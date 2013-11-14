@@ -9,6 +9,7 @@ angular.module('PSMasterMindApp').controller(
 	// Default the new project
 	$scope.project = Projects.start();
 	
+	
 	/**
 	 * Save the New Project
 	 */

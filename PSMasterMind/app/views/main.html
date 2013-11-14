@@ -6,8 +6,32 @@
   			<button ng-click="go('/newProject')">New Project</button>
   		</div>
 	</div>
+	<tabset>
+	    <tab heading="Projects">
+	    	<div class="row">
+	    		<div class="span2">Nov 2013</div>
+	    		<div class="span2">Dec 2013</div>
+	    		<div class="span2">Jan 2014</div>
+	    		<div class="span2">Feb 2014</div>
+	    		<div class="span2">Mar 2014</div>
+	    		<div class="span2">Apr 2014</div>
+	    	</div>
+	    	<div class="row" ng-repeat="data in projectGridData">
+	    		<div class="span12">
+	    			{{data.project.name}}
+	    		</div>
+	    		<div class="span12">
+	    			<progress percent="data.progress"></progress>
+	    		</div>
+	    	</div>
+		</tab>
+		<tab heading="People">
+	    	
+		</tab>
+	</tabset>
 </div>
 <hr/>
 <div class="row-fluid" style="overflow: hidden">
-	<tt>projects = {{projects}}</tt>
+	<tt>projects = {{projects}}</tt><br/><br/>
+	<tt>projectGirdData = {{projectGridData}}</tt>
 </div>
