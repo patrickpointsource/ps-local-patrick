@@ -1,0 +1,78 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="bower_components/bootstrap-sass/bootstrap-2.3.2.min.css">
+        <link rel="stylesheet" href="bower_components/bootstrap-sass/bootstrap-responsive-2.3.2.min.css">
+        <link rel="stylesheet" href="styles/main.css">
+        <link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+        <link rel="stylesheet" href="bower_components/ng-table/ng-table.css"/>
+        <!-- endbuild -->
+        
+        <!--  Dynamic  -->
+		<link rel="stylesheet/less" type="text/css" href="styles/less/screen.less" />
+		<script src="bower_components/less/dist/less-1.5.0.min.js" type="text/javascript"></script>
+		<!-- Static 
+		<link rel="stylesheet" href="less/screen.css"/>
+		-->
+		<style type="text/css">
+			@font-face {
+				src: url('fonts/Aller/Aller_Rg.ttf');
+				font-family: allerregular;
+			}
+			
+			@font-face {
+				src: url('fonts/Aller/Aller_Lt.ttf');
+				font-family: allerlight;
+			}
+			
+			@font-face {
+				src: url('fonts/Aller/Aller_Bd.ttf');
+				font-family: allerbold;
+			}
+		</style>
+</head>
+  <body ng-app="PSMasterMindApp">
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+      <script src="bower_components/es5-shim/es5-shim.js"></script>
+      <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+    <div class="container" ng-view></div>
+
+    <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
+	<script type="text/javascript" src="bower_components/ng-table/ng-table.js"></script>
+	  
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+        
+        <!-- Services -->
+        <script src="scripts/services/people.js"></script>
+        <script src="scripts/services/projects.js"></script>
+        
+        <!-- Controllers -->
+        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/newProject.js"></script>
+        <!-- endbuild -->
+</body>
+</html>
