@@ -6,7 +6,7 @@
 angular.module('PSMasterMindApp')
   .controller('MainCtrl', ['$scope', '$location', 'Projects', 'People', 
       function ($scope, $location, Projects, People) {
-	  $scope.projects = Projects.get();
+	  $scope.projects = Projects.list();
 	 
 	  function projectGirdData(){
 		  var girdData = ['foo'];

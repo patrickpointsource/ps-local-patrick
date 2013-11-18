@@ -9,7 +9,6 @@ angular.module('PSMasterMindApp').controller(
 	// Default the new project
 	$scope.project = Projects.start();
 	
-	
 	/**
 	 * Save the New Project
 	 */
@@ -33,8 +32,7 @@ angular.module('PSMasterMindApp').controller(
 				type : 'hourly'
 			}
 		}
-	}
-	;
+	};
 	
 	$scope.newRole = createNewRole();
 	

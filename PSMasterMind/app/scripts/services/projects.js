@@ -88,10 +88,49 @@ angular.module('PSMasterMindApp').factory('Projects', function() {
 		
 		localStorage[PROJECTS_KEY] = JSON.stringify(projects);
 	};
+	
+	/**
+	 * Update a project
+	 */
+	function updateProject(project){
+		var projects = getProjects();
+		var ret = null;
+		var id = project.id;
+		
+		for(var i = 0; i < projects.length; i++){
+			var curId = String(projects[i].id);
+			if(curId == id){
+				projects[i] = project;
+				break;
+			}
+		}
+		
+		return ret;
+	};
+	
+	/**
+	 * Get a project by id
+	 */
+	function getById(id){
+		var projects = getProjects();
+		var ret = null;
+		
+		for(var i = 0; i < projects.length; i++){
+			var curId = String(projects[i].id);
+			if(curId == id){
+				ret = projects[i];
+				break;
+			}
+		}
+		
+		return ret;
+	};
 
 	return {
 		start : newProject,
-		get : getProjects,
-		create : createProject
+		list : getProjects,
+		get : getById, 
+		create : createProject,
+		update: updateProject
 	};
 });
