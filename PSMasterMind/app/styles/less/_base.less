@@ -6,11 +6,106 @@
 @ps-black: black;
 @ps-white: white;
 
-*{
+@placeholder-color: #ddd;
+
+body {
 	font-family: allerregular !important;
 }
+
+label {
+	font-family: allerbold;
+	font-size: 14px;
+	color: #333;
+}
+
+input[type="text"] {
+	font-family: allerregular;
+	font-size: 14px;
+}
+
+::-webkit-input-placeholder {
+	color: @placeholder-color;
+}
+:-moz-placeholder {
+	color: @placeholder-color;
+}
+::-moz-placeholder {
+	color: @placeholder-color;
+}
+:-ms-input-placeholder {
+	color: @placeholder-color;
+}
+
+.person-field {
+	left: -48px;
+}
+
 
 #pageActions {
 	text-align: right;
 	margin-top: 16px;
+}
+
+.input-insert-right {
+	display: inline-block;
+	margin-bottom: 10px;
+	vertical-align: middle;
+	font-size: 0;
+	white-space: nowrap;
+}
+
+.full {
+	width: 100%;
+}
+
+.input-insert-right .add-in {
+	margin-left: -29px;
+	position: relative;
+	vertical-align: top;
+	display: inline-block;
+	width: auto;
+	height: 20px;
+	min-height: 16px;
+	padding: 4px 5px;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 20px;
+	text-align: center;
+	text-shadow: 0 1px 0 #fff;
+}
+
+.input-insert-left {
+	display: inline-block;
+	margin-bottom: 10px;
+	vertical-align: middle;
+	font-size: 0;
+	white-space: nowrap;
+}
+
+.input-insert-left .add-in {
+	margin-left: 5px;
+	position: absolute;
+	vertical-align: top;
+	display: inline-block;
+	width: auto;
+	height: 20px;
+	min-height: 16px;
+	padding: 4px 5px;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 20px;
+	text-align: center;
+	text-shadow: 0 1px 0 #fff;
+}
+
+.input-insert-left input {
+	text-indent: 18px;
+}
+
+.input-icon {
+	color: @placeholder-color;
+}
+
+label.radio {
+	font-family: allerregular;
 }
