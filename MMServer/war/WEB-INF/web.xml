@@ -5,53 +5,30 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
-  <!-- Servlets -->
-  
- <servlet>
-  <servlet-name>users</servlet-name>
-  <servlet-class>com.pointsource.mastermind.server.UsersServlet</servlet-class>
-</servlet>
-
-<servlet>
-  <servlet-name>oauth2</servlet-name>
-  <servlet-class>com.pointsource.mastermind.server.OAuthServlet</servlet-class>
-</servlet>
-
-<servlet>
-  <servlet-name>oauth2callback</servlet-name>
-  <servlet-class>com.pointsource.mastermind.server.OAuthCallbackServlet</servlet-class>
-</servlet>
-
-<servlet>
-	  <servlet-name>restSdkService</servlet-name>
-	  <servlet-class>
-	    org.apache.wink.server.internal.servlet.RestServlet
-	  </servlet-class>
-	  <init-param>
-	    <param-name>applicationConfigLocation</param-name>
-	    <param-value>/WEB-INF/providers;/WEB-INF/resources</param-value>
-	  </init-param>
-	  <load-on-startup>1</load-on-startup>
+    <!-- Filter -->
+    <filter>
+	   <filter-name>AuthFilter</filter-name>
+ 	  <filter-class>com.pointsource.mastermind.server.AuthFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	   <filter-name>AuthFilter</filter-name>
+	   <url-pattern>/rest/*</url-pattern>
+	</filter-mapping>
+    
+  	<!-- Servlets -->
+	<servlet>
+	     <servlet-name>restSdkService</servlet-name>
+	     <servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>
+		  <init-param>
+		    <param-name>applicationConfigLocation</param-name>
+		    <param-value>/WEB-INF/providers;/WEB-INF/resources</param-value>
+		  </init-param>
+	  	<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>restSdkService</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>oauth2</servlet-name>
-    <url-pattern>/oauth2</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>oauth2callback</servlet-name>
-    <url-pattern>/oauth2callback</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>users</servlet-name>
-    <url-pattern>/mmserver/users</url-pattern>
-  </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
