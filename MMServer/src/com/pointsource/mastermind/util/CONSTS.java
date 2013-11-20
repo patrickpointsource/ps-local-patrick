@@ -5,6 +5,7 @@ public interface CONSTS {
 	 * Resource Paths
 	 */
 	public String RESOURCE_PEOPLE = "people";
+	public String RESOURCE_PROJECTS = "projects";
 	
 	
 	/**
