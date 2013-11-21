@@ -1,5 +1,11 @@
 package com.pointsource.mastermind.server;
 
-public abstract class BaseResource {
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
+public abstract class BaseResource {
+	@Context protected UriInfo uriInfo;
+	
+	
+	
 }

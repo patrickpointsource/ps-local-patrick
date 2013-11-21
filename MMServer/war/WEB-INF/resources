@@ -1,2 +1,3 @@
 # Add JAX-RS Resource Classes Here.
 com.pointsource.mastermind.server.People
+com.pointsource.mastermind.server.Projects
