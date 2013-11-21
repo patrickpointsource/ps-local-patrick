@@ -1,0 +1,4 @@
+# Add JAX-RS Provider Classes Here.
+#auto added
+#org.apache.wink.providers.json.JsonArrayProvider
+#org.apache.wink.providers.json.JsonProvider
