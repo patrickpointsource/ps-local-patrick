@@ -1,37 +1,71 @@
-<div>
-	<div class="row">
-  		<div class="span8"><h1>PS Master Mind</h1></div>
-  		<div id="pageActions" class="actions span4">
-  			<button ng-click="clearData()">Clear Data</button>
-  			<button ng-click="go('/newProject')">New Project</button>
-  		</div>
+<div id="content">
+	<div class="row-fluid">
+		<div class="span12">
+			<div id="today">
+				Today is <span id="date">{{today}}</span>
+			</div>
+		</div>
 	</div>
-	<tabset>
-	    <tab heading="Projects">
-	    	<div class="row">
-	    		<div class="span2">Nov 2013</div>
-	    		<div class="span2">Dec 2013</div>
-	    		<div class="span2">Jan 2014</div>
-	    		<div class="span2">Feb 2014</div>
-	    		<div class="span2">Mar 2014</div>
-	    		<div class="span2">Apr 2014</div>
-	    	</div>
-	    	<div class="row" ng-repeat="data in projectGridData">
-	    		<div class="span12">
-	    			{{data.project.name}}
-	    		</div>
-	    		<div class="span12">
-	    			<progress percent="data.progress"></progress>
-	    		</div>
-	    	</div>
-		</tab>
-		<tab heading="People">
-	    	
-		</tab>
-	</tabset>
-</div>
-<hr/>
-<div class="row-fluid" style="overflow: hidden">
-	<tt>projects = {{projects}}</tt><br/><br/>
-	<tt>projectGirdData = {{projectGridData}}</tt>
+	<div class="row-fluid">
+		<div class="span12">
+			<hr></hr>
+		</div>
+	</div>
+	<div id="dashboard-widgets" class="row-fluid">
+		<div class="span4 dashboard-widget">
+			<div class="dashboard-box">
+				11
+			</div>
+			<div class="dashboard-label">Active Projects</div>
+			<div class="dashboard-actions">
+				<button class="btn">View</button>
+				<button class="btn" ng-click="createProject()">Add/Edit</button>
+			</div>
+		</div>
+		
+		<div class="span4 dashboard-widget">
+			<div class="dashboard-box">
+			</div>
+			<div class="dashboard-label">People Utilized</div>
+			<div class="dashboard-actions">
+				<button class="btn">View</button>
+				<button class="btn">Add/Edit</button>
+			</div>
+		</div>
+		
+		<div class="span4 dashboard-widget">
+			<div class="dashboard-box">
+				9
+			</div>
+			<div class="dashboard-label">Roles Utilized</div>
+			<div class="dashboard-actions">
+				<button class="btn">View</button>
+				<button class="btn">Add/Edit</button>
+			</div>
+		</div>
+	</div>
+	
+	<hr></hr>
+	
+	<div id="graph-header" class="row-fluid">
+		<div id="graph-header-title" class="span5">Quick View</div>
+		<div class="span3">
+			<select class="span12">
+				<option value="all">All Projects</option>
+			</select>
+		</div>
+		<div id="graph-header-plus" class="span1"><i class="fa fa-2x fa-plus"></i></div>
+		<div class="span3">
+			<select class="span12">
+				<option value="timeline">Year Timeline</option>
+				<option value="people">People</option>
+				<option value="hours">Hours</option>
+				<option value="roles">Roles</option>
+			</select>
+		</div>
+	</div>
+	
+	<div id="graph" class="row-fluid">
+	
+	</div>
 </div>

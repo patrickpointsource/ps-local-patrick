@@ -19,11 +19,11 @@
         <link rel="stylesheet" href="bower_components/ng-table/ng-table.css"/>
         <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
         <!-- endbuild -->
-        
+
         <!--  Dynamic  -->
 		<link rel="stylesheet/less" type="text/css" href="styles/less/screen.less" />
 		<script src="bower_components/less/dist/less-1.5.0.min.js" type="text/javascript"></script>
-		<!-- Static 
+		<!-- Static
 		<link rel="stylesheet" href="less/screen.css"/>
 		-->
 		<style type="text/css">
@@ -31,12 +31,12 @@
 				src: url('fonts/Aller/Aller_Rg.ttf');
 				font-family: allerregular;
 			}
-			
+
 			@font-face {
 				src: url('fonts/Aller/Aller_Lt.ttf');
 				font-family: allerlight;
 			}
-			
+
 			@font-face {
 				src: url('fonts/Aller/Aller_Bd.ttf');
 				font-family: allerbold;
@@ -54,28 +54,79 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div class="container" ng-view></div>
+    <header class="navbar navbar-static-top" role="navigation">
+    	<div class="navbar-inner">
+    		<div class="container">
+    			<div class="row">
+    				<div class="span12">
+			    		<div class="text-center">
+		   					<h1>PS Master Mind</h1>
+			    		</div>
+		    		</div>
+	    		</div>
+	    		<div id="badge" class="container-fluid">
+	    			<div class="row-fluid">
+			    		<div class="span6">
+		   	 				<div id="profile-photo">
+
+		   	 				</div>
+		   	 			</div>
+		   	 			<nav class="span6">
+			    			<div>My profile</div>
+			    			<div>Notifications</div>
+			    			<div>Log out</div>
+			    		</nav>
+		    		</div>
+	    		</div>
+	    	</div>
+    	</div>
+    </header>
+    <main class="container">
+    	<div class="row">
+	    	<nav id="nav-drawer" class="span3">
+	    		<ul>
+	    			<li class="active"><i class="fa fa-2x fa-fw fa-home"></i> Welcome back, Erik.</li>
+	    			<li><i class="fa fa-2x fa-fw fa-briefcase"></i> Projects</li>
+	    			<li><i class="fa fa-2x fa-fw fa-user"></i> People</li>
+	    			<li><i class="fa fa-2x fa-fw fa-users"></i> Roles</li>
+	    		</ul>
+	    	</nav>
+	    	<article class="span9" ui-view>
+
+	    	</article>
+	    	<div class="clearfix"></div>
+    	</div>
+    </main>
 
     <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+    <script type="text/javascript" src="bower_components/marked/lib/marked.js"></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
     <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script type="text/javascript" src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
     <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
 	<script type="text/javascript" src="bower_components/ng-table/ng-table.js"></script>
-	  
+
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
-        
+
+        <!-- Filters -->
+        <script src="scripts/filters/markdown.js"></script>
+
         <!-- Services -->
         <script src="scripts/services/people.js"></script>
-        <script src="scripts/services/projects.js"></script>
-        
+        <script src="scripts/services/projects/roles-service.js"></script>
+        <script src="scripts/services/projects/project-service.js"></script>
+
         <!-- Controllers -->
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/project.js"></script>
         <script src="scripts/controllers/newProject.js"></script>
         <script src="scripts/controllers/editProject.js"></script>
+        <script src="scripts/controllers/projects/roles-controller.js"></script>
+        <script src="scripts/controllers/projects/projects-controller.js"></script>
         <!-- endbuild -->
 </body>
 </html>
