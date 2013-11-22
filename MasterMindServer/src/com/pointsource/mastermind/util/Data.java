@@ -29,7 +29,6 @@ public class Data implements CONSTS{
 
 	private static JSONObject GOOGLE_USERS = null;
 	private static JSONObject PEOPLE = null;
-	private static Map<String, JSONObject> PROJECTS = new HashMap<String, JSONObject>();
 	private static int nextId = 0;
 	private static Mongo mongo;
 	private static DB db;
@@ -105,24 +104,20 @@ public class Data implements CONSTS{
 	 */
 	public static Map<String, JSONObject> getProjects() throws JSONException{
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
-		if(db != null){
-			DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
-			DBCursor cursur = projectsCol.find();
-		    
-			while(cursur.hasNext()){
-				DBObject object = cursur.next();
-				ObjectId oId = (ObjectId)object.get("_id");
-				String json = JSON.serialize(object);
-				JSONObject jsonObject = new JSONObject(json);
-				jsonObject.put(PROP_ID, oId);
-				jsonObject.put(PROP_ABOUT, RESOURCE_PROJECTS+"/"+oId);
-				ret.put(oId.toString(), jsonObject);
-			}
-		    
-		    
-		}else{
-			 ret = PROJECTS;
+		
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		DBCursor cursur = projectsCol.find();
+	    
+		while(cursur.hasNext()){
+			DBObject object = cursur.next();
+			ObjectId oId = (ObjectId)object.get("_id");
+			String json = JSON.serialize(object);
+			JSONObject jsonObject = new JSONObject(json);
+			jsonObject.put(PROP_ID, oId);
+			jsonObject.put(PROP_ABOUT, RESOURCE_PROJECTS+"/"+oId);
+			ret.put(oId.toString(), jsonObject);
 		}
+		    
 		return ret;
 	}
 	
@@ -135,20 +130,15 @@ public class Data implements CONSTS{
 	public static JSONObject getProject(String id) throws JSONException{
 		JSONObject ret = null;
 		
-		if(db != null){
-			DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
-			BasicDBObject query = new BasicDBObject();
-		    query.put("_id", new ObjectId(id));
-		    DBObject dbObj = projectsCol.findOne(query);
-		    String json = JSON.serialize(dbObj);
-		    ret = new JSONObject(json);
-		    
-		    ret.put(PROP_ID, id);
-		    ret.put(PROP_ABOUT, RESOURCE_PROJECTS+"/"+id);
-		}else{
-			 ret = PROJECTS.get(id);
-		}
-		
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		BasicDBObject query = new BasicDBObject();
+	    query.put("_id", new ObjectId(id));
+	    DBObject dbObj = projectsCol.findOne(query);
+	    String json = JSON.serialize(dbObj);
+	    ret = new JSONObject(json);
+	    
+	    ret.put(PROP_ID, id);
+	    ret.put(PROP_ABOUT, RESOURCE_PROJECTS+"/"+id);
 		
 		return ret;
 	}
@@ -160,32 +150,23 @@ public class Data implements CONSTS{
 	 * @throws JSONException 
 	 */
 	public static JSONObject createProject(JSONObject newProject) throws JSONException{
-		
 		newProject.put(PROP_ETAG, "0");
 	
-		//Cache it
-		if(db != null){
-			String json = newProject.toString();
-			DBObject dbObject = (DBObject) JSON.parse(json);
-			DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
-			WriteResult result = projectsCol.insert(dbObject);
-			//TODO Handle Result Issues
-			DBCursor cursorDoc = projectsCol.find();
-			while (cursorDoc.hasNext()) {
-				DBObject created = cursorDoc.next();
-				System.out.println("Found: " + created);
-				
-				ObjectId oId = (ObjectId)created.get("_id");
-				String idVal =  oId.toString();
-				newProject.put(PROP_ID, idVal);
-			}
+		String json = newProject.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		WriteResult result = projectsCol.insert(dbObject);
+		//TODO Handle Result Issues
+		DBCursor cursorDoc = projectsCol.find();
+		while (cursorDoc.hasNext()) {
+			DBObject created = cursorDoc.next();
+			System.out.println("Found: " + created);
+			
+			ObjectId oId = (ObjectId)created.get("_id");
+			String idVal =  oId.toString();
+			newProject.put(PROP_ID, idVal);
 		}
-		else{
-			String id = String.valueOf(nextId++);
-			//Set ID 
-			newProject.put(PROP_ID, id);
-			PROJECTS.put(id, newProject);
-		}
+		
 		newProject.put(PROP_ABOUT, RESOURCE_PROJECTS+"/"+newProject.getString(PROP_ID));
 		
 		return newProject;
@@ -204,7 +185,7 @@ public class Data implements CONSTS{
 		}
 		
 		String id = newProject.getString(PROP_ID);
-		JSONObject existing = PROJECTS.get(id);
+		JSONObject existing = getProject(id);
 		if(existing == null){
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
@@ -226,11 +207,19 @@ public class Data implements CONSTS{
 		newEtag++;
 		newProject.put(PROP_ETAG, String.valueOf(newEtag));
 		
-		//Set About
-		newProject.put(PROP_ABOUT, RESOURCE_PROJECTS+"/"+id);
+		String json = newProject.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		
-		//Cache it
-		PROJECTS.put(id, newProject);
+		BasicDBObject query = new BasicDBObject();
+	    query.put("_id", new ObjectId(id));
+	    //Exclude persisting the base
+	    BasicDBObject fields = new BasicDBObject();
+	    fields.put(PROP_BASE, 0);
+	    DBObject result = projectsCol.findAndModify(query, fields, null, false, dbObject, true, true);
+	   
+	    json = JSON.serialize(result);
+	    newProject = new JSONObject(json);
 		
 		return newProject;
 	}
