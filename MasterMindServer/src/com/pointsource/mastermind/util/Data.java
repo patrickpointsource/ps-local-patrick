@@ -29,7 +29,6 @@ public class Data implements CONSTS{
 
 	private static JSONObject GOOGLE_USERS = null;
 	private static JSONObject PEOPLE = null;
-	private static int nextId = 0;
 	private static Mongo mongo;
 	private static DB db;
 	
@@ -224,6 +223,11 @@ public class Data implements CONSTS{
 		return newProject;
 	}
 	
+	/**
+	 * Un Escape JSON
+	 * @param value
+	 * @return
+	 */
 	public static String unescapeJSON(Object value){
 		String s = String.valueOf(value);
 		
@@ -244,6 +248,11 @@ public class Data implements CONSTS{
 		return escaped;
 	}
 	
+	/**
+	 * Escape JSON
+	 * @param value
+	 * @return
+	 */
 	public static String escapeJSON(Object value){
 		String s = String.valueOf(value);
 		

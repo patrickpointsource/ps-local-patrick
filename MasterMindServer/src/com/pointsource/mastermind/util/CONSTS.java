@@ -44,4 +44,12 @@ public interface CONSTS {
 	public int DB_PORT = 27017;
 	public String DB_NAME = "mm_db_test_2013_11_21";
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
+	
+	
+	/**
+	 * Google Auth Constants
+	 */
+	public String CLIENT_ID = "141952851027.apps.googleusercontent.com";
+	public String CLIENT_SECRET = "Jiy0OMx_vOzHK1mXSIGSoog1";
+	public String APPLICATION_NAME = "PS Master Mind";
 }
