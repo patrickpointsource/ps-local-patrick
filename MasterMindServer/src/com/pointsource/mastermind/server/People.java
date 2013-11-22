@@ -14,13 +14,18 @@ import org.json.JSONObject;
 import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
 
+/**
+ * RSET Services for the Master Mind People Resources
+ * 
+ * @author kmbauer
+ */
 @Path("/"+CONSTS.RESOURCE_PEOPLE)
 @Workspace(workspaceTitle = CONSTS.WORKSPACE_TITLE, collectionTitle = CONSTS.RESOURCE_TITLE_PEOPLE)
 public class People extends BaseResource {
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public JSONObject get() throws JSONException, IOException{
-		JSONObject ret = Data.getPeople();
+		JSONObject ret = Data.getPeople(servletContext);
 		return ret;
 	}
 	

@@ -23,10 +23,20 @@ import org.json.JSONObject;
 import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
 
+/**
+ * REST services for master mind project resource collection
+ * 
+ * @author kmbauer
+ */
 @Path("/"+CONSTS.RESOURCE_PROJECTS)
 @Workspace(workspaceTitle = CONSTS.WORKSPACE_TITLE, collectionTitle = CONSTS.RESOURCE_TITLE_PROJECTS)
 public class Projects extends BaseResource {
 	
+	/**
+	 * GET projects
+	 * 
+	 * The list of projects
+	 */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public String get(){
@@ -55,6 +65,12 @@ public class Projects extends BaseResource {
 		}
 	}
 	
+	/**
+	 * GET projects/:id
+	 * 
+	 * @param id
+	 * @return A project by id
+	 */
 	@GET
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -80,6 +96,15 @@ public class Projects extends BaseResource {
 		}
 	}
 	
+	/**
+	 * POST projects
+	 * 
+	 * Adds a new project to the collection
+	 * 
+	 * @param newProject
+	 * 
+	 * @return new project location
+	 */
 	@POST
 	@Produces({MediaType.APPLICATION_JSON})
 	@Consumes({MediaType.APPLICATION_JSON})
@@ -102,6 +127,14 @@ public class Projects extends BaseResource {
 		}
 	}
 	
+	/**
+	 * PUT projects/:id
+	 * 
+	 * @param id id of a project
+	 * @param newProject new project definition
+	 * 
+	 * @return updated project
+	 */
 	@PUT
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_JSON})

@@ -1,11 +1,11 @@
 package com.pointsource.mastermind.util;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
@@ -52,10 +52,9 @@ public class Data implements CONSTS{
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public static JSONObject getGoogleUsers() throws IOException, JSONException {
+	public static JSONObject getGoogleUsers(ServletContext context) throws IOException, JSONException {
 		if (GOOGLE_USERS == null) {
-			File googleUsers = new File("WEB-INF/googleUsers.json");
-			FileInputStream is = new FileInputStream(googleUsers);
+			InputStream is = context.getResourceAsStream("/WEB-INF/googleUsers.json");
 			byte[] bytes = IOUtils.readFully(is, -1, true);
 			String jsonTxt = new String(bytes, "UTF-8");
 
@@ -71,9 +70,9 @@ public class Data implements CONSTS{
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public static JSONObject getPeople() throws IOException, JSONException {
+	public static JSONObject getPeople(ServletContext context) throws IOException, JSONException {
 		if(PEOPLE == null){
-			JSONObject googleUsers = getGoogleUsers();
+			JSONObject googleUsers = getGoogleUsers(context);
 			JSONArray users = googleUsers.getJSONArray(PROP_USERS);
 			JSONArray mmPeople = new JSONArray();
 			
