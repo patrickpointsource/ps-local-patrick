@@ -5,7 +5,7 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
     $urlRouterProvider.otherwise('/');
 
     $stateProvider
-      .state('index', {
+      .state('home', {
         url: '/',
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
@@ -44,4 +44,10 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
         templateUrl: 'views/project.html',
         controller: 'EditProjectCtrl'
       });
-  });
+  }).run(["$rootScope", "$location",
+              function ($rootScope, $location) {
+	  $rootScope.logout = function(){
+		  var access_token = localStorage["access_token"];
+		  helper.disconnectUser(access_token);
+	  }
+  }] );;
