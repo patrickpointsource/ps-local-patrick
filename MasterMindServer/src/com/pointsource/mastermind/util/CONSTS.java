@@ -4,9 +4,10 @@ public interface CONSTS {
 	/**
 	 * Resource Paths
 	 */
+	public String RESOURCE_ME = "me";
+	public String RESOURCE_NEW = "new";
 	public String RESOURCE_PEOPLE = "people";
 	public String RESOURCE_PROJECTS = "projects";
-	public String RESOURCE_NEW = "new";
 	
 	/**
 	 * Property Names
@@ -36,7 +37,7 @@ public interface CONSTS {
 	
 	
 	/**
-	 * Mongo Collection Names
+	 * Mongo Constants
 	 */
 	public String DB_USER = "admin";
 	public String DB_PASS = "t0ddSucks";
@@ -47,9 +48,13 @@ public interface CONSTS {
 	
 	
 	/**
-	 * Google Auth Constants
+	 * Google Constants
 	 */
 	public String CLIENT_ID = "141952851027.apps.googleusercontent.com";
 	public String CLIENT_SECRET = "Jiy0OMx_vOzHK1mXSIGSoog1";
 	public String APPLICATION_NAME = "PS Master Mind";
+	public String COOKIE_NAME_ACCESS_TOKEN = "access_token";
+	public String HEADER_AUTHORIZATION = "Authorization";
+	public String AUTH_TYPE = "Bearer";
+	public String GOOGLE_PLUS_PEOPLE_URI = "https://www.googleapis.com/plus/v1/people/";
 }

@@ -97,16 +97,9 @@ var helper = (function() {
         $('#authResult').append(' ' + field + ': ' + authResult[field] + '<br/>');
       }
       if (authResult['access_token']) {
-    	//Save the access token
-    	var exdate=new Date();
-	    var exdays = 7;
-	    var value = authResult['access_token'];
-	    var c_name = "access_token";
-	  
-	    exdate.setDate(exdate.getDate() + exdays);
-	    var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-	    document.cookie=c_name + "=" + c_value;
-    	  
+        helper.eraseCookie('access_token');
+        helper.createCookie('access_token', escape(authResult['access_token']));
+    	  	  
         // The user is signed in
         this.authResult = authResult;
         helper.connectServer();
@@ -121,6 +114,32 @@ var helper = (function() {
         $('#gConnect').show();
       }
       console.log('authResult', authResult);
+    },
+    createCookie: function(name,value,days) {
+    	if (days) {
+    		var date = new Date();
+    		date.setTime(date.getTime()+(days*24*60*60*1000));
+    		var expires = "; expires="+date.toGMTString();
+    	}
+    	else var expires = "";
+    	var cookie = name+"="+value+expires+"; path=/";
+    	
+    	console.log("Created Cookie: " + cookie);
+    	
+    	document.cookie = cookie;
+    },
+	readCookie: function(name) {
+    	var nameEQ = name + "=";
+    	var ca = document.cookie.split(';');
+    	for(var i=0;i < ca.length;i++) {
+    		var c = ca[i];
+    		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+    		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    	}
+    	return null;
+    },
+    eraseCookie:function(name) {
+    	helper.createCookie(name,"",-1);
     },
     /**
      * Retrieves and renders the authenticated user's Google+ profile.
@@ -150,6 +169,9 @@ var helper = (function() {
      * Calls the server endpoint to disconnect the app for the user.
      */
     disconnectServer: function() {
+      //erase cookie	
+      helper.eraseCookie('access_token');
+      
       // Revoke the server tokens
       $.ajax({
         type: 'POST',

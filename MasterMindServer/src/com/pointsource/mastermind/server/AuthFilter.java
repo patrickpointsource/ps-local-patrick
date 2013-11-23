@@ -15,6 +15,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.pointsource.mastermind.util.CONSTS;
+
 /**
  * @author kmbauer
  *
@@ -30,7 +32,7 @@ public class AuthFilter implements Filter {
 		HttpServletRequest httpReq = (HttpServletRequest) req;
 		
 		//Check the param
-		String token = httpReq.getParameter("access_token");
+		String token = httpReq.getParameter(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
 		
 		if(token == null){
 			Cookie[] cookies = httpReq.getCookies();
@@ -39,7 +41,7 @@ public class AuthFilter implements Filter {
 					Cookie ith = cookies[i];
 					String name = ith.getName();
 					
-					if("access_token".equals(name)){
+					if(CONSTS.COOKIE_NAME_ACCESS_TOKEN.equals(name)){
 						token = ith.getValue();
 						break;
 					}
