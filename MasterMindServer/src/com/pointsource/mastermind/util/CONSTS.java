@@ -54,6 +54,7 @@ public interface CONSTS {
 	public String CLIENT_SECRET = "Jiy0OMx_vOzHK1mXSIGSoog1";
 	public String APPLICATION_NAME = "PS Master Mind";
 	public String COOKIE_NAME_ACCESS_TOKEN = "access_token";
+	public String SESSION_USER_KEY = "current_user";
 	public String HEADER_AUTHORIZATION = "Authorization";
 	public String AUTH_TYPE = "Bearer";
 	public String GOOGLE_PLUS_PEOPLE_URI = "https://www.googleapis.com/plus/v1/people/";

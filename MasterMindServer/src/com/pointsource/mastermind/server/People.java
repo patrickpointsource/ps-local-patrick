@@ -31,7 +31,8 @@ public class People extends BaseResource {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public JSONObject get() {
 		try{
-			JSONObject ret = Data.getPeople(servletContext);
+			RequestContext context = getRequestContext();
+			JSONObject ret = Data.getPeople(context);
 			return ret;
 		} catch (WebApplicationException e) {
 			throw e;
@@ -51,7 +52,7 @@ public class People extends BaseResource {
 	public JSONObject getMe() {
 		try {
 			RequestContext context = getRequestContext();
-			JSONObject me = Data.getMe(context);
+			JSONObject me = context.getCurrentUser();
 			return me;
 		} catch (WebApplicationException e) {
 			e.printStackTrace();

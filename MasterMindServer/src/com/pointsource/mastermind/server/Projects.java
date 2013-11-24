@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
+import com.pointsource.mastermind.util.RequestContext;
 
 /**
  * REST services for master mind project resource collection
@@ -41,6 +42,7 @@ public class Projects extends BaseResource {
 	@Produces({MediaType.APPLICATION_JSON})
 	public String get(){
 		try {
+			RequestContext context = getRequestContext();
 			Map<String, JSONObject> projects = Data.getProjects();
 			JSONObject ret = new JSONObject();
 			int total = projects.size();
@@ -49,7 +51,7 @@ public class Projects extends BaseResource {
 			Collection<JSONObject> values = projects.values();
 			ret.put(CONSTS.PROP_DATA, values);
 			
-			URI baseURI = uriInfo.getBaseUri();
+			URI baseURI = context.getBaseURI();
 			ret.put(CONSTS.PROP_BASE, baseURI);
 			
 			ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS);
@@ -76,13 +78,14 @@ public class Projects extends BaseResource {
 	@Produces({MediaType.APPLICATION_JSON})
 	public String get(@PathParam("id")String id){
 		try {
+			RequestContext context = getRequestContext();
 			JSONObject ret = Data.getProject(id);
 			
 			if(ret == null){
 				throw new WebApplicationException(Status.NOT_FOUND);
 			}
 			
-			URI baseURI = uriInfo.getBaseUri();
+			URI baseURI = context.getBaseURI();
 			ret.put(CONSTS.PROP_BASE, baseURI);
 			
 			return Data.escapeJSON(ret);
@@ -110,11 +113,12 @@ public class Projects extends BaseResource {
 	@Consumes({MediaType.APPLICATION_JSON})
 	public Response post(JSONObject newProject){
 		try {
+			RequestContext context = getRequestContext();
 			JSONObject ret = Data.createProject(newProject);
 			
 			String about  = Data.unescapeJSON(ret.getString(CONSTS.PROP_ABOUT));
 			
-			URI aboutURI = uriInfo.getBaseUri().resolve(about);
+			URI aboutURI = context.getBaseURI().resolve(about);
 			
 			return Response.created(aboutURI).build();
 		} catch (WebApplicationException e) {

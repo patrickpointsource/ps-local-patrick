@@ -2,6 +2,10 @@ package com.pointsource.mastermind.util;
 
 import java.net.URI;
 
+import javax.servlet.ServletContext;
+
+import org.json.JSONObject;
+
 /**
  * An info the data layer will need about the current request
  * 
@@ -10,6 +14,33 @@ import java.net.URI;
 public class RequestContext {
 	private String authorization;
 	private URI baseURI;
+	private ServletContext servletContext;
+	private JSONObject currentUser;
+	
+	
+	/**
+	 * The Current Authorized User
+	 * @return
+	 */
+	public JSONObject getCurrentUser() {
+		return currentUser;
+	}
+
+	public void setCurrentUser(JSONObject currentUser) {
+		this.currentUser = currentUser;
+	}
+
+	/**
+	 * Servlet Context
+	 * @return
+	 */
+	public ServletContext getServletContext() {
+		return servletContext;
+	}
+
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
+	}
 
 	/**
 	 * The Authorization Header

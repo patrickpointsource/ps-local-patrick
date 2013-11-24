@@ -2,19 +2,15 @@ package com.pointsource.mastermind.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.wink.client.ClientResponse;
-import org.apache.wink.client.Resource;
-import org.apache.wink.client.RestClient;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +29,8 @@ import com.mongodb.util.JSON;
 
 public class Data implements CONSTS {
 
-	private static JSONObject GOOGLE_USERS = null;
+	private static Map<String, JSONObject> GOOGLE_USERS = null;
+	private static String GOOGLE_USER_ETAG = "";
 	private static JSONObject PEOPLE = null;
 	private static Mongo mongo;
 	private static DB db;
@@ -50,42 +47,29 @@ public class Data implements CONSTS {
 	}
 
 	/**
-	 * Who am I
-	 * 
-	 * @throws URISyntaxException
-	 * 
-	 */
-	public static JSONObject getMe(RequestContext content)
-			throws URISyntaxException {
-		URI googleProfile = new URI(GOOGLE_PLUS_PEOPLE_URI + RESOURCE_ME);
-		RestClient client = new RestClient();
-		Resource resource = client.resource(googleProfile);
-		ClientResponse response = resource
-				.header(HEADER_AUTHORIZATION, content.getAuthorization())
-				.accept(MediaType.APPLICATION_JSON).get();
-
-		JSONObject ret = response.getEntity(JSONObject.class);
-
-		return ret;
-	}
-
-	/**
 	 * Gets the list of Google Users
 	 * 
 	 * @return
 	 * @throws IOExceptionz
 	 * @throws JSONException
 	 */
-	public static JSONObject getGoogleUsers(ServletContext context)
+	public static Map<String, JSONObject> getGoogleUsers(RequestContext context)
 			throws IOException, JSONException {
 		if (GOOGLE_USERS == null) {
-			InputStream is = context
-					.getResourceAsStream("/WEB-INF/googleUsers.json");
+			InputStream is = context.getServletContext().getResourceAsStream(
+					"/WEB-INF/googleUsers.json");
 			byte[] bytes = IOUtils.readFully(is, -1, true);
 			String jsonTxt = new String(bytes, "UTF-8");
 
-			JSONObject json = new JSONObject(jsonTxt);
-			GOOGLE_USERS = json;
+			JSONObject googleUsers = new JSONObject(jsonTxt);
+			JSONArray users = googleUsers.getJSONArray(PROP_USERS);
+			GOOGLE_USERS = new HashMap<String, JSONObject>();
+			GOOGLE_USER_ETAG = googleUsers.getString(PROP_ETAG);
+
+			for (int i = 0; i < users.length(); i++) {
+				JSONObject ithUser = users.getJSONObject(i);
+				GOOGLE_USERS.put(ithUser.getString(PROP_ID), ithUser);
+			}
 		}
 		return GOOGLE_USERS;
 	}
@@ -97,15 +81,18 @@ public class Data implements CONSTS {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public static JSONObject getPeople(ServletContext context)
+	public static JSONObject getPeople(RequestContext context)
 			throws IOException, JSONException {
 		if (PEOPLE == null) {
-			JSONObject googleUsers = getGoogleUsers(context);
-			JSONArray users = googleUsers.getJSONArray(PROP_USERS);
+
 			JSONArray mmPeople = new JSONArray();
 
-			for (int i = 0; i < users.length(); i++) {
-				JSONObject ithUser = users.getJSONObject(i);
+			Map<String, JSONObject> googleUsers = getGoogleUsers(context);
+			Collection<JSONObject> users = googleUsers.values();
+
+			for (Iterator<JSONObject> iterator = users.iterator(); iterator
+					.hasNext();) {
+				JSONObject ithUser = (JSONObject) iterator.next();
 				JSONObject person = new JSONObject();
 				person.put(PROP_ID, ithUser.getString(PROP_ID));
 				person.put(PROP_MBOX, ithUser.getString(PROP_PRIMARY_EMAIL));
@@ -118,7 +105,7 @@ public class Data implements CONSTS {
 			}
 
 			PEOPLE = new JSONObject();
-			PEOPLE.put(PROP_ETAG, googleUsers.getString(PROP_ETAG));
+			PEOPLE.put(PROP_ETAG, GOOGLE_USER_ETAG);
 			PEOPLE.put(PROP_COUNT, mmPeople.length());
 			PEOPLE.put(PROP_PEOPLE, mmPeople);
 		}
@@ -214,32 +201,35 @@ public class Data implements CONSTS {
 	public static JSONObject updateProject(JSONObject newProject)
 			throws JSONException {
 		if (!newProject.has(PROP_ID)) {
-			IllegalArgumentException cause = new IllegalArgumentException(
-					"Project does not conatin an id property");
-			throw new WebApplicationException(cause, Status.BAD_REQUEST);
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Project does not conatin an id property").build();
+			throw new WebApplicationException(response);
 		}
 
 		String id = newProject.getString(PROP_ID);
 		JSONObject existing = getProject(id);
 		if (existing == null) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Project does not exist").build();
+			throw new WebApplicationException(response);
 		}
 
 		if (!newProject.has(PROP_ETAG)) {
-			IllegalArgumentException cause = new IllegalArgumentException(
-					"Project does not conatin an etag property");
-			throw new WebApplicationException(cause, Status.BAD_REQUEST);
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Project does not conatin an etag property").build();
+			throw new WebApplicationException(response);
 		}
 
 		String etag = newProject.getString(PROP_ETAG);
 		String old_etag = existing.getString(PROP_ETAG);
 
 		if (!etag.equals(old_etag)) {
-			IllegalArgumentException cause = new IllegalArgumentException(
-					"Project etag (" + etag
+			String message = "Project etag (" + etag
 							+ ") does not match the saved etag (" + old_etag
-							+ ")");
-			throw new WebApplicationException(cause, Status.CONFLICT);
+							+ ")";
+			Response response = Response.status(Status.CONFLICT)
+					.entity(message).build();
+			throw new WebApplicationException(response);
 		}
 
 		int newEtag = Integer.parseInt(old_etag);
