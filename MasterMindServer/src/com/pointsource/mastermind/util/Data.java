@@ -2,6 +2,7 @@ package com.pointsource.mastermind.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,16 +35,122 @@ public class Data implements CONSTS {
 	private static JSONObject PEOPLE = null;
 	private static Mongo mongo;
 	private static DB db;
+	private static JSONObject CONFIG = null;
 
+	/**
+	 * Get the server config info
+	 * @return
+	 */
+	public static JSONObject getConfig(){
+		if(CONFIG == null){
+			try {
+				JSONObject ret = new JSONObject();
+				ret.put("DB_HOSTNAME", DB_HOSTNAME_DEFAULT);
+				ret.put("DB_PORT", DB_PORT_DEFAULT);
+				ret.put("DB_NAME", DB_NAME_DEFAULT);
+				
+				CONFIG = ret;
+			} catch (Exception e) {
+				e.printStackTrace(System.err);
+			}
+		}
+		return CONFIG;
+	}
+	
+	public static JSONObject updateConfig(JSONObject config) throws UnknownHostException, JSONException{
+		try {
+			//Close the old connection
+			mongo.close();
+			db = null;
+			mongo = null;
+			
+			mongo = new Mongo(config.getString("DB_HOSTNAME"), config.getInt("DB_PORT"));
+			db = mongo.getDB(config.getString("DB_NAME"));
+			db.authenticate(DB_USER, DB_PASS.toCharArray());
+		} catch (IllegalArgumentException e) {
+			//IDK why mongo is throwing this?
+			e.printStackTrace();
+		}
+		
+		CONFIG = config;
+		return config;
+	}
+	
 	static {
 		try {
-			mongo = new Mongo(DB_HOSTNAME, DB_PORT);
-			db = mongo.getDB(DB_NAME);
+			JSONObject config = getConfig();
+			mongo = new Mongo(config.getString("DB_HOSTNAME"), config.getInt("DB_PORT"));
+			db = mongo.getDB(config.getString("DB_NAME"));
 			db.authenticate(DB_USER, DB_PASS.toCharArray());
 		} catch (Exception e) {
 			System.err.println("DB Startup Failed!!");
 			e.printStackTrace();
 		}
+	}
+	
+	//Magic Group Constants
+	private static String EXEC_ID = "execs";
+	private static String EXEC_TITLE = "Executives";
+	private static String SALES_ID = "sales";
+	private static String SALES_TITLE = "Sales";
+	
+	/**
+	 * Get the list of managed user groups
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getGroups() throws JSONException{
+		JSONObject ret = new JSONObject();
+		JSONArray members = new JSONArray();
+		
+		JSONObject g1 = new JSONObject();
+		g1.put(PROP_ID, EXEC_ID);
+		g1.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+EXEC_ID);
+		g1.put(PROP_TITLE, EXEC_TITLE);
+		members.put(g1);
+		
+		JSONObject g2 = new JSONObject();
+		g2.put(PROP_ID, SALES_ID);
+		g2.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+SALES_ID);
+		g2.put(PROP_TITLE, SALES_TITLE);
+		members.put(g2);
+		
+		ret.put(PROP_MEMBERS, members);
+		ret.put(PROP_ABOUT, RESOURCE_GROUPS);
+		ret.put(PROP_COUNT, members.length());
+		return ret;
+	}
+	
+	/**
+	 * Get the list of managed user groups
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getGroup(String groupId) throws JSONException{
+		JSONObject ret = new JSONObject();
+		JSONArray members = new JSONArray();
+		
+		//Executives Group
+		if(EXEC_ID.equals(groupId)){
+			JSONObject g1 = new JSONObject();
+			g1.put(PROP_ID, "114352410049076130019");
+			g1.put(PROP_RESOURCE, RESOURCE_PEOPLE+"/"+"114352410049076130019");
+			g1.put(PROP_TITLE, EXEC_TITLE);
+			members.put(g1);
+			
+			JSONObject g2 = new JSONObject();
+			g2.put(PROP_ID, SALES_ID);
+			g2.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+SALES_ID);
+			g2.put(PROP_TITLE, SALES_TITLE);
+			members.put(g2);
+		}
+		
+		
+		
+		ret.put(PROP_MEMBERS, members);
+		ret.put(PROP_ABOUT, RESOURCE_GROUPS);
+		ret.put(PROP_COUNT, members.length());
+		return ret;
 	}
 
 	/**
@@ -253,7 +360,9 @@ public class Data implements CONSTS {
 
 		return newProject;
 	}
-
+	
+	
+	
 	/**
 	 * Un Escape JSON
 	 * 

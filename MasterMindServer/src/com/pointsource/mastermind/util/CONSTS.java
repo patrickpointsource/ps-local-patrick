@@ -7,6 +7,7 @@ public interface CONSTS {
 	public String RESOURCE_ME = "me";
 	public String RESOURCE_NEW = "new";
 	public String RESOURCE_PEOPLE = "people";
+	public String RESOURCE_GROUPS = "groups";
 	public String RESOURCE_PROJECTS = "projects";
 	
 	/**
@@ -22,10 +23,12 @@ public interface CONSTS {
 	public String PROP_GIVEN_NAME = "givenName";
 	public String PROP_ID = "id";
 	public String PROP_MBOX = "mBox";
+	public String PROP_MEMBERS = "members";
 	public String PROP_NAME = "name";
 	public String PROP_PEOPLE = "people";
 	public String PROP_PRIMARY_EMAIL = "primaryEmail";
 	public String PROP_RESOURCE = "resource";
+	public String PROP_TITLE = "title";
 	public String PROP_USERS = "users";
 	
 	/**
@@ -34,6 +37,7 @@ public interface CONSTS {
 	public String WORKSPACE_TITLE = "PointSource Master Mind";
 	public String RESOURCE_TITLE_PEOPLE = "People";
 	public String RESOURCE_TITLE_PROJECTS = "Projects";
+	public String RESOURCE_TITLE_GROUPS = "Groups";
 	
 	
 	/**
@@ -41,9 +45,9 @@ public interface CONSTS {
 	 */
 	public String DB_USER = "admin";
 	public String DB_PASS = "t0ddSucks";
-	public String DB_HOSTNAME = "db.mastermind.pointsource.us";
-	public int DB_PORT = 27017;
-	public String DB_NAME = "mm_db_test_2013_11_21";
+	public String DB_HOSTNAME_DEFAULT = "db.mastermind.pointsource.us";
+	public int DB_PORT_DEFAULT  = 27017;
+	public String DB_NAME_DEFAULT  = "mm_db_dev";
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
 	
 	
