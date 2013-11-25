@@ -14,7 +14,7 @@ angular.module('PSMasterMindApp')
        */
       $scope.save = function () {
         ProjectsService.save($scope.project);
-        $scope.go('/home');
+        $state.go('home');
       };
 
       /**
