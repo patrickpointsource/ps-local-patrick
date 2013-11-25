@@ -14,8 +14,9 @@ angular.module('PSMasterMindApp')
      * TODO: Change the hardcoded address to localhost:8080/MasterMindServer
      * TODO: Change the hardcoded access_token query parameter
      */
-    var ProjectResource = $resource('http://localhost:8080/MasterMindServer/rest/projects/:projectId?access_token=xxx', {
-      projectId: '@projectId'
+    var ProjectResource = $resource('http://localhost:8080/MasterMindServer/rest/projects/:projectId?access_token=:access_token', {
+      projectId: '@projectId',
+      access_token: localStorage['access_token']
     }, {
       query: {
         method: 'GET',
