@@ -14,6 +14,15 @@
 	   <filter-name>AuthFilter</filter-name>
 	   <url-pattern>/rest/*</url-pattern>
 	</filter-mapping>
+	
+	<filter>
+       <filter-name>CorsFilter</filter-name>
+      <filter-class>com.pointsource.mastermind.server.CorsFilter</filter-class>
+    </filter>
+    <filter-mapping>
+       <filter-name>CorsFilter</filter-name>
+       <url-pattern>/rest/*</url-pattern>
+    </filter-mapping>
     
   	<!-- Servlets -->
 	<servlet>

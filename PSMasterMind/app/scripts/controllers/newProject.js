@@ -1,13 +1,13 @@
 'use strict';
 
 /**
- * New Project Controller
+ * Controller for creating a new Project.
  */
 angular.module('PSMasterMindApp')
-  .controller('NewProjectCtrl', ['$scope', '$location', 'ngTableParams', 'Projects', 'People', '$stateParams',
-    function ($scope, $location, TableParams, Projects, People, $stateParams) {
+  .controller('NewProjectCtrl', ['$scope', '$location', 'ngTableParams', 'Projects', 'People', '$stateParams', '$state', 'project',
+    function ($scope, $location, TableParams, Projects, People, $stateParams, $state, project) {
       // Default the new project
-      $scope.project = Projects.current();
+      $scope.project = project;
 
       var defaultTab = 'details';
       // Set the active tab to the one specified in the location
@@ -50,19 +50,27 @@ angular.module('PSMasterMindApp')
       };
 
       $scope.showDetails = function () {
-        $location.path('/projects/new/details');
+        $state.go('projects.new.tab', {
+          activeTab: 'details'
+        });
       };
 
       $scope.showRoles = function () {
-        $location.path('/projects/new/roles');
+        $state.go('projects.new.tab', {
+          activeTab: 'roles'
+        });
       };
 
       $scope.showAssignments = function () {
-        $location.path('/projects/new/assignments');
+        $state.go('projects.new.tab', {
+          activeTab: 'assignments'
+        });
       };
 
       $scope.showSummary = function () {
-        $location.path('/projects/new/summary');
+        $state.go('projects.new.tab', {
+          activeTab: 'summary'
+        });
       };
 
       $scope.$on('roles:add', function (event, role) {

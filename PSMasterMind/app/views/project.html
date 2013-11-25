@@ -12,7 +12,7 @@
 			<li ng-class="{active: activeTab == 'assignments'}"><a ng-click="showAssignments()" data-toggle="tab">Assignments</a></li>
 			<li ng-class="{active: activeTab == 'summary'}"><a ng-click="showSummary()" data-toggle="tab">Summary</a></li>
 		</ul>
-	
+
 		<div class="tab-content">
 		    <div id="details" class="tab-pane" ng-class="{active: activeTab == 'details'}">
 		    	<form name="ProjectForm" class="projectForm">
@@ -64,7 +64,7 @@
 								</div>
 							</div>
 					    </div>
-					    
+
 					    <div class="row-fluid">
 					    	<div class="span3">
 					    		<label for="projectState">Project State:</label>
@@ -86,7 +86,7 @@
 						    			<input id="totalEstimatedValue" type="number" ng-model="project.terms.totalEstValue" />
 						    		</div>
 						    	</div>
-						    	
+
 						    	<div class="span3">
 						    		<label>&nbsp;</label>
 						    		<label class="checkbox inline"><input type="checkbox" ng-model="project.terms.includesProjectManagementOverhead" />Project Includes PM Overhead</label>
@@ -118,17 +118,17 @@
 									<option value="lorrie.garbarz@pointsourcellc.com">Lorrie Garbarz</option>
 								</select>
 							</div>
-						</div>		
+						</div>
 					</fieldset>
 		    	</form>
 		    </div>
-		
+
 			<div id="roles" class="tab-pane" ng-class="{active: activeTab == 'roles'}">
-		    	<form name="ProjectForm" class="projectForm" ng-controller="RolesController" ng-submit="add()">
+		    	<form name="ProjectForm" class="projectForm" ng-controller="RolesCtrl" ng-submit="add()">
 		    		<fieldset>
 		    			<section class="well">
 			    			<h3>Add Role</h3>
-			    			
+
 			    			<div class="row-fluid">
 			    				<div class="span4">
 			    					<label>Role:</label>
@@ -157,7 +157,7 @@
 									</div>
 								</div>
 			    			</div>
-			    			
+
 			    			<div class="row-fluid">
 				    			<div class="tab-panes tabs-left span6">
 					    			<div class="nav nav-tabs">
@@ -222,21 +222,21 @@
 										</section>
 									</div>
 								</div>
-							
+
 								<div class="span6">
 									<label>Shoring:</label>
 									<label class="radio"><input type="radio" value="on" ng-model="newRole.shore" />Onshore</label>
 									<label class="radio"><input type="radio" value="off" ng-model="newRole.shore" />Offshore</label>
 								</div>
 							</div>
-							
+
 					    	<div class="row-fluid">
 					    		<div class="span12">
 							    	<input type="submit" class="btn" value="Add Role" />
 							    </div>
 						    </div>
 						</section>
-						
+
 						<h3>Current Roles</h3>
 						<div class="row-fluid">
 							<div class="span12">
@@ -254,7 +254,7 @@
 		    		</fieldset>
 		    	</form>
 			</div>
-		   
+
 		    <div id="assignments" class="tab-pane" ng-class="{active: activeTab == 'assignments'}">
 		    	<form name="ProjectForm" class="projectForm">
 		    		<fieldset class="form-horizontal">
@@ -280,7 +280,7 @@
 		    		</fieldset>
 		    	</form>
 		    </div>
-		    
+
 		    <div id="summary" class="tab-pane" ng-class="{active: activeTab == 'summary'}">
 		    	<form name="ProjectForm" class="projectForm">
 		    		<fieldset>

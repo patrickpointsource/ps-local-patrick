@@ -1,7 +1,16 @@
-<div>
-	<div class="row-fluid">
-		<div class="span12">
-		
-		</div>
-	</div>
+<div class="container-fluid">
+<div class="row-fluid">
+    <div class="span8"><h1>{{ title }}</h1></div>
+    <div id="pageActions" class="actions span4">
+        <button class="btn" ng-click="save()">Save</button>
+    </div>
+</div>
+<div class="tab-panes">
+<ul class="nav nav-tabs" ui-view="tabs">
+
+</ul>
+
+<div class="tab-content" ui-view="tab-content">
+</div>
+</div>
 </div>

@@ -1,9 +1,13 @@
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-  <head>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title></title>
@@ -11,50 +15,50 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-        <!-- build:css(.tmp) styles/main.css -->
-        <link rel="stylesheet" href="bower_components/bootstrap-sass/bootstrap-2.3.2.min.css">
-        <link rel="stylesheet" href="bower_components/bootstrap-sass/bootstrap-responsive-2.3.2.min.css">
-        <link rel="stylesheet" href="styles/main.css">
-        <link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
-        <link rel="stylesheet" href="bower_components/ng-table/ng-table.css"/>
-        <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
-        <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="bower_components/bootstrap-sass/bootstrap-2.3.2.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap-sass/bootstrap-responsive-2.3.2.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+    <link rel="stylesheet" href="bower_components/ng-table/ng-table.css"/>
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css"/>
+    <!-- endbuild -->
 
-        <!--  Dynamic  -->
-		<link rel="stylesheet/less" type="text/css" href="styles/less/screen.less" />
-		<script src="bower_components/less/dist/less-1.5.0.min.js" type="text/javascript"></script>
-		<!-- Static
-		<link rel="stylesheet" href="less/screen.css"/>
-		-->
-		<style type="text/css">
-			@font-face {
-				src: url('fonts/Aller/Aller_Rg.ttf');
-				font-family: allerregular;
-			}
+    <!--  Dynamic  -->
+    <link rel="stylesheet/less" type="text/css" href="styles/less/screen.less"/>
+    <script src="bower_components/less/dist/less-1.5.0.min.js" type="text/javascript"></script>
+    <!-- Static
+    <link rel="stylesheet" href="less/screen.css"/>
+    -->
+    <style type="text/css">
+        @font-face {
+            src: url('fonts/Aller/Aller_Rg.ttf');
+            font-family: allerregular;
+        }
 
-			@font-face {
-				src: url('fonts/Aller/Aller_Lt.ttf');
-				font-family: allerlight;
-			}
+        @font-face {
+            src: url('fonts/Aller/Aller_Lt.ttf');
+            font-family: allerlight;
+        }
 
-			@font-face {
-				src: url('fonts/Aller/Aller_Bd.ttf');
-				font-family: allerbold;
-			}
-		</style>
+        @font-face {
+            src: url('fonts/Aller/Aller_Bd.ttf');
+            font-family: allerbold;
+        }
+    </style>
 </head>
-  <body ng-app="PSMasterMindApp">
-    <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+<body ng-app="PSMasterMindApp">
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
 
-    <!--[if lt IE 9]>
-      <script src="bower_components/es5-shim/es5-shim.js"></script>
-      <script src="bower_components/json3/lib/json3.min.js"></script>
-    <![endif]-->
+<!--[if lt IE 9]>
+<script src="bower_components/es5-shim/es5-shim.js"></script>
+<script src="bower_components/json3/lib/json3.min.js"></script>
+<![endif]-->
 
-    <!-- Add your site or application content here -->
-    <div id="welcomeContent">
+<div id="welcomeContent">
 	    <h2>Welcome to PS Master Mind sign in with your PointSource Google+ account</h2>
 		<span id="signinButton">
 		  <span
@@ -96,55 +100,57 @@
 		    	</div>
 	    	</div>
 	    </header>
-	    <main class="container">
-	    	<div class="row">
-		    	<nav id="nav-drawer" class="span3">
-		    		<ul>
-		    			<li id="profileWelcomeItem" class="active"><i class="fa fa-2x fa-fw fa-home"></i> Loging in...</li>
-		    			<li><i class="fa fa-2x fa-fw fa-briefcase"></i> Projects</li>
-		    			<li><i class="fa fa-2x fa-fw fa-user"></i> People</li>
-		    			<li><i class="fa fa-2x fa-fw fa-users"></i> Roles</li>
-		    		</ul>
-		    	</nav>
-		    	<article class="span9" ui-view>
-	
-		    	</article>
-		    	<div class="clearfix"></div>
-	    	</div>
-	    </main>
+<main class="container">
+    <div class="row">
+        <nav id="nav-drawer" class="span3" ng-controller="AreasCtrl">
+            <ul>
+                <a ng-click="showHome()"><li id="profileWelcomeItem" class="active"><i class="fa fa-2x fa-fw fa-home"></i> Welcome back, Erik.</li></a>
+                <a ng-click="showProjects()"><li><i class="fa fa-2x fa-fw fa-briefcase"></i> Projects</li></a>
+                <li><i class="fa fa-2x fa-fw fa-user"></i> People</li>
+                <li><i class="fa fa-2x fa-fw fa-users"></i> Roles</li>
+            </ul>
+        </nav>
+        <article class="span9" ui-view>
+
+        </article>
+        <div class="clearfix"></div>
+    </div>
+</main>
     </div>
 
-    <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
-    <script type="text/javascript" src="bower_components/marked/lib/marked.js"></script>
-    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-    <script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
-    <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-    <script type="text/javascript" src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
-    <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
-    <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
-	<script type="text/javascript" src="bower_components/ng-table/ng-table.js"></script>
+<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+<script type="text/javascript" src="bower_components/marked/lib/marked.js"></script>
+<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+<script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script type="text/javascript" src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+<script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
+<script type="text/javascript" src="bower_components/ng-table/ng-table.js"></script>
 	<script type="text/javascript" src="scripts/login.js"></script>
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
+<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<script src="scripts/app.js"></script>
 
-        <!-- Filters -->
-        <script src="scripts/filters/markdown.js"></script>
+<!-- Filters -->
+<script src="scripts/filters/markdown.js"></script>
 
-        <!-- Services -->
-        <script src="scripts/services/people.js"></script>
-        <script src="scripts/services/projects/roles-service.js"></script>
-        <script src="scripts/services/projects/project-service.js"></script>
+<!-- Services -->
+<script src="scripts/services/people.js"></script>
+<script src="scripts/services/projects/roles-service.js"></script>
+<script src="scripts/services/projects/project-service.js"></script>
 
-        <!-- Controllers -->
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/project.js"></script>
-        <script src="scripts/controllers/newProject.js"></script>
-        <script src="scripts/controllers/editProject.js"></script>
-        <script src="scripts/controllers/projects/roles-controller.js"></script>
-        <script src="scripts/controllers/projects/projects-controller.js"></script>
-        <!-- endbuild -->
+<!-- Controllers -->
+<script src="scripts/controllers/main.js"></script>
+<script src="scripts/controllers/project.js"></script>
+<script src="scripts/controllers/newProject.js"></script>
+<script src="scripts/controllers/editProject.js"></script>
+<script src="scripts/controllers/areas.js"></script>
+<script src="scripts/controllers/projects/roles-controller.js"></script>
+<script src="scripts/controllers/projects/projects.js"></script>
+<script src="scripts/controllers/projects/project-section.js"></script>
+<!-- endbuild -->
         
         <!-- Google+ Sign-in-->
         <!-- Place this asynchronous JavaScript just before your \</body\> tag -->

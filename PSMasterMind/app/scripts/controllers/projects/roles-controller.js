@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('PSMasterMindApp').controller('RolesController', ['$scope', '$location', 'ngTableParams', 'Projects', 'People', 'Roles', '$stateParams',
+angular.module('PSMasterMindApp').controller('RolesCtrl', ['$scope', '$location', 'ngTableParams', 'Projects', 'People', 'Roles', '$stateParams',
   function ($scope, $location, ngTableParams, Projects, People, Roles, $stateParams) {
     $scope.newRole = Roles.current();
 
@@ -12,8 +12,6 @@ angular.module('PSMasterMindApp').controller('RolesController', ['$scope', '$loc
       $scope.newRoleRateType = newRateType;
 
       $scope.newRole.changeType(newRateType);
-
-      $location.path('/projects/new/roles/' + newRateType);
     };
 
     // Add a new role to the project

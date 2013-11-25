@@ -2,7 +2,11 @@
 
 angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTable', 'ngResource'])
   .config(function ($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider
+      // Forward the user to the default tab
+      .when('/projects/new', '/projects/new/details')
+      .when('/projects/:projectId', '/projects/:projectId/details')
+      .otherwise('/');
 
     $stateProvider
       .state('home', {
@@ -12,37 +16,63 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
       })
       .state('projects', {
         url: '/projects',
-        templateUrl: 'views/projects/index.html'
+        abstract: true,
+        template: '<ui-view />'
+      })
+      .state('projects.index', {
+        url: '',
+        templateUrl: 'views/projects/index.html',
+        controller: 'ProjectsCtrl'
       })
       .state('projects.new', {
         url: '/new',
-        templateUrl: 'views/project.html',
-        controller: 'NewProjectCtrl'
+        templateUrl: 'views/projects/show.html',
+        controller: 'NewProjectCtrl',
+        resolve: {
+          project: function (Projects) {
+            return Projects.create();
+          }
+        }
       })
-      .state('projects.new/tab', {
-        url: '/new/:activeTab',
-        templateUrl: 'views/project.html',
-        controller: 'NewProjectCtrl'
-      })
-      .state('projects.new/tab/innerTab', {
-        url: '/new/:activeTab/:newRoleRateType',
-        templateUrl: 'views/project.html',
-        controller: 'NewProjectCtrl'
+      .state('projects.new.tab', {
+        url: '/:activeTab',
+        views: {
+          'tabs': {
+            templateUrl: 'views/projects/show/section-tabs.html',
+            controller: 'ProjectSectionCtrl'
+          },
+          'tab-content': {
+            templateUrl: function ($stateParams) {
+              return 'views/projects/show/' + $stateParams.activeTab + '.html';
+            },
+            controller: 'ProjectSectionCtrl'
+          }
+        }
       })
       .state('projects.show', {
         url: '/:projectId',
-        templateUrl: 'views/project.html',
-        controller: 'EditProjectCtrl'
+        templateUrl: 'views/projects/show.html',
+        controller: 'EditProjectCtrl',
+        resolve: {
+          project: function (Projects, $stateParams) {
+            return Projects.get($stateParams.projectId).$promise;
+          }
+        }
       })
-      .state('projects.show/tab', {
-        url: '/:projectId/:activeTab',
-        templateUrl: 'views/project.html',
-        controller: 'EditProjectCtrl'
-      })
-      .state('projects.show/tab/innerTab', {
-        url: '/:projectId/:activeTab/:newRoleRateType',
-        templateUrl: 'views/project.html',
-        controller: 'EditProjectCtrl'
+      .state('projects.show.tab', {
+        url: '/:activeTab',
+        views: {
+          'tabs': {
+            templateUrl: 'views/projects/show/section-tabs.html',
+            controller: 'ProjectSectionCtrl'
+          },
+          'tab-content': {
+            templateUrl: function ($stateParams) {
+              return 'views/projects/show/' + $stateParams.activeTab + '.html';
+            },
+            controller: 'ProjectSectionCtrl'
+          }
+        }
       });
   }).run(["$rootScope", "$location",
               function ($rootScope, $location) {
