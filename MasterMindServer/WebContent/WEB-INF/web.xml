@@ -7,15 +7,6 @@
 
     <!-- Filter -->
     <filter>
-	   <filter-name>AuthFilter</filter-name>
- 	  <filter-class>com.pointsource.mastermind.server.AuthFilter</filter-class>
-	</filter>
-	<filter-mapping>
-	   <filter-name>AuthFilter</filter-name>
-	   <url-pattern>/rest/*</url-pattern>
-	</filter-mapping>
-	
-	<filter>
        <filter-name>CorsFilter</filter-name>
       <filter-class>com.pointsource.mastermind.server.CorsFilter</filter-class>
     </filter>
@@ -24,6 +15,15 @@
        <url-pattern>/rest/*</url-pattern>
     </filter-mapping>
     
+    <filter>
+	   <filter-name>AuthFilter</filter-name>
+ 	  <filter-class>com.pointsource.mastermind.server.AuthFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	   <filter-name>AuthFilter</filter-name>
+	   <url-pattern>/rest/*</url-pattern>
+	</filter-mapping>
+
   	<!-- Servlets -->
 	<servlet>
 	     <servlet-name>restSdkService</servlet-name>

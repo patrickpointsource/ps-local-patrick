@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response.Status;
 
 /**
  * This filter adds headers to allow Cross-Origin Resource Sharing to
@@ -41,8 +42,11 @@ public class CorsFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
+		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		
+		String method = httpRequest.getMethod();
 		
 		httpResponse.setHeader("Access-Control-Allow-Origin", "*");
 		httpResponse.setHeader("Access-Control-Allow-Headers",
@@ -50,7 +54,13 @@ public class CorsFilter implements Filter {
 		httpResponse.setHeader("Access-Control-Allow-Methods",
 				httpRequest.getHeader("Access-Control-Request-Method"));
 		
-		chain.doFilter(httpRequest, httpResponse);
+		//Eats all OPtions Requests
+		if(method.equalsIgnoreCase("OPTIONS")){
+			httpResponse.setStatus(Status.OK.getStatusCode());
+		}
+		else{
+			chain.doFilter(httpRequest, httpResponse);
+		}
 	}
 
 	@Override

@@ -78,6 +78,12 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
             controller: 'ProjectSectionCtrl'
           }
         }
+      
+      })
+      .state('people', {
+    	  url: '/people',
+    	  templateUrl: 'views/people/people.html',
+          controller: 'PeopleCtrl',
       });
   }).run(['$rootScope',
     function ($rootScope) {
