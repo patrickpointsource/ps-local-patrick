@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -40,6 +41,30 @@ public class Groups extends BaseResource {
 			ret.put(CONSTS.PROP_BASE, baseURI);
 		
 			
+			return Data.escapeJSON(ret.toString());
+		} catch (WebApplicationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	/**
+	 * Get the list of all user groups
+	 * 
+	 * @return all employees
+	 */
+	@GET
+	@Path("{groupId}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public String get(@PathParam("groupId")String groupId) {
+		try{
+			RequestContext context = getRequestContext();
+			JSONObject ret = Data.getGroup(context, groupId);
+			
+			URI baseURI = context.getBaseURI();
+			ret.put(CONSTS.PROP_BASE, baseURI);
+		
 			return Data.escapeJSON(ret.toString());
 		} catch (WebApplicationException e) {
 			throw e;

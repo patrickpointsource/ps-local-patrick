@@ -125,32 +125,47 @@ public class Data implements CONSTS {
 	 * Get the list of managed user groups
 	 * @return
 	 * @throws JSONException
+	 * @throws IOException 
 	 */
-	public static JSONObject getGroup(String groupId) throws JSONException{
+	public static JSONObject getGroup(RequestContext context, String groupId) throws JSONException, IOException{
 		JSONObject ret = new JSONObject();
 		JSONArray members = new JSONArray();
 		
+		Map<String, JSONObject> users = getGoogleUsers(context);
+		
 		//Executives Group
 		if(EXEC_ID.equals(groupId)){
-			JSONObject g1 = new JSONObject();
-			g1.put(PROP_ID, "114352410049076130019");
-			g1.put(PROP_RESOURCE, RESOURCE_PEOPLE+"/"+"114352410049076130019");
-			g1.put(PROP_TITLE, EXEC_TITLE);
-			members.put(g1);
-			
-			JSONObject g2 = new JSONObject();
-			g2.put(PROP_ID, SALES_ID);
-			g2.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+SALES_ID);
-			g2.put(PROP_TITLE, SALES_TITLE);
-			members.put(g2);
+			JSONObject chris = users.get("114352410049076130019");
+			addGroupMember(members, chris);
+			JSONObject kevin = users.get("104614151280118313239");
+			addGroupMember(members, kevin);
+			JSONObject erik = users.get("101315305679730171732");
+			addGroupMember(members, erik);
+			JSONObject steph = users.get("102699799438113157547");
+			addGroupMember(members, steph);
+		}
+		//Sales Group
+		if(SALES_ID.equals(groupId)){
+			JSONObject luke = users.get("117612942628688959688");
+			addGroupMember(members, luke);
+			JSONObject david = users.get("109518736702317118019");
+			addGroupMember(members, david);
+			JSONObject lori = users.get("111396763357009038073");
+			addGroupMember(members, lori);
 		}
 		
-		
-		
 		ret.put(PROP_MEMBERS, members);
-		ret.put(PROP_ABOUT, RESOURCE_GROUPS);
+		ret.put(PROP_ABOUT, RESOURCE_GROUPS+"/"+groupId);
 		ret.put(PROP_COUNT, members.length());
 		return ret;
+	}
+	
+	private static void addGroupMember(JSONArray members, JSONObject gUser) throws JSONException{
+		JSONObject user = new JSONObject();
+		user.put(PROP_ID, gUser.get("id"));
+		user.put(PROP_RESOURCE, RESOURCE_PEOPLE+"/"+gUser.get("id"));
+		user.put(PROP_TITLE, gUser.getJSONObject("name").get("fullName"));
+		members.put(user);
 	}
 
 	/**
