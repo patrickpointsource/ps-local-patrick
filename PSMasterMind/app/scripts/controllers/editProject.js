@@ -4,23 +4,19 @@
  * Controller for modifying an existing project.
  */
 angular.module('PSMasterMindApp')
-  .controller('EditProjectCtrl', ['$scope', '$state', '$stateParams', 'ngTableParams', 'Projects', 'project',
-    function ($scope, $state, $stateParams, ngTableParams, Projects, project) {
+  .controller('EditProjectCtrl', ['$scope', '$state', 'ProjectsService', 'project',
+    function ($scope, $state, ProjectsService, project) {
       // Set our currently viewed project to the one resolved by the service.
       $scope.project = project;
 
       // The title of the page is the project's name.
       $scope.title = project.name;
 
-      var defaultTab = 'details';
-      // Set the active tab to the one specified in the location
-      $scope.activeTab = $stateParams.activeTab || defaultTab;
-
       /**
        * Save the loaded project.
        */
       $scope.save = function () {
-        Projects.save(project);
+        ProjectsService.save(project);
       };
 
       /*

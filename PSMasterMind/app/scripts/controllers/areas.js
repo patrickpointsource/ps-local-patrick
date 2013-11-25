@@ -10,7 +10,7 @@ angular.module('PSMasterMindApp').controller('AreasCtrl', ['$scope', '$state',
      * Navigate to the dashboard.
      */
     $scope.showHome = function () {
-      $state.go('index');
+      $state.go('home');
     };
 
     /*

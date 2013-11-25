@@ -22,15 +22,20 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
       .state('projects.index', {
         url: '',
         templateUrl: 'views/projects/index.html',
-        controller: 'ProjectsCtrl'
+        controller: 'ProjectsCtrl',
+        resolve: {
+          projects: function (ProjectsService) {
+            return ProjectsService.list();
+          }
+        }
       })
       .state('projects.new', {
         url: '/new',
         templateUrl: 'views/projects/show.html',
         controller: 'NewProjectCtrl',
         resolve: {
-          project: function (Projects) {
-            return Projects.create();
+          project: function (ProjectsService) {
+            return ProjectsService.create();
           }
         }
       })
@@ -54,8 +59,8 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
         templateUrl: 'views/projects/show.html',
         controller: 'EditProjectCtrl',
         resolve: {
-          project: function (Projects, $stateParams) {
-            return Projects.get($stateParams.projectId).$promise;
+          project: function (ProjectsService, $stateParams) {
+            return ProjectsService.get($stateParams.projectId).$promise;
           }
         }
       })
@@ -74,10 +79,10 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
           }
         }
       });
-  }).run(["$rootScope", "$location",
-              function ($rootScope, $location) {
-	  $rootScope.logout = function(){
-		  var access_token = localStorage["access_token"];
-		  helper.disconnectUser(access_token);
-	  }
-  }] );;
+  }).run(['$rootScope',
+    function ($rootScope) {
+      $rootScope.logout = function () {
+        var access_token = localStorage['access_token'];
+        helper.disconnectUser(access_token);
+      };
+    }]);

@@ -4,7 +4,7 @@
  * Handles application state in regards to the currently accessed Projects.
  */
 angular.module('PSMasterMindApp')
-  .service('Projects', [ '$resource', function ($resource) {
+  .service('ProjectsService', [ '$resource', function ($resource) {
     /*
      * Create a reference to a server side resource for Projects.
      *
@@ -58,10 +58,10 @@ angular.module('PSMasterMindApp')
       angular.extend(this, projectDefaults);
     }
 
-    /*
-     * Provide a function for adding a role to a Project.
+    /**
+     * Adds a role to the Project.
      *
-     * TODO: Add validation logic so invalid roles may not be added
+     * @param role
      */
     Project.prototype.addRole = function (role) {
       this.roles.push(role);

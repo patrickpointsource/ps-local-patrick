@@ -4,20 +4,16 @@
  * Controller for creating a new Project.
  */
 angular.module('PSMasterMindApp')
-  .controller('NewProjectCtrl', ['$scope', '$location', 'ngTableParams', 'Projects', 'People', '$stateParams', '$state', 'project',
-    function ($scope, $location, TableParams, Projects, People, $stateParams, $state, project) {
+  .controller('NewProjectCtrl', ['$scope', 'ngTableParams', 'ProjectsService', 'People', '$state', 'project',
+    function ($scope, TableParams, ProjectsService, People, $state, project) {
       // Default the new project
       $scope.project = project;
-
-      var defaultTab = 'details';
-      // Set the active tab to the one specified in the location
-      $scope.activeTab = $stateParams.activeTab || defaultTab;
 
       /**
        * Save the New Project
        */
       $scope.save = function () {
-        Projects.save($scope.project);
+        ProjectsService.save($scope.project);
         $scope.go('/home');
       };
 
@@ -42,37 +38,46 @@ angular.module('PSMasterMindApp')
         }
       });
 
-      /**
-       * Navigate to another page
+      /*
+       * Navigate to Details tab.
        */
-      $scope.go = function (path) {
-        $location.path(path);
-      };
-
       $scope.showDetails = function () {
         $state.go('projects.new.tab', {
           activeTab: 'details'
         });
       };
 
+      /*
+       * Navigate to Roles tab.
+       */
       $scope.showRoles = function () {
         $state.go('projects.new.tab', {
           activeTab: 'roles'
         });
       };
 
+      /*
+       * Navigate to Assignments tab.
+       */
       $scope.showAssignments = function () {
         $state.go('projects.new.tab', {
           activeTab: 'assignments'
         });
       };
 
+      /*
+       * Navigate to Summary tab.
+       */
       $scope.showSummary = function () {
         $state.go('projects.new.tab', {
           activeTab: 'summary'
         });
       };
 
+      /*
+       * Whenever the roles:add event is fired from a child controller,
+       * handle it by adding the supplied role to our project.
+       */
       $scope.$on('roles:add', function (event, role) {
         $scope.project.addRole(role);
       });

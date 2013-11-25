@@ -1,16 +1,41 @@
 'use strict';
 
 angular.module('PSMasterMindApp')
-  .factory('Roles', function () {
+  .factory('RolesService', function () {
 
-    /*
+    /**
+     * The defaults for newly created monthly rates.
+     *
+     * @type {{type: string, fullyUtilized: boolean, hours: number, amount: number}}
+     */
+    var monthlyRateDefaults,
+      /**
+       * The defaults for a newly created role.
+       *
+       * @type {{rate: HourlyRate, shore: string}}
+       */
+      roleDefaults,
+      /**
+       * Defines the defaults for a new hourly rate.
+       *
+       * @type {{type: string, fullyUtilized: boolean, hoursPerMonth: number, amount: number}}
+       */
+      hourlyRateDefaults,
+      /**
+       * The default values for a newly created weekly rate.
+       *
+       * @type {{type: string, fullyUtilized: boolean, hoursPerWeek: number, amount: number}}
+       */
+      weeklyRateDefaults;
+
+    /**
      * Removes any entries from an object where the value is
      * undefined. Other falsy values like false and null are
      * not removed. Does not modify the passed in object, but
      * instead returns a new object just with entries which
      * have a value.
      */
-    var removeUndefinedValues = function (object) {
+    function removeUndefinedValues(object) {
       var objectWithOnlyValues = {};
 
       angular.forEach(object, function (value, key) {
@@ -20,18 +45,22 @@ angular.module('PSMasterMindApp')
       });
 
       return objectWithOnlyValues;
-    };
+    }
 
-    var hourlyRateDefaults = {
+    hourlyRateDefaults = {
       type: 'hourly',
       fullyUtilized: false,
       hoursPerMonth: 0,
       amount: 0
     };
 
-    /*
+    /**
      * Creates a new HourlyRate with optional values for hours per
      * month and full utilization.
+     *
+     * @param fullyUtilized whether this role is fully utilized over a month.
+     * @param hoursPerMonth the number of hours this role is required each month.
+     * @constructor
      */
     function HourlyRate(fullyUtilized, hoursPerMonth) {
       var userEnteredRate = {
@@ -42,16 +71,20 @@ angular.module('PSMasterMindApp')
       angular.extend(this, hourlyRateDefaults, removeUndefinedValues(userEnteredRate));
     }
 
-    var weeklyRateDefaults = {
+    weeklyRateDefaults = {
       type: 'weekly',
       fullyUtilized: false,
       hoursPerWeek: 0,
       amount: 0
     };
 
-    /*
+    /**
      * Creates a new WeeklyRate with optional values for hours per
      * week and full utilization.
+     *
+     * @param fullyUtilized whether this role is fully utilized over the month.
+     * @param hoursPerWeek the number of hours this role is required per week.
+     * @constructor
      */
     function WeeklyRate(fullyUtilized, hoursPerWeek) {
       var userEnteredRate = {
@@ -62,30 +95,42 @@ angular.module('PSMasterMindApp')
       angular.extend(this, weeklyRateDefaults, removeUndefinedValues(userEnteredRate));
     }
 
-    var monthlyRateDefaults = {
+    monthlyRateDefaults = {
       type: 'monthly',
       fullyUtilized: true,
       hours: 180,
       amount: 0
     };
 
-    /*
+    /**
      * Creates a new MonthlyRate. It is considered fully utilized and the
      * hours are set at 180.
+     *
+     * @constructor
      */
     function MonthlyRate() {
       angular.extend(this, monthlyRateDefaults);
     }
 
-    var defaults = {
+    roleDefaults = {
       rate: new HourlyRate(),
       shore: 'on'
     };
 
-    function Role(options) {
-      angular.extend(this, defaults, options);
+    /**
+     * Creates a new Role with default properties.
+     *
+     * @constructor
+     */
+    function Role() {
+      angular.extend(this, roleDefaults);
     }
 
+    /**
+     * Change a Role's rate type between hourly, weekly, and monthly.
+     *
+     * @param newType 'hourly', 'weekly', or 'monthly'
+     */
     Role.prototype.changeType = function (newType) {
       var rate;
 
@@ -104,16 +149,9 @@ angular.module('PSMasterMindApp')
       this.rate = rate;
     };
 
-    var newRole = new Role();
-
     return {
-      current: function () {
-        return newRole;
-      },
       create: function () {
-        newRole = new Role();
-
-        return newRole;
+        return new Role();
       }
     };
   });
