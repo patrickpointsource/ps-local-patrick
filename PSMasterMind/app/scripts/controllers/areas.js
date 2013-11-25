@@ -19,4 +19,11 @@ angular.module('PSMasterMindApp').controller('AreasCtrl', ['$scope', '$state',
     $scope.showProjects = function () {
       $state.go('projects.index');
     };
+    
+    /*
+     * Navigate to the projects index.
+     */
+    $scope.showPeople = function () {
+      $state.go('people');
+    };
   }]);

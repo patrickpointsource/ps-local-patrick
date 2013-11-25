@@ -32,11 +32,11 @@ angular.module('PSMasterMindApp')
      *
      * @returns {*}
      */
-    function list() {
+    function query() {
       return PeopleResource.query();
     }
 
     return {
-    	list: list
+    	query: query
     };
   }]);

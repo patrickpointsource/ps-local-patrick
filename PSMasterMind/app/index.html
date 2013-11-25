@@ -104,10 +104,9 @@
     <div class="row">
         <nav id="nav-drawer" class="span3" ng-controller="AreasCtrl">
             <ul>
-                <a ng-click="showHome()"><li id="profileWelcomeItem" class="active"><i class="fa fa-2x fa-fw fa-home"></i> Welcome back, Erik.</li></a>
+                <a ng-click="showHome()"><li class="active"><i class="fa fa-2x fa-fw fa-home"></i><span id="profileWelcomeItem">Loging In...</span></li></a>
                 <a ng-click="showProjects()"><li><i class="fa fa-2x fa-fw fa-briefcase"></i> Projects</li></a>
-                <li><i class="fa fa-2x fa-fw fa-user"></i> People</li>
-                <li><i class="fa fa-2x fa-fw fa-users"></i> Roles</li>
+                <a ng-click="showPeople()"><li><i class="fa fa-2x fa-fw fa-user"></i>People</li></a>
             </ul>
         </nav>
         <article class="span9" ui-view>

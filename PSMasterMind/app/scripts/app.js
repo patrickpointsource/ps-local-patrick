@@ -84,6 +84,11 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
     	  url: '/people',
     	  templateUrl: 'views/people/people.html',
           controller: 'PeopleCtrl',
+          resolve: {
+          result: function (People, $stateParams) {
+            return People.query().$promise;
+          }
+        }
       });
   }).run(['$rootScope',
     function ($rootScope) {
