@@ -87,19 +87,15 @@
             <div class="row-fluid">
                 <div class="span3">
                     <label class="required-label">* Executive Sponsor:</label>
-                    <select placeholder="Executive Sponsor" ng-model="project.executiveSponsor" ng-required="true" >
-                        <option value="chris.hugill@pointsourcellc.com">Chris Hugill</option>
-                        <option value="kevin.hugill@pointsourcellc.com">Kevin Hugill</option>
-                        <option value="erik.burckart@pointsourcellc.com">Erik Burkart</option>
-                        <option value="sltrunzo@pointsourcellc.com">Stephanie Trunzo</option>
+                    <select placeholder="Executive Sponsor" ng-model="project.executiveSponsor" ng-required="true" 
+                    	ng-options="m.resource as m.title for m in execs.members">
+                        
                     </select>
                 </div>
                 <div class="span3">
                     <label>Sales Sponsor:</label>
-                    <select ng-model="project.salesSponsor" >
-                        <option value="luke.langford@pointsourcellc.com">Luke Langford</option>
-                        <option value="david.acomb@pointsourcellc.com">Dave Acomb</option>
-                        <option value="lorrie.garbarz@pointsourcellc.com">Lorrie Garbarz</option>
+                    <select ng-model="project.salesSponsor" 
+                    	ng-options="m.resource as m.title for m in sales.members">
                     </select>
                 </div>
             </div>

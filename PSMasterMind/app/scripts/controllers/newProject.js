@@ -4,10 +4,12 @@
  * Controller for creating a new Project.
  */
 angular.module('PSMasterMindApp')
-  .controller('NewProjectCtrl', ['$scope', 'ngTableParams', 'ProjectsService', 'People', '$state', 'project',
-    function ($scope, TableParams, ProjectsService, People, $state, project) {
+  .controller('NewProjectCtrl', ['$scope', 'ngTableParams', 'ProjectsService', 'People', 'Groups', '$state', 'project',
+    function ($scope, TableParams, ProjectsService, People, Groups, $state, project) {
       // Default the new project
       $scope.project = project;
+      $scope.execs = Groups.get('execs');
+      $scope.sales = Groups.get('sales');
 
       /**
        * Save the New Project
@@ -20,7 +22,7 @@ angular.module('PSMasterMindApp')
       /**
        * Get the list of people
        */
-      $scope.people = People.get();
+      $scope.people = People.query();
 
       // Role Parameters
       $scope.roleTableParams = new TableParams({
