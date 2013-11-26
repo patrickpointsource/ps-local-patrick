@@ -16,7 +16,15 @@ angular.module('PSMasterMindApp')
        * Save the loaded project.
        */
       $scope.save = function () {
-        ProjectsService.save(project);
+        ProjectsService.save($scope.project).then(function (project) {
+          $scope.project = project;
+        }, function (response) {
+          // TODO: revisit just fetching the new copy on save failures. The user probably won't enjoy
+          // having their data erased without recourse.
+          ProjectsService.get($scope.project.id).then(function (project) {
+            $scope.project = project;
+          });
+        });
       };
 
       /**

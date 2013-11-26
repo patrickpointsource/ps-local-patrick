@@ -105,11 +105,15 @@ angular.module('PSMasterMindApp')
      * @param project
      */
     function save(project) {
+      var val;
+
       if (typeof project.id === 'undefined') {
-        project.post();
+        val = Resource.post(project);
       } else {
-        project.put();
+        val = project.put();
       }
+
+      return val;
     }
 
     /**

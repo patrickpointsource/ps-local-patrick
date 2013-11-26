@@ -11,9 +11,6 @@ angular.module('PSMasterMindApp')
      *
      * The query method returns an object with a property 'data' containing
      * the list of projects.
-     *
-     * TODO: Change the hardcoded address to localhost:8080/MasterMindServer
-     * TODO: Change the hardcoded access_token query parameter
      */
     var Resource = Restangular.all('people');
 
