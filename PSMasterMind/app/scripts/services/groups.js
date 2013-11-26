@@ -12,7 +12,7 @@ angular.module('PSMasterMindApp')
       RestangularConfigurer.setResponseInterceptor(function (data, operation, what) {
         var newData = data;
 
-        if (what === 'roles') {
+        if (what === 'groups') {
           if (operation === 'getList') {
             newData = data.members;
           }
