@@ -7,6 +7,13 @@ angular.module('PSMasterMindApp').controller('ProjectsCtrl', [ '$scope', '$state
   function ($scope, $state, $filter, TableParams, projects) {
 
     $scope.projects = projects;
+    
+    /**
+     * Navigate to creating a project.
+     */
+    $scope.createProject = function () {
+      $state.go('projects.new');
+    };
 
     /**
      * Navigate to a project's show page.

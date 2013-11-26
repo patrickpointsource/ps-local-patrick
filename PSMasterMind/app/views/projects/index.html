@@ -1,4 +1,9 @@
 <div class="row-fluid">
+   <div id="pageActions" class="actions span12">
+        <button class="btn" ng-click="createProject()">New</button>
+    </div>
+</div>
+<div class="row-fluid">
     <div class="span12">
         <table ng-table="tableParams" template-pagination="custom/pager" class="table">
             <tr ng-repeat="project in $data">
