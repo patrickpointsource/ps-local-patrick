@@ -24,9 +24,9 @@
                     <table ng-table="roleTableParams"  class="table">
                         <tr ng-repeat="role in project.roles">
                             <td data-title="'Role'">{{role.type.id}}</td>
-                            <td data-title="'Assignee'">{{role.assignee}}</td>
-                            <td data-title="'Assignee'">
-	                            <div ng-repeat="p in people.people | filter:{id:role.assignee}">
+                            
+                            <td data-title="'Assignee'" >
+	                            <div ng-hide="role.assignee==null" ng-repeat="p in people.people | filter:{id:role.assignee}:false">
 	   									 {{p.name}}
 								</div>
 							</td>
