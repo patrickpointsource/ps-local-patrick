@@ -62,22 +62,31 @@ angular.module('PSMasterMindApp')
      * Then, when fetching projects, we need to transform them by adding Project
      * prototype functions to them.
      */
-    Restangular.setResponseInterceptor(function (data, operation, what) {
-      var newData = data;
+    var ProjectsRestangular = Restangular.withConfig(function (RestangularConfigurer) {
+      RestangularConfigurer.setResponseInterceptor(function (data, operation, what) {
+        var newData = data;
 
-      if (what === 'projects') {
-        if (operation === 'getList') {
-          newData = data.data;
+        if (what === 'projects') {
+          if (operation === 'getList') {
+            newData = data.data;
+          }
         }
-      }
 
-      return newData;
-    }).addElementTransformer('projects', false, function (element) {
-      angular.extend(element, Project.prototype);
-      return element;
+        return newData;
+      }).addElementTransformer('projects', false, function (element) {
+        angular.extend(element, Project.prototype);
+
+        element.startDate = new Date(element.startDate);
+
+        if (element.endDate !== null) {
+          element.endDate = new Date(element.endDate);
+        }
+
+        return element;
+      });
     });
 
-    Resource = Restangular.all('projects');
+    Resource = ProjectsRestangular.all('projects');
 
     /**
      * Service function for retrieving all projects.

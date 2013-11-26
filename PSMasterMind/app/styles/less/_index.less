@@ -249,13 +249,18 @@ main {
         border: 1px solid @ps-lightgray;
 
         table {
-          tr {
-            td, th {
-              width: 139px;
-              height: 28px;
+          border-collapse: separate;
+          border-spacing: 0 10px;
 
-              &.active {
-                background-color: @ps-secondary-blue;
+          tbody {
+            tr {
+              td, th {
+                width: 139px;
+                height: 28px;
+
+                &.active {
+                  background-color: @ps-secondary-blue;
+                }
               }
             }
           }

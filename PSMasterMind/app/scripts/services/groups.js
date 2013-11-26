@@ -4,23 +4,25 @@
  * People Service
  */
 angular.module('PSMasterMindApp')
-  .factory('Groups',  [ '$resource', function ($resource) {
-	  
+  .factory('Groups',  [ '$resource', 'Restangular', function ($resource, Restangular) {
+
 	 var common_headers =  {'Authorization': 'Bearer ' + localStorage['access_token']};
-	 
-    var GroupsResource = $resource('http://localhost:8080/MasterMindServer/rest/groups/:groupId', {
-      userId: '@groupId'
-    }, {
-      query: {
-        method: 'GET',
-        headers: common_headers,
-        isArray:false
-      },
-      get: {
-    	method: 'GET',
-        headers: common_headers,
-      }
+
+    var GroupsRestangular = Restangular.withConfig(function (RestangularConfigurer) {
+      RestangularConfigurer.setResponseInterceptor(function (data, operation, what) {
+        var newData = data;
+
+        if (what === 'roles') {
+          if (operation === 'getList') {
+            newData = data.members;
+          }
+        }
+
+        return newData;
+      });
     });
+
+    var Resource = GroupsRestangular.all('groups');
 
     /**
      * Service function for retrieving all groups.
@@ -28,16 +30,16 @@ angular.module('PSMasterMindApp')
      * @returns {*}
      */
     function query() {
-      return GroupsResource.query();
+      return Resource.getList();
     }
-    
+
     /**
      * Service function for retrieving a group definition.
      *
      * @returns {*}
      */
     function get(groupId) {
-      return GroupsResource.get({ groupId: groupId });
+      return Resource.get(groupId);
     }
 
     return {
