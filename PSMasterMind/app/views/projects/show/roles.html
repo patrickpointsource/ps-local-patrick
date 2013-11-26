@@ -7,14 +7,8 @@
                 <div class="row-fluid">
                     <div class="span4">
                         <label>Role:</label>
-                        <select class="span12" ng-model="newRole.title" >
-                            <option value="SSA">Senior Software Architect</option>
-                            <option value="PM">Project Manager</option>
-                            <option value="BA">Business Analyst</option>
-                            <option value="SSE">Senior Software Engineer</option>
-                            <option value="SE">Senior Engineer</option>
-                            <option value="SUXD">Senior User Experience Designer</option>
-                            <option value="UXD">User Experience Designer</option>
+                        <select class="span12" ng-model="newRole.type.id" ng-options="m.id as m.title for m in roleTypes.members">
+                            
                         </select>
                     </div>
                     <div class="span4">
@@ -119,7 +113,7 @@
                 <div class="span12">
                     <table ng-table="roleTableParams"  class="table">
                         <tr ng-repeat="role in project.roles">
-                            <td data-title="'Role'">{{role.title}}</td>
+                            <td data-title="'Role'">{{role.type.id}}</td>
                             <td data-title="'100%'"><input type="checkbox" ng-model="role.rate.fullyUtilized"/></td>
                             <td data-title="'H/M'">{{role.rate.hoursPerMonth}}</td>
                             <td data-title="'Start Date'">{{role.startDate | date:'longDate'}}</td>

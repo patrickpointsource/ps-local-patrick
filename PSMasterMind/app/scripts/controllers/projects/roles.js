@@ -3,18 +3,18 @@
 /**
  * Controller for handling creation of Roles.
  */
-angular.module('PSMasterMindApp').controller('RolesCtrl', ['$scope', 'RolesService',
-  function ($scope, RolesService) {
+angular.module('PSMasterMindApp').controller('RolesCtrl', ['$scope', 'RolesService', 'RoleTypes', 
+  function ($scope, RolesService, RoleTypes) {
     var newRole = RolesService.create();
 
     $scope.newRole = newRole;
 
     $scope.newRoleRateType = newRole.rate.type;
+    $scope.roleTypes = RoleTypes.query();
 
     // On Role Rate Change
     $scope.changeRateType = function (newRateType) {
       $scope.newRoleRateType = newRateType;
-
       $scope.newRole.changeType(newRateType);
     };
 

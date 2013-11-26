@@ -4,12 +4,30 @@
  * Controller for creating a new Project.
  */
 angular.module('PSMasterMindApp')
-  .controller('NewProjectCtrl', ['$scope', 'ngTableParams', 'ProjectsService', 'People', 'Groups', '$state', 'project',
-    function ($scope, TableParams, ProjectsService, People, Groups, $state, project) {
+  .controller('NewProjectCtrl', ['$scope', 'ngTableParams', 'ProjectsService', 'People', 'Groups', 'RoleTypes','$state', 'project',
+    function ($scope, TableParams, ProjectsService, People, Groups,  RoleTypes, $state, project) {
       // Default the new project
       $scope.project = project;
       $scope.execs = Groups.get('execs');
-      $scope.sales = Groups.get('sales');
+      $scope.sales = Groups.get('sales'); 
+      
+      /**
+       * Get All the Role Types
+       */
+      RoleTypes.query(function(data){
+    	  //console.log("success="+JSON.stringify(data));
+  		  var types = data.members;
+  		  $scope.roleGroups = {};
+  		  for ( var int = 0; int < types.length; int++) {
+  			var roleId = types[int].id;
+  			//console.log("get="+roleId);
+  			RoleTypes.get(roleId, function(res){
+  				console.log("success="+JSON.stringify(res));
+  				$scope.roleGroups[res.id] = res;
+  			});
+  			
+  		  }
+      })
 
       /**
        * Save the New Project

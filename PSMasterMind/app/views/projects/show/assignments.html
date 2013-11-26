@@ -6,14 +6,13 @@
                     <h3>Current Roles</h3>
                     <table ng-table="roleTableParams"  class="table">
                         <tr ng-repeat="role in project.roles">
-                            <td data-title="'Role'">{{role.title}}</td>
+                            <td data-title="'Role'">{{role.type.id}}</td>
                             <td data-title="'100%'"><input type="checkbox" ng-model="role.rate.fullyUtilized"/></td>
                             <td data-title="'H/M'">{{role.rate.hoursPerMonth}}</td>
                             <td data-title="'Start Date'">{{role.startDate | date:'longDate'}}</td>
                             <td data-title="'End Date'">{{role.endDate | date:'longDate'}}</td>
                             <td data-title="'Person Assigned'">
-                                <select ng-model="role.assignee">
-                                    <option ng-repeat="person in people | filter:{primaryRole:role.title}" value="{{person.nick}}">{{person.name}}</option>
+                                <select ng-model="role.assignee" ng-options="m.resource as m.title for m in roleGroups[role.type.id].members">
                                 </select>
                             </td>
                         </tr>

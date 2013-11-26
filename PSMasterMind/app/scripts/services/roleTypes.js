@@ -4,12 +4,12 @@
  * People Service
  */
 angular.module('PSMasterMindApp')
-  .factory('Groups',  [ '$resource', function ($resource) {
+  .factory('RoleTypes',  [ '$resource', function ($resource) {
 	  
 	 var common_headers =  {'Authorization': 'Bearer ' + localStorage['access_token']};
 	 
-    var GroupsResource = $resource('http://localhost:8080/MasterMindServer/rest/groups/:groupId', {
-      userId: '@groupId'
+    var RolesResource = $resource('http://localhost:8080/MasterMindServer/rest/roles/:roleId', {
+    	roleId: '@roleId'
     }, {
       query: {
         method: 'GET',
@@ -23,21 +23,21 @@ angular.module('PSMasterMindApp')
     });
 
     /**
-     * Service function for retrieving all groups.
+     * Service function for retrieving all role types.
      *
      * @returns {*}
      */
-    function query() {
-      return GroupsResource.query();
+    function query(onSuccess) {
+      return RolesResource.query(onSuccess);
     }
     
     /**
-     * Service function for retrieving a group definition.
+     * Service function for retrieving a role type definition and member list.
      *
      * @returns {*}
      */
-    function get(groupId) {
-      return GroupsResource.get({ groupId: groupId });
+    function get(roleId, onSuccess) {
+      return RolesResource.get({ roleId: roleId }, onSuccess);
     }
 
     return {
