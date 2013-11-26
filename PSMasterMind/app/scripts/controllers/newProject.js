@@ -9,14 +9,17 @@ angular.module('PSMasterMindApp')
       // Default the new project
       $scope.project = project;
       $scope.execs = Groups.get('execs');
-      $scope.sales = Groups.get('sales'); 
-      
+      $scope.sales = Groups.get('sales');
+
+      // Set the title of the page
+      $scope.title = 'New Project';
+
       /**
        * Get All the Role Types
        */
       RoleTypes.query(function(data){
     	  //console.log("success="+JSON.stringify(data));
-  		  var types = data.members;
+  		  var types = data;
   		  $scope.roleGroups = {};
   		  for ( var int = 0; int < types.length; int++) {
   			var roleId = types[int].id;
@@ -25,7 +28,7 @@ angular.module('PSMasterMindApp')
   				//console.log("success="+JSON.stringify(res));
   				$scope.roleGroups[res.id] = res;
   			});
-  			
+
   		  }
       });
 
