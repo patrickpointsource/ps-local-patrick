@@ -48,6 +48,7 @@ public class Data implements CONSTS {
 				ret.put("DB_HOSTNAME", DB_HOSTNAME_DEFAULT);
 				ret.put("DB_PORT", DB_PORT_DEFAULT);
 				ret.put("DB_NAME", DB_NAME_DEFAULT);
+				ret.put("BUILD_NUMBER", BUILD_NUMBER);
 				
 				CONFIG = ret;
 			} catch (Exception e) {
