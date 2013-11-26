@@ -15,7 +15,8 @@
     "angular-bootstrap": "latest",
     "font-awesome": "~4.0.3",
     "marked": "0.2.10",
-    "angular-ui-router": "latest"
+    "angular-ui-router": "latest",
+    "restangular": "latest"
   },
   "devDependencies": {
     "angular-mocks": "~1.2",
