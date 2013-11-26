@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTable', 'ngResource'])
+angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTable', 'ngResource', 'restangular'])
   .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider
       // Forward the user to the default tab
@@ -12,7 +12,12 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
       .state('home', {
         url: '/',
         templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl',
+        resolve: {
+          projects: function (ProjectsService) {
+            return ProjectsService.list();
+          }
+        }
       })
       .state('projects', {
         url: '/projects',
@@ -60,7 +65,7 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
         controller: 'EditProjectCtrl',
         resolve: {
           project: function (ProjectsService, $stateParams) {
-            return ProjectsService.get($stateParams.projectId).$promise;
+            return ProjectsService.get($stateParams.projectId);
           }
         }
       })
@@ -78,19 +83,56 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
             controller: 'ProjectSectionCtrl'
           }
         }
-      
+
       })
       .state('people', {
-    	  url: '/people',
-    	  templateUrl: 'views/people/people.html',
-          controller: 'PeopleCtrl',
-          resolve: {
-          result: function (People, $stateParams) {
-            return People.query().$promise;
+        url: '/people',
+        templateUrl: 'views/people/people.html',
+        controller: 'PeopleCtrl',
+        resolve: {
+          result: function (People) {
+            return People.query();
           }
         }
       });
-  }).run(['$rootScope',
+  })
+  .config(function (RestangularProvider) {
+    var serverLocation = 'http://localhost:8080';
+
+    function toJsonReplacer(key, value) {
+      var val = value;
+
+      if (typeof key === 'string' && key === '$$hashKey') {
+        val = undefined;
+      }
+
+      return val;
+    }
+
+    RestangularProvider.setBaseUrl(serverLocation + '/MasterMindServer/rest/')
+      .setDefaultHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+      })
+      .setDefaultHttpFields({
+        transformRequest: [function (data) {
+          /*
+          HACK to get around #1463 at:
+          https://github.com/angular/angular.js/issues/1463
+          This encodes the provided object as-is, whereas the default Angular behavior strips out all properties
+          beginning with '$'. This is an issue when using data from MongoDB where a response may include a property
+          like
+
+          ...
+          "_id": { "$oid": "..." }
+          ...
+
+          Also, need to remove any keys that match '$$hashKey' because these are added by Angular and hated by Mongo
+          */
+          return data != null && typeof data === 'object' && toString.apply(data) !== '[object File]' ? JSON.stringify(data, toJsonReplacer) : data;
+        }]
+      });
+  })
+  .run(['$rootScope',
     function ($rootScope) {
       $rootScope.logout = function () {
         var access_token = localStorage['access_token'];

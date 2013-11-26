@@ -59,63 +59,67 @@
 <![endif]-->
 
 <div id="welcomeContent">
-	    <h2>Welcome to PS Master Mind sign in with your PointSource Google+ account</h2>
+    <h2>Welcome to PS Master Mind sign in with your PointSource Google+ account</h2>
 		<span id="signinButton">
 		  <span
-		    class="g-signin"
-		    data-callback="onSignInCallback"
-		    data-clientid="141952851027.apps.googleusercontent.com"
-		    data-cookiepolicy="single_host_origin"
-		    data-theme="light"
-		    data-requestvisibleactions="http://schemas.google.com/AddActivity"
-		    data-scope="https://www.googleapis.com/auth/plus.login">
+                  class="g-signin"
+                  data-callback="onSignInCallback"
+                  data-clientid="141952851027.apps.googleusercontent.com"
+                  data-cookiepolicy="single_host_origin"
+                  data-theme="light"
+                  data-requestvisibleactions="http://schemas.google.com/AddActivity"
+                  data-scope="https://www.googleapis.com/auth/plus.login">
 		  </span>
 		</span>
-	</div>
-    <div id="appContent" style="display:none">
-	    <header class="navbar navbar-static-top" role="navigation">
-	    	<div class="navbar-inner">
-	    		<div class="container">
-	    			<div class="row">
-	    				<div class="span12">
-				    		<div class="text-center">
-			   					<h1>PS Master Mind</h1>
-				    		</div>
-			    		</div>
-		    		</div>
-		    		<div id="badge" class="container-fluid">
-		    			<div class="row-fluid">
-				    		<div class="span6">
-			   	 				<div id="profile-photo">
-									<div id="profile"></div>
-			   	 				</div>
-			   	 			</div>
-			   	 			<nav class="span6">
-				    			<div>My profile</div>
-				    			<div>Notifications</div>
-				    			<button ng-click="logout()">Log out</button>
-				    		</nav>
-			    		</div>
-		    		</div>
-		    	</div>
-	    	</div>
-	    </header>
-<main class="container">
-    <div class="row">
-        <nav id="nav-drawer" class="span3" ng-controller="AreasCtrl">
-            <ul>
-                <a ng-click="showHome()"><li class="active"><i class="fa fa-2x fa-fw fa-home"></i><span id="profileWelcomeItem">Loging In...</span></li></a>
-                <a ng-click="showProjects()"><li><i class="fa fa-2x fa-fw fa-briefcase"></i> Projects</li></a>
-                <a ng-click="showPeople()"><li><i class="fa fa-2x fa-fw fa-user"></i>People</li></a>
-            </ul>
-        </nav>
-        <article class="span9" ui-view>
+</div>
+<div id="appContent" style="display:none">
+    <header class="navbar navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="span12">
+                        <div class="text-center">
+                            <h1>PS Master Mind</h1>
+                        </div>
+                    </div>
+                </div>
+                <div id="badge" class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div id="profile-photo">
+                                <div id="profile"></div>
+                            </div>
+                        </div>
+                        <nav class="span6">
+                            <div>My profile</div>
+                            <div>Notifications</div>
+                            <button ng-click="logout()">Log out</button>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="container">
+        <div class="row">
+            <nav id="nav-drawer" class="span3" ng-controller="AreasCtrl">
+                <ul>
+                    <li ng-class="{active: activeArea() === 'home'}"><a ng-click="showHome()"><i
+                            class="fa fa-2x fa-fw fa-home"></i> <span id="profileWelcomeItem">Welcome back.</span></a>
+                    </li>
+                    <li ng-class="{active: activeArea() === 'projects'}"><a ng-click="showProjects()"><i
+                            class="fa fa-2x fa-fw fa-briefcase"></i> Projects</a></li>
+                    <li ng-class="{active: activeArea() === 'people'}"><a ng-click="showPeople()"><i
+                        class="fa fa-2x fa-fw fa-user"></i> People</a></li>
+                </ul>
+            </nav>
+            <article class="span9" ui-view>
 
-        </article>
-        <div class="clearfix"></div>
-    </div>
-</main>
-    </div>
+            </article>
+            <div class="clearfix"></div>
+        </div>
+    </main>
+</div>
 
 <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 <script type="text/javascript" src="bower_components/marked/lib/marked.js"></script>
@@ -127,7 +131,9 @@
 <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
 <script type="text/javascript" src="bower_components/ng-table/ng-table.js"></script>
-	<script type="text/javascript" src="scripts/login.js"></script>
+<script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
+<script type="text/javascript" src="bower_components/restangular/dist/restangular.js"></script>
+<script type="text/javascript" src="scripts/login.js"></script>
 
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="scripts/app.js"></script>
@@ -152,25 +158,28 @@
 <script src="scripts/controllers/people/people.js"></script>
 <!-- endbuild -->
 
-        <!-- Google+ Sign-in-->
-        <!-- Place this asynchronous JavaScript just before your \</body\> tag -->
-	    <script type="text/javascript">
-	      (function() {
-	       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-	       po.src = 'https://apis.google.com/js/client:plusone.js';
-	       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-	     })();
+<!-- Google+ Sign-in-->
+<!-- Place this asynchronous JavaScript just before your \</body\> tag -->
+<script type="text/javascript">
+    (function () {
+        var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/client:plusone.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+    })();
 
-	      /**
-	       * Calls the helper method that handles the authentication flow.
-	       *
-	       * @param {Object} authResult An Object which contains the access token and
-	       *   other authentication information.
-	       */
-	      function onSignInCallback(authResult) {
-	        helper.onSignInCallback(authResult);
-	      }
+    /**
+     * Calls the helper method that handles the authentication flow.
+     *
+     * @param {Object} authResult An Object which contains the access token and
+     *   other authentication information.
+     */
+    function onSignInCallback(authResult) {
+        helper.onSignInCallback(authResult);
+    }
 
-	    </script>
+</script>
 </body>
 </html>

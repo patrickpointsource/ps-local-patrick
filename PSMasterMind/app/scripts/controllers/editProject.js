@@ -19,7 +19,7 @@ angular.module('PSMasterMindApp')
         ProjectsService.save(project);
       };
 
-      /*
+      /**
        * View the Details tab.
        */
       $scope.showDetails = function () {
@@ -28,7 +28,7 @@ angular.module('PSMasterMindApp')
         });
       };
 
-      /*
+      /**
        * View the Roles tab.
        */
       $scope.showRoles = function () {
@@ -37,7 +37,7 @@ angular.module('PSMasterMindApp')
         });
       };
 
-      /*
+      /**
        * View the Assignments tab.
        */
       $scope.showAssignments = function () {
@@ -46,7 +46,7 @@ angular.module('PSMasterMindApp')
         });
       };
 
-      /*
+      /**
        * View the summary tab.
        *
        * TODO: Add validation to ensure the required fields are complete
@@ -56,4 +56,12 @@ angular.module('PSMasterMindApp')
           activeTab: 'summary'
         });
       };
+
+      /**
+       * Whenever the roles:add event is fired from a child controller,
+       * handle it by adding the supplied role to our project.
+       */
+      $scope.$on('roles:add', function (event, role) {
+        $scope.project.addRole(role);
+      });
     }]);

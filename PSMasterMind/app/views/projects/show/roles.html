@@ -7,7 +7,7 @@
                 <div class="row-fluid">
                     <div class="span4">
                         <label>Role:</label>
-                        <select ng-model="newRole.title" >
+                        <select class="span12" ng-model="newRole.title" >
                             <option value="SSA">Senior Software Architect</option>
                             <option value="PM">Project Manager</option>
                             <option value="BA">Business Analyst</option>
@@ -19,15 +19,15 @@
                     </div>
                     <div class="span4">
                         <label class="required-label">* Start Date:</label>
-                        <div class="input-insert-right">
-                            <input type="text" ng-model="newRole.startDate" datepicker-popup="MM/dd/yyyy" ng-required="true" />
+                        <div class="span12 input-insert-right">
+                            <input class="span12" type="text" ng-model="newRole.startDate" datepicker-popup="MM/dd/yyyy" ng-required="true" />
                             <span class="add-in"><i class="fa fa-calendar input-icon"></i></span>
                         </div>
                     </div>
                     <div class="span4">
                         <label>End Date:</label>
-                        <div class="input-insert-right">
-                            <input type="text" ng-model="newRole.endDate" datepicker-popup="MM/dd/yyyy" />
+                        <div class="span12 input-insert-right">
+                            <input class="span12" type="text" ng-model="newRole.endDate" datepicker-popup="MM/dd/yyyy" />
                             <span class="add-in"><i class="fa fa-calendar input-icon"></i></span>
                         </div>
                     </div>
@@ -45,13 +45,13 @@
                                 <div class="row-fluid">
                                     <div class="span12">
                                         <label>Hourly Rate:</label>
-                                        <input placeholder="Enter Hourly Rate" type="number" ng-model="newRole.rate.amount"/>
+                                        <input class="span12" placeholder="Enter Hourly Rate" type="number" ng-model="newRole.rate.amount"/>
                                     </div>
                                 </div>
                                 <div class="row-fluid">
                                     <div class="span12">
                                         <label>Hours/Month:</label>
-                                        <input placeholder="Enter Hours per Month" type="number" ng-model="newRole.rate.hoursPerMonth"/>
+                                        <input class="span12" placeholder="Enter Hours per Month" type="number" ng-model="newRole.rate.hoursPerMonth"/>
                                     </div>
                                 </div>
                                 <div class="row-fluid">
@@ -69,13 +69,13 @@
                                 <div class="row-fluid">
                                     <div class="span12">
                                         <label>Hourly Rate:</label>
-                                        <input placeholder="Enter Hourly Rate" type="number" ng-model="newRole.rate.amount"/>
+                                        <input class="span12" placeholder="Enter Hourly Rate" type="number" ng-model="newRole.rate.amount"/>
                                     </div>
                                 </div>
                                 <div class="row-fluid">
                                     <div class="span12">
                                         <label>Hours/Week:</label>
-                                        <input placeholder="Enter Hours per Month" type="number" ng-model="newRole.rate.hoursPerWeek"/>
+                                        <input class="span12" placeholder="Enter Hours per Month" type="number" ng-model="newRole.rate.hoursPerWeek"/>
                                     </div>
                                 </div>
                                 <div class="row-fluid">
@@ -93,7 +93,7 @@
                                 <div class="row-fluid">
                                     <div class="span12">
                                         <label>Monthly Rate:</label>
-                                        <input placeholder="Margin" type="number" ng-model="newRole.rate.amount"/>
+                                        <input class="span12" placeholder="Margin" type="number" ng-model="newRole.rate.amount"/>
                                     </div>
                                 </div>
                             </section>

@@ -35,15 +35,15 @@
             <div class="row-fluid">
                 <div class="span3">
                     <label class="required-label" for="startDate">* Start Date:</label>
-                    <div class="input-insert-right">
-                        <input type="text" ng-model="project.startDate" datepicker-popup="MM/dd/yyyy" ng-required="true" />
+                    <div class="span12 input-insert-right">
+                        <input class="span12" type="text" ng-model="project.startDate" datepicker-popup="MM/dd/yyyy" ng-required="true" />
                         <span class="add-in"><i class="fa fa-calendar input-icon"></i></span>
                     </div>
                 </div>
                 <div class="span3">
                     <label for="endDate">End Date:</label>
-                    <div class="input-insert-right">
-                        <input type="text" ng-model="project.endDate" datepicker-popup="MM/dd/yyyy" />
+                    <div class="span12 input-insert-right">
+                        <input class="span12" type="text" ng-model="project.endDate" datepicker-popup="MM/dd/yyyy" />
                         <span class="add-in"><i class="fa fa-calendar input-icon"></i></span>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
             <div class="row-fluid">
                 <div class="span3">
                     <label for="projectState">Project State:</label>
-                    <select id="projectState" ng-model="project.state">
+                    <select id="projectState" class="span12" ng-model="project.state">
                         <option value="preSales">Pre-Sales</option>
                         <option value="planning">Planning</option>
                         <option value="clientActive">Client Active</option>
@@ -65,9 +65,9 @@
                 <div class="row-fluid">
                     <div class="span3">
                         <label for="totalEstimatedValue">Total Estimated Value:</label>
-                        <div class="input-insert-left">
+                        <div class="span12 input-insert-left">
                             <span class="add-in"><i class="fa fa-dollar input-icon"></i></span>
-                            <input id="totalEstimatedValue" type="number" ng-model="project.terms.totalEstValue" />
+                            <input class="span12" id="totalEstimatedValue" type="number" ng-model="project.terms.totalEstValue" />
                         </div>
                     </div>
 
@@ -87,14 +87,14 @@
             <div class="row-fluid">
                 <div class="span3">
                     <label class="required-label">* Executive Sponsor:</label>
-                    <select placeholder="Executive Sponsor" ng-model="project.executiveSponsor" ng-required="true" 
+                    <select class="span12" placeholder="Executive Sponsor" ng-model="project.executiveSponsor" ng-required="true" 
                     	ng-options="m.resource as m.title for m in execs.members">
                         
                     </select>
                 </div>
                 <div class="span3">
                     <label>Sales Sponsor:</label>
-                    <select ng-model="project.salesSponsor" 
+                    <select class="span12" ng-model="project.salesSponsor" 
                     	ng-options="m.resource as m.title for m in sales.members">
                     </select>
                 </div>

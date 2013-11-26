@@ -4,50 +4,35 @@
  * Handles application state in regards to the currently accessed Projects.
  */
 angular.module('PSMasterMindApp')
-  .service('ProjectsService', [ '$resource', function ($resource) {
-    /*
-     * Create a reference to a server side resource for Projects.
-     *
-     * The query method returns an object with a property 'data' containing
-     * the list of projects.
-     *
-     * TODO: Change the hardcoded address to localhost:8080/MasterMindServer
-     * TODO: Change the hardcoded access_token query parameter
-     */
-    var ProjectResource = $resource('http://localhost:8080/MasterMindServer/rest/projects/:projectId?access_token=:access_token', {
-      projectId: '@projectId',
-      access_token: localStorage['access_token']
-    }, {
-      query: {
-        method: 'GET',
-        isArray: false
-      },
-      update: {
-        method: 'PUT'
-      }
-    });
-
-    /*
-     * Defines the default values for a newly created Project.
-     */
-    var projectDefaults = {
-      customerName: '',
-      name: '',
-      type: '',
-      primaryContact: '',
-      description: '',
-      startDate: null,
-      endDate: null,
-      state: 'planning',
-      terms: {
-        totalEstValue: 0,
-        includesProjectManagementOverhead: false,
-        type: 'timeAndMaterials'
-      },
-      executiveSponsor: null,
-      salesSponsor: null,
-      roles: []
-    };
+  .service('ProjectsService', ['Restangular', function (Restangular) {
+      /**
+       * Create a reference to a server side resource for Projects.
+       *
+       * The query method returns an object with a property 'data' containing
+       * the list of projects.
+       */
+    var Resource,
+      /*
+       * Defines the default values for a newly created Project.
+       */
+      projectDefaults = {
+        customerName: '',
+        name: '',
+        type: '',
+        primaryContact: '',
+        description: '',
+        startDate: null,
+        endDate: null,
+        state: 'planning',
+        terms: {
+          totalEstValue: 0,
+          includesProjectManagementOverhead: false,
+          type: 'timeAndMaterials'
+        },
+        executiveSponsor: null,
+        salesSponsor: null,
+        roles: []
+      };
 
     /**
      * Constructs a new instance of a Project. A Project is a time-bound
@@ -55,8 +40,9 @@ angular.module('PSMasterMindApp')
      *
      * @constructor
      */
-    function Project() {
-      angular.extend(this, projectDefaults);
+    function Project(options) {
+      var properties = options || projectDefaults;
+      angular.extend(this, properties);
     }
 
     /**
@@ -69,12 +55,37 @@ angular.module('PSMasterMindApp')
     };
 
     /**
+     * Configure Restangular for projects. The 'getList' method returns an object
+     * with metadata, so for now just grab its data element so we have an array
+     * of objects.
+     *
+     * Then, when fetching projects, we need to transform them by adding Project
+     * prototype functions to them.
+     */
+    Restangular.setResponseInterceptor(function (data, operation, what) {
+      var newData = data;
+
+      if (what === 'projects') {
+        if (operation === 'getList') {
+          newData = data.data;
+        }
+      }
+
+      return newData;
+    }).addElementTransformer('projects', false, function (element) {
+      angular.extend(element, Project.prototype);
+      return element;
+    });
+
+    Resource = Restangular.all('projects');
+
+    /**
      * Service function for retrieving all projects.
      *
      * @returns {*}
      */
     function list() {
-      return ProjectResource.query();
+      return Resource.getList();
     }
 
     /**
@@ -84,7 +95,7 @@ angular.module('PSMasterMindApp')
      * @returns {*|Object}
      */
     function get(projectId) {
-      return ProjectResource.get({ projectId: projectId });
+      return Resource.get(projectId);
     }
 
     /**
@@ -94,14 +105,10 @@ angular.module('PSMasterMindApp')
      * @param project
      */
     function save(project) {
-      var resource = new ProjectResource(project);
-
       if (typeof project.id === 'undefined') {
-        resource.$save();
+        project.post();
       } else {
-        resource.$update({
-          projectId: project.id
-        });
+        project.put();
       }
     }
 

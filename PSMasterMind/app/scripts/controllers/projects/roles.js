@@ -5,7 +5,11 @@
  */
 angular.module('PSMasterMindApp').controller('RolesCtrl', ['$scope', 'RolesService',
   function ($scope, RolesService) {
-    $scope.newRole = RolesService.create();
+    var newRole = RolesService.create();
+
+    $scope.newRole = newRole;
+
+    $scope.newRoleRateType = newRole.rate.type;
 
     // On Role Rate Change
     $scope.changeRateType = function (newRateType) {

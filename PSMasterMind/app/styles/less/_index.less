@@ -1,242 +1,253 @@
 @import '_base';
 
 header {
-	height: 100px;
-	background-color: @ps-gray;
-	color: #fff;
-	
-	h1 {
-		font-size: 72px;
-		margin: 0;
-		line-height: 100px;
-	}
-	
-	.navbar-inner {
-		-webkit-box-shadow: none;
-		box-shadow: none;
-		
-		-webkit-border-radius: 0;
-		border-radius: 0;
-		border: none;
-		
-		background-color: transparent;
-		background-image: none;
-	}
-	
-	#badge {
-		position: absolute;
-		right: 0;
-		top: 0;
-		left: initial;
-		height: 100px;
-		width: 200px;
-		
-		#profile-photo {
-			height: 82px;
-			width: 82px;
-			margin-top: 9px;
-			border-radius: 41px;
-			background-color: #fff;
-			overflow: hidden;
-			img{
-				height: 100%;
-				z-index: -1;
-			}
-		}
-		
-		nav {
-			margin-top: 20px;
-		}
-	}
+  height: 100px;
+  background-color: @ps-gray;
+  color: #fff;
+
+  h1 {
+    font-size: 72px;
+    margin: 0;
+    line-height: 100px;
+  }
+
+  .navbar-inner {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    border: none;
+
+    background-color: transparent;
+    background-image: none;
+  }
+
+  #badge {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: initial;
+    height: 100px;
+    width: 200px;
+
+    #profile-photo {
+      height: 82px;
+      width: 82px;
+      margin-top: 9px;
+      border-radius: 41px;
+      background-color: #fff;
+      overflow: hidden;
+      img {
+        height: 100%;
+        z-index: -1;
+      }
+    }
+
+    nav {
+      margin-top: 20px;
+    }
+  }
 }
 
 /* Scale up to 1440px */
 @media (min-width: 1440px) {
-	@totalWidth: 1440px;
-	@gutterWidth: 40px;
-	@width: @totalWidth - @gutterWidth;
-	
-	.container, .navbar-static-top .container {
-		width: @width;
-	}
-	
-	[class*="span"] {
-		margin-left: @gutterWidth;
-	}
-	
-	.row {
-		margin-left: -@gutterWidth;
-	}
-	
-	@spanWidth: @totalWidth / 12;
-	
-	.span1 {
-		width: @spanWidth - @gutterWidth;
-	}
-	
-	.span2 {
-		width: @spanWidth * 2 - @gutterWidth;
-	}
-	
-	.span3 {
-		width: @spanWidth * 3 - @gutterWidth;
-	}
-	
-	.span4 {
-		width: @spanWidth * 4 - @gutterWidth;
-	}
-	
-	.span5 {
-		width: @spanWidth * 5 - @gutterWidth;
-	}
-	
-	.span6 {
-		width: @spanWidth * 6 - @gutterWidth;
-	}
-	
-	.span7 {
-		width: @spanWidth * 7 - @gutterWidth;
-	}
-	
-	.span8 {
-		width: @spanWidth * 8 - @gutterWidth;
-	}
-	
-	.span9 {
-		width: @spanWidth * 9 - @gutterWidth;
-	}
-	
-	.span10 {
-		width: @spanWidth * 10 - @gutterWidth;
-	}
-	
-	.span11 {
-		width: @spanWidth * 11 - @gutterWidth;
-	}
-	
-	.span12 {
-		width: @spanWidth * 12 - @gutterWidth;
-	}
+  @totalWidth: 1440px;
+  @gutterWidth: 40px;
+  @width: @totalWidth - @gutterWidth;
+
+  .container, .navbar-static-top .container {
+    width: @width;
+  }
+
+  [class*="span"] {
+    margin-left: @gutterWidth;
+  }
+
+  .row {
+    margin-left: -@gutterWidth;
+  }
+
+  @spanWidth: @totalWidth / 12;
+
+  .span1 {
+    width: @spanWidth - @gutterWidth;
+  }
+
+  .span2 {
+    width: @spanWidth * 2 - @gutterWidth;
+  }
+
+  .span3 {
+    width: @spanWidth * 3 - @gutterWidth;
+  }
+
+  .span4 {
+    width: @spanWidth * 4 - @gutterWidth;
+  }
+
+  .span5 {
+    width: @spanWidth * 5 - @gutterWidth;
+  }
+
+  .span6 {
+    width: @spanWidth * 6 - @gutterWidth;
+  }
+
+  .span7 {
+    width: @spanWidth * 7 - @gutterWidth;
+  }
+
+  .span8 {
+    width: @spanWidth * 8 - @gutterWidth;
+  }
+
+  .span9 {
+    width: @spanWidth * 9 - @gutterWidth;
+  }
+
+  .span10 {
+    width: @spanWidth * 10 - @gutterWidth;
+  }
+
+  .span11 {
+    width: @spanWidth * 11 - @gutterWidth;
+  }
+
+  .span12 {
+    width: @spanWidth * 12 - @gutterWidth;
+  }
 }
 
-
 main {
-	overflow: hidden;
-	
-	nav#nav-drawer {
-		height: 100%;
-		background-color: #fff;
-		padding-bottom: 5000px;
-		margin-bottom: -5000px;
-		
-		ul {
-			list-style-type: none;
-			margin: 0;
-		
-			li {
-				line-height: 50px;
-				border-right: 12px solid @ps-gray;
-				border-bottom: 1px solid @ps-gray;
-				
-				&.active {
-					margin-right: -12px;
-					background-color: @ps-lightgray;
-				}
-				
-				i {
-					margin-right: 20px;
-					margin-left: 20px;
-					color: @ps-gray;
-					vertical-align: middle;
-				}
-			}
-		}
-	}
-	
-	article {
-		#content {
-			/* Account for the 40px margin due to being in a span */
-			padding: 0 124px 0 84px;
-			
-			#today {
-				margin-top: 50px;
-				font-size: 24px;
-				
-				#date {
-					font-family: allerbold;
-				}
-			}
-			
-			hr {
-				height: 0.5px;
-				color: #ccc;
-				margin: 30px 0;
-			}
-			
-			.dashboard-widget {
-				width: 240px;
-				margin-right: 56px;
-				margin-left: 0;
-				
-				&:last-child {
-					margin-right: 0;
-				}
-				
-				.dashboard-box {
-					box-sizing: border-box;
-					width: 240px;
-					height: 206px;
-					font-size: 137px;
-					line-height: 206px;
-					text-align: center;
-					border: 1px solid @ps-lightgray;
-				}
-				
-				.dashboard-label {
-					margin: 30px 0 20px 0;
-					font-size: 24px;
-					text-align: center;
-				}
-				
-				.dashboard-actions {
-					margin-top: 20px;
-					text-align: center;
-					
-					button {
-						width: 111px;
-						margin-left: 10px;
-						
-						&:first-child {
-							margin-left: 0;
-						}
-					}
-				}
-			}
-			
-			#graph-header {
-				line-height: 30px;
-				
-				#graph-header-title {
-					font-size: 24px;
-				}
-				
-				#graph-header-plus {
-					text-align: center;
-					
-					i {
-						vertical-align: middle;
-					}
-				}
-			}
-			
-			#graph {
-				width: 832px;
-				height: 475px;
-				
-				margin-bottom: 160px;
-				
-				border: 1px solid @ps-lightgray;
-			}
-		}
-	}
+  overflow: hidden;
+
+  nav#nav-drawer {
+    height: 100%;
+    background-color: #fff;
+    padding-bottom: 5000px;
+    margin-bottom: -5000px;
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+
+      li {
+        border-right: 12px solid @ps-gray;
+        border-bottom: 1px solid @ps-gray;
+
+        a {
+          cursor: pointer;
+          line-height: 50px;
+          display: block;
+          color: inherit;
+          text-decoration: none;
+        }
+
+        &.active {
+          margin-right: -12px;
+          background-color: @ps-lightgray;
+        }
+
+        &:hover {
+          background-color: @ps-lightgray;
+          margin-right: -12px;
+        }
+
+        i {
+          margin-right: 20px;
+          margin-left: 20px;
+          color: @ps-gray;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+
+  article {
+    #content {
+      /* Account for the 40px margin due to being in a span */
+      padding: 0 124px 0 84px;
+
+      #today {
+        margin-top: 50px;
+        font-size: 24px;
+
+        #date {
+          font-family: allerbold;
+        }
+      }
+
+      hr {
+        height: 0.5px;
+        color: #ccc;
+        margin: 30px 0;
+      }
+
+      .dashboard-widget {
+        width: 240px;
+        margin-right: 56px;
+        margin-left: 0;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        .dashboard-box {
+          box-sizing: border-box;
+          width: 240px;
+          height: 206px;
+          font-size: 137px;
+          line-height: 206px;
+          text-align: center;
+          border: 1px solid @ps-lightgray;
+        }
+
+        .dashboard-label {
+          margin: 30px 0 20px 0;
+          font-size: 24px;
+          text-align: center;
+        }
+
+        .dashboard-actions {
+          margin-top: 20px;
+          text-align: center;
+
+          button {
+            width: 111px;
+            margin-left: 10px;
+
+            &:first-child {
+              margin-left: 0;
+            }
+          }
+        }
+      }
+
+      #graph-header {
+        line-height: 30px;
+
+        #graph-header-title {
+          font-size: 24px;
+        }
+
+        #graph-header-plus {
+          text-align: center;
+
+          i {
+            vertical-align: middle;
+          }
+        }
+      }
+
+      #graph {
+        width: 832px;
+        height: 475px;
+
+        margin-bottom: 160px;
+
+        border: 1px solid @ps-lightgray;
+      }
+    }
+  }
 }

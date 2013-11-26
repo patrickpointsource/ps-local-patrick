@@ -4,11 +4,9 @@
  * People Service
  */
 angular.module('PSMasterMindApp')
-  .factory('People',  [ '$resource', function ($resource) {
-	  
-	 var common_headers =  {'Authorization': 'Bearer ' + localStorage['access_token']};
-	 
-	 /*
+  .factory('People', [ 'Restangular', function (Restangular) {
+
+    /*
      * Create a reference to a server side resource for People.
      *
      * The query method returns an object with a property 'data' containing
@@ -17,15 +15,7 @@ angular.module('PSMasterMindApp')
      * TODO: Change the hardcoded address to localhost:8080/MasterMindServer
      * TODO: Change the hardcoded access_token query parameter
      */
-    var PeopleResource = $resource('http://localhost:8080/MasterMindServer/rest/people/:userId', {
-      userId: '@userId'
-    }, {
-      query: {
-        method: 'GET',
-        headers: common_headers,
-        isArray:false
-      }
-    });
+    var Resource = Restangular.all('people');
 
     /**
      * Service function for retrieving all people.
@@ -33,10 +23,10 @@ angular.module('PSMasterMindApp')
      * @returns {*}
      */
     function query() {
-      return PeopleResource.query();
+      return Resource.getList();
     }
 
     return {
-    	query: query
+      query: query
     };
   }]);
