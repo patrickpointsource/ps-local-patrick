@@ -4,35 +4,35 @@
  * Controller for creating a new Project.
  */
 angular.module('PSMasterMindApp')
-  .controller('NewProjectCtrl', ['$scope', 'ngTableParams', 'ProjectsService', 'People', 'Groups', 'RoleTypes','$state', 'project',
-    function ($scope, TableParams, ProjectsService, People, Groups,  RoleTypes, $state, project) {
+  .controller('NewProjectCtrl', ['$scope', 'ngTableParams', 'ProjectsService', 'People', 'Groups', 'RoleTypes', '$state', 'project',
+    function ($scope, TableParams, ProjectsService, People, Groups, RoleTypes, $state, project) {
       // Default the new project
       $scope.project = project;
-   // Set the title of the page
+      // Set the title of the page
       $scope.title = 'New Project';
-      
-      Groups.get('execs').then(function(group){
-    	  $scope.execs = group;
+
+      Groups.get('execs').then(function (group) {
+        $scope.execs = group;
       })
-      Groups.get('sales').then(function(group){
-    	  $scope.sales = group;
+      Groups.get('sales').then(function (group) {
+        $scope.sales = group;
       })
 
       /**
        * Get All the Role Types
        */
-      RoleTypes.query().then(function(data){
-    	  //console.log("success="+JSON.stringify(data));
-  		  var types = data;
-  		  $scope.roleGroups = {};
-  		  for ( var int = 0; int < types.length; int++) {
-  			var roleId = types[int].id;
-  			//console.log("get="+roleId);
-  			RoleTypes.get(roleId).then(function(res){
-  				//console.log("success="+JSON.stringify(res));
-  				$scope.roleGroups[res.id] = res;
-  			});
-  		  }
+      RoleTypes.query().then(function (data) {
+        //console.log("success="+JSON.stringify(data));
+        var types = data;
+        $scope.roleGroups = {};
+        for (var int = 0; int < types.length; int++) {
+          var roleId = types[int].id;
+          //console.log("get="+roleId);
+          RoleTypes.get(roleId).then(function (res) {
+            //console.log("success="+JSON.stringify(res));
+            $scope.roleGroups[res.id] = res;
+          });
+        }
       });
 
       /**
@@ -40,7 +40,7 @@ angular.module('PSMasterMindApp')
        */
       $scope.save = function () {
         ProjectsService.save($scope.project);
-        $state.go('home');
+        $state.go('projects.index');
       };
 
       /**

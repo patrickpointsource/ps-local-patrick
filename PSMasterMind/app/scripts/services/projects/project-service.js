@@ -42,7 +42,7 @@ angular.module('PSMasterMindApp')
      */
     function Project(options) {
       var properties = options || projectDefaults;
-      angular.extend(this, properties);
+      angular.extend(this, angular.copy(properties));
     }
 
     /**
@@ -76,7 +76,9 @@ angular.module('PSMasterMindApp')
       }).addElementTransformer('projects', false, function (element) {
         angular.extend(element, Project.prototype);
 
-        element.startDate = new Date(element.startDate);
+        if (element.startDate !== null) {
+          element.startDate = new Date(element.startDate);
+        }
 
         if (element.endDate !== null) {
           element.endDate = new Date(element.endDate);
