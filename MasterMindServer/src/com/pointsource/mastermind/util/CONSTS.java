@@ -6,9 +6,10 @@ public interface CONSTS {
 	 */
 	public String RESOURCE_ME = "me";
 	public String RESOURCE_NEW = "new";
-	public String RESOURCE_PEOPLE = "people";
 	public String RESOURCE_GROUPS = "groups";
+	public String RESOURCE_PEOPLE = "people";
 	public String RESOURCE_PROJECTS = "projects";
+	public String RESOURCE_ROLES = "roles";
 	
 	/**
 	 * Property Names
@@ -35,10 +36,10 @@ public interface CONSTS {
 	 * Rest Summary Constants
 	 */
 	public String WORKSPACE_TITLE = "PointSource Master Mind";
+	public String RESOURCE_TITLE_GROUPS = "Groups";
 	public String RESOURCE_TITLE_PEOPLE = "People";
 	public String RESOURCE_TITLE_PROJECTS = "Projects";
-	public String RESOURCE_TITLE_GROUPS = "Groups";
-	
+	public String RESOURCE_TITLE_ROLES = "Roles";
 	
 	/**
 	 * Mongo Constants

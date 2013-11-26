@@ -89,6 +89,196 @@ public class Data implements CONSTS {
 	}
 	
 	//Magic Group Constants
+	private static String SSA_ID = "SSA";
+	private static String SSA_TITLE = "Senior Software Architect";
+	private static String PM_ID = "PM";
+	private static String PM_TITLE = "Project Manager";
+	private static String BA_ID = "BA";
+	private static String BA_TITLE = "Business Analyst";
+	private static String SSE_ID = "SSE";
+	private static String SSE_TITLE = "Senior Software Engineer";
+	private static String SE_ID = "SE";
+	private static String SE_TITLE = "Senior Engineer";
+	private static String SUXD_ID = "SUXD";
+	private static String SUXD_TITLE = "Senior User Experience Designer";
+	private static String UXD_ID = "UXD";
+	private static String UXD_TITLE = "User Experience Designer";
+	
+	/**
+	 * Get the list of managed user groups
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getRoles() throws JSONException{
+		JSONObject ret = new JSONObject();
+		JSONArray members = new JSONArray();
+		
+		JSONObject ssa = new JSONObject();
+		ssa.put(PROP_ID, SSA_ID);
+		ssa.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+SSA_ID);
+		ssa.put(PROP_TITLE, SSA_TITLE);
+		members.put(ssa);
+		
+		JSONObject pm = new JSONObject();
+		pm.put(PROP_ID, PM_ID);
+		pm.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+PM_ID);
+		pm.put(PROP_TITLE, PM_TITLE);
+		members.put(pm);
+		
+		JSONObject ba = new JSONObject();
+		ba.put(PROP_ID, BA_ID);
+		ba.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+BA_ID);
+		ba.put(PROP_TITLE, BA_TITLE);
+		members.put(ba);
+		
+		JSONObject sse = new JSONObject();
+		sse.put(PROP_ID, SSE_ID);
+		sse.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+SSE_ID);
+		sse.put(PROP_TITLE, SSE_TITLE);
+		members.put(sse);
+		
+		JSONObject se = new JSONObject();
+		se.put(PROP_ID, SE_ID);
+		se.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+SE_ID);
+		se.put(PROP_TITLE, SE_TITLE);
+		members.put(se);
+		
+		JSONObject suxd = new JSONObject();
+		suxd.put(PROP_ID, SUXD_ID);
+		suxd.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+SUXD_ID);
+		suxd.put(PROP_TITLE, SUXD_TITLE);
+		members.put(suxd);
+		
+		JSONObject uxd = new JSONObject();
+		uxd.put(PROP_ID, UXD_ID);
+		uxd.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+UXD_ID);
+		uxd.put(PROP_TITLE, UXD_TITLE);
+		members.put(uxd);
+		
+		ret.put(PROP_MEMBERS, members);
+		ret.put(PROP_ABOUT, RESOURCE_ROLES);
+		ret.put(PROP_COUNT, members.length());
+		return ret;
+	}
+	
+	/**
+	 * Get the list of managed user groups
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException 
+	 */
+	public static JSONObject getRole(RequestContext context, String roleId) throws JSONException, IOException{
+		JSONObject ret = new JSONObject();
+		JSONArray members = new JSONArray();
+		
+		Map<String, JSONObject> users = getGoogleUsers(context);
+		
+		if(SSA_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, SSA_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+SSA_ID);
+			ret.put(PROP_TITLE, SSA_TITLE);
+			
+			JSONObject aaron = users.get("115659942511507270693");
+			addGroupMember(members, aaron);
+			JSONObject andy = users.get("106368930450799539126");
+			addGroupMember(members, andy);
+			JSONObject barry = users.get("107681682076275621618");
+			addGroupMember(members, barry);
+			JSONObject john = users.get("100521746243465967724");
+			addGroupMember(members, john);
+			JSONObject kevin = users.get("108416099312244834291");
+			addGroupMember(members, kevin);
+		}
+		
+		else if(PM_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, PM_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+PM_ID);
+			ret.put(PROP_TITLE, PM_TITLE);
+			
+			JSONObject kristal = users.get("118024801441852864610");
+			addGroupMember(members, kristal);
+			JSONObject susan = users.get("105187489722733399928");
+			addGroupMember(members, susan);
+			JSONObject krista = users.get("103362960874176228355");
+			addGroupMember(members, krista);
+		}
+		
+		else if(BA_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, BA_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+BA_ID);
+			ret.put(PROP_TITLE, BA_TITLE);
+			
+			JSONObject kristal = users.get("118024801441852864610");
+			addGroupMember(members, kristal);
+			JSONObject susan = users.get("105187489722733399928");
+			addGroupMember(members, susan);
+		}
+		
+		else if(BA_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, BA_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+BA_ID);
+			ret.put(PROP_TITLE, BA_TITLE);
+			
+			JSONObject kristal = users.get("118024801441852864610");
+			addGroupMember(members, kristal);
+			JSONObject susan = users.get("105187489722733399928");
+			addGroupMember(members, susan);
+		}
+		
+		else if(SSE_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, SSE_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+SSE_ID);
+			ret.put(PROP_TITLE, SSE_TITLE);
+			
+			JSONObject nate = users.get("102037350018901696245");
+			addGroupMember(members, nate);
+			JSONObject jm = users.get("118074563586812975506");
+			addGroupMember(members, jm);
+			JSONObject chris = users.get("112959653203369443291");
+			addGroupMember(members, chris);
+		}
+		
+		else if(SE_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, SE_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+SE_ID);
+			ret.put(PROP_TITLE, SE_TITLE);
+			
+			JSONObject hunter = users.get("100090968878728629777");
+			addGroupMember(members, hunter);
+			JSONObject brent = users.get("105526065653554855193");
+			addGroupMember(members, brent);
+		}
+		
+		else if(SUXD_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, SUXD_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+SUXD_ID);
+			ret.put(PROP_TITLE, SUXD_TITLE);
+			
+			JSONObject eric = users.get("102728171905005423498");
+			addGroupMember(members, eric);
+			JSONObject melissa = users.get("112917239891456752571");
+			addGroupMember(members, melissa);
+		}
+		
+		else if(UXD_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, UXD_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+UXD_ID);
+			ret.put(PROP_TITLE, UXD_TITLE);
+			
+			JSONObject melissa = users.get("103450144552825063641");
+			addGroupMember(members, melissa);
+			JSONObject amanda = users.get("107385689810002496434");
+			addGroupMember(members, amanda);
+		}
+		
+		ret.put(PROP_MEMBERS, members);
+		ret.put(PROP_COUNT, members.length());
+		
+		return ret;
+	}
+	
+	
+	//Magic Group Constants
 	private static String EXEC_ID = "execs";
 	private static String EXEC_TITLE = "Executives";
 	private static String SALES_ID = "sales";
