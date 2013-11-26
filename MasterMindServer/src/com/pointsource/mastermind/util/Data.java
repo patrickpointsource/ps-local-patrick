@@ -491,7 +491,7 @@ public class Data implements CONSTS {
 		DBCursor cursorDoc = projectsCol.find();
 		while (cursorDoc.hasNext()) {
 			DBObject created = cursorDoc.next();
-			System.out.println("Found: " + created);
+			//System.out.println("Found: " + created);
 
 			ObjectId oId = (ObjectId) created.get("_id");
 			String idVal = oId.toString();
@@ -589,7 +589,7 @@ public class Data implements CONSTS {
 		String escaped = s.replaceAll("\\\\\\\\/", "/");
 		// escaped = "'"+escaped+"'";
 
-		System.out.println(escaped);
+		//System.out.println(escaped);
 
 		return escaped;
 	}
@@ -615,7 +615,7 @@ public class Data implements CONSTS {
 		String escaped = s.replaceAll("/", "\\\\/");
 		// escaped = "'"+escaped+"'";
 
-		System.out.println(escaped);
+		//System.out.println(escaped);
 
 		return escaped;
 	}

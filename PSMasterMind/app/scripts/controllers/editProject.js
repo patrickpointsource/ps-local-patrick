@@ -10,6 +10,25 @@ angular.module('PSMasterMindApp')
       $scope.project = project;
       $scope.execs = Groups.get('execs');
       $scope.sales = Groups.get('sales'); 
+      
+      /**
+       * Get All the Role Types
+       */
+      RoleTypes.query(function(data){
+    	  //console.log("success="+JSON.stringify(data));
+  		  var types = data.members;
+  		  $scope.roleGroups = {};
+  		  for ( var int = 0; int < types.length; int++) {
+  			var roleId = types[int].id;
+  			//console.log("get="+roleId);
+  			RoleTypes.get(roleId, function(res){
+  				//console.log("success="+JSON.stringify(res));
+  				$scope.roleGroups[res.id] = res;
+  			});
+  			
+  		  }
+      });
+      
 
       // The title of the page is the project's name.
       $scope.title = project.name;

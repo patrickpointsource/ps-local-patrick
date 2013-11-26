@@ -48,8 +48,9 @@ public class AuthFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest httpReq = (HttpServletRequest) req;
 		HttpServletResponse httpResponse = (HttpServletResponse) resp;
+		
 		try {
-			HttpSession session = httpReq.getSession();
+			HttpSession session = httpReq.getSession(true);
 			String existingToken = String.valueOf(session
 					.getAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN));
 
@@ -90,6 +91,8 @@ public class AuthFilter implements Filter {
 			}
 
 			if (!authToken.equals(existingToken)) {
+				System.out.println(session.getId() + ": " + authToken+ " not equal to " + existingToken);
+				
 				URI googleProfile = new URI(CONSTS.GOOGLE_PLUS_PEOPLE_URI
 						+ CONSTS.RESOURCE_ME);
 				RestClient client = new RestClient();
@@ -122,6 +125,7 @@ public class AuthFilter implements Filter {
 				}
 
 				// Set the User context into the session
+				
 				session.setAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN, authToken);
 				session.setAttribute(CONSTS.SESSION_USER_KEY, ret);
 			}

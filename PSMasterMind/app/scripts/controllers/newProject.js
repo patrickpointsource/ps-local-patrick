@@ -22,12 +22,12 @@ angular.module('PSMasterMindApp')
   			var roleId = types[int].id;
   			//console.log("get="+roleId);
   			RoleTypes.get(roleId, function(res){
-  				console.log("success="+JSON.stringify(res));
+  				//console.log("success="+JSON.stringify(res));
   				$scope.roleGroups[res.id] = res;
   			});
   			
   		  }
-      })
+      });
 
       /**
        * Save the New Project
