@@ -114,6 +114,7 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
         'Authorization': 'Bearer ' + localStorage.getItem('access_token')
       })
       .setDefaultHttpFields({
+        withCredentials: true,
         transformRequest: [function (data) {
           /*
           HACK to get around #1463 at:
