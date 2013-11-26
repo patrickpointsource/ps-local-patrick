@@ -1,4 +1,4 @@
-<div id="summary" class="tab-pane active">
+<div ng-controller="SummaryCtrl" id="summary" class="tab-pane active">
     <form name="ProjectForm" class="projectForm">
         <fieldset>
             <div class="row-fluid">
@@ -23,8 +23,13 @@
                 <div class="span12">
                     <table ng-table="roleTableParams"  class="table">
                         <tr ng-repeat="role in project.roles">
-                            <td data-title="'Role'">{{role.title}}</td>
-                            <td data-title="'Resource'">{{role.assignee}}</td>
+                            <td data-title="'Role'">{{role.type.id}}</td>
+                            <td data-title="'Assignee'">{{role.assignee}}</td>
+                            <td data-title="'Assignee'">
+	                            <div ng-repeat="p in people.people | filter:{id:role.assignee}">
+	   									 {{p.name}}
+								</div>
+							</td>
                         </tr>
                     </table>
                 </div>

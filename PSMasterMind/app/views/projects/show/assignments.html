@@ -12,7 +12,7 @@
                             <td data-title="'Start Date'">{{role.startDate | date:'longDate'}}</td>
                             <td data-title="'End Date'">{{role.endDate | date:'longDate'}}</td>
                             <td data-title="'Person Assigned'">
-                                <select ng-model="role.assignee" ng-options="m.resource as m.title for m in roleGroups[role.type.id].members">
+                                <select ng-model="role.assignee" ng-options="m.id as m.title for m in roleGroups[role.type.id].members">
                                 </select>
                             </td>
                         </tr>

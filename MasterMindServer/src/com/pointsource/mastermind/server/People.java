@@ -2,6 +2,7 @@ package com.pointsource.mastermind.server;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -37,6 +38,28 @@ public class People extends BaseResource {
 		} catch (WebApplicationException e) {
 			throw e;
 		} catch (Exception e) {
+			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	/**
+	 * Get a single user definition
+	 * 
+	 * @return me
+	 */
+	@GET
+	@Path("{id}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public JSONObject getPerson(@PathParam("id")String id) {
+		try {
+			RequestContext context = getRequestContext();
+			JSONObject ret = Data.getPerson(context, id);
+			return ret;
+		} catch (WebApplicationException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
 		}
 	}

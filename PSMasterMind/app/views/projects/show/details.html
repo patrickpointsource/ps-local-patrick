@@ -62,14 +62,14 @@
                 <div class="span3">
                     <label class="required-label">* Executive Sponsor:</label>
                     <select class="span12" placeholder="Executive Sponsor" ng-model="project.executiveSponsor" ng-required="true" 
-                    	ng-options="m.resource as m.title for m in execs.members">
+                    	ng-options="m.id as m.title for m in execs.members">
                         
                     </select>
                 </div>
                 <div class="span3">
                     <label>Sales Sponsor:</label>
                     <select class="span12" ng-model="project.salesSponsor" 
-                    	ng-options="m.resource as m.title for m in sales.members">
+                    	ng-options="m.id as m.title for m in sales.members">
                     </select>
                 </div>
             </div>

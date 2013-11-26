@@ -10,7 +10,10 @@ angular.module('PSMasterMindApp').controller('RolesCtrl', ['$scope', 'RolesServi
     $scope.newRole = newRole;
 
     $scope.newRoleRateType = newRole.rate.type;
-    $scope.roleTypes = RoleTypes.query();
+    RoleTypes.query().then(function(data){
+    	console.log("Role Types = " + data);
+    	$scope.roleTypes = data;
+    });
 
     // On Role Rate Change
     $scope.changeRateType = function (newRateType) {

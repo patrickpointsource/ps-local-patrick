@@ -385,6 +385,30 @@ public class Data implements CONSTS {
 		}
 		return GOOGLE_USERS;
 	}
+	
+	public static JSONObject getPerson(RequestContext context, String id) throws IOException, JSONException{
+		
+		JSONObject people = getPeople(context);
+		JSONArray members = people.getJSONArray(PROP_PEOPLE);
+		
+		JSONObject ret = null;
+		
+		for(int i = 0; i < members.length();i++){
+			JSONObject p = members.getJSONObject(i);
+			String ithId = p.getString(PROP_ID);
+			
+			if(id.equals(ithId)){
+				ret = p;
+				break;
+			}
+		}
+		
+		if(ret == null){
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND).build());
+		}
+		
+		return ret;
+	}
 
 	/**
 	 * Gets the list of JSON people objects

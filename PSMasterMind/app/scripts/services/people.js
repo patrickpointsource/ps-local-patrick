@@ -23,7 +23,12 @@ angular.module('PSMasterMindApp')
       return Resource.getList();
     }
 
+    function get(id){
+    	return Resource.get(id);
+    }
+    
     return {
-      query: query
+      query: query,
+      get: get
     };
   }]);
