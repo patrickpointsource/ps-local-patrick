@@ -60,7 +60,7 @@ var helper = (function() {
 				$('#profile-photo').append(
 						$('<img src=\"' + profile.image.url + '\">'));
 				
-				$('#profileWelcomeItem').text('Welcome Back, ' + profile.name.givenName);
+				$('#profileWelcomeItem').text('Welcome ' + profile.name.givenName);
 			
 			});
 			$('#authOps').show('slow');
