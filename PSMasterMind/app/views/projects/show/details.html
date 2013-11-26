@@ -47,10 +47,7 @@
                         <span class="add-in"><i class="fa fa-calendar input-icon"></i></span>
                     </div>
                 </div>
-            </div>
-
-            <div class="row-fluid">
-                <div class="span3">
+                 <div class="span3">
                     <label for="projectState">Project State:</label>
                     <select id="projectState" class="span12" ng-model="project.state">
                         <option value="preSales">Pre-Sales</option>
@@ -58,6 +55,21 @@
                         <option value="clientActive">Client Active</option>
                         <option value="supportActive">Support Active</option>
                         <option value="complete">Done!</option>
+                    </select>
+                </div>
+            </div>
+             <div class="row-fluid">
+                <div class="span3">
+                    <label class="required-label">* Executive Sponsor:</label>
+                    <select class="span12" placeholder="Executive Sponsor" ng-model="project.executiveSponsor" ng-required="true" 
+                    	ng-options="m.resource as m.title for m in execs.members">
+                        
+                    </select>
+                </div>
+                <div class="span3">
+                    <label>Sales Sponsor:</label>
+                    <select class="span12" ng-model="project.salesSponsor" 
+                    	ng-options="m.resource as m.title for m in sales.members">
                     </select>
                 </div>
             </div>
@@ -84,21 +96,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row-fluid">
-                <div class="span3">
-                    <label class="required-label">* Executive Sponsor:</label>
-                    <select class="span12" placeholder="Executive Sponsor" ng-model="project.executiveSponsor" ng-required="true" 
-                    	ng-options="m.resource as m.title for m in execs.members">
-                        
-                    </select>
-                </div>
-                <div class="span3">
-                    <label>Sales Sponsor:</label>
-                    <select class="span12" ng-model="project.salesSponsor" 
-                    	ng-options="m.resource as m.title for m in sales.members">
-                    </select>
-                </div>
-            </div>
+           
         </fieldset>
     </form>
 </div>

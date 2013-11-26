@@ -4,10 +4,12 @@
  * Controller for modifying an existing project.
  */
 angular.module('PSMasterMindApp')
-  .controller('EditProjectCtrl', ['$scope', '$state', 'ProjectsService', 'project',
-    function ($scope, $state, ProjectsService, project) {
+  .controller('EditProjectCtrl', ['$scope', '$state', 'ProjectsService', 'Groups', 'RoleTypes', 'project',
+    function ($scope, $state, ProjectsService,  Groups,  RoleTypes, project) {
       // Set our currently viewed project to the one resolved by the service.
       $scope.project = project;
+      $scope.execs = Groups.get('execs');
+      $scope.sales = Groups.get('sales'); 
 
       // The title of the page is the project's name.
       $scope.title = project.name;
