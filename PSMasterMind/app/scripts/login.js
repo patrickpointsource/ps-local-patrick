@@ -19,25 +19,36 @@ var helper = (function() {
 			if (authResult['access_token']) {
 				// Save the auth result
 				this.authResult = authResult;
-				
+				var token = authResult['access_token'];
+				var existingToken = localStorage['access_token'];
 				//Save the access token
 	    	    localStorage["access_token"] = authResult['access_token'];
-	    	    
-			 	// Update the app to reflect a signed in user
 				
-				// After we load the Google+ API, render the profile data from
-				// Google+.
-				gapi.client.load('plus', 'v1', this.renderProfile);
+				if(!existingToken){
+		    	    //Reload the App
+		    	    window.location.reload();
+				}
 				
-				//Show the home page
-				$('#welcomeContent').hide();
-				$('#appContent').show();
+				else{
+				 	// Update the app to reflect a signed in user
+					
+					// After we load the Google+ API, render the profile data from
+					// Google+.
+					gapi.client.load('plus', 'v1', this.renderProfile);
+					
+					//Show the home page
+					$('#welcomeContent').hide();
+					$('#appContent').show();
+				}
 				
 			} else if (authResult['error']) {
 				// There was an error, which means the user is not signed in.
 				// As an example, you can troubleshoot by writing to the
 				// console:
 				console.log('There was an error: ' + authResult['error']);
+				
+				//Delete the auth token
+				
 				$('#authResult').append('Logged out');
 				$('#authOps').hide('slow');
 				$('#gConnect').show();
@@ -68,31 +79,39 @@ var helper = (function() {
 		},
 		
 		disconnectUser : function(access_token) {
-		  var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' +
-		      access_token;
-
-		  // Perform an asynchronous GET request.
-		  $.ajax({
-		    type: 'GET',
-		    url: revokeUrl,
-		    async: false,
-		    contentType: "application/json",
-		    dataType: 'jsonp',
-		    success: function(nullResponse) {
-		      // Do something now that user is disconnected
-		      // The response is always undefined.
-		    	
-		    	//Show the home page
-				$('#welcomeContent').show();
-				$('#appContent').hide();
-		    },
-		    error: function(e) {
-		      // Handle the error
-		      console.log(e);
-		      // You could point users to manually disconnect if unsuccessful
-		      // https://plus.google.com/apps
-		    }
-		  });
+		  if(access_token){	
+			  var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' +
+			      access_token;
+	
+			  // Perform an asynchronous GET request.
+			  $.ajax({
+			    type: 'GET',
+			    url: revokeUrl,
+			    async: false,
+			    contentType: "application/json",
+			    dataType: 'jsonp',
+			    success: function(nullResponse) {
+			      // Do something now that user is disconnected
+			      // The response is always undefined.
+			    	
+			    	//remove the token
+			    	delete window.localStorage['access_token'];
+				    location.reload();
+			    	
+	//		    	//Show the home page
+	//				$('#welcomeContent').show();
+	//				$('#appContent').hide();
+			    },
+			    error: function(e) {
+			      // Handle the error
+			      console.log(e);
+			      // You could point users to manually disconnect if unsuccessful
+			      // https://plus.google.com/apps
+			      delete window.localStorage['access_token'];
+			      location.reload();
+			    }
+			  });
+		  }
 		},
 		/**
 		 * Calls the server endpoint to get the list of people visible to this

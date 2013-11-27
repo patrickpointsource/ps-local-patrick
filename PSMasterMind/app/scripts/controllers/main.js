@@ -7,10 +7,11 @@ angular.module('PSMasterMindApp')
   .controller('MainCtrl', ['$scope', '$state', '$filter', 'projects',
     function ($scope, $state, $filter, projects) {
       $scope.today = $filter('date')(new Date());
-
-      $scope.projectCount = projects.length;
-
       $scope.projects = projects;
+      if(projects){
+    	  $scope.projectCount = projects.length;
+      }
+     
 
       /**
        * Navigate to creating a project.

@@ -23,6 +23,12 @@ angular.module('PSMasterMindApp').controller('RolesCtrl', ['$scope', 'RolesServi
 
     // Add a new role to the project
     $scope.add = function () {
+      //Validate new role	
+      //Business Rule: Hourly Rate Assumes 100% utilization
+      if($scope.newRole.rate.hoursPerMonth != null){
+    	  $scope.newRole.rate.fullyUtilized = true;
+      }
+    	
       // Bubble an event up to add this role.
       $scope.$emit('roles:add', $scope.newRole);
 

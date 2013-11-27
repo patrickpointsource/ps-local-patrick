@@ -15,7 +15,13 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
         controller: 'MainCtrl',
         resolve: {
           projects: function (ProjectsService) {
-            return ProjectsService.list();
+        	var access_token = localStorage['access_token'];
+        	if(access_token != null){
+        		return ProjectsService.list();
+        	}
+        	else{
+        		return null;
+        	}
           }
         }
       })
@@ -132,6 +138,31 @@ angular.module('PSMasterMindApp', ['ui.router', 'ui.bootstrap', 'ui.date', 'ngTa
           return data != null && typeof data === 'object' && toString.apply(data) !== '[object File]' ? JSON.stringify(data, toJsonReplacer) : data;
         }]
       });
+    
+  //Set Error Intercepter
+    RestangularProvider.setErrorInterceptor(
+      function(resp) {
+    	console.log('Error Interceptor!'); 
+        //var json = JSON.stringify(resp);
+        //console.log(json);
+        
+        var status = resp.status;
+        var method = resp.method;
+        var data = resp.data;
+        var url = resp.url;
+        
+        console.log(method + " " + url + " (" + status + ")");
+        
+        if(status == 401 || status == 403){
+        	if(status == 401) alert('Failed to login to MasterMind');
+        	if(status == 403) alert('You are not a member of the PointSource domain');
+        	
+        	var access_token = localStorage['access_token'];
+            helper.disconnectUser(access_token);
+        }
+        
+        return true; // false to stop the promise chain
+    });
   })
   .run(['$rootScope',
     function ($rootScope) {
