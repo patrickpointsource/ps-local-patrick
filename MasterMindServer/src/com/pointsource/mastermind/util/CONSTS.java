@@ -34,6 +34,7 @@ public interface CONSTS {
 	public String PROP_PRIMARY_EMAIL = "primaryEmail";
 	public String PROP_RESOURCE = "resource";
 	public String PROP_START_DATE = "startDate";
+	public String PROP_STATE = "state";
 	public String PROP_STATUS = "status";
 	public String PROP_TITLE = "title";
 	public String PROP_TYPE = "type";
@@ -42,6 +43,11 @@ public interface CONSTS {
 	/**
 	 * Constant values 
 	 */
+	public String VALUES_PROJECT_STATE_PRE_SALES = "preSales";
+	public String VALUES_PROJECT_STATE_PLANNING = "planning";
+	public String VALUES_PROJECT_STATE_CLIENT_ACTIVE = "clientActive";
+	public String VALUES_PROJECT_STATE_SUPPORT_ACTIVE = "supportActive";
+	public String VALUES_PROJECT_STATE_DONE = "done";
 	public String VALUES_PROJECT_TYPE_INVEST = "invest";
 	public String VALUES_PROJECT_TYPE_PAID = "paid";
 	public String VALUES_PROJECT_TYPE_POC = "poc";

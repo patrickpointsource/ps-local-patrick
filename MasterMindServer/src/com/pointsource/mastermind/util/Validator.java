@@ -99,6 +99,27 @@ public class Validator implements CONSTS {
 			}
 		}
 		
+		//Project State:
+		//	a.  Pre-Sales
+		//	b.  Planning   - *this is the default for new record
+		//	c.  Client Active
+		//	d.  Support Active
+		//	c.  Done! (complete)
+		if(!project.has(PROP_STATE)){
+			//default to planning
+			project.put(PROP_STATE, VALUES_PROJECT_STATE_PLANNING);
+		}
+		else{
+			String state = project.getString(PROP_STATE);
+			
+			if(!VALUES_PROJECT_STATE_CLIENT_ACTIVE.equals(state)
+					&& !VALUES_PROJECT_STATE_DONE.equals(state)
+					&& !VALUES_PROJECT_STATE_PLANNING.equals(state)
+					&& !VALUES_PROJECT_STATE_PRE_SALES.equals(state)
+					&& !VALUES_PROJECT_STATE_SUPPORT_ACTIVE.equals(state)){
+				ret.add("Unrecognized project state: " + state);
+			}
+		}
 		
 
 		return ret.toArray(new String[ret.size()]);
