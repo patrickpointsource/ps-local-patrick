@@ -89,22 +89,6 @@ public class Data implements CONSTS {
 		}
 	}
 	
-	//Magic Group Constants
-	private static String SSA_ID = "SSA";
-	private static String SSA_TITLE = "Senior Software Architect";
-	private static String PM_ID = "PM";
-	private static String PM_TITLE = "Project Manager";
-	private static String BA_ID = "BA";
-	private static String BA_TITLE = "Business Analyst";
-	private static String SSE_ID = "SSE";
-	private static String SSE_TITLE = "Senior Software Engineer";
-	private static String SE_ID = "SE";
-	private static String SE_TITLE = "Senior Engineer";
-	private static String SUXD_ID = "SUXD";
-	private static String SUXD_TITLE = "Senior User Experience Designer";
-	private static String UXD_ID = "UXD";
-	private static String UXD_TITLE = "User Experience Designer";
-	
 	/**
 	 * Get the list of managed user groups
 	 * @return
@@ -115,45 +99,45 @@ public class Data implements CONSTS {
 		JSONArray members = new JSONArray();
 		
 		JSONObject ssa = new JSONObject();
-		ssa.put(PROP_ID, SSA_ID);
-		ssa.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+SSA_ID);
-		ssa.put(PROP_TITLE, SSA_TITLE);
+		ssa.put(PROP_ID, ROLE_SSA_ID);
+		ssa.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_SSA_ID);
+		ssa.put(PROP_TITLE, ROLE_SSA_TITLE);
 		members.put(ssa);
 		
 		JSONObject pm = new JSONObject();
-		pm.put(PROP_ID, PM_ID);
-		pm.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+PM_ID);
-		pm.put(PROP_TITLE, PM_TITLE);
+		pm.put(PROP_ID, ROLE_PM_ID);
+		pm.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_PM_ID);
+		pm.put(PROP_TITLE, ROLE_PM_TITLE);
 		members.put(pm);
 		
 		JSONObject ba = new JSONObject();
-		ba.put(PROP_ID, BA_ID);
-		ba.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+BA_ID);
-		ba.put(PROP_TITLE, BA_TITLE);
+		ba.put(PROP_ID, ROLE_BA_ID);
+		ba.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_BA_ID);
+		ba.put(PROP_TITLE, ROLE_BA_TITLE);
 		members.put(ba);
 		
 		JSONObject sse = new JSONObject();
-		sse.put(PROP_ID, SSE_ID);
-		sse.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+SSE_ID);
-		sse.put(PROP_TITLE, SSE_TITLE);
+		sse.put(PROP_ID, ROLE_SSE_ID);
+		sse.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_SSE_ID);
+		sse.put(PROP_TITLE, ROLE_SSE_TITLE);
 		members.put(sse);
 		
 		JSONObject se = new JSONObject();
-		se.put(PROP_ID, SE_ID);
-		se.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+SE_ID);
-		se.put(PROP_TITLE, SE_TITLE);
+		se.put(PROP_ID, ROLE_SE_ID);
+		se.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_SE_ID);
+		se.put(PROP_TITLE, ROLE_SE_TITLE);
 		members.put(se);
 		
 		JSONObject suxd = new JSONObject();
-		suxd.put(PROP_ID, SUXD_ID);
-		suxd.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+SUXD_ID);
-		suxd.put(PROP_TITLE, SUXD_TITLE);
+		suxd.put(PROP_ID, ROLE_SUXD_ID);
+		suxd.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_SUXD_ID);
+		suxd.put(PROP_TITLE, ROLE_SUXD_TITLE);
 		members.put(suxd);
 		
 		JSONObject uxd = new JSONObject();
-		uxd.put(PROP_ID, UXD_ID);
-		uxd.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+UXD_ID);
-		uxd.put(PROP_TITLE, UXD_TITLE);
+		uxd.put(PROP_ID, ROLE_UXD_ID);
+		uxd.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_UXD_ID);
+		uxd.put(PROP_TITLE, ROLE_UXD_TITLE);
 		members.put(uxd);
 		
 		ret.put(PROP_MEMBERS, members);
@@ -174,10 +158,10 @@ public class Data implements CONSTS {
 		
 		Map<String, JSONObject> users = getGoogleUsers(context);
 		
-		if(SSA_ID.equalsIgnoreCase(roleId)){
-			ret.put(PROP_ID, SSA_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+SSA_ID);
-			ret.put(PROP_TITLE, SSA_TITLE);
+		if(ROLE_SSA_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, ROLE_SSA_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_SSA_ID);
+			ret.put(PROP_TITLE, ROLE_SSA_TITLE);
 			
 			JSONObject aaron = users.get("115659942511507270693");
 			addGroupMember(members, aaron);
@@ -191,10 +175,10 @@ public class Data implements CONSTS {
 			addGroupMember(members, kevin);
 		}
 		
-		else if(PM_ID.equalsIgnoreCase(roleId)){
-			ret.put(PROP_ID, PM_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+PM_ID);
-			ret.put(PROP_TITLE, PM_TITLE);
+		else if(ROLE_PM_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, ROLE_PM_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_PM_ID);
+			ret.put(PROP_TITLE, ROLE_PM_TITLE);
 			
 			JSONObject kristal = users.get("118024801441852864610");
 			addGroupMember(members, kristal);
@@ -204,10 +188,10 @@ public class Data implements CONSTS {
 			addGroupMember(members, krista);
 		}
 		
-		else if(BA_ID.equalsIgnoreCase(roleId)){
-			ret.put(PROP_ID, BA_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+BA_ID);
-			ret.put(PROP_TITLE, BA_TITLE);
+		else if(ROLE_BA_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, ROLE_BA_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_BA_ID);
+			ret.put(PROP_TITLE, ROLE_BA_TITLE);
 			
 			JSONObject kristal = users.get("118024801441852864610");
 			addGroupMember(members, kristal);
@@ -215,10 +199,10 @@ public class Data implements CONSTS {
 			addGroupMember(members, susan);
 		}
 		
-		else if(BA_ID.equalsIgnoreCase(roleId)){
-			ret.put(PROP_ID, BA_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+BA_ID);
-			ret.put(PROP_TITLE, BA_TITLE);
+		else if(ROLE_BA_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, ROLE_BA_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_BA_ID);
+			ret.put(PROP_TITLE, ROLE_BA_TITLE);
 			
 			JSONObject kristal = users.get("118024801441852864610");
 			addGroupMember(members, kristal);
@@ -226,10 +210,10 @@ public class Data implements CONSTS {
 			addGroupMember(members, susan);
 		}
 		
-		else if(SSE_ID.equalsIgnoreCase(roleId)){
-			ret.put(PROP_ID, SSE_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+SSE_ID);
-			ret.put(PROP_TITLE, SSE_TITLE);
+		else if(ROLE_SSE_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, ROLE_SSE_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_SSE_ID);
+			ret.put(PROP_TITLE, ROLE_SSE_TITLE);
 			
 			JSONObject nate = users.get("102037350018901696245");
 			addGroupMember(members, nate);
@@ -239,10 +223,10 @@ public class Data implements CONSTS {
 			addGroupMember(members, chris);
 		}
 		
-		else if(SE_ID.equalsIgnoreCase(roleId)){
-			ret.put(PROP_ID, SE_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+SE_ID);
-			ret.put(PROP_TITLE, SE_TITLE);
+		else if(ROLE_SE_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, ROLE_SE_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_SE_ID);
+			ret.put(PROP_TITLE, ROLE_SE_TITLE);
 			
 			JSONObject hunter = users.get("100090968878728629777");
 			addGroupMember(members, hunter);
@@ -250,10 +234,10 @@ public class Data implements CONSTS {
 			addGroupMember(members, brent);
 		}
 		
-		else if(SUXD_ID.equalsIgnoreCase(roleId)){
-			ret.put(PROP_ID, SUXD_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+SUXD_ID);
-			ret.put(PROP_TITLE, SUXD_TITLE);
+		else if(ROLE_SUXD_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, ROLE_SUXD_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_SUXD_ID);
+			ret.put(PROP_TITLE, ROLE_SUXD_TITLE);
 			
 			JSONObject eric = users.get("102728171905005423498");
 			addGroupMember(members, eric);
@@ -261,10 +245,10 @@ public class Data implements CONSTS {
 			addGroupMember(members, melissa);
 		}
 		
-		else if(UXD_ID.equalsIgnoreCase(roleId)){
-			ret.put(PROP_ID, UXD_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+UXD_ID);
-			ret.put(PROP_TITLE, UXD_TITLE);
+		else if(ROLE_UXD_ID.equalsIgnoreCase(roleId)){
+			ret.put(PROP_ID, ROLE_UXD_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_UXD_ID);
+			ret.put(PROP_TITLE, ROLE_UXD_TITLE);
 			
 			JSONObject melissa = users.get("103450144552825063641");
 			addGroupMember(members, melissa);

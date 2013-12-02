@@ -24,7 +24,9 @@ public interface CONSTS {
 	public String PROP_EXECUTIVE_SPONSOR = "executiveSponsor";
 	public String PROP_FAMILY_NAME = "familyName";
 	public String PROP_FULL_NAME = "fullName";
+	public String PROP_FULLY_UTILIZED = "fullyUtilized";
 	public String PROP_GIVEN_NAME = "givenName";
+	public String PROP_HOURS = "hours";
 	public String PROP_ID = "id";
 	public String PROP_MBOX = "mBox";
 	public String PROP_MEMBERS = "members";
@@ -33,7 +35,9 @@ public interface CONSTS {
 	public String PROP_NAME = "name";
 	public String PROP_PEOPLE = "people";
 	public String PROP_PRIMARY_EMAIL = "primaryEmail";
+	public String PROP_RATE = "rate";
 	public String PROP_RESOURCE = "resource";
+	public String PROP_ROLES = "roles";
 	public String PROP_START_DATE = "startDate";
 	public String PROP_STATE = "state";
 	public String PROP_STATUS = "status";
@@ -52,12 +56,31 @@ public interface CONSTS {
 	public String VALUES_PROJECT_TYPE_INVEST = "invest";
 	public String VALUES_PROJECT_TYPE_PAID = "paid";
 	public String VALUES_PROJECT_TYPE_POC = "poc";
+	public String VALUES_RATE_TYPE_HOURLY = "hourly";
+	public String VALUES_RATE_TYPE_MONTHLY = "monthly";
+	public String VALUES_RATE_TYPE_WEEKLY = "weekly";
 	
 	//Magic Group Constants
 	public String GROUPS_EXEC_ID = "execs";
 	public String GROUPS_EXEC_TITLE = "Executives";
 	public String GROUPS_SALES_ID = "sales";
 	public String GROUPS_SALES_TITLE = "Sales";
+	
+	//Magic Role Constants
+	public String ROLE_SSA_ID = "SSA";
+	public String ROLE_SSA_TITLE = "Senior Software Architect";
+	public String ROLE_PM_ID = "PM";
+	public String ROLE_PM_TITLE = "Project Manager";
+	public String ROLE_BA_ID = "BA";
+	public String ROLE_BA_TITLE = "Business Analyst";
+	public String ROLE_SSE_ID = "SSE";
+	public String ROLE_SSE_TITLE = "Senior Software Engineer";
+	public String ROLE_SE_ID = "SE";
+	public String ROLE_SE_TITLE = "Senior Engineer";
+	public String ROLE_SUXD_ID = "SUXD";
+	public String ROLE_SUXD_TITLE = "Senior User Experience Designer";
+	public String ROLE_UXD_ID = "UXD";
+	public String ROLE_UXD_TITLE = "User Experience Designer";
 	
 	/**
 	 * Rest Summary Constants
