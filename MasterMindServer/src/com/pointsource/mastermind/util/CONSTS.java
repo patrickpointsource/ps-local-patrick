@@ -28,7 +28,7 @@ public interface CONSTS {
 	public String PROP_MBOX = "mBox";
 	public String PROP_MEMBERS = "members";
 	public String PROP_MESSAGE = "message";
-	public String PROP_MESSAGES = "messages";
+	public String PROP_REASONS = "reasons";
 	public String PROP_NAME = "name";
 	public String PROP_PEOPLE = "people";
 	public String PROP_PRIMARY_EMAIL = "primaryEmail";

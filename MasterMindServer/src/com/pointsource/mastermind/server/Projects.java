@@ -125,7 +125,6 @@ public class Projects extends BaseResource {
 				String about  = Data.unescapeJSON(ret.getString(CONSTS.PROP_ABOUT));
 				
 				URI aboutURI = context.getBaseURI().resolve(about);
-				
 				return Response.created(aboutURI).build();
 			} catch (WebApplicationException e) {
 				JSONObject error = new JSONObject();
@@ -143,12 +142,11 @@ public class Projects extends BaseResource {
 				
 				int status = Status.BAD_REQUEST.getStatusCode();
 				error.put(CONSTS.PROP_STATUS, status);
+				error.put(CONSTS.PROP_MESSAGE, "Failed to create new project");
 				
 				String[] messages = e.getMessages();
 				if(messages.length > 0){
-					String message = String.valueOf(messages[0]);
-					error.put(CONSTS.PROP_MESSAGE, message);
-					error.put(CONSTS.PROP_MESSAGES, messages);
+					error.put(CONSTS.PROP_REASONS, messages);
 				}
 				
 				Response ret = Response.status(status).entity(error).build();

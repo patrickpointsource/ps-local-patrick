@@ -1,12 +1,17 @@
 package com.pointsource.mastermind.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Validator implements CONSTS {
+	
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	public static void canCreateProject(JSONObject project, JSONObject user)
 			throws ValidationException {
@@ -34,7 +39,7 @@ public class Validator implements CONSTS {
 			JSONObject project, JSONObject user) throws JSONException {
 		List<String> ret = new ArrayList<String>();
 
-		// Customer Name - *required -- Cannot be edited
+		// Customer Name - *required
 		if (!project.has(PROP_CUSTOMER_NAME)
 				|| project.getString(PROP_CUSTOMER_NAME) == null) {
 			ret.add("Customer Name is required");
@@ -62,6 +67,39 @@ public class Validator implements CONSTS {
 		if (!project.has(PROP_START_DATE) || project.getString(PROP_START_DATE) == null) {
 			ret.add("Project Start Date is required");
 		} 
+		
+		//Start data should be in the form yyyy-mm-dd
+		else{
+			try {
+				Date startDate = DATE_FORMAT.parse(project.getString(PROP_START_DATE));
+				if(startDate == null){
+					ret.add("Failed to parse start date");
+				}
+				
+				else if(project.has(PROP_END_DATE)){
+					try {
+						Date endDate = DATE_FORMAT.parse(project.getString(PROP_END_DATE));
+						if(endDate == null){
+							ret.add("Failed to parse end date");
+						}
+						else{
+							if(startDate.after(endDate)){
+								ret.add("The start date cannot be later than the end date");
+							}
+						}
+					} catch (ParseException e) {
+						e.printStackTrace();
+						ret.add("Failed to parse end date: " + e.getLocalizedMessage());
+					}
+				}
+				
+			} catch (ParseException e) {
+				e.printStackTrace();
+				ret.add("Failed to parse start date: " + e.getLocalizedMessage());
+			}
+		}
+		
+		
 
 		return ret.toArray(new String[ret.size()]);
 	}
