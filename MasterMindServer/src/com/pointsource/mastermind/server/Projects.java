@@ -117,9 +117,8 @@ public class Projects extends BaseResource {
 		try{
 			try {
 				RequestContext context = getRequestContext();
-				JSONObject user = context.getCurrentUser();
 				
-				Validator.canCreateProject(newProject, user);
+				Validator.canCreateProject(context, newProject);
 				JSONObject ret = Data.createProject(newProject);
 				
 				String about  = Data.unescapeJSON(ret.getString(CONSTS.PROP_ABOUT));

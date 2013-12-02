@@ -1,11 +1,13 @@
 package com.pointsource.mastermind.util;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,11 +15,10 @@ public class Validator implements CONSTS {
 	
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-	public static void canCreateProject(JSONObject project, JSONObject user)
+	public static void canCreateProject(RequestContext context, JSONObject project)
 			throws ValidationException {
 		try {
-			String[] messages = getCreateProjectValidationMessages(project,
-					user);
+			String[] messages = getCreateProjectValidationMessages(context, project);
 			if (messages.length > 0) {
 				ValidationException ex = new ValidationException(messages[0]);
 				ex.setMessages(messages);
@@ -36,7 +37,10 @@ public class Validator implements CONSTS {
 	}
 
 	public static String[] getCreateProjectValidationMessages(
-			JSONObject project, JSONObject user) throws JSONException {
+			RequestContext context, JSONObject project) throws JSONException {
+		
+		JSONObject user = context.getCurrentUser();
+		
 		List<String> ret = new ArrayList<String>();
 
 		// Customer Name - *required
@@ -121,6 +125,39 @@ public class Validator implements CONSTS {
 			}
 		}
 		
+		//Exec Sponsor - *required 
+		if(!project.has(PROP_EXECUTIVE_SPONSOR)){
+			ret.add("Project must have an Executive Sponsor");
+		}
+		else{
+			String sponsor = project.getString(PROP_EXECUTIVE_SPONSOR);
+			
+			try {
+				JSONObject group = Data.getGroup(context, GROUPS_EXEC_ID);
+				JSONArray members = group.getJSONArray(PROP_MEMBERS);
+				
+				boolean matched = false;
+				
+				for (int i = 0; i < members.length(); i++) {
+					JSONObject member = members.getJSONObject(i);
+					if(member.has(PROP_ID)){
+						String id = member.getString(PROP_ID);
+						if(id.equals(sponsor)){
+							matched = true;
+							break;
+						}
+					}
+				}
+				
+				if(!matched){
+					ret.add("Executive Sponsor is not a member of the Executive Group");
+				}
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+				ret.add("Failed to validate the Executive Sponsor: " + e.getLocalizedMessage());
+			}
+		}
 
 		return ret.toArray(new String[ret.size()]);
 	}

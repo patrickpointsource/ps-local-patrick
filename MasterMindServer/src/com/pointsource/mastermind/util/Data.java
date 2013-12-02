@@ -278,13 +278,6 @@ public class Data implements CONSTS {
 		return ret;
 	}
 	
-	
-	//Magic Group Constants
-	private static String EXEC_ID = "execs";
-	private static String EXEC_TITLE = "Executives";
-	private static String SALES_ID = "sales";
-	private static String SALES_TITLE = "Sales";
-	
 	/**
 	 * Get the list of managed user groups
 	 * @return
@@ -295,15 +288,15 @@ public class Data implements CONSTS {
 		JSONArray members = new JSONArray();
 		
 		JSONObject g1 = new JSONObject();
-		g1.put(PROP_ID, EXEC_ID);
-		g1.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+EXEC_ID);
-		g1.put(PROP_TITLE, EXEC_TITLE);
+		g1.put(PROP_ID, GROUPS_EXEC_ID);
+		g1.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+GROUPS_EXEC_ID);
+		g1.put(PROP_TITLE, GROUPS_EXEC_TITLE);
 		members.put(g1);
 		
 		JSONObject g2 = new JSONObject();
-		g2.put(PROP_ID, SALES_ID);
-		g2.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+SALES_ID);
-		g2.put(PROP_TITLE, SALES_TITLE);
+		g2.put(PROP_ID, GROUPS_SALES_ID);
+		g2.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+GROUPS_SALES_ID);
+		g2.put(PROP_TITLE, GROUPS_SALES_TITLE);
 		members.put(g2);
 		
 		ret.put(PROP_MEMBERS, members);
@@ -325,7 +318,7 @@ public class Data implements CONSTS {
 		Map<String, JSONObject> users = getGoogleUsers(context);
 		
 		//Executives Group
-		if(EXEC_ID.equals(groupId)){
+		if(GROUPS_EXEC_ID.equals(groupId)){
 			JSONObject chris = users.get("114352410049076130019");
 			addGroupMember(members, chris);
 			JSONObject kevin = users.get("104614151280118313239");
@@ -336,7 +329,7 @@ public class Data implements CONSTS {
 			addGroupMember(members, steph);
 		}
 		//Sales Group
-		if(SALES_ID.equals(groupId)){
+		if(GROUPS_SALES_ID.equals(groupId)){
 			JSONObject luke = users.get("117612942628688959688");
 			addGroupMember(members, luke);
 			JSONObject david = users.get("109518736702317118019");

@@ -21,6 +21,7 @@ public interface CONSTS {
 	public String PROP_DATA = "data";
 	public String PROP_END_DATE = "endDate";
 	public String PROP_ETAG = "etag";
+	public String PROP_EXECUTIVE_SPONSOR = "executiveSponsor";
 	public String PROP_FAMILY_NAME = "familyName";
 	public String PROP_FULL_NAME = "fullName";
 	public String PROP_GIVEN_NAME = "givenName";
@@ -52,7 +53,12 @@ public interface CONSTS {
 	public String VALUES_PROJECT_TYPE_PAID = "paid";
 	public String VALUES_PROJECT_TYPE_POC = "poc";
 	
-
+	//Magic Group Constants
+	public String GROUPS_EXEC_ID = "execs";
+	public String GROUPS_EXEC_TITLE = "Executives";
+	public String GROUPS_SALES_ID = "sales";
+	public String GROUPS_SALES_TITLE = "Sales";
+	
 	/**
 	 * Rest Summary Constants
 	 */
