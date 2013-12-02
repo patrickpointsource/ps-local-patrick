@@ -3,15 +3,15 @@
 /**
  * The main project controller
  */
-angular.module('PSMasterMindApp')
+angular.module('Mastermind')
   .controller('MainCtrl', ['$scope', '$state', '$filter', 'projects',
     function ($scope, $state, $filter, projects) {
       $scope.today = $filter('date')(new Date());
       $scope.projects = projects;
-      if(projects){
-    	  $scope.projectCount = projects.length;
+      if (projects) {
+        $scope.projectCount = projects.length;
       }
-     
+
 
       /**
        * Navigate to creating a project.

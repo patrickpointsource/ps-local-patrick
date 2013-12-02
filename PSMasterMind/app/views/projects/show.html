@@ -1,16 +1,28 @@
-<div class="container-fluid">
-<div class="row-fluid">
-    <div class="span8"><h1>{{ title }}</h1></div>
-    <div id="pageActions" class="actions span4">
-        <button class="btn" ng-click="save()">Save</button>
+<div class="container-fluid" ng-form="projectForm">
+
+    <div class="row-fluid">
+        <div class="span8"><h1>{{ title }}</h1></div>
+        <div id="pageActions" class="actions span4">
+            <input type="submit" class="btn" value="Save" ng-click="save()" />
+        </div>
     </div>
-</div>
-<div class="tab-panes">
-<ul class="nav nav-tabs" ui-view="tabs">
 
-</ul>
+    <div class="row-fluid">
+        <alert ng-repeat="message in messages" type="'error'">{{message}}</alert>
+    </div>
 
-<div class="tab-content" ui-view="tab-content">
-</div>
-</div>
+    <tabset>
+        <tab id="details" heading="Details">
+            <ng-include src="'views/projects/show/details.html'"></ng-include>
+        </tab>
+        <tab id="roles" heading="Roles">
+            <ng-include src="'views/projects/show/roles.html'"></ng-include>
+        </tab>
+        <tab id="assignments" heading="Assignments">
+            <ng-include src="'views/projects/show/assignments.html'"></ng-include>
+        </tab>
+        <tab id="summary" heading="Summary">
+            <ng-include src="'views/projects/show/summary.html'"></ng-include>
+        </tab>
+    </tabset>
 </div>

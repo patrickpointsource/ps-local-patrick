@@ -3,19 +3,15 @@
 /**
  * People Service
  */
-angular.module('PSMasterMindApp')
-  .factory('RoleTypes',  [ '$resource', 'Restangular', function ($resource, Restangular) {
-
-	 var common_headers =  {'Authorization': 'Bearer ' + localStorage['access_token']};
+angular.module('Mastermind')
+  .factory('RoleTypes', function (Restangular) {
 
     var RoleTypesRestangular = Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setResponseInterceptor(function (data, operation, what) {
+      RestangularConfigurer.setResponseInterceptor(function (data, operation) {
         var newData = data;
 
-        if (what === 'roles') {
-          if (operation === 'getList') {
-            newData = data.members;
-          }
+        if (operation === 'getList') {
+          newData = data.members;
         }
 
         return newData;
@@ -43,7 +39,7 @@ angular.module('PSMasterMindApp')
     }
 
     return {
-    	query: query,
-    	get: get
+      query: query,
+      get: get
     };
-  }]);
+  });

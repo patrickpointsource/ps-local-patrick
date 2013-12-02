@@ -1,10 +1,10 @@
 'use strict';
 
 /*
- * Controller for navigating through areas of MasterMind like its dashboard,
+ * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, and roles.
  */
-angular.module('PSMasterMindApp').controller('AreasCtrl', ['$scope', '$state',
+angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state',
   function ($scope, $state) {
 
     /**

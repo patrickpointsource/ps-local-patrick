@@ -47,7 +47,7 @@
         }
     </style>
 </head>
-<body ng-app="PSMasterMindApp">
+<body ng-app="Mastermind">
 <!--[if lt IE 7]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
     your browser</a> to improve your experience.</p>
@@ -102,7 +102,7 @@
     </header>
     <main id="mainContent" class="container">
         <div class="row">
-            <nav id="nav-drawer" class="span3" ng-controller="AreasCtrl">
+            <nav id="nav-drawer" class="span3 visible-desktop" ng-controller="AreasCtrl">
                 <ul>
                     <li ng-class="{active: activeArea() === 'home'}"><a ng-click="showHome()"><i
                             class="fa fa-2x fa-fw fa-home"></i> <span id="profileWelcomeItem">Welcome back.</span></a>
@@ -124,7 +124,8 @@
 <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 <script type="text/javascript" src="bower_components/marked/lib/marked.js"></script>
 <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-<script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+<!-- Must be included until https://github.com/angular-ui/bootstrap/issues/783 is resolved -->
+<script type="text/javascript" src="bower_components/bootstrap-sass/docs/assets/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script type="text/javascript" src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
 <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
@@ -150,15 +151,17 @@
 
 <!-- Controllers -->
 <script src="scripts/controllers/main.js"></script>
-<script src="scripts/controllers/newProject.js"></script>
-<script src="scripts/controllers/editProject.js"></script>
+<script src="scripts/controllers/project.js"></script>
 <script src="scripts/controllers/areas.js"></script>
 <script src="scripts/controllers/projects/roles.js"></script>
 <script src="scripts/controllers/projects/projects.js"></script>
-<script src="scripts/controllers/projects/project-section.js"></script>
 <script src="scripts/controllers/projects/summary.js"></script>
 <script src="scripts/controllers/people/people.js"></script>
 <!-- endbuild -->
+
+<!-- Models -->
+<script src="scripts/models/projects/project.js"></script>
+<script src="scripts/models/projects/rates.js"></script>
 
 <!-- Google+ Sign-in-->
 <!-- Place this asynchronous JavaScript just before your \</body\> tag -->

@@ -9,95 +9,92 @@
 @placeholder-color: #ddd;
 
 body {
-	font-family: allerregular !important;
+  font-family: allerregular !important;
 }
 
 label {
-	font-family: allerbold;
-	font-size: 14px;
-	color: #333;
-	margin-bottom: 14px;
+  font-family: allerbold;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 14px;
 }
 
 input[type="text"] {
-	font-family: allerregular;
-	font-size: 14px;
+  font-family: allerregular;
+  font-size: 14px;
 }
 
 /* Set the placeholder color across browsers */
 ::-webkit-input-placeholder {
-	color: @placeholder-color;
+  color: @placeholder-color;
 }
+
 :-moz-placeholder {
-	color: @placeholder-color;
+  color: @placeholder-color;
 }
+
 ::-moz-placeholder {
-	color: @placeholder-color;
+  color: @placeholder-color;
 }
+
 :-ms-input-placeholder {
-	color: @placeholder-color;
+  color: @placeholder-color;
 }
 
 #pageActions {
-	text-align: right;
-	margin-top: 16px;
-}
-
-.input-insert-right {
-	display: inline-block;
-	vertical-align: middle;
-	font-size: 0;
-	white-space: nowrap;
+  text-align: right;
+  margin-top: 16px;
 }
 
 .full {
-	width: 100%;
+  max-width: initial !important;
 }
 
-.input-insert-right .add-in {
-	margin-left: -29px;
-	position: relative;
+.input-insert.insert-right .add-in {
+  margin-left: -29px;
+  position: relative;
 }
 
-.input-insert-left {
-	display: inline-block;
-	vertical-align: middle;
-	font-size: 0;
-	white-space: nowrap;
+.input-insert {
+  display: inline-block;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 100%;
+  max-width: 240px;
 }
 
 .add-in {
-	vertical-align: top;
-	display: inline-block;
-	width: auto;
-	height: 20px;
-	min-height: 16px;
-	padding: 4px 5px;
-	font-size: 14px;
-	font-weight: normal;
-	line-height: 20px;
-	text-align: center;
-	text-shadow: 0 1px 0 #fff;
-	pointer-events: none;
+  vertical-align: top;
+  display: inline-block;
+  width: auto;
+  height: 20px;
+  min-height: 16px;
+  padding: 4px 5px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 20px;
+  text-align: center;
+  text-shadow: 0 1px 0 #fff;
+  pointer-events: none;
 }
 
-.input-insert-left .add-in {
-	margin-left: 5px;
-	position: absolute;
+.input-insert.insert-left .add-in {
+  margin-left: 5px;
+  position: absolute;
 }
 
-.input-insert-left input {
-	text-indent: 18px;
+.input-insert.insert-left input {
+  text-indent: 18px;
 }
 
 .input-icon {
-	color: @placeholder-color;
+  color: @placeholder-color;
 }
 
 label.radio, label.checkbox {
-	font-family: allerregular;
+  font-family: allerregular;
 }
 
 .required-label {
-	color: red;
+  color: red;
 }

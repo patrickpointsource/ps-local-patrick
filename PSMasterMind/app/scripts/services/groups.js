@@ -3,10 +3,8 @@
 /**
  * People Service
  */
-angular.module('PSMasterMindApp')
-  .factory('Groups',  [ '$resource', 'Restangular', function ($resource, Restangular) {
-
-	 var common_headers =  {'Authorization': 'Bearer ' + localStorage['access_token']};
+angular.module('Mastermind')
+  .factory('Groups', function (Restangular) {
 
     var GroupsRestangular = Restangular.withConfig(function (RestangularConfigurer) {
       RestangularConfigurer.setResponseInterceptor(function (data, operation, what) {
@@ -43,7 +41,7 @@ angular.module('PSMasterMindApp')
     }
 
     return {
-    	query: query,
-    	get: get
+      query: query,
+      get: get
     };
-  }]);
+  });

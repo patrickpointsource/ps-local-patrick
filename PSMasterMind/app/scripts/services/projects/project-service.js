@@ -3,8 +3,8 @@
 /*
  * Handles application state in regards to the currently accessed Projects.
  */
-angular.module('PSMasterMindApp')
-  .service('ProjectsService', ['Restangular', function (Restangular) {
+angular.module('Mastermind.services.projects')
+  .service('ProjectsService', ['Restangular', 'Project', function (Restangular, Project) {
       /**
        * Create a reference to a server side resource for Projects.
        *
@@ -12,57 +12,25 @@ angular.module('PSMasterMindApp')
        * the list of projects.
        */
     var Resource,
-      /*
-       * Defines the default values for a newly created Project.
+
+      /**
+       * Configure Restangular for projects. The 'getList' method returns an object
+       * with metadata, so for now just grab its data element so we have an array
+       * of objects.
+       *
+       * Then, when fetching projects, we need to transform them by adding Project
+       * prototype functions to them.
        */
-      projectDefaults = {
-        customerName: '',
-        name: '',
-        type: '',
-        primaryContact: '',
-        description: '',
-        startDate: null,
-        endDate: null,
-        state: 'planning',
-        terms: {
-          totalEstValue: 0,
-          includesProjectManagementOverhead: false,
-          type: 'timeAndMaterials'
-        },
-        executiveSponsor: null,
-        salesSponsor: null,
-        roles: []
-      };
+      ProjectsRestangular;
 
     /**
-     * Constructs a new instance of a Project. A Project is a time-bound
-     * goal for which various employee roles may be assigned.
+     * Configure a specific instance of Restangular for dealing with the #getList
+     * need for mapping its data.
      *
-     * @constructor
+     * Also, transform each returned object into a Project.
+     * @type {*}
      */
-    function Project(options) {
-      var properties = options || projectDefaults;
-      angular.extend(this, angular.copy(properties));
-    }
-
-    /**
-     * Adds a role to the Project.
-     *
-     * @param role
-     */
-    Project.prototype.addRole = function (role) {
-      this.roles.push(role);
-    };
-
-    /**
-     * Configure Restangular for projects. The 'getList' method returns an object
-     * with metadata, so for now just grab its data element so we have an array
-     * of objects.
-     *
-     * Then, when fetching projects, we need to transform them by adding Project
-     * prototype functions to them.
-     */
-    var ProjectsRestangular = Restangular.withConfig(function (RestangularConfigurer) {
+    ProjectsRestangular = Restangular.withConfig(function (RestangularConfigurer) {
       RestangularConfigurer.setResponseInterceptor(function (data, operation, what) {
         var newData = data;
 
@@ -74,17 +42,7 @@ angular.module('PSMasterMindApp')
 
         return newData;
       }).addElementTransformer('projects', false, function (element) {
-        angular.extend(element, Project.prototype);
-
-        if (element.startDate !== null) {
-          element.startDate = new Date(element.startDate);
-        }
-
-        if (element.endDate !== null) {
-          element.endDate = new Date(element.endDate);
-        }
-
-        return element;
+        return new Project(element);
       });
     });
 
@@ -95,9 +53,9 @@ angular.module('PSMasterMindApp')
      *
      * @returns {*}
      */
-    function list() {
+    this.list = function () {
       return Resource.getList();
-    }
+    };
 
     /**
      * Service function for retrieving a project by its ID.
@@ -105,9 +63,9 @@ angular.module('PSMasterMindApp')
      * @param projectId
      * @returns {*|Object}
      */
-    function get(projectId) {
+    this.get = function (projectId) {
       return Resource.get(projectId);
-    }
+    };
 
     /**
      * Service function for persisting a project, new or previously
@@ -115,31 +73,32 @@ angular.module('PSMasterMindApp')
      *
      * @param project
      */
-    function save(project) {
+    this.save = function (project) {
       var val;
 
-      if (typeof project.id === 'undefined') {
+      if (this.isTransient(project)) {
         val = Resource.post(project);
       } else {
-        val = project.put();
+        // Add properties for the server.
+        project._id = project.$meta._id;
+        project.etag = project.$meta.etag;
+
+        val = Resource.customPUT(project, project.id);
       }
 
       return val;
-    }
+    };
+
+    this.isTransient = function (project) {
+      return typeof project.id === 'undefined';
+    };
 
     /**
      * Service function for creating a new project.
      *
      * @returns {Project}
      */
-    function create() {
+    this.create = function () {
       return new Project();
-    }
-
-    return {
-      create: create,
-      save: save,
-      list: list,
-      get: get
     };
   }]);

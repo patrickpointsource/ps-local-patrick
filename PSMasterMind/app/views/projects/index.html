@@ -11,7 +11,7 @@
             </tr>
         </table>
         <script type="text/ng-template" id="custom/pager">
-            <ul ng-show="pages.length !== 0" class="pager ng-cloak">
+            <ul class="pager ng-cloak">
                 <li ng-repeat="page in pages"
                     ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
                     ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">

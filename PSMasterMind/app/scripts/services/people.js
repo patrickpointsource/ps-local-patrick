@@ -3,8 +3,8 @@
 /**
  * People Service
  */
-angular.module('PSMasterMindApp')
-  .factory('People', [ 'Restangular', function (Restangular) {
+angular.module('Mastermind')
+  .factory('People', function (Restangular) {
 
     /*
      * Create a reference to a server side resource for People.
@@ -23,12 +23,12 @@ angular.module('PSMasterMindApp')
       return Resource.getList();
     }
 
-    function get(id){
-    	return Resource.get(id);
+    function get(id) {
+      return Resource.get(id);
     }
-    
+
     return {
       query: query,
       get: get
     };
-  }]);
+  });

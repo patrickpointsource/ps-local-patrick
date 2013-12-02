@@ -6,7 +6,7 @@
  *
  * <span ng-bind-html="input | markdown"></span>
  */
-angular.module('PSMasterMindApp')
+angular.module('Mastermind')
   .filter('markdown', [ '$sce', function ($sce) {
     function toMarkdown(input) {
       // guard against empty input
