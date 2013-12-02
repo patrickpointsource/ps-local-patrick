@@ -23,6 +23,8 @@ import org.json.JSONObject;
 import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
 import com.pointsource.mastermind.util.RequestContext;
+import com.pointsource.mastermind.util.ValidationException;
+import com.pointsource.mastermind.util.Validator;
 
 /**
  * REST services for master mind project resource collection
@@ -112,22 +114,61 @@ public class Projects extends BaseResource {
 	@Produces({MediaType.APPLICATION_JSON})
 	@Consumes({MediaType.APPLICATION_JSON})
 	public Response post(JSONObject newProject){
-		try {
-			RequestContext context = getRequestContext();
-			JSONObject ret = Data.createProject(newProject);
-			
-			String about  = Data.unescapeJSON(ret.getString(CONSTS.PROP_ABOUT));
-			
-			URI aboutURI = context.getBaseURI().resolve(about);
-			
-			return Response.created(aboutURI).build();
-		} catch (WebApplicationException e) {
-			throw e;
+		try{
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject user = context.getCurrentUser();
+				
+				Validator.canCreateProject(newProject, user);
+				JSONObject ret = Data.createProject(newProject);
+				
+				String about  = Data.unescapeJSON(ret.getString(CONSTS.PROP_ABOUT));
+				
+				URI aboutURI = context.getBaseURI().resolve(about);
+				
+				return Response.created(aboutURI).build();
+			} catch (WebApplicationException e) {
+				JSONObject error = new JSONObject();
+				Response response = e.getResponse();
+				int status = response.getStatus();
+				String message = String.valueOf(response.getEntity());
+				error.put(CONSTS.PROP_STATUS, status);
+				error.put(CONSTS.PROP_MESSAGE, message);
+				
+				Response ret = Response.status(status).entity(error).build();
+				return ret;
+			} 
+			catch (ValidationException e) {
+				JSONObject error = new JSONObject();
+				
+				int status = Status.BAD_REQUEST.getStatusCode();
+				error.put(CONSTS.PROP_STATUS, status);
+				
+				String[] messages = e.getMessages();
+				if(messages.length > 0){
+					String message = String.valueOf(messages[0]);
+					error.put(CONSTS.PROP_MESSAGE, message);
+					error.put(CONSTS.PROP_MESSAGES, messages);
+				}
+				
+				Response ret = Response.status(status).entity(error).build();
+				return ret;
+			}
+			catch (Exception e) {
+				JSONObject error = new JSONObject();
+				
+				int status = Status.INTERNAL_SERVER_ERROR.getStatusCode();
+				String message = String.valueOf(e.getLocalizedMessage());
+				error.put(CONSTS.PROP_STATUS, status);
+				error.put(CONSTS.PROP_MESSAGE, message);
+				
+				Response ret = Response.status(status).entity(error).build();
+				return ret;
+			}
 		}catch (JSONException e) {
-			throw new WebApplicationException(e, Status.BAD_REQUEST);
-		} 
-		catch (Exception e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+			String error = "{\"status\":400,\"message\"=\""+e.getLocalizedMessage()+"\"}";
+			Response ret = Response.status(Status.BAD_REQUEST).entity(error).build();
+			return ret;
 		}
 	}
 	

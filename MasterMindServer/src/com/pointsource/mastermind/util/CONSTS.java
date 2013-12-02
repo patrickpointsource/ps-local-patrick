@@ -17,7 +17,9 @@ public interface CONSTS {
 	public String PROP_ABOUT = "about";
 	public String PROP_BASE = "base";
 	public String PROP_COUNT = "count";
+	public String PROP_CUSTOMER_NAME = "customerName";
 	public String PROP_DATA = "data";
+	public String PROP_END_DATE = "endDate";
 	public String PROP_ETAG = "etag";
 	public String PROP_FAMILY_NAME = "familyName";
 	public String PROP_FULL_NAME = "fullName";
@@ -25,13 +27,26 @@ public interface CONSTS {
 	public String PROP_ID = "id";
 	public String PROP_MBOX = "mBox";
 	public String PROP_MEMBERS = "members";
+	public String PROP_MESSAGE = "message";
+	public String PROP_MESSAGES = "messages";
 	public String PROP_NAME = "name";
 	public String PROP_PEOPLE = "people";
 	public String PROP_PRIMARY_EMAIL = "primaryEmail";
 	public String PROP_RESOURCE = "resource";
+	public String PROP_START_DATE = "startDate";
+	public String PROP_STATUS = "status";
 	public String PROP_TITLE = "title";
+	public String PROP_TYPE = "type";
 	public String PROP_USERS = "users";
 	
+	/**
+	 * Constant values 
+	 */
+	public String VALUES_PROJECT_TYPE_INVEST = "invest";
+	public String VALUES_PROJECT_TYPE_PAID = "paid";
+	public String VALUES_PROJECT_TYPE_POC = "poc";
+	
+
 	/**
 	 * Rest Summary Constants
 	 */

@@ -102,9 +102,16 @@ public class AuthFilter implements Filter {
 						.accept(MediaType.APPLICATION_JSON).get();
 
 				if (response.getStatusCode() != Status.OK.getStatusCode()) {
+					session.removeAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
+					session.removeAttribute(CONSTS.SESSION_USER_KEY);
+					
+					//Error authenticating with Google...
+					String err = response.getEntity(String.class);
+					System.err.println(response.getStatusCode() + ": "+err);
+					
 					throw new WebApplicationException(
 							Response.status(response.getStatusCode())
-									.entity(response.getEntity(String.class))
+									.entity(err)
 									.build());
 				}
 
@@ -118,6 +125,10 @@ public class AuthFilter implements Filter {
 				Map<String, JSONObject> domainUsers = Data
 						.getGoogleUsers(context);
 				if (!domainUsers.containsKey(id)) {
+					session.removeAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
+					session.removeAttribute(CONSTS.SESSION_USER_KEY);
+					
+					System.err.println(403 + ": "+ domainUsers.get("id") + " is not a member of the PointSource domain");
 					throw new WebApplicationException(
 							Response.status(Status.FORBIDDEN)
 									.entity("User is not a member of the PointSource domain")
