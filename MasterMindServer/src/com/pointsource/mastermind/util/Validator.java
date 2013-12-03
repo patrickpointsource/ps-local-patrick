@@ -239,7 +239,7 @@ public class Validator implements CONSTS {
 									// hours
 									if (!rate.has(PROP_FULLY_UTILIZED)
 											|| !rate.getBoolean(PROP_FULLY_UTILIZED)) {
-										if (!rate.has(PROP_HOURS)) {
+										if (!rate.has(PROP_HOURS) || rate.getInt(PROP_HOURS) < 1) {
 											ret.add("A Hourly Role must specify the number hours per month");
 											break;
 										} else {
@@ -259,7 +259,7 @@ public class Validator implements CONSTS {
 									// hours
 									if (!rate.has(PROP_FULLY_UTILIZED)
 											|| !rate.getBoolean(PROP_FULLY_UTILIZED)) {
-										if (!rate.has(PROP_HOURS)) {
+										if (!rate.has(PROP_HOURS) || rate.getInt(PROP_HOURS) < 1) {
 											ret.add("A Weekly Role must specify the number hours per week");
 											break;
 										} else {
