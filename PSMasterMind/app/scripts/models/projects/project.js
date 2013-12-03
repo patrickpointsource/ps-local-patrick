@@ -18,22 +18,51 @@ angular.module('Mastermind.models.projects')
 
     return Terms;
   })
-  .factory('Project', function (Terms) {
+  .factory('Role', function (Rates, RateFactory) {
+    /**
+     * The defaults for a newly created role.
+     *
+     * @type {{rate: HourlyRate, shore: string}}
+     */
+    var defaults = {
+      rate: RateFactory.build(Rates.HOURLY),
+      shore: 'on',
+      startDate: undefined,
+      endDate: undefined
+    };
+
+    /**
+     * Creates a new Role with default properties.
+     *
+     * @constructor
+     */
+    function Role(options) {
+      options = options || {};
+
+      this.rate = options.rate || angular.copy(defaults.rate);
+      this.shore = options.shore || defaults.shore;
+      this.startDate = options.startDate ? new Date(options.startDate) : defaults.startDate;
+      this.endDate = options.endDate ? new Date(options.endDate) : defaults.endDate;
+    }
+
+    return Role;
+  })
+  .factory('Project', function (Terms, Role) {
     /*
      * Defines the default values for a newly created Project.
      */
     var defaults = {
       customerName: '',
       name: '',
-      type: '',
-      primaryContact: '',
-      description: '',
-      startDate: null,
-      endDate: null,
+      type: undefined,
+      primaryContact: undefined,
+      description: undefined,
+      startDate: undefined,
+      endDate: undefined,
       state: 'planning',
       terms: new Terms(),
-      executiveSponsor: null,
-      salesSponsor: null,
+      executiveSponsor: undefined,
+      salesSponsor: undefined,
       roles: []
     };
 
@@ -57,13 +86,30 @@ angular.module('Mastermind.models.projects')
       this.state = options.state || defaults.state;
       this.terms = new Terms(options.terms);
       this.executiveSponsor = options.executiveSponsor || defaults.executiveSponsor;
-      this.roles = options.roles || defaults.roles;
+      this.roles = _.map(options.roles, function (role) {
+        return new Role(role);
+      });
+
+      /**
+       * Creates a fluent interface for accessing a subset of roles on this Project.
+       *
+       * @param startIndex
+       * @returns {{to: function(this: Project): Role[]}}
+       */
+      this.roles.from = function (startIndex) {
+        return {
+          to: _.bind(function (endIndex) {
+            return this.slice(startIndex, endIndex);
+          }, this)
+        };
+      };
 
       // Add meta info from MongoDB.
-      this.$meta = {};
       this.$meta._id = options._id;
       this.$meta.etag = options.etag;
     }
+
+    Project.prototype.$meta = {};
 
     /**
      * The rules for a valid project.
@@ -79,9 +125,11 @@ angular.module('Mastermind.models.projects')
      *  - Project has a Business Analyst role
      *  - Project terms include 10% project management overhead
      *
+     * The Project must have at least one role.
+     *
      * @type {Array}
      */
-    Project.prototype.rules = [{
+    Project.prototype.$meta.rules = [{
       description: 'Must have a customer name.',
       check: function () {
         return !_.isEmpty(this.customerName);
@@ -108,6 +156,11 @@ angular.module('Mastermind.models.projects')
 
         return roleIds.contains('BA') || roleIds.contains('PM') || this.terms.includesProjectManagementOverhead;
       }
+    }, {
+      description: 'Must have at least one role',
+      check: function () {
+        return _.size(this.roles) > 0;
+      }
     }];
 
     /**
@@ -120,6 +173,18 @@ angular.module('Mastermind.models.projects')
     };
 
     /**
+     * Removes a role from the Project.
+     *
+     * @param role
+     */
+    Project.prototype.removeRole = function (role) {
+      var roles = this.roles,
+        roleIndex = roles.indexOf(role);
+
+      roles.splice(roleIndex, 1);
+    };
+
+    /**
      * Validate the project according to its rules.
      *
      * @returns {{valid: Boolean, messages: String[]}}
@@ -127,7 +192,7 @@ angular.module('Mastermind.models.projects')
     Project.prototype.validate = function () {
       var self = this,
 
-        messages = _(this.rules).filter(function (validator) {
+        messages = _(this.$meta.rules).filter(function (validator) {
           return !validator.check.call(self);
         }).map(function (validator) {
             return validator.description;

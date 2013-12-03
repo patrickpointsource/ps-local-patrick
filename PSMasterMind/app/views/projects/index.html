@@ -8,6 +8,7 @@
         <table ng-table="tableParams" template-pagination="custom/pager" class="table">
             <tr ng-repeat="project in $data">
                 <td><a ng-click="showProject(project)">{{project.name}}</a></td>
+                <td><button class="btn btn-default" ng-click="deleteProject(project)"><i class="fa fa-trash-o"></i></button></td>
             </tr>
         </table>
         <script type="text/ng-template" id="custom/pager">

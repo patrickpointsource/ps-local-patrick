@@ -1,27 +1,30 @@
-<div class="container-fluid" ng-form="projectForm">
+<div class="container-fluid" ng-form="projectForm" ng-class="{submitted: submitAttempted}">
 
     <div class="row-fluid">
-        <div class="span8"><h1>{{ title }}</h1></div>
+        <div class="span8"><h1>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h1></div>
         <div id="pageActions" class="actions span4">
             <input type="submit" class="btn" value="Save" ng-click="save()" />
         </div>
     </div>
 
-    <div class="row-fluid">
-        <alert ng-repeat="message in messages" type="'error'">{{message}}</alert>
+    <div id="messages" class="alert alert-block alert-error" ng-show="messages.length > 0">
+        <a class="close" data-dismiss="alert">&times;</a>
+        <ul>
+            <li ng-repeat="message in messages">{{message}}</li>
+        </ul>
     </div>
 
     <tabset>
         <tab id="details" heading="Details">
             <ng-include src="'views/projects/show/details.html'"></ng-include>
         </tab>
-        <tab id="roles" heading="Roles">
+        <tab id="roles" heading="Roles" disabled="isRolesTabDisabled()">
             <ng-include src="'views/projects/show/roles.html'"></ng-include>
         </tab>
-        <tab id="assignments" heading="Assignments">
+        <tab id="assignments" heading="Assignments" disabled="isAssignmentsTabDisabled()">
             <ng-include src="'views/projects/show/assignments.html'"></ng-include>
         </tab>
-        <tab id="summary" heading="Summary">
+        <tab id="summary" heading="Summary" disabled="isSummaryTabDisabled()">
             <ng-include src="'views/projects/show/summary.html'"></ng-include>
         </tab>
     </tabset>

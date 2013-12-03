@@ -4,8 +4,8 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('RolesCtrl', ['$scope', 'RolesService', 'RoleTypes', 'Rates',
-    function ($scope, RolesService, RoleTypes, Rates) {
+  .controller('RolesCtrl',
+    function ($scope, RolesService, RoleTypes, Rates, RateFactory) {
       $scope.newRole = RolesService.create();
 
       RoleTypes.query().then(function (data) {
@@ -34,7 +34,9 @@ angular.module('Mastermind.controllers.projects')
         changeRateType(Rates.MONTHLY);
       };
 
-      // Add a new role to the project
+      /**
+       * Add a new role to the project
+       */
       $scope.add = function () {
         //Validate new role
         //Business Rule: Hourly Rate Assumes 100% utilization
@@ -46,9 +48,23 @@ angular.module('Mastermind.controllers.projects')
         $scope.$emit('roles:add', $scope.newRole);
 
         // Create the new Role with the previously selected rate type.
-        $scope.newRole = RolesService.create($scope.newRole.rate.type);
+        $scope.newRole = RolesService.create({rate: RateFactory.build($scope.newRole.rate.type)});
 
         // Reset the form to being pristine.
         $scope.rolesForm.$setPristine();
       };
-    }]);
+
+      /**
+       * Remove a role from the project
+       */
+      $scope.remove = function (role) {
+        // Bubble up an event to handle removing a role elsewhere
+        $scope.$emit('roles:remove', role);
+      };
+
+      $scope.$watch(function () {
+        return $scope.project.roles.length;
+      }, function (newLength) {
+        $scope.$emit('roles:valid:change', newLength > 0);
+      });
+    });

@@ -8,14 +8,31 @@
     max-width: 240px;
   }
 
-  .full input, .full select {
-    max-width: initial;
+  .full {
+    input, select {
+      max-width: initial;
+    }
   }
 
   .ng-invalid.ng-dirty {
     border-color: #b94a48;
   }
 
+  .control-group {
+    .help-block {
+      display: none;
+    }
+  }
+
+  .control-group.error {
+    .help-block {
+      display: block;
+    }
+
+    .input-icon {
+      color: #b94a48;
+    }
+  }
 }
 
 #summary {
@@ -26,4 +43,12 @@
   #description {
     padding: 30px 0;
   }
+}
+
+#messages {
+  position: fixed;
+  top: 0;
+  margin-top: 24px;
+  width: 50%;
+  z-index: 1;
 }

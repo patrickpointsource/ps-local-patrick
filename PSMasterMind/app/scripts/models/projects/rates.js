@@ -40,7 +40,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
      */
     var defaults = {
       fullyUtilized: false,
-      hoursPerMonth: 0,
+      hours: 0,
       amount: 0
     };
 
@@ -49,7 +49,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
 
       this.type = Rates.HOURLY;
       this.fullyUtilized = options.fullyUtilized || defaults.fullyUtilized;
-      this.hoursPerMonth = options.hoursPerMonth || defaults.hoursPerMonth;
+      this.hours = options.hours || defaults.hours;
       this.amount = options.amount || defaults.amount;
     }
 
@@ -63,7 +63,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
      */
     var defaults = {
       fullyUtilized: false,
-      hoursPerWeek: 0,
+      hours: 0,
       amount: 0
     };
 
@@ -72,9 +72,45 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
 
       this.type = Rates.WEEKLY;
       this.fullyUtilized = options.fullyUtilized || defaults.fullyUtilized;
-      this.hoursPerWeek = options.hoursPerWeek || defaults.hoursPerWeek;
+      this.hours = options.hours || defaults.hours;
       this.amount = options.amount || defaults.amount;
     }
+
+    WeeklyRate.prototype.rules = [{
+      description: 'Hours per week must be a positive number.',
+      check: function () {
+        var hours = this.hoursPerWeek;
+
+        return _.isNumber(hours) && hours > 0;
+      }
+    }, {
+      description: 'Hours per week cannot exceed 50 hours.',
+      check: function () {
+        var hours = this.hoursPerWeek;
+
+        return _.isNumber(hours) && hours <= 50;
+      }
+    }];
+
+    /**
+     * Validate the weekly rate according to its rules.
+     *
+     * @returns {{valid: Boolean, messages: String[]}}
+     */
+    WeeklyRate.prototype.validate = function () {
+      var self = this,
+
+        messages = _(this.rules).filter(function (validator) {
+          return !validator.check.call(self);
+        }).map(function (validator) {
+          return validator.description;
+        }).value();
+
+      return {
+        valid: _.isEmpty(messages),
+        messages: messages
+      };
+    };
 
     return WeeklyRate;
   })
@@ -86,7 +122,6 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
      */
     var defaults = {
       fullyUtilized: true,
-      hours: 180,
       amount: 0
     };
 
@@ -95,7 +130,6 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
 
       this.type = Rates.MONTHLY;
       this.fullyUtilized = defaults.fullyUtilized;
-      this.hours = defaults.hours;
       this.amount = options.amount || defaults.amount;
     }
 

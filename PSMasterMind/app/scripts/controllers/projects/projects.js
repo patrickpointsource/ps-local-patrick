@@ -4,8 +4,8 @@
  * Controller for handling the list of projects.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('ProjectsCtrl', [ '$scope', '$state', '$filter', 'ngTableParams', 'projects',
-    function ($scope, $state, $filter, TableParams, projects) {
+  .controller('ProjectsCtrl', [ '$scope', '$state', '$filter', 'ngTableParams', 'projects', 'ProjectsService',
+    function ($scope, $state, $filter, TableParams, projects, ProjectsService) {
 
       $scope.projects = projects;
 
@@ -25,6 +25,12 @@ angular.module('Mastermind.controllers.projects')
       $scope.showProject = function (project) {
         $state.go('projects.show', {
           projectId: project.id
+        });
+      };
+
+      $scope.deleteProject = function (project) {
+        ProjectsService.destroy(project).then(function () {
+          $state.go('projects.index');
         });
       };
 

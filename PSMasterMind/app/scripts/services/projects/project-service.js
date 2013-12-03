@@ -89,6 +89,10 @@ angular.module('Mastermind.services.projects')
       return val;
     };
 
+    this.destroy = function (project) {
+      return Resource.customDELETE(project.id);
+    }
+
     this.isTransient = function (project) {
       return typeof project.id === 'undefined';
     };

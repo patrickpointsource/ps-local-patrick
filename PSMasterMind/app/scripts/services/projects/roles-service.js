@@ -1,29 +1,7 @@
 'use strict';
 
 angular.module('Mastermind.services.projects')
-  .service('RolesService', [ 'RateFactory', 'Rates', function (RateFactory, Rates) {
-
-      /**
-       * The defaults for a newly created role.
-       *
-       * @type {{rate: HourlyRate, shore: string}}
-       */
-    var roleDefaults = {
-      rate: RateFactory.build(Rates.HOURLY),
-      shore: 'on'
-    };
-
-    /**
-     * Creates a new Role with default properties.
-     *
-     * @constructor
-     */
-    function Role(rateType) {
-      rateType = rateType || Rates.HOURLY;
-
-      angular.extend(this, roleDefaults, {rate: RateFactory.build(rateType)});
-    }
-
+  .service('RolesService', function (RateFactory, Role) {
     /**
      * Change a Role's rate type between hourly, weekly, and monthly.
      *
@@ -36,4 +14,4 @@ angular.module('Mastermind.services.projects')
     this.create = function (rateType) {
       return new Role(rateType);
     };
-  }]);
+  });
