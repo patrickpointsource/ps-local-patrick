@@ -50,74 +50,76 @@ header {
   }
 }
 
-/* Scale up to 1440px */
-@media (min-width: 1440px) {
-  @totalWidth: 1440px;
-  @gutterWidth: 40px;
-  @width: @totalWidth - @gutterWidth;
+// TODO:  need to review this w Zach and figure out what needs to stay
 
-  .container, .navbar-static-top .container {
-    width: @width;
-  }
+// /* Scale up to 1440px */
+// @media (min-width: 1440px) {
+//   @totalWidth: 1440px;
+//   @gutterWidth: 40px;
+//   @width: @totalWidth - @gutterWidth;
 
-  [class*="span"] {
-    margin-left: @gutterWidth;
-  }
+//   .container, .navbar-static-top .container {
+//     width: @width;
+//   }
 
-  .row {
-    margin-left: -@gutterWidth;
-  }
+//   [class*="span"] {
+//     margin-left: @gutterWidth;
+//   }
 
-  @spanWidth: @totalWidth / 12;
+//   .row {
+//     margin-left: -@gutterWidth;
+//   }
 
-  .span1 {
-    width: @spanWidth - @gutterWidth;
-  }
+//   @spanWidth: @totalWidth / 12;
 
-  .span2 {
-    width: @spanWidth * 2 - @gutterWidth;
-  }
+//   .span1 {
+//     width: @spanWidth - @gutterWidth;
+//   }
 
-  .span3 {
-    width: @spanWidth * 3 - @gutterWidth;
-  }
+//   .span2 {
+//     width: @spanWidth * 2 - @gutterWidth;
+//   }
 
-  .span4 {
-    width: @spanWidth * 4 - @gutterWidth;
-  }
+//   .span3 {
+//     width: @spanWidth * 3 - @gutterWidth;
+//   }
 
-  .span5 {
-    width: @spanWidth * 5 - @gutterWidth;
-  }
+//   .span4 {
+//     width: @spanWidth * 4 - @gutterWidth;
+//   }
 
-  .span6 {
-    width: @spanWidth * 6 - @gutterWidth;
-  }
+//   .span5 {
+//     width: @spanWidth * 5 - @gutterWidth;
+//   }
 
-  .span7 {
-    width: @spanWidth * 7 - @gutterWidth;
-  }
+//   .span6 {
+//     width: @spanWidth * 6 - @gutterWidth;
+//   }
 
-  .span8 {
-    width: @spanWidth * 8 - @gutterWidth;
-  }
+//   .span7 {
+//     width: @spanWidth * 7 - @gutterWidth;
+//   }
 
-  .span9 {
-    width: @spanWidth * 9 - @gutterWidth;
-  }
+//   .span8 {
+//     width: @spanWidth * 8 - @gutterWidth;
+//   }
 
-  .span10 {
-    width: @spanWidth * 10 - @gutterWidth;
-  }
+//   .span9 {
+//     width: @spanWidth * 9 - @gutterWidth;
+//   }
 
-  .span11 {
-    width: @spanWidth * 11 - @gutterWidth;
-  }
+//   .span10 {
+//     width: @spanWidth * 10 - @gutterWidth;
+//   }
 
-  .span12 {
-    width: @spanWidth * 12 - @gutterWidth;
-  }
-}
+//   .span11 {
+//     width: @spanWidth * 11 - @gutterWidth;
+//   }
+
+//   .span12 {
+//     width: @spanWidth * 12 - @gutterWidth;
+//   }
+// }
 
 main {
   overflow: hidden;
@@ -127,10 +129,12 @@ main {
     background-color: #fff;
     padding-bottom: 5000px;
     margin-bottom: -5000px;
+    padding-left: 0;
 
     ul {
       list-style-type: none;
       margin: 0;
+      padding-left: 0;
 
       li {
         border-right: 12px solid @ps-gray;

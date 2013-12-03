@@ -1,8 +1,8 @@
-<div class="container-fluid" ng-form="projectForm" ng-class="{submitted: submitAttempted}">
+<div class="container" ng-form="projectForm" ng-class="{submitted: submitAttempted}">
 
-    <div class="row-fluid">
-        <div class="span8"><h1>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h1></div>
-        <div id="pageActions" class="actions span4">
+    <div class="row">
+        <div class="col-xs-8"><h1>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h1></div>
+        <div id="pageActions" class="actions col-xs-4">
             <input type="submit" class="btn" value="Save" ng-click="save()" />
         </div>
     </div>

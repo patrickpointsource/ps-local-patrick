@@ -6,16 +6,15 @@
     "angular-route": "~1.2",
     "json3": "~3.2.4",
     "jquery": "~1.9.1",
-    "bootstrap-sass": "~2.3.1",
-    "less": "~1.5",
     "es5-shim": "~2.0.8",
     "angular-ui-date": "latest",
     "ng-table": "latest",
-    "angular-bootstrap": "latest",
     "font-awesome": "~4.0.3",
     "marked": "0.2.10",
     "angular-ui-router": "latest",
-    "restangular": "latest"
+    "restangular": "latest",
+    "bootstrap": "~3.0.2",
+    "angular-ui-bootstrap": "bootstrap3"
   },
   "devDependencies": {
     "angular-mocks": "~1.2",

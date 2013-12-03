@@ -15,8 +15,8 @@
   angular.module('Mastermind.services.projects', []);
   angular.module('Mastermind', [
     'ui.router',
-    'ui.bootstrap',
     'ui.date',
+    'ui.bootstrap.tabs',
     'ngTable',
     'restangular',
     'Mastermind.controllers.people',
