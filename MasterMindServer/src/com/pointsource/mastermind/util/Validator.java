@@ -17,7 +17,7 @@ public class Validator implements CONSTS {
 			"yyyy-MM-dd");
 
 	public static void canCreateProject(RequestContext context,
-			JSONObject project) throws ValidationException {
+			JSONObject project) throws ValidationException, JSONException {
 		try {
 			String[] messages = getCreateProjectValidationMessages(context,
 					project);
@@ -29,19 +29,27 @@ public class Validator implements CONSTS {
 			}
 		} catch (ValidationException ex) {
 			throw ex;
-		} catch (Exception e) {
-			String message = e.getClass().getName() + ": "
-					+ String.valueOf(e.getLocalizedMessage());
-			ValidationException ex = new ValidationException(message);
-			ex.setMessages(message);
+		}
+	}
+
+	public static void canUpdateProject(RequestContext context,
+			JSONObject project) throws ValidationException, JSONException {
+		try {
+			String[] messages = getCreateProjectValidationMessages(context,
+					project);
+			if (messages.length > 0) {
+				ValidationException ex = new ValidationException(messages[0]);
+				ex.setMessages(messages);
+
+				throw ex;
+			}
+		} catch (ValidationException ex) {
 			throw ex;
 		}
 	}
 
 	public static String[] getCreateProjectValidationMessages(
 			RequestContext context, JSONObject project) throws JSONException {
-
-		JSONObject user = context.getCurrentUser();
 
 		List<String> ret = new ArrayList<String>();
 
@@ -229,14 +237,18 @@ public class Validator implements CONSTS {
 									// i. 100% Utilization = Yes/No
 									// ii. hours per month BR: cannot exceed 220
 									// hours
-									if ((!rate.has(PROP_FULLY_UTILIZED) || !rate
-											.getBoolean(PROP_FULLY_UTILIZED))
-											&& rate.has(PROP_HOURS)) {
-										int hoursPerMonth = rate
-												.getInt(PROP_HOURS);
-										if (hoursPerMonth > 220) {
-											ret.add("A Role cannot exceed 220 hours per month");
+									if (!rate.has(PROP_FULLY_UTILIZED)
+											|| !rate.getBoolean(PROP_FULLY_UTILIZED)) {
+										if (!rate.has(PROP_HOURS)) {
+											ret.add("A Hourly Role must specify the number hours per month");
 											break;
+										} else {
+											int hoursPerMonth = rate
+													.getInt(PROP_HOURS);
+											if (hoursPerMonth > 220) {
+												ret.add("A Role cannot exceed 220 hours per month");
+												break;
+											}
 										}
 									}
 								} else if (VALUES_RATE_TYPE_WEEKLY
@@ -245,14 +257,19 @@ public class Validator implements CONSTS {
 									// i. 100% Utilization = Yes/No
 									// ii. hours per week BR: Cannot exceed 50
 									// hours
-									if ((!rate.has(PROP_FULLY_UTILIZED) || !rate
-											.getBoolean(PROP_FULLY_UTILIZED))
-											&& rate.has(PROP_HOURS)) {
-										int hoursPerMonth = rate
-												.getInt(PROP_HOURS);
-										if (hoursPerMonth > 220) {
-											ret.add("A Role cannot exceed 220 hours per month");
+									if (!rate.has(PROP_FULLY_UTILIZED)
+											|| !rate.getBoolean(PROP_FULLY_UTILIZED)) {
+										if (!rate.has(PROP_HOURS)) {
+											ret.add("A Weekly Role must specify the number hours per week");
 											break;
+										} else {
+											int hoursPerWeek = rate
+													.getInt(PROP_HOURS);
+											int hoursPerMonth = (int) (hoursPerWeek * 4);
+											if (hoursPerMonth > 220) {
+												ret.add("A Role cannot exceed 220 hours per month");
+												break;
+											}
 										}
 									}
 								} else if (VALUES_RATE_TYPE_MONTHLY
@@ -287,8 +304,8 @@ public class Validator implements CONSTS {
 									if (VALUES_RATE_TYPE_WEEKLY
 											.equals(rateType)) {
 										hours = (int) (rate.getInt(PROP_HOURS) * 4);
-									}
-									else if(VALUES_RATE_TYPE_HOURLY.equals(rateType)){
+									} else if (VALUES_RATE_TYPE_HOURLY
+											.equals(rateType)) {
 										hours = rate.getInt(PROP_HOURS);
 									}
 

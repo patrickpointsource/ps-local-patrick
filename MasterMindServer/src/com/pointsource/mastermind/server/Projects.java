@@ -31,44 +31,46 @@ import com.pointsource.mastermind.util.Validator;
  * 
  * @author kmbauer
  */
-@Path("/"+CONSTS.RESOURCE_PROJECTS)
+@Path("/" + CONSTS.RESOURCE_PROJECTS)
 @Workspace(workspaceTitle = CONSTS.WORKSPACE_TITLE, collectionTitle = CONSTS.RESOURCE_TITLE_PROJECTS)
 public class Projects extends BaseResource {
-	
+
 	/**
 	 * GET projects
 	 * 
 	 * The list of projects
 	 */
 	@GET
-	@Produces({MediaType.APPLICATION_JSON})
-	public String get(){
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response get() {
 		try {
-			RequestContext context = getRequestContext();
-			Map<String, JSONObject> projects = Data.getProjects();
-			JSONObject ret = new JSONObject();
-			int total = projects.size();
-			ret.put(CONSTS.PROP_COUNT, total);
-			
-			Collection<JSONObject> values = projects.values();
-			ret.put(CONSTS.PROP_DATA, values);
-			
-			URI baseURI = context.getBaseURI();
-			ret.put(CONSTS.PROP_BASE, baseURI);
-			
-			ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS);
-			
-			return Data.escapeJSON(ret.toString());
-		} catch (WebApplicationException e) {
-			throw e;
-		}catch (JSONException e) {
-			throw new WebApplicationException(e, Status.BAD_REQUEST);
-		} 
-		catch (Exception e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+			try {
+				RequestContext context = getRequestContext();
+				Map<String, JSONObject> projects = Data.getProjects();
+				JSONObject ret = new JSONObject();
+				int total = projects.size();
+				ret.put(CONSTS.PROP_COUNT, total);
+
+				Collection<JSONObject> values = projects.values();
+				ret.put(CONSTS.PROP_DATA, values);
+
+				URI baseURI = context.getBaseURI();
+				ret.put(CONSTS.PROP_BASE, baseURI);
+
+				ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS);
+
+				String str = Data.escapeJSON(ret.toString());
+				return Response.ok(str).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
 		}
 	}
-	
+
 	/**
 	 * GET projects/:id
 	 * 
@@ -77,30 +79,33 @@ public class Projects extends BaseResource {
 	 */
 	@GET
 	@Path("{id}")
-	@Produces({MediaType.APPLICATION_JSON})
-	public String get(@PathParam("id")String id){
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response get(@PathParam("id") String id) {
 		try {
-			RequestContext context = getRequestContext();
-			JSONObject ret = Data.getProject(id);
-			
-			if(ret == null){
-				throw new WebApplicationException(Status.NOT_FOUND);
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.getProject(id);
+
+				if (ret == null) {
+					throw new WebApplicationException(Status.NOT_FOUND);
+				}
+
+				URI baseURI = context.getBaseURI();
+				ret.put(CONSTS.PROP_BASE, baseURI);
+
+				String retStr = Data.escapeJSON(ret);
+
+				return Response.ok(retStr).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
 			}
-			
-			URI baseURI = context.getBaseURI();
-			ret.put(CONSTS.PROP_BASE, baseURI);
-			
-			return Data.escapeJSON(ret);
-		} catch (WebApplicationException e) {
-			throw e;
-		}catch (JSONException e) {
-			throw new WebApplicationException(e, Status.BAD_REQUEST);
-		} 
-		catch (Exception e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+		} catch (JSONException e) {
+			return handleJSONException(e);
 		}
 	}
-	
+
 	/**
 	 * POST projects
 	 * 
@@ -111,89 +116,66 @@ public class Projects extends BaseResource {
 	 * @return new project location
 	 */
 	@POST
-	@Produces({MediaType.APPLICATION_JSON})
-	@Consumes({MediaType.APPLICATION_JSON})
-	public Response post(JSONObject newProject){
-		try{
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	public Response post(JSONObject newProject) {
+		try {
 			try {
 				RequestContext context = getRequestContext();
-				
+
 				Validator.canCreateProject(context, newProject);
 				JSONObject ret = Data.createProject(newProject);
-				
-				String about  = Data.unescapeJSON(ret.getString(CONSTS.PROP_ABOUT));
-				
+
+				String about = Data.unescapeJSON(ret
+						.getString(CONSTS.PROP_ABOUT));
+
 				URI aboutURI = context.getBaseURI().resolve(about);
 				return Response.created(aboutURI).build();
+			} catch (ValidationException e) {
+				return handleValidationException(e);
 			} catch (WebApplicationException e) {
-				JSONObject error = new JSONObject();
-				Response response = e.getResponse();
-				int status = response.getStatus();
-				String message = String.valueOf(response.getEntity());
-				error.put(CONSTS.PROP_STATUS, status);
-				error.put(CONSTS.PROP_MESSAGE, message);
-				
-				Response ret = Response.status(status).entity(error).build();
-				return ret;
-			} 
-			catch (ValidationException e) {
-				JSONObject error = new JSONObject();
-				
-				int status = Status.BAD_REQUEST.getStatusCode();
-				error.put(CONSTS.PROP_STATUS, status);
-				error.put(CONSTS.PROP_MESSAGE, "Failed to create new project");
-				
-				String[] messages = e.getMessages();
-				if(messages.length > 0){
-					error.put(CONSTS.PROP_REASONS, messages);
-				}
-				
-				Response ret = Response.status(status).entity(error).build();
-				return ret;
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
 			}
-			catch (Exception e) {
-				JSONObject error = new JSONObject();
-				
-				int status = Status.INTERNAL_SERVER_ERROR.getStatusCode();
-				String message = String.valueOf(e.getLocalizedMessage());
-				error.put(CONSTS.PROP_STATUS, status);
-				error.put(CONSTS.PROP_MESSAGE, message);
-				
-				Response ret = Response.status(status).entity(error).build();
-				return ret;
-			}
-		}catch (JSONException e) {
-			String error = "{\"status\":400,\"message\"=\""+e.getLocalizedMessage()+"\"}";
-			Response ret = Response.status(Status.BAD_REQUEST).entity(error).build();
-			return ret;
+		} catch (JSONException e) {
+			return handleJSONException(e);
 		}
 	}
-	
+
 	/**
 	 * PUT projects/:id
 	 * 
-	 * @param id id of a project
-	 * @param newProject new project definition
+	 * @param id
+	 *            id of a project
+	 * @param newProject
+	 *            new project definition
 	 * 
 	 * @return updated project
 	 */
 	@PUT
 	@Path("{id}")
-	@Produces({MediaType.APPLICATION_JSON})
-	@Consumes({MediaType.APPLICATION_JSON})
-	public Response put(@PathParam("id")String id, JSONObject newProject){
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	public Response put(@PathParam("id") String id, JSONObject newProject) {
 		try {
-			newProject.put(CONSTS.PROP_ID, id);
-			JSONObject json = Data.updateProject(newProject);
-			String ret = Data.escapeJSON(json);
-			return Response.ok(ret).build();
-		} catch (WebApplicationException e) {
-			throw e;
-		}catch (JSONException e) {
-			throw new WebApplicationException(e, Status.BAD_REQUEST);
-		} 
-		catch (Exception e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+			try {
+				RequestContext context = getRequestContext();
+
+				Validator.canUpdateProject(context, newProject);
+				newProject.put(CONSTS.PROP_ID, id);
+				JSONObject json = Data.updateProject(newProject);
+				String ret = Data.escapeJSON(json);
+				return Response.ok(ret).build();
+			} catch (ValidationException e) {
+				return handleValidationException(e);
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
 		}
 	}
 }

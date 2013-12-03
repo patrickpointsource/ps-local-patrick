@@ -8,9 +8,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response;
 
 import org.apache.wink.common.annotations.Workspace;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.pointsource.mastermind.util.CONSTS;
@@ -32,22 +33,27 @@ public class Roles extends BaseResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public String get() {
-		try{
-			RequestContext context = getRequestContext();
-			JSONObject ret = Data.getRoles();
-			
-			URI baseURI = context.getBaseURI();
-			ret.put(CONSTS.PROP_BASE, baseURI);
-		
-			return Data.escapeJSON(ret.toString());
-		} catch (WebApplicationException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+	public Response get() {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.getRoles();
+
+				URI baseURI = context.getBaseURI();
+				ret.put(CONSTS.PROP_BASE, baseURI);
+
+				String retStr = Data.escapeJSON(ret.toString());
+				return Response.ok(retStr).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
 		}
 	}
-	
+
 	/**
 	 * Get the list of all roles groups
 	 * 
@@ -56,19 +62,24 @@ public class Roles extends BaseResource {
 	@GET
 	@Path("{roleId}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public String get(@PathParam("roleId")String roleId) {
-		try{
-			RequestContext context = getRequestContext();
-			JSONObject ret = Data.getRole(context, roleId);
-			
-			URI baseURI = context.getBaseURI();
-			ret.put(CONSTS.PROP_BASE, baseURI);
-		
-			return Data.escapeJSON(ret.toString());
-		} catch (WebApplicationException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+	public Response get(@PathParam("roleId") String roleId) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.getRole(context, roleId);
+
+				URI baseURI = context.getBaseURI();
+				ret.put(CONSTS.PROP_BASE, baseURI);
+
+				String retStr = Data.escapeJSON(ret.toString());
+				return Response.ok(retStr).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
 		}
 	}
 }

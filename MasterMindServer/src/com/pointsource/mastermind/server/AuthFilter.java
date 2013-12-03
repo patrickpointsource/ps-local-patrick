@@ -91,7 +91,7 @@ public class AuthFilter implements Filter {
 			}
 
 			if (!authToken.equals(existingToken)) {
-				System.out.println(session.getId() + ": " + authToken+ " not equal to " + existingToken);
+				//System.out.println(session.getId() + ": " + authToken+ " not equal to " + existingToken);
 				
 				URI googleProfile = new URI(CONSTS.GOOGLE_PLUS_PEOPLE_URI
 						+ CONSTS.RESOURCE_ME);

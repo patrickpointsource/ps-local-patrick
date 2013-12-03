@@ -6,9 +6,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response;
 
 import org.apache.wink.common.annotations.Workspace;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.pointsource.mastermind.util.CONSTS;
@@ -30,18 +31,22 @@ public class People extends BaseResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public JSONObject get() {
-		try{
-			RequestContext context = getRequestContext();
-			JSONObject ret = Data.getPeople(context);
-			return ret;
-		} catch (WebApplicationException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+	public Response get() {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.getPeople(context);
+				return Response.ok(ret).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
 		}
 	}
-	
+
 	/**
 	 * Get a single user definition
 	 * 
@@ -50,17 +55,19 @@ public class People extends BaseResource {
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public JSONObject getPerson(@PathParam("id")String id) {
+	public Response getPerson(@PathParam("id") String id) {
 		try {
-			RequestContext context = getRequestContext();
-			JSONObject ret = Data.getPerson(context, id);
-			return ret;
-		} catch (WebApplicationException e) {
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.getPerson(context, id);
+				return Response.ok(ret).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
 		}
 	}
 
@@ -72,17 +79,19 @@ public class People extends BaseResource {
 	@GET
 	@Path(CONSTS.RESOURCE_ME)
 	@Produces({ MediaType.APPLICATION_JSON })
-	public JSONObject getMe() {
+	public Response getMe() {
 		try {
-			RequestContext context = getRequestContext();
-			JSONObject me = context.getCurrentUser();
-			return me;
-		} catch (WebApplicationException e) {
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject me = context.getCurrentUser();
+				return Response.ok(me).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
 		}
 	}
 }
