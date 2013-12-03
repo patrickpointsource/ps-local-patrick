@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -42,11 +43,11 @@ public class Projects extends BaseResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response get() {
+	public Response get(@QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query) {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-				Map<String, JSONObject> projects = Data.getProjects();
+				Map<String, JSONObject> projects = Data.getProjects(query);
 				JSONObject ret = new JSONObject();
 				int total = projects.size();
 				ret.put(CONSTS.PROP_COUNT, total);
@@ -80,7 +81,7 @@ public class Projects extends BaseResource {
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response get(@PathParam("id") String id) {
+	public Response getById(@PathParam("id") String id) {
 		try {
 			try {
 				RequestContext context = getRequestContext();

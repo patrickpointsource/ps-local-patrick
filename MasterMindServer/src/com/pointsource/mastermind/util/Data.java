@@ -430,15 +430,24 @@ public class Data implements CONSTS {
 	/**
 	 * Get all the projects
 	 * 
+	 * @param query a filter param 
+	 * 
 	 * @return
 	 * @throws JSONException
 	 */
-	public static Map<String, JSONObject> getProjects() throws JSONException {
+	public static Map<String, JSONObject> getProjects(String query) throws JSONException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
-		DBCursor cursur = projectsCol.find();
-
+		DBCursor cursur = null;
+		if(query != null){
+			DBObject queryObject = (DBObject) JSON.parse(query);
+			cursur = projectsCol.find(queryObject);
+		}
+		else{
+			cursur = projectsCol.find();
+		}
+	
 		while (cursur.hasNext()) {
 			DBObject object = cursur.next();
 			ObjectId oId = (ObjectId) object.get("_id");

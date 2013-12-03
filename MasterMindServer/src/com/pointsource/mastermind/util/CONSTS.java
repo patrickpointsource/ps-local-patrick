@@ -12,6 +12,11 @@ public interface CONSTS {
 	public String RESOURCE_ROLES = "roles";
 	
 	/**
+	 * Request Paramter Names
+	 */
+	public String REQUEST_PARAM_NAME_QUERY = "query";
+	
+	/**
 	 * Property Names
 	 */
 	public String PROP_ABOUT = "about";
