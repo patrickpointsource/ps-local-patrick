@@ -89,10 +89,22 @@ angular.module('Mastermind.services.projects')
       return val;
     };
 
+    /**
+     * Delete a project from the server.
+     *
+     * @param project
+     * @returns {*}
+     */
     this.destroy = function (project) {
       return Resource.customDELETE(project.id);
     }
 
+    /**
+     * Determine whether a project has not been saved to the server yet.
+     *
+     * @param project
+     * @returns {boolean}
+     */
     this.isTransient = function (project) {
       return typeof project.id === 'undefined';
     };

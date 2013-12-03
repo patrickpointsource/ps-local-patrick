@@ -4,8 +4,8 @@
         <table ng-table="roleTableParams" class="table">
             <tr ng-repeat="role in project.roles">
                 <td data-title="'Role'">{{role.type.id}}</td>
-                <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.fullyUtilized"></i></td>
-                <td data-title="'H/M'">{{role.rate.hoursPerMonth}}</td>
+                <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.isFullyUtilized()"></i></td>
+                <td data-title="'H/M'">{{role.rate.hoursPerMonth()}}</td>
                 <td data-title="'Start Date'">{{role.startDate | date:'longDate'}}</td>
                 <td data-title="'End Date'">{{role.endDate | date:'longDate'}}</td>
                 <td data-title="'Person Assigned'">

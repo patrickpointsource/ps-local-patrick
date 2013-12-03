@@ -20,11 +20,28 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
 
   /**
    * Build a rate of rateType as previously defined using the #define function.
+   *
+   * If passed an object, grab the type property and construct the appropriate
+   * object with the supplied properties.
+   *
+   * If passed a string, build a Rate for the specified type.
+   *
+   * @param {object|string} rateParam
+   * @returns {Rate}
    */
-  build: function (rateType) {
+  build: function (rateParam) {
+    var rateType, config;
+
+    if (_.isObject(rateParam) && _.has(rateParam, 'type')) {
+      rateType = rateParam.type;
+      config = rateParam;
+    } else {
+      rateType = rateParam;
+    }
+
     var Rate = this.rates[rateType];
 
-    return (Rate ? new Rate() : null);
+    return (Rate ? new Rate(config) : null);
   }
 })
   .constant('Rates', {
@@ -53,6 +70,14 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       this.amount = options.amount || defaults.amount;
     }
 
+    HourlyRate.prototype.isFullyUtilized = function () {
+      return this.fullyUtilized;
+    };
+
+    HourlyRate.prototype.hoursPerMonth = function () {
+      return parseFloat(this.hours).toFixed(1);
+    };
+
     return HourlyRate;
   })
   .factory('WeeklyRate', function (Rates) {
@@ -76,40 +101,14 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       this.amount = options.amount || defaults.amount;
     }
 
-    WeeklyRate.prototype.rules = [{
-      description: 'Hours per week must be a positive number.',
-      check: function () {
-        var hours = this.hoursPerWeek;
+    WeeklyRate.prototype.isFullyUtilized = function () {
+      return this.fullyUtilized;
+    };
 
-        return _.isNumber(hours) && hours > 0;
-      }
-    }, {
-      description: 'Hours per week cannot exceed 50 hours.',
-      check: function () {
-        var hours = this.hoursPerWeek;
-
-        return _.isNumber(hours) && hours <= 50;
-      }
-    }];
-
-    /**
-     * Validate the weekly rate according to its rules.
-     *
-     * @returns {{valid: Boolean, messages: String[]}}
-     */
-    WeeklyRate.prototype.validate = function () {
-      var self = this,
-
-        messages = _(this.rules).filter(function (validator) {
-          return !validator.check.call(self);
-        }).map(function (validator) {
-          return validator.description;
-        }).value();
-
-      return {
-        valid: _.isEmpty(messages),
-        messages: messages
-      };
+    WeeklyRate.prototype.hoursPerMonth = function () {
+      // Weekly rate is currently hours per week. There are 5 working days per week
+      // and 22.5 per month.
+      return parseFloat(this.hours * 22.5 / 5).toFixed(1);
     };
 
     return WeeklyRate;
@@ -121,7 +120,6 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
      * @type {{fullyUtilized: boolean, hours: number, amount: number}}
      */
     var defaults = {
-      fullyUtilized: true,
       amount: 0
     };
 
@@ -129,9 +127,16 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       options = options || {};
 
       this.type = Rates.MONTHLY;
-      this.fullyUtilized = defaults.fullyUtilized;
       this.amount = options.amount || defaults.amount;
     }
+
+    MonthlyRate.prototype.isFullyUtilized = function () {
+      return true;
+    };
+
+    MonthlyRate.prototype.hoursPerMonth = function () {
+      return parseFloat(180).toFixed(1);
+    };
 
     return MonthlyRate;
   })

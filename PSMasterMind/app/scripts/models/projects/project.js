@@ -25,6 +25,7 @@ angular.module('Mastermind.models.projects')
      * @type {{rate: HourlyRate, shore: string}}
      */
     var defaults = {
+      type: undefined,
       rate: RateFactory.build(Rates.HOURLY),
       shore: 'on',
       startDate: undefined,
@@ -39,7 +40,8 @@ angular.module('Mastermind.models.projects')
     function Role(options) {
       options = options || {};
 
-      this.rate = options.rate || angular.copy(defaults.rate);
+      this.type = options.type || defaults.type;
+      this.rate = RateFactory.build(options.rate) || angular.copy(defaults.rate);
       this.shore = options.shore || defaults.shore;
       this.startDate = options.startDate ? new Date(options.startDate) : defaults.startDate;
       this.endDate = options.endDate ? new Date(options.endDate) : defaults.endDate;
@@ -195,8 +197,8 @@ angular.module('Mastermind.models.projects')
         messages = _(this.$meta.rules).filter(function (validator) {
           return !validator.check.call(self);
         }).map(function (validator) {
-            return validator.description;
-          }).value();
+          return validator.description;
+        }).value();
 
       return {
         valid: _.isEmpty(messages),

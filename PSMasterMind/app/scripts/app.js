@@ -123,7 +123,6 @@
         })
         .setDefaultHttpFields({
           withCredentials: true,
-          cache: true,
           transformRequest: [function (data) {
             /*
              HACK to get around #1463 at:

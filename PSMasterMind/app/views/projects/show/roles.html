@@ -62,14 +62,14 @@
                             <div class="span12">
                                 <label for="hourlyHourlyRate">Hourly Rate:</label>
                                 <input id="hourlyHourlyRate" class="span12" placeholder="Enter Hourly Rate"
-                                        type="number" ng-model="newRole.rate.amount" />
+                                        type="number" min="0" ng-model="newRole.rate.amount" />
                             </div>
                         </div>
                         <div class="row-fluid">
                             <div class="span12">
                                 <label for="hourlyHours">Hours/Month:</label>
                                 <input id="hourlyHours" class="span12" placeholder="Enter Hours per Month"
-                                        type="number" ng-model="newRole.rate.hours" />
+                                        type="number" required min="0" max="220" ng-model="newRole.rate.hours" />
                             </div>
                         </div>
                         <div class="row-fluid">
@@ -88,6 +88,7 @@
                             <div class="span12">
                                 <label for="weeklyHourlyRate">Hourly Rate:</label>
                                 <input id="weeklyHourlyRate" class="span12" placeholder="Enter Hourly Rate"
+                                        min="0"
                                         type="number" ng-model="newRole.rate.amount" />
                             </div>
                         </div>
@@ -95,7 +96,7 @@
                             <div class="span12">
                                 <label for="weeklyHours">Hours/Week:</label>
                                 <input id="weeklyHours" class="span12" placeholder="Enter Hours per Week"
-                                        type="number" ng-model="newRole.rate.hours" />
+                                        type="number" required min="0" max="50" ng-model="newRole.rate.hours" />
                             </div>
                         </div>
                         <div class="row-fluid">
@@ -143,8 +144,8 @@
             <table class="table" ng-table="roleTableParams" template-pagination="custom/pager">
                 <tr ng-repeat="role in project.roles">
                     <td data-title="'Role'">{{role.type.id}}</td>
-                    <td data-title="'100%'"><input type="checkbox" ng-model="role.rate.fullyUtilized" /></td>
-                    <td data-title="'H/M'">{{role.rate.hours}}</td>
+                    <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.isFullyUtilized()"></i></td>
+                    <td data-title="'H/M'">{{role.rate.hoursPerMonth()}}</td>
                     <td data-title="'Start Date'">{{role.startDate | date:'longDate'}}</td>
                     <td data-title="'End Date'">{{role.endDate | date:'longDate'}}</td>
                     <td><button class="btn btn-default" ng-click="remove(role)"><i class="fa fa-trash-o"></i></button></td>
