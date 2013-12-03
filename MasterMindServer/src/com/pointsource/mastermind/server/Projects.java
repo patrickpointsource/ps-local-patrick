@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -106,6 +107,33 @@ public class Projects extends BaseResource {
 			return handleJSONException(e);
 		}
 	}
+	
+	/**
+	 * DELETE a project
+	 */
+	@DELETE
+	@Path("{id}")
+	public Response deleteById(@PathParam("id") String id) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.deleteProject(context, id);
+
+				if (ret == null) {
+					throw new WebApplicationException(Status.NOT_FOUND);
+				}
+
+				return Response.ok().build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
 
 	/**
 	 * POST projects

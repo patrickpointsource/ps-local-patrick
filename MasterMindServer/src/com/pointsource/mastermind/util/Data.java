@@ -485,10 +485,35 @@ public class Data implements CONSTS {
 		BasicDBObject query = new BasicDBObject();
 		query.put("_id", new ObjectId(id));
 		DBObject dbObj = projectsCol.findOne(query);
+		
+		if(dbObj != null){
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+	
+			ret.put(PROP_ID, id);
+			ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
+		}
+
+		return ret;
+	}
+	
+	/**
+	 * Delete a projects by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject deleteProject(RequestContext context, String id) throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		BasicDBObject query = new BasicDBObject();
+		query.put("_id", new ObjectId(id));
+		DBObject dbObj = projectsCol.findAndRemove(query);
 		String json = JSON.serialize(dbObj);
 		ret = new JSONObject(json);
 
-		ret.put(PROP_ID, id);
 		ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
 
 		return ret;
