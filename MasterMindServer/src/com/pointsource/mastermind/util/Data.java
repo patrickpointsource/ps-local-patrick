@@ -435,27 +435,37 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static Map<String, JSONObject> getProjects(String query) throws JSONException {
+	public static Map<String, JSONObject> getProjects(String query, String fields) throws JSONException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
-		DBCursor cursur = null;
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
 		if(query != null){
-			DBObject queryObject = (DBObject) JSON.parse(query);
-			cursur = projectsCol.find(queryObject);
+			queryObject = (DBObject) JSON.parse(query);
 		}
-		else{
-			cursur = projectsCol.find();
+		if(fields != null){
+			fieldsObject = (DBObject) JSON.parse(fields);
 		}
+		
+		
+		
+		DBCursor cursur = projectsCol.find(queryObject, fieldsObject);
 	
 		while (cursur.hasNext()) {
 			DBObject object = cursur.next();
-			ObjectId oId = (ObjectId) object.get("_id");
-			String json = JSON.serialize(object);
-			JSONObject jsonObject = new JSONObject(json);
-			jsonObject.put(PROP_ID, oId);
-			jsonObject.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + oId);
-			ret.put(oId.toString(), jsonObject);
+			
+			if(object.containsField("_id")){
+				ObjectId oId = (ObjectId) object.get("_id");
+				String json = JSON.serialize(object);
+				JSONObject jsonObject = new JSONObject(json);
+				jsonObject.put(PROP_ID, oId);
+				jsonObject.put(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + oId);
+				ret.put(oId.toString(), jsonObject);
+			}
+			else{
+				System.out.println("Project not included because it did not return an _id property: " + object);
+			}
 		}
 
 		return ret;

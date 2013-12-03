@@ -14,6 +14,7 @@ public interface CONSTS {
 	/**
 	 * Request Paramter Names
 	 */
+	public String REQUEST_PARAM_NAME_FIELDS = "fields";
 	public String REQUEST_PARAM_NAME_QUERY = "query";
 	
 	/**

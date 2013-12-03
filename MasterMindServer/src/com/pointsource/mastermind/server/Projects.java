@@ -43,11 +43,11 @@ public class Projects extends BaseResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response get(@QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query) {
+	public Response get(@QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query, @QueryParam(CONSTS.REQUEST_PARAM_NAME_FIELDS)String fields) {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-				Map<String, JSONObject> projects = Data.getProjects(query);
+				Map<String, JSONObject> projects = Data.getProjects(query, fields);
 				JSONObject ret = new JSONObject();
 				int total = projects.size();
 				ret.put(CONSTS.PROP_COUNT, total);
