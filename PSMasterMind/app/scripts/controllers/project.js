@@ -5,7 +5,7 @@
  */
 angular.module('Mastermind')
   .controller('ProjectCtrl', ['$scope', '$state', 'ProjectsService', 'People', 'Groups', 'RoleTypes', 'project', 'executives', 'salesRepresentatives', 'ngTableParams', '$filter',
-    function ($scope, $state, ProjectsService, People, Groups, RoleTypes, project, executives, salesRepresentatives, TableParams) {
+    function ($scope, $state, ProjectsService, People, Groups, RoleTypes, project, executives, salesRepresentatives, TableParams, $filter) {
       var detailsValid = false, rolesValid = false;
 
       // Set our currently viewed project to the one resolved by the service.
@@ -60,7 +60,7 @@ angular.module('Mastermind')
       };
       $scope.roleTableParams = new TableParams(params, {
         counts: [],
-        total: project.roles.length, // length of data
+        total: function () { return project.roles.length; }, // length of data
         getData: function ($defer, params) {
           var start = (params.page() - 1) * params.count(),
             end = params.page() * params.count(),
@@ -72,12 +72,31 @@ angular.module('Mastermind')
         }
       });
 
+      $scope.assignmentsTableParams = new TableParams(params, {
+        counts: [],
+        total: function () { return project.roles.length; },
+        getData: function ($defer, params) {
+          var start = (params.page() - 1) * params.count(),
+            end = params.page() * params.count(),
+
+            orderedData = params.sorting() ?
+                $filter('orderBy')($scope.project.roles, params.orderBy()) :
+                $scope.project.roles,
+          // use build-in angular filter
+            ret = orderedData.slice(start, end);
+
+          $defer.resolve(ret);
+        }
+      });
+
       /**
        * Whenever the roles:add event is fired from a child controller,
        * handle it by adding the supplied role to our project.
        */
       $scope.$on('roles:add', function (event, role) {
         $scope.project.addRole(role);
+        $scope.roleTableParams.reload();
+        $scope.assignmentsTableParams.reload();
       });
 
       /**
@@ -86,6 +105,8 @@ angular.module('Mastermind')
        */
       $scope.$on('roles:remove', function (event, role) {
         $scope.project.removeRole(role);
+        $scope.roleTableParams.reload();
+        $scope.assignmentsTableParams.reload();
       });
 
       /**

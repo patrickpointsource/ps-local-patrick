@@ -142,7 +142,7 @@
     <div class="row-fluid">
         <div class="span12">
             <table class="table" ng-table="roleTableParams" template-pagination="custom/pager">
-                <tr ng-repeat="role in project.roles">
+                <tr ng-repeat="role in $data">
                     <td data-title="'Role'">{{role.type.id}}</td>
                     <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.isFullyUtilized()"></i></td>
                     <td data-title="'H/M'">{{role.rate.hoursPerMonth()}}</td>
