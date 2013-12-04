@@ -83,8 +83,8 @@ angular.module('Mastermind.models.projects')
       this.type = options.type || defaults.type;
       this.primaryContact = options.primaryContact || defaults.primaryContact;
       this.description = options.description || defaults.description;
-      this.startDate = options.startDate ? new Date(options.startDate) : defaults.startDate;
-      this.endDate = options.endDate ? new Date(options.endDate) : defaults.endDate;
+      this.startDate = options.startDate ? formatDate(options.startDate) : defaults.startDate;
+      this.endDate = options.endDate ? formatDate(options.endDate) : defaults.endDate;
       this.state = options.state || defaults.state;
       this.terms = new Terms(options.terms);
       this.executiveSponsor = options.executiveSponsor || defaults.executiveSponsor;
@@ -109,6 +109,18 @@ angular.module('Mastermind.models.projects')
       // Add meta info from MongoDB.
       this.$meta._id = options._id;
       this.$meta.etag = options.etag;
+    }
+
+    function formatDate(date) {
+      if (date.indexOf('T') !== -1) {
+        date = date.substr(0, date.indexOf('T'));
+      }
+      return date;
+      // var year = dateArray[0];
+      // var month = dateArray[1];
+      // var day = dateArray[2].substr(0,2);
+      // return month + '/' + day + '/' + year;
+
     }
 
     Project.prototype.$meta = {};

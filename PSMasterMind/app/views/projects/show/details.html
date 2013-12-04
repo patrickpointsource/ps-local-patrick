@@ -1,141 +1,119 @@
 <div ng-form="detailsForm" ng-controller="DetailsCtrl">
     <div class="row">
-        <div class="col-xs-6 control-group" ng-class="{error: isFieldInError('customerName')}">
+        <div class="col-xs-6 form-group" ng-class="{error: isFieldInError('customerName')}">
             <span class="help-block pull-right">Please enter the customer's name.</span>
-            <label class="control-label required-label" for="customerName">Customer Name:</label>
-
-            <div class="controls input-insert insert-right full">
-                <input id="customerName" name="customerName" type="text" class="col-xs-12 form-control" placeholder="Customer Name"
-                        ng-model="project.customerName"
-                        ng-class="{highlight: detailsForm.customerName.$error.required}"
-                        required
-                        ng-readonly="!isTransient">
-                <span class="add-in"><i class="fa fa-user input-icon"></i></span>
-            </div>
+            <label class="required-label" for="customerName">Customer Name:</label>
+              <input id="customerName" name="customerName" type="text" class="col-xs-12 form-control user-input-icon"
+                  placeholder="Customer Name"
+                  ng-model="project.customerName"
+                  ng-class="{highlight: detailsForm.customerName.$error.required}"
+                  required
+                  ng-readonly="!isTransient">
         </div>
-        <div class="col-xs-6 control-group">
-            <label class="control-label">Type:</label>
-            <div class="controls">
-                <label class="radio inline"><input type="radio" value="paid" ng-model="project.type" />Paid</label>
-                <label class="radio inline"><input type="radio" value="poc" ng-model="project.type" />PoC</label>
-                <label class="radio inline"><input type="radio" value="invest" ng-model="project.type" />PS
-                    Invest</label>
-            </div>
+        <div class="col-xs-6 form-group">
+            <label>Type:</label>
+            <label class="radio inline"><input type="radio" value="paid" ng-model="project.type">Paid</label>
+            <label class="radio inline"><input type="radio" value="poc" ng-model="project.type">PoC</label>
+            <label class="radio inline"><input type="radio" value="invest" ng-model="project.type">PS
+                Invest</label>
         </div>
     </div>
     <div class="row">
-        <div class="control-group col-xs-6" ng-class="{error: isFieldInError('projectName')}">
+        <div class="col-xs-6 form-group" ng-class="{error: isFieldInError('projectName')}">
             <span class="help-block pull-right">Please enter a name for the project.</span>
             <label class="control-label required-label" for="projectName">Project Name:</label>
-
-            <div class="controls">
-                <input id="projectName" type="text" class="col-xs-12 form-control" placeholder="Project Name"
-                        name="projectName"
-                        ng-model="project.name" required
-                        ng-readonly="!isTransient">
-            </div>
+            <input id="projectName" type="text" class="col-xs-12 form-control" placeholder="Project Name"
+                    name="projectName"
+                    ng-model="project.name" required
+                    ng-readonly="!isTransient">
         </div>
-        <div class="control-group col-xs-6">
-            <label class="control-label" for="primaryContact">Primary Contact:</label>
-            <div class="controls">
+        <div class="col-xs-6 form-group">
+            <label for="primaryContact">Primary Contact:</label>
                 <input id="primaryContact" type="text" class="col-xs-12 form-control" placeholder="Primary Contact"
                         name="primaryContact" ng-model="project.primaryContact">
-            </div>
         </div>
     </div>
     <div class="row">
-        <div class="control-group col-xs-12">
-            <label class="control-label" for="description">Project Description:</label>
-            <div class="controls">
-                <textarea id="description" class="col-xs-12 form-control" rows="7" name="description"
-                        ng-model="project.description"></textarea>
-            </div>
+        <div class="col-xs-12 form-group">
+            <label for="description">Project Description:</label>
+            <textarea id="description" class="col-xs-12 form-control" rows="7" name="description"
+                    ng-model="project.description"></textarea>
         </div>
     </div>
     <div class="row">
-        <div class="control-group col-xs-4" ng-class="{error: isFieldInError('startDate')}">
-            <span class="help-block pull-right">Please select a start date.</span>
-            <label class="control-label required-label" for="startDate">Start Date:</label>
-
-            <div class="controls input-insert insert-right">
-                <input id="startDate" name="startDate" class="col-xs-12 form-control" type="text" ng-model="project.startDate"
-                        datepicker-popup="MM/dd/yyyy" required
-                        ng-readonly="!isTransient" />
-                <span class="add-in"><i class="fa fa-calendar input-icon"></i></span>
-            </div>
+        <div class="col-xs-4 form-group" ng-class="{error: isFieldInError('startDate')}">
+            <label class="required-label" for="startDate">Start Date:</label>
+            <input id="startDate" name="startDate" class="col-xs-12 form-control" type="text"
+                ng-model="project.startDate"
+                data-date-format="yyyy-mm-dd"
+                required
+                data-provide="datepicker"
+                ng-readonly="!isTransient">
         </div>
-        <div class="control-group col-xs-4">
-            <label class="control-label" for="endDate">End Date:</label>
-
-            <div class="controls input-insert insert-right">
-                <input id="endDate" class="col-xs-12 form-control" type="text" ng-model="project.endDate"
-                        datepicker-popup="MM/dd/yyyy" />
-                <span class="add-in"><i class="fa fa-calendar input-icon"></i></span>
-            </div>
+        <div class="col-xs-4 form-group">
+            <label for="endDate">End Date:</label>
+            <input id="endDate" class="col-xs-12 form-control" type="text" ng-model="project.endDate"
+                data-date-format="yyyy-mm-dd"
+                data-provide="datepicker">
         </div>
-        <div class="control-group col-xs-4">
-            <label class="control-label" for="projectState">Project State:</label>
-            <div class="controls">
-                <select id="projectState" class="col-xs-12 form-control" ng-model="project.state">
-                    <option value="preSales">Pre-Sales</option>
-                    <option value="planning">Planning</option>
-                    <option value="clientActive">Client Active</option>
-                    <option value="supportActive">Support Active</option>
-                    <option value="complete">Done!</option>
-                </select>
-            </div>
+        <div class="col-xs-4 form-group">
+            <label for="projectState">Project State:</label>
+            <select id="projectState" class="col-xs-12 form-control" ng-model="project.state">
+                <option value="preSales">Pre-Sales</option>
+                <option value="planning">Planning</option>
+                <option value="clientActive">Client Active</option>
+                <option value="supportActive">Support Active</option>
+                <option value="complete">Done!</option>
+            </select>
         </div>
     </div>
     <div class="row">
-        <div class="control-group col-xs-4" ng-class="{error: isFieldInError('executiveSponsor')}">
+        <div class="col-xs-4 form-group" ng-class="{error: isFieldInError('executiveSponsor')}">
             <span class="help-block pull-right">Please choose an executive.</span>
             <label class="control-label required-label" for="executiveSponsor">Executive Sponsor:</label>
-
-            <div class="controls">
-                <select id="executiveSponsor" name="executiveSponsor" class="col-xs-12 form-control"
-                        ng-model="project.executiveSponsor.resource" required
-                        ng-options="m.resource as m.title for m in execs.members">
-                </select>
-            </div>
+            <select id="executiveSponsor" name="executiveSponsor" class="col-xs-12 form-control"
+                    ng-model="project.executiveSponsor.resource" required
+                    ng-options="m.resource as m.title for m in execs.members">
+            </select>
         </div>
-        <div class="control-group col-xs-4">
-            <label class="control-label" for="salesSponsor">Sales Sponsor:</label>
-            <div class="controls">
-                <select id="salesSponsor" class="col-xs-12 form-control" ng-model="project.salesSponsor.resource"
-                        ng-options="m.resource as m.title for m in sales.members">
-                </select>
-            </div>
+        <div class="col-xs-4 form-group">
+            <label for="salesSponsor">Sales Sponsor:</label>
+            <select id="salesSponsor" class="col-xs-12 form-control" ng-model="project.salesSponsor.resource"
+                    ng-options="m.resource as m.title for m in sales.members">
+            </select>
         </div>
     </div>
     <div class="well">
         <div class="row">
-            <div class="control-group col-xs-6">
-                <label class="control-label" for="totalEstimatedValue">Total Estimated Value:</label>
-
-                <div class="controls col-xs-12 input-insert insert-left">
-                    <span class="add-in"><i class="fa fa-dollar input-icon"></i></span>
-                    <input class="col-xs-12 form-control" id="totalEstimatedValue" type="number"
-                            ng-model="project.terms.totalEstimatedValue" />
-                </div>
+            <div class="col-xs-6 form-group">
+                <label for="totalEstimatedValue">Total Estimated Value:</label>
+                <input class="col-xs-12 form-control" id="totalEstimatedValue" type="number"
+                        ng-model="project.terms.totalEstimatedValue">
             </div>
 
-            <div class="control-group col-xs-6">
+            <div class="col-xs-6 form-group">
                 <label class="control-label">&nbsp;</label>
-                <div class="controls">
-                    <label class="checkbox inline"><input type="checkbox"
-                            ng-model="project.terms.includesProjectManagementOverhead" />Project
-                        Includes PM Overhead</label>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                            ng-model="project.terms.includesProjectManagementOverhead">Project
+                            Includes PM Overhead
+                    </label>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="control-group col-xs-12">
-                <label class="control-label">Bid Terms:</label>
-                <div class="controls">
-                    <label class="radio inline"><input type="radio" value="timeAndMaterials"
-                            ng-model="project.terms.type" />Time &amp; Materials</label>
-                    <label class="radio inline"><input type="radio" value="fixed"
-                            ng-model="project.terms.type" />Fixed</label>
+            <div class="col-xs-12 form-group">
+                <label>Bid Terms:</label>
+                <div class="radio">
+                  <label>
+                      <input type="radio" value="timeAndMaterials"
+                          ng-model="project.terms.type">Time &amp; Materials
+                  </label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" value="fixed"
+                        ng-model="project.terms.type">Fixed</label>
                 </div>
             </div>
         </div>

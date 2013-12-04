@@ -76,6 +76,16 @@ angular.module('Mastermind.services.projects')
     this.save = function (project) {
       var val;
 
+      // fix date format from datepicker
+      // if (project.startDate) {
+      //   var dateArray = project.startDate.split('/');
+      //   project.startDate = dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
+      // }
+      // if (project.endDate) {
+      //   var dateArray = project.endDate.split('/');
+      //   project.endDate = dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
+      // }
+
       if (this.isTransient(project)) {
         val = Resource.post(project);
       } else {

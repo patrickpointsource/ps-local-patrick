@@ -24,8 +24,10 @@
 # NOTE: modifying ignore files will not change the ignore status of 
 #     Eclipse derived resources.
 
-core.ignore.recursive= {node_modules} {bower_components} 
+core.ignore.recursive= \
+	{.tmp} \
+	{bower_components} \
+	{node_modules} 
 
 core.ignore= \
-	{bin}
-	
+	{bin} 

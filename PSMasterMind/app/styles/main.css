@@ -6235,17 +6235,12 @@ main article #content #graph table tbody tr th.active {
 #mainContent {
   width: 100%;
 }
+.nav-tabs {
+  margin-bottom: 30px;
+}
 .tab-content input,
 .tab-content textarea {
   margin-bottom: 20px;
-}
-.tab-content input,
-.tab-content select {
-  max-width: 240px;
-}
-.tab-content .full input,
-.tab-content .full select {
-  max-width: initial;
 }
 .tab-content .ng-invalid.ng-dirty {
   border-color: #b94a48;
