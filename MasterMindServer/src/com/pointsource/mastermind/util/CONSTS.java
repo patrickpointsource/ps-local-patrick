@@ -24,6 +24,7 @@ public interface CONSTS {
 	public String PROP_$OID = "$oid";
 	public String PROP__ID = "_id";
 	public String PROP_ABOUT = "about";
+	public String PROP_ABBREVIATION = "abbreviation";
 	public String PROP_ACCOUNTS = "accounts";
 	public String PROP_BASE = "base";
 	public String PROP_COUNT = "count";

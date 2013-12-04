@@ -115,43 +115,43 @@ public class Data implements CONSTS {
 		JSONArray members = new JSONArray();
 
 		JSONObject ssa = new JSONObject();
-		ssa.put(PROP_ID, ROLE_SSA_ID);
+		ssa.put(PROP_ABBREVIATION, ROLE_SSA_ID);
 		ssa.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
 		ssa.put(PROP_TITLE, ROLE_SSA_TITLE);
 		members.put(ssa);
 
 		JSONObject pm = new JSONObject();
-		pm.put(PROP_ID, ROLE_PM_ID);
+		pm.put(PROP_ABBREVIATION, ROLE_PM_ID);
 		pm.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_PM_ID);
 		pm.put(PROP_TITLE, ROLE_PM_TITLE);
 		members.put(pm);
 
 		JSONObject ba = new JSONObject();
-		ba.put(PROP_ID, ROLE_BA_ID);
+		ba.put(PROP_ABBREVIATION, ROLE_BA_ID);
 		ba.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_BA_ID);
 		ba.put(PROP_TITLE, ROLE_BA_TITLE);
 		members.put(ba);
 
 		JSONObject sse = new JSONObject();
-		sse.put(PROP_ID, ROLE_SSE_ID);
+		sse.put(PROP_ABBREVIATION, ROLE_SSE_ID);
 		sse.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
 		sse.put(PROP_TITLE, ROLE_SSE_TITLE);
 		members.put(sse);
 
 		JSONObject se = new JSONObject();
-		se.put(PROP_ID, ROLE_SE_ID);
+		se.put(PROP_ABBREVIATION, ROLE_SE_ID);
 		se.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SE_ID);
 		se.put(PROP_TITLE, ROLE_SE_TITLE);
 		members.put(se);
 
 		JSONObject suxd = new JSONObject();
-		suxd.put(PROP_ID, ROLE_SUXD_ID);
+		suxd.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
 		suxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
 		suxd.put(PROP_TITLE, ROLE_SUXD_TITLE);
 		members.put(suxd);
 
 		JSONObject uxd = new JSONObject();
-		uxd.put(PROP_ID, ROLE_UXD_ID);
+		uxd.put(PROP_ABBREVIATION, ROLE_UXD_ID);
 		uxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
 		uxd.put(PROP_TITLE, ROLE_UXD_TITLE);
 		members.put(uxd);
@@ -174,104 +174,112 @@ public class Data implements CONSTS {
 		JSONObject ret = new JSONObject();
 		JSONArray members = new JSONArray();
 
-		Map<String, JSONObject> users = getGoogleUsers(context);
+		String fields = "{name:1}";
 
 		if (ROLE_SSA_ID.equalsIgnoreCase(roleId)) {
-			ret.put(PROP_ID, ROLE_SSA_ID);
+			ret.put(PROP_ABBREVIATION, ROLE_SSA_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
 			ret.put(PROP_TITLE, ROLE_SSA_TITLE);
 
-			JSONObject aaron = users.get("115659942511507270693");
-			addGroupMember(members, aaron);
-			JSONObject andy = users.get("106368930450799539126");
-			addGroupMember(members, andy);
-			JSONObject barry = users.get("107681682076275621618");
-			addGroupMember(members, barry);
-			JSONObject john = users.get("100521746243465967724");
-			addGroupMember(members, john);
-			JSONObject kevin = users.get("108416099312244834291");
-			addGroupMember(members, kevin);
+			JSONObject aaron = getUserByGoogleId(context,
+					"115659942511507270693", fields);
+			addLinkToMemberList(members, aaron);
+			JSONObject andy = getUserByGoogleId(context,
+					"106368930450799539126", fields);
+			addLinkToMemberList(members, andy);
+			JSONObject barry = getUserByGoogleId(context,
+					"107681682076275621618", fields);
+			addLinkToMemberList(members, barry);
+			JSONObject john = getUserByGoogleId(context,
+					"100521746243465967724", fields);
+			addLinkToMemberList(members, john);
+			JSONObject kevin = getUserByGoogleId(context,
+					"108416099312244834291", fields);
+			addLinkToMemberList(members, kevin);
 		}
 
 		else if (ROLE_PM_ID.equalsIgnoreCase(roleId)) {
-			ret.put(PROP_ID, ROLE_PM_ID);
+			ret.put(PROP_ABBREVIATION, ROLE_PM_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_PM_ID);
 			ret.put(PROP_TITLE, ROLE_PM_TITLE);
 
-			JSONObject kristal = users.get("118024801441852864610");
-			addGroupMember(members, kristal);
-			JSONObject susan = users.get("105187489722733399928");
-			addGroupMember(members, susan);
-			JSONObject krista = users.get("103362960874176228355");
-			addGroupMember(members, krista);
+			JSONObject kristal = getUserByGoogleId(context,
+					"118024801441852864610", fields);
+			addLinkToMemberList(members, kristal);
+			JSONObject susan = getUserByGoogleId(context,
+					"105187489722733399928", fields);
+			addLinkToMemberList(members, susan);
+			JSONObject krista = getUserByGoogleId(context,
+					"103362960874176228355", fields);
+			addLinkToMemberList(members, krista);
 		}
 
 		else if (ROLE_BA_ID.equalsIgnoreCase(roleId)) {
-			ret.put(PROP_ID, ROLE_BA_ID);
+			ret.put(PROP_ABBREVIATION, ROLE_BA_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_BA_ID);
 			ret.put(PROP_TITLE, ROLE_BA_TITLE);
 
-			JSONObject kristal = users.get("118024801441852864610");
-			addGroupMember(members, kristal);
-			JSONObject susan = users.get("105187489722733399928");
-			addGroupMember(members, susan);
-		}
-
-		else if (ROLE_BA_ID.equalsIgnoreCase(roleId)) {
-			ret.put(PROP_ID, ROLE_BA_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_BA_ID);
-			ret.put(PROP_TITLE, ROLE_BA_TITLE);
-
-			JSONObject kristal = users.get("118024801441852864610");
-			addGroupMember(members, kristal);
-			JSONObject susan = users.get("105187489722733399928");
-			addGroupMember(members, susan);
+			JSONObject kristal = getUserByGoogleId(context,
+					"118024801441852864610", fields);
+			addLinkToMemberList(members, kristal);
+			JSONObject susan = getUserByGoogleId(context,
+					"105187489722733399928", fields);
+			addLinkToMemberList(members, susan);
 		}
 
 		else if (ROLE_SSE_ID.equalsIgnoreCase(roleId)) {
-			ret.put(PROP_ID, ROLE_SSE_ID);
+			ret.put(PROP_ABBREVIATION, ROLE_SSE_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
 			ret.put(PROP_TITLE, ROLE_SSE_TITLE);
 
-			JSONObject nate = users.get("102037350018901696245");
-			addGroupMember(members, nate);
-			JSONObject jm = users.get("118074563586812975506");
-			addGroupMember(members, jm);
-			JSONObject chris = users.get("112959653203369443291");
-			addGroupMember(members, chris);
+			JSONObject nate = getUserByGoogleId(context,
+					"102037350018901696245", fields);
+			addLinkToMemberList(members, nate);
+			JSONObject jm = getUserByGoogleId(context, "118074563586812975506",
+					fields);
+			addLinkToMemberList(members, jm);
+			JSONObject chris = getUserByGoogleId(context,
+					"112959653203369443291", fields);
+			addLinkToMemberList(members, chris);
 		}
 
 		else if (ROLE_SE_ID.equalsIgnoreCase(roleId)) {
-			ret.put(PROP_ID, ROLE_SE_ID);
+			ret.put(PROP_ABBREVIATION, ROLE_SE_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SE_ID);
 			ret.put(PROP_TITLE, ROLE_SE_TITLE);
 
-			JSONObject hunter = users.get("100090968878728629777");
-			addGroupMember(members, hunter);
-			JSONObject brent = users.get("105526065653554855193");
-			addGroupMember(members, brent);
+			JSONObject hunter = getUserByGoogleId(context,
+					"100090968878728629777", fields);
+			addLinkToMemberList(members, hunter);
+			JSONObject brent = getUserByGoogleId(context,
+					"105526065653554855193", fields);
+			addLinkToMemberList(members, brent);
 		}
 
 		else if (ROLE_SUXD_ID.equalsIgnoreCase(roleId)) {
-			ret.put(PROP_ID, ROLE_SUXD_ID);
+			ret.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
 			ret.put(PROP_TITLE, ROLE_SUXD_TITLE);
 
-			JSONObject eric = users.get("102728171905005423498");
-			addGroupMember(members, eric);
-			JSONObject melissa = users.get("112917239891456752571");
-			addGroupMember(members, melissa);
+			JSONObject eric = getUserByGoogleId(context,
+					"102728171905005423498", fields);
+			addLinkToMemberList(members, eric);
+			JSONObject melissa = getUserByGoogleId(context,
+					"112917239891456752571", fields);
+			addLinkToMemberList(members, melissa);
 		}
 
 		else if (ROLE_UXD_ID.equalsIgnoreCase(roleId)) {
-			ret.put(PROP_ID, ROLE_UXD_ID);
+			ret.put(PROP_ABBREVIATION, ROLE_UXD_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
 			ret.put(PROP_TITLE, ROLE_UXD_TITLE);
 
-			JSONObject melissa = users.get("103450144552825063641");
-			addGroupMember(members, melissa);
-			JSONObject amanda = users.get("107385689810002496434");
-			addGroupMember(members, amanda);
+			JSONObject melissa = getUserByGoogleId(context,
+					"103450144552825063641", fields);
+			addLinkToMemberList(members, melissa);
+			JSONObject amanda = getUserByGoogleId(context,
+					"107385689810002496434", fields);
+			addLinkToMemberList(members, amanda);
 		}
 
 		ret.put(PROP_MEMBERS, members);
@@ -318,28 +326,34 @@ public class Data implements CONSTS {
 		JSONObject ret = new JSONObject();
 		JSONArray members = new JSONArray();
 
-		Map<String, JSONObject> users = getGoogleUsers(context);
 		String fields = "{name:1}";
-		
+
 		// Executives Group
 		if (GROUPS_EXEC_ID.equals(groupId)) {
-			
-			JSONObject chris = getUserByGoogleId(context, "114352410049076130019", fields);
+
+			JSONObject chris = getUserByGoogleId(context,
+					"114352410049076130019", fields);
 			addLinkToMemberList(members, chris);
-			JSONObject kevin = getUserByGoogleId(context, "104614151280118313239", fields);
+			JSONObject kevin = getUserByGoogleId(context,
+					"104614151280118313239", fields);
 			addLinkToMemberList(members, kevin);
-			JSONObject erik = getUserByGoogleId(context, "101315305679730171732", fields);
+			JSONObject erik = getUserByGoogleId(context,
+					"101315305679730171732", fields);
 			addLinkToMemberList(members, erik);
-			JSONObject steph = getUserByGoogleId(context, "102699799438113157547", fields);
+			JSONObject steph = getUserByGoogleId(context,
+					"102699799438113157547", fields);
 			addLinkToMemberList(members, steph);
 		}
 		// Sales Group
 		if (GROUPS_SALES_ID.equals(groupId)) {
-			JSONObject luke = getUserByGoogleId(context, "117612942628688959688", fields);
+			JSONObject luke = getUserByGoogleId(context,
+					"117612942628688959688", fields);
 			addLinkToMemberList(members, luke);
-			JSONObject david = getUserByGoogleId(context, "109518736702317118019", fields);
+			JSONObject david = getUserByGoogleId(context,
+					"109518736702317118019", fields);
 			addLinkToMemberList(members, david);
-			JSONObject lori = getUserByGoogleId(context, "111396763357009038073", fields);
+			JSONObject lori = getUserByGoogleId(context,
+					"111396763357009038073", fields);
 			addLinkToMemberList(members, lori);
 		}
 
@@ -349,20 +363,12 @@ public class Data implements CONSTS {
 		return ret;
 	}
 
-	private static void addLinkToMemberList(JSONArray members, JSONObject resource)
-			throws JSONException {
+	private static void addLinkToMemberList(JSONArray members,
+			JSONObject resource) throws JSONException {
 		JSONObject userLink = new JSONObject();
 		userLink.put(PROP_RESOURCE, resource.getString(PROP_ABOUT));
 		userLink.put(PROP_TITLE, resource.getString("name"));
 		members.put(userLink);
-	}
-
-	private static void addGroupMember(JSONArray members, JSONObject gUser)
-			throws JSONException {
-		JSONObject user = new JSONObject();
-		user.put(PROP_RESOURCE, RESOURCE_PEOPLE + "/" + gUser.get("id"));
-		user.put(PROP_TITLE, gUser.getJSONObject("name").get("fullName"));
-		members.put(user);
 	}
 
 	/**
@@ -452,7 +458,7 @@ public class Data implements CONSTS {
 				person.put(PROP_NAME, name.getString(PROP_FULL_NAME));
 				person.put(PROP_FAMILY_NAME, name.getString(PROP_FAMILY_NAME));
 				person.put(PROP_GIVEN_NAME, name.getString(PROP_GIVEN_NAME));
-				
+
 				person.put(PROP_ETAG, ithUser.getString(PROP_ETAG));
 				mmPeople.put(person);
 			}
@@ -510,7 +516,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get a person
 	 * 
@@ -535,21 +541,21 @@ public class Data implements CONSTS {
 		}
 
 		DBObject object = projectsCol.findOne(queryObject, fieldsObject);
-		
-		if(object != null){
+
+		if (object != null) {
 			String json = JSON.serialize(object);
 			JSONObject jsonObject = new JSONObject(json);
-			
+
 			if (object.containsField(PROP__ID)) {
-				ObjectId _id = (ObjectId)object.get(PROP__ID);
+				ObjectId _id = (ObjectId) object.get(PROP__ID);
 				jsonObject.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + _id);
 			}
 			ret = jsonObject;
 		}
-	
+
 		return ret;
 	}
-	
+
 	/**
 	 * Get all the people
 	 * 
@@ -559,8 +565,8 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static Map<String, JSONObject> getPeople(RequestContext context, String query,
-			String fields) throws JSONException {
+	public static Map<String, JSONObject> getPeople(RequestContext context,
+			String query, String fields) throws JSONException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
@@ -577,15 +583,15 @@ public class Data implements CONSTS {
 
 		while (cursur.hasNext()) {
 			DBObject object = cursur.next();
-			
+
 			if (object.containsField(PROP__ID)) {
 				String json = JSON.serialize(object);
 				JSONObject jsonObject = new JSONObject(json);
-				
-				ObjectId _id = (ObjectId)object.get(PROP__ID);
+
+				ObjectId _id = (ObjectId) object.get(PROP__ID);
 				jsonObject.put(PROP_RESOURCE, RESOURCE_PEOPLE + "/" + _id);
-				
-				ret.put( _id.toString(), jsonObject);
+
+				ret.put(_id.toString(), jsonObject);
 			} else {
 				System.out
 						.println("Person not included because it did not return an _id property: "
@@ -595,7 +601,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get a projects by id
 	 * 
@@ -603,7 +609,8 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getPerson(RequestContext context, String id) throws JSONException {
+	public static JSONObject getPerson(RequestContext context, String id)
+			throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
@@ -668,7 +675,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Delete a person by id
 	 * 
@@ -698,8 +705,8 @@ public class Data implements CONSTS {
 	 * @param newPerson
 	 * @throws JSONException
 	 */
-	public static JSONObject createPerson(RequestContext context, JSONObject newPerson)
-			throws JSONException {
+	public static JSONObject createPerson(RequestContext context,
+			JSONObject newPerson) throws JSONException {
 		newPerson.put(PROP_ETAG, "0");
 
 		String json = newPerson.toString();
@@ -766,8 +773,8 @@ public class Data implements CONSTS {
 	 * @param newPerson
 	 * @throws JSONException
 	 */
-	public static JSONObject updatePerson(RequestContext context, JSONObject newPerson)
-			throws JSONException {
+	public static JSONObject updatePerson(RequestContext context,
+			JSONObject newPerson) throws JSONException {
 		if (!newPerson.has(PROP__ID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
 					.entity("Person does not conatin an id property").build();
@@ -780,7 +787,7 @@ public class Data implements CONSTS {
 					.entity("Person does not conatin an $oid property").build();
 			throw new WebApplicationException(response);
 		}
-		
+
 		String id = _id.getString(PROP_$OID);
 		JSONObject existing = getPerson(context, id);
 		if (existing == null) {
@@ -791,8 +798,7 @@ public class Data implements CONSTS {
 
 		if (!newPerson.has(PROP_ETAG)) {
 			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Person does not conatin an etag property")
-					.build();
+					.entity("Person does not conatin an etag property").build();
 			throw new WebApplicationException(response);
 		}
 
@@ -829,10 +835,10 @@ public class Data implements CONSTS {
 		newPerson = new JSONObject(json);
 
 		newPerson.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + id);
-		
+
 		return newPerson;
 	}
-	
+
 	/**
 	 * Update an existing new project
 	 * 
@@ -896,38 +902,40 @@ public class Data implements CONSTS {
 
 		return newProject;
 	}
-	
+
 	/**
 	 * Synchs the DB People with the Google domain users
+	 * 
 	 * @param context
-	 * @throws JSONException 
-	 * @throws IOException 
+	 * @throws JSONException
+	 * @throws IOException
 	 */
-	public static void synchPeople(RequestContext context) throws IOException, JSONException{
+	public static void synchPeople(RequestContext context) throws IOException,
+			JSONException {
 		Map<String, JSONObject> googleUsers = getGoogleUsers(context);
 		Collection<JSONObject> users = googleUsers.values();
-		
+
 		URI base = context.getBaseURI();
 		URI genericImage = base.resolve("../images/generic.png");
 
 		for (Iterator<JSONObject> iterator = users.iterator(); iterator
 				.hasNext();) {
 			JSONObject googleUserDef = (JSONObject) iterator.next();
-			
+
 			JSONObject person = new JSONObject();
-			
-			//Look for existing user
+
+			// Look for existing user
 			String googleId = googleUserDef.getString(PROP_ID);
-			//JSONObject existingPerson = getPerson(context, googleId);
-			JSONObject existingPerson = getUserByGoogleId(context, googleId, null);
-			if(existingPerson != null){
+			// JSONObject existingPerson = getPerson(context, googleId);
+			JSONObject existingPerson = getUserByGoogleId(context, googleId,
+					null);
+			if (existingPerson != null) {
 				person = existingPerson;
 			}
-			
-			
-			//Set the account type as Google
+
+			// Set the account type as Google
 			googleUserDef.put(PROP_TYPE, VALUES_ACCOUNT_TYPES_GOOGLE);
-			
+
 			/**
 			 * Set the base user properties from the Google user
 			 */
@@ -937,17 +945,18 @@ public class Data implements CONSTS {
 			person.put(PROP_NAME, name.getString(PROP_FULL_NAME));
 			person.put(PROP_FAMILY_NAME, name.getString(PROP_FAMILY_NAME));
 			person.put(PROP_GIVEN_NAME, name.getString(PROP_GIVEN_NAME));
-			if(googleUserDef.has(PROP_THUMBNAIL_PHOTO_URL)){
-				person.put(PROP_THUMBNAIL, "http://www.google.com"+googleUserDef.getString(PROP_THUMBNAIL_PHOTO_URL));
-			}else{
-				//Set as generic profileImage
+			if (googleUserDef.has(PROP_THUMBNAIL_PHOTO_URL)) {
+				person.put(PROP_THUMBNAIL, "http://www.google.com"
+						+ googleUserDef.getString(PROP_THUMBNAIL_PHOTO_URL));
+			} else {
+				// Set as generic profileImage
 				person.put(PROP_THUMBNAIL, genericImage);
 			}
-			
+
 			/**
 			 * If the user did not exist just create it
 			 */
-			if(existingPerson == null){
+			if (existingPerson == null) {
 				JSONArray accounts = new JSONArray();
 				accounts.put(googleUserDef);
 				person.put(PROP_ACCOUNTS, accounts);
@@ -956,32 +965,32 @@ public class Data implements CONSTS {
 			/**
 			 * If Update the existing user
 			 */
-			else{
-				//Get the accounts
+			else {
+				// Get the accounts
 				JSONArray accounts = person.getJSONArray(PROP_ACCOUNTS);
-				if(accounts == null){
+				if (accounts == null) {
 					accounts = new JSONArray();
 					person.put(PROP_ACCOUNTS, accounts);
 				}
-				
-				//Find the Google account
+
+				// Find the Google account
 				boolean found = false;
 				for (int i = 0; i < accounts.length(); i++) {
 					JSONObject ithAccount = accounts.getJSONObject(i);
 					String type = ithAccount.getString(PROP_TYPE);
-					if(VALUES_ACCOUNT_TYPES_GOOGLE.equals(type)){
+					if (VALUES_ACCOUNT_TYPES_GOOGLE.equals(type)) {
 						found = true;
-						//Override the Google account
+						// Override the Google account
 						accounts.put(i, googleUserDef);
 						break;
 					}
 				}
-				
-				//Account not found
-				if(!found){
+
+				// Account not found
+				if (!found) {
 					accounts.put(googleUserDef);
 				}
-				
+
 				updatePerson(context, person);
 			}
 		}
@@ -989,7 +998,7 @@ public class Data implements CONSTS {
 
 	private static JSONObject getUserByGoogleId(RequestContext context,
 			String googleId, String fields) throws JSONException {
-		String query = "{googleId:'"+googleId+"'}";
+		String query = "{googleId:'" + googleId + "'}";
 		JSONObject existingPerson = getPerson(context, query, fields);
 		return existingPerson;
 	}

@@ -70,9 +70,9 @@ public class Validator implements CONSTS {
 		} else if (!project.getString(PROP_TYPE).equals(
 				VALUES_PROJECT_TYPE_INVEST)
 				&& !project.getString(PROP_TYPE).equals(
-						VALUES_PROJECT_TYPE_INVEST)
+						VALUES_PROJECT_TYPE_POC)
 				&& !project.getString(PROP_TYPE).equals(
-						VALUES_PROJECT_TYPE_INVEST)) {
+						VALUES_PROJECT_TYPE_PAID)) {
 			ret.add("Project Type is an unknown value: "
 					+ project.getString(PROP_TYPE));
 		}
@@ -142,7 +142,8 @@ public class Validator implements CONSTS {
 		if (!project.has(PROP_EXECUTIVE_SPONSOR)) {
 			ret.add("Project must have an Executive Sponsor");
 		} else {
-			String sponsor = project.getString(PROP_EXECUTIVE_SPONSOR);
+			JSONObject sponsor = project.getJSONObject(PROP_EXECUTIVE_SPONSOR);
+			String sponsorRef = sponsor.getString(PROP_RESOURCE);
 
 			try {
 				JSONObject group = Data.getGroup(context, GROUPS_EXEC_ID);
@@ -152,9 +153,9 @@ public class Validator implements CONSTS {
 
 				for (int i = 0; i < members.length(); i++) {
 					JSONObject member = members.getJSONObject(i);
-					if (member.has(PROP_ID)) {
-						String id = member.getString(PROP_ID);
-						if (id.equals(sponsor)) {
+					if (member.has(PROP_RESOURCE)) {
+						String id = member.getString(PROP_RESOURCE);
+						if (id.equals(sponsorRef)) {
 							matched = true;
 							break;
 						}

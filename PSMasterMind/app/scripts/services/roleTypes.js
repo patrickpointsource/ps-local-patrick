@@ -34,8 +34,8 @@ angular.module('Mastermind')
      *
      * @returns {*}
      */
-    function get(roleId, onSuccess) {
-      return Resource.get(roleId).then(onSuccess);
+    function get(resource, onSuccess) {
+      return Resource.get(resource).then(onSuccess);
     }
 
     return {

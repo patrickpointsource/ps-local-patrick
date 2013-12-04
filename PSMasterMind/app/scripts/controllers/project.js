@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$scope', '$state', 'ProjectsService', 'People', 'Groups', 'RoleTypes', 'project', 'executives', 'salesRepresentatives', 'ngTableParams', '$filter',
-    function ($scope, $state, ProjectsService, People, Groups, RoleTypes, project, executives, salesRepresentatives, TableParams, $filter) {
+  .controller('ProjectCtrl', ['$scope', '$state', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'project', 'executives', 'salesRepresentatives', 'ngTableParams', '$filter',
+    function ($scope, $state, ProjectsService, Resources, People, Groups, RoleTypes, project, executives, salesRepresentatives, TableParams, $filter) {
       var detailsValid = false, rolesValid = false;
 
       // Set our currently viewed project to the one resolved by the service.
@@ -27,13 +27,18 @@ angular.module('Mastermind')
        */
       RoleTypes.query().then(function (data) {
         function assignRoleGroup(result) {
-          $scope.roleGroups[result.id] = result;
+          $scope.roleGroups[result.about] = result;
         }
 
         $scope.roleGroups = {};
-        _(data).pluck('id').forEach(function (roleTypeId) {
-          RoleTypes.get(roleTypeId).then(assignRoleGroup);
+        _(data).pluck('resource').forEach(function (resource) {
+        	Resources.get(resource).then(assignRoleGroup);
         });
+        
+        $scope.newFunctionNewName = function(resource){
+	      	return $scope.roleGroups[resource];
+	     }
+        
       });
 
       /**

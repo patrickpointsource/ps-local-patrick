@@ -12,7 +12,7 @@ angular.module('Mastermind.controllers.projects')
         console.log("Role Types = " + data);
         $scope.roleTypes = data;
       });
-
+      
       /**
        * Change the rate type on the new role to the specified new rate type
        *
