@@ -93,16 +93,16 @@
 
             <div class="controls">
                 <select id="executiveSponsor" name="executiveSponsor" class="col-xs-12 form-control"
-                        ng-model="project.executiveSponsor" required
-                        ng-options="m.id as m.title for m in execs.members">
+                        ng-model="project.executiveSponsor.resource" required
+                        ng-options="m.resource as m.title for m in execs.members">
                 </select>
             </div>
         </div>
         <div class="control-group col-xs-4">
             <label class="control-label" for="salesSponsor">Sales Sponsor:</label>
             <div class="controls">
-                <select id="salesSponsor" class="col-xs-12 form-control" ng-model="project.salesSponsor"
-                        ng-options="m.id as m.title for m in sales.members">
+                <select id="salesSponsor" class="col-xs-12 form-control" ng-model="project.salesSponsor.resource"
+                        ng-options="m.resource as m.title for m in sales.members">
                 </select>
             </div>
         </div>

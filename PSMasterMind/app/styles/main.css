@@ -6272,6 +6272,10 @@ main article #content #graph table tbody tr th.active {
   width: 50%;
   z-index: 1;
 }
+.peopleList .profileImage {
+  width: 36px;
+  height: 36px;
+}
 /* utility styles */
 /* Make float parent clear itself */
 .clearfix:after {

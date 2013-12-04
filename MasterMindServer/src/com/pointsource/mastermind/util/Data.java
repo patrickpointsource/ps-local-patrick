@@ -291,13 +291,11 @@ public class Data implements CONSTS {
 		JSONArray members = new JSONArray();
 
 		JSONObject g1 = new JSONObject();
-		g1.put(PROP_ID, GROUPS_EXEC_ID);
 		g1.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_EXEC_ID);
 		g1.put(PROP_TITLE, GROUPS_EXEC_TITLE);
 		members.put(g1);
 
 		JSONObject g2 = new JSONObject();
-		g2.put(PROP_ID, GROUPS_SALES_ID);
 		g2.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_SALES_ID);
 		g2.put(PROP_TITLE, GROUPS_SALES_TITLE);
 		members.put(g2);
@@ -321,26 +319,28 @@ public class Data implements CONSTS {
 		JSONArray members = new JSONArray();
 
 		Map<String, JSONObject> users = getGoogleUsers(context);
-
+		String fields = "{name:1}";
+		
 		// Executives Group
 		if (GROUPS_EXEC_ID.equals(groupId)) {
-			JSONObject chris = users.get("114352410049076130019");
-			addGroupMember(members, chris);
-			JSONObject kevin = users.get("104614151280118313239");
-			addGroupMember(members, kevin);
-			JSONObject erik = users.get("101315305679730171732");
-			addGroupMember(members, erik);
-			JSONObject steph = users.get("102699799438113157547");
-			addGroupMember(members, steph);
+			
+			JSONObject chris = getUserByGoogleId(context, "114352410049076130019", fields);
+			addLinkToMemberList(members, chris);
+			JSONObject kevin = getUserByGoogleId(context, "104614151280118313239", fields);
+			addLinkToMemberList(members, kevin);
+			JSONObject erik = getUserByGoogleId(context, "101315305679730171732", fields);
+			addLinkToMemberList(members, erik);
+			JSONObject steph = getUserByGoogleId(context, "102699799438113157547", fields);
+			addLinkToMemberList(members, steph);
 		}
 		// Sales Group
 		if (GROUPS_SALES_ID.equals(groupId)) {
-			JSONObject luke = users.get("117612942628688959688");
-			addGroupMember(members, luke);
-			JSONObject david = users.get("109518736702317118019");
-			addGroupMember(members, david);
-			JSONObject lori = users.get("111396763357009038073");
-			addGroupMember(members, lori);
+			JSONObject luke = getUserByGoogleId(context, "117612942628688959688", fields);
+			addLinkToMemberList(members, luke);
+			JSONObject david = getUserByGoogleId(context, "109518736702317118019", fields);
+			addLinkToMemberList(members, david);
+			JSONObject lori = getUserByGoogleId(context, "111396763357009038073", fields);
+			addLinkToMemberList(members, lori);
 		}
 
 		ret.put(PROP_MEMBERS, members);
@@ -349,10 +349,17 @@ public class Data implements CONSTS {
 		return ret;
 	}
 
+	private static void addLinkToMemberList(JSONArray members, JSONObject resource)
+			throws JSONException {
+		JSONObject userLink = new JSONObject();
+		userLink.put(PROP_RESOURCE, resource.getString(PROP_ABOUT));
+		userLink.put(PROP_TITLE, resource.getString("name"));
+		members.put(userLink);
+	}
+
 	private static void addGroupMember(JSONArray members, JSONObject gUser)
 			throws JSONException {
 		JSONObject user = new JSONObject();
-		user.put(PROP_ID, gUser.get("id"));
 		user.put(PROP_RESOURCE, RESOURCE_PEOPLE + "/" + gUser.get("id"));
 		user.put(PROP_TITLE, gUser.getJSONObject("name").get("fullName"));
 		members.put(user);
@@ -912,8 +919,7 @@ public class Data implements CONSTS {
 			//Look for existing user
 			String googleId = googleUserDef.getString(PROP_ID);
 			//JSONObject existingPerson = getPerson(context, googleId);
-			String query = "{googleId:'"+googleId+"'}";
-			JSONObject existingPerson = getPerson(context, query, null);
+			JSONObject existingPerson = getUserByGoogleId(context, googleId, null);
 			if(existingPerson != null){
 				person = existingPerson;
 			}
@@ -979,6 +985,13 @@ public class Data implements CONSTS {
 				updatePerson(context, person);
 			}
 		}
+	}
+
+	private static JSONObject getUserByGoogleId(RequestContext context,
+			String googleId, String fields) throws JSONException {
+		String query = "{googleId:'"+googleId+"'}";
+		JSONObject existingPerson = getPerson(context, query, fields);
+		return existingPerson;
 	}
 
 	/**
