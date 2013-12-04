@@ -7,7 +7,7 @@ angular.module('Mastermind.controllers.people')
   .controller('PeopleCtrl', ['$scope', '$filter', 'People', 'ngTableParams', 'result',
     function ($scope, $filter, People, TableParams, result) {
       $scope.result = result;
-      var data = result.people;
+      var data = result.members;
 
       // Table Parameters
       var params = {

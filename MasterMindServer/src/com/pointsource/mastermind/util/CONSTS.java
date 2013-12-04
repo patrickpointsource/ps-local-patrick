@@ -8,6 +8,7 @@ public interface CONSTS {
 	public String RESOURCE_NEW = "new";
 	public String RESOURCE_GROUPS = "groups";
 	public String RESOURCE_PEOPLE = "people";
+	public String RESOURCE_PEOPLE_OLD = "people_old";
 	public String RESOURCE_PROJECTS = "projects";
 	public String RESOURCE_ROLES = "roles";
 	
@@ -20,7 +21,10 @@ public interface CONSTS {
 	/**
 	 * Property Names
 	 */
+	public String PROP_$OID = "$oid";
+	public String PROP__ID = "_id";
 	public String PROP_ABOUT = "about";
+	public String PROP_ACCOUNTS = "accounts";
 	public String PROP_BASE = "base";
 	public String PROP_COUNT = "count";
 	public String PROP_CUSTOMER_NAME = "customerName";
@@ -32,6 +36,7 @@ public interface CONSTS {
 	public String PROP_FULL_NAME = "fullName";
 	public String PROP_FULLY_UTILIZED = "fullyUtilized";
 	public String PROP_GIVEN_NAME = "givenName";
+	public String PROP_GOOGLE_ID = "googleId";
 	public String PROP_HOURS = "hours";
 	public String PROP_ID = "id";
 	public String PROP_MBOX = "mBox";
@@ -47,6 +52,8 @@ public interface CONSTS {
 	public String PROP_START_DATE = "startDate";
 	public String PROP_STATE = "state";
 	public String PROP_STATUS = "status";
+	public String PROP_THUMBNAIL = "thumbnail";
+	public String PROP_THUMBNAIL_PHOTO_URL = "thumbnailPhotoUrl";
 	public String PROP_TITLE = "title";
 	public String PROP_TYPE = "type";
 	public String PROP_USERS = "users";
@@ -54,6 +61,7 @@ public interface CONSTS {
 	/**
 	 * Constant values 
 	 */
+	public String VALUES_ACCOUNT_TYPES_GOOGLE = "Google";
 	public String VALUES_PROJECT_STATE_PRE_SALES = "preSales";
 	public String VALUES_PROJECT_STATE_PLANNING = "planning";
 	public String VALUES_PROJECT_STATE_CLIENT_ACTIVE = "clientActive";
@@ -94,19 +102,21 @@ public interface CONSTS {
 	public String WORKSPACE_TITLE = "PointSource Master Mind";
 	public String RESOURCE_TITLE_GROUPS = "Groups";
 	public String RESOURCE_TITLE_PEOPLE = "People";
+	public String RESOURCE_TITLE_PEOPLE_OLD = "People: Old";
 	public String RESOURCE_TITLE_PROJECTS = "Projects";
 	public String RESOURCE_TITLE_ROLES = "Roles";
 	
 	/**
 	 * Mongo Constants
 	 */
-	public String BUILD_NUMBER = "0.1.2013.11.26";
+	public String BUILD_NUMBER = "0.1.2013.12.03";
 	public String DB_USER = "admin";
 	public String DB_PASS = "t0ddSucks";
 	public String DB_HOSTNAME_DEFAULT = "db.mastermind.pointsource.us";
 	public int DB_PORT_DEFAULT  = 27017;
-	public String DB_NAME_DEFAULT  = "mm_db_dev";
+	public String DB_NAME_DEFAULT  = "mm_db_dev_kmb";
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
+	public String COLLECTION_TITLE_PEOPLE = "People";
 	
 	
 	/**

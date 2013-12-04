@@ -2,6 +2,7 @@ package com.pointsource.mastermind.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,49 +39,13 @@ public class Data implements CONSTS {
 	private static JSONObject CONFIG = null;
 
 	/**
-	 * Get the server config info
-	 * @return
+	 * Mongo Database connection
 	 */
-	public static JSONObject getConfig(){
-		if(CONFIG == null){
-			try {
-				JSONObject ret = new JSONObject();
-				ret.put("DB_HOSTNAME", DB_HOSTNAME_DEFAULT);
-				ret.put("DB_PORT", DB_PORT_DEFAULT);
-				ret.put("DB_NAME", DB_NAME_DEFAULT);
-				ret.put("BUILD_NUMBER", BUILD_NUMBER);
-				
-				CONFIG = ret;
-			} catch (Exception e) {
-				e.printStackTrace(System.err);
-			}
-		}
-		return CONFIG;
-	}
-	
-	public static JSONObject updateConfig(JSONObject config) throws UnknownHostException, JSONException{
-		try {
-			//Close the old connection
-			mongo.close();
-			db = null;
-			mongo = null;
-			
-			mongo = new Mongo(config.getString("DB_HOSTNAME"), config.getInt("DB_PORT"));
-			db = mongo.getDB(config.getString("DB_NAME"));
-			db.authenticate(DB_USER, DB_PASS.toCharArray());
-		} catch (IllegalArgumentException e) {
-			//IDK why mongo is throwing this?
-			e.printStackTrace();
-		}
-		
-		CONFIG = config;
-		return config;
-	}
-	
 	static {
 		try {
 			JSONObject config = getConfig();
-			mongo = new Mongo(config.getString("DB_HOSTNAME"), config.getInt("DB_PORT"));
+			mongo = new Mongo(config.getString("DB_HOSTNAME"),
+					config.getInt("DB_PORT"));
 			db = mongo.getDB(config.getString("DB_NAME"));
 			db.authenticate(DB_USER, DB_PASS.toCharArray());
 		} catch (Exception e) {
@@ -88,81 +53,134 @@ public class Data implements CONSTS {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Get the server config info
+	 * 
+	 * @return
+	 */
+	public static JSONObject getConfig() {
+		if (CONFIG == null) {
+			try {
+				JSONObject ret = new JSONObject();
+				ret.put("DB_HOSTNAME", DB_HOSTNAME_DEFAULT);
+				ret.put("DB_PORT", DB_PORT_DEFAULT);
+				ret.put("DB_NAME", DB_NAME_DEFAULT);
+				ret.put("BUILD_NUMBER", BUILD_NUMBER);
+
+				CONFIG = ret;
+			} catch (Exception e) {
+				e.printStackTrace(System.err);
+			}
+		}
+		return CONFIG;
+	}
+
+	/**
+	 * 
+	 * @param config
+	 * @return
+	 * @throws UnknownHostException
+	 * @throws JSONException
+	 */
+	public static JSONObject updateConfig(JSONObject config)
+			throws UnknownHostException, JSONException {
+		try {
+			// Close the old connection
+			mongo.close();
+			db = null;
+			mongo = null;
+
+			mongo = new Mongo(config.getString("DB_HOSTNAME"),
+					config.getInt("DB_PORT"));
+			db = mongo.getDB(config.getString("DB_NAME"));
+			db.authenticate(DB_USER, DB_PASS.toCharArray());
+		} catch (IllegalArgumentException e) {
+			// IDK why mongo is throwing this?
+			e.printStackTrace();
+		}
+
+		CONFIG = config;
+		return config;
+	}
+
 	/**
 	 * Get the list of managed user groups
+	 * 
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getRoles() throws JSONException{
+	public static JSONObject getRoles() throws JSONException {
 		JSONObject ret = new JSONObject();
 		JSONArray members = new JSONArray();
-		
+
 		JSONObject ssa = new JSONObject();
 		ssa.put(PROP_ID, ROLE_SSA_ID);
-		ssa.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_SSA_ID);
+		ssa.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
 		ssa.put(PROP_TITLE, ROLE_SSA_TITLE);
 		members.put(ssa);
-		
+
 		JSONObject pm = new JSONObject();
 		pm.put(PROP_ID, ROLE_PM_ID);
-		pm.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_PM_ID);
+		pm.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_PM_ID);
 		pm.put(PROP_TITLE, ROLE_PM_TITLE);
 		members.put(pm);
-		
+
 		JSONObject ba = new JSONObject();
 		ba.put(PROP_ID, ROLE_BA_ID);
-		ba.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_BA_ID);
+		ba.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_BA_ID);
 		ba.put(PROP_TITLE, ROLE_BA_TITLE);
 		members.put(ba);
-		
+
 		JSONObject sse = new JSONObject();
 		sse.put(PROP_ID, ROLE_SSE_ID);
-		sse.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_SSE_ID);
+		sse.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
 		sse.put(PROP_TITLE, ROLE_SSE_TITLE);
 		members.put(sse);
-		
+
 		JSONObject se = new JSONObject();
 		se.put(PROP_ID, ROLE_SE_ID);
-		se.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_SE_ID);
+		se.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SE_ID);
 		se.put(PROP_TITLE, ROLE_SE_TITLE);
 		members.put(se);
-		
+
 		JSONObject suxd = new JSONObject();
 		suxd.put(PROP_ID, ROLE_SUXD_ID);
-		suxd.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_SUXD_ID);
+		suxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
 		suxd.put(PROP_TITLE, ROLE_SUXD_TITLE);
 		members.put(suxd);
-		
+
 		JSONObject uxd = new JSONObject();
 		uxd.put(PROP_ID, ROLE_UXD_ID);
-		uxd.put(PROP_RESOURCE, RESOURCE_ROLES+"/"+ROLE_UXD_ID);
+		uxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
 		uxd.put(PROP_TITLE, ROLE_UXD_TITLE);
 		members.put(uxd);
-		
+
 		ret.put(PROP_MEMBERS, members);
 		ret.put(PROP_ABOUT, RESOURCE_ROLES);
 		ret.put(PROP_COUNT, members.length());
 		return ret;
 	}
-	
+
 	/**
 	 * Get the list of managed user groups
+	 * 
 	 * @return
 	 * @throws JSONException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public static JSONObject getRole(RequestContext context, String roleId) throws JSONException, IOException{
+	public static JSONObject getRole(RequestContext context, String roleId)
+			throws JSONException, IOException {
 		JSONObject ret = new JSONObject();
 		JSONArray members = new JSONArray();
-		
+
 		Map<String, JSONObject> users = getGoogleUsers(context);
-		
-		if(ROLE_SSA_ID.equalsIgnoreCase(roleId)){
+
+		if (ROLE_SSA_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ID, ROLE_SSA_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_SSA_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
 			ret.put(PROP_TITLE, ROLE_SSA_TITLE);
-			
+
 			JSONObject aaron = users.get("115659942511507270693");
 			addGroupMember(members, aaron);
 			JSONObject andy = users.get("106368930450799539126");
@@ -174,12 +192,12 @@ public class Data implements CONSTS {
 			JSONObject kevin = users.get("108416099312244834291");
 			addGroupMember(members, kevin);
 		}
-		
-		else if(ROLE_PM_ID.equalsIgnoreCase(roleId)){
+
+		else if (ROLE_PM_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ID, ROLE_PM_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_PM_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_PM_ID);
 			ret.put(PROP_TITLE, ROLE_PM_TITLE);
-			
+
 			JSONObject kristal = users.get("118024801441852864610");
 			addGroupMember(members, kristal);
 			JSONObject susan = users.get("105187489722733399928");
@@ -187,34 +205,34 @@ public class Data implements CONSTS {
 			JSONObject krista = users.get("103362960874176228355");
 			addGroupMember(members, krista);
 		}
-		
-		else if(ROLE_BA_ID.equalsIgnoreCase(roleId)){
+
+		else if (ROLE_BA_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ID, ROLE_BA_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_BA_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_BA_ID);
 			ret.put(PROP_TITLE, ROLE_BA_TITLE);
-			
+
 			JSONObject kristal = users.get("118024801441852864610");
 			addGroupMember(members, kristal);
 			JSONObject susan = users.get("105187489722733399928");
 			addGroupMember(members, susan);
 		}
-		
-		else if(ROLE_BA_ID.equalsIgnoreCase(roleId)){
+
+		else if (ROLE_BA_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ID, ROLE_BA_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_BA_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_BA_ID);
 			ret.put(PROP_TITLE, ROLE_BA_TITLE);
-			
+
 			JSONObject kristal = users.get("118024801441852864610");
 			addGroupMember(members, kristal);
 			JSONObject susan = users.get("105187489722733399928");
 			addGroupMember(members, susan);
 		}
-		
-		else if(ROLE_SSE_ID.equalsIgnoreCase(roleId)){
+
+		else if (ROLE_SSE_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ID, ROLE_SSE_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_SSE_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
 			ret.put(PROP_TITLE, ROLE_SSE_TITLE);
-			
+
 			JSONObject nate = users.get("102037350018901696245");
 			addGroupMember(members, nate);
 			JSONObject jm = users.get("118074563586812975506");
@@ -222,87 +240,90 @@ public class Data implements CONSTS {
 			JSONObject chris = users.get("112959653203369443291");
 			addGroupMember(members, chris);
 		}
-		
-		else if(ROLE_SE_ID.equalsIgnoreCase(roleId)){
+
+		else if (ROLE_SE_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ID, ROLE_SE_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_SE_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SE_ID);
 			ret.put(PROP_TITLE, ROLE_SE_TITLE);
-			
+
 			JSONObject hunter = users.get("100090968878728629777");
 			addGroupMember(members, hunter);
 			JSONObject brent = users.get("105526065653554855193");
 			addGroupMember(members, brent);
 		}
-		
-		else if(ROLE_SUXD_ID.equalsIgnoreCase(roleId)){
+
+		else if (ROLE_SUXD_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ID, ROLE_SUXD_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_SUXD_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
 			ret.put(PROP_TITLE, ROLE_SUXD_TITLE);
-			
+
 			JSONObject eric = users.get("102728171905005423498");
 			addGroupMember(members, eric);
 			JSONObject melissa = users.get("112917239891456752571");
 			addGroupMember(members, melissa);
 		}
-		
-		else if(ROLE_UXD_ID.equalsIgnoreCase(roleId)){
+
+		else if (ROLE_UXD_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ID, ROLE_UXD_ID);
-			ret.put(PROP_ABOUT, RESOURCE_ROLES+"/"+ROLE_UXD_ID);
+			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
 			ret.put(PROP_TITLE, ROLE_UXD_TITLE);
-			
+
 			JSONObject melissa = users.get("103450144552825063641");
 			addGroupMember(members, melissa);
 			JSONObject amanda = users.get("107385689810002496434");
 			addGroupMember(members, amanda);
 		}
-		
+
 		ret.put(PROP_MEMBERS, members);
 		ret.put(PROP_COUNT, members.length());
-		
+
 		return ret;
 	}
-	
+
 	/**
 	 * Get the list of managed user groups
+	 * 
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getGroups() throws JSONException{
+	public static JSONObject getGroups() throws JSONException {
 		JSONObject ret = new JSONObject();
 		JSONArray members = new JSONArray();
-		
+
 		JSONObject g1 = new JSONObject();
 		g1.put(PROP_ID, GROUPS_EXEC_ID);
-		g1.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+GROUPS_EXEC_ID);
+		g1.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_EXEC_ID);
 		g1.put(PROP_TITLE, GROUPS_EXEC_TITLE);
 		members.put(g1);
-		
+
 		JSONObject g2 = new JSONObject();
 		g2.put(PROP_ID, GROUPS_SALES_ID);
-		g2.put(PROP_RESOURCE, RESOURCE_GROUPS+"/"+GROUPS_SALES_ID);
+		g2.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_SALES_ID);
 		g2.put(PROP_TITLE, GROUPS_SALES_TITLE);
 		members.put(g2);
-		
+
 		ret.put(PROP_MEMBERS, members);
 		ret.put(PROP_ABOUT, RESOURCE_GROUPS);
 		ret.put(PROP_COUNT, members.length());
 		return ret;
 	}
-	
+
 	/**
 	 * Get the list of managed user groups
+	 * 
 	 * @return
 	 * @throws JSONException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public static JSONObject getGroup(RequestContext context, String groupId) throws JSONException, IOException{
+	public static JSONObject getGroup(RequestContext context, String groupId)
+			throws JSONException, IOException {
 		JSONObject ret = new JSONObject();
 		JSONArray members = new JSONArray();
-		
+
 		Map<String, JSONObject> users = getGoogleUsers(context);
-		
-		//Executives Group
-		if(GROUPS_EXEC_ID.equals(groupId)){
+
+		// Executives Group
+		if (GROUPS_EXEC_ID.equals(groupId)) {
 			JSONObject chris = users.get("114352410049076130019");
 			addGroupMember(members, chris);
 			JSONObject kevin = users.get("104614151280118313239");
@@ -312,8 +333,8 @@ public class Data implements CONSTS {
 			JSONObject steph = users.get("102699799438113157547");
 			addGroupMember(members, steph);
 		}
-		//Sales Group
-		if(GROUPS_SALES_ID.equals(groupId)){
+		// Sales Group
+		if (GROUPS_SALES_ID.equals(groupId)) {
 			JSONObject luke = users.get("117612942628688959688");
 			addGroupMember(members, luke);
 			JSONObject david = users.get("109518736702317118019");
@@ -321,17 +342,18 @@ public class Data implements CONSTS {
 			JSONObject lori = users.get("111396763357009038073");
 			addGroupMember(members, lori);
 		}
-		
+
 		ret.put(PROP_MEMBERS, members);
-		ret.put(PROP_ABOUT, RESOURCE_GROUPS+"/"+groupId);
+		ret.put(PROP_ABOUT, RESOURCE_GROUPS + "/" + groupId);
 		ret.put(PROP_COUNT, members.length());
 		return ret;
 	}
-	
-	private static void addGroupMember(JSONArray members, JSONObject gUser) throws JSONException{
+
+	private static void addGroupMember(JSONArray members, JSONObject gUser)
+			throws JSONException {
 		JSONObject user = new JSONObject();
 		user.put(PROP_ID, gUser.get("id"));
-		user.put(PROP_RESOURCE, RESOURCE_PEOPLE+"/"+gUser.get("id"));
+		user.put(PROP_RESOURCE, RESOURCE_PEOPLE + "/" + gUser.get("id"));
 		user.put(PROP_TITLE, gUser.getJSONObject("name").get("fullName"));
 		members.put(user);
 	}
@@ -363,28 +385,37 @@ public class Data implements CONSTS {
 		}
 		return GOOGLE_USERS;
 	}
-	
-	public static JSONObject getPerson(RequestContext context, String id) throws IOException, JSONException{
-		
-		JSONObject people = getPeople(context);
+
+	/**
+	 * Gets the list of Google Users
+	 * 
+	 * @return
+	 * @throws IOExceptionz
+	 * @throws JSONException
+	 */
+	public static JSONObject getPersonOld(RequestContext context, String id)
+			throws IOException, JSONException {
+
+		JSONObject people = getPeopleOld(context);
 		JSONArray members = people.getJSONArray(PROP_PEOPLE);
-		
+
 		JSONObject ret = null;
-		
-		for(int i = 0; i < members.length();i++){
+
+		for (int i = 0; i < members.length(); i++) {
 			JSONObject p = members.getJSONObject(i);
 			String ithId = p.getString(PROP_ID);
-			
-			if(id.equals(ithId)){
+
+			if (id.equals(ithId)) {
 				ret = p;
 				break;
 			}
 		}
-		
-		if(ret == null){
-			throw new WebApplicationException(Response.status(Status.NOT_FOUND).build());
+
+		if (ret == null) {
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.build());
 		}
-		
+
 		return ret;
 	}
 
@@ -395,7 +426,7 @@ public class Data implements CONSTS {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public static JSONObject getPeople(RequestContext context)
+	public static JSONObject getPeopleOld(RequestContext context)
 			throws IOException, JSONException {
 		if (PEOPLE == null) {
 
@@ -414,6 +445,7 @@ public class Data implements CONSTS {
 				person.put(PROP_NAME, name.getString(PROP_FULL_NAME));
 				person.put(PROP_FAMILY_NAME, name.getString(PROP_FAMILY_NAME));
 				person.put(PROP_GIVEN_NAME, name.getString(PROP_GIVEN_NAME));
+				
 				person.put(PROP_ETAG, ithUser.getString(PROP_ETAG));
 				mmPeople.put(person);
 			}
@@ -430,42 +462,152 @@ public class Data implements CONSTS {
 	/**
 	 * Get all the projects
 	 * 
-	 * @param query a filter param 
+	 * @param query
+	 *            a filter param
 	 * 
 	 * @return
 	 * @throws JSONException
 	 */
-	public static Map<String, JSONObject> getProjects(String query, String fields) throws JSONException {
+	public static Map<String, JSONObject> getProjects(String query,
+			String fields) throws JSONException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		DBObject queryObject = null;
 		DBObject fieldsObject = null;
-		if(query != null){
+		if (query != null) {
 			queryObject = (DBObject) JSON.parse(query);
 		}
-		if(fields != null){
+		if (fields != null) {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
-		
-		
-		
+
 		DBCursor cursur = projectsCol.find(queryObject, fieldsObject);
-	
+
 		while (cursur.hasNext()) {
 			DBObject object = cursur.next();
-			
-			if(object.containsField("_id")){
-				ObjectId oId = (ObjectId) object.get("_id");
+
+			if (object.containsField(PROP__ID)) {
+				ObjectId oId = (ObjectId) object.get(PROP__ID);
 				String json = JSON.serialize(object);
 				JSONObject jsonObject = new JSONObject(json);
 				jsonObject.put(PROP_ID, oId);
 				jsonObject.put(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + oId);
 				ret.put(oId.toString(), jsonObject);
+			} else {
+				System.out
+						.println("Project not included because it did not return an _id property: "
+								+ object);
 			}
-			else{
-				System.out.println("Project not included because it did not return an _id property: " + object);
+		}
+
+		return ret;
+	}
+	
+	/**
+	 * Get a person
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getPerson(RequestContext context, String query,
+			String fields) throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+		}
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+
+		DBObject object = projectsCol.findOne(queryObject, fieldsObject);
+		
+		if(object != null){
+			String json = JSON.serialize(object);
+			JSONObject jsonObject = new JSONObject(json);
+			
+			if (object.containsField(PROP__ID)) {
+				ObjectId _id = (ObjectId)object.get(PROP__ID);
+				jsonObject.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + _id);
 			}
+			ret = jsonObject;
+		}
+	
+		return ret;
+	}
+	
+	/**
+	 * Get all the people
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static Map<String, JSONObject> getPeople(RequestContext context, String query,
+			String fields) throws JSONException {
+		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
+
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+		}
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+
+		DBCursor cursur = projectsCol.find(queryObject, fieldsObject);
+
+		while (cursur.hasNext()) {
+			DBObject object = cursur.next();
+			
+			if (object.containsField(PROP__ID)) {
+				String json = JSON.serialize(object);
+				JSONObject jsonObject = new JSONObject(json);
+				
+				ObjectId _id = (ObjectId)object.get(PROP__ID);
+				jsonObject.put(PROP_RESOURCE, RESOURCE_PEOPLE + "/" + _id);
+				
+				ret.put( _id.toString(), jsonObject);
+			} else {
+				System.out
+						.println("Person not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+
+		return ret;
+	}
+	
+	/**
+	 * Get a projects by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getPerson(RequestContext context, String id) throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		DBObject dbObj = projectsCol.findOne(query);
+
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+			ret.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + id);
 		}
 
 		return ret;
@@ -483,20 +625,20 @@ public class Data implements CONSTS {
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		BasicDBObject query = new BasicDBObject();
-		query.put("_id", new ObjectId(id));
+		query.put(PROP__ID, new ObjectId(id));
 		DBObject dbObj = projectsCol.findOne(query);
-		
-		if(dbObj != null){
+
+		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
-	
+
 			ret.put(PROP_ID, id);
 			ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
 		}
 
 		return ret;
 	}
-	
+
 	/**
 	 * Delete a projects by id
 	 * 
@@ -504,12 +646,13 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject deleteProject(RequestContext context, String id) throws JSONException {
+	public static JSONObject deleteProject(RequestContext context, String id)
+			throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		BasicDBObject query = new BasicDBObject();
-		query.put("_id", new ObjectId(id));
+		query.put(PROP__ID, new ObjectId(id));
 		DBObject dbObj = projectsCol.findAndRemove(query);
 		String json = JSON.serialize(dbObj);
 		ret = new JSONObject(json);
@@ -517,6 +660,65 @@ public class Data implements CONSTS {
 		ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
 
 		return ret;
+	}
+	
+	/**
+	 * Delete a person by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject deletePerson(RequestContext context, String id)
+			throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		DBObject dbObj = peopleCol.findAndRemove(query);
+		String json = JSON.serialize(dbObj);
+		ret = new JSONObject(json);
+
+		ret.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + id);
+
+		return ret;
+	}
+
+	/**
+	 * Create a new person
+	 * 
+	 * @param newPerson
+	 * @throws JSONException
+	 */
+	public static JSONObject createPerson(RequestContext context, JSONObject newPerson)
+			throws JSONException {
+		newPerson.put(PROP_ETAG, "0");
+
+		String json = newPerson.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
+		WriteResult result = peopleCol.insert(dbObject);
+
+		// TODO Handle Result Issues
+		DBCursor cursorDoc = peopleCol.find();
+		DBObject created = null;
+		while (cursorDoc.hasNext()) {
+			created = cursorDoc.next();
+			// System.out.println("Found: " + created);
+		}
+
+		if (created == null) {
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Person was not created").build());
+		}
+
+		ObjectId oId = (ObjectId) created.get(PROP__ID);
+		String idVal = oId.toString();
+
+		newPerson.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + idVal);
+
+		return newPerson;
 	}
 
 	/**
@@ -533,13 +735,14 @@ public class Data implements CONSTS {
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		WriteResult result = projectsCol.insert(dbObject);
+
 		// TODO Handle Result Issues
 		DBCursor cursorDoc = projectsCol.find();
 		while (cursorDoc.hasNext()) {
 			DBObject created = cursorDoc.next();
-			//System.out.println("Found: " + created);
+			// System.out.println("Found: " + created);
 
-			ObjectId oId = (ObjectId) created.get("_id");
+			ObjectId oId = (ObjectId) created.get(PROP__ID);
 			String idVal = oId.toString();
 			newProject.put(PROP_ID, idVal);
 		}
@@ -550,6 +753,79 @@ public class Data implements CONSTS {
 		return newProject;
 	}
 
+	/**
+	 * Update an existing person
+	 * 
+	 * @param newPerson
+	 * @throws JSONException
+	 */
+	public static JSONObject updatePerson(RequestContext context, JSONObject newPerson)
+			throws JSONException {
+		if (!newPerson.has(PROP__ID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Person does not conatin an id property").build();
+			throw new WebApplicationException(response);
+		}
+
+		JSONObject _id = newPerson.getJSONObject(PROP__ID);
+		if (!_id.has(PROP_$OID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Person does not conatin an $oid property").build();
+			throw new WebApplicationException(response);
+		}
+		
+		String id = _id.getString(PROP_$OID);
+		JSONObject existing = getPerson(context, id);
+		if (existing == null) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Person does not exist").build();
+			throw new WebApplicationException(response);
+		}
+
+		if (!newPerson.has(PROP_ETAG)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Person does not conatin an etag property")
+					.build();
+			throw new WebApplicationException(response);
+		}
+
+		String etag = newPerson.getString(PROP_ETAG);
+		String old_etag = existing.getString(PROP_ETAG);
+
+		if (!etag.equals(old_etag)) {
+			String message = "Person etag (" + etag
+					+ ") does not match the saved etag (" + old_etag + ")";
+			Response response = Response.status(Status.CONFLICT)
+					.entity(message).build();
+			throw new WebApplicationException(response);
+		}
+
+		int newEtag = Integer.parseInt(old_etag);
+		newEtag++;
+		newPerson.put(PROP_ETAG, String.valueOf(newEtag));
+
+		String json = newPerson.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
+
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		// Exclude persisting the base
+		BasicDBObject fields = new BasicDBObject();
+		dbObject.removeField(PROP_BASE);
+		dbObject.removeField(PROP_ABOUT);
+		dbObject.removeField(PROP_RESOURCE);
+		DBObject result = peopleCol.findAndModify(query, fields, null, false,
+				dbObject, true, true);
+
+		json = JSON.serialize(result);
+		newPerson = new JSONObject(json);
+
+		newPerson.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + id);
+		
+		return newPerson;
+	}
+	
 	/**
 	 * Update an existing new project
 	 * 
@@ -574,7 +850,8 @@ public class Data implements CONSTS {
 
 		if (!newProject.has(PROP_ETAG)) {
 			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Project does not conatin an etag property").build();
+					.entity("Project does not conatin an etag property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -583,8 +860,7 @@ public class Data implements CONSTS {
 
 		if (!etag.equals(old_etag)) {
 			String message = "Project etag (" + etag
-							+ ") does not match the saved etag (" + old_etag
-							+ ")";
+					+ ") does not match the saved etag (" + old_etag + ")";
 			Response response = Response.status(Status.CONFLICT)
 					.entity(message).build();
 			throw new WebApplicationException(response);
@@ -599,10 +875,12 @@ public class Data implements CONSTS {
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 
 		BasicDBObject query = new BasicDBObject();
-		query.put("_id", new ObjectId(id));
+		query.put(PROP__ID, new ObjectId(id));
 		// Exclude persisting the base
 		BasicDBObject fields = new BasicDBObject();
-		fields.put(PROP_BASE, 0);
+		dbObject.removeField(PROP_BASE);
+		dbObject.removeField(PROP_ABOUT);
+		dbObject.removeField(PROP_RESOURCE);
 		DBObject result = projectsCol.findAndModify(query, fields, null, false,
 				dbObject, true, true);
 
@@ -612,8 +890,97 @@ public class Data implements CONSTS {
 		return newProject;
 	}
 	
-	
-	
+	/**
+	 * Synchs the DB People with the Google domain users
+	 * @param context
+	 * @throws JSONException 
+	 * @throws IOException 
+	 */
+	public static void synchPeople(RequestContext context) throws IOException, JSONException{
+		Map<String, JSONObject> googleUsers = getGoogleUsers(context);
+		Collection<JSONObject> users = googleUsers.values();
+		
+		URI base = context.getBaseURI();
+		URI genericImage = base.resolve("../images/generic.png");
+
+		for (Iterator<JSONObject> iterator = users.iterator(); iterator
+				.hasNext();) {
+			JSONObject googleUserDef = (JSONObject) iterator.next();
+			
+			JSONObject person = new JSONObject();
+			
+			//Look for existing user
+			String googleId = googleUserDef.getString(PROP_ID);
+			//JSONObject existingPerson = getPerson(context, googleId);
+			String query = "{googleId:'"+googleId+"'}";
+			JSONObject existingPerson = getPerson(context, query, null);
+			if(existingPerson != null){
+				person = existingPerson;
+			}
+			
+			
+			//Set the account type as Google
+			googleUserDef.put(PROP_TYPE, VALUES_ACCOUNT_TYPES_GOOGLE);
+			
+			/**
+			 * Set the base user properties from the Google user
+			 */
+			person.put(PROP_GOOGLE_ID, googleUserDef.getString(PROP_ID));
+			person.put(PROP_MBOX, googleUserDef.getString(PROP_PRIMARY_EMAIL));
+			JSONObject name = googleUserDef.getJSONObject(PROP_NAME);
+			person.put(PROP_NAME, name.getString(PROP_FULL_NAME));
+			person.put(PROP_FAMILY_NAME, name.getString(PROP_FAMILY_NAME));
+			person.put(PROP_GIVEN_NAME, name.getString(PROP_GIVEN_NAME));
+			if(googleUserDef.has(PROP_THUMBNAIL_PHOTO_URL)){
+				person.put(PROP_THUMBNAIL, "http://www.google.com"+googleUserDef.getString(PROP_THUMBNAIL_PHOTO_URL));
+			}else{
+				//Set as generic profileImage
+				person.put(PROP_THUMBNAIL, genericImage);
+			}
+			
+			/**
+			 * If the user did not exist just create it
+			 */
+			if(existingPerson == null){
+				JSONArray accounts = new JSONArray();
+				accounts.put(googleUserDef);
+				person.put(PROP_ACCOUNTS, accounts);
+				createPerson(context, person);
+			}
+			/**
+			 * If Update the existing user
+			 */
+			else{
+				//Get the accounts
+				JSONArray accounts = person.getJSONArray(PROP_ACCOUNTS);
+				if(accounts == null){
+					accounts = new JSONArray();
+					person.put(PROP_ACCOUNTS, accounts);
+				}
+				
+				//Find the Google account
+				boolean found = false;
+				for (int i = 0; i < accounts.length(); i++) {
+					JSONObject ithAccount = accounts.getJSONObject(i);
+					String type = ithAccount.getString(PROP_TYPE);
+					if(VALUES_ACCOUNT_TYPES_GOOGLE.equals(type)){
+						found = true;
+						//Override the Google account
+						accounts.put(i, googleUserDef);
+						break;
+					}
+				}
+				
+				//Account not found
+				if(!found){
+					accounts.put(googleUserDef);
+				}
+				
+				updatePerson(context, person);
+			}
+		}
+	}
+
 	/**
 	 * Un Escape JSON
 	 * 
@@ -635,7 +1002,7 @@ public class Data implements CONSTS {
 		String escaped = s.replaceAll("\\\\\\\\/", "/");
 		// escaped = "'"+escaped+"'";
 
-		//System.out.println(escaped);
+		// System.out.println(escaped);
 
 		return escaped;
 	}
@@ -661,7 +1028,7 @@ public class Data implements CONSTS {
 		String escaped = s.replaceAll("/", "\\\\/");
 		// escaped = "'"+escaped+"'";
 
-		//System.out.println(escaped);
+		// System.out.println(escaped);
 
 		return escaped;
 	}

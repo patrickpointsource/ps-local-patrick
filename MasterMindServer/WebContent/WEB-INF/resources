@@ -2,5 +2,6 @@
 com.pointsource.mastermind.server.Config
 com.pointsource.mastermind.server.Groups
 com.pointsource.mastermind.server.People
+com.pointsource.mastermind.server.PeopleOld
 com.pointsource.mastermind.server.Projects
 com.pointsource.mastermind.server.Roles

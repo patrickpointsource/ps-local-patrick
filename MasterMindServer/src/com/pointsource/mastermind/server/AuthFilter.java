@@ -5,7 +5,6 @@ package com.pointsource.mastermind.server;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -117,28 +116,36 @@ public class AuthFilter implements Filter {
 
 				String str = response.getEntity(String.class);
 				JSONObject ret = new JSONObject(str);
+				
+				if(!ret.has(CONSTS.PROP_ID)){
+					throw new WebApplicationException(
+							Response.status(Status.FORBIDDEN)
+									.entity("Failed to fetch Google user")
+									.build());
+				}
+				
 				String id = ret.getString(CONSTS.PROP_ID);
-
+				
 				// Check if the User is in our domain
 				RequestContext context = new RequestContext();
 				context.setServletContext(httpReq.getServletContext());
-				Map<String, JSONObject> domainUsers = Data
-						.getGoogleUsers(context);
-				if (!domainUsers.containsKey(id)) {
-					session.removeAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
-					session.removeAttribute(CONSTS.SESSION_USER_KEY);
-					
-					System.err.println(403 + ": "+ domainUsers.get("id") + " is not a member of the PointSource domain");
+				
+				String query = "{"+CONSTS.PROP_GOOGLE_ID+":'"+id+"'}";
+				String fields = "{"+CONSTS.PROP_ACCOUNTS+":0}";
+				JSONObject domainUser = Data.getPerson(context, query, fields);
+				
+				if(domainUser == null){
+					System.err.println(403 + ": "+ domainUser + " is not a member of the PointSource domain");
 					throw new WebApplicationException(
 							Response.status(Status.FORBIDDEN)
 									.entity("User is not a member of the PointSource domain")
 									.build());
 				}
-
+				
 				// Set the User context into the session
 				
 				session.setAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN, authToken);
-				session.setAttribute(CONSTS.SESSION_USER_KEY, ret);
+				session.setAttribute(CONSTS.SESSION_USER_KEY, domainUser);
 			}
 
 			
