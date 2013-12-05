@@ -916,7 +916,7 @@ public class Data implements CONSTS {
 		Collection<JSONObject> users = googleUsers.values();
 
 		URI base = context.getBaseURI();
-		URI genericImage = base.resolve("../images/generic.png");
+		URI genericImage = base.resolve("images/generic.png");
 
 		for (Iterator<JSONObject> iterator = users.iterator(); iterator
 				.hasNext();) {

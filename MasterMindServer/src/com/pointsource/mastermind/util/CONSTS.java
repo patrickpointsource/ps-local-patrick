@@ -110,12 +110,12 @@ public interface CONSTS {
 	/**
 	 * Mongo Constants
 	 */
-	public String BUILD_NUMBER = "0.1.2013.12.03";
+	public String BUILD_NUMBER = "0.1.2013.12.05";
 	public String DB_USER = "admin";
 	public String DB_PASS = "t0ddSucks";
 	public String DB_HOSTNAME_DEFAULT = "db.mastermind.pointsource.us";
 	public int DB_PORT_DEFAULT  = 27017;
-	public String DB_NAME_DEFAULT  = "mm_db_dev_kmb";
+	public String DB_NAME_DEFAULT  = "mm_db_dev";
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
 	public String COLLECTION_TITLE_PEOPLE = "People";
 	

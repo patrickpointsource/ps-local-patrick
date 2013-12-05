@@ -158,32 +158,6 @@ public class People extends BaseResource {
 			return handleJSONException(e);
 		}
 	}
-	
-	/**
-	 * POST people/synch
-	 * 
-	 * @param id
-	 * @return A people by id
-	 */
-	@POST
-	@Path("/synch")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response synch() {
-		try {
-			try {
-				RequestContext context = getRequestContext();
-				Data.synchPeople(context);
-
-				return Response.ok().build();
-			} catch (WebApplicationException e) {
-				return handleWebApplicationException(e);
-			} catch (Exception e) {
-				return handleInternalServerError(e);
-			}
-		} catch (JSONException e) {
-			return handleJSONException(e);
-		}
-	}
 
 	/**
 	 * POST person
