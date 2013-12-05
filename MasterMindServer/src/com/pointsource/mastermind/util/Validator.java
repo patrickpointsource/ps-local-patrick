@@ -178,6 +178,11 @@ public class Validator implements CONSTS {
 			ret.add("Project must include atleast one role");
 		} else {
 			JSONArray roles = project.getJSONArray(PROP_ROLES);
+			
+			if(roles.length() < 1){
+				ret.add("Project must include atleast one role");
+			}
+			
 			boolean hasBAOrPM = false;
 			boolean checkedAllRoles = false;
 			JSONObject roleTypes = Data.getRoles();
@@ -196,30 +201,30 @@ public class Validator implements CONSTS {
 					break;
 				} else {
 					JSONObject type = role.getJSONObject(PROP_TYPE);
-					if (!type.has(PROP_ID)) {
+					if (!type.has(PROP_RESOURCE)) {
 						ret.add("Each Role type must have an ID");
 					} else {
-						String typeId = type.getString(PROP_ID);
+						String typeResource = type.getString(PROP_RESOURCE);
 
 						boolean typeFound = false;
 						for (int j = 0; j < roleTypeMembers.length(); j++) {
 							JSONObject roleType = roleTypeMembers
 									.getJSONObject(j);
-							String id = roleType.getString(PROP_ID);
-							if (id.equals(typeId)) {
+							String about = roleType.getString(PROP_RESOURCE);
+							if (about.equals(typeResource)) {
 								typeFound = true;
 								break;
 							}
 						}
 
 						if (!typeFound) {
-							ret.add("Unknown role type: " + typeId);
+							ret.add("Unknown role type: " + typeResource);
 							break;
 						}
 
 						// Includes BA or PM
-						if (ROLE_BA_ID.equals(typeId)
-								|| ROLE_PM_ID.equals(typeId)) {
+						if (typeResource.equals(RESOURCE_ROLES+"/"+ROLE_BA_ID)
+								|| typeResource.equals(RESOURCE_ROLES+"/"+ROLE_PM_ID)) {
 							hasBAOrPM = true;
 						}
 
@@ -299,22 +304,23 @@ public class Validator implements CONSTS {
 								// hours
 								// per
 								// month
-								if (ROLE_SSE_ID.equals(typeId)
-										|| ROLE_SE_ID.equals(typeId)) {
-									int hours = 180;
-									if (VALUES_RATE_TYPE_WEEKLY
-											.equals(rateType)) {
-										hours = (int) (rate.getInt(PROP_HOURS) * 4);
-									} else if (VALUES_RATE_TYPE_HOURLY
-											.equals(rateType)) {
-										hours = rate.getInt(PROP_HOURS);
-									}
-
-									if (hours < 130) {
-										ret.add("Software Engineers cannot be booked for less than 130 hours a month");
-										break;
-									}
-								}
+//TODO this should be across projects
+//								if (ROLE_SSE_ID.equals(typeId)
+//										|| ROLE_SE_ID.equals(typeId)) {
+//									int hours = 180;
+//									if (VALUES_RATE_TYPE_WEEKLY
+//											.equals(rateType)) {
+//										hours = (int) (rate.getInt(PROP_HOURS) * 4);
+//									} else if (VALUES_RATE_TYPE_HOURLY
+//											.equals(rateType)) {
+//										hours = rate.getInt(PROP_HOURS);
+//									}
+//
+//									if (hours < 130) {
+//										ret.add("Software Engineers cannot be booked for less than 130 hours a month");
+//										break;
+//									}
+//								}
 							}
 						}
 					}
