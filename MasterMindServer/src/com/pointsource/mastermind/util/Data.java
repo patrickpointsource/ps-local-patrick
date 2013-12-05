@@ -174,44 +174,36 @@ public class Data implements CONSTS {
 		JSONObject ret = new JSONObject();
 		JSONArray members = new JSONArray();
 
-		String fields = "{name:1}";
+		String fields = "{resource:1,name:1}";
 
 		if (ROLE_SSA_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_SSA_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
 			ret.put(PROP_TITLE, ROLE_SSA_TITLE);
 
-			JSONObject aaron = getUserByGoogleId(context,
-					"115659942511507270693", fields);
-			addLinkToMemberList(members, aaron);
-			JSONObject andy = getUserByGoogleId(context,
-					"106368930450799539126", fields);
-			addLinkToMemberList(members, andy);
-			JSONObject barry = getUserByGoogleId(context,
-					"107681682076275621618", fields);
-			addLinkToMemberList(members, barry);
-			JSONObject john = getUserByGoogleId(context,
-					"100521746243465967724", fields);
-			addLinkToMemberList(members, john);
-			JSONObject kevin = getUserByGoogleId(context,
-					"108416099312244834291", fields);
-			addLinkToMemberList(members, kevin);
+			String query = "{googleId:{ $in:['115659942511507270693','106368930450799539126','107681682076275621618','100521746243465967724','108416099312244834291']}}";
+			Map<String, JSONObject> result = getPeople(context, query, fields);
+			Collection<JSONObject> values = result.values();
+			for (Iterator<JSONObject> iterator = values.iterator(); iterator
+					.hasNext();) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				members.put(jsonObject);
+			}
 		}
 
 		else if (ROLE_PM_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_PM_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_PM_ID);
 			ret.put(PROP_TITLE, ROLE_PM_TITLE);
-
-			JSONObject kristal = getUserByGoogleId(context,
-					"118024801441852864610", fields);
-			addLinkToMemberList(members, kristal);
-			JSONObject susan = getUserByGoogleId(context,
-					"105187489722733399928", fields);
-			addLinkToMemberList(members, susan);
-			JSONObject krista = getUserByGoogleId(context,
-					"103362960874176228355", fields);
-			addLinkToMemberList(members, krista);
+			
+			String query = "{googleId:{ $in:['118024801441852864610','105187489722733399928','103362960874176228355']}}";
+			Map<String, JSONObject> result = getPeople(context, query, fields);
+			Collection<JSONObject> values = result.values();
+			for (Iterator<JSONObject> iterator = values.iterator(); iterator
+					.hasNext();) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				members.put(jsonObject);
+			}
 		}
 
 		else if (ROLE_BA_ID.equalsIgnoreCase(roleId)) {
@@ -219,67 +211,74 @@ public class Data implements CONSTS {
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_BA_ID);
 			ret.put(PROP_TITLE, ROLE_BA_TITLE);
 
-			JSONObject kristal = getUserByGoogleId(context,
-					"118024801441852864610", fields);
-			addLinkToMemberList(members, kristal);
-			JSONObject susan = getUserByGoogleId(context,
-					"105187489722733399928", fields);
-			addLinkToMemberList(members, susan);
+			String query = "{googleId:{ $in:['118024801441852864610','105187489722733399928']}}";
+			Map<String, JSONObject> result = getPeople(context, query, fields);
+			Collection<JSONObject> values = result.values();
+			for (Iterator<JSONObject> iterator = values.iterator(); iterator
+					.hasNext();) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				members.put(jsonObject);
+			}
 		}
 
 		else if (ROLE_SSE_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_SSE_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
 			ret.put(PROP_TITLE, ROLE_SSE_TITLE);
-
-			JSONObject nate = getUserByGoogleId(context,
-					"102037350018901696245", fields);
-			addLinkToMemberList(members, nate);
-			JSONObject jm = getUserByGoogleId(context, "118074563586812975506",
-					fields);
-			addLinkToMemberList(members, jm);
-			JSONObject chris = getUserByGoogleId(context,
-					"112959653203369443291", fields);
-			addLinkToMemberList(members, chris);
+			
+			String query = "{googleId:{ $in:['102037350018901696245','112959653203369443291']}}";
+			Map<String, JSONObject> result = getPeople(context, query, fields);
+			Collection<JSONObject> values = result.values();
+			for (Iterator<JSONObject> iterator = values.iterator(); iterator
+					.hasNext();) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				members.put(jsonObject);
+			}
 		}
 
 		else if (ROLE_SE_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_SE_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SE_ID);
 			ret.put(PROP_TITLE, ROLE_SE_TITLE);
-
-			JSONObject hunter = getUserByGoogleId(context,
-					"100090968878728629777", fields);
-			addLinkToMemberList(members, hunter);
-			JSONObject brent = getUserByGoogleId(context,
-					"105526065653554855193", fields);
-			addLinkToMemberList(members, brent);
+			
+			String query = "{googleId:{ $in:['100090968878728629777','105526065653554855193']}}";
+			Map<String, JSONObject> result = getPeople(context, query, fields);
+			Collection<JSONObject> values = result.values();
+			for (Iterator<JSONObject> iterator = values.iterator(); iterator
+					.hasNext();) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				members.put(jsonObject);
+			}
 		}
 
 		else if (ROLE_SUXD_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
 			ret.put(PROP_TITLE, ROLE_SUXD_TITLE);
-
-			JSONObject eric = getUserByGoogleId(context,
-					"102728171905005423498", fields);
-			addLinkToMemberList(members, eric);
-			JSONObject melissa = getUserByGoogleId(context,
-					"112917239891456752571", fields);
-			addLinkToMemberList(members, melissa);
+			
+			String query = "{googleId:{ $in:['102728171905005423498','112917239891456752571']}}";
+			Map<String, JSONObject> result = getPeople(context, query, fields);
+			Collection<JSONObject> values = result.values();
+			for (Iterator<JSONObject> iterator = values.iterator(); iterator
+					.hasNext();) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				members.put(jsonObject);
+			}
 		}
 
 		else if (ROLE_UXD_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_UXD_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
 			ret.put(PROP_TITLE, ROLE_UXD_TITLE);
-
-			JSONObject melissa = getUserByGoogleId(context,
-					"103450144552825063641", fields);
-			addLinkToMemberList(members, melissa);
-			JSONObject amanda = getUserByGoogleId(context,
-					"107385689810002496434", fields);
-			addLinkToMemberList(members, amanda);
+			
+			String query = "{googleId:{ $in:['103450144552825063641','107385689810002496434']}}";
+			Map<String, JSONObject> result = getPeople(context, query, fields);
+			Collection<JSONObject> values = result.values();
+			for (Iterator<JSONObject> iterator = values.iterator(); iterator
+					.hasNext();) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				members.put(jsonObject);
+			}
 		}
 
 		ret.put(PROP_MEMBERS, members);
@@ -330,31 +329,25 @@ public class Data implements CONSTS {
 
 		// Executives Group
 		if (GROUPS_EXEC_ID.equals(groupId)) {
-
-			JSONObject chris = getUserByGoogleId(context,
-					"114352410049076130019", fields);
-			addLinkToMemberList(members, chris);
-			JSONObject kevin = getUserByGoogleId(context,
-					"104614151280118313239", fields);
-			addLinkToMemberList(members, kevin);
-			JSONObject erik = getUserByGoogleId(context,
-					"101315305679730171732", fields);
-			addLinkToMemberList(members, erik);
-			JSONObject steph = getUserByGoogleId(context,
-					"102699799438113157547", fields);
-			addLinkToMemberList(members, steph);
+			String query = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547']}}";
+			Map<String, JSONObject> result = getPeople(context, query, fields);
+			Collection<JSONObject> values = result.values();
+			for (Iterator<JSONObject> iterator = values.iterator(); iterator
+					.hasNext();) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				members.put(jsonObject);
+			}
 		}
 		// Sales Group
 		if (GROUPS_SALES_ID.equals(groupId)) {
-			JSONObject luke = getUserByGoogleId(context,
-					"117612942628688959688", fields);
-			addLinkToMemberList(members, luke);
-			JSONObject david = getUserByGoogleId(context,
-					"109518736702317118019", fields);
-			addLinkToMemberList(members, david);
-			JSONObject lori = getUserByGoogleId(context,
-					"111396763357009038073", fields);
-			addLinkToMemberList(members, lori);
+			String query = "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']}}";
+			Map<String, JSONObject> result = getPeople(context, query, fields);
+			Collection<JSONObject> values = result.values();
+			for (Iterator<JSONObject> iterator = values.iterator(); iterator
+					.hasNext();) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				members.put(jsonObject);
+			}
 		}
 
 		ret.put(PROP_MEMBERS, members);
@@ -363,13 +356,6 @@ public class Data implements CONSTS {
 		return ret;
 	}
 
-	private static void addLinkToMemberList(JSONArray members,
-			JSONObject resource) throws JSONException {
-		JSONObject userLink = new JSONObject();
-		userLink.put(PROP_RESOURCE, resource.getString(PROP_ABOUT));
-		userLink.put(PROP_TITLE, resource.getString("name"));
-		members.put(userLink);
-	}
 
 	/**
 	 * Gets the list of Google Users
