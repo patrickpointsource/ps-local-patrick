@@ -43,14 +43,14 @@
     <div class="row">
         <div class="col-xs-4 form-group" ng-class="{error: isFieldInError('startDate')}">
             <label class="required-label" for="startDate">Start Date:</label>
-            <input id="startDate" name="startDate" class="col-xs-12 form-control" type="text"
+            <input id="startDate" name="startDate" class="col-xs-12 form-control datepicker" type="text"
                 ng-model="project.startDate"
                 data-date-format="yyyy-mm-dd"
                 required
                 data-provide="datepicker"
                 ng-readonly="!isTransient">
         </div>
-        <div class="col-xs-4 form-group">
+        <div class="col-xs-4 form-group datepicker">
             <label for="endDate">End Date:</label>
             <input id="endDate" class="col-xs-12 form-control" type="text" ng-model="project.endDate"
                 data-date-format="yyyy-mm-dd"

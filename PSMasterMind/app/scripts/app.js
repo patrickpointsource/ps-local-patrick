@@ -177,5 +177,17 @@
           var accessToken = localStorage.getItem('access_token');
           helper.disconnectUser(accessToken);
         };
+
+        var tpl = '<ul class="nav"><li><a href="#">My profile</a></li><li><a href="#">Notifications</a></li><li><button class="btn btn-default" ng-click="logout()">Log out</button></li></ul>';
+        $('#user-popover').popover({
+          animation: true,
+          html: true,
+          content: tpl,
+          container: 'body',
+          placement: function(){
+            return 'bottom';
+          }
+        });
+
       }]);
 }(window));

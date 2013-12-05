@@ -1,14 +1,22 @@
 @import '_base';
 
+.navbar-fixed-top {
+  margin-bottom: 0;
+}
+
 header {
-  height: 100px;
-  background-color: @ps-gray;
   color: #fff;
 
   h1 {
     font-size: 72px;
     margin: 0;
-    line-height: 100px;
+  }
+
+  nav {
+    background-color: @ps-gray;
+    .navbar-fixed-top {
+      margin-bottom: 0;
+    }
   }
 
   .navbar-inner {
@@ -23,6 +31,17 @@ header {
     background-image: none;
   }
 
+  #profile-photo {
+    height: 30px;
+    width: 30px;
+    margin-top: 0px;
+    background-color: #fff;
+    img {
+      height: 100%;
+      z-index: -1;
+    }
+  }
+
   #badge {
     position: absolute;
     right: 0;
@@ -30,19 +49,6 @@ header {
     left: initial;
     height: 100px;
     width: 200px;
-
-    #profile-photo {
-      height: 82px;
-      width: 82px;
-      margin-top: 9px;
-      border-radius: 41px;
-      background-color: #fff;
-      overflow: hidden;
-      img {
-        height: 100%;
-        z-index: -1;
-      }
-    }
 
     nav {
       margin-top: 20px;
@@ -145,15 +151,6 @@ main {
         .dashboard-actions {
           margin-top: 20px;
           text-align: center;
-
-          button {
-            width: 111px;
-            margin-left: 10px;
-
-            &:first-child {
-              margin-left: 0;
-            }
-          }
         }
       }
 
@@ -209,4 +206,16 @@ main {
 
 .nav-tabs {
   margin-bottom: 30px;
+}
+
+.popover.bottom {
+  color: @text-color;
+  z-index: 2000;
+  position: fixed;
+  margin-left: -50px;
+  margin-top: -10px;
+
+  .arrow {
+    left: 86%;
+  }
 }

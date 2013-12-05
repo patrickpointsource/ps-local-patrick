@@ -43,6 +43,7 @@ module.exports = function (grunt) {
           '<%= yeoman.app %>/views/*/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
           '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+        '{.tmp,<%= yeoman.app %>}/scripts/*/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -356,6 +357,7 @@ module.exports = function (grunt) {
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
+    // 'less',
     'concat',
     'copy:dist',
     'cdnify',

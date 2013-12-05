@@ -18,4 +18,8 @@ angular.module('Mastermind.controllers.projects')
           || ($scope.submitAttempted && detailsFormField.$pristine))
           && detailsFormField.$invalid;
       };
+
+      $('.datepicker').on('changeDate', function(ev){
+          $scope.$apply();
+      });
     });
