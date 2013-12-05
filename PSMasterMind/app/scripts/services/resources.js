@@ -10,6 +10,34 @@ angular.module('Mastermind')
     var Resource = ResourcesRestangular.all('');
 
     /**
+     * Service function for querying a resource member.
+     *
+     * @returns {*}
+     */
+    function query(resource, query, fields, onSuccess) {
+      if(query || fields){
+    	  resource = resource+'?';
+      }	
+    	
+      if(query){
+    	  query = JSON.stringify(query);
+    	  query = encodeURIComponent(query);
+    	  resource = resource+'query='+query;
+      }	
+      
+      if(fields){
+    	  if(query)resource = resource+'&';
+    	  fields = JSON.stringify(fields);
+    	  fields = encodeURIComponent(fields);
+    	  resource = resource+'fields='+fields;
+      }
+    	
+    	
+      return Resource.get(resource).then(onSuccess);
+    }
+    
+    
+    /**
      * Service function for retrieving a resource member.
      *
      * @returns {*}
@@ -19,6 +47,7 @@ angular.module('Mastermind')
     }
 
     return {
+      query: query,
       get: get
     };
   });
