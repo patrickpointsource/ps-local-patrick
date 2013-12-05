@@ -100,6 +100,7 @@
     </header>
     <main id="mainContent" class="container">
         <div class="row">
+
             <nav id="nav-drawer" class="col-xs-3 hidden-xs" ng-controller="AreasCtrl">
                 <ul>
                     <li ng-class="{active: activeArea() === 'home'}"><a ng-click="showHome()"><i
@@ -111,10 +112,8 @@
                         class="fa fa-2x fa-fw fa-user"></i> People</a></li>
                 </ul>
             </nav>
-            <article class="col-xs-9" ui-view>
 
-            </article>
-            <div class="clearfix"></div>
+            <article class="col-xs-9" ui-view></article>
         </div>
     </main>
 </div>

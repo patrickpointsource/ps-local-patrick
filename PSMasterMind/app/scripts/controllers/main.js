@@ -63,7 +63,8 @@ angular.module('Mastermind')
 
         // If the project start day is before the last day of this month
         // and its end date is after the first day of this month.
-        return project.startDate <= endDay && (project.endDate === null || project.endDate >= startDay);
+        var returnValue = new Date(project.startDate) <= endDay && (project.endDate === null || new Date(project.endDate) >= startDay);
+        return returnValue;
       };
     }]);
 

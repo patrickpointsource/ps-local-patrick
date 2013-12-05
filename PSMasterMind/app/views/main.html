@@ -6,7 +6,7 @@
 	</div>
 	<div id="dashboard-widgets" class="row">
 		<div class="col-xs-4 dashboard-widget">
-			<div class="dashboard-label"> 
+			<div class="dashboard-label">
 				Active Projects
 				<button class="btn btn-default" ng-click="createProject()">New</button>
 			</div>
@@ -21,35 +21,32 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<br/>
 
 	<div id="graphContainer" class="visible-md visible-lg">
-		<div id="graph-header" class="row">
-			<div id="graph-header-title" class="col-xs-5">Quick View</div>
+		<div id="graph-header">
+			<div id="graph-header-title" class="dashboard-label">Quick View</div>
 		</div>
-	
-		<div id="graph" class="row">
-	        <table>
-	            <tbody>
-	                <tr>
-	                    <th>Nov</th>
-	                    <th>Dec</th>
-	                    <th>Jan</th>
-	                    <th>Feb</th>
-	                    <th>Mar</th>
-	                    <th>Apr</th>
-	                </tr>
-	                <tr ng-repeat="project in projects">
-	                    <td ng-class="{active: inMonth(project, 10, 2013)}"></td>
-	                    <td ng-class="{active: inMonth(project, 11, 2013)}"></td>
-	                    <td ng-class="{active: inMonth(project, 0, 2014)}"></td>
-	                    <td ng-class="{active: inMonth(project, 1, 2014)}"></td>
-	                    <td ng-class="{active: inMonth(project, 2, 2014)}"></td>
-	                    <td ng-class="{active: inMonth(project, 3, 2014)}"></td>
-	                </tr>
-	            </tbody>
-	        </table>
-		</div>
+    <table id="graph">
+        <tbody>
+            <tr>
+                <th>Nov</th>
+                <th>Dec</th>
+                <th>Jan</th>
+                <th>Feb</th>
+                <th>Mar</th>
+                <th>Apr</th>
+            </tr>
+            <tr ng-repeat="project in projects">
+                <td ng-class="{active: inMonth(project, 10, 2013)}"></td>
+                <td ng-class="{active: inMonth(project, 11, 2013)}"></td>
+                <td ng-class="{active: inMonth(project, 0, 2014)}"></td>
+                <td ng-class="{active: inMonth(project, 1, 2014)}"></td>
+                <td ng-class="{active: inMonth(project, 2, 2014)}"></td>
+                <td ng-class="{active: inMonth(project, 3, 2014)}"></td>
+            </tr>
+        </tbody>
+    </table>
 	</div>
 </div>
