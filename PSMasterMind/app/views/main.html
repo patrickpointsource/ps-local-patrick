@@ -1,64 +1,55 @@
 <div id="content">
 	<div class="row">
 		<div class="col-xs-12">
-			<div id="today">
-				Today is <col-xs- id="date">{{today}}</col-xs->
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-12">
 
 		</div>
 	</div>
 	<div id="dashboard-widgets" class="row">
 		<div class="col-xs-4 dashboard-widget">
-			<div class="dashboard-box">
-				{{projectCount}}
-			</div>
-			<div class="dashboard-label">Active Projects</div>
-			<div class="dashboard-actions">
-				<button class="btn btn-default" ng-click="showProjects()">View</button>
+			<div class="dashboard-label"> 
+				Active Projects
 				<button class="btn btn-default" ng-click="createProject()">New</button>
+			</div>
+			<div class="dashboard-box" ng-click="showProjects()">
+				{{projectCount}}
 			</div>
 		</div>
 
 		<div class="col-xs-4 dashboard-widget">
-			<div class="dashboard-box">
-			</div>
-			<div class="dashboard-label">People Utilized</div>
-			<div class="dashboard-actions">
-				<button class="btn btn-default" ng-click="showPeople()">View</button>
+			<div class="dashboard-label">Available People</div>
+			<div class="dashboard-box" ng-click="showPeople()">
 			</div>
 		</div>
 	</div>
+	
+	<br/>
 
-	<hr></hr>
-
-	<div id="graph-header" class="row">
-		<div id="graph-header-title" class="col-xs-5">Quick View</div>
-	</div>
-
-	<div id="graph" class="row">
-        <table>
-            <tbody>
-                <tr>
-                    <th>Nov</th>
-                    <th>Dec</th>
-                    <th>Jan</th>
-                    <th>Feb</th>
-                    <th>Mar</th>
-                    <th>Apr</th>
-                </tr>
-                <tr ng-repeat="project in projects">
-                    <td ng-class="{active: inMonth(project, 10, 2013)}"></td>
-                    <td ng-class="{active: inMonth(project, 11, 2013)}"></td>
-                    <td ng-class="{active: inMonth(project, 0, 2014)}"></td>
-                    <td ng-class="{active: inMonth(project, 1, 2014)}"></td>
-                    <td ng-class="{active: inMonth(project, 2, 2014)}"></td>
-                    <td ng-class="{active: inMonth(project, 3, 2014)}"></td>
-                </tr>
-            </tbody>
-        </table>
+	<div id="graphContainer" class="visible-md visible-lg">
+		<div id="graph-header" class="row">
+			<div id="graph-header-title" class="col-xs-5">Quick View</div>
+		</div>
+	
+		<div id="graph" class="row">
+	        <table>
+	            <tbody>
+	                <tr>
+	                    <th>Nov</th>
+	                    <th>Dec</th>
+	                    <th>Jan</th>
+	                    <th>Feb</th>
+	                    <th>Mar</th>
+	                    <th>Apr</th>
+	                </tr>
+	                <tr ng-repeat="project in projects">
+	                    <td ng-class="{active: inMonth(project, 10, 2013)}"></td>
+	                    <td ng-class="{active: inMonth(project, 11, 2013)}"></td>
+	                    <td ng-class="{active: inMonth(project, 0, 2014)}"></td>
+	                    <td ng-class="{active: inMonth(project, 1, 2014)}"></td>
+	                    <td ng-class="{active: inMonth(project, 2, 2014)}"></td>
+	                    <td ng-class="{active: inMonth(project, 3, 2014)}"></td>
+	                </tr>
+	            </tbody>
+	        </table>
+		</div>
 	</div>
 </div>
