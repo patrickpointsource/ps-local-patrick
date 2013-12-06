@@ -257,7 +257,7 @@ module.exports = function (grunt) {
             src: [
               '*.{ico,png,txt}',
               '.htaccess',
-              'bower_components/**/*',
+              // 'bower_components/**/*',
               'images/{,*/}*.{gif,webp}',
               'styles/fonts/*'
             ]
@@ -364,7 +364,7 @@ module.exports = function (grunt) {
     'ngmin',
     'cssmin',
     'uglify',
-    'rev',
+    // 'rev',
     'usemin'
   ]);
 
