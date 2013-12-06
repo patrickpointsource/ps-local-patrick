@@ -3756,7 +3756,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 .navbar-brand {
   float: left;
-  padding: 25px 15px;
+  padding: 20px 15px;
   font-size: 18px;
   line-height: 20px;
 }
@@ -3795,7 +3795,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-nav {
-  margin: 12.5px -15px;
+  margin: 10px -15px;
 }
 .navbar-nav > li > a {
   padding-top: 10px;
@@ -5997,7 +5997,7 @@ td.visible-print {
 /*** End Bootstrap less ***/
 body {
   font-family: allerregular !important;
-  padding-top: 71px;
+  padding-top: 61px;
 }
 label {
   font-family: allerbold;
@@ -6097,8 +6097,8 @@ header .navbar-inner {
   background-image: none;
 }
 header #profile-photo {
-  height: 30px;
-  width: 30px;
+  height: 40px;
+  width: 40px;
   margin-top: 0px;
   background-color: #fff;
 }
@@ -6238,10 +6238,16 @@ main article #content table#graph tbody tr th.active {
   z-index: 2000;
   position: fixed;
   margin-left: -50px;
-  margin-top: -10px;
+  margin-top: -20px;
 }
 .popover.bottom .arrow {
   left: 86%;
+}
+@media (min-width: 768px) {
+  .navbar-nav > li > a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
 }
 .tab-content input,
 .tab-content textarea {

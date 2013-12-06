@@ -32,8 +32,8 @@ header {
   }
 
   #profile-photo {
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
     margin-top: 0px;
     background-color: #fff;
     img {
@@ -208,9 +208,16 @@ main {
   z-index: 2000;
   position: fixed;
   margin-left: -50px;
-  margin-top: -10px;
+  margin-top: -20px;
 
   .arrow {
     left: 86%;
+  }
+}
+
+@media (min-width: @screen-sm) {
+  .navbar-nav > li > a {
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 }
