@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$scope', '$state', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'project', 'executives', 'salesRepresentatives', 'ngTableParams', '$filter',
-    function ($scope, $state, ProjectsService, Resources, People, Groups, RoleTypes, project, executives, salesRepresentatives, TableParams, $filter) {
+  .controller('ProjectCtrl', ['$scope', '$state', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'project', 'executives', 'salesRepresentatives','ngTableParams',
+    function ($scope, $state, $filter, ProjectsService, Resources, People, Groups, RoleTypes, project, executives, salesRepresentatives, TableParams) {
       var detailsValid = false, rolesValid = false;
 
       // Set our currently viewed project to the one resolved by the service.
@@ -21,6 +21,32 @@ angular.module('Mastermind')
 
       // The title of the page is the project's name or 'New Project' if transient.
       $scope.title = $scope.isTransient ? 'New Project' : project.name;
+      
+      // Table Parameters
+      var params = {
+        page: 1,            // show first page
+        count: 10,           // count per page
+        sorting: {
+        	type: 'asc'     // initial sorting
+        }
+      };
+      
+      $scope.assignmentsTableParams = new TableParams(params, {
+        total: $scope.project.roles.length,
+        getData: function ($defer, params) {
+          var start = (params.page() - 1) * params.count(),
+            end = params.page() * params.count(),
+
+            orderedData = params.sorting() ?
+                $filter('orderBy')($scope.project.roles, params.orderBy()) :
+                $scope.project.roles,
+          // use build-in angular filter
+            ret = orderedData.slice(start, end);
+
+          $defer.resolve(ret);
+        }
+      });
+
 
       /**
        * Get All the Role Types
@@ -57,50 +83,13 @@ angular.module('Mastermind')
           }
         });
       };
-
-      // Table Parameters
-      var params = {
-        page: 1,            // show first page
-        count: 10           // count per page
-      };
-      $scope.roleTableParams = new TableParams(params, {
-        counts: [],
-        total: function () { return project.roles.length; }, // length of data
-        getData: function ($defer, params) {
-          var start = (params.page() - 1) * params.count(),
-            end = params.page() * params.count(),
-
-          // use build-in angular filter
-            ret = project.roles.from(start).to(end);
-
-          $defer.resolve(ret);
-        }
-      });
-
-      $scope.assignmentsTableParams = new TableParams(params, {
-        counts: [],
-        total: function () { return project.roles.length; },
-        getData: function ($defer, params) {
-          var start = (params.page() - 1) * params.count(),
-            end = params.page() * params.count(),
-
-            orderedData = params.sorting() ?
-                $filter('orderBy')($scope.project.roles, params.orderBy()) :
-                $scope.project.roles,
-          // use build-in angular filter
-            ret = orderedData.slice(start, end);
-
-          $defer.resolve(ret);
-        }
-      });
-
+      
       /**
        * Whenever the roles:add event is fired from a child controller,
        * handle it by adding the supplied role to our project.
        */
       $scope.$on('roles:add', function (event, role) {
         $scope.project.addRole(role);
-        $scope.roleTableParams.reload();
         $scope.assignmentsTableParams.reload();
       });
 
@@ -110,7 +99,6 @@ angular.module('Mastermind')
        */
       $scope.$on('roles:remove', function (event, role) {
         $scope.project.removeRole(role);
-        $scope.roleTableParams.reload();
         $scope.assignmentsTableParams.reload();
       });
 

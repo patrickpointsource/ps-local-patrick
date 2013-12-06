@@ -4,8 +4,10 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('RolesCtrl',
-    function ($scope, RolesService, RoleTypes, Rates, RateFactory) {
+  .controller('RolesCtrl', ['$scope', '$filter', 'RolesService', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
+    function ($scope, $filter, RolesService, RoleTypes, Rates, RateFactory, TableParams) {
+	  
+	  
       $scope.newRole = RolesService.create();
 
       RoleTypes.query().then(function (data) {
@@ -13,6 +15,24 @@ angular.module('Mastermind.controllers.projects')
         $scope.roleTypes = data;
       });
       
+      // Table Parameters
+      var params = {
+        page: 1,            // show first page
+        count: 10,           // count per page
+        sorting: {
+        	type: 'asc'     // initial sorting
+        }
+      };
+      $scope.roleTableParams = new TableParams(params, {
+    	counts: [], // hide page counts control
+        total: $scope.project.roles.length, // length of data
+        getData: function ($defer, params) {
+            var data = $scope.project.roles;
+            var ret = data.slice((params.page() - 1) * params.count(), params.page() * params.count());
+            $defer.resolve(ret);
+        }
+      });
+
       /**
        * Change the rate type on the new role to the specified new rate type
        *
@@ -46,9 +66,13 @@ angular.module('Mastermind.controllers.projects')
 
         // Bubble an event up to add this role.
         $scope.$emit('roles:add', $scope.newRole);
+        
+        //Update the tables
+        $scope.roleTableParams.reload();
 
         // Create the new Role with the previously selected rate type.
         $scope.newRole = RolesService.create({rate: RateFactory.build($scope.newRole.rate.type)});
+        
 
         // Reset the form to being pristine.
         $scope.rolesForm.$setPristine();
@@ -60,6 +84,9 @@ angular.module('Mastermind.controllers.projects')
       $scope.remove = function (role) {
         // Bubble up an event to handle removing a role elsewhere
         $scope.$emit('roles:remove', role);
+        
+        //Update the tables
+        $scope.roleTableParams.reload();
       };
 
       $scope.$watch(function () {
@@ -67,4 +94,4 @@ angular.module('Mastermind.controllers.projects')
       }, function (newLength) {
         $scope.$emit('roles:valid:change', newLength > 0);
       });
-    });
+    }]);
