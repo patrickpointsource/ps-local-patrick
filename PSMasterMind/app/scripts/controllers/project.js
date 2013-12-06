@@ -66,6 +66,25 @@ angular.module('Mastermind')
 	     }
         
       });
+      
+//      /**
+//       * Get All the people
+//       */
+//      People.query().then(function (data) {
+//	      function assignPeople(result) {
+//	        $scope.people[result.about] = result;
+//	      }
+//	
+//	      $scope.people = {};
+//	      _(data).pluck('resource').forEach(function (resource) {
+//	      	Resources.get(resource).then(assignRoleGroup);
+//	      });
+//	      
+//	      $scope.newFunctionNewName = function(resource){
+//	      	return $scope.roleGroups[resource];
+//	     }
+//	      
+//	    });
 
       /**
        * Save the loaded project.
