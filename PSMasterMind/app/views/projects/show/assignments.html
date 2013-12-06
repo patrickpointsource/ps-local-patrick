@@ -10,7 +10,7 @@
                 <td data-title="'End Date'" sortable="endDate">{{role.endDate | date:'longDate'}}</td>
                 <td data-title="'Person Assigned'">
                     <select ng-model="role.assignee.resource"
-                            ng-options="m.resource as m.title for m in roleGroups[role.type.resource].members">
+                            ng-options="m.resource as m.name for m in roleGroups[role.type.resource].members">
                     </select>
                 </td>
             </tr>

@@ -8,9 +8,6 @@ angular.module('Mastermind')
     function ($scope, $state, $filter, Resources, projects) {
       $scope.today = $filter('date')(new Date());
       $scope.projects = projects;
-      if (projects) {
-        $scope.projectCount = projects.length;
-      }
       
       //Get todays date formatted as yyyy-MM-dd
       var today = new Date();

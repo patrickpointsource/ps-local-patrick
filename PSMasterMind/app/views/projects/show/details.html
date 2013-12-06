@@ -73,13 +73,13 @@
             <label class="control-label required-label" for="executiveSponsor">Executive Sponsor:</label>
             <select id="executiveSponsor" name="executiveSponsor" class="col-xs-12 form-control"
                     ng-model="project.executiveSponsor.resource" required
-                    ng-options="m.resource as m.title for m in execs.members">
+                    ng-options="m.resource as m.name for m in execs.members">
             </select>
         </div>
         <div class="col-xs-4 form-group">
             <label for="salesSponsor">Sales Sponsor:</label>
             <select id="salesSponsor" class="col-xs-12 form-control" ng-model="project.salesSponsor.resource"
-                    ng-options="m.resource as m.title for m in sales.members">
+                    ng-options="m.resource as m.name for m in sales.members">
             </select>
         </div>
     </div>
