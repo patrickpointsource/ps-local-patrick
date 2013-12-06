@@ -143,12 +143,12 @@
     </section>
 
     <h3>Current Roles</h3>
-	<button ng-click="roleTableParams.reload()" class="btn btn-default">Reload</button>
+	<!-- button ng-click="roleTableParams.reload()" class="btn btn-default">Reload</button-->
     <div class="row">
         <div class="col-xs-12">
             <table class="table" ng-table="roleTableParams" template-pagination="custom/pager">
                 <tr ng-repeat="role in $data">
-                    <td data-title="'Role'">{{role.type.resource}}</td>
+                    <td data-title="'Role'">{{roleGroups[role.type.resource].abbreviation}}</td>
                     <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.isFullyUtilized()"></i></td>
                     <td data-title="'H/M'">{{role.rate.hoursPerMonth()}}</td>
                     <td data-title="'Start Date'">{{role.startDate | date:'longDate'}}</td>

@@ -29,7 +29,8 @@ angular.module('Mastermind.models.projects')
       rate: RateFactory.build(Rates.HOURLY),
       shore: 'on',
       startDate: undefined,
-      endDate: undefined
+      endDate: undefined,
+      assignee: undefined
     };
 
     /**
@@ -45,6 +46,7 @@ angular.module('Mastermind.models.projects')
       this.shore = options.shore || defaults.shore;
       this.startDate = options.startDate ? new Date(options.startDate) : defaults.startDate;
       this.endDate = options.endDate ? new Date(options.endDate) : defaults.endDate;
+      this.assignee = options.assignee || defaults.assignee;
     }
 
     return Role;
