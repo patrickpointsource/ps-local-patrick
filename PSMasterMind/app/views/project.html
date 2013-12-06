@@ -12,20 +12,20 @@
 			<li ng-class="{active: activeTab == 'assignments'}"><a ng-click="showAssignments()" data-toggle="tab">Assignments</a></li>
 			<li ng-class="{active: activeTab == 'summary'}"><a ng-click="showSummary()" data-toggle="tab">Summary</a></li>
 		</ul>
-
 		<div class="tab-content">
 		    <div id="details" class="tab-pane" ng-class="{active: activeTab == 'details'}">
 		    	<form name="ProjectForm" class="projectForm">
+		    	   
 		    		<fieldset>
 						<div class="row">
-							<div class="col-xs-6">
+							<div class="col-xs-12 col-sm-6">
 								<label class="required-label">* Customer Name:</label>
 								<div class="input-insert-right full">
 									<input type="text" class="col-xs-12" placeholder="Customer Name" name="customerName" ng-model="project.customerName" required>
 									<span class="add-in"><i class="fa fa-user input-icon"></i></span>
 								</div>
 							</div>
-							<div class="col-xs-6">
+							<div class="col-xs-12 col-sm-6">
 								<label>Type:</label>
 								<label class="radio inline"><input type="radio" value="paid" ng-model="project.type" />Paid</label>
 								<label class="radio inline"><input type="radio" value="poc" ng-model="project.type" />PoC</label>

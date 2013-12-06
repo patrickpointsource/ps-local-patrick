@@ -1,6 +1,6 @@
 <div ng-form="detailsForm" ng-controller="DetailsCtrl">
     <div class="row">
-        <div class="col-xs-6 form-group" ng-class="{error: isFieldInError('customerName')}">
+        <div class="col-xs-8 col-sm-6 form-group" ng-class="{error: isFieldInError('customerName')}">
             <span class="help-block pull-right">Please enter the customer's name.</span>
             <label class="required-label" for="customerName">Customer Name:</label>
               <input id="customerName" name="customerName" type="text" class="col-xs-12 form-control user-input-icon"
@@ -10,7 +10,7 @@
                   required
                   ng-readonly="!isTransient">
         </div>
-        <div class="col-xs-6 form-group">
+        <div class="col-xs-4 col-sm-6 form-group">
             <label class="required-label">Type:</label>
             <label class="radio inline no-top-margin"><input type="radio" value="paid" ng-model="project.type">Paid</label>
             <label class="radio inline"><input type="radio" value="poc" ng-model="project.type">PoC</label>
@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-6 form-group" ng-class="{error: isFieldInError('projectName')}">
+        <div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('projectName')}">
             <span class="help-block pull-right">Please enter a name for the project.</span>
             <label class="control-label required-label" for="projectName">Project Name:</label>
             <input id="projectName" type="text" class="col-xs-12 form-control" placeholder="Project Name"
@@ -27,7 +27,7 @@
                     ng-model="project.name" required
                     ng-readonly="!isTransient">
         </div>
-        <div class="col-xs-6 form-group">
+        <div class="col-xs-12 col-sm-6 form-group">
             <label for="primaryContact">Primary Contact:</label>
                 <input id="primaryContact" type="text" class="col-xs-12 form-control" placeholder="Primary Contact"
                         name="primaryContact" ng-model="project.primaryContact">
@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-4 form-group" ng-class="{error: isFieldInError('startDate')}">
+        <div class="col-xs-12  col-sm-4 form-group" ng-class="{error: isFieldInError('startDate')}">
             <label class="required-label" for="startDate">Start Date:</label>
             <input id="startDate" name="startDate" class="col-xs-12 form-control datepicker" type="text"
                 ng-model="project.startDate"
@@ -50,13 +50,13 @@
                 data-provide="datepicker"
                 ng-readonly="!isTransient">
         </div>
-        <div class="col-xs-4 form-group datepicker">
+        <div class="col-xs-12  col-sm-4 form-group datepicker">
             <label for="endDate">End Date:</label>
             <input id="endDate" class="col-xs-12 form-control" type="text" ng-model="project.endDate"
                 data-date-format="yyyy-mm-dd"
                 data-provide="datepicker">
         </div>
-        <div class="col-xs-4 form-group">
+        <div class="col-xs-12 col-sm-4 form-group">
             <label for="projectState">Project State:</label>
             <select id="projectState" class="col-xs-12 form-control" ng-model="project.state">
                 <option value="preSales">Pre-Sales</option>
@@ -68,7 +68,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-4 form-group" ng-class="{error: isFieldInError('executiveSponsor')}">
+        <div class="col-xs-12 col-sm-4 form-group" ng-class="{error: isFieldInError('executiveSponsor')}">
             <span class="help-block pull-right">Please choose an executive.</span>
             <label class="control-label required-label" for="executiveSponsor">Executive Sponsor:</label>
             <select id="executiveSponsor" name="executiveSponsor" class="col-xs-12 form-control"
@@ -76,7 +76,7 @@
                     ng-options="m.resource as m.name for m in execs.members">
             </select>
         </div>
-        <div class="col-xs-4 form-group">
+        <div class="col-xs-12 col-sm-4 form-group">
             <label for="salesSponsor">Sales Sponsor:</label>
             <select id="salesSponsor" class="col-xs-12 form-control" ng-model="project.salesSponsor.resource"
                     ng-options="m.resource as m.name for m in sales.members">
@@ -85,25 +85,14 @@
     </div>
     <div class="well">
         <div class="row">
-            <div class="col-xs-6 form-group">
+            <div class="col-xs-12 col-sm-8 form-group">
                 <label for="totalEstimatedValue">Total Estimated Value:</label>
                 <input class="col-xs-12 form-control" id="totalEstimatedValue" type="number"
                         ng-model="project.terms.totalEstimatedValue">
             </div>
-
-            <div class="col-xs-6 form-group">
-                <label class="control-label">&nbsp;</label>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox"
-                            ng-model="project.terms.includesProjectManagementOverhead">Project
-                            Includes PM Overhead
-                    </label>
-                </div>
-            </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 form-group">
+            <div class="col-xs-6 form-group">
                 <label>Bid Terms:</label>
                 <div class="radio">
                   <label>
@@ -114,6 +103,16 @@
                 <div class="radio">
                     <label><input type="radio" value="fixed"
                         ng-model="project.terms.type">Fixed</label>
+                </div>
+            </div>
+            <div class="col-xs-6  form-group">
+                <label class="control-label">&nbsp;</label>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                            ng-model="project.terms.includesProjectManagementOverhead">Project
+                            Includes PM Overhead
+                    </label>
                 </div>
             </div>
         </div>
