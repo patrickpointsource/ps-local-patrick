@@ -113,7 +113,8 @@ public interface CONSTS {
 	public String BUILD_NUMBER = "0.1.2013.12.06";
 	public String DB_USER = "admin";
 	public String DB_PASS = "t0ddSucks";
-	public String DB_HOSTNAME_DEFAULT = "db.mastermind.pointsource.us";
+	//public String DB_HOSTNAME_DEFAULT = "db.mastermind.pointsource.us";
+	public String DB_HOSTNAME_DEFAULT = "localhost";
 	public int DB_PORT_DEFAULT  = 27017;
 	public String DB_NAME_DEFAULT  = "mm_db_stage";
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
