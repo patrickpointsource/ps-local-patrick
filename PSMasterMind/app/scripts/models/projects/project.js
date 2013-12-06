@@ -88,6 +88,7 @@ angular.module('Mastermind.models.projects')
       this.state = options.state || defaults.state;
       this.terms = new Terms(options.terms);
       this.executiveSponsor = options.executiveSponsor || defaults.executiveSponsor;
+      this.salesSponsor = options.salesSponsor || defaults.salesSponsor;
       this.roles = _.map(options.roles, function (role) {
         return new Role(role);
       });

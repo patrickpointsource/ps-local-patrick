@@ -117,7 +117,7 @@
         return val;
       }
 
-      RestangularProvider.setBaseUrl(serverLocation + '/MasterMindServer/rest/')
+      RestangularProvider.setBaseUrl(serverLocation + '/MasterMindStaging/rest/')
         .setDefaultHeaders({
           'Authorization': 'Bearer ' + localStorage.getItem('access_token')
         })
