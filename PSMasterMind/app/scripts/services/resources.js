@@ -84,29 +84,25 @@ angular.module('Mastermind').factory(
 			 */
 			function resolve(resourceRef){
 				var resource = resourceRef.resource;
-				var deepCopy = function deepCopy(o) {
-			        var copy = o,k;
-			        
-			        if (o && typeof o === 'object') {
-			            copy = Object.prototype.toString.call(o) === '[object Array]' ? [] : {};
-			            for (k in o) {
-			                copy[k] = deepCopy(o[k]);
-			            }
-			        }
-			     
-			        return copy;
-			    };
-			    
+				
 			    return get(resource, function(result){
-			    	for (var k in result) {
-			    		resourceRef[k] = deepCopy(result[k]);
-		            }
+			    	var ret = $.extend(true, resourceRef, result);
+					return ret;
 			    });
 			}
+			
+			/**
+			 * Create a deep copy on an object
+			 */
+			function deepCopy(o) {
+				var copy = $.extend(true, {}, o);
+				return copy;
+		    }
 
 			return {
 				query : query,
 				get : get,
-				resolve: resolve
+				resolve: resolve,
+				deepCopy: deepCopy
 			};
 		});

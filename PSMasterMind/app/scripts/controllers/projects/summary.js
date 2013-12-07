@@ -26,12 +26,12 @@ angular.module('Mastermind.controllers.projects')
                 $scope.project.roles;
           
           //use build-in angular filter
-          var ret = orderedData.slice(start, end);
+          var result = orderedData.slice(start, end);
           
           var defers = [];
-          
-          for(var i = 0; i < ret.length; i++){
-        	  var ithRole = ret[i];
+          var ret = [];
+          for(var i = 0; i < result.length; i++){
+        	  var ithRole = Resources.deepCopy(result[i]);
         	  if(ithRole.assignee && ithRole.assignee.resource){
         		  defers.push(Resources.resolve(ithRole.assignee));
         		  //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
@@ -41,6 +41,8 @@ angular.module('Mastermind.controllers.projects')
         		  defers.push(Resources.resolve(ithRole.type));
         		  //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
         	  }
+        	  
+        	  ret[i] = ithRole;
           }
 	
 	      $.when.apply(window, defers).done(function(){
