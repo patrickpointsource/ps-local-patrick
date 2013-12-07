@@ -8,6 +8,11 @@ angular.module('Mastermind')
     var ResourcesRestangular = Restangular.withConfig(function (RestangularConfigurer) {});
 
     var Resource = ResourcesRestangular.all('');
+    
+    //Cache Constants
+    var ONE_HOUR = 60 * 60 * 1000; /* ms */
+    var MAX_TIME = ONE_HOUR;
+    var TIME_PREFIX = 'time:';
 
     /**
      * Service function for querying a resource member.
@@ -43,7 +48,27 @@ angular.module('Mastermind')
      * @returns {*}
      */
     function get(resource, onSuccess) {
-      return Resource.get(resource).then(onSuccess);
+      //First check if we have this resource in cache
+      var value = localStorage[resource];
+      var time = localStorage[TIME_PREFIX+resource];
+      
+      if(value && time){
+    	   time = Date.parse(time);
+    	   if(((new Date) - time) < MAX_TIME){
+    		   value = JSON.parse(value);
+    		   onSuccess(value);
+    	   }
+      }
+      
+      else{
+    	  return Resource.get(resource).then(function(value){
+    		  //Save to localStorage
+    		  localStorage[resource] = JSON.stringify(value);
+    		  localStorage[TIME_PREFIX+resource] = new Date();
+    		  onSuccess(value);
+    	  }
+    	);
+      }
     }
 
     return {

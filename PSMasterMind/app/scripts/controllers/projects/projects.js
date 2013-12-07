@@ -54,7 +54,9 @@ angular.module('Mastermind.controllers.projects')
               $filter('orderBy')(projects, params.orderBy()) :
               projects,
 
-            ret = orderedData.slice(start, end);
+              ret = orderedData.slice(start, end);
+             
+              
           $defer.resolve(ret);
         }
       });

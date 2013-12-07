@@ -58,7 +58,8 @@ angular.module('Mastermind')
 
         $scope.roleGroups = {};
         _(data).pluck('resource').forEach(function (resource) {
-        	Resources.get(resource).then(assignRoleGroup);
+        	
+        	Resources.get(resource, function(data){assignRoleGroup(data)});
         });
         
         $scope.newFunctionNewName = function(resource){
