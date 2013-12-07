@@ -46,19 +46,14 @@
      <br/>
     <div class="row">
         <div class="col-xs-12">
-        Role Summary to go here
-        
-        <!--
-        
-            <h3>Current Roles</h3>
-        <table ng-table="assignmentsTableParams" class="table" template-pagination="custom/pager">
+        <table ng-table="summaryRolesTableParams" class="table peopleList" template-pagination="custom/pager">
             <tr ng-repeat="role in $data">
-                <td data-title="'Role'" sortable="type.id">{{roleGroups[role.type.resource].abbreviation}}</td>
+            	<td data-title="'Person Assigned'"><img class="profileImage" src="{{role.assignee.thumbnail}}"> <span >{{role.assignee.name}}</span></td>
+                <td data-title="'Role'" sortable="type.id">{{role.type.abbreviation}}</td>
                 <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.isFullyUtilized()"></i></td>
                 <td data-title="'H/M'">{{role.rate.hoursPerMonth()}}</td>
                 <td data-title="'Start Date'" sortable="startDate">{{role.startDate | date:'longDate'}}</td>
                 <td data-title="'End Date'" sortable="endDate">{{role.endDate | date:'longDate'}}</td>
-                <td data-title="'Person Assigned'">{{role.assignee.resource}}</td>
             </tr>
         </table>
         <script type="text/ng-template" id="custom/pager">
@@ -79,8 +74,5 @@
                     </li>
                 </ul>
             </script>
-        </div>
-        
-        -->
     </div>
 </div>
