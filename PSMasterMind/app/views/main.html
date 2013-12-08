@@ -7,12 +7,12 @@
 	<div id="dashboard-widgets" class="row">
 		<div class="col-xs-6 dashboard-widget">
 			<div class="row dashboard-label">
-				<div class="col-md-9 hidden-xs hidden-sm">Active Projects</div>
-				<div class="col-xs-7 col-sm-8 visible-xs visible-sm">Projects</div>
-				<div class="col-xs-5 col-sm-4 col-md-3">
+				<div class="col-sm-9 hidden-xs">Active Projects</div>
+				<div class="col-xs-9 visible-xs">Projects</div>
+				<div class="col-xs-3">
 					<button class="pull-right btn btn-default" ng-click="createProject()">
-						<div class="visible-sm visible-md visible-lg"><i class="fa fa-plus-square"></i> Add</div>
-						<div class="visible-xs"><i class="fa fa-plus-square"></i></div>
+						<div class="visible-md visible-lg"><i class="fa fa-plus-square"></i> Add</div>
+						<div class="visible-xs visible-sm"><i class="fa fa-plus-square"></i></div>
 					</button>
 				</div>
 			</div>
@@ -23,10 +23,11 @@
 		
 		<div class="col-xs-6 dashboard-widget">
 			<div class="row dashboard-label">
-				<div class="col-md-9 hidden-xs hidden-sm">Available People</div>
-				<div class="col-xs-7 col-sm-8 visible-xs visible-sm">People</div>
+				<div class="col-md-9 hidden-xs">Available People</div>
+				<div class="col-xs-7 col-sm-8 visible-xs">People</div>
 			</div>
 			<div class="dashboard-box" ng-click="showPeople()">
+				{{availablePeopleCount}}
 			</div>
 		</div>
 	</div>

@@ -60,7 +60,7 @@ angular.module('Mastermind').factory(
 					time = Date.parse(time);
 					if (((new Date) - time) < MAX_TIME) {
 						value = JSON.parse(value);
-						onSuccess(value);
+						if(onSuccess)onSuccess(value);
 						resolved = true;
 					}
 				}
@@ -70,7 +70,7 @@ angular.module('Mastermind').factory(
 						// Save to localStorage
 						localStorage[resource] = JSON.stringify(value);
 						localStorage[TIME_PREFIX + resource] = new Date();
-						onSuccess(value);
+						if(onSuccess)onSuccess(value);
 						return value;
 					});
 				}
