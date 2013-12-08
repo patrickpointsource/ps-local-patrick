@@ -147,7 +147,9 @@
           console.log('Error Interceptor!');
           //var json = JSON.stringify(resp);
           //console.log(json);
-
+          
+          var ret = true;
+          
           var status = resp.status,
             method = resp.method,
             url = resp.url,
@@ -157,7 +159,7 @@
 
           if (status === 401 || status === 403) {
             if (status === 401) {
-              alert('Failed to login to MasterMind');
+              console.log('Failed to login to MasterMind:');
             }
             if (status === 403) {
               alert('You are not a member of the PointSource domain');
@@ -166,8 +168,9 @@
             accessToken = localStorage.getItem('access_token');
             helper.disconnectUser(accessToken);
           }
-
-          return true; // false to stop the promise chain
+          ret = false;
+          
+          return ret; // false to stop the promise chain
         }
       );
     })
