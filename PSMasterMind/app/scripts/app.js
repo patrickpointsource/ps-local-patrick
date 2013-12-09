@@ -47,13 +47,13 @@
           }
         })
         .state('projects', {
-          url: '/projects',
+          url: '/projects?filter',
           abstract: true,
           template: '<ui-view />'
         })
         .state('projects.index', {
           url: '',
-          templateUrl: 'views/projects/index.html',
+          templateUrl: 'views/projects/index.html?filter',
           controller: 'ProjectsCtrl',
           resolve: {
             projects: function (ProjectsService) {

@@ -102,7 +102,7 @@ angular.module('Mastermind')
        * Navigate to view a list of active projects.
        */
       $scope.showProjects = function () {
-        $state.go('projects.index');
+        $state.go('projects.index',{filter:'active'});
       };
 
       /**

@@ -1,17 +1,30 @@
+<br />
 <div class="row">
-   <div id="pageActions" class="actions col-xs-12">
-        <button class="btn btn-default" ng-click="createProject()"><i class="fa fa-plus-square"></i> <span>Add Project</span></button>
-    </div>
+	<div class="col-xs-9">
+		<select ng-model="projectFilter" ng-change="handleProjectFilterChanged()">
+			<option value="all">All Projects</option>
+			<option value="active">Active Projects</option>
+		</select>
+	</div>
+	<div class="col-xs-3">
+		<button class="pull-right btn btn-default" ng-click="createProject()">
+			<i class="fa fa-plus-square"></i> <span>Add Project</span>
+		</button>
+	</div>
 </div>
 <div class="row">
-    <div class="col-xs-12">
-        <table ng-table="tableParams" template-pagination="custom/pager" class="table">
-            <tr ng-repeat="project in $data">
-                <td><a ng-click="showProject(project)">{{project.name}}</a></td>
-                <td class="text-right"><button class="btn btn-default" ng-click="deleteProject(project)"><i class="fa fa-trash-o"></i></button></td>
-            </tr>
-        </table>
-        <script type="text/ng-template" id="custom/pager">
+	<div class="col-xs-12">
+		<table ng-table="tableParams" template-pagination="custom/pager"
+			class="table">
+			<tr ng-repeat="project in $data">
+				<td><a ng-click="showProject(project)">{{project.name}}</a></td>
+				<td class="text-right"><button class="btn btn-default"
+						ng-click="deleteProject(project)">
+						<i class="fa fa-trash-o"></i>
+					</button></td>
+			</tr>
+		</table>
+		<script type="text/ng-template" id="custom/pager">
             <ul class="pager ng-cloak">
                 <li ng-repeat="page in pages"
                     ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
@@ -29,5 +42,5 @@
                 </li>
             </ul>
         </script>
-    </div>
+	</div>
 </div>
