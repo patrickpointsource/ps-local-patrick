@@ -102,6 +102,13 @@ angular.module('Mastermind')
        * Navigate to view a list of active projects.
        */
       $scope.showProjects = function () {
+        $state.go('projects.index');
+      };
+      
+      /**
+       * Navigate to view a list of active projects.
+       */
+      $scope.showActiveProjects = function () {
         $state.go('projects.index',{filter:'active'});
       };
 
@@ -110,6 +117,13 @@ angular.module('Mastermind')
        */
       $scope.showPeople = function () {
         $state.go('people');
+      };
+      
+      /**
+       * Navigate to view a list of people who can be assigned to projects.
+       */
+      $scope.showAvailablePeople = function () {
+        $state.go('people', {filter:'available'});
       };
 
       /**

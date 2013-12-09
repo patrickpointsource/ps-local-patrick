@@ -94,7 +94,7 @@
           }
         })
         .state('people', {
-          url: '/people',
+          url: '/people?filter',
           templateUrl: 'views/people/people.html',
           controller: 'PeopleCtrl',
           resolve: {

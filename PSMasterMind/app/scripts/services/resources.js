@@ -41,7 +41,7 @@ angular.module('Mastermind').factory(
 					resource = resource + 'fields=' + fields;
 				}
 
-				return Resource.get(resource).then(onSuccess);
+				Resource.get(resource).then(onSuccess);
 			}
 
 			/**

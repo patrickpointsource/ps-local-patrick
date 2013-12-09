@@ -1,3 +1,15 @@
+<br />
+<div class="row">
+	<div class="col-xs-9">
+		<select ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
+			<option value="all">All People</option>
+			<option value="available">Available People</option>
+		</select>
+	</div>
+	<div class="col-xs-3">
+		
+	</div>
+</div>
 <div class="row">
      <div class="col-xs-12">
          <table ng-table="tableParams" template-pagination="custom/pager" class="table peopleList">
