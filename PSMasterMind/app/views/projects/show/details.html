@@ -1,7 +1,6 @@
 <div ng-form="detailsForm" ng-controller="DetailsCtrl">
     <div class="row">
         <div class="col-xs-8 col-sm-6 form-group" ng-class="{error: isFieldInError('customerName')}">
-            <span class="help-block pull-right">Please enter the customer's name.</span>
             <label class="required-label" for="customerName">Customer Name:</label>
               <input id="customerName" name="customerName" type="text" class="col-xs-12 form-control user-input-icon"
                   placeholder="Customer Name"
@@ -20,7 +19,6 @@
     </div>
     <div class="row">
         <div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('projectName')}">
-            <span class="help-block pull-right">Please enter a name for the project.</span>
             <label class="control-label required-label" for="projectName">Project Name:</label>
             <input id="projectName" type="text" class="col-xs-12 form-control" placeholder="Project Name"
                     name="projectName"
@@ -69,7 +67,6 @@
     </div>
     <div class="row">
         <div class="col-xs-12 col-sm-4 form-group" ng-class="{error: isFieldInError('executiveSponsor')}">
-            <span class="help-block pull-right">Please choose an executive.</span>
             <label class="control-label required-label" for="executiveSponsor">Executive Sponsor:</label>
             <select id="executiveSponsor" name="executiveSponsor" class="col-xs-12 form-control"
                     ng-model="project.executiveSponsor.resource" required
