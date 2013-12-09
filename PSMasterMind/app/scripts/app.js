@@ -146,10 +146,10 @@
         function (resp) {
           console.log('Error Interceptor!');
           //var json = JSON.stringify(resp);
-          //console.log(json);
-          
+          console.log(resp);
+
           var ret = true;
-          
+
           var status = resp.status,
             method = resp.method,
             url = resp.url,
@@ -167,9 +167,9 @@
 
             accessToken = localStorage.getItem('access_token');
             helper.disconnectUser(accessToken);
+            ret = false;
           }
-          ret = false;
-          
+
           return ret; // false to stop the promise chain
         }
       );
@@ -178,10 +178,10 @@
       function ($rootScope) {
         $rootScope.logout = function () {
           var accessToken = localStorage.getItem('access_token');
-          
+
           //Clear Local Storage
           localStorage.clear();
-          
+
           helper.disconnectUser(accessToken);
         };
 
