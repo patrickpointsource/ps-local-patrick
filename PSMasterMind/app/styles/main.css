@@ -6096,20 +6096,16 @@ header .navbar-inner {
   background-color: transparent;
   background-image: none;
 }
-header #profilePhotoContainer {
-  padding-top: 6px;
-}
-header #profilePhotoContainer #profile-photo {
-  height: 48px;
-  width: 48px;
-  margin-top: 0px;
+header #profile-photo {
+  height: 40px;
+  width: 40px;
   background-color: #fff;
 }
-header #profilePhotoContainer #profile-photo img {
+header #profile-photo img {
   height: 100%;
   z-index: -1;
 }
-header #profilePhotoContainer .dropdown-menu {
+header .user-dropdown.dropdown-menu {
   right: 0px;
   left: auto;
   padding: 5px;
