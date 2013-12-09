@@ -38,25 +38,28 @@
 		<div id="graph-header">
 			<div id="graph-header-title" class="dashboard-label">Quick View</div>
 		</div>
-    <table id="graph">
-        <tbody>
-            <tr>
-                <th>Nov</th>
-                <th>Dec</th>
-                <th>Jan</th>
-                <th>Feb</th>
-                <th>Mar</th>
-                <th>Apr</th>
-            </tr>
-            <tr ng-repeat="project in projects">
-                <td ng-class="{active: inMonth(project, 10, 2013)}"></td>
-                <td ng-class="{active: inMonth(project, 11, 2013)}"></td>
-                <td ng-class="{active: inMonth(project, 0, 2014)}"></td>
-                <td ng-class="{active: inMonth(project, 1, 2014)}"></td>
-                <td ng-class="{active: inMonth(project, 2, 2014)}"></td>
-                <td ng-class="{active: inMonth(project, 3, 2014)}"></td>
-            </tr>
-        </tbody>
-    </table>
+		
+	    <table id="graph">
+	        <tbody>
+	            <tr>
+	            	<th>Name</th>
+	                <th>Dec</th>
+	                <th>Jan</th>
+	                <th>Feb</th>
+	                <th>Mar</th>
+	                <th>Apr</th>
+	                <th>May</th>
+	            </tr>
+	            <tr ng-repeat="project in qvProjects">
+	            	<td>{{project.name}}</td>
+	                <td ng-class="{active: inMonth(project, 11, 2013)}"></td>
+	                <td ng-class="{active: inMonth(project, 0, 2014)}"></td>
+	                <td ng-class="{active: inMonth(project, 1, 2014)}"></td>
+	                <td ng-class="{active: inMonth(project, 2, 2014)}"></td>
+	                <td ng-class="{active: inMonth(project, 3, 2014)}"></td>
+	                <td ng-class="{active: inMonth(project, 4, 2014)}"></td>
+	            </tr>
+	        </tbody>
+	    </table>
 	</div>
 </div>

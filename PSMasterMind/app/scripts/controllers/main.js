@@ -89,7 +89,21 @@ angular.module('Mastermind')
     		  $scope.availablePeopleCount = inactivePeople.length;
 	      });
       });
-
+      
+      var sixMontsFromNow = new Date();
+      sixMontsFromNow.setMonth(sixMontsFromNow.getMonth() + 6);
+      var dd6 = sixMontsFromNow.getDate();
+      var mm6 = sixMontsFromNow.getMonth()+1; //January is 0!
+      var yyyy6 = sixMontsFromNow.getFullYear();
+      if(dd6<10){dd6='0'+dd6} if(mm6<10){mm6='0'+mm6} sixMontsFromNow = yyyy6+'-'+mm6+'-'+dd6;
+      
+      var qvProjQuery = {startDate:{$lte:sixMontsFromNow},$or:[{endDate:{$exists:false}},{endDate:{$gt:today}}]};
+      var qvProjFields = {resource:1,name:1,startDate:1,endDate:1};
+      
+      Resources.query('projects', qvProjQuery, qvProjFields, function(result){
+    	  $scope.qvProjects = result.data;
+      });
+      
 
       /**
        * Navigate to creating a project.
@@ -140,7 +154,9 @@ angular.module('Mastermind')
 
         // If the project start day is before the last day of this month
         // and its end date is after the first day of this month.
-        var returnValue = new Date(project.startDate) <= endDay && (project.endDate === null || new Date(project.endDate) >= startDay);
+        var projectStarted =   new Date(project.startDate) <= endDay;
+        var projectEnded = project.endDate &&  new Date(project.endDate) <= startDay;
+        var returnValue =  projectStarted && !projectEnded;
         return returnValue;
       };
     }]);
