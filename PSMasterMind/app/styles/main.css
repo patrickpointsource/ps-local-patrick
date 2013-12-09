@@ -6087,6 +6087,17 @@ header nav {
 header nav .navbar-fixed-top {
   margin-bottom: 0;
 }
+header nav .navbar-toggle {
+  float: left;
+  margin-left: 15px;
+  margin-right: 0;
+  border: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+header nav .navbar-toggle .icon-bar {
+  width: 15px;
+}
 header .navbar-inner {
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -6105,9 +6116,10 @@ header #profile-photo img {
   height: 100%;
   z-index: -1;
 }
-header .user-dropdown.dropdown-menu {
-  right: 0px;
-  left: auto;
+header #user-dropdown {
+  padding: 9px 15px 0;
+}
+header #user-dropdown .dropdown-menu {
   padding: 5px;
   min-width: 100px;
 }
