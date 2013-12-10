@@ -6199,7 +6199,7 @@ main article #content .dashboard-widget .dashboard-actions {
   text-align: center;
 }
 main article #content .dashboard-label {
-  margin: 30px 0 20px 0;
+  margin: 10px -15px;
   font-size: 24px;
   text-align: left;
 }
@@ -6215,20 +6215,26 @@ main article #content #graph-header #graph-header-plus {
 main article #content #graph-header #graph-header-plus i {
   vertical-align: middle;
 }
-main article #content table#graph {
-  margin-bottom: 60px;
-  border: 1px solid #e4e4e4;
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 10px;
+main article #content div.active {
+  background-color: #6185b8;
+  height: 18px;
 }
-main article #content table#graph tbody tr td,
-main article #content table#graph tbody tr th {
+main article #content .graph {
+  border: 1px solid #e4e4e4;
+  padding: 10px;
+  margin: auto;
+}
+main article #content .graph .row {
+  padding: 5px 0px;
+  margin: auto;
+}
+main article #content .graph tbody tr td,
+main article #content .graph tbody tr th {
   width: 139px;
   height: 28px;
 }
-main article #content table#graph tbody tr td.active,
-main article #content table#graph tbody tr th.active {
+main article #content .graph tbody tr td.active,
+main article #content .graph tbody tr th.active {
   background-color: #6185b8;
 }
 #mainContent {

@@ -6,6 +6,7 @@
 angular.module('Mastermind')
   .controller('MainCtrl', ['$scope', '$state', '$filter', 'Resources', 'projects',
     function ($scope, $state, $filter, Resources, projects) {
+	  $scope.summarySwitcher = 'projects';
       $scope.today = $filter('date')(new Date());
       $scope.projects = projects;
       
@@ -98,10 +99,50 @@ angular.module('Mastermind')
       if(dd6<10){dd6='0'+dd6} if(mm6<10){mm6='0'+mm6} sixMontsFromNow = yyyy6+'-'+mm6+'-'+dd6;
       
       var qvProjQuery = {startDate:{$lte:sixMontsFromNow},$or:[{endDate:{$exists:false}},{endDate:{$gt:today}}]};
-      var qvProjFields = {resource:1,name:1,startDate:1,endDate:1};
+      var qvProjFields = {resource:1,name:1,startDate:1,endDate:1,"roles.assignee":1};
       
       Resources.query('projects', qvProjQuery, qvProjFields, function(result){
     	  $scope.qvProjects = result.data;
+    	  
+    	  //Sort By People
+    	  var activePeoplePojects = {};
+    	  var activeProjects = $scope.qvProjects;
+    	  var activePeople = [];
+    	  for(var i = 0; i < activeProjects.length; i++){
+			  var roles = activeProjects[i].roles;
+			  if(roles){
+				//Arrary to keep track of people already in an accounted role
+				  var activePeoplePojectsResources = [];
+				  
+				  //Loop through all the roles in the active projects
+				  for(var j = 0; j < roles.length; j++){
+					  var activeRole = roles[j];
+					  
+					  if(activeRole.assignee && activeRole.assignee.resource 
+							  && !activePeoplePojects.hasOwnProperty(activeRole.assignee.resource)){
+						  //Push the assignnee onto the active list
+						  activePeople.push(Resources.get(activeRole.assignee.resource));
+						  
+						  //Create a project list 
+						  activePeoplePojects[activeRole.assignee.resource] = [activeProjects[i]];
+						  //Accout for person already in role in this project
+						  activePeoplePojectsResources.push(activeRole.assignee.resource);
+					  }
+					  else if(activeRole.assignee && activeRole.assignee.resource
+							  //And not already in an accounted role
+							  && activePeoplePojectsResources.indexOf(activeRole.assignee.resource) == -1){
+						  //Just add the project to the activePeopleProjects list
+						  activePeoplePojects[activeRole.assignee.resource].push(activeProjects[i]);
+					  }
+				  }
+			  }
+		  }
+    	  
+    	  $.when.apply(window, activePeople).done(function(){
+    		  $scope.qvPeople = activePeople;
+    		  $scope.qvPeopleProjects = activePeoplePojects;
+    	  });
+    	  
       });
       
 
