@@ -1,9 +1,9 @@
 #!/bin/bash
-SOURCEDIR=/Users/sbehun/workspaces/resourceplanner/PSMasterMind/app
-DESTINATIONDIR=/Users/sbehun/Sites/local.mastermind.pointsource.us/web
+SOURCEDIR=/Users/sbehun/workspaces/resourceplanner/PSMasterMind/app/
+DESTINATIONDIR=mm:/home/sbehun/web/
 echo -e "\nDeploying mastermind build FROM:\n$SOURCEDIR\nTO:\n$DESTINATIONDIR"
 if [ -d "$DESTINATIONDIR" ]; then
   rm -r "$DESTINATIONDIR"
 fi
-cp -r "$SOURCEDIR" "$DESTINATIONDIR"
+rsync -Crcv "$SOURCEDIR" "$DESTINATIONDIR"
 echo -e "\nDone"

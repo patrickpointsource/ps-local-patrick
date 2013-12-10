@@ -184,5 +184,10 @@
 
           helper.disconnectUser(accessToken);
         };
+
+        // fix bootstrap responsive navbar not collapsing when being clicked in single page apps
+        $(document).on('click', '.navbar-collapse.in', function(e) {
+          $(this).collapse('hide');
+        });
       }]);
 }(window));
