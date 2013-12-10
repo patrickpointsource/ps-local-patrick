@@ -171,14 +171,14 @@ angular.module('Mastermind')
        * Navigate to view a list of people who can be assigned to projects.
        */
       $scope.showPeople = function () {
-        $state.go('people');
+        $state.go('people.index');
       };
       
       /**
        * Navigate to view a list of people who can be assigned to projects.
        */
       $scope.showAvailablePeople = function () {
-        $state.go('people', {filter:'available'});
+        $state.go('people.index', {filter:'available'});
       };
 
       /**

@@ -9,14 +9,11 @@ angular.module('Mastermind.controllers.people')
       $scope.result = result;
       $scope.people = result.members;
       
-      
-      
       $scope.getPeople = function(){
     	  return People.getActivePeople();  
       
       };
       
-
       // Table Parameters
       var params = {
         page: 1,            // show first page

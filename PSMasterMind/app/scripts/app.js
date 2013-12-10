@@ -94,7 +94,12 @@
           }
         })
         .state('people', {
-          url: '/people?filter',
+          url: '/people',
+          abstract: true,
+          template: '<ui-view />'
+        })
+        .state('people.index', {
+          url: '/?filter',
           templateUrl: 'views/people/people.html',
           controller: 'PeopleCtrl',
           resolve: {
@@ -102,6 +107,11 @@
               return People.query();
             }
           }
+        })
+        .state('people.show', {
+          url: '/:profileId',
+          templateUrl: 'views/people/profile.html',
+          controller: 'ProfileCtrl'
         });
     })
     .config(function (RestangularProvider) {

@@ -45,6 +45,6 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state',
      * Navigate to the projects index.
      */
     $scope.showPeople = function () {
-      $state.go('people');
+      $state.go('people.index');
     };
   }]);
