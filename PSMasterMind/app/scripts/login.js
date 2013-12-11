@@ -53,7 +53,7 @@ var helper = (function () {
         $('#authOps').hide('slow');
         $('#gConnect').show();
       }
-      console.log('authResult', authResult);
+      //console.log('authResult', authResult);
     },
     /**
      * Retrieves and renders the authenticated user's Google+ profile.

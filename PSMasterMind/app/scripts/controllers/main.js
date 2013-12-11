@@ -24,20 +24,12 @@ angular.module('Mastermind')
     	  $scope.activeProjects = result;
     	  $scope.projectCount = result.count;
     	  
-    	  var allRoles = [];
-    	  allRoles.push(Resources.get('roles/SSA'));
-    	  allRoles.push(Resources.get('roles/PM'));
-    	  allRoles.push(Resources.get('roles/BA'));
-    	  allRoles.push(Resources.get('roles/SSE'));
-    	  allRoles.push(Resources.get('roles/SUXD'));
-    	  allRoles.push(Resources.get('roles/SE'));
-    	  allRoles.push(Resources.get('roles/UXD'));
-    	  
-    	  
-    	  $q.all(allRoles).then(function(data){
-    		  $scope.allRoles = data;
+    	  var pepInRolesQuery = {'primaryRole.resource':{$in:['roles/SSA','roles/PM','roles/BA','roles/SSE','roles/SE','roles/SUXD','roles/UXD']}};
+    	  var pepInRolesFields = {resource:1,name:1,primaryRole:1,thumbnail:1};
+
+    	  Resources.query('people',pepInRolesQuery,pepInRolesFields,function(peopleResult){
+    		  var people = peopleResult.members;
     		  var activePeople = [];
-    		  var people = [];
     		  var activeProjects = $scope.activeProjects.data;
     		  
     		  //Loop through all the active projects
@@ -56,22 +48,6 @@ angular.module('Mastermind')
     			  }
     		  }
     		  
-    		  //Loop through the role groups
-    		  var allRoles = $scope.allRoles;
-    		  for(var i = 0; i < allRoles.length; i++){
-    			  var members = allRoles[i].members;
-    			  if(members){
-    				  //Loop through all the roles in the active projects
-    				  for(var j = 0; j < members.length; j++){
-    					  var member = members[j];
-    					  if(member.resource && people.indexOf(member.resource) == -1){
-    						  //Push the assignnee onto the active list
-    						  people.push(member.resource);
-    					  }
-    				  }
-    			  }
-    		  }
-    		  
     		  //Shuffle people
     		  for(var j, x, i = people.length; i; j = Math.floor(Math.random() * i), x = people[--i], people[i] = people[j], people[j] = x);
     			  
@@ -80,7 +56,7 @@ angular.module('Mastermind')
     		  //Find the first 9 people not active
     		  for(var i = 0; i < people.length; i++){
     			  var preson = people[i];
-    			  if(activePeople.indexOf(preson) == -1){
+    			  if(activePeople.indexOf(preson.resource) == -1){
     				  inactivePeople[cnt++] = preson;
 //    				  if(cnt == 9){
 //    					  break;

@@ -47,6 +47,7 @@ public interface CONSTS {
 	public String PROP_NAME = "name";
 	public String PROP_PEOPLE = "people";
 	public String PROP_PRIMARY_EMAIL = "primaryEmail";
+	public String PROP_PRIMARY_ROLE = "primaryRole";
 	public String PROP_RATE = "rate";
 	public String PROP_RESOURCE = "resource";
 	public String PROP_ROLES = "roles";

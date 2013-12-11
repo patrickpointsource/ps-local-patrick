@@ -9,9 +9,7 @@ angular.module('Mastermind').factory(
 			var ResourcesRestangular = Restangular.withConfig(function(
 					RestangularConfigurer) {
 			});
-
-			var Resource = ResourcesRestangular.all('');
-
+			
 			// Cache Constants
 			var ONE_HOUR = 60 * 60 * 1000; /* ms */
 			var MAX_TIME = ONE_HOUR;
@@ -23,25 +21,23 @@ angular.module('Mastermind').factory(
 			 * @returns {*}
 			 */
 			function query(resource, query, fields, onSuccess) {
-				if (query || fields) {
-					resource = resource + '?';
-				}
+				var Resource = ResourcesRestangular.one('',resource);
+
+				var params = {};
 
 				if (query) {
 					query = JSON.stringify(query);
-					query = encodeURIComponent(query);
-					resource = resource + 'query=' + query;
+					//query = encodeURIComponent(query);
+					params['query'] = query;
 				}
 
 				if (fields) {
-					if (query)
-						resource = resource + '&';
 					fields = JSON.stringify(fields);
-					fields = encodeURIComponent(fields);
-					resource = resource + 'fields=' + fields;
+					//fields = encodeURIComponent(fields);
+					params['fields'] = fields;
 				}
 
-				Resource.get(resource).then(onSuccess);
+				Resource.get(params).then(onSuccess);
 			}
 
 			/**
@@ -69,7 +65,7 @@ angular.module('Mastermind').factory(
 					}
 	
 					if(!resolved) {
-						Resource.get(resource).then(function(newValue) {
+						fetch(resource).then(function(newValue) {
 							//Save to localStorage
 							localStorage[resource] = JSON.stringify(newValue);
 							localStorage[TIME_PREFIX + resource] = new Date();
@@ -86,6 +82,23 @@ angular.module('Mastermind').factory(
 			}
 			
 			/**
+			 * Fetch a Resource form the server
+			 */
+			function fetch(resource){
+				var route = '';
+				var id = resource;
+				var lastIndex = resource.indexOf('/');
+				if(lastIndex != -1){
+					route = resource.substr(0, lastIndex);
+					id = resource.substr(lastIndex + 1);
+				}
+				
+				var Resource = ResourcesRestangular.one(route,id);
+				
+				return Resource.get();
+			}
+			
+			/**
 			 * Resolve a Reference Object
 			 */
 			function resolve(resourceRef){
@@ -96,9 +109,41 @@ angular.module('Mastermind').factory(
 				    get(resource).then(function(result){
 				    	var ret = $.extend(true, resourceRef, result);
 				    	
-				    	console.log("Resolve: " + JSON.stringify(ret));
-				    	
 				    	deferred.resolve(ret);
+				    });
+				}, 1000);
+				
+				return deferred.promise;
+			}
+			
+			/**
+			 * Force Update
+			 * 
+			 * Pulls the latest version of the resource overwrites and changes passed in an updates the resource on the server
+			 */
+			function forceUpdate(resource){
+				var deferred = $q.defer();
+				
+				setTimeout(function() {
+					var resourceURL = resource.about?resource.about:resource.resource;
+					
+					var route = '';
+					var id = resourceURL;
+					var lastIndex = resourceURL.indexOf('/');
+					if(lastIndex != -1){
+						route = resourceURL.substr(0, lastIndex);
+						id = resourceURL.substr(lastIndex + 1);
+					}
+					var Resource = ResourcesRestangular.one(route,id);
+					
+					Resource.get(resourceURL).then(function(result){
+				    	//Remove the current etag
+				    	delete resource.etag;
+				    	var updated = $.extend(true, result, resource);
+				    	
+				    	result.customPUT(updated, id).then(function(newResult){
+				    		deferred.resolve(newResult);
+				    	});
 				    });
 				}, 1000);
 				
@@ -117,6 +162,7 @@ angular.module('Mastermind').factory(
 				query : query,
 				get : get,
 				resolve: resolve,
-				deepCopy: deepCopy
+				deepCopy: deepCopy,
+				forceUpdate: forceUpdate
 			};
 		});

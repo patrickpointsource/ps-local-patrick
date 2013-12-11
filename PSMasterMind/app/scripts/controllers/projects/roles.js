@@ -9,11 +9,6 @@ angular.module('Mastermind.controllers.projects')
 	  
 	  
       $scope.newRole = RolesService.create();
-
-      RoleTypes.query().then(function (data) {
-        console.log("Role Types = " + data);
-        $scope.roleTypes = data;
-      });
       
       // Table Parameters
       var params = {

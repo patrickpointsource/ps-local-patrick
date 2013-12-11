@@ -6,6 +6,17 @@
 angular.module('Mastermind.controllers.people')
   .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'ngTableParams',
     function ($scope, $state, $stateParams, $filter, Resources, People, TableParams) {
+	  Resources.get('roles').then(function(result){
+		 $scope.allRoles = result; 
+	  });
+	  
+	  $scope.updateProfile = function(){
+		  Resources.forceUpdate($scope.profile).then(function(result){
+			  $scope.profile = result;
+		  })
+	  };
+	  
+	  
 	  $scope.profileId = $stateParams.profileId;
 	  Resources.get('people/'+$scope.profileId).then(function(person){
 		 $scope.profile = person;

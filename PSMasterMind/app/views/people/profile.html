@@ -9,7 +9,11 @@
                     </div>
                     <div class="media-body">
                         <h4 class="media-heading">{{profile.name}}</h4>
-                		<a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a>
+                		<a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br/>
+                		Primary Role<br/>
+	                    <select ng-model="profile.primaryRole.resource" ng-change="updateProfile()"
+	                            ng-options="m.resource as m.title for m in allRoles.members">
+	                    </select>
                     </div>
                 </div>
             </div>

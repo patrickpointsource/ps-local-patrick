@@ -51,23 +51,37 @@ angular.module('Mastermind')
       /**
        * Get All the Role Types
        */
-      RoleTypes.query().then(function (data) {
-        function assignRoleGroup(result) {
-          $scope.roleGroups[result.about] = result;
-        }
-
-        $scope.roleGroups = {};
-        _(data).pluck('resource').forEach(function (resource) {
-        	
-        	Resources.get(resource).then(function(data){assignRoleGroup(data)});
-        });
-        
-        $scope.newFunctionNewName = function(resource){
-	      	return $scope.roleGroups[resource];
-	     }
-        
-      });
-     
+       Resources.get('roles').then(function(result){
+    	   var resources = [];
+    	   var roleGroups = {};
+    	   //Save the list of role types in the scope
+    	   $scope.roleTypes = result.members;
+    	   //Get list of roles to query members
+    	   for(var i = 0; i < result.members.length;i++){
+    		   var role = result.members[i];
+    		   var resource = role.resource;
+    		   roleGroups[resource] = role;
+    		   resources.push(resource);
+    		   //create a members array for each roles group
+    		   role.members = [];
+    	   }
+    	   
+    	   //Query all people with a primary role
+    	   var roleQuery = {'primaryRole.resource':{$in:resources}};
+    	   var fields = {resource:1,name:1,primaryRole:1,thumbnail:1};
+    	   Resources.query('people',roleQuery, fields, function(peopleResults){
+    		    var people = peopleResults.members;
+    		    //Set up lists of people in roles
+    		    for(var i = 0; i < people.length; i++){
+    		    	var person = people[i];
+    		    	var roleResource = person.primaryRole.resource;
+    		    	roleGroups[roleResource].members.push(person);
+    		    }
+    		    //Set a map of role types to members
+    		    $scope.roleGroups = roleGroups;
+    	   })
+       });
+           
 
       /**
        * Save the loaded project.

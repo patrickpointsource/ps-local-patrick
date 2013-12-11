@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -161,7 +163,56 @@ public class Data implements CONSTS {
 		ret.put(PROP_COUNT, members.length());
 		return ret;
 	}
+	
+	private static ArrayList<String> SSAs = new ArrayList<String>();
+	private static ArrayList<String> BAs = new ArrayList<String>();
+	private static ArrayList<String> PMs = new ArrayList<String>();
+	private static ArrayList<String> SSEs = new ArrayList<String>();
+	private static ArrayList<String> SEs = new ArrayList<String>();
+	private static ArrayList<String> SUXDs = new ArrayList<String>();
+	private static ArrayList<String> UXDs = new ArrayList<String>();
+	static{
+		Collections.addAll(SSAs, "115659942511507270693", "106368930450799539126", "107681682076275621618", "100521746243465967724", "108416099312244834291");
+		Collections.addAll(BAs, "118024801441852864610");
+		Collections.addAll(PMs, "105187489722733399928", "103362960874176228355");
+		Collections.addAll(SSEs, "102037350018901696245", "112959653203369443291");
+		Collections.addAll(SEs, "100090968878728629777", "105526065653554855193");
+		Collections.addAll(SUXDs, "102728171905005423498", "112917239891456752571");
+		Collections.addAll(UXDs, "103450144552825063641", "107385689810002496434");
+	}
 
+	private static void initPrimaryRole(JSONObject person, String googleID) throws JSONException{
+		String primaryRole = null;
+		if(SSAs.contains(googleID)){
+			primaryRole = RESOURCE_ROLES+"/"+ROLE_SSA_ID;
+		}
+		else if(BAs.contains(googleID)){
+			primaryRole = RESOURCE_ROLES+"/"+ROLE_BA_ID;
+		}
+		else if(PMs.contains(googleID)){
+			primaryRole = RESOURCE_ROLES+"/"+ROLE_PM_ID;
+		}
+		else if(SSEs.contains(googleID)){
+			primaryRole = RESOURCE_ROLES+"/"+ROLE_SSE_ID;
+		}
+		else if(SEs.contains(googleID)){
+			primaryRole = RESOURCE_ROLES+"/"+ROLE_SSE_ID;
+		}
+		else if(SUXDs.contains(googleID)){
+			primaryRole = RESOURCE_ROLES+"/"+ROLE_SUXD_ID;
+		}
+		else if(UXDs.contains(googleID)){
+			primaryRole = RESOURCE_ROLES+"/"+ROLE_UXD_ID;
+		}
+		
+		if(primaryRole != null){
+			JSONObject roleRef = new JSONObject();
+			roleRef.put(PROP_RESOURCE, primaryRole);
+			person.put(PROP_PRIMARY_ROLE, roleRef);
+		}
+	}
+	
+	
 	/**
 	 * Get the list of managed user groups
 	 * 
@@ -174,111 +225,46 @@ public class Data implements CONSTS {
 		JSONObject ret = new JSONObject();
 		JSONArray members = new JSONArray();
 
-		String fields = "{resource:1,name:1}";
-
 		if (ROLE_SSA_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_SSA_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
 			ret.put(PROP_TITLE, ROLE_SSA_TITLE);
-
-			String query = "{googleId:{ $in:['115659942511507270693','106368930450799539126','107681682076275621618','100521746243465967724','108416099312244834291']}}";
-			Map<String, JSONObject> result = getPeople(context, query, fields);
-			Collection<JSONObject> values = result.values();
-			for (Iterator<JSONObject> iterator = values.iterator(); iterator
-					.hasNext();) {
-				JSONObject jsonObject = (JSONObject) iterator.next();
-				members.put(jsonObject);
-			}
 		}
 
 		else if (ROLE_PM_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_PM_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_PM_ID);
 			ret.put(PROP_TITLE, ROLE_PM_TITLE);
-			
-			String query = "{googleId:{ $in:['118024801441852864610','105187489722733399928','103362960874176228355']}}";
-			Map<String, JSONObject> result = getPeople(context, query, fields);
-			Collection<JSONObject> values = result.values();
-			for (Iterator<JSONObject> iterator = values.iterator(); iterator
-					.hasNext();) {
-				JSONObject jsonObject = (JSONObject) iterator.next();
-				members.put(jsonObject);
-			}
 		}
 
 		else if (ROLE_BA_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_BA_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_BA_ID);
 			ret.put(PROP_TITLE, ROLE_BA_TITLE);
-
-			String query = "{googleId:{ $in:['118024801441852864610','105187489722733399928']}}";
-			Map<String, JSONObject> result = getPeople(context, query, fields);
-			Collection<JSONObject> values = result.values();
-			for (Iterator<JSONObject> iterator = values.iterator(); iterator
-					.hasNext();) {
-				JSONObject jsonObject = (JSONObject) iterator.next();
-				members.put(jsonObject);
-			}
 		}
 
 		else if (ROLE_SSE_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_SSE_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
 			ret.put(PROP_TITLE, ROLE_SSE_TITLE);
-			
-			String query = "{googleId:{ $in:['102037350018901696245','112959653203369443291']}}";
-			Map<String, JSONObject> result = getPeople(context, query, fields);
-			Collection<JSONObject> values = result.values();
-			for (Iterator<JSONObject> iterator = values.iterator(); iterator
-					.hasNext();) {
-				JSONObject jsonObject = (JSONObject) iterator.next();
-				members.put(jsonObject);
-			}
 		}
 
 		else if (ROLE_SE_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_SE_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SE_ID);
 			ret.put(PROP_TITLE, ROLE_SE_TITLE);
-			
-			String query = "{googleId:{ $in:['100090968878728629777','105526065653554855193']}}";
-			Map<String, JSONObject> result = getPeople(context, query, fields);
-			Collection<JSONObject> values = result.values();
-			for (Iterator<JSONObject> iterator = values.iterator(); iterator
-					.hasNext();) {
-				JSONObject jsonObject = (JSONObject) iterator.next();
-				members.put(jsonObject);
-			}
 		}
 
 		else if (ROLE_SUXD_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
 			ret.put(PROP_TITLE, ROLE_SUXD_TITLE);
-			
-			String query = "{googleId:{ $in:['102728171905005423498','112917239891456752571']}}";
-			Map<String, JSONObject> result = getPeople(context, query, fields);
-			Collection<JSONObject> values = result.values();
-			for (Iterator<JSONObject> iterator = values.iterator(); iterator
-					.hasNext();) {
-				JSONObject jsonObject = (JSONObject) iterator.next();
-				members.put(jsonObject);
-			}
 		}
 
 		else if (ROLE_UXD_ID.equalsIgnoreCase(roleId)) {
 			ret.put(PROP_ABBREVIATION, ROLE_UXD_ID);
 			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
 			ret.put(PROP_TITLE, ROLE_UXD_TITLE);
-			
-			String query = "{googleId:{ $in:['103450144552825063641','107385689810002496434']}}";
-			Map<String, JSONObject> result = getPeople(context, query, fields);
-			Collection<JSONObject> values = result.values();
-			for (Iterator<JSONObject> iterator = values.iterator(); iterator
-					.hasNext();) {
-				JSONObject jsonObject = (JSONObject) iterator.next();
-				members.put(jsonObject);
-			}
 		}
 
 		ret.put(PROP_MEMBERS, members);
@@ -939,6 +925,8 @@ public class Data implements CONSTS {
 				person.put(PROP_THUMBNAIL, genericImage);
 			}
 
+			initPrimaryRole(person, googleUserDef.getString(PROP_ID));
+			
 			/**
 			 * If the user did not exist just create it
 			 */
