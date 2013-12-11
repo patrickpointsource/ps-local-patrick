@@ -101,12 +101,7 @@
         .state('people.index', {
           url: '/?filter',
           templateUrl: 'views/people/people.html',
-          controller: 'PeopleCtrl',
-          resolve: {
-            result: function (People) {
-              return People.query();
-            }
-          }
+          controller: 'PeopleCtrl'
         })
         .state('people.show', {
           url: '/:profileId',

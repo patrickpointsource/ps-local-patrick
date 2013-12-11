@@ -4,7 +4,7 @@
  * People Service
  */
 angular.module('Mastermind')
-  .factory('People', ['Restangular', 'Resources', function (Restangular, Resources) {
+  .factory('People', ['$q','Restangular', 'Resources', function ($q, Restangular, Resources) {
 
     /*
      * Create a reference to a server side resource for People.
@@ -64,10 +64,10 @@ angular.module('Mastermind')
     
     
     function getActivePeople(onSuccess){
-    	var allRoles = getAssignableRoles();
+    	var assignableRoles = getAssignableRoles();
     	getActiveProjects(function(result){
     		var activeProjects = result.data;
-    		$.when.apply(window, allRoles).done(function(){
+    		$q.all(assignableRoles).then(function(allRoles){
     	  		  var activePeople = [];
     	  		  var people = [];
     	  		  //Loop through all the active projects
@@ -91,25 +91,28 @@ angular.module('Mastermind')
     	  				  //Loop through all the roles in the active projects
     	  				  for(var j = 0; j < members.length; j++){
     	  					  var member = members[j];
-    	  					  if(member.resource && people.indexOf(member.resource) == -1){
+    	  					  if(member && people.indexOf(member) == -1){
     	  						  //Push the assignnee onto the active list
-    	  						  people.push(member.resource);
+    	  						  people.push(member);
     	  					  }
     	  				  }
     	  			  }
     	  		  }
-    	  		  var inactivePeople = [];
-    	  		  var cnt = 0;
+    	  		  
+    	  		  //{_id:{$in:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
+    	  		  
+    	  		  var oids = [];
+    	  		  var query = {_id:{$in:oids}};
+    	  		  var fields = {resource:1,name:1,thumbnail:1};
     	  		  for(var i = 0; i < people.length; i++){
     	  			  var preson = people[i];
-    	  			  if(activePeople.indexOf(preson) == -1){
-    	  				  inactivePeople[cnt++] = Resources.resolve({resource: preson});
+    	  			  if(activePeople.indexOf(preson.resource) == -1){
+    	  				  var oid = preson['_id'];
+    	  				  oids.push(oid);
     	  			  }
     	  		  }
     	  		  
-    	  		  $.when.apply(window, inactivePeople).done(function(){
-    	  			  onSuccess(inactivePeople);
-    	  		  });
+    	  		  Resources.query('people',query,fields,onSuccess);
     		});
     	});
     	

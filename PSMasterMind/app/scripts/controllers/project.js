@@ -59,7 +59,7 @@ angular.module('Mastermind')
         $scope.roleGroups = {};
         _(data).pluck('resource').forEach(function (resource) {
         	
-        	Resources.get(resource, function(data){assignRoleGroup(data)});
+        	Resources.get(resource).then(function(data){assignRoleGroup(data)});
         });
         
         $scope.newFunctionNewName = function(resource){
@@ -67,25 +67,7 @@ angular.module('Mastermind')
 	     }
         
       });
-      
-//      /**
-//       * Get All the people
-//       */
-//      People.query().then(function (data) {
-//	      function assignPeople(result) {
-//	        $scope.people[result.about] = result;
-//	      }
-//	
-//	      $scope.people = {};
-//	      _(data).pluck('resource').forEach(function (resource) {
-//	      	Resources.get(resource).then(assignRoleGroup);
-//	      });
-//	      
-//	      $scope.newFunctionNewName = function(resource){
-//	      	return $scope.roleGroups[resource];
-//	     }
-//	      
-//	    });
+     
 
       /**
        * Save the loaded project.

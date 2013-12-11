@@ -7,7 +7,7 @@ angular.module('Mastermind.controllers.people')
   .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'ngTableParams',
     function ($scope, $state, $stateParams, $filter, Resources, People, TableParams) {
 	  $scope.profileId = $stateParams.profileId;
-	  $.when(Resources.get('people/'+$scope.profileId)).then(function(person){
+	  Resources.get('people/'+$scope.profileId).then(function(person){
 		 $scope.profile = person;
 		 
 		 var query = {'roles.assignee':{resource:person.about}};
@@ -46,11 +46,4 @@ angular.module('Mastermind.controllers.people')
 			 
 		 });
 	  });
-	  
-	  
-	  
-	  
-	  
-
-	 
   }]);

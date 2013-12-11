@@ -5,7 +5,7 @@
  */
 angular.module('Mastermind').factory(
 		'Resources',
-		function(Restangular) {
+		function($q, Restangular) {
 			var ResourcesRestangular = Restangular.withConfig(function(
 					RestangularConfigurer) {
 			});
@@ -49,46 +49,60 @@ angular.module('Mastermind').factory(
 			 * 
 			 * @returns {*}
 			 */
-			function get(resource, onSuccess) {
-				// First check if we have this resource in cache
-				var value = localStorage[resource];
-				var time = localStorage[TIME_PREFIX + resource];
-
-				var resolved = false;
+			function get(resource) {
+				var deferred = $q.defer();
 				
-				if (value && time) {
-					time = Date.parse(time);
-					if (((new Date) - time) < MAX_TIME) {
-						value = JSON.parse(value);
-						if(onSuccess)onSuccess(value);
-						resolved = true;
+				setTimeout(function() {
+				   
+					// First check if we have this resource in cache
+					var value = localStorage[resource];
+					var time = localStorage[TIME_PREFIX + resource];
+	
+					var resolved = false;
+					
+					if (value && time) {
+						time = Date.parse(time);
+						if (((new Date) - time) < MAX_TIME) {
+							value = JSON.parse(value);
+							resolved = true;
+						}
 					}
-				}
-
-				if(!resolved) {
-					return Resource.get(resource).then(function(value) {
-						// Save to localStorage
-						localStorage[resource] = JSON.stringify(value);
-						localStorage[TIME_PREFIX + resource] = new Date();
-						if(onSuccess)onSuccess(value);
-						return value;
-					});
-				}
-				else{
-					return value;
-				}
+	
+					if(!resolved) {
+						Resource.get(resource).then(function(newValue) {
+							//Save to localStorage
+							localStorage[resource] = JSON.stringify(newValue);
+							localStorage[TIME_PREFIX + resource] = new Date();
+							
+							deferred.resolve(newValue);
+						});
+					}
+					else{
+						deferred.resolve(value);
+					}
+				 }, 1000);
+				
+				return deferred.promise;
 			}
 			
 			/**
 			 * Resolve a Reference Object
 			 */
 			function resolve(resourceRef){
-				var resource = resourceRef.resource;
+				var deferred = $q.defer();
 				
-			    return get(resource, function(result){
-			    	var ret = $.extend(true, resourceRef, result);
-					return ret;
-			    });
+				setTimeout(function() {
+					var resource = resourceRef.resource;
+				    get(resource).then(function(result){
+				    	var ret = $.extend(true, resourceRef, result);
+				    	
+				    	console.log("Resolve: " + JSON.stringify(ret));
+				    	
+				    	deferred.resolve(ret);
+				    });
+				}, 1000);
+				
+				return deferred.promise;
 			}
 			
 			/**

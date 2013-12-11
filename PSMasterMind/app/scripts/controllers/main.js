@@ -4,8 +4,8 @@
  * The main project controller
  */
 angular.module('Mastermind')
-  .controller('MainCtrl', ['$scope', '$state', '$filter', 'Resources', 'projects',
-    function ($scope, $state, $filter, Resources, projects) {
+  .controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources', 'projects',
+    function ($scope, $q, $state, $filter, Resources, projects) {
 	  $scope.summarySwitcher = 'projects';
       $scope.today = $filter('date')(new Date());
       $scope.projects = projects;
@@ -32,9 +32,10 @@ angular.module('Mastermind')
     	  allRoles.push(Resources.get('roles/SUXD'));
     	  allRoles.push(Resources.get('roles/SE'));
     	  allRoles.push(Resources.get('roles/UXD'));
-    	  $scope.allRoles = allRoles;
     	  
-    	  $.when.apply(window, allRoles).done(function(data){
+    	  
+    	  $q.all(allRoles).then(function(data){
+    		  $scope.allRoles = data;
     		  var activePeople = [];
     		  var people = [];
     		  var activeProjects = $scope.activeProjects.data;
@@ -138,8 +139,8 @@ angular.module('Mastermind')
 			  }
 		  }
     	  
-    	  $.when.apply(window, activePeople).done(function(){
-    		  $scope.qvPeople = activePeople;
+    	  $q.all(activePeople).then(function(data){
+    		  $scope.qvPeople = data;
     		  $scope.qvPeopleProjects = activePeoplePojects;
     	  });
     	  
