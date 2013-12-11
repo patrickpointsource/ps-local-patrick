@@ -140,8 +140,8 @@ angular.module('Mastermind')
 		  }
     	  
     	  $q.all(activePeople).then(function(data){
-    		  $scope.qvPeople = data;
     		  $scope.qvPeopleProjects = activePeoplePojects;
+    		  $scope.qvPeople = data;
     	  });
     	  
       });

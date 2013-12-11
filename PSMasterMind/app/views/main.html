@@ -82,10 +82,10 @@
 		            </div>
 		            </div>
 		         </div>
-		         <div class="row peopleList" ng-repeat="person in qvPeople">
+		         <div class="row peopleList" ng-repeat="person in qvPeople" ng-show="qvPeople">
 		         	<div class="col-xs-1">
 		         		<div style="float:left position:absolute"><a href="#{{person.about}}">{{person.givenName}}</a></div>
-		            	<img title="{{person.name}}" class="profileImage" src="{{person.thumbnail}}">
+		            	<img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/>
 		            </div>
 		            <div class="col-xs-11">
 		            	<div class="row" ng-repeat="project in qvPeopleProjects[person.about]">

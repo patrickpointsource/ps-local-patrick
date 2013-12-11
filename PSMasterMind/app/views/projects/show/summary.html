@@ -48,7 +48,7 @@
         <div class="col-xs-12">
         <table ng-table="summaryRolesTableParams" class="table peopleList" template-pagination="custom/pager">
             <tr ng-repeat="role in $data">
-            	<td data-title="'Person Assigned'"><img class="profileImage" src="{{role.assignee.thumbnail}}"> <span >{{role.assignee.name}}</span></td>
+            	<td data-title="'Person Assigned'"><img class="profileImage" ng-src="{{role.assignee.thumbnail}}"/> <span >{{role.assignee.name}}</span></td>
                 <td data-title="'Role'" sortable="type.id">{{role.type.abbreviation}}</td>
                 <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.isFullyUtilized()"></i></td>
                 <td data-title="'H/M'">{{role.rate.hoursPerMonth()}}</td>
