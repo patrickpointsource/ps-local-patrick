@@ -46,7 +46,10 @@ angular.module('Mastermind.controllers.people')
 		    	  
 		    	  //Reload the table
 		    	  if(!$scope.tableParams)$scope.tableParams = getTableData();
-		    	  else $scope.tableParams.reload();
+		    	  else{
+		    		  $scope.tableParams.total($scope.people.length);
+		    		  $scope.tableParams.reload();
+		    	  }
 		      });
       	  }
 	      else{
@@ -56,7 +59,10 @@ angular.module('Mastermind.controllers.people')
 	    		  $scope.people = result.members;
 		    	  //Reload the table
 		    	  if(!$scope.tableParams)$scope.tableParams = getTableData();
-		    	  else $scope.tableParams.reload();
+		    	  else{
+		    		  $scope.tableParams.total($scope.people.length);
+		    		  $scope.tableParams.reload();
+		    	  }
 	    	  })
 	      }
       };
