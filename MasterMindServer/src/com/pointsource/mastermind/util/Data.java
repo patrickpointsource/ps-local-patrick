@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 import sun.misc.IOUtils;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.CommandResult;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -34,8 +36,7 @@ import com.mongodb.util.JSON;
 public class Data implements CONSTS {
 
 	private static Map<String, JSONObject> GOOGLE_USERS = null;
-	private static String GOOGLE_USER_ETAG = "";
-	private static JSONObject PEOPLE = null;
+	//private static String GOOGLE_USER_ETAG = "";
 	private static Mongo mongo;
 	private static DB db;
 	private static JSONObject CONFIG = null;
@@ -164,44 +165,44 @@ public class Data implements CONSTS {
 		return ret;
 	}
 	
-	private static ArrayList<String> SSAs = new ArrayList<String>();
-	private static ArrayList<String> BAs = new ArrayList<String>();
-	private static ArrayList<String> PMs = new ArrayList<String>();
-	private static ArrayList<String> SSEs = new ArrayList<String>();
-	private static ArrayList<String> SEs = new ArrayList<String>();
-	private static ArrayList<String> SUXDs = new ArrayList<String>();
-	private static ArrayList<String> UXDs = new ArrayList<String>();
+	private static ArrayList<String> DEFAULT_SSAs = new ArrayList<String>();
+	private static ArrayList<String> DEFAULT_BAs = new ArrayList<String>();
+	private static ArrayList<String> DEFAULT_PMs = new ArrayList<String>();
+	private static ArrayList<String> DEFAULT_SSEs = new ArrayList<String>();
+	private static ArrayList<String> DEFAULT_SEs = new ArrayList<String>();
+	private static ArrayList<String> DEFAULT_SUXDs = new ArrayList<String>();
+	private static ArrayList<String> DEFAULT_UXDs = new ArrayList<String>();
 	static{
-		Collections.addAll(SSAs, "115659942511507270693", "106368930450799539126", "107681682076275621618", "100521746243465967724", "108416099312244834291");
-		Collections.addAll(BAs, "118024801441852864610");
-		Collections.addAll(PMs, "105187489722733399928", "103362960874176228355");
-		Collections.addAll(SSEs, "102037350018901696245", "112959653203369443291");
-		Collections.addAll(SEs, "100090968878728629777", "105526065653554855193");
-		Collections.addAll(SUXDs, "102728171905005423498", "112917239891456752571");
-		Collections.addAll(UXDs, "103450144552825063641", "107385689810002496434");
+		Collections.addAll(DEFAULT_SSAs, "115659942511507270693", "106368930450799539126", "107681682076275621618", "100521746243465967724", "108416099312244834291");
+		Collections.addAll(DEFAULT_BAs, "118024801441852864610");
+		Collections.addAll(DEFAULT_PMs, "105187489722733399928", "103362960874176228355");
+		Collections.addAll(DEFAULT_SSEs, "102037350018901696245", "112959653203369443291");
+		Collections.addAll(DEFAULT_SEs, "100090968878728629777", "105526065653554855193");
+		Collections.addAll(DEFAULT_SUXDs, "102728171905005423498", "112917239891456752571");
+		Collections.addAll(DEFAULT_UXDs, "103450144552825063641", "107385689810002496434");
 	}
 
 	private static void initPrimaryRole(JSONObject person, String googleID) throws JSONException{
 		String primaryRole = null;
-		if(SSAs.contains(googleID)){
+		if(DEFAULT_SSAs.contains(googleID)){
 			primaryRole = RESOURCE_ROLES+"/"+ROLE_SSA_ID;
 		}
-		else if(BAs.contains(googleID)){
+		else if(DEFAULT_BAs.contains(googleID)){
 			primaryRole = RESOURCE_ROLES+"/"+ROLE_BA_ID;
 		}
-		else if(PMs.contains(googleID)){
+		else if(DEFAULT_PMs.contains(googleID)){
 			primaryRole = RESOURCE_ROLES+"/"+ROLE_PM_ID;
 		}
-		else if(SSEs.contains(googleID)){
+		else if(DEFAULT_SSEs.contains(googleID)){
 			primaryRole = RESOURCE_ROLES+"/"+ROLE_SSE_ID;
 		}
-		else if(SEs.contains(googleID)){
+		else if(DEFAULT_SEs.contains(googleID)){
 			primaryRole = RESOURCE_ROLES+"/"+ROLE_SSE_ID;
 		}
-		else if(SUXDs.contains(googleID)){
+		else if(DEFAULT_SUXDs.contains(googleID)){
 			primaryRole = RESOURCE_ROLES+"/"+ROLE_SUXD_ID;
 		}
-		else if(UXDs.contains(googleID)){
+		else if(DEFAULT_UXDs.contains(googleID)){
 			primaryRole = RESOURCE_ROLES+"/"+ROLE_UXD_ID;
 		}
 		
@@ -298,6 +299,96 @@ public class Data implements CONSTS {
 		ret.put(PROP_COUNT, members.length());
 		return ret;
 	}
+	
+	/**
+	 * Get the list of assignable skills
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	/**
+	 * Get all the people
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getSkills(RequestContext context,
+			String query, String fields) throws JSONException {
+		List<JSONObject> skills = new ArrayList<JSONObject>();
+		
+		DBCollection skillsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+		}
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+
+		DBCursor cursur = skillsCol.find(queryObject, fieldsObject);
+
+		while (cursur.hasNext()) {
+			DBObject object = cursur.next();
+
+			if (object.containsField(PROP__ID)) {
+				String json = JSON.serialize(object);
+				JSONObject jsonObject = new JSONObject(json);
+
+				ObjectId _id = (ObjectId) object.get(PROP__ID);
+				jsonObject.put(PROP_RESOURCE, RESOURCE_SKILLS + "/" + _id);
+
+				skills.add(jsonObject);
+			} else {
+				System.out
+						.println("Skill not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+		
+		JSONObject ret = new JSONObject();
+		int total = skills.size();
+		ret.put(CONSTS.PROP_COUNT, total);
+		
+		ret.put(CONSTS.PROP_MEMBERS, skills);
+
+		URI baseURI = context.getBaseURI();
+		ret.put(CONSTS.PROP_BASE, baseURI);
+
+		ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_SKILLS);
+
+		return ret;
+	}
+	
+	/**
+	 * Get a skill definition
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getSkill(RequestContext context, String id)
+			throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		DBObject dbObj = projectsCol.findOne(query);
+
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+			ret.put(PROP_ABOUT, RESOURCE_SKILLS + "/" + id);
+		}
+
+		return ret;
+	}
 
 	/**
 	 * Get the list of managed user groups
@@ -361,7 +452,7 @@ public class Data implements CONSTS {
 			JSONObject googleUsers = new JSONObject(jsonTxt);
 			JSONArray users = googleUsers.getJSONArray(PROP_USERS);
 			GOOGLE_USERS = new HashMap<String, JSONObject>();
-			GOOGLE_USER_ETAG = googleUsers.getString(PROP_ETAG);
+			//GOOGLE_USER_ETAG = googleUsers.getString(PROP_ETAG);
 
 			for (int i = 0; i < users.length(); i++) {
 				JSONObject ithUser = users.getJSONObject(i);
@@ -369,79 +460,6 @@ public class Data implements CONSTS {
 			}
 		}
 		return GOOGLE_USERS;
-	}
-
-	/**
-	 * Gets the list of Google Users
-	 * 
-	 * @return
-	 * @throws IOExceptionz
-	 * @throws JSONException
-	 */
-	public static JSONObject getPersonOld(RequestContext context, String id)
-			throws IOException, JSONException {
-
-		JSONObject people = getPeopleOld(context);
-		JSONArray members = people.getJSONArray(PROP_PEOPLE);
-
-		JSONObject ret = null;
-
-		for (int i = 0; i < members.length(); i++) {
-			JSONObject p = members.getJSONObject(i);
-			String ithId = p.getString(PROP_ID);
-
-			if (id.equals(ithId)) {
-				ret = p;
-				break;
-			}
-		}
-
-		if (ret == null) {
-			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-					.build());
-		}
-
-		return ret;
-	}
-
-	/**
-	 * Gets the list of JSON people objects
-	 * 
-	 * @return
-	 * @throws IOException
-	 * @throws JSONException
-	 */
-	public static JSONObject getPeopleOld(RequestContext context)
-			throws IOException, JSONException {
-		if (PEOPLE == null) {
-
-			JSONArray mmPeople = new JSONArray();
-
-			Map<String, JSONObject> googleUsers = getGoogleUsers(context);
-			Collection<JSONObject> users = googleUsers.values();
-
-			for (Iterator<JSONObject> iterator = users.iterator(); iterator
-					.hasNext();) {
-				JSONObject ithUser = (JSONObject) iterator.next();
-				JSONObject person = new JSONObject();
-				person.put(PROP_ID, ithUser.getString(PROP_ID));
-				person.put(PROP_MBOX, ithUser.getString(PROP_PRIMARY_EMAIL));
-				JSONObject name = ithUser.getJSONObject(PROP_NAME);
-				person.put(PROP_NAME, name.getString(PROP_FULL_NAME));
-				person.put(PROP_FAMILY_NAME, name.getString(PROP_FAMILY_NAME));
-				person.put(PROP_GIVEN_NAME, name.getString(PROP_GIVEN_NAME));
-
-				person.put(PROP_ETAG, ithUser.getString(PROP_ETAG));
-				mmPeople.put(person);
-			}
-
-			PEOPLE = new JSONObject();
-			PEOPLE.put(PROP_ETAG, GOOGLE_USER_ETAG);
-			PEOPLE.put(PROP_COUNT, mmPeople.length());
-			PEOPLE.put(PROP_PEOPLE, mmPeople);
-		}
-
-		return PEOPLE;
 	}
 
 	/**
@@ -875,6 +893,35 @@ public class Data implements CONSTS {
 		return newProject;
 	}
 
+	
+	public static void synchDefaultSkills(RequestContext context){
+		List<String> DEFAULT_SKILLS = new ArrayList<String>();
+		Collections.addAll(DEFAULT_SKILLS, SKILLS_DATA_POWER_TITLE, SKILLS_J2EE_TITLE, SKILLS_JAVA_TITLE, SKILLS_REST_TITLE, SKILLS_WEB_TITLE, SKILLS_WORKLIGHT_TITLE);
+		
+		DBCollection skillsCollection = db.getCollection(COLLECTION_TITLE_SKILLS);
+		
+		for (Iterator<String> iterator = DEFAULT_SKILLS.iterator(); iterator.hasNext();) {
+			String skillName = iterator.next();
+			
+			BasicDBObject skill = new BasicDBObject(PROP_TITLE, skillName);
+			
+			//Look for skill
+			DBObject ret = skillsCollection.findOne(skill);
+			if(ret == null){
+				//Create one
+				WriteResult result = skillsCollection.insert(skill);
+				
+				CommandResult error = result.getLastError();
+				if(error != null){
+					System.err.println("Insert Failed:" + error.getErrorMessage());
+					if(error.getException() != null){
+						error.getException().printStackTrace();
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Synchs the DB People with the Google domain users
 	 * 

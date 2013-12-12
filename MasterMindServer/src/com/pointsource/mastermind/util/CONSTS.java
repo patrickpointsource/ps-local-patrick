@@ -1,5 +1,6 @@
 package com.pointsource.mastermind.util;
 
+
 public interface CONSTS {
 	/**
 	 * Resource Paths
@@ -8,9 +9,9 @@ public interface CONSTS {
 	public String RESOURCE_NEW = "new";
 	public String RESOURCE_GROUPS = "groups";
 	public String RESOURCE_PEOPLE = "people";
-	public String RESOURCE_PEOPLE_OLD = "people_old";
 	public String RESOURCE_PROJECTS = "projects";
 	public String RESOURCE_ROLES = "roles";
+	public String RESOURCE_SKILLS = "skills";
 	
 	/**
 	 * Request Paramter Names
@@ -98,15 +99,23 @@ public interface CONSTS {
 	public String ROLE_UXD_ID = "UXD";
 	public String ROLE_UXD_TITLE = "User Experience Designer";
 	
+	//Magic Skills Constants
+	public String SKILLS_DATA_POWER_TITLE = "Data Power";
+	public String SKILLS_JAVA_TITLE = "Java";
+	public String SKILLS_J2EE_TITLE = "J2EE";
+	public String SKILLS_REST_TITLE = "REST";
+	public String SKILLS_WEB_TITLE = "Web";
+	public String SKILLS_WORKLIGHT_TITLE = "Worklight";
+	
 	/**
 	 * Rest Summary Constants
 	 */
 	public String WORKSPACE_TITLE = "PointSource Master Mind";
 	public String RESOURCE_TITLE_GROUPS = "Groups";
 	public String RESOURCE_TITLE_PEOPLE = "People";
-	public String RESOURCE_TITLE_PEOPLE_OLD = "People: Old";
 	public String RESOURCE_TITLE_PROJECTS = "Projects";
 	public String RESOURCE_TITLE_ROLES = "Roles";
+	public String RESOURCE_TITLE_SKILLS = "Skills";
 	
 	/**
 	 * Mongo Constants
@@ -120,6 +129,7 @@ public interface CONSTS {
 	public String DB_NAME_DEFAULT  = "mm_db_stage";
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
 	public String COLLECTION_TITLE_PEOPLE = "People";
+	public String COLLECTION_TITLE_SKILLS = "Skills";
 	
 	
 	/**
