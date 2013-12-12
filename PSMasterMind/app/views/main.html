@@ -16,7 +16,7 @@
 					</button>
 				</div>
 			</div>
-			<div class="dashboard-box" ng-click="showActiveProjects()">
+			<div class="dashboard-box big-text" ng-click="showActiveProjects()">
 				{{projectCount}}
 			</div>
 		</div>
@@ -24,10 +24,16 @@
 		<div class="col-xs-6 col-md-5 col-lg-4 dashboard-widget">
 			<div class="row dashboard-label">
 				<div class="col-md-9 hidden-xs">Available People</div>
-				<div class="col-xs-7 col-sm-8 visible-xs">People</div>
+						<div class="col-xs-7 col-sm-8 visible-xs">People</div>
 			</div>
-			<div class="dashboard-box" ng-click="showAvailablePeople()">
-				{{availablePeopleCount}}
+			<div class="dashboard-box peopleList three-rows">
+				<div class="row">
+					<div class="col-xs-6 col-sm-4" ng-repeat="person in availablePeople">
+						<a href="#{{person.resource}}">
+							<img alt="{{person.name}}" title="{{person.name}}"  ng-src="{{person.thumbnail}}"/>
+						</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -148,11 +148,21 @@ main {
 
         .dashboard-box {
           box-sizing: border-box;
-          height: 206px;
-          font-size: 137px;
-          line-height: 206px;
+          height: 210px;
           text-align: center;
           border: 1px solid @ps-lightgray;
+          &.big-text{
+          	font-size: 137px;
+	        line-height: 210px;
+          }
+          &.three-rows{
+          	line-height: 70px;
+          	overflow:hidden;
+          	img{
+          		max-height: 60px;
+          		max-width: 100%;
+          	}
+          }
         }
 
         .dashboard-actions {

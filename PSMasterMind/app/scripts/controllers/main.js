@@ -58,13 +58,13 @@ angular.module('Mastermind')
     			  var preson = people[i];
     			  if(activePeople.indexOf(preson.resource) == -1){
     				  inactivePeople[cnt++] = preson;
-//    				  if(cnt == 9){
-//    					  break;
-//    				  }
+    				  if(cnt == 9){
+    					  break;
+    				  }
     			  }
     		  }
     		  
-    		  $scope.availablePeopleCount = inactivePeople.length;
+    		  $scope.availablePeople = inactivePeople;
 	      });
       });
       
