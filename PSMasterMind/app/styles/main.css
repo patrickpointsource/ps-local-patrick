@@ -5997,7 +5997,6 @@ td.visible-print {
 /*** End Bootstrap less ***/
 body {
   font-family: allerregular !important;
-  padding-top: 105px;
 }
 label {
   font-family: allerbold;
@@ -6287,6 +6286,14 @@ main article #content .graph tbody tr th.active {
   .navbar-nav > li > a {
     padding-top: 10px;
     padding-bottom: 10px;
+  }
+  body {
+    padding-top: 105px;
+  }
+}
+@media (max-width: 767px) {
+  body {
+    padding-top: 61px;
   }
 }
 .tab-content input,
