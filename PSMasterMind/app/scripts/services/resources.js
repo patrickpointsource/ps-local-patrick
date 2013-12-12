@@ -40,6 +40,30 @@ angular.module('Mastermind').factory(
 				Resource.get(params).then(onSuccess);
 			}
 
+			
+			/**
+			 * Service function for retrieving a resource member.
+			 * 
+			 * Gets the latest from the server to ensure the latest etag
+			 * 
+			 * @returns {*}
+			 */
+			function refresh(resource) {
+				var deferred = $q.defer();
+				
+				setTimeout(function() {
+					fetch(resource).then(function(newValue) {
+						//Save to localStorage
+						localStorage[resource] = JSON.stringify(newValue);
+						localStorage[TIME_PREFIX + resource] = new Date();
+						
+						deferred.resolve(newValue);
+					});
+				 }, 1000);
+				
+				return deferred.promise;
+			}
+			
 			/**
 			 * Service function for retrieving a resource member.
 			 * 
@@ -151,6 +175,35 @@ angular.module('Mastermind').factory(
 			}
 			
 			/**
+			 * Update
+			 * 
+			 * Updates the resource on the server
+			 */
+			function update(toUpdate){
+				var deferred = $q.defer();
+			
+				setTimeout(function() {
+					var resourceURL = toUpdate.about?toUpdate.about:toUpdate.resource;
+					
+					var route = '';
+					var id = resourceURL;
+					var lastIndex = resourceURL.indexOf('/');
+					if(lastIndex != -1){
+						route = resourceURL.substr(0, lastIndex);
+						id = resourceURL.substr(lastIndex + 1);
+					}
+					var resource = ResourcesRestangular.all(route);
+					
+					resource.customPUT(toUpdate, id).then(function(newResult){
+			    		deferred.resolve(newResult);
+			    	});
+
+				}, 1000);
+				
+				return deferred.promise;
+			}
+			
+			/**
 			 * Create a deep copy on an object
 			 */
 			function deepCopy(o) {
@@ -161,8 +214,10 @@ angular.module('Mastermind').factory(
 			return {
 				query : query,
 				get : get,
+				refresh : refresh,
 				resolve: resolve,
 				deepCopy: deepCopy,
+				update: update,
 				forceUpdate: forceUpdate
 			};
 		});

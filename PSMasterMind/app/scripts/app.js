@@ -104,7 +104,7 @@
           controller: 'PeopleCtrl'
         })
         .state('people.show', {
-          url: '/:profileId',
+          url: '/:profileId?edit',
           templateUrl: 'views/people/profile.html',
           controller: 'ProfileCtrl'
         });
