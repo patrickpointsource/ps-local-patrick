@@ -6,10 +6,10 @@
 angular.module('Mastermind.controllers.projects')
   .controller('RolesCtrl', ['$scope', '$filter', 'RolesService', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
     function ($scope, $filter, RolesService, RoleTypes, Rates, RateFactory, TableParams) {
-	  
-	  
+
+
       $scope.newRole = RolesService.create();
-      
+
       // Table Parameters
       var params = {
         page: 1,            // show first page
@@ -61,13 +61,13 @@ angular.module('Mastermind.controllers.projects')
 
         // Bubble an event up to add this role.
         $scope.$emit('roles:add', $scope.newRole);
-        
+
         //Update the tables
         $scope.roleTableParams.reload();
 
         // Create the new Role with the previously selected rate type.
         $scope.newRole = RolesService.create({rate: RateFactory.build($scope.newRole.rate.type)});
-        
+
 
         // Reset the form to being pristine.
         $scope.rolesForm.$setPristine();
@@ -79,7 +79,7 @@ angular.module('Mastermind.controllers.projects')
       $scope.remove = function (role) {
         // Bubble up an event to handle removing a role elsewhere
         $scope.$emit('roles:remove', role);
-        
+
         //Update the tables
         $scope.roleTableParams.reload();
       };
@@ -89,4 +89,14 @@ angular.module('Mastermind.controllers.projects')
       }, function (newLength) {
         $scope.$emit('roles:valid:change', newLength > 0);
       });
+
+      $scope.assigneeChanged = function(index, role) {
+        console.log('assigneeChanged');
+        console.log('param index:' + index);
+        console.log('param role:');
+        console.log(role);
+
+        $scope.$emit('roles:change');
+      };
+
     }]);

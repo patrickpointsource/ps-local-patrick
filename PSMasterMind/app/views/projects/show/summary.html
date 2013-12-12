@@ -1,9 +1,9 @@
-<div ng-controller="SummaryCtrl">
+<div class="summary-tab">
     <div class="row">
     	<div>
 	        <h4 class="col-xs-12 col-sm-6" ng-class="{empty: !project.customerName}">
 	        	{{project.customerName || 'No customer'}}: {{project.name || 'No project'}}</h4>
-		</div>
+  		</div>
 	    <div class="col-xs-12 col-sm-6">
 	        <h4 ng-if="!project.endDate && project.startDate">
 	            Beginning {{project.startDate | date}}
@@ -48,7 +48,11 @@
         <div class="col-xs-12">
         <table ng-table="summaryRolesTableParams" class="table peopleList" template-pagination="custom/pager">
             <tr ng-repeat="role in $data">
-            	<td data-title="'Person Assigned'"><img class="profileImage" ng-src="{{role.assignee.thumbnail}}"/> <span >{{role.assignee.name}}</span></td>
+              	<td data-title="'Person Assigned'">
+                  <img ng-show="role.assignee" class="profileImage" ng-src="{{role.assignee.thumbnail || '/MasterMindStaging/images/generic.png'}}"/>
+                  <i class="fa fa-ban" ng-show="!role.assignee"></i>
+                  <span >{{role.assignee.name || 'Unassigned'}}</span>
+                </td>
                 <td data-title="'Role'" sortable="type.id">{{role.type.abbreviation}}</td>
                 <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.isFullyUtilized()"></i></td>
                 <td data-title="'H/M'">{{role.rate.hoursPerMonth()}}</td>

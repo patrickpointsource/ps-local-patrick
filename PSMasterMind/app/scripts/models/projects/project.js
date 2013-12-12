@@ -190,6 +190,15 @@ angular.module('Mastermind.models.projects')
     };
 
     /**
+     * Changes a role in the Project.
+     *
+     * @param role
+     */
+    Project.prototype.changeRole = function (index, role) {
+      this.roles[index] = role;
+    };
+
+    /**
      * Removes a role from the Project.
      *
      * @param role

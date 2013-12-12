@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-xs-8"><h2>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h2></div>
         <div id="pageActions" class="actions col-xs-4">
-            <button type="submit" class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
+            <button type="submit" class="btn btn-default" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
         </div>
     </div>
 
@@ -20,9 +20,6 @@
         </tab>
         <tab id="roles" heading="Roles">
             <ng-include src="'views/projects/show/roles.html'"></ng-include>
-        </tab>
-        <tab id="assignments" heading="Assignments">
-            <ng-include src="'views/projects/show/assignments.html'"></ng-include>
         </tab>
         <tab id="summary" heading="Summary">
             <ng-include src="'views/projects/show/summary.html'"></ng-include>

@@ -21,7 +21,7 @@ angular.module('Mastermind')
 
       // The title of the page is the project's name or 'New Project' if transient.
       $scope.title = $scope.isTransient ? 'New Project' : project.name;
-      
+
       // Table Parameters
       var params = {
         page: 1,            // show first page
@@ -30,20 +30,40 @@ angular.module('Mastermind')
         	type: 'asc'     // initial sorting
         }
       };
-      
-      $scope.assignmentsTableParams = new TableParams(params, {
+
+      $scope.summaryRolesTableParams = new TableParams(params, {
         total: $scope.project.roles.length,
         getData: function ($defer, params) {
-          var start = (params.page() - 1) * params.count(),
-            end = params.page() * params.count(),
+          var start = (params.page() - 1) * params.count();
+          var end = params.page() * params.count();
 
-            orderedData = params.sorting() ?
+          var orderedData = params.sorting() ?
                 $filter('orderBy')($scope.project.roles, params.orderBy()) :
-                $scope.project.roles,
-          // use build-in angular filter
-            ret = orderedData.slice(start, end);
+                $scope.project.roles;
 
-          $defer.resolve(ret);
+          //use build-in angular filter
+          var result = orderedData.slice(start, end);
+
+          var defers = [];
+          var ret = [];
+          for(var i = 0; i < result.length; i++){
+            var ithRole = Resources.deepCopy(result[i]);
+            if(ithRole.assignee && ithRole.assignee.resource){
+              defers.push(Resources.resolve(ithRole.assignee));
+              //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+            }
+
+            if(ithRole.type && ithRole.type.resource){
+              defers.push(Resources.resolve(ithRole.type));
+              //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+            }
+
+            ret[i] = ithRole;
+          }
+
+          $.when.apply(window, defers).done(function(){
+            $defer.resolve(ret);
+          });
         }
       });
 
@@ -65,7 +85,7 @@ angular.module('Mastermind')
     		   //create a members array for each roles group
     		   role.members = [];
     	   }
-    	   
+
     	   //Query all people with a primary role
     	   var roleQuery = {'primaryRole.resource':{$in:resources}};
     	   var fields = {resource:1,name:1,primaryRole:1,thumbnail:1};
@@ -81,7 +101,7 @@ angular.module('Mastermind')
     		    $scope.roleGroups = roleGroups;
     	   })
        });
-           
+
 
       /**
        * Save the loaded project.
@@ -99,14 +119,23 @@ angular.module('Mastermind')
           }
         });
       };
-      
+
       /**
        * Whenever the roles:add event is fired from a child controller,
        * handle it by adding the supplied role to our project.
        */
       $scope.$on('roles:add', function (event, role) {
         $scope.project.addRole(role);
-        $scope.assignmentsTableParams.reload();
+        $scope.summaryRolesTableParams.reload();
+      });
+
+      /**
+       * Whenever the roles:change event is fired from a child controller,
+       * handle it by updating the supplied role in our project.
+       */
+      $scope.$on('roles:change', function (event, index, role) {
+        $scope.project.changeRole(index, role);
+        $scope.summaryRolesTableParams.reload();
       });
 
       /**
@@ -115,7 +144,7 @@ angular.module('Mastermind')
        */
       $scope.$on('roles:remove', function (event, role) {
         $scope.project.removeRole(role);
-        $scope.assignmentsTableParams.reload();
+        $scope.summaryRolesTableParams.reload();
       });
 
       /**

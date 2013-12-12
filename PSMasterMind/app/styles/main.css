@@ -6291,6 +6291,15 @@ main article #content .graph tbody tr th.active {
 #summary #description {
   padding: 30px 0;
 }
+.summary-tab .fa-ban {
+  width: 36px;
+  height: 36px;
+  font-size: 28px;
+  text-align: center;
+  position: relative;
+  top: 4px;
+  color: red;
+}
 .no-top-margin {
   margin-top: 0;
 }
