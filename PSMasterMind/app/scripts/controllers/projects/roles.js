@@ -99,4 +99,8 @@ angular.module('Mastermind.controllers.projects')
         $scope.$emit('roles:change');
       };
 
+      $('.datepicker').on('hide', function(ev){
+        $scope.$apply();
+      });
+
     }]);

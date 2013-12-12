@@ -19,7 +19,7 @@ angular.module('Mastermind.controllers.projects')
           && detailsFormField.$invalid;
       };
 
-      $('.datepicker').on('changeDate', function(ev){
-          $scope.$apply();
+      $('.datepicker').on('hide', function(ev){
+        $scope.$apply();
       });
     });

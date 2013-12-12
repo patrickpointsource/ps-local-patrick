@@ -76,15 +76,22 @@ angular.module('Mastermind.services.projects')
     this.save = function (project) {
       var val;
 
-      // fix date format from datepicker
-      // if (project.startDate) {
-      //   var dateArray = project.startDate.split('/');
-      //   project.startDate = dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
-      // }
-      // if (project.endDate) {
-      //   var dateArray = project.endDate.split('/');
-      //   project.endDate = dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
-      // }
+      // fix datepicker making dates = '' when clearing them out
+      if (project.startDate === null || project.startDate === '') {
+        project.startDate = undefined;
+      }
+      if (project.endDate === null || project.endDate === '') {
+        project.endDate = undefined;
+      }
+
+      for (var i=0; i<project.roles.length; i++) {
+        if (project.roles[i].startDate === null || project.startDate === '') {
+          project.startDate = undefined;
+        }
+        if (project.roles[i].endDate === null || project.endDate === '') {
+          project.endDate = undefined;
+        }
+      }
 
       if (this.isTransient(project)) {
         val = Resource.post(project);
