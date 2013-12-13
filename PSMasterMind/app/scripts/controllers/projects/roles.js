@@ -48,6 +48,10 @@ angular.module('Mastermind.controllers.projects')
       $scope.changeToMonthlyRate = function () {
         changeRateType(Rates.MONTHLY);
       };
+      
+      $scope.roleStartDateOptions = {
+	        dateFormat: 'yy-mm-dd'
+	    };
 
       $scope.validateNewRole = function(){
     	var errors = [];
@@ -57,11 +61,36 @@ angular.module('Mastermind.controllers.projects')
     		errors.push('New Role is null');
     	}
     	else{
+    		//Role Type is Required
     		if(!newRole.type || !newRole.type.resource){
-    			errors.push("Role Type cannot be null");
+    			errors.push("Role Type is required");
     		}
+    		//Start Date is required
     		if(!newRole.startDate){
-    			errors.push("Start Date cannot be null");
+    			errors.push("Start Date is required");
+    		}
+    		//Role cannot start before the project starts
+    		else if($scope.project.startDate && newRole.startDate < $scope.project.startDate){
+    			errors.push("Role Start Date cannot be before Project Start Date");
+    		}
+    		//Role cannot start after the project ends
+    		else if($scope.project.endDate && newRole.startDate > $scope.project.endDate){
+    			errors.push("Role Start Date cannot be before Project End Date");
+    		}
+    	
+    		//Role cannot end after the project is over
+    		if(newRole.endDate && $scope.project.endDate && newRole.endDate > $scope.project.endDate){
+    			errors.push("Role End Date cannot be after Project End Date");
+    		}
+    		
+    		//Role cannot start before the project is starts
+    		else if(newRole.endDate && $scope.project.startDate && newRole.endDate < $scope.project.startDate){
+    			errors.push("Role End Date cannot be before Project Start Date");
+    		}
+    		
+    		//End Date cannot be before start date
+    		else if(newRole.startDate && newRole.endDate && newRole.startDate > newRole.endDate){
+    			errors.push("Role Start Date cannot be after Role End Date");
     		}
     		
     		 //Business Rule: Monthly Rate Assumes 100% utilization

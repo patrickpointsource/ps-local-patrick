@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-xs-12 col-sm-4 form-group">
                 <label class="required-label" for="role">Role:</label>
-                <select id="role" class="col-xs-12 form-control" ng-model="newRole.type.resource"
+                <select id="role" class="col-xs-12 form-control" ng-model="newRole.type.resource" ng-required="true"
                         ng-options="m.resource as m.title for m in roleTypes">
 
                 </select>
@@ -24,11 +24,15 @@
             <div class="col-xs-12 col-sm-4 form-group">
                 <label class="required-label" for="roleStartDate">Start Date:</label>
                 <input id="roleStartDate" class="form-control datepicker" type="text" ng-model="newRole.startDate"
-                        data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true">
+                		data-date-start-date="{{project.startDate}}"
+                		data-date-end-date="{{project.endDate}}"
+                    	data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true">
             </div>
             <div class="col-xs-12 col-sm-4 form-group">
                 <label for="roleEndDate">End Date:</label>
                 <input id="roleEndDate" class="form-control datepicker" type="text" ng-model="newRole.endDate"
+                		data-date-start-date="{{project.startDate}}"
+                		data-date-end-date="{{project.endDate}}"
                         data-provide="datepicker" data-date-format="yyyy-mm-dd">
             </div>
         </div>
