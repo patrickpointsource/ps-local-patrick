@@ -111,6 +111,7 @@
     })
     .config(function (RestangularProvider) {
       var serverLocation = 'http://localhost:8080';
+      // var serverLocation = 'http://db.mastermind.pointsource.us:8080';
 
       function toJsonReplacer(key, value) {
         var val = value;

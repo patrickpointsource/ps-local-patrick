@@ -157,20 +157,42 @@
     <div class="row">
         <div class="col-xs-12">
             <table class="table" ng-table="roleTableParams" template-pagination="custom/pager">
+              <thead>
+                <tr>
+                  <th>Person Assigned</th>
+                  <th class="hidden-xs">Role</th>
+                  <th>H/M</th>
+                  <th class="hidden-xs">Start <span class="hidden-xs">Date</span></th>
+                  <th class="hidden-xs">End <span class="hidden-xs">Date</span></th>
+                  <th class="visible-xs">Date</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
                 <tr ng-repeat="role in $data">
-                    <td data-title="'Person Assigned'">
+                    <td>
                         <select ng-model="role.assignee.resource"
                                 ng-options="m.resource as m.name for m in roleGroups[role.type.resource].members"
-                                ng-change="assigneeChanged($index, role)">
+                                ng-change="assigneeChanged($index, role)"
+                                class="form-control">
                         </select>
+                        <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>
                     </td>
-                    <td data-title="'Role'">{{roleGroups[role.type.resource].abbreviation}}</td>
-                    <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.isFullyUtilized()"></i></td>
-                    <td data-title="'H/M'">{{role.rate.hoursPerMonth()}}</td>
-                    <td data-title="'Start Date'">{{role.startDate | date:'longDate'}}</td>
-                    <td data-title="'End Date'">{{role.endDate | date:'longDate'}}</td>
+                    <td class="hidden-xs">{{roleGroups[role.type.resource].abbreviation}}</td>
+                    <td>
+                      <span ng-show="role.rate.isFullyUtilized()">100%</span>
+                      <span ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}}</span>
+                    </td>
+                    <td class="hidden-xs">{{role.startDate | date:'longDate'}}</td>
+                    <td class="hidden-xs">{{role.endDate | date:'longDate'}}</td>
+                    <td class="visible-xs">
+                      {{role.startDate | date:'shortDate'}}
+                      <span ng-show="role.endDate">-<br>{{role.endDate | date:'shortDate'}}</span>
+                      <span ng-hide="role.endDate">- Unspecified</span>
+                    </td>
                     <td><button class="btn btn-default" ng-click="remove(role)"><i class="fa fa-trash-o"></i></button></td>
                 </tr>
+              </tbody>
             </table>
             <script type="text/ng-template" id="custom/pager">
                 <ul class="pager ng-cloak">

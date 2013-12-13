@@ -6345,6 +6345,19 @@ main article #content .graph tbody tr th.active {
   background: no-repeat top 9px right 8px url('../images/icons/calendar.png');
   background-size: 14px;
 }
+th > span.hidden-xs {
+  display: inline !important;
+}
+@media (max-width: 767px) {
+  .table > thead > tr > th,
+  .table > tbody > tr > th,
+  .table > tfoot > tr > th,
+  .table > thead > tr > td,
+  .table > tbody > tr > td,
+  .table > tfoot > tr > td {
+    padding: 4px;
+  }
+}
 .peopleList .profileImage {
   width: 36px;
   height: 36px;
