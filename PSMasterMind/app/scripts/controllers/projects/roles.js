@@ -48,10 +48,6 @@ angular.module('Mastermind.controllers.projects')
       $scope.changeToMonthlyRate = function () {
         changeRateType(Rates.MONTHLY);
       };
-      
-      $scope.roleStartDateOptions = {
-	        dateFormat: 'yy-mm-dd'
-	    };
 
       $scope.validateNewRole = function(){
     	var errors = [];

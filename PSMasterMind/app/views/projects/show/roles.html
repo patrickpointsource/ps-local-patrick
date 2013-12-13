@@ -1,7 +1,9 @@
 <div ng-form="rolesForm" ng-controller="RolesCtrl">
 	<div class="row">
 		<div class="col-xs-12">
-			<button type="button" class="btn btn-default pull-right" data-toggle="collapse" data-target="#newRoleDialog">
+			<button type="button" 
+				ng-click="newRole.startDate = project.startDate;newRole.endDate = project.endDate"
+				class="btn btn-default pull-right" data-toggle="collapse" data-target="#newRoleDialog">
 		  		<i class="fa fa-plus-square"></i> <span>Add Roles</span>
 			</button>
 		</div>
@@ -22,18 +24,16 @@
                 </select>
             </div>
             <div class="col-xs-12 col-sm-4 form-group">
-                <label class="required-label" for="roleStartDate">Start Date:</label>
+                <label class="required-label" for="roleStartDate">Start Date: <span class="text-muted">{{project.startDate}}</span></label>
                 <input id="roleStartDate" class="form-control datepicker" type="text" ng-model="newRole.startDate"
-                		data-date-start-date="{{project.startDate}}"
-                		data-date-end-date="{{project.endDate}}"
-                    	data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true">
+                		data-date-start-date="{{project.startDate}}" data-date-end-date="{{project.endDate}}"
+                		todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true">
             </div>
             <div class="col-xs-12 col-sm-4 form-group">
-                <label for="roleEndDate">End Date:</label>
+                <label for="roleEndDate">End Date: <span class="text-muted">{{project.endDate}}</span></label>
                 <input id="roleEndDate" class="form-control datepicker" type="text" ng-model="newRole.endDate"
-                		data-date-start-date="{{project.startDate}}"
-                		data-date-end-date="{{project.endDate}}"
-                        data-provide="datepicker" data-date-format="yyyy-mm-dd">
+                		data-date-start-date="{{project.startDate}}" data-date-end-date="{{project.endDate}}"
+                		todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd">
             </div>
         </div>
 
