@@ -1,7 +1,7 @@
 <div ng-form="rolesForm" ng-controller="RolesCtrl">
 	<div class="row">
 		<div class="col-xs-12">
-			<button type="button" 
+			<button type="button"
 				ng-click="newRole.startDate = project.startDate;newRole.endDate = project.endDate"
 				class="btn btn-default pull-right" data-toggle="collapse" data-target="#newRoleDialog">
 		  		<i class="fa fa-plus-square"></i> <span>Add Roles</span>
@@ -45,7 +45,7 @@
           There is an open ticket under:
           https://github.com/angular-ui/bootstrap/issues/783
           -->
-         
+
         <div class="row">
             <div class="tab-panes tabs-left col-xs-9">
                 <ul class="nav nav-tabs">
@@ -147,7 +147,7 @@
 
         <div class="row">
             <div class="col-xs-12">
-                <input type="submit" class="btn" value="Add" ng-click="add()"">
+                <input type="submit" class="btn" value="Add" ng-click="add()">
             </div>
         </div>
     </section>
@@ -188,7 +188,7 @@
                     <td class="visible-xs">
                       {{role.startDate | date:'shortDate'}}
                       <span ng-show="role.endDate">-<br>{{role.endDate | date:'shortDate'}}</span>
-                      <span ng-hide="role.endDate">- Unspecified</span>
+                      <span ng-hide="role.endDate">- N/A</span>
                     </td>
                     <td><button class="btn btn-default" ng-click="remove(role)"><i class="fa fa-trash-o"></i></button></td>
                 </tr>
