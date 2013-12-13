@@ -69,8 +69,8 @@ public class Validator implements CONSTS {
 			ret.add("Project Type is required");
 		} else if (!project.getString(PROP_TYPE).equals(
 				VALUES_PROJECT_TYPE_INVEST)
-				&& !project.getString(PROP_TYPE).equals(
-						VALUES_PROJECT_TYPE_POC)
+				&& !project.getString(PROP_TYPE)
+						.equals(VALUES_PROJECT_TYPE_POC)
 				&& !project.getString(PROP_TYPE).equals(
 						VALUES_PROJECT_TYPE_PAID)) {
 			ret.add("Project Type is an unknown value: "
@@ -178,12 +178,14 @@ public class Validator implements CONSTS {
 			ret.add("Project must include atleast one role");
 		} else {
 			JSONArray roles = project.getJSONArray(PROP_ROLES);
-			
-			if(roles.length() < 1){
+
+			if (roles.length() < 1) {
 				ret.add("Project must include atleast one role");
 			}
-			
+
+			// Check if project managment was included in the estimate
 			boolean hasBAOrPM = false;
+
 			boolean checkedAllRoles = false;
 			JSONObject roleTypes = Data.getRoles();
 			JSONArray roleTypeMembers = roleTypes.getJSONArray(PROP_MEMBERS);
@@ -223,8 +225,10 @@ public class Validator implements CONSTS {
 						}
 
 						// Includes BA or PM
-						if (typeResource.equals(RESOURCE_ROLES+"/"+ROLE_BA_ID)
-								|| typeResource.equals(RESOURCE_ROLES+"/"+ROLE_PM_ID)) {
+						if (typeResource.equals(RESOURCE_ROLES + "/"
+								+ ROLE_BA_ID)
+								|| typeResource.equals(RESOURCE_ROLES + "/"
+										+ ROLE_PM_ID)) {
 							hasBAOrPM = true;
 						}
 
@@ -245,7 +249,8 @@ public class Validator implements CONSTS {
 									// hours
 									if (!rate.has(PROP_FULLY_UTILIZED)
 											|| !rate.getBoolean(PROP_FULLY_UTILIZED)) {
-										if (!rate.has(PROP_HOURS) || rate.getInt(PROP_HOURS) < 1) {
+										if (!rate.has(PROP_HOURS)
+												|| rate.getInt(PROP_HOURS) < 1) {
 											ret.add("A Hourly Role must specify the number hours per month");
 											break;
 										} else {
@@ -265,7 +270,8 @@ public class Validator implements CONSTS {
 									// hours
 									if (!rate.has(PROP_FULLY_UTILIZED)
 											|| !rate.getBoolean(PROP_FULLY_UTILIZED)) {
-										if (!rate.has(PROP_HOURS) || rate.getInt(PROP_HOURS) < 1) {
+										if (!rate.has(PROP_HOURS)
+												|| rate.getInt(PROP_HOURS) < 1) {
 											ret.add("A Weekly Role must specify the number hours per week");
 											break;
 										} else {
@@ -304,23 +310,23 @@ public class Validator implements CONSTS {
 								// hours
 								// per
 								// month
-//TODO this should be across projects
-//								if (ROLE_SSE_ID.equals(typeId)
-//										|| ROLE_SE_ID.equals(typeId)) {
-//									int hours = 180;
-//									if (VALUES_RATE_TYPE_WEEKLY
-//											.equals(rateType)) {
-//										hours = (int) (rate.getInt(PROP_HOURS) * 4);
-//									} else if (VALUES_RATE_TYPE_HOURLY
-//											.equals(rateType)) {
-//										hours = rate.getInt(PROP_HOURS);
-//									}
-//
-//									if (hours < 130) {
-//										ret.add("Software Engineers cannot be booked for less than 130 hours a month");
-//										break;
-//									}
-//								}
+								// TODO this should be across projects
+								// if (ROLE_SSE_ID.equals(typeId)
+								// || ROLE_SE_ID.equals(typeId)) {
+								// int hours = 180;
+								// if (VALUES_RATE_TYPE_WEEKLY
+								// .equals(rateType)) {
+								// hours = (int) (rate.getInt(PROP_HOURS) * 4);
+								// } else if (VALUES_RATE_TYPE_HOURLY
+								// .equals(rateType)) {
+								// hours = rate.getInt(PROP_HOURS);
+								// }
+								//
+								// if (hours < 130) {
+								// ret.add("Software Engineers cannot be booked for less than 130 hours a month");
+								// break;
+								// }
+								// }
 							}
 						}
 					}
@@ -328,7 +334,14 @@ public class Validator implements CONSTS {
 			}
 
 			if (checkedAllRoles && !hasBAOrPM) {
-				ret.add("A Project must include Project Managment or Business Analyst oversight");
+				if (project.has(PROP_TERMS)) {
+					JSONObject terms = project.getJSONObject(PROP_TERMS);
+					hasBAOrPM = terms
+							.has(PROP_INCLUDES_PROJECT_MANAGEMENT_OVERHEAD)
+							&& terms.getBoolean(PROP_INCLUDES_PROJECT_MANAGEMENT_OVERHEAD);
+				}
+
+				if(!hasBAOrPM)ret.add("A Project must include Project Managment or Business Analyst oversight");
 			}
 
 		}

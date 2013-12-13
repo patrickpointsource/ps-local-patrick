@@ -41,6 +41,7 @@ public interface CONSTS {
 	public String PROP_GOOGLE_ID = "googleId";
 	public String PROP_HOURS = "hours";
 	public String PROP_ID = "id";
+	public String PROP_INCLUDES_PROJECT_MANAGEMENT_OVERHEAD = "includesProjectManagementOverhead";
 	public String PROP_MBOX = "mBox";
 	public String PROP_MEMBERS = "members";
 	public String PROP_MESSAGE = "message";
@@ -55,6 +56,7 @@ public interface CONSTS {
 	public String PROP_START_DATE = "startDate";
 	public String PROP_STATE = "state";
 	public String PROP_STATUS = "status";
+	public String PROP_TERMS = "terms";
 	public String PROP_THUMBNAIL = "thumbnail";
 	public String PROP_THUMBNAIL_PHOTO_URL = "thumbnailPhotoUrl";
 	public String PROP_TITLE = "title";
