@@ -49,28 +49,56 @@ angular.module('Mastermind.controllers.projects')
         changeRateType(Rates.MONTHLY);
       };
 
+      $scope.validateNewRole = function(){
+    	var errors = [];
+    	var newRole = $scope.newRole;
+    	//Must select a type
+    	if(!newRole){
+    		errors.push('New Role is null');
+    	}
+    	else{
+    		if(!newRole.type || !newRole.type.resource){
+    			errors.push("Role Type cannot be null");
+    		}
+    		if(!newRole.startDate){
+    			errors.push("Start Date cannot be null");
+    		}
+    		
+    		 //Business Rule: Monthly Rate Assumes 100% utilization
+            if ($scope.newRole.rate.type == 'monthly') {
+              $scope.newRole.rate.fullyUtilized = true;
+            }
+    	}
+    	return errors;
+      };
+      
       /**
        * Add a new role to the project
        */
       $scope.add = function () {
         //Validate new role
-        //Business Rule: Hourly Rate Assumes 100% utilization
-        if ($scope.newRole.rate.hoursPerMonth != null) {
-          $scope.newRole.rate.fullyUtilized = true;
+        var errors = $scope.validateNewRole();
+        if(errors.length > 0){
+        	$scope.addRoleMessages = errors;
         }
-
-        // Bubble an event up to add this role.
-        $scope.$emit('roles:add', $scope.newRole);
-
-        //Update the tables
-        $scope.roleTableParams.reload();
-
-        // Create the new Role with the previously selected rate type.
-        $scope.newRole = RolesService.create({rate: RateFactory.build($scope.newRole.rate.type)});
-
-
-        // Reset the form to being pristine.
-        $scope.rolesForm.$setPristine();
+        else{
+	        // Bubble an event up to add this role.
+	        $scope.$emit('roles:add', $scope.newRole);
+	        
+	
+	        //Update the tables
+	        $scope.roleTableParams.reload();
+	
+	        // Create the new Role with the previously selected rate type.
+	        $scope.newRole = RolesService.create({rate: RateFactory.build($scope.newRole.rate.type)});
+	
+	        //Clear any messages
+	        $scope.addRoleMessages = [];
+	        
+	        
+	        // Reset the form to being pristine.
+	        $scope.rolesForm.$setPristine();
+        }
       };
 
       /**
