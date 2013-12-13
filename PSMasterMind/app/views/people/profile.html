@@ -1,8 +1,9 @@
 <div>
 	<div class="row">
-		<div class="col-xs-9"><h3>{{profile.name}}</h3></div>
-		<div id="pageActions" class="col-xs-3">
+		<div class="col-xs-6"><h3>{{profile.name}}</h3></div>
+		<div class="col-xs-6 pageActions">
 			<button ng-hide="editMode" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
+       		<button ng-show="editMode" class="btn" ng-click="cancel()"><i class="fa fa-chevron-left"></i> <span>Cancel</span></button>
        		<button ng-show="editMode" class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
        	</div>
 	</div>
@@ -10,19 +11,19 @@
 		<div class="col-xs-12">
             <div class="well well-sm">
                 <div class="media">
-                    <div class="thumbnail pull-left">
-                        <img class="media-object" ng-src="{{profile.thumbnail}}"/>
+                    <div class="pull-left">
+                        <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}"/>
                     </div>
                     <div class="media-body">
                 		<a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br/>
                 		<div ng-show="editMode">
 	                		Primary Role<br/>
 		                    <select ng-model="profile.primaryRole.resource"
-		                            ng-options="m.resource as m.title for m in allRoles.members">
+		                            ng-options="m.resource as m.title for m in allRoles">
 		                    </select>
 	                    </div>
 	                    <div ng-hide="editMode">
-	                		Primary Role: {{profile.primaryRole.resource?profile.primaryRole.resource:'Not Specified'}}
+	                		Primary Role: {{getRoleName(profile.primaryRole.resource)}}
 	                    </div>
                     </div>
                 </div>
@@ -62,16 +63,48 @@
 		</div>
 	</div>
 </div>
-<!-- 
 <div>
-	<h3>Skills</h3>
+	<div class="row">
+		<div class="col-xs-9">
+			<h3>Skills</h3>
+		</div>
+		<div class="col-xs-3 pageActions" ng-show="editMode">
+			<button type="button" class="btn btn-default pull-right" data-toggle="collapse" data-target="#newSkillDialog">
+		  		<i class="fa fa-plus-square"></i> <span>Add Skills</span>
+			</button>
+		</div>
+	</div>
+	<section id="newSkillDialog" class="well collapse out" ng-show="editMode">
+	 <div class="row">
+	     <div class="col-xs-12 col-sm-4 form-group">
+	         <label for="skill">Skill:</label>
+	         <select id="skillSelect" class="col-xs-12 form-control" ng-model="newSkill.type.resource"
+	                 ng-options="m.resource as m.title for m in skillTypes">
+	         </select>
+	     </div>
+	  </div>
+	  <div class="row">
+           <div class="col-xs-12">
+               <input type="submit" ng-disabled="!newSkill.type.resource" class="btn" value="Add" ng-click="addSkill()"/>
+           </div>
+       </div>
+	</section>
 	<div class="row">
 		<div class="col-xs-12">
-			<table ng-table="skillsParams" template-pagination="skills/pager" class="table">
+			<table ng-table="skillsParams" class="table">
 				<tr ng-repeat="skill in $data">
-					<td>{{skill}}</td>
+					<td data-title="'Type'">{{getSkillsName(skill.type.resource)}}</td>
+					<td ng-hide="editMode" data-title="'Proficiency'">{{getSkillProficiencyLabel(skill.proficiency)}}</td>
+					<td ng-show="editMode" data-title="'Proficiency'">
+						<select ng-model="skill.proficiency">
+							<option value="1">Some</option>
+							<option value="2">Moderate</option>
+							<option value="3">Mastered</option>
+		                </select>
+		            </td>
+					<td ng-show="editMode"><button class="btn btn-default" ng-click="removeSkill(skill)"><i class="fa fa-trash-o"></i></button></td>
 				</tr>
 			</table>
 		</div>
 	</div>
-</div> -->
+</div> 

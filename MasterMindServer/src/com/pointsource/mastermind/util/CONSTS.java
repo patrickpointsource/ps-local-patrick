@@ -93,7 +93,7 @@ public interface CONSTS {
 	public String ROLE_SSE_ID = "SSE";
 	public String ROLE_SSE_TITLE = "Senior Software Engineer";
 	public String ROLE_SE_ID = "SE";
-	public String ROLE_SE_TITLE = "Senior Engineer";
+	public String ROLE_SE_TITLE = "Software Engineer";
 	public String ROLE_SUXD_ID = "SUXD";
 	public String ROLE_SUXD_TITLE = "Senior User Experience Designer";
 	public String ROLE_UXD_ID = "UXD";
@@ -120,7 +120,7 @@ public interface CONSTS {
 	/**
 	 * Mongo Constants
 	 */
-	public String BUILD_NUMBER = "0.1.2013.12.09";
+	public String BUILD_NUMBER = "0.1.2013.12.12";
 	public String DB_USER = "admin";
 	public String DB_PASS = "t0ddSucks";
 	//public String DB_HOSTNAME_DEFAULT = "db.mastermind.pointsource.us";

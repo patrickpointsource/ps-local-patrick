@@ -257,7 +257,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: allerregular;
   font-size: 14px;
   line-height: 1.428571429;
   color: #333333;
@@ -402,7 +402,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: allerregular;
   font-weight: 500;
   line-height: 1.1;
   color: inherit;
@@ -6021,7 +6021,7 @@ input[type="text"] {
 :-ms-input-placeholder {
   color: #dddddd;
 }
-#pageActions {
+.pageActions {
   text-align: right;
   margin-top: 16px;
 }
@@ -6069,6 +6069,10 @@ label.checkbox {
 }
 .required-label:before {
   content: '* ';
+}
+/**NG Table Overrides**/
+.ng-table th {
+  text-align: left;
 }
 .navbar-fixed-top {
   margin-bottom: 0;
@@ -6344,6 +6348,13 @@ main article #content .graph tbody tr th.active {
 .peopleList .profileImage {
   width: 36px;
   height: 36px;
+}
+.fullProfileImage {
+  width: 90px;
+  height: 90px;
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 /* utility styles */
 /* Make float parent clear itself */
