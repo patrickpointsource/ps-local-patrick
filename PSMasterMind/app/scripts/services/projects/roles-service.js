@@ -58,12 +58,18 @@ angular.module('Mastermind.services.projects')
 			// i. 100% Utilization = Yes/No
 			// ii. hours per month BR: cannot exceed 220
 			// hours
+    		//BR: Senior UX Designers must have a minimum of 40 hours in a project or no hours.
     		if(newRole.rate.type == 'hourly'){
-    			if(!newRole.rate.fullyUtilized && !newRole.rate.hours){
-    				errors.push("An Hourly Role must specify the number hours per month");
-    			}
-    			else if(!newRole.rate.fullyUtilized && newRole.rate.hours > 220){
-    				errors.push("An Hourly Role cannot exceed 220 hours per month");
+    			if(!newRole.rate.fullyUtilized){
+	    			if(!newRole.rate.hours){
+	    				errors.push("An Hourly Role must specify the number hours per month");
+	    			}
+	    			else if(newRole.type.resource == 'roles/SUXD' && newRole.rate.hours < 40){
+	    				errors.push("Senior UX Designers must have a minimum of 40 hours/month in a project");
+	    			}
+	    			else if(newRole.rate.hours > 220){
+	    				errors.push("An Hourly Role cannot exceed 220 hours per month");
+	    			}
     			}
     		}
     		
@@ -71,12 +77,18 @@ angular.module('Mastermind.services.projects')
 			// i. 100% Utilization = Yes/No
 			// ii. hours per week BR: Cannot exceed 50
 			// hours
+    		//BR: Senior UX Designers must have a minimum of 40 hours in a project or no hours.
     		else if(newRole.rate.type == 'weekly'){
-    			if(!newRole.rate.fullyUtilized && !newRole.rate.hours){
-    				errors.push("A Weekly Role must specify the number hours per week");
-    			}
-    			else if(!newRole.rate.fullyUtilized && newRole.rate.hours > 220){
-    				errors.push("A Weekly Role cannot exceed 50 hours per week");
+    			if(!newRole.rate.fullyUtilized){
+	    			if(!newRole.rate.hours){
+	    				errors.push("A Weekly Role must specify the number hours per week");
+	    			}
+	    			else if(newRole.type.resource == 'roles/SUXD' && newRole.rate.hours < 10){
+	    				errors.push("Senior UX Designers must have a minimum of 40 hours/month in a project");
+	    			}
+	    			else if(!newRole.rate.fullyUtilized && newRole.rate.hours > 220){
+	    				errors.push("A Weekly Role cannot exceed 50 hours per week");
+	    			}
     			}
     		}
     		
@@ -84,6 +96,8 @@ angular.module('Mastermind.services.projects')
             if (newRole.rate.type == 'monthly') {
               newRole.rate.fullyUtilized = true;
             }
+            
+            //
     	}
     	return errors;
     }
