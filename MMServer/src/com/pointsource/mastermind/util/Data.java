@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.api.client.util.IOUtils;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.WriteResult;
+import com.mongodb.util.JSON;
 
 public class Data implements CONSTS{
 
@@ -22,7 +30,21 @@ public class Data implements CONSTS{
 	private static JSONObject PEOPLE = null;
 	private static Map<String, JSONObject> PROJECTS = new HashMap<String, JSONObject>();
 	private static int nextId = 0;
-
+	private static Mongo mongo;
+	private static DB db;
+	
+	static{
+		try {
+			mongo =  new Mongo(DB_HOSTNAME, DB_PORT);
+			db = mongo.getDB(DB_NAME);
+			db.authenticate(DB_USER, DB_PASS.toCharArray());
+		} catch (Exception e) {
+			System.err.println("DB Startup Failed!!");
+			e.printStackTrace();
+		}
+	}
+	
+	
 	/**
 	 * Gets the list of Google Users
 	 * @return
@@ -106,13 +128,25 @@ public class Data implements CONSTS{
 		String id = String.valueOf(nextId++);
 		
 		//Set ID 
-		newProject.put(PROP_ID, id);
+		//newProject.put(PROP_ID, id);
 		newProject.put(PROP_ETAG, "0");
 		newProject.put(PROP_ABOUT, RESOURCE_PROJECTS+"/"+id);
 		
 		//Cache it
-		PROJECTS.put(id, newProject);
-		
+		if(db != null){
+			String json = newProject.toString();
+			DBObject dbObject = (DBObject) JSON.parse(json);
+			DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+			WriteResult result = projectsCol.insert(dbObject);
+			//TODO Handle Result Issues
+			DBCursor cursorDoc = projectsCol.find();
+			while (cursorDoc.hasNext()) {
+				System.out.println(cursorDoc.next());
+			}
+		}
+		else{
+			PROJECTS.put(id, newProject);
+		}
 		return newProject;
 	}
 	

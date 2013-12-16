@@ -33,4 +33,15 @@ public interface CONSTS {
 	public String WORKSPACE_TITLE = "PointSource Master Mind";
 	public String RESOURCE_TITLE_PEOPLE = "People";
 	public String RESOURCE_TITLE_PROJECTS = "Projects";
+	
+	
+	/**
+	 * Mongo Collection Names
+	 */
+	public String DB_USER = "admin";
+	public String DB_PASS = "t0ddSucks";
+	public String DB_HOSTNAME = "db.mastermind.pointsource.us";
+	public int DB_PORT = 27017;
+	public String DB_NAME = "mm_db_test_2013_11_21";
+	public String COLLECTION_TITLE_PROJECTS = "Projects";
 }
