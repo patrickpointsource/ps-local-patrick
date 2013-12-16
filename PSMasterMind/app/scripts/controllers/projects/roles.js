@@ -73,22 +73,22 @@ angular.module('Mastermind.controllers.projects')
     		else if($scope.project.endDate && newRole.startDate > $scope.project.endDate){
     			errors.push("Role Start Date cannot be before Project End Date");
     		}
-    	
+
     		//Role cannot end after the project is over
     		if(newRole.endDate && $scope.project.endDate && newRole.endDate > $scope.project.endDate){
     			errors.push("Role End Date cannot be after Project End Date");
     		}
-    		
+
     		//Role cannot start before the project is starts
     		else if(newRole.endDate && $scope.project.startDate && newRole.endDate < $scope.project.startDate){
     			errors.push("Role End Date cannot be before Project Start Date");
     		}
-    		
+
     		//End Date cannot be before start date
     		else if(newRole.startDate && newRole.endDate && newRole.startDate > newRole.endDate){
     			errors.push("Role Start Date cannot be after Role End Date");
     		}
-    		
+
     		 //Business Rule: Monthly Rate Assumes 100% utilization
             if ($scope.newRole.rate.type == 'monthly') {
               $scope.newRole.rate.fullyUtilized = true;
@@ -96,7 +96,7 @@ angular.module('Mastermind.controllers.projects')
     	}
     	return errors;
       };
-      
+
       /**
        * Add a new role to the project
        */
@@ -109,18 +109,18 @@ angular.module('Mastermind.controllers.projects')
         else{
 	        // Bubble an event up to add this role.
 	        $scope.$emit('roles:add', $scope.newRole);
-	        
-	
+
+
 	        //Update the tables
 	        $scope.roleTableParams.reload();
-	
+
 	        // Create the new Role with the previously selected rate type.
 	        $scope.newRole = RolesService.create({rate: RateFactory.build($scope.newRole.rate.type)});
-	
+
 	        //Clear any messages
 	        $scope.addRoleMessages = [];
-	        
-	        
+
+
 	        // Reset the form to being pristine.
 	        $scope.rolesForm.$setPristine();
         }
@@ -155,5 +155,12 @@ angular.module('Mastermind.controllers.projects')
       $('.datepicker').on('hide', function(ev){
         $scope.$apply();
       });
+
+      $scope.isFieldInError = function (fieldName) {
+        var rolesFormField = $scope.rolesForm[fieldName];
+        return (rolesFormField.$dirty
+          || ($scope.submitAttempted && rolesFormField.$pristine))
+          && rolesFormField.$invalid;
+      };
 
     }]);

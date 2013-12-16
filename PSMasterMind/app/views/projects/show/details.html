@@ -1,7 +1,7 @@
 <div ng-form="detailsForm" ng-controller="DetailsCtrl">
     <div class="row">
         <div class="col-xs-8 col-sm-6 form-group" ng-class="{error: isFieldInError('customerName')}">
-            <label class="required-label" for="customerName">Customer Name:</label>
+            <label class="required-label control-label" for="customerName">Customer Name:</label>
               <input id="customerName" name="customerName" type="text" class="col-xs-12 form-control user-input-icon"
                   placeholder="Customer Name"
                   ng-model="project.customerName"
@@ -40,7 +40,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12  col-sm-4 form-group" ng-class="{error: isFieldInError('startDate')}">
-            <label class="required-label" for="startDate">Start Date:</label>
+            <label class="required-label control-label" for="startDate">Start Date:</label>
             <input id="startDate" name="startDate" class="col-xs-12 form-control datepicker" type="text"
                 ng-model="project.startDate"
                 data-date-format="yyyy-mm-dd"
