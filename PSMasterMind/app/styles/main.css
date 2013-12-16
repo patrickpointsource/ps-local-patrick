@@ -6110,6 +6110,10 @@ header .navbar-default .navbar-inner {
   background-color: transparent;
   background-image: none;
 }
+header .navbar-default .navbar-collapse li > a > span {
+  position: relative;
+  top: -4px;
+}
 header .navbar-inverse {
   border: 0;
   top: 60px;
