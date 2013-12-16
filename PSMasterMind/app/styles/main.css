@@ -6164,6 +6164,28 @@ header #badge {
 header #badge nav {
   margin-top: 20px;
 }
+.graph {
+  border: 1px solid #e4e4e4;
+  padding: 10px;
+  margin: auto;
+}
+.graph .row {
+  padding: 5px 0px;
+  margin: auto;
+}
+.graph tbody tr td,
+.graph tbody tr th {
+  width: 139px;
+  height: 28px;
+}
+.graph tbody tr td.active,
+.graph tbody tr th.active {
+  background-color: #6185b8;
+}
+div.active {
+  background-color: #6185b8;
+  height: 18px;
+}
 main {
   overflow: hidden;
 }
@@ -6254,28 +6276,6 @@ main article #content #graph-header #graph-header-plus {
 }
 main article #content #graph-header #graph-header-plus i {
   vertical-align: middle;
-}
-main article #content div.active {
-  background-color: #6185b8;
-  height: 18px;
-}
-main article #content .graph {
-  border: 1px solid #e4e4e4;
-  padding: 10px;
-  margin: auto;
-}
-main article #content .graph .row {
-  padding: 5px 0px;
-  margin: auto;
-}
-main article #content .graph tbody tr td,
-main article #content .graph tbody tr th {
-  width: 139px;
-  height: 28px;
-}
-main article #content .graph tbody tr td.active,
-main article #content .graph tbody tr th.active {
-  background-color: #6185b8;
 }
 #mainContent {
   width: 100%;
@@ -6404,6 +6404,9 @@ th > span.hidden-xs {
   display: block;
   max-width: 100%;
   height: auto;
+}
+.people-graph {
+  margin: 20px 0;
 }
 /* utility styles */
 /* Make float parent clear itself */

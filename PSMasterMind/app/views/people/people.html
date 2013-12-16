@@ -1,14 +1,45 @@
 <br />
 <div class="row">
-	<div class="col-xs-9">
-		<select ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
+	<div class="col-xs-4">
+		<select class="form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
 			<option value="all">All People</option>
 			<option value="available">Available People</option>
 		</select>
 	</div>
-	<div class="col-xs-3">
-		
-	</div>
+</div>
+<div class="row graph people-graph">
+    <div id="peopleSummaryGraph" class="col-xs-12">
+        <div class="row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-11">
+                <div class="row">
+                    <div class="col-xs-2">Dec</div>
+                    <div class="col-xs-2">Jan</div>
+                    <div class="col-xs-2">Feb</div>
+                    <div class="col-xs-2">Mar</div>
+                    <div class="col-xs-2">Apr</div>
+                    <div class="col-xs-2">May</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row peopleList" ng-repeat="person in qvPeople" ng-show="qvPeople">
+        <div class="col-xs-1">
+            <div style="float:left position:absolute"><a href="#{{person.about}}">{{person.givenName}}</a></div>
+            <img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/>
+        </div>
+        <div class="col-xs-11">
+            <div class="row" ng-repeat="project in qvPeopleProjects[person.about]">
+                <div style="float:left position:absolute"><a href="#{{project.resource}}">{{project.name}}</a></div>
+                <div class="col-xs-2" ng-class="{active: inMonth(project, 11, 2013)}"></div>
+                <div class="col-xs-2" ng-class="{active: inMonth(project, 0, 2014)}"></div>
+                <div class="col-xs-2" ng-class="{active: inMonth(project, 1, 2014)}"></div>
+                <div class="col-xs-2" ng-class="{active: inMonth(project, 2, 2014)}"></div>
+                <div class="col-xs-2" ng-class="{active: inMonth(project, 3, 2014)}"></div>
+                <div class="col-xs-2" ng-class="{active: inMonth(project, 4, 2014)}"></div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="row">
      <div class="col-xs-12">

@@ -116,6 +116,37 @@ header {
   }
 }
 
+.graph {
+  border: 1px solid #e4e4e4;
+  padding: 10px;
+  margin: auto;
+
+  .row{
+    padding: 5px 0px;
+    margin: auto;
+  }
+
+  tbody {
+    tr {
+      td, th {
+        width: 139px;
+        height: 28px;
+
+        &.active {
+          background-color: @ps-secondary-blue;
+        }
+      }
+    }
+  }
+}
+
+div{
+  &.active {
+    background-color: @ps-secondary-blue;
+    height: 18px;
+  }
+}
+
 main {
   overflow: hidden;
 
@@ -188,16 +219,16 @@ main {
           text-align: center;
           border: 1px solid @ps-lightgray;
           &.big-text{
-          	font-size: 137px;
-	        line-height: 210px;
+            font-size: 137px;
+          line-height: 210px;
           }
           &.three-rows{
-          	line-height: 70px;
-          	overflow:hidden;
-          	img{
-          		max-height: 60px;
-          		max-width: 100%;
-          	}
+            line-height: 70px;
+            overflow:hidden;
+            img{
+              max-height: 60px;
+              max-width: 100%;
+            }
           }
         }
 
@@ -213,9 +244,9 @@ main {
         text-align: left;
       }
 
-	  #summaryView{
+      #summaryView{
 
-	  }
+      }
 
       #graph-header {
         line-height: 30px;
@@ -229,36 +260,6 @@ main {
 
           i {
             vertical-align: middle;
-          }
-        }
-      }
-
-      div{
-	      &.active {
-	        background-color: @ps-secondary-blue;
-	        height: 18px;
-	      }
-      }
-
-      .graph {
-        border: 1px solid #e4e4e4;
-		padding: 10px;
-		margin: auto;
-		.row{
-			padding: 5px 0px;
-			margin: auto;
-		}
-
-        tbody {
-          tr {
-            td, th {
-              width: 139px;
-              height: 28px;
-
-              &.active {
-                background-color: @ps-secondary-blue;
-              }
-            }
           }
         }
       }
