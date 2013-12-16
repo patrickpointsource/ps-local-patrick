@@ -50,77 +50,7 @@ angular.module('Mastermind.controllers.projects')
       };
 
       $scope.validateNewRole = function(){
-    	var errors = [];
-    	var newRole = $scope.newRole;
-    	//Must select a type
-    	if(!newRole){
-    		errors.push('New Role is null');
-    	}
-    	else{
-    		//Role Type is Required
-    		if(!newRole.type || !newRole.type.resource){
-    			errors.push("Role Type is required");
-    		}
-    		//Start Date is required
-    		if(!newRole.startDate){
-    			errors.push("Start Date is required");
-    		}
-    		//Role cannot start before the project starts
-    		else if($scope.project.startDate && newRole.startDate < $scope.project.startDate){
-    			errors.push("Role Start Date cannot be before Project Start Date");
-    		}
-    		//Role cannot start after the project ends
-    		else if($scope.project.endDate && newRole.startDate > $scope.project.endDate){
-    			errors.push("Role Start Date cannot be before Project End Date");
-    		}
-
-    		//Role cannot end after the project is over
-    		if(newRole.endDate && $scope.project.endDate && newRole.endDate > $scope.project.endDate){
-    			errors.push("Role End Date cannot be after Project End Date");
-    		}
-
-    		//Role cannot start before the project is starts
-    		else if(newRole.endDate && $scope.project.startDate && newRole.endDate < $scope.project.startDate){
-    			errors.push("Role End Date cannot be before Project Start Date");
-    		}
-
-    		//End Date cannot be before start date
-    		else if(newRole.startDate && newRole.endDate && newRole.startDate > newRole.endDate){
-    			errors.push("Role Start Date cannot be after Role End Date");
-    		}
-
-    		// a. Hourly
-			// i. 100% Utilization = Yes/No
-			// ii. hours per month BR: cannot exceed 220
-			// hours
-    		if($scope.newRole.rate.type == 'hourly'){
-    			if(!$scope.newRole.rate.fullyUtilized && !$scope.newRole.rate.hours){
-    				errors.push("An Hourly Role must specify the number hours per month");
-    			}
-    			else if(!$scope.newRole.rate.fullyUtilized && $scope.newRole.rate.hours > 220){
-    				errors.push("An Hourly Role cannot exceed 220 hours per month");
-    			}
-    		}
-    		
-    		// b. Weekly
-			// i. 100% Utilization = Yes/No
-			// ii. hours per week BR: Cannot exceed 50
-			// hours
-    		else if($scope.newRole.rate.type == 'weekly'){
-    			if(!$scope.newRole.rate.fullyUtilized && !$scope.newRole.rate.hours){
-    				errors.push("A Weekly Role must specify the number hours per week");
-    			}
-    			else if(!$scope.newRole.rate.fullyUtilized && $scope.newRole.rate.hours > 220){
-    				errors.push("A Weekly Role cannot exceed 50 hours per week");
-    			}
-    		}
-    		
-    		 //Business Rule: Monthly Rate Assumes 100% utilization
-            if ($scope.newRole.rate.type == 'monthly') {
-              $scope.newRole.rate.fullyUtilized = true;
-            }
-    	}
-    	return errors;
+    	return RolesService.validateNewRole($scope.project, $scope.newRole);
       };
 
       /**
@@ -141,7 +71,13 @@ angular.module('Mastermind.controllers.projects')
 	        $scope.roleTableParams.reload();
 
 	        // Create the new Role with the previously selected rate type.
-	        $scope.newRole = RolesService.create({rate: RateFactory.build($scope.newRole.rate.type)});
+	        $scope.newRole = RolesService.create(
+	        	{
+	        		startDate:$scope.project.startDate, 
+	        		endDate:$scope.project.endDate,
+	        		rate: RateFactory.build($scope.newRole.rate.type)
+	        	}
+	        );
 
 	        //Clear any messages
 	        $scope.addRoleMessages = [];
