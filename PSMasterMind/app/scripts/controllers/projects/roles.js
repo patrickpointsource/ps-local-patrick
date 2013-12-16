@@ -53,6 +53,21 @@ angular.module('Mastermind.controllers.projects')
     	return RolesService.validateNewRole($scope.project, $scope.newRole);
       };
 
+      
+      $scope.displayHours = function(role){
+    	  var ret = '';
+    	  if(role.rate.isFullyUtilized()){
+    		  ret = '100%';
+    	  }
+    	  else if(role.rate.type == Rates.WEEKLY){
+    		  ret = role.rate.hours + ' per week';
+    	  }
+    	  else if(role.rate.type == Rates.HOURLY){
+    		  ret = role.rate.hours + ' per month';  
+    	  }
+    	  return ret;
+      };
+      
       /**
        * Add a new role to the project
        */
