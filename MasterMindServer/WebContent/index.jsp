@@ -29,7 +29,8 @@
 		request.getSession().setAttribute("client_id", "141952851027.apps.googleusercontent.com");
         request.getSession().setAttribute("application_name", "PS Master Mind");
   %>
-  <title>${application_name}</title>
+  <title>MasterMind Server</title>
+  <link rel="icon"  type="image/png" href="images/favicon.png">
   <script type="text/javascript">
   (function() {
     var po = document.createElement('script');
@@ -59,21 +60,10 @@
   </div>
   <div id="authOps" style="display:none">
     <h2>User is now signed in to the app using Google+</h2>
-    <p>If the user chooses to disconnect, the app must delete all stored
-    information retrieved from Google for the given user.</p>
     <button id="disconnect" >Disconnect your Google account from this app</button>
 
     <h2>User's profile information</h2>
-    <p>This data is retrieved client-side by using the Google JavaScript API
-    client library.</p>
     <div id="profile"></div>
-
-    <h2>User's friends that are visible to this app</h2>
-    <p>This data is retrieved from your server, where your server makes
-    an authorized HTTP request on the user's behalf.</p>
-    <p>If your app uses server-side rendering, this is the section you
-    would change using your server-side templating system.</p>
-    <div id="visiblePeople"></div>
 
     <h2>Authentication Logs</h2>
     <pre id="authResult"></pre>
