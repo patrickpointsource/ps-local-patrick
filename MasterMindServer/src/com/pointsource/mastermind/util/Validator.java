@@ -251,13 +251,13 @@ public class Validator implements CONSTS {
 											|| !rate.getBoolean(PROP_FULLY_UTILIZED)) {
 										if (!rate.has(PROP_HOURS)
 												|| rate.getInt(PROP_HOURS) < 1) {
-											ret.add("A Hourly Role must specify the number hours per month");
+											ret.add("An Hourly Role must specify the number hours per month");
 											break;
 										} else {
 											int hoursPerMonth = rate
 													.getInt(PROP_HOURS);
 											if (hoursPerMonth > 220) {
-												ret.add("A Role cannot exceed 220 hours per month");
+												ret.add("An Hourly Role cannot exceed 220 hours per month");
 												break;
 											}
 										}
@@ -277,9 +277,8 @@ public class Validator implements CONSTS {
 										} else {
 											int hoursPerWeek = rate
 													.getInt(PROP_HOURS);
-											int hoursPerMonth = (int) (hoursPerWeek * 4);
-											if (hoursPerMonth > 220) {
-												ret.add("A Role cannot exceed 220 hours per month");
+											if (hoursPerWeek > 50) {
+												ret.add("A Weekly Role cannot exceed 50 hours per week");
 												break;
 											}
 										}

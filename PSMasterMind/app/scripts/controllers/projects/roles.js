@@ -89,6 +89,32 @@ angular.module('Mastermind.controllers.projects')
     			errors.push("Role Start Date cannot be after Role End Date");
     		}
 
+    		// a. Hourly
+			// i. 100% Utilization = Yes/No
+			// ii. hours per month BR: cannot exceed 220
+			// hours
+    		if($scope.newRole.rate.type == 'hourly'){
+    			if(!$scope.newRole.rate.fullyUtilized && !$scope.newRole.rate.hours){
+    				errors.push("An Hourly Role must specify the number hours per month");
+    			}
+    			else if(!$scope.newRole.rate.fullyUtilized && $scope.newRole.rate.hours > 220){
+    				errors.push("An Hourly Role cannot exceed 220 hours per month");
+    			}
+    		}
+    		
+    		// b. Weekly
+			// i. 100% Utilization = Yes/No
+			// ii. hours per week BR: Cannot exceed 50
+			// hours
+    		else if($scope.newRole.rate.type == 'weekly'){
+    			if(!$scope.newRole.rate.fullyUtilized && !$scope.newRole.rate.hours){
+    				errors.push("A Weekly Role must specify the number hours per week");
+    			}
+    			else if(!$scope.newRole.rate.fullyUtilized && $scope.newRole.rate.hours > 220){
+    				errors.push("A Weekly Role cannot exceed 50 hours per week");
+    			}
+    		}
+    		
     		 //Business Rule: Monthly Rate Assumes 100% utilization
             if ($scope.newRole.rate.type == 'monthly') {
               $scope.newRole.rate.fullyUtilized = true;
