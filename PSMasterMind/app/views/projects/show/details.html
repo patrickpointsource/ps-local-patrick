@@ -9,11 +9,11 @@
                   required
                   ng-readonly="!isTransient">
         </div>
-        <div class="col-xs-4 col-sm-6 form-group">
-            <label class="required-label">Type:</label>
-            <label class="radio inline no-top-margin"><input type="radio" value="paid" ng-model="project.type">Paid</label>
-            <label class="radio inline"><input type="radio" value="poc" ng-model="project.type">PoC</label>
-            <label class="radio inline"><input type="radio" value="invest" ng-model="project.type">PS
+        <div class="col-xs-4 col-sm-6 form-group" ng-class="{error: isFieldInError('type')}">
+            <label class="required-label control-label" for="type">Type:</label>
+            <label class="radio inline no-top-margin"><input name="type" type="radio" value="paid" ng-model="project.type">Paid</label>
+            <label class="radio inline"><input name="type" type="radio" value="poc" ng-model="project.type">PoC</label>
+            <label class="radio inline"><input name="type" type="radio" value="invest" ng-model="project.type">PS
                 Invest</label>
         </div>
     </div>
