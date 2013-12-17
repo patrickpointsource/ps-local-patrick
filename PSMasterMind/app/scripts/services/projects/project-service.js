@@ -4,7 +4,7 @@
  * Handles application state in regards to the currently accessed Projects.
  */
 angular.module('Mastermind.services.projects')
-  .service('ProjectsService', ['Restangular', 'Project', function (Restangular, Project) {
+  .service('ProjectsService', ['$q', 'Restangular', 'Resources', 'Project', function ($q, Restangular, Resources, Project) {
       /**
        * Create a reference to a server side resource for Projects.
        *
@@ -58,16 +58,6 @@ angular.module('Mastermind.services.projects')
     };
 
     /**
-     * Service function for retrieving a project by its ID.
-     *
-     * @param projectId
-     * @returns {*|Object}
-     */
-    this.get = function (projectId) {
-      return Resource.get(projectId);
-    };
-
-    /**
      * Service function for persisting a project, new or previously
      * existing.
      *
@@ -96,11 +86,7 @@ angular.module('Mastermind.services.projects')
       if (this.isTransient(project)) {
         val = Resource.post(project);
       } else {
-        // Add properties for the server.
-        project._id = project.$meta._id;
-        project.etag = project.$meta.etag;
-
-        val = Resource.customPUT(project, project.id);
+        val = Resources.update(project);
       }
 
       return val;
@@ -113,7 +99,8 @@ angular.module('Mastermind.services.projects')
      * @returns {*}
      */
     this.destroy = function (project) {
-      return Resource.customDELETE(project.id);
+      var url = project.about?project.about:project.resource;
+      return Resources.remove(url);
     }
 
     /**
@@ -123,7 +110,23 @@ angular.module('Mastermind.services.projects')
      * @returns {boolean}
      */
     this.isTransient = function (project) {
-      return typeof project.id === 'undefined';
+      return typeof project.about === 'undefined';
+    };
+    
+    /**
+     * Return a defered operation that fetches a project for edit
+     */
+    this.getForEdit = function(projectId){
+    	var deferred = $q.defer();
+		
+		setTimeout(function() {
+			Resources.refresh('projects/'+projectId).then(function(project){
+				var proj = new Project(project);
+				deferred.resolve(proj);
+			});
+		}, 10);
+		
+		return deferred.promise;
     };
 
     /**
@@ -132,6 +135,6 @@ angular.module('Mastermind.services.projects')
      * @returns {Project}
      */
     this.create = function () {
-      return new Project();
+    	return new Project();
     };
   }]);

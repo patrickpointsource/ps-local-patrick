@@ -82,9 +82,6 @@
           templateUrl: 'views/projects/show.html',
           controller: 'ProjectCtrl',
           resolve: {
-            project: function (ProjectsService, $stateParams) {
-              return ProjectsService.get($stateParams.projectId);
-            },
             executives: function (Groups) {
               return Groups.get('execs');
             },

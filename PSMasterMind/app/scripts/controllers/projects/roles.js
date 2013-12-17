@@ -4,8 +4,8 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('RolesCtrl', ['$scope', '$filter', 'RolesService', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
-    function ($scope, $filter, RolesService, RoleTypes, Rates, RateFactory, TableParams) {
+  .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
+    function ($scope, $filter, $q, RolesService, RoleTypes, Rates, RateFactory, TableParams) {
 
 
       $scope.newRole = RolesService.create();
@@ -18,7 +18,9 @@ angular.module('Mastermind.controllers.projects')
         	type: 'asc'     // initial sorting
         }
       };
-      $scope.roleTableParams = new TableParams(params, {
+      
+      
+	  $scope.roleTableParams = new TableParams(params, {
     	counts: [], // hide page counts control
         total: $scope.project.roles.length, // length of data
         getData: function ($defer, params) {
@@ -27,6 +29,7 @@ angular.module('Mastermind.controllers.projects')
             $defer.resolve(ret);
         }
       });
+      
 
       /**
        * Change the rate type on the new role to the specified new rate type
@@ -53,10 +56,9 @@ angular.module('Mastermind.controllers.projects')
     	return RolesService.validateNewRole($scope.project, $scope.newRole);
       };
 
-      
       $scope.displayHours = function(role){
     	  var ret = '';
-    	  if(role.rate.isFullyUtilized()){
+    	  if(role.rate.fullyUtilized){
     		  ret = '100%';
     	  }
     	  else if(role.rate.type == Rates.WEEKLY){

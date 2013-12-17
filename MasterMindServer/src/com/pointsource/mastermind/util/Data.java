@@ -494,7 +494,6 @@ public class Data implements CONSTS {
 				ObjectId oId = (ObjectId) object.get(PROP__ID);
 				String json = JSON.serialize(object);
 				JSONObject jsonObject = new JSONObject(json);
-				jsonObject.put(PROP_ID, oId);
 				jsonObject.put(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + oId);
 				ret.put(oId.toString(), jsonObject);
 			} else {
@@ -636,7 +635,6 @@ public class Data implements CONSTS {
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
 
-			ret.put(PROP_ID, id);
 			ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
 		}
 
@@ -658,8 +656,13 @@ public class Data implements CONSTS {
 		BasicDBObject query = new BasicDBObject();
 		query.put(PROP__ID, new ObjectId(id));
 		DBObject dbObj = projectsCol.findAndRemove(query);
-		String json = JSON.serialize(dbObj);
-		ret = new JSONObject(json);
+		if(dbObj != null){
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+		}
+		else{
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Project not found to delete").build());
+		}
 
 		ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
 
@@ -748,11 +751,9 @@ public class Data implements CONSTS {
 
 			ObjectId oId = (ObjectId) created.get(PROP__ID);
 			String idVal = oId.toString();
-			newProject.put(PROP_ID, idVal);
+			newProject.put(PROP_ABOUT,
+					RESOURCE_PROJECTS + "/" + idVal);
 		}
-
-		newProject.put(PROP_ABOUT,
-				RESOURCE_PROJECTS + "/" + newProject.getString(PROP_ID));
 
 		return newProject;
 	}
@@ -835,15 +836,9 @@ public class Data implements CONSTS {
 	 * @param newProject
 	 * @throws JSONException
 	 */
-	public static JSONObject updateProject(JSONObject newProject)
+	public static JSONObject updateProject(String id, JSONObject newProject)
 			throws JSONException {
-		if (!newProject.has(PROP_ID)) {
-			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Project does not conatin an id property").build();
-			throw new WebApplicationException(response);
-		}
 
-		String id = newProject.getString(PROP_ID);
 		JSONObject existing = getProject(id);
 		if (existing == null) {
 			Response response = Response.status(Status.BAD_REQUEST)

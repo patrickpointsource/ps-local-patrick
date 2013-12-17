@@ -21,8 +21,8 @@ angular.module('Mastermind.controllers.projects')
           }
         }
 
-        console.log(detailsFormField.$name + ': ');
-        console.log(detailsFormField);
+//        console.log(detailsFormField.$name + ': ');
+//        console.log(detailsFormField);
         return (detailsFormField.$dirty
           || ($scope.submitAttempted && detailsFormField.$pristine))
           && detailsFormField.$invalid;

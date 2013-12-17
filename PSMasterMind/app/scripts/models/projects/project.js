@@ -68,6 +68,7 @@ angular.module('Mastermind.models.projects')
      * Defines the default values for a newly created Project.
      */
     var defaults = {
+      about: undefined,
       customerName: '',
       name: '',
       type: undefined,
@@ -91,7 +92,8 @@ angular.module('Mastermind.models.projects')
     function Project(options) {
       options = options || {};
 
-      this.id = options.id;
+      this.about = options.about || defaults.about;
+      this.resource = options.resource || defaults.resource;
       this.customerName = options.customerName || defaults.customerName;
       this.name = options.name || defaults.name;
       this.type = options.type || defaults.type;

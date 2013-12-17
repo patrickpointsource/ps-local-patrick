@@ -59,7 +59,7 @@ angular.module('Mastermind').factory(
 						
 						deferred.resolve(newValue);
 					});
-				 }, 1000);
+				 }, 10);
 				
 				return deferred.promise;
 			}
@@ -100,7 +100,7 @@ angular.module('Mastermind').factory(
 					else{
 						deferred.resolve(value);
 					}
-				 }, 1000);
+				 }, 10);
 				
 				return deferred.promise;
 			}
@@ -135,7 +135,7 @@ angular.module('Mastermind').factory(
 				    	
 				    	deferred.resolve(ret);
 				    });
-				}, 1000);
+				}, 10);
 				
 				return deferred.promise;
 			}
@@ -169,7 +169,7 @@ angular.module('Mastermind').factory(
 				    		deferred.resolve(newResult);
 				    	});
 				    });
-				}, 1000);
+				}, 10);
 				
 				return deferred.promise;
 			}
@@ -198,10 +198,35 @@ angular.module('Mastermind').factory(
 			    		deferred.resolve(newResult);
 			    	});
 
-				}, 1000);
+				}, 10);
 				
 				return deferred.promise;
 			}
+			
+			/**
+			 * Create a new resource in a collection
+			 */
+			function create(collection, toCreate){
+				var resource = ResourcesRestangular.all(collection);
+				return resource.post(toCreate);
+			}
+			
+
+			/**
+			 * Create a new resource in a collection
+			 */
+			function remove(resourceURL){
+				var route = '';
+				var id = resourceURL;
+				var lastIndex = resourceURL.indexOf('/');
+				if(lastIndex != -1){
+					route = resourceURL.substr(0, lastIndex);
+					id = resourceURL.substr(lastIndex + 1);
+				}
+				var resource = ResourcesRestangular.all(route);
+				return resource.customDELETE(id);
+			}
+			
 			
 			/**
 			 * Create a deep copy on an object
@@ -218,6 +243,7 @@ angular.module('Mastermind').factory(
 				resolve: resolve,
 				deepCopy: deepCopy,
 				update: update,
-				forceUpdate: forceUpdate
+				forceUpdate: forceUpdate,
+				remove: remove
 			};
 		});

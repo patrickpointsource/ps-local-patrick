@@ -4,68 +4,89 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$scope', '$state', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'project', 'executives', 'salesRepresentatives','ngTableParams',
-    function ($scope, $state, $filter, ProjectsService, Resources, People, Groups, RoleTypes, project, executives, salesRepresentatives, TableParams) {
+  .controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'executives', 'salesRepresentatives','ngTableParams',
+    function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, executives, salesRepresentatives, TableParams) {
       var detailsValid = false, rolesValid = false;
 
       // Set our currently viewed project to the one resolved by the service.
-      $scope.project = project;
-
+      $scope.projectId = $stateParams.projectId;
+      $scope.projectLoaded = false;
+      
       $scope.execs = executives;
-
       $scope.sales = salesRepresentatives;
+      
+      $scope.handleProjectSelected = function(){
+    	  var project = $scope.project;
+    	  $scope.projectLoaded = true;
+    	  $scope.isTransient = ProjectsService.isTransient(project);
 
-      $scope.isTransient = ProjectsService.isTransient(project);
+          $scope.submitAttempted = false;
 
-      $scope.submitAttempted = false;
+          // The title of the page is the project's name or 'New Project' if transient.
+          $scope.title = $scope.isTransient ? 'New Project' : project.name;
 
-      // The title of the page is the project's name or 'New Project' if transient.
-      $scope.title = $scope.isTransient ? 'New Project' : project.name;
-
-      // Table Parameters
-      var params = {
-        page: 1,            // show first page
-        count: 10,           // count per page
-        sorting: {
-        	type: 'asc'     // initial sorting
-        }
-      };
-
-      $scope.summaryRolesTableParams = new TableParams(params, {
-        total: $scope.project.roles.length,
-        getData: function ($defer, params) {
-          var start = (params.page() - 1) * params.count();
-          var end = params.page() * params.count();
-
-          var orderedData = params.sorting() ?
-                $filter('orderBy')($scope.project.roles, params.orderBy()) :
-                $scope.project.roles;
-
-          //use build-in angular filter
-          var result = orderedData.slice(start, end);
-
-          var defers = [];
-          var ret = [];
-          for(var i = 0; i < result.length; i++){
-            var ithRole = Resources.deepCopy(result[i]);
-            if(ithRole.assignee && ithRole.assignee.resource){
-              defers.push(Resources.resolve(ithRole.assignee));
-              //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+          // Table Parameters
+          var params = {
+            page: 1,            // show first page
+            count: 10,           // count per page
+            sorting: {
+            	type: 'asc'     // initial sorting
             }
+          };
 
-            if(ithRole.type && ithRole.type.resource){
-              defers.push(Resources.resolve(ithRole.type));
-              //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+          $scope.summaryRolesTableParams = new TableParams(params, {
+            total: $scope.project.roles.length,
+            getData: function ($defer, params) {
+              var start = (params.page() - 1) * params.count();
+              var end = params.page() * params.count();
+
+              var orderedData = params.sorting() ?
+                    $filter('orderBy')($scope.project.roles, params.orderBy()) :
+                    $scope.project.roles;
+
+              //use build-in angular filter
+              var result = orderedData.slice(start, end);
+
+              var defers = [];
+              var ret = [];
+              for(var i = 0; i < result.length; i++){
+                var ithRole = Resources.deepCopy(result[i]);
+                if(ithRole.assignee && ithRole.assignee.resource){
+                  defers.push(Resources.resolve(ithRole.assignee));
+                  //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+                }
+
+                if(ithRole.type && ithRole.type.resource){
+                  defers.push(Resources.resolve(ithRole.type));
+                  //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+                }
+
+                ret[i] = ithRole;
+              }
+
+              $.when.apply(window, defers).done(function(){
+                $defer.resolve(ret);
+              });
             }
-
-            ret[i] = ithRole;
-          }
-
-          $.when.apply(window, defers).done(function(){
-            $defer.resolve(ret);
           });
-        }
-      });
+      };
+      
+      /**
+       * Get Existing Project
+       */
+      if($scope.projectId){
+          ProjectsService.getForEdit($scope.projectId).then(function(project){
+        	  $scope.project = project;
+        	  $scope.handleProjectSelected();
+          });
+      }
+      /**
+       * Default create a new project
+       */
+      else{
+    	  $scope.project = ProjectsService.create();
+    	  $scope.handleProjectSelected();
+      }
 
 
       /**

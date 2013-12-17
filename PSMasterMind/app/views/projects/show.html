@@ -13,16 +13,22 @@
             <li ng-repeat="message in messages">{{message}}</li>
         </ul>
     </div>
-
     <tabset>
         <tab id="details" heading="Details">
-            <ng-include src="'views/projects/show/details.html'"></ng-include>
+        	<div ng-if="projectLoaded">
+            	<ng-include src="'views/projects/show/details.html'"></ng-include>
+            </div>
         </tab>
         <tab id="roles" heading="Roles">
-            <ng-include src="'views/projects/show/roles.html'"></ng-include>
+        	<div ng-if="projectLoaded">
+			 	<ng-include src="'views/projects/show/roles.html'"></ng-include>
+			</div>
+           
         </tab>
         <tab id="summary" heading="Summary">
-            <ng-include src="'views/projects/show/summary.html'"></ng-include>
+        	<div ng-if="projectLoaded">
+            	<ng-include src="'views/projects/show/summary.html'"></ng-include>
+            </div>
         </tab>
     </tabset>
 </div>

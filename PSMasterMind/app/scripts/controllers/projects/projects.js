@@ -52,21 +52,9 @@ angular.module('Mastermind.controllers.projects')
         $state.go('projects.new');
       };
 
-      /**
-       * Navigate to a project's show page.
-       *
-       * @param project An object that represents a view of a project
-       *   meant to be shown in a list.
-       */
-      $scope.showProject = function (project) {
-        $state.go('projects.show', {
-          projectId: project.id
-        });
-      };
-
       $scope.deleteProject = function (project) {
         ProjectsService.destroy(project).then(function () {
-          $state.go('projects.index');
+        	$scope.handleProjectFilterChanged();
         });
       };
       

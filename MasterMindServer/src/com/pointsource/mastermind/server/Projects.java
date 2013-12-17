@@ -190,10 +190,8 @@ public class Projects extends BaseResource {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-
 				Validator.canUpdateProject(context, newProject);
-				newProject.put(CONSTS.PROP_ID, id);
-				JSONObject json = Data.updateProject(newProject);
+				JSONObject json = Data.updateProject(id, newProject);
 				String ret = Data.escapeJSON(json);
 				return Response.ok(ret).build();
 			} catch (ValidationException e) {
