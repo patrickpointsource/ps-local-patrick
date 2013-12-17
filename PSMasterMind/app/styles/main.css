@@ -6182,7 +6182,7 @@ header #badge nav {
 .graph tbody tr th.active {
   background-color: #6185b8;
 }
-div.active {
+.graph div.active {
   background-color: #6185b8;
   height: 18px;
 }
