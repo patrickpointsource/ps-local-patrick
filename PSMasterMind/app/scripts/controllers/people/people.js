@@ -157,4 +157,23 @@ angular.module('Mastermind.controllers.people')
         return returnValue;
       };
 
+
+      $scope.showTableView = true;
+      $scope.showGraphView = false;
+
+      $scope.toggleTableView = function() {
+        if ($scope.showGraphView) {
+          $scope.showTableView = !$scope.showTableView;
+          $scope.showGraphView = !$scope.showGraphView;
+        }
+      }
+
+
+      $scope.toggleGraphView = function() {
+        if ($scope.showTableView) {
+          $scope.showGraphView = !$scope.showGraphView;
+          $scope.showTableView = !$scope.showTableView;
+        }
+      }
+
     }]);
