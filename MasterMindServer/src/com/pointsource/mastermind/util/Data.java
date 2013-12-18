@@ -274,6 +274,7 @@ public class Data implements CONSTS {
 		return ret;
 	}
 
+	
 	/**
 	 * Get the list of managed user groups
 	 * 
@@ -285,12 +286,12 @@ public class Data implements CONSTS {
 		JSONArray members = new JSONArray();
 
 		JSONObject g1 = new JSONObject();
-		g1.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_EXEC_ID);
+		g1.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_EXEC_TITLE);
 		g1.put(PROP_TITLE, GROUPS_EXEC_TITLE);
 		members.put(g1);
 
 		JSONObject g2 = new JSONObject();
-		g2.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_SALES_ID);
+		g2.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_SALES_TITLE);
 		g2.put(PROP_TITLE, GROUPS_SALES_TITLE);
 		members.put(g2);
 
@@ -405,7 +406,7 @@ public class Data implements CONSTS {
 		String fields = "{name:1}";
 
 		// Executives Group
-		if (GROUPS_EXEC_ID.equals(groupId)) {
+		if (GROUPS_EXEC_TITLE.equals(groupId)) {
 			String query = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547']}}";
 			Map<String, JSONObject> result = getPeople(context, query, fields);
 			Collection<JSONObject> values = result.values();
@@ -416,7 +417,7 @@ public class Data implements CONSTS {
 			}
 		}
 		// Sales Group
-		if (GROUPS_SALES_ID.equals(groupId)) {
+		if (GROUPS_SALES_TITLE.equals(groupId)) {
 			String query = "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']}}";
 			Map<String, JSONObject> result = getPeople(context, query, fields);
 			Collection<JSONObject> values = result.values();
@@ -617,19 +618,49 @@ public class Data implements CONSTS {
 	}
 
 	/**
+	 * Returns true if the user is a member of the given group
+	 * @param person
+	 * @param group
+	 * @return
+	 * @throws JSONException 
+	 */
+	private static boolean isMember(JSONObject person, String group) throws JSONException{
+		boolean ret = false;
+		
+		if(person.has(PROP_GROUPS)){
+			JSONArray groups = person.getJSONArray(PROP_GROUPS);
+			
+			for (int i = 0; i < groups.length(); i++) {
+				if(group.equals(groups.getString(i))){
+					ret = true;
+					break;
+				}
+			}
+		}
+		
+		return ret;
+	}
+	
+	/**
 	 * Get a projects by id
 	 * 
 	 * @param id
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getProject(String id) throws JSONException {
+	public static JSONObject getProject(RequestContext context, String id) throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
-		BasicDBObject query = new BasicDBObject();
-		query.put(PROP__ID, new ObjectId(id));
-		DBObject dbObj = projectsCol.findOne(query);
+		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
+		BasicDBObject fields = new BasicDBObject();
+		
+		//If not managemnet remove the financial fields
+		if(!isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)){
+			fields.put(PROP_TERMS, 0);
+		}
+		
+		DBObject dbObj = projectsCol.findOne(query, fields);
 
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
@@ -836,10 +867,10 @@ public class Data implements CONSTS {
 	 * @param newProject
 	 * @throws JSONException
 	 */
-	public static JSONObject updateProject(String id, JSONObject newProject)
+	public static JSONObject updateProject(RequestContext context, String id, JSONObject newProject)
 			throws JSONException {
 
-		JSONObject existing = getProject(id);
+		JSONObject existing = getProject(context, id);
 		if (existing == null) {
 			Response response = Response.status(Status.BAD_REQUEST)
 					.entity("Project does not exist").build();
@@ -888,7 +919,60 @@ public class Data implements CONSTS {
 		return newProject;
 	}
 
+	public static void synchDefaultGroups(RequestContext context) throws JSONException{
+		DBCollection peopleCollection = db.getCollection(COLLECTION_TITLE_PEOPLE);
+		
+		//The executive group
+		String checkExecsStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688']},groups:{$ne:'"+GROUPS_EXEC_TITLE+"'}}";
+		DBObject checkExecs = (DBObject)JSON.parse(checkExecsStr);
+		
+		DBObject addExec = new BasicDBObject("$push", new BasicDBObject(PROP_GROUPS, GROUPS_EXEC_TITLE));
+		
+		WriteResult errors = peopleCollection.updateMulti(checkExecs, addExec);
+		CommandResult error = errors.getLastError();
+		if(error != null && errors.getN() > 0){
+			System.err.println("Insert Result:" + error);
+			if(error.getException() != null){
+				error.getException().printStackTrace();
+			}
+		}
+		
+		//The executive group
+		String checkSalesStr = "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']},groups:{$ne:'"+GROUPS_SALES_TITLE+"'}}";
+		DBObject checkSales = (DBObject)JSON.parse(checkSalesStr);
+		
+		DBObject addSales = new BasicDBObject("$push", new BasicDBObject(PROP_GROUPS, GROUPS_SALES_TITLE));
+		
+		errors = peopleCollection.updateMulti(checkSales, addSales);
+		if(errors != null && errors.getN() > 0){
+			error = errors.getLastError();
+			System.err.println("Insert Result:" + error);
+			if(error.getException() != null){
+				error.getException().printStackTrace();
+			}
+		}
+		
+		//The management group
+		String checkManagementStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688','103362960874176228355','112147186764436526995']},groups:{$ne:'"+GROUPS_MANAGEMENT_TITLE+"'}}";
+		DBObject checkManagement = (DBObject)JSON.parse(checkManagementStr);
+		
+		DBObject addManagement = new BasicDBObject("$push", new BasicDBObject(PROP_GROUPS, GROUPS_MANAGEMENT_TITLE));
+		
+		errors = peopleCollection.updateMulti(checkManagement, addManagement);
+		if(errors != null && errors.getN() > 0){
+			error = errors.getLastError();
+			System.err.println("Insert Result:" + error);
+			if(error.getException() != null){
+				error.getException().printStackTrace();
+			}
+		}
+	}
 	
+	
+	/**
+	 * Default the database with a list of skills
+	 * @param context The requesting context
+	 */
 	public static void synchDefaultSkills(RequestContext context){
 		List<String> DEFAULT_SKILLS = new ArrayList<String>();
 		Collections.addAll(DEFAULT_SKILLS, SKILLS_DATA_POWER_TITLE, SKILLS_J2EE_TITLE, SKILLS_JAVA_TITLE, SKILLS_REST_TITLE, SKILLS_WEB_TITLE, SKILLS_WORKLIGHT_TITLE);

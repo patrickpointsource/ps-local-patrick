@@ -86,7 +86,7 @@ public class Projects extends BaseResource {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-				JSONObject ret = Data.getProject(id);
+				JSONObject ret = Data.getProject(context, id);
 
 				if (ret == null) {
 					throw new WebApplicationException(Status.NOT_FOUND);
@@ -191,7 +191,7 @@ public class Projects extends BaseResource {
 			try {
 				RequestContext context = getRequestContext();
 				Validator.canUpdateProject(context, newProject);
-				JSONObject json = Data.updateProject(id, newProject);
+				JSONObject json = Data.updateProject(context, id, newProject);
 				String ret = Data.escapeJSON(json);
 				return Response.ok(ret).build();
 			} catch (ValidationException e) {

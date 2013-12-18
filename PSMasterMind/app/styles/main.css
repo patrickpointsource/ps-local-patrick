@@ -6408,6 +6408,15 @@ th > span.hidden-xs {
 .people-graph {
   margin: 20px 0;
 }
+.personDetailLabel {
+  margin-bottom: auto;
+}
+.personDetailList {
+  padding-left: 15px;
+}
+.checkboxText {
+  margin-left: 5px;
+}
 @media (max-width: 767px) {
   .xs-padding-top {
     padding-top: 12px;

@@ -6,6 +6,18 @@
 angular.module('Mastermind.controllers.people')
   .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'ngTableParams',
     function ($scope, $state, $stateParams, $filter, Resources, People, TableParams) {
+	  
+	  //Load my profile for group and role checking
+      Resources.refresh('people/me').then(function(me){
+    	 $scope.me = me; 
+    	 
+//    	 //If you are a member of the management or exec groups provide access to financial info
+//    	 if(me.groups && ((me.groups.indexOf('Management') != -1) || (me.groups.indexOf('Executives') != -1))){
+//    		 $scope.financeAccess=true;
+//    	 }
+    	 
+      });
+	  
 	  /**
 	   * Load Role definitions to display names
 	   */
@@ -87,6 +99,28 @@ angular.module('Mastermind.controllers.people')
 	  $scope.editMode = $state.params.edit?$state.params.edit:false;
 	  
 	  /**
+	   * Initalizes the skills table this should only be done of the first skill add
+	   */
+	  $scope.initSkillsTable = function(){
+		//Table Parameters
+	      var params = {
+	        page: 1,            // show first page
+	        count: 10,           // count per page
+	        sorting: {
+	          title: 'asc'     // initial sorting
+	        }
+	      };
+	      $scope.skillsParams = new TableParams(params, {
+	        counts: [],
+	        total: $scope.skillsList.length, // length of data
+	        getData: function ($defer, params) {
+	          var ret = $scope.skillsList;
+	          $defer.resolve(ret);
+	        }
+	      });
+	  };
+	  
+	  /**
 	   * Populate the form with fetch profile information
 	   */
 	  $scope.setProfile = function(person){
@@ -96,22 +130,7 @@ angular.module('Mastermind.controllers.people')
 		
 		  //Setup the skills table
 		  if($scope.skillsList && !$scope.skillsParams){
-			  //Table Parameters
-		      var params = {
-		        page: 1,            // show first page
-		        count: 10,           // count per page
-		        sorting: {
-		          title: 'asc'     // initial sorting
-		        }
-		      };
-		      $scope.skillsParams = new TableParams(params, {
-		        counts: [],
-		        total: $scope.skillsList.length, // length of data
-		        getData: function ($defer, params) {
-		          var ret = $scope.skillsList;
-		          $defer.resolve(ret);
-		        }
-		      });
+			  $scope.initSkillsTable();
 		  }
 		  //Have skill just refresh
 		  else if($scope.skillsList){
@@ -121,6 +140,36 @@ angular.module('Mastermind.controllers.people')
 		  //I have no skill
 		  else{
 			  $scope.skillsParams = null;
+		  }
+		  
+		  //Set checkbox states based on the groups
+		  var groups = person.groups;
+		  
+		  $scope.isExec = groups && $.inArray('Executives', groups) != -1;
+		  $scope.isManagement = groups && $.inArray('Management', groups) != -1;
+		  $scope.isSales = groups && $.inArray('Sales', groups) != -1;
+	  };
+	  
+	  /**
+	   * In edit mode add/removed a group from the profile when the user checked or unchecked a group
+	   *
+	   */
+	  $scope.handleGroupChange = function(ev, group){
+		  //Is the group checked or unchecked
+		  var elem = ev.currentTarget;
+		  var checked = elem.checked;
+		  
+		  //If checked add the group to the profile
+		  if(checked){
+			  if(!$scope.profile.groups)$scope.profile.groups=[];
+			  $scope.profile.groups.push(group);
+		  }
+		  //Remove the group from the profile
+		  else{
+			  var arr=$scope.profile.groups?$scope.profile.groups:[],ax;
+			  while ((ax= arr.indexOf(group)) !== -1) {
+				  arr.splice(ax, 1);
+		      }
 		  }
 	  };
 	  
@@ -135,6 +184,16 @@ angular.module('Mastermind.controllers.people')
 	  };
 	  
 	  /**
+	   * Set the profile view in edit mode
+	   */
+	  $scope.cancel = function(){
+		  Resources.get('people/'+$scope.profileId).then(function(person){
+			  $scope.setProfile(person);
+			  $scope.editMode = false;
+		  });
+	  };
+	  
+	  /**
 	   * Save the user profile changes
 	   */
 	  $scope.save = function(){
@@ -142,6 +201,13 @@ angular.module('Mastermind.controllers.people')
 		  Resources.update(profile).then(function(person){
 			  $scope.setProfile(person);
 			  $scope.editMode = false;
+			  
+			  //If you updated your self refresh the local copy of me
+			  if($scope.me.about == profile.about){
+			      Resources.refresh('people/me').then(function(me){
+			     	 $scope.me = me; 
+			       });
+			  }
 		  });
 	  };
 	  
@@ -217,6 +283,11 @@ angular.module('Mastermind.controllers.people')
 		  
 		  //Default the template for the next skill entry
 		  $scope.newSkill = {type:{}, proficiency:0};
+		  
+		  //Init skills table if not already done so
+		  if($scope.skillsList && !$scope.skillsParams){
+			  $scope.initSkillsTable();
+		  }
 	  };
 	  
   }]);

@@ -39,6 +39,7 @@ public interface CONSTS {
 	public String PROP_FULLY_UTILIZED = "fullyUtilized";
 	public String PROP_GIVEN_NAME = "givenName";
 	public String PROP_GOOGLE_ID = "googleId";
+	public String PROP_GROUPS = "groups";
 	public String PROP_HOURS = "hours";
 	public String PROP_ID = "id";
 	public String PROP_INCLUDES_PROJECT_MANAGEMENT_OVERHEAD = "includesProjectManagementOverhead";
@@ -80,9 +81,8 @@ public interface CONSTS {
 	public String VALUES_RATE_TYPE_WEEKLY = "weekly";
 	
 	//Magic Group Constants
-	public String GROUPS_EXEC_ID = "execs";
 	public String GROUPS_EXEC_TITLE = "Executives";
-	public String GROUPS_SALES_ID = "sales";
+	public String GROUPS_MANAGEMENT_TITLE = "Management";
 	public String GROUPS_SALES_TITLE = "Sales";
 	
 	//Magic Role Constants
@@ -133,7 +133,6 @@ public interface CONSTS {
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
 	public String COLLECTION_TITLE_PEOPLE = "People";
 	public String COLLECTION_TITLE_SKILLS = "Skills";
-	
 	
 	/**
 	 * Google Constants

@@ -89,7 +89,10 @@ public class AuthFilter implements Filter {
 				}
 			}
 
-			if (!authToken.equals(existingToken)) {
+			/**
+			 * If we have a new access token or the session no longer contains a session user
+			 */
+			if (!authToken.equals(existingToken) || session.getAttribute(CONSTS.SESSION_USER_KEY) == null) {
 				//System.out.println(session.getId() + ": " + authToken+ " not equal to " + existingToken);
 				
 				URI googleProfile = new URI(CONSTS.GOOGLE_PLUS_PEOPLE_URI

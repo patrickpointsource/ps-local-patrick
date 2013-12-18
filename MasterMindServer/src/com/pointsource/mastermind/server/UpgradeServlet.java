@@ -38,6 +38,7 @@ public class UpgradeServlet extends HttpServlet {
 			context.setBaseURI(getBaseUrl(req));
 			Data.synchDefaultSkills(context);
 			Data.synchPeople(context);
+			Data.synchDefaultGroups(context);
 
 		} catch (Exception e) {
 			e.printStackTrace();

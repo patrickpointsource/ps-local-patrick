@@ -4,8 +4,18 @@
  * Controller for handling the Details form.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('DetailsCtrl',
-    function ($scope) {
+  .controller('DetailsCtrl',['$scope', 'Resources', function ($scope, Resources) {
+	  //Load the members of the executive Group
+	  var execQuery = {groups:'Executives'};
+	  var salesQuery = {groups:'Sales'};
+	  var fields = {name:1,resource:1};
+	  Resources.query('people', execQuery, fields, function(result){
+		  $scope.execs = result;
+	  });
+	  Resources.query('people', salesQuery, fields, function(result){
+		  $scope.sales = result;
+	  });
+	  
       $scope.$watch(function () {
         return $scope.detailsForm.$valid;
       }, function (newValidity) {
@@ -31,4 +41,4 @@ angular.module('Mastermind.controllers.projects')
       $('.datepicker').on('hide', function(ev){
         $scope.$apply();
       });
-    });
+    }]);

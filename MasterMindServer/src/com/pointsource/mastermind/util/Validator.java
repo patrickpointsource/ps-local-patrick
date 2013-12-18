@@ -1,6 +1,5 @@
 package com.pointsource.mastermind.util;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -144,32 +143,21 @@ public class Validator implements CONSTS {
 		} else {
 			JSONObject sponsor = project.getJSONObject(PROP_EXECUTIVE_SPONSOR);
 			String sponsorRef = sponsor.getString(PROP_RESOURCE);
+			String id = sponsorRef.substring(sponsorRef.lastIndexOf('/')+1);
+			JSONObject profile = Data.getPerson(context, id);
+			JSONArray groups = profile.getJSONArray(PROP_GROUPS);
+			boolean matched = false;
 
-			try {
-				JSONObject group = Data.getGroup(context, GROUPS_EXEC_ID);
-				JSONArray members = group.getJSONArray(PROP_MEMBERS);
-
-				boolean matched = false;
-
-				for (int i = 0; i < members.length(); i++) {
-					JSONObject member = members.getJSONObject(i);
-					if (member.has(PROP_RESOURCE)) {
-						String id = member.getString(PROP_RESOURCE);
-						if (id.equals(sponsorRef)) {
-							matched = true;
-							break;
-						}
-					}
+			for (int i = 0; i < groups.length(); i++) {
+				String group = groups.getString(i);
+				if (GROUPS_EXEC_TITLE.equals(group)) {
+					matched = true;
+					break;
 				}
+			}
 
-				if (!matched) {
-					ret.add("Executive Sponsor is not a member of the Executive Group");
-				}
-
-			} catch (IOException e) {
-				e.printStackTrace();
-				ret.add("Failed to validate the Executive Sponsor: "
-						+ e.getLocalizedMessage());
+			if (!matched) {
+				ret.add("Executive Sponsor is not a member of the Executive Group");
 			}
 		}
 

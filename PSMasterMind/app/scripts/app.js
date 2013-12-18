@@ -68,27 +68,13 @@
           resolve: {
             project: function (ProjectsService) {
               return ProjectsService.create();
-            },
-            executives: function (Groups) {
-              return Groups.get('execs');
-            },
-            salesRepresentatives: function (Groups) {
-              return Groups.get('sales');
             }
           }
         })
         .state('projects.show', {
           url: '/:projectId',
           templateUrl: 'views/projects/show.html',
-          controller: 'ProjectCtrl',
-          resolve: {
-            executives: function (Groups) {
-              return Groups.get('execs');
-            },
-            salesRepresentatives: function (Groups) {
-              return Groups.get('sales');
-            }
-          }
+          controller: 'ProjectCtrl'
         })
         .state('people', {
           url: '/people',
