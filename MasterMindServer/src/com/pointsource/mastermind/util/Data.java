@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -401,7 +402,7 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static Map<String, JSONObject> getProjects(String query,
+	public static Map<String, JSONObject> getProjects(RequestContext context, String query,
 			String fields) throws JSONException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 
@@ -413,6 +414,47 @@ public class Data implements CONSTS {
 		}
 		if (fields != null) {
 			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+		
+		//If not managemnet remove the financial fields
+		if(!isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE) &&
+				!isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) ){
+			//Fields is null create one to filter out terms
+			if(fieldsObject == null){
+				fieldsObject = new BasicDBObject(PROP_TERMS, 0);
+			}
+			//Do we have a fields object and does it contain the key 'terms'
+			if(fieldsObject.containsField(PROP_TERMS)){
+				int num = (Integer)fieldsObject.get(PROP_TERMS);
+				Set<String> keys = fieldsObject.keySet();
+				
+				//We have multiple requested fields terms is just one so remove it from the list
+				if(num != 0 && keys.size() > 1){
+					fieldsObject.removeField(PROP_TERMS);
+				}
+				//Terms was the only requested field flip it to a not
+				else{
+					fieldsObject.put(PROP_TERMS,0);
+				}
+			}
+			//Fields set does not include terms
+			else{
+				@SuppressWarnings("unchecked")
+				Map<String, Integer> fieldsMap = fieldsObject.toMap();
+				//Empty object add filter for terms
+				if(fieldsMap.size() == 0){
+					fieldsObject.put(PROP_TERMS, 0);
+				}
+				else{
+					int firstFieldNum = fieldsMap.values().iterator().next();
+					//Exclusive filter add terms to excludes
+					if(firstFieldNum == 0){
+						fieldsObject.put(PROP_TERMS, 0);
+					}
+					
+					//Otherwise we are fine because it is not included in the inclusive filters
+				}
+			}
 		}
 
 		DBCursor cursur = projectsCol.find(queryObject, fieldsObject);
@@ -585,7 +627,8 @@ public class Data implements CONSTS {
 		BasicDBObject fields = new BasicDBObject();
 		
 		//If not managemnet remove the financial fields
-		if(!isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)){
+		if(!isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE) &&
+				!isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) ){
 			fields.put(PROP_TERMS, 0);
 		}
 		

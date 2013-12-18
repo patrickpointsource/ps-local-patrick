@@ -48,7 +48,7 @@ public class Projects extends BaseResource {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-				Map<String, JSONObject> projects = Data.getProjects(query, fields);
+				Map<String, JSONObject> projects = Data.getProjects(context, query, fields);
 				JSONObject ret = new JSONObject();
 				int total = projects.size();
 				ret.put(CONSTS.PROP_COUNT, total);
