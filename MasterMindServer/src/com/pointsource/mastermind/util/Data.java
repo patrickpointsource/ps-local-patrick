@@ -273,33 +273,6 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-
-	
-	/**
-	 * Get the list of managed user groups
-	 * 
-	 * @return
-	 * @throws JSONException
-	 */
-	public static JSONObject getGroups() throws JSONException {
-		JSONObject ret = new JSONObject();
-		JSONArray members = new JSONArray();
-
-		JSONObject g1 = new JSONObject();
-		g1.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_EXEC_TITLE);
-		g1.put(PROP_TITLE, GROUPS_EXEC_TITLE);
-		members.put(g1);
-
-		JSONObject g2 = new JSONObject();
-		g2.put(PROP_RESOURCE, RESOURCE_GROUPS + "/" + GROUPS_SALES_TITLE);
-		g2.put(PROP_TITLE, GROUPS_SALES_TITLE);
-		members.put(g2);
-
-		ret.put(PROP_MEMBERS, members);
-		ret.put(PROP_ABOUT, RESOURCE_GROUPS);
-		ret.put(PROP_COUNT, members.length());
-		return ret;
-	}
 	
 	/**
 	 * Get the list of assignable skills
@@ -390,50 +363,6 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-
-	/**
-	 * Get the list of managed user groups
-	 * 
-	 * @return
-	 * @throws JSONException
-	 * @throws IOException
-	 */
-	public static JSONObject getGroup(RequestContext context, String groupId)
-			throws JSONException, IOException {
-		JSONObject ret = new JSONObject();
-		JSONArray members = new JSONArray();
-
-		String fields = "{name:1}";
-
-		// Executives Group
-		if (GROUPS_EXEC_TITLE.equals(groupId)) {
-			String query = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547']}}";
-			Map<String, JSONObject> result = getPeople(context, query, fields);
-			Collection<JSONObject> values = result.values();
-			for (Iterator<JSONObject> iterator = values.iterator(); iterator
-					.hasNext();) {
-				JSONObject jsonObject = (JSONObject) iterator.next();
-				members.put(jsonObject);
-			}
-		}
-		// Sales Group
-		if (GROUPS_SALES_TITLE.equals(groupId)) {
-			String query = "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']}}";
-			Map<String, JSONObject> result = getPeople(context, query, fields);
-			Collection<JSONObject> values = result.values();
-			for (Iterator<JSONObject> iterator = values.iterator(); iterator
-					.hasNext();) {
-				JSONObject jsonObject = (JSONObject) iterator.next();
-				members.put(jsonObject);
-			}
-		}
-
-		ret.put(PROP_MEMBERS, members);
-		ret.put(PROP_ABOUT, RESOURCE_GROUPS + "/" + groupId);
-		ret.put(PROP_COUNT, members.length());
-		return ret;
-	}
-
 
 	/**
 	 * Gets the list of Google Users

@@ -113,7 +113,6 @@ public interface CONSTS {
 	 * Rest Summary Constants
 	 */
 	public String WORKSPACE_TITLE = "PointSource Master Mind";
-	public String RESOURCE_TITLE_GROUPS = "Groups";
 	public String RESOURCE_TITLE_PEOPLE = "People";
 	public String RESOURCE_TITLE_PROJECTS = "Projects";
 	public String RESOURCE_TITLE_ROLES = "Roles";
