@@ -83,7 +83,7 @@ angular.module('Mastermind').factory(
 					if (value && time) {
 						time = Date.parse(time);
 						if (((new Date) - time) < MAX_TIME) {
-							console.log('LOCAL resource='+value);
+							//console.log('LOCAL '+resource+'='+value);
 							
 							value = JSON.parse(value);
 							resolved = true;
@@ -96,7 +96,7 @@ angular.module('Mastermind').factory(
 							localStorage[resource] = JSON.stringify(newValue);
 							localStorage[TIME_PREFIX + resource] = new Date();
 							
-							console.log('GET resource='+localStorage[resource]);
+							//console.log('GET '+resource+'='+localStorage[resource]);
 							
 							deferred.resolve(newValue);
 						});
@@ -171,10 +171,10 @@ angular.module('Mastermind').factory(
 				    	
 				    	result.customPUT(updated, id).then(function(newResult){
 				    		//Save to localStorage
-				    		localStorage[resource] = JSON.stringify(newResult);
-							localStorage[TIME_PREFIX + resource] = new Date();
+				    		localStorage[resourceURL] = JSON.stringify(newResult);
+							localStorage[TIME_PREFIX + resourceURL] = new Date();
 				    		
-							console.log('PUT resource='+localStorage[resource]);
+							//console.log('PUT '+resourceURL+'='+localStorage[resourceURL]);
 							
 				    		deferred.resolve(newResult);
 				    	});
@@ -206,8 +206,10 @@ angular.module('Mastermind').factory(
 					
 					resource.customPUT(toUpdate, id).then(function(newResult){
 						//Save to localStorage
-						localStorage[resource] = JSON.stringify(newResult);
-						localStorage[TIME_PREFIX + resource] = new Date();
+						localStorage[resourceURL] = JSON.stringify(newResult);
+						localStorage[TIME_PREFIX + resourceURL] = new Date();
+						
+						//console.log('PUT '+resourceURL+'='+localStorage[resourceURL]);
 						
 			    		deferred.resolve(newResult);
 			    	});
