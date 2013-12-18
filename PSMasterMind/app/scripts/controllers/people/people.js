@@ -16,56 +16,75 @@ angular.module('Mastermind.controllers.people')
       };
 
       var getTableData = function(people){
-    	  return new TableParams(params, {
-	        total: $scope.people.length, // length of data
-	        getData: function ($defer, params) {
-	          var data = $scope.people;
+        return new TableParams(params, {
+          total: $scope.people.length, // length of data
+          getData: function ($defer, params) {
+            var data = $scope.people;
 
-	          var start = (params.page() - 1) * params.count();
-	          var end = params.page() * params.count();
+            var start = (params.page() - 1) * params.count();
+            var end = params.page() * params.count();
 
-	          // use build-in angular filter
-	          var orderedData = params.sorting() ?
-	            $filter('orderBy')(data, params.orderBy()) :
-	            data;
+            // use build-in angular filter
+            var orderedData = params.sorting() ?
+              $filter('orderBy')(data, params.orderBy()) :
+              data;
 
-	          var ret = orderedData.slice(start, end);
-	          $defer.resolve(ret);
+            var ret = orderedData.slice(start, end);
+            $defer.resolve(ret);
 
-	        }
-	      });
+          }
+        });
       }
 
       /**
        * Changes list of people on a filter change
        */
       $scope.handlePeopleFilterChanged = function(){
-	      if($scope.peopleFilter == 'available'){
-		      People.getActivePeople(function(people){
-		    	  $scope.people = people.members;
+        if($scope.peopleFilter == 'available'){
+          People.getActivePeople(function(people){
+            $scope.people = people.members;
 
-		    	  //Reload the table
-		    	  if(!$scope.tableParams)$scope.tableParams = getTableData();
-		    	  else{
-		    		  $scope.tableParams.total($scope.people.length);
-		    		  $scope.tableParams.reload();
-		    	  }
-		      });
-      	  }
-	      else{
-	    	  $scope.peopleFilter = 'all';
+            //Reload the table
+            if(!$scope.tableParams)$scope.tableParams = getTableData();
+            else{
+              $scope.tableParams.total($scope.people.length);
+              $scope.tableParams.reload();
+            }
+          });
+        }
+        else if($scope.peopleFilter == 'all'){
 
-	    	  Resources.query('people', {}, {}, function(result){
-	    		  $scope.people = result.members;
-		    	  //Reload the table
-		    	  if(!$scope.tableParams)$scope.tableParams = getTableData();
-		    	  else{
-		    		  $scope.tableParams.total($scope.people.length);
-		    		  $scope.tableParams.reload();
-		    	  }
-	    	  })
-	      }
+          Resources.query('people', {}, {}, function(result){
+            $scope.people = result.members;
+            //Reload the table
+            if(!$scope.tableParams)$scope.tableParams = getTableData();
+            else{
+              $scope.tableParams.total($scope.people.length);
+              $scope.tableParams.reload();
+            }
+          })
+        }
+        else {
+          var peopleInRoleQuery = {'primaryRole.resource':$scope.peopleFilter};
+          var peopleInRoleFields = {resource:1, name:1, primaryRole:1, thumbnail:1};
+
+          Resources.query('people', peopleInRoleQuery, peopleInRoleFields, function(result){
+            console.log('people in role, ' + $scope.peopleFilter + ' query result.members:');
+            console.log(result.members);
+
+            $scope.people = result.members;
+            //Reload the table
+            if (!$scope.tableParams){
+              $scope.tableParams = getTableData();
+            }
+            else {
+              $scope.tableParams.total($scope.people.length);
+              $scope.tableParams.reload();
+            }
+          });
+        }
       };
+
       /**
        * Get Filter Param
        */
@@ -73,6 +92,14 @@ angular.module('Mastermind.controllers.people')
       //Trigger inital filter change
       $scope.handlePeopleFilterChanged();
 
+      // get all roles so we can build the filter
+      var rolesQuery = {};
+      var rolesFields = {title:1, resource:1}
+      Resources.query('roles', rolesQuery, rolesFields, function(result){
+        console.log('get roles result.members:');
+        console.log(result.members);
+        $scope.rolesFilterOptions = result.members;
+      });
 
       // build table view
       //Get todays date formatted as yyyy-MM-dd
@@ -95,6 +122,7 @@ angular.module('Mastermind.controllers.people')
       Resources.query('projects', qvProjQuery, qvProjFields, function(result){
         $scope.qvProjects = result.data;
 
+        // this is the quick view to show active people in projects for building the graph view
         //Sort By People
         var activePeoplePojects = {};
         var activeProjects = $scope.qvProjects;
@@ -167,7 +195,6 @@ angular.module('Mastermind.controllers.people')
           $scope.showGraphView = !$scope.showGraphView;
         }
       }
-
 
       $scope.toggleGraphView = function() {
         if ($scope.showTableView) {

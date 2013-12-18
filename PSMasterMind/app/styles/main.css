@@ -6408,6 +6408,11 @@ th > span.hidden-xs {
 .people-graph {
   margin: 20px 0;
 }
+@media (max-width: 767px) {
+  .xs-padding-top {
+    padding-top: 12px;
+  }
+}
 /* utility styles */
 /* Make float parent clear itself */
 .clearfix:after {

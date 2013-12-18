@@ -86,7 +86,11 @@ angular.module('Mastermind.services.projects')
       if (this.isTransient(project)) {
         val = Resource.post(project);
       } else {
-        val = Resources.update(project);
+        // Add properties for the server.
+        project._id = project.$meta._id;
+        project.etag = project.$meta.etag;
+
+        val = Resource.customPUT(project, project.id);
       }
 
       return val;
@@ -112,20 +116,20 @@ angular.module('Mastermind.services.projects')
     this.isTransient = function (project) {
       return typeof project.about === 'undefined';
     };
-    
+
     /**
      * Return a defered operation that fetches a project for edit
      */
     this.getForEdit = function(projectId){
     	var deferred = $q.defer();
-		
+
 		setTimeout(function() {
 			Resources.refresh('projects/'+projectId).then(function(project){
 				var proj = new Project(project);
 				deferred.resolve(proj);
 			});
 		}, 10);
-		
+
 		return deferred.promise;
     };
 
