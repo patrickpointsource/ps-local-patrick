@@ -125,7 +125,8 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
 
     function MonthlyRate(options) {
       options = options || {};
-
+      
+      this.fullyUtilized = true;
       this.type = Rates.MONTHLY;
       this.amount = options.amount || defaults.amount;
     }

@@ -59,7 +59,15 @@ angular.module('Mastermind.controllers.projects')
       $scope.displayHours = function(role){
     	  var ret = '';
     	  if(role.rate.fullyUtilized){
-    		  ret = '100%';
+    		  if(role.rate.type == Rates.WEEKLY){
+        		  ret = '100% Weekly';
+        	  }
+        	  else if(role.rate.type == Rates.HOURLY){
+        		  ret = '100% Hourly';  
+        	  }
+        	  else if(role.rate.type == Rates.MONTHLY){
+        		  ret = '100% Monthly';  
+        	  }
     	  }
     	  else if(role.rate.type == Rates.WEEKLY){
     		  ret = role.rate.hours + ' per week';

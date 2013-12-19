@@ -222,3 +222,20 @@
         </div>
     </div>
 </div>
+ <div class="row" ng-if="financeAccess">
+	<br/>
+    <div class="col-xs-12 ">
+        <div class="row well">
+   			<div class="col-xs-4">
+                <label>Estimated value:</label> <span>(USD) {{(project.terms.servicesEstimate+project.terms.softwareEstimate) | currency}}</span>
+            </div>
+            <div class="col-xs-4">
+                <label>Total $ In Plan:</label> <span>{{servicesTotal() | currency}}</span>
+            </div>
+            <div class="col-xs-4">
+                <label>Margin %:</label> <span>{{projectMargin() | number:0}}</span>
+            </div>
+        </div>
+    </div>
+     <br/>
+</div>

@@ -58,8 +58,6 @@ angular.module('Mastermind.controllers.projects')
         });
       };
       
-      
-
       // Table Parameters
       var params = {
         page: 1,            // show first page

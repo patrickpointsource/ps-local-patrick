@@ -19,6 +19,95 @@ angular.module('Mastermind')
     	 
       });
       
+      $scope.projectMargin = function(){
+    	 var servicesEst = $scope.project.terms.servicesEstimate;
+    	 var softwareEst = $scope.project.terms.softwareEstimate;
+    	  
+    	 var revenue = servicesEst+softwareEst;
+    	 var cost = $scope.servicesTotal();
+    	 
+    	 var margin = null;
+    	 
+    	 if(revenue && cost){
+    		 var diff = revenue - cost;
+    		 margin = diff/revenue*100;
+    	 }
+    	 
+    	 return margin;
+      };
+      
+      /**
+       * Calculate total services caost in plan
+       */
+      $scope.servicesTotal = function(){
+    	  var roles = $scope.project.roles;
+    	  
+    	  var runningTotal = 0;
+    	  for(var i = 0; roles && i < roles.length; i++){
+    		  var role = roles[i];
+    		  var rate = role.rate;
+    		  if(rate && rate.amount){
+    			  var amount = rate.amount;
+    			  if(amount){
+    				  var type = rate.type;
+    				  var startDate = new Date(role.startDate);
+    				  var endDate = new Date(role.endDate);
+    				  
+    				  if(startDate && endDate){
+	    				  //Hourly Charge rate
+	    				  if(type && type == 'monthly'){
+	    					  var numMonths = $scope.monthDif(startDate, endDate);
+	    					  var roleTotal = numMonths * amount;
+	    					  runningTotal += roleTotal;
+	    				  }
+	    				  //Weekly Charge rate
+	    				  else if(type && type== 'weekly'){
+	    					  var numWeeks = $scope.weeksDif(startDate, endDate);
+	    					  var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
+	    					  var roleTotal = numWeeks * hoursPerWeek * amount;
+	    					  runningTotal += roleTotal;
+	    				  }
+	    				  //Hourly Charge rate
+	    				  else if(type && type== 'hourly'){
+	    					  var numMonths = $scope.monthDif(startDate, endDate);
+	    					  var hoursPerMonth = rate.fullyUtilized?220:rate.hours;
+	    					  var roleTotal = numMonths * hoursPerMonth * amount;
+	    					  runningTotal += roleTotal;
+	    				  }
+    				  }
+    			  }
+    		  }
+    	  }
+    	  
+    	  return runningTotal;
+      };
+      
+      /**
+       * Number of months between 2 dates
+       */
+      $scope.monthDif = function(d1, d2) {
+    	  var months;
+    	  months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    	  months -= d1.getMonth() + 1;
+    	  months += d2.getMonth();
+    	  return months <= 0 ? 0 : months;
+      };
+      
+      /**
+       * Number of weeks between 2 dates
+       */
+      $scope.weeksDif = function(d1, d2) {
+			// The number of milliseconds in one week
+			var ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
+			// Convert both dates to milliseconds
+			var date1_ms = d1.getTime();
+			var date2_ms = d2.getTime();
+			// Calculate the difference in milliseconds
+			var difference_ms = Math.abs(date1_ms - date2_ms);
+			// Convert back to weeks and return hole weeks
+			return Math.floor(difference_ms / ONE_WEEK);
+      };
+      
       // Set our currently viewed project to the one resolved by the service.
       $scope.projectId = $stateParams.projectId;
       $scope.projectLoaded = false;
