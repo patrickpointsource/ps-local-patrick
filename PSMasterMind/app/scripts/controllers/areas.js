@@ -4,8 +4,13 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, and roles.
  */
-angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state',
-  function ($scope, $state) {
+angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resources',
+  function ($scope, $state, Resources) {
+	
+	//Load my profile for group and role checking
+    Resources.refresh('people/me').then(function(me){
+	  	 $scope.me = me; 
+    });
 
     /**
      * Determine the active area of the application for the user.
