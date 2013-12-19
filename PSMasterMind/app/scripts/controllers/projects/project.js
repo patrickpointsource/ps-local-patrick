@@ -22,13 +22,17 @@ angular.module('Mastermind')
       $scope.projectMargin = function(){
     	 var servicesEst = $scope.project.terms.servicesEstimate;
     	 var softwareEst = $scope.project.terms.softwareEstimate;
-    	  
+    	 
+    	 //Cannot be null
+    	 servicesEst = servicesEst?servicesEst:0;
+    	 softwareEst = softwareEst?softwareEst:0;
+    	 
     	 var revenue = servicesEst+softwareEst;
     	 var cost = $scope.servicesTotal();
     	 
     	 var margin = null;
     	 
-    	 if(revenue && cost){
+    	 if(cost){
     		 var diff = revenue - cost;
     		 margin = diff/revenue*100;
     	 }

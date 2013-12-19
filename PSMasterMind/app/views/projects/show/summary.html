@@ -49,7 +49,7 @@
         <table ng-table="summaryRolesTableParams" class="table peopleList" template-pagination="custom/pager">
             <tr ng-repeat="role in $data">
               	<td data-title="'Person Assigned'">
-                  <img ng-show="role.assignee" class="profileImage" ng-src="{{role.assignee.thumbnail || '/MasterMindStaging/images/generic.png'}}"/>
+                  <img ng-show="role.assignee" class="profileImage" ng-src="{{role.assignee.thumbnail}}"/>
                   <i class="fa fa-ban" ng-show="!role.assignee"></i>
                   <span >{{role.assignee.name || 'Unassigned'}}</span>
                 </td>
