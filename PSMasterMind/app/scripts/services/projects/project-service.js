@@ -90,7 +90,7 @@ angular.module('Mastermind.services.projects')
         project._id = project.$meta._id;
         project.etag = project.$meta.etag;
 
-        val = Resource.customPUT(project, project.id);
+        val = Resources.update(project);
       }
 
       return val;

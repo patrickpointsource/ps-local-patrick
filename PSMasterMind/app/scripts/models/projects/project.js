@@ -3,15 +3,15 @@
 angular.module('Mastermind.models.projects')
   .factory('Terms', function () {
     var defaults = {
-        totalEstimatedValue: 0,
-        includesProjectManagementOverhead: false,
+    	includesProjectManagementOverhead: false,
         type: 'timeAndMaterials'
       };
 
     function Terms(options) {
       options = options || {};
 
-      this.totalEstimatedValue = options.totalEstimatedValue || defaults.totalEstimatedValue;
+      this.servicesEstimate = options.servicesEstimate || defaults.servicesEstimate;
+      this.softwareEstimate = options.softwareEstimate || defaults.softwareEstimate;
       this.includesProjectManagementOverhead = options.includesProjectManagementOverhead || defaults.includesProjectManagementOverhead;
       this.type = options.type || defaults.type;
     }

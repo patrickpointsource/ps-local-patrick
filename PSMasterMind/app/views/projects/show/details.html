@@ -81,43 +81,50 @@
         </div>
     </div>
     <div class="well" ng-if="financeAccess">
-      <div class="row">
-          <div class="col-xs-12">
-              <label for="totalEstimatedValue">Total Estimated Value:</label>
-          </div>
-        </div>
+    	<div class="row">
+    		<div class="hidden-xs col-sm-6 col-md-5 col-lg-4">
+    			<label>Bid Terms:&nbsp;</label>
+    			&nbsp;&nbsp;
+    			<input type="radio" value="timeAndMaterials"
+                          ng-model="project.terms.type">&nbsp;Time &amp; Materials
+    			 &nbsp;&nbsp;
+    			 <input type="radio" value="fixed"
+                        ng-model="project.terms.type">&nbsp;Fixed
+                 
+    		</div>
+    		<div class="visible-xs col-xs-12">
+    			<label>Bid Terms:&nbsp;</label>
+    		</div>
+    		<div class="visible-xs col-xs-12">
+    			<input type="radio" value="timeAndMaterials"
+                          ng-model="project.terms.type">&nbsp;Time &amp; Materials
+    			 &nbsp;&nbsp;
+    			 <input type="radio" value="fixed"
+                        ng-model="project.terms.type">&nbsp;Fixed
+                 
+    		</div>
+    		<div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+               <input type="checkbox"
+                   ng-model="project.terms.includesProjectManagementOverhead">
+                   Project Values Includes PM Overhead
+            </div>
+    	</div>
         <div class="row">
-            <div class="col-xs-6 col-sm-3 form-group">
-                <input class="form-control" id="totalEstimatedValue" type="number"
-                    ng-model="project.terms.totalEstimatedValue">
+            <div class="col-xs-6">
+            	<label for="totalEstimatedValue">Services Estimate:</label>
+                <input class="form-control" id="servicesEstimatedValue" type="number"
+                    ng-model="project.terms.servicesEstimate">
             </div>
-            <div class="col-xs-6 col-sm-9 no-left-padding">
-                <p class="form-control-static currency-total">(USD) {{project.terms.totalEstimatedValue | currency}}</p>
+            <div class="col-xs-6">
+            	<label for="totalEstimatedValue">Software Estimate:</label>
+                <input class="form-control" id="softwareEstimatedValue" type="number"
+                    ng-model="project.terms.softwareEstimate">
             </div>
-        </div>
+         </div>
         <div class="row">
-            <div class="col-xs-6 form-group">
-                <label>Bid Terms:</label>
-                <div class="radio">
-                  <label>
-                      <input type="radio" value="timeAndMaterials"
-                          ng-model="project.terms.type">Time &amp; Materials
-                  </label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" value="fixed"
-                        ng-model="project.terms.type">Fixed</label>
-                </div>
-            </div>
-            <div class="col-xs-6  form-group">
-                <label class="control-label">&nbsp;</label>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox"
-                            ng-model="project.terms.includesProjectManagementOverhead">Project
-                            Includes PM Overhead
-                    </label>
-                </div>
+            <div class="col-xs-12">
+            	<label for="totalEstimatedValue">Total Estimated Value:</label>
+                (USD) {{(project.terms.servicesEstimate+project.terms.softwareEstimate) | currency}}
             </div>
         </div>
     </div>
