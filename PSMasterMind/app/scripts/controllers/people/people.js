@@ -15,6 +15,28 @@ angular.module('Mastermind.controllers.people')
         }
       };
 
+      // get all roles so we can build the filter
+      var rolesQuery = {};
+      var rolesFields = {title:1, resource:1}
+      Resources.query('roles', rolesQuery, rolesFields, function(result){
+        console.log('get roles result.members:');
+        console.log(result.members);
+        $scope.rolesFilterOptions = result.members;
+
+        $scope.rolesMap = {};
+
+        // build a map so we can get the resource title and abbrv
+        for (var i=0; i<result.members.length; i++) {
+          $scope.rolesMap[result.members[i].resource] = {
+            title: result.members[i].title,
+            abbreviation: result.members[i].abbreviation
+          }
+        }
+
+        console.log('$scope.rolesMap:');
+        console.log($scope.rolesMap);
+      });
+
       var getTableData = function(people){
         return new TableParams(params, {
           total: $scope.people.length, // length of data
@@ -44,9 +66,19 @@ angular.module('Mastermind.controllers.people')
           People.getActivePeople(function(people){
             $scope.people = people.members;
 
+            // add the role to the person so we can display it in the table and sort by it
+            for(var i=0; i<$scope.people.length;i++){
+              if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+                $scope.people[i].primaryRole.title = $scope.rolesMap[$scope.people[i].primaryRole.resource].title;
+                $scope.people[i].primaryRole.abbreviation = $scope.rolesMap[$scope.people[i].primaryRole.resource].abbreviation;
+              }
+            }
+
             //Reload the table
-            if(!$scope.tableParams)$scope.tableParams = getTableData();
-            else{
+            if (!$scope.tableParams){
+              $scope.tableParams = getTableData();
+            }
+            else {
               $scope.tableParams.total($scope.people.length);
               $scope.tableParams.reload();
             }
@@ -56,8 +88,19 @@ angular.module('Mastermind.controllers.people')
 
           Resources.query('people', {}, {}, function(result){
             $scope.people = result.members;
+
+            // add the role to the person so we can display it in the table and sort by it
+            for(var i=0; i<$scope.people.length;i++){
+              if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+                $scope.people[i].primaryRole.title = $scope.rolesMap[$scope.people[i].primaryRole.resource].title;
+                $scope.people[i].primaryRole.abbreviation = $scope.rolesMap[$scope.people[i].primaryRole.resource].abbreviation;
+              }
+            }
+
             //Reload the table
-            if(!$scope.tableParams)$scope.tableParams = getTableData();
+            if (!$scope.tableParams){
+              $scope.tableParams = getTableData();
+            }
             else{
               $scope.tableParams.total($scope.people.length);
               $scope.tableParams.reload();
@@ -66,13 +109,22 @@ angular.module('Mastermind.controllers.people')
         }
         else {
           var peopleInRoleQuery = {'primaryRole.resource':$scope.peopleFilter};
-          var peopleInRoleFields = {resource:1, name:1, primaryRole:1, thumbnail:1};
+          var peopleInRoleFields = {resource:1, name:1, familyName:1, givenName: 1, primaryRole:1, thumbnail:1};
 
           Resources.query('people', peopleInRoleQuery, peopleInRoleFields, function(result){
             console.log('people in role, ' + $scope.peopleFilter + ' query result.members:');
             console.log(result.members);
 
             $scope.people = result.members;
+
+            // add the role to the person so we can display it in the table and sort by it
+            for(var i=0; i<$scope.people.length;i++){
+              if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+                $scope.people[i].primaryRole.title = $scope.rolesMap[$scope.people[i].primaryRole.resource].title;
+                $scope.people[i].primaryRole.abbreviation = $scope.rolesMap[$scope.people[i].primaryRole.resource].abbreviation;
+              }
+            }
+
             //Reload the table
             if (!$scope.tableParams){
               $scope.tableParams = getTableData();
@@ -91,15 +143,6 @@ angular.module('Mastermind.controllers.people')
       $scope.peopleFilter = $state.params.filter?$state.params.filter:'all';
       //Trigger inital filter change
       $scope.handlePeopleFilterChanged();
-
-      // get all roles so we can build the filter
-      var rolesQuery = {};
-      var rolesFields = {title:1, resource:1}
-      Resources.query('roles', rolesQuery, rolesFields, function(result){
-        console.log('get roles result.members:');
-        console.log(result.members);
-        $scope.rolesFilterOptions = result.members;
-      });
 
       // build table view
       //Get todays date formatted as yyyy-MM-dd

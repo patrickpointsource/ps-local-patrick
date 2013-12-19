@@ -26,9 +26,9 @@ angular.module('Mastermind')
     function get(id) {
       return Resource.get(id);
     }
-    
- 
-    
+
+
+
     /**
      * Query to get the list of active projects
      */
@@ -39,18 +39,18 @@ angular.module('Mastermind')
         var mm = today.getMonth()+1; //January is 0!
         var yyyy = today.getFullYear();
         if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} today = yyyy+'-'+mm+'-'+dd;
-        
+
         var apQuery = {startDate:{$lte:today},$or:[{endDate:{$exists:false}},{endDate:{$gt:today}}]};
         var apFields = {resource:1,name:1,"roles.assignee":1};
-        
+
         return Resources.query('projects', apQuery, apFields, onSuccess);
     }
-    
+
     function getActivePeople(onSuccess){
     	getActiveProjects(function(result){
     		var activeProjects = result.data;
     		var activePeople = [];
-    		
+
     		//Loop through all the active projects
     		for(var i = 0; i < activeProjects.length; i++){
   			  var roles = activeProjects[i].roles;
@@ -68,9 +68,9 @@ angular.module('Mastermind')
   				  }
   			  }
   		  	}
-    		
+
     		var pepInRolesQuery = {_id:{$nin:activePeople},'primaryRole.resource':{$in:['roles/SSA','roles/PM','roles/BA','roles/SSE','roles/SE','roles/SUXD','roles/UXD']}};
-       	  	var pepInRolesFields = {resource:1,name:1,primaryRole:1,thumbnail:1};
+       	  	var pepInRolesFields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
        	  	Resources.query('people',pepInRolesQuery,pepInRolesFields,onSuccess);
     	});
     }
@@ -82,4 +82,3 @@ angular.module('Mastermind')
         getActivePeople: getActivePeople
       };
   }]);
- 

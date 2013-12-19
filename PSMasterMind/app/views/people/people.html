@@ -53,9 +53,20 @@
 </div>
 <div class="row" ng-show="showTableView">
      <div class="col-xs-12">
-         <table ng-table="tableParams" template-pagination="custom/pager" class="table peopleList">
+         <table ng-table="tableParams" template-pagination="custom/pager" class="table peopleList margin-top">
              <tr ng-repeat="person in $data">
-                <td><a href="#{{person.resource}}"><img class="profileImage" ng-src="{{person.thumbnail}}"/> <span >{{person.name}}</span></a></td>
+                <td data-title="''"><a href="#{{person.resource}}">
+                  <img class="profileImage" ng-src="{{person.thumbnail}}"/></a>
+                </td>
+                <td data-title="'Last Name'" sortable="'familyName'">
+                  <a href="#{{person.resource}}">{{person.familyName}}</a>
+                </td>
+                <td data-title="'First Name'" sortable="'givenName'">
+                  <a href="#{{person.resource}}">{{person.givenName}}</a>
+                </td>
+                <td data-title="'Role'" sortable="'primaryRole.abbreviation'">
+                  {{person.primaryRole.abbreviation}}
+                </td>
              </tr>
          </table>
          <script type="text/ng-template" id="custom/pager">
