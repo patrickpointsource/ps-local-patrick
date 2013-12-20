@@ -19,6 +19,36 @@ angular.module('Mastermind')
     	 
       });
       
+      
+	  //Set our currently viewed project to the one resolved by the service.
+      $scope.projectId = $stateParams.projectId;
+      $scope.projectLoaded = false;
+	  
+	  /**
+	   * Set the profile view in edit mode
+	   */
+	  $scope.edit = function(){
+		  $state.go('projects.show', {projectId:$scope.projectId, edit:true});
+	  };
+	  
+	  /**
+	   * Set the profile view in edit mode
+	   */
+	  $scope.cancel = function(){
+		  //Throw it away if it is a new project
+		  if($scope.isTransient){
+			  $state.go('projects.index');
+		  }
+		  //Fetch the old version of the project and show the read only mode
+		  else{
+			  Resources.get('projects/'+$scope.projectId).then(function(project){
+				  $scope.project = project;
+				  $scope.editMode = false;
+				  $scope.handleProjectSelected();
+			  });
+		  }
+	  };
+      
       $scope.projectMargin = function(){
     	 var servicesEst = $scope.project.terms.servicesEstimate;
     	 var softwareEst = $scope.project.terms.softwareEstimate;
@@ -112,14 +142,16 @@ angular.module('Mastermind')
 			return Math.floor(difference_ms / ONE_WEEK);
       };
       
-      // Set our currently viewed project to the one resolved by the service.
-      $scope.projectId = $stateParams.projectId;
-      $scope.projectLoaded = false;
+      
       
       $scope.handleProjectSelected = function(){
     	  var project = $scope.project;
     	  $scope.projectLoaded = true;
     	  $scope.isTransient = ProjectsService.isTransient(project);
+    	  /**
+    	   * Controls the edit state of the project form (an edit URL param can control this from a URL ref)
+    	   */
+    	  $scope.editMode = $state.params.edit?$state.params.edit:$scope.isTransient;
 
           $scope.submitAttempted = false;
 
@@ -232,7 +264,7 @@ angular.module('Mastermind')
         $scope.submitAttempted = true;
 
         ProjectsService.save($scope.project).then(function () {
-          $state.go('projects.index');
+        	$state.go('projects.show', {projectId:$scope.projectId, edit:false});
         }, function (response) {
           var BAD_REQUEST = 400;
 

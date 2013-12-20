@@ -72,7 +72,7 @@
           }
         })
         .state('projects.show', {
-          url: '/:projectId',
+          url: '/:projectId?edit',
           templateUrl: 'views/projects/show.html',
           controller: 'ProjectCtrl'
         })
