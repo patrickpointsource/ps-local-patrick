@@ -33,8 +33,12 @@ angular.module('Mastermind.controllers.people')
           }
         }
 
-        console.log('$scope.rolesMap:');
-        console.log($scope.rolesMap);
+//        console.log('$scope.rolesMap:');
+//        console.log($scope.rolesMap);
+        
+        //Once we have the roles map get the people
+        //Trigger inital filter change
+        $scope.handlePeopleFilterChanged();
       });
 
       var getTableData = function(people){
@@ -141,8 +145,7 @@ angular.module('Mastermind.controllers.people')
        * Get Filter Param
        */
       $scope.peopleFilter = $state.params.filter?$state.params.filter:'all';
-      //Trigger inital filter change
-      $scope.handlePeopleFilterChanged();
+      
 
       // build table view
       //Get todays date formatted as yyyy-MM-dd
