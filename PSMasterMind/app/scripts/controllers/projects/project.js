@@ -42,9 +42,7 @@ angular.module('Mastermind')
 		  //Fetch the old version of the project and show the read only mode
 		  else{
 			  Resources.get('projects/'+$scope.projectId).then(function(project){
-				  $scope.project = project;
-				  $scope.editMode = false;
-				  $scope.handleProjectSelected();
+				  $state.go('projects.show', {projectId:$scope.projectId, edit:false});
 			  });
 		  }
 	  };
