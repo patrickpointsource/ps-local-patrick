@@ -173,7 +173,8 @@
       );
     })
     .run(['$rootScope',
-      function ($rootScope) {
+      function ($rootScope, $state) {
+
         $rootScope.logout = function () {
           var accessToken = localStorage.getItem('access_token');
 

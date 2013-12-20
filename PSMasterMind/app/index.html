@@ -17,32 +17,32 @@
     
     <!-- Fonts -->
     <style>
-    @font-face {
-	    font-family: 'allerregular';
-	    src: url('fonts/Aller/Aller_Rg.ttf');
-	    font-weight: normal;
-	    font-style: normal;
-	}
-	@font-face {
-	    font-family: 'allerbold';
-	    src: url('fonts/Aller/Aller_Bd.ttf');
-	    font-weight: normal;
-	    font-style: normal;
-	}
-	@font-face {
-	    font-family: 'alleritalic';
-	    src: url('fonts/Aller/Aller_It.ttf');
-	    font-weight: normal;
-	    font-style: normal;
-	}
-	@font-face {
-	    font-family: 'allerlight';
-	    src: url('fonts/Aller/Aller_Lt.ttf');
-	    font-weight: normal;
-	    font-style: normal;
-	
-	}
-	</style>
+      @font-face {
+  	    font-family: 'allerregular';
+  	    src: url('fonts/Aller/Aller_Rg.ttf');
+  	    font-weight: normal;
+  	    font-style: normal;
+    	}
+    	@font-face {
+    	    font-family: 'allerbold';
+    	    src: url('fonts/Aller/Aller_Bd.ttf');
+    	    font-weight: normal;
+    	    font-style: normal;
+    	}
+    	@font-face {
+    	    font-family: 'alleritalic';
+    	    src: url('fonts/Aller/Aller_It.ttf');
+    	    font-weight: normal;
+    	    font-style: normal;
+    	}
+    	@font-face {
+    	    font-family: 'allerlight';
+    	    src: url('fonts/Aller/Aller_Lt.ttf');
+    	    font-weight: normal;
+    	    font-style: normal;
+    	
+    	}
+  	</style>
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css"/>
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css"/>
@@ -66,14 +66,13 @@
     <p>Sign in with your PointSource Google+ account.</p>
     <p>
     <span id="signinButton">
-      <span
-                  class="g-signin"
-                  data-callback="onSignInCallback"
-                  data-clientid="141952851027.apps.googleusercontent.com"
-                  data-cookiepolicy="single_host_origin"
-                  data-theme="light"
-                  data-requestvisibleactions="http://schemas.google.com/AddActivity"
-                  data-scope="https://www.googleapis.com/auth/plus.login">
+      <span class="g-signin" 
+        data-callback="onSignInCallback"
+        data-clientid="141952851027.apps.googleusercontent.com"
+        data-cookiepolicy="single_host_origin"
+        data-theme="light"
+        data-requestvisibleactions="http://schemas.google.com/AddActivity"
+        data-scope="https://www.googleapis.com/auth/plus.login">
       </span>
     </span>
   </p>
@@ -128,13 +127,15 @@
 		<!-- Fixed Z-index to make sure the user menu can pop over it -->
         <nav class="navbar navbar-inverse navbar-fixed-top hidden-xs" style="z-index:900">
           <ul class="nav navbar-nav">
-              <li ng-class="{active: activeArea() === 'home'}"><a ng-click="showHome()" class="close-dropdown"><i
-                      class="fa fa-2x fa-fw fa-home"></i> <span>Home</span></a>
+              <li ng-class="{active: activeArea() === 'home'}"><a ng-click="showHome()" class="close-dropdown">
+                <i class="fa fa-2x fa-fw fa-home"></i> <span>Home</span></a>
               </li>
-              <li ng-class="{active: activeArea() === 'projects'}"><a ng-click="showProjects()" class="close-dropdown"><i
-                      class="fa fa-2x fa-fw fa-briefcase"></i> Projects</a></li>
-              <li ng-class="{active: activeArea() === 'people'}"><a ng-click="showPeople()" class="close-dropdown"><i
-                  class="fa fa-2x fa-fw fa-users"></i> People</a></li>
+              <li ng-class="{active: activeArea() === 'projects'}"><a ng-click="showProjects()" class="close-dropdown">
+                <i class="fa fa-2x fa-fw fa-briefcase"></i> Projects</a>
+              </li>
+              <li ng-class="{active: activeArea() === 'people'}"><a ng-click="showPeople()" class="close-dropdown">
+                <i class="fa fa-2x fa-fw fa-users"></i> People</a>
+              </li>
           </ul>
         </nav>
     </header>
