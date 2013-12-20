@@ -42,10 +42,34 @@ angular.module('Mastermind')
 		  //Fetch the old version of the project and show the read only mode
 		  else{
 			  Resources.get('projects/'+$scope.projectId).then(function(project){
-				  $state.go('projects.show', {projectId:$scope.projectId, edit:false});
+				  $state.go('projects.show', {projectId:$scope.projectId, edit:null});
 			  });
 		  }
 	  };
+	  
+
+      /**
+       * Save the loaded project.
+       */
+      $scope.save = function () {
+        $scope.submitAttempted = true;
+
+        ProjectsService.save($scope.project).then(function (project) {
+        	if($scope.isTransient){
+  			  $state.go('projects.index');
+  		  	}
+        	else{
+        		$state.go('projects.show', {projectId:$scope.projectId, edit:null});
+        	}
+        }, function (response) {
+          var BAD_REQUEST = 400;
+
+          if (response.status === BAD_REQUEST) {
+            $scope.messages = response.data.reasons;
+          }
+        });
+      };
+
       
       $scope.projectMargin = function(){
     	 var servicesEst = $scope.project.terms.servicesEstimate;
@@ -144,12 +168,12 @@ angular.module('Mastermind')
       
       $scope.handleProjectSelected = function(){
     	  var project = $scope.project;
-    	  $scope.projectLoaded = true;
     	  $scope.isTransient = ProjectsService.isTransient(project);
     	  /**
     	   * Controls the edit state of the project form (an edit URL param can control this from a URL ref)
     	   */
-    	  $scope.editMode = $state.params.edit?$state.params.edit:$scope.isTransient;
+    	  $scope.editMode = $state.params.edit?Boolean($state.params.edit):Boolean($scope.isTransient);
+    	  $scope.projectLoaded = true;
 
           $scope.submitAttempted = false;
 
@@ -254,23 +278,6 @@ angular.module('Mastermind')
     	   })
        });
 
-
-      /**
-       * Save the loaded project.
-       */
-      $scope.save = function () {
-        $scope.submitAttempted = true;
-
-        ProjectsService.save($scope.project).then(function () {
-        	$state.go('projects.show', {projectId:$scope.projectId, edit:false});
-        }, function (response) {
-          var BAD_REQUEST = 400;
-
-          if (response.status === BAD_REQUEST) {
-            $scope.messages = response.data.reasons;
-          }
-        });
-      };
 
       /**
        * Whenever the roles:add event is fired from a child controller,

@@ -8,10 +8,8 @@
        		<button ng-show="editMode" class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
         </div>
     </div>
-    <div ng-hide="editMode">
-    	<div ng-if="projectLoaded">
-	         	<ng-include src="'views/projects/show/summary.html'"></ng-include>
-	    </div>
+    <div ng-if="(!editMode || editMode == 'false') && projectLoaded">
+    	<ng-include src="'views/projects/show/summary.html'"></ng-include>
     </div>
 	<div ng-show="editMode">
 	    <div id="messages" class="alert alert-danger" ng-show="messages.length > 0">
@@ -22,18 +20,18 @@
 	    </div>
 	    <tabset>
 	        <tab id="details" heading="Details">
-	        	<div ng-if="projectLoaded">
+	        	<div ng-if="editMode && projectLoaded">
 	            	<ng-include src="'views/projects/show/details.html'"></ng-include>
 	            </div>
 	        </tab>
 	        <tab id="roles" heading="Roles">
-	        	<div ng-if="projectLoaded">
+	        	<div ng-if="editMode && projectLoaded">
 				 	<ng-include src="'views/projects/show/roles.html'"></ng-include>
 				</div>
 	           
 	        </tab>
 	        <tab id="summary" heading="Summary">
-	        	<div ng-if="projectLoaded">
+	        	<div ng-if="editMode && projectLoaded">
 	            	<ng-include src="'views/projects/show/summary.html'"></ng-include>
 	            </div>
 	        </tab>
