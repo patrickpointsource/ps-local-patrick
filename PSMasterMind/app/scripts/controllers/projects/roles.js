@@ -131,10 +131,10 @@ angular.module('Mastermind.controllers.projects')
       });
 
       $scope.assigneeChanged = function(index, role) {
-        console.log('assigneeChanged');
-        console.log('param index:' + index);
-        console.log('param role:');
-        console.log(role);
+//        console.log('assigneeChanged');
+//        console.log('param index:' + index);
+//        console.log('param role:');
+//        console.log(role);
 
         $scope.$emit('roles:change');
       };

@@ -253,6 +253,7 @@ angular.module('Mastermind').factory(
 		    }
 
 			return {
+				create: create,
 				query : query,
 				get : get,
 				refresh : refresh,

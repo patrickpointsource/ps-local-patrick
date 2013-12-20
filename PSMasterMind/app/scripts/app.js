@@ -46,6 +46,11 @@
             }
           }
         })
+        .state('admin', {
+          url: '/admin',
+          templateUrl: 'views/admin.html',
+          controller: 'AdminCtrl'
+        })
         .state('projects', {
           url: '/projects?filter',
           abstract: true,

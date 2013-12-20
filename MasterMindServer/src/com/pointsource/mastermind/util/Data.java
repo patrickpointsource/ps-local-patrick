@@ -760,6 +760,64 @@ public class Data implements CONSTS {
 
 		return newProject;
 	}
+	
+	/**
+	 * Create a new skill
+	 * 
+	 * @param newSkill
+	 * @throws JSONException
+	 */
+	public static JSONObject createSkill(JSONObject newSkill)
+			throws JSONException {
+		newSkill.put(PROP_ETAG, "0");
+
+		String json = newSkill.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
+		WriteResult result = projectsCol.insert(dbObject);
+
+		// TODO Handle Result Issues
+		DBCursor cursorDoc = projectsCol.find();
+		while (cursorDoc.hasNext()) {
+			DBObject created = cursorDoc.next();
+			// System.out.println("Found: " + created);
+
+			ObjectId oId = (ObjectId) created.get(PROP__ID);
+			String idVal = oId.toString();
+			newSkill.put(PROP_ABOUT,
+					RESOURCE_SKILLS + "/" + idVal);
+		}
+
+		return newSkill;
+	}
+	
+	/**
+	 * Delete a skill by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject deleteSkill(RequestContext context, String id)
+			throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		DBObject dbObj = projectsCol.findAndRemove(query);
+		if(dbObj != null){
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+		}
+		else{
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Skill not found to delete").build());
+		}
+
+		ret.put(PROP_ABOUT, RESOURCE_GROUPS + "/" + id);
+
+		return ret;
+	}
 
 	/**
 	 * Update an existing person
@@ -955,6 +1013,7 @@ public class Data implements CONSTS {
 			String skillName = iterator.next();
 			
 			BasicDBObject skill = new BasicDBObject(PROP_TITLE, skillName);
+			skill.append(PROP_ETAG, "0");
 			
 			//Look for skill
 			DBObject ret = skillsCollection.findOne(skill);

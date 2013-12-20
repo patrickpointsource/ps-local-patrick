@@ -2,7 +2,10 @@ package com.pointsource.mastermind.server;
 
 import java.net.URI;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -79,6 +82,66 @@ public class Skills extends BaseResource {
 				String retStr = Data.escapeJSON(ret);
 
 				return Response.ok(retStr).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * POST skills
+	 * 
+	 * Adds a new skill to the collection
+	 * 
+	 * @param newSkill
+	 * 
+	 * @return new skill location
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	public Response post(JSONObject newSkill) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+
+				JSONObject ret = Data.createSkill(newSkill);
+
+				String about = Data.unescapeJSON(ret
+						.getString(CONSTS.PROP_ABOUT));
+
+				URI aboutURI = context.getBaseURI().resolve(about);
+				return Response.created(aboutURI).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * DELETE a skill
+	 */
+	@DELETE
+	@Path("{id}")
+	public Response deleteById(@PathParam("id") String id) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.deleteSkill(context, id);
+
+				if (ret == null) {
+					throw new WebApplicationException(Status.NOT_FOUND);
+				}
+
+				return Response.ok().build();
 			} catch (WebApplicationException e) {
 				return handleWebApplicationException(e);
 			} catch (Exception e) {

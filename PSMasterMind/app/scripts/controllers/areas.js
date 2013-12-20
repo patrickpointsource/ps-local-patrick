@@ -25,6 +25,8 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
         area = 'projects';
       } else if ($state.includes('people')) {
         area = 'people';
+      } else if ($state.includes('admin')) {
+        area = 'admin';
       }
 
       return area;
@@ -51,5 +53,12 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
      */
     $scope.showPeople = function () {
       $state.go('people.index');
+    };
+    
+    /*
+     * Navigate to the projects index.
+     */
+    $scope.showAdmin = function () {
+      $state.go('admin');
     };
   }]);
