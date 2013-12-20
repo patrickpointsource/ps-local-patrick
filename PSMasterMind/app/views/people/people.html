@@ -1,18 +1,21 @@
 <br />
 <div class="row">
-	<div class="col-xs-12 col-sm-4">
+	<div class="col-xs-12 col-sm-5 col-lg-6">
     <select class="form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
       <option value="all" ng-selected="peopleFilter === 'all'">All People</option>
       <option value="available" ng-selected="peopleFilter === 'available'">Available People</option>
       <option ng-repeat="roleOption in rolesFilterOptions" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
 		</select>
 	</div>
-  <div class="col-xs-12 col-sm-8 text-right xs-padding-top">
-    <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-class="{active: showTableView}" ng-click="toggleTableView()"><i class="fa fa-table"></i> Table</button>
-      <button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> Graph</button>
-    </div>
+	<div class="col-xs-4 col-sm-3 col-lg-2 pull-right xs-padding-top">
+	    <div class="btn-group">
+	      <button type="button" class="btn btn-default" ng-class="{active: showTableView}" ng-click="toggleTableView()"><i class="fa fa-table"></i> Table</button>
+	      <button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> Graph</button>
+	    </div>
   </div>
+  <div class="col-xs-8 col-sm-4 col-lg-4 pull-right xs-padding-top">
+		<input class="form-control" placeholder="Filter People" ng-model="filterText">
+	</div>
 </div>
 <div class="row graph people-graph" ng-show="showGraphView">
     <div id="peopleSummaryGraph" class="col-xs-12">
@@ -54,7 +57,7 @@
 <div class="row" ng-show="showTableView">
      <div class="col-xs-12">
          <table ng-table="tableParams" template-pagination="custom/pager" class="table peopleList margin-top">
-             <tr ng-repeat="person in $data">
+             <tr ng-repeat="person in $data | filter:filterText">
                 <td data-title="'Name'" sortable="'familyName'">
                   <img class="profileImage" ng-src="{{person.thumbnail}}"/></a>
                   <a href="#{{person.resource}}">{{person.familyName}}, {{person.givenName}}</a>
