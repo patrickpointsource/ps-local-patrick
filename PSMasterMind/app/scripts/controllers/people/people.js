@@ -19,8 +19,8 @@ angular.module('Mastermind.controllers.people')
       var rolesQuery = {};
       var rolesFields = {title:1, resource:1}
       Resources.query('roles', rolesQuery, rolesFields, function(result){
-        console.log('get roles result.members:');
-        console.log(result.members);
+//        console.log('get roles result.members:');
+//        console.log(result.members);
         $scope.rolesFilterOptions = result.members;
 
         $scope.rolesMap = {};
@@ -32,19 +32,22 @@ angular.module('Mastermind.controllers.people')
             abbreviation: result.members[i].abbreviation
           }
         }
-
-//        console.log('$scope.rolesMap:');
-//        console.log($scope.rolesMap);
-        
-        //Once we have the roles map get the people
-        //Trigger inital filter change
-        $scope.handlePeopleFilterChanged();
       });
 
       var getTableData = function(people){
         return new TableParams(params, {
           total: $scope.people.length, // length of data
           getData: function ($defer, params) {
+	          for(var i=0; i<$scope.people.length;i++){
+	        	//Annotate people with additional information 
+	  	        $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
+	            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+	          	// add the role to the person so we can display it in the table and sort by it
+	          	$scope.people[i].primaryRole.title = $scope.rolesMap?$scope.rolesMap[$scope.people[i].primaryRole.resource].title:'?';
+	              $scope.people[i].primaryRole.abbreviation = $scope.rolesMap?$scope.rolesMap[$scope.people[i].primaryRole.resource].abbreviation:'?';
+	            }
+	          }
+        	  
             var data = $scope.people;
 
             var start = (params.page() - 1) * params.count();
@@ -70,14 +73,6 @@ angular.module('Mastermind.controllers.people')
           People.getActivePeople(function(people){
             $scope.people = people.members;
 
-            // add the role to the person so we can display it in the table and sort by it
-            for(var i=0; i<$scope.people.length;i++){
-              if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
-                $scope.people[i].primaryRole.title = $scope.rolesMap[$scope.people[i].primaryRole.resource].title;
-                $scope.people[i].primaryRole.abbreviation = $scope.rolesMap[$scope.people[i].primaryRole.resource].abbreviation;
-              }
-            }
-
             //Reload the table
             if (!$scope.tableParams){
               $scope.tableParams = getTableData();
@@ -92,14 +87,6 @@ angular.module('Mastermind.controllers.people')
 
           Resources.query('people', {}, {}, function(result){
             $scope.people = result.members;
-
-            // add the role to the person so we can display it in the table and sort by it
-            for(var i=0; i<$scope.people.length;i++){
-              if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
-                $scope.people[i].primaryRole.title = $scope.rolesMap[$scope.people[i].primaryRole.resource].title;
-                $scope.people[i].primaryRole.abbreviation = $scope.rolesMap[$scope.people[i].primaryRole.resource].abbreviation;
-              }
-            }
 
             //Reload the table
             if (!$scope.tableParams){
@@ -116,18 +103,10 @@ angular.module('Mastermind.controllers.people')
           var peopleInRoleFields = {resource:1, name:1, familyName:1, givenName: 1, primaryRole:1, thumbnail:1};
 
           Resources.query('people', peopleInRoleQuery, peopleInRoleFields, function(result){
-            console.log('people in role, ' + $scope.peopleFilter + ' query result.members:');
-            console.log(result.members);
+//            console.log('people in role, ' + $scope.peopleFilter + ' query result.members:');
+//            console.log(result.members);
 
             $scope.people = result.members;
-
-            // add the role to the person so we can display it in the table and sort by it
-            for(var i=0; i<$scope.people.length;i++){
-              if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
-                $scope.people[i].primaryRole.title = $scope.rolesMap[$scope.people[i].primaryRole.resource].title;
-                $scope.people[i].primaryRole.abbreviation = $scope.rolesMap[$scope.people[i].primaryRole.resource].abbreviation;
-              }
-            }
 
             //Reload the table
             if (!$scope.tableParams){
@@ -163,7 +142,7 @@ angular.module('Mastermind.controllers.people')
       if(dd6<10){dd6='0'+dd6} if(mm6<10){mm6='0'+mm6} sixMontsFromNow = yyyy6+'-'+mm6+'-'+dd6;
 
       var qvProjQuery = {startDate:{$lte:sixMontsFromNow},$or:[{endDate:{$exists:false}},{endDate:{$gt:today}}]};
-      var qvProjFields = {resource:1,name:1,startDate:1,endDate:1,"roles.assignee":1};
+      var qvProjFields = {resource:1,name:1,startDate:1,endDate:1,"roles.assignee":1,"roles.rate":1};
 
       Resources.query('projects', qvProjQuery, qvProjFields, function(result){
         $scope.qvProjects = result.data;
@@ -173,6 +152,9 @@ angular.module('Mastermind.controllers.people')
         var activePeoplePojects = {};
         var activeProjects = $scope.qvProjects;
         var activePeople = [];
+        //Map of active hours by person
+        var activeHours = {};
+        
         for(var i = 0; i < activeProjects.length; i++){
           var roles = activeProjects[i].roles;
           if(roles){
@@ -182,6 +164,31 @@ angular.module('Mastermind.controllers.people')
             //Loop through all the roles in the active projects
             for(var j = 0; j < roles.length; j++){
               var activeRole = roles[j];
+              
+              //If there is an assignee log it in the active hours
+              if(activeRole.assignee && activeRole.assignee.resource && activeRole.rate){
+            	  var hoursPerMonth = 0;
+            	  var rate = activeRole.rate;
+            	  if(rate.fullyUtilized){
+            		  hoursPerMonth = 180;
+            	  }
+            	  else if(rate.type == 'hourly'){
+            		  hoursPerMonth = rate.hours;
+            	  }
+            	  else if(rate.type == 'weekly'){
+            		// Weekly rate is currently hours per week. There are 5 working days per week
+            	      // and 22.5 per month.
+            		  hoursPerMonth = parseFloat(rate.hours * 22.5 / 5).toFixed(1);
+            	  }
+            	  
+            	  //If hours are logged from another project increment it
+            	  if(activeHours.hasOwnProperty(activeRole.assignee.resource)){
+            		  activeHours[activeRole.assignee.resource] += hoursPerMonth;
+            	  }
+            	  else{
+            		  activeHours[activeRole.assignee.resource] = hoursPerMonth;
+            	  }
+              }
 
               if(activeRole.assignee && activeRole.assignee.resource
                   && !activePeoplePojects.hasOwnProperty(activeRole.assignee.resource)){
@@ -202,10 +209,17 @@ angular.module('Mastermind.controllers.people')
             }
           }
         }
-
+        
+        //Save the active hours map to the scope
+        $scope.activeHours = activeHours;
+        
         $q.all(activePeople).then(function(data){
           $scope.qvPeopleProjects = activePeoplePojects;
           $scope.qvPeople = data;
+          
+          //Once we have the active people apply the dafult filter
+          //Trigger inital filter change
+          $scope.handlePeopleFilterChanged();
         });
 
       });
