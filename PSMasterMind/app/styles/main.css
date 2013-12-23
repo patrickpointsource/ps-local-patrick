@@ -6133,6 +6133,9 @@ header .navbar-inverse .fa-2x {
 header .navbar-inverse .navbar-nav li.active > a {
   box-shadow: 0 5px 0 #434345;
 }
+header .navbar-inverse .navbar-nav li:hover {
+  cursor: pointer;
+}
 header .navbar-inverse .navbar-nav li a {
   padding-top: 7px;
   padding-bottom: 8px;
@@ -6303,11 +6306,13 @@ main article #content #graph-header #graph-header-plus i {
   }
   body {
     padding-top: 105px;
+    padding-bottom: 105px;
   }
 }
 @media (max-width: 767px) {
   body {
     padding-top: 61px;
+    padding-bottom: 61px;
   }
 }
 .tab-content input,

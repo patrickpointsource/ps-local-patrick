@@ -6,8 +6,8 @@
 angular.module('Mastermind.controllers.projects')
   .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
     function ($scope, $filter, $q, RolesService, RoleTypes, Rates, RateFactory, TableParams) {
-
-
+        
+      $scope.editingRole = false;
       $scope.newRole = RolesService.create();
 
       // Table Parameters
@@ -77,6 +77,55 @@ angular.module('Mastermind.controllers.projects')
     	  }
     	  return ret;
       };
+
+
+      $scope.triggerAddRole = function () {
+        $scope.editingRole = false;
+        $('#newRoleDialog').collapse('show');
+        $scope.newRole = RolesService.create();
+        $scope.newRole.startDate = $scope.project.startDate;
+        $scope.newRole.endDate = $scope.project.endDate;
+      };
+
+      $scope.triggerEditRole = function (role, index) {
+        $scope.editingRole = true;
+        $scope.editRoleIndex = index;
+        $('#newRoleDialog').collapse('show');
+        $scope.newRole = role;
+      };
+
+      $scope.save = function () {
+        //Validate new role
+        var errors = $scope.validateNewRole();
+        if(errors.length > 0){
+          $scope.addRoleMessages = errors;
+        }
+        else{
+          // Bubble an event up to add this role.
+          $scope.$emit('roles:change', $scope.editRoleIndex, $scope.newRole);
+
+          //Update the tables
+          $scope.roleTableParams.reload();
+
+          // Create the new Role with the previously selected rate type.
+          $scope.newRole = RolesService.create(
+            {
+              startDate:$scope.project.startDate, 
+              endDate:$scope.project.endDate,
+              rate: RateFactory.build($scope.newRole.rate.type)
+            }
+          );
+
+          //Clear any messages
+          $scope.addRoleMessages = [];
+
+          // Reset the form to being pristine.
+          $scope.rolesForm.$setPristine();
+          $('#newRoleDialog').collapse('hide');
+        }
+      };
+
+
       
       /**
        * Add a new role to the project
@@ -90,7 +139,6 @@ angular.module('Mastermind.controllers.projects')
         else{
 	        // Bubble an event up to add this role.
 	        $scope.$emit('roles:add', $scope.newRole);
-
 
 	        //Update the tables
 	        $scope.roleTableParams.reload();
@@ -107,9 +155,9 @@ angular.module('Mastermind.controllers.projects')
 	        //Clear any messages
 	        $scope.addRoleMessages = [];
 
-
 	        // Reset the form to being pristine.
 	        $scope.rolesForm.$setPristine();
+          $('#newRoleDialog').collapse('hide');
         }
       };
 

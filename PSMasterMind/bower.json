@@ -13,7 +13,7 @@
     "marked": "0.2.10",
     "angular-ui-router": "latest",
     "restangular": "latest",
-    "bootstrap": "~3.0.2",
+    "bootstrap": "3.0.2",
     "angular-ui-bootstrap": "bootstrap3",
     "bootstrap-datepicker": "~1.2.0"
   },
