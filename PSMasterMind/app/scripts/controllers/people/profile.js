@@ -256,7 +256,6 @@ angular.module('Mastermind.controllers.people')
 		 });
 	  });
 	  
-	  
 	  /**
 	   * Get the list of Skill Types
 	   */
@@ -269,6 +268,10 @@ angular.module('Mastermind.controllers.people')
 	   */
 	  $scope.newSkill = {type:{}, proficiency:0};
 	  
+	  $scope.cancelAddSkill = function () {
+	  	$('#newSkillDialog').collapse('hide');
+	  };
+
 	  /**
 	   * Add a new Skill to the profile
 	   */

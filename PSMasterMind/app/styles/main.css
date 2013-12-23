@@ -6289,6 +6289,9 @@ main article #content #graph-header #graph-header-plus i {
 .nav-tabs {
   margin-bottom: 30px;
 }
+.nav-tabs li:hover {
+  cursor: pointer;
+}
 .popover.bottom {
   color: #333333;
   z-index: 2000;
@@ -6305,8 +6308,8 @@ main article #content #graph-header #graph-header-plus i {
     padding-bottom: 10px;
   }
   body {
-    padding-top: 105px;
-    padding-bottom: 105px;
+    padding-top: 115px;
+    padding-bottom: 145px;
   }
 }
 @media (max-width: 767px) {
@@ -6391,6 +6394,9 @@ th > span.hidden-xs {
 }
 .currency-total {
   margin-top: 8px;
+}
+.table tr td.actionsCell {
+  text-align: right;
 }
 @media (max-width: 767px) {
   .table > thead > tr > th,

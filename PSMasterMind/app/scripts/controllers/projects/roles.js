@@ -78,6 +78,9 @@ angular.module('Mastermind.controllers.projects')
     	  return ret;
       };
 
+      $scope.cancelAdd = function () {
+        $('#newRoleDialog').collapse('hide');
+      };
 
       $scope.triggerAddRole = function () {
         $scope.editingRole = false;
