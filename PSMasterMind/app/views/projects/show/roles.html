@@ -178,7 +178,7 @@
                 <tr ng-repeat="role in $data">
                     <td>
                         <select ng-model="role.assignee.resource"
-                                ng-options="m.resource as m.name for m in roleGroups[role.type.resource].members"
+                                ng-options="m.resource as m.name for m in roleGroups[role.type.resource].assiganble"
                                 ng-change="assigneeChanged($index, role)"
                                 class="form-control">
                         </select>

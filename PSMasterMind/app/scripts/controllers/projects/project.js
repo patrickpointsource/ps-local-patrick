@@ -273,6 +273,29 @@ angular.module('Mastermind')
     		    	var roleResource = person.primaryRole.resource;
     		    	roleGroups[roleResource].members.push(person);
     		    }
+    		    
+    		    //Setup Assign ability rules
+    		    //PMs and BAs (Interchangeable)
+    		    var bas = roleGroups['roles/BA'].members;
+    		    var pms = roleGroups['roles/PM'].members;
+    		    roleGroups['roles/BA'].assiganble = bas.concat(pms);
+    		    roleGroups['roles/PM'].assiganble = pms.concat(bas);
+    		    
+    		    //SSE Role (SSE and SSA)
+    		    //SE Role (SE, SSE, and SSA)
+    		    var ssa = roleGroups['roles/SSA'].members;
+    		    var sse = roleGroups['roles/SSE'].members;
+    		    var se = roleGroups['roles/SE'].members;
+    		    roleGroups['roles/SSA'].assiganble = ssa;
+    		    roleGroups['roles/SSE'].assiganble = sse.concat(ssa);
+    		    roleGroups['roles/SE'].assiganble = se.concat(sse).concat(ssa);
+    		    
+    		    //UX (UX and SUDX)
+    		    var uxd = roleGroups['roles/UXD'].members;
+    		    var suxd = roleGroups['roles/SUXD'].members;
+    		    roleGroups['roles/UXD'].assiganble = uxd.concat(suxd);
+    		    roleGroups['roles/SUXD'].assiganble = suxd;
+    		    
     		    //Set a map of role types to members
     		    $scope.roleGroups = roleGroups;
     	   })
