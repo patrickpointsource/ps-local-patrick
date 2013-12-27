@@ -6,6 +6,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,11 +34,11 @@ public class Roles extends BaseResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response get() {
+	public Response get(@QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query, @QueryParam(CONSTS.REQUEST_PARAM_NAME_FIELDS)String fields) {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-				JSONObject ret = Data.getRoles();
+				JSONObject ret = Data.getRoles(context, query, fields);
 
 				URI baseURI = context.getBaseURI();
 				ret.put(CONSTS.PROP_BASE, baseURI);

@@ -132,6 +132,7 @@ public interface CONSTS {
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
 	public String COLLECTION_TITLE_PEOPLE = "People";
 	public String COLLECTION_TITLE_SKILLS = "Skills";
+	public String COLLECTION_TITLE_ROLES = "Roles";
 	
 	/**
 	 * Google Constants

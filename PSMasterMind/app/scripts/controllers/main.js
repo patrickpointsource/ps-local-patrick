@@ -24,7 +24,7 @@ angular.module('Mastermind')
     	  $scope.activeProjects = result;
     	  $scope.projectCount = result.count;
     	  
-    	  var pepInRolesQuery = {'primaryRole.resource':{$in:['roles/SSA','roles/PM','roles/BA','roles/SSE','roles/SE','roles/SUXD','roles/UXD']}};
+    	  var pepInRolesQuery = {'primaryRole.resource':{$exists:true}};
     	  var pepInRolesFields = {resource:1,name:1,primaryRole:1,thumbnail:1};
 
     	  Resources.query('people',pepInRolesQuery,pepInRolesFields,function(peopleResult){

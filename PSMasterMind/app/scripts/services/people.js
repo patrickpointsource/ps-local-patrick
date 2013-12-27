@@ -69,7 +69,7 @@ angular.module('Mastermind')
   			  }
   		  	}
 
-    		var pepInRolesQuery = {_id:{$nin:activePeople},'primaryRole.resource':{$in:['roles/SSA','roles/PM','roles/BA','roles/SSE','roles/SE','roles/SUXD','roles/UXD']}};
+    		var pepInRolesQuery = {_id:{$nin:activePeople},'primaryRole.resource':{$exists:true}};
        	  	var pepInRolesFields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
        	  	Resources.query('people',pepInRolesQuery,pepInRolesFields,onSuccess);
     	});

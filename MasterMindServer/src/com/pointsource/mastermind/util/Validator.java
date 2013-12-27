@@ -175,7 +175,7 @@ public class Validator implements CONSTS {
 			boolean hasBAOrPM = false;
 
 			boolean checkedAllRoles = false;
-			JSONObject roleTypes = Data.getRoles();
+			JSONObject roleTypes = Data.getRoles(context, "{}", "{}");
 			JSONArray roleTypeMembers = roleTypes.getJSONArray(PROP_MEMBERS);
 
 			for (int i = 0; i < roles.length(); i++) {
@@ -197,12 +197,14 @@ public class Validator implements CONSTS {
 						String typeResource = type.getString(PROP_RESOURCE);
 
 						boolean typeFound = false;
+						String typeAbr = null;
 						for (int j = 0; j < roleTypeMembers.length(); j++) {
 							JSONObject roleType = roleTypeMembers
 									.getJSONObject(j);
 							String about = roleType.getString(PROP_RESOURCE);
 							if (about.equals(typeResource)) {
 								typeFound = true;
+								typeAbr = roleType.getString(PROP_ABBREVIATION);
 								break;
 							}
 						}
@@ -213,10 +215,8 @@ public class Validator implements CONSTS {
 						}
 
 						// Includes BA or PM
-						if (typeResource.equals(RESOURCE_ROLES + "/"
-								+ ROLE_BA_ID)
-								|| typeResource.equals(RESOURCE_ROLES + "/"
-										+ ROLE_PM_ID)) {
+						if (typeAbr.equals(ROLE_BA_ID)
+								|| typeAbr.equals(ROLE_PM_ID)) {
 							hasBAOrPM = true;
 						}
 
@@ -248,7 +248,7 @@ public class Validator implements CONSTS {
 												ret.add("An Hourly Role cannot exceed 220 hours per month");
 												break;
 											}
-											else if("roles/SXUD".equals(typeResource) && hoursPerMonth < 40){
+											else if("SXUD".equals(typeAbr) && hoursPerMonth < 40){
 												ret.add("Senior UX Designers must have a minimum of 40 hours/month in a project");
 											}
 										}
@@ -273,7 +273,7 @@ public class Validator implements CONSTS {
 												ret.add("A Weekly Role cannot exceed 50 hours per week");
 												break;
 											}
-											else if("roles/SXUD".equals(typeResource) && hoursPerWeek < 10){
+											else if("SXUD".equals(typeAbr) && hoursPerWeek < 10){
 												ret.add("Senior UX Designers must have a minimum of 40 hours/month in a project");
 											}
 										}

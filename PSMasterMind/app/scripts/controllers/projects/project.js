@@ -145,7 +145,7 @@ angular.module('Mastermind')
     	  var months;
     	  months = (d2.getFullYear() - d1.getFullYear()) * 12;
     	  months -= d1.getMonth() + 1;
-    	  months += d2.getMonth();
+    	  months += d2.getMonth() + 1;
     	  return months <= 0 ? 0 : months;
       };
       
@@ -259,7 +259,7 @@ angular.module('Mastermind')
     		   roleGroups[resource] = role;
     		   resources.push(resource);
     		   //create a members array for each roles group
-    		   role.members = [];
+    		   role.assiganble = [];
     	   }
 
     	   //Query all people with a primary role
@@ -271,30 +271,30 @@ angular.module('Mastermind')
     		    for(var i = 0; i < people.length; i++){
     		    	var person = people[i];
     		    	var roleResource = person.primaryRole.resource;
-    		    	roleGroups[roleResource].members.push(person);
+    		    	roleGroups[roleResource].assiganble.push(person);
     		    }
     		    
-    		    //Setup Assign ability rules
-    		    //PMs and BAs (Interchangeable)
-    		    var bas = roleGroups['roles/BA'].members;
-    		    var pms = roleGroups['roles/PM'].members;
-    		    roleGroups['roles/BA'].assiganble = bas.concat(pms);
-    		    roleGroups['roles/PM'].assiganble = pms.concat(bas);
-    		    
-    		    //SSE Role (SSE and SSA)
-    		    //SE Role (SE, SSE, and SSA)
-    		    var ssa = roleGroups['roles/SSA'].members;
-    		    var sse = roleGroups['roles/SSE'].members;
-    		    var se = roleGroups['roles/SE'].members;
-    		    roleGroups['roles/SSA'].assiganble = ssa;
-    		    roleGroups['roles/SSE'].assiganble = sse.concat(ssa);
-    		    roleGroups['roles/SE'].assiganble = se.concat(sse).concat(ssa);
-    		    
-    		    //UX (UX and SUDX)
-    		    var uxd = roleGroups['roles/UXD'].members;
-    		    var suxd = roleGroups['roles/SUXD'].members;
-    		    roleGroups['roles/UXD'].assiganble = uxd.concat(suxd);
-    		    roleGroups['roles/SUXD'].assiganble = suxd;
+//    		    //Setup Assign ability rules
+//    		    //PMs and BAs (Interchangeable)
+//    		    var bas = roleGroups['roles/BA'].members;
+//    		    var pms = roleGroups['roles/PM'].members;
+//    		    roleGroups['roles/BA'].assiganble = bas.concat(pms);
+//    		    roleGroups['roles/PM'].assiganble = pms.concat(bas);
+//    		    
+//    		    //SSE Role (SSE and SSA)
+//    		    //SE Role (SE, SSE, and SSA)
+//    		    var ssa = roleGroups['roles/SSA'].members;
+//    		    var sse = roleGroups['roles/SSE'].members;
+//    		    var se = roleGroups['roles/SE'].members;
+//    		    roleGroups['roles/SSA'].assiganble = ssa;
+//    		    roleGroups['roles/SSE'].assiganble = sse.concat(ssa);
+//    		    roleGroups['roles/SE'].assiganble = se.concat(sse).concat(ssa);
+//    		    
+//    		    //UX (UX and SUDX)
+//    		    var uxd = roleGroups['roles/UXD'].members;
+//    		    var suxd = roleGroups['roles/SUXD'].members;
+//    		    roleGroups['roles/UXD'].assiganble = uxd.concat(suxd);
+//    		    roleGroups['roles/SUXD'].assiganble = suxd;
     		    
     		    //Set a map of role types to members
     		    $scope.roleGroups = roleGroups;

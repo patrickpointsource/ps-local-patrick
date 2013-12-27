@@ -39,6 +39,7 @@ public class UpgradeServlet extends HttpServlet {
 			Data.synchDefaultSkills(context);
 			Data.synchPeople(context);
 			Data.synchDefaultGroups(context);
+			Data.synchDefaultRoles(context);
 
 		} catch (Exception e) {
 			e.printStackTrace();
