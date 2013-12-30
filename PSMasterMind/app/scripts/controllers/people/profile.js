@@ -112,9 +112,9 @@ angular.module('Mastermind.controllers.people')
 	      };
 	      $scope.skillsParams = new TableParams(params, {
 	        counts: [],
-	        total: $scope.skillsList.length, // length of data
+	        total: $scope.skillsList?$scope.skillsList.length:0, // length of data
 	        getData: function ($defer, params) {
-	          var ret = $scope.skillsList;
+	          var ret = $scope.skillsList?$scope.skillsList:[];
 	          $defer.resolve(ret);
 	        }
 	      });
@@ -129,7 +129,7 @@ angular.module('Mastermind.controllers.people')
 		  $scope.skillsList = person.skills;
 		
 		  //Setup the skills table
-		  if($scope.skillsList && !$scope.skillsParams){
+		  if(!$scope.skillsParams){
 			  $scope.initSkillsTable();
 		  }
 		  //Have skill just refresh
@@ -139,7 +139,8 @@ angular.module('Mastermind.controllers.people')
 		  }
 		  //I have no skill
 		  else{
-			  $scope.skillsParams = null;
+			  $scope.skillsParams.total(0);
+			  $scope.skillsParams.reload();
 		  }
 		  
 		  //Set checkbox states based on the groups
@@ -280,6 +281,7 @@ angular.module('Mastermind.controllers.people')
 		  //If skills array is missing default it to an empty array
 		  if(!$scope.profile.skills){
 			  $scope.profile.skills = [];
+			  $scope.skillsList = $scope.profile.skills;
 		  }
 		  
 		  //Add skill to the list
@@ -289,8 +291,13 @@ angular.module('Mastermind.controllers.people')
 		  $scope.newSkill = {type:{}, proficiency:0};
 		  
 		  //Init skills table if not already done so
-		  if($scope.skillsList && !$scope.skillsParams){
+		  if(!$scope.skillsParams){
 			  $scope.initSkillsTable();
+		  }
+		  else{
+			  var total = $scope.skillsList?$scope.skillsList.length:0;
+			  $scope.skillsParams.total(total);
+			  $scope.skillsParams.reload();
 		  }
 	  };
 	  
