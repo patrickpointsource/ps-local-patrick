@@ -30,6 +30,18 @@ angular.module('Mastermind.controllers.projects')
         }
       });
       
+	  
+	  $scope.handleRoleTypeChanged = function(){
+		  var type = $scope.newRole.type.resource;
+		  var roleType = $scope.roleGroups[type];
+		  
+		  var rateType = $scope.newRole.rate.type;
+		  if(rateType == Rates.MONTHLY){
+			  $scope.newRole.rate.amount =  roleType.monthlyAdvertisedRate;
+		  }else{
+			  $scope.newRole.rate.amount =  roleType.hourlyAdvertisedRate;
+		  }
+	  }
 
       /**
        * Change the rate type on the new role to the specified new rate type
@@ -38,6 +50,8 @@ angular.module('Mastermind.controllers.projects')
        */
       function changeRateType(newRateType) {
         $scope.newRole.changeType(newRateType);
+        
+        $scope.handleRoleTypeChanged();
       }
 
       $scope.changeToHourlyRate = function () {
