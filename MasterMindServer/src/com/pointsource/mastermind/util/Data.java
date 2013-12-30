@@ -942,10 +942,10 @@ public class Data implements CONSTS {
 			throws JSONException {
 		JSONObject ret = null;
 
-		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_ROLES);
+		DBCollection rolesCol = db.getCollection(COLLECTION_TITLE_ROLES);
 		BasicDBObject query = new BasicDBObject();
 		query.put(PROP__ID, new ObjectId(id));
-		DBObject dbObj = projectsCol.findAndRemove(query);
+		DBObject dbObj = rolesCol.findAndRemove(query);
 		if(dbObj != null){
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
@@ -953,7 +953,62 @@ public class Data implements CONSTS {
 		else{
 			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Role not found to delete").build());
 		}
-
+		
+		//Clean up an people who have the listed skill
+		String roleURL = RESOURCE_ROLES + "/" + id;
+		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE,roleURL);
+		query = new BasicDBObject(PROP_PRIMARY_ROLE, resourceQuery);
+		DBObject unset = new BasicDBObject("$unset",new BasicDBObject(PROP_PRIMARY_ROLE, 1));
+		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
+		WriteResult result = peopleCol.updateMulti(query, unset);
+		
+		CommandResult error = result.getLastError();
+		System.out.println("Remove Primary Role References: " + result);
+		if(error != null && error.getErrorMessage() != null){
+			System.err.println("Remove Failed Failed:" + error.getErrorMessage());
+			if(error.getException() != null){
+				error.getException().printStackTrace();
+			}
+		}
+		
+		//Clean up projects who have the listed role
+		query = new BasicDBObject(PROP_ROLES+"."+PROP_TYPE,resourceQuery);
+		DBObject fields = new BasicDBObject(PROP_ROLES,1).append(PROP_ETAG, 1);
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		DBCursor cusor = projectsCol.find(query,fields);
+		
+		while(cusor.hasNext()){
+			DBObject project= cusor.next();
+			List<DBObject> roles = (List<DBObject>)project.get(PROP_ROLES);
+			
+			for (Iterator iterator = roles.iterator(); iterator.hasNext();) {
+				DBObject role = (DBObject) iterator.next();
+				
+				DBObject type = (DBObject)role.get(PROP_TYPE);
+				Object resource = type.get(PROP_RESOURCE);
+				if(roleURL.equals(resource)){
+					iterator.remove();
+				}
+			}
+			
+			//Remove skills form the query
+			project.removeField(PROP_ROLES);
+			
+			Object old_etag = project.get(PROP_ETAG);
+			int newEtag = Integer.parseInt(String.valueOf(old_etag));
+			newEtag++;
+			
+			DBObject updateRoles = new BasicDBObject("$set", new BasicDBObject(PROP_ROLES, roles).append(PROP_ETAG, String.valueOf(newEtag)));
+			DBObject updateResult =  projectsCol.findAndModify(project, updateRoles);
+			
+			if(updateResult == null){
+				System.err.println("Field to update project : " + project + ", " + updateRoles);
+			}
+			else{
+				System.out.println("Updated Roles for Project: " + RESOURCE_PEOPLE+"/"+updateResult.get(PROP__ID));
+			}
+		}
+		
 		ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + id);
 
 		return ret;

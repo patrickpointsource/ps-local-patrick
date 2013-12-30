@@ -77,6 +77,12 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 				 $scope.skills = result.members;
 				 $scope.skillsTableParams.total($scope.skills.length);
 				 $scope.skillsTableParams.reload();
+				 
+				//Reset New Skill Object
+				 $scope.newSkill = {};
+				 
+				 //Clear New Skill Form
+				 $scope.newSkillForm.$setPristine();
 			 });
 		 });
 	 }
@@ -85,11 +91,17 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 	 * Add a new Role to the server
 	 */
 	 $scope.addRole = function(){
-		 Resources.create('roles', $scope.newRole).then(function(){
+		 Resources.create('roles', $scope.newRole).then(function(){ 
 			 Resources.refresh('roles').then(function(result){
 				 $scope.roles = result.members;
 				 $scope.rolesTableParams.total($scope.roles.length);
 				 $scope.rolesTableParams.reload();
+				 
+				 //Reset New Role Object
+				 $scope.newRole = {};
+				 
+				 //Clear New Role Form
+				 $scope.newRoleForm.$setPristine();
 			 });
 		 });
 	 }

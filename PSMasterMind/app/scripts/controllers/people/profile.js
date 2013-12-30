@@ -33,7 +33,7 @@ angular.module('Mastermind.controllers.people')
 		 
 		 $scope.getRoleName = function(resource){
 			 var ret = 'Unspecified';
-			 if(resource){
+			 if(resource && $scope.rolesMap[resource]){
 				 ret = $scope.rolesMap[resource].title;
 			 }
 			 return ret;
@@ -226,33 +226,34 @@ angular.module('Mastermind.controllers.people')
 			 $scope.projects = result.data;
 			 $scope.hasProjects = result.data.length > 0;
 			 
-			  // Project Params
-		      var params = {
-		        page: 1,            // show first page
-		        count: 10,           // count per page
-		        sorting: {
-		          name: 'asc'     // initial sorting
-		        }
-		      };
-		      $scope.tableParams = new TableParams(params, {
-		        counts: [],
-		        total: $scope.projects.length, // length of data
-		        getData: function ($defer, params) {
-		          var start = (params.page() - 1) * params.count(),
-		            end = params.page() * params.count(),
-
-		          // use build-in angular filter
-		            orderedData = params.sorting() ?
-		              $filter('orderBy')($scope.projects, params.orderBy()) :
-		            	  $scope.projects,
-
-		              ret = orderedData.slice(start, end);
-		             
-		              
-		          $defer.resolve(ret);
-		        }
-		      });
-			 
+			 if($scope.hasProjects){
+				  // Project Params
+			      var params = {
+			        page: 1,            // show first page
+			        count: 10,           // count per page
+			        sorting: {
+			          name: 'asc'     // initial sorting
+			        }
+			      };
+			      $scope.tableParams = new TableParams(params, {
+			        counts: [],
+			        total: $scope.projects.length, // length of data
+			        getData: function ($defer, params) {
+			          var start = (params.page() - 1) * params.count(),
+			            end = params.page() * params.count(),
+	
+			          // use build-in angular filter
+			            orderedData = params.sorting() ?
+			              $filter('orderBy')($scope.projects, params.orderBy()) :
+			            	  $scope.projects,
+	
+			              ret = orderedData.slice(start, end);
+			             
+			              
+			          $defer.resolve(ret);
+			        }
+			      });
+			 } 
 		 });
 	  });
 	  
