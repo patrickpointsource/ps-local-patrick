@@ -37,7 +37,7 @@ import com.mongodb.util.JSON;
 public class Data implements CONSTS {
 
 	private static Map<String, JSONObject> GOOGLE_USERS = null;
-	//private static String GOOGLE_USER_ETAG = "";
+	// private static String GOOGLE_USER_ETAG = "";
 	private static Mongo mongo;
 	private static DB db;
 	private static JSONObject CONFIG = null;
@@ -108,64 +108,64 @@ public class Data implements CONSTS {
 		return config;
 	}
 
-//	/**
-//	 * Get the list of managed user groups
-//	 * 
-//	 * @return
-//	 * @throws JSONException
-//	 */
-//	public static JSONObject getRoles() throws JSONException {
-//		JSONObject ret = new JSONObject();
-//		JSONArray members = new JSONArray();
-//
-//		JSONObject ssa = new JSONObject();
-//		ssa.put(PROP_ABBREVIATION, ROLE_SSA_ID);
-//		ssa.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
-//		ssa.put(PROP_TITLE, ROLE_SSA_TITLE);
-//		members.put(ssa);
-//
-//		JSONObject pm = new JSONObject();
-//		pm.put(PROP_ABBREVIATION, ROLE_PM_ID);
-//		pm.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_PM_ID);
-//		pm.put(PROP_TITLE, ROLE_PM_TITLE);
-//		members.put(pm);
-//
-//		JSONObject ba = new JSONObject();
-//		ba.put(PROP_ABBREVIATION, ROLE_BA_ID);
-//		ba.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_BA_ID);
-//		ba.put(PROP_TITLE, ROLE_BA_TITLE);
-//		members.put(ba);
-//
-//		JSONObject sse = new JSONObject();
-//		sse.put(PROP_ABBREVIATION, ROLE_SSE_ID);
-//		sse.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
-//		sse.put(PROP_TITLE, ROLE_SSE_TITLE);
-//		members.put(sse);
-//
-//		JSONObject se = new JSONObject();
-//		se.put(PROP_ABBREVIATION, ROLE_SE_ID);
-//		se.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SE_ID);
-//		se.put(PROP_TITLE, ROLE_SE_TITLE);
-//		members.put(se);
-//
-//		JSONObject suxd = new JSONObject();
-//		suxd.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
-//		suxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
-//		suxd.put(PROP_TITLE, ROLE_SUXD_TITLE);
-//		members.put(suxd);
-//
-//		JSONObject uxd = new JSONObject();
-//		uxd.put(PROP_ABBREVIATION, ROLE_UXD_ID);
-//		uxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
-//		uxd.put(PROP_TITLE, ROLE_UXD_TITLE);
-//		members.put(uxd);
-//
-//		ret.put(PROP_MEMBERS, members);
-//		ret.put(PROP_ABOUT, RESOURCE_ROLES);
-//		ret.put(PROP_COUNT, members.length());
-//		return ret;
-//	}
-	
+	// /**
+	// * Get the list of managed user groups
+	// *
+	// * @return
+	// * @throws JSONException
+	// */
+	// public static JSONObject getRoles() throws JSONException {
+	// JSONObject ret = new JSONObject();
+	// JSONArray members = new JSONArray();
+	//
+	// JSONObject ssa = new JSONObject();
+	// ssa.put(PROP_ABBREVIATION, ROLE_SSA_ID);
+	// ssa.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
+	// ssa.put(PROP_TITLE, ROLE_SSA_TITLE);
+	// members.put(ssa);
+	//
+	// JSONObject pm = new JSONObject();
+	// pm.put(PROP_ABBREVIATION, ROLE_PM_ID);
+	// pm.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_PM_ID);
+	// pm.put(PROP_TITLE, ROLE_PM_TITLE);
+	// members.put(pm);
+	//
+	// JSONObject ba = new JSONObject();
+	// ba.put(PROP_ABBREVIATION, ROLE_BA_ID);
+	// ba.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_BA_ID);
+	// ba.put(PROP_TITLE, ROLE_BA_TITLE);
+	// members.put(ba);
+	//
+	// JSONObject sse = new JSONObject();
+	// sse.put(PROP_ABBREVIATION, ROLE_SSE_ID);
+	// sse.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
+	// sse.put(PROP_TITLE, ROLE_SSE_TITLE);
+	// members.put(sse);
+	//
+	// JSONObject se = new JSONObject();
+	// se.put(PROP_ABBREVIATION, ROLE_SE_ID);
+	// se.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SE_ID);
+	// se.put(PROP_TITLE, ROLE_SE_TITLE);
+	// members.put(se);
+	//
+	// JSONObject suxd = new JSONObject();
+	// suxd.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
+	// suxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
+	// suxd.put(PROP_TITLE, ROLE_SUXD_TITLE);
+	// members.put(suxd);
+	//
+	// JSONObject uxd = new JSONObject();
+	// uxd.put(PROP_ABBREVIATION, ROLE_UXD_ID);
+	// uxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
+	// uxd.put(PROP_TITLE, ROLE_UXD_TITLE);
+	// members.put(uxd);
+	//
+	// ret.put(PROP_MEMBERS, members);
+	// ret.put(PROP_ABOUT, RESOURCE_ROLES);
+	// ret.put(PROP_COUNT, members.length());
+	// return ret;
+	// }
+
 	private static ArrayList<String> DEFAULT_SSAs = new ArrayList<String>();
 	private static ArrayList<String> DEFAULT_BAs = new ArrayList<String>();
 	private static ArrayList<String> DEFAULT_PMs = new ArrayList<String>();
@@ -173,108 +173,109 @@ public class Data implements CONSTS {
 	private static ArrayList<String> DEFAULT_SEs = new ArrayList<String>();
 	private static ArrayList<String> DEFAULT_SUXDs = new ArrayList<String>();
 	private static ArrayList<String> DEFAULT_UXDs = new ArrayList<String>();
-	static{
-		Collections.addAll(DEFAULT_SSAs, "115659942511507270693", "106368930450799539126", "107681682076275621618", "100521746243465967724", "108416099312244834291");
+	static {
+		Collections.addAll(DEFAULT_SSAs, "115659942511507270693",
+				"106368930450799539126", "107681682076275621618",
+				"100521746243465967724", "108416099312244834291");
 		Collections.addAll(DEFAULT_BAs, "118024801441852864610");
-		Collections.addAll(DEFAULT_PMs, "105187489722733399928", "103362960874176228355");
-		Collections.addAll(DEFAULT_SSEs, "102037350018901696245", "112959653203369443291");
-		Collections.addAll(DEFAULT_SEs, "100090968878728629777", "105526065653554855193");
-		Collections.addAll(DEFAULT_SUXDs, "102728171905005423498", "112917239891456752571");
-		Collections.addAll(DEFAULT_UXDs, "103450144552825063641", "107385689810002496434");
+		Collections.addAll(DEFAULT_PMs, "105187489722733399928",
+				"103362960874176228355");
+		Collections.addAll(DEFAULT_SSEs, "102037350018901696245",
+				"112959653203369443291");
+		Collections.addAll(DEFAULT_SEs, "100090968878728629777",
+				"105526065653554855193");
+		Collections.addAll(DEFAULT_SUXDs, "102728171905005423498",
+				"112917239891456752571");
+		Collections.addAll(DEFAULT_UXDs, "103450144552825063641",
+				"107385689810002496434");
 	}
 
-	private static void initPrimaryRole(JSONObject person, String googleID) throws JSONException{
+	private static void initPrimaryRole(JSONObject person, String googleID)
+			throws JSONException {
 		String primaryRole = null;
-		if(DEFAULT_SSAs.contains(googleID)){
-			primaryRole = RESOURCE_ROLES+"/"+ROLE_SSA_ID;
+		if (DEFAULT_SSAs.contains(googleID)) {
+			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSA_ID;
+		} else if (DEFAULT_BAs.contains(googleID)) {
+			primaryRole = RESOURCE_ROLES + "/" + ROLE_BA_ID;
+		} else if (DEFAULT_PMs.contains(googleID)) {
+			primaryRole = RESOURCE_ROLES + "/" + ROLE_PM_ID;
+		} else if (DEFAULT_SSEs.contains(googleID)) {
+			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
+		} else if (DEFAULT_SEs.contains(googleID)) {
+			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
+		} else if (DEFAULT_SUXDs.contains(googleID)) {
+			primaryRole = RESOURCE_ROLES + "/" + ROLE_SUXD_ID;
+		} else if (DEFAULT_UXDs.contains(googleID)) {
+			primaryRole = RESOURCE_ROLES + "/" + ROLE_UXD_ID;
 		}
-		else if(DEFAULT_BAs.contains(googleID)){
-			primaryRole = RESOURCE_ROLES+"/"+ROLE_BA_ID;
-		}
-		else if(DEFAULT_PMs.contains(googleID)){
-			primaryRole = RESOURCE_ROLES+"/"+ROLE_PM_ID;
-		}
-		else if(DEFAULT_SSEs.contains(googleID)){
-			primaryRole = RESOURCE_ROLES+"/"+ROLE_SSE_ID;
-		}
-		else if(DEFAULT_SEs.contains(googleID)){
-			primaryRole = RESOURCE_ROLES+"/"+ROLE_SSE_ID;
-		}
-		else if(DEFAULT_SUXDs.contains(googleID)){
-			primaryRole = RESOURCE_ROLES+"/"+ROLE_SUXD_ID;
-		}
-		else if(DEFAULT_UXDs.contains(googleID)){
-			primaryRole = RESOURCE_ROLES+"/"+ROLE_UXD_ID;
-		}
-		
-		if(primaryRole != null){
+
+		if (primaryRole != null) {
 			JSONObject roleRef = new JSONObject();
 			roleRef.put(PROP_RESOURCE, primaryRole);
 			person.put(PROP_PRIMARY_ROLE, roleRef);
 		}
 	}
-	
-	
-//	/**
-//	 * Get the list of managed user groups
-//	 * 
-//	 * @return
-//	 * @throws JSONException
-//	 * @throws IOException
-//	 */
-//	public static JSONObject getRole(RequestContext context, String roleId)
-//			throws JSONException, IOException {
-//		JSONObject ret = new JSONObject();
-//		JSONArray members = new JSONArray();
-//
-//		if (ROLE_SSA_ID.equalsIgnoreCase(roleId)) {
-//			ret.put(PROP_ABBREVIATION, ROLE_SSA_ID);
-//			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
-//			ret.put(PROP_TITLE, ROLE_SSA_TITLE);
-//		}
-//
-//		else if (ROLE_PM_ID.equalsIgnoreCase(roleId)) {
-//			ret.put(PROP_ABBREVIATION, ROLE_PM_ID);
-//			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_PM_ID);
-//			ret.put(PROP_TITLE, ROLE_PM_TITLE);
-//		}
-//
-//		else if (ROLE_BA_ID.equalsIgnoreCase(roleId)) {
-//			ret.put(PROP_ABBREVIATION, ROLE_BA_ID);
-//			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_BA_ID);
-//			ret.put(PROP_TITLE, ROLE_BA_TITLE);
-//		}
-//
-//		else if (ROLE_SSE_ID.equalsIgnoreCase(roleId)) {
-//			ret.put(PROP_ABBREVIATION, ROLE_SSE_ID);
-//			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
-//			ret.put(PROP_TITLE, ROLE_SSE_TITLE);
-//		}
-//
-//		else if (ROLE_SE_ID.equalsIgnoreCase(roleId)) {
-//			ret.put(PROP_ABBREVIATION, ROLE_SE_ID);
-//			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SE_ID);
-//			ret.put(PROP_TITLE, ROLE_SE_TITLE);
-//		}
-//
-//		else if (ROLE_SUXD_ID.equalsIgnoreCase(roleId)) {
-//			ret.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
-//			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
-//			ret.put(PROP_TITLE, ROLE_SUXD_TITLE);
-//		}
-//
-//		else if (ROLE_UXD_ID.equalsIgnoreCase(roleId)) {
-//			ret.put(PROP_ABBREVIATION, ROLE_UXD_ID);
-//			ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
-//			ret.put(PROP_TITLE, ROLE_UXD_TITLE);
-//		}
-//
-//		ret.put(PROP_MEMBERS, members);
-//		ret.put(PROP_COUNT, members.length());
-//
-//		return ret;
-//	}
-	
+
+	// /**
+	// * Get the list of managed user groups
+	// *
+	// * @return
+	// * @throws JSONException
+	// * @throws IOException
+	// */
+	// public static JSONObject getRole(RequestContext context, String roleId)
+	// throws JSONException, IOException {
+	// JSONObject ret = new JSONObject();
+	// JSONArray members = new JSONArray();
+	//
+	// if (ROLE_SSA_ID.equalsIgnoreCase(roleId)) {
+	// ret.put(PROP_ABBREVIATION, ROLE_SSA_ID);
+	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
+	// ret.put(PROP_TITLE, ROLE_SSA_TITLE);
+	// }
+	//
+	// else if (ROLE_PM_ID.equalsIgnoreCase(roleId)) {
+	// ret.put(PROP_ABBREVIATION, ROLE_PM_ID);
+	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_PM_ID);
+	// ret.put(PROP_TITLE, ROLE_PM_TITLE);
+	// }
+	//
+	// else if (ROLE_BA_ID.equalsIgnoreCase(roleId)) {
+	// ret.put(PROP_ABBREVIATION, ROLE_BA_ID);
+	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_BA_ID);
+	// ret.put(PROP_TITLE, ROLE_BA_TITLE);
+	// }
+	//
+	// else if (ROLE_SSE_ID.equalsIgnoreCase(roleId)) {
+	// ret.put(PROP_ABBREVIATION, ROLE_SSE_ID);
+	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
+	// ret.put(PROP_TITLE, ROLE_SSE_TITLE);
+	// }
+	//
+	// else if (ROLE_SE_ID.equalsIgnoreCase(roleId)) {
+	// ret.put(PROP_ABBREVIATION, ROLE_SE_ID);
+	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SE_ID);
+	// ret.put(PROP_TITLE, ROLE_SE_TITLE);
+	// }
+	//
+	// else if (ROLE_SUXD_ID.equalsIgnoreCase(roleId)) {
+	// ret.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
+	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
+	// ret.put(PROP_TITLE, ROLE_SUXD_TITLE);
+	// }
+	//
+	// else if (ROLE_UXD_ID.equalsIgnoreCase(roleId)) {
+	// ret.put(PROP_ABBREVIATION, ROLE_UXD_ID);
+	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
+	// ret.put(PROP_TITLE, ROLE_UXD_TITLE);
+	// }
+	//
+	// ret.put(PROP_MEMBERS, members);
+	// ret.put(PROP_COUNT, members.length());
+	//
+	// return ret;
+	// }
+
 	/**
 	 * Get a role by id
 	 * 
@@ -299,7 +300,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get a role
 	 * 
@@ -338,17 +339,17 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get the list of assignable roles
 	 * 
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getRoles(RequestContext context,
-			String query, String fields) throws JSONException {
+	public static JSONObject getRoles(RequestContext context, String query,
+			String fields) throws JSONException {
 		List<JSONObject> roles = new ArrayList<JSONObject>();
-		
+
 		DBCollection rolesCol = db.getCollection(COLLECTION_TITLE_ROLES);
 		DBObject queryObject = null;
 		DBObject fieldsObject = null;
@@ -372,18 +373,17 @@ public class Data implements CONSTS {
 				jsonObject.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + _id);
 
 				roles.add(jsonObject);
-			} 
-			else {
+			} else {
 				System.out
 						.println("Role not included because it did not return an _id property: "
 								+ object);
 			}
 		}
-		
+
 		JSONObject ret = new JSONObject();
 		int total = roles.size();
 		ret.put(CONSTS.PROP_COUNT, total);
-		
+
 		ret.put(CONSTS.PROP_MEMBERS, roles);
 
 		URI baseURI = context.getBaseURI();
@@ -393,17 +393,17 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get the list of assignable skills
 	 * 
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getSkills(RequestContext context,
-			String query, String fields) throws JSONException {
+	public static JSONObject getSkills(RequestContext context, String query,
+			String fields) throws JSONException {
 		List<JSONObject> skills = new ArrayList<JSONObject>();
-		
+
 		DBCollection skillsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
 		DBObject queryObject = null;
 		DBObject fieldsObject = null;
@@ -433,11 +433,11 @@ public class Data implements CONSTS {
 								+ object);
 			}
 		}
-		
+
 		JSONObject ret = new JSONObject();
 		int total = skills.size();
 		ret.put(CONSTS.PROP_COUNT, total);
-		
+
 		ret.put(CONSTS.PROP_MEMBERS, skills);
 
 		URI baseURI = context.getBaseURI();
@@ -447,7 +447,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get a skill definition
 	 * 
@@ -493,7 +493,7 @@ public class Data implements CONSTS {
 			JSONObject googleUsers = new JSONObject(jsonTxt);
 			JSONArray users = googleUsers.getJSONArray(PROP_USERS);
 			GOOGLE_USERS = new HashMap<String, JSONObject>();
-			//GOOGLE_USER_ETAG = googleUsers.getString(PROP_ETAG);
+			// GOOGLE_USER_ETAG = googleUsers.getString(PROP_ETAG);
 
 			for (int i = 0; i < users.length(); i++) {
 				JSONObject ithUser = users.getJSONObject(i);
@@ -512,8 +512,8 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static Map<String, JSONObject> getProjects(RequestContext context, String query,
-			String fields) throws JSONException {
+	public static Map<String, JSONObject> getProjects(RequestContext context,
+			String query, String fields) throws JSONException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
@@ -525,44 +525,44 @@ public class Data implements CONSTS {
 		if (fields != null) {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
-		
-		//If not managemnet remove the financial fields
-		if(!isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE) &&
-				!isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) ){
-			//Fields is null create one to filter out terms
-			if(fieldsObject == null){
+
+		// If not managemnet remove the financial fields
+		if (!hasFinancialAccess(context)) {
+			// Fields is null create one to filter out terms
+			if (fieldsObject == null) {
 				fieldsObject = new BasicDBObject(PROP_TERMS, 0);
 			}
-			//Do we have a fields object and does it contain the key 'terms'
-			if(fieldsObject.containsField(PROP_TERMS)){
-				int num = (Integer)fieldsObject.get(PROP_TERMS);
+			// Do we have a fields object and does it contain the key 'terms'
+			if (fieldsObject.containsField(PROP_TERMS)) {
+				int num = (Integer) fieldsObject.get(PROP_TERMS);
 				Set<String> keys = fieldsObject.keySet();
-				
-				//We have multiple requested fields terms is just one so remove it from the list
-				if(num != 0 && keys.size() > 1){
+
+				// We have multiple requested fields terms is just one so remove
+				// it from the list
+				if (num != 0 && keys.size() > 1) {
 					fieldsObject.removeField(PROP_TERMS);
 				}
-				//Terms was the only requested field flip it to a not
-				else{
-					fieldsObject.put(PROP_TERMS,0);
-				}
-			}
-			//Fields set does not include terms
-			else{
-				@SuppressWarnings("unchecked")
-				Map<String, Integer> fieldsMap = fieldsObject.toMap();
-				//Empty object add filter for terms
-				if(fieldsMap.size() == 0){
+				// Terms was the only requested field flip it to a not
+				else {
 					fieldsObject.put(PROP_TERMS, 0);
 				}
-				else{
+			}
+			// Fields set does not include terms
+			else {
+				@SuppressWarnings("unchecked")
+				Map<String, Integer> fieldsMap = fieldsObject.toMap();
+				// Empty object add filter for terms
+				if (fieldsMap.size() == 0) {
+					fieldsObject.put(PROP_TERMS, 0);
+				} else {
 					int firstFieldNum = fieldsMap.values().iterator().next();
-					//Exclusive filter add terms to excludes
-					if(firstFieldNum == 0){
+					// Exclusive filter add terms to excludes
+					if (firstFieldNum == 0) {
 						fieldsObject.put(PROP_TERMS, 0);
 					}
-					
-					//Otherwise we are fine because it is not included in the inclusive filters
+
+					// Otherwise we are fine because it is not included in the
+					// inclusive filters
 				}
 			}
 		}
@@ -586,6 +586,18 @@ public class Data implements CONSTS {
 		}
 
 		return ret;
+	}
+
+	private static boolean hasFinancialAccess(RequestContext context)
+			throws JSONException {
+		return isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
+				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE);
+	}
+
+	private static boolean hasAdminAccess(RequestContext context)
+			throws JSONException {
+		return isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
+				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE);
 	}
 
 	/**
@@ -700,28 +712,30 @@ public class Data implements CONSTS {
 
 	/**
 	 * Returns true if the user is a member of the given group
+	 * 
 	 * @param person
 	 * @param group
 	 * @return
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
-	private static boolean isMember(JSONObject person, String group) throws JSONException{
+	private static boolean isMember(JSONObject person, String group)
+			throws JSONException {
 		boolean ret = false;
-		
-		if(person.has(PROP_GROUPS)){
+
+		if (person.has(PROP_GROUPS)) {
 			JSONArray groups = person.getJSONArray(PROP_GROUPS);
-			
+
 			for (int i = 0; i < groups.length(); i++) {
-				if(group.equals(groups.getString(i))){
+				if (group.equals(groups.getString(i))) {
 					ret = true;
 					break;
 				}
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	/**
 	 * Get a projects by id
 	 * 
@@ -729,19 +743,19 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getProject(RequestContext context, String id) throws JSONException {
+	public static JSONObject getProject(RequestContext context, String id)
+			throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
 		BasicDBObject fields = new BasicDBObject();
-		
-		//If not managemnet remove the financial fields
-		if(!isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE) &&
-				!isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) ){
+
+		// If not managemnet remove the financial fields
+		if (hasFinancialAccess(context)) {
 			fields.put(PROP_TERMS, 0);
 		}
-		
+
 		DBObject dbObj = projectsCol.findOne(query, fields);
 
 		if (dbObj != null) {
@@ -763,18 +777,27 @@ public class Data implements CONSTS {
 	 */
 	public static JSONObject deleteProject(RequestContext context, String id)
 			throws JSONException {
+		// Only admins can create roles
+		if (!hasAdminAccess(context)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+	
+		
 		JSONObject ret = null;
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		BasicDBObject query = new BasicDBObject();
 		query.put(PROP__ID, new ObjectId(id));
 		DBObject dbObj = projectsCol.findAndRemove(query);
-		if(dbObj != null){
+		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
-		}
-		else{
-			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Project not found to delete").build());
+		} else {
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Project not found to delete").build());
 		}
 
 		ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
@@ -791,6 +814,14 @@ public class Data implements CONSTS {
 	 */
 	public static JSONObject deletePerson(RequestContext context, String id)
 			throws JSONException {
+		// Only admins can create roles
+		if (!hasAdminAccess(context)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+		
 		JSONObject ret = null;
 
 		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
@@ -864,21 +895,29 @@ public class Data implements CONSTS {
 
 			ObjectId oId = (ObjectId) created.get(PROP__ID);
 			String idVal = oId.toString();
-			newProject.put(PROP_ABOUT,
-					RESOURCE_PROJECTS + "/" + idVal);
+			newProject.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + idVal);
 		}
 
 		return newProject;
 	}
-	
+
 	/**
 	 * Create a new role
 	 * 
 	 * @param newRole
 	 * @throws JSONException
 	 */
-	public static JSONObject createRole(JSONObject newRole)
-			throws JSONException {
+	public static JSONObject createRole(RequestContext context,
+			JSONObject newRole) throws JSONException {
+
+		// Only admins can create roles
+		if (!hasAdminAccess(context)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+
 		newRole.put(PROP_ETAG, "0");
 
 		String json = newRole.toString();
@@ -894,21 +933,29 @@ public class Data implements CONSTS {
 
 			ObjectId oId = (ObjectId) created.get(PROP__ID);
 			String idVal = oId.toString();
-			newRole.put(PROP_ABOUT,
-					RESOURCE_ROLES + "/" + idVal);
+			newRole.put(PROP_ABOUT, RESOURCE_ROLES + "/" + idVal);
 		}
 
 		return newRole;
 	}
-	
+
 	/**
 	 * Create a new skill
 	 * 
 	 * @param newSkill
 	 * @throws JSONException
 	 */
-	public static JSONObject createSkill(JSONObject newSkill)
+	public static JSONObject createSkill(RequestContext context, JSONObject newSkill)
 			throws JSONException {
+		
+		// Only admins can create roles
+		if (!hasAdminAccess(context)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+		
 		newSkill.put(PROP_ETAG, "0");
 
 		String json = newSkill.toString();
@@ -924,13 +971,12 @@ public class Data implements CONSTS {
 
 			ObjectId oId = (ObjectId) created.get(PROP__ID);
 			String idVal = oId.toString();
-			newSkill.put(PROP_ABOUT,
-					RESOURCE_SKILLS + "/" + idVal);
+			newSkill.put(PROP_ABOUT, RESOURCE_SKILLS + "/" + idVal);
 		}
 
 		return newSkill;
 	}
-	
+
 	/**
 	 * Delete a role by id
 	 * 
@@ -940,80 +986,95 @@ public class Data implements CONSTS {
 	 */
 	public static JSONObject deleteRole(RequestContext context, String id)
 			throws JSONException {
+		// Only admins can create roles
+		if (!hasAdminAccess(context)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+	
+		
 		JSONObject ret = null;
 
 		DBCollection rolesCol = db.getCollection(COLLECTION_TITLE_ROLES);
 		BasicDBObject query = new BasicDBObject();
 		query.put(PROP__ID, new ObjectId(id));
 		DBObject dbObj = rolesCol.findAndRemove(query);
-		if(dbObj != null){
+		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
+		} else {
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Role not found to delete").build());
 		}
-		else{
-			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Role not found to delete").build());
-		}
-		
-		//Clean up an people who have the listed skill
+
+		// Clean up an people who have the listed skill
 		String roleURL = RESOURCE_ROLES + "/" + id;
-		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE,roleURL);
+		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE, roleURL);
 		query = new BasicDBObject(PROP_PRIMARY_ROLE, resourceQuery);
-		DBObject unset = new BasicDBObject("$unset",new BasicDBObject(PROP_PRIMARY_ROLE, 1));
+		DBObject unset = new BasicDBObject("$unset", new BasicDBObject(
+				PROP_PRIMARY_ROLE, 1));
 		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
 		WriteResult result = peopleCol.updateMulti(query, unset);
-		
+
 		CommandResult error = result.getLastError();
 		System.out.println("Remove Primary Role References: " + result);
-		if(error != null && error.getErrorMessage() != null){
-			System.err.println("Remove Failed Failed:" + error.getErrorMessage());
-			if(error.getException() != null){
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Remove Failed Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
 		}
-		
-		//Clean up projects who have the listed role
-		query = new BasicDBObject(PROP_ROLES+"."+PROP_TYPE,resourceQuery);
-		DBObject fields = new BasicDBObject(PROP_ROLES,1).append(PROP_ETAG, 1);
+
+		// Clean up projects who have the listed role
+		query = new BasicDBObject(PROP_ROLES + "." + PROP_TYPE, resourceQuery);
+		DBObject fields = new BasicDBObject(PROP_ROLES, 1).append(PROP_ETAG, 1);
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
-		DBCursor cusor = projectsCol.find(query,fields);
-		
-		while(cusor.hasNext()){
-			DBObject project= cusor.next();
-			List<DBObject> roles = (List<DBObject>)project.get(PROP_ROLES);
-			
+		DBCursor cusor = projectsCol.find(query, fields);
+
+		while (cusor.hasNext()) {
+			DBObject project = cusor.next();
+			List<DBObject> roles = (List<DBObject>) project.get(PROP_ROLES);
+
 			for (Iterator iterator = roles.iterator(); iterator.hasNext();) {
 				DBObject role = (DBObject) iterator.next();
-				
-				DBObject type = (DBObject)role.get(PROP_TYPE);
+
+				DBObject type = (DBObject) role.get(PROP_TYPE);
 				Object resource = type.get(PROP_RESOURCE);
-				if(roleURL.equals(resource)){
+				if (roleURL.equals(resource)) {
 					iterator.remove();
 				}
 			}
-			
-			//Remove skills form the query
+
+			// Remove skills form the query
 			project.removeField(PROP_ROLES);
-			
+
 			Object old_etag = project.get(PROP_ETAG);
 			int newEtag = Integer.parseInt(String.valueOf(old_etag));
 			newEtag++;
-			
-			DBObject updateRoles = new BasicDBObject("$set", new BasicDBObject(PROP_ROLES, roles).append(PROP_ETAG, String.valueOf(newEtag)));
-			DBObject updateResult =  projectsCol.findAndModify(project, updateRoles);
-			
-			if(updateResult == null){
-				System.err.println("Field to update project : " + project + ", " + updateRoles);
-			}
-			else{
-				System.out.println("Updated Roles for Project: " + RESOURCE_PEOPLE+"/"+updateResult.get(PROP__ID));
+
+			DBObject updateRoles = new BasicDBObject("$set", new BasicDBObject(
+					PROP_ROLES, roles).append(PROP_ETAG,
+					String.valueOf(newEtag)));
+			DBObject updateResult = projectsCol.findAndModify(project,
+					updateRoles);
+
+			if (updateResult == null) {
+				System.err.println("Field to update project : " + project
+						+ ", " + updateRoles);
+			} else {
+				System.out.println("Updated Roles for Project: "
+						+ RESOURCE_PEOPLE + "/" + updateResult.get(PROP__ID));
 			}
 		}
-		
+
 		ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + id);
 
 		return ret;
 	}
-	
+
 	/**
 	 * Delete a skill by id
 	 * 
@@ -1023,50 +1084,59 @@ public class Data implements CONSTS {
 	 */
 	public static JSONObject deleteSkill(RequestContext context, String id)
 			throws JSONException {
+		// Only admins can create roles
+		if (!hasAdminAccess(context)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+	
+		
 		JSONObject ret = null;
 
 		DBCollection skillsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
 		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
 		DBObject dbObj = skillsCol.findAndRemove(query);
-		if(dbObj != null){
+		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
+		} else {
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Skill not found to delete").build());
 		}
-		else{
-			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Skill not found to delete").build());
-		}
-		
-		//Clean up an people who have the listed skill
+
+		// Clean up an people who have the listed skill
 		String skillURL = RESOURCE_SKILLS + "/" + id;
-		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE,skillURL);
-		query = new BasicDBObject(PROP_SKILLS+"."+PROP_TYPE,resourceQuery);
-		DBObject fields = new BasicDBObject(PROP_SKILLS,1);
+		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE, skillURL);
+		query = new BasicDBObject(PROP_SKILLS + "." + PROP_TYPE, resourceQuery);
+		DBObject fields = new BasicDBObject(PROP_SKILLS, 1);
 		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
-		DBCursor cusor = peopleCol.find(query,fields);
-		
-		while(cusor.hasNext()){
+		DBCursor cusor = peopleCol.find(query, fields);
+
+		while (cusor.hasNext()) {
 			DBObject person = cusor.next();
-			List<DBObject> skills = (List<DBObject>)person.get(PROP_SKILLS);
-			
+			List<DBObject> skills = (List<DBObject>) person.get(PROP_SKILLS);
+
 			for (Iterator iterator = skills.iterator(); iterator.hasNext();) {
 				DBObject skill = (DBObject) iterator.next();
-				
-				DBObject type = (DBObject)skill.get(PROP_TYPE);
+
+				DBObject type = (DBObject) skill.get(PROP_TYPE);
 				Object resource = type.get(PROP_RESOURCE);
-				if(skillURL.equals(resource)){
+				if (skillURL.equals(resource)) {
 					iterator.remove();
 				}
 			}
-			
-			//Remove skills form the query
+
+			// Remove skills form the query
 			person.removeField(PROP_SKILLS);
-			
-			DBObject updateSkills = new BasicDBObject("$set", new BasicDBObject(PROP_SKILLS, skills));
-			DBObject result =  peopleCol.findAndModify(person, updateSkills);
-			System.out.println("Updated Skills for Person: " + RESOURCE_PEOPLE+"/"+result.get(PROP__ID));
+
+			DBObject updateSkills = new BasicDBObject("$set",
+					new BasicDBObject(PROP_SKILLS, skills));
+			DBObject result = peopleCol.findAndModify(person, updateSkills);
+			System.out.println("Updated Skills for Person: " + RESOURCE_PEOPLE
+					+ "/" + result.get(PROP__ID));
 		}
-		
-		
 
 		ret.put(PROP_ABOUT, skillURL);
 
@@ -1151,8 +1221,8 @@ public class Data implements CONSTS {
 	 * @param newProject
 	 * @throws JSONException
 	 */
-	public static JSONObject updateProject(RequestContext context, String id, JSONObject newProject)
-			throws JSONException {
+	public static JSONObject updateProject(RequestContext context, String id,
+			JSONObject newProject) throws JSONException {
 
 		JSONObject existing = getProject(context, id);
 		if (existing == null) {
@@ -1202,194 +1272,223 @@ public class Data implements CONSTS {
 
 		return newProject;
 	}
-	
-	
-	public static void synchDefaultRoles(RequestContext context) throws JSONException{
+
+	public static void synchDefaultRoles(RequestContext context)
+			throws JSONException {
 		List<String> DEFAULT_ROLES = new ArrayList<String>();
 		List<String> DEFAULT_ROLE_ABRS = new ArrayList<String>();
-		Collections.addAll(DEFAULT_ROLES, ROLE_BA_TITLE, ROLE_PM_TITLE, ROLE_SE_TITLE, ROLE_SSA_TITLE, ROLE_SSE_TITLE, ROLE_SUXD_TITLE, ROLE_UXD_TITLE);
-		Collections.addAll(DEFAULT_ROLE_ABRS, ROLE_BA_ID, ROLE_PM_ID, ROLE_SE_ID, ROLE_SSA_ID, ROLE_SSE_ID, ROLE_SUXD_ID, ROLE_UXD_ID);
+		Collections.addAll(DEFAULT_ROLES, ROLE_BA_TITLE, ROLE_PM_TITLE,
+				ROLE_SE_TITLE, ROLE_SSA_TITLE, ROLE_SSE_TITLE, ROLE_SUXD_TITLE,
+				ROLE_UXD_TITLE);
+		Collections
+				.addAll(DEFAULT_ROLE_ABRS, ROLE_BA_ID, ROLE_PM_ID, ROLE_SE_ID,
+						ROLE_SSA_ID, ROLE_SSE_ID, ROLE_SUXD_ID, ROLE_UXD_ID);
 		Map<String, String> newRoleMapping = new HashMap<String, String>();
-		
-		
+
 		DBCollection roleCollection = db.getCollection(COLLECTION_TITLE_ROLES);
-		DBCollection peopleCollection = db.getCollection(COLLECTION_TITLE_PEOPLE);
-		DBCollection projectsCollection = db.getCollection(COLLECTION_TITLE_PROJECTS);
-		
-		for(int i = 0; i < DEFAULT_ROLES.size(); i++){
+		DBCollection peopleCollection = db
+				.getCollection(COLLECTION_TITLE_PEOPLE);
+		DBCollection projectsCollection = db
+				.getCollection(COLLECTION_TITLE_PROJECTS);
+
+		for (int i = 0; i < DEFAULT_ROLES.size(); i++) {
 			String roleName = DEFAULT_ROLES.get(i);
 			String roleAbr = DEFAULT_ROLE_ABRS.get(i);
-			
-		
+
 			BasicDBObject newRole = new BasicDBObject(PROP_TITLE, roleName);
-			
-			//Look for role
+
+			// Look for role
 			DBObject existingRole = roleCollection.findOne(newRole);
-			if(existingRole == null){
-				newRole.append(PROP_ABBREVIATION, roleAbr).append(PROP_ETAG, "0");
-				
-				//Create one
+			if (existingRole == null) {
+				newRole.append(PROP_ABBREVIATION, roleAbr).append(PROP_ETAG,
+						"0");
+
+				// Create one
 				WriteResult result = roleCollection.insert(newRole);
-				
+
 				CommandResult error = result.getLastError();
-				if(error != null){
-					System.err.println("Insert Failed:" + error.getErrorMessage());
-					if(error.getException() != null){
+				if (error != null) {
+					System.err.println("Insert Failed:"
+							+ error.getErrorMessage());
+					if (error.getException() != null) {
 						error.getException().printStackTrace();
 					}
 				}
-				
-				//Try again
+
+				// Try again
 				existingRole = roleCollection.findOne(newRole);
 			}
-		
-			if(existingRole == null){
-				throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to find Role: " + roleName).build());
+
+			if (existingRole == null) {
+				throw new WebApplicationException(Response
+						.status(Status.INTERNAL_SERVER_ERROR)
+						.entity("Failed to find Role: " + roleName).build());
 			}
-			
-			//Update any people that have this primary role
-			String newRoleURL = RESOURCE_ROLES+"/"+((ObjectId)existingRole.get(PROP__ID)).toString();
-			String oldRoleURL = RESOURCE_ROLES+"/"+roleAbr;
-			
-			//Map it for later 
+
+			// Update any people that have this primary role
+			String newRoleURL = RESOURCE_ROLES + "/"
+					+ ((ObjectId) existingRole.get(PROP__ID)).toString();
+			String oldRoleURL = RESOURCE_ROLES + "/" + roleAbr;
+
+			// Map it for later
 			newRoleMapping.put(oldRoleURL, newRoleURL);
-			
-			DBObject query = new BasicDBObject(PROP_PRIMARY_ROLE, new BasicDBObject(PROP_RESOURCE, oldRoleURL));
-			BasicDBObject update = new BasicDBObject("$set", new BasicDBObject(PROP_PRIMARY_ROLE,  new BasicDBObject(PROP_RESOURCE, newRoleURL)));
-			WriteResult result =  peopleCollection.updateMulti(query, update);
-			
+
+			DBObject query = new BasicDBObject(PROP_PRIMARY_ROLE,
+					new BasicDBObject(PROP_RESOURCE, oldRoleURL));
+			BasicDBObject update = new BasicDBObject("$set", new BasicDBObject(
+					PROP_PRIMARY_ROLE, new BasicDBObject(PROP_RESOURCE,
+							newRoleURL)));
+			WriteResult result = peopleCollection.updateMulti(query, update);
+
 			CommandResult error = result.getLastError();
-			if(error != null){
+			if (error != null) {
 				System.err.println("Insert Query:" + query);
 				System.err.println("Insert Update:" + update);
 				System.err.println("Insert Failed:" + error);
-				if(error.getException() != null){
+				if (error.getException() != null) {
 					error.getException().printStackTrace();
 				}
 			}
 		}
-		
-		//Update any projects that have this primary role
-		DBObject query = new BasicDBObject(PROP_ROLES, new BasicDBObject("$exists", true));
-		DBObject fields = new BasicDBObject(PROP_ROLES,1);
+
+		// Update any projects that have this primary role
+		DBObject query = new BasicDBObject(PROP_ROLES, new BasicDBObject(
+				"$exists", true));
+		DBObject fields = new BasicDBObject(PROP_ROLES, 1);
 		System.out.println("Find: " + query + ", " + fields);
 		DBCursor cursor = projectsCollection.find(query, fields);
-		
-		//For eacch project update all the roles on the project
+
+		// For eacch project update all the roles on the project
 		while (cursor.hasNext()) {
 			DBObject fetched = cursor.next();
 			List<DBObject> newRoles = new ArrayList<DBObject>();
 
 			@SuppressWarnings({ "unchecked" })
-			List<DBObject> roles = (List<DBObject>)fetched.get(PROP_ROLES);
-			for (Iterator<DBObject> iterator = roles.iterator(); iterator.hasNext();) {
+			List<DBObject> roles = (List<DBObject>) fetched.get(PROP_ROLES);
+			for (Iterator<DBObject> iterator = roles.iterator(); iterator
+					.hasNext();) {
 				DBObject role = iterator.next();
 				@SuppressWarnings({ "unchecked", "rawtypes" })
 				DBObject newRole = new BasicDBObject(new HashMap(role.toMap()));
-				
-				DBObject type = (DBObject)newRole.get(PROP_TYPE);
+
+				DBObject type = (DBObject) newRole.get(PROP_TYPE);
 				Object resource = type.get(PROP_RESOURCE);
-				if(newRoleMapping.containsKey(resource)){
+				if (newRoleMapping.containsKey(resource)) {
 					type.put(PROP_RESOURCE, newRoleMapping.get(resource));
 				}
-				
+
 				newRoles.add(newRole);
 			}
-			
+
 			fetched.removeField(PROP_ROLES);
-			
-			DBObject update = new BasicDBObject("$set",new BasicDBObject(PROP_ROLES, newRoles));
-			
-			//Update the project
+
+			DBObject update = new BasicDBObject("$set", new BasicDBObject(
+					PROP_ROLES, newRoles));
+
+			// Update the project
 			System.out.println("Insert Query:" + fetched);
 			System.out.println("Insert Update:" + update);
 			projectsCollection.update(fetched, update);
 		}
 	}
 
-	public static void synchDefaultGroups(RequestContext context) throws JSONException{
-		DBCollection peopleCollection = db.getCollection(COLLECTION_TITLE_PEOPLE);
-		
-		//The executive group
-		String checkExecsStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688']},groups:{$ne:'"+GROUPS_EXEC_TITLE+"'}}";
-		DBObject checkExecs = (DBObject)JSON.parse(checkExecsStr);
-		
-		DBObject addExec = new BasicDBObject("$push", new BasicDBObject(PROP_GROUPS, GROUPS_EXEC_TITLE));
-		
+	public static void synchDefaultGroups(RequestContext context)
+			throws JSONException {
+		DBCollection peopleCollection = db
+				.getCollection(COLLECTION_TITLE_PEOPLE);
+
+		// The executive group
+		String checkExecsStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688']},groups:{$ne:'"
+				+ GROUPS_EXEC_TITLE + "'}}";
+		DBObject checkExecs = (DBObject) JSON.parse(checkExecsStr);
+
+		DBObject addExec = new BasicDBObject("$push", new BasicDBObject(
+				PROP_GROUPS, GROUPS_EXEC_TITLE));
+
 		WriteResult errors = peopleCollection.updateMulti(checkExecs, addExec);
 		CommandResult error = errors.getLastError();
-		if(error != null && errors.getN() > 0){
+		if (error != null && errors.getN() > 0) {
 			System.err.println("Insert Result:" + error);
-			if(error.getException() != null){
+			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
 		}
-		
-		//The executive group
-		String checkSalesStr = "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']},groups:{$ne:'"+GROUPS_SALES_TITLE+"'}}";
-		DBObject checkSales = (DBObject)JSON.parse(checkSalesStr);
-		
-		DBObject addSales = new BasicDBObject("$push", new BasicDBObject(PROP_GROUPS, GROUPS_SALES_TITLE));
-		
+
+		// The executive group
+		String checkSalesStr = "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']},groups:{$ne:'"
+				+ GROUPS_SALES_TITLE + "'}}";
+		DBObject checkSales = (DBObject) JSON.parse(checkSalesStr);
+
+		DBObject addSales = new BasicDBObject("$push", new BasicDBObject(
+				PROP_GROUPS, GROUPS_SALES_TITLE));
+
 		errors = peopleCollection.updateMulti(checkSales, addSales);
-		if(errors != null && errors.getN() > 0){
+		if (errors != null && errors.getN() > 0) {
 			error = errors.getLastError();
 			System.err.println("Insert Result:" + error);
-			if(error.getException() != null){
+			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
 		}
-		
-		//The management group
-		String checkManagementStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688','103362960874176228355','112147186764436526995']},groups:{$ne:'"+GROUPS_MANAGEMENT_TITLE+"'}}";
-		DBObject checkManagement = (DBObject)JSON.parse(checkManagementStr);
-		
-		DBObject addManagement = new BasicDBObject("$push", new BasicDBObject(PROP_GROUPS, GROUPS_MANAGEMENT_TITLE));
-		
+
+		// The management group
+		String checkManagementStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688','103362960874176228355','112147186764436526995']},groups:{$ne:'"
+				+ GROUPS_MANAGEMENT_TITLE + "'}}";
+		DBObject checkManagement = (DBObject) JSON.parse(checkManagementStr);
+
+		DBObject addManagement = new BasicDBObject("$push", new BasicDBObject(
+				PROP_GROUPS, GROUPS_MANAGEMENT_TITLE));
+
 		errors = peopleCollection.updateMulti(checkManagement, addManagement);
-		if(errors != null && errors.getN() > 0){
+		if (errors != null && errors.getN() > 0) {
 			error = errors.getLastError();
 			System.err.println("Insert Result:" + error);
-			if(error.getException() != null){
+			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * Default the database with a list of skills
-	 * @param context The requesting context
+	 * 
+	 * @param context
+	 *            The requesting context
 	 */
-	public static void synchDefaultSkills(RequestContext context){
+	public static void synchDefaultSkills(RequestContext context) {
 		List<String> DEFAULT_SKILLS = new ArrayList<String>();
-		Collections.addAll(DEFAULT_SKILLS, SKILLS_DATA_POWER_TITLE, SKILLS_J2EE_TITLE, SKILLS_JAVA_TITLE, SKILLS_REST_TITLE, SKILLS_WEB_TITLE, SKILLS_WORKLIGHT_TITLE);
-		
-		DBCollection skillsCollection = db.getCollection(COLLECTION_TITLE_SKILLS);
-		
-		for (Iterator<String> iterator = DEFAULT_SKILLS.iterator(); iterator.hasNext();) {
+		Collections.addAll(DEFAULT_SKILLS, SKILLS_DATA_POWER_TITLE,
+				SKILLS_J2EE_TITLE, SKILLS_JAVA_TITLE, SKILLS_REST_TITLE,
+				SKILLS_WEB_TITLE, SKILLS_WORKLIGHT_TITLE);
+
+		DBCollection skillsCollection = db
+				.getCollection(COLLECTION_TITLE_SKILLS);
+
+		for (Iterator<String> iterator = DEFAULT_SKILLS.iterator(); iterator
+				.hasNext();) {
 			String skillName = iterator.next();
-			
+
 			BasicDBObject skill = new BasicDBObject(PROP_TITLE, skillName);
 			skill.append(PROP_ETAG, "0");
-			
-			//Look for skill
+
+			// Look for skill
 			DBObject ret = skillsCollection.findOne(skill);
-			if(ret == null){
-				//Create one
+			if (ret == null) {
+				// Create one
 				WriteResult result = skillsCollection.insert(skill);
-				
+
 				CommandResult error = result.getLastError();
-				if(error != null){
-					System.err.println("Insert Failed:" + error.getErrorMessage());
-					if(error.getException() != null){
+				if (error != null) {
+					System.err.println("Insert Failed:"
+							+ error.getErrorMessage());
+					if (error.getException() != null) {
 						error.getException().printStackTrace();
 					}
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Synchs the DB People with the Google domain users
 	 * 
@@ -1441,7 +1540,7 @@ public class Data implements CONSTS {
 			}
 
 			initPrimaryRole(person, googleUserDef.getString(PROP_ID));
-			
+
 			/**
 			 * If the user did not exist just create it
 			 */

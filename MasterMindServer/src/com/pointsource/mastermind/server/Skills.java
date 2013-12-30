@@ -109,7 +109,7 @@ public class Skills extends BaseResource {
 			try {
 				RequestContext context = getRequestContext();
 
-				JSONObject ret = Data.createSkill(newSkill);
+				JSONObject ret = Data.createSkill(context, newSkill);
 
 				String about = Data.unescapeJSON(ret
 						.getString(CONSTS.PROP_ABOUT));

@@ -131,7 +131,7 @@ public class Roles extends BaseResource {
 			try {
 				RequestContext context = getRequestContext();
 
-				JSONObject ret = Data.createRole(newRole);
+				JSONObject ret = Data.createRole(context, newRole);
 
 				String about = Data.unescapeJSON(ret
 						.getString(CONSTS.PROP_ABOUT));
