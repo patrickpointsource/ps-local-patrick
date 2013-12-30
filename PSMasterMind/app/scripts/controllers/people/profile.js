@@ -54,7 +54,7 @@ angular.module('Mastermind.controllers.people')
 		 
 		 $scope.getSkillsName = function(resource){
 			 var ret = 'Unspecified';
-			 if(resource){
+			 if(resource && $scope.skillsMap[resource]){
 				 ret = $scope.skillsMap[resource].title;
 			 }
 			 return ret;

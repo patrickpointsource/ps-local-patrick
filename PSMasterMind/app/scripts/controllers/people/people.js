@@ -41,7 +41,7 @@ angular.module('Mastermind.controllers.people')
 	          for(var i=0; i<$scope.people.length;i++){
 	        	//Annotate people with additional information 
 	  	        $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
-	            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+	            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource && $scope.rolesMap[$scope.people[i].primaryRole.resource]) {
 	          	// add the role to the person so we can display it in the table and sort by it
 	          	$scope.people[i].primaryRole.title = $scope.rolesMap?$scope.rolesMap[$scope.people[i].primaryRole.resource].title:'?';
 	              $scope.people[i].primaryRole.abbreviation = $scope.rolesMap?$scope.rolesMap[$scope.people[i].primaryRole.resource].abbreviation:'?';

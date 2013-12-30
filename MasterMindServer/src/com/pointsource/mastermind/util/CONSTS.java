@@ -54,6 +54,7 @@ public interface CONSTS {
 	public String PROP_RATE = "rate";
 	public String PROP_RESOURCE = "resource";
 	public String PROP_ROLES = "roles";
+	public String PROP_SKILLS = "skills";
 	public String PROP_START_DATE = "startDate";
 	public String PROP_STATE = "state";
 	public String PROP_STATUS = "status";

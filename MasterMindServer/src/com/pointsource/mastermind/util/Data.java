@@ -970,10 +970,9 @@ public class Data implements CONSTS {
 			throws JSONException {
 		JSONObject ret = null;
 
-		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
-		BasicDBObject query = new BasicDBObject();
-		query.put(PROP__ID, new ObjectId(id));
-		DBObject dbObj = projectsCol.findAndRemove(query);
+		DBCollection skillsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
+		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
+		DBObject dbObj = skillsCol.findAndRemove(query);
 		if(dbObj != null){
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
@@ -981,8 +980,40 @@ public class Data implements CONSTS {
 		else{
 			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Skill not found to delete").build());
 		}
+		
+		//Clean up an people who have the listed skill
+		String skillURL = RESOURCE_SKILLS + "/" + id;
+		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE,skillURL);
+		query = new BasicDBObject(PROP_SKILLS+"."+PROP_TYPE,resourceQuery);
+		DBObject fields = new BasicDBObject(PROP_SKILLS,1);
+		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
+		DBCursor cusor = peopleCol.find(query,fields);
+		
+		while(cusor.hasNext()){
+			DBObject person = cusor.next();
+			List<DBObject> skills = (List<DBObject>)person.get(PROP_SKILLS);
+			
+			for (Iterator iterator = skills.iterator(); iterator.hasNext();) {
+				DBObject skill = (DBObject) iterator.next();
+				
+				DBObject type = (DBObject)skill.get(PROP_TYPE);
+				Object resource = type.get(PROP_RESOURCE);
+				if(skillURL.equals(resource)){
+					iterator.remove();
+				}
+			}
+			
+			//Remove skills form the query
+			person.removeField(PROP_SKILLS);
+			
+			DBObject updateSkills = new BasicDBObject("$set", new BasicDBObject(PROP_SKILLS, skills));
+			DBObject result =  peopleCol.findAndModify(person, updateSkills);
+			System.out.println("Updated Skills for Person: " + RESOURCE_PEOPLE+"/"+result.get(PROP__ID));
+		}
+		
+		
 
-		ret.put(PROP_ABOUT, RESOURCE_SKILLS + "/" + id);
+		ret.put(PROP_ABOUT, skillURL);
 
 		return ret;
 	}
