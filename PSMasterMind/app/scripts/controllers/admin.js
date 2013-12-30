@@ -40,7 +40,34 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
         });
 	});
 	
+	/**
+	 * Fetch the list of roles
+	 */
+	Resources.refresh('roles').then(function(result){
+		$scope.roles = result.members;
+		$scope.rolesTableParams = new TableParams(params, {
+          total: $scope.roles.length, // length of data
+          getData: function ($defer, params) {
+            var data = $scope.roles;
+
+            var start = (params.page() - 1) * params.count();
+            var end = params.page() * params.count();
+
+            // use build-in angular filter
+            var orderedData = params.sorting() ?
+              $filter('orderBy')(data, params.orderBy()) :
+              data;
+
+            var ret = orderedData.slice(start, end);
+            $defer.resolve(ret);
+
+          }
+        });
+	});
+	
 	$scope.newSkill = {};
+	$scope.newRole = {};
+	
 	/**
 	 * Add a new Skill to the server
 	 */
@@ -50,6 +77,19 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 				 $scope.skills = result.members;
 				 $scope.skillsTableParams.total($scope.skills.length);
 				 $scope.skillsTableParams.reload();
+			 });
+		 });
+	 }
+	 
+	 /**
+	 * Add a new Role to the server
+	 */
+	 $scope.addRole = function(){
+		 Resources.create('roles', $scope.newRole).then(function(){
+			 Resources.refresh('roles').then(function(result){
+				 $scope.roles = result.members;
+				 $scope.rolesTableParams.total($scope.roles.length);
+				 $scope.rolesTableParams.reload();
 			 });
 		 });
 	 }
@@ -66,4 +106,17 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 			 });
 		 });
       };
+      
+      /**
+ 	  * Delete a role 
+ 	  */
+ 	 $scope.deleteRole = function (roleURL) {
+         Resources.remove(roleURL).then(function(){
+ 			 Resources.refresh('roles').then(function(result){
+ 				 $scope.roles = result.members;
+ 				 $scope.rolesTableParams.total($scope.roles.length);
+ 				 $scope.rolesTableParams.reload();
+ 			 });
+ 		 });
+       };
 }]);

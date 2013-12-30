@@ -872,6 +872,36 @@ public class Data implements CONSTS {
 	}
 	
 	/**
+	 * Create a new role
+	 * 
+	 * @param newRole
+	 * @throws JSONException
+	 */
+	public static JSONObject createRole(JSONObject newRole)
+			throws JSONException {
+		newRole.put(PROP_ETAG, "0");
+
+		String json = newRole.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_ROLES);
+		WriteResult result = projectsCol.insert(dbObject);
+
+		// TODO Handle Result Issues
+		DBCursor cursorDoc = projectsCol.find();
+		while (cursorDoc.hasNext()) {
+			DBObject created = cursorDoc.next();
+			// System.out.println("Found: " + created);
+
+			ObjectId oId = (ObjectId) created.get(PROP__ID);
+			String idVal = oId.toString();
+			newRole.put(PROP_ABOUT,
+					RESOURCE_ROLES + "/" + idVal);
+		}
+
+		return newRole;
+	}
+	
+	/**
 	 * Create a new skill
 	 * 
 	 * @param newSkill
@@ -902,6 +932,34 @@ public class Data implements CONSTS {
 	}
 	
 	/**
+	 * Delete a role by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject deleteRole(RequestContext context, String id)
+			throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_ROLES);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		DBObject dbObj = projectsCol.findAndRemove(query);
+		if(dbObj != null){
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+		}
+		else{
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Role not found to delete").build());
+		}
+
+		ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + id);
+
+		return ret;
+	}
+	
+	/**
 	 * Delete a skill by id
 	 * 
 	 * @param id
@@ -924,7 +982,7 @@ public class Data implements CONSTS {
 			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Skill not found to delete").build());
 		}
 
-		ret.put(PROP_ABOUT, RESOURCE_GROUPS + "/" + id);
+		ret.put(PROP_ABOUT, RESOURCE_SKILLS + "/" + id);
 
 		return ret;
 	}
