@@ -54,7 +54,8 @@
 			<table ng-table="tableParams" template-pagination="project/pager"
 				class="table">
 				<tr ng-repeat="project in $data">
-					<td><a href="#{{project.resource}}">{{project.name}}</a></td>
+					<td data-title="'Project'"><a href="#{{project.resource}}">{{project.name}}</a></td>
+          <td data-title="'Hours'"><div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">{{role.rate.hours}} <span class="small">({{role.rate.type}})</span></div></td>
 				</tr>
 			</table>
 			<script type="text/ng-template" id="project/pager">
@@ -123,4 +124,4 @@
 			</table>
 		</div>
 	</div>
-</div> 
+</div>
