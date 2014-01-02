@@ -70,7 +70,7 @@
                 <div class="tab-content">
                     <div id="hourlyControls" class="tab-pane active">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-4 form-group">
+                            <div class="col-xs-12 col-sm-4 form-group" ng-if="financeAccess">
                                 <label for="hourlyHourlyRate">Hourly Rate:</label>
                                 <input id="hourlyHourlyRate" class="form-control"
                                         placeholder="Enter Hourly Rate"
@@ -98,7 +98,7 @@
 
                     <div id="weeklyControls" class="tab-pane">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-4 form-group">
+                            <div class="col-xs-12 col-sm-4 form-group" ng-if="financeAccess">
                                 <label for="weeklyHourlyRate">Hourly Rate:</label>
                                 <input id="weeklyHourlyRate" class="form-control"
                                         placeholder="Enter Hourly Rate" min="0" type="number"
@@ -126,7 +126,7 @@
 
                     <div id="monthlyControls" class="tab-pane">
                         <div class="row">
-                            <div class="col-xs-12 form-group">
+                            <div class="col-xs-12 form-group" ng-if="financeAccess">
                                 <label for="monthlyRate">Monthly Rate:</label>
                                 <input id="monthlyRate" class="form-control" placeholder="Enter Hours per Month" type="number"
                                         ng-model="newRole.rate.amount">

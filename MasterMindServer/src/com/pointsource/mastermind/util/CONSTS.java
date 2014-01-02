@@ -27,6 +27,7 @@ public interface CONSTS {
 	public String PROP_ABOUT = "about";
 	public String PROP_ABBREVIATION = "abbreviation";
 	public String PROP_ACCOUNTS = "accounts";
+	public String PROP_AMOUNT = "amount";
 	public String PROP_BASE = "base";
 	public String PROP_COUNT = "count";
 	public String PROP_CUSTOMER_NAME = "customerName";

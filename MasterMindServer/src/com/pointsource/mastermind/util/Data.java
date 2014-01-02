@@ -752,7 +752,7 @@ public class Data implements CONSTS {
 		BasicDBObject fields = new BasicDBObject();
 
 		// If not managemnet remove the financial fields
-		if (hasFinancialAccess(context)) {
+		if (!hasFinancialAccess(context)) {
 			fields.put(PROP_TERMS, 0);
 		}
 

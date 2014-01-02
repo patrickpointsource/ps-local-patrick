@@ -108,6 +108,20 @@ angular.module('Mastermind.controllers.projects')
         $scope.editingRole = true;
         $scope.editRoleIndex = index;
         $('#newRoleDialog').collapse('show');
+        
+        //Show the right rate type tab
+        if(role.rate && role.rate.type){
+  		  if(role.rate.type == Rates.HOURLY){
+  			$("a[data-target='#hourlyControls']").tab('show');
+      	  }
+      	  else if(role.rate.type == Rates.WEEKLY){
+      		$("a[data-target='#weeklyControls']").tab('show');
+      	  }
+      	  else if(role.rate.type == Rates.MONTHLY){
+      		$("a[data-target='#monthlyControls']").tab('show');
+      	  }
+	    }
+         
         $scope.newRole = role;
       };
 
