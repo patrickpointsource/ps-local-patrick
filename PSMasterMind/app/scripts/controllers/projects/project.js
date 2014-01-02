@@ -7,18 +7,6 @@ angular.module('Mastermind')
   .controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'ngTableParams',
     function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, TableParams) {
       var detailsValid = false, rolesValid = false;
-
-      //Load my profile for group and role checking
-      Resources.refresh('people/me').then(function(me){
-    	 $scope.me = me; 
-    	 
-    	 //If you are a member of the management or exec groups provide access to financial info
-    	 if(me.groups && ((me.groups.indexOf('Management') != -1) || (me.groups.indexOf('Executives') != -1))){
-    		 $scope.financeAccess=true;
-    	 }
-    	 
-      });
-      
       
 	  //Set our currently viewed project to the one resolved by the service.
       $scope.projectId = $stateParams.projectId;

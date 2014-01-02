@@ -16,6 +16,9 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     		 $scope.financeAccess=true;
     		 $scope.adminAccess = true;
     	 }
+    	 
+    	 console.log('Logged In');
+    	 $scope.authState = true;
     	
     });
 

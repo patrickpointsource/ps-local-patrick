@@ -11,11 +11,6 @@ var helper = (function () {
      *            other authentication information.
      */
     onSignInCallback: function (authResult) {
-      $('#authResult').html('Auth Result:<br/>');
-      for (var field in authResult) {
-        $('#authResult').append(
-          ' ' + field + ': ' + authResult[field] + '<br/>');
-      }
       if (authResult['access_token']) {
         // Save the auth result
         this.authResult = authResult;
@@ -30,15 +25,11 @@ var helper = (function () {
         }
 
         else {
-          // Update the app to reflect a signed in user
+//          // After we load the Google+ API, render the profile data from
+//          // Google+.
+//          gapi.client.load('plus', 'v1', this.renderProfile);
 
-          // After we load the Google+ API, render the profile data from
-          // Google+.
-          gapi.client.load('plus', 'v1', this.renderProfile);
-
-          //Show the home page
-          $('#welcomeContent').hide();
-          $('#appContent').show();
+        	window.location = "/index.html";
         }
 
       } else if (authResult['error']) {
@@ -93,7 +84,7 @@ var helper = (function () {
 
             //remove the token
             delete window.localStorage['access_token'];
-            location.reload();
+            window.location = "/login.html";
 
             //		    	//Show the home page
             //				$('#welcomeContent').show();
@@ -105,9 +96,11 @@ var helper = (function () {
             // You could point users to manually disconnect if unsuccessful
             // https://plus.google.com/apps
             delete window.localStorage['access_token'];
-            location.reload();
+            window.location = "/login.html";
           }
         });
+      }else{
+      	window.location = "/login.html";
       }
     },
     /**
