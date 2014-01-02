@@ -1,10 +1,12 @@
 package com.pointsource.mastermind.util;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,8 +24,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import sun.misc.IOUtils;
-
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.admin.directory.Directory;
+import com.google.api.services.admin.directory.DirectoryScopes;
+import com.google.api.services.admin.directory.model.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import com.mongodb.DB;
@@ -36,7 +44,6 @@ import com.mongodb.util.JSON;
 
 public class Data implements CONSTS {
 
-	private static Map<String, JSONObject> GOOGLE_USERS = null;
 	// private static String GOOGLE_USER_ETAG = "";
 	private static Mongo mongo;
 	private static DB db;
@@ -476,31 +483,63 @@ public class Data implements CONSTS {
 	}
 
 	/**
+	 * Get the current list of users from our Google Apps domain
+	 * 
+	 * @param context
+	 * @return
+	 * @throws IOException
+	 * @throws GeneralSecurityException
+	 */
+	public static Users fetchGoogleUsers(RequestContext context) throws IOException, GeneralSecurityException{
+		final HttpTransport TRANSPORT = new NetHttpTransport();
+	    final JsonFactory JSON_FACTORY = new JacksonFactory();
+	    
+	    String fullPath = context.getServletContext().getRealPath("/WEB-INF/ff088aebc45c204d5f8c680e2d845b3d358bc303-privatekey.p12");
+	    //System.out.println("Full Path = " + fullPath);
+	    File file = new File(fullPath);
+	    
+	    GoogleCredential credential = new  GoogleCredential.Builder()
+	      .setTransport(TRANSPORT)
+	      .setJsonFactory(JSON_FACTORY)
+	      .setServiceAccountUser("psapps@pointsourcellc.com")
+	      .setServiceAccountId("141952851027-1u88oc96rik8l6islr44ha65o984tn3q@developer.gserviceaccount.com")
+	      .setServiceAccountScopes(Arrays.asList(DirectoryScopes.ADMIN_DIRECTORY_USER, DirectoryScopes.ADMIN_DIRECTORY_USER_READONLY))
+	      .setServiceAccountPrivateKeyFromP12File(file)
+	      .build();
+
+	    Directory admin = new Directory(TRANSPORT, JSON_FACTORY, credential);
+	    Directory.Users.List request = admin.users().list();
+	    request.setDomain("pointsourcellc.com");
+	    Users users = request.execute();
+	    
+	    return users;
+	}
+	
+	/**
 	 * Gets the list of Google Users
 	 * 
 	 * @return
 	 * @throws IOExceptionz
 	 * @throws JSONException
+	 * @throws GeneralSecurityException 
 	 */
 	public static Map<String, JSONObject> getGoogleUsers(RequestContext context)
-			throws IOException, JSONException {
-		if (GOOGLE_USERS == null) {
-			InputStream is = context.getServletContext().getResourceAsStream(
-					"/WEB-INF/googleUsers.json");
-			byte[] bytes = IOUtils.readFully(is, -1, true);
-			String jsonTxt = new String(bytes, "UTF-8");
+			throws IOException, JSONException, GeneralSecurityException {
+		
+		Users domainUsers = fetchGoogleUsers(context);
+		String jsonTxt = domainUsers.toString();
 
-			JSONObject googleUsers = new JSONObject(jsonTxt);
-			JSONArray users = googleUsers.getJSONArray(PROP_USERS);
-			GOOGLE_USERS = new HashMap<String, JSONObject>();
-			// GOOGLE_USER_ETAG = googleUsers.getString(PROP_ETAG);
+		JSONObject googleUsers = new JSONObject(jsonTxt);
+		JSONArray users = googleUsers.getJSONArray(PROP_USERS);
+		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
+		// GOOGLE_USER_ETAG = googleUsers.getString(PROP_ETAG);
 
-			for (int i = 0; i < users.length(); i++) {
-				JSONObject ithUser = users.getJSONObject(i);
-				GOOGLE_USERS.put(ithUser.getString(PROP_ID), ithUser);
-			}
+		for (int i = 0; i < users.length(); i++) {
+			JSONObject ithUser = users.getJSONObject(i);
+			ret.put(ithUser.getString(PROP_ID), ithUser);
 		}
-		return GOOGLE_USERS;
+		
+		return ret;
 	}
 
 	/**
@@ -1567,9 +1606,10 @@ public class Data implements CONSTS {
 	 * @param context
 	 * @throws JSONException
 	 * @throws IOException
+	 * @throws GeneralSecurityException 
 	 */
 	public static void synchPeople(RequestContext context) throws IOException,
-			JSONException {
+			JSONException, GeneralSecurityException {
 		Map<String, JSONObject> googleUsers = getGoogleUsers(context);
 		Collection<JSONObject> users = googleUsers.values();
 
