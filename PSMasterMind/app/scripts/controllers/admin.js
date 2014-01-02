@@ -14,7 +14,16 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
         title: 'asc'     // initial sorting
       }
     };
+    
+    $scope.triggerEditRole = function (role, index) {
+	    $scope.editingRole = true;
+	    $scope.editRoleIndex = index;
+	    $('#newRoleDialog').collapse('show');
+	    $scope.newRole = role;
+	  };
 	
+	  
+	  
 	/**
 	 * Fetch the list of skills
 	 */
@@ -87,6 +96,15 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 		 });
 	 }
 	 
+	 $scope.cancelRole = function () {
+	    $('#newRoleDialog').collapse('hide');
+	    $scope.newRole = {};
+	    $scope.editingRole = false;
+	    
+	    //Clear New Role Form
+		 $scope.newRoleForm.$setPristine();
+	  };
+	 
 	 /**
 	 * Add a new Role to the server
 	 */
@@ -99,6 +117,27 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 				 
 				 //Reset New Role Object
 				 $scope.newRole = {};
+				 
+				 //Clear New Role Form
+				 $scope.newRoleForm.$setPristine();
+			 });
+		 });
+	 }
+	 
+	 /**
+	 * Update a new Role to the server
+	 */
+	 $scope.saveRole = function(){
+		 Resources.update($scope.newRole).then(function(){ 
+			 Resources.refresh('roles').then(function(result){
+				 $scope.roles = result.members;
+				 $scope.rolesTableParams.total($scope.roles.length);
+				 $scope.rolesTableParams.reload();
+				 
+				 //Reset New Role Object
+				 $scope.newRole = {};
+				 
+				 $scope.editingRole = false;
 				 
 				 //Clear New Role Form
 				 $scope.newRoleForm.$setPristine();

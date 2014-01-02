@@ -110,7 +110,7 @@ angular.module('Mastermind').factory(
 			}
 			
 			/**
-			 * Fetch a Resource form the server
+			 * Internal Method Fetch a Resource form the server
 			 */
 			function fetch(resource){
 				var route = '';
