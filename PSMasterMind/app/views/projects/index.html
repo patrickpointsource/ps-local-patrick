@@ -1,22 +1,27 @@
 <br />
 <div class="row">
-	<div class="col-xs-9">
-		<select ng-model="projectFilter" ng-change="handleProjectFilterChanged()">
+	<div class="col-xs-12 col-sm-5 col-lg-6">
+		<select class="form-control" ng-model="projectFilter" ng-change="handleProjectFilterChanged()">
 			<option value="all">All Projects</option>
 			<option value="active">Active Projects</option>
 		</select>
 	</div>
-	<div class="col-xs-3">
-		<button class="pull-right btn btn-default" ng-click="createProject()">
-			<i class="fa fa-plus-square"></i> <span>Add Project</span>
-		</button>
+	<div class="col-xs-4 col-sm-3 col-lg-2 pull-right xs-padding-top">
+		<div class="btn-group pull-right">
+			<button class="pull-right btn btn-default" ng-click="createProject()">
+				<i class="fa fa-plus-square"></i> <span>Add Project</span>
+			</button>
+		</div>
+	</div>
+	 <div class="col-xs-8 col-sm-4 col-lg-4 pull-right xs-padding-top">
+		<input class="form-control" placeholder="Filter Projects" ng-model="filterText">
 	</div>
 </div>
 <div class="row">
 	<div class="col-xs-12">
 		<table ng-table="tableParams" template-pagination="custom/pager"
 			class="table">
-			<tr ng-repeat="project in $data">
+			<tr ng-repeat="project in $data | filter:filterText">
 				<td><a href="#{{project.resource}}">{{project.name}}</a></td>
 				<td class="text-right"><button class="btn btn-default"
 						ng-click="deleteProject(project)">
