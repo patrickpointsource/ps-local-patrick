@@ -54,21 +54,21 @@
 		<div class="row graph" ng-show="summarySwitcher == 'projects'">
 			<div id="projectsSummaryGraph" class="col-xs-12">
 		        <div class="row">
-	                <div class="col-xs-2">Dec</div>
 	                <div class="col-xs-2">Jan</div>
 	                <div class="col-xs-2">Feb</div>
 	                <div class="col-xs-2">Mar</div>
 	                <div class="col-xs-2">Apr</div>
 	                <div class="col-xs-2">May</div>
+	                <div class="col-xs-2">Jun</div>
 		        </div>
 		        <div class="row" ng-repeat="project in qvProjects">
 	            	<div style="float:left position:absolute"><a href="#{{project.resource}}">{{project.name}}</a></div>
-	                <div class="col-xs-2" ng-class="{active: inMonth(project, 11, 2013)}"></div>
 	                <div class="col-xs-2" ng-class="{active: inMonth(project, 0, 2014)}"></div>
 	                <div class="col-xs-2" ng-class="{active: inMonth(project, 1, 2014)}"></div>
 	                <div class="col-xs-2" ng-class="{active: inMonth(project, 2, 2014)}"></div>
 	                <div class="col-xs-2" ng-class="{active: inMonth(project, 3, 2014)}"></div>
 		            <div class="col-xs-2" ng-class="{active: inMonth(project, 4, 2014)}"></div>
+		            <div class="col-xs-2" ng-class="{active: inMonth(project, 5, 2014)}"></div>
 		        </div>
 		    </div>
 	    </div>
