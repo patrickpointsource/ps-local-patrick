@@ -82,18 +82,18 @@
 <div>
 	<div class="row">
 		<div class="col-xs-9">
-			<h3>Skills</h3>
+			<h3>Proficiencies</h3>
 		</div>
 		<div class="col-xs-3 pageActions" ng-show="editMode">
 			<button type="button" class="btn btn-default pull-right" data-toggle="collapse" data-target="#newSkillDialog">
-		  		<i class="fa fa-plus-square"></i> <span>Add Skills</span>
+		  		<i class="fa fa-plus-square"></i> <span>Add Proficiency</span>
 			</button>
 		</div>
 	</div>
 	<section id="newSkillDialog" class="well collapse out" ng-show="editMode">
 	 <div class="row">
 	     <div class="col-xs-12 col-sm-4 form-group">
-	         <label for="skill">Skill:</label>
+	         <label for="skill">Proficiency:</label>
 	         <select id="skillSelect" class="col-xs-12 form-control" ng-model="newSkill.type.resource"
 	                 ng-options="m.resource as m.title for m in skillTypes">
 	         </select>
@@ -109,10 +109,18 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<table ng-table="skillsParams" class="table">
+				 <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Level</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
 				<tr ng-repeat="skill in $data">
-					<td data-title="'Type'">{{getSkillsName(skill.type.resource)}}</td>
-					<td ng-hide="editMode" data-title="'Proficiency'">{{getSkillProficiencyLabel(skill.proficiency)}}</td>
-					<td ng-show="editMode" data-title="'Proficiency'">
+					<td>{{getSkillsName(skill.type.resource)}}</td>
+					<td ng-hide="editMode">{{getSkillProficiencyLabel(skill.proficiency)}}</td>
+					<td ng-show="editMode">
 						<select ng-model="skill.proficiency">
 							<option value="1">Some</option>
 							<option value="2">Moderate</option>
@@ -121,6 +129,7 @@
 		            </td>
 					<td ng-show="editMode"><button class="btn btn-default" ng-click="removeSkill(skill)"><i class="fa fa-trash-o"></i></button></td>
 				</tr>
+			  </tbody>
 			</table>
 		</div>
 	</div>
