@@ -222,10 +222,11 @@ angular.module('Mastermind.controllers.people')
 
 
 		 var query = {'roles.assignee':{resource:person.about}};
-		 var fields = {resource:1,name:1,roles:1};
+		 var fields = {resource:1,name:1,roles:1,endDate:1};
 
 		 Resources.query('projects', query, fields, function(result){
 			 $scope.projects = result.data;
+       //console.log('$scope.projects: ', $scope.projects);
 			 $scope.hasProjects = result.data.length > 0;
 
 			 if($scope.hasProjects){
@@ -301,5 +302,14 @@ angular.module('Mastermind.controllers.people')
 			  $scope.skillsParams.reload();
 		  }
 	  };
+
+    $scope.isCurrentProject = function(endDate) {
+      var endDate = new Date(endDate);
+      var currentDate = new Date();
+      if (endDate.getTime() < currentDate.getTime()) {
+        return false;
+      }
+      return true;
+    };
 
   }]);

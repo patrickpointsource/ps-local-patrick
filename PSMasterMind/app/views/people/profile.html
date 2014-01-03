@@ -53,7 +53,7 @@
 		<div class="col-xs-12">
 			<table ng-table="tableParams" template-pagination="project/pager"
 				class="table">
-				<tr ng-repeat="project in $data">
+				<tr ng-repeat="project in $data" ng-show="isCurrentProject(project.endDate)">
 					<td data-title="'Project'">
             <a href="#{{project.resource}}">{{project.name}}</a>
           </td>
