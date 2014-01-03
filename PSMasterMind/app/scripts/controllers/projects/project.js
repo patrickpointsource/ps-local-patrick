@@ -251,42 +251,49 @@ angular.module('Mastermind')
     	   }
 
     	   //Query all people with a primary role
-    	   var roleQuery = {'primaryRole.resource':{$in:resources}};
-    	   var fields = {resource:1,name:1,primaryRole:1,thumbnail:1};
+    	   var roleQuery = {'primaryRole.resource':{$exists:1}};
+    	   var fields = {resource:1,name:1,familyName:1,givenName:1,primaryRole:1,thumbnail:1};
+    	   var sort = {'primaryRole.resource':1,'familyName':1,'givenName':1};
     	   Resources.query('people',roleQuery, fields, function(peopleResults){
     		    var people = peopleResults.members;
     		    //Set up lists of people in roles
     		    for(var i = 0; i < people.length; i++){
     		    	var person = people[i];
-    		    	var roleResource = person.primaryRole.resource;
-    		    	roleGroups[roleResource].assiganble.push(person);
+    		    	var personsRole = roleGroups[person.primaryRole.resource];
+    		    	person.title = personsRole.abbreviation + ': ' + person.familyName + ", " + person.givenName;
+    		    	
+    		    	for(var j = 0; j < result.members.length;j++){
+    		    		var roleJ = result.members[j];
+    		    		
+    		    		//Primary role match place it at the front of the array in sort order
+    		    		if(roleJ.resource == person.primaryRole.resource){
+    		    			//assignable list was empty add it to the front
+    		    			if(roleGroups[roleJ.resource].assiganble.length == 0){
+    		    				roleGroups[roleJ.resource].assiganble[0] = person;
+    		    			}
+    		    			//First match just add it to the font
+    		    			else if(roleGroups[roleJ.resource].assiganble[0].primaryRole.resource != roleJ.resource){
+    		    				roleGroups[roleJ.resource].assiganble.unshift(person);
+    		    			}
+    		    			//Add it after the last match
+    		    			else{
+    		    				var index = 0;
+    		    				while(roleGroups[roleJ.resource].assiganble.length>index&&roleGroups[roleJ.resource].assiganble[index].primaryRole.resource == roleJ.resource){
+    		    					index++;
+    		    				}
+    		    				roleGroups[roleJ.resource].assiganble.splice(index,0,person);
+    		    			}
+    		    		}
+    		    		//Not the primary role leave it in sort order
+    		    		else{
+    		    			roleGroups[roleJ.resource].assiganble.push(person);
+    		    		}
+    		    	}
     		    }
-    		    
-//    		    //Setup Assign ability rules
-//    		    //PMs and BAs (Interchangeable)
-//    		    var bas = roleGroups['roles/BA'].members;
-//    		    var pms = roleGroups['roles/PM'].members;
-//    		    roleGroups['roles/BA'].assiganble = bas.concat(pms);
-//    		    roleGroups['roles/PM'].assiganble = pms.concat(bas);
-//    		    
-//    		    //SSE Role (SSE and SSA)
-//    		    //SE Role (SE, SSE, and SSA)
-//    		    var ssa = roleGroups['roles/SSA'].members;
-//    		    var sse = roleGroups['roles/SSE'].members;
-//    		    var se = roleGroups['roles/SE'].members;
-//    		    roleGroups['roles/SSA'].assiganble = ssa;
-//    		    roleGroups['roles/SSE'].assiganble = sse.concat(ssa);
-//    		    roleGroups['roles/SE'].assiganble = se.concat(sse).concat(ssa);
-//    		    
-//    		    //UX (UX and SUDX)
-//    		    var uxd = roleGroups['roles/UXD'].members;
-//    		    var suxd = roleGroups['roles/SUXD'].members;
-//    		    roleGroups['roles/UXD'].assiganble = uxd.concat(suxd);
-//    		    roleGroups['roles/SUXD'].assiganble = suxd;
     		    
     		    //Set a map of role types to members
     		    $scope.roleGroups = roleGroups;
-    	   })
+    	   },sort);
        });
 
 

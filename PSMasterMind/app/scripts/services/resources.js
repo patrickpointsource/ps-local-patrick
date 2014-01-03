@@ -20,7 +20,7 @@ angular.module('Mastermind').factory(
 			 * 
 			 * @returns {*}
 			 */
-			function query(resource, query, fields, onSuccess) {
+			function query(resource, query, fields, onSuccess, sort) {
 				var Resource = ResourcesRestangular.one('',resource);
 
 				var params = {};
@@ -35,6 +35,11 @@ angular.module('Mastermind').factory(
 					fields = JSON.stringify(fields);
 					//fields = encodeURIComponent(fields);
 					params['fields'] = fields;
+				}
+				
+				if(sort) {
+					sort = JSON.stringify(sort);
+					params['sort'] = sort;
 				}
 
 				Resource.get(params).then(onSuccess);
