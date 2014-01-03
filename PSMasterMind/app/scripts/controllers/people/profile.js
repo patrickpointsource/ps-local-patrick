@@ -21,24 +21,24 @@ angular.module('Mastermind.controllers.people')
 	  /**
 	   * Load Role definitions to display names
 	   */
-	  Resources.get('roles').then(function(result){
-		 var members = result.members;
-		 $scope.allRoles = members;
-		 var rolesMap = {};
-		 for(var i = 0; i < members.length;i++){
-			 var role = members[i];
-			 rolesMap[members[i].resource] = members[i];
-		 }
-		 $scope.rolesMap = rolesMap;
+    Resources.get('roles').then(function(result){
+      var members = result.members;
+      $scope.allRoles = members;
+      var rolesMap = {};
+      for(var i = 0; i < members.length;i++){
+        var role = members[i];
+        rolesMap[members[i].resource] = members[i];
+      }
+      $scope.rolesMap = rolesMap;
+    });
 
-		 $scope.getRoleName = function(resource){
-			 var ret = 'Unspecified';
-			 if(resource && $scope.rolesMap[resource]){
-				 ret = $scope.rolesMap[resource].title;
-			 }
-			 return ret;
-		 }
-	  });
+    $scope.getRoleName = function(resource){
+      var ret = 'Unspecified';
+      if(resource && $scope.rolesMap[resource]){
+        ret = $scope.rolesMap[resource].title;
+      }
+      return ret;
+    }
 
 	  /**
 	   * Load Skill Definitions to display names
