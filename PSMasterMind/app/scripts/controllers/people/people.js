@@ -22,36 +22,25 @@ angular.module('Mastermind.controllers.people')
 //        console.log('get roles result.members:');
 //        console.log(result.members);
         $scope.rolesFilterOptions = result.members;
-
-        $scope.rolesMap = {};
-
-        // build a map so we can get the resource title and abbrv
-        for (var i=0; i<result.members.length; i++) {
-          $scope.rolesMap[result.members[i].resource] = {
-            title: result.members[i].title,
-            abbreviation: result.members[i].abbreviation
-          }
-        }
       });
 
       var getTableData = function(people){
         return new TableParams(params, {
           total: $scope.people.length, // length of data
-          getData: function ($defer, params) {
-	          for(var i=0; i<$scope.people.length;i++){
-	        	//Annotate people with additional information 
-	  	        $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
-	            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource && $scope.rolesMap[$scope.people[i].primaryRole.resource]) {
-	          	// add the role to the person so we can display it in the table and sort by it
-	          	$scope.people[i].primaryRole.title = $scope.rolesMap?$scope.rolesMap[$scope.people[i].primaryRole.resource].title:'?';
-	              $scope.people[i].primaryRole.abbreviation = $scope.rolesMap?$scope.rolesMap[$scope.people[i].primaryRole.resource].abbreviation:'?';
-	            }
-	          }
-        	  
+          getData: function ($defer, params) { 
             var data = $scope.people;
 
             var start = (params.page() - 1) * params.count();
             var end = params.page() * params.count();
+            
+            for(var i=start; (i<$scope.people.length && i<end);i++){
+	        	//Annotate people with additional information 
+	  	        $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
+	            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+	          	// add the role to the person so we can display it in the table and sort by it
+	            	Resources.resolve($scope.people[i].primaryRole);
+	            }
+	          }
 
             // use build-in angular filter
             var orderedData = params.sorting() ?
@@ -63,7 +52,7 @@ angular.module('Mastermind.controllers.people')
 
           }
         });
-      }
+      };
 
       /**
        * Changes list of people on a filter change
