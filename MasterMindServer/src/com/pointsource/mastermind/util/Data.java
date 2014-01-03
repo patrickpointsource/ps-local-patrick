@@ -687,21 +687,29 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static Map<String, JSONObject> getPeople(RequestContext context,
-			String query, String fields) throws JSONException {
-		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
+	public static JSONArray getPeople(RequestContext context,
+			String query, String fields, String sort) throws JSONException {
+		JSONArray ret = new JSONArray();
 
-		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
+		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
 		DBObject queryObject = null;
 		DBObject fieldsObject = null;
+		DBObject sortObject = null;
 		if (query != null) {
 			queryObject = (DBObject) JSON.parse(query);
 		}
 		if (fields != null) {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
+		if (sort != null) {
+			sortObject = (DBObject) JSON.parse(sort);
+		}
 
-		DBCursor cursur = projectsCol.find(queryObject, fieldsObject);
+		DBCursor cursur = peopleCol.find(queryObject, fieldsObject);
+		
+		if(sort != null){
+			cursur = cursur.sort(sortObject);
+		}
 
 		while (cursur.hasNext()) {
 			DBObject object = cursur.next();
@@ -713,7 +721,7 @@ public class Data implements CONSTS {
 				ObjectId _id = (ObjectId) object.get(PROP__ID);
 				jsonObject.put(PROP_RESOURCE, RESOURCE_PEOPLE + "/" + _id);
 
-				ret.put(_id.toString(), jsonObject);
+				ret.put(jsonObject);
 			} else {
 				System.out
 						.println("Person not included because it did not return an _id property: "

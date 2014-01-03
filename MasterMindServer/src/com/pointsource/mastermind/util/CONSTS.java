@@ -18,6 +18,7 @@ public interface CONSTS {
 	 */
 	public String REQUEST_PARAM_NAME_FIELDS = "fields";
 	public String REQUEST_PARAM_NAME_QUERY = "query";
+	public String REQUEST_PARAM_NAME_SORT = "sort";
 	
 	/**
 	 * Property Names

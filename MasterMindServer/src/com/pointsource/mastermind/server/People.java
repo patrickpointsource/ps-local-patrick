@@ -1,8 +1,6 @@
 package com.pointsource.mastermind.server;
 
 import java.net.URI;
-import java.util.Collection;
-import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -19,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.wink.common.annotations.Workspace;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,17 +40,16 @@ public class People extends BaseResource {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response get(@QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query, @QueryParam(CONSTS.REQUEST_PARAM_NAME_FIELDS)String fields) {
+	public Response get(@QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query, @QueryParam(CONSTS.REQUEST_PARAM_NAME_FIELDS)String fields, @QueryParam(CONSTS.REQUEST_PARAM_NAME_SORT)String sort) {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-				Map<String, JSONObject> people = Data.getPeople(context, query, fields);
+				JSONArray people = Data.getPeople(context, query, fields, sort);
 				JSONObject ret = new JSONObject();
-				int total = people.size();
+				int total = people.length();
 				ret.put(CONSTS.PROP_COUNT, total);
 
-				Collection<JSONObject> values = people.values();
-				ret.put(CONSTS.PROP_MEMBERS, values);
+				ret.put(CONSTS.PROP_MEMBERS, people);
 
 				URI baseURI = context.getBaseURI();
 				ret.put(CONSTS.PROP_BASE, baseURI);
