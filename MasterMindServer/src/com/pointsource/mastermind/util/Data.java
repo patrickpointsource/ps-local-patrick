@@ -1575,37 +1575,38 @@ public class Data implements CONSTS {
 	 *            The requesting context
 	 */
 	public static void synchDefaultSkills(RequestContext context) {
-		List<String> DEFAULT_SKILLS = new ArrayList<String>();
-		Collections.addAll(DEFAULT_SKILLS, SKILLS_DATA_POWER_TITLE,
-				SKILLS_J2EE_TITLE, SKILLS_JAVA_TITLE, SKILLS_REST_TITLE,
-				SKILLS_WEB_TITLE, SKILLS_WORKLIGHT_TITLE);
-
-		DBCollection skillsCollection = db
-				.getCollection(COLLECTION_TITLE_SKILLS);
-
-		for (Iterator<String> iterator = DEFAULT_SKILLS.iterator(); iterator
-				.hasNext();) {
-			String skillName = iterator.next();
-
-			BasicDBObject skill = new BasicDBObject(PROP_TITLE, skillName);
-			skill.append(PROP_ETAG, "0");
-
-			// Look for skill
-			DBObject ret = skillsCollection.findOne(skill);
-			if (ret == null) {
-				// Create one
-				WriteResult result = skillsCollection.insert(skill);
-
-				CommandResult error = result.getLastError();
-				if (error != null) {
-					System.err.println("Insert Failed:"
-							+ error.getErrorMessage());
-					if (error.getException() != null) {
-						error.getException().printStackTrace();
-					}
-				}
-			}
-		}
+//		List<String> DEFAULT_SKILLS = new ArrayList<String>();
+//		Collections.addAll(DEFAULT_SKILLS, SKILLS_DATA_POWER_TITLE,
+//				SKILLS_J2EE_TITLE, SKILLS_JAVA_TITLE, SKILLS_REST_TITLE,
+//				SKILLS_WEB_TITLE, SKILLS_WORKLIGHT_TITLE);
+//
+//		DBCollection skillsCollection = db
+//				.getCollection(COLLECTION_TITLE_SKILLS);
+//
+//		for (Iterator<String> iterator = DEFAULT_SKILLS.iterator(); iterator
+//				.hasNext();) {
+//			String skillName = iterator.next();
+//
+//			BasicDBObject skill = new BasicDBObject(PROP_TITLE, skillName);
+//			
+//
+//			// Look for skill
+//			DBObject ret = skillsCollection.findOne(skill);
+//			if (ret == null) {
+//				// Create one
+//				skill.append(PROP_ETAG, "0");
+//				WriteResult result = skillsCollection.insert(skill);
+//
+//				CommandResult error = result.getLastError();
+//				if (error != null) {
+//					System.err.println("Insert Failed:"
+//							+ error.getErrorMessage());
+//					if (error.getException() != null) {
+//						error.getException().printStackTrace();
+//					}
+//				}
+//			}
+//		}
 	}
 
 	/**
