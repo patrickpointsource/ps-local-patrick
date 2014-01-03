@@ -98,18 +98,9 @@
         });
     })
     .config(function (RestangularProvider) {
-      // local dev
-      var serverLocation = 'http://localhost:8080';
-
-      // local dev and stage
-      var restPath = '/MasterMindStaging/rest/';
-
-      // stage and prod
-      // var serverLocation = 'http://db.mastermind.pointsource.us:8080';
-
-      // prod only
-      // var restPath = '/MasterMindServer/rest/';
-
+      var serverLocation = window.serverLocation;
+      var restPath = window.restPath;
+      
       function toJsonReplacer(key, value) {
         var val = value;
 

@@ -1,3 +1,22 @@
+//Define the global URLs for this app
+// local dev
+window.serverLocation = 'http://localhost:8080';
+window.clientBaseURL = 'http://0.0.0.0:9000/';
+
+// local dev and stage
+window.restPath = '/MasterMindStaging/rest/';
+
+//stage only
+//window.clientBaseURL = 'http://mastermind.pointsource.us/stage/';
+
+// stage and prod
+//window.serverLocation = 'http://db.mastermind.pointsource.us:8080';
+
+// prod only
+//window.restPath = '/MasterMindServer/rest/';
+//window.clientBaseURL = 'http://mastermind.pointsource.us/web/';
+
+
 var helper = (function () {
   var authResult = undefined;
 
@@ -29,7 +48,7 @@ var helper = (function () {
 //          // Google+.
 //          gapi.client.load('plus', 'v1', this.renderProfile);
 
-        	window.location = "/index.html";
+        	window.location = window.clientBaseURL+"index.html";
         }
 
       } else if (authResult['error']) {
@@ -84,7 +103,7 @@ var helper = (function () {
 
             //remove the token
             delete window.localStorage['access_token'];
-            window.location = "/login.html";
+            window.location = window.clientBaseURL+"login.html";
 
             //		    	//Show the home page
             //				$('#welcomeContent').show();
@@ -96,11 +115,11 @@ var helper = (function () {
             // You could point users to manually disconnect if unsuccessful
             // https://plus.google.com/apps
             delete window.localStorage['access_token'];
-            window.location = "/login.html";
+            window.location = window.clientBaseURL+"login.html";
           }
         });
       }else{
-      	window.location = "/login.html";
+      	window.location = window.clientBaseURL+"login.html";
       }
     },
     /**
