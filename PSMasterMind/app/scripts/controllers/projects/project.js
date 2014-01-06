@@ -54,6 +54,7 @@ angular.module('Mastermind')
 
           if (response.status === BAD_REQUEST) {
             $scope.messages = response.data.reasons;
+            
           }
         });
       };
