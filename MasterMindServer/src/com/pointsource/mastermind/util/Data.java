@@ -583,7 +583,9 @@ public class Data implements CONSTS {
 		}
 
 		fieldsObject = filterManagmentProperty(PROP_TERMS, context, fieldsObject);
-
+		String roleAmounts = PROP_ROLES+"."+PROP_RATE+"."+PROP_AMOUNT;
+		fieldsObject = filterManagmentProperty(roleAmounts, context, fieldsObject);
+		
 		DBCursor cursur = projectsCol.find(queryObject, fieldsObject);
 
 		while (cursur.hasNext()) {
@@ -824,9 +826,13 @@ public class Data implements CONSTS {
 		// If not managemnet remove the financial fields
 		if (!hasFinancialAccess(context)) {
 			fields.put(PROP_TERMS, 0);
+			String roleAmounts = PROP_ROLES+"."+PROP_RATE+"."+PROP_AMOUNT;
+			fields.put(roleAmounts, 0);
 		}
 
 		DBObject dbObj = projectsCol.findOne(query, fields);
+		
+		//Filter did not work on the 
 
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
