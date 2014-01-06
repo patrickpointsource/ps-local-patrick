@@ -27,14 +27,14 @@ angular.module('Mastermind.controllers.people')
       var getTableData = function(people){
         return new TableParams(params, {
           total: $scope.people.length, // length of data
-          getData: function ($defer, params) { 
+          getData: function ($defer, params) {
             var data = $scope.people;
 
             var start = (params.page() - 1) * params.count();
             var end = params.page() * params.count();
-            
+
             for(var i=start; (i<$scope.people.length && i<end);i++){
-	        	//Annotate people with additional information 
+	        	//Annotate people with additional information
 	  	        $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
 	            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
 	          	// add the role to the person so we can display it in the table and sort by it
@@ -113,7 +113,7 @@ angular.module('Mastermind.controllers.people')
        * Get Filter Param
        */
       $scope.peopleFilter = $state.params.filter?$state.params.filter:'all';
-      
+
 
       // build table view
       //Get todays date formatted as yyyy-MM-dd
@@ -143,7 +143,7 @@ angular.module('Mastermind.controllers.people')
         var activePeople = [];
         //Map of active hours by person
         var activeHours = {};
-        
+
         for(var i = 0; i < activeProjects.length; i++){
           var roles = activeProjects[i].roles;
           if(roles){
@@ -153,30 +153,32 @@ angular.module('Mastermind.controllers.people')
             //Loop through all the roles in the active projects
             for(var j = 0; j < roles.length; j++){
               var activeRole = roles[j];
-              
+
               //If there is an assignee log it in the active hours
               if(activeRole.assignee && activeRole.assignee.resource && activeRole.rate){
-            	  var hoursPerMonth = 0;
-            	  var rate = activeRole.rate;
-            	  if(rate.fullyUtilized){
-            		  hoursPerMonth = 180;
-            	  }
-            	  else if(rate.type == 'hourly'){
-            		  hoursPerMonth = rate.hours;
-            	  }
-            	  else if(rate.type == 'weekly'){
-            		// Weekly rate is currently hours per week. There are 5 working days per week
-            	      // and 22.5 per month.
-            		  hoursPerMonth = parseFloat(rate.hours * 22.5 / 5).toFixed(1);
-            	  }
-            	  
-            	  //If hours are logged from another project increment it
-            	  if(activeHours.hasOwnProperty(activeRole.assignee.resource)){
-            		  activeHours[activeRole.assignee.resource] += hoursPerMonth;
-            	  }
-            	  else{
-            		  activeHours[activeRole.assignee.resource] = hoursPerMonth;
-            	  }
+                var hoursPerMonth = 0;
+                var rate = activeRole.rate;
+                if(rate.fullyUtilized){
+                  hoursPerMonth = 180;
+                }
+                else if(rate.type == 'hourly'){
+                  hoursPerMonth = rate.hours;
+                }
+                else if(rate.type == 'weekly'){
+                // Weekly rate is currently hours per week. There are 5 working days per week
+                    // and 22.5 per month.
+                  var hoursPerMonthNotRounded = parseFloat(rate.hours * 22.5 / 5);
+                  hoursPerMonth = Math.round(hoursPerMonthNotRounded * 100) / 100; // round to 2 decimal places
+                }
+
+
+                //If hours are logged from another project increment it
+                if(activeHours.hasOwnProperty(activeRole.assignee.resource)){
+                  activeHours[activeRole.assignee.resource] += hoursPerMonth;
+                }
+                else{
+                  activeHours[activeRole.assignee.resource] = hoursPerMonth;
+                }
               }
 
               if(activeRole.assignee && activeRole.assignee.resource
@@ -198,14 +200,14 @@ angular.module('Mastermind.controllers.people')
             }
           }
         }
-        
+
         //Save the active hours map to the scope
         $scope.activeHours = activeHours;
-        
+
         $q.all(activePeople).then(function(data){
           $scope.qvPeopleProjects = activePeoplePojects;
           $scope.qvPeople = data;
-          
+
           //Once we have the active people apply the dafult filter
           //Trigger inital filter change
           $scope.handlePeopleFilterChanged();
