@@ -5,7 +5,6 @@ import java.net.URI;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -157,40 +156,41 @@ public class People extends BaseResource {
 		}
 	}
 
-	/**
-	 * POST person
-	 * 
-	 * Adds a new person to the collection
-	 * 
-	 * @param newPerson
-	 * 
-	 * @return new person location
-	 */
-	@POST
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Consumes({ MediaType.APPLICATION_JSON })
-	public Response post(JSONObject newPerson) {
-		try {
-			try {
-				RequestContext context = getRequestContext();
-
-				//TODO Validate Person
-				JSONObject ret = Data.createPerson(context, newPerson);
-
-				String about = Data.unescapeJSON(ret
-						.getString(CONSTS.PROP_ABOUT));
-
-				URI aboutURI = context.getBaseURI().resolve(about);
-				return Response.created(aboutURI).build();
-			} catch (WebApplicationException e) {
-				return handleWebApplicationException(e);
-			} catch (Exception e) {
-				return handleInternalServerError(e);
-			}
-		} catch (JSONException e) {
-			return handleJSONException(e);
-		}
-	}
+//  People Cannot be created	
+//	/**
+//	 * POST person
+//	 * 
+//	 * Adds a new person to the collection
+//	 * 
+//	 * @param newPerson
+//	 * 
+//	 * @return new person location
+//	 */
+//	@POST
+//	@Produces({ MediaType.APPLICATION_JSON })
+//	@Consumes({ MediaType.APPLICATION_JSON })
+//	public Response post(JSONObject newPerson) {
+//		try {
+//			try {
+//				RequestContext context = getRequestContext();
+//
+//				//TODO Validate Person
+//				JSONObject ret = Data.createPerson(context, newPerson);
+//
+//				String about = Data.unescapeJSON(ret
+//						.getString(CONSTS.PROP_ABOUT));
+//
+//				URI aboutURI = context.getBaseURI().resolve(about);
+//				return Response.created(aboutURI).build();
+//			} catch (WebApplicationException e) {
+//				return handleWebApplicationException(e);
+//			} catch (Exception e) {
+//				return handleInternalServerError(e);
+//			}
+//		} catch (JSONException e) {
+//			return handleJSONException(e);
+//		}
+//	}
 
 	/**
 	 * PUT people/:id

@@ -32,7 +32,7 @@
 							    <li ng-repeat="group in profile.groups">{{group}}</li>
 							</ul>
 	                    </div>
-	                    <div ng-show="editMode">
+	                    <div ng-if="adminAccess" ng-show="editMode">
 	                    	<label class="personDetailLabel">Groups:</label>
 	                    	<ul class="personDetailList">
 							    <li><input type="checkbox" ng-model="isExec" ng-click="handleGroupChange($event, 'Executives')"/><span class="checkboxText">Executives</span></li>

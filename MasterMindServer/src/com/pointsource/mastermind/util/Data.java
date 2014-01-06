@@ -115,64 +115,6 @@ public class Data implements CONSTS {
 		return config;
 	}
 
-	// /**
-	// * Get the list of managed user groups
-	// *
-	// * @return
-	// * @throws JSONException
-	// */
-	// public static JSONObject getRoles() throws JSONException {
-	// JSONObject ret = new JSONObject();
-	// JSONArray members = new JSONArray();
-	//
-	// JSONObject ssa = new JSONObject();
-	// ssa.put(PROP_ABBREVIATION, ROLE_SSA_ID);
-	// ssa.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
-	// ssa.put(PROP_TITLE, ROLE_SSA_TITLE);
-	// members.put(ssa);
-	//
-	// JSONObject pm = new JSONObject();
-	// pm.put(PROP_ABBREVIATION, ROLE_PM_ID);
-	// pm.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_PM_ID);
-	// pm.put(PROP_TITLE, ROLE_PM_TITLE);
-	// members.put(pm);
-	//
-	// JSONObject ba = new JSONObject();
-	// ba.put(PROP_ABBREVIATION, ROLE_BA_ID);
-	// ba.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_BA_ID);
-	// ba.put(PROP_TITLE, ROLE_BA_TITLE);
-	// members.put(ba);
-	//
-	// JSONObject sse = new JSONObject();
-	// sse.put(PROP_ABBREVIATION, ROLE_SSE_ID);
-	// sse.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
-	// sse.put(PROP_TITLE, ROLE_SSE_TITLE);
-	// members.put(sse);
-	//
-	// JSONObject se = new JSONObject();
-	// se.put(PROP_ABBREVIATION, ROLE_SE_ID);
-	// se.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SE_ID);
-	// se.put(PROP_TITLE, ROLE_SE_TITLE);
-	// members.put(se);
-	//
-	// JSONObject suxd = new JSONObject();
-	// suxd.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
-	// suxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
-	// suxd.put(PROP_TITLE, ROLE_SUXD_TITLE);
-	// members.put(suxd);
-	//
-	// JSONObject uxd = new JSONObject();
-	// uxd.put(PROP_ABBREVIATION, ROLE_UXD_ID);
-	// uxd.put(PROP_RESOURCE, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
-	// uxd.put(PROP_TITLE, ROLE_UXD_TITLE);
-	// members.put(uxd);
-	//
-	// ret.put(PROP_MEMBERS, members);
-	// ret.put(PROP_ABOUT, RESOURCE_ROLES);
-	// ret.put(PROP_COUNT, members.length());
-	// return ret;
-	// }
-
 	private static ArrayList<String> DEFAULT_SSAs = new ArrayList<String>();
 	private static ArrayList<String> DEFAULT_BAs = new ArrayList<String>();
 	private static ArrayList<String> DEFAULT_PMs = new ArrayList<String>();
@@ -222,66 +164,6 @@ public class Data implements CONSTS {
 			person.put(PROP_PRIMARY_ROLE, roleRef);
 		}
 	}
-
-	// /**
-	// * Get the list of managed user groups
-	// *
-	// * @return
-	// * @throws JSONException
-	// * @throws IOException
-	// */
-	// public static JSONObject getRole(RequestContext context, String roleId)
-	// throws JSONException, IOException {
-	// JSONObject ret = new JSONObject();
-	// JSONArray members = new JSONArray();
-	//
-	// if (ROLE_SSA_ID.equalsIgnoreCase(roleId)) {
-	// ret.put(PROP_ABBREVIATION, ROLE_SSA_ID);
-	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSA_ID);
-	// ret.put(PROP_TITLE, ROLE_SSA_TITLE);
-	// }
-	//
-	// else if (ROLE_PM_ID.equalsIgnoreCase(roleId)) {
-	// ret.put(PROP_ABBREVIATION, ROLE_PM_ID);
-	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_PM_ID);
-	// ret.put(PROP_TITLE, ROLE_PM_TITLE);
-	// }
-	//
-	// else if (ROLE_BA_ID.equalsIgnoreCase(roleId)) {
-	// ret.put(PROP_ABBREVIATION, ROLE_BA_ID);
-	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_BA_ID);
-	// ret.put(PROP_TITLE, ROLE_BA_TITLE);
-	// }
-	//
-	// else if (ROLE_SSE_ID.equalsIgnoreCase(roleId)) {
-	// ret.put(PROP_ABBREVIATION, ROLE_SSE_ID);
-	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SSE_ID);
-	// ret.put(PROP_TITLE, ROLE_SSE_TITLE);
-	// }
-	//
-	// else if (ROLE_SE_ID.equalsIgnoreCase(roleId)) {
-	// ret.put(PROP_ABBREVIATION, ROLE_SE_ID);
-	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SE_ID);
-	// ret.put(PROP_TITLE, ROLE_SE_TITLE);
-	// }
-	//
-	// else if (ROLE_SUXD_ID.equalsIgnoreCase(roleId)) {
-	// ret.put(PROP_ABBREVIATION, ROLE_SUXD_ID);
-	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_SUXD_ID);
-	// ret.put(PROP_TITLE, ROLE_SUXD_TITLE);
-	// }
-	//
-	// else if (ROLE_UXD_ID.equalsIgnoreCase(roleId)) {
-	// ret.put(PROP_ABBREVIATION, ROLE_UXD_ID);
-	// ret.put(PROP_ABOUT, RESOURCE_ROLES + "/" + ROLE_UXD_ID);
-	// ret.put(PROP_TITLE, ROLE_UXD_TITLE);
-	// }
-	//
-	// ret.put(PROP_MEMBERS, members);
-	// ret.put(PROP_COUNT, members.length());
-	//
-	// return ret;
-	// }
 
 	/**
 	 * Get a role by id
@@ -1299,12 +1181,12 @@ public class Data implements CONSTS {
 	 */
 	public static JSONObject updatePerson(RequestContext context,
 			JSONObject newPerson) throws JSONException {
+		//You must provide a primary key to update a user
 		if (!newPerson.has(PROP__ID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
 					.entity("Person does not conatin an id property").build();
 			throw new WebApplicationException(response);
 		}
-
 		JSONObject _id = newPerson.getJSONObject(PROP__ID);
 		if (!_id.has(PROP_$OID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
@@ -1313,6 +1195,8 @@ public class Data implements CONSTS {
 		}
 
 		String id = _id.getString(PROP_$OID);
+		
+		//You can only update existing users
 		JSONObject existing = getPerson(context, id);
 		if (existing == null) {
 			Response response = Response.status(Status.BAD_REQUEST)
@@ -1320,21 +1204,25 @@ public class Data implements CONSTS {
 			throw new WebApplicationException(response);
 		}
 
+		//You must provide the etag for collision control
 		if (!newPerson.has(PROP_ETAG)) {
 			Response response = Response.status(Status.BAD_REQUEST)
 					.entity("Person does not conatin an etag property").build();
 			throw new WebApplicationException(response);
 		}
-
 		String etag = newPerson.getString(PROP_ETAG);
 		String old_etag = existing.getString(PROP_ETAG);
-
 		if (!etag.equals(old_etag)) {
 			String message = "Person etag (" + etag
 					+ ") does not match the saved etag (" + old_etag + ")";
 			Response response = Response.status(Status.CONFLICT)
 					.entity(message).build();
 			throw new WebApplicationException(response);
+		}
+		
+		//Only admins can update a users groups
+		if(!hasAdminAccess(context)){
+			newPerson.put(PROP_GROUPS, existing.get(PROP_GROUPS));
 		}
 
 		int newEtag = Integer.parseInt(old_etag);

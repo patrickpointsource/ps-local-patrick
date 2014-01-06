@@ -199,7 +199,7 @@ angular.module('Mastermind.controllers.people')
 	   * Save the user profile changes
 	   */
 	  $scope.save = function(){
-		  var profile = $scope.profile;
+		  var profile = $scope.profile;	  
 		  Resources.update(profile).then(function(person){
 			  $scope.setProfile(person);
 			  $scope.editMode = false;
