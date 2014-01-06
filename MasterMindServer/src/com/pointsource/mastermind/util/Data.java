@@ -297,7 +297,18 @@ public class Data implements CONSTS {
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_ROLES);
 		BasicDBObject query = new BasicDBObject();
 		query.put(PROP__ID, new ObjectId(id));
-		DBObject dbObj = projectsCol.findOne(query);
+		BasicDBObject fields = new BasicDBObject();
+
+		// If not managemnet remove the financial fields
+		if (!hasFinancialAccess(context)) {
+			fields.put(PROP_HOURLY_ADVERTISED_RATE, 0);
+			fields.put(PROP_HOURLY_LOADED_RATE, 0);
+			fields.put(PROP_MONTHLY_ADVERTISED_RATE, 0);
+			fields.put(PROP_MONTHLY_LOADED_RATE, 0);
+		}
+		
+		
+		DBObject dbObj = projectsCol.findOne(query, fields);
 
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
@@ -366,6 +377,12 @@ public class Data implements CONSTS {
 		if (fields != null) {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
+		
+		//Filter Rate information
+		fieldsObject = filterManagmentProperty(PROP_HOURLY_ADVERTISED_RATE, context, fieldsObject);
+		fieldsObject = filterManagmentProperty(PROP_HOURLY_LOADED_RATE, context, fieldsObject);
+		fieldsObject = filterManagmentProperty(PROP_MONTHLY_ADVERTISED_RATE, context, fieldsObject);
+		fieldsObject = filterManagmentProperty(PROP_MONTHLY_LOADED_RATE, context, fieldsObject);
 
 		DBCursor cursur = rolesCol.find(queryObject, fieldsObject);
 
@@ -565,46 +582,7 @@ public class Data implements CONSTS {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
 
-		// If not managemnet remove the financial fields
-		if (!hasFinancialAccess(context)) {
-			// Fields is null create one to filter out terms
-			if (fieldsObject == null) {
-				fieldsObject = new BasicDBObject(PROP_TERMS, 0);
-			}
-			// Do we have a fields object and does it contain the key 'terms'
-			if (fieldsObject.containsField(PROP_TERMS)) {
-				int num = (Integer) fieldsObject.get(PROP_TERMS);
-				Set<String> keys = fieldsObject.keySet();
-
-				// We have multiple requested fields terms is just one so remove
-				// it from the list
-				if (num != 0 && keys.size() > 1) {
-					fieldsObject.removeField(PROP_TERMS);
-				}
-				// Terms was the only requested field flip it to a not
-				else {
-					fieldsObject.put(PROP_TERMS, 0);
-				}
-			}
-			// Fields set does not include terms
-			else {
-				@SuppressWarnings("unchecked")
-				Map<String, Integer> fieldsMap = fieldsObject.toMap();
-				// Empty object add filter for terms
-				if (fieldsMap.size() == 0) {
-					fieldsObject.put(PROP_TERMS, 0);
-				} else {
-					int firstFieldNum = fieldsMap.values().iterator().next();
-					// Exclusive filter add terms to excludes
-					if (firstFieldNum == 0) {
-						fieldsObject.put(PROP_TERMS, 0);
-					}
-
-					// Otherwise we are fine because it is not included in the
-					// inclusive filters
-				}
-			}
-		}
+		fieldsObject = filterManagmentProperty(PROP_TERMS, context, fieldsObject);
 
 		DBCursor cursur = projectsCol.find(queryObject, fieldsObject);
 
@@ -625,6 +603,51 @@ public class Data implements CONSTS {
 		}
 
 		return ret;
+	}
+
+	private static DBObject filterManagmentProperty(String property,
+			RequestContext context, DBObject fieldsObject) throws JSONException {
+		// If not managemnet remove the financial fields
+		if (!hasFinancialAccess(context)) {
+			// Fields is null create one to filter out terms
+			if (fieldsObject == null) {
+				fieldsObject = new BasicDBObject(property, 0);
+			}
+			// Do we have a fields object and does it contain the key 'terms'
+			if (fieldsObject.containsField(property)) {
+				int num = (Integer) fieldsObject.get(property);
+				Set<String> keys = fieldsObject.keySet();
+
+				// We have multiple requested fields terms is just one so remove
+				// it from the list
+				if (num != 0 && keys.size() > 1) {
+					fieldsObject.removeField(property);
+				}
+				// Terms was the only requested field flip it to a not
+				else {
+					fieldsObject.put(property, 0);
+				}
+			}
+			// Fields set does not include terms
+			else {
+				@SuppressWarnings("unchecked")
+				Map<String, Integer> fieldsMap = fieldsObject.toMap();
+				// Empty object add filter for terms
+				if (fieldsMap.size() == 0) {
+					fieldsObject.put(property, 0);
+				} else {
+					int firstFieldNum = fieldsMap.values().iterator().next();
+					// Exclusive filter add terms to excludes
+					if (firstFieldNum == 0) {
+						fieldsObject.put(property, 0);
+					}
+
+					// Otherwise we are fine because it is not included in the
+					// inclusive filters
+				}
+			}
+		}
+		return fieldsObject;
 	}
 
 	private static boolean hasFinancialAccess(RequestContext context)
