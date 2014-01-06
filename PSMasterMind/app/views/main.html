@@ -10,13 +10,13 @@
 						<div class="visible-xs visible-sm"><i class="fa fa-plus-square"></i></div>
 					</button>
 				</div>
-				
+
 			</div>
 			<div class="dashboard-box big-text" ng-click="showActiveProjects()">
 				{{projectCount}}
 			</div>
 		</div>
-		
+
 		<div class="col-xs-6 col-md-5 col-lg-4 dashboard-widget">
 			<div class="row dashboard-label">
 				<div class="col-md-9 hidden-xs" ng-click="showAvailablePeople()">Available People</div>
@@ -40,7 +40,7 @@
 		<div class="row dashboard-label">
 			<div class="col-sm-9 hidden-xs">Quick View</div>
 			<div class="col-sm-3 col-sm-12">
-				<select class="pull-right" ng-model="summarySwitcher">
+				<select class="form-control pull-right" ng-model="summarySwitcher">
 					<option value="projects">Projects View</option>
 					<option value="people">People View</option>
 				</select>
@@ -90,7 +90,7 @@
 		            	<img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/>
 		            </div>
 		            <div class="col-xs-11">
-		            	<div class="row" ng-repeat="project in qvPeopleProjects[person.about]">
+		            	<div class="row" ng-repeat="project in qvPeopleProjects[person.about] track by $index">
 		            		<div style="float:left position:absolute"><a href="#{{project.resource}}">{{project.name}}</a></div>
 			              	<div class="col-xs-2" ng-class="{active: inMonth(project, 11, 2013)}"></div>
 			                <div class="col-xs-2" ng-class="{active: inMonth(project, 0, 2014)}"></div>
