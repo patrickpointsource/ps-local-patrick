@@ -7,16 +7,6 @@ angular.module('Mastermind.controllers.people')
   .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'ngTableParams',
     function ($scope, $state, $stateParams, $filter, Resources, People, TableParams) {
 
-	  //Load my profile for group and role checking
-      Resources.refresh('people/me').then(function(me){
-    	 $scope.me = me;
-
-//    	 //If you are a member of the management or exec groups provide access to financial info
-//    	 if(me.groups && ((me.groups.indexOf('Management') != -1) || (me.groups.indexOf('Executives') != -1))){
-//    		 $scope.financeAccess=true;
-//    	 }
-
-      });
 
 	  /**
 	   * Load Role definitions to display names

@@ -18,10 +18,10 @@ import com.pointsource.mastermind.util.RequestContext;
 import com.pointsource.mastermind.util.ValidationException;
 
 public abstract class BaseResource {
-	@Context private UriInfo uriInfo;
-	@Context private ServletContext servletContext;
-	@Context private HttpHeaders headers;
-	@Context private HttpServletRequest request;
+	@Context protected UriInfo uriInfo;
+	@Context protected ServletContext servletContext;
+	@Context protected HttpHeaders headers;
+	@Context protected HttpServletRequest request;
 	
 	/**
 	 * All relevant info about the request

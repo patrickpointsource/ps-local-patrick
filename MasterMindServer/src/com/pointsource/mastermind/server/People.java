@@ -111,7 +111,7 @@ public class People extends BaseResource {
 				if (ret == null) {
 					throw new WebApplicationException(Status.NOT_FOUND);
 				}
-
+				
 				URI baseURI = context.getBaseURI();
 				ret.put(CONSTS.PROP_BASE, baseURI);
 
@@ -141,9 +141,22 @@ public class People extends BaseResource {
 			try {
 				RequestContext context = getRequestContext();
 				JSONObject me = context.getCurrentUser();
-			
+				
+				//Get the latest
+				JSONObject _id = me.getJSONObject(CONSTS.PROP__ID);
+				String query = "{"+CONSTS.PROP__ID+":"+_id+"}";
+				
+				me = Data.getPerson(context, query, null);
+
+				if (me == null) {
+					throw new WebApplicationException(Status.NOT_FOUND);
+				}
+
 				URI baseURI = context.getBaseURI();
 				me.put(CONSTS.PROP_BASE, baseURI);
+				
+				//Set the session context
+				request.getSession().setAttribute(CONSTS.SESSION_USER_KEY, me);
 				
 				return Response.ok(me).build();
 			} catch (WebApplicationException e) {

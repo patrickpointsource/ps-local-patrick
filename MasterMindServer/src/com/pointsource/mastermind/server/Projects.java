@@ -92,6 +92,7 @@ public class Projects extends BaseResource {
 					throw new WebApplicationException(Status.NOT_FOUND);
 				}
 
+				
 				URI baseURI = context.getBaseURI();
 				ret.put(CONSTS.PROP_BASE, baseURI);
 
