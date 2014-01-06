@@ -24,30 +24,30 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 	
 	  
 	  
-	/**
-	 * Fetch the list of skills
-	 */
-	Resources.refresh('skills').then(function(result){
-		$scope.skills = result.members;
-		$scope.skillsTableParams = new TableParams(params, {
-          total: $scope.skills.length, // length of data
-          getData: function ($defer, params) {
-            var data = $scope.skills;
-
-            var start = (params.page() - 1) * params.count();
-            var end = params.page() * params.count();
-
-            // use build-in angular filter
-            var orderedData = params.sorting() ?
-              $filter('orderBy')(data, params.orderBy()) :
-              data;
-
-            var ret = orderedData.slice(start, end);
-            $defer.resolve(ret);
-
-          }
-        });
-	});
+//	/**
+//	 * Fetch the list of skills
+//	 */
+//	Resources.refresh('skills').then(function(result){
+//		$scope.skills = result.members;
+//		$scope.skillsTableParams = new TableParams(params, {
+//          total: $scope.skills.length, // length of data
+//          getData: function ($defer, params) {
+//            var data = $scope.skills;
+//
+//            var start = (params.page() - 1) * params.count();
+//            var end = params.page() * params.count();
+//
+//            // use build-in angular filter
+//            var orderedData = params.sorting() ?
+//              $filter('orderBy')(data, params.orderBy()) :
+//              data;
+//
+//            var ret = orderedData.slice(start, end);
+//            $defer.resolve(ret);
+//
+//          }
+//        });
+//	});
 	
 	/**
 	 * Fetch the list of roles
@@ -74,27 +74,27 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
         });
 	});
 	
-	$scope.newSkill = {};
+	//$scope.newSkill = {};
 	$scope.newRole = {};
 	
-	/**
-	 * Add a new Skill to the server
-	 */
-	 $scope.addSkill = function(){
-		 Resources.create('skills', $scope.newSkill).then(function(){
-			 Resources.refresh('skills').then(function(result){
-				 $scope.skills = result.members;
-				 $scope.skillsTableParams.total($scope.skills.length);
-				 $scope.skillsTableParams.reload();
-				 
-				//Reset New Skill Object
-				 $scope.newSkill = {};
-				 
-				 //Clear New Skill Form
-				 $scope.newSkillForm.$setPristine();
-			 });
-		 });
-	 }
+//	/**
+//	 * Add a new Skill to the server
+//	 */
+//	 $scope.addSkill = function(){
+//		 Resources.create('skills', $scope.newSkill).then(function(){
+//			 Resources.refresh('skills').then(function(result){
+//				 $scope.skills = result.members;
+//				 $scope.skillsTableParams.total($scope.skills.length);
+//				 $scope.skillsTableParams.reload();
+//				 
+//				//Reset New Skill Object
+//				 $scope.newSkill = {};
+//				 
+//				 //Clear New Skill Form
+//				 $scope.newSkillForm.$setPristine();
+//			 });
+//		 });
+//	 }
 	 
 	 $scope.cancelRole = function () {
 	    $('#newRoleDialog').collapse('hide');
@@ -145,18 +145,18 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 		 });
 	 }
 	 
-	 /**
-	  * Delete a skill 
-	  */
-	 $scope.deleteSkill = function (skillURL) {
-        Resources.remove(skillURL).then(function(){
-			 Resources.refresh('skills').then(function(result){
-				 $scope.skills = result.members;
-				 $scope.skillsTableParams.total($scope.skills.length);
-				 $scope.skillsTableParams.reload();
-			 });
-		 });
-      };
+//	 /**
+//	  * Delete a skill 
+//	  */
+//	 $scope.deleteSkill = function (skillURL) {
+//        Resources.remove(skillURL).then(function(){
+//			 Resources.refresh('skills').then(function(result){
+//				 $scope.skills = result.members;
+//				 $scope.skillsTableParams.total($scope.skills.length);
+//				 $scope.skillsTableParams.reload();
+//			 });
+//		 });
+//      };
       
       /**
  	  * Delete a role 

@@ -119,7 +119,7 @@ public interface CONSTS {
 	/**
 	 * Rest Summary Constants
 	 */
-	public String WORKSPACE_TITLE = "PointSource Master Mind";
+	public String WORKSPACE_TITLE = "PointSource MasterMind";
 	public String RESOURCE_TITLE_PEOPLE = "People";
 	public String RESOURCE_TITLE_PROJECTS = "Projects";
 	public String RESOURCE_TITLE_ROLES = "Roles";
@@ -146,7 +146,7 @@ public interface CONSTS {
 	 */
 	public String CLIENT_ID = "141952851027.apps.googleusercontent.com";
 	public String CLIENT_SECRET = "Jiy0OMx_vOzHK1mXSIGSoog1";
-	public String APPLICATION_NAME = "PS Master Mind";
+	public String APPLICATION_NAME = "PS MasterMind";
 	public String COOKIE_NAME_ACCESS_TOKEN = "access_token";
 	public String SESSION_USER_KEY = "current_user";
 	public String HEADER_AUTHORIZATION = "Authorization";
