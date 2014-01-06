@@ -13,7 +13,7 @@
 	        </div>
         </div>
     </div>
-    
+
     <div class="row">
 		<div class="col-xs-12"><h4>Project Duration & Schedule</h4></div>
 	</div>
@@ -47,17 +47,37 @@
     <div class="row">
         <div class="col-xs-12">
         <table ng-table="summaryRolesTableParams" class="table peopleList" template-pagination="custom/pager">
+            <thead>
+                <tr>
+                    <th>Person Assigned</th>
+                    <th class="hidden-xs">Role</th>
+                    <th>Hours</th>
+                    <th class="hidden-xs">Start Date</th>
+                    <th class="hidden-xs">End Date</th>
+                    <th class="visible-xs">Dates</th>
+                    <th></th>
+                </tr>
+            </thead>
             <tr ng-repeat="role in $data">
-              	<td data-title="'Person Assigned'">
+              	<td>
                   <img ng-show="role.assignee" class="profileImage" ng-src="{{role.assignee.thumbnail}}"/>
                   <i class="fa fa-ban" ng-show="!role.assignee"></i>
                   <span >{{role.assignee.name || 'Unassigned'}}</span>
+                  <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>
                 </td>
-                <td data-title="'Role'" sortable="type.id">{{role.type.abbreviation}}</td>
-                <td data-title="'100%'"><i class="fa fa-check" ng-show="role.rate.isFullyUtilized()"></i></td>
-                <td data-title="'H/M'">{{role.rate.hoursPerMonth()}}</td>
-                <td data-title="'Start Date'" sortable="startDate">{{role.startDate | date:'longDate'}}</td>
-                <td data-title="'End Date'" sortable="endDate">{{role.endDate | date:'longDate'}}</td>
+                <td class="hidden-xs">{{role.type.abbreviation}}</td>
+                <td class="visible-xs">
+                    <span ng-show="role.rate.isFullyUtilized()">100%</span>
+                    <span ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}}/M</span>
+                </td>
+                <td class="hidden-xs">{{role.rate.hoursPerMonth()}}</td>
+                <td class="hidden-xs">{{role.startDate | date:'longDate'}}</td>
+                <td class="hidden-xs">{{role.endDate | date:'longDate'}}</td>
+                <td class="visible-xs">
+                    <small>{{role.startDate | date:'shortDate'}}</small>
+                    <span ng-show="role.endDate">-<br><small>{{role.endDate | date:'shortDate'}}</small></span>
+                    <span ng-hide="role.endDate">- <small>N/A</small></span>
+                </td>
             </tr>
         </table>
         <script type="text/ng-template" id="custom/pager">

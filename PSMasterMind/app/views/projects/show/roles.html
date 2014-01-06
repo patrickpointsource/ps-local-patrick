@@ -161,7 +161,7 @@
         </div>
     </section>
 
-    
+
 	<!-- button ng-click="roleTableParams.reload()" class="btn btn-default">Reload</button-->
     <div class="row">
         <div class="col-xs-12">
@@ -171,8 +171,8 @@
                   <th>Person Assigned</th>
                   <th class="hidden-xs">Role</th>
                   <th>Hours</th>
-                  <th class="hidden-xs">Start <span class="hidden-xs">Date</span></th>
-                  <th class="hidden-xs">End <span class="hidden-xs">Date</span></th>
+                  <th class="hidden-xs">Start Date</th>
+                  <th class="hidden-xs">End Date</th>
                   <th class="visible-xs">Dates</th>
                   <th></th>
                 </tr>
@@ -198,8 +198,8 @@
                     <td class="hidden-xs">{{role.startDate | date:'longDate'}}</td>
                     <td class="hidden-xs">{{role.endDate | date:'longDate'}}</td>
                     <td class="visible-xs">
-                      {{role.startDate | date:'shortDate'}}
-                      <span ng-show="role.endDate">-<br>{{role.endDate | date:'shortDate'}}</span>
+                      <small>{{role.startDate | date:'shortDate'}}</small>
+                      <span ng-show="role.endDate">-<br><small>{{role.endDate | date:'shortDate'}}</small></span>
                       <span ng-hide="role.endDate">- N/A</span>
                     </td>
                     <td class="actionsCell">
