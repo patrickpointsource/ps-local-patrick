@@ -34,14 +34,14 @@
         </div>
     </div>
     <div ng-show="qvPeople">
-      <div class="row peopleList" ng-repeat="person in qvPeople"
+      <div class="row peopleList" ng-repeat="person in qvPeople | filter:filterText"
           ng-hide="(peopleFilter.indexOf('role') !== -1 && peopleFilter !== person.primaryRole.resource)">
           <div class="col-xs-1">
               <div style="float:left position:absolute"><a href="#{{person.about}}">{{person.givenName}}</a></div>
               <img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/>
           </div>
           <div class="col-xs-11">
-              <div class="row" ng-repeat="project in qvPeopleProjects[person.about]">
+              <div class="row" ng-repeat="project in qvPeopleProjects[person.about] track by $index">
                   <div style="float:left position:absolute"><a href="#{{project.resource}}">{{project.name}}</a></div>
                   <div class="col-xs-2" ng-class="{active: inMonth(project, 0, 2014)}"></div>
                   <div class="col-xs-2" ng-class="{active: inMonth(project, 1, 2014)}"></div>
