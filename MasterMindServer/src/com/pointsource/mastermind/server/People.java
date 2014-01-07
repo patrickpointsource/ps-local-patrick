@@ -15,14 +15,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.wink.client.ClientResponse;
+import org.apache.wink.client.Resource;
+import org.apache.wink.client.RestClient;
 import org.apache.wink.common.annotations.Workspace;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.googlecode.googleplus.GooglePlusFactory;
-import com.googlecode.googleplus.Plus;
-import com.googlecode.googleplus.model.person.Person;
 import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
 import com.pointsource.mastermind.util.RequestContext;
@@ -110,14 +110,40 @@ public class People extends BaseResource {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-				GooglePlusFactory factory = new GooglePlusFactory(CONSTS.CLIENT_ID, CONSTS.CLIENT_SECRET);
-				 // the refreshListener is notified in case a new access token is obtained after the old one expires
-				Plus plus = factory.getApi(context.getAuthorization());
-				Person person = plus.getPeopleOperations().get(id);
 				
-				String ret = person.toString();
+				JSONObject person = Data.getPerson(context, id);
+
+				if (person == null) {
+					throw new WebApplicationException(Status.NOT_FOUND);
+				}
 				
-				return Response.ok(ret).build();
+				String googleId = person.getString(CONSTS.PROP_GOOGLE_ID);
+				
+				String auth = context.getAuthorization();
+				
+				URI googleProfileURL = new URI(CONSTS.GOOGLE_PLUS_PEOPLE_URI
+						+ googleId);
+				RestClient client = new RestClient();
+				Resource resource = client.resource(googleProfileURL);
+				ClientResponse response = resource
+						.header(CONSTS.HEADER_AUTHORIZATION, auth)
+						.accept(MediaType.APPLICATION_JSON).get();
+
+				if (response.getStatusCode() != Status.OK.getStatusCode()) {
+					//Error authenticating with Google...
+					String err = response.getEntity(String.class);
+					System.err.println(response.getStatusCode() + ": "+err);
+					
+					throw new WebApplicationException(
+							Response.status(response.getStatusCode())
+									.entity(err)
+									.build());
+				}
+
+				String str = response.getEntity(String.class);
+				//JSONObject ret = new JSONObject(str);
+				
+				return Response.ok(str).build();
 			} catch (WebApplicationException e) {
 				return handleWebApplicationException(e);
 			} catch (Exception e) {
