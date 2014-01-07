@@ -120,7 +120,7 @@ angular.module('Mastermind').factory(
 			function fetch(resource){
 				var route = '';
 				var id = resource;
-				var lastIndex = resource.indexOf('/');
+				var lastIndex = resource.lastIndexOf('/');
 				if(lastIndex != -1){
 					route = resource.substr(0, lastIndex);
 					id = resource.substr(lastIndex + 1);

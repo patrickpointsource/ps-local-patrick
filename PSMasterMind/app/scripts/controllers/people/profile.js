@@ -29,6 +29,8 @@ angular.module('Mastermind.controllers.people')
         return ret;
       }
     });
+    
+    
 
 
 //	  /**
@@ -140,6 +142,12 @@ angular.module('Mastermind.controllers.people')
 		  $scope.isExec = groups && $.inArray('Executives', groups) != -1;
 		  $scope.isManagement = groups && $.inArray('Management', groups) != -1;
 		  $scope.isSales = groups && $.inArray('Sales', groups) != -1;
+		  
+		  var url = person.about + '/' + 'gplus';
+		  
+		  Resources.get(url).then(function(result){
+			 $scope.gplusProfile = result;
+		  });
 	  };
 
 	  /**

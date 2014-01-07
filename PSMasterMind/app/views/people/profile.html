@@ -1,49 +1,80 @@
 <div>
 	<div class="row">
-		<div class="col-xs-6"><h3>{{profile.name}}</h3></div>
-		<div class="col-xs-6 pageActions">
-			<button ng-hide="editMode" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
-       		<button ng-show="editMode" class="btn" ng-click="cancel()"><i class="fa fa-chevron-left"></i> <span>Cancel</span></button>
-       		<button ng-show="editMode" class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
-       	</div>
+		<div class="col-xs-8">
+			<h3>{{profile.name}}</h3>
+		</div>
+		<div class="col-xs-4 pageActions">
+			<button ng-hide="editMode" class="btn" ng-click="edit()">
+				<i class="fa fa-pencil-square-o"></i> <span>Edit</span>
+			</button>
+			<button ng-show="editMode" class="btn" ng-click="cancel()">
+				<i class="fa fa-chevron-left"></i> <span>Cancel</span>
+			</button>
+			<button ng-show="editMode" class="btn" ng-click="save()">
+				<i class="fa fa-floppy-o"></i> <span>Save</span>
+			</button>
+		</div>
 	</div>
-    <div class="row">
-		<div class="col-xs-12">
-            <div class="well well-sm">
-                <div class="media">
-                    <div class="pull-left">
-                        <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}"/>
-                    </div>
-                    <div class="media-body fluid-row">
-                		<span><a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br/></span>
-                		<div ng-show="editMode">
-	                		<label class="personDetailLabel">Primary Role:</label>
-		                    <select ng-model="profile.primaryRole.resource"
-		                            ng-options="m.resource as m.title for m in allRoles">
-		                    </select>
-	                    </div>
-	                    <div ng-hide="editMode">
-	                    	<label class="personDetailLabel">Primary Role:</label>
-	                		<span>{{getRoleName(profile.primaryRole.resource)}}</span>
-	                    </div>
-	                    <div ng-hide="editMode || !profile.groups">
-	                    	<label class="personDetailLabel">Groups:</label>
-	                    	<ul class="personDetailList">
-							    <li ng-repeat="group in profile.groups">{{group}}</li>
-							</ul>
-	                    </div>
-	                    <div ng-if="adminAccess" ng-show="editMode">
-	                    	<label class="personDetailLabel">Groups:</label>
-	                    	<ul class="personDetailList">
-							    <li><input type="checkbox" ng-model="isExec" ng-click="handleGroupChange($event, 'Executives')"/><span class="checkboxText">Executives</span></li>
-							    <li><input type="checkbox" ng-model="isManagement" ng-click="handleGroupChange($event, 'Management')"/><span class="checkboxText">Management</span></li>
-							    <li><input type="checkbox" ng-model="isSales" ng-click="handleGroupChange($event, 'Sales')"/><span class="checkboxText">Sales</span></li>
-							</ul>
-	                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+	<div class="row well">
+		<div class="col-xs-12 col-sm-6">
+			<div class="row">
+			  <div class="col-xs-12">
+				<div ng-hide="gplusProfile" class="pull-left">
+					<img class="media-object fullProfileImage"
+						ng-src="{{profile.thumbnail}}" />
+				</div>
+				<div class="pull-left" ng-show="gplusProfile">
+					<!-- Place this tag in your head or just before your close body tag. -->
+					<script type="text/javascript" src="https://apis.google.com/js/platform.js">
+					  {parsetags: 'explicit'}
+					</script>
+					
+					<!-- Place this tag where you want the widget to render. -->
+					<div class="g-person" data-width="320" data-href="//plus.google.com/{{profile.googleId}}" data-theme="light" data-rel="author"></div>
+				</div>
+			</div>
+			<div class="col-xs-12 media-body">
+				<span><a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
+				<div ng-show="editMode">
+					<label class="personDetailLabel">Primary Role:</label> <select
+						ng-model="profile.primaryRole.resource"
+						ng-options="m.resource as m.title for m in allRoles">
+					</select>
+				</div>
+				<div ng-hide="editMode">
+					<label class="personDetailLabel">Primary Role:</label> <span>{{getRoleName(profile.primaryRole.resource)}}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-6">
+			<div ng-hide="editMode">
+					<label class="personDetailLabel">Groups:</label>
+					<span ng-show="!profile.groups"">None</span>
+					<ul class="personDetailList">
+						
+						<li ng-repeat="group in profile.groups">{{group}}</li>
+					</ul>
+				</div>
+				<div ng-if="adminAccess" ng-show="editMode">
+					<label class="personDetailLabel">Groups:</label>
+					<ul class="personDetailList">
+						<li><input type="checkbox" ng-model="isExec"
+							ng-click="handleGroupChange($event, 'Executives')" /><span
+							class="checkboxText">Executives</span></li>
+						<li><input type="checkbox" ng-model="isManagement"
+							ng-click="handleGroupChange($event, 'Management')" /><span
+							class="checkboxText">Management</span></li>
+						<li><input type="checkbox" ng-model="isSales"
+							ng-click="handleGroupChange($event, 'Sales')" /><span
+							class="checkboxText">Sales</span></li>
+					</ul>
+		     </div>
+			<label class="personDetailLabel">Accounts:</label>
+			<span ng-show="!gplusProfile.url"">None</span>
+			<ul class="personDetailList">
+				<li ng-show="gplusProfile.url"><a href="{{gplusProfile.url}}">Google+</a></li>			
+			</ul>
 	</div>
 </div>
 
@@ -53,20 +84,21 @@
 		<div class="col-xs-12">
 			<table ng-table="tableParams" template-pagination="project/pager"
 				class="table">
-				<tr ng-repeat="project in $data" ng-show="isCurrentProject(project.endDate)">
-					<td data-title="'Project'">
-            <a href="#{{project.resource}}">{{project.name}}</a>
-          </td>
-          <td data-title="'Role'">
-            <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
-              {{getRoleName(role.type.resource)}}
-            </div>
-          </td>
-          <td data-title="'Hours'">
-            <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
-              {{role.rate.hours}} <span class="small">({{role.rate.type}})</span>
-            </div>
-          </td>
+				<tr ng-repeat="project in $data"
+					ng-show="isCurrentProject(project.endDate)">
+					<td data-title="'Project'"><a href="#{{project.resource}}">{{project.name}}</a>
+					</td>
+					<td data-title="'Role'">
+						<div ng-repeat="role in project.roles"
+							ng-show="profile.about == role.assignee.resource">
+							{{getRoleName(role.type.resource)}}</div>
+					</td>
+					<td data-title="'Hours'">
+						<div ng-repeat="role in project.roles"
+							ng-show="profile.about == role.assignee.resource">
+							{{role.rate.hours}} <span class="small">({{role.rate.type}})</span>
+						</div>
+					</td>
 				</tr>
 			</table>
 			<script type="text/ng-template" id="project/pager">
