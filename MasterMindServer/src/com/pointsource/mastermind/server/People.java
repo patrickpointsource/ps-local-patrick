@@ -20,6 +20,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.googlecode.googleplus.GooglePlusFactory;
+import com.googlecode.googleplus.Plus;
+import com.googlecode.googleplus.model.person.Person;
 import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
 import com.pointsource.mastermind.util.RequestContext;
@@ -93,6 +96,38 @@ public class People extends BaseResource {
 		}
 	}
 	
+
+	/**
+	 * GET people/:id/gplus
+	 * 
+	 * @param id
+	 * @return A people by id
+	 */
+	@GET
+	@Path("{id}/"+CONSTS.RESOURCE_GPLUS)
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getGooglePlusProfile(@PathParam("id") String id) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				GooglePlusFactory factory = new GooglePlusFactory(CONSTS.CLIENT_ID, CONSTS.CLIENT_SECRET);
+				 // the refreshListener is notified in case a new access token is obtained after the old one expires
+				Plus plus = factory.getApi(context.getAuthorization());
+				Person person = plus.getPeopleOperations().get(id);
+				
+				String ret = person.toString();
+				
+				return Response.ok(ret).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}	
+		
 	/**
 	 * GET people/:id
 	 * 

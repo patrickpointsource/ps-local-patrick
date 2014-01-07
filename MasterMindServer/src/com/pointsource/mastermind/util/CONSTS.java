@@ -7,6 +7,7 @@ public interface CONSTS {
 	 */
 	public String RESOURCE_ME = "me";
 	public String RESOURCE_NEW = "new";
+	public String RESOURCE_GPLUS = "gplus";
 	public String RESOURCE_GROUPS = "groups";
 	public String RESOURCE_PEOPLE = "people";
 	public String RESOURCE_PROJECTS = "projects";
