@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'ngTableParams',
-    function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, TableParams) {
+  .controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'ngTableParams', 'editMode',
+    function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, TableParams, editMode) {
       var detailsValid = false, rolesValid = false;
       
 	  //Set our currently viewed project to the one resolved by the service.
@@ -16,7 +16,7 @@ angular.module('Mastermind')
 	   * Set the profile view in edit mode
 	   */
 	  $scope.edit = function(){
-		  $state.go('projects.show', {projectId:$scope.projectId, edit:true});
+		  $state.go('projects.edit', {projectId:$scope.projectId});
 	  };
 	  
 	  /**
@@ -161,7 +161,7 @@ angular.module('Mastermind')
     	  /**
     	   * Controls the edit state of the project form (an edit URL param can control this from a URL ref)
     	   */
-    	  $scope.editMode = $state.params.edit?Boolean($state.params.edit):Boolean($scope.isTransient);
+    	  $scope.editMode = editMode;
     	  $scope.projectLoaded = true;
 
           $scope.submitAttempted = false;

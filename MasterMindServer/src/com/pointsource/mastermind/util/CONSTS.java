@@ -9,6 +9,7 @@ public interface CONSTS {
 	public String RESOURCE_NEW = "new";
 	public String RESOURCE_GPLUS = "gplus";
 	public String RESOURCE_GROUPS = "groups";
+	public String RESOURCE_LINKS = "links";
 	public String RESOURCE_PEOPLE = "people";
 	public String RESOURCE_PROJECTS = "projects";
 	public String RESOURCE_ROLES = "roles";
@@ -57,6 +58,7 @@ public interface CONSTS {
 	public String PROP_PEOPLE = "people";
 	public String PROP_PRIMARY_EMAIL = "primaryEmail";
 	public String PROP_PRIMARY_ROLE = "primaryRole";
+	public String PROP_PROJECT = "project";
 	public String PROP_RATE = "rate";
 	public String PROP_REASONS = "reasons";
 	public String PROP_RESOURCE = "resource";
@@ -138,6 +140,7 @@ public interface CONSTS {
 	public String DB_NAME_DEFAULT  = "mm_db_stage";
 	//public String DB_NAME_DEFAULT  = "mm_db_prod";
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
+	public String COLLECTION_TITLE_LINKS = "Links";
 	public String COLLECTION_TITLE_PEOPLE = "People";
 	public String COLLECTION_TITLE_SKILLS = "Skills";
 	public String COLLECTION_TITLE_ROLES = "Roles";

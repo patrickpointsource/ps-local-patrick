@@ -188,8 +188,7 @@ public class Data implements CONSTS {
 			fields.put(PROP_MONTHLY_ADVERTISED_RATE, 0);
 			fields.put(PROP_MONTHLY_LOADED_RATE, 0);
 		}
-		
-		
+
 		DBObject dbObj = projectsCol.findOne(query, fields);
 
 		if (dbObj != null) {
@@ -259,12 +258,16 @@ public class Data implements CONSTS {
 		if (fields != null) {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
-		
-		//Filter Rate information
-		fieldsObject = filterManagmentProperty(PROP_HOURLY_ADVERTISED_RATE, context, fieldsObject);
-		fieldsObject = filterManagmentProperty(PROP_HOURLY_LOADED_RATE, context, fieldsObject);
-		fieldsObject = filterManagmentProperty(PROP_MONTHLY_ADVERTISED_RATE, context, fieldsObject);
-		fieldsObject = filterManagmentProperty(PROP_MONTHLY_LOADED_RATE, context, fieldsObject);
+
+		// Filter Rate information
+		fieldsObject = filterManagmentProperty(PROP_HOURLY_ADVERTISED_RATE,
+				context, fieldsObject);
+		fieldsObject = filterManagmentProperty(PROP_HOURLY_LOADED_RATE,
+				context, fieldsObject);
+		fieldsObject = filterManagmentProperty(PROP_MONTHLY_ADVERTISED_RATE,
+				context, fieldsObject);
+		fieldsObject = filterManagmentProperty(PROP_MONTHLY_LOADED_RATE,
+				context, fieldsObject);
 
 		DBCursor cursur = rolesCol.find(queryObject, fieldsObject);
 
@@ -389,42 +392,48 @@ public class Data implements CONSTS {
 	 * @throws IOException
 	 * @throws GeneralSecurityException
 	 */
-	public static Users fetchGoogleUsers(RequestContext context) throws IOException, GeneralSecurityException{
+	public static Users fetchGoogleUsers(RequestContext context)
+			throws IOException, GeneralSecurityException {
 		final HttpTransport TRANSPORT = new NetHttpTransport();
-	    final JsonFactory JSON_FACTORY = new JacksonFactory();
-	    
-	    String fullPath = context.getServletContext().getRealPath("/WEB-INF/ff088aebc45c204d5f8c680e2d845b3d358bc303-privatekey.p12");
-	    //System.out.println("Full Path = " + fullPath);
-	    File file = new File(fullPath);
-	    
-	    GoogleCredential credential = new  GoogleCredential.Builder()
-	      .setTransport(TRANSPORT)
-	      .setJsonFactory(JSON_FACTORY)
-	      .setServiceAccountUser("psapps@pointsourcellc.com")
-	      .setServiceAccountId("141952851027-1u88oc96rik8l6islr44ha65o984tn3q@developer.gserviceaccount.com")
-	      .setServiceAccountScopes(Arrays.asList(DirectoryScopes.ADMIN_DIRECTORY_USER, DirectoryScopes.ADMIN_DIRECTORY_USER_READONLY))
-	      .setServiceAccountPrivateKeyFromP12File(file)
-	      .build();
+		final JsonFactory JSON_FACTORY = new JacksonFactory();
 
-	    Directory admin = new Directory(TRANSPORT, JSON_FACTORY, credential);
-	    Directory.Users.List request = admin.users().list();
-	    request.setDomain("pointsourcellc.com");
-	    Users users = request.execute();
-	    
-	    return users;
+		String fullPath = context
+				.getServletContext()
+				.getRealPath(
+						"/WEB-INF/ff088aebc45c204d5f8c680e2d845b3d358bc303-privatekey.p12");
+		// System.out.println("Full Path = " + fullPath);
+		File file = new File(fullPath);
+
+		GoogleCredential credential = new GoogleCredential.Builder()
+				.setTransport(TRANSPORT)
+				.setJsonFactory(JSON_FACTORY)
+				.setServiceAccountUser("psapps@pointsourcellc.com")
+				.setServiceAccountId(
+						"141952851027-1u88oc96rik8l6islr44ha65o984tn3q@developer.gserviceaccount.com")
+				.setServiceAccountScopes(
+						Arrays.asList(DirectoryScopes.ADMIN_DIRECTORY_USER,
+								DirectoryScopes.ADMIN_DIRECTORY_USER_READONLY))
+				.setServiceAccountPrivateKeyFromP12File(file).build();
+
+		Directory admin = new Directory(TRANSPORT, JSON_FACTORY, credential);
+		Directory.Users.List request = admin.users().list();
+		request.setDomain("pointsourcellc.com");
+		Users users = request.execute();
+
+		return users;
 	}
-	
+
 	/**
 	 * Gets the list of Google Users
 	 * 
 	 * @return
 	 * @throws IOExceptionz
 	 * @throws JSONException
-	 * @throws GeneralSecurityException 
+	 * @throws GeneralSecurityException
 	 */
 	public static Map<String, JSONObject> getGoogleUsers(RequestContext context)
 			throws IOException, JSONException, GeneralSecurityException {
-		
+
 		Users domainUsers = fetchGoogleUsers(context);
 		String jsonTxt = domainUsers.toString();
 
@@ -437,7 +446,7 @@ public class Data implements CONSTS {
 			JSONObject ithUser = users.getJSONObject(i);
 			ret.put(ithUser.getString(PROP_ID), ithUser);
 		}
-		
+
 		return ret;
 	}
 
@@ -464,10 +473,12 @@ public class Data implements CONSTS {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
 
-		fieldsObject = filterManagmentProperty(PROP_TERMS, context, fieldsObject);
-		String roleAmounts = PROP_ROLES+"."+PROP_RATE+"."+PROP_AMOUNT;
-		fieldsObject = filterManagmentProperty(roleAmounts, context, fieldsObject);
-		
+		fieldsObject = filterManagmentProperty(PROP_TERMS, context,
+				fieldsObject);
+		String roleAmounts = PROP_ROLES + "." + PROP_RATE + "." + PROP_AMOUNT;
+		fieldsObject = filterManagmentProperty(roleAmounts, context,
+				fieldsObject);
+
 		DBCursor cursur = projectsCol.find(queryObject, fieldsObject);
 
 		while (cursur.hasNext()) {
@@ -484,6 +495,50 @@ public class Data implements CONSTS {
 						.println("Project not included because it did not return an _id property: "
 								+ object);
 			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Get all the projects
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getProjectLinks(RequestContext context, String id,
+			String query, String fields) throws JSONException {
+		JSONObject ret = new JSONObject();
+
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_LINKS);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+		} else {
+			queryObject = new BasicDBObject();
+		}
+
+		// Add the project query
+		String projectResourceURL = RESOURCE_PROJECTS + "/" + id;
+		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE,
+				projectResourceURL);
+		queryObject.put(PROP_PROJECT, resourceQuery);
+
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+
+		DBObject object = projectsCol.findOne(queryObject, fieldsObject);
+
+		if (object != null) {
+			String json = JSON.serialize(object);
+			JSONObject jsonObject = new JSONObject(json);
+
+			ret = jsonObject;
 		}
 
 		return ret;
@@ -594,8 +649,8 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONArray getPeople(RequestContext context,
-			String query, String fields, String sort) throws JSONException {
+	public static JSONArray getPeople(RequestContext context, String query,
+			String fields, String sort) throws JSONException {
 		JSONArray ret = new JSONArray();
 
 		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
@@ -613,8 +668,8 @@ public class Data implements CONSTS {
 		}
 
 		DBCursor cursur = peopleCol.find(queryObject, fieldsObject);
-		
-		if(sort != null){
+
+		if (sort != null) {
 			cursur = cursur.sort(sortObject);
 		}
 
@@ -708,13 +763,14 @@ public class Data implements CONSTS {
 		// If not managemnet remove the financial fields
 		if (!hasFinancialAccess(context)) {
 			fields.put(PROP_TERMS, 0);
-			String roleAmounts = PROP_ROLES+"."+PROP_RATE+"."+PROP_AMOUNT;
+			String roleAmounts = PROP_ROLES + "." + PROP_RATE + "."
+					+ PROP_AMOUNT;
 			fields.put(roleAmounts, 0);
 		}
 
 		DBObject dbObj = projectsCol.findOne(query, fields);
-		
-		//Filter did not work on the 
+
+		// Filter did not work on the
 
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
@@ -742,8 +798,7 @@ public class Data implements CONSTS {
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-	
-		
+
 		JSONObject ret = null;
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
@@ -779,7 +834,7 @@ public class Data implements CONSTS {
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-		
+
 		JSONObject ret = null;
 
 		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
@@ -860,6 +915,61 @@ public class Data implements CONSTS {
 	}
 
 	/**
+	 * Add a project link
+	 * 
+	 * @param newProject
+	 * @throws JSONException
+	 */
+	@SuppressWarnings("rawtypes")
+	public static JSONObject addProjectLink(RequestContext context, String projectId,
+			JSONObject newProjectLink) throws JSONException {
+		
+		JSONObject ret = null;
+		
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_LINKS);
+		String projectResourceURL = RESOURCE_PROJECTS + "/" + projectId;
+		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE, projectResourceURL);
+		DBObject queryObject = new BasicDBObject(PROP_PROJECT, resourceQuery);
+		DBObject fieldsObject = new BasicDBObject(PROP_PROJECT,1).append(PROP_ETAG, 1);
+		DBObject object = projectsCol.findOne(queryObject, fieldsObject);
+		if(object == null){
+			queryObject.put(PROP_ETAG, 0);
+			queryObject.put(PROP_MEMBERS, new ArrayList());
+			WriteResult result = projectsCol.insert(queryObject);
+			
+			CommandResult error = result.getLastError();
+			//System.out.println("Add project link: " + result);
+			if (error != null && error.getErrorMessage() != null) {
+				System.err.println("Add Project Link Failed:"
+						+ error.getErrorMessage());
+				if (error.getException() != null) {
+					error.getException().printStackTrace();
+				}
+
+				throw new WebApplicationException(Response
+						.status(Status.INTERNAL_SERVER_ERROR)
+						.entity(error.getErrorMessage()).build());
+			}
+			
+			//Reset Query Object
+			queryObject = new BasicDBObject(PROP_PROJECT, resourceQuery);
+		}
+		
+		//Create Basic Update Object
+		String json = newProjectLink.toString();
+		DBObject newLink = (DBObject) JSON.parse(json);
+		DBObject update = new BasicDBObject("$push", new BasicDBObject(PROP_MEMBERS, newLink)).append("$inc", new BasicDBObject(PROP_ETAG, 1));
+
+		
+		DBObject dbObj = projectsCol.findAndModify(queryObject, update);
+		if(dbObj != null){
+			String jsonString = JSON.serialize(dbObj);
+			ret = new JSONObject(jsonString);
+		}
+		return ret;
+	}
+
+	/**
 	 * Create a new role
 	 * 
 	 * @param newRole
@@ -903,9 +1013,9 @@ public class Data implements CONSTS {
 	 * @param newSkill
 	 * @throws JSONException
 	 */
-	public static JSONObject createSkill(RequestContext context, JSONObject newSkill)
-			throws JSONException {
-		
+	public static JSONObject createSkill(RequestContext context,
+			JSONObject newSkill) throws JSONException {
+
 		// Only admins can create roles
 		if (!hasAdminAccess(context)) {
 			throw new WebApplicationException(
@@ -913,7 +1023,7 @@ public class Data implements CONSTS {
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-		
+
 		newSkill.put(PROP_ETAG, "0");
 
 		String json = newSkill.toString();
@@ -951,8 +1061,7 @@ public class Data implements CONSTS {
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-	
-		
+
 		JSONObject ret = null;
 
 		DBCollection rolesCol = db.getCollection(COLLECTION_TITLE_ROLES);
@@ -1049,8 +1158,7 @@ public class Data implements CONSTS {
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-	
-		
+
 		JSONObject ret = null;
 
 		DBCollection skillsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
@@ -1100,7 +1208,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Update an existing role
 	 * 
@@ -1181,7 +1289,7 @@ public class Data implements CONSTS {
 	 */
 	public static JSONObject updatePerson(RequestContext context,
 			JSONObject newPerson) throws JSONException {
-		//You must provide a primary key to update a user
+		// You must provide a primary key to update a user
 		if (!newPerson.has(PROP__ID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
 					.entity("Person does not conatin an id property").build();
@@ -1195,8 +1303,8 @@ public class Data implements CONSTS {
 		}
 
 		String id = _id.getString(PROP_$OID);
-		
-		//You can only update existing users
+
+		// You can only update existing users
 		JSONObject existing = getPerson(context, id);
 		if (existing == null) {
 			Response response = Response.status(Status.BAD_REQUEST)
@@ -1204,7 +1312,7 @@ public class Data implements CONSTS {
 			throw new WebApplicationException(response);
 		}
 
-		//You must provide the etag for collision control
+		// You must provide the etag for collision control
 		if (!newPerson.has(PROP_ETAG)) {
 			Response response = Response.status(Status.BAD_REQUEST)
 					.entity("Person does not conatin an etag property").build();
@@ -1219,9 +1327,9 @@ public class Data implements CONSTS {
 					.entity(message).build();
 			throw new WebApplicationException(response);
 		}
-		
-		//Only admins can update a users groups
-		if(!hasAdminAccess(context)){
+
+		// Only admins can update a users groups
+		if (!hasAdminAccess(context)) {
 			newPerson.put(PROP_GROUPS, existing.get(PROP_GROUPS));
 		}
 
@@ -1492,38 +1600,38 @@ public class Data implements CONSTS {
 	 *            The requesting context
 	 */
 	public static void synchDefaultSkills(RequestContext context) {
-//		List<String> DEFAULT_SKILLS = new ArrayList<String>();
-//		Collections.addAll(DEFAULT_SKILLS, SKILLS_DATA_POWER_TITLE,
-//				SKILLS_J2EE_TITLE, SKILLS_JAVA_TITLE, SKILLS_REST_TITLE,
-//				SKILLS_WEB_TITLE, SKILLS_WORKLIGHT_TITLE);
-//
-//		DBCollection skillsCollection = db
-//				.getCollection(COLLECTION_TITLE_SKILLS);
-//
-//		for (Iterator<String> iterator = DEFAULT_SKILLS.iterator(); iterator
-//				.hasNext();) {
-//			String skillName = iterator.next();
-//
-//			BasicDBObject skill = new BasicDBObject(PROP_TITLE, skillName);
-//			
-//
-//			// Look for skill
-//			DBObject ret = skillsCollection.findOne(skill);
-//			if (ret == null) {
-//				// Create one
-//				skill.append(PROP_ETAG, "0");
-//				WriteResult result = skillsCollection.insert(skill);
-//
-//				CommandResult error = result.getLastError();
-//				if (error != null) {
-//					System.err.println("Insert Failed:"
-//							+ error.getErrorMessage());
-//					if (error.getException() != null) {
-//						error.getException().printStackTrace();
-//					}
-//				}
-//			}
-//		}
+		// List<String> DEFAULT_SKILLS = new ArrayList<String>();
+		// Collections.addAll(DEFAULT_SKILLS, SKILLS_DATA_POWER_TITLE,
+		// SKILLS_J2EE_TITLE, SKILLS_JAVA_TITLE, SKILLS_REST_TITLE,
+		// SKILLS_WEB_TITLE, SKILLS_WORKLIGHT_TITLE);
+		//
+		// DBCollection skillsCollection = db
+		// .getCollection(COLLECTION_TITLE_SKILLS);
+		//
+		// for (Iterator<String> iterator = DEFAULT_SKILLS.iterator(); iterator
+		// .hasNext();) {
+		// String skillName = iterator.next();
+		//
+		// BasicDBObject skill = new BasicDBObject(PROP_TITLE, skillName);
+		//
+		//
+		// // Look for skill
+		// DBObject ret = skillsCollection.findOne(skill);
+		// if (ret == null) {
+		// // Create one
+		// skill.append(PROP_ETAG, "0");
+		// WriteResult result = skillsCollection.insert(skill);
+		//
+		// CommandResult error = result.getLastError();
+		// if (error != null) {
+		// System.err.println("Insert Failed:"
+		// + error.getErrorMessage());
+		// if (error.getException() != null) {
+		// error.getException().printStackTrace();
+		// }
+		// }
+		// }
+		// }
 	}
 
 	/**
@@ -1532,7 +1640,7 @@ public class Data implements CONSTS {
 	 * @param context
 	 * @throws JSONException
 	 * @throws IOException
-	 * @throws GeneralSecurityException 
+	 * @throws GeneralSecurityException
 	 */
 	public static void synchPeople(RequestContext context) throws IOException,
 			JSONException, GeneralSecurityException {

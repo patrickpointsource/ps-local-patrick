@@ -110,6 +110,66 @@ public class Projects extends BaseResource {
 	}
 	
 	/**
+	 * POST a new LINK Associated with a project
+	 * 
+	 * The list of project links
+	 */
+	@POST
+	@Path("{id}/"+CONSTS.RESOURCE_LINKS)
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response addLink(@PathParam("id") String id, JSONObject newLink) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				
+				Data.addProjectLink(context, id, newLink);
+				
+				
+				URI aboutURI = context.getBaseURI().resolve(CONSTS.RESOURCE_PROJECTS+"/"+id+"/"+CONSTS.RESOURCE_LINKS);
+				return Response.created(aboutURI).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * GET links associated with a project by id
+	 * 
+	 * The list of project links
+	 */
+	@GET
+	@Path("{id}/"+CONSTS.RESOURCE_LINKS)
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getLinks(@PathParam("id") String id, @QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query, @QueryParam(CONSTS.REQUEST_PARAM_NAME_FIELDS)String fields) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.getProjectLinks(context, id, query, fields);
+				
+				URI baseURI = context.getBaseURI();
+				ret.put(CONSTS.PROP_BASE, baseURI);
+
+				ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS + "/" + id + "/"
+						+ CONSTS.RESOURCE_LINKS);
+				
+				String str = Data.escapeJSON(ret.toString());
+				return Response.ok(str).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
 	 * DELETE a project
 	 */
 	@DELETE

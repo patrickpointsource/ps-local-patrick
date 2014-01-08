@@ -1,0 +1,58 @@
+<script type="text/javascript" src="https://www.dropbox.com/static/api/1/dropins.js" id="dropboxjs" data-app-key="wmbvg9mkhukv6m0"></script>
+<div ng-controller="LinksCtrl">
+	<div class="row">
+		<div class="col-xs-8"><h3>Links</h3></div>
+		<div class="actions col-xs-4 pageActions">
+			<button type="button" class="btn btn-default pull-right" data-toggle="collapse" data-target="#newLinkDialog">
+		  		<i class="fa fa-plus-square"></i> <span>Add Link</span>
+			</button>
+		</div>
+	</div>
+	<section id="newLinkDialog" class="well collapse out">
+		<div class="row">
+        	<div class="col-xs-12 form-group">
+          		<label class="control-label" for="newLinkURL">URL:</label>
+          		<img ng-if="newLink.icon" ng-src="{{newLink.icon}}" style="width:24px;height:24px"/>
+               	<input class="col-xs-12 form-control" type="url" id="newLinkURL" ng-model="newLink.url"/>
+           </div>
+        </div>
+        <div class="row">
+        	<div class="col-xs-12">
+           		<input type="dropbox-chooser" name="selected-file" id="db-chooser" style="visibility: hidden;"/>
+           </div>
+        </div>
+        <br/>
+        <div class="row">
+        	<div class="col-xs-12 form-group">
+          		<label class="control-label" for="newLinkLabel">Label:</label>
+               	<input class="col-xs-12 form-control" id="newLinkLabel" ng-model="newLink.label"/>
+           </div>
+        </div>
+        <div class="row">
+	        <div class="col-xs-12">
+	            <input type="submit" class="btn" value="Add" ng-click="addLink()">
+	            <input type="submit" class="btn" value="Cancel" ng-click="cancelLink()">
+	        </div>
+	    </div>
+	</section>
+	<div class="row">
+     <div class="col-xs-12">
+         <table ng-table="linksTableParams" class="table margin-top">
+             <tr ng-repeat="link in $data">
+             	<td data-title="'Link'" sortable="'label'">
+                  <img ng-if="link.icon" ng-src="{{link.icon}}" style="width:24px;height:24px"/>
+                  <a href="{{link.url}}">{{link.label}}</a>
+                </td>
+                <td class="actionsCell">
+                	<!-- <button class="btn btn-default" ng-click="triggerEditLink(link, $index)">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                	<button class="btn btn-default"
+					ng-click="deleteLink(link, $index)">
+					<i class="fa fa-trash-o"></i> -->
+				</button></td>
+             </tr>
+         </table>
+     </div>
+ </div>
+</div>

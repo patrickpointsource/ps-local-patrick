@@ -77,9 +77,24 @@
           }
         })
         .state('projects.show', {
-          url: '/:projectId?edit',
+          url: '/:projectId',
           templateUrl: 'views/projects/show.html',
-          controller: 'ProjectCtrl'
+          controller: 'ProjectCtrl',
+          resolve: {
+              editMode: function () {
+                  return false;
+              }
+           }
+        })
+        .state('projects.edit', {
+          url: '/:projectId/edit',
+          templateUrl: 'views/projects/edit.html',
+          controller: 'ProjectCtrl',
+          resolve: {
+              editMode: function () {
+                  return true;
+              }
+           }
         })
         .state('people', {
           url: '/people',

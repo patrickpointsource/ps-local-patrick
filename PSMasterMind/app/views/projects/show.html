@@ -1,38 +1,26 @@
 <div ng-form="projectForm" ng-class="{submitted: submitAttempted}">
-
-    <div class="row">
+	<div class="row">
         <div class="col-xs-8"><h2>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h2></div>
         <div class="actions col-xs-4 pageActions">
             <button ng-hide="editMode" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
-       		<button ng-show="editMode" class="btn" ng-click="cancel()"><i class="fa fa-chevron-left"></i> <span>Cancel</span></button>
-       		<button ng-show="editMode" class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
-        </div>
+       	</div>
     </div>
-    <div ng-if="(!editMode || editMode == 'false') && projectLoaded">
-    	<ng-include src="'views/projects/show/summary.html'"></ng-include>
+    <div id="messages" class="alert alert-danger" ng-show="messages.length > 0">
+       <!--  <a class="close" data-dismiss="alert">&times;</a> -->
+        <ul>
+            <li ng-repeat="message in messages">{{message}}</li>
+        </ul>
     </div>
-	<div ng-show="editMode">
-	    <div id="messages" class="alert alert-danger" ng-show="messages.length > 0">
-	       <!--  <a class="close" data-dismiss="alert">&times;</a> -->
-	        <ul>
-	            <li ng-repeat="message in messages">{{message}}</li>
-	        </ul>
-	    </div>
-	    <tabset>
-	        <tab id="details" heading="Details">
-	        	<div ng-if="editMode && projectLoaded">
-	            	<ng-include src="'views/projects/show/details.html'"></ng-include>
+    <div>
+    	 <tabset>
+    	 	<tab id="summary" heading="Summary">
+	        	<div ng-if="projectLoaded">
+	            	<ng-include src="'views/projects/show/summary.html'"></ng-include>
 	            </div>
 	        </tab>
-	        <tab id="roles" heading="Roles">
-	        	<div ng-if="editMode && projectLoaded">
-				 	<ng-include src="'views/projects/show/roles.html'"></ng-include>
-				</div>
-	           
-	        </tab>
-	        <tab id="summary" heading="Summary">
-	        	<div ng-if="editMode && projectLoaded">
-	            	<ng-include src="'views/projects/show/summary.html'"></ng-include>
+	        <tab id="links" heading="Links">
+	        	<div ng-if="projectLoaded">
+	            	<ng-include src="'views/projects/show/links.html'"></ng-include>
 	            </div>
 	        </tab>
 	    </tabset>
