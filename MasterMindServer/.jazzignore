@@ -29,4 +29,5 @@ core.ignore.recursive= \
 
 core.ignore= \
 	{bin} \
-	{build} 
+	{build} \
+	{target} 

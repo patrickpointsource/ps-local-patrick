@@ -7,23 +7,41 @@ angular.module('Mastermind')
   .controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources', 'projects',
     function ($scope, $q, $state, $filter, Resources, projects) {
 	  $scope.summarySwitcher = 'projects';
-      $scope.today = $filter('date')(new Date());
       $scope.projects = projects;
-      
+
+      $scope.startDate = new Date();
+
+      var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      /**
+       * display the month name from a month number (0 - 11)
+       */
+      $scope.getMonthName = function(monthNum) {
+        if (monthNum > 11) {
+          monthNum = monthNum - 12;
+        }
+        return monthNamesShort[monthNum];
+      };
+
       //Get todays date formatted as yyyy-MM-dd
-      var today = new Date();
-      var dd = today.getDate();
-      var mm = today.getMonth()+1; //January is 0!
-      var yyyy = today.getFullYear();
-      if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} today = yyyy+'-'+mm+'-'+dd;
-      
-      var apQuery = {startDate:{$lte:today},$or:[{endDate:{$exists:false}},{endDate:{$gt:today}}]};
+      var dd = $scope.startDate.getDate();
+      var mm = $scope.startDate.getMonth()+1; //January is 0!
+      var yyyy = $scope.startDate.getFullYear();
+      if (dd<10){
+        dd='0'+dd;
+      }
+      if (mm<10){
+        mm='0'+mm;
+      }
+
+      var startDateQuery = yyyy+'-'+mm+'-'+dd;
+
+      var apQuery = {startDate:{$lte:startDateQuery},$or:[{endDate:{$exists:false}},{endDate:{$gt:startDateQuery}}]};
       var apFields = {resource:1,name:1,"roles.assignee":1};
-      
+
       Resources.query('projects', apQuery, apFields, function(result){
     	  $scope.activeProjects = result;
     	  $scope.projectCount = result.count;
-    	  
+
     	  var pepInRolesQuery = {'primaryRole.resource':{$exists:true}};
     	  var pepInRolesFields = {resource:1,name:1,primaryRole:1,thumbnail:1};
 
@@ -31,7 +49,7 @@ angular.module('Mastermind')
     		  var people = peopleResult.members;
     		  var activePeople = [];
     		  var activeProjects = $scope.activeProjects.data;
-    		  
+
     		  //Loop through all the active projects
     		  for(var i = 0; i < activeProjects.length; i++){
     			  var roles = activeProjects[i].roles;
@@ -39,7 +57,7 @@ angular.module('Mastermind')
     				  //Loop through all the roles in the active projects
     				  for(var j = 0; j < roles.length; j++){
     					  var activeRole = roles[j];
-    					  if(activeRole.assignee && activeRole.assignee.resource 
+    					  if(activeRole.assignee && activeRole.assignee.resource
     							  && activePeople.indexOf(activeRole.assignee.resource) == -1){
     						  //Push the assignnee onto the active list
     						  activePeople.push(activeRole.assignee.resource);
@@ -47,10 +65,10 @@ angular.module('Mastermind')
     				  }
     			  }
     		  }
-    		  
+
     		  //Shuffle people
     		  for(var j, x, i = people.length; i; j = Math.floor(Math.random() * i), x = people[--i], people[i] = people[j], people[j] = x);
-    			  
+
     		  var inactivePeople = [];
     		  var cnt = 0;
     		  //Find the first 9 people not active
@@ -63,24 +81,24 @@ angular.module('Mastermind')
     				  }
     			  }
     		  }
-    		  
+
     		  $scope.availablePeople = inactivePeople;
 	      });
       });
-      
+
       var sixMontsFromNow = new Date();
-      sixMontsFromNow.setMonth(sixMontsFromNow.getMonth() + 6);
+      sixMontsFromNow.setMonth($scope.startDate.getMonth() + 6);
       var dd6 = sixMontsFromNow.getDate();
       var mm6 = sixMontsFromNow.getMonth()+1; //January is 0!
       var yyyy6 = sixMontsFromNow.getFullYear();
       if(dd6<10){dd6='0'+dd6} if(mm6<10){mm6='0'+mm6} sixMontsFromNow = yyyy6+'-'+mm6+'-'+dd6;
-      
-      var qvProjQuery = {startDate:{$lte:sixMontsFromNow},$or:[{endDate:{$exists:false}},{endDate:{$gt:today}}]};
+
+      var qvProjQuery = {startDate:{$lte:sixMontsFromNow},$or:[{endDate:{$exists:false}},{endDate:{$gt:startDateQuery}}]};
       var qvProjFields = {resource:1,name:1,startDate:1,endDate:1,"roles.assignee":1};
-      
+
       Resources.query('projects', qvProjQuery, qvProjFields, function(result){
     	  $scope.qvProjects = result.data;
-    	  
+
     	  //Sort By People
     	  var activePeoplePojects = {};
     	  var activeProjects = $scope.qvProjects;
@@ -90,17 +108,17 @@ angular.module('Mastermind')
 			  if(roles){
 				//Arrary to keep track of people already in an accounted role
 				  var activePeoplePojectsResources = [];
-				  
+
 				  //Loop through all the roles in the active projects
 				  for(var j = 0; j < roles.length; j++){
 					  var activeRole = roles[j];
-					  
-					  if(activeRole.assignee && activeRole.assignee.resource 
+
+					  if(activeRole.assignee && activeRole.assignee.resource
 							  && !activePeoplePojects.hasOwnProperty(activeRole.assignee.resource)){
 						  //Push the assignnee onto the active list
 						  activePeople.push(Resources.get(activeRole.assignee.resource));
-						  
-						  //Create a project list 
+
+						  //Create a project list
 						  activePeoplePojects[activeRole.assignee.resource] = [activeProjects[i]];
 						  //Accout for person already in role in this project
 						  activePeoplePojectsResources.push(activeRole.assignee.resource);
@@ -114,14 +132,14 @@ angular.module('Mastermind')
 				  }
 			  }
 		  }
-    	  
+
     	  $q.all(activePeople).then(function(data){
     		  $scope.qvPeopleProjects = activePeoplePojects;
     		  $scope.qvPeople = data;
     	  });
-    	  
+
       });
-      
+
 
       /**
        * Navigate to creating a project.
@@ -136,7 +154,7 @@ angular.module('Mastermind')
       $scope.showProjects = function () {
         $state.go('projects.index');
       };
-      
+
       /**
        * Navigate to view a list of active projects.
        */
@@ -150,7 +168,7 @@ angular.module('Mastermind')
       $scope.showPeople = function () {
         $state.go('people.index');
       };
-      
+
       /**
        * Navigate to view a list of people who can be assigned to projects.
        */
