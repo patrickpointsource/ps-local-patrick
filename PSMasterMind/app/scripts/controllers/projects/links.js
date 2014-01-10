@@ -58,7 +58,38 @@ angular.module('Mastermind.controllers.projects')
 		    $scope.newLink = {};
 		    $scope.editingLink = false;
 	  };
+	  
+	  /**
+	   * Open the edit dialog
+	   */
+	  $scope.triggerEditLink = function (link) {
+	    $scope.editingLink = true;
+	    $('#newLinkDialog').collapse('show');
+	    $scope.newLink = link;
+	  };
 	   
+	  /**
+	 * Update an existing link to the server
+	 */
+	 $scope.saveLink = function(){
+		 Resources.update($scope.newLink).then(function(){ 
+			 Resources.refresh($scope.project.about+"/links").then(function(result){
+				 $scope.links = result.members;
+				 
+				 if($scope.linksTableParams){
+					 $scope.linksTableParams.total($scope.links.length);
+					 $scope.linksTableParams.reload();
+				 }
+				 else{
+					 $scope.initLinksTable();
+				 }
+				 
+				 //Reset New Role Object
+				 $scope.newLink = {};
+			 });
+		 });
+	 }
+	  
 	  /**
 	  * Add a new Link to the server
 	  */

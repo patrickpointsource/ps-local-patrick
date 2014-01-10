@@ -36,10 +36,10 @@ public class UpgradeServlet extends HttpServlet {
 		//Synch Users
 		try {
 			context.setBaseURI(getBaseUrl(req));
-			Data.synchDefaultSkills(context);
+			//Data.synchDefaultSkills(context);
 			Data.synchPeople(context);
 			Data.synchDefaultGroups(context);
-			Data.synchDefaultRoles(context);
+			//Data.synchDefaultRoles(context);
 
 		} catch (Exception e) {
 			e.printStackTrace();

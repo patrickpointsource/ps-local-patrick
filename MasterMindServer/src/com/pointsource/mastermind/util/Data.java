@@ -538,6 +538,17 @@ public class Data implements CONSTS {
 			String json = JSON.serialize(object);
 			JSONObject jsonObject = new JSONObject(json);
 
+			//Add the resource property to each link
+			JSONArray members = jsonObject.getJSONArray(PROP_MEMBERS);
+			for (int i = 0; i < members.length(); i++) {
+				JSONObject link = members.getJSONObject(i);
+				String lid = link.getString(PROP_ID);
+				if(lid != null){
+					String lRef = projectResourceURL+"/"+RESOURCE_LINKS+"/"+lid;
+					link.put(PROP_RESOURCE, lRef);
+				}
+			}
+			
 			ret = jsonObject;
 		}
 
@@ -826,8 +837,6 @@ public class Data implements CONSTS {
 	 */
 	public static void deleteProjectLink(RequestContext context,
 			String projectId, String linkId) throws JSONException {
-
-		JSONObject ret = null;
 
 		DBCollection linksCollection = db.getCollection(COLLECTION_TITLE_LINKS);
 
@@ -1459,6 +1468,51 @@ public class Data implements CONSTS {
 		newProject = new JSONObject(json);
 
 		return newProject;
+	}
+	
+	public static void updateProjectLink(RequestContext context, String projectId, String linkId, JSONObject newLink){
+		DBCollection linksCollection = db.getCollection(COLLECTION_TITLE_LINKS);
+		//db.Links.update({project:{resource:'projects/52a614933004580b24e3121e'},'members.id':52d010513004978f48669a75},{$set:{'members.$.url':'http://example/new'...},$inc:{etag:1}})
+
+		//TODO should check the etag
+		
+		String projectResourceURL = RESOURCE_PROJECTS + "/" + projectId;
+		DBObject queryObject = new BasicDBObject(PROP_PROJECT,
+				new BasicDBObject(PROP_RESOURCE, projectResourceURL))
+				.append(PROP_MEMBERS+"."+PROP_ID, linkId);
+		
+		//Remove etag from the property list
+		BasicDBObject set = new BasicDBObject();
+		@SuppressWarnings("unchecked")
+		Iterator<String> keys = newLink.keySet().iterator();
+		while(keys.hasNext()){
+			String key = keys.next();
+			//Filter out id, resource and etag properties
+			if(!key.equals(PROP_ETAG) && !key.equals(PROP_RESOURCE) && !key.equals(PROP_ID)){
+				String qualified = PROP_MEMBERS+".$."+key;
+				Object value = newLink.get(key);
+				set.put(qualified, value);
+			}
+		}
+
+		DBObject update = new BasicDBObject("$set", set).append(
+				"$inc", new BasicDBObject(PROP_ETAG, 1));
+
+		WriteResult result = linksCollection.update(queryObject, update);
+
+		CommandResult error = result.getLastError();
+		// System.out.println("Add project link: " + result);
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Project Link Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
 	}
 
 	public static void synchDefaultRoles(RequestContext context)

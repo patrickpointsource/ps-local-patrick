@@ -256,6 +256,33 @@ public class Projects extends BaseResource {
 	}
 
 	/**
+	 * PUT projects/:pid/links/:lid
+	 * 
+	 * @param pid id of a project
+	 * @param lid id of the link
+	 * @param newLink new link definition
+	 */
+	@PUT
+	@Path("{pid}/links/{lid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	public Response updateLink(@PathParam("pid") String pid, @PathParam("lid") String lid, JSONObject newLink) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				Data.updateProjectLink(context, pid, lid, newLink);
+				return Response.ok().build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
 	 * PUT projects/:id
 	 * 
 	 * @param id
