@@ -73,9 +73,10 @@
 					role="navigation">
 					<div class="dropdown pull-right" id="user-dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown">
-							<div id="profile-photo">
-								<img alt="{{me.name}}" title="{{me.name}}"  ng-src="{{me.thumbnail}}"/>
-							</div>
+							<!-- <div >
+								<img alt="{{me.name}}" title="{{me.name}}"  style="background-image:url({{me.thumbnail}})"/>
+							</div> -->
+							<div id="profile-photo" style="background-image:url({{me.thumbnail}})"></div>
 						</a>
 						<ul class="dropdown-menu">
 							<li><a href="#{{me.about}}">Profile</a></li>
