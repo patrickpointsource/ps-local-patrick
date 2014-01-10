@@ -93,8 +93,12 @@ angular.module('Mastermind.controllers.projects')
 	  /**
 	  * Add a new Link to the server
 	  */
-	  $scope.addLink = function(){
-		 Resources.create($scope.project.about+"/links", $scope.newLink).then(function(){ 
+	  $scope.addLink = function(link){
+		 if(!link){
+			 link = $scope.newLink;
+		 }
+		  
+		 Resources.create($scope.project.about+"/links", link).then(function(){ 
 			 Resources.refresh($scope.project.about+"/links").then(function(result){
 				 $scope.links = result.members;
 				 
@@ -107,7 +111,7 @@ angular.module('Mastermind.controllers.projects')
 				 }
 				 
 				 //Reset New Role Object
-				 $scope.newLink = {};
+				 link = {};
 			 });
 		 });
 	  };
@@ -136,10 +140,15 @@ angular.module('Mastermind.controllers.projects')
 	   * A drop box link was selected
 	   */
 	  $scope.dbFileSelected = function(e){
-		  $scope.newLink.url = e.files[0].link;
-		  $scope.newLink.label = e.files[0].name;
-		  $scope.newLink.icon = e.files[0].icon;
-		  $scope.$apply();
+		  var files = e.files;
+		  for(var i = 0; i < files.length;i++){
+			  var link = {};
+			  link.url = e.files[i].link;
+			  link.label = e.files[i].name;
+			  link.icon = e.files[i].icon;
+			  
+			  $scope.addLink(link);
+		  }
 	  };
 	  
 	  // add an event listener to a Chooser button
