@@ -819,6 +819,46 @@ public class Data implements CONSTS {
 	}
 
 	/**
+	 * Delete a project link
+	 * 
+	 * @param newProject
+	 * @throws JSONException
+	 */
+	public static void deleteProjectLink(RequestContext context,
+			String projectId, String linkId) throws JSONException {
+
+		JSONObject ret = null;
+
+		DBCollection linksCollection = db.getCollection(COLLECTION_TITLE_LINKS);
+
+		// db.Links.update({project:{resource:'projects/52a614933004580b24e3121e'}},{$pull:{members:{id:'52d010513004978f48669a75'}},$inc:{etag:1}})
+
+		String projectResourceURL = RESOURCE_PROJECTS + "/" + projectId;
+		DBObject queryObject = new BasicDBObject(PROP_PROJECT,
+				new BasicDBObject(PROP_RESOURCE, projectResourceURL));
+
+		DBObject update = new BasicDBObject("$pull", new BasicDBObject(
+				PROP_MEMBERS, new BasicDBObject(PROP_ID, linkId))).append(
+				"$inc", new BasicDBObject(PROP_ETAG, 1));
+
+		WriteResult result = linksCollection.update(queryObject, update);
+
+		CommandResult error = result.getLastError();
+		// System.out.println("Add project link: " + result);
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Project Link Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+	}
+
+	/**
 	 * Delete a person by id
 	 * 
 	 * @param id
@@ -921,24 +961,26 @@ public class Data implements CONSTS {
 	 * @throws JSONException
 	 */
 	@SuppressWarnings("rawtypes")
-	public static JSONObject addProjectLink(RequestContext context, String projectId,
-			JSONObject newProjectLink) throws JSONException {
-		
+	public static JSONObject addProjectLink(RequestContext context,
+			String projectId, JSONObject newProjectLink) throws JSONException {
+
 		JSONObject ret = null;
-		
+
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_LINKS);
 		String projectResourceURL = RESOURCE_PROJECTS + "/" + projectId;
-		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE, projectResourceURL);
+		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE,
+				projectResourceURL);
 		DBObject queryObject = new BasicDBObject(PROP_PROJECT, resourceQuery);
-		DBObject fieldsObject = new BasicDBObject(PROP_PROJECT,1).append(PROP_ETAG, 1);
+		DBObject fieldsObject = new BasicDBObject(PROP_PROJECT, 1).append(
+				PROP_ETAG, 1);
 		DBObject object = projectsCol.findOne(queryObject, fieldsObject);
-		if(object == null){
+		if (object == null) {
 			queryObject.put(PROP_ETAG, 0);
 			queryObject.put(PROP_MEMBERS, new ArrayList());
 			WriteResult result = projectsCol.insert(queryObject);
-			
+
 			CommandResult error = result.getLastError();
-			//System.out.println("Add project link: " + result);
+			// System.out.println("Add project link: " + result);
 			if (error != null && error.getErrorMessage() != null) {
 				System.err.println("Add Project Link Failed:"
 						+ error.getErrorMessage());
@@ -950,19 +992,21 @@ public class Data implements CONSTS {
 						.status(Status.INTERNAL_SERVER_ERROR)
 						.entity(error.getErrorMessage()).build());
 			}
-			
-			//Reset Query Object
+
+			// Reset Query Object
 			queryObject = new BasicDBObject(PROP_PROJECT, resourceQuery);
 		}
-		
-		//Create Basic Update Object
+
+		// Create Basic Update Object
 		String json = newProjectLink.toString();
 		DBObject newLink = (DBObject) JSON.parse(json);
-		DBObject update = new BasicDBObject("$push", new BasicDBObject(PROP_MEMBERS, newLink)).append("$inc", new BasicDBObject(PROP_ETAG, 1));
+		newLink.put(PROP_ID, new ObjectId().toString());
+		DBObject update = new BasicDBObject("$push", new BasicDBObject(
+				PROP_MEMBERS, newLink)).append("$inc", new BasicDBObject(
+				PROP_ETAG, 1));
 
-		
 		DBObject dbObj = projectsCol.findAndModify(queryObject, update);
-		if(dbObj != null){
+		if (dbObj != null) {
 			String jsonString = JSON.serialize(dbObj);
 			ret = new JSONObject(jsonString);
 		}

@@ -195,6 +195,28 @@ public class Projects extends BaseResource {
 		}
 	}
 	
+	/**
+	 * DELETE a project link
+	 */
+	@DELETE
+	@Path("{pid}/links/{lid}")
+	public Response deleteProjectLink(@PathParam("pid") String pid, @PathParam("lid")String lid) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				Data.deleteProjectLink(context, pid, lid);
+				
+				return Response.ok().build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
 
 	/**
 	 * POST projects

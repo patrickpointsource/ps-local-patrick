@@ -17,11 +17,10 @@ angular.module('Mastermind.controllers.projects')
 	  };
 	  
 	  /**
-	   * Fetch the list of links
+	   * Method to initalize the links table data
 	   */
-	   Resources.get($scope.project.about+"/links").then(function(result){
-			$scope.links = result.members;
-			$scope.linksTableParams = new TableParams(params, {
+	  $scope.initLinksTable = function(){
+		  $scope.linksTableParams = new TableParams(params, {
 	          total: $scope.links.length, // length of data
 	          getData: function ($defer, params) {
 	            var data = $scope.links;
@@ -38,7 +37,17 @@ angular.module('Mastermind.controllers.projects')
 	            $defer.resolve(ret);
 	
 	          }
-	       });
+	     });
+	  };
+	  
+	  /**
+	   * Fetch the list of links
+	   */
+	   Resources.get($scope.project.about+"/links").then(function(result){
+		    if(result.members){
+				$scope.links = result.members;
+				$scope.initLinksTable();
+		    }
 	  });
 	   
 	  /**
@@ -57,8 +66,14 @@ angular.module('Mastermind.controllers.projects')
 		 Resources.create($scope.project.about+"/links", $scope.newLink).then(function(){ 
 			 Resources.refresh($scope.project.about+"/links").then(function(result){
 				 $scope.links = result.members;
-				 $scope.linksTableParams.total($scope.links.length);
-				 $scope.linksTableParams.reload();
+				 
+				 if($scope.linksTableParams){
+					 $scope.linksTableParams.total($scope.links.length);
+					 $scope.linksTableParams.reload();
+				 }
+				 else{
+					 $scope.initLinksTable();
+				 }
 				 
 				 //Reset New Role Object
 				 $scope.newLink = {};
@@ -66,6 +81,29 @@ angular.module('Mastermind.controllers.projects')
 		 });
 	  };
 	  
+	  /**
+ 	  * Delete a link 
+ 	  */
+ 	 $scope.deleteLink = function (link) {
+ 		 var resource = $scope.project.about+'/links/'+link.id;
+         Resources.remove(resource).then(function(){
+        	 Resources.refresh($scope.project.about+"/links").then(function(result){
+				 $scope.links = result.members;
+				 
+				 if($scope.linksTableParams){
+					 $scope.linksTableParams.total($scope.links.length);
+					 $scope.linksTableParams.reload();
+				 }
+				 else{
+					 $scope.initLinksTable();
+				 }
+			 });
+ 		 });
+       };
+	  
+	  /**
+	   * A drop box link was selected
+	   */
 	  $scope.dbFileSelected = function(e){
 		  $scope.newLink.url = e.files[0].link;
 		  $scope.newLink.label = e.files[0].name;
