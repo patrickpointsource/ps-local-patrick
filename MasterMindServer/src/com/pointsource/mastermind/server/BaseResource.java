@@ -18,33 +18,42 @@ import com.pointsource.mastermind.util.RequestContext;
 import com.pointsource.mastermind.util.ValidationException;
 
 public abstract class BaseResource {
-	@Context protected UriInfo uriInfo;
-	@Context protected ServletContext servletContext;
-	@Context protected HttpHeaders headers;
-	@Context protected HttpServletRequest request;
-	
+	@Context
+	protected UriInfo uriInfo;
+	@Context
+	protected ServletContext servletContext;
+	@Context
+	protected HttpHeaders headers;
+	@Context
+	protected HttpServletRequest request;
+
 	/**
 	 * All relevant info about the request
 	 */
-	protected RequestContext getRequestContext(){
+	protected RequestContext getRequestContext() {
 		RequestContext context = new RequestContext();
 		HttpSession session = request.getSession();
 		Object user = session.getAttribute(CONSTS.SESSION_USER_KEY);
-		context.setCurrentUser((JSONObject)user);
+		if (user == null)
+			throw new WebApplicationException(Response
+					.status(Status.UNAUTHORIZED)
+					.entity("Current User is Not Set!").build());
+		context.setCurrentUser((JSONObject) user);
 		Object auth = session.getAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
 		context.setAuthorization(String.valueOf(auth));
 		context.setBaseURI(uriInfo.getBaseUri());
 		context.setServletContext(servletContext);
-		
+
 		return context;
 	}
-	
+
 	/**
 	 * Handle a JSON format exception
+	 * 
 	 * @param ex
 	 * @return
 	 */
-	protected Response handleJSONException(JSONException ex){
+	protected Response handleJSONException(JSONException ex) {
 		ex.printStackTrace(System.err);
 		String error = "{\"status\":400,\"message\"=\""
 				+ ex.getLocalizedMessage() + "\"}";
@@ -52,14 +61,16 @@ public abstract class BaseResource {
 				.build();
 		return ret;
 	}
-	
+
 	/**
 	 * Handle a validation exception
+	 * 
 	 * @param ex
 	 * @return
 	 * @throws JSONException
 	 */
-	protected Response handleValidationException(ValidationException ex) throws JSONException{
+	protected Response handleValidationException(ValidationException ex)
+			throws JSONException {
 		JSONObject error = new JSONObject();
 
 		int status = Status.BAD_REQUEST.getStatusCode();
@@ -74,12 +85,14 @@ public abstract class BaseResource {
 		Response ret = Response.status(status).entity(error).build();
 		return ret;
 	}
-	
+
 	/**
 	 * Handle a thrown WebApplication exception
-	 * @throws JSONException 
+	 * 
+	 * @throws JSONException
 	 */
-	protected Response handleWebApplicationException(WebApplicationException ex) throws JSONException{
+	protected Response handleWebApplicationException(WebApplicationException ex)
+			throws JSONException {
 		JSONObject error = new JSONObject();
 		Response response = ex.getResponse();
 		int status = response.getStatus();
@@ -90,12 +103,14 @@ public abstract class BaseResource {
 		Response ret = Response.status(status).entity(error).build();
 		return ret;
 	}
-	
+
 	/**
 	 * Handle an unexpected serevr error
-	 * @throws JSONException 
+	 * 
+	 * @throws JSONException
 	 */
-	protected Response handleInternalServerError(Exception ex) throws JSONException{
+	protected Response handleInternalServerError(Exception ex)
+			throws JSONException {
 		ex.printStackTrace(System.err);
 		JSONObject error = new JSONObject();
 
@@ -107,5 +122,5 @@ public abstract class BaseResource {
 		Response ret = Response.status(status).entity(error).build();
 		return ret;
 	}
-	
+
 }
