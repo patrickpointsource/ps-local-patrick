@@ -9,8 +9,11 @@ window.restPath = '/MasterMindStaging/rest/';
 //stage only
 //window.clientBaseURL = 'http://mastermind.pointsource.us/stage/';
 
-// stage and prod
+// stage and prod (no dmz)
 //window.serverLocation = 'http://db.mastermind.pointsource.us:8080';
+
+// stage and prod (dmz)
+//window.serverLocation = 'http://mm_dmz.pointsource.us:8080';
 
 // prod only
 //window.restPath = '/MasterMindServer/rest/';
