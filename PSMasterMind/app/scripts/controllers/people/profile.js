@@ -147,6 +147,8 @@ angular.module('Mastermind.controllers.people')
 		  
 		  Resources.get(url).then(function(result){
 			 $scope.gplusProfile = result;
+			 
+			 gapi.person.go();
 		  });
 	  };
 
