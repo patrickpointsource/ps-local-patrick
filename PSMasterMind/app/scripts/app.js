@@ -24,7 +24,9 @@
     'Mastermind.models.projects',
     'Mastermind.services.projects'
   ])
-    .config(function ($stateProvider, $urlRouterProvider) {
+    .config(function ($logProvider, $stateProvider, $urlRouterProvider) {
+      $logProvider.debugEnabled(false);
+    	
       $urlRouterProvider
         .otherwise('/');
 

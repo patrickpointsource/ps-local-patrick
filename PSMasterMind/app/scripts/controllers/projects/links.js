@@ -50,6 +50,7 @@ angular.module('Mastermind.controllers.projects')
 		    }
 	  });
 	   
+
 	  /**
 	   * Cancel add Link
 	   */
@@ -135,23 +136,50 @@ angular.module('Mastermind.controllers.projects')
 			 });
  		 });
        };
-	  
-	  /**
-	   * A drop box link was selected
-	   */
-	  $scope.dbFileSelected = function(e){
-		  var files = e.files;
-		  for(var i = 0; i < files.length;i++){
-			  var link = {};
-			  link.url = e.files[i].link;
-			  link.label = e.files[i].name;
-			  link.icon = e.files[i].icon;
-			  
-			  $scope.addLink(link);
-		  }
-	  };
-	  
-	  // add an event listener to a Chooser button
-	  document.getElementById("db-chooser").addEventListener("DbxChooserSuccess",
-        $scope.dbFileSelected, false);
+       
+      
+      /**
+       * Launch the dropbox chooser dialog
+       */
+       $scope.launchDropboxChooser = function(){
+    	   var options = {
+    			// Required. Called when a user selects an item in the Chooser.
+			    success: function(files) {
+			    	//alert("Here's the file link:" + files[0].link)
+			    	var files = files;
+			 		  for(var i = 0; i < files.length;i++){
+			 			  var file = files[i];
+			 			  var link = {};
+			 			  link.url = file.link;
+			 			  link.label = file.name;
+			 			  link.icon = file.icon;
+			 			  
+			 			  $scope.addLink(link);
+			 		  }
+			    },
+
+			    // Optional. Called when the user closes the dialog without selecting a file
+			    // and does not include any parameters.
+			    cancel: function() {
+			    	//NOOP
+			    },
+
+			    // Optional. "preview" (default) is a preview link to the document for sharing,
+			    // "direct" is an expiring link to download the contents of the file. For more
+			    // information about link types, see Link types below.
+			    linkType: "direct", // or "preview"
+
+			    // Optional. A value of false (default) limits selection to a single file, while
+			    // true enables multiple file selection.
+			    multiselect: true, // or false
+
+			    // Optional. This is a list of file extensions. If specified, the user will
+			    // only be able to select files with these extensions. You may also specify
+			    // file types, such as "video" or "images" in the list. For more information,
+			    // see File types below. By default, all extensions are allowed.
+			    //extensions: ['.pdf', '.doc', '.docx'],	   
+    	   };
+    	   Dropbox.choose(options);
+       }
+	
   }]);

@@ -17,7 +17,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     		 $scope.adminAccess = true;
     	 }
     	 
-    	 console.log('Logged In');
+    	 //console.log('Logged In');
     	 $scope.authState = true;
     	
     });
@@ -71,4 +71,12 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     $scope.showAdmin = function () {
       $state.go('admin');
     };
-  }]);
+  }]).directive('backImg', function(){
+	    return function(scope, element, attrs){
+	        var url = attrs.backImg;
+	        element.css({
+	            'background-image': 'url(' + url +')',
+	            'background-size' : 'cover'
+	        });
+	    };
+	});
