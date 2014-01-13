@@ -68,11 +68,14 @@
         })
         .state('projects.new', {
           url: '/new',
-          templateUrl: 'views/projects/show.html',
+          templateUrl: 'views/projects/edit.html',
           controller: 'ProjectCtrl',
           resolve: {
             project: function (ProjectsService) {
               return ProjectsService.create();
+            },
+            editMode: function () {
+                return true;
             }
           }
         })
