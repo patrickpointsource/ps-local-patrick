@@ -2,9 +2,13 @@
 
     <div class="row">
         <div class="col-xs-8"><h2>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h2></div>
-        <div class="actions col-xs-4 pageActions">
+        <div class="actions col-sm-4 hidden-xs pageActions">
             <button class="btn" ng-click="cancel()"><i class="fa fa-chevron-left"></i> <span>Cancel</span></button>
        		<button class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
+        </div>
+        <div class="actions col-xs-4 visible-xs pageActions">
+            <button class="btn" ng-click="cancel()"><i class="fa fa-chevron-left"></i></button>
+       		<button class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i></button>
         </div>
     </div>
     <div id="messages" class="alert alert-danger" ng-show="messages.length > 0">
@@ -32,5 +36,11 @@
 	            </div>
 	        </tab>
 	    </tabset>
+    </div>
+    <div class="row">
+       <div class="actions col-xs-12 pageActions">
+            <button class="btn" ng-click="cancel()"><i class="fa fa-chevron-left"></i> <span>Cancel</span></button>
+       		<button class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
+        </div>
     </div>
 </div>

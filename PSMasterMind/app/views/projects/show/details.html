@@ -6,8 +6,7 @@
                   placeholder="Customer Name"
                   ng-model="project.customerName"
                   ng-class="{highlight: detailsForm.customerName.$error.required}"
-                  required
-                  ng-readonly="!isTransient">
+                  required>
         </div>
         <div class="col-xs-4 col-sm-6 form-group" ng-class="{error: isFieldInError('type')}">
             <label class="required-label control-label" for="type">Type:</label>
@@ -22,8 +21,7 @@
             <label class="control-label required-label" for="projectName">Project Name:</label>
             <input id="projectName" type="text" class="col-xs-12 form-control" placeholder="Project Name"
                     name="projectName"
-                    ng-model="project.name" required
-                    ng-readonly="!isTransient">
+                    ng-model="project.name" required>
         </div>
         <div class="col-xs-12 col-sm-6 form-group">
             <label for="primaryContact">Primary Contact:</label>
@@ -45,8 +43,7 @@
                 ng-model="project.startDate"
                 data-date-format="yyyy-mm-dd"
                 required
-                data-provide="datepicker"
-                ng-readonly="!isTransient">
+                data-provide="datepicker">
         </div>
         <div class="col-xs-12  col-sm-4 form-group">
             <label for="endDate">End Date:</label>
