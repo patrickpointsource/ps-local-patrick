@@ -310,6 +310,17 @@ angular.module('Mastermind')
   		 });
   	  }
   	  
+  	 /**
+  	  * Delete a role 
+  	  */
+  	 $scope.deleteHours = function (hoursURL) {
+          Resources.remove(hoursURL).then(function(){
+  			 Resources.refresh('roles').then(function(result){
+  				$scope.initHours();
+  			 });
+  		 });
+     };
+  	  
   	  $scope.initHours = function(){
   		   //Query all hours against the project
 	   	   var hoursQuery = {'project.resource':$scope.project.about};
