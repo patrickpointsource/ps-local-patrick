@@ -455,6 +455,33 @@ public class Data implements CONSTS {
 	}
 	
 	/**
+	 * Get an hours record
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getHoursRecord(RequestContext context, String id) throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_HOURS);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		DBObject dbObj = hoursCol.findOne(query);
+
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+			ret.put(PROP_ABOUT, RESOURCE_HOURS + "/" + id);
+		}
+
+		return ret;
+	}
+
+	
+	/**
 	 * Get all the hours
 	 * 
 	 * @param query

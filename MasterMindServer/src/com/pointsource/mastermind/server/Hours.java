@@ -9,11 +9,13 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.wink.common.annotations.Workspace;
 import org.json.JSONArray;
@@ -95,6 +97,41 @@ public class Hours extends BaseResource {
 				return Response.created(aboutURI).build();
 			} catch (ValidationException e) {
 				return handleValidationException(e);
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * GET hours/:id
+	 * 
+	 * @param id
+	 * @return Hours by id
+	 */
+	@GET
+	@Path("{id}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getById(@PathParam("id") String id) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.getHoursRecord(context, id);
+
+				if (ret == null) {
+					throw new WebApplicationException(Status.NOT_FOUND);
+				}
+				
+				URI baseURI = context.getBaseURI();
+				ret.put(CONSTS.PROP_BASE, baseURI);
+
+				String retStr = Data.escapeJSON(ret);
+
+				return Response.ok(retStr).build();
 			} catch (WebApplicationException e) {
 				return handleWebApplicationException(e);
 			} catch (Exception e) {
