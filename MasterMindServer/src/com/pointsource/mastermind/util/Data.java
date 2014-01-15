@@ -449,6 +449,60 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
+	
+	/**
+	 * Get all the hours
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONArray getHours(RequestContext context, String query,
+			String fields, String sort) throws JSONException {
+		JSONArray ret = new JSONArray();
+
+		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_HOURS);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		DBObject sortObject = null;
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+		}
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+		if (sort != null) {
+			sortObject = (DBObject) JSON.parse(sort);
+		}
+
+		DBCursor cursur = hoursCol.find(queryObject, fieldsObject);
+
+		if (sort != null) {
+			cursur = cursur.sort(sortObject);
+		}
+
+		while (cursur.hasNext()) {
+			DBObject object = cursur.next();
+
+			if (object.containsField(PROP__ID)) {
+				String json = JSON.serialize(object);
+				JSONObject jsonObject = new JSONObject(json);
+
+				ObjectId _id = (ObjectId) object.get(PROP__ID);
+				jsonObject.put(PROP_RESOURCE, RESOURCE_HOURS + "/" + _id);
+
+				ret.put(jsonObject);
+			} else {
+				System.out
+						.println("Hours record not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+
+		return ret;
+	}
 
 	/**
 	 * Get all the projects

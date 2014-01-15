@@ -9,6 +9,7 @@ public interface CONSTS {
 	public String RESOURCE_NEW = "new";
 	public String RESOURCE_GPLUS = "gplus";
 	public String RESOURCE_GROUPS = "groups";
+	public String RESOURCE_HOURS = "hours";
 	public String RESOURCE_LINKS = "links";
 	public String RESOURCE_PEOPLE = "people";
 	public String RESOURCE_PROJECTS = "projects";
@@ -127,6 +128,7 @@ public interface CONSTS {
 	public String RESOURCE_TITLE_PROJECTS = "Projects";
 	public String RESOURCE_TITLE_ROLES = "Roles";
 	public String RESOURCE_TITLE_SKILLS = "Skills";
+	public String RESOURCE_TITLE_HOURS = "Hours";
 	
 	/**
 	 * Mongo Constants
@@ -139,11 +141,12 @@ public interface CONSTS {
 	public int DB_PORT_DEFAULT  = 27017;
 	public String DB_NAME_DEFAULT  = "mm_db_stage";
 	//public String DB_NAME_DEFAULT  = "mm_db_prod";
-	public String COLLECTION_TITLE_PROJECTS = "Projects";
+	public String COLLECTION_TITLE_HOURS = "Hours";
 	public String COLLECTION_TITLE_LINKS = "Links";
 	public String COLLECTION_TITLE_PEOPLE = "People";
-	public String COLLECTION_TITLE_SKILLS = "Skills";
+	public String COLLECTION_TITLE_PROJECTS = "Projects";
 	public String COLLECTION_TITLE_ROLES = "Roles";
+	public String COLLECTION_TITLE_SKILLS = "Skills";
 	
 	/**
 	 * Google Constants
