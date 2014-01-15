@@ -60,9 +60,11 @@
             </thead>
             <tr ng-repeat="role in $data">
               	<td>
-                  <img ng-show="role.assignee" class="profileImage" ng-src="{{role.assignee.thumbnail}}"/>
-                  <i class="fa fa-ban" ng-show="!role.assignee"></i>
-                  <span >{{role.assignee.name || 'Unassigned'}}</span>
+              	  <a href="#{{role.assignee.resource}}">
+	                  <img ng-show="role.assignee" class="profileImage" ng-src="{{role.assignee.thumbnail}}"/>
+	                  <i class="fa fa-ban" ng-show="!role.assignee"></i>
+	                  <span >{{role.assignee.name || 'Unassigned'}}</span>
+                  </a>
                   <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>
                 </td>
                 <td class="hidden-xs">{{role.type.abbreviation}}</td>

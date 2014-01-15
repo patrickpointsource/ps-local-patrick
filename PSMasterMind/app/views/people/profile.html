@@ -1,16 +1,22 @@
 <div>
 	<div class="row">
-		<div class="col-xs-10 col-sm-8">	
-			<br/>
+		<div class="col-xs-10 col-sm-8">
+			<br />
 			<div ng-show="gplusProfile">
-				<div class="g-person" data-href="//plus.google.com/{{profile.googleId}}" data-showtagline="false" data-showcoverphoto="false" data-rel="author"></div>
+				<div class="g-person"
+					data-href="//plus.google.com/{{profile.googleId}}" data-width="200"
+					data-showtagline="false" data-showcoverphoto="false"
+					data-rel="author"></div>
 			</div>
 			<div ng-hide="gplusProfile">
-				<div style="width:300px;border:1px lightgray solid;text-align:center;margin-bottom: 14px;">
-					<img class="media-object fullProfileImage" style="margin:5px auto auto;"
-						ng-src="{{profile.thumbnail}}" />
-					<h4 ><span ng-hide="gplusProfile">{{profile.name}}</span></h4>
-					</div>
+				<div
+					style="width: 200px; border: 1px lightgray solid; text-align: center; margin-bottom: 14px;">
+					<img class="media-object fullProfileImage"
+						style="margin: 5px auto auto;" ng-src="{{profile.thumbnail}}" />
+					<h4>
+						<span ng-hide="gplusProfile">{{profile.name}}</span>
+					</h4>
+				</div>
 			</div>
 		</div>
 		<div class="col-sm-4 hidden-xs pageActions">
@@ -30,20 +36,21 @@
 			</button>
 			<button ng-show="editMode" class="btn" ng-click="cancel()">
 				<i class="fa fa-chevron-left"></i>
-			</button>&nbsp;
+			</button>
+			&nbsp;
 			<button ng-show="editMode" class="btn" ng-click="save()">
 				<i class="fa fa-floppy-o"></i>
 			</button>
 		</div>
 	</div>
-	<br/>
+	<br />
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="well" >
+			<div class="well">
 				<div class="row">
 					<div class="col-xs-12 col-md-6">
 						<div class="row">
-							
+
 							<div class="col-xs-12 media-body">
 								<span><a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
 								<div ng-show="editMode">
@@ -83,7 +90,8 @@
 						<label class="personDetailLabel">Accounts:</label> <span
 							ng-show="!gplusProfile.url"">None</span>
 						<ul class="personDetailList">
-							<li ng-show="gplusProfile.url"><a href="{{gplusProfile.url}}">Google+</a></li>
+							<li ng-show="gplusProfile.url"><a
+								href="{{gplusProfile.url}}">Google+</a></li>
 						</ul>
 					</div>
 				</div>
@@ -92,23 +100,31 @@
 	</div>
 	<div ng-hide="editMode">
 		<div class="row">
-		<div class="col-xs-12">
-			<h3>Projects</h3>
-		</div>
-		<div class="row" ng-if="hasProjects">
 			<div class="col-xs-12">
-				<table ng-table="tableParams" template-pagination="project/pager"
-					class="table">
+				<h3>Projects</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<table ng-table="tableParams" class="table">
 					<tr ng-repeat="project in $data"
 						ng-show="isCurrentProject(project.endDate)">
-						<td data-title="'Project'"><a href="#{{project.resource}}">{{project.name}}</a>
-						</td>
-						<td data-title="'Role'">
+						<td data-title="'Project'" sortable="'name'"><a
+							href="#{{project.resource}}">{{project.name}}</a>
 							<div ng-repeat="role in project.roles"
 								ng-show="profile.about == role.assignee.resource">
-								{{getRoleName(role.type.resource)}}</div>
-						</td>
+								{{getRoleName(role.type.resource)}}</div></td>
+						<td data-title="'Dates'" sortable="'startDate'">
+							<br/>
+							<div ng-repeat="role in project.roles"
+								ng-show="profile.about == role.assignee.resource">
+								<small>{{role.startDate | date:'shortDate'}}</small> <span
+									ng-show="role.endDate">-
+								<small>{{role.endDate | date:'shortDate'}}</small></span> <span
+									ng-hide="role.endDate">- N/A</span>
+							</div></td>
 						<td data-title="'Hours'">
+							<br/>
 							<div ng-repeat="role in project.roles"
 								ng-show="profile.about == role.assignee.resource">
 								{{role.rate.hours}} <span class="small">({{role.rate.type}})</span>
@@ -116,29 +132,11 @@
 						</td>
 					</tr>
 				</table>
-				<script type="text/ng-template" id="project/pager">
-            <ul class="pager ng-cloak">
-                <li ng-repeat="page in pages"
-                    ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
-                    ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
-                    <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
-                    <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
-                </li>
-                <li>
-                    <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
-                        <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
-                        <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
-                        <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
-                        <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
-                    </div>
-                </li>
-            </ul>
-        </script>
 			</div>
 		</div>
 	</div>
-	</div>
-	<!-- <div>
+</div>
+<!-- <div>
 	<div class="row">
 		<div class="col-xs-9">
 			<h3>Proficiencies</h3>
