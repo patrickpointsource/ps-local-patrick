@@ -46,29 +46,40 @@
 </div>
 <div class="row">
      <div class="col-xs-12">
-         <table ng-table="hoursTableParams" template-pagination="hours/pager" class="table margin-top peopleList">
-             <tr ng-repeat="hoursRecord in $data">
-             	<td data-title="'Person'">
-             	  <a href="#{{hoursRecord.person.resource}}">
-	                  <img ng-show="hoursRecord.person" class="profileImage" ng-src="{{hoursRecord.person.thumbnail}}"/>
-	                  <i class="fa fa-ban" ng-show="!hoursRecord.person"></i>
-	                  <span >{{hoursRecord.person.name || 'Unknown'}}</span>
-                  </a>
-                </td>
-                <td data-title="'Date'">
-                  {{hoursRecord.date}}
-                </td>
-                <td data-title="'Hours'">
-                  {{hoursRecord.hours}}
-                </td>
-                <td data-title="'Description'">
-                  {{hoursRecord.description}}
-                </td>
-                <td class="actionsCell">
-                	<button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
-					<i class="fa fa-trash-o"></i>
-				</button></td>
-             </tr>
+     	<table ng-table="hoursTableParams" template-pagination="hours/pager" class="table margin-top peopleList">
+         	  <thead>
+                <tr>
+                  <th class="col-xs-5 col-sm-3">Person</th>
+                  <th class="col-xs-5 col-sm-2">Date</th>
+                  <th class="col-xs-1 col-sm-1">Hours</th>
+                  <th class="hidden-xs col-sm-5">Description</th>
+                  <th class="col-xs-1"></th>
+                </tr>
+              </thead>
+              <tbody>
+	             <tr ng-repeat="hoursRecord in $data">
+	             	<td>
+	             	  <a href="#{{hoursRecord.person.resource}}">
+		                  <img ng-show="hoursRecord.person" class="profileImage" ng-src="{{hoursRecord.person.thumbnail}}"/>
+		                  <i class="fa fa-ban" ng-show="!hoursRecord.person"></i>
+		                  <span style="display: inline-block;">{{hoursRecord.person.name || 'Unknown'}}</span>
+	                  </a>
+	                </td>
+	                <td>
+	                  {{hoursRecord.date}}
+	                </td>
+	                <td>
+	                  {{hoursRecord.hours}}
+	                </td>
+	                <td class="hidden-xs">
+	                  {{hoursRecord.description}}
+	                </td>
+	                <td class="actionsCell">
+	                	<button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
+						<i class="fa fa-trash-o"></i>
+					</button></td>
+	             </tr>
+	         </tbody>
          </table>
          <script type="text/ng-template" id="hours/pager">
             <ul class="pager ng-cloak">
