@@ -6,6 +6,7 @@ package com.pointsource.mastermind.server;
 import java.net.URI;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -97,6 +98,32 @@ public class Hours extends BaseResource {
 				return Response.created(aboutURI).build();
 			} catch (ValidationException e) {
 				return handleValidationException(e);
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * DELETE an hours record
+	 */
+	@DELETE
+	@Path("{id}")
+	public Response deleteById(@PathParam("id") String id) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.deleteHoursRecord(context, id);
+
+				if (ret == null) {
+					throw new WebApplicationException(Status.NOT_FOUND);
+				}
+
+				return Response.ok().build();
 			} catch (WebApplicationException e) {
 				return handleWebApplicationException(e);
 			} catch (Exception e) {

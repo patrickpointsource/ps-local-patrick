@@ -879,7 +879,7 @@ public class Data implements CONSTS {
 	}
 
 	/**
-	 * Delete a projects by id
+	 * Delete a project by id
 	 * 
 	 * @param id
 	 * @return
@@ -952,6 +952,54 @@ public class Data implements CONSTS {
 		}
 	}
 
+	/**
+	 * Delete an hours by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject deleteHoursRecord(RequestContext context, String id)
+			throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_HOURS);
+		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
+		BasicDBObject fields = new BasicDBObject(PROP_PERSON, 1);
+		DBObject dbObj = hoursCol.findOne(query, fields);
+		
+		if(dbObj == null){
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Hours not found to delete").build());
+		}
+		
+		DBObject person = (DBObject)dbObj.get(PROP_PERSON);
+		String about = String.valueOf(context.getCurrentUser().get(PROP_ABOUT));
+		String resource = (String)person.get(PROP_RESOURCE);
+		
+		// Only admins or owners person who cerated it can delete hours
+		if (!hasAdminAccess(context) && !about.endsWith(resource)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+		
+		dbObj = hoursCol.findAndRemove(query);
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+		} else {
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Project not found to delete").build());
+		}
+
+		ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
+
+		return ret;
+	}
+	
+	
 	/**
 	 * Delete a person by id
 	 * 
