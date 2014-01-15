@@ -367,4 +367,24 @@ angular.module('Mastermind')
       $scope.isSummaryTabDisabled = function () {
         return !detailsValid || !rolesValid;
       };
+      
+      
+      
+      ///////////Project Hours/////////
+      $scope.newHoursRecord = {};
+      
+      /**
+  	  * Add a new Hours Record to the server
+  	  */
+  	  $scope.addHours = function(){
+  		 //Set the project context
+  		 $scope.newHoursRecord.project = {resource:$scope.project.about};
+  		 //Set the person context
+  		 $scope.newHoursRecord.person = {resource:$scope.me.about};
+  		  
+  		 Resources.create('hours', $scope.newHoursRecord).then(function(){ 
+  			 
+  		 });
+  	  }
+      
     }]);
