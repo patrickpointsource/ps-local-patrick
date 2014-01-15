@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +50,8 @@ public class Data implements CONSTS {
 	private static Mongo mongo;
 	private static DB db;
 	private static JSONObject CONFIG = null;
+	private static String DATE_PATETRN = "yyyy-MM-dd";
+	private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATETRN);
 
 	/**
 	 * Mongo Database connection
@@ -951,6 +955,52 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
+	
+	/**
+	 * Create a new hours record
+	 * 
+	 * @param newHours
+	 * @throws JSONException
+	 */
+	public static JSONObject createHours(RequestContext context,
+			JSONObject newHoursRecord) throws JSONException {
+
+		
+		newHoursRecord.put(PROP_ETAG, "0");
+		newHoursRecord.put(PROP_CREATED, new Date());
+
+		String json = newHoursRecord.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_HOURS);
+		WriteResult result = hoursCol.insert(dbObject);
+		
+		//Handle Error Message
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Hours Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+
+		//Find the hours Record that was just created
+		DBCursor cursorDoc = hoursCol.find();
+		while (cursorDoc.hasNext()) {
+			DBObject created = cursorDoc.next();
+			// System.out.println("Found: " + created);
+
+			ObjectId oId = (ObjectId) created.get(PROP__ID);
+			String idVal = oId.toString();
+			newHoursRecord.put(PROP_ABOUT, RESOURCE_HOURS + "/" + idVal);
+		}
+
+		return newHoursRecord;
+	}
 
 	/**
 	 * Create a new person
@@ -1003,7 +1053,20 @@ public class Data implements CONSTS {
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		WriteResult result = projectsCol.insert(dbObject);
 
-		// TODO Handle Result Issues
+		//Handle Error Message
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Project Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+				
 		DBCursor cursorDoc = projectsCol.find();
 		while (cursorDoc.hasNext()) {
 			DBObject created = cursorDoc.next();

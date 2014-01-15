@@ -15,6 +15,38 @@ public class Validator implements CONSTS {
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
 			"yyyy-MM-dd");
 
+	/**
+	 * Is the hours record valid for creation
+	 * 
+	 * @param context
+	 * @param hoursRecord
+	 * @throws ValidationException
+	 * @throws JSONException
+	 */
+	public static void canCreateHours(RequestContext context,
+			JSONObject hoursRecord) throws ValidationException, JSONException {
+		try {
+			String[] messages = getHoursValidationMessages(context,
+					hoursRecord);
+			if (messages.length > 0) {
+				ValidationException ex = new ValidationException(messages[0]);
+				ex.setMessages(messages);
+
+				throw ex;
+			}
+		} catch (ValidationException ex) {
+			throw ex;
+		}
+	}
+	
+	/**
+	 * Is the project valid for creation
+	 * 
+	 * @param context
+	 * @param project
+	 * @throws ValidationException
+	 * @throws JSONException
+	 */
 	public static void canCreateProject(RequestContext context,
 			JSONObject project) throws ValidationException, JSONException {
 		try {
@@ -31,6 +63,14 @@ public class Validator implements CONSTS {
 		}
 	}
 
+	/**
+	 * Is the project valid for update
+	 * 
+	 * @param context
+	 * @param project
+	 * @throws ValidationException
+	 * @throws JSONException
+	 */
 	public static void canUpdateProject(RequestContext context,
 			JSONObject project) throws ValidationException, JSONException {
 		try {
@@ -46,7 +86,56 @@ public class Validator implements CONSTS {
 			throw ex;
 		}
 	}
+	
+	/**
+	 * Validation Messages for a an hours record
+	 * @param context
+	 * @param hoursRecord
+	 * @return
+	 * @throws JSONException
+	 */
+	public static String[] getHoursValidationMessages(
+			RequestContext context, JSONObject hoursRecord) throws JSONException {
 
+		List<String> ret = new ArrayList<String>();
+
+		// Project is required - *required
+		if (!hoursRecord.has(PROP_PROJECT)
+				|| !hoursRecord.getJSONObject(PROP_PROJECT).has(PROP_RESOURCE)) {
+			ret.add("Project is required");
+		}
+		
+		// Person is required - *required
+		if (!hoursRecord.has(PROP_PERSON)
+				|| !hoursRecord.getJSONObject(PROP_PERSON).has(PROP_RESOURCE)) {
+			ret.add("Person is required");
+		}
+		
+		// Date is required - *required
+		if (!hoursRecord.has(PROP_DATE)) {
+			ret.add("Date is required");
+		}
+		
+		// Hours are required - *required
+		if (!hoursRecord.has(PROP_HOURS)) {
+			ret.add("Hours are required");
+		}
+		
+		// Description is required - *required
+		if (!hoursRecord.has(PROP_DESCRIPTION)) {
+			ret.add("Description is required");
+		}
+		
+		return ret.toArray(new String[ret.size()]);
+	}
+
+	/**
+	 * Validation Messages for a project
+	 * @param context
+	 * @param project
+	 * @return
+	 * @throws JSONException
+	 */
 	public static String[] getCreateProjectValidationMessages(
 			RequestContext context, JSONObject project) throws JSONException {
 

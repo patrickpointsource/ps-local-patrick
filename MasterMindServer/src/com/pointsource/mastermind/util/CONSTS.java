@@ -34,8 +34,11 @@ public interface CONSTS {
 	public String PROP_AMOUNT = "amount";
 	public String PROP_BASE = "base";
 	public String PROP_COUNT = "count";
+	public String PROP_CREATED = "created";
 	public String PROP_CUSTOMER_NAME = "customerName";
 	public String PROP_DATA = "data";
+	public String PROP_DATE = "date";
+	public String PROP_DESCRIPTION = "description";
 	public String PROP_END_DATE = "endDate";
 	public String PROP_ETAG = "etag";
 	public String PROP_EXECUTIVE_SPONSOR = "executiveSponsor";
@@ -57,6 +60,7 @@ public interface CONSTS {
 	public String PROP_MONTHLY_LOADED_RATE = "monthlyLoadedRate";
 	public String PROP_NAME = "name";
 	public String PROP_PEOPLE = "people";
+	public String PROP_PERSON = "person";
 	public String PROP_PRIMARY_EMAIL = "primaryEmail";
 	public String PROP_PRIMARY_ROLE = "primaryRole";
 	public String PROP_PROJECT = "project";

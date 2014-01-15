@@ -5,7 +5,9 @@ package com.pointsource.mastermind.server;
 
 import java.net.URI;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -21,6 +23,8 @@ import org.json.JSONObject;
 import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
 import com.pointsource.mastermind.util.RequestContext;
+import com.pointsource.mastermind.util.ValidationException;
+import com.pointsource.mastermind.util.Validator;
 
 /**
  * @author kmbauer
@@ -54,6 +58,43 @@ public class Hours extends BaseResource {
 
 				String str = Data.escapeJSON(ret.toString());
 				return Response.ok(str).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * POST hours record
+	 * 
+	 * Adds a new hours record to the collection
+	 * 
+	 * @param hoursRecord
+	 * 
+	 * @return new project location
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	public Response post(JSONObject hoursRecord) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+
+				Validator.canCreateHours(context, hoursRecord);
+				JSONObject ret = Data.createHours(context, hoursRecord);
+
+				String about = Data.unescapeJSON(ret
+						.getString(CONSTS.PROP_ABOUT));
+
+				URI aboutURI = context.getBaseURI().resolve(about);
+				return Response.created(aboutURI).build();
+			} catch (ValidationException e) {
+				return handleValidationException(e);
 			} catch (WebApplicationException e) {
 				return handleWebApplicationException(e);
 			} catch (Exception e) {
