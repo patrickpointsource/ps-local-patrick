@@ -315,9 +315,7 @@ angular.module('Mastermind')
   	  */
   	 $scope.deleteHours = function (hoursURL) {
           Resources.remove(hoursURL).then(function(){
-  			 Resources.refresh('roles').then(function(result){
-  				$scope.initHours();
-  			 });
+  			 $scope.initHours();
   		 });
      };
   	  

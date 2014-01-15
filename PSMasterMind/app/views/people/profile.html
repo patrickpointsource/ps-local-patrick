@@ -43,14 +43,12 @@
 			</button>
 		</div>
 	</div>
-	<br />
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="well">
 				<div class="row">
 					<div class="col-xs-12 col-md-6">
 						<div class="row">
-
 							<div class="col-xs-12 media-body">
 								<span><a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
 								<div ng-show="editMode">
@@ -135,7 +133,113 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	<div class="row">
+		<div class="col-xs-8"><h3>Hours</h3></div>
+		<div class="actions col-xs-4 pageActions">
+			<button type="button" ng-show="canAddHours"
+				class="btn btn-default pull-right" data-toggle="collapse" data-target="#newHoursDialog">
+		  		<i class="fa fa-plus-square"></i> <span>Add Hours</span>
+			</button>
+		</div>
+	</div>
+	<div ng-form="newHoursForm" id="newHoursDialog" class="well collapse out">
+	    <div class="row">
+	    	<div class="col-xs-12 col-sm-3">
+	            <label class="control-label">Person: </label>
+	            <span>{{profile.name}}</span>
+	        </div>
+	    	<div class="col-xs-12 col-sm-9">
+	            <label class="required-label control-label" for="project">Project:</label>
+                <select name="project" id="project" class="col-xs-12 form-control" ng-model="newHoursRecord.project.resource"
+                	ng-required="true" ng-options="p.resource as p.name for p in projects">
+                </select>
+	        </div>
+		</div>
+		<div class="row">
+	    	<div class="col-xs-12 col-sm-6">
+	    		<div class="row">
+	    			<div class="col-xs-12">
+				         <label class="required-label  control-label" for="hours">Hours:</label>
+				         <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours" ng-required="true"/>
+			        </div>
+	    			<div class="col-xs-12">
+			            <label class="required-label control-label" for="date">Date:</label>
+			            <input id="date" name="date" class="form-control datepicker" type="text"
+		                    ng-model="newHoursRecord.date"
+		                		todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
+	             	</div>
+			     </div>
+	        </div>
+	        <div class="col-xs-12 col-sm-6">
+		         <label class="required-label  control-label" for="hours">Description:</label>
+		         <textarea id="hours" name="hours" rows="5" class="form-control" ng-model="newHoursRecord.description" ng-required="true"></textarea>
+	        </div>
+		</div>
+		<div class="row">
+	        <div class="col-xs-12">
+	            <input type="submit" class="btn" value="Add" ng-click="addHours()">
+	        </div>
+	    </div>
+	</div>
+	<div class="row">
+	     <div class="col-xs-12">
+	     	<table ng-table="hoursTableParams" template-pagination="hours/pager" class="table margin-top peopleList">
+	         	  <thead>
+	                <tr>
+	                  <th class="col-xs-5 col-sm-3">Project</th>
+	                  <th class="col-xs-5 col-sm-2">Date</th>
+	                  <th class="col-xs-1 col-sm-1">Hours</th>
+	                  <th class="hidden-xs col-sm-5">Description</th>
+	                  <th class="col-xs-1"></th>
+	                </tr>
+	              </thead>
+	              <tbody>
+		             <tr ng-repeat="hoursRecord in $data">
+		             	<td>
+		             	  <a href="#{{hoursRecord.project.resource}}">
+			                 <span style="display: inline-block;">{{hoursRecord.project.name || 'Unknown'}}</span>
+		                  </a>
+		                </td>
+		                <td>
+		                  {{hoursRecord.date}}
+		                </td>
+		                <td>
+		                  {{hoursRecord.hours}}
+		                </td>
+		                <td class="hidden-xs">
+		                  {{hoursRecord.description}}
+		                </td>
+		                <td class="actionsCell">
+		                	<button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
+							<i class="fa fa-trash-o"></i>
+						</button></td>
+		             </tr>
+		         </tbody>
+	         </table>
+	         <script type="text/ng-template" id="hours/pager">
+            <ul class="pager ng-cloak">
+              <li ng-repeat="page in pages"
+                    ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
+                    ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
+                <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
+                <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
+              </li>
+                <li>
+                <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
+                    <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
+                    <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
+                    <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
+                    <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
+                </div>
+                </li>
+            </ul>
+        </script>
+	     </div>
+	 </div>
 </div>
+
 <!-- <div>
 	<div class="row">
 		<div class="col-xs-9">

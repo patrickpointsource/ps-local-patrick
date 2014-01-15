@@ -7,10 +7,9 @@ angular.module('Mastermind.controllers.people')
   .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'ngTableParams',
     function ($scope, $state, $stateParams, $filter, Resources, People, TableParams) {
 
-
-	  /**
-	   * Load Role definitions to display names
-	   */
+  /**
+   * Load Role definitions to display names
+   */
     Resources.get('roles').then(function(result){
       var members = result.members;
       $scope.allRoles = members;
@@ -30,88 +29,10 @@ angular.module('Mastermind.controllers.people')
       }
     });
     
-    
-
-
-//	  /**
-//	   * Load Skill Definitions to display names
-//	   */
-//	  Resources.get('skills').then(function(result){
-//		 var members = result.members;
-//		 var skillsMap = {};
-//		 for(var i = 0; i < members.length;i++){
-//			 var role = members[i];
-//			 skillsMap[members[i].resource] = members[i];
-//		 }
-//		 $scope.skillsMap = skillsMap;
-//
-//		 $scope.getSkillsName = function(resource){
-//			 var ret = 'Unspecified';
-//			 if(resource && $scope.skillsMap[resource]){
-//				 ret = $scope.skillsMap[resource].title;
-//			 }
-//			 return ret;
-//		 }
-//	  });
-//
-//	  /**
-//	   * Get the display label for a skill proficiency value
-//	   */
-//	  $scope.getSkillProficiencyLabel = function(proficiency){
-//		  var ret = 'Unspecified';
-//
-//		  if(proficiency == 1){
-//			  ret = 'Some';
-//		  }
-//		  else if(proficiency == 2){
-//			  ret = 'Moderate';
-//		  }
-//		  else if(proficiency == 3){
-//			  ret = 'Mastered';
-//		  }
-//
-//		  return ret;
-//	  };
-//
-//	  /**
-//	   * Remove a skill from the profile
-//	   */
-//	  $scope.removeSkill = function(skill){
-//		  var list = $scope.skillsList;
-//		  var i = list.length;
-//		  while( i-- ) {
-//		      if( list[i].type.resource == skill.type.resource ) break;
-//		  }
-//
-//		  list.splice(i, 1);
-//	  };
-
 	  /**
 	   * Controls the edit state of teh profile form (an edit URL param can control this from a URL ref)
 	   */
 	  $scope.editMode = $state.params.edit?$state.params.edit:false;
-
-//	  /**
-//	   * Initalizes the skills table this should only be done of the first skill add
-//	   */
-//	  $scope.initSkillsTable = function(){
-//		//Table Parameters
-//	      var params = {
-//	        page: 1,            // show first page
-//	        count: 10,           // count per page
-//	        sorting: {
-//	          title: 'asc'     // initial sorting
-//	        }
-//	      };
-//	      $scope.skillsParams = new TableParams(params, {
-//	        counts: [],
-//	        total: $scope.skillsList?$scope.skillsList.length:0, // length of data
-//	        getData: function ($defer, params) {
-//	          var ret = $scope.skillsList?$scope.skillsList:[];
-//	          $defer.resolve(ret);
-//	        }
-//	      });
-//	  };
 
 	  /**
 	   * Populate the form with fetch profile information
@@ -150,6 +71,11 @@ angular.module('Mastermind.controllers.people')
 			 
 			 gapi.person.go();
 		  });
+		  
+		  //Check if you can add hours
+		  if($scope.adminAccess || $scope.me.about == $scope.profile.about){
+			  $scope.canAddHours = true;
+		  }
 	  };
 
 	  /**
@@ -213,6 +139,62 @@ angular.module('Mastermind.controllers.people')
 		  });
 	  };
 
+	  $scope.initHours = function(){
+ 		   //Query all hours against the project
+	   	   var hoursQuery = {'person.resource':$scope.profile.about};
+	   	   //All Fields
+	   	   var fields = {};
+	   	   var sort = {'created':1};
+	   	   Resources.query('hours',hoursQuery, fields, function(hoursResult){
+	   		    $scope.hours = hoursResult.members;
+	   		   
+	   		    if($scope.hoursTableParams){
+	   		    	$scope.hoursTableParams.total($scope.hours.length);
+	   		    	$scope.hoursTableParams.reload();
+	   		       
+	   		    }
+	   		    else{
+	   		        // Table Parameters
+			   	    var params = {
+			   	      page: 1,            // show first page
+			   	      count: 25,           // count per page
+			   	      sorting: {
+			   	        created: 'des'     // initial sorting
+			   	      }
+			   	    };
+			   	    
+			   	    
+			   	    $scope.hoursTableParams = new TableParams(params, {
+			          total: $scope.hours.length, // length of data
+			          getData: function ($defer, params) {
+			            var data = $scope.hours;
+
+			            var start = (params.page() - 1) * params.count();
+			            var end = params.page() * params.count();
+
+			            // use build-in angular filter
+			            var orderedData = params.sorting() ?
+			              $filter('orderBy')(data, params.orderBy()) :
+			              data;
+
+			            var ret = orderedData.slice(start, end);
+			            
+			            //Resolve all the people
+			            var defers = [];
+			            for(var i = 0; i < ret.length; i++){
+			            	var ithHoursRecord = ret[i];
+			            	defers.push(Resources.resolve(ithHoursRecord.project));
+			            }
+			              $.when.apply(window, defers).done(function(){
+			                $defer.resolve(ret);
+			              });
+			          }
+			        });
+	   		    }
+		   		
+	   	   },sort);
+ 	  };
+	  
 	  /**
 	   * Get the Profile
 	   */
@@ -258,8 +240,118 @@ angular.module('Mastermind.controllers.people')
 			      });
 			 }
 		 });
+		 
+		 $scope.initHours();
 	  });
 
+
+    $scope.isCurrentProject = function(endDate) {
+      var endDate = new Date(endDate);
+      var currentDate = new Date();
+      if (endDate.getTime() < currentDate.getTime()) {
+        return false;
+      }
+      return true;
+    };
+    
+    ///////////Profile Hours/////////
+    $scope.newHoursRecord = {};
+    
+     /**
+	  * Add a new Hours Record to the server
+	  */
+	  $scope.addHours = function(){
+		 //Set the person context
+		 $scope.newHoursRecord.person = {resource:$scope.profile.about};
+		  
+		 Resources.create('hours', $scope.newHoursRecord).then(function(){ 
+			$scope.initHours();
+			$scope.newHoursRecord = {};
+		 });
+	  }
+	  
+	  /**
+	   * Delete an hours instance
+	   */
+	  $scope.deleteHours = function (hoursURL) {
+          Resources.remove(hoursURL).then(function(){
+  			$scope.initHours();
+  		 });
+     };
+    
+//	  /**
+//	   * Load Skill Definitions to display names
+//	   */
+//	  Resources.get('skills').then(function(result){
+//		 var members = result.members;
+//		 var skillsMap = {};
+//		 for(var i = 0; i < members.length;i++){
+//			 var role = members[i];
+//			 skillsMap[members[i].resource] = members[i];
+//		 }
+//		 $scope.skillsMap = skillsMap;
+//
+//		 $scope.getSkillsName = function(resource){
+//			 var ret = 'Unspecified';
+//			 if(resource && $scope.skillsMap[resource]){
+//				 ret = $scope.skillsMap[resource].title;
+//			 }
+//			 return ret;
+//		 }
+//	  });
+//
+//	  /**
+//	   * Get the display label for a skill proficiency value
+//	   */
+//	  $scope.getSkillProficiencyLabel = function(proficiency){
+//		  var ret = 'Unspecified';
+//
+//		  if(proficiency == 1){
+//			  ret = 'Some';
+//		  }
+//		  else if(proficiency == 2){
+//			  ret = 'Moderate';
+//		  }
+//		  else if(proficiency == 3){
+//			  ret = 'Mastered';
+//		  }
+//
+//		  return ret;
+//	  };
+//
+//	  /**
+//	   * Remove a skill from the profile
+//	   */
+//	  $scope.removeSkill = function(skill){
+//		  var list = $scope.skillsList;
+//		  var i = list.length;
+//		  while( i-- ) {
+//		      if( list[i].type.resource == skill.type.resource ) break;
+//		  }
+//
+//		  list.splice(i, 1);
+//	  };
+//	  /**
+//	   * Initalizes the skills table this should only be done of the first skill add
+//	   */
+//	  $scope.initSkillsTable = function(){
+//		//Table Parameters
+//	      var params = {
+//	        page: 1,            // show first page
+//	        count: 10,           // count per page
+//	        sorting: {
+//	          title: 'asc'     // initial sorting
+//	        }
+//	      };
+//	      $scope.skillsParams = new TableParams(params, {
+//	        counts: [],
+//	        total: $scope.skillsList?$scope.skillsList.length:0, // length of data
+//	        getData: function ($defer, params) {
+//	          var ret = $scope.skillsList?$scope.skillsList:[];
+//	          $defer.resolve(ret);
+//	        }
+//	      });
+//	  };
 //	  /**
 //	   * Get the list of Skill Types
 //	   */
@@ -302,14 +394,5 @@ angular.module('Mastermind.controllers.people')
 //			  $scope.skillsParams.reload();
 //		  }
 //	  };
-
-    $scope.isCurrentProject = function(endDate) {
-      var endDate = new Date(endDate);
-      var currentDate = new Date();
-      if (endDate.getTime() < currentDate.getTime()) {
-        return false;
-      }
-      return true;
-    };
 
   }]);
