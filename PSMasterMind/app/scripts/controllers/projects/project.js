@@ -153,84 +153,6 @@ angular.module('Mastermind')
 			return Math.floor(difference_ms / ONE_WEEK);
       };
       
-      
-      
-      $scope.handleProjectSelected = function(){
-    	  var project = $scope.project;
-    	  $scope.isTransient = ProjectsService.isTransient(project);
-    	  /**
-    	   * Controls the edit state of the project form (an edit URL param can control this from a URL ref)
-    	   */
-    	  $scope.editMode = editMode;
-    	  $scope.projectLoaded = true;
-
-          $scope.submitAttempted = false;
-
-          // The title of the page is the project's name or 'New Project' if transient.
-          $scope.title = $scope.isTransient ? 'New Project' : project.name;
-
-          // Table Parameters
-          var params = {
-            page: 1,            // show first page
-            count: 10,           // count per page
-            sorting: {
-            	type: 'asc'     // initial sorting
-            }
-          };
-
-          $scope.summaryRolesTableParams = new TableParams(params, {
-            total: $scope.project.roles.length,
-            getData: function ($defer, params) {
-              var start = (params.page() - 1) * params.count();
-              var end = params.page() * params.count();
-
-              var orderedData = params.sorting() ?
-                    $filter('orderBy')($scope.project.roles, params.orderBy()) :
-                    $scope.project.roles;
-
-              //use build-in angular filter
-              var result = orderedData.slice(start, end);
-
-              var defers = [];
-              var ret = [];
-              for(var i = 0; i < result.length; i++){
-                var ithRole = Resources.deepCopy(result[i]);
-                if(ithRole.assignee && ithRole.assignee.resource){
-                  defers.push(Resources.resolve(ithRole.assignee));
-                  //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
-                }
-
-                if(ithRole.type && ithRole.type.resource){
-                  defers.push(Resources.resolve(ithRole.type));
-                  //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
-                }
-
-                ret[i] = ithRole;
-              }
-
-              $.when.apply(window, defers).done(function(){
-                $defer.resolve(ret);
-              });
-            }
-          });
-      };
-      
-      /**
-       * Get Existing Project
-       */
-      if($scope.projectId){
-          ProjectsService.getForEdit($scope.projectId).then(function(project){
-        	  $scope.project = project;
-        	  $scope.handleProjectSelected();
-          });
-      }
-      /**
-       * Default create a new project
-       */
-      else{
-    	  $scope.project = ProjectsService.create();
-    	  $scope.handleProjectSelected();
-      }
 
 
       /**
@@ -383,8 +305,146 @@ angular.module('Mastermind')
   		 $scope.newHoursRecord.person = {resource:$scope.me.about};
   		  
   		 Resources.create('hours', $scope.newHoursRecord).then(function(){ 
-  			 
+  			$scope.initHours();
+  			$scope.newHoursRecord = {};
   		 });
   	  }
+  	  
+  	  $scope.initHours = function(){
+  		   //Query all hours against the project
+	   	   var hoursQuery = {'project.resource':$scope.project.about};
+	   	   //All Fields
+	   	   var fields = {};
+	   	   var sort = {'created':1};
+	   	   Resources.query('hours',hoursQuery, fields, function(hoursResult){
+	   		    $scope.hours = hoursResult.members;
+	   		   
+	   		    if($scope.hoursTableParams){
+	   		    	$scope.hoursTableParams.total($scope.hours.length);
+	   		    	$scope.hoursTableParams.reload();
+	   		       
+	   		    }
+	   		    else{
+	   		        // Table Parameters
+			   	    var params = {
+			   	      page: 1,            // show first page
+			   	      count: 25,           // count per page
+			   	      sorting: {
+			   	        created: 'des'     // initial sorting
+			   	      }
+			   	    };
+			   	    
+			   	    
+			   	    $scope.hoursTableParams = new TableParams(params, {
+			          total: $scope.hours.length, // length of data
+			          getData: function ($defer, params) {
+			            var data = $scope.hours;
+
+			            var start = (params.page() - 1) * params.count();
+			            var end = params.page() * params.count();
+
+			            // use build-in angular filter
+			            var orderedData = params.sorting() ?
+			              $filter('orderBy')(data, params.orderBy()) :
+			              data;
+
+			            var ret = orderedData.slice(start, end);
+			            
+			            //Resolve all the people
+			            var defers = [];
+			            for(var i = 0; i < ret.length; i++){
+			            	var ithHoursRecord = ret[i];
+			            	defers.push(Resources.resolve(ithHoursRecord.person));
+			            }
+			              $.when.apply(window, defers).done(function(){
+			                $defer.resolve(ret);
+			              });
+			          }
+			        });
+	   		    }
+		   		
+	   	   },sort);
+  	  };
+  	  
+  	  
+  	 $scope.handleProjectSelected = function(){
+   	  var project = $scope.project;
+   	  $scope.isTransient = ProjectsService.isTransient(project);
+   	  /**
+   	   * Controls the edit state of the project form (an edit URL param can control this from a URL ref)
+   	   */
+   	  $scope.editMode = editMode;
+   	  $scope.projectLoaded = true;
+
+         $scope.submitAttempted = false;
+
+         // The title of the page is the project's name or 'New Project' if transient.
+         $scope.title = $scope.isTransient ? 'New Project' : project.name;
+
+         // Table Parameters
+         var params = {
+           page: 1,            // show first page
+           count: 10,           // count per page
+           sorting: {
+           	type: 'asc'     // initial sorting
+           }
+         };
+
+         $scope.summaryRolesTableParams = new TableParams(params, {
+           total: $scope.project.roles.length,
+           getData: function ($defer, params) {
+             var start = (params.page() - 1) * params.count();
+             var end = params.page() * params.count();
+
+             var orderedData = params.sorting() ?
+                   $filter('orderBy')($scope.project.roles, params.orderBy()) :
+                   $scope.project.roles;
+
+             //use build-in angular filter
+             var result = orderedData.slice(start, end);
+
+             var defers = [];
+             var ret = [];
+             for(var i = 0; i < result.length; i++){
+               var ithRole = Resources.deepCopy(result[i]);
+               if(ithRole.assignee && ithRole.assignee.resource){
+                 defers.push(Resources.resolve(ithRole.assignee));
+                 //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+               }
+
+               if(ithRole.type && ithRole.type.resource){
+                 defers.push(Resources.resolve(ithRole.type));
+                 //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+               }
+
+               ret[i] = ithRole;
+             }
+
+             $.when.apply(window, defers).done(function(){
+               $defer.resolve(ret);
+             });
+           }
+         });
+         
+         
+         if(!editMode)$scope.initHours();
+     };
+     
+     /**
+      * Get Existing Project
+      */
+     if($scope.projectId){
+         ProjectsService.getForEdit($scope.projectId).then(function(project){
+       	  $scope.project = project;
+       	  $scope.handleProjectSelected();
+         });
+     }
+     /**
+      * Default create a new project
+      */
+     else{
+   	  $scope.project = ProjectsService.create();
+   	  $scope.handleProjectSelected();
+     }
       
     }]);

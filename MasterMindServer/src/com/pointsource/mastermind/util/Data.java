@@ -627,8 +627,8 @@ public class Data implements CONSTS {
 			JSONArray members = jsonObject.getJSONArray(PROP_MEMBERS);
 			for (int i = 0; i < members.length(); i++) {
 				JSONObject link = members.getJSONObject(i);
-				String lid = link.getString(PROP_ID);
-				if(lid != null){
+				if(link.has(PROP_ID)){
+					String lid = link.getString(PROP_ID);
 					String lRef = projectResourceURL+"/"+RESOURCE_LINKS+"/"+lid;
 					link.put(PROP_RESOURCE, lRef);
 				}
