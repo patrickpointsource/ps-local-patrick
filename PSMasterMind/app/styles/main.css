@@ -6411,8 +6411,7 @@ th > span.hidden-xs {
   height: 36px;
 }
 .fullProfileImage {
-  width: 90px;
-  height: 90px;
+  width: 125px;
   display: block;
   max-width: 100%;
   height: auto;
