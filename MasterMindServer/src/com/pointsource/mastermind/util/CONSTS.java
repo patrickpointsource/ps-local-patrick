@@ -145,6 +145,14 @@ public interface CONSTS {
 	public int DB_PORT_DEFAULT  = 27017;
 	public String DB_NAME_DEFAULT  = "mm_db_stage";
 	//public String DB_NAME_DEFAULT  = "mm_db_prod";
+	
+	//Local Host
+	public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
+	//Staging
+	//public String PUBLIC_BASE_URL = "http://mm_dmz.pointsource.us:8080/MasterMindStaging/";
+	//Production
+	//public String PUBLIC_BASE_URL = "http://mm_dmz.pointsource.us:8080/MasterMindServer/";
+	
 	public String COLLECTION_TITLE_HOURS = "Hours";
 	public String COLLECTION_TITLE_LINKS = "Links";
 	public String COLLECTION_TITLE_PEOPLE = "People";

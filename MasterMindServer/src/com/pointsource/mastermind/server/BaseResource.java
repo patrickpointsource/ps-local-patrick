@@ -1,5 +1,8 @@
 package com.pointsource.mastermind.server;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,8 +32,9 @@ public abstract class BaseResource {
 
 	/**
 	 * All relevant info about the request
+	 * @throws URISyntaxException 
 	 */
-	protected RequestContext getRequestContext() {
+	protected RequestContext getRequestContext() throws URISyntaxException {
 		RequestContext context = new RequestContext();
 		HttpSession session = request.getSession();
 		Object user = session.getAttribute(CONSTS.SESSION_USER_KEY);
@@ -41,7 +45,7 @@ public abstract class BaseResource {
 		context.setCurrentUser((JSONObject) user);
 		Object auth = session.getAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
 		context.setAuthorization(String.valueOf(auth));
-		context.setBaseURI(uriInfo.getBaseUri());
+		context.setBaseURI(new URI(CONSTS.PUBLIC_BASE_URL));
 		context.setServletContext(servletContext);
 
 		return context;

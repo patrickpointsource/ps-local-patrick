@@ -82,7 +82,7 @@ public class Data implements CONSTS {
 				ret.put("DB_PORT", DB_PORT_DEFAULT);
 				ret.put("DB_NAME", DB_NAME_DEFAULT);
 				ret.put("BUILD_NUMBER", BUILD_NUMBER);
-
+				ret.put("PUBLIC_BASE_URL", CONSTS.PUBLIC_BASE_URL);
 				CONFIG = ret;
 			} catch (Exception e) {
 				e.printStackTrace(System.err);
