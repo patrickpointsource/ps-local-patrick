@@ -94,7 +94,7 @@ angular.module('Mastermind')
       if(dd6<10){dd6='0'+dd6} if(mm6<10){mm6='0'+mm6} sixMontsFromNow = yyyy6+'-'+mm6+'-'+dd6;
 
       var qvProjQuery = {startDate:{$lte:sixMontsFromNow},$or:[{endDate:{$exists:false}},{endDate:{$gt:startDateQuery}}]};
-      var qvProjFields = {resource:1,name:1,startDate:1,endDate:1,"roles.assignee":1};
+      var qvProjFields = {resource:1,name:1,startDate:1,endDate:1,"roles":1};
 
       Resources.query('projects', qvProjQuery, qvProjFields, function(result){
     	  $scope.qvProjects = result.data;
@@ -174,6 +174,44 @@ angular.module('Mastermind')
        */
       $scope.showAvailablePeople = function () {
         $state.go('people.index', {filter:'available'});
+      };
+      
+      /**
+       * Calculates whether a role is active within a particular month.
+       *
+       * @param project
+       * @param month
+       * @param year
+       */
+      $scope.isPersonActiveInMonth = function (project, person, month, year) {
+    	  var projectIsActive = $scope.inMonth(project, month, year);
+    	  if(!projectIsActive) return false;
+    	  
+    	  //Look through all the roles
+    	  var roles = project.roles;
+    	  var personRef = person.about?person.about:person.resource;
+    	  var ret = false;
+    	  if(personRef){
+	    	  for(var i = 0; i < roles.length; i++){
+	    		  var role = roles[i];
+	    		  //Check if person is assigned to role
+	    		  if(role.assignee && personRef == role.assignee.resource){
+	    			var nextMonth = month === 11 ? 0 : (month + 1),
+	    			       nextYear = month === 11 ? (year + 1) : year,
+	    			       startDay = new Date(year, month, 1),
+	    			       endDay = new Date(nextYear, nextMonth, 0);
+
+			        // If the role start day is before the last day of this month
+			        // and its end date is after the first day of this month.
+			        var roleStarted =   new Date(role.startDate) <= endDay;
+			        var roleEnded = role.endDate &&  new Date(role.endDate) <= startDay;
+			        ret =  roleStarted && !roleEnded;
+			        if(ret) break;
+	    		  }
+	    	  }
+    	  }
+    	  
+    	  return ret;
       };
 
       /**

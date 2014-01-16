@@ -56,12 +56,12 @@
         </div>
         <div class="row" ng-repeat="project in qvProjects">
           <div><a href="#{{project.resource}}">{{project.name}}</a></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth(), 2014)}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+1, 2014)}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+2, 2014)}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+3, 2014)}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+4, 2014)}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+5, 2014)}"></div>
+          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth(), startDate.getFullYear())}"></div>
+          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+1, startDate.getFullYear())}"></div>
+          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+2, startDate.getFullYear())}"></div>
+          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+3, startDate.getFullYear())}"></div>
+          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+4, startDate.getFullYear())}"></div>
+          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+5, startDate.getFullYear())}"></div>
         </div>
         </div>
       </div>
@@ -90,12 +90,12 @@
                 <div class="col-xs-11">
                   <div class="row" ng-repeat="project in qvPeopleProjects[person.about] track by $index">
                     <div><a href="#{{project.resource}}">{{project.name}}</a></div>
-                    <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth(), 2014)}"></div>
-                    <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+1, 2014)}"></div>
-                    <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+2, 2014)}"></div>
-                    <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+3, 2014)}"></div>
-                    <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+4, 2014)}"></div>
-                    <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+5, 2014)}"></div>
+                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth(), startDate.getFullYear())}"></div>
+                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+1, startDate.getFullYear())}"></div>
+                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+2, startDate.getFullYear())}"></div>
+                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+3, startDate.getFullYear())}"></div>
+                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+4, startDate.getFullYear())}"></div>
+                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+5, startDate.getFullYear())}"></div>
                   </div>
                 </div>
              </div>
