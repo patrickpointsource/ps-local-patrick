@@ -1,25 +1,7 @@
 <div>
 	<div class="row">
-		<div class="col-xs-10 col-sm-8">
-			<br />
-			<div ng-show="gplusProfile">
-				<div class="g-person"
-					data-href="//plus.google.com/{{profile.googleId}}" data-width="200"
-					data-showtagline="false" data-showcoverphoto="false"
-					data-rel="author"></div>
-			</div>
-			<div ng-hide="gplusProfile">
-				<div
-					style="width: 200px; border: 1px lightgray solid; text-align: center; margin-bottom: 14px;">
-					<img class="media-object fullProfileImage"
-						style="margin: 5px auto auto;" ng-src="{{profile.thumbnail}}" />
-					<h4>
-						<span ng-hide="gplusProfile">{{profile.name}}</span>
-					</h4>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-4 hidden-xs pageActions">
+		<div class="col-xs-8"><h2>{{profile.name}}</h2></div>
+		<div class="actions hidden-xs col-sm-4 pageActions">
 			<button ng-hide="editMode" class="btn" ng-click="edit()">
 				<i class="fa fa-pencil-square-o"></i> <span>Edit</span>
 			</button>
@@ -30,16 +12,15 @@
 				<i class="fa fa-floppy-o"></i> <span>Save</span>
 			</button>
 		</div>
-		<div class="col-xs-2 visible-xs pageActions">
+		<div class="actions visible-xs col-xs-4 pageActions">
 			<button ng-hide="editMode" class="btn" ng-click="edit()">
-				<i class="fa fa-pencil-square-o"></i>
+				<i class="fa fa-pencil-square-o"></i> 
 			</button>
 			<button ng-show="editMode" class="btn" ng-click="cancel()">
 				<i class="fa fa-chevron-left"></i>
 			</button>
-			&nbsp;
 			<button ng-show="editMode" class="btn" ng-click="save()">
-				<i class="fa fa-floppy-o"></i>
+				<i class="fa fa-floppy-o"></i> 
 			</button>
 		</div>
 	</div>
@@ -47,23 +28,43 @@
 		<div class="col-xs-12">
 			<div class="well">
 				<div class="row">
-					<div class="col-xs-12 col-md-6">
-						<div class="row">
-							<div class="col-xs-12 media-body">
-								<span><a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
-								<div ng-show="editMode">
-									<label class="personDetailLabel">Primary Role:</label> <select
-										ng-model="profile.primaryRole.resource"
-										ng-options="m.resource as m.title for m in allRoles">
-									</select>
-								</div>
-								<div ng-hide="editMode">
-									<label class="personDetailLabel">Primary Role:</label> <span>{{getRoleName(profile.primaryRole.resource)}}</span>
-								</div>
+					<div class="col-xs-12 col-sm-3">
+						<div style="background-color: white;width: 148px;padding: 10px;margin-bottom:10px">
+						<img class="media-object fullProfileImage"
+								 ng-src="{{profile.thumbnail}}" />
+					    </div>
+				    </div>
+					<div class="col-xs-12 col-sm-7">
+					    <div>
+							<span><a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
+							<div ng-show="editMode">
+								<label class="personDetailLabel">Primary Role:</label> <select
+									class="form-control"
+									ng-model="profile.primaryRole.resource"
+									ng-options="m.resource as m.title for m in allRoles">
+								</select>
+							</div>
+							<div ng-hide="editMode">
+								<label class="personDetailLabel">Primary Role:</label> <span>{{getRoleName(profile.primaryRole.resource)}}</span>
+							</div>
+							<div ng-show="editMode">
+								<label for="profilePhone" class="personDetailLabel">Phone:</label> 
+								<input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone"/>
+							</div>
+							<div ng-hide="editMode">
+								<label class="personDetailLabel">Phone:</label> <a ng-if="profile.phone" href="tel:+{{profile.phone | tel}}">{{profile.phone | tel}}</a>
+							</div>
+							<div ng-show="editMode">
+								<label for="profileSkype" class="personDetailLabel">Skype:</label> 
+								<input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="phone"/>
+							</div>
+							<div ng-hide="editMode">
+								<label class="personDetailLabel">Skype Id:</label> <a ng-if="profile.skypeId" href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
+								
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-12 col-md-6">
+					<div class="col-xs-12 col-sm-2" sytle="clear:both">
 						<div ng-hide="editMode">
 							<label class="personDetailLabel">Groups:</label> <span
 								ng-show="!profile.groups"">None</span>

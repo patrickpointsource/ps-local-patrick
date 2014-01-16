@@ -66,11 +66,11 @@ angular.module('Mastermind.controllers.people')
 		  
 		  var url = person.about + '/' + 'gplus';
 		  
-		  Resources.get(url).then(function(result){
-			 $scope.gplusProfile = result;
-			 
-			 gapi.person.go();
-		  });
+//		  Resources.get(url).then(function(result){
+//			 $scope.gplusProfile = result;
+//			 
+//			 gapi.person.go();
+//		  });
 		  
 		  //Check if you can add hours
 		  if($scope.adminAccess || $scope.me.about == $scope.profile.about){
