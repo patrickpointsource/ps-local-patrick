@@ -52,7 +52,7 @@
 								<input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone"/>
 							</div>
 							<div ng-hide="editMode">
-								<label class="personDetailLabel">Phone:</label> <a ng-if="profile.phone" href="tel:+{{profile.phone | tel}}">{{profile.phone | tel}}</a>
+								<label class="personDetailLabel">Phone:</label> <a ng-if="profile.phone" href="tel:{{profile.phone | tel}}">{{profile.phone | tel}}</a>
 							</div>
 							<div ng-show="editMode">
 								<label for="profileSkype" class="personDetailLabel">Skype:</label> 
