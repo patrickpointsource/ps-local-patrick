@@ -147,31 +147,27 @@
 	</div>
 	<div ng-form="newHoursForm" id="newHoursDialog" class="well collapse out">
 	    <div class="row">
-	    	<div class="col-xs-12 col-sm-3">
-	            <label class="control-label">Person: </label>
-	            <span>{{profile.name}}</span>
-	        </div>
-	    	<div class="col-xs-12 col-sm-9">
-	            <label class="required-label control-label" for="project">Project:</label>
-                <select name="project" id="project" class="col-xs-12 form-control" ng-model="newHoursRecord.project.resource"
-                	ng-required="true" ng-options="p.resource as p.name for p in projects">
-                </select>
-	        </div>
-		</div>
-		<div class="row">
-	    	<div class="col-xs-12 col-sm-6">
-	    		<div class="row">
-	    			<div class="col-xs-12">
-				         <label class="required-label  control-label" for="hours">Hours:</label>
-				         <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours" ng-required="true"/>
-			        </div>
-	    			<div class="col-xs-12">
-			            <label class="required-label control-label" for="date">Date:</label>
-			            <input id="date" name="date" class="form-control datepicker" type="text"
-		                    ng-model="newHoursRecord.date"
-		                		todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
-	             	</div>
-			     </div>
+	    	<div class="col-xs-12 col-sm-6 row">
+		    	<div class="col-xs-4">
+		            <label class="control-label">Person: </label>
+		            <span style="white-space: nowrap;overflow: hidden;">{{profile.name}}</span>
+		        </div>
+		    	<div class="col-xs-8">
+		            <label class="required-label control-label" for="project">Project:</label>
+	                <select name="project" id="project" class="col-xs-12 form-control" ng-model="newHoursRecord.project.resource"
+	                	ng-required="true" ng-options="p.resource as p.name for p in projects">
+	                </select>
+		        </div>
+		        <div class="col-xs-6">
+			         <label class="required-label  control-label" for="hours">Hours:</label>
+			         <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours" ng-required="true"/>
+		        </div>
+    			<div class="col-xs-6">
+		            <label class="required-label control-label" for="date">Date:</label>
+		            <input id="date" name="date" class="form-control datepicker" type="text"
+	                    ng-model="newHoursRecord.date"
+	                		todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
+             	</div>
 	        </div>
 	        <div class="col-xs-12 col-sm-6">
 		         <label class="required-label  control-label" for="hours">Description:</label>

@@ -1,106 +1,192 @@
+<br />
 <div id="content">
-  <div id="dashboard-widgets" class="row">
-    <div class="col-xs-12 col-sm-6 col-md-offset-1 col-md-5 col-lg-offset-2 col-lg-4 dashboard-widget">
-      <div class="row dashboard-label">
-        <div class="col-sm-9 hidden-xs" ng-click="showActiveProjects()">Active Projects</div>
-        <div class="col-xs-9 visible-xs" ng-click="showActiveProjects()">Projects</div>
-        <div class="col-xs-3">
-          <button class="pull-right btn btn-default" ng-click="createProject()">
-            <div class="visible-md visible-lg"><i class="fa fa-plus-square"></i> Add</div>
-            <div class="visible-xs visible-sm"><i class="fa fa-plus-square"></i></div>
-          </button>
-        </div>
+	<div id="dashboard-widgets" class="row">
+		<div class="col-xs-12 row-fluid">
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="panel panel-default dashboard-widget">
+					<div class="panel-heading">
+						<a href="#{{me.about}}">Log Hours</a>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+					    	<div class="col-xs-4">
+					            <label class="control-label">Person: </label>
+					            <span style="white-space: nowrap;overflow: hidden;">{{me.name}}</span>
+					        </div>
+					    	<div class="col-xs-8">
+					            <label class="required-label control-label" for="project">Project:</label>
+				                <select name="project" id="project" class="col-xs-12 form-control" ng-model="newHoursRecord.project.resource"
+				                	ng-required="true" ng-options="p.resource as p.name for p in qvProjects">
+				                </select>
+					        </div>
+						</div>
+						<br/>
+						<div class="row">
+							<div class="col-xs-6">
+								<label class="required-label  control-label" for="hours">Hours:</label>
+								<input id="hours" name="hours" class="form-control"
+									type="number" ng-model="newHoursRecord.hours"
+									ng-required="true" />
+							</div>
+							<div class="col-xs-6">
+								<label class="required-label control-label" for="date">Date:</label>
+								<input id="date" name="date" class="form-control datepicker"
+									type="text" ng-model="newHoursRecord.date" todayBtn="true"
+									data-provide="datepicker" data-date-format="yyyy-mm-dd"
+									ng-required="true" />
+							</div>
+						</div>
+						<br/>
+						<div class="row">
+							<div class="col-xs-12">
+								<label class="required-label  control-label" for="hours">Description:</label>
+								<textarea id="hours" name="hours" rows="5" class="form-control"
+									ng-model="newHoursRecord.description" ng-required="true"></textarea>
+							</div>
+						</div>
+						<br/>
+						<div class="row">
+							<div class="col-xs-12">
+								<input type="submit" class="btn" value="Add"
+									ng-click="addHours()">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="panel panel-default dashboard-widget">
+					<div class="panel-heading">
+						<a href="#projects?filter=active">Active Projects</a>
+						<div class="pull-right  btn-group btn-group-sm dashboard-actions">
+							<button class="btn btn-default" ng-click="createProject()">
+								<div>
+									<i class="fa fa-plus-square"></i>
+								</div>
+							</button>
+						</div>
+					</div>
+					<div class="panel-body">
+						<div class="dashboard-box big-text"
+							ng-click="showActiveProjects()">{{projectCount}}</div>
+					</div>
+				</div>
+			</div>
 
-      </div>
-      <div class="dashboard-box big-text" ng-click="showActiveProjects()">
-        {{projectCount}}
-      </div>
-    </div>
-
-    <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 dashboard-widget">
-      <div class="row dashboard-label">
-        <div class="col-md-9 hidden-xs" ng-click="showAvailablePeople()">Available People</div>
-        <div class="col-xs-7 col-sm-8 visible-xs" ng-click="showAvailablePeople()">People</div>
-      </div>
-      <div class="dashboard-box peopleList three-rows">
-        <div class="row">
-          <div class="col-xs-4 col-sm-3" style="min-width:100px" ng-repeat="person in availablePeople">
-            <a href="#{{person.resource}}">
-              <img alt="{{person.name}}" title="{{person.name}}"  ng-src="{{person.thumbnail}}"/>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div id="summaryView">
-    <div class="row dashboard-label">
-      <div class="col-sm-9 hidden-xs">Quick View</div>
-      <div class="col-sm-3 col-sm-12">
-        <select class="form-control pull-right" ng-model="summarySwitcher">
-          <option value="projects">Projects View</option>
-          <option value="people">People View</option>
-        </select>
-      </div>
-    </div>
-    <div class="row graph" ng-show="summarySwitcher == 'projects'">
-      <div id="projectsSummaryGraph" class="col-xs-12">
-        <div class="row">
-          <div class="col-xs-2">{{getMonthName(startDate.getMonth())}}</div>
-          <div class="col-xs-2">{{getMonthName(startDate.getMonth()+1)}}</div>
-          <div class="col-xs-2">{{getMonthName(startDate.getMonth()+2)}}</div>
-          <div class="col-xs-2">{{getMonthName(startDate.getMonth()+3)}}</div>
-          <div class="col-xs-2">{{getMonthName(startDate.getMonth()+4)}}</div>
-          <div class="col-xs-2">{{getMonthName(startDate.getMonth()+5)}}</div>
-        </div>
-        <div class="row" ng-repeat="project in qvProjects">
-          <div><a href="#{{project.resource}}">{{project.name}}</a></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth(), startDate.getFullYear())}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+1, startDate.getFullYear())}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+2, startDate.getFullYear())}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+3, startDate.getFullYear())}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+4, startDate.getFullYear())}"></div>
-          <div class="col-xs-2" ng-class="{active: inMonth(project, startDate.getMonth()+5, startDate.getFullYear())}"></div>
-        </div>
-        </div>
-      </div>
-      <div class="row graph" ng-show="summarySwitcher == 'people'">
-        <div id="peopleSummaryGraph" class="col-xs-12">
-            <div class="row">
-                  <div class="col-xs-1">
-                </div>
-                <div class="col-xs-11">
-                  <div class="row">
-                      <div class="col-xs-2">{{getMonthName(startDate.getMonth())}}</div>
-                      <div class="col-xs-2">{{getMonthName(startDate.getMonth()+1)}}</div>
-                      <div class="col-xs-2">{{getMonthName(startDate.getMonth()+2)}}</div>
-                      <div class="col-xs-2">{{getMonthName(startDate.getMonth()+3)}}</div>
-                      <div class="col-xs-2">{{getMonthName(startDate.getMonth()+4)}}</div>
-                      <div class="col-xs-2">{{getMonthName(startDate.getMonth()+5)}}</div>
-                    </div>
-                </div>
-                </div>
-             </div>
-             <div class="row peopleList" ng-repeat="person in qvPeople" ng-show="qvPeople">
-              <div class="col-xs-1">
-                <div style="float:left position:absolute"><a href="#{{person.about}}">{{person.givenName}}</a></div>
-                  <img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/>
-                </div>
-                <div class="col-xs-11">
-                  <div class="row" ng-repeat="project in qvPeopleProjects[person.about] track by $index">
-                    <div><a href="#{{project.resource}}">{{project.name}}</a></div>
-                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth(), startDate.getFullYear())}"></div>
-                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+1, startDate.getFullYear())}"></div>
-                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+2, startDate.getFullYear())}"></div>
-                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+3, startDate.getFullYear())}"></div>
-                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+4, startDate.getFullYear())}"></div>
-                    <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+5, startDate.getFullYear())}"></div>
-                  </div>
-                </div>
-             </div>
-            </div>
-        </div>
-      </div>
-  </div>
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="panel panel-default dashboard-widget">
+					<div class="panel-heading">
+						<a href="#/people/?filter=available">Available People</a>
+					</div>
+					<div class="panel-body">
+						<div class="dashboard-box peopleList three-rows">
+							<div class="row">
+								<div class="col-xs-4 col-sm-3" style="min-width: 100px"
+									ng-repeat="person in availablePeople">
+									<a href="#{{person.resource}}"> <img alt="{{person.name}}"
+										title="{{person.name}}" ng-src="{{person.thumbnail}}" />
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="col-xs-12">
+			<div class="panel panel-default dashboard-widget">
+				<div class="panel-heading">
+					Quick View
+					<div class="pull-right btn-group btn-group-sm dashboard-actions"
+						style="top: -7px;">
+						<select class="form-control" ng-model="summarySwitcher">
+							<option value="projects">Projects View</option>
+							<option value="people">People View</option>
+						</select>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="row graph" ng-show="summarySwitcher == 'projects'">
+						<div id="projectsSummaryGraph" class="col-xs-12">
+							<div class="row">
+								<div class="col-xs-2">{{getMonthName(startDate.getMonth())}}</div>
+								<div class="col-xs-2">{{getMonthName(startDate.getMonth()+1)}}</div>
+								<div class="col-xs-2">{{getMonthName(startDate.getMonth()+2)}}</div>
+								<div class="col-xs-2">{{getMonthName(startDate.getMonth()+3)}}</div>
+								<div class="col-xs-2">{{getMonthName(startDate.getMonth()+4)}}</div>
+								<div class="col-xs-2">{{getMonthName(startDate.getMonth()+5)}}</div>
+							</div>
+							<div class="row" ng-repeat="project in qvProjects">
+								<div>
+									<a href="#{{project.resource}}">{{project.name}}</a>
+								</div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth(), startDate.getFullYear())}"></div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+1, startDate.getFullYear())}"></div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+2, startDate.getFullYear())}"></div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+3, startDate.getFullYear())}"></div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+4, startDate.getFullYear())}"></div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+5, startDate.getFullYear())}"></div>
+							</div>
+						</div>
+					</div>
+					<div class="row graph" ng-show="summarySwitcher == 'people'">
+						<div id="peopleSummaryGraph" class="col-xs-12">
+							<div class="row">
+								<div class="col-xs-1"></div>
+								<div class="col-xs-11">
+									<div class="row">
+										<div class="col-xs-2">{{getMonthName(startDate.getMonth())}}</div>
+										<div class="col-xs-2">{{getMonthName(startDate.getMonth()+1)}}</div>
+										<div class="col-xs-2">{{getMonthName(startDate.getMonth()+2)}}</div>
+										<div class="col-xs-2">{{getMonthName(startDate.getMonth()+3)}}</div>
+										<div class="col-xs-2">{{getMonthName(startDate.getMonth()+4)}}</div>
+										<div class="col-xs-2">{{getMonthName(startDate.getMonth()+5)}}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row peopleList" ng-repeat="person in qvPeople"
+							ng-show="qvPeople">
+							<div class="col-xs-1">
+								<div style="float: left position:absolute">
+									<a href="#{{person.about}}">{{person.givenName}}</a>
+								</div>
+								<img title="{{person.name}}" class="profileImage"
+									ng-src="{{person.thumbnail}}" />
+							</div>
+							<div class="col-xs-11">
+								<div class="row"
+									ng-repeat="project in qvPeopleProjects[person.about] track by $index">
+									<div>
+										<a href="#{{project.resource}}">{{project.name}}</a>
+									</div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth(), startDate.getFullYear())}"></div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+1, startDate.getFullYear())}"></div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+2, startDate.getFullYear())}"></div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+3, startDate.getFullYear())}"></div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+4, startDate.getFullYear())}"></div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(project, person, startDate.getMonth()+5, startDate.getFullYear())}"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 </div>
