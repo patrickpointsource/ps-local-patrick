@@ -6170,8 +6170,6 @@ header #badge nav {
   margin-top: 20px;
 }
 .graph {
-  border: 1px solid #e4e4e4;
-  padding: 10px;
   margin: auto;
 }
 .graph .row {
@@ -6245,9 +6243,8 @@ main article #content hr {
 }
 main article #content .dashboard-widget .dashboard-box {
   box-sizing: border-box;
-  height: 210px;
+  height: 212px;
   text-align: center;
-  border: 1px solid #e4e4e4;
 }
 main article #content .dashboard-widget .dashboard-box.big-text {
   font-size: 137px;
@@ -6261,8 +6258,8 @@ main article #content .dashboard-widget .dashboard-box.three-rows img {
   height: 105px;
 }
 main article #content .dashboard-widget .dashboard-actions {
-  margin-top: 20px;
-  text-align: center;
+  position: relative;
+  top: -5px;
 }
 main article #content .dashboard-label {
   margin: 10px -15px;
