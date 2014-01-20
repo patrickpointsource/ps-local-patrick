@@ -66,6 +66,8 @@
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <![endif]-->
 <body>
+	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+	<script type="text/javascript" src="scripts/login.js"></script>
 	<div id="welcomeContent" class="jumbotron" ng-if="angular.equals(authState, 'loggedOut')">
 		<h1>PointSource MasterMind</h1>
 		<p>Sign in with your PointSource Google+ account.</p>
@@ -100,6 +102,4 @@
 			}
 		</script>
 	</div>
-	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
-	<script type="text/javascript" src="scripts/login.js"></script>
 </body>

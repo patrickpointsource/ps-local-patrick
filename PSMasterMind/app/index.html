@@ -69,8 +69,11 @@
 <script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <![endif]-->
-
 	<div ng-controller="AreasCtrl">
+		<div id="welcomeContent" class="jumbotron" ng-if="!authState">
+			<h1>PointSource MasterMind</h1>
+			<p>Loading Please Wait...</p>
+		</div>
 		<div id="appContent" ng-if="authState">
 			<header>
 				<nav class="navbar navbar-default navbar-fixed-top"
