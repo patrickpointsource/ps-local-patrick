@@ -75,7 +75,7 @@
 			<p>Loading Please Wait...</p>
 		</div>
 		<div id="appContent" ng-if="authState">
-			<header>
+			<header ng-show="authState">
 				<nav class="navbar navbar-default navbar-fixed-top"
 					role="navigation">
 					<div ng-if="me.thumbnail" class="dropdown pull-right" id="user-dropdown">
