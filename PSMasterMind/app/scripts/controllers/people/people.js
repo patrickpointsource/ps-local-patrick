@@ -15,23 +15,25 @@ angular.module('Mastermind.controllers.people')
             var start = (params.page() - 1) * params.count();
             var end = params.page() * params.count();
 
+            var activeRoles = [];
             for(var i=start; (i<$scope.people.length && i<end);i++){
 	        	//Annotate people with additional information
 	  	        $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
 	            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
 	          	// add the role to the person so we can display it in the table and sort by it
-	            	Resources.resolve($scope.people[i].primaryRole);
+	            	activeRoles.push(Resources.resolve($scope.people[i].primaryRole));
 	            }
 	          }
+            
+            $q.all(activeRoles).then(function(roles){
+            	// use build-in angular filter
+                var orderedData = params.sorting() ?
+                  $filter('orderBy')(data, params.orderBy()) :
+                  data;
 
-            // use build-in angular filter
-            var orderedData = params.sorting() ?
-              $filter('orderBy')(data, params.orderBy()) :
-              data;
-
-            var ret = orderedData.slice(start, end);
-            $defer.resolve(ret);
-
+                var ret = orderedData.slice(start, end);
+                $defer.resolve(ret);
+            });
           }
         });
       };
