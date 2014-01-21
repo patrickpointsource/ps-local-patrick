@@ -46,10 +46,8 @@
 	font-style: normal;
 }
 </style>
-<!-- libs -->
-<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="wmbvg9mkhukv6m0"></script>
 <link rel="stylesheet"
-	href="bower_components/font-awesome/css/font-awesome.css" />
+	href="bower_components/font-awesome/css/font-awesome.min.css" />
 	
 <!-- build:css styles/site.css -->
 <link rel="stylesheet" href="bower_components/ng-table/ng-table.css" />
@@ -155,7 +153,7 @@
 		</div>
 	</div>
 	
-
+	<!-- build:js scripts/modules.js -->
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 	<script type="text/javascript"
 		src="bower_components/marked/lib/marked.js"></script>
@@ -177,8 +175,10 @@
 		src="bower_components/lodash/dist/lodash.js"></script>
 	<script type="text/javascript"
 		src="bower_components/restangular/dist/restangular.js"></script>
-
+	<!-- endbuild -->
+	
 	<script type="text/javascript" src="login/scripts/login.js"></script>
+	
 	<!-- build:js({.tmp,app}) scripts/scripts.js -->
 	<script src="scripts/app.js"></script>
 
@@ -213,7 +213,7 @@
 	<script src="scripts/models/projects/project.js"></script>
 	<script src="scripts/models/projects/rates.js"></script>
 	<!-- endbuild -->
-	
-	
+	<!-- libs -->
+	<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="wmbvg9mkhukv6m0"></script>
 </body>
 </html>
