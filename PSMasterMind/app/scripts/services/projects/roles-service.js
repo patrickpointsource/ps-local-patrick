@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Mastermind.services.projects')
-  .service('RolesService', function (RateFactory, Role, Resources) {
+  .service('RolesService', ['RateFactory','Role','Resources',function (RateFactory, Role, Resources) {
     /**
      * Change a Role's rate type between hourly, weekly, and monthly.
      *
@@ -101,4 +101,4 @@ angular.module('Mastermind.services.projects')
     	}
     	return errors;
     };
-  });
+  }]);

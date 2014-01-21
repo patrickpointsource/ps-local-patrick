@@ -4,7 +4,7 @@
  * People Service
  */
 angular.module('Mastermind')
-  .factory('Groups', function (Restangular) {
+  .factory('Groups', ['Restangular',function (Restangular) {
 
     var GroupsRestangular = Restangular.withConfig(function (RestangularConfigurer) {
       RestangularConfigurer.setResponseInterceptor(function (data, operation, what) {
@@ -44,4 +44,4 @@ angular.module('Mastermind')
       query: query,
       get: get
     };
-  });
+  }]);

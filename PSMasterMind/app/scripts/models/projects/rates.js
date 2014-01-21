@@ -49,7 +49,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     WEEKLY: 'weekly',
     MONTHLY: 'monthly'
   })
-  .factory('HourlyRate', function (Rates) {
+  .factory('HourlyRate', ['Rates', function (Rates) {
     /**
      * Defines the defaults for a new hourly rate.
      *
@@ -79,8 +79,8 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     return HourlyRate;
-  })
-  .factory('WeeklyRate', function (Rates) {
+  }])
+  .factory('WeeklyRate', ['Rates', function (Rates) {
     /**
      * The default values for a newly created weekly rate.
      *
@@ -112,8 +112,8 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     return WeeklyRate;
-  })
-  .factory('MonthlyRate', function (Rates) {
+  }])
+  .factory('MonthlyRate', ['Rates', function (Rates) {
     /**
      * Monthly rates are considered fully utilized and the hours are set to 180.
      *
@@ -140,9 +140,9 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     return MonthlyRate;
-  })
-  .run(function (RateFactory, Rates, HourlyRate, WeeklyRate, MonthlyRate) {
+  }])
+  .run(['RateFactory','Rates','HourlyRate','WeeklyRate','MonthlyRate',function (RateFactory, Rates, HourlyRate, WeeklyRate, MonthlyRate) {
     RateFactory.define(Rates.HOURLY, HourlyRate);
     RateFactory.define(Rates.WEEKLY, WeeklyRate);
     RateFactory.define(Rates.MONTHLY, MonthlyRate);
-  });
+  }]);

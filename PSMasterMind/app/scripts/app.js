@@ -24,7 +24,7 @@
     'Mastermind.models.projects',
     'Mastermind.services.projects'
   ])
-    .config(function ($logProvider, $stateProvider, $urlRouterProvider) {
+    .config( ['$logProvider','$stateProvider','$urlRouterProvider',function($logProvider, $stateProvider, $urlRouterProvider) {
       $logProvider.debugEnabled(false);
     	
       $urlRouterProvider
@@ -34,19 +34,7 @@
         .state('home', {
           url: '/',
           templateUrl: 'views/main.html',
-          controller: 'MainCtrl',
-          resolve: {
-            projects: function (ProjectsService) {
-              var accessToken = localStorage.getItem('access_token'),
-                projects = null;
-
-              if (accessToken !== null) {
-                projects = ProjectsService.list();
-              }
-
-              return projects;
-            }
-          }
+          controller: 'MainCtrl'
         })
         .state('admin', {
           url: '/admin',
@@ -61,21 +49,13 @@
         .state('projects.index', {
           url: '',
           templateUrl: 'views/projects/index.html?filter',
-          controller: 'ProjectsCtrl',
-          resolve: {
-            projects: function (ProjectsService) {
-              return ProjectsService.list();
-            }
-          }
+          controller: 'ProjectsCtrl'
         })
         .state('projects.new', {
           url: '/new',
           templateUrl: 'views/projects/edit.html',
           controller: 'ProjectCtrl',
           resolve: {
-            project: function (ProjectsService) {
-              return ProjectsService.create();
-            },
             editMode: function () {
                 return true;
             }
@@ -116,7 +96,7 @@
           templateUrl: 'views/people/profile.html',
           controller: 'ProfileCtrl'
         });
-    })
+    }])
     .config( [
 	    '$compileProvider',
 	    function( $compileProvider )
@@ -125,7 +105,7 @@
 	        // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
 	    }
 	])
-    .config(function (RestangularProvider) {
+    .config( ['RestangularProvider',function(RestangularProvider) {
       var serverLocation = window.serverLocation;
       var restPath = window.restPath;
       
@@ -195,7 +175,7 @@
           return ret; // false to stop the promise chain
         }
       );
-    })
+    }])
     .run(['$rootScope',
       function ($rootScope, $state) {
 

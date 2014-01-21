@@ -4,8 +4,8 @@
  * Controller for handling the list of projects.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('ProjectsCtrl', [ '$scope', '$state', '$filter', 'ngTableParams', 'Resources', 'projects', 'ProjectsService',
-    function ($scope, $state, $filter, TableParams, Resources, projects, ProjectsService) {
+  .controller('ProjectsCtrl', [ '$scope', '$state', '$filter', 'ngTableParams', 'Resources',
+    function ($scope, $state, $filter, TableParams, Resources) {
 
 	  //Default to no projects
 	  $scope.projects = [];
@@ -53,7 +53,7 @@ angular.module('Mastermind.controllers.projects')
       };
 
       $scope.deleteProject = function (project) {
-        ProjectsService.destroy(project).then(function () {
+        Resources.remove(project).then(function () {
         	$scope.handleProjectFilterChanged();
         });
       };

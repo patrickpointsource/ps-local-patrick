@@ -40,7 +40,7 @@ module.exports = function (grunt) {
         },
         files: [
           '<%= yeoman.app %>/{,*/}*.html',
-          '<%= yeoman.app %>/views/*/{,*/}*.html',
+          '<%= yeoman.app %>/views/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
           '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
         '{.tmp,<%= yeoman.app %>}/scripts/*/{,*/}*.js',
@@ -157,9 +157,9 @@ module.exports = function (grunt) {
     },
     // not used since Uglify task does concat,
     // but still available if needed
-    /*concat: {
+    concat: {
      dist: {}
-     },*/
+     },
     rev: {
       dist: {
         files: {
@@ -167,13 +167,13 @@ module.exports = function (grunt) {
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.{css,less}',
             '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-            '<%= yeoman.dist %>/styles/fonts/*'
+            '<%= yeoman.dist %>/fonts/{,*/}*'
           ]
         }
       }
     },
     useminPrepare: {
-      html: '<%= yeoman.app %>/index.html',
+      html: ['<%= yeoman.app %>/index.html'],
       options: {
         dest: '<%= yeoman.dist %>'
       }
@@ -239,7 +239,7 @@ module.exports = function (grunt) {
           {
             expand: true,
             cwd: '<%= yeoman.app %>',
-            src: ['*.html', 'views/*.html'],
+            src: ['*.html', 'views/{,*/}*.html'],
             dest: '<%= yeoman.dist %>'
           }
         ]
@@ -257,10 +257,21 @@ module.exports = function (grunt) {
             src: [
               '*.{ico,png,txt}',
               '.htaccess',
-              // 'bower_components/**/*',
+              'bower_components/**/*',
               'images/{,*/}*.{gif,webp}',
-              'styles/fonts/*'
+              'fonts/{,*/}*',
+              'template/{,*/}*'
             ]
+          },
+          {
+	    	  expand: true,
+	          dot: true,
+	          cwd: '<%= yeoman.app %>',
+	          dest: '<%= yeoman.dist %>/login',
+	          src: [
+	            'styles/main.css',
+	            'scripts/login.js'
+	          ] 
           },
           {
             expand: true,
@@ -313,7 +324,7 @@ module.exports = function (grunt) {
           {
             expand: true,
             cwd: '<%= yeoman.dist %>/scripts',
-            src: '*.js',
+            src: '{,*/}*.js',
             dest: '<%= yeoman.dist %>/scripts'
           }
         ]
@@ -357,14 +368,14 @@ module.exports = function (grunt) {
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
-    // 'less',
+    //'less',
     'concat',
     'copy:dist',
-    'cdnify',
+    //'cdnify',
     'ngmin',
     'cssmin',
     'uglify',
-    // 'rev',
+    'rev',
     'usemin'
   ]);
 

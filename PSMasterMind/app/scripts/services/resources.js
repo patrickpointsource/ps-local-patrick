@@ -4,7 +4,7 @@
  * Get any resource
  */
 angular.module('Mastermind').factory(
-		'Resources',
+		'Resources',['$q','Restangular',
 		function($q, Restangular) {
 			var ResourcesRestangular = Restangular.withConfig(function(
 					RestangularConfigurer) {
@@ -268,4 +268,4 @@ angular.module('Mastermind').factory(
 				forceUpdate: forceUpdate,
 				remove: remove
 			};
-		});
+		}]);

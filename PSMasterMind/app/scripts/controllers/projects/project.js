@@ -9,7 +9,9 @@ angular.module('Mastermind')
       var detailsValid = false, rolesValid = false;
       
 	  //Set our currently viewed project to the one resolved by the service.
-      $scope.projectId = $stateParams.projectId;
+      if($stateParams.projectId){
+	      $scope.projectId = $stateParams.projectId;
+  	  }
       $scope.projectLoaded = false;
 	  
 	  /**

@@ -18,7 +18,7 @@ angular.module('Mastermind.models.projects')
 
     return Terms;
   })
-  .factory('Role', function (Rates, RateFactory) {
+  .factory('Role', ['Rates','RateFactory',function (Rates, RateFactory) {
     /**
      * The defaults for a newly created role.
      *
@@ -62,8 +62,8 @@ angular.module('Mastermind.models.projects')
     }
 
     return Role;
-  })
-  .factory('Project', function (Terms, Role) {
+  }])
+  .factory('Project', ['Terms','Role',function (Terms, Role) {
     /*
      * Defines the default values for a newly created Project.
      */
@@ -245,4 +245,4 @@ angular.module('Mastermind.models.projects')
     };
 
     return Project;
-  });
+  }]);

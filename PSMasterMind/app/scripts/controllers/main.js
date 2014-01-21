@@ -4,10 +4,10 @@
  * The main project controller
  */
 angular.module('Mastermind')
-  .controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources', 'projects',
-    function ($scope, $q, $state, $filter, Resources, projects) {
+  .controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources',
+    function ($scope, $q, $state, $filter, Resources) {
 	  $scope.summarySwitcher = 'projects';
-      $scope.projects = projects;
+      //$scope.projects = projects;
 
       $scope.startDate = new Date();
 
