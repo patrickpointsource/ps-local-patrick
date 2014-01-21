@@ -192,8 +192,8 @@
 	                  <th class="col-xs-1"></th>
 	                </tr>
 	              </thead>
-	              <tbody>
-		             <tr ng-repeat="hoursRecord in $data">
+	              <tbody ng-repeat="hoursRecord in $data">
+		             <tr >
 		             	<td>
 		             	  <a href="#{{hoursRecord.project.resource}}">
 			                 <span style="display: inline-block;">{{hoursRecord.project.name || 'Unknown'}}</span>
@@ -212,6 +212,9 @@
 		                	<button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
 							<i class="fa fa-trash-o"></i>
 						</button></td>
+		             </tr>
+		             <tr class="visible-xs">
+		             	<td colspan="3">{{hoursRecord.description}}</td>
 		             </tr>
 		         </tbody>
 	         </table>

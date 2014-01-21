@@ -9,32 +9,30 @@
 </div>
 <div ng-form="newHoursForm" id="newHoursDialog" class="well collapse out">
     <div class="row">
-    	
-	    	<div class="col-xs-12 col-sm-6 row">
-		    	<div class="col-xs-6">
-		            <label class="control-label" for="role">Project: </label>
-		            <span>{{project.name}}</span>
-		        </div>
-		        <div class="col-xs-6">
-		            <label class="control-label" for="role">Person: </label>
-		            <span>{{me.name}}</span>
-		        </div>
-				<div class="col-xs-6">
-			         <label class="control-label" for="hours">* Hours:</label>
-			         <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours" ng-required="true"/>
-		        </div>
-    			<div class="col-xs-6">
-		            <label class="control-label" for="date">* Date:</label>
-		            <input id="date" name="date" class="form-control datepicker" type="text"
-	                    ng-model="newHoursRecord.date"
-	                		todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
-             	</div>
-		    </div>
-		    <div class="col-xs-12 col-sm-6">
-		         <label class="control-label" for="hours">* Description:</label>
-		         <textarea id="hours" name="hours" rows="3" class="form-control" ng-model="newHoursRecord.description" ng-required="true"></textarea>
+    	<div class="col-xs-12 col-sm-6 row">
+	    	<div class="col-xs-6">
+	            <label class="control-label" for="role">Project: </label>
+	            <span>{{project.name}}</span>
 	        </div>
-       
+	        <div class="col-xs-6">
+	            <label class="control-label" for="role">Person: </label>
+	            <span>{{me.name}}</span>
+	        </div>
+			<div class="col-xs-6">
+		         <label class="control-label" for="hours">* Hours:</label>
+		         <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours" ng-required="true"/>
+	        </div>
+   			<div class="col-xs-6">
+	            <label class="control-label" for="date">* Date:</label>
+	            <input id="date" name="date" class="form-control datepicker" type="text"
+                    ng-model="newHoursRecord.date"
+                		todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
+            	</div>
+	    </div>
+	    <div class="col-xs-12 col-sm-6">
+	         <label class="control-label" for="hours">* Description:</label>
+	         <textarea id="hours" name="hours" rows="3" class="form-control" ng-model="newHoursRecord.description" ng-required="true"></textarea>
+        </div>
 	</div>
 	<div class="row">
         <div class="col-xs-12">
@@ -54,8 +52,8 @@
                   <th class="col-xs-1"></th>
                 </tr>
               </thead>
-              <tbody>
-	             <tr ng-repeat="hoursRecord in $data">
+              <tbody ng-repeat="hoursRecord in $data">
+	             <tr>
 	             	<td>
 	             	  <a href="#{{hoursRecord.person.resource}}">
 		                  <img ng-show="hoursRecord.person" class="profileImage" ng-src="{{hoursRecord.person.thumbnail}}"/>
@@ -76,6 +74,11 @@
 	                	<button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
 						<i class="fa fa-trash-o"></i>
 					</button></td>
+	             </tr>
+	             <tr class="visible-xs">
+	             	<td colspan="3">
+	                  {{hoursRecord.description}}
+	                </td>
 	             </tr>
 	         </tbody>
          </table>
