@@ -6083,6 +6083,12 @@ label.checkbox {
 .navbar-fixed-top {
   margin-bottom: 0;
 }
+#loadingMessage {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  z-index: 4000;
+}
 header {
   color: #fff;
 }

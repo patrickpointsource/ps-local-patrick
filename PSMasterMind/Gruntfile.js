@@ -259,18 +259,9 @@ module.exports = function (grunt) {
               'bower_components/**/*',
               'images/{,*/}*.{gif,webp}',
               'fonts/{,*/}*',
-              'template/{,*/}*'
+              'template/{,*/}*',
+              'login/{,*/}*'
             ]
-          },
-          {
-	    	  expand: true,
-	          dot: true,
-	          cwd: '<%= yeoman.app %>',
-	          dest: '<%= yeoman.dist %>/login',
-	          src: [
-	            'styles/main.css',
-	            'scripts/login.js'
-	          ] 
           },
           {
             expand: true,
