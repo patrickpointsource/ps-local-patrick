@@ -38,7 +38,7 @@
         })
         .state('admin', {
           url: '/admin',
-          templateUrl: 'views/admin.html',
+          templateUrl: 'views/admin/admin.html',
           controller: 'AdminCtrl'
         })
         .state('projects', {

@@ -15,11 +15,37 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
       }
     };
     
+    /**
+     * When the new role button is clicked
+     */
+    $scope.toggleNewRole = function(){
+    	//Cancel edit of new role
+    	if($scope.editRoleIndex == null && $scope.editingRole){
+    		$scope.cancelRole();
+    	}
+    	else{
+    		$scope.editRoleIndex = null;
+    		$scope.editingRole = true;
+    		$scope.newRole = {};
+    	}
+    };
+    
+    /**
+     * Run when an edit on a row is clicked
+     */
     $scope.triggerEditRole = function (role, index) {
-	    $scope.editingRole = true;
-	    $scope.editRoleIndex = index;
-	    $('#newRoleDialog').collapse('show');
-	    $scope.newRole = role;
+    	if($scope.editRoleIndex == index){
+    		$scope.cancelRole();
+    	}
+    	else{
+		    $scope.editingRole = true;
+		    $scope.editRoleIndex = index;
+		    //Close the new role dialog instance
+		    if($('#newRoleDialog').hasClass('in')){
+		    	$('#newRoleDialog').collapse('hide');
+		    }
+		    $scope.newRole = role;
+    	}
 	  };
 	
 	/**
@@ -51,9 +77,12 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 	$scope.newRole = {};
 	 
 	 $scope.cancelRole = function () {
-	    $('#newRoleDialog').collapse('hide');
+		if($('#newRoleDialog').hasClass('in')){
+	       $('#newRoleDialog').collapse('hide');
+	    }
 	    $scope.newRole = {};
 	    $scope.editingRole = false;
+	    $scope.editRoleIndex = null;
 	    
 	    //Clear New Role Form
 		 $scope.newRoleForm.$setPristine();
@@ -71,6 +100,9 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 				 
 				 //Reset New Role Object
 				 $scope.newRole = {};
+				 
+				 $scope.editingRole = false;
+				 $scope.editRoleIndex = null;
 				 
 				 //Clear New Role Form
 				 $scope.newRoleForm.$setPristine();
@@ -92,6 +124,7 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
 				 $scope.newRole = {};
 				 
 				 $scope.editingRole = false;
+				 $scope.editRoleIndex = null;
 				 
 				 //Clear New Role Form
 				 $scope.newRoleForm.$setPristine();

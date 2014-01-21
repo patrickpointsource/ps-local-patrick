@@ -1,62 +1,20 @@
 <div class="row">
 	<div class="col-xs-8"><h3>Roles</h3></div>
 	<div class="actions col-xs-4 pageActions">
-		<button type="button"
+		<button type="button" ng-click="toggleNewRole()"
 			class="btn btn-default pull-right" data-toggle="collapse" data-target="#newRoleDialog">
 	  		<i class="fa fa-plus-square"></i> <span>Add Roles</span>
 		</button>
 	</div>
 </div>
 <div ng-form="newRoleForm" id="newRoleDialog" class="well collapse out">
-    <div class="row">
-    	<div class="col-xs-4 col-sm-2">
-            <label class="control-label" for="role">Abbreviation:</label>
-            <input class="form-control" ng-model="newRole.abbreviation"/>
-        </div>
-        <div class="col-xs-8 col-sm-10">
-            <label class="control-label" for="role">Name:</label>
-            <input class="form-control" ng-model="newRole.title"/>
-        </div>
-	</div>
-	<br/>
-	<div class="row">
-    	<div class="col-xs-12 col-sm-6 col-lg-3">
-	            <label class="control-label" for="role">Hourly Advertised Rate:</label>
-	            <input class="form-control" type="number" ng-model="newRole.hourlyAdvertisedRate"/>
-            	(USD/Hour){{newRole.hourlyAdvertisedRate | currency}}
-           		<br/><br/>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-lg-3">
-            <label class="control-label" for="role">Hourly Loaded Rate:($USD/Hour)</label>
-            <input class="form-control" type="number" ng-model="newRole.hourlyLoadedRate"/>
-            (USD/Hour){{newRole.hourlyLoadedRate | currency}}
-            <br/><br/>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-lg-3">
-            <label class="control-label" for="role">Monthly Advertised Rate:</label>
-            <input class="form-control" type="number" ng-model="newRole.monthlyAdvertisedRate"/>
-           	(USD/Month){{newRole.monthlyAdvertisedRate | currency}}
-           	<br/><br/>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-lg-3">
-            <label class="control-label" for="role">Monthly Loaded Rate:($USD/Hour)</label>
-            <input class="form-control" type="number" ng-model="newRole.monthlyLoadedRate"/>
-            (USD/Month){{newRole.monthlyLoadedRate | currency}}
-            <br/><br/>
-        </div>
-	</div>
-	<div class="row">
-        <div class="col-xs-12">
-            <input type="submit" class="btn" value="Add" ng-click="addRole()" ng-show="!editingRole">
-            <input type="submit" class="btn" value="Save" ng-click="saveRole()" ng-show="editingRole">
-            <input type="submit" class="btn" value="Cancel" ng-click="cancelRole()">
-        </div>
-    </div>
+    <div ng-include src="'views/admin/roleEdit.html'"></div>
 </div>
 <div class="row">
      <div class="col-xs-12">
          <table ng-table="rolesTableParams" template-pagination="roles/pager" class="table margin-top">
-             <tr ng-repeat="role in $data">
+         	<tbody ng-repeat="role in $data">
+             <tr>
              	<td data-title="'Abbreviation'" sortable="'abbreviation'">
                   {{role.abbreviation}}
                 </td>
@@ -72,6 +30,14 @@
 					<i class="fa fa-trash-o"></i>
 				</button></td>
              </tr>
+             <tr ng-show="editRoleIndex===$index" ng-if="editRoleIndex===$index">
+             	<td colspan="3">
+             		<div ng-form="newRoleForm{{$index}}" id="editRoleDialog{{$index}}" class="well">
+					    <div ng-include src="'views/admin/roleEdit.html'"></div>
+					</div>
+             	</td>
+             </tr>
+            </tbody>
          </table>
          <script type="text/ng-template" id="roles/pager">
             <ul class="pager ng-cloak">
