@@ -101,7 +101,7 @@
 	    '$compileProvider',
 	    function( $compileProvider )
 	    {   
-	        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|skype):/);
+	        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|skype|data):/);
 	        // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
 	    }
 	])

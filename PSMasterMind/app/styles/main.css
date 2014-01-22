@@ -6287,11 +6287,11 @@ main article #content #graph-header #graph-header-plus i {
 #mainContent {
   width: 100%;
 }
-.nav-tabs {
-  margin-bottom: 30px;
-}
 .nav-tabs li:hover {
   cursor: pointer;
+}
+.nav li a {
+  padding: 5px 10px;
 }
 .popover.bottom {
   color: #333333;
@@ -6304,12 +6304,8 @@ main article #content #graph-header #graph-header-plus i {
   left: 86%;
 }
 @media (min-width: 768px) {
-  .navbar-nav > li > a {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
   body {
-    padding-top: 115px;
+    padding-top: 100px;
     padding-bottom: 145px;
   }
 }
