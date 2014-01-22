@@ -31,26 +31,33 @@
 </div>
 
 <!--
-          TODO: Convert to Angular UI tabs component.
+ TODO: Convert to Angular UI tabs component.
 
-          Currently we can't do this because of a bug in Angular UI Bootstrap which prevents nested tabs.
+ Currently we can't do this because of a bug in Angular UI Bootstrap which prevents nested tabs.
 
-          There is an open ticket under:
-          https://github.com/angular-ui/bootstrap/issues/783
-          -->
+ There is an open ticket under:
+ https://github.com/angular-ui/bootstrap/issues/783
+ -->
 
 <div class="row">
-	<div class="tab-panes tabs-left col-xs-9">
-		<ul class="nav nav-tabs">
-			<li class="active"><a ng-click="changeToHourlyRate()"
-				data-target="#hourlyControls" data-toggle="tab">Hourly</a></li>
-			<li><a ng-click="changeToWeeklyRate()"
-				data-target="#weeklyControls" data-toggle="tab">Weekly</a></li>
-			<li><a ng-click="changeToMonthlyRate()"
-				data-target="#monthlyControls" data-toggle="tab">Monthly</a></li>
-		</ul>
-		<div class="tab-content">
-			<div id="hourlyControls" class="tab-pane active">
+	<div class="col-xs-12 col-sm-8 col-md-9">
+		<div class="col-xs-12">
+				<label for="rateChoices" class="inline">Rate:</label>
+				<div id="rateChoices" class="inline form-inline">
+					<label class="radio-inline"> 
+						<input type="radio" value="hourly"
+						ng-model="newRole.rate.type">Hourly
+					</label>
+					<label class="radio-inline"> <input type="radio" value="weekly"
+						ng-model="newRole.rate.type">Weekly
+					</label>
+					<label class="radio-inline"> <input type="radio" value="monthly"
+							ng-model="newRole.rate.type">Monthly
+					</label> 
+				</div>
+		</div>
+		<div class="col-xs-12 well">
+			<div id="hourlyControls" ng-if="newRole.rate.type=='hourly'" ng-show="newRole.rate.type=='hourly'">
 				<div class="row">
 					<div class="col-xs-12 col-sm-4 form-group" ng-if="financeAccess">
 						<label for="hourlyHourlyRate">Hourly Rate:</label> <input
@@ -78,8 +85,8 @@
 				</div>
 			</div>
 
-			<div id="weeklyControls" class="tab-pane">
-				<div class="row">
+			<div id="weeklyControls" ng-if="newRole.rate.type=='weekly'" ng-show="newRole.rate.type=='weekly'">
+				<div class="row" >
 					<div class="col-xs-12 col-sm-4 form-group" ng-if="financeAccess">
 						<label for="weeklyHourlyRate">Hourly Rate:</label> <input
 							id="weeklyHourlyRate" class="form-control"
@@ -106,8 +113,8 @@
 				</div>
 			</div>
 
-			<div id="monthlyControls" class="tab-pane">
-				<div class="row">
+			<div id="monthlyControls" ng-if="newRole.rate.type=='monthly'" ng-show="newRole.rate.type=='monthly'">
+				<div class="row" >
 					<div class="col-xs-12 form-group" ng-if="financeAccess">
 						<label for="monthlyRate">Monthly Rate:</label> <input
 							id="monthlyRate" class="form-control"
@@ -119,16 +126,15 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="col-xs-3 form-group">
-		<label>Shoring:</label>
-		<div class="radio">
-			<label> <input type="radio" value="on"
+	<div class="col-xs-12 col-sm-4 col-md-3 form-group">
+		<label for="shoringOptions" class="inline">Shoring:</label>
+		<div id="shoringOptions" class="inline form-inline">
+		<label class="radio-inline"> <input type="radio" value="on"
+				
 				ng-model="newRole.shore">Onshore
 			</label>
-		</div>
-		<div class="radio">
-			<label> <input type="radio" value="off"
+		<label class="radio-inline"> <input type="radio" value="off"
+				class="radio-inline"
 				ng-model="newRole.shore">Offshore
 			</label>
 		</div>

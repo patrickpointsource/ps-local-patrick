@@ -35,8 +35,8 @@
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
-                <tr ng-repeat="role in $data">
+              <tbody ng-repeat="role in $data">
+                <tr>
                     <td>
                         <select ng-model="role.assignee.resource"
                                 ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble"
@@ -69,6 +69,13 @@
                         </button>
                     </td>
                 </tr>
+                <tr ng-show="editRoleIndex===$index" ng-if="editRoleIndex===$index">
+	             	<td colspan="5">
+	             		<div ng-form="newRoleForm{{$index}}" id="editRoleDialog{{$index}}" class="well">
+						    <div ng-include src="'views/projects/show/editRole.html'"/>
+						</div>
+	             	</td>
+	             </tr>
               </tbody>
             </table>
             <script type="text/ng-template" id="custom/pager">

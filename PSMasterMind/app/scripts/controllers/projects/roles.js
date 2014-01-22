@@ -93,36 +93,49 @@ angular.module('Mastermind.controllers.projects')
       };
 
       $scope.cancelAdd = function () {
-        $('#newRoleDialog').collapse('hide');
+    	//Close the new role dialog instance
+	    if($('#newRoleDialog').hasClass('in')){
+	    	$('#newRoleDialog').collapse('hide');
+	    }
+    	  
+		  $scope.editingRole = false;
+	      $scope.editRoleIndex = null;
+	      
       };
-
+      
+      /**
+       * When the new role button is clicked
+       */
       $scope.triggerAddRole = function () {
-        $scope.editingRole = false;
-        $('#newRoleDialog').collapse('show');
-        $scope.newRole = RolesService.create();
-        $scope.newRole.startDate = $scope.project.startDate;
-        $scope.newRole.endDate = $scope.project.endDate;
+    	 if($scope.editRoleIndex == null && $scope.editingRole){
+    		 $scope.cancelAdd();
+    	 } 
+    	 else{
+    		$scope.editRoleIndex = null;
+	        $scope.editingRole = true;
+	       
+	        $scope.newRole = RolesService.create();
+	        $scope.newRole.startDate = $scope.project.startDate;
+	        $scope.newRole.endDate = $scope.project.endDate;
+    	 }
       };
 
       $scope.triggerEditRole = function (role, index) {
-        $scope.editingRole = true;
-        $scope.editRoleIndex = index;
-        $('#newRoleDialog').collapse('show');
-        
-        //Show the right rate type tab
-        if(role.rate && role.rate.type){
-  		  if(role.rate.type == Rates.HOURLY){
-  			$("a[data-target='#hourlyControls']").tab('show');
-      	  }
-      	  else if(role.rate.type == Rates.WEEKLY){
-      		$("a[data-target='#weeklyControls']").tab('show');
-      	  }
-      	  else if(role.rate.type == Rates.MONTHLY){
-      		$("a[data-target='#monthlyControls']").tab('show');
-      	  }
-	    }
-         
-        $scope.newRole = role;
+    	  if($scope.editRoleIndex == index && $scope.editingRole){
+     		 $scope.cancelAdd();
+     	 } 
+     	 else{
+     		//Close the new role dialog instance
+ 		    if($('#newRoleDialog').hasClass('in')){
+ 		    	$('#newRoleDialog').collapse('hide');
+ 		    } 
+     		
+		    $scope.editingRole = true;
+	        $scope.editRoleIndex = index;
+	        
+	        $scope.newRole = role;  
+           
+     	 } 
       };
 
       $scope.save = function () {
