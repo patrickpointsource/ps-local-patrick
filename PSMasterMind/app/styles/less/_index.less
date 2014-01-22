@@ -277,12 +277,19 @@ main {
 }
 
 .nav-tabs {
-  margin-bottom: 30px;
   li {
     &:hover {
       cursor: pointer;
     }
   }
+}
+
+.nav{
+	li{ 
+		a {
+    		padding: 5px 10px;
+    	}
+    }
 }
 
 .popover.bottom {
@@ -298,13 +305,8 @@ main {
 }
 
 @media (min-width: @screen-sm) {
-  .navbar-nav > li > a {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
   body {
-    padding-top: 115px;
+    padding-top: 100px;
     padding-bottom: 145px;
   }
 }
