@@ -50,24 +50,51 @@ angular.module('Mastermind.controllers.projects')
 		    }
 	  });
 	   
-
 	  /**
 	   * Cancel add Link
 	   */
 	   $scope.cancelLink = function () {
-		    $('#newLinkDialog').collapse('hide');
-		    $scope.newLink = {};
-		    $scope.editingLink = false;
+		   if($('#newLinkDialog').hasClass('in')){
+		    	$('#newLinkDialog').collapse('hide');
+		   }
+		   $scope.newLink = {};
+		   $scope.editingLink = false;
+		   $scope.editLinkIndex = null;
 	  };
+	  
+	  /**
+	   * When the new link button is clicked
+	   */
+	    $scope.toggleNewLink = function(){
+	    	//Cancel edit of new role
+	    	if($scope.editLinkIndex == null && $scope.editingLink){
+	    		$scope.cancelLink();
+	    	}
+	    	else{
+	    		$scope.editLinkIndex = null;
+	    		$scope.editingLink = true;
+	    		$scope.newLink = {};
+	    	}
+	    };
 	  
 	  /**
 	   * Open the edit dialog
 	   */
-	  $scope.triggerEditLink = function (link) {
-	    $scope.editingLink = true;
-	    $('#newLinkDialog').collapse('show');
-	    $scope.newLink = link;
+	  $scope.triggerEditLink = function (link, index) {
+		if($scope.editLinkIndex == index){
+    		$scope.cancelLink();
+    	}
+		else{
+			$scope.editingLink = true;
+			$scope.editLinkIndex = index;
+			 //Close the new role dialog instance
+		    if($('#newLinkDialog').hasClass('in')){
+		    	$('#newLinkDialog').collapse('hide');
+		    }
+		    $scope.newLink = link;
+		}
 	  };
+	 
 	   
 	  /**
 	 * Update an existing link to the server
@@ -87,10 +114,13 @@ angular.module('Mastermind.controllers.projects')
 				 
 				 //Reset New Role Object
 				 $scope.newLink = {};
+				 
+				 $scope.editingLink = false;
+				 $scope.editLinkIndex = null;
 			 });
 		 });
 	 }
-	  
+	 
 	  /**
 	  * Add a new Link to the server
 	  */
@@ -111,8 +141,11 @@ angular.module('Mastermind.controllers.projects')
 					 $scope.initLinksTable();
 				 }
 				 
-				 //Reset New Role Object
+				 //Reset New Link Object
 				 link = {};
+				 
+				 $scope.editingLink = false;
+				 $scope.editLinkIndex = null;
 			 });
 		 });
 	  };
