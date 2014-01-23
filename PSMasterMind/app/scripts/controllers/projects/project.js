@@ -350,6 +350,7 @@ angular.module('Mastermind')
 			          total: $scope.hours.length, // length of data
 			          getData: function ($defer, params) {
 			            var data = $scope.hours;
+			            var projectRoles = $scope.project.roles;
 
 			            var start = (params.page() - 1) * params.count();
 			            var end = params.page() * params.count();
@@ -369,6 +370,25 @@ angular.module('Mastermind')
 			            for(var i = 0; i < ret.length; i++){
 			            	var ithHoursRecord = ret[i];     	
 			            	defers.push(Resources.resolve(ithHoursRecord.person));
+			            	
+			            	//See if the user had a role in the project at the time of the record
+	                        for(var j = 0; j < projectRoles.length;j++){
+	                        	var role = projectRoles[j];
+	                        	//Found a role for this person
+	                        	if(role.assignee && ithHoursRecord.person.resource==role.assignee.resource){
+	                        		var roleStartDate = new Date(role.startDate);
+	                        		var hoursDate = new Date(ithHoursRecord.date);
+	                        		//record was after role start date
+	                        		if(hoursDate >= roleStartDate){
+	                        			var roleEndDate = role.endDate?new Date(role.endDate):null;
+	                        			//Record was before the end of role date
+	                        			if(!roleEndDate || roleEndDate >= hoursDate){
+	                        				ithHoursRecord.role=Resources.deepCopy(role);
+	                        				defers.push(Resources.resolve(ithHoursRecord.role.type));
+	                        			}
+	                        		}
+	                        	}
+	                        }
 			            }
 			            
 			            $.when.apply(window, defers).done(function(){
@@ -490,25 +510,6 @@ angular.module('Mastermind')
 	                		data = csv.JSON2CSV(project, hours);
 	                	}
 	                	
-//	                	var rows = element.find('tr');
-//	                    angular.forEach(rows, function(row, i) {
-//	                        var tr = angular.element(row),
-//	                            tds = tr.find('th'),
-//	                            rowData = '';
-//	                        if (tr.hasClass('ng-table-filters')) {
-//	                            return;
-//	                        }
-//	                        if (tds.length == 0) {
-//	                            tds = tr.find('td');
-//	                        }
-//	                        if (i != 1) {
-//	                            angular.forEach(tds, function(td, i) {
-//	                                rowData += csv.stringify(angular.element(td).text()) + ',';
-//	                            });
-//	                            rowData = rowData.slice(0, rowData.length - 1); //remove last semicolon
-//	                        }
-//	                        data += rowData + "\n";
-//	                    });
 	                },
 	                link: function() {
 	                    return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
@@ -516,9 +517,9 @@ angular.module('Mastermind')
 	                JSON2CSV: function(project, hours) {
 	                    var str = '';
 	                    var line = '';
-	                    
+
 	                    //Print the header
-                        var head = ['Project', 'Peson', 'Date', 'Hours', 'Description'];
+                        var head = ['Project', 'Peson', 'Role', 'Date', 'Hours', 'Description', 'Role'];
                         for (var i = 0; i < head.length; i++) {
                             line += head[i] + ',';
                         }
@@ -535,9 +536,15 @@ angular.module('Mastermind')
 	                        //Project
 	                        line += csv.stringify(project.name) + ',';
 	                        line += csv.stringify(record.person.name) + ',';
+	                        if(record.role && record.role.type && record.role.title){
+	                        	line += csv.stringify(record.person.name);
+	                        }
+	                        line += ','
 	                        line += record.date + ',';
 	                        line += record.hours + ',';
 	                        line += csv.stringify(record.description) + ',';
+	                        
+	                        
 	                        
 	                        str += line + '\r\n';
 	                    }

@@ -1,6 +1,6 @@
 <div class="row">
-	<div class="col-xs-8"><h3>Hours</h3></div>
-	<div class="actions col-xs-4 pageActions">
+	<div class="col-xs-8 col-sm-4"><h3>Hours</h3></div>
+	<div class="actions col-xs-4 col-sm-8 pageActions">
 		<a class="btn btn-default" ng-mousedown="hoursToCSV.generate()" ng-href="{{hoursToCSV.link()}}" download="{{project.name}}-hours.csv">
 			<div class="hidden-xs"><i class="fa fa-table"></i><span> Export to CSV</span></div>
 			<div class="visible-xs"><i class="fa fa-table"></i></div>
@@ -13,9 +13,9 @@
 	</div>
 </div>
 
-<!-- {{project}}<br/><br/>
-{{hoursToCSV.rawJSON()}}<br/><br/>
-{{hoursToCSV.rawCSV()}} -->
+<!-- {{project}}<br/><br/>-->
+<!-- {{hoursToCSV.rawJSON()}}<br/><br/>-->
+<!-- {{hoursToCSV.rawCSV()}} -->
 
 <div ng-form="newHoursForm" id="newHoursDialog" class="well collapse out">
     <div class="row">
@@ -55,10 +55,11 @@
      	<table ng-table="hoursTableParams" template-pagination="hours/pager" class="table margin-top peopleList" export-hours="hoursToCSV">
          	  <thead>
                 <tr>
-                  <th class="col-xs-5 col-sm-3">Person</th>
-                  <th class="col-xs-5 col-sm-2">Date</th>
+                  <th class="col-xs-5 col-sm-3 col-md-3 col-lg-2">Person</th>
+                  <th class="col-xs-1 col-sm-3 col-md-2">Role</th>
+                  <th class="col-xs-4 col-sm-2 col-md-1">Date</th>
                   <th class="col-xs-1 col-sm-1">Hours</th>
-                  <th class="hidden-xs col-sm-5">Description</th>
+                  <th class="hidden-xs col-sm-3 col-md-5 col-lg-6">Description</th>
                   <th class="col-xs-1"></th>
                 </tr>
               </thead>
@@ -70,6 +71,10 @@
 		                  <i class="fa fa-ban" ng-show="!hoursRecord.person"></i>
 		                  <span style="display: inline-block;">{{hoursRecord.person.name || 'Unknown'}}</span>
 	                  </a>
+	                </td>
+	                <td>
+	                	<span class="visible-xs">{{hoursRecord.role.type.abbreviation}}</span>
+	                	<span class="hidden-xs">{{hoursRecord.role.type.title}}</span>
 	                </td>
 	                <td>
 	                  {{hoursRecord.date}}
