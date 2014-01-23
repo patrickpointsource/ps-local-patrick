@@ -522,7 +522,7 @@ angular.module('Mastermind')
 	                    var line = '';
 
 	                    //Print the header
-                        var head = ['Project', 'Peson', 'Role', 'Date', 'Hours', 'Description', 'Role'];
+                        var head = ['Project', 'Peson', 'Role', 'Date', 'Hours', 'Description'];
                         for (var i = 0; i < head.length; i++) {
                             line += head[i] + ',';
                         }
@@ -539,8 +539,8 @@ angular.module('Mastermind')
 	                        //Project
 	                        line += csv.stringify(project.name) + ',';
 	                        line += csv.stringify(record.person.name) + ',';
-	                        if(record.role && record.role.type && record.role.title){
-	                        	line += csv.stringify(record.person.name);
+	                        if(record.role && record.role.type && record.role.type.title){
+	                        	line += csv.stringify(record.role.type.title);
 	                        }
 	                        line += ','
 	                        line += record.date + ',';
