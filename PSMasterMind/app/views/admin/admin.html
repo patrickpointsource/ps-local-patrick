@@ -12,7 +12,7 @@
 </div>
 <div class="row">
      <div class="col-xs-12">
-         <table ng-table="rolesTableParams" template-pagination="roles/pager" class="table margin-top">
+         <table ng-table="rolesTableParams" template-pagination="roles/pager" class="table">
          	<tbody ng-repeat="role in $data">
              <tr>
              	<td data-title="'Abbreviation'" sortable="'abbreviation'">
@@ -85,7 +85,7 @@
 </section>
 <div class="row">
      <div class="col-xs-12">
-         <table ng-table="skillsTableParams" template-pagination="skills/pager" class="table margin-top">
+         <table ng-table="skillsTableParams" template-pagination="skills/pager" class="table">
              <tr ng-repeat="skill in $data">
                 <td data-title="'Name'" sortable="'title'">
                   {{skill.title}}
