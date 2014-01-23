@@ -3,7 +3,6 @@ package com.pointsource.mastermind.server;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,6 +21,8 @@ import com.pointsource.mastermind.util.RequestContext;
  *
  */
 public class UpgradeServlet extends HttpServlet {
+
+	private static final long serialVersionUID = 6855195588055192352L;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
@@ -57,21 +58,5 @@ public class UpgradeServlet extends HttpServlet {
 	    out.println("</body>");
 	    out.println("</html>");
 	}
-	 /**
-	   * Returns the base url (e.g, <tt>http://myhost:8080/myapp/</tt>) suitable for
-	   * using in a base tag or building reliable urls.
-	 * @throws URISyntaxException 
-	   */
-	  public static URI getBaseUrl( HttpServletRequest request ) throws URISyntaxException {
-	    if ( ( request.getServerPort() == 80 ) ||
-	         ( request.getServerPort() == 443 ) )
-	      return new URI(request.getScheme() + "://" +
-	             request.getServerName() +
-	             request.getContextPath() +  "/");
-	    else
-	      return new URI(request.getScheme() + "://" +
-	             request.getServerName() + ":" + request.getServerPort() +
-	             request.getContextPath() + "/");
-	  }
 
 }
