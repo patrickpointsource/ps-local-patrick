@@ -359,17 +359,21 @@ angular.module('Mastermind')
 			              $filter('orderBy')(data, params.orderBy()) :
 			              data;
 
-			            var ret = orderedData.slice(start, end);
+			            $scope.hoursTableData = orderedData.slice(start, end);
+			            var ret = $scope.hoursTableData;
 			            
 			            //Resolve all the people
 			            var defers = [];
+			            
+			            
 			            for(var i = 0; i < ret.length; i++){
-			            	var ithHoursRecord = ret[i];
+			            	var ithHoursRecord = ret[i];     	
 			            	defers.push(Resources.resolve(ithHoursRecord.person));
 			            }
-			              $.when.apply(window, defers).done(function(){
-			                $defer.resolve(ret);
-			              });
+			            
+			            $.when.apply(window, defers).done(function(){
+			            	$defer.resolve(ret);
+			            });
 			          }
 			        });
 	   		    }
@@ -459,7 +463,7 @@ angular.module('Mastermind')
      }
       
     }])
-    .directive('exportCsv', ['$parse', function ($parse) {
+    .directive('exportHours', ['$parse', function ($parse) {
 	    return {
 	        restrict: 'A',
 	        scope: false,
@@ -472,32 +476,76 @@ angular.module('Mastermind')
 	                            .replace(/"/g,'""') + // replace quotes with double quotes
 	                        '"';
 	                },
+	                rawJSON: function(){
+	                	return scope.hoursTableData;
+	                },
+	                rawCSV: function(){
+	                	return data;
+	                },
 	                generate: function() {
-	                	var rows = element.find('tr');
-	                    angular.forEach(rows, function(row, i) {
-	                        var tr = angular.element(row),
-	                            tds = tr.find('th'),
-	                            rowData = '';
-	                        if (tr.hasClass('ng-table-filters')) {
-	                            return;
-	                        }
-	                        if (tds.length == 0) {
-	                            tds = tr.find('td');
-	                        }
-	                        if (i != 1) {
-	                            angular.forEach(tds, function(td, i) {
-	                                rowData += csv.stringify(angular.element(td).text()) + ',';
-	                            });
-	                            rowData = rowData.slice(0, rowData.length - 1); //remove last semicolon
-	                        }
-	                        data += rowData + "\n";
-	                    });
+	                	var project = scope.project;
+	                	var hours = scope.hoursTableData;
+	                	
+	                	for(var i = 0; i < hours.length; i++){
+	                		data = csv.JSON2CSV(project, hours);
+	                	}
+	                	
+//	                	var rows = element.find('tr');
+//	                    angular.forEach(rows, function(row, i) {
+//	                        var tr = angular.element(row),
+//	                            tds = tr.find('th'),
+//	                            rowData = '';
+//	                        if (tr.hasClass('ng-table-filters')) {
+//	                            return;
+//	                        }
+//	                        if (tds.length == 0) {
+//	                            tds = tr.find('td');
+//	                        }
+//	                        if (i != 1) {
+//	                            angular.forEach(tds, function(td, i) {
+//	                                rowData += csv.stringify(angular.element(td).text()) + ',';
+//	                            });
+//	                            rowData = rowData.slice(0, rowData.length - 1); //remove last semicolon
+//	                        }
+//	                        data += rowData + "\n";
+//	                    });
 	                },
 	                link: function() {
 	                    return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
+	                },
+	                JSON2CSV: function(project, hours) {
+	                    var str = '';
+	                    var line = '';
+	                    
+	                    //Print the header
+                        var head = ['Project', 'Peson', 'Date', 'Hours', 'Description'];
+                        for (var i = 0; i < head.length; i++) {
+                            line += head[i] + ',';
+                        }
+                        //Remove last comma and add a new line
+                        line = line.slice(0, -1);
+                        str += line + '\r\n';
+                        
+                        //Print the values
+	                    for (var i = 0; i < hours.length; i++) {
+	                        var line = '';
+
+	                        var record = hours[i];
+	                        
+	                        //Project
+	                        line += csv.stringify(project.name) + ',';
+	                        line += csv.stringify(record.person.name) + ',';
+	                        line += record.date + ',';
+	                        line += record.hours + ',';
+	                        line += csv.stringify(record.description) + ',';
+	                        
+	                        str += line + '\r\n';
+	                    }
+	                    return str;
+	                    
 	                }
 	            };
-	            $parse(attrs.exportCsv).assign(scope.$parent, csv);
+	            $parse(attrs.exportHours).assign(scope.$parent, csv);
 	        }
 	    };
 	}]);
