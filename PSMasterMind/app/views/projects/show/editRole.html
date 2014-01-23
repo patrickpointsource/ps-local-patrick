@@ -143,9 +143,8 @@
 
 <div class="row">
 	<div class="col-xs-12">
-		<input type="submit" class="btn" value="Add" ng-click="add()"
-			ng-show="!editingRole"> <input type="submit" class="btn"
-			value="Save" ng-click="save()" ng-show="editingRole"> <input
-			type="submit" class="btn" value="Cancel" ng-click="cancelAdd()">
+		<input type="submit" class="btn" value="Add" ng-click="add()" ng-show="editRoleIndex==null"/> 
+		<input type="submit" class="btn" value="Save" ng-click="save()" ng-show="editRoleIndex!=null"/> 
+		<input type="submit" class="btn" value="Cancel" ng-click="cancelAdd()"/>
 	</div>
 </div>

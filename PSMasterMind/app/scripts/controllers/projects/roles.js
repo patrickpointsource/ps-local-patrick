@@ -149,6 +149,7 @@ angular.module('Mastermind.controllers.projects')
           $scope.$emit('roles:change', $scope.editRoleIndex, $scope.newRole);
 
           //Update the tables
+          $scope.roleTableParams.total($scope.project.roles.length);
           $scope.roleTableParams.reload();
 
           // Create the new Role with the previously selected rate type.
@@ -159,13 +160,15 @@ angular.module('Mastermind.controllers.projects')
               rate: RateFactory.build($scope.newRole.rate.type)
             }
           );
+          
+          $scope.editingRole = false;
+	      $scope.editRoleIndex = null;
 
           //Clear any messages
           $scope.addRoleMessages = [];
 
           // Reset the form to being pristine.
           $scope.rolesForm.$setPristine();
-          $('#newRoleDialog').collapse('hide');
         }
       };
 
@@ -185,6 +188,7 @@ angular.module('Mastermind.controllers.projects')
 	        $scope.$emit('roles:add', $scope.newRole);
 
 	        //Update the tables
+	        $scope.roleTableParams.total($scope.project.roles.length);
 	        $scope.roleTableParams.reload();
 
 	        // Create the new Role with the previously selected rate type.
@@ -195,13 +199,19 @@ angular.module('Mastermind.controllers.projects')
 	        		rate: RateFactory.build($scope.newRole.rate.type)
 	        	}
 	        );
+	        
+	        $scope.editingRole = false;
+		    $scope.editRoleIndex = null;
 
 	        //Clear any messages
 	        $scope.addRoleMessages = [];
 
 	        // Reset the form to being pristine.
 	        $scope.rolesForm.$setPristine();
-          $('#newRoleDialog').collapse('hide');
+	        //Close the new role dialog instance
+ 		    if($('#newRoleDialog').hasClass('in')){
+ 		    	$('#newRoleDialog').collapse('hide');
+ 		    } 
         }
       };
 
@@ -213,6 +223,7 @@ angular.module('Mastermind.controllers.projects')
         $scope.$emit('roles:remove', role);
 
         //Update the tables
+        $scope.roleTableParams.total($scope.project.roles.length);
         $scope.roleTableParams.reload();
       };
 

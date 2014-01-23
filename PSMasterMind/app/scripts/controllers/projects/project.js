@@ -228,6 +228,7 @@ angular.module('Mastermind')
        */
       $scope.$on('roles:add', function (event, role) {
         $scope.project.addRole(role);
+        $scope.summaryRolesTableParams.total($scope.project.roles.length);
         $scope.summaryRolesTableParams.reload();
       });
 
@@ -237,6 +238,7 @@ angular.module('Mastermind')
        */
       $scope.$on('roles:change', function (event, index, role) {
         $scope.project.changeRole(index, role);
+        $scope.summaryRolesTableParams.total($scope.project.roles.length);
         $scope.summaryRolesTableParams.reload();
       });
 
@@ -246,6 +248,7 @@ angular.module('Mastermind')
        */
       $scope.$on('roles:remove', function (event, role) {
         $scope.project.removeRole(role);
+        $scope.summaryRolesTableParams.total($scope.project.roles.length);
         $scope.summaryRolesTableParams.reload();
       });
 
