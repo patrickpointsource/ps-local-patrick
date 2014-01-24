@@ -149,10 +149,10 @@ public interface CONSTS {
 	//Local Host
 		public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
 	//Staging Only
-		//public String PUBLIC_BASE_URL = "http://dmz.mastermind.pointsource.us:8080/MasterMindStaging/";
+		//public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindStaging/";
 	//Production Only
 		//public String DB_NAME_DEFAULT  = "mm_db_prod";
-		//public String PUBLIC_BASE_URL = "http://dmz.mastermind.pointsource.us:8080/MasterMindServer/";
+		//public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindServer/";
 		
 	public String COLLECTION_TITLE_HOURS = "Hours";
 	public String COLLECTION_TITLE_LINKS = "Links";

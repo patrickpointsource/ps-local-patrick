@@ -1968,7 +1968,7 @@ public class Data implements CONSTS {
 			person.put(PROP_FAMILY_NAME, name.getString(PROP_FAMILY_NAME));
 			person.put(PROP_GIVEN_NAME, name.getString(PROP_GIVEN_NAME));
 			if (googleUserDef.has(PROP_THUMBNAIL_PHOTO_URL)) {
-				person.put(PROP_THUMBNAIL, "http://www.google.com"
+				person.put(PROP_THUMBNAIL, "https://www.google.com"
 						+ googleUserDef.getString(PROP_THUMBNAIL_PHOTO_URL));
 			} else {
 				// Set as generic profileImage
