@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'ngTableParams', 'editMode',
-    function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, TableParams, editMode) {
+  .controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
+    function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
       var detailsValid = false, rolesValid = false;
       
 	  //Set our currently viewed project to the one resolved by the service.
@@ -61,7 +61,9 @@ angular.module('Mastermind')
         });
       };
 
-      
+      /**
+       * Expected margin on a project
+       */
       $scope.projectMargin = function(){
     	 var servicesEst = $scope.project.terms.servicesEstimate;
     	 var softwareEst = $scope.project.terms.softwareEstimate;
@@ -81,6 +83,47 @@ angular.module('Mastermind')
     	 }
     	 
     	 return margin;
+      };
+      
+      /**
+       * Display the expected hours a role should work
+       */
+      $scope.displayRate = function(role){
+    	  var ret = null;
+    	  if(role){
+	    	  if(role.rate.type == Rates.MONTHLY){
+	    		  ret = '$' + role.rate.amount + ' per month';  
+	    	  }
+	    	  else{
+	    		  ret = '$' + role.rate.amount + ' per hour';
+	    	  }
+    	  }
+    	  return ret;
+      };
+      
+      /**
+       * Display the expected hours a role should work
+       */
+      $scope.displayHours = function(role){
+    	  var ret = '';
+    	  if(role.rate.fullyUtilized){
+    		  if(role.rate.type == Rates.WEEKLY){
+        		  ret = '100% Weekly';
+        	  }
+        	  else if(role.rate.type == Rates.HOURLY){
+        		  ret = '100% Hourly';  
+        	  }
+        	  else if(role.rate.type == Rates.MONTHLY){
+        		  ret = '100% Monthly';  
+        	  }
+    	  }
+    	  else if(role.rate.type == Rates.WEEKLY){
+    		  ret = role.rate.hours + ' per week';
+    	  }
+    	  else if(role.rate.type == Rates.HOURLY){
+    		  ret = role.rate.hours + ' per month';  
+    	  }
+    	  return ret;
       };
       
       /**
@@ -522,7 +565,7 @@ angular.module('Mastermind')
 	                    var line = '';
 
 	                    //Print the header
-                        var head = ['Project', 'Peson', 'Role', 'Date', 'Hours', 'Description'];
+                        var head = ['Project', 'Peson', 'Role', 'Rate', 'Date', 'Hours', 'Description'];
                         for (var i = 0; i < head.length; i++) {
                             line += head[i] + ',';
                         }
@@ -543,8 +586,13 @@ angular.module('Mastermind')
 	                        	line += csv.stringify(record.role.type.title);
 	                        }
 	                        line += ','
+	                        if(record.role){
+	                        	 line += scope.displayRate(record.role) ;
+	                        }
+	                        line += ',';
 	                        line += record.date + ',';
 	                        line += record.hours + ',';
+	                        
 	                        line += csv.stringify(record.description) + ',';
 	                        
 	                        

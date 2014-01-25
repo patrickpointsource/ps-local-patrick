@@ -30,7 +30,9 @@ angular.module('Mastermind.controllers.projects')
         }
       });
       
-	  
+	  /**
+	   * Role rate type has changed in the UI (ripple)
+	   */
 	  $scope.handleRoleTypeChanged = function(){
 		  var type = $scope.newRole.type.resource;
 		  var roleType = $scope.roleGroups[type];
@@ -70,28 +72,7 @@ angular.module('Mastermind.controllers.projects')
     	return RolesService.validateNewRole($scope.project, $scope.newRole);
       };
 
-      $scope.displayHours = function(role){
-    	  var ret = '';
-    	  if(role.rate.fullyUtilized){
-    		  if(role.rate.type == Rates.WEEKLY){
-        		  ret = '100% Weekly';
-        	  }
-        	  else if(role.rate.type == Rates.HOURLY){
-        		  ret = '100% Hourly';  
-        	  }
-        	  else if(role.rate.type == Rates.MONTHLY){
-        		  ret = '100% Monthly';  
-        	  }
-    	  }
-    	  else if(role.rate.type == Rates.WEEKLY){
-    		  ret = role.rate.hours + ' per week';
-    	  }
-    	  else if(role.rate.type == Rates.HOURLY){
-    		  ret = role.rate.hours + ' per month';  
-    	  }
-    	  return ret;
-      };
-
+     
       $scope.cancelAdd = function () {
     	//Close the new role dialog instance
 	    if($('#newRoleDialog').hasClass('in')){
@@ -120,6 +101,9 @@ angular.module('Mastermind.controllers.projects')
     	 }
       };
 
+      /**
+       * 
+       */
       $scope.triggerEditRole = function (role, index) {
     	  if($scope.editRoleIndex == index && $scope.editingRole){
      		 $scope.cancelAdd();
@@ -138,6 +122,9 @@ angular.module('Mastermind.controllers.projects')
      	 } 
       };
 
+      /**
+       * Update an existing role deinition
+       */
       $scope.save = function () {
         //Validate new role
         var errors = $scope.validateNewRole();
