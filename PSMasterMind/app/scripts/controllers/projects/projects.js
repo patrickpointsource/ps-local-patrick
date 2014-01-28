@@ -26,7 +26,6 @@ angular.module('Mastermind.controllers.projects')
 
         Resources.query('projects', apQuery, apFields, function(result){
           $scope.projects = result.data;
-          console.log($scope.projects);
           //Reload the Table
           $scope.tableParams.reload();
         });
@@ -39,41 +38,41 @@ angular.module('Mastermind.controllers.projects')
           $scope.projects = result.data;
           //Reload the table with data
           $scope.tableParams.reload();
-         });
-        }
-      };
+        });
+      }
+    };
 
-      $scope.projectFilter = $state.params.filter?$state.params.filter:'all';
-      $scope.handleProjectFilterChanged();
+    $scope.projectFilter = $state.params.filter ? $state.params.filter:'all';
+    $scope.handleProjectFilterChanged();
 
-      /**
-       * Navigate to creating a project.
-       */
-      $scope.createProject = function () {
-        $state.go('projects.new');
-      };
+    /**
+     * Navigate to creating a project.
+     */
+    $scope.createProject = function () {
+      $state.go('projects.new');
+    };
 
-      // Table Parameters
-      var params = {
-        page: 1,            // show first page
-        count: 10,           // count per page
-        sorting: {
-          name: 'asc'     // initial sorting
-        }
-      };
-      $scope.tableParams = new TableParams(params, {
-        counts: [],
-        total: $scope.projects.length, // length of data
-        getData: function ($defer, params) {
-          var start = (params.page() - 1) * params.count(),
-              end = params.page() * params.count(),
+    // Table Parameters
+    var params = {
+      page: 1,            // show first page
+      count: 10,           // count per page
+      sorting: {
+        name: 'asc'     // initial sorting
+      }
+    };
+    $scope.tableParams = new TableParams(params, {
+      counts: [],
+      total: $scope.projects.length, // length of data
+      getData: function ($defer, params) {
+        var start = (params.page() - 1) * params.count(),
+            end = params.page() * params.count(),
 
-          // use build-in angular filter
-          orderedData = params.sorting() ? $filter('orderBy')($scope.projects, params.orderBy()) : $scope.projects,
-              ret = orderedData.slice(start, end);
+        // use build-in angular filter
+        orderedData = params.sorting() ? $filter('orderBy')($scope.projects, params.orderBy()) : $scope.projects,
+            ret = orderedData.slice(start, end);
 
-          $defer.resolve(ret);
-        }
-      });
+        $defer.resolve(ret);
+      }
+    });
 
-    }]);
+}]);
