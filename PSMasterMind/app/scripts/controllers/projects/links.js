@@ -141,6 +141,10 @@ angular.module('Mastermind.controllers.projects')
     * Add a new Link to the server
     */
     $scope.addLink = function(link){
+      if(link == null){
+    	  link = $scope.newLink;
+      }	
+    	
       Resources.create($scope.project.about+"/links", link).then(function(){
         Resources.refresh($scope.project.about+"/links").then(function(result){
           $scope.links = result.members;
