@@ -1,16 +1,16 @@
 <div class="row">
-	<div class="col-xs-6 col-sm-4"><h3>Hours</h3></div>
-	<div class="actions col-xs-6 col-sm-8 pageActions">
-		<a ng-if="financeAccess" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" ng-href="{{hoursToCSV.link()}}" download="{{project.name}}-hours.csv">
-			<div class="hidden-xs"><i class="fa fa-table"></i><span> Export to CSV</span></div>
-			<div class="visible-xs"><i class="fa fa-table"></i></div>
-		</a>
-		<button type="button"
-			class="btn btn-default" data-toggle="collapse" data-target="#newHoursDialog">
-	  		<div class="hidden-xs"><i class="fa fa-plus-square"></i> <span > Add Hours</span></div>
-	  		<div class="visible-xs"><i class="fa fa-plus-square"></i></div>
-		</button>
-	</div>
+  <div class="col-xs-6 col-sm-4"><h3>Hours</h3></div>
+  <div class="actions col-xs-6 col-sm-8 pageActions">
+    <a ng-if="financeAccess" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" ng-href="{{hoursToCSV.link()}}" download="{{project.name}}-hours.csv">
+      <div class="hidden-xs"><i class="fa fa-table"></i><span> Export to CSV</span></div>
+      <div class="visible-xs"><i class="fa fa-table"></i></div>
+    </a>
+    <button type="button"
+      class="btn btn-default" data-toggle="collapse" data-target="#newHoursDialog">
+        <div class="hidden-xs"><i class="fa fa-plus-square"></i> <span > Add Hours</span></div>
+        <div class="visible-xs"><i class="fa fa-plus-square"></i></div>
+    </button>
+  </div>
 </div>
 
 <!-- {{project}}<br/><br/>-->
@@ -19,32 +19,32 @@
 
 <div ng-form="newHoursForm" id="newHoursDialog" class="well collapse out">
     <div class="row">
-    	<div class="col-xs-12 col-sm-6 row">
-	    	<div class="col-xs-6">
-	            <label class="control-label" for="role">Project: </label>
-	            <span>{{project.name}}</span>
-	        </div>
-	        <div class="col-xs-6">
-	            <label class="control-label" for="role">Person: </label>
-	            <span>{{me.name}}</span>
-	        </div>
-			<div class="col-xs-6">
-		         <label class="control-label" for="hours">* Hours:</label>
-		         <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours" ng-required="true"/>
-	        </div>
-   			<div class="col-xs-6">
-	            <label class="control-label" for="date">* Date:</label>
-	            <input id="date" name="date" class="form-control datepicker" type="text"
+      <div class="col-xs-12 col-sm-6 row">
+        <div class="col-xs-6">
+              <label class="control-label" for="role">Project: </label>
+              <span>{{project.name}}</span>
+          </div>
+          <div class="col-xs-6">
+              <label class="control-label" for="role">Person: </label>
+              <span>{{me.name}}</span>
+          </div>
+      <div class="col-xs-6">
+             <label class="control-label" for="hours">* Hours:</label>
+             <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours" ng-required="true"/>
+          </div>
+        <div class="col-xs-6">
+              <label class="control-label" for="date">* Date:</label>
+              <input id="date" name="date" class="form-control datepicker" type="text"
                     ng-model="newHoursRecord.date"
-                		todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
-            	</div>
-	    </div>
-	    <div class="col-xs-12 col-sm-6">
-	         <label class="control-label" for="hours">* Description:</label>
-	         <textarea id="hours" name="hours" rows="3" class="form-control" ng-model="newHoursRecord.description" ng-required="true"></textarea>
+                    todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
+              </div>
+      </div>
+      <div class="col-xs-12 col-sm-6">
+           <label class="control-label" for="hours">* Description:</label>
+           <textarea id="hours" name="hours" rows="3" class="form-control" ng-model="newHoursRecord.description" ng-required="true"></textarea>
         </div>
-	</div>
-	<div class="row">
+  </div>
+  <div class="row">
         <div class="col-xs-12">
             <input type="submit" class="btn" value="Add" ng-click="addHours()"/>
         </div>
@@ -52,54 +52,38 @@
 </div>
 <div class="row">
      <div class="col-xs-12">
-     	<table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList" export-hours="hoursToCSV">
-         	  <thead>
-                <tr>
-                  <th class="col-xs-3 col-sm-3 col-md-2 col-lg-2">Person</th>
-                  <th class="col-xs-1 col-sm-3 col-md-2 col-lg-2">Role</th>
-                  <th class="col-xs-5 col-sm-2 col-md-2 col-lg-1">Date</th>
-                  <th class="col-xs-1 col-sm-1">Hours</th>
-                  <th ng-if="financeAccess" class="hidden-xs hidden-sm col-md-2 col-lg-1">Rate</th>
-                  <th class="hidden-xs col-sm-3 col-md-4 col-lg-4">Description</th>
-                  <th class="col-xs-1"></th>
-                </tr>
-              </thead>
-              <tbody ng-repeat="hoursRecord in $data">
-	             <tr>
-	             	<td>
-	             	  <a href="#{{hoursRecord.person.resource}}">
-		                  <img ng-show="hoursRecord.person" class="profileImage" ng-src="{{hoursRecord.person.thumbnail}}"/>
-		                  <i class="fa fa-ban" ng-show="!hoursRecord.person"></i>
-		                  <span style="display: inline-block;">{{hoursRecord.person.name || 'Unknown'}}</span>
-	                  </a>
-	                </td>
-	                <td>
-	                	<span class="visible-xs visible-sm">{{hoursRecord.role.type.abbreviation}}</span>
-	                	<span class="hidden-xs hidden-sm">{{hoursRecord.role.type.title}}</span>
-	                </td>
-	                <td>
-	                  {{hoursRecord.date}}
-	                </td>
-	                <td>
-	                  {{hoursRecord.hours}}
-	                </td>
-	                <td ng-if="financeAccess" class="hidden-xs hidden-sm">
-	                  {{displayRate(hoursRecord.role)}}
-	                </td>
-	                <td class="hidden-xs">
-	                  {{hoursRecord.description}}
-	                </td>
-	                <td class="actionsCell">
-	                	<button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
-						<i class="fa fa-trash-o"></i>
-					</button></td>
-	             </tr>
-	             <tr class="visible-xs">
-	             	<td colspan="4">
-	                  {{hoursRecord.description}}
-	                </td>
-	             </tr>
-	         </tbody>
+      <table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList" export-hours="hoursToCSV">
+               <tr ng-repeat="hoursRecord in $data">
+                <td data-title="'Person'" sortable="'person.resource'">
+                  <a href="#{{hoursRecord.person.resource}}">
+                    <img ng-show="hoursRecord.person" class="profileImage" ng-src="{{hoursRecord.person.thumbnail}}"/>
+                    <i class="fa fa-ban" ng-show="!hoursRecord.person"></i>
+                    <span style="display: inline-block;">{{hoursRecord.person.name || 'Unknown'}}</span>
+                  </a> <span class="visible-xs">{{hoursRecord.role.type.abbreviation}}</span>
+                  </td>
+                  <td data-title="'Role'" header-class="hidden-xs" sortable="'role.type.abbreviation'"
+                      class="hidden-xs">
+                    {{hoursRecord.role.type.title}}
+                  </td>
+                  <td data-title="'Date'" sortable="'date'">
+                    <span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
+                  </td>
+                  <td data-title="'Hrs'" sortable="'hours'">
+                    {{hoursRecord.hours}}
+                  </td>
+                  <td ng-if="financeAccess" data-title="'Rate'">
+                    {{displayRate(hoursRecord.role)}}
+                  </td>
+                  <td class="hidden-xs" data-title="'Desc'" header-class="hidden-xs" sortable="'description'" class="hidden-xs">
+                    {{hoursRecord.description}}
+                  </td>
+                  <td class="actionsCell" data-title="''">
+                    <button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
+                      <i class="fa fa-trash-o"></i>
+                    </button>
+                  </td>
+               </tr>
+           </span>
          </table>
          <script type="text/ng-template" id="hours/pager">
             <ul class="pager ng-cloak">
