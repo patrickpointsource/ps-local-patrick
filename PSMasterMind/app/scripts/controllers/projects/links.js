@@ -53,27 +53,31 @@ angular.module('Mastermind.controllers.projects')
      * Cancel add Link
      */
     $scope.cancelAddLink = function () {
-      if($('#newLinkDialog').hasClass('in')){
-        $('#newLinkDialog').collapse('hide');
-      }
+		if($('#newLinkDialog').hasClass('in')){
+	        $('#newLinkDialog').collapse('hide');
+	      }
 
-      if ($scope.editLinkIndex==null) {
-        //Reset New Link Object and clear out form
-        $scope.newLink.url = null;
-        $scope.newLink.label = null;
-      }
-      $scope.editingLink = false;
-      $scope.editLinkIndex = null;
-      $scope.addLinkForm.$setPristine();
+	      if ($scope.editLinkIndex==null) {
+	        //Reset New Link Object and clear out form
+	        $scope.newLink.url = null;
+	        $scope.newLink.label = null;
+	      }
+	      $scope.editingLink = false;
+	      $scope.editLinkIndex = null;
+	      $scope.addLinkForm.$setPristine();
     };
 
     /**
      * Cancel editing an existing link
      */
-    $scope.cancelEditLink = function () {
-      $scope.editingLink = false;
-      $scope.editLinkIndex = null;
-      $scope.linksTableParams.reload();
+    $scope.cancelEditLink = function (link) {
+    	Resources.refresh($scope.project.about+"/links").then(function(result){
+    		$scope.links = result.members;
+    		$scope.editingLink = false;
+    		$scope.editLinkIndex = null;
+    		$scope.linksTableParams.reload();
+    	});
+     
     };
 
     /**
