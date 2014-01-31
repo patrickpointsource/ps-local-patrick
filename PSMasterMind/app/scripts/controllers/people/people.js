@@ -15,25 +15,20 @@ angular.module('Mastermind.controllers.people')
             var start = (params.page() - 1) * params.count();
             var end = params.page() * params.count();
 
-            var activeRoles = [];
             for(var i=start; (i<$scope.people.length && i<end);i++){
 	        	//Annotate people with additional information
 	  	        $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
-	            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+	  	     	if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
 	          	// add the role to the person so we can display it in the table and sort by it
-	            	activeRoles.push(Resources.resolve($scope.people[i].primaryRole));
+	            	$scope.people[i].primaryRole = $scope.roleGroups[$scope.people[i].primaryRole.resource];
 	            }
-	          }
-            
-            $q.all(activeRoles).then(function(roles){
-            	// use build-in angular filter
-                var orderedData = params.sorting() ?
-                  $filter('orderBy')(data, params.orderBy()) :
-                  data;
+	        }
+        	// use build-in angular filter
+            var orderedData = params.sorting() ?
+            		$filter('orderBy')(data, params.orderBy()) : data;
 
-                var ret = orderedData.slice(start, end);
-                $defer.resolve(ret);
-            });
+            var ret = orderedData.slice(start, end);
+            $defer.resolve(ret);
           }
         });
       };
@@ -356,9 +351,6 @@ angular.module('Mastermind.controllers.people')
         $scope.buildTableView();
       };
 
-
-
-
       // Table Parameters
       var params = {
         page: 1,            // show first page
@@ -367,16 +359,7 @@ angular.module('Mastermind.controllers.people')
           familyName: 'asc'     // initial sorting
         }
       };
-
-      // get all roles so we can build the filter
-      var rolesQuery = {};
-      var rolesFields = {title:1, resource:1}
-      Resources.query('roles', rolesQuery, rolesFields, function(result){
-//        console.log('get roles result.members:');
-//        console.log(result.members);
-        $scope.rolesFilterOptions = result.members;
-      });
-
+      
       var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
       $scope.peopleFilter = $state.params.filter?$state.params.filter:'all';
@@ -385,7 +368,25 @@ angular.module('Mastermind.controllers.people')
 
       $scope.showTableView = true;
       $scope.showGraphView = false;
-
-      $scope.buildTableView();
+      
+      /**
+       * Get All the Role Types
+       */
+      Resources.get('roles').then(function(result){
+        var resources = [];
+        var roleGroups = {};
+        //Save the list of role types in the scope
+        $scope.rolesFilterOptions = result.members;
+        //Get list of roles to query members
+        for(var i = 0; i < result.members.length;i++){
+          var role = result.members[i];
+          var resource = role.resource;
+          roleGroups[resource] = role;
+        }
+        $scope.roleGroups = roleGroups;
+        
+        //Kick off fetch all the people
+        $scope.buildTableView();
+      });
 
     }]);
