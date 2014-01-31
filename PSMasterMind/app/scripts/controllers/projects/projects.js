@@ -21,29 +21,42 @@ angular.module('Mastermind.controllers.projects')
         var yyyy = today.getFullYear();
         if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} today = yyyy+'-'+mm+'-'+dd;
 
+        // build query for active projects
         var apQuery = {startDate:{$lte:today},$or:[{endDate:{$exists:false}},{endDate:{$gt:today}}]};
         var apFields = {resource:1,name:1,"roles.assignee":1,customerName:1};
 
         Resources.query('projects', apQuery, apFields, function(result){
           $scope.projects = result.data;
-          //Reload the Table
-          $scope.tableParams.reload();
+          //Reload the table
+          if (!$scope.tableParams){
+            $scope.tableParams = $scope.getTableData();
+          }
+          else {
+            $scope.tableParams.total($scope.projects.length);
+            $scope.tableParams.reload();
+          }
         });
       }
       else{
         //Default to all
         $scope.projectFilter = 'all';
 
+        // query all projects
         Resources.query('projects', {}, {resource:1,name:1,customerName:1}, function(result){
           $scope.projects = result.data;
-          //Reload the table with data
-          $scope.tableParams.reload();
+
+          //Reload the table
+          if (!$scope.tableParams){
+            $scope.tableParams = $scope.getTableData();
+          }
+          else {
+            $scope.tableParams.total($scope.projects.length);
+            $scope.tableParams.reload();
+          }
+
         });
       }
     };
-
-    $scope.projectFilter = $state.params.filter ? $state.params.filter:'all';
-    $scope.handleProjectFilterChanged();
 
     /**
      * Navigate to creating a project.
@@ -52,27 +65,31 @@ angular.module('Mastermind.controllers.projects')
       $state.go('projects.new');
     };
 
-    // Table Parameters
-    var params = {
-      page: 1,            // show first page
-      count: 10,           // count per page
-      sorting: {
-    	 customerName: 'asc'     // initial sorting
-      }
-    };
-    $scope.tableParams = new TableParams(params, {
-      counts: [],
-      total: $scope.projects.length, // length of data
-      getData: function ($defer, params) {
-        var start = (params.page() - 1) * params.count(),
-            end = params.page() * params.count(),
+    $scope.getTableData = function () {
+      // Table Parameters
+      var params = {
+        page: 1,            // show first page
+        count: 10,           // count per page
+        sorting: {
+      	 customerName: 'asc'     // initial sorting
+        }
+      };
+      return new TableParams(params, {
+        counts: [],
+        total: $scope.projects.length, // length of data
+        getData: function ($defer, params) {
 
-        // use build-in angular filter
-        orderedData = params.sorting() ? $filter('orderBy')($scope.projects, params.orderBy()) : $scope.projects,
-            ret = orderedData.slice(start, end);
+          var orderedData = params.sorting() ?
+              $filter('orderBy')($scope.projects, params.orderBy()) :
+              $scope.projects;
 
-        $defer.resolve(ret);
-      }
-    });
+          $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+        }
+      });
+    }
+
+
+    $scope.projectFilter = $state.params.filter ? $state.params.filter:'all';
+    $scope.handleProjectFilterChanged();
 
 }]);
