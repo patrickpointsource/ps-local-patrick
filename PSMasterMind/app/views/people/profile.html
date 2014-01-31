@@ -1,274 +1,290 @@
 <div>
-	<div class="row">
-		<div class="col-xs-8"><h2>{{profile.name}}</h2></div>
-		<div class="actions hidden-xs col-sm-4 pageActions">
-			<button ng-hide="editMode" class="btn" ng-click="edit()">
-				<i class="fa fa-pencil-square-o"></i> <span>Edit</span>
-			</button>
-			<button ng-show="editMode" class="btn" ng-click="cancel()">
-				<i class="fa fa-chevron-left"></i> <span>Cancel</span>
-			</button>
-			<button ng-show="editMode" class="btn" ng-click="save()">
-				<i class="fa fa-floppy-o"></i> <span>Save</span>
-			</button>
-		</div>
-		<div class="actions visible-xs col-xs-4 pageActions">
-			<button ng-hide="editMode" class="btn" ng-click="edit()">
-				<i class="fa fa-pencil-square-o"></i> 
-			</button>
-			<button ng-show="editMode" class="btn" ng-click="cancel()">
-				<i class="fa fa-chevron-left"></i>
-			</button>
-			<button ng-show="editMode" class="btn" ng-click="save()">
-				<i class="fa fa-floppy-o"></i> 
-			</button>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-12">
-			<div class="well">
-				<div class="row">
-					<div class="col-xs-12 col-sm-3">
-						<div style="background-color: white;width: 148px;padding: 10px;margin-bottom:10px">
-						<img class="media-object fullProfileImage"
-								 ng-src="{{profile.thumbnail}}" />
-					    </div>
-				    </div>
-					<div class="col-xs-12 col-sm-7">
-					    <div>
-							<span><a href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
-							<div ng-show="editMode">
-								<label class="personDetailLabel">Primary Role:</label> <select
-									class="form-control"
-									ng-model="profile.primaryRole.resource"
-									ng-options="m.resource as m.title for m in allRoles">
-								</select>
-							</div>
-							<div ng-hide="editMode">
-								<label class="personDetailLabel">Primary Role:</label> <span>{{getRoleName(profile.primaryRole.resource)}}</span>
-							</div>
-							<div ng-show="editMode">
-								<label for="profilePhone" class="personDetailLabel">Phone:</label> 
-								<input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone"/>
-							</div>
-							<div ng-hide="editMode">
-								<label class="personDetailLabel">Phone:</label> <a ng-if="profile.phone" href="tel:{{profile.phone | tel}}">{{profile.phone | tel}}</a>
-							</div>
-							<div ng-show="editMode">
-								<label for="profileSkype" class="personDetailLabel">Skype:</label> 
-								<input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="phone"/>
-							</div>
-							<div ng-hide="editMode">
-								<label class="personDetailLabel">Skype Id:</label> <a ng-if="profile.skypeId" href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
-								
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-2" sytle="clear:both">
-						<div ng-hide="editMode">
-							<label class="personDetailLabel">Groups:</label> <span
-								ng-show="!profile.groups"">None</span>
-							<ul class="personDetailList" ng-show="profile.groups"">
-								<li ng-repeat="group in profile.groups">{{group}}</li>
-							</ul>
-						</div>
-						<div ng-if="adminAccess" ng-show="editMode">
-							<label class="personDetailLabel">Groups:</label>
-							<ul class="personDetailList">
-								<li><input type="checkbox" ng-model="isExec"
-									ng-click="handleGroupChange($event, 'Executives')" /><span
-									class="checkboxText">Executives</span></li>
-								<li><input type="checkbox" ng-model="isManagement"
-									ng-click="handleGroupChange($event, 'Management')" /><span
-									class="checkboxText">Management</span></li>
-								<li><input type="checkbox" ng-model="isSales"
-									ng-click="handleGroupChange($event, 'Sales')" /><span
-									class="checkboxText">Sales</span></li>
-							</ul>
-						</div>
-						<label class="personDetailLabel">Accounts:</label> <span
-							ng-show="!gplusProfile.url"">None</span>
-						<ul class="personDetailList">
-							<li ng-show="gplusProfile.url"><a
-								href="{{gplusProfile.url}}">Google+</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div ng-hide="editMode">
-		<div class="row">
-			<div class="col-xs-12">
-				<h3>Projects</h3>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12">
-				<table ng-table="tableParams" class="table">
-					<tr ng-repeat="project in $data"
-						ng-show="isCurrentProject(project.endDate)">
-						<td data-title="'Project'" sortable="'name'"><a
-							href="#{{project.resource}}">{{project.name}}</a>
-							<div ng-repeat="role in project.roles"
-								ng-show="profile.about == role.assignee.resource">
-								{{getRoleName(role.type.resource)}}</div></td>
-						<td data-title="'Dates'" sortable="'startDate'">
-							<br/>
-							<div ng-repeat="role in project.roles"
-								ng-show="profile.about == role.assignee.resource">
-								<small>{{role.startDate | date:'shortDate'}}</small> <span
-									ng-show="role.endDate">-
-								<small>{{role.endDate | date:'shortDate'}}</small></span> <span
-									ng-hide="role.endDate">- N/A</span>
-							</div></td>
-						<td data-title="'Hours'">
-							<br/>
-							<div ng-repeat="role in project.roles"
-								ng-show="profile.about == role.assignee.resource">
-								{{role.rate.hours}} <span class="small">({{role.rate.type}})</span>
-							</div>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-8"><h3>Hours</h3></div>
-		<div class="actions col-xs-4 pageActions">
-			<button type="button" ng-show="canAddHours"
-				class="btn btn-default pull-right" data-toggle="collapse" data-target="#newHoursDialog">
-		  		<i class="fa fa-plus-square"></i> <span>Add Hours</span>
-			</button>
-		</div>
-	</div>
-	<div ng-form="newHoursForm" id="newHoursDialog" class="well collapse out">
-	    <div class="row">
-	    	<div class="col-xs-12 col-sm-6 row">
-		    	<div class="col-xs-4">
-		            <label class="control-label">Person: </label>
-		            <span style="white-space: nowrap;overflow: hidden;">{{profile.name}}</span>
-		        </div>
-		    	<div class="col-xs-8">
-		            <label class="required-label control-label" for="project">Project:</label>
-	                <select name="project" id="project" class="col-xs-12 form-control" ng-model="newHoursRecord.project.resource"
-	                	ng-required="true" ng-options="p.resource as p.name for p in projects">
-	                </select>
-		        </div>
-		        <div class="col-xs-6">
-			         <label class="required-label  control-label" for="hours">Hours:</label>
-			         <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours" ng-required="true"/>
-		        </div>
-    			<div class="col-xs-6">
-		            <label class="required-label control-label" for="date">Date:</label>
-		            <input id="date" name="date" class="form-control datepicker" type="text"
-	                    ng-model="newHoursRecord.date"
-	                		todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
-             	</div>
-	        </div>
-	        <div class="col-xs-12 col-sm-6">
-		         <label class="required-label  control-label" for="hours">Description:</label>
-		         <textarea id="hours" name="hours" rows="5" class="form-control" ng-model="newHoursRecord.description" ng-required="true"></textarea>
-	        </div>
-		</div>
-		<div class="row">
-	        <div class="col-xs-12">
-	            <input type="submit" class="btn" value="Add" ng-click="addHours()">
-	        </div>
-	    </div>
-	</div>
-	<div class="row">
-	     <div class="col-xs-12">
-	     	<table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList">
-	         	  <thead>
-	                <tr>
-	                  <th class="col-xs-5 col-sm-3">Project</th>
-	                  <th class="col-xs-5 col-sm-2">Date</th>
-	                  <th class="col-xs-1 col-sm-1">Hours</th>
-	                  <th class="hidden-xs col-sm-5">Description</th>
-	                  <th class="col-xs-1"></th>
-	                </tr>
-	              </thead>
-	              <tbody ng-repeat="hoursRecord in $data">
-		             <tr >
-		             	<td>
-		             	  <a href="#{{hoursRecord.project.resource}}">
-			                 <span style="display: inline-block;">{{hoursRecord.project.name || 'Unknown'}}</span>
-		                  </a>
-		                </td>
-		                <td>
-		                  {{hoursRecord.date}}
-		                </td>
-		                <td>
-		                  {{hoursRecord.hours}}
-		                </td>
-		                <td class="hidden-xs">
-		                  {{hoursRecord.description}}
-		                </td>
-		                <td class="actionsCell">
-		                	<button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
-							<i class="fa fa-trash-o"></i>
-						</button></td>
-		             </tr>
-		             <tr class="visible-xs">
-		             	<td colspan="3">{{hoursRecord.description}}</td>
-		             </tr>
-		         </tbody>
-	         </table>
-	         <script type="text/ng-template" id="hours/pager">
-            <ul class="pager ng-cloak">
-              <li ng-repeat="page in pages"
-                    ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
-                    ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
-                <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
-                <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
-              </li>
-                <li>
-                <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
-                    <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
-                    <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
-                    <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
-                    <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
-                </div>
-                </li>
+  <div class="row">
+    <div class="col-xs-8"><h2>{{profile.name}}</h2></div>
+    <div class="actions hidden-xs col-sm-4 pageActions">
+      <button ng-hide="editMode" class="btn" ng-click="edit()">
+        <i class="fa fa-pencil-square-o"></i> <span>Edit</span>
+      </button>
+      <button ng-show="editMode" class="btn" ng-click="cancel()">
+        <i class="fa fa-chevron-left"></i> <span>Cancel</span>
+      </button>
+      <button ng-show="editMode" class="btn" ng-click="save()">
+        <i class="fa fa-floppy-o"></i> <span>Save</span>
+      </button>
+    </div>
+    <div class="actions visible-xs col-xs-4 pageActions">
+      <button ng-hide="editMode" class="btn" ng-click="edit()">
+        <i class="fa fa-pencil-square-o"></i>
+      </button>
+      <button ng-show="editMode" class="btn" ng-click="cancel()">
+        <i class="fa fa-chevron-left"></i>
+      </button>
+      <button ng-show="editMode" class="btn" ng-click="save()">
+        <i class="fa fa-floppy-o"></i>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="well">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <div style="background-color: white;width: 148px;padding: 10px;margin-bottom:10px">
+            <img class="media-object fullProfileImage"
+                 ng-src="{{profile.thumbnail}}" />
+              </div>
+            </div>
+          <div class="col-xs-12 col-sm-7">
+              <div>
+              <span><a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
+              <div ng-show="editMode">
+                <label class="personDetailLabel">Primary Role:</label> <select
+                  class="form-control"
+                  ng-model="profile.primaryRole.resource"
+                  ng-options="m.resource as m.title for m in allRoles">
+                </select>
+              </div>
+              <div ng-hide="editMode">
+                <label class="personDetailLabel">Primary Role:</label> <span>{{getRoleName(profile.primaryRole.resource)}}</span>
+              </div>
+              <div ng-show="editMode">
+                <label for="profilePhone" class="personDetailLabel">Phone:</label>
+                <input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone"/>
+              </div>
+              <div ng-hide="editMode">
+                <label class="personDetailLabel">Phone:</label> <a ng-if="profile.phone" ng-href="tel:{{profile.phone | tel}}">{{profile.phone | tel}}</a>
+              </div>
+              <div ng-show="editMode">
+                <label for="profileSkype" class="personDetailLabel">Skype:</label>
+                <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="phone"/>
+              </div>
+              <div ng-hide="editMode">
+                <label class="personDetailLabel">Skype Id:</label> <a ng-if="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-2" sytle="clear:both">
+            <div ng-hide="editMode">
+              <label class="personDetailLabel">Groups:</label> <span
+                ng-show="!profile.groups"">None</span>
+              <ul class="personDetailList" ng-show="profile.groups"">
+                <li ng-repeat="group in profile.groups">{{group}}</li>
+              </ul>
+            </div>
+            <div ng-if="adminAccess" ng-show="editMode">
+              <label class="personDetailLabel">Groups:</label>
+              <ul class="personDetailList">
+                <li><input type="checkbox" ng-model="isExec"
+                  ng-click="handleGroupChange($event, 'Executives')" /><span
+                  class="checkboxText">Executives</span></li>
+                <li><input type="checkbox" ng-model="isManagement"
+                  ng-click="handleGroupChange($event, 'Management')" /><span
+                  class="checkboxText">Management</span></li>
+                <li><input type="checkbox" ng-model="isSales"
+                  ng-click="handleGroupChange($event, 'Sales')" /><span
+                  class="checkboxText">Sales</span></li>
+              </ul>
+            </div>
+            <label class="personDetailLabel">Accounts:</label> <span
+              ng-show="!gplusProfile.url">None</span>
+            <ul class="personDetailList">
+              <li ng-show="gplusProfile.url"><a
+                ng-href="{{gplusProfile.url}}">Google+</a></li>
             </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-hide="editMode">
+    <div class="row">
+      <div class="col-xs-12">
+        <h3>Projects</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <table ng-table="tableParams" class="table">
+          <tr ng-repeat="project in $data" ng-show="isCurrentProject(project.endDate)">
+            <td data-title="'Project'" sortable="'name'"><a href="#{{project.resource}}">{{project.name}}</a>
+              <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
+                <span  class="visible-xs">{{getRoleName(role.type.resource)}}</spam>
+              </div>
+            </td>
+            <td data-title="'Role'" class="hidden-xs" header-class="hidden-xs">
+              <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
+                {{getRoleName(role.type.resource)}}
+              </div>
+            </td>
+            <td data-title="'Hours'">
+              <div ng-repeat="role in project.roles"
+                ng-show="profile.about == role.assignee.resource">
+                {{role.rate.hours}} <span class="small">({{role.rate.type}})</span>
+              </div>
+            </td>
+            <td data-title="'Start Date'" sortable="'startDate'" class="hidden-xs" header-class="hidden-xs">
+              <div ng-repeat="role in project.roles"
+                ng-show="profile.about == role.assignee.resource">
+                <small>{{role.startDate | date:'longDate'}}</small>
+              </div>
+            </td>
+            <td data-title="'End Date'" sortable="'endDate'" class="hidden-xs" header-class="hidden-xs">
+              <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
+                <span ng-show="role.endDate">
+                  <small>{{role.endDate | date:'longDate'}}</small>
+                </span>
+                <span ng-hide="role.endDate">N/A</span>
+              </div>
+            </td>
+            <td data-title="'Dates'" sortable="'startDate'" class="visible-xs" header-class="visible-xs">
+              <div ng-repeat="role in project.roles"
+                ng-show="profile.about == role.assignee.resource">
+                <small>{{role.startDate | date:'shortDate'}}</small> <span
+                  ng-show="role.endDate">-
+                <small>{{role.endDate | date:'shortDate'}}</small></span> <span
+                  ng-hide="role.endDate">- N/A</span>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-8"><h3>Hours</h3></div>
+    <div class="actions col-xs-4 pageActions">
+      <button type="button" ng-show="canAddHours"
+        class="btn btn-default pull-right" data-toggle="collapse" data-target="#newHoursDialog">
+          <i class="fa fa-plus-square"></i> <span>Add</span>
+      </button>
+    </div>
+  </div>
+  <div ng-form="newHoursForm" id="newHoursDialog" class="well collapse out">
+    <div class="row">
+      <div class="col-xs-12">
+        <h3 class="no-margin-top">Add Hours</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+          <label class="required-label control-label" for="project">Project:</label>
+          <select name="project" id="project" class="col-xs-12 form-control" ng-required="true"
+              ng-model="newHoursRecord.project.resource" ng-options="p.resource as p.name for p in projects">
+          </select>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+          <label class="required-label control-label" for="date">Date:</label>
+          <input id="date" name="date" class="form-control datepicker" type="text"
+              ng-model="newHoursRecord.date"
+              todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+          <label class="required-label  control-label" for="hours">Hours:</label>
+          <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours"
+              ng-required="true"/>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="form-group">
+          <label class="required-label control-label" for="hours">Description:</label>
+          <textarea id="hours" name="hours" rows="3" class="form-control" ng-model="newHoursRecord.description"
+              ng-required="true"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 text-right">
+        <input type="submit" class="btn" value="Submit" ng-click="addHours()">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-xs-12">
+        <table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList">
+          <tr ng-repeat="hoursRecord in $data">
+            <td data-title="'Date'" header-class="col-xs-5 col-sm-2" class="col-xs-5 col-sm-2" sortable="'date'">
+              <span class="hidden-xs">{{hoursRecord.date | date:'longDate'}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
+            </td>
+            <td data-title="'Hours'" header-class="col-xs-1 col-sm-1" class="col-xs-1 col-sm-1" sortable="'hours'">
+              {{hoursRecord.hours}}
+            </td>
+            <td data-title="'Project'" header-class="col-xs-5 col-sm-3" class="col-xs-5 col-sm-3" sortable="'project.name'">
+              <a href="#{{hoursRecord.project.resource}}">
+                 <span style="display: inline-block;">{{hoursRecord.project.name || 'Unknown'}}</span>
+                </a>
+            </td>
+            <td data-title="'Description'" header-class="hidden-xs col-sm-5" class="hidden-xs col-sm-5" sortable="'description'">
+              {{hoursRecord.description}}
+            </td>
+            <td data-title="''" class="actionsCell">
+              <button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
+              <i class="fa fa-trash-o"></i>
+              </button>
+            </td>
+          </tr>
+        </table>
+
+        <script type="text/ng-template" id="hours/pager">
+          <ul class="pager ng-cloak">
+            <li ng-repeat="page in pages"
+                  ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
+                  ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
+              <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
+              <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
+            </li>
+              <li>
+              <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
+                  <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
+                  <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
+                  <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
+                  <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
+              </div>
+              </li>
+          </ul>
         </script>
-	     </div>
-	 </div>
+      </div>
+   </div>
 </div>
 
 <!-- <div>
-	<div class="row">
-		<div class="col-xs-9">
-			<h3>Proficiencies</h3>
-		</div>
-		<div class="col-xs-3 pageActions" ng-show="editMode">
-			<button type="button" class="btn btn-default pull-right" data-toggle="collapse" data-target="#newSkillDialog">
-		  		<i class="fa fa-plus-square"></i> <span>Add Proficiency</span>
-			</button>
-		</div>
-	</div>
-	<section id="newSkillDialog" class="well collapse out" ng-show="editMode">
-	 <div class="row">
-	     <div class="col-xs-12 col-sm-4 form-group">
-	         <label for="skill">Proficiency:</label>
-	         <select id="skillSelect" class="col-xs-12 form-control" ng-model="newSkill.type.resource"
-	                 ng-options="m.resource as m.title for m in skillTypes">
-	         </select>
-	     </div>
-	  </div>
-	  <div class="row">
+  <div class="row">
+    <div class="col-xs-9">
+      <h3>Proficiencies</h3>
+    </div>
+    <div class="col-xs-3 pageActions" ng-show="editMode">
+      <button type="button" class="btn btn-default pull-right" data-toggle="collapse" data-target="#newSkillDialog">
+          <i class="fa fa-plus-square"></i> <span>Add Proficiency</span>
+      </button>
+    </div>
+  </div>
+  <section id="newSkillDialog" class="well collapse out" ng-show="editMode">
+   <div class="row">
+       <div class="col-xs-12 col-sm-4 form-group">
+           <label for="skill">Proficiency:</label>
+           <select id="skillSelect" class="col-xs-12 form-control" ng-model="newSkill.type.resource"
+                   ng-options="m.resource as m.title for m in skillTypes">
+           </select>
+       </div>
+    </div>
+    <div class="row">
            <div class="col-xs-12">
                <input type="submit" ng-disabled="!newSkill.type.resource" class="btn" value="Add" ng-click="addSkill()"/>
                <input type="submit" class="btn" value="Cancel" ng-click="cancelAddSkill()"/>
            </div>
        </div>
-	</section>
-	<div class="row">
-		<div class="col-xs-12">
-			<table ng-table="skillsParams" class="table">
-				 <thead>
+  </section>
+  <div class="row">
+    <div class="col-xs-12">
+      <table ng-table="skillsParams" class="table">
+         <thead>
                 <tr>
                   <th>Title</th>
                   <th>Level</th>
@@ -276,20 +292,20 @@
                 </tr>
               </thead>
               <tbody>
-				<tr ng-repeat="skill in $data">
-					<td>{{getSkillsName(skill.type.resource)}}</td>
-					<td ng-hide="editMode">{{getSkillProficiencyLabel(skill.proficiency)}}</td>
-					<td ng-show="editMode">
-						<select ng-model="skill.proficiency">
-							<option value="1">Some</option>
-							<option value="2">Moderate</option>
-							<option value="3">Mastered</option>
-		                </select>
-		            </td>
-					<td ng-show="editMode"><button class="btn btn-default" ng-click="removeSkill(skill)"><i class="fa fa-trash-o"></i></button></td>
-				</tr>
-			  </tbody>
-			</table>
-		</div>
-	</div>
+        <tr ng-repeat="skill in $data">
+          <td>{{getSkillsName(skill.type.resource)}}</td>
+          <td ng-hide="editMode">{{getSkillProficiencyLabel(skill.proficiency)}}</td>
+          <td ng-show="editMode">
+            <select ng-model="skill.proficiency">
+              <option value="1">Some</option>
+              <option value="2">Moderate</option>
+              <option value="3">Mastered</option>
+                    </select>
+                </td>
+          <td ng-show="editMode"><button class="btn btn-default" ng-click="removeSkill(skill)"><i class="fa fa-trash-o"></i></button></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div> -->

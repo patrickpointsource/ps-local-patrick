@@ -6080,6 +6080,9 @@ label.checkbox {
 .margin-top {
   margin-top: 20px;
 }
+.no-margin-top {
+  margin-top: 0;
+}
 .navbar-fixed-top {
   margin-bottom: 0;
 }
