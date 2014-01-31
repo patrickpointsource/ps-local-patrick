@@ -7,7 +7,7 @@ angular.module('Mastermind')
   .controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
     function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
       var detailsValid = false, rolesValid = false;
-
+      
     //Set our currently viewed project to the one resolved by the service.
     if($stateParams.projectId){
       $scope.projectId = $stateParams.projectId;
@@ -72,7 +72,7 @@ angular.module('Mastermind')
      softwareEst = softwareEst?softwareEst:0;
 
      var revenue = servicesEst+softwareEst;
-     var cost = $scope.servicesTotal();
+     var cost = $scope.servicesLoadedTotal;
 
      var margin = null;
 
@@ -126,11 +126,11 @@ angular.module('Mastermind')
     };
 
     /**
-     * Calculate total services caost in plan
+     * Calculate total services cost in plan
      */
     $scope.servicesTotal = function(){
       var roles = $scope.project.roles;
-
+      
       var runningTotal = 0;
       for(var i = 0; roles && i < roles.length; i++){
         var role = roles[i];
@@ -170,7 +170,8 @@ angular.module('Mastermind')
 
       return runningTotal;
     };
-
+    
+  
     /**
      * Number of months between 2 dates
      */
@@ -216,7 +217,8 @@ angular.module('Mastermind')
         //create a members array for each roles group
         role.assiganble = [];
       }
-
+      $scope.roleGroups = roleGroups;
+     
       //Query all people with a primary role
       var roleQuery = {'primaryRole.resource':{$exists:1}};
       var fields = {resource:1,name:1,familyName:1,givenName:1,primaryRole:1,thumbnail:1};
@@ -507,6 +509,69 @@ angular.module('Mastermind')
       });
 
       if(!editMode)$scope.initHours();
+      
+      /**
+	     * Calculate total loaded cost in plan
+	     */
+		     
+	    var roles = $scope.project.roles;
+	    var runningTotal = 0;
+	    for(var i = 0; roles && i < roles.length; i++){
+	      var role = roles[i];
+	      var roleType = $scope.roleGroups[role.type.resource];
+	      var rate=role.rate;
+	      if(roleType == null){
+	  		console.warn('Roles has and unknown type: ' + JSON.stringify(role));
+	  	}
+      else{
+	        var type = rate.type;
+	        var startDate = new Date(role.startDate);
+	        var endDate = new Date(role.endDate);
+	
+	        if(startDate && endDate){
+	          //Hourly Charge rate
+	          if(type && type == 'monthly'){
+	        	var amount = roleType.monthlyLoadedRate;
+	        	if(amount == null){
+	        		console.warn('Role Type has no monthly loaded rate: ' + roleType.title);
+	        	}
+	        	else{
+		            var numMonths = $scope.monthDif(startDate, endDate);
+		            var roleTotal = numMonths * amount;
+		            runningTotal += roleTotal;
+	        	}
+	          }
+	          //Weekly Charge rate
+	          else if(type && type== 'weekly'){
+	        	var amount = roleType.hourlyLoadedRate;
+	        	if(amount == null){
+	        		console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
+	        	}
+	        	else{
+		            var numWeeks = $scope.weeksDif(startDate, endDate);
+		            var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
+		            var roleTotal = numWeeks * hoursPerWeek * amount;
+		            runningTotal += roleTotal;
+	        	}
+	          }
+	          //Hourly Charge rate
+	          else if(type && type== 'hourly'){
+	        	var amount = roleType.hourlyLoadedRate;
+	        	if(amount == null){
+	        		console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
+	        	}
+	        	else{
+		            var numMonths = $scope.monthDif(startDate, endDate);
+		            var hoursPerMonth = rate.fullyUtilized?220:rate.hours;
+		            var roleTotal = numMonths * hoursPerMonth * amount;
+		            runningTotal += roleTotal;
+	        	}
+	          }
+	        }
+	      }
+      $scope.servicesLoadedTotal = runningTotal;
+	  };
+
     };
 
     /**

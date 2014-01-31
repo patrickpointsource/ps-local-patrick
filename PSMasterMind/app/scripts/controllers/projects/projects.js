@@ -57,7 +57,7 @@ angular.module('Mastermind.controllers.projects')
       page: 1,            // show first page
       count: 10,           // count per page
       sorting: {
-        name: 'asc'     // initial sorting
+    	 customerName: 'asc'     // initial sorting
       }
     };
     $scope.tableParams = new TableParams(params, {
