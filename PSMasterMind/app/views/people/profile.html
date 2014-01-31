@@ -1,41 +1,34 @@
 <div>
   <div class="row">
     <div class="col-xs-8"><h2>{{profile.name}}</h2></div>
-    <div class="actions hidden-xs col-sm-4 pageActions">
-      <button ng-hide="editMode" class="btn" ng-click="edit()">
-        <i class="fa fa-pencil-square-o"></i> <span>Edit</span>
+    <div class="actions col-xs-4 pageActions">
+      <button ng-hide="editMode" class="btn btn-default" ng-click="edit()">
+        <span class="hidden-xs"><i class="fa fa-pencil-square-o"></i> Edit</span>
+        <span class="visible-xs"><i class="fa fa-pencil-square-o"></i></span>
       </button>
-      <button ng-show="editMode" class="btn" ng-click="cancel()">
-        <i class="fa fa-chevron-left"></i> <span>Cancel</span>
+      <button ng-show="editMode" class="btn btn-default" ng-click="cancel()">
+        <span class="hidden-xs"><i class="fa fa-chevron-left"></i> Cancel</span>
+        <span class="visible-xs"><i class="fa fa-chevron-left"></i></span>
       </button>
-      <button ng-show="editMode" class="btn" ng-click="save()">
-        <i class="fa fa-floppy-o"></i> <span>Save</span>
-      </button>
-    </div>
-    <div class="actions visible-xs col-xs-4 pageActions">
-      <button ng-hide="editMode" class="btn" ng-click="edit()">
-        <i class="fa fa-pencil-square-o"></i>
-      </button>
-      <button ng-show="editMode" class="btn" ng-click="cancel()">
-        <i class="fa fa-chevron-left"></i>
-      </button>
-      <button ng-show="editMode" class="btn" ng-click="save()">
-        <i class="fa fa-floppy-o"></i>
+      <button ng-show="editMode" class="btn btn-default" ng-click="save()">
+        <span class="hidden-xs"><i class="fa fa-floppy-o"></i> Save</span>
+        <span class="visible-xs"><i class="fa fa-floppy-o"></i></span>
       </button>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-12">
       <div class="well">
+
         <div class="row">
           <div class="col-xs-12 col-sm-3">
-            <div style="background-color: white;width: 148px;padding: 10px;margin-bottom:10px">
-            <img class="media-object fullProfileImage"
-                 ng-src="{{profile.thumbnail}}" />
-              </div>
+            <div style="background-color: white; width: 148px; padding: 10px; margin-bottom:10px">
+              <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}" />
             </div>
+          </div>
+
           <div class="col-xs-12 col-sm-7">
-              <div>
+            <div>
               <span><a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
               <div ng-show="editMode">
                 <label class="personDetailLabel">Primary Role:</label> <select
@@ -59,8 +52,8 @@
                 <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="phone"/>
               </div>
               <div ng-hide="editMode">
-                <label class="personDetailLabel">Skype Id:</label> <a ng-if="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
-
+                <label class="personDetailLabel">Skype Id:</label>
+                <a ng-if="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
               </div>
             </div>
           </div>
@@ -94,6 +87,7 @@
             </ul>
           </div>
         </div>
+
       </div>
     </div>
   </div>
