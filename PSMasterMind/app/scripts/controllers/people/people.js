@@ -52,8 +52,8 @@ angular.module('Mastermind.controllers.people')
           });
         }
         else if($scope.peopleFilter == 'all'){
-
-          Resources.query('people', {}, {}, function(result){
+          var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
+          Resources.query('people', {}, fields, function(result){
             $scope.people = result.members;
 
             //Reload the table
