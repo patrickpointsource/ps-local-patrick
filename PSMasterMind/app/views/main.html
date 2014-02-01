@@ -2,12 +2,31 @@
 <div id="content">
 	<div id="dashboard-widgets" class="row">
 		<div class="row-fluid">
-			<div class="col-xs-12 col-sm-6 col-md-4">
-				<div class="panel panel-default dashboard-widget">
+			<div ng-if="hasActiveProjects" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+				<div  class="panel panel-default dashboard-widget">
 					<div class="panel-heading">
-						<a href="#{{me.about}}">Log Hours</a>
+						<a href="#{{me.about}}">My Active Projects</a>
 					</div>
 					<div class="panel-body">
+						<ul ng-repea>
+							<li ng-repeat="project in myActiveProjects">
+								<a ng-href="#{{project.resource}}">{{project.name}}</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div  class="panel panel-default dashboard-widget">
+					<div class="panel-heading">
+						<a href="#{{me.about}}">Log Hours</a>
+						<div class="pull-right  btn-group btn-group-sm dashboard-actions">
+							<button class="btn btn-default" data-toggle="collapse" data-target="#logHours">
+								<div>
+									<i class="fa fa-plus-square"></i>
+								</div>
+							</button>
+						</div>
+					</div>
+					<div id="logHours" class="panel-body collapse out">
 						<div class="row">
 					    	<div class="col-xs-4">
 					            <label class="control-label">Person: </label>
@@ -54,7 +73,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-12 col-sm-6 col-md-4">
+			<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 				<div class="panel panel-default dashboard-widget">
 					<div class="panel-heading">
 						<a href="#projects?filter=active">Active Projects</a>
@@ -73,7 +92,7 @@
 				</div>
 			</div>
 
-			<div class="col-xs-12 col-sm-6 col-md-4">
+			<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 				<div class="panel panel-default dashboard-widget">
 					<div class="panel-heading">
 						<a href="#/people/?filter=available">Available People</a>

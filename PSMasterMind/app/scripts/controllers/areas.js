@@ -19,7 +19,33 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     	 
     	 //console.log('Logged In');
     	 $scope.authState = true;
+    	 
+    	 //Check what projects I am active in
+    	 var query = "{roles:{%27$elemMatch%27:{startDate:{%27$lt%27:%272013-11-05%27},assignee:{resource:%27people/52a1eeec30044a209c476477%27}}}}";
     	
+    	//Get todays date formatted as yyyy-MM-dd
+    	var today = new Date();
+         var dd = today.getDate();
+         var mm = today.getMonth()+1; //January is 0!
+         var yyyy = today.getFullYear();
+         if (dd<10){
+           dd='0'+dd;
+         }
+         if (mm<10){
+           mm='0'+mm;
+         }
+
+         var startDateQuery = yyyy+'-'+mm+'-'+dd;
+
+         var apQuery = {roles:{'$elemMatch':{assignee:{resource:me.about},startDate:{$lte:startDateQuery},$or:[{endDate:{$exists:false}},{endDate:{$gt:startDateQuery}}]}}};
+         var apFields = {resource:1,name:1,"roles.assignee":1};
+         Resources.query('projects', apQuery, apFields, function(result){
+        	$scope.myActiveProjects =  result.data;
+        	if(result.data.length>0){
+        		$scope.hasActiveProjects = true;
+        	}
+         });
+    	 
     });
 
     /**
