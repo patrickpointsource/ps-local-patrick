@@ -59,6 +59,15 @@ angular.module('Mastermind')
         }
       });
     };
+    
+    /**
+     * Delete the loaded project
+     */
+    $scope.deleteProject = function () {
+      Resources.remove($scope.project.about).then(function(){
+    	  $state.go('projects.index');
+      });
+    };
 
     /**
      * Expected margin on a project

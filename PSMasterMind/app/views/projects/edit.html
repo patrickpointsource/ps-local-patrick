@@ -1,22 +1,39 @@
 <div ng-form="projectForm" ng-class="{submitted: submitAttempted}">
 
     <div class="row">
-        <div class="col-xs-8"><h2>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h2></div>
-        <div class="actions col-sm-4 hidden-xs pageActions">
+        <div class="col-xs-6 col-sm-7 col-md-8 col-lg-9"><h2>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h2></div>
+        <div class="actions col-sm-5 col-md-4 col-lg-3 hidden-xs pageActions">
+        	<button class="btn" data-toggle="collapse" data-target="#projectDelete"><i class="fa fa-trash-o"></i> <span>Delete</span></button>
             <button class="btn" ng-click="cancel()"><i class="fa fa-chevron-left"></i> <span>Cancel</span></button>
        		<button class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
         </div>
-        <div class="actions col-xs-4 visible-xs pageActions">
+        <div class="actions col-xs-6 visible-xs pageActions">
+        	<button class="btn" data-toggle="collapse" data-target="#projectDelete"><i class="fa fa-trash-o"></i> </button>
             <button class="btn" ng-click="cancel()"><i class="fa fa-chevron-left"></i></button>
        		<button class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i></button>
         </div>
+        <div class="pull-right" style="margin:15px">
+	        <div id="projectDelete" class="alert alert-danger collapse out">
+	        	<div style="margin:15px">
+			       Are you sure you want to delete this project?<br/><br/>
+			       <div class="pageActions pull-right">
+				       <button class="btn btn-danger" ng-click="deleteProject()"><i class="fa fa-trash-o"></i> <span>Yes</span></button>
+				   	   <button class="btn btn-default" data-toggle="collapse" data-target="#projectDelete"><i class="fa fa-chevron-left"></i> <span>No</span></button>
+			   		</div>
+			   	</div>
+			   	<br/>
+			   	<br/>
+		    </div>
+	    </div>
     </div>
+    
     <div id="messages" class="alert alert-danger" ng-show="messages.length > 0">
        <!--  <a class="close" data-dismiss="alert">&times;</a> -->
         <ul>
             <li ng-repeat="message in messages">{{message}}</li>
         </ul>
     </div>
+    
 	<div>
 	    <tabset>
 	        <tab id="details" heading="Details">
