@@ -107,38 +107,25 @@
               </div>
             </td>
             <td data-title="'Role'" class="hidden-xs" header-class="hidden-xs">
-              <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
-                {{getRoleName(role.type.resource)}}
-              </div>
+              {{getRoleName(project.user.type.resource)}}
             </td>
             <td data-title="'Hours'">
-              <div ng-repeat="role in project.roles"
-                ng-show="profile.about == role.assignee.resource">
-                {{role.rate.hours}} <span class="small">({{role.rate.type}})</span>
-              </div>
+              {{project.user.rate.hours}} <span class="small">({{project.user.rate.type}})</span>
             </td>
-            <td data-title="'Start Date'" sortable="'startDate'" class="hidden-xs" header-class="hidden-xs">
-              <div ng-repeat="role in project.roles"
-                ng-show="profile.about == role.assignee.resource">
-                <small>{{role.startDate | date:'longDate'}}</small>
-              </div>
+            <td data-title="'Start Date'" sortable="'user.startDate'" class="hidden-xs" header-class="hidden-xs">
+              <small>{{project.user.startDate | date:'longDate'}}</small>
             </td>
-            <td data-title="'End Date'" sortable="'endDate'" class="hidden-xs" header-class="hidden-xs">
-              <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
-                <span ng-show="role.endDate">
-                  <small>{{role.endDate | date:'longDate'}}</small>
-                </span>
-                <span ng-hide="role.endDate">N/A</span>
-              </div>
+            <td data-title="'End Date'" sortable="'user.endDate'" class="hidden-xs" header-class="hidden-xs">
+              <span ng-show="project.user.endDate">
+                <small>{{project.user.endDate | date:'longDate'}}</small>
+              </span>
+              <span ng-hide="project.user.endDate">N/A</span>
             </td>
-            <td data-title="'Dates'" sortable="'startDate'" class="visible-xs" header-class="visible-xs">
-              <div ng-repeat="role in project.roles"
-                ng-show="profile.about == role.assignee.resource">
-                <small>{{role.startDate | date:'shortDate'}}</small> <span
-                  ng-show="role.endDate">-
-                <small>{{role.endDate | date:'shortDate'}}</small></span> <span
-                  ng-hide="role.endDate">- N/A</span>
-              </div>
+            <td data-title="'Dates'" sortable="'user.startDate'" class="visible-xs" header-class="visible-xs">
+                <small>{{project.user.startDate | date:'shortDate'}}</small> <span
+                  ng-show="project.user.endDate">-
+                <small>{{project.user.endDate | date:'shortDate'}}</small></span> <span
+                  ng-hide="project.user.endDate">- N/A</span>
             </td>
           </tr>
         </table>
