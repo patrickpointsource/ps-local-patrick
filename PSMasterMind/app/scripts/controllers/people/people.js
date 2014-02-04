@@ -16,16 +16,16 @@ angular.module('Mastermind.controllers.people')
             var end = params.page() * params.count();
 
             for(var i=start; (i<$scope.people.length && i<end);i++){
-	        	//Annotate people with additional information
-	  	        $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
-	  	     	if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
-	          	// add the role to the person so we can display it in the table and sort by it
-	            	$scope.people[i].primaryRole = $scope.roleGroups[$scope.people[i].primaryRole.resource];
-	            }
-	        }
-        	// use build-in angular filter
+            //Annotate people with additional information
+              $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
+            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+              // add the role to the person so we can display it in the table and sort by it
+                $scope.people[i].primaryRole = $scope.roleGroups[$scope.people[i].primaryRole.resource];
+              }
+          }
+          // use build-in angular filter
             var orderedData = params.sorting() ?
-            		$filter('orderBy')(data, params.orderBy()) : data;
+                $filter('orderBy')(data, params.orderBy()) : data;
 
             var ret = orderedData.slice(start, end);
             $defer.resolve(ret);
@@ -97,20 +97,20 @@ angular.module('Mastermind.controllers.people')
         }
         return monthNamesShort[monthNum];
       };
-      
+
       /**
        * display the month name from a month number (0 - 11)
        */
       $scope.getShortName = function(date, inc) {
-    	var monthNum = date.getMonth() + inc;
-    	var year = date.getFullYear();
+      var monthNum = date.getMonth() + inc;
+      var year = date.getFullYear();
         if (monthNum > 11) {
           monthNum = monthNum - 12;
           year++;
         }
-        
+
         var ret = monthNamesShort[monthNum] + ' ' + year.toString().substring(2);
-        
+
         return ret;
       };
 
@@ -168,49 +168,49 @@ angular.module('Mastermind.controllers.people')
                 var activeRole = roles[j];
                 var roleIsActive = $scope.isRoleActiveInNextSixMonths(activeRole, mm-1, yyyy);
                 if(roleIsActive){
-	                //If there is an assignee log it in the active hours
-	                if(activeRole.assignee && activeRole.assignee.resource && activeRole.rate){
-	                  var hoursPerMonth = 0;
-	                  var rate = activeRole.rate;
-	                  if(rate.fullyUtilized){
-	                    hoursPerMonth = 180;
-	                  }
-	                  else if(rate.type == 'hourly'){
-	                    hoursPerMonth = rate.hours;
-	                  }
-	                  else if(rate.type == 'weekly'){
-	                  // Weekly rate is currently hours per week. There are 5 working days per week
-	                      // and 22.5 per month.
-	                    var hoursPerMonthNotRounded = parseFloat(rate.hours * 22.5 / 5);
-	                    hoursPerMonth = Math.round(hoursPerMonthNotRounded * 100) / 100; // round to 2 decimal places
-	                  }
-	
-	
-	                  //If hours are logged from another project increment it
-	                  if(activeHours.hasOwnProperty(activeRole.assignee.resource)){
-	                    activeHours[activeRole.assignee.resource] += hoursPerMonth;
-	                  }
-	                  else{
-	                    activeHours[activeRole.assignee.resource] = hoursPerMonth;
-	                  }
-	                }
-	
-	                if(activeRole.assignee && activeRole.assignee.resource
-	                    && !activePeopleProjects.hasOwnProperty(activeRole.assignee.resource)){
-	                  //Push the assignnee onto the active list
-	                  activePeople.push(Resources.get(activeRole.assignee.resource));
-	
-	                  //Create a project list
-	                  activePeopleProjects[activeRole.assignee.resource] = [activeProjects[i]];
-	                  //Accout for person already in role in this project
-	                  activePeopleProjectsResources.push(activeRole.assignee.resource);
-	                }
-	                else if(activeRole.assignee && activeRole.assignee.resource
-	                    //And not already in an accounted role
-	                    && activePeopleProjectsResources.indexOf(activeRole.assignee.resource) == -1){
-	                  //Just add the project to the activePeopleProjects list
-	                  activePeopleProjects[activeRole.assignee.resource].push(activeProjects[i]);
-	                }
+                  //If there is an assignee log it in the active hours
+                  if(activeRole.assignee && activeRole.assignee.resource && activeRole.rate){
+                    var hoursPerMonth = 0;
+                    var rate = activeRole.rate;
+                    if(rate.fullyUtilized){
+                      hoursPerMonth = 180;
+                    }
+                    else if(rate.type == 'hourly'){
+                      hoursPerMonth = rate.hours;
+                    }
+                    else if(rate.type == 'weekly'){
+                    // Weekly rate is currently hours per week. There are 5 working days per week
+                        // and 22.5 per month.
+                      var hoursPerMonthNotRounded = parseFloat(rate.hours * 22.5 / 5);
+                      hoursPerMonth = Math.round(hoursPerMonthNotRounded * 100) / 100; // round to 2 decimal places
+                    }
+
+
+                    //If hours are logged from another project increment it
+                    if(activeHours.hasOwnProperty(activeRole.assignee.resource)){
+                      activeHours[activeRole.assignee.resource] += hoursPerMonth;
+                    }
+                    else{
+                      activeHours[activeRole.assignee.resource] = hoursPerMonth;
+                    }
+                  }
+
+                  if(activeRole.assignee && activeRole.assignee.resource
+                      && !activePeopleProjects.hasOwnProperty(activeRole.assignee.resource)){
+                    //Push the assignnee onto the active list
+                    activePeople.push(Resources.get(activeRole.assignee.resource));
+
+                    //Create a project list
+                    activePeopleProjects[activeRole.assignee.resource] = [activeProjects[i]];
+                    //Accout for person already in role in this project
+                    activePeopleProjectsResources.push(activeRole.assignee.resource);
+                  }
+                  else if(activeRole.assignee && activeRole.assignee.resource
+                      //And not already in an accounted role
+                      && activePeopleProjectsResources.indexOf(activeRole.assignee.resource) == -1){
+                    //Just add the project to the activePeopleProjects list
+                    activePeopleProjects[activeRole.assignee.resource].push(activeProjects[i]);
+                  }
                 }
               }
             }
@@ -253,7 +253,7 @@ angular.module('Mastermind.controllers.people')
         var returnValue =  projectStarted && !projectEnded;
         return returnValue;
       };
-      
+
       /**
        * Calculates whether a role exists within a particular month.
        *
@@ -274,7 +274,7 @@ angular.module('Mastermind.controllers.people')
         var returnValue =  roleStarted && !roleEnded;
         return returnValue;
       };
-      
+
       /**
        * Calculates whether a role is active within a particular month.
        *
@@ -283,34 +283,34 @@ angular.module('Mastermind.controllers.people')
        * @param year
        */
       $scope.isPersonActiveInMonth = function (project, person, month, year) {
-    	  var projectIsActive = $scope.inMonth(project, month, year);
-    	  if(!projectIsActive) return false;
-    	  
-    	  //Look through all the roles
-    	  var roles = project.roles;
-    	  var personRef = person.about?person.about:person.resource;
-    	  var ret = false;
-    	  if(personRef){
-	    	  for(var i = 0; i < roles.length; i++){
-	    		  var role = roles[i];
-	    		  //Check if person is assigned to role
-	    		  if(role.assignee && personRef == role.assignee.resource){
-	    			var nextMonth = month === 11 ? 0 : (month + 1),
-	    			       nextYear = month === 11 ? (year + 1) : year,
-	    			       startDay = new Date(year, month, 1),
-	    			       endDay = new Date(nextYear, nextMonth, 0);
+        var projectIsActive = $scope.inMonth(project, month, year);
+        if(!projectIsActive) return false;
 
-			        // If the role start day is before the last day of this month
-			        // and its end date is after the first day of this month.
-			        var roleStarted =   new Date(role.startDate) <= endDay;
-			        var roleEnded = role.endDate &&  new Date(role.endDate) <= startDay;
-			        ret =  roleStarted && !roleEnded;
-			        if(ret) break;
-	    		  }
-	    	  }
-    	  }
-    	  
-    	  return ret;
+        //Look through all the roles
+        var roles = project.roles;
+        var personRef = person.about?person.about:person.resource;
+        var ret = false;
+        if(personRef){
+          for(var i = 0; i < roles.length; i++){
+            var role = roles[i];
+            //Check if person is assigned to role
+            if(role.assignee && personRef == role.assignee.resource){
+            var nextMonth = month === 11 ? 0 : (month + 1),
+                   nextYear = month === 11 ? (year + 1) : year,
+                   startDay = new Date(year, month, 1),
+                   endDay = new Date(nextYear, nextMonth, 0);
+
+              // If the role start day is before the last day of this month
+              // and its end date is after the first day of this month.
+              var roleStarted =   new Date(role.startDate) <= endDay;
+              var roleEnded = role.endDate &&  new Date(role.endDate) <= startDay;
+              ret =  roleStarted && !roleEnded;
+              if(ret) break;
+            }
+          }
+        }
+
+        return ret;
       };
 
       $scope.toggleTableView = function() {
@@ -359,7 +359,7 @@ angular.module('Mastermind.controllers.people')
           familyName: 'asc'     // initial sorting
         }
       };
-      
+
       var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
       $scope.peopleFilter = $state.params.filter?$state.params.filter:'all';
@@ -368,7 +368,7 @@ angular.module('Mastermind.controllers.people')
 
       $scope.showTableView = true;
       $scope.showGraphView = false;
-      
+
       /**
        * Get All the Role Types
        */
@@ -384,7 +384,7 @@ angular.module('Mastermind.controllers.people')
           roleGroups[resource] = role;
         }
         $scope.roleGroups = roleGroups;
-        
+
         //Kick off fetch all the people
         $scope.buildTableView();
       });

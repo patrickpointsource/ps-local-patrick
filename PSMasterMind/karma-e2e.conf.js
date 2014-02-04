@@ -7,10 +7,22 @@ module.exports = function(config) {
     basePath: '',
 
     // testing framework to use (jasmine/mocha/qunit/...)
-    frameworks: ['ng-scenario'],
+    frameworks: ['jasmine', 'ng-scenario'],
 
     // list of files / patterns to load in the browser
     files: [
+      'app/bower_components/angular/angular.js',
+      'app/bower_components/jquery/jquery.js',
+      'app/bower_components/angular-mocks/angular-mocks.js',
+      'app/bower_components/angular-ui-router/release/angular-ui-router.js',
+      'app/bower_components/angular-ui-date/src/date.js',
+      'app/bower_components/angular-ui-bootstrap/src/tabs/tabs.js',
+      'app/bower_components/ng-table/ng-table.js',
+      'app/bower_components/restangular/dist/restangular.js',
+      'app/bower_components/lodash/dist/lodash.js',
+      'app/scripts/*.js',
+      'app/scripts/**/*.js',
+      'app/scripts/**/**/*.js',
       'test/e2e/**/*.js'
     ],
 
@@ -42,13 +54,13 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: false
+    singleRun: true,
 
     // Uncomment the following lines if you are using grunt's server to run the tests
-    // proxies: {
-    //   '/': 'http://localhost:9000/'
-    // },
+    proxies: {
+      '/': 'http://localhost:9000/'
+    },
     // URL root prevent conflicts with the site root
-    // urlRoot: '_karma_'
+    urlRoot: '_karma_'
   });
 };

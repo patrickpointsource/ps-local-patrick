@@ -44,7 +44,7 @@ module.exports = function (grunt) {
           '<%= yeoman.app %>/views/{,*/}*/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
           '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
-        '{.tmp,<%= yeoman.app %>}/scripts/*/{,*/}*.js',
+          '{.tmp,<%= yeoman.app %>}/scripts/*/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -159,8 +159,8 @@ module.exports = function (grunt) {
     // not used since Uglify task does concat,
     // but still available if needed
     concat: {
-     dist: {}
-     },
+      dist: {}
+    },
     rev: {
       dist: {
         files: {
@@ -300,7 +300,12 @@ module.exports = function (grunt) {
     },
     karma: {
       unit: {
-        configFile: 'karma.conf.js',
+        configFile: 'karma-unit.conf.js',
+        singleRun: true
+      },
+      e2e: {
+        configFile: 'karma-e2e.conf.js',
+        autoWatch: false,
         singleRun: true
       }
     },
@@ -351,7 +356,8 @@ module.exports = function (grunt) {
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'karma'
+    'karma:unit',
+    'karma:e2e'
   ]);
 
   grunt.registerTask('build', [

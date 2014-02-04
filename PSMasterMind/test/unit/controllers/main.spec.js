@@ -3,7 +3,9 @@
 describe('Controller: MainCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('Mastermind'));
+  beforeEach( function() {
+    module('Mastermind');
+  });
 
   var MainCtrl,
     scope;
@@ -16,7 +18,7 @@ describe('Controller: MainCtrl', function () {
     });
   }));
 
-  it('should attach a list of awesomeThings to the scope', function () {
-    expect(scope.awesomeThings.length).toBe(3);
+  it('Quick View should default to projects', function () {
+    expect(scope.summarySwitcher).toEqual('projects');
   });
 });

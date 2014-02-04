@@ -26,7 +26,7 @@
   ])
     .config( ['$logProvider','$stateProvider','$urlRouterProvider',function($logProvider, $stateProvider, $urlRouterProvider) {
       $logProvider.debugEnabled(false);
-    	
+
       $urlRouterProvider
         .otherwise('/');
 
@@ -57,7 +57,7 @@
           controller: 'ProjectCtrl',
           resolve: {
             editMode: function () {
-                return true;
+              return true;
             }
           }
         })
@@ -66,20 +66,20 @@
           templateUrl: 'views/projects/show.html',
           controller: 'ProjectCtrl',
           resolve: {
-              editMode: function () {
-                  return false;
-              }
-           }
+            editMode: function () {
+              return false;
+            }
+          }
         })
         .state('projects.edit', {
           url: '/:projectId/edit',
           templateUrl: 'views/projects/edit.html',
           controller: 'ProjectCtrl',
           resolve: {
-              editMode: function () {
-                  return true;
-              }
-           }
+            editMode: function () {
+              return true;
+            }
+          }
         })
         .state('people', {
           url: '/people',
@@ -97,18 +97,16 @@
           controller: 'ProfileCtrl'
         });
     }])
-    .config( [
-	    '$compileProvider',
-	    function( $compileProvider )
-	    {   
-	        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|skype|data):/);
-	        // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
-	    }
-	])
-    .config( ['RestangularProvider',function(RestangularProvider) {
+    .config(['$compileProvider',
+      function( $compileProvider ) {
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|skype|data):/);
+        // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
+      }
+    ])
+    .config(['RestangularProvider', function(RestangularProvider) {
       var serverLocation = window.serverLocation;
       var restPath = window.restPath;
-      
+
       function toJsonReplacer(key, value) {
         var val = value;
 
@@ -177,7 +175,7 @@
       );
     }])
     .run(['$rootScope',
-      function ($rootScope, $state) {
+      function ($rootScope) {
 
         $rootScope.logout = function () {
           var accessToken = localStorage.getItem('access_token');
@@ -189,7 +187,7 @@
         };
 
         // fix bootstrap responsive navbar not collapsing when being clicked in single page apps
-        $(document).on('click', '.navbar-collapse.in', function(e) {
+        $(document).on('click', '.navbar-collapse.in', function() {
           $(this).collapse('hide');
         });
       }]);
