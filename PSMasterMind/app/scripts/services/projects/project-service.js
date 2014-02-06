@@ -121,16 +121,16 @@ angular.module('Mastermind.services.projects')
      * Return a defered operation that fetches a project for edit
      */
     this.getForEdit = function(projectId){
-    	var deferred = $q.defer();
+      var deferred = $q.defer();
 
-		setTimeout(function() {
-			Resources.refresh('projects/'+projectId).then(function(project){
-				var proj = new Project(project);
-				deferred.resolve(proj);
-			});
-		}, 10);
+      setTimeout(function() {
+        Resources.refresh('projects/'+projectId).then(function(project){
+          var proj = new Project(project);
+          deferred.resolve(proj);
+        });
+      }, 10);
 
-		return deferred.promise;
+      return deferred.promise;
     };
 
     /**
@@ -139,6 +139,6 @@ angular.module('Mastermind.services.projects')
      * @returns {Project}
      */
     this.create = function () {
-    	return new Project();
+      return new Project();
     };
   }]);

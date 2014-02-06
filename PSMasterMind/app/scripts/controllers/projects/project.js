@@ -5,9 +5,9 @@
  */
 angular.module('Mastermind')
   .controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
-    function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
-      var detailsValid = false, rolesValid = false;
-      
+  function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
+    var detailsValid = false, rolesValid = false;
+
     //Set our currently viewed project to the one resolved by the service.
     if($stateParams.projectId){
       $scope.projectId = $stateParams.projectId;
@@ -37,35 +37,50 @@ angular.module('Mastermind')
       }
     };
 
-
     /**
      * Save the loaded project.
      */
     $scope.save = function () {
       $scope.submitAttempted = true;
 
-      ProjectsService.save($scope.project).then(function (project) {
-        if($scope.isTransient){
-          $state.go('projects.index');
+      // set the project creator and created time
+      Resources.refresh('people/me').then(function(me){
+        if ($scope.project.created === undefined) {
+          $scope.project.created = {
+            date: new Date().toString(),
+            resource: me.about
+          };
         }
-        else{
-          $state.go('projects.show', {projectId:$scope.projectId, edit:null});
-        }
-      }, function (response) {
-        var BAD_REQUEST = 400;
 
-        if (response.status === BAD_REQUEST) {
-          $scope.messages = response.data.reasons;
-        }
+        $scope.project.modified = {
+          date: new Date().toString(),
+          resource: me.about
+        };
+
+        ProjectsService.save($scope.project).then(function (project) {
+          if($scope.isTransient){
+            $state.go('projects.index');
+          }
+          else{
+            $state.go('projects.show', {projectId:$scope.projectId, edit:null});
+          }
+        }, function (response) {
+          var BAD_REQUEST = 400;
+
+          if (response.status === BAD_REQUEST) {
+            $scope.messages = response.data.reasons;
+          }
+        });
+
       });
     };
-    
+
     /**
      * Delete the loaded project
      */
     $scope.deleteProject = function () {
       Resources.remove($scope.project.about).then(function(){
-    	  $state.go('projects.index');
+        $state.go('projects.index');
       });
     };
 
@@ -73,24 +88,24 @@ angular.module('Mastermind')
      * Expected margin on a project
      */
     $scope.projectMargin = function(){
-     var servicesEst = $scope.project.terms.servicesEstimate;
-     var softwareEst = $scope.project.terms.softwareEstimate;
+      var servicesEst = $scope.project.terms.servicesEstimate;
+      var softwareEst = $scope.project.terms.softwareEstimate;
 
-     //Cannot be null
-     servicesEst = servicesEst?servicesEst:0;
-     softwareEst = softwareEst?softwareEst:0;
+      //Cannot be null
+      servicesEst = servicesEst?servicesEst:0;
+      softwareEst = softwareEst?softwareEst:0;
 
-     var revenue = servicesEst+softwareEst;
-     var cost = $scope.servicesLoadedTotal;
+      var revenue = servicesEst+softwareEst;
+      var cost = $scope.servicesLoadedTotal;
 
-     var margin = null;
+      var margin = null;
 
-     if(cost){
-       var diff = revenue - cost;
-       margin = diff/revenue*100;
-     }
+      if(cost){
+        var diff = revenue - cost;
+        margin = diff/revenue*100;
+      }
 
-     return margin;
+      return margin;
     };
 
     /**
@@ -139,7 +154,7 @@ angular.module('Mastermind')
      */
     $scope.servicesTotal = function(){
       var roles = $scope.project.roles;
-      
+
       var runningTotal = 0;
       for(var i = 0; roles && i < roles.length; i++){
         var role = roles[i];
@@ -179,8 +194,8 @@ angular.module('Mastermind')
 
       return runningTotal;
     };
-    
-  
+
+
     /**
      * Number of months between 2 dates
      */
@@ -206,74 +221,6 @@ angular.module('Mastermind')
       // Convert back to weeks and return hole weeks
       return Math.floor(difference_ms / ONE_WEEK);
     };
-
-
-
-    /**
-     * Get All the Role Types
-     */
-    Resources.get('roles').then(function(result){
-      var resources = [];
-      var roleGroups = {};
-      //Save the list of role types in the scope
-      $scope.roleTypes = result.members;
-      //Get list of roles to query members
-      for(var i = 0; i < result.members.length;i++){
-        var role = result.members[i];
-        var resource = role.resource;
-        roleGroups[resource] = role;
-        resources.push(resource);
-        //create a members array for each roles group
-        role.assiganble = [];
-      }
-      $scope.roleGroups = roleGroups;
-     
-      //Query all people with a primary role
-      var roleQuery = {'primaryRole.resource':{$exists:1}};
-      var fields = {resource:1,name:1,familyName:1,givenName:1,primaryRole:1,thumbnail:1};
-      var sort = {'primaryRole.resource':1,'familyName':1,'givenName':1};
-      Resources.query('people',roleQuery, fields, function(peopleResults){
-          var people = peopleResults.members;
-          //Set up lists of people in roles
-          for(var i = 0; i < people.length; i++){
-            var person = people[i];
-            var personsRole = roleGroups[person.primaryRole.resource];
-            person.title = personsRole.abbreviation + ': ' + person.familyName + ", " + person.givenName;
-
-            for(var j = 0; j < result.members.length;j++){
-              var roleJ = result.members[j];
-
-              //Primary role match place it at the front of the array in sort order
-              if(roleJ.resource == person.primaryRole.resource){
-                //assignable list was empty add it to the front
-                if(roleGroups[roleJ.resource].assiganble.length == 0){
-                  roleGroups[roleJ.resource].assiganble[0] = person;
-                }
-                //First match just add it to the font
-                else if(roleGroups[roleJ.resource].assiganble[0].primaryRole.resource != roleJ.resource){
-                  roleGroups[roleJ.resource].assiganble.unshift(person);
-                }
-                //Add it after the last match
-                else{
-                  var index = 0;
-                  while(roleGroups[roleJ.resource].assiganble.length>index&&roleGroups[roleJ.resource].assiganble[index].primaryRole.resource == roleJ.resource){
-                    index++;
-                  }
-                  roleGroups[roleJ.resource].assiganble.splice(index,0,person);
-                }
-              }
-              //Not the primary role leave it in sort order
-              else{
-                roleGroups[roleJ.resource].assiganble.push(person);
-              }
-            }
-          }
-
-          //Set a map of role types to members
-          $scope.roleGroups = roleGroups;
-       },sort);
-    });
-
 
     /**
      * Whenever the roles:add event is fired from a child controller,
@@ -348,10 +295,70 @@ angular.module('Mastermind')
       return !detailsValid || !rolesValid;
     };
 
+    /**
+     * Get All the Role Types
+     */
+    Resources.get('roles').then(function(result){
+      var resources = [];
+      var roleGroups = {};
+      //Save the list of role types in the scope
+      $scope.roleTypes = result.members;
+      //Get list of roles to query members
+      for(var i = 0; i < result.members.length;i++){
+        var role = result.members[i];
+        var resource = role.resource;
+        roleGroups[resource] = role;
+        resources.push(resource);
+        //create a members array for each roles group
+        role.assiganble = [];
+      }
+      $scope.roleGroups = roleGroups;
 
+      //Query all people with a primary role
+      var roleQuery = {'primaryRole.resource':{$exists:1}};
+      var fields = {resource:1,name:1,familyName:1,givenName:1,primaryRole:1,thumbnail:1};
+      var sort = {'primaryRole.resource':1,'familyName':1,'givenName':1};
+      Resources.query('people',roleQuery, fields, function(peopleResults){
+        var people = peopleResults.members;
+        //Set up lists of people in roles
+        for(var i = 0; i < people.length; i++){
+          var person = people[i];
+          var personsRole = roleGroups[person.primaryRole.resource];
+          person.title = personsRole.abbreviation + ': ' + person.familyName + ", " + person.givenName;
 
-    ///////////Project Hours/////////
-    $scope.newHoursRecord = {};
+          for(var j = 0; j < result.members.length;j++){
+            var roleJ = result.members[j];
+
+            //Primary role match place it at the front of the array in sort order
+            if(roleJ.resource == person.primaryRole.resource){
+              //assignable list was empty add it to the front
+              if(roleGroups[roleJ.resource].assiganble.length == 0){
+                roleGroups[roleJ.resource].assiganble[0] = person;
+              }
+              //First match just add it to the font
+              else if(roleGroups[roleJ.resource].assiganble[0].primaryRole.resource != roleJ.resource){
+                roleGroups[roleJ.resource].assiganble.unshift(person);
+              }
+              //Add it after the last match
+              else{
+                var index = 0;
+                while(roleGroups[roleJ.resource].assiganble.length>index&&roleGroups[roleJ.resource].assiganble[index].primaryRole.resource == roleJ.resource){
+                  index++;
+                }
+                roleGroups[roleJ.resource].assiganble.splice(index,0,person);
+              }
+            }
+            //Not the primary role leave it in sort order
+            else{
+              roleGroups[roleJ.resource].assiganble.push(person);
+            }
+          }
+        }
+
+        //Set a map of role types to members
+        $scope.roleGroups = roleGroups;
+      },sort);
+    });
 
     /**
     * Add a new Hours Record to the server
@@ -518,70 +525,74 @@ angular.module('Mastermind')
       });
 
       if(!editMode)$scope.initHours();
-      
+
       /**
-	     * Calculate total loaded cost in plan
-	     */
-		     
-	    var roles = $scope.project.roles;
-	    var runningTotal = 0;
-	    for(var i = 0; roles && i < roles.length; i++){
-	      var role = roles[i];
-	      var roleType = $scope.roleGroups[role.type.resource];
-	      var rate=role.rate;
-	      if(roleType == null){
-	  		console.warn('Roles has and unknown type: ' + JSON.stringify(role));
-	  	}
-      else{
-	        var type = rate.type;
-	        var startDate = new Date(role.startDate);
-	        var endDate = new Date(role.endDate);
-	
-	        if(startDate && endDate){
-	          //Hourly Charge rate
-	          if(type && type == 'monthly'){
-	        	var amount = roleType.monthlyLoadedRate;
-	        	if(amount == null){
-	        		console.warn('Role Type has no monthly loaded rate: ' + roleType.title);
-	        	}
-	        	else{
-		            var numMonths = $scope.monthDif(startDate, endDate);
-		            var roleTotal = numMonths * amount;
-		            runningTotal += roleTotal;
-	        	}
-	          }
-	          //Weekly Charge rate
-	          else if(type && type== 'weekly'){
-	        	var amount = roleType.hourlyLoadedRate;
-	        	if(amount == null){
-	        		console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
-	        	}
-	        	else{
-		            var numWeeks = $scope.weeksDif(startDate, endDate);
-		            var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
-		            var roleTotal = numWeeks * hoursPerWeek * amount;
-		            runningTotal += roleTotal;
-	        	}
-	          }
-	          //Hourly Charge rate
-	          else if(type && type== 'hourly'){
-	        	var amount = roleType.hourlyLoadedRate;
-	        	if(amount == null){
-	        		console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
-	        	}
-	        	else{
-		            var numMonths = $scope.monthDif(startDate, endDate);
-		            var hoursPerMonth = rate.fullyUtilized?220:rate.hours;
-		            var roleTotal = numMonths * hoursPerMonth * amount;
-		            runningTotal += roleTotal;
-	        	}
-	          }
-	        }
-	      }
-      $scope.servicesLoadedTotal = runningTotal;
-	  };
+       * Calculate total loaded cost in plan
+       */
+
+      var roles = $scope.project.roles;
+      var runningTotal = 0;
+      for(var i = 0; roles && i < roles.length; i++){
+        var role = roles[i];
+        var roleType = $scope.roleGroups[role.type.resource];
+        var rate=role.rate;
+        if(roleType == null){
+          console.warn('Roles has and unknown type: ' + JSON.stringify(role));
+        }
+        else{
+          var type = rate.type;
+          var startDate = new Date(role.startDate);
+          var endDate = new Date(role.endDate);
+
+          if(startDate && endDate){
+            //Hourly Charge rate
+            if(type && type == 'monthly'){
+              var amount = roleType.monthlyLoadedRate;
+              if(amount == null){
+                console.warn('Role Type has no monthly loaded rate: ' + roleType.title);
+              }
+              else{
+                var numMonths = $scope.monthDif(startDate, endDate);
+                var roleTotal = numMonths * amount;
+                runningTotal += roleTotal;
+              }
+            }
+            //Weekly Charge rate
+            else if(type && type== 'weekly'){
+              var amount = roleType.hourlyLoadedRate;
+              if(amount == null){
+                console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
+              }
+              else{
+                  var numWeeks = $scope.weeksDif(startDate, endDate);
+                  var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
+                  var roleTotal = numWeeks * hoursPerWeek * amount;
+                  runningTotal += roleTotal;
+              }
+            }
+            //Hourly Charge rate
+            else if(type && type== 'hourly'){
+              var amount = roleType.hourlyLoadedRate;
+              if(amount == null){
+                console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
+              }
+              else{
+                var numMonths = $scope.monthDif(startDate, endDate);
+                var hoursPerMonth = rate.fullyUtilized?220:rate.hours;
+                var roleTotal = numMonths * hoursPerMonth * amount;
+                runningTotal += roleTotal;
+              }
+            }
+          }
+        }
+        $scope.servicesLoadedTotal = runningTotal;
+      };
 
     };
+
+
+
+    $scope.newHoursRecord = {};
 
     /**
      * Get Existing Project
@@ -600,84 +611,100 @@ angular.module('Mastermind')
       $scope.handleProjectSelected();
     }
 
-    }])
+    $scope.canDeleteProject = false;
+
+    Resources.refresh('people/me').then(function(me){
+      $scope.me = me;
+
+      if($scope.me.groups &&
+        (($scope.me.groups.indexOf('Management') !== -1) ||
+        ($scope.me.groups.indexOf('Executives') !== -1) ||
+        ($scope.creator && $scope.creator.resource === $scope.me.about))) {
+
+        $scope.canDeleteProject = true;
+      }
+      else {
+        alert('You are not allowed to delete this project.  You must be a member of management, Executives or the creator of the project.');
+      }
+    });
+
+
+  }])
     .directive('exportHours', ['$parse', function ($parse) {
       return {
-          restrict: 'A',
-          scope: false,
-          link: function(scope, element, attrs) {
-              var data = '';
-              var csv = {
-                  stringify: function(str) {
-                      return '"' +
-                          str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
-                              .replace(/"/g,'""') + // replace quotes with double quotes
-                          '"';
-                  },
-                  rawJSON: function(){
-                    return scope.hoursTableData;
-                  },
-                  rawCSV: function(){
-                    return data;
-                  },
-                  generate: function() {
-                    var project = scope.project;
-                    var hours = scope.hoursTableData;
+        restrict: 'A',
+        scope: false,
+        link: function(scope, element, attrs) {
+            var data = '';
+            var csv = {
+              stringify: function(str) {
+                return '"' +
+                  str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
+                      .replace(/"/g,'""') + // replace quotes with double quotes
+                  '"';
+              },
+              rawJSON: function(){
+                return scope.hoursTableData;
+              },
+              rawCSV: function(){
+                return data;
+              },
+              generate: function() {
+                var project = scope.project;
+                var hours = scope.hoursTableData;
 
-                    for(var i = 0; i < hours.length; i++){
-                      data = csv.JSON2CSV(project, hours);
-                    }
+                for(var i = 0; i < hours.length; i++){
+                  data = csv.JSON2CSV(project, hours);
+                }
+              },
+              link: function() {
+                return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
+              },
+              JSON2CSV: function(project, hours) {
+                var str = '';
+                var line = '';
 
-                  },
-                  link: function() {
-                      return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
-                  },
-                  JSON2CSV: function(project, hours) {
-                      var str = '';
-                      var line = '';
+                console.log('hours:' + hours);
 
-                      console.log('hours:' + hours);
+                //Print the header
+                var head = ['Project', 'Peson', 'Role', 'Rate', 'Date', 'Hours', 'Description'];
+                for (var i = 0; i < head.length; i++) {
+                    line += head[i] + ',';
+                }
+                //Remove last comma and add a new line
+                line = line.slice(0, -1);
+                str += line + '\r\n';
 
-                      //Print the header
-                        var head = ['Project', 'Peson', 'Role', 'Rate', 'Date', 'Hours', 'Description'];
-                        for (var i = 0; i < head.length; i++) {
-                            line += head[i] + ',';
-                        }
-                        //Remove last comma and add a new line
-                        line = line.slice(0, -1);
-                        str += line + '\r\n';
+                //Print the values
+                for (var i = 0; i < hours.length; i++) {
+                  var line = '';
 
-                        //Print the values
-                      for (var i = 0; i < hours.length; i++) {
-                          var line = '';
+                  var record = hours[i];
 
-                          var record = hours[i];
-
-                          //Project
-                          line += csv.stringify(project.name) + ',';
-                          line += csv.stringify(record.person.name) + ',';
-                          if(record.role && record.role.type && record.role.type.title){
-                            line += csv.stringify(record.role.type.title);
-                          }
-                          line += ','
-                          if(record.role){
-                             line += scope.displayRate(record.role) ;
-                          }
-                          line += ',';
-                          line += record.date + ',';
-                          line += record.hours + ',';
-
-                          line += csv.stringify(record.description) + ',';
-
-
-
-                          str += line + '\r\n';
-                      }
-                      return str;
-
+                  //Project
+                  line += csv.stringify(project.name) + ',';
+                  line += csv.stringify(record.person.name) + ',';
+                  if(record.role && record.role.type && record.role.type.title){
+                    line += csv.stringify(record.role.type.title);
                   }
-              };
-              $parse(attrs.exportHours).assign(scope.$parent, csv);
-          }
+                  line += ','
+                  if(record.role){
+                     line += scope.displayRate(record.role) ;
+                  }
+                  line += ',';
+                  line += record.date + ',';
+                  line += record.hours + ',';
+
+                  line += csv.stringify(record.description) + ',';
+
+
+
+                  str += line + '\r\n';
+                }
+                return str;
+              }
+          };
+          $parse(attrs.exportHours).assign(scope.$parent, csv);
+        }
       };
   }]);

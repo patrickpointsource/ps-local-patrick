@@ -32,7 +32,7 @@ angular.module('Mastermind.models.projects')
       endDate: undefined,
       assignee: undefined
     };
-    
+
     function formatDate(date) {
         if (date.indexOf('T') !== -1) {
           date = date.substr(0, date.indexOf('T'));
@@ -80,7 +80,9 @@ angular.module('Mastermind.models.projects')
       terms: new Terms(),
       executiveSponsor: undefined,
       salesSponsor: undefined,
-      roles: []
+      roles: [],
+      created: undefined,
+      modified: undefined
     };
 
     /**
@@ -108,6 +110,8 @@ angular.module('Mastermind.models.projects')
       this.roles = _.map(options.roles, function (role) {
         return new Role(role);
       });
+      this.created = options.created || defaults.created;
+      this.modified = options.modified || defaults.modified;
 
       /**
        * Creates a fluent interface for accessing a subset of roles on this Project.
