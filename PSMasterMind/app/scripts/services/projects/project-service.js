@@ -105,7 +105,7 @@ angular.module('Mastermind.services.projects')
     this.destroy = function (project) {
       var url = project.about?project.about:project.resource;
       return Resources.remove(url);
-    }
+    };
 
     /**
      * Determine whether a project has not been saved to the server yet.

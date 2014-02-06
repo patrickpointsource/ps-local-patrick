@@ -1,10 +1,12 @@
+/* global Dropbox */
 'use strict';
 
 /**
  * Controller for handling the Details form.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('LinksCtrl',['$scope', '$filter', 'Resources', 'ngTableParams', function ($scope, $filter, Resources, TableParams) {
+  .controller('LinksCtrl',['$scope', '$filter', 'Resources', 'ngTableParams',
+  function ($scope, $filter, Resources, TableParams) {
     $scope.editLink = {};
     $scope.newLink = {};
 
@@ -13,8 +15,8 @@ angular.module('Mastermind.controllers.projects')
       page: 1,            // show first page
       count: 100,           // count per page
       sorting: {
-          label: 'asc'     // initial sorting
-        }
+        label: 'asc'     // initial sorting
+      }
     };
 
     /**
@@ -30,8 +32,7 @@ angular.module('Mastermind.controllers.projects')
           var end = params.page() * params.count();
 
           // use build-in angular filter
-          var orderedData = params.sorting() ?
-            $filter('orderBy')(data, params.orderBy()) : data;
+          var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
 
           var ret = orderedData.slice(start, end);
           $defer.resolve(ret);
@@ -42,7 +43,7 @@ angular.module('Mastermind.controllers.projects')
     /**
      * Fetch the list of links
      */
-    Resources.get($scope.project.about+"/links").then(function(result){
+    Resources.get($scope.project.about + '/links').then(function(result){
       if(result.members){
         $scope.links = result.members;
         $scope.initLinksTable();
@@ -53,31 +54,30 @@ angular.module('Mastermind.controllers.projects')
      * Cancel add Link
      */
     $scope.cancelAddLink = function () {
-		if($('#newLinkDialog').hasClass('in')){
-	        $('#newLinkDialog').collapse('hide');
-	      }
+      if($('#newLinkDialog').hasClass('in')){
+        $('#newLinkDialog').collapse('hide');
+      }
 
-	      if ($scope.editLinkIndex==null) {
-	        //Reset New Link Object and clear out form
-	        $scope.newLink.url = null;
-	        $scope.newLink.label = null;
-	      }
-	      $scope.editingLink = false;
-	      $scope.editLinkIndex = null;
-	      $scope.addLinkForm.$setPristine();
+      if ($scope.editLinkIndex === null) {
+        //Reset New Link Object and clear out form
+        $scope.newLink.url = null;
+        $scope.newLink.label = null;
+      }
+      $scope.editingLink = false;
+      $scope.editLinkIndex = null;
+      $scope.addLinkForm.$setPristine();
     };
 
     /**
      * Cancel editing an existing link
      */
-    $scope.cancelEditLink = function (link) {
-    	Resources.refresh($scope.project.about+"/links").then(function(result){
-    		$scope.links = result.members;
-    		$scope.editingLink = false;
-    		$scope.editLinkIndex = null;
-    		$scope.linksTableParams.reload();
-    	});
-     
+    $scope.cancelEditLink = function () {
+      Resources.refresh($scope.project.about + '/links').then(function(result){
+        $scope.links = result.members;
+        $scope.editingLink = false;
+        $scope.editLinkIndex = null;
+        $scope.linksTableParams.reload();
+      });
     };
 
     /**
@@ -85,7 +85,7 @@ angular.module('Mastermind.controllers.projects')
      */
     $scope.toggleNewLink = function(){
       //Cancel edit of new role
-      if($scope.editLinkIndex == null && $scope.editingLink){
+      if($scope.editLinkIndex === null && $scope.editingLink){
         $scope.cancelAddLink();
       }
       else{
@@ -104,7 +104,7 @@ angular.module('Mastermind.controllers.projects')
         $('#newLinkDialog').collapse('hide');
       }
 
-      if ($scope.editingLink == true){
+      if ($scope.editingLink === true){
         $scope.cancelAddLink();
       }
 
@@ -120,7 +120,7 @@ angular.module('Mastermind.controllers.projects')
      */
     $scope.saveEditLink = function(){
       Resources.update($scope.editLink).then(function(){
-        Resources.refresh($scope.project.about+"/links").then(function(result){
+        Resources.refresh($scope.project.about + '/links').then(function(result){
           $scope.links = result.members;
 
           if($scope.linksTableParams){
@@ -139,18 +139,18 @@ angular.module('Mastermind.controllers.projects')
           $scope.editLinkIndex = null;
         });
       });
-    }
+    };
 
     /**
     * Add a new Link to the server
     */
     $scope.addLink = function(link){
-      if(link == null){
-    	  link = $scope.newLink;
-      }	
-    	
-      Resources.create($scope.project.about+"/links", link).then(function(){
-        Resources.refresh($scope.project.about+"/links").then(function(result){
+      if(link === null){
+        link = $scope.newLink;
+      }
+
+      Resources.create($scope.project.about + '/links', link).then(function(){
+        Resources.refresh($scope.project.about + '/links').then(function(result){
           $scope.links = result.members;
 
           if($scope.linksTableParams){
@@ -175,9 +175,9 @@ angular.module('Mastermind.controllers.projects')
     * Delete a link
     */
     $scope.deleteLink = function (link) {
-      var resource = $scope.project.about+'/links/'+link.id;
-          Resources.remove(resource).then(function(){
-            Resources.refresh($scope.project.about+"/links").then(function(result){
+      var resource = $scope.project.about + '/links/' + link.id;
+      Resources.remove(resource).then(function(){
+        Resources.refresh($scope.project.about + '/links').then(function(result){
           $scope.links = result.members;
 
           if($scope.linksTableParams){
@@ -200,7 +200,6 @@ angular.module('Mastermind.controllers.projects')
         // Required. Called when a user selects an item in the Chooser.
         success: function(files) {
           //alert("Here's the file link:" + files[0].link)
-          var files = files;
           for(var i = 0; i < files.length;i++){
             var file = files[i];
             var link = {};
@@ -221,7 +220,7 @@ angular.module('Mastermind.controllers.projects')
         // Optional. "preview" (default) is a preview link to the document for sharing,
         // "direct" is an expiring link to download the contents of the file. For more
         // information about link types, see Link types below.
-        linkType: "preview", // or "direct"
+        linkType: 'preview', // or 'direct'
 
         // Optional. A value of false (default) limits selection to a single file, while
         // true enables multiple file selection.
@@ -234,6 +233,6 @@ angular.module('Mastermind.controllers.projects')
         //extensions: ['.pdf', '.doc', '.docx'],
       };
       Dropbox.choose(options);
-    }
+    };
 
   }]);

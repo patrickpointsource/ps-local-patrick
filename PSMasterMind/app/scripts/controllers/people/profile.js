@@ -15,7 +15,6 @@ angular.module('Mastermind.controllers.people')
       $scope.allRoles = members;
       var rolesMap = {};
       for(var i = 0; i < members.length;i++){
-        var role = members[i];
         rolesMap[members[i].resource] = members[i];
       }
       $scope.rolesMap = rolesMap;
@@ -26,7 +25,7 @@ angular.module('Mastermind.controllers.people')
           ret = $scope.rolesMap[resource].title;
         }
         return ret;
-      }
+      };
     });
 
     /**
@@ -60,20 +59,19 @@ angular.module('Mastermind.controllers.people')
       //Set checkbox states based on the groups
       var groups = person.groups;
 
-      $scope.isExec = groups && $.inArray('Executives', groups) != -1;
-      $scope.isManagement = groups && $.inArray('Management', groups) != -1;
-      $scope.isSales = groups && $.inArray('Sales', groups) != -1;
+      $scope.isExec = groups && $.inArray('Executives', groups) !== -1;
+      $scope.isManagement = groups && $.inArray('Management', groups) !== -1;
+      $scope.isSales = groups && $.inArray('Sales', groups) !== -1;
 
       var url = person.about + '/' + 'gplus';
 
       Resources.get(url).then(function(result){
-       $scope.gplusProfile = result;
-
-       //gapi.person.go();
+        $scope.gplusProfile = result;
+        //gapi.person.go();
       });
 
       //Check if you can add hours
-      if($scope.adminAccess || $scope.me.about == $scope.profile.about){
+      if($scope.adminAccess || $scope.me.about === $scope.profile.about){
         $scope.canAddHours = true;
       }
     };
@@ -88,16 +86,18 @@ angular.module('Mastermind.controllers.people')
       var checked = elem.checked;
 
       //If checked add the group to the profile
-      if(checked){
-        if(!$scope.profile.groups)$scope.profile.groups=[];
+      if (checked){
+        if (!$scope.profile.groups){
+          $scope.profile.groups=[];
+        }
         $scope.profile.groups.push(group);
       }
       //Remove the group from the profile
-      else{
+      else {
         var arr=$scope.profile.groups?$scope.profile.groups:[],ax;
         while ((ax= arr.indexOf(group)) !== -1) {
           arr.splice(ax, 1);
-          }
+        }
       }
     };
 
@@ -131,7 +131,7 @@ angular.module('Mastermind.controllers.people')
         $scope.editMode = false;
 
         //If you updated your self refresh the local copy of me
-        if ($scope.me.about == profile.about){
+        if ($scope.me.about === profile.about){
           Resources.refresh('people/me').then(function(me){
             $scope.me = me;
           });
@@ -270,9 +270,9 @@ angular.module('Mastermind.controllers.people')
 
 
     $scope.isCurrentProject = function(endDate) {
-      var endDate = new Date(endDate);
+      var date = new Date(endDate);
       var currentDate = new Date();
-      if (endDate.getTime() < currentDate.getTime()) {
+      if (date.getTime() < currentDate.getTime()) {
         return false;
       }
       return true;
@@ -292,7 +292,7 @@ angular.module('Mastermind.controllers.people')
         $scope.initHours();
         $scope.newHoursRecord = {};
       });
-    }
+    };
 
     /**
      * Delete an hours instance

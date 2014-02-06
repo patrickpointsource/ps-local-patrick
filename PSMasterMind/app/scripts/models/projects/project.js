@@ -1,11 +1,12 @@
+/* global _ */
 'use strict';
 
 angular.module('Mastermind.models.projects')
   .factory('Terms', function () {
     var defaults = {
-    	includesProjectManagementOverhead: false,
-        type: 'timeAndMaterials'
-      };
+      includesProjectManagementOverhead: false,
+      type: 'timeAndMaterials'
+    };
 
     function Terms(options) {
       options = options || {};
@@ -34,16 +35,15 @@ angular.module('Mastermind.models.projects')
     };
 
     function formatDate(date) {
-        if (date.indexOf('T') !== -1) {
-          date = date.substr(0, date.indexOf('T'));
-        }
-        return date;
-        // var year = dateArray[0];
-        // var month = dateArray[1];
-        // var day = dateArray[2].substr(0,2);
-        // return month + '/' + day + '/' + year;
-
+      if (date.indexOf('T') !== -1) {
+        date = date.substr(0, date.indexOf('T'));
       }
+      return date;
+      // var year = dateArray[0];
+      // var month = dateArray[1];
+      // var day = dateArray[2].substr(0,2);
+      // return month + '/' + day + '/' + year;
+    }
 
     /**
      * Creates a new Role with default properties.

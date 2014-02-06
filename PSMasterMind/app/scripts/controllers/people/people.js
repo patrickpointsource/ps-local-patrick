@@ -6,7 +6,7 @@
 angular.module('Mastermind.controllers.people')
   .controller('PeopleCtrl', ['$scope', '$state', '$filter', '$q', 'Resources', 'People', 'ngTableParams',
     function ($scope, $state, $filter, $q, Resources, People, TableParams) {
-      var getTableData = function(people){
+      var getTableData = function(){
         return new TableParams(params, {
           total: $scope.people.length, // length of data
           getData: function ($defer, params) {
@@ -16,16 +16,15 @@ angular.module('Mastermind.controllers.people')
             var end = params.page() * params.count();
 
             for(var i=start; (i<$scope.people.length && i<end);i++){
-            //Annotate people with additional information
+              //Annotate people with additional information
               $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
-            if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
-              // add the role to the person so we can display it in the table and sort by it
+              if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+                // add the role to the person so we can display it in the table and sort by it
                 $scope.people[i].primaryRole = $scope.roleGroups[$scope.people[i].primaryRole.resource];
               }
-          }
-          // use build-in angular filter
-            var orderedData = params.sorting() ?
-                $filter('orderBy')(data, params.orderBy()) : data;
+            }
+            // use build-in angular filter
+            var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
 
             var ret = orderedData.slice(start, end);
             $defer.resolve(ret);
@@ -37,7 +36,7 @@ angular.module('Mastermind.controllers.people')
        * Changes list of people on a filter change
        */
       $scope.handlePeopleFilterChanged = function(){
-        if($scope.peopleFilter == 'available'){
+        if ($scope.peopleFilter === 'available'){
           People.getActivePeople(function(people){
             $scope.people = people.members;
 
@@ -51,7 +50,7 @@ angular.module('Mastermind.controllers.people')
             }
           });
         }
-        else if($scope.peopleFilter == 'all'){
+        else if ($scope.peopleFilter === 'all'){
           var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
           Resources.query('people', {}, fields, function(result){
             $scope.people = result.members;
@@ -64,7 +63,7 @@ angular.module('Mastermind.controllers.people')
               $scope.tableParams.total($scope.people.length);
               $scope.tableParams.reload();
             }
-          })
+          });
         }
         else {
           var peopleInRoleQuery = {'primaryRole.resource':$scope.peopleFilter};
@@ -102,8 +101,8 @@ angular.module('Mastermind.controllers.people')
        * display the month name from a month number (0 - 11)
        */
       $scope.getShortName = function(date, inc) {
-      var monthNum = date.getMonth() + inc;
-      var year = date.getFullYear();
+        var monthNum = date.getMonth() + inc;
+        var year = date.getFullYear();
         if (monthNum > 11) {
           monthNum = monthNum - 12;
           year++;
@@ -125,7 +124,7 @@ angular.module('Mastermind.controllers.people')
           dd='0'+dd;
         }
         if (mm<10){
-          mm='0'+mm
+          mm='0'+mm;
         }
 
         var startDateQuery = yyyy+'-'+mm+'-'+dd;
@@ -175,10 +174,10 @@ angular.module('Mastermind.controllers.people')
                     if(rate.fullyUtilized){
                       hoursPerMonth = 180;
                     }
-                    else if(rate.type == 'hourly'){
+                    else if(rate.type === 'hourly'){
                       hoursPerMonth = rate.hours;
                     }
-                    else if(rate.type == 'weekly'){
+                    else if(rate.type === 'weekly'){
                     // Weekly rate is currently hours per week. There are 5 working days per week
                         // and 22.5 per month.
                       var hoursPerMonthNotRounded = parseFloat(rate.hours * 22.5 / 5);
@@ -195,8 +194,8 @@ angular.module('Mastermind.controllers.people')
                     }
                   }
 
-                  if(activeRole.assignee && activeRole.assignee.resource
-                      && !activePeopleProjects.hasOwnProperty(activeRole.assignee.resource)){
+                  if(activeRole.assignee && activeRole.assignee.resource &&
+                    !activePeopleProjects.hasOwnProperty(activeRole.assignee.resource)){
                     //Push the assignnee onto the active list
                     activePeople.push(Resources.get(activeRole.assignee.resource));
 
@@ -205,9 +204,10 @@ angular.module('Mastermind.controllers.people')
                     //Accout for person already in role in this project
                     activePeopleProjectsResources.push(activeRole.assignee.resource);
                   }
-                  else if(activeRole.assignee && activeRole.assignee.resource
-                      //And not already in an accounted role
-                      && activePeopleProjectsResources.indexOf(activeRole.assignee.resource) == -1){
+                  else if(activeRole.assignee && activeRole.assignee.resource &&
+                    //And not already in an accounted role
+                    activePeopleProjectsResources.indexOf(activeRole.assignee.resource) === -1){
+
                     //Just add the project to the activePeopleProjects list
                     activePeopleProjects[activeRole.assignee.resource].push(activeProjects[i]);
                   }
@@ -284,7 +284,9 @@ angular.module('Mastermind.controllers.people')
        */
       $scope.isPersonActiveInMonth = function (project, person, month, year) {
         var projectIsActive = $scope.inMonth(project, month, year);
-        if(!projectIsActive) return false;
+        if (!projectIsActive){
+          return false;
+        }
 
         //Look through all the roles
         var roles = project.roles;
@@ -294,18 +296,20 @@ angular.module('Mastermind.controllers.people')
           for(var i = 0; i < roles.length; i++){
             var role = roles[i];
             //Check if person is assigned to role
-            if(role.assignee && personRef == role.assignee.resource){
-            var nextMonth = month === 11 ? 0 : (month + 1),
-                   nextYear = month === 11 ? (year + 1) : year,
-                   startDay = new Date(year, month, 1),
-                   endDay = new Date(nextYear, nextMonth, 0);
+            if(role.assignee && personRef === role.assignee.resource){
+              var nextMonth = month === 11 ? 0 : (month + 1),
+                nextYear = month === 11 ? (year + 1) : year,
+                startDay = new Date(year, month, 1),
+                endDay = new Date(nextYear, nextMonth, 0);
 
               // If the role start day is before the last day of this month
               // and its end date is after the first day of this month.
-              var roleStarted =   new Date(role.startDate) <= endDay;
+              var roleStarted =  new Date(role.startDate) <= endDay;
               var roleEnded = role.endDate &&  new Date(role.endDate) <= startDay;
-              ret =  roleStarted && !roleEnded;
-              if(ret) break;
+              ret = roleStarted && !roleEnded;
+              if (ret){
+                break;
+              }
             }
           }
         }
@@ -373,7 +377,6 @@ angular.module('Mastermind.controllers.people')
        * Get All the Role Types
        */
       Resources.get('roles').then(function(result){
-        var resources = [];
         var roleGroups = {};
         //Save the list of role types in the scope
         $scope.rolesFilterOptions = result.members;

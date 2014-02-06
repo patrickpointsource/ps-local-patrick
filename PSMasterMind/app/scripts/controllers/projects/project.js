@@ -31,7 +31,7 @@ angular.module('Mastermind')
       }
       //Fetch the old version of the project and show the read only mode
       else{
-        Resources.get('projects/'+$scope.projectId).then(function(project){
+        Resources.get('projects/' + $scope.projectId).then(function(){
           $state.go('projects.show', {projectId:$scope.projectId, edit:null});
         });
       }
@@ -57,7 +57,7 @@ angular.module('Mastermind')
           resource: me.about
         };
 
-        ProjectsService.save($scope.project).then(function (project) {
+        ProjectsService.save($scope.project).then(function () {
           if($scope.isTransient){
             $state.go('projects.index');
           }
@@ -114,7 +114,7 @@ angular.module('Mastermind')
     $scope.displayRate = function(role){
       var ret = null;
       if(role){
-        if(role.rate.type == Rates.MONTHLY){
+        if(role.rate.type === Rates.MONTHLY){
           ret = '$' + role.rate.amount + '/m';
         }
         else{
@@ -130,20 +130,20 @@ angular.module('Mastermind')
     $scope.displayHours = function(role){
       var ret = '';
       if(role.rate.fullyUtilized){
-        if(role.rate.type == Rates.WEEKLY){
+        if(role.rate.type === Rates.WEEKLY){
           ret = '100% Weekly';
         }
-        else if(role.rate.type == Rates.HOURLY){
+        else if(role.rate.type === Rates.HOURLY){
           ret = '100% Hourly';
         }
-        else if(role.rate.type == Rates.MONTHLY){
+        else if(role.rate.type === Rates.MONTHLY){
           ret = '100% Monthly';
         }
       }
-      else if(role.rate.type == Rates.WEEKLY){
+      else if(role.rate.type === Rates.WEEKLY){
         ret = role.rate.hours + ' per week';
       }
-      else if(role.rate.type == Rates.HOURLY){
+      else if(role.rate.type === Rates.HOURLY){
         ret = role.rate.hours + ' per month';
       }
       return ret;
@@ -165,26 +165,28 @@ angular.module('Mastermind')
             var type = rate.type;
             var startDate = new Date(role.startDate);
             var endDate = new Date(role.endDate);
+            var numMonths;
+            var roleTotal;
 
             if(startDate && endDate){
               //Hourly Charge rate
-              if(type && type == 'monthly'){
-                var numMonths = $scope.monthDif(startDate, endDate);
-                var roleTotal = numMonths * amount;
+              if(type && type === 'monthly'){
+                numMonths = $scope.monthDif(startDate, endDate);
+                roleTotal = numMonths * amount;
                 runningTotal += roleTotal;
               }
               //Weekly Charge rate
-              else if(type && type== 'weekly'){
+              else if(type && type === 'weekly'){
                 var numWeeks = $scope.weeksDif(startDate, endDate);
                 var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
-                var roleTotal = numWeeks * hoursPerWeek * amount;
+                roleTotal = numWeeks * hoursPerWeek * amount;
                 runningTotal += roleTotal;
               }
               //Hourly Charge rate
-              else if(type && type== 'hourly'){
-                var numMonths = $scope.monthDif(startDate, endDate);
+              else if(type && type === 'hourly'){
+                numMonths = $scope.monthDif(startDate, endDate);
                 var hoursPerMonth = rate.fullyUtilized?220:rate.hours;
-                var roleTotal = numMonths * hoursPerMonth * amount;
+                roleTotal = numMonths * hoursPerMonth * amount;
                 runningTotal += roleTotal;
               }
             }
@@ -214,12 +216,12 @@ angular.module('Mastermind')
       // The number of milliseconds in one week
       var ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
       // Convert both dates to milliseconds
-      var date1_ms = d1.getTime();
-      var date2_ms = d2.getTime();
+      var date1Ms = d1.getTime();
+      var date2Ms = d2.getTime();
       // Calculate the difference in milliseconds
-      var difference_ms = Math.abs(date1_ms - date2_ms);
+      var differenceMs = Math.abs(date1Ms - date2Ms);
       // Convert back to weeks and return hole weeks
-      return Math.floor(difference_ms / ONE_WEEK);
+      return Math.floor(differenceMs / ONE_WEEK);
     };
 
     /**
@@ -324,25 +326,25 @@ angular.module('Mastermind')
         for(var i = 0; i < people.length; i++){
           var person = people[i];
           var personsRole = roleGroups[person.primaryRole.resource];
-          person.title = personsRole.abbreviation + ': ' + person.familyName + ", " + person.givenName;
+          person.title = personsRole.abbreviation + ': ' + person.familyName + ', ' + person.givenName;
 
           for(var j = 0; j < result.members.length;j++){
             var roleJ = result.members[j];
 
             //Primary role match place it at the front of the array in sort order
-            if(roleJ.resource == person.primaryRole.resource){
+            if(roleJ.resource === person.primaryRole.resource){
               //assignable list was empty add it to the front
-              if(roleGroups[roleJ.resource].assiganble.length == 0){
+              if(roleGroups[roleJ.resource].assiganble.length === 0){
                 roleGroups[roleJ.resource].assiganble[0] = person;
               }
               //First match just add it to the font
-              else if(roleGroups[roleJ.resource].assiganble[0].primaryRole.resource != roleJ.resource){
+              else if(roleGroups[roleJ.resource].assiganble[0].primaryRole.resource !== roleJ.resource){
                 roleGroups[roleJ.resource].assiganble.unshift(person);
               }
               //Add it after the last match
               else{
                 var index = 0;
-                while(roleGroups[roleJ.resource].assiganble.length>index&&roleGroups[roleJ.resource].assiganble[index].primaryRole.resource == roleJ.resource){
+                while(roleGroups[roleJ.resource].assiganble.length>index&&roleGroups[roleJ.resource].assiganble[index].primaryRole.resource === roleJ.resource){
                   index++;
                 }
                 roleGroups[roleJ.resource].assiganble.splice(index,0,person);
@@ -373,7 +375,7 @@ angular.module('Mastermind')
         $scope.initHours();
         $scope.newHoursRecord = {};
       });
-    }
+    };
 
     /**
      * Delete a role
@@ -430,28 +432,29 @@ angular.module('Mastermind')
               var defers = [];
 
 
-              for(var i = 0; i < ret.length; i++){
+              for (var i = 0; i < ret.length; i++){
                 var ithHoursRecord = ret[i];
                 defers.push(Resources.resolve(ithHoursRecord.person));
 
                 //See if the user had a role in the project at the time of the record
-                      for(var j = 0; j < projectRoles.length;j++){
-                        var role = projectRoles[j];
-                        //Found a role for this person
-                        if(role.assignee && ithHoursRecord.person.resource==role.assignee.resource){
-                          var roleStartDate = new Date(role.startDate);
-                          var hoursDate = new Date(ithHoursRecord.date);
-                          //record was after role start date
-                          if(hoursDate >= roleStartDate){
-                            var roleEndDate = role.endDate?new Date(role.endDate):null;
-                            //Record was before the end of role date
-                            if(!roleEndDate || roleEndDate >= hoursDate){
-                              ithHoursRecord.role=Resources.deepCopy(role);
-                              defers.push(Resources.resolve(ithHoursRecord.role.type));
-                            }
-                          }
-                        }
+                for (var j = 0; j < projectRoles.length;j++){
+                  var role = projectRoles[j];
+                  //Found a role for this person
+                  if (role.assignee && ithHoursRecord.person.resource === role.assignee.resource){
+                    var roleStartDate = new Date(role.startDate);
+                    var hoursDate = new Date(ithHoursRecord.date);
+                    //record was after role start date
+                    if (hoursDate >= roleStartDate){
+                      var roleEndDate = role.endDate?new Date(role.endDate):null;
+                      //Record was before the end of role date
+                      if (!roleEndDate || roleEndDate >= hoursDate){
+                        ithHoursRecord.role=Resources.deepCopy(role);
+                        defers.push(Resources.resolve(ithHoursRecord.role.type));
                       }
+                    }
+                  }
+                }
+
               }
 
               $.when.apply(window, defers).done(function(){
@@ -484,7 +487,7 @@ angular.module('Mastermind')
         page: 1,            // show first page
         count: 10,           // count per page
         sorting: {
-         type: 'asc'     // initial sorting
+          type: 'asc'     // initial sorting
         }
       };
 
@@ -524,7 +527,9 @@ angular.module('Mastermind')
         }
       });
 
-      if(!editMode)$scope.initHours();
+      if (!editMode){
+        $scope.initHours();
+      }
 
       /**
        * Calculate total loaded cost in plan
@@ -535,58 +540,61 @@ angular.module('Mastermind')
       for(var i = 0; roles && i < roles.length; i++){
         var role = roles[i];
         var roleType = $scope.roleGroups[role.type.resource];
-        var rate=role.rate;
-        if(roleType == null){
+        var rate = role.rate;
+        var numMonths;
+        var roleTotal;
+        if (roleType === null){
           console.warn('Roles has and unknown type: ' + JSON.stringify(role));
         }
-        else{
+        else {
           var type = rate.type;
           var startDate = new Date(role.startDate);
           var endDate = new Date(role.endDate);
+          var amount;
 
           if(startDate && endDate){
             //Hourly Charge rate
-            if(type && type == 'monthly'){
-              var amount = roleType.monthlyLoadedRate;
-              if(amount == null){
+            if(type && type === 'monthly'){
+              amount = roleType.monthlyLoadedRate;
+              if(amount === null){
                 console.warn('Role Type has no monthly loaded rate: ' + roleType.title);
               }
               else{
-                var numMonths = $scope.monthDif(startDate, endDate);
-                var roleTotal = numMonths * amount;
+                numMonths = $scope.monthDif(startDate, endDate);
+                roleTotal = numMonths * amount;
                 runningTotal += roleTotal;
               }
             }
             //Weekly Charge rate
-            else if(type && type== 'weekly'){
-              var amount = roleType.hourlyLoadedRate;
-              if(amount == null){
+            else if(type && type === 'weekly'){
+              amount = roleType.hourlyLoadedRate;
+              if(amount === null){
                 console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
               }
               else{
-                  var numWeeks = $scope.weeksDif(startDate, endDate);
-                  var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
-                  var roleTotal = numWeeks * hoursPerWeek * amount;
-                  runningTotal += roleTotal;
+                var numWeeks = $scope.weeksDif(startDate, endDate);
+                var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
+                roleTotal = numWeeks * hoursPerWeek * amount;
+                runningTotal += roleTotal;
               }
             }
             //Hourly Charge rate
-            else if(type && type== 'hourly'){
-              var amount = roleType.hourlyLoadedRate;
-              if(amount == null){
+            else if(type && type === 'hourly'){
+              amount = roleType.hourlyLoadedRate;
+              if(amount === null){
                 console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
               }
               else{
-                var numMonths = $scope.monthDif(startDate, endDate);
+                numMonths = $scope.monthDif(startDate, endDate);
                 var hoursPerMonth = rate.fullyUtilized?220:rate.hours;
-                var roleTotal = numMonths * hoursPerMonth * amount;
+                roleTotal = numMonths * hoursPerMonth * amount;
                 runningTotal += roleTotal;
               }
             }
           }
         }
         $scope.servicesLoadedTotal = runningTotal;
-      };
+      }
 
     };
 
@@ -623,88 +631,84 @@ angular.module('Mastermind')
 
         $scope.canDeleteProject = true;
       }
-      else {
-        alert('You are not allowed to delete this project.  You must be a member of management, Executives or the creator of the project.');
-      }
     });
 
-
   }])
-    .directive('exportHours', ['$parse', function ($parse) {
-      return {
-        restrict: 'A',
-        scope: false,
-        link: function(scope, element, attrs) {
-            var data = '';
-            var csv = {
-              stringify: function(str) {
-                return '"' +
-                  str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
-                      .replace(/"/g,'""') + // replace quotes with double quotes
-                  '"';
-              },
-              rawJSON: function(){
-                return scope.hoursTableData;
-              },
-              rawCSV: function(){
-                return data;
-              },
-              generate: function() {
-                var project = scope.project;
-                var hours = scope.hoursTableData;
+  .directive('exportHours', ['$parse', function ($parse) {
+    return {
+      restrict: 'A',
+      scope: false,
+      link: function(scope, element, attrs) {
+        var data = '';
+        var csv = {
+          stringify: function(str) {
+            return '"' +
+              str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
+                  .replace(/"/g,'""') + // replace quotes with double quotes
+              '"';
+          },
+          rawJSON: function(){
+            return scope.hoursTableData;
+          },
+          rawCSV: function(){
+            return data;
+          },
+          generate: function() {
+            var project = scope.project;
+            var hours = scope.hoursTableData;
 
-                for(var i = 0; i < hours.length; i++){
-                  data = csv.JSON2CSV(project, hours);
-                }
-              },
-              link: function() {
-                return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
-              },
-              JSON2CSV: function(project, hours) {
-                var str = '';
-                var line = '';
+            for(var i = 0; i < hours.length; i++){
+              data = csv.JSON2CSV(project, hours);
+            }
+          },
+          link: function() {
+            return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
+          },
+          JSON2CSV: function(project, hours) {
+            var str = '';
+            var line = '';
 
-                console.log('hours:' + hours);
+            console.log('hours:' + hours);
 
-                //Print the header
-                var head = ['Project', 'Peson', 'Role', 'Rate', 'Date', 'Hours', 'Description'];
-                for (var i = 0; i < head.length; i++) {
-                    line += head[i] + ',';
-                }
-                //Remove last comma and add a new line
-                line = line.slice(0, -1);
-                str += line + '\r\n';
+            //Print the header
+            var head = ['Project', 'Peson', 'Role', 'Rate', 'Date', 'Hours', 'Description'];
+            for (var i = 0; i < head.length; i++) {
+              line += head[i] + ',';
+            }
+            //Remove last comma and add a new line
+            line = line.slice(0, -1);
+            str += line + '\r\n';
 
-                //Print the values
-                for (var i = 0; i < hours.length; i++) {
-                  var line = '';
+            //Print the values
+            for (var x = 0; x < hours.length; x++) {
+              line = '';
 
-                  var record = hours[i];
+              var record = hours[x];
 
-                  //Project
-                  line += csv.stringify(project.name) + ',';
-                  line += csv.stringify(record.person.name) + ',';
-                  if(record.role && record.role.type && record.role.type.title){
-                    line += csv.stringify(record.role.type.title);
-                  }
-                  line += ','
-                  if(record.role){
-                     line += scope.displayRate(record.role) ;
-                  }
-                  line += ',';
-                  line += record.date + ',';
-                  line += record.hours + ',';
-
-                  line += csv.stringify(record.description) + ',';
-
-
-
-                  str += line + '\r\n';
-                }
-                return str;
+              //Project
+              line += csv.stringify(project.name) + ',';
+              line += csv.stringify(record.person.name) + ',';
+              if(record.role && record.role.type && record.role.type.title){
+                line += csv.stringify(record.role.type.title);
               }
-          };
-          $parse(attrs.exportHours).assign(scope.$parent, csv);
-        }
-      };
+              line += ',';
+              if(record.role){
+                line += scope.displayRate(record.role);
+              }
+              line += ',';
+              line += record.date + ',';
+              line += record.hours + ',';
+
+              line += csv.stringify(record.description) + ',';
+
+
+
+              str += line + '\r\n';
+            }
+            return str;
+          }
+        };
+        $parse(attrs.exportHours).assign(scope.$parent, csv);
+      }
+    };
   }]);
