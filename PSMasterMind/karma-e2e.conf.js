@@ -1,13 +1,16 @@
 // Karma configuration
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
+// Angular e2e testing documentation
+// http://docs.angularjs.org/guide/dev_guide.e2e-testing
+
 module.exports = function(config) {
   config.set({
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
     // testing framework to use (jasmine/mocha/qunit/...)
-    frameworks: ['jasmine', 'ng-scenario'],
+    frameworks: ['ng-scenario', 'jasmine'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -58,7 +61,7 @@ module.exports = function(config) {
 
     // Uncomment the following lines if you are using grunt's server to run the tests
     proxies: {
-      '/': 'http://localhost:9000/'
+      '/': 'http://localhost:8080/'
     },
     // URL root prevent conflicts with the site root
     urlRoot: '_karma_'

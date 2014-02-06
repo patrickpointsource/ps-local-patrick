@@ -200,7 +200,28 @@ angular.module('Mastermind.controllers.people')
     Resources.get('people/'+$scope.profileId).then(function(person){
       $scope.setProfile(person);
 
-      var query = {'roles.assignee':{resource:person.about}};
+      // build the date string for query
+      var today = new Date();
+      var twoWeeks = new Date();
+      twoWeeks.setDate(today.getDate() - 14);
+      var dd = twoWeeks.getDate();
+      var mm = twoWeeks.getMonth()+1; //January is 0!
+      var yyyy = twoWeeks.getFullYear();
+      if (dd<10){
+        dd='0'+dd;
+      }
+      if (mm<10){
+        mm='0'+mm;
+      }
+
+      var endDateQuery = yyyy+'-'+mm+'-'+dd;
+
+      var query = {$or:[
+        {roles:{$elemMatch:{endDate:{$gte:endDateQuery},assignee:{resource:person.about}}}}, // endDate >= endDateQuery
+        {roles:{$elemMatch:{endDate:{$exists:false},assignee:{resource:person.about}}}}, // endDate does NOT exist
+        {roles:{$elemMatch:{endDate:{$exists:''},assignee:{resource:person.about}}}} // endDate exists and is empty
+      ]};
+
       var fields = {resource:1,name:1,roles:1,endDate:1};
 
       Resources.query('projects', query, fields, function(result){
