@@ -552,26 +552,26 @@ angular.module('Mastermind')
           var endDate = new Date(role.endDate);
           var amount;
 
-          if(startDate && endDate){
+          if (startDate && endDate){
             //Hourly Charge rate
-            if(type && type === 'monthly'){
+            if (type && type === 'monthly'){
               amount = roleType.monthlyLoadedRate;
-              if(amount === null){
+              if (amount === null){
                 console.warn('Role Type has no monthly loaded rate: ' + roleType.title);
               }
-              else{
+              else {
                 numMonths = $scope.monthDif(startDate, endDate);
                 roleTotal = numMonths * amount;
                 runningTotal += roleTotal;
               }
             }
             //Weekly Charge rate
-            else if(type && type === 'weekly'){
+            else if (type && type === 'weekly'){
               amount = roleType.hourlyLoadedRate;
-              if(amount === null){
+              if (amount === null){
                 console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
               }
-              else{
+              else {
                 var numWeeks = $scope.weeksDif(startDate, endDate);
                 var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
                 roleTotal = numWeeks * hoursPerWeek * amount;
@@ -579,12 +579,12 @@ angular.module('Mastermind')
               }
             }
             //Hourly Charge rate
-            else if(type && type === 'hourly'){
+            else if (type && type === 'hourly'){
               amount = roleType.hourlyLoadedRate;
-              if(amount === null){
+              if (amount === null){
                 console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
               }
-              else{
+              else {
                 numMonths = $scope.monthDif(startDate, endDate);
                 var hoursPerMonth = rate.fullyUtilized?220:rate.hours;
                 roleTotal = numMonths * hoursPerMonth * amount;
@@ -605,7 +605,7 @@ angular.module('Mastermind')
     /**
      * Get Existing Project
      */
-    if($scope.projectId){
+    if ($scope.projectId){
       ProjectsService.getForEdit($scope.projectId).then(function(project){
         $scope.project = project;
         $scope.handleProjectSelected();
@@ -614,7 +614,7 @@ angular.module('Mastermind')
     /**
      * Default create a new project
      */
-    else{
+    else {
       $scope.project = ProjectsService.create();
       $scope.handleProjectSelected();
     }
@@ -624,12 +624,16 @@ angular.module('Mastermind')
     Resources.refresh('people/me').then(function(me){
       $scope.me = me;
 
-      if($scope.me.groups &&
+      if ($scope.me.groups &&
         (($scope.me.groups.indexOf('Management') !== -1) ||
         ($scope.me.groups.indexOf('Executives') !== -1) ||
-        ($scope.creator && $scope.creator.resource === $scope.me.about))) {
+        ($scope.project.creator && $scope.project.creator.resource === $scope.me.about))) {
 
         $scope.canDeleteProject = true;
+      }
+
+      if (!$scope.projectId) {
+        $scope.canDeleteProject = false;
       }
     });
 
