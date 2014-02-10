@@ -37,7 +37,9 @@
     "karma-phantomjs-launcher": "~0.1.0",
     "karma": "~0.10.4",
     "karma-ng-html2js-preprocessor": "~0.1.0",
-    "grunt-contrib-less": "~0.8.2"
+    "grunt-contrib-less": "~0.8.2",
+    "grunt-protractor-runner": "~0.2.3",
+    "protractor": "~0.18.1"
   },
   "engines": {
     "node": ">=0.8.0"

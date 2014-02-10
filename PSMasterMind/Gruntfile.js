@@ -336,6 +336,22 @@ module.exports = function (grunt) {
           ]
         }
       }
+    },
+    protractor: {
+      options: {
+        configFile: "node_modules/protractor/referenceConf.js", // Default config file
+        keepAlive: true, // If false, the grunt process stops when the test fails.
+        noColor: false, // If true, protractor will not use colors in its output.
+        args: {
+          // Arguments passed to the command
+        }
+      },
+      your_target: {
+        options: {
+          configFile: "protractor.conf.js", // Target-specific config file
+          args: {} // Target-specific arguments
+        }
+      }
     }
   });
 
@@ -358,8 +374,8 @@ module.exports = function (grunt) {
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'karma:unit',
-    'karma:e2e'
+    'karma:unit'
+    // 'protractor'
   ]);
 
   grunt.registerTask('build', [
