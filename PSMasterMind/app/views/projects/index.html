@@ -25,7 +25,8 @@
      <tbody ng-repeat="project in $data | filter:filterText">
 	     <tr >
 	      	<td data-title="'Customer'" sortable="'customerName'">{{project.customerName}}</td>
-	        <td data-title="'Name'" sortable="'title'"><a href="#{{project.resource}}">{{project.name}}</a></td>
+	        <td data-title="'Name'" sortable="'name'"><a href="#{{project.resource}}">{{project.name}}</a></td>
+         	<td data-title="'Description'" sortable="'description'">{{project.description}}</td>
 	      </tr>
       </tbody>
     </table>

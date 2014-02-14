@@ -12,6 +12,9 @@ angular.module('Mastermind.controllers.projects')
 
     $scope.handleProjectFilterChanged = function(){
       var filter = $scope.projectFilter;
+      // project entity columns which must be displkaye don UI
+      var apFields = {resource:1,name:1,'roles.assignee':1, customerName:1, description: 1};
+      
       //Filter just the active projects
       if (filter === 'active'){
         //Get todays date formatted as yyyy-MM-dd
@@ -29,7 +32,7 @@ angular.module('Mastermind.controllers.projects')
 
         // build query for active projects
         var apQuery = {startDate:{$lte:today},$or:[{endDate:{$exists:false}},{endDate:{$gt:today}}]};
-        var apFields = {resource:1,name:1,'roles.assignee':1,customerName:1};
+       
 
         Resources.query('projects', apQuery, apFields, function(result){
           $scope.projects = result.data;
@@ -48,7 +51,7 @@ angular.module('Mastermind.controllers.projects')
         $scope.projectFilter = 'all';
 
         // query all projects
-        Resources.query('projects', {}, {resource:1,name:1,customerName:1}, function(result){
+        Resources.query('projects', {}, apFields, function(result){
           $scope.projects = result.data;
 
           //Reload the table
