@@ -4,7 +4,7 @@
  * People Service
  */
 angular.module('Mastermind')
-  .factory('People', ['$q','Restangular', 'Resources', function ($q, Restangular, Resources) {
+  .factory('People', ['$q','Restangular', 'Resources', 'ProjectsService', function ($q, Restangular, Resources, ProjectsService) {
 
     /*
      * Create a reference to a server side resource for People.
@@ -30,30 +30,11 @@ angular.module('Mastermind')
 
 
     /**
-     * Query to get the list of active projects
+     * Query to get the list of people working on
+     * active projects.
      */
-    function getActiveProjects(onSuccess){
-      //Get todays date formatted as yyyy-MM-dd
-      var today = new Date();
-      var dd = today.getDate();
-      var mm = today.getMonth()+1; //January is 0!
-      var yyyy = today.getFullYear();
-      if (dd<10){
-        dd='0'+dd;
-      }
-      if (mm<10){
-        mm='0'+mm;
-      }
-      today = yyyy+'-'+mm+'-'+dd;
-
-      var apQuery = {startDate:{$lte:today},$or:[{endDate:{$exists:false}},{endDate:{$gt:today}}]};
-      var apFields = {resource:1,name:1,'roles.assignee':1};
-
-      return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
-
     function getActivePeople(onSuccess){
-      getActiveProjects(function(result){
+      ProjectsService.getActiveProjects(function(result){
         var activeProjects = result.data;
         var activePeople = [];
 

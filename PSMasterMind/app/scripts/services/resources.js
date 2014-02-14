@@ -5,8 +5,8 @@
  * Get any resource
  */
 angular.module('Mastermind').factory(
-    'Resources',['$q','Restangular',
-    function($q, Restangular) {
+    'Resources',['$q','$timeout','Restangular',
+    function($q, $timeout, Restangular) {
       var ResourcesRestangular = Restangular.withConfig(function(
           RestangularConfigurer) {
       });
@@ -57,7 +57,7 @@ angular.module('Mastermind').factory(
       function refresh(resource) {
         var deferred = $q.defer();
 
-        setTimeout(function() {
+        $timeout(function() {
           fetch(resource).then(function(newValue) {
             //Save to localStorage
             localStorage[resource] = JSON.stringify(newValue);
@@ -78,7 +78,7 @@ angular.module('Mastermind').factory(
       function get(resource) {
         var deferred = $q.defer();
 
-        setTimeout(function() {
+        $timeout(function() {
 
           // First check if we have this resource in cache
           var value = localStorage[resource];

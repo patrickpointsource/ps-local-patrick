@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Mastermind.services.projects')
-  .service('RolesService', ['RateFactory','Role',function (RateFactory, Role) {
+  .service('RolesService', ['RateFactory','Role','Resources', function (RateFactory, Role, Resources) {
     /**
      * Change a Role's rate type between hourly, weekly, and monthly.
      *
@@ -11,10 +11,21 @@ angular.module('Mastermind.services.projects')
       this.rate = RateFactory.build(newType);
     };
 
+    /**
+     * Create a new role
+     *
+     * @param rateType 'hourly', 'weekly', or 'monthly'
+     */
     this.create = function (rateType) {
       return new Role(rateType);
     };
 
+    /**
+     * Validate a new Role being created on a project.
+     *
+     * @param project
+     * @param newRole
+     */
     this.validateNewRole = function(project, newRole){
       var errors = [];
       //Must select a type
@@ -98,5 +109,96 @@ angular.module('Mastermind.services.projects')
         }
       }
       return errors;
+    };
+    
+    /**
+     * Function declaration getRoleName()
+     * Returns a role name corresponding to a resource reference
+     *
+     * @param project
+     * @param newRole
+     */
+    this.getRoleName = function(resource){
+    	
+	
+        /**
+         * Load Role definitions to display Role names and/or Role abbreviations
+         */
+        Resources.get('roles').then(function(result){
+        	var ret = 'Unspecified';
+        	var members = result.members;
+            //$scope.allRoles = members;
+            var rolesMap = {};
+            for(var i = 0; i < members.length;i++){
+              rolesMap[members[i].resource] = members[i];
+            }
+            
+            if(resource && rolesMap[resource]){
+                ret = rolesMap[resource].title;
+            }
+            return ret;
+        });
+    };
+
+    /**
+     * Function declaration getRoleAbbr()
+     * Returns a role abbreviation corresponding to a resource reference
+     *
+     * @param project
+     * @param newRole
+     */
+    this.getRoleAbbr = function(resource){
+    	
+    	console.log("getRoleAbbr() called with resource:", resource);
+        /**
+         * Load Role definitions to display Role names and/or Role abbreviations
+         */
+        Resources.get('roles').then(function(result){
+        	var ret = 'Unspecified';
+            var members = result.members;
+            console.log("getRoleAbbr() Fetching roles returned members:", members);
+            //$scope.allRoles = members;
+            var rolesMap = {};
+            for(var i = 0; i < members.length;i++){
+              rolesMap[members[i].resource] = members[i];
+            }
+            console.log("getRoleAbbr() rolesMap:", rolesMap)
+            if(resource && rolesMap[resource]){
+                ret = rolesMap[resource].abbreviation;
+            }
+            console.log("getRoleAbbr() returning:",ret);
+            return ret;
+        });
+    };
+    
+    /**
+     * Function declaration getRoleAbbr()
+     * Returns a role abbreviation corresponding to a resource reference
+     *
+     * @param project
+     * @param newRole
+     */
+    this.getRolesMapByResource = function(){
+    	
+    	var rolesPromise;
+    	console.log("getRolesMapByResource() called.");
+        /**
+         * Load Role definitions to display Role names and/or Role abbreviations
+         */
+        rolesPromise = Resources.get('roles').then(function(result){
+        	var ret = 'Unspecified';
+            var members = result.members;
+            console.log("getRolesMapByResource() Fetching roles returned members:", members);
+            //$scope.allRoles = members;
+            var rolesMap = {};
+            for(var i = 0; i < members.length;i++){
+              rolesMap[members[i].resource] = members[i];
+            }
+
+            console.log("getRolesMapByResource() returning:",rolesMap);
+            return rolesMap;
+        });
+        
+        return rolesPromise;
     };
   }]);
