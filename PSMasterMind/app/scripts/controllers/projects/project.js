@@ -312,8 +312,10 @@ angular.module('Mastermind')
         roleGroups[resource] = role;
         resources.push(resource);
         //create a members array for each roles group
+        
         role.assiganble = [];
       }
+      
       $scope.roleGroups = roleGroups;
 
       //Query all people with a primary role
@@ -356,7 +358,13 @@ angular.module('Mastermind')
             }
           }
         }
-
+        
+        for (var roleResourceId in roleGroups)
+        	roleGroups[ roleResourceId ].assiganble.unshift({
+        		resource: undefined,
+        		title: 'unassigned'
+        	})
+        	
         //Set a map of role types to members
         $scope.roleGroups = roleGroups;
       },sort);

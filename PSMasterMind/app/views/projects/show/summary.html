@@ -71,8 +71,8 @@
             <tr ng-repeat="role in $data">
               	<td>
               	  <a href="#{{role.assignee.resource}}">
-	                  <img ng-show="role.assignee" class="profileImage" ng-src="{{role.assignee.thumbnail}}"/>
-	                  <i class="fa fa-ban" ng-show="!role.assignee"></i>
+	                  <img ng-show="role.assignee && role.assignee.resource" class="profileImage" ng-src="{{role.assignee.thumbnail}}"/>
+	                  <i class="fa fa-ban" ng-show="!role.assignee || !role.assignee.resource"></i>
 	                  <span >{{role.assignee.name || 'Unassigned'}}</span>
                   </a>
                   <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>

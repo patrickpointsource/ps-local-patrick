@@ -7,6 +7,9 @@
 angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resources',
   function ($scope, $state, Resources) {
 
+	// make these vars accessible in scope methods - especially "showHome"
+	var apQuery;
+	var apFields;
     //Load my profile for group and role checking
     Resources.refresh('people/me').then(function(me){
       $scope.me = me;
@@ -38,8 +41,9 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
 
       var startDateQuery = yyyy+'-'+mm+'-'+dd;
 
-      var apQuery = {roles:{'$elemMatch':{assignee:{resource:me.about},startDate:{$lte:startDateQuery},$or:[{endDate:{$exists:false}},{endDate:{$gt:startDateQuery}}]}}};
-      var apFields = {resource:1,name:1,'roles.assignee':1};
+      apQuery = {roles:{'$elemMatch':{assignee:{resource:me.about},startDate:{$lte:startDateQuery},$or:[{endDate:{$exists:false}},{endDate:{$gt:startDateQuery}}]}}};
+      apFields = {resource:1,name:1,'roles.assignee':1};
+      
       Resources.query('projects', apQuery, apFields, function(result){
         $scope.myActiveProjects =  result.data;
         if(result.data.length>0){
@@ -75,7 +79,14 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
      * Navigate to the dashboard.
      */
     $scope.showHome = function () {
-      $state.go('home');
+    	 Resources.query('projects', apQuery, apFields, function(result){
+	        $scope.myActiveProjects =  result.data;
+	        
+	        if(result.data.length>0){
+	          $scope.hasActiveProjects = true;
+	        }
+    	 });
+    	 $state.go('home');
     };
 
     /*
