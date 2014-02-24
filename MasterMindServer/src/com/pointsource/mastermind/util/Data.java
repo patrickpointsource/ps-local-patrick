@@ -1031,6 +1031,34 @@ public class Data implements CONSTS {
 		return ret;
 	}
 	
+	
+	/**
+	 * Delete an assignments by project id
+	 * 
+	 * @param context
+	 * @param projectId
+	 * @throws JSONException
+	 */
+	public static void deleteProjectAssignments(RequestContext context,
+			String projectId) throws JSONException {
+
+		DBCollection assignmentCollection = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+
+		// Only admins can create roles
+		if (!hasAdminAccess(context)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+
+		BasicDBObject query = new BasicDBObject();
+		
+		query.put(PROP_PROJECT, new BasicDBObject(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + projectId));
+		assignmentCollection.remove(query);
+	}
+
+	
 	/**
 	 * Create a new hours record
 	 * 
@@ -1214,6 +1242,44 @@ public class Data implements CONSTS {
 		return ret;
 	}
 
+	/**
+	 * Create a new assignement
+	 * 
+	 * @param newRole
+	 * @throws JSONException
+	 */
+	public static JSONObject createProjectAssignment(RequestContext context,
+			JSONObject newAssignment, String projectId) throws JSONException {
+
+		// Only admins can create roles
+		if (!hasAdminAccess(context)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+		
+		newAssignment.put(PROP_PROJECT, new BasicDBObject(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + projectId));
+		newAssignment.put(PROP_ETAG, "0");
+
+		String json = newAssignment.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		WriteResult result = projectsCol.insert(dbObject);
+
+		// TODO Handle Result Issues
+		DBCursor cursorDoc = projectsCol.find();
+		while (cursorDoc.hasNext()) {
+			DBObject created = cursorDoc.next();
+			// System.out.println("Found: " + created);
+
+			ObjectId oId = (ObjectId) created.get(PROP__ID);
+			String idVal = oId.toString();
+		}
+
+		return newAssignment;
+	}
+	
 	/**
 	 * Create a new role
 	 * 
@@ -2018,6 +2084,25 @@ public class Data implements CONSTS {
 				updatePerson(context, person);
 			}
 		}
+	}
+	
+	public static void refreshProjectAssignments(RequestContext context,  String id, JSONObject project)
+			throws JSONException {
+		JSONArray roles = (JSONArray) project.get("roles");
+		
+		deleteProjectAssignments(context, id);
+		
+		JSONObject role = null;
+		JSONObject assignee = null;
+		
+		for (int i = 0; i < roles.length(); i ++) {
+			role = roles.getJSONObject(i);
+			assignee = (JSONObject)role.get("assignee");
+			
+			if (assignee.has("resource"))
+				createProjectAssignment(context, role, id);
+		}
+	
 	}
 
 	private static JSONObject getUserByGoogleId(RequestContext context,

@@ -28,6 +28,7 @@ core.ignore.recursive= \
 	{*.class} 
 
 core.ignore= \
+	{.classpath} \
 	{bin} \
 	{build} \
 	{target} 
