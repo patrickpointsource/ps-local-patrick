@@ -27,7 +27,26 @@ angular.module('Mastermind')
       return Resource.get(id);
     }
 
+    /**
+     * Function declaration getPerson(personResource)
+     * Returns a role abbreviation corresponding to a resource reference
+     *
+     * @param project
+     * @param newRole
+     */
+    function getPerson(personResource){
+    	
+    	var peoplePromise;
+    	console.log("getPerson() called with", personResource);
+    	
+        var peopleWithResourceQuery = {'resource':personResource};
+        var pepInRolesFields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
+        var returnVar =  Resources.query('people',peopleWithResourceQuery,pepInRolesFields);     
+    	console.log("getPerson() returning with", returnVar);
+        
+    	return returnVar;
 
+    };
 
     /**
      * Query to get the list of people working on
@@ -69,6 +88,7 @@ angular.module('Mastermind')
     return {
       query: query,
       get: get,
-      getActivePeople: getActivePeople
+      getActivePeople: getActivePeople,
+      getPerson: getPerson
     };
   }]);

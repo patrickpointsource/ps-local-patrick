@@ -3,8 +3,8 @@
 /**
  * The main project controller
  */
-angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources','RolesService','ProjectsService','ngTableParams',
-    function ($scope, $q, $state, $filter, Resources, RolesService, ProjectsService, TableParams) {
+angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources','RolesService','ProjectsService','People','ngTableParams',
+    function ($scope, $q, $state, $filter, Resources, RolesService, ProjectsService, People, TableParams) {
 
 	// Table Parameters for Resource Deficit tables
     var params = {
@@ -48,6 +48,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
     var rolesPromise = RolesService.getRolesMapByResource();;
     var aProjectsPromise = ProjectsService.getActiveProjects(function(result){
     	$scope.activeProjects = result;
+    	console.log("main.js activeProjects:", $scope.activeProjects);
         $scope.projectCount = result.count;
         
         /*
@@ -94,6 +95,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                       $scope.activeProjectsWithUnassignedPeople[unassignedIndex++] = {
                     	  clientName: activeProjects[i].customerName,
                     	  projectName: activeProjects[i].name,
+                    	  projectResource: activeProjects[i].resource,
                     	  hours: getHoursDescription(activeRole.rate.hours, activeRole.rate.fullyUtilized, activeRole.rate.type),
                     	  role: rolesMap[activeRole.type.resource].abbreviation,
                     	  startDate: activeProjects[i].startDate,
@@ -136,60 +138,110 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
     ProjectsService.getProjectsBacklog(function(result){
     	$scope.projectBacklog = result;
         $scope.backlogCount = result.count;
+        $scope.backlogProjectsList = [];
+
         
         console.log("main.js $scope.projectBacklog:", $scope.projectBacklog);
         var projectBacklog = result.data;
-        var backlogProjectsList = [];
+
         var unassignedIndex = 0;
         var rolesPromise = RolesService.getRolesMapByResource();
         $q.all(rolesPromise).then(function(rolesMap) {
-          /*
-           * Set backlog projects
-           * 
-           */
-      	  for(var i = 0; i < projectBacklog.length; i++){
-              var roles = projectBacklog[i].roles;
-              if(roles){
- 
-                //Loop through all the roles in the backlog projects
-                for(var b = 0; b < roles.length; b++){
-                  var backlogRole = roles[b];
-                  backlogProjectsList[unassignedIndex++] = {
-                    	  clientName: projectBacklog[i].customerName,
-                    	  projectName: projectBacklog[i].name,
-                    	  hours: getHoursDescription(backlogRole.rate.hours, backlogRole.rate.fullyUtilized, backlogRole.rate.type),
-                    	  role: rolesMap[backlogRole.type.resource].abbreviation,
-                    	  startDate: projectBacklog[i].startDate,
-                    	  endDate: projectBacklog[i].endDate,
-                    	  rate: backlogRole.rate.amount};
+            /*
+             * Set backlog projects
+             * 
+             */
+        	for(var i = 0; i < projectBacklog.length; i++){
+        		var roles = projectBacklog[i].roles;
+        		if(roles){
+                	/*
+                	 * Loop through all the roles in the backlog projects  
+                	 */
+                    for(var b = 0; b < roles.length; b++){
+                        var backlogRole = roles[b];
+                        var peopleWithResourceQuery = {'resource':backlogRole.resource};
+                        var pepInRolesFields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
+                        console.log("Project in backlog:", projectBacklog[i]);
+                        console.log("backlog role:", backlogRole);
+                        
+                        var assigneeVar = backlogRole.assignee?backlogRole.assignee.resource:undefined;
+
+                        $scope.backlogProjectsList[unassignedIndex++] = {
+                          	  clientName: projectBacklog[i].customerName,
+                          	  projectName: projectBacklog[i].name,
+                          	  projectResource: projectBacklog[i].resource,
+                          	  hours: getHoursDescription(backlogRole.rate.hours, backlogRole.rate.fullyUtilized, backlogRole.rate.type),
+                          	  role: rolesMap[backlogRole.type.resource].abbreviation,
+                          	  assignee: assigneeVar ,
+                          	  startDate: projectBacklog[i].startDate,
+                          	  endDate: projectBacklog[i].endDate,
+                          	  rate: backlogRole.rate.amount
+                      };
                       console.log("backlogRole.type:",backlogRole.type);
-                      console.log("Next Role in backlog Proj:", backlogProjectsList[unassignedIndex-1]);
-                }
+                      console.log("Next Role in backlog Proj:", $scope.backlogProjectsList[unassignedIndex-1]);
+
+                  }
               }
-            }
-            console.log("Backlogged project Role list:",backlogProjectsList);
-       
+                    
+   
+            };
+            console.log("Backlogged project Role list:",$scope.backlogProjectsList);
+            return $scope.backlogProjectsList;
+
+
+
+
+        }).then (function(backlogProjectsList) {
+        	
+        	var peopleProm = Resources.get('people');
+        	peopleProm.then(function(people) {
+            	console.log("main.js peopleProm resolved. called with:", people);
+            	console.log("main.js peopleProm resolved. I already have:", backlogProjectsList);
+
+                for (var i=0; i< backlogProjectsList.length;i++) {
+                	var backlogProject = backlogProjectsList[i];
+                	console.log("main.js backlog project=", backlogProject);
+                	var assignee = backlogProject.assignee;
+                	if(assignee != undefined) {
+                    	console.log("main.js peopleProm resolved. assignee:", assignee);
+                    	backlogProject.assignee = getPersonName(people, assignee);
+                    }
+                }
+        	});
+            
             /*
              * Build out the table that contains the backlog Projects with resource deficits
              */
             $scope.backlogRoleList = new TableParams(params, {
                 total: backlogProjectsList.length, // length of data
                 getData: function ($defer, params) {
-                    
-                  var data = backlogProjectsList;
-                  var start = (params.page() - 1) * params.count();
-                  var end = params.page() * params.count();
-                  // use build-in angular filter
-                  var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
-                  var ret = orderedData.slice(start, end);
-                  console.log("Ret value for Backlog Role list:",ret);
+                
+                    var data = backlogProjectsList;
+                    var start = (params.page() - 1) * params.count();
+                    var end = params.page() * params.count();
+                    // use build-in angular filter
+                    var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
+                    var ret = orderedData.slice(start, end);
+                    console.log("Ret value for Backlog Role list:",ret);
 
-                  $defer.resolve(ret);
+                    $defer.resolve(ret);
                 }
-              });
+            });
         });
-
     });
+
+    /**
+     * Return a persons name from an array of People objects.
+     */
+    var getPersonName = function(people, assignee) {
+    	var peopleData = people.members;
+    	for (var i=0; i<peopleData.length; i++) {
+    		var person = peopleData[i];
+    		if (person.resource == assignee) {
+    			return person.name;
+    		}
+    	}  	
+    }
 
     /**
      * Find available people given the active projects

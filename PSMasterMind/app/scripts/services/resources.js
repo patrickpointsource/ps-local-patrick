@@ -29,6 +29,7 @@ angular.module('Mastermind').factory(
         if (queryString) {
           queryString = JSON.stringify(queryString);
           //query = encodeURIComponent(query);
+          console.log("resources.js queryString=",queryString);
           params.query = queryString;
         }
 
@@ -43,7 +44,10 @@ angular.module('Mastermind').factory(
           params.sort = sort;
         }
 
-        Resource.get(params).then(onSuccess);
+        if(onSuccess) {
+        	Resource.get(params).then(onSuccess);
+        } else
+        	return Resource.get(params);
       }
 
 

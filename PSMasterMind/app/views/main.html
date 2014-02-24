@@ -218,8 +218,8 @@
 			<tr ng-repeat="unassignedRole in $data">
 				<td data-title="'Client'" sortable="'customerName'">
 					{{unassignedRole.clientName}}</td>
-				<td data-title="'Project'" sortable="'projectName'">
-					{{unassignedRole.projectName}}</td>
+				<td data-title="'Project'" sortable="'projectName'"><a
+					href="#{{unassignedRole.projectResource}}">{{unassignedRole.projectName}}</a></td>
 				<td data-title="'Hours'" sortable="'hours'">
 					{{unassignedRole.hours}}</td>
 				<td data-title="'Role'" sortable="'role'">
@@ -242,8 +242,8 @@
 			<tr ng-repeat="backlogRole in $data">
 				<td data-title="'Client'" sortable="'customerName'">
 					{{backlogRole.clientName}}</td>
-				<td data-title="'Project'" sortable="'projectName'">
-					{{backlogRole.projectName}}</td>
+				<td data-title="'Project'" sortable="'projectName'"><a
+					href="#{{backlogRole.projectResource}}">{{backlogRole.projectName}}</a></td>
 				<td data-title="'Hours'" sortable="'hours'">
 					{{backlogRole.hours}}</td>
 				<td data-title="'Role'" sortable="'role'">{{backlogRole.role}}</td>
@@ -253,6 +253,8 @@
 					{{backlogRole.endDate}}</td>
 				<td data-title="'Rate ($/hr)'" sortable="'rate'">
 					{{backlogRole.rate}}</td>
+				<td data-title="'Person Assigned'" sortable="'assignee'">
+					{{backlogRole.assignee}}</td>
 			</tr>
 		</table>
 	</div>
