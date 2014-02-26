@@ -1,129 +1,143 @@
-<br/>
+<br />
 <div ng-form="detailsForm" ng-controller="DetailsCtrl">
-    <div class="row">
-        <div class="col-xs-8 col-sm-6 form-group" ng-class="{error: isFieldInError('customerName')}">
-            <label class="required-label control-label" for="customerName">Customer Name:</label>
-              <input id="customerName" name="customerName" type="text" class="col-xs-12 form-control user-input-icon"
-                  placeholder="Customer Name"
-                  ng-model="project.customerName"
-                  ng-class="{highlight: detailsForm.customerName.$error.required}"
-                  required>
-        </div>
-        <div class="col-xs-4 col-sm-6 form-group" ng-class="{error: isFieldInError('type')}">
-            <label class="required-label control-label" for="type">Type:</label>
-            <label class="radio inline no-top-margin"><input name="type" type="radio" value="paid" ng-model="project.type">Paid</label>
-            <label class="radio inline"><input name="type" type="radio" value="poc" ng-model="project.type">PoC</label>
-            <label class="radio inline"><input name="type" type="radio" value="invest" ng-model="project.type">PS
-                Invest</label>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('projectName')}">
-            <label class="control-label required-label" for="projectName">Project Name:</label>
-            <input id="projectName" type="text" class="col-xs-12 form-control" placeholder="Project Name"
-                    name="projectName"
-                    ng-model="project.name" required>
-        </div>
-        <div class="col-xs-12 col-sm-6 form-group">
-            <label for="primaryContact">Primary Contact:</label>
-                <input id="primaryContact" type="text" class="col-xs-12 form-control" placeholder="Primary Contact"
-                        name="primaryContact" ng-model="project.primaryContact">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 form-group">
-            <label for="description">Project Description:</label>
-            <textarea id="description" class="col-xs-12 form-control" rows="7" name="description"
-                    ng-model="project.description"></textarea>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12  col-sm-4 form-group" ng-class="{error: isFieldInError('startDate')}">
-            <label class="required-label control-label" for="startDate">Start Date:</label>
-            <input id="startDate" name="startDate" class="col-xs-12 form-control datepicker" type="text"
-                ng-model="project.startDate"
-                data-date-format="yyyy-mm-dd"
-                required
-                data-provide="datepicker">
-        </div>
-        <div class="col-xs-12  col-sm-4 form-group">
-            <label for="endDate">End Date:</label>
-            <input id="endDate" class="col-xs-12 form-control datepicker" type="text" ng-model="project.endDate"
-                data-date-format="yyyy-mm-dd"
-                data-provide="datepicker">
-        </div>
-        <div class="col-xs-12 col-sm-4 form-group">
-            <label for="projectState">Project State:</label>
-            <select id="projectState" class="col-xs-12 form-control" ng-model="project.state">
-                <option value="preSales">Pre-Sales</option>
-                <option value="planning">Planning</option>
-                <option value="clientActive">Client Active</option>
-                <option value="supportActive">Support Active</option>
-                <option value="complete">Done!</option>
-            </select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 col-sm-4 form-group" ng-class="{error: isFieldInError('executiveSponsor')}">
-            <label class="control-label required-label" for="executiveSponsor">Executive Sponsor:</label>
-            <select id="executiveSponsor" name="executiveSponsor" class="col-xs-12 form-control"
-                    ng-model="project.executiveSponsor.resource" required
-                    ng-options="m.resource as m.name for m in execs.members">
-            </select>
-        </div>
-        <div class="col-xs-12 col-sm-4 form-group">
-            <label for="salesSponsor">Sales Sponsor:</label>
-            <select id="salesSponsor" class="col-xs-12 form-control" ng-model="project.salesSponsor.resource"
-                    ng-options="m.resource as m.name for m in sales.members">
-            </select>
-        </div>
-    </div>
-    <div class="well" ng-if="financeAccess">
-    	<div class="row">
-    		<div class="hidden-xs col-sm-6 col-md-5 col-lg-4">
-    			<label>Bid Terms:&nbsp;</label>
-    			&nbsp;&nbsp;
-    			<input type="radio" value="timeAndMaterials"
-                          ng-model="project.terms.type">&nbsp;Time &amp; Materials
-    			 &nbsp;&nbsp;
-    			 <input type="radio" value="fixed"
-                        ng-model="project.terms.type">&nbsp;Fixed
-                 
-    		</div>
-    		<div class="visible-xs col-xs-12">
-    			<label>Bid Terms:&nbsp;</label>
-    		</div>
-    		<div class="visible-xs col-xs-12">
-    			<input type="radio" value="timeAndMaterials"
-                          ng-model="project.terms.type">&nbsp;Time &amp; Materials
-    			 &nbsp;&nbsp;
-    			 <input type="radio" value="fixed"
-                        ng-model="project.terms.type">&nbsp;Fixed
-                 
-    		</div>
-    		<div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
-               <input type="checkbox"
-                   ng-model="project.terms.includesProjectManagementOverhead">
-                   Project Values Includes PM Overhead
-            </div>
-    	</div>
-        <div class="row">
-            <div class="col-xs-6">
-            	<label for="totalEstimatedValue">Services Estimate:</label>
-                <input class="form-control" id="servicesEstimatedValue" type="number"
-                    ng-model="project.terms.servicesEstimate">
-            </div>
-            <div class="col-xs-6">
-            	<label for="totalEstimatedValue">Software Estimate:</label>
-                <input class="form-control" id="softwareEstimatedValue" type="number"
-                    ng-model="project.terms.softwareEstimate">
-            </div>
-         </div>
-        <div class="row">
-            <div class="col-xs-12">
-            	<label for="totalEstimatedValue">Total Estimated Value:</label>
-                (USD) {{(project.terms.servicesEstimate+project.terms.softwareEstimate) | currency}}
-            </div>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col-xs-8 col-sm-6 form-group"
+			ng-class="{error: isFieldInError('customerName')}">
+			<label class="required-label control-label" for="customerName">Customer
+				Name:</label> <input id="customerName" name="customerName" type="text"
+				class="col-xs-12 form-control user-input-icon"
+				placeholder="Customer Name" ng-model="project.customerName"
+				ng-class="{highlight: detailsForm.customerName.$error.required}"
+				required>
+		</div>
+		<div class="col-xs-4 col-sm-6 form-group"
+			ng-class="{error: isFieldInError('type')}">
+			<label class="required-label control-label" for="type">Type:</label>
+			<label class="radio inline no-top-margin"><input name="type"
+				type="radio" value="paid" ng-model="project.type">Paid</label> <label
+				class="radio inline"><input name="type" type="radio"
+				value="poc" ng-model="project.type">PoC</label> <label
+				class="radio inline"><input name="type" type="radio"
+				value="invest" ng-model="project.type">PS Invest</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-6 form-group"
+			ng-class="{error: isFieldInError('projectName')}">
+			<label class="control-label required-label" for="projectName">Project
+				Name:</label> <input id="projectName" type="text"
+				class="col-xs-12 form-control" placeholder="Project Name"
+				name="projectName" ng-model="project.name" required>
+		</div>
+		<div class="col-xs-12 col-sm-6 form-group">
+			<label for="primaryContact">Primary Contact:</label> <input
+				id="primaryContact" type="text" class="col-xs-12 form-control"
+				placeholder="Primary Contact" name="primaryContact"
+				ng-model="project.primaryContact">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 form-group">
+			<label for="description">Project Description:</label>
+			<textarea id="description" class="col-xs-12 form-control" rows="7"
+				name="description" ng-model="project.description"></textarea>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12  col-sm-4 form-group"
+			ng-class="{error: isFieldInError('startDate')}">
+			<label class="required-label control-label" for="startDate">Start
+				Date:</label> <input id="startDate" name="startDate"
+				class="col-xs-12 form-control datepicker" type="text"
+				ng-model="project.startDate" data-date-format="yyyy-mm-dd" required
+				data-provide="datepicker">
+		</div>
+		<div class="col-xs-12  col-sm-4 form-group">
+			<label for="endDate">End Date:</label> <input id="endDate"
+				class="col-xs-12 form-control datepicker" type="text"
+				ng-model="project.endDate" data-date-format="yyyy-mm-dd"
+				data-provide="datepicker">
+		</div>
+		<div class="col-xs-12 col-sm-4 form-group">
+			<label for="projectState">Project State:</label> <select
+				id="projectState" class="col-xs-12 form-control"
+				ng-model="project.state">
+				<option value="preSales">Pre-Sales</option>
+				<option value="planning">Planning</option>
+				<option value="clientActive">Client Active</option>
+				<option value="supportActive">Support Active</option>
+				<option value="complete">Done!</option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+
+		<div class="col-xs-12 col-sm-4 form-group"
+			ng-class="{error: isFieldInError('executiveSponsor')}">
+			<label class="control-label required-label" for="executiveSponsor">Executive
+				Sponsor:</label> <select id="executiveSponsor" name="executiveSponsor"
+				class="col-xs-12 form-control"
+				ng-model="project.executiveSponsor.resource" required
+				ng-options="m.resource as m.name for m in execs.members">
+			</select>
+		</div>
+		<div class="col-xs-12 col-sm-4 form-group">
+			<label for="salesSponsor">Sales Sponsor:</label> <select
+				id="salesSponsor" class="col-xs-12 form-control"
+				ng-model="project.salesSponsor.resource"
+				ng-options="m.resource as m.name for m in sales.members">
+			</select>
+		</div>
+	</div>
+	<div class="well" ng-if="financeAccess">
+		<div class="row">
+			<div class="hidden-xs col-sm-6 col-md-5 col-lg-4">
+				<label>Bid Terms:&nbsp;</label> &nbsp;&nbsp; <input type="radio"
+					value="timeAndMaterials" ng-model="project.terms.type">&nbsp;Time
+				&amp; Materials &nbsp;&nbsp; <input type="radio" value="fixed"
+					ng-model="project.terms.type">&nbsp;Fixed
+
+			</div>
+			<div class="visible-xs col-xs-12">
+				<label>Bid Terms:&nbsp;</label>
+			</div>
+			<div class="visible-xs col-xs-12">
+				<input type="radio" value="timeAndMaterials"
+					ng-model="project.terms.type">&nbsp;Time &amp; Materials
+				&nbsp;&nbsp; <input type="radio" value="fixed"
+					ng-model="project.terms.type">&nbsp;Fixed
+
+			</div>
+
+			<div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+				<input type="checkbox"
+					ng-model="project.terms.includesProjectManagementOverhead">
+				Project Values Includes PM Overhead
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6">
+				<label for="totalEstimatedValue">Services Estimate:</label> <input
+					class="form-control" id="servicesEstimatedValue" type="number"
+					ng-model="project.terms.servicesEstimate">
+			</div>
+			<div class="col-xs-6">
+				<label for="totalEstimatedValue">Software Estimate:</label> <input
+					class="form-control" id="softwareEstimatedValue" type="number"
+					ng-model="project.terms.softwareEstimate">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+				<input type="checkbox" name="Committed" ng-model="project.terms.committed"> Contractually
+					Committed?
+			</div>
+			<div class="col-xs-12">
+				<label for="totalEstimatedValue">Total Estimated Value:</label>
+				(USD)
+				{{(project.terms.servicesEstimate+project.terms.softwareEstimate) |
+				currency}}
+			</div>
+		</div>
+	</div>
 </div>

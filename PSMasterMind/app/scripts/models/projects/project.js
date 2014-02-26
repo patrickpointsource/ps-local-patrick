@@ -5,7 +5,8 @@ angular.module('Mastermind.models.projects')
   .factory('Terms', function () {
     var defaults = {
       includesProjectManagementOverhead: false,
-      type: 'timeAndMaterials'
+      type: 'timeAndMaterials',
+      committed: false
     };
 
     function Terms(options) {
@@ -15,6 +16,7 @@ angular.module('Mastermind.models.projects')
       this.softwareEstimate = options.softwareEstimate || defaults.softwareEstimate;
       this.includesProjectManagementOverhead = options.includesProjectManagementOverhead || defaults.includesProjectManagementOverhead;
       this.type = options.type || defaults.type;
+      this.committed = options.committed || defaults.committed;
     }
 
     return Terms;
