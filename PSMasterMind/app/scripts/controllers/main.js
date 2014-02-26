@@ -18,6 +18,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
     $scope.summarySwitcher = 'projects';
     //$scope.projects = projects;
     $scope.startDate = new Date();
+    $scope.activeAndBacklogProjects = [];
 
     var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     /**
@@ -46,6 +47,12 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
      * 
      */
     var rolesPromise = RolesService.getRolesMapByResource();;
+    ProjectsService.getActiveAndBacklogProjects(function(result){
+    	$scope.activeAndBacklogProjects = result.data;
+    	console.log("main.js activeAndBacklogProjects:", $scope.activeAndBacklogProjects);
+    });
+
+    
     var aProjectsPromise = ProjectsService.getActiveProjects(function(result){
     	$scope.activeProjects = result;
     	console.log("main.js activeProjects:", $scope.activeProjects);
@@ -90,8 +97,9 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                 //Loop through all the roles in the active projects
                 for(var b = 0; b < roles.length; b++){
                   var activeRole = roles[b];
-
-                  if (!activeRole.assignee) {
+                  console.log("Next active Role:",activeRole);
+                  
+                  if (!activeRole.assignee || !activeRole.assignee.resource) {
                       $scope.activeProjectsWithUnassignedPeople[unassignedIndex++] = {
                     	  clientName: activeProjects[i].customerName,
                     	  projectName: activeProjects[i].name,
@@ -187,10 +195,6 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
             };
             console.log("Backlogged project Role list:",$scope.backlogProjectsList);
             return $scope.backlogProjectsList;
-
-
-
-
         }).then (function(backlogProjectsList) {
         	
         	var peopleProm = Resources.get('people');

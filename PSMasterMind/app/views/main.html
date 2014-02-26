@@ -38,7 +38,7 @@
 								<select name="project" id="project"
 									class="col-xs-12 form-control"
 									ng-model="newHoursRecord.project.resource" ng-required="true"
-									ng-options="p.resource as p.name for p in qvProjects">
+									ng-options="p.resource as p.name for p in activeAndBacklogProjects">
 								</select>
 							</div>
 						</div>
@@ -216,7 +216,7 @@
 		<div class="panel-heading">Active Projects Resource Deficits</div>
 		<table ng-table="unassignedRoleList" class="table margin-top">
 			<tr ng-repeat="unassignedRole in $data">
-				<td data-title="'Client'" sortable="'customerName'">
+				<td data-title="'Client'" sortable="'clientName'">
 					{{unassignedRole.clientName}}</td>
 				<td data-title="'Project'" sortable="'projectName'"><a
 					href="#{{unassignedRole.projectResource}}">{{unassignedRole.projectName}}</a></td>
@@ -240,7 +240,7 @@
 		<div class="panel-heading">Backlog Projects Resource Needs</div>
 		<table ng-table="backlogRoleList" class="table margin-top">
 			<tr ng-repeat="backlogRole in $data">
-				<td data-title="'Client'" sortable="'customerName'">
+				<td data-title="'Client'" sortable="'clientName'">
 					{{backlogRole.clientName}}</td>
 				<td data-title="'Project'" sortable="'projectName'"><a
 					href="#{{backlogRole.projectResource}}">{{backlogRole.projectName}}</a></td>
