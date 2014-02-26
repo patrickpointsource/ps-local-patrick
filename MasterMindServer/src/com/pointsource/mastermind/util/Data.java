@@ -1177,7 +1177,9 @@ public class Data implements CONSTS {
 
 			ObjectId oId = (ObjectId) created.get(PROP__ID);
 			String idVal = oId.toString();
+			
 			newProject.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + idVal);
+			newProject.put(PROP__ID, new ObjectId(idVal));
 		}
 
 		return newProject;
@@ -2090,16 +2092,20 @@ public class Data implements CONSTS {
 			throws JSONException {
 		JSONArray roles = (JSONArray) project.get("roles");
 		
+		if (id == "") {
+			id = (project.get(PROP__ID)).toString();
+		}
+		
 		deleteProjectAssignments(context, id);
 		
 		JSONObject role = null;
-		JSONObject assignee = null;
+		Object assignee = null;
 		
 		for (int i = 0; i < roles.length(); i ++) {
 			role = roles.getJSONObject(i);
-			assignee = (JSONObject)role.get("assignee");
+			assignee =  role.has("assignee") ? role.get("assignee"): null;
 			
-			if (assignee.has("resource"))
+			if (assignee != null && (assignee instanceof JSONObject) && ((JSONObject)assignee).has("resource"))
 				createProjectAssignment(context, role, id);
 		}
 	

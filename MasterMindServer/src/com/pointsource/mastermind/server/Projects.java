@@ -304,6 +304,7 @@ public class Projects extends BaseResource {
 				RequestContext context = getRequestContext();
 				Validator.canUpdateProject(context, newProject);
 				JSONObject json = Data.updateProject(context, id, newProject);
+				
 				Data.refreshProjectAssignments(context, id, newProject);
 				
 				String ret = Data.escapeJSON(json);
