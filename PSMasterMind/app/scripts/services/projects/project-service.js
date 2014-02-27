@@ -148,7 +148,7 @@ angular.module('Mastermind.services.projects')
      */
     this.getAllProjects = function (onSuccess){
         var apQuery = {};
-        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1};
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,description:1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
     };

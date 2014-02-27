@@ -1,12 +1,10 @@
 /* Main Less file. */
-
-// Global bootstrap settings
-@import "variables.less";
-
-
-/*** Bootstrap less ***/
 // Core variables and mixins
+@import "../../bower_components/bootstrap/less/variables.less";
 @import "../../bower_components/bootstrap/less/mixins.less";
+
+// Custom overrides for ../../bower_components/bootstrap/less/variables.less
+@import "variables.less";
 
 // Reset
 @import "../../bower_components/bootstrap/less/normalize.less";
