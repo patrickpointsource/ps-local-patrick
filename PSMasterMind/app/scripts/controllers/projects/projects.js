@@ -17,37 +17,35 @@ angular.module('Mastermind.controllers.projects')
       
       //Filter just the active projects
       if (filter === 'active'){       
-        ProjectsService.getActiveProjects(function(result){
-            $scope.projects = result.data;
-            //Reload the table
-            if (!$scope.tableParams){
-              $scope.tableParams = $scope.getTableData();
-            }
-            else {
-              $scope.tableParams.total($scope.projects.length);
-              $scope.tableParams.reload();
-            }
-          });
+        ProjectsService.getActiveProjects(reloadProjects);
+      }
+      else if (filter === 'backlog'){       
+          ProjectsService.getProjectsBacklog(reloadProjects);
+      }
+      else if (filter == 'pipeline') {
+          ProjectsService.getPipelineProjects(reloadProjects);
       }
       else {
         //Default to all
         $scope.projectFilter = 'all';
 
-        // query all projects
-        Resources.query('projects', {}, apFields, function(result){
-          $scope.projects = result.data;
-
-          //Reload the table
-          if (!$scope.tableParams){
-            $scope.tableParams = $scope.getTableData();
-          }
-          else {
-            $scope.tableParams.total($scope.projects.length);
-            $scope.tableParams.reload();
-          }
-
-        });
+        ProjectsService.getAllProjects(reloadProjects);
       }
+    };
+    
+    /**
+     * Reload the Projects listing table.
+     */
+    function reloadProjects(result) {
+        $scope.projects = result.data;
+        //Reload the table
+        if (!$scope.tableParams){
+          $scope.tableParams = $scope.getTableData();
+        }
+        else {
+          $scope.tableParams.total($scope.projects.length);
+          $scope.tableParams.reload();
+        }
     };
 
     /**

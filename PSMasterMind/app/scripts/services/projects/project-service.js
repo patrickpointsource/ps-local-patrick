@@ -142,6 +142,17 @@ angular.module('Mastermind.services.projects')
       return new Project();
     };
     
+    
+    /**
+     * Query to get the list of all projects
+     */
+    this.getAllProjects = function (onSuccess){
+        var apQuery = {};
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1};
+
+        return Resources.query('projects', apQuery, apFields, onSuccess);
+    };
+
     /**
      * Query to get the list of active projects
      */
@@ -226,6 +237,45 @@ angular.module('Mastermind.services.projects')
                              ]};
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1};
       console.log("Project-service.getProjectsBacklog() apQuery=", apQuery);
+
+      return Resources.query('projects', apQuery, apFields, onSuccess);
+    }
+    
+    /**
+     * Query to get the list of pipeline projects
+     */
+    this.getPipelineProjects = function (onSuccess){
+      //Get todays date formatted as yyyy-MM-dd
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth()+1; //January is 0!
+      var yyyy = today.getFullYear();
+      if (dd<10){
+        dd='0'+dd;
+      }
+      if (mm<10){
+        mm='0'+mm;
+      }
+      today = yyyy+'-'+mm+'-'+dd;
+      
+      /*
+       * Pipeline query based on the committed flag and the project type.
+       */      
+      var apQuery = { $and: [
+                             { endDate:{$gt:today} },
+                             { $and: [
+                                      {type:'paid'}, 
+                                      { $or:[
+                                           {'terms.committed':{$exists:false}},	
+                                           {'terms.committed':false}
+                                           ]
+                                      }
+                                      ]
+                             },
+                             ]
+      				};
+      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1};
+      console.log("Project-service.getPipeline() apQuery=", apQuery);
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
     }

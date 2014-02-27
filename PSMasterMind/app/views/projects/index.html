@@ -1,36 +1,41 @@
 <br />
 <div class="row">
-  <div class="col-xs-12 col-sm-5 col-lg-6">
-    <select class="form-control" ng-model="projectFilter" ng-change="handleProjectFilterChanged()">
-      <option value="all">All Projects</option>
-      <option value="active">Active Projects</option>
-    </select>
-  </div>
-  <div class="col-xs-4 col-sm-3 col-lg-2 pull-right xs-padding-top">
-    <div class="btn-group pull-right">
-      <button class="pull-right btn btn-default" ng-click="createProject()">
-        <i class="fa fa-plus-square"></i> <span>Add Project</span>
-      </button>
-    </div>
-  </div>
-   <div class="col-xs-8 col-sm-4 col-lg-4 pull-right xs-padding-top">
-    <input class="form-control" placeholder="Filter Projects" ng-model="filterText">
-  </div>
+	<div class="col-xs-12 col-sm-5 col-lg-6">
+		<select class="form-control" ng-model="projectFilter"
+			ng-change="handleProjectFilterChanged()">
+			<option value="all">All Projects</option>
+			<option value="active">Active Projects</option>
+			<option value="backlog">Backlog Projects</option>
+			<option value="pipeline">Pipeline Projects</option>
+		</select>
+	</div>
+	<div class="col-xs-4 col-sm-3 col-lg-2 pull-right xs-padding-top">
+		<div class="btn-group pull-right">
+			<button class="pull-right btn btn-default" ng-click="createProject()">
+				<i class="fa fa-plus-square"></i> <span>Add Project</span>
+			</button>
+		</div>
+	</div>
+	<div class="col-xs-8 col-sm-4 col-lg-4 pull-right xs-padding-top">
+		<input class="form-control" placeholder="Filter Projects"
+			ng-model="filterText">
+	</div>
 </div>
-<br/>
+<br />
 <div class="row">
-  <div class="col-xs-12">
-    <table ng-table="tableParams" template-pagination="projectPager"
-      class="table">
-     <tbody ng-repeat="project in $data | filter:filterText">
-	     <tr >
-	      	<td data-title="'Customer'" sortable="'customerName'">{{project.customerName}}</td>
-	        <td data-title="'Name'" sortable="'name'"><a href="#{{project.resource}}">{{project.name}}</a></td>
-         	<td data-title="'Description'" sortable="'description'">{{project.description}}</td>
-	      </tr>
-      </tbody>
-    </table>
-    <script type="text/ng-template" id="projectPager">
+	<div class="col-xs-12">
+		<table ng-table="tableParams" template-pagination="projectPager"
+			class="table">
+			<tbody ng-repeat="project in $data | filter:filterText">
+				<tr>
+					<td data-title="'Customer'" sortable="'customerName'">{{project.customerName}}</td>
+					<td data-title="'Name'" sortable="'name'"><a
+						href="#{{project.resource}}">{{project.name}}</a></td>
+					<td data-title="'Description'" sortable="'description'">{{project.description}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<script type="text/ng-template" id="projectPager">
           <ul class="pager ng-cloak">
             <li ng-repeat="page in pages"
                   ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
@@ -49,5 +54,5 @@
           </ul>
       </script>
 
-  </div>
+	</div>
 </div>
