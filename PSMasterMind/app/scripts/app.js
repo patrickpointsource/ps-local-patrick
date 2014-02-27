@@ -175,6 +175,32 @@
     }])
     .run(['$rootScope',
       function ($rootScope) {
+    	//Handle browser navigate away
+    	window.onbeforeunload = function (event) {
+    		if($rootScope.formDirty){
+    			var message = 'Sure you want to leave?';
+    			if (typeof event == 'undefined') {
+    			    event = window.event;
+    			}
+    			if (event) {
+    				event.returnValue = message;
+    			}
+    			return message;
+    		}
+    	};
+	  	  
+  	  	$rootScope.$on('$stateChangeStart', 
+  			  function(event, toState, toParams, fromState, fromParams){
+  		  	if($rootScope.formDirty){
+                if(!confirm("The form is dirty, are you sure want to leave?")) {
+                    event.preventDefault();
+                }
+                else{
+                	$rootScope.formDirty = false;
+                }
+            }
+        });
+    	
 
         $rootScope.logout = function () {
           var accessToken = localStorage.getItem('access_token');

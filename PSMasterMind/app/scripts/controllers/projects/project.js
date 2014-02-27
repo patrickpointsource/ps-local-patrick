@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
-  function ($scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
+  .controller('ProjectCtrl', ['$rootScope', '$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
+  function ($rootScope, $scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
     var detailsValid = false, rolesValid = false;
 
     //Set our currently viewed project to the one resolved by the service.
@@ -19,12 +19,17 @@ angular.module('Mastermind')
      */
     $scope.edit = function(){
       $state.go('projects.edit', {projectId:$scope.projectId});
+      
+      $rootScope.formDirty = true;
     };
 
     /**
      * Set the profile view in edit mode
      */
     $scope.cancel = function(){
+      //Unset dirty flag
+      $rootScope.formDirty = false;
+    	
       //Throw it away if it is a new project
       if($scope.isTransient){
         $state.go('projects.index');
@@ -58,6 +63,9 @@ angular.module('Mastermind')
         };
 
         ProjectsService.save($scope.project).then(function () {
+          //Unset dirty flag
+          $rootScope.formDirty = false;
+        	
           if($scope.isTransient){
             $state.go('projects.index');
           }
