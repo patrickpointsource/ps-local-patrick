@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +39,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import com.mongodb.WriteResult;
 import com.mongodb.util.JSON;
 
@@ -50,8 +49,8 @@ public class Data implements CONSTS {
 	private static Mongo mongo;
 	private static DB db;
 	private static JSONObject CONFIG = null;
-	private static String DATE_PATETRN = "yyyy-MM-dd";
-	private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATETRN);
+	//private static String DATE_PATETRN = "yyyy-MM-dd";
+	//private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATETRN);
 
 	/**
 	 * Mongo Database connection
@@ -59,7 +58,7 @@ public class Data implements CONSTS {
 	static {
 		try {
 			JSONObject config = getConfig();
-			mongo = new Mongo(config.getString("DB_HOSTNAME"),
+			mongo = new MongoClient(config.getString("DB_HOSTNAME"),
 					config.getInt("DB_PORT"));
 			db = mongo.getDB(config.getString("DB_NAME"));
 			db.authenticate(DB_USER, DB_PASS.toCharArray());
@@ -106,7 +105,7 @@ public class Data implements CONSTS {
 			db = null;
 			mongo = null;
 
-			mongo = new Mongo(config.getString("DB_HOSTNAME"),
+			mongo = new MongoClient(config.getString("DB_HOSTNAME"),
 					config.getInt("DB_PORT"));
 			db = mongo.getDB(config.getString("DB_NAME"));
 			db.authenticate(DB_USER, DB_PASS.toCharArray());
@@ -119,55 +118,55 @@ public class Data implements CONSTS {
 		return config;
 	}
 
-	private static ArrayList<String> DEFAULT_SSAs = new ArrayList<String>();
-	private static ArrayList<String> DEFAULT_BAs = new ArrayList<String>();
-	private static ArrayList<String> DEFAULT_PMs = new ArrayList<String>();
-	private static ArrayList<String> DEFAULT_SSEs = new ArrayList<String>();
-	private static ArrayList<String> DEFAULT_SEs = new ArrayList<String>();
-	private static ArrayList<String> DEFAULT_SUXDs = new ArrayList<String>();
-	private static ArrayList<String> DEFAULT_UXDs = new ArrayList<String>();
-	static {
-		Collections.addAll(DEFAULT_SSAs, "115659942511507270693",
-				"106368930450799539126", "107681682076275621618",
-				"100521746243465967724", "108416099312244834291");
-		Collections.addAll(DEFAULT_BAs, "118024801441852864610");
-		Collections.addAll(DEFAULT_PMs, "105187489722733399928",
-				"103362960874176228355");
-		Collections.addAll(DEFAULT_SSEs, "102037350018901696245",
-				"112959653203369443291");
-		Collections.addAll(DEFAULT_SEs, "100090968878728629777",
-				"105526065653554855193");
-		Collections.addAll(DEFAULT_SUXDs, "102728171905005423498",
-				"112917239891456752571");
-		Collections.addAll(DEFAULT_UXDs, "103450144552825063641",
-				"107385689810002496434");
-	}
-
-	private static void initPrimaryRole(JSONObject person, String googleID)
-			throws JSONException {
-		String primaryRole = null;
-		if (DEFAULT_SSAs.contains(googleID)) {
-			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSA_ID;
-		} else if (DEFAULT_BAs.contains(googleID)) {
-			primaryRole = RESOURCE_ROLES + "/" + ROLE_BA_ID;
-		} else if (DEFAULT_PMs.contains(googleID)) {
-			primaryRole = RESOURCE_ROLES + "/" + ROLE_PM_ID;
-		} else if (DEFAULT_SSEs.contains(googleID)) {
-			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
-		} else if (DEFAULT_SEs.contains(googleID)) {
-			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
-		} else if (DEFAULT_SUXDs.contains(googleID)) {
-			primaryRole = RESOURCE_ROLES + "/" + ROLE_SUXD_ID;
-		} else if (DEFAULT_UXDs.contains(googleID)) {
-			primaryRole = RESOURCE_ROLES + "/" + ROLE_UXD_ID;
-		}
-
-		if (primaryRole != null) {
-			JSONObject roleRef = new JSONObject();
-			roleRef.put(PROP_RESOURCE, primaryRole);
-			person.put(PROP_PRIMARY_ROLE, roleRef);
-		}
-	}
+//	private static ArrayList<String> DEFAULT_SSAs = new ArrayList<String>();
+//	private static ArrayList<String> DEFAULT_BAs = new ArrayList<String>();
+//	private static ArrayList<String> DEFAULT_PMs = new ArrayList<String>();
+//	private static ArrayList<String> DEFAULT_SSEs = new ArrayList<String>();
+//	private static ArrayList<String> DEFAULT_SEs = new ArrayList<String>();
+//	private static ArrayList<String> DEFAULT_SUXDs = new ArrayList<String>();
+//	private static ArrayList<String> DEFAULT_UXDs = new ArrayList<String>();
+//	static {
+//		Collections.addAll(DEFAULT_SSAs, "115659942511507270693",
+//				"106368930450799539126", "107681682076275621618",
+//				"100521746243465967724", "108416099312244834291");
+//		Collections.addAll(DEFAULT_BAs, "118024801441852864610");
+//		Collections.addAll(DEFAULT_PMs, "105187489722733399928",
+//				"103362960874176228355");
+//		Collections.addAll(DEFAULT_SSEs, "102037350018901696245",
+//				"112959653203369443291");
+//		Collections.addAll(DEFAULT_SEs, "100090968878728629777",
+//				"105526065653554855193");
+//		Collections.addAll(DEFAULT_SUXDs, "102728171905005423498",
+//				"112917239891456752571");
+//		Collections.addAll(DEFAULT_UXDs, "103450144552825063641",
+//				"107385689810002496434");
+//	}
+//
+//	private static void initPrimaryRole(JSONObject person, String googleID)
+//			throws JSONException {
+//		String primaryRole = null;
+//		if (DEFAULT_SSAs.contains(googleID)) {
+//			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSA_ID;
+//		} else if (DEFAULT_BAs.contains(googleID)) {
+//			primaryRole = RESOURCE_ROLES + "/" + ROLE_BA_ID;
+//		} else if (DEFAULT_PMs.contains(googleID)) {
+//			primaryRole = RESOURCE_ROLES + "/" + ROLE_PM_ID;
+//		} else if (DEFAULT_SSEs.contains(googleID)) {
+//			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
+//		} else if (DEFAULT_SEs.contains(googleID)) {
+//			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
+//		} else if (DEFAULT_SUXDs.contains(googleID)) {
+//			primaryRole = RESOURCE_ROLES + "/" + ROLE_SUXD_ID;
+//		} else if (DEFAULT_UXDs.contains(googleID)) {
+//			primaryRole = RESOURCE_ROLES + "/" + ROLE_UXD_ID;
+//		}
+//
+//		if (primaryRole != null) {
+//			JSONObject roleRef = new JSONObject();
+//			roleRef.put(PROP_RESOURCE, primaryRole);
+//			person.put(PROP_PRIMARY_ROLE, roleRef);
+//		}
+//	}
 
 	/**
 	 * Get a role by id
@@ -687,14 +686,14 @@ public class Data implements CONSTS {
 
 	private static boolean hasFinancialAccess(RequestContext context)
 			throws JSONException {
-		return isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
-				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE);
+		return context.getCurrentUser() != null && (isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
+				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE));
 	}
 
 	private static boolean hasAdminAccess(RequestContext context)
 			throws JSONException {
-		return isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
-				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE);
+		return context.getCurrentUser() != null && (isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
+				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE));
 	}
 
 	/**
@@ -1120,7 +1119,19 @@ public class Data implements CONSTS {
 		DBCollection peopleCol = db.getCollection(COLLECTION_TITLE_PEOPLE);
 		WriteResult result = peopleCol.insert(dbObject);
 
-		// TODO Handle Result Issues
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Project Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+		
 		DBCursor cursorDoc = peopleCol.find();
 		DBObject created = null;
 		while (cursorDoc.hasNext()) {
@@ -1269,15 +1280,27 @@ public class Data implements CONSTS {
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		WriteResult result = projectsCol.insert(dbObject);
 
-		// TODO Handle Result Issues
-		DBCursor cursorDoc = projectsCol.find();
-		while (cursorDoc.hasNext()) {
-			DBObject created = cursorDoc.next();
-			// System.out.println("Found: " + created);
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Project Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
 
-			ObjectId oId = (ObjectId) created.get(PROP__ID);
-			String idVal = oId.toString();
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
 		}
+		
+//		DBCursor cursorDoc = projectsCol.find();
+//		while (cursorDoc.hasNext()) {
+//			DBObject created = cursorDoc.next();
+//			// System.out.println("Found: " + created);
+//
+//			ObjectId oId = (ObjectId) created.get(PROP__ID);
+//			String idVal = oId.toString();
+//		}
 
 		return newAssignment;
 	}
@@ -1305,8 +1328,20 @@ public class Data implements CONSTS {
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_ROLES);
 		WriteResult result = projectsCol.insert(dbObject);
+		
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Project Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
 
-		// TODO Handle Result Issues
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+
 		DBCursor cursorDoc = projectsCol.find();
 		while (cursorDoc.hasNext()) {
 			DBObject created = cursorDoc.next();
@@ -1344,7 +1379,19 @@ public class Data implements CONSTS {
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_SKILLS);
 		WriteResult result = projectsCol.insert(dbObject);
 
-		// TODO Handle Result Issues
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Project Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+		
 		DBCursor cursorDoc = projectsCol.find();
 		while (cursorDoc.hasNext()) {
 			DBObject created = cursorDoc.next();
@@ -1416,9 +1463,11 @@ public class Data implements CONSTS {
 
 		while (cusor.hasNext()) {
 			DBObject project = cusor.next();
+			@SuppressWarnings("unchecked")
 			List<DBObject> roles = (List<DBObject>) project.get(PROP_ROLES);
 
-			for (Iterator iterator = roles.iterator(); iterator.hasNext();) {
+			for (@SuppressWarnings("rawtypes")
+			Iterator iterator = roles.iterator(); iterator.hasNext();) {
 				DBObject role = (DBObject) iterator.next();
 
 				DBObject type = (DBObject) role.get(PROP_TYPE);
@@ -1495,9 +1544,11 @@ public class Data implements CONSTS {
 
 		while (cusor.hasNext()) {
 			DBObject person = cusor.next();
+			@SuppressWarnings("unchecked")
 			List<DBObject> skills = (List<DBObject>) person.get(PROP_SKILLS);
 
-			for (Iterator iterator = skills.iterator(); iterator.hasNext();) {
+			for (@SuppressWarnings("rawtypes")
+			Iterator iterator = skills.iterator(); iterator.hasNext();) {
 				DBObject skill = (DBObject) iterator.next();
 
 				DBObject type = (DBObject) skill.get(PROP_TYPE);
@@ -1643,7 +1694,12 @@ public class Data implements CONSTS {
 
 		// Only admins can update a users groups
 		if (!hasAdminAccess(context)) {
-			newPerson.put(PROP_GROUPS, existing.get(PROP_GROUPS));
+			if(existing.has(PROP_GROUPS)){
+				newPerson.put(PROP_GROUPS, existing.get(PROP_GROUPS));
+			}
+			else{
+				newPerson.put(PROP_GROUPS, new JSONArray());
+			}
 		}
 
 		int newEtag = Integer.parseInt(old_etag);
@@ -1775,181 +1831,181 @@ public class Data implements CONSTS {
 		}
 	}
 
-	public static void synchDefaultRoles(RequestContext context)
-			throws JSONException {
-		List<String> DEFAULT_ROLES = new ArrayList<String>();
-		List<String> DEFAULT_ROLE_ABRS = new ArrayList<String>();
-		Collections.addAll(DEFAULT_ROLES, ROLE_BA_TITLE, ROLE_PM_TITLE,
-				ROLE_SE_TITLE, ROLE_SSA_TITLE, ROLE_SSE_TITLE, ROLE_SUXD_TITLE,
-				ROLE_UXD_TITLE);
-		Collections
-				.addAll(DEFAULT_ROLE_ABRS, ROLE_BA_ID, ROLE_PM_ID, ROLE_SE_ID,
-						ROLE_SSA_ID, ROLE_SSE_ID, ROLE_SUXD_ID, ROLE_UXD_ID);
-		Map<String, String> newRoleMapping = new HashMap<String, String>();
-
-		DBCollection roleCollection = db.getCollection(COLLECTION_TITLE_ROLES);
-		DBCollection peopleCollection = db
-				.getCollection(COLLECTION_TITLE_PEOPLE);
-		DBCollection projectsCollection = db
-				.getCollection(COLLECTION_TITLE_PROJECTS);
-
-		for (int i = 0; i < DEFAULT_ROLES.size(); i++) {
-			String roleName = DEFAULT_ROLES.get(i);
-			String roleAbr = DEFAULT_ROLE_ABRS.get(i);
-
-			BasicDBObject newRole = new BasicDBObject(PROP_TITLE, roleName);
-
-			// Look for role
-			DBObject existingRole = roleCollection.findOne(newRole);
-			if (existingRole == null) {
-				newRole.append(PROP_ABBREVIATION, roleAbr).append(PROP_ETAG,
-						"0");
-
-				// Create one
-				WriteResult result = roleCollection.insert(newRole);
-
-				CommandResult error = result.getLastError();
-				if (error != null) {
-					System.err.println("Insert Failed:"
-							+ error.getErrorMessage());
-					if (error.getException() != null) {
-						error.getException().printStackTrace();
-					}
-				}
-
-				// Try again
-				existingRole = roleCollection.findOne(newRole);
-			}
-
-			if (existingRole == null) {
-				throw new WebApplicationException(Response
-						.status(Status.INTERNAL_SERVER_ERROR)
-						.entity("Failed to find Role: " + roleName).build());
-			}
-
-			// Update any people that have this primary role
-			String newRoleURL = RESOURCE_ROLES + "/"
-					+ ((ObjectId) existingRole.get(PROP__ID)).toString();
-			String oldRoleURL = RESOURCE_ROLES + "/" + roleAbr;
-
-			// Map it for later
-			newRoleMapping.put(oldRoleURL, newRoleURL);
-
-			DBObject query = new BasicDBObject(PROP_PRIMARY_ROLE,
-					new BasicDBObject(PROP_RESOURCE, oldRoleURL));
-			BasicDBObject update = new BasicDBObject("$set", new BasicDBObject(
-					PROP_PRIMARY_ROLE, new BasicDBObject(PROP_RESOURCE,
-							newRoleURL)));
-			WriteResult result = peopleCollection.updateMulti(query, update);
-
-			CommandResult error = result.getLastError();
-			if (error != null) {
-				System.err.println("Insert Query:" + query);
-				System.err.println("Insert Update:" + update);
-				System.err.println("Insert Failed:" + error);
-				if (error.getException() != null) {
-					error.getException().printStackTrace();
-				}
-			}
-		}
-
-		// Update any projects that have this primary role
-		DBObject query = new BasicDBObject(PROP_ROLES, new BasicDBObject(
-				"$exists", true));
-		DBObject fields = new BasicDBObject(PROP_ROLES, 1);
-		System.out.println("Find: " + query + ", " + fields);
-		DBCursor cursor = projectsCollection.find(query, fields);
-
-		// For eacch project update all the roles on the project
-		while (cursor.hasNext()) {
-			DBObject fetched = cursor.next();
-			List<DBObject> newRoles = new ArrayList<DBObject>();
-
-			@SuppressWarnings({ "unchecked" })
-			List<DBObject> roles = (List<DBObject>) fetched.get(PROP_ROLES);
-			for (Iterator<DBObject> iterator = roles.iterator(); iterator
-					.hasNext();) {
-				DBObject role = iterator.next();
-				@SuppressWarnings({ "unchecked", "rawtypes" })
-				DBObject newRole = new BasicDBObject(new HashMap(role.toMap()));
-
-				DBObject type = (DBObject) newRole.get(PROP_TYPE);
-				Object resource = type.get(PROP_RESOURCE);
-				if (newRoleMapping.containsKey(resource)) {
-					type.put(PROP_RESOURCE, newRoleMapping.get(resource));
-				}
-
-				newRoles.add(newRole);
-			}
-
-			fetched.removeField(PROP_ROLES);
-
-			DBObject update = new BasicDBObject("$set", new BasicDBObject(
-					PROP_ROLES, newRoles));
-
-			// Update the project
-			System.out.println("Insert Query:" + fetched);
-			System.out.println("Insert Update:" + update);
-			projectsCollection.update(fetched, update);
-		}
-	}
-
-	public static void synchDefaultGroups(RequestContext context)
-			throws JSONException {
-		DBCollection peopleCollection = db
-				.getCollection(COLLECTION_TITLE_PEOPLE);
-
-		// The executive group
-		String checkExecsStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688']},groups:{$ne:'"
-				+ GROUPS_EXEC_TITLE + "'}}";
-		DBObject checkExecs = (DBObject) JSON.parse(checkExecsStr);
-
-		DBObject addExec = new BasicDBObject("$push", new BasicDBObject(
-				PROP_GROUPS, GROUPS_EXEC_TITLE));
-
-		WriteResult errors = peopleCollection.updateMulti(checkExecs, addExec);
-		CommandResult error = errors.getLastError();
-		if (error != null && errors.getN() > 0) {
-			System.err.println("Insert Result:" + error);
-			if (error.getException() != null) {
-				error.getException().printStackTrace();
-			}
-		}
-
-		// The executive group
-		String checkSalesStr = "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']},groups:{$ne:'"
-				+ GROUPS_SALES_TITLE + "'}}";
-		DBObject checkSales = (DBObject) JSON.parse(checkSalesStr);
-
-		DBObject addSales = new BasicDBObject("$push", new BasicDBObject(
-				PROP_GROUPS, GROUPS_SALES_TITLE));
-
-		errors = peopleCollection.updateMulti(checkSales, addSales);
-		if (errors != null && errors.getN() > 0) {
-			error = errors.getLastError();
-			System.err.println("Insert Result:" + error);
-			if (error.getException() != null) {
-				error.getException().printStackTrace();
-			}
-		}
-
-		// The management group
-		String checkManagementStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688','103362960874176228355','112147186764436526995']},groups:{$ne:'"
-				+ GROUPS_MANAGEMENT_TITLE + "'}}";
-		DBObject checkManagement = (DBObject) JSON.parse(checkManagementStr);
-
-		DBObject addManagement = new BasicDBObject("$push", new BasicDBObject(
-				PROP_GROUPS, GROUPS_MANAGEMENT_TITLE));
-
-		errors = peopleCollection.updateMulti(checkManagement, addManagement);
-		if (errors != null && errors.getN() > 0) {
-			error = errors.getLastError();
-			System.err.println("Insert Result:" + error);
-			if (error.getException() != null) {
-				error.getException().printStackTrace();
-			}
-		}
-	}
+//	public static void synchDefaultRoles(RequestContext context)
+//			throws JSONException {
+//		List<String> DEFAULT_ROLES = new ArrayList<String>();
+//		List<String> DEFAULT_ROLE_ABRS = new ArrayList<String>();
+//		Collections.addAll(DEFAULT_ROLES, ROLE_BA_TITLE, ROLE_PM_TITLE,
+//				ROLE_SE_TITLE, ROLE_SSA_TITLE, ROLE_SSE_TITLE, ROLE_SUXD_TITLE,
+//				ROLE_UXD_TITLE);
+//		Collections
+//				.addAll(DEFAULT_ROLE_ABRS, ROLE_BA_ID, ROLE_PM_ID, ROLE_SE_ID,
+//						ROLE_SSA_ID, ROLE_SSE_ID, ROLE_SUXD_ID, ROLE_UXD_ID);
+//		Map<String, String> newRoleMapping = new HashMap<String, String>();
+//
+//		DBCollection roleCollection = db.getCollection(COLLECTION_TITLE_ROLES);
+//		DBCollection peopleCollection = db
+//				.getCollection(COLLECTION_TITLE_PEOPLE);
+//		DBCollection projectsCollection = db
+//				.getCollection(COLLECTION_TITLE_PROJECTS);
+//
+//		for (int i = 0; i < DEFAULT_ROLES.size(); i++) {
+//			String roleName = DEFAULT_ROLES.get(i);
+//			String roleAbr = DEFAULT_ROLE_ABRS.get(i);
+//
+//			BasicDBObject newRole = new BasicDBObject(PROP_TITLE, roleName);
+//
+//			// Look for role
+//			DBObject existingRole = roleCollection.findOne(newRole);
+//			if (existingRole == null) {
+//				newRole.append(PROP_ABBREVIATION, roleAbr).append(PROP_ETAG,
+//						"0");
+//
+//				// Create one
+//				WriteResult result = roleCollection.insert(newRole);
+//
+//				CommandResult error = result.getLastError();
+//				if (error != null) {
+//					System.err.println("Insert Failed:"
+//							+ error.getErrorMessage());
+//					if (error.getException() != null) {
+//						error.getException().printStackTrace();
+//					}
+//				}
+//
+//				// Try again
+//				existingRole = roleCollection.findOne(newRole);
+//			}
+//
+//			if (existingRole == null) {
+//				throw new WebApplicationException(Response
+//						.status(Status.INTERNAL_SERVER_ERROR)
+//						.entity("Failed to find Role: " + roleName).build());
+//			}
+//
+//			// Update any people that have this primary role
+//			String newRoleURL = RESOURCE_ROLES + "/"
+//					+ ((ObjectId) existingRole.get(PROP__ID)).toString();
+//			String oldRoleURL = RESOURCE_ROLES + "/" + roleAbr;
+//
+//			// Map it for later
+//			newRoleMapping.put(oldRoleURL, newRoleURL);
+//
+//			DBObject query = new BasicDBObject(PROP_PRIMARY_ROLE,
+//					new BasicDBObject(PROP_RESOURCE, oldRoleURL));
+//			BasicDBObject update = new BasicDBObject("$set", new BasicDBObject(
+//					PROP_PRIMARY_ROLE, new BasicDBObject(PROP_RESOURCE,
+//							newRoleURL)));
+//			WriteResult result = peopleCollection.updateMulti(query, update);
+//
+//			CommandResult error = result.getLastError();
+//			if (error != null) {
+//				System.err.println("Insert Query:" + query);
+//				System.err.println("Insert Update:" + update);
+//				System.err.println("Insert Failed:" + error);
+//				if (error.getException() != null) {
+//					error.getException().printStackTrace();
+//				}
+//			}
+//		}
+//
+//		// Update any projects that have this primary role
+//		DBObject query = new BasicDBObject(PROP_ROLES, new BasicDBObject(
+//				"$exists", true));
+//		DBObject fields = new BasicDBObject(PROP_ROLES, 1);
+//		System.out.println("Find: " + query + ", " + fields);
+//		DBCursor cursor = projectsCollection.find(query, fields);
+//
+//		// For eacch project update all the roles on the project
+//		while (cursor.hasNext()) {
+//			DBObject fetched = cursor.next();
+//			List<DBObject> newRoles = new ArrayList<DBObject>();
+//
+//			@SuppressWarnings({ "unchecked" })
+//			List<DBObject> roles = (List<DBObject>) fetched.get(PROP_ROLES);
+//			for (Iterator<DBObject> iterator = roles.iterator(); iterator
+//					.hasNext();) {
+//				DBObject role = iterator.next();
+//				@SuppressWarnings({ "unchecked", "rawtypes" })
+//				DBObject newRole = new BasicDBObject(new HashMap(role.toMap()));
+//
+//				DBObject type = (DBObject) newRole.get(PROP_TYPE);
+//				Object resource = type.get(PROP_RESOURCE);
+//				if (newRoleMapping.containsKey(resource)) {
+//					type.put(PROP_RESOURCE, newRoleMapping.get(resource));
+//				}
+//
+//				newRoles.add(newRole);
+//			}
+//
+//			fetched.removeField(PROP_ROLES);
+//
+//			DBObject update = new BasicDBObject("$set", new BasicDBObject(
+//					PROP_ROLES, newRoles));
+//
+//			// Update the project
+//			System.out.println("Insert Query:" + fetched);
+//			System.out.println("Insert Update:" + update);
+//			projectsCollection.update(fetched, update);
+//		}
+//	}
+//
+//	public static void synchDefaultGroups(RequestContext context)
+//			throws JSONException {
+//		DBCollection peopleCollection = db
+//				.getCollection(COLLECTION_TITLE_PEOPLE);
+//
+//		// The executive group
+//		String checkExecsStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688']},groups:{$ne:'"
+//				+ GROUPS_EXEC_TITLE + "'}}";
+//		DBObject checkExecs = (DBObject) JSON.parse(checkExecsStr);
+//
+//		DBObject addExec = new BasicDBObject("$push", new BasicDBObject(
+//				PROP_GROUPS, GROUPS_EXEC_TITLE));
+//
+//		WriteResult errors = peopleCollection.updateMulti(checkExecs, addExec);
+//		CommandResult error = errors.getLastError();
+//		if (error != null && errors.getN() > 0) {
+//			System.err.println("Insert Result:" + error);
+//			if (error.getException() != null) {
+//				error.getException().printStackTrace();
+//			}
+//		}
+//
+//		// The executive group
+//		String checkSalesStr = "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']},groups:{$ne:'"
+//				+ GROUPS_SALES_TITLE + "'}}";
+//		DBObject checkSales = (DBObject) JSON.parse(checkSalesStr);
+//
+//		DBObject addSales = new BasicDBObject("$push", new BasicDBObject(
+//				PROP_GROUPS, GROUPS_SALES_TITLE));
+//
+//		errors = peopleCollection.updateMulti(checkSales, addSales);
+//		if (errors != null && errors.getN() > 0) {
+//			error = errors.getLastError();
+//			System.err.println("Insert Result:" + error);
+//			if (error.getException() != null) {
+//				error.getException().printStackTrace();
+//			}
+//		}
+//
+//		// The management group
+//		String checkManagementStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688','103362960874176228355','112147186764436526995']},groups:{$ne:'"
+//				+ GROUPS_MANAGEMENT_TITLE + "'}}";
+//		DBObject checkManagement = (DBObject) JSON.parse(checkManagementStr);
+//
+//		DBObject addManagement = new BasicDBObject("$push", new BasicDBObject(
+//				PROP_GROUPS, GROUPS_MANAGEMENT_TITLE));
+//
+//		errors = peopleCollection.updateMulti(checkManagement, addManagement);
+//		if (errors != null && errors.getN() > 0) {
+//			error = errors.getLastError();
+//			System.err.println("Insert Result:" + error);
+//			if (error.getException() != null) {
+//				error.getException().printStackTrace();
+//			}
+//		}
+//	}
 
 	/**
 	 * Default the database with a list of skills
@@ -2042,7 +2098,7 @@ public class Data implements CONSTS {
 				person.put(PROP_THUMBNAIL, genericImage);
 			}
 
-			initPrimaryRole(person, googleUserDef.getString(PROP_ID));
+			//initPrimaryRole(person, googleUserDef.getString(PROP_ID));
 
 			/**
 			 * If the user did not exist just create it

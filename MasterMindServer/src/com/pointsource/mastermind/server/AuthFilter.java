@@ -5,6 +5,7 @@ package com.pointsource.mastermind.server;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -50,85 +51,17 @@ public class AuthFilter implements Filter {
 		
 		try {
 			HttpSession session = httpReq.getSession(true);
+			String authToken = checkAuth(httpReq);
+			
 			String existingToken = String.valueOf(session
 					.getAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN));
-
-			String authToken = httpReq.getHeader(CONSTS.HEADER_AUTHORIZATION);
-
-			if (authToken == null) {
-				// Check the param and cookies
-				String token = httpReq
-						.getParameter(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
-				if (token == null) {
-					Cookie[] cookies = httpReq.getCookies();
-					if (cookies != null) {
-						for (int i = 0; i < cookies.length; i++) {
-							Cookie ith = cookies[i];
-							String name = ith.getName();
-
-							if (CONSTS.COOKIE_NAME_ACCESS_TOKEN.equals(name)) {
-								token = ith.getValue();
-								break;
-							}
-						}
-					}
-				}
-
-				// If not found redirect to the login page
-				if (token == null) {
-					throw new WebApplicationException(
-							Response.status(Status.UNAUTHORIZED)
-									.entity("No Access Token was sent with the request")
-									.build());
-
-				}
-
-				// Create Auth Header from access token
-				else {
-					authToken = CONSTS.AUTH_TYPE + " " + token;
-				}
-			}
-
 			/**
 			 * If we have a new access token or the session no longer contains a session user
 			 */
 			if (!authToken.equals(existingToken) || session.getAttribute(CONSTS.SESSION_USER_KEY) == null) {
-				//System.out.println(session.getId() + ": " + authToken+ " not equal to " + existingToken);
-				
-				URI googleProfile = new URI(CONSTS.GOOGLE_PLUS_PEOPLE_URI
-						+ CONSTS.RESOURCE_ME);
-				RestClient client = new RestClient();
-				Resource resource = client.resource(googleProfile);
-				ClientResponse response = resource
-						.header(CONSTS.HEADER_AUTHORIZATION, authToken)
-						.accept(MediaType.APPLICATION_JSON).get();
-
-				if (response.getStatusCode() != Status.OK.getStatusCode()) {
-					session.removeAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
-					session.removeAttribute(CONSTS.SESSION_USER_KEY);
-					
-					//Error authenticating with Google...
-					String err = response.getEntity(String.class);
-					System.err.println(response.getStatusCode() + ": "+err);
-					
-					throw new WebApplicationException(
-							Response.status(response.getStatusCode())
-									.entity(err)
-									.build());
-				}
-
-				String str = response.getEntity(String.class);
-				JSONObject ret = new JSONObject(str);
-				
-				if(!ret.has(CONSTS.PROP_ID)){
-					throw new WebApplicationException(
-							Response.status(Status.FORBIDDEN)
-									.entity("Failed to fetch Google user")
-									.build());
-				}
-				
-				String id = ret.getString(CONSTS.PROP_ID);
-				
+			
+				String id = getUserId(httpReq, authToken);
+	
 				// Check if the User is in our domain
 				RequestContext context = new RequestContext();
 				context.setServletContext(httpReq.getServletContext());
@@ -146,11 +79,10 @@ public class AuthFilter implements Filter {
 				}
 				
 				// Set the User context into the session
-				
 				session.setAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN, authToken);
 				session.setAttribute(CONSTS.SESSION_USER_KEY, domainUser);
+			
 			}
-
 			
 			chain.doFilter(req, resp);
 			
@@ -164,6 +96,89 @@ public class AuthFilter implements Filter {
 					Status.INTERNAL_SERVER_ERROR.getStatusCode(),
 					e.getLocalizedMessage());
 		}
+	}
+
+	public static String checkAuth(HttpServletRequest httpReq)
+			throws URISyntaxException {
+		String authToken = httpReq.getHeader(CONSTS.HEADER_AUTHORIZATION);
+
+		if (authToken == null) {
+			// Check the param and cookies
+			String token = httpReq
+					.getParameter(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
+			if (token == null) {
+				Cookie[] cookies = httpReq.getCookies();
+				if (cookies != null) {
+					for (int i = 0; i < cookies.length; i++) {
+						Cookie ith = cookies[i];
+						String name = ith.getName();
+
+						if (CONSTS.COOKIE_NAME_ACCESS_TOKEN.equals(name)) {
+							token = ith.getValue();
+							break;
+						}
+					}
+				}
+			}
+
+			// If not found redirect to the login page
+			if (token == null) {
+				throw new WebApplicationException(
+						Response.status(Status.UNAUTHORIZED)
+								.entity("No Access Token was sent with the request")
+								.build());
+
+			}
+
+			// Create Auth Header from access token
+			else {
+				authToken = CONSTS.AUTH_TYPE + " " + token;
+			}
+		}
+
+		return authToken;
+	}
+	
+	
+	public static String getUserId(HttpServletRequest httpReq, String authToken) throws URISyntaxException{
+		String id = null;
+		HttpSession session = httpReq.getSession(true);
+		
+		URI googleProfile = new URI(CONSTS.GOOGLE_PLUS_PEOPLE_URI
+				+ CONSTS.RESOURCE_ME);
+		RestClient client = new RestClient();
+		Resource resource = client.resource(googleProfile);
+		ClientResponse response = resource
+				.header(CONSTS.HEADER_AUTHORIZATION, authToken)
+				.accept(MediaType.APPLICATION_JSON).get();
+
+		if (response.getStatusCode() != Status.OK.getStatusCode()) {
+			session.removeAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
+			session.removeAttribute(CONSTS.SESSION_USER_KEY);
+			
+			//Error authenticating with Google...
+			String err = response.getEntity(String.class);
+			System.err.println(response.getStatusCode() + ": "+err);
+			
+			throw new WebApplicationException(
+					Response.status(response.getStatusCode())
+							.entity(err)
+							.build());
+		}
+
+		String str = response.getEntity(String.class);
+		JSONObject ret = new JSONObject(str);
+		
+		if(!ret.has(CONSTS.PROP_ID)){
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("Failed to fetch Google user")
+							.build());
+		}
+		
+		id = ret.getString(CONSTS.PROP_ID);
+			
+		return id;
 	}
 
 	/*

@@ -37,11 +37,7 @@ public class UpgradeServlet extends HttpServlet {
 		//Synch Users
 		try {
 			context.setBaseURI(new URI(CONSTS.PUBLIC_BASE_URL));
-			//Data.synchDefaultSkills(context);
 			Data.synchPeople(context);
-			Data.synchDefaultGroups(context);
-			Data.synchDefaultRoles(context);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			resp.sendError(500, e.getLocalizedMessage());
