@@ -228,7 +228,7 @@ angular.module('Mastermind.controllers.people')
         // format the data so that we can use sort in the ng-table, by adding a user property to projects
         for (var i=0; i<result.data.length; i++) {
           for (var x=0; x<result.data[i].roles.length; x++) {
-            if ($scope.profile.about === result.data[i].roles[x].assignee.resource) {
+            if (result.data[i].roles[x].assignee && $scope.profile.about === result.data[i].roles[x].assignee.resource) {
               result.data[i].user = result.data[i].roles[x];
             }
           }
