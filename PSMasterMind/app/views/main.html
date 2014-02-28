@@ -144,13 +144,6 @@
                   ng-click="backlogRoleList.sorting({'startDate' : backlogRoleList.isSortBy('startDate', 'asc') ? 'desc' : 'asc'})">
                   <div>Dates</div>
                 </th>
-                <th class="hidden-xs text-center sortable" ng-class="{
-                    'sort-asc': backlogRoleList.isSortBy('rate', 'asc'),
-                    'sort-desc': backlogRoleList.isSortBy('rate', 'desc')
-                  }"
-                  ng-click="backlogRoleList.sorting({'rate' : backlogRoleList.isSortBy('rate', 'asc') ? 'desc' : 'asc'})">
-                  <div>Rate</div>
-                </th>
 			</thead>
 			<tr ng-repeat="backlogRole in $data">
 				<td sortable="'title'">
@@ -167,8 +160,6 @@
                     <span ng-show="backlogRole.endDate">-<br><small>{{backlogRole.endDate | date:'shortDate'}}</small></span>
                     <span ng-hide="backlogRole.endDate">- <small>N/A</small></span>
                 </td>
-				<td class="hidden-xs" sortable="'rate'">
-					{{backlogRole.rate|currency}}/h</td>
 			</tr>
 		</table>
 		<script type="text/ng-template" id="backlogDeficit/pager">

@@ -174,21 +174,21 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                         
                         var assigneeVar = backlogRole.assignee?backlogRole.assignee.resource:undefined;
 
-                        $scope.backlogProjectsList[unassignedIndex++] = {
-                          	  clientName: projectBacklog[i].customerName,
-                          	  projectName: projectBacklog[i].name,
-                          	  title: projectBacklog[i].customerName + ': ' + projectBacklog[i].name,
-                          	  projectResource: projectBacklog[i].resource,
-                          	  hours: getHoursDescription(backlogRole.rate.hours, backlogRole.rate.fullyUtilized, backlogRole.rate.type),
-                          	  role: rolesMap[backlogRole.type.resource].abbreviation,
-                          	  assignee: assigneeVar ,
-                          	  startDate: projectBacklog[i].startDate,
-                          	  endDate: projectBacklog[i].endDate,
-                          	  rate: backlogRole.rate.amount
-                      };
-                      //console.log("backlogRole.type:",backlogRole.type);
-                      //console.log("Next Role in backlog Proj:", $scope.backlogProjectsList[unassignedIndex-1]);
-
+                        if (!backlogRole.assignee || !backlogRole.assignee.resource) {
+                            $scope.backlogProjectsList[unassignedIndex++] = {
+                                	  clientName: projectBacklog[i].customerName,
+                                	  projectName: projectBacklog[i].name,
+                                	  title: projectBacklog[i].customerName + ': ' + projectBacklog[i].name,
+                                	  projectResource: projectBacklog[i].resource,
+                                	  hours: getHoursDescription(backlogRole.rate.hours, backlogRole.rate.fullyUtilized, backlogRole.rate.type),
+                                	  role: rolesMap[backlogRole.type.resource].abbreviation,
+                                	  assignee: assigneeVar ,
+                                	  startDate: projectBacklog[i].startDate,
+                                	  endDate: projectBacklog[i].endDate
+                            };
+                            //console.log("backlogRole.type:",backlogRole.type);
+                            //console.log("Next Role in backlog Proj:", $scope.backlogProjectsList[unassignedIndex-1]);
+                        }
                   }
               }
                     
@@ -327,6 +327,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
     	//console.log("getHoursDescription returning ", hoursDesc);
     	return hoursDesc;
     }
+   
     
     /**
      * Function to set Active People and projects
