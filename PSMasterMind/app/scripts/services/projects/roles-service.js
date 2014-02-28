@@ -149,24 +149,24 @@ angular.module('Mastermind.services.projects')
      */
     this.getRoleAbbr = function(resource){
     	
-    	console.log("getRoleAbbr() called with resource:", resource);
+    	//console.log("getRoleAbbr() called with resource:", resource);
         /**
          * Load Role definitions to display Role names and/or Role abbreviations
          */
         Resources.get('roles').then(function(result){
         	var ret = 'Unspecified';
             var members = result.members;
-            console.log("getRoleAbbr() Fetching roles returned members:", members);
+            //console.log("getRoleAbbr() Fetching roles returned members:", members);
             //$scope.allRoles = members;
             var rolesMap = {};
             for(var i = 0; i < members.length;i++){
               rolesMap[members[i].resource] = members[i];
             }
-            console.log("getRoleAbbr() rolesMap:", rolesMap)
+            //console.log("getRoleAbbr() rolesMap:", rolesMap)
             if(resource && rolesMap[resource]){
                 ret = rolesMap[resource].abbreviation;
             }
-            console.log("getRoleAbbr() returning:",ret);
+            //console.log("getRoleAbbr() returning:",ret);
             return ret;
         });
     };
@@ -181,21 +181,21 @@ angular.module('Mastermind.services.projects')
     this.getRolesMapByResource = function(){
     	
     	var rolesPromise;
-    	console.log("getRolesMapByResource() called.");
+    	//console.log("getRolesMapByResource() called.");
         /**
          * Load Role definitions to display Role names and/or Role abbreviations
          */
         rolesPromise = Resources.get('roles').then(function(result){
         	var ret = 'Unspecified';
             var members = result.members;
-            console.log("getRolesMapByResource() Fetching roles returned members:", members);
+            //console.log("getRolesMapByResource() Fetching roles returned members:", members);
             //$scope.allRoles = members;
             var rolesMap = {};
             for(var i = 0; i < members.length;i++){
               rolesMap[members[i].resource] = members[i];
             }
 
-            console.log("getRolesMapByResource() returning:",rolesMap);
+            //console.log("getRolesMapByResource() returning:",rolesMap);
             return rolesMap;
         });
         

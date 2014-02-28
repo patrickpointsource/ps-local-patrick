@@ -49,20 +49,20 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
     var rolesPromise = RolesService.getRolesMapByResource();;
     ProjectsService.getActiveAndBacklogProjects(function(result){
     	$scope.activeAndBacklogProjects = result.data;
-    	console.log("main.js activeAndBacklogProjects:", $scope.activeAndBacklogProjects);
+    	//console.log("main.js activeAndBacklogProjects:", $scope.activeAndBacklogProjects);
     });
 
     
     var aProjectsPromise = ProjectsService.getActiveProjects(function(result){
     	$scope.activeProjects = result;
-    	console.log("main.js activeProjects:", $scope.activeProjects);
+    	//console.log("main.js activeProjects:", $scope.activeProjects);
         $scope.projectCount = result.count;
         
         /*
          * With the result, first find the list of active People for Widget 1.
          */
         findNineAvailablePeople();
-        console.log("main.js availablePeople:", $scope.availablePeople);
+        //console.log("main.js availablePeople:", $scope.availablePeople);
         
         /*
          * Next, with the list of active projects, find the resource deficit on these projects.
@@ -81,7 +81,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
         
         $scope.activeProjectsWithUnassignedPeople = [];
         $q.all(rolesPromise).then(function(rolesMap) {
-      	  console.log("main.js using rolesMap:", rolesMap);
+      	  //console.log("main.js using rolesMap:", rolesMap);
           setActivePeopleAndProjects(rolesMap);
 
           /*
@@ -97,7 +97,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                 //Loop through all the roles in the active projects
                 for(var b = 0; b < roles.length; b++){
                   var activeRole = roles[b];
-                  console.log("Next active Role:",activeRole);
+                  //console.log("Next active Role:",activeRole);
                   
                   if (!activeRole.assignee || !activeRole.assignee.resource) {
                       $scope.activeProjectsWithUnassignedPeople[unassignedIndex++] = {
@@ -109,13 +109,13 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                     	  startDate: activeProjects[i].startDate,
                     	  endDate: activeProjects[i].endDate,
                     	  rate: activeRole.rate.amount};
-                      console.log("activeRole.type:",activeRole.type);
-                      console.log("Unassigned Role in Proj:", $scope.activeProjectsWithUnassignedPeople[unassignedIndex-1]);
+                      //console.log("activeRole.type:",activeRole.type);
+                      //console.log("Unassigned Role in Proj:", $scope.activeProjectsWithUnassignedPeople[unassignedIndex-1]);
                   }
                 }
               }
             }
-            console.log("Unassigned Role list:",$scope.activeProjectsWithUnassignedPeople);
+            //console.log("Unassigned Role list:",$scope.activeProjectsWithUnassignedPeople);
             
             /*
              * Build out the table that contains the Active Projects with resource deficits
@@ -130,7 +130,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                     // use build-in angular filter
                     var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
                     var ret = orderedData.slice(start, end);
-                    console.log("Ret value for Unassigned Role list:",ret);
+                    //console.log("Ret value for Unassigned Role list:",ret);
                     
                     $defer.resolve(ret);
                  }
@@ -149,7 +149,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
         $scope.backlogProjectsList = [];
 
         
-        console.log("main.js $scope.projectBacklog:", $scope.projectBacklog);
+        //console.log("main.js $scope.projectBacklog:", $scope.projectBacklog);
         var projectBacklog = result.data;
 
         var unassignedIndex = 0;
@@ -169,8 +169,8 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                         var backlogRole = roles[b];
                         var peopleWithResourceQuery = {'resource':backlogRole.resource};
                         var pepInRolesFields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
-                        console.log("Project in backlog:", projectBacklog[i]);
-                        console.log("backlog role:", backlogRole);
+                        //console.log("Project in backlog:", projectBacklog[i]);
+                        //console.log("backlog role:", backlogRole);
                         
                         var assigneeVar = backlogRole.assignee?backlogRole.assignee.resource:undefined;
 
@@ -185,29 +185,29 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                           	  endDate: projectBacklog[i].endDate,
                           	  rate: backlogRole.rate.amount
                       };
-                      console.log("backlogRole.type:",backlogRole.type);
-                      console.log("Next Role in backlog Proj:", $scope.backlogProjectsList[unassignedIndex-1]);
+                      //console.log("backlogRole.type:",backlogRole.type);
+                      //console.log("Next Role in backlog Proj:", $scope.backlogProjectsList[unassignedIndex-1]);
 
                   }
               }
                     
    
             };
-            console.log("Backlogged project Role list:",$scope.backlogProjectsList);
+            //console.log("Backlogged project Role list:",$scope.backlogProjectsList);
             return $scope.backlogProjectsList;
         }).then (function(backlogProjectsList) {
         	
         	var peopleProm = Resources.get('people');
         	peopleProm.then(function(people) {
-            	console.log("main.js peopleProm resolved. called with:", people);
-            	console.log("main.js peopleProm resolved. I already have:", backlogProjectsList);
+            	//console.log("main.js peopleProm resolved. called with:", people);
+            	//console.log("main.js peopleProm resolved. I already have:", backlogProjectsList);
 
                 for (var i=0; i< backlogProjectsList.length;i++) {
                 	var backlogProject = backlogProjectsList[i];
-                	console.log("main.js backlog project=", backlogProject);
+                	//console.log("main.js backlog project=", backlogProject);
                 	var assignee = backlogProject.assignee;
                 	if(assignee != undefined) {
-                    	console.log("main.js peopleProm resolved. assignee:", assignee);
+                    	//console.log("main.js peopleProm resolved. assignee:", assignee);
                     	backlogProject.assignee = getPersonName(people, assignee);
                     }
                 }
@@ -226,7 +226,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                     // use build-in angular filter
                     var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
                     var ret = orderedData.slice(start, end);
-                    console.log("Ret value for Backlog Role list:",ret);
+                    //console.log("Ret value for Backlog Role list:",ret);
 
                     $defer.resolve(ret);
                 }
@@ -252,15 +252,15 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
      */
     var findNineAvailablePeople = function () {
         var pepInRolesQuery = {'primaryRole.resource':{$exists:true}};
-        console.log("pepInRolesQuery",pepInRolesQuery);
+        //console.log("pepInRolesQuery",pepInRolesQuery);
         var pepInRolesFields = {resource:1,name:1,primaryRole:1,thumbnail:1};
 
         Resources.query('people',pepInRolesQuery,pepInRolesFields,function(peopleResult){
-          	console.log("peopleResult:", peopleResult);
+          	//console.log("peopleResult:", peopleResult);
             var people = peopleResult.members;
             var activePeople = [];
             var activeProjects = $scope.activeProjects.data;
-            console.log("activeProjects:", activeProjects);
+            //console.log("activeProjects:", activeProjects);
             //Loop through all the active projects
             for(var m = 0; m < activeProjects.length; m++){
               var roles = activeProjects[m].roles;
@@ -305,7 +305,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
      * Function to return a text description of the number of hours
      */
     var getHoursDescription = function (hours, fullyUtilized, type) {
-    	console.log("getHoursDescription called with", hours, fullyUtilized, type);
+    	//console.log("getHoursDescription called with", hours, fullyUtilized, type);
     	var hoursDesc;
     	
     	if (fullyUtilized) {
@@ -323,7 +323,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
     			hoursDesc= 'Monthly';
     		}
     	}
-    	console.log("getHoursDescription returning ", hoursDesc);
+    	//console.log("getHoursDescription returning ", hoursDesc);
     	return hoursDesc;
     }
     
@@ -334,7 +334,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
         var activePeopleProjects = {};
         var activeProjects = $scope.qvProjects;
         var activePeople = [];
-        console.log("setActivePeopleProjects using rolesMap:", rolesMap);
+        //console.log("setActivePeopleProjects using rolesMap:", rolesMap);
         for(var i = 0; i < activeProjects.length; i++){
             var roles = activeProjects[i].roles;
             if(roles){
@@ -366,13 +366,13 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                }
             }
           }
-          console.log("Active People Projects:", activePeopleProjects);
+          //console.log("Active People Projects:", activePeopleProjects);
           
           $q.all(activePeople).then(function(data){
               $scope.qvPeopleProjects = activePeopleProjects;
               $scope.qvPeople = data;
-              console.log("Active Project People:", data);
-              console.log("Active People Projects:", activePeopleProjects);
+              //console.log("Active Project People:", data);
+              //console.log("Active People Projects:", activePeopleProjects);
 
           });
     };

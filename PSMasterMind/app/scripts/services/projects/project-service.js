@@ -236,7 +236,7 @@ angular.module('Mastermind.services.projects')
                              }
                              ]};
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1};
-      console.log("Project-service.getProjectsBacklog() apQuery=", apQuery);
+      //console.log("Project-service.getProjectsBacklog() apQuery=", apQuery);
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
     }

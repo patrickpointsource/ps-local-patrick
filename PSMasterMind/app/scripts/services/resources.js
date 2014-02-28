@@ -29,7 +29,7 @@ angular.module('Mastermind').factory(
         if (queryString) {
           queryString = JSON.stringify(queryString);
           //query = encodeURIComponent(query);
-          console.log("resources.js queryString=",queryString);
+          //console.log("resources.js queryString=",queryString);
           params.query = queryString;
         }
 
