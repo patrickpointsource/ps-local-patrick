@@ -47,13 +47,6 @@
                   ng-click="unassignedRoleList.sorting({'startDate' : unassignedRoleList.isSortBy('startDate', 'asc') ? 'desc' : 'asc'})">
                   <div>Dates</div>
                 </th>
-                <th class="hidden-xs text-center sortable" ng-class="{
-                    'sort-asc': unassignedRoleList.isSortBy('rate', 'asc'),
-                    'sort-desc': unassignedRoleList.isSortBy('rate', 'desc')
-                  }"
-                  ng-click="unassignedRoleList.sorting({'rate' : unassignedRoleList.isSortBy('rate', 'asc') ? 'desc' : 'asc'})">
-                  <div>Rate</div>
-                </th>
 			</thead>
 			<tbody>
 				<tr ng-repeat="unassignedRole in $data">
@@ -72,8 +65,6 @@
 	                    <span ng-show="unassignedRole.endDate">-<br><small>{{unassignedRole.endDate | date:'shortDate'}}</small></span>
 	                    <span ng-hide="unassignedRole.endDate">- <small>N/A</small></span>
 	                </td>
-					<td class="hidden-xs" sortable="'rate'">
-						{{unassignedRole.rate|currency}}/hr</td>
 				</tr>
 			</tbody>
 		</table>
