@@ -1,6 +1,6 @@
 <br />
-<div id="content" ng-if="adminAccess && activeProjectsWithUnassignedPeople.length > 0">
-	<div class="row-fluid" ng-if="adminAccess">
+<div id="content">
+	<div class="row-fluid" ng-if="adminAccess && activeProjectsWithUnassignedPeople.length > 0">
 	<div class="panel panel-danger dashboard-widget">
 		<div class="panel-heading">Staffing Deficits: Active Projects</div>
 		<table ng-table="unassignedRoleList" template-pagination="activeDeficit/pager" class="table margin-top">
@@ -192,7 +192,7 @@
 	</div>
 </div>
 
-	<div id="dashboard-widgets" class="row">
+<div id="dashboard-widgets" class="row">
 		<div class="row-fluid">
 			<div ng-if="hasActiveProjects"
 				class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
