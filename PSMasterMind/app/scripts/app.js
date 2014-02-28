@@ -178,7 +178,7 @@
     	//Handle browser navigate away
     	window.onbeforeunload = function (event) {
     		if($rootScope.formDirty){
-    			var message = 'Sure you want to leave?';
+    			var message = 'You have not saved your changes. Are you sure want to leave?';
     			if (typeof event == 'undefined') {
     			    event = window.event;
     			}
@@ -192,7 +192,7 @@
   	  	$rootScope.$on('$stateChangeStart', 
   			  function(event, toState, toParams, fromState, fromParams){
   		  	if($rootScope.formDirty){
-                if(!confirm("The form is dirty, are you sure want to leave?")) {
+                if(!confirm("You have not saved your changes. Are you sure want to leave?")) {
                     event.preventDefault();
                 }
                 else{

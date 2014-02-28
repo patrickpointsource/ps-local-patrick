@@ -19,8 +19,6 @@ angular.module('Mastermind')
      */
     $scope.edit = function(){
       $state.go('projects.edit', {projectId:$scope.projectId});
-      
-      $rootScope.formDirty = true;
     };
 
     /**
@@ -491,6 +489,7 @@ angular.module('Mastermind')
        * Controls the edit state of the project form (an edit URL param can control this from a URL ref)
        */
       $scope.editMode = editMode;
+      $rootScope.formDirty = editMode;
       $scope.projectLoaded = true;
 
       $scope.submitAttempted = false;
