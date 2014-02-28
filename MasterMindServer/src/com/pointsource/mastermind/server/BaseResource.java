@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
@@ -41,6 +42,7 @@ public abstract class BaseResource {
 		if (user == null)
 			throw new WebApplicationException(Response
 					.status(Status.UNAUTHORIZED)
+					.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
 					.entity("Current User is Not Set!").build());
 		context.setCurrentUser((JSONObject) user);
 		Object auth = session.getAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN);
@@ -61,7 +63,7 @@ public abstract class BaseResource {
 		ex.printStackTrace(System.err);
 		String error = "{\"status\":400,\"message\"=\""
 				+ ex.getLocalizedMessage() + "\"}";
-		Response ret = Response.status(Status.BAD_REQUEST).entity(error)
+		Response ret = Response.status(Status.BAD_REQUEST).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(error)
 				.build();
 		return ret;
 	}
@@ -86,7 +88,7 @@ public abstract class BaseResource {
 			error.put(CONSTS.PROP_REASONS, messages);
 		}
 
-		Response ret = Response.status(status).entity(error).build();
+		Response ret = Response.status(status).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(error).build();
 		return ret;
 	}
 
@@ -104,7 +106,7 @@ public abstract class BaseResource {
 		error.put(CONSTS.PROP_STATUS, status);
 		error.put(CONSTS.PROP_MESSAGE, message);
 
-		Response ret = Response.status(status).entity(error).build();
+		Response ret = Response.status(status).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(error).build();
 		return ret;
 	}
 
@@ -123,7 +125,7 @@ public abstract class BaseResource {
 		error.put(CONSTS.PROP_STATUS, status);
 		error.put(CONSTS.PROP_MESSAGE, message);
 
-		Response ret = Response.status(status).entity(error).build();
+		Response ret = Response.status(status).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(error).build();
 		return ret;
 	}
 
