@@ -107,3 +107,25 @@ label.radio, label.checkbox {
 .no-margin-top {
   margin-top: 0;
 }
+
+.table {
+  tr {
+    td {
+      &.actionsCell {
+        text-align: right;
+      }
+      .description{
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 4;
+			line-height: 20px;
+			max-height: 90px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+	  }
+    }
+  }
+  &.fixed{
+  	table-layout: fixed;
+  }
+}

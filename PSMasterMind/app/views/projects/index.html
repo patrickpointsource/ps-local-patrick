@@ -25,12 +25,11 @@
 <div class="row">
 	<div class="col-xs-12">
 		<table ng-table="tableParams" template-pagination="projectPager"
-			class="table">
+			class="table fixed">
 			<tbody ng-repeat="project in $data | filter:filterText">
 				<tr>
-					<td data-title="'Customer'" sortable="'customerName'">{{project.customerName}}</td>
-					<td data-title="'Name'" sortable="'name'"><a
-						href="#{{project.resource}}">{{project.name}}</a></td>
+					<td data-title="'Name'" sortable="'title'"><a
+						href="#{{project.resource}}">{{project.title}}</a></td>
 					<td data-title="'Description'" sortable="'description'"><div class="description">{{project.description}}</div></td>
 				</tr>
 			</tbody>

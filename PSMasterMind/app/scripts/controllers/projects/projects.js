@@ -70,7 +70,14 @@ angular.module('Mastermind.controllers.projects')
         getData: function ($defer, params) {
           var orderedData = params.sorting() ? $filter('orderBy')($scope.projects, params.orderBy()) : $scope.projects;
 
-          $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          var ret = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count())
+          
+          for(var i =0; i < ret.length;i++){
+        	  var ith = ret[i];
+        	  ith.title = ith.customerName + ': ' + ith.name;
+          }
+          
+          $defer.resolve(ret);
         }
       });
     };

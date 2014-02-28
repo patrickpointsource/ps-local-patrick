@@ -103,6 +103,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                       $scope.activeProjectsWithUnassignedPeople[unassignedIndex++] = {
                     	  clientName: activeProjects[i].customerName,
                     	  projectName: activeProjects[i].name,
+                    	  title: activeProjects[i].customerName+': '+activeProjects[i].name,
                     	  projectResource: activeProjects[i].resource,
                     	  hours: getHoursDescription(activeRole.rate.hours, activeRole.rate.fullyUtilized, activeRole.rate.type),
                     	  role: rolesMap[activeRole.type.resource].abbreviation,
@@ -130,8 +131,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                     // use build-in angular filter
                     var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
                     var ret = orderedData.slice(start, end);
-                    //console.log("Ret value for Unassigned Role list:",ret);
-                    
+                     
                     $defer.resolve(ret);
                  }
               });
@@ -177,6 +177,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
                         $scope.backlogProjectsList[unassignedIndex++] = {
                           	  clientName: projectBacklog[i].customerName,
                           	  projectName: projectBacklog[i].name,
+                          	  title: projectBacklog[i].customerName + ': ' + projectBacklog[i].name,
                           	  projectResource: projectBacklog[i].resource,
                           	  hours: getHoursDescription(backlogRole.rate.hours, backlogRole.rate.fullyUtilized, backlogRole.rate.type),
                           	  role: rolesMap[backlogRole.type.resource].abbreviation,
