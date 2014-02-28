@@ -11,7 +11,7 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
       page: 1,            // show first page
       count: 100,           // count per page
       sorting: {
-        customerName: 'asc'     // initial sorting
+        startDate: 'asc'     // initial sorting
       }
     };
     
