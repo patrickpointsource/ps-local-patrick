@@ -59,7 +59,7 @@ angular.module('Mastermind.controllers.projects')
       // Table Parameters
       var params = {
         page: 1,            // show first page
-        count: 10,           // count per page
+        count: 100,           // count per page
         sorting: {
           customerName: 'asc'     // initial sorting
         }
