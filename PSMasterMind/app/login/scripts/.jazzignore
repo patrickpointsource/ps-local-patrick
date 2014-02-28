@@ -26,5 +26,4 @@
 
 core.ignore.recursive= 
 
-core.ignore= \
-	{login.js} 
+core.ignore= 
