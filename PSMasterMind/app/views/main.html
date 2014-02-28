@@ -5,25 +5,67 @@
 		<div class="panel-heading">Staffing Deficits: Active Projects</div>
 		<table ng-table="unassignedRoleList" template-pagination="activeDeficit/pager" class="table margin-top">
 			<thead>
-				<th sortable="'title'">Project</th>
-                <th>Role</th>
-                <th>Hours</th>
-                <th class="hidden-xs">Start Date</th>
-                <th class="hidden-xs">End Date</th>
-                <th class="visible-xs">Dates</th>
-                <th class="hidden-xs">Rate</th>
+				<th class="text-center sortable" ng-class="{
+                    'sort-asc': unassignedRoleList.isSortBy('title', 'asc'),
+                    'sort-desc': unassignedRoleList.isSortBy('title', 'desc')
+                  }"
+                  ng-click="unassignedRoleList.sorting({'title' : unassignedRoleList.isSortBy('title', 'asc') ? 'desc' : 'asc'})">
+                  <div>Project</div>
+                </th>
+                <th class="text-center sortable" ng-class="{
+                    'sort-asc': unassignedRoleList.isSortBy('role', 'asc'),
+                    'sort-desc': unassignedRoleList.isSortBy('role', 'desc')
+                  }"
+                  ng-click="unassignedRoleList.sorting({'role' : unassignedRoleList.isSortBy('role', 'asc') ? 'desc' : 'asc'})">
+                  <div>Role</div>
+                </th>
+                <th class="text-center sortable" ng-class="{
+                    'sort-asc': unassignedRoleList.isSortBy('hours', 'asc'),
+                    'sort-desc': unassignedRoleList.isSortBy('hours', 'desc')
+                  }"
+                  ng-click="unassignedRoleList.sorting({'hours' : unassignedRoleList.isSortBy('hours', 'asc') ? 'desc' : 'asc'})">
+                  <div>Hours</div>
+                </th>
+                <th class="hidden-xs text-center sortable" ng-class="{
+                    'sort-asc': unassignedRoleList.isSortBy('startDate', 'asc'),
+                    'sort-desc': unassignedRoleList.isSortBy('startDate', 'desc')
+                  }"
+                  ng-click="unassignedRoleList.sorting({'startDate' : unassignedRoleList.isSortBy('startDate', 'asc') ? 'desc' : 'asc'})">
+                  <div>Start Date</div>
+                </th>
+                <th class="hidden-xs text-center sortable" ng-class="{
+                    'sort-asc': unassignedRoleList.isSortBy('endDate', 'asc'),
+                    'sort-desc': unassignedRoleList.isSortBy('endDate', 'desc')
+                  }"
+                  ng-click="unassignedRoleList.sorting({'endDate' : unassignedRoleList.isSortBy('endDate', 'asc') ? 'desc' : 'asc'})">
+                  <div>End Date</div>
+                </th>
+                <th class="visible-xs text-center sortable" ng-class="{
+                    'sort-asc': unassignedRoleList.isSortBy('startDate', 'asc'),
+                    'sort-desc': unassignedRoleList.isSortBy('startDate', 'desc')
+                  }"
+                  ng-click="unassignedRoleList.sorting({'startDate' : unassignedRoleList.isSortBy('startDate', 'asc') ? 'desc' : 'asc'})">
+                  <div>Dates</div>
+                </th>
+                <th class="hidden-xs text-center sortable" ng-class="{
+                    'sort-asc': unassignedRoleList.isSortBy('rate', 'asc'),
+                    'sort-desc': unassignedRoleList.isSortBy('rate', 'desc')
+                  }"
+                  ng-click="unassignedRoleList.sorting({'rate' : unassignedRoleList.isSortBy('rate', 'asc') ? 'desc' : 'asc'})">
+                  <div>Rate</div>
+                </th>
 			</thead>
 			<tbody>
 				<tr ng-repeat="unassignedRole in $data">
 					<td>
 						<a href="#{{unassignedRole.projectResource}}">{{unassignedRole.title}}</a></td>
-					<td data-title="'Role'" sortable="'role'">
+					<td data-title="'Role'">
 						{{unassignedRole.role}}</td>
-					<td data-title="'Hours'" sortable="'hours'">
+					<td data-title="'Hours'">
 						{{unassignedRole.hours}}</td>
-					<td class="hidden-xs"  sortable="'startDate'">
+					<td class="hidden-xs">
 						{{unassignedRole.startDate}}</td>
-					<td class="hidden-xs"  sortable="'endDate'">
+					<td class="hidden-xs">
 						{{unassignedRole.endDate}}</td>
 					<td class="visible-xs">
 	                    <small>{{unassignedRole.startDate | date:'shortDate'}}</small>
@@ -60,13 +102,55 @@
 		<div class="panel-heading">Staffing Deficits: Backlog Projects</div>
 		<table ng-table="backlogRoleList" template-pagination="backlogDeficit/pager" class="table margin-top">
 			<thead>
-				<th sortable="'title'">Project</th>
-                <th>Role</th>
-                <th>Hours</th>
-                <th class="hidden-xs">Start Date</th>
-                <th class="hidden-xs">End Date</th>
-                <th class="visible-xs">Dates</th>
-                <th class="hidden-xs">Rate</th>
+				<th class="text-center sortable" ng-class="{
+                    'sort-asc': backlogRoleList.isSortBy('title', 'asc'),
+                    'sort-desc': backlogRoleList.isSortBy('title', 'desc')
+                  }"
+                  ng-click="backlogRoleList.sorting({'title' : backlogRoleList.isSortBy('title', 'asc') ? 'desc' : 'asc'})">
+                  <div>Project</div>
+                </th>
+                <th class="text-center sortable" ng-class="{
+                    'sort-asc': backlogRoleList.isSortBy('role', 'asc'),
+                    'sort-desc': backlogRoleList.isSortBy('role', 'desc')
+                  }"
+                  ng-click="backlogRoleList.sorting({'role' : backlogRoleList.isSortBy('role', 'asc') ? 'desc' : 'asc'})">
+                  <div>Role</div>
+                </th>
+                <th class="text-center sortable" ng-class="{
+                    'sort-asc': backlogRoleList.isSortBy('hours', 'asc'),
+                    'sort-desc': backlogRoleList.isSortBy('hours', 'desc')
+                  }"
+                  ng-click="backlogRoleList.sorting({'hours' : backlogRoleList.isSortBy('hours', 'asc') ? 'desc' : 'asc'})">
+                  <div>Hours</div>
+                </th>
+                <th class="hidden-xs text-center sortable" ng-class="{
+                    'sort-asc': backlogRoleList.isSortBy('startDate', 'asc'),
+                    'sort-desc': backlogRoleList.isSortBy('startDate', 'desc')
+                  }"
+                  ng-click="backlogRoleList.sorting({'startDate' : backlogRoleList.isSortBy('startDate', 'asc') ? 'desc' : 'asc'})">
+                  <div>Start Date</div>
+                </th>
+                <th class="hidden-xs text-center sortable" ng-class="{
+                    'sort-asc': backlogRoleList.isSortBy('endDate', 'asc'),
+                    'sort-desc': backlogRoleList.isSortBy('endDate', 'desc')
+                  }"
+                  ng-click="backlogRoleList.sorting({'endDate' : backlogRoleList.isSortBy('endDate', 'asc') ? 'desc' : 'asc'})">
+                  <div>End Date</div>
+                </th>
+                <th class="visible-xs text-center sortable" ng-class="{
+                    'sort-asc': backlogRoleList.isSortBy('startDate', 'asc'),
+                    'sort-desc': backlogRoleList.isSortBy('startDate', 'desc')
+                  }"
+                  ng-click="backlogRoleList.sorting({'startDate' : backlogRoleList.isSortBy('startDate', 'asc') ? 'desc' : 'asc'})">
+                  <div>Dates</div>
+                </th>
+                <th class="hidden-xs text-center sortable" ng-class="{
+                    'sort-asc': backlogRoleList.isSortBy('rate', 'asc'),
+                    'sort-desc': backlogRoleList.isSortBy('rate', 'desc')
+                  }"
+                  ng-click="backlogRoleList.sorting({'rate' : backlogRoleList.isSortBy('rate', 'asc') ? 'desc' : 'asc'})">
+                  <div>Rate</div>
+                </th>
 			</thead>
 			<tr ng-repeat="backlogRole in $data">
 				<td sortable="'title'">
