@@ -34,7 +34,7 @@
                 <label class="personDetailLabel">Primary Role:</label> <select
                   class="form-control"
                   ng-model="profile.primaryRole.resource"
-                  ng-options="m.resource as m.title for m in allRoles">
+                  ng-options="m.resource as m.title for m in allRoles | orderBy:'title'">
                 </select>
               </div>
               <div ng-hide="editMode">
