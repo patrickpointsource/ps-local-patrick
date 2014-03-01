@@ -4,7 +4,7 @@
  * Handles application state in regards to the currently accessed Projects.
  */
 angular.module('Mastermind.services.projects')
-  .service('ProjectsService', ['$q', 'Restangular', 'Resources', 'Project', function ($q, Restangular, Resources, Project) {
+  .service('ProjectsService', ['$q', '$sanitize', 'Restangular', 'Resources', 'Project', function ($q, $sanitize, Restangular, Resources, Project) {
       /**
        * Create a reference to a server side resource for Projects.
        *
@@ -65,6 +65,13 @@ angular.module('Mastermind.services.projects')
      */
     this.save = function (project) {
       var val;
+      
+      //Fix project description 
+      if(project.description){
+    	  project.description = $sanitize(project.description);
+    	  //Encode description
+    	  project.description = encodeURIComponent(project.description); 
+      }
 
       // fix datepicker making dates = '' when clearing them out
       if (project.startDate === null || project.startDate === '') {
@@ -125,7 +132,12 @@ angular.module('Mastermind.services.projects')
 
       setTimeout(function() {
         Resources.refresh('projects/'+projectId).then(function(project){
+        	//Fix project description 
+	        if(project.description){
+	      	  project.description = decodeURIComponent(project.description); 
+	        }
           var proj = new Project(project);
+          
           deferred.resolve(proj);
         });
       }, 10);

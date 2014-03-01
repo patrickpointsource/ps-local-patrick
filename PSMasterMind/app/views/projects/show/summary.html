@@ -13,7 +13,7 @@
 	</div>
 	<div id="summaryDescription" class="row">
     	<div class="col-xs-12">
-	        <div class="col-xs-12" ng-if="project.description" ng-bind-html="project.description | markdown">
+	        <div class="col-xs-12" ta-bind ng-if="project.description" ng-model="project.description">
 	        </div>
 	        <div class="col-xs-12" ng-if="!project.description">
 	            No description entered.

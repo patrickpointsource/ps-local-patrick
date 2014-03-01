@@ -18,12 +18,13 @@
     'ui.bootstrap.tabs',
     'ngTable',
     'restangular',
+    'textAngular',
     'Mastermind.controllers.people',
     'Mastermind.controllers.projects',
     'Mastermind.models.projects',
     'Mastermind.services.projects'
   ])
-    .config( ['$logProvider','$stateProvider','$urlRouterProvider',function($logProvider, $stateProvider, $urlRouterProvider) {
+    .config( ['$logProvider','$stateProvider','$urlRouterProvider', function($logProvider, $stateProvider, $urlRouterProvider) {
       $logProvider.debugEnabled(false);
 
       $urlRouterProvider

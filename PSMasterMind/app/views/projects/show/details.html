@@ -38,11 +38,15 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-12 form-group">
-			<label for="description">Project Description:</label>
-			<textarea id="description" class="col-xs-12 form-control" rows="7"
-				name="description" ng-model="project.description"></textarea>
+			<label for="description">Description:</label>
+			<text-angular name="htmldescription" ng-model="project.description">
+			</text-angular>
 		</div>
 	</div>
+	<!-- <textarea id="description" class="col-xs-12 form-control" rows="7"
+		name="description" ng-model="project.description"></textarea> -->
+	</div>
+
 	<div class="row">
 		<div class="col-xs-12  col-sm-4 form-group"
 			ng-class="{error: isFieldInError('startDate')}">
