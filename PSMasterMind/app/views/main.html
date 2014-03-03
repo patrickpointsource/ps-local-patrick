@@ -2,11 +2,13 @@
 <div id="content">
 	<div class="row-fluid" ng-if="adminAccess && activeProjectsWithUnassignedPeople.length > 0">
 	<div class="panel panel-danger dashboard-widget">
-		<div class="panel-heading">Staffing Deficits: Active Projects &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		  <a class="btn btn-default" ng-mousedown="activeDefToCSV.generate()" ng-href="{{activeDefToCSV.link()}}" download="ActiveDeficit.csv"> 
-      		<div class="hidden-xs"><i class="fa fa-table"></i><span> Export to CSV</span></div>
-      		<div class="visible-xs"><i class="fa fa-table"></i></div>
-    	  </a>
+		<div class="panel-heading">Staffing Deficits: Active Projects
+			<div class="pull-right  btn-group btn-group-sm dashboard-actions">
+				  <a class="btn btn-default" ng-mousedown="activeDefToCSV.generate()" ng-href="{{activeDefToCSV.link()}}" download="ActiveDeficit.csv"> 
+		      		<div class="hidden-xs"><i class="fa fa-table"></i><span> Export to CSV</span></div>
+		      		<div class="visible-xs"><i class="fa fa-table"></i></div>
+		    	  </a>
+    	  	</div>
     	  </div>
 		<table ng-table="unassignedRoleList" template-pagination="activeDeficit/pager" class="table margin-top" export-active="activeDefToCSV">
 			<thead>
@@ -95,11 +97,13 @@
 </div>
 <div class="row-fluid" ng-if="adminAccess && backlogProjectsList.length > 0">
 	<div class="panel panel-warning dashboard-widget" >
-		<div class="panel-heading">Staffing Deficits: Backlog Projects &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		  <a class="btn btn-default" ng-mousedown="backlogDefToCSV.generate()" ng-href="{{backlogDefToCSV.link()}}" download="backlogDeficit.csv"> 
-      		<div class="hidden-xs"><i class="fa fa-table"></i><span> Export to CSV</span></div>
-      		<div class="visible-xs"><i class="fa fa-table"></i></div>
-    	  </a>
+		<div class="panel-heading">Staffing Deficits: Backlog Projects
+			<div class="pull-right  btn-group btn-group-sm dashboard-actions">
+		  		<a class="btn btn-default" ng-mousedown="backlogDefToCSV.generate()" ng-href="{{backlogDefToCSV.link()}}" download="backlogDeficit.csv"> 
+      				<div class="hidden-xs"><i class="fa fa-table"></i><span> Export to CSV</span></div>
+      				<div class="visible-xs"><i class="fa fa-table"></i></div>
+    	 		 </a>
+    	 	</div>
 		</div>
 		<table ng-table="backlogRoleList" template-pagination="backlogDeficit/pager" 
 		       class="table margin-top" export-backlog="backlogDefToCSV" >
