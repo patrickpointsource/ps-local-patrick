@@ -504,10 +504,17 @@ mmModule.directive('exportBacklog', ['$parse', function ($parse) {
         var data = '';
         var csv = {
           stringify: function(str) {
-            return '"' +
-              str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
-                  .replace(/"/g,'""') + // replace quotes with double quotes
-              '"';
+        	  if(str){
+  	        	// trim spaces
+  	        	var startSpace = str.replace(/^\s\s*/, '');
+  	        	var endSpace = startSpace.replace(/\s*\s$/, '');
+  	        	// replace quotes with double quotes
+  	        	var replaceDoubleQuotes = endSpace.replace(/"/g,'""'); 
+  	            return '"' +replaceDoubleQuotes +  '"';
+          	}
+          	else{
+          		return '"'+'"';
+          	}
           },
           rawJSON: function(){
             return scope.backlogProjectsList;
@@ -570,10 +577,17 @@ mmModule.directive('exportActive', ['$parse', function ($parse) {
         var data = '';
         var csv = {
           stringify: function(str) {
-            return '"' +
-              str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
-                  .replace(/"/g,'""') + // replace quotes with double quotes
-              '"';
+        	if(str){
+	        	// trim spaces
+	        	var startSpace = str.replace(/^\s\s*/, '');
+	        	var endSpace = startSpace.replace(/\s*\s$/, '');
+	        	// replace quotes with double quotes
+	        	var replaceDoubleQuotes = endSpace.replace(/"/g,'""'); 
+	            return '"' +replaceDoubleQuotes +  '"';
+        	}
+        	else{
+        		return '"'+'"';
+        	}
           },
           rawJSON: function(){
             return scope.activeProjectsWithUnassignedPeople;
