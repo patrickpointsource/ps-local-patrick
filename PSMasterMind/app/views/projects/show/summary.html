@@ -7,35 +7,37 @@
 	    	<button ng-hide="editMode" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
 	 	</div>   	
     </div>
-       	
-	<div class="row">
-		<div class="col-xs-12"><h4>Project Scope</h4></div>
+    <div class="row">
+		<div class="col-xs-12"><h4>Schedule:</h4></div>
+	</div>
+    <div class="row">
+    	<div class="col-xs-12">
+	        <div class="col-xs-12">
+	            <label>Start Date:</label> {{project.startDate | date}}
+	        </div>
+	        <div class="col-xs-12">
+	            <label>End Date:</label> {{project.endDate | date}}
+		    </div>
+	    </div>
+    </div>
+    <div class="row">
+		<div class="col-xs-12"><h4>Description:</h4></div>
 	</div>
 	<div id="summaryDescription" class="row">
     	<div class="col-xs-12">
-	        <div class="col-xs-12" ta-bind ng-if="project.description" ng-model="project.description">
+	        <div ta-bind ng-if="project.description" ng-model="project.description">
 	        </div>
-	        <div class="col-xs-12" ng-if="!project.description">
+	        <div ng-if="!project.description">
 	            No description entered.
 	        </div>
         </div>
     </div>
 
-    <div class="row">
-		<div class="col-xs-12"><h4>Project Duration & Schedule</h4></div>
-	</div>
-    <div class="row">
-    	<div class="col-xs-12">
-	        <div ng-if="project.startDate" class="col-xs-12">
-	            <label>Project Start Date:</label> {{project.startDate | date}}
-	        </div>
-	        <div ng-if="project.endDate" class="col-xs-12">
-	            <label>Project End Date:</label> {{project.endDate | date}}
-		    </div>
-	    </div>
-    </div>
+    
     <div class="row well" ng-if="financeAccess">
-    	<br/>
+    	<div class="row">
+			<div class="col-xs-12"><h4>Terms:</h4></div>
+		</div>
         <div class="col-xs-12">
         <div class="row-fluid">
    			<div class="col-xs-12 col-sm-6 col-md-3">
@@ -54,6 +56,9 @@
     </div>
          <br/>
     </div>
+    <div class="row">
+		<div class="col-xs-12"><h4>Roles:</h4></div>
+	</div>
     <div class="row">
         <div class="col-xs-12">
         <table ng-table="summaryRolesTableParams" class="table peopleList" template-pagination="custom/pager">
