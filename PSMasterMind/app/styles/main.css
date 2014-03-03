@@ -1684,7 +1684,7 @@ output {
 .form-control {
   display: block;
   width: 100%;
-  
+  height: 34px;
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1.428571429;
@@ -1697,13 +1697,7 @@ output {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
- 
 }
-select{
-	height: 34px;
-}
-
-
 .form-control:focus {
   border-color: #66afe9;
   outline: 0;
@@ -5885,6 +5879,12 @@ label.checkbox {
 .table.fixed {
   table-layout: fixed;
 }
+.form-control {
+  height: auto;
+}
+select.form-control {
+  height: 34px;
+}
 .navbar-fixed-top {
   margin-bottom: 0;
 }
@@ -6199,6 +6199,11 @@ th > span.hidden-xs {
 }
 .currency-total {
   margin-top: 8px;
+}
+@media (max-width: 767px) {
+  .ta-toolbar {
+    display: none;
+  }
 }
 @media (max-width: 767px) {
   .table > thead > tr > th,
