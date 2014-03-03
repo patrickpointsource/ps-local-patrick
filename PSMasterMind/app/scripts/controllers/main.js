@@ -107,8 +107,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
                     	  projectResource: activeProjects[i].resource,
                     	  hours: getHoursDescription(activeRole.rate.hours, activeRole.rate.fullyUtilized, activeRole.rate.type),
                     	  role: rolesMap[activeRole.type.resource].abbreviation,
-                    	  startDate: activeProjects[i].startDate,
-                    	  endDate: activeProjects[i].endDate,
+                    	  startDate: activeRole.startDate,
+                    	  endDate: activeRole.endDate,
                     	  rate: activeRole.rate.amount};
                       //console.log("activeRole.type:",activeRole.type);
                       //console.log("Unassigned Role in Proj:", $scope.activeProjectsWithUnassignedPeople[unassignedIndex-1]);
@@ -183,8 +183,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
                                 	  hours: getHoursDescription(backlogRole.rate.hours, backlogRole.rate.fullyUtilized, backlogRole.rate.type),
                                 	  role: rolesMap[backlogRole.type.resource].abbreviation,
                                 	  assignee: assigneeVar ,
-                                	  startDate: projectBacklog[i].startDate,
-                                	  endDate: projectBacklog[i].endDate
+                                	  startDate: backlogRole.startDate,
+                                	  endDate: backlogRole.endDate
                             };
                             //console.log("backlogRole.type:",backlogRole.type);
                             //console.log("Next Role in backlog Proj:", $scope.backlogProjectsList[unassignedIndex-1]);
