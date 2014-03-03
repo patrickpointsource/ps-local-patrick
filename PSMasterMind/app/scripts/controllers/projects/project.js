@@ -20,6 +20,18 @@ angular.module('Mastermind')
     $scope.edit = function(){
       $state.go('projects.edit', {projectId:$scope.projectId});
     };
+    
+  //Load the members of the executive Group
+    var execQuery = {groups:'Executives'};
+    var salesQuery = {groups:'Sales'};
+    var fields = {name:1,resource:1};
+
+    Resources.query('people', execQuery, fields, function(result){
+      $scope.execs = result;
+    });
+    Resources.query('people', salesQuery, fields, function(result){
+      $scope.sales = result;
+    });
 
     /**
      * Set the profile view in edit mode

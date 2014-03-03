@@ -48,7 +48,7 @@
 	</div>
 
 	<div class="row">
-		<div class="col-xs-12  col-sm-4 form-group"
+		<div class="col-xs-12  col-sm-6 col-md-3 form-group"
 			ng-class="{error: isFieldInError('startDate')}">
 			<label class="required-label control-label" for="startDate">Start
 				Date:</label> <input id="startDate" name="startDate"
@@ -56,27 +56,13 @@
 				ng-model="project.startDate" data-date-format="yyyy-mm-dd" required
 				data-provide="datepicker">
 		</div>
-		<div class="col-xs-12  col-sm-4 form-group">
+		<div class="col-xs-12  col-sm-6 col-md-3 form-group">
 			<label for="endDate">End Date:</label> <input id="endDate"
 				class="col-xs-12 form-control datepicker" type="text"
 				ng-model="project.endDate" data-date-format="yyyy-mm-dd"
 				data-provide="datepicker">
 		</div>
-		<div class="col-xs-12 col-sm-4 form-group">
-			<label for="projectState">Project State:</label> <select
-				id="projectState" class="col-xs-12 form-control"
-				ng-model="project.state">
-				<option value="preSales">Pre-Sales</option>
-				<option value="planning">Planning</option>
-				<option value="clientActive">Client Active</option>
-				<option value="supportActive">Support Active</option>
-				<option value="complete">Done!</option>
-			</select>
-		</div>
-	</div>
-	<div class="row">
-
-		<div class="col-xs-12 col-sm-4 form-group"
+		<div class="col-xs-12 col-sm-6 col-md-3 form-group"
 			ng-class="{error: isFieldInError('executiveSponsor')}">
 			<label class="control-label required-label" for="executiveSponsor">Executive
 				Sponsor:</label> <select id="executiveSponsor" name="executiveSponsor"
@@ -85,7 +71,7 @@
 				ng-options="m.resource as m.name for m in execs.members">
 			</select>
 		</div>
-		<div class="col-xs-12 col-sm-4 form-group">
+		<div class="col-xs-12 col-sm-6 col-md-3 form-group">
 			<label for="salesSponsor">Sales Sponsor:</label> <select
 				id="salesSponsor" class="col-xs-12 form-control"
 				ng-model="project.salesSponsor.resource"
@@ -93,6 +79,8 @@
 			</select>
 		</div>
 	</div>
+	
+	
 	<div class="well" ng-if="financeAccess">
 		<div class="row">
 			<div class="hidden-xs col-sm-6 col-md-5 col-lg-4">
