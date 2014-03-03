@@ -109,6 +109,34 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     $scope.showAdmin = function () {
       $state.go('admin');
     };
+    
+    /**
+     * Returns a label that represents the project's state
+     */
+    $scope.projectState = function(project){
+    	var ret = 'Unknown';
+    	if(project){
+    		var today = new Date();
+    		var startDate = new Date(project.startDate);
+    		var endDate = project.endDate?new Date(project.endDate):new Date();
+    		var committed = project.committed;
+    		
+    		
+    		if(!committed){
+    			ret = 'Pipeline';
+    		}
+    		else if(today < startDate){
+    			ret = 'Backlog';
+    		}
+    		else if(endDate < today){
+    			ret = 'Done';
+    		}
+    		else{
+    			ret = 'Active';
+    		}
+    	}
+    	return ret;
+    };
 
   }]).directive('backImg', function(){
     return function(scope, element, attrs){

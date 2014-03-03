@@ -5,8 +5,7 @@ angular.module('Mastermind.models.projects')
   .factory('Terms', function () {
     var defaults = {
       includesProjectManagementOverhead: false,
-      type: 'timeAndMaterials',
-      committed: false
+      type: 'timeAndMaterials'
     };
 
     function Terms(options) {
@@ -16,7 +15,6 @@ angular.module('Mastermind.models.projects')
       this.softwareEstimate = options.softwareEstimate || defaults.softwareEstimate;
       this.includesProjectManagementOverhead = options.includesProjectManagementOverhead || defaults.includesProjectManagementOverhead;
       this.type = options.type || defaults.type;
-      this.committed = options.committed || defaults.committed;
     }
 
     return Terms;
@@ -84,7 +82,8 @@ angular.module('Mastermind.models.projects')
       salesSponsor: undefined,
       roles: [],
       created: undefined,
-      modified: undefined
+      modified: undefined,
+      committed: false
     };
 
     /**
@@ -114,6 +113,7 @@ angular.module('Mastermind.models.projects')
       });
       this.created = options.created || defaults.created;
       this.modified = options.modified || defaults.modified;
+      this.committed = options.committed || defaults.committed;
 
       /**
        * Creates a fluent interface for accessing a subset of roles on this Project.
