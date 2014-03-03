@@ -53,7 +53,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     });
 
     
-    var aProjectsPromise = ProjectsService.getActiveProjects(function(result){
+    var aProjectsPromise = ProjectsService.getActiveClientProjects(function(result){
     	$scope.activeProjects = result;
     	//console.log("main.js activeProjects:", $scope.activeProjects);
         $scope.projectCount = result.count;
@@ -143,7 +143,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
      * Next, with the list of backlog projects, create a table with the resource deficit on these projects.
      * 
      */
-    ProjectsService.getProjectsBacklog(function(result){
+    ProjectsService.getBacklogClientProjects(function(result){
     	$scope.projectBacklog = result;
         $scope.backlogCount = result.count;
         $scope.backlogProjectsList = [];
