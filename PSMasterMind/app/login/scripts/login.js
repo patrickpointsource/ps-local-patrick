@@ -1,18 +1,17 @@
 //Define the global URLs for this app
+
 // local dev
 window.serverLocation = 'http://localhost:8080';
 window.clientBaseURL = 'http://0.0.0.0:9000/';
-
-// local dev and stage
 window.restPath = '/MasterMindStaging/rest/';
 
 //stage only
+//window.restPath = '/MasterMindStaging/rest/';
 //window.clientBaseURL = 'https://mastermind.pointsource.us/stage/';
-
-// stage and prod (dmz)
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
 
-// prod only
+//prod (dmz)
+//window.serverLocation = 'https://dmz.mastermind.pointsource.us';
 //window.restPath = '/MasterMindServer/rest/';
 //window.clientBaseURL = 'https://mastermind.pointsource.us/web/';
 

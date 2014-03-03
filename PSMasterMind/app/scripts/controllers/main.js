@@ -3,7 +3,7 @@
 /**
  * The main project controller
  */
-angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources','RolesService','ProjectsService','People','ngTableParams',
+var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources','RolesService','ProjectsService','People','ngTableParams',
     function ($scope, $q, $state, $filter, Resources, RolesService, ProjectsService, People, TableParams) {
 
 	// Table Parameters for Resource Deficit tables
@@ -493,5 +493,137 @@ angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '
         //Navigate over to the users profile
         window.location='#'+$scope.me.about;
       });
+    };
+}]);
+
+mmModule.directive('exportBacklog', ['$parse', function ($parse) {
+    return {
+      restrict: '',
+      scope: false,
+      link: function(scope, element, attrs) {
+        var data = '';
+        var csv = {
+          stringify: function(str) {
+            return '"' +
+              str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
+                  .replace(/"/g,'""') + // replace quotes with double quotes
+              '"';
+          },
+          rawJSON: function(){
+            return scope.backlogProjectsList;
+          },
+          rawCSV: function(){
+            return data;
+          },
+          generate: function() {
+            var project = scope.project;
+            var deficitRoles = scope.backlogRoleList.data;
+
+            for(var i = 0; i < deficitRoles.length; i++){
+              data = csv.JSON2CSV(project, deficitRoles);
+            }
+          },
+          link: function() {
+            return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
+          },
+          JSON2CSV: function(project, deficitRoles) {
+            var str = '';
+            var line = '';
+
+            //Print the header
+            var head = ['Project', 'Role', 'Hours', 'Start Date', 'End Date'];
+            for (var i = 0; i < head.length; i++) {
+              line += head[i] + ',';
+            }
+            //Remove last comma and add a new line
+            line = line.slice(0, -1);
+            str += line + '\r\n';
+
+            //Print the values
+            for (var x = 0; x < deficitRoles.length; x++) {
+              line = '';
+
+              var role = deficitRoles[x];
+
+              //Project
+              line += csv.stringify(role.title) + ',';
+              line += csv.stringify(role.role) + ',';
+              line += csv.stringify(role.hours) + ',';
+              line += csv.stringify(role.startDate) + ',';
+              line += csv.stringify(role.endDate) + ',';
+              
+              str += line + '\r\n';
+            }
+            return str;
+          }
+        };
+        $parse(attrs.exportBacklog).assign(scope.$parent, csv);
+      }
+    };
+  }]);
+
+mmModule.directive('exportActive', ['$parse', function ($parse) {
+    return {
+      restrict: '',
+      scope: false,
+      link: function(scope, element, attrs) {
+        var data = '';
+        var csv = {
+          stringify: function(str) {
+            return '"' +
+              str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
+                  .replace(/"/g,'""') + // replace quotes with double quotes
+              '"';
+          },
+          rawJSON: function(){
+            return scope.activeProjectsWithUnassignedPeople;
+          },
+          rawCSV: function(){
+            return data;
+          },
+          generate: function() {
+            var project = scope.project;
+            var deficitRoles = scope.unassignedRoleList.data;
+
+            for(var i = 0; i < deficitRoles.length; i++){
+              data = csv.JSON2CSV(project, deficitRoles);
+            }
+          },
+          link: function() {
+            return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
+          },
+          JSON2CSV: function(project, deficitRoles) {
+            var str = '';
+            var line = '';
+
+            //Print the header
+            var head = ['Project', 'Role', 'Hours', 'Start Date', 'End Date'];
+            for (var i = 0; i < head.length; i++) {
+              line += head[i] + ',';
+            }
+            //Remove last comma and add a new line
+            line = line.slice(0, -1);
+            str += line + '\r\n';
+
+            //Print the values
+            for (var x = 0; x < deficitRoles.length; x++) {
+              line = '';
+
+              var role = deficitRoles[x];
+
+              //Project
+              line += csv.stringify(role.title) + ',';
+              line += csv.stringify(role.role) + ',';
+              line += csv.stringify(role.hours) + ',';
+              line += csv.stringify(role.startDate) + ',';
+              line += csv.stringify(role.endDate) + ',';
+              
+              str += line + '\r\n';
+            }
+            return str;
+          }
+        };
+        $parse(attrs.exportActive).assign(scope.$parent, csv);
+      }
     };
   }]);
