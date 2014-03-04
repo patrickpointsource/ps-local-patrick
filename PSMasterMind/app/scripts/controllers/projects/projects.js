@@ -13,7 +13,7 @@ angular.module('Mastermind.controllers.projects')
     $scope.handleProjectFilterChanged = function(){
       var filter = $scope.projectFilter;
       // project entity columns which must be displkaye don UI
-      var apFields = {resource:1,name:1,'roles.assignee':1, customerName:1, description: 1};
+      var apFields = {resource:1,name:1,'roles.assignee':1,customerName:1,committed:1,type:1,description: 1};
       
       //Filter just the active projects
       if (filter === 'active'){       

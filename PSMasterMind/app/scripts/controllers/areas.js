@@ -112,6 +112,8 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     
     /**
      * Returns a label that represents the project's state
+     * 
+     * You must pass the startDate,endDate,type and committed
      */
     $scope.projectState = function(project){
     	var ret = 'Unknown';
@@ -119,18 +121,21 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     		var today = new Date();
     		var startDate = new Date(project.startDate);
     		var endDate = project.endDate?new Date(project.endDate):new Date();
+    		var type = project.type;
     		var committed = project.committed;
     		
-    		
-    		if(!committed){
+    		if(endDate < today){
+    			ret = 'Done';
+    		}
+    		else if(type!='paid'){
+    			ret = 'Investment';
+    		}
+    		else if(!committed){
     			ret = 'Pipeline';
     		}
     		else if(today < startDate){
     			ret = 'Backlog';
-    		}
-    		else if(endDate < today){
-    			ret = 'Done';
-    		}
+    		} 
     		else{
     			ret = 'Active';
     		}

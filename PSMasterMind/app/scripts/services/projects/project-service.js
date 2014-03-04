@@ -160,7 +160,7 @@ angular.module('Mastermind.services.projects')
      */
     this.getAllProjects = function (onSuccess){
         var apQuery = {};
-        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description:1};
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description:1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
     };
@@ -206,7 +206,7 @@ angular.module('Mastermind.services.projects')
             	       ]}
                     ]};
       //var apQuery = {state: 'clientActive'};
-      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
+      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
     }
@@ -252,7 +252,7 @@ angular.module('Mastermind.services.projects')
             	       ]}
                     ]};
       //var apQuery = {state: 'clientActive'};
-      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
+      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
     }
@@ -293,7 +293,7 @@ angular.module('Mastermind.services.projects')
                              }
                     ]};
       //var apQuery = {state: 'clientActive'};
-      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
+      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
     }
@@ -368,7 +368,7 @@ angular.module('Mastermind.services.projects')
                                       ]
                              }
                              ]};
-      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
+      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
       //console.log("Project-service.getProjectsBacklog() apQuery=", apQuery);
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
@@ -407,7 +407,7 @@ angular.module('Mastermind.services.projects')
                              },
                              ]
       				};
-      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
+      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
       console.log("Project-service.getPipeline() apQuery=", apQuery);
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
@@ -447,7 +447,7 @@ angular.module('Mastermind.services.projects')
             	       ]}
                     ]};
         //var apQuery = {state: 'clientActive'};
-        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
     }
