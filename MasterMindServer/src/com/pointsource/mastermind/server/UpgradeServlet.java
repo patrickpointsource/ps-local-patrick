@@ -38,6 +38,7 @@ public class UpgradeServlet extends HttpServlet {
 		try {
 			context.setBaseURI(new URI(CONSTS.PUBLIC_BASE_URL));
 			Data.synchPeople(context);
+			Data.migrateCommitted(context);
 		} catch (Exception e) {
 			e.printStackTrace();
 			resp.sendError(500, e.getLocalizedMessage());

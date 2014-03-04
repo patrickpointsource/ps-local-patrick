@@ -2100,6 +2100,32 @@ public class Data implements CONSTS {
 		// }
 		// }
 	}
+	
+	/**
+	 * Sprint 7 to sprint 8 migrate Project 'terms.committed' to 'committed' 
+	 */
+	public static void migrateCommitted(RequestContext context) throws IOException{
+		//Update all Projects with terms.committed to committed
+		//db.Projects.update({"terms.committed":{"$exists":true}},{"$rename":{"terms.committed":"committed"}},false,true)
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		DBObject query =  (DBObject) JSON.parse("{\"terms.committed\":{\"$exists\":true}}");
+		DBObject update =  (DBObject) JSON.parse("{\"$rename\":{\"terms.committed\":\"committed\"}}");
+		
+		WriteResult result = projectsCol.updateMulti(query, update);
+		CommandResult error = result.getLastError();
+		// System.out.println("Add project link: " + result);
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Migrate Committed Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+	}
 
 	/**
 	 * Synchs the DB People with the Google domain users
