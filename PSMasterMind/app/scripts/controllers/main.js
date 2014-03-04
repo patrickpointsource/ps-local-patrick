@@ -235,6 +235,97 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         });
     });
 
+    /*
+     * Next, with the list of pipeline projects, create a table that shows the pipeline with staff needs.
+     * 
+     */
+    ProjectsService.getPipelineProjects(function(result){
+    	$scope.projectPipeline = result;
+        $scope.pipelineCount = result.count;
+        $scope.pipelineProjectsList = [];
+        
+        //console.log("main.js $scope.projectPipeline:", $scope.projectPipeline);
+        var projectPipeline = result.data;
+
+        var unassignedIndex = 0;
+        var rolesPromise = RolesService.getRolesMapByResource();
+        $q.all(rolesPromise).then(function(rolesMap) {
+            /*
+             * Set pipeline projects
+             * 
+             */
+        	for(var i = 0; i < projectPipeline.length; i++){
+        		var pipeProj = projectPipeline[i];
+        		var roles = projectPipeline[i].roles;
+        		if(roles){
+        			var roleList = [];
+        			var roleListIndex = 0;
+                	/*
+                	 * Loop through all the roles in the pipeline projects  
+                	 */
+                    for(var b = 0; b < roles.length; b++){
+                        var pipeProjRole = roles[b];
+                        var updated = false;
+                        
+                        for (var j = 0; j < roleList.length; j++) {
+                        	var roleCountObj = roleList[j];
+                        	if(roleCountObj.role == rolesMap[pipeProjRole.type.resource].abbreviation) {
+                        		roleCountObj.count++;
+                        		updated = true;
+                        		break;
+                        	}                    
+                        }
+                        
+                        if(!updated) {
+                        	roleList[roleListIndex++] = 
+                    		{
+                    			role: rolesMap[pipeProjRole.type.resource].abbreviation,
+                    			count: 1
+                    		};
+                        }
+                     }
+                    
+                    var stringRoleList = new String();
+                    for (var k=0; k<roleList.length;k++) {
+                        if (stringRoleList.length > 1) 
+                        	stringRoleList = stringRoleList.concat(", ");
+                    	stringRoleList = stringRoleList.concat(roleList[k].role,"(",roleList[k].count,")");
+                    }
+                    
+                    $scope.pipelineProjectsList[unassignedIndex++] = {
+                      	  clientName: pipeProj.customerName,
+                    	  projectName: pipeProj.name,
+                    	  title: pipeProj.customerName + ': ' + pipeProj.name,
+                    	  projectResource: pipeProj.resource,
+                    	  roles: stringRoleList,
+                    	  startDate: pipeProj.startDate,
+                    	  endDate: pipeProj.endDate
+                    };
+                  };
+              };                  
+              return $scope.pipelineProjectsList;
+        }).then(function(pipelineProjectsList) {
+            /*
+             * Build out the table that contains the backlog Projects with resource deficits
+             */
+            $scope.pipeListProjects = new TableParams(params, {
+                total: pipelineProjectsList.length, // length of data
+                getData: function ($defer, params) {
+                
+                    var data = pipelineProjectsList;
+                    var start = (params.page() - 1) * params.count();
+                    var end = params.page() * params.count();
+                    // use build-in angular filter
+                    var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
+                    var ret = orderedData.slice(start, end);
+                    //console.log("Ret value for Backlog Role list:",ret);
+
+                    $defer.resolve(ret);
+                }
+            });
+        });
+    });
+    
     /**
      * Return a persons name from an array of People objects.
      */
@@ -638,6 +729,77 @@ mmModule.directive('exportActive', ['$parse', function ($parse) {
           }
         };
         $parse(attrs.exportActive).assign(scope.$parent, csv);
+      }
+    };
+  }]);
+
+mmModule.directive('exportPipeline', ['$parse', function ($parse) {
+    return {
+      restrict: '',
+      scope: false,
+      link: function(scope, element, attrs) {
+        var data = '';
+        var csv = {
+          stringify: function(str) {
+        	if(str){
+	        	// trim spaces
+	        	var startSpace = str.replace(/^\s\s*/, '');
+	        	var endSpace = startSpace.replace(/\s*\s$/, '');
+	        	// replace quotes with double quotes
+	        	var replaceDoubleQuotes = endSpace.replace(/"/g,'""'); 
+	            return '"' +replaceDoubleQuotes +  '"';
+        	}
+        	else{
+        		return '"'+'"';
+        	}
+          },
+          rawJSON: function(){
+            return scope.pipelineProjectsList;
+          },
+          rawCSV: function(){
+            return data;
+          },
+          generate: function() {
+            var pipelineProjects = scope.pipeListProjects.data;
+
+            for(var i = 0; i < pipelineProjects.length; i++){
+              data = csv.JSON2CSV(pipelineProjects);
+            }
+          },
+          link: function() {
+            return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
+          },
+          JSON2CSV: function(pipelineProjects) {
+            var str = '';
+            var line = '';
+
+            //Print the header
+            var head = ['Project', 'Roles', 'Start Date', 'End Date'];
+            for (var i = 0; i < head.length; i++) {
+              line += head[i] + ',';
+            }
+            //Remove last comma and add a new line
+            line = line.slice(0, -1);
+            str += line + '\r\n';
+
+            //Print the values
+            for (var x = 0; x < pipelineProjects.length; x++) {
+              line = '';
+
+              var proj = pipelineProjects[x];
+
+              //Project
+              line += csv.stringify(proj.title) + ',';
+              line += csv.stringify(proj.roles) + ',';
+              line += csv.stringify(proj.startDate) + ',';
+              line += csv.stringify(proj.endDate) + ',';
+              
+              str += line + '\r\n';
+            }
+            return str;
+          }
+        };
+        $parse(attrs.exportPipeline).assign(scope.$parent, csv);
       }
     };
   }]);
