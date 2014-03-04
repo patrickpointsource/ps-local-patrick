@@ -11,6 +11,7 @@
 
   angular.module('Mastermind.controllers.people', []);
   angular.module('Mastermind.controllers.projects', []);
+  angular.module('Mastermind.controllers.staffing', []);
   angular.module('Mastermind.models.projects', []);
   angular.module('Mastermind.services.projects', []);
   angular.module('Mastermind', [
@@ -21,6 +22,7 @@
     'textAngular',
     'Mastermind.controllers.people',
     'Mastermind.controllers.projects',
+    'Mastermind.controllers.staffing',
     'Mastermind.models.projects',
     'Mastermind.services.projects'
   ])
@@ -91,10 +93,15 @@
           templateUrl: 'views/people/people.html',
           controller: 'PeopleCtrl'
         })
-        .state('people.show', {
+       .state('people.show', {
           url: '/:profileId?edit',
           templateUrl: 'views/people/profile.html',
           controller: 'ProfileCtrl'
+        })
+       .state('staffing', {
+          url: '/staffing',
+          templateUrl: 'views/staffing/staffing.html',
+          controller: 'StaffingCtrl'
         });
     }])
     .config(['$compileProvider',

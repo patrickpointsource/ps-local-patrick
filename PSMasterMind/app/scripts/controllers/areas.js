@@ -66,8 +66,10 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
         area = 'projects';
       } else if ($state.includes('people')) {
         area = 'people';
+      } else if ($state.includes('staffing')) {
+        area = 'staffing';
       } else if ($state.includes('admin')) {
-        area = 'admin';
+          area = 'admin';
       }
 
       return area;
@@ -101,6 +103,13 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
      */
     $scope.showPeople = function () {
       $state.go('people.index');
+    };
+    
+    /*
+     * Navigate to the staffing index.
+     */
+    $scope.showStaffing = function () {
+      $state.go('staffing');
     };
 
     /*
