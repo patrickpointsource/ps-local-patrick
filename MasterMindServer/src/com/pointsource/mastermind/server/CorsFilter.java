@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response.Status;
 
+import com.pointsource.mastermind.util.CONSTS;
+
 /**
  * This filter adds headers to allow Cross-Origin Resource Sharing to
  * the response.
@@ -48,7 +50,8 @@ public class CorsFilter implements Filter {
 		
 		String method = httpRequest.getMethod();
 		
-		httpResponse.setHeader("Access-Control-Allow-Origin", httpRequest.getHeader("Origin"));
+		//httpResponse.setHeader("Access-Control-Allow-Origin", httpRequest.getHeader("Origin"));
+		httpResponse.setHeader("Access-Control-Allow-Origin", CONSTS.WEB_SITE_URL);
 		httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
 		httpResponse.setHeader("Access-Control-Allow-Headers",
 				httpRequest.getHeader("Access-Control-Request-Headers"));
