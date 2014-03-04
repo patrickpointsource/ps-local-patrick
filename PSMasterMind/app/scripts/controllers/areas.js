@@ -150,7 +150,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     	var state = $scope.projectState(project);
     	var ret = '';
     	if(state == 'Investment'){
-    		ret = 'fa fa-usd';
+    		ret = 'fa fa-flask';
     	}
     	else if(state == 'Pipeline'){
     		ret = 'fa fa-angle-double-left';
@@ -162,7 +162,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     		ret = 'fa fa-angle-up';
     	}
     	else if(state == 'Done'){
-    		ret = 'fa fa-dot-circle-o';
+    		ret = 'fa fa-times-circle-o';
     	}
     	
     	return ret;

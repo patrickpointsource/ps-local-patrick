@@ -31,8 +31,8 @@
 					<td data-title="'Name'" sortable="'title'"><a href="#{{project.resource}}">{{project.title}}</a></td>
 					<!-- <td data-title="'Description'" sortable="'description'"><div class="description">{{project.description}}</div></td> -->
 					<td data-title="'State'"><i class="{{projectStateIcon(project)}}"></i> <span class="hidden-xs">{{projectState(project)}}</span></td>
-					<td data-title="'Start Date'" sortable="'startDate'">{{project.startDate}}</td>
-					<td data-title="'End Date'" sortable="'endDate'">{{project.endDate}}</td>
+					<td data-title="'Start'" sortable="'startDate'"><span class="hidden-xs">{{project.startDate | date}}</span><span class="visible-xs">{{project.startDate}}</span></td>
+					<td data-title="'End'" sortable="'endDate'"><span class="hidden-xs">{{project.endDate | date}}</span><span class="visible-xs">{{project.endDate}}</span></td>
 				</tr>
 			</tbody>
 		</table>
