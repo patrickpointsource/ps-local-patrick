@@ -142,6 +142,31 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     	}
     	return ret;
     };
+    
+    /**
+     * Get the icon classes associated with a project state
+     */
+    $scope.projectStateIcon = function(project){
+    	var state = $scope.projectState(project);
+    	var ret = '';
+    	if(state == 'Investment'){
+    		ret = 'fa fa-usd';
+    	}
+    	else if(state == 'Pipeline'){
+    		ret = 'fa fa-angle-double-left';
+    	}
+    	else if(state == 'Backlog'){
+    		ret = 'fa fa-angle-left';
+    	}
+    	else if(state == 'Active'){
+    		ret = 'fa fa-angle-up';
+    	}
+    	else if(state == 'Done'){
+    		ret = 'fa fa-dot-circle-o';
+    	}
+    	
+    	return ret;
+    }
 
   }]).directive('backImg', function(){
     return function(scope, element, attrs){

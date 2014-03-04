@@ -28,10 +28,9 @@
 			class="table">
 			<tbody ng-repeat="project in $data | filter:filterText">
 				<tr>
-					<td data-title="'Name'" sortable="'title'"><a
-						href="#{{project.resource}}">{{project.title}}</a></td>
+					<td data-title="'Name'" sortable="'title'"><a href="#{{project.resource}}">{{project.title}}</a></td>
 					<!-- <td data-title="'Description'" sortable="'description'"><div class="description">{{project.description}}</div></td> -->
-					<td data-title="'State'">{{projectState(project)}}</td>
+					<td data-title="'State'"><i class="{{projectStateIcon(project)}}"></i> <span class="hidden-xs">{{projectState(project)}}</span></td>
 					<td data-title="'Start Date'" sortable="'startDate'">{{project.startDate}}</td>
 					<td data-title="'End Date'" sortable="'endDate'">{{project.endDate}}</td>
 				</tr>
