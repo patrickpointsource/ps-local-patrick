@@ -19,7 +19,7 @@ angular.module('Mastermind.models.projects')
 
     return Terms;
   })
-  .factory('Role', ['Rates','RateFactory',function (Rates, RateFactory) {
+  .factory('Role', ['Rates','RateFactory', 'Assignment', function (Rates, RateFactory, Assignment) {
     /**
      * The defaults for a newly created role.
      *
@@ -58,10 +58,65 @@ angular.module('Mastermind.models.projects')
       this.shore = options.shore || defaults.shore;
       this.startDate = options.startDate ? formatDate(options.startDate) : defaults.startDate;
       this.endDate = options.endDate ? formatDate(options.endDate) : defaults.endDate;
+      
+      this.assignees = [];
+      
+      if (options.assignees) {
+    	  
+    	  
+    	  for (var i = 0; i < options.assignees.length; i ++)
+    		  this.assignees.push(new Assignment( options.assignees[i] ))
+      } else if (options.assignee)
+    	  this.assignees = [new Assignment( options.assignee )];
+      
       this.assignee = options.assignee || defaults.assignee;
     }
 
     return Role;
+  }])
+  .factory('Assignment', ['Rates','RateFactory',function (Rates, RateFactory) {
+    /**
+     * The defaults for a newly created role.
+     *
+     * @type {{rate: HourlyRate, shore: string}}
+     */
+    var defaults = {
+    	about: "assignments",
+      type: undefined,
+      rate: RateFactory.build(Rates.HOURLY),
+      shore: 'on',
+      startDate: undefined,
+      endDate: undefined,
+      assignee: undefined
+    };
+
+    function formatDate(date) {
+      if (date.indexOf('T') !== -1) {
+        date = date.substr(0, date.indexOf('T'));
+      }
+      return date;
+      // var year = dateArray[0];
+      // var month = dateArray[1];
+      // var day = dateArray[2].substr(0,2);
+      // return month + '/' + day + '/' + year;
+    }
+
+    /**
+     * Creates a new Role with default properties.
+     *
+     * @constructor
+     */
+    function Assignment(options) {
+      options = options || {};
+      
+      this.about = options.about || defaults.about;
+      this.percentage = options.percentage || defaults.percentage;
+      this.startDate = options.startDate ? formatDate(options.startDate) : defaults.startDate;
+      this.endDate = options.endDate ? formatDate(options.endDate) : defaults.endDate;
+      this.resource = options.resource || defaults.resource;
+    }
+
+    return Assignment;
   }])
   .factory('Project', ['Terms','Role',function (Terms, Role) {
     /*

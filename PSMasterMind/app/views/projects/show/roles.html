@@ -10,10 +10,14 @@
 			</button>
 		</div>
 	</div>
-	<div id="messages" class="alert alert-danger" ng-show="addRoleMessages.length > 0">
+	<div id="messages" class="alert alert-danger" ng-show="addRoleMessages.length > 0 || assignmentsErrorMessages.length > 0">
        <!--  <a class="close" ng-click="addRoleMessages = []">&times;</a> -->
         <ul>
             <li ng-repeat="message in addRoleMessages">{{message}}</li>
+        </ul>
+        
+         <ul>
+            <li ng-repeat="message in assignmentsErrorMessages">{{message}}</li>
         </ul>
     </div>
 	<section id="newRoleDialog" class="well collapse out">
@@ -26,7 +30,7 @@
             <table class="table" ng-table="roleTableParams" template-pagination="custom/pager">
               <thead>
                 <tr>
-                  <th>Person Assigned</th>
+                  
                   <th class="hidden-xs">Role</th>
                   <th>Hours</th>
                   <th class="hidden-xs">Start Date</th>
@@ -38,14 +42,16 @@
               <tbody ng-repeat="role in $data">
                 <tr>
                     <td>
+                    	<!-- 
                         <select ng-model="role.assignee.resource"
                                 ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble"
                                 ng-change="assigneeChanged($index, role)"
                                 class="form-control">
                         </select>
-                        <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>
+                         -->
+                        <span>{{roleGroups[role.type.resource].abbreviation}}</span>
                     </td>
-                    <td class="hidden-xs">{{roleGroups[role.type.resource].abbreviation}}</td>
+                    <!-- <td class="hidden-xs">{{roleGroups[role.type.resource].abbreviation}}</td> -->
                     <td class="visible-xs">
                       <span ng-show="role.rate.isFullyUtilized()">100%</span>
                       <span ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}}/M</span>
@@ -61,6 +67,9 @@
                       <span ng-hide="role.endDate">- N/A</span>
                     </td>
                     <td class="actionsCell">
+                    	<button class="btn btn-default" ng-click="triggerAssignPeople(role, $index)">
+                            <i class="fa fa-male"></i>
+                        </button>
                         <button class="btn btn-default" ng-click="triggerEditRole(role, $index)">
                             <i class="fa fa-pencil"></i>
                         </button>
@@ -73,6 +82,13 @@
 	             	<td colspan="5">
 	             		<div ng-form="newRoleForm{{$index}}" id="editRoleDialog{{$index}}" class="well">
 						    <ng-include src="'views/projects/show/editRole.html'"/>
+						</div>
+	             	</td>
+	             </tr>
+	             <tr ng-show="assignToRoleIndex===$index" ng-if="assignToRoleIndex===$index">
+	             	<td colspan="5">
+	             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}" class="well">
+						    <ng-include src="'views/projects/show/roleAssign.html'"/>
 						</div>
 	             	</td>
 	             </tr>

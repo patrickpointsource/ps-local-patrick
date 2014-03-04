@@ -236,6 +236,8 @@ public class Projects extends BaseResource {
 				RequestContext context = getRequestContext();
 
 				Validator.canCreateProject(context, newProject);
+				Data.refreshRoleIds(newProject);
+				
 				JSONObject ret = Data.createProject(newProject);
 				
 				Data.refreshProjectAssignments(context, "", newProject);
@@ -303,10 +305,12 @@ public class Projects extends BaseResource {
 			try {
 				RequestContext context = getRequestContext();
 				Validator.canUpdateProject(context, newProject);
-				JSONObject json = Data.updateProject(context, id, newProject);
-				
+				Data.refreshRoleIds(newProject);
 				Data.refreshProjectAssignments(context, id, newProject);
 				
+				JSONObject json = Data.updateProject(context, id, newProject);
+				
+
 				String ret = Data.escapeJSON(json);
 				return Response.ok(ret).build();
 			} catch (ValidationException e) {

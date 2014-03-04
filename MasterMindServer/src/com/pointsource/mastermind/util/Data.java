@@ -638,6 +638,45 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
+	
+	/**
+	 * Get project assignments by passed role
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONArray getProjectAssignments(RequestContext context, String projectId, String roleId) 
+			throws JSONException {
+		JSONArray ret = new JSONArray();
+
+		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		
+		DBObject queryObject = new BasicDBObject();
+		
+		// Add the project query
+		String projectResourceURL = RESOURCE_PROJECTS + "/" + projectId;
+		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE,
+				projectResourceURL);
+		queryObject.put(PROP_PROJECT, resourceQuery);
+		queryObject.put("role",  new BasicDBObject(PROP_RESOURCE, "projectRoles/" + roleId));
+
+		DBCursor cursur = assignmentsCol.find(queryObject);
+
+
+		while (cursur.hasNext()) {
+			DBObject object = cursur.next();
+			String json = JSON.serialize(object);
+			JSONObject jsonObject = new JSONObject(json);
+
+			
+			ret.put(jsonObject);	
+		}
+
+		return ret;
+	}
 
 	private static DBObject filterManagmentProperty(String property,
 			RequestContext context, DBObject fieldsObject) throws JSONException {
@@ -874,6 +913,18 @@ public class Data implements CONSTS {
 			ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
 		}
 
+		if (ret.has(PROP_ROLES)) {
+			JSONArray roles = ret.getJSONArray(PROP_ROLES);
+			JSONObject role;
+			
+			for (int i = 0; i < roles.length(); i ++) {
+				role = roles.getJSONObject(i);
+				
+				if (!role.has("assignees") && role.has(PROP__ID))
+					role.put("assignees", Data.getProjectAssignments(context, id, role.getString(PROP__ID)));
+			}
+		}
+		
 		return ret;
 	}
 
@@ -1261,8 +1312,8 @@ public class Data implements CONSTS {
 	 * @param newRole
 	 * @throws JSONException
 	 */
-	public static JSONObject createProjectAssignment(RequestContext context,
-			JSONObject newAssignment, String projectId) throws JSONException {
+	public static JSONObject createProjectAssignment(RequestContext context, String projectId, String roleId,
+			JSONObject newAssignment) throws JSONException {
 
 		// Only admins can create roles
 		if (!hasAdminAccess(context)) {
@@ -1274,13 +1325,15 @@ public class Data implements CONSTS {
 		
 		newAssignment.put(PROP_PROJECT, new BasicDBObject(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + projectId));
 		newAssignment.put(PROP_ETAG, "0");
+		newAssignment.put("role",  new BasicDBObject(PROP_RESOURCE, "projectRoles/" + roleId));
 
 		String json = newAssignment.toString();
 		DBObject dbObject = (DBObject) JSON.parse(json);
-		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
-		WriteResult result = projectsCol.insert(dbObject);
+		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		WriteResult result = assignmentsCol.insert(dbObject);
 
 		CommandResult error = result.getLastError();
+		
 		if (error != null && error.getErrorMessage() != null) {
 			System.err.println("Add Project Failed:"
 					+ error.getErrorMessage());
@@ -2154,16 +2207,35 @@ public class Data implements CONSTS {
 		deleteProjectAssignments(context, id);
 		
 		JSONObject role = null;
-		Object assignee = null;
+		JSONArray assignees = null;
+		String roleId;
 		
 		for (int i = 0; i < roles.length(); i ++) {
 			role = roles.getJSONObject(i);
-			assignee =  role.has("assignee") ? role.get("assignee"): null;
+			assignees =  role.has("assignees") ? (JSONArray)role.get("assignees"): null;
+			roleId = role.has(PROP__ID) ? ((Object)role.get(PROP__ID)).toString(): "";
 			
-			if (assignee != null && (assignee instanceof JSONObject) && ((JSONObject)assignee).has("resource"))
-				createProjectAssignment(context, role, id);
+			for (int j = 0; assignees != null && j < assignees.length(); j ++)
+				createProjectAssignment(context, id, roleId, (JSONObject)assignees.get(j));
+			
+			// clean this property to prevent duplication
+			role.remove("assignees");
 		}
 	
+	}
+	
+	public static void refreshRoleIds (JSONObject project)
+			throws JSONException {
+		JSONArray roles = (JSONArray) project.get("roles");
+		JSONObject role = null;
+		
+		for (int i = 0; i < roles.length(); i ++) {
+			role = roles.getJSONObject(i);
+			
+			
+			if (role != null && !role.has(PROP__ID))
+				role.put(PROP__ID, new ObjectId());
+		}
 	}
 
 	private static JSONObject getUserByGoogleId(RequestContext context,
