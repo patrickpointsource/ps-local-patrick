@@ -169,6 +169,9 @@ angular.module('Mastermind.models.projects')
       this.created = options.created || defaults.created;
       this.modified = options.modified || defaults.modified;
       this.committed = options.committed || defaults.committed;
+      
+      //Items to cache to check against inital value onto
+      this.initStartDate = this.startDate;
 
       /**
        * Creates a fluent interface for accessing a subset of roles on this Project.

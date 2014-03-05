@@ -53,11 +53,45 @@ angular.module('Mastermind')
     };
 
     /**
+     * On project save ask if the user would like to shift the start and and dates for the
+     * roles in the project
+     */
+    $scope.handleProjectStartDateShifts = function(){
+    	//Check if the start date has been updated.
+        var project = $scope.project;
+        if(project.startDate && project.startDate != project.initStartDate){
+      	  var shouldChange = confirm('The start date on your project has changed.  Would you like to shift the role start dates based on this change?');
+      	  if(shouldChange){
+      		  var delta = new Date(project.startDate) - new Date(project.initStartDate);
+      		  var roles = project.roles;
+      		  for(var i = 0; i < roles.length; i++){
+      			  var role = roles[i];
+      			  //Shift the start date
+      			  if(role.startDate){
+      				  var tmpDate = new Date(role.startDate);
+      				  tmpDate = new Date(tmpDate.getTime() + delta);
+      				  role.startDate = tmpDate;
+      			  }
+      			  //Shift the end date
+      			  if(role.endDate){
+      				  var tmpDate = new Date(role.endDate);
+      				  tmpDate = new Date(tmpDate.getTime() + delta);
+      				  role.endDate = tmpDate;
+      			  }
+      		  }
+      	  }
+        }
+    }
+    
+    
+    /**
      * Save the loaded project.
      */
     $scope.save = function () {
       $scope.submitAttempted = true;
 
+      $scope.handleProjectStartDateShifts();
+      
       // set the project creator and created time
       Resources.refresh('people/me').then(function(me){
         if ($scope.project.created === undefined) {
