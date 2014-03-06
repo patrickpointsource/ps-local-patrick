@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$rootScope', '$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
-  function ($rootScope, $scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
+  .controller('ProjectCtrl', ['$q','$rootScope', '$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
+  function ($q, $rootScope, $scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
     var detailsValid = false, rolesValid = false;
 
     //Set our currently viewed project to the one resolved by the service.
@@ -33,22 +33,40 @@ angular.module('Mastermind')
       $scope.sales = result;
     });
 
+    
+    $scope.close = function(){
+    	//Throw it away if it is a new project
+	      if($scope.isTransient){
+	        $state.go('projects.index');
+	      }
+	      //Fetch the old version of the project and show the read only mode
+	      else{
+	        Resources.get('projects/' + $scope.projectId).then(function(){
+	          $state.go('projects.show', {projectId:$scope.projectId, edit:null});
+	        });
+	      }
+    };
+    
     /**
      * Set the profile view in edit mode
      */
     $scope.cancel = function(){
-      //Unset dirty flag
-      $rootScope.formDirty = false;
-    	
-      //Throw it away if it is a new project
-      if($scope.isTransient){
-        $state.go('projects.index');
+      //If the model is dirty ask if they would like to save the changes
+      if($rootScope.formDirty){
+    	  var conf = confirm('You have made changes to this project did you want to save your changes?');
+    	  if(conf){
+    		  $scope.save().then(function(project){//Unset dirty flag
+    		      $rootScope.formDirty = false;
+    		      $scope.close();	
+    		 });
+    	  }
+      	  else{
+      		$rootScope.formDirty = false;
+      		$scope.close();	
+      	  }
       }
-      //Fetch the old version of the project and show the read only mode
       else{
-        Resources.get('projects/' + $scope.projectId).then(function(){
-          $state.go('projects.show', {projectId:$scope.projectId, edit:null});
-        });
+    	  $scope.close();
       }
     };
 
@@ -115,6 +133,8 @@ angular.module('Mastermind')
      * Save the loaded project.
      */
     $scope.save = function () {
+      var deferred = $q.defer();	
+    	
       $scope.submitAttempted = true;
 
       $scope.handleProjectStartDateShifts();
@@ -140,6 +160,8 @@ angular.module('Mastermind')
                 $scope.handleProjectSelected();
                 $rootScope.formDirty = false;
              });
+        	
+        	deferred.resolve($scope.project);
         }, function (response) {
           if(response.data.reasons){
         	  $scope.showErrors(response.data.reasons);
@@ -152,9 +174,12 @@ angular.module('Mastermind')
         	  var error = response.status + ": " + JSON.stringify(response.data);
         	  $scope.showErrors([error]);
           }
+          deferred.reject($scope.project);
         });
-
+        
       });
+      
+      return deferred.promise;
     };
 
     /**

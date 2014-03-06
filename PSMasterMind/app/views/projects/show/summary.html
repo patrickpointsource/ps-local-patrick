@@ -1,5 +1,4 @@
-<br/>
-<div class="summary-tab container well">
+<div class="summary-tab">
 	<div class="row">
 		<h3 class="col-xs-8">
 	       	{{project.customerName || 'No Customer'}}</h3>
@@ -7,20 +6,12 @@
 	    	<button ng-hide="editMode" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
 	 	</div>   	
     </div>
-    <div class="row">
-		<div class="col-xs-12"><h4>Schedule:</h4></div>
-	</div>
-    <div class="row">
-       <div class="col-xs-12 col-sm-6">
-            <label>Start Date:</label> {{project.startDate | date}}
+   <div class="row">
+     	<div class="col-xs-12" >
+            <h4><span>{{project.startDate | date}}</span><span ng-if="project.endDate"> - {{project.endDate | date}}</span>
         </div>
-        <div class="col-xs-12 col-sm-6">
-            <label>End Date:</label> {{project.endDate | date}}
-	    </div>
     </div>
-    <div class="row">
-		<div class="col-xs-12"><h4>Description:</h4></div>
-	</div>
+    <br/>
 	<div id="summaryDescription" class="row">
     	<div class="col-xs-12">
 	        <div ta-bind ng-if="project.description" ng-model="project.description">
@@ -30,7 +21,7 @@
 	        </div>
         </div>
     </div>
-
+ 	<br/>
     
     <div class="row well" ng-if="financeAccess">
     	<div class="row">
