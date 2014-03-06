@@ -21,38 +21,39 @@ angular.module('Mastermind.services.projects')
     };
 
     /**
-     * Validate a new Role being created on a project.
+     * Validate an assignments collection for specified role.
      *
      * @param project
-     * @param newRole
+     * @param assignments
      */
-    this.validateAssignments = function(project, newRole, assignments){
+    this.validateAssignments = function(project, assignments){
       var errors = [];
-      //Must select a type
-      if(!newRole){
-        errors.push('New Role is null');
-      }
-      else{
-        //Assignee for each entry is Required
-    	  var anyResourceUnassigned = false;
-    	  var anyPercentageMissed = false;
-    	  
-    	  for (var i = 0; i < assignments.length; i ++) {
-    		  if (!assignments[i].resource) 
-    			  anyResourceUnassigned = true;
-    		  
-    		  if (!assignments[i].percentage)
-    			  anyPercentageMissed = true;
-    	  }
+     
+    //Assignee for each entry is Required
+	  var anyResourceUnassigned = false;
+	  var anyPercentageMissed = false;
+	  var countEmptyPersons = 0;
+	  
+	  for (var i = 0; i < assignments.length; i ++) {
+		  if (!(assignments[i].person && assignments[i].person.resource)) 
+			  anyResourceUnassigned = true;
+		  
+		  if (!assignments[i].percentage)
+			  anyPercentageMissed = true;
+		  
+		  if (!assignments[i].percentage && !(assignments[i].person && assignments[i].person.resource))
+			  countEmptyPersons ++;
+	  }
 
-        if(anyResourceUnassigned){
-          errors.push('For each assignee entry person is required');
-        }
-        
-        if(anyPercentageMissed){
-            errors.push('For each assignee entry percentage is required');
-          }
-      }
+	  // allow one entry assignment to keep role unassigned
+    if(anyResourceUnassigned && anyPercentageMissed && (countEmptyPersons >= 1 && assignments.length > 1)){
+      errors.push('For each assignee entry can\'t be empty');
+    } else if(anyPercentageMissed && !anyResourceUnassigned){
+        errors.push('For each assignee entry percentage is required');
+    } else if(!anyPercentageMissed && anyResourceUnassigned){
+        errors.push('For each assignee entry person is required');
+    }
+      
       
       return errors;
     }
@@ -63,34 +64,30 @@ angular.module('Mastermind.services.projects')
      *
      * @param project
      */
-    this.save = function (project, role, assignments) {
+    this.save = function (project, projectAssignment) {
       var val;
 
-      for (var  i = 0; i < assignments.length; i ++) {
+      for (var  i = 0; i < projectAssignment.members.length; i ++) {
 	      // fix datepicker making dates = '' when clearing them out
-	      if (assignments[i].startDate === null || assignments[i].startDate === '') {
-	    	  assignments[i].startDate = undefined;
+	      if (projectAssignment.members[i].startDate === null || projectAssignment.members[i].startDate === '') {
+	    	  projectAssignment.members[i].startDate = undefined;
 	      }
-	      if (assignments[i].endDate === null || assignments[i].endDate === '') {
-	    	  assignments[i].endDate = undefined;
+	      if (projectAssignment.members[i].endDate === null || projectAssignment.members[i].endDate === '') {
+	    	  projectAssignment.members[i].endDate = undefined;
 	      }
 	
 	     
       }
       
-      var roleId = -1;
-      var projectId = -1;
+      
+      val = Resources.update(projectAssignment);
+	  
+      
       /*
-      val = Resources.update({
-    	  about: assignments[0].about + '/' + projectId, 
-    	  assignments: assignments
-	  });
-	  */
-      
-      Resources.create('assignments', assignments[0]).then(function(){
-         
-        });
-      
+      Resources.create(project.about + '/assignments/', assignments).then(function(res){
+    	  var res = res;
+      })
+      */
       return val;
      // return null;
     }

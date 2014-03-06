@@ -90,13 +90,13 @@ angular.module('Mastermind').factory(
 
           var resolved = false;
 
-          if (value && time) {
+          if (value && time ) {
             time = Date.parse(time);
             if (((new Date()) - time) < MAX_TIME) {
               //console.log('LOCAL '+resource+'='+value);
-
-              value = JSON.parse(value);
-              resolved = true;
+            	// correctly handle empty result which was previously stored - it is stringified to "undefined" string
+            	value = value != "undefined" ? JSON.parse(value): undefined;
+            	resolved = true;
             }
           }
 

@@ -16,9 +16,9 @@
 	            	<ng-include src="'views/projects/show/summary.html'"></ng-include>
 	            </div>
 	        </tab>
-	        <tab id="links" heading="Links">
+	        <tab id="assignments" heading="Assignments">
 	        	<div ng-if="projectLoaded">
-	            	<ng-include src="'views/projects/show/links.html'"></ng-include>
+	            	<ng-include src="'views/projects/show/assignments.html'"></ng-include>
 	            </div>
 	        </tab>
 	        <tab id="hours" heading="Hours">
@@ -26,6 +26,13 @@
 	            	<ng-include src="'views/projects/show/hours.html'"></ng-include>
 	            </div>
 	        </tab>
+	        <tab id="links" heading="Links">
+	        	<div ng-if="projectLoaded">
+	            	<ng-include src="'views/projects/show/links.html'"></ng-include>
+	            </div>
+	        </tab>
+	        
+	        
 	    </tabset>
     </div>
 </div>

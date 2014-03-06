@@ -1,27 +1,23 @@
-<div ng-form="rolesForm" ng-controller="RolesCtrl">
-	<div class="row">
-		<div class="col-xs-8"><h3>Roles</h3></div>
-		<div class="actions col-xs-4 pageActions">
-			<button type="button"
-				ng-click="triggerAddRole()"
-				data-toggle="collapse" data-target="#newRoleDialog"
-				class="btn btn-default pull-right">
-		  		<i class="fa fa-plus-square"></i> <span>Add Roles</span>
-			</button>
-		</div>
-	</div>
-	<div id="messages" class="alert alert-danger" ng-show="addRoleMessages.length > 0">
-       <!--  <a class="close" ng-click="addRoleMessages = []">&times;</a> -->
-        <ul>
-            <li ng-repeat="message in addRoleMessages">{{message}}</li>
-        </ul>
+<div ng-controller="AssignmentsCtrl">
+  
+  <!-- button ng-click="roleTableParams.reload()" class="btn btn-default">Reload</button-->
+  	<div class="row">
+		<h3 class="col-xs-8">
+	       	Assignments
+	    </h3>
+	    <div class="actions col-xs-4 pageActions">
+	    	<button ng-hide="editMode" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
+	 	</div>   	
     </div>
-	<section id="newRoleDialog" class="well collapse out">
-        <ng-include src="'views/projects/show/editRole.html'"/>
-    </section>
-    
-	<!-- button ng-click="roleTableParams.reload()" class="btn btn-default">Reload</button-->
     <div class="row">
+    	<div id="messages" class="alert alert-danger" ng-show="assignmentsErrorMessages.length > 0">
+	      
+	        
+	         <ul>
+	            <li ng-repeat="message in assignmentsErrorMessages">{{message}}</li>
+	        </ul>
+	    </div>
+    
         <div class="col-xs-12">
             <table class="table" ng-table="roleTableParams" template-pagination="custom/pager">
               <thead>
@@ -38,13 +34,6 @@
               <tbody ng-repeat="role in $data">
                 <tr>
                     <td>
-                    	<!-- 
-                        <select ng-model="role.assignee.resource"
-                                ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble"
-                                ng-change="assigneeChanged($index, role)"
-                                class="form-control">
-                        </select>
-                         -->
                         <span>{{roleGroups[role.type.resource].abbreviation}}</span>
                     </td>
                     <!-- <td class="hidden-xs">{{roleGroups[role.type.resource].abbreviation}}</td> -->
@@ -63,18 +52,21 @@
                       <span ng-hide="role.endDate">- N/A</span>
                     </td>
                     <td class="actionsCell">
-                        <button class="btn btn-default" ng-click="triggerEditRole(role, $index)">
-                            <i class="fa fa-pencil"></i>
-                        </button>
-                        <button class="btn btn-default" ng-click="remove(role)">
-                            <i class="fa fa-trash-o"></i>
-                        </button>
+                    	
                     </td>
                 </tr>
-                <tr ng-show="editRoleIndex===$index" ng-if="editRoleIndex===$index">
+                
+	             <tr ng-show="editMode" ng-if="editMode">
 	             	<td colspan="5">
-	             		<div ng-form="newRoleForm{{$index}}" id="editRoleDialog{{$index}}" class="well">
-						    <ng-include src="'views/projects/show/editRole.html'"/>
+	             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}" class="well">
+						    <ng-include src="'views/projects/show/roleAssign.html'"/>
+						</div>
+	             	</td>
+	             </tr>
+	             <tr ng-show="!editMode" ng-if="!editMode">
+	             	<td colspan="5">
+	             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}" class="well">
+						    <ng-include src="'views/projects/show/roleAssignView.html'"/>
 						</div>
 	             	</td>
 	             </tr>
@@ -100,21 +92,11 @@
             </script>
         </div>
     </div>
-</div>
- <div class="row" ng-if="financeAccess">
-	<br/>
-    <div class="col-xs-12 ">
-        <div class="row well">
-   			<div class="col-xs-4">
-                <label>Estimated value:</label> <span>(USD) {{(project.terms.servicesEstimate+project.terms.softwareEstimate) | currency}}</span>
-            </div>
-            <div class="col-xs-4">
-                <label>Total $ In Plan:</label> <span>{{servicesTotal() | currency}}</span>
-            </div>
-            <div class="col-xs-4">
-                <label>Margin %:</label> <span>{{projectMargin() | number:0}}</span>
-            </div>
-        </div>
-    </div>
-     <br/>
+    
+    <div class="row" ng-show="editMode" ng-if="editMode">
+		<div class="col-xs-12">
+			<input type="submit" class="btn" value="Save" ng-click="saveAssignment()" />
+			<input type="submit" class="btn" value="Cancel" ng-click="cancelAssignment()"/>
+		</div>
+	</div>
 </div>

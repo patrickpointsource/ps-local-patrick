@@ -1,10 +1,10 @@
 
 
-<div class="row" ng-repeat="currentAssignee in currentAssignedRole.assignees">
+<div class="row" ng-repeat="currentAssignee in role.assignees">
 	<div class="col-xs-2 col-sm-2 form-group" ng-class="{error: isFieldInError('role')}">
 		<label class="required-label control-label" for="person">Person:</label>
 		
-		<select ng-model="currentAssignee.resource"
+		<select ng-model="currentAssignee.person.resource"
                  ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble"
                  ng-change="assigneeChanged($index, role)"
                  class="form-control" name="person">
@@ -37,20 +37,12 @@
 			ng-model="currentAssignee.percentage" ng-pattern="/\d+(\.\d{1,2})?/">
 	</div>
 	<div class="col-xs-2 col-sm-2 form-group" style="padding-top: 25px;">
-        <button class="btn btn-default" ng-click="addNewAssignmentToRole($index)">
+        <button class="btn btn-default" ng-click="addNewAssignmentToRole($index, role)">
             <i class="fa fa-plus"></i>
         </button>
-        <button class="btn btn-default" ng-click="removeAssignmentToRole($index)">
+        <button class="btn btn-default" ng-click="removeAssignmentToRole($index, role)">
             <i class="fa fa-minus"></i>
         </button>
-	</div>
-</div>
-
-
-<div class="row">
-	<div class="col-xs-12">
-		<input type="submit" class="btn" value="Save" ng-click="saveAssignment()" />
-		<input type="submit" class="btn" value="Cancel" ng-click="cancelAssignment()"/>
 	</div>
 </div>
 	

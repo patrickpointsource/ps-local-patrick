@@ -1,0 +1,29 @@
+
+
+<div class="row" ng-repeat="currentAssignee in role.assignees" 
+	ng-show="role.assignees && role.assignees.length > 0 && role.assignees[0].person && role.assignees[0].person.resource">
+	<div class="col-xs-2 col-sm-2 form-group" ng-class="{error: isFieldInError('role')}">
+	     <span >{{getPersonName(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble)}}</span>               
+	</div>
+	<div class="col-xs-2 col-sm-2 form-group"
+		ng-class="{error: isFieldInError('role')}">
+		<label class="required-label control-label" for="assigneeStartDate">
+			Start Date: <span class="text-muted">{{currentAssignee.startDate}}</span>
+		</label> 
+		
+	</div>
+	<div class="col-xs-2 col-sm-2 form-group">
+		<label for="assigneeEndDate">End Date: <span class="text-muted">{{currentAssignee.endDate}}</span></label>
+		
+	</div>
+	<div class="col-xs-2 col-sm-2 form-group">
+		<label for="assigneePercentage">Percentage: <span class="text-muted">{{currentAssignee.percentage}}%</span></label>
+		
+	</div>
+	
+</div>
+
+<div class="row" ng-show="!role.assignees || role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
+	There are now assignees on this role
+</div>
+	

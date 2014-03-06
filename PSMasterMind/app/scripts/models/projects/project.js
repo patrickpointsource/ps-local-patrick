@@ -26,6 +26,7 @@ angular.module('Mastermind.models.projects')
      * @type {{rate: HourlyRate, shore: string}}
      */
     var defaults = {
+    about: undefined,
       type: undefined,
       rate: RateFactory.build(Rates.HOURLY),
       shore: 'on',
@@ -53,6 +54,7 @@ angular.module('Mastermind.models.projects')
     function Role(options) {
       options = options || {};
 
+      this.about = options.about || defaults.about;
       this.type = options.type || defaults.type;
       this.rate = RateFactory.build(options.rate) || angular.copy(defaults.rate);
       this.shore = options.shore || defaults.shore;
@@ -87,7 +89,7 @@ angular.module('Mastermind.models.projects')
       shore: 'on',
       startDate: undefined,
       endDate: undefined,
-      assignee: undefined
+      person: undefined
     };
 
     function formatDate(date) {
@@ -113,7 +115,7 @@ angular.module('Mastermind.models.projects')
       this.percentage = options.percentage || defaults.percentage;
       this.startDate = options.startDate ? formatDate(options.startDate) : defaults.startDate;
       this.endDate = options.endDate ? formatDate(options.endDate) : defaults.endDate;
-      this.resource = options.resource || defaults.resource;
+      this.person = options.person || defaults.person;
     }
 
     return Assignment;

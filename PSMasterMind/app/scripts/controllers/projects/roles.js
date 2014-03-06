@@ -4,8 +4,8 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'AssignmentService', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
-  function ($scope, $filter, $q, RolesService, AssignmentService, RoleTypes, Rates, RateFactory, TableParams) {
+  .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
+  function ($scope, $filter, $q, RolesService, RoleTypes, Rates, RateFactory, TableParams) {
 
     $scope.editingRole = false;
     $scope.newRole = RolesService.create();
@@ -71,10 +71,6 @@ angular.module('Mastermind.controllers.projects')
     $scope.validateNewRole = function(){
       return RolesService.validateNewRole($scope.project, $scope.newRole);
     };
-
-    $scope.validateAssignments = function(assignments){
-        return AssignmentService.validateAssignments($scope.project, $scope.newRole, assignments);
-      };
 
 
     $scope.cancelAdd = function () {
@@ -210,134 +206,6 @@ angular.module('Mastermind.controllers.projects')
       //Update the tables
       $scope.roleTableParams.total($scope.project.roles.length);
       $scope.roleTableParams.reload();
-    };
-
-    /**
-     * Opens assign people panel
-     */
-    $scope.triggerAssignPeople = function (role, index) {
-		if($scope.assignToRoleIndex === index && $scope.assigningPeople){
-		    $scope.cancelAssignment();
-		} else {
-			/*
-			  //Close the new role dialog instance
-			  if($('#newRoleDialog').hasClass('in')){
-				  $('#newRoleDialog').collapse('hide');
-			  }
-		*/
-			if (!role.assignees || role.assignees.length == 0) {
-				role.assignees = [];
-				
-				var props = {
-		          startDate:$scope.project.startDate,
-		          endDate:$scope.project.endDate,
-		          rate: RateFactory.build($scope.newRole.rate.type)
-		        };
-				
-				if (role.assignee && role.assignee.resource)
-					_.extend(props, role.assignee);
-				
-				var newAssignee = AssignmentService.create(props)
-				
-				role.assignees.push(newAssignee)
-			}
-			  $scope.assigningPeople = true;
-			  $scope.assignToRoleIndex = index;
-			  $scope.assignmentsErrorMessages = [];
-		
-			  $scope.currentAssignedRole = role;
-			  $scope.originalAssignees = [];
-			  
-			  for (var i = 0; role.assignees && role.assignees.length && i < role.assignees.length; i ++) {
-				  $scope.originalAssignees.push(AssignmentService.create(role.assignees[i]))
-			  }
-		  }
-	};
-	
-	$scope.showAssignmentDetails = function (index, currentAssignee) {
-		$scope.selectedAssignee = currentAssignee; 
-		currentAssignee.showDetails = currentAssignee.showDetails ? false: true;
-		
-		for (var i = 0; i < $scope.currentAssignedRole.assignees.length; i ++) {
-			if ($scope.currentAssignedRole.assignees[i] != currentAssignee)
-				$scope.currentAssignedRole.assignees[i].showDetails = false;
-		}
-	}
-	
-	$scope.addNewAssignmentToRole =  function (index) {
-		
-		$scope.currentAssignedRole.assignees.push(AssignmentService.create({
-	          startDate:$scope.project.startDate,
-	          endDate:$scope.project.endDate,
-	          percentage: 0
-	        }))
-	}
-	
-	$scope.removeAssignmentToRole = function(index) {
-		if ($scope.currentAssignedRole.assignees.length > 1)
-			$scope.currentAssignedRole.assignees.splice(index, 1);
-		
-	}
-	
-	$scope.cancelAssignment = function () {
-		/*
-		//Close the new role dialog instance
-		if($('#newRoleDialog').hasClass('in')){
-			$('#newRoleDialog').collapse('hide');
-		}
-		*/
-		$scope.assigningPeople = false;
-		$scope.assignToRoleIndex = null;
-		$scope.assignmentsErrorMessages = [];
-		$scope.currentAssignedRole.assignees = $scope.originalAssignees;
-	};
-	
-	/**
-     * Update an existing role deinition
-     */
-    $scope.saveAssignment = function () {
-      //Validate new role
-      var errors = $scope.validateAssignments($scope.currentAssignedRole.assignees);
-      
-      if (errors.length > 0){
-        $scope.assignmentsErrorMessages = errors;
-      }
-      else {
-    	  /*
-        // Bubble an event up to add this role.
-        $scope.$emit('roles:change', $scope.editRoleIndex, $scope.newRole);
-
-        //Update the tables
-        $scope.roleTableParams.total($scope.project.roles.length);
-        $scope.roleTableParams.reload();
-        */
-    	  
-    	  // for backward compatibility set for role assignee in project entity properties props of first assignee
-    	  if ( $scope.currentAssignedRole.assignees &&  $scope.currentAssignedRole.assignees.length > 0) {
-    		  if ( !$scope.currentAssignedRole.assignee )
-    			  $scope.currentAssignedRole.assignee = {};
-    		  
-	    	  $scope.currentAssignedRole.assignee.resource = $scope.currentAssignedRole.assignees[0].resource;
-	    	  $scope.currentAssignedRole.assignee.startDate = $scope.currentAssignedRole.assignees[0].startDate;
-	    	  $scope.currentAssignedRole.assignee.endDate = $scope.currentAssignedRole.assignees[0].endDate;
-	    	  $scope.currentAssignedRole.assignee.percentage = $scope.currentAssignedRole.assignees[0].percentage;
-    	  }
-    		  
-		  $scope.assigningPeople = false;
-          $scope.assignToRoleIndex = null;
-
-          //Clear any messages
-          $scope.assignmentsMessages = [];
-          
-        // Create the new Assignments with setled properties
-        //AssignmentService.save($scope.project.startDate, $scope.project.endDate, $scope.currentAssignedRole.assignees);
-
-       
-
-        // Reset the form to being pristine.
-        for (var i = 0; i < 10 && $scope["newPersonToRoleForm" + i]; i ++ )
-        	$scope["newPersonToRoleForm" + i].$setPristine();
-      }
     };
 	
     $scope.$watch(function () {
