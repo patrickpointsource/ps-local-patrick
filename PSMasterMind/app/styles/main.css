@@ -6040,53 +6040,53 @@ main nav#nav-drawer ul li i {
   color: #434345;
   vertical-align: middle;
 }
-main article #content #today {
+main #today {
   margin-top: 50px;
   font-size: 24px;
 }
-main article #content #today #date {
+main #today #date {
   font-family: allerbold;
 }
-main article #content hr {
+main hr {
   height: 0.5px;
   color: #ccc;
   margin: 30px 0;
 }
-main article #content .dashboard-widget .dashboard-box {
+main .dashboard-widget .dashboard-box {
   box-sizing: border-box;
   height: 212px;
   text-align: center;
 }
-main article #content .dashboard-widget .dashboard-box.big-text {
+main .dashboard-widget .dashboard-box.big-text {
   font-size: 137px;
   line-height: 210px;
 }
-main article #content .dashboard-widget .dashboard-box.three-rows {
+main .dashboard-widget .dashboard-box.three-rows {
   line-height: 100px;
   overflow: hidden;
 }
-main article #content .dashboard-widget .dashboard-box.three-rows img {
+main .dashboard-widget .dashboard-box.three-rows img {
   height: 105px;
 }
-main article #content .dashboard-widget .dashboard-actions {
+main .dashboard-widget .dashboard-actions {
   position: relative;
   top: -5px;
 }
-main article #content .dashboard-label {
+main .dashboard-label {
   margin: 10px -15px;
   font-size: 24px;
   text-align: left;
 }
-main article #content #graph-header {
+main #graph-header {
   line-height: 30px;
 }
-main article #content #graph-header #graph-header-title {
+main #graph-header #graph-header-title {
   font-size: 24px;
 }
-main article #content #graph-header #graph-header-plus {
+main #graph-header #graph-header-plus {
   text-align: center;
 }
-main article #content #graph-header #graph-header-plus i {
+main #graph-header #graph-header-plus i {
   vertical-align: middle;
 }
 #mainContent {
