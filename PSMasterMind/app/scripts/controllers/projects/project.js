@@ -138,6 +138,7 @@ angular.module('Mastermind')
         	ProjectsService.getForEdit($scope.projectId).then(function(project){
                 $scope.project = project;
                 $scope.handleProjectSelected();
+                $rootScope.formDirty = false;
              });
         }, function (response) {
           if(response.data.reasons){
@@ -564,10 +565,10 @@ angular.module('Mastermind')
        * Controls the edit state of the project form (an edit URL param can control this from a URL ref)
        */
       $scope.editMode = editMode;
-      $rootScope.formDirty = editMode;
       $scope.projectLoaded = true;
-
       $scope.submitAttempted = false;
+      
+      
 
       // The title of the page is the project's name or 'New Project' if transient.
       $scope.title = $scope.isTransient ? 'New Project' : project.name;
@@ -685,7 +686,30 @@ angular.module('Mastermind')
         }
         $scope.servicesLoadedTotal = runningTotal;
       }
-
+      
+      
+      //Watch for model changes
+      if(editMode){
+    	  var sentinel = $scope.sentinel;
+    	  if(sentinel){
+    		  sentinel();  //kill sentinel
+    	  }
+    	  
+    	  //Create a new watch
+    	  $scope.sentinel = $scope.$watch('project', function(newValue, oldValue){
+	    	  //console.debug(JSON.stringify(oldValue) + ' changed to ' + JSON.stringify(newValue));
+	    	  if(!$rootScope.formDirty && $scope.editMode){
+	    		  var oldStr = JSON.stringify(oldValue);
+	    		  var newStr = JSON.stringify(newValue);
+	    		  
+	    		  if(oldStr != newStr){
+	    			  console.debug('project is now dirty');
+	    			  $rootScope.formDirty = true;
+	    		  }
+	    	  }
+	    	 
+	      },true);
+      }
     };
 
 

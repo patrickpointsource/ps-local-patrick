@@ -11,16 +11,12 @@
 		<div class="col-xs-12"><h4>Schedule:</h4></div>
 	</div>
     <div class="row">
-    		<div class="col-xs-12 col-md-4">
-	            <label>State:</label> {{projectState(project)}}
-	        </div>
-	       <div class="col-xs-12 col-sm-6 col-md-4">
-	            <label>Start Date:</label> {{project.startDate | date}}
-	        </div>
-	        <div class="col-xs-12 col-sm-6 col-md-4">
-	            <label>End Date:</label> {{project.endDate | date}}
-		    </div>
-	    
+       <div class="col-xs-12 col-sm-6">
+            <label>Start Date:</label> {{project.startDate | date}}
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <label>End Date:</label> {{project.endDate | date}}
+	    </div>
     </div>
     <div class="row">
 		<div class="col-xs-12"><h4>Description:</h4></div>
