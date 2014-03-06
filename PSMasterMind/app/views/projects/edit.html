@@ -7,7 +7,7 @@
     <div class="actions col-sm-5 col-md-4 col-lg-3 hidden-xs pageActions">
       <button class="btn" data-toggle="collapse" data-target="#projectDelete" ng-show="canDeleteProject"><i class="fa fa-trash-o"></i> <span>Delete</span></button>
         <button class="btn" ng-click="cancel()"><i class="fa fa-chevron-left"></i> <span>Cancel</span></button>
-      <button class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
+      	<button class="btn" ng-click="save()"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
     </div>
     <div class="actions col-xs-6 visible-xs pageActions">
       <button class="btn" data-toggle="collapse" data-target="#projectDelete"><i class="fa fa-trash-o"></i> </button>
@@ -33,8 +33,8 @@
     </div>
   </div>
 
-  <div id="messages" class="alert alert-danger" ng-show="messages.length > 0">
-    <!--  <a class="close" data-dismiss="alert">&times;</a> -->
+  <div id="messages" class="alert alert-danger" style="display:none">
+    <a class="close" ng-click="hideMessages()">&times;</a>
     <ul>
       <li ng-repeat="message in messages">{{message}}</li>
     </ul>

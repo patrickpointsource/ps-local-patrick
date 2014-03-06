@@ -219,6 +219,8 @@ angular.module('Mastermind').factory(
 
             //console.log('PUT '+resourceURL+'='+localStorage[resourceURL]);
             deferred.resolve(newResult);
+          }, function(reason){
+        	  deferred.reject(reason);
           });
 
         }, 10);

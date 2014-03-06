@@ -83,6 +83,33 @@ angular.module('Mastermind')
         }
     }
     
+    /**
+     * Hide the messages dialog
+     */
+    $scope.hideMessages = function(){
+    	$scope.messages = null;
+    	 $('#messages').hide();
+    };
+    
+    /**
+     * Show a page level info message
+     */
+    $scope.showInfo = function(messages){
+    	 $('#messages').removeClass('alert-danger');
+    	 $('#messages').addClass('alert-info');
+    	 $scope.messages = messages;
+    	 $('#messages').show();
+    }
+    
+    /**
+     * Show a page level error message
+     */
+    $scope.showErrors = function(messages){
+    	 $('#messages').removeClass('alert-info');
+    	 $('#messages').addClass('alert-danger');
+    	 $scope.messages = messages;
+    	 $('#messages').show();
+    }
     
     /**
      * Save the loaded project.
@@ -107,20 +134,22 @@ angular.module('Mastermind')
         };
 
         ProjectsService.save($scope.project).then(function () {
-          //Unset dirty flag
-          $rootScope.formDirty = false;
-        	
-          if($scope.isTransient){
-            $state.go('projects.index');
-          }
-          else{
-            $state.go('projects.show', {projectId:$scope.projectId, edit:null});
-          }
+        	$scope.showInfo(['Project successfully saved']);
+        	ProjectsService.getForEdit($scope.projectId).then(function(project){
+                $scope.project = project;
+                $scope.handleProjectSelected();
+             });
         }, function (response) {
-          var BAD_REQUEST = 400;
-
-          if (response.status === BAD_REQUEST) {
-            $scope.messages = response.data.reasons;
+          if(response.data.reasons){
+        	  $scope.showErrors(response.data.reasons);
+          }
+          else if(response.status && response.data && response.data.message){
+        	  var error = response.status + ": " + response.data.message;
+        	  $scope.showErrors([error]);
+          }
+          else if(response.status && response.data){
+        	  var error = response.status + ": " + JSON.stringify(response.data);
+        	  $scope.showErrors([error]);
           }
         });
 
