@@ -15,6 +15,7 @@ public interface CONSTS {
 	public String RESOURCE_PROJECTS = "projects";
 	public String RESOURCE_ROLES = "roles";
 	public String RESOURCE_SKILLS = "skills";
+	public String RESOURCE_ASSIGNMENTS = "assignments";
 	
 	/**
 	 * Request Paramter Names
@@ -133,6 +134,7 @@ public interface CONSTS {
 	public String RESOURCE_TITLE_ROLES = "Roles";
 	public String RESOURCE_TITLE_SKILLS = "Skills";
 	public String RESOURCE_TITLE_HOURS = "Hours";
+	public String RESOURCE_TITLE_ASSIGNMENTS = "Assignments";
 	
 	/**
 	 * Mongo Constants
@@ -148,6 +150,8 @@ public interface CONSTS {
 		public String DB_NAME_DEFAULT  = "mm_db_stage";
 	//Local Host
 		public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
+		// TODO: revert it 
+		//public String WEB_SITE_URL = "http://localhost:9000";
 		public String WEB_SITE_URL = "http://0.0.0.0:9000";
 	//Staging Only
 		//public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindStaging/";

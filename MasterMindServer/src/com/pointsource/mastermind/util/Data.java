@@ -639,6 +639,36 @@ public class Data implements CONSTS {
 		return ret;
 	}
 	
+	public static JSONArray getProjectRoles(RequestContext context, String id) 
+			throws JSONException {
+		JSONObject project = getProject(context, id);
+		JSONArray ret = null;
+		
+		if (project.has(PROP_ROLES))
+			ret = project.getJSONArray(PROP_ROLES);
+		
+		return ret;
+	}
+	
+	public static JSONObject getProjectRoleById(RequestContext context, String id, String roleId) 
+			throws JSONException {
+		JSONObject ret = null;
+		
+		JSONObject project = getProject(context, id);
+		JSONArray roles = project.has(PROP_ROLES) ? project.getJSONArray(PROP_ROLES): null;
+		JSONObject role = null;
+		
+		for (int i = 0; i < roles.length(); i ++){
+			role = roles.getJSONObject(i);
+			
+			if (role.has(PROP__ID) && role.get(PROP__ID).toString() == roleId) {
+				ret = role;
+				break;
+			}
+		}
+		return ret;
+	}
+	
 	/**
 	 * Get project assignments by passed role
 	 * 
@@ -648,9 +678,9 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONArray getProjectAssignments(RequestContext context, String projectId, String roleId) 
+	public static JSONObject getProjectAssignments(RequestContext context, String projectId) 
 			throws JSONException {
-		JSONArray ret = new JSONArray();
+		JSONObject ret = null;
 
 		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		
@@ -661,18 +691,12 @@ public class Data implements CONSTS {
 		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE,
 				projectResourceURL);
 		queryObject.put(PROP_PROJECT, resourceQuery);
-		queryObject.put("role",  new BasicDBObject(PROP_RESOURCE, "projectRoles/" + roleId));
+		
+		DBObject object = assignmentsCol.findOne(queryObject);
 
-		DBCursor cursur = assignmentsCol.find(queryObject);
-
-
-		while (cursur.hasNext()) {
-			DBObject object = cursur.next();
+		if (object != null) {
 			String json = JSON.serialize(object);
-			JSONObject jsonObject = new JSONObject(json);
-
-			
-			ret.put(jsonObject);	
+			ret = new JSONObject(json);
 		}
 
 		return ret;
@@ -911,18 +935,6 @@ public class Data implements CONSTS {
 			ret = new JSONObject(json);
 
 			ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
-		}
-
-		if (ret.has(PROP_ROLES)) {
-			JSONArray roles = ret.getJSONArray(PROP_ROLES);
-			JSONObject role;
-			
-			for (int i = 0; i < roles.length(); i ++) {
-				role = roles.getJSONObject(i);
-				
-				if (!role.has("assignees") && role.has(PROP__ID))
-					role.put("assignees", Data.getProjectAssignments(context, id, role.getString(PROP__ID)));
-			}
 		}
 		
 		return ret;
@@ -1312,8 +1324,8 @@ public class Data implements CONSTS {
 	 * @param newRole
 	 * @throws JSONException
 	 */
-	public static JSONObject createProjectAssignment(RequestContext context, String projectId, String roleId,
-			JSONObject newAssignment) throws JSONException {
+	public static JSONObject createProjectAssignments(RequestContext context, String projectId, 
+			JSONArray assignments) throws JSONException {
 
 		// Only admins can create roles
 		if (!hasAdminAccess(context)) {
@@ -1323,10 +1335,31 @@ public class Data implements CONSTS {
 							.build());
 		}
 		
+		ObjectId id = null;
+		JSONObject assignment = null;
+		
+		for (int i = 0; i < assignments.length(); i ++){
+			assignment = assignments.getJSONObject(i);
+			
+			if (!assignment.has(PROP__ID)) {
+				id = new ObjectId();
+				assignment.put(PROP__ID, id);
+			}
+			
+			if (!assignment.has(PROP_ABOUT)) {
+				assignment.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + projectId +
+						"/" + RESOURCE_ASSIGNMENTS + "/" + assignment.get(PROP__ID).toString());
+			}
+			
+		}
+		
+		JSONObject newAssignment = new JSONObject();
+		
 		newAssignment.put(PROP_PROJECT, new BasicDBObject(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + projectId));
 		newAssignment.put(PROP_ETAG, "0");
-		newAssignment.put("role",  new BasicDBObject(PROP_RESOURCE, "projectRoles/" + roleId));
-
+		newAssignment.put(PROP_MEMBERS, assignments);
+		newAssignment.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + projectId + "/" + RESOURCE_ASSIGNMENTS);
+		
 		String json = newAssignment.toString();
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
@@ -1883,6 +1916,16 @@ public class Data implements CONSTS {
 					.entity(error.getErrorMessage()).build());
 		}
 	}
+	
+	public static JSONObject syncProjectAssignments(RequestContext context,  String id, JSONObject projectAssignment)
+			throws JSONException {
+		
+		deleteProjectAssignments(context, id);
+		
+		JSONArray assignments = projectAssignment.has(PROP_MEMBERS)? projectAssignment.getJSONArray(PROP_MEMBERS): new JSONArray();
+		
+		return createProjectAssignments(context, id, assignments);	
+	}
 
 //	public static void synchDefaultRoles(RequestContext context)
 //			throws JSONException {
@@ -2222,45 +2265,25 @@ public class Data implements CONSTS {
 		}
 	}
 	
-	public static void refreshProjectAssignments(RequestContext context,  String id, JSONObject project)
-			throws JSONException {
-		JSONArray roles = (JSONArray) project.get("roles");
-		
-		if (id == "") {
-			id = (project.get(PROP__ID)).toString();
-		}
-		
-		deleteProjectAssignments(context, id);
-		
-		JSONObject role = null;
-		JSONArray assignees = null;
-		String roleId;
-		
-		for (int i = 0; i < roles.length(); i ++) {
-			role = roles.getJSONObject(i);
-			assignees =  role.has("assignees") ? (JSONArray)role.get("assignees"): null;
-			roleId = role.has(PROP__ID) ? ((Object)role.get(PROP__ID)).toString(): "";
-			
-			for (int j = 0; assignees != null && j < assignees.length(); j ++)
-				createProjectAssignment(context, id, roleId, (JSONObject)assignees.get(j));
-			
-			// clean this property to prevent duplication
-			role.remove("assignees");
-		}
-	
-	}
-	
 	public static void refreshRoleIds (JSONObject project)
 			throws JSONException {
 		JSONArray roles = (JSONArray) project.get("roles");
 		JSONObject role = null;
+		ObjectId id;
 		
 		for (int i = 0; i < roles.length(); i ++) {
 			role = roles.getJSONObject(i);
+
+			if (role != null && !role.has(PROP__ID)) {
+				id = new ObjectId();
+				role.put(PROP__ID, id);
+			}
 			
-			
-			if (role != null && !role.has(PROP__ID))
-				role.put(PROP__ID, new ObjectId());
+			if (role != null && !role.has(PROP_ABOUT) && project.has(PROP_ABOUT)) {
+				role.put(PROP_ABOUT, project.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
+			} /*else if (role != null && !role.has(PROP_ABOUT) && !project.has(PROP_ABOUT)) {
+				role.put(PROP_ABOUT,RESOURCE_PROJECTS + "/" + RESOURCE_ROLES + "/" + role.get(PROP__ID).toString());
+			}*/
 		}
 	}
 

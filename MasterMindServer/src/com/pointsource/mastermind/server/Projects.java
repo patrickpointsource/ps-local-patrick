@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.wink.common.annotations.Workspace;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -91,7 +92,9 @@ public class Projects extends BaseResource {
 				if (ret == null) {
 					throw new WebApplicationException(Status.NOT_FOUND);
 				}
-
+				
+				// after creation of new project role about property will be empty - fix this if needed
+				Data.refreshRoleIds(ret);
 				
 				URI baseURI = context.getBaseURI();
 				ret.put(CONSTS.PROP_BASE, baseURI);
@@ -156,6 +159,145 @@ public class Projects extends BaseResource {
 
 				ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS + "/" + id + "/"
 						+ CONSTS.RESOURCE_LINKS);
+				
+				String str = Data.escapeJSON(ret.toString());
+				return Response.ok(str).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * GET assignments associated with a project by id
+	 * 
+	 * The list of project assignments
+	 */
+	@GET
+	@Path("{id}/" + CONSTS.RESOURCE_ASSIGNMENTS)
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getAssignments(@PathParam("id") String id, @QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query, @QueryParam(CONSTS.REQUEST_PARAM_NAME_FIELDS)String fields) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = Data.getProjectAssignments(context, id);
+				
+				String str = null;
+				
+				if (ret != null) {
+					URI baseURI = context.getBaseURI();
+					
+					
+					ret.put(CONSTS.PROP_BASE, baseURI);
+					ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS + "/" + id + "/"
+							+ CONSTS.RESOURCE_ASSIGNMENTS);
+					
+					str = Data.escapeJSON(ret.toString());
+					
+					return Response.ok(str).build();
+				} 
+				
+				return Response.ok().build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * GET roles associated with a project by id
+	 * 
+	 * The list of project roles with assignments
+	 */
+	@GET
+	@Path("{id}/" + CONSTS.RESOURCE_ROLES)
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getRoles(@PathParam("id") String id) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = new JSONObject();
+				JSONArray roles = Data.getProjectRoles(context, id);
+				
+				URI baseURI = context.getBaseURI();
+				
+				ret.put(CONSTS.PROP_DATA, roles);
+				ret.put(CONSTS.PROP_BASE, baseURI);
+
+				ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS + "/" + id + "/"
+						+ CONSTS.RESOURCE_ROLES);
+				
+				String str = Data.escapeJSON(ret.toString());
+				return Response.ok(str).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * GET role by id and owned by project id
+	 * 
+	 * The list of project roles with assignments
+	 */
+	@GET
+	@Path("{id}/" + CONSTS.RESOURCE_ROLES + "/{rid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getRoleById(@PathParam("id") String id, @PathParam("rid") String rid) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				JSONObject ret = new JSONObject();
+				
+				
+				URI baseURI = context.getBaseURI();
+				
+				ret.put(CONSTS.PROP_DATA, Data.getProjectRoleById(context, id, rid));
+				ret.put(CONSTS.PROP_BASE, baseURI);
+
+				ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS + "/" + id + "/"
+						+ CONSTS.RESOURCE_ROLES + "/" + rid);
+				
+				String str = Data.escapeJSON(ret.toString());
+				return Response.ok(str).build();
+			} catch (WebApplicationException e) {
+				return handleWebApplicationException(e);
+			} catch (Exception e) {
+				return handleInternalServerError(e);
+			}
+		} catch (JSONException e) {
+			return handleJSONException(e);
+		}
+	}
+	
+	/**
+	 * PUT projects/:pid/roles/:rid
+	 * 
+	 * @param pid id of a project
+	 * @param projectAssignment assignment entity
+	 */
+	@PUT
+	@Path("{pid}/" + CONSTS.RESOURCE_ASSIGNMENTS)
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	public Response updateAssignments(@PathParam("pid") String pid, JSONObject projectAssignment) {
+		try {
+			try {
+				RequestContext context = getRequestContext();
+				
+				JSONObject ret = Data.syncProjectAssignments(context, pid, projectAssignment);
 				
 				String str = Data.escapeJSON(ret.toString());
 				return Response.ok(str).build();
@@ -240,8 +382,6 @@ public class Projects extends BaseResource {
 				
 				JSONObject ret = Data.createProject(newProject);
 				
-				Data.refreshProjectAssignments(context, "", newProject);
-				
 				String about = Data.unescapeJSON(ret
 						.getString(CONSTS.PROP_ABOUT));
 
@@ -306,7 +446,6 @@ public class Projects extends BaseResource {
 				RequestContext context = getRequestContext();
 				Validator.canUpdateProject(context, newProject);
 				Data.refreshRoleIds(newProject);
-				Data.refreshProjectAssignments(context, id, newProject);
 				
 				JSONObject json = Data.updateProject(context, id, newProject);
 				
