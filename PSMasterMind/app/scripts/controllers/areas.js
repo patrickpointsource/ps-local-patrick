@@ -136,7 +136,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     		if(endDate < today){
     			ret = 'Done';
     		}
-    		else if(type!='paid'){
+    		else if(type && type!="paid"){
     			ret = 'Investment';
     		}
     		else if(!committed){

@@ -17,13 +17,19 @@ angular.module('Mastermind.controllers.projects')
       
       //Filter just the active projects
       if (filter === 'active'){       
-        ProjectsService.getActiveProjects(reloadProjects);
+        ProjectsService.getActiveClientProjects(reloadProjects);
       }
       else if (filter === 'backlog'){       
-          ProjectsService.getProjectsBacklog(reloadProjects);
+          ProjectsService.getBacklogProjects(reloadProjects);
       }
       else if (filter == 'pipeline') {
           ProjectsService.getPipelineProjects(reloadProjects);
+      }
+      else if (filter == 'investment') {
+          ProjectsService.getInvestmentProjects(reloadProjects);
+      }
+      else if (filter == 'completed') {
+          ProjectsService.getCompletedProjects(reloadProjects);
       }
       else {
         //Default to all
