@@ -188,20 +188,22 @@ public class Projects extends BaseResource {
 				
 				String str = null;
 				
-				if (ret != null) {
-					URI baseURI = context.getBaseURI();
+				// in case when project assignments doesn't exist's create new one
+				if (ret == null)
+					ret = Data.createProjectAssignments(context, id, new JSONArray());	
 					
-					
-					ret.put(CONSTS.PROP_BASE, baseURI);
-					ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS + "/" + id + "/"
-							+ CONSTS.RESOURCE_ASSIGNMENTS);
-					
-					str = Data.escapeJSON(ret.toString());
-					
-					return Response.ok(str).build();
-				} 
 				
-				return Response.ok().build();
+				URI baseURI = context.getBaseURI();
+				
+				
+				ret.put(CONSTS.PROP_BASE, baseURI);
+				ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS + "/" + id + "/"
+						+ CONSTS.RESOURCE_ASSIGNMENTS);
+				
+				str = Data.escapeJSON(ret.toString());
+				
+				
+				return Response.ok(str).build();
 			} catch (WebApplicationException e) {
 				return handleWebApplicationException(e);
 			} catch (Exception e) {

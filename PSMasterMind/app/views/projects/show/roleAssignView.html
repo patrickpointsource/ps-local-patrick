@@ -1,24 +1,34 @@
-
-
 <div class="row" ng-repeat="currentAssignee in role.assignees" 
 	ng-show="role.assignees && role.assignees.length > 0 && role.assignees[0].person && role.assignees[0].person.resource">
-	<div class="col-xs-2 col-sm-2 form-group" ng-class="{error: isFieldInError('role')}">
+	
+	<div class="col-xs-5 col-sm-2 form-group" ng-class="{error: isFieldInError('role')}">
 	     <span >{{getPersonName(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble)}}</span>               
 	</div>
-	<div class="col-xs-2 col-sm-2 form-group"
+	
+	<div class="col-xs-12 col-sm-2 form-group hidden-xs">
+		<label for="assigneePercentage">Percentage: <span class="text-muted">{{currentAssignee.percentage}}%</span></label>
+		
+	</div>
+	<div class="col-xs-3 col-sm-2 form-group visible-xs">
+		<small>{{currentAssignee.percentage}}%</small>
+		
+	</div>
+	
+	<div class="col-xs-12 col-sm-3 form-group hidden-xs"
 		ng-class="{error: isFieldInError('role')}">
 		<label class="required-label control-label" for="assigneeStartDate">
-			Start Date: <span class="text-muted">{{currentAssignee.startDate}}</span>
+			Start Date: <span class="text-muted">{{currentAssignee.startDate | date:'longDate'}}</span>
 		</label> 
 		
 	</div>
-	<div class="col-xs-2 col-sm-2 form-group">
-		<label for="assigneeEndDate">End Date: <span class="text-muted">{{currentAssignee.endDate}}</span></label>
+	<div class="col-xs-12 col-sm-3 form-group hidden-xs">
+		<label for="assigneeEndDate">End Date: <span class="text-muted">{{currentAssignee.endDate | date:'longDate'}}</span></label>
 		
 	</div>
-	<div class="col-xs-2 col-sm-2 form-group">
-		<label for="assigneePercentage">Percentage: <span class="text-muted">{{currentAssignee.percentage}}%</span></label>
-		
+	<div class="col-xs-4 col-sm-3 form-group visible-xs">
+		<small>{{currentAssignee.startDate | date:'shortDate'}}</small>
+         <span ng-show="role.endDate">-<br><small>{{currentAssignee.endDate | date:'shortDate'}}</small></span>
+         <span ng-hide="role.endDate">- N/A</span>
 	</div>
 	
 </div>

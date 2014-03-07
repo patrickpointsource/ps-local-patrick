@@ -1,7 +1,7 @@
 
 
-<div class="row" ng-repeat="currentAssignee in role.assignees">
-	<div class="col-xs-2 col-sm-2 form-group" ng-class="{error: isFieldInError('role')}">
+<div class="row well" ng-repeat="currentAssignee in role.assignees">
+	<div class="col-sm-2 col-xs-12 form-group" ng-class="{error: isFieldInError('role')}">
 		<label class="required-label control-label" for="person">Person:</label>
 		
 		<select ng-model="currentAssignee.person.resource"
@@ -10,7 +10,14 @@
                  class="form-control" name="person">
          </select>
 	</div>
-	<div class="col-xs-2 col-sm-2 form-group"
+	
+	<div class="col-sm-2 col-xs-12 form-group">
+		<label for="assigneePercentage">Percentage: <span class="text-muted">{{currentAssignee.percentage}}%</span></label>
+		<input id="assigneePercentage" class="form-control" type="number"
+			ng-model="currentAssignee.percentage" ng-pattern="/\d+(\.\d{1,2})?/">
+	</div>
+	
+	<div class="col-sm-2 col-xs-12 form-group"
 		ng-class="{error: isFieldInError('role')}">
 		<label class="required-label control-label" for="assigneeStartDate">
 			Start Date: <span class="text-muted">{{currentAssignee.startDate}}</span>
@@ -23,7 +30,7 @@
 			data-provide="datepicker" data-date-format="yyyy-mm-dd"
 			ng-required="true">
 	</div>
-	<div class="col-xs-2 col-sm-2 form-group">
+	<div class="col-sm-2 col-xs-12 form-group">
 		<label for="assigneeEndDate">End Date: <span class="text-muted">{{currentAssignee.endDate}}</span></label>
 		<input id="assigneeEndDate" class="form-control datepicker" type="text"
 			ng-model="currentAssignee.endDate"
@@ -31,18 +38,15 @@
 			data-date-end-date="{{project.endDate}}" todayBtn="true"
 			data-provide="datepicker" data-date-format="yyyy-mm-dd">
 	</div>
-	<div class="col-xs-2 col-sm-2 form-group">
-		<label for="assigneePercentage">Percentage: <span class="text-muted">{{currentAssignee.percentage}}%</span></label>
-		<input id="assigneePercentage" class="form-control" type="number"
-			ng-model="currentAssignee.percentage" ng-pattern="/\d+(\.\d{1,2})?/">
-	</div>
-	<div class="col-xs-2 col-sm-2 form-group" style="padding-top: 25px;">
+	
+	<div class="col-sm-2 col-xs-12 form-group" style="padding-top: 25px;">
         <button class="btn btn-default" ng-click="addNewAssignmentToRole($index, role)">
             <i class="fa fa-plus"></i>
         </button>
-        <button class="btn btn-default" ng-click="removeAssignmentToRole($index, role)">
+        <button ng-show="role.assignees.length > 1" class="btn btn-default" ng-click="removeAssignmentToRole($index, role)">
             <i class="fa fa-minus"></i>
         </button>
 	</div>
+	
 </div>
 	

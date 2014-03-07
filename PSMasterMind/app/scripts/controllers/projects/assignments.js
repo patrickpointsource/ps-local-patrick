@@ -54,6 +54,8 @@ angular.module('Mastermind.controllers.projects')
 		for (var i = 0; i < $scope.project.roles.length; i ++) {
          	role = $scope.project.roles[i];
          	role.assignees = role.originalAssignees;
+         	
+         	delete role.originalAssignees;
 		}
 		
 		$scope.editMode = false;
@@ -107,10 +109,9 @@ angular.module('Mastermind.controllers.projects')
       for (var i = 0; i < $scope.project.roles.length; i ++)
         	errors = errors.concat($scope.validateAssignments($scope.project.roles[i].assignees))
     	  
-      if (errors.length > 0){
+      if (errors.length > 0)
         $scope.assignmentsErrorMessages = _.uniq(errors);
-      } else {
-    	 
+      else {
     	  var assignments = [];
     	  var role;
     	  
@@ -125,16 +126,12 @@ angular.module('Mastermind.controllers.projects')
           	}
           	
           	// remove empty assignments
-          	if (role.assignees.length > 1) {
-          		for (var j = role.assignees.length - 1; j >= 0; j --) {
-          		  
-          		  
-          		  if (!role.assignees[j].percentage && !(role.assignees[j].person && role.assignees[j].person.resource))
-          			role.assignees.splice(j, 1)
-          	  }
-          	}
-          	
-          	assignments = assignments.concat(role.assignees);
+          	assignments = assignments.concat(_.filter(role.assignees, function(a){
+          		if (!a.percentage && !(a.person && a.person.resource))
+          			 return false
+          			 
+          		return true;
+          	}));
           	
           	if (role.originalAssignees) 
           		delete role.originalAssignees;
@@ -149,7 +146,15 @@ angular.module('Mastermind.controllers.projects')
 
           //if (assignments.length > 0) {
     	  $scope.projectAssignment.members = assignments;
-    	  AssignmentService.save($scope.project, $scope.projectAssignment);
+    	  
+    	  AssignmentService.save($scope.project, $scope.projectAssignment).then(function() {
+    		  $scope.showInfo(['Assignments successfully saved']);
+    		  
+    		  window.setTimeout(function(){
+    			  $scope.hideMessages();
+    		  }, 7 * 1000)
+    	  })
+    	 
           //}
 
        

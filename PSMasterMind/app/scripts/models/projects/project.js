@@ -83,10 +83,8 @@ angular.module('Mastermind.models.projects')
      * @type {{rate: HourlyRate, shore: string}}
      */
     var defaults = {
-    	about: "assignments",
+      about: undefined,
       type: undefined,
-      rate: RateFactory.build(Rates.HOURLY),
-      shore: 'on',
       startDate: undefined,
       endDate: undefined,
       person: undefined
