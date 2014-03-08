@@ -110,7 +110,7 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
      * Next, with the list of backlog projects, create a table with the resource deficit on these projects.
      * 
      */
-    ProjectsService.getBacklogClientProjects(function(result){
+    ProjectsService.getBacklogProjects(function(result){
     	$scope.projectBacklog = result;
         $scope.backlogCount = result.count;
         $scope.backlogProjectsList = [];
