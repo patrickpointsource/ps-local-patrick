@@ -83,12 +83,38 @@ angular.module('Mastermind')
         Resources.query('people',pepInRolesQuery,pepInRolesFields,onSuccess);
       });
     }
-   
+    
+    
+    /**
+     * Returns a list of people per role for display 
+     * 
+     * role: is the URI for a role i.e. 'roles/{roleid}'
+     * fields: if the mongo filter to limit the fields returned for each person
+     */
+    function getPeoplePerRole(role, fields){
+    	var deferred = $q.defer();
+    	
+    	var pepInRolesQuery = {};
+    	if(role){
+    		pepInRolesQuery = {'primaryRole.resource':role};
+    	}
+    	else{
+    		pepInRolesQuery = {'primaryRole.resource':{$exists:true}};
+    	}
+    	
+    	Resources.query('people',pepInRolesQuery,fields,function(result){
+    		deferred.resolve(result);
+    	});
+    	
+    	return deferred.promise;
+    }
+    
 
     return {
       query: query,
       get: get,
       getActivePeople: getActivePeople,
+      getPeoplePerRole: getPeoplePerRole,
       getPerson: getPerson
     };
   }]);

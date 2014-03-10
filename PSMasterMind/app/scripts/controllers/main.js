@@ -100,59 +100,54 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     		}
     	}  	
     }
+    
+    
+    /**
+     * Get the set of roles to display in the filter options drop down
+     */
+    /**
+     * Get All the Role Types
+     */
+    Resources.get('roles').then(function(result){
+	      var roleGroups = {};
+	      //Save the list of role types in the scope
+	      $scope.rolesFilterOptions = result.members;
+	      //Get list of roles to query members
+	      for(var i = 0; i < result.members.length;i++){
+	        var role = result.members[i];
+	        var resource = role.resource;
+	        roleGroups[resource] = role;
+	      }
+	      $scope.roleGroups = roleGroups;
+	
+	      //Kick off fetch all the people
+	     // $scope.buildTableView();
+    });
 
     /**
      * Find available people given the active projects
      */
     var findNineAvailablePeople = function () {
-        var pepInRolesQuery = {'primaryRole.resource':{$exists:true}};
-        //console.log("pepInRolesQuery",pepInRolesQuery);
-        var pepInRolesFields = {resource:1,name:1,primaryRole:1,thumbnail:1};
-
-        Resources.query('people',pepInRolesQuery,pepInRolesFields,function(peopleResult){
-          	//console.log("peopleResult:", peopleResult);
-            var people = peopleResult.members;
-            var activePeople = [];
-            var activeProjects = $scope.activeProjects.data;
-            //console.log("activeProjects:", activeProjects);
-            //Loop through all the active projects
-            for(var m = 0; m < activeProjects.length; m++){
-              var roles = activeProjects[m].roles;
-              if(roles){
-                //Loop through all the roles in the active projects
-                for(var a = 0; a < roles.length; a++){
-                  var activeRole = roles[a];
-                  if(activeRole.assignee && activeRole.assignee.resource &&
-                      activePeople.indexOf(activeRole.assignee.resource) === -1){
-                    //Push the assignnee onto the active list
-                    activePeople.push(activeRole.assignee.resource);
-                  }
-                }
-              }
-            }
-
-            //Shuffle people
+		  var peopleFilter = $scope.peopleFilter;
+		  var fields = {resource:1,name:1,primaryRole:1,thumbnail:1};
+		  People.getPeoplePerRole(peopleFilter, fields).then(function(peopleResult){
+			  var people = peopleResult.members;
+			//Shuffle people
             for(var j, x, i = people.length; i; j = Math.floor(Math.random() * i)){
               x = people[--i];
               people[i] = people[j];
               people[j] = x;
             }
 
-            var inactivePeople = [];
-            var cnt = 0;
-            //Find the first 9 people not active
-            for(var g = 0; g < people.length; g++){
-              var preson = people[g];
-              if(activePeople.indexOf(preson.resource) === -1){
-                inactivePeople[cnt++] = preson;
-                if(cnt === 9){
-                  break;
-                }
-              }
-            }
-          
-            $scope.availablePeople =  inactivePeople;
-        });
+            $scope.availablePeople =  people.slice(0,8);
+		  });
+    };
+    
+    /**
+     * Handle a change to the role selector on the people view
+     */
+    $scope.handlePeopleFilterChanged = function(){
+    	findNineAvailablePeople();
     };
     
     /**
