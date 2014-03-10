@@ -65,7 +65,8 @@ angular.module('Mastermind.controllers.people')
             }
           });
         }
-        else {
+        //Check if the filter is a valid role
+        else if($scope.roleGroups && $scope.roleGroups[$scope.peopleFilter]){
           var peopleInRoleQuery = {'primaryRole.resource':$scope.peopleFilter};
           var peopleInRoleFields = {resource:1, name:1, familyName:1, givenName: 1, primaryRole:1, thumbnail:1};
 
@@ -84,6 +85,22 @@ angular.module('Mastermind.controllers.people')
               $scope.tableParams.reload();
             }
           });
+        }
+        //Otherwise just show all
+        else{
+        	var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
+            Resources.query('people', {}, fields, function(result){
+              $scope.people = result.members;
+
+              //Reload the table
+              if (!$scope.tableParams){
+                $scope.tableParams = getTableData();
+              }
+              else{
+                $scope.tableParams.total($scope.people.length);
+                $scope.tableParams.reload();
+              }
+            });
         }
       };
 
