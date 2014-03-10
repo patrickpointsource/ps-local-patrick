@@ -5,12 +5,12 @@
 				class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 				<div class="panel panel-default dashboard-widget">
 					<div class="panel-heading">
-						<a href="#{{me.about}}">My Active Projects</a>
+						<a href="#{{me.about}}">My Current Projects</a>
 					</div>
 					<div class="panel-body">
 						<ul ng-repea>
 							<li ng-repeat="project in myActiveProjects"><a
-								ng-href="#{{project.resource}}">{{project.name}}</a></li>
+								ng-href="#{{project.resource}}"><i class="{{projectStateIcon(project)}}"></i> {{project.customerName}}: {{project.name}}</a></li>
 						</ul>
 					</div>
 				</div>

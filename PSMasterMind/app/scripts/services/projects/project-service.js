@@ -165,22 +165,89 @@ angular.module('Mastermind.services.projects')
         return Resources.query('projects', apQuery, apFields, onSuccess);
     };
    
+    
+    /**
+     * Get today for queries
+     */
+    this.getToday = function(){
+    	//Get todays date formatted as yyyy-MM-dd
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd<10){
+          dd='0'+dd;
+        }
+        if (mm<10){
+          mm='0'+mm;
+        }
+        today = yyyy+'-'+mm+'-'+dd;
+        
+        return today;
+    };
+    
+    /**
+     * Get My Active Projects (projects I have a current role on)
+     */
+    this.getMyCurrentProjects = function(me){
+    	var deferred = $q.defer();
+    	var startDateQuery = this.getToday();
+    	
+    	var apQuery = {
+    			members:{
+    				'$elemMatch':{
+    					person:{
+    						resource:me.about
+    					},
+    					startDate:{
+    						$lte:startDateQuery
+    					},
+    					$or:[
+    					     {
+    					    	 endDate:{
+    					    		 $exists:false
+    					    	}
+    					     },
+    					     {
+    					    	 endDate:{
+    					    		 $gt:startDateQuery
+    					    	 }
+    					     }
+    					     ]
+    					}
+    			}
+    	};
+        var apFields = {project:1};
+        Resources.query('assignments', apQuery, apFields, function(result){
+        	var assignments = result.data;
+        	var myProjects = [];
+        	for(var i = 0; i < assignments.length;i++){
+        		var assignment = assignments[i];
+        		if (assignment.project && assignment.project.resource &&
+        				myProjects.indexOf(assignment.project.resource) === -1){
+    				 //Push the assignee onto the active list
+                    var resource = assignment.project.resource;
+                    //{_id:{$nin:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
+                    var oid = {$oid:resource.substring(resource.lastIndexOf('/')+1)};
+                    myProjects.push(oid);
+    			}
+        	}
+        	
+        	var projectsQuery = {_id:{$in:myProjects}};
+	        var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1};
+	        Resources.query('projects',projectsQuery,projectsFields,function(result){
+	        	deferred.resolve(result);
+	        });
+        });
+        return deferred.promise;
+    };
+    
+    
     /**
      * Query to get the list of active projects
      */
     this.getActiveClientProjects = function (onSuccess){
-      //Get todays date formatted as yyyy-MM-dd
-      var today = new Date();
-      var dd = today.getDate();
-      var mm = today.getMonth()+1; //January is 0!
-      var yyyy = today.getFullYear();
-      if (dd<10){
-        dd='0'+dd;
-      }
-      if (mm<10){
-        mm='0'+mm;
-      }
-      today = yyyy+'-'+mm+'-'+dd;
+      var today = this.getToday();
 
       /*
        * AAD Feb 26,2014
