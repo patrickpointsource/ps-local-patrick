@@ -37,12 +37,12 @@ angular.module('Mastermind')
     function getPerson(personResource){
     	
     	var peoplePromise;
-    	console.log("getPerson() called with", personResource);
+    	//console.log("getPerson() called with", personResource);
     	
         var peopleWithResourceQuery = {'resource':personResource};
         var pepInRolesFields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
         var returnVar =  Resources.query('people',peopleWithResourceQuery,pepInRolesFields);     
-    	console.log("getPerson() returning with", returnVar);
+    	//console.log("getPerson() returning with", returnVar);
         
     	return returnVar;
 
@@ -83,7 +83,7 @@ angular.module('Mastermind')
         Resources.query('people',pepInRolesQuery,pepInRolesFields,onSuccess);
       });
     }
-
+   
 
     return {
       query: query,
