@@ -37,7 +37,7 @@ angular.module('Mastermind.controllers.people')
        */
       $scope.handlePeopleFilterChanged = function(){
         if ($scope.peopleFilter === 'available'){
-          People.getActivePeople(function(people){
+          People.getActivePeople().then(function(people){
             $scope.people = people.members;
 
             //Reload the table
