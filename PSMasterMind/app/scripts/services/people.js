@@ -53,7 +53,7 @@ angular.module('Mastermind')
      * active projects.
      */
     function getActivePeople(onSuccess){
-      ProjectsService.getActiveProjects(function(result){
+      ProjectsService.getActiveClientProjects(function(result){
         var activeProjects = result.data;
         var activePeople = [];
 
