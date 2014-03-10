@@ -425,6 +425,101 @@ public class Data implements CONSTS {
 
 		return users;
 	}
+	
+	
+	/**
+	 * Get an assignment record
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getAssignment(RequestContext context, String id, String query,
+			String fields) throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+			queryObject.put(PROP__ID, new ObjectId(id));
+		}
+		else{
+			queryObject = new BasicDBObject();
+			queryObject.put(PROP__ID, new ObjectId(id));
+		}
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+		
+		fieldsObject = filterManagmentProperty(PROP_RATE, context,
+				fieldsObject);
+
+		DBObject object = assignmentsCol.findOne(queryObject, fieldsObject);
+
+		if (object != null) {
+			String json = JSON.serialize(object);
+			JSONObject jsonObject = new JSONObject(json);
+
+			if (object.containsField(PROP__ID)) {
+				ObjectId _id = (ObjectId) object.get(PROP__ID);
+				jsonObject.put(PROP_ABOUT, RESOURCE_ASSIGNMENTS + "/" + _id);
+			}
+			ret = jsonObject;
+		}
+
+		return ret;
+	}
+	
+	/**
+	 * Get all the assignment records
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static Map<String, JSONObject> getAssignments(RequestContext context,
+			String query, String fields) throws JSONException {
+		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
+
+		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+		}
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+		
+		fieldsObject = filterManagmentProperty(PROP_RATE, context,
+				fieldsObject);
+
+		DBCursor cursur = assignmentsCol.find(queryObject, fieldsObject);
+
+		while (cursur.hasNext()) {
+			DBObject object = cursur.next();
+
+			if (object.containsField(PROP__ID)) {
+				ObjectId oId = (ObjectId) object.get(PROP__ID);
+				String json = JSON.serialize(object);
+				JSONObject jsonObject = new JSONObject(json);
+				jsonObject.put(PROP_RESOURCE, RESOURCE_ASSIGNMENTS + "/" + oId);
+				ret.put(oId.toString(), jsonObject);
+			} else {
+				System.out
+						.println("Assignment not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+
+		return ret;
+	}
 
 	/**
 	 * Gets the list of Google Users
