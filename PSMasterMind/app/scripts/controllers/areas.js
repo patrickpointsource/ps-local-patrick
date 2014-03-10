@@ -63,6 +63,12 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
      * Navigate to the dashboard.
      */
     $scope.showHome = function () {
+    	ProjectsService.getMyCurrentProjects($scope.me).then(function(result){
+	      	  $scope.myActiveProjects =  result.data;
+	  	      if(result.data.length>0){
+	  	          $scope.hasActiveProjects = true;
+	  	      }
+	     });
     	 $state.go('home');
     };
 
