@@ -104,7 +104,7 @@ angular.module('Mastermind.services.projects')
     };
     
     /**
-     * Get A person's Current Assignments 
+     * Get A person's Assignments today and going forward
      */
     this.getMyCurrentAssignments = function(person){
     	var deferred = $q.defer();
@@ -116,9 +116,6 @@ angular.module('Mastermind.services.projects')
     				'$elemMatch':{
     					person:{
     						resource:person.about
-    					},
-    					startDate:{
-    						$lte:startDateQuery
     					},
     					$or:[
     					     {
@@ -157,7 +154,8 @@ angular.module('Mastermind.services.projects')
         		//Find all the assignments for this person
         		for(var j = 0; j < projectAssignment.members.length;j++){
         			var assignment = projectAssignment.members[j];
-        			if(personURI == assignment.person.resource){
+        			var endDate = assignment.endDate?new Date(assignment.endDate):null;
+        			if(personURI == assignment.person.resource && (!endDate || endDate > today)){
         				//Associate the project directly with the an assignment
         				assignment.project = projectAssignment.project;
         				assignments.push(assignment);

@@ -167,6 +167,21 @@ angular.module('Mastermind.services.projects')
    
     
     /**
+     * Service function for querying projects
+     *
+     * @returns {*}
+     */
+    function query(query,fields) {
+    	var deferred = $q.defer();
+    	
+    	Resources.query('projects',query,fields,function(result){
+    		deferred.resolve(result);
+    	});
+      
+    	return deferred.promise;
+    }
+    
+    /**
      * Get today for queries
      */
     this.getToday = function(){

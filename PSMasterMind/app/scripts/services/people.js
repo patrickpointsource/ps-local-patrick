@@ -69,6 +69,38 @@ angular.module('Mastermind')
         today = yyyy+'-'+mm+'-'+dd;
         return today;
     }
+    
+    var getQueryDate = function(date){
+   	 //Get todays date formatted as yyyy-MM-dd
+      var dd = date.getDate();
+       var mm = date.getMonth()+1; //January is 0!
+       var yyyy = date.getFullYear();
+       if (dd<10){
+         dd='0'+dd;
+       }
+       if (mm<10){
+         mm='0'+mm;
+       }
+       date = yyyy+'-'+mm+'-'+dd;
+       return date;
+   }
+    
+    var getQueryDateSixMonthsFromNow = function(date){
+    	var sixMontsFromNow = date;
+    	sixMontsFromNow.setMonth(date.getMonth() + 6);
+	      var dd6 = sixMontsFromNow.getDate();
+	      var mm6 = sixMontsFromNow.getMonth()+1; //January is 0!
+	      var yyyy6 = sixMontsFromNow.getFullYear();
+	      if (dd6<10){
+	        dd6='0'+dd6;
+	      }
+	      if (mm6<10){
+	        mm6='0'+mm6;
+	      }
+	      var sixMontsFromNowQuery = yyyy6+'-'+mm6+'-'+dd6;
+	     
+	     return sixMontsFromNowQuery;
+    }
 
     /**
      * Query to get the list of people working on
@@ -129,6 +161,168 @@ angular.module('Mastermind')
     	return deferred.promise;
     }
     
+    /**
+     * Gets the next six months of assignments mapped per person URI starting form a given date
+     * 
+     * Resolves some of the data for the people and projects represented
+     */
+    function getPeoleAssignments(fromDate){
+    	var deferred = $q.defer();
+    	var startQueryDate = getQueryDate(fromDate);
+    	var stopQueryDate = getQueryDateSixMonthsFromNow(fromDate);
+    	var stopDate = new Date(stopQueryDate);
+    	
+    	var apQuery = {
+    			members:{
+    				'$elemMatch':{
+    					startDate:{
+    						$lte:stopQueryDate
+    					},
+    					$or:[
+    					     {
+    					    	 endDate:{
+    					    		 $exists:false
+    					    	}
+    					     },
+    					     {
+    					    	 endDate:{
+    					    		 $gt:startQueryDate
+    					    	 }
+    					     }
+    					     ]
+    					}
+    			}
+    	};
+        var apFields = {};
+        Resources.query('assignments', apQuery, apFields, function(result){
+        	var projectAssignments = result.data;
+        	//Map to return
+        	var ret = {};
+        	var today = new Date();
+        	var projectURIs = [];
+        	
+        	for(var i = 0; i < projectAssignments.length; i++){
+        		var projectAssignment = projectAssignments[i];
+        		//Loop through all the assignments in for a project
+        		for(var j = 0; j < projectAssignment.members.length; j++){
+        			var assignment = projectAssignment.members[j];
+        			
+        			//Reference the project directly in the assignment
+        			assignment.project = projectAssignment.project;
+        			if(projectURIs.indexOf(assignment.project.resource) == -1){
+        				projectURIs.push(assignment.project.resource);
+        			}
+        			
+        			var startDate = new Date(assignment.startDate);
+        			var endDate = assignment.endDate?new Date(assignment.endDate):null;
+        			//Only include current assignments
+        			if(startDate <= stopDate && (!endDate || endDate > fromDate)){
+        				var personURI = assignment.person.resource;
+        				
+        				if(ret.hasOwnProperty(personURI)){
+        					ret[personURI].push(assignment);
+        				}else{
+        					ret[personURI] = [assignment];
+        					projectURIs.push(personURI);
+        				}
+        			}
+        		}
+        	}
+        	
+        	var projectIds = [];
+        	for(var i = 0; i < projectURIs.length; i++){
+        		var projectURI = projectURIs[i];
+        		var oid = {$oid:projectURI.substring(projectURI.lastIndexOf('/')+1)};
+              	projectIds.push(oid);
+        	}
+        	
+        	var projectQuery = {_id:{$in:projectIds}};
+        	var projectFields = {resource:1,name:1,customerName:1,committed:1,type:1,startDate:1,endDate:1};
+        	Resources.query('projects', projectQuery, projectFields, function(result){
+        		var projects = result.data;
+        		//Collate resolved projects with the list of assignments
+        		for(var personURI in ret){
+        			var assignments = ret[personURI];
+        			for(var i = 0; i < assignments.length; i++){
+        				var projectURI = assignments[i].project.resource;
+        				for(var j = 0; j < projects.length; j++){
+        					var project = projects[j];
+        					if(projectURI == project.resource){
+        						assignment.project = project;
+        						break;
+        					}
+        				}
+        			}
+        		}
+        		
+        		 deferred.resolve(ret);
+        	});
+        });
+    	
+    	return deferred.promise;
+    }
+    
+    /**
+     * Get a map per user with all of there current assignment records
+     */
+    function getPeopleCurrentAssignments(){
+    	var deferred = $q.defer();
+    	var startDateQuery = getToday();
+    	
+    	var apQuery = {
+    			members:{
+    				'$elemMatch':{
+    					startDate:{
+    						$lte:startDateQuery
+    					},
+    					$or:[
+    					     {
+    					    	 endDate:{
+    					    		 $exists:false
+    					    	}
+    					     },
+    					     {
+    					    	 endDate:{
+    					    		 $gt:startDateQuery
+    					    	 }
+    					     }
+    					     ]
+    					}
+    			}
+    	};
+        var apFields = {};
+        Resources.query('assignments', apQuery, apFields, function(result){
+        	var projectAssignments = result.data;
+        	//Map to return
+        	var ret = {};
+        	var today = new Date();
+        	for(var i = 0; i < projectAssignments.length; i++){
+        		var projectAssignment = projectAssignments[i];
+        		//Loop through all the assignments in for a project
+        		for(var j = 0; j < projectAssignment.members.length; j++){
+        			var assignment = projectAssignment.members[j];
+        			
+        			
+        			var startDate = new Date(assignment.startDate);
+        			var endDate = assignment.endDate?new Date(assignment.endDate):null;
+        			//Only include current assignments
+        			if(startDate <= today && (!endDate || endDate > today)){
+        				var personURI = assignment.person.resource;
+        				
+        				if(ret.hasOwnProperty(personURI)){
+        					ret[personURI].push(assignment);
+        				}else{
+        					ret[personURI] = [assignment];
+        				}
+        			}
+        		}
+        	}
+        	
+        	deferred.resolve(ret);
+        });
+        
+        return deferred.promise;
+    }
     
     /**
      * Returns a list of people per role for display 
@@ -160,6 +354,8 @@ angular.module('Mastermind')
       get: get,
       getActivePeople: getActivePeople,
       getPeoplePerRole: getPeoplePerRole,
+      getPeoleAssignments: getPeoleAssignments,
+      getPeopleCurrentAssignments: getPeopleCurrentAssignments,
       getPerson: getPerson
     };
   }]);
