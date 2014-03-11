@@ -465,12 +465,6 @@ angular.module('Mastermind')
             }
           }
         }
-        
-        for (var roleResourceId in roleGroups)
-        	roleGroups[ roleResourceId ].assiganble.unshift({
-        		resource: undefined,
-        		title: 'unassigned'
-        	})
         	
         //Set a map of role types to members
         $scope.roleGroups = roleGroups;

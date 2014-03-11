@@ -189,6 +189,93 @@ angular.module('Mastermind.services.projects')
         return deferred.promise;
     };
     
+    this.getAssignmentsByPeriod = function(timePeriod) {
+    	var deferred = $q.defer();
+    	var apQuery = {};
+    	var apFields = {};
+    	
+    	var todayDate = this.getToday();
+    	
+    	if (timePeriod == 'current')
+	    	apQuery = {
+	    			members:{
+	    				'$elemMatch':{
+	    					startDate:{
+	    						$lte:todayDate
+	    					},
+	    					$or:[
+	    					     {
+	    					    	 endDate:{
+	    					    		 $exists:false
+	    					    	}
+	    					     },
+	    					     {
+	    					    	 endDate:{
+	    					    		 $gt:todayDate
+	    					    	 }
+	    					     }
+	    					     ]
+	    					}
+	    			}
+	    	}
+    	else if (timePeriod == 'future')
+	    	apQuery = {
+    			members:{
+    				'$elemMatch':{
+    					startDate:{
+    						$gte:todayDate
+    					},
+    					$or:[
+    					     {
+    					    	 endDate:{
+    					    		 $exists:false
+    					    	}
+    					     },
+    					     {
+    					    	 endDate:{
+    					    		 $gt:todayDate
+    					    	 }
+    					     }
+    					     ]
+    					}
+    			}
+    		}
+    	else if (timePeriod == 'past')
+	    	apQuery = {
+    			members:{
+    				'$elemMatch':{
+    					startDate:{
+    						$lt:todayDate
+    					},
+    					$or:[
+    					     {
+    					    	 endDate:{
+    					    		 $exists:false
+    					    	}
+    					     },
+    					     {
+    					    	 endDate:{
+    					    		 $lt:todayDate
+    					    	 }
+    					     }
+    					     ]
+    					}
+    			}
+    		}
+    	
+    	  Resources.query('assignments', apQuery, apFields).then(function(result){
+    	    	var role;
+    	    	
+		      if(result && result.data && result.data.length > 0)
+		    	  	deferred.resolve(result.data[0]);
+	    	  	else
+		    	  deferred.resolve(null);
+		    	  
+    	    });
+    	
+    	 return deferred.promise;
+    }
+    
     /**
      * Service function for persisting a project, new or previously
      * existing.
@@ -210,17 +297,9 @@ angular.module('Mastermind.services.projects')
 	     
       }
       
-      
       val = Resources.update(projectAssignment);
 	  
-      
-      /*
-      Resources.create(project.about + '/assignments/', assignments).then(function(res){
-    	  var res = res;
-      })
-      */
       return val;
-     // return null;
     }
     
   }])

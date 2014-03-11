@@ -10,14 +10,22 @@ angular.module('Mastermind.controllers.projects')
    
 	  $scope.editMode = false;
 	  // Table Parameters
-	var params = {
-	  page: 1,            // show first page
-	  count: 10,           // count per page
-	  sorting: {
-	    type: 'asc'     // initial sorting
-	  }
-	};
+	  var params = {
+		  page: 1,            // show first page
+		  count: 10,           // count per page
+		  sorting: {
+		    type: 'asc'     // initial sorting
+		  }
+	  };
+	  
+	  $scope.assignmentsFilters = [{name: "Current Assignments", value: "current"}, 
+	                               	{name: "Future Assignments", value: "future"},
+	                               	{name: "Past Assignments", value: "past"},
+	                               	{name: "All Assignments", value: "all"}]
 	
+	  // make selected by default to "current"
+	  $scope.selectedAssignmentsFilter = "current";
+	  
 	for (var i = 0; i < $scope.project.roles.length; i ++)
 		$scope.project.roles[i].assignees = [];
 	
@@ -30,6 +38,27 @@ angular.module('Mastermind.controllers.projects')
 	    $defer.resolve(ret);
 	  }
 	});
+	
+	$scope.getRoleCSSClass= function(abr) {
+		var result = '';
+		
+		if (abr == 'BA')
+			result = 'bg-success';
+		else if (abr == 'SSE')
+			result = 'bg-warning';
+		else if (abr == 'SSA')
+			result = 'bg-danger';
+		else if (abr == 'SE')
+			result = 'bg-warning';
+		else if (abr == 'PM')
+			result = 'bg-primary';
+		else if (abr == 'SUXD')
+			result = "bg-info"
+		else if (abr == 'SUXD')
+			result = "bg-info"
+				
+		return result;
+	}
 	
 	$scope.addNewAssignmentToRole =  function (index, role) {
 		
@@ -91,7 +120,7 @@ angular.module('Mastermind.controllers.projects')
     	if (assignable)
 	    	for(var i = 0; i < assignable.length; i ++) {
 	    		if (assignable[i].resource == personId) {
-	    			result = assignable[i].title;
+	    			result = assignable[i].familyName + ', ' + assignable[i].givenName;
 	    			break;
 	    		}
 	    	}
@@ -164,65 +193,67 @@ angular.module('Mastermind.controllers.projects')
         	$scope["newPersonToRoleForm" + i].$setPristine();
       }
     };
-
     
-
-    /**
-     * Fetch the list of roles and assignments
-     */
-    Resources.get($scope.project.about + '/assignments').then(function(result){
-    	var role;
+    $scope.handleAssignmentsFilterChanged = function() {
+    	AssignmentService.getAssignmentsByPeriod($scope.selectedAssignmentsFilter).then(function(data) {
+        	$scope.refreshAssignmentsData(data);
+        })
+    }
+    
+    $scope.refreshAssignmentsData = function(result) {
+    	for (var i = 0; i < $scope.project.roles.length; i ++) 
+			$scope.project.roles[i].assignees = [];
     	
-	      if(result && result.members){
-				$scope.projectAssignment = result;
-					  
-				var assignments = result.members ? result.members: [];
-				   
-				var findRole = function(roleId) {
-					return _.find( $scope.project.roles, function(r){
-						return roleId.indexOf(r.about) > -1;
-					})
-				}
-				    
+    	if (result && result.members) {
+    		$scope.projectAssignment = result;
+			  
+			var assignments = result.members ? result.members: [];
+			var role = null;
+			
+			var findRole = function(roleId) {
+				return _.find( $scope.project.roles, function(r){
+					return roleId.indexOf(r.about) > -1;
+				})
+			}
+			    
+			    
+			for (var  i = 0; i < assignments.length; i ++) {
+				if (assignments[i].role && assignments[i].role.resource)
+					role = findRole(assignments[i].role.resource)
+				else
+					role = null;
 				
-				    
-				for (var  i = 0; i < assignments.length; i ++) {
-					if (assignments[i].role && assignments[i].role.resource)
-						role = findRole(assignments[i].role.resource)
-					else
-						role = null;
-					
-					if (role)
-						role.assignees.push(assignments[i])
-				}
-				
-				
-	      } else {
-	    	  $scope.projectAssignment = {
+				if (role)
+					role.assignees.push(assignments[i])
+			}
+    	} else {
+    		 $scope.projectAssignment = {
 	    			  about: $scope.project.about + '/assignments'
 	    	  }
-	      }
-	      
-	      	for (var i = 0; i < $scope.project.roles.length; i ++) {
-				role = $scope.project.roles[i];
+    	}
+    	
+    	for (var i = 0; i < $scope.project.roles.length; i ++) {
+			role = $scope.project.roles[i];
+			
+			if (!role.assignees || role.assignees.length == 0) {
+				role.assignees = [];
 				
-				if (!role.assignees || role.assignees.length == 0) {
-					role.assignees = [];
-					
-					var props = {
-			          startDate:$scope.project.startDate,
-			          endDate:$scope.project.endDate
-			        };
-					
-					if (role.assignee && role.assignee.resource)
-						_.extend(props, {person: role.assignee});
-					
-					var newAssignee = AssignmentService.create(props)
-					
-					role.assignees.push(newAssignee)
-				}
+				var props = {
+		          startDate:$scope.project.startDate,
+		          endDate:$scope.project.endDate
+		        };
+				
+				/*
+				if (role.assignee && role.assignee.resource)
+					_.extend(props, {person: role.assignee});
+				*/
+				var newAssignee = AssignmentService.create(props)
+				
+				role.assignees.push(newAssignee)
 			}
-    });
-
-
+		}
+    }
+   
+    $scope.handleAssignmentsFilterChanged()
+    
   }]);

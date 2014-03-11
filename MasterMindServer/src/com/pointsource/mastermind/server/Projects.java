@@ -180,7 +180,8 @@ public class Projects extends BaseResource {
 	@GET
 	@Path("{id}/" + CONSTS.RESOURCE_ASSIGNMENTS)
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getAssignments(@PathParam("id") String id, @QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query, @QueryParam(CONSTS.REQUEST_PARAM_NAME_FIELDS)String fields) {
+	public Response getAssignments(@PathParam("id") String id, @QueryParam(CONSTS.REQUEST_PARAM_NAME_QUERY)String query,
+			@QueryParam(CONSTS.REQUEST_PARAM_NAME_FIELDS)String fields) {
 		try {
 			try {
 				RequestContext context = getRequestContext();

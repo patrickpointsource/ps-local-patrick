@@ -94,8 +94,7 @@ angular.module('Mastermind').factory(
             time = Date.parse(time);
             if (((new Date()) - time) < MAX_TIME) {
               //console.log('LOCAL '+resource+'='+value);
-            	// correctly handle empty result which was previously stored - it is stringified to "undefined" string
-            	value = value != "undefined" ? JSON.parse(value): undefined;
+            	value = JSON.parse(value);
             	resolved = true;
             }
           }

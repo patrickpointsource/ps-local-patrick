@@ -1442,8 +1442,7 @@ public class Data implements CONSTS {
 			}
 			
 			if (!assignment.has(PROP_ABOUT)) {
-				assignment.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + projectId +
-						"/" + RESOURCE_ASSIGNMENTS + "/" + assignment.get(PROP__ID).toString());
+				assignment.put(PROP_ABOUT, RESOURCE_ASSIGNMENTS + "/" + assignment.get(PROP__ID).toString());
 			}
 			
 		}

@@ -25,7 +25,7 @@ import com.pointsource.mastermind.util.RequestContext;
 /**
  * @author kmbauer
  *
- * Rest Services for the set of skils
+ * Rest Services for the role assignments
  *
  */
 @Path("/" + CONSTS.RESOURCE_ASSIGNMENTS)
@@ -42,12 +42,12 @@ public class Assignments extends BaseResource {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-				Map<String, JSONObject> projects = Data.getAssignments(context, query, fields);
+				Map<String, JSONObject> assignments = Data.getAssignments(context, query, fields);
 				JSONObject ret = new JSONObject();
-				int total = projects.size();
+				int total = assignments.size();
 				ret.put(CONSTS.PROP_COUNT, total);
 
-				Collection<JSONObject> values = projects.values();
+				Collection<JSONObject> values = assignments.values();
 				ret.put(CONSTS.PROP_DATA, values);
 
 				URI baseURI = context.getBaseURI();

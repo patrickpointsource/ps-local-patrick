@@ -1,27 +1,53 @@
 
-
-<div class="row well" ng-repeat="currentAssignee in role.assignees">
-	<div class="col-sm-2 col-xs-12 form-group" ng-class="{error: isFieldInError('role')}">
-		<label class="required-label control-label" for="person">Person:</label>
-		
+<div class="row hidden-xs" >
+	<div class="col-sm-3">
+		<span>
+			* Person
+		</span> 
+	</div>
+	<div class="col-sm-2">
+		<span>
+			* %
+		</span> 
+	</div>
+	
+	<div class="col-sm-3">
+		<span>
+			* Start Date
+		</span> 
+	</div>
+	
+	<div class="col-sm-3">
+		<span>
+			* End Date
+		</span> 
+	</div>
+	<hr/>
+</div>
+<div class="row" ng-repeat="currentAssignee in role.assignees">
+	<div class="col-sm-3 col-xs-6 form-group" ng-class="{error: isFieldInError('role')}">
 		<select ng-model="currentAssignee.person.resource"
-                 ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble"
+                 ng-options="m.resource as (m.familyName + ', ' + m.givenName) for m in roleGroups[role.type.resource].assiganble"
                  ng-change="assigneeChanged($index, role)"
                  class="form-control" name="person">
          </select>
 	</div>
 	
-	<div class="col-sm-2 col-xs-12 form-group">
-		<label for="assigneePercentage">Percentage: <span class="text-muted">{{currentAssignee.percentage}}%</span></label>
-		<input id="assigneePercentage" class="form-control" type="number"
-			ng-model="currentAssignee.percentage" ng-pattern="/\d+(\.\d{1,2})?/">
+	<div class="col-sm-2 col-xs-3" >
+		
+		<input name="assigneePercentage{{$index}}" class="form-control" style="width: 70px;" type="number" ng-model="currentAssignee.percentage" min="0" max="100" required >
 	</div>
 	
-	<div class="col-sm-2 col-xs-12 form-group"
+	<div class="col-xs-3 form-group visible-xs">
+		
+		 <button ng-show="role.assignees.length > 1" class="btn btn-default" ng-click="removeAssignmentToRole($index, role)">
+            <i class="fa fa-trash-o"></i>
+        </button>
+	</div>
+	
+	<div class="col-sm-3 col-xs-6 form-group"
 		ng-class="{error: isFieldInError('role')}">
-		<label class="required-label control-label" for="assigneeStartDate">
-			Start Date: <span class="text-muted">{{currentAssignee.startDate}}</span>
-		</label> 
+		
 		<input id="assigneeStartDate" name="assigneeStartDate"
 			class="form-control datepicker" type="text"
 			ng-model="currentAssignee.startDate"
@@ -29,9 +55,10 @@
 			data-date-end-date="{{project.endDate}}" todayBtn="true"
 			data-provide="datepicker" data-date-format="yyyy-mm-dd"
 			ng-required="true">
+		
 	</div>
-	<div class="col-sm-2 col-xs-12 form-group">
-		<label for="assigneeEndDate">End Date: <span class="text-muted">{{currentAssignee.endDate}}</span></label>
+	
+	<div class="col-sm-3 col-xs-6 form-group">
 		<input id="assigneeEndDate" class="form-control datepicker" type="text"
 			ng-model="currentAssignee.endDate"
 			data-date-start-date="{{project.startDate}}"
@@ -39,12 +66,10 @@
 			data-provide="datepicker" data-date-format="yyyy-mm-dd">
 	</div>
 	
-	<div class="col-sm-2 col-xs-12 form-group" style="padding-top: 25px;">
-        <button class="btn btn-default" ng-click="addNewAssignmentToRole($index, role)">
-            <i class="fa fa-plus"></i>
-        </button>
-        <button ng-show="role.assignees.length > 1" class="btn btn-default" ng-click="removeAssignmentToRole($index, role)">
-            <i class="fa fa-minus"></i>
+	<div class="col-sm-1 form-group hidden-xs" >
+        
+        <button ng-show="role.assignees.length > 1" class="btn btn-default pull-right" ng-click="removeAssignmentToRole($index, role)">
+            <i class="fa fa-trash-o"></i>
         </button>
 	</div>
 	

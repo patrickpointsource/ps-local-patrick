@@ -165,7 +165,7 @@ public interface CONSTS {
 	public String COLLECTION_TITLE_LINKS = "Links";
 	public String COLLECTION_TITLE_PEOPLE = "People";
 	public String COLLECTION_TITLE_PROJECTS = "Projects";
-	public String COLLECTION_TITLE_ASSIGNMENT = "Assignment";
+	public String COLLECTION_TITLE_ASSIGNMENT = "Assignments";
 	public String COLLECTION_TITLE_ROLES = "Roles";
 	public String COLLECTION_TITLE_SKILLS = "Skills";
 	
