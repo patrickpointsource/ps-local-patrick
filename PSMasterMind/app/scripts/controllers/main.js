@@ -3,8 +3,8 @@
 /**
  * The main project controller
  */
-var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources','RolesService','ProjectsService','People','ngTableParams',
-    function ($scope, $q, $state, $filter, Resources, RolesService, ProjectsService, People, TableParams) {
+var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources','RolesService','ProjectsService','People','AssignmentService', 'ngTableParams',
+    function ($scope, $q, $state, $filter, Resources, RolesService, ProjectsService, People, AssignmentService, TableParams) {
 
 	// Table Parameters for Resource Deficit tables
     var params = {
@@ -155,49 +155,76 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
      */
     var setActivePeopleAndProjects = function (rolesMap) {
         var activePeopleProjects = {};
+        var activePeopleAssignments = {};
         var activeProjects = $scope.qvProjects;
         var activePeople = [];
         //console.log("setActivePeopleProjects using rolesMap:", rolesMap);
-        for(var i = 0; i < activeProjects.length; i++){
-            var roles = activeProjects[i].roles;
-            if(roles){
-            //Array to keep track of people already in an accounted role
-              var activePeopleProjectsResources = [];
-
-              //Loop through all the roles in the active projects
-              for(var b = 0; b < roles.length; b++){
-                var activeRole = roles[b];
-
-                if(activeRole.assignee && activeRole.assignee.resource &&
-                    !activePeopleProjects.hasOwnProperty(activeRole.assignee.resource)){
-
-                  //Push the assignnee onto the active list
-                  activePeople.push(Resources.get(activeRole.assignee.resource));
-
-                  //Create a project list
-                  activePeopleProjects[activeRole.assignee.resource] = [activeProjects[i]];
-                  //Accout for person already in role in this project
-                  activePeopleProjectsResources.push(activeRole.assignee.resource);
-                }
-                else if(activeRole.assignee && activeRole.assignee.resource &&
-                    //And not already in an accounted role
-                    activePeopleProjectsResources.indexOf(activeRole.assignee.resource) === -1){
-
-                  //Just add the project to the activePeopleProjects list
-                  activePeopleProjects[activeRole.assignee.resource].push(activeProjects[i]);
-                }
-               }
-            }
-          }
-          //console.log("Active People Projects:", activePeopleProjects);
-          
-          $q.all(activePeople).then(function(data){
-              $scope.qvPeopleProjects = activePeopleProjects;
-              $scope.qvPeople = data;
-              //console.log("Active Project People:", data);
-              //console.log("Active People Projects:", activePeopleProjects);
-
-          });
+        
+        //Fetch all the assignment records for each active project
+        AssignmentService.getAssignments(activeProjects).then(function(result){
+        	var allProjectAssignments = result.data;
+        	
+        	for(var i = 0; i < allProjectAssignments.length;i++){
+        		var projectAssignments = allProjectAssignments[i];
+        		
+        		//Do not bother if there are not members assignments to this project
+        		if(projectAssignments.members){
+        			var projectResource = projectAssignments.project.resource;
+        			var project = null;
+        			//Find the project object for this assignment record
+        			for(var j = 0; j < activeProjects.length; j++){
+        				if(projectResource == activeProjects[j].resource){
+        					project = activeProjects[j];
+        					break;
+        				}
+        			}
+        			
+        			if(project){
+        				//Loop though the assignments to collate with people
+	        			for(var j = 0; j < projectAssignments.members.length;j++){
+	        				var assignment = projectAssignments.members[j];
+	        				
+	        				//Push the assignee onto the active list
+	    					if(activePeople.indexOf(assignment.person.resource) == -1){
+	    						activePeople.push(assignment.person.resource);
+	    					}
+	    					
+	        				//Build up a list of each assignment each person has on this project.
+	    					if(!activePeopleAssignments.hasOwnProperty(assignment.person.resource)){
+	    						//Create an assignments list
+	    						activePeopleAssignments[assignment.person.resource] = [assignment];
+	    					}
+	    					
+	    					else{
+	    						activePeopleAssignments[assignment.person.resource].push(assignment);
+	    					}
+	        				
+	        				//Keep a cross reference from the assignment back to the project
+	        				assignment.project = project;  
+	        			}
+	        		}
+	        		else{
+	        			console.warn("Project " + projectResource + " is not in the active project list");
+	        		}
+        		}
+        	}
+        	
+        	//Parse out the oids for a query
+        	for(var i = 0; i < activePeople.length; i++){
+	         	//{_id:{$nin:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
+	             var personResource = activePeople[i];
+	 			var oid = {$oid:personResource.substring(personResource.lastIndexOf('/')+1)};
+	 			activePeople[i] = oid;
+	        }
+             
+            //Query all the people in the list
+            var query = {'_id':{$in:activePeople}};
+            var fields = {resource:1,thumbnail:1,name:1};
+            People.query(query,fields).then(function(data){
+             	 $scope.qvPeopleAssignments = activePeopleAssignments;
+             	 $scope.qvPeople = data.members;
+            });
+        });
     };
 
     
@@ -243,37 +270,22 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
      * @param month
      * @param year
      */
-    $scope.isPersonActiveInMonth = function (project, person, month, year) {
-      var projectIsActive = $scope.inMonth(project, month, year);
+    $scope.isPersonActiveInMonth = function (assignment, person, month, year) {
+      var projectIsActive = $scope.inMonth(assignment.project, month, year);
       if (!projectIsActive){
         return false;
       }
 
-      //Look through all the roles
-      var roles = project.roles;
-      var personRef = person.about?person.about:person.resource;
-      var ret = false;
-      if (personRef){
-        for (var f = 0; f < roles.length; f++){
-          var role = roles[f];
-          //Check if person is assigned to role
-          if (role.assignee && personRef === role.assignee.resource){
-            var nextMonth = month === 11 ? 0 : (month + 1),
-            nextYear = month === 11 ? (year + 1) : year,
-            startDay = new Date(year, month, 1),
-            endDay = new Date(nextYear, nextMonth, 0);
-
-            // If the role start day is before the last day of this month
-            // and its end date is after the first day of this month.
-            var roleStarted =   new Date(role.startDate) <= endDay;
-            var roleEnded = role.endDate &&  new Date(role.endDate) <= startDay;
-            ret =  roleStarted && !roleEnded;
-            if (ret){
-              break;
-            }
-          }
-        }
-      }
+      var nextMonth = month === 11 ? 0 : (month + 1),
+	  nextYear = month === 11 ? (year + 1) : year,
+	  startDay = new Date(year, month, 1),
+	  endDay = new Date(nextYear, nextMonth, 0);
+	
+	  // If the assignment start day is before the last day of this month
+	  // and its end date is after the first day of this month.
+	  var assignmentStarted =   new Date(assignment.startDate) <= endDay;
+	  var assignmentEnded = assignment.endDate &&  new Date(assignment.endDate) <= startDay;
+	  var ret =  assignmentStarted && !assignmentEnded;
 
       return ret;
     };

@@ -19,8 +19,14 @@ angular.module('Mastermind')
      *
      * @returns {*}
      */
-    function query() {
-      return Resource.getList();
+    function query(query,fields) {
+    	var deferred = $q.defer();
+    	
+    	Resources.query('people',query,fields,function(result){
+    		deferred.resolve(result);
+    	});
+      
+    	return deferred.promise;
     }
 
     function get(id) {

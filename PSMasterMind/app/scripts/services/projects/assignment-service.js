@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Mastermind.services.projects')
-  .service('AssignmentService', ['RateFactory','Assignment','Resources', function (RateFactory, Assignment, Resources) {
+  .service('AssignmentService', ['$q', 'RateFactory','Assignment','Resources', function ($q, RateFactory, Assignment, Resources) {
     /**
      * Change a Assignment's rate type between hourly, weekly, and monthly.
      *
@@ -56,7 +56,33 @@ angular.module('Mastermind.services.projects')
       
       
       return errors;
-    }
+    };
+    
+    
+    /**
+     * Get the assignment records for a set of projects
+     * 
+     * project records that include the about or resource properties set
+     */
+    this.getAssignments = function(projects){
+    	var deferred = $q.defer();
+    	var projectURIs = [];
+    	for(var i = 0; i < projects.length; i++){
+    		var project = projects[i];
+    		var uri = project.about?project.about:project.resource;
+    		
+    		if(uri && projectURIs.indexOf(uri) == -1){
+    			projectURIs.push(uri);
+    		}
+    	}
+    	
+    	var query = {'project.resource':{$in:projectURIs}};
+    	Resources.query('assignments',query,null,function(result){
+    		deferred.resolve(result);
+    	});
+    	
+    	return deferred.promise;
+    };
     
     /**
      * Service function for persisting a project, new or previously
