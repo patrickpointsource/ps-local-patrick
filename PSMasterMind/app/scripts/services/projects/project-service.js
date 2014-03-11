@@ -187,7 +187,7 @@ angular.module('Mastermind.services.projects')
     };
     
     /**
-     * Get My Active Projects (projects I have a current role on)
+     * Get My Current Projects (projects I have a current role on)
      */
     this.getMyCurrentProjects = function(me){
     	var deferred = $q.defer();

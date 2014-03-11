@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Mastermind.services.projects')
-  .service('AssignmentService', ['$q', 'RateFactory','Assignment','Resources', function ($q, RateFactory, Assignment, Resources) {
+  .service('AssignmentService', ['$q', 'RateFactory','Assignment','Resources', 'ProjectsService', function ($q, RateFactory, Assignment, Resources, ProjectsService) {
     /**
      * Change a Assignment's rate type between hourly, weekly, and monthly.
      *
@@ -58,6 +58,25 @@ angular.module('Mastermind.services.projects')
       return errors;
     };
     
+    /**
+     * Get today for queries
+     */
+    this.getToday = function(){
+    	//Get todays date formatted as yyyy-MM-dd
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd<10){
+          dd='0'+dd;
+        }
+        if (mm<10){
+          mm='0'+mm;
+        }
+        today = yyyy+'-'+mm+'-'+dd;
+        
+        return today;
+    };
     
     /**
      * Get the assignment records for a set of projects
@@ -82,6 +101,92 @@ angular.module('Mastermind.services.projects')
     	});
     	
     	return deferred.promise;
+    };
+    
+    /**
+     * Get A person's Current Assignments 
+     */
+    this.getMyCurrentAssignments = function(person){
+    	var deferred = $q.defer();
+    	var startDateQuery = this.getToday();
+    	var personURI = person.about?person.about:person.resource;
+    	
+    	var apQuery = {
+    			members:{
+    				'$elemMatch':{
+    					person:{
+    						resource:person.about
+    					},
+    					startDate:{
+    						$lte:startDateQuery
+    					},
+    					$or:[
+    					     {
+    					    	 endDate:{
+    					    		 $exists:false
+    					    	}
+    					     },
+    					     {
+    					    	 endDate:{
+    					    		 $gt:startDateQuery
+    					    	 }
+    					     }
+    					     ]
+    					}
+    			}
+    	};
+        var apFields = {};
+        Resources.query('assignments', apQuery, apFields, function(result){
+        	var projectAssignments = result.data;
+        	var myProjects = [];
+        	var assignments = [];
+        	
+        	//Loop through all the project level assignment documents that this person has an assignment in
+        	for(var i = 0; i < projectAssignments.length;i++){
+        		//Add the project to the list of projects to resolve
+        		var projectAssignment = projectAssignments[i];
+        		if (projectAssignment.project && projectAssignment.project.resource &&
+        				myProjects.indexOf(projectAssignment.project.resource) === -1){
+    				 //Push the assignee onto the active list
+                    var resource = projectAssignment.project.resource;
+                    //{_id:{$nin:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
+                    var oid = {$oid:resource.substring(resource.lastIndexOf('/')+1)};
+                    myProjects.push(oid);
+    			}
+        		
+        		//Find all the assignments for this person
+        		for(var j = 0; j < projectAssignment.members.length;j++){
+        			var assignment = projectAssignment.members[j];
+        			if(personURI == assignment.person.resource){
+        				//Associate the project directly with the an assignment
+        				assignment.project = projectAssignment.project;
+        				assignments.push(assignment);
+        			}
+        		}
+        	}
+        	
+        	var projectsQuery = {_id:{$in:myProjects}};
+	        var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1};
+	        Resources.query('projects',projectsQuery,projectsFields,function(result){
+	        	var projects = result.data;
+	        	
+	        	//Collate projects with assignments
+	        	for(var i = 0; i < assignments.length; i++){
+	        		var assignment = assignments[i];
+	        		//Find the matching project
+	        		for(var j = 0; j < projects.length; j++){
+	        			var project = projects[j];
+	        			if(project.resource == assignment.project.resource){
+	        				assignment.project = project;
+	        				break;
+	        			}
+	        		}
+	        	}
+	        	
+	        	deferred.resolve(assignments);
+	        });
+        });
+        return deferred.promise;
     };
     
     /**

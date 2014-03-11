@@ -4,8 +4,8 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.people')
-  .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'ngTableParams',
-    function ($scope, $state, $stateParams, $filter, Resources, People, TableParams) {
+  .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ngTableParams',
+    function ($scope, $state, $stateParams, $filter, Resources, People, AssignmentService, TableParams) {
 
     /**
      * Load Role definitions to display names
@@ -193,76 +193,44 @@ angular.module('Mastermind.controllers.people')
       }, sort);
     };
 
+    
     /**
      * Get the Profile
      */
     $scope.profileId = $stateParams.profileId;
     Resources.get('people/'+$scope.profileId).then(function(person){
       $scope.setProfile(person);
-
-      // build the date string for query
-      var today = new Date();
-      var twoWeeks = new Date();
-      twoWeeks.setDate(today.getDate() - 14);
-      var dd = twoWeeks.getDate();
-      var mm = twoWeeks.getMonth()+1; //January is 0!
-      var yyyy = twoWeeks.getFullYear();
-      if (dd<10){
-        dd='0'+dd;
-      }
-      if (mm<10){
-        mm='0'+mm;
-      }
-
-      var endDateQuery = yyyy+'-'+mm+'-'+dd;
-
-      var query = {$or:[
-        {roles:{$elemMatch:{endDate:{$gte:endDateQuery},assignee:{resource:person.about}}}}, // endDate >= endDateQuery
-        {roles:{$elemMatch:{endDate:{$exists:false},assignee:{resource:person.about}}}}, // endDate does NOT exist
-        {roles:{$elemMatch:{endDate:{$exists:''},assignee:{resource:person.about}}}} // endDate exists and is empty
-      ]};
-
-      var fields = {resource:1,name:1,roles:1,endDate:1};
-
-      Resources.query('projects', query, fields, function(result){
-        // format the data so that we can use sort in the ng-table, by adding a user property to projects
-        for (var i=0; i<result.data.length; i++) {
-          for (var x=0; x<result.data[i].roles.length; x++) {
-            if (result.data[i].roles[x].assignee && $scope.profile.about === result.data[i].roles[x].assignee.resource) {
-              result.data[i].user = result.data[i].roles[x];
-            }
-          }
-        }
-
-        $scope.projects = result.data;
-        $scope.hasProjects = result.data.length > 0;
-
-        if ($scope.hasProjects){
-          // Project Params
-          var params = {
-            page: 1,            // show first page
-            count: 10,           // count per page
-            sorting: {
-              name: 'asc'     // initial sorting
-            }
-          };
-          $scope.tableParams = new TableParams(params, {
-            counts: [],
-            total: $scope.projects.length, // length of data
-            getData: function ($defer, params) {
-              var start = (params.page() - 1) * params.count(),
-                end = params.page() * params.count(),
-
-              // use build-in angular filter
-              orderedData = params.sorting() ?
-                $filter('orderBy')($scope.projects, params.orderBy()) :
-                    $scope.projects,
-                    ret = orderedData.slice(start, end);
-
-              $defer.resolve(ret);
-            }
-          });
-        }
+      
+      AssignmentService.getMyCurrentAssignments(person).then(function(assignments){
+    	  $scope.assignments = assignments;
+    	  $scope.hasAssignments = assignments.length > 0;
+    	  
+    	  if ($scope.hasAssignments){
+            // Project Params
+            var params = {
+              page: 1,            // show first page
+              count: 10,           // count per page
+              sorting: {
+            	 startDate: 'asc'     // initial sorting
+              }
+            };
+            $scope.tableParams = new TableParams(params, {
+              counts: [],
+              total: $scope.assignments.length, // length of data
+              getData: function ($defer, params) {
+                var start = (params.page() - 1) * params.count(),
+                  end = params.page() * params.count(),
+  
+                // use build-in angular filter
+                orderedData = params.sorting() ?
+                  $filter('orderBy')($scope.assignments, params.orderBy()) :
+                      $scope.assignments,
+                      ret = orderedData.slice(start, end);
+  
+                $defer.resolve(ret);
+              }
+            });
+    	  }
       });
 
       $scope.initHours();
