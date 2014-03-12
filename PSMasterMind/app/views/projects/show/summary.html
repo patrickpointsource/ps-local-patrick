@@ -8,7 +8,7 @@
     </div>
    <div class="row">
      	<div class="col-xs-12" >
-            <h4><span>{{project.startDate | date}}</span><span ng-if="project.endDate"> - {{project.endDate | date}}</span>
+            <h4><span>{{project.startDate | date}}</span><span> - {{project.endDate? project.endDate:'?'| date}}</span>
         </div>
     </div>
     <br/>
