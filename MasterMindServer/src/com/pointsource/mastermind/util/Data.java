@@ -2359,21 +2359,26 @@ public class Data implements CONSTS {
 		}
 	}
 	
+	//TODO: refactor this method to generate only _id, put about property filling  separatly
 	public static void refreshRoleIds (JSONObject project)
 			throws JSONException {
 		JSONArray roles = (JSONArray) project.get("roles");
 		JSONObject role = null;
 		ObjectId id;
+		boolean syncImmediatly = false;
 		
 		for (int i = 0; i < roles.length(); i ++) {
 			role = roles.getJSONObject(i);
 
-			if (role != null && !role.has(PROP__ID)) {
+			if (role != null && role.has(PROP_ABOUT) && project.has(PROP_ABOUT) && role.has(PROP__ID))
+				syncImmediatly = role.get(PROP_ABOUT).toString().indexOf(role.get(PROP__ID).toString()) == -1;
+				
+			if (role != null && (!role.has(PROP__ID) || syncImmediatly)) {
 				id = new ObjectId();
 				role.put(PROP__ID, id);
 			}
 			
-			if (role != null && !role.has(PROP_ABOUT) && project.has(PROP_ABOUT)) {
+			if (role != null && (!role.has(PROP_ABOUT) && project.has(PROP_ABOUT) || syncImmediatly)) {
 				role.put(PROP_ABOUT, project.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
 			} /*else if (role != null && !role.has(PROP_ABOUT) && !project.has(PROP_ABOUT)) {
 				role.put(PROP_ABOUT,RESOURCE_PROJECTS + "/" + RESOURCE_ROLES + "/" + role.get(PROP__ID).toString());
