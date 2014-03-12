@@ -68,7 +68,7 @@ angular.module('Mastermind')
         }
         today = yyyy+'-'+mm+'-'+dd;
         return today;
-    }
+    };
     
     var getQueryDate = function(date){
    	 //Get todays date formatted as yyyy-MM-dd
@@ -83,7 +83,7 @@ angular.module('Mastermind')
        }
        date = yyyy+'-'+mm+'-'+dd;
        return date;
-   }
+   };
     
     var getQueryDateSixMonthsFromNow = function(date){
     	var sixMontsFromNow = date;

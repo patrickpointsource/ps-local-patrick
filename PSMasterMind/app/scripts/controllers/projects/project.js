@@ -71,6 +71,25 @@ angular.module('Mastermind')
     };
 
     /**
+     * Get the date short format
+     */
+    var getShortDate = function(date){
+      	 //Get todays date formatted as yyyy-MM-dd
+         var dd = date.getDate();
+          var mm = date.getMonth()+1; //January is 0!
+          var yyyy = date.getFullYear();
+          if (dd<10){
+            dd='0'+dd;
+          }
+          if (mm<10){
+            mm='0'+mm;
+          }
+          date = yyyy+'-'+mm+'-'+dd;
+          return date;
+      }
+    
+    
+    /**
      * On project save ask if the user would like to shift the start and and dates for the
      * roles in the project
      */
@@ -86,15 +105,21 @@ angular.module('Mastermind')
       			  var role = roles[i];
       			  //Shift the start date
       			  if(role.startDate){
-      				  var tmpDate = new Date(role.startDate);
-      				  tmpDate = new Date(tmpDate.getTime() + delta);
-      				  role.startDate = tmpDate;
+      				  //If the role date == the original start date keep them the same
+      				  if(role.startDate == project.initStartDate){
+      					role.startDate = project.startDate;
+      				  }
+      				  else{
+	      				  var tmpDate = new Date(role.startDate);
+	      				  tmpDate = new Date(tmpDate.getTime() + delta);
+	      				  role.startDate = getShortDate(tmpDate);
+      				  }
       			  }
       			  //Shift the end date
       			  if(role.endDate){
       				  var tmpDate = new Date(role.endDate);
       				  tmpDate = new Date(tmpDate.getTime() + delta);
-      				  role.endDate = tmpDate;
+      				  role.endDate = getShortDate(tmpDate);
       			  }
       		  }
       	  }
@@ -143,7 +168,9 @@ angular.module('Mastermind')
       //TODO - Do we need this refresh why would it be out of date with the area controller?
       Resources.refresh('people/me').then(function(me){
         if ($scope.project.created === undefined) {
-          $scope.project.created = {
+        
+        //TODO Created and Modified should be set on the server side not here.	
+        $scope.project.created = {
             date: new Date().toString(),
             resource: me.about
           };
@@ -169,10 +196,11 @@ angular.module('Mastermind')
                 $scope.project = project;
                 $scope.handleProjectSelected();
                 $rootScope.formDirty = false;
+                
+                deferred.reject($scope.project);
              });
-        	
-        	deferred.resolve($scope.project);
-        }, function (response) {
+        }, 
+        function (response) {
           if(response.data.reasons){
         	  $scope.showErrors(response.data.reasons);
           }
@@ -189,6 +217,7 @@ angular.module('Mastermind')
           $scope.project.description = decodeURIComponent($scope.project.description);
           
           deferred.reject($scope.project);
+	      
         });
         
       });
