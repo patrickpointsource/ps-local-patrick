@@ -458,6 +458,25 @@ angular.module('Mastermind')
       return !detailsValid || !rolesValid;
     };
 
+    $scope.activeTab = {
+    	"assignments": false,
+    	"summary": true,
+    	"hours": false,
+    	"links": false
+    }
+    
+    $scope.tabSelected = function(selectedTabId) {
+		if ($scope.projectTabId != selectedTabId) {
+			$scope.projectTabId = selectedTabId;
+			
+			
+			$state.go('projects.show.tabId', {
+					tabId: selectedTabId,
+					filter: selectedTabId != 'assignments' ? null: 'current'
+			});
+		}
+    }
+    
     /**
      * Get All the Role Types
      */
@@ -860,6 +879,17 @@ angular.module('Mastermind')
     }
 
     $scope.canDeleteProject = false;
+
+    
+    if($state.params && $state.params.tabId) {
+        $scope.projectTabId = $state.params.tabId;
+        
+        for (var tab in $scope.activeTab)
+        	$scope.activeTab[tab] = false;
+        
+        $scope.activeTab[$state.params.tabId] = true;
+    } else
+    	$scope.projectTabId = 'summary';
 
     //TODO - Do we need this refresh why would it be out of date with the area controller?
     Resources.refresh('people/me').then(function(me){

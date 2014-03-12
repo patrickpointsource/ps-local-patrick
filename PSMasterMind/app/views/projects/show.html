@@ -11,22 +11,22 @@
     </div>
     <div>
     	 <tabset>
-    	 	<tab id="summary" heading="Summary">
+    	 	<tab id="summary" heading="Summary" active="activeTab['summary']" select="tabSelected('summary')">
 	        	<div ng-if="projectLoaded">
 	            	<ng-include src="'views/projects/show/summary.html'"></ng-include>
 	            </div>
 	        </tab>
-	        <tab id="assignments" heading="Assignments">
+	        <tab id="assignments" heading="Assignments"  active="activeTab['assignments']" select="tabSelected('assignments')">
 	        	<div ng-if="projectLoaded">
 	            	<ng-include src="'views/projects/show/assignments.html'"></ng-include>
 	            </div>
 	        </tab>
-	        <tab id="hours" heading="Hours">
+	        <tab id="hours" heading="Hours"  active="activeTab['hours']" select="tabSelected('hours')">
 	        	<div ng-if="projectLoaded">
 	            	<ng-include src="'views/projects/show/hours.html'"></ng-include>
 	            </div>
 	        </tab>
-	        <tab id="links" heading="Links">
+	        <tab id="links" heading="Links"  active="activeTab['links']" select="tabSelected('links')">
 	        	<div ng-if="projectLoaded">
 	            	<ng-include src="'views/projects/show/links.html'"></ng-include>
 	            </div>

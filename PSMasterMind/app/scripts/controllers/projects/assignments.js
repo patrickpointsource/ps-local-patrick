@@ -5,8 +5,8 @@
  * Controller for handling the Details form.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('AssignmentsCtrl',['$scope', '$filter', 'Resources', 'AssignmentService', 'ngTableParams',
-  function ($scope, $filter, Resources, AssignmentService, TableParams) {
+  .controller('AssignmentsCtrl',['$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'AssignmentService', 'ngTableParams',
+  function ($scope, $rootScope, $filter, Resources, $state, $stateParams, AssignmentService, TableParams) {
    
 	  $scope.editMode = false;
 	  // Table Parameters
@@ -24,7 +24,7 @@ angular.module('Mastermind.controllers.projects')
 	                               	{name: "All Assignments", value: "all"}]
 	
 	  // make selected by default to "current"
-	  $scope.selectedAssignmentsFilter = "current";
+	  $scope.selectedAssignmentsFilter = $state.params.filter ? $state.params.filter: "current";
 	  
 	for (var i = 0; i < $scope.project.roles.length; i ++)
 		$scope.project.roles[i].assignees = [];
@@ -40,8 +40,8 @@ angular.module('Mastermind.controllers.projects')
 	});
 	
 	$scope.getRoleCSSClass= function(abr) {
-		var result = '';
-		
+		var result = 'well';
+		/*
 		if (abr == 'BA')
 			result = 'bg-success';
 		else if (abr == 'SSE')
@@ -56,17 +56,17 @@ angular.module('Mastermind.controllers.projects')
 			result = "bg-info"
 		else if (abr == 'SUXD')
 			result = "bg-info"
-				
+			*/	
 		return result;
 	}
 	
 	$scope.addNewAssignmentToRole =  function (index, role) {
 		
 		role.assignees.push(AssignmentService.create({
-	          startDate:$scope.project.startDate,
-	          endDate:$scope.project.endDate,
-	          percentage: 0
-	        }))
+          startDate:$scope.project.startDate,
+          endDate:$scope.project.endDate,
+          percentage: 0
+        }))
 	}
 	
 	$scope.removeAssignmentToRole = function(index, role) {
@@ -88,6 +88,11 @@ angular.module('Mastermind.controllers.projects')
 		}
 		
 		$scope.editMode = false;
+		 $rootScope.formDirty = false;
+		 
+		$state.go('projects.show.tabId', {
+			tabId: $scope.projectTabId
+		});
 	};
 	
 	$scope.validateAssignments = function(assignments){
@@ -96,6 +101,7 @@ angular.module('Mastermind.controllers.projects')
       
     $scope.edit = function() {
     	$scope.editMode = true;
+    	
     	
     	 var role;
          
@@ -111,6 +117,12 @@ angular.module('Mastermind.controllers.projects')
 		    	}
          	}
          }
+         
+         $state.go('projects.show.tabId.edit', {
+				tabId: $scope.projectTabId
+			}).then(function() {
+				$rootScope.formDirty = true;
+			});
     	 
     }
     
@@ -178,10 +190,15 @@ angular.module('Mastermind.controllers.projects')
     	  
     	  AssignmentService.save($scope.project, $scope.projectAssignment).then(function() {
     		  $scope.showInfo(['Assignments successfully saved']);
+    		  $rootScope.formDirty = false;
     		  
     		  window.setTimeout(function(){
     			  $scope.hideMessages();
-    		  }, 7 * 1000)
+    		  }, 7 * 1000);
+    		  
+    		  $state.go('projects.show.tabId', {
+  				tabId: $scope.projectTabId
+  			});
     	  })
     	 
           //}
@@ -198,6 +215,14 @@ angular.module('Mastermind.controllers.projects')
     	AssignmentService.getAssignmentsByPeriod($scope.selectedAssignmentsFilter).then(function(data) {
         	$scope.refreshAssignmentsData(data);
         })
+        
+        var filter = $scope.projectTabId == "assignments" ? $scope.selectedAssignmentsFilter: null;
+        
+    	//if ($state.params.filter != filter;
+    	$state.go('.', {
+    			filter: filter, 
+				tabId: $scope.projectTabId
+			});
     }
     
     $scope.refreshAssignmentsData = function(result) {
@@ -254,6 +279,9 @@ angular.module('Mastermind.controllers.projects')
 		}
     }
    
-    $scope.handleAssignmentsFilterChanged()
+    $scope.handleAssignmentsFilterChanged();
+    
+    if ($state.is("projects.show.tabId.edit"))
+    	$scope.edit();
     
   }]);

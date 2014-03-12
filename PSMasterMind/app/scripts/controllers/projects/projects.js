@@ -87,7 +87,7 @@ angular.module('Mastermind.controllers.projects')
         }
       });
     };
-
+    
     $scope.projectFilter = $state.params.filter ? $state.params.filter:'all';
     $scope.handleProjectFilterChanged();
 

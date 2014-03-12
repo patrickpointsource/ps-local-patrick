@@ -83,6 +83,26 @@
             }
           }
         })
+        .state('projects.show.tabId', {
+          url: '/:tabId',
+          templateUrl: 'views/projects/show.html',
+          controller: 'ProjectCtrl',
+          resolve: {
+            editMode: function () {
+              return false;
+            }
+          }
+        })
+        .state('projects.show.tabId.edit', {
+          url: '/edit',
+          templateUrl: 'views/projects/show.html',
+          controller: 'ProjectCtrl',
+          resolve: {
+            editMode: function () {
+              return false;
+            }
+          }
+        })
         .state('people', {
           url: '/people',
           abstract: true,
