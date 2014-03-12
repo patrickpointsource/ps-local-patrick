@@ -77,7 +77,7 @@ angular.module('Mastermind')
     $scope.handleProjectStartDateShifts = function(){
     	//Check if the start date has been updated.
         var project = $scope.project;
-        if(project.startDate && project.startDate != project.initStartDate){
+        if(project.initStartDate && project.startDate && project.startDate != project.initStartDate){
       	  var shouldChange = confirm('The start date on your project has changed.  Would you like to shift the role start dates based on this change?');
       	  if(shouldChange){
       		  var delta = new Date(project.startDate) - new Date(project.initStartDate);
@@ -140,6 +140,7 @@ angular.module('Mastermind')
       $scope.handleProjectStartDateShifts();
       
       // set the project creator and created time
+      //TODO - Do we need this refresh why would it be out of date with the area controller?
       Resources.refresh('people/me').then(function(me){
         if ($scope.project.created === undefined) {
           $scope.project.created = {
@@ -153,8 +154,14 @@ angular.module('Mastermind')
           resource: me.about
         };
 
-        ProjectsService.save($scope.project).then(function () {
-        	$scope.showInfo(['Project successfully saved']);
+        ProjectsService.save($scope.project).then(function (updatedProject) {
+        	var projectURI = updatedProject.about;
+        	var oid = projectURI.substring(projectURI.lastIndexOf('/')+1);
+        	//Set our currently viewed project to the one resolved by the service.
+            $scope.projectId = oid;
+          
+            $scope.showInfo(['Project successfully saved']);
+            
         	ProjectsService.getForEdit($scope.projectId).then(function(project){
                 $scope.project = project;
                 $scope.handleProjectSelected();
@@ -754,6 +761,7 @@ angular.module('Mastermind')
 
     $scope.canDeleteProject = false;
 
+    //TODO - Do we need this refresh why would it be out of date with the area controller?
     Resources.refresh('people/me').then(function(me){
       $scope.me = me;
 

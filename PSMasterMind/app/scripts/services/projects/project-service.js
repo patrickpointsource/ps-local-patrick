@@ -31,7 +31,7 @@ angular.module('Mastermind.services.projects')
      * @type {*}
      */
     ProjectsRestangular = Restangular.withConfig(function (RestangularConfigurer) {
-      RestangularConfigurer.setResponseInterceptor(function (data, operation, what) {
+      RestangularConfigurer.setResponseInterceptor(function (data, operation, what,url,response) {
         var newData = data;
 
         if (what === 'projects') {
@@ -39,7 +39,7 @@ angular.module('Mastermind.services.projects')
             newData = data.data;
           }
         }
-
+        
         return newData;
       }).addElementTransformer('projects', false, function (element) {
         return new Project(element);
@@ -128,10 +128,17 @@ angular.module('Mastermind.services.projects')
      * Return a defered operation that fetches a project for edit
      */
     this.getForEdit = function(projectId){
+    	return this.getForEditByURI('projects/'+projectId);
+    };
+    
+	/**
+     * Return a defered operation that fetches a project for edit
+     */
+    this.getForEditByURI = function(projectURI){
       var deferred = $q.defer();
 
       setTimeout(function() {
-        Resources.refresh('projects/'+projectId).then(function(project){
+        Resources.refresh(projectURI).then(function(project){
         	//Fix project description 
 	        if(project.description){
 	      	  project.description = decodeURIComponent(project.description); 

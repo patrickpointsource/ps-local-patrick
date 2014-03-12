@@ -383,13 +383,13 @@ public class Projects extends BaseResource {
 				Validator.canCreateProject(context, newProject);
 				Data.refreshRoleIds(newProject);
 				
-				JSONObject ret = Data.createProject(newProject);
-				
-				String about = Data.unescapeJSON(ret
+				JSONObject json = Data.createProject(newProject);
+				String about = Data.unescapeJSON(json
 						.getString(CONSTS.PROP_ABOUT));
-
 				URI aboutURI = context.getBaseURI().resolve(about);
-				return Response.created(aboutURI).build();
+				
+				String ret = Data.escapeJSON(json);
+				return Response.created(aboutURI).entity(ret).build();
 			} catch (ValidationException e) {
 				return handleValidationException(e);
 			} catch (WebApplicationException e) {
