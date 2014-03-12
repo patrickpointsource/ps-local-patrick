@@ -112,29 +112,22 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
      * Update a new Role to the server
      */
     $scope.saveRole = function(){
-		//Validate new role
-	    var errors = $scope.validateNewRole();
-	    if (errors.length > 0){
-	      $scope.addRoleMessages = errors;
-	    }
-	    else{
-	      Resources.update($scope.newRole).then(function(){
-	        Resources.refresh('roles').then(function(result){
-	          $scope.roles = result.members;
-	          $scope.rolesTableParams.total($scope.roles.length);
-	          $scope.rolesTableParams.reload();
-	
-	          //Reset New Role Object
-	          $scope.newRole = {};
-	
-	          $scope.editingRole = false;
-	          $scope.editRoleIndex = null;
-	
-	          //Clear New Role Form
-	          $scope.newRoleForm.$setPristine();
-	        });
-	      });
-	    }
+      Resources.update($scope.newRole).then(function(){
+        Resources.refresh('roles').then(function(result){
+          $scope.roles = result.members;
+          $scope.rolesTableParams.total($scope.roles.length);
+          $scope.rolesTableParams.reload();
+
+          //Reset New Role Object
+          $scope.newRole = {};
+
+          $scope.editingRole = false;
+          $scope.editRoleIndex = null;
+
+          //Clear New Role Form
+          $scope.newRoleForm.$setPristine();
+        });
+      });
     };
 
     /**
