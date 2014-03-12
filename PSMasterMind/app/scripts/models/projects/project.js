@@ -26,6 +26,7 @@ angular.module('Mastermind.models.projects')
      * @type {{rate: HourlyRate, shore: string}}
      */
     var defaults = {
+    	_id: undefined,
     about: undefined,
       type: undefined,
       rate: RateFactory.build(Rates.HOURLY),
@@ -55,6 +56,7 @@ angular.module('Mastermind.models.projects')
       options = options || {};
 
       this.about = options.about || defaults.about;
+      this._id = options._id || defaults._id;
       this.type = options.type || defaults.type;
       this.rate = RateFactory.build(options.rate) || angular.copy(defaults.rate);
       this.shore = options.shore || defaults.shore;
