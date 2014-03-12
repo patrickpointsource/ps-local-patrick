@@ -155,10 +155,13 @@ angular.module('Mastermind')
         };
 
         ProjectsService.save($scope.project).then(function (updatedProject) {
-        	var projectURI = updatedProject.about;
-        	var oid = projectURI.substring(projectURI.lastIndexOf('/')+1);
-        	//Set our currently viewed project to the one resolved by the service.
-            $scope.projectId = oid;
+        	//On Create the project ID will be null.  Pull it from the about.
+        	if(!$scope.projectId){
+	        	var projectURI = updatedProject.about;
+	        	var oid = projectURI.substring(projectURI.lastIndexOf('/')+1);
+	        	//Set our currently viewed project to the one resolved by the service.
+	            $scope.projectId = oid;
+        	}
           
             $scope.showInfo(['Project successfully saved']);
             
@@ -181,6 +184,10 @@ angular.module('Mastermind')
         	  var error = response.status + ": " + JSON.stringify(response.data);
         	  $scope.showErrors([error]);
           }
+          
+          //Decode the description
+          $scope.project.description = decodeURIComponent($scope.project.description);
+          
           deferred.reject($scope.project);
         });
         
