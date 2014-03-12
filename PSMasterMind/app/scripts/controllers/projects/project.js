@@ -13,6 +13,7 @@ angular.module('Mastermind')
       $scope.projectId = $stateParams.projectId;
     }
     $scope.projectLoaded = false;
+    $scope.projectEstimate = 0;
 
     /**
      * Set the profile view in edit mode
@@ -42,6 +43,7 @@ angular.module('Mastermind')
 	      //Fetch the old version of the project and show the read only mode
 	      else{
 	        Resources.get('projects/' + $scope.projectId).then(function(){
+	        	$scope.projectEstimate = 0;
 	          $state.go('projects.show', {projectId:$scope.projectId, edit:null});
 	        });
 	      }
@@ -291,10 +293,10 @@ angular.module('Mastermind')
         }
       }
       else if(role.rate.type === Rates.WEEKLY){
-        ret = role.rate.hours + ' per week';
+        ret = role.rate.hoursPerWeek + ' per week';
       }
       else if(role.rate.type === Rates.HOURLY){
-        ret = role.rate.hours + ' per month';
+        ret = role.rate.hoursPerMth + ' per month';
       }
       return ret;
     };
@@ -382,6 +384,9 @@ angular.module('Mastermind')
       $scope.project.addRole(role);
       $scope.summaryRolesTableParams.total($scope.project.roles.length);
       $scope.summaryRolesTableParams.reload();
+      $scope.sowRolesTableParams.total($scope.project.roles.length);
+      $scope.sowRolesTableParams.reload();
+
     });
 
     /**
@@ -392,6 +397,9 @@ angular.module('Mastermind')
       $scope.project.changeRole(index, role);
       $scope.summaryRolesTableParams.total($scope.project.roles.length);
       $scope.summaryRolesTableParams.reload();
+      $scope.sowRolesTableParams.total($scope.project.roles.length);
+      $scope.sowRolesTableParams.reload();
+
     });
 
     /**
@@ -402,6 +410,9 @@ angular.module('Mastermind')
       $scope.project.removeRole(role);
       $scope.summaryRolesTableParams.total($scope.project.roles.length);
       $scope.summaryRolesTableParams.reload();
+      $scope.sowRolesTableParams.total($scope.project.roles.length);
+      $scope.sowRolesTableParams.reload();
+
     });
 
     /**
@@ -536,6 +547,21 @@ angular.module('Mastermind')
       Resources.remove(hoursURL).then(function(){
         $scope.initHours();
       });
+    };
+    
+    /**
+     * Format Money
+     * 
+     */
+    $scope.formatMoney = function(num, c, d, t){
+    	var n = num, 
+	    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+	    d = d == undefined ? "." : d, 
+	    t = t == undefined ? "," : t, 
+	    s = n < 0 ? "-" : "", 
+	    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+	    j = (j = i.length) > 3 ? j % 3 : 0;
+	   return '$' + s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
     };
 
     $scope.initHours = function(){
@@ -680,6 +706,44 @@ angular.module('Mastermind')
         }
       });
 
+      $scope.sowRolesTableParams = new TableParams(params, {
+          total: $scope.project.roles.length,
+          getData: function ($defer, params) {
+            var start = (params.page() - 1) * params.count();
+            var end = params.page() * params.count();
+            $scope.projectEstimate = 0;
+
+            var orderedData = params.sorting() ?
+                $filter('orderBy')($scope.project.roles, params.orderBy()) :
+                $scope.project.roles;
+
+            //use build-in angular filter
+            var result = orderedData.slice(start, end);
+
+            var defers = [];
+            var ret = [];
+            for(var i = 0; i < result.length; i++){
+              var ithRole = Resources.deepCopy(result[i]);
+              $scope.projectEstimate += ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
+              if(ithRole.assignee && ithRole.assignee.resource){
+                defers.push(Resources.resolve(ithRole.assignee));
+                //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+              }
+
+              if(ithRole.type && ithRole.type.resource){
+                defers.push(Resources.resolve(ithRole.type));
+                //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+              }
+
+              ret[i] = ithRole;
+            }
+
+            $.when.apply(window, defers).done(function(){
+              $defer.resolve(ret);
+            });
+          }
+        });
+      
       if (!editMode){
         $scope.initHours();
       }

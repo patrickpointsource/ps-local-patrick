@@ -40,9 +40,11 @@ angular.module('Mastermind.controllers.projects')
       var rateType = $scope.newRole.rate.type;
       if(rateType === Rates.MONTHLY){
         $scope.newRole.rate.amount =  roleType.monthlyAdvertisedRate;
+        $scope.newRole.rate.advAmount =  roleType.monthlyAdvertisedRate;
       }
       else{
         $scope.newRole.rate.amount =  roleType.hourlyAdvertisedRate;
+        $scope.newRole.rate.advAmount =  roleType.hourlyAdvertisedRate;
       }
     };
 
@@ -228,6 +230,22 @@ angular.module('Mastermind.controllers.projects')
       $scope.roleTableParams.reload();
     };
 	
+    /**
+     * Update an existing role deinition
+     */
+    $scope.refreshAdvAmount = function () {
+        var type = $scope.newRole.type.resource;
+        var roleType = $scope.roleGroups[type];
+
+        var rateType = $scope.newRole.rate.type;
+        if(rateType === Rates.MONTHLY){
+          $scope.newRole.rate.advAmount =  roleType.monthlyAdvertisedRate;
+        }
+        else{
+          $scope.newRole.rate.advAmount =  roleType.hourlyAdvertisedRate;
+        }
+    };
+    
     $scope.$watch(function () {
       return $scope.project.roles.length;
     }, function (newLength) {
@@ -241,6 +259,7 @@ angular.module('Mastermind.controllers.projects')
     $('.datepicker').on('hide', function(){
       $scope.$apply();
     });
+    
 
     $scope.isFieldInError = function (fieldName) {
       var rolesFormField = $scope.rolesForm[fieldName];

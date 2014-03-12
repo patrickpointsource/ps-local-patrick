@@ -13,80 +13,87 @@
     </div>
     <br/>
 	<div id="summaryDescription" class="row">
-    	<div class="col-xs-12">
-	        <div ta-bind ng-if="project.description" ng-model="project.description">
-	        </div>
-	        <div ng-if="!project.description">
-	            No description entered.
-	        </div>
-        </div>
-    </div>
- 	<br/>
-    
-    <div class="row well" ng-if="financeAccess">
-    	<div class="row">
-			<div class="col-xs-12"><h4>Terms:</h4></div>
+		<div class="col-xs-12">
+			<div ta-bind ng-if="project.description"
+				ng-model="project.description"></div>
+			<div ng-if="!project.description">No description entered.</div>
 		</div>
-        <div class="col-xs-12">
-        <div class="row-fluid">
-   			<div class="col-xs-12 col-sm-6 col-md-3">
-                <label>Estimated value:</label> <span>(USD) {{(project.terms.servicesEstimate+project.terms.softwareEstimate) | currency}}</span>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <label>Total $ In Plan:</label> <span>{{servicesTotal() | currency}}</span>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <label>Total Loaded $ In Plan:</label> <span>{{servicesLoadedTotal | currency}}</span>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <label>Margin %:</label> <span>{{projectMargin() | number:0}}</span>
-            </div>
-        </div>
-    </div>
-         <br/>
-    </div>
-    <div class="row">
-		<div class="col-xs-12"><h4>Roles:</h4></div>
 	</div>
-    <div class="row">
-        <div class="col-xs-12">
-        <table ng-table="summaryRolesTableParams" class="table peopleList" template-pagination="custom/pager">
-            <thead>
-                <tr>
-                    <th>Person Assigned</th>
-                    <th class="hidden-xs">Role</th>
-                    <th>Hours</th>
-                    <th class="hidden-xs">Start Date</th>
-                    <th class="hidden-xs">End Date</th>
-                    <th class="visible-xs">Dates</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tr ng-repeat="role in $data">
-              	<td>
-              	  <a href="#{{role.assignee.resource}}">
-	                  <img ng-show="role.assignee && role.assignee.resource" class="profileImage" ng-src="{{role.assignee.thumbnail}}"/>
-	                  <i class="fa fa-ban" ng-show="!role.assignee || !role.assignee.resource"></i>
-	                  <span >{{role.assignee.name || 'Unassigned'}}</span>
-                  </a>
-                  <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>
-                </td>
-                <td class="hidden-xs">{{role.type.abbreviation}}</td>
-                <td class="visible-xs">
-                    <span ng-show="role.rate.isFullyUtilized()">100%</span>
-                    <span ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}}/M</span>
-                </td>
-                <td class="hidden-xs">{{role.rate.hoursPerMonth()}}</td>
-                <td class="hidden-xs">{{role.startDate | date:'longDate'}}</td>
-                <td class="hidden-xs">{{role.endDate | date:'longDate'}}</td>
-                <td class="visible-xs">
-                    <small>{{role.startDate | date:'shortDate'}}</small>
-                    <span ng-show="role.endDate">-<br><small>{{role.endDate | date:'shortDate'}}</small></span>
-                    <span ng-hide="role.endDate">- <small>N/A</small></span>
-                </td>
-            </tr>
-        </table>
-        <script type="text/ng-template" id="custom/pager">
+	<br />
+
+	<div class="row well" ng-if="financeAccess">
+		<div class="row">
+			<div class="col-xs-12">
+				<h4>Terms:</h4>
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<div class="row-fluid">
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Estimated value:</label> <span>(USD)
+						{{(project.terms.servicesEstimate+project.terms.softwareEstimate)
+						| currency}}</span>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Total $ In Plan:</label> <span>{{servicesTotal() |
+						currency}}</span>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Total Loaded $ In Plan:</label> <span>{{servicesLoadedTotal
+						| currency}}</span>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Margin %:</label> <span>{{projectMargin() |
+						number:0}}</span>
+				</div>
+			</div>
+		</div>
+		<br />
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<h4>Roles:</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<table ng-table="summaryRolesTableParams" class="table peopleList"
+				template-pagination="custom/pager">
+				<thead>
+					<tr>
+						<th>Person Assigned</th>
+						<th class="hidden-xs">Role</th>
+						<th>Hours</th>
+						<th class="hidden-xs">Start Date</th>
+						<th class="hidden-xs">End Date</th>
+						<th class="visible-xs">Dates</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tr ng-repeat="role in $data">
+					<td><a href="#{{role.assignee.resource}}"> <img
+							ng-show="role.assignee && role.assignee.resource"
+							class="profileImage" ng-src="{{role.assignee.thumbnail}}" /> <i
+							class="fa fa-ban"
+							ng-show="!role.assignee || !role.assignee.resource"></i> <span>{{role.assignee.name
+								|| 'Unassigned'}}</span>
+					</a> <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>
+					</td>
+					<td class="hidden-xs">{{role.type.abbreviation}}</td>
+					<td class="visible-xs"><span
+						ng-show="role.rate.isFullyUtilized()">100%</span> <span
+						ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}}/M</span>
+					</td>
+					<td class="hidden-xs">{{role.rate.hoursPerMonth()}}</td>
+					<td class="hidden-xs">{{role.startDate | date:'longDate'}}</td>
+					<td class="hidden-xs">{{role.endDate | date:'longDate'}}</td>
+					<td class="visible-xs"><small>{{role.startDate |
+							date:'shortDate'}}</small> <span ng-show="role.endDate">-<br>
+							<small>{{role.endDate | date:'shortDate'}}</small></span> <span
+						ng-hide="role.endDate">- <small>N/A</small></span></td>
+				</tr>
+			</table>
+			<script type="text/ng-template" id="custom/pager">
                 <ul class="pager ng-cloak">
                     <li ng-repeat="page in pages"
                             ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
@@ -104,5 +111,54 @@
                     </li>
                 </ul>
             </script>
-    </div>
-</div>
+		</div>
+	</div>
+
+	<div class="row well" ng-if="financeAccess">
+		<div class="row">
+			<div class="col-xs-12">
+				<h4>Project Rate Table (Total):</h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<table ng-table="sowRolesTableParams" class="table peopleList"
+					template-pagination="custom/pager" compute-estimate="totalEstimate">
+					<thead>
+						<tr>
+							<th>Role</th>
+							<th class="hidden-xs">Advertised Rate</th>							
+							<th>Project Rate</th>
+							<th>Rate Units</th>
+							<th>Usage</th>		
+							<th>Time Period</th>					
+							<th>Estimated Total</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tr ng-repeat="role in $data">
+						<td span>{{roleGroups[role.type.resource].abbreviation}}</span>
+						</td>
+						<td class="hidden-xs">{{role.rate.advAmount}}</td>
+						
+						<td>{{role.rate.amount}}</td>						
+						<td>{{role.rate.rateUnits}}</td>
+						<td>
+						   <span>{{role.rate.getNumberOfTUs()}}</span>						   
+						</td>
+						<td>{{role.rate.getNumPeriods(role.startDate, role.endDate)}}</td>
+						<td>{{role.formatMoney(role.rate.estimatedTotal, 0)}}</td>
+					</tr>
+					<tfoot>
+						<tr>
+							<td/><td/><td/><td/><td/>
+							<td><b>Total Estimate:</b></td>
+							<td>
+							   <span>{{formatMoney(projectEstimate,0)}}</span>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>

@@ -52,6 +52,8 @@ public interface CONSTS {
 	public String PROP_HOURLY_ADVERTISED_RATE = "hourlyAdvertisedRate";
 	public String PROP_HOURLY_LOADED_RATE = "hourlyLoadedRate";
 	public String PROP_HOURS = "hours";
+	public String PROP_HOURS_PER_MONTH = "hoursPerMth";
+	public String PROP_HOURS_PER_WEEK = "hoursPerWeek";
 	public String PROP_ID = "id";
 	public String PROP_INCLUDES_PROJECT_MANAGEMENT_OVERHEAD = "includesProjectManagementOverhead";
 	public String PROP_MBOX = "mBox";

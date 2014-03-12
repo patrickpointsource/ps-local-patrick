@@ -6142,6 +6142,12 @@ main #graph-header #graph-header-plus i {
 #summary #description {
   padding: 30px 0;
 }
+#summaryDescription {
+  max-width: 100%;
+}
+#summaryDescription img {
+  max-width: 100%;
+}
 .summary-tab .fa-ban {
   width: 36px;
   height: 36px;
@@ -6298,18 +6304,13 @@ th > span.hidden-xs {
 *:first-child + html .modal-footer {
   zoom: 1;
 }
-
-
 /* IE7 */
-
 /* Turn off spinner in number inputs */
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  *-webkit-appearance: none;
-  *margin: 0;
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-
 .pull-left {
   float: left;
   padding-right: 10px;

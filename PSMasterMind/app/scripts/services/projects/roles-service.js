@@ -72,7 +72,7 @@ angular.module('Mastermind.services.projects')
         //BR: Senior UX Designers must have a minimum of 40 hours in a project or no hours.
         if(newRole.rate.type === 'hourly'){
           if(!newRole.rate.fullyUtilized){
-            if(!newRole.rate.hours){
+            if(!newRole.rate.hoursPerMth){
               errors.push('An Hourly Role must specify the number hours per month');
             }
             else if(newRole.type.resource === 'roles/SUXD' && newRole.rate.hours < 40){
@@ -91,7 +91,7 @@ angular.module('Mastermind.services.projects')
         //BR: Senior UX Designers must have a minimum of 40 hours in a project or no hours.
         else if(newRole.rate.type === 'weekly'){
           if(!newRole.rate.fullyUtilized){
-            if(!newRole.rate.hours){
+            if(!newRole.rate.hoursPerWeek){
               errors.push('A Weekly Role must specify the number hours per week');
             }
             else if(newRole.type.resource === 'roles/SUXD' && newRole.rate.hours < 10){

@@ -47,6 +47,17 @@ angular.module('Mastermind.models.projects')
       // return month + '/' + day + '/' + year;
     }
 
+    Role.prototype.formatMoney = function(num, c, d, t){
+    	var n = num, 
+    	    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    	    d = d == undefined ? "." : d, 
+    	    t = t == undefined ? "," : t, 
+    	    s = n < 0 ? "-" : "", 
+    	    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+    	    j = (j = i.length) > 3 ? j % 3 : 0;
+    	   return '$' + s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+	 };
+    
     /**
      * Creates a new Role with default properties.
      *
@@ -102,7 +113,7 @@ angular.module('Mastermind.models.projects')
       // var day = dateArray[2].substr(0,2);
       // return month + '/' + day + '/' + year;
     }
-
+ 
     /**
      * Creates a new Role with default properties.
      *

@@ -327,12 +327,12 @@ public class Validator implements CONSTS {
 									//BR: Senior UX Designers must have a minimum of 40 hours in a project or no hours.
 									if (!rate.has(PROP_FULLY_UTILIZED)
 											|| !rate.getBoolean(PROP_FULLY_UTILIZED)) {
-										if (!rate.has(PROP_HOURS)
-												|| rate.getInt(PROP_HOURS) < 1) {
+										if (!rate.has(PROP_HOURS_PER_MONTH)
+												|| rate.getInt(PROP_HOURS_PER_MONTH) < 1) {
 											ret.add("An Hourly Role must specify the number hours per month");
 											break;
 										} else {
-											int hoursPerMonth = rate.getInt(PROP_HOURS);
+											int hoursPerMonth = rate.getInt(PROP_HOURS_PER_MONTH);
 											if (hoursPerMonth > 220) {
 												ret.add("An Hourly Role cannot exceed 220 hours per month");
 												break;
@@ -351,13 +351,13 @@ public class Validator implements CONSTS {
 									//BR: Senior UX Designers must have a minimum of 40 hours in a project or no hours.
 									if (!rate.has(PROP_FULLY_UTILIZED)
 											|| !rate.getBoolean(PROP_FULLY_UTILIZED)) {
-										if (!rate.has(PROP_HOURS)
-												|| rate.getInt(PROP_HOURS) < 1) {
+										if (!rate.has(PROP_HOURS_PER_WEEK)
+												|| rate.getInt(PROP_HOURS_PER_WEEK) < 1) {
 											ret.add("A Weekly Role must specify the number hours per week");
 											break;
 										} else {
 											int hoursPerWeek = rate
-													.getInt(PROP_HOURS);
+													.getInt(PROP_HOURS_PER_WEEK);
 											if (hoursPerWeek > 50) {
 												ret.add("A Weekly Role cannot exceed 50 hours per week");
 												break;
