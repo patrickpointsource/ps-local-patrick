@@ -32,11 +32,11 @@
             ng-hide="(peopleFilter.indexOf('role') !== -1 && peopleFilter !== person.primaryRole.resource)">
             <div class="col-xs-1">
                 <div style="float:left position:absolute"><a href="#{{person.resource}}">{{person.givenName}}</a></div>
-                <img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/>
+                <a href="#{{person.resource}}"><img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/></a>
             </div>
             <div class="col-xs-11">
                 <div class="row" ng-repeat="assignment in qvPeopleAssignments[person.resource] track by $index">
-                    <div><a href="#{{project.resource}}">{{assignment.project.name}}</a></div>
+                    <div><a href="#{{project.resource}}"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.percentage}}% {{assignment.project.customerName}}: {{assignment.project.name}}</a></div>
                     <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth(), startDate.getFullYear())}"></div>
                     <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+1, startDate.getFullYear())}"></div>
                     <div class="col-xs-2" ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+2, startDate.getFullYear())}"></div>

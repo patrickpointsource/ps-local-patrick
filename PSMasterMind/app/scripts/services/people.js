@@ -86,7 +86,7 @@ angular.module('Mastermind')
    };
     
     var getQueryDateSixMonthsFromNow = function(date){
-    	var sixMontsFromNow = date;
+    	var sixMontsFromNow = new Date(date);
     	sixMontsFromNow.setMonth(date.getMonth() + 6);
 	      var dd6 = sixMontsFromNow.getDate();
 	      var mm6 = sixMontsFromNow.getMonth()+1; //January is 0!
@@ -244,7 +244,8 @@ angular.module('Mastermind')
         		for(var personURI in ret){
         			var assignments = ret[personURI];
         			for(var i = 0; i < assignments.length; i++){
-        				var projectURI = assignments[i].project.resource;
+        				var assignment = assignments[i];
+        				var projectURI = assignment.project.resource;
         				for(var j = 0; j < projects.length; j++){
         					var project = projects[j];
         					if(projectURI == project.resource){
