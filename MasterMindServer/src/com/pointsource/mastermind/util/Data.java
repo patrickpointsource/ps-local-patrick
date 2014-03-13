@@ -2299,7 +2299,7 @@ public class Data implements CONSTS {
 						role.put(PROP_ABOUT, jsonProject.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
 					} 
 					
-					if (role.has("assignee")) {
+					if (role.has("assignee") && assignee.has(PROP_RESOURCE)) {
 						assignee = role.getJSONObject("assignee");
 						
 						// set default percentage to 100
