@@ -141,7 +141,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
               people[j] = x;
             }
 
-            $scope.availablePeople =  people.slice(0,8);
+            $scope.availablePeople =  people.slice(0,12);
 		  });
     };
     
@@ -221,7 +221,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
              
             //Query all the people in the list
             var query = {'_id':{$in:activePeople}};
-            var fields = {resource:1,thumbnail:1,name:1};
+            var fields = {resource:1,thumbnail:1,name:1,givenName:1,familyName:1};
             People.query(query,fields).then(function(data){
              	 $scope.qvPeopleAssignments = activePeopleAssignments;
              	 $scope.qvPeople = data.members;

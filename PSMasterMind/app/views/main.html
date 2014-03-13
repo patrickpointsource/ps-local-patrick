@@ -110,9 +110,9 @@
 						</div>
 					</div>
 					<div class="panel-body">
-						<div class="dashboard-box peopleList three-rows">
-							<div class="row">
-								<div class="col-xs-4 col-sm-3" style="min-width: 100px"
+						<div class="dashboard-box  three-rows">
+							<div class="row-fluid">
+								<div class="col-xs-4 col-sm-2 col-md-3 col-lg-2"
 									ng-repeat="person in availablePeople">
 									<a href="#{{person.resource}}"> <img alt="{{person.name}}"
 										title="{{person.name}}" ng-src="{{person.thumbnail}}" />
@@ -190,20 +190,17 @@
 							</div>
 						</div>
 					</div>
-					<div class="row peopleList" ng-repeat="person in qvPeople"
+					<div class="row peopleList well" style="margin-bottom:5px" ng-repeat="person in qvPeople | orderBy:'givenName'"
 						ng-show="qvPeople">
 						<div class="col-xs-1">
-							<div style="float: left position:absolute">
-								<a href="#{{person.about}}">{{person.givenName}}</a>
-							</div>
-							<img title="{{person.name}}" class="profileImage"
-								ng-src="{{person.thumbnail}}" />
+							<div><a href="#{{person.resource}}">{{person.givenName}}</a></div>
+               				<a href="#{{person.resource}}"><img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/></a>
 						</div>
 						<div class="col-xs-11">
 							<div class="row"
 								ng-repeat="assignment in qvPeopleAssignments[person.resource] track by $index">
 								<div>
-									<a href="#{{assignment.project.resource}}"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.percentage}}% {{assignment.project.customerName}}: {{assignment.project.name}}</a>
+									<a href="#{{assignment.project.resource}}/assignments"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.percentage}}% {{assignment.project.customerName}}: {{assignment.project.name}}</a>
 								</div>
 								<div class="col-xs-2"
 									ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth(), startDate.getFullYear())}"></div>
