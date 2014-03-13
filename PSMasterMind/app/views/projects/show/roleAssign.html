@@ -27,7 +27,7 @@
 <div class="row" ng-repeat="currentAssignee in role.assignees">
 	<div class="col-sm-3 col-xs-6 form-group" ng-class="{error: isFieldInError('role')}">
 		<select ng-model="currentAssignee.person.resource"
-                 ng-options="m.resource as (m.familyName + ', ' + m.givenName) for m in roleGroups[role.type.resource].assiganble"
+                 ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble"
                  ng-change="assigneeChanged($index, role)"
                  class="form-control" name="person">
          </select>
