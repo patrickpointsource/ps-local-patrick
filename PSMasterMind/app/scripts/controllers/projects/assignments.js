@@ -163,6 +163,10 @@ angular.module('Mastermind.controllers.projects')
           		role.assignees[j].role = {
           			resource: role.about
           		}
+          		
+          		for (var propP in role.assignees[j].person)
+          			if (propP != "resource")
+          				delete role.assignees[j].person[propP]
           
           	}
           	

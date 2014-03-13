@@ -1421,14 +1421,6 @@ public class Data implements CONSTS {
 	 */
 	public static JSONObject createProjectAssignments(RequestContext context, String projectId, 
 			JSONArray assignments) throws JSONException {
-
-		// Only admins can create roles
-		if (!hasAdminAccess(context)) {
-			throw new WebApplicationException(
-					Response.status(Status.FORBIDDEN)
-							.entity("You need admin athority to perform this operation")
-							.build());
-		}
 		
 		ObjectId id = null;
 		JSONObject assignment = null;
@@ -2263,6 +2255,87 @@ public class Data implements CONSTS {
 					.entity(error.getErrorMessage()).build());
 		}
 	}
+	
+	/**
+	 * Sprint 7 to sprint 8 migrate Project 'terms.committed' to 'committed' 
+	 */
+	public static void migrateAssignees(RequestContext context) throws IOException{
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		
+		JSONObject jsonProject = null;
+		//WriteResult result = projectsCol.updateMulti(query, update);
+		DBCursor cursor = projectsCol.find();
+
+		boolean projectChanged = false;
+		
+		while (cursor.hasNext()) {
+			DBObject object = cursor.next();
+
+			if (object.containsField(PROP__ID)) {
+				ObjectId oId = (ObjectId) object.get(PROP__ID);
+				String json = JSON.serialize(object);
+				jsonProject = new JSONObject(json);
+				
+				projectChanged = false;
+						
+				
+				JSONObject role = null;
+				JSONObject assignee = null;
+				JSONArray assignments = new JSONArray();
+				ObjectId id;
+				
+				JSONArray roles = (JSONArray) jsonProject.get("roles");
+				
+				for (int i = 0; i < roles.length(); i ++) {
+					role = roles.getJSONObject(i);
+
+					if (role != null && !role.has(PROP__ID)) {
+						id = new ObjectId();
+						role.put(PROP__ID, id);
+						projectChanged = true;
+					}
+					
+					if (role != null && (!role.has(PROP_ABOUT) && jsonProject.has(PROP_ABOUT) && role.has(PROP__ID))) {
+						role.put(PROP_ABOUT, jsonProject.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
+					} 
+					
+					if (role.has("assignee")) {
+						assignee = role.getJSONObject("assignee");
+						
+						// set default percentage to 100
+						assignee.put("percentage", 100);
+						assignee.put(PROP_PERSON, new BasicDBObject(PROP_RESOURCE, assignee.get(PROP_RESOURCE).toString()));
+						assignee.put("role", new BasicDBObject(PROP_RESOURCE, role.get(PROP_ABOUT).toString()));
+						
+						assignments.put(assignee);
+						assignee.remove(PROP_RESOURCE);
+						
+						role.remove("assignee");
+						
+						projectChanged = true;
+					}
+					
+					// make additional cleanup
+					if (role.has("assignees")) {
+						role.remove("assignees");
+						projectChanged = true;
+					}
+				}
+				
+				if (assignments.length() > 0)
+					createProjectAssignments(context, oId.toString(), assignments);
+				
+				if (projectChanged)
+					updateProject(context,  oId.toString(), jsonProject);
+				
+			} else {
+				System.out
+						.println("Project not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+		
+	}
 
 	/**
 	 * Synchs the DB People with the Google domain users
@@ -2377,12 +2450,6 @@ public class Data implements CONSTS {
 				id = new ObjectId();
 				role.put(PROP__ID, id);
 			}
-			
-			if (role != null && (!role.has(PROP_ABOUT) && project.has(PROP_ABOUT) || syncImmediatly)) {
-				role.put(PROP_ABOUT, project.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
-			} /*else if (role != null && !role.has(PROP_ABOUT) && !project.has(PROP_ABOUT)) {
-				role.put(PROP_ABOUT,RESOURCE_PROJECTS + "/" + RESOURCE_ROLES + "/" + role.get(PROP__ID).toString());
-			}*/
 		}
 	}
 	
@@ -2390,7 +2457,6 @@ public class Data implements CONSTS {
 			throws JSONException {
 		JSONArray roles = (JSONArray) project.get("roles");
 		JSONObject role = null;
-		ObjectId id;
 		
 		for (int i = 0; i < roles.length(); i ++) {
 			role = roles.getJSONObject(i);
