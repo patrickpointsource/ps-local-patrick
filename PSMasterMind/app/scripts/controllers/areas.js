@@ -149,7 +149,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     		ret = 'fa fa-angle-left';
     	}
     	else if(state == 'Active'){
-    		ret = 'fa fa-angle-up';
+    		ret = 'fa fa-rocket';
     	}
     	else if(state == 'Done'){
     		ret = 'fa fa-times-circle-o';

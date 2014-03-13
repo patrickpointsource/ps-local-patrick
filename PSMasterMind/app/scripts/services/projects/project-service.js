@@ -208,6 +208,53 @@ angular.module('Mastermind.services.projects')
         return today;
     };
     
+    this.getQueryDateSixMonthsFromNow = function(){
+    	var sixMontsFromNow = new Date();
+    	sixMontsFromNow.setMonth(sixMontsFromNow.getMonth() + 6);
+	      var dd6 = sixMontsFromNow.getDate();
+	      var mm6 = sixMontsFromNow.getMonth()+1; //January is 0!
+	      var yyyy6 = sixMontsFromNow.getFullYear();
+	      if (dd6<10){
+	        dd6='0'+dd6;
+	      }
+	      if (mm6<10){
+	        mm6='0'+mm6;
+	      }
+	      var sixMontsFromNowQuery = yyyy6+'-'+mm6+'-'+dd6;
+	     
+	     return sixMontsFromNowQuery;
+    }
+    
+    
+    /**
+     * Get Projects that will be in progress over the next six months
+     */
+    this.getQickViewProjects = function(){
+    	var deferred = $q.defer();
+    	var today = this.getToday();
+    	var sixMonthsFromNow = this.getQueryDateSixMonthsFromNow();
+
+        /*
+         * AAD Feb 26,2014
+         * Changing active project Query to use the committed flag and the project type.
+         */
+        var qvQuery = 
+        	{
+        		startDate:{$lte:sixMonthsFromNow},
+        		$or:[
+        		     {endDate:{$exists:false}},
+        		     {endDate:{$gt:today}}
+        		]
+        	};
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,customerName:1,committed:1,type:1,description: 1};
+
+        Resources.query('projects', qvQuery, apFields, function(result){
+        	deferred.resolve(result);
+        });
+        
+        return deferred.promise;
+    };
+    
     /**
      * Get My Current Projects (projects I have a current role on)
      */

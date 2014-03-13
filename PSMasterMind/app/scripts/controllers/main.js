@@ -68,22 +68,24 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
          * Next, with the list of active projects, find the resource deficit on these projects.
          * 
          */
-        $scope.qvProjects = result.data;
-        
-        /*
-         * Next, run through the list of projects and set the active projects and people.
-         * 
-         */
-        
-        var activeProjects = $scope.qvProjects;
-        var activeProjectsWithUnassignedPeople = [];
-        var unassignedIndex = 0;
-        
-        $scope.activeProjectsWithUnassignedPeople = [];
-        $q.all(rolesPromise).then(function(rolesMap) {
-      	  //console.log("main.js using rolesMap:", rolesMap);
-          setActivePeopleAndProjects(rolesMap);
-      });
+        ProjectsService.getQickViewProjects().then(function(result){
+        	$scope.qvProjects = result.data;
+        	
+        	/*
+             * Next, run through the list of projects and set the active projects and people.
+             * 
+             */
+            
+            var activeProjects = $scope.qvProjects;
+            var activeProjectsWithUnassignedPeople = [];
+            var unassignedIndex = 0;
+            
+            $scope.activeProjectsWithUnassignedPeople = [];
+            $q.all(rolesPromise).then(function(rolesMap) {
+          	  //console.log("main.js using rolesMap:", rolesMap);
+              setActivePeopleAndProjects(rolesMap);
+          });
+        });
     });
 
 
