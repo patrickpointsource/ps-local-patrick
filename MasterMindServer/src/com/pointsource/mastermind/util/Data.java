@@ -2288,16 +2288,21 @@ public class Data implements CONSTS {
 				
 				for (int i = 0; i < roles.length(); i ++) {
 					role = roles.getJSONObject(i);
-
-					if (role != null && !role.has(PROP__ID)) {
+					
+					
+					if (!role.has(PROP__ID)) {
 						id = new ObjectId();
 						role.put(PROP__ID, id);
 						projectChanged = true;
 					}
 					
-					if (role != null && (!role.has(PROP_ABOUT) && jsonProject.has(PROP_ABOUT) && role.has(PROP__ID))) {
-						role.put(PROP_ABOUT, jsonProject.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
+					if (!role.has(PROP_ABOUT) && role.has(PROP__ID)) {
+						//role.put(PROP_ABOUT, jsonProject.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
+						role.put(PROP_ABOUT, "projects/"+String.valueOf(oId)+"/roles/"+String.valueOf(role.get(PROP__ID)));
 					} 
+					else{
+						System.err.println("Bad Role? " + String.valueOf(role));
+					}
 					
 					if (role.has("assignee")) {
 						assignee = role.getJSONObject("assignee");
@@ -2307,6 +2312,9 @@ public class Data implements CONSTS {
 							assignee.put("percentage", 100);
 							assignee.put(PROP_PERSON, new BasicDBObject(PROP_RESOURCE, assignee.get(PROP_RESOURCE).toString()));
 							assignee.put("role", new BasicDBObject(PROP_RESOURCE, role.get(PROP_ABOUT).toString()));
+							assignee.put(PROP_START_DATE, String.valueOf(role.get(PROP_START_DATE)));
+							if(role.has(PROP_END_DATE)){assignee.put(PROP_END_DATE, String.valueOf(role.get(PROP_END_DATE)));}
+							
 							
 							assignments.put(assignee);
 							assignee.remove(PROP_RESOURCE);
