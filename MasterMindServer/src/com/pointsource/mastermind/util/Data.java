@@ -2299,20 +2299,22 @@ public class Data implements CONSTS {
 						role.put(PROP_ABOUT, jsonProject.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
 					} 
 					
-					if (role.has("assignee") && assignee.has(PROP_RESOURCE)) {
+					if (role.has("assignee")) {
 						assignee = role.getJSONObject("assignee");
-						
-						// set default percentage to 100
-						assignee.put("percentage", 100);
-						assignee.put(PROP_PERSON, new BasicDBObject(PROP_RESOURCE, assignee.get(PROP_RESOURCE).toString()));
-						assignee.put("role", new BasicDBObject(PROP_RESOURCE, role.get(PROP_ABOUT).toString()));
-						
-						assignments.put(assignee);
-						assignee.remove(PROP_RESOURCE);
-						
-						role.remove("assignee");
-						
-						projectChanged = true;
+						//Check if the assinees have a resource
+						if(assignee.has(PROP_RESOURCE)){
+							// set default percentage to 100
+							assignee.put("percentage", 100);
+							assignee.put(PROP_PERSON, new BasicDBObject(PROP_RESOURCE, assignee.get(PROP_RESOURCE).toString()));
+							assignee.put("role", new BasicDBObject(PROP_RESOURCE, role.get(PROP_ABOUT).toString()));
+							
+							assignments.put(assignee);
+							assignee.remove(PROP_RESOURCE);
+							
+							role.remove("assignee");
+							
+							projectChanged = true;
+						}
 					}
 					
 					// make additional cleanup
