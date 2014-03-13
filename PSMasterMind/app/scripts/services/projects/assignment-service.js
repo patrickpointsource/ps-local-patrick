@@ -187,7 +187,7 @@ angular.module('Mastermind.services.projects')
         return deferred.promise;
     };
     
-    this.getAssignmentsByPeriod = function(timePeriod) {
+    this.getAssignmentsByPeriod = function(timePeriod, projectQuery) {
     	var deferred = $q.defer();
     	var apQuery = {};
     	var apFields = {};
@@ -260,6 +260,8 @@ angular.module('Mastermind.services.projects')
     					}
     			}
     		}
+    	
+    	_.extend(apQuery, projectQuery);
     	
     	  Resources.query('assignments', apQuery, apFields).then(function(result){
     	    	var role;

@@ -428,7 +428,17 @@ angular.module('Mastermind')
     $scope.$on('roles:valid:change', function (event, validity) {
       rolesValid = validity;
     });
-
+    
+    /**
+     * Whenever the roles:assignments:change event is fired from a child controller,
+     * handle it by updating the supplied role's assignments in our project.
+     */
+    $scope.$on('roles:assignments:change', function (event, index, role) {
+      //$scope.project.changeRole(index, role);
+      $scope.summaryRolesTableParams.total($scope.project.roles.length);
+      $scope.summaryRolesTableParams.reload();
+    });
+    
     /**
      * Must have the details filled out before the user can view the roles tab.
      *
@@ -475,6 +485,13 @@ angular.module('Mastermind')
 					filter: selectedTabId != 'assignments' ? null: 'current'
 			});
 		}
+    }
+    
+    $scope.openAssignments = function(){
+    	$state.go('projects.show.tabId', {
+				tabId: 'assignments',
+				filter: 'current'
+		});
     }
     
     /**

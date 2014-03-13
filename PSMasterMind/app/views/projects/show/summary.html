@@ -35,35 +35,47 @@
 					<tr>
 						<th>Person Assigned</th>
 						<th class="hidden-xs">Role</th>
-						<th>Hours</th>
+						<th>Percentage</th>
 						<th class="hidden-xs">Start Date</th>
 						<th class="hidden-xs">End Date</th>
 						<th class="visible-xs">Dates</th>
 						<th></th>
 					</tr>
 				</thead>
-				<tr ng-repeat="role in $data">
-					<td><a href="#{{role.assignee.resource}}"> <img
-							ng-show="role.assignee && role.assignee.resource"
-							class="profileImage" ng-src="{{role.assignee.thumbnail}}" /> <i
-							class="fa fa-ban"
-							ng-show="!role.assignee || !role.assignee.resource"></i> <span>{{role.assignee.name
-								|| 'Unassigned'}}</span>
-					</a> <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>
-					</td>
-					<td class="hidden-xs">{{role.type.abbreviation}}</td>
-					<td class="visible-xs"><span
-						ng-show="role.rate.isFullyUtilized()">100%</span> <span
-						ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}}/M</span>
-					</td>
-					<td class="hidden-xs">{{role.rate.hoursPerMonth()}}</td>
-					<td class="hidden-xs">{{role.startDate | date:'longDate'}}</td>
-					<td class="hidden-xs">{{role.endDate | date:'longDate'}}</td>
-					<td class="visible-xs"><small>{{role.startDate |
-							date:'shortDate'}}</small> <span ng-show="role.endDate">-<br>
-							<small>{{role.endDate | date:'shortDate'}}</small></span> <span
-						ng-hide="role.endDate">- <small>N/A</small></span></td>
-				</tr>
+				<tbody ng-repeat="role in $data">
+					
+					<tr ng-repeat="assignee in role.assignees" ng-if="assignee.person && assignee.person.resource">
+						<td><a href="#{{assignee.resource}}"> <img
+								ng-show="assignee && assignee.person"
+								class="profileImage" ng-src="{{assignee.person.thumbnail}}" /> <i
+								class="fa fa-ban"
+								ng-show="!assignee.person || !assignee.person.resource"></i> <span>{{assignee.person.name
+									|| 'Unassigned'}}</span>
+						</a> <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>
+						</td>
+						<td class="hidden-xs">{{role.type.abbreviation}}</td>
+						<td>
+							<span>{{assignee.percentage}}%</span> 
+						</td>
+						
+						<td class="hidden-xs">{{assignee.startDate | date:'longDate'}}</td>
+						<td class="hidden-xs">{{assignee.endDate | date:'longDate'}}</td>
+						<td class="visible-xs"><small>{{assignee.startDate |
+								date:'shortDate'}}</small> <span ng-show="assignee.endDate">-<br>
+								<small>{{assignee.endDate | date:'shortDate'}}</small></span> <span
+							ng-hide="assignee.endDate">- <small>N/A</small></span></td>
+					</tr>
+					<tr ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
+						<td colspan="6">There are now assignees on {{roleGroups[role.type.resource].abbreviation}} role</td>
+					</tr>
+				</tbody>
+				<tfoot >
+					<tr>
+						<td>
+							<div class="row "><div class="col-sm-12"><a href="javascript:void(0)" ng-click="openAssignments()">More</a></div></div>
+						</td>
+					</tr>
+				</tfoot>
 			</table>
 			<script type="text/ng-template" id="custom/pager">
                 <ul class="pager ng-cloak">

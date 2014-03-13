@@ -212,7 +212,11 @@ angular.module('Mastermind.controllers.projects')
     };
     
     $scope.handleAssignmentsFilterChanged = function() {
-    	AssignmentService.getAssignmentsByPeriod($scope.selectedAssignmentsFilter).then(function(data) {
+    	AssignmentService.getAssignmentsByPeriod($scope.selectedAssignmentsFilter, {
+    		project: {
+    			resource: $scope.project.about
+    		}
+    	}).then(function(data) {
         	$scope.refreshAssignmentsData(data);
         })
         
@@ -224,32 +228,61 @@ angular.module('Mastermind.controllers.projects')
 				tabId: $scope.projectTabId
 			});
     }
+    $scope.peopleList = [];
     
     $scope.refreshAssignmentsData = function(result) {
-    	for (var i = 0; i < $scope.project.roles.length; i ++) 
-			$scope.project.roles[i].assignees = [];
+    	for (var i = 0; i < $scope.project.roles.length; i ++) {
+    		$scope.project.roles[i].assignees = [];
+    	}
     	
     	if (result && result.members) {
     		$scope.projectAssignment = result;
 			  
 			var assignments = result.members ? result.members: [];
-			var role = null;
+			
 			
 			var findRole = function(roleId) {
 				return _.find( $scope.project.roles, function(r){
 					return roleId.indexOf(r.about) > -1;
 				})
 			}
-			    
-			    
+			
+			var findPerson = function(personId) {
+				return _.find( $scope.peopleList, function(p){
+					return personId == p.resource;
+				})
+			}
+			   
+			// fill people list
+		
+			if ($scope.peopleList.length == 0) {
+				var people = [];
+				
+				for (var prop in $scope.roleGroups)
+					people = people.concat( $scope.roleGroups[prop].assiganble)
+					
+				$scope.peopleList = _.uniq(people, function(p) { return p.resource; })
+			}
+			
+			var role = null;
+			var person = null;
+			
 			for (var  i = 0; i < assignments.length; i ++) {
 				if (assignments[i].role && assignments[i].role.resource)
 					role = findRole(assignments[i].role.resource)
 				else
 					role = null;
 				
+				person = assignments[i].person && assignments[i].person.resource ? findPerson(assignments[i].person.resource): null;
+				
+				if (person) {
+					assignments[i].person.thumbnail = person.thumbnail;
+					assignments[i].person.name = person.familyName + ', ' + person.givenName
+				}
+				
 				if (role)
 					role.assignees.push(assignments[i])
+					
 			}
     	} else {
     		 $scope.projectAssignment = {
@@ -268,15 +301,14 @@ angular.module('Mastermind.controllers.projects')
 		          endDate:$scope.project.endDate
 		        };
 				
-				/*
-				if (role.assignee && role.assignee.resource)
-					_.extend(props, {person: role.assignee});
-				*/
+				
 				var newAssignee = AssignmentService.create(props)
 				
 				role.assignees.push(newAssignee)
 			}
 		}
+    	
+    	$scope.$emit('roles:assignments:change')
     }
    
     $scope.handleAssignmentsFilterChanged();

@@ -2385,6 +2385,21 @@ public class Data implements CONSTS {
 			}*/
 		}
 	}
+	
+	public static void refreshRoleAbout (JSONObject project)
+			throws JSONException {
+		JSONArray roles = (JSONArray) project.get("roles");
+		JSONObject role = null;
+		ObjectId id;
+		
+		for (int i = 0; i < roles.length(); i ++) {
+			role = roles.getJSONObject(i);
+
+			if (role != null && (!role.has(PROP_ABOUT) && project.has(PROP_ABOUT) && role.has(PROP__ID))) {
+				role.put(PROP_ABOUT, project.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
+			} 
+		}
+	}
 
 	private static JSONObject getUserByGoogleId(RequestContext context,
 			String googleId, String fields) throws JSONException {

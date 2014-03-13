@@ -94,7 +94,7 @@ public class Projects extends BaseResource {
 				}
 				
 				// after creation of new project role about property will be empty - fix this if needed
-				Data.refreshRoleIds(ret);
+				Data.refreshRoleAbout(ret);
 				
 				URI baseURI = context.getBaseURI();
 				ret.put(CONSTS.PROP_BASE, baseURI);
@@ -386,6 +386,8 @@ public class Projects extends BaseResource {
 				JSONObject json = Data.createProject(newProject);
 				String about = Data.unescapeJSON(json
 						.getString(CONSTS.PROP_ABOUT));
+				
+				Data.refreshRoleAbout(newProject);
 				URI aboutURI = context.getBaseURI().resolve(about);
 				
 				String ret = Data.escapeJSON(json);
@@ -449,6 +451,7 @@ public class Projects extends BaseResource {
 				RequestContext context = getRequestContext();
 				Validator.canUpdateProject(context, newProject);
 				Data.refreshRoleIds(newProject);
+				Data.refreshRoleAbout(newProject);
 				
 				JSONObject json = Data.updateProject(context, id, newProject);
 				
