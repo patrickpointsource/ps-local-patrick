@@ -21,35 +21,7 @@
 	</div>
 	<br />
 
-	<div class="row well" ng-if="financeAccess">
-		<div class="row">
-			<div class="col-xs-12">
-				<h4>Terms:</h4>
-			</div>
-		</div>
-		<div class="col-xs-12">
-			<div class="row-fluid">
-				<div class="col-xs-12 col-sm-6 col-md-3">
-					<label>Estimated value:</label> <span>(USD)
-						{{(project.terms.servicesEstimate+project.terms.softwareEstimate)
-						| currency}}</span>
-				</div>
-				<div class="col-xs-12 col-sm-6 col-md-3">
-					<label>Total $ In Plan:</label> <span>{{servicesTotal() |
-						currency}}</span>
-				</div>
-				<div class="col-xs-12 col-sm-6 col-md-3">
-					<label>Total Loaded $ In Plan:</label> <span>{{servicesLoadedTotal
-						| currency}}</span>
-				</div>
-				<div class="col-xs-12 col-sm-6 col-md-3">
-					<label>Margin %:</label> <span>{{projectMargin() |
-						number:0}}</span>
-				</div>
-			</div>
-		</div>
-		<br />
-	</div>
+
 	<div class="row">
 		<div class="col-xs-12">
 			<h4>Roles:</h4>
@@ -112,6 +84,36 @@
                 </ul>
             </script>
 		</div>
+	</div>
+
+	<div class="row well" ng-if="financeAccess">
+		<div class="row">
+			<div class="col-xs-12">
+				<h4>Terms:</h4>
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<div class="row-fluid">
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Estimated value:</label> <span>(USD)
+						{{(project.terms.servicesEstimate+project.terms.softwareEstimate)
+						| currency}}</span>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Total $ In Plan:</label> <span>{{servicesTotal() |
+						currency}}</span>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Total Loaded $ In Plan:</label> <span>{{servicesLoadedTotal
+						| currency}}</span>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Margin %:</label> <span>{{projectMargin() |
+						number:0}}</span>
+				</div>
+			</div>
+		</div>
+		<br />
 	</div>
 
 	<div class="row well" ng-if="financeAccess">

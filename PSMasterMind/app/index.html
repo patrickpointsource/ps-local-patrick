@@ -144,7 +144,7 @@
 							ng-click="showPeople()" class="close-dropdown"> <i
 								class="fa fa-2x fa-fw fa-users"></i> People
 						</a></li>
-						<li ng-class="{active: activeArea() === 'staffing'}"><a
+						<li ng-if="adminAccess" ng-class="{active: activeArea() === 'staffing'}"><a
 							ng-click="showStaffing()" class="close-dropdown"> <i
 								class="fa fa-2x fa-fw fa-tasks"></i> Staffing
 						</a></li>
