@@ -18,7 +18,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     $scope.summarySwitcher = 'projects';
     //$scope.projects = projects;
     $scope.startDate = new Date();
-    $scope.activeAndBacklogProjects = [];
+    $scope.ongoingProjects = [];
+    $scope.hoursProjects = [];
 
     var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     /**
@@ -47,9 +48,30 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
      * 
      */
     var rolesPromise = RolesService.getRolesMapByResource();;
-    ProjectsService.getActiveAndBacklogProjects(function(result){
-    	$scope.activeAndBacklogProjects = result.data;
-    	//console.log("main.js activeAndBacklogProjects:", $scope.activeAndBacklogProjects);
+    ProjectsService.getOngoingProjects(function(result){
+    	$scope.ongoingProjects = result.data;
+    	//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
+    	
+    	ProjectsService.getMyCurrentProjects($scope.me).then(function(myCurrentProjects) {
+        	var myProjects = myCurrentProjects.data;
+        	for (var m=0; m< myProjects.length; m++) {
+        		var myProj = myProjects[m];
+        		var found = undefined;
+        		$scope.hoursProjects.push(myProj);
+        		
+        		for (var n=0;n< $scope.ongoingProjects.length; n++) {
+        			var proj = $scope.ongoingProjects[n];
+        			if(proj.resource == myProj.resource) {
+        				$scope.ongoingProjects.splice(n,1);
+        				break;
+        			}
+        		}
+        	}
+        	
+        	while($scope.ongoingProjects.length >0) {
+        		$scope.hoursProjects.push($scope.ongoingProjects.pop());
+        	}        	
+        });
     });
 
     

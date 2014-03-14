@@ -420,7 +420,7 @@ angular.module('Mastermind.services.projects')
     /**
      * Query to get the list of active+backlog projects
      */
-    this.getActiveAndBacklogProjects = function (onSuccess){
+    this.getOngoingProjects = function (onSuccess){
         //Get todays date formatted as yyyy-MM-dd
         var today = new Date();
         var dd = today.getDate();
@@ -441,10 +441,15 @@ angular.module('Mastermind.services.projects')
                            {endDate:{$gt:today}}
                            ]
                     },
-          	        { $and: [
-        	                {type:'paid'}, 
-        	                {'committed': true}
-        	                ]
+          	        { $or:[
+          	               { $and: [
+          	                        {type:'paid'}, 
+          	                        {'committed': true}
+          	                        ]
+          	               },
+          	               {type:'invest'},
+          	               {type:'poc'}
+         	              ]
                     } 
                     ]
             };
