@@ -2265,6 +2265,7 @@ public class Data implements CONSTS {
 		DBCursor cursor = projectsCol.find();
 
 		int COUNT_HOURS_PER_MONTH = 160;
+		int COUNT_HOURS_PER_WEEK = 40;
 		boolean projectChanged = false;
 		
 		while (cursor.hasNext()) {
@@ -2314,7 +2315,34 @@ public class Data implements CONSTS {
 							
 							if (role.has(PROP_RATE)) {
 								rate = role.getJSONObject(PROP_RATE);
-								percentage = rate.has("fullyUtilized") && rate.getBoolean("fullyUtilized") ? 100: Math.round(100 * Integer.parseInt(rate.get(PROP_HOURS).toString()) / COUNT_HOURS_PER_MONTH);
+								
+								if(rate.has("fullyUtilized") && rate.getBoolean("fullyUtilized")){
+									percentage = 100;
+								}
+								else if(rate.has(PROP_TYPE) && "weekly".equals(rate.get(PROP_TYPE))){
+									if(rate.has(PROP_HOURS)){
+										percentage = Math.round(100 * Integer.parseInt(rate.get(PROP_HOURS).toString()) / COUNT_HOURS_PER_WEEK);
+									}
+									else if(rate.has("hoursPerWeek")){
+										percentage = Math.round(100 * Integer.parseInt(rate.get("hoursPerWeek").toString()) / COUNT_HOURS_PER_WEEK);
+									}
+									else{
+										percentage = 100;
+									}
+								}
+								else if(rate.has(PROP_TYPE) && "hourly".equals(rate.get(PROP_TYPE))){
+									if(rate.has(PROP_HOURS)){
+										percentage = Math.round(100 * Integer.parseInt(rate.get(PROP_HOURS).toString()) / COUNT_HOURS_PER_MONTH);
+									}
+									else if(rate.has("hoursPerMth")){
+										percentage = Math.round(100 * Integer.parseInt(rate.get("hoursPerMth").toString()) / COUNT_HOURS_PER_MONTH);
+									}
+									else{
+										percentage = 100;
+									}
+								}else{
+									percentage = 100;
+								}
 							}
 							
 							assignee.put("percentage", percentage);
