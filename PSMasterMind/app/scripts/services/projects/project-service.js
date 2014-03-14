@@ -268,9 +268,6 @@ angular.module('Mastermind.services.projects')
     					person:{
     						resource:me.about
     					},
-    					startDate:{
-    						$lte:startDateQuery
-    					},
     					$or:[
     					     {
     					    	 endDate:{
