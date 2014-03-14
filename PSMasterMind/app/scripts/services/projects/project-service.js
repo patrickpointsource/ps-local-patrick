@@ -325,7 +325,7 @@ angular.module('Mastermind.services.projects')
                              {startDate:{$lte:today}},
                              { $or:[
                                     {endDate:{$exists:false}},
-                                    {endDate:{$gt:today}}
+                                    {endDate:{$gte:today}}
                                     ]},
                              ]},
                     { $and: [
@@ -396,7 +396,7 @@ angular.module('Mastermind.services.projects')
        * Pipeline query based on the committed flag and the project type.
        */      
       var apQuery = { $and: [
-                             { endDate:{$gt:today} },
+                             { $or:[{'endDate':{$exists:false}}, {endDate:{$gte:today}}] },
                              { $and: [
                                       {type:'paid'}, 
                                       { $or:[
@@ -476,20 +476,15 @@ angular.module('Mastermind.services.projects')
        * Changing active project Query to use the committed flag and the project type.
        */
       var apQuery = 
-            {$and: [
-                    { $and: [
-                             {startDate:{$lte:today}},
-                             { $or:[
-                                    {endDate:{$exists:false}},
-                                    {endDate:{$gt:today}}
-                                    ]
-                             },
-                            ]
-                    },
-                    { type: 'invest'
-                    }
-                   ]
-            };
+    	  {$and: [{$or:[
+    	               {endDate:{$exists:false}},
+    	               {endDate:{$gte:today}}
+    	               ]}
+        	  ,
+        		{$or:[
+        		     {type: 'invest'},
+    	             {type: 'poc'}
+        		  ]}]};
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
@@ -515,16 +510,7 @@ angular.module('Mastermind.services.projects')
       /*
        * Changing active project Query to use the committed flag and the project type.
        */
-      var apQuery = 
-            { $and: [
-                     {startDate:{$lte:today}},
-                     { $or:[
-                            {endDate:{$exists:false}},
-                            {endDate:{$lt:today}}
-                            ]
-                     }
-                     ]
-            };
+      var apQuery = {endDate:{$lt:today}};
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);

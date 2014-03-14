@@ -109,12 +109,23 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     	var ret = 'Unknown';
     	if(project){
     		var today = new Date();
-    		var startDate = new Date(project.startDate);
-    		var endDate = project.endDate?new Date(project.endDate):new Date();
+    		var dd = today.getDate();
+            var mm = today.getMonth()+1; //January is 0!
+            var yyyy = today.getFullYear();
+            if (dd<10){
+              dd='0'+dd;
+            }
+            if (mm<10){
+              mm='0'+mm;
+            }
+            today = yyyy+'-'+mm+'-'+dd;
+			
+    		var startDate = project.startDate;
+    		var endDate = project.endDate;
     		var type = project.type;
     		var committed = project.committed;
     		
-    		if(endDate < today){
+    		if(endDate && endDate < today){
     			ret = 'Done';
     		}
     		else if(type && type!="paid"){

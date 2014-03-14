@@ -31,7 +31,7 @@ angular.module('Mastermind.controllers.projects')
 	  
 	  if (new Date($scope.project.startDate) >= todayDate && (!$scope.project.endDate || new Date($scope.project.endDate) > todayDate))
 		  $scope.selectedAssignmentsFilter = "future";
-	  else  if (new Date($scope.project.startDate) < todayDate && (!$scope.project.endDate || new Date($scope.project.endDate) < todayDate))
+	  else  if (new Date($scope.project.startDate) < todayDate && ($scope.project.endDate && new Date($scope.project.endDate) < todayDate))
 		  $scope.selectedAssignmentsFilter = "past";
 	  
 	  if ($scope.projectTabId != "assignments")
