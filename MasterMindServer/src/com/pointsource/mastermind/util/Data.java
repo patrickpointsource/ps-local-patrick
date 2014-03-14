@@ -2282,6 +2282,7 @@ public class Data implements CONSTS {
 				JSONObject role = null;
 				JSONObject assignee = null;
 				JSONArray assignments = new JSONArray();
+				JSONObject rate = null;
 				ObjectId id;
 				
 				JSONArray roles = (JSONArray) jsonProject.get("roles");
@@ -2329,6 +2330,35 @@ public class Data implements CONSTS {
 					if (role.has("assignees")) {
 						role.remove("assignees");
 						projectChanged = true;
+					}
+					
+					if (role.has("rate")) {
+						rate = role.getJSONObject("rate");
+						String type = rate.getString("type");
+						if (type.equals("hourly")) {
+							int hours = rate.optInt("hours");
+							int hoursPerMth = rate.optInt("hoursPerMth");
+							
+							if (hours!=0 && hoursPerMth==0) {
+									rate.put("hoursPerMth", hours);
+
+								projectChanged = true;
+							}
+						}
+						
+						if (type.equals("weekly")) {
+							int hours = rate.optInt("hours");
+							int hoursPerWeek = rate.optInt("hoursPerWeek");
+							
+							if (hours!=0 && hoursPerWeek==0) {
+								rate.put("hoursPerWeek", hours);
+								projectChanged = true;
+							}
+						}
+						
+						if(rate.remove("hours") != null) {
+							projectChanged = true;
+						}
 					}
 				}
 				
