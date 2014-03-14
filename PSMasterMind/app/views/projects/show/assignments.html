@@ -15,7 +15,7 @@
         </div>
 	   
 	    <div class="actions col-sm-3 col-md-4 col-lg-3 pageActions hidden-xs">
-	    	<button ng-hide="editMode" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
+	    	<button ng-hide="editMode || !adminAccess" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
 	    	<button ng-hide="!editMode" class="btn" ng-click="cancelAssignment()"><i class="fa fa-chevron-left"></i><span>Cancel</span></button>
       		<button ng-hide="!editMode" class="btn" ng-click="saveAssignment()"><i class="fa fa-floppy-o"></i><span>Save</span></button>
 	 	</div> 

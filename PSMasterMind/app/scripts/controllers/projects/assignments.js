@@ -337,7 +337,7 @@ angular.module('Mastermind.controllers.projects')
    
     $scope.handleAssignmentsFilterChanged();
     
-    if ($state.is("projects.show.tabId.edit"))
+    if ($state.is("projects.show.tabId.edit") && $scope.adminAccess)
     	$scope.edit();
     
   }]);

@@ -2261,11 +2261,10 @@ public class Data implements CONSTS {
 	 */
 	public static void migrateAssignees(RequestContext context) throws IOException{
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
-		
 		JSONObject jsonProject = null;
-		//WriteResult result = projectsCol.updateMulti(query, update);
 		DBCursor cursor = projectsCol.find();
 
+		int COUNT_HOURS_PER_MONTH = 160;
 		boolean projectChanged = false;
 		
 		while (cursor.hasNext()) {
@@ -2281,9 +2280,11 @@ public class Data implements CONSTS {
 				
 				JSONObject role = null;
 				JSONObject assignee = null;
+				JSONObject rate = null;
 				JSONArray assignments = new JSONArray();
 				JSONObject rate = null;
 				ObjectId id;
+				int percentage;
 				
 				JSONArray roles = (JSONArray) jsonProject.get("roles");
 				
@@ -2298,7 +2299,6 @@ public class Data implements CONSTS {
 					}
 					
 					if (!role.has(PROP_ABOUT) && role.has(PROP__ID)) {
-						//role.put(PROP_ABOUT, jsonProject.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
 						role.put(PROP_ABOUT, "projects/"+String.valueOf(oId)+"/roles/"+String.valueOf(role.get(PROP__ID)));
 					} 
 					else{
@@ -2310,7 +2310,14 @@ public class Data implements CONSTS {
 						//Check if the assinees have a resource
 						if(assignee.has(PROP_RESOURCE)){
 							// set default percentage to 100
-							assignee.put("percentage", 100);
+							percentage = 100;
+							
+							if (role.has(PROP_RATE)) {
+								rate = role.getJSONObject(PROP_RATE);
+								percentage = rate.has("fullyUtilized") && rate.getBoolean("fullyUtilized") ? 100: Math.round(100 * Integer.parseInt(rate.get(PROP_HOURS).toString()) / COUNT_HOURS_PER_MONTH);
+							}
+							
+							assignee.put("percentage", percentage);
 							assignee.put(PROP_PERSON, new BasicDBObject(PROP_RESOURCE, assignee.get(PROP_RESOURCE).toString()));
 							assignee.put("role", new BasicDBObject(PROP_RESOURCE, role.get(PROP_ABOUT).toString()));
 							assignee.put(PROP_START_DATE, String.valueOf(role.get(PROP_START_DATE)));
