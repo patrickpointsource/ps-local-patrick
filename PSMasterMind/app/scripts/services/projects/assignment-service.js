@@ -168,7 +168,7 @@ angular.module('Mastermind.services.projects')
         		//Find all the assignments for this person
         		for(var j = 0; j < projectAssignment.members.length;j++){
         			var assignment = projectAssignment.members[j];
-        			var endDate = assignment.endDate?new Date(assignment.endDate):null;
+        			var endDate = assignment.endDate?assignment.endDate:null;
         			if(personURI == assignment.person.resource && (!endDate || endDate > startDateQuery)){
         				//Associate the project directly with the an assignment
         				assignment.project = projectAssignment.project;
