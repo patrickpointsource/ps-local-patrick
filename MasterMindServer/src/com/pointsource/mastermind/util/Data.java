@@ -2282,7 +2282,7 @@ public class Data implements CONSTS {
 				JSONObject assignee = null;
 				JSONObject rate = null;
 				JSONArray assignments = new JSONArray();
-				JSONObject rate = null;
+				
 				ObjectId id;
 				int percentage;
 				
