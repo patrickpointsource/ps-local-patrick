@@ -5,8 +5,8 @@
  * Controller for handling the Details form.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('AssignmentsCtrl',['$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'AssignmentService', 'ngTableParams',
-  function ($scope, $rootScope, $filter, Resources, $state, $stateParams, AssignmentService, TableParams) {
+  .controller('AssignmentsCtrl',['$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'AssignmentService', '$location', 'ngTableParams',
+  function ($scope, $rootScope, $filter, Resources, $state, $stateParams, AssignmentService, $location, TableParams) {
    
 	  $scope.editMode = false;
 	  // Table Parameters
@@ -25,6 +25,9 @@ angular.module('Mastermind.controllers.projects')
 	
 	  // make selected by default to "current"
 	  $scope.selectedAssignmentsFilter = $state.params.filter ? $state.params.filter: "current";
+	  
+	  if ($scope.projectTabId != "assignments")
+		  $scope.selectedAssignmentsFilter = "all";
 	  
 	for (var i = 0; i < $scope.project.roles.length; i ++)
 		$scope.project.roles[i].assignees = [];
@@ -224,14 +227,31 @@ angular.module('Mastermind.controllers.projects')
         	$scope.refreshAssignmentsData(data);
         })
         
-        var filter = $scope.projectTabId == "assignments" ? $scope.selectedAssignmentsFilter: null;
+        if ($scope.projectTabId == "assignments") {
+	        // in case when we simply converting url "assignments" to "assignments?filter=current" we must replace latest history entry
+	        var filter = $scope.projectTabId == "assignments" ? $scope.selectedAssignmentsFilter: null;
+	        var options = {
+	        		location: $state.params.filter != null? true: "replace"
+	        }
+	
+	        // for some reasons $state.go do not recognize "replace" value
+	        /*
+	    	$state.go('projects.show.tabId', {
+	    			filter: filter, 
+					tabId: $scope.projectTabId
+				}, options);
+	        */
+	        
+	        var updatedUrl = $state.href('projects.show.tabId', { filter: filter, tabId: $scope.projectTabId}).replace('#', '');
+	        
+	        if (options.location == "replace")
+	        	$location.url(updatedUrl).replace();
+	        else
+	        	$location.url(updatedUrl)
+        }
         
-    	//if ($state.params.filter != filter;
-    	$state.go('.', {
-    			filter: filter, 
-				tabId: $scope.projectTabId
-			});
     }
+    
     $scope.peopleList = [];
     
     $scope.refreshAssignmentsData = function(result) {

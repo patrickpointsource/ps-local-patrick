@@ -469,10 +469,10 @@ angular.module('Mastermind')
     };
 
     $scope.activeTab = {
-    	"assignments": false,
-    	"summary": true,
-    	"hours": false,
-    	"links": false
+    	"assignments": $state.params.tabId == "assignments",
+    	"summary": $state.params.tabId == "summary",
+    	"hours": $state.params.tabId == "hours",
+    	"links": $state.params.tabId == "links"
     }
     
     $scope.tabSelected = function(selectedTabId) {
@@ -897,16 +897,14 @@ angular.module('Mastermind')
 
     $scope.canDeleteProject = false;
 
+    $scope.projectTabId = $state.params.tabId;
     
-    if($state.params && $state.params.tabId) {
-        $scope.projectTabId = $state.params.tabId;
-        
+    if($state.params && $state.params.tabId && !$scope.activeTab[$state.params.tabId]) {
         for (var tab in $scope.activeTab)
         	$scope.activeTab[tab] = false;
         
         $scope.activeTab[$state.params.tabId] = true;
-    } else
-    	$scope.projectTabId = 'summary';
+    }
 
     //TODO - Do we need this refresh why would it be out of date with the area controller?
     Resources.refresh('people/me').then(function(me){

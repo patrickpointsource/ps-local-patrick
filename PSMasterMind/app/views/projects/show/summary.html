@@ -43,15 +43,24 @@
 					</tr>
 				</thead>
 				<tbody ng-repeat="role in $data">
-					
+					<tr>
+	                    <td colspan="7">
+	                    	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
+	                    	<span ng-show="role.rate.isFullyUtilized()">100%</span>&nbsp;
+	                      	<span ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}} h/m</span>&nbsp;
+	                      	<small>{{role.startDate | date:'MMM d y'}}</small>
+		                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
+		                      <span ng-hide="role.endDate">- N/A</span>
+	                    </td>
+	                </tr>
 					<tr ng-repeat="assignee in role.assignees" ng-if="assignee.person && assignee.person.resource">
-						<td><a href="#{{assignee.resource}}"> <img
+						<td><a href="#{{assignee.person.resource}}"> <img
 								ng-show="assignee && assignee.person"
 								class="profileImage" ng-src="{{assignee.person.thumbnail}}" /> <i
 								class="fa fa-ban"
 								ng-show="!assignee.person || !assignee.person.resource"></i> <span>{{assignee.person.name
 									|| 'Unassigned'}}</span>
-						</a> <span class="visible-xs">{{roleGroups[role.type.resource].abbreviation}}</span>
+						</a>
 						</td>
 						<td class="hidden-xs">{{role.type.abbreviation}}</td>
 						<td>
