@@ -149,19 +149,20 @@ public interface CONSTS {
 	public int DB_PORT_DEFAULT  = 27017;
 	
 	//Local And Staging
-		public String DB_NAME_DEFAULT  = "mm_db_prodclone";
+		public String DB_NAME_DEFAULT  = "mm_db_stage";
 	//Local Host
-		//public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
+		public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
 		// TODO: revert it 
 		//public String WEB_SITE_URL = "http://localhost:9000";
-		//public String WEB_SITE_URL = "http://0.0.0.0:9000";
+		public String WEB_SITE_URL = "http://0.0.0.0:9000";
 	//Staging Only
-		public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindStaging/";
+		//public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindStaging/";
+		//public String DB_NAME_DEFAULT  = "mm_db_prodclone";
 	//Production Only
 		//public String DB_NAME_DEFAULT  = "mm_db_prod";
 		//public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindServer/";
 	//Production and Staging
-		public String WEB_SITE_URL = "https://mastermind.pointsource.us";
+		//public String WEB_SITE_URL = "https://mastermind.pointsource.us";
 		
 	public String COLLECTION_TITLE_HOURS = "Hours";
 	public String COLLECTION_TITLE_LINKS = "Links";
