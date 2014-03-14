@@ -17,6 +17,9 @@ angular.module('Mastermind.controllers.projects')
 		    type: 'asc'     // initial sorting
 		  }
 	  };
+	  var now = new Date();
+	  
+	  var todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 	  
 	  $scope.assignmentsFilters = [{name: "Current Assignments", value: "current"}, 
 	                               	{name: "Future Assignments", value: "future"},
@@ -25,6 +28,11 @@ angular.module('Mastermind.controllers.projects')
 	
 	  // make selected by default to "current"
 	  $scope.selectedAssignmentsFilter = $state.params.filter ? $state.params.filter: "current";
+	  
+	  if (new Date($scope.project.startDate) >= todayDate && (!$scope.project.endDate || new Date($scope.project.endDate) > todayDate))
+		  $scope.selectedAssignmentsFilter = "future";
+	  else  if (new Date($scope.project.startDate) < todayDate && (!$scope.project.endDate || new Date($scope.project.endDate) < todayDate))
+		  $scope.selectedAssignmentsFilter = "past";
 	  
 	  if ($scope.projectTabId != "assignments")
 		  $scope.selectedAssignmentsFilter = "all";
@@ -192,8 +200,8 @@ angular.module('Mastermind.controllers.projects')
           $scope.editMode = false;
           
 
-          //if (assignments.length > 0) {
-    	  $scope.projectAssignment.members = assignments;
+          // concatenate hided assingnee members
+    	  $scope.projectAssignment.members = assignments.concat($scope.projectAssignment.excludedMembers ? $scope.projectAssignment.excludedMembers: []);
     	  
     	  AssignmentService.save($scope.project, $scope.projectAssignment).then(function() {
     		  $scope.showInfo(['Assignments successfully saved']);

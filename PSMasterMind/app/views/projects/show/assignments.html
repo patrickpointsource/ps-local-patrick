@@ -7,7 +7,7 @@
             </h4> 
         </div>
         <div class="col-sm-5 col-xs-8 col-md-4 col-lg-6" style="padding-top:15px;">
-           <select name="assignmentsFilter" id="assignmentsFilter" class="form-control"
+           <select name="assignmentsFilter" id="assignmentsFilter" ng-disabled="editMode" class="form-control"
 				ng-model="selectedAssignmentsFilter" ng-change="handleAssignmentsFilterChanged()"
 				ng-required="true"
 				ng-options="f.value as f.name for f in assignmentsFilters | orderBy:'name'">

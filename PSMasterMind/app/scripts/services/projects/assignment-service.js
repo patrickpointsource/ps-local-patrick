@@ -79,6 +79,20 @@ angular.module('Mastermind.services.projects')
     };
     
     /**
+     * Get today for js objects
+     */
+    this.getTodayDate = function(){
+    	//Get todays date formatted as yyyy-MM-dd
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth(); //January is 0!
+        var yyyy = today.getFullYear();
+       
+        
+        return new Date(yyyy, mm, dd);
+    };
+    
+    /**
      * Get the assignment records for a set of projects
      * 
      * project records that include the about or resource properties set
@@ -191,7 +205,7 @@ angular.module('Mastermind.services.projects')
     	var deferred = $q.defer();
     	var apQuery = {};
     	var apFields = {};
-    	
+    	/*
     	var todayDate = this.getToday();
     	
     	if (timePeriod == 'current')
@@ -260,20 +274,56 @@ angular.module('Mastermind.services.projects')
     					}
     			}
     		}
-    	
+    	*/
     	_.extend(apQuery, projectQuery);
+    	
+    	var _this = this;
     	
     	  Resources.query('assignments', apQuery, apFields).then(function(result){
     	    	var role;
     	    	
 		      if(result && result.data && result.data.length > 0)
-		    	  	deferred.resolve(result.data[0]);
+		    	  	deferred.resolve(_this.filterAssignmentsByPeriod(result.data[0], timePeriod));
 	    	  	else
 		    	  deferred.resolve(null);
 		    	  
     	    });
     	
     	 return deferred.promise;
+    }
+    
+    this.filterAssignmentsByPeriod = function(assignmentsObject, period) {
+    	
+    	if (assignmentsObject && assignmentsObject.members) {
+    		var today = this.getTodayDate();
+    		var excluded = [];
+    		var included = [];
+    		
+    		_.each(assignmentsObject.members, function(m) {
+    			if (period == "current") {
+    				if (new Date(m.startDate) <= today && (!m.endDate || new Date(m.endDate) > today) )
+    					included.push(m)
+					else
+						excluded.push(m)
+    			} else if (period == "future") {
+    				if (new Date(m.startDate) >= today && (!m.endDate || new Date(m.endDate) > today) )
+    					included.push(m)
+					else
+						excluded.push(m)
+    			} else if (period == "past") {
+    				if (new Date(m.startDate) < today && (!m.endDate || new Date(m.endDate) < today) )
+    					included.push(m)
+					else
+						excluded.push(m)
+    			} else if (period == "all") 
+    				included.push(m)
+    		})
+    		
+    		assignmentsObject.members = included;
+    		assignmentsObject.excludedMembers = excluded;
+    	}
+    	
+    	return assignmentsObject;
     }
     
     /**
