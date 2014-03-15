@@ -40,7 +40,6 @@ angular.module('Mastermind')
     	$rootScope.formDirty = false;
     	$scope.editMode = false;
         $scope.submitAttempted = false;
-        $scope.projectId = null;
     	
     	//Throw it away if it is a new project
 	      if($scope.isTransient){

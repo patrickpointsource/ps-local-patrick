@@ -108,11 +108,15 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     	var endDate = new Date(endD);
       	var numMonths = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
       	
-      	
-      	if(this.fullyUtilized) 
-      		this.estimatedTotal = numMonths * 180 * this.amount;
-      	else
-      		this.estimatedTotal = numMonths * this.hoursPerMth * this.amount;
+      	//This should default to 0 is the other values are not set
+      	if(numMonths && this.amount){
+	      	if(this.fullyUtilized) {
+	      		this.estimatedTotal = numMonths * 180 * this.amount;
+	      	}
+	      	else if(this.hoursPerMth){
+	      		this.estimatedTotal = numMonths * this.hoursPerMth * this.amount;
+	      	}
+      	}
     	
       	return this.estimatedTotal;
 
@@ -174,7 +178,10 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     	var startDate = new Date(startD);
     	var endDate = new Date(endD);
       	var numWeeks = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 4.5));
-      	this.estimatedTotal = numWeeks * this.hoursPerWeek * this.amount;
+      	//This should default to 0 is the other values are not set
+      	if(numWeeks && this.hoursPerWeek && this.amount){
+      		this.estimatedTotal = numWeeks * this.hoursPerWeek * this.amount;
+      	}
         return this.estimatedTotal;
     }; 
     return WeeklyRate;
@@ -228,7 +235,10 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
 		var startDate = new Date(startD);
 		var endDate = new Date(endD);
 		var numMonths = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
-		this.estimatedTotal = numMonths * this.amount;
+		//This should default to 0 is the other values are not set
+		if(numMonths && this.amount){
+			this.estimatedTotal = numMonths * this.amount;
+		}
         return this.estimatedTotal;
     }; 
     
