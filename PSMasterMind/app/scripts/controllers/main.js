@@ -147,6 +147,13 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
 	      //Kick off fetch all the people
 	     // $scope.buildTableView();
     });
+    
+    /**
+     * Go to the people page filter by selected role
+     */
+    $scope.handleShowPeopleClick = function(){
+    	 $state.go('people.index',{filter:$scope.peopleFilter});
+    };
 
     /**
      * Find available people given the active projects
