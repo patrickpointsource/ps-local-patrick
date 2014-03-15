@@ -325,8 +325,7 @@ angular.module('Mastermind.services.projects')
         	var myProjects = [];
         	for(var i = 0; i < assignments.length;i++){
         		var assignment = assignments[i];
-        		if (assignment.project && assignment.project.resource &&
-        				myProjects.indexOf(assignment.project.resource) === -1){
+        		if (assignment.project && assignment.project.resource){
     				 //Push the assignee onto the active list
                     var resource = assignment.project.resource;
                     //{_id:{$nin:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
@@ -335,7 +334,24 @@ angular.module('Mastermind.services.projects')
     			}
         	}
         	
-        	var projectsQuery = {_id:{$in:myProjects}};
+        	var projectsQuery = {
+        			'_id':{
+        				$in:myProjects
+        			},
+        			'$or':
+        			[
+        			 {
+        				 endDate:{
+        					 $exists:false
+        				 }   
+					  },
+					  {
+						  endDate:{
+							  $gt:startDateQuery
+						  }
+					  }
+					]
+				};
 	        var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1};
 	        Resources.query('projects',projectsQuery,projectsFields,function(result){
 	        	deferred.resolve(result);
