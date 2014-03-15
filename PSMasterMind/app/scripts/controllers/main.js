@@ -156,14 +156,24 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
 		  var fields = {resource:1,name:1,primaryRole:1,thumbnail:1};
 		  People.getPeoplePerRole(peopleFilter, fields).then(function(peopleResult){
 			  var people = peopleResult.members;
-			//Shuffle people
-            for(var j, x, i = people.length; i; j = Math.floor(Math.random() * i)){
-              x = people[--i];
-              people[i] = people[j];
-              people[j] = x;
-            }
+			  
+			  if(people.length > 12){
+				  	//Seed the randomness per day
+				  	var today = new Date();
+				  	var seed = Math.ceil((today.getDay()+1)*(today.getMonth()+1)*today.getFullYear());
+				  	var randomResult = [];
+				  	
+					//Shuffle people
+		            for(var i = 0; i < 12; i++){
+		              var j = ((seed+i)%(people.length));
+		              randomResult[i] = people[j];
+		            }
+		            $scope.availablePeople =  randomResult;
+			  }
 
-            $scope.availablePeople =  people.slice(0,12);
+			  else{
+				  $scope.availablePeople = people;
+			  }
 		  });
     };
     
