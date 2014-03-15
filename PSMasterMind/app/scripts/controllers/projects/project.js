@@ -158,7 +158,7 @@ angular.module('Mastermind')
     	 $scope.messages = messages;
     	 $('#messages').show();
     }
-    
+
     /**
      * Save the loaded project.
      */
@@ -202,7 +202,7 @@ angular.module('Mastermind')
                 $scope.handleProjectSelected();
                 $rootScope.formDirty = false;
                 
-                deferred.reject($scope.project);
+                deferred.resolve($scope.project);
              });
         }, 
         function (response) {
