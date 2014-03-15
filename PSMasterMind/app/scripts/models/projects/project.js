@@ -141,7 +141,7 @@ angular.module('Mastermind.models.projects')
       name: '',
       type: undefined,
       primaryContact: undefined,
-      description: undefined,
+      description: '',
       startDate: undefined,
       endDate: undefined,
       state: 'planning',

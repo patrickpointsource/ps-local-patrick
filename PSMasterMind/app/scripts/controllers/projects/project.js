@@ -36,6 +36,12 @@ angular.module('Mastermind')
 
     
     $scope.close = function(){
+    	$scope.stopWatchingProjectChanges();
+    	$rootScope.formDirty = false;
+    	$scope.editMode = false;
+        $scope.submitAttempted = false;
+        $scope.projectId = null;
+    	
     	//Throw it away if it is a new project
 	      if($scope.isTransient){
 	        $state.go('projects.index');
@@ -58,12 +64,10 @@ angular.module('Mastermind')
     	  var conf = confirm('You have made changes to this project did you want to save your changes?');
     	  if(conf){
     		  $scope.save().then(function(project){//Unset dirty flag
-    		      $rootScope.formDirty = false;
     		      $scope.close();	
     		 });
     	  }
       	  else{
-      		$rootScope.formDirty = false;
       		$scope.close();	
       	  }
       }
@@ -852,15 +856,33 @@ angular.module('Mastermind')
       
       //Watch for model changes
       if(editMode){
-    	  var sentinel = $scope.sentinel;
-    	  if(sentinel){
-    		  sentinel();  //kill sentinel
-    	  }
+    	  $scope.stopWatchingProjectChanges();
     	  
     	  //Create a new watch
     	  $scope.sentinel = $scope.$watch('project', function(newValue, oldValue){
 	    	  //console.debug(JSON.stringify(oldValue) + ' changed to ' + JSON.stringify(newValue));
 	    	  if(!$rootScope.formDirty && $scope.editMode){
+	    		  //Do not include anthing in the $meta property in the comparison
+	    		  if(oldValue.hasOwnProperty('$meta')){
+	    			  var oldClone = Resources.deepCopy(oldValue);
+	    			  delete oldClone['$meta'];
+	    			  oldValue = oldClone;
+	    		  }
+	    		  if(newValue.hasOwnProperty('$meta')){
+	    			  var newClone = Resources.deepCopy(newValue);
+	    			  delete newClone['$meta'];
+	    			  newValue = newClone;
+	    		  }
+	    		  
+	    		  //Text Angular seems to add non white space characters for some reason
+	    		  if(newValue.description){
+	    			  newValue.description = newValue.description.trim();
+	    		  }
+	    		  if(oldValue.description){
+	    			  oldValue.description = oldValue.description.trim();
+	    		  }
+	    		  
+	    		  
 	    		  var oldStr = JSON.stringify(oldValue);
 	    		  var newStr = JSON.stringify(newValue);
 	    		  
@@ -872,6 +894,13 @@ angular.module('Mastermind')
 	    	 
 	      },true);
       }
+    };
+    
+    $scope.stopWatchingProjectChanges = function(){
+    	var sentinel = $scope.sentinel;
+	  	if(sentinel){
+	  		sentinel();  //kill sentinel
+	  	}
     };
 
 
