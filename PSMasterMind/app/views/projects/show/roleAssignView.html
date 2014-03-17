@@ -2,7 +2,10 @@
 	ng-show="role.assignees && role.assignees.length > 0 && role.assignees[0].person && role.assignees[0].person.resource">
 	
 	<div class="col-xs-5 col-sm-2 form-group" ng-class="{error: isFieldInError('role')}">
-	     <span >{{getPersonName(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble)}}</span>               
+	     <a href="#{{currentAssignee.person.resource}}">
+	     	<img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble).thumbnail}}"/>
+	     		{{getPersonName(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble)}}
+	     </a>           
 	</div>
 	
 	<div class="col-xs-12 col-sm-2 form-group hidden-xs">

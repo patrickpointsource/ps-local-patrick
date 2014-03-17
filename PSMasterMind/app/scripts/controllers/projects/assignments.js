@@ -156,6 +156,20 @@ angular.module('Mastermind.controllers.projects')
     	return result;
     };
     
+    $scope.getPerson = function(personId, assignable) {
+    	var result = undefined;
+    	
+    	if (assignable)
+	    	for(var i = 0; i < assignable.length; i ++) {
+	    		if (assignable[i].resource == personId) {
+	    			result = assignable[i];
+	    			break;
+	    		}
+	    	}
+    	
+    	return result;
+    };
+    
 	/**
      * Save role assignements
      */

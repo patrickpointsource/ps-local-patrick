@@ -202,15 +202,16 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         //console.log("setActivePeopleProjects using rolesMap:", rolesMap);
         
         //Fetch all the assignment records for each active project
-        // load all current assignments ""
-        AssignmentService.getAssignments(activeProjects, "current").then(function(result){
+        // load all current assignments (we are filtering projects by 'past' and looking at the excluded member list for active and future assignments)
+        AssignmentService.getAssignments(activeProjects, "past").then(function(result){
         	var allProjectAssignments = result.data;
         	
         	for(var i = 0; i < allProjectAssignments.length;i++){
         		var projectAssignments = allProjectAssignments[i];
         		
         		//Do not bother if there are not members assignments to this project
-        		if(projectAssignments.members){
+        		
+        		if(projectAssignments.excludedMembers){
         			var projectResource = projectAssignments.project.resource;
         			var project = null;
         			//Find the project object for this assignment record
@@ -223,8 +224,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         			
         			if(project){
         				//Loop though the assignments to collate with people
-	        			for(var j = 0; j < projectAssignments.members.length;j++){
-	        				var assignment = projectAssignments.members[j];
+	        			for(var j = 0; j < projectAssignments.excludedMembers.length;j++){
+	        				var assignment = projectAssignments.excludedMembers[j];
 	        				
 	        				//Push the assignee onto the active list
 	    					if(activePeople.indexOf(assignment.person.resource) == -1){

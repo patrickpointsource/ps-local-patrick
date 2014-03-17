@@ -4,8 +4,9 @@
          <table ng-table="tableParams" template-pagination="custom/pager" class="table peopleList margin-top">
              <tr ng-repeat="person in $data | filter:filterText">
                 <td data-title="'Name'" sortable="'familyName'">
-                  <img class="profileImage" ng-src="{{person.thumbnail}}"/></a>
-                  <a href="#{{person.resource}}">{{person.familyName}}, {{person.givenName}}</a>
+                <a href="#{{person.resource}}">
+                  <img class="profileImage" ng-src="{{person.thumbnail}}"/>
+                  {{person.familyName}}, {{person.givenName}}</a>
                 </td>
                 <td data-title="'Role'" sortable="'primaryRole.abbreviation'">
                   {{person.primaryRole.abbreviation}}

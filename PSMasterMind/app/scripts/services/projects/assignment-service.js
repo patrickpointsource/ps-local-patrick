@@ -207,6 +207,14 @@ angular.module('Mastermind.services.projects')
         return deferred.promise;
     };
     
+    /**
+     * Filters out a set of assignments based on time period
+     * 
+     * 'current' == all active project
+     * 'future' == all assignments that have not yet started
+     * 'past' == all assignments that have already ends
+     * 
+     */
     this.getAssignmentsByPeriod = function(timePeriod, projectQuery) {
     	var deferred = $q.defer();
     	var apQuery = {};
@@ -220,7 +228,7 @@ angular.module('Mastermind.services.projects')
     	    	var role;
     	    	
 		      if(result && result.data && result.data.length > 0)
-		    	  	deferred.resolve(_this.filterAssignmentsByPeriod(result.data[0], timePeriod));
+		    	    deferred.resolve(_this.filterAssignmentsByPeriod(result.data[0], timePeriod));
 	    	  	else
 		    	  deferred.resolve(null);
 		    	  
