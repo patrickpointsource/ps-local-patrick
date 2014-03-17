@@ -203,13 +203,15 @@ angular.module('Mastermind.controllers.projects')
           // concatenate hided assingnee members
     	  $scope.projectAssignment.members = assignments.concat($scope.projectAssignment.excludedMembers ? $scope.projectAssignment.excludedMembers: []);
     	  
-    	  AssignmentService.save($scope.project, $scope.projectAssignment).then(function() {
+    	  AssignmentService.save($scope.project, $scope.projectAssignment).then(function(result) {
     		  $scope.showInfo(['Assignments successfully saved']);
     		  $rootScope.formDirty = false;
     		  
     		  window.setTimeout(function(){
     			  $scope.hideMessages();
     		  }, 7 * 1000);
+    		  
+    		  $scope.refreshAssignmentsData( AssignmentService.filterAssignmentsByPeriod($scope.projectAssignment, $scope.selectedAssignmentsFilter));
     		  
     		  $state.go('projects.show.tabId', {
   				tabId: $scope.projectTabId

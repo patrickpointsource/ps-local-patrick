@@ -97,9 +97,12 @@ angular.module('Mastermind.services.projects')
      * 
      * project records that include the about or resource properties set
      */
-    this.getAssignments = function(projects){
+    this.getAssignments = function(projects, timePeriod){
     	var deferred = $q.defer();
     	var projectURIs = [];
+
+    	timePeriod = timePeriod ? timePeriod: "all";
+    	
     	for(var i = 0; i < projects.length; i++){
     		var project = projects[i];
     		var uri = project.about?project.about:project.resource;
@@ -110,8 +113,11 @@ angular.module('Mastermind.services.projects')
     	}
     	
     	var query = {'project.resource':{$in:projectURIs}};
+    	var _this = this;
+    	
     	Resources.query('assignments',query,null,function(result){
-    		deferred.resolve(result);
+    		//deferred.resolve(result);
+    		deferred.resolve(_this.filterAssignmentsArrayByPeriod(result, timePeriod))
     	});
     	
     	return deferred.promise;
@@ -205,76 +211,7 @@ angular.module('Mastermind.services.projects')
     	var deferred = $q.defer();
     	var apQuery = {};
     	var apFields = {};
-    	/*
-    	var todayDate = this.getToday();
     	
-    	if (timePeriod == 'current')
-	    	apQuery = {
-	    			members:{
-	    				'$elemMatch':{
-	    					startDate:{
-	    						$lte:todayDate
-	    					},
-	    					$or:[
-	    					     {
-	    					    	 endDate:{
-	    					    		 $exists:false
-	    					    	}
-	    					     },
-	    					     {
-	    					    	 endDate:{
-	    					    		 $gt:todayDate
-	    					    	 }
-	    					     }
-	    					     ]
-	    					}
-	    			}
-	    	}
-    	else if (timePeriod == 'future')
-	    	apQuery = {
-    			members:{
-    				'$elemMatch':{
-    					startDate:{
-    						$gte:todayDate
-    					},
-    					$or:[
-    					     {
-    					    	 endDate:{
-    					    		 $exists:false
-    					    	}
-    					     },
-    					     {
-    					    	 endDate:{
-    					    		 $gt:todayDate
-    					    	 }
-    					     }
-    					     ]
-    					}
-    			}
-    		}
-    	else if (timePeriod == 'past')
-	    	apQuery = {
-    			members:{
-    				'$elemMatch':{
-    					startDate:{
-    						$lt:todayDate
-    					},
-    					$or:[
-    					     {
-    					    	 endDate:{
-    					    		 $exists:false
-    					    	}
-    					     },
-    					     {
-    					    	 endDate:{
-    					    		 $lt:todayDate
-    					    	 }
-    					     }
-    					     ]
-    					}
-    			}
-    		}
-    	*/
     	_.extend(apQuery, projectQuery);
     	
     	var _this = this;
@@ -290,6 +227,13 @@ angular.module('Mastermind.services.projects')
     	    });
     	
     	 return deferred.promise;
+    }
+    
+    this.filterAssignmentsArrayByPeriod = function(assignmentsResult, period) {
+    	for (var i = 0;  assignmentsResult.data && i < assignmentsResult.data.length; i ++)
+    		 assignmentsResult.data[i] = this.filterAssignmentsByPeriod( assignmentsResult.data[i], period);
+    	
+    	return assignmentsResult;
     }
     
     this.filterAssignmentsByPeriod = function(assignmentsObject, period) {

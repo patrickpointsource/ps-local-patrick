@@ -202,7 +202,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         //console.log("setActivePeopleProjects using rolesMap:", rolesMap);
         
         //Fetch all the assignment records for each active project
-        AssignmentService.getAssignments(activeProjects).then(function(result){
+        // load all current assignments ""
+        AssignmentService.getAssignments(activeProjects, "current").then(function(result){
         	var allProjectAssignments = result.data;
         	
         	for(var i = 0; i < allProjectAssignments.length;i++){
