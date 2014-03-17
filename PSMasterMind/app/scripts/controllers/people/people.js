@@ -4,8 +4,8 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.people')
-  .controller('PeopleCtrl', ['$scope', '$state', '$filter', '$q', 'Resources', 'People', 'ProjectsService', 'ngTableParams',
-    function ($scope, $state, $filter, $q, Resources, People, ProjectsService, TableParams) {
+  .controller('PeopleCtrl', ['$scope', '$state', '$location', '$filter', '$q', 'Resources', 'People', 'ProjectsService', 'ngTableParams',
+    function ($scope, $state, $location, $filter, $q, Resources, People, ProjectsService, TableParams) {
       var getTableData = function(){
         return new TableParams(params, {
           total: $scope.people.length, // length of data
@@ -106,6 +106,10 @@ angular.module('Mastermind.controllers.people')
               }
             });
         }
+        
+        //Replace the URL in history with the filter
+        var updatedUrl = $state.href('people.index', { filter: $scope.peopleFilter}).replace('#', '');
+        $location.url(updatedUrl).replace();
       };
 
       /**

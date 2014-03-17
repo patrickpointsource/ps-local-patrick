@@ -4,8 +4,8 @@
  * Controller for handling the list of projects.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('ProjectsCtrl', [ '$scope', '$state', '$filter', 'ngTableParams', 'ProjectsService','Resources',
-  function ($scope, $state, $filter, TableParams, ProjectsService, Resources) {
+  .controller('ProjectsCtrl', [ '$scope', '$state', '$filter', '$location', 'ngTableParams', 'ProjectsService','Resources',
+  function ($scope, $state, $filter, $location, TableParams, ProjectsService, Resources) {
 
     //Default to no projects
     $scope.projects = [];
@@ -37,6 +37,10 @@ angular.module('Mastermind.controllers.projects')
 
         ProjectsService.getAllProjects(reloadProjects);
       }
+      
+      //Replace the URL in history with the filter
+      var updatedUrl = $state.href('projects.index', { filter: $scope.projectFilter}).replace('#', '');
+      $location.url(updatedUrl).replace();
     };
     
     /**
