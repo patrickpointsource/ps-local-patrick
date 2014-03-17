@@ -26,18 +26,24 @@ angular.module('Mastermind.controllers.projects')
 	                               	{name: "Past Assignments", value: "past"},
 	                               	{name: "All Assignments", value: "all"}]
 	
-	  // make selected by default to "current"
-	  $scope.selectedAssignmentsFilter = $state.params.filter ? $state.params.filter: "current";
 	  
-	  if (new Date($scope.project.startDate) >= todayDate && (!$scope.project.endDate || new Date($scope.project.endDate) > todayDate))
+	  //TODO what is this for?
+	  if ($scope.projectTabId != "assignments"){
+		  $scope.selectedAssignmentsFilter = "all";
+	  }
+	  //If explicit use the passed in filter
+	  else if($state.params.filter){
+		  $scope.selectedAssignmentsFilter = $state.params.filter;
+	  }
+	  else if (new Date($scope.project.startDate) >= todayDate && (!$scope.project.endDate || new Date($scope.project.endDate) > todayDate))
 		  $scope.selectedAssignmentsFilter = "future";
 	  else  if (new Date($scope.project.startDate) < todayDate && ($scope.project.endDate && new Date($scope.project.endDate) < todayDate))
 		  $scope.selectedAssignmentsFilter = "past";
-	  
-	  
-	  
-	  if ($scope.projectTabId != "assignments")
-		  $scope.selectedAssignmentsFilter = "all";
+	  // make selected by default to "current"
+	  else{
+		  $scope.selectedAssignmentsFilter = "current";
+	  }
+	 
 	  
 	for (var i = 0; i < $scope.project.roles.length; i ++)
 		$scope.project.roles[i].assignees = [];
