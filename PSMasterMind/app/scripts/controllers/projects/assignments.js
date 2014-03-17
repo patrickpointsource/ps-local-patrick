@@ -34,6 +34,8 @@ angular.module('Mastermind.controllers.projects')
 	  else  if (new Date($scope.project.startDate) < todayDate && ($scope.project.endDate && new Date($scope.project.endDate) < todayDate))
 		  $scope.selectedAssignmentsFilter = "past";
 	  
+	  
+	  
 	  if ($scope.projectTabId != "assignments")
 		  $scope.selectedAssignmentsFilter = "all";
 	  
@@ -102,7 +104,9 @@ angular.module('Mastermind.controllers.projects')
 		 $rootScope.formDirty = false;
 		 
 		$state.go('projects.show.tabId', {
-			tabId: $scope.projectTabId
+			tabId: $scope.projectTabId,
+			//filter: $scope.selectedAssignmentsFilter
+			filter: "all"
 		});
 	};
 	
@@ -130,7 +134,8 @@ angular.module('Mastermind.controllers.projects')
          }
          
          $state.go('projects.show.tabId.edit', {
-				tabId: $scope.projectTabId
+				tabId: $scope.projectTabId,
+				filter: null
 			}).then(function() {
 				$rootScope.formDirty = true;
 			});
@@ -214,7 +219,9 @@ angular.module('Mastermind.controllers.projects')
     		  $scope.refreshAssignmentsData( AssignmentService.filterAssignmentsByPeriod($scope.projectAssignment, $scope.selectedAssignmentsFilter));
     		  
     		  $state.go('projects.show.tabId', {
-  				tabId: $scope.projectTabId
+  				tabId: $scope.projectTabId,
+  				//filter: $scope.selectedAssignmentsFilter
+  				filter: "all"
   			});
     	  })
     	 
@@ -229,7 +236,7 @@ angular.module('Mastermind.controllers.projects')
     };
     
     $scope.handleAssignmentsFilterChanged = function() {
-    	AssignmentService.getAssignmentsByPeriod($scope.selectedAssignmentsFilter, {
+    	AssignmentService.getAssignmentsByPeriod($state.is('projects.show.tabId.edit') ? "all": $scope.selectedAssignmentsFilter, {
     		project: {
     			resource: $scope.project.about
     		}
@@ -237,7 +244,7 @@ angular.module('Mastermind.controllers.projects')
         	$scope.refreshAssignmentsData(data);
         })
         
-        if ($scope.projectTabId == "assignments") {
+        if ($scope.projectTabId == "assignments" && !$state.is("projects.show.tabId.edit")) {
 	        // in case when we simply converting url "assignments" to "assignments?filter=current" we must replace latest history entry
 	        var filter = $scope.projectTabId == "assignments" ? $scope.selectedAssignmentsFilter: null;
 	        var options = {
@@ -347,7 +354,9 @@ angular.module('Mastermind.controllers.projects')
    
     $scope.handleAssignmentsFilterChanged();
     
-    if ($state.is("projects.show.tabId.edit") && $scope.adminAccess)
+    if ($state.is("projects.show.tabId.edit") && $scope.adminAccess) {
     	$scope.edit();
+    	//$rootScope.formDirty = false;
+    }
     
   }]);

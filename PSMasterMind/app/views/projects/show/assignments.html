@@ -7,7 +7,7 @@
             </h4> 
         </div>
         <div class="col-sm-5 col-xs-8 col-md-4 col-lg-6" style="padding-top:15px;">
-           <select name="assignmentsFilter" id="assignmentsFilter" ng-disabled="editMode" class="form-control"
+           <select name="assignmentsFilter" id="assignmentsFilter" ng-show="!editMode" class="form-control"
 				ng-model="selectedAssignmentsFilter" ng-change="handleAssignmentsFilterChanged()"
 				ng-required="true"
 				ng-options="f.value as f.name for f in assignmentsFilters | orderBy:'name'">
@@ -50,7 +50,8 @@
                     </td>
                     <td class="actionsCell">
                     	<button ng-if="editMode" class="btn btn-default" ng-click="addNewAssignmentToRole($index, role)">
-				            <span>Add</span>
+				            <div class="hidden-xs"><i class="fa fa-plus-square"></i> <span > Add Assignment</span></div>
+        					<div class="visible-xs"><i class="fa fa-plus-square"></i></div>
 				        </button>
                     </td>
                 </tr>
