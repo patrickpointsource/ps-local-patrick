@@ -39,8 +39,10 @@ angular.module('Mastermind.controllers.projects')
       }
       
       //Replace the URL in history with the filter
-      var updatedUrl = $state.href('projects.index', { filter: $scope.projectFilter}).replace('#', '');
-      $location.url(updatedUrl).replace();
+      if($scope.projectFilter != $state.params.filter){
+	      var updatedUrl = $state.href('projects.index', { filter: $scope.projectFilter}).replace('#', '');
+	      $location.url(updatedUrl).replace();
+      }
     };
     
     /**

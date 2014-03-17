@@ -4,7 +4,7 @@
     <select class="form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
       <option value="all" ng-selected="peopleFilter === 'all'">All People</option>
       <option value="available" ng-selected="peopleFilter === 'available'">Available People</option>
-      <option ng-repeat="roleOption in rolesFilterOptions" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
+      <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
     </select>
   </div>
   <div class="col-xs-4 col-sm-3 col-lg-2 pull-right xs-padding-top">

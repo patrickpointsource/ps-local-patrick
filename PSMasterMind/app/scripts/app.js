@@ -109,7 +109,7 @@
           template: '<ui-view />'
         })
         .state('people.index', {
-          url: '/?filter',
+          url: '/?filter&view',
           templateUrl: 'views/people/people.html',
           controller: 'PeopleCtrl'
         })

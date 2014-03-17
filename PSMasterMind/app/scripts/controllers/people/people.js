@@ -92,6 +92,7 @@ angular.module('Mastermind.controllers.people')
         }
         //Otherwise just show all
         else{
+        	$scope.peopleFilter = 'all';
         	var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
             Resources.query('people', {}, fields, function(result){
               $scope.people = result.members;
@@ -108,8 +109,17 @@ angular.module('Mastermind.controllers.people')
         }
         
         //Replace the URL in history with the filter
-        var updatedUrl = $state.href('people.index', { filter: $scope.peopleFilter}).replace('#', '');
-        $location.url(updatedUrl).replace();
+        if($scope.peopleFilter != $state.params.filter){
+	        var view = false;
+	        if($scope.showGraphView){
+	        	view = 'graph';
+	        }
+	        else{
+	        	view = 'table';
+	        }
+	        var updatedUrl = $state.href('people.index', { 'filter': $scope.peopleFilter, 'view':view}).replace('#', '');
+	        $location.url(updatedUrl).replace();
+	    }
       };
 
       /**
@@ -273,8 +283,8 @@ angular.module('Mastermind.controllers.people')
       $scope.startDate = new Date();
       //$scope.startDate.setMonth($scope.startDate.getMonth() + 1);
 
-      $scope.showTableView = true;
-      $scope.showGraphView = false;
+      $scope.showTableView = $state.params.view?$state.params.view=='table':true;
+      $scope.showGraphView = $state.params.view?$state.params.view=='graph':false;;
 
       /**
        * Get All the Role Types
