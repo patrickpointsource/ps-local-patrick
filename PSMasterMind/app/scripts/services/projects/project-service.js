@@ -141,7 +141,12 @@ angular.module('Mastermind.services.projects')
         Resources.refresh(projectURI).then(function(project){
         	//Fix project description 
 	        if(project.description){
-	      	  project.description = decodeURIComponent(project.description); 
+	        	try{
+	        		project.description = decodeURIComponent(project.description); 
+	        	}
+	        	catch(err){
+	        	  console.warn('Failed to decode project description: ' + project.description + '\n' + err);
+	        	}
 	        }
           var proj = new Project(project);
           
