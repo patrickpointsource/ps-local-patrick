@@ -3,7 +3,7 @@
 	
 	<div class="col-xs-5 col-sm-2 form-group" ng-class="{error: isFieldInError('role')}">
 	     <a href="#{{currentAssignee.person.resource}}">
-	     	<img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble).thumbnail}}"/>
+	     	<img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble).thumbnail}}"/></a>
 	     		{{getPersonName(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble)}}
 	     </a>           
 	</div>
