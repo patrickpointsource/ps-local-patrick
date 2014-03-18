@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -2261,15 +2263,17 @@ public class Data implements CONSTS {
 	 */
 	public static void migrateAssignees(RequestContext context) throws IOException{
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		DBCollection rolesCol = db.getCollection(COLLECTION_TITLE_ROLES);
 		JSONObject jsonProject = null;
-		DBCursor cursor = projectsCol.find();
+		JSONObject jsonAdminRole = null;
+		DBCursor projectsCursor = projectsCol.find();
 
 		int COUNT_HOURS_PER_MONTH = 160;
 		int COUNT_HOURS_PER_WEEK = 40;
 		boolean projectChanged = false;
 		
-		while (cursor.hasNext()) {
-			DBObject object = cursor.next();
+		while (projectsCursor.hasNext()) {
+			DBObject object = projectsCursor.next();
 
 			if (object.containsField(PROP__ID)) {
 				ObjectId oId = (ObjectId) object.get(PROP__ID);
@@ -2291,7 +2295,7 @@ public class Data implements CONSTS {
 				
 				for (int i = 0; i < roles.length(); i ++) {
 					role = roles.getJSONObject(i);
-					
+					DBCursor rolesCursor = rolesCol.find();					
 					
 					if (!role.has(PROP__ID)) {
 						id = new ObjectId();
@@ -2376,9 +2380,67 @@ public class Data implements CONSTS {
 							
 							if (hours!=0 && hoursPerMth==0) {
 									rate.put("hoursPerMth", hours);
-
-								projectChanged = true;
+									hoursPerMth = hours;
+									projectChanged = true;
 							}
+							
+							/*
+							 * Load the loadedAmount data field in the rate
+							 */
+							int loadedAmount = rate.optInt("loadedAmount");
+							if(loadedAmount ==0) {
+								while(rolesCursor.hasNext()) {
+									DBObject adminRole = rolesCursor.next();
+									if (adminRole.containsField(PROP__ID)) {
+										ObjectId adminRoleOId = (ObjectId) adminRole.get(PROP__ID);
+										String adminRoleJSON = JSON.serialize(adminRole);
+										jsonAdminRole = new JSONObject(adminRoleJSON);
+										String adminRolesIDString = "roles/" + String.valueOf(adminRoleOId);
+									
+										JSONObject roleType = role.getJSONObject("type");
+										//String adminRolesIDString = jsonAdminRole.optString("resource");
+										String projRolesIDString = roleType.optString("resource");
+
+										if(adminRolesIDString.equals(projRolesIDString)) {
+											rate.put("loadedAmount", jsonAdminRole.optInt("hourlyLoadedRate"));
+											projectChanged = true;
+											break;
+										}
+									}
+								}
+							}
+							
+							/*
+							 * Correct the estimatedTotal in the Rate object as well.
+							 */
+							String startDate = role.getString("startDate");
+							String endDate = role.optString("endDate");
+							if(!endDate.equals("")) {
+								//int numMonths = monthDiff(startDate, endDate);
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+								Date startD = null, endD = null;
+								try {
+									startD = sdf.parse(startDate);
+									endD = sdf.parse(endDate);
+								} catch (ParseException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								
+								long numMillis = endD.getTime() - startD.getTime();
+								double dnumMonths = (double)numMillis/(1000L * 60 * 60 * 24 * 31);
+								int numMonths = (int)Math.ceil(dnumMonths);
+								//int numMonths = (int)Math.ceil(numMts);
+								int hourlyRate = rate.optInt("amount");
+								boolean fullyUtilized = rate.optBoolean("fullyUtilized");
+								hoursPerMth = fullyUtilized?220:hoursPerMth;
+								
+								rate.put("estimatedTotal", hoursPerMth * numMonths * hourlyRate);
+								projectChanged = true;
+								
+							}
+							
+							
 						}
 						
 						if (type.equals("weekly")) {
@@ -2389,6 +2451,119 @@ public class Data implements CONSTS {
 								rate.put("hoursPerWeek", hours);
 								projectChanged = true;
 							}
+							
+							/*
+							 * Load the loadedAmount date field in the rate
+							 */
+							int loadedAmount = rate.optInt("loadedAmount");
+							if(loadedAmount ==0) {
+								while(rolesCursor.hasNext()) {
+									DBObject adminRole = rolesCursor.next();
+									if (adminRole.containsField(PROP__ID)) {
+										ObjectId adminRoleOId = (ObjectId) adminRole.get(PROP__ID);
+										String adminRoleJSON = JSON.serialize(adminRole);
+										jsonAdminRole = new JSONObject(adminRoleJSON);
+										String adminRolesIDString = "roles/" + String.valueOf(adminRoleOId);
+									
+										JSONObject roleType = role.getJSONObject("type");
+										//String adminRolesIDString = jsonAdminRole.optString("resource");
+										String projRolesIDString = roleType.optString("resource");
+
+										if(adminRolesIDString.equals(projRolesIDString)) {
+											rate.put("loadedAmount", jsonAdminRole.optInt("hourlyLoadedRate"));
+											projectChanged = true;
+											break;
+										}
+									}
+								}
+							}
+							
+							/*
+							 * Correct the estimatedTotal in the Rate object as well.
+							 */
+							String startDate = role.getString("startDate");
+							String endDate = role.optString("endDate");
+							if(!endDate.equals("")) {
+								//int numMonths = monthDiff(startDate, endDate);
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+								Date startD = null, endD = null;
+								try {
+									startD = sdf.parse(startDate);
+									endD = sdf.parse(endDate);
+								} catch (ParseException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+
+								long numMillis = endD.getTime() - startD.getTime();
+								double dnumWeeks = (double)numMillis/(1000L * 60 * 60 * 24 * 7);
+								int numWeeks = (int)Math.ceil(dnumWeeks);
+								//double numWks = (double)((numMillis)/(1000L * 60 * 60 * 24 * 7));
+								//int numWeeks = (int)Math.ceil(numWks);
+								int hourlyRate = rate.optInt("amount");
+								boolean fullyUtilized = rate.optBoolean("fullyUtilized");
+								hoursPerWeek = fullyUtilized?50:hoursPerWeek;
+								
+								rate.put("estimatedTotal", hoursPerWeek * numWeeks * hourlyRate);
+								projectChanged = true;
+								
+							}
+
+						}
+						
+						if(type.equals("monthly")) {
+							int loadedAmount = rate.optInt("loadedAmount");
+							if(loadedAmount ==0) {
+								while(rolesCursor.hasNext()) {
+									DBObject adminRole = rolesCursor.next();
+									if (adminRole.containsField(PROP__ID)) {
+										ObjectId adminRoleOId = (ObjectId) adminRole.get(PROP__ID);
+										String adminRoleJSON = JSON.serialize(adminRole);
+										jsonAdminRole = new JSONObject(adminRoleJSON);
+										String adminRolesIDString = "roles/" + String.valueOf(adminRoleOId);
+									
+										JSONObject roleType = role.getJSONObject("type");
+										//String adminRolesIDString = jsonAdminRole.optString("resource");
+										String projRolesIDString = roleType.optString("resource");
+
+										if(adminRolesIDString.equals(projRolesIDString)) {
+											rate.put("loadedAmount", jsonAdminRole.optInt("monthlyLoadedRate"));
+											projectChanged = true;
+											break;
+										}
+									}
+								}
+							}
+							
+							/*
+							 * Correct the estimatedTotal in the Rate object as well.
+							 */
+							String startDate = role.getString("startDate");
+							String endDate = role.optString("endDate");
+							if(!endDate.equals("")) {
+								//int numMonths = monthDiff(startDate, endDate);
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+								Date startD = null, endD = null;
+								try {
+									startD = sdf.parse(startDate);
+									endD = sdf.parse(endDate);
+								} catch (ParseException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+
+								long numMillis = endD.getTime() - startD.getTime();
+								double dnumMonths = (double)numMillis/(1000L * 60 * 60 * 24 * 31);
+								int numMonths = (int)Math.ceil(dnumMonths);
+								
+								//double numMts = ((numMillis)/(1000L * 60 * 60 * 24 * 30));
+								//int numMonths = (int)Math.ceil(numMts);
+								int monthlyRate = rate.optInt("amount");
+								rate.put("estimatedTotal", numMonths * monthlyRate);
+								projectChanged = true;
+								
+							}
+
 						}
 						
 						if(rate.remove("hours") != null) {

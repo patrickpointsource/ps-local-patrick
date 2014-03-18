@@ -116,20 +116,20 @@
 		<div class="col-xs-12">
 			<div class="row-fluid">
 				<div class="col-xs-12 col-sm-6 col-md-3">
-					<label>Estimated value:</label> <span>(USD)
-						{{(project.terms.servicesEstimate+project.terms.softwareEstimate)
+					<label>Software $ In Plan:</label> <span>(USD)
+						{{(project.terms.softwareEstimate)?(project.terms.softwareEstimate):0
 						| currency}}</span>
 				</div>
 				<div class="col-xs-12 col-sm-6 col-md-3">
-					<label>Total $ In Plan:</label> <span>{{servicesTotal() |
+					<label>Services $ In Plan:</label> <span>{{servicesTotal() |
 						currency}}</span>
 				</div>
 				<div class="col-xs-12 col-sm-6 col-md-3">
-					<label>Total Loaded $ In Plan:</label> <span>{{servicesLoadedTotal
+					<label>Loaded $ In Plan:</label> <span>{{servicesLoadedTotal
 						| currency}}</span>
 				</div>
 				<div class="col-xs-12 col-sm-6 col-md-3">
-					<label>Margin %:</label> <span>{{projectMargin() |
+					<label>Services Margin %:</label> <span>{{projectMargin() |
 						number:0}}</span>
 				</div>
 			</div>
@@ -177,7 +177,7 @@
 							<td/><td/><td/><td/><td/>
 							<td><b>Total Estimate:</b></td>
 							<td>
-							   <span>{{formatMoney(projectEstimate,0)}}</span>
+							   <span>{{formatMoney(project.terms.servicesEstimate,0)}}</span>
 							</td>
 						</tr>
 					</tfoot>

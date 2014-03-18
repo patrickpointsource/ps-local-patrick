@@ -41,10 +41,12 @@ angular.module('Mastermind.controllers.projects')
       if(rateType === Rates.MONTHLY){
         $scope.newRole.rate.amount =  roleType.monthlyAdvertisedRate;
         $scope.newRole.rate.advAmount =  roleType.monthlyAdvertisedRate;
+        $scope.newRole.rate.loadedAmount = roleType.monthlyLoadedRate;
       }
       else{
         $scope.newRole.rate.amount =  roleType.hourlyAdvertisedRate;
         $scope.newRole.rate.advAmount =  roleType.hourlyAdvertisedRate;
+        $scope.newRole.rate.loadedAmount = roleType.hourlyLoadedRate;
       }
     };
 
@@ -229,9 +231,14 @@ angular.module('Mastermind.controllers.projects')
       $scope.roleTableParams.total($scope.project.roles.length);
       $scope.roleTableParams.reload();
     };
-	
+
+    $scope.refreshAdvLoadedAmounts = function () {
+    	$scope.refreshLoadedAmount();
+    	$scope.refreshAdvAmount();
+    }
+
     /**
-     * Update an existing role deinition
+     * Update an existing advertised role deinition
      */
     $scope.refreshAdvAmount = function () {
         var type = $scope.newRole.type.resource;
@@ -243,6 +250,22 @@ angular.module('Mastermind.controllers.projects')
         }
         else{
           $scope.newRole.rate.advAmount =  roleType.hourlyAdvertisedRate;
+        }
+    };
+
+    /**
+     * Update an existing loaded rate
+     */
+    $scope.refreshLoadedAmount = function () {
+        var type = $scope.newRole.type.resource;
+        var roleType = $scope.roleGroups[type];
+
+        var rateType = $scope.newRole.rate.type;
+        if(rateType === Rates.MONTHLY){
+          $scope.newRole.rate.loadedAmount =  roleType.monthlyLoadedRate;
+        }
+        else{
+          $scope.newRole.rate.loadedAmount =  roleType.hourlyLoadedRate;
         }
     };
     

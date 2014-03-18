@@ -250,14 +250,13 @@ angular.module('Mastermind')
       servicesEst = servicesEst?servicesEst:0;
       softwareEst = softwareEst?softwareEst:0;
 
-      var revenue = servicesEst+softwareEst;
+      var revenue = servicesEst;
       var cost = $scope.servicesLoadedTotal;
 
       var margin = null;
 
       if(cost){
-        var diff = revenue - cost;
-        margin = diff/revenue*100;
+        margin = revenue/cost*100;
       }
 
       return margin;
@@ -333,14 +332,14 @@ angular.module('Mastermind')
               //Weekly Charge rate
               else if(type && type === 'weekly'){
                 var numWeeks = $scope.weeksDif(startDate, endDate);
-                var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
+                var hoursPerWeek = rate.fullyUtilized?50:rate.hoursPerWeek;
                 roleTotal = numWeeks * hoursPerWeek * amount;
                 runningTotal += roleTotal;
               }
               //Hourly Charge rate
               else if(type && type === 'hourly'){
                 numMonths = $scope.monthDif(startDate, endDate);
-                var hoursPerMonth = rate.fullyUtilized?220:rate.hours;
+                var hoursPerMonth = rate.fullyUtilized?220:rate.hoursPerMth;
                 roleTotal = numMonths * hoursPerMonth * amount;
                 runningTotal += roleTotal;
               }
@@ -357,26 +356,30 @@ angular.module('Mastermind')
      * Number of months between 2 dates
      */
     $scope.monthDif = function(d1, d2) {
-      var months;
-      months = (d2.getFullYear() - d1.getFullYear()) * 12;
-      months -= d1.getMonth() + 1;
-      months += d2.getMonth() + 1;
-      return months <= 0 ? 0 : months;
+//      var months;
+//      months = (d2.getFullYear() - d1.getFullYear()) * 12;
+//      months -= d1.getMonth() + 1;
+//      months += d2.getMonth() + 1;
+//      return months <= 0 ? 0 : months;
+      
+      return Math.ceil((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24 * 30));
     };
 
     /**
      * Number of weeks between 2 dates
      */
     $scope.weeksDif = function(d1, d2) {
-      // The number of milliseconds in one week
-      var ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
-      // Convert both dates to milliseconds
-      var date1Ms = d1.getTime();
-      var date2Ms = d2.getTime();
-      // Calculate the difference in milliseconds
-      var differenceMs = Math.abs(date1Ms - date2Ms);
-      // Convert back to weeks and return hole weeks
-      return Math.floor(differenceMs / ONE_WEEK);
+//      // The number of milliseconds in one week
+//      var ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
+//      // Convert both dates to milliseconds
+//      var date1Ms = d1.getTime();
+//      var date2Ms = d2.getTime();
+//      // Calculate the difference in milliseconds
+//      var differenceMs = Math.abs(date1Ms - date2Ms);
+//      // Convert back to weeks and return hole weeks
+//      return Math.floor(differenceMs / ONE_WEEK);
+      
+      return Math.ceil((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24 * 4.5));
     };
 
     /**
@@ -750,7 +753,7 @@ angular.module('Mastermind')
           getData: function ($defer, params) {
             var start = (params.page() - 1) * params.count();
             var end = params.page() * params.count();
-            $scope.projectEstimate = 0;
+            $scope.project.terms.servicesEstimate = 0;
 
             var orderedData = params.sorting() ?
                 $filter('orderBy')($scope.project.roles, params.orderBy()) :
@@ -763,7 +766,7 @@ angular.module('Mastermind')
             var ret = [];
             for(var i = 0; i < result.length; i++){
               var ithRole = Resources.deepCopy(result[i]);
-              $scope.projectEstimate += ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
+              $scope.project.terms.servicesEstimate += ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
               if(ithRole.assignee && ithRole.assignee.resource){
                 defers.push(Resources.resolve(ithRole.assignee));
                 //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
@@ -811,7 +814,7 @@ angular.module('Mastermind')
           if (startDate && endDate){
             //Hourly Charge rate
             if (type && type === 'monthly'){
-              amount = roleType.monthlyLoadedRate;
+              amount = role.rate.loadedAmount;
               if (amount === null){
                 console.warn('Role Type has no monthly loaded rate: ' + roleType.title);
               }
@@ -823,26 +826,26 @@ angular.module('Mastermind')
             }
             //Weekly Charge rate
             else if (type && type === 'weekly'){
-              amount = roleType.hourlyLoadedRate;
+              amount = role.rate.loadedAmount;
               if (amount === null){
                 console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
               }
               else {
                 var numWeeks = $scope.weeksDif(startDate, endDate);
-                var hoursPerWeek = rate.fullyUtilized?50:rate.hours;
+                var hoursPerWeek = rate.fullyUtilized?50:rate.hoursPerWeek;
                 roleTotal = numWeeks * hoursPerWeek * amount;
                 runningTotal += roleTotal;
               }
             }
             //Hourly Charge rate
             else if (type && type === 'hourly'){
-              amount = roleType.hourlyLoadedRate;
+              amount = role.rate.loadedAmount;
               if (amount === null){
                 console.warn('Role Type has no hourly loaded rate: ' + roleType.title);
               }
               else {
                 numMonths = $scope.monthDif(startDate, endDate);
-                var hoursPerMonth = rate.fullyUtilized?220:rate.hours;
+                var hoursPerMonth = rate.fullyUtilized?220:rate.hoursPerMth;
                 roleTotal = numMonths * hoursPerMonth * amount;
                 runningTotal += roleTotal;
               }

@@ -66,6 +66,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       hoursPerMth: 0,
       amount: 0,
       advAmount: 0,
+      loadedRate: 0,
       estimatedTotal: 0
     };
 
@@ -77,6 +78,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       this.fullyUtilized = options.fullyUtilized || defaults.fullyUtilized;
       this.hoursPerMth = options.hoursPerMth || defaults.hoursPerMth;
       this.amount = options.amount || defaults.amount;
+      this.loadedAmount = options.loadedAmount || defaults.loadedAmount;
       this.advAmount = options.advAmount || defaults.advAmount;
       this.estimatedTotal = options.estimatedTotal || defaults.estimatedTotal;
     }
@@ -86,12 +88,12 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     HourlyRate.prototype.hoursPerMonth = function () {
-      if(this.fullyUtilized) return 180;
+      if(this.fullyUtilized) return 220;
       return parseFloat(this.hoursPerMth).toFixed(1);
     };
     
     HourlyRate.prototype.getNumberOfTUs = function () {
-    	var num = 180;
+    	var num = 220;
         if(this.fullyUtilized) return num.toString().concat(" hours/ month");
         return parseFloat(this.hoursPerMth).toFixed(0).toString().concat(" hours/ month");
       };
@@ -111,7 +113,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       	//This should default to 0 is the other values are not set
       	if(numMonths && this.amount){
 	      	if(this.fullyUtilized) {
-	      		this.estimatedTotal = numMonths * 180 * this.amount;
+	      		this.estimatedTotal = numMonths * 220 * this.amount;
 	      	}
 	      	else if(this.hoursPerMth){
 	      		this.estimatedTotal = numMonths * this.hoursPerMth * this.amount;
@@ -135,6 +137,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       hoursPerWeek: 0,
       amount: 0,
       advAmount: 0,
+      loadedAmount: 0,
       estimatedTotal: 0
     };
 
@@ -146,6 +149,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       this.fullyUtilized = options.fullyUtilized || defaults.fullyUtilized;
       this.hoursPerWeek = options.hoursPerWeek || defaults.hoursPerWeek;
       this.amount = options.amount || defaults.amount;
+      this.loadedAmount = options.loadedAmount || defaults.loadedAmount;
       this.advAmount = options.advAmount || defaults.advAmount;
       this.estimatedTotal = options.estimatedTotal || defaults.estimatedTotal;
     }
@@ -155,14 +159,14 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     WeeklyRate.prototype.hoursPerMonth = function () {
-      if(this.fullyUtilized) return 180;
+      if(this.fullyUtilized) return 220;
       // Weekly rate is currently hours per week. There are 5 working days per week
       // and 22.5 per month.
       return parseFloat(this.hoursPerWeek * 22.5 / 5).toFixed(1);
     };
 
     WeeklyRate.prototype.getNumberOfTUs = function () {
-    	var num=40;
+    	var num=50;
         if(this.fullyUtilized) return num.toString().concat(" hours/ week");
         return parseFloat(this.hoursPerWeek).toFixed(0).toString().concat(" hours/ week");
     };
@@ -195,6 +199,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     var defaults = {
       amount: 0,
       advAmount: 0,
+      loadedAmount: 0,
       estimatedTotal: 0
     };
 
@@ -205,6 +210,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       this.type = Rates.MONTHLY;
       this.rateUnits = RateUnits.MONTHS;
       this.amount = options.amount || defaults.amount;
+      this.loadedAmount = options.loadedAmount || defaults.loadedAmount;
       this.advAmount = options.advAmount || defaults.advAmount;
       this.estimatedTotal = options.estimatedTotal || defaults.estimatedTotal;
     }
@@ -214,14 +220,14 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     MonthlyRate.prototype.hoursPerMonth = function () {
-      if(this.fullyUtilized) return 180;
-      return parseFloat(180).toFixed(1);
+      if(this.fullyUtilized) return 220;
+      return parseFloat(220).toFixed(1);
     };
 
     MonthlyRate.prototype.getNumberOfTUs = function () {
     	
-        if(this.fullyUtilized) return parseFloat(180).toFixed(0).toString().concat(" hours/ month");
-        return parseFloat(180).toFixed(0).toString().concat(" hours/ month");
+        if(this.fullyUtilized) return parseFloat(220).toFixed(0).toString().concat(" hours/ month");
+        return parseFloat(220).toFixed(0).toString().concat(" hours/ month");
     };
 
     MonthlyRate.prototype.getNumPeriods = function (startD, endD) {
