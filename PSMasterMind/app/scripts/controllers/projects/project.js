@@ -519,7 +519,7 @@ angular.module('Mastermind')
     $scope.openAssignments = function(){
     	$state.go('projects.show.tabId', {
 				tabId: 'assignments',
-				filter: 'current'
+				filter: 'all'
 		});
     }
     
