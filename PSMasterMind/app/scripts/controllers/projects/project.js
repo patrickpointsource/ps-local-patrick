@@ -243,7 +243,7 @@ angular.module('Mastermind')
      * Expected margin on a project
      */
     $scope.projectMargin = function(){
-      var servicesEst = $scope.project.terms.servicesEstimate;
+      var servicesEst = $scope.servicesEstimate;
       var softwareEst = $scope.project.terms.softwareEstimate;
 
       //Cannot be null
@@ -762,7 +762,7 @@ angular.module('Mastermind')
           getData: function ($defer, params) {
             var start = (params.page() - 1) * params.count();
             var end = params.page() * params.count();
-            $scope.project.terms.servicesEstimate = 0;
+            $scope.servicesEstimate = 0;
 
             var orderedData = params.sorting() ?
                 $filter('orderBy')($scope.project.roles, params.orderBy()) :
@@ -775,7 +775,7 @@ angular.module('Mastermind')
             var ret = [];
             for(var i = 0; i < result.length; i++){
               var ithRole = Resources.deepCopy(result[i]);
-              $scope.project.terms.servicesEstimate += ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
+              $scope.servicesEstimate += ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
               if(ithRole.assignee && ithRole.assignee.resource){
                 defers.push(Resources.resolve(ithRole.assignee));
                 //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;

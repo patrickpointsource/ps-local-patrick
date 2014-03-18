@@ -11,7 +11,6 @@ angular.module('Mastermind.models.projects')
     function Terms(options) {
       options = options || {};
 
-      this.servicesEstimate = options.servicesEstimate || defaults.servicesEstimate;
       this.softwareEstimate = options.softwareEstimate || defaults.softwareEstimate;
       this.includesProjectManagementOverhead = options.includesProjectManagementOverhead || defaults.includesProjectManagementOverhead;
       this.type = options.type || defaults.type;
