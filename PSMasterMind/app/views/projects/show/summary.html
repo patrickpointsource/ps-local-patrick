@@ -170,7 +170,7 @@
 						   <span>{{role.rate.getNumberOfTUs()}}</span>						   
 						</td>
 						<td>{{role.rate.getNumPeriods(role.startDate, role.endDate)}}</td>
-						<td>{{role.formatMoney(role.rate.estimatedTotal, 0)}}</td>
+						<td>{{role.formatMoney(role.rate.getEstimatedTotal(role.startDate, role.endDate), 0)}}</td>
 					</tr>
 					<tfoot>
 						<tr>

@@ -66,8 +66,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       hoursPerMth: 0,
       amount: 0,
       advAmount: 0,
-      loadedRate: 0,
-      estimatedTotal: 0
+      loadedRate: 0
     };
 
     function HourlyRate(options) {
@@ -80,7 +79,6 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       this.amount = options.amount || defaults.amount;
       this.loadedAmount = options.loadedAmount || defaults.loadedAmount;
       this.advAmount = options.advAmount || defaults.advAmount;
-      this.estimatedTotal = options.estimatedTotal || defaults.estimatedTotal;
     }
 
     HourlyRate.prototype.isFullyUtilized = function () {
@@ -109,18 +107,19 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     	var startDate = new Date(startD);
     	var endDate = new Date(endD);
       	var numMonths = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
+      	var estimatedTotal = 0;
       	
       	//This should default to 0 is the other values are not set
       	if(numMonths && this.amount){
 	      	if(this.fullyUtilized) {
-	      		this.estimatedTotal = numMonths * 220 * this.amount;
+	      		estimatedTotal = numMonths * 220 * this.amount;
 	      	}
 	      	else if(this.hoursPerMth){
-	      		this.estimatedTotal = numMonths * this.hoursPerMth * this.amount;
+	      		estimatedTotal = numMonths * this.hoursPerMth * this.amount;
 	      	}
       	}
     	
-      	return this.estimatedTotal;
+      	return estimatedTotal;
 
     }; 
     
@@ -137,8 +136,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       hoursPerWeek: 0,
       amount: 0,
       advAmount: 0,
-      loadedAmount: 0,
-      estimatedTotal: 0
+      loadedAmount: 0
     };
 
     function WeeklyRate(options) {
@@ -151,7 +149,6 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       this.amount = options.amount || defaults.amount;
       this.loadedAmount = options.loadedAmount || defaults.loadedAmount;
       this.advAmount = options.advAmount || defaults.advAmount;
-      this.estimatedTotal = options.estimatedTotal || defaults.estimatedTotal;
     }
 
     WeeklyRate.prototype.isFullyUtilized = function () {
@@ -182,11 +179,13 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     	var startDate = new Date(startD);
     	var endDate = new Date(endD);
       	var numWeeks = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 4.5));
+      	var estimatedTotal = 0;
+
       	//This should default to 0 is the other values are not set
       	if(numWeeks && this.hoursPerWeek && this.amount){
-      		this.estimatedTotal = numWeeks * this.hoursPerWeek * this.amount;
+      		estimatedTotal = numWeeks * this.hoursPerWeek * this.amount;
       	}
-        return this.estimatedTotal;
+        return estimatedTotal;
     }; 
     return WeeklyRate;
   }])
@@ -199,8 +198,8 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     var defaults = {
       amount: 0,
       advAmount: 0,
-      loadedAmount: 0,
-      estimatedTotal: 0
+      loadedAmount: 0
+
     };
 
     function MonthlyRate(options) {
@@ -212,7 +211,6 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       this.amount = options.amount || defaults.amount;
       this.loadedAmount = options.loadedAmount || defaults.loadedAmount;
       this.advAmount = options.advAmount || defaults.advAmount;
-      this.estimatedTotal = options.estimatedTotal || defaults.estimatedTotal;
     }
 
     MonthlyRate.prototype.isFullyUtilized = function () {
@@ -241,11 +239,13 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
 		var startDate = new Date(startD);
 		var endDate = new Date(endD);
 		var numMonths = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
+      	var estimatedTotal = 0;
+
 		//This should default to 0 is the other values are not set
 		if(numMonths && this.amount){
-			this.estimatedTotal = numMonths * this.amount;
+			estimatedTotal = numMonths * this.amount;
 		}
-        return this.estimatedTotal;
+        return estimatedTotal;
     }; 
     
     return MonthlyRate;
