@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$q','$rootScope', '$scope', '$state', '$stateParams', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
-  function ($q, $rootScope, $scope, $state, $stateParams, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
+  .controller('ProjectCtrl', ['$q','$rootScope', '$scope', '$state', '$stateParams', '$location', '$filter', 'ProjectsService', 'Resources', 'People', 'Groups', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
+  function ($q, $rootScope, $scope, $state, $stateParams, $location, $filter, ProjectsService, Resources, People, Groups, RoleTypes, Rates, TableParams, editMode) {
     var detailsValid = false, rolesValid = false;
 
     //Set our currently viewed project to the one resolved by the service.
@@ -483,13 +483,22 @@ angular.module('Mastermind')
     
     $scope.tabSelected = function(selectedTabId) {
 		if ($scope.projectTabId != selectedTabId) {
-			$scope.projectTabId = selectedTabId;
-			
-			
-			$state.go('projects.show.tabId', {
+
+			if (!$scope.projectTabId) {
+				var updatedUrl = $state.href('projects.show.tabId', { 
 					tabId: selectedTabId,
 					filter: selectedTabId != 'assignments' ? null: 'current'
-			});
+				}).replace('#', '');
+	        
+	        
+	        	$location.url(updatedUrl).replace();
+			} else
+				$state.go('projects.show.tabId', {
+						tabId: selectedTabId,
+						filter: selectedTabId != 'assignments' ? null: 'current'
+				});
+			
+			$scope.projectTabId = selectedTabId;
 		}
     }
     

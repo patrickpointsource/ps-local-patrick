@@ -28,6 +28,7 @@ angular.module('Mastermind.controllers.projects')
 	
 	  
 	  //TODO what is this for?
+	  // Load "all" assignments for displaying it on "summary" tab, and possibly on other tabs
 	  if ($scope.projectTabId != "assignments"){
 		  $scope.selectedAssignmentsFilter = "all";
 	  }
