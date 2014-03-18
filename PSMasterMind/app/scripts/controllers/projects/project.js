@@ -789,7 +789,17 @@ angular.module('Mastermind')
             var ret = [];
             for(var i = 0; i < result.length; i++){
               var ithRole = Resources.deepCopy(result[i]);
-              $scope.servicesEstimate += ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
+              var roleEstimate = 0;
+              if(ithRole.startDate && ithRole.endDate) {
+            	  roleEstimate = ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
+              }
+              else if(ithRole.startDate) {
+            	  /*
+            	   * Use the project endDate if the role doesn't have an endDate.
+            	   */
+            	  roleEstimate = ithRole.rate.getEstimatedTotal($scope.project.endDate);
+              }
+              $scope.servicesEstimate += roleEstimate;
               if(ithRole.assignee && ithRole.assignee.resource){
                 defers.push(Resources.resolve(ithRole.assignee));
                 //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
