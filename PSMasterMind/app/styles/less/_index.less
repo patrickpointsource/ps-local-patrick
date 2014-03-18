@@ -20,7 +20,6 @@ header {
   }
 
   .navbar-default {
-    background-color: @ps-gray;
     .navbar-fixed-top {
       margin-bottom: 0;
     }
@@ -215,7 +214,17 @@ main {
       }
 
       .dashboard-widget {
-
+      	&.panel-default{
+      	border-color: @ps-blue;
+			.panel-heading{
+				background-color: @ps-lightgray;
+				border-color: @ps-secondary-blue;
+				a {
+					color: @ps-secondary-blue;
+				}
+			}
+		}
+		
         .dashboard-box {
           box-sizing: border-box;
           text-align: center;
