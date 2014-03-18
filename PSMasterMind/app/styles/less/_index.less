@@ -34,7 +34,16 @@ header {
 
       .icon-bar {
         width: 15px;
+        background-color:white;
       }
+    }
+    
+    .navbar-toggle:hover, .navbar-toggle:focus{
+    	background-color: transparent;
+    	.icon-bar {
+	        width: 15px;
+	        background-color:@ps-lightgray;
+	      }
     }
 
     .navbar-inner {
@@ -71,7 +80,7 @@ header {
       li {
 
         &.active > a {
-          box-shadow: 0 5px 0 @ps-gray;
+          box-shadow: 0 5px 0 @ps-secondary-blue;
         }
 
         &:hover {
@@ -83,7 +92,7 @@ header {
           padding-bottom: 8px;
 
           &:hover {
-            box-shadow: 0 5px 0 @ps-gray;
+            box-shadow: 0 5px 0 @ps-secondary-blue;
           }
         }
       }
@@ -93,10 +102,7 @@ header {
   #profile-photo {
     height: 40px;
     width: 40px;
-    background-size:40px 40px;
-    border-radius: 20px;
-	-webkit-border-radius: 20px;
-	-moz-border-radius: 20px;
+    .img-circle;
   }
 
   #user-dropdown {
@@ -236,6 +242,8 @@ main {
             
             img{
               width: 100%;
+              margin-bottom:10px;
+              .img-circle;
             }
           }
         }
