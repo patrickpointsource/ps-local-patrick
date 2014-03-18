@@ -17,9 +17,6 @@ angular.module('Mastermind.controllers.projects')
 		    type: 'asc'     // initial sorting
 		  }
 	  };
-	  var now = new Date();
-	  
-	  var todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 	  
 	  $scope.assignmentsFilters = [{name: "Current Assignments", value: "current"}, 
 	                               	{name: "Future Assignments", value: "future"},
@@ -35,15 +32,8 @@ angular.module('Mastermind.controllers.projects')
 	  //If explicit use the passed in filter
 	  else if($state.params.filter){
 		  $scope.selectedAssignmentsFilter = $state.params.filter;
-	  }
-	  else if (new Date($scope.project.startDate) >= todayDate && (!$scope.project.endDate || new Date($scope.project.endDate) > todayDate))
-		  $scope.selectedAssignmentsFilter = "future";
-	  else  if (new Date($scope.project.startDate) < todayDate && ($scope.project.endDate && new Date($scope.project.endDate) < todayDate))
-		  $scope.selectedAssignmentsFilter = "past";
-	  // make selected by default to "current"
-	  else{
-		  $scope.selectedAssignmentsFilter = "current";
-	  }
+	  } else
+		  $scope.selectedAssignmentsFilter = $scope.getDefaultAssignmentsFilter()
 	 
 	  
 	for (var i = 0; i < $scope.project.roles.length; i ++)

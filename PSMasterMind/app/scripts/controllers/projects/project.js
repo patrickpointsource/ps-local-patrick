@@ -481,13 +481,27 @@ angular.module('Mastermind')
     	"links": $state.params.tabId == "links"
     }
     
+    $scope.getDefaultAssignmentsFilter = function() {
+		var result = "current";
+		var now = new Date();
+		  
+		var todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+		  
+    	if (new Date($scope.project.startDate) >= todayDate && (!$scope.project.endDate || new Date($scope.project.endDate) > todayDate))
+	  		  result = "future";
+	  	  else  if (new Date($scope.project.startDate) < todayDate && ($scope.project.endDate && new Date($scope.project.endDate) < todayDate))
+	  		  result = "past";
+    	
+    	return result;
+    }
+    
     $scope.tabSelected = function(selectedTabId) {
 		if ($scope.projectTabId != selectedTabId) {
 
 			if (!$scope.projectTabId) {
 				var updatedUrl = $state.href('projects.show.tabId', { 
 					tabId: selectedTabId,
-					filter: selectedTabId != 'assignments' ? null: 'current'
+					filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
 				}).replace('#', '');
 	        
 	        
@@ -495,7 +509,7 @@ angular.module('Mastermind')
 			} else
 				$state.go('projects.show.tabId', {
 						tabId: selectedTabId,
-						filter: selectedTabId != 'assignments' ? null: 'current'
+						filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
 				});
 			
 			$scope.projectTabId = selectedTabId;
