@@ -41,7 +41,7 @@ angular.module('Mastermind.services.projects')
 		  if (!assignments[i].percentage)
 			  anyPercentageMissed = true;
 		  
-		  if (!assignments[i].percentage && !(assignments[i].person && assignments[i].person.resource))
+		  if (!assignments[i].percentage || !(assignments[i].person && assignments[i].person.resource))
 			  countEmptyPersons ++;
 	  }
 
@@ -50,8 +50,6 @@ angular.module('Mastermind.services.projects')
       errors.push('For each assignee entry can\'t be empty');
     } else if(anyPercentageMissed && !anyResourceUnassigned){
         errors.push('For each assignee entry percentage is required');
-    } else if(!anyPercentageMissed && anyResourceUnassigned){
-        errors.push('For each assignee entry person is required');
     }
       
       

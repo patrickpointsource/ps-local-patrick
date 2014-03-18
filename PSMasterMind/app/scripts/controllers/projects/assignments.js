@@ -70,12 +70,23 @@ angular.module('Mastermind.controllers.projects')
 		return result;
 	}
 	
-	$scope.addNewAssignmentToRole =  function (index, role) {
+	$scope.getDefaultRolePercentage = function(role) {
+		var defaultPercentage = 100;
+		var hoursPerMonth = parseFloat(role.rate.hoursPerMonth());
+		var DEFAULT_HOURS_PER_MONTH = 220;
 		
+		if (role.assignees.length == 0)
+			defaultPercentage = Math.round(100 * hoursPerMonth / DEFAULT_HOURS_PER_MONTH)
+		else
+			defaultPercentage = Math.round(50 * hoursPerMonth / DEFAULT_HOURS_PER_MONTH)
+		
+		return defaultPercentage;
+	}
+	$scope.addNewAssignmentToRole =  function (index, role) {
 		role.assignees.push(AssignmentService.create({
           startDate:$scope.project.startDate,
           endDate:$scope.project.endDate,
-          percentage: 0
+          percentage: $scope.getDefaultRolePercentage(role)
         }))
 	}
 	
@@ -350,7 +361,8 @@ angular.module('Mastermind.controllers.projects')
 				
 				var props = {
 		          startDate:$scope.project.startDate,
-		          endDate:$scope.project.endDate
+		          endDate:$scope.project.endDate,
+		          percentage: $scope.getDefaultRolePercentage(role)
 		        };
 				
 				
