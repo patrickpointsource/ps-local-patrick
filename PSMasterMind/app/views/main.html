@@ -140,32 +140,27 @@
 				<a href="#projects"><i class="fa fa-briefcase"></i> Current Projects</a>
 			</div>
 			<div class="panel-body">
-				<div class="row graph">
-					<div id="projectsSummaryGraph" class="col-xs-12">
-						<div class="row">
-							<div class="col-xs-2">{{getMonthName(startDate.getMonth())}}</div>
-							<div class="col-xs-2">{{getMonthName(startDate.getMonth()+1)}}</div>
-							<div class="col-xs-2">{{getMonthName(startDate.getMonth()+2)}}</div>
-							<div class="col-xs-2">{{getMonthName(startDate.getMonth()+3)}}</div>
-							<div class="col-xs-2">{{getMonthName(startDate.getMonth()+4)}}</div>
-							<div class="col-xs-2">{{getMonthName(startDate.getMonth()+5)}}</div>
-						</div>
+				<div class="graph">
+					<div id="projectsSummaryGraph">
 						<div class="row" ng-repeat="project in qvProjects | orderBy:'customerName'">
-							<div>
+							<div class="title">
 								<a href="#{{project.resource}}"><i class="{{projectStateIcon(project)}}"></i> {{project.customerName}}: {{project.name}}</a>
 							</div>
-							<div class="col-xs-2"
-								ng-class="{active: inMonth(project, startDate.getMonth(), startDate.getFullYear())}"></div>
-							<div class="col-xs-2"
-								ng-class="{active: inMonth(project, startDate.getMonth()+1, startDate.getFullYear())}"></div>
-							<div class="col-xs-2"
-								ng-class="{active: inMonth(project, startDate.getMonth()+2, startDate.getFullYear())}"></div>
-							<div class="col-xs-2"
-								ng-class="{active: inMonth(project, startDate.getMonth()+3, startDate.getFullYear())}"></div>
-							<div class="col-xs-2"
-								ng-class="{active: inMonth(project, startDate.getMonth()+4, startDate.getFullYear())}"></div>
-							<div class="col-xs-2"
-								ng-class="{active: inMonth(project, startDate.getMonth()+5, startDate.getFullYear())}"></div>
+							<div class="progress">
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+1, startDate.getFullYear())}"> {{getMonthName(startDate.getMonth())}}</div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+1, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+1)}}</div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+2, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+2)}}</div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+3, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+3)}}</div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+4, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+4)}}</div>
+								<div class="col-xs-2"
+									ng-class="{active: inMonth(project, startDate.getMonth()+5, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+5)}}</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -180,46 +175,33 @@
 				Current Assignments
 			</div>
 			<div class="panel-body">
-				<div class="row graph">
-					<div id="peopleSummaryGraph" class="col-xs-12">
-						<div class="row">
-							<div class="col-xs-1"></div>
-							<div class="col-xs-11">
-								<div class="row">
-									<div class="col-xs-2">{{getMonthName(startDate.getMonth())}}</div>
-									<div class="col-xs-2">{{getMonthName(startDate.getMonth()+1)}}</div>
-									<div class="col-xs-2">{{getMonthName(startDate.getMonth()+2)}}</div>
-									<div class="col-xs-2">{{getMonthName(startDate.getMonth()+3)}}</div>
-									<div class="col-xs-2">{{getMonthName(startDate.getMonth()+4)}}</div>
-									<div class="col-xs-2">{{getMonthName(startDate.getMonth()+5)}}</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row peopleList well" style="margin-bottom:5px" ng-repeat="person in qvPeople | orderBy:'givenName'"
+				<div class="graph">
+					<div class="peopleList" style="margin-bottom:5px" ng-repeat="person in qvPeople | orderBy:'givenName'"
 						ng-show="qvPeople">
-						<div class="col-xs-1">
-							<div><a href="#{{person.resource}}">{{person.givenName}}</a></div>
-               				<a href="#{{person.resource}}"><img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/></a>
+						<div>
+               				<a href="#{{person.resource}}"><img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/> {{person.name}}</a>
 						</div>
-						<div class="col-xs-11">
-							<div class="row"
+						
+						<div>
+							<div 
 								ng-repeat="assignment in qvPeopleAssignments[person.resource] track by $index">
-								<div>
+								<div class="title">
 									<a href="#{{assignment.project.resource}}/assignments"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.percentage}}% {{assignment.project.customerName}}: {{assignment.project.name}}</a>
 								</div>
-								<div class="col-xs-2"
-									ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth(), startDate.getFullYear())}"></div>
-								<div class="col-xs-2"
-									ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+1, startDate.getFullYear())}"></div>
-								<div class="col-xs-2"
-									ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+2, startDate.getFullYear())}"></div>
-								<div class="col-xs-2"
-									ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+3, startDate.getFullYear())}"></div>
-								<div class="col-xs-2"
-									ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+4, startDate.getFullYear())}"></div>
-								<div class="col-xs-2"
-									ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+5, startDate.getFullYear())}"></div>
+								<div class="progress">
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth(), startDate.getFullYear())}">{{getMonthName(startDate.getMonth())}}</div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+1, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+1)}}</div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+2, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+2)}}</div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+3, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+3)}}</div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+4, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+4)}}</div>
+									<div class="col-xs-2"
+										ng-class="{active: isPersonActiveInMonth(assignment, person, startDate.getMonth()+5, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+5)}}</div>
+								</div>
 							</div>
 						</div>
 					</div>

@@ -54,21 +54,6 @@ angular.module('Mastermind.controllers.people')
             }
           });
         }
-        else if ($scope.peopleFilter === 'all'){
-          var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
-          Resources.query('people', {}, fields, function(result){
-            $scope.people = result.members;
-
-            //Reload the table
-            if (!$scope.tableParams){
-              $scope.tableParams = getTableData();
-            }
-            else{
-              $scope.tableParams.total($scope.people.length);
-              $scope.tableParams.reload();
-            }
-          });
-        }
         //Check if the filter is a valid role
         else if($scope.roleGroups && $scope.roleGroups[$scope.peopleFilter]){
           var peopleInRoleQuery = {'primaryRole.resource':$scope.peopleFilter};
@@ -94,18 +79,31 @@ angular.module('Mastermind.controllers.people')
         else{
         	$scope.peopleFilter = 'all';
         	var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
-            Resources.query('people', {}, fields, function(result){
-              $scope.people = result.members;
-
-              //Reload the table
-              if (!$scope.tableParams){
-                $scope.tableParams = getTableData();
-              }
-              else{
-                $scope.tableParams.total($scope.people.length);
-                $scope.tableParams.reload();
-              }
-            });
+        	//var fieldsEncoded = encodeURIComponent(JSON.stringify(fields));
+        	//var url = 'people?fields='+fieldsEncoded;
+        	Resources.get('people', {'fields':fields}).then(function(result){
+        		 $scope.people = result.members;
+        		 //Reload the table
+        		 if (!$scope.tableParams){
+        			 $scope.tableParams = getTableData();
+        		 }
+        		 else{
+        			 $scope.tableParams.total($scope.people.length);
+        			 $scope.tableParams.reload();
+        		 }
+        	});
+//            Resources.query('people', {}, fields, function(result){
+//              $scope.people = result.members;
+//
+//              //Reload the table
+//              if (!$scope.tableParams){
+//                $scope.tableParams = getTableData();
+//              }
+//              else{
+//                $scope.tableParams.total($scope.people.length);
+//                $scope.tableParams.reload();
+//              }
+//            });
         }
         
         //Replace the URL in history with the filter

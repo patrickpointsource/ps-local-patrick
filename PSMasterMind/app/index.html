@@ -190,6 +190,7 @@
 	<script src="bower_components/textAngular/textAngular.js"></script>
 	<script type="text/javascript"
 		src="bower_components/textAngular/textAngular-sanitize.js"></script>
+	<script type='application/javascript' src='bower_components/fastclick/lib/fastclick.js'></script>
 	<!-- endbuild -->
 	
 	<script type="text/javascript" src="login/scripts/login.js"></script>
@@ -233,5 +234,12 @@
 	<!-- endbuild -->
 	<!-- libs -->
 	<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="wmbvg9mkhukv6m0"></script>
+
+
+	<script>
+		$(function() {
+		    FastClick.attach(document.body);
+		});
+	</script>
 </body>
 </html>

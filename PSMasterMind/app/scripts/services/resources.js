@@ -79,14 +79,18 @@ angular.module('Mastermind').factory(
        *
        * @returns {*}
        */
-      function get(resource) {
+      function get(resource, params) {
         var deferred = $q.defer();
 
         $timeout(function() {
-
+        	
+          var key = resource;
+          if(params){
+        	  key = key+'?'+JSON.stringify(params);
+          }
           // First check if we have this resource in cache
-          var value = localStorage[resource];
-          var time = localStorage[TIME_PREFIX + resource];
+          var value = localStorage[key];
+          var time = localStorage[TIME_PREFIX + key];
 
           var resolved = false;
 
@@ -100,10 +104,10 @@ angular.module('Mastermind').factory(
           }
 
           if(!resolved) {
-            fetch(resource).then(function(newValue) {
+            fetch(resource, params).then(function(newValue) {
               //Save to localStorage
-              localStorage[resource] = JSON.stringify(newValue);
-              localStorage[TIME_PREFIX + resource] = new Date();
+              localStorage[key] = JSON.stringify(newValue);
+              localStorage[TIME_PREFIX + key] = new Date();
 
               //console.log('GET '+resource+'='+localStorage[resource]);
 
@@ -121,7 +125,7 @@ angular.module('Mastermind').factory(
       /**
        * Internal Method Fetch a Resource form the server
        */
-      function fetch(resource){
+      function fetch(resource, params){
         var route = '';
         var id = resource;
         var lastIndex = resource.lastIndexOf('/');
@@ -130,7 +134,7 @@ angular.module('Mastermind').factory(
           id = resource.substr(lastIndex + 1);
         }
 
-        var Resource = ResourcesRestangular.one(route,id);
+        var Resource = ResourcesRestangular.one(route,id,params);
 
         return Resource.get();
       }

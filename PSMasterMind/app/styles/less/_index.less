@@ -79,11 +79,11 @@ header {
     &.navbar-nav{
     	li {
     		a{
-    			color: @ps-secondary-blue;
+    			color: @ps-gray;
     		}
     	}
     	a:hover {
-    		color: @ps-gray;
+    		color: @gray-darker;
     	}
     }
 
@@ -91,7 +91,7 @@ header {
       li {
 
         &.active > a {
-          box-shadow: 0 5px 0 @ps-secondary-blue;
+          box-shadow: 0 5px 0 @ps-gray;
         }
 
         &:hover {
@@ -103,7 +103,7 @@ header {
           padding-bottom: 8px;
 		 
           &:hover {
-            box-shadow: 0 5px 0 @ps-secondary-blue;
+            box-shadow: 0 5px 0 @ps-gray;
           }
         }
       }
@@ -156,15 +156,37 @@ header {
         height: 28px;
 
         &.active {
-          background-color: @ps-secondary-blue;
+          background-color: @ps-blue;
         }
       }
     }
   }
+  
+  .title{
+  	margin-bottom: 4px;
+  	font-size: 1.1em;
+  }
 
+  .progress{
+  	font-size: .8em;
+  	min-width:260px;
+  	overflow: hidden;
+	height: 20px;
+	margin-bottom: 20px; 
+	background-size: 40px 40px;
+	background-color: @ps-lightgray;
+	background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+ 
+ 	div{
+ 		padding-left:10px;
+ 		padding-top:4px;
+ 	}
+  }
+  
   div.active {
-    background-color: @ps-secondary-blue;
-    height: 18px;
+  	background-color: @ps-blue;
+  	height: 20px;
+  	color: @ps-lightgray;
   }
 }
 
@@ -236,9 +258,7 @@ main {
 			.panel-heading{
 				background-color: @ps-lightgray;
 				border-color: darken(@ps-lightgray, 20%);
-				a {
-					color: @ps-secondary-blue;
-				}
+				
 				&.trim-bottom-padding{
 					padding-bottom: 0px;
 				}
