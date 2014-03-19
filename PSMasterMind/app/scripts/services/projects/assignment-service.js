@@ -302,4 +302,8 @@ angular.module('Mastermind.services.projects')
       return val;
     }
     
+    this.getRoles = function(project) {
+    	return Resources.get(project.about + '/roles');
+    }
+    
   }])

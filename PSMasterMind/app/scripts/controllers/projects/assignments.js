@@ -199,12 +199,9 @@ angular.module('Mastermind.controllers.projects')
           	
           	for (var j = 0; j < role.assignees.length; j ++) {
           		role.assignees[j].role = {
-          			resource: role.about
+          			//resource: role.about
+          			resource: $scope.project.about + '/roles/' + role._id
           		}
-          		
-          		for (var propP in role.assignees[j].person)
-          			if (propP != "resource")
-          				delete role.assignees[j].person[propP]
           
           	}
           	
@@ -216,11 +213,9 @@ angular.module('Mastermind.controllers.projects')
           		return true;
           	}));
           	
-          	if (role.originalAssignees) 
-          		delete role.originalAssignees;
-          	
           }
 		 
+          $scope.cleanupAssignmentsExtraInfo();
 
           //Clear any messages
           $scope.assignmentsErrorMessages = [];
@@ -247,8 +242,6 @@ angular.module('Mastermind.controllers.projects')
   			});
     	  })
     	 
-          //}
-
        
 
         // Reset the form to being pristine.
@@ -256,6 +249,36 @@ angular.module('Mastermind.controllers.projects')
         	$scope["newPersonToRoleForm" + i].$setPristine();
       }
     };
+    
+    /*
+     * Remove from saved objects unnecessary properties
+     */
+    $scope.cleanupAssignmentsExtraInfo = function() {
+    	var role;
+    	
+    	for (var i = 0; i < $scope.project.roles.length; i ++) {
+          	role = $scope.project.roles[i];
+          	
+          	for (var j = 0; j < role.assignees.length; j ++) {
+          		for (var propP in role.assignees[j].person)
+          			if (propP != "resource")
+          				delete role.assignees[j].person[propP]
+          
+          	}
+          	
+          	
+          	
+          	if (role.originalAssignees) 
+          		delete role.originalAssignees;
+          	
+          	if (role.about) 
+          		delete role.about;
+          	
+          }
+    	
+    	if ($scope.projectAssignment.excludedMembers)
+    		delete $scope.projectAssignment.excludedMembers;
+    }
     
     $scope.handleAssignmentsFilterChanged = function() {
     	AssignmentService.getAssignmentsByPeriod($state.is('projects.show.tabId.edit') ? "all": $scope.selectedAssignmentsFilter, {
@@ -304,9 +327,9 @@ angular.module('Mastermind.controllers.projects')
 			var assignments = result.members ? result.members: [];
 			
 			
-			var findRole = function(roleId) {
+			var findRole = function(roleResource) {
 				return _.find( $scope.project.roles, function(r){
-					return roleId.indexOf(r.about) > -1;
+					return roleResource.indexOf(r._id) > -1;
 				})
 			}
 			
@@ -379,7 +402,10 @@ angular.module('Mastermind.controllers.projects')
     
     if ($state.is("projects.show.tabId.edit") && $scope.adminAccess) {
     	$scope.edit();
-    	//$rootScope.formDirty = false;
     }
-    
+    /*
+    AssignmentService.getRoles($scope.project).then(function(result) {
+		var tmp = result;
+	})
+    */
   }]);

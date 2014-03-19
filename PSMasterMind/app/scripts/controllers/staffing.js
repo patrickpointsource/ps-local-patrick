@@ -83,7 +83,8 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 			                         * Loop through assignees to find a match
 			                         */
 			                        for (var c=0; c<assignees.length; c++) {
-			                        	if(activeRole.about == assignees[c].role.resource) {
+			                        	//if(activeRole.about == assignees[c].role.resource) {
+			                        	if(assignees[c].role.resource && assignees[c].role.resource.indexOf(activeRole._id) > -1) {
 			                        		foundRoleMatch = true;
 			                        	}
 			                        }
@@ -178,7 +179,8 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 			                         * Loop through assignees to find a match
 			                         */
 			                        for (var c=0; c<assignees.length; c++) {
-			                        	if(backlogRole.about == assignees[c].role.resource) {
+			                        	//if(backlogRole.about == assignees[c].role.resource) {
+			                        	if(assignees[c].role.resource && assignees[c].role.resource.indexOf(backlogRole._id) > -1) {
 			                        		foundRoleMatch = true;
 			                        	}
 			                        }

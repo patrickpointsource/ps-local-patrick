@@ -93,8 +93,7 @@ public class Projects extends BaseResource {
 					throw new WebApplicationException(Status.NOT_FOUND);
 				}
 				
-				// after creation of new project role about property will be empty - fix this if needed
-				Data.refreshRoleAbout(ret);
+				Data.removeRoleInjectedProps(ret);
 				
 				URI baseURI = context.getBaseURI();
 				ret.put(CONSTS.PROP_BASE, baseURI);
@@ -230,13 +229,15 @@ public class Projects extends BaseResource {
 				JSONObject ret = new JSONObject();
 				JSONArray roles = Data.getProjectRoles(context, id);
 				
+				Data.injectRoleResource(roles, CONSTS.RESOURCE_PROJECTS + "/" + id + "/" + CONSTS.RESOURCE_ROLES + "/");
+				
 				URI baseURI = context.getBaseURI();
 				
 				ret.put(CONSTS.PROP_DATA, roles);
 				ret.put(CONSTS.PROP_BASE, baseURI);
 
 				ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS + "/" + id + "/"
-						+ CONSTS.RESOURCE_ROLES);
+						+ CONSTS.RESOURCE_ROLES );
 				
 				String str = Data.escapeJSON(ret.toString());
 				return Response.ok(str).build();
@@ -271,7 +272,7 @@ public class Projects extends BaseResource {
 				ret.put(CONSTS.PROP_BASE, baseURI);
 
 				ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_PROJECTS + "/" + id + "/"
-						+ CONSTS.RESOURCE_ROLES + "/" + rid);
+						+ CONSTS.RESOURCE_ROLES);
 				
 				String str = Data.escapeJSON(ret.toString());
 				return Response.ok(str).build();
@@ -387,7 +388,7 @@ public class Projects extends BaseResource {
 				String about = Data.unescapeJSON(json
 						.getString(CONSTS.PROP_ABOUT));
 				
-				Data.refreshRoleAbout(newProject);
+				
 				URI aboutURI = context.getBaseURI().resolve(about);
 				
 				String ret = Data.escapeJSON(json);
@@ -451,10 +452,9 @@ public class Projects extends BaseResource {
 				RequestContext context = getRequestContext();
 				Validator.canUpdateProject(context, newProject);
 				Data.refreshRoleIds(newProject);
-				Data.refreshRoleAbout(newProject);
+				Data.removeRoleInjectedProps(newProject);
 				
 				JSONObject json = Data.updateProject(context, id, newProject);
-				
 
 				String ret = Data.escapeJSON(json);
 				return Response.ok(ret).build();

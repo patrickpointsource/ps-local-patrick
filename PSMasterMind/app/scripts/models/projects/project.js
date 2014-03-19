@@ -31,8 +31,7 @@ angular.module('Mastermind.models.projects')
       rate: RateFactory.build(Rates.HOURLY),
       shore: 'on',
       startDate: undefined,
-      endDate: undefined,
-      assignee: undefined
+      endDate: undefined
     };
 
     function formatDate(date) {
@@ -82,8 +81,7 @@ angular.module('Mastermind.models.projects')
     		  this.assignees.push(new Assignment( options.assignees[i] ))
       } else if (options.assignee)
     	  this.assignees = [new Assignment( options.assignee )];
-      
-      this.assignee = options.assignee || defaults.assignee;
+
     }
 
     return Role;

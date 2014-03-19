@@ -741,8 +741,10 @@ public class Data implements CONSTS {
 		JSONObject project = getProject(context, id);
 		JSONArray ret = null;
 		
-		if (project.has(PROP_ROLES))
+		if (project.has(PROP_ROLES)) {
+			removeRoleInjectedProps(project);
 			ret = project.getJSONArray(PROP_ROLES);
+		}
 		
 		return ret;
 	}
@@ -2703,7 +2705,20 @@ public class Data implements CONSTS {
 		}
 	}
 	
-	public static void refreshRoleAbout (JSONObject project)
+	public static void injectRoleResource (JSONArray roles, String baseResource)
+			throws JSONException {
+		JSONObject role = null;
+		
+		for (int i = 0; i < roles.length(); i ++) {
+			role = roles.getJSONObject(i);
+
+			if (role != null && (!role.has(PROP_RESOURCE) && role.has(PROP__ID))) {
+				role.put(PROP_RESOURCE, baseResource + role.get(PROP__ID).toString());
+			} 
+		}
+	}
+	
+	public static void removeRoleInjectedProps (JSONObject project)
 			throws JSONException {
 		JSONArray roles = (JSONArray) project.get("roles");
 		JSONObject role = null;
@@ -2711,8 +2726,12 @@ public class Data implements CONSTS {
 		for (int i = 0; i < roles.length(); i ++) {
 			role = roles.getJSONObject(i);
 
-			if (role != null && (!role.has(PROP_ABOUT) && project.has(PROP_ABOUT) && role.has(PROP__ID))) {
-				role.put(PROP_ABOUT, project.get(PROP_ABOUT) + "/roles/" + role.get(PROP__ID).toString());
+			if (role != null && role.has(PROP_ABOUT)) {
+				role.remove(PROP_ABOUT);
+			} 
+			
+			if (role != null && role.has(PROP_RESOURCE)) {
+				role.remove(PROP_RESOURCE);
 			} 
 		}
 	}
