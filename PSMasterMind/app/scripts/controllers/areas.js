@@ -106,7 +106,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
      * You must pass the startDate,endDate,type and committed
      */
     $scope.projectState = function(project){
-    	var ret = 'Unknown';
+    	var ret = null;
     	if(project){
     		var today = new Date();
     		var dd = today.getDate();
