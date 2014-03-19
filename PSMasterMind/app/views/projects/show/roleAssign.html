@@ -7,7 +7,7 @@
 	</div>
 	<div class="col-sm-2">
 		<span>
-			* %
+			* % Time
 		</span> 
 	</div>
 	
@@ -34,8 +34,7 @@
 	</div>
 	
 	<div class="col-sm-2 col-xs-3" >
-		
-		<input name="assigneePercentage{{$index}}" class="form-control" style="width: 70px;" type="number" ng-model="currentAssignee.percentage" min="0" max="100" required >
+		<input name="assigneePercentage{{$index}}" class="form-control" style="width: 70px;" type="number" ng-model="currentAssignee.percentage" min="0" max="100" placeholder="%" required />
 	</div>
 	
 	<div class="col-xs-3 form-group visible-xs">
@@ -54,7 +53,7 @@
 			data-date-start-date="{{project.startDate}}"
 			data-date-end-date="{{project.endDate}}" todayBtn="true"
 			data-provide="datepicker" data-date-format="yyyy-mm-dd"
-			ng-required="true">
+			ng-required="true"/>
 		
 	</div>
 	
@@ -63,7 +62,7 @@
 			ng-model="currentAssignee.endDate"
 			data-date-start-date="{{project.startDate}}"
 			data-date-end-date="{{project.endDate}}" todayBtn="true"
-			data-provide="datepicker" data-date-format="yyyy-mm-dd">
+			data-provide="datepicker" data-date-format="yyyy-mm-dd"/>
 	</div>
 	
 	<div class="col-sm-1 form-group hidden-xs" >

@@ -1,12 +1,12 @@
 <div class="assignments-tab" ng-controller="AssignmentsCtrl">
 
-  	<div class="row">
-     	<div class="col-sm-4 col-xs-12 col-md-4 col-lg-3" style="padding-top:15px;" >
+  	  <div class="row hidden-xs">
+     	<div class="col-sm-4 col-md-4 col-lg-3" style="padding-top:15px;" >
             <h4>
             	<span>{{project.startDate | date}}</span><span> - {{project.endDate? project.endDate:'?'| date}}</span>
             </h4> 
         </div>
-        <div class="col-sm-5 col-xs-8 col-md-4 col-lg-6" style="padding-top:15px;">
+        <div class="col-sm-5 col-md-4 col-lg-6" style="padding-top:15px;">
            <select name="assignmentsFilter" id="assignmentsFilter" ng-show="!editMode" class="form-control"
 				ng-model="selectedAssignmentsFilter" ng-change="handleAssignmentsFilterChanged()"
 				ng-required="true"
@@ -14,16 +14,30 @@
 			</select>
         </div>
 	   
-	    <div class="actions col-sm-3 col-md-4 col-lg-3 pageActions hidden-xs">
+	    <div class="actions col-sm-3 col-md-4 col-lg-3 pageActions">
 	    	<button ng-hide="editMode || !adminAccess" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
 	    	<button ng-hide="!editMode" class="btn" ng-click="cancelAssignment()"><i class="fa fa-chevron-left"></i><span>Cancel</span></button>
       		<button ng-hide="!editMode" class="btn" ng-click="saveAssignment()"><i class="fa fa-floppy-o"></i><span>Save</span></button>
 	 	</div> 
-	 	<div class="actions col-xs-4 pageActions visible-xs">
+	 </div>
+	<div class="row visible-xs">
+		<div class="col-xs-8" style="padding-top:15px;" >
+            <h4>
+            	<span>{{project.startDate | date}}</span><span> - {{project.endDate? project.endDate:'?'| date}}</span>
+            </h4> 
+        </div>
+	 	<div class="actions col-xs-4 pageActions">
 	 		<button ng-hide="editMode || !adminAccess" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i></button>
 	 		<button ng-hide="!editMode" class="btn" ng-click="cancelAssignment()"><i class="fa fa-chevron-left"></i></button>
       		<button ng-hide="!editMode" class="btn" ng-click="saveAssignment()"><i class="fa fa-floppy-o"></i></button>
 	 	</div>  	
+	 	<div ng-show="!editMode" class="col-xs-12" style="padding-top:15px;">
+           <select name="assignmentsFilter" id="assignmentsFilter"  class="form-control"
+				ng-model="selectedAssignmentsFilter" ng-change="handleAssignmentsFilterChanged()"
+				ng-required="true"
+				ng-options="f.value as f.name for f in assignmentsFilters | orderBy:'name'">
+			</select>
+        </div>
     </div>
     
     
