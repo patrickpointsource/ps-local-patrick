@@ -20,7 +20,7 @@
       		<button ng-hide="!editMode" class="btn" ng-click="saveAssignment()"><i class="fa fa-floppy-o"></i><span>Save</span></button>
 	 	</div> 
 	 	<div class="actions col-xs-4 pageActions visible-xs">
-	 		<button ng-hide="editMode" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i></button>
+	 		<button ng-hide="editMode || !adminAccess" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i></button>
 	 		<button ng-hide="!editMode" class="btn" ng-click="cancelAssignment()"><i class="fa fa-chevron-left"></i></button>
       		<button ng-hide="!editMode" class="btn" ng-click="saveAssignment()"><i class="fa fa-floppy-o"></i></button>
 	 	</div>  	
