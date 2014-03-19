@@ -75,6 +75,17 @@ header {
       position: relative;
       top: 2px;
     }
+    
+    &.navbar-nav{
+    	li {
+    		a{
+    			color: @ps-secondary-blue;
+    		}
+    	}
+    	a:hover {
+    		color: @ps-gray;
+    	}
+    }
 
     .navbar-nav {
       li {
@@ -90,7 +101,7 @@ header {
         a {
           padding-top: 7px;
           padding-bottom: 8px;
-
+		 
           &:hover {
             box-shadow: 0 5px 0 @ps-secondary-blue;
           }
@@ -221,12 +232,15 @@ main {
 
       .dashboard-widget {
       	&.panel-default{
-      	border-color: @ps-blue;
+      	border-color: darken(@ps-lightgray, 20%);
 			.panel-heading{
 				background-color: @ps-lightgray;
-				border-color: @ps-secondary-blue;
+				border-color: darken(@ps-lightgray, 20%);
 				a {
 					color: @ps-secondary-blue;
+				}
+				&.trim-bottom-padding{
+					padding-bottom: 0px;
 				}
 			}
 		}
@@ -241,7 +255,8 @@ main {
           &.three-rows{
             
             img{
-              width: 100%;
+              width:100%;
+              max-width: 96px;
               margin-bottom:10px;
               .img-circle;
             }
