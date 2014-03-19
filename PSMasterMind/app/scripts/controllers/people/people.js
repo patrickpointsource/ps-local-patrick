@@ -40,22 +40,8 @@ angular.module('Mastermind.controllers.people')
        * Changes list of people on a filter change
        */
       $scope.handlePeopleFilterChanged = function(){
-        if ($scope.peopleFilter === 'available'){
-          People.getActivePeople().then(function(people){
-            $scope.people = people.members;
-
-            //Reload the table
-            if (!$scope.tableParams){
-              $scope.tableParams = getTableData();
-            }
-            else {
-              $scope.tableParams.total($scope.people.length);
-              $scope.tableParams.reload();
-            }
-          });
-        }
         //Check if the filter is a valid role
-        else if($scope.roleGroups && $scope.roleGroups[$scope.peopleFilter]){
+        if($scope.roleGroups && $scope.roleGroups[$scope.peopleFilter]){
           var peopleInRoleQuery = {'primaryRole.resource':$scope.peopleFilter};
           var peopleInRoleFields = {resource:1, name:1, familyName:1, givenName: 1, primaryRole:1, thumbnail:1};
 
