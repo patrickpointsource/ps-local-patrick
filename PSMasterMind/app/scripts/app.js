@@ -201,8 +201,8 @@
         }
       );
     }])
-    .run(['$rootScope',
-      function ($rootScope) {
+    .run(['$rootScope', '$state',
+      function ($rootScope, $state) {
     	//Handle browser navigate away
     	window.onbeforeunload = function (event) {
     		if($rootScope.formDirty){
@@ -218,17 +218,33 @@
     	};
 	  	  
   	  	$rootScope.$on('$stateChangeStart', 
-  			  function(event, toState, toParams, fromState, fromParams){
+  	  		_.bind(function(event, toState, toParams, fromState, fromParams) { 
   		  	if($rootScope.formDirty){
-                if(!confirm("You have not saved your changes. Are you sure want to leave?")) {
-                    event.preventDefault();
-                }
-                else{
-                	$rootScope.formDirty = false;
-                }
+  		  		
+  		  		var _this = this;
+  		  		event.preventDefault();
+  		  		
+  		  		$rootScope.modalDialog = {
+  		  			title: "Changes are not saved",
+  		  			text: "You have not saved your changes. Are you sure want to leave?",
+  		  			ok: "Ok",
+  		  			no: "Cancel",
+  		  			okHandler: function() {
+  		  				$rootScope.formDirty = false;
+  		  				$("#modalYesNo").modal('hide');
+  		  			},
+  		  			noHandler: function() {
+  		  				$("#modalYesNo").modal('hide');
+  		  			}
+  		  		};
+  		  		
+  		  		$("#modalYesNo").modal('toggle').on('hide.bs.modal', function(e) {
+  		  			if(!$rootScope.formDirty) {	  				
+  		  				_this.state.go(toState);
+  		  			}
+  		  		});
             }
-        });
-    	
+  	  	}, {state: $state}));
 
         $rootScope.logout = function () {
           var accessToken = localStorage.getItem('access_token');

@@ -162,6 +162,26 @@
 				<article class="col-xs-12" ui-view></article>
 			</div>
 			</main>
+			
+			<!-- Modal -->
+            <div class="modal fade" id="modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">{{getModal().title}}</h4>
+                        </div>
+                        <div class="modal-body">
+                        {{getModal().text}}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" ng-click="getModal().okHandler()">{{getModal().ok}}</button>
+                            <button type="button" class="btn btn-default" ng-click="getModal().noHandler()">{{getModal().no}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal -->
 		</div>
 	</div>
 	
@@ -234,12 +254,5 @@
 	<!-- endbuild -->
 	<!-- libs -->
 	<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="wmbvg9mkhukv6m0"></script>
-
-
-	<script>
-		$(function() {
-		    FastClick.attach(document.body);
-		});
-	</script>
 </body>
 </html>

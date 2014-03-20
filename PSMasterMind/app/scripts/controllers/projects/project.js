@@ -60,15 +60,25 @@ angular.module('Mastermind')
     $scope.cancel = function(){
       //If the model is dirty ask if they would like to save the changes
       if($rootScope.formDirty){
-    	  var conf = confirm('You have made changes to this project did you want to save your changes?');
-    	  if(conf){
-    		  $scope.save().then(function(project){//Unset dirty flag
-    		      $scope.close();	
-    		 });
-    	  }
-      	  else{
-      		$scope.close();	
-      	  }
+    	  
+    	  $rootScope.modalDialog = {
+		  		title: "Changes are not saved",
+		  		text: "You have made changes to this project did you want to save your changes?",
+		  		ok: "Save Changes",
+		  		no: "Cancel",
+		  		okHandler: function() {
+		  			$("#modalYesNo").modal('hide');
+		  			$scope.save().then(function(project) {//Unset dirty flag
+		  				$scope.close();
+		  			});
+		  		},
+		  		noHandler: function() {
+		  			$("#modalYesNo").modal('hide');
+		  			$scope.close();
+		  		}
+		  };
+		  		
+		  $("#modalYesNo").modal('toggle');
       }
       else{
     	  $scope.close();
@@ -102,32 +112,44 @@ angular.module('Mastermind')
     	//Check if the start date has been updated.
         var project = $scope.project;
         if(project.initStartDate && project.startDate && project.startDate != project.initStartDate){
-      	  var shouldChange = confirm('The start date on your project has changed.  Would you like to shift the role start dates based on this change?');
-      	  if(shouldChange){
-      		  var delta = new Date(project.startDate) - new Date(project.initStartDate);
-      		  var roles = project.roles;
-      		  for(var i = 0; i < roles.length; i++){
-      			  var role = roles[i];
-      			  //Shift the start date
-      			  if(role.startDate){
-      				  //If the role date == the original start date keep them the same
-      				  if(role.startDate == project.initStartDate){
-      					role.startDate = project.startDate;
-      				  }
-      				  else{
-	      				  var tmpDate = new Date(role.startDate);
-	      				  tmpDate = new Date(tmpDate.getTime() + delta);
-	      				  role.startDate = getShortDate(tmpDate);
-      				  }
-      			  }
-      			  //Shift the end date
-      			  if(role.endDate){
-      				  var tmpDate = new Date(role.endDate);
-      				  tmpDate = new Date(tmpDate.getTime() + delta);
-      				  role.endDate = getShortDate(tmpDate);
-      			  }
-      		  }
-      	  }
+        	
+        	$rootScope.modalDialog = {
+    		  		title: "The start date on your project has changed",
+    		  		text: "Would you like to shift the role start dates based on this change?",
+    		  		ok: "Yes",
+    		  		no: "No",
+    		  		okHandler: function() {
+    		  			$("#modalYesNo").modal('hide');
+    		  			var delta = new Date(project.startDate) - new Date(project.initStartDate);
+    		      		var roles = project.roles;
+    		      		for(var i = 0; i < roles.length; i++) {
+    		      			var role = roles[i];
+    		      			//Shift the start date
+    		      			if(role.startDate){
+    		      				//If the role date == the original start date keep them the same
+    		      				if(role.startDate == project.initStartDate){
+    		      					role.startDate = project.startDate;
+    		      				}
+    		      				else {
+    			      				var tmpDate = new Date(role.startDate);
+    			      				tmpDate = new Date(tmpDate.getTime() + delta);
+    			      				role.startDate = getShortDate(tmpDate);
+    		      				}
+    		      			}
+    		      			//Shift the end date
+    		      			if(role.endDate){
+    		      				var tmpDate = new Date(role.endDate);
+    		      				tmpDate = new Date(tmpDate.getTime() + delta);
+    		      				role.endDate = getShortDate(tmpDate);
+    		      			}
+    		      		}
+    		  		},
+    		  		noHandler: function() {
+    		  			$("#modalYesNo").modal('hide');
+    		  		}
+    		  };
+    		  		
+    		  $("#modalYesNo").modal('toggle');
         }
     }
     

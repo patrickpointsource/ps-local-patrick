@@ -4,8 +4,8 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, and roles.
  */
-angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resources', 'ProjectsService',
-  function ($scope, $state, Resources, ProjectsService) {
+angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$rootScope','Resources', 'ProjectsService',
+  function ($scope, $state, $rootScope, Resources, ProjectsService) {
 
 	// make these vars accessible in scope methods - especially "showHome"
 	var apQuery;
@@ -167,6 +167,10 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state','Resour
     	}
     	
     	return ret;
+    }
+    
+    $scope.getModal = function() {
+    	return $rootScope.modalDialog;
     }
 
   }]).directive('backImg', function(){
