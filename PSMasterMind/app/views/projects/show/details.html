@@ -24,7 +24,7 @@
 			ng-class="{error: isFieldInError('customerName')}">
 			<label class="required-label control-label" for="customerName">Customer
 				Name:</label> <input id="customerName" name="customerName" type="text"
-				class="col-xs-12 form-control user-input-icon"
+				class="col-xs-12 form-control"
 				placeholder="Customer Name" ng-model="project.customerName"
 				ng-class="{highlight: detailsForm.customerName.$error.required}"
 				required>
@@ -73,7 +73,7 @@
 	<div class="row">
 		<div class="col-xs-12 form-group">
 			<label for="description">Description:</label>
-			<text-angular name="htmldescription" ng-model="project.description"/>
+			<text-angular class="summaryDescription" name="htmldescription" ng-model="project.description"/>
 		</div>
 	</div>
 	
