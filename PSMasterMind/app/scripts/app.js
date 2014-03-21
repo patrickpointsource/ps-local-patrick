@@ -20,6 +20,7 @@
     'ngTable',
     'restangular',
     'textAngular',
+    'n3-charts.linechart',
     'Mastermind.controllers.people',
     'Mastermind.controllers.projects',
     'Mastermind.controllers.staffing',

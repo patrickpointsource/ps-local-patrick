@@ -50,8 +50,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     var rolesPromise = RolesService.getRolesMapByResource();;
     ProjectsService.getOngoingProjects(function(result){
     	$scope.ongoingProjects = result.data;
-    	//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
-    	
+ 
     	ProjectsService.getMyCurrentProjects($scope.me).then(function(myCurrentProjects) {
         	var myProjects = myCurrentProjects.data;
         	for (var m=0; m< myProjects.length; m++) {
@@ -370,5 +369,38 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         window.location='#'+$scope.me.about;
       });
     };
+    
+    /**
+     * Booking Forecast Data
+     */
+    ProjectsService.getActiveAndBacklogProjects(function(result){
+    	var projects = result.data;
+    	//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
+    	
+    	$scope.initBookingForecast(projects);
+    });
+    
+    
+    $scope.initBookingForecast = function(projects){
+    	$scope.options = {
+		axes: {
+		    x: {key: 'x', labelFunction: function(value) {return value;}, type: 'linear', tooltipFormatter: function(x) {return x;}},
+		    y: {type: 'linear'}
+		  },
+		  series: [
+		    {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked'},
+		    {y: 'otherValue', color: '#f34d4b', label: 'Available'}
+		  ],
+		  lineMode: 'linear'
+		};
+	    
+    	var input = projects;
+    	
+	    ProjectsService.getBookingForecastData(input).then(function(result){
+	    	$scope.data = result;
+	    });
+    }
+    
+    
 }]);
 

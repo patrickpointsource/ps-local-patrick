@@ -349,7 +349,6 @@ angular.module('Mastermind')
     	return deferred.promise;
     }
     
-
     return {
       query: query,
       get: get,
