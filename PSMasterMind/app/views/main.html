@@ -1,9 +1,14 @@
 <br />
-<div class="row">
+<div class="row" ng-if="adminAccess">
 	<div class="col-xs-12">
 		<div class="panel panel-default dashboard-widget">
 			<div class="panel-heading">
 				Booking Forecast
+				<div class="checkbox pull-right" style="margin-top:0px">
+				    <label>
+				      <input type="checkbox" ng-change="handleFBShowPipeline()" ng-model="bfShowPipeline"/> Show Pipeline
+				    </label>
+				  </div>
 			</div>
 			<div class="panel-body">
 				<div>

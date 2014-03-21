@@ -373,30 +373,35 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     /**
      * Booking Forecast Data
      */
-    ProjectsService.getActiveAndBacklogProjects(function(result){
+    ProjectsService.getActiveBacklogAndPipelineProjects(function(result){
     	var projects = result.data;
     	//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
-    	
-    	$scope.initBookingForecast(projects);
+    	$scope.fbProjects = projects;
+    	$scope.initBookingForecast();
     });
     
     
-    $scope.initBookingForecast = function(projects){
-    	$scope.options = {
+    $scope.handleFBShowPipeline = function(){
+    	//$scope.initBookingForecast();
+    };
+    
+    $scope.options = {
 		axes: {
-		    x: {key: 'x', labelFunction: function(value) {return value;}, type: 'linear', tooltipFormatter: function(x) {return x;}},
+		    x: {key: 'x', type: 'date', tooltipFormatter: function (d) {return moment(d).fromNow();}},
 		    y: {type: 'linear'}
 		  },
 		  series: [
 		    {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked'},
 		    {y: 'otherValue', color: '#f34d4b', label: 'Available'}
 		  ],
-		  lineMode: 'linear'
-		};
-	    
-    	var input = projects;
+		  lineMode: 'linear',
+		  tooltipMode: "default"
+	};
+    
+    $scope.initBookingForecast = function(){
     	
-	    ProjectsService.getBookingForecastData(input).then(function(result){
+	    
+	    ProjectsService.getBookingForecastData($scope.fbProjects, $scope.bfShowPipeline).then(function(result){
 	    	$scope.data = result;
 	    });
     }
