@@ -162,9 +162,16 @@
 				<article class="col-xs-12" ui-view></article>
 			</div>
 			</main>
-			
-			<!-- Modal -->
-            <div class="modal fade" id="modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+            <div class="modal fade modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <ng-include src="'modalTemplate'"/>
+            </div>
+            
+            <div class="modal fade modalYesNoCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <ng-include src="'modalTemplate'"/>
+            </div>
+            
+            <script type="text/ng-template" id="modalTemplate">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -177,11 +184,11 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" ng-click="getModal().okHandler()">{{getModal().ok}}</button>
                             <button type="button" class="btn btn-default" ng-click="getModal().noHandler()">{{getModal().no}}</button>
+                            <button type="button" class="btn btn-default" ng-show="getModal().cancel" ng-click="getModal().cancelHandler()" data-dismiss="modal">{{getModal().cancel}}</button>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- End Modal -->
+            </script>
 		</div>
 	</div>
 	

@@ -229,16 +229,17 @@
   		  			text: "You have not saved your changes. Are you sure want to leave?",
   		  			ok: "Ok",
   		  			no: "Cancel",
+  		  			cancel: '',
   		  			okHandler: function() {
   		  				$rootScope.formDirty = false;
-  		  				$("#modalYesNo").modal('hide');
+  		  				$(".modalYesNo").modal('hide');
   		  			},
   		  			noHandler: function() {
-  		  				$("#modalYesNo").modal('hide');
+  		  				$(".modalYesNo").modal('hide');
   		  			}
   		  		};
   		  		
-  		  		$("#modalYesNo").modal('toggle').on('hide.bs.modal', function(e) {
+  		  		$(".modalYesNo").modal('show').on('hide.bs.modal', function(e) {
   		  			if(!$rootScope.formDirty) {	  				
   		  				_this.state.go(toState);
   		  			}

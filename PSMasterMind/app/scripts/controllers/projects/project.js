@@ -14,6 +14,7 @@ angular.module('Mastermind')
     }
     $scope.projectLoaded = false;
     $scope.projectEstimate = 0;
+    $scope.shiftDatesChecked = false;
 
     /**
      * Set the profile view in edit mode
@@ -64,21 +65,26 @@ angular.module('Mastermind')
     	  $rootScope.modalDialog = {
 		  		title: "Changes are not saved",
 		  		text: "You have made changes to this project did you want to save your changes?",
-		  		ok: "Save Changes",
-		  		no: "Cancel",
+		  		ok: "Yes",
+		  		no: "No",
+		  		cancel: "Cancel",
 		  		okHandler: function() {
-		  			$("#modalYesNo").modal('hide');
+		  			$(".modalYesNoCancel").modal('hide');
+		  			
 		  			$scope.save().then(function(project) {//Unset dirty flag
-		  				$scope.close();
-		  			});
+			  			$scope.close();
+			  		});
 		  		},
 		  		noHandler: function() {
-		  			$("#modalYesNo").modal('hide');
+		  			$(".modalYesNoCancel").modal('hide');
 		  			$scope.close();
+		  		},
+		  		cancelHandler: function() { 
+		  			$(".modalYesNoCancel").modal('hide');
 		  		}
 		  };
 		  		
-		  $("#modalYesNo").modal('toggle');
+		  $(".modalYesNoCancel").modal('show');
       }
       else{
     	  $scope.close();
@@ -108,9 +114,10 @@ angular.module('Mastermind')
      * On project save ask if the user would like to shift the start and and dates for the
      * roles in the project
      */
-    $scope.handleProjectStartDateShifts = function(){
+    $scope.handleProjectStartDateShifts = function(callback){
     	//Check if the start date has been updated.
         var project = $scope.project;
+        
         if(project.initStartDate && project.startDate && project.startDate != project.initStartDate){
         	
         	$rootScope.modalDialog = {
@@ -118,8 +125,8 @@ angular.module('Mastermind')
     		  		text: "Would you like to shift the role start dates based on this change?",
     		  		ok: "Yes",
     		  		no: "No",
+    		  		cancel: "",
     		  		okHandler: function() {
-    		  			$("#modalYesNo").modal('hide');
     		  			var delta = new Date(project.startDate) - new Date(project.initStartDate);
     		      		var roles = project.roles;
     		      		for(var i = 0; i < roles.length; i++) {
@@ -143,13 +150,21 @@ angular.module('Mastermind')
     		      				role.endDate = getShortDate(tmpDate);
     		      			}
     		      		}
+    		      		
+    		      		callback();
+    		      		$(".modalYesNo").modal('hide');
     		  		},
     		  		noHandler: function() {
-    		  			$("#modalYesNo").modal('hide');
+    		  			$(".modalYesNo").modal('hide');
     		  		}
     		  };
-    		  		
-    		  $("#modalYesNo").modal('toggle');
+        	
+        	//hiding previous modal
+        	$(".modalYesNoCancel").modal('hide');
+    		$(".modalYesNo").modal('show');
+        }
+        else {
+        	callback();
         }
     }
     
@@ -187,71 +202,74 @@ angular.module('Mastermind')
     $scope.save = function () {
       var deferred = $q.defer();	
     	
-      $scope.submitAttempted = true;
-
-      $scope.handleProjectStartDateShifts();
-      
-      // set the project creator and created time
-      //TODO - Do we need this refresh why would it be out of date with the area controller?
-      Resources.refresh('people/me').then(function(me){
-        if ($scope.project.created === undefined) {
-        
-        //TODO Created and Modified should be set on the server side not here.	
-        $scope.project.created = {
-            date: new Date().toString(),
-            resource: me.about
-          };
-        }
-
-        $scope.project.modified = {
-          date: new Date().toString(),
-          resource: me.about
-        };
-
-        ProjectsService.save($scope.project).then(function (updatedProject) {
-        	//On Create the project ID will be null.  Pull it from the about.
-        	if(!$scope.projectId){
-	        	var projectURI = updatedProject.about;
-	        	var oid = projectURI.substring(projectURI.lastIndexOf('/')+1);
-	        	//Set our currently viewed project to the one resolved by the service.
-	            $scope.projectId = oid;
-        	}
-          
-            $scope.showInfo(['Project successfully saved']);
+      var savingCallback = function() {
+          // set the project creator and created time
+          //TODO - Do we need this refresh why would it be out of date with the area controller?
+      	
+          Resources.refresh('people/me').then(function(me){
+            if ($scope.project.created === undefined) {
             
-        	ProjectsService.getForEdit($scope.projectId).then(function(project){
-                $scope.project = project;
-                $scope.handleProjectSelected();
-                $rootScope.formDirty = false;
+            //TODO Created and Modified should be set on the server side not here.	
+            $scope.project.created = {
+                date: new Date().toString(),
+                resource: me.about
+              };
+            }
+
+            $scope.project.modified = {
+              date: new Date().toString(),
+              resource: me.about
+            };
+
+            ProjectsService.save($scope.project).then(function (updatedProject) {
+            	//On Create the project ID will be null.  Pull it from the about.
+            	if(!$scope.projectId){
+    	        	var projectURI = updatedProject.about;
+    	        	var oid = projectURI.substring(projectURI.lastIndexOf('/')+1);
+    	        	//Set our currently viewed project to the one resolved by the service.
+    	            $scope.projectId = oid;
+            	}
+              
+                $scope.showInfo(['Project successfully saved']);
                 
-                deferred.resolve($scope.project);
-             });
-        }, 
-        function (response) {
-          if(response.data.reasons){
-        	  $scope.showErrors(response.data.reasons);
-          }
-          else if(response.status && response.data && response.data.message){
-        	  var error = response.status + ": " + response.data.message;
-        	  $scope.showErrors([error]);
-          }
-          else if(response.status && response.data){
-        	  var error = response.status + ": " + JSON.stringify(response.data);
-        	  $scope.showErrors([error]);
-          }
-          
-          //Decode the description
-          $scope.project.description = decodeURIComponent($scope.project.description);
-          
-          deferred.reject($scope.project);
-	      
-        });
-        
-      });
+            	ProjectsService.getForEdit($scope.projectId).then(function(project){
+                    $scope.project = project;
+                    $scope.handleProjectSelected();
+                    $rootScope.formDirty = false;
+                    
+                    deferred.resolve($scope.project);
+                 });
+            }, 
+            function (response) {
+              if(response.data.reasons){
+            	  $scope.showErrors(response.data.reasons);
+              }
+              else if(response.status && response.data && response.data.message){
+            	  var error = response.status + ": " + response.data.message;
+            	  $scope.showErrors([error]);
+              }
+              else if(response.status && response.data){
+            	  var error = response.status + ": " + JSON.stringify(response.data);
+            	  $scope.showErrors([error]);
+              }
+              
+              //Decode the description
+              $scope.project.description = decodeURIComponent($scope.project.description);
+              
+              deferred.reject($scope.project);
+    	      
+            });
+            
+          });
+       };
+      
+      $scope.submitAttempted = true;
+      
+      $scope.handleProjectStartDateShifts(savingCallback);
       
       return deferred.promise;
     };
-
+    
     /**
      * Delete the loaded project
      */
