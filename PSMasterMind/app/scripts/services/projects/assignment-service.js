@@ -115,7 +115,8 @@ angular.module('Mastermind.services.projects')
     	
     	Resources.query('assignments',query,null,function(result){
     		//deferred.resolve(result);
-    		deferred.resolve(_this.filterAssignmentsArrayByPeriod(result, timePeriod))
+    		var ret = filterAssignmentsArrayByPeriod(result, timePeriod);
+    		deferred.resolve(ret);
     	});
     	
     	return deferred.promise;
@@ -235,7 +236,7 @@ angular.module('Mastermind.services.projects')
     	 return deferred.promise;
     }
     
-    this.filterAssignmentsArrayByPeriod = function(assignmentsResult, period) {
+    var filterAssignmentsArrayByPeriod = function(assignmentsResult, period) {
     	for (var i = 0;  assignmentsResult.data && i < assignmentsResult.data.length; i ++)
     		 assignmentsResult.data[i] = this.filterAssignmentsByPeriod( assignmentsResult.data[i], period);
     	
@@ -306,4 +307,79 @@ angular.module('Mastermind.services.projects')
     	return Resources.get(project.about + '/roles');
     }
     
-  }])
+    /**
+     * Return the set of staffing deficits assignments for active projects
+     */
+    this.getActiveProjectStaffingDeficits = function(){
+    	var deferred = $q.defer();
+    	var getAssignments = this.getAssignments;
+    	
+    	
+    	ProjectsService.getActiveClientProjects(function(result){
+    		var activeProjects = result.data;
+    	    var activeProjectsWithUnassignedPeople = [];
+    	    var unassignedIndex = 0;
+    	    getAssignments(activeProjects).then(function (assignments) {
+	    	        	
+	    	        	
+            /*
+             * Set projects without any assigned people.
+             * 
+             */
+    	    for(var i = 0; i < activeProjects.length; i++){
+    	    	var proj = activeProjects[i];
+    	    	var roles = activeProjects[i].roles;
+    	    	var projAssignments = undefined;
+    					
+    			for(var l=0; l<assignments.count; l++) {
+    				projAssignments = assignments.data[l];
+    				if(projAssignments.project.resource == proj.resource) {
+    					if(projAssignments.members && projAssignments.members.length > 0) {
+    						var assignees = projAssignments.members;
+    				        if(roles){
+			                      	/*
+			                       	* Loop through all the roles in the active projects
+			                       	*/
+    				               	for(var b = 0; b < roles.length; b++){
+    				            	   var activeRole = roles[b];		
+    				                   var foundRoleMatch = false;
+    				                   
+				                        /*
+				                         * Loop through assignees to find a match
+				                         */
+				                        for (var c=0; c<assignees.length; c++) {
+				                        	//if(activeRole.about == assignees[c].role.resource) {
+				                        	if(assignees[c].role.resource && assignees[c].role.resource.indexOf(activeRole._id) > -1) {
+				                        		foundRoleMatch = true;
+				                        	}
+				                        }
+    				                        
+				                        if(!foundRoleMatch) {
+					                        activeProjectsWithUnassignedPeople[unassignedIndex++] = {
+					                            	  clientName: proj.customerName,
+					                            	  projectName: proj.name,
+					                            	  title: proj.customerName+': '+proj.name,
+					                            	  projectResource: proj.resource,
+					                            	  hours: getHoursDescription(activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
+					                            	  role: $scope.rolesMap[activeRole.type.resource].abbreviation,
+					                            	  startDate: activeRole.startDate,
+					                            	  endDate: activeRole.endDate,
+					                            	  rate: activeRole.rate.amount};
+					                              //console.log("activeRole.type:",activeRole.type);
+					                              //console.log("Unassigned Role in Proj:", $scope.activeProjectsWithUnassignedPeople[unassignedIndex-1]);
+				                        }
+    				               }
+    				        }
+    					}
+    				}
+    			}
+    	    }
+    	    
+    	    deferred.resolve(activeProjectsWithUnassignedPeople);
+    	 });
+    });
+    	
+    return deferred.promise;
+  };
+    
+  }]);

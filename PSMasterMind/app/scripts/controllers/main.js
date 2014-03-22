@@ -72,14 +72,23 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         	}        	
         });
     });
-
     
-    var fetchProjectCounts = ProjectsService.getProjectCounts();
-    fetchProjectCounts.then(function(counts){
-    	$scope.activeCount = counts.active;
-		$scope.backlogCount = counts.backlog;
-		$scope.pipelineCount = counts.pipeline;
-		$scope.investmentCount = counts.investment;
+    /**
+     * Fetch a count of the number of staffing deficits
+     */
+    AssignmentService.getActiveProjectStaffingDeficits().then(function(assignments){
+    	var count = assignments.length;
+    	$scope.activeProjectDeficitCount = count;
+    });  
+
+    /**
+     * Fetch the counts of the current projects
+     */
+    ProjectsService.getProjectCounts().then(function(counts){
+	    	$scope.activeCount = counts.active;
+			$scope.backlogCount = counts.backlog;
+			$scope.pipelineCount = counts.pipeline;
+			$scope.investmentCount = counts.investment;
     });
     
     var aProjectsPromise = ProjectsService.getActiveClientProjects(function(result){
@@ -319,8 +328,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
 				    y: {type: 'linear'}
 				  },
 				  series: [
-				    {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked'},
-				    {y: 'otherValue', color: '#f34d4b', label: 'Available'}
+				    {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked (hr/m)'},
+				    {y: 'otherValue', color: '#f34d4b', label: 'Available (hr/m)'}
 				  ],
 				  lineMode: 'linear',
 				  tooltipMode: "default"
