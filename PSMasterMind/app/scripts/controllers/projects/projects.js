@@ -60,11 +60,57 @@ angular.module('Mastermind.controllers.projects')
         }
     };
 
+    $scope.toggleTableView = function() {
+	    if ($scope.showGraphView) {
+	      $scope.showTableView = !$scope.showTableView;
+	      $scope.showGraphView = !$scope.showGraphView;
+	    }
+	};
+
+	$scope.toggleGraphView = function() {
+		if ($scope.showTableView) {
+			$scope.showGraphView = !$scope.showGraphView;
+			$scope.showTableView = !$scope.showTableView;
+		}
+	};
+    
     /**
      * Navigate to creating a project.
      */
     $scope.createProject = function () {
       $state.go('projects.new');
+    };
+    
+    $scope.startDate = new Date();
+    var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    /**
+     * display the month name from a month number (0 - 11)
+     */
+    $scope.getMonthName = function(monthNum) {
+      if (monthNum > 11) {
+        monthNum = monthNum - 12;
+      }
+      return monthNamesShort[monthNum];
+    };
+
+    /**
+     * Calculates whether the project exists within a particular month.
+     *
+     * @param project
+     * @param month
+     */
+    $scope.inMonth = function (project, month, year) {
+      var nextMonth = month === 11 ? 0 : (month + 1),
+        nextYear = month === 11 ? (year + 1) : year,
+        startDay = new Date(year, month, 1),
+        endDay = new Date(nextYear, nextMonth, 0);
+
+      // If the project start day is before the last day of this month
+      // and its end date is after the first day of this month.
+      var projectStarted =   new Date(project.startDate) <= endDay;
+      var projectEnded = project.endDate &&  new Date(project.endDate) <= startDay;
+      var returnValue =  projectStarted && !projectEnded;
+      return returnValue;
     };
 
     $scope.getTableData = function () {
@@ -95,6 +141,8 @@ angular.module('Mastermind.controllers.projects')
     };
     
     $scope.projectFilter = $state.params.filter ? $state.params.filter:'all';
+    $scope.showTableView = $state.params.view?$state.params.view=='table':true;
+    $scope.showGraphView = $state.params.view?$state.params.view=='graph':false;
     $scope.handleProjectFilterChanged();
 
   }]);

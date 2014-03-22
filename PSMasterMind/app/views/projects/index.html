@@ -1,7 +1,7 @@
 <br />
 <div class="row">
-	<div class="col-xs-12 col-sm-5 col-lg-6">
-		<select class="form-control" ng-model="projectFilter"
+  <div class="col-xs-10 col-sm-5">
+    <select class="form-control" ng-model="projectFilter"
 			ng-change="handleProjectFilterChanged()">
 			<option value="all">All Projects</option>
 			<option value="active">Active Projects</option>
@@ -9,53 +9,32 @@
 			<option value="pipeline">Pipeline Projects</option>
 			<option value="investment">Investment Projects</option>
 			<option value="completed">Completed Projects</option>
-		</select>
-	</div>
-	<div class="col-xs-4 col-sm-3 col-lg-2 pull-right xs-padding-top">
-		<div class="btn-group pull-right">
-			<button class="pull-right btn btn-default" ng-click="createProject()">
-				<i class="fa fa-plus-square"></i> <span>Add Project</span>
-			</button>
-		</div>
-	</div>
-	<div class="col-xs-8 col-sm-4 col-lg-4 pull-right xs-padding-top">
-		<input class="form-control" placeholder="Filter Projects"
+	</select>
+  </div>
+  <div class="col-xs-2 pull-right ">
+  	  <div  class="pull-right">
+	      <!-- <div class="btn-group">
+	        <button type="button" class="btn btn-default" ng-class="{active: showTableView}" ng-click="toggleTableView()"><i class="fa fa-table"></i> <span class="hidden-xs hidden-sm">Table</span></button>
+	        <button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> <span class="hidden-xs hidden-sm">Graph</span></button>
+	      </div> -->
+      	<button type="button" class="btn btn-default" ng-click="createProject()"><i class="fa fa-plus-square"></i> <span class="hidden-xs">Add Project</span>
+		</button>
+      </div>
+  </div>
+  <div class="col-xs-12 col-sm-5 pull-right xs-padding-top">
+    <input class="form-control" placeholder="Filter Projects"
 			ng-model="filterText" autofocus />
-	</div>
+  </div>
 </div>
 <br />
-<div class="row">
-	<div class="col-xs-12">
-		<table ng-table="tableParams" template-pagination="projectPager"
-			class="table">
-			<tbody ng-repeat="project in $data | filter:filterText">
-				<tr>
-					<td data-title="'Name'" sortable="'title'"><a href="#{{project.resource}}">{{project.title}}</a></td>
-					<!-- <td data-title="'Description'" sortable="'description'"><div class="description">{{project.description}}</div></td> -->
-					<td data-title="'State'"><i class="{{projectStateIcon(project)}}"></i> <span class="hidden-xs">{{projectState(project)}}</span></td>
-					<td data-title="'Start'" sortable="'startDate'"><span class="hidden-xs">{{project.startDate | date}}</span><span class="visible-xs">{{project.startDate}}</span></td>
-					<td data-title="'End'" sortable="'endDate'"><span class="hidden-xs">{{project.endDate | date}}</span><span class="visible-xs">{{project.endDate}}</span></td>
-				</tr>
-			</tbody>
-		</table>
-		<script type="text/ng-template" id="projectPager">
-          <ul class="pager ng-cloak">
-            <li ng-repeat="page in pages"
-                  ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
-                  ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
-              <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
-              <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
-            </li>
-            <li>
-              <div class="btn-group">
-                  <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
-                  <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
-                  <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
-                  <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
-              </div>
-            </li>
-          </ul>
-      </script>
 
-	</div>
+<ng-include src="'views/projects/projectsGraph.html'"></ng-include>
+
+<!-- <div ng-if="showTableView">
+	<ng-include src="'views/projects/projectsTable.html'"></ng-include>
 </div>
+
+<div ng-if="showGraphView">
+	<ng-include src="'views/projects/projectsGraph.html'"></ng-include>
+</div>
+ -->

@@ -254,7 +254,7 @@ angular.module('Mastermind.controllers.people')
       //$scope.startDate.setMonth($scope.startDate.getMonth() + 1);
 
       $scope.showTableView = $state.params.view?$state.params.view=='table':true;
-      $scope.showGraphView = $state.params.view?$state.params.view=='graph':false;;
+      $scope.showGraphView = $state.params.view?$state.params.view=='graph':false;
 
       /**
        * Get All the Role Types
