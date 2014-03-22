@@ -1,7 +1,66 @@
 <br />
 <div id="dashboard-widgets" class="row">
 		<div class="row-fluid">
-			<div ng-if="hasActiveProjects"
+			<div id="projectsWidget" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+				<div class="panel panel-default dashboard-widget">
+					<div class="panel-heading">
+						Current Projects
+						<div class="pull-right  btn-group btn-group-sm dashboard-actions">
+							<button class="btn btn-default" ng-click="createProject()">
+								<div>
+									<i class="fa fa-plus-square"></i>
+								</div>
+							</button>
+						</div>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<a href="#projects?filter=active">
+								<div class="col-xs-6 text-center">
+									<i class="fa fa-rocket"></i> Active
+									<div class="big-text fa-5x">{{activeCount}}</div>
+								</div>
+							</a>
+							<a href="#projects?filter=backlog">
+								<div class="col-xs-6 text-center">
+									<i class="fa fa-angle-left"></i> Backlog
+									<div class="big-text fa-5x">{{backlogCount}}</div>
+								</div>
+							</a>
+							<a href="#projects?filter=pipeline">
+								<div class="col-xs-6 text-center">
+									<i class="fa fa-angle-double-left"></i> Pipeline
+									<div class="big-text fa-5x">{{pipelineCount}}</div>
+								</div>
+							</a>
+							<a href="#projects?filter=pipeline">
+								<div class="col-xs-6 text-center">
+									<i class="fa fa-flask"></i> Investment
+									<div class="big-text fa-5x">{{investmentCount}}</div>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-6" ng-if="adminAccess">
+				<div class="panel panel-default dashboard-widget">
+					<div class="panel-heading">
+						Booking Forecast
+						<div class="checkbox pull-right" style="margin-top:0px">
+						
+						      <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"> Show Pipeline
+						    
+						  </div>
+					</div>
+					<div class="panel-body">
+						<div style="max-height:400px">
+							<linechart  data="data" options="options" mode=""></linechart>
+						</div>
+					</div>
+				</div>
+			</div>
+						<div ng-if="hasActiveProjects"
 				class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 				<div class="panel panel-default dashboard-widget">
 					<div class="panel-heading">
@@ -75,41 +134,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-				<div class="panel panel-default dashboard-widget">
-					<div class="panel-heading">
-						<a href="#projects?filter=active"><i class="fa fa-rocket"></i> Active Projects</a>
-						<div class="pull-right  btn-group btn-group-sm dashboard-actions">
-							<button class="btn btn-default" ng-click="createProject()">
-								<div>
-									<i class="fa fa-plus-square"></i>
-								</div>
-							</button>
-						</div>
-					</div>
-					<div class="panel-body">
-						<div class="dashboard-box big-text fa-5x text-center"
-							ng-click="showActiveProjects()">{{projectCount}}</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-6" ng-if="adminAccess">
-				<div class="panel panel-default dashboard-widget">
-					<div class="panel-heading">
-						Booking Forecast
-						<div class="checkbox pull-right" style="margin-top:0px">
-						
-						      <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"> Show Pipeline
-						    
-						  </div>
-					</div>
-					<div class="panel-body">
-						<div style="max-height:400px">
-							<linechart  data="data" options="options" mode=""></linechart>
-						</div>
-					</div>
-				</div>
-			</div>
 			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-6">
 				<div class="panel panel-default dashboard-widget">
 					<div class="panel-heading trim-bottom-padding">
@@ -161,7 +185,7 @@
 					<div id="projectsSummaryGraph">
 						<div class="row" ng-repeat="project in qvProjects | orderBy:'customerName'">
 							<div class="title">
-								<a href="#{{project.resource}}"><i class="{{projectStateIcon(project)}}"></i> {{project.customerName}}: {{project.name}}</a>
+								<i class="{{projectStateIcon(project)}}"></i> <a href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a>
 							</div>
 							<div class="progress">
 								<div class="col-xs-2"

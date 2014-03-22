@@ -74,10 +74,18 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     });
 
     
+    var fetchProjectCounts = ProjectsService.getProjectCounts();
+    fetchProjectCounts.then(function(counts){
+    	$scope.activeCount = counts.active;
+		$scope.backlogCount = counts.backlog;
+		$scope.pipelineCount = counts.pipeline;
+		$scope.investmentCount = counts.investment;
+    });
+    
     var aProjectsPromise = ProjectsService.getActiveClientProjects(function(result){
     	$scope.activeProjects = result;
     	//console.log("main.js activeProjects:", $scope.activeProjects);
-        $scope.projectCount = result.count;
+        
         
         /*
          * With the result, first find the list of active People for Widget 1.

@@ -106,42 +106,8 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
      * You must pass the startDate,endDate,type and committed
      */
     $scope.projectState = function(project){
-    	var ret = null;
-    	if(project){
-    		var today = new Date();
-    		var dd = today.getDate();
-            var mm = today.getMonth()+1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd<10){
-              dd='0'+dd;
-            }
-            if (mm<10){
-              mm='0'+mm;
-            }
-            today = yyyy+'-'+mm+'-'+dd;
-			
-    		var startDate = project.startDate;
-    		var endDate = project.endDate;
-    		var type = project.type;
-    		var committed = project.committed;
-    		
-    		if(endDate && endDate < today){
-    			ret = 'Done';
-    		}
-    		else if(type && type!="paid"){
-    			ret = 'Investment';
-    		}
-    		else if(!committed){
-    			ret = 'Pipeline';
-    		}
-    		else if(today < startDate){
-    			ret = 'Backlog';
-    		} 
-    		else{
-    			ret = 'Active';
-    		}
-    	}
-    	return ret;
+    	var state = ProjectsService.getProjectState(project);
+    	return state;
     };
     
     /**
