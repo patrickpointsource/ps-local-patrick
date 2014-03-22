@@ -380,29 +380,32 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     	$scope.initBookingForecast();
     });
     
-    
-    $scope.handleFBShowPipeline = function(){
-    	//$scope.initBookingForecast();
+    $scope.bfShowPipeline = false;
+    $scope.handleFBShowPipeline = function(checked){
+    	$scope.bfShowPipeline = checked;
+    	$scope.initBookingForecast();
     };
     
-    $scope.options = {
-		axes: {
-		    x: {key: 'x', type: 'date', tooltipFormatter: function (d) {return moment(d).fromNow();}},
-		    y: {type: 'linear'}
-		  },
-		  series: [
-		    {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked'},
-		    {y: 'otherValue', color: '#f34d4b', label: 'Available'}
-		  ],
-		  lineMode: 'linear',
-		  tooltipMode: "default"
-	};
     
     $scope.initBookingForecast = function(){
-    	
-	    
-	    ProjectsService.getBookingForecastData($scope.fbProjects, $scope.bfShowPipeline).then(function(result){
-	    	$scope.data = result;
+    	var showPipeline = $scope.bfShowPipeline;
+    	var projects = $scope.fbProjects;
+    	ProjectsService.getBookingForecastData(projects, showPipeline).then(function(result){
+	    	//If data did not exist set it
+    		
+    		$scope.options = {
+				axes: {
+				    x: {key: 'x', type: 'date', tooltipFormatter: function (d) {return moment(d).fromNow();}},
+				    y: {type: 'linear'}
+				  },
+				  series: [
+				    {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked'},
+				    {y: 'otherValue', color: '#f34d4b', label: 'Available'}
+				  ],
+				  lineMode: 'linear',
+				  tooltipMode: "default"
+			};
+    		$scope.data = result;
 	    });
     }
     

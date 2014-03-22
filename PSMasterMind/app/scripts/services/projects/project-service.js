@@ -688,9 +688,7 @@ angular.module('Mastermind.services.projects')
 	    			}
     			}
     		}
-    		
-    		console.log('Total = ' + comitments[0]);
-    		
+    	
     		var ret = [
 		          {x: new Date(dateChecks[0]), value: comitments[0], otherValue: total},
 		          {x: new Date(dateChecks[1]), value: comitments[1], otherValue: total},

@@ -1,23 +1,4 @@
 <br />
-<div class="row" ng-if="adminAccess">
-	<div class="col-xs-12">
-		<div class="panel panel-default dashboard-widget">
-			<div class="panel-heading">
-				Booking Forecast
-				<div class="checkbox pull-right" style="margin-top:0px">
-				    <label>
-				      <input type="checkbox" ng-change="handleFBShowPipeline()" ng-model="bfShowPipeline"/> Show Pipeline
-				    </label>
-				  </div>
-			</div>
-			<div class="panel-body">
-				<div>
-					<linechart data="data" options="options" mode=""></linechart>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 <div id="dashboard-widgets" class="row">
 		<div class="row-fluid">
 			<div ng-if="hasActiveProjects"
@@ -112,7 +93,23 @@
 					</div>
 				</div>
 			</div>
-
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-6" ng-if="adminAccess">
+				<div class="panel panel-default dashboard-widget">
+					<div class="panel-heading">
+						Booking Forecast
+						<div class="checkbox pull-right" style="margin-top:0px">
+						    <label>
+						      <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"> Show Pipeline
+						    </label>
+						  </div>
+					</div>
+					<div class="panel-body">
+						<div style="max-height:400px">
+							<linechart  data="data" options="options" mode=""></linechart>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-6">
 				<div class="panel panel-default dashboard-widget">
 					<div class="panel-heading trim-bottom-padding">
