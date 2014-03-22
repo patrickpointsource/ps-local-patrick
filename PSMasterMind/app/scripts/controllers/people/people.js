@@ -46,9 +46,6 @@ angular.module('Mastermind.controllers.people')
           var peopleInRoleFields = {resource:1, name:1, familyName:1, givenName: 1, primaryRole:1, thumbnail:1};
 
           Resources.query('people', peopleInRoleQuery, peopleInRoleFields, function(result){
-//            console.log('people in role, ' + $scope.peopleFilter + ' query result.members:');
-//            console.log(result.members);
-
             $scope.people = result.members;
 
             //Reload the table
@@ -78,18 +75,6 @@ angular.module('Mastermind.controllers.people')
         			 $scope.tableParams.reload();
         		 }
         	});
-//            Resources.query('people', {}, fields, function(result){
-//              $scope.people = result.members;
-//
-//              //Reload the table
-//              if (!$scope.tableParams){
-//                $scope.tableParams = getTableData();
-//              }
-//              else{
-//                $scope.tableParams.total($scope.people.length);
-//                $scope.tableParams.reload();
-//              }
-//            });
         }
         
         //Replace the URL in history with the filter
@@ -169,23 +154,24 @@ angular.module('Mastermind.controllers.people')
     		  People.getPeoleAssignments(startDate).then(function(peopleAssignments){
     			  $scope.qvPeopleAssignments = peopleAssignments;
     			  
-	    		  var peopleIds = [];
-    			  for(var resource in peopleAssignments){
-    				//{_id:{$nin:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
-  	                var oid = {$oid:resource.substring(resource.lastIndexOf('/')+1)};
-  	                peopleIds.push(oid);
-	    		  }
-    			  
-    			  //Look up all people with relevant assignments
-    			  var pepQuery = {_id:{$in:peopleIds}};
-			      var pepFields = {resource:1,name:1,familyName:1,givenName:1,primaryRole:1,thumbnail:1};
-			      People.query(pepQuery,pepFields).then(function(data){
-			    	  $scope.qvPeople = data.members;
- 
-		    		  //Once we have the active people apply the default filter
-			          //Trigger initial filter change
-		    		  $scope.handlePeopleFilterChanged(); 
-			      });
+    			  //Trigger initial filter change
+	    		  $scope.handlePeopleFilterChanged();
+//    			  
+//	    		  var peopleIds = [];
+//    			  for(var resource in peopleAssignments){
+//    				//{_id:{$nin:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
+//  	                var oid = {$oid:resource.substring(resource.lastIndexOf('/')+1)};
+//  	                peopleIds.push(oid);
+//	    		  }
+//    			  
+//    			  //Look up all people with relevant assignments
+//    			  var pepQuery = {_id:{$in:peopleIds}};
+//			      var pepFields = {resource:1,name:1,familyName:1,givenName:1,primaryRole:1,thumbnail:1};
+//			      People.query(pepQuery,pepFields).then(function(data){
+//			    	  $scope.qvPeople = data.members;
+// 
+//		    		   
+//			      });
 	    	  });
       	 }
       };

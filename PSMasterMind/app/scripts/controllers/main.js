@@ -98,14 +98,6 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
              */
             
             var activeProjects = $scope.qvProjects;
-            var activeProjectsWithUnassignedPeople = [];
-            var unassignedIndex = 0;
-            
-            $scope.activeProjectsWithUnassignedPeople = [];
-            $q.all(rolesPromise).then(function(rolesMap) {
-          	  //console.log("main.js using rolesMap:", rolesMap);
-              setActivePeopleAndProjects(rolesMap);
-          });
         });
     });
 
@@ -189,87 +181,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     $scope.handlePeopleFilterChanged = function(){
     	findNineAvailablePeople();
     };
-    
-    /**
-     * Function to set Active People and projects
-     */
-    var setActivePeopleAndProjects = function (rolesMap) {
-        var activePeopleProjects = {};
-        var activePeopleAssignments = {};
-        var activeProjects = $scope.qvProjects;
-        var activePeople = [];
-        //console.log("setActivePeopleProjects using rolesMap:", rolesMap);
-        
-        //Fetch all the assignment records for each active project
-        // load all current assignments (we are filtering projects by 'past' and looking at the excluded member list for active and future assignments)
-        AssignmentService.getAssignments(activeProjects, "past").then(function(result){
-        	var allProjectAssignments = result.data;
-        	
-        	for(var i = 0; i < allProjectAssignments.length;i++){
-        		var projectAssignments = allProjectAssignments[i];
-        		
-        		//Do not bother if there are not members assignments to this project
-        		
-        		if(projectAssignments.excludedMembers){
-        			var projectResource = projectAssignments.project.resource;
-        			var project = null;
-        			//Find the project object for this assignment record
-        			for(var j = 0; j < activeProjects.length; j++){
-        				if(projectResource == activeProjects[j].resource){
-        					project = activeProjects[j];
-        					break;
-        				}
-        			}
-        			
-        			if(project){
-        				//Loop though the assignments to collate with people
-	        			for(var j = 0; j < projectAssignments.excludedMembers.length;j++){
-	        				var assignment = projectAssignments.excludedMembers[j];
-	        				
-	        				//Push the assignee onto the active list
-	    					if(activePeople.indexOf(assignment.person.resource) == -1){
-	    						activePeople.push(assignment.person.resource);
-	    					}
-	    					
-	        				//Build up a list of each assignment each person has on this project.
-	    					if(!activePeopleAssignments.hasOwnProperty(assignment.person.resource)){
-	    						//Create an assignments list
-	    						activePeopleAssignments[assignment.person.resource] = [assignment];
-	    					}
-	    					
-	    					else{
-	    						activePeopleAssignments[assignment.person.resource].push(assignment);
-	    					}
-	        				
-	        				//Keep a cross reference from the assignment back to the project
-	        				assignment.project = project;  
-	        			}
-	        		}
-	        		else{
-	        			console.warn("Project " + projectResource + " is not in the active project list");
-	        		}
-        		}
-        	}
-        	
-        	//Parse out the oids for a query
-        	for(var i = 0; i < activePeople.length; i++){
-	         	//{_id:{$nin:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
-	             var personResource = activePeople[i];
-	 			var oid = {$oid:personResource.substring(personResource.lastIndexOf('/')+1)};
-	 			activePeople[i] = oid;
-	        }
-             
-            //Query all the people in the list
-            var query = {'_id':{$in:activePeople}};
-            var fields = {resource:1,thumbnail:1,name:1,givenName:1,familyName:1};
-            People.query(query,fields).then(function(data){
-             	 $scope.qvPeopleAssignments = activePeopleAssignments;
-             	 $scope.qvPeople = data.members;
-            });
-        });
-    };
-
-    
+     
     /**
      * Navigate to creating a project.
      */
