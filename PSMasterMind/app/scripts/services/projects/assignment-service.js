@@ -114,9 +114,46 @@ angular.module('Mastermind.services.projects')
     	var _this = this;
     	
     	Resources.query('assignments',query,null,function(result){
-    		//deferred.resolve(result);
-    		var ret = filterAssignmentsArrayByPeriod(result, timePeriod);
-    		deferred.resolve(ret);
+    		//Get todays date formatted as yyyy-MM-dd
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth(); //January is 0!
+            var yyyy = today.getFullYear();
+            today = new Date(yyyy, mm, dd);
+    		
+    		for (var i = 0;  result.data && i < result.data.length; i ++){
+    			var assignmentsObject = result.data[i];
+    			
+    			if (assignmentsObject && assignmentsObject.members) {
+    	    		var excluded = [];
+    	    		var included = [];
+    	    		
+    	    		_.each(assignmentsObject.members, function(m) {
+    	    			if (timePeriod == "current") {
+    	    				if (new Date(m.startDate) <= today && (!m.endDate || new Date(m.endDate) > today) )
+    	    					included.push(m)
+    						else
+    							excluded.push(m)
+    	    			} else if (timePeriod == "future") {
+    	    				if (new Date(m.startDate) >= today && (!m.endDate || new Date(m.endDate) > today) )
+    	    					included.push(m)
+    						else
+    							excluded.push(m)
+    	    			} else if (timePeriod == "past") {
+    	    				if (new Date(m.startDate) < today && (!m.endDate || new Date(m.endDate) < today) )
+    	    					included.push(m)
+    						else
+    							excluded.push(m)
+    	    			} else if (timePeriod == "all") 
+    	    				included.push(m)
+    	    		})
+    	    		
+    	    		assignmentsObject.members = included;
+    	    		assignmentsObject.excludedMembers = excluded;
+    	    	}
+       		 	result.data[i] = assignmentsObject;
+    		}
+    		deferred.resolve(result.data);
     	});
     	
     	return deferred.promise;
@@ -236,12 +273,6 @@ angular.module('Mastermind.services.projects')
     	 return deferred.promise;
     }
     
-    var filterAssignmentsArrayByPeriod = function(assignmentsResult, period) {
-    	for (var i = 0;  assignmentsResult.data && i < assignmentsResult.data.length; i ++)
-    		 assignmentsResult.data[i] = this.filterAssignmentsByPeriod( assignmentsResult.data[i], period);
-    	
-    	return assignmentsResult;
-    }
     
     this.filterAssignmentsByPeriod = function(assignmentsObject, period) {
     	
