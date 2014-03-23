@@ -167,6 +167,9 @@ header {
   	font-size: 1.1em;
   }
 
+   @prog-color1: rgba(75,170, 48,.30);
+   /*@prog-color2: @brand-success;*/
+   @prog-color2: rgba(75,170, 48,.15);
   .progress{
   	font-size: .8em;
   	min-width:260px;
@@ -180,15 +183,14 @@ header {
  		padding-left:10px;
  		padding-top:4px;
  		text-align: center;
- 		background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+ 		
+ 		
  	}
   }
   
   div.active {
-  	background-color: @brand-success;
   	height: 20px;
-  	color: @ps-lightgray;
-  	
+  	background-image: linear-gradient(135deg,@prog-color1 15%,@prog-color2 15%,@prog-color2 30%,@prog-color1 30%, @prog-color1 60%,@prog-color2 60%,@prog-color2 75%, @prog-color1 75%, @prog-color1 90%);
   }
 }
 

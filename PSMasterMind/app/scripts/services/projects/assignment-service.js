@@ -345,65 +345,64 @@ angular.module('Mastermind.services.projects')
     	var deferred = $q.defer();
     	var getAssignments = this.getAssignments;
     	
-    	
+    	/**
+    	 * Get all the active projects
+    	 */
     	ProjectsService.getActiveClientProjects(function(result){
     		var activeProjects = result.data;
     	    var activeProjectsWithUnassignedPeople = [];
     	    var unassignedIndex = 0;
+    	    
+    	    /**
+    	     * Get all assigment records for each active project
+    	     */
     	    getAssignments(activeProjects).then(function (assignments) {
-	    	        	
-	    	        	
-            /*
-             * Set projects without any assigned people.
-             * 
-             */
-    	    for(var i = 0; i < activeProjects.length; i++){
-    	    	var proj = activeProjects[i];
-    	    	var roles = activeProjects[i].roles;
-    	    	var projAssignments = undefined;
-    					
-    			for(var l=0; l<assignments.count; l++) {
-    				projAssignments = assignments.data[l];
-    				if(projAssignments.project.resource == proj.resource) {
-    					if(projAssignments.members && projAssignments.members.length > 0) {
-    						var assignees = projAssignments.members;
-    				        if(roles){
-			                      	/*
-			                       	* Loop through all the roles in the active projects
-			                       	*/
-    				               	for(var b = 0; b < roles.length; b++){
-    				            	   var activeRole = roles[b];		
-    				                   var foundRoleMatch = false;
-    				                   
-				                        /*
-				                         * Loop through assignees to find a match
-				                         */
-				                        for (var c=0; c<assignees.length; c++) {
-				                        	//if(activeRole.about == assignees[c].role.resource) {
-				                        	if(assignees[c].role.resource && assignees[c].role.resource.indexOf(activeRole._id) > -1) {
-				                        		foundRoleMatch = true;
-				                        	}
-				                        }
-    				                        
-				                        if(!foundRoleMatch) {
-					                        activeProjectsWithUnassignedPeople[unassignedIndex++] = {
-					                            	  clientName: proj.customerName,
-					                            	  projectName: proj.name,
-					                            	  title: proj.customerName+': '+proj.name,
-					                            	  projectResource: proj.resource,
-					                            	  hours: getHoursDescription(activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
-					                            	  role: $scope.rolesMap[activeRole.type.resource].abbreviation,
-					                            	  startDate: activeRole.startDate,
-					                            	  endDate: activeRole.endDate,
-					                            	  rate: activeRole.rate.amount};
-					                              //console.log("activeRole.type:",activeRole.type);
-					                              //console.log("Unassigned Role in Proj:", $scope.activeProjectsWithUnassignedPeople[unassignedIndex-1]);
-				                        }
-    				               }
-    				        }
-    					}
-    				}
-    			}
+
+	    	    for(var i = 0; i < activeProjects.length; i++){
+	    	    	var proj = activeProjects[i];
+	    	    	var roles = activeProjects[i].roles;
+
+	    	    	var projAssignments = undefined;
+	    	    	
+	    			for(var l=0; l<assignments.count; l++) {
+	    				projAssignments = assignments.data[l];
+	    				if(projAssignments.project.resource == proj.resource) {
+	    					if(projAssignments.members && projAssignments.members.length > 0) {
+	    						var assignees = projAssignments.members;
+	    				        if(roles){
+				                      	/*
+				                       	* Loop through all the roles in the active projects
+				                       	*/
+	    				               	for(var b = 0; b < roles.length; b++){
+	    				            	   var activeRole = roles[b];		
+	    				                   var foundRoleMatch = false;
+	    				                   
+					                        /*
+					                         * Loop through assignees to find a match
+					                         */
+					                        for (var c=0; c<assignees.length; c++) {
+					                        	//if(activeRole.about == assignees[c].role.resource) {
+					                        	if(assignees[c].role.resource && assignees[c].role.resource.indexOf(activeRole._id) > -1) {
+					                        		foundRoleMatch = true;
+					                        	}
+					                        }
+	    				                        
+					                        if(!foundRoleMatch) {
+					                        	activeProjectsWithUnassignedPeople.push(activeRole);
+					                        }
+	    				               }
+	    				        }
+	    					}
+	    				}
+	    			}
+	    			
+	    			//If there were no assignments add all the roles to the list
+	    	    	if(assignments.count == 0 || !projAssignments ){
+	    	    		for(var b = 0; b < roles.length; b++){
+			            	   var activeRole = roles[b];
+			            	   activeProjectsWithUnassignedPeople.push(activeRole);
+	    	    		}
+	    	    	}
     	    }
     	    
     	    deferred.resolve(activeProjectsWithUnassignedPeople);

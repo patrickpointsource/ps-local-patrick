@@ -5,7 +5,14 @@
  */
 var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources','RolesService','ProjectsService','People','AssignmentService', 'ngTableParams',
     function ($scope, $q, $state, $filter, Resources, RolesService, ProjectsService, People, AssignmentService, TableParams) {
-
+	
+	/**Init Count vairables
+     */
+    $scope.activeCount = '';
+	$scope.backlogCount = '';
+	$scope.pipelineCount = '';
+	$scope.investmentCount = '';
+	
 	// Table Parameters for Resource Deficit tables
     var params = {
       page: 1,            // show first page
@@ -81,6 +88,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     	$scope.activeProjectDeficitCount = count;
     });  
 
+    
+    
     /**
      * Fetch the counts of the current projects
      */
