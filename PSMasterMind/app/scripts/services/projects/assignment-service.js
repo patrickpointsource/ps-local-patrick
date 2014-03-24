@@ -364,8 +364,8 @@ angular.module('Mastermind.services.projects')
 
 	    	    	var projAssignments = undefined;
 	    	    	
-	    			for(var l=0; l<assignments.count; l++) {
-	    				projAssignments = assignments.data[l];
+	    			for(var l=0; l<assignments.length; l++) {
+	    				projAssignments = assignments[l];
 	    				if(projAssignments.project.resource == proj.resource) {
 	    					if(projAssignments.members && projAssignments.members.length > 0) {
 	    						var assignees = projAssignments.members;

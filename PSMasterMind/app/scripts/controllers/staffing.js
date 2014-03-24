@@ -66,8 +66,8 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 				var roles = activeProjects[i].roles;
 				var projAssignments = undefined;
 				
-				for(var l=0; l<assignments.count; l++) {
-					projAssignments = assignments.data[l];
+				for(var l=0; l<assignments.length; l++) {
+					projAssignments = assignments[l];
 					if(projAssignments.project.resource == proj.resource) {
 						if(projAssignments.members && projAssignments.members.length > 0) {
 							var assignees = projAssignments.members;
@@ -162,8 +162,8 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 				var roles = projectBacklog[i].roles;
 				var projAssignments = undefined;
 				
-				for(var l=0; l<assignments.count; l++) {
-					projAssignments = assignments.data[l];
+				for(var l=0; l<assignments.length; l++) {
+					projAssignments = assignments[l];
 					if(projAssignments.project.resource == proj.resource) {
 						if(projAssignments.members && projAssignments.members.length > 0) {
 							var assignees = projAssignments.members;
