@@ -6,7 +6,8 @@
 angular.module('Mastermind.controllers.people')
   .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ngTableParams',
     function ($scope, $state, $stateParams, $filter, Resources, People, AssignmentService, TableParams) {
-
+	  
+	  var UNSPECIFIED = 'Unspecified';
     /**
      * Load Role definitions to display names
      */
@@ -17,10 +18,21 @@ angular.module('Mastermind.controllers.people')
       for(var i = 0; i < members.length;i++){
         rolesMap[members[i].resource] = members[i];
       }
+      
+      // sorting roles by title
+      $scope.allRoles.sort(function(a,b) {
+          var x = a.title.toLowerCase();
+          var y = b.title.toLowerCase();
+          return x < y ? -1 : x > y ? 1 : 0;
+      });
+      
+      // add unspecified item to roles dropdown
+      $scope.allRoles.unshift({"title": UNSPECIFIED});
+      
       $scope.rolesMap = rolesMap;
 
       $scope.getRoleName = function(resource){
-        var ret = 'Unspecified';
+        var ret = UNSPECIFIED;
         if(resource && $scope.rolesMap[resource]){
           ret = $scope.rolesMap[resource].title;
         }
@@ -126,6 +138,11 @@ angular.module('Mastermind.controllers.people')
      */
     $scope.save = function(){
       var profile = $scope.profile;
+      
+      if(!profile.primaryRole || !profile.primaryRole.resource) {
+    	  profile.primaryRole = null;
+      }
+      
       Resources.update(profile).then(function(person){
         $scope.setProfile(person);
         $scope.editMode = false;
