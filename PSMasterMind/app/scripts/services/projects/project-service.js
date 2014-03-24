@@ -720,6 +720,40 @@ angular.module('Mastermind.services.projects')
     	return deferred.promise;
     };
     
+    
+    /**
+     * Get a list of projects about to kick off
+     */
+    this.getProjectsKickingOff = function (){
+    	var deferred = $q.defer();
+    	
+        //Get todays date formatted as yyyy-MM-dd
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd<10){
+          dd='0'+dd;
+        }
+        if (mm<10){
+          mm='0'+mm;
+        }
+        today = yyyy+'-'+mm+'-'+dd;
+
+        var query = 
+            {
+        		startDate:{$gte:today},
+                'committed': true
+            };
+        var fields = {resource:1,name:1,startDate:1,endDate:1,customerName:1,committed:1,type:1};
+
+        Resources.query('projects', query, fields, function(result){
+        	deferred.resolve(result);
+        });
+        
+        return deferred.promise;
+    }
+    
     /**
      * For a given set of projects cerate a data set of roles versus aviable billable hours to be used for the
      * booking forecast widget
