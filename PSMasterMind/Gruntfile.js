@@ -263,7 +263,8 @@ module.exports = function (grunt) {
               'images/{,*/}*.{gif,webp}',
               'fonts/{,*/}*',
               'template/{,*/}*',
-              'login/{,*/}*'
+              'login/{,*/}*',
+	      '*.html', 'views/{,*/}*.html', 'views/{,*/}*/{,*/}*.html'
             ]
           },
           {
@@ -297,7 +298,7 @@ module.exports = function (grunt) {
         'copy:styles',
         'imagemin',
         'svgmin',
-        'htmlmin'
+        //'htmlmin'
       ]
     },
     karma: {

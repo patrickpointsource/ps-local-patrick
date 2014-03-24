@@ -334,7 +334,7 @@ angular.module('Mastermind.services.projects')
     	var deferred = $q.defer();
     	var startDateQuery = this.getToday();
     	
-    	var apQuery = {
+    	var query = {
     			members:{
     				'$elemMatch':{
     					person:{
@@ -355,8 +355,8 @@ angular.module('Mastermind.services.projects')
     					}
     			}
     	};
-        var apFields = {project:1};
-        Resources.query('assignments', apQuery, apFields, function(result){
+        var fields = {project:1};
+        Resources.query('assignments', query, fields, function(result){
         	var assignments = result.data;
         	var myProjects = [];
         	for(var i = 0; i < assignments.length;i++){
@@ -371,21 +371,47 @@ angular.module('Mastermind.services.projects')
         	}
         	
         	var projectsQuery = {
-        			'_id':{
-        				$in:myProjects
-        			},
-        			'$or':
-        			[
-        			 {
-        				 endDate:{
-        					 $exists:false
-        				 }   
-					  },
-					  {
-						  endDate:{
-							  $gt:startDateQuery
-						  }
-					  }
+//        			'_id':{
+//        				$in:myProjects
+//        			},
+        			'$and':
+        				[
+        				 {
+        					 '$or':
+        						 [
+        						  {
+        							  salesSponsor:{
+        								  resource:me.about
+        							  }
+        						  },
+        						  {
+        							  executiveSponsor:{
+        								  resource:me.about
+        							  }
+        						  },
+        						  {
+        							 '_id':{
+        			        				$in:myProjects
+        							 },
+        						  }
+        				]
+        					 
+        				 },
+        				 {
+        				 '$or':
+        					 [
+        					  {
+        						  endDate:{
+        							  $exists:false
+        						  }   
+        					  },
+        					  {
+        						  endDate:{
+        							  $gt:startDateQuery
+        						  }
+        					  }
+        					 ]
+        				 }
 					]
 				};
 	        var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1};

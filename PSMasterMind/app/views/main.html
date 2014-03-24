@@ -1,27 +1,13 @@
 <br />
 <div id="dashboard-widgets" class="row">
-		<div class="row-fluid">
-			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-				<div class="row">
-					<div id="staffingDeficitWidget" class="col-xs-12 col-sm-6 col-md-6 col-lg-6" ng-if="!adminAccess">
-						<ng-include src="'views/hoursEntry.html'"></ng-include>
-					</div>
-					<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-						<div class="row">
-						<div id="projectKickoffsWidget" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<div class="panel panel-default dashboard-widget">
-								<div class="panel-heading">
-									<i class="fa fa-briefcase"></i> Project Kickoffs
-								</div>
-								<div class="panel-body">
-									<div class="row" ng-repeat="project in projectsKickingOff | orderBy:'startDate'"" >
-										<div class="col-xs-8 col-lg-7 text-left"><i class="{{projectStateIcon(project)}}"></i> <a
-											ng-href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a></div>
-										<div class="col-xs-4 col-lg-5" ng-class="{'text-success':{{startWithinAMonth(project)}}}">{{dateString(project.startDate)}}</div>
-									</div>
-								</div>
-							</div>
-						</div>
+	<div class="row-fluid">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+			<div class="row">
+				<div id="staffingDeficitWidget" class="col-xs-12 col-sm-6 col-md-6 col-lg-6" ng-if="!adminAccess">
+					<ng-include src="'views/hoursEntry.html'"></ng-include>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+					<div class="row">
 						<div id="staffingDeficitWidget" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-if="adminAccess">
 							<div class="panel panel-danger  dashboard-widget">
 								<div class="panel-heading">
@@ -38,109 +24,124 @@
 								</div>
 							</div>
 						</div>
-						</div>
-					</div>
-					<div id="projectsWidget" class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-						<div class="panel panel-default dashboard-widget">
-							<div class="panel-heading">
-								<i class="fa fa-briefcase"></i> Current Projects
-								<div class="pull-right  btn-group btn-group-sm dashboard-actions">
-									<button class="btn btn-default" ng-click="createProject()">
-										<div>
-											<i class="fa fa-plus-square"></i>
-										</div>
-									</button>
+						<div id="projectKickoffsWidget" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<div class="panel panel-default dashboard-widget">
+								<div class="panel-heading">
+									<i class="fa fa-briefcase"></i> Project Kickoffs
 								</div>
-							</div>
-							<div class="panel-body">
-								<div class="row">
-									<a href="#projects?filter=active">
-										<div class="col-xs-6 text-center">
-											<i class="fa fa-rocket"></i> Active
-											<div class="big-text fa-5x">{{activeCount}}</div>
-										</div>
-									</a>
-									<a href="#projects?filter=backlog">
-										<div class="col-xs-6 text-center">
-											<i class="fa fa-angle-left"></i> Backlog
-											<div class="big-text fa-5x">{{backlogCount}}</div>
-										</div>
-									</a>
-									<a href="#projects?filter=pipeline">
-										<div class="col-xs-6 text-center">
-											<i class="fa fa-angle-double-left"></i> Pipeline
-											<div class="big-text fa-5x">{{pipelineCount}}</div>
-										</div>
-									</a>
-									<a href="#projects?filter=investment">
-										<div class="col-xs-6 text-center">
-											<i class="fa fa-flask"></i> Investment
-											<div class="big-text fa-5x">{{investmentCount}}</div>
-										</div>
-									</a>
+								<div class="panel-body">
+									<div class="row" ng-repeat="project in projectsKickingOff | orderBy:'startDate'"" >
+										<div class="col-xs-8 col-lg-7 text-left"><i class="{{projectStateIcon(project)}}"></i> <a
+											ng-href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a></div>
+										<div class="col-xs-4 col-lg-5" ng-class="{'text-success':{{startWithinAMonth(project)}}}">{{dateString(project.startDate)}}</div>
+									</div>
 								</div>
 							</div>
 						</div>
+					
 					</div>
 				</div>
-			</div>
-			<div class="col-xs-12 col-md-12 col-lg-6" ng-if="adminAccess">
-				<div class="panel panel-default dashboard-widget">
-					<div class="panel-heading">
-						<i class="fa fa-users"></i> Booking Forecast
-						<div class="checkbox pull-right" style="margin-top:0px">
-						
-						      <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"> Show Pipeline
-						    
-						  </div>
-					</div>
-					<div class="panel-body">
-						<div style="max-height:400px">
-							<linechart  data="data" options="options" mode=""></linechart>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-md-12 col-lg-6" ng-if="!adminAccess">
-				<div class="panel panel-default dashboard-widget">
-					<div class="panel-heading trim-bottom-padding">
-						<div class="row">
-							<div class="col-xs-4 col-sm-6 col-md-4 col-lg-8">
-								<i class="fa fa-users"></i> People
-							</div>
-							<div class="col-xs-8 col-sm-6 col-md-8 col-lg-4 dashboard-actions">
-								<select class="pull-right btn-group-sm  form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
-									<option value="" selected>Filter By Role</option>
-							       <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
-							    </select>
-						    </div>
-						</div>
-					</div>
-					<div class="panel-body">
-						<div class="dashboard-box  three-rows">
-							<div class="row-fluid">
-								<div class="col-xs-4 col-sm-2 col-md-3 col-lg-2"
-									ng-repeat="person in availablePeople">
-									<a href="#{{person.resource}}"> <img alt="{{person.name}}"
-										title="{{person.name}}" ng-src="{{person.thumbnail}}" />
-									</a>
-								</div>
+				<div id="projectsWidget" class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+					<div class="panel panel-default dashboard-widget">
+						<div class="panel-heading">
+							<i class="fa fa-briefcase"></i> Current Projects
+							<div class="pull-right  btn-group btn-group-sm dashboard-actions">
+								<button class="btn btn-default" ng-click="createProject()">
+									<div>
+										<i class="fa fa-plus-square"></i>
+									</div>
+								</button>
 							</div>
 						</div>
-						<div class="row clearfix">
-							<div class="col-xs-12 text-center">
-								<br/>
-								<button class="btn btn-default btn-md" ng-click="handleShowPeopleClick()">Show All <i class="fa fa-chevron-right"></i></button>
+						<div class="panel-body">
+							<div class="row">
+								<a href="#projects?filter=active">
+									<div class="col-xs-6 text-center">
+										<i class="fa fa-rocket"></i> Active
+										<div class="big-text fa-5x">{{activeCount}}</div>
+									</div>
+								</a>
+								<a href="#projects?filter=backlog">
+									<div class="col-xs-6 text-center">
+										<i class="fa fa-angle-left"></i> Backlog
+										<div class="big-text fa-5x">{{backlogCount}}</div>
+									</div>
+								</a>
+								<a href="#projects?filter=pipeline">
+									<div class="col-xs-6 text-center">
+										<i class="fa fa-angle-double-left"></i> Pipeline
+										<div class="big-text fa-5x">{{pipelineCount}}</div>
+									</div>
+								</a>
+								<a href="#projects?filter=investment">
+									<div class="col-xs-6 text-center">
+										<i class="fa fa-flask"></i> Investment
+										<div class="big-text fa-5x">{{investmentCount}}</div>
+									</div>
+								</a>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<div class="col-xs-12 col-md-12 col-lg-6" ng-if="adminAccess">
+			<div class="panel panel-default dashboard-widget">
+				<div class="panel-heading">
+					<i class="fa fa-users"></i> Booking Forecast
+					<div class="checkbox pull-right" style="margin-top:0px">
+					
+					      <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"> Show Pipeline
+					    
+					  </div>
+				</div>
+				<div class="panel-body">
+					<div style="max-height:400px">
+						<linechart  data="data" options="options" mode=""></linechart>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-12 col-lg-6" ng-if="!adminAccess">
+			<div class="panel panel-default dashboard-widget">
+				<div class="panel-heading trim-bottom-padding">
+					<div class="row">
+						<div class="col-xs-4 col-sm-6 col-md-4 col-lg-8">
+							<i class="fa fa-users"></i> People
+						</div>
+						<div class="col-xs-8 col-sm-6 col-md-8 col-lg-4 dashboard-actions">
+							<select class="pull-right btn-group-sm  form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
+								<option value="" selected>Filter By Role</option>
+						       <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
+						    </select>
+					    </div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="dashboard-box  three-rows">
+						<div class="row-fluid">
+							<div class="col-xs-4 col-sm-2 col-md-3 col-lg-2"
+								ng-repeat="person in availablePeople">
+								<a href="#{{person.resource}}"> <img alt="{{person.name}}"
+									title="{{person.name}}" ng-src="{{person.thumbnail}}" />
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="row clearfix">
+						<div class="col-xs-12 text-center">
+							<br/>
+							<button class="btn btn-default btn-md" ng-click="handleShowPeopleClick()">Show All <i class="fa fa-chevron-right"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
+</div>
 
 
-<div class="row">
+<div class="row" ng-show="hasActiveProjects">
 	<div class="col-xs-12">
 		<div class="panel panel-default dashboard-widget">
 			<div class="panel-heading">
@@ -149,7 +150,7 @@
 			<div class="panel-body">
 				<div class="graph">
 					<div id="projectsSummaryGraph">
-						<div class="row" ng-repeat="project in qvProjects | orderBy:'customerName'">
+						<div class="row" ng-repeat="project in myProjects | orderBy:'customerName'">
 							<div class="title col-xs-12 col-md-3 col-lg-2">
 								<i class="{{projectStateIcon(project)}}"></i> <a href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a>
 							</div>

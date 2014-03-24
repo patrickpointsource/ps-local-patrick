@@ -22,17 +22,6 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 
       //console.log('Logged In');
       $scope.authState = true;
-
-      // Check what projects I am active in
-      // not sure what this is used for... it is not being used, can we take it out? 
-      // This is at least being used on the home page (possibly should be moved to main.js
-      // var query = '{roles:{%27$elemMatch%27:{startDate:{%27$lt%27:%272013-11-05%27},assignee:{resource:%27people/52a1eeec30044a209c476477%27}}}}';
-      ProjectsService.getMyCurrentProjects(me).then(function(result){
-    	  $scope.myActiveProjects =  result.data;
-	      if(result.data.length>0){
-	          $scope.hasActiveProjects = true;
-	      }
-      });
     });
 
     /**

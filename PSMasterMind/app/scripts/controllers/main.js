@@ -49,20 +49,20 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     if (mm<10){
       mm='0'+mm;
     }
-
-    /*
-     * Fetch a list of all the active Projects.
-     * 
-     */
+   
     var rolesPromise = RolesService.getRolesMapByResource();;
     ProjectsService.getOngoingProjects(function(result){
     	$scope.ongoingProjects = result.data;
  
     	ProjectsService.getMyCurrentProjects($scope.me).then(function(myCurrentProjects) {
-        	var myProjects = myCurrentProjects.data;
-        	for (var m=0; m< myProjects.length; m++) {
-        		var myProj = myProjects[m];
+    		$scope.myProjects = myCurrentProjects.data;
+        	if($scope.myProjects.length>0){
+  	          $scope.hasActiveProjects = true;
+  	      	}
+        	for (var m=0; m< $scope.myProjects.length; m++) {
+        		var myProj = $scope.myProjects[m];
         		var found = undefined;
+        		myProj.title = myProj.customerName+': '+myProj.name;
         		$scope.hoursProjects.push(myProj);
         		
         		for (var n=0;n< $scope.ongoingProjects.length; n++) {
@@ -75,7 +75,9 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         	}
         	
         	while($scope.ongoingProjects.length >0) {
-        		$scope.hoursProjects.push($scope.ongoingProjects.pop());
+        		var myProj = $scope.ongoingProjects.pop();
+        		myProj.title = myProj.customerName+': '+myProj.name;
+        		$scope.hoursProjects.push(myProj);
         	}        	
         });
     });
