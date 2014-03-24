@@ -171,14 +171,14 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     WeeklyRate.prototype.getNumPeriods = function (startD, endD) {
     	var startDate = new Date(startD);
     	var endDate = new Date(endD);
-      	var numWeeks = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 4.5));
+      	var numWeeks = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 7));
         return numWeeks.toString().concat(" weeks");
     }; 
     
     WeeklyRate.prototype.getEstimatedTotal = function (startD, endD) {
     	var startDate = new Date(startD);
     	var endDate = new Date(endD);
-      	var numWeeks = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 4.5));
+      	var numWeeks = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 7));
       	var estimatedTotal = 0;
 
       	//This should default to 0 is the other values are not set
