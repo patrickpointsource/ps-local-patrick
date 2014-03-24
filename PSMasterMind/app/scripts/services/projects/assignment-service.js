@@ -360,6 +360,7 @@ angular.module('Mastermind.services.projects')
 
 	    	    for(var i = 0; i < activeProjects.length; i++){
 	    	    	var proj = activeProjects[i];
+	    	    	var foundProjMatch = false;
 	    	    	var roles = activeProjects[i].roles;
 
 	    	    	var projAssignments = undefined;
@@ -367,6 +368,7 @@ angular.module('Mastermind.services.projects')
 	    			for(var l=0; l<assignments.length; l++) {
 	    				projAssignments = assignments[l];
 	    				if(projAssignments.project.resource == proj.resource) {
+	    					foundProjMatch = true;
 	    					if(projAssignments.members && projAssignments.members.length > 0) {
 	    						var assignees = projAssignments.members;
 	    				        if(roles){
@@ -397,7 +399,7 @@ angular.module('Mastermind.services.projects')
 	    			}
 	    			
 	    			//If there were no assignments add all the roles to the list
-	    	    	if(assignments.count == 0 || !projAssignments ){
+	    	    	if(assignments.count == 0 || !projAssignments || !foundProjMatch ){
 	    	    		for(var b = 0; b < roles.length; b++){
 			            	   var activeRole = roles[b];
 			            	   activeProjectsWithUnassignedPeople.push(activeRole);
