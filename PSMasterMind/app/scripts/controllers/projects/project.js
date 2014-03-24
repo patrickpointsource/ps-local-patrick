@@ -763,7 +763,13 @@ angular.module('Mastermind')
       /**
        * Controls the edit state of the project form (an edit URL param can control this from a URL ref)
        */
-      $scope.editMode = editMode;
+      if($scope.canEdit()) {
+    	  $scope.editMode = editMode;
+      } else {
+    	  $scope.editMode = false;
+    	  $state.go('projects.show', {projectId:$scope.projectId, edit:null});
+      }
+      
       $scope.projectLoaded = true;
       $scope.submitAttempted = false;
       
