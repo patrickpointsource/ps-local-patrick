@@ -20,7 +20,13 @@ angular.module('Mastermind')
      * Set the profile view in edit mode
      */
     $scope.edit = function(){
-      $state.go('projects.edit', {projectId:$scope.projectId});
+    	if($scope.canEdit()) {
+    		$state.go('projects.edit', {projectId:$scope.projectId});
+    	}
+    };
+    
+    $scope.canEdit = function() {
+    	return $scope.adminAccess || ($scope.project.created.resource == $scope.me.about);
     };
     
   //Load the members of the executive Group

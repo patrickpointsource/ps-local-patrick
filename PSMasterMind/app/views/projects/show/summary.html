@@ -3,7 +3,7 @@
 		<h3 class="col-xs-8">
 	       	{{project.customerName || 'No Customer'}}</h3>
 	    <div class="actions col-xs-4 pageActions">
-	    	<button ng-hide="editMode" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
+	    	<button ng-hide="editMode || !canEdit()" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
 	 	</div>   	
     </div>
    <div class="row">
