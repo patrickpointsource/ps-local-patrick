@@ -49,26 +49,6 @@ angular.module('Mastermind.controllers.projects')
 	  }
 	});
 	
-	$scope.getRoleCSSClass= function(abr) {
-		var result = 'well';
-		/*
-		if (abr == 'BA')
-			result = 'bg-success';
-		else if (abr == 'SSE')
-			result = 'bg-warning';
-		else if (abr == 'SSA')
-			result = 'bg-danger';
-		else if (abr == 'SE')
-			result = 'bg-warning';
-		else if (abr == 'PM')
-			result = 'bg-primary';
-		else if (abr == 'SUXD')
-			result = "bg-info"
-		else if (abr == 'SUXD')
-			result = "bg-info"
-			*/	
-		return result;
-	}
 	/*
 	$scope.getDefaultRolePercentage = function(role) {
 		var defaultPercentage = 100;
@@ -84,9 +64,8 @@ angular.module('Mastermind.controllers.projects')
 	}
 	*/
 	$scope.getDefaultRoleHoursPerWeek = function(role) {
-		var HOURS_PER_WEEK = 40;
 		
-		return Math.round(role.percentageNeededToCover * 40 / 100);
+		return role.hoursNeededToCover;
 	}
 	
 	$scope.addNewAssignmentToRole =  function (index, role) {
@@ -384,6 +363,10 @@ angular.module('Mastermind.controllers.projects')
 	    	  }
     	}
     	
+    	
+    	
+    	AssignmentService.calculateRolesCoverage($scope.project.roles, $scope.projectAssignment.members ? $scope.projectAssignment.members: [])
+    	
     	for (var i = 0; i < $scope.project.roles.length; i ++) {
 			role = $scope.project.roles[i];
 			
@@ -404,7 +387,6 @@ angular.module('Mastermind.controllers.projects')
 			}
 		}
     	
-    	AssignmentService.calculateRolesCoverage($scope.project.roles, $scope.projectAssignment.members ? $scope.projectAssignment.members: [])
     	$scope.$emit('roles:assignments:change')
     }
    

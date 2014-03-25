@@ -203,6 +203,50 @@ angular.module('Mastermind')
     }
 
     /**
+     * Method which provides apropriate css for the assignments panels
+     */
+    $scope.getCoverageClass = function(role) {
+    	var result = '';
+    	
+    	if (role.percentageCovered == 0)
+    		result = 'panel-danger';
+    	else if (role.percentageCovered < 100)
+    		result = 'panel-warning';
+    	else
+    		result = 'panel-success';
+    	
+    	return result;
+    }
+    
+    $scope.getCoverageValue = function(role) {
+    	var result = '';
+    	var HOURS_PER_WEEK = 40;
+    	
+    	if (role.percentageCovered < 100)
+    		result = '+' + role.hoursNeededToCover;
+    	
+    	if (role.hoursExtraCovered > 0) {
+    		result = result ? ('/' + result): '';
+    		result = '-' + role.hoursExtraCovered;
+    	}
+    	
+    	if (result)
+    		result += ' h/w'
+    	
+    	return result;
+    }
+    
+
+	$scope.getRoleCSSClass= function(abr, role) {
+		var result = 'panel ';
+		
+		
+		result += $scope.getCoverageClass(role);
+		
+		return result;
+	}
+	
+    /**
      * Save the loaded project.
      */
     $scope.save = function () {

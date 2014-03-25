@@ -51,10 +51,9 @@
         <div class="col-xs-12">
             <table class="table peopleList" ng-table="roleTableParams" template-pagination="custom/pager">
               
-              <tbody ng-repeat="role in $data" class="{{getRoleCSSClass(roleGroups[role.type.resource].abbreviation)}}" 
-              	style=" border-top: 15px solid white;">
-                <tr>
-                    <td colspan="4">
+              <tbody ng-repeat="role in $data" class="{{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}" style="border-top:0px;">
+                <tr class="panel-heading">
+                    <td colspan="5">
                     	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
                     	<span ng-show="role.rate.isFullyUtilized()">100%</span>&nbsp;
                       	<span ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}} h/m</span>&nbsp;
@@ -62,9 +61,8 @@
 	                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
 	                      <span ng-hide="role.endDate">- N/A</span>
 	                      &nbsp;
-	                    <span style="background-color: {{getCoverageColor(role)}}; height: 15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-	                   	<span>{{role.percentageCovered}} %</span>
-	                   	<span>over: {{role.percentageExtraCovered}} %</span>
+	                   	<span>{{getCoverageValue(role)}}</span>
+	                   	
                     </td>
                     <td class="actionsCell">
                     	<button ng-if="editMode" class="btn btn-default" ng-click="addNewAssignmentToRole($index, role)">

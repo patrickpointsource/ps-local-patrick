@@ -46,7 +46,7 @@ angular.module('Mastermind.services.projects')
 	  }
 
 	  // allow one entry assignment to keep role unassigned
-    if(anyResourceUnassigned && anyHoursPerWeekMissed && (countEmptyPersons >= 1 && assignments.length > 1)){
+    if(anyResourceUnassigned && (countEmptyPersons >= 1 && assignments.length > 1)){
       errors.push('For each assignee entry can\'t be empty');
     } else if(anyHoursPerWeekMissed && !anyResourceUnassigned){
         errors.push('For each assignee entry hours per week is required');
@@ -367,8 +367,8 @@ angular.module('Mastermind.services.projects')
     		currentResult = this.calculateSingleRoleCoverage(roles[i], assignmentsMap[ roles[i]._id ]);
     		
     		roles[i].percentageCovered = currentResult.percentageCovered;
-    		roles[i].percentageExtraCovered = currentResult.percentageExtraCovered;
-    		roles[i].percentageNeededToCover = currentResult.percentageNeededToCover;
+    		roles[i].hoursExtraCovered = currentResult.hoursExtraCovered;
+    		roles[i].hoursNeededToCover = currentResult.hoursNeededToCover;
     	}
     	
     	//return result;
@@ -467,8 +467,15 @@ angular.module('Mastermind.services.projects')
     	
     	
     	// calculate total percentage coverage
+    	var HOURS_PER_MONTH = 180;
+    	var HOURS_PER_WEEK = 40;
     	var ONE_WEEK = 40;
     	
+    	if (!role.rate.isFullyUtilized() && role.rate.type == "hourly")
+    		ONE_WEEK = Math.round(role.rate.hoursPerMonth() / HOURS_PER_MONTH * HOURS_PER_WEEK)
+    	else if (!role.rate.isFullyUtilized() && role.rate.type == "weekly")
+    		ONE_WEEK = role.rate.hoursPerWeek; 
+    		
     	var totalCountDays = Math.ceil((coverageTimeline[coverageTimeline.length - 1].date.getTime() - 
     			coverageTimeline[ 0 ].date.getTime()) / ONE_DAY);
     	var currentCountDays = 0;
@@ -503,8 +510,8 @@ angular.module('Mastermind.services.projects')
     	totalCountDays -= substractDays;
     	
     	result.percentageCovered = Math.round(100 * totalCovered / totalCountDays);
-    	result.percentageExtraCovered = Math.round(100 * totalExtraCovered / totalCountDays);
-    	result.percentageNeededToCover = Math.round(100 * (1 - kMin));
+    	result.hoursExtraCovered = Math.round(ONE_WEEK * totalExtraCovered / totalCountDays);
+    	result.hoursNeededToCover = kMin == 1 ? ONE_WEEK : Math.round(ONE_WEEK * (1 - kMin));
     	
     	return result;
     }

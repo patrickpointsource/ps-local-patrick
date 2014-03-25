@@ -42,8 +42,8 @@
 						<th></th>
 					</tr>
 				</thead>
-				<tbody ng-repeat="role in $data">
-					<tr>
+				<tbody ng-repeat="role in $data" class="{{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+					<tr class="panel-heading">
 	                    <td colspan="7">
 	                    	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
 	                    	<span ng-show="role.rate.isFullyUtilized()">100%</span>&nbsp;
@@ -51,6 +51,7 @@
 	                      	<small>{{role.startDate | date:'MMM d y'}}</small>
 		                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
 		                      <span ng-hide="role.endDate">- N/A</span>
+		                      <span>{{getCoverageValue(role)}}</span>
 	                    </td>
 	                </tr>
 					<tr ng-repeat="assignee in role.assignees" ng-if="assignee.person && assignee.person.resource">
