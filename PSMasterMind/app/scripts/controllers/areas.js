@@ -120,6 +120,11 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     	else if(state == 'Done'){
     		ret = 'fa fa-times-circle-o';
     	}
+    	else if(state == 'Deal Lost'){
+    		ret = 'fa fa-minus-circle';
+    	}
+    	
+    	
     	
     	return ret;
     }

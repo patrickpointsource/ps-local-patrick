@@ -31,6 +31,9 @@ angular.module('Mastermind.controllers.projects')
       else if (filter == 'completed') {
           ProjectsService.getCompletedProjects(reloadProjects);
       }
+      else if (filter == 'deallost') {
+          ProjectsService.getDealLostProjects(reloadProjects);
+      }
       else {
         //Default to all
         $scope.projectFilter = 'all';

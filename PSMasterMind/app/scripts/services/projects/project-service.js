@@ -624,11 +624,46 @@ angular.module('Mastermind.services.projects')
       /*
        * Changing active project Query to use the committed flag and the project type.
        */
-      var apQuery = {endDate:{$lt:today}};
+      var apQuery = { $and: [
+                             {endDate:{$lt:today}},
+                             { $and: [
+                                      {'committed': true}
+                                     ]
+                             },
+                             ]
+      				};
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
     };
+    
+    this.getDealLostProjects = function (onSuccess){
+    	//Get todays date formatted as yyyy-MM-dd
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd<10){
+          dd='0'+dd;
+        }
+        if (mm<10){
+          mm='0'+mm;
+        }
+        today = yyyy+'-'+mm+'-'+dd;
+        
+        var apQuery = { $and: [
+                               {endDate:{$lt:today}},
+                               { $and: [
+                                        {'committed': false}
+                                       ]
+                               },
+                               ]
+        				};
+
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
+
+        return Resources.query('projects', apQuery, apFields, onSuccess);
+    }
     
     
     var getSixMonthsOfDates = function(monthInc){
@@ -678,7 +713,12 @@ angular.module('Mastermind.services.projects')
     		var committed = project.committed;
     		
     		if(endDate && endDate < today){
-    			ret = 'Done';
+    			if(!committed){
+    				ret = 'Deal Lost';
+    			}
+    			else {
+    				ret = 'Done';
+    			}
     		}
     		else if(type && type!="paid"){
     			ret = 'Investment';
@@ -729,7 +769,7 @@ angular.module('Mastermind.services.projects')
 
         Resources.query('projects', query, fields, function(results){
         	var projects = results.data;
-        	var ret = {active:0,backlog:0,pipeline:0,investment:0};
+        	var ret = {active:0,backlog:0,pipeline:0,investment:0,deallost:0};
         	for(var i = 0; i < projects.length;i++){
         		var project = projects[i];
         		var state = getProjectState(project);
@@ -738,6 +778,7 @@ angular.module('Mastermind.services.projects')
         		if(state == 'Backlog')ret.backlog++;
         		if(state == 'Pipeline')ret.pipeline++;
         		if(state == 'Investment')ret.investment++;
+        		if(state == 'Deal Lost')ret.deallost++;
         	}
         	
         	deferred.resolve(ret);
