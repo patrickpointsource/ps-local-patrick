@@ -223,11 +223,11 @@ angular.module('Mastermind')
     	var HOURS_PER_WEEK = 40;
     	
     	if (role.percentageCovered < 100)
-    		result = '+' + role.hoursNeededToCover;
+    		result = '-' + role.hoursNeededToCover;
     	
     	if (role.hoursExtraCovered > 0) {
     		result = result ? ('/' + result): '';
-    		result = '-' + role.hoursExtraCovered;
+    		result = '+' + role.hoursExtraCovered;
     	}
     	
     	if (result)
