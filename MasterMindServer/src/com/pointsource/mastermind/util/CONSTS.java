@@ -10,6 +10,7 @@ public interface CONSTS {
 	public String RESOURCE_GPLUS = "gplus";
 	public String RESOURCE_GROUPS = "groups";
 	public String RESOURCE_HOURS = "hours";
+	public String RESOURCE_JAZZ_HUB = "jazzHub";
 	public String RESOURCE_LINKS = "links";
 	public String RESOURCE_PEOPLE = "people";
 	public String RESOURCE_PROJECTS = "projects";
@@ -83,6 +84,13 @@ public interface CONSTS {
 	public String PROP_USERS = "users";
 	
 	/**
+	 * RDF Namespaces
+	 */
+	public String NS_DCTERMS = "http://purl.org/dc/terms/";
+	public String NS_OSLC = "http://open-services.net/ns/core#";
+	public String NS_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	
+	/**
 	 * Constant values 
 	 */
 	public String VALUES_ACCOUNT_TYPES_GOOGLE = "Google";
@@ -136,6 +144,7 @@ public interface CONSTS {
 	public String RESOURCE_TITLE_ROLES = "Roles";
 	public String RESOURCE_TITLE_SKILLS = "Skills";
 	public String RESOURCE_TITLE_HOURS = "Hours";
+	public String RESOURCE_TITLE_JAZZ_HUB = "Jazz Hub";
 	public String RESOURCE_TITLE_ASSIGNMENTS = "Assignments";
 	
 	/**
@@ -183,4 +192,12 @@ public interface CONSTS {
 	public String HEADER_AUTHORIZATION = "Authorization";
 	public String AUTH_TYPE = "Bearer";
 	public String GOOGLE_PLUS_PEOPLE_URI = "https://www.googleapis.com/plus/v1/people/";
+	
+	
+	/**
+	 * Jazz Hub Constants
+	 */
+	public String JAZZ_HUB_USERID = "psbot";
+	public String JAZZ_HUB_USER_PASS = "P0!ntS0urc3!";
+	public String JAZZ_HUB_BASE = "https://hub.jazz.net/ccm01/";
 }
