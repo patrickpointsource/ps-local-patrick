@@ -217,7 +217,7 @@ public class Projects extends BaseResource {
 	/**
 	 * GET roles associated with a project by id
 	 * 
-	 * The list of project roles with assignments
+	 * The list of project roles
 	 */
 	@GET
 	@Path("{id}/" + CONSTS.RESOURCE_ROLES)

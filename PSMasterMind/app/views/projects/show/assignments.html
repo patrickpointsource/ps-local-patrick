@@ -61,6 +61,10 @@
                       	<small>{{role.startDate | date:'MMM d y'}}</small>
 	                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
 	                      <span ng-hide="role.endDate">- N/A</span>
+	                      &nbsp;
+	                    <span style="background-color: {{getCoverageColor(role)}}; height: 15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	                   	<span>{{role.percentageCovered}} %</span>
+	                   	<span>over: {{role.percentageExtraCovered}} %</span>
                     </td>
                     <td class="actionsCell">
                     	<button ng-if="editMode" class="btn btn-default" ng-click="addNewAssignmentToRole($index, role)">

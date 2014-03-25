@@ -39,7 +39,9 @@ public class UpgradeServlet extends HttpServlet {
 			context.setBaseURI(new URI(CONSTS.PUBLIC_BASE_URL));
 			Data.synchPeople(context);
 			Data.migrateCommitted(context);
-			Data.migrateAssignees(context);
+			//Data.migrateAssignees(context);
+			Data.convertAssignmentPercentageToHoursPerWeek(context);
+			Data.removeRolesAbout(context);
 		} catch (Exception e) {
 			e.printStackTrace();
 			resp.sendError(500, e.getLocalizedMessage());

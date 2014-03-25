@@ -69,7 +69,7 @@ angular.module('Mastermind.controllers.projects')
 			*/	
 		return result;
 	}
-	
+	/*
 	$scope.getDefaultRolePercentage = function(role) {
 		var defaultPercentage = 100;
 		var hoursPerMonth = parseFloat(role.rate.hoursPerMonth());
@@ -82,11 +82,19 @@ angular.module('Mastermind.controllers.projects')
 		
 		return defaultPercentage;
 	}
+	*/
+	$scope.getDefaultRoleHoursPerWeek = function(role) {
+		var HOURS_PER_WEEK = 40;
+		
+		return Math.round(role.percentageNeededToCover * 40 / 100);
+	}
+	
 	$scope.addNewAssignmentToRole =  function (index, role) {
 		role.assignees.push(AssignmentService.create({
           startDate:$scope.project.startDate,
           endDate:$scope.project.endDate,
-          percentage: $scope.getDefaultRolePercentage(role)
+          //percentage: $scope.getDefaultRolePercentage(role)
+          hoursPerWeek: $scope.getDefaultRoleHoursPerWeek(role)
         }))
 	}
 	
@@ -385,7 +393,8 @@ angular.module('Mastermind.controllers.projects')
 				var props = {
 		          startDate:$scope.project.startDate,
 		          endDate:$scope.project.endDate,
-		          percentage: $scope.getDefaultRolePercentage(role)
+		          //percentage: $scope.getDefaultRolePercentage(role),
+		          hoursPerWeek: $scope.getDefaultRoleHoursPerWeek(role)
 		        };
 				
 				
@@ -395,17 +404,27 @@ angular.module('Mastermind.controllers.projects')
 			}
 		}
     	
+    	AssignmentService.calculateRolesCoverage($scope.project.roles, $scope.projectAssignment.members ? $scope.projectAssignment.members: [])
     	$scope.$emit('roles:assignments:change')
     }
    
+    $scope.getCoverageColor = function(role) {
+    	var start = 0;
+    	var end = 120;
+    	
+    	var a = role.percentageCovered / 100;
+    	 
+		var b = end * a;
+		var c = b + start;
+		
+		//Return a CSS HSL string
+		return 'hsl('+c+',100%,50%)';
+    }
+    
     $scope.handleAssignmentsFilterChanged();
     
     if ($state.is("projects.show.tabId.edit") && $scope.adminAccess) {
     	$scope.edit();
     }
-    /*
-    AssignmentService.getRoles($scope.project).then(function(result) {
-		var tmp = result;
-	})
-    */
+   
   }]);

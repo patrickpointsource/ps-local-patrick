@@ -31,25 +31,25 @@ angular.module('Mastermind.services.projects')
      
     //Assignee for each entry is Required
 	  var anyResourceUnassigned = false;
-	  var anyPercentageMissed = false;
+	  var anyHoursPerWeekMissed = false;
 	  var countEmptyPersons = 0;
 	  
 	  for (var i = 0; i < assignments.length; i ++) {
 		  if (!(assignments[i].person && assignments[i].person.resource)) 
 			  anyResourceUnassigned = true;
 		  
-		  if (!assignments[i].percentage)
-			  anyPercentageMissed = true;
+		  if (!assignments[i].hoursPerWeek)
+			  anyHoursPerWeekMissed = true;
 		  
-		  if (!assignments[i].percentage || !(assignments[i].person && assignments[i].person.resource))
+		  if (!assignments[i].hoursPerWeek || !(assignments[i].person && assignments[i].person.resource))
 			  countEmptyPersons ++;
 	  }
 
 	  // allow one entry assignment to keep role unassigned
-    if(anyResourceUnassigned && anyPercentageMissed && (countEmptyPersons >= 1 && assignments.length > 1)){
+    if(anyResourceUnassigned && anyHoursPerWeekMissed && (countEmptyPersons >= 1 && assignments.length > 1)){
       errors.push('For each assignee entry can\'t be empty');
-    } else if(anyPercentageMissed && !anyResourceUnassigned){
-        errors.push('For each assignee entry percentage is required');
+    } else if(anyHoursPerWeekMissed && !anyResourceUnassigned){
+        errors.push('For each assignee entry hours per week is required');
     }
       
       
@@ -334,8 +334,179 @@ angular.module('Mastermind.services.projects')
       return val;
     }
     
-    this.getRoles = function(project) {
-    	return Resources.get(project.about + '/roles');
+    this.calculateRolesCoverage = function(roles, assignments) {
+    	var assignmentsMap = {};
+    	
+    	var findRole = function(roleResource) {
+			return _.find(roles, function(r){
+				return roleResource.indexOf(r._id) > -1;
+			})
+		}
+    	
+    	for (var i = 0; i < roles.length; i ++) {
+    		assignmentsMap[roles[i]._id] = [];
+    	}
+    	
+    	var role;
+    	
+    	
+    	for (var i = 0; i < assignments.length; i ++) {
+    		if (assignments[i].role && assignments[i].role.resource)
+				role = findRole(assignments[i].role.resource)
+			else
+				role = null;
+			
+			
+			if (role)
+				assignmentsMap[ role._id ].push(assignments[i])
+    	}
+    	
+    	var currentResult;
+    	
+    	for (var i = 0; i < roles.length; i ++) {
+    		currentResult = this.calculateSingleRoleCoverage(roles[i], assignmentsMap[ roles[i]._id ]);
+    		
+    		roles[i].percentageCovered = currentResult.percentageCovered;
+    		roles[i].percentageExtraCovered = currentResult.percentageExtraCovered;
+    		roles[i].percentageNeededToCover = currentResult.percentageNeededToCover;
+    	}
+    	
+    	//return result;
+    }
+    
+    this.calculateSingleRoleCoverage = function(role, assignments) {
+    	var result = {
+    		percentageCovered: 0,
+    		percentageExtraCovered: 0
+    	}
+    	
+    	// store info about role assignments on timeline
+    	var minDate = new Date(role.startDate);
+    	var maxDate = new Date(role.endDate);
+    	
+    	var coverageTimeline = [{
+    		date: new Date(role.startDate),
+    		entity: role,
+    		type: 'start',
+    		hours: 0,
+    		isRole: true
+    	}, {
+    		date: new Date(role.endDate),
+    		entity: role,
+    		type: 'end',
+    		hours: 0,
+    		isRole: true
+    	}];
+    	
+    	
+    	for (var i = 0; i < assignments.length; i ++) {
+    		coverageTimeline.push({
+        		date: new Date(assignments[i].startDate),
+        		entity: assignments[i],
+        		type: 'start',
+        		hours: 0
+        	})
+        	
+        	// prevent from calculation errors where assignm,ents done for earlier or bigger dates than role
+        	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
+        		coverageTimeline[coverageTimeline.length - 1].date = minDate;
+    		
+    		if (coverageTimeline[coverageTimeline.length - 1].date > maxDate)
+        		coverageTimeline[coverageTimeline.length - 1].date = maxDate;
+    		
+        	coverageTimeline.push({
+        		date: new Date(assignments[i].endDate),
+        		entity: assignments[i],
+        		type: 'end',
+        		hours: 0
+        	})
+        	
+        	// prevent from calculation errors where assignm,ents done for earlier or bigger dates than role
+        	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
+        		coverageTimeline[coverageTimeline.length - 1].date = minDate;
+    		
+    		if (coverageTimeline[coverageTimeline.length - 1].date > maxDate)
+        		coverageTimeline[coverageTimeline.length - 1].date = maxDate;
+    	}
+    	
+    	// sort timeline so that we will have all period divided into few small periods with  stable assignments covrage during this period
+    	coverageTimeline.sort(function(o1, o2) {
+    		if (o1.date > o2.date)
+				return 1;
+			else if (o1.date < o2.date)
+				return -1;
+			
+    		if (o1.isRole && !o2.isRole && o1.type == 'end')
+    			return 1;
+    		else if (!o1.isRole && o2.isRole && o2.type == 'end')
+    			return -1;
+    		else if (o1.type == 'end' && o2.type != 'end')
+    			return -1;
+    		else if (o2.type == 'end' && o1.type != 'end')
+    			return 1;
+    		
+			return 0;
+    	})
+    	
+    	// calculate for each period its h/w coverage
+    	var currentHoursPerWeek = 0;
+    	var ONE_DAY = 24 * 60 * 60 * 1000; 
+    	
+    	for (var i = 1; i < (coverageTimeline.length - 1); i ++) {
+    		
+    		//if (coverageTimeline[i].type == 'end' && coverageTimeline[i].entity != coverageTimeline[i - 1].entity)
+    		//	currentHoursPerWeek += coverageTimeline[i].entity.hoursPerWeek;
+    		if (coverageTimeline[i].type == 'start')
+    			currentHoursPerWeek += coverageTimeline[i].entity.hoursPerWeek;
+    		else if (coverageTimeline[i].type == 'end')
+    			currentHoursPerWeek -= coverageTimeline[i].entity.hoursPerWeek;
+    		
+    		
+    		coverageTimeline[i].hours = currentHoursPerWeek;
+    	}
+    	
+    	
+    	// calculate total percentage coverage
+    	var ONE_WEEK = 40;
+    	
+    	var totalCountDays = Math.ceil((coverageTimeline[coverageTimeline.length - 1].date.getTime() - 
+    			coverageTimeline[ 0 ].date.getTime()) / ONE_DAY);
+    	var currentCountDays = 0;
+    	var currentK = 0;
+    	var currentExtraK = 0;
+    	var totalCovered = 0;
+    	var totalExtraCovered = 0;
+    	var kMin = 1;
+    	var substractDays = 0;
+    	
+    	for (var i = 1; i < (coverageTimeline.length - 1); i ++) {
+    		currentK = coverageTimeline[i].hours / ONE_WEEK;
+    		
+    		currentExtraK = currentK > 1 ? (currentK - 1): 0;
+    		currentK = currentK > 1 ? 1: currentK;
+
+    		currentCountDays = Math.ceil((coverageTimeline[i + 1].date.getTime() - 
+        			coverageTimeline[ i ].date.getTime()) / ONE_DAY);
+    		
+    		if (currentCountDays == 1 && coverageTimeline[i + 1].type == 'start' && coverageTimeline[i].type == 'end') {
+    			currentCountDays = 0;
+    			substractDays += 1;
+    		}
+    		
+    		if (currentCountDays > 0)
+    			kMin = kMin > currentK? currentK: kMin;
+    		
+    		totalCovered += currentCountDays * currentK;
+    		totalExtraCovered += currentCountDays * currentExtraK;
+    	}
+    	
+    	totalCountDays -= substractDays;
+    	
+    	result.percentageCovered = Math.round(100 * totalCovered / totalCountDays);
+    	result.percentageExtraCovered = Math.round(100 * totalExtraCovered / totalCountDays);
+    	result.percentageNeededToCover = Math.round(100 * (1 - kMin));
+    	
+    	return result;
     }
     
     /**

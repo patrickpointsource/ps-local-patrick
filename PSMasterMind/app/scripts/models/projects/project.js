@@ -97,7 +97,8 @@ angular.module('Mastermind.models.projects')
       type: undefined,
       startDate: undefined,
       endDate: undefined,
-      person: undefined
+      person: undefined,
+      hoursPerWeek: 0
     };
 
     function formatDate(date) {
@@ -121,6 +122,7 @@ angular.module('Mastermind.models.projects')
       
       this.about = options.about || defaults.about;
       this.percentage = options.percentage || defaults.percentage;
+      this.hoursPerWeek = options.hoursPerWeek || defaults.hoursPerWeek;
       this.startDate = options.startDate ? formatDate(options.startDate) : defaults.startDate;
       this.endDate = options.endDate ? formatDate(options.endDate) : defaults.endDate;
       this.person = options.person || defaults.person;

@@ -1204,15 +1204,6 @@ public class Data implements CONSTS {
 			String projectId) throws JSONException {
 
 		DBCollection assignmentCollection = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
-
-		// Only admins can create roles
-		if (!hasAdminAccess(context)) {
-			throw new WebApplicationException(
-					Response.status(Status.FORBIDDEN)
-							.entity("You need admin athority to perform this operation")
-							.build());
-		}
-
 		BasicDBObject query = new BasicDBObject();
 		
 		query.put(PROP_PROJECT, new BasicDBObject(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + projectId));
@@ -1458,7 +1449,7 @@ public class Data implements CONSTS {
 		CommandResult error = result.getLastError();
 		
 		if (error != null && error.getErrorMessage() != null) {
-			System.err.println("Add Project Failed:"
+			System.err.println("Add Project Assignment Failed:"
 					+ error.getErrorMessage());
 			if (error.getException() != null) {
 				error.getException().printStackTrace();
@@ -1468,15 +1459,6 @@ public class Data implements CONSTS {
 					.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(error.getErrorMessage()).build());
 		}
-		
-//		DBCursor cursorDoc = projectsCol.find();
-//		while (cursorDoc.hasNext()) {
-//			DBObject created = cursorDoc.next();
-//			// System.out.println("Found: " + created);
-//
-//			ObjectId oId = (ObjectId) created.get(PROP__ID);
-//			String idVal = oId.toString();
-//		}
 
 		return newAssignment;
 	}
@@ -2261,7 +2243,7 @@ public class Data implements CONSTS {
 	}
 	
 	/**
-	 * Sprint 7 to sprint 8 migrate Project 'terms.committed' to 'committed' 
+	 * Sprint 7 to sprint 8 migrate Roles assignees
 	 */
 	public static void migrateAssignees(RequestContext context) throws IOException{
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
@@ -2574,12 +2556,117 @@ public class Data implements CONSTS {
 					}
 				}
 				
-				if (assignments.length() > 0)
+				if (assignments.length() > 0) {
+					deleteProjectAssignments(context, oId.toString());
 					createProjectAssignments(context, oId.toString(), assignments);
+				}
 				
 				if (projectChanged)
 					updateProject(context,  oId.toString(), jsonProject);
 				
+			} else {
+				System.out
+						.println("Project not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+		
+	}
+	
+	/**
+	 * Sprint 8 to sprint 9 migrate Removes roles about
+	 */
+	public static void removeRolesAbout(RequestContext context) throws IOException{
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		JSONObject jsonProject = null;
+		DBCursor projectsCursor = projectsCol.find();
+
+		boolean projectChanged = false;
+		
+		while (projectsCursor.hasNext()) {
+			DBObject object = projectsCursor.next();
+
+			if (object.containsField(PROP__ID)) {
+				ObjectId oId = (ObjectId) object.get(PROP__ID);
+				String json = JSON.serialize(object);
+				jsonProject = new JSONObject(json);
+				
+				projectChanged = false;
+				JSONObject role = null;
+
+
+				
+				JSONArray roles = (JSONArray) jsonProject.get("roles");
+				
+				for (int i = 0; i < roles.length(); i ++) {
+					role = roles.getJSONObject(i);
+					
+					
+					if (role.has(PROP_ABOUT) ) {
+						role.remove(PROP_ABOUT);
+						projectChanged = true;
+					} 
+				}
+				
+				if (projectChanged)
+					updateProject(context,  oId.toString(), jsonProject);
+				
+			} else {
+				System.out
+						.println("Project not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+		
+	}
+	
+	public static void convertAssignmentPercentageToHoursPerWeek(RequestContext context) throws IOException{
+		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		
+		JSONObject jsonAssignment = null;
+		DBCursor assignmentsCursor = assignmentsCol.find();
+
+		boolean assignmentsChanged = false;
+		
+		while (assignmentsCursor.hasNext()) {
+			DBObject object = assignmentsCursor.next();
+
+			if (object.containsField(PROP__ID)) {
+				String oId =  "";
+				
+				String json = JSON.serialize(object);
+				jsonAssignment = new JSONObject(json);
+				
+				if (jsonAssignment.has(PROP_PROJECT)) {
+					JSONObject proj = jsonAssignment.getJSONObject(PROP_PROJECT);
+					oId = proj.getString(PROP_RESOURCE).replaceAll(RESOURCE_PROJECTS + "/", "");
+				}
+				
+				assignmentsChanged = false;
+						
+				JSONObject assignment = null;
+				//JSONArray assignments = null;
+				int percentage;
+				int hoursPerWeek = 0;
+				
+				JSONArray members = (JSONArray) jsonAssignment.get("members");
+				
+				for (int i = 0; i < members.length(); i ++) {
+					assignment = members.getJSONObject(i);
+					
+					percentage = assignment.getInt("percentage");
+					
+					hoursPerWeek = Math.round(percentage * 40 / 100);
+					
+					assignment.put("hoursPerWeek", hoursPerWeek);
+					assignmentsChanged = true;
+				}
+				
+				if (assignmentsChanged) {
+					deleteProjectAssignments(context, oId.toString());
+					createProjectAssignments(context, oId.toString(), members);
+				}
+
 			} else {
 				System.out
 						.println("Project not included because it did not return an _id property: "
