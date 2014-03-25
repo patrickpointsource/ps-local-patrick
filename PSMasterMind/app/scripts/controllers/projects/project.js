@@ -221,17 +221,26 @@ angular.module('Mastermind')
     $scope.getCoverageValue = function(role) {
     	var result = '';
     	var HOURS_PER_WEEK = 40;
+    	var HOURS_PER_MONTH = 180;
+    	var isMonthly = role.rate.type == "hourly";
+    	var getHours = function(h) {
+    		if (isMonthly)
+    			return Math.round(HOURS_PER_MONTH * h / HOURS_PER_WEEK);
+    		
+    		return h;
+    			
+    	}
     	
     	if (role.percentageCovered < 100)
-    		result = '-' + role.hoursNeededToCover;
+    		result = '-' + getHours(role.hoursNeededToCover);
     	
     	if (role.hoursExtraCovered > 0) {
     		result = result ? ('/' + result): '';
-    		result = '+' + role.hoursExtraCovered;
+    		result = '+' + getHours(role.hoursExtraCovered);
     	}
     	
     	if (result)
-    		result += ' h/w'
+    		result += isMonthly ? ' h/m': ' h/w'
     	
     	return result;
     }
@@ -606,8 +615,8 @@ angular.module('Mastermind')
 		}
     }
     
-    $scope.openAssignments = function(){
-    	$state.go('projects.show.tabId', {
+    $scope.editAssignments = function(){
+    	$state.go('projects.show.tabId.edit', {
 				tabId: 'assignments',
 				filter: 'all'
 		});

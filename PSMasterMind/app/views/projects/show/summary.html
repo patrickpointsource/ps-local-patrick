@@ -31,23 +31,13 @@
 		<div class="col-xs-12">
 			<table ng-table="summaryRolesTableParams" class="table peopleList"
 				template-pagination="custom/pager">
-				<thead>
-					<tr>
-						<th>Person Assigned</th>
-						<th class="hidden-xs">Role</th>
-						<th>Hours per Week</th>
-						<th class="hidden-xs">Start Date</th>
-						<th class="hidden-xs">End Date</th>
-						<th class="visible-xs">Dates</th>
-						<th></th>
-					</tr>
-				</thead>
 				<tbody ng-repeat="role in $data" class="{{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
 					<tr class="panel-heading">
 	                    <td colspan="7">
 	                    	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
 	                    	<span ng-show="role.rate.isFullyUtilized()">100%</span>&nbsp;
-	                      	<span ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}} h/m</span>&nbsp;
+	                      	<span ng-hide="role.rate.isFullyUtilized() || role.rate.type != 'hourly'">{{role.rate.hoursPerMonth()}} h/m</span>&nbsp;
+	                      	<span ng-hide="role.rate.type == 'hourly'">{{role.rate.hoursPerWeek}} h/w</span>&nbsp;
 	                      	<small>{{role.startDate | date:'MMM d y'}}</small>
 		                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
 		                      <span ng-hide="role.endDate">- N/A</span>
@@ -82,7 +72,11 @@
 				<tfoot >
 					<tr>
 						<td colspan="7">
-							<div class="row "><div class="col-sm-12"><a href="javascript:void(0)" ng-click="openAssignments()">More</a></div></div>
+							<div class="row ">
+								<div class="col-sm-12">
+									<button ng-hide="editMode || !adminAccess" class="btn" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
+								</div>
+							</div>
 						</td>
 					</tr>
 				</tfoot>

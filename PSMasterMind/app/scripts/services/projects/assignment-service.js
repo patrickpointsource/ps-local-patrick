@@ -382,7 +382,7 @@ angular.module('Mastermind.services.projects')
     	
     	// store info about role assignments on timeline
     	var minDate = new Date(role.startDate);
-    	var maxDate = new Date(role.endDate);
+    	var maxDate = role.endDate ? new Date(role.endDate): null;
     	
     	var coverageTimeline = [{
     		date: new Date(role.startDate),
@@ -390,14 +390,16 @@ angular.module('Mastermind.services.projects')
     		type: 'start',
     		hours: 0,
     		isRole: true
-    	}, {
-    		date: new Date(role.endDate),
-    		entity: role,
-    		type: 'end',
-    		hours: 0,
-    		isRole: true
     	}];
     	
+    	if (role.endDate)
+    		coverageTimeline.push({
+        		date: new Date(role.endDate),
+        		entity: role,
+        		type: 'end',
+        		hours: 0,
+        		isRole: true
+        	})
     	
     	for (var i = 0; i < assignments.length; i ++) {
     		coverageTimeline.push({
@@ -411,7 +413,7 @@ angular.module('Mastermind.services.projects')
         	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
         		coverageTimeline[coverageTimeline.length - 1].date = minDate;
     		
-    		if (coverageTimeline[coverageTimeline.length - 1].date > maxDate)
+    		if (maxDate && coverageTimeline[coverageTimeline.length - 1].date > maxDate)
         		coverageTimeline[coverageTimeline.length - 1].date = maxDate;
     		
         	coverageTimeline.push({
@@ -509,8 +511,8 @@ angular.module('Mastermind.services.projects')
     	
     	totalCountDays -= substractDays;
     	
-    	result.percentageCovered = Math.round(100 * totalCovered / totalCountDays);
-    	result.hoursExtraCovered = Math.round(ONE_WEEK * totalExtraCovered / totalCountDays);
+    	result.percentageCovered = totalCountDays ? Math.round(100 * totalCovered / totalCountDays): 0;
+    	result.hoursExtraCovered = totalCountDays ? Math.round(ONE_WEEK * totalExtraCovered / totalCountDays): 0;
     	result.hoursNeededToCover = kMin == 1 ? ONE_WEEK : Math.round(ONE_WEEK * (1 - kMin));
     	
     	return result;
