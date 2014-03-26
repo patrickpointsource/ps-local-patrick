@@ -30,7 +30,7 @@
 									<i class="fa fa-briefcase"></i> Project Kickoffs
 								</div>
 								<div class="panel-body">
-									<div class="row" ng-repeat="project in projectsKickingOff | orderBy:'startDate'"" >
+									<div class="row" ng-repeat="project in projectsKickingOff | orderBy:'startDate'" >
 										<div class="col-xs-8 col-lg-7 text-left"><i class="{{projectStateIcon(project)}}"></i> <a
 											ng-href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a></div>
 										<div class="col-xs-4 col-lg-5" ng-class="{'text-success':{{startWithinAMonth(project)}}}">{{dateString(project.startDate)}}</div>
@@ -91,7 +91,7 @@
 					<i class="fa fa-users"></i> Booking Forecast
 					<div class="checkbox pull-right" style="margin-top:0px">
 					
-					      <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"> Show Pipeline
+					      <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"/> Show Pipeline
 					    
 					  </div>
 				</div>
