@@ -96,6 +96,30 @@ angular.module('Mastermind')
     	  $scope.close();
       }
     };
+    
+    $scope.getExecutiveSponsor = function() {
+    	var resource = $scope.project.executiveSponsor.resource;
+    	var name = _.findWhere($scope.execs.members, { resource: resource }).name;
+    	if(typeof name === 'undefined') {
+    		name = '';
+    	}
+    	return name;
+    };
+    
+    $scope.getSalesSponsor = function() {
+    	if($scope.project.salesSponsor){
+    		var resource = $scope.project.salesSponsor.resource;
+    		var name = _.findWhere($scope.sales.members, { resource: resource }).name;
+        	if(typeof name === 'undefined') {
+        		name = '';
+        	}
+    	}
+    	else {
+    		name = '';
+    	}
+    	
+    	return name;
+    };
 
     /**
      * Get the date short format
