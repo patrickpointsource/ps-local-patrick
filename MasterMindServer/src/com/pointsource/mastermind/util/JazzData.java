@@ -2,6 +2,7 @@ package com.pointsource.mastermind.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +100,48 @@ public class JazzData implements CONSTS {
 			    detail.put(PROP_RESOURCE, detailResource);
 			    project.put("details", detail);
 		    }
+		    
+		    String[] parts = title.split("\\|");
+		    if(parts.length >= 2){
+			    String userPart = parts[0].trim();
+			    String projPart = URLEncoder.encode(parts[1].trim(), "UTF-8");
+			    //Use %20 not +
+			    projPart = projPart.replaceAll("\\+", "%20");
+			    
+			    /**
+			     * Create a Jazz Hub Project Link in the form https://hub.jazz.net/project/kmbauer/PointSource%20MasterMind
+			     * from the title kmbauer|PointSource MasterMind
+			     */
+			    String url = "https://hub.jazz.net/project/"+userPart+"/"+projPart;
+			    JSONObject homePage = new JSONObject();
+			    homePage.put(PROP_RESOURCE, url);
+			    project.put("homePage", homePage);
+			    
+			    /**
+			     * Create a link to the Dashboard in the form https://hub.jazz.net/ccm01/web/projects/kmbauer/PointSource%20MasterMind#action=com.ibm.team.dashboard.viewDashboard
+			     * from the title kmbauer|PointSource MasterMind
+			     */
+			    String dashURL = "https://hub.jazz.net/ccm01/web/projects/"+userPart+"%20%7C%20"+projPart+"#action=com.ibm.team.dashboard.viewDashboard";
+			    JSONObject dashboard = new JSONObject();
+			    dashboard.put(PROP_RESOURCE, dashURL);
+			    project.put("dashboard", dashboard);
+			    
+			    /**
+			     * Create a link to the current project plans in the form https://hub.jazz.net/ccm01/web/projects/kmbauer%20%7C%20PointSource%20MasterMind#action=com.ibm.team.apt.search&predef=current
+			     * from the title kmbauer|PointSource MasterMind
+			     */
+			    String plansUrl = "https://hub.jazz.net/ccm01/web/projects/"+userPart+"%20%7C%20"+projPart+"#action=com.ibm.team.apt.search&predef=current";
+			    JSONObject plans = new JSONObject();
+			    plans.put(PROP_RESOURCE, plansUrl);
+			    project.put("currentPlans", plans);
+			    
+		    }
+		    else{
+		    	System.err.println("Failed to parse project title: " + title);
+		    }
+		    
+		    
+		    
 		    array.put(project);
 		}
 		

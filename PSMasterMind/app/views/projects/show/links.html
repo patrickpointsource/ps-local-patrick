@@ -1,10 +1,54 @@
 <div ng-controller="LinksCtrl">
+  <br/>
+  <div class="panel panel-info" >
+		<div class="panel-heading"><img src="images/jazzHub.png" style="display: inline-block !important; vertical-align: top !important; height:20px;width:auto"/> JazzHub</div>
+		<div class="panel-body">
+			<div class="row" ng-if="notJHLinked">
+				<div class="col-xs-12">
+					<div class="hidden-xs  hidden-md">
+						<img src="images/jazzHubLg.png" class="hidden-xs hidden-md pull-left" style="display: inline-block !important; vertical-align: top !important; max-width:160px;width:auto"/>	
+					</div>
+					<div style="display: inline-block !important; vertical-align: middle !important;">
+						<h2>Project not linked with JazzHub</h2>
+		  				<button class="btn btn-lg btn-default" ng-click="handleLinkProjectRequest()"><i class="fa fa-link"></i> Link Projects</button>
+	  				</div>
+  				</div>
+			</div>
+			<div ng-if="linkWithJazzHub">
+				<h2 ng-if="!JHProjectsLoaded">Loading JazzHub projects please wait...</h2>
+				<div ng-if="JHProjectsLoaded">
+					<input class="form-control" placeholder="Filter Projects" ng-model="filterText" autofocus />
+					<div class="row-fluid ">
+						<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="project in jazzHubProjects | filter:filterText | orderBy:'title'">
+							<div class="panel">
+								<button class="btn btn-default" ng-click="handleLinkProjectWithJazzHub(project.resource)"><span style="display:inline;white-space: nowrap;width: 100%;overflow: hidden;text-overflow: ellipsis;">{{project.title}}</span></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-if="linkedWithJazzHub">
+				<div style="width: 100%; display: inline-block !important; vertical-align: middle !important;">
+					<img src="images/jazzHubLg.png" class="hidden-xs hidden-md pull-left" style="display: inline-block !important; vertical-align: top !important; max-width:160px;width:auto"/>	
+					<p>
+						<h2><a href="{{jazzHubProject.homePage.resource}}">{{jazzHubProject.title}}</a></h2>
+						<div style="padding:5px;">
+						<a style="border:1px solid #cccccc" class="text-center btn-lg btn-default" href="{{jazzHubProject.dashboard.resource}}"><i class="fa fa-tachometer"></i> Dashboard</a>
+  						<a style="border:1px solid #cccccc" class="text-center btn-lg btn-default" href="{{jazzHubProject.currentPlans.resource}}"><i class="fa fa-tasks"></i> Plans</a>
+  						</div>
+  					</p>
+  				</div>
+			</div>
+		</div>
+  	
+  </div>
+
   <div class="row">
     <div class="col-xs-2"><h3>Links</h3></div>
     <div class="actions col-xs-10 pageActions">
       <button type="button" ng-click="toggleNewLink()"
           class="btn btn-default pull-right" data-toggle="collapse" data-target="#newLinkDialog">
-        <i class="fa fa-plus-square"></i> <span>Add Links</span>
+          <i class="fa fa-plus-square"></i> <span>Add Links</span>
       </button>
       <button class="btn btn-default" ng-click="launchDropboxChooser()">
         <i class="fa fa-dropbox"></i> <span>Dropbox</span>

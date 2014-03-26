@@ -5,8 +5,8 @@
  * Controller for handling the Details form.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('LinksCtrl',['$scope', '$filter', 'Resources', 'ngTableParams',
-  function ($scope, $filter, Resources, TableParams) {
+  .controller('LinksCtrl',['$scope', '$filter', 'Resources', 'JazzHubService', 'ngTableParams',
+  function ($scope, $filter, Resources, JazzHubService, TableParams) {
     $scope.editLink = {};
     $scope.newLink = {};
 
@@ -234,5 +234,50 @@ angular.module('Mastermind.controllers.projects')
       };
       Dropbox.choose(options);
     };
+    
+    /**
+     * Jazz Hub Integration
+     */
+    //Flag the project is not yet linked with Jazz Hub
+    $scope.notJHLinked = true;
+    //Flag to indicate we have not loaded jazz hub yet
+    $scope.JHProjectsLoaded = false;
+    
+    /**
+     * Load the set of Jazz Hub projects and display them in a list
+     */
+    $scope.handleLinkProjectRequest = function(){
+    	$scope.notJHLinked = false;
+    	$scope.linkWithJazzHub = true;
+    	JazzHubService.getJazzHubProjects().then(function(result){
+        	$scope.jazzHubProjects = result.members;
+        	$scope.JHProjectsLoaded = true;
+        });
+    };
+    
+    /**
+     * Render the information about Jazz Hub
+     */
+    $scope.handleLinkProjectWithJazzHub = function(resource){
+    	//Find the project entry
+    	var jhProject = null;
+    	for(var i = 0; i < $scope.jazzHubProjects.length;i++){
+    		var ithJHProject = $scope.jazzHubProjects[i];
+    		var jhResource = ithJHProject.resource;
+    		
+    		if(jhResource == resource){
+    			jhProject = ithJHProject;
+    			break;
+    		}
+    	}
+    	
+    	if(jhProject){
+	    	$scope.jazzHubProject = Resources.deepCopy(jhProject);
+	    	
+	    	$scope.linkWithJazzHub = false;
+	    	$scope.linkedWithJazzHub = true;
+    	}
+    };
+   
 
   }]);
