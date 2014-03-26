@@ -236,7 +236,7 @@ angular.module('Mastermind')
     		result = 'panel-danger';
     	else if (role.percentageCovered < 100)
     		result = 'panel-warning';
-    	else
+    	else if (role.percentageCovered != undefined)
     		result = 'panel-success';
     	
     	return result;

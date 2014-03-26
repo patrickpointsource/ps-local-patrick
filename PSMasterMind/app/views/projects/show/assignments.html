@@ -48,12 +48,11 @@
 	        </ul>
 	    </div>
     
-        <div class="col-xs-12">
-            <table class="table peopleList" ng-table="roleTableParams" template-pagination="custom/pager">
+        <div class="col-sm-12">
               
-              <tbody ng-repeat="role in $data" class="{{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}" style="border-top:0px;">
-                <tr class="panel-heading">
-                    <td colspan="5">
+              <div ng-repeat="role in project.roles" class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+                <div class="panel-heading ">
+                   
                     	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
                     	<span ng-show="role.rate.isFullyUtilized()">100%</span>&nbsp;
                       	<span ng-hide="role.rate.isFullyUtilized() || role.rate.type != 'hourly'">{{role.rate.hoursPerMonth()}} h/m</span>&nbsp;
@@ -64,31 +63,31 @@
 	                      &nbsp;
 	                   	<span>{{getCoverageValue(role)}}</span>
 	                   	
-                    </td>
-                    <td class="actionsCell">
-                    	<button ng-if="editMode" class="btn btn-default" ng-click="addNewAssignmentToRole($index, role)">
+                   
+                   	<div class="pull-right  btn-group btn-group-sm" style="margin-top:-5px;">
+                    	<a ng-if="editMode" class="btn btn-default" ng-mousedown="addNewAssignmentToRole($index, role)">
 				            <div class="hidden-xs"><i class="fa fa-plus-square"></i> <span > Add Assignment</span></div>
         					<div class="visible-xs"><i class="fa fa-plus-square"></i></div>
-				        </button>
-                    </td>
-                </tr>
+				        </a>
+                    </div>
+                </div>
                 
-	             <tr ng-show="editMode" ng-if="editMode">
-	             	<td colspan="5">
-	             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}">
-						    <ng-include src="'views/projects/show/roleAssign.html'"/>
-						</div>
-	             	</td>
-	             </tr>
-	             <tr ng-show="!editMode" ng-if="!editMode">
-	             	<td colspan="5">
+	             <div class="row-fluid" ng-show="editMode" ng-if="editMode" style="padding-top: 12px; padding-left: 12px;">
+	             	
+             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}">
+					    <ng-include src="'views/projects/show/roleAssign.html'"/>
+					</div>
+	             	
+	             </div>
+	             <div ng-show="!editMode" ng-if="!editMode" class="row-fluid" style="padding-top: 12px; padding-left: 12px;">
+	             	
 	             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}" class="">
 						    <ng-include src="'views/projects/show/roleAssignView.html'"/>
 						</div>
-	             	</td>
-	             </tr>
-              </tbody>
-            </table>
+	             	
+	             </div>
+              </div>
+
             <script type="text/ng-template" id="custom/pager">
                 <ul class="pager ng-cloak">
                     <li ng-repeat="page in pages"
