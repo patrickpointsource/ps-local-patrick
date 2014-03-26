@@ -829,70 +829,86 @@ angular.module('Mastermind.services.projects')
     	
     	//First get the total nuber of billable hours per month
     	var deferred = $q.defer();
-    	var query = {
-    			groups:{
-    				$nin:['Sales','Executives']
+    	
+    	//find people who aren't billable
+    	//and then check
+    	Resources.query('roles', {isNonBillable:true},{title:1},function(result) {
+    		
+    		var nonBillableRolesArray = [];
+    		var memberLength = result.members.length;
+    		for(var i=0; i< memberLength; i++) {
+    			nonBillableRolesArray.push(result.members[i].resource);
+    		}
+    		
+    		var query = {
+    			'primaryRole.resource': {
+    				$nin : nonBillableRolesArray
     			},
-    			primaryRole:{
-    				'$exists': true
-    			}
-    		};
-    	var fields = {name:1};    	
-    	Resources.query('people',query,fields,function(result){
-    		var total = result.count*180;
-    		var comitments = [0,0,0,0,0,0];
-    		var dateChecks = getSixMonthsOfDates();
-    		for(var i = 0; i < projects.length; i++){
-    			var project = projects[i];
-    			if(project.committed || showPipeline){
-	    			var roles = project.roles;
-	    			for(var j = 0; j < roles.length; j++){
-	    				var role = roles[j];
-	    				var hoursPerMonth = 0;
-	    				if(role.rate.fullyUtilized){
-	    					hoursPerMonth = 180;
-	    				}
-	    				else if(role.rate.hoursPerMth){
-	    					hoursPerMonth = role.rate.hoursPerMth;
-	    				}
-	    				else if(role.rate.hoursPerWeek){
-	    					hoursPerMonth = role.rate.hoursPerWeek*4;
-	    				}
-	    				
-	    				//Check if roles if now active
-	    				if(role.startDate <= dateChecks[0] && (!role.endDate || role.endDate >= dateChecks[0])){
-	    					comitments[0]+=hoursPerMonth;
-	    				}
-	    				if(role.startDate <= dateChecks[1] && (!role.endDate || role.endDate >= dateChecks[1])){
-	    					comitments[1]+=hoursPerMonth;
-	    				}
-	    				if(role.startDate <= dateChecks[2] && (!role.endDate || role.endDate >= dateChecks[2])){
-	    					comitments[2]+=hoursPerMonth;
-	    				}
-	    				if(role.startDate <= dateChecks[3] && (!role.endDate || role.endDate >= dateChecks[3])){
-	    					comitments[3]+=hoursPerMonth;
-	    				}
-	    				if(role.startDate <= dateChecks[4] && (!role.endDate || role.endDate >= dateChecks[4])){
-	    					comitments[4]+=hoursPerMonth;
-	    				}
-	    				if(role.startDate <= dateChecks[5] && (!role.endDate || role.endDate >= dateChecks[5])){
-	    					comitments[5]+=hoursPerMonth;
-	    				}
-	    			}
+    			primaryRole : {
+    				'$exists' : true
     			}
     		}
-    	
-    		var ret = [
-		          {x: new Date(dateChecks[0]), value: comitments[0], otherValue: total},
-		          {x: new Date(dateChecks[1]), value: comitments[1], otherValue: total},
-		          {x: new Date(dateChecks[2]), value: comitments[2], otherValue: total},
-		          {x: new Date(dateChecks[3]), value: comitments[3], otherValue: total},
-		          {x: new Date(dateChecks[4]), value: comitments[4], otherValue: total},
-		          {x: new Date(dateChecks[5]), value: comitments[5], otherValue: total}
-    		];
+    		var fields = {name : 1, primaryRole: 1}
+        	
+        	Resources.query('people',query,fields,function(result){
+        		var total = result.count*180;
+        		var comitments = [0,0,0,0,0,0];
+        		var dateChecks = getSixMonthsOfDates();
+        		for(var i = 0; i < projects.length; i++){
+        			var project = projects[i];
+        			if(project.committed || showPipeline){
+    	    			var roles = project.roles;
+    	    			for(var j = 0; j < roles.length; j++){
+    	    				var role = roles[j];
+    	    				var hoursPerMonth = 0;
+    	    				if(role.rate.fullyUtilized){
+    	    					hoursPerMonth = 180;
+    	    				}
+    	    				else if(role.rate.hoursPerMth){
+    	    					hoursPerMonth = role.rate.hoursPerMth;
+    	    				}
+    	    				else if(role.rate.hoursPerWeek){
+    	    					hoursPerMonth = role.rate.hoursPerWeek*4;
+    	    				}
+    	    				
+    	    				//Check if roles if now active
+    	    				if(role.startDate <= dateChecks[0] && (!role.endDate || role.endDate >= dateChecks[0])){
+    	    					comitments[0]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[1] && (!role.endDate || role.endDate >= dateChecks[1])){
+    	    					comitments[1]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[2] && (!role.endDate || role.endDate >= dateChecks[2])){
+    	    					comitments[2]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[3] && (!role.endDate || role.endDate >= dateChecks[3])){
+    	    					comitments[3]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[4] && (!role.endDate || role.endDate >= dateChecks[4])){
+    	    					comitments[4]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[5] && (!role.endDate || role.endDate >= dateChecks[5])){
+    	    					comitments[5]+=hoursPerMonth;
+    	    				}
+    	    			}
+        			}
+        		}
+        	
+        		var ret = [
+    		          {x: new Date(dateChecks[0]), value: comitments[0], otherValue: total},
+    		          {x: new Date(dateChecks[1]), value: comitments[1], otherValue: total},
+    		          {x: new Date(dateChecks[2]), value: comitments[2], otherValue: total},
+    		          {x: new Date(dateChecks[3]), value: comitments[3], otherValue: total},
+    		          {x: new Date(dateChecks[4]), value: comitments[4], otherValue: total},
+    		          {x: new Date(dateChecks[5]), value: comitments[5], otherValue: total}
+        		];
+        		
+        		deferred.resolve(ret);
+        	});
     		
-    		deferred.resolve(ret);
-    	});
+    		
+    	})
+
     	
     	return deferred.promise;
     };
