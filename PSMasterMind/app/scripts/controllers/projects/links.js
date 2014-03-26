@@ -5,8 +5,8 @@
  * Controller for handling the Details form.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('LinksCtrl',['$scope', '$filter', 'Resources', 'JazzHubService', 'ngTableParams',
-  function ($scope, $filter, Resources, JazzHubService, TableParams) {
+  .controller('LinksCtrl',['$scope', '$filter', 'Resources', 'LinksService', 'JazzHubService', 'ngTableParams',
+  function ($scope, $filter, Resources, LinksService, JazzHubService, TableParams) {
     $scope.editLink = {};
     $scope.newLink = {};
 
@@ -145,9 +145,10 @@ angular.module('Mastermind.controllers.projects')
     * Add a new Link to the server
     */
     $scope.addLink = function(link){
-      if(link === null){
-        link = $scope.newLink;
-      }
+    	//If we did not pass in a link use the $scope.newLink
+	    if(!link){
+	      link = $scope.newLink;
+	    }
 
       Resources.create($scope.project.about + '/links', link).then(function(){
         Resources.refresh($scope.project.about + '/links').then(function(result){
@@ -238,10 +239,21 @@ angular.module('Mastermind.controllers.projects')
     /**
      * Jazz Hub Integration
      */
-    //Flag the project is not yet linked with Jazz Hub
-    $scope.notJHLinked = true;
-    //Flag to indicate we have not loaded jazz hub yet
-    $scope.JHProjectsLoaded = false;
+    //Look for a Jazz Hub Link
+    LinksService.getJazzHubProjects($scope.project.about).then(function(link){
+    	if(!link){
+    		 //Flag the project is not yet linked with Jazz Hub
+    	    $scope.notJHLinked = true;
+    	    //Flag to indicate we have not loaded jazz hub yet
+    	    $scope.JHProjectsLoaded = false;
+    	}
+    	else{
+    		$scope.jazzHubProject = link;
+	    	
+	    	$scope.linkWithJazzHub = false;
+	    	$scope.linkedWithJazzHub = true;
+    	}
+    });
     
     /**
      * Load the set of Jazz Hub projects and display them in a list
@@ -273,9 +285,17 @@ angular.module('Mastermind.controllers.projects')
     	
     	if(jhProject){
 	    	$scope.jazzHubProject = Resources.deepCopy(jhProject);
+	    	var link = $scope.jazzHubProject;
+	    	link.url = link.homePage.resource;
+            link.label = link.title;
+            link.icon = 'images/jazzHub.png';
+            link.type = 'jazzHub';
+        	LinksService.linkWithJazzHubProject($scope.project.about, link).then(function(result){
+        		$scope.linkWithJazzHub = false;
+    	    	$scope.linkedWithJazzHub = true;
+        	});
 	    	
-	    	$scope.linkWithJazzHub = false;
-	    	$scope.linkedWithJazzHub = true;
+	    	
     	}
     };
    
