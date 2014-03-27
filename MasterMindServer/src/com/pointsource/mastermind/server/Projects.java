@@ -119,16 +119,18 @@ public class Projects extends BaseResource {
 	@POST
 	@Path("{id}/"+CONSTS.RESOURCE_LINKS)
 	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({MediaType.APPLICATION_JSON})
 	public Response addLink(@PathParam("id") String id, JSONObject newLink) {
 		try {
 			try {
 				RequestContext context = getRequestContext();
 				
-				Data.addProjectLink(context, id, newLink);
+				JSONObject jsonObject = Data.addProjectLink(context, id, newLink);
 				
+				String linkID = jsonObject.getString(CONSTS.PROP_ID);
 				
-				URI aboutURI = context.getBaseURI().resolve(CONSTS.RESOURCE_PROJECTS+"/"+id+"/"+CONSTS.RESOURCE_LINKS);
-				return Response.created(aboutURI).build();
+				URI aboutURI = context.getBaseURI().resolve(CONSTS.RESOURCE_PROJECTS+"/"+id+"/"+CONSTS.RESOURCE_LINKS+"/"+linkID);
+				return Response.created(aboutURI).entity(jsonObject).build();
 			} catch (WebApplicationException e) {
 				return handleWebApplicationException(e);
 			} catch (Exception e) {

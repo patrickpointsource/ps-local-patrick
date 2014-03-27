@@ -101,8 +101,14 @@
 		        <tbody ng-repeat="link in $data">
 		          <tr>
 		            <td data-title="'Link'" sortable="'label'">
-		              <img ng-if="link.icon" ng-src="{{link.icon}}" style="width:24px;height:24px"/>
-		              <a ng-href="{{link.url}}" target="_blank" ng-bind="link.label"></a>
+		              <div ng-if="link.icon">
+		              	<img ng-src="{{link.icon}}" style="width:24px;height:24px"/>
+		              	<a ng-href="{{link.url}}" target="_blank" ng-bind="link.label"></a>
+		              </div>
+		              <div ng-if="!link.icon">
+		              	<i class="fa fa-globe text-center" style="width:24px;height:24px"></i>
+		              	<a ng-href="{{link.url}}" target="_blank" ng-bind="link.label"></a>
+		              </div>
 		            </td>
 		            <td class="actionsCell">
 		              <button class="btn btn-default" ng-click="triggerEditLink(link, $index)">

@@ -1402,7 +1402,7 @@ public class Data implements CONSTS {
 
 		DBObject dbObj = projectsCol.findAndModify(queryObject, update);
 		if (dbObj != null) {
-			String jsonString = JSON.serialize(dbObj);
+			String jsonString = JSON.serialize(newLink);
 			ret = new JSONObject(jsonString);
 		}
 		return ret;

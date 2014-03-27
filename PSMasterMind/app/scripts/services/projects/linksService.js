@@ -7,6 +7,35 @@ angular.module('Mastermind.services.projects')
   .service('LinksService', ['$q', 'Resources', function ($q, Resources) {
 	  
 	  /**
+	   * Fetch all the web links for a given project
+	   * 
+	   * filters out jazzHub links
+	   */
+	  this.getWebLinks = function(projectURL){
+		  var deferred = $q.defer();
+		  
+		  /**
+		   * Fetch the list of links
+		   */
+		   Resources.refresh(projectURL + '/links').then(function(result){
+		     var ret = [];
+			 if(result.members){
+		    	 for(var i = 0; i < result.members.length; i++){
+		        	 var link = result.members[i];
+		        	 if(link.type || link.type != 'jazzHub'){
+		        		 ret.push(link);
+		        	 }
+		         }
+		      }
+			 
+			  deferred.resolve(ret);
+		   });
+		  
+		  return deferred.promise;
+	  };
+	  
+	  
+	  /**
 	   * Get the Jazz Hub Link if one exists
 	   */
 	  this.getJazzHubProjects = function (projectURL) {

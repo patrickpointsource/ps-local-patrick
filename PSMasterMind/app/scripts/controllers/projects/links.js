@@ -43,11 +43,9 @@ angular.module('Mastermind.controllers.projects')
     /**
      * Fetch the list of links
      */
-    Resources.get($scope.project.about + '/links').then(function(result){
-      if(result.members){
-        $scope.links = result.members;
-        $scope.initLinksTable();
-      }
+    LinksService.getWebLinks($scope.project.about).then(function(result){
+    	$scope.links = result;
+    	$scope.initLinksTable();
     });
 
     /**
@@ -282,13 +280,13 @@ angular.module('Mastermind.controllers.projects')
     	}
     	
     	if(jhProject){
-	    	$scope.jazzHubProject = Resources.deepCopy(jhProject);
-	    	var link = $scope.jazzHubProject;
+	    	var link = Resources.deepCopy(jhProject);
 	    	link.url = link.homePage.resource;
             link.label = link.title;
             link.icon = 'images/jazzHub.png';
             link.type = 'jazzHub';
         	LinksService.linkWithJazzHubProject($scope.project.about, link).then(function(result){
+        		$scope.jazzHubProject = result;
         		$scope.linkWithJazzHub = false;
     	    	$scope.linkedWithJazzHub = true;
         	});
