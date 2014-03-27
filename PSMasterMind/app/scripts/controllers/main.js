@@ -207,6 +207,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
      * Handle a change to the role selector on the people view
      */
     $scope.handlePeopleFilterChanged = function(){
+    	// Somehow peopleFilter goes to the separate scope.
+    	$scope.peopleFilter = this.peopleFilter;
     	findNineAvailablePeople();
     };
      
