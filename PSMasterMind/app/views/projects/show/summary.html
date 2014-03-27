@@ -12,25 +12,42 @@
         </div>
     </div>
     <br/>
-	<div class="summaryDescription row">
-		<div class="col-xs-12">
-			<div ta-bind ng-if="project.description"
-				ng-model="project.description"></div>
-			<div ng-if="!project.description">No description entered.</div>
+	<div class="summaryDescription">
+		<div class="row">
+			<div class="col-xs-12">
+				<div ta-bind ng-if="project.description"
+					ng-model="project.description"></div>
+				<div ng-if="!project.description">No description entered.</div>
+			</div>
 		</div>
 	</div>
 	<br />
 
-
 	<div class="row">
-		<div class="col-xs-12">
+		<div class="col-xs-4">
 			<h4>Roles:</h4>
+		</div>
+		<div class="actions col-xs-8 pageActions" style="margin-top:0px">
+			<button ng-hide="editMode || !adminAccess" class="btn" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span></button>
+		</div>
+				
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-12">
-			
-				<div ng-repeat="role in project.roles" class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+		<div class="col-xs-12 col-sm-6 col-lg-4">
+			<div class="panel panel-default dashboard-widget">
+				<div class="panel-heading">Sponsors</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-xs-12 col-sm-6"><label>Executive:</label><span>{{getExecutiveSponsor()}}</span></div>
+						<div class="col-xs-12 col-sm-6"><label>Sales:</label> <span>{{getSalesSponsor()}}</span></div>
+					
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="role in project.roles">
+				<div  class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
 					<div class="panel-heading">
 	                   
 	                    	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
@@ -77,17 +94,9 @@
 						<span style="padding: 12px;">There are no assignees on this role</span>
 					</div>
 				</div>
-				<div >
-					
-					<div class="row" style="padding-bottom: 12px;">
-						<div class="col-sm-12">
-							<button ng-hide="editMode || !adminAccess" class="btn" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
-						</div>
-					</div>
-						
-				</div>
 			</table>
-			<script type="text/ng-template" id="custom/pager">
+		</div>
+		<script type="text/ng-template" id="custom/pager">
                 <ul class="pager ng-cloak">
                     <li ng-repeat="page in pages"
                             ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
@@ -104,25 +113,9 @@
                         </div>
                     </li>
                 </ul>
-            </script>
-		</div>
+         </script>
+		
 	</div>
-	
-	<div class="row well">
-	   <div class="row">
-            <div class="col-xs-12">
-                <h4>Sponsors:</h4>
-            </div>
-        </div>
-        <div class="col-xs-12">
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <label>Executive sponsor:</label> <span>{{getExecutiveSponsor()}}</span>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <label>Sales Sponsor:</label> <span>{{getSalesSponsor()}}</span>
-            </div>
-        </div>
-    </div>
 
 	<div class="row well" ng-if="financeAccess">
 		<div class="row">
