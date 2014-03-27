@@ -90,13 +90,11 @@
 				<div class="panel-heading">
 					<i class="fa fa-users"></i> Booking Forecast
 					<div class="checkbox pull-right" style="margin-top:0px">
-					
-					      <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"/> Show Pipeline
-					    
-					  </div>
+						<input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"/> Include Pipeline
+					</div>
 				</div>
 				<div class="panel-body">
-					<div style="max-height:400px">
+					<div style="max-height:350px">
 						<linechart  data="data" options="options" mode=""></linechart>
 					</div>
 				</div>

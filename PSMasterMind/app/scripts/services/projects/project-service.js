@@ -851,7 +851,7 @@ angular.module('Mastermind.services.projects')
     		var fields = {name : 1, primaryRole: 1}
         	
         	Resources.query('people',query,fields,function(result){
-        		var total = result.count*180;
+        		var total = result.count;
         		var comitments = [0,0,0,0,0,0];
         		var dateChecks = getSixMonthsOfDates();
         		for(var i = 0; i < projects.length; i++){
@@ -894,13 +894,20 @@ angular.module('Mastermind.services.projects')
         			}
         		}
         	
+        		var peopleInMonth1 = Math.ceil(comitments[0]/180);
+        		var peopleInMonth2 = Math.ceil(comitments[1]/180);
+        		var peopleInMonth3 = Math.ceil(comitments[2]/180);
+        		var peopleInMonth4 = Math.ceil(comitments[3]/180);
+        		var peopleInMonth5 = Math.ceil(comitments[4]/180);
+        		var peopleInMonth6 = Math.ceil(comitments[5]/180);
+        		
         		var ret = [
-    		          {x: new Date(dateChecks[0]), value: comitments[0], otherValue: total},
-    		          {x: new Date(dateChecks[1]), value: comitments[1], otherValue: total},
-    		          {x: new Date(dateChecks[2]), value: comitments[2], otherValue: total},
-    		          {x: new Date(dateChecks[3]), value: comitments[3], otherValue: total},
-    		          {x: new Date(dateChecks[4]), value: comitments[4], otherValue: total},
-    		          {x: new Date(dateChecks[5]), value: comitments[5], otherValue: total}
+    		          {x: new Date(dateChecks[0]), value: peopleInMonth1, otherValue: total},
+    		          {x: new Date(dateChecks[1]), value: peopleInMonth2, otherValue: total},
+    		          {x: new Date(dateChecks[2]), value: peopleInMonth3, otherValue: total},
+    		          {x: new Date(dateChecks[3]), value: peopleInMonth4, otherValue: total},
+    		          {x: new Date(dateChecks[4]), value: peopleInMonth5, otherValue: total},
+    		          {x: new Date(dateChecks[5]), value: peopleInMonth6, otherValue: total}
         		];
         		
         		deferred.resolve(ret);

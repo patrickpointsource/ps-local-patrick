@@ -405,8 +405,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
 				    y: {type: 'linear'}
 				  },
 				  series: [
-				    {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked (hr/m)'},
-				    {y: 'otherValue', color: '#f34d4b', label: 'Available (hr/m)'}
+				    {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked'},
+				    {y: 'otherValue', color: '#f34d4b', label: 'Bookable People'}
 				  ],
 				  lineMode: 'linear',
 				  tooltipMode: "default"
