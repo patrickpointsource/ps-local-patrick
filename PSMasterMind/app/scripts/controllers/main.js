@@ -50,7 +50,10 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
       mm='0'+mm;
     }
    
-    var rolesPromise = RolesService.getRolesMapByResource();;
+    var rolesPromise = RolesService.getRolesMapByResource();
+    /**
+     * Set up the projects to be added to the hours entry drop down
+     */
     ProjectsService.getOngoingProjects(function(result){
     	$scope.ongoingProjects = result.data;
  
@@ -59,11 +62,13 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         	if($scope.myProjects.length>0){
   	          $scope.hasActiveProjects = true;
   	      	}
+        	
+        	var myProjects = [];
         	for (var m=0; m< $scope.myProjects.length; m++) {
         		var myProj = $scope.myProjects[m];
         		var found = undefined;
         		myProj.title = myProj.customerName+': '+myProj.name;
-        		$scope.hoursProjects.push(myProj);
+        		myProjects.push(myProj);
         		
         		for (var n=0;n< $scope.ongoingProjects.length; n++) {
         			var proj = $scope.ongoingProjects[n];
@@ -74,11 +79,30 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         		}
         	}
         	
+        	myProjects.sort(function(item1,item2){
+        		if ( item1.title < item2.title )
+        		  return -1;
+        		if ( item1.title > item2.title )
+        			return 1;
+        		return 0;
+        	});
+        	
+        	var otherProjects = [];
         	while($scope.ongoingProjects.length >0) {
         		var myProj = $scope.ongoingProjects.pop();
         		myProj.title = myProj.customerName+': '+myProj.name;
-        		$scope.hoursProjects.push(myProj);
-        	}        	
+        		otherProjects.push(myProj);
+        	}   
+        	
+        	otherProjects.sort(function(item1,item2){
+        		if ( item1.title < item2.title )
+        		  return -1;
+        		if ( item1.title > item2.title )
+        			return 1;
+        		return 0;
+        	});
+        	
+        	$scope.hoursProjects = myProjects.concat(otherProjects);
         });
     });
     
