@@ -40,5 +40,11 @@ angular.module('Mastermind.services.projects')
 		  return Resources.create(projectURL + '/links', jazzHubProject);
 	  };
 	  
-	   
+	 /**
+	  * Delete a project link
+	  */
+	 this.deleteLink = function(projectURL, link){
+		 var resource = projectURL + '/links/' + link.id;
+		 return Resources.remove(resource);
+	 };
 }]);

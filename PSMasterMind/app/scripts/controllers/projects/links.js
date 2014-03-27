@@ -176,18 +176,16 @@ angular.module('Mastermind.controllers.projects')
     * Delete a link
     */
     $scope.deleteLink = function (link) {
-      var resource = $scope.project.about + '/links/' + link.id;
-      Resources.remove(resource).then(function(){
-        Resources.refresh($scope.project.about + '/links').then(function(result){
-          $scope.links = result.members;
-
-          if($scope.linksTableParams){
-            $scope.linksTableParams.total($scope.links.length);
-            $scope.linksTableParams.reload();
-          }
-          else{
-            $scope.initLinksTable();
-          }
+    	LinksService.deleteLink($scope.project.about, link).then(function(){
+    		Resources.refresh($scope.project.about + '/links').then(function(result){
+    			$scope.links = result.members;
+	          if($scope.linksTableParams){
+	            $scope.linksTableParams.total($scope.links.length);
+	            $scope.linksTableParams.reload();
+	          }
+	          else{
+	            $scope.initLinksTable();
+	          }
         });
       });
     };
@@ -294,10 +292,18 @@ angular.module('Mastermind.controllers.projects')
         		$scope.linkWithJazzHub = false;
     	    	$scope.linkedWithJazzHub = true;
         	});
-	    	
-	    	
     	}
     };
    
-
-  }]);
+    /**
+     * Unlink the project with a Jazz Hub Project
+     */
+    $scope.unlinkWithJazzHub = function(){
+    	var link = $scope.jazzHubProject;
+    	LinksService.deleteLink($scope.project.about, link).then(function(){
+    		$scope.jazzHubProject = null;
+    		$scope.linkedWithJazzHub = false;
+    		$scope.notJHLinked = true;
+    	});
+    };
+}]);
