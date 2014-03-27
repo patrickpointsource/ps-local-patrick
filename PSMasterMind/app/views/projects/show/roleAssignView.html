@@ -37,7 +37,8 @@
 </div>
 
 <div class="row" ng-show="!role.assignees || role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
-	<div class="col-xs-12 col-sm-12">There are no assignees on this role
+	<div style="padding: 0 0 12px 12px;"  ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
+			<i class="fa fa-ban" style="color:#f34d4b"></i> <span>There are no assignees on this role</span>
 	</div>
 </div>
 	
