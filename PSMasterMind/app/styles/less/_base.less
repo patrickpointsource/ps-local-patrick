@@ -145,3 +145,28 @@ select{
   		height:34px;
 	}
 }
+
+
+@media (min-width: @screen-sm) {
+  body {
+    padding-top: 100px;
+    padding-bottom: 25px;
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  body {
+    padding-top: 61px;
+    padding-bottom: 25px;
+    
+    .panel{
+    	.panel-heading, .panel-body{
+    		padding: 10px;
+    	}
+    }
+    
+    .container{
+    	padding: 10px;
+    }
+  }
+}
