@@ -68,8 +68,6 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
       advAmount: 0,
       loadedRate: 0
     };
-
-    var HOURS_PER_MONTH = 180;
     
     function HourlyRate(options) {
       options = options || {};
@@ -88,11 +86,13 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     HourlyRate.prototype.hoursPerMonth = function () {
+    	var HOURS_PER_MONTH = 180;
       if(this.fullyUtilized) return HOURS_PER_MONTH;
       return parseFloat(this.hoursPerMth).toFixed(1);
     };
     
     HourlyRate.prototype.getNumberOfTUs = function () {
+    	var HOURS_PER_MONTH = 180;
     	var num = HOURS_PER_MONTH;
         if(this.fullyUtilized) return num.toString().concat(" hours/ month");
         return parseFloat(this.hoursPerMth).toFixed(0).toString().concat(" hours/ month");
@@ -106,6 +106,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };      
     
     HourlyRate.prototype.getEstimatedTotal = function (startD, endD) {
+    	var HOURS_PER_MONTH = 180;
     	var startDate = new Date(startD);
     	var endDate = new Date(endD);
       	var numMonths = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
@@ -158,6 +159,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     WeeklyRate.prototype.hoursPerMonth = function () {
+    	var HOURS_PER_MONTH = 180;
       if(this.fullyUtilized) return HOURS_PER_MONTH;
       // Weekly rate is currently hours per week. There are 5 working days per week
       // and 22.5 per month.
@@ -220,6 +222,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     MonthlyRate.prototype.hoursPerMonth = function () {
+    	var HOURS_PER_MONTH = 180;
       if(this.fullyUtilized) return HOURS_PER_MONTH;
       return parseFloat(HOURS_PER_MONTH).toFixed(1);
     };
