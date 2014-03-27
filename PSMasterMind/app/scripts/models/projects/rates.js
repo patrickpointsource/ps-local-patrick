@@ -167,7 +167,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     WeeklyRate.prototype.getNumberOfTUs = function () {
-    	var num=50;
+    	var HOURS_PER_WEEK = 40;
         if(this.fullyUtilized) return num.toString().concat(" hours/ week");
         return parseFloat(this.hoursPerWeek).toFixed(0).toString().concat(" hours/ week");
     };
@@ -228,9 +228,9 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     MonthlyRate.prototype.getNumberOfTUs = function () {
-    	
-        if(this.fullyUtilized) return parseFloat(220).toFixed(0).toString().concat(" hours/ month");
-        return parseFloat(220).toFixed(0).toString().concat(" hours/ month");
+    	var HOURS_PER_MONTH = 180;
+        if(this.fullyUtilized) return parseFloat(HOURS_PER_MONTH).toFixed(0).toString().concat(" hours/ month");
+        return parseFloat(HOURS_PER_MONTH).toFixed(0).toString().concat(" hours/ month");
     };
 
     MonthlyRate.prototype.getNumPeriods = function (startD, endD) {
