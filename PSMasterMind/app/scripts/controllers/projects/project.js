@@ -256,12 +256,14 @@ angular.module('Mastermind')
     			
     	}
     	
-    	if (role.percentageCovered < 100)
+    	if (role.percentageCovered == 0)
+    		result = '-' + (role.rate.type == "weekly" ? role.rate.hoursPerWeek: role.rate.hoursPerMonth())
+    	else if (role.percentageCovered < 100)
     		result = '-' + getHours(role.hoursNeededToCover);
     	
     	if (role.hoursExtraCovered > 0) {
-    		result = result ? ('/' + result): '';
-    		result = '+' + getHours(role.hoursExtraCovered);
+    		//result = result ? ('/' + result): '';
+    		result = result + ' / +' + getHours(role.hoursExtraCovered);
     	}
     	
     	if (result)
@@ -552,8 +554,8 @@ angular.module('Mastermind')
      */
     $scope.$on('roles:add', function (event, role) {
       $scope.project.addRole(role);
-      $scope.summaryRolesTableParams.total($scope.project.roles.length);
-      $scope.summaryRolesTableParams.reload();
+      //$scope.summaryRolesTableParams.total($scope.project.roles.length);
+      //$scope.summaryRolesTableParams.reload();
       $scope.sowRolesTableParams.total($scope.project.roles.length);
       $scope.sowRolesTableParams.reload();
 
@@ -565,8 +567,8 @@ angular.module('Mastermind')
      */
     $scope.$on('roles:change', function (event, index, role) {
       $scope.project.changeRole(index, role);
-      $scope.summaryRolesTableParams.total($scope.project.roles.length);
-      $scope.summaryRolesTableParams.reload();
+      //$scope.summaryRolesTableParams.total($scope.project.roles.length);
+      //$scope.summaryRolesTableParams.reload();
       $scope.sowRolesTableParams.total($scope.project.roles.length);
       $scope.sowRolesTableParams.reload();
 
@@ -578,8 +580,8 @@ angular.module('Mastermind')
      */
     $scope.$on('roles:remove', function (event, role) {
       $scope.project.removeRole(role);
-      $scope.summaryRolesTableParams.total($scope.project.roles.length);
-      $scope.summaryRolesTableParams.reload();
+      //$scope.summaryRolesTableParams.total($scope.project.roles.length);
+      //$scope.summaryRolesTableParams.reload();
       $scope.sowRolesTableParams.total($scope.project.roles.length);
       $scope.sowRolesTableParams.reload();
 
@@ -605,8 +607,8 @@ angular.module('Mastermind')
      */
     $scope.$on('roles:assignments:change', function (event, index, role) {
       //$scope.project.changeRole(index, role);
-      $scope.summaryRolesTableParams.total($scope.project.roles.length);
-      $scope.summaryRolesTableParams.reload();
+      //$scope.summaryRolesTableParams.total($scope.project.roles.length);
+      //$scope.summaryRolesTableParams.reload();
     });
     
     /**
@@ -913,7 +915,7 @@ angular.module('Mastermind')
           type: 'asc'     // initial sorting
         }
       };
-
+/*
       $scope.summaryRolesTableParams = new TableParams(params, {
         total: $scope.project.roles.length,
         getData: function ($defer, params) {
@@ -949,7 +951,7 @@ angular.module('Mastermind')
           });
         }
       });
-
+*/
       $scope.sowRolesTableParams = new TableParams(params, {
           total: $scope.project.roles.length,
           getData: function ($defer, params) {

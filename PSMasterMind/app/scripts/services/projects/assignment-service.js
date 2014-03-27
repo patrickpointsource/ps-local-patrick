@@ -427,7 +427,7 @@ angular.module('Mastermind.services.projects')
         	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
         		coverageTimeline[coverageTimeline.length - 1].date = minDate;
     		
-    		if (coverageTimeline[coverageTimeline.length - 1].date > maxDate)
+    		if (maxDate && coverageTimeline[coverageTimeline.length - 1].date > maxDate)
         		coverageTimeline[coverageTimeline.length - 1].date = maxDate;
     	}
     	

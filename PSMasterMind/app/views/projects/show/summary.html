@@ -75,7 +75,7 @@
 						<span class="hidden-xs ">{{role.type.abbreviation}}</span>
 						
 						<span class="hidden-xs">
-							<label for="assigneeHoursPerWeek">Hours per Week: <span class="text-muted">{{assignee.hoursPerWeek}} h/w</span></label>
+							<small>Hours per Week: </small><span class="text-muted">{{assignee.hoursPerWeek}} h/w</span>
 							
 						</span>
 						<span class="visible-xs">
@@ -85,7 +85,7 @@
 						
 						
 						<span class="hidden-xs" >{{assignee.startDate | date:'longDate'}}</span>
-						<span class="hidden-xs">{{assignee.endDate | date:'longDate'}}</span>
+						<span class="hidden-xs">-{{assignee.endDate | date:'longDate'}}</span>
 						<span class="visible-xs">
 							<small>{{assignee.startDate |
 								date:'shortDate'}}</small> <span ng-show="assignee.endDate">-<br>
