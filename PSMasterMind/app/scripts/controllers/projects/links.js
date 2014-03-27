@@ -23,8 +23,10 @@ angular.module('Mastermind.controllers.projects')
      * Method to initalize the links table data
      */
     $scope.initLinksTable = function(){
+     // params.count = $scope.links.length, // hides pager
       $scope.linksTableParams = new TableParams(params, {
         total: $scope.links.length, // length of data
+        counts: [], // hides page sizes,
         getData: function ($defer, params) {
           var data = $scope.links;
 
@@ -70,12 +72,13 @@ angular.module('Mastermind.controllers.projects')
      * Cancel editing an existing link
      */
     $scope.cancelEditLink = function () {
-      Resources.refresh($scope.project.about + '/links').then(function(result){
-        $scope.links = result.members;
-        $scope.editingLink = false;
-        $scope.editLinkIndex = null;
-        $scope.linksTableParams.reload();
-      });
+    	LinksService.getWebLinks($scope.project.about).then(function(result){
+	        $scope.links = result;
+	        $scope.editingLink = false;
+	        $scope.editLinkIndex = null;
+	        $scope.linksTableParams.total($scope.links.length);
+	        $scope.linksTableParams.reload();
+    	});
     };
 
     /**
@@ -118,8 +121,8 @@ angular.module('Mastermind.controllers.projects')
      */
     $scope.saveEditLink = function(){
       Resources.update($scope.editLink).then(function(){
-        Resources.refresh($scope.project.about + '/links').then(function(result){
-          $scope.links = result.members;
+    	 LinksService.getWebLinks($scope.project.about).then(function(result){
+          $scope.links = result;
 
           if($scope.linksTableParams){
             $scope.linksTableParams.total($scope.links.length);
@@ -149,24 +152,24 @@ angular.module('Mastermind.controllers.projects')
 	    }
 
       Resources.create($scope.project.about + '/links', link).then(function(){
-        Resources.refresh($scope.project.about + '/links').then(function(result){
-          $scope.links = result.members;
-
-          if($scope.linksTableParams){
-            $scope.linksTableParams.total($scope.links.length);
-            $scope.linksTableParams.reload();
-          }
-          else{
-            $scope.initLinksTable();
-          }
-
-          //Reset New Link Object and clear out form
-          link = {};
-          $scope.newLink = {};
-          $scope.editingLink = false;
-          $scope.editLinkIndex = null;
-          $scope.addLinkForm.$setPristine();
-        });
+    	  LinksService.getWebLinks($scope.project.about).then(function(result){
+	          $scope.links = result;
+	
+	          if($scope.linksTableParams){
+	            $scope.linksTableParams.total($scope.links.length);
+	            $scope.linksTableParams.reload();
+	          }
+	          else{
+	            $scope.initLinksTable();
+	          }
+	
+	          //Reset New Link Object and clear out form
+	          link = {};
+	          $scope.newLink = {};
+	          $scope.editingLink = false;
+	          $scope.editLinkIndex = null;
+	          $scope.addLinkForm.$setPristine();
+    	  });
       });
     };
 
@@ -175,8 +178,8 @@ angular.module('Mastermind.controllers.projects')
     */
     $scope.deleteLink = function (link) {
     	LinksService.deleteLink($scope.project.about, link).then(function(){
-    		Resources.refresh($scope.project.about + '/links').then(function(result){
-    			$scope.links = result.members;
+    		LinksService.getWebLinks($scope.project.about).then(function(result){
+    			$scope.links = result;
 	          if($scope.linksTableParams){
 	            $scope.linksTableParams.total($scope.links.length);
 	            $scope.linksTableParams.reload();
@@ -262,6 +265,14 @@ angular.module('Mastermind.controllers.projects')
         	$scope.JHProjectsLoaded = true;
         });
     };
+    
+    /**
+     * Cancel the request to link with Jazz Hub
+     */
+    $scope.cancelJHLink = function(){
+    	$scope.linkWithJazzHub = false;
+    	$scope.notJHLinked = true;
+    }
     
     /**
      * Render the information about Jazz Hub

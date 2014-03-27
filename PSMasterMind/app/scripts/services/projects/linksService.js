@@ -22,7 +22,7 @@ angular.module('Mastermind.services.projects')
 			 if(result.members){
 		    	 for(var i = 0; i < result.members.length; i++){
 		        	 var link = result.members[i];
-		        	 if(link.type || link.type != 'jazzHub'){
+		        	 if(!link.type || link.type != 'jazzHub'){
 		        		 ret.push(link);
 		        	 }
 		         }

@@ -5,18 +5,19 @@
 		  <div class="panel panel-info dashboard-widget" >
 				<div class="panel-heading">
 					<img src="images/jazzHub.png" style="display: inline-block !important; vertical-align: top !important; height:20px;width:auto"/> JazzHub
-					<div class="pull-right btn-group btn-group-sm dashboard-actions" ng-if="linkedWithJazzHub">
-						  <button class="btn btn-default" ng-click="unlinkWithJazzHub()"><i class="fa fa-chain-broken"></i> Unlink</button>
+					<div class="pull-right btn-group btn-group-sm dashboard-actions" >
+						  <button ng-if="linkedWithJazzHub" class="btn btn-default" ng-click="unlinkWithJazzHub()"><i class="fa fa-chain-broken"></i> Unlink</button>
+						  <button ng-if="linkWithJazzHub" class="btn btn-default" ng-click="cancelJHLink()"><i class="fa fa-chevron-left"></i> <span>Cancel</span></button>
 		    	  	</div>
 				</div>
 				<div class="panel-body">
 					<div class="row" ng-if="notJHLinked">
 						<div class="col-xs-12">
 							<div class="hidden-xs  hidden-md">
-								<img src="images/jazzHubLg.png" class="hidden-xs hidden-md pull-left" style="display: inline-block !important; vertical-align: top !important; max-width:160px;width:auto"/>	
+								<img src="images/jazzHubLg.png" class="pull-left" style="display: inline-block !important; vertical-align: top !important; max-width:160px;width:auto"/>	
 							</div>
 							<div style="display: inline-block !important; vertical-align: middle !important;">
-								<h2>Project not linked with JazzHub</h2>
+								<h3>Project not linked with JazzHub</h3>
 				  				<button class="btn btn-lg btn-default" ng-click="handleLinkProjectRequest()"><i class="fa fa-link"></i> Link Projects</button>
 			  				</div>
 		  				</div>
@@ -26,9 +27,11 @@
 						<div ng-if="JHProjectsLoaded">
 							<input class="form-control" placeholder="Filter Projects" ng-model="filterText" autofocus />
 							<div class="row-fluid ">
-								<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="project in jazzHubProjects | filter:filterText | orderBy:'title'">
-									<div class="panel">
-										<button class="btn btn-default" ng-click="handleLinkProjectWithJazzHub(project.resource)"><span style="display:inline;white-space: nowrap;width: 100%;overflow: hidden;text-overflow: ellipsis;">{{project.title}}</span></button>
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6" ng-repeat="project in jazzHubProjects | filter:filterText | orderBy:'title'">
+									<div class="panel" width="100%">
+										<button style="max-width: 100%;" class="btn btn-default" ng-click="handleLinkProjectWithJazzHub(project.resource)">
+											<span style="display: inline-block !important;max-width: 100%;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{project.title}}</span>
+										</button>
 									</div>
 								</div>
 							</div>
@@ -36,12 +39,15 @@
 					</div>
 					<div ng-if="linkedWithJazzHub">
 						<div style="width: 100%; display: inline-block !important; vertical-align: middle !important;">
-							<img src="images/jazzHubLg.png" class="hidden-xs hidden-md pull-left" style="display: inline-block !important; vertical-align: top !important; max-width:160px;width:auto"/>	
+							<div class="hidden-xs  hidden-md">
+								<img src="images/jazzHubLg.png" class="pull-left" style="display:inline-block !important; vertical-align: top !important; max-width:160px;width:auto"/>	
+							</div>
 							<p>
-								<h2><a href="{{jazzHubProject.homePage.resource}}">{{jazzHubProject.title}}</a></h2>
-								<div style="padding:5px;">
-								<a style="border:1px solid #cccccc" class="text-center btn-lg btn-default" href="{{jazzHubProject.dashboard.resource}}"><i class="fa fa-tachometer"></i> Dashboard</a>
-		  						<a style="border:1px solid #cccccc" class="text-center btn-lg btn-default" href="{{jazzHubProject.currentPlans.resource}}"><i class="fa fa-tasks"></i> Plans</a>
+								<h3><a href="{{jazzHubProject.homePage.resource}}">{{jazzHubProject.title}}</a></h3>
+								<br/>
+								<div>
+									<a style="border:1px solid #cccccc" class="text-center btn-lg btn-default" href="{{jazzHubProject.dashboard.resource}}"><i class="fa fa-tachometer"></i> Dashboard</a>
+		  							<a style="border:1px solid #cccccc" class="text-center btn-lg btn-default" href="{{jazzHubProject.currentPlans.resource}}"><i class="fa fa-tasks"></i> Plans</a>
 		  						</div>
 		  					</p>
 		  				</div>
@@ -54,13 +60,24 @@
 		  <div class="row">
 		    <div class="col-xs-6"><h3>Web Links</h3></div>
 		    <div class="actions col-xs-6 pageActions">
-		      <button type="button" ng-click="toggleNewLink()"
-		          class="btn btn-default pull-right" data-toggle="collapse" data-target="#newLinkDialog">
-		          <i class="fa fa-plus-square"></i> <span>Add Links</span>
-		      </button>
-		      <button class="btn btn-default" ng-click="launchDropboxChooser()">
-		        <i class="fa fa-dropbox"></i> <span>Dropbox</span>
-		      </button>
+		    	<div class="hidden-xs  hidden-md">
+			      <button type="button" ng-click="toggleNewLink()"
+			          class="btn btn-default pull-right" data-toggle="collapse" data-target="#newLinkDialog">
+			          <i class="fa fa-plus-square"></i> <span>Add Links</span>
+			      </button>
+			      <button class="btn btn-default" ng-click="launchDropboxChooser()">
+			        <i class="fa fa-dropbox"></i> <span>Dropbox</span>
+			      </button>
+			    </div>
+			    <div class="visible-xs  hidden-md">
+			      <button type="button" ng-click="toggleNewLink()"
+			          class="btn btn-default pull-right" data-toggle="collapse" data-target="#newLinkDialog">
+			          <i class="fa fa-plus-square"></i>
+			      </button>
+			      <button class="btn btn-default" ng-click="launchDropboxChooser()">
+			        <i class="fa fa-dropbox"></i>
+			      </button>
+			    </div>
 		    </div>
 		  </div>
 		
@@ -94,29 +111,65 @@
 		      </div>
 		    </form>
 		  </section>
+		 
+<!-- 		 <div class="row">
+		  	<div class="col-xs-12">
+		  		<table class="table table-condensed table-striped" width="100%">
+		  			<tbody ng-repeat="link in links">
+		  				<tr>
+							<td data-title="'Link'" sortable="'label'"width="100%" >
+				              <div style="whitespace:wrap">
+					              <div ng-if="link.icon">
+					              	<img ng-src="{{link.icon}}" style="width:24px;height:24px"/>
+					              	<a ng-href="{{link.url}}" target="_blank" ng-bind="link.label"></a>
+					              </div>
+					              <div ng-if="!link.icon">
+					              	<i class="fa fa-globe text-center" style="width:24px;height:24px"></i>
+					              	<a ng-href="{{link.url}}" target="_blank" ng-bind="link.label"></a>
+					              </div>
+				              </div>
+				              <div class="pull-right" style="position:relative;right:0px;top:0px">
+					            	<button class="btn btn-default" ng-click="triggerEditLink(link, $index)">
+							                    <i class="fa fa-pencil"></i>
+							        </button>
+					            	<button class="btn btn-default" ng-click="deleteLink(link)">
+							                <i class="fa fa-trash-o"></i>
+							        </button>
+						      </div>
+				            </td>
+			            </tr>
+		            </tbody>
+				</table>
+		  	</div>
+		  </div>  -->
 		
-		  <div class="row">
+	  <div class="row">
 		    <div class="col-xs-12">
-		      <table ng-table="linksTableParams" class="table">
+		     <div class="table-responsive">
+		      <table ng-table="linksTableParams" class="table" width="100%">
 		        <tbody ng-repeat="link in $data">
-		          <tr>
-		            <td data-title="'Link'" sortable="'label'">
-		              <div ng-if="link.icon">
-		              	<img ng-src="{{link.icon}}" style="width:24px;height:24px"/>
-		              	<a ng-href="{{link.url}}" target="_blank" ng-bind="link.label"></a>
-		              </div>
-		              <div ng-if="!link.icon">
-		              	<i class="fa fa-globe text-center" style="width:24px;height:24px"></i>
-		              	<a ng-href="{{link.url}}" target="_blank" ng-bind="link.label"></a>
+		          <tr style="display: inline-block;">
+		            <td data-title="'Link'" sortable="'label'" width="99%" style="word-wrap: break-word">
+		              <div>
+			              <div ng-if="link.icon">
+			              	<img ng-src="{{link.icon}}" style="width:24px;height:24px"/>
+			              	<a ng-href="{{link.url}}" target="_blank" ng-bind="link.label"></a>
+			              </div>
+			              <div ng-if="!link.icon">
+			              	<i class="fa fa-globe text-center" style="width:24px;height:24px"></i>
+			              	<a ng-href="{{link.url}}" target="_blank" ng-bind="link.label"></a>
+			              </div>
 		              </div>
 		            </td>
-		            <td class="actionsCell">
-		              <button class="btn btn-default" ng-click="triggerEditLink(link, $index)">
-		                    <i class="fa fa-pencil"></i>
-		                </button>
-		              <button class="btn btn-default" ng-click="deleteLink(link)">
-		                <i class="fa fa-trash-o"></i>
-		              </button>
+		            <td class="actionsCell" width="100" style="white-space: nowrap">
+		            	<!-- div class="pull-right" style="position:relative;right:0px;top:0px"> -->
+			            	<button class="btn btn-default" ng-click="triggerEditLink(link, $index)">
+					                    <i class="fa fa-pencil"></i>
+					        </button>
+			            	<button class="btn btn-default" ng-click="deleteLink(link)">
+					                <i class="fa fa-trash-o"></i>
+					        </button>
+				        <!-- </div> -->
 		            </td>
 		          </tr>
 		          <tr ng-if="editLinkIndex===$index">
@@ -155,8 +208,9 @@
 		          </tr>
 		        </tbody>
 		      </table>
+		      </div>
 		    </div>
-		  </div>
+		  </div>  
 	  </div>
   </div>
 </div>
