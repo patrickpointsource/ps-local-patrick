@@ -233,8 +233,10 @@ angular.module('Mastermind.controllers.projects')
     };
 
     $scope.refreshAdvLoadedAmounts = function () {
-    	$scope.refreshLoadedAmount();
-    	$scope.refreshAdvAmount();
+    	if($scope.newRole.type) {
+        	$scope.refreshLoadedAmount();
+        	$scope.refreshAdvAmount();
+    	}
     }
 
     /**

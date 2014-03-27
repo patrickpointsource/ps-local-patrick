@@ -24,8 +24,8 @@
 			ng-class="{error: isFieldInError('customerName')}">
 			<label class="required-label control-label" for="customerName">Customer
 				Name:</label> <input id="customerName" name="customerName" type="text"
-				class="col-xs-12 form-control"
-				placeholder="Customer Name" ng-model="project.customerName"
+				class="col-xs-12 form-control" placeholder="Customer Name"
+				ng-model="project.customerName"
 				ng-class="{highlight: detailsForm.customerName.$error.required}"
 				required>
 		</div>
@@ -69,14 +69,15 @@
 			</select>
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<div class="col-xs-12 form-group">
 			<label for="description">Description:</label>
-			<text-angular class="summaryDescription" name="htmldescription" ng-model="project.description"/>
+			<text-angular class="summaryDescription" name="htmldescription"
+				ng-model="project.description" />
 		</div>
 	</div>
-	
+
 	<div class="well" ng-if="financeAccess">
 		<div class="row">
 			<div class="hidden-xs col-sm-6 col-md-5 col-lg-4">
@@ -104,28 +105,33 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-xs-6">
-				<label for="totalEstimatedValue">Services Estimate:</label> <input
-					class="form-control" id="servicesEstimatedValue" type="currency" readOnly
-					ng-model="servicesEstimate">
+			<div class="col-xs-6" ng-if="!isFixedBid()">
+				<label for="servicesEstimatedValue">Services Estimate:</label> <input
+					class="form-control" id="servicesEstimatedValue" type="currency"
+					readOnly value="{{getServicesEstimate() | currency}}">
+			</div>
+			<div class="col-xs-6" ng-if="isFixedBid()">
+				<label for="fixedBidEstimate">Services Estimate:</label> <input
+					class="form-control" id="fixedBidEstimate" type="currency"
+					ng-model="project.terms.fixedBidServicesRevenue">
 			</div>
 			<div class="col-xs-6">
-				<label for="totalEstimatedValue">Software Estimate:</label> <input
-					class="form-control" id="softwareEstimatedValue" type="currency"
+				<label for="softwareEstimate">Software Estimate:</label> <input
+					class="form-control" id="softwareEstimate" type="currency"
 					ng-model="project.terms.softwareEstimate">
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-xs-6 col-sm-6 col-md-5 col-lg-4">
-				<input type="checkbox" name="Committed" ng-model="project.committed"> Contractually
-					Committed?
+				<input type="checkbox" name="Committed" ng-model="project.committed">
+				Contractually Committed?
 			</div>
 			<div class="col-xs-6">
 				<label for="totalEstimatedValue">Total Estimated Value:</label>
-				(USD)
-				{{(servicesEstimate+project.terms.softwareEstimate) |
+				(USD) {{(getServicesEstimate() +project.terms.softwareEstimate) |
 				currency}}
 			</div>
 		</div>
 	</div>
+</div>
 </div>

@@ -1,17 +1,21 @@
 <div class="summary-tab">
 	<div class="row">
-		<h3 class="col-xs-8">
-	       	{{project.customerName || 'No Customer'}}</h3>
-	    <div class="actions col-xs-4 pageActions">
-	    	<button ng-hide="editMode || !canEdit()" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
-	 	</div>   	
-    </div>
-   <div class="row">
-     	<div class="col-xs-12" >
-            <h4><span>{{project.startDate | date}}</span><span> - {{project.endDate? project.endDate:'?'| date}}</span>
-        </div>
-    </div>
-    <br/>
+		<h3 class="col-xs-8">{{project.customerName || 'No Customer'}}</h3>
+		<div class="actions col-xs-4 pageActions">
+			<button ng-hide="editMode || !canEdit()" class="btn"
+				ng-click="edit()">
+				<i class="fa fa-pencil-square-o"></i> <span>Edit</span>
+			</button>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<h4>
+				<span>{{project.startDate | date}}</span><span> -
+					{{project.endDate? project.endDate:'?'| date}}</span>
+		</div>
+	</div>
+	<br />
 	<div class="summaryDescription">
 		<div class="row">
 			<div class="col-xs-12">
@@ -27,76 +31,127 @@
 		<div class="col-xs-4">
 			<h4>Roles:</h4>
 		</div>
-		<div class="actions col-xs-8 pageActions" style="margin-top:0px">
-			<button ng-hide="editMode || !adminAccess" class="btn" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span></button>
+		<div class="actions col-xs-8 pageActions" style="margin-top: 0px">
+			<button ng-hide="editMode || !adminAccess" class="btn"
+				ng-click="editAssignments()">
+				<i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span>
+			</button>
 		</div>
-				
-		</div>
+
 	</div>
-	<div class="row">
-		<div class="col-xs-12 col-sm-6 col-lg-4">
-			<div class="panel panel-default dashboard-widget">
-				<div class="panel-heading">Sponsors</div>
-				<div class="panel-body">
-					<div class="row">
-						<div class="col-xs-12 col-sm-6"><label>Executive:</label><span>{{getExecutiveSponsor()}}</span></div>
-						<div class="col-xs-12 col-sm-6"><label>Sales:</label> <span>{{getSalesSponsor()}}</span></div>
-					
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="role in project.roles">
-				<div  class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
-					<div class="panel-heading">
-	                   
-	                    	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
-	                    	<span ng-show="role.rate.isFullyUtilized()">100%</span>&nbsp;
-	                      	<span ng-hide="role.rate.isFullyUtilized() || role.rate.type != 'hourly'">{{role.rate.hoursPerMonth()}} h/m</span>&nbsp;
-	                      	<span ng-hide="role.rate.type == 'hourly'">{{role.rate.hoursPerWeek}} h/w</span>&nbsp;
-	                      	<small>{{role.startDate | date:'MMM d y'}}</small>
-		                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
-		                      <span ng-hide="role.endDate">- N/A</span>
-		                      <span>{{getCoverageValue(role)}}</span>
-	                   </div>
-					<div ng-repeat="assignee in role.assignees" ng-if="assignee.person && assignee.person.resource" style="padding: 12px 0 12px 12px;;">
-						<span >
-							<a href="#{{assignee.person.resource}}"> <img
-									ng-show="assignee && assignee.person"
-									class="profileImage" ng-src="{{assignee.person.thumbnail}}" /> <i
-									class="fa fa-ban"
-									ng-show="!assignee.person || !assignee.person.resource"></i> <span>{{assignee.person.name
-										|| 'Unassigned'}}</span>
-							</a>
-						</span>
-						<span class="hidden-xs ">{{role.type.abbreviation}}</span>
-						
-						<span class="hidden-xs">
-							<label for="assigneeHoursPerWeek">Hours per Week: <span class="text-muted">{{assignee.hoursPerWeek}} h/w</span></label>
-							
-						</span>
-						<span class="visible-xs">
-							<small>{{assignee.hoursPerWeek}}</small>
-							
-						</span> 
-						
-						
-						<span class="hidden-xs" >{{assignee.startDate | date:'longDate'}}</span>
-						<span class="hidden-xs">{{assignee.endDate | date:'longDate'}}</span>
-						<span class="visible-xs">
-							<small>{{assignee.startDate |
-								date:'shortDate'}}</small> <span ng-show="assignee.endDate">-<br>
-								<small>{{assignee.endDate | date:'shortDate'}}</small></span> <span
-							ng-hide="assignee.endDate">- <small>N/A</small></span>
-						</span>
-					</div>
-					<div ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
-						<span style="padding: 12px;">There are no assignees on this role</span>
-					</div>
-				</div>
-			</table>
-		</div>
-		<script type="text/ng-template" id="custom/pager">
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<table ng-table="summaryRolesTableParams" class="table peopleList"
+			template-pagination="custom/pager">
+			<tbody ng-repeat="role in $data"
+				class="{{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+				<tr class="panel-heading">
+					<td colspan="7"><span>{{roleGroups[role.type.resource].abbreviation}}:
+					</span> <span ng-show="role.rate.isFullyUtilized()">100%</span>&nbsp; <span
+						ng-hide="role.rate.isFullyUtilized() || role.rate.type != 'hourly'">{{role.rate.hoursPerMonth()}}
+							h/m</span>&nbsp; <span ng-hide="role.rate.type == 'hourly'">{{role.rate.hoursPerWeek}}
+							h/w</span>&nbsp; <small>{{role.startDate | date:'MMM d y'}}</small> <span
+						ng-show="role.endDate">-<small>{{role.endDate |
+								date:'MMM d y'}}</small></span> <span ng-hide="role.endDate">- N/A</span> <span>{{getCoverageValue(role)}}</span>
+					</td>
+				</tr>
+				<tr ng-repeat="assignee in role.assignees"
+					ng-if="assignee.person && assignee.person.resource">
+					<td><a href="#{{assignee.person.resource}}"> <img
+							ng-show="assignee && assignee.person" class="profileImage"
+							ng-src="{{assignee.person.thumbnail}}" /> <i class="fa fa-ban"
+							ng-show="!assignee.person || !assignee.person.resource"></i> <span>{{assignee.person.name
+								|| 'Unassigned'}}</span>
+					</a></td>
+					<td class="hidden-xs">{{role.type.abbreviation}}</td>
+					<td><span>{{assignee.hoursPerWeek}}</span></td>
+
+					<td class="hidden-xs">{{assignee.startDate | date:'longDate'}}</td>
+					<td class="hidden-xs">{{assignee.endDate | date:'longDate'}}</td>
+					<td class="visible-xs"><small>{{assignee.startDate |
+							<div class="col-xs-12 col-sm-6 col-lg-4">
+								<div class="panel panel-default dashboard-widget">
+									<div class="panel-heading">Sponsors</div>
+									<div class="panel-body">
+										<div class="row">
+											<div class="col-xs-12 col-sm-6">
+												<label>Executive:</label><span>{{getExecutiveSponsor()}}</span>
+											</div>
+											<div class="col-xs-12 col-sm-6">
+												<label>Sales:</label> <span>{{getSalesSponsor()}}</span>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6 col-lg-4"
+								ng-repeat="role in project.roles">
+								<div
+									class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+									<div class="panel-heading">
+
+										<span>{{roleGroups[role.type.resource].abbreviation}}:
+										</span> <span ng-show="role.rate.isFullyUtilized()">100%</span>&nbsp;
+										<span
+											ng-hide="role.rate.isFullyUtilized() || role.rate.type != 'hourly'">{{role.rate.hoursPerMonth()}}
+											h/m</span>&nbsp; <span ng-hide="role.rate.type == 'hourly'">{{role.rate.hoursPerWeek}}
+											h/w</span>&nbsp; <small>{{role.startDate | date:'MMM d y'}}</small>
+										<span ng-show="role.endDate">-<small>{{role.endDate
+												| date:'MMM d y'}}</small></span> <span ng-hide="role.endDate">- N/A</span>
+										<span>{{getCoverageValue(role)}}</span>
+									</div>
+									<div ng-repeat="assignee in role.assignees"
+										ng-if="assignee.person && assignee.person.resource"
+										style="padding: 12px 0 12px 12px;">
+										<span> <a href="#{{assignee.person.resource}}"> <img
+												ng-show="assignee && assignee.person" class="profileImage"
+												ng-src="{{assignee.person.thumbnail}}" /> <i
+												class="fa fa-ban"
+												ng-show="!assignee.person || !assignee.person.resource"></i>
+												<span>{{assignee.person.name || 'Unassigned'}}</span>
+										</a>
+										</span> <span class="hidden-xs ">{{role.type.abbreviation}}</span> <span
+											class="hidden-xs"> <label for="assigneeHoursPerWeek">Hours
+												per Week: <span class="text-muted">{{assignee.hoursPerWeek}}
+													h/w</span>
+										</label>
+
+										</span> <span class="visible-xs"> <small>{{assignee.hoursPerWeek}}</small>
+
+										</span> <span class="hidden-xs">{{assignee.startDate |
+											date:'longDate'}}</span> <span class="hidden-xs">{{assignee.endDate
+											| date:'longDate'}}</span> <span class="visible-xs"> <small>{{assignee.startDate
+												| date:'shortDate'}}</small> <span ng-show="assignee.endDate">-<br>
+												<small>{{assignee.endDate | date:'shortDate'}}</small></span> <span
+											ng-hide="assignee.endDate">- <small>N/A</small></span></td>
+				</tr>
+				<tr
+					ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
+					<td colspan="7">There are no assignees on this role</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7">
+						<div class="row ">
+							<div class="col-sm-12">
+								<button ng-hide="editMode || !adminAccess" class="btn"
+									ng-click="editAssignments()">
+									<i class="fa fa-pencil-square-o"></i> <span>Edit</span>
+								</button>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tfoot>
+	</div>
+
+</div>
+</table>
+</div>
+<script type="text/ng-template" id="custom/pager">
                 <ul class="pager ng-cloak">
                     <li ng-repeat="page in pages"
                             ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
@@ -114,13 +169,39 @@
                     </li>
                 </ul>
          </script>
-		
-	</div>
 
-	<div class="row well" ng-if="financeAccess">
+</div>
+<div class="row well" ng-if="financeAccess">
+	<div class="row">
+		<div class="col-xs-12">
+			<h4>Sponsors:</h4>
+		</div>
+	</div>
+	<div class="col-xs-12">
+		<div class="col-xs-12 col-sm-6 col-md-3">
+			<label>Executive sponsor:</label> <span>{{getExecutiveSponsor()}}</span>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-md-3">
+			<label>Sales Sponsor:</label> <span>{{getSalesSponsor()}}</span>
+		</div>
+	</div>
+</div>
+
+<div ng-if="financeAccess">
+	<div class="row well">
 		<div class="row">
 			<div class="col-xs-12">
 				<h4>Terms:</h4>
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<div class="row-fluid">
+				<div class="col-xs-12 col-sm-6 col-md-3" ng-if="isFixedBid()">
+					<label>Project Type:</label> <span>Fixed Bid</span>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3" ng-if="!isFixedBid()">
+					<label>Project Type:</label> <span>Time and Materials</span>
+				</div>
 			</div>
 		</div>
 		<div class="col-xs-12">
@@ -147,7 +228,7 @@
 		<br />
 	</div>
 
-	<div class="row well" ng-if="financeAccess">
+	<div class="row well" ng-if="!isFixedBid()">
 		<div class="row">
 			<div class="col-xs-12">
 				<h4>Project Rate Table (Total):</h4>
@@ -160,11 +241,11 @@
 					<thead>
 						<tr>
 							<th>Role</th>
-							<th class="hidden-xs">Advertised Rate</th>							
+							<th class="hidden-xs">Advertised Rate</th>
 							<th>Project Rate</th>
 							<th>Rate Units</th>
-							<th>Usage</th>		
-							<th>Time Period</th>					
+							<th>Usage</th>
+							<th>Time Period</th>
 							<th>Estimated Total</th>
 							<th></th>
 						</tr>
@@ -173,25 +254,27 @@
 						<td span>{{roleGroups[role.type.resource].abbreviation}}</span>
 						</td>
 						<td class="hidden-xs">{{role.rate.advAmount}}</td>
-						
-						<td>{{role.rate.amount}}</td>						
+
+						<td>{{role.rate.amount}}</td>
 						<td>{{role.rate.rateUnits}}</td>
-						<td>
-						   <span>{{role.rate.getNumberOfTUs()}}</span>						   
-						</td>
+						<td><span>{{role.rate.getNumberOfTUs()}}</span></td>
 						<td>{{role.rate.getNumPeriods(role.startDate, role.endDate)}}</td>
-						<td>{{role.formatMoney(role.rate.getEstimatedTotal(role.startDate, role.endDate), 0)}}</td>
+						<td>{{role.formatMoney(role.rate.getEstimatedTotal(role.startDate,
+							role.endDate), 0)}}</td>
 					</tr>
 					<tfoot>
 						<tr>
-							<td/><td/><td/><td/><td/>
+							<td />
+							<td />
+							<td />
+							<td />
+							<td />
 							<td><b>Total Estimate:</b></td>
-							<td>
-							   <span>{{formatMoney(servicesEstimate,0)}}</span>
-							</td>
+							<td><span>{{formatMoney(getServicesEstimate(),0)}}</span></td>
 						</tr>
 					</tfoot>
 				</table>
 			</div>
 		</div>
 	</div>
+</div>

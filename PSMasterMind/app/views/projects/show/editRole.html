@@ -33,271 +33,290 @@
 <div class="row">
 	<div class="col-xs-12 col-sm-8 col-md-9">
 		<div class="row">
-		<div class="col-xs-12">
-			<label for="rateChoices" class="inline">Terms:</label>
-			<div id="rateChoices" class="inline form-inline">
-				<label class="radio-inline"> <input type="radio"
-					value="hourly" ng-model="newRole.rate.type" ng-change="refreshAdvLoadedAmounts()">Hourly
-				</label> <label class="radio-inline"> <input type="radio"
-					value="weekly" ng-model="newRole.rate.type" ng-change="refreshAdvLoadedAmounts()">Weekly
-				</label> <label class="radio-inline"> <input type="radio"
-					value="monthly" ng-model="newRole.rate.type" ng-change="refreshAdvLoadedAmounts()">Monthly
-				</label>
+			<div class="col-xs-12">
+				<label for="rateChoices" class="inline">Terms:</label>
+				<div id="rateChoices" class="inline form-inline">
+					<label class="radio-inline"> <input type="radio"
+						value="hourly" ng-model="newRole.rate.type"
+						ng-change="refreshAdvLoadedAmounts()">Hourly
+					</label> <label class="radio-inline"> <input type="radio"
+						value="weekly" ng-model="newRole.rate.type"
+						ng-change="refreshAdvLoadedAmounts()">Weekly
+					</label> <label class="radio-inline"> <input type="radio"
+						value="monthly" ng-model="newRole.rate.type"
+						ng-change="refreshAdvLoadedAmounts()">Monthly
+					</label>
+				</div>
 			</div>
-		</div>
-		<!-- Hourly Rate -->
-		<div class="col-xs-12 well">
-			<!-- Hourly Rates -->
-			<div id="hourlyControls" ng-if="newRole.rate.type=='hourly'"
-				ng-show="newRole.rate.type=='hourly'">
-				<div class="row">
-					<div class="col-xs-12 col-md-6" ng-if="financeAccess">
-						<div class="row">
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<div class="row">
-									<div class="col-xs-10">
-										<label for="currentHourlyRate">Advertised Rate (USD/hour):</label>  
+			<!-- Hourly Rate -->
+			<div class="col-xs-12 well">
+				<!-- Hourly Rates -->
+				<div id="hourlyControls" ng-if="newRole.rate.type=='hourly'"
+					ng-show="newRole.rate.type=='hourly'">
+					<div class="row">
+						<div ng-if="financeAccess">
+							<div class="row col-xs-12 col-md-6" ng-if="!isFixedBid()">
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<div class="row">
+										<div class="col-xs-10">
+											<label for="currentHourlyRate">Advertised Rate
+												(USD/hour):</label>
+										</div>
+										<div class="col-xs-2">
+											<label class="pull-right">
+												<button class="btn btn-default"
+													ng-click="refreshAdvAmount()">
+													<i class="fa fa-refresh"></i>
+												</button>
+											</label>
+										</div>
 									</div>
-									<div class="col-xs-2">
-										<label class="pull-right">
-											<button class="btn btn-default" ng-click="refreshAdvAmount()"><i class="fa fa-refresh"></i></button>
-										</label>
+									<div class="row">
+										<div class="col-xs-12">
+											<input id="hourlyHourlyAdvRate" class="form-control"
+												placeholder="Enter Advertised Hourly Rate" type="number"
+												min="0" ng-model="newRole.rate.advAmount" />
+										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										<input
-											id="hourlyHourlyAdvRate" class="form-control"
-											placeholder="Enter Advertised Hourly Rate" type="number" min="0"
-											ng-model="newRole.rate.advAmount"/>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										(USD/Hour){{newRole.rate.advAmount | currency}}
-									</div>
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<div class="row">
-									<div class="col-xs-10">
-										<label for="loadedHourlyRate">Loaded Rate (USD/hour):</label>  
-									</div>
-									<div class="col-xs-2">
-										<label class="pull-right">
-											<button class="btn btn-default" ng-click="refreshLoadedAmount()"><i class="fa fa-refresh"></i></button>
-										</label>
+									<div class="row">
+										<div class="col-xs-12">
+											(USD/Hour){{newRole.rate.advAmount | currency}}</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										<input
-											id="loadedHourlyRate" class="form-control"
-											placeholder="Enter Loaded Hourly Rate"
-											ng-model="newRole.rate.loadedAmount" readonly />
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<div class="row">
+										<div class="col-xs-10">
+											<label for="loadedHourlyRate">Loaded Rate (USD/hour):</label>
+										</div>
+										<div class="col-xs-2">
+											<label class="pull-right">
+												<button class="btn btn-default"
+													ng-click="refreshLoadedAmount()">
+													<i class="fa fa-refresh"></i>
+												</button>
+											</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-12">
+											<input id="loadedHourlyRate" class="form-control"
+												placeholder="Enter Loaded Hourly Rate"
+												ng-model="newRole.rate.loadedAmount" readonly />
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-xs-12">
+											(USD/Hour){{newRole.rate.loadedAmount | currency}}</div>
 									</div>
 								</div>
-								
-								<div class="row">
-									<div class="col-xs-12">
-										(USD/Hour){{newRole.rate.loadedAmount | currency}}
-									</div>
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<label for="hourlyHourlyRate">Project Rate (USD/hour):</label>
+									<input id="hourlyHourlyRate" class="form-control"
+										placeholder="Enter Hourly Rate" type="number" min="0"
+										ng-model="newRole.rate.amount" />
+									(USD/Hour){{newRole.rate.amount | currency}}
 								</div>
-							</div>
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<label for="hourlyHourlyRate">Project Rate (USD/hour):</label> <input
-									id="hourlyHourlyRate" class="form-control"
-									placeholder="Enter Hourly Rate" type="number" min="0"
-									ng-model="newRole.rate.amount"/>
-								(USD/Hour){{newRole.rate.amount | currency}}
 							</div>
 						</div>
-					</div>
-					<div class="col-xs-12 col-md-6">
-						<div class="row">
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<label for="hourlyHours">Hours/Month:</label> <input
-									id="hourlyHours" class="form-control"
-									placeholder="Enter Hours per Month" type="number"
-									ng-model="newRole.rate.hoursPerMth"/>
-							</div>
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<label>Utilization:</label>
-								<div class="checkbox">
-									<label> <input type="checkbox"
-										ng-model="newRole.rate.fullyUtilized"> 100% Utilized
-									</label>
+						<div class="col-xs-12 col-md-6">
+							<div class="row">
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<label for="hourlyHours">Hours/Month:</label> <input
+										id="hourlyHours" class="form-control"
+										placeholder="Enter Hours per Month" type="number"
+										ng-model="newRole.rate.hoursPerMth" />
+								</div>
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<label>Utilization:</label>
+									<div class="checkbox">
+										<label> <input type="checkbox"
+											ng-model="newRole.rate.fullyUtilized"> 100% Utilized
+										</label>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			
-			<!-- Weekly Rates -->
-			<div id="weeklyControls" ng-if="newRole.rate.type=='weekly'"
-				ng-show="newRole.rate.type=='weekly'">
-				<div class="row">
-					<div class="col-xs-12 col-md-6" ng-if="financeAccess">
-						<div class="row">
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<div class="row">
-									<div class="col-xs-10">
-										<label for="currentHourlyRate">Advertised Rate (USD/hour):</label> 
-									</div>
-									<div class="col-xs-2">
-										<label class="pull-right">
-											<button class="btn btn-default" ng-click="refreshAdvAmount()"><i class="fa fa-refresh"></i></button>
-										</label>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										<input
-											id="weeklyHourlyAdvRate" class="form-control"
-											placeholder="Enter Advertised Hourly Rate" type="number" min="0"
-											ng-model="newRole.rate.advAmount"/>
-									</div>
-									
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										(USD/Hour){{newRole.rate.advAmount | currency}}
-									</div>
-								</div>
-							</div>
 
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<div class="row">
-									<div class="col-xs-10">
-										<label for="currentLoadedRate">Loaded Rate (USD/hour):</label> 
+				<!-- Weekly Rates -->
+				<div id="weeklyControls" ng-if="newRole.rate.type=='weekly'"
+					ng-show="newRole.rate.type=='weekly'">
+					<div class="row">
+						<div ng-if="financeAccess">
+							<div class="row col-xs-12 col-md-6" ng-if="!isFixedBid()">
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<div class="row">
+										<div class="col-xs-10">
+											<label for="currentHourlyRate">Advertised Rate
+												(USD/hour):</label>
+										</div>
+										<div class="col-xs-2">
+											<label class="pull-right">
+												<button class="btn btn-default"
+													ng-click="refreshAdvAmount()">
+													<i class="fa fa-refresh"></i>
+												</button>
+											</label>
+										</div>
 									</div>
-									<div class="col-xs-2">
-										<label class="pull-right">
-											<button class="btn btn-default" ng-click="refreshLoadedAmount()"><i class="fa fa-refresh"></i></button>
-										</label>
+									<div class="row">
+										<div class="col-xs-12">
+											<input id="weeklyHourlyAdvRate" class="form-control"
+												placeholder="Enter Advertised Hourly Rate" type="number"
+												min="0" ng-model="newRole.rate.advAmount" />
+										</div>
+
+									</div>
+									<div class="row">
+										<div class="col-xs-12">
+											(USD/Hour){{newRole.rate.advAmount | currency}}</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										<input
-											id="weeklyHourlyLoadedRate" class="form-control"
-											placeholder="Enter Loaded Hourly Rate" readonly
-											ng-model="newRole.rate.loadedAmount"/>
+
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<div class="row">
+										<div class="col-xs-10">
+											<label for="currentLoadedRate">Loaded Rate
+												(USD/hour):</label>
+										</div>
+										<div class="col-xs-2">
+											<label class="pull-right">
+												<button class="btn btn-default"
+													ng-click="refreshLoadedAmount()">
+													<i class="fa fa-refresh"></i>
+												</button>
+											</label>
+										</div>
 									</div>
-									
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										(USD/Hour){{newRole.rate.loadedAmount | currency}}
+									<div class="row">
+										<div class="col-xs-12">
+											<input id="weeklyHourlyLoadedRate" class="form-control"
+												placeholder="Enter Loaded Hourly Rate" readonly
+												ng-model="newRole.rate.loadedAmount" />
+										</div>
+
+									</div>
+									<div class="row">
+										<div class="col-xs-12">
+											(USD/Hour){{newRole.rate.loadedAmount | currency}}</div>
 									</div>
 								</div>
-							</div>						
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<label for="weeklyHourlyRate">Project Rate (USD/hour):</label> <input
-									id="weeklyHourlyRate" class="form-control"
-									placeholder="Enter Hourly Rate" min="0" type="number"
-									ng-model="newRole.rate.amount"/>
-								(USD/Hour){{newRole.rate.amount | currency}}
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<label for="weeklyHourlyRate">Project Rate (USD/hour):</label>
+									<input id="weeklyHourlyRate" class="form-control"
+										placeholder="Enter Hourly Rate" min="0" type="number"
+										ng-model="newRole.rate.amount" />
+									(USD/Hour){{newRole.rate.amount | currency}}
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-xs-12 col-md-6">
-						<div class="row">
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<label for="weeklyHours">Hours/Week:</label> <input
+						<div class="col-xs-12 col-md-6">
+							<div class="row">
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<label for="weeklyHours">Hours/Week:</label> <input
 										id="weeklyHours" class="form-control"
 										placeholder="Enter Hours per Week" type="number"
-										ng-model="newRole.rate.hoursPerWeek"/>
-								
-							</div>
-							<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-								<label>Utilization:</label>
-								<div class="checkbox">
-									<label> <input type="checkbox"
-										ng-model="newRole.rate.fullyUtilized"/> 100% Utilized
-									</label>
+										ng-model="newRole.rate.hoursPerWeek" />
+
+								</div>
+								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
+									<label>Utilization:</label>
+									<div class="checkbox">
+										<label> <input type="checkbox"
+											ng-model="newRole.rate.fullyUtilized" /> 100% Utilized
+										</label>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<!-- Monthly Rate -->
-			<div id="monthlyControls" ng-if="newRole.rate.type=='monthly'"
-				ng-show="newRole.rate.type=='monthly'">
-				<div class="row" ng-if="financeAccess">
-					<div class="col-xs-12">
-						<div class="row">
-							<div class="col-xs-12 col-sm-6">
-								<div class="row">
-									<div class="col-xs-10">
-										<label for="currentMonthlyRate">Advertised Rate (USD/month):</label> 
+				<!-- Monthly Rate -->
+				<div id="monthlyControls" ng-if="newRole.rate.type=='monthly'"
+					ng-show="newRole.rate.type=='monthly'">
+					<div class="row" ng-if="financeAccess">
+						<div class="col-xs-12">
+							<div class="row" >
+								<div class="col-xs-12 col-sm-6" ng-if="!isFixedBid()">
+									<div class="row">
+										<div class="col-xs-10">
+											<label for="currentMonthlyRate">Advertised Rate
+												(USD/month):</label>
+										</div>
+										<div class="col-xs-2">
+											<label class="pull-right">
+												<button class="btn" ng-click="refreshAdvAmount()">
+													<i class="fa fa-refresh"></i>
+												</button>
+											</label>
+										</div>
 									</div>
-									<div class="col-xs-2">
-										<label class="pull-right">
-											<button class="btn" ng-click="refreshAdvAmount()"><i class="fa fa-refresh"></i></button>
-										</label>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										<input
-											id="monthlyAdvRate" class="form-control"
-											placeholder="Enter Advertised Monthly Rate" type="number" min="0"
-											ng-model="newRole.rate.advAmount"/>
-									</div>
-									
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										(USD/Hour){{newRole.rate.amount | currency}}
-									</div>
-								</div>
-							</div>
+									<div class="row" ng-if="!isFixedBid()">
+										<div class="col-xs-12">
+											<input id="monthlyAdvRate" class="form-control"
+												placeholder="Enter Advertised Monthly Rate" type="number"
+												min="0" ng-model="newRole.rate.advAmount" />
+										</div>
 
-							<div class="col-xs-12 col-sm-6">
-								<div class="row">
-									<div class="col-xs-10">
-										<label for="LoadedMonthlyRate">Loaded Rate (USD/month):</label> 
 									</div>
-									<div class="col-xs-2">
-										<label class="pull-right">
-											<button class="btn" ng-click="refreshLoadedAmount()"><i class="fa fa-refresh"></i></button>
-										</label>
+									<div class="row" ng-if="!isFixedBid()">
+										<div class="col-xs-12">(USD/Hour){{newRole.rate.amount |
+											currency}}</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										<input
-											id="monthlyLoadedRate" class="form-control"
-											placeholder="Enter Loaded Monthly Rate" readonly
-											ng-model="newRole.rate.loadedAmount"/>
+
+								<div class="col-xs-12 col-sm-6" ng-if="!isFixedBid()">
+									<div class="row">
+										<div class="col-xs-10">
+											<label for="LoadedMonthlyRate">Loaded Rate
+												(USD/month):</label>
+										</div>
+										<div class="col-xs-2">
+											<label class="pull-right">
+												<button class="btn" ng-click="refreshLoadedAmount()">
+													<i class="fa fa-refresh"></i>
+												</button>
+											</label>
+										</div>
 									</div>
-									
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										(USD/Hour){{newRole.rate.loadedAmount | currency}}
+									<div class="row">
+										<div class="col-xs-12">
+											<input id="monthlyLoadedRate" class="form-control"
+												placeholder="Enter Loaded Monthly Rate" readonly
+												ng-model="newRole.rate.loadedAmount" />
+										</div>
+
+									</div>
+									<div class="row">
+										<div class="col-xs-12">
+											(USD/Hour){{newRole.rate.loadedAmount | currency}}</div>
 									</div>
 								</div>
-							</div>
-													
-							<div class="col-xs-12 col-sm-6">
-								<label for="monthlyRate">Project Rate (USD/month):</label> <input
-								id="monthlyRate" class="form-control"
-								placeholder="Enter Hours per Month" type="number"
-								ng-model="newRole.rate.amount"/>
+
+								<div class="col-xs-12 col-sm-6" ng-if="!isFixedBid()">
+									<label for="monthlyRate">Project Rate (USD/month):</label> <input
+										id="monthlyRate" class="form-control"
+										placeholder="Enter Hours per Month" type="number"
+										ng-model="newRole.rate.amount" />
 									(USD/Month){{newRole.rate.amount | currency}}
-								
+								</div>
+
+							<div class="col-xs-12 col-sm-6">
+								<label>Utilization:</label>
+								<div class="checkbox">
+									<label> <input type="checkbox" disabled="disabled" checked="checked" />100% Utilized
+									</label>
+								</div>
+							</div>
 							</div>
 						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		</div>
-	</div>
 	</div>
 	<div class="col-xs-12 col-sm-4 col-md-3 form-group">
 		<label for="shoringOptions" class="inline">Shoring:</label>

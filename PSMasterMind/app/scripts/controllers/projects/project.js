@@ -14,6 +14,7 @@ angular.module('Mastermind')
     }
     $scope.projectLoaded = false;
     $scope.projectEstimate = 0;
+    //$scope.servicesEstimate = 0;
     $scope.shiftDatesChecked = false;
 
     /**
@@ -366,7 +367,7 @@ angular.module('Mastermind')
      * Expected margin on a project
      */
     $scope.projectMargin = function(){
-      var servicesEst = $scope.servicesEstimate;
+      var servicesEst = $scope.getServicesEstimate();
       var softwareEst = $scope.project.terms.softwareEstimate;
 
       //Cannot be null
@@ -384,6 +385,41 @@ angular.module('Mastermind')
 
       return margin;
     };
+
+    /**
+     * Return servicesEstimate
+     */
+    $scope.getServicesEstimate = function(){
+    	var svcsEst = 0;
+    	if($scope.isFixedBid()) {
+    		svcsEst = $scope.project.terms.fixedBidServicesRevenue;
+    	} 
+    	else { 		
+    		if(!$scope.servicesEstimate || $scope.servicesEstimate ==0) {
+                for(var i = 0; i < $scope.project.roles.length; i++){
+                    var ithRole = $scope.project.roles[i];
+                    var roleEstimate = 0;
+                    if(ithRole.startDate && ithRole.endDate) {
+                  	  roleEstimate = ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
+                    }
+                    else if(ithRole.startDate) {
+                  	  /*
+                  	   * Use the project endDate if the role doesn't have an endDate.
+                  	   */
+                  	  roleEstimate = ithRole.rate.getEstimatedTotal($scope.project.endDate);
+                    }
+                    svcsEst += roleEstimate;
+
+                  }
+                  $scope.servicesEstimate = svcsEst;
+    		}
+    		else {
+    			svcsEst = $scope.servicesEstimate;
+    		}
+    	}
+		
+		return svcsEst;
+    }
 
     /**
      * Display the expected hours a role should work
@@ -430,48 +466,53 @@ angular.module('Mastermind')
      * Calculate total services cost in plan
      */
     $scope.servicesTotal = function(){
-      var roles = $scope.project.roles;
-
-      var runningTotal = 0;
-      for(var i = 0; roles && i < roles.length; i++){
-        var role = roles[i];
-        var rate = role.rate;
-        if(rate && rate.amount){
-          var amount = rate.amount;
-          if(amount){
-            var type = rate.type;
-            var startDate = new Date(role.startDate);
-            var endDate = new Date(role.endDate);
-            var numMonths;
-            var roleTotal;
-
-            if(startDate && endDate){
-              //Hourly Charge rate
-              if(type && type === 'monthly'){
-                numMonths = $scope.monthDif(startDate, endDate);
-                roleTotal = numMonths * amount;
-                runningTotal += roleTotal;
-              }
-              //Weekly Charge rate
-              else if(type && type === 'weekly'){
-                var numWeeks = $scope.weeksDif(startDate, endDate);
-                var hoursPerWeek = rate.fullyUtilized?50:rate.hoursPerWeek;
-                roleTotal = numWeeks * hoursPerWeek * amount;
-                runningTotal += roleTotal;
-              }
-              //Hourly Charge rate
-              else if(type && type === 'hourly'){
-                numMonths = $scope.monthDif(startDate, endDate);
-                var hoursPerMonth = rate.fullyUtilized?220:rate.hoursPerMth;
-                roleTotal = numMonths * hoursPerMonth * amount;
-                runningTotal += roleTotal;
-              }
-            }
-          }
-        }
-      }
-
-      return runningTotal;
+    	return $scope.getServicesEstimate();
+    	
+//    	if($scope.isFixedBid()) {
+//    		return $scope.project.terms.fixedBidServicesRevenue;
+//    	}
+//    	else {
+//    		var roles = $scope.project.roles;
+//    		var runningTotal = 0;
+//    		for(var i = 0; roles && i < roles.length; i++){
+//    	        var role = roles[i];
+//    	        var rate = role.rate;
+//    	        if(rate && rate.amount){
+//      	          var amount = rate.amount;
+//    	          if(amount){
+//    	            var type = rate.type;
+//    	            var startDate = new Date(role.startDate);
+//    	            var endDate = new Date(role.endDate);
+//    	            var numMonths;
+//    	            var roleTotal;
+//
+//    	            if(startDate && endDate){
+//    	              //Hourly Charge rate
+//    	              if(type && type === 'monthly'){
+//    	                numMonths = $scope.monthDif(startDate, endDate);
+//    	                roleTotal = numMonths * amount;
+//    	                runningTotal += roleTotal;
+//    	              }
+//    	              //Weekly Charge rate
+//    	              else if(type && type === 'weekly'){
+//    	                var numWeeks = $scope.weeksDif(startDate, endDate);
+//    	                var hoursPerWeek = rate.fullyUtilized?50:rate.hoursPerWeek;
+//    	                roleTotal = numWeeks * hoursPerWeek * amount;
+//    	                runningTotal += roleTotal;
+//    	              }
+//    	              //Hourly Charge rate
+//    	              else if(type && type === 'hourly'){
+//    	                numMonths = $scope.monthDif(startDate, endDate);
+//    	                var hoursPerMonth = rate.fullyUtilized?220:rate.hoursPerMth;
+//    	                roleTotal = numMonths * hoursPerMonth * amount;
+//    	                runningTotal += roleTotal;
+//    	              }
+//    	            }
+//    	          }
+//    	        }
+//    	      }
+//  	      return runningTotal;
+//    	}
     };
 
 
@@ -502,7 +543,7 @@ angular.module('Mastermind')
 //      // Convert back to weeks and return hole weeks
 //      return Math.floor(differenceMs / ONE_WEEK);
       
-      return Math.ceil((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24 * 4.5));
+      return Math.ceil((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24 * 7));
     };
 
     /**
@@ -597,6 +638,15 @@ angular.module('Mastermind')
       return !detailsValid || !rolesValid;
     };
 
+    /**
+     * Check to see if this is a fixed bid project or not.
+     * 
+     * @returns {boolean}
+     */
+    $scope.isFixedBid = function () {
+      return $scope.project.terms.type=="fixed";
+    };
+    
     $scope.activeTab = {
     	"assignments": $state.params.tabId == "assignments",
     	"summary": $state.params.tabId == "summary",
@@ -905,7 +955,8 @@ angular.module('Mastermind')
           getData: function ($defer, params) {
             var start = (params.page() - 1) * params.count();
             var end = params.page() * params.count();
-            $scope.servicesEstimate = 0;
+            //$scope.servicesEstimate = 0;
+            var svcsEst = 0;
 
             var orderedData = params.sorting() ?
                 $filter('orderBy')($scope.project.roles, params.orderBy()) :
@@ -928,7 +979,7 @@ angular.module('Mastermind')
             	   */
             	  roleEstimate = ithRole.rate.getEstimatedTotal($scope.project.endDate);
               }
-              $scope.servicesEstimate += roleEstimate;
+              svcsEst += roleEstimate;
               if(ithRole.assignee && ithRole.assignee.resource){
                 defers.push(Resources.resolve(ithRole.assignee));
                 //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
@@ -941,6 +992,7 @@ angular.module('Mastermind')
 
               ret[i] = ithRole;
             }
+            $scope.servicesEstimate = svcsEst;
 
             $.when.apply(window, defers).done(function(){
               $defer.resolve(ret);
@@ -994,7 +1046,7 @@ angular.module('Mastermind')
               }
               else {
                 var numWeeks = $scope.weeksDif(startDate, endDate);
-                var hoursPerWeek = rate.fullyUtilized?50:rate.hoursPerWeek;
+                var hoursPerWeek = rate.fullyUtilized?40:rate.hoursPerWeek;
                 roleTotal = numWeeks * hoursPerWeek * amount;
                 runningTotal += roleTotal;
               }
@@ -1007,7 +1059,7 @@ angular.module('Mastermind')
               }
               else {
                 numMonths = $scope.monthDif(startDate, endDate);
-                var hoursPerMonth = rate.fullyUtilized?220:rate.hoursPerMth;
+                var hoursPerMonth = rate.fullyUtilized?180:rate.hoursPerMth;
                 roleTotal = numMonths * hoursPerMonth * amount;
                 runningTotal += roleTotal;
               }

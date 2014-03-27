@@ -5,6 +5,7 @@ angular.module('Mastermind.models.projects')
   .factory('Terms', function () {
     var defaults = {
       includesProjectManagementOverhead: false,
+      fixedBidServicesRevenue: 0,
       type: 'timeAndMaterials'
     };
 
@@ -12,6 +13,7 @@ angular.module('Mastermind.models.projects')
       options = options || {};
 
       this.softwareEstimate = options.softwareEstimate || defaults.softwareEstimate;
+      this.fixedBidServicesRevenue = options.fixedBidServicesRevenue || defaults.fixedBidServicesRevenue;
       this.includesProjectManagementOverhead = options.includesProjectManagementOverhead || defaults.includesProjectManagementOverhead;
       this.type = options.type || defaults.type;
     }

@@ -2243,6 +2243,32 @@ public class Data implements CONSTS {
 	}
 	
 	/**
+	 * Sprint 8 to sprint 9 migrate Project 'terms.servicesEstimate' to 'terms.fixedBidServicesRevenue' 
+	 */
+	public static void migrateServicesEstimate(RequestContext context) throws IOException{
+		//Update all Projects with terms.committed to committed
+		//db.Projects.update({"terms.committed":{"$exists":true}},{"$rename":{"terms.committed":"committed"}},false,true)
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		DBObject query =  (DBObject) JSON.parse("{\"terms.servicesEstimate\":{\"$exists\":true}}");
+		DBObject update =  (DBObject) JSON.parse("{\"$rename\":{\"terms.servicesEstimate\":\"terms.fixedBidServicesRevenue\"}}");
+		
+		WriteResult result = projectsCol.updateMulti(query, update);
+		CommandResult error = result.getLastError();
+		// System.out.println("Add project link: " + result);
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Migrate ServicesEstimate Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+	}
+	
+	/**
 	 * Sprint 7 to sprint 8 migrate Roles assignees
 	 */
 	public static void migrateAssignees(RequestContext context) throws IOException{
