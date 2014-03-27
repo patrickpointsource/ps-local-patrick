@@ -32,10 +32,10 @@ angular.module('Mastermind')
   //Load the members of the executive Group
     var execQuery = {groups:'Executives'};
     var salesQuery = {groups:'Sales'};
-    var fields = {name:1,resource:1};
+    var fields = {name:1,resource:1,familyName:1,givenName:1};
 
     Resources.query('people', execQuery, fields, function(result){
-      $scope.execs = result;
+    	$scope.execs = result;
     });
     Resources.query('people', salesQuery, fields, function(result){
       $scope.sales = result;
