@@ -169,7 +169,7 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.{css,less}',
-//            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
           ]
         }
       }
@@ -187,30 +187,30 @@ module.exports = function (grunt) {
         dirs: ['<%= yeoman.dist %>']
       }
     },
-//    imagemin: {
-//      dist: {
-//        files: [
-//          {
-//            expand: true,
-//            cwd: '<%= yeoman.app %>/images',
-//            src: '{,*/}*.{png,jpg,jpeg}',
-//            dest: '<%= yeoman.dist %>/images'
-//          }
-//        ]
-//      }
-//    },
-//    svgmin: {
-//      dist: {
-//        files: [
-//          {
-//            expand: true,
-//            cwd: '<%= yeoman.app %>/images',
-//            src: '{,*/}*.svg',
-//            dest: '<%= yeoman.dist %>/images'
-//          }
-//        ]
-//      }
-//    },
+    imagemin: {
+      dist: {
+        files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.app %>/images',
+            src: '{,*/}*.{png,jpg,jpeg}',
+            dest: '<%= yeoman.dist %>/images'
+          }
+        ]
+      }
+    },
+    svgmin: {
+      dist: {
+        files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.app %>/images',
+            src: '{,*/}*.svg',
+            dest: '<%= yeoman.dist %>/images'
+          }
+        ]
+      }
+    },
     cssmin: {
       // By default, your `index.html` <!-- Usemin Block --> will take care of
       // minification. This option is pre-configured if you do not wish to use
@@ -227,7 +227,7 @@ module.exports = function (grunt) {
     htmlmin: {
       dist: {
         options: {
-          removeCommentsFromCDATA: true,
+          /*removeCommentsFromCDATA: true,
            // https://github.com/yeoman/grunt-usemin/issues/44
            //collapseWhitespace: true,
            collapseBooleanAttributes: true,
@@ -235,13 +235,13 @@ module.exports = function (grunt) {
            removeRedundantAttributes: true,
            useShortDoctype: true,
            removeEmptyAttributes: true,
-           removeOptionalTags: true
+           removeOptionalTags: true*/
         },
         files: [
           {
             expand: true,
             cwd: '<%= yeoman.app %>',
-            src: ['*.html', 'views/{,*/}*.html', 'views/{,*/}*/{,*/}*.html'],
+            src: ['*.html', 'views/{,*/}*.html'],
             dest: '<%= yeoman.dist %>'
           }
         ]
@@ -260,11 +260,10 @@ module.exports = function (grunt) {
               '*.{ico,png,txt}',
               '.htaccess',
               'bower_components/**/*',
-              'images/{,*/}*.{gif,png,webp}',
+              'images/{,*/}*.{gif,webp}',
               'fonts/{,*/}*',
               'template/{,*/}*',
               'login/{,*/}*'
-              //,'*.html', 'views/{,*/}*.html', 'views/{,*/}*/{,*/}*.html'
             ]
           },
           {
@@ -296,8 +295,8 @@ module.exports = function (grunt) {
       dist: [
         'coffee',
         'copy:styles',
-        //'imagemin',
-        //'svgmin',
+        'imagemin',
+        'svgmin',
         'htmlmin'
       ]
     },
@@ -384,7 +383,7 @@ module.exports = function (grunt) {
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
-    'less',
+    //'less',
     'concat',
     'copy:dist',
     //'cdnify',
