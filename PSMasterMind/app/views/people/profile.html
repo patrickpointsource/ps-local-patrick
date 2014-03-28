@@ -25,7 +25,7 @@
           	<img class="media-object fullProfileImage pull-left" ng-src="{{profile.thumbnail}}" />
             <div>
               <span><a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
-              <div ng-show="editMode">
+              <div ng-show="editMode" class="profile-edit-margin-top">
                 <label class="personDetailLabel">Primary Role:</label> <select
                   class="form-control"
                   ng-model="profile.primaryRole.resource"
