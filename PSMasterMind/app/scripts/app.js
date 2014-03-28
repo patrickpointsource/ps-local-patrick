@@ -226,16 +226,22 @@
   		  		event.preventDefault();
   		  		
   		  		$rootScope.modalDialog = {
-  		  			title: "Changes are not saved",
-  		  			text: "You have not saved your changes. Are you sure want to leave?",
-  		  			ok: "Ok",
-  		  			no: "Cancel",
-  		  			cancel: '',
-  		  			okHandler: function() {
+  		  			title: "Save Changes",
+  		  			text: "Would you like to save your changes before leaving?",
+	  		  		ok: "Yes",
+			  		no: "No",
+			  		cancel: "Cancel",
+			  		okHandler: function() {
+			  			return $rootScope.dirtySaveHandler().then(function(project) {//Unset dirty flag
+			  				$rootScope.formDirty = false;
+			  				$(".modalYesNo").modal('hide');
+				  		});
+  		  			},
+  		  			noHandler: function() {
   		  				$rootScope.formDirty = false;
   		  				$(".modalYesNo").modal('hide');
   		  			},
-  		  			noHandler: function() {
+  		  			Handler: function() {
   		  				$(".modalYesNo").modal('hide');
   		  			}
   		  		};

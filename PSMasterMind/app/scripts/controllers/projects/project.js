@@ -46,6 +46,7 @@ angular.module('Mastermind')
     $scope.close = function(){
     	$scope.stopWatchingProjectChanges();
     	$rootScope.formDirty = false;
+    	$rootScope.dirtySaveHandler = false;
     	$scope.editMode = false;
         $scope.submitAttempted = false;
     	
@@ -62,6 +63,7 @@ angular.module('Mastermind')
 	      }
     };
     
+    
     /**
      * Set the profile view in edit mode
      */
@@ -70,17 +72,19 @@ angular.module('Mastermind')
       if($rootScope.formDirty){
     	  
     	  $rootScope.modalDialog = {
-		  		title: "Changes are not saved",
-		  		text: "You have made changes to this project did you want to save your changes?",
+		  		title: "Save Changes",
+		  		text: "Would you like to save your changes before leaving?",
 		  		ok: "Yes",
 		  		no: "No",
 		  		cancel: "Cancel",
 		  		okHandler: function() {
 		  			$(".modalYesNoCancel").modal('hide');
-		  			
-		  			$scope.save().then(function(project) {//Unset dirty flag
+		  			$rootScope.dirtySaveHandler().then(function(project) {//Unset dirty flag
 			  			$scope.close();
 			  		});
+//		  			$scope.save().then(function(project) {//Unset dirty flag
+//			  			$scope.close();
+//			  		});
 		  		},
 		  		noHandler: function() {
 		  			$(".modalYesNoCancel").modal('hide');
@@ -152,8 +156,8 @@ angular.module('Mastermind')
         if(project.initStartDate && project.startDate && project.startDate != project.initStartDate){
         	
         	$rootScope.modalDialog = {
-    		  		title: "The start date on your project has changed",
-    		  		text: "Would you like to shift the role start dates based on this change?",
+    		  		title: "Shift Role Start Dates",
+    		  		text: "The project start date has changed.  Would you like to shift the role start dates based on this change?",
     		  		ok: "Yes",
     		  		no: "No",
     		  		cancel: "",
@@ -322,6 +326,7 @@ angular.module('Mastermind')
                     $scope.project = project;
                     $scope.handleProjectSelected();
                     $rootScope.formDirty = false;
+                    $rootScope.dirtySaveHandler = null;
                     
                     deferred.resolve($scope.project);
                  });
@@ -1117,6 +1122,9 @@ angular.module('Mastermind')
 	    		  if(oldStr != newStr){
 	    			  console.debug('project is now dirty');
 	    			  $rootScope.formDirty = true;
+	    			  $rootScope.dirtySaveHandler = function(){
+	    			    	return $scope.save();
+	    			   };
 	    		  }
 	    	  }
 	    	 

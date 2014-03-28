@@ -96,7 +96,8 @@ angular.module('Mastermind.controllers.projects')
 		}
 		
 		$scope.editMode = false;
-		 $rootScope.formDirty = false;
+			//TODO removing dirty handler
+		 	//$rootScope.formDirty = false;
 		 
 		$state.go('projects.show.tabId', {
 			tabId: $scope.projectTabId,
@@ -132,7 +133,11 @@ angular.module('Mastermind.controllers.projects')
 				tabId: $scope.projectTabId,
 				filter: null
 			}).then(function() {
-				$rootScope.formDirty = true;
+//TODO removing dirty handler
+//				$rootScope.formDirty = true;
+//				$rootScope.dirtySaveHandler = function(){
+//			    	return $scope.saveAssignment();
+//				};
 			});
     	 
     }
@@ -212,9 +217,10 @@ angular.module('Mastermind.controllers.projects')
           // concatenate hided assingnee members
     	  $scope.projectAssignment.members = assignments.concat($scope.projectAssignment.excludedMembers ? $scope.projectAssignment.excludedMembers: []);
     	  
-    	  AssignmentService.save($scope.project, $scope.projectAssignment).then(function(result) {
+    	  return AssignmentService.save($scope.project, $scope.projectAssignment).then(function(result) {
     		  $scope.showInfo(['Assignments successfully saved']);
-    		  $rootScope.formDirty = false;
+    		  	//TODO removing dirty handler
+  		 		//$rootScope.formDirty = false;
     		  
     		  window.setTimeout(function(){
     			  $scope.hideMessages();

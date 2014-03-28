@@ -2,9 +2,9 @@
 	<div class="row">
 		<h3 class="col-xs-8">{{project.customerName || 'No Customer'}}</h3>
 		<div class="actions col-xs-4 pageActions">
-			<button ng-hide="editMode || !canEdit()" class="btn"
+			<button ng-hide="editMode || !canEdit()" class="btn btn-default"
 				ng-click="edit()">
-				<i class="fa fa-pencil-square-o"></i> <span>Edit</span>
+				<i class="fa fa-pencil-square-o"></i> <span>Edit Details</span>
 			</button>
 		</div>
 	</div>
@@ -31,7 +31,7 @@
 			<h4>Roles:</h4>
 		</div>
 		<div class="actions col-xs-8 pageActions" style="margin-top:0px">
-			<button ng-hide="editMode || !adminAccess" class="btn" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span></button>
+			<button ng-hide="editMode || !adminAccess" class="btn btn-default" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span></button>
 		</div>
 				
 		</div>

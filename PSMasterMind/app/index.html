@@ -165,28 +165,28 @@
 			
 			<!-- <footer class="text-center container"><br/><small>© 2014 PointSource, LLC. All rights reserved.</small></footer> -->
 
-            <div class="modal fade modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <ng-include src="'modalTemplate'"/>
             </div>
             
-            <div class="modal fade modalYesNoCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal modalYesNoCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <ng-include src="'modalTemplate'"/>
             </div>
             
             <script type="text/ng-template" id="modalTemplate">
                 <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
+                    <div class="modal-content panel panel-info">
+                        <div class="modal-header panel-heading">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 class="modal-title" id="myModalLabel">{{getModal().title}}</h4>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body panel-body">
                         {{getModal().text}}
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" ng-click="getModal().okHandler()">{{getModal().ok}}</button>
                             <button type="button" class="btn btn-default" ng-click="getModal().noHandler()">{{getModal().no}}</button>
                             <button type="button" class="btn btn-default" ng-show="getModal().cancel" ng-click="getModal().cancelHandler()" data-dismiss="modal">{{getModal().cancel}}</button>
+							<button type="button" class="btn btn-primary" ng-click="getModal().okHandler()">{{getModal().ok}}</button>
                         </div>
                     </div>
                 </div>
