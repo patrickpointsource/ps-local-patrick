@@ -390,13 +390,13 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
     	else {
     		switch (type) {
     		case 'hourly':
-    			hoursDesc= hoursPerMth + "/month";
+    			hoursDesc= hoursPerMth + "/m";
     			break;
     		case 'weekly':
-    			hoursDesc= hoursPerWeek + "/week";
+    			hoursDesc= hoursPerWeek + "/w";
     			break;
     		case 'monthly':
-    			hoursDesc= 'Monthly';
+    			hoursDesc= '100%';
     		}
     	}
     	//console.log("getHoursDescription returning ", hoursDesc);
