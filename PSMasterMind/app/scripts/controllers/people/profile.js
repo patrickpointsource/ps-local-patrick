@@ -146,6 +146,14 @@ angular.module('Mastermind.controllers.people')
       }
       
       Resources.update(profile).then(function(person){
+      	var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
+      	var params = {'fields':fields};
+      	var key = "people?" + JSON.stringify(params);
+     
+      	delete localStorage[key];      
+      	
+      	var getBack = localStorage[key];
+      	
         $scope.setProfile(person);
         $scope.editMode = false;
 
