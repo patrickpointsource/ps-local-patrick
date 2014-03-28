@@ -231,6 +231,7 @@ angular.module('Mastermind.controllers.people')
           	for (var m=0; m< myProjects.length; m++) {
           		var myProj = myProjects[m];
           		var found = undefined;
+          		myProj.title = myProj.customerName+': '+myProj.name;
           		$scope.projects.push(myProj);
           		
           		for (var n=0;n< $scope.ongoingProjects.length; n++) {
@@ -243,9 +244,11 @@ angular.module('Mastermind.controllers.people')
           	}
           	
           	function compare(a,b) {
-          	  if (a.name < b.name)
+          	  var titleA = a.customerName+': '+a.name;
+          	  var titleB = b.customerName+': '+b.name;
+          	  if (titleA < titleB)
           	     return -1;
-          	  if (a.name > b.name)
+          	  if (titleA > titleB)
           	    return 1;
           	  return 0;
           	}
@@ -253,7 +256,9 @@ angular.module('Mastermind.controllers.people')
           	$scope.ongoingProjects.sort(compare);
           	$scope.ongoingProjects.reverse();
           	while($scope.ongoingProjects.length >0) {
-          		$scope.projects.push($scope.ongoingProjects.pop());
+          		var nextProj = $scope.ongoingProjects.pop();
+          		nextProj.title = nextProj.customerName+': '+nextProj.name;
+          		$scope.projects.push(nextProj);
           	}        	
           });
       });
