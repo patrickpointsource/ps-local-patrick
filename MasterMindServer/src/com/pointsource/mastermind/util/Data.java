@@ -1333,14 +1333,10 @@ public class Data implements CONSTS {
 					.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(error.getErrorMessage()).build());
 		}
-				
-		DBCursor cursorDoc = projectsCol.find();
-		while (cursorDoc.hasNext()) {
-			DBObject created = cursorDoc.next();
-			// System.out.println("Found: " + created);
-
-			ObjectId oId = (ObjectId) created.get(PROP__ID);
-			String idVal = oId.toString();
+		
+		// after object insertion its "_id" became available
+		if (dbObject.get(PROP__ID) != null) {
+			String idVal = dbObject.get(PROP__ID).toString();
 			
 			newProject.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + idVal);
 			newProject.put(PROP__ID, new ObjectId(idVal));

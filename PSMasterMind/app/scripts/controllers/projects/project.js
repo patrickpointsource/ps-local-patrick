@@ -556,9 +556,12 @@ angular.module('Mastermind')
       $scope.project.addRole(role);
       //$scope.summaryRolesTableParams.total($scope.project.roles.length);
       //$scope.summaryRolesTableParams.reload();
+      
+      /*
+       * as sow table isn't available in edit mode
       $scope.sowRolesTableParams.total($scope.project.roles.length);
       $scope.sowRolesTableParams.reload();
-
+		*/
     });
 
     /**
@@ -569,9 +572,12 @@ angular.module('Mastermind')
       $scope.project.changeRole(index, role);
       //$scope.summaryRolesTableParams.total($scope.project.roles.length);
       //$scope.summaryRolesTableParams.reload();
+     
+      /*
+       * as sow table isn't available in edit mode
       $scope.sowRolesTableParams.total($scope.project.roles.length);
       $scope.sowRolesTableParams.reload();
-
+		*/
     });
 
     /**
@@ -582,9 +588,11 @@ angular.module('Mastermind')
       $scope.project.removeRole(role);
       //$scope.summaryRolesTableParams.total($scope.project.roles.length);
       //$scope.summaryRolesTableParams.reload();
+      /*
+       * as sow table isn't available in edit mode
       $scope.sowRolesTableParams.total($scope.project.roles.length);
       $scope.sowRolesTableParams.reload();
-
+		*/
     });
 
     /**
@@ -955,50 +963,52 @@ angular.module('Mastermind')
       $scope.sowRolesTableParams = new TableParams(params, {
           total: $scope.project.roles.length,
           getData: function ($defer, params) {
-            var start = (params.page() - 1) * params.count();
-            var end = params.page() * params.count();
-            //$scope.servicesEstimate = 0;
-            var svcsEst = 0;
-
-            var orderedData = params.sorting() ?
-                $filter('orderBy')($scope.project.roles, params.orderBy()) :
-                $scope.project.roles;
-
-            //use build-in angular filter
-            var result = orderedData.slice(start, end);
-
-            var defers = [];
-            var ret = [];
-            for(var i = 0; i < result.length; i++){
-              var ithRole = Resources.deepCopy(result[i]);
-              var roleEstimate = 0;
-              if(ithRole.startDate && ithRole.endDate) {
-            	  roleEstimate = ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
-              }
-              else if(ithRole.startDate) {
-            	  /*
-            	   * Use the project endDate if the role doesn't have an endDate.
-            	   */
-            	  roleEstimate = ithRole.rate.getEstimatedTotal($scope.project.endDate);
-              }
-              svcsEst += roleEstimate;
-              if(ithRole.assignee && ithRole.assignee.resource){
-                defers.push(Resources.resolve(ithRole.assignee));
-                //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
-              }
-
-              if(ithRole.type && ithRole.type.resource){
-                defers.push(Resources.resolve(ithRole.type));
-                //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
-              }
-
-              ret[i] = ithRole;
-            }
-            $scope.servicesEstimate = svcsEst;
-
-            $.when.apply(window, defers).done(function(){
-              $defer.resolve(ret);
-            });
+        	  //if ($scope.financeAccess && !$scope.isFixedBid()) {
+	            var start = (params.page() - 1) * params.count();
+	            var end = params.page() * params.count();
+	            //$scope.servicesEstimate = 0;
+	            var svcsEst = 0;
+	
+	            var orderedData = params.sorting() ?
+	                $filter('orderBy')($scope.project.roles, params.orderBy()) :
+	                $scope.project.roles;
+	
+	            //use build-in angular filter
+	            var result = orderedData.slice(start, end);
+	
+	            var defers = [];
+	            var ret = [];
+	            for(var i = 0; i < result.length; i++){
+	              var ithRole = Resources.deepCopy(result[i]);
+	              var roleEstimate = 0;
+	              if(ithRole.startDate && ithRole.endDate) {
+	            	  roleEstimate = ithRole.rate.getEstimatedTotal(ithRole.startDate, ithRole.endDate);
+	              }
+	              else if(ithRole.startDate) {
+	            	  /*
+	            	   * Use the project endDate if the role doesn't have an endDate.
+	            	   */
+	            	  roleEstimate = ithRole.rate.getEstimatedTotal($scope.project.endDate);
+	              }
+	              svcsEst += roleEstimate;
+	              if(ithRole.assignee && ithRole.assignee.resource){
+	                defers.push(Resources.resolve(ithRole.assignee));
+	                //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+	              }
+	
+	              if(ithRole.type && ithRole.type.resource){
+	                defers.push(Resources.resolve(ithRole.type));
+	                //ithRole.assignee.name = "Test Name " + i + ": " + ithRole.assignee.resource;
+	              }
+	
+	              ret[i] = ithRole;
+	            }
+	            $scope.servicesEstimate = svcsEst;
+	
+	            $.when.apply(window, defers).done(function(){
+	              $defer.resolve(ret);
+	            });
+        	  //}
           }
         });
       

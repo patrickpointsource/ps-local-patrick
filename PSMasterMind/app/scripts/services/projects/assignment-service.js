@@ -380,6 +380,7 @@ angular.module('Mastermind.services.projects')
     		percentageExtraCovered: 0
     	}
     	
+    	var ONE_DAY = 24 * 60 * 60 * 1000; 
     	// store info about role assignments on timeline
     	var minDate = new Date(role.startDate);
     	var maxDate = role.endDate ? new Date(role.endDate): null;
@@ -401,6 +402,9 @@ angular.module('Mastermind.services.projects')
         		isRole: true
         	})
     	
+        var assignmentsWithoutEndDate = [];
+    	var maxStartDate = new Date(role.startDate);
+    	
     	for (var i = 0; i < assignments.length; i ++) {
     		coverageTimeline.push({
         		date: new Date(assignments[i].startDate),
@@ -409,6 +413,9 @@ angular.module('Mastermind.services.projects')
         		hours: 0
         	})
         	
+        	if (maxStartDate < assignments[i].startDate)
+        		maxStartDate = assignments[i].startDate;
+        	
         	// prevent from calculation errors where assignm,ents done for earlier or bigger dates than role
         	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
         		coverageTimeline[coverageTimeline.length - 1].date = minDate;
@@ -416,12 +423,15 @@ angular.module('Mastermind.services.projects')
     		if (maxDate && coverageTimeline[coverageTimeline.length - 1].date > maxDate)
         		coverageTimeline[coverageTimeline.length - 1].date = maxDate;
     		
-        	coverageTimeline.push({
-        		date: new Date(assignments[i].endDate),
-        		entity: assignments[i],
-        		type: 'end',
-        		hours: 0
-        	})
+    		if (assignments[i].endDate)
+	        	coverageTimeline.push({
+	        		date: new Date(assignments[i].endDate),
+	        		entity: assignments[i],
+	        		type: 'end',
+	        		hours: 0
+	        	})
+        	else
+        		assignmentsWithoutEndDate.push(assignments[i])
         	
         	// prevent from calculation errors where assignm,ents done for earlier or bigger dates than role
         	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
@@ -431,6 +441,24 @@ angular.module('Mastermind.services.projects')
         		coverageTimeline[coverageTimeline.length - 1].date = maxDate;
     	}
     	
+    	var defaultEndDate = new Date(maxStartDate.getTime() + ONE_DAY);
+    	
+    	if ( !role.endDate )
+    		coverageTimeline.push({
+        		date: defaultEndDate,
+        		entity: role,
+        		type: 'end',
+        		hours: 0,
+        		isRole: true
+        	})
+        	
+        for (var i = 0; i < assignmentsWithoutEndDate.length; i ++)
+        	coverageTimeline.push({
+        		date: defaultEndDate,
+        		entity: assignmentsWithoutEndDate[i],
+        		type: 'end',
+        		hours: 0
+        	})
     	// sort timeline so that we will have all period divided into few small periods with  stable assignments covrage during this period
     	coverageTimeline.sort(function(o1, o2) {
     		if (o1.date > o2.date)
@@ -452,7 +480,7 @@ angular.module('Mastermind.services.projects')
     	
     	// calculate for each period its h/w coverage
     	var currentHoursPerWeek = 0;
-    	var ONE_DAY = 24 * 60 * 60 * 1000; 
+    	
     	
     	for (var i = 1; i < (coverageTimeline.length - 1); i ++) {
     		
