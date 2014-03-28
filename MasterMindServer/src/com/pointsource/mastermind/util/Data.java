@@ -2642,6 +2642,64 @@ public class Data implements CONSTS {
 		
 	}
 	
+	/**
+	 * Sprint 8 to sprint 9 migrate Removes roles about
+	 */
+	public static void removeProjectEstimateFields(RequestContext context) throws IOException{
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
+		JSONObject jsonProject = null;
+		DBCursor projectsCursor = projectsCol.find();
+
+		boolean projectChanged = false;
+		
+		while (projectsCursor.hasNext()) {
+			DBObject object = projectsCursor.next();
+
+			if (object.containsField(PROP__ID)) {
+				ObjectId oId = (ObjectId) object.get(PROP__ID);
+				String json = JSON.serialize(object);
+				jsonProject = new JSONObject(json);
+				
+				projectChanged = false;
+				JSONObject role = null;
+
+				if (jsonProject.has(PROP_TERMS)) {
+					JSONObject propTerms = jsonProject.getJSONObject(PROP_TERMS);
+					
+					if (propTerms.has("servicesEstimate")) {
+						propTerms.remove("servicesEstimate");
+						projectChanged = true;
+					}
+				} 
+				
+				JSONArray roles = (JSONArray) jsonProject.get("roles");
+				
+				for (int i = 0; i < roles.length(); i ++) {
+					role = roles.getJSONObject(i);
+					
+					
+					if (role.has(PROP_RATE)) {
+						JSONObject propRate = role.getJSONObject(PROP_RATE);
+						
+						if (propRate.has("estimatedTotal")) {
+							propRate.remove("estimatedTotal");
+							projectChanged = true;
+						}
+					} 
+				}
+				
+				if (projectChanged)
+					updateProject(context,  oId.toString(), jsonProject);
+				
+			} else {
+				System.out
+						.println("Project not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+		
+	}
+	
 	public static void convertAssignmentPercentageToHoursPerWeek(RequestContext context) throws IOException{
 		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		
@@ -2676,12 +2734,14 @@ public class Data implements CONSTS {
 				for (int i = 0; i < members.length(); i ++) {
 					assignment = members.getJSONObject(i);
 					
-					percentage = assignment.getInt("percentage");
-					
-					hoursPerWeek = Math.round(percentage * 40 / 100);
-					
-					assignment.put("hoursPerWeek", hoursPerWeek);
-					assignmentsChanged = true;
+					if (assignment.has("percentage")) {
+						percentage = assignment.getInt("percentage");
+						
+						hoursPerWeek = Math.round(percentage * 40 / 100);
+						
+						assignment.put("hoursPerWeek", hoursPerWeek);
+						assignmentsChanged = true;
+					}
 				}
 				
 				if (assignmentsChanged) {
