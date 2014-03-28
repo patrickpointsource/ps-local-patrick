@@ -54,14 +54,14 @@
                 <div class="panel-heading ">
                    
                     	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
-                    	<span ng-show="role.rate.isFullyUtilized()">100%</span>&nbsp;
-                      	<span ng-hide="role.rate.isFullyUtilized() || role.rate.type != 'hourly'">{{role.rate.hoursPerMonth()}} h/m</span>&nbsp;
-	                    <span ng-hide="role.rate.type == 'hourly'">{{role.rate.hoursPerWeek}} h/w</span>&nbsp;
+                		<span ng-show="role.rate.isFullyUtilized()">100%</span>
+						<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>				
+						<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
                       	<small>{{role.startDate | date:'MMM d y'}}</small>
 	                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
 	                      <span ng-hide="role.endDate">- N/A</span>
 	                      &nbsp;
-	                   	<span>{{getCoverageValue(role)}}</span>
+	                   	<!-- <span>{{getCoverageValue(role)}}</span> -->
 	                   	
                    
                    	<div class="pull-right  btn-group btn-group-sm" style="margin-top:-5px;">

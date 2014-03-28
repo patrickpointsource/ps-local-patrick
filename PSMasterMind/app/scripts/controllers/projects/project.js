@@ -16,7 +16,7 @@ angular.module('Mastermind')
     $scope.projectEstimate = 0;
     //$scope.servicesEstimate = 0;
     $scope.shiftDatesChecked = false;
-
+	$scope.Math = window.Math;
     /**
      * Set the profile view in edit mode
      */
