@@ -2663,6 +2663,7 @@ public class Data implements CONSTS {
 				projectChanged = false;
 				JSONObject role = null;
 
+				/*
 				if (jsonProject.has(PROP_TERMS)) {
 					JSONObject propTerms = jsonProject.getJSONObject(PROP_TERMS);
 					
@@ -2671,7 +2672,7 @@ public class Data implements CONSTS {
 						projectChanged = true;
 					}
 				} 
-				
+				*/
 				JSONArray roles = (JSONArray) jsonProject.get("roles");
 				
 				for (int i = 0; i < roles.length(); i ++) {
