@@ -49,50 +49,49 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="role in project.roles">
-				<div  class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
-			<div class="panel-heading">
-
-				<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
-				<span ng-show="role.rate.isFullyUtilized()">100%</span>
-				<span ng-hide="role.rate.isFullyUtilized() || role.rate.type != 'hourly'">{{role.rate.hoursPerMonth()}} h/m</span>
-				&emsp;
-				<span ng-hide="role.rate.type == 'hourly'">{{role.rate.hoursPerWeek}} h/w</span>
-				<small>{{role.startDate | date:'MMM d y'}}</small><span ng-show="role.endDate">&ensp;-&ensp;<small>{{role.endDate | date:'MMM d y'}}</small></span>
-				&emsp;
-				<span ng-hide="role.endDate">- N/A</span>
-				<span>{{getCoverageValue(role)}}</span>
-			</div>
-			<div ng-repeat="assignee in role.assignees" ng-if="assignee.person && assignee.person.resource" style="padding: 12px 0 12px 12px;">
-				<div class="row">
-					<span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-						<a href="#{{assignee.person.resource}}"> <img ng-show="assignee && assignee.person" class="profileImage" ng-src="{{assignee.person.thumbnail}}" /></a>
-					</span>
-					<span class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-						<a href="#{{assignee.person.resource}}">
-							<i class="fa fa-ban" ng-show="!assignee.person || !assignee.person.resource"></i>{{assignee.person.name || 'Unassigned'}} </a>
-						<br />
-						<span class="hidden-xs">
-							<small>Hours per Week: </small> <span class="text-muted">{{assignee.hoursPerWeek}} h/w</span>
-							<br />
-							{{assignee.startDate | date:'longDate'}}&ensp;-&ensp;{{assignee.endDate | date:'longDate'}}{{role.type.abbreviation}}
-							<br />
+		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="role in project.roles | orderBy:'startDate':false | orderBy:'endDate':true">
+			<div  class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+				<div class="panel-heading">
+	
+					<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
+					<span ng-show="role.rate.isFullyUtilized()">100%</span>
+					<span ng-hide="role.rate.isFullyUtilized() || role.rate.type != 'hourly'">{{role.rate.hoursPerMonth()}} h/m</span>
+					&emsp;
+					<span ng-hide="role.rate.type == 'hourly'">{{role.rate.hoursPerWeek}} h/w</span>
+					<small>{{role.startDate | date:'MMM d y'}}</small><span ng-show="role.endDate">&ensp;-&ensp;<small>{{role.endDate | date:'MMM d y'}}</small></span>
+					&emsp;
+					<span ng-hide="role.endDate">- N/A</span>
+					<span>{{getCoverageValue(role)}}</span>
+				</div>
+				<div ng-repeat="assignee in role.assignees" ng-if="assignee.person && assignee.person.resource" style="padding: 12px 0 12px 12px;">
+					<div class="row">
+						<span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+							<a href="#{{assignee.person.resource}}"> <img ng-show="assignee && assignee.person" class="profileImage" ng-src="{{assignee.person.thumbnail}}" /></a>
 						</span>
-						<span class="visible-xs">
-							<small>{{assignee.hoursPerWeek}} h/w</small>
-							&emsp; | &emsp;
-							<small>{{assignee.startDate | date:'shortDate'}}</small>
-							<span ng-show="assignee.endDate">- <small>{{assignee.endDate | date:'shortDate'}}</small></span>
-							<span ng-hide="assignee.endDate">- <small>N/A</small></span>
+						<span class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+							<a href="#{{assignee.person.resource}}">
+								<i class="fa fa-ban" ng-show="!assignee.person || !assignee.person.resource"></i>{{assignee.person.name || 'Unassigned'}} </a>
+							<br />
+							<span class="hidden-xs">
+								<small>Hours per Week: </small> <span class="text-muted">{{assignee.hoursPerWeek}} h/w</span>
+								<br />
+								{{assignee.startDate | date:'longDate'}}&ensp;-&ensp;{{assignee.endDate | date:'longDate'}}{{role.type.abbreviation}}
+								<br />
+							</span>
+							<span class="visible-xs">
+								<small>{{assignee.hoursPerWeek}} h/w</small>
+								&emsp; | &emsp;
+								<small>{{assignee.startDate | date:'shortDate'}}</small>
+								<span ng-show="assignee.endDate">- <small>{{assignee.endDate | date:'shortDate'}}</small></span>
+								<span ng-hide="assignee.endDate">- <small>N/A</small></span>
+							</span>
 						</span>
-					</span>
+					</div>
+				</div>
+				<div style="padding: 12px 0 12px 12px;"  ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
+					<i class="fa fa-ban" style="color:#f34d4b"></i><span>There are no assignees on this role</span>
 				</div>
 			</div>
-			<div style="padding: 12px 0 12px 12px;"  ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
-				<i class="fa fa-ban" style="color:#f34d4b"></i><span>There are no assignees on this role</span>
-			</div>
-		</div>
-			</table>
 		</div>
 		<script type="text/ng-template" id="custom/pager">
                 <ul class="pager ng-cloak">
