@@ -164,6 +164,7 @@ angular.module('Mastermind.controllers.people')
       var sort = {'created':1};
       Resources.query('hours',hoursQuery, fields, function(hoursResult){
         $scope.hours = hoursResult.members;
+        $scope.hasHours = $scope.hours.length > 0;
 
         if($scope.hoursTableParams){
           $scope.hoursTableParams.total($scope.hours.length);
