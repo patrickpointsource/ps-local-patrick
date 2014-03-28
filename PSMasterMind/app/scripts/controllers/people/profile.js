@@ -4,10 +4,12 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.people')
-  .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ngTableParams',
-    function ($scope, $state, $stateParams, $filter, Resources, People, AssignmentService, TableParams) {
+  .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService','ngTableParams',
+    function ($scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TableParams) {
 	  
 	  var UNSPECIFIED = 'Unspecified';
+	  $scope.projects = [];
+	  
     /**
      * Load Role definitions to display names
      */
@@ -211,6 +213,7 @@ angular.module('Mastermind.controllers.people')
       }, sort);
     };
 
+
     
     /**
      * Get the Profile
@@ -218,6 +221,42 @@ angular.module('Mastermind.controllers.people')
     $scope.profileId = $stateParams.profileId;
     Resources.get('people/'+$scope.profileId).then(function(person){
       $scope.setProfile(person);
+
+      ProjectsService.getOngoingProjects(function(result){
+      	$scope.ongoingProjects = result.data;
+        	//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
+      	
+      	ProjectsService.getMyCurrentProjects($scope.me).then(function(myCurrentProjects) {
+          	var myProjects = myCurrentProjects.data;
+          	for (var m=0; m< myProjects.length; m++) {
+          		var myProj = myProjects[m];
+          		var found = undefined;
+          		$scope.projects.push(myProj);
+          		
+          		for (var n=0;n< $scope.ongoingProjects.length; n++) {
+          			var proj = $scope.ongoingProjects[n];
+          			if(proj.resource == myProj.resource) {
+          				$scope.ongoingProjects.splice(n,1);
+          				break;
+          			}
+          		}
+          	}
+          	
+          	function compare(a,b) {
+          	  if (a.name < b.name)
+          	     return -1;
+          	  if (a.name > b.name)
+          	    return 1;
+          	  return 0;
+          	}
+          	
+          	$scope.ongoingProjects.sort(compare);
+          	$scope.ongoingProjects.reverse();
+          	while($scope.ongoingProjects.length >0) {
+          		$scope.projects.push($scope.ongoingProjects.pop());
+          	}        	
+          });
+      });
       
       AssignmentService.getMyCurrentAssignments(person).then(function(assignments){
     	  $scope.assignments = assignments;
