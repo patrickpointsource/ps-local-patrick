@@ -27,7 +27,7 @@ angular.module('Mastermind')
     };
     
     $scope.canEdit = function() {
-    	return $scope.adminAccess || ($scope.project.created.resource == $scope.me.about);
+    	return $scope.adminAccess || !$scope.project.created || ($scope.project.created.resource == $scope.me.about);
     };
     
   //Load the members of the executive Group
@@ -901,6 +901,25 @@ angular.module('Mastermind')
 
     $scope.handleProjectSelected = function(){
       var project = $scope.project;
+      
+      //TODO - Do we need this refresh why would it be out of date with the area controller?
+      Resources.refresh('people/me').then(function(me){
+        $scope.me = me;
+
+        if ($scope.me.groups &&
+          (($scope.me.groups.indexOf('Management') !== -1) ||
+          ($scope.me.groups.indexOf('Executives') !== -1) ||
+          ($scope.project.creator && $scope.project.creator.resource === $scope.me.about))) {
+
+          $scope.canDeleteProject = true;
+        }
+
+        if (!$scope.projectId) {
+          $scope.canDeleteProject = false;
+        }
+      });
+      
+      
       $scope.isTransient = ProjectsService.isTransient(project);
       /**
        * Controls the edit state of the project form (an edit URL param can control this from a URL ref)
@@ -1171,22 +1190,7 @@ angular.module('Mastermind')
         $scope.activeTab[$state.params.tabId] = true;
     }
 
-    //TODO - Do we need this refresh why would it be out of date with the area controller?
-    Resources.refresh('people/me').then(function(me){
-      $scope.me = me;
-
-      if ($scope.me.groups &&
-        (($scope.me.groups.indexOf('Management') !== -1) ||
-        ($scope.me.groups.indexOf('Executives') !== -1) ||
-        ($scope.project.creator && $scope.project.creator.resource === $scope.me.about))) {
-
-        $scope.canDeleteProject = true;
-      }
-
-      if (!$scope.projectId) {
-        $scope.canDeleteProject = false;
-      }
-    });
+    
 
   }])
   .directive('exportHours', ['$parse', function ($parse) {
