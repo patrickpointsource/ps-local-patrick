@@ -60,7 +60,7 @@
 				<small>{{role.startDate | date:'MMM d y'}}</small><span ng-show="role.endDate">&ensp;-&ensp;<small>{{role.endDate | date:'MMM d y'}}</small></span>
 				&emsp;
 				<span ng-hide="role.endDate">- N/A</span>
-				<!-- <span>{{getCoverageValue(role)}}</span> -->
+				<span>{{getCoverageValue(role)}}</span>
 			</div>
 			<div ng-repeat="assignee in role.assignees" ng-if="assignee.person && assignee.person.resource" style="padding: 12px 0 12px 12px;">
 				<div class="row">

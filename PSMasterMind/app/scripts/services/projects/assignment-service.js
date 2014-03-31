@@ -541,7 +541,7 @@ angular.module('Mastermind.services.projects')
     	
     	result.percentageCovered = totalCountDays ? Math.round(100 * totalCovered / totalCountDays): 0;
     	result.hoursExtraCovered = totalCountDays ? Math.round(ONE_WEEK * totalExtraCovered / totalCountDays): 0;
-    	result.hoursNeededToCover = kMin == 1 ? ONE_WEEK : Math.round(ONE_WEEK * (1 - kMin));
+    	result.hoursNeededToCover = (result.percentageCovered < 100 && kMin == 1) ? ONE_WEEK : Math.round(ONE_WEEK * (1 - kMin));
     	
     	return result;
     }
