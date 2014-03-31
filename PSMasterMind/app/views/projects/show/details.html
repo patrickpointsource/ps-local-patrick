@@ -107,17 +107,17 @@
 		<div class="row">
 			<div class="col-xs-6" ng-if="!isFixedBid()">
 				<label for="servicesEstimatedValue">Services Estimate:</label> <input
-					class="form-control" id="servicesEstimatedValue" type="currency"
+					class="form-control" id="servicesEstimatedValue" type="currency" currency-format
 					readOnly value="{{getServicesEstimate() | currency}}">
 			</div>
 			<div class="col-xs-6" ng-if="isFixedBid()">
 				<label for="fixedBidEstimate">Services Estimate:</label> <input
-					class="form-control" id="fixedBidEstimate" type="currency"
+					class="form-control" id="fixedBidEstimate" type="currency" currency-format
 					ng-model="project.terms.fixedBidServicesRevenue">
 			</div>
 			<div class="col-xs-6">
 				<label for="softwareEstimate">Software Estimate:</label> <input
-					class="form-control" id="softwareEstimate" type="currency"
+					class="form-control" id="softwareEstimate" type="currency" currency-format
 					ng-model="project.terms.softwareEstimate">
 			</div>
 		</div>
