@@ -27,6 +27,7 @@ angular.module('Mastermind.services.projects')
      * @param newRole
      */
     this.validateNewRole = function(project, newRole){
+    	var HOURS_PER_MONTH = 180;
       var errors = [];
       //Must select a type
       if(!newRole){
@@ -78,8 +79,8 @@ angular.module('Mastermind.services.projects')
             else if(newRole.type.resource === 'roles/SUXD' && newRole.rate.hours < 40){
               errors.push('Senior UX Designers must have a minimum of 40 hours/month in a project');
             }
-            else if(newRole.rate.hours > 220){
-              errors.push('An Hourly Role cannot exceed 220 hours per month');
+            else if(newRole.rate.hours > HOURS_PER_MONTH){
+              errors.push('An Hourly Role cannot exceed ' + HOURS_PER_MONTH + ' hours per month');
             }
           }
         }

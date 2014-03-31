@@ -2274,7 +2274,7 @@ public class Data implements CONSTS {
 		JSONObject jsonAdminRole = null;
 		DBCursor projectsCursor = projectsCol.find();
 
-		int COUNT_HOURS_PER_MONTH = 160;
+		int COUNT_HOURS_PER_MONTH = CONSTS.HOURS_PER_MONTH;
 		int COUNT_HOURS_PER_WEEK = 40;
 		boolean projectChanged = false;
 		
@@ -2439,7 +2439,7 @@ public class Data implements CONSTS {
 								//int numMonths = (int)Math.ceil(numMts);
 								int hourlyRate = rate.optInt("amount");
 								boolean fullyUtilized = rate.optBoolean("fullyUtilized");
-								hoursPerMth = fullyUtilized?220:hoursPerMth;
+								hoursPerMth = fullyUtilized? CONSTS.HOURS_PER_MONTH: hoursPerMth;
 								
 								rate.put("estimatedTotal", hoursPerMth * numMonths * hourlyRate);
 								projectChanged = true;

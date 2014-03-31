@@ -49,20 +49,7 @@ angular.module('Mastermind.controllers.projects')
 	  }
 	});
 	
-	/*
-	$scope.getDefaultRolePercentage = function(role) {
-		var defaultPercentage = 100;
-		var hoursPerMonth = parseFloat(role.rate.hoursPerMonth());
-		var DEFAULT_HOURS_PER_MONTH = 220;
-		
-		if (role.assignees.length == 0)
-			defaultPercentage = Math.round(100 * hoursPerMonth / DEFAULT_HOURS_PER_MONTH)
-		else
-			defaultPercentage = Math.round(50 * hoursPerMonth / DEFAULT_HOURS_PER_MONTH)
-		
-		return defaultPercentage;
-	}
-	*/
+	
 	$scope.getDefaultRoleHoursPerWeek = function(role) {
 		
 		return role.hoursNeededToCover;

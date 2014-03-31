@@ -322,7 +322,7 @@ public class Validator implements CONSTS {
 								if (VALUES_RATE_TYPE_HOURLY.equals(rateType)) {
 									// a. Hourly
 									// i. 100% Utilization = Yes/No
-									// ii. hours per month BR: cannot exceed 220
+									// ii. hours per month BR: cannot exceed CONSTS.HOURS_PER_MONTH
 									// hours
 									//BR: Senior UX Designers must have a minimum of 40 hours in a project or no hours.
 									if (!rate.has(PROP_FULLY_UTILIZED)
@@ -333,8 +333,8 @@ public class Validator implements CONSTS {
 											break;
 										} else {
 											int hoursPerMonth = rate.getInt(PROP_HOURS_PER_MONTH);
-											if (hoursPerMonth > 220) {
-												ret.add("An Hourly Role cannot exceed 220 hours per month");
+											if (hoursPerMonth > CONSTS.HOURS_PER_MONTH) {
+												ret.add( String.format("An Hourly Role cannot exceed %d hours per month", CONSTS.HOURS_PER_MONTH));
 												break;
 											}
 											else if("SXUD".equals(typeAbr) && hoursPerMonth < 40){
