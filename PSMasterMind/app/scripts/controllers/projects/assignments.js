@@ -78,14 +78,14 @@ angular.module('Mastermind.controllers.projects')
         }))
 	}
 	
-	$scope.removeAssignmentFromRole = function(index, role) {
+	$scope.removeAssignmentFromRole = function(index, role, parent) {
 		if (role.assignees.length > 1)
 			role.assignees.splice(index, 1)
 		else if (role.assignees.length == 1 && role.assignees[0].person && role.assignees[0].person.resource) {
 			role.assignees[0].person = {};
 		}
 		
-		
+		$("#roleAssignmentDelete" + parent + index).collapse('hide');
 	}
 	
 	$scope.cancelAssignment = function () {
