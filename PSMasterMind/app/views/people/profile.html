@@ -25,7 +25,7 @@
           	<img class="media-object fullProfileImage pull-left" ng-src="{{profile.thumbnail}}" />
             <div>
               <span><a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
-              <div ng-show="editMode" class="profile-edit-margin-top">
+              <div ng-show="editMode" style="margin-top: 7%;">
                 <label class="personDetailLabel">Primary Role:</label> <select
                   class="form-control"
                   ng-model="profile.primaryRole.resource"
@@ -49,6 +49,14 @@
               <div ng-hide="editMode">
                 <label class="personDetailLabel">Skype Id:</label>
                 <a ng-if="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
+              </div>
+              <div ng-show="editMode">
+                <label for="profileJazzHub" class="personDetailLabel">Jazz Hub:</label>
+                <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text"/>
+              </div>
+              <div ng-hide="editMode">
+                <label class="personDetailLabel">Jazz Hub Id:</label>
+                <span>{{profile.jazzHubId}}</span>
               </div>
             </div>
           </div>
