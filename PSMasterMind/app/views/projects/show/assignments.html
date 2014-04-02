@@ -1,5 +1,5 @@
 <div class="assignments-tab" ng-controller="AssignmentsCtrl">
-
+	
   	  <div class="row hidden-xs">
      	<div class="col-sm-4 col-md-4 col-lg-3" style="padding-top:15px;" >
             <h4>
@@ -21,74 +21,74 @@
 	 	</div> 
 	 </div>
 
-	<div class="row visible-xs">
-		<div class="col-xs-8" style="padding-top:15px;" >
-            <h4>
-            	<span>{{project.startDate | date}}</span><span> - {{project.endDate? project.endDate:'?'| date}}</span>
-            </h4> 
-        </div>
-	 	<div class="actions col-xs-4 pageActions">
-	 		<button ng-hide="editMode || !adminAccess" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i></button>
-	 		<button ng-hide="!editMode" class="btn" ng-click="cancelAssignment()"><i class="fa fa-chevron-left"></i></button>
-      		<button ng-hide="!editMode" class="btn" ng-click="saveAssignment()"><i class="fa fa-floppy-o"></i></button>
-	 	</div>  	
-	 	<div ng-show="!editMode" class="col-xs-12" style="padding-top:15px;">
-           <select name="assignmentsFilter" id="assignmentsFilter"  class="form-control"
-				ng-model="selectedAssignmentsFilter" ng-change="handleAssignmentsFilterChanged()"
-				ng-required="true"
-				ng-options="f.value as f.name for f in assignmentsFilters | orderBy:'name'">
-			</select>
-        </div>
-    </div>
-   	<br/>
-    <div class="row">
-    	<div id="messages" class="alert alert-danger" ng-show="assignmentsErrorMessages.length > 0">
-	         <ul>
-	            <li ng-repeat="message in assignmentsErrorMessages">{{message}}</li>
-	        </ul>
+		<div class="row visible-xs">
+			<div class="col-xs-8" style="padding-top:15px;" >
+	            <h4>
+	            	<span>{{project.startDate | date}}</span><span> - {{project.endDate? project.endDate:'?'| date}}</span>
+	            </h4> 
+	        </div>
+		 	<div class="actions col-xs-4 pageActions">
+		 		<button ng-hide="editMode || !adminAccess" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i></button>
+		 		<button ng-hide="!editMode" class="btn" ng-click="cancelAssignment()"><i class="fa fa-chevron-left"></i></button>
+	      		<button ng-hide="!editMode" class="btn" ng-click="saveAssignment()"><i class="fa fa-floppy-o"></i></button>
+		 	</div>  	
+		 	<div ng-show="!editMode" class="col-xs-12" style="padding-top:15px;">
+	           <select name="assignmentsFilter" id="assignmentsFilter"  class="form-control"
+					ng-model="selectedAssignmentsFilter" ng-change="handleAssignmentsFilterChanged()"
+					ng-required="true"
+					ng-options="f.value as f.name for f in assignmentsFilters | orderBy:'name'">
+				</select>
+	        </div>
 	    </div>
-    
-        <div class="col-sm-12">
-              
-              <div ng-repeat="role in project.roles" class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
-                <div class="panel-heading ">
-                   
-                    	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
-                		<span ng-show="role.rate.isFullyUtilized()">100%</span>
-						<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>				
-						<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
-                      	<small>{{role.startDate | date:'MMM d y'}}</small>
-	                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
-	                      <span ng-hide="role.endDate">- N/A</span>
-	                      &nbsp;
-	                   	<span>{{getCoverageValue(role)}}</span>
-	                   	
-                   
-                   	<div class="pull-right  btn-group btn-group-sm" style="margin-top:-5px;">
-                    	<a ng-if="editMode" class="btn btn-default" ng-mousedown="addNewAssignmentToRole($index, role)">
-				            <div class="hidden-xs"><i class="fa fa-plus-square"></i> <span > Add Assignment</span></div>
-        					<div class="visible-xs"><i class="fa fa-plus-square"></i></div>
-				        </a>
-                    </div>
-                </div>
-                
-	             <div class="row-fluid" ng-show="editMode" ng-if="editMode" style="padding-top: 12px; padding-left: 12px;">
-	             	
-             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}">
-					    <ng-include src="'views/projects/show/roleAssign.html'"/>
-					</div>
-	             	
-	             </div>
-	             <div ng-show="!editMode" ng-if="!editMode" class="row-fluid" style="padding-top: 12px; padding-left: 12px;">
-	             	
+	   	<br/>
+	    <div class="row">
+	    	<div id="messages" class="alert alert-danger" ng-show="assignmentsErrorMessages.length > 0">
+		         <ul>
+		            <li ng-repeat="message in assignmentsErrorMessages">{{message}}</li>
+		        </ul>
+		    </div>
+	    
+	        <div class="col-sm-12">
+	              
+	              <div ng-repeat="role in project.roles" class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+	                <div class="panel-heading ">
+	                   
+	                    	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
+	                		<span ng-show="role.rate.isFullyUtilized()">100%</span>
+							<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>				
+							<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
+	                      	<small>{{role.startDate | date:'MMM d y'}}</small>
+		                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
+		                      <span ng-hide="role.endDate">- N/A</span>
+		                      &nbsp;
+		                   	<span>{{getCoverageValue(role)}}</span>
+		                   	
+	                   
+	                   	<div class="pull-right  btn-group btn-group-sm" style="margin-top:-5px;">
+	                    	<a ng-if="editMode" class="btn btn-default" ng-mousedown="addNewAssignmentToRole($index, role)">
+					            <div class="hidden-xs"><i class="fa fa-plus-square"></i> <span > Add Assignment</span></div>
+	        					<div class="visible-xs"><i class="fa fa-plus-square"></i></div>
+					        </a>
+	                    </div>
+	                </div>
+	                
+		             <div class="row-fluid" ng-show="editMode" ng-if="editMode" style="padding-top: 12px; padding-left: 12px;">
+		             	
 	             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}">
-						    <ng-include src="'views/projects/show/roleAssignView.html'"/>
+						    <ng-include src="'views/projects/show/roleAssign.html'"/>
 						</div>
-	             	
-	             </div>
-              </div>
-
-            <script type="text/ng-template" id="custom/pager">
+		             	
+		             </div>
+		             <div ng-show="!editMode" ng-if="!editMode" class="row-fluid" style="padding-top: 12px; padding-left: 12px;">
+		             	
+		             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}">
+							    <ng-include src="'views/projects/show/roleAssignView.html'"/>
+							</div>
+		             	
+		             </div>
+	              </div>
+	
+	            <script type="text/ng-template" id="custom/pager">
                 <ul class="pager ng-cloak">
                     <li ng-repeat="page in pages"
                             ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
@@ -106,6 +106,7 @@
                     </li>
                 </ul>
             </script>
-        </div>
-    </div>
+	        </div>
+	    </div>
+	
 </div>

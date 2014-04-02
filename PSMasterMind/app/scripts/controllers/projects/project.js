@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$q','$rootScope', '$scope', '$state', '$stateParams', '$location', '$filter', 'ProjectsService', 'Resources', 'People', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
-  function ($q, $rootScope, $scope, $state, $stateParams, $location, $filter, ProjectsService, Resources, People, RoleTypes, Rates, TableParams, editMode) {
+  .controller('ProjectCtrl', ['$q','$rootScope', '$scope', '$state', '$stateParams', '$location', '$filter', '$controller', 'ProjectsService', 'Resources', 'People', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
+  function ($q, $rootScope, $scope, $state, $stateParams, $location, $filter, $controller, ProjectsService, Resources, People, RoleTypes, Rates, TableParams, editMode) {
     var detailsValid = false, rolesValid = false;
 
     //Set our currently viewed project to the one resolved by the service.
@@ -252,6 +252,7 @@ angular.module('Mastermind')
     	var HOURS_PER_WEEK = 40;
     	var HOURS_PER_MONTH = 180;
     	var isMonthly = role.rate.type == "hourly";
+    	
     	var getHours = function(h) {
     		if (isMonthly)
     			return Math.round(HOURS_PER_MONTH * h / HOURS_PER_WEEK);
@@ -266,8 +267,8 @@ angular.module('Mastermind')
     		result = '-' + getHours(role.hoursNeededToCover);
     	
     	if (role.hoursExtraCovered > 0) {
-    		//result = result ? ('/' + result): '';
-    		result = result + ' / +' + getHours(role.hoursExtraCovered);
+    		result = result ? ('/' + result): '';
+    		result = result + ' + ' + getHours(role.hoursExtraCovered);
     	}
     	
     	if (result)
@@ -689,6 +690,7 @@ angular.module('Mastermind')
 			if (!$scope.projectTabId) {
 				var updatedUrl = $state.href('projects.show.tabId', { 
 					tabId: selectedTabId,
+					edit: $stateParams.edit? 'edit': '',
 					filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
 				}).replace('#', '');
 	        
@@ -697,6 +699,7 @@ angular.module('Mastermind')
 			} else
 				$state.go('projects.show.tabId', {
 						tabId: selectedTabId,
+						edit: $stateParams.edit? 'edit': '',
 						filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
 				});
 			
@@ -705,9 +708,11 @@ angular.module('Mastermind')
     }
     
     $scope.editAssignments = function(){
-    	$state.go('projects.show.tabId.edit', {
+    	$state.go('projects.show.tabId', {
 				tabId: 'assignments',
-				filter: 'all'
+				filter: 'all',
+				edit: 'edit',
+				reload: true
 		});
     }
     
@@ -1158,7 +1163,23 @@ angular.module('Mastermind')
 	  	}
     };
 
-
+    
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+    	//if (fromParams.edit != null || toParams.edit != null) {
+    	if (toState.name == 'projects.show.tabId' && toParams.tabId == 'assignments'  && fromParams.tabId == 'assignments') {
+        	//set url manualy
+        	var updatedUrl = $state.href(toState.name, toParams).replace('#', '');
+        	$location.url(updatedUrl);
+        	event.preventDefault();
+        	/*
+        	var assignmentsCtrl = $controller('AssignmentsCtrl');
+        	
+        	var tmp;
+        	*/
+        	
+        }
+    })
+    
 
     $scope.newHoursRecord = {};
 

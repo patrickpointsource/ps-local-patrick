@@ -85,25 +85,26 @@
           }
         })
         .state('projects.show.tabId', {
-          url: '/:tabId',
+          url: '/:tabId/:edit',
           templateUrl: 'views/projects/show.html',
           controller: 'ProjectCtrl',
+          //reloadOnSearch: false,
           resolve: {
             editMode: function () {
-              return false;
+              return true;
             }
           }
         })
-        .state('projects.show.tabId.edit', {
+        /*.state('projects.show.tabId.edit', {
           url: '/edit',
           templateUrl: 'views/projects/show.html',
           controller: 'ProjectCtrl',
           resolve: {
             editMode: function () {
-              return false;
+              return true;
             }
           }
-        })
+        })*/
         .state('people', {
           url: '/people',
           abstract: true,

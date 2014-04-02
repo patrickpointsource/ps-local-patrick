@@ -24,6 +24,7 @@ angular.module('Mastermind.controllers.projects')
 	                               	{name: "All Assignments", value: "all"}]
 	
 	  
+	  
 	  //TODO what is this for?
 	  // Load "all" assignments for displaying it on "summary" tab, and possibly on other tabs
 	  if ($scope.projectTabId != "assignments"){
@@ -49,6 +50,19 @@ angular.module('Mastermind.controllers.projects')
 	  }
 	});
 	
+	$scope.currentTabStates = [{
+		tabId: $state.params.tabId,
+		edit:  $state.params.edit,
+		filter:  $state.params.filter
+	}];
+	
+	$scope.pushState = function(state) {
+		if ($scope.currentTabStates.length > 5)
+			$scope.currentTabStates.splice($scope.currentTabStates.length - 1, 1);
+		
+		$scope.currentTabStates.unshift(state);
+		
+	}
 	
 	$scope.getDefaultRoleHoursPerWeek = function(role) {
 		
@@ -74,58 +88,68 @@ angular.module('Mastermind.controllers.projects')
 		$scope.assignmentsErrorMessages = [];
 		
 		var role;
+		//var assignments = [];
 		
 		for (var i = 0; i < $scope.project.roles.length; i ++) {
          	role = $scope.project.roles[i];
-         	role.assignees = role.originalAssignees;
+         	role.assignees = _.toArray(role.originalAssignees);
+         	
+         	//assignments = assignments.concat(role.assignees);
          	
          	delete role.originalAssignees;
 		}
 		
+		//AssignmentService.calculateRolesCoverage($scope.project.roles, assignments)
+    	
 		$scope.editMode = false;
 			//TODO removing dirty handler
 		 	//$rootScope.formDirty = false;
-		 
-		$state.go('projects.show.tabId', {
+		
+		var params = {
 			tabId: $scope.projectTabId,
+			edit: null,
 			//filter: $scope.selectedAssignmentsFilter
 			filter: "all"
-		});
+		};
+		
+		 $scope.selectedAssignmentsFilter = "all";
+		 $scope.handleAssignmentsFilterChanged();
+		 
+		$state.go('projects.show.tabId', params);
+		$scope.pushState(params)
 	};
 	
 	$scope.validateAssignments = function(assignments){
         return AssignmentService.validateAssignments($scope.project, assignments);
       };
       
-    $scope.edit = function() {
-    	$scope.editMode = true;
+    $scope.edit = function(avoidStateSwitch) {
     	
     	
-    	 var role;
+    	AssignmentService.getAssignmentsByPeriod("all", {
+    		project: {
+    			resource: $scope.project.about
+    		}
+    	}).then(function(data) {
+        	$scope.refreshAssignmentsData(data);
+        	$scope.editMode = true;
+        	
+        	if (!avoidStateSwitch) {
+           	 var params = {
+   				tabId: $scope.projectTabId,
+   				filter: null,
+   				edit: 'edit'
+   			}
+           	 
+   	         $state.go('projects.show.tabId', params);
+   	         
+   	         $scope.pushState(params)
+            }
+        })
+        
+    	// $scope.fillOriginalAssignees();
+    	 
          
-    	 // to support cancel functionality
-         for (var i = 0; i < $scope.project.roles.length; i ++) {
-         	role = $scope.project.roles[i];
-         	
-         	if (!role.originalAssignees) {
-         		role.originalAssignees = [];
-         		
-		    	for (var j = 0; role.assignees && role.assignees.length && j < role.assignees.length; j ++) {
-		    		role.originalAssignees.push(AssignmentService.create(role.assignees[j]))
-		    	}
-         	}
-         }
-         
-         $state.go('projects.show.tabId.edit', {
-				tabId: $scope.projectTabId,
-				filter: null
-			}).then(function() {
-//TODO removing dirty handler
-//				$rootScope.formDirty = true;
-//				$rootScope.dirtySaveHandler = function(){
-//			    	return $scope.saveAssignment();
-//				};
-			});
     	 
     }
     
@@ -215,11 +239,14 @@ angular.module('Mastermind.controllers.projects')
     		  
     		  $scope.refreshAssignmentsData( AssignmentService.filterAssignmentsByPeriod($scope.projectAssignment, $scope.selectedAssignmentsFilter));
     		  
-    		  $state.go('projects.show.tabId', {
-  				tabId: $scope.projectTabId,
-  				//filter: $scope.selectedAssignmentsFilter
-  				filter: "all"
-  			});
+    		  var params = {
+	  				tabId: $scope.projectTabId,
+	  				//filter: $scope.selectedAssignmentsFilter
+	  				filter: "all"
+				}
+    		  $state.go('projects.show.tabId', params);
+    		  
+    		  $scope.pushState(params)
     	  })
     	 
        
@@ -261,7 +288,7 @@ angular.module('Mastermind.controllers.projects')
     }
     
     $scope.handleAssignmentsFilterChanged = function() {
-    	AssignmentService.getAssignmentsByPeriod($state.is('projects.show.tabId.edit') ? "all": $scope.selectedAssignmentsFilter, {
+    	AssignmentService.getAssignmentsByPeriod($scope.currentTabStates[0].edit ? "all": $scope.selectedAssignmentsFilter, {
     		project: {
     			resource: $scope.project.about
     		}
@@ -276,6 +303,8 @@ angular.module('Mastermind.controllers.projects')
 	        		location: $state.params.filter != null? true: "replace"
 	        }
 	
+	        if ($scope.currentTabStates[0].edit)
+	        	filter = null;
 	        // for some reasons $state.go do not recognize "replace" value
 	        /*
 	    	$state.go('projects.show.tabId', {
@@ -283,8 +312,14 @@ angular.module('Mastermind.controllers.projects')
 					tabId: $scope.projectTabId
 				}, options);
 	        */
+	        var params = { 
+    			filter: filter, 
+    			tabId: $scope.projectTabId,
+    			edit: $scope.currentTabStates[0].edit
+			}
+	        var updatedUrl = $state.href('projects.show.tabId', params).replace('#', '');
 	        
-	        var updatedUrl = $state.href('projects.show.tabId', { filter: filter, tabId: $scope.projectTabId}).replace('#', '');
+	        $scope.pushState(params);
 	        
 	        if (options.location == "replace")
 	        	$location.url(updatedUrl).replace();
@@ -292,6 +327,23 @@ angular.module('Mastermind.controllers.projects')
 	        	$location.url(updatedUrl)
         }
         
+    }
+    
+    $scope.fillOriginalAssignees = function() {
+    	var role;
+    	
+    	// to support cancel functionality
+        for (var i = 0; i < $scope.project.roles.length; i ++) {
+        	role = $scope.project.roles[i];
+        	
+        	if (!role.originalAssignees) {
+        		role.originalAssignees = [];
+        		
+		    	for (var j = 0; role.assignees && role.assignees.length && j < role.assignees.length; j ++) {
+		    		role.originalAssignees.push(AssignmentService.create(role.assignees[j]))
+		    	}
+        	}
+        }
     }
     
     $scope.peopleList = [];
@@ -350,6 +402,9 @@ angular.module('Mastermind.controllers.projects')
 					role.assignees.push(assignments[i])
 					
 			}
+			
+			$scope.fillOriginalAssignees();
+			
     	} else {
     		 $scope.projectAssignment = {
 	    			  about: $scope.project.about + '/assignments'
@@ -380,26 +435,15 @@ angular.module('Mastermind.controllers.projects')
 			}
 		}
     	
-    	$scope.$emit('roles:assignments:change')
-    }
-   
-    $scope.getCoverageColor = function(role) {
-    	var start = 0;
-    	var end = 120;
+    	$scope.$emit('roles:assignments:change');
     	
-    	var a = role.percentageCovered / 100;
-    	 
-		var b = end * a;
-		var c = b + start;
-		
-		//Return a CSS HSL string
-		return 'hsl('+c+',100%,50%)';
+    	
     }
     
     $scope.handleAssignmentsFilterChanged();
-    
-    if ($state.is("projects.show.tabId.edit") && $scope.adminAccess) {
-    	$scope.edit();
-    }
    
+    // switch to edit mode if needed
+	if ($state.params.edit  && $scope.adminAccess){
+    	$scope.edit(true);
+    }
   }]);
