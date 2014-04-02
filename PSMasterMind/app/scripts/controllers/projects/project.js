@@ -237,7 +237,9 @@ angular.module('Mastermind')
     $scope.getCoverageClass = function(role) {
     	var result = '';
     	
-    	if (role.percentageCovered == 0)
+    	if (role.isPastRole)
+    		result = 'panel-default';
+    	else if (role.percentageCovered == 0)
     		result = 'panel-danger';
     	else if (role.percentageCovered < 100)
     		result = 'panel-warning';
@@ -1154,6 +1156,32 @@ angular.module('Mastermind')
 	    	 
 	      },true);
       }
+      
+      // sort roles inside project
+      var today = new Date();
+      
+      var dd = today.getDate();
+      var mm = today.getMonth(); 
+      var yyyy = today.getFullYear();
+     
+      today =  new Date(yyyy, mm, dd);
+      
+      $scope.project.roles.sort(function(r1, r2) {
+    	  if (new Date(r1.startDate) < today && (!r1.endDate || new Date(r1.endDate) < today) ) 
+    		  return 1;
+    	  else if (new Date(r2.startDate) < today && (!r2.endDate || new Date(r2.endDate) < today) )
+    		  return -1;
+    	  else if (/*new Date(r2.startDate) >= today && */new Date(r1.startDate) > new Date(r2.startDate))
+    		  return 1;
+    	  else if (/*new Date(r1.startDate) >= today && */new Date(r2.startDate) > new Date(r1.startDate))
+    		  return -1;
+      })
+      
+      for (var i = 0; i < $scope.project.roles.length; i ++) {
+    	  if (new Date( $scope.project.roles[i].startDate) < today && 
+    			  (! $scope.project.roles[i].endDate || new Date( $scope.project.roles[i].endDate) < today) )
+    		  $scope.project.roles[i].isPastRole = true;
+      }
     };
     
     $scope.stopWatchingProjectChanges = function(){
@@ -1165,18 +1193,11 @@ angular.module('Mastermind')
 
     
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-    	//if (fromParams.edit != null || toParams.edit != null) {
     	if (toState.name == 'projects.show.tabId' && toParams.tabId == 'assignments'  && fromParams.tabId == 'assignments') {
         	//set url manualy
         	var updatedUrl = $state.href(toState.name, toParams).replace('#', '');
         	$location.url(updatedUrl);
         	event.preventDefault();
-        	/*
-        	var assignmentsCtrl = $controller('AssignmentsCtrl');
-        	
-        	var tmp;
-        	*/
-        	
         }
     })
     

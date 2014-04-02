@@ -78,9 +78,13 @@ angular.module('Mastermind.controllers.projects')
         }))
 	}
 	
-	$scope.removeAssignmentToRole = function(index, role) {
+	$scope.removeAssignmentFromRole = function(index, role) {
 		if (role.assignees.length > 1)
-			role.assignees.splice(index, 1);
+			role.assignees.splice(index, 1)
+		else if (role.assignees.length == 1 && role.assignees[0].person && role.assignees[0].person.resource) {
+			role.assignees[0].person = {};
+		}
+		
 		
 	}
 	
@@ -210,7 +214,7 @@ angular.module('Mastermind.controllers.projects')
           	
           	// remove empty assignments
           	assignments = assignments.concat(_.filter(role.assignees, function(a){
-          		if (!a.percentage && !(a.person && a.person.resource))
+          		if (!(a.person && a.person.resource))
           			 return false
           			 
           		return true;
@@ -346,6 +350,19 @@ angular.module('Mastermind.controllers.projects')
         }
     }
     
+    $scope.getActualProjectAssignmentMembers = function() {
+    	var result = [];
+    	var role = null;
+    	
+    	for (var i = 0; i < $scope.project.roles.length; i ++) {
+          	role = $scope.project.roles[i];
+          	
+          	result = result.concat(role.assignees)
+    	}
+    	
+    	return result;
+    }
+    
     $scope.peopleList = [];
     
     $scope.refreshAssignmentsData = function(result) {
@@ -413,7 +430,7 @@ angular.module('Mastermind.controllers.projects')
     	
     	
     	
-    	AssignmentService.calculateRolesCoverage($scope.project.roles, $scope.projectAssignment.members ? $scope.projectAssignment.members: [])
+    	AssignmentService.calculateRolesCoverage($scope.project.roles, $scope.getActualProjectAssignmentMembers())
     	
     	for (var i = 0; i < $scope.project.roles.length; i ++) {
 			role = $scope.project.roles[i];

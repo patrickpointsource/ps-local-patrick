@@ -26,94 +26,7 @@
 		</div>
 	</div>
 	<br />
-	<div class="row">
-		<div class="col-xs-4">
-			<h4>Roles:</h4>
-		</div>
-		<div class="actions col-xs-8 pageActions" style="margin-top:0px">
-			<button ng-hide="editMode || !adminAccess" class="btn btn-default" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span></button>
-		</div>
-				
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-12 col-sm-6 col-lg-4">
-			<div class="panel panel-default dashboard-widget">
-				<div class="panel-heading">Sponsors</div>
-				<div class="panel-body">
-					<div class="row">
-						<div class="col-xs-12 col-sm-6"><label>Executive:</label><span>{{getExecutiveSponsor()}}</span></div>
-						<div class="col-xs-12 col-sm-6"><label>Sales:</label> <span>{{getSalesSponsor()}}</span></div>
-					
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="role in project.roles">
-				<div  class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
-			<div class="panel-heading">
-
-				<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
-				<span ng-show="role.rate.isFullyUtilized()">100%</span>
-				<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>				
-				<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
-				<small>{{role.startDate | date:'MMM d y'}}</small><span ng-show="role.endDate">&ensp;-&ensp;<small>{{role.endDate | date:'MMM d y'}}</small></span>
-				&emsp;
-				<span ng-hide="role.endDate">- N/A</span>
-				<span>{{getCoverageValue(role)}}</span>
-			</div>
-			<div ng-repeat="assignee in role.assignees" ng-if="assignee.person && assignee.person.resource" style="padding: 12px 0 12px 12px;">
-				<div class="row">
-					<span class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >
-						<a href="#{{assignee.person.resource}}"> <img ng-show="assignee && assignee.person" class="profileImage" ng-src="{{assignee.person.thumbnail}}" style="float:right"/></a>
-					</span>
-					<span class="col-lg-10 col-md-10 col-sm-10 col-xs-10" style="padding-left:0;">
-						<a href="#{{assignee.person.resource}}">
-							<i class="fa fa-ban" ng-show="!assignee.person || !assignee.person.resource"></i>{{assignee.person.name || 'Unassigned'}} </a>
-						<br />
-						<span class="hidden-xs">
-							<small>Hours per Week: </small> <span class="text-muted">{{assignee.hoursPerWeek}} h/w</span>
-							<br />
-							{{assignee.startDate | date:'longDate'}}&ensp;-&ensp;{{assignee.endDate | date:'longDate'}}{{role.type.abbreviation}}
-							<br />
-						</span>
-						<span class="visible-xs">
-							<small>{{assignee.hoursPerWeek}} h/w</small>
-							&emsp; | &emsp;
-							<small>{{assignee.startDate | date:'shortDate'}}</small>
-							<span ng-show="assignee.endDate">- <small>{{assignee.endDate | date:'shortDate'}}</small></span>
-							<span ng-hide="assignee.endDate">- <small>N/A</small></span>
-						</span>
-					</span>
-				</div>
-			</div>
-			<div style="padding: 12px 0 12px 12px;"  ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
-				<i class="fa fa-ban" style="color:#f34d4b"></i> <span>There are no assignees on this role</span>
-			</div>
-		</div>
-			</table>
-		</div>
-		<script type="text/ng-template" id="custom/pager">
-                <ul class="pager ng-cloak">
-                    <li ng-repeat="page in pages"
-                            ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
-                            ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
-                        <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
-                        <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
-                    </li>
-                    <li>
-                        <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
-                            <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
-                            <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
-                            <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
-                            <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
-                        </div>
-                    </li>
-                </ul>
-         </script>
-		
-	</div>
-
+	
 <div ng-if="financeAccess">
 	<div class="row well">
 		<div class="row">
@@ -205,3 +118,91 @@
 		</div>
 	</div>
 </div>
+
+<div class="row">
+		<div class="col-xs-4">
+			<h4>Roles:</h4>
+		</div>
+		<div class="actions col-xs-8 pageActions" style="margin-top:0px">
+			<button ng-hide="editMode || !adminAccess" class="btn btn-default" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span></button>
+		</div>
+				
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-6 col-lg-4">
+			<div class="panel panel-default dashboard-widget">
+				<div class="panel-heading">Sponsors</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-xs-12 col-sm-6"><label>Executive:</label><span>{{getExecutiveSponsor()}}</span></div>
+						<div class="col-xs-12 col-sm-6"><label>Sales:</label> <span>{{getSalesSponsor()}}</span></div>
+					
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="role in project.roles">
+				<div  class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+			<div class="panel-heading">
+
+				<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
+				<span ng-show="role.rate.isFullyUtilized()">100%</span>
+				<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>				
+				<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
+				<small>{{role.startDate | date:'MMM d y'}}</small><span ng-show="role.endDate">&ensp;-&ensp;<small>{{role.endDate | date:'MMM d y'}}</small></span>
+				&emsp;
+				<span ng-hide="role.endDate">- N/A</span>
+				<span>{{getCoverageValue(role)}}</span>
+			</div>
+			<div ng-repeat="assignee in role.assignees" ng-if="assignee.person && assignee.person.resource" style="padding: 12px 0 12px 12px;">
+				<div class="row">
+					<span class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >
+						<a href="#{{assignee.person.resource}}"> <img ng-show="assignee && assignee.person" class="profileImage" ng-src="{{assignee.person.thumbnail}}" style="float:right"/></a>
+					</span>
+					<span class="col-lg-10 col-md-10 col-sm-10 col-xs-10" style="padding-left:0;">
+						<a href="#{{assignee.person.resource}}">
+							<i class="fa fa-ban" ng-show="!assignee.person || !assignee.person.resource"></i>{{assignee.person.name || 'Unassigned'}} </a>
+						<br />
+						<span class="hidden-xs">
+							<small>Hours per Week: </small> <span class="text-muted">{{assignee.hoursPerWeek}} h/w</span>
+							<br />
+							{{assignee.startDate | date:'longDate'}}&ensp;-&ensp;{{assignee.endDate | date:'longDate'}}{{role.type.abbreviation}}
+							<br />
+						</span>
+						<span class="visible-xs">
+							<small>{{assignee.hoursPerWeek}} h/w</small>
+							&emsp; | &emsp;
+							<small>{{assignee.startDate | date:'shortDate'}}</small>
+							<span ng-show="assignee.endDate">- <small>{{assignee.endDate | date:'shortDate'}}</small></span>
+							<span ng-hide="assignee.endDate">- <small>N/A</small></span>
+						</span>
+					</span>
+				</div>
+			</div>
+			<div style="padding: 12px 0 12px 12px;"  ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
+				<i class="fa fa-ban" style="color:#f34d4b"></i> <span>There are no assignees on this role</span>
+			</div>
+		</div>
+			</table>
+		</div>
+		<script type="text/ng-template" id="custom/pager">
+                <ul class="pager ng-cloak">
+                    <li ng-repeat="page in pages"
+                            ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
+                            ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
+                        <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
+                        <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
+                    </li>
+                    <li>
+                        <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
+                            <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
+                            <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
+                            <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
+                            <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
+                        </div>
+                    </li>
+                </ul>
+         </script>
+		
+	</div>
