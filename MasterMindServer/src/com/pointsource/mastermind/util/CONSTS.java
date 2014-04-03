@@ -161,9 +161,9 @@ public interface CONSTS {
 		public String DB_NAME_DEFAULT  = "mm_db_stage";
 	//Local Host
 		public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
-		
-	//public String WEB_SITE_URL = "http://localhost:9000";
-	public String WEB_SITE_URL = "http://0.0.0.0:9000";
+		// TODO: revert it 
+		public String WEB_SITE_URL = "http://localhost:9000";
+		//public String WEB_SITE_URL = "http://0.0.0.0:9000";
 	//Staging Only
 		//public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindStaging/";
 		//public String DB_NAME_DEFAULT  = "mm_db_prodclone";
