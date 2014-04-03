@@ -293,6 +293,8 @@ angular.module('Mastermind.controllers.projects')
 				}
     		  
     		  if(!navigateOut){
+    			  $scope.stopWatchingAssignmentChanges();
+    			  $rootScope.formDirty = false;
     			  $state.go('projects.show.tabId', params);
     		  }
     		  
