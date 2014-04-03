@@ -369,6 +369,8 @@ angular.module('Mastermind.services.projects')
     		roles[i].percentageCovered = currentResult.percentageCovered;
     		roles[i].hoursExtraCovered = currentResult.hoursExtraCovered;
     		roles[i].hoursNeededToCover = currentResult.hoursNeededToCover;
+    		roles[i].daysGap = currentResult.daysGap;
+    		roles[i].coveredKMin = currentResult.coveredKMin;
     	}
     	
     	//return result;
@@ -413,8 +415,11 @@ angular.module('Mastermind.services.projects')
         		hours: 0
         	})
         	
-        	if (maxStartDate < assignments[i].startDate)
-        		maxStartDate = assignments[i].startDate;
+        	if (maxStartDate < new Date(assignments[i].startDate))
+        		maxStartDate = new Date(assignments[i].startDate);
+    		
+    		if (assignments[i].endDate && maxStartDate < new Date(assignments[i].endDate))
+        		maxStartDate = new Date(assignments[i].endDate);
         	
         	// prevent from calculation errors where assignm,ents done for earlier or bigger dates than role
         	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
@@ -515,6 +520,12 @@ angular.module('Mastermind.services.projects')
     	var totalExtraCovered = 0;
     	var kMin = 1;
     	var substractDays = 0;
+    	var countDaysGap = 0;
+    	
+    	currentCountDays = Math.ceil((coverageTimeline[1].date.getTime() - 
+    			coverageTimeline[ 0 ].date.getTime()) / ONE_DAY);
+    	
+    	countDaysGap += currentCountDays;
     	
     	for (var i = 1; i < (coverageTimeline.length - 1); i ++) {
     		currentK = coverageTimeline[i].hours / ONE_WEEK;
@@ -530,6 +541,9 @@ angular.module('Mastermind.services.projects')
     			substractDays += 1;
     		}
     		
+    		if (currentK == 0)
+    			countDaysGap += currentCountDays;
+    		
     		if (currentCountDays > 0)
     			kMin = kMin > currentK? currentK: kMin;
     		
@@ -542,6 +556,8 @@ angular.module('Mastermind.services.projects')
     	result.percentageCovered = totalCountDays ? Math.round(100 * totalCovered / totalCountDays): 0;
     	result.hoursExtraCovered = totalCountDays ? Math.round(ONE_WEEK * totalExtraCovered / totalCountDays): 0;
     	result.hoursNeededToCover = (result.percentageCovered < 100 && kMin == 1) ? ONE_WEEK : Math.round(ONE_WEEK * (1 - kMin));
+    	result.daysGap = countDaysGap;
+    	result.coveredKMin = kMin;
     	
     	return result;
     }

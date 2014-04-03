@@ -50,7 +50,7 @@
 	    
 	        <div class="col-sm-12">
 	              
-	              <div ng-repeat="role in project.roles" class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+	              <div ng-repeat-start="role in project.roles" class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
 	                <div class="panel-heading ">
 	                   
 	                    	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
@@ -87,6 +87,18 @@
 		             	
 		             </div>
 	              </div>
+	              <div ng-repeat-end ng-if="showSeparator(role, $index)" class="row">
+					<div class="col-sm-12">
+						<hr  />
+					</div>
+					<div class="col-sm-12" ng-if="showSeparator(role, $index) == 'future'" style="margin-bottom: 12px; margin-top: -12px;">
+						<span>Future</span>
+					</div>
+					<div class="col-sm-12" ng-if="showSeparator(role, $index) == 'past'" style="margin-bottom: 12px; margin-top: -12px;">
+						<span>Past</span>
+					</div>
+					
+				</div>
 	
 	            <script type="text/ng-template" id="custom/pager">
                 <ul class="pager ng-cloak">

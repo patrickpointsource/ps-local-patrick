@@ -251,6 +251,7 @@ angular.module('Mastermind')
     
     $scope.getCoverageValue = function(role) {
     	var result = '';
+    	/*
     	var HOURS_PER_WEEK = 40;
     	var HOURS_PER_MONTH = 180;
     	var isMonthly = role.rate.type == "hourly";
@@ -275,6 +276,28 @@ angular.module('Mastermind')
     	
     	if (result)
     		result += isMonthly ? ' h/m': ' h/w'
+    		
+    	if (role.hoursExtraCovered > 0) {
+    		result = result ? ('/' + result): '';
+    		result = result + ' + ' + getHours(role.hoursExtraCovered);
+    	}
+    	*/
+    	if (role.percentageCovered == 0)
+    		result = 'Unassigned';
+    	else if (role.percentageCovered < 100) {
+    		if (role.daysGap)
+    			result = 'Gaps'
+    				
+    		if (role.coveredKMin > 0 && role.coveredKMin < 1){
+    			result += result ? '/': '';
+    			
+    			result += 'Inadequate';
+    		}
+    		
+    	} else if (role.percentageCovered == 100)
+    		result = 'Adequate';
+    	
+    	
     	
     	return result;
     }
@@ -285,6 +308,20 @@ angular.module('Mastermind')
 		
 		
 		result += $scope.getCoverageClass(role);
+		
+		return result;
+	}
+	
+	$scope.showSeparator = function(role, index) {
+		var result = '';
+		
+		if ($scope.project.roles[index] && $scope.project.roles[index + 1]) {
+			
+			if (!$scope.project.roles[index].isPastRole && $scope.project.roles[index + 1].isPastRole)
+				result = 'past';
+			else if (!$scope.project.roles[index].isFutureRole && $scope.project.roles[index + 1].isFutureRole)
+				result = 'future';
+		}
 		
 		return result;
 	}
@@ -1181,6 +1218,10 @@ angular.module('Mastermind')
     	  if (new Date( $scope.project.roles[i].startDate) < today && 
     			  (! $scope.project.roles[i].endDate || new Date( $scope.project.roles[i].endDate) < today) )
     		  $scope.project.roles[i].isPastRole = true;
+    	  else if (new Date($scope.project.roles[i].startDate) >= today && 
+    			  (!$scope.project.roles[i].endDate || new Date($scope.project.roles[i].endDate) > today) ) 
+    		  $scope.project.roles[i].isFutureRole = true;
+    		  
       }
     };
     
