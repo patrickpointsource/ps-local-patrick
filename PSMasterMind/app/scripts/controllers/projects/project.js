@@ -1208,10 +1208,21 @@ angular.module('Mastermind')
     		  return 1;
     	  else if (new Date(r2.startDate) < today && (!r2.endDate || new Date(r2.endDate) < today) )
     		  return -1;
-    	  else if (/*new Date(r2.startDate) >= today && */new Date(r1.startDate) > new Date(r2.startDate))
+    	 else if (new Date(r1.startDate) >= today)
     		  return 1;
-    	  else if (/*new Date(r1.startDate) >= today && */new Date(r2.startDate) > new Date(r1.startDate))
+      	else if (new Date(r2.startDate) >= today)
+		  return -1;
+    	 /* else if (new Date(r2.startDate) > new Date(r1.startDate))
     		  return -1;
+    	  */
+    	  var abr1 = $scope.roleGroups[r1.type.resource].abbreviation;
+    	  var abr2 = $scope.roleGroups[r2.type.resource].abbreviation;
+    	  
+    	  if (abr1 > abr2)
+    		  return 1;
+    	  else if (abr2 > abr1)
+    		  return -1
+    	  return 0;
       })
       
       for (var i = 0; i < $scope.project.roles.length; i ++) {
