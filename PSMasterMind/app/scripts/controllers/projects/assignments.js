@@ -153,9 +153,52 @@ angular.module('Mastermind.controllers.projects')
         
     	// $scope.fillOriginalAssignees();
     	 
-         
-    	 
+      	  $scope.stopWatchingAssignmentChanges();
+      	  
+      	  //Create a new watch
+      	  $scope.sentinel = $scope.$watch('project.roles', function(newValue, oldValue){
+  	    	  if(!$rootScope.formDirty && $scope.editMode){
+  	    		  //Do not include anthing in the $meta property in the comparison
+  	    		  if(oldValue.hasOwnProperty('$meta')){
+  	    			  var oldClone = Resources.deepCopy(oldValue);
+  	    			  delete oldClone['$meta'];
+  	    			  oldValue = oldClone;
+  	    		  }
+  	    		  if(newValue.hasOwnProperty('$meta')){
+  	    			  var newClone = Resources.deepCopy(newValue);
+  	    			  delete newClone['$meta'];
+  	    			  newValue = newClone;
+  	    		  }
+  	    		  
+  	    		  //Text Angular seems to add non white space characters for some reason
+  	    		  if(newValue.description){
+  	    			  newValue.description = newValue.description.trim();
+  	    		  }
+  	    		  if(oldValue.description){
+  	    			  oldValue.description = oldValue.description.trim();
+  	    		  }
+  	    		  
+  	    		  var oldStr = JSON.stringify(oldValue);
+  	    		  var newStr = JSON.stringify(newValue);
+  	    		  
+  	    		  if(oldStr != newStr){
+  	    			  console.debug('assignment is now dirty');
+  	    			  $rootScope.formDirty = true;
+  	    			  $rootScope.dirtySaveHandler = function(){
+  	    			    	return $scope.saveAssignment(true);
+  	    			   };
+  	    		  }
+  	    	  }
+  	    	 
+  	      },true);
     }
+    
+    $scope.stopWatchingAssignmentChanges = function(){
+    	var sentinel = $scope.sentinel;
+	  	if(sentinel){
+	  		sentinel();  //kill sentinel
+	  	}
+    };
     
     $scope.getPersonName = function(personId, assignable) {
     	var result = undefined;
@@ -188,7 +231,7 @@ angular.module('Mastermind.controllers.projects')
 	/**
      * Save role assignements
      */
-    $scope.saveAssignment = function () {
+    $scope.saveAssignment = function (navigateOut) {
       //Validate new role
       var errors = [];
       
@@ -248,7 +291,10 @@ angular.module('Mastermind.controllers.projects')
 	  				//filter: $scope.selectedAssignmentsFilter
 	  				filter: "all"
 				}
-    		  $state.go('projects.show.tabId', params);
+    		  
+    		  if(!navigateOut){
+    			  $state.go('projects.show.tabId', params);
+    		  }
     		  
     		  $scope.pushState(params)
     	  })
