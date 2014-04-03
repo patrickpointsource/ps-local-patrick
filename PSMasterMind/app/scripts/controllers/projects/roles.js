@@ -238,6 +238,20 @@ angular.module('Mastermind.controllers.projects')
         	$scope.refreshAdvAmount();
     	}
     }
+    
+    /**
+     * Set default values for hours when 100% utilized
+     */
+    $scope.fullyUtilizedChanged = function(perRate) {
+    	if($scope.newRole.rate.fullyUtilized){
+    		if(perRate === 'perWeek') {
+    			$scope.newRole.rate.hoursPerWeek = 40;
+    		}
+    		if(perRate === 'perMonth') {
+    			$scope.newRole.rate.hoursPerMth = 180;
+    		}
+    	}
+    };
 
     /**
      * Update an existing advertised role deinition

@@ -125,13 +125,13 @@
 									<label for="hourlyHours">Hours/Month:</label> <input
 										id="hourlyHours" class="form-control"
 										placeholder="Enter Hours per Month" type="number"
-										ng-model="newRole.rate.hoursPerMth" />
+										ng-model="newRole.rate.hoursPerMth" ng-disabled="newRole.rate.fullyUtilized"/>
 								</div>
 								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
 									<label>Utilization:</label>
 									<div class="checkbox">
 										<label> <input type="checkbox"
-											ng-model="newRole.rate.fullyUtilized"> 100% Utilized
+											ng-model="newRole.rate.fullyUtilized" ng-change="fullyUtilizedChanged('perMonth')"> 100% Utilized
 										</label>
 									</div>
 								</div>
@@ -218,14 +218,14 @@
 									<label for="weeklyHours">Hours/Week:</label> <input
 										id="weeklyHours" class="form-control"
 										placeholder="Enter Hours per Week" type="number"
-										ng-model="newRole.rate.hoursPerWeek" />
+										ng-model="newRole.rate.hoursPerWeek" ng-disabled="newRole.rate.fullyUtilized"/>
 
 								</div>
 								<div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
 									<label>Utilization:</label>
 									<div class="checkbox">
 										<label> <input type="checkbox"
-											ng-model="newRole.rate.fullyUtilized" /> 100% Utilized
+											ng-model="newRole.rate.fullyUtilized"  ng-change="fullyUtilizedChanged('perWeek')" /> 100% Utilized
 										</label>
 									</div>
 								</div>
