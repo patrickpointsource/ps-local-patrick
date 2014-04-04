@@ -6,7 +6,9 @@
 angular.module('Mastermind.controllers.projects')
   .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'Resources', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
   function ($scope, $filter, $q, RolesService, Resources, RoleTypes, Rates, RateFactory, TableParams) {
-
+	  
+	var HOURS_PER_WEEK = 40;
+	var HOURS_PER_MONTH = 180;
     $scope.editingRole = false;
     $scope.newRole = RolesService.create();
 
@@ -101,6 +103,8 @@ angular.module('Mastermind.controllers.projects')
         $scope.newRole = RolesService.create();
         $scope.newRole.startDate = $scope.project.startDate;
         $scope.newRole.endDate = $scope.project.endDate;
+        $scope.newRole.rate.fullyUtilized = true;
+        $scope.newRole.rate.hoursPerMth = 180;
       }
     };
     
@@ -237,18 +241,19 @@ angular.module('Mastermind.controllers.projects')
         	$scope.refreshLoadedAmount();
         	$scope.refreshAdvAmount();
     	}
+    	$scope.fullyUtilizedChanged();
     }
     
     /**
      * Set default values for hours when 100% utilized
      */
-    $scope.fullyUtilizedChanged = function(perRate) {
+    $scope.fullyUtilizedChanged = function() {
     	if($scope.newRole.rate.fullyUtilized){
-    		if(perRate === 'perWeek') {
-    			$scope.newRole.rate.hoursPerWeek = 40;
+    		if($scope.newRole.rate.type === 'weekly') {
+    			$scope.newRole.rate.hoursPerWeek = HOURS_PER_WEEK;
     		}
-    		if(perRate === 'perMonth') {
-    			$scope.newRole.rate.hoursPerMth = 180;
+    		if($scope.newRole.rate.type === 'hourly') {
+    			$scope.newRole.rate.hoursPerMth = HOURS_PER_MONTH;
     		}
     	}
     };
