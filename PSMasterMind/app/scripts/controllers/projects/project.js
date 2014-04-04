@@ -729,8 +729,8 @@ angular.module('Mastermind')
 			if (!$scope.projectTabId) {
 				var updatedUrl = $state.href('projects.show.tabId', { 
 					tabId: selectedTabId,
-					edit: $stateParams.edit? 'edit': '',
-					filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
+					edit: $stateParams.edit? 'edit': ''
+					//filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
 				}).replace('#', '');
 	        
 	        
@@ -738,8 +738,8 @@ angular.module('Mastermind')
 			} else
 				$state.go('projects.show.tabId', {
 						tabId: selectedTabId,
-						edit: $stateParams.edit? 'edit': '',
-						filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
+						edit: $stateParams.edit? 'edit': ''
+						//filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
 				});
 			
 			$scope.projectTabId = selectedTabId;
@@ -747,12 +747,12 @@ angular.module('Mastermind')
     }
     
     $scope.editAssignments = function(){
-    	$state.go('projects.show.tabId', {
+    	$state.transitionTo('projects.show.tabId', {
 				tabId: 'assignments',
-				filter: 'all',
+				filter: null,
 				edit: 'edit',
-				reload: true
-		});
+				projectId: $stateParams.projectId
+		}, {reload: true, inherit: false, notify: true });
     }
     
     /**
@@ -1087,7 +1087,7 @@ angular.module('Mastermind')
       /**
        * Calculate total loaded cost in plan
        */
-
+      var HOURS_PER_WEEK = 45;
       var roles = $scope.project.roles;
       var runningTotal = 0;
       for(var i = 0; roles && i < roles.length; i++){
@@ -1126,7 +1126,7 @@ angular.module('Mastermind')
               }
               else {
                 var numWeeks = $scope.weeksDif(startDate, endDate);
-                var hoursPerWeek = rate.fullyUtilized?40:rate.hoursPerWeek;
+                var hoursPerWeek = rate.fullyUtilized? HOURS_PER_WEEK:rate.hoursPerWeek;
                 roleTotal = numWeeks * hoursPerWeek * amount;
                 runningTotal += roleTotal;
               }

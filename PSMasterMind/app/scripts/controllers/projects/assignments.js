@@ -24,7 +24,7 @@ angular.module('Mastermind.controllers.projects')
 	                               	{name: "All Assignments", value: "all"}]
 	
 	  
-	  
+	  /*
 	  //TODO what is this for?
 	  // Load "all" assignments for displaying it on "summary" tab, and possibly on other tabs
 	  if ($scope.projectTabId != "assignments"){
@@ -35,7 +35,8 @@ angular.module('Mastermind.controllers.projects')
 		  $scope.selectedAssignmentsFilter = $state.params.filter;
 	  } else
 		  $scope.selectedAssignmentsFilter = $scope.getDefaultAssignmentsFilter()
-	 
+	 */
+	  $scope.selectedAssignmentsFilter = "all";
 	  
 	for (var i = 0; i < $scope.project.roles.length; i ++)
 		$scope.project.roles[i].assignees = [];
@@ -52,8 +53,8 @@ angular.module('Mastermind.controllers.projects')
 	
 	$scope.currentTabStates = [{
 		tabId: $state.params.tabId,
-		edit:  $state.params.edit,
-		filter:  $state.params.filter
+		edit:  $state.params.edit
+		/*,filter:  $state.params.filter*/
 	}];
 	
 	$scope.pushState = function(state) {
@@ -64,17 +65,19 @@ angular.module('Mastermind.controllers.projects')
 		
 	}
 	
-	$scope.getDefaultRoleHoursPerWeek = function(role) {
+	$scope.getDefaultRoleHoursPerWeek = function(info) {
 		
-		return role.hoursNeededToCover;
+		return info.hoursNeededToCover;
 	}
 	
 	$scope.addNewAssignmentToRole =  function (index, role) {
+		var coverageInfo = AssignmentService.calculateSingleRoleCoverage(role, role.assignees);
+		
 		role.assignees.push(AssignmentService.create({
           startDate:$scope.project.startDate,
           endDate:$scope.project.endDate,
           //percentage: $scope.getDefaultRolePercentage(role)
-          hoursPerWeek: $scope.getDefaultRoleHoursPerWeek(role)
+          hoursPerWeek: $scope.getDefaultRoleHoursPerWeek(coverageInfo)
         }))
 	}
 	
@@ -111,9 +114,9 @@ angular.module('Mastermind.controllers.projects')
 		
 		var params = {
 			tabId: $scope.projectTabId,
-			edit: null,
+			edit: null
 			//filter: $scope.selectedAssignmentsFilter
-			filter: "all"
+			//filter: "all"
 		};
 		
 		 $scope.selectedAssignmentsFilter = "all";
@@ -141,7 +144,7 @@ angular.module('Mastermind.controllers.projects')
         	if (!avoidStateSwitch) {
            	 var params = {
    				tabId: $scope.projectTabId,
-   				filter: null,
+   				//filter: null,
    				edit: 'edit'
    			}
            	 
@@ -289,7 +292,7 @@ angular.module('Mastermind.controllers.projects')
     		  var params = {
 	  				tabId: $scope.projectTabId,
 	  				//filter: $scope.selectedAssignmentsFilter
-	  				filter: "all"
+	  				filter: null
 				}
     		  
     		  if(!navigateOut){
@@ -340,7 +343,7 @@ angular.module('Mastermind.controllers.projects')
     }
     
     $scope.handleAssignmentsFilterChanged = function() {
-    	AssignmentService.getAssignmentsByPeriod($scope.currentTabStates[0].edit ? "all": $scope.selectedAssignmentsFilter, {
+    	AssignmentService.getAssignmentsByPeriod("all", {
     		project: {
     			resource: $scope.project.about
     		}
@@ -365,7 +368,7 @@ angular.module('Mastermind.controllers.projects')
 				}, options);
 	        */
 	        var params = { 
-    			filter: filter, 
+    			//filter: filter, 
     			tabId: $scope.projectTabId,
     			edit: $scope.currentTabStates[0].edit
 			}

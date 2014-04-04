@@ -28,7 +28,7 @@ angular.module('Mastermind.services.projects')
      */
     this.validateNewRole = function(project, newRole){
     	var HOURS_PER_MONTH = 180;
-    	var HOURS_PER_WEEK = 40;
+    	var HOURS_PER_WEEK = 45;
       var errors = [];
       //Must select a type
       if(!newRole){
@@ -110,7 +110,7 @@ angular.module('Mastermind.services.projects')
           newRole.rate.fullyUtilized = true;
         }
         
-        //BR: Fully utilized default values is 40h/w and 180h/m
+        //BR: Fully utilized default values is 45h/w and 180h/m
         if(newRole.rate.fullyUtilized) {
         	if(newRole.rate.type === 'weekly') {
         		newRole.rate.hoursPerWeek = HOURS_PER_WEEK;

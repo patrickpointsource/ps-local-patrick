@@ -169,7 +169,7 @@ angular.module('Mastermind.models.projects').constant('RateFactory', {
     };
 
     WeeklyRate.prototype.getNumberOfTUs = function () {
-    	var HOURS_PER_WEEK = 40;
+    	var HOURS_PER_WEEK = 45;
     	
         if(this.fullyUtilized) 
         	return HOURS_PER_WEEK.toString().concat(" hours/ week");

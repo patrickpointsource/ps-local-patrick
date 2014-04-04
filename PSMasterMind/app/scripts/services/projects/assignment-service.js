@@ -503,8 +503,8 @@ angular.module('Mastermind.services.projects')
     	
     	// calculate total percentage coverage
     	var HOURS_PER_MONTH = 180;
-    	var HOURS_PER_WEEK = 40;
-    	var ONE_WEEK = 40;
+    	var HOURS_PER_WEEK = 45;
+    	var ONE_WEEK = 45;
     	
     	if (!role.rate.isFullyUtilized() && role.rate.type == "hourly")
     		ONE_WEEK = Math.round(role.rate.hoursPerMonth() / HOURS_PER_MONTH * HOURS_PER_WEEK)

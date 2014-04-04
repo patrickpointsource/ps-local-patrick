@@ -7,7 +7,7 @@ angular.module('Mastermind.controllers.projects')
   .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'Resources', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
   function ($scope, $filter, $q, RolesService, Resources, RoleTypes, Rates, RateFactory, TableParams) {
 	  
-	var HOURS_PER_WEEK = 40;
+	var HOURS_PER_WEEK = 45;
 	var HOURS_PER_MONTH = 180;
     $scope.editingRole = false;
     $scope.newRole = RolesService.create();

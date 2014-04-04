@@ -65,7 +65,7 @@
           }
         })
         .state('projects.show', {
-          url: '/:projectId',
+          url: '/:projectId/:tabId',
           templateUrl: 'views/projects/show.html',
           controller: 'ProjectCtrl',
           resolve: {
@@ -85,10 +85,10 @@
           }
         })
         .state('projects.show.tabId', {
-          url: '/:tabId/:edit',
+          url: '/:edit',
           templateUrl: 'views/projects/show.html',
+          //template: "<div ui-view />",
           controller: 'ProjectCtrl',
-          //reloadOnSearch: false,
           resolve: {
             editMode: function () {
               return true;
