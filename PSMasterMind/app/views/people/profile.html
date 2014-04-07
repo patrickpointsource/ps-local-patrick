@@ -22,11 +22,12 @@
 
         <div class="row">
           <div class="col-xs-12 col-sm-9">
-          	<img class="media-object fullProfileImage pull-left" ng-src="{{profile.thumbnail}}" />
+          	<img class="media-object fullProfileImage pull-left" style="margin-bottom:10px" ng-src="{{profile.thumbnail}}" />
             <div>
               <span><a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
               <div ng-show="editMode" style="margin-top: 7%;">
-                <label class="personDetailLabel">Primary Role:</label> <select
+              	<br/>
+                <label class="personDetailLabel" style="width:100%">Primary Role:</label> <select
                   class="form-control"
                   ng-model="profile.primaryRole.resource"
                   ng-options="m.resource as m.title for m in allRoles">
@@ -44,14 +45,14 @@
               </div>
               <div ng-show="editMode">
                 <label for="profileSkype" class="personDetailLabel">Skype:</label>
-                <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="phone"/>
+                <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="text"/>
               </div>
               <div ng-hide="editMode">
                 <label class="personDetailLabel">Skype Id:</label>
                 <a ng-if="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
               </div>
               <div ng-show="editMode">
-                <label for="profileJazzHub" class="personDetailLabel">Jazz Hub:</label>
+                <label for="profileJazzHub" class="personDetailLabel">Jazz Hub Id:</label>
                 <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text"/>
               </div>
               <div ng-hide="editMode">
@@ -77,6 +78,9 @@
 	                <li><input type="checkbox" ng-model="isManagement"
 	                  ng-click="handleGroupChange($event, 'Management')" /><span
 	                  class="checkboxText">Management</span></li>
+	                <li><input type="checkbox" ng-model="isProjectManagement"
+	                  ng-click="handleGroupChange($event, 'Project Management')" /><span
+	                  class="checkboxText">Project Management</span></li>
 	                <li><input type="checkbox" ng-model="isSales"
 	                  ng-click="handleGroupChange($event, 'Sales')" /><span
 	                  class="checkboxText">Sales</span></li>
