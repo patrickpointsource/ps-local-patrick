@@ -379,6 +379,7 @@ module.exports = function (grunt) {
       'clean:server',
       'concurrent:server',
       'autoprefixer',
+      'less',
       'connect:livereload',
       'watch'
     ]);
@@ -398,7 +399,7 @@ module.exports = function (grunt) {
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
-    //'less',
+    'less',
     'concat',
     'copy:dist',
     //'cdnify',
