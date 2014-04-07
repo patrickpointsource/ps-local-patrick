@@ -4,6 +4,13 @@
 angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService',
     function ($scope, $state, $rootScope, Resources, ProjectsService) {
 
+        /**
+         * TODO THIS SECTION REQUIRES CLEANUP AND MODULARIZATION
+         * TODO set up hour submission
+         * TODO make the calendar scroll left/right
+         * TODO save to MongoDB
+         */
+
         $scope.entryFormOpen = false; //default open status of hours entry form
         $scope.requestedDayHours = {};
         $scope.openHoursEntry = function (day) {
@@ -148,12 +155,13 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                     name: 1, customerName: 1, resource: 1
                 }
                 Resources.query('projects', query, fields, function (result) {
-                    //console.warn(result.data);
+                    console.warn(result.data);
                     var length = result.data.length;
                     for (i=0; i < length; i++) {
                         $scope.requestedDayHours[i]["name"] = result.data[i].name;
+                        $scope.requestedDayHours[i]["customerName"] = result.data[i].customerName;
                     }
-                    //console.log($scope.requestedDayHours)
+                    console.log($scope.requestedDayHours)
                 });
             });
 
@@ -296,25 +304,6 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
         });
 
-        $scope.getHoursForEachDay = function() {
-            //get the hours for each day and display total hours entered
-
-        }
-
-
-
-        $scope.getDisplayedHours = function() {
-
-        }
-
-
-        //TODO make the calendar scroll left/right
-        //TODO tie form to the day clicked
-        //TODO populate form with projects user is assigned to
-        //TODO populate form with previously entered clients and billed hours
-        //TODO on "Add new hours" click, add another row to the form
-        //TODO create dropdown with clients listing for entering new hours
-        //TODO save to Mongo
 
         $scope.newHoursRecord = {};
 

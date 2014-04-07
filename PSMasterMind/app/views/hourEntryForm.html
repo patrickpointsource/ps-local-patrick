@@ -2,7 +2,7 @@
 
         <form ng-repeat="hoursEntry in requestedDayHours">
             <div class="form-group">
-                <div class="col-md-4 control-label" ng-show="hoursEntry.name">{{hoursEntry.name}}</div>
+                <div class="col-md-4 control-label" ng-show="hoursEntry.name">{{hoursEntry.name}}: {{hoursEntry.customerName}}</div>
 
                 <select class="col-md-4" ng-model="hoursProjects" ng-hide="hoursEntry.name" ng-options="project.title for project in hoursProjects">
                     <option value="">--- Choose Project ---</option>
