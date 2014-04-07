@@ -28,7 +28,7 @@
 	<br />
 	
 <div ng-if="financeAccess">
-	<div class="row well">
+	<div class="row well" ng-if="isPaidClientProject()">
 		<div class="row">
 			<div class="col-xs-12">
 				<h4>Terms:</h4>
@@ -72,7 +72,7 @@
 		<br />
 	</div>
 
-	<div class="row well" ng-if="!isFixedBid()">
+	<div class="row well" ng-if="isTandM_clientProject()">
 		<div class="row">
 			<div class="col-xs-12">
 				<h4>Project Rate Table (Total):</h4>

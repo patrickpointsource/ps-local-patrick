@@ -514,52 +514,6 @@ angular.module('Mastermind')
      */
     $scope.servicesTotal = function(){
     	return $scope.getServicesEstimate();
-    	
-//    	if($scope.isFixedBid()) {
-//    		return $scope.project.terms.fixedBidServicesRevenue;
-//    	}
-//    	else {
-//    		var roles = $scope.project.roles;
-//    		var runningTotal = 0;
-//    		for(var i = 0; roles && i < roles.length; i++){
-//    	        var role = roles[i];
-//    	        var rate = role.rate;
-//    	        if(rate && rate.amount){
-//      	          var amount = rate.amount;
-//    	          if(amount){
-//    	            var type = rate.type;
-//    	            var startDate = new Date(role.startDate);
-//    	            var endDate = new Date(role.endDate);
-//    	            var numMonths;
-//    	            var roleTotal;
-//
-//    	            if(startDate && endDate){
-//    	              //Hourly Charge rate
-//    	              if(type && type === 'monthly'){
-//    	                numMonths = $scope.monthDif(startDate, endDate);
-//    	                roleTotal = numMonths * amount;
-//    	                runningTotal += roleTotal;
-//    	              }
-//    	              //Weekly Charge rate
-//    	              else if(type && type === 'weekly'){
-//    	                var numWeeks = $scope.weeksDif(startDate, endDate);
-//    	                var hoursPerWeek = rate.fullyUtilized?50:rate.hoursPerWeek;
-//    	                roleTotal = numWeeks * hoursPerWeek * amount;
-//    	                runningTotal += roleTotal;
-//    	              }
-//    	              //Hourly Charge rate
-//    	              else if(type && type === 'hourly'){
-//    	                numMonths = $scope.monthDif(startDate, endDate);
-//    	                var hoursPerMonth = rate.fullyUtilized?220:rate.hoursPerMth;
-//    	                roleTotal = numMonths * hoursPerMonth * amount;
-//    	                runningTotal += roleTotal;
-//    	              }
-//    	            }
-//    	          }
-//    	        }
-//    	      }
-//  	      return runningTotal;
-//    	}
     };
 
 
@@ -700,6 +654,26 @@ angular.module('Mastermind')
      */
     $scope.isFixedBid = function () {
       return $scope.project.terms.type=="fixed";
+    };
+    
+    /**
+     * Check to see if this is t&m client project.
+     * 
+     * @returns {boolean}
+     */
+    $scope.isTandM_clientProject = function () {
+    	
+      return $scope.project.type=="paid" && $scope.project.terms.type=="timeAndMaterials";
+    };
+    
+    /**
+     * Check to see if this is a paid client project.
+     * 
+     * @returns {boolean}
+     */
+    $scope.isPaidClientProject = function () {
+    	
+      return $scope.project.type=="paid";
     };
     
     $scope.activeTab = {
@@ -991,7 +965,7 @@ angular.module('Mastermind')
       // Table Parameters
       var params = {
         page: 1,            // show first page
-        count: 10,           // count per page
+        count: 50,           // count per page
         sorting: {
           type: 'asc'     // initial sorting
         }
