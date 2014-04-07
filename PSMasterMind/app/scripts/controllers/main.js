@@ -318,23 +318,26 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
       return returnValue;
     };
 
-
-    $scope.newHoursRecord = {};
-
-    /**
-     * Add a new Hours Record to the server
-     */
-    $scope.addHours = function(){
-      //Set the person context
-      $scope.newHoursRecord.person = {resource:$scope.me.about};
-
-      Resources.create('hours', $scope.newHoursRecord).then(function(){
-        $scope.newHoursRecord = {};
-
-        //Navigate over to the users profile
-        window.location='#'+$scope.me.about;
-      });
-    };
+/**
+ * Moving this to its own controller controllers/hours.js
+ * /
+ *
+//    $scope.newHoursRecord = {};
+//
+//    /**
+//     * Add a new Hours Record to the server
+//     */
+//    $scope.addHours = function(){
+//      //Set the person context
+//      $scope.newHoursRecord.person = {resource:$scope.me.about};
+//
+//      Resources.create('hours', $scope.newHoursRecord).then(function(){
+//        $scope.newHoursRecord = {};
+//
+//        //Navigate over to the users profile
+//        window.location='#'+$scope.me.about;
+//      });
+//    };
     
     
     /**

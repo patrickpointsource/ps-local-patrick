@@ -3,8 +3,8 @@
 /**
  * Controller for handling the Details form.
  */
-angular.module('Mastermind.controllers.projects')
-  .controller('DetailsCtrl',['$scope', 'Resources', function ($scope, Resources) {
+angular.module('Mastermind.controllers.projects', [])
+  .controller('DetailsCtrl',['$scope', '$filter', 'Resources', function ($scope, Resources) {
     $scope.$watch(function () {
       return $scope.detailsForm.$valid;
     }, function (newValidity) {
@@ -29,13 +29,15 @@ angular.module('Mastermind.controllers.projects')
   }])
     .directive('currencyFormat', ['$filter', function ($filter) { //helpfully found here: http://jsfiddle.net/SAWsA/811/
         return {
-            require: '?ngModel',
+            require: 'ngModel',
             link: function (scope, elem, attrs, ctrl) {
+                var filter = $filter;
+                console.log(ctrl);
                 if (!ctrl) return;
 
 
                 ctrl.$formatters.unshift(function (a) {
-                    return $filter(attrs.format)(ctrl.$modelValue)
+                    return filter(attrs.format)(ctrl.$modelValue)
                 });
 
 
@@ -46,4 +48,68 @@ angular.module('Mastermind.controllers.projects')
                 });
             }
         };
-    }]);
+    }])
+.directive('currencyInput', function() {
+    return {
+        restrict: 'A',
+        replace: true,
+        require: "ngModel",
+        link: function(scope, element, attrs) {
+
+            $(element).bind('keyup', function(e) {
+                var input = element.find('input');
+                var inputVal = input.val();
+
+                //clearing left side zeros
+                while (scope.field.charAt(0) == '0') {
+                    scope.field = scope.field.substr(1);
+                }
+
+                scope.field = scope.field.replace(/[^\d.\',']/g, '');
+
+                var point = scope.field.indexOf(".");
+                if (point >= 0) {
+                    scope.field = scope.field.slice(0, point + 3);
+                }
+
+                var decimalSplit = scope.field.split(".");
+                var intPart = decimalSplit[0];
+                var decPart = decimalSplit[1];
+
+                intPart = intPart.replace(/[^\d]/g, '');
+                if (intPart.length > 3) {
+                    var intDiv = Math.floor(intPart.length / 3);
+                    while (intDiv > 0) {
+                        var lastComma = intPart.indexOf(",");
+                        if (lastComma < 0) {
+                            lastComma = intPart.length;
+                        }
+
+                        if (lastComma - 3 > 0) {
+                            intPart = intPart.splice(lastComma - 3, 0, ",");
+                        }
+                        intDiv--;
+                    }
+                }
+
+                if (decPart === undefined) {
+                    decPart = "";
+                }
+                else {
+                    decPart = "." + decPart;
+                }
+                var res = intPart + decPart;
+
+                scope.$apply(function() {scope.field = res});
+
+
+            });
+
+        }
+    };
+});
+
+String.prototype.splice = function(idx, rem, s) {
+    return (this.slice(0, idx) + s + this.slice(idx + Math.abs(rem)));
+};
+

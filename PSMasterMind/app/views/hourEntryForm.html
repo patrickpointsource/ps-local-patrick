@@ -1,0 +1,38 @@
+<div class="panel-body" id="hourEntryForm" ng-show="entryFormOpen">
+
+        <form ng-repeat="hoursEntry in requestedDayHours">
+            <div class="form-group">
+                <div class="col-md-4 control-label" ng-show="hoursEntry.name">{{hoursEntry.name}}</div>
+
+                <select class="col-md-4" ng-model="hoursProjects" ng-hide="hoursEntry.name" ng-options="project.title for project in hoursProjects">
+                    <option value="">--- Choose Project ---</option>
+                </select>
+                <input  class="col-md-1" type="number" value="{{hoursEntry.hours}}" placeholder="0"/>
+                <input class="col-md-offset-1 col-md-6" type="text" value="{{hoursEntry.description}}" placeholder="Description"/> <br/>
+            </div>
+        </form>
+    <div class="form-group"><button type="" ng-click="addNewHours();" class="btn btn-default pull-left">Add new hours</button></div>
+    <div class="form-group"><button ng-click="addHours();"type="submit" class="btn btn-default pull-right">Save</button></div>
+
+    <!--<form action="">-->
+        <!--<div class="form-group">-->
+            <!--<div class="col-md-4 control-label">Client # 1</div>-->
+            <!--<input  class="col-md-1"type="text"/>-->
+            <!--<input class="col-md-offset-1 col-md-6" type="text"/> <br/>-->
+        <!--</div>-->
+
+        <!--<div class="form-group">-->
+            <!--<div class="col-md-4 control-label">Client # 2</div>-->
+            <!--<input  class="col-md-1"type="text"/>-->
+            <!--<input class="col-md-offset-1 col-md-6" type="text"/> <br/>-->
+        <!--</div>-->
+
+        <!--<div class="form-group">-->
+            <!--<div class="col-md-4 control-label">Client # 3</div>-->
+            <!--<input  class="col-md-1"type="text"/>-->
+            <!--<input class="col-md-offset-1 col-md-6" type="text"/> <br/>-->
+        <!--</div>-->
+
+    <!--</form>-->
+
+</div>
