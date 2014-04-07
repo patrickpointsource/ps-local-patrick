@@ -232,7 +232,7 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 				if (!foundProjMatch) {
 					if(roles) {
 	                      for(var b = 0; b < roles.length; b++){
-		                        var activeRole = roles[b];		
+		                        var backlogRole = roles[b];		
 		                        $scope.backlogProjectsList[unassignedIndex++] = {
 		                            	  clientName: proj.customerName,
 		                            	  projectName: proj.name,
