@@ -65,7 +65,9 @@
           }
         })
         .state('projects.show', {
-          url: '/:projectId/:tabId',
+         // url: '/:projectId/:tabId',
+        	 //url: '/:projectId/[tabId]',
+          url: '/{projectId}{tabId:(?:/[^/]+)?}',
           templateUrl: 'views/projects/show.html',
           controller: 'ProjectCtrl',
           resolve: {
@@ -84,7 +86,7 @@
             }
           }
         })
-        .state('projects.show.tabId', {
+       /* .state('projects.show.tabId', {
           url: '/:edit',
           templateUrl: 'views/projects/show.html',
           //template: "<div ui-view />",
@@ -94,7 +96,7 @@
               return true;
             }
           }
-        })
+        })*/
         /*.state('projects.show.tabId.edit', {
           url: '/edit',
           templateUrl: 'views/projects/show.html',

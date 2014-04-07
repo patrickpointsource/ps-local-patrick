@@ -703,10 +703,10 @@ angular.module('Mastermind')
     };
     
     $scope.activeTab = {
-    	"assignments": $state.params.tabId == "assignments",
-    	"summary": $state.params.tabId == "summary",
-    	"hours": $state.params.tabId == "hours",
-    	"links": $state.params.tabId == "links"
+    	"/assignments": $state.params.tabId == "/assignments",
+    	"/summary": $state.params.tabId == "/summary",
+    	"/hours": $state.params.tabId == "/hours",
+    	"/links": $state.params.tabId == "/links"
     }
     
     $scope.getDefaultAssignmentsFilter = function() {
@@ -725,21 +725,26 @@ angular.module('Mastermind')
     
     $scope.tabSelected = function(selectedTabId) {
 		if ($scope.projectTabId != selectedTabId) {
-
+			
+			selectedTabId = selectedTabId && selectedTabId.indexOf('/') != 0 ? ('/' + selectedTabId): selectedTabId
+			
 			if (!$scope.projectTabId) {
-				var updatedUrl = $state.href('projects.show.tabId', { 
+				
+				var updatedUrl = $state.href('projects.show', { 
 					tabId: selectedTabId,
-					edit: $stateParams.edit? 'edit': ''
-					//filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
+					edit: $stateParams.edit? 'edit': '',
+					filter: null,
+					projectId: $stateParams.projectId
 				}).replace('#', '');
-	        
-	        
+	        	
+				
 	        	$location.url(updatedUrl).replace();
 			} else
-				$state.go('projects.show.tabId', {
+				$state.go('projects.show', {
 						tabId: selectedTabId,
-						edit: $stateParams.edit? 'edit': ''
-						//filter: selectedTabId != 'assignments' ? null: $scope.getDefaultAssignmentsFilter()
+						edit: $stateParams.edit? 'edit': '',
+						filter: null,
+						projectId: $stateParams.projectId
 				});
 			
 			$scope.projectTabId = selectedTabId;
@@ -747,7 +752,7 @@ angular.module('Mastermind')
     }
     
     $scope.editAssignments = function(){
-    	$state.transitionTo('projects.show.tabId', {
+    	$state.transitionTo('projects.show', {
 				tabId: 'assignments',
 				filter: null,
 				edit: 'edit',
@@ -1243,16 +1248,16 @@ angular.module('Mastermind')
 	  	}
     };
 
-    
+    /*
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-    	if (toState.name == 'projects.show.tabId' && toParams.tabId == 'assignments'  && fromParams.tabId == 'assignments') {
+    	if (toState.name == 'projects.show' && toParams.tabId == 'assignments'  && fromParams.tabId == 'assignments') {
         	//set url manualy
         	var updatedUrl = $state.href(toState.name, toParams).replace('#', '');
         	$location.url(updatedUrl);
         	event.preventDefault();
         }
     })
-    
+    */
 
     $scope.newHoursRecord = {};
 

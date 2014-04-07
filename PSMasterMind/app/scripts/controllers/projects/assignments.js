@@ -122,7 +122,7 @@ angular.module('Mastermind.controllers.projects')
 		 $scope.selectedAssignmentsFilter = "all";
 		 $scope.handleAssignmentsFilterChanged();
 		 
-		$state.go('projects.show.tabId', params);
+		$state.go('projects.show', params);
 		$scope.pushState(params)
 	};
 	
@@ -148,7 +148,7 @@ angular.module('Mastermind.controllers.projects')
    				edit: 'edit'
    			}
            	 
-   	         $state.go('projects.show.tabId', params);
+   	         $state.go('projects.show', params);
    	         
    	         $scope.pushState(params)
             }
@@ -298,7 +298,7 @@ angular.module('Mastermind.controllers.projects')
     		  if(!navigateOut){
     			  $scope.stopWatchingAssignmentChanges();
     			  $rootScope.formDirty = false;
-    			  $state.go('projects.show.tabId', params);
+    			  $state.go('projects.show', params);
     		  }
     		  
     		  $scope.pushState(params)
@@ -351,7 +351,7 @@ angular.module('Mastermind.controllers.projects')
         	$scope.refreshAssignmentsData(data);
         })
         
-        if ($scope.projectTabId == "assignments" && !$state.is("projects.show.tabId.edit")) {
+        if ($scope.projectTabId == "assignments" && !$state.is("projects.show.edit")) {
 	        // in case when we simply converting url "assignments" to "assignments?filter=current" we must replace latest history entry
 	        var filter = $scope.projectTabId == "assignments" ? $scope.selectedAssignmentsFilter: null;
 	        var options = {
@@ -362,7 +362,7 @@ angular.module('Mastermind.controllers.projects')
 	        	filter = null;
 	        // for some reasons $state.go do not recognize "replace" value
 	        /*
-	    	$state.go('projects.show.tabId', {
+	    	$state.go('projects.show', {
 	    			filter: filter, 
 					tabId: $scope.projectTabId
 				}, options);
@@ -372,7 +372,7 @@ angular.module('Mastermind.controllers.projects')
     			tabId: $scope.projectTabId,
     			edit: $scope.currentTabStates[0].edit
 			}
-	        var updatedUrl = $state.href('projects.show.tabId', params).replace('#', '');
+	        var updatedUrl = $state.href('projects.show', params).replace('#', '');
 	        
 	        $scope.pushState(params);
 	        
