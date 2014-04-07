@@ -86,7 +86,8 @@
 						<tr>
 							<th>Role</th>
 							<th class="hidden-xs">Advertised Rate</th>
-							<th>Project Rate</th>
+							<th class="hidden-xs">Project Rate</th>
+							<th class="visible-xs">Rate</th>
 							<th>Rate Units</th>
 							<th>Usage</th>
 							<th>Time Period</th>
@@ -109,11 +110,12 @@
 					<tfoot>
 						<tr>
 							<td />
+							<td class="hidden-xs"/>
 							<td />
 							<td />
 							<td />
-							<td />
-							<td><b>Total Estimate:</b></td>
+							<td class="hidden-xs"><b>Total Estimate:</b></td>
+							<td class="visible-xs"><b>Total:</b></td>
 							<td><span>{{formatMoney(getServicesEstimate(),0)}}</span></td>
 						</tr>
 					</tfoot>
