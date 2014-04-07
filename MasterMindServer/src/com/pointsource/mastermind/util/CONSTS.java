@@ -110,6 +110,7 @@ public interface CONSTS {
 	public String GROUPS_EXEC_TITLE = "Executives";
 	public String GROUPS_MANAGEMENT_TITLE = "Management";
 	public String GROUPS_SALES_TITLE = "Sales";
+	public String GROUPS_PROJECT_MANAGEMENT_TITLE = "Project Management";
 	
 	//Magic Role Constants
 	public String ROLE_SSA_ID = "SSA";

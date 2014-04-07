@@ -186,7 +186,7 @@ public class Data implements CONSTS {
 		query.put(PROP__ID, new ObjectId(id));
 		BasicDBObject fields = new BasicDBObject();
 
-		// If not managemnet remove the financial fields
+		// If not management remove the financial fields
 		if (!hasFinancialAccess(context)) {
 			fields.put(PROP_HOURLY_ADVERTISED_RATE, 0);
 			fields.put(PROP_HOURLY_LOADED_RATE, 0);
@@ -803,7 +803,7 @@ public class Data implements CONSTS {
 
 	private static DBObject filterManagmentProperty(String property,
 			RequestContext context, DBObject fieldsObject) throws JSONException {
-		// If not managemnet remove the financial fields
+		// If not management remove the financial fields
 		if (!hasFinancialAccess(context)) {
 			// Fields is null create one to filter out terms
 			if (fieldsObject == null) {
@@ -846,10 +846,16 @@ public class Data implements CONSTS {
 		return fieldsObject;
 	}
 
+	private static boolean hasProjectManagementAccess(RequestContext context)
+			throws JSONException {
+		return context.getCurrentUser() != null && (isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
+				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) || isMember(context.getCurrentUser(), GROUPS_PROJECT_MANAGEMENT_TITLE));
+	}
+	
 	private static boolean hasFinancialAccess(RequestContext context)
 			throws JSONException {
 		return context.getCurrentUser() != null && (isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
-				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE));
+				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) || isMember(context.getCurrentUser(), GROUPS_SALES_TITLE));
 	}
 
 	private static boolean hasAdminAccess(RequestContext context)
@@ -1017,7 +1023,7 @@ public class Data implements CONSTS {
 		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
 		BasicDBObject fields = new BasicDBObject();
 
-		// If not managemnet remove the financial fields
+		// If not management remove the financial fields
 		if (!hasFinancialAccess(context)) {
 			fields.put(PROP_TERMS, 0);
 			String roleAmounts = PROP_ROLES + "." + PROP_RATE + "."
@@ -1049,7 +1055,7 @@ public class Data implements CONSTS {
 	public static JSONObject deleteProject(RequestContext context, String id)
 			throws JSONException {
 		// Only admins can create roles
-		if (!hasAdminAccess(context)) {
+		if (!hasProjectManagementAccess(context)) {
 			throw new WebApplicationException(
 					Response.status(Status.FORBIDDEN)
 							.entity("You need admin athority to perform this operation")
@@ -1139,7 +1145,7 @@ public class Data implements CONSTS {
 		String resource = (String)person.get(PROP_RESOURCE);
 		
 		// Only admins or owners person who cerated it can delete hours
-		if (!hasAdminAccess(context) && !about.endsWith(resource)) {
+		if (!hasProjectManagementAccess(context) && !about.endsWith(resource)) {
 			throw new WebApplicationException(
 					Response.status(Status.FORBIDDEN)
 							.entity("You need admin athority to perform this operation")

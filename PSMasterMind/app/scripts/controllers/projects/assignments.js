@@ -511,7 +511,7 @@ angular.module('Mastermind.controllers.projects')
     $scope.handleAssignmentsFilterChanged();
    
     // switch to edit mode if needed
-	if ($state.params.edit  && $scope.adminAccess){
+	if ($state.params.edit  && $scope.projectManagementAccess){
     	$scope.edit(true);
     }
   }]);

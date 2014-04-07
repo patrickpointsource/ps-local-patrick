@@ -8,7 +8,7 @@
 				</div>
 				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 					<div class="row">
-						<div id="staffingDeficitWidget" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-if="adminAccess">
+						<div id="staffingDeficitWidget" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-if="projectManagementAccess">
 							<div class="panel panel-danger  dashboard-widget">
 								<div class="panel-heading">
 									<i class="fa fa-tasks"></i> Staffing Deficits
@@ -85,7 +85,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-12 col-md-12 col-lg-6" ng-if="adminAccess">
+		<div class="col-xs-12 col-md-12 col-lg-6" ng-if="projectManagementAccess || financeAccess">
 			<div class="panel panel-default dashboard-widget">
 				<div class="panel-heading">
 					<i class="fa fa-users"></i> Booking Forecast

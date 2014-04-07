@@ -14,14 +14,62 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     Resources.refresh('people/me').then(function(me){
       $scope.me = me;
 
-      //If you are a member of the management or exec groups provide access to financial info
-      if(me.groups && ((me.groups.indexOf('Management') !== -1) || (me.groups.indexOf('Executives') !== -1))){
+      /**
+       * Members of the 'Executives' group... 
+       * 
+       * Is in the Executive Sponsor List (queried from People collection)
+       * Can edit any project (projectManagementAccess)
+       * Can view all financial info (financeAccess)
+       * Can make project assignments (projectManagementAccess)
+       * View Staffing Deficits (projectManagementAccess)
+       * Update Role Types (adminAccess)
+       * Can Assign Users to Groups (adminAccess)
+       */
+      if(me.groups && me.groups.indexOf('Executives') !== -1){
         $scope.financeAccess = true;
         $scope.adminAccess = true;
+        $scope.projectManagementAccess = true;
       }
+      
+	  /**
+	   * Members of the 'Management' group...
+	   * 
+	   * Can edit any project (projectManagementAccess)
+	   * Can view all financial info (financeAccess)
+	   * Can make project assignments (projectManagementAccess)
+	   * View Staffing Deficits (projectManagementAccess)
+	   * Update Role Types (adminAccess)
+	   * Can Assign Users to Groups (adminAccess)
+	   */
+	 	if(me.groups && me.groups.indexOf('Management') !== -1){
+	      $scope.financeAccess = true;
+	      $scope.adminAccess = true;
+	      $scope.projectManagementAccess = true;
+	    }
 
-      //console.log('Logged In');
-      $scope.authState = true;
+		/**
+		 * Members of the 'Project Management' group...
+		 * 
+		 * Can edit any project (projectManagementAccess)
+		 * Can make project assignments (projectManagementAccess)
+		 * View Staffing Deficits (projectManagementAccess)
+		 */
+		if(me.groups && me.groups.indexOf('Project Management') !== -1){
+		    $scope.projectManagementAccess = true;
+		}
+		
+		/**
+		 * Members of the 'Sales' group...
+		 * 
+		 * Is in the Sales Sponsor List (queried from People collection)
+		 * Can view all financial info (financeAccess)
+		 */
+		if(me.groups && me.groups.indexOf('Sales') !== -1){
+		    $scope.financeAccess = true;
+		}
+
+		//console.log('Logged In');
+		$scope.authState = true;
     });
 
     /**

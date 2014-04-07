@@ -1,7 +1,7 @@
 <br />
 	
 <div id="content">
-	<div class="row-fluid" ng-if="adminAccess">
+	<div class="row-fluid" ng-if="projectManagementAccess">
 	<div class="panel panel-danger dashboard-widget">
 		<div class="panel-heading">Staffing Deficits: 
 			<a href="#/projects?filter=active"> Active Projects </a>
@@ -97,7 +97,7 @@
         </script>
 	</div>
 </div>
-<div class="row-fluid" ng-if="adminAccess">
+<div class="row-fluid" ng-if="projectManagementAccess">
 	<div class="panel panel-warning dashboard-widget" >
 		<div class="panel-heading">Staffing Deficits: 
 			<a href="#/projects?filter=backlog">Backlog Projects</a>
@@ -194,7 +194,7 @@
 	</div>
 </div>
 
-<div class="row-fluid" ng-if="adminAccess">
+<div class="row-fluid" ng-if="projectManagementAccess">
 	<div class="panel panel-info dashboard-widget" >
 		<div class="panel-heading">Staffing Deficits:
 			<a href="#/projects?filter=pipeline">Pipeline Projects</a>

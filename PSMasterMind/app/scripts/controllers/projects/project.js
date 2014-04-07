@@ -27,7 +27,7 @@ angular.module('Mastermind')
     };
     
     $scope.canEdit = function() {
-    	return $scope.adminAccess || !$scope.project.created || ($scope.project.created.resource == $scope.me.about);
+    	return $scope.projectManagementAccess || !$scope.project.created || ($scope.project.created.resource == $scope.me.about);
     };
     
   //Load the members of the executive Group
