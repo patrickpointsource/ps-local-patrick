@@ -724,7 +724,7 @@ angular.module('Mastermind')
     }
     
     $scope.tabSelected = function(selectedTabId) {
-		if ($scope.projectTabId != selectedTabId) {
+		if ($scope.projectTabId != '/edit' && $scope.projectTabId != selectedTabId) {
 			
 			selectedTabId = selectedTabId && selectedTabId.indexOf('/') != 0 ? ('/' + selectedTabId): selectedTabId
 			
@@ -752,8 +752,8 @@ angular.module('Mastermind')
     }
     
     $scope.editAssignments = function(){
-    	$state.transitionTo('projects.show', {
-				tabId: 'assignments',
+    	$state.transitionTo('projects.show.tabEdit', {
+				tabId: '/assignments',
 				filter: null,
 				edit: 'edit',
 				projectId: $stateParams.projectId
@@ -1282,7 +1282,7 @@ angular.module('Mastermind')
 
     $scope.projectTabId = $state.params.tabId;
     
-    if($state.params && $state.params.tabId && !$scope.activeTab[$state.params.tabId]) {
+    if($state.params && $state.params.tabId != '/edit' && $state.params.tabId && !$scope.activeTab[$state.params.tabId]) {
         for (var tab in $scope.activeTab)
         	$scope.activeTab[tab] = false;
         
