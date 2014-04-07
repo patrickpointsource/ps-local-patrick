@@ -426,8 +426,8 @@ angular.module('Mastermind')
 
       var margin = null;
 
-      if(cost){
-        margin = revenue/cost*100;
+      if(revenue){
+        margin = (revenue - cost)*100 /revenue;
       }
 
       return margin;
