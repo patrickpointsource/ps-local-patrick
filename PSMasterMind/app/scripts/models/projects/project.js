@@ -263,7 +263,7 @@ angular.module('Mastermind.models.projects')
       check: function () {
         var roleIds = _(this.roles).pluck('type').pluck('id');
 
-        return roleIds.contains('BA') || roleIds.contains('PM') || this.terms.includesProjectManagementOverhead;
+        return roleIds.contains('SBA') ||  roleIds.contains('BA') || roleIds.contains('PM') || this.terms.includesProjectManagementOverhead;
       }
     }, {
       description: 'Must have at least one role',

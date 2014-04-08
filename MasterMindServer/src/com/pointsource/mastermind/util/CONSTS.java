@@ -119,6 +119,8 @@ public interface CONSTS {
 	public String ROLE_PM_TITLE = "Project Manager";
 	public String ROLE_BA_ID = "BA";
 	public String ROLE_BA_TITLE = "Business Analyst";
+	public String ROLE_SBA_ID = "SBA";
+	public String ROLE_SBA_TITLE = "Senior Business Analyst";
 	public String ROLE_SSE_ID = "SSE";
 	public String ROLE_SSE_TITLE = "Senior Software Engineer";
 	public String ROLE_SE_ID = "SE";

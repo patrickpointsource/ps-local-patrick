@@ -305,6 +305,7 @@ public class Validator implements CONSTS {
 
 						// Includes BA or PM
 						if (typeAbr.equals(ROLE_BA_ID)
+								|| typeAbr.equals(ROLE_SBA_ID)
 								|| typeAbr.equals(ROLE_PM_ID)) {
 							hasBAOrPM = true;
 						}
