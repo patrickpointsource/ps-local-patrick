@@ -500,6 +500,15 @@ angular.module('Mastermind.controllers.projects')
 				var newAssignee = AssignmentService.create(props)
 				
 				role.assignees.push(newAssignee)
+			} else {
+				role.assignees.sort(function(a1, a2){
+					 if (new Date(a1.startDate) < new Date(a2.startDate) ) 
+			    		  return -1;
+					 else  if (new Date(a1.startDate) > new Date(a2.startDate) ) 
+			    		  return 1;
+					 
+					 return 0
+				})
 			}
 		}
     	

@@ -237,9 +237,10 @@ angular.module('Mastermind')
     $scope.getCoverageClass = function(role) {
     	var result = '';
     	
-    	if (role.isPastRole)
+    	/*if (role.isPastRole)
     		result = 'panel-default';
-    	else if (role.percentageCovered == 0)
+    	else */
+    	if (role.percentageCovered == 0)
     		result = 'panel-danger';
     	else if (role.percentageCovered < 100)
     		result = 'panel-warning';
@@ -312,16 +313,16 @@ angular.module('Mastermind')
 		return result;
 	}
 	
-	$scope.showSeparator = function(role, index) {
+	$scope.showSeparator = function(role, index, skipFirst) {
 		var result = '';
-		
-		if ($scope.project.roles[index] && $scope.project.roles[index + 1]) {
 			
-			if (!$scope.project.roles[index].isPastRole && $scope.project.roles[index + 1].isPastRole)
-				result = 'past';
-			else if (!$scope.project.roles[index].isFutureRole && $scope.project.roles[index + 1].isFutureRole)
-				result = 'future';
-		}
+		if ($scope.project.roles[index].isPastRole && (!$scope.project.roles[index + 1] || !$scope.project.roles[index + 1].isPastRole))
+			result = 'past';
+		else if ($scope.project.roles[index].isFutureRole && (!$scope.project.roles[index + 1] || !$scope.project.roles[index + 1].isFutureRole))
+			result = 'future';
+		
+		if (skipFirst && result && index == 0)
+			result = '';
 		
 		return result;
 	}
@@ -1187,20 +1188,19 @@ angular.module('Mastermind')
     		  return 1;
     	  else if (new Date(r2.startDate) < today && (!r2.endDate || new Date(r2.endDate) < today) )
     		  return -1;
-    	 else if (new Date(r1.startDate) >= today)
+    	  else if (new Date(r1.startDate) >= today)
     		  return 1;
-      	else if (new Date(r2.startDate) >= today)
-		  return -1;
-    	 /* else if (new Date(r2.startDate) > new Date(r1.startDate))
+    	  else if (new Date(r2.startDate) >= today)
     		  return -1;
-    	  */
+    	 
     	  var abr1 = $scope.roleGroups[r1.type.resource].abbreviation;
     	  var abr2 = $scope.roleGroups[r2.type.resource].abbreviation;
     	  
     	  if (abr1 > abr2)
     		  return 1;
     	  else if (abr2 > abr1)
-    		  return -1
+    		  return -1;
+    	  
     	  return 0;
       })
       

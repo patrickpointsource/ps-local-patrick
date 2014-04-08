@@ -148,7 +148,21 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat-start="role in project.roles">
+		<div ng-repeat-start="role in project.roles" ng-if="showSeparator(role, $index)" class="col-sm-12">
+			<div class="row">
+				<hr  />
+			</div>
+			<div class="row">
+				<div class="col-xs-4" ng-if="showSeparator(role, $index) == 'future'" style="margin-bottom: 12px; margin-top: -12px;">
+					<h4>Future:</h4>
+				</div>
+				<div class="col-xs-4" ng-if="showSeparator(role, $index) == 'past'" style="margin-bottom: 12px; margin-top: -12px;">
+					<h4>Past:</h4>
+				</div>
+			</div>
+			
+		</div>
+		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat-end>
 				<div  class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
 				<div class="panel-heading">
 	
@@ -189,18 +203,6 @@
 				<div style="padding: 12px 0 12px 12px;"  ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
 					<i class="fa fa-ban" style="color:#f34d4b"></i> <span>There are no assignees on this role</span>
 				</div>
-			</div>
-			
-		</div>
-		<div ng-repeat-end ng-if="showSeparator(role, $index)" class="row">
-			<div class="col-sm-12">
-				<hr  />
-			</div>
-			<div class="col-sm-12" ng-if="showSeparator(role, $index) == 'future'" style="margin-bottom: 12px; margin-top: -12px;">
-				<span>Future</span>
-			</div>
-			<div class="col-sm-12" ng-if="showSeparator(role, $index) == 'past'" style="margin-bottom: 12px; margin-top: -12px;">
-				<span>Past</span>
 			</div>
 			
 		</div>
