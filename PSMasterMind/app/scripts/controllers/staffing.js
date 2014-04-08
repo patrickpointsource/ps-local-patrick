@@ -213,8 +213,6 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 			                        }
 			                        
 			                        if(!foundRoleMatch) {
-			                        	var roleList = [];
-					        			var roleListIndex = 0;
 			                        	// total roles list mapping for backlog project
 				                        for (var j = 0; j < roleList.length; j++) {
 				                        	var roleCountObj = roleList[j];
@@ -267,6 +265,9 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 			                      	  endDate: proj.endDate
 			                      };
 			                }
+						}
+						else {
+							foundProjMatch = false;
 						}
 					}
 				}
