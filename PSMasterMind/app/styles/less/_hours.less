@@ -1,8 +1,11 @@
 .hoursHead, .hoursEntered{text-align:center; padding:0; border:1px solid #AAAAAA}
 .hoursHead {background-color: #ccc; }
-.active .hoursEntered {background-color:#eee;}
+.btn.active {color: #fff; background-color: #428bca; border-color: #357ebd;}
 .hoursEntered {font-size:200%}
-#hourEntryFrom {background-color:#eee;}
+.table > tbody > tr > th.active {background:none;} //override bootstrap style
+
+#hourEntryForm input[type="number"] {padding:0; text-align:center;} //override bootstrap style
+
 
 @media (max-width: 768px){
   .fivecolumns .col-md-2, .fivecolumns .col-sm-2, .fivecolumns .col-lg-2  {

@@ -1,21 +1,75 @@
-<div ng-controller="HoursCtrl" class="panel panel-default dashboard-widget">
-    <div class="panel-heading">Hours</div>
-    <div class="panel-body" id="LogHours">
-        <!--//$scope.$on('view loaded')-->
+<!--<div ng-controller="HoursCtrl" class="panel panel-default dashboard-widget">-->
+    <!--<div class="panel-heading">Hours</div>-->
+    <!--<div class="panel-body" id="LogHours">-->
+        <!--&lt;!&ndash;//$scope.$on('view loaded')&ndash;&gt;-->
 
-        <div class="row fivecolumns">
-            <div ng-repeat="day in hoursGrid" ng-class="{active : isSelected(day)}">
-                <div class="col-md-2" ng-click="openHoursEntry(day);">
-                    <div class="col-md-12 hoursHead">{{day.day}}<br/>{{day.date}}</div>
-                    <div class="col-md-12 hoursEntered">{{day.hours}}</div>
+        <!--<div class="row fivecolumns">-->
+            <!--<div ng-repeat="day in hoursGrid" ng-class="{active : isSelected(day)}">-->
+                <!--<div class="col-md-2" ng-click="openHoursEntry(day);">-->
+                    <!--<div class="col-md-12 hoursHead">{{day.day}}<br/>{{day.date}}</div>-->
+                    <!--<div class="col-md-12 hoursEntered">{{day.hours}}</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;{{selected.date}}&ndash;&gt;-->
+    <!--<ng-include src="'views/hourEntryForm.html'"></ng-include>-->
+
+<!--</div>-->
+
+<div class="panel panel-default dashboard-widget" ng-controller="HoursCtrl">
+    <div class="panel-heading">
+        <i class="fa fa-calendar-o"></i> Hours: {{allHours[0].date}}<!-- Mar 30 — Apr 5 2014 --> &mdash; {{allHours[6].date}}
+        <div class="pull-right btn-group-sm dashboard-actions">
+            <button class="btn btn-default">
+                <div>
+                    Today
                 </div>
-            </div>
+            </button>
+            <button class="btn btn-default">
+                <div>
+                    <i class="fa fa-angle-left"></i>
+                </div>
+            </button>
+            <button class="btn btn-default">
+                <div>
+                    <i class="fa fa-angle-right"></i>
+                </div>
+            </button>
         </div>
     </div>
-    <!--{{selected.date}}-->
-    <ng-include src="'views/hourEntryForm.html'"></ng-include>
+    <div class="panel-body">
+        <h3></h3>
+        <div class="table-responsive" style="border:none">
+            <table class="table table-condensed">
+                <tbody >
+                <tr >
+                    <th class="text-center">MON</th>
+                    <th class="text-center">TUE</th>
+                    <th class="text-center">WED</th>
+                    <th class="text-center">THU</th>
+                    <th class="text-center">FRI</th>
+                    <th class="text-center">SAT</th>
+                    <th class="text-center">SUN</th>
+                </tr>
+                <tr>
+                    <th ng-repeat="day in allHours" ng-class="{active : isSelected(day)}" class="text-center"><button class="btn btn-default btn-lg" ng-class="{active: isSelected(day)}" data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>
 
+                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[0].totalHours}}</button></th>-->
+                    <!--<th class="text-center"><button class="btn btn-danger btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[1].totalHours}}</button></th>-->
+                    <!--<th class="text-center"><button class="btn btn-warning btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[2].totalHours}}</button></th>-->
+                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[3].totalHours}}</button></th>-->
+                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[4].totalHours}}</button></th>-->
+                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[5].totalHours}}</button></th>-->
+                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[6].totalHours}}</button></th>-->
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="editHours" class="well collapse out"> <ng-include src="'views/hourEntryForm.html'"></ng-include></div>
+    </div>
 </div>
+
 <!--<div class="panel panel-default dashboard-widget">-->
 
     <!--<div class="panel-heading">-->
