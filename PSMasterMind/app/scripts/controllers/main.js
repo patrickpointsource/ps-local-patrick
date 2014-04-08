@@ -50,7 +50,6 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
       mm='0'+mm;
     }
    
-    var rolesPromise = RolesService.getRolesMapByResource();
     /**
      * Set up the projects to be added to the hours entry drop down
      */
@@ -317,27 +316,6 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
       var returnValue =  projectStarted && !projectEnded;
       return returnValue;
     };
-
-/**
- * Moving this to its own controller controllers/hours.js
- * /
- *
-//    $scope.newHoursRecord = {};
-//
-//    /**
-//     * Add a new Hours Record to the server
-//     */
-//    $scope.addHours = function(){
-//      //Set the person context
-//      $scope.newHoursRecord.person = {resource:$scope.me.about};
-//
-//      Resources.create('hours', $scope.newHoursRecord).then(function(){
-//        $scope.newHoursRecord = {};
-//
-//        //Navigate over to the users profile
-//        window.location='#'+$scope.me.about;
-//      });
-//    };
     
     
     /**
@@ -419,7 +397,9 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     	$scope.initBookingForecast();
     };
     
-    
+    /**
+     * Sets up the booking forcast graph
+     */
     $scope.initBookingForecast = function(){
     	var showPipeline = $scope.bfShowPipeline;
     	var projects = $scope.fbProjects;
@@ -440,8 +420,51 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
 			};
     		$scope.data = result;
 	    });
+    };
+    
+    /**
+     * Returns the text summary per project for the my projects section of the home page
+     */
+    $scope.getMyProjectSummaryLine = function(project){
+    	var roles = [];
+    	if(project.status.isExecutiveSponsor){
+    		roles.push('EXEC');
+    	}
+    	
+    	if(project.status.isSalesSponsor){
+    		roles.push('SALES');
+    	}
+    	
+    	var projectAssignments = project.status.assignments;
+    	var totalHoursPerWeek = 0;
+    	for(var i = 0; i < projectAssignments.length;i++){
+    		var projectAssignment = projectAssignments[i];
+    		var role = projectAssignment.role;
+    		if(role.type){
+    			role = $scope.roleGroups[role.type.resource];
+    			if(role && role.abbreviation){
+    				roles.push(role.abbreviation);
+    			}
+    		}
+    		if(projectAssignment && projectAssignment.hoursPerWeek){
+    			totalHoursPerWeek += projectAssignment.hoursPerWeek;
+    		}
+    	}
+    	
+    	if(totalHoursPerWeek > 0){
+    		totalHoursPerWeek = ' @'+totalHoursPerWeek+'h/w ';
+    	}else{
+    		totalHoursPerWeek = '';
+    	}
+    	
+    	//Get the total hours logged
+    	var hoursLogged = '';
+    	if(project.status.hoursLogged){
+    		hoursLogged = ' - ' + project.status.hoursLogged + ' hrs logged';
+    	}
+    
+    	var ret = "<span class=\"text-muted\">" + roles + ":" + totalHoursPerWeek + hoursLogged + "</span>";
+    	return ret;
     }
-    
-    
 }]);
 

@@ -90,6 +90,29 @@ angular.module('Mastermind.services.projects')
         return new Date(yyyy, mm, dd);
     };
     
+    
+    /**
+     * Get all the assignments for a given project
+     */
+    this.getCurrentAndFurtureAssignmentsForProject = function(projectURI){
+    	var deferred = $q.defer();
+    	
+    	var query =  {'project.resource':projectURI};
+    	
+    	Resources.query('assignments',query,null,function(result){
+    		if(!result || !result.data || !result.data.length <= 0){
+    			deferred.reject('Not Found');
+    		}
+    		else{
+    			var ret = result.data[0];
+    			deferred.resolve(ret);
+    		}
+    		
+    	});
+    	
+    	return deferred.promise;
+    }
+    
     /**
      * Get the assignment records for a set of projects
      * 

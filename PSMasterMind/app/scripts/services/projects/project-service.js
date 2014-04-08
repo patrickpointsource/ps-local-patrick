@@ -355,7 +355,7 @@ angular.module('Mastermind.services.projects')
     					}
     			}
     	};
-        var fields = {project:1};
+        var fields = {project:1, members:1};
         Resources.query('assignments', query, fields, function(result){
         	var assignments = result.data;
         	var myProjects = [];
@@ -369,7 +369,6 @@ angular.module('Mastermind.services.projects')
                     myProjects.push(oid);
     			}
         	}
-        	
         	var projectsQuery = {
 //        			'_id':{
 //        				$in:myProjects
@@ -414,9 +413,102 @@ angular.module('Mastermind.services.projects')
         				 }
 					]
 				};
-	        var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1};
+	        var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1,roles:1,executiveSponsor:1,salesSponsor:1};
 	        Resources.query('projects',projectsQuery,projectsFields,function(result){
-	        	deferred.resolve(result);
+	        	var projects = result.data;
+	        	var ret = result;
+	        	for(var i = 0; i < projects.length; i++){
+	        		var project = projects[i];
+        			
+        			/**
+    	        	 * For each project we will create a staus object with some information about your assignment on the project and hours you have logged against the project
+    	        	 */
+    	        	project.status = {};
+    	        	var execSponsor = project.executiveSponsor;
+    	        	var slaesSponsor = project.salesSponsor;
+    	        	
+    	        	if(execSponsor && execSponsor.resource && execSponsor.resource == me.about){
+    	        		project.status.isExecutiveSponsor = true;
+    	        	}
+    	        	
+    	        	if(slaesSponsor && slaesSponsor.resource && slaesSponsor.resource == me.about){
+    	        		project.status.isSalesSponsor = true;
+    	        	}
+    	        	
+    	        	//Match up the assignments record for this project
+    	        	var assignmentsRecord = null;
+    	        	for(var j = 0; j < assignments.length;j++){
+    	        		var assignment = assignments[j];
+    	        		if (assignment.project && assignment.project.resource 
+    	        				&& assignment.project.resource == project.resource){
+    	        			assignmentsRecord = assignment;
+    	        			break;
+    	    			}
+    	        	}
+    	        	
+    	        	//Find the current roles 
+    	        	project.status.assignments = [];
+    	        	if(assignmentsRecord){
+    	        		var members = assignmentsRecord.members;
+	    	        	for(var j = 0; j < members.length;j++){
+	    	        		var assignment = members[j];
+	    	        		if (assignment.person && assignment.person.resource
+	    	        				&& assignment.person.resource == me.about){
+	    	        			project.status.assignments.push(assignment);
+	    	        			var assignmentRoleResourceURI = assignment.role.resource;
+	    	        			//Match the assignment up with a role on the project
+	    	        			for(var k = 0; k < project.roles.length; k++){
+	    	        				var role = project.roles[k];
+	    	        				var id = role['_id'];
+	    	        				//If the role URI ends with the _id of the role replace the reference to the role
+	    	        				//with the role object
+	    	        				if(assignmentRoleResourceURI.indexOf(id, assignmentRoleResourceURI.length - id.length) !== -1){
+	    	        					assignment.role = role;
+	    	        				}
+	    	        			}
+	    	    			}
+	    	        	}
+    	        	}
+    	        	
+    	        	
+	        	}
+	        	
+	        	/**
+	        	 * Fetch all the Hours Records for this project to count hours logged against my projects
+	        	 */
+	        	var hoursQuery = {
+	        		  person:{
+						  resource:me.about
+					  }
+				};
+	        	var hoursFields = {hours:1,project:1,date:1};
+	        	Resources.query('hours',hoursQuery,hoursFields,function(result){
+	        		//Iterate through all the hours records and append the hours to total hours logged
+	        		var members = result.members;
+	        		for(var i = 0; i < members.length;i++){
+	        			var hoursRecord = members[i];
+	        			var projectURI = hoursRecord.project.resource;
+	        			
+	        			//Find the associated project
+	        			for(var j = 0; j < projects.length; j++){
+	    	        		var project = projects[j];
+	    	        		if(project.resource == projectURI){
+	    	        			var projectStatus = project.status;
+	    	        			if(!projectStatus.hoursLogged){
+	    	        				projectStatus.hoursLogged = hoursRecord.hours;
+	    	        			}
+	    	        			else{
+	    	        				projectStatus.hoursLogged += hoursRecord.hours;
+	    	        			}
+	    	        			
+	    	        			break;
+	    	        		}
+	        			}
+	        		}
+	        	
+	        		deferred.resolve(ret);
+	        	});
+	        	
 	        });
         });
         return deferred.promise;
