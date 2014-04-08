@@ -539,10 +539,19 @@ angular.module('Mastermind.controllers.projects')
 				role.assignees.push(newAssignee)
 			} else {
 				role.assignees.sort(function(a1, a2){
-					 if (new Date(a1.startDate) < new Date(a2.startDate) ) 
-			    		  return -1;
-					 else  if (new Date(a1.startDate) > new Date(a2.startDate) ) 
+					 if (a1.endDate && a2.endDate && new Date(a1.endDate) < new Date(a2.endDate) ) 
 			    		  return 1;
+					 else if (a1.endDate && a2.endDate && new Date(a1.endDate) > new Date(a2.endDate) ) 
+			    		  return -1;
+					 else if (!a1.endDate && a2.endDate ) 
+			    		  return -1;
+					 else if (a1.endDate && !a2.endDate ) 
+			    		  return 1;
+					 else if ((!a1.endDate && !a2.endDate || a1.endDate == a2.endDate) && new Date(a1.startDate) < new Date(a2.startDate)) 
+			    		  return -1;
+					 else if ((!a1.endDate && !a2.endDate || a1.endDate == a2.endDate) && new Date(a1.startDate) > new Date(a2.startDate)) 
+			    		  return 1;
+					
 					 
 					 return 0
 				})

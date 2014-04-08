@@ -1183,36 +1183,69 @@ angular.module('Mastermind')
      
       today =  new Date(yyyy, mm, dd);
       
-      $scope.project.roles.sort(function(r1, r2) {
-    	  if (new Date(r1.startDate) < today && (!r1.endDate || new Date(r1.endDate) < today) ) 
-    		  return 1;
-    	  else if (new Date(r2.startDate) < today && (!r2.endDate || new Date(r2.endDate) < today) )
-    		  return -1;
-    	  else if (new Date(r1.startDate) >= today)
-    		  return 1;
-    	  else if (new Date(r2.startDate) >= today)
-    		  return -1;
-    	 
-    	  var abr1 = $scope.roleGroups[r1.type.resource].abbreviation;
-    	  var abr2 = $scope.roleGroups[r2.type.resource].abbreviation;
-    	  
-    	  if (abr1 > abr2)
-    		  return 1;
-    	  else if (abr2 > abr1)
-    		  return -1;
-    	  
-    	  return 0;
-      })
+      
       
       for (var i = 0; i < $scope.project.roles.length; i ++) {
-    	  if (new Date( $scope.project.roles[i].startDate) < today && 
-    			  (! $scope.project.roles[i].endDate || new Date( $scope.project.roles[i].endDate) < today) )
+    	  $scope.project.roles[i].isPastRole = false;
+    	  $scope.project.roles[i].isFutureRole = false;
+    	  $scope.project.roles[i].isCurrentRole = false;
+    	  
+    	  if (new Date( $scope.project.roles[i].startDate) < today && ($scope.project.roles[i].endDate && new Date( $scope.project.roles[i].endDate) < today) )
     		  $scope.project.roles[i].isPastRole = true;
     	  else if (new Date($scope.project.roles[i].startDate) >= today && 
     			  (!$scope.project.roles[i].endDate || new Date($scope.project.roles[i].endDate) > today) ) 
     		  $scope.project.roles[i].isFutureRole = true;
+    	  else
+    		  $scope.project.roles[i].isCurrentRole = true;
     		  
       }
+      
+      $scope.project.roles.sort(function(r1, r2) {
+    	  
+    	  if (r1.isFutureRole && r2.isFutureRole || r1.isPastRole && r2.isPastRole || 
+    			  	r1.isCurrentRole && r2.isCurrentRole) {
+	    	  if (r1.endDate && r2.endDate && new Date(r1.endDate) < new Date(r2.endDate) ) 
+	    		  return 1;
+	    	  else if (r1.endDate && !r2.endDate) 
+	    		  return 1;
+	    	  else if (!r1.endDate && !r2.endDate && new Date(r1.startDate) > new Date(r2.startDate) ) 
+	    		  return 1;
+	    	  else if (r1.endDate == r2.endDate && new Date(r1.startDate) > new Date(r2.startDate) ) 
+	    		  return 1;
+	    	  
+	    	  else if (r1.endDate && r2.endDate && new Date(r1.endDate) > new Date(r2.endDate) ) 
+	    		  return -1;
+	    	  else if (!r1.endDate && r2.endDate) 
+	    		  return -1;
+	    	  else if (!r1.endDate && !r2.endDate && new Date(r1.startDate) < new Date(r2.startDate) ) 
+	    		  return -1;
+	    	  else if (r1.endDate == r2.endDate && new Date(r1.startDate) < new Date(r2.startDate) ) 
+	    		  return -1;
+	    	  
+	    	  
+	    	 
+	    	  var abr1 = $scope.roleGroups[r1.type.resource].abbreviation;
+	    	  var abr2 = $scope.roleGroups[r2.type.resource].abbreviation;
+	    	  
+	    	  if (r1.endDate == r2.endDate && r1.startDate == r2.startDate ) {
+		    	  if (abr1 > abr2)
+		    		  return 1;
+		    	  else if (abr2 > abr1)
+		    		  return -1;
+	    	  }
+    	  } else if (r1.isPastRole && (r2.isFutureRole || r2.isCurrentRole))
+    		  return 1
+		  else if (r2.isPastRole && (r1.isFutureRole || r1.isCurrentRole))
+    		  return -1
+		  else if (r1.isFutureRole && r2.isCurrentRole)
+    		  return 1
+		  else if (r2.isFutureRole && r1.isCurrentRole)
+    		  return -1
+		  else if (r1.isCurrentRole && (r2.isFutureRole || r2.isPastRole))
+    		  return -1
+    	  
+    	  return 0;
+      })
     };
     
     $scope.stopWatchingProjectChanges = function(){
