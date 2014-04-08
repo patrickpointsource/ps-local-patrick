@@ -1,11 +1,11 @@
 <br />
 <div id="dashboard-widgets" class="row">
 	<div class="row-fluid">
+		<div class="col-xs-12 col-md-12 col-lg-6" ng-if="!adminAccess">
+			<ng-include src="'views/hoursEntry.html'"></ng-include>
+		</div>
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
 			<div class="row">
-				<div id="staffingDeficitWidget" class="col-xs-12 col-sm-6 col-md-6 col-lg-6" ng-if="!adminAccess">
-					<ng-include src="'views/hoursEntry.html'"></ng-include>
-				</div>
 				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 					<div class="row">
 						<div id="staffingDeficitWidget" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-if="projectManagementAccess">
@@ -41,7 +41,7 @@
 					
 					</div>
 				</div>
-				<div id="projectsWidget" class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+				<div id="projectsWidget" class="col-xs-12 col-sm-6 col-md-6 col-lg-6" >
 					<div class="panel panel-default dashboard-widget">
 						<div class="panel-heading">
 							<i class="fa fa-briefcase"></i> Current Projects
@@ -85,6 +85,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="col-xs-12 col-md-12 col-lg-6" ng-if="projectManagementAccess || financeAccess">
 			<div class="panel panel-default dashboard-widget">
 				<div class="panel-heading">
@@ -100,7 +101,46 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-12 col-md-12 col-lg-6" ng-if="!adminAccess">
+		
+		<div ng-show="hasActiveProjects">
+			<div class="col-xs-12 col-md-12 col-lg-6">
+				<div class="panel panel-default dashboard-widget">
+					<div class="panel-heading">
+						<i class="fa fa-briefcase"></i> My Projects
+					</div>
+					<div class="panel-body">
+						<div class="graph">
+							<div id="projectsSummaryGraph">
+								<div class="row" ng-repeat="project in myProjects | orderBy:'customerName'">
+									<div class="title col-xs-12 col-md-3 col-lg-2">
+										<i class="{{projectStateIcon(project)}}"></i> <a href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a>
+									</div>
+									<div class="col-xs-12 col-md-9 col-lg-10">
+										<div class="progress ">
+											<div class="col-xs-2"
+												ng-class="{active: inMonth(project, startDate.getMonth(), startDate.getFullYear())}"> {{getMonthName(startDate.getMonth())}}</div>
+											<div class="col-xs-2"
+												ng-class="{active: inMonth(project, startDate.getMonth()+1, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+1)}}</div>
+											<div class="col-xs-2"
+												ng-class="{active: inMonth(project, startDate.getMonth()+2, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+2)}}</div>
+											<div class="col-xs-2"
+												ng-class="{active: inMonth(project, startDate.getMonth()+3, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+3)}}</div>
+											<div class="col-xs-2"
+												ng-class="{active: inMonth(project, startDate.getMonth()+4, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+4)}}</div>
+											<div class="col-xs-2"
+												ng-class="{active: inMonth(project, startDate.getMonth()+5, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+5)}}</div>
+										</div>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-xs-12 col-md-12 col-lg-6">
 			<div class="panel panel-default dashboard-widget">
 				<div class="panel-heading trim-bottom-padding">
 					<div class="row">
@@ -135,44 +175,27 @@
 				</div>
 			</div>
 		</div>
-	</div>
-</div>
-
-
-<div class="row" ng-show="hasActiveProjects">
-	<div class="col-xs-12">
-		<div class="panel panel-default dashboard-widget">
-			<div class="panel-heading">
-				<i class="fa fa-briefcase"></i> My Projects
-			</div>
-			<div class="panel-body">
-				<div class="graph">
-					<div id="projectsSummaryGraph">
-						<div class="row" ng-repeat="project in myProjects | orderBy:'customerName'">
-							<div class="title col-xs-12 col-md-3 col-lg-2">
-								<i class="{{projectStateIcon(project)}}"></i> <a href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a>
-							</div>
-							<div class="col-xs-12 col-md-9 col-lg-10">
-								<div class="progress ">
-									<div class="col-xs-2"
-										ng-class="{active: inMonth(project, startDate.getMonth(), startDate.getFullYear())}"> {{getMonthName(startDate.getMonth())}}</div>
-									<div class="col-xs-2"
-										ng-class="{active: inMonth(project, startDate.getMonth()+1, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+1)}}</div>
-									<div class="col-xs-2"
-										ng-class="{active: inMonth(project, startDate.getMonth()+2, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+2)}}</div>
-									<div class="col-xs-2"
-										ng-class="{active: inMonth(project, startDate.getMonth()+3, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+3)}}</div>
-									<div class="col-xs-2"
-										ng-class="{active: inMonth(project, startDate.getMonth()+4, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+4)}}</div>
-									<div class="col-xs-2"
-										ng-class="{active: inMonth(project, startDate.getMonth()+5, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+5)}}</div>
-								</div>
-								
-							</div>
+		<div class="col-xs-12 col-md-12 col-lg-6">
+			<div class="panel panel-default dashboard-widget">
+				<div class="panel-heading trim-bottom-padding">
+					<div class="row">
+						<div class="col-xs-4 col-sm-6 col-md-4 col-lg-8">
+							Yammer
 						</div>
 					</div>
 				</div>
+				<div class="panel-body">
+					<div id="embedded-feed" style="height:400px;width:100%"></div>
+					<script> yam.connect.embedFeed({
+						container: "#embedded-feed",
+						network: "pointsourcellc.com",
+						feedType: "group",
+						feedId: "all"});
+					</script>
+				</div>
 			</div>
+		
+			
 		</div>
 	</div>
 </div>
