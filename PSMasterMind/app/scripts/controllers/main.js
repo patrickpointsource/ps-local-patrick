@@ -463,7 +463,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     		hoursLogged = ' - ' + project.status.hoursLogged + ' hrs logged';
     	}
     
-    	var ret = "<span class=\"text-muted\">" + roles + ":" + totalHoursPerWeek + hoursLogged + "</span>";
+    	var ret = "<span class=\"text-muted\">" + roles + totalHoursPerWeek + hoursLogged + "</span>";
     	return ret;
     }
 }]);
