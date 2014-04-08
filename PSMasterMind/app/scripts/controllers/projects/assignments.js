@@ -9,6 +9,7 @@ angular.module('Mastermind.controllers.projects')
   function ($scope, $rootScope, $filter, Resources, $state, $stateParams, AssignmentService, $location, TableParams) {
    
 	  $scope.editMode = false;
+	  
 	  // Table Parameters
 	  var params = {
 		  page: 1,            // show first page
@@ -92,6 +93,36 @@ angular.module('Mastermind.controllers.projects')
 	}
 	
 	$scope.cancelAssignment = function () {
+		
+		if($rootScope.formDirty){
+	    	  
+	    	  $rootScope.modalDialog = {
+			  		title: "Save Changes",
+			  		text: "Would you like to save your changes before leaving?",
+			  		ok: "Yes",
+			  		no: "No",
+			  		cancel: "Cancel",
+			  		okHandler: function() {
+			  			$(".modalYesNoCancel").modal('hide');
+			  			$scope.saveAssignment();
+			  		},
+			  		noHandler: function() {
+			  			$(".modalYesNoCancel").modal('hide');
+			  			$scope.cancelButtonHandler();
+			  		},
+			  		cancelHandler: function() { 
+			  			$(".modalYesNoCancel").modal('hide');
+			  		}
+			  };
+			  		
+			  $(".modalYesNoCancel").modal('show');
+	      }
+	      else{
+	    	  $scope.cancelButtonHandler();
+	      }
+	};
+	
+	$scope.cancelButtonHandler = function() {
 		$scope.assignmentsErrorMessages = [];
 		
 		var role;
@@ -109,8 +140,8 @@ angular.module('Mastermind.controllers.projects')
 		//AssignmentService.calculateRolesCoverage($scope.project.roles, assignments)
     	
 		$scope.editMode = false;
-			//TODO removing dirty handler
-		 	//$rootScope.formDirty = false;
+			
+		$rootScope.formDirty = false;
 		
 		var params = {
 			tabId: $scope.projectTabId,
@@ -123,8 +154,8 @@ angular.module('Mastermind.controllers.projects')
 		 $scope.handleAssignmentsFilterChanged();
 		 
 		$state.go('projects.show', params);
-		$scope.pushState(params)
-	};
+		$scope.pushState(params);
+	}
 	
 	$scope.validateAssignments = function(assignments){
         return AssignmentService.validateAssignments($scope.project, assignments);
@@ -156,44 +187,7 @@ angular.module('Mastermind.controllers.projects')
         
     	// $scope.fillOriginalAssignees();
     	 
-      	  $scope.stopWatchingAssignmentChanges();
-      	  
-      	  //Create a new watch
-      	  $scope.sentinel = $scope.$watch('project.roles', function(newValue, oldValue){
-  	    	  if(!$rootScope.formDirty && $scope.editMode){
-  	    		  //Do not include anthing in the $meta property in the comparison
-  	    		  if(oldValue.hasOwnProperty('$meta')){
-  	    			  var oldClone = Resources.deepCopy(oldValue);
-  	    			  delete oldClone['$meta'];
-  	    			  oldValue = oldClone;
-  	    		  }
-  	    		  if(newValue.hasOwnProperty('$meta')){
-  	    			  var newClone = Resources.deepCopy(newValue);
-  	    			  delete newClone['$meta'];
-  	    			  newValue = newClone;
-  	    		  }
-  	    		  
-  	    		  //Text Angular seems to add non white space characters for some reason
-  	    		  if(newValue.description){
-  	    			  newValue.description = newValue.description.trim();
-  	    		  }
-  	    		  if(oldValue.description){
-  	    			  oldValue.description = oldValue.description.trim();
-  	    		  }
-  	    		  
-  	    		  var oldStr = JSON.stringify(oldValue);
-  	    		  var newStr = JSON.stringify(newValue);
-  	    		  
-  	    		  if(oldStr != newStr){
-  	    			  console.debug('assignment is now dirty');
-  	    			  $rootScope.formDirty = true;
-  	    			  $rootScope.dirtySaveHandler = function(){
-  	    			    	return $scope.saveAssignment(true);
-  	    			   };
-  	    		  }
-  	    	  }
-  	    	 
-  	      },true);
+      	  $scope.refreshAssignmentSentinel();
     }
     
     $scope.stopWatchingAssignmentChanges = function(){
@@ -202,6 +196,47 @@ angular.module('Mastermind.controllers.projects')
 	  		sentinel();  //kill sentinel
 	  	}
     };
+    
+    $scope.refreshAssignmentSentinel = function() {
+    	$scope.stopWatchingAssignmentChanges();
+    	
+    	//Create a new watch
+    	  $scope.sentinel = $scope.$watch('project.roles', function(newValue, oldValue){
+	    	  if(!$rootScope.formDirty && $scope.editMode){
+	    		  //Do not include anthing in the $meta property in the comparison
+	    		  if(oldValue.hasOwnProperty('$meta')){
+	    			  var oldClone = Resources.deepCopy(oldValue);
+	    			  delete oldClone['$meta'];
+	    			  oldValue = oldClone;
+	    		  }
+	    		  if(newValue.hasOwnProperty('$meta')){
+	    			  var newClone = Resources.deepCopy(newValue);
+	    			  delete newClone['$meta'];
+	    			  newValue = newClone;
+	    		  }
+	    		  
+	    		  //Text Angular seems to add non white space characters for some reason
+	    		  if(newValue.description){
+	    			  newValue.description = newValue.description.trim();
+	    		  }
+	    		  if(oldValue.description){
+	    			  oldValue.description = oldValue.description.trim();
+	    		  }
+	    		  
+	    		  var oldStr = JSON.stringify(oldValue);
+	    		  var newStr = JSON.stringify(newValue);
+	    		  
+	    		  if(oldStr != newStr){
+	    			  console.debug('assignment is now dirty');
+	    			  $rootScope.formDirty = true;
+	    			  $rootScope.dirtySaveHandler = function(){
+	    			    	return $scope.saveAssignment(true);
+	    			   };
+	    		  }
+	    	  }
+	    	 
+	      },true);
+    }
     
     $scope.getPersonName = function(personId, assignable) {
     	var result = undefined;
@@ -349,6 +384,8 @@ angular.module('Mastermind.controllers.projects')
     		}
     	}).then(function(data) {
         	$scope.refreshAssignmentsData(data);
+        	$scope.refreshAssignmentSentinel();
+        	$rootScope.formDirty = false;
         })
         
         if ($scope.projectTabId == "assignments" && !$state.is("projects.show.edit")) {
@@ -513,12 +550,10 @@ angular.module('Mastermind.controllers.projects')
 		}
     	
     	$scope.$emit('roles:assignments:change');
-    	
-    	
     }
     
     $scope.handleAssignmentsFilterChanged();
-   
+    
     // switch to edit mode if needed
 	if ($state.params.edit  && $scope.projectManagementAccess){
     	$scope.edit(true);
