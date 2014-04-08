@@ -17,6 +17,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
             $scope.selected = day;
             console.log(day);
+
             $scope.entryFormOpen = true;
 
 
@@ -61,6 +62,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                     }
                 }
 
+
                 myProjects.sort(function (item1, item2) {
                     if (item1.title < item2.title)
                         return -1;
@@ -83,7 +85,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                         return 1;
                     return 0;
                 });
-
+                //$scope.myProjects = myProjects;
+                console.log($scope.myProjects)
                 $scope.hoursProjects = myProjects.concat(otherProjects);
                 //console.log($scope.hoursProjects);
             });
@@ -92,7 +95,29 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
         //MOVE THIS TO FORM CONTROLLER WHEN READY
         $scope.addNewHours = function () {
-            $scope.requestedDayHours.push({client: '', hours: null, description: ''});
+            console.log('clicked addNewHours');
+            console.log($scope.selected);
+
+            //match date with current hours
+            var allHoursLength = $scope.allHours.length;
+            for(var i=0; i<allHoursLength; i++) {
+                if($scope.selected.date === $scope.allHours[i].date) {
+                    $scope.activeAddition = $scope.allHours[i];
+                    $scope.newHoursRecord = {
+                        customerName : "",
+                        date : $scope.selected.date,
+                        description : "",
+                        hours : "",
+                        name : "",
+                        project : {
+                            resource : ""
+                        }
+                    }
+                    //push the new hours record to the appropriate hoursEntries array
+                    //this will cause the UI to update and show a blank field
+                    $scope.allHours[i].hoursEntries.push($scope.newHoursRecord);
+                }
+            }
         };
 
         //date formatter helper
@@ -111,7 +136,9 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
 
 
-        var me = $scope.me;
+        var me = $scope.me.about;
+        $scope.findMyProjects
+        console.log($scope.me);
         $scope.getHours = function () {
             var query = {
                 "person.resource": me.about
@@ -306,14 +333,19 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.addHours = function () {
             console.log('clicked addHours')
             //Set the project context
+            //console.log(day);
+
             $scope.newHoursRecord.project = {resource: $scope.newHoursRecord.project.resource};
             //Set the person context
             $scope.newHoursRecord.person = {resource: $scope.me.about};
 
             Resources.create('hours', $scope.newHoursRecord).then(function () {
-                $scope.initHours();
-                $scope.newHoursRecord = {};
-                $scope.openHoursEntry($scope.selected);
+                console.log('saved')
+
+//                $scope.initHours();
+//                $scope.newHoursRecord = {};
+//                $scope.openHoursEntry($scope.selected);
+                $scope.activeAddition.hourEntries.push($scope.newHoursRecord);
             });
         };
 
