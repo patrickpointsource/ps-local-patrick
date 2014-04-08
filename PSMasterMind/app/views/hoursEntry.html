@@ -1,37 +1,19 @@
-<!--<div ng-controller="HoursCtrl" class="panel panel-default dashboard-widget">-->
-    <!--<div class="panel-heading">Hours</div>-->
-    <!--<div class="panel-body" id="LogHours">-->
-        <!--&lt;!&ndash;//$scope.$on('view loaded')&ndash;&gt;-->
-
-        <!--<div class="row fivecolumns">-->
-            <!--<div ng-repeat="day in hoursGrid" ng-class="{active : isSelected(day)}">-->
-                <!--<div class="col-md-2" ng-click="openHoursEntry(day);">-->
-                    <!--<div class="col-md-12 hoursHead">{{day.day}}<br/>{{day.date}}</div>-->
-                    <!--<div class="col-md-12 hoursEntered">{{day.hours}}</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-    <!--&lt;!&ndash;{{selected.date}}&ndash;&gt;-->
-    <!--<ng-include src="'views/hourEntryForm.html'"></ng-include>-->
-
-<!--</div>-->
-
 <div class="panel panel-default dashboard-widget" ng-controller="HoursCtrl">
     <div class="panel-heading">
-        <i class="fa fa-calendar-o"></i> Hours: {{allHours[0].date}}<!-- Mar 30 — Apr 5 2014 --> &mdash; {{allHours[6].date}}
+        <i class="fa fa-calendar-o"></i> Hours:
         <div class="pull-right btn-group-sm dashboard-actions">
-            <button class="btn btn-default">
-                <div>
-                    Today
-                </div>
-            </button>
-            <button class="btn btn-default">
+
+            <button class="btn btn-default" ng-click="backInTime()">
                 <div>
                     <i class="fa fa-angle-left"></i>
                 </div>
             </button>
-            <button class="btn btn-default">
+            <button class="btn btn-default" ng-click="thisWeek()">
+                <div>
+                    This Week
+                </div>
+            </button>
+            <button class="btn btn-default" ng-click="forwardInTime()">
                 <div>
                     <i class="fa fa-angle-right"></i>
                 </div>
@@ -39,11 +21,11 @@
         </div>
     </div>
     <div class="panel-body">
-        <h3></h3>
+        {{allHours[0].date}}<!-- Mar 30 — Apr 5 2014 --> &mdash; {{allHours[6].date}}
         <div class="table-responsive" style="border:none">
             <table class="table table-condensed">
                 <tbody >
-                <tr >
+                <tr>
                     <th class="text-center">MON</th>
                     <th class="text-center">TUE</th>
                     <th class="text-center">WED</th>
@@ -53,15 +35,7 @@
                     <th class="text-center">SUN</th>
                 </tr>
                 <tr>
-                    <th ng-repeat="day in allHours" ng-class="{active : isSelected(day)}" class="text-center"><button class="btn btn-default btn-lg" ng-class="{active: isSelected(day)}" data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>
-
-                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[0].totalHours}}</button></th>-->
-                    <!--<th class="text-center"><button class="btn btn-danger btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[1].totalHours}}</button></th>-->
-                    <!--<th class="text-center"><button class="btn btn-warning btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[2].totalHours}}</button></th>-->
-                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[3].totalHours}}</button></th>-->
-                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[4].totalHours}}</button></th>-->
-                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[5].totalHours}}</button></th>-->
-                    <!--<th class="text-center"><button class="btn btn-default btn-lg" data-toggle="collapse" data-target="#editHours">{{allHours[6].totalHours}}</button></th>-->
+                    <th ng-repeat="day in allHours" class="text-center"><button class="btn btn-default btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index<5 ,'btn-warning': day.totalHours < 8 && $index<5 , 'btn-default' : days.totalHours >= 8 && $index<5, 'active': isSelected(day)}" data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>
                 </tr>
                 </tbody>
             </table>
@@ -69,69 +43,3 @@
         <div id="editHours" class="well collapse out"> <ng-include src="'views/hourEntryForm.html'"></ng-include></div>
     </div>
 </div>
-
-<!--<div class="panel panel-default dashboard-widget">-->
-
-    <!--<div class="panel-heading">-->
-        <!--Hours-->
-        <!--&lt;!&ndash; <div class="pull-right  btn-group btn-group-sm dashboard-actions">-->
-            <!--<button class="btn btn-default" data-toggle="collapse"-->
-                <!--data-target="#logHours">-->
-                <!--<div>-->
-                    <!--<i class="fa fa-plus-square"></i>-->
-                <!--</div>-->
-            <!--</button>-->
-        <!--</div> &ndash;&gt;-->
-    <!--</div>-->
-    <!--&lt;!&ndash; <div id="logHours" class="panel-body collapse out"> &ndash;&gt;-->
-    <!--<div id="logHours" class="panel-body">-->
-        <!--<div class="row">-->
-            <!--<div class="col-xs-4">-->
-                <!--<label class="control-label">Person: </label> <span-->
-                    <!--style="white-space: nowrap; overflow: hidden;">{{me.name}}</span>-->
-            <!--</div>-->
-            <!--<div class="col-xs-8">-->
-                <!--<label class="required-label control-label" for="project">Project:</label>-->
-                <!--<select name="project" id="project"-->
-                        <!--class="col-xs-12 form-control"-->
-                        <!--ng-model="newHoursRecord.project.resource" ng-required="true"-->
-                        <!--ng-options="p.resource as p.title for p in hoursProjects">-->
-                <!--</select>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<br/>-->
-
-        <!--<div class="row">-->
-            <!--<div class="col-xs-6">-->
-                <!--<label class="required-label  control-label" for="hours">Hours:</label>-->
-                <!--<input id="hours" name="hours" class="form-control"-->
-                       <!--type="number" ng-model="newHoursRecord.hours"-->
-                       <!--ng-required="true"/>-->
-            <!--</div>-->
-            <!--<div class="col-xs-6">-->
-                <!--<label class="required-label control-label" for="date">Date:</label>-->
-                <!--<input id="date" name="date" class="form-control datepicker"-->
-                       <!--type="text" ng-model="newHoursRecord.date" todayBtn="true"-->
-                       <!--data-provide="datepicker" data-date-format="yyyy-mm-dd"-->
-                       <!--ng-required="true"/>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<br/>-->
-
-        <!--<div class="row">-->
-            <!--<div class="col-xs-12">-->
-                <!--<label class="required-label  control-label" for="hours">Description:</label>-->
-                <!--<textarea id="hours" name="hours" rows="5" class="form-control"-->
-                          <!--ng-model="newHoursRecord.description" ng-required="true"></textarea>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<br/>-->
-
-        <!--<div class="row">-->
-            <!--<div class="col-xs-12">-->
-                <!--<input type="submit" class="btn" value="Add"-->
-                       <!--ng-click="addHours()">-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->

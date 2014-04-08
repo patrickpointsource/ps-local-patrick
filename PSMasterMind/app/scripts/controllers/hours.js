@@ -12,13 +12,13 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
          */
         $scope.newHoursRecord;
         $scope.entryFormOpen = false; //default open status of hours entry form
-        $scope.requestedDayHours = {"project": {"resource": "projects/5332d4ef036462ce38b2072d"}, "person": {"resource": "people/5331988a0364acc9309b1e8a"}, "etag": "0", "_id": {"$oid": "533473710364fdb301cbfa51"}, "created": "Thu Mar 27 14:52:33 EDT 2014", "hours": 10, "description": "hours", "resource": "hours/533473710364fdb301cbfa51", "date": "2014-03-25", "$$hashKey": "00V", "name": "Dakota", "oid": "5331b52d0364acc9309b1ece", "customerName": "Dakota"};
+        //$scope.requestedDayHours = {"project": {"resource": "projects/5332d4ef036462ce38b2072d"}, "person": {"resource": "people/5331988a0364acc9309b1e8a"}, "etag": "0", "_id": {"$oid": "533473710364fdb301cbfa51"}, "created": "Thu Mar 27 14:52:33 EDT 2014", "hours": 10, "description": "hours", "resource": "hours/533473710364fdb301cbfa51", "date": "2014-03-25", "$$hashKey": "00V", "name": "Dakota", "oid": "5331b52d0364acc9309b1ece", "customerName": "Dakota"};
         $scope.openHoursEntry = function (day) {
 
             $scope.selected = day;
             console.log(day);
             $scope.entryFormOpen = true;
-            $scope.getDayHours(day.date);
+
 
             //set value of hidden date field in form to selected date value
             $scope.newHoursRecord.date = day.date;
@@ -29,6 +29,11 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.isSelected = function (day) {
             return $scope.selected === day;
         }
+
+
+
+
+
 
         ProjectsService.getOngoingProjects(function (result) {
             $scope.ongoingProjects = result.data;
@@ -90,7 +95,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             $scope.requestedDayHours.push({client: '', hours: null, description: ''});
         };
 
-        //date formatter
+        //date formatter helper
         $scope.formatTheDate = function (d) {
             var dd = d.getDate();
             var mm = d.getMonth() + 1;
@@ -104,11 +109,47 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             $scope.theDayFormatted = yyyy + '-' + mm + '-' + dd;
         }
 
+
+
+        var me = $scope.me;
+        $scope.getHours = function () {
+            var query = {
+                "person.resource": me.about
+            };
+            var fields = {
+                date: 1, hours: 1
+            }
+            Resources.query('hours', query, fields, function (result) {
+                console.log(result.members);
+            })
+        }
+        //$scope.getHours();
+
+        //control time
+        $scope.dateIndex = 0;
+        $scope.backInTime = function() {
+            $scope.dateIndex = $scope.dateIndex + 7;
+            $scope.getDisplayedHours();
+
+        }
+        $scope.forwardInTime = function() {
+            $scope.dateIndex = $scope.dateIndex -7;
+            $scope.getDisplayedHours();
+
+        }
+        $scope.thisWeek = function() {
+            $scope.dateIndex = 0;
+            $scope.getDisplayedHours();
+        }
+
+
+
         //TODO task: get this week of dates
-        $scope.thisWeek = function (callback) {
+        $scope.showWeekDates = function (callback) {
             //get the number of days since monday
             var day = $scope.startDate.getDay();
-            var monday = day - 1;
+            console.log(day);
+            var monday = ((day - 1)+$scope.dateIndex);
 
             //array to hold the dates
             $scope.thisWeekDates = [];
@@ -125,29 +166,15 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             //console.log($scope.thisWeekDates);
         }
 
-        var me = $scope.me;
-        $scope.getHours = function () {
-            var query = {
-                "person.resource": me.about
-            };
-            var fields = {
-                date: 1, hours: 1
-            }
-            Resources.query('hours', query, fields, function (result) {
-                console.log(result.members);
-            })
-        }
-        //$scope.getHours();
-
         //TODO Build hours array for entire shown week
 
-        $scope.allHours = [];
+
         $scope.getDisplayedHours = function (callback) {
+            $scope.allHours = [];
             var user = $scope.me.about;
             var thisWeekDates = $scope.thisWeekDates;
 
-
-            $scope.thisWeek(function (datesArray) {
+            $scope.showWeekDates(function (datesArray) {
                 console.log(datesArray);
 
                 var query = {
@@ -195,6 +222,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
                     //sum the total hours for each date and grab project IDs for use in retrieving project names
                     $scope.requestedProjectsIds = [];
+                    $scope.requestedProjects = [];
                     for(var i=0; i<$scope.allHours.length; i++ ) {
                         var hoursEntryLength = $scope.allHours[i].hoursEntries.length;
                         for (var j=0; j<hoursEntryLength; j++) {
@@ -246,181 +274,15 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                     console.warn($scope.allHours);
                 })
             })
-
-
-            //search hours collection for hours matching these dates and user ID
-
-
-            //console.log()
-
         }
 
         $scope.getDisplayedHours();
 
 
-        //TODO tie this into the clicked upon day
-        $scope.getDayHours = function (requestedDay) {
-            var query = {
-                "person.resource": $scope.me.about,
-                'date': requestedDay
-            };
-            var fields = {
-                // hours : 1, date : 1, "project.resource" : 1, "_id" : 1
-            }
-            $scope.requestedProjects = [];
-            Resources.query('hours', query, fields, function (result) {
-                //console.log(result.members);
-                $scope.requestedDayHours = result.members;
-                //grab each result.members.project.resource put in array
-                var memberLength = result.members.length;
-                for (i = 0; i < memberLength; i++) {
-                    var resourceID = result.members[i].project.resource;
-                    var resourceIDStripped = resourceID.substring(resourceID.lastIndexOf('/') + 1)
-                    var oid = {$oid: resourceIDStripped};
-                    $scope.requestedProjects.push(oid);
-                }
-
-                //build query to get the project names
-                var query = {
-                    "_id": {
-                        $in: $scope.requestedProjects
-                    }
-                };
-                var fields = {
-                    name: 1, customerName: 1, resource: 1
-                }
-                Resources.query('projects', query, fields, function (result) {
-                    //console.warn(result.data);
-                    var length = result.data.length;
-                    for (i = 0; i < length; i++) {
-                        $scope.requestedDayHours[i]["name"] = result.data[i].name;
-                        $scope.requestedDayHours[i]["customerName"] = result.data[i].customerName;
-                    }
-                    //console.log(JSON.stringify($scope.requestedDayHours))
-                });
-            });
-
-        };
-        $scope.getDayHours();
 
 
-        //console.log('monday fell on: ' + $scope.thisWeekDates[0]);
 
 
-        //get all the hours for a person
-        //console.log($scope.me);
-
-
-        $scope.dummyDaysData = [
-            {day: "Monday", date: '3/24', hours: 8, entryId: '1234'},
-            {day: "Tuesday", date: '3/25', hours: 8, entryId: '1235'},
-            {day: "Wednesday", date: '3/26', hours: 8, entryId: '1236'},
-            {day: "Thursday", date: '3/27', hours: 8, entryId: '1237'},
-            {day: "Friday", date: '3/28', hours: 8, entryId: '1238'}
-        ];
-
-
-        //using the week's dates retrieve the user's whole week's worth of hours.
-        $scope.thisWeek(function (thisWeekDates) {
-            // console.log('this week days: ' + thisWeekDates);
-            var me = $scope.me
-            //search hours collection for hours matching these dates and user ID
-            var query = {
-                "person.resource": me.about,
-                $and: [
-                    {
-                        "date": {
-                            $in: thisWeekDates
-                        }
-                    }
-                ]
-            }
-            var fields = {
-
-            }
-            Resources.query('hours', query, fields, function (result) {
-                // console.log(result.members);
-
-                //query projects collection to get common names of projects
-                var weekDatesLength = thisWeekDates.length;
-                var memberLength = result.members.length;
-                $scope.hoursGrid = [];
-                var initialHours = 0;
-                var foundDates = [];
-                var daysOfTheWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-                for (i = 0; i < weekDatesLength; i++) {
-                    var obj = {}
-                    obj["date"] = thisWeekDates[i];
-                    obj["hours"] = 0;
-                    obj["day"] = daysOfTheWeek[i]
-                    $scope.hoursGrid.push(obj);
-
-                }
-                for (var i = 0; i < memberLength; i++) {
-                    if ($.inArray(result.members[i].date, foundDates) === -1) {
-                        //add it to found dates
-                        foundDates.push(result.members[i].date)
-                    }
-                }
-                //add up hours
-                for (i = 0; i < $scope.hoursGrid.length; i++) {
-                    for (j = 0; j < memberLength; j++) {
-                        if (result.members[j].date === $scope.hoursGrid[i].date) {
-                            $scope.hoursGrid[i].hours = result.members[j].hours + $scope.hoursGrid[i].hours;
-                        }
-                    }
-                }
-
-
-                for (var i = 0; i < foundDates.length; i++) {
-                    //console.log('searching records for date: ' + foundDates[i]);
-                    var daysHours = 0;
-                    for (var j = 0; j < memberLength; j++) {
-                        if (result.members[j].date === foundDates[i]) {
-                            daysHours = daysHours + result.members[j].hours;
-                            //console.log('total hours for day: ' + foundDates[i] + ' ' + daysHours);
-                            var obj = {}
-                            obj["date"] = foundDates[i];
-                            obj["hours"] = daysHours;
-                            //$scope.hoursGrid.push(obj);
-                        }
-
-                    }
-                }
-                // console.log(foundDates);
-                // console.log($scope.hoursGrid)
-
-                $scope.requestedProjects = [];
-                for (i = 0; i < memberLength; i++) {
-                    var resourceID = result.members[i].project.resource;
-                    var resourceIDStripped = resourceID.substring(resourceID.lastIndexOf('/') + 1)
-                    var oid = {$oid: resourceIDStripped};
-                    $scope.requestedProjects.push(oid);
-                }
-                //console.log($scope.requestedProjects);
-
-                //build query to get the project names
-                var query = {
-                    "_id": {
-                        $in: $scope.requestedProjects
-                    }
-                };
-                var fields = {
-                    name: 1, customerName: 1, resource: 1
-                }
-                Resources.query('projects', query, fields, function (result) {
-                    //console.warn(result.data);
-                    var length = result.data.length;
-                    // console.log(result.data)
-                    for (i = 0; i < length; i++) {
-                        $scope.requestedDayHours[i]["name"] = result.data[i].name;
-                        $scope.requestedDayHours[i]["oid"] = result.data[i]._id.$oid;
-                    }
-                    //console.log($scope.requestedDayHours)
-                });
-            });
-
-        });
 
 
         $scope.newHoursRecord = {};
