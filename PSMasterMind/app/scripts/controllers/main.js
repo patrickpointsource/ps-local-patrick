@@ -457,17 +457,25 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     	
     	var projectAssignments = project.status.assignments;
     	var totalHoursPerWeek = 0;
+    	var now = moment();
     	for(var i = 0; i < projectAssignments.length;i++){
     		var projectAssignment = projectAssignments[i];
     		var role = projectAssignment.role;
     		if(role.type){
     			role = $scope.roleGroups[role.type.resource];
-    			if(role && role.abbreviation){
+    			if(role && role.abbreviation && $.inArray(role.abbreviation, roles) == -1){
     				roles.push(role.abbreviation);
     			}
     		}
+    		
+    
     		if(projectAssignment && projectAssignment.hoursPerWeek){
-    			totalHoursPerWeek += projectAssignment.hoursPerWeek;
+    			var startDate = moment(projectAssignment.startDate);
+        		var endDate = endDate?moment(projectAssignment.endDate):now.add('day', 1);
+    			
+        		if(now >= startDate && now <= endDate){
+        			totalHoursPerWeek += projectAssignment.hoursPerWeek;
+        		}
     		}
     	}
     	
