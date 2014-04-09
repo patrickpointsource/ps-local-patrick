@@ -2576,6 +2576,87 @@ public class Data implements CONSTS {
 	}
 	
 	/**
+	 * Sprint 9 to sprint 10 migrate Removes roles about
+	 */
+	public static void migrateFullyUtilizedAssignees(RequestContext context) throws IOException{
+DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		
+		JSONObject jsonAssignment = null;
+		DBCursor assignmentsCursor = assignmentsCol.find();
+
+		boolean assignmentsChanged = false;
+		
+		while (assignmentsCursor.hasNext()) {
+			DBObject object = assignmentsCursor.next();
+
+			if (object.containsField(PROP__ID)) {
+				String oId =  "";
+				
+				String json = JSON.serialize(object);
+				jsonAssignment = new JSONObject(json);
+				
+				if (jsonAssignment.has(PROP_PROJECT)) {
+					JSONObject proj = jsonAssignment.getJSONObject(PROP_PROJECT);
+					oId = proj.getString(PROP_RESOURCE).replaceAll(RESOURCE_PROJECTS + "/", "");
+				}
+				
+				assignmentsChanged = false;
+						
+				JSONObject assignment = null;
+				JSONArray members = (JSONArray) jsonAssignment.get("members");
+				JSONObject assignmentsMap = new JSONObject();
+				JSONObject role = null;
+				JSONArray tmpAssignments;
+				
+				for (int k = 0; k < members.length(); k ++) {
+					role = members.getJSONObject(k).getJSONObject("role");
+					
+					if (role != null && role.has(PROP_RESOURCE)) {
+						if (!assignmentsMap.has(role.getString(PROP_RESOURCE))){
+								tmpAssignments = new JSONArray();
+								assignmentsMap.put( role.getString(PROP_RESOURCE), tmpAssignments);
+						} else
+							tmpAssignments = assignmentsMap.getJSONArray(role.getString(PROP_RESOURCE));
+						
+						tmpAssignments.put(members.getJSONObject(k));
+						
+					}
+				}
+				Iterator<?> keys = assignmentsMap.keys();
+				String roleId;
+				
+		        while( keys.hasNext() ){
+		        	roleId = (String)keys.next();
+		        	
+		            if( assignmentsMap.get(roleId) instanceof JSONArray ){
+		            	tmpAssignments = assignmentsMap.getJSONArray(roleId);
+		            	
+		            	if (tmpAssignments.length() == 1) {
+							assignment = tmpAssignments.getJSONObject(0);
+							
+							if (assignment.has("hoursPerWeek") && assignment.getInt("hoursPerWeek") == 40) {
+								assignment.put("hoursPerWeek", 45);
+								assignmentsChanged = true;
+							}
+						}
+		            }
+		        }
+				
+				
+				
+				if (assignmentsChanged) {
+					deleteProjectAssignments(context, oId.toString());
+					createProjectAssignments(context, oId.toString(), members);
+				}
+
+			} else {
+				System.out
+						.println("Project not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+	}
+	/**
 	 * Sprint 8 to sprint 9 migrate Removes roles about
 	 */
 	public static void removeRolesAbout(RequestContext context) throws IOException{
