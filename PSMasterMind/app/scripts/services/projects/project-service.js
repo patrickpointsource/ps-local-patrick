@@ -924,13 +924,18 @@ angular.module('Mastermind.services.projects')
     	
     	//find people who aren't billable
     	//and then check
-    	Resources.query('roles', {isNonBillable:true},{title:1},function(result) {
+    	//Resources.query('roles', {isNonBillable:true},{title:1},function(result) {
+    	Resources.query('roles', {},{title:1, utilizationRate:1, isNonBillable: 1},function(result) {
     		
     		var nonBillableRolesArray = [];
     		var memberLength = result.members.length;
+    		
     		for(var i=0; i< memberLength; i++) {
-    			nonBillableRolesArray.push(result.members[i].resource);
+    			if (result.members[i].isNonBillable)
+    				nonBillableRolesArray.push(result.members[i].resource);
     		}
+    		
+    		var roleList = result.members;
     		
     		var query = {
     			'primaryRole.resource': {
@@ -943,7 +948,25 @@ angular.module('Mastermind.services.projects')
     		var fields = {name : 1, primaryRole: 1}
         	
         	Resources.query('people',query,fields,function(result){
-        		var total = result.count;
+        		var total = 0;
+        		var roleType = null;
+				var utilizationRate = 100;
+        		
+        		for (var k = 0; k < result.members.length; k ++) {
+        			utilizationRate = 100;
+        			roleType = _.find(roleList, function(r) {return result.members[k].primaryRole.resource.indexOf(r.resource) > -1})
+        			
+        			if (roleType && roleType.utilizationRate)
+    					total += Math.round(roleType.utilizationRate * 10 / 100) / 10;
+        			else
+        				total += 1;
+        		}
+        		
+        		// align floating point arithmetic
+        		total = parseFloat(total.toFixed(1));
+        		
+        		//total = result.members.length;
+        		
         		var comitments = [0,0,0,0,0,0];
         		var dateChecks = getSixMonthsOfDates();
         		for(var i = 0; i < projects.length; i++){
@@ -953,6 +976,7 @@ angular.module('Mastermind.services.projects')
     	    			for(var j = 0; j < roles.length; j++){
     	    				var role = roles[j];
     	    				var hoursPerMonth = 0;
+    	    				
     	    				if(role.rate.fullyUtilized){
     	    					hoursPerMonth = 180;
     	    				}
@@ -962,6 +986,8 @@ angular.module('Mastermind.services.projects')
     	    				else if(role.rate.hoursPerWeek){
     	    					hoursPerMonth = role.rate.hoursPerWeek*4;
     	    				}
+    	    				
+    	    				//hoursPerMonth  = Math.round(hoursPerMonth * utilizationRate / 100);
     	    				
     	    				//Check if roles if now active
     	    				if(role.startDate <= dateChecks[0] && (!role.endDate || role.endDate >= dateChecks[0])){
