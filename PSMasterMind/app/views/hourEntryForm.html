@@ -4,30 +4,30 @@
         <!--<div class="col-md-1">Hours:</div>-->
         <!--<div class="col-md-offset-1 col-md-5">Description:</div>-->
     </div>
-    <form ng-repeat="hoursEntry in selected.hoursEntries">
+    <form ng-repeat="hoursEntry in selected.hoursEntries track by $index">
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
                 <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-show="hoursEntry.name">
-                    <div>{{hoursEntry.name}}: {{hoursEntry.customerName}}</div>
+                    <div>{{hoursEntry.name}}: {{hoursEntry.customerName}} <span ng-show="hoursEntry.hoursPerWeek"> | h/w:{{hoursEntry.hoursPerWeek}}</span></div>
                 </div>
                 <select name="project" id="project"
-                        class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-show="!hoursEntry.name"
+                        class="col-xs-6 col-sm-12 col-md-6 col-lg-12 form-control" ng-show="!hoursEntry.name"
                         ng-model="newHoursRecord.project.resource" ng-required="true"
                         ng-options="p.resource as p.title for p in hoursProjects">
                 </select>
 
                 <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12">
-                    <input type="number" value="{{hoursEntry.hours}}"
+                    <input type="number" value="{{hoursEntry.hours}}" class="form-control"
                            ng-show="hoursEntry.name" />
-                    <input id="hours" name="hours" ng-show="!hoursEntry.hours"
+                    <input id="hours" name="hours" ng-show="!hoursEntry.name" class="form-control"
                            type="number" ng-model="newHoursRecord.hours"
                            ng-required="true" placeholder="Hours"/>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-6 col-md-12 col-lg-6"><br/>
-                <textarea class="col-xs-12 col-sm-12 col-md-12 col-lg-12" type="text" ng-show="hoursEntry.description"
+                <textarea class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-control" type="text" ng-show="hoursEntry.description"
                           >{{hoursEntry.description}}</textarea>
-                <textarea class="col-xs-12 col-sm-12 col-md-12 col-lg-12" type="text" ng-show="!hoursEntry.description"
+                <textarea class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-control" type="text" ng-show="!hoursEntry.description"
                           ng-model="newHoursRecord.description"
                           ng-required="true" placeholder="Description"/></textarea>
             </div>

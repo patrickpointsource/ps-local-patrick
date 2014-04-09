@@ -12,18 +12,67 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
          */
         $scope.newHoursRecord;
         $scope.entryFormOpen = false; //default open status of hours entry form
-        //$scope.requestedDayHours = {"project": {"resource": "projects/5332d4ef036462ce38b2072d"}, "person": {"resource": "people/5331988a0364acc9309b1e8a"}, "etag": "0", "_id": {"$oid": "533473710364fdb301cbfa51"}, "created": "Thu Mar 27 14:52:33 EDT 2014", "hours": 10, "description": "hours", "resource": "hours/533473710364fdb301cbfa51", "date": "2014-03-25", "$$hashKey": "00V", "name": "Dakota", "oid": "5331b52d0364acc9309b1ece", "customerName": "Dakota"};
+
+
         $scope.openHoursEntry = function (day) {
+            $scope.entryFormOpen = true;
+
+            //create array to hold all assignments and their properties for use if user hasn't entered anything for assigned projects
+            $scope.zeroHoursAssigned = [];
+            $scope.emptyHours = [];
 
             $scope.selected = day;
             console.log(day);
+            //$scope.selected.hoursEntries.length=0
 
-            $scope.entryFormOpen = true;
+            //merge the assigned hours and project names together to place an empty hours entry later
+            console.log($scope.emptyHours);
+            for (var i = 0; i < $scope.requestedProjectNames.length; i++) {
+                for (var j = 0; j < $scope.userAssignments.length; j++) {
+                    if ($scope.requestedProjectNames[i].resource === $scope.userAssignments[j].project.resource) {
+                        $scope.mergeRecursive($scope.requestedProjectNames[i], $scope.userAssignments[j], function (result) {
+                            result.hours = 0;
+                            $scope.zeroHoursAssigned.push(result);
+                        })
+
+                    }
+                }
+            }
+
+
+
+
+            //go through hours entries in the selected day and create an array of existing projects that are needed.
+            for (var i = 0; i < $scope.selected.hoursEntries.length; i++) {
+                for (var j = 0; j < $scope.zeroHoursAssigned.length; j++) {
+                    if ($scope.selected.hoursEntries[i].project.resource === $scope.zeroHoursAssigned[j].resource) {
+                        //$scope.selected.hoursEntries.unshift($scope.zeroHoursAssigned[j]);
+                        console.log($scope.selected.hoursEntries[i].project.resource)
+                        console.log($scope.zeroHoursAssigned[j].resource)
+                        if (jQuery.inArray(j, $scope.emptyHours) === -1) {
+                            $scope.emptyHours.push(j);
+                        }
+                    }
+                }
+            }
+
+            //remove the existing entries from the assigned list.
+            for (var i = 0; i < $scope.emptyHours.length; i++) {
+                $scope.zeroHoursAssigned.splice($scope.emptyHours[i], 1);
+            }
+            //add an empty record for display for each of the missing assigned projects in the hours entries of the day
+            for (i = 0; i < $scope.zeroHoursAssigned.length; i++) {
+                $scope.selected.hoursEntries.unshift($scope.zeroHoursAssigned[i]);
+            }
+
+
+
 
 
             //set value of hidden date field in form to selected date value
             $scope.newHoursRecord.date = day.date;
-            console.log($scope.newHoursRecord.date);
+           // console.log($scope.newHoursRecord.date);
+
         };
 
         //keep track of which day is selected
@@ -31,9 +80,28 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             return $scope.selected === day;
         }
 
+        $scope.mergeRecursive = function (obj1, obj2, callback) {
 
+            for (var p in obj2) {
+                try {
+                    // Property in destination object set; update its value.
+                    if (obj2[p].constructor == Object) {
+                        obj1[p] = $scope.mergeRecursive(obj1[p], obj2[p]);
 
+                    } else {
+                        obj1[p] = obj2[p];
 
+                    }
+
+                } catch (e) {
+                    // Property in destination object not set; create it and set its value.
+                    obj1[p] = obj2[p];
+
+                }
+            }
+            //return obj1;
+            callback(obj1);
+        }
 
 
         ProjectsService.getOngoingProjects(function (result) {
@@ -86,7 +154,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                     return 0;
                 });
                 //$scope.myProjects = myProjects;
-                console.log($scope.myProjects)
+                //console.log($scope.myProjects)
                 $scope.hoursProjects = myProjects.concat(otherProjects);
                 //console.log($scope.hoursProjects);
             });
@@ -97,20 +165,21 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.addNewHours = function () {
             console.log('clicked addNewHours');
             console.log($scope.selected);
+            console.log($)
 
             //match date with current hours
             var allHoursLength = $scope.allHours.length;
-            for(var i=0; i<allHoursLength; i++) {
-                if($scope.selected.date === $scope.allHours[i].date) {
+            for (var i = 0; i < allHoursLength; i++) {
+                if ($scope.selected.date === $scope.allHours[i].date) {
                     $scope.activeAddition = $scope.allHours[i];
                     $scope.newHoursRecord = {
-                        customerName : "",
-                        date : $scope.selected.date,
-                        description : "",
-                        hours : "",
-                        name : "",
-                        project : {
-                            resource : ""
+                        customerName: "",
+                        date: $scope.selected.date,
+                        description: "",
+                        hours: "",
+                        name: "",
+                        project: {
+                            resource: ""
                         }
                     }
                     //push the new hours record to the appropriate hoursEntries array
@@ -135,10 +204,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         }
 
 
-
         var me = $scope.me.about;
-        $scope.findMyProjects
-        console.log($scope.me);
         $scope.getHours = function () {
             var query = {
                 "person.resource": me.about
@@ -154,29 +220,29 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
         //control time
         $scope.dateIndex = 0;
-        $scope.backInTime = function() {
+        $scope.backInTime = function () {
             $scope.dateIndex = $scope.dateIndex + 7;
             $scope.getDisplayedHours();
 
         }
-        $scope.forwardInTime = function() {
-            $scope.dateIndex = $scope.dateIndex -7;
+        $scope.forwardInTime = function () {
+            $scope.dateIndex = $scope.dateIndex - 7;
             $scope.getDisplayedHours();
 
         }
-        $scope.thisWeek = function() {
+        $scope.thisWeek = function () {
             $scope.dateIndex = 0;
             $scope.getDisplayedHours();
         }
-
 
 
         //TODO task: get this week of dates
         $scope.showWeekDates = function (callback) {
             //get the number of days since monday
             var day = $scope.startDate.getDay();
-            console.log(day);
-            var monday = ((day - 1)+$scope.dateIndex);
+
+            var monday = ((day - 1) + $scope.dateIndex);
+
 
             //array to hold the dates
             $scope.thisWeekDates = [];
@@ -250,9 +316,9 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                     //sum the total hours for each date and grab project IDs for use in retrieving project names
                     $scope.requestedProjectsIds = [];
                     $scope.requestedProjects = [];
-                    for(var i=0; i<$scope.allHours.length; i++ ) {
+                    for (var i = 0; i < $scope.allHours.length; i++) {
                         var hoursEntryLength = $scope.allHours[i].hoursEntries.length;
-                        for (var j=0; j<hoursEntryLength; j++) {
+                        for (var j = 0; j < hoursEntryLength; j++) {
                             //build array of project IDs for project name retrieval next
                             //console.log($scope.allHours[i].hoursEntries[j].project.resource);
                             var resourceID = $scope.allHours[i].hoursEntries[j].project.resource;
@@ -263,7 +329,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                             $scope.requestedProjects.push(oid);
 
                             //sum the hours
-                            if($scope.allHours[i].date === $scope.allHours[i].hoursEntries[j].date) {
+                            if ($scope.allHours[i].date === $scope.allHours[i].hoursEntries[j].date) {
                                 $scope.allHours[i].totalHours = $scope.allHours[i].totalHours + $scope.allHours[i].hoursEntries[j].hours;
                             }
                         }
@@ -280,13 +346,14 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                         name: 1, customerName: 1, resource: 1
                     }
                     Resources.query('projects', query, fields, function (result) {
-                       console.log(result.data);
+                        $scope.requestedProjectNames = result.data;
+                        console.log($scope.requestedProjectNames);
                         var projectsLength = result.data.length;
-                        for(var i=0; i<$scope.allHours.length; i++ ) {
+                        for (var i = 0; i < $scope.allHours.length; i++) {
                             var hoursEntryLength = $scope.allHours[i].hoursEntries.length;
                             //go through each hoursEntry
-                            for (var j=0; j<hoursEntryLength; j++) {
-                                for(var k=0; k< projectsLength; k++) {
+                            for (var j = 0; j < hoursEntryLength; j++) {
+                                for (var k = 0; k < projectsLength; k++) {
                                     if ($scope.allHours[i].hoursEntries[j].project.resource === result.data[k].resource) {
                                         $scope.allHours[i].hoursEntries[j].name = result.data[k].name;
                                         $scope.allHours[i].hoursEntries[j].customerName = result.data[k].customerName;
@@ -296,8 +363,34 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                         }
 
                     });
+                    $scope.getUserAssignments($scope.me.about, function (result) {
+                        //console.log(result)
+                        var resultLength = result.length;
+                        for (var i = 0; i < resultLength; i++) {
 
-                    console.log(result.members);
+                            var allHoursLength = $scope.allHours.length;
+                            for (var j = 0; j < allHoursLength; j++) {
+
+                                var entriesLength = $scope.allHours[j].hoursEntries.length;
+                                for (var k = 0; k < entriesLength; k++) {
+                                    //console.log($scope.allHours[j].hoursEntries[k].project.resource);
+                                    if ($scope.allHours[j].hoursEntries[k].project.resource === result[i].project.resource) {
+                                        $scope.allHours[j].hoursEntries[k].endDate = result[i].endDate;
+                                        $scope.allHours[j].hoursEntries[k].about = result[i].about;
+                                        $scope.allHours[j].hoursEntries[k].hoursPerWeek = result[i].hoursPerWeek;
+                                        $scope.allHours[j].hoursEntries[k].role = result[i].role;
+                                        $scope.allHours[j].hoursEntries[k].startDate = result[i].startDate;
+                                        $scope.allHours[j].hoursEntries[k].currentlyAssigned = true;
+                                    } else {
+
+                                    }
+                                }
+                            }
+                        }
+                    })
+
+
+                    //console.log(result.members);
                     console.warn($scope.allHours);
                 })
             })
@@ -306,10 +399,58 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.getDisplayedHours();
 
 
+        //TODO set up assignments query
+        //retrieve user assignments (projects) within the date range
+        //compare those projects to hours logged for matches
 
+        $scope.getUserAssignments = function (me, callback) {
+            var monday = $scope.thisWeekDates[0];
+            var sunday = $scope.thisWeekDates[6];
+            //console.log('looking for records for: ' + me);
+            var query =
+            {
+                members: {
+                    $elemMatch: {
+                        "person.resource": me
+                    },
+                    $elemMatch: {
+                        startDate: {
+                            $lte: monday
+                        },
+                        $or: [
+                            {
+                                endDate: {$exists: false}
+                            },
+                            {
+                                endDate: {$gt: sunday}
+                            }
+                        ]
+                    }
+                }
+            };
 
+            var fields = {
 
+            }
+            $scope.userAssignments = []
+            Resources.query('assignments', query, fields, function (result) {
+                //console.log(result.data);
+                var dataLength = result.data.length;
+                for (var i = 0; i < dataLength; i++) {
+                    var memberLength = result.data[i].members.length;
+                    for (var j = 0; j < memberLength; j++) {
+                        //console.log(result.data[i].members[j].person.resource)
+                        if (result.data[i].members[j].person.resource === me) {
+                            var obj = result.data[i].members[j];
+                            obj.project = result.data[i].project;
+                            $scope.userAssignments.push(obj);
+                        }
+                    }
+                }
+                callback($scope.userAssignments);
+            });
 
+        }
 
 
         $scope.newHoursRecord = {};
