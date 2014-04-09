@@ -199,32 +199,45 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     };
 
     /**
+     * Randomize the people result
+     */
+    var randomizePeople = function(people){
+    	if(people.length > 12){
+		  	//Seed the randomness per day
+		  	var today = new Date();
+		  	var seed = Math.ceil((today.getDay()+1)*(today.getMonth()+1)*today.getFullYear());
+		  	var randomResult = [];
+		  	
+			//Shuffle people
+            for(var i = 0; i < 12; i++){
+              var j = ((seed+i)%(people.length));
+              randomResult[i] = people[j];
+            }
+            $scope.availablePeople =  randomResult;
+	  }
+
+	  else{
+		  $scope.availablePeople = people;
+	  }
+    }
+    
+    /**
      * Find available people given the active projects
      */
-    var findNineAvailablePeople = function () {
+    var findNineAvailablePeople = function() {
+    	if($scope.peopleFilter){
 		  var peopleFilter = $scope.peopleFilter;
 		  var fields = {resource:1,name:1,primaryRole:1,thumbnail:1};
 		  People.getPeoplePerRole(peopleFilter, fields).then(function(peopleResult){
 			  var people = peopleResult.members;
-			  
-			  if(people.length > 12){
-				  	//Seed the randomness per day
-				  	var today = new Date();
-				  	var seed = Math.ceil((today.getDay()+1)*(today.getMonth()+1)*today.getFullYear());
-				  	var randomResult = [];
-				  	
-					//Shuffle people
-		            for(var i = 0; i < 12; i++){
-		              var j = ((seed+i)%(people.length));
-		              randomResult[i] = people[j];
-		            }
-		            $scope.availablePeople =  randomResult;
-			  }
-
-			  else{
-				  $scope.availablePeople = people;
-			  }
+			  randomizePeople(people);
 		  });
+    	}
+    	else{
+    		People.getMyPeople($scope.me).then(function(peopleResult){
+  			  randomizePeople(peopleResult);
+  		  });
+    	}
     };
     
     /**

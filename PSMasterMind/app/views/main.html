@@ -170,7 +170,7 @@
 						<div class="col-xs-8 col-sm-6 col-md-8 col-lg-4 dashboard-actions">
 							<select class="pull-right btn-group-sm  form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
 								<option value="" selected>Filter By Role</option>
-						       <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
+						       	<option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
 						    </select>
 					    </div>
 					</div>

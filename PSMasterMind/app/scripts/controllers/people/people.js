@@ -58,8 +58,7 @@ angular.module('Mastermind.controllers.people')
             }
           });
         }
-        //Otherwise just show all
-        else{
+        else if($scope.peopleFilter == 'all'){
         	$scope.peopleFilter = 'all';
         	var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
         	//var fieldsEncoded = encodeURIComponent(JSON.stringify(fields));
@@ -74,6 +73,22 @@ angular.module('Mastermind.controllers.people')
         			 $scope.tableParams.total($scope.people.length);
         			 $scope.tableParams.reload();
         		 }
+        	});
+        }
+        //Otherwise just show my
+        else{
+        	$scope.peopleFilter = 'my';
+        	
+        	People.getMyPeople($scope.me).then(function(people){
+        		$scope.people = people;
+	       		 //Reload the table
+	       		 if (!$scope.tableParams){
+	       			 $scope.tableParams = getTableData();
+	       		 }
+	       		 else{
+	       			 $scope.tableParams.total($scope.people.length);
+	       			 $scope.tableParams.reload();
+	       		 }
         	});
         }
         
@@ -249,7 +264,7 @@ angular.module('Mastermind.controllers.people')
 
       var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-      $scope.peopleFilter = $state.params.filter?$state.params.filter:'all';
+      $scope.peopleFilter = $state.params.filter?$state.params.filter:'my';
       $scope.startDate = new Date();
       //$scope.startDate.setMonth($scope.startDate.getMonth() + 1);
 
