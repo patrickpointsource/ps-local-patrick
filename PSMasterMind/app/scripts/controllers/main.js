@@ -70,6 +70,12 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         		myProj.title = myProj.customerName+': '+myProj.name;
         		myProjects.push(myProj);
         		
+        		//Check if you have an assignment to flag that you have an assignment on the project
+        		//and not that you are an exec or sales sponsor
+        		if(myProj && myProj.status && myProj.status.hasAssignment){
+        			$scope.hasAssignment = true;
+        		}
+        		
         		for (var n=0;n< $scope.ongoingProjects.length; n++) {
         			var proj = $scope.ongoingProjects[n];
         			if(proj.resource == myProj.resource) {

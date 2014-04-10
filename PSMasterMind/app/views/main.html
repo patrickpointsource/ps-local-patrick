@@ -1,14 +1,14 @@
 <br />
 <div id="dashboard-widgets" class="row">
 	<div class="row-fluid">
-		<div class="col-xs-12 col-md-12 col-lg-6" ng-if="hasActiveProjects">
+		<div class="col-xs-12 col-md-12 col-lg-6" ng-if="hasAssignment">
 			<ng-include src="'views/hoursEntry.html'"></ng-include>
 		</div>
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
 			<div class="row">
 				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 					<div class="row">
-						<div id="staffingDeficitWidget" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-if="projectManagementAccess">
+						<div id="staffingDeficitWidget" class="col-xs-12" ng-if="projectManagementAccess">
 							<div class="panel panel-danger  dashboard-widget">
 								<div class="panel-heading">
 									<i class="fa fa-tasks"></i> Staffing Deficits
@@ -24,7 +24,7 @@
 								</div>
 							</div>
 						</div>
-						<div id="projectKickoffsWidget" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div id="projectKickoffsWidget" class="col-xs-12">
 							<div class="panel panel-default dashboard-widget">
 								<div class="panel-heading">
 									<i class="fa fa-briefcase"></i> Project Kickoffs
@@ -41,7 +41,7 @@
 					
 					</div>
 				</div>
-				<div id="projectsWidget" class="col-xs-12 col-sm-6 col-md-6 col-lg-6" >
+				<div id="projectsWidget" class="col-xs-12 col-sm-6" >
 					<div class="panel panel-default dashboard-widget">
 						<div class="panel-heading">
 							<i class="fa fa-briefcase"></i> Current Projects
@@ -141,7 +141,7 @@
 			</div>
 		</div>
 		
-		<div class="col-xs-12 col-md-6">
+		<div class="col-xs-12 col-md-6" ng-if="hasAssignment">
 			<div class="panel panel-default dashboard-widget">
 				<div class="panel-heading trim-bottom-padding">
 					<div class="row">

@@ -464,6 +464,9 @@ angular.module('Mastermind.services.projects')
 	    	        				//with the role object
 	    	        				if(assignmentRoleResourceURI.indexOf(id, assignmentRoleResourceURI.length - id.length) !== -1){
 	    	        					assignment.role = role;
+	    	        					
+	    	        					//Mark that you have an assignment on the project
+	    	        					project.status.hasAssignment = true;
 	    	        				}
 	    	        			}
 	    	    			}
