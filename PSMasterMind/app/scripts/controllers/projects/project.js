@@ -202,15 +202,6 @@ angular.module('Mastermind')
       				tmpDate = $scope.validateRoleDates(startDate, endDate, tmpDate);
       				role.endDate = getShortDate(tmpDate);
       			}
-      			//Update assignments
-      			for(var j = 0; j < $scope.projectAssignments.members.length; j++) {
-      				var member = $scope.projectAssignments.members[j];
-      				var roleId = $scope.project.about + '/roles/' + role._id;
-      				
-      				if(member.role.resource == roleId) {
-      					// TODO: finish with assignments shift
-      				}
-      			}
       		}
         }
         
