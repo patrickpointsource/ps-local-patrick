@@ -28,51 +28,24 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
          * TODO save to MongoDB
          */
         $scope.newHoursRecord;
-        $scope.entryFormOpen = true; //default open status of hours entry form
-
+         //default open status of hours entry form
+        $scope.entryFormOpen = false;
         $scope.lastSelectedDay = {};
         $scope.openHoursEntry = function (day) {
 
-            $scope.selected = day;
+
             console.log($scope.selected)
 
-//            if($scope.selected === $scope.lastSelectedDay) {
-////                console.log('matched');
-////                $scope.selected.length = 0;
-////                delete $scope.selected;
-////                console.log($scope.selected)
-//               //close the panel
-//                console.log('matched');
-//                $scope.lastSelectedDay.length = {}
-//               // $scope.entryForm = false;
-//                delete $scope.lastSelectedDay;
-//
-//
-//            } else if($scope.selected !== $scope.lastSelectedDay){
-//
-//                console.log('no match');
-//                $scope.selected = day;
-//                $scope.lastSelectedDay = $scope.selected;
-////                if ($scope.entryFormOpen) {
-////                    $scope.entryForm = false;
-////                } else {
-////                    $scope.entryFormOpen = true;
-////                }
-//                $scope.entryFormOpen = true;
-//                //create array to hold all assignments and their properties for use if user hasn't entered anything for assigned projects
-//
-//
-//
-//
-//            }
+            if($scope.entryFormOpen && day === $scope.selected) {
+                $scope.entryFormOpen = false
+                delete $scope.selected;
+            } else {
+                $scope.selected = day;
+                $scope.entryFormOpen = true;
+            }
 
 
 
-
-
-            //set value of hidden date field in form to selected date value
-            $scope.newHoursRecord.date = day.date;
-           // console.log($scope.newHoursRecord.date);
 
         };
 
@@ -241,7 +214,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.showWeekDates = function (callback) {
             //get the number of days since monday
             var day = $scope.startDate.getDay();
-            console.log($scope.startDate);
+            //console.log($scope.startDate);
 
 
             var monday = ((day - 1) + $scope.dateIndex);
@@ -283,13 +256,21 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             return $scope.prettyCalendarDates;
         }
 
-        $scope.showWeekDates(function(result) {
-            HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[7]).then(function(result){
-                console.warn(result);
+        $scope.showWeekDates(function (result) {
+            HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[7]).then(function (result) {
+                //console.warn(result);
                 $scope.displayedHours = result;
+                for (var i = 0; i < $scope.displayedHours.length; i++) {
+                    $scope.displayedHours[i].totalHours = 0;
+                    for (var j = 0; j < $scope.displayedHours[i].hoursEntries.length; j++) {
+                        if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
+                            $scope.displayedHours[i].totalHours = $scope.displayedHours[i].totalHours + $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours
+                        }
+                    }
+                }
+               // console.warn($scope.displayedHours);
             });
         });
-
 
 
         //TODO Build hours array for entire shown week

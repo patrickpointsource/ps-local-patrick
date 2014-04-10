@@ -37,11 +37,11 @@
                 </tr>
                 <tr>
                     <!--<th ng-repeat="day in allHours" class="text-center"><button class="btn btn-default btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index<5 ,'btn-warning': day.totalHours < 8 && $index<5 , 'btn-default' : days.totalHours >= 8 && $index<5, 'active': lastSelectedDay === day}" data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>-->
-                    <th ng-repeat="day in displayedHours" class="text-center"><button class="btn btn-default btn-lg"  data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.date}}</button></th>
+                    <th ng-repeat="day in displayedHours" class="text-center"><button class="btn btn-default btn-lg"  class="btn btn-default btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index<5 ,'btn-warning': day.totalHours < 8 && $index<5 , 'btn-default' : days.totalHours >= 8 && $index<5, 'active': selected === day}"  data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div id="editHours" class="well collapse out"> <ng-include src="'views/hourEntryForm.html'"></ng-include></div>
+        <div id="editHours" class="" ng-show="entryFormOpen"> <ng-include src="'views/hourEntryForm.html'"></ng-include></div>
     </div>
 </div>
