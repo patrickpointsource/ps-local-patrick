@@ -145,25 +145,26 @@ angular.module('Mastermind')
     				  for(var p = 0; p < assignments.length; p++){
     					  var assignment = assignments[p];
     					  if(assignment.person && assignment.person.resource && personURI == assignment.person.resource){
-    						  //TODO make sure it is a current assignment
-    						  assignmentRecord = assignment;
-    						  break;
-    						  
+    						  //Check if it is a current assignment
+    						  var assignmentStartDate = moment(assignment.startDate);
+    						  //If no end date default to the passed in end date
+            				  var assignmentEndDate = assignment.endDate?moment(assignment.endDate):endDateMoment;
+    						  if(endDateMoment.unix() >= assignmentStartDate.unix() && startDateMoment.unix() <= assignmentEndDate.unix()){
+    							  assignmentRecord = assignment;
+        						  break;
+    						  }
     					  }
     				  }
     				  
     				  //if we found a matching assignment
     				  if(assignmentRecord){
-    					  var assignmentStartDate = moment(assignmentRecord.startDate);
-        				  var assignmentEndDate = moment(assignmentRecord.endDate);
-        				  
-        				  
         				  //Loop through all the days
         				  for(var j = 0; j < numDays; j++){
         					  var entries = ret[j];
             				  //Create the new entry if it does not exist
-            				  if(!entries){
-            					  var date = moment(startDate).add('days',j).format('YYYY-MM-DD');
+        					  var dateMoment = moment(startDate).add('days',j);
+        					  if(!entries){
+            					  var date = dateMoment.format('YYYY-MM-DD');
             					  entries = {
             							date: date,
             							hoursEntries:[]
@@ -171,26 +172,31 @@ angular.module('Mastermind')
             					  ret[j] = entries;
             				  }
             				  
-            				  //TODO Look through the hours records to see if there is one for this assignments project
-            				  var existingEntry = null;
-            				  for(var k = 0; k < entries.hoursEntries.length; k++){
-            					  var entry = entries.hoursEntries[k];
-            					  var hoursProjectURI = entry.project.resource;
-            					  if(hoursProjectURI == assignmentProjectURI){
-            						  existingEntry = entry.assignment = assignmentRecord;
-            						  break;
-            					  }
-            					  
-            				  }
-            				  
-            				  //Not Found
-            				  if(!existingEntry){
-	            				  entries.hoursEntries.push({
-          							   project: {resource:assignmentProjectURI},
-	            					  assignment: assignmentRecord
-	            				  });
-            				  }
-
+        					  //Check if it is a current assignment
+    						  var assignmentStartDate = moment(assignment.startDate);
+    						  //If no end date default to the passed in end date
+            				  var assignmentEndDate = assignment.endDate?moment(assignment.endDate):endDateMoment;
+    						  if(dateMoment.unix() >= assignmentStartDate.unix() && dateMoment.unix() <= assignmentEndDate.unix()){
+    							//Look through the hours records to see if there is one for this assignments project
+                				  var existingEntry = null;
+                				  for(var k = 0; k < entries.hoursEntries.length; k++){
+                					  var entry = entries.hoursEntries[k];
+                					  var hoursProjectURI = entry.project.resource;
+                					  if(hoursProjectURI == assignmentProjectURI){
+                						  existingEntry = entry.assignment = assignmentRecord;
+                						  break;
+                					  }
+                					  
+                				  }
+                				  
+                				  //Not Found
+                				  if(!existingEntry){
+    	            				  entries.hoursEntries.push({
+              							  project: {resource:assignmentProjectURI},
+    	            					  assignment: assignmentRecord
+    	            				  });
+                				  }
+    						  }
         				 }
     				  }
     				  
