@@ -92,29 +92,23 @@ angular.module('Mastermind')
 	        	
 	        	//Fetch all hours entries between these two dates
 	        	var hoursQuery = {
-        			members:{
-        				'$elemMatch':{
-        					person:{
-        						resource:person.about
-        					},
-        					startDate:{
-        						$lte:endDate
-        					},
-        					$or:[
-        					     {
-        					    	 endDate:{
-        					    		 $exists:false
-        					    	}
-        					     },
-        					     {
-        					    	 endDate:{
-        					    		 $gte:startDate
-        					    	 }
-        					     }
-        					     ]
-        					}
-        			}
-    		  };
+	        	    person:{
+    						resource:person.about
+    				},
+    				$and:[
+    				      {
+    				    	  date:{
+    				    		  $lte:endDate
+    				    	  }
+    				      },
+    				      {
+    				    	  date:{
+    				    			$gte:startDate
+    				    		}  
+    				      }
+    				]
+    				
+	        	};
     		  var hoursFields = {};
     		  Resources.query('hours', hoursQuery, hoursFields, function(result){
     			  var hoursResults = result.members;
@@ -137,6 +131,7 @@ angular.module('Mastermind')
     				  }
     				  
     				  entries.hoursEntries.push({
+    					  project: hoursRecord.project,
     					  hoursRecord: hoursRecord
     				  });
     			  }
@@ -145,6 +140,7 @@ angular.module('Mastermind')
     			  //Go through all the assignments and add them to the return array
     			  for(var i = 0; i < projectAssignments.length;i++){
     				  var assignments = projectAssignments[i].members;
+    				  var assignmentProjectURI = projectAssignments[i].project.resource;
     				  var assignmentRecord = null;
     				  for(var p = 0; p < assignments.length; p++){
     					  var assignment = assignments[p];
@@ -161,6 +157,7 @@ angular.module('Mastermind')
     					  var assignmentStartDate = moment(assignmentRecord.startDate);
         				  var assignmentEndDate = moment(assignmentRecord.endDate);
         				  
+        				  
         				  //Loop through all the days
         				  for(var j = 0; j < numDays; j++){
         					  var entries = ret[j];
@@ -175,9 +172,24 @@ angular.module('Mastermind')
             				  }
             				  
             				  //TODO Look through the hours records to see if there is one for this assignments project
-            				  entries.hoursEntries.push({
-            					  assignment: assignmentRecord
-            				  });
+            				  var existingEntry = null;
+            				  for(var k = 0; k < entries.hoursEntries.length; k++){
+            					  var entry = entries.hoursEntries[k];
+            					  var hoursProjectURI = entry.project.resource;
+            					  if(hoursProjectURI == assignmentProjectURI){
+            						  existingEntry = entry.assignment = assignmentRecord;
+            						  break;
+            					  }
+            					  
+            				  }
+            				  
+            				  //Not Found
+            				  if(!existingEntry){
+	            				  entries.hoursEntries.push({
+          							   project: {resource:assignmentProjectURI},
+	            					  assignment: assignmentRecord
+	            				  });
+            				  }
 
         				 }
     				  }

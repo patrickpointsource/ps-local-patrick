@@ -6,8 +6,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
 		//EXAMPLE of fetch the hours entries for 7 days
 		var today = moment();
-		var oneWeekFromNow = moment().add(1, 'weeks');
-		HoursService.getHoursRecordsBetweenDates($scope.me, today.format('YYYY-MM-DD'), oneWeekFromNow.format('YYYY-MM-DD')).then(function(result){
+		var oneWeekAgo = moment().subtract(1, 'weeks');
+		HoursService.getHoursRecordsBetweenDates($scope.me, oneWeekAgo.format('YYYY-MM-DD'), today.format('YYYY-MM-DD')).then(function(result){
 			//alert('Success!');
 		});
 	
