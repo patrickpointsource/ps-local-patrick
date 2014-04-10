@@ -9,12 +9,14 @@
 
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-show="hoursEntry.project.name">
-                    <div>{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}} <span ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</span></div>
+                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-if="hoursEntry.project.name" >
+                    <div ng-init="hoursEntry.hoursRecord.project.resource = hoursEntry.project.resource">{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}} <span ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</span></div>
+                	 <div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
                 </div>
+               
                 <select name="project" id="project"
                         class="col-xs-6 col-sm-12 col-md-6 col-lg-12 form-control" ng-show="!hoursEntry.project.name"
-                        ng-model="newHoursRecord.project.resource" ng-required="true"
+                        ng-model="hoursEntry.hoursRecord.project.resource" ng-required="true"
                         ng-options="p.resource as p.title for p in hoursProjects">
                 </select>
 

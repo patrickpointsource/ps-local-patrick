@@ -15,12 +15,18 @@ angular.module('Mastermind')
 	  this.updateHours = function (hoursRecords) {
 		  var requests = [];
 		  for(var i = 0; i < hoursRecords.length; i++){
-			  var record = hoursRecords;
+			  var record = hoursRecords[i];
 			  var id = record['_id'];
+			  
 			  if(id){
-				  requests.push(Resources.update(record));
+				  if(record.hours <= 0){
+					  requests.push(Resources.remove(record.resource));
+				  }
+				  else{
+					  requests.push(Resources.update(record));
+				  }
 			  }
-			  else{
+			  else if(record.hours >= 0){
 				  requests.push(Resources.create('hours', record));
 			  }
 		  }

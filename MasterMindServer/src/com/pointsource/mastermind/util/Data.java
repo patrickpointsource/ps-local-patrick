@@ -1262,6 +1262,78 @@ public class Data implements CONSTS {
 
 		return newHoursRecord;
 	}
+	
+	/**
+	 * Update an hours record
+	 * 
+	 * @param newHours
+	 * @throws JSONException
+	 */
+	public static JSONObject updateHours(RequestContext context,
+			JSONObject newHours) throws JSONException {
+		if (!newHours.has(PROP__ID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Hours Record does not conatin an id property").build();
+			throw new WebApplicationException(response);
+		}
+
+		JSONObject _id = newHours.getJSONObject(PROP__ID);
+		if (!_id.has(PROP_$OID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Hours Record does not conatin an $oid property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String id = _id.getString(PROP_$OID);
+		JSONObject existing = getHoursRecord(context, id);
+		if (existing == null) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Hours Record does not exist").build();
+			throw new WebApplicationException(response);
+		}
+
+		if (!newHours.has(PROP_ETAG)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Hours Record does not conatin an etag property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String etag = newHours.getString(PROP_ETAG);
+		String old_etag = existing.getString(PROP_ETAG);
+
+		if (!etag.equals(old_etag)) {
+			String message = "Hours Record etag (" + etag
+					+ ") does not match the saved etag (" + old_etag + ")";
+			Response response = Response.status(Status.CONFLICT)
+					.entity(message).build();
+			throw new WebApplicationException(response);
+		}
+
+		int newEtag = Integer.parseInt(old_etag);
+		newEtag++;
+		newHours.put(PROP_ETAG, String.valueOf(newEtag));
+
+		String json = newHours.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_HOURS);
+
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		// Exclude persisting the base
+		BasicDBObject fields = new BasicDBObject();
+		dbObject.removeField(PROP_BASE);
+		dbObject.removeField(PROP_ABOUT);
+		dbObject.removeField(PROP_RESOURCE);
+		DBObject result = hoursCol.findAndModify(query, fields, null, false,
+				dbObject, true, true);
+
+		json = JSON.serialize(result);
+		newHours = new JSONObject(json);
+
+		newHours.put(PROP_ABOUT, RESOURCE_HOURS + "/" + id);
+
+		return newHours;
+	}
 
 	/**
 	 * Create a new person

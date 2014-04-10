@@ -488,21 +488,38 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 //        };
 
         $scope.addHours = function () {
-            console.log('clicked addHours')
-            //Set the project context
-            //console.log(day);
+           var enteries = $scope.selected.hoursEntries;
+        	var hoursRecords = [];
+        	
+        	for(var i = 0; i < enteries.length;i++){
+        		var entry = enteries[i];
+        		if(entry.hoursRecord){
+        			hoursRecords.push(entry.hoursRecord);
+        			if(!entry.hoursRecord.person){
+        				entry.hoursRecord.person = {resource: $scope.me.about};
+        			}
+        		}
+        	}
 
-            $scope.newHoursRecord.project = {resource: $scope.newHoursRecord.project.resource};
-            //Set the person context
-            $scope.newHoursRecord.person = {resource: $scope.me.about};
-
-            Resources.create('hours', $scope.newHoursRecord).then(function () {
-                console.log('saved')
-
-//                $scope.initHours();
-//                $scope.newHoursRecord = {};
-//                $scope.openHoursEntry($scope.selected);
-                $scope.activeAddition.hourEntries.push($scope.newHoursRecord);
+            HoursService.updateHours(hoursRecords).then(function () {
+            	$scope.entryFormOpen = false;
+            	delete $scope.selected;
+            	$scope.showWeekDates(function (result) {
+                    HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[7]).then(function (result) {
+                        //console.warn(result);
+                        $scope.displayedHours = result;
+                        for (var i = 0; i < $scope.displayedHours.length; i++) {
+                            $scope.displayedHours[i].totalHours = 0;
+                            for (var j = 0; j < $scope.displayedHours[i].hoursEntries.length; j++) {
+                                if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
+                                    $scope.displayedHours[i].totalHours = $scope.displayedHours[i].totalHours + $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours
+                                }
+                            }
+                        }
+                       // console.warn($scope.displayedHours);
+                    });
+                });
+            	
             });
         };
 
