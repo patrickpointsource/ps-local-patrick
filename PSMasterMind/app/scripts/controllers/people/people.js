@@ -58,7 +58,23 @@ angular.module('Mastermind.controllers.people')
             }
           });
         }
-        else if($scope.peopleFilter == 'all'){
+        else if($scope.peopleFilter == 'my'){
+        	$scope.peopleFilter = 'my';
+        	
+        	People.getMyPeople($scope.me).then(function(people){
+        		$scope.people = people;
+	       		 //Reload the table
+	       		 if (!$scope.tableParams){
+	       			 $scope.tableParams = getTableData();
+	       		 }
+	       		 else{
+	       			 $scope.tableParams.total($scope.people.length);
+	       			 $scope.tableParams.reload();
+	       		 }
+        	});
+        }
+        //Otherwise just show all
+        else {
         	$scope.peopleFilter = 'all';
         	var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
         	//var fieldsEncoded = encodeURIComponent(JSON.stringify(fields));
@@ -75,22 +91,8 @@ angular.module('Mastermind.controllers.people')
         		 }
         	});
         }
-        //Otherwise just show my
-        else{
-        	$scope.peopleFilter = 'my';
-        	
-        	People.getMyPeople($scope.me).then(function(people){
-        		$scope.people = people;
-	       		 //Reload the table
-	       		 if (!$scope.tableParams){
-	       			 $scope.tableParams = getTableData();
-	       		 }
-	       		 else{
-	       			 $scope.tableParams.total($scope.people.length);
-	       			 $scope.tableParams.reload();
-	       		 }
-        	});
-        }
+        
+        
         
         //Replace the URL in history with the filter
         if($scope.peopleFilter != $state.params.filter){
@@ -264,7 +266,7 @@ angular.module('Mastermind.controllers.people')
 
       var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-      $scope.peopleFilter = $state.params.filter?$state.params.filter:'my';
+      $scope.peopleFilter = $state.params.filter?$state.params.filter:'all';
       $scope.startDate = new Date();
       //$scope.startDate.setMonth($scope.startDate.getMonth() + 1);
 

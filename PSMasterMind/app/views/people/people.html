@@ -2,8 +2,8 @@
 <div class="row">
   <div class="col-xs-12 col-sm-5 col-lg-6">
     <select class="form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
-       <option value="my" ng-selected="peopleFilter === 'my'">My People</option>
       <option value="all" ng-selected="peopleFilter === 'all'">All People</option>
+      <option value="my" ng-selected="peopleFilter === 'my'">My People</option>
       <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
     </select>
   </div>

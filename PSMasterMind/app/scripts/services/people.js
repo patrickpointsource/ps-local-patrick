@@ -379,7 +379,7 @@ angular.module('Mastermind')
     					}
     			}
     	};
-        var fields = {"members.startDate":1,"members.endDate":1,"members.person":1};
+        var fields = {project:1,"members.startDate":1,"members.endDate":1,"members.person":1};
         Resources.query('assignments', query, fields, function(result){
         	var projectAssignments = result.data;
         	var peopleIds = [];
@@ -387,6 +387,7 @@ angular.module('Mastermind')
         	//Loop through all the project assignments
         	for(var i = 0; i < projectAssignments.length; i++){
         		var projectAssignment = projectAssignments[i];
+        		//console.log('Project:' + projectAssignment.project.resource);
         		var members = projectAssignment.members;
         		//Loop though all the assignment records
         		for(var j = 0; j < members.length; j++){
@@ -397,12 +398,20 @@ angular.module('Mastermind')
         				//contruct oids for query over people
         				var oid = {$oid:uri.substring(uri.lastIndexOf('/')+1)};
         				//Check the assignment end data to see if it is a past related employee
-        				var endDate = endDate?moment(assignment.endDate):now.add('day', 1);
-        				if(now >= endDate){
+        				var endDate = assignment.endDate?moment(assignment.endDate):now.add('day', 1);
+        				if(now.unix() <= endDate.unix()){
+        					//console.log('Adds:' + uri);
+        					
         					peopleIds.push(oid);
         					peopleURIs.push(uri);
         				}
+//        				else{
+//        					console.log('Bad Date for: ' + uri + ', ' + now + ' <= ' + endDate);
+//        				}
         			}
+//        			else{
+//            			console.log('Ingnore: ' + uri);
+//            		}
         		}
         	}
         	
