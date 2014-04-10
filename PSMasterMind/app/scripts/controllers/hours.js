@@ -175,6 +175,9 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 mm = '0' + mm;
             }
             $scope.theDayFormatted = yyyy + '-' + mm + '-' + dd;
+            var dayFormat = yyyy + '-' + mm + '-' + dd;
+            return dayFormat
+
         }
 
 
@@ -214,11 +217,14 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.showWeekDates = function (callback) {
             //get the number of days since monday
             var day = $scope.startDate.getDay();
-            //console.log($scope.startDate);
+            console.log($scope.startDate);
 
 
             var monday = ((day - 1) + $scope.dateIndex);
 
+            var d = new Date();
+            $scope.todaysDate = $scope.formatTheDate(d);
+            console.log($scope.todaysDate);
 
             //array to hold the dates
             $scope.thisWeekDates = [];
@@ -256,6 +262,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             return $scope.prettyCalendarDates;
         }
 
+
+
         $scope.showWeekDates(function (result) {
             HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[7]).then(function (result) {
                 //console.warn(result);
@@ -268,7 +276,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                         }
                     }
                 }
-               // console.warn($scope.displayedHours);
+                console.warn($scope.displayedHours);
             });
         });
 
