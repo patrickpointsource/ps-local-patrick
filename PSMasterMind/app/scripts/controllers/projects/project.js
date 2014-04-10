@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$q','$rootScope', '$scope', '$state', '$stateParams', '$location', '$filter', '$controller', 'ProjectsService', 'Resources', 'People', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode',
-  function ($q, $rootScope, $scope, $state, $stateParams, $location, $filter, $controller, ProjectsService, Resources, People, RoleTypes, Rates, TableParams, editMode) {
+  .controller('ProjectCtrl', ['$q','$rootScope', '$scope', '$state', '$stateParams', '$location', '$filter', '$controller', 'ProjectsService', 'Resources', 'People', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode', 'AssignmentService',
+  function ($q, $rootScope, $scope, $state, $stateParams, $location, $filter, $controller, ProjectsService, Resources, People, RoleTypes, Rates, TableParams, editMode, AssignmentService) {
     var detailsValid = false, rolesValid = false;
 
     //Set our currently viewed project to the one resolved by the service.
@@ -150,57 +150,126 @@ angular.module('Mastermind')
      * roles in the project
      */
     $scope.handleProjectStartDateShifts = function(callback){
-    	//Check if the start date has been updated.
+    	
+    	AssignmentService.getAssignmentsByPeriod("all", {
+    		project: {
+    			resource: $scope.project.about
+    		}
+    	}).then(function(data) {
+    		$scope.projectAssignments = data;
+    	});
+    	
         var project = $scope.project;
         
-        if(project.initStartDate && project.startDate && project.startDate != project.initStartDate){
-        	
-        	$rootScope.modalDialog = {
-    		  		title: "Shift Role Start Dates",
-    		  		text: "The project start date has changed.  Would you like to shift the role start dates based on this change?",
-    		  		ok: "Yes",
-    		  		no: "No",
-    		  		cancel: "",
-    		  		okHandler: function() {
-    		  			var delta = new Date(project.startDate) - new Date(project.initStartDate);
-    		      		var roles = project.roles;
-    		      		for(var i = 0; i < roles.length; i++) {
-    		      			var role = roles[i];
-    		      			//Shift the start date
-    		      			if(role.startDate){
-    		      				//If the role date == the original start date keep them the same
-    		      				if(role.startDate == project.initStartDate){
-    		      					role.startDate = project.startDate;
-    		      				}
-    		      				else {
-    			      				var tmpDate = new Date(role.startDate);
-    			      				tmpDate = new Date(tmpDate.getTime() + delta);
-    			      				role.startDate = getShortDate(tmpDate);
-    		      				}
-    		      			}
-    		      			//Shift the end date
-    		      			if(role.endDate){
-    		      				var tmpDate = new Date(role.endDate);
-    		      				tmpDate = new Date(tmpDate.getTime() + delta);
-    		      				role.endDate = getShortDate(tmpDate);
-    		      			}
-    		      		}
-    		      		
-    		      		callback();
-    		      		$(".modalYesNo").modal('hide');
-    		  		},
-    		  		noHandler: function() {
-    		  			$(".modalYesNo").modal('hide');
-    		  		}
-    		  };
-        	
-        	//hiding previous modal
-        	$(".modalYesNoCancel").modal('hide');
-    		$(".modalYesNo").modal('show');
+        var startDateShifted = project.initStartDate && project.startDate && project.startDate != project.initStartDate;
+        var endDateShifted = ((typeof project.initEndDate === 'undefined') && project.endDate) || 
+        					 (project.initEndDate && project.endDate != project.initEndDate);
+        
+        var startDate = new Date(project.startDate);
+        var initStartDate = new Date(project.initStartDate);
+        var endDate;
+        var initEndDate;
+        if(project.endDate) {
+        	endDate = new Date(project.endDate);
         }
-        else {
-        	callback();
+        if(project.initEndDate) {
+        	initEndDate = new Date(project.initEndDate);
         }
+        var roles = project.roles;
+        
+        //Check if the START date has been updated.
+        if(startDateShifted) {
+        	var delta = startDate - initStartDate;
+      		for(var i = 0; i < roles.length; i++) {
+      			var role = roles[i];
+      			//Shift the start date
+      			if(role.startDate){
+      				//If the role date == the original start date keep them the same
+      				if(role.startDate == project.initStartDate){
+      					role.startDate = project.startDate;
+      				}
+      				else {
+	      				var tmpDate = new Date(role.startDate);
+	      				tmpDate = new Date(tmpDate.getTime() + delta);
+	      				tmpDate = $scope.validateRoleDates(startDate, endDate, tmpDate);
+	      				role.startDate = getShortDate(tmpDate);
+      				}
+      			}
+      			//Shift the end date
+      			if(role.endDate){
+      				var tmpDate = new Date(role.endDate);
+      				tmpDate = new Date(tmpDate.getTime() + delta);
+      				tmpDate = $scope.validateRoleDates(startDate, endDate, tmpDate);
+      				role.endDate = getShortDate(tmpDate);
+      			}
+      			//Update assignments
+      			for(var j = 0; j < $scope.projectAssignments.members.length; j++) {
+      				var member = $scope.projectAssignments.members[j];
+      				var roleId = $scope.project.about + '/roles/' + role._id;
+      				
+      				if(member.role.resource == roleId) {
+      					// TODO: finish with assignments shift
+      				}
+      			}
+      		}
+        }
+        
+        //Check if the END date has been updated.
+        if(endDateShifted) {
+          // end date just shifted
+          if(initEndDate) {
+        	var delta = endDate - initEndDate;
+      		for(var i = 0; i < roles.length; i++) {
+      			var role = roles[i];
+      			//Shift the start date
+      			if(role.endDate){
+      				if(role.endDate == project.initEndDate){
+      					role.endDate = project.endDate;
+      				}
+      				else {
+	      				var tmpDate = new Date(role.endDate);
+	      				tmpDate = new Date(tmpDate.getTime() + delta);
+	      				tmpDate = $scope.validateRoleDates(startDate, endDate, tmpDate);
+	      				role.endDate = getShortDate(tmpDate);
+      				}
+      			}
+      			else {
+      				role.endDate = project.endDate;
+      			}
+      			//Shift the start date
+      			if(role.start){
+      				var tmpDate = new Date(role.startDate);
+      				tmpDate = new Date(tmpDate.getTime() + delta);
+      				tmpDate = $scope.validateRoleDates(startDate, endDate, tmpDate);
+      				role.startDate = getShortDate(tmpDate);
+      			}
+      		}
+          }
+          // end date initialized
+          else {
+        	  project.initEndDate = project.endDate;
+        	  for(var i = 0; i < roles.length; i++) {
+        		var role = roles[i];
+        		
+        		role.endDate = project.endDate;
+        	  }
+          }
+        }
+        
+        callback();
+    }
+    
+    $scope.validateRoleDates = function(projectStartDate, projectEndDate, tmpDate) {
+    	if(projectEndDate) {
+			if(tmpDate > projectEndDate) {
+				tmpDate = projectEndDate;
+			}
+		}
+		if(tmpDate < projectStartDate) {
+			tmpDate = projectStartDate;
+		}
+		
+		return tmpDate;
     }
     
     /**

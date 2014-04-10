@@ -18,7 +18,16 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
     $scope.summarySwitcher = 'projects';
     $scope.startDate = new Date();
     $scope.activeAndBacklogProjects = [];
-
+    
+    // TODO: change to css class
+    $scope.getProjectItemCss = function(isProjectItem) {
+    	var ret = "";
+    	if(isProjectItem) {
+    		ret = "background-color: antiquewhite;";
+    	}
+    	
+    	return ret;
+    }
     /*
      * Fetch a list of all the active Projects.
      * 
@@ -194,6 +203,8 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 			                if(roles){
 			                	var roleList = [];
 			        			var roleListIndex = 0;
+			        			var startingProjectIndex = $scope.backlogProjectsList.length;
+			        			var projectDeficitesItemsCount = 0;
 			                      /*
 			                       * Loop through all the roles in the active projects
 			                       */
@@ -213,6 +224,7 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 			                        }
 			                        
 			                        if(!foundRoleMatch) {
+			                        	projectDeficitesItemsCount++;
 			                        	// total roles list mapping for backlog project
 				                        for (var j = 0; j < roleList.length; j++) {
 				                        	var roleCountObj = roleList[j];
@@ -241,29 +253,36 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 				                            	  role: $scope.rolesMap[backlogRole.type.resource].abbreviation,
 				                            	  startDate: backlogRole.startDate,
 				                            	  endDate: backlogRole.endDate,
-				                            	  rate: backlogRole.rate.amount};
+				                            	  rate: backlogRole.rate.amount,
+				                            	  isProjectItem: false};
 				                              //console.log("backlogRole.type:",activeRole.type);
 				                              //console.log("Unassigned Role in Proj:", $scope.backlogProjectsList[unassignedIndex-1]);
 				                      }
 			                      }
 			                      
-			                      var stringRoleList = new String();
-			                      for (var k=0; k<roleList.length;k++) {
-			                          if (stringRoleList.length > 1) 
-			                          	stringRoleList = stringRoleList.concat(", ");
-			                      	stringRoleList = stringRoleList.concat(roleList[k].role,"(",roleList[k].count,")");
+			                      if(projectDeficitesItemsCount > 0) {
+			                    	  var stringRoleList = new String();
+				                      for (var k=0; k<roleList.length;k++) {
+				                          if (stringRoleList.length > 1)
+				                          	stringRoleList = stringRoleList.concat(", ");
+				                      	stringRoleList = stringRoleList.concat(roleList[k].role,"(",roleList[k].count,")");
+				                      }
+				                      
+				                      var projectItem = {
+					                          clientName: proj.customerName,
+					                      	  projectName: proj.name,
+					                      	  title: proj.customerName + ': ' + proj.name,
+					                      	  projectResource: proj.resource,
+					                      	  role: stringRoleList,
+					                      	  hours: '-',
+					                      	  startDate: proj.startDate,
+					                      	  endDate: proj.endDate,
+					                      	  isProjectItem: true
+					                      };
+				                      
+				                      $scope.backlogProjectsList.splice(startingProjectIndex, 0, projectItem);
+				                      unassignedIndex++;
 			                      }
-			                      
-			                      $scope.backlogProjectsList[unassignedIndex++] = {
-			                          clientName: proj.customerName,
-			                      	  projectName: proj.name,
-			                      	  title: proj.customerName + ': ' + proj.name,
-			                      	  projectResource: proj.resource,
-			                      	  role: stringRoleList,
-			                      	  hours: '-',
-			                      	  startDate: proj.startDate,
-			                      	  endDate: proj.endDate
-			                      };
 			                }
 						}
 						else {
@@ -276,6 +295,8 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 					if(roles) {
 						  var roleList = [];
 	        			  var roleListIndex = 0;
+	        			  var startingProjectIndex = $scope.backlogProjectsList.length;
+		        		  var projectDeficitesItemsCount = 0;
 	                      for(var b = 0; b < roles.length; b++){
 	                    	    var updated = false;
 		                        var backlogRole = roles[b];
@@ -288,7 +309,8 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 		                            	  role: $scope.rolesMap[backlogRole.type.resource].abbreviation,
 		                            	  startDate: backlogRole.startDate,
 		                            	  endDate: backlogRole.endDate,
-		                            	  rate: backlogRole.rate.amount};
+		                            	  rate: backlogRole.rate.amount,
+		                            	  isProjectItem: false};
 		                        
 		                        // total roles list mapping for backlog project
 		                        for (var j = 0; j < roleList.length; j++) {
@@ -316,16 +338,20 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
 	                      	stringRoleList = stringRoleList.concat(roleList[k].role,"(",roleList[k].count,")");
 	                      }
 	                      
-	                      $scope.backlogProjectsList[unassignedIndex++] = {
-	                          clientName: proj.customerName,
-	                      	  projectName: proj.name,
-	                      	  title: proj.customerName + ': ' + proj.name,
-	                      	  projectResource: proj.resource,
-	                      	  role: stringRoleList,
-	                      	  hours: '-',
-	                      	  startDate: proj.startDate,
-	                      	  endDate: proj.endDate
-	                      };
+	                      var projectItem = {
+		                          clientName: proj.customerName,
+		                      	  projectName: proj.name,
+		                      	  title: proj.customerName + ': ' + proj.name,
+		                      	  projectResource: proj.resource,
+		                      	  role: stringRoleList,
+		                      	  hours: '-',
+		                      	  startDate: proj.startDate,
+		                      	  endDate: proj.endDate,
+		                      	  isProjectItem: true
+		                      };
+	                      
+	                      $scope.backlogProjectsList.splice(startingProjectIndex, 0, projectItem);
+	                      unassignedIndex++;
 					}
 				}
           	  }
@@ -350,7 +376,12 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
                 /*
                  * Build out the table that contains the backlog Projects with resource deficits
                  */
-                $scope.backlogRoleList = new TableParams(params, {
+              	var backlogTableParams = {
+              	      page: 1,              // show first page
+              	      count: 100,           // count per page
+              	      sorting: {}           // initial sorting is already done
+              	    };
+                $scope.backlogRoleList = new TableParams(backlogTableParams, {
                     total: $scope.backlogProjectsList.length, // length of data
                     getData: function ($defer, params) {
                     

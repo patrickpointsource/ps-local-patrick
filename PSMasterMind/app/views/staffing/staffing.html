@@ -154,7 +154,7 @@
                   <div>Dates</div>
                 </th>
 			</thead>
-			<tr ng-repeat="backlogRole in $data">
+			<tr ng-repeat="backlogRole in $data" style="{{getProjectItemCss(backlogRole.isProjectItem)}}">
 				<td sortable="'title'">
 					<a href="#{{backlogRole.projectResource}}">{{backlogRole.title}}</a></td>
 				<td sortable="'role'">{{backlogRole.role}}</td>

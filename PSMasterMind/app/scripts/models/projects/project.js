@@ -186,6 +186,7 @@ angular.module('Mastermind.models.projects')
       
       //Items to cache to check against inital value onto
       this.initStartDate = this.startDate;
+      this.initEndDate = this.endDate;
 
       /**
        * Creates a fluent interface for accessing a subset of roles on this Project.
