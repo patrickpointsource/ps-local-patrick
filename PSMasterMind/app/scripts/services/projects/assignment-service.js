@@ -405,6 +405,8 @@ angular.module('Mastermind.services.projects')
     		percentageExtraCovered: 0
     	}
     	
+    	assignments = _.filter(assignments, function(a) { return a.person && a.person.resource});
+    	
     	var ONE_DAY = 24 * 60 * 60 * 1000; 
     	// store info about role assignments on timeline
     	var minDate = new Date(role.startDate);

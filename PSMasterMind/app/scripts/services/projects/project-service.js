@@ -957,7 +957,7 @@ angular.module('Mastermind.services.projects')
         		
         		for (var k = 0; k < result.members.length; k ++) {
         			utilizationRate = 100;
-        			roleType = _.find(roleList, function(r) {return result.members[k].primaryRole.resource.indexOf(r.resource) > -1})
+        			roleType = _.find(roleList, function(r) {return result.members[k].primaryRole && result.members[k].primaryRole.resource && result.members[k].primaryRole.resource.indexOf(r.resource) > -1})
         			
         			if (roleType && roleType.utilizationRate)
     					total += Math.round(roleType.utilizationRate * 10 / 100) / 10;

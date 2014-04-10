@@ -463,6 +463,7 @@ angular.module('Mastermind.controllers.projects')
 			  
 			var assignments = result.members ? result.members: [];
 			
+			result.members = _.filter(result.members, function(a) { return a.person && a.person.resource});
 			
 			var findRole = function(roleResource) {
 				return _.find( $scope.project.roles, function(r){
@@ -520,6 +521,10 @@ angular.module('Mastermind.controllers.projects')
     	
     	AssignmentService.calculateRolesCoverage($scope.project.roles, $scope.getActualProjectAssignmentMembers())
     	
+    	var today = new Date();
+        
+        today = new Date(today.getFullYear(), today.getMonth(),  today.getDate());
+        
     	for (var i = 0; i < $scope.project.roles.length; i ++) {
 			role = $scope.project.roles[i];
 			
@@ -538,8 +543,21 @@ angular.module('Mastermind.controllers.projects')
 				
 				role.assignees.push(newAssignee)
 			} else {
+				_.each(role.assignees, function(a) {
+					a.isCurrent = a.isFuture = a.isPast = false
+					if (new Date(a.startDate) <= today && (!a.endDate || new Date(a.endDate) > today) )
+			    		 a.isCurrent = true;
+					else if (new Date(a.startDate) >= today && (!a.endDate || new Date(a.endDate) > today) )
+    					a.isFuture = true;
+					else if (new Date(a.startDate) < today && (!a.endDate || new Date(a.endDate) < today) )
+						a.isPast = true;
+				})
 				role.assignees.sort(function(a1, a2){
-					 if (a1.endDate && a2.endDate && new Date(a1.endDate) < new Date(a2.endDate) ) 
+					if (!a1.isCurrent && a2.isCurrent)
+						return 1;
+					else if (a1.isCurrent && !a2.isCurrent)
+						return -1;
+					else  if (a1.endDate && a2.endDate && new Date(a1.endDate) < new Date(a2.endDate) ) 
 			    		  return 1;
 					 else if (a1.endDate && a2.endDate && new Date(a1.endDate) > new Date(a2.endDate) ) 
 			    		  return -1;
