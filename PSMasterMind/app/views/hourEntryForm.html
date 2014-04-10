@@ -1,34 +1,31 @@
 <div class="panel-body" id="hourEntryForm" ng-show="entryFormOpen">
-    <div class="row">
-        <!--<div class="col-md-3">Project:</div>-->
-        <!--<div class="col-md-1">Hours:</div>-->
-        <!--<div class="col-md-offset-1 col-md-5">Description:</div>-->
-    </div>
-
     <form ng-repeat="hoursEntry in selected.hoursEntries">
 
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-if="hoursEntry.project.name" >
-                    <div ng-init="hoursEntry.hoursRecord.project.resource = hoursEntry.project.resource">{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}} <span ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</span></div>
-                	 <div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
-                </div>
-               
-                <select name="project" id="project"
-                        class="col-xs-6 col-sm-12 col-md-6 col-lg-12 form-control" ng-show="!hoursEntry.project.name"
-                        ng-model="hoursEntry.hoursRecord.project.resource" ng-required="true"
-                        ng-options="p.resource as p.title for p in hoursProjects">
-                </select>
-
-                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12">
-                    <input type="number" value="{{hoursEntry.hoursRecord.hours}}" class="form-control"
-                          ng-model="hoursEntry.hoursRecord.hours"/>
-
-                </div>
+            	<div class="row">
+            		
+	                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-if="hoursEntry.project.name" >
+	                    <div ng-init="hoursEntry.hoursRecord.project.resource = hoursEntry.project.resource">{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}} <span ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</span></div>
+	                	 <div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
+	                </div>
+	               	<div ng-if="!hoursEntry.project.name" class="col-xs-6 col-sm-12 col-md-6 col-lg-12 ">
+	               		<select name="project" id="project"
+	                        class="form-control" 
+	                        ng-model="hoursEntry.hoursRecord.project.resource" ng-required="true"
+	                        ng-options="p.resource as p.title for p in hoursProjects">
+	                	</select>
+	               	</div>
+	                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12">
+	                    <input type="text" value="{{hoursEntry.hoursRecord.hours}}" class="form-control"
+	                          ng-model="hoursEntry.hoursRecord.hours"/>
+	                </div>
+	            </div>
             </div>
-            <div class="col-xs-12 col-sm-6 col-md-12 col-lg-6"><br/>
-                <textarea class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-control" type="text" ng-model="hoursEntry.hoursRecord.description" placeholder="Description"
+            <div class="col-xs-12 col-sm-6 col-md-12 col-lg-6"><div class="hidden-sm hidden-lg"><br/></div>
+            	<textarea class="col-xs-12 form-control" type="text" ng-model="hoursEntry.hoursRecord.description" placeholder="Description"
                           >{{hoursEntry.hoursRecord.description}}</textarea>
+              
 
             </div>
         </div>
@@ -69,11 +66,11 @@
 
     </form>
     <div class="row">
-        <div class="form-group">
-            <button type="" ng-click="addNewHours();" class="btn btn-default pull-left">Add new hours</button>
-        </div>
-        <div class="form-group">
-            <button ng-click="addHours();" type="submit" class="btn btn-default pull-right">Save</button>
+        <div class="form-group col-xs-12">
+        	<div class="pull-right">
+           	 	<button type="" ng-click="addNewHours();" class="btn btn-default"><i class="fa fa-plus-square"></i> Add Project</button>
+            	<button ng-click="addHours();" type="submit" class="btn btn-default "><i class="fa fa-floppy-o"></i> Save</button>
+            </div>
         </div>
     </div>
 
