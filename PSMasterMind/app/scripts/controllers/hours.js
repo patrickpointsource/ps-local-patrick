@@ -1,9 +1,17 @@
 /**
  * Created by kenhoes on 4/1/14.
  */
-angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService',
-    function ($scope, $state, $rootScope, Resources, ProjectsService) {
+angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'HoursService', 'ProjectsService',
+    function ($scope, $state, $rootScope, Resources, HoursService, ProjectsService) {
 
+		//EXAMPLE of fetch the hours entries for 7 days
+		var today = moment();
+		var oneWeekFromNow = moment().add(1, 'weeks');
+		HoursService.getHoursRecordsBetweenDates($scope.me, today.format('YYYY-MM-DD'), oneWeekFromNow.format('YYYY-MM-DD')).then(function(result){
+			//alert('Success!');
+		});
+	
+	
         /**
          * TODO THIS SECTION REQUIRES CLEANUP AND MODULARIZATION
          * TODO set up hour submission
@@ -302,7 +310,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                     for (var i = 0; i < dateLength; i++) {
                         for (var j = 0; j < result.members.length; j++) {
                             if (result.members[j].date === datesArray[i]) {
-                                var hourEntryObj = {}
+                                var hourEntryObj = {};
                                 hourEntryObj.date = result.members[j].date;
                                 hourEntryObj.hours = result.members[j].hours;
                                 hourEntryObj.project = result.members[j].project;
@@ -472,22 +480,26 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 //        };
 
         $scope.addHours = function () {
-            console.log('clicked addHours')
-            //Set the project context
-            //console.log(day);
-
-            $scope.newHoursRecord.project = {resource: $scope.newHoursRecord.project.resource};
-            //Set the person context
-            $scope.newHoursRecord.person = {resource: $scope.me.about};
-
-            Resources.create('hours', $scope.newHoursRecord).then(function () {
-                console.log('saved')
-
-//                $scope.initHours();
-//                $scope.newHoursRecord = {};
-//                $scope.openHoursEntry($scope.selected);
-                $scope.activeAddition.hourEntries.push($scope.newHoursRecord);
-            });
+//        	var hoursRecords = [];
+//        	for(var i = 0; i < $scope.selected.hoursEntries.length; i++){
+//        		var entry = $scope.selected.hoursEntries[i];
+//        		var newRecord = {
+//        			project: entry.project,
+//        			person: entry.person,
+//        			hours: entry.hours,
+//        			date: entry.date,
+//        			description: entry.description
+//        		};
+//        		if(entry['_id']) newRecord['_id'] = entry['_id'];
+//        		if(entry.etag) newRecord.etag = entry.etag;
+//        		if(entry.created) newRecord.created = entry.created;
+//        		hoursRecords.push(newRecord);
+//        	}
+        	
+        	HoursService.updateHours(hoursRecords).then(function (results) {
+        		alert('success!');
+        		//$scope.activeAddition.hourEntries.push($scope.newHoursRecord);
+        	});
         };
 
     }
