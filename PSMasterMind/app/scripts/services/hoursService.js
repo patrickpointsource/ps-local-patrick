@@ -62,6 +62,9 @@ angular.module('Mastermind')
 		  
 		  var personURI = person.about?person.about:person.resource;
 		  
+		  var projectURIs = [];
+		  var projectOIDs = [];
+		  
 		  var query = {
     			members:{
     				'$elemMatch':{
@@ -134,6 +137,16 @@ angular.module('Mastermind')
     					  project: hoursRecord.project,
     					  hoursRecord: hoursRecord
     				  });
+    				  
+    				  
+    				  //Add this to the list of project we need to resolve
+    				  if(projectURIs.indexOf(hoursRecord.project.resource) === -1){
+    					  var resource = hoursRecord.project.resource;
+    					  projectURIs.push(resource);
+    					  var oid = {$oid:resource.substring(resource.lastIndexOf('/')+1)};
+    					  projectOIDs.push(oid);
+    				  }
+    				  
     			  }
     			  
     			  
@@ -195,14 +208,49 @@ angular.module('Mastermind')
               							  project: {resource:assignmentProjectURI},
     	            					  assignment: assignmentRecord
     	            				  });
+    	            				  //Add this to the list of project we need to resolve
+    	            				  if(projectURIs.indexOf(assignmentProjectURI) === -1){
+    	            					  var resource = assignmentProjectURI;
+    	            					  projectURIs.push(resource);
+    	            					  var oid = {$oid:resource.substring(resource.lastIndexOf('/')+1)};
+    	            					  projectOIDs.push(oid);
+    	            				  }
                 				  }
     						  }
         				 }
     				  }
     				  
     			  }
-    			  //TODO Fetch all the projects associated with these assignments
-    			  deferred.resolve(ret);
+    			  
+    			  //Fetch all the projects associated with these assignments
+    			  var projectsQuery = {_id:{$in:projectOIDs}};
+    		      var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1};
+    		      Resources.query('projects',projectsQuery,projectsFields,function(result){
+    		        	var projects = result.data;
+    			  
+    		        	//Fill in all the resolved projects
+    		        	for(var i = 0; i < ret.length;i++){
+    		        		var day = ret[i];
+    		        		if(day && day.hoursEntries){
+    		        			for(var j = 0; j < day.hoursEntries.length; j++){
+    		        				var entry = day.hoursEntries[j];
+    		        				var entryProjectURI = entry.project.resource;
+    		        				//Find the matching resolved project
+    		        				for(var k = 0; k < projects.length;k++){
+    		        					var project = projects[k];
+    		        					if(entryProjectURI == project.resource){
+    		        						//Replace the project
+    		        						entry.project = project;
+    		        						break;
+    		        					}
+    		        				}
+    		        			}
+    		        		}
+    		        	}
+    		        	
+    		        	deferred.resolve(ret);
+    		      });
+    			  
     		  });
     		 });
 		  
