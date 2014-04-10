@@ -8,7 +8,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 		var today = moment();
 		var oneWeekAgo = moment().subtract(1, 'weeks');
 		HoursService.getHoursRecordsBetweenDates($scope.me, oneWeekAgo.format('YYYY-MM-DD'), today.format('YYYY-MM-DD')).then(function(result){
-			alert('Success!');
+			//alert('Success!');
 		});
 	
 	
