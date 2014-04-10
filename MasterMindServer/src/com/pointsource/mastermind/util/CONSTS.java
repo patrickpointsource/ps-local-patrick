@@ -153,7 +153,7 @@ public interface CONSTS {
 	/**
 	 * Mongo Constants
 	 */
-	public String BUILD_NUMBER = "0.1.2014.03.14";
+	public String BUILD_NUMBER = "0.1.2014.04.10";
 	public String DB_USER = "admin";
 	public String DB_PASS = "t0ddSucks";
 	//public String DB_HOSTNAME_DEFAULT = "db.mastermind.pointsource.us";
@@ -164,12 +164,10 @@ public interface CONSTS {
 		public String DB_NAME_DEFAULT  = "mm_db_stage";
 	//Local Host
 		public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
-		
-	//public String WEB_SITE_URL = "http://localhost:9000";
-	public String WEB_SITE_URL = "http://0.0.0.0:9000";
+		//public String WEB_SITE_URL = "http://localhost:9000";
+		public String WEB_SITE_URL = "http://0.0.0.0:9000";
 	//Staging Only
 		//public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindStaging/";
-		//public String DB_NAME_DEFAULT  = "mm_db_prodclone";
 	//Production Only
 		//public String DB_NAME_DEFAULT  = "mm_db_prod";
 		//public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindServer/";
