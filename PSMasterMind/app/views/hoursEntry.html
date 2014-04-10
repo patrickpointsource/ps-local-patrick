@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="panel-body">
-        {{allHours[0].date}}<!-- Mar 30 — Apr 5 2014 --> &mdash; {{allHours[6].date}}
+        {{prettyCalendarDates.firstDate}}<!-- Mar 30 — Apr 5 2014 --> &ndash; {{prettyCalendarDates.lastDate}}
         <div class="table-responsive" style="border:none">
             <table class="table table-condensed">
                 <tbody >
@@ -34,7 +34,8 @@
                     <th class="text-center">SUN</th>
                 </tr>
                 <tr>
-                    <th ng-repeat="day in allHours" class="text-center"><button class="btn btn-default btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index<5 ,'btn-warning': day.totalHours < 8 && $index<5 , 'btn-default' : days.totalHours >= 8 && $index<5, 'active': isSelected(day)}" data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>
+                    <!--<th ng-repeat="day in allHours" class="text-center"><button class="btn btn-default btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index<5 ,'btn-warning': day.totalHours < 8 && $index<5 , 'btn-default' : days.totalHours >= 8 && $index<5, 'active': lastSelectedDay === day}" data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>-->
+                    <th ng-repeat="day in displayedHours" class="text-center"><button class="btn btn-default btn-lg"  data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.date}}</button></th>
                 </tr>
                 </tbody>
             </table>

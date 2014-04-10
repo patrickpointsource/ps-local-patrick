@@ -4,11 +4,13 @@
         <!--<div class="col-md-1">Hours:</div>-->
         <!--<div class="col-md-offset-1 col-md-5">Description:</div>-->
     </div>
-    <form ng-repeat="hoursEntry in selected.hoursEntries track by $index">
+
+    <form ng-repeat="hoursEntry in selected.hoursEntries">
+
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-12 col-lg-6">
-                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-show="hoursEntry.name">
-                    <div>{{hoursEntry.name}}: {{hoursEntry.customerName}} <span ng-show="hoursEntry.hoursPerWeek"> | h/w:{{hoursEntry.hoursPerWeek}}</span></div>
+                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-show="hoursEntry.project.resource">
+                    <div>{{hoursEntry.project.resource}}:<!-- {{hoursEntry.customerName}}--> <span ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</span></div>
                 </div>
                 <select name="project" id="project"
                         class="col-xs-6 col-sm-12 col-md-6 col-lg-12 form-control" ng-show="!hoursEntry.name"
