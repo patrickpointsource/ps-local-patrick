@@ -72,7 +72,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                     } else {
                         var hoursEntries = []
                         $scope.displayedHours[i].hoursEntries = hoursEntries;
-                        console.log($scope.displayedHours[i])
+                        //console.log($scope.displayedHours[i])
                         $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
                     }
                    // $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
@@ -98,19 +98,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
         }
 
-
+        $scope.moment = moment;
         var me = $scope.me.about;
-        $scope.getHours = function () {
-            var query = {
-                "person.resource": me.about
-            };
-            var fields = {
-                date: 1, hours: 1
-            }
-            Resources.query('hours', query, fields, function (result) {
-                console.log(result.members);
-            })
-        }
 
 
         //Doc Brown - time travel.
@@ -125,7 +114,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.forwardInTime = function () {
             $scope.dateIndex = $scope.dateIndex - 7;
             $scope.entryFormOpen = false;
-            console.log($scope.dateIndex);
+           // console.log($scope.dateIndex);
 
             delete $scope.selected;
             $scope.hoursRequest();
@@ -141,32 +130,24 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
         //TODO task: get this week of dates
         $scope.showWeekDates = function (callback) {
-            //get the number of days since monday
-            var day = $scope.startDate.getDay();
-            //console.log($scope.startDate);
-
-
-            var monday = ((day - 1) + $scope.dateIndex);
-
-            var d = new Date();
-            $scope.todaysDate = $scope.formatTheDate(d);
-            //console.log($scope.todaysDate);
+        	$scope.todaysDate = $scope.moment().format('YYYY-MM-DD');
+        	var moment = $scope.moment().subtract($scope.dateIndex, 'days');
+        	var monday = moment.day("Monday");
+        	
 
             //array to hold the dates
             $scope.thisWeekDates = [];
 
 
             //run through and build out the array of the week's dates
-            for (var i = 0; i <= 7; i++) {
-                var d = new Date();
-                d.setDate((d.getDate() - monday) + i);
-                $scope.formatTheDate(d);
-                $scope.thisWeekDates.push($scope.theDayFormatted);
-                //console.log($scope.theDayFormatted);
+            for (var i = 0; i < 7; i++) {
+            	var moment = $scope.moment(monday).add(i, 'days');
+            	var dateFormatted = moment.format('YYYY-MM-DD');
+            	$scope.thisWeekDates.push(dateFormatted);
             }
             $scope.prettyCalendarFormats($scope.thisWeekDates[0], $scope.thisWeekDates[6]);
             callback($scope.thisWeekDates);
-            console.log($scope.thisWeekDates.length);
+            //console.log($scope.thisWeekDates.length);
         }
 
         $scope.months = ['Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -191,26 +172,12 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
         $scope.hoursRequest = function () {
             $scope.showWeekDates(function (result) {
-                HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[7]).then(function (result) {
+                HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[6]).then(function (result) {
                     if(result.length === 0) {
-                        delete $scope.displayedHours;
-                        $scope.displayedHours = [];
-                        console.log('error');
-                        for(var i=0; i<7; i++) {
-                            var obj = {}
-                            obj.date = $scope.thisWeekDates[i];
-                            obj.totalHours = 0;
-                            var futureness = $scope.checkForFutureness(obj.date);
-                            obj.futureness = futureness;
-                            obj.hoursEntries = [];
-                            $scope.displayedHours.push(obj);
-                        }
+                    	console.error("getHoursRecordsBetweenDates("+$scope.thisWeekDates[0]+","+$scope.thisWeekDates[6]+") gave me no results");
                     } else {
                         $scope.displayedHours = result;
                         for (var i = 0; i < $scope.displayedHours.length; i++) {
-                            if($scope.displayedHours[i].totalHours) {
-                                console.log('has hours');
-                            }
                             $scope.displayedHours[i].totalHours = 0;
 
                             var futureness = $scope.checkForFutureness($scope.displayedHours[i].date);
@@ -222,9 +189,6 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                             }
                         }
                     }
-                    //console.warn(result);
-
-                   console.warn($scope.displayedHours);
                 });
             });
         }
@@ -232,22 +196,6 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.hoursRequest();
 
         $scope.newHoursRecord = {};
-
-        /**
-         * Add a new Hours Record to the server
-         */
-//        $scope.addHours = function () {
-//            console.log('clicked addHours')
-//            //Set the person context
-//            $scope.newHoursRecord.person = {resource: $scope.me.about};
-//            console.log($scope.newHoursRecord)
-//            Resources.create('hours', $scope.newHoursRecord).then(function(){
-//                $scope.newHoursRecord = {};
-//            });
-//
-//            //TODO update scopes to show new hours and count or rerun get day's hours.
-//            $scope.openHoursEntry($scope.selected);
-//        };
 
         $scope.addHours = function () {
             var entries = $scope.selected.hoursEntries;

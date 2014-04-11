@@ -75,7 +75,8 @@ angular.module('Mastermind')
 		  var personURI = person.about?person.about:person.resource;
 		  var startDateMoment = moment(startDate);
 		  var endDateMoment = moment(endDate);
-		  var numDays = endDateMoment.diff(startDateMoment, 'days');
+		  //Adding one to be inclusive
+		  var numDays = endDateMoment.diff(startDateMoment, 'days')+1;
 		  
 		  var personURI = person.about?person.about:person.resource;
 		  
@@ -133,6 +134,15 @@ angular.module('Mastermind')
     		  Resources.query('hours', hoursQuery, hoursFields, function(result){
     			  var hoursResults = result.members;
     			  var ret = [];
+    			  //Init the array
+    			  for(var i = 0; i < numDays; i++){
+    				  var dateMoment = moment(startDate).add('days',i);
+    				  var date = dateMoment.format('YYYY-MM-DD');
+    				  ret[i]={totalHours:0,
+    						  date: date,
+    						  hoursEntries:[]};
+    			  }
+    			  
     			  //Go through all the hours results and add them to the return array
     			  for(var i = 0; i < hoursResults.length;i++){
     				  var hoursRecord = hoursResults[i];
@@ -141,14 +151,21 @@ angular.module('Mastermind')
     				  //Get the difference in days
     				  var diff = hoursMoment.diff(startDateMoment, 'days');
     				  var entries = ret[diff];
+    				  
     				  //Create the new entry if it does not exist
     				  if(!entries){
+    					  console.warn('Adding for hours out side inital array: ' + hoursRecord.date + ' ' + startDate + ' ' + endDate);
+    					  
     					  entries = {
+    							totalHours:0,
     							date: hoursRecord.date,
     							hoursEntries:[]
     					  };
     					  ret[diff] = entries;
     				  }
+    				  
+    				  //Increment the total hours
+    				  entries.totalHours += hoursRecord.hours;
     				  
     				  entries.hoursEntries.push({
     					  project: hoursRecord.project,
@@ -194,8 +211,10 @@ angular.module('Mastermind')
             				  //Create the new entry if it does not exist
         					  var dateMoment = moment(startDate).add('days',j);
         					  if(!entries){
+        						  console.warn('Adding for assignment out side inital array: ' + date + ' ' + startDate + ' ' + endDate);
             					  var date = dateMoment.format('YYYY-MM-DD');
             					  entries = {
+            							totalHours:0,
             							date: date,
             							hoursEntries:[]
             					  };
