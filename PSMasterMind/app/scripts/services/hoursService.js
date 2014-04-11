@@ -23,10 +23,18 @@ angular.module('Mastermind')
 					  requests.push(Resources.remove(record.resource));
 				  }
 				  else{
+					  //Default description
+					  if(!record.description){
+						  record.description = 'No Description Entered';
+					  }
 					  requests.push(Resources.update(record));
 				  }
 			  }
 			  else if(record.hours >= 0){
+				  //Default description
+				  if(!record.description){
+					  record.description = 'No Description Entered';
+				  }
 				  requests.push(Resources.create('hours', record));
 			  }
 		  }
