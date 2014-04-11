@@ -3,22 +3,6 @@
  */
 angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'HoursService',
     function ($scope, $state, $rootScope, Resources, ProjectsService, HoursService) {
-//
-
-        //EXAMPLE of fetch the hours entries for 7 days
-//		var today = moment();
-//		var oneWeekFromNow = moment().add(1, 'weeks');
-//		HoursService.getHoursRecordsBetweenDates($scope.me, today.format('YYYY-MM-DD'), oneWeekFromNow.format('YYYY-MM-DD')).then(function(result){
-//			//alert('Success!');
-//		});
-
-
-//        var today = moment();
-//        var oneWeekAgo = moment().subtract(1, 'weeks');
-//        HoursService.getHoursRecordsBetweenDates($scope.me, oneWeekAgo.format('YYYY-MM-DD'), today.format('YYYY-MM-DD')).then(function (result) {
-//            //alert('Success!');
-//        });
-
 
         $scope.checkForFutureness = function(date) {
             //flux capacitor
@@ -61,69 +45,6 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
 
         };
-
-        //keep track of which day is selected
-//        $scope.isSelected = function (day) {
-//
-//           $scope.selected === day;
-//        }
-
-
-        ProjectsService.getOngoingProjects(function (result) {
-            $scope.ongoingProjects = result.data;
-
-            ProjectsService.getMyCurrentProjects($scope.me).then(function (myCurrentProjects) {
-                $scope.myProjects = myCurrentProjects.data;
-
-                if ($scope.myProjects.length > 0) {
-                    $scope.hasActiveProjects = true;
-                }
-
-                var myProjects = [];
-                for (var m = 0; m < $scope.myProjects.length; m++) {
-                    var myProj = $scope.myProjects[m];
-                    var found = undefined;
-                    myProj.title = myProj.customerName + ': ' + myProj.name;
-                    myProjects.push(myProj);
-
-                    for (var n = 0; n < $scope.ongoingProjects.length; n++) {
-                        var proj = $scope.ongoingProjects[n];
-                        if (proj.resource == myProj.resource) {
-                            $scope.ongoingProjects.splice(n, 1);
-                            break;
-                        }
-                    }
-                }
-
-
-                myProjects.sort(function (item1, item2) {
-                    if (item1.title < item2.title)
-                        return -1;
-                    if (item1.title > item2.title)
-                        return 1;
-                    return 0;
-                });
-
-                var otherProjects = [];
-                while ($scope.ongoingProjects.length > 0) {
-                    var myProj = $scope.ongoingProjects.pop();
-                    myProj.title = myProj.customerName + ': ' + myProj.name;
-                    otherProjects.push(myProj);
-                }
-
-                otherProjects.sort(function (item1, item2) {
-                    if (item1.title < item2.title)
-                        return -1;
-                    if (item1.title > item2.title)
-                        return 1;
-                    return 0;
-                });
-                //$scope.myProjects = myProjects;
-                //console.log($scope.myProjects)
-                $scope.hoursProjects = myProjects.concat(otherProjects);
-                //console.log($scope.hoursProjects);
-            });
-        });
 
 
         //MOVE THIS TO FORM CONTROLLER WHEN READY
