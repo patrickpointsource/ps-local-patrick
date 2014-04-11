@@ -107,14 +107,14 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         //Doc Brown - time travel.
         $scope.dateIndex = 0;
         $scope.backInTime = function () {
-            $scope.dateIndex = $scope.dateIndex + 7;
+            $scope.dateIndex = $scope.dateIndex + 6;
             $scope.entryFormOpen = false;
             delete $scope.selected;
             $scope.hoursRequest();
 
         }
         $scope.forwardInTime = function () {
-            $scope.dateIndex = $scope.dateIndex - 7;
+            $scope.dateIndex = $scope.dateIndex - 6;
             $scope.entryFormOpen = false;
             delete $scope.selected;
             $scope.hoursRequest();

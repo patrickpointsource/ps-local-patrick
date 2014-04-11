@@ -17,6 +17,7 @@ angular.module('Mastermind')
 		  for(var i = 0; i < hoursRecords.length; i++){
 			  var record = hoursRecords[i];
 			  var id = record['_id'];
+              record.hours = parseInt(record.hours);
 			  
 			  if(id){
 				  if(record.hours <= 0){
