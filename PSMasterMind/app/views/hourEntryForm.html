@@ -6,8 +6,11 @@
             	<div class="row">
             		
 	                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-if="hoursEntry.project.name" >
-	                    <div ng-init="hoursEntry.hoursRecord.project.resource = hoursEntry.project.resource">{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}} <span ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</span></div>
-	                	 <div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
+	                    <div ng-init="hoursEntry.hoursRecord.project.resource = hoursEntry.project.resource">
+	                    	<label>{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}}</label>
+	                    	<span ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</span>
+	                    </div>
+	                	<div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
 	                </div>
 	               	<div ng-if="!hoursEntry.project.name" class="col-xs-6 col-sm-12 col-md-6 col-lg-12 ">
 	               		<select name="project" id="project"
@@ -17,14 +20,14 @@
 	                	</select>
 	               	</div>
 	                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12">
-	                    <input type="number" value="{{hoursEntry.hoursRecord.hours}}" class="form-control"
+	                    <input value="{{hoursEntry.hoursRecord.hours}}" class="form-control"
 	                          ng-model="hoursEntry.hoursRecord.hours"/>
 	                </div>
 	            </div>
             </div>
             <div class="col-xs-12 col-sm-6 col-md-12 col-lg-6"><div class="hidden-sm hidden-lg"><br/></div>
             	<textarea class="col-xs-12 form-control" type="text" ng-model="hoursEntry.hoursRecord.description" placeholder="Description"
-                          >{{hoursEntry.hoursRecord.description}}</textarea>
+                         rows="3" >{{hoursEntry.hoursRecord.description}}</textarea>
               
 
             </div>
