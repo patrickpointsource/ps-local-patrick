@@ -87,7 +87,7 @@ public class Projects extends BaseResource {
 		try {
 			try {
 				RequestContext context = getRequestContext();
-				JSONObject ret = Data.getProject(context, id);
+				JSONObject ret = Data.getProject(context, id, false);
 
 				if (ret == null) {
 					throw new WebApplicationException(Status.NOT_FOUND);

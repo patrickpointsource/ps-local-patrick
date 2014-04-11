@@ -738,7 +738,7 @@ public class Data implements CONSTS {
 	
 	public static JSONArray getProjectRoles(RequestContext context, String id) 
 			throws JSONException {
-		JSONObject project = getProject(context, id);
+		JSONObject project = getProject(context, id, false);
 		JSONArray ret = null;
 		
 		if (project.has(PROP_ROLES)) {
@@ -753,7 +753,7 @@ public class Data implements CONSTS {
 			throws JSONException {
 		JSONObject ret = null;
 		
-		JSONObject project = getProject(context, id);
+		JSONObject project = getProject(context, id, false);
 		JSONArray roles = project.has(PROP_ROLES) ? project.getJSONArray(PROP_ROLES): null;
 		JSONObject role = null;
 		
@@ -1015,7 +1015,7 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getProject(RequestContext context, String id)
+	public static JSONObject getProject(RequestContext context, String id, Boolean allFields)
 			throws JSONException {
 		JSONObject ret = null;
 
@@ -1024,7 +1024,7 @@ public class Data implements CONSTS {
 		BasicDBObject fields = new BasicDBObject();
 
 		// If not management remove the financial fields
-		if (!hasFinancialAccess(context)) {
+		if (!hasFinancialAccess(context) && !allFields) {
 			fields.put(PROP_TERMS, 0);
 			String roleAmounts = PROP_ROLES + "." + PROP_RATE + "."
 					+ PROP_AMOUNT;
@@ -1969,7 +1969,7 @@ public class Data implements CONSTS {
 	public static JSONObject updateProject(RequestContext context, String id,
 			JSONObject newProject) throws JSONException {
 
-		JSONObject existing = getProject(context, id);
+		JSONObject existing = getProject(context, id, true);
 		if (existing == null) {
 			Response response = Response.status(Status.BAD_REQUEST)
 					.entity("Project does not exist").build();
@@ -1998,7 +1998,26 @@ public class Data implements CONSTS {
 		newEtag++;
 		newProject.put(PROP_ETAG, String.valueOf(newEtag));
 
-		String json = newProject.toString();
+		if (!hasFinancialAccess(context) && newProject.has(PROP_ROLES)) {
+			newProject.remove(PROP_TERMS);
+			
+			// manually remove passed by default amount value
+			JSONArray roles = newProject.getJSONArray(PROP_ROLES);
+			JSONObject r = null;
+			
+			for (int i = 0; i < roles.length(); i ++) {
+				r = roles.getJSONObject(i);
+				
+				if (r.has(PROP_RATE))
+					r.getJSONObject(PROP_RATE).remove(PROP_AMOUNT);
+			}
+			
+		}
+		
+		extendJSONObject(existing, newProject);
+		
+		//String json = newProject.toString();
+		String json = existing.toString();
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 
@@ -3147,5 +3166,67 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 				}
 			}
 		}// for
+	}
+	
+	public static void extendJSONObject(JSONObject destination, JSONObject source) {
+		Iterator<?> keys = source.keys();
+		String propertyName;
+		JSONArray tmpSoureArr, tmpDestinationArr;
+		
+		
+        while( keys.hasNext() ){
+        	propertyName = (String)keys.next();
+        	
+        	if( source.get(propertyName) instanceof String ){
+        		destination.put(propertyName, source.get(propertyName));
+        	} else if( source.get(propertyName) instanceof JSONArray ){
+        		
+        		if (destination.has(propertyName) && destination.get(propertyName) instanceof JSONArray){
+        			tmpSoureArr = source.getJSONArray(propertyName);
+        			tmpDestinationArr = destination.getJSONArray(propertyName);
+	            	
+        			if (tmpSoureArr.length() > 0 && tmpSoureArr.get(0) instanceof JSONObject) {
+        				JSONObject tmpSourceObj, tmpDestinationObj;
+        				
+		            	for (int j = 0; j < tmpSoureArr.length(); j ++) {
+		            		tmpSourceObj = tmpSoureArr.getJSONObject(j);
+		            		
+		            		if (tmpSourceObj.has(PROP__ID)) {
+		            			tmpDestinationObj = null;
+		            			
+		            			for (int k = 0; k < tmpDestinationArr.length(); k ++) {
+		            				if (tmpDestinationArr.get(k) instanceof JSONObject) {
+		            					tmpDestinationObj = tmpDestinationArr.getJSONObject(k);
+		            					
+		            					if (tmpDestinationObj.has(PROP__ID) && 
+		            							tmpDestinationObj.getString(PROP__ID).equals(tmpSourceObj.getString(PROP__ID)))
+		            						break;
+		            					else
+		            						tmpDestinationObj = null;
+		            				} else
+		            					tmpDestinationObj = null;
+		            					
+		            					
+		            			}
+		            			
+		            			if (tmpDestinationObj != null)
+		            				extendJSONObject(tmpDestinationObj, tmpSourceObj);
+		            		}
+		            	}
+        			} else 
+        				destination.put(propertyName, source.get(propertyName));
+        		} else
+        			destination.put(propertyName, source.get(propertyName));
+        		
+            } else if( source.get(propertyName) instanceof JSONObject ){ 
+            	if (destination.has(propertyName) && destination.get(propertyName) instanceof JSONObject)
+            		extendJSONObject((JSONObject)destination.get(propertyName), (JSONObject)source.get(propertyName));
+            	else
+            		destination.put(propertyName, source.get(propertyName));
+            		
+            } else
+            	destination.put(propertyName, source.get(propertyName));
+        }
+		
 	}
 }
