@@ -321,29 +321,7 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
                 
                 $scope.backlogProjectsList.splice(startingProjectIndex, 0, projectItem);
                 unassignedIndex++;
-          	  }
-        	  
-        	  // Add backlog projects summary row
-        	  var stringRoleList = new String();
-              for (var k=0; k<projectRolesList.length;k++) {
-                  if (stringRoleList.length > 1) 
-                  	stringRoleList = stringRoleList.concat(", ");
-              	stringRoleList = stringRoleList.concat(projectRolesList[k].role,"(",projectRolesList[k].count,")");
-              }
-              
-              var projectItem = {
-                      clientName: '',
-                  	  projectName: 'Summary:',
-                  	  title: 'Summary:',
-                  	  projectResource: '',
-                  	  role: stringRoleList,
-                  	  hours: '',
-                  	  startDate: '',
-                  	  endDate: '',
-                  	  isProjectItem: true
-                  };
-              
-              $scope.backlogProjectsList.splice(0, 0, projectItem);
+          	  }        	  
         	  
               //console.log("Backlogged project Role list:",$scope.backlogProjectsList);
       	
