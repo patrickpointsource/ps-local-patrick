@@ -55,28 +55,6 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 //           $scope.selected === day;
 //        }
 
-        $scope.mergeRecursive = function (obj1, obj2, callback) {
-
-            for (var p in obj2) {
-                try {
-                    // Property in destination object set; update its value.
-                    if (obj2[p].constructor == Object) {
-                        obj1[p] = $scope.mergeRecursive(obj1[p], obj2[p]);
-
-                    } else {
-                        obj1[p] = obj2[p];
-
-                    }
-
-                } catch (e) {
-                    // Property in destination object not set; create it and set its value.
-                    obj1[p] = obj2[p];
-
-                }
-            }
-            //return obj1;
-            callback(obj1);
-        }
 
 
         ProjectsService.getOngoingProjects(function (result) {
@@ -141,24 +119,23 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             console.log('clicked addNewHours');
             console.log($scope.selected);
 
+
+
             //match date with current hours
-            var allHoursLength = $scope.allHours.length;
-            for (var i = 0; i < allHoursLength; i++) {
-                if ($scope.selected.date === $scope.allHours[i].date) {
-                    $scope.activeAddition = $scope.allHours[i];
+            var displayedHoursLength = $scope.displayedHours.length;
+            for (var i = 0; i < displayedHoursLength; i++) {
+                if ($scope.selected.date === $scope.displayedHours[i].date) {
+                   // $scope.activeAddition = $scope.displayedHours[i];
                     $scope.newHoursRecord = {
-                        customerName: "",
                         date: $scope.selected.date,
                         description: "",
                         hours: "",
-                        name: "",
-                        project: {
-                            resource: ""
-                        }
+                        person: $scope.me,
+                        project: {}
                     };
                     //push the new hours record to the appropriate hoursEntries array
                     //this will cause the UI to update and show a blank field
-                    $scope.allHours[i].hoursEntries.push($scope.newHoursRecord);
+                    $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
                 }
             }
         };
@@ -199,17 +176,17 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.dateIndex = 0;
         $scope.backInTime = function () {
             $scope.dateIndex = $scope.dateIndex + 7;
-            $scope.getDisplayedHours();
+            $scope.hoursRequest();
 
         }
         $scope.forwardInTime = function () {
             $scope.dateIndex = $scope.dateIndex - 7;
-            $scope.getDisplayedHours();
+            $scope.hoursRequest();
 
         }
         $scope.thisWeek = function () {
             $scope.dateIndex = 0;
-            $scope.getDisplayedHours();
+            $scope.hoursRequest();
         }
 
 
@@ -262,23 +239,27 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             return $scope.prettyCalendarDates;
         }
 
-
-
-        $scope.showWeekDates(function (result) {
-            HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[7]).then(function (result) {
-                //console.warn(result);
-                $scope.displayedHours = result;
-                for (var i = 0; i < $scope.displayedHours.length; i++) {
-                    $scope.displayedHours[i].totalHours = 0;
-                    for (var j = 0; j < $scope.displayedHours[i].hoursEntries.length; j++) {
-                        if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
-                            $scope.displayedHours[i].totalHours = $scope.displayedHours[i].totalHours + $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours
+        $scope.hoursRequest = function() {
+            $scope.showWeekDates(function (result) {
+                HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[7]).then(function (result) {
+                    //console.warn(result);
+                    $scope.displayedHours = result;
+                    for (var i = 0; i < $scope.displayedHours.length; i++) {
+                        $scope.displayedHours[i].totalHours = 0;
+                        for (var j = 0; j < $scope.displayedHours[i].hoursEntries.length; j++) {
+                            if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
+                                $scope.displayedHours[i].totalHours = $scope.displayedHours[i].totalHours + $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours
+                            }
                         }
                     }
-                }
-                console.warn($scope.displayedHours);
+                    console.warn($scope.displayedHours);
+                });
             });
-        });
+        }
+
+       $scope.hoursRequest();
+
+
 
 
         //TODO Build hours array for entire shown week
@@ -496,38 +477,29 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 //        };
 
         $scope.addHours = function () {
-           var enteries = $scope.selected.hoursEntries;
+           var entries = $scope.selected.hoursEntries;
         	var hoursRecords = [];
         	
-        	for(var i = 0; i < enteries.length;i++){
-        		var entry = enteries[i];
+        	for(var i = 0; i < entries.length;i++){
+                //console.log(entries[i].hoursRecord);
+
+        		var entry = entries[i];
         		if(entry.hoursRecord){
         			hoursRecords.push(entry.hoursRecord);
         			if(!entry.hoursRecord.person){
         				entry.hoursRecord.person = {resource: $scope.me.about};
         			}
+                    if(!entry.hoursRecord.date) {
+                        entry.hoursRecord.date = $scope.selected.date;
+                    }
         		}
         	}
 
             HoursService.updateHours(hoursRecords).then(function () {
             	$scope.entryFormOpen = false;
             	delete $scope.selected;
-            	$scope.showWeekDates(function (result) {
-                    HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[7]).then(function (result) {
-                        //console.warn(result);
-                        $scope.displayedHours = result;
-                        for (var i = 0; i < $scope.displayedHours.length; i++) {
-                            $scope.displayedHours[i].totalHours = 0;
-                            for (var j = 0; j < $scope.displayedHours[i].hoursEntries.length; j++) {
-                                if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
-                                    $scope.displayedHours[i].totalHours = $scope.displayedHours[i].totalHours + $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours
-                                }
-                            }
-                        }
-                       // console.warn($scope.displayedHours);
-                    });
-                });
-            	
+
+            	$scope.hoursRequest();
             });
         };
 

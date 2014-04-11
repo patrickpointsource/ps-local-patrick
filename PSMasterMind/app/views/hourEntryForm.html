@@ -17,7 +17,7 @@
 	                	</select>
 	               	</div>
 	                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12">
-	                    <input type="text" value="{{hoursEntry.hoursRecord.hours}}" class="form-control"
+	                    <input type="number" value="{{hoursEntry.hoursRecord.hours}}" class="form-control"
 	                          ng-model="hoursEntry.hoursRecord.hours"/>
 	                </div>
 	            </div>
@@ -28,38 +28,14 @@
               
 
             </div>
+            <input id="date" name="date" class="form-control"
+                   type="hidden" ng-model="hoursEntry.date"
+                   ng-required="true" value="selected.date"/>
         </div>
 
 
-        <!-- For displaying existing records -->
-        <!--<div class="col-md-4 control-label" ng-show="hoursEntry.name">{{hoursEntry.name}}: {{hoursEntry.customerName}}</div>-->
-
-        <!--<div class="row">-->
-        <!--<div class="col-xs-6 col-sm-12">{{hoursEntry.name}}: {{hoursEntry.customerName}}</div>-->
-        <!--</div>-->
-
-        <!--<div class="form-group"><label for="hours" class="col-xs-12 visible-xs">Hours</label>-->
-        <!--<input class="col-xs-1 col-sm-1 col-md-1 col-lg-1" type="number" value="{{hoursEntry.hours}}"-->
-        <!--ng-show="hoursEntry.hours" placeholder="0"/></div>-->
-        <!--<label for="description" class="col-xs-12 control-label visible-xs">Description</label>-->
-        <!--<input class="col-xs-12 col-sm-5 col-md-offset-1 col-md-5" type="text" ng-show="hoursEntry.description"-->
-        <!--value="{{hoursEntry.description}}" placeholder="Description"/>-->
 
 
-        <!-- for adding an empty row to add to the records -->
-
-
-        <!--<input id="hours" name="hours" class="col-md-1" ng-show="!hoursEntry.hours"-->
-               <!--type="number" ng-model="newHoursRecord.hours"-->
-               <!--ng-required="true"/>-->
-        <!--<input type="text" id="hours" name="hours" class="col-md-offset-1 col-md-5"-->
-               <!--ng-show="!hoursEntry.description"-->
-               <!--ng-model="newHoursRecord.description" ng-required="true">-->
-
-        <!-- hidden field to hold date as selected in the hours bar -->
-        <input id="date" name="date" class="form-control" ng-show="!hoursEntry.name"
-               type="hidden" ng-model="newHoursRecord.date"
-               ng-required="true"/>
 
 
         <br/>
