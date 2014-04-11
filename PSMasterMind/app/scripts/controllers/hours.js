@@ -6,7 +6,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
         $scope.checkForFutureness = function(date) {
             //flux capacitor
-            var a = moment();
+            var a = moment().subtract('days',1);
             var b = moment(date);
             var diff = a.diff(b);
 
@@ -67,7 +67,15 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                     };
                     //push the new hours record to the appropriate hoursEntries array
                     //this will cause the UI to update and show a blank field
-                    $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
+                    if($scope.displayedHours[i].hoursEntries) {
+                        $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
+                    } else {
+                        var hoursEntries = []
+                        $scope.displayedHours[i].hoursEntries = hoursEntries;
+                        console.log($scope.displayedHours[i])
+                        $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
+                    }
+                   // $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
                 }
             }
         };
@@ -84,6 +92,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 mm = '0' + mm;
             }
             $scope.theDayFormatted = yyyy + '-' + mm + '-' + dd;
+
             var dayFormat = yyyy + '-' + mm + '-' + dd;
             return dayFormat
 
@@ -107,15 +116,17 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         //Doc Brown - time travel.
         $scope.dateIndex = 0;
         $scope.backInTime = function () {
-            $scope.dateIndex = $scope.dateIndex + 6;
+            $scope.dateIndex = $scope.dateIndex + 7;
             $scope.entryFormOpen = false;
             delete $scope.selected;
             $scope.hoursRequest();
 
         }
         $scope.forwardInTime = function () {
-            $scope.dateIndex = $scope.dateIndex - 6;
+            $scope.dateIndex = $scope.dateIndex - 7;
             $scope.entryFormOpen = false;
+            console.log($scope.dateIndex);
+
             delete $scope.selected;
             $scope.hoursRequest();
 
@@ -146,15 +157,16 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
 
             //run through and build out the array of the week's dates
-            for (var i = 0; i < 8; i++) {
+            for (var i = 0; i <= 7; i++) {
                 var d = new Date();
                 d.setDate((d.getDate() - monday) + i);
                 $scope.formatTheDate(d);
                 $scope.thisWeekDates.push($scope.theDayFormatted);
+                //console.log($scope.theDayFormatted);
             }
             $scope.prettyCalendarFormats($scope.thisWeekDates[0], $scope.thisWeekDates[6]);
             callback($scope.thisWeekDates);
-            //console.log($scope.thisWeekDates);
+            console.log($scope.thisWeekDates.length);
         }
 
         $scope.months = ['Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -180,21 +192,39 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.hoursRequest = function () {
             $scope.showWeekDates(function (result) {
                 HoursService.getHoursRecordsBetweenDates($scope.me, $scope.thisWeekDates[0], $scope.thisWeekDates[7]).then(function (result) {
-                    //console.warn(result);
-                    $scope.displayedHours = result;
-                    for (var i = 0; i < $scope.displayedHours.length; i++) {
-                        $scope.displayedHours[i].totalHours = 0;
+                    if(result.length === 0) {
+                        delete $scope.displayedHours;
+                        $scope.displayedHours = [];
+                        console.log('error');
+                        for(var i=0; i<7; i++) {
+                            var obj = {}
+                            obj.date = $scope.thisWeekDates[i];
+                            obj.totalHours = 0;
+                            var futureness = $scope.checkForFutureness(obj.date);
+                            obj.futureness = futureness;
+                            obj.hoursEntries = [];
+                            $scope.displayedHours.push(obj);
+                        }
+                    } else {
+                        $scope.displayedHours = result;
+                        for (var i = 0; i < $scope.displayedHours.length; i++) {
+                            if($scope.displayedHours[i].totalHours) {
+                                console.log('has hours');
+                            }
+                            $scope.displayedHours[i].totalHours = 0;
 
-
-                        var futureness = $scope.checkForFutureness($scope.displayedHours[i].date);
-                        $scope.displayedHours[i].futureness = futureness;
-                        for (var j = 0; j < $scope.displayedHours[i].hoursEntries.length; j++) {
-                            if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
-                                $scope.displayedHours[i].totalHours = $scope.displayedHours[i].totalHours + $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours
+                            var futureness = $scope.checkForFutureness($scope.displayedHours[i].date);
+                            $scope.displayedHours[i].futureness = futureness;
+                            for (var j = 0; j < $scope.displayedHours[i].hoursEntries.length; j++) {
+                                if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
+                                    $scope.displayedHours[i].totalHours = $scope.displayedHours[i].totalHours + $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours
+                                }
                             }
                         }
                     }
-                  // console.warn($scope.displayedHours);
+                    //console.warn(result);
+
+                   console.warn($scope.displayedHours);
                 });
             });
         }

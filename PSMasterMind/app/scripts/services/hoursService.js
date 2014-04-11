@@ -262,7 +262,7 @@ angular.module('Mastermind')
     		        			}
     		        		}
     		        	}
-    		        	
+
     		        	deferred.resolve(ret);
     		      });
     			  
