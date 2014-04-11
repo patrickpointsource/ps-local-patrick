@@ -18,6 +18,8 @@ angular.module('Mastermind')
 			  var record = hoursRecords[i];
 			  var id = record['_id'];
               record.hours = parseInt(record.hours);
+              //TODO check the hours client side and inform user they have entered an impossible number (Sprint 11 task 25576)
+              if (record.hours > 24) record.hours = 8;
 			  
 			  if(id){
 				  if(record.hours <= 0){
