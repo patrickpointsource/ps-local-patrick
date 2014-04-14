@@ -252,7 +252,8 @@ angular.module('Mastermind')
               }
             }
             
-            AssignmentService.save($scope.project, $scope.projectAssignments);
+            if ($scope.projectAssignments)
+            	AssignmentService.save($scope.project, $scope.projectAssignments);
             
             callback();
     	});
@@ -272,7 +273,7 @@ angular.module('Mastermind')
     }
     
     $scope.shiftAssignments = function(role, startDelta, endDelta) {
-    	for(var i = 0; i < $scope.projectAssignments.members.length; i++) {
+    	for(var i = 0; $scope.projectAssignments && i < $scope.projectAssignments.members.length; i++) {
     		var assignment = $scope.projectAssignments.members[i];
     		if(assignment.role.resource.indexOf(role._id) > -1) {
     			// if start date changed

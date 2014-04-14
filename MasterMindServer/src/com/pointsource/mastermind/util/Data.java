@@ -3171,7 +3171,7 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 	public static void extendJSONObject(JSONObject destination, JSONObject source) {
 		Iterator<?> keys = source.keys();
 		String propertyName;
-		JSONArray tmpSoureArr, tmpDestinationArr;
+		JSONArray tmpSoureArr, tmpDestinationArr, tmpDestinationArrCopy;
 		
 		
         while( keys.hasNext() ){
@@ -3185,21 +3185,28 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
         			tmpSoureArr = source.getJSONArray(propertyName);
         			tmpDestinationArr = destination.getJSONArray(propertyName);
 	            	
+        			tmpDestinationArrCopy = new JSONArray();
+        			// remove all
+        			for (int k = (tmpDestinationArr.length() - 1); k >= 0; k --) {
+        				tmpDestinationArrCopy.put(tmpDestinationArr.get(k));
+        				tmpDestinationArr.remove(k);
+        			}
+        			
         			if (tmpSoureArr.length() > 0 && tmpSoureArr.get(0) instanceof JSONObject) {
         				JSONObject tmpSourceObj, tmpDestinationObj;
         				
-		            	for (int j = 0; j < tmpSoureArr.length(); j ++) {
+		            	for (int j = (tmpSoureArr.length() - 1); j >= 0; j --) {
 		            		tmpSourceObj = tmpSoureArr.getJSONObject(j);
 		            		
 		            		if (tmpSourceObj.has(PROP__ID)) {
 		            			tmpDestinationObj = null;
 		            			
-		            			for (int k = 0; k < tmpDestinationArr.length(); k ++) {
-		            				if (tmpDestinationArr.get(k) instanceof JSONObject) {
-		            					tmpDestinationObj = tmpDestinationArr.getJSONObject(k);
+		            			for (int k = 0; k < tmpDestinationArrCopy.length(); k ++) {
+		            				if (tmpDestinationArrCopy.get(k) instanceof JSONObject) {
+		            					tmpDestinationObj = tmpDestinationArrCopy.getJSONObject(k);
 		            					
 		            					if (tmpDestinationObj.has(PROP__ID) && 
-		            							tmpDestinationObj.getString(PROP__ID).equals(tmpSourceObj.getString(PROP__ID)))
+		            							tmpDestinationObj.get(PROP__ID).toString().equals(tmpSourceObj.get(PROP__ID).toString()))
 		            						break;
 		            					else
 		            						tmpDestinationObj = null;
@@ -3209,9 +3216,15 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		            					
 		            			}
 		            			
-		            			if (tmpDestinationObj != null)
+		            			if (tmpDestinationObj != null) {
 		            				extendJSONObject(tmpDestinationObj, tmpSourceObj);
-		            		}
+		            				tmpDestinationArr.put(tmpDestinationObj);
+		            			} else
+		            				// simply put object if it hasn't old version in destination arr
+			            			tmpDestinationArr.put(tmpSourceObj);
+		            		} else
+		            			// simply put object if it is new
+		            			tmpDestinationArr.put(tmpSourceObj);
 		            	}
         			} else 
         				destination.put(propertyName, source.get(propertyName));
