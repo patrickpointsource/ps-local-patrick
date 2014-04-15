@@ -6,6 +6,9 @@
  */
 angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filter', '$q', 'Resources','ngTableParams',
   function ($scope, $state, $filter, $q, Resources, TableParams) {
+	
+	$scope.navType = 'pills';
+	  
     // Table Parameters
     var params = {
       page: 1,            // show first page
@@ -142,62 +145,4 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
         });
       });
     };
-
-
-//      $scope.newSkill = {};
-//    /**
-//     * Fetch the list of skills
-//     */
-//    Resources.refresh('skills').then(function(result){
-//      $scope.skills = result.members;
-//      $scope.skillsTableParams = new TableParams(params, {
-//           total: $scope.skills.length, // length of data
-//           getData: function ($defer, params) {
-//             var data = $scope.skills;
-  //
-//             var start = (params.page() - 1) * params.count();
-//             var end = params.page() * params.count();
-  //
-//             // use build-in angular filter
-//             var orderedData = params.sorting() ?
-//               $filter('orderBy')(data, params.orderBy()) :
-//               data;
-  //
-//             var ret = orderedData.slice(start, end);
-//             $defer.resolve(ret);
-  //
-//           }
-//         });
-//    });
-  //
-//    /**
-//     * Add a new Skill to the server
-//     */
-//     $scope.addSkill = function(){
-//       Resources.create('skills', $scope.newSkill).then(function(){
-//         Resources.refresh('skills').then(function(result){
-//           $scope.skills = result.members;
-//           $scope.skillsTableParams.total($scope.skills.length);
-//           $scope.skillsTableParams.reload();
-//
-//          //Reset New Skill Object
-//           $scope.newSkill = {};
-//
-//           //Clear New Skill Form
-//           $scope.newSkillForm.$setPristine();
-//         });
-//       });
-//     }
-//   /**
-//    * Delete a skill
-//    */
-//   $scope.deleteSkill = function (skillURL) {
-//       Resources.remove(skillURL).then(function(){
-//       Resources.refresh('skills').then(function(result){
-//         $scope.skills = result.members;
-//         $scope.skillsTableParams.total($scope.skills.length);
-//         $scope.skillsTableParams.reload();
-//       });
-//     });
-//     };
   }]);
