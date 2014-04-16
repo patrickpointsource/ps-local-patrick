@@ -100,7 +100,7 @@
            <div class="cos-xs-12" ng-show="person.collapsed">
            		<hr/>
            </div>
-           <div ng-repeat="hoursRecord in person.hoursEntries" ng-show="person.collapsed">
+           <div ng-repeat="hoursRecord in getProjectHours(person.hoursEntries)" ng-show="person.collapsed">
            		 <div class="cos-xs-12">
 		           	<div class="col-xs-3">
 		           		<span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>

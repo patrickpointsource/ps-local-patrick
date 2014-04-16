@@ -960,7 +960,7 @@ angular.module('Mastermind')
     $scope.selectedHoursPeriod = -1;
     
 	$scope.handleHoursPeriodChanged = function() {
-		
+		//$scope.organizeHours($scope.hours)
 	}
 	
 	
@@ -974,35 +974,38 @@ angular.module('Mastermind')
 		var minDate = null;
 		var maxDate = null;
 		
-		var current;
+		var currentDate;
 		
 		for (var i = 0; i < hours.length; i ++) {
-			current = new Date(hours[i].date);
+			currentDate = new Date(hours[i].date);
 			
-			if (!minDate || minDate > current)
-				minDate = current;
+			if (!minDate || minDate > currentDate)
+				minDate = new Date(currentDate);
 			
-			if (!maxDate || maxDate > current)
-				maxDate = current;
+			if (!maxDate || maxDate <= currentDate)
+				maxDate = new Date(currentDate);
 		}
 		
 		var ifAddYear = minDate.getFullYear() != maxDate.getFullYear();
 		
-		current = minDate;
+		currentDate = new Date(minDate);
 		var o = null;
 		
-		while (current <= maxDate) {
+		while (currentDate <= maxDate) {
 			o = {
-					name: current.getMonth() != now.getMonth() ? monthNames[current.getMonth()]: "Current",
-					value: current.getMonth()
+					name: currentDate.getMonth() != now.getMonth() ? monthNames[currentDate.getMonth()]: "Current",
+					value: currentDate.getMonth()
 				};
 			$scope.hoursPeriods.push(o)
 			
 			if (ifAddYear) {
-				o.name = o.name + ', ' + current.getFullYear();
-				o.value = current.getFullYear() + '-' + o.value;
+				o.name = o.name + ', ' + currentDate.getFullYear();
+				o.value = currentDate.getFullYear() + '-' + o.value;
 			}
-			current = new Date(current).setMonth(current.getMonth()+1)
+			currentDate = new Date(currentDate)
+			
+			currentDate.setMonth(currentDate.getMonth()+1);
+			currentDate.setDate(1);
 		}
 	}
     $scope.organizeHours = function(hours) {
@@ -1089,7 +1092,7 @@ angular.module('Mastermind')
     		if (person.resource == $scope.organizedHours[i].resource)
     			personHours = $scope.organizedHours[i].hoursEntries;
     	
-    	_.each(personHours, function(o) {
+    	_.each($scope.getProjectHours(personHours), function(o) {
     		result += o.hours;
     	})
     	
@@ -1115,6 +1118,24 @@ angular.module('Mastermind')
     	return result.join(', ');
     	
     };
+    
+    $scope.getProjectHours = function(currentHours) {
+    	var selected = new Date();
+    	
+    	var tmp = $scope.selectedHoursPeriod.toString().split('-');
+    	
+    	if (tmp.length == 1)
+    		selected.setMonth(tmp[0])
+    	else if (tmp.length == 2){
+    		selected.setFullYear(tmp[0])
+    		selected.setMonth(tmp[1])
+    	}
+    		
+    	return _.filter(currentHours, function(h){
+    		var d = new Date(h.date)
+    		return d.getFullYear() == selected.getFullYear() && d.getMonth() == selected.getMonth()
+    	})
+    }
     
     
     
