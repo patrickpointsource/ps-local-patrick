@@ -1,8 +1,21 @@
 <div class="row">
-  <div class="col-xs-6 col-sm-4"><h3>Hours</h3></div>
-  <div class="actions col-xs-6 col-sm-8 pageActions">
+  <div class="col-xs-1 col-sm-1 col-md-1">
+  	<h3 class="hidden-xs">View</h3>
+ </div>
+ 
+  <div class="col-xs-4 col-sm-4 col-md-2" style="padding-top: 20px;">
+  	<span>
+     <select name="hoursPeriod" class="form-control"
+		ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
+		ng-required="true"
+		ng-options="f.value as f.name for f in hoursPeriods | orderBy:'name'">
+	</select>
+	</span>
+ </div>
+ 
+  <div class="actions col-xs-6 col-sm-6 col-md-9 pageActions">
     <a ng-if="financeAccess" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" ng-href="{{hoursToCSV.link()}}" download="{{project.name}}-hours.csv">
-      <div class="hidden-xs"><i class="fa fa-table"></i><span> Export to CSV</span></div>
+      <div class="hidden-xs"><i class="fa fa-table"></i><span> Download to Excel</span></div>
       <div class="visible-xs"><i class="fa fa-table"></i></div>
     </a>
     <button type="button"
@@ -11,6 +24,11 @@
         <div class="visible-xs"><i class="fa fa-plus-square"></i></div>
     </button>
   </div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<hr  />
+	</div>
 </div>
 
 <!-- {{project}}<br/><br/>-->
@@ -51,7 +69,57 @@
     </div>
 </div>
 <div class="row">
-     <div class="col-xs-12">
+     <div class="col-xs-12 peopleList">
+      <div ng-repeat="person in organizedHours" >
+            <div class="row" style="padding-bottom: 12px;">
+            	
+            	<div class="col-xs-12">
+            		<span style="margin-right: 12px;" ng-if="!person.collapsed" ><i class="fa fa-caret-right" ng-click="person.collapsed=true" ng-show="person && person.thumbnail"></i></span>
+            		<span style="margin-right: 12px;" ng-if="person.collapsed" ><i class="fa fa-caret-down" ng-click="person.collapsed=false" ng-show="person && person.thumbnail"></i></span>
+	            	<a href="#{{person.resource}}">
+	                    <img ng-show="person && person.thumbnail" class="profileImage" ng-src="{{person.thumbnail}}"/>
+	                    <i class="fa fa-ban" ng-show="!person || !person.thumbnail"></i>
+	                    <span style="display: inline-block;">{{person.name || 'Unknown'}}</span>
+	                  </a>
+	            	<span>: {{getPersonProjectRoles(person)}}</span>
+	            	<span>- {{getPersonTotalHours(person)}} hours</span>
+           		</div>
+            	
+            </div>
+           <div class="col-xs-12" ng-show="person.collapsed">
+	           	<div class="col-xs-3">
+	           		Date
+	           	</div>
+	           	<div class="col-xs-3">
+	           		Hours
+	           	</div>
+	           	<div class="col-xs-3">
+	           		Description
+	           	</div>
+           </div>
+           <div class="cos-xs-12" ng-show="person.collapsed">
+           		<hr/>
+           </div>
+           <div ng-repeat="hoursRecord in person.hoursEntries" ng-show="person.collapsed">
+           		 <div class="cos-xs-12">
+		           	<div class="col-xs-3">
+		           		<span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
+		           	</div>
+		           	<div class="col-xs-3">
+		           		{{hoursRecord.hours}}
+		           	</div>
+		           	<div class="col-xs-3">
+		           		{{hoursRecord.description}}
+		           	</div>
+		           	<div class="col-xs-3">
+		           		<button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.resource)">
+	                      <i class="fa fa-trash-o"></i>
+	                    </button>
+		           	</div>
+	           </div
+            </div>
+        </div>
+     <!--  
       <table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList" export-hours="hoursToCSV">
                <tr ng-repeat="hoursRecord in $data">
                 <td data-title="'Person'" sortable="'person.resource'">
@@ -103,5 +171,6 @@
                 </li>
             </ul>
         </script>
+        -->
      </div>
  </div>

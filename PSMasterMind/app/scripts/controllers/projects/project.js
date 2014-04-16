@@ -955,6 +955,169 @@ angular.module('Mastermind')
 	   return '$' + s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
     };
 
+    //$scope.hoursPeriods = [{name: 'march', value: 3}, {name: 'current', value: 4}, {name: 'may', value: 5}];
+    $scope.hoursPeriods = [];
+    $scope.selectedHoursPeriod = -1;
+    
+	$scope.handleHoursPeriodChanged = function() {
+		
+	}
+	
+	
+	$scope.initHoursPeriods = function(hours) {
+		var monthNames = [ "January", "February", "March", "April", "May", "June",
+		                   "July", "August", "September", "October", "November", "December" ];
+		
+		var now = new Date();
+		
+		 $scope.selectedHoursPeriod = now.getMonth();
+		var minDate = null;
+		var maxDate = null;
+		
+		var current;
+		
+		for (var i = 0; i < hours.length; i ++) {
+			current = new Date(hours[i].date);
+			
+			if (!minDate || minDate > current)
+				minDate = current;
+			
+			if (!maxDate || maxDate > current)
+				maxDate = current;
+		}
+		
+		var ifAddYear = minDate.getFullYear() != maxDate.getFullYear();
+		
+		current = minDate;
+		var o = null;
+		
+		while (current <= maxDate) {
+			o = {
+					name: current.getMonth() != now.getMonth() ? monthNames[current.getMonth()]: "Current",
+					value: current.getMonth()
+				};
+			$scope.hoursPeriods.push(o)
+			
+			if (ifAddYear) {
+				o.name = o.name + ', ' + current.getFullYear();
+				o.value = current.getFullYear() + '-' + o.value;
+			}
+			current = new Date(current).setMonth(current.getMonth()+1)
+		}
+	}
+    $scope.organizeHours = function(hours) {
+    	   var data = $scope.hours;
+           var projectRoles = $scope.project.roles;
+           
+           var ret = data;
+           //Resolve all the people
+           var defers = [];
+           var $defer = $q.defer();
+           
+           for (var i = 0; i < ret.length; i++){
+             var ithHoursRecord = ret[i];
+             defers.push(Resources.resolve(ithHoursRecord.person));
+
+             //See if the user had a role in the project at the time of the record
+             for (var j = 0; j < projectRoles.length;j++){
+               var role = projectRoles[j];
+               //Found a role for this person
+               if (role.assignee && ithHoursRecord.person.resource === role.assignee.resource){
+                 var roleStartDate = new Date(role.startDate);
+                 var hoursDate = new Date(ithHoursRecord.date);
+                 //record was after role start date
+                 if (hoursDate >= roleStartDate){
+                   var roleEndDate = role.endDate?new Date(role.endDate):null;
+                   //Record was before the end of role date
+                   if (!roleEndDate || roleEndDate >= hoursDate){
+                     ithHoursRecord.role=Resources.deepCopy(role);
+                     defers.push(Resources.resolve(ithHoursRecord.role.type));
+                   }
+                 }
+               }
+             }
+
+           }
+
+           var cb = function() {
+		    	$scope.organizedHours = [];
+		    	
+		    	var tmpHoursMap = {};
+		    	var tmpPersonMap = {};
+		    	
+		    	for (var i = 0; i < hours.length; i ++) {
+		    		if (!tmpPersonMap[ hours[i].person.resource ]) {
+		    			tmpPersonMap[ hours[i].person.resource ] = _.extend({}, hours[i].person);
+		    			tmpHoursMap[ hours[i].person.resource ] = [];
+		    		}
+		    		
+		    		tmpHoursMap[ hours[i].person.resource ].push( hours[i]);
+		    	}
+		    	
+		    	$scope.organizedHours = _.map(tmpPersonMap, function(val, key) { return val})
+		    	
+		    	for (var i = 0; i < $scope.organizedHours.length; i ++)
+		    		$scope.organizedHours[i].hoursEntries = tmpHoursMap[ $scope.organizedHours[i].resource ]
+    	
+           }
+           // use simply callback logic to wait until everyone will load
+           var counter = 0;
+           var thenFn = function(){
+        	   counter ++;
+        	   
+        	   if (counter == defers.length) {
+        		   cb()
+        	   }
+           }
+           for (var i = 0; i < defers.length; i ++) {
+        	   defers[i].then(thenFn)
+           }
+           /*
+           $.when.apply(window, defers).done(function(r){
+               $defer.resolve(ret);
+               
+               cb();
+             });*/
+    		
+    }
+    
+    $scope.getPersonTotalHours = function(person) {
+    	var result = 0;
+    	var personHours = [];
+    	
+    	for (var i = 0; i < $scope.organizedHours.length; i ++)
+    		if (person.resource == $scope.organizedHours[i].resource)
+    			personHours = $scope.organizedHours[i].hoursEntries;
+    	
+    	_.each(personHours, function(o) {
+    		result += o.hours;
+    	})
+    	
+    	return result;
+    }
+    
+    $scope.getPersonProjectRoles = function(person) {
+    	var result = [];
+    	var assignees;
+    	var entry;
+    	
+    	for (var i = 0; i < $scope.project.roles.length; i ++) {
+    		assignees = $scope.project.roles[i].assignees;
+    		entry = _.find(assignees, function(a){
+    			if (a.person && a.person.resource == person.resource)
+    				return true
+    		})
+    		
+    		if (entry)
+    			result.push($scope.roleGroups[$scope.project.roles[i].type.resource].abbreviation)
+    	}
+    	
+    	return result.join(', ');
+    	
+    };
+    
+    
+    
     $scope.initHours = function(){
       //Query all hours against the project
       var hoursQuery = {'project.resource':$scope.project.about};
@@ -964,6 +1127,9 @@ angular.module('Mastermind')
       Resources.query('hours',hoursQuery, fields, function(hoursResult){
         $scope.hours = hoursResult.members;
 
+        $scope.organizeHours($scope.hours);
+        $scope.initHoursPeriods($scope.hours);
+        
         if($scope.hoursTableParams){
           $scope.hoursTableParams.total($scope.hours.length);
           $scope.hoursTableParams.reload();
@@ -979,7 +1145,7 @@ angular.module('Mastermind')
             }
           };
 
-
+          	/*
           $scope.hoursTableParams = new TableParams(params, {
             total: $scope.hours.length, // length of data
             getData: function ($defer, params) {
@@ -1025,12 +1191,14 @@ angular.module('Mastermind')
                 }
 
               }
-
+              
+              $scope.organizeHours($scope.hours)
+              
               $.when.apply(window, defers).done(function(){
                 $defer.resolve(ret);
               });
             }
-          });
+          });*/
         }
 
       }, sort);

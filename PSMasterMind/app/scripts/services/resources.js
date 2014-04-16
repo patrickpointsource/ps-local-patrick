@@ -155,7 +155,8 @@ angular.module('Mastermind').factory(
 
         return deferred.promise;
       }
-
+      
+      
       /**
        * Force Update
        *
