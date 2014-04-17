@@ -20,8 +20,8 @@ describe("E2E: Create project, check projects list, delete project, check projec
 	
 	this.login = function() {
 		ptor.get("https://accounts.google.com/ServiceLogin?sacu=1");
-		ptor.findElement(protractor.By.css('input[name="Email"]')).sendKeys('daniil.dziaruhin@pointsourcellc.com')
-		ptor.findElement(protractor.By.css('input[name="Passwd"]')).sendKeys('P0!nt1989')
+		ptor.findElement(protractor.By.css('input[name="Email"]')).sendKeys('[POINTSOURCE_EMAIL]')
+		ptor.findElement(protractor.By.css('input[name="Passwd"]')).sendKeys('[POINTSOURCE_PASSWORD]')
 		ptor.findElement(protractor.By.css('input[name="signIn"]')).click();
 		this.get();	
 	};

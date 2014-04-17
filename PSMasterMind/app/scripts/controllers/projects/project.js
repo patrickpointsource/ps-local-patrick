@@ -41,7 +41,6 @@ angular.module('Mastermind')
     Resources.query('people', salesQuery, fields, function(result){
       $scope.sales = result;
     });
-
     
     $scope.close = function(){
     	$scope.stopWatchingProjectChanges();
@@ -958,19 +957,26 @@ angular.module('Mastermind')
     //$scope.hoursPeriods = [{name: 'march', value: 3}, {name: 'current', value: 4}, {name: 'may', value: 5}];
     $scope.hoursPeriods = [];
     $scope.selectedHoursPeriod = -1;
+    $scope.currentDisplayedHours = [];
     
 	$scope.handleHoursPeriodChanged = function() {
+		var period = this.selectedHoursPeriod;
+		for(var i = 0; i < $scope.currentDisplayedHours.length; i++){
+			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries, period);
+		}
+		
 		//$scope.organizeHours($scope.hours)
 	}
 	
+	$scope.monthNames = [ "January", "February", "March", "April", "May", "June",
+		                   "July", "August", "September", "October", "November", "December" ];
 	
 	$scope.initHoursPeriods = function(hours) {
-		var monthNames = [ "January", "February", "March", "April", "May", "June",
-		                   "July", "August", "September", "October", "November", "December" ];
+		$scope.hoursPeriods = [];
 		
 		var now = new Date();
 		
-		 $scope.selectedHoursPeriod = now.getMonth();
+		$scope.selectedHoursPeriod = now.getMonth();
 		var minDate = null;
 		var maxDate = null;
 		
@@ -993,7 +999,7 @@ angular.module('Mastermind')
 		
 		while (currentDate <= maxDate) {
 			o = {
-					name: currentDate.getMonth() != now.getMonth() ? monthNames[currentDate.getMonth()]: "Current",
+					name: currentDate.getMonth() != now.getMonth() ? $scope.monthNames[currentDate.getMonth()]: "Current",
 					value: currentDate.getMonth()
 				};
 			$scope.hoursPeriods.push(o)
@@ -1059,8 +1065,10 @@ angular.module('Mastermind')
 		    	
 		    	$scope.organizedHours = _.map(tmpPersonMap, function(val, key) { return val})
 		    	
-		    	for (var i = 0; i < $scope.organizedHours.length; i ++)
-		    		$scope.organizedHours[i].hoursEntries = tmpHoursMap[ $scope.organizedHours[i].resource ]
+		    	for (var i = 0; i < $scope.organizedHours.length; i ++) {
+		    		$scope.organizedHours[i].hoursEntries = tmpHoursMap[ $scope.organizedHours[i].resource ];
+		    		$scope.currentDisplayedHours[i] = $scope.getProjectHours(tmpHoursMap[ $scope.organizedHours[i].resource ]);
+		    	}
     	
            }
            // use simply callback logic to wait until everyone will load
@@ -1084,15 +1092,16 @@ angular.module('Mastermind')
     		
     }
     
-    $scope.getPersonTotalHours = function(person) {
+    $scope.getPersonTotalHours = function(index) {
     	var result = 0;
-    	var personHours = [];
+    	//var personHours = [];
     	
-    	for (var i = 0; i < $scope.organizedHours.length; i ++)
-    		if (person.resource == $scope.organizedHours[i].resource)
-    			personHours = $scope.organizedHours[i].hoursEntries;
+    	//for (var i = 0; i < $scope.organizedHours.length; i ++)
+    	//	if (person.resource == $scope.organizedHours[i].resource)
+    	//		personHours = $scope.organizedHours[i].hoursEntries;
     	
-    	_.each($scope.getProjectHours(personHours), function(o) {
+    	//_.each($scope.getProjectHours(personHours), function(o) {
+    	_.each($scope.currentDisplayedHours[index], function(o) {
     		result += o.hours;
     	})
     	
@@ -1119,10 +1128,16 @@ angular.module('Mastermind')
     	
     };
     
-    $scope.getProjectHours = function(currentHours) {
+    $scope.getProjectHours = function(currentHours, month) {
     	var selected = new Date();
     	
-    	var tmp = $scope.selectedHoursPeriod.toString().split('-');
+    	var tmp;
+    	if(month) {
+    		tmp = month.toString().split('-');
+    	}
+    	else {
+    		tmp = $scope.selectedHoursPeriod.toString().split('-');
+    	}
     	
     	if (tmp.length == 1)
     		selected.setMonth(tmp[0])
@@ -1130,15 +1145,15 @@ angular.module('Mastermind')
     		selected.setFullYear(tmp[0])
     		selected.setMonth(tmp[1])
     	}
-    		
-    	return _.filter(currentHours, function(h){
+    	
+    	var retHours = _.filter(currentHours, function(h){
     		var d = new Date(h.date)
     		return d.getFullYear() == selected.getFullYear() && d.getMonth() == selected.getMonth()
-    	})
+    	});
+    	
+    	return retHours;
     }
-    
-    
-    
+
     $scope.initHours = function(){
       //Query all hours against the project
       var hoursQuery = {'project.resource':$scope.project.about};
@@ -1598,85 +1613,62 @@ angular.module('Mastermind')
         
         $scope.activeTab[$state.params.tabId] = true;
     }
-
     
-
-  }])
-  .directive('exportHours', ['$parse', function ($parse) {
-    return {
-      restrict: 'A',
-      scope: false,
-      link: function(scope, element, attrs) {
-        var data = '';
-        var csv = {
-          stringify: function(str) {
-            return '"' +
-              str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
-                  .replace(/"/g,'""') + // replace quotes with double quotes
-              '"';
-          },
-          rawJSON: function(){
-            return scope.hoursTableData;
-          },
-          rawCSV: function(){
-            return data;
-          },
-          generate: function() {
-            var project = scope.project;
-            var hours = scope.hoursTableData;
-
-            for(var i = 0; i < hours.length; i++){
-              data = csv.JSON2CSV(project, hours);
-            }
-          },
-          link: function() {
-            return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
-          },
-          JSON2CSV: function(project, hours) {
-            var str = '';
-            var line = '';
-
-            console.log('hours:' + hours);
-
-            //Print the header
-            var head = ['Project', 'Peson', 'Role', 'Rate', 'Date', 'Hours', 'Description'];
-            for (var i = 0; i < head.length; i++) {
-              line += head[i] + ',';
-            }
-            //Remove last comma and add a new line
-            line = line.slice(0, -1);
-            str += line + '\r\n';
-
-            //Print the values
-            for (var x = 0; x < hours.length; x++) {
-              line = '';
-
-              var record = hours[x];
-
-              //Project
-              line += csv.stringify(project.name) + ',';
-              line += csv.stringify(record.person.name) + ',';
-              if(record.role && record.role.type && record.role.type.title){
-                line += csv.stringify(record.role.type.title);
+    $scope.csvData = null;
+    $scope.hoursToCSV = {
+            stringify: function(str) {
+              return '"' +
+                str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
+                    .replace(/"/g,'""') + // replace quotes with double quotes
+                '"';
+            },
+            generate: function() {
+              var project = $scope.project;
+              var hours = [];
+              
+              if($scope.currentDisplayedHours) {
+            	  for(var i = 0; i < $scope.currentDisplayedHours.length; i++ ) {
+            		  hours = hours.concat($scope.currentDisplayedHours[i]);
+            	  }
               }
-              line += ',';
-              if(record.role){
-                line += scope.displayRate(record.role);
-              }
-              line += ',';
-              line += record.date + ',';
-              line += record.hours + ',';
 
-              line += csv.stringify(record.description) + ',';
-
-
-
-              str += line + '\r\n';
+              $scope.csvData = $scope.JSON2CSV(project, hours);
+            },
+            link: function() {
+              return 'data:text/csv;charset=UTF-8,' + encodeURIComponent($scope.csvData);
             }
-            return str;
-          }
-        };
-        $parse(attrs.exportHours).assign(scope.$parent, csv);
-      }
-    };
+          };
+    
+    $scope.JSON2CSV = function(project, hours) {
+        var str = '';
+        var line = '';
+
+        console.log('hours:' + hours);
+
+        //Print the header
+        var head = ['Person', 'Role', 'Date', 'Hours', 'Description'];
+        for (var i = 0; i < head.length; i++) {
+          line += head[i] + ',';
+        }
+        //Remove last comma and add a new line
+        line = line.slice(0, -1);
+        str += line + '\r\n';
+
+        //Print the values
+        for (var x = 0; x < hours.length; x++) {
+          line = '';
+
+          var record = hours[x];
+
+          line += $scope.hoursToCSV.stringify(record.person.name) + ',';
+          line += $scope.hoursToCSV.stringify($scope.getPersonProjectRoles(record.person)) + ',';
+          line += record.date + ',';
+          line += record.hours + ',';
+
+          line += $scope.hoursToCSV.stringify(record.description) + ',';
+          str += line + '\r\n';
+        }
+        return str;
+      };
+
   }]);

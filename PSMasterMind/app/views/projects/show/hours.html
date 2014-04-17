@@ -14,7 +14,7 @@
  </div>
  
   <div class="actions col-xs-6 col-sm-6 col-md-9 pageActions">
-    <a ng-if="financeAccess" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" ng-href="{{hoursToCSV.link()}}" download="{{project.name}}-hours.csv">
+    <a ng-if="financeAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="{{project.name}}-{{monthNames[selectedHoursPeriod]}}.csv">
       <div class="hidden-xs"><i class="fa fa-table"></i><span> Download to Excel</span></div>
       <div class="visible-xs"><i class="fa fa-table"></i></div>
     </a>
@@ -82,7 +82,7 @@
 	                    <span style="display: inline-block;">{{person.name || 'Unknown'}}</span>
 	                  </a>
 	            	<span>: {{getPersonProjectRoles(person)}}</span>
-	            	<span>- {{getPersonTotalHours(person)}} hours</span>
+	            	<span>- {{getPersonTotalHours($index)}} hours</span>
            		</div>
             	
             </div>
@@ -100,7 +100,7 @@
            <div class="cos-xs-12" ng-show="person.collapsed">
            		<hr/>
            </div>
-           <div ng-repeat="hoursRecord in getProjectHours(person.hoursEntries)" ng-show="person.collapsed">
+           <div ng-repeat="hoursRecord in currentDisplayedHours[$index]" ng-show="person.collapsed">
            		 <div class="cos-xs-12">
 		           	<div class="col-xs-3">
 		           		<span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
