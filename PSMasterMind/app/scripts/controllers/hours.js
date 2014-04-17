@@ -227,7 +227,12 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
                 $scope.hoursRequest();
             });
+           
         };
 
+        $scope.$watch('displayedHours', function(value) { 
+            var val = value || null;            
+            if (val)  $scope.$emit('masonryGo');
+        });
     }
 ]);

@@ -3,8 +3,8 @@
 /**
  * The main project controller
  */
-var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '$filter', 'Resources','RolesService','ProjectsService','People','AssignmentService', 'ngTableParams',
-    function ($scope, $q, $state, $filter, Resources, RolesService, ProjectsService, People, AssignmentService, TableParams) {
+var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$q', '$state', '$filter', '$timeout', 'Resources','RolesService','ProjectsService','People','AssignmentService', 'ngTableParams',
+    function ($scope, $q, $state, $filter, $timeout, Resources, RolesService, ProjectsService, People, AssignmentService, TableParams) {
 	
 	/**Init Count vairables
      */
@@ -109,6 +109,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
         	});
         	
         	$scope.hoursProjects = myProjects.concat(otherProjects);
+        	
         });
     });
     
@@ -118,9 +119,10 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     AssignmentService.getActiveProjectStaffingDeficits().then(function(assignments){
     	var count = assignments.length;
     	$scope.activeProjectDeficitCount = count;
+    	
+    	
     });  
 
-    
     
     /**
      * Fetch the counts of the current projects
@@ -514,5 +516,48 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     	return ret;
     }
     
+    //Start Masonry
+    //Initalize Masonry as late as possible
+    var $container = $('#dashboard-widgets');
+    $container.masonry({
+    	itemSelector: '.item'
+    });
+    
+    $scope.$on('masonryGo', function(e,count){
+    	$timeout(function(){
+    		$container.masonry();
+    	},100);
+    	
+    });
+    
+    $scope.$watch('activeProjectDeficitCount', function(value) { 
+        var val = value || null;            
+        if (val)  $scope.$emit('masonryGo');
+    });
+    
+    $scope.$watch('projectsKickingOff', function(value) { 
+        var val = value || null;            
+        if (val)  $scope.$emit('masonryGo');
+    });
+    
+    //LineChart
+    $scope.$watch('data', function(value) { 
+        var val = value || null;            
+        if (val)  $scope.$emit('masonryGo');
+    });
+    
+    //My Projects
+    $scope.$watch('myProjects', function(value) { 
+        var val = value || null;            
+        if (val)  $scope.$emit('masonryGo');
+    });
+    
+    //Available People
+    $scope.$watch('availablePeople', function(value) { 
+        var val = value || null;            
+        if (val)  $scope.$emit('masonryGo');
+    });
+    
+    //End Masonry
 }]);
 
