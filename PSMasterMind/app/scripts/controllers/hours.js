@@ -79,6 +79,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 }
             }
         };
+        
+        $scope.deleteHoursRecord = function(index) {
+        	$scope.selected.hoursEntries.splice(index, 1);
+        }
 
         //date formatter helper
         $scope.formatTheDate = function (d) {
