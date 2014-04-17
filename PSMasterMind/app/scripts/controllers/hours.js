@@ -136,18 +136,19 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.showWeekDates = function (callback) {
         	$scope.todaysDate = $scope.moment().format('YYYY-MM-DD');
         	var moment = $scope.moment().subtract($scope.dateIndex, 'days');
-        	var monday = moment.day("Monday");
+        	var startOfWeek = moment.day(0);
         	
 
             //array to hold the dates
             $scope.thisWeekDates = [];
-
+            $scope.thisWeekDayLables = [];
 
             //run through and build out the array of the week's dates
             for (var i = 0; i < 7; i++) {
-            	var moment = $scope.moment(monday).add(i, 'days');
+            	var moment = $scope.moment(startOfWeek).add(i, 'days');
             	var dateFormatted = moment.format('YYYY-MM-DD');
             	$scope.thisWeekDates.push(dateFormatted);
+            	$scope.thisWeekDayLables[i] = moment.format('ddd');
             }
             $scope.prettyCalendarFormats($scope.thisWeekDates[0], $scope.thisWeekDates[6]);
             callback($scope.thisWeekDates);

@@ -107,8 +107,8 @@ angular.module('Mastermind')
     					}
     			}
 		  };
-		  var fields = {};
-		  Resources.query('assignments', query, fields, function(result){
+		  var fields = {project:1,"members.startDate":1,"members.endDate":1,"members.person":1,"members.role":1,"members.hoursPerWeek":1};
+		  Resources.get('assignments', {query:query, fields:fields}).then(function(result){
 	        	var projectAssignments = result.data;
 	        	
 	        	//Fetch all hours entries between these two dates
@@ -261,7 +261,7 @@ angular.module('Mastermind')
     			  //Fetch all the projects associated with these assignments
     			  var projectsQuery = {_id:{$in:projectOIDs}};
     		      var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1};
-    		      Resources.query('projects',projectsQuery,projectsFields,function(result){
+    		      Resources.get('projects',{query:projectsQuery,fields:projectsFields}).then(function(result){
     		        	var projects = result.data;
     			  
     		        	//Fill in all the resolved projects

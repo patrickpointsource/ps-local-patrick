@@ -27,18 +27,12 @@
             <table class="table table-condensed">
                 <tbody >
                 <tr>
-                    <th class="text-center">MON</th>
-                    <th class="text-center">TUE</th>
-                    <th class="text-center">WED</th>
-                    <th class="text-center">THU</th>
-                    <th class="text-center">FRI</th>
-                    <th class="text-center">SAT</th>
-                    <th class="text-center">SUN</th>
+                	<th class="text-center" ng-repeat="dayLabel in thisWeekDayLables">{{dayLabel | uppercase}}</th>
                 </tr>
 
                 <tr>
                     <!--<th ng-repeat="day in allHours" class="text-center"><button class="btn btn-default btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index<5 ,'btn-warning': day.totalHours < 8 && $index<5 , 'btn-default' : days.totalHours >= 8 && $index<5, 'active': lastSelectedDay === day}" data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>-->
-                    <th ng-repeat="day in displayedHours" class="text-center"><button class="btn btn-default btn-lg"  class="btn btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index<5 && !day.futureness ,'btn-warning': day.totalHours < 8 && $index<5 && !day.futureness, 'btn-default' : days.totalHours >= 8 && $index<5 && !day.futureness, 'todaysClass' : day.date === todaysDate, 'futureDay': day.futureness, 'active': selected.date === day.date}"  
+                    <th ng-repeat="day in displayedHours" class="text-center"><button class="btn btn-default btn-lg"  class="btn btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index > 0 && $index<6 && !day.futureness ,'btn-warning': day.totalHours < 8 && $index > 0 && $index<6 && !day.futureness, 'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness, 'todaysClass' : day.date === todaysDate, 'futureDay': day.futureness, 'active': selected.date === day.date}"  
                     	data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>
                 </tr>
                 </tbody>
