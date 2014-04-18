@@ -1,77 +1,92 @@
-<div class="panel-body" id="hourEntryForm" ng-show="entryFormOpen">
-    <form>
-    	<div class="row">
-	        <div class="form-group col-xs-12">
-	        	<div class="pull-right">
-	        		<button type="" ng-click="addNewTaskHours();" class="btn btn-default"><i class="fa fa-plus-square"></i> Add Task</button>
-	           	 	<button type="" ng-click="addNewHours();" class="btn btn-default"><i class="fa fa-plus-square"></i> Add Project</button>
-	            	<button ng-click="addHours();" type="submit" class="btn btn-default "><i class="fa fa-floppy-o"></i> Save</button>
-	            </div>
-	        </div>
+
+<div class="modal-dialog" id="hourEntryForm">
+	<div class="modal-content panel panel-info">
+    	<div class="modal-header panel-heading">
+     			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+       			<h4 class="modal-title">Hours: {{selected.date | date:'EEE MMM d'}}</h4>
+		</div>
+     		
+		<div class="modal-body panel-body">
+		    <form>
+		    	<div class="row">
+			        <div class="form-group col-xs-12">
+			        	<div class="pull-right">
+			        		<button type="" ng-click="addNewTaskHours();" class="btn btn-default"><i class="fa fa-plus-square"></i> Add Task</button>
+			           	 	<button type="" ng-click="addNewHours();" class="btn btn-default"><i class="fa fa-plus-square"></i> Add Project</button>
+			            	
+			            </div>
+			        </div>
+			    </div>
+		        <div class="row" ng-repeat="hoursEntry in selected.hoursEntries" style="margin-bottom: 7px; padding-top: 7px; padding-bottom: 7px;">
+		            <div class="col-xs-12 col-sm-5 col-md-12 col-lg-5">
+		            	<div class="row">
+		            		
+			                <div class="col-xs-9 col-sm-12 col-md-6 col-lg-12" ng-if="hoursEntry.project.name" >
+			                    <div ng-init="hoursEntry.hoursRecord.project.resource = hoursEntry.project.resource">
+			                    	<label>{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}} <div ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</div>
+			                    	</label>
+			                    	
+			                    </div>
+			                	<div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
+			                </div>
+			               	<div ng-if="!hoursEntry.project.name" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
+			               		<select name="project" id="project"
+			                        class="form-control form-group" 
+			                        ng-model="hoursEntry.hoursRecord.project.resource" ng-required="true"
+			                        ng-options="p.resource as p.title for p in hoursProjects">
+			                	</select>
+			               	</div>
+			                <div class="col-xs-3 col-sm-12 col-md-6 col-lg-12">
+			                    <input value="{{hoursEntry.hoursRecord.hours}}" class="form-group form-control"
+			                         placeholder="Hours" ng-model="hoursEntry.hoursRecord.hours"/>
+			                </div>
+			            </div>
+		            </div>
+		            <div class="col-xs-10 col-sm-5 col-md-10 col-lg-5">
+		            	<textarea class="col-xs-12 form-control form-group" type="text" ng-model="hoursEntry.hoursRecord.description" placeholder="Description"
+		                         rows="3" >{{hoursEntry.hoursRecord.description}}</textarea>
+		            </div>
+		            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+		                 <button class="btn btn-default pull-right" ng-click="deleteHoursRecord($index)">
+		                     <i class="fa fa-trash-o"></i>
+		                 </button>
+		            </div>
+		            
+		            <input id="date" name="date" class="form-control"
+		                   type="hidden" ng-model="hoursEntry.date"
+		                   ng-required="true" value="selected.date"/>
+		        </div>
+		
+		        <br/>
+		
+		    </form>
+		    
+		
+		    <!--<form action="">-->
+		    <!--<div class="form-group">-->
+		    <!--<div class="col-md-4 control-label">Client # 1</div>-->
+		    <!--<input  class="col-md-1"type="text"/>-->
+		    <!--<input class="col-md-offset-1 col-md-6" type="text"/> <br/>-->
+		    <!--</div>-->
+		
+		    <!--<div class="form-group">-->
+		    <!--<div class="col-md-4 control-label">Client # 2</div>-->
+		    <!--<input  class="col-md-1"type="text"/>-->
+		    <!--<input class="col-md-offset-1 col-md-6" type="text"/> <br/>-->
+		    <!--</div>-->
+		
+		    <!--<div class="form-group">-->
+		    <!--<div class="col-md-4 control-label">Client # 3</div>-->
+		    <!--<input  class="col-md-1"type="text"/>-->
+		    <!--<input class="col-md-offset-1 col-md-6" type="text"/> <br/>-->
+		    <!--</div>-->
+		
+		    <!--</form>-->
+		
+		</div>
+		<div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button ng-click="addHours();" type="submit" class="btn btn-default "><i class="fa fa-floppy-o"></i> Save</button>
 	    </div>
-        <div class="row" ng-repeat="hoursEntry in selected.hoursEntries" style="margin-bottom: 7px; padding-top: 7px; padding-bottom: 7px;">
-            <div class="col-xs-12 col-sm-5 col-md-12 col-lg-5">
-            	<div class="row">
-            		
-	                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12" ng-if="hoursEntry.project.name" >
-	                    <div ng-init="hoursEntry.hoursRecord.project.resource = hoursEntry.project.resource">
-	                    	<label>{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}}</label>
-	                    	<span ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</span>
-	                    </div>
-	                	<div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
-	                </div>
-	               	<div ng-if="!hoursEntry.project.name" class="col-xs-6 col-sm-12 col-md-6 col-lg-12 ">
-	               		<select name="project" id="project"
-	                        class="form-control form-group" 
-	                        ng-model="hoursEntry.hoursRecord.project.resource" ng-required="true"
-	                        ng-options="p.resource as p.title for p in hoursProjects">
-	                	</select>
-	               	</div>
-	                <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12">
-	                    <input value="{{hoursEntry.hoursRecord.hours}}" class="form-group form-control"
-	                         placeholder="Hours" ng-model="hoursEntry.hoursRecord.hours"/>
-	                </div>
-	            </div>
-            </div>
-            <div class="col-xs-10 col-sm-5 col-md-10 col-lg-5">
-            	<textarea class="col-xs-12 form-control form-group" type="text" ng-model="hoursEntry.hoursRecord.description" placeholder="Description"
-                         rows="3" >{{hoursEntry.hoursRecord.description}}</textarea>
-            </div>
-            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                 <button class="btn btn-default pull-right" ng-click="deleteHoursRecord($index)">
-                     <i class="fa fa-trash-o"></i>
-                 </button>
-            </div>
-            
-            <input id="date" name="date" class="form-control"
-                   type="hidden" ng-model="hoursEntry.date"
-                   ng-required="true" value="selected.date"/>
-        </div>
-
-        <br/>
-
-    </form>
-    
-
-    <!--<form action="">-->
-    <!--<div class="form-group">-->
-    <!--<div class="col-md-4 control-label">Client # 1</div>-->
-    <!--<input  class="col-md-1"type="text"/>-->
-    <!--<input class="col-md-offset-1 col-md-6" type="text"/> <br/>-->
-    <!--</div>-->
-
-    <!--<div class="form-group">-->
-    <!--<div class="col-md-4 control-label">Client # 2</div>-->
-    <!--<input  class="col-md-1"type="text"/>-->
-    <!--<input class="col-md-offset-1 col-md-6" type="text"/> <br/>-->
-    <!--</div>-->
-
-    <!--<div class="form-group">-->
-    <!--<div class="col-md-4 control-label">Client # 3</div>-->
-    <!--<input  class="col-md-1"type="text"/>-->
-    <!--<input class="col-md-offset-1 col-md-6" type="text"/> <br/>-->
-    <!--</div>-->
-
-    <!--</form>-->
-
+	</div>
 </div>

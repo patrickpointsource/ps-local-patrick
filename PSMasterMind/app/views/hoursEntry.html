@@ -1,43 +1,46 @@
-<div class="panel panel-default dashboard-widget" ng-controller="HoursCtrl">
-    <div class="panel-heading">
-        <i class="fa fa-calendar-o"></i> Hours:
-        <div class="pull-right btn-group-sm dashboard-actions">
-            <button class="btn btn-default" ng-click="backInTime()">
-                <div>
-                    <i class="fa fa-angle-left"></i>
-                </div>
-            </button>
-            <button class="btn btn-default" ng-click="thisWeek()">
-                <div>
-                    Today
-                </div>
-            </button>
-            <button class="btn btn-default" ng-click="forwardInTime()">
-                <div>
-                    <i class="fa fa-angle-right"></i>
-                </div>
-            </button>
-        </div>
-    </div>
-    <div class="panel-body">
-
-       <h3> {{prettyCalendarDates.firstDate}}<!-- Mar 30 — Apr 5 2014 --> &ndash; {{prettyCalendarDates.lastDate}} </h3>
-
-        <div class="table-responsive" style="border:none">
-            <table class="table table-condensed">
-                <tbody >
-                <tr>
-                	<th class="text-center" ng-repeat="dayLabel in thisWeekDayLables">{{dayLabel | uppercase}}</th>
-                </tr>
-
-                <tr>
-                    <!--<th ng-repeat="day in allHours" class="text-center"><button class="btn btn-default btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index<5 ,'btn-warning': day.totalHours < 8 && $index<5 , 'btn-default' : days.totalHours >= 8 && $index<5, 'active': lastSelectedDay === day}" data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>-->
-                    <th ng-repeat="day in displayedHours" class="text-center"><button class="btn btn-default btn-lg"  class="btn btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index > 0 && $index<6 && !day.futureness ,'btn-warning': day.totalHours < 8 && $index > 0 && $index<6 && !day.futureness, 'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness, 'todaysClass' : day.date === todaysDate, 'futureDay': day.futureness, 'active': selected.date === day.date}"  
-                    	data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="editHours" class="well" ng-show="entryFormOpen"> <ng-include src="'views/hourEntryForm.html'"></ng-include></div>
-    </div>
+<div ng-controller="HoursCtrl">
+	<div class="panel panel-default dashboard-widget" >
+	    <div class="panel-heading">
+	        <i class="fa fa-calendar-o"></i> Hours:
+	        <div class="pull-right btn-group-sm dashboard-actions">
+	            <button class="btn btn-default" ng-click="backInTime()">
+	                <div>
+	                    <i class="fa fa-angle-left"></i>
+	                </div>
+	            </button>
+	            <button class="btn btn-default" ng-click="thisWeek()">
+	                <div>
+	                    Today
+	                </div>
+	            </button>
+	            <button class="btn btn-default" ng-click="forwardInTime()">
+	                <div>
+	                    <i class="fa fa-angle-right"></i>
+	                </div>
+	            </button>
+	        </div>
+	    </div>
+	    <div class="panel-body">
+	
+	       <h3> {{prettyCalendarDates.firstDate}}<!-- Mar 30 — Apr 5 2014 --> &ndash; {{prettyCalendarDates.lastDate}} </h3>
+	
+	        <div class="table-responsive" style="border:none">
+	            <table class="table table-condensed">
+	                <tbody >
+	                <tr>
+	                	<th class="text-center" ng-repeat="dayLabel in thisWeekDayLables">{{dayLabel | uppercase}}</th>
+	                </tr>
+	
+	                <tr>
+	                    <!--<th ng-repeat="day in allHours" class="text-center"><button class="btn btn-default btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index<5 ,'btn-warning': day.totalHours < 8 && $index<5 , 'btn-default' : days.totalHours >= 8 && $index<5, 'active': lastSelectedDay === day}" data-toggle="collapse" data-target="#editHours" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>-->
+	                    <th ng-repeat="day in displayedHours" class="text-center"><button class="btn btn-default btn-lg"  class="btn btn-lg" ng-class="{'btn-danger':day.totalHours===0 && $index > 0 && $index<6 && !day.futureness ,'btn-warning': day.totalHours < 8 && $index > 0 && $index<6 && !day.futureness, 'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness, 'todaysClass' : day.date === todaysDate, 'futureDay': day.futureness, 'active': selected.date === day.date}"  
+	                    	data-target="#editHours" data-toggle="modal" ng-click="openHoursEntry(day);">{{day.totalHours}}</button></th>
+	                </tr>
+	                </tbody>
+	            </table>
+	        </div>
+	        
+	    </div>
+	</div>
+	<div id="editHours" class="modal fade" ng-show="entryFormOpen"> <ng-include src="'views/hourEntryForm.html'"></ng-include></div>
 </div>

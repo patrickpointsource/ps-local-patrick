@@ -225,12 +225,17 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                     }
                 }
             }
+            
+            $('#editHours').modal('hide');
 
             HoursService.updateHours(hoursRecords).then(function () {
                 $scope.entryFormOpen = false;
                 delete $scope.selected;
 
                 $scope.hoursRequest();
+                
+                
+                
             });
            
         };
