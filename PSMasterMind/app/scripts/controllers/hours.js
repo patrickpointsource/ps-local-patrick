@@ -40,9 +40,18 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 delete $scope.selected;
             } else {
                 $scope.selected = day;
+                $('#editHours').modal('show');
                 $scope.entryFormOpen = true;
+                
             }
 
+
+        };
+        
+        $scope.hideHoursEntry = function (day) {
+        	$scope.entryFormOpen = false
+            delete $scope.selected;
+        	$('#editHours').modal('hide');
 
         };
 
@@ -226,9 +235,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 }
             }
             
-            $('#editHours').modal('hide');
+           
 
             HoursService.updateHours(hoursRecords).then(function () {
+            	 $('#editHours').modal('hide');
                 $scope.entryFormOpen = false;
                 delete $scope.selected;
 
