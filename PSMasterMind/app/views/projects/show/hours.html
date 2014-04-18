@@ -8,7 +8,7 @@
      <select name="hoursPeriod" class="form-control"
 		ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
 		ng-required="true"
-		ng-options="f.value as f.name for f in hoursPeriods | orderBy:'name'">
+		ng-options="f.value as f.name for f in hoursPeriods">
 	</select>
 	</span>
  </div>

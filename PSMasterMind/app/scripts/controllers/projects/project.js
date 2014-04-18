@@ -1132,7 +1132,7 @@ angular.module('Mastermind')
     	var selected = new Date();
     	
     	var tmp;
-    	if(month) {
+    	if(month || month == 0) {
     		tmp = month.toString().split('-');
     	}
     	else {
