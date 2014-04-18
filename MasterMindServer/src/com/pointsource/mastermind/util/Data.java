@@ -631,6 +631,112 @@ public class Data implements CONSTS {
 		return ret;
 	}
 
+	
+	/**
+	 * Get tasks by query
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONArray getTasks(RequestContext context, String query,
+			String fields, String sort) throws JSONException {
+		JSONArray ret = new JSONArray();
+
+		DBCollection tasksCol = db.getCollection(COLLECTION_TITLE_TASKS);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		DBObject sortObject = null;
+		
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+		}
+		
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+		
+		if (sort != null) {
+			sortObject = (DBObject) JSON.parse(sort);
+		}
+
+		DBCursor cursur = tasksCol.find(queryObject, fieldsObject);
+
+		if (sort != null) {
+			cursur = cursur.sort(sortObject);
+		}
+
+		while (cursur.hasNext()) {
+			DBObject object = cursur.next();
+
+			if (object.containsField(PROP__ID)) {
+				String json = JSON.serialize(object);
+				JSONObject jsonObject = new JSONObject(json);
+
+				ObjectId _id = (ObjectId) object.get(PROP__ID);
+				jsonObject.put(PROP_RESOURCE, RESOURCE_TASKS + "/" + _id);
+
+				ret.put(jsonObject);
+			} else {
+				System.out
+						.println("Task record not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+
+		return ret;
+	}
+	
+	/**
+	 * Get an task record
+	 * 
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getTask(RequestContext context, String id) throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection tasksCol = db.getCollection(COLLECTION_TITLE_TASKS);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		DBObject dbObj = tasksCol.findOne(query);
+
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+			ret.put(PROP_ABOUT, RESOURCE_TASKS + "/" + id);
+		}
+
+		return ret;
+	}
+	
+	/**
+	 * Get an task by name
+	 * 
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getTaskByName(RequestContext context, String name) throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection tasksCol = db.getCollection(COLLECTION_TITLE_TASKS);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP_NAME, name);
+		DBObject dbObj = tasksCol.findOne(query);
+
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+			ret.put(PROP_ABOUT, RESOURCE_TASKS + "/" + ret.get(PROP__ID).toString());
+		}
+
+		return ret;
+	}
+
 	/**
 	 * Get all the projects
 	 * 
@@ -1166,6 +1272,54 @@ public class Data implements CONSTS {
 		return ret;
 	}
 	
+	/**
+	 * Delete an task by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject deleteTask(RequestContext context, String id)
+			throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection tasksCol = db.getCollection(COLLECTION_TITLE_TASKS);
+		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
+		BasicDBObject fields = new BasicDBObject(PROP_PERSON, 1);
+		DBObject dbObj = tasksCol.findOne(query, fields);
+		
+		if(dbObj == null){
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Task not found to delete").build());
+		}
+		
+		//DBObject person = (DBObject)dbObj.get(PROP_PERSON);
+		//String about = String.valueOf(context.getCurrentUser().get(PROP_ABOUT));
+		//String resource = (String)person.get(PROP_RESOURCE);
+		
+		// Only admins can delete task
+		if (!hasProjectManagementAccess(context) ) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+		
+		dbObj = tasksCol.findAndRemove(query);
+		
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+		} else {
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Task not found to delete").build());
+		}
+
+		ret.put(PROP_ABOUT, RESOURCE_TASKS + "/" + id);
+
+		return ret;
+	}
+	
 	
 	/**
 	 * Delete a person by id
@@ -1335,6 +1489,125 @@ public class Data implements CONSTS {
 		return newHours;
 	}
 
+	
+	/**
+	 * Create a new hours record
+	 * 
+	 * @param newHours
+	 * @throws JSONException
+	 */
+	public static JSONObject createTask(RequestContext context,
+			JSONObject newTask) throws JSONException {
+
+		
+		newTask.put(PROP_ETAG, "0");
+		newTask.put(PROP_CREATED, new Date());
+
+		String json = newTask.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection tasksCol = db.getCollection(COLLECTION_TITLE_TASKS);
+		WriteResult result = tasksCol.insert(dbObject);
+		
+		//Handle Error Message
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Tasks Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+
+		//Find the hours Record that was just created
+		DBCursor cursorDoc = tasksCol.find();
+		while (cursorDoc.hasNext()) {
+			DBObject created = cursorDoc.next();
+			// System.out.println("Found: " + created);
+
+			ObjectId oId = (ObjectId) created.get(PROP__ID);
+			String idVal = oId.toString();
+			newTask.put(PROP_ABOUT, RESOURCE_TASKS + "/" + idVal);
+		}
+
+		return newTask;
+	}
+	
+	/**
+	 * Update an task
+	 * 
+	 * @param newHours
+	 * @throws JSONException
+	 */
+	public static JSONObject updateTask(RequestContext context,
+			JSONObject task) throws JSONException {
+		if (!task.has(PROP__ID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Task does not conatin an id property").build();
+			throw new WebApplicationException(response);
+		}
+
+		JSONObject _id = task.getJSONObject(PROP__ID);
+		if (!_id.has(PROP_$OID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Task does not conatin an $oid property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String id = _id.getString(PROP_$OID);
+		JSONObject existing = getTask(context, id);
+		if (existing == null) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Task does not exist").build();
+			throw new WebApplicationException(response);
+		}
+
+		if (!task.has(PROP_ETAG)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Task Record does not conatin an etag property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String etag = task.getString(PROP_ETAG);
+		String old_etag = existing.getString(PROP_ETAG);
+
+		if (!etag.equals(old_etag)) {
+			String message = "Task Record etag (" + etag
+					+ ") does not match the saved etag (" + old_etag + ")";
+			Response response = Response.status(Status.CONFLICT)
+					.entity(message).build();
+			throw new WebApplicationException(response);
+		}
+
+		int newEtag = Integer.parseInt(old_etag);
+		newEtag++;
+		task.put(PROP_ETAG, String.valueOf(newEtag));
+
+		String json = task.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection taskCol = db.getCollection(COLLECTION_TITLE_TASKS);
+
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		// Exclude persisting the base
+		BasicDBObject fields = new BasicDBObject();
+		dbObject.removeField(PROP_BASE);
+		dbObject.removeField(PROP_ABOUT);
+		dbObject.removeField(PROP_RESOURCE);
+		DBObject result = taskCol.findAndModify(query, fields, null, false,
+				dbObject, true, true);
+
+		json = JSON.serialize(result);
+		task = new JSONObject(json);
+
+		task.put(PROP_ABOUT, RESOURCE_HOURS + "/" + id);
+
+		return task;
+	}
+	
 	/**
 	 * Create a new person
 	 * 
@@ -2851,6 +3124,35 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 			}
 		}
 		
+	}
+	
+	/**
+	 * Sprint 11 migrate Task prepolation
+	 */
+	public static void initTasks(RequestContext context) throws IOException{
+		String[] prePopulatedTasks = new String[] {
+				  "Meetings", 
+				  "Design", 
+				  "Sales", 
+				  "Pre-sales support",
+				  "Sick time",
+				  "Training",
+				  "Marketing",
+				  "Administration",
+				  "Documentation"
+				};
+		JSONObject task;
+		
+		for (int i = 0; i < prePopulatedTasks.length; i ++) {
+			task = getTaskByName(context, prePopulatedTasks[i]);
+			
+			if (task == null) {
+				task = new JSONObject();
+				
+				task.put(PROP_NAME, prePopulatedTasks[i]);
+				Data.createTask(context, task);
+			}
+		}
 	}
 	
 	public static void convertAssignmentPercentageToHoursPerWeek(RequestContext context) throws IOException{

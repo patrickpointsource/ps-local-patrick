@@ -80,6 +80,11 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             }
         };
         
+        $scope.addNewTaskHours = function () {
+            //TODO: Implement new task logic
+        	console.log("add task")
+        };
+        
         $scope.deleteHoursRecord = function(index) {
         	$scope.selected.hoursEntries.splice(index, 1);
         }

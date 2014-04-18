@@ -992,7 +992,7 @@ angular.module('Mastermind')
 				maxDate = new Date(currentDate);
 		}
 		
-		var ifAddYear = minDate.getFullYear() != maxDate.getFullYear();
+		var ifAddYear = minDate && maxDate && minDate.getFullYear() != maxDate.getFullYear();
 		
 		currentDate = new Date(minDate);
 		var o = null;

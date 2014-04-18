@@ -41,9 +41,10 @@ public class UpgradeServlet extends HttpServlet {
 			Data.migrateServicesEstimate(context);
 			Data.removeProjectEstimateFields(context);
 			//Data.migrateAssignees(context);
-			Data.migrateFullyUtilizedAssignees(context);
+			//Data.migrateFullyUtilizedAssignees(context);
 			//Data.convertAssignmentPercentageToHoursPerWeek(context);
 			//Data.removeRolesAbout(context);
+			Data.initTasks(context);
 		} catch (Exception e) {
 			e.printStackTrace();
 			resp.sendError(500, e.getLocalizedMessage());

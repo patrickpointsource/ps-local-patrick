@@ -40,6 +40,30 @@ public class Validator implements CONSTS {
 	}
 	
 	/**
+	 * Is the task valid for creation
+	 * 
+	 * @param context
+	 * @param task
+	 * @throws ValidationException
+	 * @throws JSONException
+	 */
+	public static void canCreateTask(RequestContext context,
+			JSONObject task) throws ValidationException, JSONException {
+		try {
+			String[] messages = getTaskValidationMessages(context,
+					task);
+			if (messages.length > 0) {
+				ValidationException ex = new ValidationException(messages[0]);
+				ex.setMessages(messages);
+
+				throw ex;
+			}
+		} catch (ValidationException ex) {
+			throw ex;
+		}
+	}
+	
+	/**
 	 * Is the project valid for creation
 	 * 
 	 * @param context
@@ -129,6 +153,27 @@ public class Validator implements CONSTS {
 		return ret.toArray(new String[ret.size()]);
 	}
 
+	
+	/**
+	 * Validation Messages for a an hours record
+	 * @param context
+	 * @param hoursRecord
+	 * @return
+	 * @throws JSONException
+	 */
+	public static String[] getTaskValidationMessages(
+			RequestContext context, JSONObject hoursRecord) throws JSONException {
+
+		List<String> ret = new ArrayList<String>();
+
+		// Description is required - *required
+		if (!hoursRecord.has(PROP_NAME)) {
+			ret.add("Name is required");
+		}
+		
+		return ret.toArray(new String[ret.size()]);
+	}
+	
 	/**
 	 * Validation Messages for a project
 	 * @param context

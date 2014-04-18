@@ -7,3 +7,4 @@ com.pointsource.mastermind.server.Projects
 com.pointsource.mastermind.server.Roles
 com.pointsource.mastermind.server.Skills
 com.pointsource.mastermind.server.Assignments
+com.pointsource.mastermind.server.Tasks
