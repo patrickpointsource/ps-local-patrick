@@ -27,6 +27,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     $scope.startDate = new Date();
     $scope.ongoingProjects = [];
     $scope.hoursProjects = [];
+    // fill it in hours controller
+    $scope.hoursTasks = [];
 
     var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     /**

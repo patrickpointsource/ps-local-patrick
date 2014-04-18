@@ -29,11 +29,19 @@
 			                    </div>
 			                	<div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
 			                </div>
-			               	<div ng-if="!hoursEntry.project.name" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
+			               	<div ng-if="hoursEntry.project && !hoursEntry.project.name || hoursEntry.hoursRecord.project && !hoursEntry.hoursRecord.project.name" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
 			               		<select name="project" id="project"
 			                        class="form-control form-group" 
 			                        ng-model="hoursEntry.hoursRecord.project.resource" ng-required="true"
 			                        ng-options="p.resource as p.title for p in hoursProjects">
+			                	</select>
+			               	</div>
+			               	
+			               	<div ng-if="hoursEntry.task && !hoursEntry.task.name || hoursEntry.hoursRecord.task && !hoursEntry.hoursRecord.task.name" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
+			               		<select name="task" id="task"
+			                        class="form-control form-group" 
+			                        ng-model="hoursEntry.hoursRecord.task.resource" ng-required="true"
+			                        ng-options="t.resource as t.name for t in hoursTasks">
 			                	</select>
 			               	</div>
 			                <div class="col-xs-3 col-sm-12 col-md-6 col-lg-12">

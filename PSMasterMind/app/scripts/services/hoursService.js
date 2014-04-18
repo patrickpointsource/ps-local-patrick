@@ -174,7 +174,7 @@ angular.module('Mastermind')
     				  
     				  
     				  //Add this to the list of project we need to resolve
-    				  if(projectURIs.indexOf(hoursRecord.project.resource) === -1){
+    				  if(hoursRecord.project && projectURIs.indexOf(hoursRecord.project.resource) === -1){
     					  var resource = hoursRecord.project.resource;
     					  projectURIs.push(resource);
     					  var oid = {$oid:resource.substring(resource.lastIndexOf('/')+1)};
@@ -230,10 +230,14 @@ angular.module('Mastermind')
                 				  var existingEntry = null;
                 				  for(var k = 0; k < entries.hoursEntries.length; k++){
                 					  var entry = entries.hoursEntries[k];
-                					  var hoursProjectURI = entry.project.resource;
-                					  if(hoursProjectURI == assignmentProjectURI){
-                						  existingEntry = entry.assignment = assignmentRecord;
-                						  break;
+                					  
+                					  if ( entry.project ) {
+	                					  var hoursProjectURI = entry.project.resource;
+	                					  
+	                					  if(hoursProjectURI == assignmentProjectURI){
+	                						  existingEntry = entry.assignment = assignmentRecord;
+	                						  break;
+	                					  }
                 					  }
                 					  
                 				  }
@@ -270,15 +274,18 @@ angular.module('Mastermind')
     		        		if(day && day.hoursEntries){
     		        			for(var j = 0; j < day.hoursEntries.length; j++){
     		        				var entry = day.hoursEntries[j];
-    		        				var entryProjectURI = entry.project.resource;
-    		        				//Find the matching resolved project
-    		        				for(var k = 0; k < projects.length;k++){
-    		        					var project = projects[k];
-    		        					if(entryProjectURI == project.resource){
-    		        						//Replace the project
-    		        						entry.project = project;
-    		        						break;
-    		        					}
+    		        				
+    		        				if (entry.project) {
+	    		        				var entryProjectURI = entry.project.resource;
+	    		        				//Find the matching resolved project
+	    		        				for(var k = 0; k < projects.length;k++){
+	    		        					var project = projects[k];
+	    		        					if(entryProjectURI == project.resource){
+	    		        						//Replace the project
+	    		        						entry.project = project;
+	    		        						break;
+	    		        					}
+	    		        				}
     		        				}
     		        			}
     		        		}

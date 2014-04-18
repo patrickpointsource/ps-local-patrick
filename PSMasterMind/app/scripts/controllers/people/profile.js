@@ -4,11 +4,24 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.people')
-  .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService','ngTableParams',
-    function ($scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TableParams) {
+  .controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService','TasksService','ngTableParams',
+    function ($scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, TableParams) {
 	  
 	  var UNSPECIFIED = 'Unspecified';
 	  $scope.projects = [];
+	  $scope.hoursTasks = [];
+	  
+	  $scope.loadAvailableTasks = function() {
+      	TasksService.refreshTasks().then(function(tasks) {
+      		_.each(tasks, function(t){
+      			$scope.hoursTasks.push(t)
+      		})
+      		
+      		
+      	})
+      }
+	  
+	  $scope.loadAvailableTasks();
 	  
     /**
      * Load Role definitions to display names

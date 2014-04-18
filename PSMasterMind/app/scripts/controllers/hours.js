@@ -1,8 +1,8 @@
 /**
  * Created by kenhoes on 4/1/14.
  */
-angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'HoursService',
-    function ($scope, $state, $rootScope, Resources, ProjectsService, HoursService) {
+angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'HoursService', 'TasksService',
+    function ($scope, $state, $rootScope, Resources, ProjectsService, HoursService, TasksService) {
 
         $scope.checkForFutureness = function(date) {
             //flux capacitor
@@ -57,7 +57,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
 
         //MOVE THIS TO FORM CONTROLLER WHEN READY
-        $scope.addNewHours = function () {
+        $scope.addNewHours = function (isTask) {
             //console.log('clicked addNewHours');
             //console.log($scope.selected);
 
@@ -71,9 +71,14 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                         date: $scope.selected.date,
                         description: "",
                         hours: "",
-                        person: $scope.me,
-                        project: {}
+                        person: $scope.me
+                        
                     };
+                    
+                    if (!isTask)
+                    	$scope.newHoursRecord.project = {};
+                    else
+                    	$scope.newHoursRecord.task = {};
                     //push the new hours record to the appropriate hoursEntries array
                     //this will cause the UI to update and show a blank field
                     if($scope.displayedHours[i].hoursEntries) {
@@ -90,9 +95,18 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         };
         
         $scope.addNewTaskHours = function () {
-            //TODO: Implement new task logic
-        	console.log("add task")
+            $scope.addNewHours(true)
         };
+        
+        $scope.loadAvailableTasks = function() {
+        	TasksService.refreshTasks().then(function(tasks) {
+        		_.each(tasks, function(t){
+        			$scope.hoursTasks.push(t)
+        		})
+        		
+        		
+        	})
+        }
         
         $scope.deleteHoursRecord = function(index) {
         	$scope.selected.hoursEntries.splice(index, 1);
@@ -213,7 +227,6 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         }
 
         $scope.hoursRequest();
-
         $scope.newHoursRecord = {};
 
         $scope.addHours = function () {
@@ -250,6 +263,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
            
         };
 
+        $scope.loadAvailableTasks();
+        
         $scope.$watch('displayedHours', function(value) { 
             var val = value || null;            
             if (val)  $scope.$emit('masonryGo');

@@ -1499,7 +1499,14 @@ public class Data implements CONSTS {
 	public static JSONObject createTask(RequestContext context,
 			JSONObject newTask) throws JSONException {
 
-		
+		// Only admins can delete task
+		if (!hasProjectManagementAccess(context) ) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+				
 		newTask.put(PROP_ETAG, "0");
 		newTask.put(PROP_CREATED, new Date());
 
@@ -1544,6 +1551,15 @@ public class Data implements CONSTS {
 	 */
 	public static JSONObject updateTask(RequestContext context,
 			JSONObject task) throws JSONException {
+		
+		// Only admins can delete task
+		if (!hasProjectManagementAccess(context) ) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+				
 		if (!task.has(PROP__ID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
 					.entity("Task does not conatin an id property").build();

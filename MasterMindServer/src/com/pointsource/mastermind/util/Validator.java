@@ -124,9 +124,11 @@ public class Validator implements CONSTS {
 		List<String> ret = new ArrayList<String>();
 
 		// Project is required - *required
-		if (!hoursRecord.has(PROP_PROJECT)
-				|| !hoursRecord.getJSONObject(PROP_PROJECT).has(PROP_RESOURCE)) {
-			ret.add("Project is required");
+		if ((!hoursRecord.has(PROP_PROJECT)
+				|| !hoursRecord.getJSONObject(PROP_PROJECT).has(PROP_RESOURCE)) 
+				&& (!hoursRecord.has(PROP_TASK)
+				|| !hoursRecord.getJSONObject(PROP_TASK).has(PROP_RESOURCE))) {
+			ret.add("Project or Task is required");
 		}
 		
 		// Person is required - *required

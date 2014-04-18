@@ -490,22 +490,25 @@ angular.module('Mastermind.services.projects')
 	        		var members = result.members;
 	        		for(var i = 0; i < members.length;i++){
 	        			var hoursRecord = members[i];
-	        			var projectURI = hoursRecord.project.resource;
 	        			
-	        			//Find the associated project
-	        			for(var j = 0; j < projects.length; j++){
-	    	        		var project = projects[j];
-	    	        		if(project.resource == projectURI){
-	    	        			var projectStatus = project.status;
-	    	        			if(!projectStatus.hoursLogged){
-	    	        				projectStatus.hoursLogged = hoursRecord.hours;
-	    	        			}
-	    	        			else{
-	    	        				projectStatus.hoursLogged += hoursRecord.hours;
-	    	        			}
-	    	        			
-	    	        			break;
-	    	        		}
+	        			if (hoursRecord.project) {
+		        			var projectURI = hoursRecord.project.resource;
+		        			
+		        			//Find the associated project
+		        			for(var j = 0; j < projects.length; j++){
+		    	        		var project = projects[j];
+		    	        		if(project.resource == projectURI){
+		    	        			var projectStatus = project.status;
+		    	        			if(!projectStatus.hoursLogged){
+		    	        				projectStatus.hoursLogged = hoursRecord.hours;
+		    	        			}
+		    	        			else{
+		    	        				projectStatus.hoursLogged += hoursRecord.hours;
+		    	        			}
+		    	        			
+		    	        			break;
+		    	        		}
+		        			}
 	        			}
 	        		}
 	        	

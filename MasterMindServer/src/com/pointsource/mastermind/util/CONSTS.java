@@ -82,6 +82,7 @@ public interface CONSTS {
 	public String PROP_TITLE = "title";
 	public String PROP_TYPE = "type";
 	public String PROP_USERS = "users";
+	public String PROP_TASK = "task";
 	
 	/**
 	 * RDF Namespaces
