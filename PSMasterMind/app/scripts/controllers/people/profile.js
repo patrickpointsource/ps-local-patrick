@@ -200,7 +200,8 @@ angular.module('Mastermind.controllers.people')
             page: 1,            // show first page
             count: 25,           // count per page
             sorting: {
-              created: 'des'     // initial sorting
+             // created: 'des'     // initial sorting
+            	date: 'des'
             }
           };
 
@@ -224,8 +225,13 @@ angular.module('Mastermind.controllers.people')
               var defers = [];
               for(var i = 0; i < ret.length; i++){
                 var ithHoursRecord = ret[i];
-                defers.push(Resources.resolve(ithHoursRecord.project));
+                
+                if (ithHoursRecord.project)
+                	defers.push(Resources.resolve(ithHoursRecord.project));
+                else if (ithHoursRecord.task)
+                	defers.push(Resources.resolve(ithHoursRecord.task));
               }
+              
               $.when.apply(window, defers).done(function(){
                 $defer.resolve(ret);
               });

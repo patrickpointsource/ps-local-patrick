@@ -229,6 +229,11 @@
                  <span style="display: inline-block;">{{hoursRecord.project.name || 'Unknown'}}</span>
                 </a>
             </td>
+            <td data-title="'Task'" header-class="col-xs-5 col-sm-3" class="col-xs-5 col-sm-3" sortable="'task.name'">
+              <a href="#{{hoursRecord.task.resource}}">
+                 <span style="display: inline-block;">{{hoursRecord.task.name || ''}}</span>
+                </a>
+            </td>
             <td data-title="'Description'" header-class="hidden-xs col-sm-5" class="hidden-xs col-sm-5" sortable="'description'">
               {{hoursRecord.description}}
             </td>
