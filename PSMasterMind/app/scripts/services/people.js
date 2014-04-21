@@ -216,7 +216,7 @@ angular.module('Mastermind')
         			var startDate = new Date(assignment.startDate);
         			var endDate = assignment.endDate?new Date(assignment.endDate):null;
         			//Only include current assignments
-        			if(startDate <= stopDate && (!endDate || endDate > fromDate)){
+        			if(assignment.person && startDate <= stopDate && (!endDate || endDate > fromDate)){
         				var personURI = assignment.person.resource;
         				
         				if(ret.hasOwnProperty(personURI)){
@@ -307,7 +307,7 @@ angular.module('Mastermind')
         			var startDate = new Date(assignment.startDate);
         			var endDate = assignment.endDate?new Date(assignment.endDate):null;
         			//Only include current assignments
-        			if(startDate <= today && (!endDate || endDate > today)){
+        			if(assignment.person && startDate <= today && (!endDate || endDate > today)){
         				var personURI = assignment.person.resource;
         				
         				if(ret.hasOwnProperty(personURI)){

@@ -206,6 +206,7 @@ angular.module('Mastermind.controllers.people')
         
         var projects = _.pluck($scope.hours, "project");
         
+        projects = _.filter(projects, function(p){if (p) return true});
         projects = _.pluck(projects, "resource");
         
         projects = _.uniq(projects);
@@ -218,7 +219,7 @@ angular.module('Mastermind.controllers.people')
         	projectHours[projCounter].project = project;
         	
         	for(var hoursCounter = 0; hoursCounter < $scope.hours.length; hoursCounter++) {
-        		if($scope.hours[hoursCounter].project.resource == projects[projCounter]) {
+        		if($scope.hours[hoursCounter].project && $scope.hours[hoursCounter].project.resource == projects[projCounter]) {
         			projectHours[projCounter].hours.push($scope.hours[hoursCounter]);
         		}
         	}
