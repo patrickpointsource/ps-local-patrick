@@ -179,8 +179,12 @@ angular.module('Mastermind.controllers.people')
         }
       });
     };
-
+    
+    $scope.projectHours = [];
+    
     $scope.initHours = function(){
+      var projectHours = [];
+    	
       //Query all hours against the project
       var hoursQuery = {'person.resource':$scope.profile.about};
       //All Fields
@@ -189,8 +193,40 @@ angular.module('Mastermind.controllers.people')
       Resources.query('hours',hoursQuery, fields, function(hoursResult){
         $scope.hours = hoursResult.members;
         $scope.hasHours = $scope.hours.length > 0;
-
-        if($scope.hoursTableParams){
+        
+        for(var i = 0; i < $scope.hours.length; i++) {
+        	var hour = $scope.hours[i];
+        	
+        	if(hour.task) {
+        		var taskRes = $scope.hours[i].task.resource;
+            	var task = _.findWhere($scope.hoursTasks, { resource: taskRes});
+            	$scope.hours[i].task.name = task.name;
+        	}
+        }
+        
+        var projects = _.pluck($scope.hours, "project");
+        
+        projects = _.pluck(projects, "resource");
+        
+        projects = _.uniq(projects);
+        
+        for(var projCounter = 0; projCounter < projects.length; projCounter++){
+        	projectHours[projCounter] = { projectURI: projects[projCounter], hours: [], collapsed: false };
+        	
+        	var project = _.findWhere($scope.projects, { resource: projects[projCounter]});
+        	
+        	projectHours[projCounter].project = project;
+        	
+        	for(var hoursCounter = 0; hoursCounter < $scope.hours.length; hoursCounter++) {
+        		if($scope.hours[hoursCounter].project.resource == projects[projCounter]) {
+        			projectHours[projCounter].hours.push($scope.hours[hoursCounter]);
+        		}
+        	}
+        }
+        
+        $scope.projectHours = projectHours;
+        
+        /*if($scope.hoursTableParams){
           $scope.hoursTableParams.total($scope.hours.length);
           $scope.hoursTableParams.reload();
         }
@@ -202,11 +238,11 @@ angular.module('Mastermind.controllers.people')
             sorting: {
              // created: 'des'     // initial sorting
             	date: 'des'
-            }
-          };
+            }*/
+          //};
 
 
-          $scope.hoursTableParams = new TableParams(params, {
+          /*$scope.hoursTableParams = new TableParams(params, {
             total: $scope.hours.length, // length of data
             getData: function ($defer, params) {
               var data = $scope.hours;
@@ -236,12 +272,10 @@ angular.module('Mastermind.controllers.people')
                 $defer.resolve(ret);
               });
             }
-          });
-        }
+          });*/
+        //}
       }, sort);
     };
-
-
     
     /**
      * Get the Profile
@@ -287,7 +321,9 @@ angular.module('Mastermind.controllers.people')
           		var nextProj = $scope.ongoingProjects.pop();
           		nextProj.title = nextProj.customerName+': '+nextProj.name;
           		$scope.projects.push(nextProj);
-          	}        	
+          	}
+          	
+          	$scope.initHours();
           });
       });
       
@@ -322,8 +358,6 @@ angular.module('Mastermind.controllers.people')
             });
     	  }
       });
-
-      $scope.initHours();
     });
 
 
@@ -355,9 +389,22 @@ angular.module('Mastermind.controllers.people')
     /**
      * Delete an hours instance
      */
-    $scope.deleteHours = function (hoursURL) {
-      Resources.remove(hoursURL).then(function(){
-        $scope.initHours();
+    $scope.deleteHours = function (hoursRecord) {
+      Resources.remove(hoursRecord.resource).then(function(){
+        var projectRecord = _.findWhere($scope.projectHours, { projectURI: hoursRecord.project.resource });
+        for(var i = 0; i < projectRecord.hours.length; i++) {
+        	if(projectRecord.hours[i].resource == hoursRecord.resource) {
+        		projectRecord.hours.splice(i, 1);
+        		
+        		if(projectRecord.hours.length == 0) {
+        			for(var j = 0; j < $scope.projectHours.length; j++) {
+        				if($scope.projectHours[j].projectURI == projectRecord.projectURI) {
+        					$scope.projectHours.splice(j, 1);
+        				}
+        			}
+        		}
+        	}
+        }
       });
     };
 

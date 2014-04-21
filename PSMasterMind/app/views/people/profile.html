@@ -216,7 +216,69 @@
   <div class="row">
       <div class="col-xs-12">
         <span ng-hide="hasHours">There are no logged hours.</span>
-        <table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList" ng-show="hasHours">
+        
+        <div ng-repeat="projectHour in projectHours" ng-if="projectHours" style="background-color: beige; margin-bottom: 10px;">
+            <div class="row" style="padding-bottom: 12px;">
+                <div class="col-xs-12">
+                    <span style="margin-right: 12px;" ng-if="!projectHour.collapsed" ><i class="fa fa-caret-right" ng-click="projectHour.collapsed=true" ng-show="projectHour"></i></span>
+                    <span style="margin-right: 12px;" ng-if="projectHour.collapsed" ><i class="fa fa-caret-down" ng-click="projectHour.collapsed=false" ng-show="projectHour"></i></span>
+                    <a href="#/{{projectHour.projectURI}}">{{projectHour.project ? projectHour.project.customerName + ": " + projectHour.project.name : "Unknown"}}</a>
+                </div>
+                
+            </div>
+           <div class="col-xs-12" ng-show="projectHour.collapsed" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: auto;">
+                <div class="col-xs-4 col-md-2 col-lg-2">
+                    Date
+                    <div class="visible-xs">
+                      Description
+                    </div>
+                </div>
+                <div class="col-xs-4 visible-xs">
+                      Task
+                </div>
+                <div class="col-xs-4 col-md-2 col-lg-2">
+                    Hours
+                </div>
+                <div class="col-md-3 col-lg-3 hidden-xs">
+                    Task
+                </div>
+                <div class="col-md-3 col-lg-3 hidden-xs">
+                    Description
+                </div>
+           </div>
+           <div ng-repeat="hoursRecord in projectHour.hours" ng-show="projectHour.collapsed">
+                 <div class="cos-xs-12">
+                   <div class="row" style="border-bottom: 1px solid #dddddd; margin: 0px;">
+                    <div class="col-xs-4 col-md-2 col-lg-2">
+                        <span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
+                    </div>
+                    <div class="col-xs-4 visible-xs">
+                        {{hoursRecord.task.name || 'No Task'}}
+                    </div>
+                    <div class="col-xs-2 col-md-2 col-lg-2">
+                        {{hoursRecord.hours}}
+                    </div>
+                    <div class="col-xs-2 visible-xs">
+                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord)">
+                          <i class="fa fa-trash-o"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-3 col-lg-3 hidden-xs">
+                        {{hoursRecord.task.name || 'No Task'}}
+                    </div>
+                    <div class="col-xs-9 col-md-3 col-lg-3">
+                        {{hoursRecord.description}}
+                    </div>
+                    <div class="col-md-2 col-lg-2 hidden-xs">
+                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord)">
+                          <i class="fa fa-trash-o"></i>
+                        </button>
+                    </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+        <!--  <table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList" ng-show="hasHours">
           <tr ng-repeat="hoursRecord in $data">
             <td data-title="'Date'" header-class="col-xs-5 col-sm-2" class="col-xs-5 col-sm-2" sortable="'date'">
               <span class="hidden-xs">{{hoursRecord.date | date:'longDate'}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
@@ -244,7 +306,7 @@
             </td>
           </tr>
         </table>
-
+-->
         <script type="text/ng-template" id="hours/pager">
           <ul class="pager ng-cloak">
             <li ng-repeat="page in pages"
