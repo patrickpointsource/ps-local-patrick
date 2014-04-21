@@ -1,11 +1,11 @@
 <div class="row">
-  <div class="col-xs-1 col-sm-1 col-md-1">
+  <div class="col-sm-1 col-md-1 hidden-xs">
   	<h3 class="hidden-xs">View</h3>
  </div>
  
-  <div class="col-xs-4 col-sm-4 col-md-2" style="padding-top: 20px;">
+  <div class="col-xs-6 col-sm-4 col-md-2" style="padding-top: 20px;">
   	<span>
-     <select name="hoursPeriod" class="form-control"
+     <select name="hoursPeriod" class="form-control" ng-if="organizedHours" 
 		ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
 		ng-required="true"
 		ng-options="f.value as f.name for f in hoursPeriods">
@@ -69,10 +69,12 @@
     </div>
 </div>
 <div class="row">
+     <div class="col-xs-12" ng-if="!organizedHours">
+        <div class="alert alert-warning">There are no logged hours for this project.</div>
+     </div>
      <div class="col-xs-12 peopleList">
-      <div ng-repeat="person in organizedHours" >
+      <div ng-repeat="person in organizedHours" ng-if="organizedHours" style="background-color: beige; margin-bottom: 10px;">
             <div class="row" style="padding-bottom: 12px;">
-            	
             	<div class="col-xs-12">
             		<span style="margin-right: 12px;" ng-if="!person.collapsed" ><i class="fa fa-caret-right" ng-click="person.collapsed=true" ng-show="person && person.thumbnail"></i></span>
             		<span style="margin-right: 12px;" ng-if="person.collapsed" ><i class="fa fa-caret-down" ng-click="person.collapsed=false" ng-show="person && person.thumbnail"></i></span>
@@ -86,30 +88,38 @@
            		</div>
             	
             </div>
-           <div class="col-xs-12" ng-show="person.collapsed" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: 30px;">
-	           	<div class="col-xs-3">
+           <div class="col-xs-12" ng-show="person.collapsed" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: auto;">
+	           	<div class="col-xs-4 col-md-3 col-lg-3">
 	           		Date
+	           		<div class="visible-xs">
+	           		  Description
+	           		</div>
 	           	</div>
-	           	<div class="col-xs-3">
+	           	<div class="col-xs-4 col-md-3 col-lg-3">
 	           		Hours
 	           	</div>
-	           	<div class="col-xs-3">
-	           		Description
-	           	</div>
+	           	<div class="col-md-3 col-lg-3 hidden-xs">
+                    Description
+                </div>
            </div>
            <div ng-repeat="hoursRecord in currentDisplayedHours[$index]" ng-show="person.collapsed">
            		 <div class="cos-xs-12">
-           		   <div class="row">
-		           	<div class="col-xs-3">
+           		   <div class="row" style="border-bottom: 1px solid #dddddd; margin: 0px;">
+		           	<div class="col-xs-4 col-md-3 col-lg-3">
 		           		<span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
 		           	</div>
-		           	<div class="col-xs-3">
+		           	<div class="col-xs-4 col-md-3 col-lg-3">
 		           		{{hoursRecord.hours}}
 		           	</div>
-		           	<div class="col-xs-3">
+		           	<div class="col-xs-4 visible-xs">
+                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.resource)">
+                          <i class="fa fa-trash-o"></i>
+                        </button>
+                    </div>
+		           	<div class="col-xs-9 col-md-3 col-lg-3">
 		           		{{hoursRecord.description}}
 		           	</div>
-		           	<div class="col-xs-3">
+		           	<div class="col-md-3 col-lg-3 hidden-xs">
 		           		<button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.resource)">
 	                      <i class="fa fa-trash-o"></i>
 	                    </button>
