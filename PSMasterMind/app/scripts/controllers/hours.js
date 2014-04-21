@@ -30,9 +30,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         //default open status of hours entry form
         $scope.entryFormOpen = false;
         $scope.lastSelectedDay = {};
+        $scope.hoursToDelete = [];
         $scope.openHoursEntry = function (day) {
 
-
+        	$scope.hoursToDelete = [];
             //console.log($scope.selected)
 
             if ($scope.entryFormOpen && day === $scope.selected) {
@@ -42,10 +43,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 $scope.selected = day;
                 $('#editHours').modal('show');
                 $scope.entryFormOpen = true;
-                
             }
-
-
         };
         
         $scope.hideHoursEntry = function (day) {
@@ -109,6 +107,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         }
         
         $scope.deleteHoursRecord = function(index) {
+        	$scope.hoursToDelete.push($scope.selected.hoursEntries[index].hoursRecord.resource);
         	$scope.selected.hoursEntries.splice(index, 1);
         }
 
@@ -249,6 +248,13 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             }
             
            
+            
+            if($scope.hoursToDelete) {
+            	for(var i = 0; i < $scope.hoursToDelete.length; i++) {
+            		Resources.remove($scope.hoursToDelete[i]);
+            	}
+            }
+            
 
             HoursService.updateHours(hoursRecords).then(function () {
             	 $('#editHours').modal('hide');
