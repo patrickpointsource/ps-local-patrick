@@ -258,7 +258,9 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             
             if($scope.hoursToDelete) {
             	for(var i = 0; i < $scope.hoursToDelete.length; i++) {
-            		Resources.remove($scope.hoursToDelete[i]);
+            		if($scope.hoursToDelete[i]) {
+            			Resources.remove($scope.hoursToDelete[i]);
+            		}
             	}
             }
             
@@ -271,6 +273,76 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             });
            
         };
+        
+        $scope.copyHours = function(index) {
+        	var substructedDays = 1;
+        	var today = new Date($scope.selected.date);
+        	
+        	// if monday, copy from last friday
+        	if(today.getDay() == 1) {
+        		substructedDays = 3;
+        	}
+        	
+        	var copyFromDate = new Date();
+        	copyFromDate.setDate(today.getDate() - substructedDays);
+        	
+        	
+        	var shortDate = getShortDate(copyFromDate);
+        	var copyFromEntry = _.findWhere($scope.displayedHours, { date: shortDate });
+        	
+        	if(copyFromEntry) {
+        		var hoursRecords = _.pluck($scope.selected.hoursEntries, "hoursRecord");
+        		hoursRecords = _.reject(hoursRecords, function(h) { return (typeof h) === 'undefined'; });
+        		$scope.hoursToDelete = _.pluck(hoursRecords, "resource");
+        		$scope.selected.hoursEntries = [];
+        		
+        		var displayedHoursEntry = _.findWhere($scope.displayedHours, { date: $scope.selected.date });
+        		for(var i = 0; i < copyFromEntry.hoursEntries.length; i++) {
+        			if(copyFromEntry.hoursEntries[i].hoursRecord) {
+        				var newHoursRecord = {
+            					date: $scope.selected.date,
+                                description: copyFromEntry.hoursEntries[i].hoursRecord.description,
+                                hours: copyFromEntry.hoursEntries[i].hoursRecord.hours,
+                                person: { resource: $scope.me.about }
+            				}
+        				
+        				if(copyFromEntry.hoursEntries[i].hoursRecord.project) {
+        					newHoursRecord.project = copyFromEntry.hoursEntries[i].hoursRecord.project;
+        				}
+        				
+        				if(copyFromEntry.hoursEntries[i].hoursRecord.task) {
+        					newHoursRecord.task = copyFromEntry.hoursEntries[i].hoursRecord.task;
+        				}
+        				
+        				var hoursEntry = {
+        					project: copyFromEntry.hoursEntries[i].project,
+        					hoursRecord: newHoursRecord
+        				}
+        				
+        				if(copyFromEntry.hoursEntries[i].assignment) {
+        					hoursEntry.assignment = copyFromEntry.hoursEntries[i].assignment;
+        				}
+        				
+        				displayedHoursEntry.hoursEntries.unshift(hoursEntry);
+        			}
+        		}
+        	}
+        }
+        
+        var getShortDate = function(date){
+         	 //Get todays date formatted as yyyy-MM-dd
+            var dd = date.getDate();
+             var mm = date.getMonth()+1; //January is 0!
+             var yyyy = date.getFullYear();
+             if (dd<10){
+               dd='0'+dd;
+             }
+             if (mm<10){
+               mm='0'+mm;
+             }
+             date = yyyy+'-'+mm+'-'+dd;
+             return date;
+         }
         
         $scope.hideMessages = function(){
         	$scope.hoursValidation = [];
