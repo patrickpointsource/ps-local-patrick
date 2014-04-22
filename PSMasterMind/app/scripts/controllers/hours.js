@@ -275,59 +275,69 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         };
         
         $scope.copyHours = function(index) {
-        	var substructedDays = 1;
         	var today = new Date($scope.selected.date);
+        	var copyFromDate = new Date();
+        	var copyFromEntries = [];
         	
         	// if monday, copy from last friday
         	if(today.getDay() == 1) {
-        		substructedDays = 3;
-        	}
-        	
-        	var copyFromDate = new Date();
-        	copyFromDate.setDate(today.getDate() - substructedDays);
-        	
-        	
-        	var shortDate = getShortDate(copyFromDate);
-        	var copyFromEntry = _.findWhere($scope.displayedHours, { date: shortDate });
-        	
-        	if(copyFromEntry) {
-        		var hoursRecords = _.pluck($scope.selected.hoursEntries, "hoursRecord");
-        		hoursRecords = _.reject(hoursRecords, function(h) { return (typeof h) === 'undefined'; });
-        		$scope.hoursToDelete = _.pluck(hoursRecords, "resource");
-        		$scope.selected.hoursEntries = [];
+        		copyFromDate.setDate(today.getDate() - 3);
         		
-        		var displayedHoursEntry = _.findWhere($scope.displayedHours, { date: $scope.selected.date });
-        		for(var i = 0; i < copyFromEntry.hoursEntries.length; i++) {
-        			if(copyFromEntry.hoursEntries[i].hoursRecord) {
-        				var newHoursRecord = {
-            					date: $scope.selected.date,
-                                description: copyFromEntry.hoursEntries[i].hoursRecord.description,
-                                hours: copyFromEntry.hoursEntries[i].hoursRecord.hours,
-                                person: { resource: $scope.me.about }
-            				}
-        				
-        				if(copyFromEntry.hoursEntries[i].hoursRecord.project) {
-        					newHoursRecord.project = copyFromEntry.hoursEntries[i].hoursRecord.project;
-        				}
-        				
-        				if(copyFromEntry.hoursEntries[i].hoursRecord.task) {
-        					newHoursRecord.task = copyFromEntry.hoursEntries[i].hoursRecord.task;
-        				}
-        				
-        				var hoursEntry = {
-        					project: copyFromEntry.hoursEntries[i].project,
-        					hoursRecord: newHoursRecord
-        				}
-        				
-        				if(copyFromEntry.hoursEntries[i].assignment) {
-        					hoursEntry.assignment = copyFromEntry.hoursEntries[i].assignment;
-        				}
-        				
-        				displayedHoursEntry.hoursEntries.unshift(hoursEntry);
+        		var date = getShortDate(copyFromDate);
+        		
+        		var friydayHours = HoursService.getHoursRecordsBetweenDates($scope.me, date, date).then(function(result) {
+        			if(result.length > 0) {
+        				copyHoursCallback(result[0].hoursEntries);
         			}
-        		}
+        		});
+        	}
+        	else {
+        		copyFromDate.setDate(today.getDate() - 1);
+            	
+            	var shortDate = getShortDate(copyFromDate);
+            	var copyFromEntry = _.findWhere($scope.displayedHours, { date: shortDate });
+            	
+            	copyHoursCallback(copyFromEntry.hoursEntries);
         	}
         }
+        
+        var copyHoursCallback = function(copyFromEntries) {
+    		var hoursRecords = _.pluck($scope.selected.hoursEntries, "hoursRecord");
+    		hoursRecords = _.reject(hoursRecords, function(h) { return (typeof h) === 'undefined'; });
+    		$scope.hoursToDelete = _.pluck(hoursRecords, "resource");
+    		$scope.selected.hoursEntries = [];
+    		
+    		var displayedHoursEntry = _.findWhere($scope.displayedHours, { date: $scope.selected.date });
+    		for(var i = 0; i < copyFromEntries.length; i++) {
+    			if(copyFromEntries[i].hoursRecord) {
+    				var newHoursRecord = {
+        					date: $scope.selected.date,
+                            description: copyFromEntries[i].hoursRecord.description,
+                            hours: copyFromEntries[i].hoursRecord.hours,
+                            person: { resource: $scope.me.about }
+        				}
+    				
+    				if(copyFromEntries[i].hoursRecord.project) {
+    					newHoursRecord.project = copyFromEntries[i].hoursRecord.project;
+    				}
+    				
+    				if(copyFromEntries[i].hoursRecord.task) {
+    					newHoursRecord.task = copyFromEntries[i].hoursRecord.task;
+    				}
+    				
+    				var hoursEntry = {
+    					project: copyFromEntries[i].project,
+    					hoursRecord: newHoursRecord
+    				}
+    				
+    				if(copyFromEntries[i].assignment) {
+    					hoursEntry.assignment = copyFromEntries[i].assignment;
+    				}
+    				
+    				displayedHoursEntry.hoursEntries.unshift(hoursEntry);
+    			}
+    		}
+    	}
         
         var getShortDate = function(date){
          	 //Get todays date formatted as yyyy-MM-dd
