@@ -37,7 +37,7 @@
 			                    </div>
 			                	<div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
 			                </div>
-			               	<div ng-if="hoursEntry.project && !hoursEntry.project.name || hoursEntry.hoursRecord.project && !hoursEntry.hoursRecord.project.name" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
+			               	<div ng-if="hoursEntry.project && !hoursEntry.project.resource || hoursEntry.hoursRecord.project && !hoursEntry.hoursRecord.project.resource" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
 			               		<select name="project" id="project"
 			                        class="form-control form-group" 
 			                        ng-model="hoursEntry.hoursRecord.project.resource" ng-required="true"
@@ -60,7 +60,7 @@
 		            </div>
 		            <div class="col-xs-10 col-sm-5 col-md-10 col-lg-5">
 		            	<textarea class="col-xs-12 form-control form-group" type="text" ng-model="hoursEntry.hoursRecord.description" placeholder="Description"
-		                         rows="3" >{{hoursEntry.hoursRecord.description}}</textarea>
+		                         rows="4" >{{hoursEntry.hoursRecord.description}}</textarea>
 		            </div>
 		            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 		                 <button class="btn btn-default pull-right" ng-click="deleteHoursRecord($index)">
