@@ -227,17 +227,21 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
         $scope.hoursRequest();
         $scope.newHoursRecord = {};
+        $scope.hoursValidation = [];
 
         $scope.addHours = function () {
             var entries = $scope.selected.hoursEntries;
             var hoursRecords = [];
-
+            var totalHours = 0;
+            $scope.hoursValidation = [];
+            
             for (var i = 0; i < entries.length; i++) {
                 //console.log(entries[i].hoursRecord);
 
                 var entry = entries[i];
                 if (entry.hoursRecord) {
                     hoursRecords.push(entry.hoursRecord);
+                    totalHours += parseInt(entry.hoursRecord.hours);
                     if (!entry.hoursRecord.person) {
                         entry.hoursRecord.person = {resource: $scope.me.about};
                     }
@@ -247,7 +251,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 }
             }
             
-           
+            if(totalHours > 24) {
+            	$scope.hoursValidation.push("You are trying to submit more than 24 h/day.");
+            	return;
+            }
             
             if($scope.hoursToDelete) {
             	for(var i = 0; i < $scope.hoursToDelete.length; i++) {
@@ -255,18 +262,18 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             	}
             }
             
-
             HoursService.updateHours(hoursRecords).then(function () {
             	 $('#editHours').modal('hide');
                 $scope.entryFormOpen = false;
                 delete $scope.selected;
 
                 $scope.hoursRequest();
-                
-                
-                
             });
            
+        };
+        
+        $scope.hideMessages = function(){
+        	$scope.hoursValidation = [];
         };
 
         $scope.loadAvailableTasks();

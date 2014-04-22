@@ -7,6 +7,14 @@
 		</div>
      		
 		<div class="modal-body panel-body">
+		    <div class="row" ng-if="hoursValidation.length > 0">
+		      <div id="hoursValidationDiv" class="alert alert-danger">
+                <a class="close" ng-click="hideMessages()">&times;</a>
+                    <ul>
+                        <li ng-repeat="message in hoursValidation">{{message}}</li>
+                    </ul>
+                </div>
+		    </div>
 		    <form>
 		    	<div class="row">
 			        <div class="form-group col-xs-12">
