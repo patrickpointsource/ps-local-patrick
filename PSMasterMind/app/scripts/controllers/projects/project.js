@@ -144,11 +144,29 @@ angular.module('Mastermind')
       }
     
     
+    $scope.checkShiftDates = function() {
+    	var project = $scope.project;
+        
+        var startDateShifted = project.initStartDate && project.startDate && project.startDate != project.initStartDate;
+        var endDateShifted = ((typeof project.initEndDate === 'undefined') && project.endDate) || 
+        					 (project.initEndDate && project.endDate != project.initEndDate);
+        
+        if(startDateShifted || endDateShifted) {
+        	$("#dateShiftConfirm").modal('show');
+        }
+    }
+    
     /**
      * On project save ask if the user would like to shift the start and and dates for the
      * roles in the project
      */
     $scope.handleProjectStartDateShifts = function(callback){
+    	
+    	var project = $scope.project;
+        
+        var startDateShifted = project.initStartDate && project.startDate && project.startDate != project.initStartDate;
+        var endDateShifted = ((typeof project.initEndDate === 'undefined') && project.endDate) || 
+        					 (project.initEndDate && project.endDate != project.initEndDate);
     	
     	AssignmentService.getAssignmentsByPeriod("all", {
     		project: {
@@ -157,12 +175,6 @@ angular.module('Mastermind')
     	}).then(function(data) {
     		$scope.projectAssignments = data;
     		
-    		var project = $scope.project;
-            
-            var startDateShifted = project.initStartDate && project.startDate && project.startDate != project.initStartDate;
-            var endDateShifted = ((typeof project.initEndDate === 'undefined') && project.endDate) || 
-            					 (project.initEndDate && project.endDate != project.initEndDate);
-            
             var startDate = new Date(project.startDate);
             var initStartDate = new Date(project.initStartDate);
             var endDate;
@@ -443,7 +455,7 @@ angular.module('Mastermind')
     /**
      * Save the loaded project.
      */
-    $scope.save = function () {
+    $scope.save = function (dateShiftNeeded) {
       var deferred = $q.defer();	
     	
       var savingCallback = function() {
@@ -510,7 +522,14 @@ angular.module('Mastermind')
       
       $scope.submitAttempted = true;
       
-      $scope.handleProjectStartDateShifts(savingCallback);
+      if(dateShiftNeeded) {
+    	  $scope.handleProjectStartDateShifts(savingCallback);
+    	  
+    	  $("#dateShiftConfirm").modal('hide');
+      }
+      else {
+    	  savingCallback();
+      }
       
       return deferred.promise;
     };
