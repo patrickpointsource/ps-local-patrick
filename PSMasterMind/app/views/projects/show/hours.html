@@ -14,7 +14,7 @@
  </div>
  
   <div class="actions col-xs-6 col-sm-6 col-md-9 pageActions">
-    <a ng-if="financeAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="{{project.name}}-{{monthNames[selectedHoursPeriod]}}.csv">
+    <a ng-if="financeAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="{{project.name}}-{{currentMonth}}.csv">
       <div class="hidden-xs"><i class="fa fa-table"></i><span> Download to Excel</span></div>
       <div class="visible-xs"><i class="fa fa-table"></i></div>
     </a>

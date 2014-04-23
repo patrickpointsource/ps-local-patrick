@@ -985,10 +985,12 @@ angular.module('Mastermind')
     //$scope.hoursPeriods = [{name: 'march', value: 3}, {name: 'current', value: 4}, {name: 'may', value: 5}];
     $scope.hoursPeriods = [];
     $scope.selectedHoursPeriod = -1;
+    $scope.currentMonth = "";
     $scope.currentDisplayedHours = [];
     
 	$scope.handleHoursPeriodChanged = function() {
 		var period = this.selectedHoursPeriod;
+		$scope.currentMonth = $scope.monthNames[period];
 		for(var i = 0; i < $scope.currentDisplayedHours.length; i++){
 			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries, period);
 		}
@@ -1007,6 +1009,7 @@ angular.module('Mastermind')
 		var now = new Date();
 		
 		$scope.selectedHoursPeriod = now.getMonth();
+		$scope.currentMonth = $scope.monthNames[$scope.selectedHoursPeriod];
 		var minDate = null;
 		var maxDate = null;
 		
