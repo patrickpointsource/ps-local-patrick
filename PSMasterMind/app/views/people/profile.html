@@ -141,8 +141,17 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-8"><h3>Hours</h3></div>
-    <div class="actions col-xs-4 pageActions">
+    <div class="col-xs-3 col-md-1 col-lg-1"><h3>Hours</h3></div>
+    <div class="col-xs-5 col-md-2 col-lg-2" style="padding-top: 15px;">
+        <span>
+            <select name="hoursPeriod" class="form-control"
+                ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
+                ng-required="true"
+                ng-options="f.value as f.name for f in hoursPeriods">
+            </select>
+        </span>
+    </div>
+    <div class="actions col-xs-4 col-md-9 col-lg-9 pageActions">
       <button type="button" ng-show="canAddHours"
         class="btn btn-default pull-right" data-toggle="collapse" data-target="#newHoursDialog">
           <i class="fa fa-plus-square"></i> <span>Add</span>
@@ -215,18 +224,21 @@
   </div>
   <div class="row">
       <div class="col-xs-12">
-        <span ng-hide="hasHours">There are no logged hours.</span>
+        <div ng-hide="hasHours" class="alert alert-warning">There are no logged hours.</div>
         
-        <div ng-repeat="projectHour in projectHours" ng-if="projectHours" style="background-color: beige; margin-bottom: 10px;">
-            <div class="row" style="padding-bottom: 12px;">
-                <div class="col-xs-12">
+        <div ng-repeat="projectHour in projectHours" class="well">
+            <div class="row">
+                <div class="col-xs-12" style="margin-bottom: 10px;">
                     <span style="margin-right: 12px;" ng-if="!projectHour.collapsed" ><i class="fa fa-caret-right" ng-click="projectHour.collapsed=true" ng-show="projectHour"></i></span>
                     <span style="margin-right: 12px;" ng-if="projectHour.collapsed" ><i class="fa fa-caret-down" ng-click="projectHour.collapsed=false" ng-show="projectHour"></i></span>
-                    <a href="#/{{projectHour.projectURI}}">{{projectHour.project ? projectHour.project.customerName + ": " + projectHour.project.name : "Unknown"}}</a>
+                    <i class="{{projectHour.icon}}"></i>
+                    <a href="#/{{projectHour.project.about}}">{{projectHour.project ? projectHour.project.customerName + ": " + projectHour.project.name : "Unknown"}}</a>
                 </div>
-                
             </div>
-           <div class="col-xs-12" ng-show="projectHour.collapsed" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: auto;">
+            <div ng-if="isEmptyForSelectedMonth(projectHour)" ng-show="projectHour.collapsed" class="alert alert-warning" style="margin-top: 10px; margin-bottom: 0px;">
+                No hours logged found for selected month.
+            </div>
+           <div class="col-xs-12" ng-show="projectHour.collapsed" ng-if="!isEmptyForSelectedMonth(projectHour)" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: auto;">
                 <div class="col-xs-4 col-md-2 col-lg-2">
                     Date
                     <div class="visible-xs">
@@ -246,31 +258,31 @@
                     Description
                 </div>
            </div>
-           <div ng-repeat="hoursRecord in projectHour.hours" ng-show="projectHour.collapsed">
+           <div ng-repeat="hoursRecord in projectHour.hours" ng-show="projectHour.collapsed" ng-if="hoursRecord.show">
                  <div class="cos-xs-12">
                    <div class="row" style="border-bottom: 1px solid #dddddd; margin: 0px;">
                     <div class="col-xs-4 col-md-2 col-lg-2">
-                        <span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
+                        <span class="hidden-xs">{{hoursRecord.hour.date | date}}</span><span class="visible-xs">{{hoursRecord.hour.date | date:'shortDate'}}</span>
                     </div>
                     <div class="col-xs-4 visible-xs">
-                        {{hoursRecord.task.name || 'No Task'}}
+                        {{hoursRecord.hour.task.name || 'No Task'}}
                     </div>
                     <div class="col-xs-2 col-md-2 col-lg-2">
-                        {{hoursRecord.hours}}
+                        {{hoursRecord.hour.hours}}
                     </div>
                     <div class="col-xs-2 visible-xs">
-                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord)">
+                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.hour)">
                           <i class="fa fa-trash-o"></i>
                         </button>
                     </div>
                     <div class="col-md-3 col-lg-3 hidden-xs">
-                        {{hoursRecord.task.name || 'No Task'}}
+                        {{hoursRecord.hour.task.name || 'No Task'}}
                     </div>
                     <div class="col-xs-9 col-md-3 col-lg-3">
-                        {{hoursRecord.description}}
+                        {{hoursRecord.hour.description}}
                     </div>
                     <div class="col-md-2 col-lg-2 hidden-xs">
-                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord)">
+                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.hour)">
                           <i class="fa fa-trash-o"></i>
                         </button>
                     </div>
