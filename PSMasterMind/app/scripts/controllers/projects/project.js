@@ -746,9 +746,8 @@ angular.module('Mastermind')
      * handle it by updating the supplied role's assignments in our project.
      */
     $scope.$on('roles:assignments:change', function (event, index, role) {
-      //$scope.project.changeRole(index, role);
-      //$scope.summaryRolesTableParams.total($scope.project.roles.length);
-      //$scope.summaryRolesTableParams.reload();
+    	$scope.updateHoursPersons()
+      
     });
     
     /**
@@ -984,6 +983,8 @@ angular.module('Mastermind')
 			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries, period);
 		}
 		
+		for (var i = 0; i < $scope.organizedHours.length; i ++)
+			$scope.organizedHours[i].collapsed = false;
 		//$scope.organizeHours($scope.hours)
 	}
 	
@@ -1033,6 +1034,7 @@ angular.module('Mastermind')
 			currentDate.setDate(1);
 		}
 	}
+	
     $scope.organizeHours = function(hours) {
     	   var data = $scope.hours;
            var projectRoles = $scope.project.roles;
@@ -1087,9 +1089,14 @@ angular.module('Mastermind')
 		    	for (var i = 0; i < $scope.organizedHours.length; i ++) {
 		    		$scope.organizedHours[i].hoursEntries = tmpHoursMap[ $scope.organizedHours[i].resource ];
 		    		$scope.currentDisplayedHours[i] = $scope.getProjectHours(tmpHoursMap[ $scope.organizedHours[i].resource ]);
+		    		
+		    		
 		    	}
-    	
+		    	
+		    	// merge all other persons from assignees 
+		    	$scope.updateHoursPersons()
            }
+           
            // use simply callback logic to wait until everyone will load
            var counter = 0;
            var thenFn = function(){
@@ -1099,6 +1106,7 @@ angular.module('Mastermind')
         		   cb()
         	   }
            }
+           
            for (var i = 0; i < defers.length; i ++) {
         	   defers[i].then(thenFn)
            }
@@ -1108,6 +1116,43 @@ angular.module('Mastermind')
                
                cb();
              });*/
+    		
+    }
+    
+    /*
+     * Includes assignees to project hours
+     * */
+    $scope.updateHoursPersons = function() {
+    	if ($scope.organizedHours) {
+	    	var assignees = [];
+	    	
+	    	for (var i = 0; i < $scope.project.roles.length; i ++) {
+	    		assignees = assignees.concat(_.map($scope.project.roles[i].assignees, function(a){ 
+					return a.person
+				}))
+	    	}
+	    	
+	    	assignees = _.filter(assignees, function(a) {
+	    		return a.resource
+	    	})
+	    	
+	    	var tmpP;
+	    	
+	    	
+	    	_.each(assignees, function(a) {
+	    		tmpP = _.find($scope.organizedHours, function(p) {
+	    			return p.resource == a.resource
+	    		})
+	    		
+	    		if (!tmpP) {
+	    			$scope.organizedHours.push(_.extend({
+	    				hoursEntries: []
+	    			}, a))
+	    			
+	    		}
+	    	})
+    	
+    	}
     		
     }
     
@@ -1170,6 +1215,14 @@ angular.module('Mastermind')
     		return d.getFullYear() == selected.getFullYear() && d.getMonth() == selected.getMonth()
     	});
     	
+    	retHours.sort(function(h1, h2){
+			if (new Date(h1.date) > new Date(h2.date))
+				return -1
+			else if (new Date(h1.date) < new Date(h2.date))
+				return 1
+			
+			return 0
+		})
     	return retHours;
     }
 

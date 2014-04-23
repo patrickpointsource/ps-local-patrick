@@ -73,7 +73,7 @@
         <div class="alert alert-warning">There are no logged hours for this project.</div>
      </div>
      <div class="col-xs-12 peopleList">
-      <div ng-repeat="person in organizedHours" ng-if="organizedHours" style="background-color: beige; margin-bottom: 10px;">
+      <div ng-repeat="person in organizedHours" ng-if="organizedHours" class="well" style="margin-bottom: 10px;">
             <div class="row" style="padding-bottom: 12px;">
             	<div class="col-xs-12">
             		<span style="margin-right: 12px;" ng-if="!person.collapsed" ><i class="fa fa-caret-right" ng-click="person.collapsed=true" ng-show="person && person.thumbnail"></i></span>
@@ -127,6 +127,9 @@
 		           </div>
 	           </div>
             </div>
+        	<div ng-if="currentDisplayedHours[$index].length == 0 && person.collapsed">
+        		<span>There are no logged hours</span>
+        	</div>
         </div>
      <!--  
       <table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList" export-hours="hoursToCSV">
