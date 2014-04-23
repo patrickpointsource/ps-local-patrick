@@ -74,10 +74,10 @@
      </div>
      <div class="col-xs-12 peopleList">
       <div ng-repeat="person in organizedHours" ng-if="organizedHours" class="well" style="margin-bottom: 10px;">
-            <div class="row" style="padding-bottom: 12px;">
+            <div class="row" style="padding-bottom: 12px;" ng-click="person.collapsed=!person.collapsed">
             	<div class="col-xs-12">
-            		<span style="margin-right: 12px;" ng-if="!person.collapsed" ><i class="fa fa-caret-right" ng-click="person.collapsed=true" ng-show="person && person.thumbnail"></i></span>
-            		<span style="margin-right: 12px;" ng-if="person.collapsed" ><i class="fa fa-caret-down" ng-click="person.collapsed=false" ng-show="person && person.thumbnail"></i></span>
+            		<span style="margin-right: 12px;" ng-if="!person.collapsed" ><i class="fa fa-caret-right" ng-show="person && person.thumbnail"></i></span>
+            		<span style="margin-right: 12px;" ng-if="person.collapsed" ><i class="fa fa-caret-down" ng-show="person && person.thumbnail"></i></span>
 	            	<a href="#{{person.resource}}">
 	                    <img ng-show="person && person.thumbnail" class="profileImage" ng-src="{{person.thumbnail}}"/>
 	                    <i class="fa fa-ban" ng-show="!person || !person.thumbnail"></i>
@@ -131,58 +131,6 @@
         		<span>There are no logged hours</span>
         	</div>
         </div>
-     <!--  
-      <table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList" export-hours="hoursToCSV">
-               <tr ng-repeat="hoursRecord in $data">
-                <td data-title="'Person'" sortable="'person.resource'">
-                  <a href="#{{hoursRecord.person.resource}}">
-                    <img ng-show="hoursRecord.person" class="profileImage" ng-src="{{hoursRecord.person.thumbnail}}"/>
-                    <i class="fa fa-ban" ng-show="!hoursRecord.person"></i>
-                    <span style="display: inline-block;">{{hoursRecord.person.name || 'Unknown'}}</span>
-                  </a> <span class="visible-xs">{{hoursRecord.role.type.abbreviation}}</span>
-                  </td>
-                  <td data-title="'Role'" header-class="hidden-xs" sortable="'role.type.abbreviation'"
-                      class="hidden-xs">
-                    {{hoursRecord.role.type.title}}
-                  </td>
-                  <td data-title="'Date'" sortable="'date'">
-                    <span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
-                  </td>
-                  <td data-title="'Hrs'" sortable="'hours'">
-                    {{hoursRecord.hours}}
-                  </td>
-                  <td ng-if="financeAccess" data-title="'Rate'">
-                    {{displayRate(hoursRecord.role)}}
-                  </td>
-                  <td class="hidden-xs" data-title="'Desc'" header-class="hidden-xs" sortable="'description'" class="hidden-xs">
-                    {{hoursRecord.description}}
-                  </td>
-                  <td class="actionsCell" data-title="''">
-                    <button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
-                      <i class="fa fa-trash-o"></i>
-                    </button>
-                  </td>
-               </tr>
-           </span>
-         </table>
-         <script type="text/ng-template" id="hours/pager">
-            <ul class="pager ng-cloak">
-              <li ng-repeat="page in pages"
-                    ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
-                    ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
-                <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
-                <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
-              </li>
-                <li>
-                <div class="btn-group">
-                    <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
-                    <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
-                    <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
-                    <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
-                </div>
-                </li>
-            </ul>
-        </script>
-        -->
+    
      </div>
  </div>
