@@ -252,7 +252,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             }
             
             if(totalHours > 24) {
-            	$scope.hoursValidation.push("You are trying to submit more than 24 h/day.");
+            	$scope.hoursValidation.push("Hours logged on a given day cannot exceed 24 hours.");
             	return;
             }
             
