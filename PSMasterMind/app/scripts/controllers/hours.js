@@ -275,29 +275,49 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         };
         
         $scope.copyHours = function(index) {
-        	var today = new Date($scope.selected.date);
+        	var selectedDate = new Date($scope.selected.date);
         	var copyFromDate = new Date();
         	var copyFromEntries = [];
         	
-        	// if monday, copy from last friday
-        	if(today.getDay() == 1) {
-        		copyFromDate.setDate(today.getDate() - 3);
-        		
-        		var date = getShortDate(copyFromDate);
-        		
-        		var friydayHours = HoursService.getHoursRecordsBetweenDates($scope.me, date, date).then(function(result) {
-        			if(result.length > 0) {
-        				copyHoursCallback(result[0].hoursEntries);
+        	// if it's possible, trying to find hours entries from yesterday
+        	copyFromDate.setDate(selectedDate.getDate() - 1);
+        	
+        	var shortDate = getShortDate(copyFromDate);
+        	var copyFromEntry = _.findWhere($scope.displayedHours, { date: shortDate });
+        	var copyEntryFound = false;
+        	
+        	if(copyFromEntry) {
+        		var prevDayHoursRecords = _.pluck(copyFromEntry.hoursEntries, "hoursRecord");
+        		prevDayHoursRecords = _.filter(prevDayHoursRecords, function(p) {
+        			if(p) return true;
+        		});
+        		if(prevDayHoursRecords.length > 0) {
+        			copyHoursCallback(copyFromEntry.hoursEntries);
+        			copyEntryFound = true;
+        		}
+        	}
+        	// if not, get hours for 1 week earlier than selected date, find nearest day with logged hours.
+        	if(!copyEntryFound) {
+        		var fromDate = selectedDate.setDate(selectedDate.getDate() - 7);
+               	var from = getShortDate(new Date(fromDate));
+        		HoursService.getHoursRecordsBetweenDates($scope.me, from, shortDate).then(function(result) {
+        			for(var i = result.length - 1; i >= 0; i--) {
+        				if(result[i].hoursEntries.length > 0) {
+        					var houseRecordsInside = _.filter(result[i].hoursEntries, function(h) {
+        						if(h.hoursRecord) return true;
+        					});
+        					if(houseRecordsInside.length > 0) {
+        						copyHoursCallback(result[i].hoursEntries);
+        						copyEntryFound = true;
+            					return;
+        					}
+        				}
+        			}
+        			
+        			if(!copyEntryFound) {
+        				$scope.hoursValidation.push("No hours to copy found for the last week.");
         			}
         		});
-        	}
-        	else {
-        		copyFromDate.setDate(today.getDate() - 1);
-            	
-            	var shortDate = getShortDate(copyFromDate);
-            	var copyFromEntry = _.findWhere($scope.displayedHours, { date: shortDate });
-            	
-            	copyHoursCallback(copyFromEntry.hoursEntries);
         	}
         }
         
