@@ -202,7 +202,7 @@ angular.module('Mastermind.controllers.people')
         for(var i = 0; i < $scope.hours.length; i++) {
         	var hour = $scope.hours[i];
         	
-        	if(hour.task) {
+        	if(hour.task && hour.task.resource) {
         		var taskRes = $scope.hours[i].task.resource;
             	var task = _.findWhere($scope.hoursTasks, { resource: taskRes});
             	$scope.hours[i].task.name = task.name;
@@ -215,6 +215,11 @@ angular.module('Mastermind.controllers.people')
         projects = _.pluck(projects, "resource");
         
         projects = _.uniq(projects);
+        
+        // filter array to avoid empty entries
+        projects = _.filter(projects, function(p){
+        	return p ? true: false;
+        })
         
         var currentMonth = new Date().getMonth();
         var currentYear = new Date().getFullYear();
@@ -464,6 +469,9 @@ angular.module('Mastermind.controllers.people')
     $scope.addHours = function(){
       //Set the person context
       $scope.newHoursRecord.person = {resource:$scope.profile.about};
+      
+      if (!$scope.newHoursRecord.description)
+    	  $scope.newHoursRecord.description = "No Description Entered";
 
       Resources.create('hours', $scope.newHoursRecord).then(function(){
         $scope.initHours();
@@ -493,6 +501,12 @@ angular.module('Mastermind.controllers.people')
       });
     };
 
+    $scope.handleHoursTypeChanged = function(type) {
+    	if (type == 'task' &&  $scope.newHoursRecord.project)
+    		delete $scope.newHoursRecord.project;
+    	else if (type == 'project' && $scope.newHoursRecord.task)
+    		delete $scope.newHoursRecord.task;
+    }
 //    /**
 //     * Load Skill Definitions to display names
 //     */

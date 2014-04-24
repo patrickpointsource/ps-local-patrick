@@ -952,6 +952,9 @@ angular.module('Mastermind')
       //Set the person context
       $scope.newHoursRecord.person = {resource:$scope.me.about};
 
+      if (!$scope.newHoursRecord.description)
+    	  $scope.newHoursRecord.description = "No Description Entered";
+      
       Resources.create('hours', $scope.newHoursRecord).then(function(){
         $scope.initHours();
         $scope.newHoursRecord = {};

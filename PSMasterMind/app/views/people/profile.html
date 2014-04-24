@@ -169,26 +169,20 @@
         <div class="form-group">
           <label class="required-label control-label" for="project">Project:</label>
           
-          <select name="project" id="project" class="col-xs-12 form-control" ng-required="true"
+          <select name="project" id="project" class="col-xs-12 form-control" ng-required="true" ng-change="handleHoursTypeChanged('project')" 
               ng-model="newHoursRecord.project.resource" ng-options="p.resource as p.title for p in projects">
-          </select>
-          
-         
-           
-			               	
+          </select>		               	
         </div>
       </div>
       <div class="col-xs-12 col-sm-3">
         <div class="form-group">
           <label class="required-label control-label" for="project">Task:</label>
           
-          <select name="task" id="task"
+          <select name="task" id="task" ng-change="handleHoursTypeChanged('task')" 
                  class="col-xs-12 form-control" 
                  ng-model="newHoursRecord.task.resource" ng-required="true"
                  ng-options="t.resource as t.name for t in hoursTasks">
-         	</select>
-           
-			               	
+         	</select>              	
         </div>
       </div>
       <div class="col-xs-12 col-sm-3">
