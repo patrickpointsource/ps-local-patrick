@@ -1016,7 +1016,9 @@ angular.module('Mastermind')
 		var currentDate;
 		
 		for (var i = 0; i < hours.length; i ++) {
-			currentDate = new Date(hours[i].date);
+			var tmpD = hours[i].date.split('-');
+			
+			currentDate = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]));
 			
 			if (!minDate || minDate > currentDate)
 				minDate = new Date(currentDate);
@@ -1224,8 +1226,12 @@ angular.module('Mastermind')
     	}
     	
     	var retHours = _.filter(currentHours, function(h){
-    		var d = new Date(h.date)
-    		return d.getFullYear() == selected.getFullYear() && d.getMonth() == selected.getMonth()
+    		//var d = new Date(h.date);
+    		var tmpD = h.date.split('-');
+    		var y = parseInt(tmpD[0]);
+    		var m = parseInt(tmpD[1]) - 1;
+    		
+    		return y == selected.getFullYear() && m == selected.getMonth()
     	});
     	
     	retHours.sort(function(h1, h2){

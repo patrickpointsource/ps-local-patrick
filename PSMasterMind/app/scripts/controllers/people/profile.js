@@ -217,7 +217,7 @@ angular.module('Mastermind.controllers.people')
         projects = _.uniq(projects);
         
         var currentMonth = new Date().getMonth();
-       
+        var currentYear = new Date().getFullYear();
         
         for(var projCounter = 0; projCounter < projects.length; projCounter++){
         	var project = ProjectsService.getForEditByURI(projects[projCounter]).then(function(result) {
@@ -229,11 +229,15 @@ angular.module('Mastermind.controllers.people')
         	        
         		for(var hoursCounter = 0; hoursCounter < $scope.hours.length; hoursCounter++) {
         			taskHour = null;
-        			var hoursMonth = new Date($scope.hours[hoursCounter].date).getMonth();
+        			
+        			var tmpD = $scope.hours[hoursCounter].date.split('-');
+            		
+        			var hoursMonth = parseInt(tmpD[1]) - 1;
+        			var hoursYear = parseInt(tmpD[0]);
         			
         			if($scope.hours[hoursCounter].project && $scope.hours[hoursCounter].project.resource == result.about) {
             			
-            			projectHour.hours.push({hour: $scope.hours[hoursCounter], show: currentMonth == hoursMonth});
+            			projectHour.hours.push({hour: $scope.hours[hoursCounter], show: (currentMonth == hoursMonth && currentYear == hoursYear)});
             		} else if($scope.hours[hoursCounter].task) {
             			if (!tasksMap[$scope.hours[hoursCounter].task.resource])
             				tasksMap[$scope.hours[hoursCounter].task.resource] = $scope.hours[hoursCounter].task
@@ -241,7 +245,7 @@ angular.module('Mastermind.controllers.people')
         				if (!tasksHoursMap[$scope.hours[hoursCounter].task.resource])
         					tasksHoursMap[$scope.hours[hoursCounter].task.resource] = []
             			
-            			tasksHoursMap[$scope.hours[hoursCounter].task.resource].push({hour: $scope.hours[hoursCounter], show: currentMonth == hoursMonth})
+            			tasksHoursMap[$scope.hours[hoursCounter].task.resource].push({hour: $scope.hours[hoursCounter], show: (currentMonth == hoursMonth && currentYear == hoursYear)})
             		}
             	}
         		
@@ -288,7 +292,9 @@ angular.module('Mastermind.controllers.people')
 		var currentDate;
 		
 		for (var i = 0; i < hours.length; i ++) {
-			currentDate = new Date(hours[i].date);
+			var tmpD = hours[i].date.split('-');
+			
+			currentDate = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]));
 			
 			if (!minDate || minDate > currentDate)
 				minDate = new Date(currentDate);
