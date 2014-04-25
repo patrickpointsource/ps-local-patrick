@@ -276,12 +276,14 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         
         $scope.copyHours = function(index) {
         	$scope.hideMessages();
-        	var selectedDate = new Date($scope.selected.date);
-        	var copyFromDate = new Date($scope.selected.date);
+        	var selectedDate = getDate($scope.selected.date);
+        	
         	var copyFromEntries = [];
         	
         	// if it's possible, trying to find hours entries from yesterday
-        	copyFromDate.setDate(selectedDate.getDate() - 1);
+        	var tmpD = $scope.selected.date.split('-');
+        	
+        	var copyFromDate = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]) - 1);
         	
         	var shortDate = getShortDate(copyFromDate);
         	var copyFromEntry = _.findWhere($scope.displayedHours, { date: shortDate });
@@ -299,8 +301,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         	}
         	// if not, get hours for 1 week earlier than selected date, find nearest day with logged hours.
         	if(!copyEntryFound) {
-        		var fromDate = selectedDate.setDate(selectedDate.getDate() - 7);
-               	var from = getShortDate(new Date(fromDate));
+        		var fromDate = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]) - 7);
+               	var from = getShortDate(fromDate);
         		HoursService.getHoursRecordsBetweenDates($scope.me, from, shortDate).then(function(result) {
         			for(var i = result.length - 1; i >= 0; i--) {
         				if(result[i].hoursEntries.length > 0) {
@@ -320,6 +322,14 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         			}
         		});
         	}
+        }
+        
+        var getDate = function(dateString) {
+        	var tmpD = dateString.split('-');
+			
+			var date = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]), parseInt(tmpD[2]));
+			
+			return date;
         }
         
         var copyHoursCallback = function(copyFromEntries) {
