@@ -1,5 +1,3 @@
-
-
 describe("E2E: Create project, check projects list, delete project, check project list.", function() {
 
   var ptor;
