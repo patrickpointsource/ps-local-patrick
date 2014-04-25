@@ -943,10 +943,32 @@ angular.module('Mastermind')
       },sort);
     });
 
+    $scope.hoursValidation = [];
+
+    $scope.getNewHoursValidationErrors = function(newHoursForm) {
+    	
+    	$scope.hoursValidation = [];
+    	
+    	if (newHoursForm.hours.$dirty && newHoursForm.hours.$invalid){
+    		$scope.hoursValidation.push("Incorrect value for hours")
+    	
+    	} 
+    	
+    	if (newHoursForm.hoursDescription.$dirty && newHoursForm.hoursDescription.$invalid) {
+    		$scope.hoursValidation.push("Hours description is empty");
+    		
+    	}
+    	
+    	return  $scope.hoursValidation.length > 0;
+    }
+    
+    
+    
     /**
     * Add a new Hours Record to the server
     */
     $scope.addHours = function(){
+    	var form = this.newHoursForm;
       //Set the project context
       $scope.newHoursRecord.project = {resource:$scope.project.about};
       //Set the person context
@@ -958,6 +980,7 @@ angular.module('Mastermind')
       Resources.create('hours', $scope.newHoursRecord).then(function(){
         $scope.initHours();
         $scope.newHoursRecord = {};
+        form.setPristine(true)
       });
     };
 

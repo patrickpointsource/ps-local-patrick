@@ -7,7 +7,8 @@
 		</div>
      		
 		<div class="modal-body panel-body">
-		    <div class="row" ng-if="hoursValidation.length > 0">
+		   <!--  <div class="row" ng-if="hoursValidation.length > 0"> --> 
+		   <div class="row" ng-if="getNewHoursValidationErrors(hoursForm)">
 		      <div id="hoursValidationDiv" class="alert alert-danger">
                 <a class="close" ng-click="hideMessages()">&times;</a>
                     <ul>
@@ -15,7 +16,7 @@
                     </ul>
                 </div>
 		    </div>
-		    <form>
+		    <form name="hoursForm">
 		    	<div class="row">
 			        <div class="form-group col-xs-12">
 			        	<div class="pull-right">
@@ -45,7 +46,7 @@
 			                	</select>
 			               	</div>
 			               	
-			               	<div ng-if="hoursEntry.task && !hoursEntry.task.name || hoursEntry.hoursRecord.task && !hoursEntry.hoursRecord.task.name" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
+			               	<div ng-if="hoursEntry.task && !hoursEntry.task.name || hoursEntry.hoursRecord.task && hoursEntry.hoursRecord.task.resource" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
 			               		<select name="task" id="task"
 			                        class="form-control form-group" 
 			                        ng-model="hoursEntry.hoursRecord.task.resource" ng-required="true"
@@ -53,8 +54,11 @@
 			                	</select>
 			               	</div>
 			                <div class="col-xs-3 col-sm-12 col-md-6 col-lg-12">
-			                    <input value="{{hoursEntry.hoursRecord.hours}}" class="form-group form-control"
-			                         placeholder="Hours" ng-model="hoursEntry.hoursRecord.hours"/>
+			                    <input value="{{hoursEntry.hoursRecord.hours}}" 
+			                    	
+			                    		name="hours"
+			                    		class="form-group form-control" type="number"
+			                         placeholder="Hours" ng-model="hoursEntry.hoursRecord.hours" />
 			                </div>
 			            </div>
 		            </div>

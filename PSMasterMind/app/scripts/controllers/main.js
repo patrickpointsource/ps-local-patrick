@@ -485,7 +485,8 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     		var projectAssignment = projectAssignments[i];
     		var role = projectAssignment.role;
     		if(role.type){
-    			role = $scope.roleGroups[role.type.resource];
+    			role = $scope.roleGroups ? $scope.roleGroups[role.type.resource]: null;
+    			
     			if(role && role.abbreviation && $.inArray(role.abbreviation, roles) == -1){
     				roles.push(role.abbreviation);
     			}

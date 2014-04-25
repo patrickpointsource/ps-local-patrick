@@ -229,6 +229,29 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.newHoursRecord = {};
         $scope.hoursValidation = [];
 
+        $scope.getNewHoursValidationErrors = function(hoursForm) {
+        	
+        	$scope.hoursValidation = [];
+        	/*
+        	for (var i = 0; hoursForm["hours" + i]; i++) {
+	        	if ( hoursForm["hours" + i].$dirty &&  hoursForm["hours" + i].$invalid){
+	        		$scope.hoursValidation.push("Incorrect value for hours")
+	        	
+	        	} 
+	        	
+        	}
+        	*/
+        	
+        	if ( hoursForm["hours"] && hoursForm["hours"].$dirty &&  hoursForm["hours"].$invalid){
+        		$scope.hoursValidation.push("Incorrect value for hours")
+        	
+        	}
+        	
+        	$scope.hoursValidation = _.uniq($scope.hoursValidation)
+        	
+        	return  $scope.hoursValidation.length > 0;
+        }
+        
         $scope.addHours = function () {
             var entries = $scope.selected.hoursEntries;
             var hoursRecords = [];
@@ -241,7 +264,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 var entry = entries[i];
                 if (entry.hoursRecord) {
                     hoursRecords.push(entry.hoursRecord);
-                    totalHours += parseInt(entry.hoursRecord.hours);
+                    totalHours += !isNaN(parseInt(entry.hoursRecord.hours)) ? parseInt(entry.hoursRecord.hours): 0;
                     if (!entry.hoursRecord.person) {
                         entry.hoursRecord.person = {resource: $scope.me.about};
                     }

@@ -34,7 +34,17 @@
 <!-- {{project}}<br/><br/>-->
 <!-- {{hoursToCSV.rawJSON()}}<br/><br/>-->
 <!-- {{hoursToCSV.rawCSV()}} -->
-
+<!--  
+<div class="row" ng-if="hoursValidation.length > 0">
+-->
+<div class="row" ng-if="getNewHoursValidationErrors(newHoursForm)">
+   <div id="hoursValidationDiv" class="alert alert-danger">
+     <a class="close" ng-click="hoursValidation=[]">&times;</a>
+         <ul>
+             <li ng-repeat="message in hoursValidation">{{message}}</li>
+         </ul>
+     </div>
+ </div>
 <div ng-form="newHoursForm" id="newHoursDialog" class="well collapse out">
     <div class="row">
       <div class="col-xs-12 col-sm-6 row">
@@ -59,12 +69,13 @@
       </div>
       <div class="col-xs-12 col-sm-6">
            <label class="control-label" for="hours">* Description:</label>
-           <textarea id="hours" name="hours" rows="3" class="form-control" ng-model="newHoursRecord.description" ng-required="true"></textarea>
+           <textarea id="hoursDescription" name="hoursDescription" rows="3" class="form-control" ng-model="newHoursRecord.description" 
+           	></textarea>
         </div>
   </div>
   <div class="row">
         <div class="col-xs-12">
-            <input type="submit" class="btn" value="Add" ng-click="addHours()"/>
+            <input type="submit" class="btn" value="Add" ng-click="addHours()" ng-disabled="newHoursForm.$invalid"/>
         </div>
     </div>
 </div>
