@@ -65,7 +65,7 @@ describe("E2E: Create project, check projects list, delete project, check projec
 	this.roleStartDate = element(by.model('newRole.startDate'));
 	this.hoursPerMonth = element(by.model('newRole.rate.hoursPerMth'));
 	this.addRoleButton = element(by.css('[ng-click="add()"]'));
-	this.saveButton = element(by.css('[ng-click="save()"]'));
+	this.saveButton = element(by.css('[ng-click="checkShiftDates()"]'));
 	this.successMessage = element.all(by.repeater('message in messages'));
   };
   
@@ -108,7 +108,9 @@ describe("E2E: Create project, check projects list, delete project, check projec
 	//newProjectPage.roleStartDate.sendKeys("2014-04-01");
 	//newProjectPage.hoursPerMonth.sendKeys("120");
 	newProjectPage.addRoleButton.click();
+	ptor.sleep(3000);
 	newProjectPage.saveButton.click();
+	ptor.sleep(3000);
 	newProjectPage.successMessage.then(function(arr) {
         expect(arr[0].getText()).toEqual('Project successfully saved');
 	});
