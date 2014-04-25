@@ -275,8 +275,9 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         };
         
         $scope.copyHours = function(index) {
+        	$scope.hideMessages();
         	var selectedDate = new Date($scope.selected.date);
-        	var copyFromDate = new Date();
+        	var copyFromDate = new Date($scope.selected.date);
         	var copyFromEntries = [];
         	
         	// if it's possible, trying to find hours entries from yesterday
