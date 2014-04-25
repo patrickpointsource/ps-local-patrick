@@ -47,6 +47,7 @@ describe("E2E: Create project, check projects list, delete project, check projec
 	this.projectTypesRadio = element.all(by.model('project.type'));
 	this.calendarToday = element(by.css('.day active'));
 	this.startDate = element(by.model('project.startDate'));
+	this.endDate = element(by.model('project.endDate'));
 	this.projectCommited = element(by.model('project.committed'));
 	this.execSponsorSelect = function(number) {
 		var options = element(by.model('project.executiveSponsor.resource')).findElements(by.tagName('option'))   
@@ -81,7 +82,7 @@ describe("E2E: Create project, check projects list, delete project, check projec
   // IMPORTANT: required at lest 1 sponsor in sponsor's list, 
   //            required at lest 1 role (and gets first of them)
   //            for correct project list check, we should not have any created projects
-  it ('Should create a project.', function(){
+  it ('Should create active project.', function(){
 	var projectsPage = new ProjectsPage();
 	var newProjectPage = new NewProjectPage();
 	
@@ -94,29 +95,82 @@ describe("E2E: Create project, check projects list, delete project, check projec
 		expect(url).toEqual(projectsPage.newUrl);
 	});
 
-	// common fields filling
-	newProjectPage.execSponsorSelect(1); // assume that we have at least 1 sponsor in list.
-	newProjectPage.nameInput.sendKeys("Automated test project");
-	newProjectPage.customerInput.sendKeys("Automated test customer");
-	newProjectPage.projectTypesRadio.first(0).click();
-	newProjectPage.startDate.sendKeys("2014-04-01");
-	newProjectPage.projectCommited.click();
-	newProjectPage.rolesTab.click();
-	// roles tab filling
-	newProjectPage.triggerAddRoleButton.click();
-	newProjectPage.roleSelect(1); // select project manager
-	//newProjectPage.roleStartDate.sendKeys("2014-04-01");
-	//newProjectPage.hoursPerMonth.sendKeys("120");
-	newProjectPage.addRoleButton.click();
-	ptor.sleep(3000);
-	newProjectPage.saveButton.click();
-	ptor.sleep(3000);
+	fillCommonFields(newProjectPage, function() {
+		fillActiveProjectPageFields(newProjectPage);
+	});
+	
 	newProjectPage.successMessage.then(function(arr) {
         expect(arr[0].getText()).toEqual('Project successfully saved');
 	});
   }, 30000);
   
-  it('Open projects page, shoud display created project.', function(){
+  it ('Should create backlog project.', function(){
+		var projectsPage = new ProjectsPage();
+		var newProjectPage = new NewProjectPage();
+		
+		projectsPage.get(); // going to projects
+		ptor.sleep(1000); // wait until it loads
+		projectsPage.addProjectButton.click();
+		
+		// assert for "project/new" url
+		ptor.getCurrentUrl().then(function(url) {
+			expect(url).toEqual(projectsPage.newUrl);
+		});
+
+		fillCommonFields(newProjectPage, function() {
+			fillBacklogProjectPageFields(newProjectPage);
+		});
+		
+		newProjectPage.successMessage.then(function(arr) {
+	        expect(arr[0].getText()).toEqual('Project successfully saved');
+		});
+	  }, 30000);
+  
+  it ('Should create pipeline project.', function(){
+		var projectsPage = new ProjectsPage();
+		var newProjectPage = new NewProjectPage();
+		
+		projectsPage.get(); // going to projects
+		ptor.sleep(1000); // wait until it loads
+		projectsPage.addProjectButton.click();
+		
+		// assert for "project/new" url
+		ptor.getCurrentUrl().then(function(url) {
+			expect(url).toEqual(projectsPage.newUrl);
+		});
+
+		fillCommonFields(newProjectPage, function() {
+			fillPipelineProjectPageFields(newProjectPage);
+		});
+		
+		newProjectPage.successMessage.then(function(arr) {
+	        expect(arr[0].getText()).toEqual('Project successfully saved');
+		});
+	  }, 30000);
+  
+  it ('Should create completed project.', function(){
+		var projectsPage = new ProjectsPage();
+		var newProjectPage = new NewProjectPage();
+		
+		projectsPage.get(); // going to projects
+		ptor.sleep(1000); // wait until it loads
+		projectsPage.addProjectButton.click();
+		
+		// assert for "project/new" url
+		ptor.getCurrentUrl().then(function(url) {
+			expect(url).toEqual(projectsPage.newUrl);
+		});
+
+		fillCommonFields(newProjectPage, function() {
+			fillCompletedProjectPageFields(newProjectPage);
+		});
+		
+		newProjectPage.successMessage.then(function(arr) {
+	        expect(arr[0].getText()).toEqual('Project successfully saved');
+		});
+	  }, 30000);
+  
+  it('Open projects page, shoud display created projects.', function(){
 	var projectsPage = new ProjectsPage();
 	projectsPage.get();
 	ptor.getCurrentUrl().then(function(url) {
@@ -124,11 +178,11 @@ describe("E2E: Create project, check projects list, delete project, check projec
 	});
 	ptor.sleep(1000);
 	ptor.waitForAngular().then(function() {
-		expect(projectsPage.projects.count()).toEqual(1);
+		expect(projectsPage.projects.count()).toEqual(3);
 	});
   }, 30000);
   
-  it('Should delete created project', function(){
+  it('Should delete first project', function(){
 	var projectsPage = new ProjectsPage();
 	projectsPage.get();
 	ptor.sleep(1000);
@@ -154,13 +208,107 @@ describe("E2E: Create project, check projects list, delete project, check projec
 	});
 	ptor.sleep(4000); // for demo
   }, 30000);
-
+  
+  var fillCommonFields = function(newProjectPage, fillOtherFieldsCallback) {
+	newProjectPage.execSponsorSelect(1); // assume that we have at least 1 sponsor in list.
+	
+	newProjectPage.customerInput.sendKeys("Test customer");
+	newProjectPage.projectTypesRadio.first(0).click();
+	
+	fillOtherFieldsCallback();
+	
+	// roles tab filling
+	newProjectPage.rolesTab.click();
+	newProjectPage.triggerAddRoleButton.click();
+	newProjectPage.roleSelect(1); // select project manager
+	newProjectPage.addRoleButton.click();
+	newProjectPage.saveButton.click();
+  }
+  
+  var fillActiveProjectPageFields = function(newProjectPage) {
+	    // start date in the past
+		var today = new Date();
+		today.setDate(today.getDate() - 2);
+		var startDate = getShortDate(new Date(today));
+		
+		newProjectPage.startDate.sendKeys(startDate);
+		newProjectPage.nameInput.sendKeys("Acrive project");
+		newProjectPage.projectCommited.click();
+  }
+  
+  var fillBacklogProjectPageFields = function(newProjectPage) {
+	    // start date in the future
+		var today = new Date();
+		today.setDate(today.getDate() + 2);
+		var startDate = getShortDate(new Date(today));
+		
+		newProjectPage.startDate.sendKeys(startDate);
+		newProjectPage.nameInput.sendKeys("Backlog project");
+		newProjectPage.projectCommited.click();
+  }
+  
+  var fillPipelineProjectPageFields = function(newProjectPage) {
+		// start date in the future
+		var today = new Date();
+		today.setDate(today.getDate() + 2);
+		var startDate = getShortDate(new Date(today));
+		
+		newProjectPage.nameInput.sendKeys("Pipeline project");
+		newProjectPage.startDate.sendKeys(startDate);
+		// not contractually commited
+		//newProjectPage.projectCommited.click();
+  }
+  
+  var fillCompletedProjectPageFields = function(newProjectPage) {
+	    newProjectPage.nameInput.sendKeys("Pipeline project");
+	    // start date in the past
+		var start = new Date();
+		start.setDate(start.getDate() - 4);
+		var startDate = getShortDate(new Date(start));
+		
+		// end date in the past
+		var end = new Date();
+		end.setDate(end.getDate() - 2);
+		var endDate = getShortDate(new Date(end));
+		
+		newProjectPage.startDate.sendKeys(startDate);
+		newProjectPage.endDate.sendKeys(endDate);
+		newProjectPage.projectCommited.click();
+  }
+  
+  var fillInvestmentProjectPageFields = function(newProjectPage) {
+	    // start date in the future
+		var today = new Date();
+		today.setDate(today.getDate() + 2);
+		var startDate = getShortDate(new Date(today));
+		
+		// TODO: click on 2nd item in projectTypesRadio
+		newProjectPage.startDate.sendKeys(startDate);
+		newProjectPage.nameInput.sendKeys("Investment project");
+		newProjectPage.projectCommited.click();
+  }
+  
   var showProps = function(property) {
 	var str = '';
 	for (var prop in property)
 		str += prop + ': ';
 	console.log('available methods in ' + property + ':' + str + '\n');
   };
+  
+  var getShortDate = function(date){
+   	 //Get todays date formatted as yyyy-MM-dd
+      var dd = date.getDate();
+       var mm = date.getMonth()+1; //January is 0!
+       var yyyy = date.getFullYear();
+       if (dd<10){
+         dd='0'+dd;
+       }
+       if (mm<10){
+         mm='0'+mm;
+       }
+       date = yyyy+'-'+mm+'-'+dd;
+       return date;
+   };
   /*var str = '';
 
  for (var prop in t)
