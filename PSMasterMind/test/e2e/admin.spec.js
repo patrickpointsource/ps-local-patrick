@@ -1,5 +1,3 @@
-
-
 describe("E2E: AdministrationPage tests.", function() {
 
   var ptor;
