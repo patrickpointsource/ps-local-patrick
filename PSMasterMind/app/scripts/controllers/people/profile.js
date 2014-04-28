@@ -315,7 +315,7 @@ angular.module('Mastermind.controllers.people')
 		
 		while (currentDate <= maxDate) {
 			o = {
-					name: currentDate.getMonth() != now.getMonth() ? $scope.monthNames[currentDate.getMonth()]: "Current",
+					name: $scope.monthNames[currentDate.getMonth()],
 					value: currentDate.getMonth()
 				};
 			$scope.hoursPeriods.push(o)
