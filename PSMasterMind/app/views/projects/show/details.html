@@ -132,6 +132,23 @@
 				currency}}
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+				<label for="billingDate">Billing Date:</label>
+				<input id="billingDate" name="billingDate"
+					class="col-xs-12 form-control datepicker" type="text"
+					ng-model="project.terms.billingDate" data-date-format="yyyy-mm-dd" required
+					data-provide="datepicker">
+			</div>
+			<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+				<label for="billingFrequency">Billing Frequency:</label>
+				<select name="billingFrequency" class="form-control" 
+					ng-model="project.terms.billingFrequency"
+					ng-required="true"
+					ng-options="f.value as f.label for f in billingFrequencyOptions">
+				</select>
+			</div>
+		</div>
 	</div>
 </div>
 </div>

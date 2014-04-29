@@ -326,8 +326,8 @@ angular.module('Mastermind.controllers.people')
 			}
 			currentDate = new Date(currentDate)
 			
-			currentDate.setMonth(currentDate.getMonth()+1);
 			currentDate.setDate(1);
+			currentDate.setMonth(currentDate.getMonth()+1);
 		}
 	}
     

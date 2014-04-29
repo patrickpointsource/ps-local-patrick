@@ -46,6 +46,14 @@
 					<label>Contractually Committed: </label>
 					<span ng-if="project.committed">Yes</span><span ng-if="!project.committed">No</span>
 				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Billing Date: </label>
+					<span ng-if="project.terms.billingDate">{{getFormatedBillingDate()}}</span>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label>Billing Frequency: </label>
+					<span ng-if="project.terms.billingFrequency">{{getFormatedBillingFrequency()}}</span>
+				</div>
 			</div>
 		</div>
 		<div class="col-xs-12">
@@ -135,7 +143,7 @@
 				
 		</div>
 	</div>
-	<div class="row">
+	<div class="row rolesList">
 		<div class="col-xs-12 col-sm-6 col-lg-4">
 			<div class="panel panel-default dashboard-widget">
 				<div class="panel-heading">Sponsors</div>

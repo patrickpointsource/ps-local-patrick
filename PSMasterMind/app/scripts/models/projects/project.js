@@ -6,7 +6,9 @@ angular.module('Mastermind.models.projects')
     var defaults = {
       includesProjectManagementOverhead: false,
       fixedBidServicesRevenue: 0,
-      type: 'timeAndMaterials'
+      type: 'timeAndMaterials',
+      billingFrequency: undefined,
+      billingDate: undefined
     };
 
     function Terms(options) {
@@ -16,6 +18,8 @@ angular.module('Mastermind.models.projects')
       this.fixedBidServicesRevenue = options.fixedBidServicesRevenue || defaults.fixedBidServicesRevenue;
       this.includesProjectManagementOverhead = options.includesProjectManagementOverhead || defaults.includesProjectManagementOverhead;
       this.type = options.type || defaults.type;
+      this.billingFrequency = options.billingFrequency || defaults.billingFrequency;
+      this.billingDate = options.billingDate || defaults.billingDate;
     }
 
     return Terms;

@@ -949,12 +949,12 @@ angular.module('Mastermind')
     	
     	$scope.hoursValidation = [];
     	
-    	if (newHoursForm.hours.$dirty && newHoursForm.hours.$invalid){
+    	if (newHoursForm && newHoursForm.hours.$dirty && newHoursForm.hours.$invalid){
     		$scope.hoursValidation.push("Incorrect value for hours")
     	
     	} 
     	
-    	if (newHoursForm.hoursDescription.$dirty && newHoursForm.hoursDescription.$invalid) {
+    	if (newHoursForm && newHoursForm.hoursDescription.$dirty && newHoursForm.hoursDescription.$invalid) {
     		$scope.hoursValidation.push("Hours description is empty");
     		
     	}
@@ -1071,8 +1071,9 @@ angular.module('Mastermind')
 			}
 			currentDate = new Date(currentDate)
 			
-			currentDate.setMonth(currentDate.getMonth()+1);
 			currentDate.setDate(1);
+			currentDate.setMonth(currentDate.getMonth()+1);
+			
 		}
 	}
 	
@@ -1174,7 +1175,7 @@ angular.module('Mastermind')
 	    	}
 	    	
 	    	assignees = _.filter(assignees, function(a) {
-	    		return a.resource
+	    		return a && a.resource
 	    	})
 	    	
 	    	var tmpP;
@@ -1234,9 +1235,12 @@ angular.module('Mastermind')
     };
     
     $scope.getProjectHours = function(currentHours, month) {
-    	var selected = new Date();
+    	var now = new Date();
+    	var selectedYear;
+    	var selectedMonth;
     	
     	var tmp;
+    	
     	if(month || month == 0) {
     		tmp = month.toString().split('-');
     	}
@@ -1244,11 +1248,13 @@ angular.module('Mastermind')
     		tmp = $scope.selectedHoursPeriod.toString().split('-');
     	}
     	
-    	if (tmp.length == 1)
-    		selected.setMonth(tmp[0])
-    	else if (tmp.length == 2){
-    		selected.setFullYear(tmp[0])
-    		selected.setMonth(tmp[1])
+    	if (tmp.length == 1) {
+    		//selected.setMonth(tmp[0])
+    		selectedMonth = tmp[0];
+    		selectedYear = now.getFullYear();
+    	} else if (tmp.length == 2){
+    		selectedMonth = tmp[1];
+    		selectedYear = tmp[0];
     	}
     	
     	var retHours = _.filter(currentHours, function(h){
@@ -1257,7 +1263,7 @@ angular.module('Mastermind')
     		var y = parseInt(tmpD[0]);
     		var m = parseInt(tmpD[1]) - 1;
     		
-    		return y == selected.getFullYear() && m == selected.getMonth()
+    		return y == selectedYear && m == selectedMonth
     	});
     	
     	retHours.sort(function(h1, h2){
@@ -1298,65 +1304,13 @@ angular.module('Mastermind')
             }
           };
 
-          	/*
-          $scope.hoursTableParams = new TableParams(params, {
-            total: $scope.hours.length, // length of data
-            getData: function ($defer, params) {
-              var data = $scope.hours;
-              var projectRoles = $scope.project.roles;
-
-              var start = (params.page() - 1) * params.count();
-              var end = params.page() * params.count();
-
-              // use build-in angular filter
-              var orderedData = params.sorting() ?
-                $filter('orderBy')(data, params.orderBy()) :
-                data;
-
-              $scope.hoursTableData = orderedData.slice(start, end);
-              var ret = $scope.hoursTableData;
-
-              //Resolve all the people
-              var defers = [];
-
-
-              for (var i = 0; i < ret.length; i++){
-                var ithHoursRecord = ret[i];
-                defers.push(Resources.resolve(ithHoursRecord.person));
-
-                //See if the user had a role in the project at the time of the record
-                for (var j = 0; j < projectRoles.length;j++){
-                  var role = projectRoles[j];
-                  //Found a role for this person
-                  if (role.assignee && ithHoursRecord.person.resource === role.assignee.resource){
-                    var roleStartDate = new Date(role.startDate);
-                    var hoursDate = new Date(ithHoursRecord.date);
-                    //record was after role start date
-                    if (hoursDate >= roleStartDate){
-                      var roleEndDate = role.endDate?new Date(role.endDate):null;
-                      //Record was before the end of role date
-                      if (!roleEndDate || roleEndDate >= hoursDate){
-                        ithHoursRecord.role=Resources.deepCopy(role);
-                        defers.push(Resources.resolve(ithHoursRecord.role.type));
-                      }
-                    }
-                  }
-                }
-
-              }
-              
-              $scope.organizeHours($scope.hours)
-              
-              $.when.apply(window, defers).done(function(){
-                $defer.resolve(ret);
-              });
-            }
-          });*/
+          	
         }
 
       }, sort);
     };
 
+    $scope.hoursMode = "filtered";
 
     $scope.handleProjectSelected = function(){
       var project = $scope.project;
@@ -1690,16 +1644,40 @@ angular.module('Mastermind')
 	  	}
     };
 
-    /*
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-    	if (toState.name == 'projects.show' && toParams.tabId == 'assignments'  && fromParams.tabId == 'assignments') {
-        	//set url manualy
-        	var updatedUrl = $state.href(toState.name, toParams).replace('#', '');
-        	$location.url(updatedUrl);
-        	event.preventDefault();
-        }
-    })
-    */
+    $scope.billingFrequencyOptions = [{label: "Once Week", value: "week"}, {label:"Once Month", value: "month"}];
+    $scope.getFormatedBillingDate = function() {
+    	var result = '';
+    	var d;
+    	
+    	if ($scope.project.terms.billingDate && $scope.project.terms.billingFrequency == "month") {
+    		d = new Date($scope.project.terms.billingDate);
+    		
+    		result = "Each " + d.getDate() + "th of Month"
+    	} else if ($scope.project.terms.billingDate && $scope.project.terms.billingFrequency == "week") {
+    		var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    		
+    		d = new Date($scope.project.terms.billingDate);
+    		
+    		result = "Each " + days[d.getDay()] + " of Week"
+    	}
+    	
+    	return result;
+    }
+    
+    $scope.getFormatedBillingFrequency = function() {
+    	var result = "";
+    	
+    	if ($scope.project.terms.billingDate && $scope.project.terms.billingFrequency == "month") {
+    		result = "Monthly"
+    	
+    	} else if ($scope.project.terms.billingDate && $scope.project.terms.billingFrequency == "week") {
+    		result = "Weekly"
+    	
+    	}
+    	
+    	
+    	return result;
+    }
 
     $scope.newHoursRecord = {};
 
