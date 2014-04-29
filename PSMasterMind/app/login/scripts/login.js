@@ -15,6 +15,10 @@ window.restPath = '/MasterMindStaging/rest/';
 //window.restPath = '/MasterMindServer/rest/';
 //window.clientBaseURL = 'https://mastermind.pointsource.us/web/';
 
+//demo
+//window.serverLocation = 'https://dmz.mastermind.pointsource.us';
+//window.restPath = '/MasterMindDemo/rest/';
+//window.clientBaseURL = 'https://mastermind.pointsource.us/demo/';
 
 var helper = (function () {
   var authResult = undefined;
