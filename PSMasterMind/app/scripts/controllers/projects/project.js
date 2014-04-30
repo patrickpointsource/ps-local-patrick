@@ -4,8 +4,8 @@
  * Controller for modifying an existing project.
  */
 angular.module('Mastermind')
-  .controller('ProjectCtrl', ['$q','$rootScope', '$scope', '$state', '$stateParams', '$location', '$filter', '$controller', 'ProjectsService', 'Resources', 'People', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode', 'AssignmentService',
-  function ($q, $rootScope, $scope, $state, $stateParams, $location, $filter, $controller, ProjectsService, Resources, People, RoleTypes, Rates, TableParams, editMode, AssignmentService) {
+  .controller('ProjectCtrl', ['$q','$rootScope', '$scope', '$state', '$stateParams', '$location', '$filter', '$controller', 'ProjectsService', 'Resources', 'People', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode', 'AssignmentService', 'HoursService',
+  function ($q, $rootScope, $scope, $state, $stateParams, $location, $filter, $controller, ProjectsService, Resources, People, RoleTypes, Rates, TableParams, editMode, AssignmentService, HoursService) {
     var detailsValid = false, rolesValid = false;
 
     //Set our currently viewed project to the one resolved by the service.
@@ -1341,6 +1341,7 @@ angular.module('Mastermind')
 
         $scope.organizeHours($scope.hours);
         $scope.initHoursPeriods($scope.hours);
+        $scope.thisWeek();
         
         if($scope.hoursTableParams){
           $scope.hoursTableParams.total($scope.hours.length);
@@ -1728,9 +1729,126 @@ angular.module('Mastermind')
     $scope.hoursViewType = 'monthly';
     $scope.selectedWeek = 0;
     
-    $scope.thisWeekDayLables = [];
+    $scope.thisWeekDayLabels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     
     $scope.newHoursRecord = {};
+    
+    $scope.moment = moment;
+    
+    
+    
+    $scope.startWeekDate = $scope.moment().day(0).format('YYYY-MM-DD');
+	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
+	
+	$scope.showWeek = function() {
+    	var hoursQuery = {
+        	    project:{
+						resource:$scope.project.about
+				},
+				$and:[
+				      {
+				    	  date:{
+				    		  $lte:$scope.endWeekDate
+				    	  }
+				      },
+				      {
+				    	  date:{
+				    			$gte:$scope.startWeekDate
+				    		}  
+				      }
+				]
+				
+        	};
+    	
+    	Resources.query('hours',hoursQuery, {}).then(function (result) {
+            if(result.count === 0) {
+            	console.error("getHoursRecordsBetweenDates("+$scope.startWeekDate+","+$scope.endWeekDate+") gave me no results");
+            } else {
+                $scope.thisWeekHours = result.members;
+                $scope.weekPersonHours = [];
+                $scope.weekHours = [];
+                
+                var uniqPersons = _.uniq(_.pluck(_.pluck($scope.thisWeekHours, 'person'), 'resource'));
+                
+                for(var i = 0; i < uniqPersons.length; i++) {
+                	$scope.weekPersonHours.push({ person: { resource: uniqPersons[i]}, hours: []});
+                	
+                	Resources.resolve($scope.weekPersonHours[i].person);
+
+                	var personRecord = $scope.weekPersonHours[i];
+                	for (var k = 0; k < 7; k++) {
+                		personRecord.hours.push({});
+                		personRecord.hours[k].totalHours = 0;
+                		personRecord.hours[k].hoursEntries = [];
+
+                    	var futureness = $scope.checkForFutureness($scope.moment($scope.startWeekDate).add('days', i).format('YYYY-MM-DD'));
+                    	personRecord.hours[k].futureness = futureness;
+                    	for(var j = 0; j < $scope.thisWeekHours.length; j++) {
+                    		if(($scope.thisWeekHours[j].date == $scope.moment($scope.startWeekDate).day(k).format('YYYY-MM-DD')) &&
+                    		    ($scope.thisWeekHours[j].person.resource == uniqPersons[i])) {
+                    			personRecord.hours[k].hoursEntries.push($scope.thisWeekHours[j]);
+                    			personRecord.hours[k].totalHours += $scope.thisWeekHours[j].hours;
+                    		}
+                    	}
+                    }
+                }
+                
+                for (var i = 0; i < 7; i++) {
+                	$scope.weekHours.push({});
+                	$scope.weekHours[i].totalHours = 0;
+                	$scope.weekHours[i].hoursEntries = [];
+
+                	var futureness = $scope.checkForFutureness($scope.moment($scope.startWeekDate).add('days', i).format('YYYY-MM-DD'));
+            		$scope.weekHours[i].futureness = futureness;
+                	for(var j = 0; j < $scope.thisWeekHours.length; j++) {
+                		if($scope.thisWeekHours[j].date == $scope.moment().day(i).format('YYYY-MM-DD')) {
+                			$scope.weekHours[i].hoursEntries.push($scope.thisWeekHours[j]);
+                			$scope.weekHours[i].totalHours += $scope.thisWeekHours[j].hours;
+                		}
+                	}
+                }
+            }
+        });
+    }
+	
+	$scope.checkForFutureness = function(date) {
+        //flux capacitor
+        var a = moment().subtract('days',1);
+        var b = moment(date);
+        var diff = a.diff(b);
+
+        var futureness;
+        if (diff < 0) {
+            futureness = true
+        } else {
+            futureness = false
+        }
+        return futureness;
+    }
+	
+	$scope.dayFormatted = function(yyyymmdd, params) {
+		if(params) {
+			return moment(yyyymmdd).format(params);
+		}
+		
+		return moment(yyyymmdd).format("MMM D");
+	}
+    
+    $scope.thisWeek = function() {
+    	
+    	$scope.startWeekDate = $scope.moment().day(0).format('YYYY-MM-DD');
+    	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
+    	
+    	$scope.showWeek();
+    }
+    
+    $scope.prevWeek = function() {
+    	
+    	$scope.startWeekDate = $scope.moment().day(-7).format('YYYY-MM-DD');
+    	$scope.endWeekDate = $scope.moment().day(-1).format('YYYY-MM-DD');
+    	
+    	$scope.showWeek();
+    }
 
     /**
      * Get Existing Project
