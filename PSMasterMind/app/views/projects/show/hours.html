@@ -1,21 +1,20 @@
 <div class="row">
-  <div class="col-sm-1 col-md-1 hidden-xs" style="padding-top:14px;">
-  	
-  	<h4 >
-  		<input ng-if="project.terms && project.terms.billingDate" name="hoursMode"
-				type="radio" value="filtered" ng-model="hoursMode" >View</h4>
- </div>
- 
- <div class="col-xs-3 col-sm-2 col-md-2">
-    <div class="btn-group" data-toggle="buttons" style="margin-top: 15px;">
-            <label class="btn btn-default active" ng-click="viewType = 'monthly';">
-                <input type="radio" name="options"> Monthly
-            </label>
-            <label class="btn btn-default" ng-click="viewType = 'weekly';">
-                <input type="radio" name="options"> Weekly
-            </label>
-     </div>
- </div>
+	<div class="col-xs-3 col-sm-2 col-md-2">
+	   <div class="btn-group" data-toggle="buttons" style="margin-top: 15px;">
+	           <label class="btn btn-default active" ng-click="viewType = 'monthly';">
+	               <input type="radio" name="options"> Monthly
+	           </label>
+	           <label class="btn btn-default" ng-click="viewType = 'weekly';">
+	               <input type="radio" name="options"> Weekly
+	           </label>
+	           <label class="btn btn-default" ng-if="project.terms && project.terms.billingDate" ng-click="viewType = 'billings';">
+	               <input type="radio" name="options"> Billings
+	           </label>
+	    </div>
+	</div>
+</div>
+<div class="row">
+  
  
   <div class="col-xs-3 col-sm-2 col-md-2" style="padding-top: 10px;">
      <select name="hoursPeriod" class="form-control" ng-if="organizedHours && viewType == 'monthly'" 
@@ -26,14 +25,7 @@
 	
   </div>
  
- <div class="col-sm-1 col-md-1 hidden-xs" style="padding-top:14px;">
-  	
-  	<h4 ng-if="project.terms && project.terms.billingDate">
-  		<input  name="hoursMode"
-				type="radio" value="billed" ng-model="hoursMode" >Billing</h4>
- </div>
- 
-  <div class="actions col-xs-5 col-sm-5 col-md-6 pageActions">
+  <div class="actions col-xs-9 col-sm-10 col-md-10 pageActions">
     <a ng-if="financeAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="{{project.name}}-{{currentMonth}}.csv">
       <div class="hidden-xs"><i class="fa fa-table"></i><span> Download to Excel</span></div>
       <div class="visible-xs"><i class="fa fa-table"></i></div>
@@ -41,6 +33,7 @@
     
   </div>
 </div>
+
 <div class="row">
 	<div class="col-sm-12">
 		<hr  />
