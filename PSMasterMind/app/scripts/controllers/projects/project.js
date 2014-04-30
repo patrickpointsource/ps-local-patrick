@@ -1010,13 +1010,14 @@ angular.module('Mastermind')
 
     //$scope.hoursPeriods = [{name: 'march', value: 3}, {name: 'current', value: 4}, {name: 'may', value: 5}];
     $scope.hoursPeriods = [];
-    $scope.selectedHoursPeriod = -1;
+    $scope.selectedHoursPeriod = null;
     $scope.currentMonth = "";
     $scope.currentDisplayedHours = [];
     
 	$scope.handleHoursPeriodChanged = function() {
 		var period = this.selectedHoursPeriod;
 		$scope.currentMonth = $scope.monthNames[period];
+		
 		for(var i = 0; i < $scope.currentDisplayedHours.length; i++){
 			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries, period);
 		}
@@ -1034,8 +1035,11 @@ angular.module('Mastermind')
 		
 		var now = new Date();
 		
-		$scope.selectedHoursPeriod = now.getMonth();
-		$scope.currentMonth = $scope.monthNames[$scope.selectedHoursPeriod];
+		if (!$scope.selectedHoursPeriod && ($scope.hoursViewType == "monthly")) {
+			$scope.selectedHoursPeriod = now.getMonth();
+			$scope.currentMonth = $scope.monthNames[$scope.selectedHoursPeriod];
+		}
+		
 		var minDate = null;
 		var maxDate = null;
 		
@@ -1055,24 +1059,73 @@ angular.module('Mastermind')
 		
 		var ifAddYear = minDate && maxDate && minDate.getFullYear() != maxDate.getFullYear();
 		
-		currentDate = new Date(minDate);
-		var o = null;
-		
-		while (currentDate <= maxDate) {
-			o = {
-					name: $scope.monthNames[currentDate.getMonth()],
-					value: currentDate.getMonth()
-				};
-			$scope.hoursPeriods.push(o)
+		if ($scope.hoursViewType == "monthly") {
+			$scope.hoursPeriods = [];
 			
-			if (ifAddYear) {
-				o.name = o.name + ', ' + currentDate.getFullYear();
-				o.value = currentDate.getFullYear() + '-' + o.value;
+			currentDate = new Date(minDate);
+			
+			var o = null;
+			
+			while (currentDate <= maxDate) {
+				o = {
+						name: $scope.monthNames[currentDate.getMonth()],
+						value: currentDate.getMonth()
+					};
+				$scope.hoursPeriods.push(o)
+				
+				if (ifAddYear) {
+					o.name = o.name + ', ' + currentDate.getFullYear();
+					o.value = currentDate.getFullYear() + '-' + o.value;
+				}
+				currentDate = new Date(currentDate)
+				
+				currentDate.setDate(1);
+				currentDate.setMonth(currentDate.getMonth()+1);
+				
 			}
-			currentDate = new Date(currentDate)
+		} else if ($scope.hoursViewType == "billings") {
+			$scope.hoursPeriods = [];
 			
-			currentDate.setDate(1);
-			currentDate.setMonth(currentDate.getMonth()+1);
+			currentDate = new Date($scope.project.terms.billingDate);
+			
+			var step = '';
+			
+			if ($scope.project.terms.billingFrequency == 'weekly')
+				step = '7d';
+			else if ($scope.project.terms.billingFrequency == 'biweekly')
+				step = '14d';
+			else if ($scope.project.terms.billingFrequency == 'monthly')
+				step = '1m';
+			else if ($scope.project.terms.billingFrequency == 'quarterly')
+				step = '3m';
+			
+			var o = null;
+			var nextDate =  new Date(currentDate);
+			var viewPeriod = '';
+			
+			while (currentDate <= maxDate) {
+				
+				if (step.indexOf('d') > -1)
+					nextDate.setDate(nextDate.getDate() + parseInt(step))
+				else if(step.indexOf('m') > -1)
+					nextDate.setMonth(nextDate.getMonth() + parseInt(step))
+				else
+					nextDate = new Date(maxDate)	
+					
+				
+				
+				o = {
+						name: (currentDate.getMonth() + 1) + '/' + currentDate.getDate() + ' - ' + 
+							(nextDate.getMonth() + 1) + '/' + nextDate.getDate() ,
+						value: currentDate.getFullYear() + '-' + currentDate.getMonth() + '-' + currentDate.getDate() + ':' + 
+							nextDate.getFullYear() + '-' + nextDate.getMonth() + '-' + nextDate.getDate() 
+					};
+				
+				$scope.hoursPeriods.push(o)
+				
+				
+				currentDate = new Date(nextDate)
+			}
 			
 		}
 	}
@@ -1644,22 +1697,10 @@ angular.module('Mastermind')
 	  	}
     };
 
-    $scope.billingFrequencyOptions = [{label: "Once Week", value: "week"}, {label:"Once Month", value: "month"}];
+    $scope.billingFrequencyOptions = [{label: "Weekly", value: "weekly"}, {label:"Biweekly", value: "biweekly"}, 
+                                      	{label:"Monthly", value: "monthly"}, {label:"Quarterly", value: "quarterly"}];
     $scope.getFormatedBillingDate = function() {
-    	var result = '';
-    	var d;
-    	
-    	if ($scope.project.terms.billingDate && $scope.project.terms.billingFrequency == "month") {
-    		d = new Date($scope.project.terms.billingDate);
-    		
-    		result = "Each " + d.getDate() + "th of Month"
-    	} else if ($scope.project.terms.billingDate && $scope.project.terms.billingFrequency == "week") {
-    		var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    		
-    		d = new Date($scope.project.terms.billingDate);
-    		
-    		result = "Each " + days[d.getDay()] + " of Week"
-    	}
+    	var result = $scope.project.terms.billingDate;
     	
     	return result;
     }
@@ -1667,19 +1708,24 @@ angular.module('Mastermind')
     $scope.getFormatedBillingFrequency = function() {
     	var result = "";
     	
-    	if ($scope.project.terms.billingDate && $scope.project.terms.billingFrequency == "month") {
-    		result = "Monthly"
+    	var entry = _.find($scope.billingFrequencyOptions, function(o) {
+    		if (o.value == $scope.project.terms.billingFrequency)
+    			return true;
+    		return false;
+    	})
     	
-    	} else if ($scope.project.terms.billingDate && $scope.project.terms.billingFrequency == "week") {
-    		result = "Weekly"
-    	
-    	}
-    	
+    	result = entry ? entry.label: '';
     	
     	return result;
     }
     
-    $scope.viewType = 'monthly';
+    $scope.setHoursView = function(view) {
+    	$scope.hoursViewType = view;
+    	
+    	$scope.initHoursPeriods($scope.hours);
+    }
+    
+    $scope.hoursViewType = 'monthly';
     $scope.selectedWeek = 0;
     
     $scope.thisWeekDayLables = [];
