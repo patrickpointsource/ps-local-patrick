@@ -6,15 +6,25 @@
 				type="radio" value="filtered" ng-model="hoursMode" >View</h4>
  </div>
  
-  <div class="col-xs-6 col-sm-4 col-md-2" style="padding-top: 20px;">
-  	
-     <select name="hoursPeriod" class="form-control" ng-if="organizedHours" 
+ <div class="col-xs-3 col-sm-2 col-md-2">
+    <div class="btn-group" data-toggle="buttons" style="margin-top: 15px;">
+            <label class="btn btn-default active" ng-click="viewType = 'monthly';">
+                <input type="radio" name="options"> Monthly
+            </label>
+            <label class="btn btn-default" ng-click="viewType = 'weekly';">
+                <input type="radio" name="options"> Weekly
+            </label>
+     </div>
+ </div>
+ 
+  <div class="col-xs-3 col-sm-2 col-md-2" style="padding-top: 10px;">
+     <select name="hoursPeriod" class="form-control" ng-if="organizedHours && viewType == 'monthly'" 
 		ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
 		ng-required="true"
 		ng-options="f.value as f.name for f in hoursPeriods" ng-disabled="hoursMode=='billed'">
 	</select>
 	
- </div>
+  </div>
  
  <div class="col-sm-1 col-md-1 hidden-xs" style="padding-top:14px;">
   	
@@ -23,7 +33,7 @@
 				type="radio" value="billed" ng-model="hoursMode" >Billing</h4>
  </div>
  
-  <div class="actions col-xs-5 col-sm-5 col-md-8 pageActions">
+  <div class="actions col-xs-5 col-sm-5 col-md-6 pageActions">
     <a ng-if="financeAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="{{project.name}}-{{currentMonth}}.csv">
       <div class="hidden-xs"><i class="fa fa-table"></i><span> Download to Excel</span></div>
       <div class="visible-xs"><i class="fa fa-table"></i></div>
@@ -52,7 +62,8 @@
      </div>
  </div>
 
-<div class="row">
+ <!-- Monthly view -->
+<div class="row" ng-if="viewType == 'monthly'">
      <div class="col-xs-12" ng-if="!organizedHours">
         <div class="alert alert-warning">There are no logged hours for this project.</div>
      </div>
@@ -117,4 +128,45 @@
         </div>
     
      </div>
+ </div>
+ 
+ <!-- Weekly view -->
+ <div class="row" ng-if="viewType == 'weekly'">
+  <div class="col-xs-6">
+    <div class="panel panel-default dashboard-widget" >
+        <div class="panel-heading">
+            <i class="fa fa-calendar-o"></i> Hours:
+            <div class="pull-right btn-group-sm dashboard-actions">
+                <button class="btn btn-default" ng-click="prevWeek()">
+                    <div>
+                        Previous week
+                    </div>
+                </button>
+                <button class="btn btn-default" ng-click="thisWeek()">
+                    <div>
+                        This week
+                    </div>
+                </button>
+            </div>
+        </div>
+        <div class="panel-body">
+    
+           <h3> {{prettyCalendarDates.firstDate}}<!-- Mar 30 — Apr 5 2014 --> &ndash; {{prettyCalendarDates.lastDate}} </h3>
+    
+            <div class="table-responsive" style="border:none">
+                <table class="table table-condensed">
+                    <tbody >
+                    <tr>
+                        <th class="text-center" ng-repeat="dayLabel in thisWeekDayLables">{{dayLabel | uppercase}}</th>
+                    </tr>
+    
+                    <tr>
+                        <th ng-repeat="day in displayedHours" class="text-center"><button class="btn btn-hours btn-default" ng-class="{'btn-danger':day.totalHours===0 && $index > 0 && $index<6 && !day.futureness ,'btn-warning': day.totalHours < 8 && $index > 0 && $index<6 && !day.futureness, 'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness, 'todaysClass' : day.date === todaysDate, 'futureDay': day.futureness, 'active': selected.date === day.date}">{{day.totalHours}}</button></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  </div>
  </div>

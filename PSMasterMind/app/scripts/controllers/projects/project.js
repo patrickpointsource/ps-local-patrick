@@ -1678,7 +1678,12 @@ angular.module('Mastermind')
     	
     	return result;
     }
-
+    
+    $scope.viewType = 'monthly';
+    $scope.selectedWeek = 0;
+    
+    $scope.thisWeekDayLables = [];
+    
     $scope.newHoursRecord = {};
 
     /**
