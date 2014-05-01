@@ -1,21 +1,44 @@
 body {
-  font-family: allerregular !important;
+  font-family: 'Open Sans', sans-serif !important;
 }
 
 #mainContent{
   
 }
 
-label {
-  font-family: allerbold;
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 14px;
+
+h1, .h1{
+	color: @gray-dark;
+}
+h2, .h2{
+	color: @gray;
+	font-weight: 300; 
+}
+h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6{
+	color: @gray-less;
+}
+h6, .h6{
+	font-weight: 700;
 }
 
-input[type="text"] {
-  font-family: allerregular;
+.form-control{
+	border: 1px solid #ccc;
+	min-height: 40px;
+	font-family: 'Open Sans', sans-serif;
+  	font-size: 16px;
+	color:#aaa;
+}
+
+.form-control:focus{
+	color: @gray-dark;
+}
+
+label {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700; 
   font-size: 14px;
+  color: @gray-dark;
+  margin-bottom: 14px;
 }
 
 /* Set the placeholder color across browsers */
@@ -91,7 +114,7 @@ input[type="text"] {
 }
 
 label.radio, label.checkbox {
-  font-family: allerregular;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .required-label:before {
@@ -104,7 +127,7 @@ label.radio, label.checkbox {
 	text-align: left;
 }
 .ng-table th.sortable.sort-desc, .ng-table th.sortable.sort-asc{
-	background-color:@ps-lightgray;
+	background-color:@gray-light;
 }
 
 .margin-top {

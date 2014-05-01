@@ -42,7 +42,7 @@ header {
     	background-color: transparent;
     	.icon-bar {
 	        width: 15px;
-	        background-color:@ps-lightgray;
+	        background-color:@gray-light;
 	      }
     }
 
@@ -79,11 +79,11 @@ header {
     &.navbar-nav{
     	li {
     		a{
-    			color: @ps-gray;
+    			color: @gray;
     		}
     	}
     	a:hover {
-    		color: @gray-darker;
+    		color: @gray-dark;
     	}
     }
 
@@ -91,7 +91,7 @@ header {
       li {
 
         &.active > a {
-          box-shadow: 0 5px 0 @ps-gray;
+          box-shadow: 0 5px 0 @gray;
         }
 
         &:hover {
@@ -103,7 +103,7 @@ header {
           padding-bottom: 8px;
 		 
           &:hover {
-            box-shadow: 0 5px 0 @ps-gray;
+            box-shadow: 0 5px 0 @gray;
           }
         }
       }
@@ -170,7 +170,7 @@ header {
 	height: 20px;
 	margin-bottom: 20px; 
 	background-size: 40px 40px;
-	background-color: @ps-lightgray;
+	background-color: @gray-light;
 	
  	div{
  		padding-left:10px;
@@ -190,7 +190,7 @@ header {
 
 #projectsWidget, #staffingDeficitWidget{
 	a{
-		color:@ps-gray;
+		color:@gray;
 	}
 }
 
@@ -210,8 +210,8 @@ main {
       padding-left: 0;
 
       li {
-        border-right: 12px solid @ps-gray;
-        border-bottom: 1px solid @ps-gray;
+        border-right: 12px solid @gray;
+        border-bottom: 1px solid @gray;
 
         a {
           cursor: pointer;
@@ -223,18 +223,18 @@ main {
 
         &.active {
           margin-right: -12px;
-          background-color: @ps-lightgray;
+          background-color: @gray-light;
         }
 
         &:hover {
-          background-color: @ps-lightgray;
+          background-color: @gray-light;
           margin-right: -12px;
         }
 
         i {
           margin-right: 20px;
           margin-left: 20px;
-          color: @ps-gray;
+          color: @gray;
           vertical-align: middle;
         }
       }
@@ -245,7 +245,8 @@ main {
         font-size: 24px;
 
         #date {
-          font-family: allerbold;
+          font-family: 'Open Sans', sans-serif;
+          font-weight: 700; 
         }
       }
 
@@ -257,10 +258,10 @@ main {
 
       .dashboard-widget {
       	&.panel-default{
-      	border-color: darken(@ps-lightgray, 20%);
+      	border-color: darken(@gray-light, 20%);
 			.panel-heading{
-				background-color: @ps-lightgray;
-				border-color: darken(@ps-lightgray, 20%);
+				background-color: @gray-light;
+				border-color: darken(@gray-light, 20%);
 				
 				&.trim-bottom-padding{
 					padding-bottom: 0px;
