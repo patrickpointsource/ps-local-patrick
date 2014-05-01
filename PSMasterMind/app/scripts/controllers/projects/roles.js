@@ -259,6 +259,15 @@ angular.module('Mastermind.controllers.projects')
     };
 
     /**
+     * Set default values for hours when in a PSInvest project
+     */
+    $scope.setFullUtilization = function() {
+    	if ($scope.newRole.rate.fullyUtilized != true) {
+        	$scope.newRole.rate.fullyUtilized = true;
+    	}
+    };
+    
+    /**
      * Update an existing advertised role deinition
      */
     $scope.refreshAdvAmount = function () {

@@ -31,7 +31,7 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-12 col-sm-8 col-md-9">
+	<div class="col-xs-12 col-sm-8 col-md-9" ng-if="isPaidClientProject()">
 		<div class="row">
 			<div class="col-xs-12">
 				<label for="rateChoices" class="inline">Terms:</label>
@@ -315,6 +315,17 @@
 						</div>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-8 col-md-9" ng-if="!isPaidClientProject()">
+		<div class="row">
+			<div class="col-xs-12 col-sm-6">
+				<label>Utilization:</label>
+					<div class="checkbox">
+						<label> <input type="checkbox" disabled="disabled" checked="checked" />100% Utilized</label>
+						{{ setFullUtilization() }}
+					</div>
 			</div>
 		</div>
 	</div>

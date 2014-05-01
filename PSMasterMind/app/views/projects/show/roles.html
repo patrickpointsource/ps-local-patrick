@@ -106,7 +106,7 @@
 </div>
  <div class="row" ng-if="financeAccess">
 	<br/>
-    <div class="col-xs-12 ">
+    <div class="col-xs-12 " ng-if="isPaidClientProject()">
         <div class="row well">
    			<div class="col-xs-4">
                 <label>Estimated value:</label> <span>(USD) {{(servicesEstimate+project.terms.softwareEstimate) | currency}}</span>
