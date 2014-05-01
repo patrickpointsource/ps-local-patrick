@@ -1016,7 +1016,12 @@ angular.module('Mastermind')
     
 	$scope.handleHoursPeriodChanged = function() {
 		var period = this.selectedHoursPeriod;
+		
+		$scope.selectedHoursPeriod = period;
 		$scope.currentMonth = $scope.monthNames[period];
+		
+		//if (!$scope.currentMonth)
+		//	$scope.currentMonth = (new Date()).getMonth();
 		
 		for(var i = 0; i < $scope.currentDisplayedHours.length; i++){
 			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries, period);
@@ -1035,7 +1040,7 @@ angular.module('Mastermind')
 		
 		var now = new Date();
 		
-		if (!$scope.selectedHoursPeriod && ($scope.hoursViewType == "monthly")) {
+		if ($scope.hoursViewType == "monthly") {
 			$scope.selectedHoursPeriod = now.getMonth();
 			$scope.currentMonth = $scope.monthNames[$scope.selectedHoursPeriod];
 		}
@@ -1085,8 +1090,9 @@ angular.module('Mastermind')
 			}
 		} else if ($scope.hoursViewType == "billings") {
 			$scope.hoursPeriods = [];
+			//$scope.selectedHoursPeriod = null;
 			
-			currentDate = new Date($scope.project.terms.billingDate);
+			
 			
 			var step = '';
 			
@@ -1099,6 +1105,19 @@ angular.module('Mastermind')
 			else if ($scope.project.terms.billingFrequency == 'quarterly')
 				step = '3m';
 			
+			currentDate = new Date($scope.project.terms.billingDate);
+			/*
+			if (step.indexOf('d') > -1)
+				currentDate.setDate(nextDate.getDate() + parseInt(step))
+			else if(step.indexOf('m') > -1)
+				currentDate.setMonth(nextDate.getMonth() + parseInt(step))
+			*/	
+			var align = function(k) {
+				if (k.toString().length == 1)
+					return '0' + k;
+				
+				return k;
+			}
 			var o = null;
 			var nextDate =  new Date(currentDate);
 			var viewPeriod = '';
@@ -1117,9 +1136,12 @@ angular.module('Mastermind')
 				o = {
 						name: (currentDate.getMonth() + 1) + '/' + currentDate.getDate() + ' - ' + 
 							(nextDate.getMonth() + 1) + '/' + nextDate.getDate() ,
-						value: currentDate.getFullYear() + '-' + currentDate.getMonth() + '-' + currentDate.getDate() + ':' + 
-							nextDate.getFullYear() + '-' + nextDate.getMonth() + '-' + nextDate.getDate() 
+						value: currentDate.getFullYear() + '-' + align(currentDate.getMonth() + 1) + '-' + align(currentDate.getDate()) + ':' + 
+							nextDate.getFullYear() + '-' + align(nextDate.getMonth() + 1) + '-' + align(nextDate.getDate()) 
 					};
+				
+				//if (!$scope.selectedHoursPeriod)
+				//	$scope.selectedHoursPeriod = o.value;
 				
 				$scope.hoursPeriods.push(o)
 				
@@ -1292,7 +1314,17 @@ angular.module('Mastermind')
     	var selectedYear;
     	var selectedMonth;
     	
+    	var startDate = null;
+    	var endDate = null;
+    	
     	var tmp;
+    	
+    	if ($scope.selectedHoursPeriod.toString().indexOf(':') > -1) {
+    		tmp = $scope.selectedHoursPeriod.split(':');
+    		
+    		startDate = tmp[0];
+    		endDate = tmp[1];
+    	}
     	
     	if(month || month == 0) {
     		tmp = month.toString().split('-');
@@ -1311,12 +1343,15 @@ angular.module('Mastermind')
     	}
     	
     	var retHours = _.filter(currentHours, function(h){
-    		//var d = new Date(h.date);
+    		
     		var tmpD = h.date.split('-');
     		var y = parseInt(tmpD[0]);
     		var m = parseInt(tmpD[1]) - 1;
     		
-    		return y == selectedYear && m == selectedMonth
+    		if (!startDate && !endDate)
+    			return (y == selectedYear && m == selectedMonth);
+    		
+    		return h.date >= startDate && h.date < endDate;
     	});
     	
     	retHours.sort(function(h1, h2){
