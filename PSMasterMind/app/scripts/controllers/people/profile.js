@@ -280,6 +280,8 @@ angular.module('Mastermind.controllers.people')
         				hours: tasksHoursMap[taskResource]
         			}, tasksMap[taskResource]))
         		}
+        		
+        		$scope.thisWeek();
         	});
         }
       }, sort);

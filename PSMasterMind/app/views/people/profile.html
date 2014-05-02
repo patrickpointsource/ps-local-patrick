@@ -392,7 +392,7 @@
                             <hr style="margin: 0;"/>
                             <div style="margin-left: 30px;">
                                 <a href="#/{{projectHour.project.about}}" ng-if="!personHours.task")>{{personHours.project ? personHours.project.customerName + ": " + personHours.project.name : "Unknown"}}</a>
-                                <a href="#/{{taskHour.about}}" ng-if="personHours.task">{{personHours.task.name ? taskHour.name : "Unknown"}}</a>
+                                <a href="#/{{taskHour.about}}" ng-if="personHours.task">{{personHours.task.name ? personHours.task.name : "Unknown"}}</a>
                             </div>
                         </div>
                         <div class="col-xs-1 col-md-1 col-lg-1" ng-repeat="day in personHours.hoursByDate">
