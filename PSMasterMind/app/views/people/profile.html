@@ -143,13 +143,6 @@
   <div class="row">
     <div class="col-xs-3 col-md-1 col-lg-1"><h3>Hours</h3></div>
     <div class="col-xs-5 col-md-2 col-lg-2" style="padding-top: 15px;">
-        <span>
-            <select name="hoursPeriod" class="form-control"
-                ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
-                ng-required="true"
-                ng-options="f.value as f.name for f in hoursPeriods">
-            </select>
-        </span>
     </div>
     <div class="actions col-xs-4 col-md-9 col-lg-9 pageActions">
       <button type="button" ng-show="canAddHours"
@@ -217,9 +210,34 @@
     </div>
   </div>
   <div class="row">
+    <div class="col-xs-12">
+          <div class="btn-group" data-toggle="buttons" style="margin-top: 15px;">
+               <label class="btn btn-default active" ng-click="setHoursView('monthly')">
+                   <input type="radio" name="options"> Monthly
+               </label>
+               <label class="btn btn-default" ng-click="setHoursView('weekly')">
+                   <input type="radio" name="options"> Weekly
+               </label>
+          </div>
+      </div>
+  </div>
+  <div class="row" ng-hide="hasHours">
       <div class="col-xs-12">
-        <div ng-hide="hasHours" class="alert alert-warning">There are no logged hours.</div>
-        
+        <div class="alert alert-warning" style="margin-top: 15px;">There are no logged hours.</div>
+      </div>
+  </div>
+  <div class="row" ng-if="hoursViewType == 'monthly'">
+    <div class="row">
+      <div class="col-xs-5 col-md-2 col-lg-2" style="margin: 15px;">
+        <select name="hoursPeriod" class="form-control" ng-if="hasHours"
+                ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
+                ng-required="true"
+                ng-options="f.value as f.name for f in hoursPeriods">
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
         <div ng-repeat="projectHour in projectHours" class="well">
             <div class="row" ng-click="projectHour.collapsed=!projectHour.collapsed" >
                 <div class="col-xs-12" style="margin-bottom: 10px;">
@@ -337,55 +355,56 @@
                </div>
             </div>
         </div>
-        <!--  <table ng-table="hoursTableParams" template-pagination="hours/pager" class="table peopleList" ng-show="hasHours">
-          <tr ng-repeat="hoursRecord in $data">
-            <td data-title="'Date'" header-class="col-xs-5 col-sm-2" class="col-xs-5 col-sm-2" sortable="'date'">
-              <span class="hidden-xs">{{hoursRecord.date | date:'longDate'}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
-            </td>
-            <td data-title="'Hours'" header-class="col-xs-1 col-sm-1" class="col-xs-1 col-sm-1" sortable="'hours'">
-              {{hoursRecord.hours}}
-            </td>
-            <td data-title="'Project'" header-class="col-xs-5 col-sm-3" class="col-xs-5 col-sm-3" sortable="'project.name'">
-              <a href="#{{hoursRecord.project.resource}}">
-                 <span style="display: inline-block;">{{hoursRecord.project.name || 'Unknown'}}</span>
-                </a>
-            </td>
-            <td data-title="'Task'" header-class="col-xs-5 col-sm-3" class="col-xs-5 col-sm-3" sortable="'task.name'">
-              <a href="#{{hoursRecord.task.resource}}">
-                 <span style="display: inline-block;">{{hoursRecord.task.name || ''}}</span>
-                </a>
-            </td>
-            <td data-title="'Description'" header-class="hidden-xs col-sm-5" class="hidden-xs col-sm-5" sortable="'description'">
-              {{hoursRecord.description}}
-            </td>
-            <td data-title="''" class="actionsCell">
-              <button class="btn btn-default" ng-click="deleteHours(hoursRecord.resource)">
-              <i class="fa fa-trash-o"></i>
-              </button>
-            </td>
-          </tr>
-        </table>
--->
-        <script type="text/ng-template" id="hours/pager">
-          <ul class="pager ng-cloak">
-            <li ng-repeat="page in pages"
-                  ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
-                  ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
-              <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
-              <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
-            </li>
-              <li>
-              <div class="btn-group" ng-show="hours.length >= 10" >
-                  <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
-                  <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
-                  <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
-                  <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
-              </div>
-              </li>
-          </ul>
-        </script>
       </div>
+    </div>
    </div>
+   
+   <!-- Weekly view -->
+   <div class="row" ng-if="hoursViewType == 'weekly'" style="margin-top: 15px;">
+    <div class="col-xs-12 col-md-6 col-lg-6">
+       <div class="panel panel-default dashboard-widget" >
+        <div class="panel-heading" style="padding: 0;">
+            <i class="fa fa-calendar-o" style="padding-top: 15px;padding-bottom: 10px;padding-left: 15px;"></i> Project weekly hours summary:
+            <div class="pull-right btn-group-sm" data-toggle="buttons" style="margin-top:5px; margin-right: 5px;">
+               <label class="btn btn-default" ng-click="prevWeek()">
+                   <input type="radio" name="weeks"> Previous week
+               </label>
+               <label class="btn btn-default active" ng-click="thisWeek()">
+                   <input type="radio" name="weeks"> This week
+               </label>
+            </div>
+         </div>
+         <div class="panel-body">
+           <h3> {{dayFormatted(startWeekDate)}} &ndash; {{dayFormatted(endWeekDate, "MMM D, YYYY")}} </h3>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row hidden-xs">
+                        <div class="hidden-xs col-md-5"></div>
+                        <div class="col-xs-1 col-md-1 text-center" ng-repeat="dayLabel in thisWeekDayLabels">{{thisWeekDayLabels[$index]}}</div>
+                    </div>
+                    <div class="row" ng-repeat="personHours in weekHours" style="margin-bottom: 5px;">
+                        <div class="hidden-xs col-md-5" style="margin-top:15px;">
+                            <i class="{{projectStateIcon(personHours.project)}}" ng-if="personHours.project" style="margin-right: 5px;"></i>
+                            <a href="#/{{projectHour.project.about}}" ng-if="!personHours.task")>{{personHours.project ? personHours.project.customerName + ": " + personHours.project.name : "Unknown"}}</a>
+                            <a href="#/{{taskHour.about}}" ng-if="personHours.task">{{personHours.task.name ? personHours.task.name : "Unknown"}}</a>
+                        </div>
+                        <div class="row hidden-md hidden-lg hidden-sm">
+                            <hr style="margin: 0;"/>
+                            <div style="margin-left: 30px;">
+                                <a href="#/{{projectHour.project.about}}" ng-if="!personHours.task")>{{personHours.project ? personHours.project.customerName + ": " + personHours.project.name : "Unknown"}}</a>
+                                <a href="#/{{taskHour.about}}" ng-if="personHours.task">{{personHours.task.name ? taskHour.name : "Unknown"}}</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-1 col-md-1 col-lg-1" ng-repeat="day in personHours.hoursByDate">
+                            <button class="btn btn-hours btn-default" ng-class="{'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6, 'futureDay': day.futureness, 'todaysClass': moment().format('YYYY-MM-DD') == day.date }">{{day.totalHours}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+ </div>
 </div>
 
 <!-- <div>

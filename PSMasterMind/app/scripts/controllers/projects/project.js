@@ -1765,6 +1765,7 @@ angular.module('Mastermind')
     $scope.newHoursRecord = {};
     
     $scope.moment = moment;
+    
 
     $scope.startWeekDate = $scope.moment().day(0).format('YYYY-MM-DD');
 	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
@@ -1794,8 +1795,15 @@ angular.module('Mastermind')
             	console.error("getHoursRecordsBetweenDates("+$scope.startWeekDate+","+$scope.endWeekDate+") gave me no results");
             } else {
                 $scope.thisWeekHours = result.members;
+                
+                //_.sortBy($scope.thisWeekHours, function(h) { return new Date(h.date); });
                 $scope.weekPersonHours = [];
                 $scope.weekHours = [];
+                
+                // resolve persons to fill csv fields
+                for(var i = 0; i < $scope.thisWeekHours.length; i++) {
+                	Resources.resolve($scope.thisWeekHours[i].person);
+                }
                 
                 var uniqPersons = _.uniq(_.pluck(_.pluck($scope.thisWeekHours, 'person'), 'resource'));
                 
@@ -1810,7 +1818,7 @@ angular.module('Mastermind')
                 		personRecord.hours[k].totalHours = 0;
                 		personRecord.hours[k].hoursEntries = [];
 
-                    	var futureness = $scope.checkForFutureness($scope.moment($scope.startWeekDate).add('days', i).format('YYYY-MM-DD'));
+                    	var futureness = $scope.checkForFutureness($scope.moment($scope.startWeekDate).add('days', k).format('YYYY-MM-DD'));
                     	personRecord.hours[k].futureness = futureness;
                     	for(var j = 0; j < $scope.thisWeekHours.length; j++) {
                     		if(($scope.thisWeekHours[j].date == $scope.moment($scope.startWeekDate).day(k).format('YYYY-MM-DD')) &&
@@ -1820,21 +1828,6 @@ angular.module('Mastermind')
                     		}
                     	}
                     }
-                }
-                
-                for (var i = 0; i < 7; i++) {
-                	$scope.weekHours.push({});
-                	$scope.weekHours[i].totalHours = 0;
-                	$scope.weekHours[i].hoursEntries = [];
-
-                	var futureness = $scope.checkForFutureness($scope.moment($scope.startWeekDate).add('days', i).format('YYYY-MM-DD'));
-            		$scope.weekHours[i].futureness = futureness;
-                	for(var j = 0; j < $scope.thisWeekHours.length; j++) {
-                		if($scope.thisWeekHours[j].date == $scope.moment().day(i).format('YYYY-MM-DD')) {
-                			$scope.weekHours[i].hoursEntries.push($scope.thisWeekHours[j]);
-                			$scope.weekHours[i].totalHours += $scope.thisWeekHours[j].hours;
-                		}
-                	}
                 }
             }
         });
@@ -1919,9 +1912,17 @@ angular.module('Mastermind')
               var project = $scope.project;
               var hours = [];
               
-              if($scope.currentDisplayedHours) {
-            	  for(var i = 0; i < $scope.currentDisplayedHours.length; i++ ) {
-            		  hours = hours.concat($scope.currentDisplayedHours[i]);
+              if($scope.hoursViewType == 'monthly' || $scope.hoursViewType == 'billings') {
+            	  if($scope.currentDisplayedHours) {
+                	  for(var i = 0; i < $scope.currentDisplayedHours.length; i++ ) {
+                		  hours = hours.concat($scope.currentDisplayedHours[i]);
+                	  }
+                  }
+              }
+              
+              if($scope.hoursViewType == 'weekly') {
+            	  if($scope.weekPersonHours) {
+            		  hours = $scope.thisWeekHours;
             	  }
               }
 

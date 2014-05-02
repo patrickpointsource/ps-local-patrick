@@ -337,7 +337,7 @@ angular.module('Mastermind.controllers.people')
 			for(var j = 0; j < projHour.hours.length; j++) {
 				var hour = projHour.hours[j];
 				var hoursMonth = new Date(hour.hour.date).getMonth();
-				hour.show = $scope.selectedHoursPeriod == hoursMonth;
+				hour.show = this.selectedHoursPeriod == hoursMonth;
 			}
 		}
 		
@@ -346,7 +346,7 @@ angular.module('Mastermind.controllers.people')
 			for(var j = 0; j < projHour.hours.length; j++) {
 				var hour = projHour.hours[j];
 				var hoursMonth = new Date(hour.hour.date).getMonth();
-				hour.show = $scope.selectedHoursPeriod == hoursMonth;
+				hour.show = this.selectedHoursPeriod == hoursMonth;
 			}
 		}
 	}
@@ -506,6 +506,144 @@ angular.module('Mastermind.controllers.people')
     		delete $scope.newHoursRecord.project;
     	else if (type == 'project' && $scope.newHoursRecord.task)
     		delete $scope.newHoursRecord.task;
+    }
+    
+    $scope.setHoursView = function(view) {
+    	$scope.hoursViewType = view;
+    	
+    	if(view == 'weekly') {
+    		$scope.thisWeek();
+    	}
+    }
+    
+    $scope.hoursViewType = 'monthly';
+    $scope.selectedWeek = 0;
+    $scope.thisWeekDayLabels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    $scope.newHoursRecord = {};
+    $scope.moment = moment;
+    
+    $scope.startWeekDate = $scope.moment().day(0).format('YYYY-MM-DD');
+	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
+	
+	$scope.dayFormatted = function(yyyymmdd, params) {
+		if(params) {
+			return moment(yyyymmdd).format(params);
+		}
+		
+		return moment(yyyymmdd).format("MMM D");
+	}
+    
+    $scope.thisWeek = function() {
+    	
+    	$scope.startWeekDate = $scope.moment().day(0).format('YYYY-MM-DD');
+    	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
+    	
+    	$scope.showWeek();
+    }
+    
+    $scope.prevWeek = function() {
+    	
+    	$scope.startWeekDate = $scope.moment().day(-7).format('YYYY-MM-DD');
+    	$scope.endWeekDate = $scope.moment().day(-1).format('YYYY-MM-DD');
+    	
+    	$scope.showWeek();
+    }
+    
+    $scope.weekHoursByProject = [];
+	$scope.weekHoursByTask = [];
+    
+    $scope.showWeek = function() {
+    	var profileWeekHours = [];
+    	for(var i = 0; i < $scope.hours.length; i++) {
+    		var hour = $scope.hours[i];
+    		var date = convertDate(hour.date);
+    		var start = convertDate($scope.startWeekDate);
+    		var end = convertDate($scope.endWeekDate);
+    		if(date >= start && date <= end) {
+    			profileWeekHours.push(hour);
+    		}
+    	}
+    	
+    	var weekHoursByProject = [];
+    	var weekHoursByTask = [];
+
+    	// filtering hours entries by project and task
+    	for(var i = 0; i < profileWeekHours.length; i++) {
+    		var weekHour = profileWeekHours[i];
+    		
+    		var filteredHoursByProject = {};
+    		if(weekHour.project) {
+    			filteredHoursByProject = _.filter(weekHoursByProject, function(h) { return h.project.resource == weekHour.project.resource; });
+    			if(filteredHoursByProject.length == 0) {
+        			var weekHourByProject = { project: weekHour.project, hours: [weekHour]};
+        			Resources.resolve(weekHourByProject.project);
+        			weekHoursByProject.push(weekHourByProject);
+        		} else {
+        			filteredHoursByProject[0].hours.push(weekHour);
+        		}
+    		}
+    		
+    		var filteredHoursByTask = {};
+    		if(weekHour.task) {
+    			filteredHoursByTask = _.filter(weekHoursByTask, function(h) { return h.task.resource == weekHour.task.resource; });
+    			if(filteredHoursByTask.length == 0) {
+        			var weekHourByTask = { task: weekHour.task, hours: [weekHour]};
+        			weekHoursByTask.push(weekHourByTask);
+        		} else {
+        			filteredHoursByTask[0].hours.push(weekHour);
+        		}
+    		}
+    	}
+    	
+    	$scope.weekHours = weekHoursByProject.concat(weekHoursByTask);
+    	
+    	// filter hours entries by day of week
+    	for(var i = 0; i < $scope.weekHours.length; i++) {
+    		var weekHours = $scope.weekHours[i];
+    		weekHours.hoursByDate = [];
+    		for(var w = 0; w < 7; w++) {
+    			var totalHours = 0;
+    			var weekHoursEntries = [];
+        		var date = $scope.moment($scope.startWeekDate).add('days', w).format("YYYY-MM-DD");
+        		
+    			for(var h = 0; h < weekHours.hours.length; h++) {
+    				if(weekHours.hours[h].date == date) {
+    					weekHoursEntries.push(weekHours.hours[h]);
+    					totalHours += weekHours.hours[h].hours;
+    				}
+    			}
+    			
+    			weekHours.hoursByDate.push({ 
+    					hours: weekHoursEntries,
+    					totalHours: totalHours,
+    					futureness: $scope.checkForFutureness($scope.moment($scope.startWeekDate).add('days', w).format('YYYY-MM-DD'))
+    			});
+        	}
+		}
+    	
+    	$scope.weekHoursByProject = weekHoursByProject;
+    	$scope.weekHoursByTask = weekHoursByTask;
+    }
+    
+    var convertDate = function(stringDate) {
+    	var tmpDate = stringDate.split('-');
+    	
+    	return new Date(tmpDate[0], parseInt(tmpDate[1]) - 1, tmpDate[2]);
+    }
+    
+    $scope.checkForFutureness = function(date) {
+        //flux capacitor
+        var a = moment().subtract('days',1);
+        var b = moment(date);
+        var diff = a.diff(b);
+
+        var futureness;
+        if (diff < 0) {
+            futureness = true
+        } else {
+            futureness = false
+        }
+        return futureness;
     }
 //    /**
 //     * Load Skill Definitions to display names
