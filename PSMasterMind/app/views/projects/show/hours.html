@@ -1,6 +1,6 @@
 <div class="row">
-	<div class="col-xs-12">
-	   <div class="col-xs-12 btn-group" data-toggle="buttons" style="margin-top: 15px;">
+	<div class="col-xs-12 col-sm-6 col-md-5">
+	   <div class="btn-group" data-toggle="buttons" style="margin-top: 15px;">
 	           <label class="btn btn-default active" ng-click="setHoursView('monthly')">
 	               <input type="radio" name="options"> Monthly
 	           </label>
@@ -15,55 +15,63 @@
 	           </label>
 	    </div>
 	</div>
+	
+<!-- 
 </div>
 <div class="row">
-  
+   -->
  
-  <div class="col-xs-8 col-sm-8 col-md-7" style="padding-top: 10px;" ng-if="organizedHours && hoursViewType != 'customDates'">
-     <div class="col-xs-12 col-sm-4 col-md-4">
-	     <select name="hoursPeriod" class="form-control" ng-if="organizedHours && hoursViewType == 'billings'" 
-			ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged('selectedHoursPeriod')"
-			ng-required="true"
-			ng-options="f.value as f.name for f in hoursPeriods">
-		</select>
-		
-		<select name="hoursPeriod" class="form-control" ng-if="organizedHours && hoursViewType == 'monthly'" 
-			ng-model="currentMonth" ng-change="handleHoursPeriodChanged('currentMonth')"
-			ng-required="true"
-			ng-options="f.value as f.name for f in monthPeriods">
-		</select>
-	</div>
+  <div class="col-xs-8 col-sm-5 col-md-4" style="padding-top: 10px;" ng-if="organizedHours && hoursViewType != 'customDates' && hoursViewType != 'weekly'">
+  	<form class="form-horizontal" >
+	  	<label for="period" class="hidden-xs control-label col-xs-3 col-sm-4 col-md-5 pull-left" style="white-space: nowrap;">
+				<span class="pull-left">Select period:</span>
+		</label>
+	     <div class="col-xs-6 col-sm-4 col-md-6">
+		     <select name="hoursPeriod" class="form-control" ng-if="organizedHours && hoursViewType == 'billings'" 
+				ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged('selectedHoursPeriod')"
+				ng-required="true"
+				ng-options="f.value as f.name for f in hoursPeriods">
+			</select>
+			
+			<select name="hoursPeriod" class="form-control" ng-if="organizedHours && hoursViewType == 'monthly'" 
+				ng-model="currentMonth" ng-change="handleHoursPeriodChanged('currentMonth')"
+				ng-required="true"
+				ng-options="f.value as f.name for f in monthPeriods">
+			</select>
+		</div>
+	</form>
 	
   </div>
   
-  <div class="col-xs-8 col-sm-8 col-md-7" style="padding-top: 10px;" ng-if="organizedHours && hoursViewType == 'customDates'" >
+  <div class="col-xs-8 col-sm-5 col-md-4" style="padding-top: 10px;" ng-if="organizedHours && hoursViewType == 'customDates'" >
    <form class="form-horizontal" >
-		<label for="fromDate" class="control-label col-xs-2 col-sm-1 col-md-1">From:</label>
-		<div class="col-xs-3 col-md-4 col-sm-4">
+		<label for="period" class="hidden-xs control-label col-xs-3 col-sm-4 col-md-3 pull-left" style="white-space: nowrap;">
+			<span class="pull-left">Select period:</span>
+		</label>
+		<div class="col-xs-3 col-md-3 col-sm-3">
 			<input id="fromDate" name="fromDate"
-				class=" form-control datepicker" type="text"
-				ng-model="selectedHoursFromDate" data-date-format="yyyy-mm-dd"
+				class=" form-control datepicker" type="text" placeholder="Start Date"
+				ng-model="selectedHoursStartDate" data-date-format="yyyy-mm-dd"
 				data-provide="datepicker">
 		</div>
-		<label for="fromDate" class="control-label col-xs-2 col-sm-1 col-md-1">To:</label>
-		<div class="col-xs-3 col-md-4 col-sm-4">
+		<div class="col-xs-3 col-md-3 col-sm-3">
 			<input id="toDate" name="toDate"
-				class="form-control datepicker" type="text"
-				ng-model="selectedHoursToDate" data-date-format="yyyy-mm-dd"
+				class="form-control datepicker" type="text" placeholder="End Date"
+				ng-model="selectedHoursEndDate" data-date-format="yyyy-mm-dd"
 				data-provide="datepicker">
 		</div>
 		<div class="col-xs-2 col-md-2 col-sm-2">
-			<a ng-if="selectedHoursFromDate && selectedHoursToDate"  class="btn btn-default">
-		      <div class="hidden-xs"><i class="fa fa-search"></i>Apply</div>
+			<a ng-disabled="!selectedHoursEndDate || !selectedHoursStartDate"  class="btn btn-default" ng-click="applyCustomHoursPeriod()">
+		      <div class="hidden-xs"><i class="fa fa-search"></i></div>
 		      <div class="visible-xs"><i class="fa fa-search"></i></div>
 		    </a>
 	    </div>
     </form>
   </div>
  
-  <div class="actions col-xs-4 col-sm-4 col-md-5 pageActions">
+  <div class="actions col-xs-2 col-sm-1 col-md-3 pageActions pull-right">
     <a ng-if="financeAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="{{project.name}}-{{currentMonth}}.csv">
-      <div class="hidden-xs"><i class="fa fa-table"></i><span> Download to Excel</span></div>
+      <div class="hidden-xs"><i class="fa fa-table"></i><span class="hidden-sm hidden-xs"> Download to Excel</span></div>
       <div class="visible-xs"><i class="fa fa-table"></i></div>
     </a>
     
@@ -92,7 +100,7 @@
  </div>
 
  <!-- Monthly view -->
-<div class="row" ng-if="hoursViewType == 'monthly' || hoursViewType == 'billings'">
+<div class="row" ng-if="hoursViewType == 'monthly' || hoursViewType == 'billings' || hoursViewType == 'customDates'">
      <div class="col-xs-12" ng-if="!organizedHours">
         <div class="alert alert-warning">There are no logged hours for this project.</div>
      </div>

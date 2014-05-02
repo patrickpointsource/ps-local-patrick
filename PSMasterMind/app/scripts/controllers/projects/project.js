@@ -1021,7 +1021,17 @@ angular.module('Mastermind')
 			$scope.currentMonth = period;
 		else if (period)
 			$scope.selectedHoursPeriod =  period;
+
+		for(var i = 0; i < $scope.currentDisplayedHours.length; i++){
+			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries);
+		}
 		
+		for (var i = 0; i < $scope.organizedHours.length; i ++)
+			$scope.organizedHours[i].collapsed = false;
+	}
+	
+	$scope.applyCustomHoursPeriod = function() {
+		$scope.selectedHoursPeriod = this.selectedHoursStartDate + ':' + this.selectedHoursEndDate;
 		
 		for(var i = 0; i < $scope.currentDisplayedHours.length; i++){
 			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries);
@@ -1029,8 +1039,9 @@ angular.module('Mastermind')
 		
 		for (var i = 0; i < $scope.organizedHours.length; i ++)
 			$scope.organizedHours[i].collapsed = false;
-		//$scope.organizeHours($scope.hours)
 	}
+	
+	
 	
 	$scope.monthNames = [ "January", "February", "March", "April", "May", "June",
 		                   "July", "August", "September", "October", "November", "December" ];
@@ -1318,7 +1329,7 @@ angular.module('Mastermind')
     	
     	var tmp;
     	
-    	if ($scope.hoursViewType == "billings" && $scope.selectedHoursPeriod.toString().indexOf(':') > -1) {
+    	if (($scope.hoursViewType == "billings" || $scope.hoursViewType == "customDates") && $scope.selectedHoursPeriod.toString().indexOf(':') > -1) {
     		tmp = $scope.selectedHoursPeriod.split(':');
     		
     		startDate = tmp[0];
