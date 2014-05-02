@@ -229,9 +229,12 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         $scope.newHoursRecord = {};
         $scope.hoursValidation = [];
 
-        $scope.getNewHoursValidationErrors = function(hoursForm) {
+        $scope.getNewHoursValidationErrors = function() {
         	
         	$scope.hoursValidation = [];
+        	
+        	var totalHours = 0;
+        	
         	/*
         	for (var i = 0; hoursForm["hours" + i]; i++) {
 	        	if ( hoursForm["hours" + i].$dirty &&  hoursForm["hours" + i].$invalid){
@@ -242,10 +245,19 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         	}
         	*/
         	
-        	if ( hoursForm["hours"] && hoursForm["hours"].$dirty &&  hoursForm["hours"].$invalid){
-        		$scope.hoursValidation.push("Incorrect value for hours")
+        	 var entries = $scope.selected ? $scope.selected.hoursEntries: [];
+            
+             
+	         for (var i = 0; i < entries.length; i++) {
+	        	 if ( entries[i].innerHoursForm &&  entries[i].innerHoursForm["hours"] && entries[i].innerHoursForm["hours"].$dirty &&  entries[i].innerHoursForm["hours"].$invalid){
+	         		$scope.hoursValidation.push("Incorrect value for hours")
+	         	
+	        	 } else if (entries[i].hoursRecord && entries[i].hoursRecord.hours)
+	        		 totalHours += entries[i].hoursRecord.hours;
+	         }
         	
-        	}
+	         if(totalHours > 24)
+	            	$scope.hoursValidation.push("Hours logged on a given day cannot exceed 24 hours.");
         	
         	$scope.hoursValidation = _.uniq($scope.hoursValidation)
         	

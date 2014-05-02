@@ -1008,23 +1008,23 @@ angular.module('Mastermind')
 	   return '$' + s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
     };
 
-    //$scope.hoursPeriods = [{name: 'march', value: 3}, {name: 'current', value: 4}, {name: 'may', value: 5}];
     $scope.hoursPeriods = [];
-    $scope.selectedHoursPeriod = null;
+    $scope.monthPeriods = [];
+    $scope.selectedHoursPeriod = "";
     $scope.currentMonth = "";
     $scope.currentDisplayedHours = [];
     
-	$scope.handleHoursPeriodChanged = function() {
-		var period = this.selectedHoursPeriod;
+	$scope.handleHoursPeriodChanged = function(propName) {
+		var period = propName ? this[propName]: "";
 		
-		$scope.selectedHoursPeriod = period;
-		$scope.currentMonth = $scope.monthNames[period];
+		if (period && $scope.monthNames[period])
+			$scope.currentMonth = period;
+		else if (period)
+			$scope.selectedHoursPeriod =  period;
 		
-		//if (!$scope.currentMonth)
-		//	$scope.currentMonth = (new Date()).getMonth();
 		
 		for(var i = 0; i < $scope.currentDisplayedHours.length; i++){
-			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries, period);
+			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries);
 		}
 		
 		for (var i = 0; i < $scope.organizedHours.length; i ++)
@@ -1039,11 +1039,6 @@ angular.module('Mastermind')
 		$scope.hoursPeriods = [];
 		
 		var now = new Date();
-		
-		if ($scope.hoursViewType == "monthly") {
-			$scope.selectedHoursPeriod = now.getMonth();
-			$scope.currentMonth = $scope.monthNames[$scope.selectedHoursPeriod];
-		}
 		
 		var minDate = null;
 		var maxDate = null;
@@ -1064,8 +1059,8 @@ angular.module('Mastermind')
 		
 		var ifAddYear = minDate && maxDate && minDate.getFullYear() != maxDate.getFullYear();
 		
-		if ($scope.hoursViewType == "monthly") {
-			$scope.hoursPeriods = [];
+		if ($scope.hoursViewType == "monthly" && $scope.monthPeriods.length == 0) {
+			//$scope.monthPeriods = [];
 			
 			currentDate = new Date(minDate);
 			
@@ -1076,7 +1071,7 @@ angular.module('Mastermind')
 						name: $scope.monthNames[currentDate.getMonth()],
 						value: currentDate.getMonth()
 					};
-				$scope.hoursPeriods.push(o)
+				$scope.monthPeriods.push(o)
 				
 				if (ifAddYear) {
 					o.name = o.name + ', ' + currentDate.getFullYear();
@@ -1088,8 +1083,11 @@ angular.module('Mastermind')
 				currentDate.setMonth(currentDate.getMonth()+1);
 				
 			}
-		} else if ($scope.hoursViewType == "billings") {
-			$scope.hoursPeriods = [];
+			
+			if (!$scope.currentMonth)
+				$scope.currentMonth = now.getMonth();
+		} else if ($scope.hoursViewType == "billings" && $scope.hoursPeriods.length == 0) {
+			//$scope.hoursPeriods = [];
 			//$scope.selectedHoursPeriod = null;
 			
 			
@@ -1140,8 +1138,6 @@ angular.module('Mastermind')
 							nextDate.getFullYear() + '-' + align(nextDate.getMonth() + 1) + '-' + align(nextDate.getDate()) 
 					};
 				
-				//if (!$scope.selectedHoursPeriod)
-				//	$scope.selectedHoursPeriod = o.value;
 				
 				$scope.hoursPeriods.push(o)
 				
@@ -1149,6 +1145,9 @@ angular.module('Mastermind')
 				currentDate = new Date(nextDate)
 			}
 			
+			
+			if (!$scope.selectedHoursPeriod && $scope.hoursPeriods.length > 0)
+				$scope.selectedHoursPeriod = $scope.hoursPeriods[0].value;
 		}
 	}
 	
@@ -1319,19 +1318,17 @@ angular.module('Mastermind')
     	
     	var tmp;
     	
-    	if ($scope.selectedHoursPeriod.toString().indexOf(':') > -1) {
+    	if ($scope.hoursViewType == "billings" && $scope.selectedHoursPeriod.toString().indexOf(':') > -1) {
     		tmp = $scope.selectedHoursPeriod.split(':');
     		
     		startDate = tmp[0];
     		endDate = tmp[1];
-    	}
-    	
-    	if(month || month == 0) {
+    	} else if (!month && month != 0){
+    		tmp = $scope.currentMonth.toString().split('-');
+    	} else if (month || month == 0) {
     		tmp = month.toString().split('-');
     	}
-    	else {
-    		tmp = $scope.selectedHoursPeriod.toString().split('-');
-    	}
+    	
     	
     	if (tmp.length == 1) {
     		//selected.setMonth(tmp[0])
@@ -1759,19 +1756,16 @@ angular.module('Mastermind')
     	$scope.hoursViewType = view;
     	
     	$scope.initHoursPeriods($scope.hours);
+    	$scope.handleHoursPeriodChanged();
     }
     
     $scope.hoursViewType = 'monthly';
     $scope.selectedWeek = 0;
-    
     $scope.thisWeekDayLabels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    
     $scope.newHoursRecord = {};
     
     $scope.moment = moment;
-    
-    
-    
+
     $scope.startWeekDate = $scope.moment().day(0).format('YYYY-MM-DD');
 	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
 	

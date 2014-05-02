@@ -8,7 +8,7 @@
      		
 		<div class="modal-body panel-body">
 		   <!--  <div class="row" ng-if="hoursValidation.length > 0"> --> 
-		   <div class="row" ng-if="getNewHoursValidationErrors(hoursForm)">
+		   <div class="row" ng-if="getNewHoursValidationErrors()">
 		      <div id="hoursValidationDiv" class="alert alert-danger">
                 <a class="close" ng-click="hideMessages()">&times;</a>
                     <ul>
@@ -29,37 +29,38 @@
 		        <div class="row" ng-repeat="hoursEntry in selected.hoursEntries" style="margin-bottom: 7px; padding-top: 7px; padding-bottom: 7px;">
 		            <div class="col-xs-12 col-sm-5 col-md-12 col-lg-5">
 		            	<div class="row">
-		            		
-			                <div class="col-xs-9 col-sm-12 col-md-6 col-lg-12" ng-if="hoursEntry.project.name" >
-			                    <div ng-init="hoursEntry.hoursRecord.project.resource = hoursEntry.project.resource">
-			                    	<label>{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}} <div style="display: inline;" ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</div>
-			                    	</label>
-			                    	
-			                    </div>
-			                	<div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
-			                </div>
-			               	<div ng-if="hoursEntry.project && !hoursEntry.project.resource || hoursEntry.hoursRecord.project && !hoursEntry.hoursRecord.project.resource" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
-			               		<select name="project" id="project"
-			                        class="form-control form-group" 
-			                        ng-model="hoursEntry.hoursRecord.project.resource" ng-required="true"
-			                        ng-options="p.resource as p.title for p in hoursProjects">
-			                	</select>
-			               	</div>
-			               	
-			               	<div ng-if="hoursEntry.task && !hoursEntry.task.name || hoursEntry.hoursRecord.task && hoursEntry.hoursRecord.task.resource" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
-			               		<select name="task" id="task"
-			                        class="form-control form-group" 
-			                        ng-model="hoursEntry.hoursRecord.task.resource" ng-required="true"
-			                        ng-options="t.resource as t.name for t in hoursTasks">
-			                	</select>
-			               	</div>
-			                <div class="col-xs-3 col-sm-12 col-md-6 col-lg-12">
-			                    <input value="{{hoursEntry.hoursRecord.hours}}" 
-			                    	
-			                    		name="hours"
-			                    		class="form-group form-control" type="number" step="0.1"
-			                         placeholder="Hours" ng-model="hoursEntry.hoursRecord.hours" />
-			                </div>
+		            		<ng-form name="innerHoursForm" >
+				                <div class="col-xs-9 col-sm-12 col-md-6 col-lg-12" ng-if="hoursEntry.project.name" ng-init="hoursEntry.innerHoursForm = innerHoursForm" >
+				                    <div ng-init="hoursEntry.hoursRecord.project.resource = hoursEntry.project.resource">
+				                    	<label>{{hoursEntry.project.name}}: {{hoursEntry.project.customerName}} <div style="display: inline;" ng-show="hoursEntry.assignment.hoursPerWeek"> | h/w:{{hoursEntry.assignment.hoursPerWeek}}</div>
+				                    	</label>
+				                    	
+				                    </div>
+				                	<div ng-init="hoursEntry.hoursRecord.date = selected.date"></div>
+				                </div>
+				               	<div ng-if="hoursEntry.project && !hoursEntry.project.resource || hoursEntry.hoursRecord.project && !hoursEntry.hoursRecord.project.resource" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
+				               		<select name="project" id="project"
+				                        class="form-control form-group" 
+				                        ng-model="hoursEntry.hoursRecord.project.resource" ng-required="true"
+				                        ng-options="p.resource as p.title for p in hoursProjects">
+				                	</select>
+				               	</div>
+				               	
+				               	<div ng-if="hoursEntry.task && !hoursEntry.task.name || hoursEntry.hoursRecord.task && hoursEntry.hoursRecord.task.resource" class="col-xs-9 col-sm-12 col-md-6 col-lg-12 ">
+				               		<select name="task" id="task"
+				                        class="form-control form-group" 
+				                        ng-model="hoursEntry.hoursRecord.task.resource" ng-required="true"
+				                        ng-options="t.resource as t.name for t in hoursTasks">
+				                	</select>
+				               	</div>
+				                <div class="col-xs-3 col-sm-12 col-md-6 col-lg-12">
+				                    <input value="{{hoursEntry.hoursRecord.hours}}" 
+				                    	
+				                    		name="hours"
+				                    		class="form-group form-control" type="number" step="0.1"
+				                         placeholder="Hours" ng-model="hoursEntry.hoursRecord.hours" />
+				                </div>
+			                </ng-form>
 			            </div>
 		            </div>
 		            <div class="col-xs-10 col-sm-5 col-md-10 col-lg-5">
@@ -106,7 +107,7 @@
 		</div>
 		<div class="modal-footer">
 	        <button type="button" class="btn btn-default" ng-click="hideHoursEntry()">Close</button>
-	        <button ng-click="addHours();" type="submit" class="btn btn-default "><i class="fa fa-floppy-o"></i> Save</button>
+	        <button ng-click="addHours();" type="submit" class="btn btn-default " ng-disabled="getNewHoursValidationErrors()"><i class="fa fa-floppy-o"></i> Save</button>
 	    </div>
 	</div>
 </div>
