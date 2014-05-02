@@ -1373,7 +1373,7 @@ angular.module('Mastermind')
 
         $scope.organizeHours($scope.hours);
         $scope.initHoursPeriods($scope.hours);
-        $scope.thisWeek();
+        $scope.currentWeek();
         
         if($scope.hoursTableParams){
           $scope.hoursTableParams.total($scope.hours.length);
@@ -1766,11 +1766,14 @@ angular.module('Mastermind')
     
     $scope.moment = moment;
     
-
+    $scope.selectedWeekIndex = 0;
     $scope.startWeekDate = $scope.moment().day(0).format('YYYY-MM-DD');
 	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
 	
 	$scope.showWeek = function() {
+    	$scope.startWeekDate = $scope.moment().day($scope.selectedWeekIndex).format('YYYY-MM-DD');
+    	$scope.endWeekDate = $scope.moment().day($scope.selectedWeekIndex + 6).format('YYYY-MM-DD');
+		
     	var hoursQuery = {
         	    project:{
 						resource:$scope.project.about
@@ -1791,15 +1794,14 @@ angular.module('Mastermind')
         	};
     	
     	Resources.query('hours',hoursQuery, {}).then(function (result) {
+    		$scope.weekPersonHours = [];
+            $scope.weekHours = [];
             if(result.count === 0) {
             	console.error("getHoursRecordsBetweenDates("+$scope.startWeekDate+","+$scope.endWeekDate+") gave me no results");
             } else {
                 $scope.thisWeekHours = result.members;
-                
                 //_.sortBy($scope.thisWeekHours, function(h) { return new Date(h.date); });
-                $scope.weekPersonHours = [];
-                $scope.weekHours = [];
-                
+
                 // resolve persons to fill csv fields
                 for(var i = 0; i < $scope.thisWeekHours.length; i++) {
                 	Resources.resolve($scope.thisWeekHours[i].person);
@@ -1856,19 +1858,18 @@ angular.module('Mastermind')
 		return moment(yyyymmdd).format("MMM D");
 	}
     
-    $scope.thisWeek = function() {
-    	
-    	$scope.startWeekDate = $scope.moment().day(0).format('YYYY-MM-DD');
-    	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
-    	
+	$scope.currentWeek = function() {
+		$scope.selectedWeekIndex = 0;
+		$scope.showWeek();
+	}
+	
+    $scope.nextWeek = function() {
+    	$scope.selectedWeekIndex += 7;
     	$scope.showWeek();
     }
     
     $scope.prevWeek = function() {
-    	
-    	$scope.startWeekDate = $scope.moment().day(-7).format('YYYY-MM-DD');
-    	$scope.endWeekDate = $scope.moment().day(-1).format('YYYY-MM-DD');
-    	
+    	$scope.selectedWeekIndex -= 7;
     	$scope.showWeek();
     }
 

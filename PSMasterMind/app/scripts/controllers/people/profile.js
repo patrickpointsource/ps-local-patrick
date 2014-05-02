@@ -281,7 +281,7 @@ angular.module('Mastermind.controllers.people')
         			}, tasksMap[taskResource]))
         		}
         		
-        		$scope.thisWeek();
+        		$scope.currentWeek();
         	});
         }
       }, sort);
@@ -514,12 +514,12 @@ angular.module('Mastermind.controllers.people')
     	$scope.hoursViewType = view;
     	
     	if(view == 'weekly') {
-    		$scope.thisWeek();
+    		$scope.currentWeek();
     	}
     }
     
     $scope.hoursViewType = 'monthly';
-    $scope.selectedWeek = 0;
+    $scope.selectedWeekIndex = 0;
     $scope.thisWeekDayLabels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     $scope.newHoursRecord = {};
     $scope.moment = moment;
@@ -535,19 +535,18 @@ angular.module('Mastermind.controllers.people')
 		return moment(yyyymmdd).format("MMM D");
 	}
     
-    $scope.thisWeek = function() {
-    	
-    	$scope.startWeekDate = $scope.moment().day(0).format('YYYY-MM-DD');
-    	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
-    	
+	$scope.currentWeek = function() {
+		$scope.selectedWeekIndex = 0;
+		$scope.showWeek();
+	}
+	
+    $scope.nextWeek = function() {
+    	$scope.selectedWeekIndex += 7;
     	$scope.showWeek();
     }
     
     $scope.prevWeek = function() {
-    	
-    	$scope.startWeekDate = $scope.moment().day(-7).format('YYYY-MM-DD');
-    	$scope.endWeekDate = $scope.moment().day(-1).format('YYYY-MM-DD');
-    	
+    	$scope.selectedWeekIndex -= 7;
     	$scope.showWeek();
     }
     
@@ -555,6 +554,9 @@ angular.module('Mastermind.controllers.people')
 	$scope.weekHoursByTask = [];
     
     $scope.showWeek = function() {
+    	$scope.startWeekDate = $scope.moment().day($scope.selectedWeekIndex).format('YYYY-MM-DD');
+    	$scope.endWeekDate = $scope.moment().day($scope.selectedWeekIndex + 6).format('YYYY-MM-DD');
+    	
     	var profileWeekHours = [];
     	for(var i = 0; i < $scope.hours.length; i++) {
     		var hour = $scope.hours[i];
