@@ -50,7 +50,7 @@
 				<nav class="navbar navbar-default navbar-fixed-top"  
 					role="navigation" id="navbar1">
 
-					<div class="nav-bar-container col-md-10 col-sm-10 col-xs-10 ">
+					<div class="nav-bar-container col-md-9 col-sm-9 col-xs-9">
 						<div class="visible-md visible-lg appTitle navbar-brand">
 							<ng-include src="'views/breadcrumb.html'"></ng-include>
 						</div>
@@ -93,16 +93,23 @@
 						</div>
 						<!-- /.navbar-collapse -->
 					</div>
-					<div class="user-info-container col-md-2 col-sm-2 col-xs-2">
-						<div ng-if="me.thumbnail" class="dropdown pull-right" id="user-dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown">
-								<div id="profile-photo" back-img="{{me.thumbnail}}"></div>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a href="#{{me.about}}">Profile</a></li>
-								<li><a ng-click="logout()">Log out</a></li>
-							</ul>
+					<div class="user-info-container col-md-3 col-sm-3 col-xs-3">
+						
+							<div ng-if="me.thumbnail" class="dropdown pull-right" id="user-dropdown" style="width:100%;">
+								
+								<a class="dropdown-toggle" data-toggle="dropdown" >
+									<div id="profile-photo" back-img="{{me.thumbnail}}" style="float:left;"></div>
+									<div class="hidden-xs hidden-sm" style="float:left; color:white;margin-top:11px; margin-left: 4px;">{{me.name}}</div>
+									<span class="caret" style="color: white; margin-top:17px;"></span>
+								</a>
+								
+								<ul class="dropdown-menu">
+									<li><a href="#{{me.about}}">Profile</a></li>
+									<li><a ng-click="logout()">Log out</a></li>
+								</ul>
+							</div>
 						</div>
+						
 					</div>
 					
 				</nav>

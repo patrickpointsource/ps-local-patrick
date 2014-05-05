@@ -130,7 +130,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         }
 
         $scope.moment = moment;
-        var me = $scope.me.about;
+        var me = $scope.me ? $scope.me.about: '';
 
 
         //Doc Brown - time travel.

@@ -9,12 +9,17 @@
 #navbar1 {
   height: 78px;
   left:280px;
-  background-color: #1074BC;
+  background-color: @mm-blue;
 }
 
 @media (max-width: 991px) {
   #navbar1 {
     left: 0px;
+    background-color: @charcoleRegular;
+  }
+  
+  #navbar1 .user-info-container {
+  	background-color: @charcoleRegular;
   }
 }
 
@@ -55,6 +60,11 @@
 			}
 		}
 	}
+}
+
+.navbar .appTitle{
+	color: white;
+	font-weight: bold;
 }
 
 .collapse.width {
@@ -182,7 +192,7 @@ header {
   }
 
   #user-dropdown {
-    padding: 10px 15px 0;
+    padding: 10px 0px 0;
 
     .dropdown-menu {
       padding: 5px;
@@ -402,7 +412,7 @@ main {
 }
 
 header .navbar .user-info-container {
-	background-color: #0696DA;
+	background-color: @mm-lightblue;
 	height: 100%;
 }
 
