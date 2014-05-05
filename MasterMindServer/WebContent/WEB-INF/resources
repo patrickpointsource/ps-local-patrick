@@ -1,5 +1,5 @@
 # Add JAX-RS Resource Classes Here.
-com.pointsource.mastermind.server.Config
+com.pointsource.mastermind.server.config.Config
 com.pointsource.mastermind.server.Hours
 com.pointsource.mastermind.server.JazzHub
 com.pointsource.mastermind.server.People

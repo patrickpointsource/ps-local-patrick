@@ -14,9 +14,9 @@ import org.apache.wink.common.annotations.Workspace;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.pointsource.mastermind.server.jazzhub.JazzData;
 import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
-import com.pointsource.mastermind.util.JazzData;
 import com.pointsource.mastermind.util.RequestContext;
 
 @Path("/" + CONSTS.RESOURCE_JAZZ_HUB)

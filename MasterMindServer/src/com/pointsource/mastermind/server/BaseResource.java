@@ -11,13 +11,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.pointsource.mastermind.util.CONSTS;
+import com.pointsource.mastermind.util.Data;
 import com.pointsource.mastermind.util.RequestContext;
 import com.pointsource.mastermind.util.ValidationException;
 
@@ -127,6 +128,23 @@ public abstract class BaseResource {
 
 		Response ret = Response.status(status).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).entity(error).build();
 		return ret;
+	}
+
+
+	protected Response sendResponseWithSerializedJson(JSONObject obj,
+			Status status) {
+		String str = Data.escapeJSON(obj.toString());
+		return Response.status(status).entity(str).build();
+	}
+
+	protected void addAboutInfo(HttpServletRequest request, JSONObject obj) {
+		if (obj.has(CONSTS.PROP__ID)) {
+			obj.put(CONSTS.PROP__ID,
+					request.getRequestURL()
+							+ "/"
+							+ obj.getJSONObject(CONSTS.PROP__ID).getString(
+									CONSTS.PROP_$OID));
+		}
 	}
 
 }

@@ -83,6 +83,9 @@ public interface CONSTS {
 	public String PROP_TYPE = "type";
 	public String PROP_USERS = "users";
 	public String PROP_TASK = "task";
+	public String PROP_PROPERTIES = "properties";
+	public String PROP_CONFIG = "config";
+	public String PROP_VALUE = "value";
 	
 	/**
 	 * RDF Namespaces
@@ -106,6 +109,7 @@ public interface CONSTS {
 	public String VALUES_RATE_TYPE_HOURLY = "hourly";
 	public String VALUES_RATE_TYPE_MONTHLY = "monthly";
 	public String VALUES_RATE_TYPE_WEEKLY = "weekly";
+	public String VALUES_SERIVCES_CONFIGURATION = "services";
 	
 	//Magic Group Constants
 	public String GROUPS_EXEC_TITLE = "Executives";
@@ -185,6 +189,7 @@ public interface CONSTS {
 	public String COLLECTION_TITLE_ROLES = "Roles";
 	public String COLLECTION_TITLE_SKILLS = "Skills";
 	public String COLLECTION_TITLE_TASKS = "Tasks";
+	public String COLLECTION_TITLE_CONFIGURATION = "Configuration";
 	/**
 	 * Google Constants
 	 */
@@ -197,16 +202,11 @@ public interface CONSTS {
 	public String AUTH_TYPE = "Bearer";
 	public String GOOGLE_PLUS_PEOPLE_URI = "https://www.googleapis.com/plus/v1/people/";
 	
-	
-	/**
-	 * Jazz Hub Constants
-	 */
-	public String JAZZ_HUB_USERID = "psbot";
-	public String JAZZ_HUB_USER_PASS = "P0!ntS0urc3!";
-	public String JAZZ_HUB_BASE = "https://hub.jazz.net/ccm01/";
-	
+
 	/**
 	 * For calculation purpose
 	 */
 	public int HOURS_PER_MONTH = 180;
+	
+	
 }

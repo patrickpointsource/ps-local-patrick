@@ -12,10 +12,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -46,11 +49,14 @@ import com.mongodb.WriteResult;
 import com.mongodb.util.JSON;
 
 public class Data implements CONSTS {
-
 	// private static String GOOGLE_USER_ETAG = "";
 	private static Mongo mongo;
 	private static DB db;
 	private static JSONObject CONFIG = null;
+	private static AtomicReference<JSONObject> serviceConfigReference = new AtomicReference<JSONObject>(
+			null);
+
+
 	//private static String DATE_PATETRN = "yyyy-MM-dd";
 	//private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATETRN);
 
@@ -90,6 +96,259 @@ public class Data implements CONSTS {
 			}
 		}
 		return CONFIG;
+	}
+
+	private static DBObject internalFetchConfig(String configName) {
+		DBCollection configCol = db
+				.getCollection(CONSTS.COLLECTION_TITLE_CONFIGURATION);
+		return configCol.findOne(createConfigQuery(configName));
+	}
+
+	/**
+	 * Creates a simple queryable object that enables a config to be queried by
+	 * its name
+	 * 
+	 * @param configName
+	 * @return
+	 */
+	private static BasicDBObject createConfigQuery(String configName) {
+		return new BasicDBObject(PROP_CONFIG, configName);
+	}
+
+	public static void deleteServiceConfig(RequestContext context) {
+		PermissionUtil
+				.checkAdminAccess(context, "Delete service configuration");
+
+		DBCollection peopleCol = db
+				.getCollection(COLLECTION_TITLE_CONFIGURATION);
+		DBObject dbObj = peopleCol
+				.findAndRemove(createConfigQuery(VALUES_SERIVCES_CONFIGURATION));
+		if (dbObj == null)
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Configuration not found").build());
+		serviceConfigReference.set(null);
+	}
+
+	/**
+	 * Gets the services configuration info
+	 * 
+	 * @return
+	 */
+	public static JSONObject getServiceConfig() {
+		// See if the config is cached
+		JSONObject config = serviceConfigReference.get();
+		if (config == null) {
+			// Needs to synched with the default properties
+			// this should be a one time charge for each time the server
+			// is started
+			DBObject dbObject = internalFetchConfig(VALUES_SERIVCES_CONFIGURATION);
+
+			JSONObject jsonConfig = null;
+			if (dbObject != null) {
+				jsonConfig = decodeJSON(toJson(dbObject));
+			}
+
+			if (jsonConfig == null) {
+				jsonConfig = new JSONObject();
+				jsonConfig.put(PROP_CONFIG, VALUES_SERIVCES_CONFIGURATION);
+			}
+
+			JSONArray properties = null;
+			if (jsonConfig.has(PROP_PROPERTIES) == false) {
+				properties = new JSONArray();
+				jsonConfig.put(PROP_PROPERTIES, properties);
+			} else {
+				properties = jsonConfig.getJSONArray(PROP_PROPERTIES);
+			}
+
+			boolean dirty = synchProperties(properties);
+
+			if (dirty) {
+				// Update the record in the db
+				try {
+					jsonConfig = updateServiceConfig(jsonConfig);
+				} catch (ConflictException ex) {
+					// This means someone has gotten in before us, redo this
+					// again. Under very normal operation, this would never
+					// happen
+					// The only way this could happen, is if someone issues an
+					// update
+					// without fetching the config first through this method
+					return getServiceConfig();
+				}
+			}
+
+			if (serviceConfigReference.compareAndSet(null, jsonConfig) == false) {
+				// This object is not the most recent, fetch again
+				return getServiceConfig();
+			}
+			return jsonConfig;
+		}
+		return config;
+	}
+
+	/**
+	 * Synchs the properties from the current config, with what is held in the
+	 * default properties. This is a lightweight auto migration mechanism. This
+	 * only solves the usecase for adds/removes. If a property changes names
+	 * then something else is needed. That will probably be an edge case, and
+	 * does not necessarily need to be solved now
+	 * 
+	 * @param currentConfig
+	 * @return Whether or not the config is dirty
+	 */
+	private static boolean synchProperties(JSONArray jsonConfig) {
+		// Read the default properties, and synch
+		boolean dirty = false;
+
+		Set<String> allKeys = new HashSet<String>();
+		Set<String> defaultKeys = new HashSet<String>();
+		Set<String> currentKeys = new HashSet<String>();
+
+		Properties defaultProps = readDefaultProperties();
+		for (Object key : defaultProps.keySet()) {
+			String keyString = key.toString();
+			allKeys.add(keyString);
+			defaultKeys.add(keyString);
+		}
+		for (int i = 0; i < jsonConfig.length(); i++) {
+			JSONObject property = jsonConfig.getJSONObject(i);
+			String name = property.getString(PROP_NAME);
+			allKeys.add(name);
+			currentKeys.add(name);
+		}
+		for (String key : allKeys) {
+			// Exists in default, but not in current = ADD
+			if (defaultKeys.contains(key) == true
+					&& currentKeys.contains(key) == false) {
+				JSONObject newProperty = new JSONObject();
+				newProperty.put(PROP_NAME, key);
+				newProperty.put(PROP_VALUE, defaultProps.get(key).toString());
+				jsonConfig.put(newProperty);
+				dirty = true;
+			} else if (defaultKeys.contains(key) == false
+					&& currentKeys.contains(key) == true) {
+				// Does not exist in the default properties, but exists
+				// in the current props = REMOVE
+				int idx = findIdexOfProperty(key, jsonConfig);
+				if (idx > -1) {
+					jsonConfig.remove(idx);
+					dirty = true;
+				}
+
+			}
+		}
+		return dirty;
+	}
+
+	private static int findIdexOfProperty(String nameToFind, JSONArray jsonArray) {
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject property = jsonArray.getJSONObject(i);
+			String name = property.getString(PROP_NAME);
+			if (name.equals(nameToFind))
+				return i;
+		}
+		return -1;
+	}
+
+	/**
+	 * Protected with admin check
+	 * 
+	 * @param context
+	 * @param config
+	 * @return
+	 */
+	public static JSONObject updateServiceConfig(RequestContext context,
+			JSONObject config) {
+		PermissionUtil.checkAdminAccess(context, "update service config");
+		return updateServiceConfig(config);
+	}
+
+	/**
+	 * Updates the services configuration, and replaces the cached copy only if
+	 * it has not been initialized
+	 * 
+	 * @param config
+	 * @return
+	 * @throws ConflictException
+	 */
+	private static JSONObject updateServiceConfig(JSONObject config)
+			throws ConflictException {
+
+		if (config.has(PROP_CONFIG) == false) {
+			throw new WebApplicationException(Response
+					.status(Status.BAD_REQUEST)
+					.entity("Configuration is missing the 'config' element")
+					.build());
+		}
+
+		DBCollection configCol = db
+				.getCollection(CONSTS.COLLECTION_TITLE_CONFIGURATION);
+
+		DBObject dbObject = internalFetchConfig(VALUES_SERIVCES_CONFIGURATION);
+		// If a config does not exist, then one needs to be initialized with
+		// etag and create date
+		boolean insert = false;
+
+		if (dbObject == null) {
+			config.put(PROP_ETAG, "0");
+			config.put(PROP_CREATED, new Date());
+			insert = true;
+		} else {
+			checkForCollisionAndIncrementETag(config, dbObject);
+		}
+
+		String ecodedJson = encodeJSON(config);
+		dbObject = (DBObject) JSON.parse(ecodedJson);
+
+		WriteResult result = configCol.update(
+				createConfigQuery(VALUES_SERIVCES_CONFIGURATION), dbObject,
+				true, false);
+		checkForErrorFromDBOperation(result);
+		if (insert) {
+			// Gets the latest with the generated id
+			config = decodeJSON(toJson(internalFetchConfig(VALUES_SERIVCES_CONFIGURATION)));
+		}
+
+		// Only update the cached config if it is not null (i.e. initialized).
+		// This method is not responsible for initializing
+		// the properties. The properties need to be synched upon initialization
+		if (serviceConfigReference.get() != null) {
+			serviceConfigReference.set(config);
+		}
+		return config;
+	}
+
+	private static void checkForErrorFromDBOperation(WriteResult result)
+			throws WebApplicationException {
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Database operation failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+
+	}
+
+	private static JSONObject toJson(DBObject dbObject) {
+		String json = JSON.serialize(dbObject);
+		return new JSONObject(json);
+	}
+
+	private static Properties readDefaultProperties() {
+		Properties props = new Properties();
+		try {
+			props.load(Data.class.getResourceAsStream("default.properties"));
+		} catch (IOException ex) {
+
+		}
+		return props;
 	}
 
 	/**
@@ -964,10 +1223,30 @@ public class Data implements CONSTS {
 				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) || isMember(context.getCurrentUser(), GROUPS_SALES_TITLE));
 	}
 
-	private static boolean hasAdminAccess(RequestContext context)
-			throws JSONException {
-		return context.getCurrentUser() != null && (isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
-				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE));
+
+	
+	private static void checkForCollisionAndIncrementETag(JSONObject newRecord,
+			DBObject oldRecord) throws ConflictException {
+		int newEtag = 0;
+		if (oldRecord != null && oldRecord.containsField(PROP_ETAG)) {
+			// If the old record has en etag
+			if (newRecord.has(PROP_ETAG) == false) {
+				Response response = Response.status(Status.BAD_REQUEST)
+						.entity("New record is missing etag").build();
+				throw new WebApplicationException(response);
+			}
+
+			String etag = newRecord.getString(PROP_ETAG);
+			String old_etag = (String) oldRecord.get(PROP_ETAG);
+			if (!etag.equals(old_etag)) {
+				String message = "Record etag (" + etag
+						+ ") does not match the saved etag (" + old_etag + ")";
+				throw new ConflictException(message);
+			}
+			newEtag = Integer.parseInt(old_etag);
+			newEtag++;
+		}
+		newRecord.put(PROP_ETAG, String.valueOf(newEtag));
 	}
 
 	/**
@@ -1331,12 +1610,7 @@ public class Data implements CONSTS {
 	public static JSONObject deletePerson(RequestContext context, String id)
 			throws JSONException {
 		// Only admins can create roles
-		if (!hasAdminAccess(context)) {
-			throw new WebApplicationException(
-					Response.status(Status.FORBIDDEN)
-							.entity("You need admin athority to perform this operation")
-							.build());
-		}
+		PermissionUtil.checkAdminAccess(context, "delete person");
 
 		JSONObject ret = null;
 
@@ -1836,12 +2110,7 @@ public class Data implements CONSTS {
 			JSONObject newRole) throws JSONException {
 
 		// Only admins can create roles
-		if (!hasAdminAccess(context)) {
-			throw new WebApplicationException(
-					Response.status(Status.FORBIDDEN)
-							.entity("You need admin athority to perform this operation")
-							.build());
-		}
+		PermissionUtil.checkAdminAccess(context, "create role");
 
 		newRole.put(PROP_ETAG, "0");
 
@@ -1886,12 +2155,7 @@ public class Data implements CONSTS {
 			JSONObject newSkill) throws JSONException {
 
 		// Only admins can create roles
-		if (!hasAdminAccess(context)) {
-			throw new WebApplicationException(
-					Response.status(Status.FORBIDDEN)
-							.entity("You need admin athority to perform this operation")
-							.build());
-		}
+		PermissionUtil.checkAdminAccess(context, "create skill");
 
 		newSkill.put(PROP_ETAG, "0");
 
@@ -1936,12 +2200,7 @@ public class Data implements CONSTS {
 	public static JSONObject deleteRole(RequestContext context, String id)
 			throws JSONException {
 		// Only admins can create roles
-		if (!hasAdminAccess(context)) {
-			throw new WebApplicationException(
-					Response.status(Status.FORBIDDEN)
-							.entity("You need admin athority to perform this operation")
-							.build());
-		}
+		PermissionUtil.checkAdminAccess(context, "delete role");
 
 		JSONObject ret = null;
 
@@ -2035,12 +2294,7 @@ public class Data implements CONSTS {
 	public static JSONObject deleteSkill(RequestContext context, String id)
 			throws JSONException {
 		// Only admins can create roles
-		if (!hasAdminAccess(context)) {
-			throw new WebApplicationException(
-					Response.status(Status.FORBIDDEN)
-							.entity("You need admin athority to perform this operation")
-							.build());
-		}
+		PermissionUtil.checkAdminAccess(context, "delete skill");
 
 		JSONObject ret = null;
 
@@ -2214,7 +2468,7 @@ public class Data implements CONSTS {
 		}
 
 		// Only admins can update a users groups
-		if (!hasAdminAccess(context)) {
+		if (!PermissionUtil.hasAdminAccess(context)) {
 			if(existing.has(PROP_GROUPS)){
 				newPerson.put(PROP_GROUPS, existing.get(PROP_GROUPS));
 			}
@@ -2324,6 +2578,24 @@ public class Data implements CONSTS {
 		newProject = new JSONObject(json);
 
 		return newProject;
+	}
+
+	public static JSONObject getConfiguration(RequestContext context,
+			String configName) {
+		JSONObject ret = null;
+
+		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_CONFIGURATION);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP_NAME, configName);
+		DBObject dbObj = projectsCol.findOne(query);
+
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+			//ret.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + id);
+		}
+
+		return ret;
 	}
 	
 	public static void updateProjectLink(RequestContext context, String projectId, String linkId, JSONObject newLink){
@@ -3486,6 +3758,14 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		}// for
 	}
 	
+	private static String encodeJSON(JSONObject obj) {
+		return obj.toString().replaceAll("\\.", "%2E");
+	}
+
+	private static JSONObject decodeJSON(JSONObject obj) {
+		return new JSONObject(obj.toString().replaceAll("%2E", "\\."));
+	}
+
 	public static void extendJSONObject(JSONObject destination, JSONObject source) {
 		Iterator<?> keys = source.keys();
 		String propertyName;
