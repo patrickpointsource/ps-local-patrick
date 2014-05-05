@@ -225,7 +225,6 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             });
         }
 
-        $scope.hoursRequest();
         $scope.newHoursRecord = {};
         $scope.hoursValidation = [];
 
@@ -424,11 +423,22 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         	$scope.hoursValidation = [];
         };
 
-        $scope.loadAvailableTasks();
+        
         
         $scope.$watch('displayedHours', function(value) { 
             var val = value || null;            
             if (val)  $scope.$emit('masonryGo');
         });
+       
+        var init = function (event) {
+        	$scope.hoursRequest();
+        	$scope.loadAvailableTasks();
+        };
+        
+        if ($scope.me)
+        	init()
+        else
+        	$rootScope.$on('me:loaded', init)
+        
     }
 ]);

@@ -70,6 +70,8 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 
 		//console.log('Logged In');
 		$scope.authState = true;
+		
+		$scope.$emit('me:loaded')
     });
 
     /**
