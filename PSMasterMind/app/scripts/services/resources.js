@@ -16,17 +16,12 @@ angular.module('Mastermind').factory(
       var MAX_TIME = ONE_HOUR;
       var TIME_PREFIX = 'time:';
 
-      var counter = 0;
-      
       /**
        * Service function for querying a resource member.
        *
        * @returns {*}
        */
       function query(resource, queryString, fields, onSuccess, sort) {
-    	  var startDate = new Date();
-    	  console.log('counter: query: ' + resource + ':' + JSON.stringify(queryString) + ':' + (counter ++));
-    	  
         var Resource = ResourcesRestangular.one('',resource);
 
         var params = {};
@@ -50,14 +45,9 @@ angular.module('Mastermind').factory(
         }
 
         if(onSuccess) {
-        	Resource.get(params).then(onSuccess)/*.then(function() {
-        		
-        		console.log('end: ' + ((new Date()).getTime() - startDate.getTime()) + ': query: ' + resource + ':' + JSON.stringify(queryString) + ':' + counter);  
-        	});*/
+        	Resource.get(params).then(onSuccess);
         } else
-        	return Resource.get(params)/*.then(function() {
-        		console.log('end: ' + ((new Date()).getTime() - startDate.getTime()) + ': query: ' + resource + ':' + JSON.stringify(queryString) + ':' + counter);  
-        	});*/
+        	return Resource.get(params);
       }
 
 
@@ -69,7 +59,6 @@ angular.module('Mastermind').factory(
        * @returns {*}
        */
       function refresh(resource) {
-    	  console.log('counter: refresh:'+ resource + ':' + (counter ++));
         var deferred = $q.defer();
 
         $timeout(function() {
@@ -91,7 +80,6 @@ angular.module('Mastermind').factory(
        * @returns {*}
        */
       function get(resource, params) {
-    	  console.log('counter: get:' + resource + ':'+ (counter ++));
         var deferred = $q.defer();
 
         $timeout(function() {
