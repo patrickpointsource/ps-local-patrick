@@ -1891,6 +1891,8 @@ angular.module('Mastermind')
       ProjectsService.getForEdit($scope.projectId).then(function(project){
         $scope.project = project;
         $scope.handleProjectSelected();
+        
+        $rootScope.breadcrumpText = "All Projects" + " > " + project.name;
       });
     }
     /**
