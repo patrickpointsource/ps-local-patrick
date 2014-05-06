@@ -163,8 +163,12 @@ header {
     }
 
     .navbar-nav {
+    	position:relative;
+    	color: white;
+    	
       li {
-
+		position:static;
+		
         &.active > a {
           box-shadow: 0 5px 0 @gray;
         }
@@ -174,14 +178,74 @@ header {
         }
 
         a {
+        	position:static;
           padding-top: 7px;
           padding-bottom: 8px;
-		 
+		
           &:hover {
             box-shadow: 0 5px 0 @gray;
           }
+          
+          span {
+          	 color: white;
+          	 text-transform: none;
+          	 position:relative;
+          	 top: -12px;
+          }
         }
       }
+    }
+    
+    ul.subnavbar {
+    	display: none;
+    	background-color: rgb(77, 77, 77);
+		position: absolute;
+		top:0px;
+		right:0px;
+		
+		width:204px;
+		min-height:100%;
+		z-index: 10001;
+		
+		li {
+			padding-left: 36px;
+			text-transform: none;
+			white-space: nowrap;
+			a {
+				span {
+					top: 0px;
+				}
+			}
+		}
+		
+		li.subheader {
+			padding-left: 16px;
+		}
+		
+		li.active-subitem {
+			background-color: @navbar-subnavbar-active-bg;
+			
+			a {
+				background-color: @navbar-subnavbar-active-bg !important;
+			}
+		}
+		
+		li.subitems-header {
+			height: 40px !important;
+			background-color: @navbar-subnavbar-header-bg;
+			
+			a {
+				background-color: @navbar-subnavbar-header-bg !important;
+			}
+		}
+    }
+    
+    li.active ul.subnavbar {
+    	display: block;
+    }
+    
+    li.active > a.hasSubmenu > span{
+    	display: none;
     }
   }
 
