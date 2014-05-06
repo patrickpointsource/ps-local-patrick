@@ -13,6 +13,9 @@ angular.module('Mastermind')
 	  $scope.breadCrumpParts = [];
 	  
 	  $scope.updateBreadCrump = function() {
+		  $scope.breadCrumpParts = _.filter($scope.breadCrumpParts, function(part) {
+			  return part;
+		  });
 		  $scope.breadcrumpText = $scope.breadCrumpParts.join(' > ');
 	  }
 	  
@@ -72,7 +75,7 @@ angular.module('Mastermind')
 	  			$scope.breadCrumpParts.push("Administration");
 	  		}
 	  		
-	  		if($scope.state.name == 'projects.show') {
+	  		if($scope.state.name == 'projects.show' || $scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit') {
 	  			$scope.breadCrumpParts = [ 'All Projects' ];
 	  			if($scope.params.projectId) {
 	  				$scope.breadCrumpParts.push("");
@@ -110,11 +113,14 @@ angular.module('Mastermind')
 	  				People.get($scope.params.profileId).then(function(profile) {
 	  					if(profile.accounts.length > 0) {
 	  						$scope.breadCrumpParts[2] = profile.name;
-	  						$scope.updateBreadCrump();
 	  					}
 	  					RolesService.getRolesMapByResource().then(function(map) {
-	  						$scope.breadCrumpParts[1] = map[profile.primaryRole.resource].title;
-	  						$scope.updateBreadCrump();
+	  						if(profile.primaryRole) {
+	  							$scope.breadCrumpParts[1] = map[profile.primaryRole.resource].title;
+		  						$scope.updateBreadCrump();
+	  						} else {
+	  							$scope.updateBreadCrump();
+	  						}
 	  					});
 	  					
 	  				});
