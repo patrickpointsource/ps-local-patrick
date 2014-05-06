@@ -148,21 +148,21 @@ angular.module('Mastermind')
     $scope.checkShiftDates = function() {
     	var deferred = $q.defer();
     	
-    	var project = $scope.project;
-        
-        var startDateShifted = project.initStartDate && project.startDate && project.startDate != project.initStartDate;
-        var endDateShifted = ((typeof project.initEndDate === 'undefined') && project.endDate) || 
-        					 (project.initEndDate && project.endDate != project.initEndDate);
-        
-        var result = startDateShifted || endDateShifted;
-        deferred.resolve(result);
-        if(result) {
-        	$("#dateShiftConfirm").modal('show');
-        }
-        else {
-        	$scope.save(false);
-        }
-        
+    		var project = $scope.project;
+            
+            var startDateShifted = project.initStartDate && project.startDate && project.startDate != project.initStartDate;
+            var endDateShifted = ((typeof project.initEndDate === 'undefined') && project.endDate) || 
+            					 (project.initEndDate && project.endDate != project.initEndDate);
+            
+            var result = (startDateShifted || endDateShifted) && $scope.projectId;
+            deferred.resolve(result);
+            if(result) {
+            	$("#dateShiftConfirm").modal('show');
+            }
+            else {
+            	$scope.save(false);
+            }
+
         return deferred.promise;
     }
     
