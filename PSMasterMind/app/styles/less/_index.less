@@ -162,7 +162,9 @@ header {
     
     &.navbar-nav{
     	li {
+    		position:static;
     		a{
+    		position:static;
     			color: @gray;
     		}
     	}
@@ -204,6 +206,7 @@ header {
       }
     }
     
+    
     ul.subnavbar {
     	display: none;
     	background-color: rgb(77, 77, 77);
@@ -239,9 +242,14 @@ header {
 		
 		li.subitems-header.subheader{
 			text-transform: none;
+			margin-bottom:0px !important;
 			a {
 				color: @navbar-subnavbar-subitemsheader-color !important;
 			}
+		}
+		
+		li:last-child {
+			margin-bottom:0px !important;
 		}
 		
 		li.active-subitem {
@@ -538,6 +546,10 @@ header .navbar .navbar-breadcrumb {
 	}
 }
 
+.nav-bar-container .navbar-collapse {
+	overflow: hidden;
+	left:0px;
+}
 .popover.bottom {
   color: @text-color;
   z-index: 2000;

@@ -118,6 +118,22 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		isRender: $scope.adminAccess
 	}];
 	
+	$scope.isSubitemSelected = function(subItem) {
+		var result = false;
+		var val = subItem.value;
+		var f = $scope.getActiveAreaFilter();
+		var tmp = f.split(',');
+		
+		for (var i = 0; i < tmp.length; i ++) {
+			if (tmp[i].trim().toLowerCase() == val) {
+				result = true;
+				break;
+			}
+		}
+		subItem.active = result;
+		
+		return result;
+	}
 	
 	$scope.handleClick = function(handler, menuItem, subItem, subIndex) {
 		if (this[handler])
@@ -137,9 +153,16 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 					menuItem.subItems[i].active =  !subItem.active;
 						
 			}
-				
-				
+			
+			var selected = [];
+
 			subItem.active = !subItem.active;
+			
+			for (var i = 0; i < menuItem.subItems.length; i ++)
+				if (menuItem.subItems[i].active)
+					selected.push(menuItem.subItems[i].value)
+					
+			this[menuItem.handler](selected.join(','))
 		}
 	}
 	

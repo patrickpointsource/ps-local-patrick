@@ -72,7 +72,42 @@ angular.module('Mastermind.controllers.people')
 	       			 $scope.tableParams.reload();
 	       		 }
         	});
-        }
+        } else if($scope.peopleFilter && $scope.peopleFilter != 'all' && ($scope.peopleFilter.indexOf(':') > -1 || $scope.peopleFilter.indexOf(',') > -1 || !$scope.roleGroups[$scope.peopleFilter])){
+        	var peopleQuery = {$or: []};
+        	var tmp = $scope.peopleFilter.split(':');
+        	
+        	tmp = tmp[tmp.length - 1];
+        	
+        	tmp = tmp.split(',')
+        	
+        	tmp = $scope.mapPeopleGroupToRoles(tmp);
+        	
+        	if (tmp.length > 0)
+	        	for (var i = 0; i < tmp.length; i ++) {
+	        		peopleQuery.$or.push({'primaryRole.resource': tmp[i]})
+	        	}
+        	else
+        		peopleQuery.$or.push({'primaryRole.resource': 'null'})
+        	
+            //var peopleInRoleQuery = {'primaryRole.resource': peopleQuery};
+            
+            var peopleInRoleFields = {resource:1, name:1, familyName:1, givenName: 1, primaryRole:1, thumbnail:1};
+
+           
+            Resources.query('people', peopleQuery, peopleInRoleFields, function(result){
+              $scope.people = result.members;
+
+              //Reload the table
+              if (!$scope.tableParams){
+                $scope.tableParams = getTableData();
+              }
+              else {
+                $scope.tableParams.total($scope.people.length);
+                $scope.tableParams.reload();
+              }
+            });
+            
+          }
         //Otherwise just show all
         else {
         	$scope.peopleFilter = 'all';
@@ -230,6 +265,35 @@ angular.module('Mastermind.controllers.people')
         }
         $scope.buildTableView();
       };
+      
+      $scope.mapPeopleGroupToRoles = function(peopleGroups) {
+    	  var result = [];
+    	  var mapRoles = {};
+    	  var rolePeopleGroupMap = {
+    			  'development': ['SE', 'SSE', 'SSA', 'SSEO', 'ST'],
+    			  'businessdevelopment': ['SBA', 'BA', 'PM', 'SI', 'BIZDEV'],
+    			  "administration": ['ADMIN'],
+    			  "clientexpierencemgmt": ['MKT', 'DMDE', 'CxD'],
+    			  "digitalexperience":["UXD","SUXD", 'DxM', 'DMDE'],
+    			  "executivemgmt":["EXEC", 'DD', 'CxD', 'CD'],
+    			  "sales":["SALES"]
+    	  }
+    	  var map = _.map($scope.roleGroups, function(val, key){
+    		  mapRoles[val.abbreviation] = key;
+    	  })
+    	  
+    	  var abbrs = [];
+    	  
+    	  for (var i = 0; i < peopleGroups.length; i ++){
+    		  abbrs = rolePeopleGroupMap[ peopleGroups[i] ];
+    		  
+    		  for (var j = 0; abbrs && j < abbrs.length; j ++)
+    			  if (mapRoles[abbrs[j]])
+    				  result.push( mapRoles[abbrs[j]] )
+    	  }
+    	  
+    	  return result;
+      }
 
       /**
        * Move the starting date back 5 months

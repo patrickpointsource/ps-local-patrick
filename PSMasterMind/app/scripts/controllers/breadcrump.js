@@ -96,8 +96,11 @@ angular.module('Mastermind')
 	  						$scope.breadCrumpParts.push('My');
 		  				else {
 		  					RolesService.getRolesMapByResource().then(function(map) {
-		  						$scope.breadCrumpParts.push(map[$scope.params.filter].title);
-		  						$scope.updateBreadCrump();
+		  						
+		  						if (map[$scope.params.filter]) {
+		  							$scope.breadCrumpParts.push(map[$scope.params.filter].title);
+		  							$scope.updateBreadCrump();
+		  						}
 		  					});
 		  				}
 	  				}

@@ -34,7 +34,12 @@ angular.module('Mastermind.controllers.projects')
       else if (filter == 'deallost') {
           ProjectsService.getDealLostProjects(reloadProjects);
       }
-      else {
+      // in case of complex filter, e.g. status:deallost, active, active
+      else if (filter.indexOf(':') > -1 || filter.indexOf(',') > -1) {
+    	  var tmp = filter.split(':');
+    	  
+    	  ProjectsService.getProjectsByStatusFilter(tmp[tmp.length - 1], reloadProjects)
+      } else {
         //Default to all
         $scope.projectFilter = 'all';
 

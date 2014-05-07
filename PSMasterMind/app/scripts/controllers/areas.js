@@ -5,7 +5,7 @@
  * projects, people, and roles.
  */
 angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$rootScope','Resources', 'ProjectsService',
-  function ($scope, $state, $rootScope, Resources, ProjectsService) {
+  function ($scope, $state,  $rootScope, Resources, ProjectsService) {
 
 	// make these vars accessible in scope methods - especially "showHome"
 	var apQuery;
@@ -98,6 +98,9 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 
     $scope.activeArea = activeArea;
 
+    $scope.getActiveAreaFilter = function(){
+    	return $state.params ? $state.params.filter: "all"
+    }
     /*
      * Navigate to the dashboard.
      */
@@ -114,15 +117,21 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     /*
      * Navigate to the projects index.
      */
-    $scope.showProjects = function () {
-      $state.go('projects.index');
+    $scope.showProjects = function (filter) {
+    	if (!filter)
+    		$state.go('projects.index', {filter:'all'});
+    	else
+    		$state.go('projects.index', {filter:filter});
     };
 
     /*
      * Navigate to the projects index.
      */
-    $scope.showPeople = function () {
-      $state.go('people.index');
+    $scope.showPeople = function (filter) {
+    	if (!filter)
+    		$state.go('people.index', {filter:'all'});
+    	else
+    		$state.go('people.index', {filter:filter});
     };
     
     /*

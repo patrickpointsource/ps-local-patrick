@@ -48,6 +48,82 @@ angular.module('Mastermind.services.projects')
 
     Resource = ProjectsRestangular.all('projects');
 
+    var _this = this;
+    
+    var projectsQueryMap = function(key) {
+    	var today = _this.getToday();
+    	
+    	var map = {
+	    	"active": {$and: [
+	    	                    { $and: [
+	    	                             {startDate:{$lte:today}},
+	    	                             { $or:[
+	    	                                    {endDate:{$exists:false}},
+	    	                                    {endDate:{$gte:today}}
+	    	                                    ]},
+	    	                             ]},
+	    	                    { $and: [
+	    	                             {type:'paid'}, 
+	    	            	             {'committed': true}
+	    	            	            ]
+	    	                    },
+	    	                    ]
+	    	            },
+	          "backlog": { $and: [
+	                              {startDate:{$gt:today}},
+	                              { $and: [
+	                                       {type:'paid'}, 
+	                                       {'committed': true}
+	                                       ]
+	                              },
+	                              ]
+	       				},
+   			  "pipeline": { $and: [
+   	                             { $or:[{'endDate':{$exists:false}}, {endDate:{$gte:today}}] },
+   	                             { $and: [
+   	                                      {type:'paid'}, 
+   	                                      { $or:[
+   	                                           {'committed':{$exists:false}},	
+   	                                           {'committed':false}
+   	                                           ]
+   	                                      }
+   	                                      ]
+   	                             },
+   	                             ]
+   	      				},
+			  "investment":  {$and: [{$or:[
+			            	               {endDate:{$exists:false}},
+			            	               {endDate:{$gte:today}}
+			            	               ]}
+			                	  ,
+			                		{$or:[
+			                		     {type: 'invest'},
+			            	             {type: 'poc'}
+			                		  ]}]},
+    		  "complete": { $and: [
+    	                             {endDate:{$lt:today}},
+    	                             { $and: [
+    	                                      {'committed': true}
+    	                                     ]
+    	                             },
+    	                             ]
+    	      				},
+    	      "deallost": { $and: [
+                                   {endDate:{$lt:today}},
+                                   { $and: [
+                                            {'committed': false}
+                                           ]
+                                   },
+                                   ]
+            				}
+	    	          
+	    }
+    	
+    	if (key)
+    		return map[ key.toLowerCase() ]
+    	
+    	return map;
+    }
     /**
      * Service function for retrieving all projects.
      *
@@ -520,6 +596,20 @@ angular.module('Mastermind.services.projects')
         return deferred.promise;
     };
     
+    /**
+     * Query to get the list of active projects
+     */
+    this.getProjectsByStatusFilter = function (filter, onSuccess){
+      var apQuery = {$or: []};
+      var tmp = filter.split(',')
+      
+      for (var i = 0; i < tmp.length; i ++) 
+    	  apQuery["$or"].push(projectsQueryMap( tmp[i].trim()))
+      
+      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
+
+      return Resources.query('projects', apQuery, apFields, onSuccess);
+    }
     
     /**
      * Query to get the list of active projects
@@ -531,22 +621,7 @@ angular.module('Mastermind.services.projects')
        * AAD Feb 26,2014
        * Changing active project Query to use the committed flag and the project type.
        */
-      var apQuery = 
-            {$and: [
-                    { $and: [
-                             {startDate:{$lte:today}},
-                             { $or:[
-                                    {endDate:{$exists:false}},
-                                    {endDate:{$gte:today}}
-                                    ]},
-                             ]},
-                    { $and: [
-                             {type:'paid'}, 
-            	             {'committed': true}
-            	            ]
-                    },
-                    ]
-            };
+      var apQuery = projectsQueryMap("active");
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
@@ -572,15 +647,7 @@ angular.module('Mastermind.services.projects')
       /*
        * Changing backlog project Query to use the committed flag and the project type.
        */
-      var apQuery = { $and: [
-                             {startDate:{$gt:today}},
-                             { $and: [
-                                      {type:'paid'}, 
-                                      {'committed': true}
-                                      ]
-                             },
-                             ]
-      				};
+      var apQuery = projectsQueryMap("backlog");
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
       //console.log("Project-service.getBacklogProjects() apQuery=", apQuery);
 
@@ -607,19 +674,7 @@ angular.module('Mastermind.services.projects')
       /*
        * Pipeline query based on the committed flag and the project type.
        */      
-      var apQuery = { $and: [
-                             { $or:[{'endDate':{$exists:false}}, {endDate:{$gte:today}}] },
-                             { $and: [
-                                      {type:'paid'}, 
-                                      { $or:[
-                                           {'committed':{$exists:false}},	
-                                           {'committed':false}
-                                           ]
-                                      }
-                                      ]
-                             },
-                             ]
-      				};
+      var apQuery = projectsQueryMap("pipeline");
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
       //console.log("Project-service.getPipeline() apQuery=", apQuery);
 
@@ -687,16 +742,7 @@ angular.module('Mastermind.services.projects')
       /*
        * Changing active project Query to use the committed flag and the project type.
        */
-      var apQuery = 
-    	  {$and: [{$or:[
-    	               {endDate:{$exists:false}},
-    	               {endDate:{$gte:today}}
-    	               ]}
-        	  ,
-        		{$or:[
-        		     {type: 'invest'},
-    	             {type: 'poc'}
-        		  ]}]};
+      var apQuery = projectsQueryMap("investment");
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
@@ -722,14 +768,7 @@ angular.module('Mastermind.services.projects')
       /*
        * Changing active project Query to use the committed flag and the project type.
        */
-      var apQuery = { $and: [
-                             {endDate:{$lt:today}},
-                             { $and: [
-                                      {'committed': true}
-                                     ]
-                             },
-                             ]
-      				};
+      var apQuery = projectsQueryMap("complete");
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
@@ -749,14 +788,7 @@ angular.module('Mastermind.services.projects')
         }
         today = yyyy+'-'+mm+'-'+dd;
         
-        var apQuery = { $and: [
-                               {endDate:{$lt:today}},
-                               { $and: [
-                                        {'committed': false}
-                                       ]
-                               },
-                               ]
-        				};
+        var apQuery = projectsQueryMap("deallost");
 
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
 

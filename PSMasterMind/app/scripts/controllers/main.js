@@ -269,8 +269,11 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     /**
      * Navigate to view a list of active projects.
      */
-    $scope.showProjects = function () {
-      $state.go('projects.index');
+    $scope.showProjects = function (filter) {
+    	if (!filter)
+    		$state.go('projects.index');
+    	else
+    		$state.go('projects.index', {filter:filter});
     };
 
     /**
