@@ -122,7 +122,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		var result = false;
 		var val = subItem.value;
 		var f = $scope.getActiveAreaFilter();
-		var tmp = f.split(',');
+		var tmp = f ? f.split(','): [];
 		
 		for (var i = 0; i < tmp.length; i ++) {
 			if (tmp[i].trim().toLowerCase() == val) {
