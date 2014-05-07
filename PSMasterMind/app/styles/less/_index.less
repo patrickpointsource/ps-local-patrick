@@ -9,7 +9,9 @@
 #navbar1 {
   height: 78px;
   left:280px;
-  background-color: @mm-blue;
+	background-color: #fff; 
+	color: #333;
+	border-bottom-width: 0px;
 }
 
 @media (max-width: 991px) {
@@ -64,9 +66,16 @@
 
 .navbar .appTitle{
 	color: white;
+	font-size: 24px;
+}
+
+.navbar .text-bold {
 	font-weight: bold;
 }
 
+.navbar .text-light {
+	font-weight: 100;
+}
 .collapse.width {
 	height: auto;
 	-webkit-transition: width 0.35s ease;
@@ -187,8 +196,7 @@ header {
           }
           
           span {
-          	 color: white;
-          	 text-transform: none;
+          	font-weight: bold;
           	 position:relative;
           	 top: -12px;
           }
@@ -209,25 +217,41 @@ header {
 		
 		li {
 			padding-left: 36px;
-			text-transform: none;
+			color: @navbar-subnavbar-color;
+			font-size: 13px;
 			white-space: nowrap;
+			text-transform: none;
 			a {
 				span {
-					top: 0px;
+					top: 6px;
 				}
 			}
 		}
 		
 		li.subheader {
 			padding-left: 16px;
+			text-transform: uppercase;
+			font-size: 14px;
+			a {
+				color: @navbar-subnavbar-subheader-color !important;
+			}
+		}
+		
+		li.subitems-header.subheader{
+			text-transform: none;
+			a {
+				color: @navbar-subnavbar-subitemsheader-color !important;
+			}
 		}
 		
 		li.active-subitem {
+			color: white;
 			background-color: @navbar-subnavbar-active-bg;
 			
 			a {
 				background-color: @navbar-subnavbar-active-bg !important;
 			}
+			
 		}
 		
 		li.subitems-header {
@@ -476,8 +500,27 @@ main {
 }
 
 header .navbar .user-info-container {
-	background-color: @mm-lightblue;
+	background-color: @mm-smoothbluelight;
 	height: 100%;
+	font-size: 18px;
+	color: #4a4a4a;
+}
+
+header .navbar .navbar-search {
+	clear: both;
+	
+	button {
+		padding-top: 9px;
+		padding-bottom: 9px;
+	}
+}
+
+header .navbar .navbar-breadcrumb {
+	font-size: 32px;
+	font-weight: normal;
+	font-color: @gray-dark;
+	
+	padding-top: 18px;
 }
 
 .popover.bottom {

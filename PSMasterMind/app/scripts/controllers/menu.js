@@ -9,7 +9,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 	//$scope.projectManagementAccess = false;
 	
 	$scope.menuItems = [ {
-		text: "Home",
+		text: "Dashboard",
 		value: "home",
 		handler: "showHome",
 		iconCss: "fa-home",
@@ -49,7 +49,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			text: "Complete",
 			value: "complete",
 			handler: "handleSubitem"
-		}, {
+		}/*, {
 			text: "All Clients",
 			value: "allclients",
 			subheader: true,
@@ -62,7 +62,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			text: "AllState Dealer Service",
 			value: "allstate",
 			handler: "handleSubitem"
-		}]
+		}*/]
 		
 	}, {
 		text: "People",
@@ -84,7 +84,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			value: "businessdevelopment",
 			handler: "handleSubitem"
 		}, {
-			text: "Client Expierence Mgmt",
+			text: "Client Experience Mgmt",
 			value: "clientexpierencemgmt",
 			handler: "handleSubitem"
 		}, {
