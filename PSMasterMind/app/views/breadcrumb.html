@@ -1,1 +1,3 @@
-<span ng-controller="BreadcrumpCtrl" >{{breadcrumpText}}</span>
+<ol class="breadcrumb" ng-controller="BreadcrumpCtrl">
+    <li ng-repeat="part in breadCrumpParts" ng-class="{'active': $index == breadCrumpParts.length - 1}">{{part}}</li>
+</ol>

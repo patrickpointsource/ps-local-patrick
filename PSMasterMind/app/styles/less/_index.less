@@ -521,6 +521,21 @@ header .navbar .navbar-breadcrumb {
 	font-color: @gray-dark;
 	
 	padding-top: 18px;
+	
+	.breadcrumb {
+	    background-color: #fff;
+	    padding-top: 0px;
+	    > li {
+            + li:before {
+                content: ">";
+                color: @gray-dark;
+            }
+        }
+        
+        > .active {
+            color: @gray-less;
+        }
+	}
 }
 
 .popover.bottom {

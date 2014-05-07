@@ -16,7 +16,6 @@ angular.module('Mastermind')
 		  $scope.breadCrumpParts = _.filter($scope.breadCrumpParts, function(part) {
 			  return part;
 		  });
-		  $scope.breadcrumpText = $scope.breadCrumpParts.join(' > ');
 	  }
 	  
 	  $scope.getBreadCrump = function() {
