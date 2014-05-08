@@ -119,7 +119,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
      */
     $scope.showProjects = function (filter) {
     	if (!filter)
-    		$state.go('projects.index', {filter:'all'});
+    		$state.go('projects.index', {filter:'none'});
     	else
     		$state.go('projects.index', {filter:filter});
     };
@@ -129,7 +129,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
      */
     $scope.showPeople = function (filter) {
     	if (!filter)
-    		$state.go('people.index', {filter:'all'});
+    		$state.go('people.index', {filter:'none'});
     	else
     		$state.go('people.index', {filter:filter});
     };

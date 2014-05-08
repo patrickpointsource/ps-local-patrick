@@ -22,7 +22,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		isRender: "true",
 		subItems: [ {
 			text: "All Statuses",
-			value: "allstatuses",
+			value: "all",
 			subheader: true,
 			handler: "handleSubitem"
 		}, {
@@ -72,7 +72,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		isRender: "true",
 		subItems: [ {
 			text: "All People",
-			value: "allpeople",
+			value: "all",
 			subheader: true,
 			handler: "handleSubitem"
 		}, {
@@ -118,7 +118,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		isRender: $scope.adminAccess
 	}];
 	
-	$scope.isSubitemSelected = function(subItem) {
+	$scope.isSubitemSelected = function(subItem, item) {
 		var result = false;
 		var val = subItem.value;
 		var f = $scope.getActiveAreaFilter();
@@ -130,6 +130,17 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 				break;
 			}
 		}
+		
+		if (!result && !subItem.subheader) {
+			var start = _.indexOf(item.subItems, subItem)
+			
+			var i = start;
+			
+			for (; i >= 0 && !item.subItems[i].subheader; i --){}
+			
+			result = item.subItems[i].active;
+		}
+		
 		subItem.active = result;
 		
 		return result;
@@ -161,8 +172,11 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			for (var i = 0; i < menuItem.subItems.length; i ++)
 				if (menuItem.subItems[i].active)
 					selected.push(menuItem.subItems[i].value)
-					
-			this[menuItem.handler](selected.join(','))
+			
+			if (_.find(selected, function(v) {return v == "all"}))
+				this[menuItem.handler]("all")
+			else
+				this[menuItem.handler](selected.join(','))
 		}
 	}
 	

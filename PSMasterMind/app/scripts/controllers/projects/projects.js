@@ -39,6 +39,11 @@ angular.module('Mastermind.controllers.projects')
     	  var tmp = filter.split(':');
     	  
     	  ProjectsService.getProjectsByStatusFilter(tmp[tmp.length - 1], reloadProjects)
+      } else if (filter == 'none'){
+         // show empty list
+          reloadProjects({
+        	  data: []
+          });
       } else {
         //Default to all
         $scope.projectFilter = 'all';
