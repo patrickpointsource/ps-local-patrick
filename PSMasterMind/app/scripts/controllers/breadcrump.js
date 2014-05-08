@@ -9,8 +9,39 @@ angular.module('Mastermind')
 	  
 	  $scope.state = $state.current;
 	  $scope.params = $state.params;
+	  $scope.fromState = {};
+  	  $scope.fromParams = {};
 	  $scope.promisedPart = "";
 	  $scope.breadCrumpParts = [];
+	  
+	  var rolePeopleGroupMap = {
+			  'development': ['SE', 'SSE', 'SSA', 'SSEO', 'ST'],
+			  'businessdevelopment': ['SBA', 'BA', 'PM', 'SI', 'BIZDEV'],
+			  "administration": ['ADMIN'],
+			  "clientexpierencemgmt": ['MKT', 'DMDE', 'CxD'],
+			  "digitalexperience":["UXD","SUXD", 'DxM', 'DMDE'],
+			  "executivemgmt":["EXEC", 'DD', 'CxD', 'CD'],
+			  "sales":["SALES"]
+	  }
+	  
+	  var mapPeopleFilterToUI = function(filterPeople) {
+		  if(filterPeople == 'businessdevelopment') {
+				return 'Business Development';
+			}
+			if(filterPeople == 'clientexpierencemgmt') {
+				return 'Client Experience Mgmt';
+			}
+			if(filterPeople == 'digitalexperience') {
+				return 'Digital Experience';
+			}
+			if(filterPeople == 'executivemgmt') {
+				return 'Executive Mgmt';
+			}
+			
+			var bigLetter = filterPeople[0].toUpperCase();
+			var endPart = filterPeople.slice(1, filterPeople.length);
+			return bigLetter + endPart;
+	  }
 	  
 	  $scope.updateBreadCrump = function() {
 		  $scope.breadCrumpParts = _.filter($scope.breadCrumpParts, function(part) {
@@ -92,15 +123,14 @@ angular.module('Mastermind')
 	  		}
 	  		
 	  		if($scope.state.name == 'people.index') {
-	  			$scope.breadCrumpParts = [ 'All People' ];
+	  			$scope.breadCrumpParts = [ 'People' ];
 	  			if($scope.params.filter) {
+	  				if($scope.params.filter == 'none') {
+	  					$scope.breadCrumpParts = [ 'People' ];
+	  				} else {
 	  				if($scope.params.filter == 'all') {
-	  					$scope.breadCrumpParts = [ 'All People' ];
-	  				}
-	  				else {
-	  					if($scope.params.filter == 'my')
-	  						$scope.breadCrumpParts.push('My');
-		  				else {
+	  					$scope.breadCrumpParts = [ 'People', 'All' ];
+	  				} else {
 		  					/*RolesService.getRolesMapByResource().then(function(map) {
 		  						
 		  						if (map[$scope.params.filter]) {
@@ -114,55 +144,76 @@ angular.module('Mastermind')
 		  						var filterPeople = $scope.params.filter.split(',');
 		  						
 		  						for(var i = 0; i < filterPeople.length; i++) {
-		  							if(filterPeople[i] == 'businessdevelopment') {
-		  								filterPeople[i] = 'Business Development';
-		  								continue;
-		  							}
-		  							if(filterPeople[i] == 'clientexpierencemgmt') {
-		  								filterPeople[i] = 'Client Exprierence Mgmt';
-		  								continue;
-		  							}
-		  							if(filterPeople[i] == 'digitalexperience') {
-		  								filterPeople[i] = 'Digital Exprierence';
-		  								continue;
-		  							}
-		  							if(filterPeople[i] == 'executivemgmt') {
-		  								filterPeople[i] = 'Executive Mgmt';
-		  								continue;
-		  							}
-		  							
-		  							var bigLetter = filterPeople[i][0].toUpperCase();
-			  						var endPart = filterPeople[i].slice(1, filterPeople[i].length);
-			  						filterPeople[i] = bigLetter + endPart;
+		  							filterPeople[i] = mapPeopleFilterToUI(filterPeople[i]);
 		  						}
 		  						
 		  						$scope.breadCrumpParts.push(filterPeople.join(', '));
 		  					}
 		  					
 		  					$scope.updateBreadCrump();
-		  				}
+		  				
+	  				    }
 	  				}
-	  				
 	  			}
 	  		}
 	  		
 	  		if($scope.state.name == 'people.show') {
-	  			$scope.breadCrumpParts = [ 'All People', '', '' ];
+	  			var fromPeopleList = false;
+	  			$scope.breadCrumpParts = [ 'People', '' ];
+	  			if($scope.fromState.name == 'people.index') {
+	  				if($scope.fromParams.filter) {
+	  					var splittedPeopleFilter = $scope.fromParams.filter.split(',');
+	  					if(splittedPeopleFilter.length == 1) {
+	  						$scope.breadCrumpParts = ['People', mapPeopleFilterToUI(splittedPeopleFilter[0]), ''];
+	  						
+	  						fromPeopleList = true;
+	  					}
+	  					else {
+	  						$scope.breadCrumpParts = [ 'People', '' ];
+	  					}
+	  				} else {
+	  					$scope.breadCrumpParts = [ 'People', '' ];
+	  				}
+	  			}
 	  			
 	  			if($scope.params.profileId) {
 	  				People.get($scope.params.profileId).then(function(profile) {
 	  					if(profile.accounts.length > 0) {
-	  						$scope.breadCrumpParts[2] = profile.name;
+	  						if(fromPeopleList) {
+	  							RolesService.getRolesMapByResource().then(function(map) {
+			  						if(profile.primaryRole) {
+			  							var roleAbbr = map[profile.primaryRole.resource].abbreviation;
+			  							var mapRoles = rolePeopleGroupMap[$scope.fromParams.filter];
+			  							if(_.contains(mapRoles, roleAbbr)) {
+			  								if($scope.breadCrumpParts[1] != mapPeopleFilterToUI(splittedPeopleFilter[0])) {
+			  									$scope.breadCrumpParts = ['People', profile.name];
+			  								} else {
+			  									$scope.breadCrumpParts[2] = profile.name;
+			  								}
+			  							} else {
+			  								$scope.breadCrumpParts = ['People', profile.name];
+			  							}
+			  							
+				  						$scope.updateBreadCrump();
+			  						} else {
+			  							$scope.updateBreadCrump();
+			  						}
+			  					});
+	  							$scope.breadCrumpParts[2] = profile.name;
+	  						} else {
+	  							$scope.breadCrumpParts[1] = profile.name;
+	  						}
+	  						
 	  					}
-	  					RolesService.getRolesMapByResource().then(function(map) {
+	  					/*RolesService.getRolesMapByResource().then(function(map) {
 	  						if(profile.primaryRole) {
+	  							var role = map[profile.primaryRole.resource];
 	  							$scope.breadCrumpParts[1] = map[profile.primaryRole.resource].title;
 		  						$scope.updateBreadCrump();
 	  						} else {
 	  							$scope.updateBreadCrump();
 	  						}
-	  					});
-	  					
+	  					});*/
 	  				});
 	  			}
 	  		}
@@ -176,6 +227,8 @@ angular.module('Mastermind')
 	  	  	_.bind(function(event, toState, toParams, fromState, fromParams) {
 	  	  		$scope.state = toState;
 	  	  		$scope.params = toParams;
+	  	  		$scope.fromState = fromState;
+	  	  		$scope.fromParams = fromParams;
 	  	  		
 	  	  		$scope.getBreadCrump();
 	  	  }))
