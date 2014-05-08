@@ -101,6 +101,53 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     $scope.getActiveAreaFilter = function(){
     	return $state.params ? $state.params.filter: "all"
     }
+    
+    $scope.showHideMenu = function() {
+    	
+    	var isToBeShown = !$('#navbar-collapse-mobile').hasClass('in');
+    	//var menuWidth = $('#navbar-collapse-mobile').width();
+    	var menuWidth = 280;
+    	
+    	if (isToBeShown) {
+    		if(!$('#appContent').data('origWidth'))
+    			$('#appContent').data('origWidth', $('#appContent').width())
+    			
+    		$('#appContent').css('width', $('#appContent').data('origWidth'));
+    		$('#appContent').parent().css('overflow', 'hidden')
+    		
+	    	$('#appContent').animate({
+	    		marginLeft: menuWidth + 'px'
+	    	});
+    		
+    		$(".navbar.navbar-default.navbar-fixed-top").animate({
+	    		paddingLeft: (menuWidth - 20) + 'px'
+	    	});
+    	} else {
+    		$('#appContent').animate({
+	    		marginLeft: '0px'
+	    	}, function() {
+	    		$('#appContent').css('width', 'auto');
+	    		$('#appContent').parent().css('overflow', 'auto')
+	    	});
+    		
+    		$(".navbar.navbar-default.navbar-fixed-top").animate({
+	    		paddingLeft: '0px'
+	    	});
+    	}
+    	
+    	$('#navbar-collapse-mobile').collapse('toggle');
+    }
+    
+    $scope.showMainMenu = function(e) {
+    	e = e ? e: window.event;
+    	e.preventDefault();
+    	e.stopPropagation();
+    	
+    	var subnavbar = $(e.target).closest('.subnavbar');
+    	
+    	subnavbar.addClass('hidden');
+    	return false;
+    }
     /*
      * Navigate to the dashboard.
      */
@@ -119,7 +166,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
      */
     $scope.showProjects = function (filter) {
     	if (!filter)
-    		$state.go('projects.index', {filter:'none'});
+    		$state.go('projects.index', {filter:'all'});
     	else
     		$state.go('projects.index', {filter:filter});
     };
@@ -129,7 +176,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
      */
     $scope.showPeople = function (filter) {
     	if (!filter)
-    		$state.go('people.index', {filter:'none'});
+    		$state.go('people.index', {filter:'all'});
     	else
     		$state.go('people.index', {filter:filter});
     };

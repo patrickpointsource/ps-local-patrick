@@ -248,6 +248,25 @@ header {
 			}
 		}
 		
+		li.mainmenu-ref {
+			display: none;
+			padding-left: 8px;
+			padding-top: 5px;
+			font-size: 14px;
+			font-weight: normal;
+			a {
+				color: #8f8f8f;
+				
+				i {
+					margin-right: 0px;
+					color: #333333;
+				}
+				span {
+					top: 0px;
+				}
+			}
+		}
+		
 		li:last-child {
 			margin-bottom:0px !important;
 		}
@@ -276,11 +295,38 @@ header {
     	display: block;
     }
     
+    li.active ul.subnavbar.hidden {
+    	display: none;
+    }
+    
     li.active > a.hasSubmenu > span{
     	display: none;
     }
   }
 
+	#navbar-collapse-mobile {
+		margin:0px;
+		padding-right:0px;
+		top:0px;
+		
+		li.active > a.hasSubmenu > span{
+	    	display: inline;
+	    }
+		    
+		ul.subnavbar {
+			margin: 0px;
+			left:0px;
+			right: auto;
+			width: 100%;
+			
+			li.mainmenu-ref {
+				display: list-item;
+			}
+			
+			
+		}
+	}
+	
   #profile-photo {
     height: 40px;
     width: 40px;

@@ -6,6 +6,9 @@
 			
 		</a>
 		<ul ng-if="menuItem.subItems.length > 0" class="nav navbar-nav subnavbar">
+			<li class="mainmenu-ref" ng-click="showMainMenu(window.event)">
+				<a class=""> <i class="fa fa-2x fa-fw fa-arrow-left"></i> <span>main menu</span></a>
+			</li>
 			<li class="subitems-header subheader">
 				<a class="close-dropdown"> <span>{{menuItem.text}}</span></a>
 			</li>

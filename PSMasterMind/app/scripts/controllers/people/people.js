@@ -270,13 +270,12 @@ angular.module('Mastermind.controllers.people')
     	  var result = [];
     	  var mapRoles = {};
     	  var rolePeopleGroupMap = {
-    			  'development': ['SE', 'SSE', 'SSA', 'SSEO', 'ST'],
-    			  'businessdevelopment': ['SBA', 'BA', 'PM', 'SI', 'BIZDEV'],
-    			  "administration": ['ADMIN'],
-    			  "clientexpierencemgmt": ['MKT', 'DMDE', 'CxD'],
-    			  "digitalexperience":["UXD","SUXD", 'DxM', 'DMDE'],
-    			  "executivemgmt":["EXEC", 'DD', 'CxD', 'CD'],
-    			  "sales":["SALES"]
+    			 "development": ['SE', 'SSE', 'SSA', 'SSEO', 'ST','SI'],
+    	         "administration": ['ADMIN'],
+    	         "clientexpierencemgmt": ['SBA', 'BA', 'PM', 'CxD'],
+    	         "digitalexperience":["UXD","SUXD", 'DxM', 'DMDE', 'MKT',],
+    	         "executivemgmt":["EXEC", 'DD', 'CxD', 'CD', 'DMDE'],
+    	         "sales":["SALES"]
     	  }
     	  var map = _.map($scope.roleGroups, function(val, key){
     		  mapRoles[val.abbreviation] = key;

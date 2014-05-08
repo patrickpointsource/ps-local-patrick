@@ -80,10 +80,6 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			value: "administration",
 			handler: "handleSubitem"
 		}, {
-			text: "Business Development",
-			value: "businessdevelopment",
-			handler: "handleSubitem"
-		}, {
 			text: "Client Experience Mgmt",
 			value: "clientexpierencemgmt",
 			handler: "handleSubitem"
@@ -130,7 +126,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 				break;
 			}
 		}
-		
+		/*
 		if (!result && !subItem.subheader) {
 			var start = _.indexOf(item.subItems, subItem)
 			
@@ -140,16 +136,22 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			
 			result = item.subItems[i].active;
 		}
-		
+		*/
 		subItem.active = result;
 		
 		return result;
 	}
 	
 	$scope.handleClick = function(handler, menuItem, subItem, subIndex) {
-		if (this[handler])
+		var e = window.event;
+		
+		if (this[handler]) {
+			var li = $(e.target).closest('li');
+			
+			li.find('ul.subnavbar').removeClass('hidden');
+			
 			this[handler]();
-		else if (handler == "handleSubitem" && subItem){
+		} else if (handler == "handleSubitem" && subItem){
 			
 			
 			if (!subItem.subheader){
@@ -159,11 +161,11 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 						break;
 					}
 						
-			} else {
+			} /*else {
 				for (var i = subIndex + 1; menuItem.subItems[i] && !menuItem.subItems[i].subheader; i ++)
 					menuItem.subItems[i].active =  !subItem.active;
 						
-			}
+			}*/
 			
 			var selected = [];
 
@@ -176,7 +178,15 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			if (_.find(selected, function(v) {return v == "all"}))
 				this[menuItem.handler]("all")
 			else
-				this[menuItem.handler](selected.join(','))
+				this[menuItem.handler](selected.join(','));
+			
+			
+		}
+		
+		
+		
+		if (e) {
+			e.stopPropagation()
 		}
 	}
 	
