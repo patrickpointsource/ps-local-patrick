@@ -16,6 +16,12 @@ angular.module('Mastermind')
 		  $scope.breadCrumpParts = _.filter($scope.breadCrumpParts, function(part) {
 			  return part;
 		  });
+		  
+		  for(var i = 0; i < $scope.breadCrumpParts.length; i++) {
+			  if($scope.breadCrumpParts[i].length > 70) {
+				  $scope.breadCrumpParts[i] = $scope.breadCrumpParts[i].substring(0, 67) + '...';
+			  }
+		  }
 	  }
 	  
 	  $scope.getBreadCrump = function() {
@@ -95,13 +101,45 @@ angular.module('Mastermind')
 	  					if($scope.params.filter == 'my')
 	  						$scope.breadCrumpParts.push('My');
 		  				else {
-		  					RolesService.getRolesMapByResource().then(function(map) {
+		  					/*RolesService.getRolesMapByResource().then(function(map) {
 		  						
 		  						if (map[$scope.params.filter]) {
 		  							$scope.breadCrumpParts.push(map[$scope.params.filter].title);
 		  							$scope.updateBreadCrump();
 		  						}
-		  					});
+		  					});*/
+		  					if($scope.params.filter.indexOf("all") == 0) {
+		  						$scope.breadCrumpParts.push("All");
+		  					} else {
+		  						var filterPeople = $scope.params.filter.split(',');
+		  						
+		  						for(var i = 0; i < filterPeople.length; i++) {
+		  							if(filterPeople[i] == 'businessdevelopment') {
+		  								filterPeople[i] = 'Business Development';
+		  								continue;
+		  							}
+		  							if(filterPeople[i] == 'clientexpierencemgmt') {
+		  								filterPeople[i] = 'Client Exprierence Mgmt';
+		  								continue;
+		  							}
+		  							if(filterPeople[i] == 'digitalexperience') {
+		  								filterPeople[i] = 'Digital Exprierence';
+		  								continue;
+		  							}
+		  							if(filterPeople[i] == 'executivemgmt') {
+		  								filterPeople[i] = 'Executive Mgmt';
+		  								continue;
+		  							}
+		  							
+		  							var bigLetter = filterPeople[i][0].toUpperCase();
+			  						var endPart = filterPeople[i].slice(1, filterPeople[i].length);
+			  						filterPeople[i] = bigLetter + endPart;
+		  						}
+		  						
+		  						$scope.breadCrumpParts.push(filterPeople.join(', '));
+		  					}
+		  					
+		  					$scope.updateBreadCrump();
 		  				}
 	  				}
 	  				
