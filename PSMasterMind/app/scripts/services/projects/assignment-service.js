@@ -216,6 +216,7 @@ angular.module('Mastermind.services.projects')
         	var projectAssignments = result.data;
         	var myProjects = [];
         	var assignments = [];
+        	var HOURS_PER_WEEK = 45;
         	
         	//Loop through all the project level assignment documents that this person has an assignment in
         	for(var i = 0; i < projectAssignments.length;i++){
@@ -237,6 +238,7 @@ angular.module('Mastermind.services.projects')
         			if(personURI == assignment.person.resource && (!endDate || endDate > startDateQuery)){
         				//Associate the project directly with the an assignment
         				assignment.project = projectAssignment.project;
+        				assignment.percentage = Math.round(100*assignment.hoursPerWeek/HOURS_PER_WEEK);
         				assignments.push(assignment);
         			}
         		}

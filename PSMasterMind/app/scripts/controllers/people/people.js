@@ -173,6 +173,8 @@ angular.module('Mastermind.controllers.people')
        * build table view
        */
       $scope.buildTableView = function() {
+    	  var HOURS_PER_WEEK = 45;
+
     	  //Actual Table View Data
     	  if($scope.showTableView){
 	    	  People.getPeopleCurrentAssignments().then(function(activeAssignments){
@@ -183,9 +185,9 @@ angular.module('Mastermind.controllers.people')
 	    			  var assignments = activeAssignments[person];
 	    			  for(var i = 0; i < assignments.length; i++){
 	    				  var assignment = assignments[i];
-	    				  cnt += assignment.percentage;
+	    				  cnt += assignment.hoursPerWeek;
 	    			  }
-	    			  activePercentages[person] = cnt;
+	    			  activePercentages[person] = Math.round(100*cnt/HOURS_PER_WEEK);
 	    		  }
 	    		  
 	    		  $scope.activePercentages = activePercentages;
