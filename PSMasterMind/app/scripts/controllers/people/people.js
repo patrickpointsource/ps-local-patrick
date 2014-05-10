@@ -357,4 +357,29 @@ angular.module('Mastermind.controllers.people')
         $scope.buildTableView();
       });
 
+      /**
+       * Custom angular filter for person's searchable attributes
+       */
+      $scope.filterPerson = function(filter) {
+        return function(person) {
+          if (filter && person) {
+            // Construct search string -- separate person's
+            // searchable attributes by whitespace
+            var searchStr = "";
+            var addToSearchStr = function(searchStr, str) {
+              return searchStr += " " + str.toLowerCase().replace(/ /g,'');
+            }
+            if (person.name) {
+              searchStr = addToSearchStr(searchStr, person.name);
+            }
+            if (person.primaryRole && person.primaryRole.abbreviation) {
+              searchStr = addToSearchStr(searchStr, person.primaryRole.abbreviation);
+            }
+            // Prepare filter for search string
+            filter = filter.toLowerCase().replace(/ /g,'');
+            // Search in search string
+            return searchStr.indexOf(filter) > 0;
+          } else return person;
+        };
+      };
     }]);

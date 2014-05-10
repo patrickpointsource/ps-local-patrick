@@ -12,7 +12,7 @@
     </div>
   </div>
  <div class="graph people-graph">
-		<div class="peopleList" style="margin-bottom:5px" ng-repeat="person in people | filter:filterText | orderBy:'givenName'"
+		<div class="peopleList" style="margin-bottom:5px" ng-repeat="person in people | filter:filterPerson(filterText) | orderBy:'givenName'"
             ng-hide="(peopleFilter.indexOf('role') !== -1 && peopleFilter !== person.primaryRole.resource)">
             <div class="row" ng-if="qvPeopleAssignments[person.resource]">
 				<div class="title col-xs-2 col-sm-1 col-md-1 col-lg-1">
