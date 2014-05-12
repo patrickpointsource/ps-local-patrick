@@ -89,8 +89,8 @@ angular.module('Mastermind')
 		  					if(projectFilters[i] == 'investment') {
 		  						filtersText.push("Investment");
 		  					}
-		  					if(projectFilters[i] == 'completed') {
-		  						filtersText.push("Completed");
+		  					if(projectFilters[i] == 'complete') {
+		  						filtersText.push("Complete");
 		  					}
 		  					if(projectFilters[i] == 'deallost') {
 		  						filtersText.push("Deal Lost");
