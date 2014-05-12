@@ -15,11 +15,6 @@
 	           </label>
 	    </div>
 	</div>
-	
-<!-- 
-</div>
-<div class="row">
-   -->
  
   <div class="col-xs-8 col-sm-5 col-md-4" style="padding-top: 10px;" ng-if="organizedHours && hoursViewType != 'customDates' && hoursViewType != 'weekly'">
   	<form class="form-horizontal" >
@@ -43,24 +38,24 @@
 	
   </div>
   
-  <div class="col-xs-8 col-sm-5 col-md-4" style="padding-top: 10px;padding-left: 0px; padding-right: 0px;" ng-if="organizedHours && hoursViewType == 'customDates'" >
+  <div class="col-xs-10 col-sm-5 col-md-4 custom-dates-group" ng-if="organizedHours && hoursViewType == 'customDates'" >
    <form class="form-horizontal" >
-		<label for="period" class="hidden-xs control-label col-xs-3 col-sm-4 col-md-3 pull-left" style="white-space: nowrap;">
+		<label for="period" class="hidden-xs control-label col-xs-3 col-sm-4 col-md-3 pull-left">
 			<span class="pull-left">Select period:</span>
 		</label>
-		<div class="col-xs-3 col-md-3 col-sm-3" style="padding-left: 0px; padding-right: 0px; min-width: 90px; margin-right: 7px;">
-			<input id="fromDate" name="fromDate" style="padding-left: 2px; padding-right: 2px; "
+		<div class="col-xs-3 col-md-3 col-sm-3">
+			<input id="fromDate" name="fromDate" 
 				class=" form-control datepicker" type="text" placeholder="Start Date"
 				ng-model="selectedHoursStartDate" data-date-format="yyyy-mm-dd"
 				data-provide="datepicker">
 		</div>
-		<div class="col-xs-3 col-md-3 col-sm-3" style="padding-left: 0px; padding-right: 0px; min-width: 90px; margin-right: 7px;">
-			<input id="toDate" name="toDate" style="padding-left: 2px; padding-right: 2px; "
+		<div class="col-xs-3 col-md-3 col-sm-3">
+			<input id="toDate" name="toDate" 
 				class="form-control datepicker" type="text" placeholder="End Date"
 				ng-model="selectedHoursEndDate" data-date-format="yyyy-mm-dd"
 				data-provide="datepicker">
 		</div>
-		<div class="col-xs-2 col-md-2 col-sm-2" style="width: 30px; padding-right: 0px; padding-left: 0px; margin-top: 2px;">
+		<div class="col-xs-2 col-md-2 col-sm-2">
 			<a ng-disabled="!selectedHoursEndDate || !selectedHoursStartDate"  class="btn btn-default" ng-click="applyCustomHoursPeriod()">
 		      <div class="hidden-xs"><i class="fa fa-search"></i></div>
 		      <div class="visible-xs"><i class="fa fa-search"></i></div>
