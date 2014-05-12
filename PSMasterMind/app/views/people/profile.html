@@ -1,32 +1,18 @@
 <div>
-  <div class="row">
-    <div class="col-xs-8"><h2>{{profile.name}}</h2></div>
-    <div class="actions col-xs-4 pageActions">
-      <button ng-hide="editMode" class="btn btn-default" ng-click="edit()">
-        <span class="hidden-xs"><i class="fa fa-pencil-square-o"></i> Edit</span>
-        <span class="visible-xs"><i class="fa fa-pencil-square-o"></i></span>
-      </button>
-      <button ng-show="editMode" class="btn btn-default" ng-click="cancel()">
-        <span class="hidden-xs"><i class="fa fa-chevron-left"></i> Cancel</span>
-        <span class="visible-xs"><i class="fa fa-chevron-left"></i></span>
-      </button>
-      <button ng-show="editMode" class="btn btn-default" ng-click="save()">
-        <span class="hidden-xs"><i class="fa fa-floppy-o"></i> Save</span>
-        <span class="visible-xs"><i class="fa fa-floppy-o"></i></span>
-      </button>
-    </div>
-  </div>
-  <div class="row">
+  <div class="row top-row">
     <div class="col-xs-12">
-      <div class="well">
-
-        <div class="row">
-          <div class="col-xs-12 col-sm-9">
-          	<img class="media-object fullProfileImage pull-left" style="margin-bottom:10px" ng-src="{{profile.thumbnail}}" />
-            <div>
+      <div class="row padded-row">
+        <div class="col-xs-3">
+          <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}" />
+        </div>
+        <div class="well col-xs-9">
+          <div class="row">
+            <div class="col-xs-5">
+              <label class="personDetailLabel">{{profile.name}}</label>
+              <br/>
               <span><a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
               <div ng-show="editMode" style="margin-top: 7%;">
-              	<br/>
+                <br/>
                 <label class="personDetailLabel" style="width:100%">Primary Role:</label> <select
                   class="form-control"
                   ng-model="profile.primaryRole.resource"
@@ -41,7 +27,8 @@
                 <input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone"/>
               </div>
               <div ng-hide="editMode">
-                <label class="personDetailLabel">Phone:</label> <a ng-if="profile.phone" ng-href="tel:{{profile.phone | tel}}">{{profile.phone | tel}}</a>
+                <label class="personDetailLabel">Phone:</label>
+                <a ng-if="profile.phone" ng-href="tel:{{profile.phone | tel}}">{{profile.phone | tel}}</a>
               </div>
               <div ng-show="editMode">
                 <label for="profileSkype" class="personDetailLabel">Skype:</label>
@@ -60,366 +47,398 @@
                 <span>{{profile.jazzHubId}}</span>
               </div>
             </div>
+            <div class="col-xs-3">
+              <div ng-hide="editMode">
+                <label class="personDetailLabel">Groups:</label> <span
+                  ng-show="!profile.groups"">None</span>
+                <ul class="personDetailList" ng-show="profile.groups"">
+                  <li ng-repeat="group in profile.groups">{{group}}</li>
+                </ul>
+              </div>
+              <div ng-if="adminAccess" ng-show="editMode">
+                <label class="personDetailLabel">Groups:</label>
+                <ul class="personDetailList">
+                  <li><input type="checkbox" ng-model="isExec"
+                    ng-click="handleGroupChange($event, 'Executives')" /><span
+                    class="checkboxText">Executives</span></li>
+                  <li><input type="checkbox" ng-model="isManagement"
+                    ng-click="handleGroupChange($event, 'Management')" /><span
+                    class="checkboxText">Management</span></li>
+                  <li><input type="checkbox" ng-model="isProjectManagement"
+                    ng-click="handleGroupChange($event, 'Project Management')" /><span
+                    class="checkboxText">Project Management</span></li>
+                  <li><input type="checkbox" ng-model="isSales"
+                    ng-click="handleGroupChange($event, 'Sales')" /><span
+                    class="checkboxText">Sales</span></li>
+                </ul>
+              </div>
+              <label class="personDetailLabel">Accounts:</label>
+              <span ng-show="!gplusProfile.url">None</span>
+              <ul class="personDetailList">
+                <li ng-show="gplusProfile.url"><a
+                  ng-href="{{gplusProfile.url}}">Google+</a></li>
+              </ul>
+            </div>
+            <div class="actions col-xs-4 pageActions" style="margin-top:0;">
+              <button ng-hide="editMode" class="btn btn-default" ng-click="edit()">
+                <span class="hidden-xs"><i class="fa fa-pencil-square-o"></i> Edit</span>
+                <span class="visible-xs"><i class="fa fa-pencil-square-o"></i></span>
+              </button>
+              <button ng-show="editMode" class="btn btn-default" ng-click="cancel()">
+                <span class="hidden-xs"><i class="fa fa-chevron-left"></i> Cancel</span>
+                <span class="visible-xs"><i class="fa fa-chevron-left"></i></span>
+              </button>
+              <button ng-show="editMode" class="btn btn-default" ng-click="save()">
+                <span class="hidden-xs"><i class="fa fa-floppy-o"></i> Save</span>
+                <span class="visible-xs"><i class="fa fa-floppy-o"></i></span>
+              </button>
+            </div>
           </div>
-          <div class="col-xs-12 col-sm-3">
-	            <div ng-hide="editMode">
-	              <label class="personDetailLabel">Groups:</label> <span
-	                ng-show="!profile.groups"">None</span>
-	              <ul class="personDetailList" ng-show="profile.groups"">
-	                <li ng-repeat="group in profile.groups">{{group}}</li>
-	              </ul>
-	            </div>
-	            <div ng-if="adminAccess" ng-show="editMode">
-	              <label class="personDetailLabel">Groups:</label>
-	              <ul class="personDetailList">
-	                <li><input type="checkbox" ng-model="isExec"
-	                  ng-click="handleGroupChange($event, 'Executives')" /><span
-	                  class="checkboxText">Executives</span></li>
-	                <li><input type="checkbox" ng-model="isManagement"
-	                  ng-click="handleGroupChange($event, 'Management')" /><span
-	                  class="checkboxText">Management</span></li>
-	                <li><input type="checkbox" ng-model="isProjectManagement"
-	                  ng-click="handleGroupChange($event, 'Project Management')" /><span
-	                  class="checkboxText">Project Management</span></li>
-	                <li><input type="checkbox" ng-model="isSales"
-	                  ng-click="handleGroupChange($event, 'Sales')" /><span
-	                  class="checkboxText">Sales</span></li>
-	              </ul>
-	            </div>
-	            <label class="personDetailLabel">Accounts:</label> <span
-	              ng-show="!gplusProfile.url">None</span>
-	            <ul class="personDetailList">
-	              <li ng-show="gplusProfile.url"><a
-	                ng-href="{{gplusProfile.url}}">Google+</a></li>
-	            </ul>
-	          </div>
         </div>
-
       </div>
     </div>
   </div>
-  <div ng-hide="editMode">
-    <div class="row">
-      <div class="col-xs-12">
-        <h3>Current Assignments</h3>
+  <div class="row padded-row">
+    <div ng-hide="editMode" class="well col-xs-12">
+      <div class="row">
+        <div class="col-xs-12">
+          <h3>My Projects</h3>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <span ng-hide="hasAssignments">There are no current assignments.</span>
-        <table class="table">
-          <tr ng-repeat="assignment in assignments" ng-show="hasAssignments">
-            <td data-title="'Project'"><a href="#{{assignment.project.resource}}"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.project.name}}: {{assignment.project.name}}</a>
-              <!-- <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
-                <span  class="visible-xs">{{getRoleName(role.type.resource)}}</spam>
-              </div> -->
-            </td>
-            <!-- <td data-title="'Role'" class="hidden-xs" header-class="hidden-xs">
-              {{getRoleName(project.user.type.resource)}}
-            </td> -->
-            <td data-title="'Percentage'">
-              	{{assignment.percentage}}%
-            </td>
-            <td data-title="'Start Date'" sortable="'startDate'" class="hidden-xs" header-class="hidden-xs">
-              <small>{{assignment.startDate | date:'longDate'}}</small>
-            </td>
-            <td data-title="'End Date'" sortable="'endDate'" class="hidden-xs" header-class="hidden-xs">
-              <span ng-show="assignment.endDate">
-                <small>{{assignment.endDate | date:'longDate'}}</small>
-              </span>
-              <span ng-hide="assignment.endDate">N/A</span>
-            </td>
-            <td data-title="'Dates'" sortable="'startDate'" class="visible-xs" header-class="visible-xs">
+      <div class="row">
+        <div class="col-xs-12">
+          <span ng-hide="hasAssignments">There are no current assignments.</span>
+          <table class="table">
+            <tr ng-repeat="assignment in assignments" ng-show="hasAssignments">
+              <td data-title="'Project'"><a href="#{{assignment.project.resource}}"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.project.name}}: {{assignment.project.name}}</a>
+           <!-- <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
+                  <span  class="visible-xs">{{getRoleName(role.type.resource)}}</spam>
+                </div> -->
+              </td>
+              <!-- <td data-title="'Role'" class="hidden-xs" header-class="hidden-xs">
+                {{getRoleName(project.user.type.resource)}}
+              </td> -->
+              <td data-title="'Percentage'">
+                {{assignment.percentage}}%
+              </td>
+              <td data-title="'Start Date'" sortable="'startDate'" class="hidden-xs" header-class="hidden-xs">
+                <small>{{assignment.startDate | date:'longDate'}}</small>
+              </td>
+              <td data-title="'End Date'" sortable="'endDate'" class="hidden-xs" header-class="hidden-xs">
+                <span ng-show="assignment.endDate">
+                  <small>{{assignment.endDate | date:'longDate'}}</small>
+                </span>
+                <span ng-hide="assignment.endDate">N/A</span>
+              </td>
+              <td data-title="'Dates'" sortable="'startDate'" class="visible-xs" header-class="visible-xs">
                 <small>{{assignment.startDate | date:'shortDate'}}</small> <span
                   ng-show="assignment.endDate">-
                 <small>{{assignment.endDate | date:'shortDate'}}</small></span> <span
                   ng-hide="assignment.endDate">- N/A</span>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-3 col-md-1 col-lg-1"><h3>Hours</h3></div>
-    <div class="col-xs-5 col-md-2 col-lg-2" style="padding-top: 15px;">
-    </div>
-    <div class="actions col-xs-4 col-md-9 col-lg-9 pageActions">
-      <button type="button" ng-show="canAddHours"
-        class="btn btn-default pull-right" data-toggle="collapse" data-target="#newHoursDialog">
-          <i class="fa fa-plus-square"></i> <span>Add</span>
-      </button>
-    </div>
-  </div>
-  <div ng-form="newHoursForm" id="newHoursDialog" class="well collapse out">
-    <div class="row">
-      <div class="col-xs-12">
-        <h3 class="no-margin-top">Add Hours</h3>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12 col-sm-3">
-        <div class="form-group">
-          <label class="required-label control-label" for="project">Project:</label>
-          
-          <select name="project" id="project" class="col-xs-12 form-control" ng-required="true" ng-change="handleHoursTypeChanged('project')" 
-              ng-model="newHoursRecord.project.resource" ng-options="p.resource as p.title for p in projects">
-          </select>		               	
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-3">
-        <div class="form-group">
-          <label class="required-label control-label" for="project">Task:</label>
-          
-          <select name="task" id="task" ng-change="handleHoursTypeChanged('task')" 
-                 class="col-xs-12 form-control" 
-                 ng-model="newHoursRecord.task.resource" ng-required="true"
-                 ng-options="t.resource as t.name for t in hoursTasks">
-         	</select>              	
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-3">
-        <div class="form-group">
-          <label class="required-label control-label" for="date">Date:</label>
-          <input id="date" name="date" class="form-control datepicker" type="text"
-              ng-model="newHoursRecord.date"
-              todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-3">
-        <div class="form-group">
-          <label class="required-label  control-label" for="hours">Hours:</label>
-          <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours"
-              ng-required="true"/>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <div class="form-group">
-          <label class="required-label control-label" for="hours">Description:</label>
-          <textarea id="hours" name="hours" rows="3" class="form-control" ng-model="newHoursRecord.description"
-              ng-required="true"></textarea>
+    <div class="well col-xs-12">
+      <div class="row">
+        <div class="col-xs-3 col-md-1 col-lg-1"><h3>Hours</h3></div>
+        <div class="col-xs-5 col-md-2 col-lg-2" style="padding-top: 15px;">
+        </div>
+        <div class="actions col-xs-4 col-md-9 col-lg-9 pageActions">
+          <button type="button" ng-show="canAddHours"
+            class="btn btn-default pull-right" data-toggle="collapse" data-target="#newHoursDialog">
+            <i class="fa fa-plus-square"></i> <span>Add</span>
+          </button>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12 text-right">
-        <input type="submit" class="btn" value="Submit" ng-click="addHours()">
+      <div ng-form="newHoursForm" id="newHoursDialog" class="collapse out">
+        <div class="row">
+          <div class="col-xs-12">
+            <h3 class="no-margin-top">Add Hours</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+              <label class="required-label control-label" for="project">Project:</label>
+              <select name="project" id="project" class="col-xs-12 form-control" ng-required="true" ng-change="handleHoursTypeChanged('project')" 
+                ng-model="newHoursRecord.project.resource" ng-options="p.resource as p.title for p in projects">
+              </select>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+              <label class="required-label control-label" for="project">Task:</label>
+              <select name="task" id="task" ng-change="handleHoursTypeChanged('task')" 
+                class="col-xs-12 form-control" 
+                ng-model="newHoursRecord.task.resource" ng-required="true"
+                ng-options="t.resource as t.name for t in hoursTasks">
+              </select>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+              <label class="required-label control-label" for="date">Date:</label>
+              <input id="date" name="date" class="form-control datepicker" type="text"
+                ng-model="newHoursRecord.date"
+                todayBtn="true" data-provide="datepicker" data-date-format="yyyy-mm-dd" ng-required="true"/>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-3">
+            <div class="form-group">
+              <label class="required-label    control-label" for="hours">Hours:</label>
+              <input id="hours" name="hours" class="form-control" type="number" ng-model="newHoursRecord.hours"
+                ng-required="true"/>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="form-group">
+              <label class="required-label control-label" for="hours">Description:</label>
+              <textarea id="hours" name="hours" rows="3" class="form-control" ng-model="newHoursRecord.description"
+                ng-required="true"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 text-right">
+            <input type="submit" class="btn" value="Submit" ng-click="addHours()">
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12">
-          <div class="btn-group" data-toggle="buttons" style="margin-top: 15px;">
-               <label class="btn btn-default active" ng-click="setHoursView('monthly')">
-                   <input type="radio" name="options"> Monthly
-               </label>
-               <label class="btn btn-default" ng-click="setHoursView('weekly')">
-                   <input type="radio" name="options"> Weekly
-               </label>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="btn-group center-block" data-toggle="buttons"
+               style="margin-top: 20px;">
+            <label class="btn btn-default" ng-click="setHoursView('weekly')">
+              <input type="radio" name="options"> Week View
+            </label>
+            <label class="btn btn-default active" ng-click="setHoursView('monthly')">
+              <input type="radio" name="options"> Month View
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-hide="hasHours">
+          <div class="col-xs-12">
+            <div class="alert alert-warning" style="margin-top: 20px;">There are no logged hours.</div>
           </div>
       </div>
-  </div>
-  <div class="row" ng-hide="hasHours">
-      <div class="col-xs-12">
-        <div class="alert alert-warning" style="margin-top: 15px;">There are no logged hours.</div>
-      </div>
-  </div>
-  <div class="row" ng-if="hoursViewType == 'monthly'">
-    <div class="row">
-      <div class="col-xs-5 col-md-2 col-lg-2" style="margin: 15px;">
-        <select name="hoursPeriod" class="form-control" ng-if="hasHours"
-                ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
-                ng-required="true"
-                ng-options="f.value as f.name for f in hoursPeriods">
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <div ng-repeat="projectHour in projectHours" class="well">
-            <div class="row" ng-click="projectHour.collapsed=!projectHour.collapsed" >
-                <div class="col-xs-12" style="margin-bottom: 10px;">
+      <div class="row" ng-if="hoursViewType == 'monthly'">
+        <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-5 col-md-2 col-lg-2" style="margin-top: 20px; margin-bottom: 20px">
+              <select name="hoursPeriod" class="form-control" ng-if="hasHours"
+                      ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
+                      ng-required="true"
+                      ng-options="f.value as f.name for f in hoursPeriods">
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div ng-repeat="projectHour in projectHours">
+                <div class="row" ng-click="projectHour.collapsed=!projectHour.collapsed" >
+                  <div class="col-xs-12" style="margin-bottom: 10px;">
                     <span style="margin-right: 12px;" ng-if="!projectHour.collapsed" ><i class="fa fa-caret-right" ng-show="projectHour"></i></span>
                     <span style="margin-right: 12px;" ng-if="projectHour.collapsed" ><i class="fa fa-caret-down" ng-show="projectHour"></i></span>
                     <i class="{{projectHour.icon}}"></i>
                     <a href="#/{{projectHour.project.about}}">{{projectHour.project ? projectHour.project.customerName + ": " + projectHour.project.name : "Unknown"}}</a>
+                  </div>
                 </div>
-            </div>
-            <div ng-if="isEmptyForSelectedMonth(projectHour)" ng-show="projectHour.collapsed" class="alert alert-warning" style="margin-top: 10px; margin-bottom: 0px;">
-                No hours logged found for selected month.
-            </div>
-           <div class="col-xs-12" ng-show="projectHour.collapsed" ng-if="!isEmptyForSelectedMonth(projectHour)" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: auto;">
-                <div class="col-xs-4 col-md-2 col-lg-2">
+                <div ng-if="isEmptyForSelectedMonth(projectHour)" ng-show="projectHour.collapsed" class="alert alert-warning" style="margin-top: 10px; margin-bottom: 20px;">
+                  No hours logged found for selected month.
+                </div>
+                <div class="col-xs-12" ng-show="projectHour.collapsed" ng-if="!isEmptyForSelectedMonth(projectHour)" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: auto;">
+                  <div class="col-xs-4 col-md-2 col-lg-2">
                     Date
                     <div class="visible-xs">
                       Description
                     </div>
-                </div>
-               
-                <div class="col-xs-4 col-md-2 col-lg-2">
+                  </div>
+                  <div class="col-xs-4 col-md-2 col-lg-2">
                     Hours
-                </div>
-               
-                <div class="col-md-3 col-lg-3 hidden-xs">
+                  </div>
+                  <div class="col-md-3 col-lg-3 hidden-xs">
                     Description
+                  </div>
                 </div>
-           </div>
-           <div ng-repeat="hoursRecord in projectHour.hours" ng-show="projectHour.collapsed" ng-if="hoursRecord.show">
-                 <div class="cos-xs-12">
-                   <div class="row" style="border-bottom: 1px solid #dddddd; margin: 0px;">
-                    <div class="col-xs-4 col-md-2 col-lg-2">
-                        <span class="hidden-xs">{{hoursRecord.hour.date | date}}</span><span class="visible-xs">{{hoursRecord.hour.date | date:'shortDate'}}</span>
-                    </div>
-                    <div class="col-xs-4 visible-xs">
+                <div ng-repeat="hoursRecord in projectHour.hours" ng-show="projectHour.collapsed" ng-if="hoursRecord.show">
+                  <div class="cos-xs-12">
+                    <div class="row" style="border-bottom: 1px solid #dddddd; margin: 0px;">
+                      <div class="col-xs-4 col-md-2 col-lg-2">
+                        <span class="hidden-xs">{{hoursRecord.hour.date | date}}</span>
+                        <span class="visible-xs">{{hoursRecord.hour.date | date:'shortDate'}}</span>
+                      </div>
+                      <div class="col-xs-4 visible-xs">
                         {{hoursRecord.hour.task.name || 'No Task'}}
-                    </div>
-                    <div class="col-xs-2 col-md-2 col-lg-2">
+                      </div>
+                      <div class="col-xs-2 col-md-2 col-lg-2">
                         {{hoursRecord.hour.hours}}
-                    </div>
-                    <div class="col-xs-2 visible-xs">
+                      </div>
+                      <div class="col-xs-2 visible-xs">
                         <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.hour)">
                           <i class="fa fa-trash-o"></i>
                         </button>
-                    </div>
-                    
-                    <div class="col-xs-9 col-md-3 col-lg-3">
+                      </div>
+                      <div class="col-xs-9 col-md-3 col-lg-3">
                         {{hoursRecord.hour.description}}
-                    </div>
-                    <div class="col-md-5 col-lg-5 hidden-xs">
+                      </div>
+                      <div class="col-md-5 col-lg-5 hidden-xs">
                         <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.hour)">
                           <i class="fa fa-trash-o"></i>
                         </button>
+                      </div>
                     </div>
-                   </div>
-               </div>
-            </div>
-        </div>
-        
-        <div ng-repeat="taskHour in taskHours" class="well">
-            <div class="row" ng-click="taskHour.collapsed=!taskHour.collapsed" >
-                <div class="col-xs-12" style="margin-bottom: 10px;">
+                  </div>
+                </div>
+              </div>
+              <div ng-repeat="taskHour in taskHours" class="well">
+                <div class="row" ng-click="taskHour.collapsed=!taskHour.collapsed" >
+                  <div class="col-xs-12" style="margin-bottom: 10px;">
                     <span style="margin-right: 12px;" ng-if="!taskHour.collapsed" ><i class="fa fa-caret-right" ng-show="taskHour"></i></span>
                     <span style="margin-right: 12px;" ng-if="taskHour.collapsed" ><i class="fa fa-caret-down" ng-show="taskHour"></i></span>
                     <i class="{taskHour.icon}}"></i>
                     <a href="#/{{taskHour.about}}">{{taskHour.name ? taskHour.name : "Unknown"}}</a>
+                  </div>
                 </div>
-            </div>
-            <div ng-if="isEmptyForSelectedMonth(taskHour)" ng-show="taskHour.collapsed" class="alert alert-warning" style="margin-top: 10px; margin-bottom: 0px;">
-                No hours logged found for selected month.
-            </div>
-           <div class="col-xs-12" ng-show="taskHour.collapsed" ng-if="!isEmptyForSelectedMonth(taskHour)" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: auto;">
-                <div class="col-xs-4 col-md-2 col-lg-2">
+                <div ng-if="isEmptyForSelectedMonth(taskHour)" ng-show="taskHour.collapsed" class="alert alert-warning" style="margin-top: 10px; margin-bottom: 0px;">
+                  No hours logged found for selected month.
+                </div>
+                <div class="col-xs-12" ng-show="taskHour.collapsed" ng-if="!isEmptyForSelectedMonth(taskHour)" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: auto;">
+                  <div class="col-xs-4 col-md-2 col-lg-2">
                     Date
                     <div class="visible-xs">
                       Description
                     </div>
-                </div>
-               
-                <div class="col-xs-4 col-md-2 col-lg-2">
+                  </div>
+                  <div class="col-xs-4 col-md-2 col-lg-2">
                     Hours
-                </div>
-               
-                <div class="col-md-3 col-lg-3 hidden-xs">
+                  </div>
+                  <div class="col-md-3 col-lg-3 hidden-xs">
                     Description
+                  </div>
                 </div>
-           </div>
-           <div ng-repeat="hoursRecord in taskHour.hours" ng-show="taskHour.collapsed" ng-if="hoursRecord.show">
-                 <div class="cos-xs-12">
-                   <div class="row" style="border-bottom: 1px solid #dddddd; margin: 0px;">
-                    <div class="col-xs-4 col-md-2 col-lg-2">
+                <div ng-repeat="hoursRecord in taskHour.hours" ng-show="taskHour.collapsed" ng-if="hoursRecord.show">
+                  <div class="cos-xs-12">
+                    <div class="row" style="border-bottom: 1px solid #dddddd; margin: 0px;">
+                      <div class="col-xs-4 col-md-2 col-lg-2">
                         <span class="hidden-xs">{{hoursRecord.hour.date | date}}</span><span class="visible-xs">{{hoursRecord.hour.date | date:'shortDate'}}</span>
+                      </div>
+                        <div class="col-xs-4 visible-xs">
+                          {{hoursRecord.hour.task.name || 'No Task'}}
+                        </div>
+                        <div class="col-xs-2 col-md-2 col-lg-2">
+                          {{hoursRecord.hour.hours}}
+                        </div>
+                        <div class="col-xs-2 visible-xs">
+                          <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.hour)">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                        </div>
+                        <div class="col-xs-9 col-md-3 col-lg-3">
+                          {{hoursRecord.hour.description}}
+                        </div>
+                        <div class="col-md-5 col-lg-5 hidden-xs">
+                          <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.hour)">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div class="col-xs-4 visible-xs">
-                        {{hoursRecord.hour.task.name || 'No Task'}}
-                    </div>
-                    <div class="col-xs-2 col-md-2 col-lg-2">
-                        {{hoursRecord.hour.hours}}
-                    </div>
-                    <div class="col-xs-2 visible-xs">
-                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.hour)">
-                          <i class="fa fa-trash-o"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="col-xs-9 col-md-3 col-lg-3">
-                        {{hoursRecord.hour.description}}
-                    </div>
-                    <div class="col-md-5 col-lg-5 hidden-xs">
-                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.hour)">
-                          <i class="fa fa-trash-o"></i>
-                        </button>
-                    </div>
-                   </div>
-               </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+      <!-- Weekly view -->
+      <div class="row" ng-if="hoursViewType == 'weekly'" style="margin-top: 20px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="panel panel-default dashboard-widget" >
+            <div class="panel-heading" style="padding: 0;">
+              <i class="fa fa-calendar-o" style="padding-top: 15px;padding-bottom: 10px;padding-left: 15px;"></i>
+              Project weekly hours summary:
+              <div class="pull-right btn-group-sm" style="margin-top:5px; margin-right: 5px;">
+                <label class="btn btn-default" ng-class="{'active': selectedWeekIndex < 0 }" ng-click="prevWeek()">
+                  <div>
+                    <i class="fa fa-angle-left"></i>
+                  </div>
+                </label>
+                <label class="btn btn-default" ng-class="{'active': selectedWeekIndex == 0 }" ng-click="currentWeek()">
+                  Today
+                </label>
+                <label class="btn btn-default" ng-class="{'active': selectedWeekIndex > 0 }" ng-click="nextWeek()">
+                  <div>
+                    <i class="fa fa-angle-right"></i>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="panel-body">
+              <h3> {{dayFormatted(startWeekDate)}} &ndash; {{dayFormatted(endWeekDate, "MMM D, YYYY")}} </h3>
+              <div class="col-xs-12" ng-if="weekHours.length == 0">
+                <div class="alert alert-warning">There are no logged hours for that week.</div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12" ng-if="weekHours.length > 0">
+                  <div class="row hidden-xs" style="padding-bottom: 5px;">
+                    <div class="hidden-xs col-sm-5"></div>
+                    <div class="col-xs-1 col-md-1" ng-repeat="dayLabel in thisWeekDayLabels"
+                      style="padding-left: 20px;">{{thisWeekDayLabels[$index]}}</div>
+                  </div>
+                  <div class="row" ng-repeat="personHours in weekHours" style="margin-bottom: 5px;">
+                    <div class="hidden-xs col-sm-5" style="margin-top: 20px;">
+                      <i class="{{projectStateIcon(personHours.project)}}" ng-if="personHours.project" style="margin-right: 5px;"></i>
+                      <a href="#/{{projectHour.project.about}}" ng-if="!personHours.task")>{{personHours.project ? personHours.project.customerName + ": " + personHours.project.name : "Unknown"}}</a>
+                      <a href="#/{{taskHour.about}}" ng-if="personHours.task">{{personHours.task.name ? personHours.task.name : "Unknown"}}</a>
+                    </div>
+                    <div class="row hidden-md hidden-sm hidden-lg">
+                      <hr style="margin: 0;"/>
+                      <div class="col-xs-12">
+                        <div style="margin-left: 30px;">
+                          <i class="{{projectStateIcon(personHours.project)}}" ng-if="personHours.project" style="margin-right: 5px;"></i>
+                          <a href="#/{{projectHour.project.about}}" ng-if="!personHours.task")>{{personHours.project ? personHours.project.customerName + ": " + personHours.project.name : "Unknown"}}</a>
+                          <a href="#/{{taskHour.about}}" ng-if="personHours.task">{{personHours.task.name ? personHours.task.name : "Unknown"}}</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-xs-1 col-md-1 col-lg-1" ng-repeat="day in personHours.hoursByDate">
+                      <button class="btn btn-hours btn-default" ng-class="{'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6, 'futureDay': day.futureness, 'todaysClass': moment().format('YYYY-MM-DD') == day.date }">{{day.totalHours}}</button>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-   </div>
-   
-   <!-- Weekly view -->
-   <div class="row" ng-if="hoursViewType == 'weekly'" style="margin-top: 15px;">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-       <div class="panel panel-default dashboard-widget" >
-        <div class="panel-heading" style="padding: 0;">
-            <i class="fa fa-calendar-o" style="padding-top: 15px;padding-bottom: 10px;padding-left: 15px;"></i> Project weekly hours summary:
-            <div class="pull-right btn-group-sm" style="margin-top:5px; margin-right: 5px;">
-               <label class="btn btn-default" ng-class="{'active': selectedWeekIndex < 0 }" ng-click="prevWeek()">
-                    <div>
-                        <i class="fa fa-angle-left"></i>
-                    </div>
-               </label>
-               <label class="btn btn-default" ng-class="{'active': selectedWeekIndex == 0 }" ng-click="currentWeek()">
-                   Today
-               </label>
-               <label class="btn btn-default" ng-class="{'active': selectedWeekIndex > 0 }" ng-click="nextWeek()">
-                    <div>
-                        <i class="fa fa-angle-right"></i>
-                    </div>
-               </label>
-            </div>
-         </div>
-         <div class="panel-body">
-            <h3> {{dayFormatted(startWeekDate)}} &ndash; {{dayFormatted(endWeekDate, "MMM D, YYYY")}} </h3>
-            <div class="col-xs-12" ng-if="weekHours.length == 0">
-                <div class="alert alert-warning">There are no logged hours for that week.</div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12" ng-if="weekHours.length > 0">
-                    <div class="row hidden-xs" style="padding-bottom: 5px;">
-                        <div class="hidden-xs col-sm-5"></div>
-                        <div class="col-xs-1 col-md-1" ng-repeat="dayLabel in thisWeekDayLabels" style="padding-left: 20px;">{{thisWeekDayLabels[$index]}}</div>
-                    </div>
-                    <div class="row" ng-repeat="personHours in weekHours" style="margin-bottom: 5px;">
-                        <div class="hidden-xs col-sm-5" style="margin-top:15px;">
-                            <i class="{{projectStateIcon(personHours.project)}}" ng-if="personHours.project" style="margin-right: 5px;"></i>
-                            <a href="#/{{projectHour.project.about}}" ng-if="!personHours.task")>{{personHours.project ? personHours.project.customerName + ": " + personHours.project.name : "Unknown"}}</a>
-                            <a href="#/{{taskHour.about}}" ng-if="personHours.task">{{personHours.task.name ? personHours.task.name : "Unknown"}}</a>
-                        </div>
-                        <div class="row hidden-md hidden-sm hidden-lg">
-                            <hr style="margin: 0;"/>
-                            <div class="col-xs-12">
-                                <div style="margin-left: 30px;">
-                                    <i class="{{projectStateIcon(personHours.project)}}" ng-if="personHours.project" style="margin-right: 5px;"></i>
-                                    <a href="#/{{projectHour.project.about}}" ng-if="!personHours.task")>{{personHours.project ? personHours.project.customerName + ": " + personHours.project.name : "Unknown"}}</a>
-                                    <a href="#/{{taskHour.about}}" ng-if="personHours.task">{{personHours.task.name ? personHours.task.name : "Unknown"}}</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-1 col-md-1 col-lg-1" ng-repeat="day in personHours.hoursByDate">
-                            <button class="btn btn-hours btn-default" ng-class="{'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6, 'futureDay': day.futureness, 'todaysClass': moment().format('YYYY-MM-DD') == day.date }">{{day.totalHours}}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  </div>
+  </div>
+  <div class="row padded-row">
+    <div class="col-xs-6 expenses">
+      <div class="well">
+        <div class="row">
+          <div class="col-xs-12">
+            <h3>Expenses</h3>
+          </div>
         </div>
+      </div>
+    </div>
+    <div class="col-xs-6 vacations">
+      <div class="well">
+        <div class="row">
+          <div class="col-xs-12">
+            <h3>Vacations</h3>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
- </div>
 </div>
-
 <!-- <div>
   <div class="row">
     <div class="col-xs-9">
