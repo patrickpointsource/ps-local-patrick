@@ -28,7 +28,7 @@ angular.module('Mastermind.controllers.projects')
       else if (filter == 'investment') {
           ProjectsService.getInvestmentProjects(reloadProjects);
       }
-      else if (filter == 'completed') {
+      else if (filter == 'completed' || filter == 'complete') {
           ProjectsService.getCompletedProjects(reloadProjects);
       }
       else if (filter == 'deallost') {

@@ -1026,7 +1026,7 @@ angular.module('Mastermind')
 			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries);
 		}
 		
-		for (var i = 0; i < $scope.organizedHours.length; i ++)
+		for (var i = 0; $scope.organizedHours.length && i < $scope.organizedHours.length; i ++)
 			$scope.organizedHours[i].collapsed = false;
 	}
 	
