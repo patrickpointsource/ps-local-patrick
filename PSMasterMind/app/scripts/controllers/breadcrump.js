@@ -47,11 +47,11 @@ angular.module('Mastermind')
 			  return part;
 		  });
 		  
-		  for(var i = 0; i < $scope.breadCrumpParts.length; i++) {
+		  /*for(var i = 0; i < $scope.breadCrumpParts.length; i++) {
 			  if($scope.breadCrumpParts[i].length > 70) {
 				  $scope.breadCrumpParts[i] = $scope.breadCrumpParts[i].substring(0, 67) + '...';
 			  }
-		  }
+		  }*/
 	  }
 	  
 	  $scope.getBreadCrump = function() {
