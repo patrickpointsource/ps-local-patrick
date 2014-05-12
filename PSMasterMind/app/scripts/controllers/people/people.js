@@ -35,7 +35,182 @@ angular.module('Mastermind.controllers.people')
           }
         });
       };
+      
+      var rolePeopleGroupMap = {
+ 			 "development": ['SE', 'SSE', 'SSA', 'SSEO', 'ST','SI'],
+ 	         "administration": ['ADMIN'],
+ 	         "clientexpierencemgmt": ['SBA', 'BA', 'PM', 'CxD'],
+ 	         "digitalexperience":["UXD","SUXD", 'DxM', 'DMDE', 'MKT',],
+ 	         "executivemgmt":["EXEC", 'DD', 'CxD', 'CD', 'DMDE'],
+ 	         "sales":["SALES"]
+ 	  }
+      
+      var mapPeopleFilterToUI = function(filterPeople) {
+		  if(filterPeople == 'businessdevelopment') {
+				return 'Business Development';
+			}
+			if(filterPeople == 'clientexpierencemgmt') {
+				return 'Client Experience Mgmt';
+			}
+			if(filterPeople == 'digitalexperience') {
+				return 'Digital Experience';
+			}
+			if(filterPeople == 'executivemgmt') {
+				return 'Executive Mgmt';
+			}
+			
+			var bigLetter = filterPeople[0].toUpperCase();
+			var endPart = filterPeople.slice(1, filterPeople.length);
+			return bigLetter + endPart;
+	  };
+      
+      $scope.sortType = 'name-desc';
+      
+      $scope.changeSort = function(type) {
+    	  
+    	  if(type) {
+    		  $scope.sortType = type;
+    	  }
+    	  
+    	  if(type == 'name-desc') {
+    		  $scope.people.sort(function(a, b) {
+    			  if (a.familyName < b.familyName){
+    			        return -1;
+    			  } else if (a.familyName > b.familyName) {
+    			       return  1;
+    			    } else{
+    			        return 0;
+    			      } 
+    		  });
+    	  }
+    	  
+    	  if(type == 'name-asc') {
+    		  $scope.people.sort(function(a, b) {
+    			  if (a.familyName < b.familyName){
+    			        return 1;
+    			  } else if (a.familyName > b.familyName) {
+    			       return  -1;
+    			    } else{
+    			        return 0;
+    			      } 
+    		  });
+    	  }
+    	  
+    	  if(type == 'role-desc') {
+    		  $scope.people.sort(function(a, b) {
+    			  
+    			  if(!a.primaryRole && !b.primaryRole) {
+    				  return 0;
+    			  }
+    			  if(!a.primaryRole) {
+    				  return 1;
+    			  }
+    			  if(!b.primaryRole) {
+    				  return -1;
+    			  }
 
+    			  if (a.primaryRole.title < b.primaryRole.title) {
+  	    				return -1;
+    			  	} else if (a.primaryRole.title > b.primaryRole.title) {
+    			  			return 1;
+    			  		} else{
+    			  				return 0;
+    			  			}
+    		  });
+    	  }
+    	  
+    	  if(type == 'role-asc') {
+    		  $scope.people.sort(function(a, b) {
+    			  
+    			if(!a.primaryRole && !b.primaryRole) {
+    				return 0;
+    			}
+    			if(!a.primaryRole) {
+    				return 1;
+    			}
+    			if(!b.primaryRole) {
+    				return -1;
+    			}
+
+    			if (a.primaryRole.title < b.primaryRole.title) {
+    	    			return 1;
+    	    	} else if (a.primaryRole.title > b.primaryRole.title) {
+    	    			return  -1;
+    	    		} else{
+    	    			return 0;
+    	    			}
+    		  });
+    	  }
+    	  
+    	  if(type == 'group-desc') {
+    	   $scope.people.sort(function(a, b) {
+    		  if(!a.group && !b.group) {
+  				return 0;
+  			}
+  			if(!a.group) {
+  				return 1;
+  			}
+  			if(!b.group) {
+  				return -1;
+  			}
+
+  			if (a.group < b.group) {
+  	    			return -1;
+  	    	} else if (a.group > b.group) {
+  	    			return 1;
+  	    		} else{
+  	    			return 0;
+  	    			}
+    	   });
+    	  }
+    	  
+    	  if(type == 'group-asc') {
+       	   $scope.people.sort(function(a, b) {
+       		  if(!a.group && !b.group) {
+     				return 0;
+     			}
+     			if(!a.group) {
+     				return 1;
+     			}
+     			if(!b.group) {
+     				return -1;
+     			}
+
+     			if (a.group < b.group) {
+     	    			return 1;
+     	    	} else if (a.group > b.group) {
+     	    			return -1;
+     	    		} else{
+     	    			return 0;
+     	    			}
+       	   });
+       	  }
+    	  
+    	  if(type == 'rate-desc') {
+    		  $scope.people.sort(function(a, b) {
+    			  if (a.activePercentage < b.activePercentage){
+    			        return -1;
+    			  } else if (a.activePercentage > b.activePercentage) {
+    			       return  1;
+    			    } else{
+    			        return 0;
+    			      } 
+    		  });
+    	  }
+    	  
+    	  if(type == 'rate-asc') {
+    		  $scope.people.sort(function(a, b) {
+    			  if (a.activePercentage < b.activePercentage){
+    			        return 1;
+    			  } else if (a.activePercentage > b.activePercentage) {
+    			       return  -1;
+    			    } else{
+    			        return 0;
+    			      } 
+    		  });
+    	  }
+      }
+      
       /**
        * Changes list of people on a filter change
        */
@@ -47,15 +222,7 @@ angular.module('Mastermind.controllers.people')
 
           Resources.query('people', peopleInRoleQuery, peopleInRoleFields, function(result){
             $scope.people = result.members;
-
-            //Reload the table
-            if (!$scope.tableParams){
-              $scope.tableParams = getTableData();
-            }
-            else {
-              $scope.tableParams.total($scope.people.length);
-              $scope.tableParams.reload();
-            }
+            $scope.fillPeopleProps();
           });
         }
         else if($scope.peopleFilter == 'my'){
@@ -63,14 +230,7 @@ angular.module('Mastermind.controllers.people')
         	
         	People.getMyPeople($scope.me).then(function(people){
         		$scope.people = people;
-	       		 //Reload the table
-	       		 if (!$scope.tableParams){
-	       			 $scope.tableParams = getTableData();
-	       		 }
-	       		 else{
-	       			 $scope.tableParams.total($scope.people.length);
-	       			 $scope.tableParams.reload();
-	       		 }
+        		$scope.fillPeopleProps();
         	});
         } else if($scope.peopleFilter && $scope.peopleFilter != 'all' && ($scope.peopleFilter.indexOf(':') > -1 || $scope.peopleFilter.indexOf(',') > -1 || !$scope.roleGroups[$scope.peopleFilter])){
         	var peopleQuery = {$or: []};
@@ -97,14 +257,7 @@ angular.module('Mastermind.controllers.people')
             Resources.query('people', peopleQuery, peopleInRoleFields, function(result){
               $scope.people = result.members;
 
-              //Reload the table
-              if (!$scope.tableParams){
-                $scope.tableParams = getTableData();
-              }
-              else {
-                $scope.tableParams.total($scope.people.length);
-                $scope.tableParams.reload();
-              }
+              $scope.fillPeopleProps();
             });
             
           }
@@ -116,18 +269,10 @@ angular.module('Mastermind.controllers.people')
         	//var url = 'people?fields='+fieldsEncoded;
         	Resources.get('people', {'fields':fields}).then(function(result){
         		 $scope.people = result.members;
-        		 //Reload the table
-        		 if (!$scope.tableParams){
-        			 $scope.tableParams = getTableData();
-        		 }
-        		 else{
-        			 $scope.tableParams.total($scope.people.length);
-        			 $scope.tableParams.reload();
-        		 }
+        		 
+        		 $scope.fillPeopleProps();
         	});
         }
-        
-        
         
         //Replace the URL in history with the filter
         if($scope.peopleFilter != $state.params.filter){
@@ -142,6 +287,35 @@ angular.module('Mastermind.controllers.people')
 	        $location.url(updatedUrl).replace();
 	    }
       };
+      
+      $scope.fillPeopleProps = function() {
+    	  for(var i=0; i<$scope.people.length; i++){
+              //Annotate people with additional information
+              $scope.people[i].activeHours = $scope.activeHours?$scope.activeHours[$scope.people[i].resource]:'?';
+              
+              $scope.people[i].activePercentage = $scope.activePercentages?
+            	  ($scope.activePercentages[$scope.people[i].resource]?$scope.activePercentages[$scope.people[i].resource]:0):'?';
+              
+              if ($scope.people[i].primaryRole && $scope.people[i].primaryRole.resource) {
+                // add the role to the person so we can display it in the table and sort by it
+                $scope.people[i].primaryRole = $scope.roleGroups[$scope.people[i].primaryRole.resource];
+                
+                var group = "";
+                _.each(rolePeopleGroupMap, function(rolesArray, key) {
+                	if(_.contains(rolesArray, $scope.people[i].primaryRole.abbreviation)) {
+                		group = key;
+                	}
+                });
+                if(group.length > 0) {
+                	$scope.people[i].group = mapPeopleFilterToUI(group);
+                } else {
+                	$scope.people[i].group = '';
+                }
+              }
+           }
+    	  
+    	  $scope.changeSort($scope.sortType);
+      }
 
       /**
        * display the month name from a month number (0 - 11)
@@ -271,14 +445,7 @@ angular.module('Mastermind.controllers.people')
       $scope.mapPeopleGroupToRoles = function(peopleGroups) {
     	  var result = [];
     	  var mapRoles = {};
-    	  var rolePeopleGroupMap = {
-    			 "development": ['SE', 'SSE', 'SSA', 'SSEO', 'ST','SI'],
-    	         "administration": ['ADMIN'],
-    	         "clientexpierencemgmt": ['SBA', 'BA', 'PM', 'CxD'],
-    	         "digitalexperience":["UXD","SUXD", 'DxM', 'DMDE', 'MKT',],
-    	         "executivemgmt":["EXEC", 'DD', 'CxD', 'CD', 'DMDE'],
-    	         "sales":["SALES"]
-    	  }
+    	  
     	  var map = _.map($scope.roleGroups, function(val, key){
     		  mapRoles[val.abbreviation] = key;
     	  })
