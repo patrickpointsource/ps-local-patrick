@@ -1807,9 +1807,7 @@ angular.module('Mastermind')
     	Resources.query('hours',hoursQuery, {}).then(function (result) {
     		$scope.weekPersonHours = [];
             $scope.weekHours = [];
-            if(result.count === 0) {
-            	console.error("getHoursRecordsBetweenDates("+$scope.startWeekDate+","+$scope.endWeekDate+") gave me no results");
-            } else {
+            if(result.count > 0) {
                 $scope.thisWeekHours = result.members;
                 //_.sortBy($scope.thisWeekHours, function(h) { return new Date(h.date); });
 
