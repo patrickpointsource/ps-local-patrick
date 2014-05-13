@@ -1,4 +1,23 @@
 <div>
+  <div class="row">
+    <div class="col-xs-8"><h2>{{profile.name}}</h2></div>
+    <div class="actions col-xs-4 pageActions">
+      <button ng-hide="editMode" class="btn btn-default" ng-click="edit()">
+        <span class="hidden-xs"><i class="fa fa-pencil-square-o"></i> Edit</span>
+        <span class="visible-xs"><i class="fa fa-pencil-square-o"></i></span>
+      </button>
+      <button ng-show="editMode" class="btn btn-default" ng-click="cancel()">
+        <span class="hidden-xs"><i class="fa fa-chevron-left"></i> Cancel</span>
+        <span class="visible-xs"><i class="fa fa-chevron-left"></i></span>
+      </button>
+      <button ng-show="editMode" class="btn btn-default" ng-click="save()">
+        <span class="hidden-xs"><i class="fa fa-floppy-o"></i> Save</span>
+        <span class="visible-xs"><i class="fa fa-floppy-o"></i></span>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+<div>
   <div class="row top-row">
     <div class="col-xs-12">
       <div class="row padded-row">

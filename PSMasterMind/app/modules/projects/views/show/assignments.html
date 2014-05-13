@@ -82,14 +82,14 @@
 		             <div class="row-fluid" ng-show="editMode" ng-if="editMode" style="padding-top: 12px; padding-left: 12px;">
 		             	
 	             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}">
-						    <ng-include src="'views/projects/show/roleAssign.html'"/>
+						    <ng-include src="'modules/projects/views/show/roleAssign.html'"/>
 						</div>
 		             	
 		             </div>
 		             <div ng-show="!editMode" ng-if="!editMode" class="row-fluid" style="padding-top: 12px; padding-left: 12px;">
 		             	
 		             		<div ng-form="newPersonToRoleForm{{$index}}" id="editPersonToRoleDialog{{$index}}">
-							    <ng-include src="'views/projects/show/roleAssignView.html'"/>
+							    <ng-include src="'modules/projects/views/show/roleAssignView.html'"/>
 							</div>
 		             	
 		             </div>

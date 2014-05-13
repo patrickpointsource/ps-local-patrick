@@ -1,0 +1,121 @@
+<div class="row">
+	<div class="col-xs-8"><h3>Roles</h3></div>
+	<div class="actions col-xs-4 pageActions">
+		<button type="button" ng-click="toggleNewRole()"
+			class="btn btn-default pull-right" data-toggle="collapse" data-target="#newRoleDialog">
+	  		<div class="hidden-xs"><i class="fa fa-plus-square"></i> <span>Add Roles</span></div>
+	  		<div class="visible-xs"><i class="fa fa-plus-square"></i></div>
+		</button>
+	</div>
+</div>
+
+<div ng-form="newRoleForm" id="newRoleDialog" class="well collapse out">
+    <div ng-include src="'modules/admin/partials/roleEdit.html'"></div>
+</div>
+<div class="row">
+     <div class="col-xs-12">
+         <table ng-table="rolesTableParams" template-pagination="roles/pager" class="table">
+         	<tbody ng-repeat="role in $data">
+             <tr>
+             	<td data-title="'Abbreviation'" sortable="'abbreviation'">
+                  {{role.abbreviation}}
+                </td>
+                <td data-title="'Name'" sortable="'title'">
+                  {{role.title}}
+                </td>
+                <td class="actionsCell">
+                	<button class="btn btn-default" ng-click="triggerEditRole(role, $index)">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                	<button class="btn btn-default"
+					ng-click="deleteRole(role.resource)">
+					<i class="fa fa-trash-o"></i>
+				</button></td>
+             </tr>
+             <tr ng-show="editRoleIndex===$index" ng-if="editRoleIndex===$index">
+             	<td colspan="3">
+             		<div ng-form="newRoleForm{{$index}}" id="editRoleDialog{{$index}}" class="well">
+					    <div ng-include src="'modules/admin/partials/roleEdit.html'"></div>
+					</div>
+             	</td>
+             </tr>
+            </tbody>
+         </table>
+         <script type="text/ng-template" id="roles/pager">
+            <ul class="pager ng-cloak">
+              <li ng-repeat="page in pages"
+                    ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
+                    ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
+                <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
+                <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
+              </li>
+                <li>
+                <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
+                    <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
+                    <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
+                    <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
+                    <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
+                </div>
+                </li>
+            </ul>
+        </script>
+     </div>
+ </div>
+ <!--  
+ <div class="row">
+	<div class="col-xs-8"><h3>Proficiencies</h3></div>
+	<div class="actions col-xs-4 pageActions">
+		<button type="button"
+			class="btn btn-default pull-right" data-toggle="collapse" data-target="#newSkillDialog">
+	  		<i class="fa fa-plus-square"></i> <span>Add Proficiency</span>
+		</button>
+	</div>
+</div>
+<section ng-form="newSkillForm" id="newSkillDialog" class="well collapse out">
+    <div class="row">
+        <div class="col-xs-12">
+            <label class="control-label" for="role">Title:</label>
+            <input class="form-control" ng-model="newSkill.title"/>
+        </div>
+	</div>
+	<div class="row">
+		<br/>
+        <div class="col-xs-12">
+            <input type="submit" class="btn" value="Add" ng-click="addSkill()">
+        </div>
+    </div>
+</section>
+<div class="row">
+     <div class="col-xs-12">
+         <table ng-table="skillsTableParams" template-pagination="skills/pager" class="table">
+             <tr ng-repeat="skill in $data">
+                <td data-title="'Name'" sortable="'title'">
+                  {{skill.title}}
+                </td>
+                <td class="text-right"><button class="btn btn-default"
+					ng-click="deleteSkill(skill.resource)">
+					<i class="fa fa-trash-o"></i>
+				</button></td>
+             </tr>
+         </table>
+         <script type="text/ng-template" id="skills/pager">
+            <ul class="pager ng-cloak">
+              <li ng-repeat="page in pages"
+                    ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
+                    ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
+                <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
+                <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
+              </li>
+                <li>
+                <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
+                    <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
+                    <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
+                    <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
+                    <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
+                </div>
+                </li>
+            </ul>
+        </script>
+     </div>
+ </div>
+ -->

@@ -1,0 +1,58 @@
+<div ng-controller="TasksCtrl">
+	<div class="row">
+		<div class="col-xs-8"><h3>Tasks</h3></div>
+		<div class="actions col-xs-4 pageActions">
+			<button type="button" ng-click="toggleNewTask()"
+				class="btn btn-default pull-right" data-toggle="collapse" data-target="#newTaskDialog">
+		  		<div class="hidden-xs"><i class="fa fa-plus-square"></i> <span>Add Task</span></div>
+		  		<div class="visible-xs"><i class="fa fa-plus-square"></i></div>
+			</button>
+		</div>
+	</div>
+	<div class="row">
+		<div ng-form="newTaskForm" id="newTaskDialog" class="well collapse out">
+		    <div ng-include src="'modules/admin/partials/taskEdit.html'"></div>
+		</div>
+	</div>
+	<div class="row">
+	     <div class="col-xs-12">
+	         
+	         	<div class="row-fluid" style="font-weight: bold; border-bottom: 2px solid #dddddd; margin-bottom: 10px; height: 30px;">
+		           	<div class="col-xs-6">
+		           		Name
+		           	</div>
+		           	
+	           </div>
+	         	<div ng-repeat="task in availableTasks">
+	             <div class="row-fluid" 
+	             	style="border-bottom: 2px solid #dddddd;display:inline-block; width: 100%; padding-bottom:7px;">
+	             	
+	                <div class="col-xs-6" data-title="'Name'" sortable="'name'">
+	                  {{task.name}}
+	                </div>
+	                <div class="col-xs-6">
+	                	<div class="actionsCell pull-right">
+		                	<button class="btn btn-default" ng-click="triggerEditTask(task, $index)">
+		                        <i class="fa fa-pencil"></i>
+		                    </button>
+		                	<button class="btn btn-default"
+								ng-click="deleteTask(task.resource)">
+								<i class="fa fa-trash-o"></i>
+							</button>
+						</div>
+					</div>
+	             </div>
+	             <div ng-show="editTaskIndex===$index" ng-if="editTaskIndex===$index">
+	             	<div colspan="3">
+	             		<div ng-form="newTaskForm{{$index}}" id="editTaskDialog{{$index}}" class="well">
+						    <div ng-include src="'modules/admin/partials/taskEdit.html'"></div>
+						</div>
+	             	</div>
+	             </div>
+	            </div>
+	 
+	        
+	     </div>
+	 </div>
+ 
+ </div>

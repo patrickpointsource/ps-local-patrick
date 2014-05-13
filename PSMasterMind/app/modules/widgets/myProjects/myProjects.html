@@ -1,0 +1,36 @@
+<div class="col-xs-12 col-lg-6 item" ng-controller="MyProjectsCtrl" ng-show="hasActiveProjects">
+    <div class="panel panel-default dashboard-widget">
+        <div class="panel-heading">
+            <i class="fa fa-briefcase"></i> My Projects
+        </div>
+        <div class="panel-body">
+            <div class="graph">
+                <div id="projectsSummaryGraph">
+                    <div class="row" ng-repeat="project in myProjects | orderBy:'customerName'">
+                        <div class="title col-xs-12">
+                            <i class="{{projectStateIcon(project)}}"></i> <a href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a> <div style="display: inline;" ng-bind-html="getMyProjectSummaryLine(project)"></div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="progress ">
+                                <div class="col-xs-2"
+                                     ng-class="{active: inMonth(project, startDate.getMonth(), startDate.getFullYear())}"> {{getMonthName(startDate.getMonth())}}</div>
+                                <div class="col-xs-2"
+                                     ng-class="{active: inMonth(project, startDate.getMonth()+1, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+1)}}</div>
+                                <div class="col-xs-2"
+                                     ng-class="{active: inMonth(project, startDate.getMonth()+2, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+2)}}</div>
+                                <div class="col-xs-2"
+                                     ng-class="{active: inMonth(project, startDate.getMonth()+3, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+3)}}</div>
+                                <div class="col-xs-2"
+                                     ng-class="{active: inMonth(project, startDate.getMonth()+4, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+4)}}</div>
+                                <div class="col-xs-2"
+                                     ng-class="{active: inMonth(project, startDate.getMonth()+5, startDate.getFullYear())}">{{getMonthName(startDate.getMonth()+5)}}</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

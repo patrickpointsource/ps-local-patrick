@@ -41,7 +41,7 @@
         })
         .state('admin', {
           url: '/admin',
-          templateUrl: 'views/admin/admin.html',
+          templateUrl: 'modules/admin/views/admin.html',
           controller: 'AdminCtrl'
         })
         .state('projects', {
@@ -51,12 +51,12 @@
         })
         .state('projects.index', {
           url: '',
-          templateUrl: 'views/projects/index.html?filter',
+          templateUrl: 'modules/projects/views/index.html?filter',
           controller: 'ProjectsCtrl'
         })
         .state('projects.new', {
           url: '/new',
-          templateUrl: 'views/projects/edit.html',
+          templateUrl: 'modules/projects/views/edit.html',
           controller: 'ProjectCtrl',
           resolve: {
             editMode: function () {
@@ -68,7 +68,7 @@
          // url: '/:projectId/:tabId',
         	 //url: '/:projectId/[tabId]',
           url: '/{projectId}{tabId:(?:/(?!edit)[^/]+)?}',
-          templateUrl: 'views/projects/show.html',
+          templateUrl: 'modules/projects/views/show.html',
           controller: 'ProjectCtrl',
           resolve: {
             editMode: function () {
@@ -78,7 +78,7 @@
         })
         .state('projects.edit', {
           url: '/:projectId/edit',
-          templateUrl: 'views/projects/edit.html',
+          templateUrl: 'modules/projects/views/edit.html',
           controller: 'ProjectCtrl',
           resolve: {
             editMode: function () {
@@ -88,7 +88,7 @@
         })
         .state('projects.show.tabEdit', {
           url: '/:edit',
-          templateUrl: 'views/projects/show.html',
+          templateUrl: 'modules/projects/views/show.html',
           //template: "<div ui-view />",
           controller: 'ProjectCtrl',
           resolve: {
@@ -99,7 +99,7 @@
         })
         /*.state('projects.show.tabId.edit', {
           url: '/edit',
-          templateUrl: 'views/projects/show.html',
+          templateUrl: 'modules/projects/views/show.html',
           controller: 'ProjectCtrl',
           resolve: {
             editMode: function () {
@@ -114,17 +114,17 @@
         })
         .state('people.index', {
           url: '/?filter&view',
-          templateUrl: 'views/people/people.html',
+          templateUrl: 'modules/people/people.html',
           controller: 'PeopleCtrl'
         })
        .state('people.show', {
           url: '/:profileId?edit',
-          templateUrl: 'views/people/profile.html',
+          templateUrl: 'modules/people/profile.html',
           controller: 'ProfileCtrl'
         })
        .state('staffing', {
           url: '/staffing',
-          templateUrl: 'views/staffing/staffing.html',
+          templateUrl: 'modules/staffing/staffing.html',
           controller: 'StaffingCtrl'
         });
     }])

@@ -10,6 +10,11 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 	// make these vars accessible in scope methods - especially "showHome"
 	var apQuery;
 	var apFields;
+
+    $scope.widgets = [
+      {'name' : 'Hours', 'templateLocation' : 'modules/widgets/hours/hours.html', 'available' : ['you', 'me', 'them']}
+    ]
+
     //Load my profile for group and role checking
     Resources.refresh('people/me').then(function(me){
       $scope.me = me;

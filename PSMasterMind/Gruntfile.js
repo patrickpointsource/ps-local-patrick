@@ -45,7 +45,9 @@ module.exports = function (grunt) {
           '.tmp/styles/{,*/}*.css',
           '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
           '{.tmp,<%= yeoman.app %>}/scripts/*/{,*/}*.js',
-          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+          '{.tmp,<%= yeoman.app %>}/modules/*/{,*/}*.*',
+          '{.tmp,<%= yeoman.app %>}/modules/widgets/*/{,*/}*.*',
         ]
       }
     },

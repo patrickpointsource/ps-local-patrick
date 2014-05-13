@@ -17,7 +17,7 @@
         </ul>
     </div>
 	<section id="newRoleDialog" class="well collapse out">
-        <ng-include src="'views/projects/show/editRole.html'"/>
+        <ng-include src="'modules/projects/views/show/editRole.html'"/>
     </section>
     
 	<!-- button ng-click="roleTableParams.reload()" class="btn btn-default">Reload</button-->
@@ -77,7 +77,7 @@
                 <tr ng-show="editRoleIndex===$index" ng-if="editRoleIndex===$index">
 	             	<td colspan="5">
 	             		<div ng-form="newRoleForm{{$index}}" id="editRoleDialog{{$index}}" class="well">
-						    <ng-include src="'views/projects/show/editRole.html'"/>
+						    <ng-include src="'modules/projects/views/show/editRole.html'"/>
 						</div>
 	             	</td>
 	             </tr>
