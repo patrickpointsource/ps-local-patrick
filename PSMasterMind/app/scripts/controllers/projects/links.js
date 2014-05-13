@@ -5,8 +5,8 @@
  * Controller for handling the Details form.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('LinksCtrl',['$scope', '$filter', 'Resources', 'LinksService', 'JazzHubService', 'ngTableParams',
-  function ($scope, $filter, Resources, LinksService, JazzHubService, TableParams) {
+  .controller('LinksCtrl',['$scope', '$rootScope', '$filter', 'Resources', 'LinksService', 'JazzHubService', 'ngTableParams',
+  function ($scope, $rootScope, $filter, Resources, LinksService, JazzHubService, TableParams) {
     $scope.editLink = {};
     $scope.newLink = {};
 
@@ -41,14 +41,6 @@ angular.module('Mastermind.controllers.projects')
         }
       });
     };
-
-    /**
-     * Fetch the list of links
-     */
-    LinksService.getWebLinks($scope.project.about).then(function(result){
-    	$scope.links = result;
-    	$scope.initLinksTable();
-    });
 
     /**
      * Cancel add Link
@@ -235,24 +227,6 @@ angular.module('Mastermind.controllers.projects')
       Dropbox.choose(options);
     };
     
-    /**
-     * Jazz Hub Integration
-     */
-    //Look for a Jazz Hub Link
-    LinksService.getJazzHubProjects($scope.project.about).then(function(link){
-    	if(!link){
-    		 //Flag the project is not yet linked with Jazz Hub
-    	    $scope.notJHLinked = true;
-    	    //Flag to indicate we have not loaded jazz hub yet
-    	    $scope.JHProjectsLoaded = false;
-    	}
-    	else{
-    		$scope.jazzHubProject = link;
-	    	
-	    	$scope.linkWithJazzHub = false;
-	    	$scope.linkedWithJazzHub = true;
-    	}
-    });
     
     /**
      * Load the set of Jazz Hub projects and display them in a list
@@ -315,4 +289,33 @@ angular.module('Mastermind.controllers.projects')
     		$scope.notJHLinked = true;
     	});
     };
+    
+    $rootScope.$on("project:loaded", function() {
+    	/**
+         * Jazz Hub Integration
+         */
+        //Look for a Jazz Hub Link
+        LinksService.getJazzHubProjects($scope.project.about).then(function(link){
+        	if(!link){
+        		 //Flag the project is not yet linked with Jazz Hub
+        	    $scope.notJHLinked = true;
+        	    //Flag to indicate we have not loaded jazz hub yet
+        	    $scope.JHProjectsLoaded = false;
+        	}
+        	else{
+        		$scope.jazzHubProject = link;
+    	    	
+    	    	$scope.linkWithJazzHub = false;
+    	    	$scope.linkedWithJazzHub = true;
+        	}
+        });
+        
+    	/**
+         * Fetch the list of links
+         */
+        LinksService.getWebLinks($scope.project.about).then(function(result){
+        	$scope.links = result;
+        	$scope.initLinksTable();
+        });
+    })
 }]);

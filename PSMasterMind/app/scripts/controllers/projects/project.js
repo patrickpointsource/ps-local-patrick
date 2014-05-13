@@ -27,7 +27,8 @@ angular.module('Mastermind')
     };
     
     $scope.canEdit = function() {
-    	return $scope.projectManagementAccess || !$scope.project.created || ($scope.project.created.resource == $scope.me.about);
+    	return ($scope.project && ($scope.projectManagementAccess || !$scope.project.created || 
+    			($scope.project.created.resource == $scope.me.about)));
     };
     
   //Load the members of the executive Group
@@ -103,16 +104,18 @@ angular.module('Mastermind')
     };
     
     $scope.getExecutiveSponsor = function() {
-    	var resource = $scope.project.executiveSponsor.resource;
-    	var name = _.findWhere($scope.execs.members, { resource: resource }).name;
-    	if(typeof name === 'undefined') {
-    		name = '';
+    	if ($scope.project) {
+	    	var resource = $scope.project.executiveSponsor.resource;
+	    	var name = _.findWhere($scope.execs.members, { resource: resource }).name;
+	    	if(typeof name === 'undefined') {
+	    		name = '';
+	    	}
+	    	return name;
     	}
-    	return name;
     };
     
     $scope.getSalesSponsor = function() {
-    	if($scope.project.salesSponsor){
+    	if($scope.project && $scope.project.salesSponsor){
     		var resource = $scope.project.salesSponsor.resource;
     		var name = _.findWhere($scope.sales.members, { resource: resource }).name;
         	if(typeof name === 'undefined') {
@@ -505,6 +508,8 @@ angular.module('Mastermind')
                     $rootScope.dirtySaveHandler = null;
                     
                     deferred.resolve($scope.project);
+                    
+                    $scope.$emit('project:loaded');
                  });
             }, 
             function (response) {
@@ -805,7 +810,7 @@ angular.module('Mastermind')
      */
     $scope.isTandM_clientProject = function () {
     	
-      return $scope.project.type=="paid" && $scope.project.terms.type=="timeAndMaterials";
+      return $scope.project && $scope.project.type=="paid" && $scope.project.terms.type=="timeAndMaterials";
     };
     
     /**
@@ -815,7 +820,7 @@ angular.module('Mastermind')
      */
     $scope.isPaidClientProject = function () {
     	
-      return $scope.project.type=="paid";
+      return $scope.project && $scope.project.type=="paid";
     };
     
     $scope.activeTab = {
@@ -1894,6 +1899,8 @@ angular.module('Mastermind')
         if($scope.projectTabId == '') {
         	$scope.tabSelected('/summary');
         }
+        
+        $scope.$emit('project:loaded');
       });
     }
     /**
@@ -1902,6 +1909,7 @@ angular.module('Mastermind')
     else {
       $scope.project = ProjectsService.create();
       $scope.handleProjectSelected();
+      $scope.$emit('project:loaded');
     }
 
     $scope.canDeleteProject = false;

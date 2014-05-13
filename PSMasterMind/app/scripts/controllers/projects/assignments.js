@@ -24,33 +24,10 @@ angular.module('Mastermind.controllers.projects')
 	                               	{name: "Past Assignments", value: "past"},
 	                               	{name: "All Assignments", value: "all"}]
 	
-	  
-	  /*
-	  //TODO what is this for?
-	  // Load "all" assignments for displaying it on "summary" tab, and possibly on other tabs
-	  if ($scope.projectTabId != "assignments"){
-		  $scope.selectedAssignmentsFilter = "all";
-	  }
-	  //If explicit use the passed in filter
-	  else if($state.params.filter){
-		  $scope.selectedAssignmentsFilter = $state.params.filter;
-	  } else
-		  $scope.selectedAssignmentsFilter = $scope.getDefaultAssignmentsFilter()
-	 */
+	 
 	  $scope.selectedAssignmentsFilter = "all";
 	  
-	for (var i = 0; i < $scope.project.roles.length; i ++)
-		$scope.project.roles[i].assignees = [];
 	
-	$scope.roleTableParams = new TableParams(params, {
-	  counts: [], // hide page counts control
-	  total: $scope.project.roles.length, // length of data
-	  getData: function ($defer, params) {
-	    var data = $scope.project.roles;
-	    var ret = data.slice((params.page() - 1) * params.count(), params.page() * params.count());
-	    $defer.resolve(ret);
-	  }
-	});
 	
 	$scope.currentTabStates = [{
 		tabId: $state.params.tabId,
@@ -579,10 +556,26 @@ angular.module('Mastermind.controllers.projects')
     	$scope.$emit('roles:assignments:change');
     }
     
-    $scope.handleAssignmentsFilterChanged();
+    $rootScope.$on("project:loaded", function() {
+    	for (var i = 0; i < $scope.project.roles.length; i ++)
+    		$scope.project.roles[i].assignees = [];
+    	
+    	$scope.roleTableParams = new TableParams(params, {
+    	  counts: [], // hide page counts control
+    	  total: $scope.project.roles.length, // length of data
+    	  getData: function ($defer, params) {
+    	    var data = $scope.project.roles;
+    	    var ret = data.slice((params.page() - 1) * params.count(), params.page() * params.count());
+    	    $defer.resolve(ret);
+    	  }
+    	});
+    	
+        $scope.handleAssignmentsFilterChanged();
+        
+        // switch to edit mode if needed
+    	if ($state.params.edit  && $scope.projectManagementAccess){
+        	$scope.edit(true);
+        }
+    })
     
-    // switch to edit mode if needed
-	if ($state.params.edit  && $scope.projectManagementAccess){
-    	$scope.edit(true);
-    }
   }]);
