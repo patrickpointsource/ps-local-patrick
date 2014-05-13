@@ -1,15 +1,64 @@
-<div ng-form="projectForm" ng-class="{submitted: submitAttempted}">
-	<div class="row">
+<div ng-form="projectForm" ng-class="{submitted: submitAttempted}" style="background-color: white;">
+	<!--<div class="row">
 		<div class="col-xs-10 col-sm-9 col-lg-10"><h2>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h2></div>
     	<div class="col-xs-2 col-sm-3 col-lg-2"><h3 class="pull-right"><i class="{{projectStateIcon(project)}}"></i> <span class="hidden-xs">{{projectState(project)}}</span></h3></div>
-    </div>
-    <div id="messages" class="alert alert-danger" ng-show="messages.length > 0">
+    </div>-->
+    <div id="messages" class="row alert alert-danger" ng-show="messages.length > 0">
        <!--  <a class="close" data-dismiss="alert">&times;</a> -->
         <ul>
             <li ng-repeat="message in messages">{{message}}</li>
         </ul>
     </div>
-    <div>
+    <div class="row" style="padding-top:20px; background-color: white;">
+        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-5">
+            <ul class="nav nav-tabs">
+                <li ng-class="{active: activeTab['/summary']}"><a ng-click="tabSelected('/summary')">Summary</a></li>
+                <li ng-class="{active: activeTab['/assignments']}"><a ng-click="tabSelected('/assignments')">Assignments</a></li>
+                <li ng-class="{active: activeTab['/hours']}"><a ng-click="tabSelected('/hours')">Hours</a></li>
+                <li ng-class="{active: activeTab['/links']}"><a ng-click="tabSelected('/links')">Links</a></li>
+            </ul>
+        </div>
+        <div class="hidden-xs hidden-sm hidden-md col-lg-3"></div>
+        <div class="hidden-xs hidden-sm col-md-5 col-lg-4">
+                <table class="pull-right">
+                    <tr>
+                        <td>
+                            <button ng-hide="editMode || !canEdit()" class="btn" ng-click="edit()">
+                                Edit
+                            </button>
+                        </td>
+                        <td style="padding-left: 10px;"><button class="btn">Print</button></td>
+                        <td style="padding-left: 10px;"><input type="text" class="form-control pull-right" placeholder="search page"/></td>
+                    </tr>
+                </table>
+        </div>
+        <div class="col-xs-12 col-sm-12 hidden-md hidden-lg" style="margin-top: 10px;">
+            <table class="pull-right">
+                    <tr>
+                        <td><button class="btn">Edit</button></td>
+                        <td style="padding-left: 10px;"><button class="btn">Print</button></td>
+                        <td style="padding-left: 10px;"><input type="text" class="form-control pull-right" placeholder="search page"/></td>
+                    </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row" style="background-color: white;">
+        <div ng-show="projectLoaded && activeTab['/summary']" style="padding-left: 20px; padding-right: 20px; background-color: white;">
+             <ng-include src="'views/projects/show/summary.html'"></ng-include>
+        </div>
+        <div ng-show="projectLoaded && activeTab['/assignments']">
+             <ng-include src="'views/projects/show/assignments.html'"></ng-include>
+        </div>
+        <div ng-show="projectLoaded && activeTab['/hours']">
+             <ng-include src="'views/projects/show/hours.html'"></ng-include>
+        </div>
+        <div ng-show="projectLoaded && activeTab['/links']">
+             <ng-include src="'views/projects/show/links.html'"></ng-include>
+        </div>
+    </div>
+    
+    <!--  <div class="row">
     	 <tabset>
     	 	<tab id="summary" heading="Summary" active="activeTab['/summary']" select="tabSelected('/summary')">
 	        	<div ng-if="projectLoaded">
@@ -33,6 +82,6 @@
 	        </tab>
 	        
 	        
-	    </tabset>
-    </div>
+	    </tabset> 
+    </div>-->
 </div>

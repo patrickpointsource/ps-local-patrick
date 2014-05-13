@@ -1889,8 +1889,11 @@ angular.module('Mastermind')
       ProjectsService.getForEdit($scope.projectId).then(function(project){
         $scope.project = project;
         $scope.handleProjectSelected();
+        $scope.updateHoursPersons();
         
-        $rootScope.breadcrumpText = "All Projects" + " > " + project.name;
+        if($scope.projectTabId == '') {
+        	$scope.tabSelected('/summary');
+        }
       });
     }
     /**
