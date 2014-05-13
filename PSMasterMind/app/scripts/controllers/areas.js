@@ -107,6 +107,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     	var isToBeShown = !$('#navbar-collapse-mobile').hasClass('in');
     	//var menuWidth = $('#navbar-collapse-mobile').width();
     	var menuWidth = 280;
+    	var minTopHeaderContentWidth = 90;
     	
     	if (isToBeShown) {
     		if(!$('#appContent').data('origWidth'))
@@ -119,8 +120,19 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 	    		marginLeft: menuWidth + 'px'
 	    	});
     		
+    		var paddingLeft = (menuWidth - 20);
+    		var topHeaderWidth = $(".navbar.navbar-default.navbar-fixed-top").width();
+    		
+    		if ((topHeaderWidth - paddingLeft) < minTopHeaderContentWidth){
+    			var w = $(".navbar.navbar-default.navbar-fixed-top").width();
+    			
+    			$(".navbar.navbar-default.navbar-fixed-top").data('origWidth', w)
+    			
+    			$(".navbar.navbar-default.navbar-fixed-top").width( w + minTopHeaderContentWidth - (topHeaderWidth - paddingLeft) );
+    		}
+    		
     		$(".navbar.navbar-default.navbar-fixed-top").animate({
-	    		paddingLeft: (menuWidth - 20) + 'px'
+	    		paddingLeft:  paddingLeft + 'px'
 	    	});
     	} else {
     		$('#appContent').animate({
@@ -132,6 +144,9 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     		
     		$(".navbar.navbar-default.navbar-fixed-top").animate({
 	    		paddingLeft: '0px'
+	    	}, function() {
+	    		if ($(".navbar.navbar-default.navbar-fixed-top").data('origWidth'))
+	    			$(".navbar.navbar-default.navbar-fixed-top").width($(".navbar.navbar-default.navbar-fixed-top").data('origWidth'))
 	    	});
     	}
     	

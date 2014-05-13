@@ -431,6 +431,19 @@ angular.module('Mastermind')
     	return deferred.promise;
     }
     
+    function getPeopleGroupMapping() {
+    	return {
+    		"development": ['SE', 'SSE', 'SSEO', 'ST','SI'],
+    		"architects":['SSA', 'SA'],
+    		"administration": ['ADMIN'],
+	         "clientexpierencemgmt": ["SBA", "BA", "PM", "CxD"],
+	         "digitalexperience":["UXD","SUXD", "DxM"],
+	         "executivemgmt":["EXEC", "DD", "CxD", "CD", "DMDE"],
+	         "marketing":["MKT", "DMDE"],
+	         "sales":["SALES"]
+ 	  }
+    }
+    
     return {
       query: query,
       get: get,
@@ -439,6 +452,7 @@ angular.module('Mastermind')
       getMyPeople: getMyPeople,
       getPeoleAssignments: getPeoleAssignments,
       getPeopleCurrentAssignments: getPeopleCurrentAssignments,
-      getPerson: getPerson
+      getPerson: getPerson,
+      getPeopleGroupMapping: getPeopleGroupMapping
     };
   }]);

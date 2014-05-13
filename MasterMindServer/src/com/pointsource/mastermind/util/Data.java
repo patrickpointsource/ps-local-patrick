@@ -1771,10 +1771,10 @@ public class Data implements CONSTS {
 	 * @throws JSONException
 	 */
 	public static JSONObject createTask(RequestContext context,
-			JSONObject newTask) throws JSONException {
+			JSONObject newTask, Boolean isUpgrade) throws JSONException {
 
 		// Only admins can delete task
-		if (!hasProjectManagementAccess(context) ) {
+		if (!hasProjectManagementAccess(context) && !isUpgrade) {
 			throw new WebApplicationException(
 					Response.status(Status.FORBIDDEN)
 							.entity("You need admin athority to perform this operation")
@@ -3438,7 +3438,7 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 				task = new JSONObject();
 				
 				task.put(PROP_NAME, prePopulatedTasks[i]);
-				Data.createTask(context, task);
+				Data.createTask(context, task, true);
 			}
 		}
 	}

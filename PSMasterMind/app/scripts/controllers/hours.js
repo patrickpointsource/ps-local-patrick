@@ -40,7 +40,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 $scope.entryFormOpen = false
                 delete $scope.selected;
             } else {
-                $scope.selected = day;
+            	// use deep cloning to prevent from errors when some entries were removed and then canceled
+                $scope.selected = JSON.parse(JSON.stringify(day));
                 $('#editHours').modal('show');
                 $scope.entryFormOpen = true;
             }
@@ -107,8 +108,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         }
         
         $scope.deleteHoursRecord = function(index) {
-        	$scope.hoursToDelete.push($scope.selected.hoursEntries[index].hoursRecord.resource);
-        	$scope.selected.hoursEntries.splice(index, 1);
+        	if ($scope.selected.hoursEntries[index] && $scope.selected.hoursEntries[index].hoursRecord) {
+        		$scope.hoursToDelete.push($scope.selected.hoursEntries[index].hoursRecord.resource);
+        		$scope.selected.hoursEntries.splice(index, 1);
+        	}
         }
 
         //date formatter helper

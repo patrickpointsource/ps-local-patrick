@@ -88,7 +88,7 @@ public class Tasks extends BaseResource {
 				RequestContext context = getRequestContext();
 
 				Validator.canCreateTask(context, task);
-				JSONObject ret = Data.createTask(context, task);
+				JSONObject ret = Data.createTask(context, task, false);
 
 				String about = Data.unescapeJSON(ret
 						.getString(CONSTS.PROP_ABOUT));

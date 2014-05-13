@@ -14,14 +14,7 @@ angular.module('Mastermind')
 	  $scope.promisedPart = "";
 	  $scope.breadCrumpParts = [];
 	  
-	  var rolePeopleGroupMap = {
-	 			 "development": ['SE', 'SSE', 'SSA', 'SSEO', 'ST','SI'],
-	 	         "administration": ['ADMIN'],
-	 	         "clientexpierencemgmt": ['SBA', 'BA', 'PM', 'CxD'],
-	 	         "digitalexperience":["UXD","SUXD", 'DxM', 'DMDE', 'MKT',],
-	 	         "executivemgmt":["EXEC", 'DD', 'CxD', 'CD', 'DMDE'],
-	 	         "sales":["SALES"]
-	 	  }
+	  var rolePeopleGroupMap = People.getPeopleGroupMapping();
 	  
 	  var mapPeopleFilterToUI = function(filterPeople) {
 		  if(filterPeople == 'businessdevelopment') {
