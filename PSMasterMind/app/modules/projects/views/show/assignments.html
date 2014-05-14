@@ -1,20 +1,14 @@
 <div class="assignments-tab" ng-controller="AssignmentsCtrl">
 	
-  	  <div class="row hidden-xs">
+  	  <div class="row hidden-xs" style="margin-top: -12px;">
      	<div class="col-sm-4 col-md-4 col-lg-3" style="padding-top:15px;" >
+     		<!--
             <h4>
             	<span>{{project.startDate | date}}</span><span> - {{project.endDate? project.endDate:'?'| date}}</span>
             </h4> 
+              -->
         </div>
-        <!-- 
-        <div class="col-sm-5 col-md-4 col-lg-6" style="padding-top:15px;">
-           <select name="assignmentsFilter" id="assignmentsFilter" ng-show="!editMode" class="form-control"
-				ng-model="selectedAssignmentsFilter" ng-change="handleAssignmentsFilterChanged()"
-				ng-required="true"
-				ng-options="f.value as f.name for f in assignmentsFilters | orderBy:'name'">
-			</select>
-        </div>
-	    -->
+        
 	    <div class="actions col-sm-8 col-md-8 col-lg-9 pageActions">
 	    	<button ng-hide="editMode || !projectManagementAccess" class="btn btn-default" ng-click="edit()"><i class="fa fa-pencil-square-o"></i> <span>Edit</span></button>
 	    	<button ng-hide="!editMode" class="btn" ng-click="cancelAssignment()"><i class="fa fa-chevron-left"></i> <span>Cancel</span></button>
@@ -22,11 +16,13 @@
 	 	</div> 
 	 </div>
 
-		<div class="row visible-xs">
-			<div class="col-xs-8" style="padding-top:15px;" >
+		<div class="row visible-xs" style="margin-top: -24px;">
+			<div class="col-xs-8" style="" >
+	            <!-- 
 	            <h4>
 	            	<span>{{project.startDate | date}}</span><span> - {{project.endDate? project.endDate:'?'| date}}</span>
 	            </h4> 
+	             -->
 	        </div>
 		 	<div class="actions col-xs-4 pageActions">
 		 		<button ng-hide="editMode || !projectManagementAccess" class="btn" ng-click="edit()"><i class="fa fa-pencil-square-o"></i></button>
@@ -36,7 +32,7 @@
 		 	
 	    </div>
 	   	<br/>
-	    <div class="row">
+	    <div class="row" style="margin-top: -15px;">
 	    	<div id="messages" class="alert alert-danger" ng-show="assignmentsErrorMessages.length > 0">
 		         <ul>
 		            <li ng-repeat="message in assignmentsErrorMessages">{{message}}</li>
@@ -44,15 +40,15 @@
 		    </div>
 	    
 	        <div class="col-sm-12">
-               <div ng-repeat-start="role in project.roles" ng-if="showSeparator(role, $index, true)" class="row">
-					<div class="col-sm-12">
-						<hr  />
+               <div ng-repeat-start="role in project.roles" ng-if="showSeparator(role, $index)" class="row">
+					<div class="col-sm-12" ng-if="showSeparator(role, $index) == 'current'">
+						<h4>Active Roles</h4>
 					</div>
 					<div class="col-sm-12" ng-if="showSeparator(role, $index) == 'future'" style="margin-bottom: 12px; margin-top: -12px;">
-						<h4>Future:</h4>
+						<h4>Upcoming Resources</h4>
 					</div>
 					<div class="col-sm-12" ng-if="showSeparator(role, $index) == 'past'" style="margin-bottom: 12px; margin-top: -12px;">
-						<h4>Past:</h4>
+						<h4>Completed Resources:</h4>
 					</div>
 					
 				</div>
@@ -60,15 +56,16 @@
 	              <div ng-repeat-end class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
 	                <div class="panel-heading ">
 	                   
-	                    	<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
-	                		<span ng-show="role.rate.isFullyUtilized()">100%</span>
-							<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>				
+	                    	<span class="role-abbreviation">{{roleGroups[role.type.resource].abbreviation}}: </span>
+	                		<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>				
 							<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
-	                      	<small>{{role.startDate | date:'MMM d y'}}</small>
-		                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'MMM d y'}}</small></span>
+	                      	<span ng-show="role.rate.isFullyUtilized()">100%</span>
+	                      	
+	                		<small>from {{role.startDate | date:'M/d/y'}}</small>
+		                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'M/d/y'}}</small></span>
 		                      <span ng-hide="role.endDate">- N/A</span>
 		                      &nbsp;
-		                   	<span>{{getCoverageValue(role)}}</span>
+		                   	<span class="role-coverage">{{getCoverageValue(role)}}</span>
 		                   	
 	                   
 	                   	<div class="pull-right  btn-group btn-group-sm" style="margin-top:-5px;">

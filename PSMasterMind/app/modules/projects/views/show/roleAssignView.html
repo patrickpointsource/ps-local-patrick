@@ -8,30 +8,33 @@
 	     </a>           
 	</div>
 	
-	<div class="col-xs-12 col-sm-2 form-group hidden-xs">
-		<label for="assigneeHoursPerWeek">Hours per Week: <span class="text-muted">{{currentAssignee.hoursPerWeek}}</span></label>
-		
-	</div>
-	<div class="col-xs-3 col-sm-2 form-group visible-xs">
-		<small>{{currentAssignee.hoursPerWeek}}</small>
-		
-	</div>
-	
-	<div class="col-xs-12 col-sm-3 form-group hidden-xs"
-		ng-class="{error: isFieldInError('role')}">
-		<label class="required-label control-label" for="assigneeStartDate">
-			Start Date: <span class="text-muted">{{currentAssignee.startDate | date:'longDate'}}</span>
-		</label> 
-		
+	<div class="col-xs-12 col-sm-3 form-group ">
+		<label >
+			<span class="text-muted">{{roleGroups[currentAssignee.primaryRole.resource].abbreviation}} - </span>
+			</label>
 	</div>
 	<div class="col-xs-12 col-sm-3 form-group hidden-xs">
-		<label for="assigneeEndDate">End Date: <span class="text-muted">{{currentAssignee.endDate | date:'longDate'}}</span></label>
+		<label >
+			<span class="text-muted">{{currentAssignee.startDate | date:'M/d/y'}} - </span>
+			
+			<span ng-show="currentAssignee.endDate" class="text-muted">{{currentAssignee.endDate | date:'M/d/y'}}</span>
+			
+			<span ng-hide="currentAssignee.endDate">- N/A</span>
+		</label>
 		
 	</div>
 	<div class="col-xs-4 col-sm-3 form-group visible-xs">
 		<small>{{currentAssignee.startDate | date:'shortDate'}}</small>
-         <span ng-show="role.endDate">-<br><small>{{currentAssignee.endDate | date:'shortDate'}}</small></span>
-         <span ng-hide="role.endDate">- N/A</span>
+         <span ng-show="currentAssignee.endDate">-<br><small>{{currentAssignee.endDate | date:'shortDate'}}</small></span>
+         <span ng-hide="currentAssignee.endDate">- N/A</span>
+	</div>
+	<div class="col-xs-12 col-sm-2 form-group hidden-xs">
+		<label for="assigneeHoursPerWeek"><span class="text-muted">{{currentAssignee.hoursPerWeek}} h/w</span></label>
+		
+	</div>
+	<div class="col-xs-3 col-sm-2 form-group visible-xs">
+		<small>{{currentAssignee.hoursPerWeek}} h/w</small>
+		
 	</div>
 	
 </div>

@@ -454,10 +454,12 @@ angular.module('Mastermind')
 	$scope.showSeparator = function(role, index, skipFirst) {
 		var result = '';
 			
-		if ($scope.project.roles[index].isPastRole && (!$scope.project.roles[index + 1] || !$scope.project.roles[index + 1].isPastRole))
+		if ($scope.project.roles[index].isPastRole && (!$scope.project.roles[index - 1] || !$scope.project.roles[index - 1].isPastRole))
 			result = 'past';
-		else if ($scope.project.roles[index].isFutureRole && (!$scope.project.roles[index + 1] || !$scope.project.roles[index + 1].isFutureRole))
+		else if ($scope.project.roles[index].isFutureRole && (!$scope.project.roles[index - 1] || !$scope.project.roles[index - 1].isFutureRole))
 			result = 'future';
+		else if ($scope.project.roles[index].isCurrentRole && (!$scope.project.roles[index - 1] || !$scope.project.roles[index - 1].isCurrentRole))
+			result = 'current';
 		
 		if (skipFirst && result && index == 0)
 			result = '';
