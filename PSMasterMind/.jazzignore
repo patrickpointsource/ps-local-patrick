@@ -31,5 +31,4 @@ core.ignore.recursive= \
 	{node_modules} 
 
 core.ignore= \
-	{Gruntfile.js} \
 	{bin} 
