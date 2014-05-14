@@ -24,12 +24,7 @@
 # NOTE: modifying ignore files will not change the ignore status of 
 #     Eclipse derived resources.
 
-core.ignore.recursive= \
-	{.tmp} \
-	{bower_components} \
-	{dist} \
-	{node_modules} 
+core.ignore.recursive= 
 
 core.ignore= \
-	{Gruntfile.js} \
-	{bin} 
+	{admin.html} 

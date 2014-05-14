@@ -1,4 +1,26 @@
-<div class="row">
-	<div class="col-xs-8"><h3>Groups</h3></div>
-
-</div>
+	<table ng-table="tableParams" class="table">
+      <tbody ng-repeat="group in groups" ng-controller="groupCtrl">
+        <tr class="ng-table-group">
+          <td colspan="3">
+            <a href="" ng-click="group.$hideRows = !group.$hideRows">
+              <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': group.$hideRows, 'glyphicon-chevron-down': !group.$hideRows }"></span>
+              <strong>{{ group.label }}</strong>
+            </a>
+          </td>
+        </tr>
+        <tr ng-hide="group.$hideRows" ng-repeat="member in group.members">
+          <td data-title="'Pic'">
+          	<a href="#{{member.resource}}"><img class="people-image" ng-src="{{member.thumbnail}}"/></a>
+          </td>
+          <td sortable="name" data-title="'Name'">
+                <a href="#{{member.resource}}" class="person-name">
+	                  {{member.familyName}}, {{member.givenName}}
+	            </a>
+          </td>
+          <td sortable="role" data-title="'Role'">
+          	<div class="col-xs-3 col-md-2 people-prop">{{member.primaryRole.abbreviation}}</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+	 
