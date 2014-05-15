@@ -3,37 +3,37 @@
 	
 	<div class="col-xs-5 col-sm-2 form-group" ng-class="{error: isFieldInError('role')}">
 	     <a href="#{{currentAssignee.person.resource}}">
-	     	<img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble).thumbnail}}"/></a>
+	     	<img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble).thumbnail}}"/>
 	     		{{getPersonName(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble)}}
 	     </a>           
 	</div>
 	
 	<div class="col-xs-12 col-sm-3 form-group ">
 		<label >
-			<span class="text-muted">{{roleGroups[currentAssignee.primaryRole.resource].abbreviation}} - </span>
+			<span class="">{{roleGroups[role.type.resource].abbreviation}}</span>
 			</label>
 	</div>
-	<div class="col-xs-12 col-sm-3 form-group hidden-xs">
+	<div class="col-sm-3 form-group hidden-xs">
 		<label >
-			<span class="text-muted">{{currentAssignee.startDate | date:'M/d/y'}} - </span>
+			<span class="">{{currentAssignee.startDate | date:'M/d/y'}} - </span>
 			
-			<span ng-show="currentAssignee.endDate" class="text-muted">{{currentAssignee.endDate | date:'M/d/y'}}</span>
+			<span ng-show="currentAssignee.endDate" class="">{{currentAssignee.endDate | date:'M/d/y'}}</span>
 			
 			<span ng-hide="currentAssignee.endDate">- N/A</span>
 		</label>
 		
 	</div>
-	<div class="col-xs-4 col-sm-3 form-group visible-xs">
+	<div class="col-xs-4 form-group visible-xs">
 		<small>{{currentAssignee.startDate | date:'shortDate'}}</small>
          <span ng-show="currentAssignee.endDate">-<br><small>{{currentAssignee.endDate | date:'shortDate'}}</small></span>
          <span ng-hide="currentAssignee.endDate">- N/A</span>
 	</div>
-	<div class="col-xs-12 col-sm-2 form-group hidden-xs">
-		<label for="assigneeHoursPerWeek"><span class="text-muted">{{currentAssignee.hoursPerWeek}} h/w</span></label>
+	<div class="col-sm-4 form-group hidden-xs">
+		<label for="assigneeHoursPerWeek" class="pull-right"><span class="time-text"><span>{{currentAssignee.hoursPerWeek}}</span> h/w</span></label>
 		
 	</div>
-	<div class="col-xs-3 col-sm-2 form-group visible-xs">
-		<small>{{currentAssignee.hoursPerWeek}} h/w</small>
+	<div class="col-xs-3 form-group visible-xs">
+		<span class="pull-right"><small>{{currentAssignee.hoursPerWeek}} h/w</small></span>
 		
 	</div>
 	
