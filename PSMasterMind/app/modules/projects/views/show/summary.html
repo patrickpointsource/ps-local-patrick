@@ -135,14 +135,9 @@
 	</div>
 </div>
 
-<div class="row">
+    <div class="row content-header-gray project-content">
 		<div class="col-xs-4">
-			<h4>Roles:</h4>
-		</div>
-		<div class="actions col-xs-8 pageActions" style="margin-top:0px">
-			<button ng-hide="editMode || !projectManagementAccess" class="btn btn-default" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span></button>
-		</div>
-				
+			Roles:
 		</div>
 	</div>
 	<div class="row rolesList">
@@ -158,7 +153,10 @@
 				</div>
 			</div>
 		</div>
-		<div ng-repeat-start="role in project.roles" ng-if="showSeparator(role, $index)" class="col-sm-12">
+		<div class="col-xs-12 col-sm-6 col-lg-8">
+		    <button ng-hide="editMode || !projectManagementAccess" class="btn btn-default pull-right" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span></button>
+		</div>
+		<div ng-repeat-start="role in project.roles" ng-if="showSeparator(role, $index)" class="row">
 			<div class="row">
 				<hr  />
 			</div>
@@ -172,24 +170,37 @@
 			</div>
 			
 		</div>
-		<div class="col-xs-12 people-row" ng-repeat-end>
-		    <!--<div ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
-		        <div class="col-xs-2">
-                    <img class="profileImage" />
+		<div class="row" ng-repeat-end>
+		    <div class="row people-row role-row" ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
+		        <div class="col-xs-5 col-sm-6">
+		            <img class="people-image" style="width: 50px; height: 50px;" />
+                    {{roleGroups[role.type.resource].title}}
                 </div>
-                <div class="col-xs-4 people-prop">{{roleGroups[role.type.resource].title}}</div>
-                <div class="col-xs-2 people-prop">{{assignee.hoursPerWeek}} h/w</div>
-                <div class="col-xs-4" style="color: green; font-size: 22px;">{{getCoverageValue(role)}}</div>
+                <div class="col-xs-2 people-prop">
+                    <span ng-show="role.rate.isFullyUtilized()">100%</span>
+                    <span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>
+                    <span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
+                </div>
+                <div class="hidden-xs col-sm-4 assignment-row" ng-class="{'assignment-green': getCoverageValue(role) == 'Adequate', 'assignment-yellow': getCoverageValue(role) == 'Inadequate', 'assignment-red': getCoverageValue(role) == 'Unassigned'}">
+                    {{getCoverageValue(role)}}
+                </div>
+                <div class="col-xs-5 hidden-sm hidden-md hidden-lg" style="margin-top: 15px;" ng-class="{'assignment-green': getCoverageValue(role) == 'Adequate', 'assignment-yellow': getCoverageValue(role) == 'Inadequate', 'assignment-red': getCoverageValue(role) == 'Unassigned'}">
+                    {{getCoverageValue(role)}}
+                </div>
 		    </div>
-		    <div class="row people-row" ng-repeat="assignee in role.assignees">
-		        <div class="col-xs-2">
-		            <a href="#{{assignee.person.resource}}"> <img ng-show="assignee && assignee.person" class="profileImage" ng-src="{{assignee.person.thumbnail}}" style="float:right"/></a>
+		    <div class="row people-row role-row" ng-repeat="assignee in role.assignees" ng-if="role.assignees.length > 0 && role.assignees[0].person && role.assignees[0].person.resource">
+		        <div class="col-xs-5 col-sm-6">
+		            <a href="#{{assignee.person.resource}}"> <img ng-show="assignee && assignee.person" class="people-image" ng-src="{{assignee.person.thumbnail}}"/> {{roleGroups[role.type.resource].title}}</a>
 		        </div>
-		        <div class="col-xs-4 people-prop">{{roleGroups[role.type.resource].title}}</div>
 		        <div class="col-xs-2 people-prop">{{assignee.hoursPerWeek}} h/w</div>
-		        <div class="col-xs-4" style="color: green; font-size: 22px;">{{getCoverageValue(role)}}</div>
-		    </div> -->
-				<div  class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+		        <div class="hidden-xs col-sm-4 assignment-row" ng-class="{'assignment-green': getCoverageValue(role) == 'Adequate', 'assignment-yellow': getCoverageValue(role) == 'Inadequate', 'assignment-red': getCoverageValue(role) == 'Unassigned'}">
+		            {{getCoverageValue(role)}}
+		        </div>
+		        <div class="col-xs-5 hidden-sm hidden-md hidden-lg" style="margin-top: 15px;" ng-class="{'assignment-green': getCoverageValue(role) == 'Adequate', 'assignment-yellow': getCoverageValue(role) == 'Inadequate', 'assignment-red': getCoverageValue(role) == 'Unassigned'}">
+                    {{getCoverageValue(role)}}
+                </div>
+		    </div> 
+				<!--<div  class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
 				<div class="panel-heading">
 	
 					<span>{{roleGroups[role.type.resource].abbreviation}}: </span>
@@ -230,7 +241,7 @@
 					<i class="fa fa-ban" style="color:#f34d4b"></i> <span>There are no assignees on this role</span>
 				</div>
 				
-		</div>
+		</div>-->
 			
 		</div>
 	</div>
