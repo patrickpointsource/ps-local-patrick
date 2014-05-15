@@ -1,5 +1,6 @@
+<div ng-controller="GroupsCtrl">
 	<table ng-table="tableParams" class="table">
-      <tbody ng-repeat="group in groups" ng-controller="groupCtrl">
+      <tbody ng-repeat="group in groups" ng-controller="groupRowCtrl">
         <tr class="ng-table-group">
           <td colspan="3">
             <a href="" ng-click="group.$hideRows = !group.$hideRows">
@@ -23,4 +24,4 @@
         </tr>
       </tbody>
     </table>
-	 
+</div>
