@@ -380,7 +380,7 @@ angular.module('Mastermind.controllers.people')
       	$scope.ongoingProjects = result.data;
         	//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
       	
-      	ProjectsService.getMyCurrentProjects($scope.me).then(function(myCurrentProjects) {
+      	ProjectsService.getMyCurrentProjects(person).then(function(myCurrentProjects) {
           	var myProjects = myCurrentProjects.data;
           	for (var m=0; m< myProjects.length; m++) {
           		var myProj = myProjects[m];

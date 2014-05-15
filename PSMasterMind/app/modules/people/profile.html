@@ -99,54 +99,20 @@
     </div>
   </div>
   <div class="row padded-row">
-    <div ng-hide="editMode" class="well col-xs-12">
-      <div class="row">
-        <div class="col-xs-12">
-          <h3>My Projects</h3>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-12">
-          <span ng-hide="hasAssignments">There are no current assignments.</span>
-          <table class="table">
-            <tr ng-repeat="assignment in assignments" ng-show="hasAssignments">
-              <td data-title="'Project'"><a href="#{{assignment.project.resource}}"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.project.name}}: {{assignment.project.name}}</a>
-           <!-- <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
-                  <span  class="visible-xs">{{getRoleName(role.type.resource)}}</spam>
-                </div> -->
-              </td>
-              <!-- <td data-title="'Role'" class="hidden-xs" header-class="hidden-xs">
-                {{getRoleName(project.user.type.resource)}}
-              </td> -->
-              <td data-title="'Percentage'">
-                {{assignment.percentage}}%
-              </td>
-              <td data-title="'Start Date'" sortable="'startDate'" class="hidden-xs" header-class="hidden-xs">
-                <small>{{assignment.startDate | date:'longDate'}}</small>
-              </td>
-              <td data-title="'End Date'" sortable="'endDate'" class="hidden-xs" header-class="hidden-xs">
-                <span ng-show="assignment.endDate">
-                  <small>{{assignment.endDate | date:'longDate'}}</small>
-                </span>
-                <span ng-hide="assignment.endDate">N/A</span>
-              </td>
-              <td data-title="'Dates'" sortable="'startDate'" class="visible-xs" header-class="visible-xs">
-                <small>{{assignment.startDate | date:'shortDate'}}</small> <span
-                  ng-show="assignment.endDate">-
-                <small>{{assignment.endDate | date:'shortDate'}}</small></span> <span
-                  ng-hide="assignment.endDate">- N/A</span>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
     <div class="well col-xs-12">
       <div class="row">
-        <div class="col-xs-3 col-md-1 col-lg-1"><h3>Hours</h3></div>
-        <div class="col-xs-5 col-md-2 col-lg-2" style="padding-top: 15px;">
+        <div class="col-xs-2"><h3>Hours</h3></div>
+        <div class="col-xs-8 hour-views">
+          <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-default" ng-click="setHoursView('weekly')">
+              <input type="radio" name="options"> Week View
+            </label>
+            <label class="btn btn-default active" ng-click="setHoursView('monthly')">
+              <input type="radio" name="options"> Month View
+            </label>
+          </div>
         </div>
-        <div class="actions col-xs-4 col-md-9 col-lg-9 pageActions">
+        <div class="actions col-xs-2 pageActions" style="margin-top: 20px;">
           <button type="button" ng-show="canAddHours"
             class="btn btn-default pull-right" data-toggle="collapse" data-target="#newHoursDialog">
             <i class="fa fa-plus-square"></i> <span>Add</span>
@@ -210,28 +176,17 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-12">
-          <div class="btn-group center-block" data-toggle="buttons"
-               style="margin-top: 20px;">
-            <label class="btn btn-default" ng-click="setHoursView('weekly')">
-              <input type="radio" name="options"> Week View
-            </label>
-            <label class="btn btn-default active" ng-click="setHoursView('monthly')">
-              <input type="radio" name="options"> Month View
-            </label>
-          </div>
-        </div>
       </div>
       <div class="row" ng-hide="hasHours">
           <div class="col-xs-12">
             <div class="alert alert-warning" style="margin-top: 20px;">There are no logged hours.</div>
           </div>
       </div>
-      <div class="row" ng-if="hoursViewType == 'monthly'">
+      <div class="row" ng-if="hasHours && hoursViewType == 'monthly'">
         <div class="col-xs-12">
           <div class="row">
             <div class="col-xs-5 col-md-2 col-lg-2" style="margin-top: 20px; margin-bottom: 20px">
-              <select name="hoursPeriod" class="form-control" ng-if="hasHours"
+              <select name="hoursPeriod" class="form-control"
                       ng-model="selectedHoursPeriod" ng-change="handleHoursPeriodChanged()"
                       ng-required="true"
                       ng-options="f.value as f.name for f in hoursPeriods">
@@ -414,6 +369,61 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row padded-row">
+    <div ng-hide="editMode" class="well col-xs-12">
+      <div class="row">
+        <div class="col-xs-12">
+          <h3>My Projects</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div ng-show="isExec" class="col-xs-12">
+          <span ng-show="projects.length === 0">No current projects found.</span>
+          <table>
+            <tr ng-repeat="project in projects">
+              <td data-title="'Project'">
+                <a href="#{{project.resource}}"><i class="{{projectStateIcon(project)}}"></i> {{project.name}}: {{project.name}}</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div ng-hide="isExec" class="col-xs-12">
+          <span ng-hide="hasAssignments">No current projects found.</span>
+          <table class="table">
+            <tr ng-repeat="assignment in assignments" ng-show="hasAssignments">
+              <td data-title="'Project'">
+                <a href="#{{assignment.project.resource}}"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.project.name}}: {{assignment.project.name}}</a>
+           <!-- <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
+                  <span  class="visible-xs">{{getRoleName(role.type.resource)}}</spam>
+                </div> -->
+              </td>
+              <!-- <td data-title="'Role'" class="hidden-xs" header-class="hidden-xs">
+                {{getRoleName(project.user.type.resource)}}
+              </td> -->
+              <td data-title="'Percentage'">
+                {{assignment.percentage}}%
+              </td>
+              <td data-title="'Start Date'" sortable="'startDate'" class="hidden-xs" header-class="hidden-xs">
+                <small>{{assignment.startDate | date:'longDate'}}</small>
+              </td>
+              <td data-title="'End Date'" sortable="'endDate'" class="hidden-xs" header-class="hidden-xs">
+                <span ng-show="assignment.endDate">
+                  <small>{{assignment.endDate | date:'longDate'}}</small>
+                </span>
+                <span ng-hide="assignment.endDate">N/A</span>
+              </td>
+              <td data-title="'Dates'" sortable="'startDate'" class="visible-xs" header-class="visible-xs">
+                <small>{{assignment.startDate | date:'shortDate'}}</small> <span
+                  ng-show="assignment.endDate">-
+                <small>{{assignment.endDate | date:'shortDate'}}</small></span> <span
+                  ng-hide="assignment.endDate">- N/A</span>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>
