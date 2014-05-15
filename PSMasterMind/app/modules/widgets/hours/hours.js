@@ -232,6 +232,14 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             //console.log($scope.displayedHours[i])
             $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
           }
+          
+          // sync selected object with displayedHours collection
+          if ($scope.selected.hoursEntries) {
+	          $scope.selected.hoursEntries.unshift($scope.newHoursRecord);
+	        } else {
+	          $scope.selected.hoursEntries = [];
+	          $scope.selected.hoursEntries.unshift($scope.newHoursRecord);
+	        }
           // $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
         }
       }
@@ -252,11 +260,11 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     }
 
     $scope.deleteHoursRecord = function (index) {
-        	if ($scope.selected.hoursEntries[index] && $scope.selected.hoursEntries[index].hoursRecord) {
-      $scope.hoursToDelete.push($scope.selected.hoursEntries[index].hoursRecord.resource);
-      $scope.selected.hoursEntries.splice(index, 1);
+		if ($scope.selected.hoursEntries[index] && $scope.selected.hoursEntries[index].hoursRecord) {
+	      $scope.hoursToDelete.push($scope.selected.hoursEntries[index].hoursRecord.resource);
+	      $scope.selected.hoursEntries.splice(index, 1);
+	    }
     }
-        }
 
     //date formatter helper
     $scope.formatTheDate = function (d) {
