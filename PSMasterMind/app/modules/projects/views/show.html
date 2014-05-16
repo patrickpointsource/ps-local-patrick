@@ -3,6 +3,26 @@
 		<div class="col-xs-10 col-sm-9 col-lg-10"><h2>{{ title }} <span class="badge badge-important">{{messages.length}}</span></h2></div>
     	<div class="col-xs-2 col-sm-3 col-lg-2"><h3 class="pull-right"><i class="{{projectStateIcon(project)}}"></i> <span class="hidden-xs">{{projectState(project)}}</span></h3></div>
     </div>-->
+    <div class="row" style="background-color: white; padding-top: 15px; padding-left: 15px;">
+        <div class="col-xs-12 col-sm-6">
+            <h3 class="zero-margin">{{title}}</h3>
+            <h6 class="zero-margin">{{project.customerName || 'No Customer'}}</h6>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <table class="pull-right">
+                    <tr>
+                        <td>
+                            <button ng-hide="editMode || !canEdit()" class="btn project-button" ng-click="edit()">
+                                Edit
+                            </button>
+                        </td>
+                        <td style="padding-left: 10px;"><button class="btn project-button">Print</button></td>
+                        <td style="padding-left: 10px;"><input type="text" class="form-control pull-right" placeholder="search page"/></td>
+                    </tr>
+                </table>
+        </div>
+                 
+    </div>
     <div id="messages" class="row alert alert-danger" ng-show="messages.length > 0">
        <!--  <a class="close" data-dismiss="alert">&times;</a> -->
         <ul>
@@ -18,9 +38,9 @@
                 <li ng-class="{active: activeTab['/links']}"><a ng-click="tabSelected('/links')">Links</a></li>
             </ul>
         </div>
-        <div class="hidden-xs hidden-sm hidden-md col-lg-3"></div>
+        <!--<div class="hidden-xs hidden-sm hidden-md col-lg-3"></div>
         <div class="hidden-xs hidden-sm col-md-5 col-lg-4">
-                <table class="pull-right">
+                  <table class="pull-right">
                     <tr>
                         <td>
                             <button ng-hide="editMode || !canEdit()" class="btn" ng-click="edit()">
@@ -40,7 +60,7 @@
                         <td style="padding-left: 10px;"><input type="text" class="form-control pull-right" placeholder="search page"/></td>
                     </tr>
             </table>
-        </div>
+        </div>-->
     </div>
 
     <div class="row tab-content" >
