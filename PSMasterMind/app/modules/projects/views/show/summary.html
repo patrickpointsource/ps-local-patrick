@@ -17,10 +17,16 @@
 	</div>
 	<br />-->
 <div class="row summaryDescription">
-	<div class="col-xs-12 col-sm-6">
+	<div class="col-xs-12 col-sm-6" style="background-color: white; padding-bottom: 10px;">
 	    <div class="row">
 	       <div class="col-xs-12 col-sm-8">
 	           <h6>{{project.startDate | date}} - {{project.endDate? project.endDate:'?'| date}}</h6>
+	           <div class="row" style="padding-left: 15px;">
+	               <label class="zero-margin">Executive Sponsor: &nbsp</label><span>{{getExecutiveSponsor()}}</span>
+	           </div>
+	           <div class="row" style="padding-left: 15px;">
+                   <label class="zero-margin">Sales Sponsor: &nbsp </label> <span>{{getSalesSponsor() || '-'}}</span>
+               </div>
 	       </div>
 	       <div class="col-xs-12 col-sm-4">
 	           <h6><i class="{{projectStateIcon(project)}}"></i> <span>{{projectState(project)}}</span></h6>
@@ -34,7 +40,7 @@
       <div class="row content-header-gray project-content">
           <div class="col-xs-12">Terms:</div>
       </div>
-      <div class="row">
+      <div class="row" style="background-color: white; padding-bottom: 10px; margin-left: 15px; padding-top: 20px; margin-right: 0px;">
         <div class="col-xs-12 col-lg-6">
             <div class="row-fluid">
                 <div class="col-xs-12" ng-if="isFixedBid()">
@@ -84,14 +90,14 @@
 	
 <div class="row" ng-if="financeAccess">
 	<div class="col-xs-12" ng-if="isTandM_clientProject()">
-		<div class="row content-header-gray project-content" style="margin-top: 15px;">
+		<div class="row content-header-gray project-content" style="margin-top: 15px; margin-left: 0px;">
 			<div class="col-xs-12">
 				Project Rate Table (Total):
 			</div>
 		</div>
-		<div class="row" style="padding-left: 15px;">
+		<div class="row">
 			<div class="col-xs-12">
-				<table ng-table="sowRolesTableParams" class="table peopleList"
+				<table ng-table="sowRolesTableParams" class="table peopleList" style="background-color: white;"
 					template-pagination="custom/pager" compute-estimate="totalEstimate">
 					<thead>
 						<tr>
@@ -136,12 +142,12 @@
 	</div>
 </div>
 
-    <div class="row content-header-gray project-content">
+    <div class="row content-header-gray project-content" style="margin-left: 0px;">
 		<div class="col-xs-4">
 			Roles:
 		</div>
 	</div>
-	<div class="row rolesList">
+	<div class="row rolesList" style="background-color: white; margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-top: 10px; padding-bottom: 20px; margin-bottom: 20px;">
 		<!--  <div class="col-xs-12 col-sm-6 col-lg-4">
 			<div class="panel panel-default dashboard-widget">
 				<div class="panel-heading">Sponsors</div>
@@ -172,15 +178,21 @@
 		</div>
 		<div class="row" ng-repeat-end>
 		    <div class="row people-row role-row">
-		        <div class="col-xs-5 col-sm-6 role-prop">
+		        <div class="col-xs-5 col-sm-6 col-md-3 col-lg-3 role-prop">
                     <a ng-click="tabSelected('/assignments')" style="cursor: pointer;">{{roleGroups[role.type.resource].title}}</a>
                 </div>
-                <div class="col-xs-2 role-prop">
+                <div class="col-xs-2 col-md-1 col-lg-1 role-prop">
                     <span ng-show="role.rate.isFullyUtilized()">100%</span>
                     <span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>
                     <span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
                 </div>
-                <div class="hidden-xs col-sm-4 assignment-row" ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
+                <div class="hidden-xs col-sm-2 col-md-2 col-lg-2 role-prop">
+                    <label class="zero-margin">From: &nbsp</label>{{role.startDate}}
+                </div>
+                <div class="hidden-xs col-sm-2 col-md-2 col-lg-2 role-prop">
+                    <label class="zero-margin">To: &nbsp</label>{{role.endDate || '-'}}
+                </div>
+                <div class="hidden-xs col-sm-4 col-md-2 col-lg-2 assignment-row" ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
                     <strong>{{getCoverageValue(role)}}</strong>
                 </div>
                 <div class="col-xs-5 hidden-sm hidden-md hidden-lg" style="margin-top: 15px;" ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
