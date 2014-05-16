@@ -375,10 +375,10 @@ angular.module('Mastermind')
     $scope.getCoverageClass = function(role) {
     	var result = '';
     	
-    	/*if (role.isPastRole)
+    	if (role.isPastRole)
     		result = 'panel-default';
-    	else */
-    	if (role.percentageCovered == 0)
+    
+    	else if (role.percentageCovered == 0)
     		result = 'panel-danger';
     	else if (role.percentageCovered < 100)
     		result = 'panel-warning';
@@ -390,37 +390,7 @@ angular.module('Mastermind')
     
     $scope.getCoverageValue = function(role) {
     	var result = '';
-    	/*
-    	var HOURS_PER_WEEK = 40;
-    	var HOURS_PER_MONTH = 180;
-    	var isMonthly = role.rate.type == "hourly";
     	
-    	var getHours = function(h) {
-    		if (isMonthly)
-    			return Math.round(HOURS_PER_MONTH * h / HOURS_PER_WEEK);
-    		
-    		return h;
-    			
-    	}
-    	
-    	if (role.percentageCovered == 0)
-    		result = '-' + (role.rate.type == "weekly" ? role.rate.hoursPerWeek: role.rate.hoursPerMonth())
-    	else if (role.percentageCovered < 100)
-    		result = '-' + getHours(role.hoursNeededToCover);
-    	
-    	if (role.hoursExtraCovered > 0) {
-    		result = result ? ('/' + result): '';
-    		result = result + ' + ' + getHours(role.hoursExtraCovered);
-    	}
-    	
-    	if (result)
-    		result += isMonthly ? ' h/m': ' h/w'
-    		
-    	if (role.hoursExtraCovered > 0) {
-    		result = result ? ('/' + result): '';
-    		result = result + ' + ' + getHours(role.hoursExtraCovered);
-    	}
-    	*/
     	if (role.percentageCovered == 0)
     		result = 'Unassigned';
     	else if (role.percentageCovered < 100) {
@@ -430,11 +400,11 @@ angular.module('Mastermind')
     		if (role.coveredKMin > 0 && role.coveredKMin < 1){
     			result += result ? '/': '';
     			
-    			result += 'Inadequate';
+    			result += 'NEEDS ATTENTION';
     		}
     		
     	} else if (role.percentageCovered == 100)
-    		result = 'Adequate';
+    		result = 'OKAY';
     	
     	
     	

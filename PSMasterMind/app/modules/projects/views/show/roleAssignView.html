@@ -1,4 +1,4 @@
-<div class="row" ng-repeat="currentAssignee in role.assignees" 
+<div class="row assignee-row" ng-repeat="currentAssignee in role.assignees" 
 	ng-show="role.assignees && role.assignees.length > 0 && role.assignees[0].person && role.assignees[0].person.resource">
 	
 	<div class="col-xs-5 col-sm-2 form-group" ng-class="{error: isFieldInError('role')}">
@@ -8,24 +8,24 @@
 	     </a>           
 	</div>
 	
-	<div class="col-xs-12 col-sm-3 form-group ">
+	<div class="col-xs-12 col-sm-3 form-group person-abbreviation">
 		<label >
 			<span class="">{{roleGroups[role.type.resource].abbreviation}}</span>
-			</label>
+		</label>
 	</div>
 	<div class="col-sm-3 form-group hidden-xs">
 		<label >
-			<span class="">{{currentAssignee.startDate | date:'M/d/y'}} - </span>
+			<span class="">From {{currentAssignee.startDate | date:'M/d/y'}} to </span>
 			
 			<span ng-show="currentAssignee.endDate" class="">{{currentAssignee.endDate | date:'M/d/y'}}</span>
 			
-			<span ng-hide="currentAssignee.endDate">- N/A</span>
+			<span ng-hide="currentAssignee.endDate"> N/A</span>
 		</label>
 		
 	</div>
 	<div class="col-xs-4 form-group visible-xs">
-		<small>{{currentAssignee.startDate | date:'shortDate'}}</small>
-         <span ng-show="currentAssignee.endDate">-<br><small>{{currentAssignee.endDate | date:'shortDate'}}</small></span>
+		<small>From {{currentAssignee.startDate | date:'shortDate'}}</small>
+         <span ng-show="currentAssignee.endDate">to <br><small>{{currentAssignee.endDate | date:'shortDate'}}</small></span>
          <span ng-hide="currentAssignee.endDate">- N/A</span>
 	</div>
 	<div class="col-sm-4 form-group hidden-xs">
