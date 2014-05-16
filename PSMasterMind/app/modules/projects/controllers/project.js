@@ -392,7 +392,7 @@ angular.module('Mastermind')
     	var result = '';
     	
     	if (role.percentageCovered == 0)
-    		result = 'Unassigned';
+    		result = 'UNASSIGNED';
     	else if (role.percentageCovered < 100) {
     		if (role.daysGap)
     			result = 'Gaps'

@@ -65,12 +65,12 @@
 		                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'M/d/y'}}</small></span>
 		                      <span ng-hide="role.endDate">- N/A</span>
 		                      &nbsp;
-		                   	<span class="role-coverage col-xs-2">{{getCoverageValue(role)}}</span>
+		                   	<span ng-show="!editMode" class="role-coverage col-xs-2">{{getCoverageValue(role)}}</span>
 		                   	
 	                   
 	                   	<div class="pull-right  btn-group btn-group-sm" style="margin-top:-5px;">
-	                    	<a ng-if="editMode" class="btn btn-default" ng-mousedown="addNewAssignmentToRole($index, role)">
-					            <div class="hidden-xs"><i class="fa fa-plus-square"></i> <span > Add Assignment</span></div>
+	                    	<a ng-if="editMode" class="btn btn-default" ng-mousedown="addNewAssignmentToRole($index, role)" style="color: black;">
+					            <div class="hidden-xs"><span > Add New</span></div>
 	        					<div class="visible-xs"><i class="fa fa-plus-square"></i></div>
 					        </a>
 	                    </div>
