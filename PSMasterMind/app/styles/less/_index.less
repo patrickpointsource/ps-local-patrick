@@ -43,7 +43,7 @@
 	li {
 		width: 100%;
 		height: 50px;
-		margin-bottom: 5px;
+		// margin-bottom: 5px;
 	}
 }
 
@@ -61,7 +61,7 @@
 		a {
 			padding-left: 0 !important;
 			i {
-				margin-left: 20px;
+				margin-left: 15px;
 				margin-right: 15px;
 			}
 		}
@@ -71,6 +71,7 @@
 //bootstrap override for centering page title on left
 .navbar-header {
 	float: none;
+	height: 77px;
 }
 
 .navbar .appTitle{
@@ -192,9 +193,10 @@ header {
     .navbar-nav {
     	position:relative;
     	color: white;
+			height: 100%;
 
       li {
-		position:static;
+				position:static;
 
         &.active > a {
           box-shadow: 0 5px 0 @gray;
@@ -207,7 +209,7 @@ header {
         a {
         	position:static;
           padding-top: 13px;
-          padding-bottom: 13px;
+          padding-bottom: 8px;
 
           &:hover {
             box-shadow: 0 5px 0 @gray;
@@ -216,7 +218,7 @@ header {
           span {
           	position:relative;
           	top: -5px;
-						font-size: 15px;
+						font-size: 14px;
 						font-weight: bold;
           }
         }
@@ -227,37 +229,45 @@ header {
     ul.subnavbar {
     	display: none;
     	background-color: rgb(77, 77, 77);
-		position: absolute;
-		top:0px;
-		right:0px;
+			position: absolute;
+			top:0px;
+			right:0px;
 
-		width:210px;
-		min-height:100%;
-		z-index: 10001;
+			width:218px;
+			min-height:100%;
+			z-index: 10001;
 
 		li {
-			padding-left: 36px;
 			color: @navbar-subnavbar-color;
-			font-size: 13px;
+			font-size: 14px;
+			font-weight: normal;
 			white-space: nowrap;
 			text-transform: none;
 			a {
+				padding-left: 22px !important;
+				padding-bottom: 17px !important;
 				span {
+					color: @navbar-subnavbar-color;
 					top: 6px;
+					font-weight: normal;
 				}
 			}
 		}
 
 		li.subheader {
-			padding-left: 16px;
 			text-transform: uppercase;
 			font-size: 14px;
 			a {
-				color: @navbar-subnavbar-subheader-color !important;
+				padding-left: 15px !important;
+
+				span {
+					font-weight: bold;
+				}
 			}
 		}
 
-		li.subitems-header.subheader{
+		li.subitems-header.subheader {
+			display: none;
 			text-transform: none;
 			margin-bottom:0px !important;
 			a {
@@ -293,10 +303,43 @@ header {
 			background-color: @navbar-subnavbar-active-bg;
 
 			a {
-				background-color: @navbar-subnavbar-active-bg !important;
+				color: @turquoiseRegular !important;
+
+				i.fa-check {
+					display: inline-block;
+					position: absolute;
+					color: @turquoiseRegular;
+					right: 1px;
+					padding-top: 9px;
+				}
+					i.fa-circle-thin {
+						color: @gray-nav-circle-active;
+					}
 			}
 
 		}
+
+		li:hover, li a:hover {
+			background-color: @navbar-subnavbar-active-bg !important;
+
+			i.fa-circle-thin {
+				color: @gray-nav-circle-active;
+			}
+		}
+
+		li a {
+			i.fa-check {
+				display:none;
+			}
+				i.fa-circle-thin {
+					position: absolute;
+					right: -2px;
+					color: @gray-nav-circle;
+					font-size: 23px;
+					padding-top: 5px;
+				}
+		}
+
 
 		li.subitems-header {
 			height: 40px !important;
@@ -571,10 +614,11 @@ main {
 }
 
 header .navbar .user-info-container {
-	background-color: @mm-smoothbluelight;
+	//background-color: @mm-smoothbluelight;
 	height: 100%;
 	font-size: 18px;
 	color: #4a4a4a;
+	border-left: 1px solid @gray-light;
 }
 
 header .navbar .navbar-search {
@@ -584,6 +628,34 @@ header .navbar .navbar-search {
 		padding-top: 9px;
 		padding-bottom: 9px;
 	}
+}
+
+.navbar-search .navbar-form {
+	background-color: @gray-search;
+	margin: 0;
+	padding: 10px;
+
+		.input-group-addon {
+			padding: 6px 4px;
+			color: @gray-light-search;
+			background-color: @gray-search;
+			border: none;
+		}
+
+		input.form-control {
+			color: white;
+			background-color: @gray-search;
+			border: none;
+		}
+
+		// input[placeholder] {
+		// 	color: @gray-lighter-search;
+		// }
+
+		input:-moz-placeholder { color: @gray-lighter-search; }
+		input::-moz-placeholder { color: @gray-lighter-search; }
+		input:-ms-input-placeholder { color: @gray-lighter-search; }
+		input::-webkit-input-placeholder { color: @gray-lighter-search; }
 }
 
 header .navbar .navbar-breadcrumb {
