@@ -20,7 +20,8 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet"
 	href="bower_components/font-awesome/css/font-awesome.min.css" />
-	
+<link rel="stylesheet" href="fonts/icomoon/style.css" />
+
 <!-- build:css styles/site.css -->
 <link rel="stylesheet" href="bower_components/ng-table/ng-table.css" />
 <link rel="stylesheet"
@@ -47,7 +48,7 @@
 		</div>
 		<div id="appContent" ng-if="authState">
 			<header>
-				<nav class="navbar navbar-default navbar-fixed-top"  
+				<nav class="navbar navbar-default navbar-fixed-top"
 					role="navigation" id="navbar1">
 
 					<div class="nav-bar-container col-lg-10 col-md-8 col-sm-8 col-xs-8">
@@ -96,23 +97,23 @@
                                         </td>
                                     </tr>
                                 </table>
-					                   
 
-					                    
+
+
 
 					       </div>
-					      
+
 					   </div>
 					</div>
-						
-					
-					
+
+
+
 				</nav>
 
 				<!-- Fixed Z-index to make sure the user menu can pop over it -->
 				<nav class="navbar navbar-inverse navbar-fixed-top hidden-xs hidden-sm"
 					style="z-index: 900; top: 0px;" id="navbar2">
-					
+
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle" data-toggle="collapse"
 							data-target="#navbar-collapse">
@@ -124,7 +125,7 @@
 							<a class="appTitle navbar-brand" href="#"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
 						</div>
 					</div>
-					
+
 					<div class="navbar-search">
 				        <form class="navbar-form" role="search">
 					        <div class="input-group">
@@ -135,7 +136,7 @@
 					        </div>
 				        </form>
 			        </div>
-        
+
 					<ng-include src="'views/mainMenu.html'" onload="this.additionalClass=''"></ng-include>
 				</nav>
 			</header>
@@ -145,17 +146,17 @@
 				<article class="col-xs-12" ui-view></article>
 			</div>
 			</main>
-			
+
 			<!-- <footer class="text-center container"><br/><small>© 2014 PointSource, LLC. All rights reserved.</small></footer> -->
 
             <div class="modal modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <ng-include src="'modalTemplate'"/>
             </div>
-            
+
             <div class="modal modalYesNoCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <ng-include src="'modalTemplate'"/>
             </div>
-            
+
             <script type="text/ng-template" id="modalTemplate">
                 <div class="modal-dialog">
                     <div class="modal-content panel panel-info">
@@ -176,7 +177,7 @@
             </script>
 		</div>
 	</div>
-	
+
 	<!-- build:js scripts/modules.js -->
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 	<script type="text/javascript"
@@ -208,9 +209,9 @@
 	<script type="text/javascript" src="bower_components/masonry/dist/masonry.pkgd.js"></script>
 	<script type="text/javascript" src="bower_components/imagesloaded/imagesloaded.js"></script>
 	<!-- endbuild -->
-	
+
 	<script type="text/javascript" src="login/scripts/login.js"></script>
-	
+
 	<!-- build:js({.tmp,app}) scripts/scripts.js -->
 	<script src="scripts/app.js"></script>
 
@@ -271,11 +272,11 @@
 	<!-- Models -->
 	<script src="scripts/models/projects/project.js"></script>
 	<script src="scripts/models/projects/rates.js"></script>
-	
+
 	<!-- libs -->
 	<script src="scripts/libs/line-chart.js"></script>
 	<!-- endbuild -->
-	
+
 	<!-- libs (not compiled)-->
 	<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="wmbvg9mkhukv6m0"></script>
 	<script src="https://assets.yammer.com/assets/platform_embed.js"></script>
