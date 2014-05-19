@@ -555,6 +555,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
           }
 
           displayedHoursEntry.hoursEntries.unshift(hoursEntry);
+          
+          $scope.selected.hoursEntries.unshift( JSON.parse(JSON.stringify(hoursEntry)));
         }
       }
     }
