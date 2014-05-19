@@ -17,7 +17,7 @@
 	</div>
 	<br />-->
 <div class="row summaryDescription">
-	<div class="col-xs-12 col-sm-6" style="background-color: white; padding-bottom: 10px;">
+	<div class="col-xs-12 col-sm-6" style="background-color: white; padding-bottom: 10px; margin-bottom: 10px;">
 	    <div class="row">
 	       <div class="col-xs-12 col-sm-8">
 	           <h6>{{project.startDate | date}} - {{project.endDate? project.endDate:'?'| date}}</h6>
@@ -148,20 +148,6 @@
 		</div>
 	</div>
 	<div class="row rolesList" style="background-color: white; margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-top: 10px; padding-bottom: 20px; margin-bottom: 20px;">
-		<!--  <div class="col-xs-12 col-sm-6 col-lg-4">
-			<div class="panel panel-default dashboard-widget">
-				<div class="panel-heading">Sponsors</div>
-				<div class="panel-body">
-					<div class="row">
-						<div class="col-xs-12 col-sm-6"><label>Executive:</label><span>{{getExecutiveSponsor()}}</span></div>
-						<div class="col-xs-12 col-sm-6"><label>Sales:</label> <span>{{getSalesSponsor()}}</span></div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-xs-12 col-sm-6 col-lg-8">
-		    <button ng-hide="editMode || !projectManagementAccess" class="btn btn-default pull-right" ng-click="editAssignments()"><i class="fa fa-pencil-square-o"></i> <span>Edit Assignments</span></button>
-		</div>-->
 		<div ng-repeat-start="role in project.roles" ng-if="showSeparator(role, $index)" class="row">
 			<!--  <div class="row">
 				<hr  />
@@ -192,7 +178,7 @@
                 <div class="hidden-xs col-sm-2 col-md-2 col-lg-2 role-prop">
                     <label class="zero-margin">To: &nbsp</label>{{role.endDate || '-'}}
                 </div>
-                <div class="hidden-xs col-sm-4 col-md-2 col-lg-2 assignment-row" ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
+                <div class="hidden-xs col-sm-4 col-md-4 col-lg-4 assignment-row" ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
                     <strong>{{getCoverageValue(role)}}</strong>
                 </div>
                 <div class="col-xs-5 hidden-sm hidden-md hidden-lg" style="margin-top: 15px;" ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
