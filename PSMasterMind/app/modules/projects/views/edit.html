@@ -1,4 +1,4 @@
-<div ng-form="projectForm" ng-class="{submitted: submitAttempted}">
+<div ng-form="projectForm" ng-class="{'submitted project-form': submitAttempted, 'project-form': !submitAttempted}">
 
   <div class="row">
     <div class="col-xs-6 col-sm-7 col-md-8 col-lg-9">
@@ -42,14 +42,17 @@
 
   <div>
   <tabset>
-      <tab id="details" heading="Details">
+      <tab id="details" heading="Summary">
         <div ng-if="projectLoaded">
           <ng-include src="'modules/projects/views/show/details.html'"></ng-include>
         </div>
         </tab>
-      <tab id="roles" heading="Roles">
+      <tab id="roles" heading="Assignments">
         <div ng-if="projectLoaded">
+        <!-- 
           <ng-include src="'modules/projects/views/show/roles.html'"></ng-include>
+        -->
+        	 <ng-include src="'modules/projects/views/show/assignments.html'"></ng-include>
         </div>
       </tab>
     </tabset>

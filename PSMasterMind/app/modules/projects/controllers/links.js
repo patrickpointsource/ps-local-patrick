@@ -290,7 +290,7 @@ angular.module('Mastermind.controllers.projects')
     	});
     };
     
-    $rootScope.$on("project:loaded", function() {
+    var initLinks = function() {
     	/**
          * Jazz Hub Integration
          */
@@ -317,5 +317,10 @@ angular.module('Mastermind.controllers.projects')
         	$scope.links = result;
         	$scope.initLinksTable();
         });
-    })
+    }
+    
+    if (!$scope.project)
+    	$rootScope.$on("project:loaded", initLinks)
+    else
+    	initLinks();
 }]);

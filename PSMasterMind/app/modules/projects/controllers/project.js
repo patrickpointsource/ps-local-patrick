@@ -50,6 +50,7 @@ angular.module('Mastermind')
     	$scope.editMode = false;
         $scope.submitAttempted = false;
     	
+        $scope.$emit('project:close');
     	//Throw it away if it is a new project
 	      if($scope.isTransient){
 	        $state.go('projects.index');
@@ -472,6 +473,8 @@ angular.module('Mastermind')
             	}
               
                 $scope.showInfo(['Project successfully saved']);
+                
+                $scope.$emit('project:save');
                 
             	ProjectsService.getForEdit($scope.projectId).then(function(project){
                     $scope.project = project;

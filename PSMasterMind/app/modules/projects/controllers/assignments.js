@@ -8,8 +8,7 @@ angular.module('Mastermind.controllers.projects')
   .controller('AssignmentsCtrl',['$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'AssignmentService', '$location', 'ngTableParams',
   function ($scope, $rootScope, $filter, Resources, $state, $stateParams, AssignmentService, $location, TableParams) {
    
-	  $scope.editMode = false;
-	  
+	 
 	  // Table Parameters
 	  var params = {
 		  page: 1,            // show first page
@@ -375,12 +374,7 @@ angular.module('Mastermind.controllers.projects')
 	        if ($scope.currentTabStates[0].edit)
 	        	filter = null;
 	        // for some reasons $state.go do not recognize "replace" value
-	        /*
-	    	$state.go('projects.show', {
-	    			filter: filter, 
-					tabId: $scope.projectTabId
-				}, options);
-	        */
+	       
 	        var params = { 
     			//filter: filter, 
     			tabId: $scope.projectTabId,
@@ -556,7 +550,7 @@ angular.module('Mastermind.controllers.projects')
     	$scope.$emit('roles:assignments:change');
     }
     
-    $rootScope.$on("project:loaded", function() {
+    var initAssignments = function() {
     	for (var i = 0; i < $scope.project.roles.length; i ++)
     		$scope.project.roles[i].assignees = [];
     	
@@ -573,9 +567,22 @@ angular.module('Mastermind.controllers.projects')
         $scope.handleAssignmentsFilterChanged();
         
         // switch to edit mode if needed
-    	if ($state.params.edit  && $scope.projectManagementAccess){
+    	if (($scope.editMode || $state.params.edit)  && $scope.projectManagementAccess){
         	$scope.edit(true);
         }
+    }
+    
+    if (!$scope.project)
+    	$rootScope.$on("project:loaded", initAssignments)
+    else
+    	initAssignments();
+    
+    $rootScope.$on("project:save", function() {
+    	$scope.saveAssignment();
+    })
+    
+     $rootScope.$on("project:cancel", function() {
+    	 $scope.cancelAssignment();
     })
     
   }]);
