@@ -1,4 +1,4 @@
-angular.module('Mastermind').controller('StaffingDeficitWidgetCtrl',
+angular.module('Mastermind').controller('StaffingDeficitWidgetCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'AssignmentService',
   function ($scope, $state, $rootScope, Resources, AssignmentService) {
 
 
@@ -8,4 +8,4 @@ angular.module('Mastermind').controller('StaffingDeficitWidgetCtrl',
     });
 
   }
-);
+]);

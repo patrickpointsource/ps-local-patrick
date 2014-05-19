@@ -279,8 +279,9 @@ module.exports = function (grunt) {
               'images/{,*/}*.{gif,webp}',
               'fonts/**/*',
               'template/{,*/}*',
-              'login/{,*/}*'
-              ,'*.html', 'views/{,*/}*.html', 'views/{,*/}*/{,*/}*.html'
+              'login/{,*/}*',
+              'modules/{,*/}*.html', 'modules/{,*/}*/{,*/}*.html',
+              '*.html', 'views/{,*/}*.html', 'views/{,*/}*/{,*/}*.html'
             ]
           },
           {
@@ -338,9 +339,12 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            cwd: '<%= yeoman.dist %>/scripts',
-            src: '{,*/}*.js',
-            dest: '<%= yeoman.dist %>/scripts'
+            cwd: '<%= yeoman.dist %>',
+            src: [
+              'scripts/{,*/}*.js',
+              'modules/{,*/}*.js'
+            ],
+            dest: '<%= yeoman.dist %>'
           }
         ]
       }
