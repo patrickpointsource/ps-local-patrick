@@ -4,10 +4,6 @@
   </div>
   <div class="col-xs-12 col-sm-1">
   	  <div class="pull-right">
-	      <!-- <div class="btn-group">
-	        <button type="button" class="btn btn-default" ng-class="{active: showTableView}" ng-click="toggleTableView()"><i class="fa fa-table"></i> <span class="hidden-xs hidden-sm">Table</span></button>
-	        <button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> <span class="hidden-xs hidden-sm">Graph</span></button>
-	      </div> -->
       	<button type="button" class="btn project-button" ng-click="createProject()">
       	    <!-- <i class="fa fa-plus-square"></i>  -->
       	    <span>Add Project</span>
@@ -19,15 +15,16 @@
 			ng-model="filterText" autofocus />
   </div>
 </div>
-<br />
-
-<ng-include src="'modules/projects/views/projectsTable.html'"></ng-include>
-
-<!-- <div ng-if="showTableView">
+<div class="row" style="text-align: center;">
+    <div class="btn-group">
+        <button type="button" class="btn btn-default" ng-class="{active: showTableView}" ng-click="toggleTableView()"><i class="fa fa-table"></i> <span class="hidden-xs hidden-sm">Table</span></button>
+        <button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> <span class="hidden-xs hidden-sm">Graph</span></button>
+    </div> 
+</div>
+<div ng-if="showTableView">
 	<ng-include src="'modules/projects/views/projectsTable.html'"></ng-include>
 </div>
 
 <div ng-if="showGraphView">
 	<ng-include src="'modules/projects/views/projectsGraph.html'"></ng-include>
 </div>
- -->
