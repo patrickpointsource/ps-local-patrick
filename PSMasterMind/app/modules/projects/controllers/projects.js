@@ -9,7 +9,11 @@ angular.module('Mastermind.controllers.projects')
 
     //Default to no projects
     $scope.projects = [];
-
+    
+    $scope.fillStatuses = function() {
+    	
+    }
+    
     $scope.handleProjectFilterChanged = function(){
       var filter = $scope.projectFilter;
       // project entity columns which must be displkaye don UI
@@ -63,6 +67,10 @@ angular.module('Mastermind.controllers.projects')
      */
     function reloadProjects(result) {
         $scope.projects = result.data;
+        
+        for(var i = 0; i < $scope.projects.length; i++) {
+        	$scope.projects[i].state = ProjectsService.getProjectState($scope.projects[i]);
+        }
 //        //Reload the table
 //        if (!$scope.tableParams){
 //          $scope.tableParams = $scope.getTableData();
@@ -152,6 +160,127 @@ angular.module('Mastermind.controllers.projects')
 //        }
 //      });
 //    };
+    
+    $scope.sort = function(array, property, descending) {
+    	$scope.projects.sort(function(a, b) {
+    		if(!a[property] && !b[property]) {
+  			  return 0;
+  		  	}
+  		  	if(!a[property]) {
+  			  return 1;
+  		  	}
+  		  	if(!b[property]) {
+  			  return -1;
+  		  	}
+    		
+			if (a[property] < b[property]){
+			      return descending ? -1 : 1;
+			} else if (a[property] > b[property]) {
+			     return descending ? 1 : -1;
+			  } else{
+			      return 0;
+			    } 
+		});
+    }
+    
+    $scope.changeSort = function(type) {
+  	  
+  	  if(type) {
+  		  $scope.sortType = type;
+  	  }
+  	  
+  	  if(type == 'proj-desc') {
+  		  $scope.sort($scope.projects, 'name', true);
+  	  }
+  	  
+  	  if(type == 'proj-asc') {
+  		$scope.sort($scope.projects, 'name', false);
+  	  }
+  	  
+  	  if(type == 'cust-desc') {
+  		$scope.sort($scope.projects, 'customerName', true);
+  	  }
+  	  
+  	  if(type == 'cust-asc') {
+  		$scope.sort($scope.projects, 'customerName', false);
+  	  }
+  	  
+  	  if(type == 'sd-desc') {
+  		$scope.projects.sort(function(a, b) {
+			  if (new Date(a.startDate) < new Date(b.startDate)){
+			        return -1;
+			  } else if (new Date(a.startDate) > new Date(b.startDate)) {
+			       return 1;
+			    } else{
+			        return 0;
+			      } 
+		});
+  	  }
+  	  
+  	  if(type == 'sd-asc') {
+  		$scope.projects.sort(function(a, b) {
+			if (new Date(a.startDate) < new Date(b.startDate)){
+			      return 1;
+			} else if (new Date(a.startDate) > new Date(b.startDate)) {
+			     return -1;
+			  } else{
+			      return 0;
+			    }
+		});
+      }
+  	  
+  	  if(type == 'ed-desc') {
+  		$scope.projects.sort(function(a, b) {
+  			if(!a.endDate && !b.endDate) {
+    			return 0;
+    		  }
+    		  if(!a.endDate) {
+    			return 1;
+    		  }
+    		  if(!b.endDate) {
+    			return -1;
+    		}
+  			
+			if (new Date(a.endDate) < new Date(b.endDate)){
+			      return -1;
+			} else if (new Date(a.endDate) > new Date(b.endDate)) {
+			     return 1;
+			  } else{
+			      return 0;
+			    } 
+		});
+  	  }
+  	  
+  	  if(type == 'ed-asc') {
+  		$scope.projects.sort(function(a, b) {
+  			if(!a.endDate && !b.endDate) {
+    			return 0;
+    		  }
+    		  if(!a.endDate) {
+    			return 1;
+    		  }
+    		  if(!b.endDate) {
+    			return -1;
+    		}
+  			
+			if (new Date(a.endDate) < new Date(b.endDate)){
+			      return 1;
+			} else if (new Date(a.endDate) > new Date(b.endDate)) {
+			     return -1;
+			  } else{
+			      return 0;
+			    } 
+		});
+  	  }
+  	  
+  	  if(type == 'stat-desc') {
+  		$scope.sort($scope.projects, 'state', true);
+  	  }
+  	  
+  	  if(type == 'stat-asc') {
+  		$scope.sort($scope.projects, 'state', false);
+  	  }
+    }
     
     $scope.projectFilter = $state.params.filter ? $state.params.filter:'all';
     $scope.showTableView = $state.params.view?$state.params.view=='table':true;
