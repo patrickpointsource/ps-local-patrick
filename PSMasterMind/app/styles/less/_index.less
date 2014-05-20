@@ -388,8 +388,7 @@ header {
 	}
 
   #profile-photo {
-    height: 40px;
-    width: 40px;
+    margin: 0 auto;
     .img-circle;
   }
 
@@ -533,7 +532,11 @@ main {
         margin: 30px 0;
       }
 
-      .dashboard-widget {
+      #dashboard-widgets {
+				margin-top: 15px;
+			}
+			
+			.dashboard-widget {
       	&.panel-default{
 				border: none;
 				border-radius: 0;
@@ -597,17 +600,22 @@ main {
       }
 }
 
-.row .equal {
-	margin-bottom: 15px;
+.equal div[class*='col-'] {
+	margin-bottom: 5px;
 }
 
 .equal {
     overflow: hidden;
 }
 
-.equal .panel {
-    padding-bottom: 9000px;
-		margin-bottom: -9000px;
+@media (min-width: 1200px) {
+	.equal .panel {
+			padding-bottom: 9000px;
+			margin-bottom: -9000px;
+	}
+	.row {
+		margin-bottom: 15px;
+	}
 }
 
 #mainContent{

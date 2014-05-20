@@ -15,6 +15,9 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
       {'name' : 'Hours', 'templateLocation' : 'modules/widgets/hours/hours.html', 'available' : ['you', 'me', 'them']}
     ]
 
+    // Default dashboard view overwritten below if Exec or Management
+    $scope.dashboardScreen = 'views/dashboards/baseDashboard.html';
+
     //Load my profile for group and role checking
     Resources.refresh('people/me').then(function(me){
       $scope.me = me;
@@ -34,7 +37,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
         $scope.financeAccess = true;
         $scope.adminAccess = true;
         $scope.projectManagementAccess = true;
-        $scope.isExecutive = true;
+        $scope.dashboardScreen = 'views/dashboards/execDashboard.html';
       }
 
 	  /**
@@ -51,7 +54,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 	      $scope.financeAccess = true;
 	      $scope.adminAccess = true;
 	      $scope.projectManagementAccess = true;
-        $scope.isManager = true;
+        $scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
 	    }
 
 		/**
@@ -63,6 +66,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 		 */
 		if(me.groups && me.groups.indexOf('Project Management') !== -1){
 		    $scope.projectManagementAccess = true;
+        $scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
 		}
 
 		/**

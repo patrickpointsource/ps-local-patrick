@@ -1,82 +1,9 @@
-<br/>
-<div >
+<div>
   <div id="dashboard-widgets">
       <!--<div class="col-xs-12 col-lg-6"><div ng-repeat="widget in widgets">-->
           <!--{{widget.name}}-->
       <!--</div></div>-->
-      <div ng-show="!isExecutive && !isManager">
-      	<div class="row">
-        	<div class="col-xs-12 col-lg-12">
-      			<ng-include src="'modules/widgets/hours/hoursEntry.html'"></ng-include>
-      		</div>
-        </div>
-
-        <div class="row">
-          <div class="col-xs-12 col-lg-12">
-              <ng-include src="'modules/widgets/myProjects/myProjects.html'"></ng-include>
-          </div>
-        </div>
-
-        <div class="row equal">
-            <div class="col-xs-12 col-lg-6">
-              <ng-include src="'modules/widgets/projectKickoffs/projectKickoffs.html'"></ng-include>
-            </div>
-
-            <div class="col-xs-12 col-lg-6">
-              <ng-include src="'modules/widgets/people/people.html'"></ng-include>
-            </div>
-        </div>
-      </div>
-
-      <div ng-show="isExecutive">
-        <div class="row">
-          <div class="col-xs-12 col-lg-12">
-            <ng-include src="'modules/widgets/bookingForecast/bookingForecast.html'"></ng-include>
-          </div>
-        </div>
-
-        <div class="row equal">
-          <div class="col-xs-12 col-lg-6">
-            <ng-include src="'modules/widgets/currentProjects/currentProjects.html'"></ng-include>
-          </div>
-
-          <div class="col-xs-12 col-lg-6">
-            <ng-include src="'modules/widgets/projectKickoffs/projectKickoffs.html'"></ng-include>
-          </div>
-        </div>
-
-      </div>
-
-      <div ng-show="isManager">
-        <div class="row equal">
-          <div class="col-xs-12 col-lg-6">
-            <ng-include src="'modules/widgets/bookingForecast/bookingForecast.html'"></ng-include>
-          </div>
-
-          <div class="col-xs-12 col-lg-6">
-            <ng-include src="'modules/widgets/staffingDeficit/staffingDeficit.html'"></ng-include>
-          </div>
-
-        </div>
-
-        <div class="row equal">
-          <div class="col-xs-12 col-lg-6">
-            <ng-include src="'modules/widgets/currentProjects/currentProjects.html'"></ng-include>
-          </div>
-
-          <div class="col-xs-12 col-lg-6">
-            <ng-include src="'modules/widgets/projectKickoffs/projectKickoffs.html'"></ng-include>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-xs-12 col-lg-12">
-            <ng-include src="'modules/widgets/hours/hoursEntry.html'"></ng-include>
-          </div>
-        </div>
-
-      </div>
-
+      <ng-include src="dashboardScreen"></ng-include>
 
 
   </div> <!-- end widgets -->

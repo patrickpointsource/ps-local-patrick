@@ -269,7 +269,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
       var ret = "<span class=\"text-muted\">" + roles + totalHoursPerWeek + hoursLogged + "</span>";
       return ret;
     }
-
+    
     //Start Masonry
     //Initalize Masonry as late as possible
 //    var $container = $('#dashboard-widgets');
@@ -314,4 +314,3 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
 
     //End Masonry
   }]);
-
