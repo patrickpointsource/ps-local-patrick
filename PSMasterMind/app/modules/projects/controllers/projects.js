@@ -71,6 +71,8 @@ angular.module('Mastermind.controllers.projects')
         for(var i = 0; i < $scope.projects.length; i++) {
         	$scope.projects[i].state = ProjectsService.getProjectState($scope.projects[i]);
         }
+        
+        $scope.changeSort('proj-desc');
 //        //Reload the table
 //        if (!$scope.tableParams){
 //          $scope.tableParams = $scope.getTableData();
@@ -160,6 +162,14 @@ angular.module('Mastermind.controllers.projects')
 //        }
 //      });
 //    };
+    
+    $scope.switchSort = function(prop) {
+    	if($scope.sortType == prop + "-desc") {
+			$scope.changeSort(prop + "-asc");
+		} else {
+			$scope.changeSort(prop + "-desc");
+		}
+    }
     
     $scope.sort = function(array, property, descending) {
     	$scope.projects.sort(function(a, b) {
@@ -286,5 +296,4 @@ angular.module('Mastermind.controllers.projects')
     $scope.showTableView = $state.params.view?$state.params.view=='table':true;
     $scope.showGraphView = $state.params.view?$state.params.view=='graph':false;
     $scope.handleProjectFilterChanged();
-
   }]);

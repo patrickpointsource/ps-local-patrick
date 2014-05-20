@@ -1,52 +1,76 @@
 <div class="row people-list" style="padding-top: 0px;">
     <div class="col-xs-12">
-        <div class="row content-header-gray people-header">
-            <div class="col-md-1">
-            </div>
-            <div class="col-md-2 person-header-name">Project</div>
-            <div class="col-md-1 person-sorting">
+        <!--  <div class="row content-header-gray people-header">
+            <!-- <div class="hidden-xs hidden-sm col-md-1">
+            </div> ---
+            <div class="col-xs-3 col-md-2 person-header-name">Project</div>
+            <div class="hiddex-xs hidden-sm col-md-1 person-sorting">
                 <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'proj-asc'}" ng-click="changeSort('proj-asc')"></i></button>
                 <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'proj-desc'}"  ng-click="changeSort('proj-desc')"></i></button>
             </div>
-            <div class="col-md-1 person-header">Client</div>
-            <div class="col-md-1 person-sorting">
+            <div class="clearfix visible-xs"></div>
+            <div class="col-xs-3 col-md-1 person-header">Client</div>
+            <div class="hidden-xs hidden-sm col-md-1 person-sorting">
                 <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'cust-asc'}" ng-click="changeSort('cust-asc')"></i></button>
                 <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'cust-desc'}" ng-click="changeSort('cust-desc')"></i></button>
             </div>
-            <div class="col-md-1 person-header">Start Date</div>
-            <div class="col-md-1 person-sorting">
+            <div class="col-xs-2 col-md-1 person-header">Start Date</div>
+            <div class="hidden-xs hidden-sm col-md-1 person-sorting">
                 <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'sd-asc'}" ng-click="changeSort('sd-asc')"></i></button>
                 <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'sd-desc'}" ng-click="changeSort('sd-desc')"></i></button>
             </div>
-            <div class="col-md-1 person-header">End Date</div>
-            <div class="col-md-1 person-sorting">
+            <div class="col-xs-2 col-md-1 person-header">End Date</div>
+            <div class="hidden-xs hidden-sm col-md-1 person-sorting">
                 <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'ed-asc'}" ng-click="changeSort('ed-asc')"></i></button>
                 <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'ed-desc'}" ng-click="changeSort('ed-desc')"></i></button>
             </div>
-            <div class="col-md-1">Status</div>
-            <div class="col-md-1 person-sorting">
+            <div class="col-xs-2 col-md-2 person-header">Status</div>
+            <div class="hidden-xs hidden-sm col-md-1 person-sorting">
                 <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'stat-asc'}" ng-click="changeSort('stat-asc')"></i></button>
                 <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'stat-desc'}" ng-click="changeSort('stat-desc')"></i></button>
             </div>
-        </div>
+        </div>-->
 
-        <div class="row people-row" ng-repeat="project in projects | filter:filterText" style="padding-top: 0px; padding-bottom: 0px;">
-            <div class="col-md-1 project-icon-container">
-                <i class="{{projectStateIcon(project)}} fa-3x"></i>
+        <div class="row item-row" ng-repeat="project in projects | filter:filterText">
+            <div class="hidden-xs hidden-sm col-md-1 project-icon-container" style="min-height: 90px;">
+                <i class="{{projectStateIcon(project)}} fa-5x"></i>
             </div>
-            <div class="col-md-3 project-prop">
+            <div class="visible-xs visible-sm col-xs-2">
+                <i class="{{projectStateIcon(project)}}"></i>
+            </div>
+            
+            <div class="hidden-xs hidden-sm col-md-2 item-prop">
                 <a href="#{{project.resource}}">{{project.name}}</a>
             </div>
-            <div class="col-md-2 project-prop">
-                {{project.customerName}}
+            <div class="visible-xs visible-sm col-xs-5">
+                <a href="#{{project.resource}}">{{project.name}}</a>
             </div>
-            <div class="col-md-2 project-prop">
+            
+            <div class="hidden-xs hidden-sm col-md-2 item-prop">
+                {{project.customerName ? project.customerName : 'No customer'}}
+            </div>
+            <div class="visible-xs visible-sm col-xs-5">
+                {{project.customerName ? project.customerName : 'No customer'}}
+            </div>
+            
+            <div class="hidden-xs hidden-sm col-md-2 item-prop">
                 {{project.startDate | date}}
             </div>
-            <div class="col-md-2 project-prop">
+            <div class="visible-xs visible-sm col-xs-4">
+                {{project.startDate | date}}
+            </div>
+            
+            <div class="hidden-xs hidden-sm col-md-2 item-prop">
                 {{project.endDate | date}}
             </div>
-            <div class="col-md-2 people-utilization-rate">
+            <div class="visible-xs visible-sm col-xs-4">
+                {{project.endDate | date}}
+            </div>
+            
+            <div class="hidden-xs hidden-sm col-md-3 item-prop-big">
+                {{project.state}}
+            </div>
+            <div class="visible-xs visible-sm col-xs-4">
                 {{project.state}}
             </div>
         </div>

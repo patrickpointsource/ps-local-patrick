@@ -1,6 +1,34 @@
 <br />
 <div class="row">
-  <div class="col-xs-12 col-sm-8">
+  <div class="col-xs-12 col-sm-4">
+      <div class="btn-group sort-buttons">
+        <button type="button" class="btn btn-default" ng-class="{ 'active': sortType == 'proj-asc' || sortType == 'proj-desc'}" ng-click="switchSort('proj')">Project
+            <i class="fa fa-caret-up" ng-show="sortType == 'proj-asc'"></i>
+            <i class="fa fa-caret-down" ng-show="sortType == 'proj-desc'"></i>
+        </button>
+        <button type="button" class="btn btn-default" ng-class="{ 'active': sortType == 'cust-asc' || sortType == 'cust-desc'}" ng-click="switchSort('cust')">Client
+            <i class="fa fa-caret-up" ng-show="sortType == 'cust-asc'"></i>
+            <i class="fa fa-caret-down" ng-show="sortType == 'cust-desc'"></i>
+        </button>
+        <button type="button" class="btn btn-default" ng-class="{ 'active': sortType == 'sd-asc' || sortType == 'sd-desc'}" ng-click="switchSort('sd')">Start Date
+            <i class="fa fa-caret-up" ng-show="sortType == 'sd-asc'"></i>
+            <i class="fa fa-caret-down" ng-show="sortType == 'sd-desc'"></i>
+        </button>
+        <button type="button" class="btn btn-default" ng-class="{ 'active': sortType == 'ed-asc' || sortType == 'ed-desc'}" ng-click="switchSort('ed')">End Date
+            <i class="fa fa-caret-up" ng-show="sortType == 'ed-asc'"></i>
+            <i class="fa fa-caret-down" ng-show="sortType == 'ed-desc'"></i>
+        </button>
+        <button type="button" class="btn btn-default" ng-class="{ 'active': sortType == 'stat-asc' || sortType == 'stat-desc'}" ng-click="switchSort('stat')">Status
+            <i class="fa fa-caret-up" ng-show="sortType == 'stat-asc'"></i>
+            <i class="fa fa-caret-down" ng-show="sortType == 'stat-desc'"></i>
+        </button>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4" style="text-align: center;">
+      <div class="btn-group">
+        <button type="button" class="btn btn-default" ng-class="{active: showTableView}" ng-click="toggleTableView()"><i class="fa fa-table"></i> <span class="hidden-xs hidden-sm">Table</span></button>
+        <button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> <span class="hidden-xs hidden-sm">Graph</span></button>
+    </div> 
   </div>
   <div class="col-xs-12 col-sm-1">
   	  <div class="pull-right">
@@ -14,12 +42,6 @@
     <input class="form-control" placeholder="Filter Projects"
 			ng-model="filterText" autofocus />
   </div>
-</div>
-<div class="row" style="text-align: center;">
-    <div class="btn-group">
-        <button type="button" class="btn btn-default" ng-class="{active: showTableView}" ng-click="toggleTableView()"><i class="fa fa-table"></i> <span class="hidden-xs hidden-sm">Table</span></button>
-        <button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> <span class="hidden-xs hidden-sm">Graph</span></button>
-    </div> 
 </div>
 <div ng-if="showTableView">
 	<ng-include src="'modules/projects/views/projectsTable.html'"></ng-include>
