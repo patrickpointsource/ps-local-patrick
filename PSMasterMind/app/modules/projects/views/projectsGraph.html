@@ -1,6 +1,6 @@
 <div class="graph margin-top">
 <div id="projectsSummaryGraph">
-	<div class="row" ng-repeat="project in projects | filter:filterText | orderBy:'customerName'">
+	<div class="row item-row" ng-repeat="project in projects | filter:filterText">
 		<div class="title col-xs-12 col-md-3 col-lg-2">
 			<i class="{{projectStateIcon(project)}}"></i> <a href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a>
 		</div>
