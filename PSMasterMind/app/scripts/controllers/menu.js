@@ -91,6 +91,10 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			text: "Architects",
 			value: "architects",
 			handler: "handleSubitem"
+		},{
+			text: "Marketing",
+			value: "marketing",
+			handler: "handleSubitem"
 		}, {
 			text: "Digital Experience",
 			value: "digitalexperience",
