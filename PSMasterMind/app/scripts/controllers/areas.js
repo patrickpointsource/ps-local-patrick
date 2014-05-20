@@ -20,8 +20,8 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
       $scope.me = me;
 
       /**
-       * Members of the 'Executives' group... 
-       * 
+       * Members of the 'Executives' group...
+       *
        * Is in the Executive Sponsor List (queried from People collection)
        * Can edit any project (projectManagementAccess)
        * Can view all financial info (financeAccess)
@@ -34,11 +34,12 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
         $scope.financeAccess = true;
         $scope.adminAccess = true;
         $scope.projectManagementAccess = true;
+        $scope.isExecutive = true;
       }
-      
+
 	  /**
 	   * Members of the 'Management' group...
-	   * 
+	   *
 	   * Can edit any project (projectManagementAccess)
 	   * Can view all financial info (financeAccess)
 	   * Can make project assignments (projectManagementAccess)
@@ -50,11 +51,12 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 	      $scope.financeAccess = true;
 	      $scope.adminAccess = true;
 	      $scope.projectManagementAccess = true;
+        $scope.isManager = true;
 	    }
 
 		/**
 		 * Members of the 'Project Management' group...
-		 * 
+		 *
 		 * Can edit any project (projectManagementAccess)
 		 * Can make project assignments (projectManagementAccess)
 		 * View Staffing Deficits (projectManagementAccess)
@@ -62,10 +64,10 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 		if(me.groups && me.groups.indexOf('Project Management') !== -1){
 		    $scope.projectManagementAccess = true;
 		}
-		
+
 		/**
 		 * Members of the 'Sales' group...
-		 * 
+		 *
 		 * Is in the Sales Sponsor List (queried from People collection)
 		 * Can view all financial info (financeAccess)
 		 */
@@ -75,7 +77,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 
 		//console.log('Logged In');
 		$scope.authState = true;
-		
+
 		$scope.$emit('me:loaded')
     });
 
@@ -106,36 +108,36 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     $scope.getActiveAreaFilter = function(){
     	return $state.params ? $state.params.filter: "all"
     }
-    
+
     $scope.showHideMenu = function() {
-    	
+
     	var isToBeShown = !$('#navbar-collapse-mobile').hasClass('in');
     	//var menuWidth = $('#navbar-collapse-mobile').width();
     	var menuWidth = 280;
     	var minTopHeaderContentWidth = 90;
-    	
+
     	if (isToBeShown) {
     		if(!$('#appContent').data('origWidth'))
     			$('#appContent').data('origWidth', $('#appContent').width())
-    			
+
     		$('#appContent').css('width', $('#appContent').data('origWidth'));
     		$('#appContent').parent().css('overflow', 'hidden')
-    		
+
 	    	$('#appContent').animate({
 	    		marginLeft: menuWidth + 'px'
 	    	});
-    		
+
     		var paddingLeft = (menuWidth - 20);
     		var topHeaderWidth = $(".navbar.navbar-default.navbar-fixed-top").width();
-    		
+
     		if ((topHeaderWidth - paddingLeft) < minTopHeaderContentWidth){
     			var w = $(".navbar.navbar-default.navbar-fixed-top").width();
-    			
+
     			$(".navbar.navbar-default.navbar-fixed-top").data('origWidth', w)
-    			
+
     			$(".navbar.navbar-default.navbar-fixed-top").width( w + minTopHeaderContentWidth - (topHeaderWidth - paddingLeft) );
     		}
-    		
+
     		$(".navbar.navbar-default.navbar-fixed-top").animate({
 	    		paddingLeft:  paddingLeft + 'px'
 	    	});
@@ -146,7 +148,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 	    		$('#appContent').css('width', 'auto');
 	    		$('#appContent').parent().css('overflow', 'auto')
 	    	});
-    		
+
     		$(".navbar.navbar-default.navbar-fixed-top").animate({
 	    		paddingLeft: '0px'
 	    	}, function() {
@@ -154,17 +156,17 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 	    			$(".navbar.navbar-default.navbar-fixed-top").width($(".navbar.navbar-default.navbar-fixed-top").data('origWidth'))
 	    	});
     	}
-    	
+
     	$('#navbar-collapse-mobile').collapse('toggle');
     }
-    
+
     $scope.showMainMenu = function(e) {
     	e = e ? e: window.event;
     	e.preventDefault();
     	e.stopPropagation();
-    	
+
     	var subnavbar = $(e.target).closest('.subnavbar');
-    	
+
     	subnavbar.addClass('hidden');
     	return false;
     }
@@ -200,7 +202,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     	else
     		$state.go('people.index', {filter:filter});
     };
-    
+
     /*
      * Navigate to the staffing index.
      */
@@ -214,17 +216,17 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     $scope.showAdmin = function () {
       $state.go('admin');
     };
-    
+
     /**
      * Returns a label that represents the project's state
-     * 
+     *
      * You must pass the startDate,endDate,type and committed
      */
     $scope.projectState = function(project){
     	var state = ProjectsService.getProjectState(project);
     	return state;
     };
-    
+
     /**
      * Get the icon classes associated with a project state
      */
@@ -249,12 +251,12 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     	else if(state == 'Deal Lost'){
     		ret = 'fa fa-minus-circle';
     	}
-    	
-    	
-    	
+
+
+
     	return ret;
     }
-    
+
     $scope.getModal = function() {
     	return $rootScope.modalDialog;
     }

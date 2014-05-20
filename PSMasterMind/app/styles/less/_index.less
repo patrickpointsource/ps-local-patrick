@@ -535,10 +535,14 @@ main {
 
       .dashboard-widget {
       	&.panel-default{
-      	border-color: darken(@gray-light, 20%);
+				border: none;
+				border-radius: 0;
+				// border-color: darken(@gray-light, 20%);
 			.panel-heading{
 				background-color: @gray-light;
-				border-color: darken(@gray-light, 20%);
+				border: none;
+				border-radius: 0;
+				// border-color: darken(@gray-light, 20%);
 
 				&.trim-bottom-padding{
 					padding-bottom: 0px;
@@ -566,7 +570,7 @@ main {
 
         .dashboard-actions {
           position: relative;
-			top: -5px;
+					top: -5px;
         }
       }
 
@@ -591,6 +595,19 @@ main {
           }
         }
       }
+}
+
+.row .equal {
+	margin-bottom: 15px;
+}
+
+.equal {
+    overflow: hidden;
+}
+
+.equal .panel {
+    padding-bottom: 9000px;
+		margin-bottom: -9000px;
 }
 
 #mainContent{
@@ -646,6 +663,7 @@ header .navbar .navbar-search {
 			color: white;
 			background-color: @gray-search;
 			border: none;
+			box-shadow: none;
 		}
 
 		// input[placeholder] {
@@ -656,6 +674,8 @@ header .navbar .navbar-search {
 		input::-moz-placeholder { color: @gray-lighter-search; }
 		input:-ms-input-placeholder { color: @gray-lighter-search; }
 		input::-webkit-input-placeholder { color: @gray-lighter-search; }
+
+		input::-webkit-tap-highlight-color{ color: @gray-search; }
 }
 
 header .navbar .navbar-breadcrumb {

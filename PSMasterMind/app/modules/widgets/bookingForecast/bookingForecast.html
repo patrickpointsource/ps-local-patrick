@@ -1,15 +1,13 @@
-<div class="col-xs-12 col-lg-6 item" ng-show="projectManagementAccess || financeAccess" ng-controller="BookingForecastCtrl">
-    <div class="panel panel-default dashboard-widget">
-        <div class="panel-heading">
-            <i class="fa fa-users"></i> Booking Forecast
-            <div class="checkbox pull-right" style="margin-top:0px">
-                <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"/> Include Pipeline
-            </div>
+<div class="panel panel-default dashboard-widget" ng-show="projectManagementAccess || financeAccess" ng-controller="BookingForecastCtrl">
+    <div class="panel-heading">
+        <i class="fa fa-users"></i> Booking Forecast
+        <div class="checkbox pull-right" style="margin-top:0px">
+            <input type="checkbox" ng-model="bfShowPipeline" ng-change="handleFBShowPipeline(bfShowPipeline)"/> Include Pipeline
         </div>
-        <div class="panel-body">
-            <div style="max-height:350px">
-                <linechart  data="data" options="options" mode=""></linechart>
-            </div>
+    </div>
+    <div class="panel-body">
+        <div style="max-height:350px">
+            <linechart  data="data" options="options" mode=""></linechart>
         </div>
     </div>
 </div>
