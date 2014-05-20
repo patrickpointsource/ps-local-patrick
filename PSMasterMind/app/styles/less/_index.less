@@ -9,7 +9,7 @@
 }
 
 #navbar1 {
-  height: 78px;
+  height: 79px;
   left:280px;
 	background-color: @body-bg;
 	color: @gray-dark;
@@ -25,7 +25,21 @@
 
   #navbar1 .user-info-container {
   	background-color: @charcoleRegular;
+		border-left: none;
+		padding-right: 10px;
   }
+}
+
+@media (max-width: 780px) {
+	#navbar1 .user-info-container {
+		margin-left: -10px;
+	}
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+	#navbar1 .user-info-container {
+		margin-left: -25px;
+	}
 }
 
 #navbar2, .collapse.width.in {
@@ -43,7 +57,7 @@
 	li {
 		width: 100%;
 		height: 50px;
-		// margin-bottom: 5px;
+		margin-bottom: 5px;
 	}
 }
 
@@ -52,7 +66,7 @@
 
 	li a:hover, li.active a, li.active a:hover {
 		color: @navbar-default-link-active-color !important;
-		background-color: #4d4d4d !important;
+		background-color: @charcoleMedium !important;
 		box-shadow: none !important;
 	}
 
@@ -72,6 +86,7 @@
 .navbar-header {
 	float: none;
 	height: 77px;
+	border-bottom: 1px solid @gray-header-underline;
 }
 
 .navbar .appTitle{
@@ -127,11 +142,10 @@ header {
 
     .navbar-toggle {
       float: left;
-      margin-left: 15px;
+			margin-top: 28px;
       margin-right: 0;
       border: 0;
-      padding-left: 0;
-      padding-right: 0;
+      padding:2px 10px 2px 1px;
 
       .icon-bar {
         width: 15px;
@@ -194,6 +208,7 @@ header {
     	position:relative;
     	color: white;
 			height: 100%;
+			padding-top: 10px;
 
       li {
 				position:static;
@@ -209,7 +224,7 @@ header {
         a {
         	position:static;
           padding-top: 13px;
-          padding-bottom: 8px;
+          padding-bottom: 9px;
 
           &:hover {
             box-shadow: 0 5px 0 @gray;
@@ -243,6 +258,7 @@ header {
 			font-weight: normal;
 			white-space: nowrap;
 			text-transform: none;
+			margin-bottom: 1px;
 			a {
 				padding-left: 22px !important;
 				padding-bottom: 17px !important;
@@ -535,7 +551,7 @@ main {
       #dashboard-widgets {
 				margin-top: 15px;
 			}
-			
+
 			.dashboard-widget {
       	&.panel-default{
 				border: none;
@@ -600,10 +616,6 @@ main {
       }
 }
 
-.equal div[class*='col-'] {
-	margin-bottom: 5px;
-}
-
 .equal {
     overflow: hidden;
 }
@@ -640,10 +652,11 @@ main {
 
 header .navbar .user-info-container {
 	//background-color: @mm-smoothbluelight;
+	border-left: 1px solid @gray-light;
 	height: 100%;
 	font-size: 18px;
 	color: #4a4a4a;
-	border-left: 1px solid @gray-light;
+	padding: 0;
 }
 
 header .navbar .navbar-search {
