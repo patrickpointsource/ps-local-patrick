@@ -104,6 +104,8 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
         area = 'staffing';
       } else if ($state.includes('admin')) {
         area = 'admin';
+      } else if ($state.includes('reports')) {
+        area = 'reports';
       }
 
       return area;
@@ -229,6 +231,14 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
      */
     $scope.showAdmin = function() {
       $state.go('admin');
+    };
+    
+    
+    /*
+     * Navigate to the report index.
+     */
+    $scope.showReports = function() {
+      $state.go('reports');
     };
 
     /**

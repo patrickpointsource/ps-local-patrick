@@ -120,6 +120,12 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		handler: "showAdmin",
 		iconCss: "icon-admin",
 		isRender: $scope.adminAccess
+	}, {
+		text: "Reports",
+		value: "reports",
+		handler: "showReports",
+		iconCss: "icon-reports",
+		isRender: $scope.projectManagementAccess
 	}];
 
 	$scope.isSubitemSelected = function(subItem, item) {
@@ -150,8 +156,8 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		return result;
 	}
 
-	$scope.handleClick = function(handler, menuItem, subItem, subIndex) {
-		var e = window.event;
+	$scope.handleClick = function(e, handler, menuItem, subItem, subIndex) {
+		var e = e || window.event;
 
 		if (this[handler]) {
 			var li = $(e.target).closest('li');

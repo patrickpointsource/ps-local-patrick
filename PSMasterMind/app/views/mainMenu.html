@@ -1,6 +1,6 @@
 <ul ng-controller="MenuCtrl" class="nav navbar-nav {{additionalClass}}">
 	<li ng-repeat="menuItem in menuItems" ng-class="{active: activeArea() === '{{menuItem.value}}'}" ng-if="menuItem.isRender">
-		<a ng-click="handleClick(menuItem.handler)" class="{{menuItem.subItems.length > 0 ? 'close-dropdown hasSubmenu': 'close-dropdown'}}">
+		<a ng-click="handleClick($event, menuItem.handler)" class="{{menuItem.subItems.length > 0 ? 'close-dropdown hasSubmenu': 'close-dropdown'}}">
 			<i class="fa fa-2x fa-fw {{menuItem.iconCss}}"></i>
 			<span>{{menuItem.text}}</span>
 
@@ -13,7 +13,7 @@
 				<a class="close-dropdown"> <span>{{menuItem.text}}</span></a>
 			</li>
 			<li ng-repeat="subItem in menuItem.subItems" ng-class="{'active-subitem': isSubitemSelected(subItem, menuItem), 'subheader': subItem.subheader}">
-				<a ng-click="handleClick(subItem.handler, menuItem, subItem, $index)" class="close-dropdown">  <span>{{subItem.text}}</span><i class="fa fa-circle-thin"></i><i class="fa fa-check"></i></a>
+				<a ng-click="handleClick($event, subItem.handler, menuItem, subItem, $index)" class="close-dropdown">  <span>{{subItem.text}}</span><i class="fa fa-circle-thin"></i><i class="fa fa-check"></i></a>
 			</li>
 		</ul>
 

@@ -14,6 +14,8 @@
   angular.module('Mastermind.controllers.staffing', []);
   angular.module('Mastermind.models.projects', []);
   angular.module('Mastermind.services.projects', []);
+  angular.module('d3', []);
+  angular.module('Mastermind.directives', ['d3']);
   angular.module('Mastermind', [
     'ui.router',
     'ui.bootstrap.tabs',
@@ -21,6 +23,7 @@
     'restangular',
     'textAngular',
     'n3-charts.linechart',
+    'Mastermind.directives',
     'Mastermind.controllers.people',
     'Mastermind.controllers.projects',
     'Mastermind.controllers.staffing',
@@ -89,7 +92,7 @@
         .state('projects.show.tabEdit', {
           url: '/:edit',
           templateUrl: 'modules/projects/views/show.html',
-          //template: "<div ui-view />",
+          //template: '<div ui-view />',
           controller: 'ProjectCtrl',
           resolve: {
             editMode: function () {
@@ -126,8 +129,13 @@
           url: '/staffing',
           templateUrl: 'modules/staffing/staffing.html',
           controller: 'StaffingCtrl'
-        });
-    }])
+        })
+      .state('reports', {
+          url: '/reports',
+          templateUrl: 'modules/reports/views/reports.html',
+          controller: 'ReportsCtrl'
+        })
+     }])
     .config(['$compileProvider',
       function( $compileProvider ) {
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|skype|data):/);
@@ -163,7 +171,7 @@
              like
 
              ...
-             "_id": { "$oid": "..." }
+             '_id': { '$oid': '...' }
              ...
 
              Also, need to remove any keys that match '$$hashKey' because these are added by Angular and hated by Mongo
@@ -211,7 +219,7 @@
     	window.onbeforeunload = function (event) {
     		if($rootScope.formDirty){
     			var message = 'You have not saved your changes. Are you sure want to leave?';
-    			if (typeof event == 'undefined') {
+    			if (typeof event === 'undefined') {
     			    event = window.event;
     			}
     			if (event) {
@@ -229,27 +237,27 @@
   		  		event.preventDefault();
   		  		
   		  		$rootScope.modalDialog = {
-  		  			title: "Save Changes",
-  		  			text: "Would you like to save your changes before leaving?",
-	  		  		ok: "Yes",
-			  		no: "No",
-			  		cancel: "Cancel",
+  		  			title: 'Save Changes',
+  		  			text: 'Would you like to save your changes before leaving?',
+	  		  		ok: 'Yes',
+			  		no: 'No',
+			  		cancel: 'Cancel',
 			  		okHandler: function() {
 			  			return $rootScope.dirtySaveHandler().then(function(project) {//Unset dirty flag
 			  				$rootScope.formDirty = false;
-			  				$(".modalYesNo").modal('hide');
+			  				$('.modalYesNo').modal('hide');
 				  		});
   		  			},
   		  			noHandler: function() {
   		  				$rootScope.formDirty = false;
-  		  				$(".modalYesNo").modal('hide');
+  		  				$('.modalYesNo').modal('hide');
   		  			},
   		  			Handler: function() {
-  		  				$(".modalYesNo").modal('hide');
+  		  				$('.modalYesNo').modal('hide');
   		  			}
   		  		};
   		  		
-  		  		$(".modalYesNo").modal('show').on('hide.bs.modal', function(e) {
+  		  		$('.modalYesNo').modal('show').on('hide.bs.modal', function(e) {
   		  			if(!$rootScope.formDirty) {	  				
   		  				_this.state.go(toState);
   		  			}

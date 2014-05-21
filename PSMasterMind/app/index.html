@@ -202,7 +202,7 @@
 	<script type="text/javascript"
 		src="bower_components/textAngular/textAngular-sanitize.js"></script>
 	<script type='application/javascript' src='bower_components/fastclick/lib/fastclick.js'></script>
-	<script type="text/javascript" src="bower_components/d3/d3.js"></script>
+ 	<script type="text/javascript" src="bower_components/d3/d3.js"></script>
 	<script type="text/javascript" src="bower_components/moment/moment.js"></script>
 	<script type="text/javascript" src="bower_components/masonry/dist/masonry.pkgd.js"></script>
 	<script type="text/javascript" src="bower_components/imagesloaded/imagesloaded.js"></script>
@@ -221,6 +221,7 @@
 	<script src="scripts/services/people.js"></script>
 	<script src="scripts/services/roleTypes.js"></script>
 	<script src="scripts/services/jazzHubService.js"></script>
+	<script src="scripts/services/d3.js"></script>
 
 	<!-- Controllers -->
 	<script src="scripts/controllers/main.js"></script>
@@ -251,6 +252,8 @@
     <script src="modules/projects/services/assignment-service.js"></script>
     <script src="modules/projects/services/tasks-service.js"></script>
     <script src="modules/projects/services/LinksService.js"></script>
+     <!-- modules/reports -->
+    <script src="modules/reports/controllers/reports.js"></script>
 
     <!-- WIDGETS (modules/widgets) -->
     <script src="modules/widgets/hours/hours.js"></script>
@@ -262,10 +265,11 @@
     <script src="modules/widgets/myProjects/myProjects.js"></script>
     <script src="modules/widgets/people/people.js"></script>
 
-
 	<!-- Directives -->
 	<script type="text/javascript"
 		src="bower_components/angular-ui-bootstrap/src/tabs/tabs.js"></script>
+	<script type="text/javascript"
+		src="modules/reports/directives/d3Basic.js"></script>
 
 	<!-- Models -->
 	<script src="scripts/models/projects/project.js"></script>
