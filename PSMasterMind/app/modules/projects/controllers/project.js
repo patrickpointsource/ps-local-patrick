@@ -116,13 +116,13 @@ angular.module('Mastermind')
     };
     
     $scope.getExecutiveSponsorEmail = function() {
-    	if ($scope.project) {
-	    	var resource = $scope.project.executiveSponsor.resource;
-	    	var name = _.findWhere($scope.execs.members, { resource: resource }).mBox;
-	    	if(typeof name === 'undefined') {
-	    		name = '';
-	    	}
-	    	return name;
+    	if ($scope.project && $scope.project.executiveSponsor) {
+    			var resource = $scope.project.executiveSponsor.resource;
+    	    	var name = _.findWhere($scope.execs.members, { resource: resource }).mBox;
+    	    	if(typeof name === 'undefined') {
+    	    		name = '';
+    	    	}
+    	    	return name;
     	}
     };
     
@@ -596,6 +596,9 @@ angular.module('Mastermind')
      * Return servicesEstimate
      */
     $scope.getServicesEstimate = function(){
+      if($scope.project && $scope.project.terms) {
+    		
+    	
     	var svcsEst = 0;
     	if($scope.isFixedBid()) {
     		svcsEst = $scope.project.terms.fixedBidServicesRevenue;
@@ -625,6 +628,7 @@ angular.module('Mastermind')
     	}
 		
 		return svcsEst;
+	  }
     }
 
     /**
