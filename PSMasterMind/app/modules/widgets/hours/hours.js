@@ -23,6 +23,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     // fill it in hours controller
     $scope.hoursTasks = [];
     $scope.hasAssignment = false;
+    $rootScope.hasAssignment = false;
 
     var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     /**
@@ -71,6 +72,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
           //and not that you are an exec or sales sponsor
           if (myProj && myProj.status && myProj.status.hasAssignment) {
             $scope.hasAssignment = true;
+            $rootScope.hasAssignment = true;
           }
 
           for (var n = 0; n < $scope.ongoingProjects.length; n++) {
@@ -131,6 +133,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
           //and not that you are an exec or sales sponsor
           if (myProj && myProj.status && myProj.status.hasAssignment) {
             $scope.hasAssignment = true;
+            $rootScope.hasAssignment = true;
           }
 
           for (var n = 0; n < $scope.ongoingProjects.length; n++) {
@@ -232,7 +235,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             //console.log($scope.displayedHours[i])
             $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
           }
-          
+
           // sync selected object with displayedHours collection
           if ($scope.selected.hoursEntries) {
 	          $scope.selected.hoursEntries.unshift($scope.newHoursRecord);
@@ -555,7 +558,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
           }
 
           //displayedHoursEntry.hoursEntries.unshift(hoursEntry);
-          
+
           $scope.selected.hoursEntries.unshift( JSON.parse(JSON.stringify(hoursEntry)));
         }
       }

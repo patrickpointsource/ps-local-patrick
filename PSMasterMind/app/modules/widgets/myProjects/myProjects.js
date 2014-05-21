@@ -14,7 +14,7 @@ angular.module('Mastermind').controller('MyProjectsCtrl', ['$scope', '$state', '
       ProjectsService.getMyCurrentProjects($scope.me).then(function(myCurrentProjects) {
         $scope.myProjects = myCurrentProjects.data;
         if($scope.myProjects.length>0){
-          $scope.hasActiveProjects = true;
+          $rootScope.hasActiveProjects = true;
         }
 
         var myProjects = [];
