@@ -36,9 +36,12 @@
                     <label class="required-label control-label" for="type">Project Type:</label>
                 </div>
                 <div class="col-xs-8 col-sm-9">
-                        <label ng-class="{'active': project.type =='paid'}"><input id="project_type_paid" name="type" type="radio" value="paid" ng-model="project.type">PAID</label>
-                        <label ng-class="{'active': project.type =='poc'}"><input id="project_type_poc" name="type" type="radio" value="poc" ng-model="project.type">POC</label>
-                        <label ng-class="{'active': project.type =='invest'}"><input id="project_type_invest" name="type" type="radio" value="invest" ng-model="project.type">INVEST</label>
+                    <div class="btn-group sort-buttons project-edit-buttons" data-toggle="radio">
+                        <label class="btn" data-toggle="radio" ng-class="{'active': project.type =='paid'}"><input id="project_type_paid" name="type" type="radio" value="paid" ng-model="project.type"  hidden>PAID</label>
+                        <label class="btn" data-toggle="radio" ng-class="{'active': project.type =='poc'}"><input id="project_type_poc" name="type" type="radio" value="poc" ng-model="project.type"  hidden>POC</label>
+                        <label class="btn" data-toggle="radio" ng-class="{'active': project.type =='invest'}"><input id="project_type_invest" name="type" type="radio" value="invest" ng-model="project.type"  hidden>INVEST</label>
+                    </div>
+                        
                 </div>
             </div>
         </div>
@@ -125,27 +128,27 @@
 	<div class="well" ng-if="financeAccess">
 		<div class="row">
 		    <div class="col-xs-12 col-sm-6">
-		        <div class="row">
+		        <div class="row" style="margin-bottom: 20px;">
 		            <div class="hidden-xs col-sm-3">
-                <label>Bid Terms:&nbsp;</label> &nbsp;&nbsp;
-            </div>
-            <div class="hidden-xs col-sm-9">
-                <div class="btn-group sort-buttons" data-toggle="radio">
-                    <label class="btn" data-toggle="radio" ng-class="{'active': project.terms.type == 'timeAndMaterials'}">
-                        <input name="bid-terms" type="radio" value="timeAndMaterials" ng-model="project.terms.type" hidden>&nbsp;TIME &amp; MATERIALS &nbsp;&nbsp; 
-                    </label>
-                    <label class="btn" data-toggle="radio" ng-class="{'active': project.terms.type == 'fixed'}">
-                        <input name="bid-terms" type="radio" value="fixed" ng-model="project.terms.type" hidden>&nbsp;FIXED
-                    </label>
-                </div>
-            </div>
-            <div class="visible-xs col-xs-12">
-                <label>Bid Terms:&nbsp;</label>
-            </div>
-            <div class="visible-xs col-xs-12">
-                <input type="radio" value="timeAndMaterials" ng-model="project.terms.type">&nbsp;TIME &amp; MATERIALS&nbsp;&nbsp; 
-                <input type="radio" value="fixed" ng-model="project.terms.type">&nbsp;FIXED
-            </div>
+                        <label>Bid Terms:&nbsp;</label> &nbsp;&nbsp;
+                    </div>
+                    <div class="hidden-xs col-sm-9">
+                        <div class="btn-group sort-buttons project-edit-buttons" data-toggle="radio">
+                            <label class="btn" data-toggle="radio" ng-class="{'active': project.terms.type == 'timeAndMaterials'}">
+                                <input name="bid-terms" type="radio" value="timeAndMaterials" ng-model="project.terms.type" hidden>&nbsp;TIME &amp; MATERIALS &nbsp;&nbsp; 
+                            </label>
+                            <label class="btn" data-toggle="radio" ng-class="{'active': project.terms.type == 'fixed'}">
+                                <input name="bid-terms" type="radio" value="fixed" ng-model="project.terms.type" hidden>&nbsp;FIXED
+                            </label>
+                        </div>
+                    </div>
+                    <div class="visible-xs col-xs-12">
+                        <label>Bid Terms:&nbsp;</label>
+                    </div>
+                    <div class="visible-xs col-xs-12">
+                        <input type="radio" value="timeAndMaterials" ng-model="project.terms.type">&nbsp;TIME &amp; MATERIALS&nbsp;&nbsp; 
+                        <input type="radio" value="fixed" ng-model="project.terms.type">&nbsp;FIXED
+                    </div>
 		        </div>
 		    </div>
 			<div class="col-xs-12 col-sm-6">
@@ -192,9 +195,13 @@
 		        </div>
             </div>
             <div class="col-xs-12 col-sm-6">
-                 <label for="totalEstimatedValue">Total Estimated Value:</label>
-                (USD) {{(getServicesEstimate() +project.terms.softwareEstimate) |
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>TOTAL ESTIMATED VALUE:</strong></div>
+                    <div class="panel-body">
+                        {{(getServicesEstimate() +project.terms.softwareEstimate) |
                 currency}}
+                    </div>
+                </div>
             </div>
 		</div>
 		<div class="row">
