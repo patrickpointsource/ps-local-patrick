@@ -780,3 +780,73 @@ header .navbar .navbar-breadcrumb {
 .form-control::-webkit-input-placeholder { color: @gray-light-search; }
 
 .form-control::-webkit-tap-highlight-color{ color: @gray-search; }
+
+.hours-day-entry {
+	width: 100%;
+	height: 100%;
+	border-left: 1px solid #efefef;
+    border-right: 1px solid #efefef;
+    border-bottom: 1px solid #dbdbdb;
+    font-weight: bold;
+    color: #4d4d4d;
+}
+
+.hours-day-active {
+	background-color: #f7f7f7 !important; 
+	border-bottom-width: 0px;
+}
+
+.hours-logged {
+	min-height: 50px;
+	background-color: #f7f7f7 !important;
+	
+	.hours-empty {
+		text-align: center;
+		font-size: 15px;
+		color: #4d4d4d;
+		margin-top:16px;
+	}
+}
+
+.hours-logged-entry {
+	height: 50px;
+	border-bottom: 1px solid #fff;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	
+	span {
+		top: 15px;
+		position: relative;
+		display: inline-block;
+	}
+	 .hours-logged-value {
+	 	font-weight: bold;
+	 	font-size: 15px;
+	 	padding-left: 20px;
+	 	padding-right: 20px;
+	 }
+	 
+	 .hours-logged-project {
+	 	width: 24%;
+	 	font-weight: bold;
+	 	font-size: 15px;
+	 	color: #999999;
+	 }
+	 
+	 .hours-logged-desc {
+	 	color: #999999;
+	 	font-size: 14px;
+	 }
+	 
+	  .hours-logged-action {
+	  	float: right;
+	  	font-size: 15px;
+	  	color: #d1d1d1;
+	  	padding:8px;
+	  	margin-top:-4px;
+	  }
+	 
+}
+.hours-modal {
+	display: block;
+}

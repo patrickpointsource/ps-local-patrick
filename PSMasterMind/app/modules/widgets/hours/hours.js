@@ -3,16 +3,24 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
     $scope.checkForFutureness = function (date) {
       //flux capacitor
-      var a = moment().subtract('days', 1);
+      /*
+    	var a = moment().subtract('days', 1);
       var b = moment(date);
       var diff = a.diff(b);
-
+*/
+    	var a = moment();
+        var b = moment(date);
+      
+        
       var futureness;
-      if (diff < 0) {
+      
+      if (b.year() > a.year() || b.month() > a.month() || b.date() > a.date()) {
         futureness = true
       } else {
         futureness = false
       }
+      
+    	
       return futureness;
     }
 
@@ -188,17 +196,24 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         delete $scope.selected;
       } else {
             	// use deep cloning to prevent from errors when some entries were removed and then canceled
-                $scope.selected = JSON.parse(JSON.stringify(day));
-        $('#editHours').modal('show');
-        $scope.entryFormOpen = true;
+                $scope.selected = $scope.cloneDay(day);
+        //$('#editHours').modal('show');
+                $scope.entryFormOpen = true;
+                $scope.showHideHoursDialog(true)
+        
       }
     };
+    
+    $scope.setSelected = function(day) {
+    	$scope.selected = $scope.cloneDay(day);
+    }
 
     $scope.hideHoursEntry = function (day) {
       $scope.entryFormOpen = false
-      delete $scope.selected;
-      $('#editHours').modal('hide');
-
+      //delete $scope.selected;
+      
+      //$('#editHours').modal('hide');
+      $scope.showHideHoursDialog(false)
     };
 
 
@@ -367,15 +382,28 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             console.error("getHoursRecordsBetweenDates(" + $scope.thisWeekDates[0] + "," + $scope.thisWeekDates[6] + ") gave me no results");
           } else {
             $scope.displayedHours = result;
+            
             for (var i = 0; i < $scope.displayedHours.length; i++) {
               $scope.displayedHours[i].totalHours = 0;
 
               var futureness = $scope.checkForFutureness($scope.displayedHours[i].date);
+              
               $scope.displayedHours[i].futureness = futureness;
+              
               for (var j = 0; j < $scope.displayedHours[i].hoursEntries.length; j++) {
                 if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
                   $scope.displayedHours[i].totalHours = $scope.displayedHours[i].totalHours + $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours
+                  
+                  if ($scope.displayedHours[i].hoursEntries[j].hoursRecord.task) {
+                	  $scope.displayedHours[i].hoursEntries[j].task  = $scope.displayedHours[i].hoursEntries[j].hoursRecord.task;
+                	  Resources.resolve($scope.displayedHours[i].hoursEntries[j].task)
+                  }
                 }
+              }
+              
+              if ( !$scope.selected && $scope.displayedHours[i].date == $scope.todaysDate){
+            	  //$scope.selected = JSON.parse(JSON.stringify( $scope.displayedHours[i]));
+            	  $scope.selected = $scope.displayedHours[i];
               }
             }
           }
@@ -457,9 +485,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       }
 
       HoursService.updateHours(hoursRecords).then(function () {
-        $('#editHours').modal('hide');
+        //$('#editHours').modal('hide');
+    	  $scope.showHideHoursDialog(false)
         $scope.entryFormOpen = false;
-        delete $scope.selected;
+       // delete $scope.selected;
 
         $scope.hoursRequest();
       });
@@ -559,7 +588,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
           //displayedHoursEntry.hoursEntries.unshift(hoursEntry);
 
-          $scope.selected.hoursEntries.unshift( JSON.parse(JSON.stringify(hoursEntry)));
+          $scope.selected.hoursEntries.unshift( $scope.cloneDay(hoursEntry) );
         }
       }
     }
@@ -583,6 +612,14 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       $scope.hoursValidation = [];
     };
 
+    $scope.showHideHoursDialog = function(show) {
+    	$('#editHours').modal(show ? 'show': 'hide');
+    	//$('#editHours').css('display', show ? 'block !important': 'none !important')
+    }
+    
+    $scope.cloneDay = function(day) {
+    	return JSON.parse(JSON.stringify(day));
+    }
 
     $scope.$watch('displayedHours', function (value) {
       var val = value || null;
