@@ -133,7 +133,7 @@ th > span.hidden-xs {
 
 .project-form .tab-content > div
 {
-	padding-left: 20px; 
+	padding-left: 20px;
 	padding-right: 20px;
 }
 
@@ -238,6 +238,7 @@ th > span.hidden-xs {
 
 .assignment-row {
     font-size: 25px;
+    padding-top: 25px;
 }
 
 .assignment-red {
@@ -256,6 +257,7 @@ th > span.hidden-xs {
     background-color: white !important; 
     margin-left: 30px !important;
     margin-right: 30px !important;
+    padding-top: 0px !important;
 }
 
 .zero-margin {
@@ -268,6 +270,19 @@ th > span.hidden-xs {
 
 .project-button {
     padding: 8px 15px 8px 15px;
+    height: 40px;
+}
+
+.edit-button {
+    background-color: @smoothBlueRegular;
+    padding-top: 5px;
+    color: white;
+}
+
+.print-button {
+    background-color: @smoothBlueMedium;
+    padding-top: 5px;
+    color: white;
 }
 
 .role-prop {
@@ -284,5 +299,67 @@ th > span.hidden-xs {
 
     > i {
         margin-left: 25%;
+    }
+}
+
+.tab-buttons {
+    > button {
+        border: 1px solid @gray-light-search;
+    }
+}
+
+.active-tab {
+    background-color: white;
+}
+
+.icon-blue {
+    color: @smoothBlueRegular;
+}
+
+.project-icon-big {
+    background-color: @gray-search;
+    color: white;
+    width: 210px; 
+    height: 210px; 
+    border: 1px black solid;
+}
+
+.rate-table {
+    text-align: center;
+    
+    > thead > tr > th {
+        text-align: center;
+    }
+}
+
+.terms-rows {
+    > div > span {
+        color: gray;
+    }
+}
+
+.months-row {
+    height: 45px;
+    margin: 20px 0px 0px 0px;
+    
+    .active {
+        background-color: @smoothBlueMedium;
+    }
+        
+    .current {
+        background-color: @smoothBlueRegular;
+    }
+    
+    > div {
+        height: 45px;
+        padding: 10px 0px 0px 0px;
+        text-align: center;
+        background-color: @gray-light-search;
+        border: 1px solid white;
+
+        > span {
+            color: white;
+            font-weight: bold;
+        }
     }
 }

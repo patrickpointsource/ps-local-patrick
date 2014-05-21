@@ -34,7 +34,7 @@ angular.module('Mastermind')
   //Load the members of the executive Group
     var execQuery = {groups:'Executives'};
     var salesQuery = {groups:'Sales'};
-    var fields = {name:1,resource:1,familyName:1,givenName:1};
+    var fields = {name:1,resource:1,familyName:1,givenName:1,mBox:1};
 
     Resources.query('people', execQuery, fields, function(result){
     	$scope.execs = result;
@@ -115,10 +115,36 @@ angular.module('Mastermind')
     	}
     };
     
+    $scope.getExecutiveSponsorEmail = function() {
+    	if ($scope.project) {
+	    	var resource = $scope.project.executiveSponsor.resource;
+	    	var name = _.findWhere($scope.execs.members, { resource: resource }).mBox;
+	    	if(typeof name === 'undefined') {
+	    		name = '';
+	    	}
+	    	return name;
+    	}
+    };
+    
     $scope.getSalesSponsor = function() {
     	if($scope.project && $scope.project.salesSponsor){
     		var resource = $scope.project.salesSponsor.resource;
     		var name = _.findWhere($scope.sales.members, { resource: resource }).name;
+        	if(typeof name === 'undefined') {
+        		name = '';
+        	}
+    	}
+    	else {
+    		name = '';
+    	}
+    	
+    	return name;
+    };
+    
+    $scope.getSalesSponsorEmail = function() {
+    	if($scope.project && $scope.project.salesSponsor){
+    		var resource = $scope.project.salesSponsor.resource;
+    		var name = _.findWhere($scope.sales.members, { resource: resource }).mBox;
         	if(typeof name === 'undefined') {
         		name = '';
         	}
@@ -523,6 +549,16 @@ angular.module('Mastermind')
       
       return deferred.promise;
     };
+    
+    var SYMBOLS_FOR_DESCRIPTION = 100;
+    
+    var cutDescription = function(description) {
+    	if(description.length < SYMBOLS_FOR_DESCRIPTION) {
+    		return description;
+    	}
+    	
+    	return description.substring(0, SYMBOLS_FOR_DESCRIPTION);
+    }
     
     /**
      * Delete the loaded project
@@ -1868,8 +1904,10 @@ angular.module('Mastermind')
     if ($scope.projectId){
       ProjectsService.getForEdit($scope.projectId).then(function(project){
         $scope.project = project;
+        $scope.project.shortDescription = cutDescription($scope.project.description);
         $scope.handleProjectSelected();
         $scope.updateHoursPersons();
+        $scope.initMonths();
         
         if($scope.projectTabId == '') {
         	$scope.tabSelected('/summary');
@@ -1896,6 +1934,18 @@ angular.module('Mastermind')
         	$scope.activeTab[tab] = false;
         
         $scope.activeTab[$state.params.tabId] = true;
+    }
+    
+    $scope.showDescription = false;
+    
+    $scope.switchDescription = function(value) {
+    	$scope.showDescription = value;
+    }
+    
+    $scope.showFullTerms = false;
+    
+    $scope.showTerms = function(value) {
+    	$scope.showFullTerms = value;
     }
     
     $scope.csvData = null;
@@ -1931,6 +1981,71 @@ angular.module('Mastermind')
             }
           };
     
+    $scope.inMonth = function (month, year) {
+        var nextMonth = month === 11 ? 0 : (month + 1),
+          nextYear = month === 11 ? (year + 1) : year,
+          startDay = new Date(year, month, 1),
+          endDay = new Date(nextYear, nextMonth, 0);
+
+        // If the project start day is before the last day of this month
+        // and its end date is after the first day of this month.
+        var projectStarted =   new Date($scope.project.startDate) <= endDay;
+        var projectEnded = $scope.project.endDate &&  new Date($scope.project.endDate) <= startDay;
+        var returnValue =  projectStarted && !projectEnded;
+        return returnValue;
+    };
+    
+    $scope.isActiveMonth = function(offset) {
+    	if($scope.project) {
+    		var startDate = new Date($scope.project.startDate);
+    		var month = startDate.getMonth() + offset;
+    		var year = startDate.getFullYear();
+    		return $scope.inMonth(month, year);
+    	}
+    }
+    
+    $scope.isCurrentMonth = function(offset) {
+    	if($scope.project) {
+    		var startDate = new Date($scope.project.startDate);
+    		var month = startDate.getMonth() + offset;
+    		var year = startDate.getFullYear();
+    		
+    		var today = new Date();
+    		
+    		return month == today.getMonth() && year == today.getFullYear();
+    	}
+    }
+    
+    var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    $scope.getMonthName = function(offset) {
+    	if($scope.project) {
+    		var startDateMonth = new Date($scope.project.startDate).getMonth() + offset;
+            if (startDateMonth > 11) {
+            	startDateMonth = startDateMonth - 12;
+            }
+            return monthNamesShort[startDateMonth];
+    	}
+    };
+    
+    $scope.months = [];
+    
+    $scope.initMonths = function() {
+    	for(var i = 0; i < 12; i++) {
+    		var month = { name: $scope.getMonthName(i) };
+    		
+    		if($scope.isCurrentMonth(i)) {
+    			month.current = true;
+    		} else {
+    			if($scope.isActiveMonth(i)) {
+        			month.active = true;
+        		}
+    		}
+    		
+    		$scope.months.push(month);
+    	}
+    }
+      
     $scope.JSON2CSV = function(project, hours) {
         var str = '';
         var line = '';
