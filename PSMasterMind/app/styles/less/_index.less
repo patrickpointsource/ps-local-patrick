@@ -558,9 +558,9 @@ main {
 				border-radius: 0;
 				// border-color: darken(@gray-light, 20%);
 			.panel-heading{
-				background-color: @gray-light;
 				border: none;
 				border-radius: 0;
+				font-size: 18px;
 				// border-color: darken(@gray-light, 20%);
 
 				&.trim-bottom-padding{
@@ -588,8 +588,32 @@ main {
         }
 
         .dashboard-actions {
-          position: relative;
-					top: -5px;
+
+					a {
+						font-size: 14px;
+						display: inline-block;
+						padding: 13px 13px 10px 10px;
+						margin: -11px -13px;
+						color: @lightBlueWidgetActions !important;
+
+						&:hover {
+							color: white !important;
+							background-color: @smoothBlueMedium;
+							cursor: pointer;
+							text-decoration: none;
+						}
+
+						i {
+							font-size: 17px;
+							padding-right: 2px;
+						}
+
+					}
+
+					select.form-control {
+						font-size: 14px;
+						border-radius: 0;
+					}
         }
       }
 
@@ -748,3 +772,11 @@ header .navbar .navbar-breadcrumb {
     margin: 20px 0 10px 0;
     font-size: 16px;
 }
+
+// bootstrap override for placeholder text
+.form-control:-moz-placeholder { color: @gray-light-search; }
+.form-control::-moz-placeholder { color: @gray-light-search; }
+.form-control:-ms-input-placeholder { color: @gray-light-search; }
+.form-control::-webkit-input-placeholder { color: @gray-light-search; }
+
+.form-control::-webkit-tap-highlight-color{ color: @gray-search; }
