@@ -438,6 +438,22 @@ angular.module('Mastermind')
     	return result;
     }
     
+    $scope.getCoverageIcon = function(role) {
+    	var value = $scope.getCoverageValue(role);
+    	
+    	if(value == "OKAY") {
+    		return "fa fa-check assignment-icon-okay";
+    	}
+    	
+    	if(value == "NEEDS ATTENTIONS" || value == "Gaps") {
+    		return "fa fa-exclamation assignment-icon-warning";
+    	}
+    	
+    	if(value == "UNASSIGNED") {
+    		return "fa fa-times assignment-icon-danger";
+    	}
+    }
+    
 
 	$scope.getRoleCSSClass= function(abr, role) {
 		var result = 'panel ';

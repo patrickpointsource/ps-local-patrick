@@ -62,11 +62,14 @@
 							<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
 	                      	<span ng-show="role.rate.isFullyUtilized()">100%</span>
 	                      	
-	                		<small>from {{role.startDate | date:'M/d/y'}}</small>
+	                		 <small>from {{role.startDate | date:'M/d/y'}}</small>
 		                      <span ng-show="role.endDate">-<small>{{role.endDate | date:'M/d/y'}}</small></span>
 		                      <span ng-hide="role.endDate">- N/A</span>
 		                      &nbsp;
-		                   	<span ng-show="!editMode" class="role-coverage col-xs-2">{{getCoverageValue(role)}}</span>
+		                    
+		                   	<span ng-show="!editMode" class="role-coverage col-xs-2">
+		                   	     <i ng-show="!editMode" class="{{getCoverageIcon(role)}} pull-right"></i>
+		                   	</span>
 		                   	
 	                   
 	                   	<div class="pull-right  btn-group btn-group-sm" style="margin-top:-5px;">
