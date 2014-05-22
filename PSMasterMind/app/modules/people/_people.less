@@ -97,7 +97,7 @@
 .people-prop {
     padding-left: 0;
     padding-right: 0;
-    &>div {
+    &>div>div {
         color: #fff;
         background-color: #1ba2c1;
         text-align: center;
@@ -105,9 +105,10 @@
     }
     @media (min-width: @screen-sm-min) {
         height: 135px;
+        display: table;
         &>div {
-            position: relative;
-            top: 40%;
+            display: table-cell;
+            vertical-align: middle;
         }
     }
 }
@@ -145,10 +146,11 @@
     color: #3a3a3a;
     height: 135px;
     text-align: center;
+    display: table;
 
     a {
-        position: relative;
-        top: 40%;
+        display: table-cell;
+        vertical-align: middle;
     }
 }
 
@@ -161,9 +163,10 @@
     @media (min-width: @screen-sm-min) {
         height: 135px;
     }
+    display: table;
     &>div {
-        position: relative;
-        top: 40%;
+        display: table-cell;
+        vertical-align: middle;
     }
 }
 
