@@ -289,27 +289,66 @@ th > span.hidden-xs {
     margin-top: 10px;
 }
 
+.project-row {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.project-row-name {
+    padding-top: 20px;
+    
+    > a {
+        font-family: Open Sans Bold;
+        font-weight: bold;
+        font-size: 24px;
+        color: #3a3a3a;
+    }
+}
+
+.project-row-cust {
+    font-family: Open Sans Regular;
+    font-size: 16px;
+    color: #bfbfbf;
+    padding-top: 30px;
+}
+
+.project-row-dates {
+    font-family: Open Sans Regular;
+    font-size: 16px;
+    color: #737373;
+    padding-top: 30px;
+    
+    > i {
+        color: #d9d9d9;
+    }
+}
+
 .project-prop {
     padding-top: 25px; 
     color: black;
 }
 .project-icon-container {
-    padding-top: 10px; 
-    padding-bottom: 10px;
-
+    padding-top: 10px !important; 
+    padding-bottom: 10px !important;
+    background-color: #ace8e0;
     > i {
-        margin-left: 25%;
+        margin-right: 15%;
     }
 }
 
 .tab-buttons {
     > button {
+        background-color: #a6a6a6;
         border: 1px solid @gray-light-search;
+        font-family: 'Open Sans Bold'; 
+        font-weight: bold; 
+        font-size: 14px; 
+        color: #8c8c8c;
     }
 }
 
 .active-tab {
-    background-color: white;
+    background-color: white !important;
 }
 
 .icon-blue {
@@ -354,17 +393,57 @@ th > span.hidden-xs {
         height: 45px;
         padding: 10px 0px 0px 0px;
         text-align: center;
+        font-family: Open Sans ExtraBold;
+        color: #fff;
+        font-weight: bold;
+        font-size: 12px;
         background-color: @gray-light-search;
         border: 1px solid white;
-
-        > span {
-            color: white;
-            font-weight: bold;
-        }
     }
 }
 .project-edit-buttons {
     > label {
         border: 1px @gray-light-search solid;
+    }
+}
+.status-text {
+    display: inline; 
+    color: #d9d9d9; 
+    margin: 10px 10px 0px 0px;
+    font-family: 'Open Sans';
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.sponsors-header {
+    font-family: Open Sans Semibold;
+    color: #bfbfbf;
+    font-size: 14px;
+}
+
+.sponsors-row {
+    font-family: Open Sans Semibold;
+    color: #808080;
+    font-size: 14px;
+    font-weight: bold;
+    
+    > a {
+        font-family: Open Sans Semibold;
+        font-size: 12px;
+        color: @smoothBlueRegular;
+    }
+}
+
+.project-timeline {
+    font-size: 14px;
+    > span {
+        .text {
+            font-family: Open Sans Semibold;
+            color: #bfbfbf;
+        }
+        .time {
+            font-family: Open Sans Regular; 
+            color: @gray-lighter-search;
+        }
     }
 }
