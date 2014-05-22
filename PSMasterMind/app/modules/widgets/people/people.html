@@ -2,10 +2,13 @@
     <div class="panel-heading">
           <i class="fa fa-users"></i> People
           <div class="pull-right  btn-group btn-group-sm dashboard-actions">
-              <select class="pull-right btn-group-sm  form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
-                  <option value="" selected>Filter By Role</option>
-                  <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
-              </select>
+              <div class="styled-select">
+                  <select class="btn-group-sm  form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
+                      <option value="" selected>Filter By Role</option>
+                      <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
+                  </select>
+                  <i class="fa fa-chevron-down"></i>
+              </div>
           </div>
     </div>
     <div class="panel-body">

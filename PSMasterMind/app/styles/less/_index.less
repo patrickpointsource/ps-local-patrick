@@ -13,7 +13,7 @@
   left:280px;
 	background-color: @body-bg;
 	color: @gray-dark;
-	border-bottom-width: 0px;
+	border-bottom: 1px solid @gray-light;
 	border-top: 2px solid @turquoiseRegular;
 }
 
@@ -654,7 +654,7 @@ main {
 				// border-color: darken(@gray-light, 20%);
 			.panel-heading{
 				border: none;
-				border-radius: 0;
+				border-radius: 2px;
 				font-size: 18px;
 				// border-color: darken(@gray-light, 20%);
 
@@ -704,10 +704,33 @@ main {
 						}
 
 					}
-
+                    
+                    .styled-select {
+                        width: 175px;
+                        background-color: white;
+                        border: 1px solid @gray-light;
+                        border-radius: 2px;
+                        margin-top: -3px;
+                        
+                        i {
+                            color: @gray;
+                            padding: 5px 2px 0 0;
+                            position: absolute;
+                            top: 0;
+                            right: 6px;
+                        }
+                    }
+            
 					select.form-control {
+                        display: inline-block;
+                        height: 30px;
+                        min-height: 30px;
 						font-size: 14px;
+                        border: none !important;
 						border-radius: 0;
+                        -webkit-appearance: none;
+                        background: transparent;
+                        padding-right: 0;
 					}
         }
       }
