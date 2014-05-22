@@ -72,24 +72,21 @@
 }
 
 .people-image {
-    max-width: 50px;
-    max-height: 50px;
+    width: 100px;
+    height: 100px;
+    border: 5px solid #acdde8;
     .img-circle;
 }
 
 .people-list {
     margin-top: 0px;
-    padding-top: 25px;
 }
 
 .people-row {
-    background-color: @gray-light;
+    background-color: #fff;
     color: @smoothBlueRegular;
-    padding-top: 10px;
-    padding-bottom: 10px;
     margin: 10px 0 0 0;
-    border: 2px solid @charcoleMedium;
-    border-radius: 6px;
+    border: 1px solid #d0d0d0;
 }
 
 .people-header {
@@ -98,20 +95,76 @@
 }
 
 .people-prop {
-    padding-top: 20px;
-    padding-left: 0px;
+    padding-left: 0;
+    padding-right: 0;
+    &>div {
+        color: #fff;
+        background-color: #1ba2c1;
+        text-align: center;
+        font-size: 24px;
+    }
+    @media (min-width: @screen-sm-min) {
+        height: 135px;
+        &>div {
+            position: relative;
+            top: 40%;
+        }
+    }
 }
 
 .people-utilization-rate {
-    font-size: 40px;
-    padding-left: 0px;
+    text-align: center;
+    background-color: #f4f4f4;
+    font-size: 72px;
+    padding-left: 0;
+    padding-right: 0;
+    @media (min-width: @screen-sm-min) {
+        padding-top: 15px;
+        padding-bottom: 18px;
+    }
     font-weight: bold;
-    color: black;
-    padding-top: 0px;
+    color: #4d4d4d;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+    .percent {
+        font-size: 25px;
+    }
+}
+
+.person-image {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    padding: 0;
 }
 
 .person-name {
-    margin-left: 10px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #3a3a3a;
+    height: 135px;
+    text-align: center;
+
+    a {
+        position: relative;
+        top: 40%;
+    }
+}
+
+.person-title {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color: #737373;
+    text-align: center;
+    @media (min-width: @screen-sm-min) {
+        height: 135px;
+    }
+    &>div {
+        position: relative;
+        top: 40%;
+    }
 }
 
 .person-header-name {
@@ -149,5 +202,28 @@
 }
 
 .people-search {
-    padding-top: 40px;
+    padding-top: 30px;
+}
+
+.sort-buttons {
+    @media (min-width: @screen-sm-min) {
+        margin-top: 10px;
+    }
+    @media (max-width: @screen-sm-min) {
+        margin-top: 30px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .sort-button {
+        color: #fff;
+        background-color: @charcoleMedium;
+        text-transform: uppercase;
+        cursor: pointer;
+        padding: 10px;
+        
+        &.active {
+            background-color: @charcoleRegular;
+        }
+    }
 }

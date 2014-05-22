@@ -62,7 +62,22 @@ angular.module('Mastermind.controllers.people')
       $scope.changeSort = function(type) {
     	  
     	  if(type) {
-    		  $scope.sortType = type;
+	    	  if(type == 'name') {
+	    		  if($scope.sortType == 'name-desc')
+	    			  type = $scope.sortType = 'name-asc';
+	    		  else
+	    			  type = $scope.sortType = 'name-desc';
+	    	  } else if(type == 'role') {
+	    		  if($scope.sortType == 'role-desc')
+	    			  type = $scope.sortType = 'role-asc';
+	    		  else
+	    			  type = $scope.sortType = 'role-desc'
+	    	  } else if(type == 'rate') {
+	    		  if($scope.sortType == 'rate-desc')
+	    			  type = $scope.sortType = 'rate-asc';
+	    		  else
+	    			  type = $scope.sortType = 'rate-desc';
+	    	  }
     	  }
     	  
     	  if(type == 'name-desc') {
