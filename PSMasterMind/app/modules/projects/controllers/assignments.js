@@ -551,25 +551,27 @@ angular.module('Mastermind.controllers.projects')
     }
     
     var initAssignments = function() {
-    	for (var i = 0; i < $scope.project.roles.length; i ++)
-    		$scope.project.roles[i].assignees = [];
-    	
-    	$scope.roleTableParams = new TableParams(params, {
-    	  counts: [], // hide page counts control
-    	  total: $scope.project.roles.length, // length of data
-    	  getData: function ($defer, params) {
-    	    var data = $scope.project.roles;
-    	    var ret = data.slice((params.page() - 1) * params.count(), params.page() * params.count());
-    	    $defer.resolve(ret);
-    	  }
-    	});
-    	
-        $scope.handleAssignmentsFilterChanged();
-        
-        // switch to edit mode if needed
-    	if (($scope.editMode || $state.params.edit)  && $scope.projectManagementAccess){
-        	$scope.edit(true);
-        }
+    	if($scope.project && $scope.project.roles) {
+    		for (var i = 0; i < $scope.project.roles.length; i ++)
+        		$scope.project.roles[i].assignees = [];
+        	
+        	$scope.roleTableParams = new TableParams(params, {
+        	  counts: [], // hide page counts control
+        	  total: $scope.project.roles.length, // length of data
+        	  getData: function ($defer, params) {
+        	    var data = $scope.project.roles;
+        	    var ret = data.slice((params.page() - 1) * params.count(), params.page() * params.count());
+        	    $defer.resolve(ret);
+        	  }
+        	});
+        	
+            $scope.handleAssignmentsFilterChanged();
+            
+            // switch to edit mode if needed
+        	if (($scope.editMode || $state.params.edit)  && $scope.projectManagementAccess){
+            	$scope.edit(true);
+            }
+    	}
     }
     
     if (!$scope.project)

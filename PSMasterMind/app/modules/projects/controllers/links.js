@@ -295,28 +295,30 @@ angular.module('Mastermind.controllers.projects')
          * Jazz Hub Integration
          */
         //Look for a Jazz Hub Link
-        LinksService.getJazzHubProjects($scope.project.about).then(function(link){
-        	if(!link){
-        		 //Flag the project is not yet linked with Jazz Hub
-        	    $scope.notJHLinked = true;
-        	    //Flag to indicate we have not loaded jazz hub yet
-        	    $scope.JHProjectsLoaded = false;
-        	}
-        	else{
-        		$scope.jazzHubProject = link;
-    	    	
-    	    	$scope.linkWithJazzHub = false;
-    	    	$scope.linkedWithJazzHub = true;
-        	}
-        });
-        
-    	/**
-         * Fetch the list of links
-         */
-        LinksService.getWebLinks($scope.project.about).then(function(result){
-        	$scope.links = result;
-        	$scope.initLinksTable();
-        });
+      if($scope.project) {
+    	  LinksService.getJazzHubProjects($scope.project.about).then(function(link){
+          	if(!link){
+          		 //Flag the project is not yet linked with Jazz Hub
+          	    $scope.notJHLinked = true;
+          	    //Flag to indicate we have not loaded jazz hub yet
+          	    $scope.JHProjectsLoaded = false;
+          	}
+          	else{
+          		$scope.jazzHubProject = link;
+      	    	
+      	    	$scope.linkWithJazzHub = false;
+      	    	$scope.linkedWithJazzHub = true;
+          	}
+          });
+          
+      	/**
+           * Fetch the list of links
+           */
+          LinksService.getWebLinks($scope.project.about).then(function(result){
+          	$scope.links = result;
+          	$scope.initLinksTable();
+          });
+      }
     }
     
     if (!$scope.project)

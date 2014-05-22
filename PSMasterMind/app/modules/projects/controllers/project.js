@@ -105,7 +105,7 @@ angular.module('Mastermind')
     };
     
     $scope.getExecutiveSponsor = function() {
-    	if ($scope.project) {
+    	if ($scope.project && $scope.project.executiveSponsor) {
 	    	var resource = $scope.project.executiveSponsor.resource;
 	    	var name = _.findWhere($scope.execs.members, { resource: resource }).name;
 	    	if(typeof name === 'undefined') {
@@ -1062,8 +1062,10 @@ angular.module('Mastermind')
 			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries);
 		}
 		
-		for (var i = 0; $scope.organizedHours.length && i < $scope.organizedHours.length; i ++)
-			$scope.organizedHours[i].collapsed = false;
+		if($scope.organizedHours) {
+			for (var i = 0; $scope.organizedHours.length && i < $scope.organizedHours.length; i ++)
+				$scope.organizedHours[i].collapsed = false;
+		}
 	}
 	
 	$scope.applyCustomHoursPeriod = function() {
