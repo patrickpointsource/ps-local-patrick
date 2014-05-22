@@ -18,7 +18,7 @@
                       </div>
                  </div>
                  <div class="row" style="margin-top: 25px;">
-                      <div class="col-xs-12" style="font-family: Open Sans Regular; font-size: 14px; color: #8c8c8c;">
+                      <div class="col-xs-12">
                           <div ta-bind ng-if="project.shortDescription && !showDescription" ng-model="project.shortDescription" style="max-height: 20px;"></div>
                           <div ta-bind ng-if="project.description && showDescription" ng-model="project.description"></div>
                           <a ng-if="!showDescription && project.description.length > project.shortDescription.length" ng-click="switchDescription(true)" style="cursor: pointer;">see more</a>
