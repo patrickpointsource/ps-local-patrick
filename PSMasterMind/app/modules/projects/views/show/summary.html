@@ -19,7 +19,7 @@
                  </div>
                  <div class="row" style="margin-top: 25px;">
                       <div class="col-xs-12">
-                          <div ta-bind ng-if="project.shortDescription && !showDescription" ng-model="project.shortDescription" style="max-height: 20px;"></div>
+                          <div ta-bind ng-if="project.shortDescription && !showDescription" ng-model="project.shortDescription"></div>
                           <div ta-bind ng-if="project.description && showDescription" ng-model="project.description"></div>
                           <a ng-if="!showDescription && project.description.length > project.shortDescription.length" ng-click="switchDescription(true)" style="cursor: pointer;">see more</a>
                           <a ng-if="showDescription" ng-click="switchDescription(false)" style="cursor: pointer;">see less</a>
