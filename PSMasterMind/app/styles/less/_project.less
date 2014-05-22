@@ -436,14 +436,31 @@ th > span.hidden-xs {
 
 .project-timeline {
     font-size: 14px;
-    > span {
-        .text {
-            font-family: Open Sans Semibold;
-            color: #bfbfbf;
-        }
-        .time {
-            font-family: Open Sans Regular; 
-            color: @gray-lighter-search;
+}
+
+.proj-timeline-text {
+    font-family: Open Sans Semibold;
+    color: #bfbfbf;
+}
+
+.proj-timeline-date {
+    font-family: Open Sans Regular; 
+    color: @gray-lighter-search;
+}
+
+.full-terms {
+    margin-bottom: 0px;
+    
+    > div {
+        text-align: center;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        
+        > a {
+            font-family: Open Sans Regular;
+            font-size: 14px;
+            color: @smoothBlueRegular;
+            cursor: pointer;
         }
     }
 }
