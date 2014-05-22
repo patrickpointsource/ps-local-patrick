@@ -403,10 +403,105 @@ header {
 		}
 	}
 
-  #profile-photo {
-    margin: 0 auto;
-    .img-circle;
-  }
+	.navbar .user-info-container {
+		//background-color: @mm-smoothbluelight;
+		border-left: 1px solid @gray-light;
+		height: 100%;
+		font-size: 18px;
+		color: #4a4a4a;
+		padding: 0;
+
+		&:hover, &.open {
+			background-color: @gray-lighter;
+		}
+        
+        &.open {
+            box-shadow: -1px 0 7px 0 rgba(0, 0, 0, 0.175);
+            
+            .drop-cover {
+                margin-left: -21px;
+                background-color: @gray-lighter;
+                height: 7px;
+                width: 100%;
+                position: absolute;
+                bottom: -3px;
+                z-index: 400;
+            }
+            
+            #profile-photo {
+                box-shadow: 0 0 0 5px white;
+            }
+        }
+	}
+
+	#profile-photo {
+		margin: 15px auto;
+		cursor: pointer;
+		.img-circle;
+
+		&:hover {
+			box-shadow: 0 0 0 5px white;
+		}
+	}
+
+	.dropdown-menu {
+        margin: 0;
+        padding: 0;
+		top: 77px;
+		right: 0;
+		left: auto;
+		background-color: @gray-lighter;
+		border: 1px solid @gray-outline;
+		border-radius: 0;
+		width: 310px;
+        height: 252px;
+        box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.175);
+		z-index: 200;
+	}
+    
+    #profile-photo-full {
+        margin: 20px 15px 20px 20px;
+        height: 100px;
+        width: 100px;
+        border: 2px solid @gray-outline;
+        margin-right: 15px;
+    }
+    
+    #user-info {
+        padding-right: 20px;
+        
+        h4 {
+            margin-top: 25px;
+            padding-bottom: 20px;
+            font-size: 15px;
+            font-weight: bold;
+            color: @gray-dark;
+        }
+        
+        a {
+            font-size: 13px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+    }
+    
+    .employee-since {
+        color: @gray-light-headers;
+        background-color: white;
+        margin: 15px 0 0 0;
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid @gray-outline;
+    }
+    
+    .panel-actions {
+        background-color: white;
+        text-align: center;
+        padding: 15px 0;
+        .btn {
+            margin-right: 10px;
+        }
+    }
 
   #user-dropdown {
     padding: 10px 0px 0;
@@ -677,15 +772,6 @@ main {
     }
 }
 
-header .navbar .user-info-container {
-	//background-color: @mm-smoothbluelight;
-	border-left: 1px solid @gray-light;
-	height: 100%;
-	font-size: 18px;
-	color: #4a4a4a;
-	padding: 0;
-}
-
 header .navbar .navbar-search {
 	clear: both;
 
@@ -737,6 +823,7 @@ header .navbar .navbar-breadcrumb {
 	    background-color: #fff;
 	    white-space: nowrap;
 	    padding-top: 0px;
+        margin-bottom: 5px;
 	    > li {
             + li:before {
                 content: ">";
@@ -780,73 +867,3 @@ header .navbar .navbar-breadcrumb {
 .form-control::-webkit-input-placeholder { color: @gray-light-search; }
 
 .form-control::-webkit-tap-highlight-color{ color: @gray-search; }
-
-.hours-day-entry {
-	width: 100%;
-	height: 100%;
-	border-left: 1px solid #efefef;
-    border-right: 1px solid #efefef;
-    border-bottom: 1px solid #dbdbdb;
-    font-weight: bold;
-    color: #4d4d4d;
-}
-
-.hours-day-active {
-	background-color: #f7f7f7 !important; 
-	border-bottom-width: 0px;
-}
-
-.hours-logged {
-	min-height: 50px;
-	background-color: #f7f7f7 !important;
-	
-	.hours-empty {
-		text-align: center;
-		font-size: 15px;
-		color: #4d4d4d;
-		margin-top:16px;
-	}
-}
-
-.hours-logged-entry {
-	height: 50px;
-	border-bottom: 1px solid #fff;
-	border-left: 1px solid #fff;
-	border-right: 1px solid #fff;
-	
-	span {
-		top: 15px;
-		position: relative;
-		display: inline-block;
-	}
-	 .hours-logged-value {
-	 	font-weight: bold;
-	 	font-size: 15px;
-	 	padding-left: 20px;
-	 	padding-right: 20px;
-	 }
-	 
-	 .hours-logged-project {
-	 	width: 24%;
-	 	font-weight: bold;
-	 	font-size: 15px;
-	 	color: #999999;
-	 }
-	 
-	 .hours-logged-desc {
-	 	color: #999999;
-	 	font-size: 14px;
-	 }
-	 
-	  .hours-logged-action {
-	  	float: right;
-	  	font-size: 15px;
-	  	color: #d1d1d1;
-	  	padding:8px;
-	  	margin-top:-4px;
-	  }
-	 
-}
-.hours-modal {
-	display: block;
-}
