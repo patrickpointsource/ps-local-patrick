@@ -246,12 +246,12 @@ angular.module('Mastermind')
           				}
           			}
           			//Shift the end date
-          			if(role.endDate){
+          			/*if(role.endDate){
           				var tmpDate = new Date(role.endDate);
           				tmpDate = new Date(tmpDate.getTime() + delta);
           				tmpDate = $scope.validateShiftDates(startDate, endDate, tmpDate);
           				role.endDate = getShortDate(tmpDate);
-          			}
+          			}*/
           			
           			$scope.shiftAssignments(role, delta, 0);
           		}
@@ -264,7 +264,7 @@ angular.module('Mastermind')
             	var delta = endDate - initEndDate;
           		for(var i = 0; i < roles.length; i++) {
           			var role = roles[i];
-          			//Shift the start date
+          			//Shift the end date
           			if(role.endDate){
           				if(role.endDate == project.initEndDate){
           					role.endDate = project.endDate;
@@ -280,12 +280,12 @@ angular.module('Mastermind')
           				role.endDate = project.endDate;
           			}
           			//Shift the start date
-          			if(role.start){
+          			/*if(role.start){
           				var tmpDate = new Date(role.startDate);
           				tmpDate = new Date(tmpDate.getTime() + delta);
           				tmpDate = $scope.validateShiftDates(startDate, endDate, tmpDate);
           				role.startDate = getShortDate(tmpDate);
-          			}
+          			}*/
           			
           			$scope.shiftAssignments(role, 0, delta);
           		}
@@ -336,12 +336,12 @@ angular.module('Mastermind')
     				assignment.startDate = getShortDate(tmpDate);
     			
     				// shift end if exist
-    				if(assignment.endDate) {
+    				/*if(assignment.endDate) {
     					var tmpDate = new Date(assignment.endDate);
     					tmpDate = new Date(tmpDate.getTime() + startDelta);
     					tmpDate = $scope.validateShiftDates(new Date(role.startDate), new Date(role.endDate), tmpDate);
     					assignment.endDate = getShortDate(tmpDate);
-    				}
+    				}*/
     			}
     			
     			// if end date changed
@@ -353,10 +353,10 @@ angular.module('Mastermind')
     				assignment.startDate = getShortDate(tmpDate);
     			
     				// shift start
-    				var tmpDate = new Date(assignment.startDate);
+    				/*var tmpDate = new Date(assignment.startDate);
     				tmpDate = new Date(tmpDate.getTime() + endDelta);
     				tmpDate = $scope.validateShiftDates(new Date(role.startDate), new Date(role.endDate), tmpDate);
-    				assignment.endDate = getShortDate(tmpDate);
+    				assignment.endDate = getShortDate(tmpDate);*/
     				
     			}
     			
@@ -484,6 +484,7 @@ angular.module('Mastermind')
      * Save the loaded project.
      */
     $scope.save = function (dateShiftNeeded) {
+      $("#dateShiftConfirm").modal('hide');
       var deferred = $q.defer();	
     	
       var savingCallback = function() {
