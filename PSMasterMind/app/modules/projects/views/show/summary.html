@@ -4,7 +4,7 @@
         <!-- Header with big picture and info -->
         <div class="row" style="margin-top: 10px;">
              <div class="hidden-xs col-sm-5 col-md-4 col-lg-3">
-                  <div class="project-icon-big"><i class="{{projectStateIcon(project)}} fa-5x" style="margin: 70px 0 0 70px;"></i></div>
+                  <div class="project-icon-big"><i class="{{projectStateIcon(project)}} fa-5x" style="margin: 70px 0 0 70px; padding: 5px 0 0 15px;"></i></div>
              </div>
              <div class="col-xs-12 col-sm-7 col-md-8 col-lg-9">
                  <div class="row">
@@ -42,7 +42,7 @@
         </div>
         <!-- Dates -->
         <div class="row" style=" margin-top: 23px; margin-bottom: 25px; padding-right: 20px;">
-            <div class="col-xs-12 col-sm-6 col-sm-offset-6">
+            <div class="col-xs-12 col-sm-6 col-sm-offset-6" style="padding-right: 0px;">
                 <div class="pull-right project-timeline">
                     <span class="proj-timeline-text">Project timeline &nbsp</span>
                     <span class="proj-timeline-date">{{project.startDate | date}} &nbsp</span>
@@ -76,8 +76,9 @@
                     <span>Date of 1st Invoice: </span>
                     <label ng-if="project.terms.billingDate">{{getFormatedBillingDate()}}</label>
                 </div>
+                <div class="clearfix visible-xs visible-sm"></div>
                 <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Software $ In Plan:</span> <label>(USD)
+                    <span>Software $ In Plan:</span> <label>
                         {{(project.terms.softwareEstimate)?(project.terms.softwareEstimate):0
                         | currency}}</label>
                 </div>
@@ -98,6 +99,7 @@
                     <span>Billing Frequency: </span>
                     <label ng-if="project.terms.billingFrequency">{{getFormatedBillingFrequency()}}</label>
                 </div>
+                <div class="clearfix visible-xs visible-sm"></div>
                 <div class="col-xs-12 col-sm-6 col-md-3">
                     <span>Services $ In Plan:</span> <label>{{servicesTotal() |
                         currency}}</label>
