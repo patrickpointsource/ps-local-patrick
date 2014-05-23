@@ -22,7 +22,7 @@
     'ngTable',
     'restangular',
     'textAngular',
-    //'ngQuickDate',
+    'ngQuickDate',
     'n3-charts.linechart',
     'Mastermind.directives',
     'Mastermind.controllers.people',

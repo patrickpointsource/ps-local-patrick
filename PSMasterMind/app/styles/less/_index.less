@@ -30,18 +30,35 @@
   	background-color: @charcoleRegular;
 		border-left: none;
 		padding-right: 10px;
-  }
+      
+      &.open {
+          box-shadow: none;
+      }
+    }
+    
+    .user-info-container .drop-cover {
+        bottom: -8px !important;
+    }
 }
 
 @media (max-width: 780px) {
 	#navbar1 .user-info-container {
 		margin-left: -10px;
+        width: 57px;
+        
+        &.open {
+          box-shadow: none;
+      }
 	}
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
 	#navbar1 .user-info-container {
 		margin-left: -25px;
+        
+        &.open #profile-photo {
+          box-shadow: none;
+      }
 	}
 }
 
@@ -90,7 +107,7 @@
 //bootstrap override for centering page title on left
 .navbar-header {
 	float: none;
-	height: 77px;
+	height: 75px;
 	border-bottom: 1px solid @gray-header-underline;
 }
 
@@ -710,8 +727,8 @@ main {
 					a {
 						font-size: 14px;
 						display: inline-block;
-						padding: 13px 13px 10px 10px;
-						margin: -11px -13px;
+						padding: 10px 12px 10px 10px;
+						margin: -13px -13px;
 						color: @lightBlueWidgetActions !important;
 
 						&:hover {
