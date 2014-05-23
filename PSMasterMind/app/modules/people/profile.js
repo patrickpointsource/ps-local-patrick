@@ -14,12 +14,10 @@ angular.module('Mastermind.controllers.people')
 	  $scope.loadAvailableTasks = function() {
       	TasksService.refreshTasks().then(function(tasks) {
       		_.each(tasks, function(t){
-      			$scope.hoursTasks.push(t)
-      		})
-      		
-      		
-      	})
-      }
+      			$scope.hoursTasks.push(t);
+      		});
+      	});
+      };
 	  
 	  $scope.loadAvailableTasks();
 	  
@@ -42,7 +40,7 @@ angular.module('Mastermind.controllers.people')
       });
       
       // add unspecified item to roles dropdown
-      $scope.allRoles.unshift({"title": UNSPECIFIED});
+      $scope.allRoles.unshift({'title': UNSPECIFIED});
       
       $scope.rolesMap = rolesMap;
 
@@ -162,7 +160,7 @@ angular.module('Mastermind.controllers.people')
       Resources.update(profile).then(function(person){
       	var fields = {resource:1,name:1, familyName: 1, givenName: 1, primaryRole:1,thumbnail:1};
       	var params = {'fields':fields};
-      	var key = "people?" + JSON.stringify(params);
+      	var key = 'people?' + JSON.stringify(params);
      
       	delete localStorage[key];      
       	
@@ -180,8 +178,8 @@ angular.module('Mastermind.controllers.people')
       });
     };
     
-    $scope.monthNames = [ "January", "February", "March", "April", "May", "June",
-		                   "July", "August", "September", "October", "November", "December" ];
+    $scope.monthNames = [ 'January', 'February', 'March', 'April', 'May', 'June',
+		                   'July', 'August', 'September', 'October', 'November', 'December' ];
 
     $scope.initHours = function(){
       var projectHours = [];
@@ -200,8 +198,7 @@ angular.module('Mastermind.controllers.people')
         $scope.hasHours = $scope.hours.length > 0;
         
         for(var i = 0; i < $scope.hours.length; i++) {
-        	var hour = $scope.hours[i];
-        	
+        	var hour = $scope.hours[i];        	
         	if(hour.task && hour.task.resource) {
         		var taskRes = $scope.hours[i].task.resource;
             	var task = _.findWhere($scope.hoursTasks, { resource: taskRes});
@@ -209,17 +206,15 @@ angular.module('Mastermind.controllers.people')
         	}
         }
         
-        var projects = _.pluck($scope.hours, "project");
-        
-        projects = _.filter(projects, function(p){if (p) return true});
-        projects = _.pluck(projects, "resource");
-        
+        var projects = _.pluck($scope.hours, 'project');
+        projects = _.filter(projects, function(p){if (p){ return true;}});
+        projects = _.pluck(projects, 'resource');        
         projects = _.uniq(projects);
         
         // filter array to avoid empty entries
         projects = _.filter(projects, function(p){
         	return p ? true: false;
-        })
+        });
         
         var currentMonth = new Date().getMonth();
         var currentYear = new Date().getFullYear();
@@ -227,58 +222,69 @@ angular.module('Mastermind.controllers.people')
         for(var projCounter = 0; projCounter < projects.length; projCounter++){
         	var project = ProjectsService.getForEditByURI(projects[projCounter]).then(function(result) {
         		
-        		var projectHour = { projectURI: result.about, project: result, hours: [], collapsed: false, icon: $scope.projectStateIcon(result) }
+        		var projectHour = { projectURI: result.about, 
+        							project: result, 
+        							hours: [], 
+        							collapsed: false, 
+        							icon: $scope.projectStateIcon(result),
+        							totalHours: 0};
         		var taskHour = null;
     		 	var tasksMap = {};
-    	        var tasksHoursMap = {};
+    	        var tasksHoursMap = {hours: [], 
+    	        					 show: true};
         	        
         		for(var hoursCounter = 0; hoursCounter < $scope.hours.length; hoursCounter++) {
-        			taskHour = null;
-        			
-        			var tmpD = $scope.hours[hoursCounter].date.split('-');
-            		
+        			taskHour = null;        			
+        			var hoursData = $scope.hours[hoursCounter];
+        			var tmpD = hoursData.date.split('-');            		
         			var hoursMonth = parseInt(tmpD[1]) - 1;
         			var hoursYear = parseInt(tmpD[0]);
-        			
-        			if($scope.hours[hoursCounter].project && $scope.hours[hoursCounter].project.resource == result.about) {
-            			
-            			projectHour.hours.push({hour: $scope.hours[hoursCounter], show: (currentMonth == hoursMonth && currentYear == hoursYear)});
-            		} else if($scope.hours[hoursCounter].task) {
-            			if (!tasksMap[$scope.hours[hoursCounter].task.resource])
-            				tasksMap[$scope.hours[hoursCounter].task.resource] = $scope.hours[hoursCounter].task
-            				
-        				if (!tasksHoursMap[$scope.hours[hoursCounter].task.resource])
-        					tasksHoursMap[$scope.hours[hoursCounter].task.resource] = []
-            			
-            			tasksHoursMap[$scope.hours[hoursCounter].task.resource].push({hour: $scope.hours[hoursCounter], show: (currentMonth == hoursMonth && currentYear == hoursYear)})
-            		}
+        			var timeValue = 0;
+        			        			
+        			if(hoursData.project && hoursData.project.resource == result.about) {
+        					timeValue = hoursData.hours;
+        					projectHour.totalHours += timeValue;
+		            		projectHour.hours.push({hour: hoursData, 
+		            			                    show: (currentMonth === hoursMonth && currentYear === hoursYear),
+		            			                    value: timeValue});
+            		} else if(hoursData.task) {
+            			timeValue = hoursData.hours;
+            			if (!tasksMap[hoursData.task.resource]) {
+            				tasksMap[hoursData.task.resource] = hoursData.task;
+            			}
+        				if (!tasksHoursMap[hoursData.task.resource]) {
+        					tasksHoursMap[hoursData.task.resource] = [];
+        				}
+        				//tasksHoursMap[hoursData.task.resource].totalHours += timeValue;
+        				tasksHoursMap[hoursData.task.resource]
+        					.push({hour: hoursData, show: (currentMonth == hoursMonth && currentYear == hoursYear)});
+            		}		
             	}
         		
         		projectHour.hours.sort(function(h1, h2){
-        			if (new Date(h1.hour.date) > new Date(h2.hour.date))
-        				return -1
-        			else if (new Date(h1.hour.date) < new Date(h2.hour.date))
-        				return 1
-        			
-        			return 0
+        			if (new Date(h1.hour.date) > new Date(h2.hour.date)) { 
+                        return -1; 
+                    } else if (new Date(h1.hour.date) < new Date(h2.hour.date)) { 
+                        return 1;
+                    }        			
+        			return 0;
         		});
         		
-        		$scope.projectHours.push(projectHour);
-        		
+        		$scope.projectHours.push(projectHour);        		
         		$scope.taskHours = [];
         		
         		for (var taskResource in tasksMap) {
         			tasksHoursMap[taskResource].sort(function(h1, h2){
-            			if (new Date(h1.hour.date) > new Date(h2.hour.date))
-            				return -1
-            			else if (new Date(h1.hour.date) < new Date(h2.hour.date))
-            				return 1
-            			
-            			return 0
+            			if (new Date(h1.hour.date) > new Date(h2.hour.date)){ 
+                            return -1;
+                        } else if (new Date(h1.hour.date) < new Date(h2.hour.date)){ 
+                            return 1;
+                        }          			
+            			return 0;
             		});
         			$scope.taskHours.push(_.extend({
         				hours: tasksHoursMap[taskResource]
-        			}, tasksMap[taskResource]))
+        			}, tasksMap[taskResource]));
         		}
         		
         		$scope.currentWeek();
@@ -303,11 +309,8 @@ angular.module('Mastermind.controllers.people')
 			
 			currentDate = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]));
 			
-			if (!minDate || minDate > currentDate)
-				minDate = new Date(currentDate);
-			
-			if (!maxDate || maxDate <= currentDate)
-				maxDate = new Date(currentDate);
+			if (!minDate || minDate > currentDate){ minDate = new Date(currentDate); }
+			if (!maxDate || maxDate <= currentDate){ maxDate = new Date(currentDate); }
 		}
 		
 		var ifAddYear = minDate && maxDate && minDate.getFullYear() != maxDate.getFullYear();
@@ -320,54 +323,54 @@ angular.module('Mastermind.controllers.people')
 					name: $scope.monthNames[currentDate.getMonth()],
 					value: currentDate.getMonth()
 				};
-			$scope.hoursPeriods.push(o)
+			$scope.hoursPeriods.push(o);
 			
 			if (ifAddYear) {
 				o.name = o.name + ', ' + currentDate.getFullYear();
 				o.value = currentDate.getFullYear() + '-' + o.value;
 			}
-			currentDate = new Date(currentDate)
+			currentDate = new Date(currentDate);
 			
 			currentDate.setDate(1);
 			currentDate.setMonth(currentDate.getMonth()+1);
 		}
-	}
+	};
     
     $scope.handleHoursPeriodChanged = function() {
 		for(var i = 0; i < $scope.projectHours.length; i++){
 			var projHour = $scope.projectHours[i];
+			projHour.totalHours = 0;
 			for(var j = 0; j < projHour.hours.length; j++) {
 				var hour = projHour.hours[j];
 				var hoursMonth = new Date(hour.hour.date).getMonth();
 				hour.show = this.selectedHoursPeriod == hoursMonth;
+				if(hour.show) { projHour.totalHours += hour; }
 			}
 		}
 		
-		for(var i = 0; i < $scope.taskHours.length; i++){
-			var projHour = $scope.taskHours[i];
-			for(var j = 0; j < projHour.hours.length; j++) {
-				var hour = projHour.hours[j];
-				var hoursMonth = new Date(hour.hour.date).getMonth();
+		for(i = 0; i < $scope.taskHours.length; i++){
+            projHour = $scope.taskHours[i];
+            projHour.totalHours = 0;
+			for(j = 0; j < projHour.hours.length; j++) {
+				hour = projHour.hours[j];
+				hoursMonth = new Date(hour.hour.date).getMonth();
 				hour.show = this.selectedHoursPeriod == hoursMonth;
+				if(hour.show) { projHour.totalHours += hour; }
 			}
 		}
-	}
+	};
     
     $scope.isEmptyForSelectedMonth = function(projectHour) {
     	for(var i = 0; i < projectHour.hours.length; i++) {
-    		if(projectHour.hours[i].show) {
-    			return false;
-    		}
+    		if(projectHour.hours[i].show) { return false; }
     	}
-    	
     	return true;
-    }
+    };
     
     $scope.projectIcon = function(projectResource) {
     	var iconObject = _.findWhere($scope.projectIcons, { resource: projectResource});
-    	
     	return iconObject ? iconObject.icon : '';
-    }
+    };
     
     /**
      * Get the Profile
@@ -390,7 +393,7 @@ angular.module('Mastermind.controllers.people')
           		
           		for (var n=0;n< $scope.ongoingProjects.length; n++) {
           			var proj = $scope.ongoingProjects[n];
-          			if(proj.resource == myProj.resource) {
+          			if(proj.resource === myProj.resource) {
           				$scope.ongoingProjects.splice(n,1);
           				break;
           			}
@@ -400,10 +403,8 @@ angular.module('Mastermind.controllers.people')
           	function compare(a,b) {
           	  var titleA = a.customerName+': '+a.name;
           	  var titleB = b.customerName+': '+b.name;
-          	  if (titleA < titleB)
-          	     return -1;
-          	  if (titleA > titleB)
-          	    return 1;
+          	  if (titleA < titleB) { return -1; }
+          	  if (titleA > titleB) { return 1; }
           	  return 0;
           	}
           	
@@ -472,8 +473,9 @@ angular.module('Mastermind.controllers.people')
       //Set the person context
       $scope.newHoursRecord.person = {resource:$scope.profile.about};
       
-      if (!$scope.newHoursRecord.description)
-    	  $scope.newHoursRecord.description = "No Description Entered";
+      if (!$scope.newHoursRecord.description) {
+    	  $scope.newHoursRecord.description = 'No Description Entered';
+      }
 
       Resources.create('hours', $scope.newHoursRecord).then(function(){
         $scope.initHours();
@@ -504,23 +506,21 @@ angular.module('Mastermind.controllers.people')
     };
 
     $scope.handleHoursTypeChanged = function(type) {
-    	if (type == 'task' &&  $scope.newHoursRecord.project)
+    	if (type === 'task' &&  $scope.newHoursRecord.project) {
     		delete $scope.newHoursRecord.project;
-    	else if (type == 'project' && $scope.newHoursRecord.task)
+        } else if (type === 'project' && $scope.newHoursRecord.task) {
     		delete $scope.newHoursRecord.task;
-    }
+        }
+    };
     
     $scope.setHoursView = function(view) {
-    	$scope.hoursViewType = view;
-    	
-    	if(view == 'weekly') {
-    		$scope.currentWeek();
-    	}
-    }
+    	$scope.hoursViewType = view;    	
+    	if(view === 'weekly') { $scope.currentWeek(); }
+    };
     
-    $scope.hoursViewType = 'monthly';
+    $scope.hoursViewType = 'weekly';
     $scope.selectedWeekIndex = 0;
-    $scope.thisWeekDayLabels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    $scope.thisWeekDayLabels = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     $scope.newHoursRecord = {};
     $scope.moment = moment;
     
@@ -528,27 +528,24 @@ angular.module('Mastermind.controllers.people')
 	$scope.endWeekDate = $scope.moment().day(6).format('YYYY-MM-DD');
 	
 	$scope.dayFormatted = function(yyyymmdd, params) {
-		if(params) {
-			return moment(yyyymmdd).format(params);
-		}
-		
-		return moment(yyyymmdd).format("MMM D");
-	}
+		if(params) { return moment(yyyymmdd).format(params); }		
+		return moment(yyyymmdd).format('MMM D');
+	};
     
 	$scope.currentWeek = function() {
 		$scope.selectedWeekIndex = 0;
 		$scope.showWeek();
-	}
+	};
 	
     $scope.nextWeek = function() {
     	$scope.selectedWeekIndex += 7;
     	$scope.showWeek();
-    }
+    };
     
     $scope.prevWeek = function() {
     	$scope.selectedWeekIndex -= 7;
     	$scope.showWeek();
-    }
+    };
     
     $scope.weekHoursByProject = [];
 	$scope.weekHoursByTask = [];
@@ -572,12 +569,13 @@ angular.module('Mastermind.controllers.people')
     	var weekHoursByTask = [];
 
     	// filtering hours entries by project and task
-    	for(var i = 0; i < profileWeekHours.length; i++) {
-    		var weekHour = profileWeekHours[i];
-    		
+    	for(i = 0; i < profileWeekHours.length; i++) {
+    		var weekHour = profileWeekHours[i];    		
     		var filteredHoursByProject = {};
     		if(weekHour.project) {
-    			filteredHoursByProject = _.filter(weekHoursByProject, function(h) { return h.project.resource == weekHour.project.resource; });
+    			filteredHoursByProject = _.filter(weekHoursByProject, function(h) { 
+                    return h.project.resource == weekHour.project.resource; 
+                });
     			if(filteredHoursByProject.length == 0) {
         			var weekHourByProject = { project: weekHour.project, hours: [weekHour]};
         			Resources.resolve(weekHourByProject.project);
@@ -589,7 +587,9 @@ angular.module('Mastermind.controllers.people')
     		
     		var filteredHoursByTask = {};
     		if(weekHour.task) {
-    			filteredHoursByTask = _.filter(weekHoursByTask, function(h) { return h.task.resource == weekHour.task.resource; });
+    			filteredHoursByTask = _.filter(weekHoursByTask, function(h) { 
+    				return h.task.resource == weekHour.task.resource;
+    			});
     			if(filteredHoursByTask.length == 0) {
         			var weekHourByTask = { task: weekHour.task, hours: [weekHour]};
         			weekHoursByTask.push(weekHourByTask);
@@ -602,13 +602,13 @@ angular.module('Mastermind.controllers.people')
     	$scope.weekHours = weekHoursByProject.concat(weekHoursByTask);
     	
     	// filter hours entries by day of week
-    	for(var i = 0; i < $scope.weekHours.length; i++) {
+    	for(i = 0; i < $scope.weekHours.length; i++) {
     		var weekHours = $scope.weekHours[i];
     		weekHours.hoursByDate = [];
     		for(var w = 0; w < 7; w++) {
     			var totalHours = 0;
     			var weekHoursEntries = [];
-        		var date = $scope.moment($scope.startWeekDate).add('days', w).format("YYYY-MM-DD");
+        		date = $scope.moment($scope.startWeekDate).add('days', w).format('YYYY-MM-DD');
         		
     			for(var h = 0; h < weekHours.hours.length; h++) {
     				if(weekHours.hours[h].date == date) {
@@ -620,20 +620,20 @@ angular.module('Mastermind.controllers.people')
     			weekHours.hoursByDate.push({ 
     					hours: weekHoursEntries,
     					totalHours: totalHours,
-    					futureness: $scope.checkForFutureness($scope.moment($scope.startWeekDate).add('days', w).format('YYYY-MM-DD'))
+    					futureness: $scope.checkForFutureness($scope.moment($scope.startWeekDate)
+    							.add('days', w).format('YYYY-MM-DD'))
     			});
         	}
 		}
     	
     	$scope.weekHoursByProject = weekHoursByProject;
     	$scope.weekHoursByTask = weekHoursByTask;
-    }
+    };
     
     var convertDate = function(stringDate) {
-    	var tmpDate = stringDate.split('-');
-    	
+    	var tmpDate = stringDate.split('-');    	
     	return new Date(tmpDate[0], parseInt(tmpDate[1]) - 1, tmpDate[2]);
-    }
+    };
     
     $scope.checkForFutureness = function(date) {
         //flux capacitor
@@ -642,13 +642,10 @@ angular.module('Mastermind.controllers.people')
         var diff = a.diff(b);
 
         var futureness;
-        if (diff < 0) {
-            futureness = true
-        } else {
-            futureness = false
-        }
+        if (diff < 0) { futureness = true;
+        } else { futureness = false; }
         return futureness;
-    }
+    };
 //    /**
 //     * Load Skill Definitions to display names
 //     */
