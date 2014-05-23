@@ -533,9 +533,12 @@ angular.module('Mastermind.services.projects')
     	var HOURS_PER_WEEK = 45;
     	var ONE_WEEK = 45;
     	
-    	if (!role.rate.isFullyUtilized() && role.rate.type == "hourly")
-    		ONE_WEEK = Math.round(role.rate.hoursPerMonth() / HOURS_PER_MONTH * HOURS_PER_WEEK)
-    	else if (!role.rate.isFullyUtilized() && role.rate.type == "weekly")
+    	//if ((!role.rate.isFullyUtilized()) && role.rate.type == "hourly")
+    	if ((!role.rate.fullyUtilized) && role.rate.type == "hourly")
+    		//ONE_WEEK = Math.round(role.rate.hoursPerMonth() / HOURS_PER_MONTH * HOURS_PER_WEEK)
+    		ONE_WEEK = Math.round(role.rate.hoursPerMth / HOURS_PER_MONTH * HOURS_PER_WEEK)
+    	else if (!role.rate.fullyUtilized && role.rate.type == "weekly")
+    	//else if (!role.rate.isFullyUtilized() && role.rate.type == "weekly")
     		ONE_WEEK = role.rate.hoursPerWeek; 
     		
     	var totalCountDays = Math.ceil((coverageTimeline[coverageTimeline.length - 1].date.getTime() - 
