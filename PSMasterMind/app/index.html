@@ -58,7 +58,9 @@
 						</div>
 						<div class="visible-sm visible-xs navbar-header">
 							<button type="button" class="navbar-toggle" ng-click="showHideMenu()">
-								<span class="sr-only">Toggle navigation</span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>
+								<span class="sr-only">Toggle navigation</span> <span
+									class="icon-bar"></span> <span class="icon-bar"></span> <span
+									class="icon-bar"></span>
 							</button>
 							<div class="hidden-md hidden-lg" style="white-space: nowrap;">
 								<a class="appTitle navbar-brand" style="padding-left:5px; padding-right:0px; float: none; display: inline-block;" href="#"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
@@ -93,11 +95,15 @@
 				</nav>
 
 				<!-- Fixed Z-index to make sure the user menu can pop over it -->
-				<nav class="navbar navbar-inverse navbar-fixed-top hidden-xs hidden-sm" style="z-index: 900; top: 0px;" id="navbar2">
+				<nav class="navbar navbar-inverse navbar-fixed-top hidden-xs hidden-sm"
+					style="z-index: 900; top: 0px;" id="navbar2">
 
 					<div class="navbar-header">
-						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-							<span class="sr-only">Toggle navigation</span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>
+						<button type="button" class="navbar-toggle" data-toggle="collapse"
+							data-target="#navbar-collapse">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
 						</button>
 						<div>
 							<a class="appTitle navbar-brand" href="#"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
@@ -121,46 +127,39 @@
 			</header>
 
 			<main id="mainContent" class="container">
-				<div class="row">
-					<article class="col-xs-12" ui-view></article>
-				</div>
+			<div class="row">
+				<article class="col-xs-12" ui-view></article>
+			</div>
 			</main>
 
 			<!-- <footer class="text-center container"><br/><small>© 2014 PointSource, LLC. All rights reserved.</small></footer> -->
 
-			<div class="modal modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<ng-include src="'modalTemplate'" />
-			</div>
+            <div class="modal modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <ng-include src="'modalTemplate'"/>
+            </div>
 
-			<div class="modal modalYesNoCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<ng-include src="'modalTemplate'" />
-			</div>
+            <div class="modal modalYesNoCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <ng-include src="'modalTemplate'"/>
+            </div>
 
-			<script type="text/ng-template" id="modalTemplate">
-				< div class = "modal-dialog" > < div class = "modal-content panel panel-info" > < div class = "modal-header panel-heading" > < button type = "button"
-				class = "close"
-				data - dismiss = "modal"
-				aria - hidden = "true" > & times; < /button>
-                            <h4 class="modal-title" id="myModalLabel">{{getModal().title}}</h4 > < /div>
+            <script type="text/ng-template" id="modalTemplate">
+                <div class="modal-dialog">
+                    <div class="modal-content panel panel-info">
+                        <div class="modal-header panel-heading">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">{{getModal().title}}</h4>
+                        </div>
                         <div class="modal-body panel-body">
                         {{getModal().text}}
-                        </div > < div class = "modal-footer" > < button type = "button"
-				class = "btn btn-default"
-				ng - click = "getModal().noHandler()" > {
-					{
-						getModal().no
-					}
-				} < /button>
-                            <button type="button" class="btn btn-default" ng-show="getModal().cancel" ng-click="getModal().cancelHandler()" data-dismiss="modal">{{getModal().cancel}}</button > < button type = "button"
-				class = "btn btn-primary"
-				ng - click = "getModal().okHandler()" > {
-					{
-						getModal().ok
-					}
-				} < /button>
-                        </div > < /div>
-                </div >
-			</script>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" ng-click="getModal().noHandler()">{{getModal().no}}</button>
+                            <button type="button" class="btn btn-default" ng-show="getModal().cancel" ng-click="getModal().cancelHandler()" data-dismiss="modal">{{getModal().cancel}}</button>
+							<button type="button" class="btn btn-primary" ng-click="getModal().okHandler()">{{getModal().ok}}</button>
+                        </div>
+                    </div>
+                </div>
+            </script>
 		</div>
 	</div>
 
@@ -176,7 +175,7 @@
 	<script type="text/javascript" src="bower_components/ng-table/ng-table.js"></script>
 	<script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
 	<script type="text/javascript" src="bower_components/restangular/dist/restangular.js"></script>
-	<script src="bower_components/textAngular/textAngular.js"></script>
+	<script type="text/javascript" src="bower_components/textAngular/textAngular.js"></script>
 	<script type="text/javascript" src="bower_components/textAngular/textAngular-sanitize.js"></script>
 	<script type='application/javascript' src='bower_components/fastclick/lib/fastclick.js'></script>
 	<script type="text/javascript" src="bower_components/d3/d3.js"></script>
@@ -205,34 +204,34 @@
 	<!-- Controllers -->
 	<script src="scripts/controllers/main.js"></script>
 	<script src="scripts/controllers/areas.js"></script>
-	<script src="scripts/controllers/config.js"></script>
-	<script src="scripts/controllers/breadcrump.js"></script>
-	<script src="scripts/controllers/menu.js"></script>
+    <script src="scripts/controllers/config.js"></script>
+    <script src="scripts/controllers/breadcrump.js"></script>
+    <script src="scripts/controllers/menu.js"></script>
 
-	<!-- MODULES -->
-	<!-- modules/admin -->
-	<script src="modules/admin/controllers/admin.js"></script>
-	<script src="modules/admin/controllers/groups.js"></script>
-	<script src="modules/admin/controllers/tasks.js"></script>
-	<!-- modules/people -->
-	<script src="modules/people/people.js"></script>
-	<script src="modules/people/profile.js"></script>
-	<!-- modules/staffing -->
-	<script src="modules/staffing/staffing.js"></script>
-	<!-- modules/projects -->
-	<script src="modules/projects/controllers/project.js"></script>
-	<script src="modules/projects/controllers/details.js"></script>
-	<script src="modules/projects/controllers/roles.js"></script>
-	<script src="modules/projects/controllers/projects.js"></script>
-	<script src="modules/projects/controllers/links.js"></script>
-	<script src="modules/projects/controllers/assignments.js"></script>
-	<script src="modules/projects/services/roles-service.js"></script>
-	<script src="modules/projects/services/project-service.js"></script>
-	<script src="modules/projects/services/assignment-service.js"></script>
-	<script src="modules/projects/services/tasks-service.js"></script>
-	<script src="modules/projects/services/LinksService.js"></script>
-	<!-- modules/reports -->
-	<script src="modules/reports/controllers/reports.js"></script>
+    <!-- MODULES -->
+    <!-- modules/admin -->
+    <script src="modules/admin/controllers/admin.js"></script>
+    <script src="modules/admin/controllers/groups.js"></script>
+    <script src="modules/admin/controllers/tasks.js"></script>
+    <!-- modules/people -->
+    <script src="modules/people/people.js"></script>
+    <script src="modules/people/profile.js"></script>
+    <!-- modules/staffing -->
+    <script src="modules/staffing/staffing.js"></script>
+    <!-- modules/projects -->
+    <script src="modules/projects/controllers/project.js"></script>
+    <script src="modules/projects/controllers/details.js"></script>
+    <script src="modules/projects/controllers/roles.js"></script>
+    <script src="modules/projects/controllers/projects.js"></script>
+    <script src="modules/projects/controllers/links.js"></script>
+    <script src="modules/projects/controllers/assignments.js"></script>
+    <script src="modules/projects/services/roles-service.js"></script>
+    <script src="modules/projects/services/project-service.js"></script>
+    <script src="modules/projects/services/assignment-service.js"></script>
+    <script src="modules/projects/services/tasks-service.js"></script>
+    <script src="modules/projects/services/LinksService.js"></script>
+     <!-- modules/reports -->
+    <script src="modules/reports/controllers/reports.js"></script>
 
 	<!-- WIDGETS (modules/widgets) -->
 	<script src="modules/widgets/hours/hours.js"></script>

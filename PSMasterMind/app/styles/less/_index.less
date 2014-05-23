@@ -9,12 +9,15 @@
 }
 
 #navbar1 {
-  height: 79px;
-  left:280px;
-	background-color: @body-bg;
-	color: @gray-dark;
-	border-bottom: 1px solid @gray-light;
-	border-top: 2px solid @turquoiseRegular;
+    height: 79px;
+    left:280px;
+    background-color: @body-bg;
+    color: @gray-dark;
+    border-bottom: 1px solid @gray-light;
+    border-top: 2px solid @turquoiseRegular;
+    -moz-box-shadow: 0 2px 2px -2px @gray-outline;
+    -webkit-box-shadow: 0 2px 2px -2px @gray-outline;
+    box-shadow: 0 2px 2px -2px @gray-outline;
 }
 
 @media (max-width: 991px) {
@@ -68,6 +71,8 @@
 		color: @navbar-default-link-active-color !important;
 		background-color: @charcoleMedium !important;
 		box-shadow: none !important;
+        -moz-box-shadow: none !important;
+        -webkit-box-shadow: none !important;
 	}
 
 	li {
@@ -162,15 +167,16 @@ header {
     }
 
     .navbar-inner {
-      -webkit-box-shadow: none;
-      box-shadow: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
 
-      -webkit-border-radius: 0;
-      border-radius: 0;
-      border: none;
+        -webkit-border-radius: 0;
+        border-radius: 0;
+        border: none;
 
-      background-color: transparent;
-      background-image: none;
+        background-color: transparent;
+        background-image: none;
     }
 
     .navbar-collapse li > a > span {
@@ -211,10 +217,13 @@ header {
 			padding-top: 10px;
 
       li {
-				position:static;
+          position:static;
 
         &.active > a {
-          box-shadow: 0 5px 0 @gray;
+            box-shadow: 0 5px 0 @gray;
+            -moz-box-shadow: 0 5px 0 @gray;
+            -webkit-box-shadow: 0 5px 0 @gray;
+                
         }
 
         &:hover {
@@ -222,19 +231,21 @@ header {
         }
 
         a {
-        	position:static;
-          padding-top: 13px;
-          padding-bottom: 9px;
+            position:static;
+            padding-top: 13px;
+            padding-bottom: 9px;
 
-          &:hover {
+            &:hover {
             box-shadow: 0 5px 0 @gray;
-          }
+            -moz-box-shadow: 0 5px 0 @gray;
+            -webkit-box-shadow: 0 5px 0 @gray;
+            }
 
           span {
           	position:relative;
           	top: -5px;
-						font-size: 14px;
-						font-weight: bold;
+            font-size: 14px;
+            font-weight: bold;
           }
         }
       }
@@ -405,7 +416,7 @@ header {
 
 	.navbar .user-info-container {
 		//background-color: @mm-smoothbluelight;
-		border-left: 1px solid @gray-light;
+		border-left: 1px solid @gray-outline;
 		height: 100%;
 		font-size: 18px;
 		color: #4a4a4a;
@@ -416,7 +427,9 @@ header {
 		}
         
         &.open {
-            box-shadow: -1px 0 7px 0 rgba(0, 0, 0, 0.175);
+            box-shadow: 0 3px 7px 0 @gray-outline;
+            -moz-box-shadow: 0 3px 7px 0 @gray-outline;
+            -webkit-box-shadow: 0 3px 7px 0 @gray-outline;
             
             .drop-cover {
                 margin-left: -21px;
@@ -424,12 +437,15 @@ header {
                 height: 7px;
                 width: 100%;
                 position: absolute;
-                bottom: -3px;
+                bottom: -2px;
+                right: 0;
                 z-index: 400;
             }
             
             #profile-photo {
                 box-shadow: 0 0 0 5px white;
+                -moz-box-shadow: 0 0 0 5px white;
+                -webkit-box-shadow: 0 0 0 5px white;
             }
         }
 	}
@@ -454,8 +470,8 @@ header {
 		border: 1px solid @gray-outline;
 		border-radius: 0;
 		width: 310px;
-        height: 252px;
-        box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.175);
+        height: 258px;
+        box-shadow: -1px 1px 6px 1px @gray-outline;
 		z-index: 200;
 	}
     
@@ -468,9 +484,13 @@ header {
     }
     
     #user-info {
-        padding-right: 20px;
+        float: left;
+        display: inline-block;
+        padding-right: 15px;
         
         h4 {
+            display: inline-block;
+            float: left;
             margin-top: 25px;
             padding-bottom: 20px;
             font-size: 15px;
@@ -481,11 +501,14 @@ header {
         a {
             font-size: 13px;
             display: inline-block;
+            float: left;
             margin-top: 5px;
+            clear: both;
         }
     }
     
     .employee-since {
+        clear: both;
         color: @gray-light-headers;
         background-color: white;
         margin: 15px 0 0 0;
