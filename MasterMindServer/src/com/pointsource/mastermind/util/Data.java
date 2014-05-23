@@ -1677,6 +1677,7 @@ public class Data implements CONSTS {
 					.entity(error.getErrorMessage()).build());
 		}
 
+		/*
 		//Find the hours Record that was just created
 		DBCursor cursorDoc = hoursCol.find();
 		while (cursorDoc.hasNext()) {
@@ -1685,6 +1686,14 @@ public class Data implements CONSTS {
 
 			ObjectId oId = (ObjectId) created.get(PROP__ID);
 			String idVal = oId.toString();
+			newHoursRecord.put(PROP_ABOUT, RESOURCE_HOURS + "/" + idVal);
+		}
+		*/
+		
+		// after object insertion its "_id" became available
+		if (dbObject.get(PROP__ID) != null) {
+			String idVal = dbObject.get(PROP__ID).toString();
+			
 			newHoursRecord.put(PROP_ABOUT, RESOURCE_HOURS + "/" + idVal);
 		}
 
@@ -1752,6 +1761,7 @@ public class Data implements CONSTS {
 		dbObject.removeField(PROP_BASE);
 		dbObject.removeField(PROP_ABOUT);
 		dbObject.removeField(PROP_RESOURCE);
+		dbObject.removeField(PROP__ID);
 		DBObject result = hoursCol.findAndModify(query, fields, null, false,
 				dbObject, true, true);
 

@@ -27,12 +27,40 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
     $scope.startDate = new Date();
     $scope.ongoingProjects = [];
+    
     $scope.hoursProjects = [];
     // fill it in hours controller
     $scope.hoursTasks = [];
+    
+    $scope.projectTasksList = [];
+   
     $scope.hasAssignment = false;
     $rootScope.hasAssignment = false;
-
+    
+    var taskIconsMap = {
+    	"meetings": "fa-comments-o",
+    	"design": "fa-lightbulb-o",
+    	"sales": "fa-usd",
+    	"pre-sales support": "fa-phone",
+    	"training": "fa-bolt",
+    	"marketing": "fa-bar-chart-o",
+    	"administration": "fa-cogs",
+    	"documentation": "fa-folder-o",
+    	"sick time":  "fa-ambulance",
+    };
+    
+    var taskIconStylseMap = {
+        	"meetings": "padding: 3px 7px;",
+        	"design": "padding: 3px 10px;",
+        	"sales": "padding: 3px 10px;",
+        	"pre-sales support": "padding: 3px 8px;",
+        	"training": "padding: 3px 10px;",
+        	"marketing": "padding: 3px 6px;",
+        	"administration": "padding: 3px 6px;",
+        	"documentation": "padding: 4px 7.5px;",
+        	"sick time":  "padding: 3px 6px;",
+        };
+    
     var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     /**
      * display the month name from a month number (0 - 11)
@@ -116,7 +144,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         });
 
         $scope.hoursProjects = myProjects.concat(otherProjects);
-
+        
+        $scope.projectTasksList =  $scope.projectTasksList.concat( myProjects.concat(otherProjects) )
       });
     });
 
@@ -204,10 +233,204 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       }
     };
     
+    $scope.editHoursEntry = function(e, hourEntry, tagetInput) {
+    	hourEntry.hoursRecord.editMode = true;
+    	
+    	hourEntry.hoursRecord.hoursEdited = hourEntry.hoursRecord.hours;
+    	hourEntry.hoursRecord.descriptionEdited = hourEntry.hoursRecord.description;
+    	
+    	if (!hourEntry.hoursRecord.isAdded){
+    		hourEntry.selectedItem = hourEntry.hoursRecord.project ? hourEntry.project : hourEntry.hoursRecord.task;
+    	}
+    	
+    	e = e ? e: window.event;
+    	tagetInput = tagetInput ? tagetInput: $(e.target).closest('.hours-logged-entry').find('[name="project-task-select"]')
+    	
+    	var autocomplete = $('.dashboard-widget.hours ul.dropdown-menu.ddProjectsTasksMenu');
+    	
+    	$scope.bindAutocompleteHandlers(tagetInput);
+    	
+    	autocomplete.insertAfter(tagetInput);
+    	tagetInput.data('_autocomplete', autocomplete);
+    }
+    
+    
+    $scope.removeOrCloseHourEntry = function(e, hourEntry, index) {
+    	if (hourEntry.hoursRecord.editMode) {
+    		hourEntry.hoursRecord.editMode = false;
+    		$scope.clearAutocompleteHandlers($(e.target).closest('.hours-logged-entry').find('[name="project-task-select"]'));
+    	} else {
+    		//$scope.deleteHoursRecord(index)
+    		$scope.selected.hoursEntries.splice(index, 1);
+    		
+    		if (hourEntry.hoursRecord)
+    			Resources.remove(hourEntry.hoursRecord.resource).then(function() {
+    				$scope.hoursRequest();
+    			});
+	      
+			
+    		 //Resources.remove(hourEntry);
+    	}
+    	
+    }
+    
+    $scope.saveHoursEntry = function(e, hourEntry, isAdded) {
+    	hourEntry.hoursRecord.hours = hourEntry.hoursRecord.hoursEdited;
+    	hourEntry.hoursRecord.description = hourEntry.hoursRecord.descriptionEdited;
+
+    	if ($scope.getNewHoursValidationErrors())
+    		return;
+    	
+    	$('ul.dropdown-menu.ddProjectsTasksMenu').appendTo($('.dashboard-widget.hours .panel-body'))
+    	delete hourEntry.hoursRecord.hoursEdited;
+    	delete hourEntry.hoursRecord.descriptionEdited;
+  
+    	delete hourEntry.hoursRecord.editMode;
+    	delete hourEntry.hoursRecord.isAdded;
+    	
+    	if (hourEntry.selectedItem) {
+    		delete hourEntry.hoursRecord.project;
+        	delete hourEntry.hoursRecord.task;
+        	delete hourEntry.project;
+        	delete hourEntry.task;
+        	
+        	if (hourEntry.selectedItem.resource.indexOf('projects') > -1) {
+        		hourEntry.project = hourEntry.selectedItem
+        		
+        		hourEntry.hoursRecord.project = {
+        				resource: hourEntry.selectedItem.resource,
+        				name: hourEntry.selectedItem.name
+        		}
+        	} else if (hourEntry.selectedItem.resource.indexOf('tasks') > -1) {
+        		hourEntry.task = hourEntry.selectedItem
+        		
+        		hourEntry.hoursRecord.task = {
+        				resource: hourEntry.selectedItem.resource,
+        				name: hourEntry.selectedItem.name
+        		}
+        	}
+        	
+        	delete hourEntry.selectedItem;
+    	}
+    	hourEntry.hoursRecord.editMode = false;
+    	
+    	$scope.addHours()
+    }
+    
     $scope.setSelected = function(day) {
+    	if ($scope.selected)
+    		delete $scope.selected;
+    	
     	$scope.selected = $scope.cloneDay(day);
     }
+    
+    $scope.clearSelectedItem = function(e, hourEntry) {
+    	delete hourEntry.selectedItem;
+    }
+    $scope.bindAutocompleteHandlers = function(input){
+    	input.bind('click');
+    	input.bind('dblclick', function(){
+    		var autocomplete = $(this).data('_autocomplete');
+    		
+    		autocomplete.show();
+    	});
+    	
+    	input.next('.search-icon').bind('click', function(){
+    		var autocomplete = input.data('_autocomplete');
+    		
+    		autocomplete.show();
+    	});
+    	
+    	
+    	$(document).bind('click', $scope.handleDocClick);
+    	
+    	input.bind('keyup', function(e){
+    		e = e ? e: window.event;
+    		
+    		var input = $(e.target).closest('input');
+    		
+    		
+    		var val = input.val();
+    		var autocomplete = input.data('_autocomplete');
+    		
+    		autocomplete.find('li').each(function(ind, el){
+    			var taskName = $(el).find('.task-name').text().toLowerCase();
+    			var projectName = $(el).find('.project-name').text().toLowerCase();
+    			var projectCustomerName = $(el).find('.project-customer-name').text().toLowerCase();
+    			
+    			var result = taskName && taskName.indexOf(val) > -1;
+    			
+    			result = result || projectName && projectName.indexOf(val) > -1;
+    			result = result || projectCustomerName && projectCustomerName.indexOf(val) > -1;
+    			
+    			if (result)
+    				$(el).css('display', '')
+    			else
+    				$(el).css('display', 'none')
+    		})
+    		autocomplete.show();
+    	})
+    }
+    
+    $scope.clearAutocompleteHandlers = function(input){
+    	input.unbind('click');
+    	input.unbind('dblclick');
+    	input.next('.search-icon').unbind('click');
+    	
+    	input.unbind('keydown');
+    	
+    	$(document).unbind('click', $scope.handleDocClick)
+    }
+    
+    $scope.menuItemSelected = function(menuItem) {
+    	var id = menuItem.attr('_id');
+		
+		var item = _.find($scope.projectTasksList, function(tp) {
+			return tp.resource == id;
+		})
+		
+		var ul = menuItem.closest('ul');
+		
+		//ul.prev('input').val(item.name);
+		
+		var entry = ul.closest('.hours-logged-entry');
+		var currentInd = entry.attr('_hourentryindex');
+		
+		var hourEntry = $scope.selected.hoursEntries[currentInd];
+		
+		$scope.$apply(function() {
+			hourEntry.selectedItem = item;
+		});
+		
+    };
+    
+    $scope.handleDocClick = function(e) {
+    	e = e ? e: window.event;
+    	
+    	var menuItem = $(e.target).closest('a.menu-item');
+    	
+    	if (menuItem.length == 1) 
+    		$scope.menuItemSelected(menuItem)
+    	
+    	if ($(e.target).closest('input[name="project-task-select"]').length > 0)
+    		return
+    		
+		if ($(e.target).closest('.search-icon').length > 0)
+    		return
+    		
+    	$('ul.dropdown-menu.ddProjectsTasksMenu').hide();
+    	
+    }
 
+    $scope.initNewHoursEntry = function(hourEntry) {
+    	if (hourEntry.hoursRecord && hourEntry.hoursRecord.isAdded) {
+    		// use timeout to perform code after init 
+    		window.setTimeout(function(){
+    			$scope.editHoursEntry(null, hourEntry, 
+    				$('.dashboard-widget.hours .row.hours-logged .hours-logged-entry input[name="project-task-select"]').eq(0))
+			}, 0)
+    	}
+    }
     $scope.hideHoursEntry = function (day) {
       $scope.entryFormOpen = false
       //delete $scope.selected;
@@ -216,15 +439,16 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       $scope.showHideHoursDialog(false)
     };
 
-
+    $scope.addHoursEntry = function(){
+    	$scope.addNewHours();
+    }
+    
+   
     //MOVE THIS TO FORM CONTROLLER WHEN READY
     $scope.addNewHours = function (isTask) {
-      //console.log('clicked addNewHours');
-      //console.log($scope.selected);
-
-
       //match date with current hours
       var displayedHoursLength = $scope.displayedHours.length;
+      
       for (var i = 0; i < displayedHoursLength; i++) {
         if ($scope.selected.date === $scope.displayedHours[i].date) {
           // $scope.activeAddition = $scope.displayedHours[i];
@@ -232,7 +456,9 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             date: $scope.selected.date,
             description: "",
             hours: "",
-            person: $scope.me
+            person: $scope.me,
+            editMode: true,
+            isAdded: true
 
           };
 
@@ -240,28 +466,46 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             $scope.newHoursRecord.project = {};
           else
             $scope.newHoursRecord.task = {};
+          /*
           //push the new hours record to the appropriate hoursEntries array
           //this will cause the UI to update and show a blank field
           if ($scope.displayedHours[i].hoursEntries) {
-            $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
+            $scope.displayedHours[i].hoursEntries.unshift({hoursRecord: $scope.newHoursRecord});
           } else {
             var hoursEntries = []
             $scope.displayedHours[i].hoursEntries = hoursEntries;
             //console.log($scope.displayedHours[i])
-            $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
+            $scope.displayedHours[i].hoursEntries.unshift({hoursRecord: $scope.newHoursRecord});
           }
+          */
 
+          
           // sync selected object with displayedHours collection
           if ($scope.selected.hoursEntries) {
-	          $scope.selected.hoursEntries.unshift($scope.newHoursRecord);
+	          $scope.selected.hoursEntries.unshift({hoursRecord: $scope.newHoursRecord});
 	        } else {
 	          $scope.selected.hoursEntries = [];
-	          $scope.selected.hoursEntries.unshift($scope.newHoursRecord);
+	          $scope.selected.hoursEntries.unshift({hoursRecord: $scope.newHoursRecord});
 	        }
+          
+          
           // $scope.displayedHours[i].hoursEntries.unshift($scope.newHoursRecord);
         }
       }
     };
+    
+    $scope.anyAdded = function() {
+    	var result = false;
+    	
+    	for (var i = 0; i < $scope.selected.hoursEntries.length; i++) {
+            var entry = $scope.selected.hoursEntries[i];
+            
+            if (entry.hoursRecord && entry.hoursRecord.isAdded)
+            	result = true;
+    	}
+    	
+    	return result;
+    }
 
     $scope.addNewTaskHours = function () {
       $scope.addNewHours(true)
@@ -271,6 +515,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       TasksService.refreshTasks().then(function (tasks) {
         _.each(tasks, function (t) {
           $scope.hoursTasks.push(t)
+          $scope.projectTasksList.push(t);
+          
+          t.icon = taskIconsMap[t.name.toLowerCase()];
+          t.iconCss = taskIconStylseMap[t.name.toLowerCase()]
         })
 
 
@@ -278,9 +526,11 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     }
 
     $scope.deleteHoursRecord = function (index) {
-		if ($scope.selected.hoursEntries[index] && $scope.selected.hoursEntries[index].hoursRecord) {
-	      $scope.hoursToDelete.push($scope.selected.hoursEntries[index].hoursRecord.resource);
-	      $scope.selected.hoursEntries.splice(index, 1);
+		if ($scope.selected.hoursEntries[index] ) {
+			if ($scope.selected.hoursEntries[index].hoursRecord)
+				$scope.hoursToDelete.push($scope.selected.hoursEntries[index].hoursRecord.resource);
+	      
+			$scope.selected.hoursEntries.splice(index, 1);
 	    }
     }
 
@@ -401,8 +651,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
                 }
               }
               
-              if ( !$scope.selected && $scope.displayedHours[i].date == $scope.todaysDate){
+              if (!$scope.selected && $scope.displayedHours[i].date == $scope.todaysDate){
             	  //$scope.selected = JSON.parse(JSON.stringify( $scope.displayedHours[i]));
+            	  $scope.selected = $scope.displayedHours[i];
+              } else if ($scope.selected && $scope.displayedHours[i].date == $scope.selected.date){
             	  $scope.selected = $scope.displayedHours[i];
               }
             }
@@ -438,7 +690,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
           $scope.hoursValidation.push("Incorrect value for hours")
 
         } else if (entries[i].hoursRecord && entries[i].hoursRecord.hours)
-          totalHours += entries[i].hoursRecord.hours;
+          totalHours += parseFloat(entries[i].hoursRecord.hours);
       }
 
       if (totalHours > 24)
@@ -456,19 +708,24 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       $scope.hoursValidation = [];
 
       for (var i = 0; i < entries.length; i++) {
-        //console.log(entries[i].hoursRecord);
-
         var entry = entries[i];
+        
         if (entry.hoursRecord) {
           hoursRecords.push(entry.hoursRecord);
           totalHours += !isNaN(parseInt(entry.hoursRecord.hours)) ? parseInt(entry.hoursRecord.hours) : 0;
-          if (!entry.hoursRecord.person) {
-            entry.hoursRecord.person = {resource: $scope.me.about};
-          }
+          //if (!entry.hoursRecord.person) {
+          entry.hoursRecord.person = {resource: $scope.me.about};
+          //}
           if (!entry.hoursRecord.date) {
             entry.hoursRecord.date = $scope.selected.date;
           }
         }
+        
+        // remove embedded property which leverage to server side error when updating hours record
+        if (entry.hoursRecord && entry.hoursRecord.project && entry.hoursRecord.project["$fromServer"])
+        	delete entry.hoursRecord.project["$fromServer"]
+        else  if (entry.hoursRecord && entry.hoursRecord.task && entry.hoursRecord.task["$fromServer"])
+        	delete entry.hoursRecord.task["$fromServer"]
       }
 
       if (totalHours > 24) {
@@ -476,6 +733,9 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         return;
       }
 
+      // update total hours value to apropriatly display in hours widget
+      $scope.selected.totalHours = totalHours;
+      /*
       if ($scope.hoursToDelete) {
         for (var i = 0; i < $scope.hoursToDelete.length; i++) {
           if ($scope.hoursToDelete[i]) {
@@ -483,11 +743,11 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
           }
         }
       }
-
+*/
       HoursService.updateHours(hoursRecords).then(function () {
         //$('#editHours').modal('hide');
-    	  $scope.showHideHoursDialog(false)
-        $scope.entryFormOpen = false;
+    	  //$scope.showHideHoursDialog(false)
+        //$scope.entryFormOpen = false;
        // delete $scope.selected;
 
         $scope.hoursRequest();
