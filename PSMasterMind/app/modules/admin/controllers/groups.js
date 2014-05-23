@@ -9,7 +9,6 @@ angular.module('Mastermind').controller('GroupsCtrl',['$scope',
                                                       'Resources', 
                                                       '$state', 
                                                       '$stateParams', 
-                                                      '$location', 
                                                       'ngTableParams',
                                             function ($scope, 
                                             		  $rootScope, 
@@ -17,7 +16,6 @@ angular.module('Mastermind').controller('GroupsCtrl',['$scope',
                                             		  Resources, 
                                             		  $state, 
                                             		  $stateParams, 
-                                            		  $location, 
                                             		  ngTableParams) {
    
 	    
