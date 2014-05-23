@@ -1,7 +1,24 @@
 <div ng-controller="ReportsCtrl">
     <br />
     <form class="form-inline" role="form">
-        <div class="xs-padding-top form-group btn-group" style="text-align: center;">
+         <div class="form-group" ng-class="{error: isFieldInError('endDate')}">
+            <datepicker ng-model='date1' icon-class='fa fa-calendar' label-format='EEEE, MMMM d, yyyy'></datepicker>
+            <label class="sr-only" for="endDate">End</label>
+            <input class="form-control datepicker col-xs-3" id="endDate" name="endDate" 
+                   type="text" ng-model="report.endDate" 
+                   data-date-format="yyyy-mm-dd" required data-provide="datepicker" 
+                   placeholder="End Date">
+        </div>
+        <i class="fa fa-long-arrow-right"></i>
+        <div class="form-group" ng-class="{error: isFieldInError('startDate')}">
+            <label class="sr-only" for="startDate">Start</label>
+            <input class="form-control datepicker col-xs-3" id="startDate" name="startDate" 
+                   type="text" ng-model="report.startDate" data-date-format="yyyy-mm-dd" 
+                   required data-provide="datepicker" 
+                   placeholder="Start Date">
+        </div>
+        
+        <div class="xs-padding-top form-group btn-group pull-right" style="text-align: center;">
             <button type="button" class="btn btn-default" ng-class="{active: task}" 
                     ng-click="toggleView($event, 'task')">
                 <i class="fa fa-tasks"></i>
@@ -22,20 +39,6 @@
                 <i class="fa fa-group"></i>
                 <span class="hidden-xs hidden-sm">By Group</span>
             </button>
-        </div>
-        <div class="form-group pull-right" ng-class="{error: isFieldInError('startDate')}">
-            <label class="sr-only" for="startDate">Start</label>
-            <input class="form-control datepicker col-xs-3" id="startDate" name="startDate" 
-                   type="text" ng-model="report.startDate" data-date-format="yyyy-mm-dd" 
-                   required data-provide="datepicker" 
-                   placeholder="Start Date">
-        </div>
-        <div class="form-group pull-right" ng-class="{error: isFieldInError('endDate')}">
-            <label class="sr-only" for="endDate">End</label>
-            <input class="form-control datepicker col-xs-3" id="endDate" name="endDate" 
-                   type="text" ng-model="report.endDate" 
-                   data-date-format="yyyy-mm-dd" required data-provide="datepicker" 
-                   placeholder="End Date">
         </div>
     </form>
     <d3-reports data="reportData" label="name" on-click="reportClick(item)"></d3-reports>

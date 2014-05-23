@@ -103,6 +103,10 @@ angular.module('Mastermind')
 	  			$scope.breadCrumpParts.push("Administration");
 	  		}
 	  		
+	  		if($scope.state.name == 'reports') {
+	  			$scope.breadCrumpParts.push("Reports");
+	  		}
+	  		
 	  		if($scope.state.name == 'projects.show' || $scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit') {
 	  			$scope.breadCrumpParts = [ 'All Projects' ];
 	  			if($scope.params.projectId) {
