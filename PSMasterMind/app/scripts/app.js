@@ -215,8 +215,7 @@
       );
     }])
     //Sets default values for the quickDate Directive used in Reports
-   /*
-    .config(function(ngQuickDateDefaultsProvider) {
+      .config(function(ngQuickDateDefaultsProvider) {
     	  // Configure with icons from font-awesome
     	  return ngQuickDateDefaultsProvider.set({
     	    closeButtonHtml: "<i class='fa fa-times'></i>",
@@ -230,7 +229,6 @@
     	    }
     	  })
       })
-     */
     .run(['$rootScope', '$state',
       function ($rootScope, $state) {
     	//Handle browser navigate away
