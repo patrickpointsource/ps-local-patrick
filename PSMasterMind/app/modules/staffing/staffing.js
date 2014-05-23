@@ -27,125 +27,100 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
     	}
     	
     	return ret;
-    }
+    };
+    
     /*
      * Fetch a list of all the active Projects.
      * 
      */
-    var rolesPromise = RolesService.getRolesMapByResource();;
+    var activeStaffing = {};
+    var activeProjects = [];
+    var activeProjectsWithUnassignedPeople = [];
+    var unassignedIndex = 0;
+    $scope.activeProjectsWithUnassignedPeople = [];
+    
     ProjectsService.getActiveAndBacklogProjects(function(result){
     	$scope.activeAndBacklogProjects = result.data;
     	//console.log("staffing.js activeAndBacklogProjects:", $scope.activeAndBacklogProjects);
     });
     
-    var aProjectsPromise = ProjectsService.getActiveClientProjects(function(result){
-    	$scope.activeProjects = result;
-    	//console.log("staffing.js activeProjects:", $scope.activeProjects);
-        $scope.projectCount = result.count;
+    RolesService.getRolesMapByResource().then (
+    		function (data) {
+    			activeStaffing.rolesMap = data;
+    			$scope.rolesMap = data;
+    			
+    			return ProjectsService.getActiveClientProjects();
+    		}
+    ).then(
+    		function(data){
+    			activeStaffing.projects = data;
+    			$scope.activeProjects = data;
+    			//console.log("staffing.js activeProjects:", $scope.activeProjects);
+    			$scope.projectCount = data.count;
         
-        /*
-         * Next, with the list of active projects, find the resource deficit on these projects.
-         * 
-         */
-        $scope.qvProjects = result.data;
+    	        /* Next, with the list of active projects, find the resource deficit on these projects.*/
+    	        $scope.qvProjects = data.data;
+    	        activeProjects = $scope.qvProjects;
+    	        
+    	         /* Next, run through the list of projects and set the active projects and people. */
+    	        return AssignmentService.getAssignments(activeProjects);
+    		}
         
-        /*
-         * Next, run through the list of projects and set the active projects and people.
-         * 
-         */
-        var activeProjects = $scope.qvProjects;
-        var activeProjectsWithUnassignedPeople = [];
-        var unassignedIndex = 0;
-        
-        $scope.activeProjectsWithUnassignedPeople = [];
-        
-        $q.all(rolesPromise).then(function(rolesMap) {
-      	  //console.log("staging.js using rolesMap:", rolesMap);
-        	$scope.rolesMap = rolesMap;
-        	return AssignmentService.getAssignments(activeProjects);
-        }).then(function (assignments) {
-        	
-        	
-            /*
-             * Finally set projects without any assigned people.
-             * 
-             */
-        	  for(var i = 0; i < activeProjects.length; i++){
-        		var proj = activeProjects[i];
-        		var foundProjMatch = false;
-        		var roles = activeProjects[i].roles;
-        		var projAssignments = undefined;
+    ).then(
+    		function (data) {
+                /*
+                 * Finally set projects without any assigned people.
+                 * 
+                 */
+    			for(var i = 0; i < activeProjects.length; i++){
+              		var proj = activeProjects[i];
+              		var foundProjMatch = false;
+              		var roles = activeProjects[i].roles;
+              		
+              		
+              		var projAssignments = undefined;
 				
-				for(var l=0; l<assignments.length; l++) {
+    				for(var l=0; l<data.length; l++) {
 
-					projAssignments = assignments[l];
-					if(projAssignments.project.resource == proj.resource) {
-						foundProjMatch = true;
-						if(projAssignments.members && projAssignments.members.length > 0) {
-							var assignees = projAssignments.members;
-			                if(roles){
-			                      /*
-			                       * Loop through all the roles in the active projects
-			                       */
-			                      for(var b = 0; b < roles.length; b++){
-			                        var activeRole = roles[b];		
-			                        var foundRoleMatch = false;
-			                        //console.log("Next active Role:",activeRole);
-			                        /*
-			                         * Loop through assignees to find a match
-			                         */
-			                        for (var c=0; c<assignees.length; c++) {
-			                        	//if(activeRole.about == assignees[c].role.resource) {
-			                        	if(assignees[c].role.resource && assignees[c].role.resource.indexOf(activeRole._id) > -1) {
-			                        		foundRoleMatch = true;
-			                        	}
-			                        }
+    					projAssignments = data[l];
+    					if(projAssignments.project.resource == proj.resource) {
+     						
+    						if(projAssignments.members && projAssignments.members.length > 0) {
+    							var assignees = projAssignments.members;
+    			                if(roles){
+    			                	AssignmentService.calculateRolesCoverage(roles, assignees);
+    			                	
+    			                	/*
+    			                	 * Loop through all the roles in the active projects 
+    			                	 */
+  			                      	for(var b = 0; b < roles.length; b++){
+    				                        var activeRole = roles[b];	
 			                        
-			                        if(!foundRoleMatch) {
-				                        $scope.activeProjectsWithUnassignedPeople[unassignedIndex++] = {
-				                            	  clientName: proj.customerName,
-				                            	  projectName: proj.name,
-				                            	  title: proj.customerName+': '+proj.name,
-				                            	  projectResource: proj.resource,
-				                            	  hours: getHoursDescription(activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
-				                            	  role: $scope.rolesMap[activeRole.type.resource].abbreviation,
-				                            	  startDate: activeRole.startDate,
-				                            	  endDate: activeRole.endDate,
-				                            	  rate: activeRole.rate.amount};
-				                              //console.log("activeRole.type:",activeRole.type);
-				                              //console.log("Unassigned Role in Proj:", $scope.activeProjectsWithUnassignedPeople[unassignedIndex-1]);
-				                      }
-			                      }
-			                }
-						}
-					}
-				}
-			
-				if (!foundProjMatch) {
-					if(roles) {
-	                      for(var b = 0; b < roles.length; b++){
-		                        var activeRole = roles[b];		
-		                        $scope.activeProjectsWithUnassignedPeople[unassignedIndex++] = {
-		                            	  clientName: proj.customerName,
-		                            	  projectName: proj.name,
-		                            	  title: proj.customerName+': '+proj.name,
-		                            	  projectResource: proj.resource,
-		                            	  hours: getHoursDescription(activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
-		                            	  role: $scope.rolesMap[activeRole.type.resource].abbreviation,
-		                            	  startDate: activeRole.startDate,
-		                            	  endDate: activeRole.endDate,
-		                            	  rate: activeRole.rate.amount
-		                        };
-	                      }
-					
-					}
-				}
-  			}
+    				                        if(activeRole.hoursNeededToCover > 0) {
+    					                        $scope.activeProjectsWithUnassignedPeople[unassignedIndex++] = {
+    					                            	  clientName: proj.customerName,
+    					                            	  projectName: proj.name,
+    					                            	  title: proj.customerName+': '+proj.name,
+    					                            	  projectResource: proj.resource,
+    					                            	  hours: getHoursDescription(activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
+    					                            	  role: $scope.rolesMap[activeRole.type.resource].abbreviation,
+    					                            	  startDate: activeRole.startDate,
+    					                            	  endDate: activeRole.endDate,
+    					                            	  rate: activeRole.rate.amount
+    					                        };
+    					                      }
+    			                      }
+  			                      	break;
+    			                }
+    						}
+    					}
+    				}
+      			}
         	  
-        	  /*
-        	   * Build out the table that contains the Active Projects with resource deficits
-        	   */
-        	  $scope.unassignedRoleList = new TableParams(params, {
+          	  /*
+          	   * Build out the table that contains the Active Projects with resource deficits
+          	   */
+          	  $scope.unassignedRoleList = new TableParams(params, {
         		  total: $scope.activeProjectsWithUnassignedPeople.length, // length of data
         		  getData: function ($defer, params) {
 
@@ -159,8 +134,9 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
         			  $defer.resolve(ret);
         		  }
         	  });
-        });
-    });
+            }
+    );
+//  });
 
     /*
      * Next, with the list of backlog projects, create a table with the resource deficit on these projects.
