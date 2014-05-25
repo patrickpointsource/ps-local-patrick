@@ -8,10 +8,8 @@
 		        <div style="display: inline-block; position:absolute; left:0px; right:0px; text-align:center"> 
 		        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
 		        </div>
-		        <div class="pull-right btn-group btn-group-sm dashboard-actions" ng-click="addHoursEntry();">
+		        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
 		        	<a ng-click="addHoursEntry()"><i class="fa fa-plus"></i> Add Hours</a> 
-		        	<!--ng-click="openHoursEntry(selected);addHoursEntry();" >
-		        	  -->
 		        </div>
 		       </div>
 	       
@@ -84,9 +82,9 @@
 			                <i class="fa fa-search"></i>
 			            </span>
 	        			 
-	        			<span class="hours-logged-desc" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.description}}</span>
+	        			<span class="hours-logged-desc" style="width: -webkit-calc(70% - 70px)" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.description}}</span>
 	        			
-	        			<input class="hours-logged-desc edit-input" type="text"
+	        			<input class="hours-logged-desc edit-input" type="text" style="width: -webkit-calc(70% - 100px)" 
 			                    class="form-control" placeholder="Description"
 			                    name="hours-logged-desc-edit" ng-model="hourEntry.hoursRecord.descriptionEdited" required ng-show="hourEntry.hoursRecord.editMode">
 			                    

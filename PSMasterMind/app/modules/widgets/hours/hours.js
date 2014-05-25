@@ -280,6 +280,14 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
     	if ($scope.getNewHoursValidationErrors())
     		return;
+    	/*
+    	if (hourEntry.hoursRecord.isAdded && (hourEntry.hoursRecord.hours == "" || (!(hourEntry.hoursRecord.project 
+    				&& hourEntry.hoursRecord.project.resource) && !(hourEntry.hoursRecord.task 
+    	    				&& hourEntry.hoursRecord.task.resource))  ))
+    		return;
+    	*/
+    	if (hourEntry.hoursRecord.isAdded && (hourEntry.hoursRecord.hours == "" || !hourEntry.selectedItem))
+    		return;
     	
     	$('ul.dropdown-menu.ddProjectsTasksMenu').appendTo($('.dashboard-widget.hours .panel-body'))
     	delete hourEntry.hoursRecord.hoursEdited;
@@ -329,15 +337,19 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     }
     $scope.bindAutocompleteHandlers = function(input){
     	input.bind('click');
+    	
+    	
     	input.bind('dblclick', function(){
     		var autocomplete = $(this).data('_autocomplete');
     		
+    		autocomplete.find('li').css('display', '')
     		autocomplete.show();
     	});
     	
     	input.next('.search-icon').bind('click', function(){
     		var autocomplete = input.data('_autocomplete');
     		
+    		autocomplete.find('li').css('display', '')
     		autocomplete.show();
     	});
     	
