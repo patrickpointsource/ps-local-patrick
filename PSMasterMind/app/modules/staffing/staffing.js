@@ -72,6 +72,31 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
                  * Finally set projects without any assigned people.
                  * 
                  */
+    			
+    			var fillDeficit = function(addAllRoles) {
+    				/*
+                	 * Loop through all the roles in the active projects 
+                	 */
+                	for(var b = 0; b < roles.length; b++){
+	                        var activeRole = roles[b];	
+                    
+	                        if(activeRole.hoursNeededToCover > 0 || addAllRoles) {
+		                        $scope.activeProjectsWithUnassignedPeople[unassignedIndex++] = {
+		                            	  clientName: proj.customerName,
+		                            	  projectName: proj.name,
+		                            	  title: proj.customerName+': '+proj.name,
+		                            	  projectResource: proj.resource,
+		                            	  hours: getHoursDescription(activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
+		                            	  role: $scope.rolesMap[activeRole.type.resource].abbreviation,
+		                            	  startDate: activeRole.startDate,
+		                            	  endDate: activeRole.endDate,
+		                            	  rate: activeRole.rate.amount
+		                        };
+		                      }
+                      }
+    			}
+    			var found = false;
+    			
     			for(var i = 0; i < activeProjects.length; i++){
               		var proj = activeProjects[i];
               		var foundProjMatch = false;
@@ -80,41 +105,33 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
               		
               		var projAssignments = undefined;
 				
-    				for(var l=0; l<data.length; l++) {
+              		found = false;
+              		
+    				for (var l=0; l<data.length; l ++) {
 
     					projAssignments = data[l];
+    					
     					if(projAssignments.project.resource == proj.resource) {
      						
     						if(projAssignments.members && projAssignments.members.length > 0) {
     							var assignees = projAssignments.members;
+    							
+    							found = true;
+    							
     			                if(roles){
     			                	AssignmentService.calculateRolesCoverage(roles, assignees);
+    			                	// add info about deficit properties
+    			                	fillDeficit()
     			                	
-    			                	/*
-    			                	 * Loop through all the roles in the active projects 
-    			                	 */
-  			                      	for(var b = 0; b < roles.length; b++){
-    				                        var activeRole = roles[b];	
-			                        
-    				                        if(activeRole.hoursNeededToCover > 0) {
-    					                        $scope.activeProjectsWithUnassignedPeople[unassignedIndex++] = {
-    					                            	  clientName: proj.customerName,
-    					                            	  projectName: proj.name,
-    					                            	  title: proj.customerName+': '+proj.name,
-    					                            	  projectResource: proj.resource,
-    					                            	  hours: getHoursDescription(activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
-    					                            	  role: $scope.rolesMap[activeRole.type.resource].abbreviation,
-    					                            	  startDate: activeRole.startDate,
-    					                            	  endDate: activeRole.endDate,
-    					                            	  rate: activeRole.rate.amount
-    					                        };
-    					                      }
-    			                      }
   			                      	break;
     			                }
     						}
     					}
     				}
+    				
+    				// add info about deficit properties
+    				if (!found) 
+    					fillDeficit(true);
       			}
         	  
           	  /*

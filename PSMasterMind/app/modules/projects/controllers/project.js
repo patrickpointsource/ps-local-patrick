@@ -1070,7 +1070,7 @@ angular.module('Mastermind')
 		else if (period)
 			$scope.selectedHoursPeriod =  period;
 
-		for(var i = 0; i < $scope.currentDisplayedHours.length; i++){
+		for(var i = 0; $scope.currentDisplayedHours && i < $scope.currentDisplayedHours.length; i++){
 			$scope.currentDisplayedHours[i] = $scope.getProjectHours($scope.organizedHours[i].hoursEntries);
 		}
 		
