@@ -242,10 +242,16 @@ angular.module('Mastermind.controllers.projects')
     	return result;
     };
     
+    var saveInProgress = false;
+    
 	/**
      * Save role assignements
      */
     $scope.saveAssignment = function (navigateOut) {
+    	
+    	if (saveInProgress)
+    		return;
+    	
       //Validate new role
       var errors = [];
       
@@ -257,6 +263,8 @@ angular.module('Mastermind.controllers.projects')
       else {
     	  var assignments = [];
     	  var role;
+    	  
+    	  saveInProgress = true;
     	  
           for (var i = 0; i < $scope.project.roles.length; i ++) {
           	role = $scope.project.roles[i];
@@ -290,6 +298,8 @@ angular.module('Mastermind.controllers.projects')
     	  $scope.projectAssignment.members = assignments.concat($scope.projectAssignment.excludedMembers ? $scope.projectAssignment.excludedMembers: []);
     	  
     	  return AssignmentService.save($scope.project, $scope.projectAssignment).then(function(result) {
+    		  saveInProgress = false;
+    		  
     		  $scope.showInfo(['Assignments successfully saved']);
     		  	//TODO removing dirty handler
   		 		//$rootScope.formDirty = false;
@@ -579,12 +589,17 @@ angular.module('Mastermind.controllers.projects')
     else
     	initAssignments();
     
-    $rootScope.$on("project:save", function() {
+    var unbindSave = $rootScope.$on("project:save", function() {
     	$scope.saveAssignment();
     })
     
-     $rootScope.$on("project:cancel", function() {
+    var unbindCancel = $rootScope.$on("project:cancel", function() {
     	 $scope.cancelAssignment();
+    })
+    
+    $scope.$on("$destroy", function() {
+    	unbindSave();
+    	unbindCancel()
     })
     
   }]);

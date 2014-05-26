@@ -321,8 +321,15 @@ angular.module('Mastermind.controllers.projects')
       }
     }
     
+    var unbindLoad = null;
+    
     if (!$scope.project)
-    	$rootScope.$on("project:loaded", initLinks)
+    	unbindLoad = $rootScope.$on("project:loaded", initLinks)
     else
     	initLinks();
+    
+    $scope.$on("$destroy", function() {
+    	if (unbindLoad)
+    		unbindLoad();
+    })
 }]);
