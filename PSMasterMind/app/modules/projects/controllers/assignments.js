@@ -300,13 +300,13 @@ angular.module('Mastermind.controllers.projects')
     	  return AssignmentService.save($scope.project, $scope.projectAssignment).then(function(result) {
     		  saveInProgress = false;
     		  
-    		  $scope.showInfo(['Assignments successfully saved']);
+    		  //$scope.showInfo(['Assignments successfully saved']);
     		  	//TODO removing dirty handler
   		 		//$rootScope.formDirty = false;
     		  
-    		  window.setTimeout(function(){
-    			  $scope.hideMessages();
-    		  }, 7 * 1000);
+    		  //window.setTimeout(function(){
+    			//  $scope.hideMessages();
+    		  //}, 7 * 1000);
     		  
     		  $scope.refreshAssignmentsData( AssignmentService.filterAssignmentsByPeriod($scope.projectAssignment, $scope.selectedAssignmentsFilter));
     		  
@@ -319,7 +319,10 @@ angular.module('Mastermind.controllers.projects')
     		  if(!navigateOut){
     			  $scope.stopWatchingAssignmentChanges();
     			  $rootScope.formDirty = false;
-    			  $state.go('projects.show', params);
+    			  $scope.editMode = true;
+    			  if($scope.editDone && $scope.editDone == true) {
+    				  $state.go('projects.show', params);
+    			  }
     		  }
     		  
     		  $scope.pushState(params)
