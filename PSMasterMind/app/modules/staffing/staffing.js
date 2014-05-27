@@ -153,7 +153,6 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
         	  });
             }
     );
-//  });
 
     /*
      * Next, with the list of backlog projects, create a table with the resource deficit on these projects.
