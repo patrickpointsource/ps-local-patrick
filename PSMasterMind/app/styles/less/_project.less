@@ -293,13 +293,17 @@ th > span.hidden-xs {
 }
 
 .project-row-name {
-    padding-top: 20px;
+    padding-top: 0px;
+    display: table;
+    height: 76px;
     
     > a {
         font-family: 'Open Sans', sans-serif;
         font-weight: bold;
         font-size: 24px;
         color: #3a3a3a;
+        display: table-cell;
+        vertical-align: middle;
     }
 }
 
@@ -307,17 +311,31 @@ th > span.hidden-xs {
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;
     color: #bfbfbf;
-    padding-top: 30px;
+    padding-top: 0px;
+    display: table;
+    height: 76px;
+  
+    span {
+      display: table-cell;
+      vertical-align: middle;
+    }
 }
 
 .project-row-dates {
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;
     color: #737373;
-    padding-top: 30px;
+    padding-top: 0px;
+    display: table;
+    height: 76px;
     
     > i {
         color: #d9d9d9;
+    }
+  
+    span {
+      display: table-cell;
+      vertical-align: middle;
     }
 }
 
