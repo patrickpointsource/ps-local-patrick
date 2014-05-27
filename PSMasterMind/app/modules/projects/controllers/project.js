@@ -591,13 +591,25 @@ angular.module('Mastermind')
     	
     	var splittedDesc = description.split('<div>');
     	
-    	result = splittedDesc[0] + '<div>' + splittedDesc[1] + '<div>' + splittedDesc[2];
+    	$scope.splittedDescription = [];
     	
-    	if(result.length > SYMBOLS_FOR_DESCRIPTION) {
-    		result = description.substring(0, SYMBOLS_FOR_DESCRIPTION);
+    	$scope.splittedDescription.push(splittedDesc[0]);
+    	
+    	if(splittedDesc[1]) {
+    		$scope.splittedDescription.push('<div>' + splittedDesc[1]);
     	}
     	
-    	return result;
+    	if(splittedDesc[2]) {
+    		$scope.splittedDescription.push('<div>' + splittedDesc[2]);
+    	}
+    	
+    	if($scope.splittedDescription[0].length > SYMBOLS_FOR_DESCRIPTION) {
+    		$scope.splittedDescription[0] = $scope.splittedDescription[0].substring(0, SYMBOLS_FOR_DESCRIPTION);
+    	}
+    	
+    	$('#desc-1').html($scope.splittedDescription[0]);
+    	$('#desc-2').html($scope.splittedDescription[1]);
+    	$('#desc-3').html($scope.splittedDescription[2]);
     }
     
     /**
@@ -1950,7 +1962,7 @@ angular.module('Mastermind')
     if ($scope.projectId){
       ProjectsService.getForEdit($scope.projectId).then(function(project){
         $scope.project = project;
-        $scope.project.shortDescription = cutDescription($scope.project.description);
+        cutDescription($scope.project.description);
         $scope.handleProjectSelected();
         $scope.updateHoursPersons();
         $scope.initMonths();
@@ -1960,6 +1972,8 @@ angular.module('Mastermind')
         }
         
         $scope.$emit('project:loaded');
+        
+        reloadShortDesc();
       });
     }
     /**
@@ -1970,7 +1984,18 @@ angular.module('Mastermind')
       $scope.handleProjectSelected();
       $scope.$emit('project:loaded');
     }
-
+    
+    var reloadShortDesc = function() {
+    	$('#desc-1').html($scope.splittedDescription[0]);
+    	if($scope.splittedDescription[1]) {
+    		$('#desc-2').html($scope.splittedDescription[1]);
+    	}
+    	if($scope.splittedDescription[2]) {
+    		$('#desc-3').html($scope.splittedDescription[2]);
+    	}
+    	$('#desc-3 div').css('display', 'inline');
+    }
+    
     $scope.canDeleteProject = false;
 
     $scope.projectTabId = $state.params.tabId;
@@ -1986,6 +2011,7 @@ angular.module('Mastermind')
     
     $scope.switchDescription = function(value) {
     	$scope.showDescription = value;
+    	reloadShortDesc();
     }
     
     $scope.showFullTerms = false;
@@ -2062,6 +2088,20 @@ angular.module('Mastermind')
     	}
     }
     
+    $scope.isFutureActiveMonth = function(offset) {
+    	if($scope.project) {
+    		var startDate = new Date($scope.project.startDate);
+    		var month = startDate.getMonth() + offset;
+    		var year = startDate.getFullYear();
+    		
+    		var today = new Date();
+    		
+    		return month > today.getMonth();
+    	}
+    }
+    
+    
+    
     var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
     $scope.getMonthName = function(offset) {
@@ -2084,11 +2124,18 @@ angular.module('Mastermind')
     			month.current = true;
     		} else {
     			if($scope.isActiveMonth(i)) {
-        			month.active = true;
+    				if($scope.isFutureActiveMonth(i)){
+    					month.future = true;
+    				} else {
+    					month.active = true;
+    				}
         		}
+    			
     		}
     		
-    		$scope.months.push(month);
+    		if(month.current || month.future || month.active) {
+    			$scope.months.push(month);
+    		}
     	}
     }
       

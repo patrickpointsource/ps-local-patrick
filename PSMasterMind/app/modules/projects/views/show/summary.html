@@ -17,11 +17,17 @@
                           <div class="pull-right status-text">{{projectState(project).toUpperCase()}}</div> 
                       </div>
                  </div>
-                 <div class="row" style="margin-top: 25px; margin-bottom: 10px;">
+                 <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
                       <div class="col-xs-12">
-                          <div ta-bind ng-if="project.shortDescription && !showDescription" ng-model="project.shortDescription"></div>
+                          <div ng-show="!showDescription">
+                              <div id="desc-1"></div>
+                              <div id="desc-2"></div>
+                              <div>
+                                <div id="desc-3" style="display: inline;"></div>
+                                <a ng-if="!showDescription && project.description.length > splittedDescription[0].length" ng-click="switchDescription(true)" style="cursor: pointer;">see more</a>
+                              </div>
+                          </div>
                           <div ta-bind ng-if="project.description && showDescription" ng-model="project.description"></div>
-                          <a ng-if="!showDescription && project.description.length > project.shortDescription.length" ng-click="switchDescription(true)" style="cursor: pointer;">see more</a>
                           <a ng-if="showDescription" ng-click="switchDescription(false)" style="cursor: pointer;">see less</a>
                           <div ng-if="!project.description">No description entered.</div>
                       </div>
