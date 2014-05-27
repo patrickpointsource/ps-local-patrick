@@ -491,15 +491,14 @@ angular.module('Mastermind')
       var deferred = $q.defer();	
     	
       var savingCallback = function() {
-    	  var wasCreated = false;
+    	  var wasCreated = $scope.projectId ? false : true;
           // set the project creator and created time
           //TODO - Do we need this refresh why would it be out of date with the area controller?
       	
           Resources.refresh('people/me').then(function(me){
             if ($scope.project.created === undefined) {
-            	wasCreated = true;
-            //TODO Created and Modified should be set on the server side not here.	
-            $scope.project.created = {
+              //TODO Created and Modified should be set on the server side not here.	
+              $scope.project.created = {
                 date: new Date().toString(),
                 resource: me.about
               };
@@ -518,12 +517,26 @@ angular.module('Mastermind')
     	        	var oid = projectURI.substring(projectURI.lastIndexOf('/')+1);
     	        	//Set our currently viewed project to the one resolved by the service.
     	            $scope.projectId = oid;
+    	            
+    	            // after creating a project, if clicked Done, go to projects list
+    	            // if clicked Save, make project editable (redirect to Edit page)
+    	            if($scope.editDone) {
+    	            	$rootScope.formDirty = false;
+    	            	$state.go('projects.index', {
+                	          filter: 'all'
+                	        });
+    	            }
+    	            else {
+    	            	$rootScope.formDirty = false;
+    	            	$state.go('projects.edit', {projectId:$scope.projectId});
+    	            }
             	}
-                	$scope.showInfo(['Project successfully saved']);
+            	
+                $scope.showInfo(['Project successfully saved']);
                 
-                	$scope.$emit('project:save');
+                $scope.$emit('project:save');
                 	
-                    ProjectsService.getForEdit($scope.projectId).then(function(project){
+                ProjectsService.getForEdit($scope.projectId).then(function(project){
                     $scope.project = project;
                     $scope.handleProjectSelected();
                     $rootScope.formDirty = false;
@@ -532,13 +545,6 @@ angular.module('Mastermind')
                     deferred.resolve($scope.project);
                         
                     $scope.$emit('project:loaded');
-                    
-                    if(wasCreated) {
-                    	$rootScope.formDirty = false;
-                    	$state.go('projects.index', {
-                    	          filter: 'all'
-                    	        });
-                    }
                 });
             }, 
             function (response) {
