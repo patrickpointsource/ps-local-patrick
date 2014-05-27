@@ -319,6 +319,16 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     	if ($scope.selected)
     		delete $scope.selected;
     	
+    	if ($scope.selected) {
+    		
+    	      
+    	      for (var i = 0; i < $scope.displayedHours.length; i++) {
+    	        if ($scope.selected.date === $scope.displayedHours[i].date) {
+    	        	$scope.displayedHours[i] = $scope.selected;
+    	        }
+    	      }
+    	}
+    	
     	$scope.selected = $scope.cloneDay(day);
     }
     
@@ -780,6 +790,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 	    		  project: updatedRecords[0].project,
 	    		  task: updatedRecords[0].task
 	    	  })
+	    	  
+    	
         //$scope.hoursRequest();
       });
 
