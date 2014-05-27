@@ -1,6 +1,6 @@
 <div ng-controller="GroupsCtrl">
 	<table ng-table="tableParams" class="table">
-      <tbody ng-repeat="group in groups" ng-controller="groupRowCtrl">
+      <tbody ng-repeat="group in groups">
         <tr class="ng-table-group">
           <td colspan="3">
             <a href="" ng-click="group.$hideRows = !group.$hideRows">

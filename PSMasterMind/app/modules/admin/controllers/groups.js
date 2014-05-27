@@ -73,8 +73,10 @@ angular.module('Mastermind').controller('GroupsCtrl',['$scope',
 
 }]);
 
+/*
 // Minimizes the Management group - added in case they want all collapsed at start
 angular.module('Mastermind').controller('groupRowCtrl', function($scope) {
 	  if ($scope.group.label != 'Management')
 	    $scope.groups.$hideRows = true;
 });
+*/
