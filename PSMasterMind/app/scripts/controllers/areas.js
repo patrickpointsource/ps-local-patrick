@@ -84,7 +84,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
       //console.log('Logged In');
       $scope.authState = true;
 
-      $scope.$emit('me:loaded')
+      $scope.$emit('me:loaded');
     });
 
     /**
@@ -114,8 +114,8 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     $scope.activeArea = activeArea;
 
     $scope.getActiveAreaFilter = function() {
-      return $state.params ? $state.params.filter : "all"
-    }
+      return $state.params ? $state.params.filter : 'all';
+    };
 
     $scope.showHideMenu = function() {
 
@@ -125,28 +125,29 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
       var minTopHeaderContentWidth = 90;
 
       if (isToBeShown) {
-        if (!$('#appContent').data('origWidth'))
-          $('#appContent').data('origWidth', $('#appContent').width())
+        if (!$('#appContent').data('origWidth')) {
+          $('#appContent').data('origWidth', $('#appContent').width());
+        }
 
         $('#appContent').css('width', $('#appContent').data('origWidth'));
-        $('#appContent').parent().css('overflow', 'hidden')
+        $('#appContent').parent().css('overflow', 'hidden');
 
         $('#appContent').animate({
           marginLeft: menuWidth + 'px'
         });
 
         var paddingLeft = (menuWidth - 20);
-        var topHeaderWidth = $(".navbar.navbar-default.navbar-fixed-top").width();
+        var topHeaderWidth = $('.navbar.navbar-default.navbar-fixed-top').width();
 
         if ((topHeaderWidth - paddingLeft) < minTopHeaderContentWidth) {
-          var w = $(".navbar.navbar-default.navbar-fixed-top").width();
+          var w = $('.navbar.navbar-default.navbar-fixed-top').width();
 
-          $(".navbar.navbar-default.navbar-fixed-top").data('origWidth', w)
+          $('.navbar.navbar-default.navbar-fixed-top').data('origWidth', w);
 
-          $(".navbar.navbar-default.navbar-fixed-top").width(w + minTopHeaderContentWidth - (topHeaderWidth - paddingLeft));
+          $('.navbar.navbar-default.navbar-fixed-top').width(w + minTopHeaderContentWidth - (topHeaderWidth - paddingLeft));
         }
 
-        $(".navbar.navbar-default.navbar-fixed-top").animate({
+        $('.navbar.navbar-default.navbar-fixed-top').animate({
           paddingLeft: paddingLeft + 'px'
         });
       } else {
@@ -154,19 +155,20 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
           marginLeft: '0px'
         }, function() {
           $('#appContent').css('width', 'auto');
-          $('#appContent').parent().css('overflow', 'auto')
+          $('#appContent').parent().css('overflow', 'auto');
         });
 
-        $(".navbar.navbar-default.navbar-fixed-top").animate({
+        $('.navbar.navbar-default.navbar-fixed-top').animate({
           paddingLeft: '0px'
         }, function() {
-          if ($(".navbar.navbar-default.navbar-fixed-top").data('origWidth'))
-            $(".navbar.navbar-default.navbar-fixed-top").width($(".navbar.navbar-default.navbar-fixed-top").data('origWidth'))
+          if ($('.navbar.navbar-default.navbar-fixed-top').data('origWidth')) {
+            $('.navbar.navbar-default.navbar-fixed-top').width($('.navbar.navbar-default.navbar-fixed-top').data('origWidth'));
+          }
         });
       }
 
       $('#navbar-collapse-mobile').collapse('toggle');
-    }
+    };
 
     $scope.showMainMenu = function(e) {
       e = e ? e : window.event;
@@ -177,7 +179,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
 
       subnavbar.addClass('hidden');
       return false;
-    }
+    };
     /*
      * Navigate to the dashboard.
      */
@@ -195,28 +197,30 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
      * Navigate to the projects index.
      */
     $scope.showProjects = function(filter) {
-      if (!filter)
+      if (!filter) {
         $state.go('projects.index', {
           filter: 'all'
         });
-      else
+      } else {
         $state.go('projects.index', {
           filter: filter
         });
+      }
     };
 
     /*
      * Navigate to the projects index.
      */
     $scope.showPeople = function(filter) {
-      if (!filter)
+      if (!filter) {
         $state.go('people.index', {
           filter: 'all'
         });
-      else
+      } else {
         $state.go('people.index', {
           filter: filter
         });
+      }
     };
 
     /*
@@ -232,8 +236,8 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
     $scope.showAdmin = function() {
       $state.go('admin');
     };
-    
-    
+
+
     /*
      * Navigate to the report index.
      */
