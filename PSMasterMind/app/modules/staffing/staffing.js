@@ -29,6 +29,22 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
     	return ret;
     };
     
+    var today = new Date();
+	var dd = today.getDate();
+    var mm = today.getMonth(); 
+    var yyyy = today.getFullYear();
+   
+    today =  new Date(yyyy, mm, dd);
+    
+    /*
+     * Helps to filter past entries - roles and assignees
+     **/
+    $scope.filterPastEntries = function(entry) {  
+	  	  if (new Date( entry.startDate) < today && (entry.endDate && new Date( entry.endDate) < today) )
+	      		 return false;
+	  	  
+	  	  return true
+    }
     /*
      * Fetch a list of all the active Projects.
      * 
@@ -100,7 +116,7 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
     			for(var i = 0; i < activeProjects.length; i++){
               		var proj = activeProjects[i];
               		var foundProjMatch = false;
-              		var roles = activeProjects[i].roles;
+              		var roles = _.filter(activeProjects[i].roles, $scope.filterPastEntries);
               		
               		
               		var projAssignments = undefined;
@@ -114,13 +130,13 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
     					if(projAssignments.project.resource == proj.resource) {
      						
     						if(projAssignments.members && projAssignments.members.length > 0) {
-    							var assignees = projAssignments.members;
+    							var assignees = _.filter(projAssignments.members, $scope.filterPastEntries);
     							
     							found = true;
     							
     			                if(roles){
     			                	AssignmentService.calculateRolesCoverage(roles, assignees);
-    			                	// add info about deficit properties
+    			                	// add info about deficit roles
     			                	fillDeficit()
     			                	
   			                      	break;
@@ -129,7 +145,7 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
     					}
     				}
     				
-    				// add info about deficit properties
+    				// add info about other deficit roles, which doesn't have assignments
     				if (!found) 
     					fillDeficit(true);
       			}

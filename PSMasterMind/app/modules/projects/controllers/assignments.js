@@ -167,7 +167,7 @@ angular.module('Mastermind.controllers.projects')
     }
     
     $scope.stopWatchingAssignmentChanges = function(){
-    	var sentinel = $scope.sentinel;
+    	var sentinel = $scope.assignmentsSentinel;
 	  	if(sentinel){
 	  		sentinel();  //kill sentinel
 	  	}
@@ -177,7 +177,7 @@ angular.module('Mastermind.controllers.projects')
     	$scope.stopWatchingAssignmentChanges();
     	
     	//Create a new watch
-    	  $scope.sentinel = $scope.$watch('project.roles', function(newValue, oldValue){
+    	  $scope.assignmentsSentinel = $scope.$watch('project.roles', function(newValue, oldValue){
 	    	  if(!$rootScope.formDirty && $scope.editMode){
 	    		  //Do not include anthing in the $meta property in the comparison
 	    		  if(oldValue.hasOwnProperty('$meta')){

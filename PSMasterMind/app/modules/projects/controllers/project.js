@@ -1713,7 +1713,7 @@ angular.module('Mastermind')
 	    		  }
 	    	  }
 	    	 
-	      },true);
+	      }, true);
       }
       
       // sort roles inside project
