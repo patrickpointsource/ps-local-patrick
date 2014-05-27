@@ -1,5 +1,44 @@
 <div class="row people-list" style="padding-top: 0px;">
     <div class="col-xs-12">
+        <div class="row people-header">
+            <div class="col-xs-6 col-sm-4 col-md-4" style="padding-left: 25px;">
+              <span class="header-name">Project</span>
+              <div class="person-sorting">
+                  <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'proj-asc'}" ng-click="changeSort('proj-asc')"></i></button>
+                  <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'proj-desc'}"  ng-click="changeSort('proj-desc')"></i></button>
+              </div>
+            </div>
+            <div class="clearfix visible-xs"></div>
+            <div class="col-xs-6 col-sm-4 col-md-3">
+              <span class="header-name">Client</span>
+              <div class="person-sorting">
+                  <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'cust-asc'}" ng-click="changeSort('cust-asc')"></i></button>
+                  <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'cust-desc'}" ng-click="changeSort('cust-desc')"></i></button>
+              </div>
+            </div>
+            <div class="col-xs-4 col-sm-5 col-md-2">
+              <span class="header-name">Start Date</span>
+              <div class="person-sorting">
+                  <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'sd-asc'}" ng-click="changeSort('sd-asc')"></i></button>
+                  <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'sd-desc'}" ng-click="changeSort('sd-desc')"></i></button>
+              </div>
+            </div>
+            <div class="col-xs-5 col-sm-7 col-md-2">
+              <span class="header-name">End Date</span>
+              <div class="person-sorting">
+                  <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'ed-asc'}" ng-click="changeSort('ed-asc')"></i></button>
+                  <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'ed-desc'}" ng-click="changeSort('ed-desc')"></i></button>
+              </div>
+            </div>
+            <div class="hidden-sm col-xs-3 col-md-1" style="padding-left: 0;">
+              <span class="header-name">Status</span>
+              <div class="person-sorting">
+                  <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'stat-asc'}" ng-click="changeSort('stat-asc')"></i></button>
+                  <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'stat-desc'}" ng-click="changeSort('stat-desc')"></i></button>
+              </div>
+            </div>
+        </div>
+      
         <div class="row item-row project-row" ng-repeat="project in projects | filter:filterText" style="margin-top: 10px; margin-bottom: 0px;">
             <div class="col-xs-6 col-sm-4 col-md-4 item-prop project-row-name">
                 <a href="#{{project.resource}}">{{project.name}}</a>

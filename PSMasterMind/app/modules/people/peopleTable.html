@@ -1,32 +1,42 @@
 <!-- Table View -->
 <div class="row people-list">
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 pull-right people-filter">
+        <input class="form-control" placeholder="Filter People" ng-model="filterText" autofocus/>
+    </div>
     <div class="col-xs-12">
-        <!-- <div class="row content-header-gray people-header">
-            <div class="col-xs-5 col-md-4 person-header-name">Person</div>
-            <div class="col-xs-1 col-md-1 person-sorting">
-                <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'name-asc'}" ng-click="changeSort('name-asc')"></i></button>
-                <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'name-desc'}"  ng-click="changeSort('name-desc')"></i></button>
+         <div class="row people-header">
+            <div class="col-xs-12 col-sm-5 col-md-5 person-header-name">
+              <span class="header-name">NAME</span>
+              <div class="person-sorting">
+                  <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'name-asc'}" ng-click="changeSort('name-asc')"></i></button>
+                  <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'name-desc'}"  ng-click="changeSort('name-desc')"></i></button>
+              </div>
             </div>
-            <div class="col-xs-2 col-md-1 person-header">Role</div>
-            <div class="col-xs-1 col-md-1 person-sorting">
-                <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'role-asc'}" ng-click="changeSort('role-asc')"></i></button>
-                <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'role-desc'}" ng-click="changeSort('role-desc')"></i></button>
+            <div class="col-xs-4 col-sm-1 person-header">
+              <span class="header-name">ROLE</span>
+              <div class="person-sorting">
+                  <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'role-asc'}" ng-click="changeSort('role-asc')"></i></button>
+                  <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'role-desc'}" ng-click="changeSort('role-desc')"></i></button>
+              </div>
             </div>
-            <div class="hidden-xs hidden-sm col-md-1 person-header">Group</div>
-            <div class="hidden-xs hidden-sm col-md-1 person-sorting">
-                <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'group-asc'}" ng-click="changeSort('group-asc')"></i></button>
-                <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'group-desc'}" ng-click="changeSort('group-desc')"></i></button>
+            <div class="col-xs-8 col-sm-4 person-header">
+              <span class="header-name">TITLE</span>
+              <div class="person-sorting">
+                  <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'group-asc'}" ng-click="changeSort('group-asc')"></i></button>
+                  <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'group-desc'}" ng-click="changeSort('group-desc')"></i></button>
+              </div>
             </div>
-            <div class="hidden-xs hidden-sm col-md-2 person-header">Utilization Rate</div>
-            <div class="col-xs-2 hidden-md hidden-lg person-header">Rate</div>
-            <div class="col-xs-1 col-md-1 person-sorting">
-                <button class="sorting-button"><i class="fa fa-chevron-up" ng-class="{ 'active': sortType == 'rate-asc'}" ng-click="changeSort('rate-asc')"></i></button>
-                <button class="sorting-button"><i class="fa fa-chevron-down" ng-class="{ 'active': sortType == 'rate-desc'}" ng-click="changeSort('rate-desc')"></i></button>
+            <div class="col-xs-12 col-sm-2 person-header">
+              <span class="header-name">UTILIZATION</span>
+              <div class="person-sorting">
+                  <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'rate-asc'}" ng-click="changeSort('rate-asc')"></i></button>
+                  <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'rate-desc'}" ng-click="changeSort('rate-desc')"></i></button>
+              </div>
             </div>
-        </div> -->
+        </div> 
         <div class="row people-row" ng-repeat="person in people | filter:filterPerson(filterText)">
-            <a class="col-xs-4 col-sm-2 person-image" href="#{{person.resource}}"><img class="people-image" ng-src="{{person.thumbnail}}"/></a>
-            <div class="col-xs-8 col-sm-3 person-name">
+            <a class="col-xs-3 col-sm-2 person-image" href="#{{person.resource}}"><img class="people-image" ng-src="{{person.thumbnail}}"/></a>
+            <div class="col-xs-9 col-sm-3 person-name">
                 <a href="#{{person.resource}}">{{person.familyName}}, {{person.givenName}}</a>
             </div>
             <div class="col-xs-4 col-sm-1 people-prop">

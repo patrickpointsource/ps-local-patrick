@@ -17,7 +17,13 @@
   </div>
 </div>
 -->
-<div class="row people-search">
+
+<div ng-if="showTableView">
+	<ng-include src="'modules/people/peopleTable.html'"></ng-include>
+</div>
+
+<div ng-if="showGraphView">
+  <div class="row people-search">
     <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 pull-right">
         <input class="form-control" placeholder="Filter People" ng-model="filterText" autofocus/>
     </div>
@@ -39,10 +45,5 @@
         </button>
     </div>
 </div>
-<div ng-if="showTableView">
-	<ng-include src="'modules/people/peopleTable.html'"></ng-include>
-</div>
-
-<div ng-if="showGraphView">
 	<ng-include src="'modules/people/peopleGraph.html'"></ng-include>
 </div>

@@ -1,7 +1,7 @@
 <br />
 <div class="row">
-  <div class="col-xs-12 col-md-4">
-      <div class="btn-group sort-buttons">
+  <div class="col-xs-12 col-md-3">
+      <div ng-if="showGraphView" class="btn-group sort-buttons">
         <button type="button" class="btn btn-default" ng-class="{ 'active': sortType == 'proj-asc' || sortType == 'proj-desc'}" ng-click="switchSort('proj')">Project
             <i class="fa fa-caret-up" ng-show="sortType == 'proj-asc'"></i>
             <i class="fa fa-caret-down" ng-show="sortType == 'proj-desc'"></i>
