@@ -1695,6 +1695,11 @@ public class Data implements CONSTS {
 			String idVal = dbObject.get(PROP__ID).toString();
 			
 			newHoursRecord.put(PROP_ABOUT, RESOURCE_HOURS + "/" + idVal);
+			
+			JSONObject _id = new JSONObject();
+			
+			_id.put(PROP_$OID, idVal);
+			newHoursRecord.put(PROP__ID, _id );
 		}
 
 		return newHoursRecord;

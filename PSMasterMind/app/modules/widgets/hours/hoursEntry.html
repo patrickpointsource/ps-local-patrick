@@ -3,14 +3,18 @@
 	    <div class="panel-heading">
 	    	
 		    	<div style="width:100%; position:relative;">
-	    		<span> <!-- <i class="fa fa-calendar-o"></i> --> Hours </span>
-		    	
-		        <div style="display: inline-block; position:absolute; left:0px; right:0px; text-align:center"> 
-		        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
-		        </div>
-		        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
-		        	<a ng-click="addHoursEntry()"><i class="fa fa-plus"></i> Add Hours</a> 
-		        </div>
+		    		<span> <!-- <i class="fa fa-calendar-o"></i> --> Hours </span>
+			    	
+			        <div style="display: inline-block; position:absolute; left:0px; right:0px; text-align:center"> 
+			        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
+			        </div>
+			        
+			        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
+			        	<a ng-click="addHoursEntry()"><i class="fa fa-plus"></i> Add Hours</a> 
+			        </div>
+			        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
+			        	<a ng-click="copyHoursEntry()"><i class="fa fa-copy"></i> Copy Hours</a> 
+			        </div>
 		       </div>
 	       
 	        
@@ -62,7 +66,7 @@
 	        	<div class="hours-empty" ng-show="selected.totalHours == 0 && !anyAdded()">No hours logged</div>
 	        	<div ng-show="selected.totalHours > 0 || anyAdded()" ng-repeat="hourEntry in selected.hoursEntries" >
 	        		<div class="hours-logged-entry" ng-if="hourEntry.hoursRecord.hours > 0 || hourEntry.hoursRecord.editMode" 
-	        			_hourentryindex="{{$index}}" ng-init="initNewHoursEntry(hourEntry, $element)">
+	        			_hourentryindex="{{$index}}" ng-init="initNewHoursEntry(hourEntry)">
 	        			<span class="hours-logged-value" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.hours}} hrs</span>
 	        			<input class="hours-logged-value edit-input" type="text"
 			                    class="form-control" placeholder="hours"
@@ -75,13 +79,26 @@
 					    	><span>{{hourEntry.selectedItem.name}}</span><i ng-click="clearSelectedItem(e, hourEntry)" class="fa fa-times"></i>
 					    </span>
 					       
-	        			<input class="hours-logged-project edit-input" type="text"  
+	        			<input class="hours-logged-project edit-input" type="text"  ng-disabled="projectTasksList.length == 0" 
 			                    class="form-control" placeholder="Find a project or task"
 			                    name="project-task-select"  required ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined">
 	                    <span class="search-icon" ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined" style="position:absolute; margin-left:-30px; top: 15px;">
 			                <i class="fa fa-search"></i>
 			            </span>
-	        			 
+	        			<ul class="dropdown-menu ddProjectsTasksMenu" role="menu" aria-labelledby="ddProjectsTasksMenu">
+						  <li role="presentation" ng-repeat="tp in projectTasksList" >
+						  	<a class="menu-item task-menu-item" role="menuitem" tabindex="-1" href="#" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
+							  	<span class="task-icon" ng-if="tp.icon" style="{{tp.iconCss}}"><i class="fa {{tp.icon}}"></i></span>
+							  	<span class="task-name">{{tp.name}}</span>
+						  	</a>
+						  	<a class="menu-item project-menu-item" role="menuitem" tabindex="-1" href="#" ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
+							  	<span class="project-icon" ></span>
+							  	<span class="project-name">{{tp.name}}</span>
+							  	<span class="project-customer-name">{{tp.customerName}}</span>
+						  	</a>
+					  		</li>
+						</ul>
+			
 	        			<span class="hours-logged-desc" style="width: -webkit-calc(70% - 70px)" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.description}}</span>
 	        			
 	        			<input class="hours-logged-desc edit-input" type="text" style="width: -webkit-calc(70% - 100px)" 
@@ -103,19 +120,7 @@
 	        		</div>
 	        	</div>
 	        </div>
-	        <ul class="dropdown-menu ddProjectsTasksMenu" role="menu" aria-labelledby="ddProjectsTasksMenu">
-			  <li role="presentation" ng-repeat="tp in projectTasksList" >
-			  	<a class="menu-item task-menu-item" role="menuitem" tabindex="-1" href="#" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
-				  	<span class="task-icon" ng-if="tp.icon" style="{{tp.iconCss}}"><i class="fa {{tp.icon}}"></i></span>
-				  	<span class="task-name">{{tp.name}}</span>
-			  	</a>
-			  	<a class="menu-item project-menu-item" role="menuitem" tabindex="-1" href="#" ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
-				  	<span class="project-icon" ></span>
-				  	<span class="project-name">{{tp.name}}</span>
-				  	<span class="project-customer-name">{{tp.customerName}}</span>
-			  	</a>
-		  		</li>
-			</ul>
+	        
 	    </div>
 	</div>
 	<div id="editHours" class="modal hours-modal" style="top: 20px;" ng-show="entryFormOpen"> 

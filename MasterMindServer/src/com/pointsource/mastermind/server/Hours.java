@@ -92,11 +92,18 @@ public class Hours extends BaseResource {
 				Validator.canCreateHours(context, hoursRecord);
 				JSONObject ret = Data.createHours(context, hoursRecord);
 
+				/*
 				String about = Data.unescapeJSON(ret
 						.getString(CONSTS.PROP_ABOUT));
 
 				URI aboutURI = context.getBaseURI().resolve(about);
 				return Response.created(aboutURI).build();
+				*/
+				URI baseURI = context.getBaseURI();
+				ret.put(CONSTS.PROP_BASE, baseURI);
+				
+				String retStr = Data.escapeJSON(ret);
+				return Response.ok(retStr).build();
 			} catch (ValidationException e) {
 				return handleValidationException(e);
 			} catch (WebApplicationException e) {
