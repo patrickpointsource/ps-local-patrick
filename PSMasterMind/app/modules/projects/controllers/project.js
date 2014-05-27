@@ -2069,34 +2069,30 @@ angular.module('Mastermind')
     
     $scope.isActiveMonth = function(offset) {
     	if($scope.project) {
-    		var startDate = new Date($scope.project.startDate);
-    		var month = startDate.getMonth() + offset;
-    		var year = startDate.getFullYear();
-    		return $scope.inMonth(month, year);
+    		var today = new Date();
+    		today.setMonth(today.getMonth() - 5 + offset);
+    		return $scope.inMonth(today.getMonth(), today.getFullYear());
     	}
     }
     
     $scope.isCurrentMonth = function(offset) {
     	if($scope.project) {
-    		var startDate = new Date($scope.project.startDate);
-    		var month = startDate.getMonth() + offset;
-    		var year = startDate.getFullYear();
-    		
+    		var startDate = new Date();
+    		startDate.setMonth(startDate.getMonth() - 5 + offset);
     		var today = new Date();
-    		
-    		return month == today.getMonth();
+
+    		return startDate.getMonth() == today.getMonth();
     	}
     }
     
     $scope.isFutureActiveMonth = function(offset) {
     	if($scope.project) {
-    		var startDate = new Date($scope.project.startDate);
-    		var month = startDate.getMonth() + offset;
-    		var year = startDate.getFullYear();
+    		var startDate = new Date();
+    		startDate.setMonth(startDate.getMonth() - 5 + offset);
     		
     		var today = new Date();
     		
-    		return month > today.getMonth();
+    		return today < startDate;
     	}
     }
     
@@ -2106,7 +2102,9 @@ angular.module('Mastermind')
     
     $scope.getMonthName = function(offset) {
     	if($scope.project) {
-    		var startDateMonth = new Date($scope.project.startDate).getMonth() + offset;
+    		var today = new Date();
+    		var firstMonthDate = new Date(today.setMonth(today.getMonth() - 5 + offset));
+    		var startDateMonth = firstMonthDate.getMonth();
             if (startDateMonth > 11) {
             	startDateMonth = startDateMonth - 12;
             }
@@ -2117,7 +2115,8 @@ angular.module('Mastermind')
     $scope.months = [];
     
     $scope.initMonths = function() {
-    	for(var i = 0; i < 12; i++) {
+    	var i = 0;
+    	while($scope.months.length < 12) {
     		var month = { name: $scope.getMonthName(i) };
     		
     		if($scope.isCurrentMonth(i)) {
@@ -2136,6 +2135,8 @@ angular.module('Mastermind')
     		if(month.current || month.future || month.active) {
     			$scope.months.push(month);
     		}
+    		
+    		i++;
     	}
     }
       

@@ -59,10 +59,10 @@
         </div>
 
         <!-- Full terms trigger -->
-        <div class="row full-terms" ng-if="financeAccess && isPaidClientProject()">
+        <div class="row full-terms" ng-if="financeAccess && isPaidClientProject()" style="margin-bottom: 0px;">
             <hr class="zero-margin" />
-            <div ng-if="!showFullTerms"><a ng-click="showTerms(true);">See full terms</a></div>
-            <div ng-if="showFullTerms"><a ng-click="showTerms(false);">Hide full terms</a></div>
+            <div ng-show="!showFullTerms" style="padding-bottom: 10px;"><a ng-click="showTerms(true);">See full terms</a></div>
+            <div ng-show="showFullTerms"><a ng-click="showTerms(false);">Hide full terms</a></div>
         </div>
         <!-- Terms -->
         <div class="row" ng-if="financeAccess && isPaidClientProject() && showFullTerms" style="color: gray; padding-left: 25px;">
@@ -185,7 +185,7 @@
             </div>
         </div>
         
-        <div class="row" ng-if="financeAccess && isPaidClientProject()">
+        <div class="row" ng-if="financeAccess && isPaidClientProject()" style="margin-bottom: 0px;">
             <div style="text-align: center;" ng-if="showFullTerms"><a ng-click="showTerms(false);" style="cursor: pointer;">Hide full terms</a></div>
         </div>
     </div>
