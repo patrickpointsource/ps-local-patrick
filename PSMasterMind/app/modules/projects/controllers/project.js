@@ -2116,7 +2116,7 @@ angular.module('Mastermind')
     
     $scope.initMonths = function() {
     	var i = 0;
-    	while($scope.months.length < 12) {
+    	while($scope.months.length < 12 && i < 18) {
     		var month = { name: $scope.getMonthName(i) };
     		
     		if($scope.isCurrentMonth(i)) {
@@ -2133,7 +2133,17 @@ angular.module('Mastermind')
     		}
     		
     		if(month.current || month.future || month.active) {
-    			$scope.months.push(month);
+    			var today = new Date();
+    			var date = new Date(today.setMonth(today.getMonth() - 5 + i));
+    			if($scope.project.endDate) {
+    				var projEndDate = new Date($scope.project.endDate);
+    				
+    				if(projEndDate > date) {
+    					$scope.months.push(month);
+    				}
+    			} else {
+    				$scope.months.push(month);
+    			}
     		}
     		
     		i++;
