@@ -498,9 +498,9 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 		        }
 	    	} else {
 	    		// switch to edit mode predefined entries
-	    		for (var i = 0; i < $scope.selected.hoursEntries.length; i ++) {
-	    			$scope.selected.hoursEntries[i].hoursRecord.editMode = true;
-	    			$scope.selected.hoursEntries[i].hoursRecord.isAdded = true;
+	    		for (var j = 0; j < $scope.selected.hoursEntries.length; j ++) {
+	    			$scope.selected.hoursEntries[j].hoursRecord.editMode = true;
+	    			$scope.selected.hoursEntries[j].hoursRecord.isAdded = true;
 	    		}
 	    	}
           
