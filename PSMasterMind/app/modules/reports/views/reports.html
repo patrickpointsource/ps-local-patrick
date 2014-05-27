@@ -42,5 +42,8 @@
             </button>
         </div>
     </form>
-    <d3-reports data="reportData" label="name" on-click="reportClick(item)"></d3-reports>
+    <div d3-bars bar-height="20" bar-padding="5" data='data'></div>
+    <div class="panel-body" >
+    	<d3-reports data="reportData" label="name" on-click="reportClick(item)"></d3-reports>
+	</div>
 </div>

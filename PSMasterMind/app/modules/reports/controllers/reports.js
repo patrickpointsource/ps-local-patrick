@@ -84,7 +84,12 @@ angular.module('Mastermind').controller('ReportsCtrl', ['$scope',
             d.value = +d.value;
         });
 
-        $scope.reportData = dataSet;
+        //$scope.reportData = dataSet;
+        $scope.data = dataSet;
+  //       $scope.data = [
+//    {name: 'Ari', score: 10},
+//    {name: 'Q', score: 90}
+//    ];
 
         $scope.reportClick = function (item) {
             alert(item.name);
