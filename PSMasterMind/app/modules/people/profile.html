@@ -260,7 +260,7 @@
                     <span style="margin-right: 12px;" ng-if="taskHour.collapsed" ><i class="fa fa-caret-down" ng-show="taskHour"></i></span>
                     <i class="{taskHour.icon}}"></i>
                     <span><a href="#/{{taskHour.about}}">{{taskHour.name ? taskHour.name : "Unknown"}}</a>&nbsp;&nbsp;----&nbsp;&nbsp;
-                   		   <{{taskHour.hour}} Hours</span>
+                   		   {{taskHour.totalHours}} Hours</span>
                   </div>
                 </div>
                 <div ng-if="isEmptyForSelectedMonth(taskHour)" ng-show="taskHour.collapsed" class="alert alert-warning" style="margin-top: 10px; margin-bottom: 0px;">

@@ -254,8 +254,9 @@ angular.module('Mastermind.controllers.people')
             			}
         				if (!tasksHoursMap[hoursData.task.resource]) {
         					tasksHoursMap[hoursData.task.resource] = [];
+        					tasksHoursMap[hoursData.task.resource].totalHours = 0;
         				}
-        				//tasksHoursMap[hoursData.task.resource].totalHours += timeValue;
+        				tasksHoursMap[hoursData.task.resource].totalHours += timeValue;
         				tasksHoursMap[hoursData.task.resource]
         					.push({hour: hoursData, show: (currentMonth == hoursMonth && currentYear == hoursYear)});
             		}		
@@ -283,7 +284,8 @@ angular.module('Mastermind.controllers.people')
             			return 0;
             		});
         			$scope.taskHours.push(_.extend({
-        				hours: tasksHoursMap[taskResource]
+        				hours: tasksHoursMap[taskResource],
+        				totalHours: tasksHoursMap[taskResource].totalHours
         			}, tasksMap[taskResource]));
         		}
         		
