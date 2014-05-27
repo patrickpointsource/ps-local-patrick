@@ -584,14 +584,20 @@ angular.module('Mastermind')
       return deferred.promise;
     };
     
-    var SYMBOLS_FOR_DESCRIPTION = 100;
+    var SYMBOLS_FOR_DESCRIPTION = 400;
     
     var cutDescription = function(description) {
-    	if(description.length < SYMBOLS_FOR_DESCRIPTION) {
-    		return description;
+    	var result = "";
+    	
+    	var splittedDesc = description.split('<div>');
+    	
+    	result = splittedDesc[0] + '<div>' + splittedDesc[1] + '<div>' + splittedDesc[2];
+    	
+    	if(result.length > SYMBOLS_FOR_DESCRIPTION) {
+    		result = description.substring(0, SYMBOLS_FOR_DESCRIPTION);
     	}
     	
-    	return description.substring(0, SYMBOLS_FOR_DESCRIPTION);
+    	return result;
     }
     
     /**

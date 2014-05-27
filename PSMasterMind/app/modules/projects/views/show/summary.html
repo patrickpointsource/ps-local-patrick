@@ -17,7 +17,7 @@
                           <div class="pull-right status-text">{{projectState(project).toUpperCase()}}</div> 
                       </div>
                  </div>
-                 <div class="row" style="margin-top: 25px;">
+                 <div class="row" style="margin-top: 25px; margin-bottom: 10px;">
                       <div class="col-xs-12">
                           <div ta-bind ng-if="project.shortDescription && !showDescription" ng-model="project.shortDescription"></div>
                           <div ta-bind ng-if="project.description && showDescription" ng-model="project.description"></div>
@@ -27,12 +27,12 @@
                       </div>
                  </div>
                  <div class="row sponsors-header">
-                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2">Executive Sponsor: &nbsp</div>
-                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2">Sales Sponsor: &nbsp </div>
+                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;">Executive Sponsor: &nbsp</div>
+                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;">Sales Sponsor: &nbsp </div>
                  </div>
                  <div class="row sponsors-row">
-                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2"><label>{{getExecutiveSponsor()}} &nbsp</label><a href="mailto: {{getExecutiveSponsorEmail()}}">email</a></div>
-                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2"><label>{{getSalesSponsor() || '-'}} &nbsp</label><a ng-if="getSalesSponsor()" href="mailto: {{getSalesSponsorEmail() || '-'}}">email</a></div>
+                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;"><label>{{getExecutiveSponsor()}} &nbsp</label><a href="mailto: {{getExecutiveSponsorEmail()}}">email</a></div>
+                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;"><label>{{getSalesSponsor() || '-'}} &nbsp</label><a ng-if="getSalesSponsor()" href="mailto: {{getSalesSponsorEmail() || '-'}}">email</a></div>
                  </div>
              </div>
         </div>
