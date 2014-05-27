@@ -590,6 +590,7 @@ header {
    @prog-color1: rgba(75,170, 48,.30);
    /*@prog-color2: @brand-success;*/
    @prog-color2: rgba(75,170, 48,.15);
+  
   .progress{
   	font-size: .8em;
   	min-width:260px;
@@ -688,11 +689,12 @@ main {
 			}
 
 			.dashboard-widget {
-      	&.panel-default{
+      	
+              &.panel-default {
 				border: none;
 				border-radius: 0;
 				// border-color: darken(@gray-light, 20%);
-			.panel-heading{
+			 .panel-heading {
 				border: none;
 				border-radius: 2px;
 				font-size: 18px;
@@ -725,57 +727,65 @@ main {
         .dashboard-actions {
         			margin-left: 10px;
         			margin-right: 10px;
-					a {
-						font-size: 14px;
-						display: inline-block;
-						padding: 10px 12px 10px 10px;
-						margin: -13px -13px;
-						color: @lightBlueWidgetActions !important;
+          a {
+              font-size: 14px;
+              display: inline-block;
+              padding: 12px 12px 9px 10px;
+              margin: -11px -13px 0 0;
+              color: @lightBlueWidgetActions !important;
 
-						&:hover {
-							color: white !important;
-							background-color: @smoothBlueMedium;
-							cursor: pointer;
-							text-decoration: none;
-						}
-
-						i {
-							font-size: 17px;
-							padding-right: 2px;
-						}
-
-					}
-                    
-                    .styled-select {
-                        width: 175px;
-                        background-color: white;
-                        border: 1px solid @gray-light;
-                        border-radius: 2px;
-                        margin-top: -3px;
-                        
-                        i {
-                            color: @gray;
-                            padding: 5px 2px 0 0;
-                            position: absolute;
-                            top: 0;
-                            right: 6px;
-                        }
-                    }
+              &:hover {
+                color: white !important;
+                background-color: @smoothBlueMedium;
+                cursor: pointer;
+                text-decoration: none;
+              }
             
-					select.form-control {
-                        display: inline-block;
-                        height: 30px;
-                        min-height: 30px;
-						font-size: 14px;
-                        border: none !important;
-						border-radius: 0;
-                        -webkit-appearance: none;
-                        -moz-appearance: none;
-                        -ms-appearance: none;
-                        -o-appearance: none;
-                        background: transparent;
-                        padding-right: 0;
-					}
+              &.active {
+                color: white !important;
+              }
+
+              i {
+                font-size: 17px;
+                padding-right: 2px;
+                
+                &.fa-angle-right, &.fa-angle-left {
+                  font-weight: bold;
+                }
+              }
+
+          }
+                    
+          .styled-select {
+            width: 175px;
+            background-color: white;
+            border: 1px solid @gray-light;
+            border-radius: 2px;
+            margin-top: -3px;
+
+            i {
+              color: @gray;
+              padding: 5px 2px 0 0;
+              position: absolute;
+              top: 0;
+              right: 6px;
+            }
+          }
+
+          select.form-control {
+            display: inline-block;
+            height: 30px;
+            min-height: 30px;
+            font-size: 14px;
+            border: none !important;
+            border-radius: 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -ms-appearance: none;
+            -o-appearance: none;
+            background: transparent;
+            padding-right: 0;
+          }
         }
       }
 
@@ -800,6 +810,14 @@ main {
           }
         }
       }
+}
+
+.centered-widget-header-text {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 100%;
+  text-align: center;
 }
 
 .equal {
