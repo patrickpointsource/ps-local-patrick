@@ -346,7 +346,7 @@ angular.module('Mastermind.controllers.people')
 				var hour = projHour.hours[j];
 				var hoursMonth = new Date(hour.hour.date).getMonth();
 				hour.show = this.selectedHoursPeriod == hoursMonth;
-				if(hour.show) { projHour.totalHours += hour; }
+				if(hour.show) { projHour.totalHours += hour.hour.hours; }
 			}
 		}
 		
@@ -357,7 +357,7 @@ angular.module('Mastermind.controllers.people')
 				hour = projHour.hours[j];
 				hoursMonth = new Date(hour.hour.date).getMonth();
 				hour.show = this.selectedHoursPeriod == hoursMonth;
-				if(hour.show) { projHour.totalHours += hour; }
+				if(hour.show) { projHour.totalHours += hour.hour.hours; }
 			}
 		}
 	};
