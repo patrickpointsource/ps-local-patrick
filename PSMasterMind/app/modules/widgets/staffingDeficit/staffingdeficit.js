@@ -2,8 +2,7 @@ angular.module('Mastermind').controller('StaffingDeficitWidgetCtrl', ['$scope', 
   function ($scope, $state, $rootScope, Resources, AssignmentService) {
 
 
-    AssignmentService.getActiveProjectStaffingDeficits().then(function(assignments){
-      var count = assignments.length;
+    AssignmentService.getActiveProjectStaffingDeficits().then(function(count){
       $scope.activeProjectDeficitCount = count;
     });
 

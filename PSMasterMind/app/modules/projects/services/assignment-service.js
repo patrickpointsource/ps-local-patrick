@@ -357,51 +357,9 @@ angular.module('Mastermind.services.projects')
       val = Resources.update(projectAssignment);
 	  
       return val;
-    }
-    
-    this.calculateRolesCoverage = function(roles, assignments) {
-    	var assignmentsMap = {};
-    	
-    	var findRole = function(roleResource) {
-			return _.find(roles, function(r){
-				return roleResource.indexOf(r._id) > -1;
-			})
-		}
-    	
-    	for (var i = 0; i < roles.length; i ++) {
-    		assignmentsMap[roles[i]._id] = [];
-    	}
-    	
-    	var role;
-    	
-    	
-    	for (var i = 0; i < assignments.length; i ++) {
-    		if (assignments[i].role && assignments[i].role.resource)
-				role = findRole(assignments[i].role.resource)
-			else
-				role = null;
-			
-			
-			if (role)
-				assignmentsMap[ role._id ].push(assignments[i])
-    	}
-    	
-    	var currentResult;
-    	
-    	for (var i = 0; i < roles.length; i ++) {
-    		currentResult = this.calculateSingleRoleCoverage(roles[i], assignmentsMap[ roles[i]._id ]);
-    		
-    		roles[i].percentageCovered = currentResult.percentageCovered;
-    		roles[i].hoursExtraCovered = currentResult.hoursExtraCovered;
-    		roles[i].hoursNeededToCover = currentResult.hoursNeededToCover;
-    		roles[i].daysGap = currentResult.daysGap;
-    		roles[i].coveredKMin = currentResult.coveredKMin;
-    	}
-    	
-    	//return result;
-    }
-    
-    this.calculateSingleRoleCoverage = function(role, assignments) {
+    };
+
+    var calculateSingleRoleCoverage = function(role, assignments) {
     	var result = {
     		percentageCovered: 0,
     		percentageExtraCovered: 0
@@ -590,82 +548,147 @@ angular.module('Mastermind.services.projects')
     	result.coveredKMin = kMin;
     	
     	return result;
+    };
+    
+    
+    
+    this.calculateRolesCoverage = function(roles, assignments) {
+    	var assignmentsMap = {};
+    	//var calcSingleRoleCoverage = AssignmentService.prototype.calculateSingleRoleCoverage;
+    	
+    	var findRole = function(roleResource) {
+			return _.find(roles, function(r){
+				return roleResource.indexOf(r._id) > -1;
+			})
+		};
+    	
+    	for (var i = 0; i < roles.length; i ++) {
+    		assignmentsMap[roles[i]._id] = [];
+    	};
+    	
+    	var role;
+    	
+    	
+    	for (var i = 0; i < assignments.length; i ++) {
+    		if (assignments[i].role && assignments[i].role.resource)
+				role = findRole(assignments[i].role.resource)
+			else
+				role = null;
+			
+			
+			if (role)
+				assignmentsMap[ role._id ].push(assignments[i])
+    	}
+    	
+    	var currentResult;
+    	
+    	for (var i = 0; i < roles.length; i ++) {
+    		currentResult = calculateSingleRoleCoverage(roles[i], assignmentsMap[ roles[i]._id ]);
+    		
+    		roles[i].percentageCovered = currentResult.percentageCovered;
+    		roles[i].hoursExtraCovered = currentResult.hoursExtraCovered;
+    		roles[i].hoursNeededToCover = currentResult.hoursNeededToCover;
+    		roles[i].daysGap = currentResult.daysGap;
+    		roles[i].coveredKMin = currentResult.coveredKMin;
+    	}
+    	
+    	//return result;
     }
+    
     
     /**
      * Return the set of staffing deficits assignments for active projects
      */
     this.getActiveProjectStaffingDeficits = function(){
     	var deferred = $q.defer();
+
+    	var numDeficits = 0;
+    	var activeProjects;
     	var getAssignments = this.getAssignments;
-    	
+    	var calculateRolesCoverage = this.calculateRolesCoverage;
+     	
     	/**
     	 * Get all the active projects
     	 */
-    	ProjectsService.getActiveClientProjects(function(result){
-    		var activeProjects = result.data;
-    	    var activeProjectsWithUnassignedPeople = [];
-    	    var unassignedIndex = 0;
-    	    
-    	    /**
-    	     * Get all assigment records for each active project
-    	     */
-    	    getAssignments(activeProjects).then(function (assignments) {
+    	ProjectsService.getActiveClientProjects().then(
+    			function(result){
+    	    		activeProjects = result.data;
+    	    	    var activeProjectsWithUnassignedPeople = [];
+    	    	    var unassignedIndex = 0;
+    	    	    
+    	    	    return getAssignments(activeProjects);
+    			}
+    	).then(
+    			function(data) {
+        			var fillDeficit = function(addAllRoles) {
+        				/*
+                    	 * Loop through all the roles in the active projects 
+                    	 */
+                    	for(var b = 0; b < roles.length; b++){
+    	                        var activeRole = roles[b];	
+                        
+    	                        if(activeRole.hoursNeededToCover > 0 || addAllRoles) {
+    	                        	numDeficits ++;
+     		                     }
+                          }
+        			};
+        			
+        		    /*
+        		     * Helps to filter past entries - roles and assignees
+        		     **/
+        		    var filterPastEntries = function(entry) {  
+        		        var today = new Date();
+        		    	var dd = today.getDate();
+        		        var mm = today.getMonth(); 
+        		        var yyyy = today.getFullYear();
+        		       
+        		        today =  new Date(yyyy, mm, dd);
+        			  	  if (new Date( entry.startDate) < today && (entry.endDate && new Date( entry.endDate) < today) )
+        			      		 return false;
+        			  	  
+        			  	  return true;
+        		    };
+        		    
+        			var found = false;
+        			
+        			for(var i = 0; i < activeProjects.length; i++){
+                  		var proj = activeProjects[i];
+                  		var foundProjMatch = false;
+                  		var roles = _.filter(activeProjects[i].roles, filterPastEntries);                  		                  		
+                  		var projAssignments = undefined;
+    				
+                  		found = false;
+                  		
+        				for (var l=0; l<data.length; l ++) {
 
-	    	    for(var i = 0; i < activeProjects.length; i++){
-	    	    	var proj = activeProjects[i];
-	    	    	var foundProjMatch = false;
-	    	    	var roles = activeProjects[i].roles;
-
-	    	    	var projAssignments = undefined;
-	    	    	
-	    			for(var l=0; l<assignments.length; l++) {
-	    				projAssignments = assignments[l];
-	    				if(projAssignments.project.resource == proj.resource) {
-	    					foundProjMatch = true;
-	    					if(projAssignments.members && projAssignments.members.length > 0) {
-	    						var assignees = projAssignments.members;
-	    				        if(roles){
-				                      	/*
-				                       	* Loop through all the roles in the active projects
-				                       	*/
-	    				               	for(var b = 0; b < roles.length; b++){
-	    				            	   var activeRole = roles[b];		
-	    				                   var foundRoleMatch = false;
-	    				                   
-					                        /*
-					                         * Loop through assignees to find a match
-					                         */
-					                        for (var c=0; c<assignees.length; c++) {
-					                        	//if(activeRole.about == assignees[c].role.resource) {
-					                        	if(assignees[c].role.resource && assignees[c].role.resource.indexOf(activeRole._id) > -1) {
-					                        		foundRoleMatch = true;
-					                        	}
-					                        }
-	    				                        
-					                        if(!foundRoleMatch) {
-					                        	activeProjectsWithUnassignedPeople.push(activeRole);
-					                        }
-	    				               }
-	    				        }
-	    					}
-	    				}
-	    			}
-	    			
-	    			//If there were no assignments add all the roles to the list
-	    	    	if(assignments.count == 0 || !projAssignments || !foundProjMatch ){
-	    	    		for(var b = 0; b < roles.length; b++){
-			            	   var activeRole = roles[b];
-			            	   activeProjectsWithUnassignedPeople.push(activeRole);
-	    	    		}
-	    	    	}
-    	    }
-    	    
-    	    deferred.resolve(activeProjectsWithUnassignedPeople);
-    	 });
-    });
+        					projAssignments = data[l];
+        					
+        					if(projAssignments.project.resource == proj.resource) {
+         						
+        						if(projAssignments.members && projAssignments.members.length > 0) {
+        							var assignees = _.filter(projAssignments.members, filterPastEntries);        							
+        							found = true;
+        							
+        			                if(roles){
+        			                	calculateRolesCoverage(roles, assignees);
+        			                	// add info about deficit roles
+        			                	fillDeficit();
+        			                	
+      			                      	break;
+        			                }
+        						}
+        					}
+        				}
+        				
+        				// add info about other deficit roles, which doesn't have assignments
+        				if (!found) 
+        					fillDeficit(true);
+          			}
+        			deferred.resolve(numDeficits);
+    			}
+		);
     	
-    return deferred.promise;
-  };
+        return deferred.promise;
+    };
     
   }]);
