@@ -2067,28 +2067,58 @@ angular.module('Mastermind')
         return returnValue;
     };
     
-    $scope.isActiveMonth = function(offset) {
+    $scope.getTimelineStartDate = function(offset) {
+    	var result = new Date();
+    	
     	if($scope.project) {
     		var today = new Date();
-    		today.setMonth(today.getMonth() - 5 + offset);
-    		return $scope.inMonth(today.getMonth(), today.getFullYear());
+    		var projStart = new Date($scope.project.startDate);
+    		// done or active
+    		if(projStart <= today) {
+    			if($scope.project.endDate) {
+    				var projEnd = new Date($scope.project.endDate);
+    				//done proj
+    				if(projEnd < today) {
+    					result.setMonth(projEnd.getMonth() - 11 + offset);
+    				} 
+    				// active proj
+    				else {
+    					result.setMonth(today.getMonth() - 5 + offset);
+    				}
+    			} 
+    			// active proj
+    			else {
+    				result.setMonth(today.getMonth() - 5 + offset);
+    			}
+    		} 
+    		// future proj
+    		else {
+    			result.setMonth(projStart.getMonth() + offset);
+    		}
+    		
+    		return result;
+    	}
+    }
+    
+    $scope.isActiveMonth = function(offset) {
+    	if($scope.project) {
+    		var startDate = $scope.getTimelineStartDate(offset);
+    		return $scope.inMonth(startDate.getMonth(), startDate.getFullYear());
     	}
     }
     
     $scope.isCurrentMonth = function(offset) {
     	if($scope.project) {
-    		var startDate = new Date();
-    		startDate.setMonth(startDate.getMonth() - 5 + offset);
+    		var startDate = $scope.getTimelineStartDate(offset);
     		var today = new Date();
 
-    		return startDate.getMonth() == today.getMonth();
+    		return startDate.getMonth() == today.getMonth() && startDate.getFullYear() == today.getFullYear();
     	}
     }
     
     $scope.isFutureActiveMonth = function(offset) {
     	if($scope.project) {
-    		var startDate = new Date();
-    		startDate.setMonth(startDate.getMonth() - 5 + offset);
+    		var startDate = $scope.getTimelineStartDate(offset);
     		
     		var today = new Date();
     		
@@ -2102,8 +2132,7 @@ angular.module('Mastermind')
     
     $scope.getMonthName = function(offset) {
     	if($scope.project) {
-    		var today = new Date();
-    		var firstMonthDate = new Date(today.setMonth(today.getMonth() - 5 + offset));
+    		var firstMonthDate = $scope.getTimelineStartDate(offset);
     		var startDateMonth = firstMonthDate.getMonth();
             if (startDateMonth > 11) {
             	startDateMonth = startDateMonth - 12;
@@ -2115,8 +2144,7 @@ angular.module('Mastermind')
     $scope.months = [];
     
     $scope.initMonths = function() {
-    	var i = 0;
-    	while($scope.months.length < 12 && i < 18) {
+    	for(var i = 0; i < 12; i++) {
     		var month = { name: $scope.getMonthName(i) };
     		
     		if($scope.isCurrentMonth(i)) {
@@ -2133,20 +2161,8 @@ angular.module('Mastermind')
     		}
     		
     		if(month.current || month.future || month.active) {
-    			var today = new Date();
-    			var date = new Date(today.setMonth(today.getMonth() - 5 + i));
-    			if($scope.project.endDate) {
-    				var projEndDate = new Date($scope.project.endDate);
-    				
-    				if(projEndDate > date) {
-    					$scope.months.push(month);
-    				}
-    			} else {
-    				$scope.months.push(month);
-    			}
+    			$scope.months.push(month);
     		}
-    		
-    		i++;
     	}
     }
       
