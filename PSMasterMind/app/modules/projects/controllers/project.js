@@ -105,7 +105,7 @@ angular.module('Mastermind')
     };
     
     $scope.getExecutiveSponsor = function() {
-    	if ($scope.project && $scope.project.executiveSponsor) {
+    	if ($scope.project && $scope.project.executiveSponsor && $scope.execs && $scope.execs.members) {
 	    	var resource = $scope.project.executiveSponsor.resource;
 	    	var name = _.findWhere($scope.execs.members, { resource: resource }).name;
 	    	if(typeof name === 'undefined') {
@@ -116,7 +116,7 @@ angular.module('Mastermind')
     };
     
     $scope.getExecutiveSponsorEmail = function() {
-    	if ($scope.project && $scope.project.executiveSponsor) {
+    	if ($scope.project && $scope.project.executiveSponsor && $scope.execs && $scope.execs.members) {
     			var resource = $scope.project.executiveSponsor.resource;
     	    	var name = _.findWhere($scope.execs.members, { resource: resource }).mBox;
     	    	if(typeof name === 'undefined') {
