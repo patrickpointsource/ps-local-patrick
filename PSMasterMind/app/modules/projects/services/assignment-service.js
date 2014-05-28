@@ -359,7 +359,7 @@ angular.module('Mastermind.services.projects')
       return val;
     };
 
-    this.calculateSingleRoleCoverage = function(role, assignments) {
+    var calculateSingleRoleCoverage = function(role, assignments) {
     	var result = {
     		percentageCovered: 0,
     		percentageExtraCovered: 0
@@ -583,7 +583,7 @@ angular.module('Mastermind.services.projects')
     	var currentResult;
     	
     	for (var i = 0; i < roles.length; i ++) {
-    		currentResult = this.calculateSingleRoleCoverage(roles[i], assignmentsMap[ roles[i]._id ]);
+    		currentResult = calculateSingleRoleCoverage(roles[i], assignmentsMap[ roles[i]._id ]);
     		
     		roles[i].percentageCovered = currentResult.percentageCovered;
     		roles[i].hoursExtraCovered = currentResult.hoursExtraCovered;
