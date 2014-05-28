@@ -958,6 +958,10 @@ header .navbar .navbar-breadcrumb {
 		width: 24%;
 		margin-top: -4px;
 		margin-left: 4px;
+		
+		li {
+			overflow: hidden;
+		}
 	}
 }
 .hours-day-entry {
@@ -1028,6 +1032,12 @@ header .navbar .navbar-breadcrumb {
 		height: 32px;
 		top: 7px;
 		padding: 4px 8px;
+		
+		span {
+			display: inline-block;
+			white-space: nowrap;
+			overflow: hidden;
+		}
 	 }
 	 
 	 .hours-logged-project.selected-item i {
@@ -1106,11 +1116,20 @@ header .navbar .navbar-breadcrumb {
 	margin-right: 15px;
 }
 
+.dropdown-menu.ddProjectsTasksMenu > li > a > span.task-name{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+}
+
 .dropdown-menu.ddProjectsTasksMenu > li > a > span.project-name{
 	position:static;
 	display: inline-block;
 	font-size: 15px;
 	color: #000;
+	
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .dropdown-menu.ddProjectsTasksMenu > li > a > span.project-customer-name{
@@ -1118,6 +1137,9 @@ header .navbar .navbar-breadcrumb {
 	display: block;
 	color: #a8a8a8;
 	font-size:12px;
+	
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .dropdown-menu.ddProjectsTasksMenu > li > a:hover,

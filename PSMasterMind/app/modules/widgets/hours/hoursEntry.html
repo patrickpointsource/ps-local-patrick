@@ -76,7 +76,7 @@
 	        			<span class="hours-logged-project" ng-hide="hourEntry.hoursRecord.editMode" ng-if="hourEntry.task && hourEntry.task.name">{{hourEntry.task.name}}</span>
 					       
 					    <span class="hours-logged-project selected-item" ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem != undefined" 
-					    	><span>{{hourEntry.selectedItem.name}}</span><i ng-click="clearSelectedItem(e, hourEntry)" class="fa fa-times"></i>
+					    	><span style="width: -webkit-calc(100% - 20px)">{{hourEntry.selectedItem.name}}</span><i ng-click="clearSelectedItem(e, hourEntry)" class="fa fa-times"></i>
 					    </span>
 					       
 	        			<input class="hours-logged-project edit-input" type="text"  ng-disabled="projectTasksList.length == 0" 
@@ -89,12 +89,12 @@
 						  <li role="presentation" ng-repeat="tp in projectTasksList" >
 						  	<a class="menu-item task-menu-item" role="menuitem" tabindex="-1" href="#" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
 							  	<span class="task-icon" ng-if="tp.icon" style="{{tp.iconCss}}"><i class="fa {{tp.icon}}"></i></span>
-							  	<span class="task-name">{{tp.name}}</span>
+							  	<span class="task-name" style="width: -webkit-calc(100% - 20px)">{{tp.name}}</span>
 						  	</a>
 						  	<a class="menu-item project-menu-item" role="menuitem" tabindex="-1" href="#" ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
 							  	<span class="project-icon" ></span>
-							  	<span class="project-name">{{tp.name}}</span>
-							  	<span class="project-customer-name">{{tp.customerName}}</span>
+							  	<span class="project-name" style="width: -webkit-calc(100% - 15px)">{{tp.name}}</span>
+							  	<span class="project-customer-name" style="width: -webkit-calc(100% - 25px)">{{tp.customerName}}</span>
 						  	</a>
 					  		</li>
 						</ul>
