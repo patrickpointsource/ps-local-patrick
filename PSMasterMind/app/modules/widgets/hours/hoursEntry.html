@@ -105,9 +105,6 @@
 			                    class="form-control" placeholder="Description"
 			                    name="hours-logged-desc-edit" ng-model="hourEntry.hoursRecord.descriptionEdited" required ng-show="hourEntry.hoursRecord.editMode">
 			                    
-	        			<span class="hours-logged-action" ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
-		                    <i class="fa fa-times"></i>
-		                </span>
 		                <span class="hours-logged-action" ng-hide="hourEntry.hoursRecord.editMode" ng-click="editHoursEntry($event, hourEntry)">
 		                    <i class="fa fa-pencil"></i>
 		                </span>
@@ -116,6 +113,9 @@
 		                </span>
 		                <span class="hours-logged-add" ng-show="hourEntry.hoursRecord.editMode && hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry, true)">
 		                    Add
+		                </span>
+		                <span class="hours-logged-action" ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
+		                    <i class="fa fa-times"></i>
 		                </span>
 	        		</div>
 	        	</div>

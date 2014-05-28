@@ -115,7 +115,7 @@ angular.module('Mastermind.controllers.projects')
 		
 		//AssignmentService.calculateRolesCoverage($scope.project.roles, assignments)
     	
-		$scope.editMode = false;
+		//$scope.editMode = false;
 			
 		$rootScope.formDirty = false;
 		
@@ -146,7 +146,7 @@ angular.module('Mastermind.controllers.projects')
     		}
     	}).then(function(data) {
         	$scope.refreshAssignmentsData(data);
-        	$scope.editMode = true;
+        	//$scope.editMode = true;
         	
         	if (!avoidStateSwitch) {
            	 var params = {
@@ -291,7 +291,7 @@ angular.module('Mastermind.controllers.projects')
 
           //Clear any messages
           $scope.assignmentsErrorMessages = [];
-          $scope.editMode = false;
+          //$scope.editMode = false;
           
 
           // concatenate hided assingnee members
@@ -319,7 +319,7 @@ angular.module('Mastermind.controllers.projects')
     		  if(!navigateOut){
     			  $scope.stopWatchingAssignmentChanges();
     			  $rootScope.formDirty = false;
-    			  $scope.editMode = true;
+    			  //$scope.editMode = true;
     			  if($scope.editDone && $scope.editDone == true) {
     				  $state.go('projects.show', params);
     			  }
@@ -580,10 +580,12 @@ angular.module('Mastermind.controllers.projects')
         	
             $scope.handleAssignmentsFilterChanged();
             
+            /*
             // switch to edit mode if needed
         	if (($scope.editMode || $state.params.edit)  && $scope.projectManagementAccess){
             	$scope.edit(true);
             }
+            */
     	}
     }
     

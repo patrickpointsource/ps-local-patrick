@@ -992,13 +992,21 @@ header .navbar .navbar-breadcrumb {
 }
 
 .hours-logged-entry {
-	height: 50px;
+	min-height: 50px;
 	position:relative;
 	
 	border-bottom: 1px solid #fff;
 	border-left: 1px solid #fff;
 	border-right: 1px solid #fff;
 	
+	/*use those styles to verticaly align row content*/
+	display: flex;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	align-items: center;
+
 	 .hours-logged-value {
 	 	font-weight: bold;
 	 	font-size: 15px;
@@ -1014,7 +1022,9 @@ header .navbar .navbar-breadcrumb {
 	 	font-weight: normal !important;
 	 	height: 36px;
 	 	
-	 	top: 8px !important;
+	 	/*top: 8px !important;*/
+	 	margin-left: 3px;
+	 	margin-right: 3px;
 	 	padding-left: 5px;
 	 	padding-right: 5px;
 	 }
@@ -1080,8 +1090,8 @@ header .navbar .navbar-breadcrumb {
 }
 
 .hours-logged-entry > span, .hours-logged-entry > .edit-input {
-	top: 15px;
-	position: relative;
+	/*top: 15px;
+	position: relative;*/
 	display: inline-block;
 }
 

@@ -80,7 +80,8 @@
           }
         })
         .state('projects.edit', {
-          url: '/:projectId/edit',
+          //url: '/:projectId/edit',
+        	url: '/{projectId}{tabId:(?:/(?!edit)[^/]+)?}/edit',
           templateUrl: 'modules/projects/views/edit.html',
           controller: 'ProjectCtrl',
           resolve: {
@@ -89,6 +90,7 @@
             }
           }
         })
+       
         .state('projects.show.tabEdit', {
           url: '/:edit',
           templateUrl: 'modules/projects/views/show.html',
@@ -100,16 +102,6 @@
             }
           }
         })
-        /*.state('projects.show.tabId.edit', {
-          url: '/edit',
-          templateUrl: 'modules/projects/views/show.html',
-          controller: 'ProjectCtrl',
-          resolve: {
-            editMode: function () {
-              return true;
-            }
-          }
-        })*/
         .state('people', {
           url: '/people',
           abstract: true,

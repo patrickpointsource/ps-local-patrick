@@ -43,12 +43,12 @@
 
   <div>
   <tabset>
-      <tab id="details" heading="Summary">
+      <tab id="details" heading="Summary" active="activeTab['/summary']">
         <div ng-if="projectLoaded">
           <ng-include src="'modules/projects/views/show/details.html'"></ng-include>
         </div>
         </tab>
-      <tab id="roles" heading="Assignments">
+      <tab id="roles" heading="Assignments" active="activeTab['/assignments']">
         <div ng-if="projectLoaded">
         <!-- 
           <ng-include src="'modules/projects/views/show/roles.html'"></ng-include>
