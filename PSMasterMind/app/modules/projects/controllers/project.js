@@ -35,13 +35,6 @@ angular.module('Mastermind')
     var execQuery = {groups:'Executives'};
     var salesQuery = {groups:'Sales'};
     var fields = {name:1,resource:1,familyName:1,givenName:1,mBox:1};
-
-    Resources.query('people', execQuery, fields, function(result){
-    	$scope.execs = result;
-    });
-    Resources.query('people', salesQuery, fields, function(result){
-      $scope.sales = result;
-    });
     
     $scope.close = function(){
     	$scope.stopWatchingProjectChanges();
@@ -111,6 +104,8 @@ angular.module('Mastermind')
 	    	if(typeof name === 'undefined') {
 	    		name = '';
 	    	}
+	    	
+	    	$scope.executiveSponsor = name;
 	    	return name;
     	}
     };
@@ -122,14 +117,17 @@ angular.module('Mastermind')
     	    	if(typeof name === 'undefined') {
     	    		name = '';
     	    	}
+    	    	
+    	    	$scope.executiveSponsorEmail = name;
     	    	return name;
     	}
     };
     
     $scope.getSalesSponsor = function() {
-    	if($scope.project && $scope.project.salesSponsor){
+    	if($scope.project && $scope.project.salesSponsor && $scope.sales && $scope.sales.members){
     		var resource = $scope.project.salesSponsor.resource;
     		var name = _.findWhere($scope.sales.members, { resource: resource }).name;
+    		
         	if(typeof name === 'undefined') {
         		name = '';
         	}
@@ -137,6 +135,8 @@ angular.module('Mastermind')
     	else {
     		name = '';
     	}
+    	
+    	$scope.salesSponsor = name;
     	
     	return name;
     };
@@ -152,6 +152,8 @@ angular.module('Mastermind')
     	else {
     		name = '';
     	}
+    	
+    	$scope.salesSponsorEmail = name;
     	
     	return name;
     };
@@ -545,6 +547,8 @@ angular.module('Mastermind')
                     deferred.resolve($scope.project);
                         
                     $scope.$emit('project:loaded');
+                    
+                    $scope.loadExecAndPeople()
                 });
             }, 
             function (response) {
@@ -1933,6 +1937,23 @@ angular.module('Mastermind')
         return futureness;
     }
 	
+	$scope.loadExecAndPeople = function() {
+		Resources.query('people', execQuery, fields, function(result){
+        	$scope.execs = result;
+        	
+        	$scope.getExecutiveSponsor();
+        	$scope.getExecutiveSponsorEmail()
+        });
+        Resources.query('people', salesQuery, fields, function(result){
+          $scope.sales = result;
+          
+         // $scope.$apply(function() {
+        	  $scope.getSalesSponsor();
+      		$scope.getSalesSponsorEmail()
+         // })
+        });
+        
+	}
 	$scope.dayFormatted = function(yyyymmdd, params) {
 		if(params) {
 			return moment(yyyymmdd).format(params);
@@ -1974,6 +1995,9 @@ angular.module('Mastermind')
         $scope.$emit('project:loaded');
         
         reloadShortDesc();
+        $scope.loadExecAndPeople()
+        
+        
       });
     }
     /**
@@ -1983,6 +2007,8 @@ angular.module('Mastermind')
       $scope.project = ProjectsService.create();
       $scope.handleProjectSelected();
       $scope.$emit('project:loaded');
+      
+      $scope.loadExecAndPeople()
     }
     
     var reloadShortDesc = function() {

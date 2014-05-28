@@ -37,8 +37,8 @@
                      <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;">Sales Sponsor: &nbsp </div>
                  </div>
                  <div class="row sponsors-row">
-                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;"><label>{{getExecutiveSponsor()}} &nbsp</label><a href="mailto: {{getExecutiveSponsorEmail()}}">email</a></div>
-                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;"><label>{{getSalesSponsor() || '-'}} &nbsp</label><a ng-if="getSalesSponsor()" href="mailto: {{getSalesSponsorEmail() || '-'}}">email</a></div>
+                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;"><label>{{executiveSponsor}} &nbsp</label><a href="mailto: {{executiveSponsorEmail}}">email</a></div>
+                     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;"><label>{{salesSponsor || '-'}} &nbsp</label><a ng-if="salesSponsor" href="mailto: {{salesSponsorEmail || '-'}}">email</a></div>
                  </div>
              </div>
         </div>
