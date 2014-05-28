@@ -75,7 +75,9 @@
                         <div class="drop-cover"></div>
                         </div>
 						<div class="dropdown-menu" role="menu">
-                            <div id="profile-photo-full" back-img="{{me.thumbnail}}" class="pull-left"></div> 
+                            <a href="#{{me.about}}">
+                              <div id="profile-photo-full" back-img="{{me.thumbnail}}" class="pull-left"></div>
+                            </a> 
                             <div id="user-info">
                                 <h4>{{me.givenName}} {{me.familyName}}</h4>
                                 <a href="#{{me.about}}">MasterMind Preferences</a>

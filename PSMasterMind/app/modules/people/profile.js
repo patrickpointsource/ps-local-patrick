@@ -10,6 +10,7 @@ angular.module('Mastermind.controllers.people')
 	  var UNSPECIFIED = 'Unspecified';
 	  $scope.projects = [];
 	  $scope.hoursTasks = [];
+      $scope.execProjects = [];
 	  
 	  $scope.loadAvailableTasks = function() {
       	TasksService.refreshTasks().then(function(tasks) {
@@ -400,6 +401,9 @@ angular.module('Mastermind.controllers.people')
           				break;
           			}
           		}
+              if (myProj.executiveSponsor.resource === 'people/'+$scope.profileId) {
+                  $scope.execProjects.push(myProj);
+              }
           	}
           	
           	function compare(a,b) {

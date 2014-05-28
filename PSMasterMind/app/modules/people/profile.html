@@ -361,12 +361,8 @@
   </div>
   <div class="row padded-row">
     <div ng-hide="editMode" class="well col-xs-12">
-      <div class="row">
-        <div class="col-xs-12">
-          <h3>My Projects</h3>
-        </div>
-      </div>
-      <div class="row">
+      
+<!--
         <div ng-show="isExec" class="col-xs-12">
           <span ng-show="projects.length === 0">No current projects found.</span>
           <table>
@@ -377,12 +373,43 @@
             </tr>
           </table>
         </div>
-        <div ng-hide="isExec" class="col-xs-12">
+-->
+<!--        <div ng-hide="isExec" class="col-xs-12">-->
+        
+      <div class="row">
+        <div class="col-xs-12">
+          <h3>My Projects</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
           <span ng-hide="hasAssignments">No current projects found.</span>
           <table class="table">
+            <tr ng-show="isExec && execProjects.length !== 0" ng-repeat="execProject in execProjects">
+              <td data-title="'Project'">
+                <a href="#{{execProject.resource}}"><i class="{{projectStateIcon(execProject)}}"></i> {{execProject.name}}: {{execProject.customerName}}</a>
+                 - (Executive Sponsor)
+              </td>
+              <td data-title="'Percentage'">
+                &nbsp;
+              </td>
+              <td data-title="'Start Date'" sortable="'startDate'" class="hidden-xs" header-class="hidden-xs">
+                <small>{{execProject.startDate | date:'longDate'}}</small>
+              </td>
+              <td data-title="'End Date'" sortable="'endDate'" class="hidden-xs" header-class="hidden-xs">
+                <span ng-show="execProject.endDate">
+                  <small>{{execProject.endDate | date:'longDate'}}</small>
+                </span>
+                <span ng-hide="execProject.endDate">N/A</span>
+              </td>
+              <td data-title="'Dates'" sortable="'startDate'" class="visible-xs" header-class="visible-xs">
+                <small>{{execProject.startDate | date:'shortDate'}}</small>  <span ng-show="execProject.endDate"> -
+                <small>{{execProject.endDate | date:'shortDate'}}</small></span>  <span ng-hide="execProject.endDate"> - N/A</span>
+              </td>
+            </tr>
             <tr ng-repeat="assignment in assignments" ng-show="hasAssignments">
               <td data-title="'Project'">
-                <a href="#{{assignment.project.resource}}"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.project.name}}: {{assignment.project.name}}</a>
+                <a href="#{{assignment.project.resource}}"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.project.name}}: {{assignment.project.customerName}}</a>
                 <!-- <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">
                   <span  class="visible-xs">{{getRoleName(role.type.resource)}}</spam>
                 </div> -->
@@ -403,8 +430,8 @@
                 <span ng-hide="assignment.endDate">N/A</span>
               </td>
               <td data-title="'Dates'" sortable="'startDate'" class="visible-xs" header-class="visible-xs">
-                <small>{{assignment.startDate | date:'shortDate'}}</small>  <span ng-show="assignment.endDate">-
-                <small>{{assignment.endDate | date:'shortDate'}}</small></span>  <span ng-hide="assignment.endDate">- N/A</span>
+                <small>{{assignment.startDate | date:'shortDate'}}</small>  <span ng-show="assignment.endDate"> -
+                <small>{{assignment.endDate | date:'shortDate'}}</small></span>  <span ng-hide="assignment.endDate"> - N/A</span>
               </td>
             </tr>
           </table>
