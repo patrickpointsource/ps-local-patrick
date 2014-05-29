@@ -82,133 +82,94 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     if (mm < 10) {
       mm = '0' + mm;
     }
-    var rolesPromise = RolesService.getRolesMapByResource();
+    //var rolesPromise = RolesService.getRolesMapByResource();
 
     /**
      * Set up the projects to be added to the hours entry drop down
      */
-    ProjectsService.getOngoingProjects(function (result) {
+    
+    $scope.loadProjects = function() {
+    	ProjectsService.getOngoingProjects(function (result) {
 
-      $scope.ongoingProjects = result.data;
+    	      $scope.ongoingProjects = result.data;
 
-      ProjectsService.getMyCurrentProjects($scope.me).then(function (myCurrentProjects) {
-        $scope.myProjects = myCurrentProjects.data;
-        if ($scope.myProjects.length > 0) {
-          $scope.hasActiveProjects = true;
-        }
+    	      ProjectsService.getMyCurrentProjects($scope.me).then(function (myCurrentProjects) {
+    	        $scope.myProjects = myCurrentProjects.data;
+    	        if ($scope.myProjects.length > 0) {
+    	          $scope.hasActiveProjects = true;
+    	        }
 
-        var myProjects = [];
-        for (var m = 0; m < $scope.myProjects.length; m++) {
-          var myProj = $scope.myProjects[m];
-          var found = undefined;
-          myProj.title = myProj.customerName + ': ' + myProj.name;
-          myProjects.push(myProj);
+    	        var myProjects = [];
+    	        for (var m = 0; m < $scope.myProjects.length; m++) {
+    	          var myProj = $scope.myProjects[m];
+    	          
+    	          myProj.title = myProj.customerName + ': ' + myProj.name;
+    	          myProjects.push(myProj);
 
-          //Check if you have an assignment to flag that you have an assignment on the project
-          //and not that you are an exec or sales sponsor
-          if (myProj && myProj.status && myProj.status.hasAssignment) {
-            $scope.hasAssignment = true;
-            $rootScope.hasAssignment = true;
-          }
+    	          //Check if you have an assignment to flag that you have an assignment on the project
+    	          //and not that you are an exec or sales sponsor
+    	          if (myProj && myProj.status && myProj.status.hasAssignment) {
+    	            $scope.hasAssignment = true;
+    	            $rootScope.hasAssignment = true;
+    	          }
 
-          for (var n = 0; n < $scope.ongoingProjects.length; n++) {
-            var proj = $scope.ongoingProjects[n];
-            if (proj.resource == myProj.resource) {
-              $scope.ongoingProjects.splice(n, 1);
-              break;
-            }
-          }
-        }
+    	          
+    	        }
+    	        
+    	        var otherProjects = [];
+  	          
+	  	          for (var n = $scope.ongoingProjects.length - 1; n >= 0 ; n--) {
+	  	            var proj = _.find(myProjects, function(mp) {
+	  	            	return mp.resource == $scope.ongoingProjects[n].resource
+	  	            });
+	  	            
+	  	            if (!proj) {
+	  	            	  var myProj = $scope.ongoingProjects[n];
+	  	                  
+	  	                  otherProjects.push(myProj);
+	  	                  
+	  	                  myProj.isOtherProj = true;
+	  	            }
+	  	          }
 
-        myProjects.sort(function (item1, item2) {
-          if (item1.title < item2.title)
-            return -1;
-          if (item1.title > item2.title)
-            return 1;
-          return 0;
-        });
-
-        var otherProjects = [];
-        while ($scope.ongoingProjects.length > 0) {
-          var myProj = $scope.ongoingProjects.pop();
-          myProj.title = myProj.customerName + ': ' + myProj.name;
-          otherProjects.push(myProj);
-        }
-
-        otherProjects.sort(function (item1, item2) {
-          if (item1.title < item2.title)
-            return -1;
-          if (item1.title > item2.title)
-            return 1;
-          return 0;
-        });
-
-        $scope.hoursProjects = myProjects.concat(otherProjects);
-        
-        $scope.projectTasksList =  $scope.projectTasksList.concat( myProjects.concat(otherProjects) )
-      });
-    });
-
-
-    ProjectsService.getOngoingProjects(function (result) {
-      $scope.ongoingProjects = result.data;
-
-      ProjectsService.getMyCurrentProjects($scope.me).then(function (myCurrentProjects) {
-        $scope.myProjects = myCurrentProjects.data;
-        if ($scope.myProjects.length > 0) {
-          $scope.hasActiveProjects = true;
-        }
-
-        var myProjects = [];
-        for (var m = 0; m < $scope.myProjects.length; m++) {
-          var myProj = $scope.myProjects[m];
-          var found = undefined;
-          myProj.title = myProj.customerName + ': ' + myProj.name;
-          myProjects.push(myProj);
-
-          //Check if you have an assignment to flag that you have an assignment on the project
-          //and not that you are an exec or sales sponsor
-          if (myProj && myProj.status && myProj.status.hasAssignment) {
-            $scope.hasAssignment = true;
-            $rootScope.hasAssignment = true;
-          }
-
-          for (var n = 0; n < $scope.ongoingProjects.length; n++) {
-            var proj = $scope.ongoingProjects[n];
-            if (proj.resource == myProj.resource) {
-              $scope.ongoingProjects.splice(n, 1);
-              break;
-            }
-          }
-        }
-
-        myProjects.sort(function (item1, item2) {
-          if (item1.title < item2.title)
-            return -1;
-          if (item1.title > item2.title)
-            return 1;
-          return 0;
-        });
-
-        var otherProjects = [];
-        while ($scope.ongoingProjects.length > 0) {
-          var myProj = $scope.ongoingProjects.pop();
-          myProj.title = myProj.customerName + ': ' + myProj.name;
-          otherProjects.push(myProj);
-        }
-
-        otherProjects.sort(function (item1, item2) {
-          if (item1.title < item2.title)
-            return -1;
-          if (item1.title > item2.title)
-            return 1;
-          return 0;
-        });
-
-        $scope.hoursProjects = myProjects.concat(otherProjects);
-
-      });
-    })
+    	        /*
+    	        myProjects.sort(function (item1, item2) {
+    	          if (item1.title < item2.title)
+    	            return -1;
+    	          if (item1.title > item2.title)
+    	            return 1;
+    	          return 0;
+    	        });
+    	        */
+    	        /*
+    	        var otherProjects = [];
+    	        
+    	        while ($scope.ongoingProjects.length > 0) {
+    	          var myProj = $scope.ongoingProjects.pop();
+    	          myProj.title = myProj.customerName + ': ' + myProj.name;
+    	          otherProjects.push(myProj);
+    	          
+    	          myProj.isOtherProj = true;
+    	        }
+    	        */
+    	/*
+    	        otherProjects.sort(function (item1, item2) {
+    	          if (item1.title < item2.title)
+    	            return -1;
+    	          if (item1.title > item2.title)
+    	            return 1;
+    	          return 0;
+    	        });
+    	*/
+    	        $scope.hoursProjects = myProjects.concat(otherProjects);
+    	        
+    	        $scope.projectTasksList =  $scope.projectTasksList.concat( myProjects.concat(otherProjects) );
+    	        
+    	        $scope.sortProjectTaskList();
+    	      });
+    	    });
+    }
+ 
 
     $scope.newHoursRecord;
     //default open status of hours entry form
@@ -234,6 +195,23 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       }
     };
     */
+    $scope.sortProjectTaskList = function() {
+    	$scope.projectTasksList.sort(function (item1, item2) {
+    		if (item1.isOtherProj && !item2.isOtherProj)
+    			return 1;
+    		else if (!item1.isOtherProj && item2.isOtherProj)
+    			return -1;
+    		else if (item1.isTask && !item2.isTask)
+    			return 1;
+    		else if (!item1.isTask && item2.isTask)
+    			return -1;
+    		else if (item1.title < item2.title)
+                return -1;
+              if (item1.title > item2.title)
+                return 1;
+              return 0;
+            });
+    }
     
     $scope.editHoursEntry = function(e, hourEntry, tagetInput) {
     	hourEntry.hoursRecord.editMode = true;
@@ -255,14 +233,13 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     $scope.removeOrCloseHourEntry = function(e, hourEntry, index) {
     	if (hourEntry.hoursRecord.editMode) {
     		
-    		if (!hourEntry.hoursRecord.isCopied) {
+    		//if (!hourEntry.hoursRecord.isCopied) {
     			hourEntry.hoursRecord.editMode = false;
     			$scope.clearAutocompleteHandlers($(e.target).closest('.hours-logged-entry').find('[name="project-task-select"]'));
-    		} else {
-    			$scope.selected.hoursEntries.splice(index, 1);
-    			$scope.validateAndCalculateTotalHours();
-    		}
+    		//} 
     		
+    		$scope.selected.hoursEntries.splice(index, 1);
+    		$scope.validateAndCalculateTotalHours();
     	} else {
     		//$scope.deleteHoursRecord(index)
     		$scope.selected.hoursEntries.splice(index, 1);
@@ -346,10 +323,15 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     $scope.clearSelectedItem = function(e, hourEntry) {
     	delete hourEntry.selectedItem;
     }
+    
+    $scope.bindEventHandlers = function() {
+    	$(document).bind('click', $scope.handleDocClick);
+    }
+    $scope.unbindEventHandlers = function() {
+    	$(document).unbind('click', $scope.handleDocClick)
+    }
+    
     $scope.bindAutocompleteHandlers = function(input){
-    	input.bind('click');
-    	
-    	
     	input.bind('dblclick', function(){
     		var autocomplete = $(this).parent().find('ul.dropdown-menu');
     		
@@ -364,9 +346,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     		autocomplete.show();
     	});
     	
-    	
-    	$(document).bind('click', $scope.handleDocClick);
-    	
+
     	input.bind('keyup', function(e){
     		e = e ? e: window.event;
     		
@@ -401,8 +381,6 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     	input.next('.search-icon').unbind('click');
     	
     	input.unbind('keydown');
-    	
-    	$(document).unbind('click', $scope.handleDocClick)
     }
     
     $scope.menuItemSelected = function(menuItem) {
@@ -457,11 +435,11 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     	if (hourEntry.hoursRecord && hourEntry.hoursRecord.isAdded || hourEntry.hoursRecord && hourEntry.hoursRecord.isCopied) {
     		// use timeout to perform code after init 
     		window.setTimeout(function(){
-    			//$('.dashboard-widget.hours .row.hours-logged .hours-logged-entry').eq(0).scope().hourEntry.hoursRecord.hours
+    			
     			$('.dashboard-widget.hours .row.hours-logged .hours-logged-entry').each(function(ind, el) {
     				// in case of newly added entry correctly switch it to edit mode
-    				if ($(el).scope().hourEntry.hoursRecord.hours == "" || $(el).scope().hourEntry.hoursRecord.hours == undefined 
-							|| $(el).scope().hourEntry.hoursRecord.isCopied)
+    				if (hourEntry == $(el).scope().hourEntry && ($(el).scope().hourEntry.hoursRecord.hours == "" || $(el).scope().hourEntry.hoursRecord.hours == undefined 
+							|| $(el).scope().hourEntry.hoursRecord.isCopied))
     					$scope.$apply(function() {
     						$scope.editHoursEntry(null, $(el).scope().hourEntry, $(el).find('input[name="project-task-select"]').eq(0))
     					})
@@ -485,7 +463,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         if ($scope.selected.date === $scope.displayedHours[i].date) {
           // $scope.activeAddition = $scope.displayedHours[i];
         	
-        	if ($scope.selected.totalHours > 0) {
+        	if ($scope.selected.totalHours > 0 || $scope.anyCopied()) {
 	          $scope.newHoursRecord = {
 	            date: $scope.selected.date,
 	            description: "",
@@ -534,6 +512,19 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     	
     	return result;
     }
+    
+    $scope.anyCopied = function() {
+    	var result = false;
+    	
+    	for (var i = 0; i < $scope.selected.hoursEntries.length; i++) {
+            var entry = $scope.selected.hoursEntries[i];
+            
+            if (entry.hoursRecord && entry.hoursRecord.editMode && entry.hoursRecord && entry.hoursRecord.isCopied)
+            	result = true;
+    	}
+    	
+    	return result;
+    }
 
     $scope.addNewTaskHours = function () {
       $scope.addNewHours(true)
@@ -545,23 +536,15 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
           $scope.hoursTasks.push(t)
           $scope.projectTasksList.push(t);
           
+          t.isTask = true;
           t.icon = taskIconsMap[t.name.toLowerCase()];
           t.iconCss = taskIconStylseMap[t.name.toLowerCase()]
         })
-
-
+        
+        $scope.sortProjectTaskList();
       })
     }
-/*
-    $scope.deleteHoursRecord = function (index) {
-		if ($scope.selected.hoursEntries[index] ) {
-			if ($scope.selected.hoursEntries[index].hoursRecord)
-				$scope.hoursToDelete.push($scope.selected.hoursEntries[index].hoursRecord.resource);
-	      
-			$scope.selected.hoursEntries.splice(index, 1);
-	    }
-    }
-*/
+
     //date formatter helper
     $scope.formatTheDate = function (d) {
       var dd = d.getDate();
@@ -881,7 +864,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       var displayedHoursEntry = _.findWhere($scope.displayedHours, { date: $scope.selected.date });
       
       for (var i = 0; i < copyFromEntries.length; i++) {
-        if (copyFromEntries[i].hoursRecord) {
+        if (copyFromEntries[i].hoursRecord && copyFromEntries[i].hoursRecord.hours > 0) {
           var newHoursRecord = {
             date: $scope.selected.date,
             description: copyFromEntries[i].hoursRecord.description,
@@ -954,6 +937,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     var init = function (event) {
       $scope.hoursRequest();
       $scope.loadAvailableTasks();
+      $scope.bindEventHandlers();
+      $scope.loadProjects();
     };
 
     if ($scope.me)
@@ -961,5 +946,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     else
       $rootScope.$on('me:loaded', init)
 
+      $scope.$on("$destroy", function() {
+    	  $scope.unbindEventHandlers();
+    })
   }
 ]);
