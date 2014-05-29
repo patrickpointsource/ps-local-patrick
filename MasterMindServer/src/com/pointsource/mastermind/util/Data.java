@@ -681,7 +681,7 @@ public class Data implements CONSTS {
 
 		Directory admin = new Directory(TRANSPORT, JSON_FACTORY, credential);
 		Directory.Users.List request = admin.users().list();
-		request.setDomain("pointsourcellc.com");
+		request.setDomain("pointsource.com");
 		Users users = request.execute();
 
 		return users;
