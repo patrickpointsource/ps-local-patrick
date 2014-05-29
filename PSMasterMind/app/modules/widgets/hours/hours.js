@@ -278,7 +278,11 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     	hourEntry.hoursRecord.hours = hourEntry.hoursRecord.hoursEdited;
     	hourEntry.hoursRecord.description = hourEntry.hoursRecord.descriptionEdited;
 
-    	if ($scope.getNewHoursValidationErrors())
+    	
+		$scope.getNewHoursValidationErrors()
+    	
+    	
+    	if ($scope.hoursValidation.length > 0)
     		return;
     	
     	if (hourEntry.hoursRecord.isAdded && (hourEntry.hoursRecord.hours == "" || !hourEntry.selectedItem))
@@ -693,26 +697,25 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       $scope.hoursValidation = [];
 
       var totalHours = 0;
-
-      /*
-       for (var i = 0; hoursForm["hours" + i]; i++) {
-       if ( hoursForm["hours" + i].$dirty &&  hoursForm["hours" + i].$invalid){
-       $scope.hoursValidation.push("Incorrect value for hours")
-
-       }
-
-       }
-       */
-
       var entries = $scope.selected ? $scope.selected.hoursEntries : [];
 
 
       for (var i = 0; i < entries.length; i++) {
-        if (entries[i].innerHoursForm && entries[i].innerHoursForm["hours"] && entries[i].innerHoursForm["hours"].$dirty && entries[i].innerHoursForm["hours"].$invalid) {
-          $scope.hoursValidation.push("Incorrect value for hours")
+    	  if (entries[i].hoursRecord && entries[i].hoursRecord.hours == "") {
+    		  $scope.hoursValidation.push("Hours value is empty")
+    	  } else if (entries[i].hoursRecord && entries[i].hoursRecord.hours) {
+        	var res = /^\d+(\.\d{1,2})?$/.exec(entries[i].hoursRecord.hours)
+        	
+        	if (!res)
+        		$scope.hoursValidation.push("Incorrect value for hours")
 
-        } else if (entries[i].hoursRecord && entries[i].hoursRecord.hours)
-          totalHours += parseFloat(entries[i].hoursRecord.hours);
+        } 
+		  if (entries[i].hoursRecord && entries[i].hoursRecord.editMode && !entries[i].selectedItem)
+	      	$scope.hoursValidation.push("Project or task hasn't been selected")
+          	
+    	if (entries[i].hoursRecord && entries[i].hoursRecord.hours)
+          totalHours += parseFloat(entries[i].hoursRecord.hours); 
+       
       }
 
       if (totalHours > 24)
@@ -778,6 +781,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 	    	  _.extend(hourEntry.hoursRecord, {
 	    		  _id: updatedRecords[0]._id,
 	    		  about: updatedRecords[0].about,
+	    		  resource: updatedRecords[0].resource,
 	    		  base: updatedRecords[0].base,
 	    		  created: updatedRecords[0].created,
 	    		  date: updatedRecords[0].date,

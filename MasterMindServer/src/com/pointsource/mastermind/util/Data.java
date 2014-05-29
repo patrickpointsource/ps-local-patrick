@@ -1690,7 +1690,7 @@ public class Data implements CONSTS {
 		}
 		*/
 		
-		// after object insertion its "_id" became available
+		// after hours record insertion its "_id" became available
 		if (dbObject.get(PROP__ID) != null) {
 			String idVal = dbObject.get(PROP__ID).toString();
 			
@@ -1699,7 +1699,9 @@ public class Data implements CONSTS {
 			JSONObject _id = new JSONObject();
 			
 			_id.put(PROP_$OID, idVal);
+			
 			newHoursRecord.put(PROP__ID, _id );
+			newHoursRecord.put(PROP_RESOURCE, RESOURCE_HOURS + "/" + idVal);
 		}
 
 		return newHoursRecord;

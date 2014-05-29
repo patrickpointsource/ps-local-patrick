@@ -51,13 +51,13 @@ public class Hours extends BaseResource {
 				JSONArray hours = Data.getHours(context, query, fields, sort);
 				JSONObject ret = new JSONObject();
 				int total = hours.length();
+				
 				ret.put(CONSTS.PROP_COUNT, total);
-
 				ret.put(CONSTS.PROP_MEMBERS, hours);
 
 				URI baseURI = context.getBaseURI();
+				
 				ret.put(CONSTS.PROP_BASE, baseURI);
-
 				ret.put(CONSTS.PROP_ABOUT, CONSTS.RESOURCE_HOURS);
 
 				String str = Data.escapeJSON(ret.toString());

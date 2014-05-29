@@ -20,7 +20,7 @@
 	        
 	    </div>
 	    <div class="panel-body" style="padding-top:0px; padding-bottom: 0px;">
-	    	<div class="row" ng-if="getNewHoursValidationErrors()">
+	    	<div class="row" ng-show="hoursValidation.length > 0">
 		      <div id="hoursValidationDiv" class="alert alert-danger">
                 <a class="close" ng-click="hideMessages()">&times;</a>
                     <ul>
@@ -87,11 +87,11 @@
 			            </span>
 	        			<ul class="dropdown-menu ddProjectsTasksMenu" role="menu" aria-labelledby="ddProjectsTasksMenu">
 						  <li role="presentation" ng-repeat="tp in projectTasksList" >
-						  	<a class="menu-item task-menu-item" role="menuitem" tabindex="-1" href="#" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
+						  	<a class="menu-item task-menu-item" role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
 							  	<span class="task-icon" ng-if="tp.icon" style="{{tp.iconCss}}"><i class="fa {{tp.icon}}"></i></span>
 							  	<span class="task-name" style="width: -webkit-calc(100% - 20px)">{{tp.name}}</span>
 						  	</a>
-						  	<a class="menu-item project-menu-item" role="menuitem" tabindex="-1" href="#" ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
+						  	<a class="menu-item project-menu-item" role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
 							  	<span class="project-icon" ></span>
 							  	<span class="project-name" style="width: -webkit-calc(100% - 15px)">{{tp.name}}</span>
 							  	<span class="project-customer-name" style="width: -webkit-calc(100% - 25px)">{{tp.customerName}}</span>
