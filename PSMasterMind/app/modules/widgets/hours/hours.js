@@ -351,7 +351,9 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     		e = e ? e: window.event;
     		
     		var input = $(e.target).closest('input');
-    		var val = input.val().toLowerCase();
+    		
+    		
+    		var val = input.val();
     		var autocomplete = input.parent().find('ul.dropdown-menu');
     		
     		autocomplete.find('li').each(function(ind, el){
@@ -368,8 +370,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     				$(el).css('display', '')
     			else
     				$(el).css('display', 'none')
-    		});
-    		
+    		})
     		autocomplete.show();
     	})
     }
@@ -462,7 +463,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         if ($scope.selected.date === $scope.displayedHours[i].date) {
           // $scope.activeAddition = $scope.displayedHours[i];
         	
-        	if ($scope.selected.totalHours > 0 || $scope.anyCopied() || ($scope.selected.hoursEntries && $scope.selected.hoursEntries.length == 0)) {
+        	if ($scope.selected.totalHours > 0 || $scope.anyCopied()) {
 	          $scope.newHoursRecord = {
 	            date: $scope.selected.date,
 	            description: "",

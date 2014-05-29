@@ -113,8 +113,7 @@ angular.module('Mastermind')
     			}
 		  };
 		  var fields = {project:1,"members.startDate":1,"members.endDate":1,"members.person":1,"members.role":1,"members.hoursPerWeek":1};
-		  //Resources.get('assignments', {query:query, fields:fields}).then(function(result){
-		  Resources.query('assignments', query, fields).then(function(result){
+		  Resources.get('assignments', {query:query, fields:fields}).then(function(result){
 	        	var projectAssignments = result.data;
 	        	
 	        	//Fetch all hours entries between these two dates
@@ -136,7 +135,6 @@ angular.module('Mastermind')
     				]
     				
 	        	};
-	        	
     		  var hoursFields = {};
     		  Resources.query('hours', hoursQuery, hoursFields, function(result){
     			  var hoursResults = result.members;
