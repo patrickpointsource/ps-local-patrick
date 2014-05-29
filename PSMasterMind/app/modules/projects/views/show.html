@@ -4,7 +4,7 @@
     	<div class="col-xs-2 col-sm-3 col-lg-2"><h3 class="pull-right"><i class="{{projectStateIcon(project)}}"></i> <span class="hidden-xs">{{projectState(project)}}</span></h3></div>
     </div>-->
     <div class="row" style="padding-top: 20px; margin-bottom: 0px;">
-        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-5">
+        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-6">
             <div class="btn-group tab-buttons">
                 <button class="btn project-button" ng-class="{'active-tab': activeTab['/summary']}" ng-click="tabSelected('/summary')">Summary</button>
                 <button class="btn project-button" ng-class="{'active-tab': activeTab['/assignments']}" ng-click="tabSelected('/assignments')">Assignments</button>
@@ -12,8 +12,8 @@
                 <button class="btn project-button" ng-class="{'active-tab': activeTab['/links']}" ng-click="tabSelected('/links')">Links</button>
             </div>
         </div>
-        <div class="col-xs-12 col-sm-6 col-md-5 col-lg-7">
-            <table class="pull-right">
+        <div class="col-xs-12 col-sm-5 col-md-5 col-lg-6">
+            <table class="project-summary-buttons">
                     <tr>
                         <td>
                             <button ng-hide="editMode || !canEdit()" class="btn project-button edit-button" ng-click="edit()">

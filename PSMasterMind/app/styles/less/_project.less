@@ -137,6 +137,14 @@ th > span.hidden-xs {
 	padding-right: 20px;
 }
 
+@media (max-width: @screen-xs-max) {
+  .project-form .tab-content > div
+    {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
 .project-form .assignments-tab h4{
 	font-size: 14px;
 	background-color: #777777;
@@ -494,8 +502,56 @@ th > span.hidden-xs {
   }
 }
 
+.project-info-container {
+    background-color: white; 
+    padding-bottom: 10px; 
+    margin-bottom: 10px;
+}
+
+@media (max-width: @screen-xs-max) {
+    .project-info-container {
+        padding-left: 0px;
+    }
+}
+
+.project-info-row {
+    margin-top: 10px; 
+    min-height: 225px;
+}
+
+@media (max-width: @screen-xs-max) {
+    .project-info-row {
+        margin-left: 0px;
+    }
+}
+
 .project-icon-div {
     width: 240px;
     position: absolute;
     margin-left: 15px;
+}
+
+.project-terms {
+    margin-bottom: 14px;
+}
+
+@media (max-width: @screen-xs-max) {
+    .project-terms {
+        margin-bottom: 0px;
+    }
+}
+
+.project-summary-buttons {
+    float: right;
+}
+
+@media (max-width: @screen-xs-max) {
+    .project-summary-buttons {
+        float: none;
+        margin-top: 10px;
+    }
+    
+    .tab-buttons > button {
+        font-size: 11px;
+    }
 }
