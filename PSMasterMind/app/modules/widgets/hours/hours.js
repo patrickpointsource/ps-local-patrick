@@ -214,7 +214,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     //default open status of hours entry form
     $scope.entryFormOpen = false;
     $scope.lastSelectedDay = {};
-    $scope.hoursToDelete = [];
+   // $scope.hoursToDelete = [];
+    /*
     $scope.openHoursEntry = function (day) {
 
       $scope.hoursToDelete = [];
@@ -232,6 +233,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
         
       }
     };
+    */
     
     $scope.editHoursEntry = function(e, hourEntry, tagetInput) {
     	hourEntry.hoursRecord.editMode = true;
@@ -252,8 +254,13 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     
     $scope.removeOrCloseHourEntry = function(e, hourEntry, index) {
     	if (hourEntry.hoursRecord.editMode) {
-    		hourEntry.hoursRecord.editMode = false;
-    		$scope.clearAutocompleteHandlers($(e.target).closest('.hours-logged-entry').find('[name="project-task-select"]'));
+    		
+    		if (!hourEntry.hoursRecord.isCopied) {
+    			hourEntry.hoursRecord.editMode = false;
+    			$scope.clearAutocompleteHandlers($(e.target).closest('.hours-logged-entry').find('[name="project-task-select"]'));
+    		} else 
+    			$scope.selected.hoursEntries.splice(index, 1);
+    		
     	} else {
     		//$scope.deleteHoursRecord(index)
     		$scope.selected.hoursEntries.splice(index, 1);
@@ -498,8 +505,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 	    	} else {
 	    		// switch to edit mode predefined entries
 	    		for (var j = 0; j < $scope.selected.hoursEntries.length; j ++) {
-	    			$scope.selected.hoursEntries[j].hoursRecord.editMode = true;
-	    			$scope.selected.hoursEntries[j].hoursRecord.isAdded = true;
+	    			if ($scope.selected.hoursEntries[j].hoursRecord) {
+	    				$scope.selected.hoursEntries[j].hoursRecord.editMode = true;
+	    				$scope.selected.hoursEntries[j].hoursRecord.isAdded = true;
+	    			}
 	    		}
 	    	}
           
@@ -537,7 +546,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
       })
     }
-
+/*
     $scope.deleteHoursRecord = function (index) {
 		if ($scope.selected.hoursEntries[index] ) {
 			if ($scope.selected.hoursEntries[index].hoursRecord)
@@ -546,7 +555,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 			$scope.selected.hoursEntries.splice(index, 1);
 	    }
     }
-
+*/
     //date formatter helper
     $scope.formatTheDate = function (d) {
       var dd = d.getDate();
@@ -788,15 +797,16 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     	$scope.copyHours();
     	
     	for (var i = 0; i < $scope.selected.hoursEntries.length; i ++) {
-    		if ($scope.selected.hoursEntries[i].hoursRecord.hours > 0) {
+    		if ($scope.selected.hoursEntries[i].hoursRecord && 
+					$scope.selected.hoursEntries[i].hoursRecord.hours > 0 && $scope.selected.hoursEntries[i].hoursRecord.isCopied) {
 	    		$scope.selected.hoursEntries[i].hoursRecord.editMode = true;
-	    		$scope.selected.hoursEntries[i].hoursRecord.isCopied = true;
     		}
     	}
     }
     
     $scope.copyHours = function () {
       $scope.hideMessages();
+      
       var selectedDate = getDate($scope.selected.date);
 
       var copyFromEntries = [];
@@ -853,13 +863,16 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
     var copyHoursCallback = function (copyFromEntries) {
       var hoursRecords = _.pluck($scope.selected.hoursEntries, "hoursRecord");
+      
       hoursRecords = _.reject(hoursRecords, function (h) {
         return (typeof h) === 'undefined';
       });
-      $scope.hoursToDelete = _.pluck(hoursRecords, "resource");
-      $scope.selected.hoursEntries = [];
+      //$scope.hoursToDelete = _.pluck(hoursRecords, "resource");
+      //$scope.selected.hoursEntries = [];
 
+      // simply add copied hours to current day hours entries
       var displayedHoursEntry = _.findWhere($scope.displayedHours, { date: $scope.selected.date });
+      
       for (var i = 0; i < copyFromEntries.length; i++) {
         if (copyFromEntries[i].hoursRecord) {
           var newHoursRecord = {
@@ -869,6 +882,8 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
             person: { resource: $scope.me.about }
           }
 
+          newHoursRecord.isCopied = true;
+          
           if (copyFromEntries[i].hoursRecord.project) {
             newHoursRecord.project = copyFromEntries[i].hoursRecord.project;
           }
@@ -879,6 +894,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
           var hoursEntry = {
             project: copyFromEntries[i].project,
+            task: copyFromEntries[i].task,
             hoursRecord: newHoursRecord
           }
 
@@ -891,6 +907,13 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
           $scope.selected.hoursEntries.unshift( $scope.cloneDay(hoursEntry) );
         }
       }
+      /*
+      // after copying remove all previous day's hours
+      for (var i = 0; $scope.hoursToDelete && i < $scope.hoursToDelete.length; i ++) {
+    	  if ($scope.hoursToDelete[i])
+    		  Resources.remove($scope.hoursToDelete[i])
+      }
+      */
     }
 
     var getShortDate = function (date) {
