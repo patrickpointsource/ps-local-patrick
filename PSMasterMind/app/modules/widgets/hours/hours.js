@@ -702,7 +702,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       var entries = $scope.selected ? $scope.selected.hoursEntries : [];
 
 
-      if (hourEntry.hoursRecord && (hourEntry.hoursRecord.hours == "" || parseFloat(hourEntry.hoursRecord.hours) === 0)) {
+      if (hourEntry.hoursRecord && (hourEntry.hoursRecord.hours == "" || parseFloat(hourEntry.hoursRecord.hours) === 0) || hourEntry.hoursRecord.hours === undefined) {
 		  $scope.hoursValidation.push("Hours value is empty")
 	  } else if (hourEntry.hoursRecord && hourEntry.hoursRecord.hours) {
     	var res = /^\d+(\.\d{1,2})?$/.exec(hourEntry.hoursRecord.hours)
