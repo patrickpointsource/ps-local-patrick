@@ -258,8 +258,10 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     		if (!hourEntry.hoursRecord.isCopied) {
     			hourEntry.hoursRecord.editMode = false;
     			$scope.clearAutocompleteHandlers($(e.target).closest('.hours-logged-entry').find('[name="project-task-select"]'));
-    		} else 
+    		} else {
     			$scope.selected.hoursEntries.splice(index, 1);
+    			$scope.validateAndCalculateTotalHours();
+    		}
     		
     	} else {
     		//$scope.deleteHoursRecord(index)
@@ -279,7 +281,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     	hourEntry.hoursRecord.description = hourEntry.hoursRecord.descriptionEdited;
 
     	
-		$scope.getNewHoursValidationErrors()
+		$scope.getNewHoursValidationErrors(hourEntry)
     	
     	
     	if ($scope.hoursValidation.length > 0)
@@ -692,7 +694,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     $scope.newHoursRecord = {};
     $scope.hoursValidation = [];
 
-    $scope.getNewHoursValidationErrors = function () {
+    $scope.getNewHoursValidationErrors = function (hourEntry) {
 
       $scope.hoursValidation = [];
 
@@ -700,19 +702,19 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
       var entries = $scope.selected ? $scope.selected.hoursEntries : [];
 
 
-      for (var i = 0; i < entries.length; i++) {
-    	  if (entries[i].hoursRecord && entries[i].hoursRecord.hours == "") {
-    		  $scope.hoursValidation.push("Hours value is empty")
-    	  } else if (entries[i].hoursRecord && entries[i].hoursRecord.hours) {
-        	var res = /^\d+(\.\d{1,2})?$/.exec(entries[i].hoursRecord.hours)
-        	
-        	if (!res)
-        		$scope.hoursValidation.push("Incorrect value for hours")
+      if (hourEntry.hoursRecord && (hourEntry.hoursRecord.hours == "" || parseFloat(hourEntry.hoursRecord.hours) === 0)) {
+		  $scope.hoursValidation.push("Hours value is empty")
+	  } else if (hourEntry.hoursRecord && hourEntry.hoursRecord.hours) {
+    	var res = /^\d+(\.\d{1,2})?$/.exec(hourEntry.hoursRecord.hours)
+    	
+    	if (!res)
+    		$scope.hoursValidation.push("Incorrect value for hours")
 
-        } 
-		  if (entries[i].hoursRecord && entries[i].hoursRecord.editMode && !entries[i].selectedItem)
-	      	$scope.hoursValidation.push("Project or task hasn't been selected")
-          	
+    } 
+	  if (hourEntry.hoursRecord && hourEntry.hoursRecord.editMode && !hourEntry.selectedItem)
+      	$scope.hoursValidation.push("Project or task hasn't been selected")
+      	
+      for (var i = 0; i < entries.length; i++) {       	
     	if (entries[i].hoursRecord && entries[i].hoursRecord.hours)
           totalHours += parseFloat(entries[i].hoursRecord.hours); 
        
@@ -730,6 +732,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
     	 var entries = $scope.selected.hoursEntries;
          var hoursRecords = [];
          var totalHours = 0;
+         
          $scope.hoursValidation = [];
 
          for (var i = 0; i < entries.length; i++) {
