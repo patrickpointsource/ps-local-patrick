@@ -198,8 +198,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"><strong>TOTAL ESTIMATED VALUE:</strong></div>
                     <div class="panel-body">
-                        {{(getServicesEstimate() +project.terms.softwareEstimate) |
-                currency}}
+                        {{getTotalEstimate() | currency}}
                     </div>
                 </div>
             </div>

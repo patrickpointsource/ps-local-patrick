@@ -686,6 +686,20 @@ angular.module('Mastermind')
 		return svcsEst;
 	  }
     }
+    
+    $scope.getTotalEstimate = function() {
+    	var srvEstimate = parseInt($scope.getServicesEstimate());
+    	
+    	if(!srvEstimate)
+    		srvEstimate = 0;
+    	
+    	var sftwEstimate = parseInt($scope.project.terms.softwareEstimate);
+    	
+    	if(!sftwEstimate)
+    		sftwEstimate = 0;
+    	
+    	return srvEstimate + sftwEstimate;
+    }
 
     /**
      * Display the expected hours a role should work
