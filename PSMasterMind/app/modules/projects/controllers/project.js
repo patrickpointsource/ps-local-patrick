@@ -660,7 +660,7 @@ angular.module('Mastermind')
     		svcsEst = $scope.project.terms.fixedBidServicesRevenue;
     	} 
     	else { 		
-    		if(!$scope.servicesEstimate || $scope.servicesEstimate ==0) {
+    		//if(!$scope.servicesEstimate || $scope.servicesEstimate ==0) {
                 for(var i = 0; i < $scope.project.roles.length; i++){
                     var ithRole = $scope.project.roles[i];
                     var roleEstimate = 0;
@@ -677,10 +677,10 @@ angular.module('Mastermind')
 
                   }
                   $scope.servicesEstimate = svcsEst;
-    		}
+    		/*}
     		else {
     			svcsEst = $scope.servicesEstimate;
-    		}
+    		}*/
     	}
 		
 		return svcsEst;
