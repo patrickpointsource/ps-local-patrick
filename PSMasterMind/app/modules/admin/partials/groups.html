@@ -2,7 +2,7 @@
 	<table ng-table="tableParams" class="table">
       <tbody ng-repeat="group in groups" ng-controller="groupRowCtrl">
         <tr class="ng-table-group">
-          <td colspan="3">
+          <td colspan="2">
             <a href="" ng-click="group.$hideRows = !group.$hideRows">
               <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': group.$hideRows, 'glyphicon-chevron-down': !group.$hideRows }"></span>
               <strong>{{ group.label }}</strong>
@@ -11,16 +11,18 @@
         </tr>
         <tr ng-hide="group.$hideRows" ng-repeat="member in group.members">
           <td data-title="'Pic'">
-          	<a href="#{{member.resource}}"><img class="people-image" ng-src="{{member.thumbnail}}"/></a>
+          	<a class="col-xs-3 col-sm-2"  href="#{{member.resource}}">
+          		<img class="img-row-thumbnail" ng-src="{{member.thumbnail}}"/>
+          	</a>
           </td>
-          <td sortable="name" data-title="'Name'">
-                <a href="#{{member.resource}}" class="person-name">
-	                  {{member.familyName}}, {{member.givenName}}
-	            </a>
+          <td sortable="name" class="row-person-name" data-title="'Name'">
+               <!--  <div class="col-xs-9 col-sm-3 "> -->
+        			<a href="#{{member.resource}}">{{member.familyName}}, {{member.givenName}}</a>
+      		<!-- 	</div> -->
           </td>
-          <td sortable="role" data-title="'Role'">
-          	<div class="col-xs-3 col-md-2 people-prop">{{member.primaryRole.abbreviation}}</div>
-          </td>
+          <!-- <td sortable="role" data-title="'Role'">
+          	<div class="col-xs-4 col-sm-1 people-prop">{{member.primaryRole.abbreviation}}</div>
+          </td> -->
         </tr>
       </tbody>
     </table>
