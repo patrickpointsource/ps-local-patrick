@@ -979,8 +979,35 @@ header .navbar .navbar-breadcrumb {
 		li {
 			overflow: hidden;
 		}
+		
+		@media (max-width: @screen-xs) {
+			left: auto;
+			top: 80px;
+			width: 100%;
+			text-align: left;
+
+		}
 	}
 }
+
+.hours-day {
+	float: left; 
+	height: 100%; 
+	@media (min-width: @screen-sm) {
+		width: 12.5%;
+	}
+	@media (max-width: @screen-sm) {
+		width: 88%;
+		display: none;
+	}
+}
+
+.hours-day.active {
+	@media (max-width: @screen-sm) {
+		display: block;
+	}
+}
+
 .hours-day-entry {
 	width: 100%;
 	height: 100%;
@@ -999,7 +1026,7 @@ header .navbar .navbar-breadcrumb {
 .hours-logged {
 	min-height: 50px;
 	background-color: #f7f7f7 !important;
-	
+	clear: both;
 	.hours-empty {
 		text-align: center;
 		font-size: 15px;
@@ -1024,12 +1051,22 @@ header .navbar .navbar-breadcrumb {
 	display: -webkit-flex;
 	align-items: center;
 
+	@media (max-width: @screen-xs) {
+		display: block;
+		text-align: center;
+	}
 	 .hours-logged-value {
 	 	font-weight: bold;
 	 	font-size: 15px;
 	 	width: 6%;
 	 	text-align: center;
 	 	white-space: nowrap;
+	 	
+	 	@media (max-width: @screen-xs) {
+			display: block;
+			text-align: center;
+			width: 100%;
+		}
 	 }
 	 
 	 .edit-input {
@@ -1051,6 +1088,12 @@ header .navbar .navbar-breadcrumb {
 	 	font-weight: bold;
 	 	font-size: 15px;
 	 	color: #999999;
+	 	
+	 	@media (max-width: @screen-xs) {
+			display: block;
+			text-align: center;
+			width: 100%;
+		}
 	 }
 	 
 	 .hours-logged-project.selected-item {
@@ -1075,7 +1118,15 @@ header .navbar .navbar-breadcrumb {
 	 .hours-logged-desc {
 	 	color: #999999;
 	 	font-size: 14px;
+	 	
 	 	/*set width inline*/
+	 	
+	 	@media (max-width: @screen-xs) {
+			display: block;
+			text-align: center;
+			width: 100% !important;
+			clear: both;
+		}
 	 }
 	 
 	  .hours-logged-action {
@@ -1084,6 +1135,10 @@ header .navbar .navbar-breadcrumb {
 	  	color: #d1d1d1;
 	  	padding:8px;
 	  	margin-top:-4px;
+	  	
+	  	@media (max-width: @screen-xs) {
+			float: none;
+		}
 	  }
 	  
 	  .hours-logged-save {

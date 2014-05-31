@@ -10,10 +10,10 @@
 			        </div>
 			        
 			        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
-			        	<a ng-click="addHoursEntry()"><i class="fa fa-plus"></i> Add Hours</a> 
+			        	<a ng-click="addHoursEntry()"><i class="fa fa-plus"></i> <span class="hidden-xs hidden-sm">Add Hours</span></a> 
 			        </div>
 			        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
-			        	<a ng-click="copyHoursEntry()"><i class="fa fa-copy"></i> Copy Hours</a> 
+			        	<a ng-click="copyHoursEntry()"><i class="fa fa-copy"></i> <span class="hidden-xs hidden-sm">Copy Hours</span></a> 
 			        </div>
 		       </div>
 	       
@@ -30,12 +30,17 @@
 		    </div>
 			
 	        <div class="row" style="height: 140px; margin-bottom: 0px;">
-	        	<div ng-click="backInTime()" style="float: left;height: 100%; width: 6%; border-bottom: 1px solid #dbdbdb; text-align: center;border-right: 1px solid #efefef;">
+	        	<div ng-click="backInTime()" class="hidden-xs hidden-sm" style="float: left;height: 100%; width: 6%; border-bottom: 1px solid #dbdbdb; text-align: center;border-right: 1px solid #efefef;">
 	        		<div style="width: 100%; top: 40%; position:relative;">
 	                    <i class="fa fa-caret-left fa-2x"></i>
 	                </div>
 	        	</div>
-	        	<div ng-repeat="day in displayedHours" class="text-center" style="float: left; height: 100%; width: 12.5%;">
+	        	<div ng-click="backDay()" class="visible-xs visible-sm" style="float: left;height: 100%; width: 6%; border-bottom: 1px solid #dbdbdb; text-align: center;border-right: 1px solid #efefef;">
+	        		<div style="width: 100%; top: 40%; position:relative;">
+	                    <i class="fa fa-caret-left fa-2x"></i>
+	                </div>
+	        	</div>
+	        	<div ng-repeat="day in displayedHours" class="text-center hours-day" ng-class="{'active': selected.date === day.date}">
                 	<div class="hours-day-entry"  
 	                	ng-class="{'hours-danger':day.totalHours===0 && $index > 0 && $index<6 && !day.futureness ,
 	                				'hours-warning': day.totalHours < 8 && $index > 0 && $index<6 && !day.futureness, 
@@ -56,7 +61,12 @@
 	                	<div style="font-size: 18px; color: #a8a8a8; font-weight: normal;">HOURS</div>
 	                </div>
                 </div>
-	        	<div ng-click="forwardInTime()" style="float: left;height: 100%; width: 6%; text-align: center;border-bottom: 1px solid #dbdbdb;border-left: 1px solid #efefef;">
+	        	<div ng-click="forwardInTime()"  class="hidden-xs hidden-sm" style="float: left;height: 100%; width: 6%; text-align: center;border-bottom: 1px solid #dbdbdb;border-left: 1px solid #efefef;">
+	        		<div style="width: 100%; top: 40%; position:relative;">
+	                    <i class="fa fa-caret-right fa-2x"></i>
+	                </div>
+	        	</div>
+	        	<div ng-click="nextDay()"  class="visible-xs visible-sm" style="float: left;height: 100%; width: 6%; text-align: center;border-bottom: 1px solid #dbdbdb;border-left: 1px solid #efefef;">
 	        		<div style="width: 100%; top: 40%; position:relative;">
 	                    <i class="fa fa-caret-right fa-2x"></i>
 	                </div>
@@ -64,6 +74,7 @@
 	        </div>
 	        <div class="row hours-logged">
 	        	<div class="hours-empty" ng-show="selected.totalHours == 0 && !anyAdded()">No hours logged</div>
+	        	
 	        	<div ng-show="selected.totalHours > 0 || anyAdded()" ng-repeat="hourEntry in selected.hoursEntries" >
 	        		<div class="hours-logged-entry" ng-if="hourEntry.hoursRecord.hours > 0 || hourEntry.hoursRecord.editMode" 
 	        			_hourentryindex="{{$index}}" ng-init="initNewHoursEntry(hourEntry)">

@@ -548,7 +548,7 @@ angular.module('Mastermind')
                         
                     $scope.$emit('project:loaded');
                     
-                    $scope.loadExecAndPeople()
+                    $scope.loadExecAndPeople();
                 });
             }, 
             function (response) {
@@ -969,69 +969,76 @@ angular.module('Mastermind')
     /**
      * Get All the Role Types
      */
-    Resources.get('roles').then(function(result){
-      var resources = [];
-      var roleGroups = {};
-      //Save the list of role types in the scope
-      $scope.roleTypes = result.members;
-      //Get list of roles to query members
-      for(var i = 0; i < result.members.length;i++){
-        var role = result.members[i];
-        var resource = role.resource;
-        roleGroups[resource] = role;
-        resources.push(resource);
-        //create a members array for each roles group
-        
-        role.assiganble = [];
-      }
-      
-      $scope.roleGroups = roleGroups;
-
-      //Query all people with a primary role
-      var roleQuery = {'primaryRole.resource':{$exists:1}};
-      var fields = {resource:1,name:1,familyName:1,givenName:1,primaryRole:1,thumbnail:1};
-      var sort = {'primaryRole.resource':1,'familyName':1,'givenName':1};
-      Resources.query('people',roleQuery, fields, function(peopleResults){
-        var people = peopleResults.members;
-        //Set up lists of people in roles
-        for(var i = 0; i < people.length; i++){
-          var person = people[i];
-          var personsRole = roleGroups[person.primaryRole.resource];
-          person.title = personsRole.abbreviation + ': ' + person.familyName + ', ' + person.givenName;
-
-          for(var j = 0; j < result.members.length;j++){
-            var roleJ = result.members[j];
-
-            //Primary role match place it at the front of the array in sort order
-            if(roleJ.resource === person.primaryRole.resource){
-              //assignable list was empty add it to the front
-              if(roleGroups[roleJ.resource].assiganble.length === 0){
-                roleGroups[roleJ.resource].assiganble[0] = person;
-              }
-              //First match just add it to the font
-              else if(roleGroups[roleJ.resource].assiganble[0].primaryRole.resource !== roleJ.resource){
-                roleGroups[roleJ.resource].assiganble.unshift(person);
-              }
-              //Add it after the last match
-              else{
-                var index = 0;
-                while(roleGroups[roleJ.resource].assiganble.length>index&&roleGroups[roleJ.resource].assiganble[index].primaryRole.resource === roleJ.resource){
-                  index++;
-                }
-                roleGroups[roleJ.resource].assiganble.splice(index,0,person);
-              }
-            }
-            //Not the primary role leave it in sort order
-            else{
-              roleGroups[roleJ.resource].assiganble.push(person);
-            }
-          }
-        }
-        	
-        //Set a map of role types to members
-        $scope.roleGroups = roleGroups;
-      },sort);
-    });
+    $scope.getAllRoleTypes = function(rolesCb) {
+    
+	    Resources.get('roles').then(function(result){
+	      var resources = [];
+	      var roleGroups = {};
+	      //Save the list of role types in the scope
+	      $scope.roleTypes = result.members;
+	      //Get list of roles to query members
+	      for(var i = 0; i < result.members.length;i++){
+	        var role = result.members[i];
+	        var resource = role.resource;
+	        roleGroups[resource] = role;
+	        resources.push(resource);
+	        //create a members array for each roles group
+	        
+	        role.assiganble = [];
+	      }
+	      
+	      $scope.roleGroups = roleGroups;
+	
+	      //Query all people with a primary role
+	      var roleQuery = {'primaryRole.resource':{$exists:1}};
+	      var fields = {resource:1,name:1,familyName:1,givenName:1,primaryRole:1,thumbnail:1};
+	      var sort = {'primaryRole.resource':1,'familyName':1,'givenName':1};
+	      
+	      Resources.query('people',roleQuery, fields, function(peopleResults){
+	        var people = peopleResults.members;
+	        //Set up lists of people in roles
+	        for(var i = 0; i < people.length; i++){
+	          var person = people[i];
+	          var personsRole = roleGroups[person.primaryRole.resource];
+	          person.title = personsRole.abbreviation + ': ' + person.familyName + ', ' + person.givenName;
+	
+	          for(var j = 0; j < result.members.length;j++){
+	            var roleJ = result.members[j];
+	
+	            //Primary role match place it at the front of the array in sort order
+	            if(roleJ.resource === person.primaryRole.resource){
+	              //assignable list was empty add it to the front
+	              if(roleGroups[roleJ.resource].assiganble.length === 0){
+	                roleGroups[roleJ.resource].assiganble[0] = person;
+	              }
+	              //First match just add it to the font
+	              else if(roleGroups[roleJ.resource].assiganble[0].primaryRole.resource !== roleJ.resource){
+	                roleGroups[roleJ.resource].assiganble.unshift(person);
+	              }
+	              //Add it after the last match
+	              else{
+	                var index = 0;
+	                while(roleGroups[roleJ.resource].assiganble.length>index&&roleGroups[roleJ.resource].assiganble[index].primaryRole.resource === roleJ.resource){
+	                  index++;
+	                }
+	                roleGroups[roleJ.resource].assiganble.splice(index,0,person);
+	              }
+	            }
+	            //Not the primary role leave it in sort order
+	            else{
+	              roleGroups[roleJ.resource].assiganble.push(person);
+	            }
+	          }
+	        }
+	        	
+	        //Set a map of role types to members
+	        $scope.roleGroups = roleGroups;
+	        
+	        if (rolesCb)
+	        	rolesCb()
+	      },sort);
+	    });
+    }
 
     $scope.hoursValidation = [];
 
@@ -1996,20 +2003,23 @@ angular.module('Mastermind')
      */
     if ($scope.projectId){
       ProjectsService.getForEdit($scope.projectId).then(function(project){
-        $scope.project = project;
-        cutDescription($scope.project.description);
-        $scope.handleProjectSelected();
-        $scope.updateHoursPersons();
-        $scope.initMonths();
-        
-        if($scope.projectTabId == '') {
-        	$scope.tabSelected('/summary');
-        }
-        
-        $scope.$emit('project:loaded');
-        
-        reloadShortDesc();
-        $scope.loadExecAndPeople()
+    	  
+    	  $scope.getAllRoleTypes(function(){
+		        $scope.project = project;
+		        cutDescription($scope.project.description);
+		        $scope.handleProjectSelected();
+		        $scope.updateHoursPersons();
+		        $scope.initMonths();
+		        
+		        if($scope.projectTabId == '') {
+		        	$scope.tabSelected('/summary');
+		        }
+		        
+		        $scope.$emit('project:loaded');
+		        
+		        reloadShortDesc();
+		        $scope.loadExecAndPeople();
+    	  })
         
         
       });
@@ -2018,11 +2028,13 @@ angular.module('Mastermind')
      * Default create a new project
      */
     else {
-      $scope.project = ProjectsService.create();
-      $scope.handleProjectSelected();
-      $scope.$emit('project:loaded');
-      
-      $scope.loadExecAndPeople()
+    	 $scope.getAllRoleTypes(function(){
+		      $scope.project = ProjectsService.create();
+		      $scope.handleProjectSelected();
+		      $scope.$emit('project:loaded');
+		      
+		      $scope.loadExecAndPeople();
+    	 })
     }
     
     var reloadShortDesc = function() {
