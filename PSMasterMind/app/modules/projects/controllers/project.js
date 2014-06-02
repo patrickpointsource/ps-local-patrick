@@ -1885,9 +1885,8 @@ angular.module('Mastermind')
     	$scope.endWeekDate = $scope.moment().day($scope.selectedWeekIndex + 6).format('YYYY-MM-DD');
 		
     	var hoursQuery = {
-        	    project:{
-						resource:$scope.project.about
-				},
+				'project.resource': $scope.project.about,
+				
 				$and:[
 				      {
 				    	  date:{
