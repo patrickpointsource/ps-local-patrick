@@ -51,37 +51,68 @@ public class AuthFilter implements Filter {
 		
 		try {
 			HttpSession session = httpReq.getSession(true);
-			String authToken = checkAuth(httpReq);
+			JSONObject domainUser = null;
+			String fields = "{"+CONSTS.PROP_ACCOUNTS+":0}";
 			
-			String existingToken = String.valueOf(session
-					.getAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN));
-			/**
-			 * If we have a new access token or the session no longer contains a session user
-			 */
-			if (!authToken.equals(existingToken) || session.getAttribute(CONSTS.SESSION_USER_KEY) == null) {
-			
-				String id = getUserId(httpReq, authToken);
-	
-				// Check if the User is in our domain
-				RequestContext context = new RequestContext();
-				context.setServletContext(httpReq.getServletContext());
+			if (CONSTS.USE_LOCAL_AUTH) {
+				/*
+				 * To be used primarily for local demo purposes
+				 */
+				String authorizationHeader = httpReq.getHeader("Authorization");
+				System.out.println("authorizationHeader =" + authorizationHeader);
 				
-				String query = "{"+CONSTS.PROP_GOOGLE_ID+":'"+id+"'}";
-				String fields = "{"+CONSTS.PROP_ACCOUNTS+":0}";
-				JSONObject domainUser = Data.getPerson(context, query, fields);
-				
-				if(domainUser == null){
-					System.err.println(403 + ": "+ domainUser + " is not a member of the PointSource domain");
-					throw new WebApplicationException(
-							Response.status(Status.FORBIDDEN)
-									.entity("User is not a member of the PointSource domain")
-									.build());
+				if (authorizationHeader != null) {
+					String[] headerParts = authorizationHeader.split(" ");
+					for(int i=0; i< headerParts.length; i++) {
+						System.out.println("headerParts[" + i + "]=" + headerParts[i]);
+					}			
+					
+					System.out.println("httpReq =" + httpReq);
+					String query = "{"+"mBox"+":'"+headerParts[1]+"'}";
+					domainUser = Data.getPerson(null, query, fields);
 				}
 				
-				// Set the User context into the session
-				session.setAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN, authToken);
+				if (domainUser == null) {
+					/*
+					 * Use Aditya's google ID by default
+					 */
+					String query_old = "{"+CONSTS.PROP_GOOGLE_ID+":'"+"102238582318534521897"+"'}";
+					domainUser = Data.getPerson(null, query_old, fields);
+				}
+				System.out.println("Setting user to:" + domainUser);
 				session.setAttribute(CONSTS.SESSION_USER_KEY, domainUser);
-			
+			}
+			else {
+				String authToken = checkAuth(httpReq);
+				
+				String existingToken = String.valueOf(session
+						.getAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN));
+				/**
+				 * If we have a new access token or the session no longer contains a session user
+				 */
+				if (!authToken.equals(existingToken) || session.getAttribute(CONSTS.SESSION_USER_KEY) == null) {
+				
+					String id = getUserId(httpReq, authToken);
+		
+					// Check if the User is in our domain
+					RequestContext context = new RequestContext();
+					context.setServletContext(httpReq.getServletContext());
+					
+					String query = "{"+CONSTS.PROP_GOOGLE_ID+":'"+id+"'}";
+					domainUser = Data.getPerson(context, query, fields);
+
+					if(domainUser == null){
+						System.err.println(403 + ": "+ domainUser + " is not a member of the PointSource domain");
+						throw new WebApplicationException(
+								Response.status(Status.FORBIDDEN)
+										.entity("User is not a member of the PointSource domain")
+										.build());
+					}
+					
+					// Set the User context into the session
+					session.setAttribute(CONSTS.COOKIE_NAME_ACCESS_TOKEN, authToken);
+					session.setAttribute(CONSTS.SESSION_USER_KEY, domainUser);
+				}
 			}
 			
 			chain.doFilter(req, resp);

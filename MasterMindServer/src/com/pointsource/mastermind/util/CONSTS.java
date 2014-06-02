@@ -211,5 +211,10 @@ public interface CONSTS {
 	 */
 	public int HOURS_PER_MONTH = 180;
 	
+	/**
+	 * Global flag to turn off Google Auth.
+	 */
+	public boolean USE_LOCAL_AUTH = false;
+	
 	
 }
