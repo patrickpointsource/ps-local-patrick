@@ -94,14 +94,11 @@ angular.module('Mastermind').controller('HoursCtrl',
 	 */
 
 	$scope.loadProjects = function() {
-		ProjectsService
-				.getOngoingProjects(function(result) {
+		ProjectsService.getOngoingProjects(function(result) {
 
 					$scope.ongoingProjects = result.data;
 
-					ProjectsService
-							.getMyCurrentProjects(
-									$scope.me)
+					ProjectsService.getMyCurrentProjects($scope.me)
 							.then(
 									function(
 											myCurrentProjects) {
@@ -119,23 +116,7 @@ angular.module('Mastermind').controller('HoursCtrl',
 													+ myProj.name;
 											myProjects
 													.push(myProj);
-
-											// Check if
-											// you have
-											// an
-											// assignment
-											// to flag
-											// that you
-											// have an
-											// assignment
-											// on the
-											// project
-											// and not
-											// that you
-											// are an
-											// exec or
-											// sales
-											// sponsor
+											
 											if (myProj
 													&& myProj.status
 													&& myProj.status.hasAssignment) {
@@ -166,48 +147,7 @@ angular.module('Mastermind').controller('HoursCtrl',
 											}
 										}
 
-										/*
-										 * myProjects.sort(function
-										 * (item1,
-										 * item2) { if
-										 * (item1.title <
-										 * item2.title)
-										 * return -1; if
-										 * (item1.title >
-										 * item2.title)
-										 * return 1;
-										 * return 0; });
-										 */
-										/*
-										 * var
-										 * otherProjects =
-										 * [];
-										 * 
-										 * while
-										 * ($scope.ongoingProjects.length >
-										 * 0) { var
-										 * myProj =
-										 * $scope.ongoingProjects.pop();
-										 * myProj.title =
-										 * myProj.customerName + ': ' +
-										 * myProj.name;
-										 * otherProjects.push(myProj);
-										 * 
-										 * myProj.isOtherProj =
-										 * true; }
-										 */
-										/*
-										 * otherProjects.sort(function
-										 * (item1,
-										 * item2) { if
-										 * (item1.title <
-										 * item2.title)
-										 * return -1; if
-										 * (item1.title >
-										 * item2.title)
-										 * return 1;
-										 * return 0; });
-										 */
+										
 										$scope.hoursProjects = myProjects
 												.concat(otherProjects);
 
@@ -215,9 +155,27 @@ angular.module('Mastermind').controller('HoursCtrl',
 												.concat(myProjects
 														.concat(otherProjects));
 
-										$scope
-												.sortProjectTaskList();
+										// load projects on which current person have at least one assignment in past/present/future
+										HoursService.getCurrentPersonProjects($scope.me).then(function(projectsWithMyAssignments) {
+											
+											var found;
+											
+											for (var i = 0; i < projectsWithMyAssignments.length; i ++) {
+												found = _.find($scope.projectTasksList, function(tp) {
+													return tp.resource == projectsWithMyAssignments[i].resource
+												})
+												
+												if (found)
+													delete found.isOtherProj
+											}
+											
+											$scope.projectTasksList = $scope.projectTasksList.concat(projectsWithMyAssignments);
+
+											$scope.sortProjectTaskList();
+										})
 									});
+					
+					
 				});
 	}
 
@@ -244,6 +202,10 @@ angular.module('Mastermind').controller('HoursCtrl',
 	 *  } };
 	 */
 	$scope.sortProjectTaskList = function() {
+		$scope.projectTasksList = _.uniq($scope.projectTasksList, function(tp) {
+			return tp.resource
+		});
+		
 		$scope.projectTasksList
 				.sort(function(item1, item2) {
 					if (item1.isOtherProj
@@ -331,13 +293,20 @@ angular.module('Mastermind').controller('HoursCtrl',
 
 	$scope.saveHoursEntry = function(e, hourEntry,
 			isAdded) {
+		var tmpHours = hourEntry.hoursRecord.hours;
+		var tmpDesc = hourEntry.hoursRecord.description;
+		
 		hourEntry.hoursRecord.hours = hourEntry.hoursRecord.hoursEdited;
 		hourEntry.hoursRecord.description = hourEntry.hoursRecord.descriptionEdited;
 
 		$scope.getNewHoursValidationErrors(hourEntry)
 
-		if ($scope.hoursValidation.length > 0)
+		if ($scope.hoursValidation.length > 0) {
+			hourEntry.hoursRecord.hours = tmpHours;
+			hourEntry.hoursRecord.description = tmpDesc;
+			
 			return;
+		}
 
 		if (hourEntry.hoursRecord.isAdded
 				&& (hourEntry.hoursRecord.hours == "" || !hourEntry.selectedItem))
@@ -991,6 +960,14 @@ angular.module('Mastermind').controller('HoursCtrl',
 						.push("Incorrect value for hours")
 
 		}
+		
+		if (hourEntry.hoursRecord && hourEntry.selectedItem && hourEntry.selectedItem.startDate) {
+			var selectedDate = new Date($scope.selected.date);
+			
+			if (selectedDate > new Date(hourEntry.selectedItem.endDate) || selectedDate < new Date(hourEntry.selectedItem.endDate))
+				$scope.hoursValidation.push("You are logging hours for project which is already ended or not started")
+		}
+		
 		if (hourEntry.hoursRecord
 				&& hourEntry.hoursRecord.editMode
 				&& !hourEntry.selectedItem)
