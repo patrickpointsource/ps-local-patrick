@@ -84,7 +84,9 @@ angular.module('Mastermind.controllers.projects')
       if($('#newRoleDialog').hasClass('in')){
         $('#newRoleDialog').collapse('hide');
       }
-
+      
+      $scope.project.roles[$scope.editRoleIndex].rate = $scope.initialChangingRate;
+      
       $scope.editingRole = false;
       $scope.editRoleIndex = null;
     };
@@ -141,6 +143,8 @@ angular.module('Mastermind.controllers.projects')
           $('#newRoleDialog').collapse('hide');
         }
 
+        $scope.initialChangingRate = $.extend(true, {}, $scope.project.roles[index].rate);
+        
         $scope.editingRole = true;
         $scope.editRoleIndex = index;
 
