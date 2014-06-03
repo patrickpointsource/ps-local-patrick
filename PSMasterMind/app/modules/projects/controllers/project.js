@@ -2079,11 +2079,12 @@ angular.module('Mastermind')
                     .replace(/"/g,'""') + // replace quotes with double quotes
                 '"';
             },
+            
             generate: function() {
               var project = $scope.project;
               var hours = [];
               
-              if($scope.hoursViewType == 'monthly' || $scope.hoursViewType == 'billings') {
+              if($scope.hoursViewType == 'monthly' || $scope.hoursViewType == 'billings' || $scope.hoursViewType == 'customDates') {
             	  if($scope.currentDisplayedHours) {
                 	  for(var i = 0; i < $scope.currentDisplayedHours.length; i++ ) {
                 		  hours = hours.concat($scope.currentDisplayedHours[i]);

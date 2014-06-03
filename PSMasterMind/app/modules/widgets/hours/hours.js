@@ -964,7 +964,7 @@ angular.module('Mastermind').controller('HoursCtrl',
 		if (hourEntry.hoursRecord && hourEntry.selectedItem && hourEntry.selectedItem.startDate) {
 			var selectedDate = new Date($scope.selected.date);
 			
-			if (selectedDate > new Date(hourEntry.selectedItem.endDate) || selectedDate < new Date(hourEntry.selectedItem.endDate))
+			if (selectedDate > new Date(hourEntry.selectedItem.endDate) || selectedDate < new Date(hourEntry.selectedItem.startDate))
 				$scope.hoursValidation.push("You are logging hours for project which is already ended or not started")
 		}
 		
