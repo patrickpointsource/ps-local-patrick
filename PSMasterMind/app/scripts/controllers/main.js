@@ -272,13 +272,13 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     
     
     // Fix for Bootstrap drop-down menu toggling
-    var $dropdownClick = $('.dropdown');
-    $dropdwonClick.click(function(e) {
-      var $dropdownContainer = $('.dropdown .dropdown-menu');
-      $dropdownContainer.click(function(e) {
-        e.stopPropagation();
-      });
-    });
+//    var $dropdownClick = $('.dropdown');
+//    $dropdwonClick.click(function(e) {
+//      var $dropdownContainer = $('.dropdown .dropdown-menu');
+//      $dropdownContainer.click(function(e) {
+//        e.stopPropagation();
+//      });
+//    });
     
     //Start Masonry
     //Initalize Masonry as late as possible
