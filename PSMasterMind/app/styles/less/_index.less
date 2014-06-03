@@ -448,6 +448,21 @@ header {
 		}
 	}
 
+    .dropdown-menu {
+        margin: 0;
+        padding: 0;
+		top: 77px;
+		right: 0;
+		left: auto;
+		background-color: @gray-lighter;
+		border: 1px solid @gray-outline;
+		border-radius: 0;
+		width: 310px;
+        height: 258px;
+        box-shadow: -1px 1px 6px 1px @gray-outline;
+		z-index: 999;
+	}
+  
 	.navbar .user-info-container {
 		//background-color: @mm-smoothbluelight;
 		border-left: 1px solid @gray-outline;
@@ -473,7 +488,7 @@ header {
                 position: absolute;
                 bottom: -2px;
                 right: 0;
-                z-index: 400;
+                z-index: 1000;
             }
             
             #profile-photo {
@@ -492,21 +507,6 @@ header {
 		&:hover {
 			box-shadow: 0 0 0 5px white;
 		}
-	}
-
-	.dropdown-menu {
-        margin: 0;
-        padding: 0;
-		top: 77px;
-		right: 0;
-		left: auto;
-		background-color: @gray-lighter;
-		border: 1px solid @gray-outline;
-		border-radius: 0;
-		width: 310px;
-        height: 258px;
-        box-shadow: -1px 1px 6px 1px @gray-outline;
-		z-index: 200;
 	}
     
     #profile-photo-full {

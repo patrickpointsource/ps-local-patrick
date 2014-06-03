@@ -16,6 +16,11 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
       'templateLocation': 'modules/widgets/hours/hours.html',
       'available': ['you', 'me', 'them']
     }];
+    
+    // Fix for Bootstrap drop-down menu toggling
+    $('.dropdown .dropdown-menu').click(function(e) {
+      e.stopPropagation();
+    });
 
     // Default dashboard view overwritten below if Exec or Management
     $scope.dashboardScreen = 'views/dashboards/baseDashboard.html';

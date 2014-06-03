@@ -1,5 +1,6 @@
 {
   "node": true,
+  "globalstrict": true,
   "browser": true,
   "esnext": true,
   "bitwise": true,
