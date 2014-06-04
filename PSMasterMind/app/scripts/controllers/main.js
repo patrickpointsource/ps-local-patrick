@@ -15,10 +15,10 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
 
     // Table Parameters for Resource Deficit tables
     var params = {
-      page: 1,            // show first page
-      count: 100,           // count per page
+      page: 1, // show first page
+      count: 100, // count per page
       sorting: {
-        startDate: 'asc'     // initial sorting
+        startDate: 'asc' // initial sorting
       }
     };
 
@@ -64,17 +64,22 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
      * Navigate to view a list of active projects.
      */
     $scope.showProjects = function (filter) {
-    	if (!filter)
-    		$state.go('projects.index');
-    	else
-    		$state.go('projects.index', {filter:filter});
+      if (!filter) {
+        $state.go('projects.index');
+      } else {
+        $state.go('projects.index', {
+          filter: filter
+        });
+      }
     };
 
     /**
      * Navigate to view a list of active projects.
      */
     $scope.showActiveProjects = function () {
-      $state.go('projects.index', {filter: 'active'});
+      $state.go('projects.index', {
+        filter: 'active'
+      });
     };
 
     /**
@@ -88,7 +93,9 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
      * Navigate to view a list of people who can be assigned to projects.
      */
     $scope.showAvailablePeople = function () {
-      $state.go('people.index', {filter: 'available'});
+      $state.go('people.index', {
+        filter: 'available'
+      });
     };
 
     /**
@@ -143,13 +150,14 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
      * /
      *
      $scope.newHoursRecord = {};
-
-     /**
+     
      * Add a new Hours Record to the server
      */
     $scope.addHours = function () {
       //Set the person context
-      $scope.newHoursRecord.person = {resource: $scope.me.about};
+      $scope.newHoursRecord.person = {
+        resource: $scope.me.about
+      };
 
       Resources.create('hours', $scope.newHoursRecord).then(function () {
         $scope.newHoursRecord = {};
@@ -160,61 +168,61 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     };
 
 
-//    /**
-//     * returns true is string ends with a give suffix
-//     */
-//    var endsWith = function (str, suffix) {
-//      return str.indexOf(suffix, str.length - suffix.length) !== -1;
-//    };
-//
-//    var parseDate = function (input) {
-//      var parts = input.split('-');
-//      // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
-//      return new Date(parts[0], parts[1] - 1, parts[2]); // Note: months are 0-based
-//    }
-//
-//
-//    /**
-//     * Returns true if active in the next month
-//     */
-//    $scope.startWithinAMonth = function (project) {
-//      var startDate = parseDate(project.startDate);
-//
-//      var today = new Date();
-//      var oneMonthFromNow = moment(today).add('months', 1);
-//
-//      var ret = startDate <= oneMonthFromNow;
-//      return ret;
-//    };
-//
-//    /**
-//     * Converts a date to a display string
-//     */
-//    $scope.dateString = function (dateIn) {
-//      var date = parseDate(dateIn);
-//      //Get todays date formatted as yyyy-MM-dd
-//      var dd = date.getDate();
-//      var mm = date.getMonth();
-//
-//      var month = $scope.getMonthName(mm);
-//      var day = dd;
-//      if (endsWith(String(dd), '1')) {
-//        day = dd + 'st';
-//      }
-//      else if (endsWith(String(dd), '2')) {
-//        day = dd + 'nd';
-//      }
-//      else if (endsWith(String(dd), '3')) {
-//        day = dd + 'rd';
-//      }
-//      else {
-//        day = dd + 'th';
-//      }
-//
-//
-//      var ret = month + ' ' + day;
-//      return ret;
-//    };
+    //    /**
+    //     * returns true is string ends with a give suffix
+    //     */
+    //    var endsWith = function (str, suffix) {
+    //      return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    //    };
+    //
+    //    var parseDate = function (input) {
+    //      var parts = input.split('-');
+    //      // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
+    //      return new Date(parts[0], parts[1] - 1, parts[2]); // Note: months are 0-based
+    //    }
+    //
+    //
+    //    /**
+    //     * Returns true if active in the next month
+    //     */
+    //    $scope.startWithinAMonth = function (project) {
+    //      var startDate = parseDate(project.startDate);
+    //
+    //      var today = new Date();
+    //      var oneMonthFromNow = moment(today).add('months', 1);
+    //
+    //      var ret = startDate <= oneMonthFromNow;
+    //      return ret;
+    //    };
+    //
+    //    /**
+    //     * Converts a date to a display string
+    //     */
+    //    $scope.dateString = function (dateIn) {
+    //      var date = parseDate(dateIn);
+    //      //Get todays date formatted as yyyy-MM-dd
+    //      var dd = date.getDate();
+    //      var mm = date.getMonth();
+    //
+    //      var month = $scope.getMonthName(mm);
+    //      var day = dd;
+    //      if (endsWith(String(dd), '1')) {
+    //        day = dd + 'st';
+    //      }
+    //      else if (endsWith(String(dd), '2')) {
+    //        day = dd + 'nd';
+    //      }
+    //      else if (endsWith(String(dd), '3')) {
+    //        day = dd + 'rd';
+    //      }
+    //      else {
+    //        day = dd + 'th';
+    //      }
+    //
+    //
+    //      var ret = month + ' ' + day;
+    //      return ret;
+    //    };
 
     /**
      * Returns the text summary per project for the my projects section of the home page
@@ -230,8 +238,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
       }
 
       var projectAssignments = project.status.assignments;
-      var totalHoursPerWeek = 0;
-      var now = moment();
+      var totalHoursPerWeek = 0, now = moment();
       for (var i = 0; i < projectAssignments.length; i++) {
         var projectAssignment = projectAssignments[i];
         var role = projectAssignment.role;
@@ -269,58 +276,5 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
       var ret = "<span class=\"text-muted\">" + roles + totalHoursPerWeek + hoursLogged + "</span>";
       return ret;
     }
-    
-    
-    // Fix for Bootstrap drop-down menu toggling
-//    var $dropdownClick = $('.dropdown');
-//    $dropdwonClick.click(function(e) {
-//      var $dropdownContainer = $('.dropdown .dropdown-menu');
-//      $dropdownContainer.click(function(e) {
-//        e.stopPropagation();
-//      });
-//    });
-    
-    //Start Masonry
-    //Initalize Masonry as late as possible
-//    var $container = $('#dashboard-widgets');
-//    $container.masonry({
-//    	itemSelector: '.item'
-//    });
-//
-//    $scope.$on('masonryGo', function(e,count){
-//    	$timeout(function(){
-//    		$container.masonry();
-//    	},100);
-//
-//    });
-//
-//    $scope.$watch('activeProjectDeficitCount', function(value) {
-//        var val = value || null;
-//        if (val)  $scope.$emit('masonryGo');
-//    });
-//
-//    $scope.$watch('projectsKickingOff', function(value) {
-//        var val = value || null;
-//        if (val)  $scope.$emit('masonryGo');
-//    });
-//
-//    //LineChart
-//    $scope.$watch('data', function(value) {
-//        var val = value || null;
-//        if (val)  $scope.$emit('masonryGo');
-//    });
-//
-//    //My Projects
-//    $scope.$watch('myProjects', function(value) {
-//        var val = value || null;
-//        if (val)  $scope.$emit('masonryGo');
-//    });
-//
-//    //Available People
-//    $scope.$watch('availablePeople', function(value) {
-//        var val = value || null;
-//        if (val)  $scope.$emit('masonryGo');
-//    });
 
-    //End Masonry
   }]);
