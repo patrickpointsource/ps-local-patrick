@@ -61,7 +61,7 @@ angular.module('Mastermind')
     /**
      * Set the profile view in edit mode
      */
-    $scope.cancel = function(){
+    /*$scope.cancel = function(){
       //If the model is dirty ask if they would like to save the changes
       if($rootScope.formDirty){
     	  
@@ -95,7 +95,7 @@ angular.module('Mastermind')
       else{
     	  $scope.close();
       }
-    };
+    };*/
     
     $scope.getExecutiveSponsor = function() {
     	if ($scope.project && $scope.project.executiveSponsor && $scope.execs && $scope.execs.members) {
@@ -180,7 +180,7 @@ angular.module('Mastermind')
     
     $scope.checkShiftDates = function(editDone) {
     	var deferred = $q.defer();
-    	
+    	$('.modalYesNo').modal('hide');
     	$scope.editDone = editDone;
     	
     		var project = $scope.project;
@@ -494,6 +494,7 @@ angular.module('Mastermind')
     	
       var savingCallback = function() {
     	  var wasCreated = $scope.projectId ? false : true;
+    	  
           // set the project creator and created time
           //TODO - Do we need this refresh why would it be out of date with the area controller?
       	
@@ -512,6 +513,10 @@ angular.module('Mastermind')
             };
 
             ProjectsService.save($scope.project).then(function (updatedProject) {
+            	$rootScope.hideModals();
+	            if($rootScope.projectEdit && $rootScope.needsTonavigateOut && !$scope.editDone) {
+	            	$rootScope.navigateOutFunc();
+	            }
             	
             	//On Create the project ID will be null.  Pull it from the about.
             	if(!$scope.projectId){
@@ -1750,8 +1755,9 @@ angular.module('Mastermind')
 	    		  if(oldStr != newStr){
 	    			  console.debug('project is now dirty');
 	    			  $rootScope.formDirty = true;
+	    			  $rootScope.projectEdit = true;
 	    			  $rootScope.dirtySaveHandler = function(){
-	    			    	return $scope.save();
+	    			    	return $scope.checkShiftDates();
 	    			   };
 	    		  }
 	    	  }

@@ -224,6 +224,7 @@
   	  	$rootScope.$on('$stateChangeStart', 
   	  		_.bind(function(event, toState, toParams, fromState, fromParams) {
   		  	if($rootScope.formDirty){
+  		  		$rootScope.needsTonavigateOut = true;
   		  		
   		  		var _this = this;
   		  		event.preventDefault();
@@ -235,10 +236,15 @@
 			  		no: 'No',
 			  		cancel: 'Cancel',
 			  		okHandler: function() {
-			  			return $rootScope.dirtySaveHandler().then(function(project) {//Unset dirty flag
-			  				$rootScope.formDirty = false;
-			  				$('.modalYesNo').modal('hide');
-				  		});
+			  			if($rootScope.projectEdit) {
+			  				return $rootScope.dirtySaveHandler();
+			  			}
+			  			else {
+			  				return $rootScope.dirtySaveHandler().then(function(project) {//Unset dirty flag
+				  				$rootScope.formDirty = false;
+				  				$('.modalYesNo').modal('hide');
+					  		});
+			  			}
   		  			},
   		  			noHandler: function() {
   		  				$rootScope.formDirty = false;
@@ -249,14 +255,27 @@
   		  			}
   		  		};
   		  		
+  		  		$rootScope.navigateOutFunc = function() { 
+					$rootScope.formDirty = false;
+					_this.state.go(toState); 
+				};
+  		  		
   		  		$('.modalYesNo').modal('show').on('hide.bs.modal', function(e) {
-  		  			if(!$rootScope.formDirty) {	  				
-  		  				_this.state.go(toState);
+  		  			if(!$rootScope.formDirty) {
+  		  				if($rootScope.projectEdit) {
+  		  					_this.state.go(toState);
+  		  				}
   		  			}
   		  		});
             }
   	  	}, {state: $state}));
-
+  	  	
+  	  	$rootScope.hideModals = function() {
+  	  		$('.modalYesNo').modal('hide');
+  	  		$("#dateShiftConfirm").modal('hide');
+  	  		$(".modal-backdrop").hide();
+  	  	}
+  	  	
         $rootScope.logout = function () {
           var accessToken = localStorage.getItem('access_token');
 
