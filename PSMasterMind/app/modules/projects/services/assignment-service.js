@@ -359,7 +359,17 @@ angular.module('Mastermind.services.projects')
       return val;
     };
 
-    this.calculateSingleRoleCoverage = function(role, assignments) {
+    this.calculateSingleRoleCoverage = function(role, assignments, includePastCoverage) {
+    	
+    	function alignDate(date) {
+    		//return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0));
+    		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+	    }
+    	
+    	var now = alignDate(new Date());
+    	var today = alignDate(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
+    	
+    	
     	var result = {
     		percentageCovered: 0,
     		percentageExtraCovered: 0
@@ -369,11 +379,11 @@ angular.module('Mastermind.services.projects')
     	
     	var ONE_DAY = 24 * 60 * 60 * 1000; 
     	// store info about role assignments on timeline
-    	var minDate = new Date(role.startDate);
-    	var maxDate = role.endDate ? new Date(role.endDate): null;
+    	var minDate = includePastCoverage ? alignDate(new Date(role.startDate)): today;
+    	var maxDate = role.endDate ? alignDate(new Date(role.endDate)): null;
     	
     	var coverageTimeline = [{
-    		date: new Date(role.startDate),
+    		date: includePastCoverage ? alignDate(new Date(role.startDate)): today,
     		entity: role,
     		type: 'start',
     		hours: 0,
@@ -382,7 +392,7 @@ angular.module('Mastermind.services.projects')
     	
     	if (role.endDate)
     		coverageTimeline.push({
-        		date: new Date(role.endDate),
+        		date: alignDate(new Date(role.endDate)),
         		entity: role,
         		type: 'end',
         		hours: 0,
@@ -390,38 +400,62 @@ angular.module('Mastermind.services.projects')
         	})
     	
         var assignmentsWithoutEndDate = [];
-    	var maxStartDate = new Date(role.startDate);
+    	var maxStartDate = alignDate(new Date(role.startDate));
+    	
+    	var alignEntityStartEndDates = function(restrictPast, entity) {
+    		
+    		var resultEntity = _.extend({}, entity);
+    		
+    		resultEntity.startDate = alignDate(new Date(entity.startDate));
+    		
+    		if (restrictPast && entity.startDate < today)
+    			resultEntity.startDate = alignDate(new Date(today));
+    		
+    		if (entity.endDate) {
+    			resultEntity.endDate = alignDate(new Date(entity.endDate));
+    			
+    			if (restrictPast && entity.endDate < today)
+    				resultEntity.endDate = alignDate(new Date(today));
+    		}
+    		
+    		return resultEntity;
+    	}
+    	
+    	var entity;
     	
     	for (var i = 0; i < assignments.length; i ++) {
+    		
+    		entity = alignEntityStartEndDates(!includePastCoverage, assignments[i]);
+    		
     		coverageTimeline.push({
-        		date: new Date(assignments[i].startDate),
-        		entity: assignments[i],
+        		date: entity.startDate,
+        		entity: entity,
         		type: 'start',
         		hours: 0
         	})
         	
-        	if (maxStartDate < new Date(assignments[i].startDate))
-        		maxStartDate = new Date(assignments[i].startDate);
+        	if (maxStartDate < entity.startDate)
+        		maxStartDate = alignDate(new Date(entity.startDate));
     		
-    		if (assignments[i].endDate && maxStartDate < new Date(assignments[i].endDate))
-        		maxStartDate = new Date(assignments[i].endDate);
+    		if (entity.endDate && maxStartDate < entity.endDate)
+        		maxStartDate = alignDate(new Date(entity.endDate));
         	
-        	// prevent from calculation errors where assignm,ents done for earlier or bigger dates than role
+        	// prevent from calculation errors where assignments done for earlier or bigger dates than role
         	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
         		coverageTimeline[coverageTimeline.length - 1].date = minDate;
     		
     		if (maxDate && coverageTimeline[coverageTimeline.length - 1].date > maxDate)
         		coverageTimeline[coverageTimeline.length - 1].date = maxDate;
     		
-    		if (assignments[i].endDate)
+    		if (entity.endDate)
 	        	coverageTimeline.push({
-	        		date: new Date(assignments[i].endDate),
-	        		entity: assignments[i],
+	        		date: alignDate(new Date(entity.endDate)),
+	        		entity: entity,
 	        		type: 'end',
 	        		hours: 0
 	        	})
         	else
-        		assignmentsWithoutEndDate.push(assignments[i])
+        		assignmentsWithoutEndDate.push(entity)
         	
         	// prevent from calculation errors where assignm,ents done for earlier or bigger dates than role
         	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
@@ -431,7 +465,9 @@ angular.module('Mastermind.services.projects')
         		coverageTimeline[coverageTimeline.length - 1].date = maxDate;
     	}
     	
-    	var defaultEndDate = new Date(maxStartDate.getTime() + ONE_DAY);
+    	maxStartDate = maxStartDate < today ? alignDate(new Date(today)): maxStartDate;
+    	
+    	var defaultEndDate = alignDate(new Date(maxStartDate.getTime() + ONE_DAY));
     	
     	if ( !role.endDate )
     		coverageTimeline.push({
@@ -449,7 +485,7 @@ angular.module('Mastermind.services.projects')
         		type: 'end',
         		hours: 0
         	})
-    	// sort timeline so that we will have all period divided into few small periods with  stable assignments covrage during this period
+    	// sort timeline so that we will have all period divided into few small periods with  stable assignments coverage during this period
     	coverageTimeline.sort(function(o1, o2) {
     		if (o1.date > o2.date)
 				return 1;
@@ -474,8 +510,6 @@ angular.module('Mastermind.services.projects')
     	
     	for (var i = 1; i < (coverageTimeline.length - 1); i ++) {
     		
-    		//if (coverageTimeline[i].type == 'end' && coverageTimeline[i].entity != coverageTimeline[i - 1].entity)
-    		//	currentHoursPerWeek += coverageTimeline[i].entity.hoursPerWeek;
     		if (coverageTimeline[i].type == 'start')
     			currentHoursPerWeek += coverageTimeline[i].entity.hoursPerWeek;
     		else if (coverageTimeline[i].type == 'end')
@@ -552,7 +586,7 @@ angular.module('Mastermind.services.projects')
     
     
     
-    this.calculateRolesCoverage = function(roles, assignments) {
+    this.calculateRolesCoverage = function(roles, assignments, analysePastCoverage) {
     	var assignmentsMap = {};
     	//var calcSingleRoleCoverage = AssignmentService.prototype.calculateSingleRoleCoverage;
     	
@@ -583,7 +617,7 @@ angular.module('Mastermind.services.projects')
     	var currentResult;
     	
     	for (var i = 0; i < roles.length; i ++) {
-    		currentResult = this.calculateSingleRoleCoverage(roles[i], assignmentsMap[ roles[i]._id ]);
+    		currentResult = this.calculateSingleRoleCoverage(roles[i], assignmentsMap[ roles[i]._id ], analysePastCoverage);
     		
     		roles[i].percentageCovered = currentResult.percentageCovered;
     		roles[i].hoursExtraCovered = currentResult.hoursExtraCovered;
