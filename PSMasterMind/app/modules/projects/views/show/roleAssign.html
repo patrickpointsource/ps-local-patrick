@@ -50,8 +50,8 @@
 		<input id="assigneeStartDate" name="assigneeStartDate"
 			class="form-control datepicker" type="text"
 			ng-model="currentAssignee.startDate"
-			data-date-start-date="{{project.startDate}}"
-			data-date-end-date="{{project.endDate}}" todayBtn="true"
+			data-date-start-date="{{role.startDate}}"
+			data-date-end-date="{{role.endDate}}" todayBtn="true"
 			data-provide="datepicker" data-date-format="yyyy-mm-dd"
 			ng-required="true"/>
 		
@@ -60,8 +60,8 @@
 	<div class="col-sm-3 col-xs-6 form-group">
 		<input id="assigneeEndDate" class="form-control datepicker" type="text"
 			ng-model="currentAssignee.endDate"
-			data-date-start-date="{{project.startDate}}"
-			data-date-end-date="{{project.endDate}}" todayBtn="true"
+			data-date-start-date="{{role.startDate}}"
+			data-date-end-date="{{role.endDate}}" todayBtn="true"
 			data-provide="datepicker" data-date-format="yyyy-mm-dd"/>
 	</div>
 	

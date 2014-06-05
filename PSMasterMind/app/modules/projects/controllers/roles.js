@@ -85,7 +85,9 @@ angular.module('Mastermind.controllers.projects')
         $('#newRoleDialog').collapse('hide');
       }
       
-      $scope.project.roles[$scope.editRoleIndex].rate = $scope.initialChangingRate;
+      if($scope.project.roles[$scope.editRoleIndex]) {
+    	  $scope.project.roles[$scope.editRoleIndex].rate = $scope.initialChangingRate;
+      }
       
       $scope.editingRole = false;
       $scope.editRoleIndex = null;

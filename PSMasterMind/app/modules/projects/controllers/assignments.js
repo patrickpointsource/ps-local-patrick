@@ -51,8 +51,8 @@ angular.module('Mastermind.controllers.projects')
 		var coverageInfo = AssignmentService.calculateSingleRoleCoverage(role, role.assignees);
 		
 		role.assignees.push(AssignmentService.create({
-          startDate:$scope.project.startDate,
-          endDate:$scope.project.endDate,
+          startDate: role.startDate,
+          endDate: role.endDate,
           //percentage: $scope.getDefaultRolePercentage(role)
           hoursPerWeek: $scope.getDefaultRoleHoursPerWeek(coverageInfo)
         }))
@@ -516,8 +516,8 @@ angular.module('Mastermind.controllers.projects')
 				role.assignees = [];
 				
 				var props = {
-		          startDate:$scope.project.startDate,
-		          endDate:$scope.project.endDate,
+		          startDate: role.startDate,
+		          endDate: role.endDate,
 		          //percentage: $scope.getDefaultRolePercentage(role),
 		          hoursPerWeek: $scope.getDefaultRoleHoursPerWeek(role)
 		        };
