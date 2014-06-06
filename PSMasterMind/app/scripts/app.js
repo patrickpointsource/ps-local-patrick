@@ -126,7 +126,7 @@
           url: '/reports',
           templateUrl: 'modules/reports/views/reports.html',
           controller: 'ReportsCtrl'
-        })
+        });
      }])
     .config(['$compileProvider',
       function( $compileProvider ) {
@@ -272,9 +272,9 @@
   	  	
   	  	$rootScope.hideModals = function() {
   	  		$('.modalYesNo').modal('hide');
-  	  		$("#dateShiftConfirm").modal('hide');
-  	  		$(".modal-backdrop").hide();
-  	  	}
+  	  		$('#dateShiftConfirm').modal('hide');
+  	  		$('.modal-backdrop').hide();
+  	  	};
   	  	
         $rootScope.logout = function () {
           var accessToken = localStorage.getItem('access_token');
