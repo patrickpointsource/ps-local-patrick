@@ -44,7 +44,7 @@
     </div>
     <div class="row people-row" ng-repeat="person in people | filter:filterPerson(filterText)">
       <a class="col-xs-3 col-sm-2 person-image" href="#{{person.resource}}">
-        <img class="people-image" ng-src="{{person.thumbnail}}" />
+        <img class="fullProfileImage" ng-src="{{person.thumbnail}}" />
       </a>
       <div class="col-xs-9 col-sm-3 person-name">
         <a href="#{{person.resource}}">{{person.familyName}}, {{person.givenName}}</a>
