@@ -57,6 +57,8 @@ public interface CONSTS {
 	public String PROP_HOURS_PER_WEEK = "hoursPerWeek";
 	public String PROP_ID = "id";
 	public String PROP_INCLUDES_PROJECT_MANAGEMENT_OVERHEAD = "includesProjectManagementOverhead";
+	public String PROP_ISACTIVE = "isActive";
+	public String PROP_LAST_SYNCHRONIZED = "lastSynchronized";
 	public String PROP_MBOX = "mBox";
 	public String PROP_MEMBERS = "members";
 	public String PROP_MESSAGE = "message";

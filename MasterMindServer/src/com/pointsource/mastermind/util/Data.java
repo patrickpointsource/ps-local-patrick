@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -3533,6 +3534,10 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 
 		URI base = context.getBaseURI();
 		URI genericImage = base.resolve("images/generic.png");
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		Date syncDate = Calendar.getInstance().getTime();
+		String timeStamp = dateFormat.format(syncDate);
 
 		for (Iterator<JSONObject> iterator = users.iterator(); iterator
 				.hasNext();) {
@@ -3568,6 +3573,9 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 				person.put(PROP_THUMBNAIL, genericImage);
 			}
 
+			// setting the last synchronized date
+			person.put(PROP_LAST_SYNCHRONIZED, timeStamp);
+			
 			//initPrimaryRole(person, googleUserDef.getString(PROP_ID));
 
 			/**
@@ -3610,6 +3618,37 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 
 				updatePerson(context, person);
 			}
+		}
+		
+		// Iterate by mongo users to find ex-employees (presented in mongo, but not updated from Google)
+		try {
+			JSONArray people = Data.getPeople(context, "{}", "{}", "{}");
+			
+			for (int i = 0; i < people.length(); i++) {
+				JSONObject userDef = people.getJSONObject(i);
+				
+				if(userDef.has(PROP_LAST_SYNCHRONIZED)) {
+					Date syncDateFormatted = dateFormat.parse(timeStamp);
+					String lastSyncString = userDef.getString(PROP_LAST_SYNCHRONIZED);
+					Date lastSyncDate = dateFormat.parse(lastSyncString);
+					
+					if(syncDateFormatted.after(lastSyncDate)) {
+						userDef.put(PROP_ISACTIVE, "false");
+					} else {
+						userDef.put(PROP_ISACTIVE, "true");
+					}
+				} else {
+					userDef.put(PROP_ISACTIVE, "false");
+					userDef.put(PROP_LAST_SYNCHRONIZED, timeStamp);
+				}
+				
+				updatePerson(context, userDef);
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			
 		}
 	}
 	
