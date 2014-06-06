@@ -35,9 +35,9 @@
 }
 @media (max-width: 780px) {
   #navbar1 .user-info-container.open {
-      box-shadow: none;
-    }
-  }
+     box-shadow: none;
+   }
+  
 }
 @media (min-width: 320px) and (max-width: 480px) {
   #navbar1 .user-info-container {
@@ -865,6 +865,52 @@ header .navbar .navbar-breadcrumb {
   color: @gray-search;
 }
 .dashboard-widget.hours {
+	.panel-body {
+		padding-top:0px; 
+		padding-bottom: 0px;
+		
+		.hours-container {
+			height: 140px; 
+			margin-bottom: 0px;
+			
+			
+			.back-week, .back-day, .next-week, .next-day {
+				float: left;
+				height: 100%; 
+				width: 6%; 
+				border-bottom: 1px solid #dbdbdb; 
+				text-align: center;
+				border-right: 1px solid #efefef;
+				
+				div {
+					width: 100%; 
+					top: 40%; 
+					position:relative;
+				}
+			}
+			
+			.next-week, .next-day {
+				border-left: 1px solid #efefef;
+				border-right-width: 0px;
+			}
+		}
+	}
+	
+	.panel-heading {
+		.inner-heading {
+			width:100%; 
+			position:relative;
+			
+			.start-end {
+				display: inline-block; 
+				position:absolute; 
+				left:0px; 
+				right:0px; 
+				text-align:center
+			}
+		}
+	}
+	
   .dropdown-menu.ddProjectsTasksMenu {
     left: 6%;
     width: 24%;
@@ -884,6 +930,35 @@ header .navbar .navbar-breadcrumb {
 .hours-day {
   float: left;
   height: 100%;
+  
+  .hours-day-header{
+  	font-size: 25px; 
+  	color: #a8a8a8; 
+  	font-weight: normal;
+  }
+  
+  .hours-day-content {
+  	font-size: 60px;
+  	line-height:60px;
+  	position:relative;
+  	
+  	.hours-day-check {
+  		position:absolute;
+  		color: #1bc156; 
+  		margin-left: -16px; 
+  		font-size: 14px;
+  		margin-top: 16px;
+  		-webkit-text-stroke-width: 3px;
+   		-webkit-text-stroke-color: #fff;
+  	}
+  }
+  
+  .hours-day-footer {
+  	font-size: 18px; 
+  	color: #a8a8a8; 
+  	font-weight: normal;
+  }
+  
   @media (min-width: @screen-sm) {
     width: 12.5%;
   }
@@ -973,6 +1048,13 @@ header .navbar .navbar-breadcrumb {
       width: 100%;
     }
   }
+  
+  .search-icon {
+  	position:absolute; 
+  	margin-left:-30px; 
+  	top: 15px;
+  }
+  
   .hours-logged-project.selected-item {
     background-color: #999999;
     color: #fff;
