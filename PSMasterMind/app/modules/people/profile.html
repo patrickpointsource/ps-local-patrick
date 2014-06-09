@@ -1,51 +1,81 @@
 <div>
   <div class="row top-row">
-    
+    <div class="profile-actions pageActions" style="margin-top:0;">
+      <button ng-hide="editMode" class="btn btn-default" ng-click="edit()">
+        <span class="hidden-xs"><i class="fa fa-pencil-square-o"></i> Edit</span>
+        <span class="visible-xs"><i class="fa fa-pencil-square-o"></i></span>
+      </button>
+      <button ng-show="editMode" class="btn btn-default" ng-click="cancel()">
+        <span class="hidden-xs"><i class="fa fa-chevron-left"></i> Cancel</span>
+        <span class="visible-xs"><i class="fa fa-chevron-left"></i></span>
+      </button>
+      <button ng-show="editMode" class="btn btn-default" ng-click="save()">
+        <span class="hidden-xs"><i class="fa fa-floppy-o"></i> Save</span>
+        <span class="visible-xs"><i class="fa fa-floppy-o"></i></span>
+      </button>
+    </div>
+
     <div class="col-xs-12">
       <div class="row padded-row">
-        <div class="col-xs-3">
-          <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}" />
-        </div>
-        <div class="well col-xs-9">
-          <div class="row">
-            <div class="col-xs-5">
-              <label class="personDetailLabel">{{profile.name}}</label>
-              <br/>
-              <span><a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a><br /></span>
-              <div ng-show="editMode" style="margin-top: 7%;">
-                <br/>
-                <label class="personDetailLabel" style="width:100%">Primary Role:</label>
-                <select class="form-control" ng-model="profile.primaryRole.resource" ng-options="m.resource as m.title for m in allRoles">
-                </select>
+        <div class="well">
+          <div class="row person-detail">
+            <div class="col-xs-9">
+              <div class="personPicColumn">
+                <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}" />
+                <div class="verticalGreyLine" ng-show="gplusProfile.url"></div>
+                <a ng-show="gplusProfile.url" class="googlePlusIcon" ng-href="{{gplusProfile.url}}"><span class="fa fa-google-plus"></span></a>
               </div>
-              <div ng-hide="editMode">
-                <label class="personDetailLabel">Primary Role:</label> <span>{{getRoleName(profile.primaryRole.resource)}}</span>
-              </div>
-              <div ng-show="editMode">
-                <label for="profilePhone" class="personDetailLabel">Phone:</label>
-                <input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone" />
-              </div>
-              <div ng-hide="editMode">
-                <label class="personDetailLabel">Phone:</label>
-                <a ng-if="profile.phone" ng-href="tel:{{profile.phone | tel}}">{{profile.phone | tel}}</a>
-              </div>
-              <div ng-show="editMode">
-                <label for="profileSkype" class="personDetailLabel">Skype:</label>
-                <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="text" />
-              </div>
-              <div ng-hide="editMode">
-                <label class="personDetailLabel">Skype Id:</label>
-                <a ng-if="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
-              </div>
-              <div ng-show="editMode">
-                <label for="profileJazzHub" class="personDetailLabel">Jazz Hub Id:</label>
-                <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text" />
-              </div>
-              <div ng-hide="editMode">
-                <label class="personDetailLabel">Jazz Hub Id:</label>
-                <span>{{profile.jazzHubId}}</span>
+            
+              <div class="person-contact-info">
+                <div class="personDetailName">{{profile.name}}</div>
+                <div ng-show="editMode">
+                  <br/>
+                  <label>Primary Role:</label>
+                  <select class="form-control" ng-model="profile.primaryRole.resource" ng-options="m.resource as m.title for m in allRoles">
+                  </select>
+                </div>
+                <div ng-hide="editMode">
+                  <div class="sub-heading">{{getRoleName(profile.primaryRole.resource)}}</div>
+                </div>
+
+                <div class="col-lg-12 contact-fields">
+                  <div class="row">
+                    <div ng-hide="editMode" class="col-md-4">
+                      <label>Email</label>
+                      <a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a>
+                    </div>
+
+                    <div ng-show="editMode" class="col-md-6">
+                      <label for="profilePhone" class="personDetailLabel">Phone</label>
+                      <input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone" />
+                    </div>
+                    <div ng-hide="editMode" class="col-md-3">
+                      <label class="personDetailLabel">Phone</label>
+                      <a ng-if="profile.phone" ng-href="tel:{{profile.phone | tel}}">{{profile.phone | tel}}</a>
+                    </div>
+                    
+                    <div ng-show="editMode" class="col-md-6">
+                      <label for="profileSkype" class="personDetailLabel">Skype</label>
+                      <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="text" />
+                    </div>
+                    <div ng-hide="editMode" class="col-md-2">
+                      <label class="personDetailLabel">Skype Id</label>
+                      <a ng-if="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
+                    </div>
+
+                    <div ng-show="editMode" class="col-md-6">
+                      <label for="profileJazzHub" class="personDetailLabel">JazzHub Id</label>
+                      <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text" />
+                    </div>
+                    <div ng-hide="editMode" class="col-md-3">
+                      <label class="personDetailLabel">JazzHub</label>
+                      <span>{{profile.jazzHubId}}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+
             <div class="col-xs-3">
               <div ng-hide="editMode">
                 <label class="personDetailLabel">Groups:</label> <span ng-show="!profile.groups" ">None</span>
@@ -76,20 +106,6 @@
                 <li ng-show="gplusProfile.url"><a ng-href="{{gplusProfile.url}}">Google+</a>
                 </li>
               </ul>
-            </div>
-            <div class="actions col-xs-4 pageActions" style="margin-top:0;">
-              <button ng-hide="editMode" class="btn btn-default" ng-click="edit()">
-                <span class="hidden-xs"><i class="fa fa-pencil-square-o"></i> Edit</span>
-                <span class="visible-xs"><i class="fa fa-pencil-square-o"></i></span>
-              </button>
-              <button ng-show="editMode" class="btn btn-default" ng-click="cancel()">
-                <span class="hidden-xs"><i class="fa fa-chevron-left"></i> Cancel</span>
-                <span class="visible-xs"><i class="fa fa-chevron-left"></i></span>
-              </button>
-              <button ng-show="editMode" class="btn btn-default" ng-click="save()">
-                <span class="hidden-xs"><i class="fa fa-floppy-o"></i> Save</span>
-                <span class="visible-xs"><i class="fa fa-floppy-o"></i></span>
-              </button>
             </div>
           </div>
         </div>

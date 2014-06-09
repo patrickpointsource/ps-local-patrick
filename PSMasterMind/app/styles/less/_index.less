@@ -1,7 +1,7 @@
 // out: ../main.css
 @import '_base';
- #appContent {
-  @media (min-width: @screen-md-min) {
+#appContent {
+  @media (min-width:@screen-md-min) {
     margin-left: 280px;
   }
 }
@@ -16,11 +16,10 @@
   -webkit-box-shadow: 0 2px 2px -2px @gray-outline;
   box-shadow: 0 2px 2px -2px @gray-outline;
 }
-@media (max-width: 991px) {
+@media (max-width:991px) {
   #navbar1 {
     left: 0px;
     background-color: @charcoleRegular;
-
   }
   #navbar1 .user-info-container {
     background-color: @charcoleRegular;
@@ -33,33 +32,29 @@
     bottom: -8px !important;
   }
 }
-@media (max-width: 780px) {
+@media (max-width:780px) {
   #navbar1 .user-info-container.open {
-     box-shadow: none;
-   }
-} 
-
-@media (min-width: 320px) and (max-width: 480px) {
+    box-shadow: none;
+  }
+}
+@media (min-width:320px) and (max-width:480px) {
   #navbar1 .user-info-container {
     &.open #profile-photo {
       box-shadow: none;
     }
   }
 }
-
-#navbar2,
-.collapse.width.in {
+#navbar2, .collapse.width.in {
   top: 78px;
   bottom: 0px;
   position: fixed;
   width: 280px !important;
   border-top: 2px solid @turquoiseRegular;
-
-//padding-top: 12px;
-  @media (max-width: @screen-sm-max) {
+  //padding-top: 12px;
+  @media (max-width:@screen-sm-max) {
     background-color: @gray-dark;
   }
-  max-height:none;
+  max-height: none;
   li {
     width: 100%;
     height: 50px;
@@ -68,7 +63,6 @@
 }
 .navbar-inverse {
   background-color: @gray-dark;
-
   li a:hover, li.active a, li.active a:hover {
     color: @navbar-default-link-active-color !important;
     background-color: @charcoleMedium !important;
@@ -93,14 +87,12 @@
   height: 75px;
   border-bottom: 1px solid @gray-header-underline;
 }
-
 //bootstrap override for line-height of navbar-brand
 .navbar-brand.appTitle {
   line-height: 75px;
   padding: 0;
   height: 75px;
 }
-
 .hidden-sm .navbar-header .appTitle {
   color: white;
   font-size: 28px;
@@ -175,13 +167,11 @@ header {
         background-color: white;
       }
     }
-    .navbar-toggle:hover,
-    .navbar-toggle:focus {
+    .navbar-toggle:hover, .navbar-toggle:focus {
       background-color: transparent;
       .icon-bar {
         width: 15px;
         background-color: @gray-light;
-
       }
     }
     .navbar-inner {
@@ -320,7 +310,6 @@ header {
       li.active-subitem {
         color: white;
         background-color: @navbar-subnavbar-active-bg;
-
         a {
           color: @turquoiseRegular !important;
           i.fa-check {
@@ -332,16 +321,13 @@ header {
           }
           i.fa-circle-thin {
             color: @gray-nav-circle-active;
-
           }
         }
       }
-      li:hover,
-      li a:hover {
+      li:hover, li a:hover {
         background-color: @navbar-subnavbar-active-bg !important;
         i.fa-circle-thin {
           color: @gray-nav-circle-active;
-
         }
       }
       li a {
@@ -423,7 +409,6 @@ header {
       box-shadow: 0 3px 7px 0 @gray-outline;
       -moz-box-shadow: 0 3px 7px 0 @gray-outline;
       -webkit-box-shadow: 0 3px 7px 0 @gray-outline;
-
       .drop-cover {
         margin-left: -21px;
         background-color: @gray-lighter;
@@ -468,7 +453,6 @@ header {
       font-size: 15px;
       font-weight: bold;
       color: @gray-dark;
-
     }
     a {
       font-size: 13px;
@@ -530,9 +514,10 @@ header {
     margin-bottom: 4px;
     font-size: 1.1em;
   }
-  @prog-color1: rgba(75,170,48,.30);
-  /*@prog-color2: @brand-success;*/
-  @prog-color2: rgba(75,170,48,.15);
+  @prog-color1:rgba(75, 170, 48, .30);
+  /* @prog-color2:@brand-success;
+  */
+  @prog-color2:rgba(75, 170, 48, .15);
   .progress {
     font-size: .8em;
     min-width: 260px;
@@ -541,28 +526,21 @@ header {
     margin-bottom: 20px;
     background-size: 40px 40px;
     background-color: @gray-light;
-
     div {
       padding-left: 10px;
       padding-top: 4px;
       text-align: center;
     }
   }
-  
   div.active {
     height: 20px;
-    background-image: linear-gradient(135deg, @prog-color1 15%, @prog-color2 15%, @prog-color2 30%, 
-      @prog-color1 30%, @prog-color1 60%, @prog-color2 60%,@prog-color2 75%, @prog-color1 75%, @prog-color1 90%);
+    background-image: linear-gradient(135deg, @prog-color1 15%, @prog-color2 15%, @prog-color2 30%, @prog-color1 30%, @prog-color1 60%, @prog-color2 60%, @prog-color2 75%, @prog-color1 75%, @prog-color1 90%);
   }
 }
-
-#projectsWidget,
-#staffingDeficitWidget {
-  a {
-    color: @gray;
+#projectsWidget, #staffingDeficitWidget {
+  a{color: @gray;
   }
 }
-
 main {
   overflow: hidden;
   nav#nav-drawer {
@@ -588,7 +566,6 @@ main {
         &.active {
           margin-right: -12px;
           background-color: @gray-light;
-
         }
         &:hover {
           background-color: @gray-light;
@@ -733,7 +710,7 @@ main {
 .equal {
   overflow: hidden;
 }
-@media (min-width: 1200px) {
+@media (min-width:1200px) {
   .equal .panel {
     padding-bottom: 9000px;
     margin-bottom: -9000px;
@@ -757,8 +734,7 @@ main {
 }
 .nav {
   li {
-    a {
-      padding: 5px 10px;
+    a{padding: 5px 10px;
     }
   }
 }
@@ -771,8 +747,7 @@ header .navbar .navbar-search {
 }
 .navbar-search .navbar-form {
   background-color: @gray-search;
-
-margin: 0;
+  margin: 0;
   padding: 10px;
   .input-group-addon {
     padding: 6px 4px;
@@ -787,8 +762,9 @@ margin: 0;
     box-shadow: none;
   }
   // input[placeholder] {
-  // 	color: @gray-lighter-search;
-  // }
+    //  color: @gray-lighter-search;
+    //
+  //}
   input:-moz-placeholder {
     color: @gray-lighter-search;
   }
@@ -823,16 +799,13 @@ header .navbar .navbar-breadcrumb {
     }
     > .active {
       color: @gray-less;
-
     }
   }
 }
-
 .nav-bar-container .navbar-collapse {
   overflow: hidden;
   left: 0px;
 }
-
 .popover.bottom {
   color: @text-color;
   z-index: 2000;
@@ -866,52 +839,44 @@ header .navbar .navbar-breadcrumb {
   color: @gray-search;
 }
 .dashboard-widget.hours {
-	.panel-body {
-		padding-top:0px; 
-		padding-bottom: 0px;
-		
-		.hours-container {
-			height: 140px; 
-			margin-bottom: 0px;
-			
-			
-			.back-week, .back-day, .next-week, .next-day {
-				float: left;
-				height: 100%; 
-				width: 6%; 
-				border-bottom: 1px solid #dbdbdb; 
-				text-align: center;
-				border-right: 1px solid #efefef;
-				
-				div {
-					width: 100%; 
-					top: 40%; 
-					position:relative;
-				}
-			}
-			
-			.next-week, .next-day {
-				border-left: 1px solid #efefef;
-				border-right-width: 0px;
-			}
-		}
-	}
-	
-	.panel-heading {
-		.inner-heading {
-			width:100%; 
-			position:relative;
-			
-			.start-end {
-				display: inline-block; 
-				position:absolute; 
-				left:0px; 
-				right:0px; 
-				text-align:center
-			}
-		}
-	}
-	
+  .panel-body {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    .hours-container {
+      height: 140px;
+      margin-bottom: 0px;
+      .back-week, .back-day, .next-week, .next-day {
+        float: left;
+        height: 100%;
+        width: 6%;
+        border-bottom: 1px solid #dbdbdb;
+        text-align: center;
+        border-right: 1px solid #efefef;
+        div {
+          width: 100%;
+          top: 40%;
+          position: relative;
+        }
+      }
+      .next-week, .next-day {
+        border-left: 1px solid #efefef;
+        border-right-width: 0px;
+      }
+    }
+  }
+  .panel-heading {
+    .inner-heading {
+      width: 100%;
+      position: relative;
+      .start-end {
+        display: inline-block;
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        text-align: center
+      }
+    }
+  }
   .dropdown-menu.ddProjectsTasksMenu {
     left: 6%;
     width: 24%;
@@ -920,7 +885,7 @@ header .navbar .navbar-breadcrumb {
     li {
       overflow: hidden;
     }
-    @media (max-width: @screen-xs) {
+    @media (max-width:@screen-xs) {
       left: auto;
       top: 80px;
       width: 100%;
@@ -931,45 +896,40 @@ header .navbar .navbar-breadcrumb {
 .hours-day {
   float: left;
   height: 100%;
-  
-  .hours-day-header{
-  	font-size: 25px; 
-  	color: #a8a8a8; 
-  	font-weight: normal;
+  .hours-day-header {
+    font-size: 25px;
+    color: #a8a8a8;
+    font-weight: normal;
   }
-  
   .hours-day-content {
-  	font-size: 60px;
-  	line-height:60px;
-  	position:relative;
-  	
-  	.hours-day-check {
-  		position:absolute;
-  		color: #1bc156; 
-  		margin-left: -16px; 
-  		font-size: 14px;
-  		margin-top: 16px;
-  		-webkit-text-stroke-width: 3px;
-   		-webkit-text-stroke-color: #fff;
-  	}
+    font-size: 60px;
+    line-height: 60px;
+    position: relative;
+    .hours-day-check {
+      position: absolute;
+      color: #1bc156;
+      margin-left: -16px;
+      font-size: 14px;
+      margin-top: 16px;
+      -webkit-text-stroke-width: 3px;
+      -webkit-text-stroke-color: #fff;
+    }
   }
-  
   .hours-day-footer {
-  	font-size: 18px; 
-  	color: #a8a8a8; 
-  	font-weight: normal;
+    font-size: 18px;
+    color: #a8a8a8;
+    font-weight: normal;
   }
-  
-  @media (min-width: @screen-sm) {
+  @media (min-width:@screen-sm) {
     width: 12.5%;
   }
-  @media (max-width: @screen-sm) {
+  @media (max-width:@screen-sm) {
     width: 88%;
     display: none;
   }
 }
 .hours-day.active {
-  @media (max-width: @screen-sm) {
+  @media (max-width:@screen-sm) {
     display: block;
   }
 }
@@ -1002,15 +962,14 @@ header .navbar .navbar-breadcrumb {
   position: relative;
   border-bottom: 1px solid #fff;
   border-left: 1px solid #fff;
-  border-right: 1px solid #fff;
-  /*use those styles to verticaly align row content*/
+  border-right: 1px solid #fff; /* use those styles to verticaly align row content */
   display: flex;
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex;
   align-items: center;
-  @media (max-width: @screen-xs) {
+  @media (max-width:@screen-xs) {
     display: block;
     text-align: center;
   }
@@ -1020,7 +979,7 @@ header .navbar .navbar-breadcrumb {
     width: 6%;
     text-align: center;
     white-space: nowrap;
-    @media (max-width: @screen-xs) {
+    @media (max-width:@screen-xs) {
       display: block;
       text-align: center;
       width: 100%;
@@ -1032,7 +991,8 @@ header .navbar .navbar-breadcrumb {
     color: #999999 !important;
     font-weight: normal !important;
     height: 36px;
-    /*top: 8px !important;*/
+    /* top: 8px !important;
+    */
     margin-left: 3px;
     margin-right: 3px;
     padding-left: 5px;
@@ -1043,19 +1003,17 @@ header .navbar .navbar-breadcrumb {
     font-weight: bold;
     font-size: 15px;
     color: #999999;
-    @media (max-width: @screen-xs) {
+    @media (max-width:@screen-xs) {
       display: block;
       text-align: center;
       width: 100%;
     }
   }
-  
   .search-icon {
-  	position:absolute; 
-  	margin-left:-30px; 
-  	top: 15px;
+    position: absolute;
+    margin-left: -30px;
+    top: 15px;
   }
-  
   .hours-logged-project.selected-item {
     background-color: #999999;
     color: #fff;
@@ -1075,9 +1033,8 @@ header .navbar .navbar-breadcrumb {
   }
   .hours-logged-desc {
     color: #999999;
-    font-size: 14px;
-    /*set width inline*/
-    @media (max-width: @screen-xs) {
+    font-size: 14px; /* set width inline */
+    @media (max-width:@screen-xs) {
       display: block;
       text-align: center;
       width: 100% !important;
@@ -1090,7 +1047,7 @@ header .navbar .navbar-breadcrumb {
     color: #d1d1d1;
     padding: 8px;
     margin-top: -4px;
-    @media (max-width: @screen-xs) {
+    @media (max-width:@screen-xs) {
       float: none;
     }
   }
@@ -1111,10 +1068,10 @@ header .navbar .navbar-breadcrumb {
     top: 8px;
   }
 }
-.hours-logged-entry > span,
-.hours-logged-entry > .edit-input {
-  /*top: 15px;
-	position: relative;*/
+.hours-logged-entry > span, .hours-logged-entry > .edit-input {
+  /* top: 15px;
+  position: relative;
+  */
   display: inline-block;
 }
 .dropdown-menu.ddProjectsTasksMenu > li > a {
@@ -1168,14 +1125,11 @@ header .navbar .navbar-breadcrumb {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.dropdown-menu.ddProjectsTasksMenu > li > a:hover,
-.dropdown-menu.ddProjectsTasksMenu > li > a:focus {
-  /*background-color: #999999;*/
+.dropdown-menu.ddProjectsTasksMenu > li > a:hover, .dropdown-menu.ddProjectsTasksMenu > li > a:focus {
+  /* background-color: #999999;
+  */
 }
-.dropdown-menu.ddProjectsTasksMenu > li > a:hover > span.task-icon,
-.dropdown-menu.ddProjectsTasksMenu > li > a:focus > span.task-icon,
-.dropdown-menu.ddProjectsTasksMenu > li > a:hover > span.project-icon,
-.dropdown-menu.ddProjectsTasksMenu > li > a:focus > span.project-icon {
+.dropdown-menu.ddProjectsTasksMenu > li > a:hover > span.task-icon, .dropdown-menu.ddProjectsTasksMenu > li > a:focus > span.task-icon, .dropdown-menu.ddProjectsTasksMenu > li > a:hover > span.project-icon, .dropdown-menu.ddProjectsTasksMenu > li > a:focus > span.project-icon {
   background-color: #1bc1ac !important;
 }
 .hours-modal {
