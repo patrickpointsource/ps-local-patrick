@@ -1,25 +1,29 @@
 <div ng-controller="HoursCtrl">
 	<div class="panel panel-default dashboard-widget hours" >
 	    <div class="panel-heading">
-	    	
-		    	<div style="width:100%; position:relative;">
-		    		<span> <!-- <i class="fa fa-calendar-o"></i> --> Hours </span>
-			    	
-			        <div style="display: inline-block; position:absolute; left:0px; right:0px; text-align:center"> 
-			        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
-			        </div>
-			        
-			        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
-			        	<a ng-click="addHoursEntry()"><i class="fa fa-plus"></i> <span class="hidden-xs hidden-sm">Add Hours</span></a> 
-			        </div>
-			        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
-			        	<a ng-click="copyHoursEntry()"><i class="fa fa-copy"></i> <span class="hidden-xs hidden-sm">Copy Hours</span></a> 
-			        </div>
-		       </div>
-	       
-	        
+	    	<div class="inner-heading">
+	    		<span> <!-- <i class="fa fa-calendar-o"></i> --> Hours </span>
+		    	
+		        <div ng-show="mode=='week'" class="start-end" > 
+		        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
+		        </div>
+		        <div ng-show="mode=='month'" class="week-month-radio">
+		          <div class="btn-group" data-toggle="buttons">
+		            <label class="btn btn-default active" ng-click="setSubmode('monthly')">
+		              <input type="radio" name="options">Month
+		            </label>
+		            <label class="btn btn-default" ng-click="setSubmode('weekly')">
+		              <input type="radio" name="options">Week
+		            </label>
+		          </div>
+		        </div>
+        
+		        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
+		        	<a ng-click="copyHoursEntry()"><i class="fa fa-copy"></i> <span class="hidden-xs hidden-sm">Copy yesterday</span></a> 
+		        </div>
+	       </div>
 	    </div>
-	    <div class="panel-body" style="padding-top:0px; padding-bottom: 0px;">
+	    <div class="panel-body" >
 	    	<div class="row" ng-show="hoursValidation.length > 0">
 		      <div id="hoursValidationDiv" class="alert alert-danger">
                 <a class="close" ng-click="hideMessages()">&times;</a>
@@ -29,50 +33,106 @@
                 </div>
 		    </div>
 			
-	        <div class="row" style="height: 140px; margin-bottom: 0px;">
-	        	<div ng-click="backInTime()" class="hidden-xs hidden-sm" style="float: left;height: 100%; width: 6%; border-bottom: 1px solid #dbdbdb; text-align: center;border-right: 1px solid #efefef;">
-	        		<div style="width: 100%; top: 40%; position:relative;">
+	        <div class="row hours-week-container" ng-class="{'week-visible': mode=='month' && subMode=='weekly' || mode=='week'}">
+	        	<div ng-click="backInTime()" class="hidden-xs hidden-sm back-week">
+	        		<div >
 	                    <i class="fa fa-caret-left fa-2x"></i>
 	                </div>
 	        	</div>
-	        	<div ng-click="backDay()" class="visible-xs visible-sm" style="float: left;height: 100%; width: 6%; border-bottom: 1px solid #dbdbdb; text-align: center;border-right: 1px solid #efefef;">
-	        		<div style="width: 100%; top: 40%; position:relative;">
+	        	<div ng-click="backDay()" class="visible-xs visible-sm back-day">
+	        		<div >
 	                    <i class="fa fa-caret-left fa-2x"></i>
 	                </div>
 	        	</div>
 	        	<div ng-repeat="day in displayedHours" class="text-center hours-day" ng-class="{'active': selected.date === day.date}">
                 	<div class="hours-day-entry"  
-	                	ng-class="{'hours-danger':day.totalHours===0 && $index > 0 && $index<6 && !day.futureness ,
-	                				'hours-warning': day.totalHours < 8 && $index > 0 && $index<6 && !day.futureness, 
-	                				'hours-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness, 
+	                	ng-class="{'hours-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness, 
 	                				'hours-day-today' : day.date === todaysDate, 
 	                				'futureDay': day.futureness, 
-	                				'hours-day-active': selected.date === day.date}"  ng-click="setSelected(day)">
-	                	<div style="font-size: 25px; color: #a8a8a8; font-weight: normal;">{{thisWeekDayLables[$index] | uppercase}}</div>
-	                	<div style="font-size: 60px;line-height:60px;position:relative;">
+	                				'hours-day-active': selected.date === day.date}"  ng-click="setSelected(day, $index)">
+	                	<div class="hours-day-header" >{{thisWeekDayLables[$index] | uppercase}}</div>
+	                	<div class="hours-day-content">
 	                		<span>{{day.totalHours}}</span>
-	                		<span ng-if="day.totalHours >= 8" 
-	                			style="position:absolute;color: #1bc156; margin-left: -16px; font-size: 14px;margin-top: 16px;-webkit-text-stroke-width: 3px;
-   -webkit-text-stroke-color: #fff;">
+	                		<span class="hours-day-check" ng-if="day.totalHours >= 8" >
 		                		<i class="fa fa-check fa-2x"></i>
 		                	</span>
 	                	</div>
 	                	
-	                	<div style="font-size: 18px; color: #a8a8a8; font-weight: normal;">HOURS</div>
+	                	<div class="hours-day-footer">HOURS</div>
 	                </div>
                 </div>
-	        	<div ng-click="forwardInTime()"  class="hidden-xs hidden-sm" style="float: left;height: 100%; width: 6%; text-align: center;border-bottom: 1px solid #dbdbdb;border-left: 1px solid #efefef;">
-	        		<div style="width: 100%; top: 40%; position:relative;">
+	        	<div ng-click="forwardInTime()"  class="hidden-xs hidden-sm next-week" >
+	        		<div >
 	                    <i class="fa fa-caret-right fa-2x"></i>
 	                </div>
 	        	</div>
-	        	<div ng-click="nextDay()"  class="visible-xs visible-sm" style="float: left;height: 100%; width: 6%; text-align: center;border-bottom: 1px solid #dbdbdb;border-left: 1px solid #efefef;">
-	        		<div style="width: 100%; top: 40%; position:relative;">
+	        	<div ng-click="nextDay()"  class="visible-xs visible-sm next-day" >
+	        		<div>
 	                    <i class="fa fa-caret-right fa-2x"></i>
 	                </div>
 	        	</div>
 	        </div>
-	        <div class="row hours-logged">
+	        
+	        <div class="row hours-month-container hidden-xs hidden-sm" ng-class="{'month-visible': mode=='month' && subMode != 'weekly' }">
+	        	<div ng-click="backMonth()" class="back-month">
+	        		<div >
+	                    <i class="fa fa-caret-left fa-2x"></i>
+	                </div>
+	        	</div>
+	        	<div class="current-month" style="width:-webkit-calc(100% - 170px);">
+	        		<span>{{months[currentMonth.month()]}}</span> {{currentMonth.year()}}
+	        	</div>
+	        	
+	        	 <div ng-click="nextMonth()"  class="next-month" style="float:right">
+	        		<div>
+	                    <i class="fa fa-caret-right fa-2x"></i>
+	                </div>
+	        	</div>
+	        	<div class="day-labels">
+	        		<div class="hours-day-caption empty">
+		        		<div class="hours-day-header" >&nbsp;</div>
+		        	</div>
+		        	<div ng-repeat="lbl in thisWeekDayLables" class="hours-day-caption">
+		        		<div class="hours-day-header" >{{thisWeekDayLables[$index] | uppercase}}</div>
+		        	</div>
+		        	<div class="hours-day-caption empty">
+		        		<div class="hours-day-header" >&nbsp;</div>
+		        	</div>
+		        	
+	        	</div>
+	        	<div ng-repeat-start="day in displayedMonthDays" ng-show="{{$index % 7 == 0}}" class="text-center hours-day-empty">
+                	<div class="hours-day-entry"></div>
+                </div>
+  
+                <div class="text-center hours-day" ng-class="{'active': selected.date === day.date}">
+                	<div class="hours-day-entry"  
+	                	ng-class="{'hours-day-active': selected.date === day.date, 'hours-day-first-in-week': $index % 7 == 0 && $index > 0}"  ng-click="setSelected(day, $index)">
+	                	
+	                	<div class="hours-day-content">
+	                		<span class="month-day">{{day.dayOfMonth}}</span>
+	                	</div>
+	                	<div class="active-circle">
+	                		<div class="inner-circle"></div>
+	                	</div>
+	                	<div class="hours-day-footer">
+	                		<span class="hours">{{day.totalHours}}</span>
+	                		
+	                		hours
+	                		<span class="hours-day-check" ng-if="day.totalHours >= 8" >
+		                		<i class="fa fa-check"></i>
+		                	</span>
+	                	</div>
+	                </div>
+                </div>
+                 
+                 
+                 <div ng-repeat-end ng-show="{{$index % 7 == 6 }}" class="text-center hours-day-empty last">
+                	<div class="hours-day-entry">
+	                	
+	                </div>
+                </div>
+	        </div>
+	        <div class="row hours-logged" ng-class="{'month-visible': mode=='month' && subMode != 'weekly' }" ng-hide="mode=='month' && subMode != 'weekly' && currentMonth.month() != moment(selected.date).month()">
 	        	<div class="hours-empty" ng-show="selected.totalHours == 0 && !anyAdded()">No hours logged</div>
 	        	
 	        	<div ng-show="selected.totalHours > 0 || anyAdded()" ng-repeat="hourEntry in selected.hoursEntries" >
@@ -86,14 +146,16 @@
 	        			<span class="hours-logged-project" ng-hide="hourEntry.hoursRecord.editMode" ng-if="hourEntry.project && hourEntry.project.name">{{hourEntry.project.name}}</span>
 	        			<span class="hours-logged-project" ng-hide="hourEntry.hoursRecord.editMode" ng-if="hourEntry.task && hourEntry.task.name">{{hourEntry.task.name}}</span>
 					       
-					    <span class="hours-logged-project selected-item" ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem != undefined" 
-					    	><span style="width: -webkit-calc(100% - 20px)">{{hourEntry.selectedItem.name}}</span><i ng-click="clearSelectedItem(e, hourEntry)" class="fa fa-times"></i>
+					    <span class="hours-logged-project selected-item" 
+					    	ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem != undefined" >
+					    		<span style="width: -webkit-calc(100% - 20px)">{{hourEntry.selectedItem.name}}</span>
+					    		<i ng-click="clearSelectedItem(e, hourEntry)" class="fa fa-times"></i>
 					    </span>
 					       
 	        			<input class="hours-logged-project edit-input" type="text"  ng-disabled="projectTasksList.length == 0" 
 			                    class="form-control" placeholder="Find a project or task"
 			                    name="project-task-select"  required ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined">
-	                    <span class="search-icon" ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined" style="position:absolute; margin-left:-30px; top: 15px;">
+	                    <span class="search-icon" ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined" >
 			                <i class="fa fa-search"></i>
 			            </span>
 	        			<ul class="dropdown-menu ddProjectsTasksMenu" role="menu" aria-labelledby="ddProjectsTasksMenu">
@@ -133,8 +195,5 @@
 	        </div>
 	        
 	    </div>
-	</div>
-	<div id="editHours" class="modal hours-modal" style="top: 20px;" ng-show="entryFormOpen"> 
-		<ng-include src="'modules/widgets/hours/hourEntryForm.html'"></ng-include>
 	</div>
 </div>

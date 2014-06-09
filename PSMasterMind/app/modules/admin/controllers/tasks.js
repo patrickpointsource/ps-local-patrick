@@ -69,7 +69,7 @@ angular.module('Mastermind')
 	     */
 	    $scope.deleteTask = function (taskURL) {
 	      Resources.remove(taskURL).then(function(){
-	        $scope.loadTasks()
+	        $scope.loadTasks();
 	      });
 	    };
 	    
@@ -112,7 +112,7 @@ angular.module('Mastermind')
 		return TasksService.refreshTasks().then(function(tasks){
 			$scope.availableTasks = tasks;
 		});
-	}
+	};
 	
 	
     

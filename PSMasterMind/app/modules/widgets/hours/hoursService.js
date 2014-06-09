@@ -201,14 +201,17 @@ angular.module('Mastermind')
     				  var assignments = projectAssignments[i].members;
     				  var assignmentProjectURI = projectAssignments[i].project.resource;
     				  var assignmentRecord = null;
+    				  
     				  for(var p = 0; p < assignments.length; p++){
     					  var assignment = assignments[p];
+    					  
     					  if(assignment.person && assignment.person.resource && personURI == assignment.person.resource){
     						  // Check if it is a current assignment
     						  var assignmentStartDate = moment(assignment.startDate);
     						  // If no end date default to the passed in end
 								// date
             				  var assignmentEndDate = assignment.endDate?moment(assignment.endDate):endDateMoment;
+            				  
     						  if(endDateMoment.unix() >= assignmentStartDate.unix() && startDateMoment.unix() <= assignmentEndDate.unix()){
     							  assignmentRecord = assignment;
         						  break;
@@ -223,6 +226,7 @@ angular.module('Mastermind')
         					  var entries = ret[j];
             				  // Create the new entry if it does not exist
         					  var dateMoment = moment(startDate).add('days',j);
+        					  
         					  if(!entries){
         						  console.warn('Adding for assignment out side inital array: ' + date + ' ' + startDate + ' ' + endDate);
             					  var date = dateMoment.format('YYYY-MM-DD');
@@ -259,9 +263,15 @@ angular.module('Mastermind')
                 				  
                 				  // Not Found
                 				  if(!existingEntry){
+                					  
+                					  // add empty record with recored hours equal 0
     	            				  entries.hoursEntries.push({
               							  project: {resource:assignmentProjectURI},
-    	            					  assignment: assignmentRecord
+    	            					  assignment: assignmentRecord,
+    	            					  hoursRecord: {
+    	            						  hours:0,
+    	            						  project: {resource:assignmentProjectURI}
+    	            					  }
     	            				  });
     	            				  // Add this to the list of project we
 										// need to resolve
@@ -314,7 +324,7 @@ angular.module('Mastermind')
     		 });
 		  
 		  return deferred.promise;
-	  }
+	  };
 	  
 	  this.getCurrentPersonProjects = function(person){
 		  var deferred = $q.defer();
@@ -358,10 +368,10 @@ angular.module('Mastermind')
 	        	 Resources.query('projects', projectsQuery, projectFields, function(result){
 	        		 var projectsResults = result.members;
 					 
-	        		 deferred.resolve(result.data)
-				 })
-		  })
+	        		 deferred.resolve(result.data);
+				 });
+		  });
 		  
 		  return deferred.promise;
-	  }
+	  };
 }]);
