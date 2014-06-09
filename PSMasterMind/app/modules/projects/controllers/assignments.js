@@ -374,6 +374,7 @@ angular.module('Mastermind.controllers.projects')
     	}).then(function(data) {
         	$scope.refreshAssignmentsData(data);
         	$scope.refreshAssignmentSentinel();
+        	$scope.setSentinel();
         	$rootScope.formDirty = false;
         })
         

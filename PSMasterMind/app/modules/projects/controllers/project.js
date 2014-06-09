@@ -8,6 +8,15 @@ angular.module('Mastermind')
   function ($q, $rootScope, $scope, $state, $stateParams, $location, $filter, $controller, ProjectsService, Resources, People, RoleTypes, Rates, TableParams, editMode, AssignmentService, HoursService) {
     var detailsValid = false, rolesValid = false;
 
+    $scope.stopWatchingProjectChanges = function(){
+    	var sentinel = $scope.sentinel;
+	  	if(sentinel){
+	  		sentinel();  //kill sentinel
+	  	}
+    };
+    
+    $scope.stopWatchingProjectChanges();
+    
     //Set our currently viewed project to the one resolved by the service.
     if($stateParams.projectId){
       $scope.projectId = $stateParams.projectId;
@@ -1719,52 +1728,6 @@ angular.module('Mastermind')
         $scope.servicesLoadedTotal = runningTotal;
       }
       
-      
-      //Watch for model changes
-      if(editMode){
-    	  $scope.stopWatchingProjectChanges();
-    	  
-    	  //Create a new watch
-    	  $scope.sentinel = $scope.$watch('project', function(newValue, oldValue){
-	    	  //console.debug(JSON.stringify(oldValue) + ' changed to ' + JSON.stringify(newValue));
-	    	  if(!$rootScope.formDirty && $scope.editMode){
-	    		  //Do not include anthing in the $meta property in the comparison
-	    		  if(oldValue.hasOwnProperty('$meta')){
-	    			  var oldClone = Resources.deepCopy(oldValue);
-	    			  delete oldClone['$meta'];
-	    			  oldValue = oldClone;
-	    		  }
-	    		  if(newValue.hasOwnProperty('$meta')){
-	    			  var newClone = Resources.deepCopy(newValue);
-	    			  delete newClone['$meta'];
-	    			  newValue = newClone;
-	    		  }
-	    		  
-	    		  //Text Angular seems to add non white space characters for some reason
-	    		  if(newValue.description){
-	    			  newValue.description = newValue.description.trim();
-	    		  }
-	    		  if(oldValue.description){
-	    			  oldValue.description = oldValue.description.trim();
-	    		  }
-	    		  
-	    		  
-	    		  var oldStr = JSON.stringify(oldValue);
-	    		  var newStr = JSON.stringify(newValue);
-	    		  
-	    		  if(oldStr != newStr){
-	    			  console.debug('project is now dirty');
-	    			  $rootScope.formDirty = true;
-	    			  $rootScope.projectEdit = true;
-	    			  $rootScope.dirtySaveHandler = function(){
-	    			    	return $scope.checkShiftDates();
-	    			   };
-	    		  }
-	    	  }
-	    	 
-	      }, true);
-      }
-      
       // sort roles inside project
       var today = new Date();
       
@@ -1836,14 +1799,7 @@ angular.module('Mastermind')
     		  return -1
     	  
     	  return 0;
-      })
-    };
-    
-    $scope.stopWatchingProjectChanges = function(){
-    	var sentinel = $scope.sentinel;
-	  	if(sentinel){
-	  		sentinel();  //kill sentinel
-	  	}
+      });
     };
 
     $scope.billingFrequencyOptions = [{label: "Weekly", value: "weekly"}, {label:"Biweekly", value: "biweekly"}, 
@@ -2025,8 +1981,6 @@ angular.module('Mastermind')
 		        reloadShortDesc();
 		        $scope.loadExecAndPeople();
     	  })
-        
-        
       });
     }
     /**
@@ -2255,5 +2209,52 @@ angular.module('Mastermind')
         }
         return str;
       };
+      
+    $scope.setSentinel = function() {
+    	//Watch for model changes
+        if(editMode){
+      	  $scope.stopWatchingProjectChanges();
+      	  
+      	  //Create a new watch
+      	  $scope.sentinel = $scope.$watch('project', function(newValue, oldValue){
+  	    	  //console.debug(JSON.stringify(oldValue) + ' changed to ' + JSON.stringify(newValue));
+  	    	  if(!$rootScope.formDirty && $scope.editMode){
+  	    		  //Do not include anthing in the $meta property in the comparison
+  	    		  if(oldValue.hasOwnProperty('$meta')){
+  	    			  var oldClone = Resources.deepCopy(oldValue);
+  	    			  delete oldClone['$meta'];
+  	    			  oldValue = oldClone;
+  	    		  }
+  	    		  if(newValue.hasOwnProperty('$meta')){
+  	    			  var newClone = Resources.deepCopy(newValue);
+  	    			  delete newClone['$meta'];
+  	    			  newValue = newClone;
+  	    		  }
+  	    		  
+  	    		  //Text Angular seems to add non white space characters for some reason
+  	    		  if(newValue.description){
+  	    			  newValue.description = newValue.description.trim();
+  	    		  }
+  	    		  if(oldValue.description){
+  	    			  oldValue.description = oldValue.description.trim();
+  	    		  }
+  	    		  
+  	    		  
+  	    		  var oldStr = JSON.stringify(oldValue);
+  	    		  var newStr = JSON.stringify(newValue);
+  	    		  
+  	    		  if(oldStr != newStr){
+  	    			  console.debug('project is now dirty');
+  	    			  $rootScope.formDirty = true;
+  	    			  $rootScope.projectEdit = true;
+  	    			  $rootScope.dirtySaveHandler = function(){
+  	    			    	return $scope.checkShiftDates();
+  	    			   };
+  	    		  }
+  	    	  }
+  	    	 
+  	      }, true);
+        }
+    }
 
   }]);
