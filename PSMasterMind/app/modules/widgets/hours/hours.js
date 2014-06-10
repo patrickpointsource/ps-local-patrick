@@ -617,8 +617,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[       t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[       t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[        t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[        t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -782,14 +782,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[       d1.getMonth( ) ];
+		var month1 = $scope.months[        d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[       d2.getMonth( ) ];
+		var month2 = $scope.months[        d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
@@ -904,7 +904,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		if( hourEntry.hoursRecord && ( hourEntry.hoursRecord.hours == "" || parseFloat( hourEntry.hoursRecord.hours ) === 0 ) || hourEntry.hoursRecord.hours === undefined ) {
 			$scope.hoursValidation.push( "Hours value is empty" );
 		} else if( hourEntry.hoursRecord && hourEntry.hoursRecord.hours ) {
-			var res = /^\d+(\.\d{1,2})?$/.exec( hourEntry.hoursRecord.hours );
+			var res = /^\d*(\.\d{1,2})?$/.exec( hourEntry.hoursRecord.hours );
 
 			if( !res )
 				$scope.hoursValidation.push( "Incorrect value for hours" );
