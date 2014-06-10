@@ -251,6 +251,7 @@ th > span.hidden-xs {
   padding-top: 0px;
   display: table;
   height: 76px;
+  word-break: break-word;
   > a {
     font-family: 'Open Sans', sans-serif;
     font-weight: bold;
@@ -267,6 +268,7 @@ th > span.hidden-xs {
   padding-top: 0px;
   display: table;
   height: 76px;
+  word-break: break-word;
   span {
     display: table-cell;
     vertical-align: middle;
@@ -285,6 +287,14 @@ th > span.hidden-xs {
   span {
     display: table-cell;
     vertical-align: middle;
+  }
+}
+@media (max-width:@screen-xs-max) {
+  .project-row-name {
+    height: auto;
+  }
+  .project-row-cust {
+    height: auto;
   }
 }
 .project-prop {
@@ -462,4 +472,15 @@ th > span.hidden-xs {
   .tab-buttons > button {
     font-size: 11px;
   }
+}
+.people-header-dates {
+  padding: 0px;
+}
+@media (max-width:@screen-xs-max) {
+  .people-header-dates {
+    padding-left: 15px;
+  }
+}
+.people-header-status {
+  padding: 0px;
 }

@@ -5,7 +5,7 @@
   </div>
   <div class="col-xs-12">
     <div class="row people-header">
-      <div class="col-xs-12 col-sm-5 col-md-5 person-header-name">
+      <div class="col-xs-6 col-sm-5 col-md-5 person-header-name">
         <a class="header-name" ng-class="{ active: sortType=='name-asc' || sortType=='name-desc' }" ng-click="switchSort('name')">NAME</a>
         <div class="person-sorting">
           <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'name-asc'}" ng-click="changeSort('name-asc')"></i>
@@ -14,7 +14,7 @@
           </button>
         </div>
       </div>
-      <div class="col-xs-4 col-sm-1 person-header">
+      <div class="col-xs-6 col-sm-2 col-md-1 person-header" style="padding-right: 0px; padding-left: 0px;">
         <a class="header-name" ng-class="{ active: sortType=='role-asc' || sortType=='role-desc' }" ng-click="switchSort('role')">ROLE</a>
         <div class="person-sorting">
           <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'role-asc'}" ng-click="changeSort('role-asc')"></i>
@@ -23,7 +23,7 @@
           </button>
         </div>
       </div>
-      <div class="col-xs-8 col-sm-4 person-header">
+      <div class="col-xs-6 col-sm-3 col-md-4 person-header-name">
         <a class="header-name" ng-class="{ active: sortType=='group-asc' || sortType=='group-desc' }" ng-click="switchSort('group')">TITLE</a>
         <div class="person-sorting">
           <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'group-asc'}" ng-click="changeSort('group-asc')"></i>
@@ -32,7 +32,7 @@
           </button>
         </div>
       </div>
-      <div class="col-xs-12 col-sm-2 person-header">
+      <div class="col-xs-6 col-sm-2 person-header" style="padding-right: 0px; padding-left: 0px;">
         <a class="header-name" ng-class="{ active: sortType=='rate-asc' || sortType=='rate-desc' }" ng-click="switchSort('rate')">UTILIZATION</a>
         <div class="person-sorting">
           <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'rate-asc'}" ng-click="changeSort('rate-asc')"></i>
