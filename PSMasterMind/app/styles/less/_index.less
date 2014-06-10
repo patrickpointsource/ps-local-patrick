@@ -1001,7 +1001,7 @@ header .navbar .navbar-breadcrumb {
       
       .hours-day-check {
         margin-top: 2px;
-        margin-left: 55px;
+        right: 7px;
         -webkit-text-stroke-width: 0px;
       }
       
@@ -1124,6 +1124,13 @@ header .navbar .navbar-breadcrumb {
 .hours-day.active {
   @media (max-width: @screen-sm) {
     display: block;
+  }
+  
+  .hours-day-entry {
+    @media (max-width: @screen-sm) {
+      background-color: white !important;
+      border-width: 0px !important;
+    }
   }
 }
 .hours-day-entry {

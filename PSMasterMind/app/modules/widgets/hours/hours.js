@@ -343,7 +343,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		}
 
 		e = e ? e : window.event;
-		var isCircle = $( e.target ).closest( '.active-circle' ).size( ) > 0;
+		
+		var isCircle = e ? $( e.target ).closest( '.active-circle' ).size( ) > 0: false;
 
 		if( isCircle ) {
 			$scope.showHideLoggedHours( e, index );
@@ -675,12 +676,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		}
 
 		if( foundInd > 0 )
-			$scope.selected = $scope.displayedHours[ foundInd - 1 ];
+			//$scope.selected = $scope.displayedHours[ foundInd - 1 ];
+			$scope.setSelected(null, $scope.displayedHours[ foundInd - 1  ], foundInd - 1 );
 		else {
 			$scope.dateIndex = $scope.dateIndex + 7;
 
 			$scope.hoursRequest( function( ) {
-				$scope.selected = $scope.displayedHours[ $scope.displayedHours.length - 1 ];
+				//$scope.selected = $scope.displayedHours[ $scope.displayedHours.length - 1 ];
+				$scope.setSelected(null, $scope.displayedHours[ $scope.displayedHours.length - 1  ], $scope.displayedHours.length - 1 );
 			} );
 		}
 
@@ -696,11 +699,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		}
 
 		if( foundInd < $scope.displayedHours.length - 1 )
-			$scope.selected = $scope.displayedHours[ foundInd + 1 ];
+			//$scope.selected = $scope.displayedHours[ foundInd + 1 ];
+			$scope.setSelected(null, $scope.displayedHours[ foundInd + 1 ], foundInd + 1 );
 		else {
 			$scope.dateIndex = $scope.dateIndex - 7;
 			$scope.hoursRequest( function( ) {
-				$scope.selected = $scope.displayedHours[ 0 ];
+				//$scope.selected = $scope.displayedHours[ 0 ];
+				$scope.setSelected(null, $scope.displayedHours[ 0 ], 0 );
 			} );
 		}
 
@@ -830,9 +835,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 								// =
 								// JSON.parse(JSON.stringify(
 								// $scope.displayedHours[i]));
-								$scope.selected = $scope.displayedHours[ i ];
+								$scope.setSelected(null, $scope.displayedHours[ i ], i);
+								//$scope.selected = $scope.displayedHours[ i ];
 							} else if( $scope.selected && $scope.displayedHours[ i ].date == $scope.selected.date ) {
-								$scope.selected = $scope.displayedHours[ i ];
+								//$scope.selected = $scope.displayedHours[ i ];
+								$scope.setSelected(null, $scope.displayedHours[ i ], i);
 							}
 
 							$( '.dashboard-widget.hours .row.hours-logged' ).show( );
@@ -878,9 +885,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 							if( !$scope.selected && $scope.displayedMonthDays[ i ].date == $scope.todaysDate ) {
 
-								$scope.selected = $scope.displayedMonthDays[ i ];
+								//$scope.selected = $scope.displayedMonthDays[ i ];
+								$scope.setSelected(null, $scope.displayedMonthDays[ i ], i);
 							} else if( $scope.selected && $scope.displayedMonthDays[ i ].date == $scope.selected.date ) {
-								$scope.selected = $scope.displayedMonthDays[ i ];
+								//$scope.selected = $scope.displayedMonthDays[ i ];
+								$scope.setSelected(null, $scope.displayedMonthDays[ i ], i);
 							}
 
 							if( cb )
