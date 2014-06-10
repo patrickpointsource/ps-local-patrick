@@ -917,6 +917,7 @@ header .navbar .navbar-breadcrumb {
         .active-circle {
           display: none;
           position: absolute;
+          z-index: 1001;
           top: -3px;
           height: 40px;
           width: 40px;
@@ -935,6 +936,11 @@ header .navbar .navbar-breadcrumb {
             background-color: #1ba2c1;
           }
          
+        }
+        
+        .active-circle.bottom {
+          top: auto;
+          bottom: 3px;
         }
       }
       
@@ -1149,6 +1155,9 @@ header .navbar .navbar-breadcrumb {
 .hours-logged.month-visible {
   width: 100%;
   position: absolute;
+    display: none;
+    margin-bottom: 0px;
+    height: auto;
   z-index: 1001;
 }
 .hours-logged-entry {

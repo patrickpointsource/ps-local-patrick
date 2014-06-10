@@ -32,6 +32,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$rootScope.hasAssignment = false;
 
 	$scope.mode = $scope.mode ? $scope.mode : 'week';
+	$scope.subMode = $scope.subMode ? $scope.subMode : 'weekly';
 
 	$scope.setSubmode = function( subMode ) {
 		$scope.subMode = subMode;
@@ -230,29 +231,27 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		if( hourEntry.hoursRecord.isAdded )
 			return;
 
-		if( hourEntry.hoursRecord.editMode ) {
+		//if( hourEntry.hoursRecord.editMode ) {
 
-			// if (!hourEntry.hoursRecord.isCopied) {
-			hourEntry.hoursRecord.editMode = false;
-			$scope.clearAutocompleteHandlers( $( e.target ).closest( '.hours-logged-entry' ).find( '[name="project-task-select"]' ) );
-			// }
+		// if (!hourEntry.hoursRecord.isCopied) {
+		hourEntry.hoursRecord.editMode = false;
+		$scope.clearAutocompleteHandlers( $( e.target ).closest( '.hours-logged-entry' ).find( '[name="project-task-select"]' ) );
+		// }
 
-			if( hourEntry.hoursRecord.isAdded )
-				$scope.selected.hoursEntries.splice( index, 1 );
-			delete hourEntry.hoursRecord.isCopied;
+		//delete hourEntry.hoursRecord.isCopied;
 
-			$scope.validateAndCalculateTotalHours( );
+		//$scope.validateAndCalculateTotalHours( );
 
-		} else {
-			// $scope.deleteHoursRecord(index)
-			$scope.selected.hoursEntries.splice( index, 1 );
+		//} else {
+		// $scope.deleteHoursRecord(index)
+		$scope.selected.hoursEntries.splice( index, 1 );
 
-			if( hourEntry.hoursRecord )
-				Resources.remove( hourEntry.hoursRecord.resource ).then( function( ) {
-					// $scope.hoursRequest();
-					$scope.validateAndCalculateTotalHours( );
-				} );
-		}
+		if( hourEntry.hoursRecord )
+			Resources.remove( hourEntry.hoursRecord.resource ).then( function( ) {
+				// $scope.hoursRequest();
+				$scope.validateAndCalculateTotalHours( );
+			} );
+		//}
 
 	};
 
@@ -281,6 +280,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		delete hourEntry.hoursRecord.editMode;
 		delete hourEntry.hoursRecord.isAdded;
 		delete hourEntry.hoursRecord.isCopied;
+		delete hourEntry.hoursRecord.isDefault;
 
 		if( hourEntry.selectedItem ) {
 			delete hourEntry.hoursRecord.project;
@@ -311,7 +311,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		$scope.addHours( hourEntry, isAdded );
 	};
 
-	$scope.setSelected = function( day, index ) {
+	$scope.setSelected = function( e, day, index ) {
 		if( $scope.selected && $scope.isDisplayedWeek( ) ) {
 			for( var i = 0; i < $scope.displayedHours.length; i++ ) {
 				if( $scope.selected.date === $scope.displayedHours[ i ].date ) {
@@ -324,14 +324,54 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 					$scope.displayedMonthDays[ i ] = $scope.selected;
 				}
 			}
-
-			$( '.dashboard-widget.hours .row.hours-logged' ).css( 'bottom', ( 5 - Math.floor( index / 7 ) ) * 110 - 25 + 'px' );
 		}
 
 		if( $scope.selected )
 			delete $scope.selected;
 
 		$scope.selected = $scope.cloneDay( day );
+
+		var anyLogged = _.find( $scope.selected.hoursEntries, function( h ) {
+			return h.hoursRecord.hours > 0;
+		} );
+
+		for( var i = 0; !anyLogged && i < $scope.selected.hoursEntries.length; i++ ) {
+			if( $scope.selected.hoursEntries[ i ].hoursRecord && $scope.selected.hoursEntries[ i ].hoursRecord.hours == 0 ) {
+				$scope.selected.hoursEntries[ i ].hoursRecord.editMode = true;
+				$scope.selected.hoursEntries[ i ].hoursRecord.isDefault = true;
+			}
+		}
+
+		e = e ? e : window.event;
+		var isCircle = $( e.target ).closest( '.active-circle' ).size( ) > 0;
+
+		if( isCircle ) {
+			$scope.showHideLoggedHours( e, index );
+		} else if( !$scope.isDisplayedWeek( ) )
+			$( '.dashboard-widget.hours .row.hours-logged' ).hide( );
+
+	};
+
+	$scope.showHideLoggedHours = function( e, index ) {
+		var loggedHours = $( '.dashboard-widget.hours .row.hours-logged' );
+		//var size = $( '.dashboard-widget.hours .row.hours-logged
+		// .hours-logged-entry:visible' ).size();
+		index = index % 7 == 0 ? ( index + 1 ) : index;
+
+		if( !loggedHours.is( ':visible' ) ) {
+			loggedHours.show( );
+
+			if( Math.floor( index / 7 ) >= 3 ) {
+				loggedHours.css( 'top', '' );
+				loggedHours.css( 'bottom', ( 5 - Math.floor( index / 7 ) ) * 110 - 5 + 'px' );
+			} else {
+
+				loggedHours.css( 'bottom', '' );
+				loggedHours.css( 'top', ( Math.ceil( index / 7 ) + 1 ) * 110 + 'px' );
+			}
+		} else
+			loggedHours.hide( );
+
 	};
 
 	$scope.clearSelectedItem = function( e, hourEntry ) {
@@ -442,13 +482,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	};
 
 	$scope.initNewHoursEntry = function( hourEntry ) {
-		if( hourEntry.hoursRecord && hourEntry.hoursRecord.isAdded || hourEntry.hoursRecord && hourEntry.hoursRecord.isCopied ) {
+		if( hourEntry.hoursRecord && ( hourEntry.hoursRecord.isAdded || hourEntry.hoursRecord && hourEntry.hoursRecord.isCopied || hourEntry.hoursRecord.isDefault ) ) {
 			// use timeout to perform code after init
 			window.setTimeout( function( ) {
 
 				$( '.dashboard-widget.hours .row.hours-logged .hours-logged-entry' ).each( function( ind, el ) {
 
-					if( hourEntry == $( el ).scope( ).hourEntry && ( $( el ).scope( ).hourEntry.hoursRecord.hours == "" || $( el ).scope( ).hourEntry.hoursRecord.hours == undefined || $( el ).scope( ).hourEntry.hoursRecord.isCopied ) )
+					if( hourEntry == $( el ).scope( ).hourEntry && ( $( el ).scope( ).hourEntry.hoursRecord.hours == 0 || $( el ).scope( ).hourEntry.hoursRecord.hours == "" || $( el ).scope( ).hourEntry.hoursRecord.hours == undefined || $( el ).scope( ).hourEntry.hoursRecord.isCopied ) )
 						$scope.$apply( function( ) {
 							$scope.editHoursEntry( null, $( el ).scope( ).hourEntry, $( el ).find( 'input[name="project-task-select"]' ).eq( 0 ) );
 						} );
@@ -577,8 +617,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[    t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[    t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[       t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[       t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -645,7 +685,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		}
 
 	};
-	
+
 	$scope.nextDay = function( ) {
 		var foundInd;
 
@@ -668,16 +708,16 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	};
 
-    $scope.nextMonth = function() {
-        $scope.currentMonth = $scope.moment( $scope.currentMonth ).add( 1, 'month' );
-        $scope.hoursRequest();
-    };
-    
-    $scope.backMonth = function() {
-        $scope.currentMonth = $scope.moment( $scope.currentMonth ).subtract( 1, 'month' );
-        $scope.hoursRequest();
-    };
-    
+	$scope.nextMonth = function( ) {
+		$scope.currentMonth = $scope.moment( $scope.currentMonth ).add( 1, 'month' );
+		$scope.hoursRequest( );
+	};
+
+	$scope.backMonth = function( ) {
+		$scope.currentMonth = $scope.moment( $scope.currentMonth ).subtract( 1, 'month' );
+		$scope.hoursRequest( );
+	};
+
 	$scope.thisWeek = function( ) {
 		$scope.dateIndex = 0;
 		$scope.entryFormOpen = false;
@@ -714,7 +754,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	};
 
 	$scope.calculateMonthDates = function( callback ) {
-	    $scope.displayedMonthDays = [];
+		$scope.displayedMonthDays = [ ];
 		$scope.todaysDate = $scope.moment( ).format( 'YYYY-MM-DD' );
 		var moment = $scope.moment( $scope.currentMonth );
 
@@ -742,14 +782,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[    d1.getMonth( ) ];
+		var month1 = $scope.months[       d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[    d2.getMonth( ) ];
+		var month2 = $scope.months[       d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
@@ -771,7 +811,6 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 							var futureness = $scope.checkForFutureness( $scope.displayedHours[ i ].date );
 
 							$scope.displayedHours[ i ].futureness = futureness;
-							$scope.addNewHoursRecord( $scope.displayedHours[ i ] );
 
 							for( var j = 0; j < $scope.displayedHours[ i ].hoursEntries.length; j++ ) {
 								if( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord ) {
@@ -784,6 +823,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 								}
 							}
 
+							$scope.addNewHoursRecord( $scope.displayedHours[ i ] );
+
 							if( !$scope.selected && $scope.displayedHours[ i ].date == $scope.todaysDate ) {
 								// $scope.selected
 								// =
@@ -793,6 +834,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 							} else if( $scope.selected && $scope.displayedHours[ i ].date == $scope.selected.date ) {
 								$scope.selected = $scope.displayedHours[ i ];
 							}
+
+							$( '.dashboard-widget.hours .row.hours-logged' ).show( );
 
 							if( cb )
 								cb( );
@@ -836,7 +879,6 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 							if( !$scope.selected && $scope.displayedMonthDays[ i ].date == $scope.todaysDate ) {
 
 								$scope.selected = $scope.displayedMonthDays[ i ];
-								$( '.dashboard-widget.hours .row.hours-logged' ).css( 'bottom', ( 5 - Math.floor( i / 7 ) ) * 110 - 25 + 'px' );
 							} else if( $scope.selected && $scope.displayedMonthDays[ i ].date == $scope.selected.date ) {
 								$scope.selected = $scope.displayedMonthDays[ i ];
 							}

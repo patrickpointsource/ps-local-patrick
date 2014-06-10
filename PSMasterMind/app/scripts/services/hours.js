@@ -83,7 +83,7 @@ function( $q, Restangular, Resources, RolesService ) {
 
 		return oneMonthBeforeToday;
 	};
-	
+
 	/**
 	 * Query to get the list of hours working on
 	 * active projects.
