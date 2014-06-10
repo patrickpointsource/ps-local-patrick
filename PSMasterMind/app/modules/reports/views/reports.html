@@ -5,17 +5,17 @@
         <div class="form-group" ng-class="{error: isFieldInError('startDate')}">
             <label class="sr-only" for="startDate">Start</label>
             <input class="form-control datepicker col-xs-3" id="startDate" name="startDate" 
-                   type="text" ng-model="report.startDate" data-date-format="yyyy-mm-dd" 
+                   type="text" ng-model="startDateModel" data-date-format="yyyy-mm-dd" 
                    required data-provide="datepicker" 
                    placeholder="Start Date">
         </div>
         <i class="fa fa-long-arrow-right"></i>
         <div class="form-group" ng-class="{error: isFieldInError('endDate')}">
-            <datepicker ng-model='date1' icon-class='fa fa-calendar' label-format='EEEE, MMMM d, yyyy'></datepicker>
             <label class="sr-only" for="endDate">End</label>
             <input class="form-control datepicker col-xs-3" id="endDate" name="endDate" 
-                   type="text" ng-model="report.endDate" 
-                   data-date-format="yyyy-mm-dd" required data-provide="datepicker" 
+                   type="text" ng-model="endDateModel" 
+                   data-date-format="yyyy-mm-dd" 
+                   required data-provide="datepicker" 
                    placeholder="End Date">
         </div>
         
@@ -42,8 +42,6 @@
             </button>
         </div>
     </form>
-    <div d3-bars bar-height="20" bar-padding="5" data='data'></div>
-    <div class="panel-body" >
-    	<d3-reports data="reportData" label="name" on-click="reportClick(item)"></d3-reports>
-	</div>
+    </br>
+    <div d3-bars data="data" label="name" on-click="reportClick(item)"></div>
 </div>
