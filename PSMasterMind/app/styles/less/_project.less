@@ -292,9 +292,24 @@ th > span.hidden-xs {
 @media (max-width:@screen-xs-max) {
   .project-row-name {
     height: auto;
+    margin-top: 5px;
+  }
+  .project-row-name a {
+    font-size: 15px;
   }
   .project-row-cust {
     height: auto;
+  }
+  .project-row-cust a {
+    font-size: 14px;
+  }
+  .project-row-dates {
+    height: auto;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  .project-row-dates a {
+    font-size: 14px;
   }
 }
 .project-prop {
@@ -483,4 +498,42 @@ th > span.hidden-xs {
 }
 .people-header-status {
   padding: 0px;
+}
+.project-icon-xs {
+  margin-top: 5px;
+}
+
+@media (max-width:@screen-xs-max) {
+  .person-name {
+    height: auto !important;
+    margin-top: 5px;
+    > a {
+      font-size: 16px;
+    }
+  }
+  .person-title {
+    font-size: 15px !important;
+    text-align: left !important;
+  }
+  .people-prop.person-prop {
+    padding-left: 15px !important;
+    > div > div {
+      font-size: 15px !important;
+    }
+  }
+  .fullProfileImage {
+    height: 50px !important;
+    width: 50px !important;
+  }
+  .person-image {
+    margin-top: 10px !important;
+    margin-bottom: 12px !important;
+  }
+  .person-header-name.person-header-title {
+    padding-left: 0px;
+  }
+}
+.utilization-rate-xs {
+  font-weight: bold;
+  color: #3a3a3a;
 }
