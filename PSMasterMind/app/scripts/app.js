@@ -232,8 +232,8 @@
   		  		$rootScope.modalDialog = {
   		  			title: 'Save Changes',
   		  			text: 'Would you like to save your changes before leaving?',
-	  		  		ok: 'Yes',
-			  		no: 'No',
+	  		  		ok: 'YES',
+			  		no: 'NO',
 			  		cancel: 'Cancel',
 			  		okHandler: function() {
 			  			if($rootScope.projectEdit) {
