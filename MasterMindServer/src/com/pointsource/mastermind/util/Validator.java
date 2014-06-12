@@ -467,12 +467,15 @@ public class Validator implements CONSTS {
 			if (checkedAllRoles && !hasBAOrPM) {
 				if (project.has(PROP_TERMS)) {
 					JSONObject terms = project.getJSONObject(PROP_TERMS);
-					hasBAOrPM = terms
-							.has(PROP_INCLUDES_PROJECT_MANAGEMENT_OVERHEAD)
+					hasBAOrPM = terms.has(PROP_INCLUDES_PROJECT_MANAGEMENT_OVERHEAD)
 							&& terms.getBoolean(PROP_INCLUDES_PROJECT_MANAGEMENT_OVERHEAD);
 				}
 
-				if(!hasBAOrPM)ret.add("A Project must include Project Managment or Business Analyst oversight");
+				if(!hasBAOrPM && !project.getString(PROP_TYPE).equals(VALUES_PROJECT_TYPE_INVEST)
+						&& !project.getString(PROP_TYPE).equals(VALUES_PROJECT_TYPE_POC)) {
+					ret.add("A Project must include Project Managment or Business Analyst oversight");
+				}
+					
 			}
 
 		}
