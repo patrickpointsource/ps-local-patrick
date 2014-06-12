@@ -862,6 +862,14 @@ header .navbar .navbar-breadcrumb {
           width: 100%; 
           top: 40%; 
           position:relative;
+          
+          i {
+            color: #efefef;
+          }
+        }
+        
+        @media (max-width: @screen-sm) {
+          border-width: 0px !important;
         }
       }
       
@@ -1035,16 +1043,28 @@ header .navbar .navbar-breadcrumb {
       width:100%; 
       position:relative;
       
-      .start-end, .week-month-radio {
-        display: inline-block; 
+      .header-container {
+        display: inline-block;
+        white-space: nowrap; 
         position:absolute; 
         left:0px; 
         right:0px; 
-        text-align:center
+        text-align:center;
+        margin-top: -3px;
+      }
+      
+      .today-btn-container {
+        display: inline-block;
+        .btn.today {
+          border: 1px solid white !important;
+          background-color: #1ba2c1 !important;
+          color: white;
+          font-weight: bold;
+        }
       }
       
       .week-month-radio {
-        top: -3px;
+        display: inline-block;
         
         .btn.btn-default {
           font-weight: bold;
@@ -1073,9 +1093,9 @@ header .navbar .navbar-breadcrumb {
     li {
       overflow: hidden;
     }
-    @media (max-width: @screen-xs) {
-      left: auto;
-      top: 80px;
+    @media (max-width: @screen-sm) {
+      left: -5px;
+      top: 85px;
       width: 100%;
       text-align: left;
     }
@@ -1089,6 +1109,10 @@ header .navbar .navbar-breadcrumb {
     font-size: 25px; 
     color: #a8a8a8; 
     font-weight: normal;
+    
+    sup {
+      font-size: 14px;
+    }
   }
   
   .hours-day-content {
@@ -1151,11 +1175,17 @@ header .navbar .navbar-breadcrumb {
   min-height: 50px;
   background-color: #f7f7f7 !important;
   clear: both;
+  
   .hours-empty {
     text-align: center;
     font-size: 15px;
     color: #4d4d4d;
     margin-top: 16px;
+  }
+  
+  @media (max-width: @screen-sm) {
+    margin-left: -10px;
+    margin-right: -10px;
   }
 }
 
@@ -1173,6 +1203,9 @@ header .navbar .navbar-breadcrumb {
   border-bottom: 1px solid #fff;
   border-left: 1px solid #fff;
   border-right: 1px solid #fff;
+  
+  padding-left: 7px;
+  
   /*use those styles to verticaly align row content*/
   display: flex;
   display: -webkit-box;
@@ -1180,22 +1213,48 @@ header .navbar .navbar-breadcrumb {
   display: -ms-flexbox;
   display: -webkit-flex;
   align-items: center;
-  @media (max-width: @screen-xs) {
+  
+  @media (max-width: @screen-sm) {
     display: block;
-    text-align: center;
+    text-align: right;
+    .edit-caption.ng-hide {
+      display: none !important;
+    }
+    .edit-caption {
+      text-align: left;
+      height: 40px;
+      width: 100%;
+      color: #999999;
+      
+      .close-edit {
+        float: right;
+        margin-right: 10px;
+      }
+    }
   }
+  
   .hours-logged-value {
     font-weight: bold;
     font-size: 15px;
     width: 6%;
     text-align: center;
     white-space: nowrap;
-    @media (max-width: @screen-xs) {
+    @media (max-width: @screen-sm) {
+      float:left;
+      text-align: left;
+      width: 20%;
+    }
+  }
+  
+  .hours-logged-value.edit-input {
+    @media (max-width: @screen-sm) {
       display: block;
       text-align: center;
       width: 100%;
     }
   }
+  
+  
   .edit-input {
     border: 1px solid #efefef;
     border-radius: 3px;
@@ -1207,13 +1266,35 @@ header .navbar .navbar-breadcrumb {
     margin-right: 3px;
     padding-left: 5px;
     padding-right: 5px;
+    
+    @media (max-width: @screen-sm) {
+      margin-top: 3px;
+      margin-bottom: 3px;
+      margin-left: 0px;
+      
+    }
+  }
+  .edit-input.ng-hide {
+    display: none !important;
   }
   .hours-logged-project {
     width: 24%;
     font-weight: bold;
     font-size: 15px;
     color: #999999;
-    @media (max-width: @screen-xs) {
+    @media (max-width: @screen-sm) {
+      float: left;
+      text-align: left;
+      width: 80%;
+      
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+  
+  .hours-logged-project.edit-input {
+    @media (max-width: @screen-sm) {
       display: block;
       text-align: center;
       width: 100%;
@@ -1224,6 +1305,13 @@ header .navbar .navbar-breadcrumb {
     position:absolute; 
     margin-left:-30px; 
     top: 15px;
+    
+     @media (max-width: @screen-sm) {
+      margin-left: 0px;
+      margin-top: 10px;
+      top: auto;
+      right: 10px;
+    }
   }
   
   .hours-logged-project.selected-item {
@@ -1232,38 +1320,101 @@ header .navbar .navbar-breadcrumb {
     height: 32px;
     top: 7px;
     padding: 4px 8px;
+    float: right;
+    
+    margin-top: 3px;
     span {
       display: inline-block;
       white-space: nowrap;
       overflow: hidden;
     }
+    
+    @media (max-width: @screen-sm) {
+      width: 100%;
+      margin-right: 4px;
+      margin-left: 1px;
+      
+      i {
+        position: relative;
+        top: -3px;
+      }
+    }
   }
-  .hours-logged-project.selected-item i {
-    float: right;
-    color: #c1c1c1;
-    margin-top: 3px;
-  }
+  
   .hours-logged-desc {
     color: #999999;
     font-size: 14px;
     /*set width inline*/
-    @media (max-width: @screen-xs) {
+    @media (max-width: @screen-sm) {
       display: block;
-      text-align: center;
+      text-align: left;
       width: 100% !important;
       clear: both;
     }
   }
+  
+  .hours-logged-desc.mobile-visible {
+    display: block !important;
+  }
+  
   .hours-logged-action {
     float: right;
     font-size: 15px;
     color: #d1d1d1;
     padding: 8px;
     margin-top: -4px;
-    @media (max-width: @screen-xs) {
+    @media (max-width: @screen-sm) {
       float: none;
+      clear: both;
+      display: block;
     }
   }
+  
+  .hours-logged-action.edit {
+     @media (max-width: @screen-sm) {
+       align-self: flex-end;
+       
+       display: none;
+    }
+  }
+  
+  .hours-logged-action.delete {
+     @media (max-width: @screen-sm) {
+       font-size: 14px;
+       color: #1ba2c1;
+       position: absolute;
+      left: 0px;
+      bottom: 0px;
+    }
+  }
+  
+   .hours-logged-action.delete.ng-hide {
+     @media (max-width: @screen-sm) {
+       display: none !important;
+     }
+   }
+  
+  .hours-logged-action.edit.mobile-visible {
+     @media (max-width: @screen-sm) {
+     
+      display: block !important;
+    }
+  }
+  
+  .hours-logged-details {
+    position:absolute;
+    top:4px;
+    right:0px;
+    color: #d1d1d1;
+    padding: 0px 8px;
+    
+  }
+  
+  // provide manual strong selector to make "ng-hide" work
+  .hours-logged-details.ng-hide {
+    display: none !important;
+  }
+  
   .hours-logged-save {
     text-transform: uppercase;
     background-color: #1ba2c1;
@@ -1271,6 +1422,12 @@ header .navbar .navbar-breadcrumb {
     color: #fff;
     font-weight: bold;
     top: 8px;
+    
+    margin-top: 5px;
+    margin-bottom: 5px;
+    @media (max-width: @screen-sm) {
+      margin-right: 4px;
+    }
   }
   .hours-logged-add {
     text-transform: uppercase;
@@ -1279,14 +1436,63 @@ header .navbar .navbar-breadcrumb {
     color: #fff;
     font-weight: bold;
     top: 8px;
+    
+    @media (max-width: @screen-sm) {
+       margin-top: 5px;
+       margin-bottom: 5px;
+       margin-right: 4px;
+    }
   }
 }
+
+.hours-logged-entry.edit-entry, .hours-logged-entry.view-entry {
+  display: flex !important;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: -webkit-flex !important;
+  
+  // make it multiline
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+  
 .hours-logged-entry > span,
 .hours-logged-entry > .edit-input {
   /*top: 15px;
   position: relative;*/
   display: inline-block;
 }
+
+.hours-logged-entry.mobile-add {
+  color: #1ba2c1;
+  padding-right: 10px;
+  padding-left: 7px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: left;
+  
+  span.text {
+    position: absolute;
+    top:10px;
+    left: 7px;
+  }
+  
+  span.add {
+    position: absolute;
+    top:10px;
+    right: 10px;
+  }
+  
+  span.close-new {
+    font-size: 14px;
+    display: none;
+    position:absolute;
+    top:10px;
+    right: 10px;
+    color: #c1c1c1;
+  }
+}
+
 .dropdown-menu.ddProjectsTasksMenu > li > a {
   padding-left: 15px;
   min-height: 40px;

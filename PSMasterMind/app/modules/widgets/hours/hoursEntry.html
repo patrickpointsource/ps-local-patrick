@@ -3,19 +3,24 @@
 	    <div class="panel-heading">
 	    	<div class="inner-heading">
 	    		<span> <!-- <i class="fa fa-calendar-o"></i> --> Hours </span>
-		    	
+		    	<!--
 		        <div ng-show="mode=='week'" class="start-end" > 
 		        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
-		        </div>
-		        <div ng-show="mode=='month'" class="week-month-radio">
-		          <div class="btn-group" data-toggle="buttons">
-		            <label class="btn btn-default" ng-click="setSubmode('monthly')" ng-class="{'active': subMode == 'monthly'}">
-		              <input type="radio" name="options">Month
-		            </label>
-		            <label class="btn btn-default" ng-click="setSubmode('weekly')" ng-class="{'active': subMode == 'weekly'}">
-		              <input type="radio" name="options">Week
-		            </label>
-		          </div>
+		        </div>-->
+		        <div class="header-container" ng-click="showToday(e)">
+			        <div class="today-btn-container" > 
+			        	 <button class="btn btn-default today">Today</button>
+			        </div>
+			        <div ng-show="mode=='month'" class="hidden-sm hidden-xs week-month-radio">
+			          <div class="btn-group" data-toggle="buttons">
+			            <label class="btn btn-default" ng-click="setSubmode('monthly')" ng-class="{'active': subMode == 'monthly'}">
+			              <input type="radio" name="options">Month
+			            </label>
+			            <label class="btn btn-default" ng-click="setSubmode('weekly')" ng-class="{'active': subMode == 'weekly'}">
+			              <input type="radio" name="options">Week
+			            </label>
+			          </div>
+			        </div>
 		        </div>
         
 		        <div class="pull-right btn-group btn-group-sm dashboard-actions" >
@@ -50,7 +55,10 @@
 	                				'hours-day-today' : day.date === todaysDate, 
 	                				'futureDay': day.futureness, 
 	                				'hours-day-active': selected.date === day.date}"  ng-click="setSelected(e, day, $index)">
-	                	<div class="hours-day-header" >{{thisWeekDayLables[$index] | uppercase}}</div>
+	                	<div class="hours-day-header" >
+	                		<span>{{thisWeekDayLables[$index] | uppercase}}</span>
+	                		<span class="month-day">{{day.dayOfMonth}}</span><sup>th</sup>
+	                	</div>
 	                	<div class="hours-day-content">
 	                		<span>{{day.totalHours}}</span>
 	                		<span class="hours-day-check" ng-if="day.totalHours >= 8" >
@@ -136,10 +144,29 @@
 	        </div>
 	        <div class="row hours-logged" ng-class="{'month-visible': mode=='month' && subMode != 'weekly' }" >
 	        	<div class="hours-empty" ng-show="selected.totalHours == 0 && !anyAdded()">No hours logged</div>
+	        	<div class="visible-xs visible-sm hours-logged-entry mobile-add" ng-click="showNewHoursEntry(e)">
+	        		<span class="text">Add new entry</span>
+	        		<span class="add">
+	        			<i class="fa fa-plus"></i>
+	        		</span>
+	        		<span class="close-new" ng-click="closeNewHoursEntry(e);">
+	                    <i class="fa fa-times"></i>
+	                </span>
+	        	</div>
 	        	
 	        	<div ng-if="selected.totalHours > 0 || anyAdded()" ng-repeat="hourEntry in selected.hoursEntries" >
-	        		<div class="hours-logged-entry" ng-if="hourEntry.hoursRecord.hours > 0 || hourEntry.hoursRecord.editMode" 
-	        			_hourentryindex="{{$index}}" ng-init="initNewHoursEntry(hourEntry)">
+	        		<div class="hidden-xs hidden-sm hours-logged-entry" 
+	        			ng-class="{'new-entry': hourEntry.hoursRecord.isAdded, 
+	        						'edit-entry': hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded,
+	        						'view-entry': !hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded}" 
+	        			ng-if="hourEntry.hoursRecord.hours > 0 || hourEntry.hoursRecord.editMode" 
+	        			_	hourentryindex="{{$index}}" ng-init="initNewHoursEntry(hourEntry)">
+	        			<span class="visible-xs visible-sm edit-caption" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded">
+	        				<span class="text">Edit entry</span>
+	        				<span class="close-edit" ng-click="closeEditHoursEntry(e, hourEntry);">
+			                    <i class="fa fa-times"></i>
+			                </span>
+	        			</span>
 	        			<span class="hours-logged-value" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.hours}} hrs</span>
 	        			<input class="hours-logged-value edit-input" type="text"
 			                    class="form-control" placeholder="hours"
@@ -174,14 +201,21 @@
 					  		</li>
 						</ul>
 			
-	        			<span class="hours-logged-desc" style="width: -webkit-calc(70% - 70px)" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.description}}</span>
+	        			<span class="hours-logged-desc hidden-xs hidden-sm" ng-hide="hourEntry.hoursRecord.editMode" style="width: -webkit-calc(70% - 70px)" 
+	        				ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.description}}</span>
 	        			
 	        			<input class="hours-logged-desc edit-input" type="text" style="width: -webkit-calc(70% - 100px)" 
-			                    class="form-control" placeholder="Description"
+			                    class="form-control" placeholder="Add a description"
 			                    name="hours-logged-desc-edit" ng-model="hourEntry.hoursRecord.descriptionEdited" required ng-show="hourEntry.hoursRecord.editMode">
 			                    
-		                <span class="hours-logged-action" ng-hide="hourEntry.hoursRecord.editMode" ng-click="editHoursEntry($event, hourEntry)">
+		                <span class="hours-logged-details visible-xs visible-sm" ng-class="{'visible-mobile': !hourEntry.hoursRecord.editMode}" ng-hide="hourEntry.hoursRecord.editMode" ng-click="showHideDesc(e, hourEntry)">
+		                    <i class="fa fa-chevron-down"></i>
+		                </span>
+		                <span class="hours-logged-action edit" ng-hide="hourEntry.hoursRecord.editMode" ng-click="editHoursEntry($event, hourEntry)">
 		                    <i class="fa fa-pencil"></i>
+		                </span>
+		                <span class="hours-logged-action delete visible-xs visible-sm " ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded" ng-click="deleteHoursEntry($event, hourEntry, $index)">
+		                    Delete
 		                </span>
 		                <span class="hours-logged-save" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry)">
 		                    Save
@@ -189,7 +223,7 @@
 		                <span class="hours-logged-add" ng-show="hourEntry.hoursRecord.editMode && hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry, true)">
 		                    Add
 		                </span>
-		                <span class="hours-logged-action" ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
+		                <span class="hours-logged-action hidden-sm hidden-xs" ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
 		                    <i class="fa fa-times"></i>
 		                </span>
 	        		</div>
