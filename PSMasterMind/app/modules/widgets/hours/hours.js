@@ -34,7 +34,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.mode = $scope.mode ? $scope.mode : 'week';
 	$scope.subMode = $scope.subMode ? $scope.subMode : 'weekly';
 
-	$scope.setSubmode = function( subMode ) {
+	$scope.setSubmode = function( e, subMode ) {
+		e = e ? e : window.event;
+
+		e.stopPropagation( );
+
 		$scope.subMode = subMode;
 		$scope.hoursRequest( );
 	};
@@ -91,9 +95,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	if( mm < 10 ) {
 		mm = '0' + mm;
 	}
-	// var rolesPromise =
-	// RolesService.getRolesMapByResource();
 
+	$scope.getCurrentPerson = function( ) {
+		if( $scope.mode == 'month' )
+			return $scope.profile;
+
+		return $scope.me;
+	};
 	/**
 	 * Set up the projects to be added to the hours
 	 * entry drop down
@@ -104,14 +112,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 			$scope.ongoingProjects = result.data;
 
-			ProjectsService.getMyCurrentProjects( $scope.me ).then( function( myCurrentProjects ) {
+			ProjectsService.getMyCurrentProjects( $scope.getCurrentPerson( ) ).then( function( myCurrentProjects ) {
 				$scope.myProjects = myCurrentProjects.data;
 				if( $scope.myProjects.length > 0 ) {
 					$scope.hasActiveProjects = true;
 				}
 
 				var myProjects = [ ], m;
-				
+
 				for( m = 0; m < $scope.myProjects.length; m++ ) {
 					var myProj = $scope.myProjects[ m ];
 
@@ -147,7 +155,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 				// load projects on which current person have at least one assignment in
 				// past/present/future
-				HoursService.getCurrentPersonProjects( $scope.me ).then( function( projectsWithMyAssignments ) {
+				HoursService.getCurrentPersonProjects( $scope.getCurrentPerson( ) ).then( function( projectsWithMyAssignments ) {
 
 					var found;
 
@@ -212,77 +220,74 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		} );
 	};
 
-    $scope.showNewHoursEntry = function(e) {
-        $( '.dashboard-widget.hours .row.hours-logged .hours-logged-entry' ).each( function( ind, el ) {
+	$scope.showNewHoursEntry = function( e ) {
+		$( '.dashboard-widget.hours .row.hours-logged .hours-logged-entry' ).each( function( ind, el ) {
 
-            if( $( el ).scope( ).hourEntry && $( el ).scope( ).hourEntry.hoursRecord.isAdded && ( $( el ).scope( ).hourEntry.hoursRecord.hours == 0 || $( el ).scope( ).hourEntry.hoursRecord.hours == "" || $( el ).scope( ).hourEntry.hoursRecord.hours == undefined ) )
-                $( el ).addClass('view-entry');
-                
-        } );
-        
-        e = e ? e: window.event;
-        
-        $(e.target).closest('.hours-logged-entry').find('.close-new').show();
-        $(e.target).closest('.hours-logged-entry').find('.add').hide();
-    };
-    
-    $scope.closeNewHoursEntry = function(e) {
-        $( '.dashboard-widget.hours .row.hours-logged .hours-logged-entry' ).each( function( ind, el ) {
+			if( $( el ).scope( ).hourEntry && $( el ).scope( ).hourEntry.hoursRecord.isAdded && ( $( el ).scope( ).hourEntry.hoursRecord.hours == 0 || $( el ).scope( ).hourEntry.hoursRecord.hours == "" || $( el ).scope( ).hourEntry.hoursRecord.hours == undefined ) )
+				$( el ).addClass( 'view-entry' );
 
-            if( $( el ).scope( ).hourEntry && $( el ).scope( ).hourEntry.hoursRecord.isAdded && 
-                ( $( el ).scope( ).hourEntry.hoursRecord.hours == 0 || $( el ).scope( ).hourEntry.hoursRecord.hours == "" 
-                || $( el ).scope( ).hourEntry.hoursRecord.hours == undefined ) )
-                $( el ).removeClass('view-entry');
-                
-            
-                
-                /*
-                $scope.$apply( function( ) {
-                    $scope.editHoursEntry( null, $( el ).scope( ).hourEntry, $( el ).find( 'input[name="project-task-select"]' ).eq( 0 ) );
-                } );
-                */
-        } );   
-        
-        e = e ? e: window.event;
-        
-        $(e.target).closest('.hours-logged-entry').find('.close-new').hide();
-        $(e.target).closest('.hours-logged-entry').find('.add').show();
-        
-        e.stopPropagation();
-    };
-    
-    $scope.showHideDesc = function(e, hourEntry) {
-        e = e ? e: window.event;
-        
-        var i = $(e.target).closest('.hours-logged-details').find('i');
-        var entry = $(e.target).closest('.hours-logged-entry');
-        var desc = entry.find('span.hours-logged-desc');
-         
-        if (!hourEntry.detailsVisible) {
-            i.removeClass('fa-chevron-down').addClass('fa-chevron-up'); 
-            desc.addClass('mobile-visible');
-            entry.find('.edit').addClass('mobile-visible');
-            hourEntry.detailsVisible = true;
-            //entry.css('paddingBottom', '20px');
-        } else {
-            i.removeClass('fa-chevron-up').addClass('fa-chevron-down');
-            desc.removeClass('mobile-visible');
-            entry.find('.edit').removeClass('mobile-visible');
-            hourEntry.detailsVisible = false;
-            //entry.css('paddingBottom', '0px')
-        }
-        
-    };
-    
+		} );
+
+		e = e ? e : window.event;
+
+		$( e.target ).closest( '.hours-logged-entry' ).find( '.close-new' ).show( );
+		$( e.target ).closest( '.hours-logged-entry' ).find( '.add' ).hide( );
+	};
+
+	$scope.closeNewHoursEntry = function( e ) {
+		$( '.dashboard-widget.hours .row.hours-logged .hours-logged-entry' ).each( function( ind, el ) {
+
+			if( $( el ).scope( ).hourEntry && $( el ).scope( ).hourEntry.hoursRecord.isAdded && ( $( el ).scope( ).hourEntry.hoursRecord.hours == 0 || $( el ).scope( ).hourEntry.hoursRecord.hours == "" || $( el ).scope( ).hourEntry.hoursRecord.hours == undefined ) )
+				$( el ).removeClass( 'view-entry' );
+
+			/*
+			 $scope.$apply( function( ) {
+			 $scope.editHoursEntry( null, $( el ).scope( ).hourEntry, $( el ).find(
+			 'input[name="project-task-select"]' ).eq( 0 ) );
+			 } );
+			 */
+		} );
+
+		e = e ? e : window.event;
+
+		$( e.target ).closest( '.hours-logged-entry' ).find( '.close-new' ).hide( );
+		$( e.target ).closest( '.hours-logged-entry' ).find( '.add' ).show( );
+
+		e.stopPropagation( );
+	};
+
+	$scope.showHideDesc = function( e, hourEntry ) {
+		e = e ? e : window.event;
+
+		var i = $( e.target ).closest( '.hours-logged-details' ).find( 'i' );
+		var entry = $( e.target ).closest( '.hours-logged-entry' );
+		var desc = entry.find( 'span.hours-logged-desc' );
+
+		if( !hourEntry.detailsVisible ) {
+			i.removeClass( 'fa-chevron-down' ).addClass( 'fa-chevron-up' );
+			desc.addClass( 'mobile-visible' );
+			entry.find( '.edit' ).addClass( 'mobile-visible' );
+			hourEntry.detailsVisible = true;
+			//entry.css('paddingBottom', '20px');
+		} else {
+			i.removeClass( 'fa-chevron-up' ).addClass( 'fa-chevron-down' );
+			desc.removeClass( 'mobile-visible' );
+			entry.find( '.edit' ).removeClass( 'mobile-visible' );
+			hourEntry.detailsVisible = false;
+			//entry.css('paddingBottom', '0px')
+		}
+
+	};
+
 	$scope.editHoursEntry = function( e, hourEntry, tagetInput ) {
-	    e = e ? e : window.event;
-	    
-	    if (e) {
-    	    var hoursLoggedEntry = $( e.target ).closest( '.hours-logged-entry' );
-    	    
-    	    hoursLoggedEntry.find('.mobile-visible').removeClass('mobile-visible');
-    	    hoursLoggedEntry.find('.fa-chevron-up').removeClass('fa-chevron-up').addClass('fa-chevron-down');
-	    }
+		e = e ? e : window.event;
+
+		if( e ) {
+			var hoursLoggedEntry = $( e.target ).closest( '.hours-logged-entry' );
+
+			hoursLoggedEntry.find( '.mobile-visible' ).removeClass( 'mobile-visible' );
+			hoursLoggedEntry.find( '.fa-chevron-up' ).removeClass( 'fa-chevron-up' ).addClass( 'fa-chevron-down' );
+		}
 		hourEntry.hoursRecord.editMode = true;
 
 		hourEntry.hoursRecord.hoursEdited = hourEntry.hoursRecord.hours;
@@ -292,30 +297,29 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		hourEntry.selectedItem = hourEntry.hoursRecord.project ? hourEntry.project : hourEntry.hoursRecord.task;
 		// }
 
-		
 		tagetInput = tagetInput ? tagetInput : hoursLoggedEntry.find( '[name="project-task-select"]' );
 
 		$scope.bindAutocompleteHandlers( tagetInput );
 	};
 
-    /**
-     * Mobile version while operation distributed
-     */
-    $scope.closeEditHoursEntry = function(e, hourEntry) {
-        e = e ? e: window.event;
-        $scope.clearAutocompleteHandlers( $( e.target ).closest( '.hours-logged-entry' ).find( '[name="project-task-select"]' ) );
-        
-        hourEntry.hoursRecord.editMode = false;
-        hourEntry.detailsVisible = false;
-    };
-    
-    $scope.deleteHoursEntry = function(e, hourEntry, index) {
-        $scope.removeOrCloseHourEntry(e, hourEntry, index);
-    };
-    
+	/**
+	 * Mobile version while operation distributed
+	 */
+	$scope.closeEditHoursEntry = function( e, hourEntry ) {
+		e = e ? e : window.event;
+		$scope.clearAutocompleteHandlers( $( e.target ).closest( '.hours-logged-entry' ).find( '[name="project-task-select"]' ) );
+
+		hourEntry.hoursRecord.editMode = false;
+		hourEntry.detailsVisible = false;
+	};
+
+	$scope.deleteHoursEntry = function( e, hourEntry, index ) {
+		$scope.removeOrCloseHourEntry( e, hourEntry, index );
+	};
+
 	$scope.removeOrCloseHourEntry = function( e, hourEntry, index ) {
-	    e = e ? e: window.event;
-	    
+		e = e ? e : window.event;
+
 		if( hourEntry.hoursRecord.isAdded )
 			return;
 
@@ -396,18 +400,19 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		hourEntry.hoursRecord.editMode = false;
 		hourEntry.detailsVisible = false;
-		
+
 		$scope.addHours( hourEntry, isAdded );
 	};
 
 	$scope.setSelected = function( e, day, index ) {
+
 		if( $scope.selected && $scope.isDisplayedWeek( ) ) {
 			for( var i = 0; i < $scope.displayedHours.length; i++ ) {
 				if( $scope.selected.date === $scope.displayedHours[ i ].date ) {
 					$scope.displayedHours[ i ] = $scope.selected;
 				}
 			}
-		} else {
+		} else if( $scope.selected ) {
 			for( var i = 0; i < $scope.displayedMonthDays.length; i++ ) {
 				if( $scope.selected.date === $scope.displayedMonthDays[ i ].date ) {
 					$scope.displayedMonthDays[ i ] = $scope.selected;
@@ -432,8 +437,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		}
 
 		e = e ? e : window.event;
-		
-		var isCircle = e ? $( e.target ).closest( '.active-circle' ).size( ) > 0: false;
+
+		var isCircle = e ? $( e.target ).closest( '.active-circle' ).size( ) > 0 : false;
 
 		if( isCircle ) {
 			$scope.showHideLoggedHours( e, index );
@@ -606,7 +611,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						date: $scope.selected.date,
 						description: "",
 						hours: "",
-						person: $scope.me,
+						person: $scope.getCurrentPerson( ),
 						editMode: true,
 						isAdded: true
 
@@ -650,7 +655,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			description: "",
 			hours: 0,
 			project: {},
-			person: $scope.me,
+			person: $scope.getCurrentPerson( ),
 			editMode: true,
 			isAdded: true
 
@@ -707,8 +712,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[        t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[        t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[            t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[            t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -732,7 +737,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	};
 
-	var me = $scope.me ? $scope.me.about : '';
+	var me = $scope.getCurrentPerson( ) ? $scope.getCurrentPerson( ).about : '';
 
 	// Doc Brown - time travel.
 	$scope.dateIndex = 0;
@@ -766,13 +771,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		if( foundInd > 0 )
 			//$scope.selected = $scope.displayedHours[ foundInd - 1 ];
-			$scope.setSelected(null, $scope.displayedHours[ foundInd - 1  ], foundInd - 1 );
+			$scope.setSelected( null, $scope.displayedHours[ foundInd - 1 ], foundInd - 1 );
 		else {
 			$scope.dateIndex = $scope.dateIndex + 7;
 
 			$scope.hoursRequest( function( ) {
 				//$scope.selected = $scope.displayedHours[ $scope.displayedHours.length - 1 ];
-				$scope.setSelected(null, $scope.displayedHours[ $scope.displayedHours.length - 1  ], $scope.displayedHours.length - 1 );
+				$scope.setSelected( null, $scope.displayedHours[ $scope.displayedHours.length - 1 ], $scope.displayedHours.length - 1 );
 			} );
 		}
 
@@ -789,12 +794,12 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		if( foundInd < $scope.displayedHours.length - 1 )
 			//$scope.selected = $scope.displayedHours[ foundInd + 1 ];
-			$scope.setSelected(null, $scope.displayedHours[ foundInd + 1 ], foundInd + 1 );
+			$scope.setSelected( null, $scope.displayedHours[ foundInd + 1 ], foundInd + 1 );
 		else {
 			$scope.dateIndex = $scope.dateIndex - 7;
 			$scope.hoursRequest( function( ) {
 				//$scope.selected = $scope.displayedHours[ 0 ];
-				$scope.setSelected(null, $scope.displayedHours[ 0 ], 0 );
+				$scope.setSelected( null, $scope.displayedHours[ 0 ], 0 );
 			} );
 		}
 
@@ -847,17 +852,21 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		// console.log($scope.thisWeekDates.length);
 	};
 
-    $scope.showToday = function(e) {
-        e = e ? e: window.event;
-        
-        $scope.dateIndex = 0;
-        $scope.currentMonth = $scope.moment( );
-        
-        if ($scope.selected)
-            $scope.setSelected(null, $scope.selected, -1 );
-        $scope.hoursRequest();
-    };
-    
+	$scope.showToday = function( e ) {
+		e = e ? e : window.event;
+
+		e.stopPropagation( );
+
+		$scope.dateIndex = 0;
+		$scope.currentMonth = $scope.moment( );
+
+		if( $scope.selected )
+			$scope.setSelected( null, $scope.selected, -1 );
+		delete $scope.selected;
+
+		$scope.hoursRequest( );
+	};
+
 	$scope.calculateMonthDates = function( callback ) {
 		$scope.displayedMonthDays = [ ];
 		$scope.todaysDate = $scope.moment( ).format( 'YYYY-MM-DD' );
@@ -887,14 +896,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[        d1.getMonth( ) ];
+		var month1 = $scope.months[            d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[        d2.getMonth( ) ];
+		var month2 = $scope.months[            d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
@@ -904,7 +913,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.hoursRequest = function( cb ) {
 		if( $scope.isDisplayedWeek( ) )
 			$scope.showWeekDates( function( result ) {
-				HoursService.getHoursRecordsBetweenDates( $scope.me, $scope.thisWeekDates[ 0 ], $scope.thisWeekDates[ 6 ] ).then( function( result ) {
+				HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), $scope.thisWeekDates[ 0 ], $scope.thisWeekDates[ 6 ] ).then( function( result ) {
 					if( result.length === 0 ) {
 						console.error( "getHoursRecordsBetweenDates(" + $scope.thisWeekDates[ 0 ] + "," + $scope.thisWeekDates[ 6 ] + ") gave me no results" );
 					} else {
@@ -917,7 +926,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 							$scope.displayedHours[ i ].futureness = futureness;
 							$scope.displayedHours[ i ].dayOfMonth = $scope.moment( $scope.displayedHours[ i ].date ).date( );
-							
+
 							for( var j = 0; j < $scope.displayedHours[ i ].hoursEntries.length; j++ ) {
 								if( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord ) {
 									$scope.displayedHours[ i ].totalHours = $scope.displayedHours[ i ].totalHours + $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.hours;
@@ -936,24 +945,25 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 								// =
 								// JSON.parse(JSON.stringify(
 								// $scope.displayedHours[i]));
-								$scope.setSelected(null, $scope.displayedHours[ i ], i);
+								$scope.setSelected( null, $scope.displayedHours[ i ], i );
 								//$scope.selected = $scope.displayedHours[ i ];
 							} else if( $scope.selected && $scope.displayedHours[ i ].date == $scope.selected.date ) {
 								//$scope.selected = $scope.displayedHours[ i ];
-								$scope.setSelected(null, $scope.displayedHours[ i ], i);
+								$scope.setSelected( null, $scope.displayedHours[ i ], i );
 							}
 
-							$( '.dashboard-widget.hours .row.hours-logged' ).show( );
-
-							if( cb )
-								cb( );
 						}
+
+						$( '.dashboard-widget.hours .row.hours-logged' ).show( );
+
+						if( cb )
+							cb( );
 					}
 				} );
 			} );
 		else
 			$scope.calculateMonthDates( function( monthDays ) {
-				HoursService.getHoursRecordsBetweenDates( $scope.me, monthDays[ 0 ], monthDays[ 34 ] ).then( function( result ) {
+				HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), monthDays[ 0 ], monthDays[ 34 ] ).then( function( result ) {
 					if( result.length === 0 ) {
 						console.error( "getHoursRecordsBetweenDates(" + $scope.thisWeekDates[ 0 ] + "," + $scope.thisWeekDates[ 34 ] + ") gave me no results" );
 					} else {
@@ -977,7 +987,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 								if( $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord ) {
 									$scope.displayedMonthDays[ i ].totalHours = $scope.displayedMonthDays[ i ].totalHours + $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.hours;
 
-									if( $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.task ) {
+									if( $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.task && $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.task.resource ) {
 										$scope.displayedMonthDays[i].hoursEntries[ j ].task = $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.task;
 										Resources.resolve( $scope.displayedMonthDays[i].hoursEntries[ j ].task );
 									}
@@ -987,15 +997,16 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 							if( !$scope.selected && $scope.displayedMonthDays[ i ].date == $scope.todaysDate ) {
 
 								//$scope.selected = $scope.displayedMonthDays[ i ];
-								$scope.setSelected(null, $scope.displayedMonthDays[ i ], i);
+								$scope.setSelected( null, $scope.displayedMonthDays[ i ], i );
 							} else if( $scope.selected && $scope.displayedMonthDays[ i ].date == $scope.selected.date ) {
 								//$scope.selected = $scope.displayedMonthDays[ i ];
-								$scope.setSelected(null, $scope.displayedMonthDays[ i ], i);
+								$scope.setSelected( null, $scope.displayedMonthDays[ i ], i );
 							}
 
-							if( cb )
-								cb( );
 						}
+
+						if( cb )
+							cb( );
 					}
 				} );
 			} );
@@ -1060,7 +1071,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				totalHours += !isNaN( parseFloat( entry.hoursRecord.hours ) ) ? parseFloat( entry.hoursRecord.hours ) : 0;
 				// if (!entry.hoursRecord.person) {
 				entry.hoursRecord.person = {
-					resource: $scope.me.about
+					resource: $scope.getCurrentPerson( ).about
 				};
 				// }
 				if( !entry.hoursRecord.date ) {
@@ -1180,7 +1191,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		if( !copyEntryFound ) {
 			var fromDate = new Date( parseInt( tmpD[ 0 ] ), parseInt( tmpD[ 1 ] ) - 1, parseInt( tmpD[ 2 ] ) - 7 );
 			var from = getShortDate( fromDate );
-			HoursService.getHoursRecordsBetweenDates( $scope.me, from, shortDate ).then( function( result ) {
+			HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), from, shortDate ).then( function( result ) {
 				for( var i = result.length - 1; i >= 0; i-- ) {
 					if( result[ i ].hoursEntries.length > 0 ) {
 						var houseRecordsInside = _.filter( result[ i ].hoursEntries, function( h ) {
@@ -1229,7 +1240,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 					description: copyFromEntries[ i ].hoursRecord.description,
 					hours: copyFromEntries[ i ].hoursRecord.hours,
 					person: {
-						resource: $scope.me.about
+						resource: $scope.getCurrentPerson( ).about
 					}
 				};
 
@@ -1303,10 +1314,12 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		$scope.loadProjects( );
 	};
 
-	if( $scope.me )
+	if( $scope.me && $scope.mode == 'week' || $scope.profile && $scope.mode == 'month' )
 		init( );
-	else
+	else if( $scope.mode == 'week' )
 		$rootScope.$on( 'me:loaded', init );
+	else if( $scope.mode == 'month' )
+		$rootScope.$on( 'profile:loaded', init );
 
 	$scope.$on( "$destroy", function( ) {
 		$scope.unbindEventHandlers( );

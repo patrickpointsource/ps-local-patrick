@@ -13,10 +13,10 @@
 			        </div>
 			        <div ng-show="mode=='month'" class="hidden-sm hidden-xs week-month-radio">
 			          <div class="btn-group" data-toggle="buttons">
-			            <label class="btn btn-default" ng-click="setSubmode('monthly')" ng-class="{'active': subMode == 'monthly'}">
+			            <label class="btn btn-default" ng-click="setSubmode(e, 'monthly')" ng-class="{'active': subMode == 'monthly'}">
 			              <input type="radio" name="options">Month
 			            </label>
-			            <label class="btn btn-default" ng-click="setSubmode('weekly')" ng-class="{'active': subMode == 'weekly'}">
+			            <label class="btn btn-default" ng-click="setSubmode(e, 'weekly')" ng-class="{'active': subMode == 'weekly'}">
 			              <input type="radio" name="options">Week
 			            </label>
 			          </div>
