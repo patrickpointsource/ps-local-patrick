@@ -188,7 +188,7 @@ angular.module('Mastermind.controllers.projects')
             return -1;
           }
 
-          if (a[property] < b[property]) {
+          if (a[property].toLowerCase() < b[property].toLowerCase()) {
             return descending ? -1 : 1;
           } else if (a[property] > b[property]) {
             return descending ? 1 : -1;
@@ -205,19 +205,19 @@ angular.module('Mastermind.controllers.projects')
         }
 
         if (type === 'proj-desc') {
-          $scope.sort($scope.projects, 'name', true);
+        	$scope.projects = _.sortBy($scope.projects, function(proj) { return proj.name.toLowerCase();});
         }
 
         if (type === 'proj-asc') {
-          $scope.sort($scope.projects, 'name', false);
+        	$scope.projects = _.sortBy($scope.projects, function(proj) { return proj.name.toLowerCase();}).reverse();
         }
 
         if (type === 'cust-desc') {
-          $scope.sort($scope.projects, 'customerName', true);
+          $scope.projects = _.sortBy($scope.projects, function(proj) { return proj.customerName.toLowerCase();});
         }
 
         if (type === 'cust-asc') {
-          $scope.sort($scope.projects, 'customerName', false);
+          $scope.projects = _.sortBy($scope.projects, function(proj) { return proj.customerName.toLowerCase();}).reverse();
         }
 
         if (type === 'sd-desc') {
@@ -289,11 +289,11 @@ angular.module('Mastermind.controllers.projects')
         }
 
         if (type === 'stat-desc') {
-          $scope.sort($scope.projects, 'state', true);
+          $scope.projects = _.sortBy($scope.projects, function(proj) { return proj.state.toLowerCase();});
         }
 
         if (type === 'stat-asc') {
-          $scope.sort($scope.projects, 'state', false);
+          $scope.projects = _.sortBy($scope.projects, function(proj) { return proj.state.toLowerCase();}).reverse();
         }
       };
 

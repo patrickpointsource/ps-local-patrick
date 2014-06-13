@@ -74,27 +74,11 @@ angular.module('Mastermind.controllers.people')
     	  }
     	  
     	  if(type == 'name-desc') {
-    		  $scope.people.sort(function(a, b) {
-    			  if (a.familyName < b.familyName){
-    			        return -1;
-    			  } else if (a.familyName > b.familyName) {
-    			       return  1;
-    			    } else{
-    			        return 0;
-    			      } 
-    		  });
+    		  $scope.people = _.sortBy($scope.people, function(person) { return person.familyName.toLowerCase();});
     	  }
     	  
     	  if(type == 'name-asc') {
-    		  $scope.people.sort(function(a, b) {
-    			  if (a.familyName < b.familyName){
-    			        return 1;
-    			  } else if (a.familyName > b.familyName) {
-    			       return  -1;
-    			    } else{
-    			        return 0;
-    			      } 
-    		  });
+    		  $scope.people = _.sortBy($scope.people, function(person) { return person.familyName.toLowerCase();}).reverse();
     	  }
     	  
     	  if(type == 'role-desc') {
