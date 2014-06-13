@@ -120,12 +120,12 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		handler: "showAdmin",
 		iconCss: "icon-admin",
 		isRender: $scope.adminAccess
-	}, {
-		text: "Reports",
-		value: "reports",
-		handler: "showReports",
-		iconCss: "icon-reports",
-		isRender: $scope.projectManagementAccess
+//	}, {
+//		text: "Reports",
+//		value: "reports",
+//		handler: "showReports",
+//		iconCss: "icon-reports",
+//		isRender: $scope.projectManagementAccess
 	}];
 
 	$scope.isSubitemSelected = function(subItem, item) {
