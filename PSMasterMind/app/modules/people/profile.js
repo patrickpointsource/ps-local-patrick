@@ -356,7 +356,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		while( currentDate <= maxDate ) {
 			o = {
-				name: $scope.monthNames[ currentDate.getMonth( ) ],
+				name: $scope.monthNames[  currentDate.getMonth( ) ],
 				value: currentDate.getMonth( )
 			};
 			$scope.hoursPeriods.push( o );
@@ -370,6 +370,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			currentDate.setDate( 1 );
 			currentDate.setMonth( currentDate.getMonth( ) + 1 );
 		}
+	};
+
+	$scope.setCurrentMonth = function( month ) {
+		$scope.selectedHoursPeriod = month;
+		$scope.handleHoursPeriodChanged( );
 	};
 
 	$scope.handleHoursPeriodChanged = function( ) {
@@ -827,4 +832,4 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	//      }
 	//    };
 
-} ] ); 
+} ] );

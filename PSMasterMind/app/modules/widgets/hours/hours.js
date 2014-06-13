@@ -41,6 +41,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		$scope.subMode = subMode;
 		$scope.hoursRequest( );
+
+		if( $scope.mode == 'month' && $scope.subMode == 'monthly' )
+			$rootScope.showHoursMonthInfo = true;
+		else
+			$rootScope.showHoursMonthInfo = false;
 	};
 
 	$scope.isDisplayedWeek = function( ) {
@@ -716,8 +721,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[             t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[             t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[               t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[               t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -813,11 +818,19 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	$scope.nextMonth = function( ) {
 		$scope.currentMonth = $scope.moment( $scope.currentMonth ).add( 1, 'month' );
+
+		if( $scope.setCurrentMonth )
+			$scope.setCurrentMonth( $scope.currentMonth.month( ) );
+
 		$scope.hoursRequest( );
 	};
 
 	$scope.backMonth = function( ) {
 		$scope.currentMonth = $scope.moment( $scope.currentMonth ).subtract( 1, 'month' );
+
+		if( $scope.setCurrentMonth )
+			$scope.setCurrentMonth( $scope.currentMonth.month( ) );
+
 		$scope.hoursRequest( );
 	};
 
@@ -900,14 +913,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[             d1.getMonth( ) ];
+		var month1 = $scope.months[               d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[             d2.getMonth( ) ];
+		var month2 = $scope.months[               d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
