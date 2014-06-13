@@ -53,7 +53,7 @@
                 	<div class="hours-day-entry"  
 	                	ng-class="{'hours-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness, 
 	                				'hours-day-today' : day.date === todaysDate, 
-	                				'futureDay': day.futureness, 
+	                				'hours-day-not-logged': day.totalHours == 0, 
 	                				'hours-day-active': selected.date === day.date}"  ng-click="setSelected(e, day, $index)">
 	                	<div class="hours-day-header" >
 	                		<span>{{thisWeekDayLables[$index] | uppercase}}</span>
@@ -114,7 +114,9 @@
   
                 <div class="text-center hours-day" ng-class="{'active': selected.date === day.date}">
                 	<div class="hours-day-entry"  
-	                	ng-class="{'hours-day-active': selected.date === day.date, 'hours-day-first-in-week': $index % 7 == 0 && $index > 0}"  ng-click="setSelected(e, day, $index)">
+	                	ng-class="{'hours-day-active': selected.date === day.date, 
+	                				'hours-day-first-in-week': $index % 7 == 0 && $index > 0,
+	                				'hours-day-not-logged': day.totalHours == 0}"  ng-click="setSelected(e, day, $index)">
 	                	
 	                	<div class="hours-day-content">
 	                		<span class="month-day">{{day.dayOfMonth}}</span>

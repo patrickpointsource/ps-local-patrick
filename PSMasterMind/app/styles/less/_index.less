@@ -921,6 +921,7 @@ header .navbar .navbar-breadcrumb {
       .hours-day-entry {
         height: 108px;
         position:relative;
+        color: black;
         
         .active-circle {
           display: none;
@@ -949,6 +950,10 @@ header .navbar .navbar-breadcrumb {
         .active-circle.bottom {
           top: auto;
           bottom: 3px;
+        }
+        
+        .hours {
+          color: black;
         }
       }
       
@@ -997,7 +1002,7 @@ header .navbar .navbar-breadcrumb {
         
         .hours {
           font-weight: bold;
-          color: black;
+          //color: black;
         }
       }
       
@@ -1175,6 +1180,13 @@ header .navbar .navbar-breadcrumb {
   border-bottom-width: 0px;
 }
 
+.hours-day-not-logged {
+  color: #eee !important;
+  
+  .hours {
+    color: #a8a8a8 !important;
+  }
+}
 .hours-logged {
   min-height: 50px;
   background-color: #f7f7f7 !important;
