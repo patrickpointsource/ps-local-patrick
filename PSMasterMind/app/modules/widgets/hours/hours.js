@@ -47,6 +47,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		return $scope.mode == 'month' && $scope.subMode == 'weekly' || $scope.mode == 'week';
 	};
 
+	$scope.showHideWidget = function( show ) {
+		$scope.hasAssignment = show;
+		$rootScope.hasAssignment = show;
+	};
+
 	var taskIconsMap = {
 		"meetings": "fa-comments-o",
 		"design": "fa-lightbulb-o",
@@ -127,15 +132,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 					myProjects.push( myProj );
 
 					if( myProj && myProj.status && myProj.status.hasAssignment ) {
-						$scope.hasAssignment = true;
-						$rootScope.hasAssignment = true;
+						$scope.showHideWidget( true );
 					}
 
 				}
 
-				var otherProjects = [ ];
+				var otherProjects = [ ], n;
 
-				for( var n = $scope.ongoingProjects.length - 1; n >= 0; n-- ) {
+				for( n = $scope.ongoingProjects.length - 1; n >= 0; n-- ) {
 					var proj = _.find( myProjects, function( mp ) {
 						return mp.resource == $scope.ongoingProjects[ n ].resource;
 					} );
@@ -157,9 +161,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				// past/present/future
 				HoursService.getCurrentPersonProjects( $scope.getCurrentPerson( ) ).then( function( projectsWithMyAssignments ) {
 
-					var found;
+					var found, i;
 
-					for( var i = 0; i < projectsWithMyAssignments.length; i++ ) {
+					for( i = 0; i < projectsWithMyAssignments.length; i++ ) {
 						found = _.find( $scope.projectTasksList, function( tp ) {
 							return tp.resource == projectsWithMyAssignments[ i ].resource;
 						} );
@@ -712,8 +716,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[            t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[            t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[             t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[             t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -896,14 +900,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[            d1.getMonth( ) ];
+		var month1 = $scope.months[             d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[            d2.getMonth( ) ];
+		var month2 = $scope.months[             d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
@@ -917,6 +921,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 					if( result.length === 0 ) {
 						console.error( "getHoursRecordsBetweenDates(" + $scope.thisWeekDates[ 0 ] + "," + $scope.thisWeekDates[ 6 ] + ") gave me no results" );
 					} else {
+						$scope.showHideWidget( true );
+
 						$scope.displayedHours = result;
 
 						for( var i = 0; i < $scope.displayedHours.length; i++ ) {
@@ -967,6 +973,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 					if( result.length === 0 ) {
 						console.error( "getHoursRecordsBetweenDates(" + $scope.thisWeekDates[ 0 ] + "," + $scope.thisWeekDates[ 34 ] + ") gave me no results" );
 					} else {
+						$scope.showHideWidget( true );
 						$scope.fillWeekDays( $scope.moment( monthDays[ 0 ] ) );
 
 						$scope.displayedMonthDays = result;
