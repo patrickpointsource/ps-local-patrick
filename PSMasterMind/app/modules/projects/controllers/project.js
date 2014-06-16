@@ -317,8 +317,9 @@ angular.module('Mastermind')
               }
             }
             
-            if ($scope.projectAssignments)
-            	AssignmentService.save($scope.project, $scope.projectAssignments);
+            // save assignments after project
+            //if ($scope.projectAssignments)
+            //	AssignmentService.save($scope.project, $scope.projectAssignments);
             
             callback();
     	});
@@ -338,6 +339,36 @@ angular.module('Mastermind')
     }
     
     $scope.shiftAssignments = function(role, startDelta, endDelta) {
+    	for(var i = 0; i < $scope.project.roles.length; i++) {
+    		for(var j = 0; j < $scope.project.roles[i].assignees.length; j++) {
+    			var assignment = $scope.project.roles[i].assignees[j];
+    			if(assignment.role && assignment.role.resource.indexOf(role._id) > -1) {
+    				// if start date changed
+        			if(startDelta != 0) {
+        				// shift start
+        				var tmpDate = new Date(assignment.startDate);
+        				tmpDate = new Date(tmpDate.getTime() + startDelta);
+        				tmpDate = $scope.validateShiftDates(new Date(role.startDate), new Date(role.endDate), tmpDate);
+        				assignment.startDate = getShortDate(tmpDate);
+        			}
+        			
+        			// if end date changed
+        			if(endDelta != 0) {
+        				//shift end
+        				var tmpDate = new Date(assignment.endDate);
+        				tmpDate = new Date(tmpDate.getTime() + endDelta);
+        				tmpDate = $scope.validateShiftDates(new Date(role.startDate), new Date(role.endDate), tmpDate);
+        				assignment.startDate = getShortDate(tmpDate);
+        			}
+        			
+        			// if endDate was set or removed, change assignment endDate
+        			if((role.endDate && !assignment.endDate) || (!role.endDate && assignment.endDate)){
+        				assignment.endDate = role.endDate;
+        			}
+    			}
+    		}
+    	}
+    	
     	for(var i = 0; $scope.projectAssignments && i < $scope.projectAssignments.members.length; i++) {
     		var assignment = $scope.projectAssignments.members[i];
     		if(assignment.role.resource.indexOf(role._id) > -1) {
@@ -348,14 +379,6 @@ angular.module('Mastermind')
     				tmpDate = new Date(tmpDate.getTime() + startDelta);
     				tmpDate = $scope.validateShiftDates(new Date(role.startDate), new Date(role.endDate), tmpDate);
     				assignment.startDate = getShortDate(tmpDate);
-    			
-    				// shift end if exist
-    				/*if(assignment.endDate) {
-    					var tmpDate = new Date(assignment.endDate);
-    					tmpDate = new Date(tmpDate.getTime() + startDelta);
-    					tmpDate = $scope.validateShiftDates(new Date(role.startDate), new Date(role.endDate), tmpDate);
-    					assignment.endDate = getShortDate(tmpDate);
-    				}*/
     			}
     			
     			// if end date changed
@@ -365,13 +388,6 @@ angular.module('Mastermind')
     				tmpDate = new Date(tmpDate.getTime() + endDelta);
     				tmpDate = $scope.validateShiftDates(new Date(role.startDate), new Date(role.endDate), tmpDate);
     				assignment.startDate = getShortDate(tmpDate);
-    			
-    				// shift start
-    				/*var tmpDate = new Date(assignment.startDate);
-    				tmpDate = new Date(tmpDate.getTime() + endDelta);
-    				tmpDate = $scope.validateShiftDates(new Date(role.startDate), new Date(role.endDate), tmpDate);
-    				assignment.endDate = getShortDate(tmpDate);*/
-    				
     			}
     			
     			// if endDate was set or removed, change assignment endDate
