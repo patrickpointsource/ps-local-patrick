@@ -421,20 +421,28 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	};
 
 	$scope.setSelected = function( e, day, index ) {
+		var i = 0;
+
+		// skip situation when overriding provided editing for specific day
+		//if ($scope.selected && $scope.selected.date == day.date)
+		//    return;
 
 		if( $scope.selected && $scope.isDisplayedWeek( ) ) {
-			for( var i = 0; i < $scope.displayedHours.length; i++ ) {
+			for( i = 0; i < $scope.displayedHours.length; i++ ) {
 				if( $scope.selected.date === $scope.displayedHours[ i ].date ) {
 					$scope.displayedHours[ i ] = $scope.selected;
 				}
 			}
 		} else if( $scope.selected ) {
-			for( var i = 0; i < $scope.displayedMonthDays.length; i++ ) {
+
+			for( i = 0; i < $scope.displayedMonthDays.length; i++ ) {
 				if( $scope.selected.date === $scope.displayedMonthDays[ i ].date ) {
 					$scope.displayedMonthDays[ i ] = $scope.selected;
 				}
 			}
 		}
+
+		day = $scope.isDisplayedWeek( ) ? $scope.displayedHours[ index ] : $scope.displayedMonthDays[ index ];
 
 		if( $scope.selected )
 			delete $scope.selected;
@@ -766,8 +774,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[                    t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[                    t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[                          t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[                          t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -958,14 +966,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[                    d1.getMonth( ) ];
+		var month1 = $scope.months[                          d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[                    d2.getMonth( ) ];
+		var month2 = $scope.months[                          d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
@@ -973,6 +981,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	};
 
 	$scope.hoursRequest = function( cb ) {
+		var numberVal = function( v ) {
+			if( !isNaN( parseFloat( v ) ) )
+				return parseFloat( v );
+
+			return 0;
+
+		};
+
 		if( $scope.isDisplayedWeek( ) )
 			$scope.showWeekDates( function( result ) {
 				HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), $scope.thisWeekDates[ 0 ], $scope.thisWeekDates[ 6 ] ).then( function( result ) {
@@ -993,7 +1009,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 							for( var j = 0; j < $scope.displayedHours[ i ].hoursEntries.length; j++ ) {
 								if( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord ) {
-									$scope.displayedHours[ i ].totalHours = $scope.displayedHours[ i ].totalHours + $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.hours;
+									$scope.displayedHours[ i ].totalHours = numberVal( $scope.displayedHours[ i ].totalHours ) + numberVal( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.hours );
 
 									if( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.task ) {
 										$scope.displayedHours[i].hoursEntries[ j ].task = $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.task;
@@ -1050,7 +1066,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 							for( var j = 0; j < $scope.displayedMonthDays[ i ].hoursEntries.length; j++ ) {
 								if( $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord ) {
-									$scope.displayedMonthDays[ i ].totalHours = $scope.displayedMonthDays[ i ].totalHours + $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.hours;
+									$scope.displayedMonthDays[ i ].totalHours = numberVal( $scope.displayedMonthDays[ i ].totalHours ) + numberVal( $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.hours );
 
 									if( $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.task && $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.task.resource ) {
 										$scope.displayedMonthDays[i].hoursEntries[ j ].task = $scope.displayedMonthDays[i].hoursEntries[ j ].hoursRecord.task;
