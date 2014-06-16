@@ -1070,6 +1070,7 @@ header .navbar .navbar-breadcrumb {
       
       .start-end {
         display: inline-block;
+        margin-left: 12px;
       }
       
       .week-month-radio {
@@ -1105,6 +1106,11 @@ header .navbar .navbar-breadcrumb {
 
     li {
       overflow: hidden;
+      
+      span.highlight {
+        color: #1bc1ac !important;
+        font-weight: bold;
+      }
     }
     @media (max-width: @screen-sm) {
       left: -5px;
@@ -1467,14 +1473,16 @@ header .navbar .navbar-breadcrumb {
 }
 
 .hours-logged-entry.edit-entry, .hours-logged-entry.view-entry {
-  display: flex !important;
-  display: -webkit-box !important;
-  display: -ms-flexbox !important;
-  display: -webkit-flex !important;
-  
-  // make it multiline
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  @media (max-width: @screen-sm) {
+    display: flex !important;
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: -webkit-flex !important;
+    
+    // make it multiline
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
 }
   
 .hours-logged-entry > span,

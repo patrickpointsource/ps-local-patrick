@@ -519,9 +519,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			var autocomplete = input.parent( ).find( 'ul.dropdown-menu' );
 
 			var filter = function( txt, substr ) {
-				return txt.replace( substr, function( s ) {
-					return '<span class="highlight">' + s + '</span>';
-				} )
+
+				if( substr )
+					txt = txt.replace( new RegExp( substr, "gi" ), function( s ) {
+						return '<span class="highlight">' + s + '</span>';
+					} );
+
+				return txt;
 			};
 
 			autocomplete.find( 'li' ).each( function( ind, el ) {
@@ -548,12 +552,22 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				} else
 					$( el ).css( 'display', 'none' );
 
+				var newText = '';
+
 				if( taskName && taskName.indexOf( val ) > -1 ) {
-					$( el ).find( '.task-name' ).html( filter( $( el ).find( '.task-name' ).attr( '_origName' ), val ) );
-				} else if( projectName && projectName.indexOf( val ) > -1 ) {
-					$( el ).find( '.project-name' ).html( filter( $( el ).find( '.project-name' ).attr( '_origName' ), val ) );
-				} else if( projectCustomerName && projectCustomerName.indexOf( val ) > -1 ) {
-					$( el ).find( '.project-customer-name' ).html( filter( $( el ).find( '.project-customer-name' ).attr( '_origName' ), val ) );
+					newText = filter( $( el ).find( '.task-name' ).attr( '_origName' ), val );
+					$( el ).find( '.task-name' ).html( newText );
+				}
+
+				if( projectName && projectName.indexOf( val ) > -1 ) {
+					newText = filter( $( el ).find( '.project-name' ).attr( '_origName' ), val );
+
+					$( el ).find( '.project-name' ).html( newText );
+				}
+
+				if( projectCustomerName && projectCustomerName.indexOf( val ) > -1 ) {
+					newText = filter( $( el ).find( '.project-customer-name' ).attr( '_origName' ), val );
+					$( el ).find( '.project-customer-name' ).html( newText );
 				}
 
 			} );
@@ -693,7 +707,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var newHoursRecord = {
 			date: day.date,
 			description: "",
-			hours: 0,
+			hours: "",
 			project: {},
 			person: $scope.getCurrentPerson( ),
 			editMode: true,
@@ -752,8 +766,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[                  t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[                  t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[                    t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[                    t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -944,14 +958,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[                  d1.getMonth( ) ];
+		var month1 = $scope.months[                    d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[                  d2.getMonth( ) ];
+		var month2 = $scope.months[                    d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;

@@ -2,15 +2,13 @@
 	<div class="panel panel-default dashboard-widget hours" >
 	    <div class="panel-heading">
 	    	<div class="inner-heading">
-	    		<span> <!-- <i class="fa fa-calendar-o"></i> --> Hours </span>
-		    	<!--
-		        <div ng-show="mode=='week'" class="start-end" > 
-		        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
-		        </div>-->
-		        <div class="header-container" ng-click="showToday(e)">
-		        	<div ng-show="isDisplayedWeek() && false" class="start-end" > 
-			        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
+	    		<span class="hidden-xs"> Hours </span>
+		    	
+		        <div ng-show="isDisplayedWeek()" class="start-end" > 
+			        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}}  
 			        </div>
+		        <div class="header-container" ng-click="showToday(e)">
+		        	
 			        <div class="today-btn-container" > 
 			        	 <button class="btn btn-default today">Today</button>
 			        </div>
@@ -174,7 +172,7 @@
 	        			</span>
 	        			<span class="hours-logged-value" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.hours}} hrs</span>
 	        			<input class="hours-logged-value edit-input" type="text"
-			                    class="form-control" placeholder="hours"
+			                    class="form-control" placeholder="# hours"
 			                    name="hours-logged-value-edit" ng-model="hourEntry.hoursRecord.hoursEdited" required ng-show="hourEntry.hoursRecord.editMode">
 	        			  
 	        			<span class="hours-logged-project" ng-hide="hourEntry.hoursRecord.editMode" ng-if="hourEntry.project && hourEntry.project.name">{{hourEntry.project.name}}</span>
