@@ -8,6 +8,9 @@
 		        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
 		        </div>-->
 		        <div class="header-container" ng-click="showToday(e)">
+		        	<div ng-show="isDisplayedWeek() && false" class="start-end" > 
+			        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}} 
+			        </div>
 			        <div class="today-btn-container" > 
 			        	 <button class="btn btn-default today">Today</button>
 			        </div>

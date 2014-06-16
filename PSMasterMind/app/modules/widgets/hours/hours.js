@@ -46,9 +46,12 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		$scope.subMode = subMode;
 		$scope.hoursRequest( );
 
-		if( $scope.mode == 'month' && $scope.subMode == 'monthly' )
+		if( $scope.mode == 'month' && $scope.subMode == 'monthly' ) {
 			$rootScope.showHoursMonthInfo = true;
-		else
+
+			if( $scope.setCurrentMonth )
+				$scope.setCurrentMonth( $scope.currentMonth.month( ) );
+		} else
 			$rootScope.showHoursMonthInfo = false;
 	};
 
@@ -549,9 +552,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 					$( el ).find( '.task-name' ).html( filter( $( el ).find( '.task-name' ).attr( '_origName' ), val ) );
 				} else if( projectName && projectName.indexOf( val ) > -1 ) {
 					$( el ).find( '.project-name' ).html( filter( $( el ).find( '.project-name' ).attr( '_origName' ), val ) );
-				} else if (projectCustomerName && projectCustomerName.indexOf( val ) > -1) {
-                    $( el ).find( '.project-customer-name' ).html(filter($( el ).find( '.project-customer-name' ).attr('_origName'), val));
-                }
+				} else if( projectCustomerName && projectCustomerName.indexOf( val ) > -1 ) {
+					$( el ).find( '.project-customer-name' ).html( filter( $( el ).find( '.project-customer-name' ).attr( '_origName' ), val ) );
+				}
 
 			} );
 
@@ -749,8 +752,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[                 t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[                 t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[                  t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[                  t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -941,14 +944,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[                 d1.getMonth( ) ];
+		var month1 = $scope.months[                  d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[                 d2.getMonth( ) ];
+		var month2 = $scope.months[                  d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
