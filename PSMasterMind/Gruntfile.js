@@ -31,7 +31,7 @@ module.exports = function(grunt) {
                 tasks: ['copy:styles', 'autoprefixer']
             },
             less: {
-                files: ['<%= yeoman.app %>/styles/{,*/}*.less'],
+                files: ['<%= yeoman.app %>/styles/{,*/}*.less', '<%= yeoman.app %>/modules/{,*/}*.less'],
                 tasks: ['less']
             },
             livereload: {
