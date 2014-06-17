@@ -6,7 +6,9 @@
 angular.module( 'Mastermind.controllers.people' ).controller( 'ProfileCtrl', [ '$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService', 'TasksService', 'ngTableParams',
 function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, TableParams ) {
 
+	$scope.moment = moment;
 	var UNSPECIFIED = 'Unspecified';
+	var HOURS_PER_WEEK = 45;
 	$scope.projects = [ ];
 	$scope.hoursTasks = [ ];
 	$scope.execProjects = [ ];
@@ -198,6 +200,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.projectHours = [ ];
 		$scope.hoursPeriods = [ ];
 		$scope.selectedHoursPeriod = -1;
+		var now = new Date();
+		$scope.totalMonthHours = 0;
 
 		//Query all hours against the project
 		var hoursQuery = {
@@ -212,9 +216,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			$scope.hours = hoursResult.members;
 			$scope.initHoursPeriods( $scope.hours );
 			$scope.hasHours = $scope.hours.length > 0;
-
+			
 			for( var i = 0; i < $scope.hours.length; i++ ) {
 				var hour = $scope.hours[ i ];
+				var date = new Date(hour.date);
+				if(now.getFullYear() == date.getFullYear() && now.getMonth() == date.getMonth()) {
+					$scope.totalMonthHours += hour.hours;
+				}
 				if( hour.task && hour.task.resource ) {
 					var taskRes = $scope.hours[ i ].task.resource;
 					var task = _.findWhere( $scope.hoursTasks, {
@@ -424,87 +432,106 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	/**
 	 * Get the Profile
 	 */
-	$scope.profileId = $stateParams.profileId;
-	Resources.get( 'people/' + $scope.profileId ).then( function( person ) {
-		$scope.setProfile( person );
+	$scope.initProfile = function() {
+		$scope.profileId = $stateParams.profileId;
+		Resources.get( 'people/' + $scope.profileId ).then( function( person ) {
+			$scope.setProfile( person );
 
-		ProjectsService.getOngoingProjects( function( result ) {
-			$scope.ongoingProjects = result.data;
-			//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
+			ProjectsService.getOngoingProjects( function( result ) {
+				$scope.ongoingProjects = result.data;
+				//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
 
-			ProjectsService.getMyCurrentProjects( person ).then( function( myCurrentProjects ) {
-				var myProjects = myCurrentProjects.data;
-				for( var m = 0; m < myProjects.length; m++ ) {
-					var myProj = myProjects[ m ];
-					var found = undefined;
-					myProj.title = myProj.customerName + ': ' + myProj.name;
-					$scope.projects.push( myProj );
+				ProjectsService.getMyCurrentProjects( person ).then( function( myCurrentProjects ) {
+					var myProjects = myCurrentProjects.data;
+					$scope.activeProjectsCount = myProjects.length;
+					var hoursRate = 0;
+					for( var m = 0; m < myProjects.length; m++ ) {
+						var myProj = myProjects[ m ];
+						
+						
+						for(var rolesCounter = 0; rolesCounter < myProj.roles.length; rolesCounter++) {
+							_.each(myProj.roles[rolesCounter].assignees, function(assignee) { 
+								if(assignee.person && assignee.person.resource == $scope.profile.about) {
+									hoursRate += assignee.hoursPerWeek;
+								}
+							});
+						}
+						
+						$scope.hoursRateValue = hoursRate;
+						$scope.hoursRateFromProjects = Math.round(100*hoursRate/HOURS_PER_WEEK);
+						
+						var found = undefined;
+						myProj.title = myProj.customerName + ': ' + myProj.name;
+						$scope.projects.push( myProj );
 
-					for( var n = 0; n < $scope.ongoingProjects.length; n++ ) {
-						var proj = $scope.ongoingProjects[ n ];
-						if( proj.resource === myProj.resource ) {
-							$scope.ongoingProjects.splice( n, 1 );
-							break;
+						for( var n = 0; n < $scope.ongoingProjects.length; n++ ) {
+							var proj = $scope.ongoingProjects[ n ];
+							if( proj.resource === myProj.resource ) {
+								$scope.ongoingProjects.splice( n, 1 );
+								break;
+							}
+						}
+						if( myProj.executiveSponsor.resource === 'people/' + $scope.profileId ) {
+							$scope.execProjects.push( myProj );
 						}
 					}
-					if( myProj.executiveSponsor.resource === 'people/' + $scope.profileId ) {
-						$scope.execProjects.push( myProj );
+
+					function compare( a, b ) {
+						var titleA = a.customerName + ': ' + a.name;
+						var titleB = b.customerName + ': ' + b.name;
+						if( titleA < titleB ) {
+							return -1;
+						}
+						if( titleA > titleB ) {
+							return 1;
+						}
+						return 0;
 					}
-				}
 
-				function compare( a, b ) {
-					var titleA = a.customerName + ': ' + a.name;
-					var titleB = b.customerName + ': ' + b.name;
-					if( titleA < titleB ) {
-						return -1;
+
+					$scope.ongoingProjects.sort( compare );
+					$scope.ongoingProjects.reverse( );
+					while( $scope.ongoingProjects.length > 0 ) {
+						var nextProj = $scope.ongoingProjects.pop( );
+						nextProj.title = nextProj.customerName + ': ' + nextProj.name;
+						$scope.projects.push( nextProj );
 					}
-					if( titleA > titleB ) {
-						return 1;
-					}
-					return 0;
+
+					$scope.initHours( );
+				} );
+			} );
+
+			AssignmentService.getMyCurrentAssignments( person ).then( function( assignments ) {
+				$scope.assignments = assignments;
+				$scope.hasAssignments = assignments.length > 0;
+
+				if( $scope.hasAssignments ) {
+					// Project Params
+					var params = {
+						page: 1, // show first page
+						count: 10, // count per page
+						sorting: {
+							startDate: 'asc' // initial sorting
+						}
+					};
+					$scope.tableParams = new TableParams( params, {
+						counts: [ ],
+						total: $scope.assignments.length, // length of data
+						getData: function( $defer, params ) {
+							var start = ( params.page( ) - 1 ) * params.count( ), end = params.page( ) * params.count( ),
+
+							// use build-in angular filter
+							orderedData = params.sorting( ) ? $filter('orderBy')( $scope.assignments, params.orderBy( ) ) : $scope.assignments, ret = orderedData.slice( start, end );
+
+							$defer.resolve( ret );
+						}
+					} );
 				}
-
-
-				$scope.ongoingProjects.sort( compare );
-				$scope.ongoingProjects.reverse( );
-				while( $scope.ongoingProjects.length > 0 ) {
-					var nextProj = $scope.ongoingProjects.pop( );
-					nextProj.title = nextProj.customerName + ': ' + nextProj.name;
-					$scope.projects.push( nextProj );
-				}
-
-				$scope.initHours( );
 			} );
 		} );
-
-		AssignmentService.getMyCurrentAssignments( person ).then( function( assignments ) {
-			$scope.assignments = assignments;
-			$scope.hasAssignments = assignments.length > 0;
-
-			if( $scope.hasAssignments ) {
-				// Project Params
-				var params = {
-					page: 1, // show first page
-					count: 10, // count per page
-					sorting: {
-						startDate: 'asc' // initial sorting
-					}
-				};
-				$scope.tableParams = new TableParams( params, {
-					counts: [ ],
-					total: $scope.assignments.length, // length of data
-					getData: function( $defer, params ) {
-						var start = ( params.page( ) - 1 ) * params.count( ), end = params.page( ) * params.count( ),
-
-						// use build-in angular filter
-						orderedData = params.sorting( ) ? $filter('orderBy')( $scope.assignments, params.orderBy( ) ) : $scope.assignments, ret = orderedData.slice( start, end );
-
-						$defer.resolve( ret );
-					}
-				} );
-			}
-		} );
-	} );
+	}
+	
+	$scope.initProfile();
 
 	$scope.isCurrentProject = function( endDate ) {
 		var date = new Date( endDate );
@@ -580,8 +607,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.selectedWeekIndex = 0;
 	$scope.thisWeekDayLabels = [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT' ];
 	$scope.newHoursRecord = {};
-	$scope.moment = moment;
-
+	
 	$scope.startWeekDate = $scope.moment( ).day( 0 ).format( 'YYYY-MM-DD' );
 	$scope.endWeekDate = $scope.moment( ).day( 6 ).format( 'YYYY-MM-DD' );
 
@@ -690,9 +716,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 				} );
 			}
 		}
-
+		
 		$scope.weekHoursByProject = weekHoursByProject;
 		$scope.weekHoursByTask = weekHoursByTask;
+		
+		$scope.totalWeekHours = 0;
+		_.each(profileWeekHours, function(element) { $scope.totalWeekHours += parseInt(element.hours); });
+		
+		$scope.initPercentageCircle();
 	};
 
 	var convertDate = function( stringDate ) {
@@ -714,6 +745,34 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		}
 		return futureness;
 	};
+	
+	$scope.initPercentageCircle = function() {
+		var percents = 0;
+		var degrees = 0;
+		
+		if($scope.totalWeekHours && $scope.hoursRateValue && $scope.hoursRateValue != 0) {
+			percents = Math.ceil($scope.totalWeekHours / $scope.hoursRateValue * 100);
+			
+			// convert to degrees
+			degrees = Math.ceil(percents * 360 / 100);
+			
+			if(degrees > 360)
+				degrees = 360;
+		}
+		
+		var activeBorder = $("#percentage-activeBorder");
+
+		if (degrees<=180){
+		  activeBorder.css('background-image','linear-gradient(' + (90+degrees) + 'deg, transparent 50%, #ececec 50%),linear-gradient(90deg, #ececec 50%, transparent 50%)');
+		  }
+		else{
+		   activeBorder.css('background-image','linear-gradient(' + (degrees-90) + 'deg, transparent 50%, #69DBCC 50%),linear-gradient(90deg, #ececec 50%, transparent 50%)');
+		}
+	}
+	
+	$scope.$on('hours:added', function (event, index, role) {
+		$scope.initProfile();
+    });
 	//    /**
 	//     * Load Skill Definitions to display names
 	//     */

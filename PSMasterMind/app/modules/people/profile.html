@@ -19,7 +19,7 @@
       <div class="row padded-row">
         <div class="well">
           <div class="row person-detail">
-            <div class="col-xs-9">
+            <div class="col-xs-12 col-sm-9">
               <div class="personPicColumn">
                 <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}" />
                 <div class="verticalGreyLine" ng-show="gplusProfile.url"></div>
@@ -40,34 +40,34 @@
 
                 <div class="col-lg-12 contact-fields">
                   <div class="row">
-                    <div ng-hide="editMode" class="col-md-4">
+                    <div ng-hide="editMode" class="col-xs-12 col-md-4">
                       <label>Email</label>
                       <a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a>
                     </div>
 
-                    <div ng-show="editMode" class="col-md-6">
+                    <div ng-show="editMode" class="col-xs-12 col-md-6">
                       <label for="profilePhone" class="personDetailLabel">Phone</label>
                       <input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone" />
                     </div>
-                    <div ng-hide="editMode" class="col-md-3">
+                    <div ng-hide="editMode" class="col-xs-12 col-md-3">
                       <label class="personDetailLabel">Phone</label>
                       <a ng-if="profile.phone" ng-href="tel:{{profile.phone | tel}}">{{profile.phone | tel}}</a>
                     </div>
                     
-                    <div ng-show="editMode" class="col-md-6">
+                    <div ng-show="editMode" class="col-xs-12 col-md-6">
                       <label for="profileSkype" class="personDetailLabel">Skype</label>
                       <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="text" />
                     </div>
-                    <div ng-hide="editMode" class="col-md-2">
+                    <div ng-hide="editMode" class="col-xs-12 col-md-2">
                       <label class="personDetailLabel">Skype Id</label>
                       <a ng-if="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
                     </div>
 
-                    <div ng-show="editMode" class="col-md-6">
+                    <div ng-show="editMode" class="col-xs-12 col-md-6">
                       <label for="profileJazzHub" class="personDetailLabel">JazzHub Id</label>
                       <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text" />
                     </div>
-                    <div ng-hide="editMode" class="col-md-3">
+                    <div ng-hide="editMode" class="col-xs-12 col-md-3">
                       <label class="personDetailLabel">JazzHub</label>
                       <span>{{profile.jazzHubId}}</span>
                     </div>
@@ -76,13 +76,7 @@
               </div>
             </div>
 
-            <div class="col-xs-3">
-              <div ng-hide="editMode">
-                <label class="personDetailLabel">Groups:</label> <span ng-show="!profile.groups" ">None</span>
-                <ul class="personDetailList " ng-show="profile.groups "">
-                <li ng-repeat="group in profile.groups">{{group}}</li>
-                </ul>
-              </div>
+            <div class="col-xs-12 col-sm-3 profile-graph-container">
               <div ng-if="adminAccess" ng-show="editMode">
                 <label class="personDetailLabel">Groups:</label>
                 <ul class="personDetailList">
@@ -100,12 +94,37 @@
                   </li>
                 </ul>
               </div>
-              <label class="personDetailLabel">Accounts:</label>
+              <h3 class="profile-graph-header">Hours this week</h3>
+              <div class="percentage-container visible-lg">
+                <div id="percentage-activeBorder" class="percentage-active-border">
+                    <div id="percentage-circle" class="percentage-circle">
+                      <h1 class="percentage-circle-week-hours">
+                        {{totalWeekHours ? totalWeekHours : 0}}
+                      </h1>
+                      <h5 class="percentage-circle-week-hours-rate">of {{hoursRateValue}}</h5>
+                    </div>
+                  </div>
+                </div>
+              <h1 class="hidden-lg percentage-circle-week-hours">
+                        {{totalWeekHours ? totalWeekHours : 0}}
+              </h1>
+              <h5 class="hidden-lg percentage-circle-week-hours-rate">of {{hoursRateValue}}</h5>
+              
+              <h5 style="text-align: center;">
+                <span style="font-weight: bold; font-size: 22px;">{{totalMonthHours ? totalMonthHours : 0}}</span> hrs logged this month
+              </h5>
+              <h5 style="text-align: center;">
+                <span style="font-weight: bold; font-size: 22px;">{{hoursRateFromProjects ? hoursRateFromProjects : 0}}</span> % utilized
+              </h5>
+              <h5 style="text-align: center;">
+                <span style="font-weight: bold; font-size: 22px;">{{activeProjectsCount ? activeProjectsCount : 0}}</span> active projects
+              </h5>
+              <!-- <label class="personDetailLabel">Accounts:</label>
               <span ng-show="!gplusProfile.url">None</span>
               <ul class="personDetailList">
                 <li ng-show="gplusProfile.url"><a ng-href="{{gplusProfile.url}}">Google+</a>
                 </li>
-              </ul>
+              </ul> -->
             </div>
           </div>
         </div>

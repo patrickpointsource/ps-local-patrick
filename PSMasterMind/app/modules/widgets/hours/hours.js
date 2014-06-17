@@ -1221,7 +1221,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 			if( isAdded )
 				$scope.addNewHoursRecord( $scope.selected );
-
+			
+			$scope.$emit('hours:added');
 		} );
 
 	};
