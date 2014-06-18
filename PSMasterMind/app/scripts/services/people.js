@@ -386,7 +386,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 
 		return deferred.promise;
 	}
-
+	
 	/**
 	 * Return the list of people you work with
 	 */
@@ -425,6 +425,8 @@ function( $q, Restangular, Resources, ProjectsService ) {
 			var peopleIds = [ ];
 			var peopleURIs = [ ];
 			//Loop through all the project assignments
+			var peopleIds = [ ];
+			//Loop through all the project assignments
 			for( var i = 0; i < projectAssignments.length; i++ ) {
 				var projectAssignment = projectAssignments[ i ];
 				//console.log('Project:' + projectAssignment.project.resource);
@@ -442,43 +444,63 @@ function( $q, Restangular, Resources, ProjectsService ) {
 						//Check the assignment end data to see if it is a past related employee
 						var endDate = assignment.endDate ? moment( assignment.endDate ) : now.add( 'day', 1 );
 						if( now.unix( ) <= endDate.unix( ) ) {
-							//console.log('Adds:' + uri);
-
 							peopleIds.push( oid );
 							peopleURIs.push( uri );
 						}
-						//        				else{
-						//        					console.log('Bad Date for: ' + uri + ', ' + now + ' <= ' +
-						// endDate);
-						//        				}
 					}
-					//        			else{
-					//            			console.log('Ingnore: ' + uri);
-					//            		}
 				}
 			}
+			
+			// get exec sponsors projects
+			ProjectsService.getMyExecSponsoredProjects(me).then(function(execSponsoredProjects) {
+			  for(var p = 0; p < execSponsoredProjects.count; p++) {
+				var roles = execSponsoredProjects.data[p].roles;
+				for(var r = 0; r < roles.length; r++) {
+				  var assignees = roles[r].assignees;
+				  for(var s = 0; s < assignees.length; s++) {
+					  if(assignees[s].person.resource) {
+						  var uri = assignees[s].person.resource;
+							//Check if we have already added this person
+							if( personURI != uri && $.inArray( uri, peopleURIs ) == -1 ) {
+								//contruct oids for query over people
+								var oid = {
+									$oid: uri.substring( uri.lastIndexOf( '/' ) + 1 )
+								};
+								//Check the assignment end data to see if it is a past related employee
+								var endDate = assignees[s].endDate ? moment( assignees[s].endDate ) : now.add( 'day', 1 );
+								if( now.unix( ) <= endDate.unix( ) ) {
 
-			if( peopleIds.length <= 0 ) {
-				deferred.resolve( [ ] );
-			} else {
-				//Fetch all the people
-				var pepInRolesQuery = {
-					_id: {
-						$in: peopleIds
-					}
-				};
-				var pepInRolesFields = {
-					resource: 1,
-					name: 1,
-					familyName: 1,
-					givenName: 1,
-					primaryRole: 1,
-					thumbnail: 1
-				};
-				Resources.query( 'people', pepInRolesQuery, pepInRolesFields, function( result ) {
-					deferred.resolve( result.members );
-				} );
-			}
+									peopleIds.push( oid );
+									peopleURIs.push( uri );
+								}
+							}
+					  }
+				  }
+				}
+			  }
+				
+				if( peopleIds.length <= 0 ) {
+					deferred.resolve( [ ] );
+				} else {
+					//Fetch all the people
+					var pepInRolesQuery = {
+						_id: {
+							$in: peopleIds
+						}
+					};
+					var pepInRolesFields = {
+						resource: 1,
+						name: 1,
+						familyName: 1,
+						givenName: 1,
+						primaryRole: 1,
+						thumbnail: 1
+					};
+					Resources.query( 'people', pepInRolesQuery, pepInRolesFields, function( result ) {
+						deferred.resolve( result.members );
+					} );
+				}
+			});
 		} );
 
 		return deferred.promise;

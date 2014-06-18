@@ -404,6 +404,26 @@ angular.module('Mastermind.services.projects')
     };
     
     /**
+     * Get Projects wich I am an exec sponsor
+     */
+    
+    this.getMyExecSponsoredProjects = function(me) {
+      var deferred = $q.defer();
+      var query = {
+    	  executiveSponsor:{
+    		resource:me.about
+    	}
+      }
+      var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1,roles:1,executiveSponsor:1,salesSponsor:1};
+      
+      Resources.query('projects',query,projectsFields,function(result){
+        deferred.resolve(result);
+      });
+      
+      return deferred.promise;
+    }
+    
+    /**
      * Get My Current Projects (projects I have a current role on)
      */
     this.getMyCurrentProjects = function(me){

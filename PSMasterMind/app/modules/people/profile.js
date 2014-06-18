@@ -457,9 +457,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							});
 						}
 						
-						$scope.hoursRateValue = hoursRate;
-						$scope.hoursRateFromProjects = Math.round(100*hoursRate/HOURS_PER_WEEK);
-						
 						var found = undefined;
 						myProj.title = myProj.customerName + ': ' + myProj.name;
 						$scope.projects.push( myProj );
@@ -475,6 +472,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							$scope.execProjects.push( myProj );
 						}
 					}
+					
+					$scope.hoursRateValue = hoursRate;
+					$scope.hoursRateFromProjects = Math.round(100*hoursRate/HOURS_PER_WEEK);
 
 					function compare( a, b ) {
 						var titleA = a.customerName + ': ' + a.name;
