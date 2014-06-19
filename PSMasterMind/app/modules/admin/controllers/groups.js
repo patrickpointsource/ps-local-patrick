@@ -37,6 +37,7 @@ angular.module('Mastermind').controller('GroupsCtrl',['$scope',
 	        var groupsMap = {};
 	        $scope.groups.forEach(function(entry) {
 	        	groupsMap[entry.label] = entry;
+	        	entry.collapsed = true;
 	        });
 	        
 	        // Count the number of entries into groups
@@ -54,23 +55,71 @@ angular.module('Mastermind').controller('GroupsCtrl',['$scope',
 	            	}
 	            }
 	        }
-	        $scope.tableParams = new ngTableParams({
-	            page: 1,            // show first page
-	            count: 10          // count per page
-	        }, {
-	            groupBy: 'groups',
-	            total: rowCount,
-	            getData: function($defer, params) {
-	              var orderedData = params.sorting() ?
-	                      $filter('orderBy')($scope.groups, $scope.tableParams.orderBy()) :
-	                    	  $scope.groups;
-
-	              $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), 
-	            		  		 params.page() * params.count()));
-	            }
-	        });
 	    });
-
+  
+  $scope.addToGroupIndex = -1;
+	    
+  $scope.triggerAddToGroup = function(index) {
+	$scope.error = "";
+	if(index == $scope.addToGroupIndex) {
+		$scope.addToGroupIndex = -1;
+		return;
+	}
+	$scope.addToGroupIndex = index;
+	
+	$scope.membersToAdd = _.reject($scope.members, function(member) {
+	  return _.contains(member.groups, $scope.groups[index].label);
+	});
+  }
+  
+  $scope.memberToAddSelected = function() {
+	  $scope.memberToAdd = this.memberToAdd;
+	  $scope.error = "";
+  }
+  
+  $scope.addMember = function() {
+	if($scope.memberToAdd) {
+	  var member = _.find($scope.members, function(m) {
+	    return m.resource == $scope.memberToAdd;
+	  });
+		  
+	  var groupToAdd = $scope.groups[$scope.addToGroupIndex].label;
+		  
+	  member.groups.push(groupToAdd);
+		  
+	  Resources.update( member ).then(function(addedMember) {
+		$scope.groups[$scope.addToGroupIndex].members.push(addedMember);
+		$scope.membersToAdd = _.reject($scope.membersToAdd, function(m) {
+		  return _.contains(m.groups, $scope.groups[$scope.addToGroupIndex].label);
+	    });
+		$scope.memberToAdd = null;
+	  });
+	} else {
+		$scope.error = "Please choose a member"
+	}
+  }
+  
+  $scope.deleteMember = function(member, index) {
+	var groupToRemove = $scope.groups[index].label;
+	
+	var indexToRemove = member.groups.indexOf(groupToRemove);
+	
+	member.groups.splice(indexToRemove, 1);
+	
+	Resources.update( member ).then(function(removedMember) {
+		$scope.groups[index].members = _.reject($scope.groups[index].members, function(m) {
+			return m.resource == member.resource;
+		})
+		$scope.membersToAdd = _.reject($scope.members, function(m) {
+			return _.contains(m.groups, $scope.groups[index].label);
+		});
+		$scope.memberToAdd = null;
+	  });
+  }
+  
+  $scope.collapseGroup = function(index) {
+	$scope.groups[index].collapsed = $scope.groups[index].collapsed ? false : true;
+  }
 }]);
 
 

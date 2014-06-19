@@ -1,29 +1,51 @@
 <div ng-controller="GroupsCtrl">
-	<table ng-table="tableParams" class="table">
-      <tbody ng-repeat="group in groups" ng-controller="groupRowCtrl">
-        <tr class="ng-table-group">
-          <td colspan="2">
-            <a href="" ng-click="group.$hideRows = !group.$hideRows">
-              <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': group.$hideRows, 'glyphicon-chevron-down': !group.$hideRows }"></span>
-              <strong>{{ group.label }}</strong>
-            </a>
-          </td>
-        </tr>
-        <tr ng-hide="group.$hideRows" ng-repeat="member in group.members">
-          <td data-title="'Pic'">
-          	<a class="col-xs-3 col-sm-2"  href="#{{member.resource}}">
-          		<img class="img-row-thumbnail" ng-src="{{member.thumbnail}}"/>
-          	</a>
-          </td>
-          <td sortable="name" class="row-person-name" data-title="'Name'">
-               <!--  <div class="col-xs-9 col-sm-3 "> -->
-        			<a href="#{{member.resource}}">{{member.familyName}}, {{member.givenName}}</a>
-      		<!-- 	</div> -->
-          </td>
-          <!-- <td sortable="role" data-title="'Role'">
-          	<div class="col-xs-4 col-sm-1 people-prop">{{member.primaryRole.abbreviation}}</div>
-          </td> -->
-        </tr>
-      </tbody>
-    </table>
+  <div class="row" style="margin-right: 15px;">
+    <div class="col-xs-12" ng-repeat="group in groups" style="background-color: white; margin: 10px 15px 0px 15px;">
+      <div class="row">
+        <div class="col-xs-6" style="margin-top: 15px;">
+          <i class="fa fa-caret-right fa-2x cursor-pointer" ng-hide="group.collapsed" ng-click="collapseGroup($index)"></i>
+          <i class="fa fa-caret-down fa-2x cursor-pointer" ng-show="group.collapsed" ng-click="collapseGroup($index)"></i>
+          <h3 style="display: inline;"><a class="cursor-pointer" ng-click="collapseGroup($index)">{{group.label}}</a></h3>
+        </div>
+        <div class="col-xs-6">
+          <button class="btn pull-right hidden-xs" ng-click="triggerAddToGroup($index)" style="margin-top: 10px;">
+            <i class="fa fa-caret-right" ng-hide="addToGroupIndex == $index"></i>
+            <i class="fa fa-caret-down" ng-show="addToGroupIndex == $index"></i>&nbsp; Add to group
+          </button>
+          <button class="btn pull-right visible-xs" ng-click="triggerAddToGroup($index)" style="margin-top: 10px;">
+            <i class="fa fa-caret-right" ng-hide="addToGroupIndex == $index"></i>
+            <i class="fa fa-caret-down" ng-show="addToGroupIndex == $index"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row col-xs-12 alert alert-danger" ng-show="error" style="margin-left: 0px;">
+        {{error}}
+      </div>
+      <div class="row col-xs-12" ng-show="addToGroupIndex == $index && group.collapsed">
+        <div class="col-xs-10 col-sm-6 col-md-4 col-lg-3">
+          <select ng-model="memberToAdd"
+                 ng-options="m.resource as m.name for m in membersToAdd"
+                 ng-change="memberToAddSelected()"
+                 class="form-control" name="memberToAdd">
+           </select>
+         </div>
+         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+           <button class="btn" ng-click="addMember()"><i class="fa fa-plus"></i>Add</button>
+         </div>
+      </div>
+      <div class="row col-xs-12 col-md-6 col-lg-4" ng-repeat="member in group.members" ng-show="group.collapsed">
+        <div class="col-xs-3">
+          <a href="#{{member.resource}}">
+            <img class="img-row-thumbnail" ng-src="{{member.thumbnail}}"/>
+          </a>
+        </div>
+        <div class="col-xs-7" style="padding-top: 10px;">
+          <a href="#{{member.resource}}">{{member.familyName}}, {{member.givenName}}</a>
+        </div>
+        <div class="col-xs-2">
+          <button class="btn" ng-click="deleteMember(member, $parent.$index)"><i class="fa fa-trash-o"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
