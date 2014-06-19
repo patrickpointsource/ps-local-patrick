@@ -38,6 +38,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.mode = $scope.mode ? $scope.mode : 'week';
 	$scope.subMode = $scope.subMode ? $scope.subMode : 'weekly';
 
+	$scope.customHoursStartDate = '';
+	$scope.customHoursEndDate = '';
+
 	$scope.setSubmode = function( e, subMode ) {
 		e = e ? e : window.event;
 
@@ -62,6 +65,106 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.showHideWidget = function( show ) {
 		$scope.hasAssignment = show;
 		$rootScope.hasAssignment = show;
+	};
+
+	$scope.applyCustomHoursPeriod = function( ) {
+
+		if( $scope.setCustomPeriod )
+			$scope.setCustomPeriod( $scope.customHoursStartDate, $scope.customHoursEndDate );
+
+		$rootScope.showHoursMonthInfo = true;
+	};
+
+
+	$scope.JSON2CSV = function( person, hours ) {
+		var str = '';
+		var line = '';
+
+		console.log( 'hours:' + hours );
+
+		//Print the header
+		var head = [ 'Project/Task', 'Date', 'Hours', 'Description' ];
+		for( var i = 0; i < head.length; i++ ) {
+			line += head[ i ] + ',';
+		}
+		//Remove last comma and add a new line
+		line = line.slice( 0, -1 );
+		str += line + '\r\n';
+
+		//Print the values
+		for( var x = 0; x < hours.length; x++ ) {
+			line = '';
+
+			var record = hours[ x ];
+
+			if( record.project )
+				line += $scope.hoursToCSV.stringify( record.project.name ) + ',';
+			else
+				line += $scope.hoursToCSV.stringify( record.task.name ) + ',';
+
+
+			line += record.hour.date + ',';
+			line += record.hour.hours + ',';
+
+			line += $scope.hoursToCSV.stringify( record.hour.description ) + ',';
+			str += line + '\r\n';
+		}
+		return str;
+	};
+
+	$scope.csvData = null;
+	$scope.hoursToCSV = {
+		stringify: function( str ) {
+			return '"' + str.replace( /^\s\s*/, '' ).replace( /\s*\s$/, '' )// trim spaces
+			.replace( /"/g, '""' ) + // replace quotes with double quotes
+			'"';
+		},
+
+		generate: function( ) {
+			var project;
+			var hours = [ ];
+
+			if( $scope.projectHours ) {
+				for( var i = 0; i < $scope.projectHours.length; i++ ) {
+
+					for( var j = 0; j < $scope.projectHours[ i ].hours.length; j++ ) {
+						if( $scope.projectHours[i].hours[ j ].show ) {
+							$scope.projectHours[ i ].hours[ j ].project = {
+								name: $scope.projectHours[ i ].project.name,
+								roles: $scope.projectHours[ i ].project.roles
+							};
+
+							hours = hours.concat( $scope.projectHours[ i ].hours[ j ] );
+						}
+
+					}
+
+				}
+			}
+
+			if( $scope.taskHours ) {
+				for( var i = 0; i < $scope.taskHours.length; i++ ) {
+				    
+				    for( var j = 0; j < $scope.taskHours[ i ].hours.length; j++ ) {
+    					
+						if( $scope.taskHours[i].hours[ j ].show ) {
+							$scope.taskHours[ i ].hours[ j ].task = {
+								name: $scope.taskHours[ i ].name
+							};
+
+							hours = hours.concat( $scope.taskHours[ i ].hours[ j ] );
+						}
+
+					}
+				}
+			}
+
+			$scope.csvData = $scope.JSON2CSV( $scope.getCurrentPerson( ), hours );
+		},
+
+		link: function( ) {
+			return 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData );
+		}
 	};
 
 	var taskIconsMap = {
@@ -774,8 +877,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[                          t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[                          t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[                            t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[                            t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -966,14 +1069,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[                          d1.getMonth( ) ];
+		var month1 = $scope.months[                            d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[                          d2.getMonth( ) ];
+		var month2 = $scope.months[                            d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;

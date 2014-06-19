@@ -38,16 +38,10 @@
               <tbody ng-repeat="role in $data">
                 <tr>
                     <td>
-                    	<!-- 
-                        <select ng-model="role.assignee.resource"
-                                ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble"
-                                ng-change="assigneeChanged($index, role)"
-                                class="form-control">
-                        </select>
-                         -->
-                        <span>{{roleGroups[role.type.resource].abbreviation}}</span>
+                    	
+                        <span>{{getAbbreviation(role)}}</span>
                     </td>
-                    <!-- <td class="hidden-xs">{{roleGroups[role.type.resource].abbreviation}}</td> -->
+                    <!-- <td class="hidden-xs">{{getAbbreviation(role)}}</td> -->
                     <td class="visible-xs">
                       <span ng-show="role.rate.isFullyUtilized()">100%</span>
                       <span ng-hide="role.rate.isFullyUtilized()">{{role.rate.hoursPerMonth()}}/M</span>

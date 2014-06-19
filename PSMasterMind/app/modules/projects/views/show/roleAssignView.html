@@ -3,14 +3,14 @@
 	
 	<div class="col-xs-5 col-sm-4 form-group" ng-class="{error: isFieldInError('role')}">
 	     <a href="#{{currentAssignee.person.resource}}">
-	     	<img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble).thumbnail}}"/>
-	     		{{getPersonName(currentAssignee.person.resource,  roleGroups[role.type.resource].assiganble)}}
+	     	<img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  role).thumbnail}}"/>
+	     		{{getPersonName(currentAssignee.person.resource,  role)}}
 	     </a>           
 	</div>
 	
 	<div class="col-xs-12 col-sm-2 form-group person-abbreviation">
 		<label >
-			<span class="">{{roleGroups[role.type.resource].abbreviation}}</span>
+			<span class="">{{getAbbreviation(role)}}</span>
 		</label>
 	</div>
 	<div class="col-sm-4 form-group hidden-xs">

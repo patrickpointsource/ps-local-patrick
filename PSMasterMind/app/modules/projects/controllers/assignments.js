@@ -215,9 +215,10 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		}, true );
 	};
 
-	$scope.getPersonName = function( personId, assignable ) {
+	$scope.getPersonName = function( personId, role ) {
 		var result = undefined;
-
+        var assignable = $scope.roleGroups[role.type.resource].assiganble;
+        
 		if( assignable )
 			for( var i = 0; i < assignable.length; i++ ) {
 				if( assignable[ i ].resource == personId ) {
@@ -229,9 +230,10 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		return result;
 	};
 
-	$scope.getPerson = function( personId, assignable ) {
+	$scope.getPerson = function( personId, role ) {
 		var result = undefined;
-
+        var assignable = $scope.roleGroups[role.type.resource].assiganble;
+        
 		if( assignable )
 			for( var i = 0; i < assignable.length; i++ ) {
 				if( assignable[ i ].resource == personId ) {

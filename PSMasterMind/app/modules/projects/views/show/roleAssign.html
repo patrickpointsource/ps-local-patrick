@@ -26,7 +26,7 @@
 </div>
 <div class="row" ng-repeat="currentAssignee in role.assignees">
     <div class="row" style="margin-left: 15px; margin-right: 15px;">
-	<div class="col-sm-3 col-xs-6 form-group" ng-class="{error: isFieldInError('role')}">
+	<div class="col-sm-3 col-xs-6 form-group" ng-class="{error: isFieldInError('role')}" ng-if="roleGroups[role.type.resource] != undefined">
 		<select ng-model="currentAssignee.person.resource"
                  ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble"
                  ng-change="assigneeChanged($index, role)"

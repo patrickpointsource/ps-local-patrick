@@ -277,7 +277,7 @@ function( $q, $timeout, Restangular ) {
     function cleanLocalStorageIfNeeded( ) {
         var latestTime = localStorage[ "LATEST_LOCAL_STORAGE_CHECK" ];
         var now = new Date( );
-        var ONE_DAY = 24 * 60 * 60 * 1000;
+        var ONE_DAY = CONSTS.ONE_DAY;
 
         if( !latestTime )
             localStorage[ "LATEST_LOCAL_STORAGE_CHECK" ] = now.toString( );

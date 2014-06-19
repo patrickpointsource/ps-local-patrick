@@ -27,8 +27,8 @@ angular.module('Mastermind.services.projects')
      * @param newRole
      */
     this.validateNewRole = function(project, newRole){
-    	var HOURS_PER_MONTH = 180;
-    	var HOURS_PER_WEEK = 45;
+    	var HOURS_PER_MONTH = CONSTS.HOURS_PER_MONTH;
+    	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
       var errors = [];
       //Must select a type
       if(!newRole){

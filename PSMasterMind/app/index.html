@@ -124,7 +124,7 @@
         </div>
       </main>
 
-      <!-- <footer class="text-center container"><br/><small>© 2014 PointSource, LLC. All rights reserved.</small></footer> -->
+      <!-- <footer class="text-center container"><br/><small>В© 2014 PointSource, LLC. All rights reserved.</small></footer> -->
 
       <div class="modal modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <ng-include src="'modalTemplate'" />
@@ -183,6 +183,10 @@
   <!-- build:js({.tmp,app}) scripts/scripts.js -->
   <script src="scripts/app.js"></script>
 
+  <!-- Utils -->
+  <script src="scripts/util/consts.js"></script>
+  <script src="scripts/util/util.js"></script>
+  
   <!-- Filters -->
   <script src="scripts/filters/markdown.js"></script>
 
@@ -242,6 +246,8 @@
   <!-- Models -->
   <script src="scripts/models/projects/project.js"></script>
   <script src="scripts/models/projects/rates.js"></script>
+  
+  
 
   <!-- libs -->
   <script src="scripts/libs/line-chart.js"></script>

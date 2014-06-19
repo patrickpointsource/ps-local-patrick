@@ -384,15 +384,34 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.selectedHoursPeriod = month;
 		$scope.handleHoursPeriodChanged( );
 	};
+	
+	$scope.setCustomPeriod = function( startDate, endDate ) {
+        $scope.customHoursStartDate = startDate;
+        $scope.customHoursEndDate = endDate;
+        
+        $scope.selectedHoursPeriod = -1;
+        $scope.handleHoursPeriodChanged( );
+    };
 
+    
 	$scope.handleHoursPeriodChanged = function( ) {
+	    var d;
+	    
 		for( var i = 0; i < $scope.projectHours.length; i++ ) {
 			var projHour = $scope.projectHours[ i ];
 			projHour.totalHours = 0;
+			
 			for( var j = 0; j < projHour.hours.length; j++ ) {
 				var hour = projHour.hours[ j ];
 				var hoursMonth = new Date( hour.hour.date ).getMonth( );
-				hour.show = this.selectedHoursPeriod == hoursMonth;
+				
+				if ($scope.selectedHoursPeriod > -1)
+				    hour.show = this.selectedHoursPeriod == hoursMonth;
+				else if ($scope.customHoursStartDate && $scope.customHoursEndDate){
+				    d = Util.alignDate(new Date( hour.hour.date ));
+				    
+				    hour.show = d < Util.alignDate(new Date($scope.customHoursEndDate)) && d >= Util.alignDate(new Date($scope.customHoursStartDate));
+				}
 				if( hour.show ) {
 					projHour.totalHours += hour.hour.hours;
 				}
@@ -402,10 +421,19 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		for( i = 0; i < $scope.taskHours.length; i++ ) {
 			projHour = $scope.taskHours[ i ];
 			projHour.totalHours = 0;
+			
 			for( j = 0; j < projHour.hours.length; j++ ) {
 				hour = projHour.hours[ j ];
 				hoursMonth = new Date( hour.hour.date ).getMonth( );
-				hour.show = this.selectedHoursPeriod == hoursMonth;
+				
+				if ($scope.selectedHoursPeriod > -1)
+                    hour.show = this.selectedHoursPeriod == hoursMonth;
+                else if ($scope.customHoursStartDate && $scope.customHoursEndDate){
+                    d = Util.alignDate(new Date( hour.hour.date ));
+                    
+                    hour.show = d < Util.alignDate(new Date($scope.customHoursEndDate)) && d >= Util.alignDate(new Date($scope.customHoursStartDate));
+                }
+				
 				if( hour.show ) {
 					projHour.totalHours += hour.hour.hours;
 				}

@@ -332,7 +332,7 @@ angular.module('Mastermind.controllers.people')
        * build table view
        */
       $scope.buildTableView = function() {
-    	  var HOURS_PER_WEEK = 45;
+    	  var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
 
     	  //Actual Table View Data
     	  if($scope.showTableView){

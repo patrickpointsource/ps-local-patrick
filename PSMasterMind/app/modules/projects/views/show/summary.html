@@ -147,7 +147,7 @@
                         </tr>
                     </thead>
                     <tr ng-repeat="role in $data">
-                        <td span>{{roleGroups[role.type.resource].abbreviation}}</span>
+                        <td span>{{getAbbreviation(role)}}</span>
                         </td>
                         <td class="hidden-xs">{{role.rate.advAmount}}</td>
 
@@ -224,10 +224,10 @@
 		    <!--  <div class="row people-row role-row">-->
 		    <div class="row item-row role-row" style="margin-bottom: 10px; min-height: 90px;">
 		        <div class="hidden-xs col-sm-3 col-md-2 col-lg-3 item-prop">
-                    <a ng-click="tabSelected('/assignments')" style="cursor: pointer;">{{roleGroups[role.type.resource].title}}</a>
+                    <a ng-click="tabSelected('/assignments')" style="cursor: pointer;">{{getPersonTitle(role)}}</a>
                 </div>
                 <div class="visible-xs col-xs-3 item-prop">
-                    <a ng-click="tabSelected('/assignments')" style="cursor: pointer;">{{roleGroups[role.type.resource].abbreviation}}</a>
+                    <a ng-click="tabSelected('/assignments')" style="cursor: pointer;">{{getAbbreviation(role)}}</a>
                 </div>
                 <div class="col-xs-3 col-sm-1 col-md-1 col-lg-1 item-prop">
                     <span ng-show="role.rate.isFullyUtilized()">100%</span>

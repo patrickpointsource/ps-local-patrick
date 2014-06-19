@@ -54,10 +54,10 @@
 					
 				</div>
 				
-	              <div ng-repeat-end class="peopleList {{getRoleCSSClass(roleGroups[role.type.resource].abbreviation, role)}}">
+	              <div ng-repeat-end class="peopleList {{getRoleCSSClass(role)}}">
 	                <div class="panel-heading ">
 	                   
-	                    	<span class="role-abbreviation">{{roleGroups[role.type.resource].abbreviation}}: </span>
+	                    	<span class="role-abbreviation">{{getAbbreviation(role)}}: </span>
 	                		<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'hourly'">{{Math.ceil(role.rate.hoursPerMonth())}} h/m</span>				
 							<span ng-show="!role.rate.isFullyUtilized() && role.rate.type == 'weekly'">{{Math.ceil(role.rate.hoursPerWeek)}} h/w</span>
 	                      	<span ng-show="role.rate.isFullyUtilized()">100%</span>

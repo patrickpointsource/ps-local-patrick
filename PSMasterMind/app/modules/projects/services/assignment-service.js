@@ -216,7 +216,7 @@ angular.module('Mastermind.services.projects')
         	var projectAssignments = result.data;
         	var myProjects = [];
         	var assignments = [];
-        	var HOURS_PER_WEEK = 45;
+        	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
         	
         	//Loop through all the project level assignment documents that this person has an assignment in
         	for(var i = 0; i < projectAssignments.length;i++){
@@ -377,7 +377,7 @@ angular.module('Mastermind.services.projects')
     	
     	assignments = _.filter(assignments, function(a) { return a.person && a.person.resource});
     	
-    	var ONE_DAY = 24 * 60 * 60 * 1000; 
+    	var ONE_DAY = CONSTS.ONE_DAY; 
     	// store info about role assignments on timeline
     	var minDate = includePastCoverage ? alignDate(new Date(role.startDate)): today;
     	var maxDate = role.endDate ? alignDate(new Date(role.endDate)): null;
@@ -521,9 +521,9 @@ angular.module('Mastermind.services.projects')
     	
     	
     	// calculate total percentage coverage
-    	var HOURS_PER_MONTH = 180;
-    	var HOURS_PER_WEEK = 45;
-    	var ONE_WEEK = 45;
+    	var HOURS_PER_MONTH = CONSTS.HOURS_PER_MONTH;
+    	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
+    	var ONE_WEEK = CONSTS.HOURS_PER_WEEK;
     	
     	//if ((!role.rate.isFullyUtilized()) && role.rate.type == "hourly")
     	if ((!role.rate.fullyUtilized) && role.rate.type == "hourly")
