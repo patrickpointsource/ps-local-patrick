@@ -50,6 +50,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		$scope.hoursRequest( );
 
 		if( $scope.mode == 'month' && $scope.subMode == 'monthly' ) {
+		    if ($scope.selected)
+                $scope.currentMonth = $scope.moment($scope.selected.date);
+          
 			$rootScope.showHoursMonthInfo = true;
 
 			if( $scope.setCurrentMonth )
@@ -74,7 +77,6 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		$rootScope.showHoursMonthInfo = true;
 	};
-
 
 	$scope.JSON2CSV = function( person, hours ) {
 		var str = '';
@@ -101,7 +103,6 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				line += $scope.hoursToCSV.stringify( record.project.name ) + ',';
 			else
 				line += $scope.hoursToCSV.stringify( record.task.name ) + ',';
-
 
 			line += record.hour.date + ',';
 			line += record.hour.hours + ',';
@@ -144,9 +145,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 			if( $scope.taskHours ) {
 				for( var i = 0; i < $scope.taskHours.length; i++ ) {
-				    
-				    for( var j = 0; j < $scope.taskHours[ i ].hours.length; j++ ) {
-    					
+
+					for( var j = 0; j < $scope.taskHours[ i ].hours.length; j++ ) {
+
 						if( $scope.taskHours[i].hours[ j ].show ) {
 							$scope.taskHours[ i ].hours[ j ].task = {
 								name: $scope.taskHours[ i ].name
@@ -545,7 +546,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			}
 		}
 
-		day = $scope.isDisplayedWeek( ) ? $scope.displayedHours[ index ] : $scope.displayedMonthDays[ index ];
+		if( index > -1 )
+			day = $scope.isDisplayedWeek( ) ? $scope.displayedHours[ index ] : $scope.displayedMonthDays[ index ];
 
 		if( $scope.selected )
 			delete $scope.selected;
@@ -877,8 +879,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[                            t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[                            t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[                             t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[                             t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -1016,11 +1018,24 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	// TODO task: get this week of dates
 	$scope.showWeekDates = function( callback ) {
 		$scope.todaysDate = $scope.moment( ).format( 'YYYY-MM-DD' );
-		var moment = $scope.moment( ).subtract( $scope.dateIndex, 'days' );
+
+		var moment = null;
+
+		if( !$scope.selected )
+			moment = $scope.moment( ).subtract( $scope.dateIndex, 'days' );
+		else {
+
+			moment = $scope.moment( $scope.selected.date ).startOf( 'week' );
+
+			//$scope.dateIndex = $scope.moment( $scope.selected.date ).subtract( $scope.moment( ) ).days( );
+			//$scope.dateIndex = $scope.moment.duration($scope.moment( $scope.selected.date ).diff( $scope.moment( ) )).days();
+			$scope.dateIndex = $scope.moment( ).diff( $scope.moment( $scope.selected.date ), 'days' );
+		}
 
 		$scope.fillWeekDays( moment.day( 0 ) );
 
 		$scope.prettyCalendarFormats( $scope.thisWeekDates[ 0 ], $scope.thisWeekDates[ 6 ] );
+
 		callback( $scope.thisWeekDates );
 		// console.log($scope.thisWeekDates.length);
 	};
@@ -1043,6 +1058,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.calculateMonthDates = function( callback ) {
 		$scope.displayedMonthDays = [ ];
 		$scope.todaysDate = $scope.moment( ).format( 'YYYY-MM-DD' );
+		
+		  
 		var moment = $scope.moment( $scope.currentMonth );
 
 		var startOfMonth = moment.startOf( 'month' );
@@ -1069,14 +1086,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[                            d1.getMonth( ) ];
+		var month1 = $scope.months[                             d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[                            d2.getMonth( ) ];
+		var month2 = $scope.months[                             d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
@@ -1132,6 +1149,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 								//$scope.selected = $scope.displayedHours[ i ];
 							} else if( $scope.selected && $scope.displayedHours[ i ].date == $scope.selected.date ) {
 								//$scope.selected = $scope.displayedHours[ i ];
+								$scope.selected.dayOfMonth = $scope.displayedHours[ i ].dayOfMonth;
 								$scope.setSelected( null, $scope.displayedHours[ i ], i );
 							}
 
@@ -1184,6 +1202,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 								$scope.setSelected( null, $scope.displayedMonthDays[ i ], i );
 							} else if( $scope.selected && $scope.displayedMonthDays[ i ].date == $scope.selected.date ) {
 								//$scope.selected = $scope.displayedMonthDays[ i ];
+								$scope.selected.dayOfMonth = $scope.displayedMonthDays[ i ].dayOfMonth;
 								$scope.setSelected( null, $scope.displayedMonthDays[ i ], i );
 							}
 
@@ -1324,8 +1343,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 			if( isAdded )
 				$scope.addNewHoursRecord( $scope.selected );
-			
-			$scope.$emit('hours:added');
+
+			$scope.$emit( 'hours:added' );
 		} );
 
 	};
