@@ -835,6 +835,32 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
+	
+	/**
+	 * Get an vacation record
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getVacationRecord(RequestContext context, String id) throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection vacationsCol = db.getCollection(COLLECTION_TITLE_VACATIONS);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		DBObject dbObj = vacationsCol.findOne(query);
+
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+			ret.put(PROP_ABOUT, RESOURCE_VACATIONS + "/" + id);
+		}
+
+		return ret;
+	}
 
 	
 	/**
@@ -942,6 +968,60 @@ public class Data implements CONSTS {
 			} else {
 				System.out
 						.println("Task record not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+
+		return ret;
+	}
+	
+	/**
+	 * Get all the vacations
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONArray getVacations(RequestContext context, String query,
+			String fields, String sort) throws JSONException {
+		JSONArray ret = new JSONArray();
+
+		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_VACATIONS);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		DBObject sortObject = null;
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+		}
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+		if (sort != null) {
+			sortObject = (DBObject) JSON.parse(sort);
+		}
+
+		DBCursor cursur = hoursCol.find(queryObject, fieldsObject);
+
+		if (sort != null) {
+			cursur = cursur.sort(sortObject);
+		}
+
+		while (cursur.hasNext()) {
+			DBObject object = cursur.next();
+
+			if (object.containsField(PROP__ID)) {
+				String json = JSON.serialize(object);
+				JSONObject jsonObject = new JSONObject(json);
+
+				ObjectId _id = (ObjectId) object.get(PROP__ID);
+				jsonObject.put(PROP_RESOURCE, RESOURCE_VACATIONS + "/" + _id);
+
+				ret.put(jsonObject);
+			} else {
+				System.out
+						.println("Vacation record not included because it did not return an _id property: "
 								+ object);
 			}
 		}
@@ -1553,6 +1633,53 @@ public class Data implements CONSTS {
 	}
 	
 	/**
+	 * Delete an hours by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject deleteVacationRecord(RequestContext context, String id)
+			throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection vacsCol = db.getCollection(COLLECTION_TITLE_VACATIONS);
+		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
+		BasicDBObject fields = new BasicDBObject(PROP_PERSON, 1);
+		DBObject dbObj = vacsCol.findOne(query, fields);
+		
+		if(dbObj == null){
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Vacation to delete is not found").build());
+		}
+		
+		DBObject person = (DBObject)dbObj.get(PROP_PERSON);
+		String about = String.valueOf(context.getCurrentUser().get(PROP_ABOUT));
+		String resource = (String)person.get(PROP_RESOURCE);
+		
+		// Only admins or owners person who created it can delete vacation
+		if (!hasProjectManagementAccess(context) && !about.endsWith(resource)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+		
+		dbObj = vacsCol.findAndRemove(query);
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+		} else {
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Vacation to delete is not found").build());
+		}
+
+		ret.put(PROP_ABOUT, RESOURCE_VACATIONS + "/" + id);
+
+		return ret;
+	}
+	
+	/**
 	 * Delete an task by id
 	 * 
 	 * @param id
@@ -1714,6 +1841,79 @@ public class Data implements CONSTS {
 	 * @param newHours
 	 * @throws JSONException
 	 */
+	public static JSONObject updateVacations(RequestContext context,
+			JSONObject newVacation) throws JSONException {
+		if (!newVacation.has(PROP__ID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an id property").build();
+			throw new WebApplicationException(response);
+		}
+
+		JSONObject _id = newVacation.getJSONObject(PROP__ID);
+		if (!_id.has(PROP_$OID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an $oid property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String id = _id.getString(PROP_$OID);
+		JSONObject existing = getVacationRecord(context, id);
+		if (existing == null) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not exist").build();
+			throw new WebApplicationException(response);
+		}
+
+		if (!newVacation.has(PROP_ETAG)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an etag property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String etag = newVacation.getString(PROP_ETAG);
+		String old_etag = existing.getString(PROP_ETAG);
+
+		if (!etag.equals(old_etag)) {
+			String message = "Hours Record etag (" + etag
+					+ ") does not match the saved etag (" + old_etag + ")";
+			Response response = Response.status(Status.CONFLICT)
+					.entity(message).build();
+			throw new WebApplicationException(response);
+		}
+
+		int newEtag = Integer.parseInt(old_etag);
+		newEtag++;
+		newVacation.put(PROP_ETAG, String.valueOf(newEtag));
+
+		String json = newVacation.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_VACATIONS);
+
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		// Exclude persisting the base
+		BasicDBObject fields = new BasicDBObject();
+		dbObject.removeField(PROP_BASE);
+		dbObject.removeField(PROP_ABOUT);
+		dbObject.removeField(PROP_RESOURCE);
+		dbObject.removeField(PROP__ID);
+		DBObject result = hoursCol.findAndModify(query, fields, null, false,
+				dbObject, true, true);
+
+		json = JSON.serialize(result);
+		newVacation = new JSONObject(json);
+
+		newVacation.put(PROP_ABOUT, RESOURCE_HOURS + "/" + id);
+
+		return newVacation;
+	}
+	
+	/**
+	 * Update an hours record
+	 * 
+	 * @param newHours
+	 * @throws JSONException
+	 */
 	public static JSONObject updateHours(RequestContext context,
 			JSONObject newHours) throws JSONException {
 		if (!newHours.has(PROP__ID)) {
@@ -1779,6 +1979,127 @@ public class Data implements CONSTS {
 		newHours.put(PROP_ABOUT, RESOURCE_HOURS + "/" + id);
 
 		return newHours;
+	}
+	
+	/**
+	 * Update an vacation record
+	 * 
+	 * @param newVacation
+	 * @throws JSONException
+	 */
+	public static JSONObject updateVacation(RequestContext context,
+			JSONObject newVacation) throws JSONException {
+		if (!newVacation.has(PROP__ID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an id property").build();
+			throw new WebApplicationException(response);
+		}
+
+		JSONObject _id = newVacation.getJSONObject(PROP__ID);
+		if (!_id.has(PROP_$OID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an $oid property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String id = _id.getString(PROP_$OID);
+		JSONObject existing = getVacationRecord(context, id);
+		if (existing == null) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not exist").build();
+			throw new WebApplicationException(response);
+		}
+
+		if (!newVacation.has(PROP_ETAG)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an etag property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String etag = newVacation.getString(PROP_ETAG);
+		String old_etag = existing.getString(PROP_ETAG);
+
+		if (!etag.equals(old_etag)) {
+			String message = "Vacation Record etag (" + etag
+					+ ") does not match the saved etag (" + old_etag + ")";
+			Response response = Response.status(Status.CONFLICT)
+					.entity(message).build();
+			throw new WebApplicationException(response);
+		}
+
+		int newEtag = Integer.parseInt(old_etag);
+		newEtag++;
+		newVacation.put(PROP_ETAG, String.valueOf(newEtag));
+
+		String json = newVacation.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection vacsCol = db.getCollection(COLLECTION_TITLE_VACATIONS);
+
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		// Exclude persisting the base
+		BasicDBObject fields = new BasicDBObject();
+		dbObject.removeField(PROP_BASE);
+		dbObject.removeField(PROP_ABOUT);
+		dbObject.removeField(PROP_RESOURCE);
+		dbObject.removeField(PROP__ID);
+		DBObject result = vacsCol.findAndModify(query, fields, null, false,
+				dbObject, true, true);
+
+		json = JSON.serialize(result);
+		newVacation = new JSONObject(json);
+
+		newVacation.put(PROP_ABOUT, RESOURCE_VACATIONS + "/" + id);
+
+		return newVacation;
+	}
+	
+	/**
+	 * Create a new vacation record
+	 * 
+	 * @param newVacation
+	 * @throws JSONException
+	 */
+	public static JSONObject createVacation(RequestContext context,
+			JSONObject newVacationRecord) throws JSONException {
+
+		newVacationRecord.put(PROP_ETAG, "0");
+		newVacationRecord.put(PROP_CREATED, new Date());
+
+		String json = newVacationRecord.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection vacsCol = db.getCollection(COLLECTION_TITLE_VACATIONS);
+		WriteResult result = vacsCol.insert(dbObject);
+		
+		//Handle Error Message
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Vacations Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+		
+		// after vacation record insertion its "_id" became available
+		if (dbObject.get(PROP__ID) != null) {
+			String idVal = dbObject.get(PROP__ID).toString();
+			
+			newVacationRecord.put(PROP_ABOUT, RESOURCE_VACATIONS + "/" + idVal);
+			
+			JSONObject _id = new JSONObject();
+			
+			_id.put(PROP_$OID, idVal);
+			
+			newVacationRecord.put(PROP__ID, _id );
+			newVacationRecord.put(PROP_RESOURCE, RESOURCE_VACATIONS + "/" + idVal);
+		}
+
+		return newVacationRecord;
 	}
 
 	

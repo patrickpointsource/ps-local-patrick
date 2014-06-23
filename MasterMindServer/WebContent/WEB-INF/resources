@@ -8,3 +8,4 @@ com.pointsource.mastermind.server.Roles
 com.pointsource.mastermind.server.Skills
 com.pointsource.mastermind.server.Assignments
 com.pointsource.mastermind.server.Tasks
+com.pointsource.mastermind.server.Vacations
