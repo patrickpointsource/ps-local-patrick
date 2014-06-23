@@ -324,14 +324,14 @@ angular.module('Mastermind.services.projects')
 						excluded.push(m)
     			} else if (period == "all") 
     				included.push(m)
-    		})
+    		});
     		
     		assignmentsObject.members = included;
     		assignmentsObject.excludedMembers = excluded;
     	}
     	
     	return assignmentsObject;
-    }
+    };
     
     /**
      * Service function for persisting a project, new or previously
@@ -361,6 +361,8 @@ angular.module('Mastermind.services.projects')
 
     this.calculateSingleRoleCoverage = function(role, assignments, includePastCoverage) {
     	
+    	var tmpDate;
+    	
     	function alignDate(date) {
     		//return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0));
     		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
@@ -373,17 +375,19 @@ angular.module('Mastermind.services.projects')
     	var result = {
     		percentageCovered: 0,
     		percentageExtraCovered: 0
-    	}
+    	};
     	
     	assignments = _.filter(assignments, function(a) { return a.person && a.person.resource});
     	
     	var ONE_DAY = CONSTS.ONE_DAY; 
     	// store info about role assignments on timeline
-    	var minDate = includePastCoverage ? alignDate(new Date(role.startDate)): today;
+    	tmpDate = alignDate(new Date(role.startDate));
+    	
+    	var minDate = (includePastCoverage || today < tmpDate) ? tmpDate: today;
     	var maxDate = role.endDate ? alignDate(new Date(role.endDate)): null;
     	
     	var coverageTimeline = [{
-    		date: includePastCoverage ? alignDate(new Date(role.startDate)): today,
+    		date: (includePastCoverage || today < tmpDate)? tmpDate: today,
     		entity: role,
     		type: 'start',
     		hours: 0,
@@ -397,10 +401,11 @@ angular.module('Mastermind.services.projects')
         		type: 'end',
         		hours: 0,
         		isRole: true
-        	})
+        	});
     	
         var assignmentsWithoutEndDate = [];
     	var maxStartDate = alignDate(new Date(role.startDate));
+    	var maxEndDate = new Date(maxStartDate);
     	
     	var alignEntityStartEndDates = function(restrictPast, entity) {
     		
@@ -419,7 +424,7 @@ angular.module('Mastermind.services.projects')
     		}
     		
     		return resultEntity;
-    	}
+    	};
     	
     	var entity;
     	
@@ -437,8 +442,8 @@ angular.module('Mastermind.services.projects')
         	if (maxStartDate < entity.startDate)
         		maxStartDate = alignDate(new Date(entity.startDate));
     		
-    		if (entity.endDate && maxStartDate < entity.endDate)
-        		maxStartDate = alignDate(new Date(entity.endDate));
+    		if (entity.endDate && maxEndDate < entity.endDate)
+        		maxEndDate = alignDate(new Date(entity.endDate));
         	
         	// prevent from calculation errors where assignments done for earlier or bigger dates than role
         	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
@@ -453,9 +458,9 @@ angular.module('Mastermind.services.projects')
 	        		entity: entity,
 	        		type: 'end',
 	        		hours: 0
-	        	})
+	        	});
         	else
-        		assignmentsWithoutEndDate.push(entity)
+        		assignmentsWithoutEndDate.push(entity);
         	
         	// prevent from calculation errors where assignm,ents done for earlier or bigger dates than role
         	if (coverageTimeline[coverageTimeline.length - 1].date < minDate)
@@ -467,8 +472,13 @@ angular.module('Mastermind.services.projects')
     	
     	maxStartDate = maxStartDate < today ? alignDate(new Date(today)): maxStartDate;
     	
-    	var defaultEndDate = alignDate(new Date(maxStartDate.getTime() + ONE_DAY));
+    	var defaultEndDate;
     	
+    	if (maxEndDate > maxStartDate)
+    	   defaultEndDate = alignDate(new Date(maxEndDate));
+    	else
+    	   defaultEndDate = alignDate(new Date(maxStartDate.getTime() + ONE_DAY));
+    	   
     	if ( !role.endDate )
     		coverageTimeline.push({
         		date: defaultEndDate,
@@ -476,7 +486,7 @@ angular.module('Mastermind.services.projects')
         		type: 'end',
         		hours: 0,
         		isRole: true
-        	})
+        	});
         	
         for (var i = 0; i < assignmentsWithoutEndDate.length; i ++)
         	coverageTimeline.push({
