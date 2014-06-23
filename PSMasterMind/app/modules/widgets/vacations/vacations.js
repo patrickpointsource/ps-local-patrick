@@ -7,44 +7,50 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
     Denied: "Denied"
   }
   
+  var VACATION_CAPACITY = 14;
+  
   $scope.vacations = [];
   
   $scope.getVacations = function() {
 	VacationsService.getVacations($scope.profile).then(function(result) {
-	  $scope.vacations = result;
+	  $scope.vacations = _.sortBy(result, function(vacation) {
+	    return new Date(vacation.startDate);
+	  });
 	});
   }
   
   $scope.getVacations();
   
-  $scope.getNewRequestDays = function() {
-	if($scope.vacationStartDate && $scope.vacationEndDate) {
-	  var start = moment($scope.vacationStartDate);
-	  var end = moment($scope.vacationEndDate);
-	  
-	  var result = end.diff(start, 'days');
-	  
-	  result++
-	  
-	  return result;
-	}
-  }
-  
   $scope.getDays = function(start, end) {
-	var start = moment(start);
-	var end = moment(end);
-	
-	var result = end.diff(start, 'days');
-	
-	result++;
+	if(!start || !end) {
+	  return "";
+	}
+	var actualDays = $scope.getActualDays(start, end);
 	
 	var days = "Days";
 	
-	if(result == 1) {
+	if(actualDays == 1) {
 	  days = "Day";
 	}
 	
-	return result + " " + days;
+	return actualDays + " " + days;
+  }
+  
+  $scope.getActualDays = function(startDate, endDate) {
+	var start = moment(startDate);
+	var end = moment(endDate);
+	var allDays = end.diff(start ,'days');
+	var actualDays = 0;
+	
+	for(var d = 0; d <= allDays; d++) {
+	  start.add('days', 1);
+	  
+	  if(start.day() != 0 && start.day() != 6) {
+		actualDays++;
+	  }
+	}
+	
+	return actualDays;
   }
   
   $scope.requestHours = function() {
@@ -54,10 +60,6 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	} else {
 	  $scope.requestNew = true;
 	}
-  }
-  
-  $scope.getVacationCapacity = function() {
-	return 14;
   }
   
   $scope.addVacation = function() {
@@ -76,6 +78,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	VacationsService.addNewVacation(vacation).then(function(result) {
 	  $scope.vacations.push(result);
 	  $scope.requestHours();
+	  $scope.vacations = _.sortBy($scope.vacations, function(vacation) {
+		return new Date(vacation.startDate);
+	  });
 	});
   }
   
@@ -87,6 +92,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	if(!$scope.vacationEndDate) {
 	  $scope.errors.push("Please enter the end date.");
 	}
+	
+	$scope.checkForConflictDates($scope.vacationStartDate, $scope.vacationEndDate);
+	
 	return $scope.errors.length > 0;
   }
   
@@ -99,6 +107,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.editVacationIndex = -1;
   
   $scope.editVacation = function(index) {
+	$scope.errors = [];
 	if($scope.editVacationIndex == index) {
 	  $scope.editVacationIndex = -1;
 	  $scope.getVacations();
@@ -115,8 +124,98 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   }
   
   $scope.updateVacation = function(vacation) {
+	if(!$scope.checkForConflictDates(vacation.startDate, vacation.endDate, vacation.resource)) {
+	  return;
+	}
 	Resources.update(vacation).then(function(result) {
 	  $scope.editVacationIndex = -1;
+	  $scope.getVacations();
 	});
+  }
+  
+  $scope.getCurrentYearVacationDays = function() {
+	var now = moment();
+	var yearDays = 0;
+	for(var i = 0; i < $scope.vacations.length; i++) {
+	  var vacation = $scope.vacations[i];
+	  var start = moment(vacation.startDate);
+	  var end = moment(vacation.endDate);
+	  // check if start and end date in the same year
+	  if(start.year() == end.year()) {
+		// check that year is current
+		if(start.year() == now.year()) {
+		  var days = $scope.getActualDays(start, end);
+		  yearDays += days;
+		}
+		// else vacation is split between years
+	  } else {
+		var days = end.diff(start, 'days');
+		var dayIteration = start;
+		var thisYearDays = 0;
+		for(var d = 1; d <= days; d++) {
+		  if(dayIteration.add('days', d).year() == now.year()) {
+			thisYearDays++;
+		  }
+		}
+		
+		yearDays += thisYearDays;
+	  }
+	}
+	
+	return VACATION_CAPACITY - yearDays;
+  }
+  
+  $scope.checkForConflictDates = function(startDate, endDate, editedVacation) {
+	$scope.errors = [];
+	var vacStartDate = moment(startDate);
+	var vacEndDate = moment(endDate);
+	
+	if(end < start) {
+	  $scope.errors.push('End date is less than start date.');
+	  return false;
+	}
+	
+	for(var i = 0; i < $scope.vacations.length; i++) {
+	  var vacation = $scope.vacations[i];
+	  
+	  var start = moment(vacation.startDate);
+	  var end = moment(vacation.endDate);
+	  
+	  if(!editedVacation || editedVacation != vacation.resource) {
+	  /*
+	   *          ----------start----------end----------
+	   *  
+	   * -----vacStartDate-----start-----vacEndDate-----end---------- (1)
+	   * ----------start---vacStartDate----vacEndDate---end---------- (2)
+	   * ----------start-----vacStartDate-----end-----vacEndDate----- (3)
+	   * */
+	    if( /* (1) */ (vacStartDate <= start && vacEndDate >= start) ||
+		  /* (2) */ (vacStartDate >= start && vacStartDate <= end && vacEndDate >= start && vacEndDate <= end) ||
+		  /* (3) */ (vacStartDate <= end && vacEndDate >= end)) {
+		  if(vacation.startDate == vacation.endDate) {
+			$scope.errors.push("Confict with vacation: [ " + start.format("MMM D") + " ]");
+		  } else {
+			$scope.errors.push("Confict with vacation: [ " + start.format("MMM D") + " - " + end.format("MMM D") + " ]");
+		  }
+		  
+		  
+		  return false;
+	    }
+	  }
+	}
+	
+	return true;
+  }
+  
+  $scope.getStatusText = function(status) {
+	if(status == STATUS.Pending) {
+	  return "PENDING";
+	}
+	if(status == STATUS.Approved) {
+	  return "APPROVED";
+	}
+	if(status == STATUS.Denied) {
+	  return "DENIED";
+	}
   }
 } ] );
