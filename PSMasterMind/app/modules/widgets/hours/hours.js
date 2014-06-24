@@ -50,9 +50,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		$scope.hoursRequest( );
 
 		if( $scope.mode == 'month' && $scope.subMode == 'monthly' ) {
-		    if ($scope.selected)
-                $scope.currentMonth = $scope.moment($scope.selected.date);
-          
+			if( $scope.selected )
+				$scope.currentMonth = $scope.moment( $scope.selected.date );
+
 			$rootScope.showHoursMonthInfo = true;
 
 			if( $scope.setCurrentMonth )
@@ -879,8 +879,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[                             t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[                             t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[                              t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[                              t.name.toLowerCase( ) ];
 			} );
 
 			$scope.sortProjectTaskList( );
@@ -1015,21 +1015,32 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		}
 	};
 
+	$scope.getTodaysDate = function( ) {
+		var today = $scope.moment( );
+
+		if( $scope.firstBusinessDay )
+			return $scope.firstBusinessDay.format( 'YYYY-MM-DD' );
+
+		return today.format( 'YYYY-MM-DD' );
+	};
+
 	// TODO task: get this week of dates
 	$scope.showWeekDates = function( callback ) {
-		$scope.todaysDate = $scope.moment( ).format( 'YYYY-MM-DD' );
+		$scope.todaysDate = $scope.getTodaysDate( );
 
 		var moment = null;
 
 		if( !$scope.selected )
-			moment = $scope.moment( ).subtract( $scope.dateIndex, 'days' );
+			moment = $scope.moment( $scope.todaysDate ).subtract( $scope.dateIndex, 'days' );
 		else {
 
 			moment = $scope.moment( $scope.selected.date ).startOf( 'week' );
 
-			//$scope.dateIndex = $scope.moment( $scope.selected.date ).subtract( $scope.moment( ) ).days( );
-			//$scope.dateIndex = $scope.moment.duration($scope.moment( $scope.selected.date ).diff( $scope.moment( ) )).days();
-			$scope.dateIndex = $scope.moment( ).diff( $scope.moment( $scope.selected.date ), 'days' );
+			//$scope.dateIndex = $scope.moment( $scope.selected.date ).subtract(
+			// $scope.moment( ) ).days( );
+			//$scope.dateIndex = $scope.moment.duration($scope.moment( $scope.selected.date
+			// ).diff( $scope.moment( ) )).days();
+			$scope.dateIndex = $scope.moment( $scope.todaysDate ).diff( $scope.moment( $scope.selected.date ), 'days' );
 		}
 
 		$scope.fillWeekDays( moment.day( 0 ) );
@@ -1057,9 +1068,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	$scope.calculateMonthDates = function( callback ) {
 		$scope.displayedMonthDays = [ ];
-		$scope.todaysDate = $scope.moment( ).format( 'YYYY-MM-DD' );
-		
-		  
+		$scope.todaysDate = $scope.getTodaysDate( );
+
 		var moment = $scope.moment( $scope.currentMonth );
 
 		var startOfMonth = moment.startOf( 'month' );
@@ -1086,18 +1096,50 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[                             d1.getMonth( ) ];
+		var month1 = $scope.months[                              d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[                             d2.getMonth( ) ];
+		var month2 = $scope.months[                              d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
 		return $scope.prettyCalendarDates;
+	};
+
+	$scope.calculateLastBusinessDay = function( cb ) {
+		//var startOFWeek = $scope.moment($scope.thisWeekDates[ 0 ]);
+		var todayDate = $scope.getTodaysDate( );
+		var startOfWeek = $scope.moment( todayDate ).day( 0 );
+		var diff = $scope.moment( todayDate ).diff( $scope.moment( startOfWeek ), 'days' );
+		var firstBusineesDay;
+
+		if( diff < 5 ) {
+			firstBusineesDay = startOfWeek.subtract( ( 5 - diff ) + 1, 'days' );
+
+			firstBusineesDay = firstBusineesDay.format( 'YYYY-MM-DD' );
+			HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), firstBusineesDay, todayDate ).then( function( result ) {
+				firstBusineesDay = '';
+
+				for( var j = 0; !firstBusineesDay && j < result.length; j++ ) {
+					if( result[ j ].totalHours == 0 && $scope.moment( result[ j ].date ).weekday( ) < 6 && $scope.moment( result[ j ].date ).weekday( ) > 0 )
+						firstBusineesDay = result[ j ].date;
+				}
+
+				cb( firstBusineesDay )
+			} );
+		} else {
+			var weekday = $scope.moment( todayDate ).weekday( );
+
+			firstBusineesDay = $scope.moment( todayDate ).subtract( weekday - 1, 'days' );
+
+			firstBusineesDay = firstBusineesDay.format( 'YYYY-MM-DD' );
+
+			cb( firstBusineesDay );
+		}
 	};
 
 	$scope.hoursRequest = function( cb ) {
@@ -1512,7 +1554,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	} );
 
 	var init = function( event ) {
-		$scope.hoursRequest( );
+		$scope.calculateLastBusinessDay( function( firstBusinessDay ) {
+			$scope.firstBusinessDay = $scope.moment( firstBusinessDay );
+			$scope.hoursRequest( );
+		} );
+
 		$scope.loadAvailableTasks( );
 		$scope.bindEventHandlers( );
 		$scope.loadProjects( );
