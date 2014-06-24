@@ -12,7 +12,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.vacations = [];
   
   $scope.getVacations = function() {
-	VacationsService.getVacations($scope.profile).then(function(result) {
+	VacationsService.getVacations($scope.me).then(function(result) {
 	  $scope.vacations = _.sortBy(result, function(vacation) {
 	    return new Date(vacation.startDate);
 	  });
@@ -43,7 +43,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	var actualDays = 0;
 	
 	for(var d = 0; d <= allDays; d++) {
-	  start.add('days', 1);
+	  if(d != 0) {
+		start.add('days', 1);
+	  }
 	  
 	  if(start.day() != 0 && start.day() != 6) {
 		actualDays++;
@@ -170,8 +172,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	var vacStartDate = moment(startDate);
 	var vacEndDate = moment(endDate);
 	
-	if(end < start) {
+	if(vacEndDate < vacStartDate) {
 	  $scope.errors.push('End date is less than start date.');
+	  return false;
+	}
+	
+	if($scope.getActualDays(startDate, endDate) == 0) {
+	  $scope.errors.push("Selected period does not contain working days.");
 	  return false;
 	}
 	

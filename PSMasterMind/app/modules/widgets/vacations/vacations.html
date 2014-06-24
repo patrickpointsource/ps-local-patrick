@@ -1,16 +1,19 @@
 <div ng-controller="VacationsCtrl">
   <div class="panel panel-default dashboard-widget">
     <div class="panel-heading"> 
-      <i class="fa fa-briefcase"></i> Vacations
+      <i class="fa fa-briefcase"></i> Out of Office
       <div class="pull-right  btn-group btn-group-sm dashboard-actions">
-        <a ng-click="requestHours()"><i class="fa fa-plus"></i> Request Hours</a>
+        <a ng-click="requestHours()"><i class="fa fa-plus"></i> New Request</a>
       </div>
     </div>
     <div class="panel-body no-bottom-padding">
       <div class="row" style="margin-bottom: 0px;">
-        <div class="col-xs-12" style="text-align: center; border-bottom: 1px solid #ededed; padding-bottom: 10px;">
+        <div class="col-xs-12 align-center" style="border-bottom: 1px solid #ededed; padding-bottom: 10px;">
           <h4>You have <strong ng-class="{ 'black-text': getCurrentYearVacationDays() > 0, 'gray-text': getCurrentYearVacationDays() <= 0 }">{{getCurrentYearVacationDays()}} days </strong>available for vacation</h4>
         </div>
+      </div>
+      <div class="row no-vertical-margin" ng-show="vacations.length == 0" style="padding-top: 10px; padding-bottom: 10px; text-align: center;">
+        <h5 style="font-size: 16px;">There are no current requests.</h5>
       </div>
       <div class="row alert alert-danger" ng-show="errors.length > 0">
         <ul>
@@ -18,7 +21,10 @@
         </ul>
       </div>
       <div class="row" ng-show="requestNew">
-        <div class="col-xs-12" style="margin-bottom: 10px; margin-top: 10px;">New Request</div>
+        <div class="col-xs-12" style="margin-bottom: 10px; margin-top: 10px;">
+          <span style="font-weight: bold; color: #808080; font-size: 15px;">New Request</span>
+          <i class="fa fa-times cursor-pointer pull-right color-gray-image-border" ng-click="requestHours()"></i>
+        </div>
         <div class="col-xs-4 col-sm-4">
           <input id="fromDate" name="fromDate" class=" form-control datepicker" type="text" placeholder="Start Date" ng-model="vacationStartDate" data-date-format="yyyy-mm-dd" data-provide="datepicker">
         </div>
@@ -43,18 +49,18 @@
           <div class="col-xs-5" style="font-weight: bold; color: #808080; font-size: 15px;">
             {{displayDate(vacation.startDate)}} <span ng-hide="vacation.startDate === vacation.endDate">- {{displayDate(vacation.endDate)}}</span>
           </div>
-          <div class="col-xs-2 no-horizontal-padding">{{getDays(vacation.startDate, vacation.endDate)}}</div>
-          <div class="col-xs-4 no-horizontal-padding" style="text-align: center;" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied'}">
+          <div class="col-xs-2 no-horizontal-padding" style="color: #808080; font-weight: 500;">{{getDays(vacation.startDate, vacation.endDate)}}</div>
+          <div class="col-xs-4 no-horizontal-padding align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied', 'color-gray-image-border': vacation.status === 'Pending'}">
             <i class="fa fa-check" ng-show="vacation.status === 'Approved'"></i>
             <span ng-class="{'bold-text': vacation.status == 'Approved' || vacation.status == 'Denied'}">{{getStatusText(vacation.status)}}</span>
           </div>
-          <div class="col-xs-1 no-left-padding"><i class="fa fa-pencil cursor-pointer pull-right" ng-click="editVacation($index)"></i></div>
+          <div class="col-xs-1 no-left-padding"><i class="fa fa-pencil cursor-pointer pull-right color-gray-image-border" ng-click="editVacation($index)"></i></div>
         </div>
         <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding" ng-show="editVacationIndex == $index">
           <div class="row col-xs-12" style="margin-left: 0px; margin-right: 0px; margin-bottom: 10px; padding-left: 0px; padding-left: 0px;">
-            <div class="col-xs-8"><strong>Request</strong> submitted on {{vacation.created}}</div>
-            <div class="col-xs-3" style="text-align: center;">{{getStatusText(vacation.status)}}</div>
-            <div class="col-xs-1 no-padding"><i class="fa fa-times cursor-pointer pull-right" ng-click="editVacation($index)"></i></div>
+            <div class="col-xs-8" style="font-size: 15px;"><strong>Request</strong> <span class="color-gray-image-border">submitted on {{vacation.created}}</span></div>
+            <div class="col-xs-3 align-center">{{getStatusText(vacation.status)}}</div>
+            <div class="col-xs-1 no-padding"><i class="fa fa-times cursor-pointer pull-right color-gray-image-border" ng-click="editVacation($index)"></i></div>
           </div>
           <div class="col-xs-4 col-sm-4">
             <input id="fromDate" name="fromDate" class=" form-control datepicker" type="text" placeholder="Start Date" ng-model="vacation.startDate" data-date-format="yyyy-mm-dd" data-provide="datepicker">
