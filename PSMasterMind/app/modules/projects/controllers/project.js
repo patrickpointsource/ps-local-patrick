@@ -1028,7 +1028,8 @@ else if( role.percentageCovered == 0 )
 				familyName: 1,
 				givenName: 1,
 				primaryRole: 1,
-				thumbnail: 1
+				thumbnail: 1,
+				isActive: 1
 			};
 			var sort = {
 				'primaryRole.resource': 1,
@@ -1044,6 +1045,8 @@ else if( role.percentageCovered == 0 )
 					var personsRole = roleGroups[ person.primaryRole.resource ];
 					person.title = personsRole.abbreviation + ': ' + person.familyName + ', ' + person.givenName;
 
+                    if (person.isActive == 'false')
+                        continue;
 					for( var j = 0; j < result.members.length; j++ ) {
 						var roleJ = result.members[ j ];
 

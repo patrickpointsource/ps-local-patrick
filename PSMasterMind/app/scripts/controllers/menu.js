@@ -49,20 +49,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			text: "Complete",
 			value: "complete",
 			handler: "handleSubitem"
-		}/*, {
-			text: "All Clients",
-			value: "allclients",
-			subheader: true,
-			handler: "handleSubitem"
-		}, {
-			text: "AlleveNet",
-			value: "allevenet",
-			handler: "handleSubitem"
-		}, {
-			text: "AllState Dealer Service",
-			value: "allstate",
-			handler: "handleSubitem"
-		}*/]
+		}]
 
 	}, {
 		text: "People",
@@ -107,7 +94,11 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			text: "Sales",
 			value: "sales",
 			handler: "handleSubitem"
-		}]
+		}, {
+            text: "Inactive",
+            value: "inactive",
+            handler: "handleSubitem"
+        }]
 	}, {
 		text: "Staffing",
 		value: "staffing",

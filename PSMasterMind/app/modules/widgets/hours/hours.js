@@ -1018,7 +1018,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.getTodaysDate = function( ) {
 		var today = $scope.moment( );
 
-		if( $scope.firstBusinessDay )
+        
+            
+		if( !$scope.today && $scope.firstBusinessDay )
 			return $scope.firstBusinessDay.format( 'YYYY-MM-DD' );
 
 		return today.format( 'YYYY-MM-DD' );
@@ -1056,11 +1058,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		e.stopPropagation( );
 
+        $scope.today = true;
 		$scope.dateIndex = 0;
 		$scope.currentMonth = $scope.moment( );
 
 		if( $scope.selected )
 			$scope.setSelected( null, $scope.selected, -1 );
+			
 		delete $scope.selected;
 
 		$scope.hoursRequest( );
@@ -1129,6 +1133,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						firstBusineesDay = result[ j ].date;
 				}
 
+                if (!firstBusineesDay)
+                    firstBusineesDay = todayDate;
 				cb( firstBusineesDay )
 			} );
 		} else {

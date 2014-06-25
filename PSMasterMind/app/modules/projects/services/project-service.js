@@ -995,15 +995,18 @@ angular.module('Mastermind.services.projects')
     		
     		var roleList = result.members;
     		
+    		// calculate booking forecast only for active people
     		var query = {
     			'primaryRole.resource': {
     				$nin : nonBillableRolesArray
     			},
     			primaryRole : {
     				'$exists' : true
-    			}
-    		}
-    		var fields = {name : 1, primaryRole: 1}
+    			},
+    			isActive: 'true'
+    		};
+    		
+    		var fields = {name : 1, primaryRole: 1};
         	
         	Resources.query('people',query,fields,function(result){
         		var total = 0;

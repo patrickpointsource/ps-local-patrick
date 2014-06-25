@@ -7,10 +7,10 @@
 		        <div ng-show="isDisplayedWeek()" class="start-end" > 
 			        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}}  
 			        </div>
-		        <div class="header-container" ng-click="showToday(e)">
+		        <div class="header-container" >
 		        	
 			        <div class="today-btn-container" > 
-			        	 <button class="btn btn-default today">Today</button>
+			        	 <button class="btn btn-default today" ng-click="showToday(e)">Today</button>
 			        </div>
 			        <div ng-show="mode=='month'" class="hidden-sm hidden-xs week-month-radio">
 			          <div class="btn-group" data-toggle="buttons">

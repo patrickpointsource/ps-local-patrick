@@ -71,6 +71,24 @@
                       <label class="personDetailLabel">JazzHub</label>
                       <span>{{profile.jazzHubId}}</span>
                     </div>
+                    
+                    <div ng-show="editMode" class="col-xs-12 col-md-3 part-time-container edit">
+                      <input type="checkbox" name="profilePartTime" ng-model="profile.partTime"  />
+                      <label for="profilePartTime" class="profilePartTimeLabel">Part time</label>
+                      
+                    </div>
+                    <div ng-hide="editMode" class="col-xs-12 col-md-3 part-time-container view">
+                      <label class="profilePartTimeLabel">Part time</label>
+                      <span ng-show="profile.partTime">YES</span>
+                      <span ng-show="!profile.partTime">NO</span>
+                    </div>
+                    
+                    <div ng-hide="editMode && profile.isActive" class="col-xs-12 col-md-3 ">
+                      <label class="profilePartTimeLabel">Inactive person</label>
+                      
+                    </div>
+                    
+                    
                   </div>
                 </div>
               </div>
