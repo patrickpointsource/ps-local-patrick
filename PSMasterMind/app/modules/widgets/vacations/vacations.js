@@ -7,6 +7,15 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
     Denied: "Denied"
   }
   
+  var VACATION_TYPES = {
+	Personal: "Personal Time",
+	Vacation: "Vacation",
+	Conf: "Conferences/Training",
+	Jury: "Jury Duty"
+  }
+  
+  $scope.vacationTypes = ["Personal Time", "Vacation", "Conferences/Training", "Jury Duty"];
+  
   var VACATION_CAPACITY = 14;
   
   $scope.vacations = [];
@@ -58,8 +67,17 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.requestHours = function() {
 	$scope.errors = [];
 	if($scope.requestNew) {
+	  // clean new vacation form
 	  $scope.requestNew = false;
+	  $scope.vacationStartDate = "";
+	  $scope.vacationEndDate = "";
+	  $scope.newDescription = "";
+	  $scope.vacationType = "";
 	} else {
+	  // fill new vacation form with default values (today)
+	  var today = moment().format("YYYY-MM-DD");
+	  $scope.vacationStartDate = today;
+	  $scope.vacationEndDate = today;
 	  $scope.requestNew = true;
 	}
   }
@@ -74,7 +92,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  endDate: $scope.vacationEndDate,
 	  description: $scope.newDescription ? $scope.newDescription : "No description entered.",
 	  person: { resource: $scope.profile.about},
-	  status: STATUS.Pending
+	  status: STATUS.Pending,
+	  type: $scope.vacationType
 	}
 	
 	VacationsService.addNewVacation(vacation).then(function(result) {
@@ -90,9 +109,15 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	$scope.errors = [];
 	if(!$scope.vacationStartDate) {
 	  $scope.errors.push("Please enter the start date.");
+	  return true;
 	}
 	if(!$scope.vacationEndDate) {
 	  $scope.errors.push("Please enter the end date.");
+	  return true;
+	}
+	if(!$scope.vacationType || $scope.vacationType === "") {
+	  $scope.errors.push("Please select vacation type.");
+	  return true;
 	}
 	
 	$scope.checkForConflictDates($scope.vacationStartDate, $scope.vacationEndDate);
@@ -223,6 +248,21 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	}
 	if(status == STATUS.Denied) {
 	  return "DENIED";
+	}
+  }
+  
+  $scope.getTypeText = function(type) {
+	if(type == VACATION_TYPES.Personal) {
+	  return "Personal";
+	}
+	if(type == VACATION_TYPES.Vacation) {
+	  return VACATION_TYPES.Vacation;
+	}
+	if(type == VACATION_TYPES.Conf) {
+	  return "Conf./Training";
+	}
+	if(type == VACATION_TYPES.Jury) {
+	  return VACATION_TYPES.Jury;
 	}
   }
 } ] );
