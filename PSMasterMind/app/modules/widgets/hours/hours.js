@@ -464,7 +464,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.validateAndCalculateTotalHours( );
 			} );
 		//}
-
+		
+		$scope.$emit( 'hours:deleted' );
 	};
 
 	$scope.saveHoursEntry = function( e, hourEntry, isAdded ) {
@@ -914,7 +915,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		$scope.entryFormOpen = false;
 		delete $scope.selected;
 		$scope.hoursRequest( );
-
+		
+		$scope.$emit('hours:backInTime');
 	};
 	$scope.forwardInTime = function( ) {
 		$scope.dateIndex = $scope.dateIndex - 7;
@@ -923,7 +925,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		delete $scope.selected;
 		$scope.hoursRequest( );
-
+		
+		$scope.$emit('hours:forwardInTime');
 	};
 
 	$scope.backDay = function( ) {

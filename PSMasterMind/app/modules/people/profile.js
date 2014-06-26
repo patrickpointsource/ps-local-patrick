@@ -194,7 +194,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	};
 
 	$scope.monthNames = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
-
+	
 	$scope.initHours = function( ) {
 		var projectHours = [ ];
 		$scope.projectHours = [ ];
@@ -660,6 +660,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.selectedWeekIndex -= 7;
 		$scope.showWeek( );
 	};
+	
+	$scope.$on('hours:backInTime', function() {
+	  $scope.prevWeek();
+	});
+	
+	$scope.$on('hours:forwardInTime', function() {
+	  $scope.nextWeek();
+	});
 
 	$scope.weekHoursByProject = [ ];
 	$scope.weekHoursByTask = [ ];
@@ -671,13 +679,18 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		var profileWeekHours = [ ];
 		for( var i = 0; i < $scope.hours.length; i++ ) {
 			var hour = $scope.hours[ i ];
-			var date = convertDate( hour.date );
-			var start = convertDate( $scope.startWeekDate );
-			var end = convertDate( $scope.endWeekDate );
-			if( date >= start && date <= end ) {
-				profileWeekHours.push( hour );
+			var date = moment( hour.date );
+			var start = moment( $scope.startWeekDate );
+			var end = moment( $scope.endWeekDate );
+			if( (date.isAfter(start) || date.isSame(start)) && (date.isBefore(end) || date.isSame(end)) ) {
+			  profileWeekHours.push( hour );
 			}
 		}
+		
+		$scope.totalWeekHours = 0;
+		_.each(profileWeekHours, function(element) { $scope.totalWeekHours += parseInt(element.hours); });
+		
+		$scope.initPercentageCircle();
 
 		var weekHoursByProject = [ ];
 		var weekHoursByTask = [ ];
@@ -747,11 +760,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		
 		$scope.weekHoursByProject = weekHoursByProject;
 		$scope.weekHoursByTask = weekHoursByTask;
-		
-		$scope.totalWeekHours = 0;
-		_.each(profileWeekHours, function(element) { $scope.totalWeekHours += parseInt(element.hours); });
-		
-		$scope.initPercentageCircle();
 	};
 
 	var convertDate = function( stringDate ) {
@@ -799,7 +807,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	}
 	
 	$scope.$on('hours:added', function (event, index, role) {
-		$scope.initProfile();
+		$scope.initHours();
+    });
+	
+	$scope.$on('hours:deleted', function (event, index, role) {
+		$scope.initHours();
     });
 	//    /**
 	//     * Load Skill Definitions to display names
