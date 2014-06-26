@@ -70,6 +70,14 @@ angular.module('Mastermind').controller('GroupsCtrl',['$scope',
 	$scope.membersToAdd = _.reject($scope.members, function(member) {
 	  return _.contains(member.groups, $scope.groups[index].label);
 	});
+	
+	$scope.sortMembers();
+  }
+  
+  $scope.sortMembers = function() {
+	$scope.membersToAdd = _.sortBy($scope.membersToAdd, function(member) {
+	  return member.familyName;
+	});
   }
   
   $scope.memberToAddSelected = function() {

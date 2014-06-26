@@ -24,7 +24,7 @@
       <div class="row col-xs-12" ng-show="addToGroupIndex == $index && group.collapsed">
         <div class="col-xs-10 col-sm-6 col-md-4 col-lg-3">
           <select ng-model="memberToAdd"
-                 ng-options="m.resource as m.name for m in membersToAdd"
+                 ng-options="m.resource as m.familyName + ', ' + m.givenName for m in membersToAdd"
                  ng-change="memberToAddSelected()"
                  class="form-control" name="memberToAdd">
            </select>
