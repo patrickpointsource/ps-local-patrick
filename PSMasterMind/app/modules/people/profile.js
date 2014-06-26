@@ -688,7 +688,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		}
 		
 		$scope.totalWeekHours = 0;
-		_.each(profileWeekHours, function(element) { $scope.totalWeekHours += parseInt(element.hours); });
+		_.each(profileWeekHours, function(element) { $scope.totalWeekHours += parseFloat(element.hours); });
 		
 		$scope.initPercentageCircle();
 

@@ -462,10 +462,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			Resources.remove( hourEntry.hoursRecord.resource ).then( function( ) {
 				// $scope.hoursRequest();
 				$scope.validateAndCalculateTotalHours( );
+				$scope.$emit( 'hours:deleted' );
 			} );
 		//}
-		
-		$scope.$emit( 'hours:deleted' );
 	};
 
 	$scope.saveHoursEntry = function( e, hourEntry, isAdded ) {
