@@ -228,8 +228,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			} );
 		} else if( $scope.peopleFilter && $scope.peopleFilter != 'all' && ( $scope.peopleFilter.indexOf( ':' ) > -1 || $scope.peopleFilter.indexOf( ',' ) > -1 || !$scope.roleGroups[ $scope.peopleFilter ] ) ) {
 			var peopleQuery = {
-				$or: [ ],
-				$and: [ ]
+				$or: [ ]
 			};
 			var tmp = $scope.peopleFilter.split( ':' );
 
@@ -256,11 +255,11 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				peopleQuery.$or.push( {
 					'isActive': 'false'
 				} );
-			else
-			     peopleQuery.$and.push( {
-                    'isActive': 'true'
-                } );
-			
+			else {
+				peopleQuery.$and = [ {
+					'isActive': 'true'
+				} ];
+			}
 
 			var peopleInRoleFields = {
 				resource: 1,
@@ -291,9 +290,11 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			};
 			//var fieldsEncoded = encodeURIComponent(JSON.stringify(fields));
 			//var url = 'people?fields='+fieldsEncoded;
-			Resources.get( 'people', {
-				'fields': fields
-			} ).then( function( result ) {
+			Resources.query( 'people', {
+				'$and': [ {
+					'isActive': 'true'
+				} ]
+			}, fields ).then( function( result ) {
 				$scope.people = result.members;
 
 				$scope.fillPeopleProps( );
@@ -570,4 +571,4 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				return person;
 		};
 	};
-} ] ); 
+} ] );

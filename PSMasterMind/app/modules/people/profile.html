@@ -83,7 +83,7 @@
                       <span ng-show="!profile.partTime">NO</span>
                     </div>
                     
-                    <div ng-hide="editMode && profile.isActive" class="col-xs-12 col-md-3 ">
+                    <div ng-hide="editMode || profile.isActive == 'true'" class="col-xs-12 col-md-3 ">
                       <label class="profilePartTimeLabel">Inactive person</label>
                       
                     </div>

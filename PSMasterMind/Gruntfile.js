@@ -42,11 +42,14 @@ module.exports = function(grunt) {
                     '<%= yeoman.app %>/{,*/}*.html',
                     '<%= yeoman.app %>/views/{,*/}*.html',
                     '<%= yeoman.app %>/views/{,*/}*/{,*/}*.html',
+                    '<%= yeoman.app %>/modules/{,*/}*/{,*/}*.html',
+                    '<%= yeoman.app %>/modules/{,*/}*.html',
                     '.tmp/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
                     '{.tmp,<%= yeoman.app %>}/scripts/*/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
                     '{.tmp,<%= yeoman.app %>}/modules/*/{,*/}*.*',
+                    '{.tmp,<%= yeoman.app %>}/modules/*/*.*',
                     '{.tmp,<%= yeoman.app %>}/modules/widgets/*/{,*/}*.*',
                 ]
             }
