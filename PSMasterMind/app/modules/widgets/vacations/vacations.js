@@ -18,17 +18,49 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   var VACATION_CAPACITY = 14;
   
+  var VACATIONS_PER_PAGE = 3;
+  
   $scope.vacations = [];
+  
+  $scope.vacationsPage = 1;
   
   $scope.getVacations = function() {
 	VacationsService.getVacations($scope.me).then(function(result) {
 	  $scope.vacations = _.sortBy(result, function(vacation) {
 	    return new Date(vacation.startDate);
 	  });
+	  
+	  $scope.showVacations();
 	});
   }
   
   $scope.getVacations();
+  
+  $scope.prevPage = function() {
+	  $scope.vacationsPage--;
+	  $scope.showVacations();
+  }
+  
+  $scope.nextPage = function() {
+	  $scope.vacationsPage++;
+	  $scope.showVacations();
+  }
+  
+  $scope.showVacations = function() {
+	if($scope.vacations.length > VACATIONS_PER_PAGE) {
+		var startIndex = ($scope.vacationsPage - 1) * VACATIONS_PER_PAGE;
+		$scope.allPages = Math.ceil($scope.vacations.length / VACATIONS_PER_PAGE);
+		$scope.displayedVacations = [];
+		for(var i = 0; i < VACATIONS_PER_PAGE; i++) {
+		  if($scope.vacations[startIndex + i]) {
+			$scope.displayedVacations.push($scope.vacations[startIndex + i]);
+		  }
+		}
+	} else {
+	  $scope.displayedVacations = $scope.vacations;
+	  $scope.vacationsPage = 1;
+	}
+  }
   
   $scope.getDays = function(start, end) {
 	if(!start || !end) {
@@ -102,6 +134,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.vacations = _.sortBy($scope.vacations, function(vacation) {
 		return new Date(vacation.startDate);
 	  });
+	  
+	  $scope.showVacations();
 	});
   }
   
@@ -147,6 +181,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	Resources.remove(vacation.resource).then(function(result) {
 	  $scope.vacations.splice($scope.editVacationIndex, 1);
 	  $scope.editVacationIndex = -1;
+	  $scope.showVacations();
 	})
   }
   

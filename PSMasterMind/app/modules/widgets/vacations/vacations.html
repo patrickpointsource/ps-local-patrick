@@ -70,7 +70,7 @@
       </div>
 
 <!-- Vacations -->
-      <div class="row" ng-repeat="vacation in vacations" style="border-bottom: 1px solid #ededed; padding-top: 15px; margin-bottom: 0px; background-color: #f7f7f7;">
+      <div class="row" ng-repeat="vacation in displayedVacations" style="border-bottom: 1px solid #ededed; padding-top: 15px; margin-bottom: 0px; background-color: #f7f7f7;">
         
         <!-- View -->
         <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding" ng-hide="editVacationIndex == $index">
@@ -126,6 +126,15 @@
           </div>
         </div>
       </div>
+      
+      <!-- Pagination -->
+        <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding" style="background-color: white; margin-top: 15px;" ng-show="vacations.length > 3">
+          <div class="col-xs-1 no-padding" ng-hide="vacationsPage == 1" ng-click="prevPage()"><i class="fa fa-caret-left"></i></div>
+          <div class="col-xs-1 no-padding" ng-show="vacationsPage == 1"></div>
+          <div class="col-xs-10 align-center"><span style="color: #808080;">Page {{vacationsPage}}</span> <span style="color:#c1c1c1;">of {{allPages}}</span></div>
+          <div class="col-xs-1 align-right no-padding" ng-hide="vacationsPage == allPages" ng-click="nextPage()"><i class="fa fa-caret-right"></i></div>
+          <div class="col-xs-1 align-right no-padding" ng-show="vacationsPage == allPages"></div>
+        </div>
     </div>
   </div>
 </div>
