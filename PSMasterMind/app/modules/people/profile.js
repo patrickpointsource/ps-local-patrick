@@ -501,7 +501,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						}
 					}
 					
-					$scope.hoursRateValue = hoursRate;
+					//$scope.hoursRateValue = hoursRate;
 					//$scope.hoursRateFromProjects = Math.round(100*hoursRate/HOURS_PER_WEEK);
 
 					function compare( a, b ) {
@@ -560,6 +560,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						var myAssignment = assignments[ i ];
 						cnt += myAssignment.hoursPerWeek;
 					}
+					$scope.hoursRateValue = cnt;
 					$scope.hoursRateFromProjects = Math.round( 100 * cnt / HOURS_PER_WEEK );
 				}
 			} );
