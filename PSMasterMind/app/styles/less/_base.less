@@ -326,4 +326,36 @@ select{
 .color-gray-image-border {
   color: @gray-image-border;
 }
-
+@media (max-width: @screen-xs-max) {
+  .margin-bottom-xs {
+    margin-bottom: 10px;
+  }
+  .margin-right-xs {
+    margin-right: 10px;
+  }
+  .padding-left-xs {
+    padding-left: 15px !important;
+  }
+  .no-left-padding-xs {
+    padding-left: 0px;
+  }
+  .no-horizontal-margin-xs {
+    margin-left: 0px; margin-right: 0px;
+  }
+  .no-horizontal-padding-xs {
+    padding-left: 0px !important; padding-right: 0px !important;
+  }
+  .horizontal-padding-xs {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+@media (max-width: @screen-md-max) {
+  .vertical-margin-md {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+.bootstrap-select {
+  width: 100% !important;
+}
