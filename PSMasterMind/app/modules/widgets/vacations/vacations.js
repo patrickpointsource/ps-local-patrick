@@ -112,6 +112,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.vacationEndDate = today;
 	  $scope.requestNew = true;
 	}
+	
+	$('.select-vacation-start-date').selectpicker();
+	$('.select-vacation-start-date').selectpicker('render');
   }
   
   $scope.addVacation = function() {
@@ -174,6 +177,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.getVacations();
 	} else {
 	  $scope.editVacationIndex = index;
+	  $('.select-vacation-start-date-edit').selectpicker();
 	}
   }
   

@@ -37,11 +37,10 @@
         </div>
         <div class="row col-xs-12 no-margin no-horizontal-padding">
           <div class="col-xs-12 col-sm-4">
-              <select ng-model="vacationType"
-                 ng-options="v as v for v in vacationTypes"
-                 ng-change="vacationTypeSelected()"
+              <select class="selectpicker select-vacation-start-date" data-style="btn-info" ng-model="vacationType"
                  class="form-control" name="vacationType">
-                 <option value="" selected>Type of request</option>
+                 <option selected value="">Type of Request</option>
+                 <option ng-repeat="vacationType in vacationTypes" value="{{vacationType}}">{{vacationType}}</option>
                </select>
           </div>
           <div class="row col-xs-12 col-sm-8 no-right-padding">
@@ -95,7 +94,7 @@
           </div>
           <div class="row col-xs-12 no-margin no-horizontal-padding">
             <div class="col-xs-12 col-sm-4">
-              <select ng-model="vacation.type"
+              <select class="selectpicker select-vacation-start-date-edit" data-style="btn-info" ng-model="vacation.type"
                  ng-options="v as v for v in vacationTypes"
                  ng-change="vacationTypeSelected()"
                  class="form-control" name="vacationType">
