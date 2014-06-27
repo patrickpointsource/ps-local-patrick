@@ -75,11 +75,11 @@
                     <div ng-show="editMode" class="col-xs-12 col-md-3 part-time-container edit">
                       <input type="checkbox" name="profilePartTime" ng-model="profile.partTime"  />
                       <label for="profilePartTime" class="profilePartTimeLabel">Part time</label>
-                      
+                      <input ng-model="profile.partTimeHours" ng-disabled="!profile.partTime" placeholder="h/w" type="number" class="form-control" />
                     </div>
                     <div ng-hide="editMode" class="col-xs-12 col-md-3 part-time-container view">
                       <label class="profilePartTimeLabel">Part time</label>
-                      <span ng-show="profile.partTime">YES</span>
+                      <span ng-show="profile.partTime">{{profile.partTimeHours}}h/w</span>
                       <span ng-show="!profile.partTime">NO</span>
                     </div>
                     
