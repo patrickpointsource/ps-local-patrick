@@ -3941,38 +3941,58 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 			}
 		}
 		
-		// Iterate by mongo users to find ex-employees (presented in mongo, but not updated from Google)
+	}
+	
+	/**
+	 * Sprint 15 to sprint 16 marking all inactive people 
+	 */
+	public static void markInactivePeople(RequestContext context) throws IOException,
+		JSONException, GeneralSecurityException, ParseException  {
+		// store all inactive people in constant array
+		JSONArray inactivePeople = new JSONArray("[{\"fullName\": \"Mike Albano\", \"date\": \"20140627_000000\"}, " + 
+						"{\"fullName\": \"Chelsea Bosworth\", \"date\": \"20140627_000000\"}," +
+						"{\"fullName\": \"Raj Daswani\", \"date\": \"20140627_000000\"}," +
+						"{\"fullName\": \"Vahe Kesoyan\", \"date\": \"20140627_000000\"}," +
+						"{\"fullName\": \"Vera Veramei\", \"date\": \"20140627_000000\"}," +
+						"{\"fullName\": \"Maksim Leshkevich\", \"date\": \"20140627_000000\"}," +
+						"{\"fullName\": \"Lorrie Garbarz\", \"date\": \"20140627_000000\"}," +
+						"{\"fullName\": \"Caroline Lewis\", \"date\": \"20140627_000000\"}," +
+						"{\"fullName\": \"Phil List\", \"date\": \"20140627_000000\"}," +
+						"{\"fullName\": \"Melissa Lyon\", \"date\": \"20140627_000000\"}," +
+						"{\"fullName\": \"Ben Schell\", \"date\": \"20140627_000000\"}," +
+						
+						"{\"fullName\": \"Chelsea Bosworth\", \"date\": \"20140627_000000\"}]");
+		
 		try {
 			JSONArray people = Data.getPeople(context, "{}", "{}", "{}");
+			String foundStamp = "";
 			
 			for (int i = 0; i < people.length(); i++) {
 				JSONObject userDef = people.getJSONObject(i);
 				
-				if(userDef.has(PROP_LAST_SYNCHRONIZED)) {
-					Date syncDateFormatted = dateFormat.parse(timeStamp);
-					String lastSyncString = userDef.getString(PROP_LAST_SYNCHRONIZED);
-					Date lastSyncDate = dateFormat.parse(lastSyncString);
-					
-					if(syncDateFormatted.after(lastSyncDate)) {
-						userDef.put(PROP_ISACTIVE, "false");
-					} else {
-						userDef.put(PROP_ISACTIVE, "true");
+				foundStamp = "";
+				
+				if (userDef.has(PROP_NAME) && !userDef.get(PROP_NAME).toString().equals("")) {
+					for (int j = 0; foundStamp.equals("") && j < inactivePeople.length(); j ++) {
+						if (userDef.get(PROP_NAME).toString().equals(inactivePeople.getJSONObject(j).get(PROP_FULL_NAME).toString())) {
+							foundStamp = inactivePeople.getJSONObject(j).get(PROP_DATE).toString();
+						}
 					}
-				} else {
+				}
+				
+				if (!foundStamp.equals("")) {
 					userDef.put(PROP_ISACTIVE, "false");
-					userDef.put(PROP_LAST_SYNCHRONIZED, timeStamp);
+					userDef.put(PROP_LAST_SYNCHRONIZED, foundStamp);
+				} else {
+					userDef.put(PROP_ISACTIVE, "true");
 				}
 				
 				updatePerson(context, userDef);
 			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} finally {
 			
 		}
 	}
-	
 	//TODO: refactor this method to generate only _id, put about property filling  separatly
 	public static void refreshRoleIds (JSONObject project)
 			throws JSONException {

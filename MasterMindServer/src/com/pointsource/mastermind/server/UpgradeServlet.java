@@ -40,6 +40,7 @@ public class UpgradeServlet extends HttpServlet {
 			Data.synchPeople(context);
 			Data.migrateServicesEstimate(context);
 			Data.removeProjectEstimateFields(context);
+			Data.markInactivePeople(context);
 			//Data.migrateAssignees(context);
 			//Data.migrateFullyUtilizedAssignees(context);
 			//Data.convertAssignmentPercentageToHoursPerWeek(context);
