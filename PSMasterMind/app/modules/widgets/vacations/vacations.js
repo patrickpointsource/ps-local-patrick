@@ -16,7 +16,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.vacationTypes = ["Personal Time", "Vacation", "Conferences/Training", "Jury Duty"];
   
-  var VACATION_CAPACITY = 14;
+  var VACATION_CAPACITY = 15;
   
   var VACATIONS_PER_PAGE = 3;
   
@@ -298,6 +298,18 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	}
 	if(type == VACATION_TYPES.Jury) {
 	  return VACATION_TYPES.Jury;
+	}
+  }
+  
+  $scope.getStartVacDate = function(date) {
+	return date;
+  }
+  
+  $scope.startDateChanged = function(date) {
+	if(date) {
+	  $('#toDateEdit').datepicker('setStartDate', date);
+	} else {
+	  $('#vacationToDate').datepicker('setStartDate', $scope.vacationStartDate);
 	}
   }
 } ] );
