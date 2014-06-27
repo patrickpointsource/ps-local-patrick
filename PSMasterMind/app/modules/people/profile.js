@@ -502,7 +502,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					}
 					
 					$scope.hoursRateValue = hoursRate;
-					$scope.hoursRateFromProjects = Math.round(100*hoursRate/HOURS_PER_WEEK);
+					//$scope.hoursRateFromProjects = Math.round(100*hoursRate/HOURS_PER_WEEK);
 
 					function compare( a, b ) {
 						var titleA = a.customerName + ': ' + a.name;
@@ -554,6 +554,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							$defer.resolve( ret );
 						}
 					} );
+					
+					var cnt = 0;
+					for( var i = 0; i < assignments.length; i++ ) {
+						var myAssignment = assignments[ i ];
+						cnt += myAssignment.hoursPerWeek;
+					}
+					$scope.hoursRateFromProjects = Math.round( 100 * cnt / HOURS_PER_WEEK );
 				}
 			} );
 		} );
