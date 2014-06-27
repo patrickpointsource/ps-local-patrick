@@ -29,6 +29,20 @@ var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope'
     	return ret;
     };
     
+    $scope.filterStaffing = function (filter)
+    {
+		return function (item)
+	  		{
+				return filter
+					?
+						item.clientName && item.clientName.toLowerCase().indexOf(filter.toLowerCase()) != -1 ||
+						item.projectName && item.projectName.toLowerCase().indexOf(filter.toLowerCase()) != -1 ||
+						item.role && item.role.toLowerCase().indexOf(filter.toLowerCase()) != -1
+					:
+						item;
+			};
+    };
+    
     var today = new Date();
 	var dd = today.getDate();
     var mm = today.getMonth(); 
