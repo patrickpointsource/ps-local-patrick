@@ -259,6 +259,13 @@
         margin-top: -3px;
       }
       
+       @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
+            .inner-heading {
+              font-size: 14px;
+             
+            }
+        }
+      
       .today-btn-container {
         display: inline-block;
         .btn.today {
@@ -272,6 +279,20 @@
       .start-end {
         display: inline-block;
         margin-left: 12px;
+      }
+      
+      @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
+          .start-end {
+            font-size: 14px;
+            margin-left: 0px;
+          }
+      }
+      
+      @media (max-width: @screen-sm) {
+          .start-end {
+            font-size: 12px;
+            margin-left: -8px;
+          }
       }
       
       .week-month-radio {
@@ -335,12 +356,29 @@
     }
   }
   
+  @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
+      .hours-day-header {
+        font-size: 18px; 
+        
+        sup {
+          font-size: 12px;
+        }
+      }
+  }
+  
   .hours-day-content {
     font-size: 60px;
     line-height:60px;
     position:relative;
   }
   
+  @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
+    .hours-day-content {
+      font-size: 50px;
+      line-height:50px;
+      
+    }
+  }
   .hours-day-check {
       position:absolute;
       color: #1bc156; 
@@ -355,6 +393,13 @@
     font-size: 18px; 
     color: #a8a8a8; 
     font-weight: normal;
+  }
+  
+  @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
+      .hours-day-footer {
+        font-size: 16px; 
+        
+      }
   }
   
   @media (min-width: @screen-sm) {

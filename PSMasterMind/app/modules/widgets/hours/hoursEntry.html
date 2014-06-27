@@ -184,7 +184,7 @@
         	</div>
 	        <div class="row hours-logged" ng-class="{'month-visible': mode=='month' && subMode != 'weekly' }" >
 	        	<div class="hours-empty" ng-show="selected.totalHours == 0 && !anyAdded()">No hours logged</div>
-	        	<div class="visible-xs visible-sm hours-logged-entry mobile-add" ng-click="showNewHoursEntry(e)">
+	        	<div class="visible-xs hours-logged-entry mobile-add" ng-click="showNewHoursEntry(e)">
 	        		<span class="text">Add new entry</span>
 	        		<span class="add">
 	        			<i class="fa fa-plus"></i>
@@ -195,13 +195,13 @@
 	        	</div>
 	        	
 	        	<div ng-if="selected.totalHours > 0 || anyAdded()" ng-repeat="hourEntry in selected.hoursEntries" >
-	        		<div class="hidden-xs hidden-sm hours-logged-entry" 
+	        		<div class="hidden-xs hours-logged-entry" 
 	        			ng-class="{'new-entry': hourEntry.hoursRecord.isAdded, 
 	        						'edit-entry': hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded,
 	        						'view-entry': !hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded}" 
 	        			ng-if="hourEntry.hoursRecord.hours > 0 || hourEntry.hoursRecord.editMode" 
 	        			_	hourentryindex="{{$index}}" ng-init="initNewHoursEntry(hourEntry)">
-	        			<span class="visible-xs visible-sm edit-caption" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded">
+	        			<span class="visible-xs edit-caption" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded">
 	        				<span class="text">Edit entry</span>
 	        				<span class="close-edit" ng-click="closeEditHoursEntry(e, hourEntry);">
 			                    <i class="fa fa-times"></i>

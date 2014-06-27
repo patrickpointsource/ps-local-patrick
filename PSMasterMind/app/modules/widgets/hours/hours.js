@@ -1117,29 +1117,30 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	};
 
 	$scope.calculateLastBusinessDay = function( cb ) {
-		//var startOFWeek = $scope.moment($scope.thisWeekDates[ 0 ]);
 		var todayDate = $scope.getTodaysDate( );
 		var startOfWeek = $scope.moment( todayDate ).day( 0 );
 		var diff = $scope.moment( todayDate ).diff( $scope.moment( startOfWeek ), 'days' );
 		var firstBusineesDay;
 
-		if( diff < 5 ) {
-			firstBusineesDay = startOfWeek.subtract( ( 5 - diff ) + 1, 'days' );
+		if( diff >= 5 ) 
+	       firstBusineesDay = $scope.moment(startOfWeek);
+		else
+		   firstBusineesDay = startOfWeek.subtract( ( 5 - diff ) + 1, 'days' );
 
-			firstBusineesDay = firstBusineesDay.format( 'YYYY-MM-DD' );
-			HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), firstBusineesDay, todayDate ).then( function( result ) {
-				firstBusineesDay = '';
+		firstBusineesDay = firstBusineesDay.format( 'YYYY-MM-DD' );
+		HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), firstBusineesDay, todayDate ).then( function( result ) {
+			firstBusineesDay = '';
 
-				for( var j = 0; !firstBusineesDay && j < result.length; j++ ) {
-					if( result[ j ].totalHours == 0 && $scope.moment( result[ j ].date ).weekday( ) < 6 && $scope.moment( result[ j ].date ).weekday( ) > 0 )
-						firstBusineesDay = result[ j ].date;
-				}
+			for( var j = 0; !firstBusineesDay && j < result.length; j++ ) {
+				if( result[ j ].totalHours == 0 && $scope.moment( result[ j ].date ).weekday( ) < 6 && $scope.moment( result[ j ].date ).weekday( ) > 0 )
+					firstBusineesDay = result[ j ].date;
+			}
 
-                if (!firstBusineesDay)
-                    firstBusineesDay = todayDate;
-				cb( firstBusineesDay )
-			} );
-		} else {
+            if (!firstBusineesDay)
+                firstBusineesDay = todayDate;
+			cb( firstBusineesDay );
+		} );
+		/*} else {
 			var weekday = $scope.moment( todayDate ).weekday( );
 
 			firstBusineesDay = $scope.moment( todayDate ).subtract( weekday - 1, 'days' );
@@ -1147,7 +1148,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			firstBusineesDay = firstBusineesDay.format( 'YYYY-MM-DD' );
 
 			cb( firstBusineesDay );
-		}
+		}*/
 	};
 
 	$scope.hoursRequest = function( cb ) {
@@ -1187,6 +1188,15 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 									}
 								}
 							}
+							
+							if (false && $scope.displayedHours[ i ].totalHours == 0) {
+							    for( var j = 0; false &&j < $scope.displayedHours[ i ].hoursEntries.length; j++ ) {
+                                    if( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord ) 
+                                        $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.isAdded = true;
+                                }
+							   
+							}
+							     //$scope.firstBusinessDay = $scope.firstBusinessDay.add(1, 'days');
 
 							$scope.addNewHoursRecord( $scope.displayedHours[ i ] );
 
