@@ -471,11 +471,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 				ProjectsService.getMyCurrentProjects( person ).then( function( myCurrentProjects ) {
 					var myProjects = myCurrentProjects.data;
-					$scope.activeProjectsCount = myProjects.length;
+					$scope.activeProjectsCount = 0;
 					var hoursRate = 0;
 					for( var m = 0; m < myProjects.length; m++ ) {
 						var myProj = myProjects[ m ];
 						
+						if(ProjectsService.getProjectState(myProj) == 'Active') {
+						  $scope.activeProjectsCount++;
+						}
 						
 						for(var rolesCounter = 0; rolesCounter < myProj.roles.length; rolesCounter++) {
 							_.each(myProj.roles[rolesCounter].assignees, function(assignee) { 
@@ -558,7 +561,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					var cnt = 0;
 					for( var i = 0; i < assignments.length; i++ ) {
 						var myAssignment = assignments[ i ];
-						cnt += myAssignment.hoursPerWeek;
+						var now = moment();
+						var start = moment(myAssignment.startDate);
+						if(start.isBefore(now) || start.isSame(now, 'day')) {
+						  if(!myAssignment.endDate || moment(myAssignment.endDate).isAfter(now) || moment(myAssignment.endDate).isSame(now, 'day')) {
+						    cnt += myAssignment.hoursPerWeek;
+						  }
+						}
 					}
 					$scope.hoursRateValue = cnt;
 					$scope.hoursRateFromProjects = Math.round( 100 * cnt / HOURS_PER_WEEK );
