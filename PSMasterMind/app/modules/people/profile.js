@@ -3,8 +3,8 @@
 /**
  * Controller for handling creation of Roles.
  */
-angular.module( 'Mastermind.controllers.people' ).controller( 'ProfileCtrl', [ '$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService', 'TasksService', 'ngTableParams',
-function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, TableParams ) {
+angular.module( 'Mastermind.controllers.people' ).controller( 'ProfileCtrl', [ '$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService', 'TasksService', 'ngTableParams', '$rootScope',
+function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, TableParams, $rootScope ) {
 
 	$scope.moment = moment;
 	var UNSPECIFIED = 'Unspecified';
@@ -656,6 +656,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 	$scope.currentWeek = function( ) {
 		$scope.selectedWeekIndex = 0;
+		if($rootScope.defaultHoursWeekShiftedBack) {
+		  $scope.selectedWeekIndex = -7;
+		}
 		$scope.showWeek( );
 	};
 
@@ -676,6 +679,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.$on('hours:forwardInTime', function() {
 	  $scope.nextWeek();
 	});
+	
+	$scope.$on('hours:showToday', function() {
+      $scope.selectedWeekIndex = 0;
+      $scope.showWeek( );
+    });
 
 	$scope.weekHoursByProject = [ ];
 	$scope.weekHoursByTask = [ ];
