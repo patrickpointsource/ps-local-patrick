@@ -3,17 +3,6 @@
 
 body
   h1 Welcome to PS MasterMind
-    h2= 'This application is powered by NodeJS (version ' + process.version + ') on ' + process.platform + ' platform.'
-    table(border="0", cellspacing="0", cellpadding="0")
-      thead
-        tr
-          th.env-var Name
-          th Value
-      tbody
-        each val, name in process.env
-          tr
-            td.env-var= name
-            td
-              //- If the value is JSON, print it in a prettier format.
-              pre= /^{/.test(val) ? JSON.stringify(JSON.parse(val), null, '  ') : val
+  include ..\..\public\html\body.html
+   
 
