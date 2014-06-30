@@ -3,14 +3,14 @@
     <div class="panel-heading"> 
       <i class="fa fa-briefcase"></i> Out of Office
       <div class="pull-right  btn-group btn-group-sm dashboard-actions">
-        <a ng-click="requestHours()"><i class="fa fa-plus"></i> New Request</a>
+        <a ng-click="requestHours()" ng-show="me.about == profile.about"><i class="fa fa-plus"></i> New Request</a>
       </div>
     </div>
     <div class="panel-body no-bottom-padding no-horizontal-padding-xs">
 <!-- Available vacation days -->
-      <div class="row" style="margin-bottom: 0px;">
+      <div class="row" style="margin-bottom: 0px;" ng-show="isManagement() || me.about == profile.about">
         <div class="col-xs-12 align-center" style="border-bottom: 1px solid #ededed; padding-bottom: 10px;">
-          <h4>You have 
+          <h4><span ng-show="me.about == profile.about">You</span><span ng-hide="me.about == profile.about">{{profile.name}}</span> have 
              <strong ng-class="{ 'black-text': getCurrentYearVacationDays() > 0, 'gray-text': getCurrentYearVacationDays() <= 0 }">
                {{getCurrentYearVacationDays()}} days 
              </strong>of vacation available for use.
@@ -86,7 +86,7 @@
             <i class="fa fa-check" ng-show="vacation.status === 'Approved'"></i>
             <span ng-class="{'bold-text': vacation.status == 'Approved' || vacation.status == 'Denied'}">{{getStatusText(vacation.status)}}</span>
           </div>
-          <div class="col-xs-1 no-left-padding"><i class="fa fa-pencil cursor-pointer pull-right color-gray-image-border" ng-click="editVacation($index)"></i></div>
+          <div class="col-xs-1 no-left-padding"><i class="fa fa-pencil cursor-pointer pull-right color-gray-image-border" ng-click="editVacation($index)" ng-show="me.about == profile.about"></i></div>
         </div>
         
         <!-- Edit -->

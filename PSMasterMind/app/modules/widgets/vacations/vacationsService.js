@@ -6,12 +6,12 @@
 angular.module( 'Mastermind' ).service( 'VacationsService', [ '$q', 'Resources',
 function( $q, Resources ) {
 
-  this.getVacations = function(person) {
+  this.getVacations = function(profileId) {
 	var deferred = $q.defer( );
 	
 	var query = {
 		person: {
-			resource: person.about
+			resource: 'people/' + profileId
 		}
 	};
 	

@@ -25,14 +25,15 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.vacationsPage = 1;
   
   $scope.getVacations = function() {
-	VacationsService.getVacations($scope.me).then(function(result) {
-	  $scope.vacations = _.sortBy(result, function(vacation) {
-	    return new Date(vacation.startDate);
-	  });
+      $scope.profileLoaded = true;
+	  VacationsService.getVacations($scope.profileId).then(function(result) {
+	    $scope.vacations = _.sortBy(result, function(vacation) {
+	      return new Date(vacation.startDate);
+	    });
 	  
-	  $scope.showVacations();
-	});
-  }
+	    $scope.showVacations();
+	  });
+  };
   
   $scope.getVacations();
   
@@ -315,5 +316,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	} else {
 	  $('#vacationToDate').datepicker('setStartDate', $scope.vacationStartDate);
 	}
+  }
+  
+  $scope.isManagement = function() {
+    if($scope.me.groups && ( ( $scope.me.groups.indexOf( 'Management' ) !== -1 ) || ( $scope.me.groups.indexOf( 'Executives' ) !== -1 ))) {
+      return true;
+    }
+    
+    return false;
   }
 } ] );
