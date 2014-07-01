@@ -150,15 +150,16 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	};
 
 	$scope.getSalesSponsor = function( ) {
+	  var name = '';
 		if( $scope.project && $scope.project.salesSponsor && $scope.sales && $scope.sales.members ) {
 			var resource = $scope.project.salesSponsor.resource;
-			var name = _.findWhere( $scope.sales.members, {
+			var member = _.findWhere( $scope.sales.members, {
 				resource: resource
-			} ).name;
-
-			if( typeof name === 'undefined' ) {
-				name = '';
-			}
+			} );
+            
+            if(member && member.name) {
+              name = member.name;
+            }
 		} else {
 			name = '';
 		}
@@ -169,21 +170,23 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	};
 
 	$scope.getSalesSponsorEmail = function( ) {
+	    var mBox = '';
 		if( $scope.project && $scope.project.salesSponsor ) {
 			var resource = $scope.project.salesSponsor.resource;
-			var name = _.findWhere( $scope.sales.members, {
+			var member = _.findWhere( $scope.sales.members, {
 				resource: resource
-			} ).mBox;
-			if( typeof name === 'undefined' ) {
-				name = '';
+			} );
+			
+			if(member && member.mBox) {
+			  mBox = member.mBox;
 			}
 		} else {
-			name = '';
+			mBox = '';
 		}
 
-		$scope.salesSponsorEmail = name;
+		$scope.salesSponsorEmail = mBox;
 
-		return name;
+		return mBox;
 	};
 
 	/**
@@ -546,7 +549,7 @@ else if( role.percentageCovered == 0 )
 
 				ProjectsService.save( $scope.project ).then( function( updatedProject ) {
 					$rootScope.hideModals( );
-					if( $rootScope.projectEdit && $rootScope.needsTonavigateOut && !$scope.editDone ) {
+					if( $rootScope.projectEdit && $rootScope.needsTonavigateOut && $scope.editDone ) {
 						$rootScope.navigateOutFunc( );
 					}
 

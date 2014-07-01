@@ -8,7 +8,7 @@
       <button class="btn" data-toggle="collapse" data-target="#projectDelete" ng-show="canDeleteProject"><span>Delete</span></button>
         <button class="btn" ng-click="close()"><span>Cancel</span></button>
         <button class="btn" ng-click="checkShiftDates(true)"><span>Done</span></button>
-      	<button class="btn" ng-click="checkShiftDates(false)"><span>Save</span></button>
+      	<button class="btn" ng-click="checkShiftDates(false)" ng-disabled="!formDirty"><span>Save</span></button>
     </div>
     <div class="actions col-xs-6 visible-xs pageActions">
       <button class="btn" data-toggle="collapse" data-target="#projectDelete"><i class="fa fa-trash-o"></i> </button>
@@ -61,7 +61,7 @@
   <div class="row">
     <div class="actions col-xs-12 pageActions">
       <button class="btn" ng-click="checkShiftDates(true)"><i class="fa fa-chevron-left"></i> <span>Done</span></button>
-      <button class="btn" ng-click="checkShiftDates(false)"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
+      <button class="btn" ng-click="checkShiftDates(false)" ng-disabled="!formDirty"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
     </div>
   </div>
   <div class="modal fade" id="dateShiftConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
