@@ -34,7 +34,7 @@
     </div>
   </div>
 
-  <div id="messages" class="alert alert-danger" style="display:none">
+  <div id="messages" class="alert alert-danger" ng-show="messages && messages.length > 0">
     <a class="close" ng-click="hideMessages()">&times;</a>
     <ul>
       <li ng-repeat="message in messages">{{message}}</li>

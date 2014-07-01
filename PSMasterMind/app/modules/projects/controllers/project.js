@@ -611,6 +611,10 @@ else if( role.percentageCovered == 0 )
 
 		$scope.submitAttempted = true;
 
+        if(!$scope.validateFields()) {
+          return deferred.promise;
+        }
+
 		if( dateShiftNeeded ) {
 			$scope.handleProjectStartDateShifts( savingCallback );
 
@@ -621,6 +625,20 @@ else if( role.percentageCovered == 0 )
 
 		return deferred.promise;
 	};
+	
+	$scope.validateFields = function() {
+	  $scope.messages = [];
+	
+	  if(!$scope.project.name || $scope.project.name === "") {
+	    $scope.messages.push("Project name is required.");
+	  }
+	  
+	  if(!$scope.project.customerName || $scope.project.customerName === "") {
+        $scope.messages.push("Customer name is required.");
+      }
+      
+      return $scope.messages.length == 0;
+	}
 
 	var SYMBOLS_FOR_DESCRIPTION = 400;
 
