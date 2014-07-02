@@ -275,7 +275,8 @@ function( $q, Resources ) {
 										},
 										assignment: assignmentRecord,
 										hoursRecord: {
-											hours: 0,
+											//hours: 0,
+											hours: "",
 											project: {
 												resource: assignmentProjectURI
 											}

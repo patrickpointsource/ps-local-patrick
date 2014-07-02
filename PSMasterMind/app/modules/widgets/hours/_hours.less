@@ -720,6 +720,7 @@
 
 .hours-logged-entry.edit-entry, .hours-logged-entry.view-entry {
   @media (max-width: @screen-sm) {
+    /*
     display: flex !important;
     display: -webkit-box !important;
     display: -ms-flexbox !important;
@@ -727,10 +728,12 @@
     
     // make it multiline
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: flex-end;*/
+   display: block !important;
   }
 }
   
+
 .hours-logged-entry > span,
 .hours-logged-entry > .edit-input {
   /*top: 15px;
