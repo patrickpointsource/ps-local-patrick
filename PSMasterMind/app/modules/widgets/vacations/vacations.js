@@ -8,13 +8,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   }
   
   var VACATION_TYPES = {
-	Personal: "Personal Time",
+	Personal: "Personal Leave",
 	Vacation: "Vacation",
-	Conf: "Conferences/Training",
-	Jury: "Jury Duty"
+	Travel: "Customer Travel",
+	Sick: "Sick Time"
   }
   
-  $scope.vacationTypes = ["Personal Time", "Vacation", "Conferences/Training", "Jury Duty"];
+  $scope.vacationTypes = [VACATION_TYPES.Personal, VACATION_TYPES.Vacation, VACATION_TYPES.Travel, VACATION_TYPES.Sick];
   
   var VACATION_CAPACITY = 15;
   
@@ -123,12 +123,20 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  return;
 	}
 	
+	var vacStatus;
+	
+	if($scope.vacationType == VACATION_TYPES.Sick || $scope.vacationType == VACATION_TYPES.Travel) {
+	  vacStatus = STATUS.Approved;
+	} else {
+	  vacStatus = STATUS.Pending;
+	}
+	
 	var vacation = {
 	  startDate: $scope.vacationStartDate,
 	  endDate: $scope.vacationEndDate,
 	  description: $scope.newDescription ? $scope.newDescription : "No description entered.",
 	  person: { resource: $scope.profile.about},
-	  status: STATUS.Pending,
+	  status: vacStatus,
 	  type: $scope.vacationType
 	}
 	
@@ -298,11 +306,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	if(type == VACATION_TYPES.Vacation) {
 	  return VACATION_TYPES.Vacation;
 	}
-	if(type == VACATION_TYPES.Conf) {
-	  return "Conf./Training";
+	if(type == VACATION_TYPES.Travel) {
+	  return "Travel";
 	}
-	if(type == VACATION_TYPES.Jury) {
-	  return VACATION_TYPES.Jury;
+	if(type == VACATION_TYPES.Sick) {
+	  return VACATION_TYPES.Sick;
 	}
   }
   
