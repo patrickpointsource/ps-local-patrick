@@ -4,5 +4,19 @@
 	<a href="people">All people</a><br />
 	<a href="assignments">All assignments</a><br />
 	<a href="tasks">All tasks</a><br />
-	<a href="hoursByPerson">Hours by person</a><br />
+	<a href="javascript:void(0)" class="hoursByPerson">Hours by person</a><br />
+	<textarea rows="6" cols="25" name="hoursByPersonParams" >{}</textarea>
 </div>
+<script>
+	var trim = function(s) {
+		return s.toString().replace(/^\s+|\s+$/g, "");
+	};
+			
+	document.querySelector('.hoursByPerson').onclick = function(e) {
+		e = e ? e: window.eevent;
+		
+		var txt = document.querySelector('*[name="hoursByPersonParams"]');
+		window.location.href = 'hoursByPersonDate?params=' + encodeURIComponent(trim(txt.value));
+	};
+	
+</script>

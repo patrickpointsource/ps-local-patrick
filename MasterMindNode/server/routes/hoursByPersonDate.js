@@ -5,7 +5,7 @@ var express = require('express');
 var util = require('../util/auth');
 
 var router = express.Router();
-
+/*
 router.get('/', util.isAuthenticated, function(req, res){
     // Call to tasks service
     hoursByPersonDate.listHoursByPersonDate(function(err, result){
@@ -16,5 +16,19 @@ router.get('/', util.isAuthenticated, function(req, res){
         }            
     });
 }); 
+*/
+router.get('/', util.isAuthenticated, function(req, res){
+    //var params = ["people/52ab7005e4b0fd2a8d130016", "2014-05-20"];
+    //var params = {"keys": ["people/52ab7005e4b0fd2a8d130016", "2014-05-20"] };
+    var params = JSON.parse(req.query["params"]);
+    // Call to tasks service
+    hoursByPersonDate.listHoursByPersonDate(params, function(err, result){
+        if(err){
+            res.json(500, err);
+        } else {
+            res.json(result);
+        }            
+    });
+});
 
 module.exports = router;
