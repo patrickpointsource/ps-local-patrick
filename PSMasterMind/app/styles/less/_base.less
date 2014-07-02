@@ -356,6 +356,11 @@ a.staffing-export-btn
     padding-right: 10px;
   }
 }
+@media (max-width: @screen-sm-max) {
+  .no-left-padding-sm {
+    padding-left: 0px !important;
+  }
+}
 @media (max-width: @screen-md-max) {
   .vertical-margin-md {
     margin-top: 10px;
@@ -365,3 +370,12 @@ a.staffing-export-btn
 .bootstrap-select {
   width: 100% !important;
 }
+.selectpicker > li > a > span {
+  font-size: 15px;
+}
+@media (min-width: @screen-md-max) {
+  .padding-left-lg {
+    padding-left: 15px !important;
+  }
+}
+
