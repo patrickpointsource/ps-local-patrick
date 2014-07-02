@@ -125,7 +125,7 @@
         </div>
       </main>
 
-      <!-- <footer class="text-center container"><br/><small>В© 2014 PointSource, LLC. All rights reserved.</small></footer> -->
+      <!-- <footer class="text-center container"><br/><small>Р’В© 2014 PointSource, LLC. All rights reserved.</small></footer> -->
 
       <div class="modal modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <ng-include src="'modalTemplate'" />
@@ -146,10 +146,10 @@
                   </div>
                   <div class="modal-footer">
                       <div>
-                        <a class="cursor-pointer" ng-click="getModal().noHandler()" style="padding-right: 10px;">{{getModal().no}}</a>
-                        <a class="cursor-pointer" ng-show="getModal().cancel" ng-click="getModal().cancelHandler()" data-dismiss="modal">{{getModal().cancel}}</a>
+                        <a class="cursor-pointer" ng-click="modalDialog.noHandler()" style="padding-right: 10px;">{{modalDialog.no}}</a>
+                        <a class="cursor-pointer" ng-show="modalDialog.cancel" ng-click="modalDialog.cancelHandler()" data-dismiss="modal">{{modalDialog.cancel}}</a>
                       </div>
-                      <button type="button" class="btn btn-modal-primary pull-right" ng-click="getModal().okHandler()">{{getModal().ok}}</button>
+                      <button type="button" class="btn btn-modal-primary pull-right" ng-click="modalDialog.okHandler()">{{modalDialog.ok}}</button>
                   </div>
               </div>
           </div>

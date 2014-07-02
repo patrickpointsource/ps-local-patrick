@@ -551,6 +551,7 @@ else if( role.percentageCovered == 0 )
 					$rootScope.hideModals( );
 					if( $rootScope.projectEdit && $rootScope.needsTonavigateOut && $scope.editDone ) {
 						$rootScope.navigateOutFunc( );
+						return;
 					}
 
 					//On Create the project ID will be null.  Pull it from the about.
@@ -2279,7 +2280,7 @@ else if( role.percentageCovered == 0 )
 						$rootScope.formDirty = true;
 						$rootScope.projectEdit = true;
 						$rootScope.dirtySaveHandler = function( ) {
-							return $scope.checkShiftDates( );
+							return $scope.checkShiftDates( true );
 						};
 					}
 				}
