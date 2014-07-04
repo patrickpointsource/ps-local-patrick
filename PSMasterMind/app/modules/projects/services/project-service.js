@@ -1006,22 +1006,30 @@ angular.module('Mastermind.services.projects')
     			isActive: 'true'
     		};
     		
-    		var fields = {name : 1, primaryRole: 1};
+    		var fields = {name : 1, primaryRole: 1, partTimeHours: 1};
         	
         	Resources.query('people',query,fields,function(result){
         		var total = 0;
         		var roleType = null;
 				var utilizationRate = 100;
+        		var currentValue = 1;
         		
         		for (var k = 0; k < result.members.length; k ++) {
         			utilizationRate = 100;
         			roleType = _.find(roleList, function(r) {return result.members[k].primaryRole && result.members[k].primaryRole.resource && result.members[k].primaryRole.resource.indexOf(r.resource) > -1})
         			
+        			currentValue = 1;
+        			
         			if (roleType && roleType.utilizationRate)
-    					total += Math.round(roleType.utilizationRate * 10 / 100) / 10;
-        			else
-        				total += 1;
-        		}
+                        currentValue = Math.round(roleType.utilizationRate * 10 / 100) / 10;
+                    
+                        
+        			if (result.members[k].partTimeHours && !isNaN(parseFloat(result.members[k].partTimeHours)))
+        			     currentValue = Math.round(currentValue * 100 * parseFloat(result.members[k].partTimeHours) / CONSTS.HOURS_PER_WEEK) / 100;
+        			
+        			
+    				total += currentValue;
+        		};
         		
         		// align floating point arithmetic
         		total = parseFloat(total.toFixed(1));
