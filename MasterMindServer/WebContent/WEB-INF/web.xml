@@ -39,6 +39,11 @@
 	     <servlet-class>com.pointsource.mastermind.server.UpgradeServlet</servlet-class>
 	  	<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>
+        <servlet-name>SchedulerServlet</servlet-name>
+        <servlet-class>com.pointsource.mastermind.server.SchedulerServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 	
 	<!-- Servlet Mappings -->
 	<servlet-mapping>

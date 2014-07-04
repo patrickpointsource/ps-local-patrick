@@ -172,7 +172,7 @@ public interface CONSTS {
 	
 	//Local Host
 		public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
-		public String WEB_SITE_URL = "http://0.0.0.0:9000";
+		public String WEB_SITE_URL = "http://localhost:9000";
 		//public String WEB_SITE_URL = "http://localhost:9000";
 		public String DB_NAME_DEFAULT  = "mm_db_stage";
 	//Staging Only

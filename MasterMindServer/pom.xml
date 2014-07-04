@@ -75,6 +75,21 @@
 		    <type>pom</type>
 		    <version>2.11.1</version>
 		  </dependency>
+		  <dependency>
+    		<groupId>org.quartz-scheduler</groupId>
+    		<artifactId>quartz</artifactId>
+    		<version>2.2.1</version>
+		  </dependency>
+		  <dependency>
+    		<groupId>org.quartz-scheduler</groupId>
+    		<artifactId>quartz-jobs</artifactId>
+    		<version>2.2.1</version>
+		  </dependency>
+		  <dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		  </dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
