@@ -36,6 +36,15 @@ angular.module('Mastermind').controller('ConfigCtrl', ['$scope', '$filter', '$q'
 		$scope.refreshConfig = function() {
 			Resources.refresh('config/services').then(function(result) {
 				$scope.config = result;
+				
+				if ($scope.config.properties)
+    				$scope.config.properties.sort(function(p1, p2){
+    				    if (p1.name > p2.name)
+    				        return 1;
+    				    else if (p1.name < p2.name)
+                            return -1;
+                        return 0;
+    				});
 			});
 		}
 		
