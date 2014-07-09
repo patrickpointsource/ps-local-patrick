@@ -19,6 +19,7 @@
   angular.module('Mastermind', [
     'ui.router',
     'ui.bootstrap.tabs',
+    'ui.bootstrap.timepicker',
     'ngTable',
     'restangular',
     'textAngular',

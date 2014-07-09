@@ -1,4 +1,4 @@
-angular.module( 'Mastermind' ).controller( 'VacationsCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'TasksService', 'RolesService',
+angular.module( 'Mastermind').controller( 'VacationsCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'TasksService', 'RolesService',
 function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsService, TasksService, RolesService ) {
   
   var STATUS = {
@@ -13,6 +13,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	Travel: "Customer Travel",
 	Sick: "Sick Time"
   }
+  
+  $scope.START_TIME_DEFAULT = "09:00";
+  
+  $scope.END_TIME_DEFAULT = "17:00";
   
   $scope.vacationTypes = [VACATION_TYPES.Personal, VACATION_TYPES.Vacation, VACATION_TYPES.Travel, VACATION_TYPES.Sick];
   
@@ -73,6 +77,17 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	
 	if(actualDays == 1) {
 	  days = "Day";
+	  
+	  var diff = moment(end).diff(start, 'hours');
+	  if(diff < 8) {
+	    days = "Hours";
+	    
+	    if(diff <= 1) {
+	      days = "Hour";
+	    }
+	    
+	    actualDays = diff;
+	  }
 	}
 	
 	return actualDays + " " + days;
@@ -109,6 +124,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	} else {
 	  // fill new vacation form with default values (today)
 	  var today = moment().format("YYYY-MM-DD");
+	  $scope.vacationStartTime = $scope.START_TIME_DEFAULT;
+	  $scope.vacationEndTime = $scope.END_TIME_DEFAULT;
 	  $scope.vacationStartDate = today;
 	  $scope.vacationEndDate = today;
 	  $scope.requestNew = true;
@@ -116,6 +133,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	
 	$('.select-vacation-start-date').selectpicker();
 	$('.select-vacation-start-date').selectpicker('render');
+	
+	$('.select-vacation-manager').selectpicker();
   }
   
   $scope.addVacation = function() {
@@ -124,6 +143,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	}
 	
 	var vacStatus;
+	var vacStartTime = $scope.START_TIME_DEFAULT;
+	var vacEndTime = $scope.END_TIME_DEFAULT;
+	
+	if($scope.vacationStartTime && $scope.vacationEndTime) {
+	  vacStartTime = $scope.vacationStartTime;
+	  vacEndTime = $scope.vacationEndTime;
+	}
 	
 	if($scope.vacationType == VACATION_TYPES.Sick || $scope.vacationType == VACATION_TYPES.Travel) {
 	  vacStatus = STATUS.Approved;
@@ -132,8 +158,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	}
 	
 	var vacation = {
-	  startDate: $scope.vacationStartDate,
-	  endDate: $scope.vacationEndDate,
+	  startDate: $scope.vacationStartDate + " " + vacStartTime,
+	  endDate: $scope.vacationEndDate + " " + vacEndTime,
 	  description: $scope.newDescription ? $scope.newDescription : "No description entered.",
 	  person: { resource: $scope.profile.about},
 	  status: vacStatus,
@@ -161,12 +187,20 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.errors.push("Please enter the end date.");
 	  return true;
 	}
+	if(!$scope.vacationStartTime) {
+      $scope.errors.push("Please enter the start time.");
+      return true;
+    }
+    if(!$scope.vacationEndTime) {
+      $scope.errors.push("Please enter the end time.");
+      return true;
+    }
 	if(!$scope.vacationType || $scope.vacationType === "") {
 	  $scope.errors.push("Please select vacation type.");
 	  return true;
 	}
 	
-	$scope.checkForConflictDates($scope.vacationStartDate, $scope.vacationEndDate);
+	$scope.checkForConflictDates($scope.vacationStartDate, $scope.vacationEndDate, $scope.vacationStartTime, $scope.vacationEndTime);
 	
 	return $scope.errors.length > 0;
   }
@@ -186,7 +220,16 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.getVacations();
 	} else {
 	  $scope.editVacationIndex = index;
+	  
+	  var vacation = $scope.displayedVacations[index];
+	  var start = moment(vacation.startDate);
+	  var end = moment(vacation.endDate);
+	  $scope.vacationEditStartDate = start.format("MM-DD-YYYY");
+	  $scope.vacationEditEndDate = end.format("MM-DD-YYYY");
+	  $scope.vacationEditStartTime = start.format("HH:mm");
+	  $scope.vacationEditEndTime = end.format("HH:mm");
 	  $('.select-vacation-start-date-edit').selectpicker();
+	  $('.select-vacation-manager-' + index).selectpicker();
 	}
   }
   
@@ -199,7 +242,16 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   }
   
   $scope.updateVacation = function(vacation) {
-	if(!$scope.checkForConflictDates(vacation.startDate, vacation.endDate, vacation.resource)) {
+    $scope.errors = [];
+    if($scope.vacationEditStartDate && $scope.vacationEditEndDate && this.vacationEditStartTime && this.vacationEditEndTime) {
+      vacation.startDate = $scope.vacationEditStartDate + " " + this.vacationEditStartTime;
+      vacation.endDate = $scope.vacationEditEndDate + " " + this.vacationEditEndTime;
+    } else {
+      $scope.errors.push("Dates validation failed.");
+      return;
+    }
+    
+	if(!$scope.checkForConflictDates($scope.vacationEditStartDate, $scope.vacationEditEndDate, $scope.vacationEditStartTime, $scope.vacationEditEndTime, vacation.resource)) {
 	  return;
 	}
 	Resources.update(vacation).then(function(result) {
@@ -240,10 +292,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	return VACATION_CAPACITY - yearDays;
   }
   
-  $scope.checkForConflictDates = function(startDate, endDate, editedVacation) {
+  $scope.checkForConflictDates = function(startDate, endDate, startTime, endTime, editedVacation) {
 	$scope.errors = [];
-	var vacStartDate = moment(startDate);
-	var vacEndDate = moment(endDate);
+	var vacStartDate = moment(startDate + " " + startTime);
+	var vacEndDate = moment(endDate + " " + endTime);
 	
 	if(vacEndDate < vacStartDate) {
 	  $scope.errors.push('End date is less than start date.');
@@ -332,5 +384,19 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
     }
     
     return false;
+  }
+  
+  $scope.getFormattedTime = function(datetime) {
+    var mom = moment(datetime).format('hh:mm A');
+    
+    return mom;
+  }
+  
+  $scope.timeChanged = function() {
+    console.log($scope.vacationStartTime);
+  }
+  
+  $scope.isSameDay = function(date1, date2) {
+    return moment(date1).isSame(date2, 'days');
   }
 } ] );
