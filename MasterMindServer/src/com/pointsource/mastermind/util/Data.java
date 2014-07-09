@@ -3998,15 +3998,22 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		String[] result = null;
 		DBObject dbObject = internalFetchConfig(VALUES_SERIVCES_CONFIGURATION);
 		
-		String json = JSON.serialize( dbObject );
-		JSONObject config = new JSONObject(json);
+		//String json = JSON.serialize( dbObject );
+		
+		JSONObject config = null;
+		
+		if (dbObject != null) {
+			config = decodeJSON(toJson(dbObject));
+		}
+		
+		
 		JSONArray properties = config.getJSONArray(PROP_PROPERTIES);
 		JSONObject entry;
 		
 		for (int j = 0; j < properties.length(); j ++) {
 			entry = properties.getJSONObject(j);
 			
-			if (entry.has(PROP_NAME) && entry.get(PROP_NAME).toString().equals("reminder%2Einterested%2Eparties") && !entry.get(PROP_VALUE).toString().equals(""))
+			if (entry.has(PROP_NAME) && entry.get(PROP_NAME).toString().equals("reminder.interested.parties") && !entry.get(PROP_VALUE).toString().equals(""))
 				result = entry.get(PROP_VALUE).toString().split(",");
 		}
 		
