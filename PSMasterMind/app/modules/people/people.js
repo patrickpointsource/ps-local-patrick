@@ -302,7 +302,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		}
 
 		//Replace the URL in history with the filter
-		if( $scope.peopleFilter != $state.params.filter ) {
+		if( $state.current && $state.current.name.indexOf('people') > -1 && $scope.peopleFilter != $state.params.filter ) {
 			var view = false;
 			if( $scope.showGraphView ) {
 				view = 'graph';
@@ -313,6 +313,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				'filter': $scope.peopleFilter,
 				'view': view
 			} ).replace( '#', '' );
+			
 			$location.url( updatedUrl ).replace( );
 		}
 	};
