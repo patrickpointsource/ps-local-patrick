@@ -78,11 +78,6 @@ public class InitialEmailReminderJob implements Job {
 	}
 	
 	public List<String> getCCAdresses() {
-		String[] parties = Data.getInterestedParties(null);
-		
-		if (parties != null)
-			return Arrays.asList(parties);
-		
 		return null;
 	}
 }
