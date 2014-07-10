@@ -232,8 +232,8 @@
                   <div>Project</div>
                 </th>
                 <th class="text-center sortable" ng-class="{
-                    'sort-asc': pipeListProjects.isSortBy('roles', 'asc'),
-                    'sort-desc': pipeListProjects.isSortBy('roles', 'desc')
+                    'sort-asc': pipeListProjects.isSortBy('role', 'asc'),
+                    'sort-desc': pipeListProjects.isSortBy('role', 'desc')
                   }"
                   ng-click="pipeListProjects.sorting({'roles' : backlogRoleList.isSortBy('roles', 'asc') ? 'desc' : 'asc'})">
                   <div>Roles</div>
@@ -266,7 +266,7 @@
 			<tr ng-repeat="pipelineRole in $data | filter:filterStaffing(filterText)">
 				<td sortable="'title'">
 					<a href="#{{pipelineRole.projectResource}}">{{pipelineRole.title}}</a></td>
-				<td sortable="'roles'">{{pipelineRole.roles}}</td>
+				<td sortable="'role'">{{pipelineRole.role}}</td>
 				<td class="hidden-xs" data-title="'Start Date'" sortable="'startDate'">
 					{{pipelineRole.startDate}}</td>
 				<td class="hidden-xs" data-title="'End Date'" sortable="'endDate'">

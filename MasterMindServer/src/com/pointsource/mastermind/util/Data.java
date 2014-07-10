@@ -3997,9 +3997,6 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 	public static String[] getInterestedParties(RequestContext context) {
 		String[] result = null;
 		DBObject dbObject = internalFetchConfig(VALUES_SERIVCES_CONFIGURATION);
-		
-		//String json = JSON.serialize( dbObject );
-		
 		JSONObject config = null;
 		
 		if (dbObject != null) {
@@ -4020,6 +4017,29 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		if (result != null)
 			for (int j = 0; j < result.length; j ++)
 				result[j].trim();
+		
+		return result;
+	}
+	
+	public static boolean getReminderActive(RequestContext context) {
+		boolean result = false;
+		DBObject dbObject = internalFetchConfig(VALUES_SERIVCES_CONFIGURATION);
+		JSONObject config = null;
+		
+		if (dbObject != null) {
+			config = decodeJSON(toJson(dbObject));
+		}
+		
+		
+		JSONArray properties = config.getJSONArray(PROP_PROPERTIES);
+		JSONObject entry;
+		
+		for (int j = 0; j < properties.length(); j ++) {
+			entry = properties.getJSONObject(j);
+			
+			if (entry.has(PROP_NAME) && entry.get(PROP_NAME).toString().equals("reminder.active") && !entry.get(PROP_VALUE).toString().equals(""))
+				result = entry.get(PROP_VALUE).toString().toLowerCase().equals("true");
+		}
 		
 		return result;
 	}
