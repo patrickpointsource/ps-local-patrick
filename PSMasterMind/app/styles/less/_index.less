@@ -86,9 +86,12 @@
   float: none;
   height: 75px;
   border-bottom: 1px solid @gray-header-underline;
-  position:absolute;
-  background-color: #333333;
-  z-index: 1001;
+  
+  @media (max-width:@screen-sm) {
+    position:absolute;
+    background-color: #333333;
+    z-index: 1001;
+  }
 }
 //bootstrap override for line-height of navbar-brand
 .navbar-brand.appTitle {
@@ -104,7 +107,6 @@
   float: none;
   height: auto;
   text-align: center;
-  width: 280px;
 }
 .visible-sm.navbar-header .appTitle {
   float: none;

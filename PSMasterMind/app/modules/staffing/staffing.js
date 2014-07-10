@@ -114,7 +114,7 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 				};
 			};
 		};
-		
+
 		var found = false;
 
 		for( var i = 0; i < activeProjects.length; i++ ) {
@@ -198,67 +198,94 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 			 *
 			 */
 			var fillBacklogDeficit = function( addAllRoles ) {
-                /*
-                 * Loop through all the roles in the active projects
-                 */
-                for( var b = 0; b < roles.length; b++ ) {
-                    var activeRole = roles[ b ];
-    
-                    if( activeRole.hoursNeededToCover > 0 || addAllRoles ) {
-                        $scope.backlogProjectsList[ unassignedIndex++ ] = {
-                            clientName: proj.customerName,
-                            projectName: proj.name,
-                            title: proj.customerName + ': ' + proj.name,
-                            projectResource: proj.resource,
-                            hours: getHoursDescription( activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
-                            role: $scope.rolesMap[ activeRole.type.resource ].abbreviation,
-                            startDate: activeRole.startDate,
-                            endDate: activeRole.endDate,
-                            rate: activeRole.rate.amount
-                        };
-                    };
-                };
-            };
-            
-            var found = false;
-    
-            for( var i = 0; i < projectBacklog.length; i++ ) {
-                var proj = projectBacklog[ i ];
-                var foundProjMatch = false;
-                var roles = _.filter( projectBacklog[ i ].roles, $scope.filterPastEntries );
-    
-                var projAssignments = undefined;
-    
-                found = false;
-    
-                for( var l = 0; l < assignments.length; l++ ) {
-    
-                    projAssignments = assignments[ l ];
-    
-                    if( projAssignments.project.resource == proj.resource ) {
-    
-                        if( projAssignments.members && projAssignments.members.length > 0 ) {
-                            var assignees = _.filter( projAssignments.members, $scope.filterPastEntries );
-    
-                            found = true;
-    
-                            if( roles ) {
-                                AssignmentService.calculateRolesCoverage( roles, assignees );
-                                // add info about deficit roles
-                                fillBacklogDeficit( );
-    
-                                break;
-                            };
-                        };
-                    };
-                };
-    
-                // add info about other deficit roles, which doesn't have assignments
-                if( !found )
-                    fillBacklogDeficit( true );
-            }
-			
-            
+				/*
+				 * Loop through all the roles in the backlog projects
+				 */
+				var projectRolesInfo = {};
+				var initialIndexVal = unassignedIndex;
+				
+				for( var b = 0; b < roles.length; b++ ) {
+					var activeRole = roles[ b ];
+
+					if( activeRole.hoursNeededToCover > 0 || addAllRoles ) {
+						$scope.backlogProjectsList[ unassignedIndex++ ] = {
+							clientName: proj.customerName,
+							projectName: proj.name,
+							title: proj.customerName + ': ' + proj.name,
+							projectResource: proj.resource,
+							hours: getHoursDescription( activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
+							role: $scope.rolesMap[ activeRole.type.resource ].abbreviation,
+							startDate: activeRole.startDate,
+							endDate: activeRole.endDate,
+							rate: activeRole.rate.amount
+						};
+					};
+					
+					if( !projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] )
+                            projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] = 0;
+
+                    projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] += 1;
+				};
+
+				var rolesInfo = _.map( projectRolesInfo, function( val, key ) {
+					return key + '(' + val + ')';
+				} );
+				
+				unassignedIndex += 1;
+				
+				$scope.backlogProjectsList.splice( initialIndexVal, 0, {
+					clientName: proj.customerName,
+					projectName: proj.name,
+					title: proj.customerName + ': ' + proj.name,
+					projectResource: proj.resource,
+					hours: '-',
+					role: rolesInfo.join( ', ' ),
+					startDate: activeRole.startDate,
+					endDate: activeRole.endDate,
+					rate: activeRole.rate.amount,
+					isProjectItem: true
+				} );
+
+			};
+
+			var found = false;
+
+			for( var i = 0; i < projectBacklog.length; i++ ) {
+				var proj = projectBacklog[ i ];
+				var foundProjMatch = false;
+				var roles = _.filter( projectBacklog[ i ].roles, $scope.filterPastEntries );
+
+				var projAssignments = undefined;
+
+				found = false;
+
+				for( var l = 0; l < assignments.length; l++ ) {
+
+					projAssignments = assignments[ l ];
+
+					if( projAssignments.project.resource == proj.resource ) {
+
+						if( projAssignments.members && projAssignments.members.length > 0 ) {
+							var assignees = _.filter( projAssignments.members, $scope.filterPastEntries );
+
+							found = true;
+
+							if( roles ) {
+								AssignmentService.calculateRolesCoverage( roles, assignees );
+								// add info about deficit roles
+								fillBacklogDeficit( );
+
+								break;
+							};
+						};
+					};
+				};
+
+				// add info about other deficit roles, which doesn't have assignments
+				if( !found )
+					fillBacklogDeficit( true );
+			}
+
 			/*
 			 * Build out the table that contains the backlog Projects with resource deficits
 			 */
@@ -267,7 +294,7 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 				count: 100, // count per page
 				sorting: {} // initial sorting is already done
 			};
-			
+
 			$scope.backlogRoleList = new TableParams( backlogTableParams, {
 				total: $scope.backlogProjectsList.length, // length of data
 				getData: function( $defer, params ) {
@@ -300,77 +327,88 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 		var projectPipeline = result.data;
 
 		var unassignedIndex = 0;
-		
+
 		var rolesPromise = RolesService.getRolesMapByResource( );
-        $q.all( rolesPromise ).then( function( rolesMap ) {
-            //console.log("staging.js using rolesMap:", rolesMap);
-            $scope.rolesMap = rolesMap;
-            return AssignmentService.getAssignments( projectPipeline, "all" );
-        } ).then( function( assignments ) {
-            
-            var fillPipelineDeficit = function( addAllRoles ) {
-                /*
-                 * Loop through all the roles in the active projects
-                 */
-                for( var b = 0; b < roles.length; b++ ) {
-                    var activeRole = roles[ b ];
-    
-                    if( activeRole.hoursNeededToCover > 0 || addAllRoles ) {
-                        $scope.pipelineProjectsList[ unassignedIndex++ ] = {
-                            clientName: proj.customerName,
-                            projectName: proj.name,
-                            title: proj.customerName + ': ' + proj.name,
-                            projectResource: proj.resource,
-                            hours: getHoursDescription( activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
-                            role: $scope.rolesMap[ activeRole.type.resource ].abbreviation,
-                            startDate: activeRole.startDate,
-                            endDate: activeRole.endDate,
-                            rate: activeRole.rate.amount
-                        };
-                    };
-                };
-            };
-            
-            var found = false;
-    
-            for( var i = 0; i < projectPipeline.length; i++ ) {
-                var proj = projectPipeline[ i ];
-                var foundProjMatch = false;
-                var roles = _.filter( projectPipeline[ i ].roles, $scope.filterPastEntries );
-    
-                var projAssignments = undefined;
-    
-                found = false;
-    
-                for( var l = 0; l < assignments.length; l++ ) {
-    
-                    projAssignments = assignments[ l ];
-    
-                    if( projAssignments.project.resource == proj.resource ) {
-    
-                        if( projAssignments.members && projAssignments.members.length > 0 ) {
-                            var assignees = _.filter( projAssignments.members, $scope.filterPastEntries );
-    
-                            found = true;
-    
-                            if( roles ) {
-                                AssignmentService.calculateRolesCoverage( roles, assignees );
-                                // add info about deficit roles
-                                fillPipelineDeficit( );
-    
-                                break;
-                            };
-                        };
-                    };
-                };
-    
-                // add info about other deficit roles, which doesn't have assignments
-                if( !found )
-                    fillPipelineDeficit( true );
-            }
-            
-            return $scope.pipelineProjectsList;
-        }).then( function( pipelineProjectsList ) {
+		$q.all( rolesPromise ).then( function( rolesMap ) {
+			//console.log("staging.js using rolesMap:", rolesMap);
+			$scope.rolesMap = rolesMap;
+			return AssignmentService.getAssignments( projectPipeline, "all" );
+		} ).then( function( assignments ) {
+
+			var fillPipelineDeficit = function( addAllRoles ) {
+				/*
+				 * Loop through all the roles in the pipeline projects
+				 */
+				
+				var projectRolesInfo = {};
+
+				for( var b = 0; b < roles.length; b++ ) {
+					var activeRole = roles[ b ];
+
+					if( !projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] )
+                            projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] = 0;
+
+                    projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] += 1;
+				};
+				
+				var rolesInfo = _.map( projectRolesInfo, function( val, key ) {
+                    return key + '(' + val + ')';
+                } );
+                
+                $scope.pipelineProjectsList.splice( unassignedIndex ++, 0, {
+                    clientName: proj.customerName,
+                    projectName: proj.name,
+                    title: proj.customerName + ': ' + proj.name,
+                    projectResource: proj.resource,
+                    hours: '-',
+                    role: rolesInfo.join( ', ' ),
+                    startDate: activeRole.startDate,
+                    endDate: activeRole.endDate,
+                    rate: activeRole.rate.amount,
+                    isProjectItem: true
+                } );
+			};
+
+			var found = false;
+
+			for( var i = 0; i < projectPipeline.length; i++ ) {
+				var proj = projectPipeline[ i ];
+				var foundProjMatch = false;
+				var roles = _.filter( projectPipeline[ i ].roles, $scope.filterPastEntries );
+
+				var projAssignments = undefined;
+
+				found = false;
+
+				for( var l = 0; l < assignments.length; l++ ) {
+
+					projAssignments = assignments[ l ];
+
+					if( projAssignments.project.resource == proj.resource ) {
+
+						if( projAssignments.members && projAssignments.members.length > 0 ) {
+							var assignees = _.filter( projAssignments.members, $scope.filterPastEntries );
+
+							found = true;
+
+							if( roles ) {
+								AssignmentService.calculateRolesCoverage( roles, assignees );
+								// add info about deficit roles
+								fillPipelineDeficit( );
+
+								break;
+							};
+						};
+					};
+				};
+
+				// add info about other deficit roles, which doesn't have assignments
+				if( !found )
+					fillPipelineDeficit( true );
+			}
+
+			return $scope.pipelineProjectsList;
+		} ).then( function( pipelineProjectsList ) {
 			/*
 			 * Build out the table that contains the backlog Projects with resource deficits
 			 */
