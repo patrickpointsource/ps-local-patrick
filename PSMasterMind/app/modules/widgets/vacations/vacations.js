@@ -159,11 +159,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  vacEndTime = $scope.vacationEndTime;
 	}
 	
-	if($scope.vacationType == VACATION_TYPES.Sick || $scope.vacationType == VACATION_TYPES.Travel) {
-	  vacStatus = STATUS.Approved;
-	} else {
-	  vacStatus = STATUS.Pending;
-	}
+	//if($scope.vacationType == VACATION_TYPES.Sick || $scope.vacationType == VACATION_TYPES.Travel) {
+	//  vacStatus = STATUS.Approved;
+	//} else {
+	//  vacStatus = STATUS.Pending;
+	//}
+	
+	vacStatus = STATUS.Approved;
 	
 	var vacation = {
 	  startDate: $scope.vacationStartDate + " " + vacStartTime,

@@ -8,7 +8,7 @@
     </div>
     <div class="panel-body no-bottom-padding no-horizontal-padding-xs">
 <!-- Available vacation days -->
-      <div class="row" style="margin-bottom: 0px;" ng-show="isManagement() || me.about == profile.about">
+      <div class="row" style="margin-bottom: 0px;" ng-show="me.about == profile.about">
         <div class="col-xs-12 align-center" style="border-bottom: 1px solid #ededed; padding-bottom: 10px;">
           <h4><span ng-show="me.about == profile.about">You</span><span ng-hide="me.about == profile.about">{{profile.name}}</span> have 
              <strong ng-class="{ 'black-text': getCurrentYearVacationDays() > 0, 'gray-text': getCurrentYearVacationDays() <= 0 }">
@@ -37,10 +37,10 @@
         </div>
         <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding horizontal-padding-xs" style="margin-bottom: 5px;">
           <div class="col-xs-12 col-md-6">
-            <div ng-if="!editManager" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">Approving Manager</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerCallback()" ng-show="!editManager"></i></div>
+            <!--<div ng-if="!editManager" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">Approving Manager</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerCallback()" ng-show="!editManager"></i></div>
             <select ng-if="editManager" class="selectpicker select-vacation-manager" data-style="btn-info" ng-model="vacationManager" ng-change="managerSelected()" name="vacationManager" disabled>
                  <option selected value="">Approving Manager</option>
-             </select>
+             </select>-->
              <select class="selectpicker select-vacation-start-date" data-style="btn-info" ng-model="vacationType" name="vacationType">
                  <option selected value="" ng-hide="vacationType">Type of Request</option>
                  <option ng-repeat="vacationType in vacationTypes" value="{{vacationType}}">{{vacationType}}</option>
@@ -134,10 +134,10 @@
           </div>
           <div class="row col-xs-12 no-margin no-horizontal-padding">
             <div class="col-xs-12 col-sm-6">
-              <div ng-if="!editManagerEdit" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">Approving Manager</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerEditCallback($index)" ng-show="!editManagerEdit"></i></div>
+              <!--<div ng-if="!editManagerEdit" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">Approving Manager</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerEditCallback($index)" ng-show="!editManagerEdit"></i></div>
               <select ng-if="editManagerEdit" class="selectpicker select-vacation-manager-{{$index}}" data-style="btn-info" ng-model="vacationManager" name="vacationManager" disabled>
                 <option selected value="">Approving Manager</option>
-              </select>
+              </select>-->
               <select class="selectpicker select-vacation-start-date-edit" data-style="btn-info" ng-model="vacation.type"
                  ng-options="v as v for v in vacationTypes"
                  ng-change="vacationTypeSelected()"
