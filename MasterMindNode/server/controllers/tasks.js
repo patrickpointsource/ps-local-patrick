@@ -3,12 +3,12 @@
 var dataAccess = require('../data/dataAccess');
 
 module.exports.listTasks = function(callback) {
-    dataAccess.listTasks('mm_db_demo', function(err, body){
+    dataAccess.listTasks(function(err, body){
         if (err) {
             console.log(err);
             callback('error loading tasks', null);
         } else {
-            console.log(body);
+            //console.log(body);
             callback(null, body);
         }
     });

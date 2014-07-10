@@ -1,6 +1,6 @@
 'use strict';
 
-var dataAccess = require('../data/dataAccess');
+var dbAccess = require('../data/dbAccess');
 /*
 module.exports.listHoursByPersonDate = function(callback) {
     dataAccess.listHoursByPersonDate('mm_db_demo', function(err, body){
@@ -16,7 +16,7 @@ module.exports.listHoursByPersonDate = function(callback) {
 */
 
 module.exports.listHoursByPersonDate = function(params, callback) {
-    dataAccess.listHoursByStartEndDates('mm_db_demo', params, function(err, body){
+    dbAccess.listHoursByStartEndDates( params, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading tasks', null);

@@ -3,12 +3,12 @@
 var dataAccess = require('../data/dataAccess');
 
 module.exports.listPeople = function(callback) {
-    dataAccess.listPeople('mm_db_demo', function(err, body){
+    dataAccess.listPeople(function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people', null);
         } else {
-            console.log(body);
+            //console.log(body);
             callback(null, body);
         }
     });
