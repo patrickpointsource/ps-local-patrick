@@ -207,11 +207,7 @@
 			                    <i class="fa fa-times"></i>
 			                </span>
 	        			</span>
-	        			<span class="hours-logged-value" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.hours}} hrs</span>
-	        			<input class="hours-logged-value edit-input" type="text"
-			                    class="form-control" placeholder="# hours"
-			                    name="hours-logged-value-edit" ng-model="hourEntry.hoursRecord.hoursEdited" required ng-show="hourEntry.hoursRecord.editMode">
-	        			  
+	        			
 	        			<span class="hours-logged-project" ng-hide="hourEntry.hoursRecord.editMode" ng-if="hourEntry.project && hourEntry.project.name">{{hourEntry.project.name}}</span>
 	        			<span class="hours-logged-project" ng-hide="hourEntry.hoursRecord.editMode" ng-if="hourEntry.task && hourEntry.task.name">{{hourEntry.task.name}}</span>
 					       
@@ -240,7 +236,13 @@
 						  	</a>
 					  		</li>
 						</ul>
-			
+						
+						<span class="hours-logged-value" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.hours}} hrs</span>
+	        			<input class="hours-logged-value edit-input" type="text"
+			                    class="form-control" placeholder="# hours"
+			                    name="hours-logged-value-edit" ng-model="hourEntry.hoursRecord.hoursEdited" required ng-show="hourEntry.hoursRecord.editMode">
+	        			  
+	        			  
 	        			<span class="hours-logged-desc hidden-xs" ng-hide="hourEntry.hoursRecord.editMode" style="width: -webkit-calc(70% - 70px)" 
 	        				ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.description}}</span>
 	        			

@@ -1130,7 +1130,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), firstBusineesDay, todayDate ).then( function( result ) {
 			firstBusineesDay = '';
 
-			for( var j = 0; !firstBusineesDay && j < result.length; j++ ) {
+			for( var j = result.length - 1; result[ j ] && result[ j ].totalHours == 0 && j >= 0; j -- ) {
 				if( result[ j ].totalHours == 0 && $scope.moment( result[ j ].date ).weekday( ) < 6 && $scope.moment( result[ j ].date ).weekday( ) > 0 )
 					firstBusineesDay = result[ j ].date;
 			}
