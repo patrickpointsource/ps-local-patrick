@@ -73,17 +73,17 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	}
 	var actualDays = $scope.getActualDays(start, end);
 	
-	var days = "Days";
+	var days = "days";
 	
 	if(actualDays == 1) {
-	  days = "Day";
+	  days = "day";
 	  
 	  var diff = moment(end).diff(start, 'hours');
 	  if(diff < 8) {
-	    days = "Hours";
+	    days = "hours";
 	    
 	    if(diff <= 1) {
-	      days = "Hour";
+	      days = "hour";
 	    }
 	    
 	    actualDays = diff;
@@ -91,6 +91,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	}
 	
 	return actualDays + " " + days;
+  }
+  
+  $scope.getNewVacationDuration = function() {
+    return $scope.getDays($scope.vacationStartDate + " " + $scope.vacationStartTime, this.vacationEndDate + " " + this.vacationEndTime);
+  }
+  
+  $scope.getEditVacationDuration = function() {
+    return $scope.getDays(this.vacationEditStartDate + " " + this.vacationEditStartTime, this.vacationEditEndDate + " " + this.vacationEditEndTime);
   }
   
   $scope.getActualDays = function(startDate, endDate) {
@@ -215,6 +223,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.editVacation = function(index) {
 	$scope.errors = [];
+	$scope.editManagerEdit = false;
 	if($scope.editVacationIndex == index) {
 	  $scope.editVacationIndex = -1;
 	  $scope.getVacations();
@@ -224,8 +233,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  var vacation = $scope.displayedVacations[index];
 	  var start = moment(vacation.startDate);
 	  var end = moment(vacation.endDate);
-	  $scope.vacationEditStartDate = start.format("MM-DD-YYYY");
-	  $scope.vacationEditEndDate = end.format("MM-DD-YYYY");
+	  $scope.vacationEditStartDate = start.format("YYYY-MM-DD");
+	  $scope.vacationEditEndDate = end.format("YYYY-MM-DD");
 	  $scope.vacationEditStartTime = start.format("HH:mm");
 	  $scope.vacationEditEndTime = end.format("HH:mm");
 	  $('.select-vacation-start-date-edit').selectpicker();
@@ -243,9 +252,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.updateVacation = function(vacation) {
     $scope.errors = [];
-    if($scope.vacationEditStartDate && $scope.vacationEditEndDate && this.vacationEditStartTime && this.vacationEditEndTime) {
-      vacation.startDate = $scope.vacationEditStartDate + " " + this.vacationEditStartTime;
-      vacation.endDate = $scope.vacationEditEndDate + " " + this.vacationEditEndTime;
+    if(this.vacationEditStartDate && this.vacationEditEndDate && this.vacationEditStartTime && this.vacationEditEndTime) {
+      vacation.startDate = this.vacationEditStartDate + " " + this.vacationEditStartTime;
+      vacation.endDate = this.vacationEditEndDate + " " + this.vacationEditEndTime;
     } else {
       $scope.errors.push("Dates validation failed.");
       return;
@@ -370,9 +379,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	return date;
   }
   
-  $scope.startDateChanged = function(date) {
-	if(date) {
-	  $('#toDateEdit').datepicker('setStartDate', date);
+  $scope.startDateChanged = function(index) {
+	if(index) {
+	  $('#toDateEdit' + index).datepicker('setStartDate', $scope.vacationEditStartDate);
 	} else {
 	  $('#vacationToDate').datepicker('setStartDate', $scope.vacationStartDate);
 	}
@@ -399,4 +408,49 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.isSameDay = function(date1, date2) {
     return moment(date1).isSame(date2, 'days');
   }
+  
+  $scope.showVacationTime = false;
+  
+  $scope.managerSelected = function() {
+    if(showVacationTime) {
+      $scope.showVacationTime = false;
+    } else {
+      $scope.showVacationTime = true;
+    }
+  }
+  
+  $scope.dateChanged = function() {
+    $scope.vacationStartDate = this.vacationStartDate;
+    $scope.vacationEndDate = this.vacationEndDate;
+    $scope.vacationStartTime = this.vacationStartTime;
+    $scope.vacationEndTime = this.vacationEndTime;
+    $scope.startDateChanged();
+  }
+  
+  $scope.editManager = false;
+  
+  $scope.editManagerCallback = function() {
+    if($scope.editManager) {
+      $scope.editManager = false;
+    } else {
+      $scope.editManager = true;
+      
+      setTimeout(function() { 
+        $(".select-vacation-manager").selectpicker();
+      }, 5);
+    }
+  }
+  
+  $scope.editManagerEditCallback = function(index) {
+    if($scope.editManagerEdit) {
+      $scope.editManagerEdit = false;
+    } else {
+      $scope.editManagerEdit = true;
+      
+      setTimeout(function() { 
+        $(".select-vacation-manager-" + index).selectpicker();
+      }, 5);
+    }
+  }
+  
 } ] );

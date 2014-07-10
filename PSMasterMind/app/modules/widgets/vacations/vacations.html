@@ -36,56 +36,60 @@
           <i class="fa fa-times cursor-pointer pull-right color-gray-image-border" style="padding-right: 30px;" ng-click="requestHours()"></i>
         </div>
         <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding horizontal-padding-xs" style="margin-bottom: 5px;">
-          <div class="col-xs-12 col-sm-6">
-            <select class="selectpicker select-vacation-manager" data-style="btn-info" ng-model="vacationManager" name="vacationManager" disabled>
+          <div class="col-xs-12 col-md-6">
+            <div ng-if="!editManager" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">Approving Manager</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerCallback()" ng-show="!editManager"></i></div>
+            <select ng-if="editManager" class="selectpicker select-vacation-manager" data-style="btn-info" ng-model="vacationManager" ng-change="managerSelected()" name="vacationManager" disabled>
                  <option selected value="">Approving Manager</option>
              </select>
-          </div>
-          <div class="col-xs-12 col-sm-6">
-            <select class="selectpicker select-vacation-start-date" data-style="btn-info" ng-model="vacationType" name="vacationType">
+             <select class="selectpicker select-vacation-start-date" data-style="btn-info" ng-model="vacationType" name="vacationType">
                  <option selected value="" ng-hide="vacationType">Type of Request</option>
                  <option ng-repeat="vacationType in vacationTypes" value="{{vacationType}}">{{vacationType}}</option>
              </select>
           </div>
+          <div class="col-xs-12 col-md-6">
+            <i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerCallback()" ng-show="editManager"></i>
+          </div>
         </div>
-        <div class="row col-xs-12 vacation-dates-row no-horizontal-margin horizontal-padding-xs visible-lg">
+        <div ng-if="vacationType" class="row col-xs-12 vacation-dates-row no-margin padding-bottom-5 horizontal-padding-xs visible-lg">
+          <div class="gray-text">From</div>
+          <div class="gray-text" style="margin-left: 49%;">Until</div>
+        </div>
+        <div ng-if="vacationType" class="row col-xs-12 vacation-dates-row no-horizontal-margin horizontal-padding-xs visible-lg">
           <div class="vac-dates-date">
-            <input id="vacationFromDate" name="vacationFromDate" ng-init="START_TIME_DEFAULT" class="form-control datepicker fa-calendar" type="text" placeholder="Start Date" ng-model="vacationStartDate" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-change="startDateChanged()"/>
+            <input id="vacationFromDate" name="vacationFromDate" ng-init="START_TIME_DEFAULT" class="form-control datepicker fa-calendar" type="text" placeholder="Start Date" ng-model="vacationStartDate" ng-change="dateChanged()" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-change="startDateChanged()"/>
           </div>
           <div class="vac-dates-time">
-            <input class="form-control" type="time" ng-model="vacationStartTime"/>
+            <input class="form-control" type="time" ng-model="vacationStartTime" ng-change="dateChanged()"/>
           </div>
           <div class="vac-dates-arrow">
             <i class="fa fa-long-arrow-right fa-2x hidden-xs" style="color: #ededed;"></i>
           </div>
           <div class="vac-dates-date">
-            <input id="vacationToDate" name="vacationToDate" class=" form-control datepicker" type="text" placeholder="End Date" ng-model="vacationEndDate" data-date-format="yyyy-mm-dd" ng-disabled="!vacationStartDate" data-provide="datepicker" data-date-start-date="{{vacationStartDate}}">
+            <input id="vacationToDate" name="vacationToDate" class=" form-control datepicker" type="text" placeholder="End Date" ng-model="vacationEndDate" ng-change="dateChanged()" data-date-format="yyyy-mm-dd" ng-disabled="!vacationStartDate" data-provide="datepicker" data-date-start-date="{{vacationStartDate}}">
           </div>
           <div class="vac-dates-time">
-            <input class="form-control no-right-padding" type="time" ng-model="vacationEndTime"/>
+            <input class="form-control no-right-padding" type="time" ng-model="vacationEndTime" ng-change="dateChanged()"/>
           </div>
         </div>
-        <div class="row col-xs-12 no-horizontal-margin horizontal-padding-xs hidden-lg">
-          <div class="col-xs-12 color-gray-image-border">Start Date:</div>
-            <div class="col-xs-12 col-sm-6 no-horizontal-padding margin-bottom-xs padding-left-xs">
+        <div ng-if="vacationType" class="row col-xs-12 no-horizontal-margin horizontal-padding-xs hidden-lg">
+          <div class="col-xs-12 gray-text no-left-padding">From:
+          </div>
+            <div class="col-xs-12 col-sm-6 no-horizontal-padding-xs no-left-padding padding-right-xs margin-bottom-xs padding-left-xs">
               <input id="vacationFromDate" name="vacationFromDate" ng-init="START_TIME_DEFAULT" class=" form-control datepicker" type="text" placeholder="Start Date" ng-model="vacationStartDate" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-change="startDateChanged()">
             </div>
-            <div class="col-xs-12 col-sm-6 no-right-padding">
+            <div class="col-xs-12 col-sm-6 no-horizontal-padding-xs no-right-padding padding-right-xs margin-bottom-xs padding-left-xs">
               <input class="form-control" type="time" ng-model="vacationStartTime"/>
-              <!--<div id="vacationStartTimePicker" class="collapse out">
-                <timepicker ng-model="vacationStartTime" ng-change="timeChanged()" hour-step="1" minute-step="1"></timepicker>
-              </div>-->
             </div>
-            <div class="col-xs-12 color-gray-image-border">End Date:</div>
-            <div class="col-xs-12 col-sm-6 no-horizontal-padding margin-bottom-xs padding-left-xs">
+            <div class="col-xs-12 gray-text no-left-padding">Until:</div>
+            <div class="col-xs-12 col-sm-6 no-horizontal-padding-xs no-left-padding padding-right-xs margin-bottom-xs padding-left-xs">
               <input id="vacationToDate" name="vacationToDate" class=" form-control datepicker" type="text" placeholder="End Date" ng-model="vacationEndDate" data-date-format="yyyy-mm-dd" ng-disabled="!vacationStartDate" data-provide="datepicker" data-date-start-date="{{vacationStartDate}}">
             </div>
-            <div class="col-xs-12 col-sm-6 no-right-padding">
+            <div class="col-xs-12 col-sm-6 no-horizontal-padding-xs no-right-padding padding-right-xs margin-bottom-xs padding-left-xs">
               <input class="form-control no-right-padding" type="time" ng-model="vacationEndTime"/>
             </div>
         </div>
         
-        <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding horizontal-padding-xs">
+        <div ng-if="vacationType" class="row col-xs-12 no-horizontal-margin padding-top-10 no-horizontal-padding horizontal-padding-xs">
           <!--<div class="visible-xs col-xs-12 color-gray-image-border">Days:</div>
           <div class="col-xs-12 col-sm-4 margin-bottom-xs padding-left-xs"><input type="text" class="form-control" value="{{getDays(vacationStartDate, vacationEndDate)}}" disabled/></div>-->
           <div class="visible-xs col-xs-12 color-gray-image-border">Description:</div>
@@ -93,8 +97,9 @@
             <input type="text" placeholder="Description" ng-model="newDescription" class="form-control"/>
           </div>
         </div>
-        <div class="row col-xs-12 no-horizontal-padding margin-bottom-xs margin-right-xs vertical-margin-md">
-          <button class="btn btn-active pull-right" ng-click="addVacation()" style="color: white; font-weight: bold; font-size: 16px;">SUBMIT</button>
+        <div ng-if="vacationType" class="row col-xs-12 no-horizontal-padding margin-bottom-xs margin-right-xs vertical-margin-md">
+          <button class="btn btn-info pull-right" ng-click="addVacation()" style="color: white; font-weight: bold; font-size: 16px;">SUBMIT</button>
+          <span class="pull-right gray-text vac-requested"><span class="color-gray-less bold">{{getNewVacationDuration()}}</span> requested</span>
         </div>
       </div>
 
@@ -108,8 +113,9 @@
             <span style="color: #808080; font-weight: 500;">({{getDays(vacation.startDate, vacation.endDate)}})</span>
           </div>
           <div class="col-xs-2 no-horizontal-padding" style="color: #808080; font-weight: 500;">{{getTypeText(vacation.type)}}</div>
-          <div class="col-xs-4 no-horizontal-padding align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied', 'color-gray-image-border': vacation.status === 'Pending'}">
+          <div class="col-xs-4 no-horizontal-padding align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied', 'color-yellow': vacation.status === 'Pending'}">
             <i class="fa fa-check" ng-show="vacation.status === 'Approved'"></i>
+            <i class="fa fa-clock-o" ng-show="vacation.status === 'Pending'"></i>
             <span ng-class="{'bold-text': vacation.status == 'Approved' || vacation.status == 'Denied'}">{{getStatusText(vacation.status)}}</span>
           </div>
           <div class="col-xs-1 no-left-padding"><i class="fa fa-pencil cursor-pointer pull-right color-gray-image-border" ng-click="editVacation($index)" ng-show="me.about == profile.about"></i></div>
@@ -119,54 +125,78 @@
         <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding" ng-show="editVacationIndex == $index">
           <div class="row col-xs-12" style="margin-left: 0px; margin-right: 0px; margin-bottom: 10px; padding-left: 0px; padding-left: 0px;">
             <div class="col-xs-8" style="font-size: 15px;"><strong>Request</strong> <span class="color-gray-image-border">submitted on {{vacation.created}}</span></div>
-            <div class="col-xs-3 align-center">{{getStatusText(vacation.status)}}</div>
+            <div class="col-xs-3 align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied', 'color-yellow': vacation.status === 'Pending'}">
+              <i class="fa fa-check" ng-show="vacation.status === 'Approved'"></i>
+              <i class="fa fa-clock-o" ng-show="vacation.status === 'Pending'"></i>
+              <span ng-class="{'bold-text': vacation.status == 'Approved' || vacation.status == 'Denied'}">{{getStatusText(vacation.status)}}</span>
+            </div>
             <div class="col-xs-1 no-padding"><i class="fa fa-times cursor-pointer pull-right color-gray-image-border" ng-click="editVacation($index)"></i></div>
           </div>
           <div class="row col-xs-12 no-margin no-horizontal-padding">
             <div class="col-xs-12 col-sm-6">
-              <select class="selectpicker select-vacation-manager-{{$index}}" data-style="btn-info" ng-model="vacationManager" name="vacationManager" disabled>
+              <div ng-if="!editManagerEdit" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">Approving Manager</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerEditCallback($index)" ng-show="!editManagerEdit"></i></div>
+              <select ng-if="editManagerEdit" class="selectpicker select-vacation-manager-{{$index}}" data-style="btn-info" ng-model="vacationManager" name="vacationManager" disabled>
                 <option selected value="">Approving Manager</option>
               </select>
-            </div>
-            <div class="row col-xs-12 col-sm-6 no-right-padding">
               <select class="selectpicker select-vacation-start-date-edit" data-style="btn-info" ng-model="vacation.type"
                  ng-options="v as v for v in vacationTypes"
                  ng-change="vacationTypeSelected()"
                  class="form-control" name="vacationType">
                </select>
             </div>
+            <div class="row col-xs-12 col-sm-6 no-right-padding">
+              <i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerEditCallback($index)" ng-show="editManagerEdit"></i>
+            </div>
           </div>
-          <div class="row col-xs-12 no-horizontal-margin horizontal-padding-xs">
-            <div class="visible-xs col-xs-12 color-gray-image-border">Start Date:</div>
-              <div class="col-xs-12 col-sm-3 no-horizontal-padding margin-bottom-xs padding-left-xs">
-                <input id="fromDateEdit" name="fromDate" class=" form-control datepicker" type="text" placeholder="Start Date" ng-model="vacationEditStartDate" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-change="startDateChanged(vacation.startDate)">
-              </div>
-              <div class="col-xs-6 col-sm-2 no-right-padding">
-                <input class="form-control no-right-padding" type="time" ng-model="vacationEditStartTime"/>
-              </div>
-              <div class="hidden-xs col-sm-2 no-horizontal-padding align-center">
-                <i class="fa fa-long-arrow-right fa-3x" style="color: #ededed;"></i>
-              </div>
-              <div class="visible-xs col-xs-12 color-gray-image-border">Start Date:</div>
-              <div class="col-xs-12 col-sm-3 no-horizontal-padding margin-bottom-xs padding-left-xs">
-                <input id="toDateEdit" name="toDate" class=" form-control datepicker" type="text" placeholder="End Date" ng-model="vacationEditEndDate" data-date-format="yyyy-mm-dd" ng-disabled="!vacation.startDate" data-provide="datepicker">
-              </div>
-              <div class="col-xs-6 col-sm-2 no-right-padding">
-                <input class="form-control no-right-padding" type="time" ng-model="vacationEditEndTime"/>
-              </div>
+        <div class="row col-xs-12 vacation-dates-row no-margin padding-bottom-5 horizontal-padding-xs visible-lg">
+          <div class="gray-text">From</div>
+          <div class="gray-text" style="margin-left: 49%;">Until</div>
+        </div>
+        <div class="row col-xs-12 vacation-dates-row no-horizontal-margin horizontal-padding-xs visible-lg">
+          <div class="vac-dates-date">
+            <input id="vacationEditFromDate + $index" name="vacationEditFromDate" class="form-control datepicker fa-calendar" type="text" placeholder="Start Date" ng-model="vacationEditStartDate" ng-change="dateChanged()" data-date-format="yyyy-mm-dd" data-provide="datepicker"/>
           </div>
-          <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding">
-            <div class="visible-xs col-xs-12 color-gray-image-border">Days:</div>
-            <div class="col-xs-12 col-sm-4 margin-bottom-xs padding-left-xs"><input type="text" class="form-control" value="{{getDays(vacation.startDate, vacation.endDate)}}" disabled/></div>
+          <div class="vac-dates-time">
+            <input class="form-control" type="time" ng-model="vacationEditStartTime" ng-change="dateChanged()"/>
+          </div>
+          <div class="vac-dates-arrow">
+            <i class="fa fa-long-arrow-right fa-2x hidden-xs" style="color: #ededed;"></i>
+          </div>
+          <div class="vac-dates-date">
+            <input id="vacationToDate + {{$index}}" name="vacationEditToDate + {{$index}}" class=" form-control datepicker" type="text" placeholder="End Date" ng-model="vacationEditEndDate" ng-change="dateChanged()" data-date-format="yyyy-mm-dd" data-provide="datepicker" data-date-start-date="{{vacationEditStartDate}}">
+          </div>
+          <div class="vac-dates-time">
+            <input class="form-control no-right-padding" type="time" ng-model="vacationEditEndTime" ng-change="dateChanged()"/>
+          </div>
+        </div>
+          <div class="row col-xs-12 no-horizontal-margin hidden-lg">
+            <div class="col-xs-12 gray-text no-horizontal-padding-xs no-left-padding">From:
+            </div>
+            <div class="col-xs-12 col-sm-6 no-horizontal-padding-xs no-left-padding margin-bottom-xs">
+              <input id="vacationFromDate + $index" name="vacationEditFromDate + $index" class=" form-control datepicker" type="text" placeholder="Start Date" ng-model="vacationEditStartDate" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-change="dateChanged($index)">
+            </div>
+            <div class="col-xs-12 col-sm-6 no-horizontal-padding-xs no-right-padding margin-bottom-xs">
+              <input class="form-control" type="time" ng-model="vacationEditStartTime"/>
+            </div>
+            <div class="col-xs-12 gray-text no-horizontal-padding-xs no-left-padding">Until:</div>
+            <div class="col-xs-12 col-sm-6 no-horizontal-padding-xs no-left-padding margin-bottom-xs">
+              <input id="vacationEditToDate + $index" name="vacationEditToDate + $index" class=" form-control datepicker" type="text" placeholder="End Date" ng-model="vacationEditEndDate" data-date-format="yyyy-mm-dd" data-provide="datepicker" data-date-start-date="{{vacationStartDate}}">
+            </div>
+            <div class="col-xs-12 col-sm-6 no-horizontal-padding-xs no-right-padding margin-bottom-xs">
+              <input class="form-control no-right-padding" type="time" ng-model="vacationEditEndTime"/>
+            </div>
+          </div>
+          <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding padding-top-10">
             <div class="visible-xs col-xs-12 color-gray-image-border">Description:</div>
-            <div class="col-xs-12 col-sm-8 no-left-padding margin-bottom-xs padding-left-xs">
+            <div class="col-xs-12 margin-bottom-xs padding-left-xs">
               <input type="text" placeholder="Description" ng-model="vacation.description" class="form-control"/>
             </div>
           </div>
           
           <div class="row col-xs-12 no-horizontal-margin margin-bottom-xs vertical-margin-md">
-            <button class="btn btn-default" ng-click="deleteVacation(vacation)" style="color: red; border: 1px solid red; background-color: white;">Cancel Request</button>
-            <button class="btn btn-default pull-right" ng-click="updateVacation(vacation)" style="background-color: #1ba2c1; color: white; font-size: 16px; font-weight: bold;">SAVE</button>
+            <button class="btn btn-default" ng-click="deleteVacation(vacation)" style="color: red; border: 0px; background-color: #f7f7f7;">Cancel Request</button>
+            <button class="btn btn-info pull-right" ng-click="updateVacation(vacation)" style="background-color: #1ba2c1; color: white; font-size: 16px; font-weight: bold;">RESUBMIT</button>
+            <span class="pull-right gray-text vac-requested"><span class="color-gray-less bold">{{getEditVacationDuration()}}</span> requested</span>
           </div>
         </div>
       </div>
