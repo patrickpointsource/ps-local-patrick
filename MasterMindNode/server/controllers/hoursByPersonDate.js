@@ -15,11 +15,11 @@ module.exports.listHoursByPersonDate = function(callback) {
 };
 */
 
-module.exports.listHoursByPersonDate = function(params, callback) {
-    dbAccess.listHoursByStartEndDates( params, function(err, body){
+module.exports.listHoursByPersonDate = function(startParams, endParams, callback) {
+    dbAccess.listHoursByStartEndDates( startParams, endParams, function(err, body){
         if (err) {
             console.log(err);
-            callback('error loading tasks', null);
+            callback('error loading hours by start and end dates', null);
         } else {
             console.log(body);
             callback(null, body);
