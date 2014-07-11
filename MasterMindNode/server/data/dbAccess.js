@@ -9,7 +9,6 @@ var database = config.db;
 
 var cloudantView = function(designName, viewName, params, callback){
     var db = nano.db.use(database);
-    console.log("database=" + database);
     if (params)
         db.view(designName, viewName, params, function(err, body){
             if (err) {
@@ -26,6 +25,40 @@ var cloudantView = function(designName, viewName, params, callback){
               callback(null, body);
             }
         });
+};
+
+
+var insertItem = function(id, item, callback){
+    var db = nano.db.use(database);
+    db.insert(item, id, function(err, body){
+    	if (err) {
+			callback(err, null);
+		} else {
+        	callback(null, body);
+		}
+    });
+};
+
+var deleteItem = function(id, rev, callback){
+    var db = nano.db.use(database);
+    db.destroy(id, rev, function(err, body){
+    	if (err) {
+			callback(err, null);
+		} else {
+        	callback(null, body);
+		}
+    });
+};
+
+var getItem = function(id, callback){
+    var db = nano.db.use(database);
+    db.get(id, function(err, body){
+    	if (err) {
+			callback(err, null);
+		} else {
+        	callback(null, body);
+		}
+    });
 };
 
 module.exports.listHoursByPerson = function(callback) {
@@ -69,3 +102,14 @@ module.exports.listAssignments = function(callback) {
         callback(err, body);
     });
 };
+
+module.exports.listRoles = function(callback) {
+    cloudantView('views', 'Roles', {include_docs : true}, function(err, body){
+        callback(err, body);
+    });
+};
+
+module.exports.insertItem = insertItem;
+module.exports.deleteItem = deleteItem;
+module.exports.getItem = getItem;
+

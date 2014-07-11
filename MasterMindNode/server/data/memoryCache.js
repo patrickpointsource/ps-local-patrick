@@ -7,3 +7,8 @@ module.exports.putObject = function( key, obj ) {
 module.exports.getObject = function( key ) {
 	return cache.get(key);
 }; 
+
+
+module.exports.deleteObject = function( key ) {
+	cache.del(key);
+}; 

@@ -7,6 +7,7 @@ var PROJECTS_KEY = 'Projects';
 var PEOPLE_KEY = 'People';
 var ASSIGNMENTS_KEY = 'Assignments';
 var TASKS_KEY = 'Tasks';
+var ROLES_KEY = 'Roles';
 
 var listProjects = function(callback) {
 
@@ -84,7 +85,61 @@ var listTasks = function(callback) {
 		
 };
 
+var listRoles = function(callback) {
+
+	var result = memoryCache.getObject(ROLES_KEY);
+	if (result) {
+		console.log("read " + ROLES_KEY + " from memory cache");
+		callback(null, result);
+	}
+	else {
+		dbAccess.listRoles(function(err, body){
+		if (!err) {
+			console.log("save " + ROLES_KEY + " to memory cache");
+	    	memoryCache.putObject(ROLES_KEY, body);
+	    }
+	    callback (err, body);
+		});
+	}
+		
+};
+
+var insertItem = function(id, obj, type, callback) {
+	dbAccess.insertItem(id, obj, function(err, body){
+		if (!err) {
+			console.log("Object with id " + id + " created in db");
+	    	memoryCache.deleteObject(type);
+	    }
+	    callback (err, body);
+		});
+}
+
+var deleteItem = function(id, rev, type, callback) {
+	dbAccess.deleteItem(id, rev, function(err, body){
+		if (!err) {
+			console.log("Object with id " + id + " deleted from db");
+	    	memoryCache.deleteObject(type);
+	    }
+	    callback (err, body);
+		});
+}
+
+var getItem = function(id , callback) {
+	dbAccess.getItem(id, function(err, body){
+		if (!err) {
+			console.log("Read object with id " + id + " from db");
+	    }
+	    callback (err, body);
+		});
+}
+
+
 module.exports.listProjects = listProjects;
 module.exports.listPeople = listPeople;
 module.exports.listAssignments = listAssignments;
 module.exports.listTasks = listTasks;
+module.exports.listRoles = listRoles;
+
+module.exports.insertItem = insertItem;
+module.exports.deleteItem = deleteItem;
+module.exports.getItem = getItem;

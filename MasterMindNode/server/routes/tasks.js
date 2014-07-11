@@ -17,4 +17,15 @@ router.get('/', util.isAuthenticated, function(req, res){
     });
 }); 
 
+router.get('/new', util.isAuthenticated, function(req, res){
+    // Call to tasks service
+    tasks.listTasks(function(err, result){
+        if(err){
+            res.json(500, err);
+        } else {
+            res.json(result);
+        }            
+    });
+}); 
+
 module.exports = router;

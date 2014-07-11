@@ -22,6 +22,7 @@ var projects = require('./server/routes/projects');
 var people = require('./server/routes/people');
 var assignments = require('./server/routes/assignments');
 var tasks = require('./server/routes/tasks');
+var roles = require('./server/routes/roles');
 
 // Configure passport
 require('./server/config/passport.js')(passport);
@@ -53,6 +54,7 @@ app.use('/projects', projects);
 app.use('/people', people);
 app.use('/assignments', assignments);
 app.use('/tasks', tasks);
+app.use('/roles', roles);
 
 // Setup routes
 require('./server/routes/auth')(app, passport);
