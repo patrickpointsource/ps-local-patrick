@@ -202,13 +202,13 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 				 * Loop through all the roles in the backlog projects
 				 */
 				var projectRolesInfo = {};
-				var initialIndexVal = unassignedIndex;
+				var initialIndexVal = unassignedBacklogIndex;
 				
 				for( var b = 0; b < roles.length; b++ ) {
 					var activeRole = roles[ b ];
 
 					if( activeRole.hoursNeededToCover > 0 || addAllRoles ) {
-						$scope.backlogProjectsList[ unassignedIndex++ ] = {
+						$scope.backlogProjectsList.push({
 							clientName: proj.customerName,
 							projectName: proj.name,
 							title: proj.customerName + ': ' + proj.name,
@@ -218,9 +218,9 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 							startDate: activeRole.startDate,
 							endDate: activeRole.endDate,
 							rate: activeRole.rate.amount
-						};
-					};
-					
+						});
+					}
+				
 					if( !projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] )
                             projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] = 0;
 
@@ -231,9 +231,9 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 					return key + '(' + val + ')';
 				} );
 				
-				unassignedIndex += 1;
+				unassignedBacklogIndex += 1;
 				
-				$scope.backlogProjectsList.splice( initialIndexVal, 0, {
+				$scope.backlogProjectsList.push({
 					clientName: proj.customerName,
 					projectName: proj.name,
 					title: proj.customerName + ': ' + proj.name,
@@ -285,6 +285,21 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 				if( !found )
 					fillBacklogDeficit( true );
 			}
+			
+			$scope.backlogProjectsList.sort(function(p1, p2){
+			    if (p1.projectName > p2.projectName ) 
+			         return 1;
+			    else if (p1.projectName < p2.projectName ) 
+                     return -1;
+                
+                else if (p1.projectName == p2.projectName && p1.isProjectItem && !p2.isProjectItem)
+                    return -1;
+                else if (p1.projectName == p2.projectName && !p1.isProjectItem && p2.isProjectItem)
+                    return 1;
+                    
+                
+                return 0;
+			});
 
 			/*
 			 * Build out the table that contains the backlog Projects with resource deficits
