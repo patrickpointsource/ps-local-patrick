@@ -462,7 +462,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			Resources.remove( hourEntry.hoursRecord.resource ).then( function( ) {
 				// $scope.hoursRequest();
 				$scope.validateAndCalculateTotalHours( );
-				$scope.$emit( 'hours:deleted' );
+				$scope.$emit( 'hours:deleted', $scope.selected );
 			} );
 		//}
 	};
@@ -573,7 +573,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			$scope.showHideLoggedHours( e, index );
 		} else if( !$scope.isDisplayedWeek( ) )
 			$( '.dashboard-widget.hours .row.hours-logged' ).hide( );
-
+        
+        $scope.$emit('hours:selectedNew', $scope.selected);
 	};
 
 	$scope.showHideLoggedHours = function( e, index ) {
@@ -1403,7 +1404,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			if( isAdded )
 				$scope.addNewHoursRecord( $scope.selected );
 
-			$scope.$emit( 'hours:added' );
+			$scope.$emit( 'hours:added', $scope.selected );
 		} );
 
 	};

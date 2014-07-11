@@ -195,12 +195,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 	$scope.monthNames = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
 	
-	$scope.initHours = function( ) {
+	$scope.initHours = function( isReinit ) {
 		var projectHours = [ ];
 		$scope.projectHours = [ ];
 		$scope.hoursPeriods = [ ];
 		$scope.selectedHoursPeriod = -1;
-		var now = new Date();
+		var now = moment();
 		$scope.totalMonthHours = 0;
 
 		//Query all hours against the project
@@ -219,8 +219,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			
 			for( var i = 0; i < $scope.hours.length; i++ ) {
 				var hour = $scope.hours[ i ];
-				var date = new Date(hour.date);
-				if(now.getFullYear() == date.getFullYear() && now.getMonth() == date.getMonth()) {
+				var date = moment(hour.date);
+				if(now.isSame(date, 'month')) {
 					$scope.totalMonthHours += hour.hours;
 				}
 				if( hour.task && hour.task.resource ) {
@@ -326,8 +326,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							totalHours: tasksHoursMap[ taskResource ].totalHours
 						}, tasksMap[ taskResource ] ) );
 					}
-
-					$scope.currentWeek( );
+                    
+                    if(!isReinit) {
+                      $scope.currentWeek( );
+                    } else {
+                      $scope.showWeek( );
+                    }
 				} );
 			}
 		}, sort );
@@ -693,6 +697,22 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
       $scope.selectedWeekIndex = 0;
       $scope.showWeek( );
     });
+    
+    $scope.$on('hours:selectedNew', function(event, day) {
+      var month = moment(day.date).month();
+      if($scope.selectedMonth != month) {
+        $scope.selectedMonth = month;
+        
+        $scope.totalMonthHours = 0;
+        for( var i = 0; i < $scope.hours.length; i++ ) {
+          var hour = $scope.hours[ i ];
+          var date = moment(hour.date);
+          if(moment(day.date).isSame(date, 'month')) {
+            $scope.totalMonthHours += hour.hours;
+          }
+        }
+      }
+    });
 
 	$scope.weekHoursByProject = [ ];
 	$scope.weekHoursByTask = [ ];
@@ -831,13 +851,21 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		}
 	}
 	
-	$scope.$on('hours:added', function (event, index, role) {
-		$scope.initHours();
+	$scope.$on('hours:added', function (event, selectedDay) {
+		$scope.recalculateCircle(selectedDay);
     });
 	
-	$scope.$on('hours:deleted', function (event, index, role) {
-		$scope.initHours();
+	$scope.$on('hours:deleted', function (event, selectedDay) {
+		$scope.recalculateCircle(selectedDay);
     });
+    
+    $scope.recalculateCircle = function(day) {
+      var selectedMoment = moment(day.date);
+      var startOfSelectedWeek = selectedMoment.day(0);
+      var todaysStartWeek = moment().day(0)
+      $scope.selectedWeekIndex = startOfSelectedWeek.diff(todaysStartWeek, 'days');
+      $scope.initHours(true);
+    }
 	//    /**
 	//     * Load Skill Definitions to display names
 	//     */
