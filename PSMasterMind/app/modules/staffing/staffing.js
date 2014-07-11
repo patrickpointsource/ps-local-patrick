@@ -202,8 +202,7 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 				 * Loop through all the roles in the backlog projects
 				 */
 				var projectRolesInfo = {};
-				var initialIndexVal = unassignedBacklogIndex;
-				
+								
 				for( var b = 0; b < roles.length; b++ ) {
 					var activeRole = roles[ b ];
 
@@ -231,7 +230,6 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 					return key + '(' + val + ')';
 				} );
 				
-				unassignedBacklogIndex += 1;
 				
 				$scope.backlogProjectsList.push({
 					clientName: proj.customerName,

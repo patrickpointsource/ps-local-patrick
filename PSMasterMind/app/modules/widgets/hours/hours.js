@@ -930,7 +930,6 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	};
 
 	$scope.backDay = function( ) {
-
 		var foundInd;
 
 		for( var i = 0; i < $scope.displayedHours.length; i++ ) {
@@ -944,7 +943,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			$scope.setSelected( null, $scope.displayedHours[ foundInd - 1 ], foundInd - 1 );
 		else {
 			$scope.dateIndex = $scope.dateIndex + 7;
-
+            delete $scope.selected;
+            
 			$scope.hoursRequest( function( ) {
 				//$scope.selected = $scope.displayedHours[ $scope.displayedHours.length - 1 ];
 				$scope.setSelected( null, $scope.displayedHours[ $scope.displayedHours.length - 1 ], $scope.displayedHours.length - 1 );
@@ -967,6 +967,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			$scope.setSelected( null, $scope.displayedHours[ foundInd + 1 ], foundInd + 1 );
 		else {
 			$scope.dateIndex = $scope.dateIndex - 7;
+			delete $scope.selected;
+			 
 			$scope.hoursRequest( function( ) {
 				//$scope.selected = $scope.displayedHours[ 0 ];
 				$scope.setSelected( null, $scope.displayedHours[ 0 ], 0 );

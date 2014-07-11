@@ -238,6 +238,9 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 			var includeInactive = _.indexOf( tmp, 'inactive' ) > -1;
 
+            if( !$scope.projectManagementAccess)
+                includeInactive = false;
+        
 			tmp = $scope.mapPeopleGroupToRoles( tmp );
 
 			if( tmp.length > 0 )

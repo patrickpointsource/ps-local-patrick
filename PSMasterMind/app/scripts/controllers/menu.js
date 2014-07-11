@@ -6,8 +6,7 @@
  */
 angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter', '$q',
   function ($scope, $state, $filter, $q) {
-	//$scope.projectManagementAccess = false;
-
+      //$scope.projectManagementAccess = false;
 	$scope.menuItems = [ {
 		text: "Dashboard",
 		value: "home",
@@ -97,7 +96,8 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		}, {
             text: "Inactive",
             value: "inactive",
-            handler: "handleSubitem"
+            handler: "handleSubitem",
+            isNotRender: $scope.projectManagementAccess.toString().toLowerCase() != 'true'
         }]
 	}, {
 		text: "Staffing",

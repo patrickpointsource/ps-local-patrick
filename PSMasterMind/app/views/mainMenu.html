@@ -12,7 +12,7 @@
 			<li class="subitems-header subheader">
 				<a class="close-dropdown"> <span>{{menuItem.text}}</span></a>
 			</li>
-			<li ng-repeat="subItem in menuItem.subItems" ng-class="{'active-subitem': isSubitemSelected(subItem, menuItem), 'subheader': subItem.subheader}">
+			<li ng-repeat="subItem in menuItem.subItems" ng-if="!subItem.isNotRender" ng-class="{'active-subitem': isSubitemSelected(subItem, menuItem), 'subheader': subItem.subheader}">
 				<a ng-click="handleClick($event, subItem.handler, menuItem, subItem, $index)" class="close-dropdown">  <span>{{subItem.text}}</span><i class="fa fa-circle-thin"></i><i class="fa fa-check"></i></a>
 			</li>
 		</ul>
