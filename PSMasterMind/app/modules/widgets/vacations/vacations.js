@@ -95,7 +95,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.vacationStartDate = today;
 	  $scope.vacationEndDate = today;
 	  $scope.requestNew = true;
-	  $scope.vacationManager = _.findWhere($scope.managers, { resource: $scope.profile.manager.resource });
+	  if($scope.profile.manager) {
+	    $scope.vacationManager = _.findWhere($scope.managers, { resource: $scope.profile.manager.resource });
+	  }
 	}
 	
 	$('.select-vacation-start-date').selectpicker();

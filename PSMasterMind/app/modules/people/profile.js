@@ -28,7 +28,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
     };
 
     Resources.query( 'people', managersQuery, null, function( result ) {
-      $scope.managers = result.members;
+      $scope.managers = _.sortBy(result.members, function(manager) {
+        return manager.name;
+      });
     } );
 
 	/**
