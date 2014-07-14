@@ -7,8 +7,9 @@ var util = require('../util/auth');
 var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
+    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
     // Call to tasks service
-    tasks.listTasks(function(err, result){
+    tasks.listTasks(query, function(err, result){
         if(err){
             res.json(500, err);
         } else {

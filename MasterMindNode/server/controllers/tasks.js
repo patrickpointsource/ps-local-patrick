@@ -2,8 +2,8 @@
 
 var dataAccess = require('../data/dataAccess');
 
-module.exports.listTasks = function(callback) {
-    dataAccess.listTasks(function(err, body){
+module.exports.listTasks = function(q, callback) {
+    dataAccess.listTasks(q, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading tasks', null);

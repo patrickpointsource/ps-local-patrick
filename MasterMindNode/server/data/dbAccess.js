@@ -3,7 +3,6 @@
 // Data access layer for cloudant
 var config = require('../config/config.js');
 var _ = require('underscore');
-var _query = require('underscore-query');
 var nano = require('nano')(config.cloudant.url);
 
 var database = config.db;

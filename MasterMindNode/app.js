@@ -20,15 +20,38 @@ var hoursByPerson = require('./server/routes/hoursByPerson');
 var hoursByPersonDate = require('./server/routes/hoursByPersonDate');
 var projects = require('./server/routes/projects');
 var people = require('./server/routes/people');
+var peopleMe = require('./server/routes/peopleme');
 var assignments = require('./server/routes/assignments');
 var tasks = require('./server/routes/tasks');
+var hours = require('./server/routes/hours');
 var roles = require('./server/routes/roles');
 
 // Configure passport
 require('./server/config/passport.js')(passport);
 
+var allowCrossDomain = function(req, res, next) {
+    //res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:9000');
+
+    //res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Methods', 'GET');
+    res.header('Access-Control-Allow-Headers', 'accept, authorization');
+    //res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
+
 // setup middleware
 var app = express();
+
+app.use(allowCrossDomain);
 
 // configure Express
 app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
@@ -50,11 +73,13 @@ app.use(express.static(__dirname + '/bower_components'));
 
 app.use('/hoursByPerson', hoursByPerson);
 app.use('/hoursByPersonDate', hoursByPersonDate);
-app.use('/projects', projects);
-app.use('/people', people);
-app.use('/assignments', assignments);
-app.use('/tasks', tasks);
-app.use('/roles', roles);
+app.use('//projects', projects);
+app.use('/people', peopleMe);
+app.use('//people', people);
+app.use('//assignments', assignments);
+app.use('//tasks', tasks);
+app.use('//roles', roles);
+app.use('//hours', hours);
 
 // Setup routes
 require('./server/routes/auth')(app, passport);

@@ -2,8 +2,8 @@
 
 var dataAccess = require('../data/dataAccess');
 
-module.exports.listPeople = function(callback) {
-    dataAccess.listPeople(function(err, body){
+module.exports.listPeople = function(query, callback) {
+    dataAccess.listPeople(query, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people', null);

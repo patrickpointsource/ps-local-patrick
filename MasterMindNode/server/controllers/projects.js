@@ -2,8 +2,8 @@
 
 var dataAccess = require('../data/dataAccess');
 
-module.exports.listProjects = function(callback) {
-    dataAccess.listProjects(function(err, body){
+module.exports.listProjects = function(query, callback) {
+    dataAccess.listProjects(query, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading projects', null);

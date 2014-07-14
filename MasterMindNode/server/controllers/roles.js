@@ -2,8 +2,8 @@
 
 var dataAccess = require('../data/dataAccess');
 
-module.exports.listRoles = function(callback) {
-    dataAccess.listRoles(function(err, body){
+module.exports.listRoles = function(q, callback) {
+    dataAccess.listRoles(q, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading roles', null);

@@ -1,7 +1,9 @@
-var dbAccess = require('../data/dbAccess.js');
-var memoryCache = require('../data/memoryCache.js');
+var dbAccess = require( '../data/dbAccess.js' );
+var memoryCache = require( '../data/memoryCache.js' );
+var _ = require( 'underscore' );
+var query = require("underscore-query")( _ );
 
-var config = require('../config/config.js');
+var config = require( '../config/config.js' );
 
 var PROJECTS_KEY = 'Projects';
 var PEOPLE_KEY = 'People';
@@ -9,130 +11,173 @@ var ASSIGNMENTS_KEY = 'Assignments';
 var TASKS_KEY = 'Tasks';
 var ROLES_KEY = 'Roles';
 
-var listProjects = function(callback) {
+//TODO: fix $oid to _id
+var alignQuery = function( q, qP, pProp, pInd) {
 
-	var result = memoryCache.getObject(PROJECTS_KEY);
-	if (result) {
-		console.log("read " + PROJECTS_KEY + " from memory cache");
-		callback(null, result);
-	}
-	else {
-		dbAccess.listProjects(function(err, body){
-		if (!err) {
-			console.log("save " + PROJECTS_KEY + " to memory cache");
-	    	memoryCache.putObject(PROJECTS_KEY, body);
-	    }
-	    callback (err, body);
-		});
-	}
-		
+	if( _.isArray( q ) )
+		for( var j = 0; j < q.length; q++ )
+			alignQuery( q[ j ], q, null, j );
+	else if( _.isObject( q ) )
+		for( var prop in q ) {
+			if( prop == "$oid" ) {
+				//q[ "_id" ] = q[ prop ];
+				//delete q[ "$oid" ];
+				
+				if (pInd == undefined)
+				    qP[pRop] = q[ prop ];
+				else
+				    qP[pProp][pInd] = q[ prop ];
+			} else if( _.isArray( q[ prop ] ) )
+				for( var j = 0; j < q[prop].length; j ++ )
+					alignQuery( q[prop][ j ], q, prop, j );
+			else if( _.isObject( q[ prop ] ) )
+				alignQuery( q[ prop ], q, prop );
+		};
+	//return q;
 };
 
-var listPeople = function(callback) {
+var queryRecords = function( data, q, propName) {
+	var res = {
+		about: data.about
+	};
 
-	var result = memoryCache.getObject(PEOPLE_KEY);
-	if (result) {
-		console.log("read " + PEOPLE_KEY + " from memory cache");
-		callback(null, result);
+    alignQuery( q );
+    
+    if (!propName) {
+	   res.data = _.query( data.data,  q);
+	
+
+	   res.count = res.data.length;
+	} else {
+	    res[propName] = _.query( data.data,  q);
+    
+
+       res.count =  res[propName].length;
 	}
-	else {
-		dbAccess.listPeople(function(err, body){
-		if (!err) {
-			console.log("save " + PEOPLE_KEY + " to memory cache");
-	    	memoryCache.putObject(PEOPLE_KEY, body);
-	    }
-	    callback (err, body);
-		});
-	}
-		
+
+	return res;
 };
 
-var listAssignments = function(callback) {
+var listProjects = function( q, callback ) {
 
-	var result = memoryCache.getObject(ASSIGNMENTS_KEY);
-	if (result) {
-		console.log("read " + ASSIGNMENTS_KEY + " from memory cache");
-		callback(null, result);
+	var result = memoryCache.getObject( PROJECTS_KEY );
+	var data = null;
+
+	if( result ) {
+		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+
+		callback( null, queryRecords( result, q ) );
+	} else {
+		dbAccess.listProjects( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				memoryCache.putObject( PROJECTS_KEY, body );
+			}
+
+			callback( err, queryRecords( body, q ) );
+		} );
 	}
-	else {
-		dbAccess.listAssignments(function(err, body){
-		if (!err) {
-			console.log("save " + ASSIGNMENTS_KEY + " to memory cache");
-	    	memoryCache.putObject(ASSIGNMENTS_KEY, body);
-	    }
-	    callback (err, body);
-		});
-	}
-		
+
 };
 
-var listTasks = function(callback) {
+var listPeople = function( q, callback ) {
 
-	var result = memoryCache.getObject(TASKS_KEY);
-	if (result) {
-		console.log("read " + TASKS_KEY + " from memory cache");
-		callback(null, result);
+	var result = memoryCache.getObject( PEOPLE_KEY );
+	if( result ) {
+		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q , "members") );
+	} else {
+		dbAccess.listPeople( function( err, body) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, queryRecords( body, q, "members" ) );
+		} );
 	}
-	else {
-		dbAccess.listTasks(function(err, body){
-		if (!err) {
-			console.log("save " + TASKS_KEY + " to memory cache");
-	    	memoryCache.putObject(TASKS_KEY, body);
-	    }
-	    callback (err, body);
-		});
-	}
-		
+
 };
 
-var listRoles = function(callback) {
+var listAssignments = function( q, callback ) {
 
-	var result = memoryCache.getObject(ROLES_KEY);
-	if (result) {
-		console.log("read " + ROLES_KEY + " from memory cache");
-		callback(null, result);
+	var result = memoryCache.getObject( ASSIGNMENTS_KEY );
+	if( result ) {
+		console.log( "read " + ASSIGNMENTS_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q )  );
+	} else {
+		dbAccess.listAssignments( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + ASSIGNMENTS_KEY + " to memory cache" );
+				memoryCache.putObject( ASSIGNMENTS_KEY, body );
+			}
+			callback( err, queryRecords( body, q )  );
+		} );
 	}
-	else {
-		dbAccess.listRoles(function(err, body){
-		if (!err) {
-			console.log("save " + ROLES_KEY + " to memory cache");
-	    	memoryCache.putObject(ROLES_KEY, body);
-	    }
-	    callback (err, body);
-		});
-	}
-		
+
 };
 
-var insertItem = function(id, obj, type, callback) {
-	dbAccess.insertItem(id, obj, function(err, body){
-		if (!err) {
-			console.log("Object with id " + id + " created in db");
-	    	memoryCache.deleteObject(type);
-	    }
-	    callback (err, body);
-		});
+var listTasks = function( q, callback ) {
+
+	var result = memoryCache.getObject( TASKS_KEY );
+	if( result ) {
+		console.log( "read " + TASKS_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q , "members")  );
+	} else {
+		dbAccess.listTasks( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + TASKS_KEY + " to memory cache" );
+				memoryCache.putObject( TASKS_KEY, body );
+			}
+			callback( err, queryRecords( body, q , "members")  );
+		} );
+	}
+
+};
+
+var listRoles = function( q, callback ) {
+
+	var result = memoryCache.getObject( ROLES_KEY );
+	if( result ) {
+		console.log( "read " + ROLES_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q , "members")  );
+	} else {
+		dbAccess.listRoles( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + ROLES_KEY + " to memory cache" );
+				memoryCache.putObject( ROLES_KEY, body );
+			}
+			callback( err, queryRecords( body, q , "members")  );
+		} );
+	}
+
+};
+
+var insertItem = function( id, obj, type, callback ) {
+	dbAccess.insertItem( id, obj, function( err, body ) {
+		if( !err ) {
+			console.log( "Object with id " + id + " created in db" );
+			memoryCache.deleteObject( type );
+		}
+		callback( err, body );
+	} );
 }
-
-var deleteItem = function(id, rev, type, callback) {
-	dbAccess.deleteItem(id, rev, function(err, body){
-		if (!err) {
-			console.log("Object with id " + id + " deleted from db");
-	    	memoryCache.deleteObject(type);
-	    }
-	    callback (err, body);
-		});
+var deleteItem = function( id, rev, type, callback ) {
+	dbAccess.deleteItem( id, rev, function( err, body ) {
+		if( !err ) {
+			console.log( "Object with id " + id + " deleted from db" );
+			memoryCache.deleteObject( type );
+		}
+		callback( err, body );
+	} );
 }
-
-var getItem = function(id , callback) {
-	dbAccess.getItem(id, function(err, body){
-		if (!err) {
-			console.log("Read object with id " + id + " from db");
-	    }
-	    callback (err, body);
-		});
+var getItem = function( id, callback ) {
+	dbAccess.getItem( id, function( err, body ) {
+		if( !err ) {
+			console.log( "Read object with id " + id + " from db" );
+		}
+		callback( err, body );
+	} );
 }
-
 
 module.exports.listProjects = listProjects;
 module.exports.listPeople = listPeople;
