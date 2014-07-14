@@ -83,6 +83,26 @@
                       <span ng-show="!profile.partTime">NO</span>
                     </div>
                     
+                    <div ng-show="editMode" class="col-xs-12 col-md-10 col-lg-3 edit">
+                      <label for="profilePartTime" class="profilePartTimeLabel">Vacation capacity</label>
+                      <input ng-model="profile.vacationCapacity" placeholder="days" type="number" class="form-control" />
+                    </div>
+                    <div ng-hide="editMode" class="col-xs-12 col-md-10 col-lg-3 view no-left-padding-sm">
+                      <label class="profilePartTimeLabel">Vacation capacity</label>
+                      <span>{{profile.vacationCapacity || 15}} days</span>
+                    </div>
+                    
+                    <div ng-show="editMode" class="col-xs-12 col-md-10 col-lg-6 edit">
+                      <label for="profileManager" class="profilePartTimeLabel">Manager</label>
+                      <select class="form-control" ng-model="profile.manager" ng-options="c.name for c in managers">
+                        <!--<option selected value="" ng-if="!profile.manager">Select Manager</option>-->
+                      </select>
+                    </div>
+                    <div ng-hide="editMode" class="col-xs-12 col-md-10 col-lg-3 view no-left-padding-sm">
+                      <label class="profilePartTimeLabel">Manager</label>
+                      <span>{{profile.manager.name || "Not Selected"}}</span>
+                    </div>
+                    
                     <div ng-hide="editMode || profile.isActive == 'true'" class="col-xs-12 col-md-10 col-lg-3 ">
                       <label class="profilePartTimeLabel">Inactive person</label>
                       

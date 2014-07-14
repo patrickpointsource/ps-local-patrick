@@ -1,18 +1,9 @@
 angular.module( 'Mastermind').controller( 'VacationsCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'TasksService', 'RolesService',
 function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsService, TasksService, RolesService ) {
   
-  var STATUS = {
-    Pending: "Pending",
-    Approved: "Approved",
-    Denied: "Denied"
-  }
+  var STATUS = VacationsService.STATUS;
   
-  var VACATION_TYPES = {
-	Personal: "Personal Leave",
-	Vacation: "Vacation",
-	Travel: "Customer Travel",
-	Sick: "Sick Time"
-  }
+  var VACATION_TYPES = VacationsService.VACATION_TYPES;
   
   $scope.START_TIME_DEFAULT = "09:00";
   
@@ -34,6 +25,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	    $scope.vacations = _.sortBy(result, function(vacation) {
 	      return new Date(vacation.startDate);
 	    });
+	    
+	    for(var i = 0; i < $scope.vacations.length; i++) {
+	      Resources.resolve($scope.vacations[i].vacationManager);
+	    }
 	  
 	    $scope.showVacations();
 	  });
@@ -68,29 +63,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   }
   
   $scope.getDays = function(start, end) {
-	if(!start || !end) {
-	  return "";
-	}
-	var actualDays = $scope.getActualDays(start, end);
-	
-	var days = "days";
-	
-	if(actualDays == 1) {
-	  days = "day";
-	  
-	  var diff = moment(end).diff(start, 'hours');
-	  if(diff < 8) {
-	    days = "hours";
-	    
-	    if(diff <= 1) {
-	      days = "hour";
-	    }
-	    
-	    actualDays = diff;
-	  }
-	}
-	
-	return actualDays + " " + days;
+    return VacationsService.getDays(start, end);
   }
   
   $scope.getNewVacationDuration = function() {
@@ -102,22 +75,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   }
   
   $scope.getActualDays = function(startDate, endDate) {
-	var start = moment(startDate);
-	var end = moment(endDate);
-	var allDays = end.diff(start ,'days');
-	var actualDays = 0;
-	
-	for(var d = 0; d <= allDays; d++) {
-	  if(d != 0) {
-		start.add('days', 1);
-	  }
-	  
-	  if(start.day() != 0 && start.day() != 6) {
-		actualDays++;
-	  }
-	}
-	
-	return actualDays;
+	return VacationsService.getActualDays(startDate, endDate);
   }
   
   $scope.requestHours = function() {
@@ -137,6 +95,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.vacationStartDate = today;
 	  $scope.vacationEndDate = today;
 	  $scope.requestNew = true;
+	  $scope.vacationManager = _.findWhere($scope.managers, { resource: $scope.profile.manager.resource });
 	}
 	
 	$('.select-vacation-start-date').selectpicker();
@@ -159,21 +118,20 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  vacEndTime = $scope.vacationEndTime;
 	}
 	
-	//if($scope.vacationType == VACATION_TYPES.Sick || $scope.vacationType == VACATION_TYPES.Travel) {
-	//  vacStatus = STATUS.Approved;
-	//} else {
-	//  vacStatus = STATUS.Pending;
-	//}
-	
-	vacStatus = STATUS.Approved;
-	
+	if($scope.vacationType == VACATION_TYPES.Sick || $scope.vacationType == VACATION_TYPES.Travel || !$scope.vacationManager) {
+	  vacStatus = STATUS.Approved;
+	} else {
+	  vacStatus = STATUS.Pending;
+	}
+
 	var vacation = {
 	  startDate: $scope.vacationStartDate + " " + vacStartTime,
 	  endDate: $scope.vacationEndDate + " " + vacEndTime,
 	  description: $scope.newDescription ? $scope.newDescription : "No description entered.",
 	  person: { resource: $scope.profile.about},
 	  status: vacStatus,
-	  type: $scope.vacationType
+	  type: $scope.vacationType,
+	  vacationManager: { resource: $scope.vacationManager.resource }
 	}
 	
 	VacationsService.addNewVacation(vacation).then(function(result) {
@@ -239,6 +197,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.vacationEditEndDate = end.format("YYYY-MM-DD");
 	  $scope.vacationEditStartTime = start.format("HH:mm");
 	  $scope.vacationEditEndTime = end.format("HH:mm");
+	  $scope.vacationManagerEdit = _.findWhere($scope.managers, { resource: vacation.vacationManager.resource });
 	  $('.select-vacation-start-date-edit').selectpicker();
 	  $('.select-vacation-manager-' + index).selectpicker();
 	}
@@ -265,6 +224,17 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	if(!$scope.checkForConflictDates($scope.vacationEditStartDate, $scope.vacationEditEndDate, $scope.vacationEditStartTime, $scope.vacationEditEndTime, vacation.resource)) {
 	  return;
 	}
+	
+	if($scope.vacationManagerEdit) {
+      vacation.vacationManager = { resource: $scope.vacationManagerEdit.resource };
+    }
+    
+    if(vacation.type == VACATION_TYPES.Sick || vacation.type == VACATION_TYPES.Travel) {
+      vacation.status = STATUS.Approved;
+    } else {
+      vacation.status = STATUS.Pending;
+    }
+    
 	Resources.update(vacation).then(function(result) {
 	  $scope.editVacationIndex = -1;
 	  $scope.getVacations();
@@ -351,30 +321,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   }
   
   $scope.getStatusText = function(status) {
-	if(status == STATUS.Pending) {
-	  return "PENDING";
-	}
-	if(status == STATUS.Approved) {
-	  return "APPROVED";
-	}
-	if(status == STATUS.Denied) {
-	  return "DENIED";
-	}
+	return VacationsService.getStatusText(status);
   }
   
   $scope.getTypeText = function(type) {
-	if(type == VACATION_TYPES.Personal) {
-	  return "Personal";
-	}
-	if(type == VACATION_TYPES.Vacation) {
-	  return VACATION_TYPES.Vacation;
-	}
-	if(type == VACATION_TYPES.Travel) {
-	  return "Travel";
-	}
-	if(type == VACATION_TYPES.Sick) {
-	  return VACATION_TYPES.Sick;
-	}
+    return VacationsService.getTypeText(type);
   }
   
   $scope.getStartVacDate = function(date) {
@@ -414,11 +365,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.showVacationTime = false;
   
   $scope.managerSelected = function() {
-    if(showVacationTime) {
-      $scope.showVacationTime = false;
-    } else {
-      $scope.showVacationTime = true;
-    }
+    $scope.vacationManager = this.vacationManager;
+    $scope.editManager = !$scope.editManager;
+  }
+  
+  $scope.managerEditSelected = function() {
+    $scope.vacationManagerEdit = this.vacationManagerEdit;
+    $scope.editManagerEdit = !$scope.editManagerEdit;
   }
   
   $scope.dateChanged = function() {

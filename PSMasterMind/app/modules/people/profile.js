@@ -22,6 +22,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	};
 
 	$scope.loadAvailableTasks( );
+	
+	var managersQuery = {
+      'groups': 'Management'
+    };
+
+    Resources.query( 'people', managersQuery, null, function( result ) {
+      $scope.managers = result.members;
+    } );
 
 	/**
 	 * Load Role definitions to display names
@@ -68,8 +76,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	 */
 	$scope.setProfile = function( person ) {
 		$scope.profile = person;
-		$scope.$emit( 'profile:loaded' );
-
+		
+		Resources.resolve($scope.profile.manager).then(function(result) {
+		  $scope.$emit( 'profile:loaded' );
+		});
+		
 		//      $scope.skillsList = person.skills;
 		//
 		//      //Setup the skills table
@@ -162,6 +173,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		if( !profile.primaryRole || !profile.primaryRole.resource ) {
 			profile.primaryRole = null;
+		}
+		
+		if(profile.manager) {
+		  profile.manager = { 
+		      "resource": profile.manager.resource
+		  }
 		}
 
 		Resources.update( profile ).then( function( person ) {
@@ -703,14 +720,17 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
       if($scope.selectedMonth != month) {
         $scope.selectedMonth = month;
         
-        $scope.totalMonthHours = 0;
-        for( var i = 0; i < $scope.hours.length; i++ ) {
-          var hour = $scope.hours[ i ];
-          var date = moment(hour.date);
-          if(moment(day.date).isSame(date, 'month')) {
-            $scope.totalMonthHours += hour.hours;
+        if($scope.hours) {
+          $scope.totalMonthHours = 0;
+          for( var i = 0; i < $scope.hours.length; i++ ) {
+            var hour = $scope.hours[ i ];
+            var date = moment(hour.date);
+            if(moment(day.date).isSame(date, 'month')) {
+              $scope.totalMonthHours += hour.hours;
+            }
           }
         }
+        
       }
     });
 

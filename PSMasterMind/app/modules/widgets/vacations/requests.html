@@ -1,0 +1,46 @@
+<div class="panel panel-default dashboard-widget" id="projectKickoffsWidget" ng-controller="VacationRequestsCtrl">
+    <div class="panel-heading">
+        Out of Office Requests
+    </div>
+    <div class="panel-body no-bottom-padding no-horizontal-padding-xs">
+      <div class="padding-bottom-10">
+        <h4 class="align-center">You have {{requests.length}} pending requests.</h4>
+      </div>
+      <div class="row vac-row no-horizontal-margin-xs" ng-repeat="request in requests">
+        <div class="row no-horizontal-margin margin-bottom-md">
+          <div class="col-xs-4 vac-first-col">{{request.person.name}}</div>
+          <div class="col-xs-4 vac-type no-horizontal-padding">{{getTypeText(request.type)}} <span class="color-gray-image-border">({{request.days}})</span></div>
+          <div class="col-xs-3 bold no-horizontal-padding" ng-class="{'assignment-green': request.status === 'Approved', 'assignment-red': request.status === 'Denied', 'color-yellow': request.status === 'Pending'}">
+            <i class="fa fa-check" ng-show="request.status === 'Approved'"></i>
+            <i class="fa fa-clock-o" ng-show="request.status === 'Pending'"></i>
+            {{getStatusText(request.status)}}
+          </div>
+          <div class="col-xs-1 no-horizontal-padding">
+            <i class="fa fa-chevron-down" ng-show="expandedIndex != $index" ng-click="expandRequest($index)"></i>
+            <i class="fa fa-chevron-up" ng-show="expandedIndex == $index" ng-click="expandRequest($index)"></i>
+          </div>
+        </div>
+        
+        <div class="row col-xs-12 no-horizontal-margin" ng-show="expandedIndex == $index">
+          <div class="row no-horizontal-margin">
+            <i class="fa fa-calendar"></i> 
+            {{displayDate(request.startDate)}} <span ng-hide="isSameDay(request.startDate, request.endDate)">- {{displayDate(request.endDate)}}</span>
+          </div>
+          <div class="row no-horizontal-margin color-gray-image-border margin-bottom-md">
+            {{request.description}}
+          </div>
+          <div class="row no-horizontal-margin color-gray-image-border margin-bottom-md">
+            <input class="form-control" ng-model="request.comment" placeholder="Comment"/>
+          </div>
+          <div class="row no-horizontal-margin color-gray-image-border">
+            <button class="btn btn-approve pull-right" ng-click="decide($index, true)">
+              <i class="fa fa-check"></i> <span>APPROVE</span>
+            </button>
+            <button class="btn btn-deny pull-right" ng-click="decide($index, false)">
+              <i class="fa fa-times"></i> <span>DENY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
