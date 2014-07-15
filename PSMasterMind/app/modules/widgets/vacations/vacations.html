@@ -38,7 +38,7 @@
         <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding horizontal-padding-xs" style="margin-bottom: 5px;">
           <div class="col-xs-12 col-md-6">
             <div ng-if="profile.manager && !editManager" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">{{vacationManager.name}}</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerCallback()" ng-show="!editManager"></i></div>
-            <select ng-options="m.name for m in managers" class="selectpicker select-vacation-manager" data-style="btn-info" ng-model="vacationManager" ng-change="managerSelected()" name="vacationManager">
+            <select ng-show="editManager" ng-options="m.name for m in managers" class="selectpicker select-vacation-manager" data-style="btn-info" ng-model="vacationManager" ng-change="managerSelected()" name="vacationManager">
                <option selected value="" ng-hide="vacationManager">Select manager</option>
              </select>
              <select class="selectpicker select-vacation-start-date" data-style="btn-info" ng-model="vacationType" name="vacationType">
