@@ -1,0 +1,94 @@
+<br />
+<div class="row-fluid" ng-if="projectManagementAccess">
+	<div class="row">
+		<div class="col-xs-2 col-md-2">
+			<input class="form-control" placeholder="Select a group" />
+		</div>
+		<div class="col-xs-2 col-md-2">
+			<input class="form-control" placeholder="Find project" />
+		</div>
+		<div class="col-xs-2 ">
+   			<input class="form-control datepicker" placeholder="Start Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+		</div>
+		<div class="col-xs-2 ">
+   			<input class="form-control datepicker" placeholder="End Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+		</div>
+		<div class="col-xs-2 ">
+   			<input class="form-control" placeholder="Availability %" />
+		</div>
+		<div class="col-xs-2 checkbox">
+   			<input id="rf-show-hidden-chk" type="checkbox" class="checkbox pull-left" />
+   			<label for="rf-show-hidden-chk">show people on commitment investment projects</label>
+		</div>
+	</div>
+		
+	<div class="row people-header">
+      <div class="col-xs-3 col-sm-4 col-md-4 person-header-name">
+        <a class="header-name" ng-class="{ active: sortType=='name-asc' || sortType=='name-desc' }" ng-click="switchSort('name')">NAME</a>
+        <div class="person-sorting">
+          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'name-asc'}" ng-click="changeSort('name-asc')"></i>
+          </button>
+          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'name-desc'}" ng-click="changeSort('name-desc')"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-xs-3 col-sm-2 col-md-2 person-header" style="padding-right: 0px; padding-left: 0px;">
+        <a class="header-name" ng-class="{ active: sortType=='role-asc' || sortType=='role-desc' }" ng-click="switchSort('role')">ROLE</a>
+        <div class="person-sorting">
+          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'role-asc'}" ng-click="changeSort('role-asc')"></i>
+          </button>
+          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'role-desc'}" ng-click="changeSort('role-desc')"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-xs-2 col-sm-3 col-md-2 person-header person-header-title">
+        <a class="header-name" ng-class="{ active: sortType=='group-asc' || sortType=='group-desc' }" ng-click="switchSort('group')">GROUP</a>
+        <div class="person-sorting">
+          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'group-asc'}" ng-click="changeSort('group-asc')"></i>
+          </button>
+          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'group-desc'}" ng-click="changeSort('group-desc')"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-xs-4 col-sm-2 person-header" style="padding-right: 0px; padding-left: 0px;">
+        <a class="header-name" ng-class="{ active: sortType=='rate-asc' || sortType=='rate-desc' }" ng-click="switchSort('rate')">AVAILABLE DATE</a>
+        <div class="person-sorting">
+          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'rate-asc'}" ng-click="changeSort('rate-asc')"></i>
+          </button>
+          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'rate-desc'}" ng-click="changeSort('rate-desc')"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-xs-4 col-sm-2 col-md-2 person-header" style="padding-right: 0px; padding-left: 0px;">
+        <a class="header-name" ng-class="{ active: sortType=='rate-asc' || sortType=='rate-desc' }" ng-click="switchSort('rate')">AVAILABILITY %</a>
+        <div class="person-sorting">
+          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'rate-asc'}" ng-click="changeSort('rate-asc')"></i>
+          </button>
+          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'rate-desc'}" ng-click="changeSort('rate-desc')"></i>
+          </button>
+        </div>
+      </div>
+   	</div>
+    <div class="row row people-row" ng-repeat="person in people | filter:filterPerson(filterText)" style="margin-top: 10px; margin-bottom: 0px;">
+            <div class="col-xs-3 col-sm-4 col-md-4 item-prop">
+                <a class="col-xs-3 col-sm-2" href="#{{person.resource}}" style="margin-bottom: 20px; margin-top: -5px;">
+   					<img class="smallProfileImage" ng-src="{{person.thumbnail}}" />
+				</a>
+				<div class="col-xs-9 col-sm-10">
+					<a href="#{{person.resource}}">{{person.familyName}}, {{person.givenName}}</a>
+				</div>
+            </div>
+            <div class="col-xs-3 col-sm-2 col-md-2 item-prop person-staffing-text">
+                <span>{{person.primaryRole.title || "-"}}</span>
+            </div>
+            <div class="col-xs-2 col-sm-3 col-md-2 item-prop person-staffing-text">
+                <span>{{person.group || "-"}}</span>
+            </div>
+            <div class="col-xs-4 col-sm-2 item-prop person-staffing-text">
+                <span>{{person.availabilityDate}}</span>
+            </div>
+            <div class="col-xs-4 col-sm-2 col-md-2 item-prop">
+                {{person.activePercentage}}<span class="percent">%</span>
+            </div>
+        </div>
+</div>
