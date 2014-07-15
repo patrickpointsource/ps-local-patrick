@@ -68,6 +68,34 @@ function( $q, Resources ) {
     return deferred.promise;
   }
   
+  this.getOtherRequestsThisDay = function(manager, day) {
+    var deferred = $q.defer( );
+    
+    //var today = moment().format("YYYY-MM-DD");
+    
+    var query = { 
+      $and: [ 
+        {
+          vacationManager: {
+            resource: manager.about
+          }
+        },
+        {
+          startDate: {$lte: day}
+        },
+        {
+          endDate: {$gte: day}
+        }
+      ]
+    };
+    
+    Resources.query('vacations', query, {}).then(function(result) {
+      deferred.resolve( result.members );
+    });
+    
+    return deferred.promise;
+  }
+  
   this.getDays = function(start, end) {
     if(!start || !end) {
       return "";

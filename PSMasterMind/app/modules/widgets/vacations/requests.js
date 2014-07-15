@@ -2,9 +2,7 @@ angular.module( 'Mastermind').controller( 'VacationRequestsCtrl', [ '$scope', '$
 function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsService, TasksService, RolesService ) {
   
   $scope.showRequests = function() {
-    
-  }
-  VacationsService.getRequests($scope.me).then(function(result) {
+    VacationsService.getRequests($scope.me).then(function(result) {
     $scope.requests = result;
     
     for(var i = 0; i < $scope.requests.length; i++) {
@@ -14,6 +12,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       request.days = VacationsService.getDays(request.startDate, request.endDate);
     }
   });
+  }
+  
+  $scope.requests = [];
+  $scope.showRequests();
   $scope.expandedIndex = -1;
   
   $scope.expandRequest = function(index) {
@@ -21,6 +23,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       $scope.expandedIndex = -1;
     } else {
       $scope.expandedIndex = index;
+      VacationsService.getOtherRequestsThisDay($scope.me, $scope.requests[index].startDate).then(function(result) {
+        $scope.peopleOutThisDay = _.uniq(_.pluck(result, "person"));
+        
+        for(var i = 0; i < $scope.peopleOutThisDay.length; i++) {
+          Resources.resolve($scope.peopleOutThisDay[i]);
+        }
+      });
     }
   }
   

@@ -409,5 +409,4 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       }, 5);
     }
   }
-  
 } ] );
