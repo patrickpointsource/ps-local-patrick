@@ -107,6 +107,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.isManagement = groups && $.inArray( 'Management', groups ) !== -1;
 		$scope.isSales = groups && $.inArray( 'Sales', groups ) !== -1;
 		$scope.isProjectManagement = groups && $.inArray( 'Project Management', groups ) !== -1;
+		
+		$scope.canEditCapacity = 
+		    $.inArray( 'Executives', $scope.me.groups ) !== -1
+         || $.inArray( 'Management', $scope.me.groups ) !== -1
+         || $.inArray( 'Sales', $scope.me.groups ) !== -1;
+         
+         $scope.canSeeCapacity = $scope.canEditCapacity || $scope.profileId == $scope.me._id.$oid;
 
 		var url = person.about + '/' + 'gplus';
 
