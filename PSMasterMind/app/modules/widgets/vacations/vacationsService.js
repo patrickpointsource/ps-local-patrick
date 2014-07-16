@@ -13,10 +13,10 @@ function( $q, Resources ) {
   }
   
   this.VACATION_TYPES = {
-    Personal: "Personal Leave",
+    Appointment: "Appointment",
     Vacation: "Vacation",
     Travel: "Customer Travel",
-    Sick: "Sick Time"
+    Training: "Conference/Training"
   }
   
   this.getVacations = function(profileId) {
@@ -68,7 +68,7 @@ function( $q, Resources ) {
     return deferred.promise;
   }
   
-  this.getOtherRequestsThisDay = function(manager, day) {
+  this.getOtherRequestsThisPeriod = function(manager, request) {
     var deferred = $q.defer( );
     
     //var today = moment().format("YYYY-MM-DD");
@@ -81,10 +81,10 @@ function( $q, Resources ) {
           }
         },
         {
-          startDate: {$lte: day}
+          startDate: {$lte: request.endDate}
         },
         {
-          endDate: {$gte: day}
+          endDate: {$gte: request.startDate}
         }
       ]
     };
@@ -111,6 +111,9 @@ function( $q, Resources ) {
       if(diff < 8) {
         days = "hours";
         
+        if(diff == 4) {
+          return "0.5 day"
+        }
         if(diff <= 1) {
           days = "hour";
         }
@@ -142,8 +145,8 @@ function( $q, Resources ) {
   }
   
   this.getTypeText = function(type) {
-    if(type == this.VACATION_TYPES.Personal) {
-      return "Personal";
+    if(type == this.VACATION_TYPES.Appointment) {
+      return this.VACATION_TYPES.Appointment;
     }
     if(type == this.VACATION_TYPES.Vacation) {
       return this.VACATION_TYPES.Vacation;
@@ -151,8 +154,8 @@ function( $q, Resources ) {
     if(type == this.VACATION_TYPES.Travel) {
       return "Travel";
     }
-    if(type == this.VACATION_TYPES.Sick) {
-      return this.VACATION_TYPES.Sick;
+    if(type == this.VACATION_TYPES.Training) {
+      return "Conf./Training";
     }
   }
   

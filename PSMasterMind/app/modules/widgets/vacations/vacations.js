@@ -9,7 +9,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.END_TIME_DEFAULT = "17:00";
   
-  $scope.vacationTypes = [VACATION_TYPES.Personal, VACATION_TYPES.Vacation, VACATION_TYPES.Travel, VACATION_TYPES.Sick];
+  $scope.vacationTypes = [VACATION_TYPES.Appointment, VACATION_TYPES.Vacation, VACATION_TYPES.Travel, VACATION_TYPES.Training];
   
   var VACATION_CAPACITY = 15;
   
@@ -111,7 +111,6 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  return;
 	}
 	
-	var vacStatus;
 	var vacStartTime = $scope.START_TIME_DEFAULT;
 	var vacEndTime = $scope.END_TIME_DEFAULT;
 	
@@ -120,21 +119,21 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  vacEndTime = $scope.vacationEndTime;
 	}
 	
-	if($scope.vacationType == VACATION_TYPES.Sick || $scope.vacationType == VACATION_TYPES.Travel || !$scope.vacationManager) {
-	  vacStatus = STATUS.Approved;
-	} else {
-	  vacStatus = STATUS.Pending;
-	}
-
 	var vacation = {
 	  startDate: $scope.vacationStartDate + " " + vacStartTime,
 	  endDate: $scope.vacationEndDate + " " + vacEndTime,
 	  description: $scope.newDescription ? $scope.newDescription : "No description entered.",
 	  person: { resource: $scope.profile.about},
-	  status: vacStatus,
 	  type: $scope.vacationType,
 	  vacationManager: { resource: $scope.vacationManager.resource }
 	}
+	
+	if(($scope.vacationType == VACATION_TYPES.Appointment && moment(vacation.endDate).diff(vacation.startDate, 'hours') <= 4)
+	   || $scope.vacationType == VACATION_TYPES.Travel) {
+      vacation.status = STATUS.Approved;
+    } else {
+      vacation.status = STATUS.Pending;
+    }
 	
 	VacationsService.addNewVacation(vacation).then(function(result) {
 	  $scope.vacations.push(result);
@@ -168,6 +167,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	if(!$scope.vacationType || $scope.vacationType === "") {
 	  $scope.errors.push("Please select vacation type.");
 	  return true;
+	}
+	if(!$scope.vacationManager) {
+	  $scope.errors.push("Please select manager.");
+      return true;
 	}
 	
 	$scope.checkForConflictDates($scope.vacationStartDate, $scope.vacationEndDate, $scope.vacationStartTime, $scope.vacationEndTime);
@@ -408,5 +411,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
         $(".select-vacation-manager-" + index).selectpicker();
       }, 5);
     }
+  }
+  
+  $scope.newDescChanged = function() {
+    $scope.newDescription = this.newDescription;
   }
 } ] );

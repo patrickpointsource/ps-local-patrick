@@ -94,7 +94,7 @@
           <div class="col-xs-12 col-sm-4 margin-bottom-xs padding-left-xs"><input type="text" class="form-control" value="{{getDays(vacationStartDate, vacationEndDate)}}" disabled/></div>-->
           <div class="visible-xs col-xs-12 color-gray-image-border">Description:</div>
           <div class="col-xs-12 margin-bottom-xs padding-left-xs">
-            <input type="text" placeholder="Description" ng-model="newDescription" class="form-control"/>
+            <input type="text" placeholder="Description" ng-model="newDescription" class="form-control" ng-change="newDescChanged()"/>
           </div>
         </div>
         <div ng-if="vacationType" class="row col-xs-12 no-horizontal-padding margin-bottom-xs margin-right-xs vertical-margin-md">
@@ -189,6 +189,12 @@
             <div class="visible-xs col-xs-12 color-gray-image-border">Description:</div>
             <div class="col-xs-12 margin-bottom-xs padding-left-xs">
               <input type="text" placeholder="Description" ng-model="vacation.description" class="form-control"/>
+            </div>
+          </div>
+          <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding">
+            <div class="col-xs-12" ng-if="vacation.comment">Comment from {{vacationManagerEdit.name}}:</div>
+            <div class="col-xs-12 color-gray-image-border italic margin-bottom-xs padding-left-xs" ng-if="vacation.comment">
+              "{{vacation.comment}}"
             </div>
           </div>
           

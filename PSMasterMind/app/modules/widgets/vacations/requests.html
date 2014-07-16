@@ -17,7 +17,7 @@
       <div class="row vac-row no-horizontal-margin-xs" ng-repeat="request in requests">
         <div class="row no-horizontal-margin margin-bottom-md">
           <div class="col-xs-4 vac-first-col">{{request.person.name}}</div>
-          <div class="col-xs-4 vac-type no-horizontal-padding">{{getTypeText(request.type)}} <span class="color-gray-image-border">({{request.days}})</span></div>
+          <div class="col-xs-4 vac-type no-horizontal-padding">{{getTypeText(request.type)}} <span class="color-gray-image-border">({{getDays(request.startDate, request.endDate)}})</span></div>
           <div class="col-xs-3 bold no-horizontal-padding" ng-class="{'assignment-green': request.status === 'Approved', 'assignment-red': request.status === 'Denied', 'color-yellow': request.status === 'Pending'}">
             <i class="fa fa-check" ng-show="request.status === 'Approved'"></i>
             <i class="fa fa-clock-o" ng-show="request.status === 'Pending'"></i>
@@ -32,16 +32,21 @@
         <div class="row col-xs-12 no-horizontal-margin" ng-show="expandedIndex == $index">
           <div class="row no-horizontal-margin">
             <i class="fa fa-calendar"></i> 
-            {{displayDate(request.startDate)}} <span ng-hide="isSameDay(request.startDate, request.endDate)">- {{displayDate(request.endDate)}}</span>
+            {{displayDate(request.startDate)}} <!--<span ng-hide="isSameDay(request.startDate, request.endDate)">--> <span>- {{displayDate(request.endDate)}}</span>
           </div>
-          <div class="row no-horizontal-margin color-gray-image-border margin-bottom-md">
-            {{request.description}}
+          <div class="row no-horizontal-margin color-gray-image-border italic margin-bottom-md">
+            "{{request.description}}"
           </div>
           <div class="row no-margin vac-type margin-bottom-md" ng-show="peopleOutThisDay && peopleOutThisDay.length > 0">
-            Other People out this day.
+            Other People out this period.
           </div>
           <div class="row no-horizontal-margin margin-bottom-md">
-            <a ng-repeat="otherVacPerson in peopleOutThisDay" href="#{{otherVacPerson.about}}">{{otherVacPerson.name}}<span ng-hide="$index == peopleOutThisDay.length - 1">,&nbsp;</span></a>
+            <a ng-repeat-start="otherVacPerson in peopleOutThisDay" href="#{{otherVacPerson.about}}">{{otherVacPerson.name}}</a>
+            (<span class="smallDates" ng-repeat="period in otherVacPerson.periods">
+              {{displayShortPeriod(period)}}
+              <span class="smallDates" ng-hide="$index == otherVacPerson.periods.length - 1">|</span>
+            </span>)
+             <span ng-repeat-end ng-hide="$index == peopleOutThisDay.length - 1">,&nbsp;</span>
           </div>
           <div class="row no-horizontal-margin color-gray-image-border margin-bottom-md">
             <input class="form-control" ng-model="request.comment" placeholder="Comment"/>
