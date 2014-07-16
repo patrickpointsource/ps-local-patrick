@@ -3,6 +3,7 @@
 angular.module( 'Mastermind' ).controller( 'ResourceFinderCtrl', [ '$scope', '$state', '$location', '$filter', '$q', 'Resources', 'People', 'ProjectsService',
 function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsService ) {
 	
+	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
 	var parent_fillPeopleProps = $scope.$parent.fillPeopleProps;
 	
 	$scope.$parent.fillPeopleProps = function( ) {
@@ -129,84 +130,83 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 	}
 	
 	$scope.$parent.buildTableView = function( ) {
-		var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
-		var DAYS_IN_WEEK = 5; // weekend excluded
 
 		//Actual Table View Data
 		if( $scope.$parent.showTableView ) {
-			var sDate = new Date(),
-				eDate = new Date(2014, 10, 1);
+//			var sDate = new Date(),
+//				eDate = new Date(2014, 10, 1);
 		    	
 			People.getPeopleCurrentAssignments().then(function(activeAssignments)
 			{
 				//Sum the percentages for all of the active assignments
-				var activePercentages = {};
-				var availabilityDates = {};
-				
-				for (var person in activeAssignments)
-				{
-					//if (person == "people/52fa5fae5f445c2b8d3b147d"){
-					var actualWorkingHours = 0;
-					var assignments = activeAssignments[person];
-					var availabilityDate = null;
-					var actualWorkingHours3 = 0;
-					
-					var days = 0;
-				    
-				    for (var currentDate = new Date(sDate.valueOf()); currentDate <= eDate; currentDate.setDate(currentDate.getDate() + 1))
-				    {  
-				        var day = currentDate.getDay();
-				        
-				        if (day != 0 && day != 6)
-			        	{
-				        	days++;
-				        	
-				        	actualWorkingHours3 = 0;
-				        	
-				        	for (var i = 0, count = assignments.length; i < count; i++)
-							{
-								var assignment = assignments[i];
-								var assignmentEndDate = new Date(Date.parse(assignment.endDate || "2029-01-01")); // 2029 -- rising of skynet
-								
-								// Processing only those assignments which intersect the specified range.
-								if (assignmentEndDate >= currentDate)
-								{
-									actualWorkingHours3 += assignment.hoursPerWeek;
-									
-									if (actualWorkingHours3 >= HOURS_PER_WEEK)
-										break;
-								}
-							}
-				        	
-				        	if (!availabilityDate && actualWorkingHours3 < HOURS_PER_WEEK)
-				        		availabilityDate = new Date(currentDate.valueOf());
-				        	
-				        	actualWorkingHours += Math.min(actualWorkingHours3, HOURS_PER_WEEK);
-			        	}
-				    }
-				    
-//					for (var i = 0, count = assignments.length; i < count; i++)
-//					{
-//						var assignment = assignments[i];
-//						var assignmentStartDate = new Date(Date.parse(assignment.startDate));
-//						var assignmentEndDate = new Date(Date.parse(assignment.endDate));
-//						
-//						// Processing only those assignments which intersect the specified range.
-//						if (assignmentEndDate >= sDate && assignmentStartDate <= eDate)
-//						{
-//							var minEndDate = assignmentEndDate < eDate ? assignmentEndDate : eDate;
-//							var workingWeeks = getWorkingWeekInRange(availabilityDate, minEndDate);
-//							
-//							actualWorkingHours += assignment.hoursPerWeek * workingWeeks;
-//						}
-//					}
-					
-					availabilityDates[person] = availabilityDate;
-					activePercentages[person] = 100 - Math.round(actualWorkingHours / (days * HOURS_PER_WEEK) * 100);//}
-				}
-
-				$scope.$parent.availabilityDates = availabilityDates;
-				$scope.$parent.activePercentages = activePercentages;
+//				var activePercentages = {};
+//				var availabilityDates = {};
+//				
+//				for (var person in activeAssignments)
+//				{
+//					//if (person == "people/52fa5fae5f445c2b8d3b147d"){
+//					var actualWorkingHours = 0;
+//					var assignments = activeAssignments[person];
+//					var availabilityDate = null;
+//					var workingHours = 0;
+//					
+//					var days = 0;
+//				    
+//				    for (var currentDate = new Date(sDate.valueOf()); currentDate <= eDate; currentDate.setDate(currentDate.getDate() + 1))
+//				    {  
+//				        var day = currentDate.getDay();
+//				        
+//				        if (day != 0 && day != 6)
+//			        	{
+//				        	days++;
+//				        	
+//				        	workingHours = 0;
+//				        	
+//				        	for (var i = 0, count = assignments.length; i < count; i++)
+//							{
+//								var assignment = assignments[i];
+//								var assignmentEndDate = new Date(Date.parse(assignment.endDate || "2029-01-01")); // 2029 -- rising of skynet
+//								
+//								// Processing only those assignments which intersect the specified range.
+//								if (assignmentEndDate >= currentDate)
+//								{
+//									workingHours += assignment.hoursPerWeek;
+//									
+//									if (workingHours >= HOURS_PER_WEEK)
+//										break;
+//								}
+//							}
+//				        	
+//				        	if (!availabilityDate && workingHours < HOURS_PER_WEEK)
+//				        		availabilityDate = new Date(currentDate.valueOf());
+//				        	
+//				        	actualWorkingHours += Math.min(workingHours, HOURS_PER_WEEK);
+//			        	}
+//				    }
+//				    
+////					for (var i = 0, count = assignments.length; i < count; i++)
+////					{
+////						var assignment = assignments[i];
+////						var assignmentStartDate = new Date(Date.parse(assignment.startDate));
+////						var assignmentEndDate = new Date(Date.parse(assignment.endDate));
+////						
+////						// Processing only those assignments which intersect the specified range.
+////						if (assignmentEndDate >= sDate && assignmentStartDate <= eDate)
+////						{
+////							var minEndDate = assignmentEndDate < eDate ? assignmentEndDate : eDate;
+////							var workingWeeks = getWorkingWeekInRange(availabilityDate, minEndDate);
+////							
+////							actualWorkingHours += assignment.hoursPerWeek * workingWeeks;
+////						}
+////					}
+//					
+//					availabilityDates[person] = availabilityDate;
+//					activePercentages[person] = 100 - Math.round(actualWorkingHours / (days * HOURS_PER_WEEK) * 100);//}
+//				}
+//
+//				$scope.$parent.availabilityDates = availabilityDates;
+//				$scope.$parent.activePercentages = activePercentages;
+				$scope.activeAssignments = activeAssignments;
 
 				//Once we have the active people apply the default filter
 				//Trigger initial filter change
@@ -218,5 +218,70 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		else if( $scope.showGraphView ) {
 			
 		}
+	};
+	
+	$scope.filterResources = function(startDate, endDate, availabilityPercentage)
+	{
+		return function (person)
+			{
+				if (person && $scope.activeAssignments && startDate && endDate)
+				{
+					var actualWorkingHours = 0;
+					var assignments = $scope.activeAssignments[person.resource];
+					var availabilityDate = null;
+					var workingHours = 0;
+					var days = 0;
+					startDate = new Date(Date.parse(startDate));
+					endDate = new Date(Date.parse(endDate));
+					
+					if (assignments == null)
+					{
+						person.availabilityDate = formatDate(startDate);
+					    person.activePercentage = 100;
+						
+						return true;
+					}
+						
+				    for (var currentDate = new Date(startDate.valueOf()); currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1))
+				    {  
+				        var day = currentDate.getDay();
+				        
+				        if (day != 0 && day != 6)
+			        	{
+				        	days++;
+				        	
+				        	workingHours = 0;
+				        	
+				        	for (var i = 0, count = assignments.length; i < count; i++)
+							{
+								var assignment = assignments[i];
+								var assignmentEndDate = new Date(Date.parse(assignment.endDate || "2029-01-01")); // 2029 -- rising of skynet
+								
+								// Processing only those assignments which intersect the specified range.
+								if (assignmentEndDate >= currentDate)
+								{
+									workingHours += assignment.hoursPerWeek;
+									
+									if (workingHours >= HOURS_PER_WEEK)
+										break;
+								}
+							}
+				        	
+				        	if (!availabilityDate && workingHours < HOURS_PER_WEEK)
+				        		availabilityDate = new Date(currentDate.valueOf());
+				        	
+				        	actualWorkingHours += Math.min(workingHours, HOURS_PER_WEEK);
+			        	}
+				    }
+				    
+				    person.availabilityDate = formatDate(availabilityDate);
+				    
+				    person.activePercentage = 100 - Math.round(actualWorkingHours / (days * HOURS_PER_WEEK) * 100);
+				    
+				    return person.activePercentage > (availabilityPercentage || 0);
+				}
+				else
+					return false;
+			};
 	};
 } ] );

@@ -8,17 +8,17 @@
 			<input class="form-control" placeholder="Find project" />
 		</div>
 		<div class="col-xs-2 ">
-   			<input class="form-control datepicker" placeholder="Start Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+   			<input class="form-control datepicker" placeholder="Start Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-model="filterStartDate" />
 		</div>
 		<div class="col-xs-2 ">
-   			<input class="form-control datepicker" placeholder="End Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+   			<input class="form-control datepicker" placeholder="End Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-model="filterEndDate" />
 		</div>
 		<div class="col-xs-2 ">
-   			<input class="form-control" placeholder="Availability %" />
+   			<input class="form-control" placeholder="Availability %" ng-model="filterAvailabilityPercentage" />
 		</div>
 		<div class="col-xs-2 checkbox">
-   			<input id="rf-show-hidden-chk" type="checkbox" class="checkbox pull-left" />
-   			<label for="rf-show-hidden-chk">show people on commitment investment projects</label>
+   			<!-- <input id="rf-show-hidden-chk" type="checkbox" class="checkbox pull-left" />
+   			<label for="rf-show-hidden-chk">show people on commitment investment projects</label> -->
 		</div>
 	</div>
 		
@@ -69,7 +69,7 @@
         </div>
       </div>
    	</div>
-    <div class="row row people-row" ng-repeat="person in people | filter:filterPerson(filterText)" style="margin-top: 10px; margin-bottom: 0px;">
+    <div class="row row people-row" ng-repeat="person in people | filter:filterResources(filterStartDate, filterEndDate, filterAvailabilityPercentage)" style="margin-top: 10px; margin-bottom: 0px;">
             <div class="col-xs-3 col-sm-4 col-md-4 item-prop">
                 <a class="col-xs-3 col-sm-2" href="#{{person.resource}}" style="margin-bottom: 20px; margin-top: -5px;">
    					<img class="smallProfileImage" ng-src="{{person.thumbnail}}" />
@@ -79,7 +79,7 @@
 				</div>
             </div>
             <div class="col-xs-3 col-sm-2 col-md-2 item-prop person-staffing-text">
-                <span>{{person.primaryRole.title || "-"}}</span>
+                <span>{{person.primaryRole.abbreviation || "-"}}</span>
             </div>
             <div class="col-xs-2 col-sm-3 col-md-2 item-prop person-staffing-text">
                 <span>{{person.group || "-"}}</span>

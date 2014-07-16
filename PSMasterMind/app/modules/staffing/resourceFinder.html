@@ -8,11 +8,6 @@
 		        <button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> <span class="hidden-xs hidden-sm">Graph</span></button>
 		    </div> 
 		  </div>
-		  
-		  <div class="col-xs-12 col-sm-3 col-md-3 xs-padding-top pull-right">
-		    <input class="form-control" placeholder="Filter Projects"
-					ng-model="filterText" autofocus />
-		  </div>
 		</div>
 		<div ng-if="showTableView">
 			<ng-include src="'modules/staffing/partials/resourceFinderTable.html'"></ng-include>
