@@ -23,8 +23,6 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.pointsource.mastermind.util.Data;
-
 public class SchedulerServlet extends HttpServlet {
 	private final static Logger LOGGER = Logger.getLogger(SchedulerServlet.class.getName());
 
@@ -55,7 +53,8 @@ public class SchedulerServlet extends HttpServlet {
 			String tmp = jobProps.getProperty(ACTIVE_KEY);
 			boolean isJobSchedulerActive = (tmp!=null && tmp.trim().equalsIgnoreCase("true"));
 			*/
-    		boolean isJobSchedulerActive = Data.getReminderActive(null);
+//    		boolean isJobSchedulerActive = Data.getReminderActive(null);
+    		boolean isJobSchedulerActive = true;
     		
 			if(isJobSchedulerActive) {
 				int jobsScheduled = 0;

@@ -33,35 +33,61 @@ public class InitialEmailReminderJob implements Job {
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
 		
-		JSONArray people = Data.getPeople(null, "", "", "");
-		if (people != null) {
-			for( int i = 0; i < people.length(); i++) {
-				JSONObject contact = (JSONObject) people.get(i);
-				String resource = (String) contact.get(RESOURCE_KEY);
-				String givenName = (String) contact.get(GIVENNAME_KEY);
-				String fullName = (String) contact.get(NAME_KEY);
-				String mBox = (String) contact.get(MAILBOX_KEY);
-				Boolean isActive = Boolean.valueOf((String)contact.get(ACTIVE_KEY));
-				
-//				if (isActive && mBox.eqauls("denis.novalenko@pointsource.com")) 
-				if (isActive) 
-				{
-					String date= DATE_FORMAT.format(getPreviousWorkingDay());
+		boolean isActive = Data.getReminderActive(null);
+		boolean isDebug = Data.getReminderDebug(null);
+		
+		LOGGER.log(Level.INFO, "reminder.active=" + isActive);
+		LOGGER.log(Level.INFO, "reminder.debug=" + isDebug);
+		
+		// if debug mode is enabled send reminder for limited notification list
+		if (isDebug) {
+			String[] notificationList = Data.getDebugNotificationList(null);
+			if (notificationList != null && notificationList.length > 0) {
+				String name = "Reminder for Limited Notification List";
+				String message = SmtpHelper.getReminderMessage(name);
+				try {
+					SmtpSender.getInstance().sendTLSEmail(Arrays.asList(notificationList), null, name, message);
+				} catch (SmtpException e) {
+					LOGGER.log(Level.SEVERE, e.getMessage());
+				}
+			}
+			
+		}
+
+		// if active mode is enabled send reminder for all related contacts
+		if (isActive ) {
+			JSONArray people = Data.getPeople(null, "", "", "");
+			if (people != null) {
+				for( int i = 0; i < people.length(); i++) {
+					JSONObject contact = (JSONObject) people.get(i);
+					String resource = (String) contact.get(RESOURCE_KEY);
+					String givenName = (String) contact.get(GIVENNAME_KEY);
+					String fullName = (String) contact.get(NAME_KEY);
+					String mBox = (String) contact.get(MAILBOX_KEY);
+					Boolean isActiveContact = Boolean.valueOf((String)contact.get(ACTIVE_KEY));
 					
-					String query = "{\"person\":{\"resource\":\"" + resource + "\"},\"date\":\"" + date + "\"}";
-					JSONArray vacation = Data.getVacations(null, query, "", "");
-					JSONArray hours = Data.getHours(null, query, "", "");
-					if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
-						String message = SmtpHelper.getReminderMessage(givenName);
-						try {
-							SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), getCCAdresses(), "Reminder for " + fullName, message);
-						} catch (SmtpException e) {
-							LOGGER.log(Level.SEVERE, e.getMessage());
+					if (isActiveContact) 
+					{
+						String date= DATE_FORMAT.format(getPreviousWorkingDay());
+						
+						String query = "{\"person\":{\"resource\":\"" + resource + "\"},\"date\":\"" + date + "\"}";
+						JSONArray vacation = Data.getVacations(null, query, "", "");
+						JSONArray hours = Data.getHours(null, query, "", "");
+						if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
+							String message = SmtpHelper.getReminderMessage(givenName);
+							try {
+								SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), getCCAdresses(), "Reminder for " + fullName, message);
+							} catch (SmtpException e) {
+								LOGGER.log(Level.SEVERE, e.getMessage());
+							}
+							
 						}
 					}
 				}
 			}
 		}
+		
+		
 	}
 
 	private Date getPreviousWorkingDay() {

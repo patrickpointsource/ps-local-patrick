@@ -60,6 +60,11 @@ public class Data implements CONSTS {
 
 	//private static String DATE_PATETRN = "yyyy-MM-dd";
 	//private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATETRN);
+	
+	private final static String REMINDER_DEBUG_NOTIFICATION_LIST_KEY = "reminder.debug.notification.list";
+	private final static String REMINDER_INTERESTED_PARTIES = "reminder.interested.parties";
+	private final static String REMINDER_ACTIVE = "reminder.active";
+	private final static String REMINDER_DEBUG = "reminder.debug";
 
 	/**
 	 * Mongo Database connection
@@ -3994,8 +3999,8 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		}
 	}
 	
-	public static String[] getInterestedParties(RequestContext context) {
-		String[] result = null;
+	private static String getValueFromConfigurationByKey(String key) {
+		String result = null;
 		DBObject dbObject = internalFetchConfig(VALUES_SERIVCES_CONFIGURATION);
 		JSONObject config = null;
 		
@@ -4010,39 +4015,50 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		for (int j = 0; j < properties.length(); j ++) {
 			entry = properties.getJSONObject(j);
 			
-			if (entry.has(PROP_NAME) && entry.get(PROP_NAME).toString().equals("reminder.interested.parties") && !entry.get(PROP_VALUE).toString().equals(""))
-				result = entry.get(PROP_VALUE).toString().split(",");
+			if (entry.has(PROP_NAME) && entry.get(PROP_NAME).toString().equals(key) && !entry.get(PROP_VALUE).toString().equals(""))
+				result = entry.get(PROP_VALUE).toString();
 		}
-		
-		if (result != null)
+				
+		return result;
+	}
+
+	
+
+	private static String[] getStringArrayFromConfigurationByKey(String key) {
+		String value = getValueFromConfigurationByKey(key);
+		if (value != null) {
+			String[] result = value.split(",");
 			for (int j = 0; j < result.length; j ++)
 				result[j].trim();
-		
-		return result;
+			return result;
+		}
+		return null;
 	}
-	
+
+	private static boolean getBooleanFromConfigurationByKey(String key) {
+		String value = getValueFromConfigurationByKey(key);
+		if (value != null) {
+			return value.toLowerCase().equals("true");
+		}
+		return false;
+	}
+
+	public static String[] getDebugNotificationList(RequestContext context) {
+		return getStringArrayFromConfigurationByKey(REMINDER_DEBUG_NOTIFICATION_LIST_KEY);
+	}
+
+	public static String[] getInterestedParties(RequestContext context) {
+		return getStringArrayFromConfigurationByKey(REMINDER_INTERESTED_PARTIES);
+	}
+
 	public static boolean getReminderActive(RequestContext context) {
-		boolean result = false;
-		DBObject dbObject = internalFetchConfig(VALUES_SERIVCES_CONFIGURATION);
-		JSONObject config = null;
-		
-		if (dbObject != null) {
-			config = decodeJSON(toJson(dbObject));
-		}
-		
-		
-		JSONArray properties = config.getJSONArray(PROP_PROPERTIES);
-		JSONObject entry;
-		
-		for (int j = 0; j < properties.length(); j ++) {
-			entry = properties.getJSONObject(j);
-			
-			if (entry.has(PROP_NAME) && entry.get(PROP_NAME).toString().equals("reminder.active") && !entry.get(PROP_VALUE).toString().equals(""))
-				result = entry.get(PROP_VALUE).toString().toLowerCase().equals("true");
-		}
-		
-		return result;
+		return getBooleanFromConfigurationByKey(REMINDER_ACTIVE);
 	}
+
+	public static boolean getReminderDebug(RequestContext context) {
+		return getBooleanFromConfigurationByKey(REMINDER_DEBUG);
+	}
+
 	
 	//TODO: refactor this method to generate only _id, put about property filling  separatly
 	public static void refreshRoleIds (JSONObject project)
