@@ -882,6 +882,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				t.isTask = true;
 				t.icon = taskIconsMap[                               t.name.toLowerCase( ) ];
 				t.iconCss = taskIconStylseMap[                               t.name.toLowerCase( ) ];
+				t.visible = t.name != "Vacation" && t.name != "Appointment";
 			} );
 
 			$scope.sortProjectTaskList( );

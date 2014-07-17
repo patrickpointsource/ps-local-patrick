@@ -224,7 +224,7 @@
 			                <i class="fa fa-search"></i>
 			            </span>
 	        			<ul class="dropdown-menu ddProjectsTasksMenu" role="menu" aria-labelledby="ddProjectsTasksMenu">
-						  <li role="presentation" ng-repeat="tp in projectTasksList" >
+						  <li role="presentation" ng-repeat="tp in projectTasksList" ng-show="!tp.isTask || (tp.isTask && tp.visible)">
 						  	<a class="menu-item task-menu-item" role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
 							  	<span class="task-icon" ng-if="tp.icon" style="{{tp.iconCss}}"><i class="fa {{tp.icon}}"></i></span>
 							  	<span class="task-name" style="width: -webkit-calc(100% - 20px)">{{tp.name}}</span>
