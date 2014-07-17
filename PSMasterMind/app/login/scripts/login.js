@@ -3,8 +3,10 @@
 // local dev
 
 window.serverLocation = 'http://localhost:8080';
-window.clientBaseURL = 'http://0.0.0.0:9000/';
 window.restPath = '/MasterMindStaging/rest/';
+window.clientBaseURL = 'http://0.0.0.0:9000/';
+//window.serverLocation = 'http://localhost:3000';
+//window.restPath = '';
 
 //stage only
 //window.restPath = '/MasterMindStaging/rest/';
