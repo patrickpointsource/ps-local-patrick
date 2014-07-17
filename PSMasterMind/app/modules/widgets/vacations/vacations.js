@@ -253,34 +253,53 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.getCurrentYearVacationDays = function() {
 	var now = moment();
-	var yearDays = 0;
+	var hoursPerDay = 8;
+	var yearHours = 0;
+	var hoursCapacity = hoursPerDay * $scope.profile.vacationCapacity;
+	
 	for(var i = 0; i < $scope.vacations.length; i++) {
 	  var vacation = $scope.vacations[i];
-	  var start = moment(vacation.startDate);
-	  var end = moment(vacation.endDate);
-	  // check if start and end date in the same year
-	  if(start.year() == end.year()) {
-		// check that year is current
-		if(start.year() == now.year()) {
-		  var days = $scope.getActualDays(start, end);
-		  yearDays += days;
-		}
-		// else vacation is split between years
-	  } else {
-		var days = end.diff(start, 'days');
-		var dayIteration = start;
-		var thisYearDays = 0;
-		for(var d = 1; d <= days; d++) {
-		  if(dayIteration.add('days', d).year() == now.year()) {
-			thisYearDays++;
-		  }
-		}
-		
-		yearDays += thisYearDays;
+	  if(vacation.type == VacationsService.VACATION_TYPES.Vacation) {
+	    var start = moment(vacation.startDate);
+        var end = moment(vacation.endDate);
+        // check if start and end date in the same year
+        if(start.year() == end.year()) {
+          // check that year is current
+          if(start.year() == now.year()) {
+            var days = $scope.getActualDays(start, end);
+            if(days == 1) {
+              var diff = end.diff(start, 'hours');
+              if(diff <= 8) {
+                yearHours += diff;
+              } else {
+                yearHours += 8;
+              }
+            } else {
+              yearHours += days * 8;
+            }
+          }
+        // else vacation is split between years
+        } else {
+          var days = end.diff(start, 'days');
+          var dayIteration = start;
+          var thisYearHours = 0;
+          for(var d = 1; d <= days; d++) {
+            if(dayIteration.add('days', d).year() == now.year()) {
+              thisYearHours += 8;
+            }
+          }
+        
+          yearHours += thisYearHours;
+        }
 	  }
 	}
 	
-	return VACATION_CAPACITY - yearDays;
+	var roundHours = ((hoursCapacity - yearHours)/8);
+	if(Math.ceil(roundHours) == roundHours) {
+	  return roundHours;
+	} else {
+	  return roundHours.toFixed(1);
+	}
   }
   
   $scope.checkForConflictDates = function(startDate, endDate, startTime, endTime, editedVacation) {
