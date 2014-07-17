@@ -31,4 +31,6 @@ core.ignore= \
 	{.classpath} \
 	{bin} \
 	{build} \
+	{dist} \
+	{node_modules} \
 	{target} 
