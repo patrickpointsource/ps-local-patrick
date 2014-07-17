@@ -97,7 +97,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
             text: "Inactive",
             value: "inactive",
             handler: "handleSubitem",
-            isNotRender: $scope.projectManagementAccess && $scope.projectManagementAccess.toString().toLowerCase() != 'true'
+            isNotRender: !$scope.projectManagementAccess
         }]
 	}, {
 		text: "Staffing",
