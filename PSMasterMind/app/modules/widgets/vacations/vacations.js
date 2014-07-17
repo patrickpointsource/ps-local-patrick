@@ -98,6 +98,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  if($scope.profile.manager) {
 	    $scope.vacationManager = _.findWhere($scope.managers, { resource: $scope.profile.manager.resource });
 	  }
+	  if($scope.vacationManager) {
+        $scope.editManager = false;
+      } else {
+        $scope.editManager = true;
+      }
 	}
 	
 	$('.select-vacation-start-date').selectpicker();
@@ -371,7 +376,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.managerSelected = function() {
     $scope.vacationManager = this.vacationManager;
-    $scope.editManager = !$scope.editManager;
+    $scope.editManager = false;
   }
   
   $scope.managerEditSelected = function() {
@@ -387,18 +392,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
     $scope.startDateChanged();
   }
   
-  $scope.editManager = false;
-  
   $scope.editManagerCallback = function() {
-    if($scope.editManager) {
-      $scope.editManager = false;
-    } else {
-      $scope.editManager = true;
-      
-      setTimeout(function() { 
-        $(".select-vacation-manager").selectpicker();
-      }, 5);
-    }
+    $scope.editManager = true;
+    setTimeout(function() { 
+      $(".select-vacation-manager").selectpicker();
+    }, 5);
   }
   
   $scope.editManagerEditCallback = function(index) {
