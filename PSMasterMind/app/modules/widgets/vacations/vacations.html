@@ -36,8 +36,10 @@
           <i class="fa fa-times cursor-pointer pull-right color-gray-image-border" style="padding-right: 30px;" ng-click="requestHours()"></i>
         </div>
         <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding horizontal-padding-xs" style="margin-bottom: 5px;">
-          <div class="col-xs-12 col-md-6">
+          <div class="col-xs-12">
             <div ng-show="vacationManager && !editManager" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">{{vacationManager.name}}</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerCallback()" ng-show="!editManager"></i></div>
+          </div>
+          <div class="col-xs-12 col-md-6">
             <div ng-show="editManager">
               <select ng-options="m.name for m in managers" class="selectpicker select-vacation-manager" data-style="btn-info" ng-model="vacationManager" ng-change="managerSelected()" name="vacationManager">
                 <option selected value="" ng-hide="vacationManager">Select manager</option>

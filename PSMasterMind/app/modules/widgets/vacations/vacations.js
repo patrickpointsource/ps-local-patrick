@@ -239,7 +239,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       vacation.vacationManager = { resource: $scope.vacationManagerEdit.resource };
     }
     
-    if(vacation.type == VACATION_TYPES.Sick || vacation.type == VACATION_TYPES.Travel) {
+    if((vacation.type == VACATION_TYPES.Appointment && moment(vacation.endDate).diff(vacation.startDate, 'hours') <= 4)
+       || vacation.type == VACATION_TYPES.Travel) {
       vacation.status = STATUS.Approved;
     } else {
       vacation.status = STATUS.Pending;
