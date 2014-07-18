@@ -85,21 +85,23 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 		$scope.authState = true;
 		
 		$scope.notifications = [];
-    
-      VacationsService.getRequests($scope.me).then(function(result) {
-        _.each(result, function(request) {
-          Resources.resolve(request.person).then(function(person){
-            $scope.notifications.push({
-              type: "Vacation",
-              header: "Pending Paid Vacation Request",
-              text: "From " + person.name,
-              icon: "fa fa-clock-o",
-              resource: request.resource
-            });
+        
+        if( me.groups && me.groups.indexOf( 'Management' ) !== -1 ) {
+          VacationsService.getRequests($scope.me).then(function(result) {
+            _.each(result, function(request) {
+              Resources.resolve(request.person).then(function(person){
+                $scope.notifications.push({
+                  type: "Vacation",
+                  header: "Pending Paid Vacation Request",
+                  text: "From " + person.name,
+                  icon: "fa fa-clock-o",
+                  resource: request.resource
+                });
+              });
+            })
           });
-        })
-      });
-
+        }
+      
 		$scope.$emit( 'me:loaded' );
 	} );
 
