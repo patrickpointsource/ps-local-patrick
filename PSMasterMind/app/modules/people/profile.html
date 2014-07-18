@@ -89,7 +89,7 @@
                     </div>
                     <div ng-if="canSeeCapacity" ng-hide="editMode" class="col-xs-12 col-md-10 col-lg-3 view no-left-padding-sm padding-top-10">
                       <label class="profilePartTimeLabel">Vacation entitlements</label>
-                      <span>{{profile.vacationCapacity || 15}} days</span>
+                      <span>{{profile.vacationCapacity || 'Not Set'}} <span ng-show="profile.vacationCapacity">days</span></span>
                     </div>
                     
                     <div ng-show="canEditCapacity && editMode" class="col-xs-12 col-md-10 col-lg-6 edit padding-top-10">
