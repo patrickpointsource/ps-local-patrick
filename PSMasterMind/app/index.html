@@ -66,6 +66,29 @@
             <div class="collapse navbar-collapse width" id="navbar-collapse-mobile">
               <ng-include src="'views/mainMenu.html'" onload="this.additionalClass='navbar-inverse visible-xs visible-sm'"></ng-include>
             </div>
+            
+            <div class="user-info-container" style="right: 90px;">
+              <div id="notifications" class="dropdown-toggle" data-toggle="dropdown" style="width: 50px; height: 50px;">
+                <div class="drop-cover"></div>
+                <i class="fa fa-bell-o fa-2x notification-bell"></i>
+                <div ng-if="notifications.length > 0" style="position: absolute; right: 20px; top: 15px; color: white; background-color: red; border-radius: 50%; width:25px;height:25px; padding-left: 8px; font-weight:bold;">{{notifications.length}}</div>
+              </div>
+              <div class="dropdown-menu notifications" role="menu" aria-labelledby="notifications">
+                  <div ng-repeat="notification in notifications" ng-class="{'notification-request': notification.type == 'Vacation'}">
+                    <div class="col-xs-2 notification-icon">
+                      <i class="{{notification.icon}}"></i>
+                    </div>
+                    <div class="col-xs-10 padding-top-15">
+                      <div class="bold">{{notification.header}}</div>
+                      <div class="notification-text">{{notification.text}}</div>
+                    </div>
+                    
+                  </div>
+                  <div ng-if="notifications.length == 0" class="color-gray-image-border no-notifications">
+                    There are no notifications.
+                  </div>
+              </div>
+            </div>
             <!-- /.navbar-collapse -->
             <div class="user-info-container dropdown">
               <div id="profile-photo" back-img="{{me.thumbnail}}" class="dropdown-toggle" data-toggle="dropdown" style="width: 50px; height: 50px;">
@@ -125,7 +148,7 @@
         </div>
       </main>
 
-      <!-- <footer class="text-center container"><br/><small>Р В РІР‚в„ўР вЂ™Р’В© 2014 PointSource, LLC. All rights reserved.</small></footer> -->
+      <!-- <footer class="text-center container"><br/><small>Р В Р’В Р Р†Р вЂљРІвЂћСћР В РІР‚в„ўР вЂ™Р’В© 2014 PointSource, LLC. All rights reserved.</small></footer> -->
 
       <div class="modal modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <ng-include src="'modalTemplate'" />

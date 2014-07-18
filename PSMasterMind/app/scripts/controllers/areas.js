@@ -4,8 +4,8 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, and roles.
  */
-angular.module( 'Mastermind' ).controller( 'AreasCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService',
-function( $scope, $state, $rootScope, Resources, ProjectsService ) {
+angular.module( 'Mastermind' ).controller( 'AreasCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService',
+function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsService ) {
 
 	// make these vars accessible in scope methods - especially "showHome"
 	var apQuery;
@@ -83,6 +83,22 @@ function( $scope, $state, $rootScope, Resources, ProjectsService ) {
 
 		//console.log('Logged In');
 		$scope.authState = true;
+		
+		$scope.notifications = [];
+    
+      VacationsService.getRequests($scope.me).then(function(result) {
+        _.each(result, function(request) {
+          Resources.resolve(request.person).then(function(person){
+            $scope.notifications.push({
+              type: "Vacation",
+              header: "Pending Paid Vacation Request",
+              text: "From " + person.name,
+              icon: "fa fa-clock-o",
+              resource: request.resource
+            });
+          });
+        })
+      });
 
 		$scope.$emit( 'me:loaded' );
 	} );
@@ -281,6 +297,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService ) {
 	$scope.getModal = function( ) {
 		return $rootScope.modalDialog;
 	};
+	
+	$scope.$on('request-processed', function(event, resource) {
+	  for(var i = 0; i < $scope.notifications.length; i++) {
+	    if(resource == $scope.notifications[i].resource) {
+	      $scope.notifications.splice(i, 1);
+	    }
+	  }
+	});
 
 } ] ).directive( 'backImg', function( ) {
 	return function( scope, element, attrs ) {
