@@ -1,6 +1,6 @@
 'use strict';
 
-var tasks = require('../controllers/tasks');
+var links = require('../controllers/links');
 var express = require('express');
 var util = require('../util/auth');
 
@@ -8,8 +8,9 @@ var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
     var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-    // Call to tasks service
-    tasks.listTasks(query, function(err, result){
+    
+    // Call to projects service
+    links.listLinks(query, function(err, result){
         if(err){
             res.json(500, err);
         } else {
@@ -17,21 +18,9 @@ router.get('/', util.isAuthenticated, function(req, res){
         }            
     });
 }); 
-
-router.get('/new', util.isAuthenticated, function(req, res){
-    // Call to tasks service
-    tasks.listTasks(function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            res.json(result);
-        }            
-    });
-}); 
-
 
 router.post('/', function(req, res) {
-    tasks.insertTask(req.body, function(err, result){
+    links.insertLink(req.body, function(err, result){
         if(err){
             res.json(500, err);
         } else {
@@ -41,7 +30,7 @@ router.post('/', function(req, res) {
 });
 
 router.delete('/', function(req, res) {
-    tasks.deleteTask(req.body, function(err, result){
+    links.deleteLink(req.body, function(err, result){
         if(err){
             res.json(500, err);
         } else {
@@ -52,7 +41,7 @@ router.delete('/', function(req, res) {
 
 router.get('/:id', function(req, res) {
 	var id = req.params.id;
-    tasks.getTask(id, function(err, result){
+    links.getLink(id, function(err, result){
         if(err){
             res.json(500, err);
         } else {

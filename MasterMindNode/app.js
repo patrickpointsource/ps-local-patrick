@@ -25,6 +25,9 @@ var assignments = require('./server/routes/assignments');
 var tasks = require('./server/routes/tasks');
 var hours = require('./server/routes/hours');
 var roles = require('./server/routes/roles');
+var configuration = require('./server/routes/configuration');
+var skills = require('./server/routes/skills');
+var links = require('./server/routes/links');
 
 // Configure passport
 require('./server/config/passport.js')(passport);
@@ -80,6 +83,9 @@ app.use('//assignments', assignments);
 app.use('//tasks', tasks);
 app.use('//roles', roles);
 app.use('//hours', hours);
+app.use('//configuration', configuration);
+app.use('//links', links);
+app.use('//skills', skills);
 
 // Setup routes
 require('./server/routes/auth')(app, passport);

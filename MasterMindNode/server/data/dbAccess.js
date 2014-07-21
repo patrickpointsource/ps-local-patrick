@@ -167,6 +167,24 @@ module.exports.listRoles = function(callback) {
     });
 };
 
+module.exports.listLinks = function(callback) {
+    cloudantView('views', 'Links', {include_docs : true}, function(err, body){
+         callback(err, prepareResponse(body, 'links', 'doc'));
+    });
+};
+
+module.exports.listConfiguration = function(callback) {
+    cloudantView('views', 'Configuration', {include_docs : true}, function(err, body){
+         callback(err, prepareResponse(body, 'configuration', 'doc'));
+    });
+};
+
+module.exports.listSkills = function(callback) {
+    cloudantView('views', 'Skills', {include_docs : true}, function(err, body){
+         callback(err, prepareResponse(body, 'skills', 'doc'));
+    });
+};
+
 module.exports.insertItem = insertItem;
 module.exports.deleteItem = deleteItem;
 module.exports.getItem = getItem;

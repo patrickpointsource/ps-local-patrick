@@ -2,11 +2,11 @@
 
 var dataAccess = require('../data/dataAccess');
 
-module.exports.listRoles = function(q, callback) {
-    dataAccess.listRoles(q, function(err, body){
+module.exports.listSkills = function(q, callback) {
+    dataAccess.listSkills(q, function(err, body){
         if (err) {
             console.log(err);
-            callback('error loading roles', null);
+            callback('error loading skills', null);
         } else {
             //console.log(body);
             callback(null, body);
@@ -14,19 +14,19 @@ module.exports.listRoles = function(q, callback) {
     });
 };
 
-module.exports.insertRole = function(obj, callback) {
-    dataAccess.insertItem(obj._id, obj, dataAccess.ROLES_KEY, function(err, body){
+module.exports.insertSkill = function(obj, callback) {
+    dataAccess.insertItem(obj._id, obj, dataAccess.SKILLS_KEY, function(err, body){
         if (err) {
             console.log(err);
-            callback('error loading roles', null);
+            callback('error insert skill', null);
         } else {
             callback(null, body);
         }
     });
 };
 
-module.exports.deleteRole = function(obj, callback) {
-    dataAccess.deleteItem(obj._id, obj._rev, dataAccess.ROLES_KEY, function(err, body){
+module.exports.deleteSkill = function(obj, callback) {
+    dataAccess.deleteItem(obj._id, obj._rev, dataAccess.SKILLS_KEY, function(err, body){
         if (err) {
             console.log(err);
             callback(err, null);
@@ -36,7 +36,7 @@ module.exports.deleteRole = function(obj, callback) {
     });
 };
 
-module.exports.getRole = function(id, callback) {
+module.exports.getConfiguration = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
             console.log(err);

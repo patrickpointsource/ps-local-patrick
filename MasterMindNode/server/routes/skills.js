@@ -1,6 +1,6 @@
 'use strict';
 
-var tasks = require('../controllers/tasks');
+var skills = require('../controllers/skills');
 var express = require('express');
 var util = require('../util/auth');
 
@@ -8,19 +8,9 @@ var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
     var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-    // Call to tasks service
-    tasks.listTasks(query, function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            res.json(result);
-        }            
-    });
-}); 
-
-router.get('/new', util.isAuthenticated, function(req, res){
-    // Call to tasks service
-    tasks.listTasks(function(err, result){
+    
+    // Call to skills service
+    skills.listSkills(query, function(err, result){
         if(err){
             res.json(500, err);
         } else {
@@ -31,7 +21,7 @@ router.get('/new', util.isAuthenticated, function(req, res){
 
 
 router.post('/', function(req, res) {
-    tasks.insertTask(req.body, function(err, result){
+    skills.insertSkill(req.body, function(err, result){
         if(err){
             res.json(500, err);
         } else {
@@ -41,7 +31,7 @@ router.post('/', function(req, res) {
 });
 
 router.delete('/', function(req, res) {
-    tasks.deleteTask(req.body, function(err, result){
+    skills.deleteSkill(req.body, function(err, result){
         if(err){
             res.json(500, err);
         } else {
@@ -52,7 +42,7 @@ router.delete('/', function(req, res) {
 
 router.get('/:id', function(req, res) {
 	var id = req.params.id;
-    tasks.getTask(id, function(err, result){
+    skills.getSkill(id, function(err, result){
         if(err){
             res.json(500, err);
         } else {

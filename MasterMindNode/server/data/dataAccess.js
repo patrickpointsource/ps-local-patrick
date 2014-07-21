@@ -10,6 +10,9 @@ var PEOPLE_KEY = 'People';
 var ASSIGNMENTS_KEY = 'Assignments';
 var TASKS_KEY = 'Tasks';
 var ROLES_KEY = 'Roles';
+var CONFIGURATION_KEY = 'Configuration';
+var SKILLS_KEY = 'Skills';
+var LINKS_KEY = 'Links';
 
 //TODO: fix $oid to _id
 var alignQuery = function( q, qP, pProp, pInd) {
@@ -151,6 +154,62 @@ var listRoles = function( q, callback ) {
 	}
 
 };
+
+
+var listLinks = function( q, callback ) {
+
+	var result = memoryCache.getObject( LINKS_KEY );
+	if( result ) {
+		console.log( "read " + LINKS_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q , "members") );
+	} else {
+		dbAccess.listLinks( function( err, body) {
+			if( !err ) {
+				console.log( "save " + LINKS_KEY + " to memory cache" );
+				memoryCache.putObject( LINKS_KEY, body );
+			}
+			callback( err, queryRecords( body, q, "members" ) );
+		} );
+	}
+
+};
+
+var listConfiguration = function( q, callback ) {
+
+	var result = memoryCache.getObject( CONFIGURATION_KEY );
+	if( result ) {
+		console.log( "read " + CONFIGURATION_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q , "members") );
+	} else {
+		dbAccess.listConfiguration( function( err, body) {
+			if( !err ) {
+				console.log( "save " + CONFIGURATION_KEY + " to memory cache" );
+				memoryCache.putObject( CONFIGURATION_KEY, body );
+			}
+			callback( err, queryRecords( body, q, "members" ) );
+		} );
+	}
+
+};
+
+var listSkills = function( q, callback ) {
+
+	var result = memoryCache.getObject( SKILLS_KEY );
+	if( result ) {
+		console.log( "read " + SKILLS_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q , "members") );
+	} else {
+		dbAccess.listSkills( function( err, body) {
+			if( !err ) {
+				console.log( "save " + SKILLS_KEY + " to memory cache" );
+				memoryCache.putObject( SKILLS_KEY, body );
+			}
+			callback( err, queryRecords( body, q, "members" ) );
+		} );
+	}
+
+};
+
 
 var insertItem = function( id, obj, type, callback ) {
 	dbAccess.insertItem( id, obj, function( err, body ) {
