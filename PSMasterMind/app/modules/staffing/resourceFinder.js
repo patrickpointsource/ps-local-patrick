@@ -4,6 +4,7 @@ angular.module( 'Mastermind' ).controller( 'ResourceFinderCtrl', [ '$scope', '$s
 function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsService ) {
 	
 	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
+	var ROLE_NOTSELECTED = "Select a role or group";
 	var parent_fillPeopleProps = $scope.$parent.fillPeopleProps;
 	
 	$scope.$parent.fillPeopleProps = function( ) {
@@ -220,7 +221,50 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		}
 	};
 	
-	$scope.filterResources = function(startDate, endDate, availabilityPercentage)
+	Resources.get( 'roles' ).then( function( result ) {
+		var members = result.members;
+		$scope.allRoles = members;
+		var rolesMap = {};
+		for( var i = 0; i < members.length; i++ ) {
+			$scope.allRoles[i].category = "Roles";
+			rolesMap[ members[ i ].resource ] = members[ i ];
+		}
+
+		$scope.allRoles.push(
+			{ title: "Administration", resource: "Administration", category: "Groups" },
+			{ title: "Client Experience Mgmt", resource: "Client Experience Mgmt", category: "Groups" },
+			{ title: "Development", resource: "Development", category: "Groups" },
+			{ title: "Architects", resource: "Architects", category: "Groups" },
+			{ title: "Marketing", resource: "Marketing", category: "Groups" },
+			{ title: "Digital Experience", resource: "Digital Experience", category: "Groups" },
+			{ title: "Executive Mgmt", resource: "Executive Mgmt", category: "Groups" },
+			{ title: "Sales", resource: "Sales", category: "Groups" }
+		);
+		
+		// sorting roles by title
+		$scope.allRoles.sort( function( a, b ) {
+			var x = a.title.toLowerCase( );
+			var y = b.title.toLowerCase( );
+			return x < y ? -1 : x > y ? 1 : 0;
+		} );
+
+		// add unspecified item to roles dropdown
+		$scope.allRoles.unshift( {
+			'title': ROLE_NOTSELECTED
+		} );
+
+//		$scope.rolesMap = rolesMap;
+//
+//		$scope.getRoleName = function( resource ) {
+//			var ret = UNSPECIFIED;
+//			if( resource && $scope.rolesMap[ resource ] ) {
+//				ret = $scope.rolesMap[ resource ].title;
+//			}
+//			return ret;
+//		};
+	} );
+	
+	$scope.filterResources = function(startDate, endDate, role, availabilityPercentage)
 	{
 		return function (person)
 			{
@@ -234,6 +278,9 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 					startDate = new Date(Date.parse(startDate));
 					endDate = new Date(Date.parse(endDate));
 					
+					if (role && person.primaryRole && role != person.primaryRole.resource && person.group && role != person.group)
+						return false;
+					
 					if (assignments == null)
 					{
 						person.availabilityDate = formatDate(startDate);
@@ -241,7 +288,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 						
 						return true;
 					}
-						
+					
 				    for (var currentDate = new Date(startDate.valueOf()); currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1))
 				    {  
 				        var day = currentDate.getDay();
@@ -255,7 +302,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				        	for (var i = 0, count = assignments.length; i < count; i++)
 							{
 								var assignment = assignments[i];
-								var assignmentEndDate = new Date(Date.parse(assignment.endDate || "2029-01-01")); // 2029 -- rising of skynet
+								var assignmentEndDate = new Date(Date.parse(assignment.endDate || "2029-01-01")); // 2029: end of time. rising of skynet
 								
 								// Processing only those assignments which intersect the specified range.
 								if (assignmentEndDate >= currentDate)
