@@ -28,6 +28,7 @@ var roles = require('./server/routes/roles');
 var configuration = require('./server/routes/configuration');
 var skills = require('./server/routes/skills');
 var links = require('./server/routes/links');
+var vacations = require('./server/routes/vacations');
 
 // Configure passport
 require('./server/config/passport.js')(passport);
@@ -80,12 +81,13 @@ app.use('//projects', projects);
 app.use('/people', peopleMe);
 app.use('//people', people);
 app.use('//assignments', assignments);
-app.use('//tasks', tasks);
-app.use('//roles', roles);
-app.use('//hours', hours);
-app.use('//configuration', configuration);
-app.use('//links', links);
-app.use('//skills', skills);
+app.use('/tasks', tasks);
+app.use('/roles', roles);
+app.use('/hours', hours);
+app.use('/configuration', configuration);
+app.use('/links', links);
+app.use('/skills', skills);
+app.use('/vacations', vacations);
 
 // Setup routes
 require('./server/routes/auth')(app, passport);

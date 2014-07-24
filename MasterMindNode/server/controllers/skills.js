@@ -36,7 +36,7 @@ module.exports.deleteSkill = function(obj, callback) {
     });
 };
 
-module.exports.getConfiguration = function(id, callback) {
+module.exports.getSkill = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
             console.log(err);

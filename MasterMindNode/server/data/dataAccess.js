@@ -142,14 +142,14 @@ var listRoles = function( q, callback ) {
 	var result = memoryCache.getObject( ROLES_KEY );
 	if( result ) {
 		console.log( "read " + ROLES_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q , "members")  );
+		callback( null, queryRecords( result, q , "members") );
 	} else {
-		dbAccess.listRoles( function( err, body ) {
+		dbAccess.listRoles( function( err, body) {
 			if( !err ) {
 				console.log( "save " + ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( ROLES_KEY, body );
 			}
-			callback( err, queryRecords( body, q , "members")  );
+			callback( err, queryRecords( body, q, "members" ) );
 		} );
 	}
 
@@ -210,6 +210,24 @@ var listSkills = function( q, callback ) {
 
 };
 
+var listVacations = function( q, callback ) {
+
+	var result = memoryCache.getObject( VACATIONS_KEY );
+	if( result ) {
+		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q , "members") );
+	} else {
+		dbAccess.listVacations( function( err, body) {
+			if( !err ) {
+				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				memoryCache.putObject( VACATIONS_KEY, body );
+			}
+			callback( err, queryRecords( body, q, "members" ) );
+		} );
+	}
+
+};
+
 
 var insertItem = function( id, obj, type, callback ) {
 	dbAccess.insertItem( id, obj, function( err, body ) {
@@ -243,6 +261,10 @@ module.exports.listPeople = listPeople;
 module.exports.listAssignments = listAssignments;
 module.exports.listTasks = listTasks;
 module.exports.listRoles = listRoles;
+module.exports.listLinks = listLinks;
+module.exports.listSkills = listSkills;
+module.exports.listConfiguration = listConfiguration;
+module.exports.listVacations = listVacations;
 
 module.exports.insertItem = insertItem;
 module.exports.deleteItem = deleteItem;

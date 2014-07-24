@@ -13,3 +13,14 @@ module.exports.listAssignments = function(q, callback) {
         }
     });
 };
+
+module.exports.getAssignment = function(id, callback) {
+    dataAccess.getItem(id, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error get assignment', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};

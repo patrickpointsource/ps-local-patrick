@@ -185,6 +185,12 @@ module.exports.listSkills = function(callback) {
     });
 };
 
+module.exports.listVacations = function(callback) {
+    cloudantView('views', 'Vacations', {include_docs : true}, function(err, body){
+         callback(err, prepareResponse(body, 'vacations', 'doc'));
+    });
+};
+
 module.exports.insertItem = insertItem;
 module.exports.deleteItem = deleteItem;
 module.exports.getItem = getItem;

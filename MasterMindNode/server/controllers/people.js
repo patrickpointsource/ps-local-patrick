@@ -13,3 +13,51 @@ module.exports.listPeople = function(query, callback) {
         }
     });
 };
+
+
+module.exports.insertPerson = function(obj, callback) {
+    dataAccess.insertItem(obj._id, obj, dataAccess.PEOPLE_KEY, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading roles', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
+module.exports.deletePerson = function(obj, callback) {
+    dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PEOPLE_KEY, function(err, body){
+        if (err) {
+            console.log(err);
+            callback(err, null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
+module.exports.getPerson = function(id, callback) {
+    dataAccess.getItem(id, function(err, body){
+        if (err) {
+            console.log(err);
+            callback(err, null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
+module.exports.getMyPerson = function(callback) {
+	
+	//TODO get id of auth user
+	
+    dataAccess.getItem(id, function(err, body){
+        if (err) {
+            console.log(err);
+            callback(err, null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
