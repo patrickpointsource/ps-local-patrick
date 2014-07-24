@@ -79,9 +79,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.setProfile = function( person ) {
 		$scope.profile = person;
 		
-		Resources.resolve($scope.profile.manager).then(function(result) {
-		  $scope.$emit( 'profile:loaded' );
-		});
+		if ($scope.profile.manager)
+    		Resources.resolve($scope.profile.manager).then(function(result) {
+    		  $scope.$emit( 'profile:loaded' );
+    		});
+    	else
+    	   $scope.$emit( 'profile:loaded' );
 		
 		//      $scope.skillsList = person.skills;
 		//
