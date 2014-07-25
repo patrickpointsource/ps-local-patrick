@@ -386,7 +386,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 
 		return deferred.promise;
 	}
-	
+
 	/**
 	 * Return the list of people you work with
 	 */
@@ -450,35 +450,35 @@ function( $q, Restangular, Resources, ProjectsService ) {
 					}
 				}
 			}
-			
-			// get exec sponsors projects
-			ProjectsService.getMyExecSponsoredProjects(me).then(function(execSponsoredProjects) {
-			  for(var p = 0; p < execSponsoredProjects.count; p++) {
-				var roles = execSponsoredProjects.data[p].roles;
-				for(var r = 0; r < roles.length; r++) {
-				  var assignees = roles[r].assignees;
-				  for(var s = 0; s < assignees.length; s++) {
-					  if(assignees[s].person.resource) {
-						  var uri = assignees[s].person.resource;
-							//Check if we have already added this person
-							if( personURI != uri && $.inArray( uri, peopleURIs ) == -1 ) {
-								//contruct oids for query over people
-								var oid = {
-									$oid: uri.substring( uri.lastIndexOf( '/' ) + 1 )
-								};
-								//Check the assignment end data to see if it is a past related employee
-								var endDate = assignees[s].endDate ? moment( assignees[s].endDate ) : now.add( 'day', 1 );
-								if( now.unix( ) <= endDate.unix( ) ) {
 
-									peopleIds.push( oid );
-									peopleURIs.push( uri );
+			// get exec sponsors projects
+			ProjectsService.getMyExecSponsoredProjects( me ).then( function( execSponsoredProjects ) {
+				for( var p = 0; p < execSponsoredProjects.count; p++ ) {
+					var roles = execSponsoredProjects.data[ p ].roles;
+					for( var r = 0; r < roles.length; r++ ) {
+						var assignees = roles[ r ].assignees;
+						for( var s = 0; s < assignees.length; s++ ) {
+							if( assignees[ s ].person.resource ) {
+								var uri = assignees[ s ].person.resource;
+								//Check if we have already added this person
+								if( personURI != uri && $.inArray( uri, peopleURIs ) == -1 ) {
+									//contruct oids for query over people
+									var oid = {
+										$oid: uri.substring( uri.lastIndexOf( '/' ) + 1 )
+									};
+									//Check the assignment end data to see if it is a past related employee
+									var endDate = assignees[ s ].endDate ? moment( assignees[ s ].endDate ) : now.add( 'day', 1 );
+									if( now.unix( ) <= endDate.unix( ) ) {
+
+										peopleIds.push( oid );
+										peopleURIs.push( uri );
+									}
 								}
 							}
-					  }
-				  }
+						}
+					}
 				}
-			  }
-				
+
 				if( peopleIds.length <= 0 ) {
 					deferred.resolve( [ ] );
 				} else {
@@ -500,7 +500,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 						deferred.resolve( result.members );
 					} );
 				}
-			});
+			} );
 		} );
 
 		return deferred.promise;
@@ -509,7 +509,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	function getPeopleGroupMapping( ) {
 		return {
 			"development": [ 'SE', 'SSE', 'SEO', 'SSEO', 'ST', 'SI' ],
-			"architects": [ 'SSA', 'SA' ],
+			"architects": [ 'SSA', 'SA', 'ESA', 'SSAO' ],
 			"administration": [ 'ADMIN' ],
 			"clientexpierencemgmt": [ "SBA", "BA", "PM", "CxD" ],
 			"digitalexperience": [ "UXD", "SUXD", "DxM", "CD" ],
