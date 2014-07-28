@@ -60,16 +60,21 @@ public class InitialEmailReminderJob implements Job {
 					JSONArray hours = Data.getHours(null, query, "", "");
 					if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
 						try {
+							List<String> emails = getCCAdresses();
 							if (isActive) {
 								String message = SmtpHelper.getReminderMessage(givenName);
-								SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), getCCAdresses(), "Reminder for " + fullName, message);
+								SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), emails, "Reminder for " + fullName, message);
 							}
 							if (isDebug) {
 								String computerName=InetAddress.getLocalHost().getHostName();
-								String message = SmtpHelper.getReminderDebugMessage(givenName, computerName);
+								String ccMail = null;
+								if (emails != null) {
+									ccMail = Arrays.toString(emails.toArray());
+								}
+								String message = SmtpHelper.getReminderDebugMessage(givenName, mBox, ccMail, computerName);
 								String[] notificationList = Data.getDebugNotificationList(null);
 								if (notificationList != null && notificationList.length > 0) {
-									SmtpSender.getInstance().sendTLSEmail(Arrays.asList(notificationList), null, "Reminder for " + fullName + " (" + mBox + ")", message);
+									SmtpSender.getInstance().sendTLSEmail(Arrays.asList(notificationList), null, "Reminder for " + fullName + " (Limited Notification List)", message);
 								}
 									
 							}

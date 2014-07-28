@@ -27,7 +27,7 @@ public class SmtpHelper {
 		return msg;
 	}
 
-	public static String getReminderDebugMessage(String userName, String computerName) {
+	public static String getReminderDebugMessage(String userName, String userMail, String ccMail, String computerName) {
 		BufferedInputStream bis = new BufferedInputStream(SmtpHelper.class.getResourceAsStream(REMINDER_DEBUG_NOTICE));
 		StringBuffer buf = new StringBuffer();
 		int x;
@@ -42,6 +42,8 @@ public class SmtpHelper {
 		String msg = buf.toString();
 		msg = msg.replaceAll("!userName!", userName);
 		msg = msg.replaceAll("!computerName!", computerName);
+		msg = msg.replaceAll("!ccMail!", ccMail);
+		msg = msg.replaceAll("!userMail!", userMail);
 		return msg;
 	}
 }
