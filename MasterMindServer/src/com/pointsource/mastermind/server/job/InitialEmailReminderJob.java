@@ -1,5 +1,7 @@
 package com.pointsource.mastermind.server.job;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -39,55 +41,48 @@ public class InitialEmailReminderJob implements Job {
 		LOGGER.log(Level.INFO, "reminder.active=" + isActive);
 		LOGGER.log(Level.INFO, "reminder.debug=" + isDebug);
 		
-		// if debug mode is enabled send reminder for limited notification list
-		if (isDebug) {
-			String[] notificationList = Data.getDebugNotificationList(null);
-			if (notificationList != null && notificationList.length > 0) {
-				String name = "Reminder for Limited Notification List";
-				String message = SmtpHelper.getReminderMessage(name);
-				try {
-					SmtpSender.getInstance().sendTLSEmail(Arrays.asList(notificationList), null, name, message);
-				} catch (SmtpException e) {
-					LOGGER.log(Level.SEVERE, e.getMessage());
-				}
-			}
-			
-		}
-
-		// if active mode is enabled send reminder for all related contacts
-		if (isActive ) {
-			JSONArray people = Data.getPeople(null, "", "", "");
-			if (people != null) {
-				for( int i = 0; i < people.length(); i++) {
-					JSONObject contact = (JSONObject) people.get(i);
-					String resource = (String) contact.get(RESOURCE_KEY);
-					String givenName = (String) contact.get(GIVENNAME_KEY);
-					String fullName = (String) contact.get(NAME_KEY);
-					String mBox = (String) contact.get(MAILBOX_KEY);
-					Boolean isActiveContact = Boolean.valueOf((String)contact.get(ACTIVE_KEY));
+		JSONArray people = Data.getPeople(null, "", "", "");
+		if (people != null) {
+			for( int i = 0; i < people.length(); i++) {
+				JSONObject contact = (JSONObject) people.get(i);
+				String resource = (String) contact.get(RESOURCE_KEY);
+				String givenName = (String) contact.get(GIVENNAME_KEY);
+				String fullName = (String) contact.get(NAME_KEY);
+				String mBox = (String) contact.get(MAILBOX_KEY);
+				Boolean isActiveContact = Boolean.valueOf((String)contact.get(ACTIVE_KEY));
 					
-					if (isActiveContact) 
-					{
-						String date= DATE_FORMAT.format(getPreviousWorkingDay());
+				if (isActiveContact) 
+				{
+					String date= DATE_FORMAT.format(getPreviousWorkingDay());
 						
-						String query = "{\"person\":{\"resource\":\"" + resource + "\"},\"date\":\"" + date + "\"}";
-						JSONArray vacation = Data.getVacations(null, query, "", "");
-						JSONArray hours = Data.getHours(null, query, "", "");
-						if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
-							String message = SmtpHelper.getReminderMessage(givenName);
-							try {
+					String query = "{\"person\":{\"resource\":\"" + resource + "\"},\"date\":\"" + date + "\"}";
+					JSONArray vacation = Data.getVacations(null, query, "", "");
+					JSONArray hours = Data.getHours(null, query, "", "");
+					if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
+						try {
+							if (isActive) {
+								String message = SmtpHelper.getReminderMessage(givenName);
 								SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), getCCAdresses(), "Reminder for " + fullName, message);
-							} catch (SmtpException e) {
-								LOGGER.log(Level.SEVERE, e.getMessage());
 							}
-							
+							if (isDebug) {
+								String computerName=InetAddress.getLocalHost().getHostName();
+								String message = SmtpHelper.getReminderDebugMessage(givenName, computerName);
+								String[] notificationList = Data.getDebugNotificationList(null);
+								if (notificationList != null && notificationList.length > 0) {
+									SmtpSender.getInstance().sendTLSEmail(Arrays.asList(notificationList), null, "Reminder for " + fullName + " (" + mBox + ")", message);
+								}
+									
+							}
+						} catch (SmtpException e) {
+							LOGGER.log(Level.SEVERE, e.getMessage());
+						}
+						catch (UnknownHostException e) {
+							LOGGER.log(Level.SEVERE, e.getMessage());
 						}
 					}
 				}
 			}
 		}
-		
-		
 	}
 
 	private Date getPreviousWorkingDay() {

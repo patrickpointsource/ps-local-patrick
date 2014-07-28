@@ -8,9 +8,12 @@ import com.pointsource.mastermind.util.Data;
 public class SecondEmailReminderJob extends InitialEmailReminderJob {
 	
 	public List<String> getCCAdresses() {
-		String[] emails = Data.getInterestedParties(null);
-		if (emails != null) {
-			return Arrays.asList(emails);
+		boolean isActive = Data.getReminderActive(null);
+		if (isActive) {
+			String[] emails = Data.getInterestedParties(null);
+			if (emails != null) {
+				return Arrays.asList(emails);
+			}
 		}
 		return null;
 	}

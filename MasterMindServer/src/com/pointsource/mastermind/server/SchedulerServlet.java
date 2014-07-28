@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -117,8 +118,10 @@ public class SchedulerServlet extends HttpServlet {
 	                                jobCronEntry = jobCronEntry.replace("\"","");
 	                                
 	                                // using Trigger for production 
-									Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroup).withSchedule(CronScheduleBuilder.cronSchedule(jobCronEntry)).build();
-
+									Trigger trigger = TriggerBuilder.newTrigger()
+											.withIdentity(jobName, jobGroup)
+											.withSchedule(CronScheduleBuilder.cronSchedule(jobCronEntry).inTimeZone(TimeZone.getTimeZone("America/New_York")))
+											.build();
 									// schedule it
 									scheduler.scheduleJob(job, trigger);
 									++jobsScheduled;
