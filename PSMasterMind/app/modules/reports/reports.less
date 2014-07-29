@@ -1,15 +1,92 @@
-.panel-body {
-	display: inline-block;
-	margin-right: 2px;
-	background-color: teal;
-}		
-.axis {
-   font: 10px sans-serif;
- }
+.reports .btn-export {
+  color: white;
+  font-weight: bold;
+}
 
-.axis path,
-.axis line {
-   fill: none;
-   stroke: #000;
-   shape-rendering: crispEdges;
+.reports {
+
+  .states, .groups {
+    h3 {
+      font-weight: bold;
+      color: black;
+    }
+    
+    label {
+      color: Gray;
+      font-weight: normal;
+    }
+  }
+  
+  .parameters {
+    .row {
+      margin-left: -10px;
+    }
+  }
+}
+
+.report-types > div {
+  @media (min-width: @screen-sm) {
+    height: 123px;
+  }
+  
+  @media (max-width: @screen-sm) {
+    height: 80px;
+  }
+  color: #acdde8;
+  background-color: #eaf6f9;
+  border-right: 2px solid white;
+}
+
+.terms > .container {
+  width: 100%;
+}
+
+.terms-selection > div {
+  @media (min-width: @screen-sm) {
+    height: 58px;
+  }
+  
+  @media (max-width: @screen-sm) {
+    height: 20px;
+  }
+  color: #acdde8;
+  background-color: #eaf6f9;
+  border-right: 1px solid white;
+  
+  .text {
+    text-align: center;
+    position:relative;
+    top: 30%;
+  }
+}
+
+.terms-selection > div.active {
+  background-color: #60c5db;
+  color: white;
+}
+
+.report-types > div.active {
+  background-color: #60c5db;
+  color: white;
+}
+
+.report-types {
+  margin-left: 0px;
+  
+  .text {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .icon {
+    text-align: center;
+    margin-top:20%;
+  }
+  
+  
+}
+
+
+.terms-dates-separator {
+  padding-left: 0px;
 }
