@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -19,7 +20,9 @@ import org.quartz.JobExecutionException;
 import com.pointsource.mastermind.server.smtp.SmtpException;
 import com.pointsource.mastermind.server.smtp.SmtpHelper;
 import com.pointsource.mastermind.server.smtp.SmtpSender;
+import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
+import com.pointsource.mastermind.util.RequestContext;
 
 public class InitialEmailReminderJob implements Job {
 	private final static Logger LOGGER = Logger.getLogger(InitialEmailReminderJob.class.getName());
@@ -28,7 +31,8 @@ public class InitialEmailReminderJob implements Job {
 	private final static String GIVENNAME_KEY = "givenName";
 	private final static String NAME_KEY = "name";
 	private final static String ACTIVE_KEY = "isActive";
-	
+	private final static String PRIMARY_ROLE_KEY = "primaryRole";
+		
 	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
@@ -40,8 +44,9 @@ public class InitialEmailReminderJob implements Job {
 		
 		LOGGER.log(Level.INFO, "reminder.active=" + isActive);
 		LOGGER.log(Level.INFO, "reminder.debug=" + isDebug);
-		
-		JSONArray people = Data.getPeople(null, "", "", "");
+		RequestContext rContext = getRequestContext();
+		JSONArray people = Data.getPeople(rContext, "", "", "");
+		JSONObject roles = Data.getRoles(rContext, "{\"$and\":[{\"isNonBillable\":true}]}", "");
 		if (people != null) {
 			for( int i = 0; i < people.length(); i++) {
 				JSONObject contact = (JSONObject) people.get(i);
@@ -50,8 +55,15 @@ public class InitialEmailReminderJob implements Job {
 				String fullName = (String) contact.get(NAME_KEY);
 				String mBox = (String) contact.get(MAILBOX_KEY);
 				Boolean isActiveContact = Boolean.valueOf((String)contact.get(ACTIVE_KEY));
+				JSONObject primaryRole = null;
+				try {
+					primaryRole = (JSONObject)contact.get(PRIMARY_ROLE_KEY);
+				}
+				catch (JSONException jsone) {
+					LOGGER.log(Level.FINE, jsone + " for " + fullName);
+				}
 					
-				if (isActiveContact) 
+				if (isActiveContact && primaryRole != null && roles.toString().indexOf(primaryRole.getString("resource")) == -1 ) 
 				{
 					String date= DATE_FORMAT.format(getPreviousWorkingDay());
 						
@@ -106,4 +118,15 @@ public class InitialEmailReminderJob implements Job {
 	public List<String> getCCAdresses() {
 		return null;
 	}
+	
+	protected RequestContext getRequestContext() {
+		RequestContext context = new RequestContext();
+		JSONObject user = new JSONObject();
+		JSONArray groups = new JSONArray();
+		groups.put(CONSTS.GROUPS_MANAGEMENT_TITLE);
+		user.put(CONSTS.PROP_GROUPS, groups);
+		context.setCurrentUser(user);
+		return context;
+	}
+
 }
