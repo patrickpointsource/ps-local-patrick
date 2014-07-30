@@ -29,6 +29,7 @@ var configuration = require('./server/routes/configuration');
 var skills = require('./server/routes/skills');
 var links = require('./server/routes/links');
 var vacations = require('./server/routes/vacations');
+var securityRoles = require('./server/routes/securityRoles');
 
 // Configure passport
 require('./server/config/passport.js')(passport);
@@ -88,6 +89,7 @@ app.use('/configuration', configuration);
 app.use('/links', links);
 app.use('/skills', skills);
 app.use('/vacations', vacations);
+app.use('/securityRoles', securityRoles);
 
 // Setup routes
 require('./server/routes/auth')(app, passport);

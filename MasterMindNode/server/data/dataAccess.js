@@ -10,6 +10,7 @@ var PEOPLE_KEY = 'People';
 var ASSIGNMENTS_KEY = 'Assignments';
 var TASKS_KEY = 'Tasks';
 var ROLES_KEY = 'Roles';
+var SECURITY_ROLES_KEY = 'SecurityRoles';
 var CONFIGURATION_KEY = 'Configuration';
 var SKILLS_KEY = 'Skills';
 var LINKS_KEY = 'Links';
@@ -228,6 +229,23 @@ var listVacations = function( q, callback ) {
 
 };
 
+var listSecurityRoles = function( q, callback ) {
+	var result = memoryCache.getObject( SECURITY_ROLES_KEY );
+	if( result ) {
+		console.log( "read " + SECURITY_ROLES_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q , "members") );
+	} else {
+		dbAccess.listSecurityRoles( function( err, body) {
+			if( !err ) {
+				console.log( "save " + SECURITY_ROLES_KEY + " to memory cache" );
+				memoryCache.putObject( SECURITY_ROLES_KEY, body );
+			}
+			callback( err, queryRecords( body, q, "members" ) );
+		} );
+	}
+
+};
+
 
 var insertItem = function( id, obj, type, callback ) {
 	dbAccess.insertItem( id, obj, function( err, body ) {
@@ -265,6 +283,7 @@ module.exports.listLinks = listLinks;
 module.exports.listSkills = listSkills;
 module.exports.listConfiguration = listConfiguration;
 module.exports.listVacations = listVacations;
+module.exports.listSecurityRoles = listSecurityRoles;
 
 module.exports.insertItem = insertItem;
 module.exports.deleteItem = deleteItem;
