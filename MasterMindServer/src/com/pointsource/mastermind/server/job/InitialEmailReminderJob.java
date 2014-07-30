@@ -38,67 +38,76 @@ public class InitialEmailReminderJob implements Job {
 	@Override
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
-		
-		boolean isActive = Data.getReminderActive(null);
-		boolean isDebug = Data.getReminderDebug(null);
-		
-		LOGGER.log(Level.INFO, "reminder.active=" + isActive);
-		LOGGER.log(Level.INFO, "reminder.debug=" + isDebug);
-		RequestContext rContext = getRequestContext();
-		JSONArray people = Data.getPeople(rContext, "", "", "");
-		JSONObject roles = Data.getRoles(rContext, "{\"$and\":[{\"isNonBillable\":true}]}", "");
-		if (people != null) {
-			for( int i = 0; i < people.length(); i++) {
-				JSONObject contact = (JSONObject) people.get(i);
-				String resource = (String) contact.get(RESOURCE_KEY);
-				String givenName = (String) contact.get(GIVENNAME_KEY);
-				String fullName = (String) contact.get(NAME_KEY);
-				String mBox = (String) contact.get(MAILBOX_KEY);
-				Boolean isActiveContact = Boolean.valueOf((String)contact.get(ACTIVE_KEY));
-				JSONObject primaryRole = null;
-				try {
-					primaryRole = (JSONObject)contact.get(PRIMARY_ROLE_KEY);
-				}
-				catch (JSONException jsone) {
-					LOGGER.log(Level.FINE, jsone + " for " + fullName);
-				}
-					
-				if (isActiveContact && primaryRole != null && roles.toString().indexOf(primaryRole.getString("resource")) == -1 ) 
-				{
-					String date= DATE_FORMAT.format(getPreviousWorkingDay());
-						
-					String query = "{\"person\":{\"resource\":\"" + resource + "\"},\"date\":\"" + date + "\"}";
-					JSONArray vacation = Data.getVacations(null, query, "", "");
-					JSONArray hours = Data.getHours(null, query, "", "");
-					if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
-						try {
-							List<String> emails = getCCAdresses();
-							if (isActive) {
-								String message = SmtpHelper.getReminderMessage(givenName);
-								SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), emails, "Reminder for " + fullName, message);
-							}
-							if (isDebug) {
-								String computerName=InetAddress.getLocalHost().getHostName();
-								String ccMail = null;
-								if (emails != null) {
-									ccMail = Arrays.toString(emails.toArray());
-								}
-								String message = SmtpHelper.getReminderDebugMessage(givenName, mBox, ccMail, computerName);
-								String[] notificationList = Data.getDebugNotificationList(null);
-								if (notificationList != null && notificationList.length > 0) {
-									SmtpSender.getInstance().sendTLSEmail(Arrays.asList(notificationList), null, "Reminder for " + fullName + " (Limited Notification List)", message);
-								}
-									
-							}
-						} catch (SmtpException e) {
-							LOGGER.log(Level.SEVERE, e.getMessage());
+		try {
+			boolean isActive = Data.getReminderActive(null);
+			boolean isDebug = Data.getReminderDebug(null);
+			
+			LOGGER.log(Level.INFO, "reminder.active=" + isActive);
+			LOGGER.log(Level.INFO, "reminder.debug=" + isDebug);
+			RequestContext rContext = getRequestContext();
+			JSONArray people = Data.getPeople(rContext, "", "", "");
+			JSONObject roles = Data.getRoles(rContext, "{\"$and\":[{\"isNonBillable\":true}]}", "");
+			if (people != null) {
+				for( int i = 0; i < people.length(); i++) {
+					JSONObject contact = (JSONObject) people.get(i);
+					String resource = (String) contact.get(RESOURCE_KEY);
+					String givenName = (String) contact.get(GIVENNAME_KEY);
+					String fullName = (String) contact.get(NAME_KEY);
+					String mBox = (String) contact.get(MAILBOX_KEY);
+					Boolean isActiveContact = Boolean.valueOf((String)contact.get(ACTIVE_KEY));
+					JSONObject primaryRole = null;
+					try {
+						primaryRole = (JSONObject)contact.get(PRIMARY_ROLE_KEY);
+					}
+					catch (JSONException jsone) {
+						if (isDebug) {
+							LOGGER.log(Level.FINE, jsone + " for " + fullName);
 						}
-						catch (UnknownHostException e) {
-							LOGGER.log(Level.SEVERE, e.getMessage());
+					}
+						
+					if (isActiveContact && primaryRole != null && roles.toString().indexOf(primaryRole.getString("resource")) == -1 ) 
+					{
+						String date= DATE_FORMAT.format(getPreviousWorkingDay());
+							
+						String query = "{\"person\":{\"resource\":\"" + resource + "\"},\"date\":\"" + date + "\"}";
+						JSONArray vacation = Data.getVacations(null, query, "", "");
+						JSONArray hours = Data.getHours(null, query, "", "");
+						if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
+							try {
+								List<String> emails = getCCAdresses();
+								if (isActive) {
+									String message = SmtpHelper.getReminderMessage(givenName);
+									SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), emails, "Reminder for " + fullName, message);
+								}
+								if (isDebug) {
+									String computerName=InetAddress.getLocalHost().getHostName();
+									String ccMail = null;
+									if (emails != null) {
+										ccMail = Arrays.toString(emails.toArray());
+									}
+									else {
+										ccMail = "";
+									}
+									String message = SmtpHelper.getReminderDebugMessage(givenName, mBox, ccMail, computerName);
+									String[] notificationList = Data.getDebugNotificationList(null);
+									if (notificationList != null && notificationList.length > 0) {
+										SmtpSender.getInstance().sendTLSEmail(Arrays.asList(notificationList), null, "Reminder for " + fullName + " (Limited Notification List)", message);
+									}
+										
+								}
+							} catch (SmtpException e) {
+								LOGGER.log(Level.SEVERE, e.getMessage());
+							}
+							catch (UnknownHostException e) {
+								LOGGER.log(Level.SEVERE, e.getMessage());
+							}
 						}
 					}
 				}
 			}
+		}
+		catch (Exception e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
 		}
 	}
 
