@@ -20,6 +20,7 @@
     'ui.router',
     'ui.bootstrap.tabs',
     'ui.bootstrap.timepicker',
+    'ui.bootstrap',
     'ngTable',
     'restangular',
     'textAngular',

@@ -1,11 +1,13 @@
 'use strict';
 
-angular.module( 'Mastermind' ).controller( 'ResourceFinderCtrl', [ '$scope', '$state', '$location', '$filter', '$q', 'Resources', 'People', 'ProjectsService',
-function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsService ) {
+angular.module( 'Mastermind' ).controller( 'ResourceFinderCtrl', [ '$scope', '$state', '$location', '$filter', '$q', 'Resources', 'People', 'AssignmentService', 'ProjectsService',
+function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentService, ProjectsService ) {
 	
 	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
 	var ROLE_NOTSELECTED = "Select a role or group";
 	var parent_fillPeopleProps = $scope.$parent.fillPeopleProps;
+	
+	$scope.resourceFinderTabActive = true;
 	
 	$scope.$parent.fillPeopleProps = function( ) {
 		for( var i = 0; i < $scope.$parent.people.length; i++ )
@@ -130,6 +132,24 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		return date;
 	}
 	
+	$scope.assignProject = function (project, person, startDate, endDate)
+	{
+		var assignment = {
+			about: project.resource + "/assignments",
+			members: [{
+				startDate: startDate,
+				endDate: endDate,
+				person: person,
+				role: {
+					resource: project.resource + "/" + person.primaryRole.resource
+				}
+			}],
+			project: project
+		};
+		
+		AssignmentService.save(project, assignment).then(function (result){alert(JSON.stringify(result))});
+	};
+	
 	$scope.$parent.buildTableView = function( ) {
 
 		//Actual Table View Data
@@ -221,6 +241,11 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		}
 	};
 	
+	ProjectsService.getAllProjects(function (result)
+	{
+		$scope.projectList = result.data;
+	});
+	
 	Resources.get( 'roles' ).then( function( result ) {
 		var members = result.members;
 		$scope.allRoles = members;
@@ -278,7 +303,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 					startDate = new Date(Date.parse(startDate));
 					endDate = new Date(Date.parse(endDate));
 					
-					if (role && person.primaryRole && role != person.primaryRole.resource && person.group && role != person.group)
+					if (!person.primaryRole || role && role != person.primaryRole.resource && person.group && role != person.group)
 						return false;
 					
 					if (assignments == null)
