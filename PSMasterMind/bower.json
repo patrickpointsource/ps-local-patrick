@@ -18,19 +18,19 @@
     "bootstrap-datepicker": "~1.2.0",
     "bootstrap-select": "1.5.4",
     "angular-ui-date": "0.0.3",
-    "textAngular": "1.2",
+    "textAngular": "~1.2",
     "fastclick": "1.0.0",
     "d3": "3.4.3",
     "moment": "2.5.1",
     "masonry": "3.1",
-    "imagesloaded": "3.1.4"
+    "imagesloaded": "3.1.4",
+    "typeahead.js": "~0.10"
   },
   "devDependencies": {
     "angular-mocks": "~1.2",
     "angular-scenario": "~1.2"
   },
   "resolutions": {
-    "angular-sanitize": "~1.2.x",
     "bootstrap": "3.1",
     "angular": "1.2.15"
   }

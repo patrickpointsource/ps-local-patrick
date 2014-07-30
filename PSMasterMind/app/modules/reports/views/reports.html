@@ -1,4 +1,4 @@
-<div ng-controller="ReportsCtrl" class="reports">
+<div  class="reports">
 	<div class="row" style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
 		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 		    <div class="btn-group tab-buttons">
@@ -85,14 +85,19 @@
 					
 				
 					<div class="row">
-						<label for="reportClient">Choose a project</label>
-						<input class="col-xs-6 form-control" name="reportClient"  type="text" placeholder="Search for an existing project or task" ng-model="reportClient"  >
+						<label for="reportProject">Choose a project</label>
+						<input class="col-xs-6 form-control" name="reportProject"  type="text" placeholder="Search for an existing project or task" ng-model="reportProject"  >
 					</div>
 					
 					
 					<div class="row">
-						<label for="reportClient">Choose a person</label>
-						<input class="col-xs-6 form-control" name="reportClient"  type="text" placeholder="Search for an existing person" ng-model="reportClient"  >
+						<div>
+							<label for="reportPerson">Choose a person</label>
+						</div>
+						<div class="">
+						<input  class="col-xs-12 form-control" name="reportPerson"  type="text" placeholder="Search for an existing person" 
+							ng-model="reportPerson" >
+						</div>
 					</div>
 				
 					
@@ -185,7 +190,7 @@
 						</div>
 						<div class="row groups">
 							<div ng-repeat="rolesRow in arrangedRoles" class="col-xs-4">
-								<input ng-repeat-start="role in rolesRow" type="checkbox" ng-model="userRoles[role.value]"  />
+								<input ng-repeat-start="role in rolesRow" type="checkbox" ng-model="userRoles[role.value].value"  />
 								<label>{{role.abbreviation}}</label>
 								<br ng-repeat-end/>
 								
