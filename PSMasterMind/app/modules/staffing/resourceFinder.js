@@ -150,6 +150,32 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 		AssignmentService.save(project, assignment).then(function (result){alert(JSON.stringify(result))});
 	};
 	
+	$scope.$on("resfinder:select", function (event, args)
+	{
+		$scope.projectToAssignTo = { name: args.projectName, resource: args.projectResource };
+		$scope.filterStartDate = args.startDate;
+		
+		var endDate = args.endDate;
+		
+		if (!endDate)
+		{
+			endDate = new Date(args.startDate);
+			
+			endDate.setMonth(endDate.getMonth() + 2);
+			
+			endDate = formatDate(endDate);
+		}
+		
+		$scope.filterEndDate = endDate;
+		
+		for (var i = 0, count = $scope.allRoles.length; i < count; i++)
+			if ($scope.allRoles[i].abbreviation == args.role)
+			{
+				$scope.filterRole2 = $scope.allRoles[i].resource;
+				break;
+			}
+	});
+	
 	$scope.$parent.buildTableView = function( ) {
 
 		//Actual Table View Data

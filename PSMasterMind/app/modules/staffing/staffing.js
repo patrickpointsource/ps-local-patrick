@@ -21,8 +21,9 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 	
 	$scope.navigateToResourceTab = function (selectedRoleAndProject)
 	{
-		$scope.selectedRoleAndProject = selectedRoleAndProject;
-		$scope.projectToAssignTo = selectedRoleAndProject.projectName;
+		//$scope.selectedRoleAndProject = selectedRoleAndProject;
+		//$scope.projectToAssignTo = selectedRoleAndProject.projectName;
+		$scope.$broadcast("resfinder:select", selectedRoleAndProject);
 	};
 
 	// TODO: change to css class
