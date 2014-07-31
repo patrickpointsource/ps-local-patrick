@@ -20,6 +20,7 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
@@ -36,6 +37,7 @@ public class SchedulerServlet extends HttpServlet {
     private final String THREADS_KEY = "threads";
     private final String JOB_NAME_KEY = "jobName";
     private final String SCHEDULER_NAME_DEFAULT = "jobScheduler";
+    private Scheduler scheduler;
     
 	public void init() throws ServletException
     {
@@ -156,4 +158,14 @@ public class SchedulerServlet extends HttpServlet {
 
     }
 
+    public void destroy() {
+    	if (scheduler != null) {
+    		try {
+				scheduler.shutdown();
+			} catch (SchedulerException e) {
+				LOGGER.log(Level.SEVERE, e.getMessage());
+				e.printStackTrace();
+			}
+    	}
+    }
 }
