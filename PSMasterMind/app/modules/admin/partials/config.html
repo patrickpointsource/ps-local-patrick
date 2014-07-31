@@ -16,10 +16,11 @@
                             {{property.name}}
                         </div>
                         <div class="col-xs-7" ng-if="editIndex!==$index">
-                            {{property.value}}
+                            {{$index == 0 ? "*******" : property.value}}
                         </div>
                         <div class="col-xs-7" ng-if="editIndex===$index">
-                            <input class="form-control" ng-model="property.value"/>
+                            <input class="form-control" ng-model="property.value" ng-if="$index == 0" type="password" />
+                            <input class="form-control" ng-model="property.value" ng-if="$index != 0" />
                         </div>
                         <div class="col-xs-2">
                             <button class="btn btn-default pull-right" ng-click="edit($index)">
