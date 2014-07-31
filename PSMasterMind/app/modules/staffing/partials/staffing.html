@@ -184,7 +184,8 @@
                     <span ng-hide="backlogRole.endDate">- <small>N/A</small></span>
                 </td>
                 <td>
-                    <button class="btn">View Candidates</button>
+                    <button class="btn" onclick="window.setTimeout(function(){ $('#groups tab-heading').click(); }, 300);"
+	                    	ng-click="navigateToResourceTab(unassignedRole);">View Candidates</button>
                 </td>
 			</tr>
 
@@ -278,7 +279,8 @@
                     <span ng-hide="pipelineRole.endDate">- <small>N/A</small></span>
                 </td>
                 <td>
-                    <button class="btn">View Candidates</button>
+                    <button class="btn" onclick="window.setTimeout(function(){ $('#groups tab-heading').click(); }, 300);"
+	                    	ng-click="navigateToResourceTab(unassignedRole);">View Candidates</button>
                 </td>
 			</tr>
 		</table>

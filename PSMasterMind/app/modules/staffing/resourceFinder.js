@@ -139,24 +139,35 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 			members: [{
 				startDate: startDate,
 				endDate: endDate,
-				person: person,
+				person:
+				{
+					resource: person.resource
+				},
 				role: {
-					resource: project.resource + "/" + person.primaryRole.resource
+					resource: project.resource + "/" + project.roleId
 				}
 			}],
-			project: project
+			project:
+			{
+				resource: project.resource
+			}
 		};
 		
-		AssignmentService.save(project, assignment).then(function (result){alert(JSON.stringify(result))});
+		AssignmentService.save(project, assignment)
+			.then(function (result)
+			{
+				
+			});
 	};
 	
 	$scope.$on("resfinder:select", function (event, args)
 	{
-		$scope.projectToAssignTo = { name: args.projectName, resource: args.projectResource };
+		$scope.projectToAssignTo = { name: args.projectName, resource: args.projectResource, roleId: args.roleId };
 		$scope.filterStartDate = args.startDate;
 		
 		var endDate = args.endDate;
 		
+		// If no end date specified, end date is set to 2 month from the startDate.
 		if (!endDate)
 		{
 			endDate = new Date(args.startDate);
