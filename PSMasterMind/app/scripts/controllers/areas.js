@@ -307,6 +307,20 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	    }
 	  }
 	});
+	
+	$scope.search = function (event)
+	{
+		if (event.which == 13)
+		{
+			$scope.showProjects();
+			
+			setTimeout(function()
+			{
+				$scope.showProjects();
+				$rootScope.$broadcast("project:search", event.target.value);
+			}, 200); // temporary hack
+		}
+	};
 
 } ] ).directive( 'backImg', function( ) {
 	return function( scope, element, attrs ) {

@@ -4,8 +4,8 @@
  * Controller for handling the list of projects.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('ProjectsCtrl', ['$scope', '$state', '$filter', '$location', 'ngTableParams', 'ProjectsService', 'Resources',
-    function($scope, $state, $filter, $location, TableParams, ProjectsService, Resources) {
+  .controller('ProjectsCtrl', ['$rootScope', '$scope', '$state', '$filter', '$location', 'ngTableParams', 'ProjectsService', 'Resources',
+    function($rootScope, $scope, $state, $filter, $location, TableParams, ProjectsService, Resources) {
 
       //Default to no projects
       $scope.projects = [];
@@ -13,7 +13,10 @@ angular.module('Mastermind.controllers.projects')
       $scope.fillStatuses = function() {
 
       }
-
+      $rootScope.$on("project:search", function (event, data)
+    		  {
+    	    	  $scope.filterText = data;
+    		  });
       $scope.handleProjectFilterChanged = function() {
         var filter = $scope.projectFilter;
         // project entity columns which must be displkaye don UI
@@ -301,6 +304,7 @@ angular.module('Mastermind.controllers.projects')
       $scope.showTableView = $state.params.view ? $state.params.view === 'table' : true;
       $scope.showGraphView = $state.params.view ? $state.params.view === 'graph' : false;
       $scope.handleProjectFilterChanged();
-
+      
+      
     }
   ]);
