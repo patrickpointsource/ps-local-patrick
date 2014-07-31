@@ -9,7 +9,9 @@
 		</div>
 		
 		<div class="col-xs-6">
-			<button class="btn pull-right btn-export" ng-click="exportToCSV()">EXPORT CSV</button>
+			<a class="btn pull-right btn-export" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="Custom.csv">
+		      EXPORT CSV
+		    </a>
 		</div>
 	</div>
 	
@@ -107,29 +109,29 @@
 					
 					<div class="row states">
 						<div class="col-xs-4">
-							<input type="checkbox" name="allStates" ng-model="projectStates.all"  />
+							<input type="checkbox" name="allStates" ng-model="projectStates.all"  ng-click="selectProjectState(e, 'all')"/>
 							<label for="allStates" >Select all states</label>
 							<br />
-							<input type="checkbox" name="activeState" ng-model="projectStates.active"  />
+							<input type="checkbox" name="activeState" ng-model="projectStates.active"  ng-click="selectProjectState(e, 'active')"/>
 							<label for="activeState" >Active</label>
 							<br />
-							<input type="checkbox" name="backlogState" ng-model="projectStates.backlog"  />
+							<input type="checkbox" name="backlogState" ng-model="projectStates.backlog"  ng-click="selectProjectState(e, 'backlog')"/>
 							<label for="backlogState" >Backlog</label>
 						</div>
 						
 						<div class="col-xs-4">
-							<input type="checkbox" name="forecastedState" ng-model="projectStates.forecasted"  />
+							<input type="checkbox" name="forecastedState" ng-model="projectStates.forecasted"  ng-click="selectProjectState(e, 'forecasted')"/>
 							<label for="forecastedState">Forecasted</label>
 							<br />
-							<input type="checkbox" name="investmentState" ng-model="projectStates.investment"  />
+							<input type="checkbox" name="investmentState" ng-model="projectStates.investment" ng-click="selectProjectState(e, 'investment')" />
 							<label for="investmentState" >Investment</label>
 							<br />
-							<input type="checkbox" name="deallostState" ng-model="projectStates.deallost"  />
+							<input type="checkbox" name="deallostState" ng-model="projectStates.deallost"  ng-click="selectProjectState(e, 'deallost')"/>
 							<label for="deallostState" >Deal Lost</label>
 						</div>
 						
 						<div class="col-xs-4">
-							<input type="checkbox" name="completeState" ng-model="projectStates.complete"  />
+							<input type="checkbox" name="completeState" ng-model="projectStates.complete"  ng-click="selectProjectState(e, 'complete')"/>
 							<label for="completeState">Complete</label>
 							<br />
 						</div>
@@ -147,35 +149,35 @@
 						</div>
 						<div class="row groups">
 							<div class="col-xs-4">
-								<input type="checkbox" name="allGroups" ng-model="userGroups.all"  />
+								<input type="checkbox" name="allGroups" ng-model="userGroups.all"  ng-click="selectUserGroup(e, 'all')"/>
 								<label for="allGroups" >Select all groups</label>
 								<br />
-								<input type="checkbox" name="adminGroup" ng-model="userGroups.administration"  />
+								<input type="checkbox" name="adminGroup" ng-model="userGroups.administration"  ng-click="selectUserGroup(e, 'administration')"/>
 								<label for="adminGroup" >Administration</label>
 								<br />
-								<input type="checkbox" name="clientExpGroup" ng-model="userGroups.clientexperience"  />
+								<input type="checkbox" name="clientExpGroup" ng-model="userGroups.clientexperience"  ng-click="selectUserGroup(e, 'clientexperience')"/>
 								<label for="clientExpGroup" >Client Experience</label>
 							</div>
 							
 							<div class="col-xs-4">
-								<input type="checkbox" name="forecastedState" ng-model="userGroups.development"  />
+								<input type="checkbox" name="forecastedState" ng-model="userGroups.development"  ng-click="selectUserGroup(e, 'development')"/>
 								<label for="devGroup">Development</label>
 								<br />
-								<input type="checkbox" name="investmentState" ng-model="userGroups.architects"  />
+								<input type="checkbox" name="investmentState" ng-model="userGroups.architects"  ng-click="selectUserGroup(e, 'architects')"/>
 								<label for="architectsGroup" >Architects</label>
 								<br />
-								<input type="checkbox" name="marketingGroup" ng-model="userGroups.marketing"  />
+								<input type="checkbox" name="marketingGroup" ng-model="userGroups.marketing"  ng-click="selectUserGroup(e, 'marketing')"/>
 								<label for="marketingGroup" >Marketing</label>
 							</div>
 							
 							<div class="col-xs-4">
-								<input type="checkbox" name="digitalExpGroup" ng-model="userGroups.digitalexperience"  />
+								<input type="checkbox" name="digitalExpGroup" ng-model="userGroups.digitalexperience"  ng-click="selectUserGroup(e, 'digitalexperience')"/>
 								<label for="digitalExpGroup">Digitlal Experience</label>
 								<br />
-								<input type="checkbox" name="execGroup" ng-model="userGroups.executives"  />
+								<input type="checkbox" name="execGroup" ng-model="userGroups.executives"  ng-click="selectUserGroup(e, 'executives')"/>
 								<label for="execGroup">Executives</label>
 								<br />
-								<input type="checkbox" name="salesGroup" ng-model="userGroups.sales"  />
+								<input type="checkbox" name="salesGroup" ng-model="userGroups.sales"  ng-click="selectUserGroup(e, 'sales')"/>
 								<label for="salesGroup">Sales</label>
 								
 							</div>
@@ -190,7 +192,7 @@
 						</div>
 						<div class="row groups">
 							<div ng-repeat="rolesRow in arrangedRoles" class="col-xs-4">
-								<input ng-repeat-start="role in rolesRow" type="checkbox" ng-model="userRoles[role.value].value"  />
+								<input ng-repeat-start="role in rolesRow" type="checkbox" ng-model="userRoles[role.value].value"  ng-click="selectUserRole(e, role.value)"/>
 								<label>{{role.abbreviation}}</label>
 								<br ng-repeat-end/>
 								
@@ -279,7 +281,9 @@
 	
 	<div class="row " style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
 		<div class="col-xs-12">
-			<button class="btn pull-right btn-export" ng-click="exportToCSV()">EXPORT CSV</button>
+			<a class="btn pull-right btn-export" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="Custom.csv">
+		      EXPORT CSV
+		    </a>
 		</div>
 	</div>
 </div>
