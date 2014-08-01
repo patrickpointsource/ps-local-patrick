@@ -2,7 +2,9 @@ package com.pointsource.mastermind.server;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -19,6 +21,7 @@ import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -38,6 +41,7 @@ public class SchedulerServlet extends HttpServlet {
     private final String JOB_NAME_KEY = "jobName";
     private final String SCHEDULER_NAME_DEFAULT = "jobScheduler";
     private Scheduler scheduler;
+    private List<JobKey> scheduledJobKeys;
     
 	public void init() throws ServletException
     {
@@ -75,13 +79,13 @@ public class SchedulerServlet extends HttpServlet {
 					} catch(Throwable t) {
 					}
 				}
-
+				scheduledJobKeys = new ArrayList<JobKey>();
 				Properties schedProps = new Properties();
 				schedProps.setProperty("org.quartz.threadPool.threadCount", ""+threads);
 				schedProps.setProperty("org.quartz.scheduler.instanceName", "DefaultScheduler"); // could configure this if necessary
 				schedProps.setProperty("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
 				schedulerFactory = new StdSchedulerFactory(schedProps); // schedulerFactory is a singleton
-				Scheduler scheduler = schedulerFactory.getDefaultScheduler();
+				scheduler = schedulerFactory.getDefaultScheduler();
 				
 				Enumeration jobKeys = jobProps.keys();
 				while(jobKeys.hasMoreElements()) {
@@ -124,6 +128,7 @@ public class SchedulerServlet extends HttpServlet {
 											.withIdentity(jobName, jobGroup)
 											.withSchedule(CronScheduleBuilder.cronSchedule(jobCronEntry).inTimeZone(TimeZone.getTimeZone("America/New_York")))
 											.build();
+									scheduledJobKeys.add(trigger.getJobKey());
 									// schedule it
 									scheduler.scheduleJob(job, trigger);
 									++jobsScheduled;
@@ -159,12 +164,34 @@ public class SchedulerServlet extends HttpServlet {
     }
 
     public void destroy() {
+		LOGGER.log(Level.INFO, "destroying Scheduler");
     	if (scheduler != null) {
     		try {
-				scheduler.shutdown();
-			} catch (SchedulerException e) {
-				LOGGER.log(Level.SEVERE, e.getMessage());
-				e.printStackTrace();
+    			try {
+    				scheduler.shutdown(true);
+    			}
+    			catch (SchedulerException e) {
+	        		LOGGER.log(Level.INFO, "error :" + e.getMessage());
+    			}
+				
+				int ct = 0;
+
+        		LOGGER.log(Level.INFO, "Try waiting for the scheduler to shutdown. Only wait 30 seconds.");
+	            while(ct < 30) {
+	                ct++;
+	        		LOGGER.log(Level.INFO, "waiting for " + ct + " seconds");
+	                Thread.sleep(1000);
+	                try {
+						if (scheduler.isShutdown()) {
+			        		LOGGER.log(Level.INFO, "Scheduler stopped");
+						    break;
+						}
+					} catch (SchedulerException e) {
+		        		LOGGER.log(Level.INFO, "error :" + e.getMessage());
+					}
+	            }
+	            
+			}  catch (InterruptedException e) {
 			}
     	}
     }
