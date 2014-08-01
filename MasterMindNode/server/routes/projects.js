@@ -3,8 +3,10 @@
 var projects = require('../controllers/projects');
 var express = require('express');
 var util = require('../util/auth');
+var resources = require('../util/resources');
 
 var router = express.Router();
+
 
 router.get('/', util.isAuthenticated, function(req, res){
     var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
@@ -54,15 +56,20 @@ router.get('/:id/links', function(req, res) {
 });
 
 router.get('/:id/assignments', function(req, res) {
-	var id = req.params.id;
-    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-    projects.listAssignments(id, query, function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            res.json(result);
-        }            
-    });
+	security.isAllowed(req.user, res, resources.assignments.resourceName, resources.assignments.permissions[0], function(allowed){
+		if (allowed) 
+		{
+			var id = req.params.id;
+		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
+		    projects.listAssignments(id, query, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
+		}
+	});
 });
 
 router.get('/:id/roles', function(req, res) {
@@ -100,14 +107,19 @@ router.get('/:id/roles/:roleId', function(req, res) {
 });
 
 router.put('/:id/assigments', function(req, res) {
-	var id = req.params.id;
-    projects.insertAssignment(id, req.body, function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            res.json(result);
-        }            
-    });
+	security.isAllowed(req.user, res, resources.assignments.resourceName, resources.assignments.permissions[1], function(allowed){
+		if (allowed) 
+		{
+			var id = req.params.id;
+		    projects.insertAssignment(id, req.body, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
+		}
+	});
 });
 
 router.delete('/', function(req, res) {
