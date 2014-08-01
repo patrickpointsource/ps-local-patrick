@@ -220,6 +220,7 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 							projectResource: proj.resource,
 							hours: getHoursDescription( activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
 							role: $scope.rolesMap[ activeRole.type.resource ].abbreviation,
+							roleId: activeRole._id,
 							startDate: activeRole.startDate,
 							endDate: activeRole.endDate,
 							rate: activeRole.rate.amount
