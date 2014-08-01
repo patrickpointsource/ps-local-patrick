@@ -48,6 +48,20 @@ module.exports.getPerson = function(id, callback) {
     });
 };
 
+
+module.exports.getPersonByGoogleId = function(id, callback) {
+    var query = {googleId: id};
+    dataAccess.listPeople(query, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading getPersonByGoogleId', null);
+        } else {
+            //console.log(body);
+            callback(null, body);
+        }
+    });
+};
+
 module.exports.getMyPerson = function(callback) {
 	
 	//TODO get id of auth user

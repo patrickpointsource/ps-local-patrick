@@ -84,6 +84,19 @@ var listProjects = function( q, callback ) {
 
 };
 
+var getProfileByGoogleId = function(id, callback){
+    var query = {googleId: id};
+	listPeople(query, function (err, list) {
+		if (!err) {
+	    	callback(null, list["members"][0]);
+		}
+		else {
+			callback(err, null);
+		}
+	});
+}	
+
+
 var listPeople = function( q, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
@@ -284,6 +297,7 @@ module.exports.listSkills = listSkills;
 module.exports.listConfiguration = listConfiguration;
 module.exports.listVacations = listVacations;
 module.exports.listSecurityRoles = listSecurityRoles;
+module.exports.getProfileByGoogleId = getProfileByGoogleId;
 
 module.exports.insertItem = insertItem;
 module.exports.deleteItem = deleteItem;

@@ -7,10 +7,7 @@ var util = require('../util/auth');
 var router = express.Router();
 
 router.get('/me', util.isAuthenticated, function(req, res){
-    var query = {googleId: req.user};
-    
-    // Call to tasks service
-    people.listPeople(query, function(err, result){
+    people.getPersonByGoogleId(req.user, function(err, result){
         if(err){
             res.json(500, err);
         } else {

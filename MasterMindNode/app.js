@@ -31,6 +31,9 @@ var links = require('./server/routes/links');
 var vacations = require('./server/routes/vacations');
 var securityRoles = require('./server/routes/securityRoles');
 
+var security = require('./server/util/security.js');
+
+
 // Configure passport
 require('./server/config/passport.js')(passport);
 
@@ -97,9 +100,53 @@ require('./server/routes/auth')(app, passport);
 // Application paths that are protected
 app.get('/', ensureLoggedIn('/login'),
   function(req, res){
-    res.render('index');
+  	 if (!req.session.initSecurity)  
+  	 {
+  	 	loadSecurity(req.user, function (err) {
+  	 		if (!err) {
+  	 			req.session.initSecurity = true;
+  	 		}
+			else {
+				console.log("err=" + err);
+			}
+		     res.render('index');
+  	 	});
+  	 	
+   	 }
+   	 else {
+	     res.render('index');
+   	 }
 });
 
+var loadSecurity = function(id, callback) {
+	security.initSecurity(id, function (err, isInit) {
+		if (!isInit) {
+			console.log("Security has not been initialized properly : " + err);
+		}
+		callback(err);
+	});
+/*	dataAccess.getProfileByGoogleId(id, function (err, user) {
+		if (!err) {
+			dataAccess.listSecurityRoles(null, function (err, roles) {
+				var securityRoles = roles["members"];
+				for (var i=0; i < securityRoles.length; i++) {
+					var resources = securityRoles[i].resources;
+					for (var k=0; k < resources.length; k++) {
+						security.allow(securityRoles[i].name, resources[k].name, resources[k].permissions, function(err) {
+							console.log("err=" + err);
+						})
+					}
+				}
+				//security.addRole(id, 'Managers')
+				callback(err, user, roles);					
+			});
+		}
+		else {
+			callback(err, null, null);					
+		}
+   	});
+   	*/
+}
 // There are many useful environment variables available in process.env,
 // please refer to the following document for detailed description:
 // http://ng.w3.bluemix.net/docs/FAQ.jsp#env_var

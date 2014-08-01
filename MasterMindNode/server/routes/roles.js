@@ -7,7 +7,10 @@ var util = require('../util/auth');
 var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
-    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
+   console.log("req.user=" + req.user);
+   console.log("req.session.profile =" + JSON.stringify(req.session.profile) );
+   console.log("req.session.securityRoles =" + JSON.stringify(req.session.securityRoles) );
+     var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
     
     // Call to projects service
     roles.listRoles(query, function(err, result){

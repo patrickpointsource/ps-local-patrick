@@ -8,7 +8,7 @@ var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
     var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-    
+    console.log("query=" + JSON.stringify(query));
     // Call to tasks service
     people.listPeople(query, function(err, result){
         if(err){
