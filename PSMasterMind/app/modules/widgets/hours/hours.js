@@ -549,6 +549,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		if( index > -1 )
 			day = $scope.isDisplayedWeek( ) ? $scope.displayedHours[ index ] : $scope.displayedMonthDays[ index ];
 
+        //TODO: resolve situation when $scope.displayedMonthDays still not loaded and contains string days representation
+        if (_.isString(day))
+            return;
+            
 		if( $scope.selected )
 			delete $scope.selected;
 

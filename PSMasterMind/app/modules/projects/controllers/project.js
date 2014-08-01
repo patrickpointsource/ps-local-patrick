@@ -1791,8 +1791,8 @@ else if( role.percentageCovered == 0 )
 				else if( r1.endDate == r2.endDate && new Date( r1.startDate ) < new Date( r2.startDate ) )
 					return -1;
 
-				var abr1 = $scope.roleGroups[ r1.type.resource ].abbreviation;
-				var abr2 = $scope.roleGroups[ r2.type.resource ].abbreviation;
+				var abr1 = $scope.roleGroups[ r1.type.resource ] ? $scope.roleGroups[ r1.type.resource ].abbreviation: '';
+				var abr2 = $scope.roleGroups[ r2.type.resource ] ? $scope.roleGroups[ r2.type.resource ].abbreviation: '';
 
 				if( r1.endDate == r2.endDate && r1.startDate == r2.startDate ) {
 					if( abr1 > abr2 )
@@ -2132,7 +2132,7 @@ else if( role.percentageCovered == 0 )
 	};
 
 	$scope.getAbbreviation = function( role ) {
-		if( $scope.roleGroups && role && role.type )
+		if( $scope.roleGroups && role && role.type && $scope.roleGroups[ role.type.resource ])
 			return $scope.roleGroups[ role.type.resource ].abbreviation;
 
 		return "";

@@ -39,6 +39,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 			$scope.financeAccess = true;
 			$scope.adminAccess = true;
 			$scope.projectManagementAccess = true;
+			$scope.executivesAccess = true;
 			$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
 		}
 

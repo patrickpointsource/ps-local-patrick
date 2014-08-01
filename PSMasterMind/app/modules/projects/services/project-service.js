@@ -1101,9 +1101,40 @@ angular.module('Mastermind.services.projects')
         	});
     		
     		
-    	})
+    	});
 
     	
     	return deferred.promise;
     };
+    
+    this.getProjectsStatus = function(projects) {
+        var type = {};
+        var i = 0;
+        var project;
+        var today = this.getToday();
+        
+        for (i = 0; i < projects.length; i ++) {
+            project = projects[i];
+            
+            if (project.committed && project.committed.toString() == 'true' && project.type == 'paid' 
+                    && project.startDate <= today && (!project.endDate || project.endDate >= today))
+                type[project.resource] = 'active';
+            else if (project.committed && project.committed.toString() == 'true' && project.type == 'paid' 
+                    && project.startDate > today )
+                type[project.resource] = 'backlog';
+            else if ((!project.committed || project.committed.toString() == 'false') && project.type == 'paid' 
+                    && project.startDate <= today && (!project.endDate || project.endDate >= today))
+                type[project.resource] = 'pipeline';
+            else if ((project.type == 'poc' || project.type == 'invest')  &&  (!project.endDate || project.endDate >= today))
+                type[project.resource] = 'investment';
+            else if (project.committed && project.committed.toString() == 'true' && project.endDate < today)
+                type[project.resource] = 'complete';
+            else if ((!project.committed || project.committed.toString() == 'false') && project.endDate < today)
+                type[project.resource] = 'deallost';
+            
+        }
+        return type;
+    };
+    
+    
   }]);

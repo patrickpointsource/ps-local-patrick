@@ -178,7 +178,7 @@ angular.module('Mastermind')
 	  						if(fromPeopleList) {
 	  							RolesService.getRolesMapByResource().then(function(map) {
 			  						if(profile.primaryRole) {
-			  							var roleAbbr = map[profile.primaryRole.resource].abbreviation;
+			  							var roleAbbr = map[profile.primaryRole.resource] ? map[profile.primaryRole.resource].abbreviation: '';
 			  							var mapRoles = rolePeopleGroupMap[$scope.fromParams.filter];
 			  							if(_.contains(mapRoles, roleAbbr)) {
 			  								if($scope.breadCrumpParts[1] != mapPeopleFilterToUI(splittedPeopleFilter[0])) {

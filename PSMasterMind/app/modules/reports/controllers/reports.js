@@ -220,8 +220,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		};
 
 		ProjectsService.getAllProjects( function( result ) {
-		    $scope.originalProjects = result.data;
-		    
+			$scope.originalProjects = result.data;
+
 			$scope.projectList = _.map( result.data, function( m ) {
 				return {
 					value: m.name,
@@ -250,6 +250,18 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 					source: Util.getTypeaheadStrFilter( $scope.projectList )
 				} );
 
+				$( 'input[name="reportProject"]' ).on( 'typeahead:selected', function( e, selected ) {
+					$scope.$apply( function( ) {
+						var prop;
+
+						for( prop in $scope.projectStates ) {
+							$scope.projectStates[ prop ] = false;
+						}
+
+						$scope.reportClient = null;
+					} );
+				} );
+
 			} );
 
 			$scope.clientList = _.map( result.data, function( m ) {
@@ -273,6 +285,13 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				name: 'clientds',
 				source: Util.getTypeaheadStrFilter( $scope.clientList )
 			} );
+
+			$( 'input[name="reportClient"]' ).on( 'typeahead:selected', function( e, selected ) {
+				$scope.$apply( function( ) {
+
+					$scope.reportProject = null;
+				} );
+			} );
 		} );
 
 	};
@@ -293,38 +312,75 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		$scope.reportTypes[ report ] = true;
 	};
 
-	$scope.getReportData = function( ) {
-       var result = [];
-       
-		$scope.reportClient = $( 'input[name="reportClient"]' ).typeahead( 'val' );
-		$scope.reportPerson = $( 'input[name="reportPerson"]' ).typeahead( 'val' );
-		$scope.reportProject = $( 'input[name="reportProject"]' ).typeahead( 'val' );
+	$scope.getReportData = function( cb ) {
+		var result = [ ];
 
-		$scope.reportPerson = _.find( $scope.peopleList, function( p ) {
-			return p.value == $scope.reportPerson;
+		var reportClient = $( 'input[name="reportClient"]' ).typeahead( 'val' );
+		var reportPerson = $( 'input[name="reportPerson"]' ).typeahead( 'val' );
+		var reportProject = $( 'input[name="reportProject"]' ).typeahead( 'val' );
+
+		reportPerson = _.find( $scope.peopleList, function( p ) {
+			return p.value == reportPerson;
 		} );
 
-		$scope.reportProject = _.find( $scope.projectList, function( p ) {
-			return p.value == $scope.reportProject;
+		reportProject = _.find( $scope.projectList, function( p ) {
+			return p.value == reportProject;
 		} );
-        
-        var selectedRoles = [];
-        var selectedGroups = [];
-        
-        var selectedStatuses = [];
-        var cond = false;
-        var i;
-        
-        for (i = 0; i < $scope.originalProjects.length; i ++) {
-            cond = false;
-            
-            cond = cond || $scope.reportProject && $scope.reportProject.resource && $scope.originalProjects[i].about == $scope.reportProject.resource;
-            
-            if (cond) {
-                result.push($scope.originalProjects[i]);
-            }
-        }
-		return result;
+
+		// 1. determine projects for reports
+		var selectedRoles = [ ];
+		var selectedGroups = [ ];
+
+		var selectedStatuses = [ ];
+		var cond = false;
+		var i;
+		var j;
+
+		var projectStatuses = ProjectsService.getProjectsStatus( $scope.originalProjects );
+
+		for( i = 0; i < $scope.originalProjects.length; i++ ) {
+			cond = false;
+
+			cond = cond || $scope.reportProject && $scope.reportProject.resource && $scope.originalProjects[ i ].resource == $scope.reportProject.resource;
+			cond = cond || $scope.projectStates[ 'all' ];
+			cond = cond || $scope.projectStates[ projectStatuses[ $scope.originalProjects[ i ].resource ] ];
+			cond = cond || $scope.reportClient && $scope.customerName == $scope.reportClient;
+
+			if( cond ) {
+				result.push( $scope.originalProjects[ i ] );
+			}
+		}
+
+		var userRoles = _.object( _.map( $scope.userRoles, function( x ) {
+			return [ x.resource, x.value ];
+		} ) );
+
+		// 2. filter roles
+		for( i = result.length - 1; i >= 0; i-- ) {
+		    result[i].hour = {};
+		    
+		    
+		    
+			for( j = result[ i ].roles.length - 1; j >= 0; j-- ) {
+				cond = $scope.userRoles[ 'all' ].value;
+
+				cond = cond || userRoles[ result[i].roles[ j ].type.resource ];
+
+				if( !cond )
+					result[ i ].roles.splice( j, 1 );
+			}
+
+			if( result[ i ].roles.length == 0 )
+				result.splice( i, 1 );
+				
+			
+		}
+
+		cb( result );
+	};
+
+	$scope.getHoursHeader = function( ) {
+		return [ 'Project/Task', 'Date', 'Hours', 'Description' ];
 	};
 
 	$scope.JSON2CSV = function( reportData ) {
@@ -332,34 +388,31 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		var line = '';
 
 		//Print the header
-		var head = [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid revenue', 'Role', 'Role quantity' ];
+		//var head = [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid
+		// revenue', 'Role', 'Role quantity' ];
+		var head = $scope.getHoursHeader( );
+		var i = 0;
 
-		for( var i = 0; i < head.length; i++ ) {
+		for( i = 0; i < head.length; i++ ) {
 			line += head[ i ] + ',';
 		}
 		//Remove last comma and add a new line
 		line = line.slice( 0, -1 );
 		str += line + '\r\n';
 
-		for( var i = 0; i < reportData.length; i++ ) {
+		var i;
+
+		for( i = 0; i < reportData.length; i++ ) {
 			line = '';
 
 			var record = reportData[ i ];
 
-			if( record.project )
-				line += $scope.hoursToCSV.stringify( record.project.name ) + ',';
-			else
-				line += $scope.hoursToCSV.stringify( record.task.name ) + ',';
+			line += $scope.hoursToCSV.stringify( record.name ) + ',';
 
-			if( record.project )
-				line += $scope.hoursToCSV.stringify( record.project.name ) + ',';
-			else
-				line += ','
+			line += record.hour.date + ',';
+			line += record.hour.hours + ',';
 
-			line += record.invoiceDate + ',';
-			line += record.fixedBidRevenue + ',';
-
-			//line += $scope.hoursToCSV.stringify( record.hour.description ) + ',';
+			line += $scope.hoursToCSV.stringify( record.hour.description ? record.hour.description: '' ) + ',';
 			str += line + '\r\n';
 		}
 
@@ -375,9 +428,10 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		},
 
 		generate: function( ) {
-			var reportData = $scope.getReportData( );
+			$scope.getReportData( function( reportData ) {
+				$scope.csvData = $scope.JSON2CSV( reportData );
+			} );
 
-			$scope.csvData = $scope.JSON2CSV( $scope.getReportData( ) );
 		},
 
 		link: function( ) {

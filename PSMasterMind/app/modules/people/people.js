@@ -334,7 +334,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 				var group = "";
 				_.each( rolePeopleGroupMap, function( rolesArray, key ) {
-					if( _.contains( rolesArray, $scope.people[ i ].primaryRole.abbreviation ) ) {
+					if( $scope.people[ i ].primaryRole && $scope.people[ i ].primaryRole.abbreviation && _.contains( rolesArray, $scope.people[ i ].primaryRole.abbreviation ) ) {
 						group = key;
 					}
 				} );
@@ -474,7 +474,8 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		var mapRoles = {};
 
 		var map = _.map( $scope.roleGroups, function( val, key ) {
-			mapRoles[ val.abbreviation ] = key;
+			if (val)
+			     mapRoles[ val.abbreviation ] = key;
 		} )
 		var abbrs = [ ];
 

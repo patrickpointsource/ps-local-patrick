@@ -3,13 +3,14 @@
 		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 		    <div class="btn-group tab-buttons">
 		        <button class="btn project-button" ng-class="{'active-tab': activeTab['hours']}" ng-click="tabSelected('hours')">Hours Reports</button>
-		        <button class="btn project-button" ng-class="{'active-tab': activeTab['billing']}" ng-click="tabSelected('billing')">Billing Reports</button>
+		        
+		        <button class="btn project-button" ng-if="executivesAccess" ng-class="{'active-tab': activeTab['billing']}" ng-click="tabSelected('billing')">Finance Reports</button>
 		        <button class="btn project-button" ng-class="{'active-tab': activeTab['outofoffice']}" ng-click="tabSelected('outofoffice')">Out of Office Reports</button>
 		    </div>
 		</div>
 		
 		<div class="col-xs-6">
-			<a class="btn pull-right btn-export" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="Custom.csv">
+			<a class="btn pull-right btn-export" name="topCSVLink" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="Custom.csv">
 		      EXPORT CSV
 		    </a>
 		</div>
@@ -27,7 +28,7 @@
 					</div>
 					<div class="text">Custom</div>
 				</div>
-				
+				<!--
 				<div class="col-xs-2 project" ng-class="{'active': reportTypes['project']}" ng-click="selectReportType(e, 'project')">
 					<div class="icon">
 						<i class="fa fa-3x fa-rocket"></i>
@@ -62,7 +63,7 @@
 					</div>
 					<div class="text">Utilization</div>
 				</div>
-				
+				-->
 			</div>
 		</div>
 	</div>
@@ -281,7 +282,7 @@
 	
 	<div class="row " style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
 		<div class="col-xs-12">
-			<a class="btn pull-right btn-export" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="Custom.csv">
+			<a class="btn pull-right btn-export" name="bottomCSVLink" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="Custom.csv">
 		      EXPORT CSV
 		    </a>
 		</div>
