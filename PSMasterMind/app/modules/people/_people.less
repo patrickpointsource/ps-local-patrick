@@ -355,11 +355,25 @@ a.header-name {
       font-size: 16px;
     }
   }
+
+  .res-person-name {
+    height: auto !important;
+    margin-top: 5px;
+    > a {
+      font-size: 16px;
+    }
+  }
   .person-title {
     font-size: 15px !important;
     text-align: left !important;
   }
   .people-prop.person-prop {
+    padding-left: 15px !important;
+    > div > div {
+      font-size: 15px !important;
+    }
+  }
+  .res-people-prop {
     padding-left: 15px !important;
     > div > div {
       font-size: 15px !important;
@@ -474,4 +488,45 @@ a.header-name {
 .vac-approving-manager {
   color: @gray-less;
   padding-bottom: 15px;
+}
+
+.res-people-prop {
+  padding-left: 0;
+  padding-right: 0;
+  &>div>div {
+    color: #737373;
+    font-size: 20px;
+  }
+  @media (min-width: @screen-sm-min) {
+    height: 85px;
+    display: table;
+    &>div {
+      display: table-cell;
+      vertical-align: middle;
+    }
+  }
+}
+
+.res-person-name {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  color: #3a3a3a;
+  height: 85px;
+  display: table;
+
+  a {
+    display: table-cell;
+    color: #3a3a3a;
+    vertical-align: middle;
+  }
+}
+
+.res-person-avail {
+  @media (max-width: @screen-sm-min) {
+    padding-top: 15px;
+    padding-bottom: 18px;
+    margin-top: -38px;
+  }
+  
 }

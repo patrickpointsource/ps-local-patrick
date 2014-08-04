@@ -382,9 +382,9 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
                     projectResource: proj.resource,
                     hours: '-',
                     role: rolesInfo.join( ', ' ),
-                    //startDate: activeRole.startDate,
-                    //endDate: activeRole.endDate,
-                    //rate: activeRole.rate.amount,
+                    startDate: activeRole ? activeRole.startDate : null,
+                    endDate: activeRole ? activeRole.endDate : null,
+                    rate: activeRole ? activeRole.rate.amount : null,
                     isProjectItem: true
                 } );
 			};

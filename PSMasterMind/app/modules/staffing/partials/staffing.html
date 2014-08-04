@@ -185,7 +185,7 @@
                 </td>
                 <td>
                     <button class="btn" onclick="window.setTimeout(function(){ $('#groups tab-heading').click(); }, 300);"
-	                    	ng-click="navigateToResourceTab(backlogRole);">View Candidates</button>
+	                    	ng-click="navigateToResourceTab(backlogRole);" ng-show="!backlogRole.isProjectItem">View Candidates</button>
                 </td>
 			</tr>
 
@@ -261,9 +261,6 @@
                   ng-click="pipeListProjects.sorting({'startDate' : pipeListProjects.isSortBy('startDate', 'asc') ? 'desc' : 'asc'})">
                   <div>Dates</div>
                 </th>
-                <th class="text-center">
-                  <div>Resources Available</div>
-                </th>
 			</thead>
 			<tr ng-repeat="pipelineRole in $data | filter:filterStaffing(filterText)">
 				<td sortable="'title'">
@@ -277,10 +274,6 @@
                     <small>{{pipelineRole.startDate | date:'shortDate'}}</small>
                     <span ng-show="pipelineRole.endDate">-<br><small>{{pipelineRole.endDate | date:'shortDate'}}</small></span>
                     <span ng-hide="pipelineRole.endDate">- <small>N/A</small></span>
-                </td>
-                <td>
-                    <button class="btn" onclick="window.setTimeout(function(){ $('#groups tab-heading').click(); }, 300);"
-	                    	ng-click="navigateToResourceTab(pipelineRole);">View Candidates</button>
                 </td>
 			</tr>
 		</table>
