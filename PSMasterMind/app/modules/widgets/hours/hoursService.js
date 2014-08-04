@@ -14,12 +14,12 @@ function( $q, Resources ) {
 	 */
 	this.updateHours = function( hoursRecords ) {
 		var requests = [ ], i;
-		
+
 		for( i = 0; i < hoursRecords.length; i++ ) {
 			var record = hoursRecords[ i ];
 			var id = record[ '_id' ];
 
-			if( record.hours && ( parseInt( record.hours ) ).toString( ) == record.hours.toString( ) )
+			if( record.hours && (  parseInt( record.hours ) ).toString( ) == record.hours.toString( ) )
 				record.hours = parseInt( record.hours );
 			else if( record.hours && !isNaN( parseFloat( record.hours ) ) )
 				record.hours = parseFloat( record.hours );
@@ -416,4 +416,18 @@ function( $q, Resources ) {
 
 		return deferred.promise;
 	};
-} ] ); 
+
+	this.customQuery = function( query, fields ) {
+	    var deferred = $q.defer( );
+		var hoursFields = {};
+		var hoursQuery = {};
+		
+		fields = fields? fields: {};
+		
+		Resources.query( 'hours', _.extend(hoursQuery, query), _.extend(hoursFields, fields), function( result ) {
+		    deferred.resolve( result.members );
+		} )
+		
+		return deferred.promise;
+	}
+} ] );

@@ -3,8 +3,8 @@
 /**
  * Controller for Reports.
  */
-angular.module( 'Mastermind' ).controller( 'ReportsCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', 'Resources', 'AssignmentService', 'ProjectsService', 'TasksService', 'RolesService', 'ngTableParams',
-function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentService, ProjectsService, TasksService, RolesService, TableParams ) {
+angular.module( 'Mastermind' ).controller( 'ReportsCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', 'Resources', 'AssignmentService', 'ProjectsService', 'TasksService', 'RolesService', 'HoursService', 'People', 'ngTableParams',
+function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentService, ProjectsService, TasksService, RolesService, HoursService, PeopleService, TableParams ) {
 
 	$scope.activeTab = {
 		'hours': true
@@ -19,8 +19,10 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 	};
 
 	$scope.reportClick = function( item ) {
-		alert( item.name );
+		//alert( item.name );
 	};
+
+	$scope.peopleMap = {};
 
 	$scope.tabSelected = function( tabName ) {
 		var prop;
@@ -32,9 +34,11 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		$scope.activeTab[ tabName ] = true;
 	};
 
+	$scope.rolesMapping = {};
+
 	$scope.userRoles = {
 		all: {
-			value: false
+			value: true
 		}
 	};
 
@@ -123,13 +127,6 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		else if( role != 'all' && $scope.userRoles[ role ] )
 			$scope.userRoles[ 'all' ].value = false;
 
-		/*
-		//deselect user groups
-		for( prop in $scope.userGroups ) {
-		$scope.userGroups[ prop ] = false;
-		}
-		*/
-		//$scope.reportPerson = null;
 	};
 
 	$scope.loadRoles = function( ) {
@@ -155,9 +152,11 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				role.value = role.abbreviation.toLowerCase( );
 
 				$scope.userRoles[ role.value ] = {
-					value: false,
+					value: true,
 					resource: role.resource
 				};
+
+				$scope.rolesMapping[ role.resource ] = role.value;
 			}
 
 		} );
@@ -187,6 +186,10 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 		Resources.query( 'people', peopleInRoleQuery, peopleInRoleFields, function( result ) {
 			$scope.peopleList = _.map( result.members, function( m ) {
+				$scope.peopleMap[ m.resource ] = {
+					name: m.name
+				};
+
 				return {
 					value: m.name,
 					resource: m.resource
@@ -220,7 +223,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		};
 
 		ProjectsService.getAllProjects( function( result ) {
-			$scope.originalProjects = result.data;
+			$scope.loadedProjects = result.data;
 
 			$scope.projectList = _.map( result.data, function( m ) {
 				return {
@@ -313,6 +316,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 	};
 
 	$scope.getReportData = function( cb ) {
+		$scope.csvData = null;
+
 		var result = [ ];
 
 		var reportClient = $( 'input[name="reportClient"]' ).typeahead( 'val' );
@@ -335,13 +340,14 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		var cond = false;
 		var i;
 		var j;
+		$scope.originalProjects = JSON.parse( JSON.stringify( $scope.loadedProjects ) );
 
 		var projectStatuses = ProjectsService.getProjectsStatus( $scope.originalProjects );
 
 		for( i = 0; i < $scope.originalProjects.length; i++ ) {
 			cond = false;
 
-			cond = cond || $scope.reportProject && $scope.reportProject.resource && $scope.originalProjects[ i ].resource == $scope.reportProject.resource;
+			cond = cond || reportProject && reportProject.resource && $scope.originalProjects[ i ].resource == reportProject.resource;
 			cond = cond || $scope.projectStates[ 'all' ];
 			cond = cond || $scope.projectStates[ projectStatuses[ $scope.originalProjects[ i ].resource ] ];
 			cond = cond || $scope.reportClient && $scope.customerName == $scope.reportClient;
@@ -350,17 +356,29 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				result.push( $scope.originalProjects[ i ] );
 			}
 		}
+		var groupRoleMapping = PeopleService.getPeopleGroupMapping( );
 
+		var prop;
+		var roles;
+		var i;
+
+		for( prop in $scope.userGroups ) {
+			if( $scope.userGroups[ prop ] === true ) {
+				roles = groupRoleMapping[ prop ];
+
+				for( i = 0; roles && i < roles.length; i++ )
+					if( $scope.userRoles[   roles[ i ].toLowerCase( ) ] )
+						$scope.userRoles[   roles[ i ].toLowerCase( ) ].value = true;
+			}
+		}
 		var userRoles = _.object( _.map( $scope.userRoles, function( x ) {
 			return [ x.resource, x.value ];
 		} ) );
 
 		// 2. filter roles
 		for( i = result.length - 1; i >= 0; i-- ) {
-		    result[i].hour = {};
-		    
-		    
-		    
+			result[ i ].hour = {};
+
 			for( j = result[ i ].roles.length - 1; j >= 0; j-- ) {
 				cond = $scope.userRoles[ 'all' ].value;
 
@@ -372,15 +390,120 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 			if( result[ i ].roles.length == 0 )
 				result.splice( i, 1 );
-				
-			
-		}
 
-		cb( result );
+		}
+		//var rolesPersonMapping = {};
+		//var projectPersonsMapping = {};
+		var projectMapping = {};
+
+		var j;
+
+		AssignmentService.getAssignments( result ).then( function( assignments ) {
+			var persons = [ ];
+
+			for( i = 0; i < assignments.length; i++ ) {
+
+				//result[ i ].hour.hours = 1;
+				for( j = 0; j < assignments[ i ].members.length; j++ ) {
+
+					if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j ].person.resource ) {
+						if( !projectMapping[ assignments[ i ].project.resource ] )
+							projectMapping[ assignments[ i ].project.resource ] = {};
+
+						if( !projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ] )
+							projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ] = [ ];
+
+						projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ].push( {
+							resource: assignments[ i ].members[ j ].person.resource,
+							name: $scope.peopleMap[ assignments[ i ].members[ j ].person.resource ].name
+						} );
+
+						//if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j
+						// ].person.resource )
+						persons.push( assignments[ i ].members[ j ].person.resource );
+					}
+				}
+			}
+
+			var hoursQ = {
+				$or: [ ]
+			};
+
+			var prop;
+
+			hoursQ.$or = _.map( projectMapping, function( val, key ) {
+				return {
+					"project.resource": key
+				};
+			} );
+			hoursQ.$or = _.uniq( hoursQ.$or, function( p ) {
+				return p[ "project.resource" ];
+			} );
+
+			var findPersonOnProject = function( rolesPersonMapping, resource ) {
+				var prop;
+				var result = null;
+
+				for( prop in rolesPersonMapping ) {
+					result = result || _.find( rolesPersonMapping[ prop ], function( p ) {
+						return p.resource == resource;
+					} );
+				}
+
+				return result;
+			};
+
+			HoursService.customQuery( hoursQ ).then( function( reportHours ) {
+				var person;
+
+				for( i = 0; i < reportHours.length; i++ ) {
+					person = findPersonOnProject( projectMapping[ reportHours[ i ].project.resource ], reportHours[ i ].person.resource );
+
+					if( person ) {
+						person.hours = person.hours ? person.hours : [ ];
+						person.hours.push( {
+							hours: reportHours[ i ].hours,
+							description: reportHours[ i ].description,
+							date: reportHours[ i ].date
+						} );
+					}
+				}
+
+				var roleResource;
+
+				for( i = 0; i < result.length; i++ )
+					for( j = 0; j < result[ i ].roles.length; j++ ) {
+						roleResource = result[ i ].resource + '/roles/' + result[i].roles[ j ]._id;
+
+						if( projectMapping[ result[ i ].resource ] && projectMapping[ result[ i ].resource ][ roleResource ] ) {
+							result[i].roles[ j ].persons = projectMapping[ result[i].resource ][ roleResource ];
+							var l = 0;
+
+							for( l = 0; l < result[i].roles[ j ].persons.length; l++ ) {
+								if( result[i].roles[ j ].persons[ l ].hours )
+									result[i].roles[ j ].persons[ l ].hours.sort( function( p1, p2 ) {
+										if( p1.date < p2.date )
+											return 1;
+										else if( p1.date > p2.date )
+											return -1;
+										return 0;
+									} );
+							}
+						} else
+							result[i].roles[ j ].persons = [ ];
+
+						result[i].roles[ j ].abbreviation = $scope.rolesMapping[ result[i].roles[ j ].type.resource ].toUpperCase( );
+					}
+
+				cb( result );
+			} );
+
+		} );
+
 	};
 
 	$scope.getHoursHeader = function( ) {
-		return [ 'Project/Task', 'Date', 'Hours', 'Description' ];
+		return [ 'Project/Task', 'Role', 'Person', 'Date', 'Hours', 'Description' ];
 	};
 
 	$scope.JSON2CSV = function( reportData ) {
@@ -392,15 +515,19 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		// revenue', 'Role', 'Role quantity' ];
 		var head = $scope.getHoursHeader( );
 		var i = 0;
-
-		for( i = 0; i < head.length; i++ ) {
-			line += head[ i ] + ',';
-		}
-		//Remove last comma and add a new line
-		line = line.slice( 0, -1 );
+		/*
+		 for( i = 0; i < head.length; i++ ) {
+		 line += head[ i ] + ',';
+		 }
+		 //Remove last comma and add a new line
+		 line = line.slice( 0, -1 );
+		 */
+		line += head.join( ',' )
 		str += line + '\r\n';
 
 		var i;
+		var j;
+		var k;
 
 		for( i = 0; i < reportData.length; i++ ) {
 			line = '';
@@ -408,11 +535,44 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			var record = reportData[ i ];
 
 			line += $scope.hoursToCSV.stringify( record.name ) + ',';
+			line += [ '--', '--', '--', '--' ].join( ',' );
+			line += '\r\n';
 
-			line += record.hour.date + ',';
-			line += record.hour.hours + ',';
+			//line += [ '--', '--' ].join( ',' );
 
-			line += $scope.hoursToCSV.stringify( record.hour.description ? record.hour.description: '' ) + ',';
+			for( j = 0; j < record.roles.length; j++ ) {
+				//line += record.roles[ j ].abbreviation + ',';
+
+				//line += '\r\n';
+
+				for( k = 0; k < record.roles[ j ].persons.length; k++ ) {
+					//line += [ '--', '--' ].join( ',' );
+
+					if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
+						line += [ '--' ].join( ',' );
+						line += record.roles[ j ].abbreviation + ',';
+						line += [ '--', '--', '--' ].join( ',' );
+						line += '\r\n';
+					}
+					var l = 0;
+
+					for( l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
+						line += [ '--' ].join( ',' );
+						line += record.roles[ j ].abbreviation + ',';
+						line += record.roles[ j ].persons[ k ].name + ',';
+						line += record.roles[ j ].persons[ k ].hours[ l ].date + ',';
+						line += record.roles[ j ].persons[ k ].hours[ l ].hours + ',';
+						line += record.roles[ j ].persons[ k ].hours[ l ].description + ',';
+						line += '\r\n';
+					}
+
+				}
+
+			}
+			//line += record.hour.date + ',';
+			//    line += record.hour.hours + ',';
+			//line += $scope.hoursToCSV.stringify( record.hour.description ?
+			// record.hour.description : '' ) + ',';
 			str += line + '\r\n';
 		}
 
@@ -420,6 +580,9 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 	};
 
 	$scope.csvData = null;
+
+	var skipGenerate;
+
 	$scope.hoursToCSV = {
 		stringify: function( str ) {
 			return '"' + str.replace( /^\s\s*/, '' ).replace( /\s*\s$/, '' )// trim spaces
@@ -427,15 +590,39 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			'"';
 		},
 
-		generate: function( ) {
+		generate: function( e ) {
+			e = e ? e : window.event;
+			var btn = $( e.target ).closest( '.btn-export' );
+
+			e.preventDefault( );
+			e.stopPropagation( );
+
+			if( skipGenerate )
+				return;
+
 			$scope.getReportData( function( reportData ) {
 				$scope.csvData = $scope.JSON2CSV( reportData );
+
+				var evt = document.createEvent( "MouseEvents" );
+
+				evt.initMouseEvent( "click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null );
+
+				btn.attr( 'href', 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData ) );
+
+				skipGenerate = true;
+
+				var allowDefault = btn.get( 0 ).dispatchEvent( evt );
+
+				window.setTimeout( function( ) {
+					skipGenerate = false;
+				}, 1000 * 7 );
 			} );
 
 		},
 
 		link: function( ) {
-			return 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData );
+			return '';
+			//return 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData );
 		}
 	};
 
