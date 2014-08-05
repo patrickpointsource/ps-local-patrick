@@ -10,7 +10,7 @@
 		</div>
 		
 		<div class="col-xs-6">
-			<a class="btn pull-right btn-export" name="topCSVLink" ng-click="hoursToCSV.generate(e)" href="{{hoursToCSV.link()}}" download="Custom.csv">
+			<a class="btn pull-right btn-export" name="topCSVLink" ng-click="hoursToCSV.generate($event)" href="{{hoursToCSV.link()}}" download="Custom.csv">
 		      EXPORT CSV
 		    </a>
 		</div>
@@ -205,13 +205,13 @@
 		</div>
 	</div>
 	
-	<div class="row padded-row terms" style="display: none;">
+	<div class="row padded-row terms" >
 		<div class="well container">
 			<div class="col-xs-12 terms-dates-separator">
 				<h3>Select a timeframe</h3>
 			</div>
 			
-			<div class="col-xs-6">
+			<div class="col-xs-6" style="display: none;">
 				<div class="row">
 					
 					<label >Term</label>
@@ -231,7 +231,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-6">
+			<div class="col-xs-6" style="display: none;">
 				<div class="row">
 					<div class="col-xs-6">
 					<label >Choose a start date</label>
@@ -247,14 +247,14 @@
 					
 				</div>
 			</div>
-			<div class="col-xs-12 terms-dates-separator" >
+			<div class="col-xs-12 terms-dates-separator" style="display: none;">
 				<hr />
 			</div>
 			
 			<div class="col-xs-6">
 				<div class="row">
 					<div class="col-xs-6 terms-dates-separator">
-						<span>OR </span><label >Choose a custom date range</label>
+						<span style="display: none;">OR </span><label >Choose a custom date range</label>
 					</div>
 				</div>
 				<div class="row" >
@@ -282,7 +282,7 @@
 	
 	<div class="row " style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
 		<div class="col-xs-12">
-			<a class="btn pull-right btn-export" name="bottomCSVLink" ng-click="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="Custom.csv">
+			<a class="btn pull-right btn-export" name="bottomCSVLink" ng-click="hoursToCSV.generate($event)" href="{{hoursToCSV.link()}}" download="Custom.csv">
 		      EXPORT CSV
 		    </a>
 		</div>

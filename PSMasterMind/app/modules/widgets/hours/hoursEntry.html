@@ -14,13 +14,13 @@
 			        </div>
 			        <div ng-show="mode=='month'" class="hidden-sm hidden-xs week-month-radio">
 			          <div class="btn-group" data-toggle="buttons">
-			            <label class="btn btn-default" ng-click="setSubmode(e, 'monthly')" ng-class="{'active': subMode == 'monthly'}">
+			            <label class="btn btn-default" ng-click="setSubmode($event, 'monthly')" ng-class="{'active': subMode == 'monthly'}">
 			              <input type="radio" name="options">Month
 			            </label>
-			            <label class="btn btn-default" ng-click="setSubmode(e, 'weekly')" ng-class="{'active': subMode == 'weekly'}">
+			            <label class="btn btn-default" ng-click="setSubmode($event, 'weekly')" ng-class="{'active': subMode == 'weekly'}">
 			              <input type="radio" name="options">Week
 			            </label>
-			            <label class="btn btn-default" ng-click="setSubmode(e, 'custom')" ng-class="{'active': subMode == 'custom'}">
+			            <label class="btn btn-default" ng-click="setSubmode($event, 'custom')" ng-class="{'active': subMode == 'custom'}">
 			              <input type="radio" name="options">Custom
 			            </label>
 			          </div>
@@ -91,7 +91,7 @@
 	                    <i class="fa fa-caret-left fa-2x"></i>
 	                </div>
 	        	</div>
-	        	<div class="current-month" style="width:-webkit-calc(100% - 170px);">
+	        	<div class="current-month" style="width:-webkit-calc(100% - 170px);width: calc(100% - 170px);">
 	        		<span>{{months[currentMonth.month()]}}</span> {{currentMonth.year()}}
 	        	</div>
 	        	
@@ -213,7 +213,7 @@
 					       
 					    <span class="hours-logged-project selected-item" 
 					    	ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem != undefined" >
-					    		<span style="width: -webkit-calc(100% - 20px)">{{hourEntry.selectedItem.name}}</span>
+					    		<span style="width: -webkit-calc(100% - 20px); width: calc(100% - 20px);">{{hourEntry.selectedItem.name}}</span>
 					    		<i ng-click="clearSelectedItem(e, hourEntry)" class="fa fa-times"></i>
 					    </span>
 					       
@@ -227,12 +227,12 @@
 						  <li role="presentation" ng-repeat="tp in projectTasksList" ng-show="!tp.isTask || (tp.isTask && tp.visible)">
 						  	<a class="menu-item task-menu-item" role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
 							  	<span class="task-icon" ng-if="tp.icon" style="{{tp.iconCss}}"><i class="fa {{tp.icon}}"></i></span>
-							  	<span class="task-name" style="width: -webkit-calc(100% - 20px)">{{tp.name}}</span>
+							  	<span class="task-name" style="width: -webkit-calc(100% - 20px);width: calc(100% - 20px);">{{tp.name}}</span>
 						  	</a>
 						  	<a class="menu-item project-menu-item" role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
 							  	<span class="project-icon" ></span>
-							  	<span class="project-name" style="width: -webkit-calc(100% - 15px)">{{tp.name}}</span>
-							  	<span class="project-customer-name" style="width: -webkit-calc(100% - 25px)">{{tp.customerName}}</span>
+							  	<span class="project-name" style="width: -webkit-calc(100% - 15px);width: calc(100% - 15px);">{{tp.name}}</span>
+							  	<span class="project-customer-name" style="width: -webkit-calc(100% - 25px);width: calc(100% - 25px);">{{tp.customerName}}</span>
 						  	</a>
 					  		</li>
 						</ul>

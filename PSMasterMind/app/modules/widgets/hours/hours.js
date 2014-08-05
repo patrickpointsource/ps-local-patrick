@@ -549,10 +549,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		if( index > -1 )
 			day = $scope.isDisplayedWeek( ) ? $scope.displayedHours[ index ] : $scope.displayedMonthDays[ index ];
 
-        //TODO: resolve situation when $scope.displayedMonthDays still not loaded and contains string days representation
-        if (_.isString(day))
-            return;
-            
+		//TODO: resolve situation when $scope.displayedMonthDays still not loaded and
+		// contains string days representation
+		if( _.isString( day ) )
+			return;
+
 		if( $scope.selected )
 			delete $scope.selected;
 
@@ -577,8 +578,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			$scope.showHideLoggedHours( e, index );
 		} else if( !$scope.isDisplayedWeek( ) )
 			$( '.dashboard-widget.hours .row.hours-logged' ).hide( );
-        
-        $scope.$emit('hours:selectedNew', $scope.selected);
+
+		$scope.$emit( 'hours:selectedNew', $scope.selected );
 	};
 
 	$scope.showHideLoggedHours = function( e, index ) {
@@ -884,8 +885,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[                               t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[                               t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[                                 t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[                                 t.name.toLowerCase( ) ];
 				t.visible = t.name != "Vacation" && t.name != "Appointment";
 			} );
 
@@ -948,8 +949,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			$scope.setSelected( null, $scope.displayedHours[ foundInd - 1 ], foundInd - 1 );
 		else {
 			$scope.dateIndex = $scope.dateIndex + 7;
-            delete $scope.selected;
-            
+			delete $scope.selected;
+
 			$scope.hoursRequest( function( ) {
 				//$scope.selected = $scope.displayedHours[ $scope.displayedHours.length - 1 ];
 				$scope.setSelected( null, $scope.displayedHours[ $scope.displayedHours.length - 1 ], $scope.displayedHours.length - 1 );
@@ -973,7 +974,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		else {
 			$scope.dateIndex = $scope.dateIndex - 7;
 			delete $scope.selected;
-			 
+
 			$scope.hoursRequest( function( ) {
 				//$scope.selected = $scope.displayedHours[ 0 ];
 				$scope.setSelected( null, $scope.displayedHours[ 0 ], 0 );
@@ -1075,7 +1076,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		delete $scope.selected;
 
 		$scope.hoursRequest( );
-		
+
 		$scope.$emit( 'hours:showToday' );
 	};
 
@@ -1109,14 +1110,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[                               d1.getMonth( ) ];
+		var month1 = $scope.months[                                 d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[                               d2.getMonth( ) ];
+		var month2 = $scope.months[                                 d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
@@ -1138,7 +1139,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), firstBusineesDay, todayDate ).then( function( result ) {
 			firstBusineesDay = '';
 
-			for( var j = result.length - 1; result[ j ] && result[ j ].totalHours == 0 && j >= 0; j -- ) {
+			for( var j = result.length - 1; result[ j ] && result[ j ].totalHours == 0 && j >= 0; j-- ) {
 				if( result[ j ].totalHours == 0 && $scope.moment( result[ j ].date ).weekday( ) < 6 && $scope.moment( result[ j ].date ).weekday( ) > 0 )
 					firstBusineesDay = result[ j ].date;
 			}
@@ -1448,7 +1449,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		if( copyFromEntry ) {
 			var prevDayHoursRecords = _.pluck( copyFromEntry.hoursEntries, "hoursRecord" );
 			prevDayHoursRecords = _.filter( prevDayHoursRecords, function( p ) {
-				if( p )
+				if( !isNaN( parseFloat( p.hours ) ) )
 					return true;
 			} );
 			if( prevDayHoursRecords.length > 0 ) {
@@ -1466,7 +1467,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				for( var i = result.length - 1; i >= 0; i-- ) {
 					if( result[ i ].hoursEntries.length > 0 ) {
 						var houseRecordsInside = _.filter( result[ i ].hoursEntries, function( h ) {
-							if( h.hoursRecord )
+							//if( h.hoursRecord )
+							if( !isNaN( parseFloat( h.hoursRecord.hours ) ) )
 								return true;
 						} );
 						if( houseRecordsInside.length > 0 ) {
@@ -1485,7 +1487,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	};
 	var getDate = function( dateString ) {
 		var tmpD = dateString.split( '-' );
-		var date = new Date( parseInt( tmpD[ 0 ] ), parseInt( tmpD[ 1 ] ), parseInt( tmpD[ 2 ] ) );
+		var date = new Date( parseInt( tmpD[ 0 ] ), parseInt( tmpD[ 1 ] ) - 1, parseInt( tmpD[ 2 ] ) );
 		return date;
 	};
 	var copyHoursCallback = function( copyFromEntries ) {
@@ -1581,13 +1583,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	var init = function( event ) {
 		$scope.calculateLastBusinessDay( function( firstBusinessDay ) {
 			$scope.firstBusinessDay = $scope.moment( firstBusinessDay );
-			
-			$scope.hoursRequest( function() {
-			  var startOfWeek = $scope.moment().day( 0 );
-              if($scope.firstBusinessDay.isBefore(startOfWeek)) {
-                $rootScope.defaultHoursWeekShiftedBack = true;
-              }
-			});
+
+			$scope.hoursRequest( function( ) {
+				var startOfWeek = $scope.moment( ).day( 0 );
+				if( $scope.firstBusinessDay.isBefore( startOfWeek ) ) {
+					$rootScope.defaultHoursWeekShiftedBack = true;
+				}
+			} );
 		} );
 
 		$scope.loadAvailableTasks( );

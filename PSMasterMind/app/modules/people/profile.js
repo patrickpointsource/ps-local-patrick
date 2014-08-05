@@ -22,16 +22,16 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	};
 
 	$scope.loadAvailableTasks( );
-	
-	var managersQuery = {
-      'groups': 'Management'
-    };
 
-    Resources.query( 'people', managersQuery, null, function( result ) {
-      $scope.managers = _.sortBy(result.members, function(manager) {
-        return manager.name;
-      });
-    } );
+	var managersQuery = {
+		'groups': 'Management'
+	};
+
+	Resources.query( 'people', managersQuery, null, function( result ) {
+		$scope.managers = _.sortBy( result.members, function( manager ) {
+			return manager.name;
+		} );
+	} );
 
 	/**
 	 * Load Role definitions to display names
@@ -78,14 +78,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	 */
 	$scope.setProfile = function( person ) {
 		$scope.profile = person;
-		
-		if ($scope.profile.manager)
-    		Resources.resolve($scope.profile.manager).then(function(result) {
-    		  $scope.$emit( 'profile:loaded' );
-    		});
-    	else
-    	   $scope.$emit( 'profile:loaded' );
-		
+
+		if( $scope.profile.manager )
+			Resources.resolve( $scope.profile.manager ).then( function( result ) {
+				$scope.$emit( 'profile:loaded' );
+			} );
+		else
+			$scope.$emit( 'profile:loaded' );
+
 		//      $scope.skillsList = person.skills;
 		//
 		//      //Setup the skills table
@@ -110,13 +110,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.isManagement = groups && $.inArray( 'Management', groups ) !== -1;
 		$scope.isSales = groups && $.inArray( 'Sales', groups ) !== -1;
 		$scope.isProjectManagement = groups && $.inArray( 'Project Management', groups ) !== -1;
-		
-		$scope.canEditCapacity = 
-		    $.inArray( 'Executives', $scope.me.groups ) !== -1
-         || $.inArray( 'Management', $scope.me.groups ) !== -1
-         || $.inArray( 'Sales', $scope.me.groups ) !== -1;
-         
-         $scope.canSeeCapacity = $scope.canEditCapacity || $scope.profileId == $scope.me._id.$oid;
+
+		$scope.canEditCapacity = $.inArray( 'Executives', $scope.me.groups ) !== -1 || $.inArray( 'Management', $scope.me.groups ) !== -1 || $.inArray( 'Sales', $scope.me.groups ) !== -1;
+
+		$scope.canSeeCapacity = $scope.canEditCapacity || $scope.profileId == $scope.me._id.$oid;
 
 		var url = person.about + '/' + 'gplus';
 
@@ -186,11 +183,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		if( !profile.primaryRole || !profile.primaryRole.resource ) {
 			profile.primaryRole = null;
 		}
-		
-		if(profile.manager) {
-		  profile.manager = { 
-		      "resource": profile.manager.resource
-		  }
+
+		if( profile.manager ) {
+			profile.manager = {
+				"resource": profile.manager.resource
+			}
 		}
 
 		Resources.update( profile ).then( function( person ) {
@@ -223,13 +220,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	};
 
 	$scope.monthNames = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
-	
-	$scope.initHours = function( isReinit ) {
+
+	$scope.initHours = function( isReinit, cb ) {
 		var projectHours = [ ];
 		$scope.projectHours = [ ];
 		$scope.hoursPeriods = [ ];
 		$scope.selectedHoursPeriod = -1;
-		var now = moment();
+
+		var now = moment( );
 		$scope.totalMonthHours = 0;
 
 		//Query all hours against the project
@@ -245,11 +243,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			$scope.hours = hoursResult.members;
 			$scope.initHoursPeriods( $scope.hours );
 			$scope.hasHours = $scope.hours.length > 0;
-			
+
 			for( var i = 0; i < $scope.hours.length; i++ ) {
 				var hour = $scope.hours[ i ];
-				var date = moment(hour.date);
-				if(now.isSame(date, 'month')) {
+				var date = moment( hour.date );
+				if( now.isSame( date, 'month' ) ) {
 					$scope.totalMonthHours += hour.hours;
 				}
 				if( hour.task && hour.task.resource ) {
@@ -355,12 +353,15 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							totalHours: tasksHoursMap[ taskResource ].totalHours
 						}, tasksMap[ taskResource ] ) );
 					}
-                    
-                    if(!isReinit) {
-                      $scope.currentWeek( );
-                    } else {
-                      $scope.showWeek( );
-                    }
+
+					if( !isReinit ) {
+						$scope.currentWeek( );
+					} else {
+						$scope.showWeek( );
+					}
+
+					if( cb )
+						cb( );
 				} );
 			}
 		}, sort );
@@ -371,7 +372,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		var now = new Date( );
 
-		$scope.selectedHoursPeriod = now.getMonth( );
+		if( !$scope.isDisplayedWeek( ) )
+			$scope.selectedHoursPeriod = $scope.selectedMonth;
+		else
+			$scope.selectedHoursPeriod = now.getMonth( );
 		var minDate = null;
 		var maxDate = null;
 
@@ -397,7 +401,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		while( currentDate <= maxDate ) {
 			o = {
-				name: $scope.monthNames[  currentDate.getMonth( ) ],
+				name: $scope.monthNames[    currentDate.getMonth( ) ],
 				value: currentDate.getMonth( )
 			};
 			$scope.hoursPeriods.push( o );
@@ -417,33 +421,32 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.selectedHoursPeriod = month;
 		$scope.handleHoursPeriodChanged( );
 	};
-	
-	$scope.setCustomPeriod = function( startDate, endDate ) {
-        $scope.customHoursStartDate = startDate;
-        $scope.customHoursEndDate = endDate;
-        
-        $scope.selectedHoursPeriod = -1;
-        $scope.handleHoursPeriodChanged( );
-    };
 
-    
+	$scope.setCustomPeriod = function( startDate, endDate ) {
+		$scope.customHoursStartDate = startDate;
+		$scope.customHoursEndDate = endDate;
+
+		$scope.selectedHoursPeriod = -1;
+		$scope.handleHoursPeriodChanged( );
+	};
+
 	$scope.handleHoursPeriodChanged = function( ) {
-	    var d;
-	    
+		var d;
+
 		for( var i = 0; i < $scope.projectHours.length; i++ ) {
 			var projHour = $scope.projectHours[ i ];
 			projHour.totalHours = 0;
-			
+
 			for( var j = 0; j < projHour.hours.length; j++ ) {
 				var hour = projHour.hours[ j ];
 				var hoursMonth = new Date( hour.hour.date ).getMonth( );
-				
-				if ($scope.selectedHoursPeriod > -1)
-				    hour.show = this.selectedHoursPeriod == hoursMonth;
-				else if ($scope.customHoursStartDate && $scope.customHoursEndDate){
-				    d = Util.alignDate(new Date( hour.hour.date ));
-				    
-				    hour.show = d < Util.alignDate(new Date($scope.customHoursEndDate)) && d >= Util.alignDate(new Date($scope.customHoursStartDate));
+
+				if( $scope.selectedHoursPeriod > -1 )
+					hour.show = this.selectedHoursPeriod == hoursMonth;
+				else if( $scope.customHoursStartDate && $scope.customHoursEndDate ) {
+					d = Util.alignDate( new Date( hour.hour.date ) );
+
+					hour.show = d < Util.alignDate( new Date( $scope.customHoursEndDate ) ) && d >= Util.alignDate( new Date( $scope.customHoursStartDate ) );
 				}
 				if( hour.show ) {
 					projHour.totalHours += hour.hour.hours;
@@ -454,19 +457,19 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		for( i = 0; i < $scope.taskHours.length; i++ ) {
 			projHour = $scope.taskHours[ i ];
 			projHour.totalHours = 0;
-			
+
 			for( j = 0; j < projHour.hours.length; j++ ) {
 				hour = projHour.hours[ j ];
 				hoursMonth = new Date( hour.hour.date ).getMonth( );
-				
-				if ($scope.selectedHoursPeriod > -1)
-                    hour.show = this.selectedHoursPeriod == hoursMonth;
-                else if ($scope.customHoursStartDate && $scope.customHoursEndDate){
-                    d = Util.alignDate(new Date( hour.hour.date ));
-                    
-                    hour.show = d < Util.alignDate(new Date($scope.customHoursEndDate)) && d >= Util.alignDate(new Date($scope.customHoursStartDate));
-                }
-				
+
+				if( $scope.selectedHoursPeriod > -1 )
+					hour.show = this.selectedHoursPeriod == hoursMonth;
+				else if( $scope.customHoursStartDate && $scope.customHoursEndDate ) {
+					d = Util.alignDate( new Date( hour.hour.date ) );
+
+					hour.show = d < Util.alignDate( new Date( $scope.customHoursEndDate ) ) && d >= Util.alignDate( new Date( $scope.customHoursStartDate ) );
+				}
+
 				if( hour.show ) {
 					projHour.totalHours += hour.hour.hours;
 				}
@@ -483,6 +486,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		return true;
 	};
 
+	// move method to determine hours widget mode from hours widget
+	$scope.isDisplayedWeek = function( ) {
+		return $scope.mode == 'month' && $scope.subMode == 'weekly' || $scope.mode == 'week';
+	};
+
 	$scope.projectIcon = function( projectResource ) {
 		var iconObject = _.findWhere( $scope.projectIcons, {
 			resource: projectResource
@@ -493,7 +501,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	/**
 	 * Get the Profile
 	 */
-	$scope.initProfile = function() {
+	$scope.initProfile = function( ) {
 		$scope.profileId = $stateParams.profileId;
 		Resources.get( 'people/' + $scope.profileId ).then( function( person ) {
 			$scope.setProfile( person );
@@ -508,19 +516,19 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					var hoursRate = 0;
 					for( var m = 0; m < myProjects.length; m++ ) {
 						var myProj = myProjects[ m ];
-						
-						if(ProjectsService.getProjectState(myProj) == 'Active') {
-						  $scope.activeProjectsCount++;
+
+						if( ProjectsService.getProjectState( myProj ) == 'Active' ) {
+							$scope.activeProjectsCount++;
 						}
-						
-						for(var rolesCounter = 0; rolesCounter < myProj.roles.length; rolesCounter++) {
-							_.each(myProj.roles[rolesCounter].assignees, function(assignee) { 
-								if(assignee.person && assignee.person.resource == $scope.profile.about) {
+
+						for( var rolesCounter = 0; rolesCounter < myProj.roles.length; rolesCounter++ ) {
+							_.each( myProj.roles[ rolesCounter ].assignees, function( assignee ) {
+								if( assignee.person && assignee.person.resource == $scope.profile.about ) {
 									hoursRate += assignee.hoursPerWeek;
 								}
-							});
+							} );
 						}
-						
+
 						var found = undefined;
 						myProj.title = myProj.customerName + ': ' + myProj.name;
 						$scope.projects.push( myProj );
@@ -536,7 +544,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							$scope.execProjects.push( myProj );
 						}
 					}
-					
+
 					//$scope.hoursRateValue = hoursRate;
 					//$scope.hoursRateFromProjects = Math.round(100*hoursRate/HOURS_PER_WEEK);
 
@@ -590,16 +598,16 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							$defer.resolve( ret );
 						}
 					} );
-					
+
 					var cnt = 0;
 					for( var i = 0; i < assignments.length; i++ ) {
 						var myAssignment = assignments[ i ];
-						var now = moment();
-						var start = moment(myAssignment.startDate);
-						if(start.isBefore(now) || start.isSame(now, 'day')) {
-						  if(!myAssignment.endDate || moment(myAssignment.endDate).isAfter(now) || moment(myAssignment.endDate).isSame(now, 'day')) {
-						    cnt += myAssignment.hoursPerWeek;
-						  }
+						var now = moment( );
+						var start = moment( myAssignment.startDate );
+						if( start.isBefore( now ) || start.isSame( now, 'day' ) ) {
+							if( !myAssignment.endDate || moment( myAssignment.endDate ).isAfter( now ) || moment( myAssignment.endDate ).isSame( now, 'day' ) ) {
+								cnt += myAssignment.hoursPerWeek;
+							}
 						}
 					}
 					$scope.hoursRateValue = cnt;
@@ -608,8 +616,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			} );
 		} );
 	}
-	
-	$scope.initProfile();
+
+	$scope.initProfile( );
 
 	$scope.isCurrentProject = function( endDate ) {
 		var date = new Date( endDate );
@@ -685,7 +693,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.selectedWeekIndex = 0;
 	$scope.thisWeekDayLabels = [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT' ];
 	$scope.newHoursRecord = {};
-	
+
 	$scope.startWeekDate = $scope.moment( ).day( 0 ).format( 'YYYY-MM-DD' );
 	$scope.endWeekDate = $scope.moment( ).day( 6 ).format( 'YYYY-MM-DD' );
 
@@ -698,8 +706,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 	$scope.currentWeek = function( ) {
 		$scope.selectedWeekIndex = 0;
-		if($rootScope.defaultHoursWeekShiftedBack) {
-		  $scope.selectedWeekIndex = -7;
+		if( $rootScope.defaultHoursWeekShiftedBack ) {
+			$scope.selectedWeekIndex = -7;
 		}
 		$scope.showWeek( );
 	};
@@ -713,38 +721,38 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.selectedWeekIndex -= 7;
 		$scope.showWeek( );
 	};
-	
-	$scope.$on('hours:backInTime', function() {
-	  $scope.prevWeek();
-	});
-	
-	$scope.$on('hours:forwardInTime', function() {
-	  $scope.nextWeek();
-	});
-	
-	$scope.$on('hours:showToday', function() {
-      $scope.selectedWeekIndex = 0;
-      $scope.showWeek( );
-    });
-    
-    $scope.$on('hours:selectedNew', function(event, day) {
-      var month = moment(day.date).month();
-      if($scope.selectedMonth != month) {
-        $scope.selectedMonth = month;
-        
-        if($scope.hours) {
-          $scope.totalMonthHours = 0;
-          for( var i = 0; i < $scope.hours.length; i++ ) {
-            var hour = $scope.hours[ i ];
-            var date = moment(hour.date);
-            if(moment(day.date).isSame(date, 'month')) {
-              $scope.totalMonthHours += hour.hours;
-            }
-          }
-        }
-        
-      }
-    });
+
+	$scope.$on( 'hours:backInTime', function( ) {
+		$scope.prevWeek( );
+	} );
+
+	$scope.$on( 'hours:forwardInTime', function( ) {
+		$scope.nextWeek( );
+	} );
+
+	$scope.$on( 'hours:showToday', function( ) {
+		$scope.selectedWeekIndex = 0;
+		$scope.showWeek( );
+	} );
+
+	$scope.$on( 'hours:selectedNew', function( event, day ) {
+		var month = moment( day.date ).month( );
+		if( $scope.selectedMonth != month ) {
+			$scope.selectedMonth = month;
+
+			if( $scope.hours ) {
+				$scope.totalMonthHours = 0;
+				for( var i = 0; i < $scope.hours.length; i++ ) {
+					var hour = $scope.hours[ i ];
+					var date = moment( hour.date );
+					if( moment( day.date ).isSame( date, 'month' ) ) {
+						$scope.totalMonthHours += hour.hours;
+					}
+				}
+			}
+
+		}
+	} );
 
 	$scope.weekHoursByProject = [ ];
 	$scope.weekHoursByTask = [ ];
@@ -759,15 +767,17 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			var date = moment( hour.date );
 			var start = moment( $scope.startWeekDate );
 			var end = moment( $scope.endWeekDate );
-			if( (date.isAfter(start) || date.isSame(start)) && (date.isBefore(end) || date.isSame(end)) ) {
-			  profileWeekHours.push( hour );
+			if( ( date.isAfter( start ) || date.isSame( start ) ) && ( date.isBefore( end ) || date.isSame( end ) ) ) {
+				profileWeekHours.push( hour );
 			}
 		}
-		
+
 		$scope.totalWeekHours = 0;
-		_.each(profileWeekHours, function(element) { $scope.totalWeekHours += parseFloat(element.hours); });
-		
-		$scope.initPercentageCircle();
+		_.each( profileWeekHours, function( element ) {
+			$scope.totalWeekHours += parseFloat( element.hours );
+		} );
+
+		$scope.initPercentageCircle( );
 
 		var weekHoursByProject = [ ];
 		var weekHoursByTask = [ ];
@@ -834,7 +844,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 				} );
 			}
 		}
-		
+
 		$scope.weekHoursByProject = weekHoursByProject;
 		$scope.weekHoursByTask = weekHoursByTask;
 	};
@@ -858,46 +868,48 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		}
 		return futureness;
 	};
-	
-	$scope.initPercentageCircle = function() {
+
+	$scope.initPercentageCircle = function( ) {
 		var percents = 0;
 		var degrees = 0;
-		
-		if($scope.totalWeekHours && $scope.hoursRateValue && $scope.hoursRateValue != 0) {
-			percents = Math.ceil($scope.totalWeekHours / $scope.hoursRateValue * 100);
-			
+
+		if( $scope.totalWeekHours && $scope.hoursRateValue && $scope.hoursRateValue != 0 ) {
+			percents = Math.ceil( $scope.totalWeekHours / $scope.hoursRateValue * 100 );
+
 			// convert to degrees
-			degrees = Math.ceil(percents * 360 / 100);
-			
-			if(degrees > 360)
+			degrees = Math.ceil( percents * 360 / 100 );
+
+			if( degrees > 360 )
 				degrees = 360;
 		}
-		
-		var activeBorder = $("#percentage-activeBorder");
 
-		if (degrees<=180){
-		  activeBorder.css('background-image','linear-gradient(' + (90+degrees) + 'deg, transparent 50%, #ececec 50%),linear-gradient(90deg, #ececec 50%, transparent 50%)');
-		  }
-		else{
-		   activeBorder.css('background-image','linear-gradient(' + (degrees-90) + 'deg, transparent 50%, #69DBCC 50%),linear-gradient(90deg, #ececec 50%, transparent 50%)');
+		var activeBorder = $( "#percentage-activeBorder" );
+
+		if( degrees <= 180 ) {
+			activeBorder.css( 'background-image', 'linear-gradient(' + ( 90 + degrees ) + 'deg, transparent 50%, #ececec 50%),linear-gradient(90deg, #ececec 50%, transparent 50%)' );
+		} else {
+			activeBorder.css( 'background-image', 'linear-gradient(' + ( degrees - 90 ) + 'deg, transparent 50%, #69DBCC 50%),linear-gradient(90deg, #ececec 50%, transparent 50%)' );
 		}
 	}
-	
-	$scope.$on('hours:added', function (event, selectedDay) {
-		$scope.recalculateCircle(selectedDay);
-    });
-	
-	$scope.$on('hours:deleted', function (event, selectedDay) {
-		$scope.recalculateCircle(selectedDay);
-    });
-    
-    $scope.recalculateCircle = function(day) {
-      var selectedMoment = moment(day.date);
-      var startOfSelectedWeek = selectedMoment.day(0);
-      var todaysStartWeek = moment().day(0)
-      $scope.selectedWeekIndex = startOfSelectedWeek.diff(todaysStartWeek, 'days');
-      $scope.initHours(true);
-    }
+
+	$scope.$on( 'hours:added', function( event, selectedDay ) {
+		$scope.recalculateCircle( selectedDay );
+	} );
+
+	$scope.$on( 'hours:deleted', function( event, selectedDay ) {
+		$scope.recalculateCircle( selectedDay );
+	} );
+
+	$scope.recalculateCircle = function( day ) {
+		var selectedMoment = moment( day.date );
+		var startOfSelectedWeek = selectedMoment.day( 0 );
+		var todaysStartWeek = moment( ).day( 0 )
+		$scope.selectedWeekIndex = startOfSelectedWeek.diff( todaysStartWeek, 'days' );
+		$scope.initHours( true, function( ) {
+			$scope.handleHoursPeriodChanged( );
+		} );
+
+	}
 	//    /**
 	//     * Load Skill Definitions to display names
 	//     */

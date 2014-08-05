@@ -367,8 +367,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				roles = groupRoleMapping[ prop ];
 
 				for( i = 0; roles && i < roles.length; i++ )
-					if( $scope.userRoles[   roles[ i ].toLowerCase( ) ] )
-						$scope.userRoles[   roles[ i ].toLowerCase( ) ].value = true;
+					if( $scope.userRoles[              roles[ i ].toLowerCase( ) ] )
+						$scope.userRoles[              roles[ i ].toLowerCase( ) ].value = true;
 			}
 		}
 		var userRoles = _.object( _.map( $scope.userRoles, function( x ) {
@@ -392,9 +392,16 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				result.splice( i, 1 );
 
 		}
-		//var rolesPersonMapping = {};
-		//var projectPersonsMapping = {};
+
 		var projectMapping = {};
+
+		// in case of selected task simply put into map because we have no selected
+		// projects and it will be returned empty assignments list
+		if( reportProject && reportProject.resource && reportProject.resource.indexOf( 'tasks' ) > -1 )
+			projectMapping[ reportProject.resource ] = {
+				resource: reportProject.resource,
+				name: reportProject.value
+			};
 
 		var j;
 
@@ -432,6 +439,10 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			var prop;
 
 			hoursQ.$or = _.map( projectMapping, function( val, key ) {
+				if( key.indexOf( 'tasks' ) > -1 )
+					return {
+						"task.resource": key
+					};
 				return {
 					"project.resource": key
 				};
@@ -455,17 +466,45 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 			HoursService.customQuery( hoursQ ).then( function( reportHours ) {
 				var person;
+				var mappingEntry;
 
 				for( i = 0; i < reportHours.length; i++ ) {
-					person = findPersonOnProject( projectMapping[ reportHours[ i ].project.resource ], reportHours[ i ].person.resource );
 
+					if( reportHours[ i ].project && reportHours[ i ].project.resource ) {
+						//projectMapping[ reportHours[ i ].task.resource ];
+						mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
+						person = findPersonOnProject( mappingEntry, reportHours[ i ].person.resource );
+					} else if( reportHours[ i ].task && reportHours[ i ].task.resource ) {
+						person = null;
+
+						if( projectMapping[ reportHours[ i ].task.resource ].persons )
+							person = _.find( projectMapping[ reportHours[ i ].task.resource ].persons, function( p ) {
+								return p.resource == reportHours[ i ].person.resource;
+							} );
+
+						if( !projectMapping[ reportHours[ i ].task.resource ].persons )
+							projectMapping[ reportHours[ i ].task.resource ].persons = [ ];
+
+						if( !person ) {
+							person = {
+								name: $scope.peopleMap[ reportHours[ i ].person.resource ].name,
+								resource: reportHours[ i ].person.resource
+							};
+
+							projectMapping[ reportHours[ i ].task.resource ].persons.push( person );
+						}
+					}
+
+					//$scope.peopleMap[ assignments[ i ].members[ j ].person.resource ].name
 					if( person ) {
 						person.hours = person.hours ? person.hours : [ ];
-						person.hours.push( {
-							hours: reportHours[ i ].hours,
-							description: reportHours[ i ].description,
-							date: reportHours[ i ].date
-						} );
+
+						if( ( !$scope.reportCustomStartDate || reportHours[ i ].date >= $scope.reportCustomStartDate ) && ( !$scope.reportCustomEndDate || reportHours[ i ].date <= $scope.reportCustomEndDate ) )
+							person.hours.push( {
+								hours: reportHours[ i ].hours,
+								description: reportHours[ i ].description,
+								date: reportHours[ i ].date
+							} );
 					}
 				}
 
@@ -495,6 +534,11 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 						result[i].roles[ j ].abbreviation = $scope.rolesMapping[ result[i].roles[ j ].type.resource ].toUpperCase( );
 					}
 
+				if( result.length == 0 )
+					// put tasks info
+					for( prop in projectMapping )
+					result.push( projectMapping[ prop ] );
+
 				cb( result );
 			} );
 
@@ -515,14 +559,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		// revenue', 'Role', 'Role quantity' ];
 		var head = $scope.getHoursHeader( );
 		var i = 0;
-		/*
-		 for( i = 0; i < head.length; i++ ) {
-		 line += head[ i ] + ',';
-		 }
-		 //Remove last comma and add a new line
-		 line = line.slice( 0, -1 );
-		 */
-		line += head.join( ',' )
+
+		line += head.join( ',' );
 		str += line + '\r\n';
 
 		var i;
@@ -533,14 +571,14 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			line = '';
 
 			var record = reportData[ i ];
-
+			/*
 			line += $scope.hoursToCSV.stringify( record.name ) + ',';
-			line += [ '--', '--', '--', '--' ].join( ',' );
+			line += [ '--', '--', '--', '--', '--' ].join( ',' );
 			line += '\r\n';
-
+			*/
 			//line += [ '--', '--' ].join( ',' );
 
-			for( j = 0; j < record.roles.length; j++ ) {
+			for( j = 0; record.roles && j < record.roles.length; j++ ) {
 				//line += record.roles[ j ].abbreviation + ',';
 
 				//line += '\r\n';
@@ -549,15 +587,17 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 					//line += [ '--', '--' ].join( ',' );
 
 					if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
-						line += [ '--' ].join( ',' );
+						//line += [ '--' ].join( ',' );
+						line += $scope.hoursToCSV.stringify( record.name ) + ',';
 						line += record.roles[ j ].abbreviation + ',';
-						line += [ '--', '--', '--' ].join( ',' );
+						line += [ '--', '--', '--', '--' ].join( ',' );
 						line += '\r\n';
 					}
 					var l = 0;
 
 					for( l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
-						line += [ '--' ].join( ',' );
+						//line += [ '--' ].join( ',' );
+						line += $scope.hoursToCSV.stringify( record.name ) + ',';
 						line += record.roles[ j ].abbreviation + ',';
 						line += record.roles[ j ].persons[ k ].name + ',';
 						line += record.roles[ j ].persons[ k ].hours[ l ].date + ',';
@@ -569,11 +609,30 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				}
 
 			}
+
+			// in case of tasks
+			if( !record.roles )
+				for( k = 0; k < record.persons.length; k++ ) {
+
+					for( l = 0; record.persons[ k ].hours && l < record.persons[ k ].hours.length; l++ ) {
+						//line += [ '--' ].join( ',' );
+						line += $scope.hoursToCSV.stringify( record.name ) + ',';
+						line += '--,';
+						line += record.persons[ k ].name + ',';
+						line += record.persons[ k ].hours[ l ].date + ',';
+						line += record.persons[ k ].hours[ l ].hours + ',';
+						line += record.persons[ k ].hours[ l ].description + ',';
+						line += '\r\n';
+					}
+
+				}
 			//line += record.hour.date + ',';
 			//    line += record.hour.hours + ',';
 			//line += $scope.hoursToCSV.stringify( record.hour.description ?
 			// record.hour.description : '' ) + ',';
-			str += line + '\r\n';
+
+			if( line )
+				str += line + '\r\n';
 		}
 
 		return str;
