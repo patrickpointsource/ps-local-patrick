@@ -194,7 +194,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 					startDate = new Date(Date.parse(startDate));
 					endDate = new Date(Date.parse(endDate));
 					
-					if (!person.primaryRole || role && role != person.primaryRole.resource && person.group && role != person.group)
+					if (!person.primaryRole || role && role != person.primaryRole.resource && (!person.group || role != person.group))
 						return false;
 					
 					if (assignments == null)
