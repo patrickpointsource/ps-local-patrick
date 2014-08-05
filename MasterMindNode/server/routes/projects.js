@@ -3,7 +3,7 @@
 var projects = require('../controllers/projects');
 var express = require('express');
 var util = require('../util/auth');
-var resources = require('../util/resources');
+var securityResources = require('../util/securityResources');
 
 var router = express.Router();
 
@@ -56,7 +56,7 @@ router.get('/:id/links', function(req, res) {
 });
 
 router.get('/:id/assignments', function(req, res) {
-	security.isAllowed(req.user, res, resources.assignments.resourceName, resources.assignments.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions[0], function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -107,7 +107,7 @@ router.get('/:id/roles/:roleId', function(req, res) {
 });
 
 router.put('/:id/assigments', function(req, res) {
-	security.isAllowed(req.user, res, resources.assignments.resourceName, resources.assignments.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions[1], function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;

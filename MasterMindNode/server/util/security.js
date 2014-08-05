@@ -55,13 +55,13 @@ module.exports.initSecurity = function(id, callback) {
 			});
 		}
 	});
-}
+};
 
 var getRolesByGoogleId = function(id, callback) {
 	dataAccess.getItem(id + "_SecurityRoles", function (err, result) {
 		callback(err, result);
 	});
-}
+};
 
 var allow = function(role, resource, permission, callback) {
     acl.allow(role, resource, permission, function(err){
@@ -89,4 +89,4 @@ module.exports.insertRoles = function(id, roles, callback) {
 	dataAccess.insertItem(obj._id, obj, obj._id, function (err, result) {
 		callback(err, result);
 	});
-}
+};

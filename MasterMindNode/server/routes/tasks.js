@@ -5,12 +5,12 @@ var tasks = require('../controllers/tasks');
 var express = require('express');
 var util = require('../util/auth');
 var security = require('../util/security');
-var resources = require('../util/resources');
+var securityResources = require('../util/securityResources');
 
 var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
-	security.isAllowed(req.user, res, resources.tasks.resourceName, resources.tasks.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions[0], function(allowed){
 		if (allowed) 
 		{
 			var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
@@ -30,7 +30,7 @@ router.get('/', util.isAuthenticated, function(req, res){
 
 router.post('/', function(req, res) {
 
-	security.isAllowed(req.user, res, resources.tasks.resourceName, resources.tasks.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions[1], function(allowed){
 		if (allowed) 
 		{
 		    tasks.insertTask(req.body, function(err, result){
@@ -48,7 +48,7 @@ router.post('/', function(req, res) {
 
 router.delete('/', function(req, res) {
 
-	security.isAllowed(req.user, res, resources.tasks.resourceName, resources.tasks.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions[1], function(allowed){
 		if (allowed) 
 		{
 		    tasks.deleteTask(req.body, function(err, result){
@@ -64,7 +64,7 @@ router.delete('/', function(req, res) {
 
 
 router.get('/:id', function(req, res) {
-	security.isAllowed(req.user, res, resources.tasks.resourceName, resources.tasks.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions[0], function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;

@@ -4,51 +4,80 @@ var configuration = require('../controllers/configuration');
 var express = require('express');
 var util = require('../util/auth');
 
+var security = require('../util/security');
+var securityResources = require('../util/securityResources');
+
+
 var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
-    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-    
-    // Call to projects service
-    configuration.listConfiguration(query, function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            res.json(result);
-        }            
-    });
-}); 
+
+	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions[0], function(allowed){
+		if (allowed) 
+		{
+		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
+		   	configuration.listConfiguration(query, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
+		}
+	});
+ ); 
 
 
 router.post('/', function(req, res) {
-    configuration.insertConfiguration(req.body, function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            res.json(result);
-        }            
-    });
+
+	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions[1], function(allowed){
+		if (allowed) 
+		{
+		    configuration.insertConfiguration(req.body, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
+		}
+	});
+
 });
 
 router.delete('/', function(req, res) {
-    configuration.deleteConfiguration(req.body, function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            res.json(result);
-        }            
-    });
+	
+	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions[1], function(allowed){
+		if (allowed) 
+		{
+			configuration.deleteConfiguration(req.body, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
+		}
+	});
+
 });
 
 router.get('/:id', function(req, res) {
-	var id = req.params.id;
-    configuration.getConfiguration(id, function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            res.json(result);
-        }            
-    });
+
+	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions[0], function(allowed){
+		if (allowed) 
+		{
+			var id = req.params.id;
+		    configuration.getConfiguration(id, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
+		}
+	});
+
 });
 
 module.exports = router;

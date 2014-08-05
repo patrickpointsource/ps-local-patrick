@@ -5,13 +5,13 @@ var assignments = require('../controllers/assignments');
 var express = require('express');
 var util = require('../util/auth');
 var security = require('../util/security');
-var resources = require('../util/resources');
+var securityResources = require('../util/securityResources');
 
 var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
 
-	security.isAllowed(req.user, res, resources.assignments.resourceName, resources.assignments.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions[0], function(allowed){
 		if (allowed) 
 		{
 		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
@@ -30,7 +30,7 @@ router.get('/', util.isAuthenticated, function(req, res){
 }); 
 
 router.get('/:id', function(req, res) {
-	security.isAllowed(req.user, res, resources.assignments.resourceName, resources.assignments.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions[0], function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;

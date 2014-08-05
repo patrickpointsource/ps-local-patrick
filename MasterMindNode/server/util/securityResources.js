@@ -1,6 +1,6 @@
 'use strict';
 
-var resources = {
+var securityResources = {
     tasks :{
         resourceName: 'tasks',
         permissions: ['viewTasks','editTasks']
@@ -8,7 +8,11 @@ var resources = {
     assignments :{
         resourceName: 'assignments',
         permissions: ['viewAssignments','editAssignments']
+    },
+    configuration :{
+        resourceName: 'configuration',
+        permissions: ['viewConfiguration','editConfiguration']
     }
 };
 
-module.exports = resources;
+module.exports = securityResources;
