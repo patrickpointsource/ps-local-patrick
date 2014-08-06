@@ -7,18 +7,26 @@ var util = require('../util/auth');
 var router = express.Router();
 
 router.get('/me', util.isAuthenticated, function(req, res){
-    people.getPersonByGoogleId(req.user, function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            var me = result.members.length == 1 ? result.members[0]: {};
-            
-            me.about = "people/" + me._id;
-            
-            res.json(me);
-        }            
-    });
+	
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions[3], function(allowed){
+		if (allowed) 
+		{
+		    people.getPersonByGoogleId(req.user, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            var me = result.members.length == 1 ? result.members[0]: {};
+		            
+		            me.about = "people/" + me._id;
+		            
+		            res.json(me);
+		        }            
+		    });
+		}
+	});
+
 }); 
+
 /*
 router.options('/me', util.isAuthenticated, function(req, res){
     var headers = {};

@@ -4,6 +4,7 @@ var tasks = require('../controllers/tasks');
 
 var express = require('express');
 var util = require('../util/auth');
+
 var security = require('../util/security');
 var securityResources = require('../util/securityResources');
 

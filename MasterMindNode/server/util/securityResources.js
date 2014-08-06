@@ -20,11 +20,11 @@ var securityResources = {
     },
     people :{
         resourceName: 'people',
-        permissions: ['viewPeople', 'viewProfile','editProfile','editMyProfile','viewPersonnelData','editPersonnelData','viewGroups','editGroups']
+        permissions: ['viewPeople', 'viewProfile','editProfile','viewMyProfile','editMyProfile','viewPersonnelData','editPersonnelData','viewGroups','editGroups']
     },
     projects :{
         resourceName: 'projects',
-        permissions: ['viewProfile','editProfile','editMyProfile','viewPersonnelData','editPersonnelData','viewGroups','editGroups']
+        permissions: ['viewProjects','editProjects','viewProjectLinks','editProjectLinks','viewRoles','editRoles']
     }
 };
 
