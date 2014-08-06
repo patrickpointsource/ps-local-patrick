@@ -25,7 +25,7 @@ router.get('/', util.isAuthenticated, function(req, res){
 		    });
 		}
 	});
- ); 
+ }); 
 
 
 router.post('/', function(req, res) {
