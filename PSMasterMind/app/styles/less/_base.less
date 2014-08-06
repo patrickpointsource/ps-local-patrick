@@ -485,12 +485,19 @@ a.staffing-export-btn
 .italic {
   font-style: italic;
 }
+.notifications {
+  height: auto !important;
+}
 .notifications > div {
-  height: 70px;
+  /*min-height: 70px;*/
+  height: 100%;
   border-bottom: 2px solid white;
 }
 .notification-request {
   color: #ffbe00;
+}
+.notification-request-cancel {
+  color: red;
 }
 .notification-bell {
   padding-left: 27px;
@@ -505,12 +512,21 @@ a.staffing-export-btn
 .notification-icon {
   text-align: center;
   padding-top: 25px;
-  border-right: 2px solid white;
   > i {
     font-size: 19px;
     font-weight: bold;
   }
 }
+.notification-container {
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 .no-notifications {
   padding: 25px 0 0 30px;
+}
+.horizontal-padding-15 {
+  padding-left: 15px;
+  padding-right: 15px;
 }

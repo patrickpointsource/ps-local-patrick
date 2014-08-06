@@ -65,7 +65,7 @@ function( $q, $scope, $state, $rootScope, Resources, ProjectsService, VacationsS
       $scope.expandedIndex = -1;
       
       if(isApproved) {
-        $scope.commitHours(request);
+        VacationsService.commitHours(request);
       }
     });
     
@@ -191,5 +191,14 @@ function( $q, $scope, $state, $rootScope, Resources, ProjectsService, VacationsS
     } else {
       return $scope.displayDate(period.startDate) + " - " + $scope.displayDate(period.endDate);
     }
+  }
+  
+  $scope.deleteVacation = function(index) {
+    var request = $scope.requests[index];
+    
+    Resources.remove(request.resource).then(function(result) {
+      $scope.requests.splice(index, 1);
+      $scope.expandedIndex = -1;
+    });
   }
 } ] );

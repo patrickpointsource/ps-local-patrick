@@ -91,13 +91,26 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
           VacationsService.getRequests($scope.me).then(function(result) {
             _.each(result, function(request) {
               Resources.resolve(request.person).then(function(person){
-                $scope.notifications.push({
-                  type: "Vacation",
-                  header: "Pending Paid Vacation Request",
-                  text: "From " + person.name,
-                  icon: "fa fa-clock-o",
-                  resource: request.resource
-                });
+                var notification = {};
+                if(request.status == "Cancelled") {
+                  notification = {
+                    type: "VacationCancel",
+                    header: "Cancelled Paid Vacation Request",
+                    text: person.name + " has deleted out-of-office entry: " + request.startDate + " - " + request.endDate + ", " + request.type + ". Reason: " + request.cancellationReason,
+                    icon: "fa fa-times-circle",
+                    resource: request.resource
+                  };
+                } else {
+                  notification = {
+                    type: "Vacation",
+                    header: "Pending Paid Vacation Request",
+                    text: "From " + person.name,
+                    icon: "fa fa-clock-o",
+                    resource: request.resource
+                  };
+                }
+                
+                $scope.notifications.push(notification);
               });
             })
           });

@@ -3,13 +3,14 @@
 /*
  * Services dealing with the vacations service
  */
-angular.module( 'Mastermind' ).service( 'VacationsService', [ '$q', 'Resources',
-function( $q, Resources ) {
+angular.module( 'Mastermind' ).service( 'VacationsService', [ '$q', 'Resources', 'HoursService',
+function( $q, Resources, HoursService ) {
 
   this.STATUS = {
     Pending: "Pending",
     Approved: "Approved",
-    Denied: "Denied"
+    Denied: "Denied",
+    Cancelled: "Cancelled"
   }
   
   this.VACATION_TYPES = {
@@ -54,9 +55,14 @@ function( $q, Resources ) {
           vacationManager: {
             resource: manager.about
           }
-        },
+        }
+      ],
+      $or: [
         {
           status: "Pending"
+        },
+        {
+          status: "Cancelled"
         }
       ]
     };
@@ -169,5 +175,88 @@ function( $q, Resources ) {
     if(status == this.STATUS.Denied) {
       return "DENIED";
     }
+    if(status == this.STATUS.Cancelled) {
+      return "CANCELLED";
+    }
   }
+  
+  this.getTaskForVacation = function(type) {
+    var deferred = $q.defer();
+    
+    var taskQuery = { name: "Vacation" };
+    
+    if(type == this.VACATION_TYPES.Appointment) {
+      taskQuery = { name: "Appointment" };
+    }
+    
+    Resources.query('tasks', taskQuery, null, function(result) {
+      if(result.count == 0) {
+        Resources.create('tasks', taskQuery).then(function() {
+          this.getTaskForVacation(type).then(function(res) {
+            deferred.resolve(res);
+          });
+        });
+      } else {
+        deferred.resolve(result.members[0]);
+      }
+    });
+    
+    return deferred.promise;
+  }
+  
+  this.commitHours = function(request) {
+    var $this = this;
+    this.getTaskForVacation(request.type).then(function(task) {
+      var start = moment(request.startDate);
+      var end = moment(request.endDate);
+      var actualDays = $this.getActualDays(request.startDate, request.endDate);
+    
+    // hours add for 1 day
+    if(actualDays == 1) {
+      var hours = end.diff(start ,'hours');
+      
+      var oneDayHours = 0;
+      if(hours <= 8) {
+        oneDayHours = 8;
+      } else {
+        oneDayHours = hours;
+      }
+      
+      var hoursEntry = {
+        date: moment(request.startDate).format("YYYY-MM-DD"),
+        person: request.person,
+        description: "Vacation: " + request.description,
+        hours: oneDayHours,
+        task: {resource: task.resource, name: task.name}
+      }
+      
+      HoursService.updateHours([hoursEntry]);
+    // hours add for many days
+    } else {
+      var allDays = end.diff(start ,'days');
+      actualDays = 0;
+      var hoursEntries = [];
+      for(var d = 0; d <= allDays; d++) {
+        if(d != 0) {
+          start.add('days', 1);
+        }
+      
+        if(start.day() != 0 && start.day() != 6) {
+          var hoursEntry = {
+            date: start.format("YYYY-MM-DD"),
+            person: request.person,
+            description: "Vacation: " + request.description,
+            hours: 8,
+            task: {resource: task.resource, name: task.name}
+          }
+          
+          hoursEntries.push(hoursEntry);
+        }
+      }
+      
+      HoursService.updateHours(hoursEntries);
+    }
+    });
+  }
+  
 } ] );

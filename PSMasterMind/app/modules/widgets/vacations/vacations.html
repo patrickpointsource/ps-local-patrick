@@ -118,7 +118,7 @@
             <span style="color: #808080; font-weight: 500;">({{getDays(vacation.startDate, vacation.endDate)}})</span>
           </div>
           <div class="col-xs-2 no-horizontal-padding vac-type">{{getTypeText(vacation.type)}}</div>
-          <div class="col-xs-4 no-horizontal-padding align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied', 'color-yellow': vacation.status === 'Pending'}">
+          <div class="col-xs-4 no-horizontal-padding align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied' || vacation.status === 'Cancelled', 'color-yellow': vacation.status === 'Pending'}">
             <i class="fa fa-check" ng-show="vacation.status === 'Approved'"></i>
             <i class="fa fa-clock-o" ng-show="vacation.status === 'Pending'"></i>
             <span ng-class="{'bold-text': vacation.status == 'Approved' || vacation.status == 'Denied'}">{{getStatusText(vacation.status)}}</span>
@@ -130,7 +130,7 @@
         <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding" ng-show="editVacationIndex == $index">
           <div class="row col-xs-12" style="margin-left: 0px; margin-right: 0px; margin-bottom: 10px; padding-left: 0px; padding-left: 0px;">
             <div class="col-xs-8" style="font-size: 15px;"><strong>Request</strong> <span class="color-gray-image-border">submitted on {{vacation.created}}</span></div>
-            <div class="col-xs-3 align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied', 'color-yellow': vacation.status === 'Pending'}">
+            <div class="col-xs-3 align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied' || vacation.status === 'Cancelled', 'color-yellow': vacation.status === 'Pending'}">
               <i class="fa fa-check" ng-show="vacation.status === 'Approved'"></i>
               <i class="fa fa-clock-o" ng-show="vacation.status === 'Pending'"></i>
               <span ng-class="{'bold-text': vacation.status == 'Approved' || vacation.status == 'Denied'}">{{getStatusText(vacation.status)}}</span>
@@ -138,8 +138,10 @@
             <div class="col-xs-1 no-padding"><i class="fa fa-times cursor-pointer pull-right color-gray-image-border" ng-click="editVacation($index)"></i></div>
           </div>
           <div class="row col-xs-12 no-margin no-horizontal-padding">
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12">
               <div ng-if="profile.manager && !editManagerEdit" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">{{vacationManagerEdit.name}}</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerEditCallback($index)" ng-show="!editManagerEdit"></i></div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
               <select ng-if="editManagerEdit" ng-options="m.name for m in managers" class="selectpicker select-vacation-manager-{{$index}}" data-style="btn-info" ng-model="vacationManagerEdit" ng-change="managerEditSelected()" name="{{'vacationManagerEdit' + $index}}">
               </select>
               <select class="selectpicker select-vacation-start-date-edit" data-style="btn-info" ng-model="vacation.type"
@@ -204,7 +206,7 @@
           </div>
           
           <div class="row col-xs-12 no-horizontal-margin margin-bottom-xs vertical-margin-md">
-            <button class="btn btn-default" ng-click="deleteVacation(vacation)" style="color: red; border: 0px; background-color: #f7f7f7;">Cancel Request</button>
+            <button class="btn btn-default" data-toggle="modal" data-target="#vacCancelModal" style="color: red; border: 0px; background-color: #f7f7f7;">Cancel Request</button>
             <button class="btn btn-info pull-right" ng-click="updateVacation(vacation)" style="background-color: #1ba2c1; color: white; font-size: 16px; font-weight: bold;">RESUBMIT</button>
             <span class="pull-right gray-text vac-requested"><span class="color-gray-less bold">{{getEditVacationDuration()}}</span> requested</span>
           </div>
@@ -219,6 +221,28 @@
           <div class="col-xs-1 align-right no-padding" ng-hide="vacationsPage == allPages" ng-click="nextPage()"><i class="fa fa-caret-right"></i></div>
           <div class="col-xs-1 align-right no-padding" ng-show="vacationsPage == allPages"></div>
         </div>
+    </div>
+  </div>
+  <div class="modal fade" id="vacCancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Cancel out-of-office request</h4>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" ng-show="cancelValidation">
+          {{cancelValidation}}
+        </div>
+        <div class="row horizontal-padding-15">Are you sure you want to cancel your out-of-office request? If so, please provide a reason.</div>
+        <div class="row horizontal-padding-15"><input class="form-control" type="text" ng-model="cancellationReason" placeholder="Cancellation reason" required/></div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <a class="cursor-pointer" data-dismiss="modal">No</a>
+        </div>
+        <button ng-click="deleteVacation()" type="button" class="btn btn-modal-primary pull-right">YES</button>
+      </div>
+      </div>
     </div>
   </div>
 </div>

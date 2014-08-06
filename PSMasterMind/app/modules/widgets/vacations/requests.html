@@ -54,12 +54,18 @@
           <div class="row no-horizontal-margin color-gray-image-border margin-bottom-md">
             <input class="form-control" ng-model="request.comment" placeholder="Comment"/>
           </div>
-          <div class="row no-horizontal-margin color-gray-image-border">
+          <div class="row no-horizontal-margin color-gray-image-border" ng-show="request.status != 'Cancelled'">
             <button class="btn btn-approve pull-right" ng-click="decide($index, true)">
               <i class="fa fa-check"></i> <span>APPROVE</span>
             </button>
             <button class="btn btn-deny pull-right" ng-click="decide($index, false)">
               <i class="fa fa-times"></i> <span>DENY</span>
+            </button>
+          </div>
+          <div class="row no-horizontal-margin color-gray-image-border" ng-show="request.status == 'Cancelled'">
+            <span>Cancellation reason: <i>{{request.cancellationReason}}</i></span>
+            <button class="btn btn-deny pull-right" ng-click="deleteVacation($index)">
+              <i class="fa fa-times"></i> <span>REMOVE</span>
             </button>
           </div>
         </div>

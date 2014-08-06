@@ -213,12 +213,32 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	}
   }
   
-  $scope.deleteVacation = function(vacation) {
-	Resources.remove(vacation.resource).then(function(result) {
+  $scope.deleteVacation = function() {
+	/*Resources.remove(vacation.resource).then(function(result) {
 	  $scope.vacations.splice($scope.editVacationIndex, 1);
 	  $scope.editVacationIndex = -1;
 	  $scope.showVacations();
-	})
+	})*/
+	$scope.cancelValidation = "";
+	
+	var vacation = $scope.displayedVacations[$scope.editVacationIndex];
+	
+	vacation.status = VacationsService.STATUS.Cancelled;
+	
+	if(!$scope.cancellationReason) {
+	  $scope.cancelValidation = "Please enter a reason.";
+	  return;
+	}
+	
+	vacation.cancellationReason = $scope.cancellationReason;
+	
+	vacation.vacationManager = { resource: vacation.vacationManager.resource };
+	
+	Resources.update(vacation).then(function(result) {
+	  $("#vacCancelModal").modal('hide');
+      $scope.editVacationIndex = -1;
+      $scope.getVacations();
+    });
   }
   
   $scope.updateVacation = function(vacation) {
