@@ -602,7 +602,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 						line += record.roles[ j ].persons[ k ].name + ',';
 						line += record.roles[ j ].persons[ k ].hours[ l ].date + ',';
 						line += record.roles[ j ].persons[ k ].hours[ l ].hours + ',';
-						line += record.roles[ j ].persons[ k ].hours[ l ].description + ',';
+						line += $scope.hoursToCSV.stringify(record.roles[ j ].persons[ k ].hours[ l ].description) + ',';
 						line += '\r\n';
 					}
 
@@ -621,7 +621,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 						line += record.persons[ k ].name + ',';
 						line += record.persons[ k ].hours[ l ].date + ',';
 						line += record.persons[ k ].hours[ l ].hours + ',';
-						line += record.persons[ k ].hours[ l ].description + ',';
+						line += $scope.hoursToCSV.stringify(record.persons[ k ].hours[ l ].description) + ',';
 						line += '\r\n';
 					}
 

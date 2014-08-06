@@ -85,13 +85,13 @@ app.use('//projects', projects);
 app.use('/people', peopleMe);
 app.use('//people', people);
 app.use('//assignments', assignments);
-app.use('/tasks', tasks);
-app.use('/roles', roles);
-app.use('/hours', hours);
+app.use('//tasks', tasks);
+app.use('//roles', roles);
+app.use('//hours', hours);
 app.use('/configuration', configuration);
 app.use('/links', links);
 app.use('/skills', skills);
-app.use('/vacations', vacations);
+app.use('//vacations', vacations);
 app.use('/securityRoles', securityRoles);
 
 // Setup routes

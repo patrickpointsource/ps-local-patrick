@@ -2,7 +2,7 @@ var dbAccess = require( '../data/dbAccess.js' );
 var memoryCache = require( '../data/memoryCache.js' );
 var _ = require( 'underscore' );
 var query = require("underscore-query")( _ );
-
+var sift = require('sift');
 var config = require( '../config/config.js' );
 
 var PROJECTS_KEY = 'Projects';
@@ -12,6 +12,7 @@ var TASKS_KEY = 'Tasks';
 var ROLES_KEY = 'Roles';
 var SECURITY_ROLES_KEY = 'SecurityRoles';
 var CONFIGURATION_KEY = 'Configuration';
+var VACATIONS_KEY = 'Vacations';
 var SKILLS_KEY = 'Skills';
 var LINKS_KEY = 'Links';
 
@@ -48,12 +49,13 @@ var queryRecords = function( data, q, propName) {
     alignQuery( q );
     
     if (!propName) {
-	   res.data = _.query( data.data,  q);
-	
+	   //res.data = _.query( data.data,  q);
+	   res.data = sift(q, data.data);
 
 	   res.count = res.data.length;
 	} else {
-	    res[propName] = _.query( data.data,  q);
+	    //res[propName] = _.query( data.data,  q);
+	    res[propName] = sift(q, data.data);
     
 
        res.count =  res[propName].length;
