@@ -866,6 +866,32 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
+	
+	/**
+	 * Get a notification record
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject getNotificationRecord(RequestContext context, String id) throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection notificationsCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		DBObject dbObj = notificationsCol.findOne(query);
+
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+			ret.put(PROP_ABOUT, RESOURCE_NOTIFICATIONS + "/" + id);
+		}
+
+		return ret;
+	}
 
 	
 	/**
@@ -1027,6 +1053,60 @@ public class Data implements CONSTS {
 			} else {
 				System.out
 						.println("Vacation record not included because it did not return an _id property: "
+								+ object);
+			}
+		}
+
+		return ret;
+	}
+	
+	/**
+	 * Get all the notifications
+	 * 
+	 * @param query
+	 *            a filter param
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONArray getNotifications(RequestContext context, String query,
+			String fields, String sort) throws JSONException {
+		JSONArray ret = new JSONArray();
+
+		DBCollection notificationsCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
+		DBObject queryObject = null;
+		DBObject fieldsObject = null;
+		DBObject sortObject = null;
+		if (query != null) {
+			queryObject = (DBObject) JSON.parse(query);
+		}
+		if (fields != null) {
+			fieldsObject = (DBObject) JSON.parse(fields);
+		}
+		if (sort != null) {
+			sortObject = (DBObject) JSON.parse(sort);
+		}
+
+		DBCursor cursur = notificationsCol.find(queryObject, fieldsObject);
+
+		if (sort != null) {
+			cursur = cursur.sort(sortObject);
+		}
+
+		while (cursur.hasNext()) {
+			DBObject object = cursur.next();
+
+			if (object.containsField(PROP__ID)) {
+				String json = JSON.serialize(object);
+				JSONObject jsonObject = new JSONObject(json);
+
+				ObjectId _id = (ObjectId) object.get(PROP__ID);
+				jsonObject.put(PROP_RESOURCE, RESOURCE_NOTIFICATIONS + "/" + _id);
+
+				ret.put(jsonObject);
+			} else {
+				System.out
+						.println("Notification record not included because it did not return an _id property: "
 								+ object);
 			}
 		}
@@ -1685,6 +1765,53 @@ public class Data implements CONSTS {
 	}
 	
 	/**
+	 * Delete a notification by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws JSONException
+	 */
+	public static JSONObject deleteNotificationRecord(RequestContext context, String id)
+			throws JSONException {
+		JSONObject ret = null;
+
+		DBCollection vacsCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
+		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
+		BasicDBObject fields = new BasicDBObject(PROP_PERSON, 1);
+		DBObject dbObj = vacsCol.findOne(query, fields);
+		
+		if(dbObj == null){
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Notification to delete is not found").build());
+		}
+		
+		DBObject person = (DBObject)dbObj.get(PROP_PERSON);
+		String about = String.valueOf(context.getCurrentUser().get(PROP_ABOUT));
+		String resource = (String)person.get(PROP_RESOURCE);
+		
+		// Only admins or owners person who created it can delete vacation
+		if (!hasProjectManagementAccess(context) && !about.endsWith(resource)) {
+			throw new WebApplicationException(
+					Response.status(Status.FORBIDDEN)
+							.entity("You need admin athority to perform this operation")
+							.build());
+		}
+		
+		dbObj = vacsCol.findAndRemove(query);
+		if (dbObj != null) {
+			String json = JSON.serialize(dbObj);
+			ret = new JSONObject(json);
+		} else {
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+					.entity("Notification to delete is not found").build());
+		}
+
+		ret.put(PROP_ABOUT, RESOURCE_NOTIFICATIONS + "/" + id);
+
+		return ret;
+	}
+	
+	/**
 	 * Delete an task by id
 	 * 
 	 * @param id
@@ -1908,9 +2035,82 @@ public class Data implements CONSTS {
 		json = JSON.serialize(result);
 		newVacation = new JSONObject(json);
 
-		newVacation.put(PROP_ABOUT, RESOURCE_HOURS + "/" + id);
+		newVacation.put(PROP_ABOUT, RESOURCE_VACATIONS + "/" + id);
 
 		return newVacation;
+	}
+	
+	/**
+	 * Update a notification record
+	 * 
+	 * @param newNotification
+	 * @throws JSONException
+	 */
+	public static JSONObject updateNotification(RequestContext context,
+			JSONObject newNotification) throws JSONException {
+		if (!newNotification.has(PROP__ID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Notification Record does not conatin an id property").build();
+			throw new WebApplicationException(response);
+		}
+
+		JSONObject _id = newNotification.getJSONObject(PROP__ID);
+		if (!_id.has(PROP_$OID)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Notification Record does not conatin an $oid property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String id = _id.getString(PROP_$OID);
+		JSONObject existing = getNotificationRecord(context, id);
+		if (existing == null) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Notification Record does not exist").build();
+			throw new WebApplicationException(response);
+		}
+
+		if (!newNotification.has(PROP_ETAG)) {
+			Response response = Response.status(Status.BAD_REQUEST)
+					.entity("Notification Record does not conatin an etag property").build();
+			throw new WebApplicationException(response);
+		}
+
+		String etag = newNotification.getString(PROP_ETAG);
+		String old_etag = existing.getString(PROP_ETAG);
+
+		if (!etag.equals(old_etag)) {
+			String message = "Notification Record etag (" + etag
+					+ ") does not match the saved etag (" + old_etag + ")";
+			Response response = Response.status(Status.CONFLICT)
+					.entity(message).build();
+			throw new WebApplicationException(response);
+		}
+
+		int newEtag = Integer.parseInt(old_etag);
+		newEtag++;
+		newNotification.put(PROP_ETAG, String.valueOf(newEtag));
+
+		String json = newNotification.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
+
+		BasicDBObject query = new BasicDBObject();
+		query.put(PROP__ID, new ObjectId(id));
+		// Exclude persisting the base
+		BasicDBObject fields = new BasicDBObject();
+		dbObject.removeField(PROP_BASE);
+		dbObject.removeField(PROP_ABOUT);
+		dbObject.removeField(PROP_RESOURCE);
+		dbObject.removeField(PROP__ID);
+		DBObject result = hoursCol.findAndModify(query, fields, null, false,
+				dbObject, true, true);
+
+		json = JSON.serialize(result);
+		newNotification = new JSONObject(json);
+
+		newNotification.put(PROP_ABOUT, RESOURCE_NOTIFICATIONS + "/" + id);
+
+		return newNotification;
 	}
 	
 	/**
@@ -2105,6 +2305,54 @@ public class Data implements CONSTS {
 		}
 
 		return newVacationRecord;
+	}
+	
+	/**
+	 * Create a new notification record
+	 * 
+	 * @param newNotificationRecord
+	 * @throws JSONException
+	 */
+	public static JSONObject createNotification(RequestContext context,
+			JSONObject newNotificationRecord) throws JSONException {
+
+		newNotificationRecord.put(PROP_ETAG, "0");
+		newNotificationRecord.put(PROP_CREATED, new Date());
+
+		String json = newNotificationRecord.toString();
+		DBObject dbObject = (DBObject) JSON.parse(json);
+		DBCollection vacsCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
+		WriteResult result = vacsCol.insert(dbObject);
+		
+		//Handle Error Message
+		CommandResult error = result.getLastError();
+		if (error != null && error.getErrorMessage() != null) {
+			System.err.println("Add Notification Failed:"
+					+ error.getErrorMessage());
+			if (error.getException() != null) {
+				error.getException().printStackTrace();
+			}
+
+			throw new WebApplicationException(Response
+					.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(error.getErrorMessage()).build());
+		}
+		
+		// after notification record insertion its "_id" became available
+		if (dbObject.get(PROP__ID) != null) {
+			String idVal = dbObject.get(PROP__ID).toString();
+			
+			newNotificationRecord.put(PROP_ABOUT, RESOURCE_NOTIFICATIONS + "/" + idVal);
+			
+			JSONObject _id = new JSONObject();
+			
+			_id.put(PROP_$OID, idVal);
+			
+			newNotificationRecord.put(PROP__ID, _id );
+			newNotificationRecord.put(PROP_RESOURCE, RESOURCE_NOTIFICATIONS + "/" + idVal);
+		}
+
+		return newNotificationRecord;
 	}
 
 	

@@ -19,6 +19,7 @@ public interface CONSTS {
 	public String RESOURCE_ASSIGNMENTS = "assignments";
 	public String RESOURCE_TASKS = "tasks";
 	public String RESOURCE_VACATIONS = "vacations";
+	public String RESOURCE_NOTIFICATIONS = "notifications";
 	/**
 	 * Request Paramter Names
 	 */
@@ -159,6 +160,7 @@ public interface CONSTS {
 	public String RESOURCE_TITLE_ASSIGNMENTS = "Assignments";
 	public String RESOURCE_TITLE_TASKS = "Tasks";
 	public String RESOURCE_TITLE_VACATIONS = "Vacations";
+	public String RESOURCE_TITLE_NOTIFICATIONS = "Notifications";
 	
 	/**
 	 * Mongo Constants
@@ -198,6 +200,7 @@ public interface CONSTS {
 	public String COLLECTION_TITLE_TASKS = "Tasks";
 	public String COLLECTION_TITLE_CONFIGURATION = "Configuration";
 	public String COLLECTION_TITLE_VACATIONS = "Vacations";
+	public String COLLECTION_TITLE_NOTIFICATIONS = "Notifications";
 	/**
 	 * Google Constants
 	 */
