@@ -1607,4 +1607,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.$on( "$destroy", function( ) {
 		$scope.unbindEventHandlers( );
 	} );
+	
+	$rootScope.$on("hours:requiredRefresh", function() {
+	  $scope.hoursRequest( );
+	});
 } ] );

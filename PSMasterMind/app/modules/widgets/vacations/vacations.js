@@ -136,6 +136,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	if(($scope.vacationType == VACATION_TYPES.Appointment && moment(vacation.endDate).diff(vacation.startDate, 'hours') <= 4)
 	   || $scope.vacationType == VACATION_TYPES.Travel) {
       vacation.status = STATUS.Approved;
+      
+      // commit hours if vacation entry approved instantly
+      VacationsService.commitHours(vacation);
+      $rootScope.$emit("hours:requiredRefresh");
     } else {
       vacation.status = STATUS.Pending;
     }
@@ -262,6 +266,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
     if((vacation.type == VACATION_TYPES.Appointment && moment(vacation.endDate).diff(vacation.startDate, 'hours') <= 4)
        || vacation.type == VACATION_TYPES.Travel) {
       vacation.status = STATUS.Approved;
+      
+      // commit hours after updating vacation entry if it is gets approved instantly
+      VacationsService.commitHours(vacation);
+      $rootScope.$emit("hours:requiredRefresh");
     } else {
       vacation.status = STATUS.Pending;
     }

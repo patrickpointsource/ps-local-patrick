@@ -217,15 +217,15 @@ function( $q, Resources, HoursService ) {
       
       var oneDayHours = 0;
       if(hours <= 8) {
-        oneDayHours = 8;
-      } else {
         oneDayHours = hours;
+      } else {
+        oneDayHours = 8;
       }
       
       var hoursEntry = {
         date: moment(request.startDate).format("YYYY-MM-DD"),
         person: request.person,
-        description: "Vacation: " + request.description,
+        description: task.name + ": " + request.description,
         hours: oneDayHours,
         task: {resource: task.resource, name: task.name}
       }
@@ -245,7 +245,7 @@ function( $q, Resources, HoursService ) {
           var hoursEntry = {
             date: start.format("YYYY-MM-DD"),
             person: request.person,
-            description: "Vacation: " + request.description,
+            description: task.name + ": " + request.description,
             hours: 8,
             task: {resource: task.resource, name: task.name}
           }
