@@ -9,26 +9,41 @@ var securityResources = require('../util/securityResources');
 
 var router = express.Router();
 
-router.get('/me', util.isAuthenticated, function(req, res){
-	
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions[3], function(allowed){
+
+router.get('/:id', function(req, res) {
+	console.log( "tested get person service");
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions[1], function(allowed){
 		if (allowed) 
 		{
-		    people.getPersonByGoogleId(req.user, function(err, result){
-		        if(err){
-		            res.json(500, err);
-		        } else {
-		            var me = result.members.length == 1 ? result.members[0]: {};
-		            
-		            me.about = "people/" + me._id;
-		            
-		            res.json(me);
-		        }            
-		    });
+			var id = req.params.id;
+			if (id == 'me') {
+				
+				people.getPersonByGoogleId(req.user, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            var me = result.members.length == 1 ? result.members[0]: {};
+			            
+			            me.about = "people/" + me._id;
+			            
+			            res.json(me);
+			        }            
+		   	 	});
+			}
+			else {
+			    people.getPerson(id, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
 		}
 	});
 
-}); 
+});
+
 
 /*
 router.options('/me', util.isAuthenticated, function(req, res){
