@@ -115,7 +115,8 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 						roleId: activeRole._id,
 						startDate: activeRole.startDate,
 						endDate: activeRole.endDate,
-						rate: activeRole.rate.amount
+						rate: activeRole.rate.amount,
+						_rate: activeRole.rate
 					};
 				};
 			};
@@ -223,7 +224,8 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 							roleId: activeRole._id,
 							startDate: activeRole.startDate,
 							endDate: activeRole.endDate,
-							rate: activeRole.rate.amount
+							rate: activeRole.rate.amount,
+							_rate: activeRole.rate
 						});
 					}
 				

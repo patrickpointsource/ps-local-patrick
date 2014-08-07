@@ -63,6 +63,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 			members: [{
 				startDate: startDate,
 				endDate: endDate,
+				hoursPerWeek: project.rate && project.rate.hoursPerWeek || HOURS_PER_WEEK,
 				person:
 				{
 					resource: person.resource
@@ -80,13 +81,19 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 		AssignmentService.save(project, assignment)
 			.then(function (result)
 			{
-				
+				for (var i = 0, count = $scope.people.length; i < count; i++)
+					if ($scope.people[i].resource == result.members[0].person.resource)
+					{
+						$scope.people.splice(i, 1);
+						$scope.filterStartDate = $scope.filterStartDate;
+						break;
+					}
 			});
 	};
 	
 	$scope.$on("resfinder:select", function (event, args)
 	{
-		$scope.projectToAssignTo = { name: args.projectName, resource: args.projectResource, roleId: args.roleId };
+		$scope.projectToAssignTo = { name: args.projectName, resource: args.projectResource, roleId: args.roleId, rate: args._rate };
 		$scope.filterStartDate = args.startDate || $scope.formatDate(new Date());
 		
 		var endDate = args.endDate;
@@ -96,7 +103,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 		{
 			endDate = new Date($scope.filterStartDate);
 			
-			endDate.setMonth(endDate.getMonth() + 2);
+			endDate.setMonth(endDate.getMonth() + 12);
 			
 			endDate = $scope.formatDate(endDate);
 		}
@@ -191,7 +198,13 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 					var availabilityDate = null;
 					var workingHours = 0;
 					var days = 0;
+					var now = new Date();
+					
 					startDate = new Date(Date.parse(startDate));
+					
+					if (startDate < now)
+						startDate = now;
+					
 					endDate = new Date(Date.parse(endDate));
 					
 					if (!person.primaryRole || role && role != person.primaryRole.resource && (!person.group || role != person.group))
@@ -248,7 +261,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 			};
 	};
 } ] )
-.directive('myRepeatDirective', function() {
+.directive('resRepeater', function() {
 	return function($scope, element, attrs)
 	{
 	    if ($scope.$last)

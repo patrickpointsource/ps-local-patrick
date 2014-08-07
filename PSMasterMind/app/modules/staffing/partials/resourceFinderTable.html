@@ -68,11 +68,8 @@
           </button>
         </div>
       </div>
-      <!-- <div class="col-xs-4 col-sm-2 col-md-1 person-header" style="padding-right: 0px; padding-left: 0px;" ng-show="projectToAssignTo">
-        
-      </div>-->
    	</div>
-    <div my-repeat-directive class="row people-row" ng-repeat="person in people | filter:filterResources(filterStartDate, filterEndDate, filterRole2, filterAvailabilityPercentage)" style="margin-top: 10px; margin-bottom: 0px;">
+    <div res-repeater class="row people-row" ng-repeat="person in people | filter:filterResources(filterStartDate, filterEndDate, filterRole2, filterAvailabilityPercentage)" style="margin-top: 10px; margin-bottom: 0px;">
 	    <a class="col-xs-2 col-sm-1 person-image" href="#{{person.resource}}">
 	  		<img class="smallProfileImage" ng-src="{{person.thumbnail}}" />
 		</a>
@@ -94,36 +91,15 @@
 		    <div>{{formatDate(person.availabilityDate)}}</div>
 		  </div>
 		</div>
-		<div class="col-xs-2 col-sm-2 res-people-prop res-person-avail" style="font-weight: bold;">
+		<div class="col-xs-1 col-sm-1 res-people-prop res-person-avail" style="font-weight: bold;">
 		  <div>
 		    <div>{{person.availabilityPercentage}}%</div>
 	      </div>
 		</div>
-            
-            
-            
-            <!-- <div class="col-xs-3 col-sm-4 col-md-4 item-prop">
-                <a class="col-xs-3 col-sm-2" href="#{{person.resource}}" style="margin-bottom: 20px; margin-top: -5px;">
-   					<img class="smallProfileImage" ng-src="{{person.thumbnail}}" />
-				</a>
-				<div class="col-xs-10 col-sm-10 person-name" style="height: auto;">
-					<a href="#{{person.resource}}">{{person.familyName}}, {{person.givenName}}</a>
-				</div>
-            </div>
-            <div class="col-xs-3 col-sm-2 col-md-2 item-prop">
-                <span>{{person.primaryRole.abbreviation || "-"}}</span>
-            </div>
-            <div class="col-xs-2 col-sm-3 col-md-2 item-prop">
-                <span>{{person.group || "-"}}</span>
-            </div>
-            <div class="col-xs-4 col-sm-2 item-prop">
-                <span>{{formatDate(person.availabilityDate)}}</span>
-            </div>
-            <div class="col-xs-4 col-sm-2 col-md-2 item-prop">
-                {{person.availabilityPercentage}}<span class="percent">%</span>
-            </div>
-            <!-- <div class="col-xs-4 col-sm-2 col-md-1 item-prop" ng-show="projectToAssignTo && filterRole2">
-                <button class="btn" ng-click="assignProject(projectToAssignTo, person, filterStartDate, filterEndDate)">Assign</button>
-            </div>-->
+		<div class="col-xs-12 col-sm-1 res-people-prop res-person-btn-assign">
+		  <div>
+		    <div><button class="btn" ng-click="assignProject(projectToAssignTo, person, filterStartDate, filterEndDate)">Assign</button></div>
+	      </div>
+		</div>
 	</div>
 </div>
