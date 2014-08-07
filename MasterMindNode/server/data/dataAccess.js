@@ -1,7 +1,6 @@
 var dbAccess = require( '../data/dbAccess.js' );
 var memoryCache = require( '../data/memoryCache.js' );
 var _ = require( 'underscore' );
-var query = require("underscore-query")( _ );
 var sift = require('sift');
 var config = require( '../config/config.js' );
 
