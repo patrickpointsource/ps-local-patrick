@@ -4,6 +4,9 @@ var people = require('../controllers/people');
 var express = require('express');
 var util = require('../util/auth');
 
+var security = require('../util/security');
+var securityResources = require('../util/securityResources');
+
 var router = express.Router();
 
 router.get('/me', util.isAuthenticated, function(req, res){

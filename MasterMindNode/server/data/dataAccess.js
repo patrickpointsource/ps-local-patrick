@@ -41,21 +41,23 @@ var alignQuery = function( q, qP, pProp, pInd) {
 	//return q;
 };
 
-var queryRecords = function( data, q, propName) {
+var queryRecords = function( data, q, propName, resourcePrefix) {
 	var res = {
 		about: data.about
 	};
-
+    if (!q)
+        q = {};
+        
     alignQuery( q );
     
     if (!propName) {
 	   //res.data = _.query( data.data,  q);
-	   res.data = sift(q, data.data);
+	   res.data = addResourceProperty(sift(q, data.data), resourcePrefix);
 
 	   res.count = res.data.length;
 	} else {
 	    //res[propName] = _.query( data.data,  q);
-	    res[propName] = sift(q, data.data);
+	    res[propName] = addResourceProperty(sift(q, data.data), resourcePrefix);
     
 
        res.count =  res[propName].length;
@@ -63,6 +65,21 @@ var queryRecords = function( data, q, propName) {
 
 	return res;
 };
+
+var addResourceProperty = function(collection, resourcePrefix) {
+    var tmpId;
+    
+    for (var i = 0; i < collection.length; i ++) {
+        if (_.isObject(collection[i]._id))
+            tmpId = collection[i]._id["$oid"].toString();
+        else
+            tmpId = collection[i]._id.toString();
+            
+        collection[i].resource = resourcePrefix + tmpId;
+    }
+    return collection;
+};
+
 
 var listProjects = function( q, callback ) {
 
@@ -72,7 +89,7 @@ var listProjects = function( q, callback ) {
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
 
-		callback( null, queryRecords( result, q ) );
+		callback( null, queryRecords( result, q, null, "project/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
@@ -80,7 +97,7 @@ var listProjects = function( q, callback ) {
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 
-			callback( err, queryRecords( body, q ) );
+			callback( err, queryRecords( body, q, null, "project/" ) );
 		} );
 	}
 
@@ -96,7 +113,7 @@ var getProfileByGoogleId = function(id, callback){
 			callback(err, null);
 		}
 	});
-}	
+};
 
 
 var listPeople = function( q, callback ) {
@@ -104,14 +121,14 @@ var listPeople = function( q, callback ) {
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q , "members") );
+		callback( null, queryRecords( result, q , "members", "people/") );
 	} else {
 		dbAccess.listPeople( function( err, body) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members" ) );
+			callback( err, queryRecords( body, q, "members", "people/" ) );
 		} );
 	}
 
@@ -122,14 +139,14 @@ var listAssignments = function( q, callback ) {
 	var result = memoryCache.getObject( ASSIGNMENTS_KEY );
 	if( result ) {
 		console.log( "read " + ASSIGNMENTS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q )  );
+		callback( null, queryRecords( result, q, null, "assignments/" )  );
 	} else {
 		dbAccess.listAssignments( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + ASSIGNMENTS_KEY + " to memory cache" );
 				memoryCache.putObject( ASSIGNMENTS_KEY, body );
 			}
-			callback( err, queryRecords( body, q )  );
+			callback( err, queryRecords( body, q, null, "assignments/" )  );
 		} );
 	}
 
@@ -140,14 +157,14 @@ var listTasks = function( q, callback ) {
 	var result = memoryCache.getObject( TASKS_KEY );
 	if( result ) {
 		console.log( "read " + TASKS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q , "members")  );
+		callback( null, queryRecords( result, q , "members", "tasks/")  );
 	} else {
 		dbAccess.listTasks( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + TASKS_KEY + " to memory cache" );
 				memoryCache.putObject( TASKS_KEY, body );
 			}
-			callback( err, queryRecords( body, q , "members")  );
+			callback( err, queryRecords( body, q , "members", "tasks/")  );
 		} );
 	}
 
@@ -158,14 +175,14 @@ var listRoles = function( q, callback ) {
 	var result = memoryCache.getObject( ROLES_KEY );
 	if( result ) {
 		console.log( "read " + ROLES_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q , "members") );
+		callback( null, queryRecords( result, q , "members", "roles/") );
 	} else {
 		dbAccess.listRoles( function( err, body) {
 			if( !err ) {
 				console.log( "save " + ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( ROLES_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members" ) );
+			callback( err, queryRecords( body, q, "members", "roles/" ) );
 		} );
 	}
 
@@ -177,14 +194,14 @@ var listLinks = function( q, callback ) {
 	var result = memoryCache.getObject( LINKS_KEY );
 	if( result ) {
 		console.log( "read " + LINKS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q , "members") );
+		callback( null, queryRecords( result, q , "members", "links/") );
 	} else {
 		dbAccess.listLinks( function( err, body) {
 			if( !err ) {
 				console.log( "save " + LINKS_KEY + " to memory cache" );
 				memoryCache.putObject( LINKS_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members" ) );
+			callback( err, queryRecords( body, q, "members", "links/" ) );
 		} );
 	}
 
@@ -195,14 +212,14 @@ var listConfiguration = function( q, callback ) {
 	var result = memoryCache.getObject( CONFIGURATION_KEY );
 	if( result ) {
 		console.log( "read " + CONFIGURATION_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q , "members") );
+		callback( null, queryRecords( result, q , "members", "configuration/") );
 	} else {
 		dbAccess.listConfiguration( function( err, body) {
 			if( !err ) {
 				console.log( "save " + CONFIGURATION_KEY + " to memory cache" );
 				memoryCache.putObject( CONFIGURATION_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members" ) );
+			callback( err, queryRecords( body, q, "members", "configuration/" ) );
 		} );
 	}
 
@@ -213,14 +230,14 @@ var listSkills = function( q, callback ) {
 	var result = memoryCache.getObject( SKILLS_KEY );
 	if( result ) {
 		console.log( "read " + SKILLS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q , "members") );
+		callback( null, queryRecords( result, q , "members", "skills/") );
 	} else {
 		dbAccess.listSkills( function( err, body) {
 			if( !err ) {
 				console.log( "save " + SKILLS_KEY + " to memory cache" );
 				memoryCache.putObject( SKILLS_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members" ) );
+			callback( err, queryRecords( body, q, "members", "skills/" ) );
 		} );
 	}
 
@@ -231,14 +248,14 @@ var listVacations = function( q, callback ) {
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
 		console.log( "read " + VACATIONS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q , "members") );
+		callback( null, queryRecords( result, q , "members", "vacations/") );
 	} else {
 		dbAccess.listVacations( function( err, body) {
 			if( !err ) {
 				console.log( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members" ) );
+			callback( err, queryRecords( body, q, "members", "vacations/" ) );
 		} );
 	}
 
@@ -248,14 +265,14 @@ var listSecurityRoles = function( q, callback ) {
 	var result = memoryCache.getObject( SECURITY_ROLES_KEY );
 	if( result ) {
 		console.log( "read " + SECURITY_ROLES_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q , "members") );
+		callback( null, queryRecords( result, q , "members", "securityroles/") );
 	} else {
 		dbAccess.listSecurityRoles( function( err, body) {
 			if( !err ) {
 				console.log( "save " + SECURITY_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( SECURITY_ROLES_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members" ) );
+			callback( err, queryRecords( body, q, "members", "securityroles/" ) );
 		} );
 	}
 
