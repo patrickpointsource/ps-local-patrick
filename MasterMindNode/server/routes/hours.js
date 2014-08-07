@@ -7,10 +7,15 @@ var util = require('../util/auth');
 var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
-    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-    
-    res.json({count: 0, about: "hours", members: []});
-     
+	
+	security.isAllowed(req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function(allowed){
+		if (allowed) 
+		{
+   			var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
+	    	res.json({count: 0, about: "hours", members: []});
+		}
+	});
+
 }); 
 
 module.exports = router;
