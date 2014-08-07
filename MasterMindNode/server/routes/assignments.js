@@ -11,7 +11,7 @@ var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
 
-	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewAssignments, function(allowed){
 		if (allowed) 
 		{
 		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
@@ -30,7 +30,7 @@ router.get('/', util.isAuthenticated, function(req, res){
 }); 
 
 router.get('/:id', function(req, res) {
-	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewAssignments, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;

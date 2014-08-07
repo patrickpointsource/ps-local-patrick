@@ -11,8 +11,8 @@ var router = express.Router();
 
 
 router.get('/:id', function(req, res) {
-	console.log( "tested get person service");
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions[1], function(allowed){
+
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;

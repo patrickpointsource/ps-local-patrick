@@ -12,7 +12,7 @@ var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
     
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function(allowed){
 		if (allowed) 
 		{
 		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
@@ -30,7 +30,7 @@ router.get('/', util.isAuthenticated, function(req, res){
 
 router.get('/:id', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -48,7 +48,7 @@ router.get('/:id', function(req, res) {
 
 router.post('/:id/links', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[3], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -66,7 +66,7 @@ router.post('/:id/links', function(req, res) {
 
 router.get('/:id/links', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[2], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjectLinks, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -85,7 +85,7 @@ router.get('/:id/links', function(req, res) {
 
 router.get('/:id/assignments', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewProjects, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -104,7 +104,7 @@ router.get('/:id/assignments', function(req, res) {
 
 router.get('/:id/roles', function(req, res) {
 	
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[4], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewRoles, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -120,27 +120,10 @@ router.get('/:id/roles', function(req, res) {
 
 });
 
-router.get('/:id/roles', function(req, res) {
-
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[4], function(allowed){
-		if (allowed) 
-		{
-			var id = req.params.id;
-		    projects.listRoles(id, function(err, result){
-		        if(err){
-		            res.json(500, err);
-		        } else {
-		            res.json(result);
-		        }            
-		    });
-		}
-	});
-
-});
 
 router.get('/:id/roles/:roleId', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[4], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewRoles, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -158,7 +141,7 @@ router.get('/:id/roles/:roleId', function(req, res) {
 });
 
 router.put('/:id/assigments', function(req, res) {
-	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.editProjects, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -176,7 +159,7 @@ router.put('/:id/assigments', function(req, res) {
 
 router.delete('/', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function(allowed){
 		if (allowed) 
 		{
 		    projects.deleteProject(req.body, function(err, result){
@@ -193,7 +176,7 @@ router.delete('/', function(req, res) {
 
 router.delete('/:id/links/:linkId', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[3], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -212,7 +195,7 @@ router.delete('/:id/links/:linkId', function(req, res) {
 
 router.post('/', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function(allowed){
 		if (allowed) 
 		{
 		    projects.insertProject(req.body, function(err, result){
@@ -229,7 +212,7 @@ router.post('/', function(req, res) {
 
 router.put('/:id/links/:linkId', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[3], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
@@ -248,7 +231,7 @@ router.put('/:id/links/:linkId', function(req, res) {
 
 router.put('/:id', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;

@@ -12,7 +12,7 @@ var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
 
-	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.viewConfiguration, function(allowed){
 		if (allowed) 
 		{
 		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
@@ -30,7 +30,7 @@ router.get('/', util.isAuthenticated, function(req, res){
 
 router.post('/', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.editConfiguration, function(allowed){
 		if (allowed) 
 		{
 		    configuration.insertConfiguration(req.body, function(err, result){
@@ -47,7 +47,7 @@ router.post('/', function(req, res) {
 
 router.delete('/', function(req, res) {
 	
-	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.editConfiguration, function(allowed){
 		if (allowed) 
 		{
 			configuration.deleteConfiguration(req.body, function(err, result){
@@ -64,7 +64,7 @@ router.delete('/', function(req, res) {
 
 router.get('/:id', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.viewConfiguration, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;

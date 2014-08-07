@@ -37,15 +37,4 @@ router.delete('/', function(req, res) {
     });
 });
 
-router.get('/:id', function(req, res) {
-	var id = req.params.id;
-    securityRoles.getSecurityRole(id, function(err, result){
-        if(err){
-            res.json(500, err);
-        } else {
-            res.json(result);
-        }            
-    });
-});
-
 module.exports = router;

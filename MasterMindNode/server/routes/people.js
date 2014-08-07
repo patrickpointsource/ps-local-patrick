@@ -11,7 +11,7 @@ var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
 	
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions[0], function(allowed){
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 
 		{
 		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
@@ -31,7 +31,7 @@ router.get('/', util.isAuthenticated, function(req, res){
 
 router.post('/', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions[2], function(allowed){
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
 		if (allowed) 
 		{
 		    people.insertPerson(req.body, function(err, result){
@@ -48,7 +48,7 @@ router.post('/', function(req, res) {
 
 router.delete('/', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions[2], function(allowed){
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.edtProfile, function(allowed){
 		if (allowed) 
 		{
 		    people.deletePerson(req.body, function(err, result){
@@ -65,7 +65,7 @@ router.delete('/', function(req, res) {
 
 router.get('/:id', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions[1], function(allowed){
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;

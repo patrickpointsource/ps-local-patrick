@@ -4,27 +4,59 @@ var securityResources = {
     
     tasks :{
         resourceName: 'tasks',
-        permissions: ['viewTasks','editTasks']
+        permissions: {
+        	viewTasks : 'viewTasks',
+        	editTasks : 'editTasks'
+        }
     },
     assignments :{
         resourceName: 'assignments',
-        permissions: ['viewAssignments','editAssignments']
+        permissions: {
+	       	viewAssignments : 'viewAssignments',
+        	editAssignments : 'editAssignments'
+        }
     },
     configuration :{
         resourceName: 'configuration',
-        permissions: ['viewConfiguration','editConfiguration']
+        permissions: {
+	       	viewConfiguration : 'viewConfiguration',
+        	editConfiguration : 'editConfiguration'
+        }
+        
     },
     hours :{
         resourceName: 'hours',
-        permissions: ['viewHours','editHours','editMyHours', 'viewHoursReportsAndCSV']
+        permissions: {
+	       	viewHours : 'viewHours',
+        	editHours : 'editHours',
+        	editMyHours : 'editMyHours',
+        	viewHoursReportsAndCSV : 'viewHoursReportsAndCSV'
+        }
     },
     people :{
         resourceName: 'people',
-        permissions: ['viewPeople', 'viewProfile','editProfile','viewMyProfile','editMyProfile','viewPersonnelData','editPersonnelData','viewGroups','editGroups']
+        permissions: {
+	       	viewPeople : 'viewPeople',
+        	viewProfile : 'viewProfile',
+        	editProfile : 'editProfile',
+        	viewMyProfile : 'viewMyProfile',
+        	editMyProfile : 'editMyProfile',
+        	viewPersonnelData : 'viewPersonnelData',
+        	editPersonnelData : 'editPersonnelData',
+        	viewGroups : 'viewGroups',
+        	editGroups : 'editGroups'
+        } 
     },
     projects :{
         resourceName: 'projects',
-        permissions: ['viewProjects','editProjects','viewProjectLinks','editProjectLinks','viewRoles','editRoles']
+        permissions: {
+	       	viewProjects : 'viewProjects',
+        	editProjects : 'editProjects',
+        	viewProjectLinks : 'viewProjectLinks',
+        	editProjectLinks : 'editProjectLinks',
+        	viewRoles : 'viewRoles',
+        	editRoles : 'editRoles'
+        }         
     }
 };
 
