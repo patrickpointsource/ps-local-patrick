@@ -36,15 +36,13 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 	if(tab) {
 	  if(tab == 'resourcefinder') {
 	    $scope.activeTab = 'resourcefinder';
-	    
-	    if($state.params.startDate && $state.params.endDate) {
-	      $scope.navigateToResourceTab({startDate: $state.params.startDate, endDate: $state.params.endDate});
-	    }
 	  }
 	}
 	
 	$scope.tabSelected = function(tab) {
 	  $scope.activeTab = tab;
+	  
+	  $state.go('staffing', { tab: tab });
 	}
 	
 	$scope.summarySwitcher = 'projects';
