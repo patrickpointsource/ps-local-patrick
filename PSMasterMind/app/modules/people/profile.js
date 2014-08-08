@@ -433,7 +433,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.handleHoursPeriodChanged = function( ) {
 		var d;
 
-		for( var i = 0; i < $scope.projectHours.length; i++ ) {
+		for( var i = 0; $scope.projectHours && i < $scope.projectHours.length; i++ ) {
 			var projHour = $scope.projectHours[ i ];
 			projHour.totalHours = 0;
 
@@ -454,7 +454,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			}
 		}
 
-		for( i = 0; i < $scope.taskHours.length; i++ ) {
+		for( i = 0; $scope.taskHours && i < $scope.taskHours.length; i++ ) {
 			projHour = $scope.taskHours[ i ];
 			projHour.totalHours = 0;
 

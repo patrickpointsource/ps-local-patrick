@@ -22,11 +22,24 @@
 				<h3>Select a report type</h3>
 			</div>
 			<div class="row report-types">
-				<div class="col-xs-2 custom" ng-class="{'active': reportTypes['custom']}" ng-click="selectReportType(e, 'custom')">
+				<div class="col-xs-2 custom" ng-class="{'active': reportTypes['custom']}" ng-if="!activeTab['billing']" ng-click="selectReportType(e, 'custom')">
 					<div class="icon">
 						<i class="fa fa-3x fa-file-text-o"></i>
 					</div>
 					<div class="text">Custom</div>
+				</div>
+				<div class="col-xs-2 custom" ng-class="{'active': reportTypes['customforecast']}" ng-if="activeTab['billing']" ng-click="selectReportType(e, 'customforecast')">
+					<div class="icon">
+						<i class="fa fa-3x fa-file-text-o"></i>
+					</div>
+					<div class="text">Custom Forecast</div>
+				</div>
+				
+				<div class="col-xs-2 custom" ng-class="{'active': reportTypes['customaccruals']}" ng-if="activeTab['billing']" ng-click="selectReportType(e, 'customaccruals')">
+					<div class="icon">
+						<i class="fa fa-3x fa-file-text-o"></i>
+					</div>
+					<div class="text">Custom Accruals</div>
 				</div>
 				<!--
 				<div class="col-xs-2 project" ng-class="{'active': reportTypes['project']}" ng-click="selectReportType(e, 'project')">
@@ -110,29 +123,29 @@
 					
 					<div class="row states">
 						<div class="col-xs-4">
-							<input type="checkbox" name="allStates" ng-model="projectStates.all"  ng-click="selectProjectState(e, 'all')"/>
+							<input type="checkbox" name="allStates" ng-model="projectStates.all"  ng-click="selectProjectState(e, 'all')" ng-disabled="projectStatesDisabled"/>
 							<label for="allStates" >Select all states</label>
 							<br />
-							<input type="checkbox" name="activeState" ng-model="projectStates.active"  ng-click="selectProjectState(e, 'active')"/>
+							<input type="checkbox" name="activeState" ng-model="projectStates.active"  ng-click="selectProjectState(e, 'active')" ng-disabled="projectStatesDisabled"/>
 							<label for="activeState" >Active</label>
 							<br />
-							<input type="checkbox" name="backlogState" ng-model="projectStates.backlog"  ng-click="selectProjectState(e, 'backlog')"/>
+							<input type="checkbox" name="backlogState" ng-model="projectStates.backlog"  ng-click="selectProjectState(e, 'backlog')" ng-disabled="projectStatesDisabled"/>
 							<label for="backlogState" >Backlog</label>
 						</div>
 						
 						<div class="col-xs-4">
-							<input type="checkbox" name="forecastedState" ng-model="projectStates.forecasted"  ng-click="selectProjectState(e, 'forecasted')"/>
+							<input type="checkbox" name="forecastedState" ng-model="projectStates.forecasted"  ng-click="selectProjectState(e, 'forecasted')" ng-disabled="projectStatesDisabled"/>
 							<label for="forecastedState">Forecasted</label>
 							<br />
-							<input type="checkbox" name="investmentState" ng-model="projectStates.investment" ng-click="selectProjectState(e, 'investment')" />
+							<input type="checkbox" name="investmentState" ng-model="projectStates.investment" ng-click="selectProjectState(e, 'investment')" ng-disabled="projectStatesDisabled"/>
 							<label for="investmentState" >Investment</label>
 							<br />
-							<input type="checkbox" name="deallostState" ng-model="projectStates.deallost"  ng-click="selectProjectState(e, 'deallost')"/>
+							<input type="checkbox" name="deallostState" ng-model="projectStates.deallost"  ng-click="selectProjectState(e, 'deallost')" ng-disabled="projectStatesDisabled"/>
 							<label for="deallostState" >Deal Lost</label>
 						</div>
 						
 						<div class="col-xs-4">
-							<input type="checkbox" name="completeState" ng-model="projectStates.complete"  ng-click="selectProjectState(e, 'complete')"/>
+							<input type="checkbox" name="completeState" ng-model="projectStates.complete"  ng-click="selectProjectState(e, 'complete')" ng-disabled="projectStatesDisabled"/>
 							<label for="completeState">Complete</label>
 							<br />
 						</div>
@@ -211,7 +224,7 @@
 				<h3>Select a timeframe</h3>
 			</div>
 			
-			<div class="col-xs-6" style="display: none;">
+			<div class="col-xs-6" ng-if="activeTab['billing']">
 				<div class="row">
 					
 					<label >Term</label>
@@ -231,7 +244,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-6" style="display: none;">
+			<div class="col-xs-6" ng-if="activeTab['billing']">
 				<div class="row">
 					<div class="col-xs-6">
 					<label >Choose a start date</label>
@@ -247,14 +260,14 @@
 					
 				</div>
 			</div>
-			<div class="col-xs-12 terms-dates-separator" style="display: none;">
+			<div class="col-xs-12 terms-dates-separator" ng-if="activeTab['billing']">
 				<hr />
 			</div>
 			
 			<div class="col-xs-6">
 				<div class="row">
 					<div class="col-xs-6 terms-dates-separator">
-						<span style="display: none;">OR </span><label >Choose a custom date range</label>
+						<span ng-if="activeTab['billing']">OR </span><label >Choose a custom date range</label>
 					</div>
 				</div>
 				<div class="row" >
