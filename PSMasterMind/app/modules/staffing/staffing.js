@@ -22,7 +22,9 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
           projectName: selectedRoleAndProject.projectName, 
           projectResource: selectedRoleAndProject.projectResource,
           roleId: selectedRoleAndProject.roleId,
-          role: selectedRoleAndProject.role
+          role: selectedRoleAndProject.role,
+          startDate: selectedRoleAndProject.startDate,
+          endDate: selectedRoleAndProject.endDate
         };
         
         $state.go("staffing", params);
