@@ -204,7 +204,7 @@ function( $q, Resources, HoursService ) {
     return deferred.promise;
   }
   
-  this.commitHours = function(request) {
+  this.commitHours = function(request, updateHoursNotification) {
     var $this = this;
     this.getTaskForVacation(request.type).then(function(task) {
       var start = moment(request.startDate);
@@ -230,7 +230,7 @@ function( $q, Resources, HoursService ) {
         task: {resource: task.resource, name: task.name}
       }
       
-      HoursService.updateHours([hoursEntry]);
+      HoursService.updateHours([hoursEntry]).then(updateHoursNotification);
     // hours add for many days
     } else {
       var allDays = end.diff(start ,'days');
@@ -254,7 +254,7 @@ function( $q, Resources, HoursService ) {
         }
       }
       
-      HoursService.updateHours(hoursEntries);
+      HoursService.updateHours(hoursEntries).then(updateHoursNotification);
     }
     });
   }

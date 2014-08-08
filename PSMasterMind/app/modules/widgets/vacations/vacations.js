@@ -133,13 +133,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  vacationManager: { resource: $scope.vacationManager.resource }
 	}
 	
-	if(($scope.vacationType == VACATION_TYPES.Appointment && moment(vacation.endDate).diff(vacation.startDate, 'hours') <= 4)
-	   || $scope.vacationType == VACATION_TYPES.Travel) {
+	if($scope.isApproved(vacation)) {
       vacation.status = STATUS.Approved;
       
       // commit hours if vacation entry approved instantly
-      VacationsService.commitHours(vacation);
-      $rootScope.$emit("hours:requiredRefresh");
+      VacationsService.commitHours(vacation, function() { 
+        $rootScope.$emit("hours:requiredRefresh");
+      });
     } else {
       vacation.status = STATUS.Pending;
     }
@@ -263,13 +263,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       vacation.vacationManager = { resource: $scope.vacationManagerEdit.resource };
     }
     
-    if((vacation.type == VACATION_TYPES.Appointment && moment(vacation.endDate).diff(vacation.startDate, 'hours') <= 4)
-       || vacation.type == VACATION_TYPES.Travel) {
+    if($scope.isApproved(vacation)) {
       vacation.status = STATUS.Approved;
       
       // commit hours after updating vacation entry if it is gets approved instantly
-      VacationsService.commitHours(vacation);
-      $rootScope.$emit("hours:requiredRefresh");
+      VacationsService.commitHours(vacation, function() { 
+        $rootScope.$emit("hours:requiredRefresh");
+      });
     } else {
       vacation.status = STATUS.Pending;
     }
@@ -278,6 +278,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.editVacationIndex = -1;
 	  $scope.getVacations();
 	});
+  }
+  
+  $scope.isApproved = function(vacation) {
+    if((vacation.type == VACATION_TYPES.Appointment && moment(vacation.endDate).diff(vacation.startDate, 'hours') <= 4)
+       || vacation.type == VACATION_TYPES.Travel || (moment().isAfter(vacation.startDate) && moment().isAfter(vacation.endDate)))
+       return true;
+    else
+      return false;
   }
   
   $scope.getCurrentYearVacationDays = function() {
