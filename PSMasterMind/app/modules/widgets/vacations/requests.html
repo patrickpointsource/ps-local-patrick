@@ -49,7 +49,8 @@
              <span ng-repeat-end ng-hide="$index == peopleOutThisDay.length - 1">,&nbsp;</span>
           </div>
           <div class="row no-horizontal-margin vac-type margin-bottom-md">
-            <a href="#{{request.person.about}}">{{request.person.givenName}}'s Projects</a>
+            <a href="#{{request.person.about}}">{{request.person.givenName}}'s Projects</a> | 
+            <a class="cursor-pointer" ng-click="getResourceFinderLink(request)">People available to cover</a>
           </div>
           <div class="row no-horizontal-margin color-gray-image-border margin-bottom-md">
             <input class="form-control" ng-model="request.comment" placeholder="Comment"/>

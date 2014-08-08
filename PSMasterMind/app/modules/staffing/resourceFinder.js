@@ -7,6 +7,34 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 	var ROLE_NOTSELECTED = "Select a role or group";
 	var $parent_changeSort = $scope.$parent.changeSort;
 	
+	$scope.showTableView = true;
+	
+	$scope.findResources = function(args) {
+      $scope.projectToAssignTo = { name: args.projectName, resource: args.projectResource, roleId: args.roleId};
+        $scope.filterStartDate = args.startDate || $scope.formatDate(new Date());
+        
+        var endDate = args.endDate;
+        
+        // If no end date specified, end date is set to 2 month from the startDate.
+        if (!endDate)
+        {
+            endDate = new Date($scope.filterStartDate);
+            
+            endDate.setMonth(endDate.getMonth() + 12);
+            
+            endDate = $scope.formatDate(endDate);
+        }
+        
+        $scope.filterEndDate = endDate;
+        
+        for (var i = 0, count = $scope.allRoles.length; i < count; i++)
+            if ($scope.allRoles[i].abbreviation == args.role)
+            {
+                $scope.filterRole2 = $scope.allRoles[i].resource;
+                break;
+            }
+    }
+	
 	$scope.sortType = "availabilityPercentage-desc";
 	
 	$scope.switchSort = function (prop)
@@ -92,31 +120,9 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 	};
 	
 	$scope.$on("resfinder:select", function (event, args)
-	{
-		$scope.projectToAssignTo = { name: args.projectName, resource: args.projectResource, roleId: args.roleId, rate: args._rate };
-		$scope.filterStartDate = args.startDate || $scope.formatDate(new Date());
-		
-		var endDate = args.endDate;
-		
-		// If no end date specified, end date is set to 2 month from the startDate.
-		if (!endDate)
-		{
-			endDate = new Date($scope.filterStartDate);
-			
-			endDate.setMonth(endDate.getMonth() + 12);
-			
-			endDate = $scope.formatDate(endDate);
-		}
-		
-		$scope.filterEndDate = endDate;
-		
-		for (var i = 0, count = $scope.allRoles.length; i < count; i++)
-			if ($scope.allRoles[i].abbreviation == args.role)
-			{
-				$scope.filterRole2 = $scope.allRoles[i].resource;
-				break;
-			}
-	});
+    {
+      $scope.findResources(args);
+    });
 	
 	$scope.$parent.buildTableView = function( ) {
 
@@ -175,7 +181,11 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 		$scope.allRoles.unshift( {
 			'title': ROLE_NOTSELECTED
 		} );
-
+        
+        if($state.params) {
+          $scope.findResources($state.params);
+        }
+        
 //		$scope.rolesMap = rolesMap;
 //
 //		$scope.getRoleName = function( resource ) {

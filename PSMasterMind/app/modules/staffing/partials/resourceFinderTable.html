@@ -5,7 +5,7 @@
 			<select class="form-control" ng-model="filterRole2" ng-options="m.resource as m.title group by m.category for m in allRoles"></select>
 		</div>
 		<div class="col-xs-5 col-sm-3 col-md-3">
-			<input  class="form-control" ng-model="projectToAssignTo" placeholder="Find project" typeahead-min-length="2" highlight="true" typeahead="p as p.name for p in projectList | filter:{name:$viewValue}" />
+			<input  class="form-control" ng-model="projectToAssignTo.name" placeholder="Find project" typeahead-min-length="2" highlight="true" typeahead="p as p.name for p in projectList | filter:{name:$viewValue}" />
 		</div>
 		<div class="col-xs-5 col-sm-2 col-md-2">
    			<input class="form-control datepicker" placeholder="Start Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-model="filterStartDate" />

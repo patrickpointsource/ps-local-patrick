@@ -15,15 +15,40 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 		}
 	};
 	
+	$scope.navigateToResourceTab = function (selectedRoleAndProject)
+    {
+        var params = {
+          tab: 'resourcefinder',
+          projectName: selectedRoleAndProject.projectName, 
+          projectResource: selectedRoleAndProject.projectResource,
+          roleId: selectedRoleAndProject.roleId,
+          role: selectedRoleAndProject.role
+        };
+        
+        $state.go("staffing", params);
+    };
+	
+	$scope.activeTab = 'staffing';
+	
+	var tab = $state.params.tab;
+	if(tab) {
+	  if(tab == 'resourcefinder') {
+	    $scope.activeTab = 'resourcefinder';
+	    
+	    if($state.params.startDate && $state.params.endDate) {
+	      $scope.navigateToResourceTab({startDate: $state.params.startDate, endDate: $state.params.endDate});
+	    }
+	  }
+	}
+	
+	$scope.tabSelected = function(tab) {
+	  $scope.activeTab = tab;
+	}
+	
 	$scope.summarySwitcher = 'projects';
 	$scope.startDate = new Date( );
 	$scope.activeAndBacklogProjects = [ ];
 	
-	$scope.navigateToResourceTab = function (selectedRoleAndProject)
-	{
-		$scope.$broadcast("resfinder:select", selectedRoleAndProject);
-	};
-
 	// TODO: change to css class
 	$scope.getProjectItemCss = function( isProjectItem ) {
 		var ret = "";

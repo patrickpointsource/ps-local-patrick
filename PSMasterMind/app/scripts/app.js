@@ -120,7 +120,7 @@
           controller: 'ProfileCtrl'
         })
        .state('staffing', {
-          url: '/staffing',
+          url: '/staffing?tab&startDate&endDate&projectName&projectResource&roleId&role',
           templateUrl: 'modules/staffing/staffing.html',
           controller: 'StaffingCtrl'
         })

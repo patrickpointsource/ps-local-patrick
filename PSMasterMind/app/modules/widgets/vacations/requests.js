@@ -201,4 +201,10 @@ function( $q, $scope, $state, $rootScope, Resources, ProjectsService, VacationsS
       $scope.expandedIndex = -1;
     });
   }
+  
+  $scope.getResourceFinderLink = function(request) {
+    var startDate = moment(request.startDate).format('YYYY-MM-DD');
+    var endDate = moment(request.endDate).format('YYYY-MM-DD');
+    $state.go('staffing', { tab:'resourcefinder', startDate: startDate, endDate: endDate });
+  }
 } ] );
