@@ -1,5 +1,5 @@
-angular.module( 'Mastermind').controller( 'VacationsCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'TasksService', 'RolesService',
-function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsService, TasksService, RolesService ) {
+angular.module( 'Mastermind').controller( 'VacationsCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'TasksService', 'RolesService', 'NotificationsService',
+function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsService, TasksService, RolesService, NotificationsService ) {
   
   var STATUS = VacationsService.STATUS;
   
@@ -142,16 +142,27 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       });
     } else {
       vacation.status = STATUS.Pending;
+      
+      var notification = {
+        type: "Vacation",
+        header: "Pending Paid Vacation Request",
+        text: "From " + $scope.me.name,
+        icon: "fa fa-clock-o",
+        person: { resource: $scope.vacationManager.resource }
+      };
+      
+      NotificationsService.add(notification).then(function(result) {
+      });
     }
 	
 	VacationsService.addNewVacation(vacation).then(function(result) {
-	  $scope.vacations.push(result);
-	  $scope.requestHours();
-	  $scope.vacations = _.sortBy($scope.vacations, function(vacation) {
-		return new Date(vacation.startDate);
-	  });
-	  
-	  $scope.showVacations();
+      $scope.vacations.push(result);
+      $scope.requestHours();
+      $scope.vacations = _.sortBy($scope.vacations, function(vacation) {
+        return new Date(vacation.startDate);
+      });
+      
+      $scope.showVacations();
 	});
   }
   
@@ -218,30 +229,30 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   }
   
   $scope.deleteVacation = function() {
-	/*Resources.remove(vacation.resource).then(function(result) {
-	  $scope.vacations.splice($scope.editVacationIndex, 1);
-	  $scope.editVacationIndex = -1;
-	  $scope.showVacations();
-	})*/
 	$scope.cancelValidation = "";
-	
-	var vacation = $scope.displayedVacations[$scope.editVacationIndex];
-	
-	vacation.status = VacationsService.STATUS.Cancelled;
 	
 	if(!$scope.cancellationReason) {
 	  $scope.cancelValidation = "Please enter a reason.";
 	  return;
 	}
 	
-	vacation.cancellationReason = $scope.cancellationReason;
+	var vacation = $scope.displayedVacations[$scope.editVacationIndex];
 	
-	vacation.vacationManager = { resource: vacation.vacationManager.resource };
+	var notification = {
+      type: "VacationCancel",
+      header: "Cancelled Paid Vacation Request",
+      text: $scope.me.name + " has deleted out-of-office entry: " + vacation.startDate + " - " + vacation.endDate + ", " + vacation.type + ". Reason: " + $scope.cancellationReason,
+      icon: "fa fa-times-circle",
+      person: { resource: vacation.vacationManager.resource }
+    };
 	
-	Resources.update(vacation).then(function(result) {
+	NotificationsService.add(notification).then(function(result) {
 	  $("#vacCancelModal").modal('hide');
-      $scope.editVacationIndex = -1;
-      $scope.getVacations();
+	  Resources.remove(vacation.resource).then(function(result) {
+        $scope.vacations.splice($scope.editVacationIndex, 1);
+        $scope.editVacationIndex = -1;
+        $scope.showVacations();
+      });
     });
   }
   
@@ -272,6 +283,17 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       });
     } else {
       vacation.status = STATUS.Pending;
+      
+      var notification = {
+        type: "Vacation",
+        header: "Pending Paid Vacation Request",
+        text: "From " + $scope.me.name,
+        icon: "fa fa-clock-o",
+        person: { resource: $scope.vacationManager.resource }
+      };
+      
+      NotificationsService.add(notification).then(function(result) {
+      });
     }
     
 	Resources.update(vacation).then(function(result) {

@@ -4,8 +4,8 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, and roles.
  */
-angular.module( 'Mastermind' ).controller( 'AreasCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService',
-function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsService ) {
+angular.module( 'Mastermind' ).controller( 'AreasCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'NotificationsService',
+function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsService, NotificationsService ) {
 
 	// make these vars accessible in scope methods - especially "showHome"
 	var apQuery;
@@ -88,31 +88,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 		$scope.notifications = [];
         
         if( me.groups && me.groups.indexOf( 'Management' ) !== -1 ) {
-          VacationsService.getRequests($scope.me).then(function(result) {
-            _.each(result, function(request) {
-              Resources.resolve(request.person).then(function(person){
-                var notification = {};
-                if(request.status == "Cancelled") {
-                  notification = {
-                    type: "VacationCancel",
-                    header: "Cancelled Paid Vacation Request",
-                    text: person.name + " has deleted out-of-office entry: " + request.startDate + " - " + request.endDate + ", " + request.type + ". Reason: " + request.cancellationReason,
-                    icon: "fa fa-times-circle",
-                    resource: request.resource
-                  };
-                } else {
-                  notification = {
-                    type: "Vacation",
-                    header: "Pending Paid Vacation Request",
-                    text: "From " + person.name,
-                    icon: "fa fa-clock-o",
-                    resource: request.resource
-                  };
-                }
-                
-                $scope.notifications.push(notification);
-              });
-            })
+          NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
+            $scope.notifications = result.members;
           });
         }
       
@@ -335,6 +312,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 			}, 200); // temporary hack
 		}
 	};
+	
+	$scope.removeNotification = function(index) {
+	  var notification = $scope.notifications[index];
+	  Resources.remove(notification.resource).then(function(result) {
+	    $scope.notifications.splice(index, 1);
+	  });
+	}
 
 } ] ).directive( 'backImg', function( ) {
 	return function( scope, element, attrs ) {

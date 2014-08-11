@@ -30,7 +30,7 @@
     'Mastermind.controllers.projects',
     'Mastermind.controllers.staffing',
     'Mastermind.models.projects',
-    'Mastermind.services.projects'
+    'Mastermind.services.projects',
   ])
     .config( ['$logProvider','$stateProvider','$urlRouterProvider', function($logProvider, $stateProvider, $urlRouterProvider) {
       $logProvider.debugEnabled(false);
