@@ -7,8 +7,6 @@ var util = require('../util/auth');
 var security = require('../util/security');
 var securityResources = require('../util/securityResources');
 
-var context = require('../util/context');
-
 var router = express.Router();
 
 
@@ -37,7 +35,6 @@ router.get('/:id', function(req, res) {
 			        if(err){
 			            res.json(500, err);
 			        } else {
-			        	result.about = "people/" + result._id;
 			            res.json(result);
 			        }            
 			    });
@@ -47,62 +44,12 @@ router.get('/:id', function(req, res) {
 
 });
 
+router.post('/', function(req, res) {
 
-router.get('/:id/gplus', function(req, res) {
-	var id = req.params.id;
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function(allowed){
 		if (allowed) 
 		{
-
-			people.getPerson(id, function(err, result){
-				if(err){
-			    	res.json(500, err);
-				} else {
-					var https = require('https');
-		
-					var options = {
-					  host: 'www.googleapis.com',
-					  port: 443,
-					  path: '/plus/v1/people/' + result.googleId,
-					  method: 'GET',
-					  headers: {
-					  	Authorization : 'Bearer ' + context.authorization,
-		 			  	accept: 'application/json'
-					  }
-					};
-					
-					var data='';
-					var request = https.request(options, function(response) {
-						response.on('data', function(d) {
-							data += d;
-					  	});
-						response.on('end', function() {
-							console.log(data);
-							res.json(data);
-					  	});
-					});
-					request.end();
-					request.on('error', function(e) {
-						console.error(e);
-			    		res.json(500, e);
-					});
-			    }            
-			});
-
-
-		}
-	});
-
-});
-
-
-router.put('/:id', function(req, res) {
-	var id = req.params.id;
-	req.body._id = id;
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
-		if (allowed) 
-		{
-		    people.insertPerson(req.body, function(err, result){
+		    projects.insertProject(req.body, function(err, result){
 		        if(err){
 		            res.json(500, err);
 		        } else {

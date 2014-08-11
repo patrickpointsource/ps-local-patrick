@@ -21,4 +21,22 @@ router.get('/', util.isAuthenticated, function(req, res){
 
 }); 
 
+router.post('/', function(req, res) {
+
+	security.isAllowed(req.user, res, securityResources.tasks.resourceName, securityResources.tasks.editTasks, function(allowed){
+		if (allowed) 
+		{
+		    tasks.insertTask(req.body, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
+		}
+	});	
+
+});
+
+
 module.exports = router;

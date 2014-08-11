@@ -19,6 +19,7 @@ var logger = log4js.getLogger();
 var hoursByPerson = require('./server/routes/hoursByPerson');
 var hoursByPersonDate = require('./server/routes/hoursByPersonDate');
 var projects = require('./server/routes/projects');
+var projectsMe = require('./server/routes/projectsme');
 var people = require('./server/routes/people');
 var peopleMe = require('./server/routes/peopleme');
 var assignments = require('./server/routes/assignments');
@@ -49,6 +50,9 @@ var allowCrossDomain = function(req, res, next) {
 
     // intercept OPTIONS method
     if ('OPTIONS' == req.method) {
+      res.header('Access-Control-Allow-Headers', 'accept, authorization, content-type');
+      res.header('Access-Control-Allow-Methods', 'POST');
+      res.header('Access-Control-Allow-Methods', 'PUT');
       res.send(200);
     }
     else {
@@ -82,6 +86,7 @@ app.use(express.static(__dirname + '/bower_components'));
 app.use('/hoursByPerson', hoursByPerson);
 app.use('/hoursByPersonDate', hoursByPersonDate);
 app.use('//projects', projects);
+app.use('/projects', projectsMe);
 app.use('/people', peopleMe);
 app.use('//people', people);
 app.use('//assignments', assignments);
@@ -125,28 +130,8 @@ var loadSecurity = function(id, callback) {
 		}
 		callback(err);
 	});
-/*	dataAccess.getProfileByGoogleId(id, function (err, user) {
-		if (!err) {
-			dataAccess.listSecurityRoles(null, function (err, roles) {
-				var securityRoles = roles["members"];
-				for (var i=0; i < securityRoles.length; i++) {
-					var resources = securityRoles[i].resources;
-					for (var k=0; k < resources.length; k++) {
-						security.allow(securityRoles[i].name, resources[k].name, resources[k].permissions, function(err) {
-							console.log("err=" + err);
-						})
-					}
-				}
-				//security.addRole(id, 'Managers')
-				callback(err, user, roles);					
-			});
-		}
-		else {
-			callback(err, null, null);					
-		}
-   	});
-   	*/
-}
+};
+
 // There are many useful environment variables available in process.env,
 // please refer to the following document for detailed description:
 // http://ng.w3.bluemix.net/docs/FAQ.jsp#env_var

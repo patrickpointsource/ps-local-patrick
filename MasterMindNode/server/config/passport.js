@@ -8,6 +8,7 @@ var googleapis = require('googleapis');
 
 
 var config = require('./config.js');
+var context = require('../util/context.js');
 
 var validateGoogleToken = function(token, done){
     // Verify the token we were passed is valid and issued to our app
@@ -23,6 +24,7 @@ var validateGoogleToken = function(token, done){
           // Verify this was issued to our app
           // Verify this user exists in our DB
           if(result.audience === config.google.clientID){
+          	context.authorization = token;
             return done('', result.user_id);
           } else {
             return done('validation failed', null);
