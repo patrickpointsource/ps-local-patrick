@@ -26,9 +26,16 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	var managersQuery = {
 		'groups': 'Management'
 	};
-
-	Resources.query( 'people', managersQuery, null, function( result ) {
-		$scope.managers = _.sortBy( result.members, function( manager ) {
+    
+    $scope.managers = [];
+    
+	Resources.query( 'people', managersQuery, { _id: 1, resource: 1, name: 1}, function( result ) {
+	    for(var i = 0; i < result.members.length; i++) {
+	      var manager = result.members[i];
+	      $scope.managers.push({name: manager.name, resource: manager.resource});
+	    }
+	    
+		$scope.managers = _.sortBy( $scope.managers, function( manager ) {
 			return manager.name;
 		} );
 	} );
@@ -79,10 +86,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.setProfile = function( person ) {
 		$scope.profile = person;
 
-		if( $scope.profile.manager )
-			Resources.resolve( $scope.profile.manager ).then( function( result ) {
-				$scope.$emit( 'profile:loaded' );
-			} );
+		if( $scope.profile.manager ) {
+		  $scope.profile.manager = _.findWhere($scope.managers, { resource: $scope.profile.manager.resource});
+		  $scope.$emit( 'profile:loaded' );
+		}
 		else
 			$scope.$emit( 'profile:loaded' );
 
