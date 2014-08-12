@@ -1,6 +1,6 @@
 'use strict';
 
-var people = require('../controllers/people');
+var projects = require('../controllers/projects');
 var express = require('express');
 var util = require('../util/auth');
 
@@ -9,36 +9,19 @@ var securityResources = require('../util/securityResources');
 
 var router = express.Router();
 
-
 router.get('/:id', function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
+	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function(allowed){
 		if (allowed) 
 		{
 			var id = req.params.id;
-			if (id == 'me') {
-				
-				people.getPersonByGoogleId(req.user, function(err, result){
-			        if(err){
-			            res.json(500, err);
-			        } else {
-			            var me = result.members.length == 1 ? result.members[0]: {};
-			            
-			            me.about = "people/" + me._id;
-			            
-			            res.json(me);
-			        }            
-		   	 	});
-			}
-			else {
-			    people.getPerson(id, function(err, result){
-			        if(err){
-			            res.json(500, err);
-			        } else {
-			            res.json(result);
-			        }            
-			    });
-			}
+		    projects.getProject(id, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
 		}
 	});
 
@@ -49,7 +32,9 @@ router.post('/', function(req, res) {
 	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function(allowed){
 		if (allowed) 
 		{
-		    projects.insertProject(req.body, function(err, result){
+			var project = req.body;
+			project.form = 'Projects';
+		    projects.insertProject(project, function(err, result){
 		        if(err){
 		            res.json(500, err);
 		        } else {

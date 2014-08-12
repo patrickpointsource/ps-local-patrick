@@ -86,18 +86,20 @@ app.use(express.static(__dirname + '/bower_components'));
 app.use('/hoursByPerson', hoursByPerson);
 app.use('/hoursByPersonDate', hoursByPersonDate);
 app.use('//projects', projects);
-app.use('/projects', projectsMe);
+app.use('/projects', projects);
 app.use('/people', peopleMe);
 app.use('//people', people);
 app.use('//assignments', assignments);
 app.use('//tasks', tasks);
 app.use('//roles', roles);
+app.use('/roles', roles);
 app.use('//hours', hours);
 app.use('/configuration', configuration);
 app.use('/links', links);
 app.use('/skills', skills);
 app.use('//vacations', vacations);
 app.use('/securityRoles', securityRoles);
+
 
 // Setup routes
 require('./server/routes/auth')(app, passport);

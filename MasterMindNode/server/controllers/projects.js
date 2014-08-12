@@ -8,7 +8,11 @@ module.exports.listProjects = function(query, callback) {
             console.log(err);
             callback('error loading projects', null);
         } else {
-            //console.log(body);
+            var result = body.data;
+            for (var i in result) {
+       		    result[i].resource = "projects/" + result[i]._id;
+        		result[i].about = "projects/" + result[i]._id;
+            }
             callback(null, body);
         }
     });
@@ -20,6 +24,8 @@ module.exports.getProject = function(id, callback) {
             console.log(err);
             callback(err, null);
         } else {
+   		    body.resource = "projects/" + body._id;
+       		body.about = "projects/" + body._id;
             callback(null, body);
         }
     });
@@ -38,10 +44,7 @@ module.exports.addProjectLink = function(id, obj, callback) {
 };
 
 
-module.exports.listLinks = function(id, callback) {
-	
-	//TODO filter by project id
-	
+module.exports.listLinks = function(id, query, callback) {
     dataAccess.listLinks(query, function(err, body){
         if (err) {
             console.log(err);

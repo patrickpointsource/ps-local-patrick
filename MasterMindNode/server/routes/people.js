@@ -34,7 +34,9 @@ router.post('/', function(req, res) {
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
 		if (allowed) 
 		{
-		    people.insertPerson(req.body, function(err, result){
+			var person = req.body;
+            person.about = "people/" + person._id;
+		    people.insertPerson(person, function(err, result){
 		        if(err){
 		            res.json(500, err);
 		        } else {
