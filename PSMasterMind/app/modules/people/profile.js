@@ -262,7 +262,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					var task = _.findWhere( $scope.hoursTasks, {
 						resource: taskRes
 					} );
-					$scope.hours[ i ].task.name = task.name;
+					
+					var taskName = "Unknown";
+					if(task) {
+					  taskName = task.name;
+					}
+					$scope.hours[ i ].task.name = taskName;
 				}
 			}
 
@@ -453,7 +458,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 				else if( $scope.customHoursStartDate && $scope.customHoursEndDate ) {
 					d = Util.alignDate( new Date( hour.hour.date ) );
 
-					hour.show = d < Util.alignDate( new Date( $scope.customHoursEndDate ) ) && d >= Util.alignDate( new Date( $scope.customHoursStartDate ) );
+					hour.show = d <= Util.alignDate( new Date( $scope.customHoursEndDate ) ) && d >= Util.alignDate( new Date( $scope.customHoursStartDate ) );
 				}
 				if( hour.show ) {
 					projHour.totalHours += hour.hour.hours;
