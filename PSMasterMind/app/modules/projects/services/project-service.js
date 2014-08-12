@@ -248,7 +248,8 @@ angular.module('Mastermind.services.projects')
      */
     this.getAllProjects = function (onSuccess){
         var apQuery = {};
-        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description:1};
+        // terms will be checked on backend and loaded only for allowed persons
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description:1, terms:1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
     };

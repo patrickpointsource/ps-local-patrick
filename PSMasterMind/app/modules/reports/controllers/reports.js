@@ -388,8 +388,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				roles = groupRoleMapping[ prop ];
 
 				for( i = 0; roles && i < roles.length; i++ )
-					if( $scope.userRoles[            roles[ i ].toLowerCase( ) ] )
-						$scope.userRoles[            roles[ i ].toLowerCase( ) ].value = true;
+					if( $scope.userRoles[                                        roles[ i ].toLowerCase( ) ] )
+						$scope.userRoles[                                        roles[ i ].toLowerCase( ) ].value = true;
 			}
 		}
 
@@ -406,6 +406,9 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				cond = $scope.userRoles[ 'all' ].value;
 
 				cond = cond || userRoles[ result[i].roles[ j ].type.resource ];
+
+				// init abbreviation
+				result[i].roles[ j ].abbreviation = $scope.rolesMapping[ result[i].roles[ j ].type.resource ].toUpperCase( );
 
 				if( !cond )
 					result[ i ].roles.splice( j, 1 );
@@ -436,36 +439,321 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		};
 	};
 
-	$scope.getBillingForecastReportData = function( cb) {
+	$scope.getBillingForecastReportData = function( cb ) {
 		$scope.csvData = null;
 
 		var filtered = $scope.processAndApplyFilters( );
 		var projects = filtered.result;
 		var i, j;
 
-		for( i = 0; i < projects.length; i++ ) {
-			if( projects[ i ].type == 'paid' ) {
-				projects[ i ].invoiceRevenue = 0;
+		var targetType = '';
+
+		if( $scope.reportTerms[ 'month' ] )
+			targetType = 'monthly';
+		else if( $scope.reportTerms[ 'week' ] )
+			targetType = 'weekly';
+		else if( $scope.reportTerms[ 'quarter' ] )
+			targetType = 'quarterly';
+
+		var startDate = null;
+		var endDate = null;
+
+		if( $scope.reportStartDate ) {
+			startDate = $scope.reportStartDate;
+
+			if( targetType == 'monthly' )
+				endDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
+			else if( targetType == 'weekly' )
+				endDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
+			else if( targetType == 'quarterly' )
+				endDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
+		} else if( $scope.reportCustomStartDate && $scope.reportCustomEndDate ) {
+			startDate = $scope.reportCustomStartDate;
+			endDate = $scope.reportCustomEndDate;
+		}
+
+		for( i = projects.length - 1; i >= 0; i-- ) {
+			// remove projects which has different report type
+			if( !projects[ i ].terms.billingFrequency ) {
+				projects.splice( i, 1 );
+			} else if( projects[ i ].terms.billingFrequency.indexOf( targetType ) == -1 ) {
+				projects.splice( i, 1 );
+			} else if( startDate && ( projects[ i ].terms.billingDate < startDate || projects[ i ].terms.billingDate > endDate ) ) {
+				projects.splice( i, 1 );
 			}
 		}
-		
-		cb(projects);
+
+		cb( projects );
 	};
-	
-	$scope.getBillingAccrualsReportData = function(cb) {
-	    $scope.csvData = null;
 
-        var filtered = $scope.processAndApplyFilters( );
-        var projects = filtered.result;
-        var i, j;
+	$scope.getBillingAccrualsReportData = function( cb ) {
+		$scope.csvData = null;
 
-        for( i = 0; i < projects.length; i++ ) {
-            if( projects[ i ].type == 'paid' ) {
-                projects[ i ].invoiceRevenue = 0;
-            }
-        }
-        
-        cb(projects);
+		var filtered = $scope.processAndApplyFilters( );
+		var projects = filtered.result;
+		var i, j;
+
+		var targetType = '';
+
+		if( $scope.reportTerms[ 'month' ] )
+			targetType = 'monthly';
+		else if( $scope.reportTerms[ 'week' ] )
+			targetType = 'weekly';
+		else if( $scope.reportTerms[ 'quarter' ] )
+			targetType = 'quarterly';
+
+		var startDate = null;
+		var endDate = null;
+
+		if( $scope.reportStartDate ) {
+			startDate = $scope.reportStartDate;
+
+			if( targetType == 'monthly' )
+				endDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
+			else if( targetType == 'weekly' )
+				endDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
+			else if( targetType == 'quarterly' )
+				endDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
+		} else if( $scope.reportCustomStartDate && $scope.reportCustomEndDate ) {
+			startDate = $scope.reportCustomStartDate;
+			endDate = $scope.reportCustomEndDate;
+		}
+		/*else {
+		 var now = moment( ).format( 'YYYY-MM-DD' );
+
+		 startDate = record.terms.billingDate;
+		 var prev = startDate;
+
+		 while( startDate < now ) {
+		 prev = startDate;
+
+		 if( targetType == 'monthly' )
+		 startDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
+		 else if( targetType == 'weekly' )
+		 startDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
+		 else if( targetType == 'quarterly' )
+		 startDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
+		 }
+
+		 startDate = prev;
+
+		 if( targetType == 'monthly' )
+		 endDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
+		 else if( targetType == 'weekly' )
+		 endDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
+		 else if( targetType == 'quarterly' )
+		 endDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
+		 }*/
+
+		for( i = projects.length - 1; i >= 0; i-- ) {
+			// remove projects which has different report type
+			if( !projects[ i ].terms.billingFrequency ) {
+				projects.splice( i, 1 );
+			} else if( projects[ i ].terms.billingFrequency.indexOf( targetType ) == -1 ) {
+				projects.splice( i, 1 );
+			} else if( startDate && ( projects[ i ].terms.billingDate < startDate || projects[ i ].terms.billingDate > endDate ) ) {
+				projects.splice( i, 1 );
+			}
+		}
+
+		var reportClient = filtered.reportClient;
+		var reportProject = filtered.reportProject;
+		var reportPerson = filtered.reportPerson;
+		var projectMapping = filtered.projectMapping;
+		var person;
+
+		var i, j;
+		// load assignments for filtered projects
+		AssignmentService.getAssignments( projects ).then( function( assignments ) {
+			var persons = [ ];
+
+			for( i = 0; i < assignments.length; i++ ) {
+
+				//result[ i ].hour.hours = 1;
+				for( j = 0; j < assignments[ i ].members.length; j++ ) {
+
+					if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j ].person.resource ) {
+						if( !projectMapping[ assignments[ i ].project.resource ] )
+							projectMapping[ assignments[ i ].project.resource ] = {};
+
+						if( !projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ] )
+							projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ] = [ ];
+
+						person = {
+							resource: assignments[ i ].members[ j ].person.resource,
+							hoursPerWeek: assignments[ i ].members[ j ].hoursPerWeek,
+							startDate: assignments[ i ].members[ j ].startDate,
+							endDate: assignments[ i ].members[ j ].endDate,
+							name: $scope.peopleMap[ assignments[ i ].members[ j ].person.resource ].name
+						};
+
+						var project = _.find( projects, function( p ) {
+							return p.resource == assignments[ i ].project.resource;
+						} );
+						var now = moment( ).format( 'YYYY-MM-DD' );
+
+						startDate = project.terms.billingDate;
+						var prev = startDate;
+
+						while( startDate < now ) {
+							prev = startDate;
+
+							if( targetType == 'monthly' )
+								startDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
+							else if( targetType == 'weekly' )
+								startDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
+							else if( targetType == 'quarterly' )
+								startDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
+						}
+
+						startDate = prev;
+
+						if( targetType == 'monthly' )
+							endDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
+						else if( targetType == 'weekly' )
+							endDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
+						else if( targetType == 'quarterly' )
+							endDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
+
+						projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ].push( person );
+
+						person.hours = person.hours ? person.hours : [ ];
+
+						person.startBillingDate = startDate;
+						person.endBillingDate = endDate;
+
+						if( person.startDate > person.startBillingDate )
+							person.startBillingDate = person.startDate;
+
+						if( person.endDate < person.endBillingDate )
+							person.endBillingDate = person.endDate;
+
+						//if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j
+						// ].person.resource )
+						persons.push( assignments[ i ].members[ j ].person.resource );
+					}
+				}
+			}
+
+			// prepare requests to load hours for associated with filtered projects people
+			var hoursQ = {
+				$or: [ ]
+			};
+
+			var prop;
+
+			hoursQ.$or = _.map( projectMapping, function( val, key ) {
+				if( key.indexOf( 'tasks' ) > -1 )
+					return {
+						"task.resource": key
+					};
+				return {
+					"project.resource": key
+				};
+			} );
+			hoursQ.$or = _.uniq( hoursQ.$or, function( p ) {
+				return p[ "project.resource" ];
+			} );
+
+			// find by person_resource person in {roles_mapping}-[persons]
+			var findPersonOnProject = function( rolesPersonMapping, resource ) {
+				var prop;
+				var result = null;
+
+				for( prop in rolesPersonMapping ) {
+					result = result || _.find( rolesPersonMapping[ prop ], function( p ) {
+						return p.resource == resource;
+					} );
+				}
+
+				return result;
+			};
+
+			if( hoursQ[ "$or" ].length > 0 )
+				HoursService.customQuery( hoursQ ).then( function( reportHours ) {
+					var person;
+					var mappingEntry;
+
+					for( i = 0; i < reportHours.length; i++ ) {
+
+						// find person entry associated with current hours entry
+						if( reportHours[ i ].project && reportHours[ i ].project.resource ) {
+							mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
+							person = findPersonOnProject( mappingEntry, reportHours[ i ].person.resource );
+						} else if( reportHours[ i ].task && reportHours[ i ].task.resource ) {
+							person = null;
+
+							if( projectMapping[ reportHours[ i ].task.resource ].persons )
+								person = _.find( projectMapping[ reportHours[ i ].task.resource ].persons, function( p ) {
+									return p.resource == reportHours[ i ].person.resource;
+								} );
+
+							if( !projectMapping[ reportHours[ i ].task.resource ].persons )
+								projectMapping[ reportHours[ i ].task.resource ].persons = [ ];
+
+							if( !person ) {
+								person = {
+									name: $scope.peopleMap[ reportHours[ i ].person.resource ].name,
+									resource: reportHours[ i ].person.resource
+								};
+
+								projectMapping[ reportHours[ i ].task.resource ].persons.push( person );
+							}
+						}
+
+						// for found person put current hours entry into hours collection
+						if( person ) {
+
+							if( reportHours[ i ].date >= person.startBillingDate && reportHours[ i ].date <= person.endBillingDate ) {
+								person.hours.push( {
+									hours: reportHours[ i ].hours,
+									description: reportHours[ i ].description,
+									date: reportHours[ i ].date
+								} );
+
+							}
+						}
+					}
+
+					var roleResource;
+					// migrate initialized persons collection with associated hours for each role to
+					// each project role
+					for( i = 0; i < projects.length; i++ )
+						for( j = 0; j < projects[ i ].roles.length; j++ ) {
+							roleResource = projects[ i ].resource + '/roles/' + projects[i].roles[ j ]._id;
+
+							if( projectMapping[ projects[ i ].resource ] && projectMapping[ projects[ i ].resource ][ roleResource ] ) {
+								projects[i].roles[ j ].persons = projectMapping[ projects[i].resource ][ roleResource ];
+								var l = 0;
+
+								for( l = 0; l < projects[i].roles[ j ].persons.length; l++ ) {
+									if( projects[i].roles[ j ].persons[ l ].hours )
+										projects[i].roles[ j ].persons[ l ].hours.sort( function( p1, p2 ) {
+											if( p1.date < p2.date )
+												return 1;
+											else if( p1.date > p2.date )
+												return -1;
+											return 0;
+										} );
+								}
+							} else
+								projects[i].roles[ j ].persons = [ ];
+
+						}
+
+					if( projects.length == 0 )
+						// put tasks info
+						for( prop in projectMapping )
+						projects.push( projectMapping[ prop ] );
+
+					cb( projects );
+				} );
+			else
+				cb( [ ] );
+
+		} );
+
+		//cb( projects );
 	};
 
 	$scope.getHoursReportData = function( cb ) {
@@ -611,7 +899,6 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 							} else
 								result[i].roles[ j ].persons = [ ];
 
-							result[i].roles[ j ].abbreviation = $scope.rolesMapping[ result[i].roles[ j ].type.resource ].toUpperCase( );
 						}
 
 					if( result.length == 0 )
@@ -636,7 +923,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			if( $scope.reportTypes[ 'customforecast' ] )
 				return [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid revenue', 'Role', 'Role quantity', 'Theoretical monthly revenue total' ];
 			else if( $scope.reportTypes[ 'customaccruals' ] )
-                return [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid revenue', 'Role', 'Role quantity', 'Theoretical monthly total', 'Assignment name', 'Hours logged', 'Theoretical hours remaining', 'Total Revenue expected for month' ];
+				return [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid revenue', 'Role', 'Role quantity', 'Theoretical monthly total', 'Assignment name', 'Hours logged', 'Theoretical hours remaining', 'Total Revenue expected for month' ];
 		}
 	};
 
@@ -645,8 +932,6 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		var line = '';
 
 		//Print the header
-		//var head = [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid
-		// revenue', 'Role', 'Role quantity' ];
 		var head = $scope.getHoursHeader( );
 		var i = 0;
 
@@ -661,43 +946,146 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			line = '';
 
 			var record = reportData[ i ];
-			/*
-			line += $scope.hoursToCSV.stringify( record.name ) + ',';
-			line += [ '--', '--', '--', '--', '--' ].join( ',' );
-			line += '\r\n';
-			*/
-			//line += [ '--', '--' ].join( ',' );
 
-			for( j = 0; record.roles && j < record.roles.length; j++ ) {
-				//line += record.roles[ j ].abbreviation + ',';
+			// include information about fixed bid project
+			if( $scope.reportTypes[ 'customaccruals' ] || $scope.reportTypes[ 'customforecast' ] ) {
 
-				//line += '\r\n';
+				if( record.terms && record.terms.type == 'fixed' ) {
+					line += $scope.hoursToCSV.stringify( record.name ) + ',';
 
-				for( k = 0; record.roles[ j ].persons && k < record.roles[ j ].persons.length; k++ ) {
-					//line += [ '--', '--' ].join( ',' );
+					line += 'fixed,';
 
-					if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
-						//line += [ '--' ].join( ',' );
-						line += $scope.hoursToCSV.stringify( record.name ) + ',';
-						line += record.roles[ j ].abbreviation + ',';
-						line += [ '--', '--', '--', '--' ].join( ',' );
-						line += '\r\n';
-					}
-					var l = 0;
+					if( record.terms.billingDate )
+						line += record.terms.billingDate + ',';
+					else
+						line += '--,';
 
-					for( l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
-						//line += [ '--' ].join( ',' );
-						line += $scope.hoursToCSV.stringify( record.name ) + ',';
-						line += record.roles[ j ].abbreviation + ',';
-						line += record.roles[ j ].persons[ k ].name + ',';
-						line += record.roles[ j ].persons[ k ].hours[ l ].date + ',';
-						line += record.roles[ j ].persons[ k ].hours[ l ].hours + ',';
-						line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + ',';
-						line += '\r\n';
-					}
+					var projectDuration = moment( record.endDate ).diff( record.startDate, 'days' ) / 30;
+
+					if( record.terms && record.terms.type == 'fixed' ) {
+						line += $scope.hoursToCSV.stringify( Util.formatCurrency( Math.round( record.terms.fixedBidServicesRevenue / projectDuration ) ) + '$ per month' ) + ',';
+						line += [ '--', '--', '--', '--', '--', '--', '--' ].join( ',' ) + ',';
+					} else
+						line += '--,';
+
+					line += '\r\n';
 
 				}
+			}
 
+			for( j = 0; record.roles && j < record.roles.length; j++ ) {
+
+				if( $scope.activeTab[ 'hours' ] ) {
+					// for hours report
+					for( k = 0; record.roles[ j ].persons && k < record.roles[ j ].persons.length; k++ ) {
+						//line += [ '--', '--' ].join( ',' );
+
+						if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
+							//line += [ '--' ].join( ',' );
+							line += $scope.hoursToCSV.stringify( record.name ) + ',';
+							line += record.roles[ j ].abbreviation + ',';
+							line += [ '--', '--', '--', '--' ].join( ',' );
+							line += '\r\n';
+						}
+						var l = 0;
+
+						for( l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
+							//line += [ '--' ].join( ',' );
+							line += $scope.hoursToCSV.stringify( record.name ) + ',';
+							line += record.roles[ j ].abbreviation + ',';
+							line += record.roles[ j ].persons[ k ].name + ',';
+							line += record.roles[ j ].persons[ k ].hours[ l ].date + ',';
+							line += record.roles[ j ].persons[ k ].hours[ l ].hours + ',';
+							line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + ',';
+							line += '\r\n';
+						}
+
+					}
+				} else if( $scope.activeTab[ 'billing' ] ) {
+					// for financial reports
+					if( !record.roles[ j ].persons && record.terms && record.terms.type != 'fixed' ) {
+						line += $scope.hoursToCSV.stringify( record.name ) + ',';
+
+						if( record.terms && record.terms.type == 'timeAndMaterials' )
+							line += 't&m,';
+
+						if( record.terms.billingDate )
+							line += record.terms.billingDate + ',';
+						else
+							line += '--,';
+
+						line += '--,';
+
+						var hoursPerMonth = Util.getHoursPerMonthFromRate( record.roles[ j ].rate );
+
+						var monthTotal = record.roles[ j ].rate.amount * hoursPerMonth;
+
+						line += record.roles[ j ].abbreviation + ',';
+						line += hoursPerMonth + ' h/m ,';
+						line += $scope.hoursToCSV.stringify( Util.formatCurrency( monthTotal ) + ' $' ) + ',';
+						line += '\r\n';
+					} else if( record.roles[ j ].persons && record.terms && record.terms.type != 'fixed' ) {
+
+						// add empty person to keep consistent logic
+						if( !record.roles[ j ].persons || record.roles[ j ].persons.length == 0 )
+							record.roles[ j ].persons = [ {
+								name: '--',
+								hours: [ ],
+								hoursPerWeek: 0
+							} ];
+
+						// var projectDuration = moment( record.endDate ).diff( record.startDate, 'days')
+						// ) / 30;
+						var now = moment( ).format( 'YYYY-MM-DD' );
+
+						for( k = 0; k < record.roles[ j ].persons.length; k++ ) {
+							if( record.roles[ j ].persons[ k ].startBillingDate < now ) {
+								line += $scope.hoursToCSV.stringify( record.name ) + ',';
+
+								if( record.terms && record.terms.type == 'timeAndMaterials' )
+									line += 't&m,';
+
+								if( record.terms.billingDate )
+									line += record.terms.billingDate + ',';
+								else
+									line += '--,';
+
+								line += '--,';
+
+								var hoursPerMonth = Util.getHoursPerMonthFromRate( record.roles[ j ].rate );
+								var monthTotal = record.roles[ j ].rate.amount * hoursPerMonth;
+
+								line += record.roles[ j ].abbreviation + ',';
+								line += hoursPerMonth + ' h/m ,';
+								line += $scope.hoursToCSV.stringify( Util.formatCurrency( monthTotal ) + ' $' ) + ',';
+
+								var hoursLogged = 0;
+								var l = 0;
+
+								for( l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
+									hoursLogged += record.roles[ j ].persons[k].hours[ l ].hours;
+								}
+
+								var weeks = moment( record.roles[ j ].persons[ k ].endBillingDate ).diff( now, 'days' ) / 7;
+
+								if( weeks < 0 )
+									weeks = 0;
+
+								var expectedHours = Math.round( weeks * record.roles[ j ].persons[ k ].hoursPerWeek );
+
+								line += record.roles[ j ].persons[ k ].name + ',';
+								line += hoursLogged + ',';
+								line += expectedHours + ',';
+
+								var revenueExpected = ( expectedHours + hoursLogged ) * record.roles[ j ].rate.amount;
+
+								line += $scope.hoursToCSV.stringify( Util.formatCurrency( revenueExpected ) + ' $' ) + ',';
+
+								line += '\r\n';
+							}
+						}
+					}
+				}
 			}
 
 			// in case of tasks
@@ -776,9 +1164,9 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 					reportDataCb( reportData );
 				} );
 			else if( $scope.activeTab[ 'billing' ] && $scope.reportTypes[ 'customaccruals' ] )
-                $scope.getBillingAccrualsReportData( function( reportData ) {
-                    reportDataCb( reportData );
-                } );
+				$scope.getBillingAccrualsReportData( function( reportData ) {
+					reportDataCb( reportData );
+				} );
 
 		},
 
