@@ -19,7 +19,7 @@ function( $q, Resources ) {
 			var record = hoursRecords[ i ];
 			var id = record[ '_id' ];
 
-			if( record.hours && (  parseInt( record.hours ) ).toString( ) == record.hours.toString( ) )
+			if( record.hours && (    parseInt( record.hours ) ).toString( ) == record.hours.toString( ) )
 				record.hours = parseInt( record.hours );
 			else if( record.hours && !isNaN( parseFloat( record.hours ) ) )
 				record.hours = parseFloat( record.hours );
@@ -324,20 +324,26 @@ function( $q, Resources ) {
 					for( var i = 0; i < ret.length; i++ ) {
 						var day = ret[ i ];
 						if( day && day.hoursEntries ) {
-							for( var j = 0; j < day.hoursEntries.length; j++ ) {
+							for( var j = day.hoursEntries.length - 1; j >= 0; j-- ) {
 								var entry = day.hoursEntries[ j ];
 
 								if( entry.project ) {
 									var entryProjectURI = entry.project.resource;
 									// Find the matching resolved project
+									var found = false;
+
 									for( var k = 0; k < projects.length; k++ ) {
 										var project = projects[ k ];
 										if( entryProjectURI == project.resource ) {
 											// Replace the project
 											entry.project = project;
+											found = true;
 											break;
 										}
 									}
+
+									if( !found )
+										day.hoursEntries.splice( j, 1 );
 								}
 							}
 						}
@@ -418,16 +424,16 @@ function( $q, Resources ) {
 	};
 
 	this.customQuery = function( query, fields ) {
-	    var deferred = $q.defer( );
+		var deferred = $q.defer( );
 		var hoursFields = {};
 		var hoursQuery = {};
-		
-		fields = fields? fields: {};
-		
-		Resources.query( 'hours', _.extend(hoursQuery, query), _.extend(hoursFields, fields), function( result ) {
-		    deferred.resolve( result.members );
+
+		fields = fields ? fields : {};
+
+		Resources.query( 'hours', _.extend( hoursQuery, query ), _.extend( hoursFields, fields ), function( result ) {
+			deferred.resolve( result.members );
 		} )
-		
+
 		return deferred.promise;
 	}
 } ] );

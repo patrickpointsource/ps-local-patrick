@@ -12,6 +12,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.projects = [ ];
 	$scope.hoursTasks = [ ];
 	$scope.execProjects = [ ];
+	$scope.availableProjects = [ ];
 
 	$scope.loadAvailableTasks = function( ) {
 		TasksService.refreshTasks( ).then( function( tasks ) {
@@ -26,15 +27,22 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	var managersQuery = {
 		'groups': 'Management'
 	};
-    
-    $scope.managers = [];
-    
-	Resources.query( 'people', managersQuery, { _id: 1, resource: 1, name: 1}, function( result ) {
-	    for(var i = 0; i < result.members.length; i++) {
-	      var manager = result.members[i];
-	      $scope.managers.push({name: manager.name, resource: manager.resource});
-	    }
-	    
+
+	$scope.managers = [ ];
+
+	Resources.query( 'people', managersQuery, {
+		_id: 1,
+		resource: 1,
+		name: 1
+	}, function( result ) {
+		for( var i = 0; i < result.members.length; i++ ) {
+			var manager = result.members[ i ];
+			$scope.managers.push( {
+				name: manager.name,
+				resource: manager.resource
+			} );
+		}
+
 		$scope.managers = _.sortBy( $scope.managers, function( manager ) {
 			return manager.name;
 		} );
@@ -87,10 +95,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.profile = person;
 
 		if( $scope.profile.manager ) {
-		  $scope.profile.manager = _.findWhere($scope.managers, { resource: $scope.profile.manager.resource});
-		  $scope.$emit( 'profile:loaded' );
-		}
-		else
+			$scope.profile.manager = _.findWhere( $scope.managers, {
+				resource: $scope.profile.manager.resource
+			} );
+			$scope.$emit( 'profile:loaded' );
+		} else
 			$scope.$emit( 'profile:loaded' );
 
 		//      $scope.skillsList = person.skills;
@@ -262,10 +271,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					var task = _.findWhere( $scope.hoursTasks, {
 						resource: taskRes
 					} );
-					
+
 					var taskName = "Unknown";
-					if(task) {
-					  taskName = task.name;
+					if( task ) {
+						taskName = task.name;
 					}
 					$scope.hours[ i ].task.name = taskName;
 				}
@@ -413,7 +422,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		while( currentDate <= maxDate ) {
 			o = {
-				name: $scope.monthNames[    currentDate.getMonth( ) ],
+				name: $scope.monthNames[      currentDate.getMonth( ) ],
 				value: currentDate.getMonth( )
 			};
 			$scope.hoursPeriods.push( o );
@@ -515,15 +524,20 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	 */
 	$scope.initProfile = function( ) {
 		$scope.profileId = $stateParams.profileId;
+
 		Resources.get( 'people/' + $scope.profileId ).then( function( person ) {
 			$scope.setProfile( person );
 
 			ProjectsService.getOngoingProjects( function( result ) {
 				$scope.ongoingProjects = result.data;
 				//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
+				$scope.availableProjects = $scope.availableProjects.concat( result.data );
 
 				ProjectsService.getMyCurrentProjects( person ).then( function( myCurrentProjects ) {
 					var myProjects = myCurrentProjects.data;
+
+					$scope.availableProjects = $scope.availableProjects.concat( myProjects );
+
 					$scope.activeProjectsCount = 0;
 					var hoursRate = 0;
 					for( var m = 0; m < myProjects.length; m++ ) {
@@ -555,7 +569,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						if( myProj.executiveSponsor.resource === 'people/' + $scope.profileId ) {
 							$scope.execProjects.push( myProj );
 						}
-					}
+					};
 
 					//$scope.hoursRateValue = hoursRate;
 					//$scope.hoursRateFromProjects = Math.round(100*hoursRate/HOURS_PER_WEEK);
@@ -587,6 +601,20 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 			AssignmentService.getMyCurrentAssignments( person ).then( function( assignments ) {
 				$scope.assignments = assignments;
+
+				var k = 0;
+				var found = false;
+
+				for( k = $scope.assignments.length - 1; k >= 0; k-- ) {
+					found = false;
+
+					found = _.find( $scope.availableProjects, function( p ) {
+						return p.resource == $scope.assignments[ k ].project.resource;
+					} )
+					if( !found )
+						$scope.assignments.splice( k, 1 );
+				};
+
 				$scope.hasAssignments = assignments.length > 0;
 
 				if( $scope.hasAssignments ) {
