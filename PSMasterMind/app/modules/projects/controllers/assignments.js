@@ -432,6 +432,17 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 
 		return result;
 	};
+	
+	$scope.isPastAssignment = function(currentAssignee) {
+	  if(!currentAssignee.endDate) {
+	    return false;
+	  }
+	  
+	  var now = moment();
+	  var assignmentEndMoment = moment(currentAssignee.endDate);
+	  
+	  return assignmentEndMoment.isBefore(now);
+	};
 
 	$scope.peopleList = [ ];
 
@@ -492,6 +503,14 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 					role.assignees.push( assignments[ i ] );
 
 			}
+			
+			for( var i = 0; i < $scope.project.roles.length; i++ ) {
+              if($scope.project.roles[ i ].assignees.length > 1) {
+                _.sortBy($scope.project.roles[ i ].assignees, function(assignment) {
+                  return new Date(assignment.endDate);
+                });
+              }
+            }
 
 			$scope.fillOriginalAssignees( );
 

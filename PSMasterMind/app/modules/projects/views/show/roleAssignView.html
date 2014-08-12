@@ -1,5 +1,6 @@
 <div class="row assignee-row" ng-repeat="currentAssignee in role.assignees" 
-	ng-show="role.assignees && role.assignees.length > 0 && role.assignees[0].person && role.assignees[0].person.resource">
+	ng-show="role.assignees && role.assignees.length > 0 && role.assignees[0].person && role.assignees[0].person.resource"
+	ng-class="{'past-assignment': isPastAssignment(currentAssignee)}">
 	
 	<div class="col-xs-5 col-sm-4 form-group" ng-class="{error: isFieldInError('role')}">
 	     <a href="#{{currentAssignee.person.resource}}">
@@ -40,7 +41,7 @@
 </div>
 
 <div class="row" ng-show="!role.assignees || role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
-	<div style="padding: 0 0 12px 12px;"  ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
+	<div style="padding: 12px 0 12px 12px;"  ng-if="role.assignees.length == 0 || !role.assignees[0].person || !role.assignees[0].person.resource">
 			<i class="fa fa-ban" style="color:#f34d4b"></i> <span>There are no assignees on this role</span>
 	</div>
 </div>
