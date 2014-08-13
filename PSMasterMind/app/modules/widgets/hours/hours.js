@@ -415,6 +415,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		// if (!hourEntry.hoursRecord.isAdded){
 		hourEntry.selectedItem = hourEntry.hoursRecord.project ? hourEntry.project : hourEntry.hoursRecord.task;
+		
+		setExpectedHoursPrompt(hourEntry, hourEntry.hoursRecord.project ? hourEntry.project : hourEntry.hoursRecord.task);
 		// }
 
 		tagetInput = tagetInput ? tagetInput : hoursLoggedEntry.find( '[name="project-task-select"]' );
@@ -720,9 +722,45 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		$scope.$apply( function( ) {
 			hourEntry.selectedItem = item;
+			
+			setExpectedHoursPrompt(hourEntry, item);
 		} );
 
 	};
+	
+	function setExpectedHoursPrompt(hourEntry, selectedProject)
+	{
+		var hoursSet = false;
+		
+		if (selectedProject && selectedProject.resource.indexOf("projects/") == 0 && selectedProject.roles)
+		{
+			var currentUser = $scope.getCurrentPerson();
+			
+			
+			for (var i = 0, count = selectedProject.roles.length; i < count; i++)
+			{
+				var role = selectedProject.roles[i];
+				
+				for (var j = 0, assigneeCount = role.assignees.length; j < assigneeCount; j++)
+				{
+					var assignee = role.assignees[j];
+					
+					if (assignee.person.resource == currentUser.about)
+					{
+						hourEntry.expectedHours = Math.round(assignee.hoursPerWeek / 5);
+						hoursSet = true;
+						break;
+					}
+				}
+				
+				if (hoursSet)
+					break;
+			}
+		}
+		
+		if (!hoursSet)
+			hourEntry.expectedHours = null;
+	}
 
 	$scope.handleDocClick = function( e ) {
 		e = e ? e : window.event;
