@@ -13,7 +13,9 @@ var Util = {
 	getHoursPerMonthFromRate: function( rate ) {
 		var result = 0;
 
-		if( !isNaN( parseInt( rate.hoursPerMth ) ) )
+		if( rate.fullyUtilized )
+			result = CONSTS.HOURS_PER_MONTH;
+		else if( !isNaN( parseInt( rate.hoursPerMth ) ) )
 			result = rate.hoursPerMth;
 		else if( !isNaN( parseInt( rate.hoursPerWeek ) ) && parseInt( rate.hoursPerWeek ) )
 			result = Math.round( rate.hoursPerWeek * 4 );

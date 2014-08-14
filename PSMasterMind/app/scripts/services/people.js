@@ -514,7 +514,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 			"clientexpierencemgmt": [ "SBA", "BA", "PM", "CxD" ],
 			"digitalexperience": [ "UXD", "SUXD", "DxM", "CD" ],
 			"executivemgmt": [ "EXEC", "DD", "CxD", "CD", "DMDE" ],
-			"marketing": [ "MKT", "DMDE" ],
+			"marketing": [ "MKT", "DMDE", "MS" ],
 			"sales": [ "SALES" ]
 		};
 	}

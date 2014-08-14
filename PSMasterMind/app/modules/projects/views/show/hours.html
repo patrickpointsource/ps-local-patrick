@@ -92,7 +92,7 @@
     <div class="alert alert-warning">There are no logged hours for this project.</div>
   </div>
   <div class="col-xs-12 peopleList">
-    <div ng-repeat="person in organizedHours" ng-if="organizedHours && getPersonTotalHours($index) > 0" class="well" style="margin-bottom: 10px;">
+    <div ng-repeat="person in organizedHours" ng-if="organizedHours" class="well" style="margin-bottom: 10px;">
       <div class="row" style="padding-bottom: 12px;" ng-click="person.collapsed=!person.collapsed">
         <div class="col-xs-12">
           <span style="margin-right: 12px;" ng-if="!person.collapsed"><i class="fa fa-caret-right" ng-show="person && person.thumbnail"></i></span>
@@ -104,6 +104,10 @@
           </a>
           <span>: {{getPersonProjectRoles(person)}}</span>
           <span>- {{getPersonTotalHours($index)}} hours</span>
+          <span> {{person.hoursPerWeek * 4}} h/m</span>
+          <span> Expected: {{getExpectedHoursForMonth(person, $index)}} hours</span>
+          <span ng-if="getOverloggedHoursForMonth(person, $index) > 0"> Extra logged: {{getOverloggedHoursForMonth(person, $index)}} hours</span>
+          
         </div>
 
       </div>
@@ -174,7 +178,7 @@
           </a>
         </div>
       </div>
-      <div class="panel-body">
+      <div class="panel-body peopleList">
         <!--            <h3> {{dayFormatted(startWeekDate)}} &ndash; {{dayFormatted(endWeekDate, "MMM D, YYYY")}} </h3>-->
         <div class="row">
           <div class="col-xs-12" ng-if="weekPersonHours.length == 0">
@@ -188,8 +192,14 @@
             <div class="row" ng-repeat="personHours in weekPersonHours" style="margin-bottom: 5px;">
               <div class="hidden-xs col-sm-5" style="margin-top:15px;">
                 <a href="#{{personHours.person.resource}}">
-                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />{{personHours.person.name}}
+                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />
+                  
                 </a>
+                <span>{{personHours.person.name}}</span>
+                <span> {{personHours.hoursPerWeek}} h/w</span>
+                <span> Expected: {{getExpectedHoursForWeek(personHours)}} hours</span>
+          		<span ng-if="getOverloggedHoursForWeek(personHours) > 0"> Extra logged: {{getOverloggedHoursForWeek(personHours)}} hours</span>
+          
               </div>
               <div class="row hidden-sm hidden-md hidden-lg hidden-sm">
                 <hr style="margin: 0;" />

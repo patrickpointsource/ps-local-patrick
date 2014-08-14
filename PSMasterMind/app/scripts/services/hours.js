@@ -3,8 +3,8 @@
 /**
  * Hours Service
  */
-angular.module( 'Mastermind' ).factory( 'Hours', [ '$q', 'Restangular', 'Resources', 'RolesService',
-function( $q, Restangular, Resources, RolesService ) {
+angular.module( 'Mastermind' ).factory( 'Hours', [ '$q', 'Restangular', 'Resources', 'RolesService', 'People',
+function( $q, Restangular, Resources, RolesService, People ) {
 
 	/*
 	 * Create a reference to a server side resource for Hours.
@@ -284,6 +284,7 @@ function( $q, Restangular, Resources, RolesService ) {
 	}
 
 	function getHoursGroupMapping( ) {
+	    /*
 		return {
 			"development": [ 'SE', 'SSE', 'SSEO', 'ST', 'SI' ],
 			"architects": [ 'SSA', 'SA' ],
@@ -291,9 +292,11 @@ function( $q, Restangular, Resources, RolesService ) {
 			"clientexpierencemgmt": [ "SBA", "BA", "PM", "CxD" ],
 			"digitalexperience": [ "UXD", "SUXD", "DxM" ],
 			"executivemgmt": [ "EXEC", "DD", "CxD", "CD", "DMDE" ],
-			"marketing": [ "MKT", "DMDE" ],
+			"marketing": [ "MKT", "DMDE", "MS" ],
 			"sales": [ "SALES" ]
 		};
+		*/
+		return People.getPeopleGroupMapping();
 	}
 
 	return {

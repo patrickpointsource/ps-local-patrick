@@ -150,16 +150,16 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	};
 
 	$scope.getSalesSponsor = function( ) {
-	  var name = '';
+		var name = '';
 		if( $scope.project && $scope.project.salesSponsor && $scope.sales && $scope.sales.members ) {
 			var resource = $scope.project.salesSponsor.resource;
 			var member = _.findWhere( $scope.sales.members, {
 				resource: resource
 			} );
-            
-            if(member && member.name) {
-              name = member.name;
-            }
+
+			if( member && member.name ) {
+				name = member.name;
+			}
 		} else {
 			name = '';
 		}
@@ -170,15 +170,15 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	};
 
 	$scope.getSalesSponsorEmail = function( ) {
-	    var mBox = '';
+		var mBox = '';
 		if( $scope.project && $scope.project.salesSponsor ) {
 			var resource = $scope.project.salesSponsor.resource;
 			var member = _.findWhere( $scope.sales.members, {
 				resource: resource
 			} );
-			
-			if(member && member.mBox) {
-			  mBox = member.mBox;
+
+			if( member && member.mBox ) {
+				mBox = member.mBox;
 			}
 		} else {
 			mBox = '';
@@ -615,9 +615,9 @@ else if( role.percentageCovered == 0 )
 
 		$scope.submitAttempted = true;
 
-        if(!$scope.validateFields()) {
-          return deferred.promise;
-        }
+		if( !$scope.validateFields( ) ) {
+			return deferred.promise;
+		}
 
 		if( dateShiftNeeded ) {
 			$scope.handleProjectStartDateShifts( savingCallback );
@@ -629,21 +629,20 @@ else if( role.percentageCovered == 0 )
 
 		return deferred.promise;
 	};
-	
-	$scope.validateFields = function() {
-	  $scope.messages = [];
-	
-	  if(!$scope.project.name || $scope.project.name === "") {
-	    $scope.messages.push("Project name is required.");
-	  }
-	  
-	  if(!$scope.project.customerName || $scope.project.customerName === "") {
-        $scope.messages.push("Customer name is required.");
-      }
-      
-      return $scope.messages.length == 0;
-	}
 
+	$scope.validateFields = function( ) {
+		$scope.messages = [ ];
+
+		if( !$scope.project.name || $scope.project.name === "" ) {
+			$scope.messages.push( "Project name is required." );
+		}
+
+		if( !$scope.project.customerName || $scope.project.customerName === "" ) {
+			$scope.messages.push( "Customer name is required." );
+		}
+
+		return $scope.messages.length == 0;
+	}
 	var SYMBOLS_FOR_DESCRIPTION = 400;
 
 	var cutDescription = function( description ) {
@@ -1067,7 +1066,6 @@ else if( role.percentageCovered == 0 )
 					var personsRole = roleGroups[ person.primaryRole.resource ];
 					person.title = personsRole.abbreviation + ': ' + person.familyName + ', ' + person.givenName;
 
-                    
 					for( var j = 0; j < result.members.length; j++ ) {
 						var roleJ = result.members[ j ];
 
@@ -1236,7 +1234,7 @@ else if( role.percentageCovered == 0 )
 
 			while( currentDate <= maxDate ) {
 				o = {
-					name: $scope.monthNames[    currentDate.getMonth( ) ],
+					name: $scope.monthNames[              currentDate.getMonth( ) ],
 					value: currentDate.getMonth( )
 				};
 				$scope.monthPeriods.push( o );
@@ -1370,6 +1368,7 @@ else if( role.percentageCovered == 0 )
 
 			// merge all other persons from assignees
 			$scope.updateHoursPersons( );
+			$scope.updateOrganizedHours( );
 		};
 		// use simply callback logic to wait until everyone will load
 		var counter = 0;
@@ -1390,6 +1389,68 @@ else if( role.percentageCovered == 0 )
 		 cb();
 		 });*/
 
+	};
+
+	$scope.updateOrganizedHours = function( ) {
+		// wait until $scope.projectAssignments and $scope.organizedHours will be
+		// initialized
+		if( $scope.projectAssignments && $scope.organizedHours ) {
+			var assignments = $scope.projectAssignments;
+			var person = null;
+			var startD = null;
+			var endD = null;
+			var additionalPersons = [ ];
+
+			var monthDate = new Date( );
+
+			monthDate.setMonth( $scope.currentMonth );
+
+			var startOfMonthDate = moment( monthDate ).startOf( 'month' ).format( 'YYYY-MM-DD' );
+			var endOfMonthDate = moment( monthDate ).endOf( 'month' ).format( 'YYYY-MM-DD' );
+			;
+
+			var i;
+
+			for( i = 0; i < assignments.members.length; i++ ) {
+				person = _.find( $scope.organizedHours, function( o ) {
+					return assignments.members[ i ].person.resource == o.resource;
+				} );
+
+				startD = new Date( assignments.members[ i ].startDate );
+				endD = new Date( assignments.members[ i ].endDate );
+
+				if( !person.hoursPerWeek && !person.endDate && !person.startDate ) {
+					person.hoursPerWeek = assignments.members[ i ].hoursPerWeek;
+					person.endDate = assignments.members[ i ].endDate;
+					person.startDate = assignments.members[ i ].startDate;
+				} else {
+					person.hoursPerWeek = assignments.members[ i ].hoursPerWeek > person.hoursPerWeek ? assignments.members[ i ].hoursPerWeek : person.hoursPerWeek;
+					person.endDate = assignments.members[ i ].endDate > person.endDate ? assignments.members[ i ].endDate : person.endDate;
+					person.startDate = assignments.members[ i ].startDate < person.startDate ? assignments.members[ i ].startDate : person.startDate;
+				}
+
+				if( person.endDate > endOfMonthDate )
+					person.endDate = endOfMonthDate;
+
+				if( person.startDate < startOfMonthDate )
+					person.startDate = startOfMonthDate;
+
+				if( !person && endD.getMonth( ) >= $scope.currentMonth && startD.getMonth( ) <= $scope.currentMonth )
+					additionalPersons.push( assignments.members[ i ].person.resource );
+			}
+
+			additionalPersons = _.uniq( additionalPersons );
+
+			for( i = 0; i < additionalPersons.length; i++ ) {
+				person = {
+					resource: additionalPersons[ i ],
+					hours: [ ]
+				};
+
+				$scope.organizedHours.push( person );
+				Resources.resolve( person.resource );
+			};
+		}
 	};
 	/*
 	 * Includes assignees to project hours
@@ -1422,6 +1483,54 @@ else if( role.percentageCovered == 0 )
 			} );
 		}
 
+	};
+
+	$scope.getExpectedHoursForWeek = function( personHours ) {
+		var loggedHours = 0;
+		var i = 0;
+
+		for( i = 0; i < personHours.hours.length; i++ )
+			loggedHours += personHours.hours[ i ].totalHours;
+
+		var result = personHours.hoursPerWeek - loggedHours;
+
+		if( result < 0 )
+			result = 0;
+
+		return result;
+	};
+
+	$scope.getOverloggedHoursForWeek = function( personHours ) {
+		var loggedHours = 0;
+		var i = 0;
+
+		for( i = 0; i < personHours.hours.length; i++ )
+			loggedHours += personHours.hours[ i ].totalHours;
+
+		var result = loggedHours - personHours.hoursPerWeek;
+
+		if( result < 0 )
+			result = 0;
+
+		return result;
+	};
+
+	$scope.getExpectedHoursForMonth = function( person, ind ) {
+		var result = person.hoursPerWeek * 4 - $scope.getPersonTotalHours( ind );
+
+		if( result < 0 )
+			result = 0;
+
+		return result;
+	};
+
+	$scope.getOverloggedHoursForMonth = function( person, ind ) {
+		var result = $scope.getPersonTotalHours( ind ) - person.hoursPerWeek * 4;
+
+		if( result < 0 )
+			result = 0;
+
+		return result;
 	};
 
 	$scope.getPersonTotalHours = function( index ) {
@@ -1791,8 +1900,8 @@ else if( role.percentageCovered == 0 )
 				else if( r1.endDate == r2.endDate && new Date( r1.startDate ) < new Date( r2.startDate ) )
 					return -1;
 
-				var abr1 = $scope.roleGroups[ r1.type.resource ] ? $scope.roleGroups[ r1.type.resource ].abbreviation: '';
-				var abr2 = $scope.roleGroups[ r2.type.resource ] ? $scope.roleGroups[ r2.type.resource ].abbreviation: '';
+				var abr1 = $scope.roleGroups[ r1.type.resource ] ? $scope.roleGroups[ r1.type.resource ].abbreviation : '';
+				var abr2 = $scope.roleGroups[ r2.type.resource ] ? $scope.roleGroups[ r2.type.resource ].abbreviation : '';
 
 				if( r1.endDate == r2.endDate && r1.startDate == r2.startDate ) {
 					if( abr1 > abr2 )
@@ -1884,47 +1993,87 @@ else if( role.percentageCovered == 0 )
 
 		};
 
-		Resources.query( 'hours', hoursQuery, {} ).then( function( result ) {
-			$scope.weekPersonHours = [ ];
-			$scope.weekHours = [ ];
-			if( result.count > 0 ) {
-				$scope.thisWeekHours = result.members;
-				//_.sortBy($scope.thisWeekHours, function(h) { return new Date(h.date); });
+		AssignmentService.getAssignmentsByPeriod( "all", {
+			project: {
+				resource: $scope.project.about
+			}
+		} ).then( function( data ) {
+			$scope.projectAssignments = data;
+			$scope.updateOrganizedHours( );
 
-				// resolve persons to fill csv fields
-				for( var i = 0; i < $scope.thisWeekHours.length; i++ ) {
-					Resources.resolve( $scope.thisWeekHours[ i ].person );
-				}
+			Resources.query( 'hours', hoursQuery, {} ).then( function( result ) {
+				$scope.weekPersonHours = [ ];
+				$scope.weekHours = [ ];
 
-				var uniqPersons = _.uniq( _.pluck( _.pluck( $scope.thisWeekHours, 'person' ), 'resource' ) );
+				if( result.count > 0 ) {
+					$scope.thisWeekHours = result.members;
+					//_.sortBy($scope.thisWeekHours, function(h) { return new Date(h.date); });
 
-				for( var i = 0; i < uniqPersons.length; i++ ) {
-					$scope.weekPersonHours.push( {
-						person: {
-							resource: uniqPersons[ i ]
-						},
-						hours: [ ]
-					} );
+					// resolve persons to fill csv fields
+					for( var i = 0; i < $scope.thisWeekHours.length; i++ ) {
+						Resources.resolve( $scope.thisWeekHours[ i ].person );
+					}
 
-					Resources.resolve( $scope.weekPersonHours[ i ].person );
+					var uniqPersons = _.pluck( _.pluck( $scope.thisWeekHours, 'person' ), 'resource' );
+					var hoursStartEndDatesMap = {};
 
-					var personRecord = $scope.weekPersonHours[ i ];
-					for( var k = 0; k < 7; k++ ) {
-						personRecord.hours.push( {} );
-						personRecord.hours[ k ].totalHours = 0;
-						personRecord.hours[ k ].hoursEntries = [ ];
+					for( var i = 0; i < $scope.projectAssignments.members.length; i++ ) {
+						if( $scope.projectAssignments.members[ i ].endDate >= $scope.startWeekDate && $scope.projectAssignments.members[ i ].startDate < $scope.endWeekDate ) {
+							uniqPersons.push( $scope.projectAssignments.members[ i ].person.resource );
 
-						var futureness = $scope.checkForFutureness( $scope.moment( $scope.startWeekDate ).add( 'days', k ).format( 'YYYY-MM-DD' ) );
-						personRecord.hours[ k ].futureness = futureness;
-						for( var j = 0; j < $scope.thisWeekHours.length; j++ ) {
-							if( ( $scope.thisWeekHours[ j ].date == $scope.moment( $scope.startWeekDate ).day( k ).format( 'YYYY-MM-DD' ) ) && ( $scope.thisWeekHours[ j ].person.resource == uniqPersons[ i ] ) ) {
-								personRecord.hours[ k ].hoursEntries.push( $scope.thisWeekHours[ j ] );
-								personRecord.hours[ k ].totalHours += $scope.thisWeekHours[ j ].hours;
+							if( !hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] )
+								hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] = {
+									hoursPerWeek: $scope.projectAssignments.members[ i ].hoursPerWeek,
+									startDate: $scope.projectAssignments.members[ i ].startDate,
+									endDate: $scope.projectAssignments.members[ i ].endDate
+								};
+							else {
+								if( $scope.projectAssignments.members[ i ].startDate < hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].startDate )
+									hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].startDate = $scope.projectAssignments.members[ i ].startDate;
+
+								if( $scope.projectAssignments.members[ i ].endDate > hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].endDate )
+									hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].endDate = $scope.projectAssignments.members[ i ].endDate;
+
+								if( $scope.projectAssignments.members[ i ].hoursPerWeek > hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].hoursPerWeek )
+									hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].hoursPerWeek = $scope.projectAssignments.members[ i ].hoursPerWeek;
+							}
+						}
+					}
+
+					uniqPersons = _.uniq( uniqPersons );
+
+					for( var i = 0; i < uniqPersons.length; i++ ) {
+						$scope.weekPersonHours.push( {
+							person: {
+								resource: uniqPersons[ i ]
+							},
+							hours: [ ],
+							startDate: hoursStartEndDatesMap[ uniqPersons[ i ] ].startDate,
+							endDate: hoursStartEndDatesMap[ uniqPersons[ i ] ].endDate,
+							hoursPerWeek: hoursStartEndDatesMap[ uniqPersons[ i ] ].hoursPerWeek
+						} );
+
+						Resources.resolve( $scope.weekPersonHours[ i ].person );
+
+						var personRecord = $scope.weekPersonHours[ i ];
+
+						for( var k = 0; k < 7; k++ ) {
+							personRecord.hours.push( {} );
+							personRecord.hours[ k ].totalHours = 0;
+							personRecord.hours[ k ].hoursEntries = [ ];
+
+							var futureness = $scope.checkForFutureness( $scope.moment( $scope.startWeekDate ).add( 'days', k ).format( 'YYYY-MM-DD' ) );
+							personRecord.hours[ k ].futureness = futureness;
+							for( var j = 0; j < $scope.thisWeekHours.length; j++ ) {
+								if( ( $scope.thisWeekHours[ j ].date == $scope.moment( $scope.startWeekDate ).day( k ).format( 'YYYY-MM-DD' ) ) && ( $scope.thisWeekHours[ j ].person.resource == uniqPersons[ i ] ) ) {
+									personRecord.hours[ k ].hoursEntries.push( $scope.thisWeekHours[ j ] );
+									personRecord.hours[ k ].totalHours += $scope.thisWeekHours[ j ].hours;
+								}
 							}
 						}
 					}
 				}
-			}
+			} );
 		} );
 	};
 
@@ -2132,18 +2281,18 @@ else if( role.percentageCovered == 0 )
 	};
 
 	$scope.getAbbreviation = function( role ) {
-		if( $scope.roleGroups && role && role.type && $scope.roleGroups[ role.type.resource ])
+		if( $scope.roleGroups && role && role.type && $scope.roleGroups[ role.type.resource ] )
 			return $scope.roleGroups[ role.type.resource ].abbreviation;
 
 		return "";
 	};
 
-    $scope.getPersonTitle = function(role) {
-        if( $scope.roleGroups && role && role.type )
-            return $scope.roleGroups[role.type.resource].title;
-            
-        return "";
-    };
+	$scope.getPersonTitle = function( role ) {
+		if( $scope.roleGroups && role && role.type )
+			return $scope.roleGroups[ role.type.resource ].title;
+
+		return "";
+	};
 	$scope.isActiveMonth = function( offset ) {
 		if( $scope.project ) {
 			var startDate = $scope.getTimelineStartDate( offset );
