@@ -64,6 +64,14 @@ public class InitialEmailReminderJob implements Job {
 						}
 					}
 						
+					LOGGER.log(Level.INFO, "fullName=" + fullName);
+					LOGGER.log(Level.INFO, "isActiveContact=" + isActiveContact);
+					LOGGER.log(Level.INFO, "primaryRole=" + primaryRole);
+					if (primaryRole != null) {
+						LOGGER.log(Level.INFO, "primaryRole.getString(resource)=" + primaryRole.getString("resource"));
+					}
+					LOGGER.log(Level.INFO, "roles.toString()=" + roles.toString());
+
 					if (isActiveContact && primaryRole != null && roles.toString().indexOf(primaryRole.getString("resource")) == -1 ) 
 					{
 						String date= DATE_FORMAT.format(getPreviousWorkingDay());
@@ -81,7 +89,9 @@ public class InitialEmailReminderJob implements Job {
 									LOGGER.log(Level.INFO, "message=" + message);
 									LOGGER.log(Level.INFO, "mBox=" + mBox);
 									LOGGER.log(Level.INFO, "fullName=" + fullName);
-									SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), emails, "Reminder for " + fullName, message);
+									if (message != null && !message.equals("")) {
+										SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), emails, "Reminder for " + fullName, message);
+									}
 								}
 								if (isDebug) {
 									String computerName=InetAddress.getLocalHost().getHostName();
