@@ -63,15 +63,13 @@ public class SmtpSender {
 			}
 			message.setFrom(new InternetAddress(propsTLS.getProperty(MAIL_FROM_PROPERTY)));
 			message.setSubject(subject);
-			message.setDataHandler(new DataHandler(new ByteArrayDataSource(body.toString(), "text/plain")));		
+			message.setDataHandler(new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain")));		
 			Transport.send(message);
 			
 		} catch (AddressException addressEx) {
 			throw new SmtpException(addressEx.getMessage());
 		} catch (MessagingException msgEx) {
 			throw new SmtpException(msgEx.getMessage());
-		} catch (IOException e) {
-			throw new SmtpException(e.getMessage());
 		}
 	}
 
@@ -86,7 +84,12 @@ public class SmtpSender {
 			List<InternetAddress> list = new ArrayList<InternetAddress>();
 			Iterator<String> i = source.iterator();
 			while (i.hasNext()) {
-				list.add(new InternetAddress(i.next()));
+				try {
+					list.add(new InternetAddress(i.next()));
+				}
+				catch (AddressException ae) {
+					LOGGER.log(Level.SEVERE, "Incorrect address : " + ae.getMessage());
+				}
 			}
 			addressess = (InternetAddress[]) list.toArray(new InternetAddress[] {});
 		}

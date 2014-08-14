@@ -41,7 +41,6 @@ public class InitialEmailReminderJob implements Job {
 		try {
 			boolean isActive = Data.getReminderActive(null);
 			boolean isDebug = Data.getReminderDebug(null);
-			
 			LOGGER.log(Level.INFO, "reminder.active=" + isActive);
 			LOGGER.log(Level.INFO, "reminder.debug=" + isDebug);
 			RequestContext rContext = getRequestContext();
@@ -75,8 +74,13 @@ public class InitialEmailReminderJob implements Job {
 						if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
 							try {
 								List<String> emails = getCCAdresses();
+								LOGGER.log(Level.INFO, "emails=" + emails);
 								if (isActive) {
+									LOGGER.log(Level.INFO, "givenName=" + givenName);
 									String message = SmtpHelper.getReminderMessage(givenName);
+									LOGGER.log(Level.INFO, "message=" + message);
+									LOGGER.log(Level.INFO, "mBox=" + mBox);
+									LOGGER.log(Level.INFO, "fullName=" + fullName);
 									SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), emails, "Reminder for " + fullName, message);
 								}
 								if (isDebug) {
@@ -96,9 +100,11 @@ public class InitialEmailReminderJob implements Job {
 										
 								}
 							} catch (SmtpException e) {
+								e.printStackTrace();
 								LOGGER.log(Level.SEVERE, e.getMessage());
 							}
 							catch (UnknownHostException e) {
+								e.printStackTrace();
 								LOGGER.log(Level.SEVERE, e.getMessage());
 							}
 						}
@@ -107,7 +113,8 @@ public class InitialEmailReminderJob implements Job {
 			}
 		}
 		catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+				e.printStackTrace();
+				LOGGER.log(Level.SEVERE, e.getMessage());
 		}
 	}
 
