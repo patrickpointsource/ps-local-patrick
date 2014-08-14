@@ -28,7 +28,7 @@ router.get('/', util.isAuthenticated, function(req, res){
 
 }); 
 
-router.get('/:id', function(req, res) {
+router.get('/:id', util.isAuthenticated, function(req, res) {
 
 	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function(allowed){
 		if (allowed) 
@@ -46,7 +46,7 @@ router.get('/:id', function(req, res) {
 
 });
 
-router.post('/:id/links', function(req, res) {
+router.post('/:id/links', util.isAuthenticated, function(req, res) {
 
 	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function(allowed){
 		if (allowed) 
@@ -64,7 +64,7 @@ router.post('/:id/links', function(req, res) {
 
 });
 
-router.get('/:id/links', function(req, res) {
+router.get('/:id/links', util.isAuthenticated, function(req, res) {
 
 	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjectLinks, function(allowed){
 		if (allowed) 
@@ -83,7 +83,7 @@ router.get('/:id/links', function(req, res) {
 
 });
 
-router.get('/:id/assignments', function(req, res) {
+router.get('/:id/assignments', util.isAuthenticated, function(req, res) {
 
 	security.isAllowed(req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewProjects, function(allowed){
 		if (allowed) 
@@ -102,7 +102,7 @@ router.get('/:id/assignments', function(req, res) {
 
 });
 
-router.get('/:id/roles', function(req, res) {
+router.get('/:id/roles', util.isAuthenticated, function(req, res) {
 	
 	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewRoles, function(allowed){
 		if (allowed) 
@@ -121,7 +121,7 @@ router.get('/:id/roles', function(req, res) {
 });
 
 
-router.get('/:id/roles/:roleId', function(req, res) {
+router.get('/:id/roles/:roleId', util.isAuthenticated, function(req, res) {
 
 	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewRoles, function(allowed){
 		if (allowed) 
@@ -198,7 +198,9 @@ router.post('/', function(req, res) {
 	security.isAllowed(req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function(allowed){
 		if (allowed) 
 		{
-		    projects.insertProject(req.body, function(err, result){
+			var project = req.body;
+			project.form = 'Projects';
+		    projects.insertProject(project, function(err, result){
 		        if(err){
 		            res.json(500, err);
 		        } else {

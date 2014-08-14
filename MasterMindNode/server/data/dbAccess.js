@@ -173,6 +173,12 @@ module.exports.listSecurityRoles = function(callback) {
     });
 };
 
+module.exports.listUserRoles = function(callback) {
+    cloudantView('views', 'UserRoles', {include_docs : true}, function(err, body){
+         callback(err, prepareResponse(body, 'user_roles', 'doc'));
+    });
+};
+
 module.exports.listLinks = function(callback) {
     cloudantView('views', 'Links', {include_docs : true}, function(err, body){
          callback(err, prepareResponse(body, 'links', 'doc'));

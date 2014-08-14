@@ -31,7 +31,9 @@ module.exports.allowedPermissions = function(userId, resources, callback) {
     });
 };
 
-module.exports.initSecurity = function(id, callback) {
+
+module.exports.initialize = function() {
+	console.log("initializing security");
 	var errStr = [];
 	dataAccess.listSecurityRoles(null, function (err, roles) {
 		var securityRoles = roles["members"];
@@ -44,27 +46,21 @@ module.exports.initSecurity = function(id, callback) {
 			}
 		}
 		if (errStr.length != 0) {
-			callback(errStr, false);					
+			console.log("Security has not been initialized properly : " + errStr);
 		}
 		else {
-			getRolesByGoogleId(id, function (err, result) {
-				if (!err) {
-					addRole(id, result.roles)
-					callback(err, true);					
+			dataAccess.listUserRoles(null, function (err, roles) {
+				var userRoles = roles["members"];
+				for (var i=0; i < userRoles.length; i++) {
+					addRole(userRoles[i].userId, userRoles[i].roles)
 				}
-				else {
-					callback(err, false);					
-				}	
 			});
+		
 		}
 	});
 };
 
-var getRolesByGoogleId = function(id, callback) {
-	dataAccess.getItem(id + "_SecurityRoles", function (err, result) {
-		callback(err, result);
-	});
-};
+
 
 var allow = function(role, resource, permission, callback) {
     acl.allow(role, resource, permission, function(err){
@@ -82,14 +78,4 @@ var addRole = function(userId, roles, callback) {
             callback(err);
         }
     });
-};
-
-module.exports.insertRoles = function(id, roles, callback) {
-	var obj = {"_id" : id + "_SecurityRoles", "roles" : roles };
-	console.log("obj._id=" + obj._id);
-	console.log("obj.roles=" + obj.roles);
-	
-	dataAccess.insertItem(obj._id, obj, obj._id, function (err, result) {
-		callback(err, result);
-	});
 };

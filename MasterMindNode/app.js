@@ -19,9 +19,7 @@ var logger = log4js.getLogger();
 var hoursByPerson = require('./server/routes/hoursByPerson');
 var hoursByPersonDate = require('./server/routes/hoursByPersonDate');
 var projects = require('./server/routes/projects');
-var projectsMe = require('./server/routes/projectsme');
 var people = require('./server/routes/people');
-var peopleMe = require('./server/routes/peopleme');
 var assignments = require('./server/routes/assignments');
 var tasks = require('./server/routes/tasks');
 var hours = require('./server/routes/hours');
@@ -31,6 +29,7 @@ var skills = require('./server/routes/skills');
 var links = require('./server/routes/links');
 var vacations = require('./server/routes/vacations');
 var securityRoles = require('./server/routes/securityRoles');
+var userRoles = require('./server/routes/userRoles');
 
 var security = require('./server/util/security.js');
 
@@ -79,6 +78,7 @@ app.use(session({ secret: config.sessionSecret,
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 // Public paths, mainly UI code
 app.use(express.static(__dirname + '/public')); 
 app.use(express.static(__dirname + '/bower_components')); 
@@ -87,7 +87,7 @@ app.use('/hoursByPerson', hoursByPerson);
 app.use('/hoursByPersonDate', hoursByPersonDate);
 app.use('//projects', projects);
 app.use('/projects', projects);
-app.use('/people', peopleMe);
+app.use('/people', people);
 app.use('//people', people);
 app.use('//assignments', assignments);
 app.use('//tasks', tasks);
@@ -99,6 +99,7 @@ app.use('/links', links);
 app.use('/skills', skills);
 app.use('//vacations', vacations);
 app.use('/securityRoles', securityRoles);
+app.use('/userRoles', userRoles);
 
 
 // Setup routes
@@ -107,32 +108,8 @@ require('./server/routes/auth')(app, passport);
 // Application paths that are protected
 app.get('/', ensureLoggedIn('/login'),
   function(req, res){
-  	 if (!req.session.initSecurity)  
-  	 {
-  	 	loadSecurity(req.user, function (err) {
-  	 		if (!err) {
-  	 			req.session.initSecurity = true;
-  	 		}
-			else {
-				console.log("err=" + err);
-			}
-		     res.render('index');
-  	 	});
-  	 	
-   	 }
-   	 else {
 	     res.render('index');
-   	 }
 });
-
-var loadSecurity = function(id, callback) {
-	security.initSecurity(id, function (err, isInit) {
-		if (!isInit) {
-			console.log("Security has not been initialized properly : " + err);
-		}
-		callback(err);
-	});
-};
 
 // There are many useful environment variables available in process.env,
 // please refer to the following document for detailed description:
@@ -154,4 +131,9 @@ var host = (process.env.VCAP_APP_HOST || 'localhost');
 var port = (process.env.VCAP_APP_PORT || 3000);
 // Start server
 app.listen(port, host);
+
+// Initialize security layer
+security.initialize();
+
 console.log('App started on port ' + port);
+

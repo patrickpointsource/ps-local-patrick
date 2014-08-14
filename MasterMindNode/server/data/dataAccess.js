@@ -10,6 +10,7 @@ var ASSIGNMENTS_KEY = 'Assignments';
 var TASKS_KEY = 'Tasks';
 var ROLES_KEY = 'Roles';
 var SECURITY_ROLES_KEY = 'SecurityRoles';
+var USER_ROLES_KEY = 'UserRoles';
 var CONFIGURATION_KEY = 'Configuration';
 var VACATIONS_KEY = 'Vacations';
 var SKILLS_KEY = 'Skills';
@@ -277,6 +278,23 @@ var listSecurityRoles = function( q, callback ) {
 
 };
 
+var listUserRoles = function( q, callback ) {
+	var result = memoryCache.getObject( USER_ROLES_KEY );
+	if( result ) {
+		console.log( "read " + USER_ROLES_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q , "members", "userRoles/") );
+	} else {
+		dbAccess.listUserRoles( function( err, body) {
+			if( !err ) {
+				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
+				memoryCache.putObject( USER_ROLES_KEY, body );
+			}
+			callback( err, queryRecords( body, q, "members", "userRoles/" ) );
+		} );
+	}
+
+};
+
 
 var insertItem = function( id, obj, type, callback ) {
 	dbAccess.insertItem( id, obj, function( err, body ) {
@@ -315,6 +333,7 @@ module.exports.listSkills = listSkills;
 module.exports.listConfiguration = listConfiguration;
 module.exports.listVacations = listVacations;
 module.exports.listSecurityRoles = listSecurityRoles;
+module.exports.listUserRoles = listUserRoles;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
 
 module.exports.insertItem = insertItem;

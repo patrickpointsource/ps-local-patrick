@@ -65,12 +65,18 @@ router.delete('/', function(req, res) {
 
 });
 
-router.get('/:id', function(req, res) {
+router.get('/:id', util.isAuthenticated, function(req, res) {
+	console.log("req.headers=" + req.headers.authorization);
+	console.log("req.user=" + req.user);
+	console.log("securityResources=" + securityResources);
+	console.log("res=" + res);
 
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function(allowed){
 		if (allowed) 
 		{
+			console.log("test");
 			var id = req.params.id;
+			console.log("id=" + id);
 			if (id == 'me') {
 				
 				people.getPersonByGoogleId(req.user, function(err, result){
