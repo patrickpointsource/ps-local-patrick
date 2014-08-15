@@ -4,6 +4,7 @@
 package com.pointsource.mastermind.server;
 
 import java.net.URI;
+import java.util.Arrays;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -24,6 +25,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.pointsource.mastermind.server.smtp.SmtpHelper;
+import com.pointsource.mastermind.server.smtp.SmtpSender;
 import com.pointsource.mastermind.util.CONSTS;
 import com.pointsource.mastermind.util.Data;
 import com.pointsource.mastermind.util.RequestContext;
@@ -115,6 +118,30 @@ public class Vacations extends BaseResource {
 				RequestContext context = getRequestContext();
 
 				JSONObject ret = Data.createVacation(context, vacationRecord);
+				
+				JSONObject vManager = (JSONObject) vacationRecord.get(CONSTS.PROP_VACATION_MANAGER);
+				String vManagerRef = vManager.getString(CONSTS.PROP_RESOURCE);
+				String vManagerId = vManagerRef.substring(vManagerRef.lastIndexOf('/')+1);
+				JSONObject vManagerProfile = Data.getPerson(context, vManagerId);
+
+				JSONObject person = (JSONObject) vacationRecord.get(CONSTS.PROP_PERSON);
+				String personRef = person.getString(CONSTS.PROP_RESOURCE);
+				String personId = personRef.substring(personRef.lastIndexOf('/')+1);
+				JSONObject personProfile = Data.getPerson(context, personId);
+				
+				String mBox = (String) vManagerProfile.get(CONSTS.PROP_MBOX);
+				if (mBox != null) {
+					String requestType = (String) vacationRecord.get(CONSTS.PROP_TYPE);
+					String startDate = (String) vacationRecord.get(CONSTS.PROP_START_DATE);
+					String endDate = (String) vacationRecord.get(CONSTS.PROP_END_DATE);
+					String description = (String) vacationRecord.get(CONSTS.PROP_DESCRIPTION);
+					String personName = (String) personProfile.get(CONSTS.PROP_NAME);
+					String userName = (String) vManagerProfile.get(CONSTS.PROP_GIVEN_NAME);
+					String title = "Pending Paid " + requestType + " Request";
+					String message = SmtpHelper.getOutOfOfficeRequestMessage(userName, personName, requestType, startDate, endDate, description);
+					SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), null, title, message);
+				}
+				
 
 				URI baseURI = context.getBaseURI();
 				ret.put(CONSTS.PROP_BASE, baseURI);

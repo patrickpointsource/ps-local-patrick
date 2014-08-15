@@ -90,6 +90,7 @@ public interface CONSTS {
 	public String PROP_PROPERTIES = "properties";
 	public String PROP_CONFIG = "config";
 	public String PROP_VALUE = "value";
+	public String PROP_VACATION_MANAGER = "vacationManager";
 	
 	/**
 	 * RDF Namespaces

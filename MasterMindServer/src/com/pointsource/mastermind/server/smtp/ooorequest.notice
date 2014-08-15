@@ -1,0 +1,12 @@
+!userName!,
+
+You have received a notification on MasterMind the details of which are as follows. 
+
+Type of request : !requestType!
+From : !startDate!
+Until : !endDate!
+Person : !personName!
+Description : !description!
+
+Please log on to Mastermind for details by visiting the URL below.
+https://mastermind.pointsource.us
