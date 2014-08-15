@@ -10,9 +10,11 @@
 		</div>
 		
 		<div class="col-xs-6">
-			<a class="btn pull-right btn-export" name="topCSVLink" ng-click="hoursToCSV.generate($event)" href="{{hoursToCSV.link()}}" download="Custom.csv">
-		      EXPORT CSV
-		    </a>
+			<button class="btn pull-right btn-export" name="topCSVLink" ng-click="hoursToCSV.generate($event)" >
+				<a href="{{hoursToCSV.link()}}" download="Custom.csv" >
+			      EXPORT CSV
+			    </a>
+		    </button>
 		</div>
 	</div>
 	
@@ -295,9 +297,11 @@
 	
 	<div class="row " style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
 		<div class="col-xs-12">
-			<a class="btn pull-right btn-export" name="bottomCSVLink" ng-click="hoursToCSV.generate($event)" href="{{hoursToCSV.link()}}" download="Custom.csv">
-		      EXPORT CSV
-		    </a>
+			<button class="btn pull-right btn-export" name="bottomCSVLink" ng-click="hoursToCSV.generate($event)" >
+				<a href="{{hoursToCSV.link()}}" download="Custom.csv" >
+			      EXPORT CSV
+			    </a>
+		    </button>
 		</div>
 	</div>
 </div>

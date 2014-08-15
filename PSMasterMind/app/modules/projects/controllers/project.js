@@ -1064,7 +1064,7 @@ else if( role.percentageCovered == 0 )
 				for( var i = 0; i < people.length; i++ ) {
 					var person = people[ i ];
 					var personsRole = roleGroups[ person.primaryRole.resource ];
-					person.title = personsRole.abbreviation + ': ' + person.familyName + ', ' + person.givenName;
+					person.title = ( personsRole ? ( personsRole.abbreviation + ': ' ) : '' ) + person.familyName + ', ' + person.givenName;
 
 					for( var j = 0; j < result.members.length; j++ ) {
 						var roleJ = result.members[ j ];
@@ -1234,7 +1234,7 @@ else if( role.percentageCovered == 0 )
 
 			while( currentDate <= maxDate ) {
 				o = {
-					name: $scope.monthNames[              currentDate.getMonth( ) ],
+					name: $scope.monthNames[               currentDate.getMonth( ) ],
 					value: currentDate.getMonth( )
 				};
 				$scope.monthPeriods.push( o );
@@ -1500,14 +1500,14 @@ else if( role.percentageCovered == 0 )
 		return result;
 	};
 
-	$scope.getOverloggedHoursForWeek = function( personHours ) {
+	$scope.getLoggedHoursForWeek = function( personHours ) {
 		var loggedHours = 0;
 		var i = 0;
 
 		for( i = 0; i < personHours.hours.length; i++ )
 			loggedHours += personHours.hours[ i ].totalHours;
 
-		var result = loggedHours - personHours.hoursPerWeek;
+		var result = loggedHours;
 
 		if( result < 0 )
 			result = 0;
@@ -1524,8 +1524,8 @@ else if( role.percentageCovered == 0 )
 		return result;
 	};
 
-	$scope.getOverloggedHoursForMonth = function( person, ind ) {
-		var result = $scope.getPersonTotalHours( ind ) - person.hoursPerWeek * 4;
+	$scope.getLoggedHoursForMonth = function( person, ind ) {
+		var result = $scope.getPersonTotalHours( ind );
 
 		if( result < 0 )
 			result = 0;

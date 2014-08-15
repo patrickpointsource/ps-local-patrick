@@ -25,6 +25,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 	$scope.peopleMap = {};
 	$scope.projectStatesDisabled = false;
 
+	$scope.roleDepartementMapping = PeopleService.getPeopleGroupMapping( );
+
 	$scope.tabSelected = function( tabName ) {
 		var prop;
 
@@ -388,8 +390,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				roles = groupRoleMapping[ prop ];
 
 				for( i = 0; roles && i < roles.length; i++ )
-					if( $scope.userRoles[                                        roles[ i ].toLowerCase( ) ] )
-						$scope.userRoles[                                        roles[ i ].toLowerCase( ) ].value = true;
+					if( $scope.userRoles[                                             roles[ i ].toLowerCase( ) ] )
+						$scope.userRoles[                                             roles[ i ].toLowerCase( ) ].value = true;
 			}
 		}
 
@@ -518,32 +520,6 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			startDate = $scope.reportCustomStartDate;
 			endDate = $scope.reportCustomEndDate;
 		}
-		/*else {
-		 var now = moment( ).format( 'YYYY-MM-DD' );
-
-		 startDate = record.terms.billingDate;
-		 var prev = startDate;
-
-		 while( startDate < now ) {
-		 prev = startDate;
-
-		 if( targetType == 'monthly' )
-		 startDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
-		 else if( targetType == 'weekly' )
-		 startDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
-		 else if( targetType == 'quarterly' )
-		 startDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
-		 }
-
-		 startDate = prev;
-
-		 if( targetType == 'monthly' )
-		 endDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
-		 else if( targetType == 'weekly' )
-		 endDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
-		 else if( targetType == 'quarterly' )
-		 endDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
-		 }*/
 
 		for( i = projects.length - 1; i >= 0; i-- ) {
 			// remove projects which has different report type
@@ -917,7 +893,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 	$scope.getHoursHeader = function( ) {
 		if( $scope.activeTab[ 'hours' ] )
-			return [ 'Project/Task', 'Role', 'Person', 'Date', 'Hours', 'Description' ];
+			return [ 'Project/Task', 'Person', 'Role', 'Department', 'Date', 'Hours', 'Description' ];
 
 		if( $scope.activeTab[ 'billing' ] ) {
 			if( $scope.reportTypes[ 'customforecast' ] )
@@ -947,7 +923,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 			var record = reportData[ i ];
 
-			// include information about fixed bid project
+			// financial: include information about fixed bid project
 			if( $scope.reportTypes[ 'customaccruals' ] || $scope.reportTypes[ 'customforecast' ] ) {
 
 				if( record.terms && record.terms.type == 'fixed' ) {
@@ -973,6 +949,20 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				}
 			}
 
+			var getDepartment = function( role ) {
+				var group;
+				var result = [];
+
+				for( group in $scope.roleDepartementMapping ) {
+					if( _.find( $scope.roleDepartementMapping[ group ], function( r ) {
+					   return r == role;
+					} ) ) {
+                        result.push(group);
+					}
+				}
+
+				return result.join(',');
+			};
 			for( j = 0; record.roles && j < record.roles.length; j++ ) {
 
 				if( $scope.activeTab[ 'hours' ] ) {
@@ -983,7 +973,9 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 						if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
 							//line += [ '--' ].join( ',' );
 							line += $scope.hoursToCSV.stringify( record.name ) + ',';
+							line += record.roles[ j ].persons[ k ].name + ',';
 							line += record.roles[ j ].abbreviation + ',';
+							line += $scope.hoursToCSV.stringify(getDepartment( record.roles[ j ].abbreviation )) + ',';
 							line += [ '--', '--', '--', '--' ].join( ',' );
 							line += '\r\n';
 						}
@@ -992,8 +984,10 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 						for( l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
 							//line += [ '--' ].join( ',' );
 							line += $scope.hoursToCSV.stringify( record.name ) + ',';
-							line += record.roles[ j ].abbreviation + ',';
 							line += record.roles[ j ].persons[ k ].name + ',';
+							line += record.roles[ j ].abbreviation + ',';
+							line += $scope.hoursToCSV.stringify(getDepartment( record.roles[ j ].abbreviation )) + ',';
+
 							line += record.roles[ j ].persons[ k ].hours[ l ].date + ',';
 							line += record.roles[ j ].persons[ k ].hours[ l ].hours + ',';
 							line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + ',';
@@ -1127,15 +1121,22 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			'"';
 		},
 
+		/*Only called when our custom event fired*/
+		onInnerReportLink: function( e ) {
+			e = e ? e : window.event;
+
+			//e.preventDefault();
+			e.stopPropagation( );
+
+			$( e.target ).closest( 'a' ).unbind( 'click' );
+		},
+
 		generate: function( e ) {
 			e = e ? e : window.event;
-			var btn = $( e.target ).closest( '.btn-export' );
+			var btn = $( e.target ).closest( '.btn-export a' );
 
 			e.preventDefault( );
 			e.stopPropagation( );
-
-			if( skipGenerate )
-				return;
 
 			var reportDataCb = function( reportData ) {
 				$scope.csvData = $scope.JSON2CSV( reportData );
@@ -1146,13 +1147,18 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 				btn.attr( 'href', 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData ) );
 
-				skipGenerate = true;
+				//skipGenerate = true;
+
+				btn.click( $scope.hoursToCSV.onInnerReportLink );
 
 				var allowDefault = btn.get( 0 ).dispatchEvent( evt );
 
-				window.setTimeout( function( ) {
-					skipGenerate = false;
-				}, 1000 * 7 );
+				/*
+				 window.setTimeout( function( ) {
+				 skipGenerate = false;
+				 }, 1000 * 7 );
+				 */
+
 			};
 
 			if( $scope.activeTab[ 'hours' ] )
