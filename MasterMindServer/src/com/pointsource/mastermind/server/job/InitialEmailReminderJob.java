@@ -58,7 +58,7 @@ public class InitialEmailReminderJob implements Job {
 					try {
 						primaryRole = (JSONObject)contact.get(PRIMARY_ROLE_KEY);
 					}
-					catch (JSONException jsone) {
+					catch (Exception jsone) {
 						if (isDebug) {
 							LOGGER.log(Level.FINE, jsone + " for " + fullName);
 						}
