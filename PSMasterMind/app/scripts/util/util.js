@@ -52,5 +52,32 @@ var Util = {
 			cb( matches );
 		};
 
+	},
+
+	fixRestAngularPathMethod: function( configurerFn ) {
+		if( window.fixUrl ) {
+			return function( RestangularConfigurer ) {
+				var tmp = '';
+				var oldBase = RestangularConfigurer.urlCreatorFactory.path.prototype.base;
+
+				RestangularConfigurer.urlCreatorFactory.path.prototype.base = function( current ) {
+					var res = oldBase.apply( this, [ current ] );
+
+					res = res.replace( /[^\:]\/\//gi, function( entry ) {
+						return entry.replace( "//", "/" );
+					} );
+					//res = res.replace( "//", "/" );
+					return res;
+				};
+
+				if( configurerFn )
+					configurerFn( RestangularConfigurer );
+			};
+		}
+
+		return function( RestangularConfigurer ) {
+			if( configurerFn )
+				configurerFn( RestangularConfigurer );
+		};
 	}
 };

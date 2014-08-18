@@ -12,7 +12,7 @@ function( $q, Restangular, Resources, RolesService, People ) {
 	 * The query method returns an object with a property 'data' containing
 	 * the list of projects.
 	 */
-	var Resource = Restangular.all( 'hours' );
+	var Resource = Restangular.withConfig( Util.fixRestAngularPathMethod() ).all( 'hours' );
 
 	/**
 	 * Service function for retrieving all hours.

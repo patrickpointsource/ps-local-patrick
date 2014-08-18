@@ -12,7 +12,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 * The query method returns an object with a property 'data' containing
 	 * the list of projects.
 	 */
-	var Resource = Restangular.all( 'people' );
+	var Resource = Restangular.withConfig( Util.fixRestAngularPathMethod() ).all( 'people' );
 
 	/**
 	 * Service function for retrieving all people.

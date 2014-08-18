@@ -30,6 +30,24 @@ angular.module('Mastermind.services.projects')
      * Also, transform each returned object into a Project.
      * @type {*}
      */
+    
+    ProjectsRestangular = Restangular.withConfig( Util.fixRestAngularPathMethod(function (RestangularConfigurer) {
+      RestangularConfigurer.setResponseInterceptor(function (data, operation, what,url,response) {
+        var newData = data;
+
+        if (what === 'projects') {
+          if (operation === 'getList') {
+            newData = data.data;
+          }
+        }
+        
+        return newData;
+      }).addElementTransformer('projects', false, function (element) {
+        return new Project(element);
+      });
+    }) );
+    
+    /*
     ProjectsRestangular = Restangular.withConfig(function (RestangularConfigurer) {
       RestangularConfigurer.setResponseInterceptor(function (data, operation, what,url,response) {
         var newData = data;
@@ -45,7 +63,7 @@ angular.module('Mastermind.services.projects')
         return new Project(element);
       });
     });
-
+*/
     Resource = ProjectsRestangular.all('projects');
 
     var _this = this;

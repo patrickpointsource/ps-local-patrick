@@ -29,6 +29,7 @@ var securityResources = {
         permissions: {
 	       	viewHours : 'viewHours',
         	editHours : 'editHours',
+        	deleteMyHours : 'deleteMyHours',
         	editMyHours : 'editMyHours',
         	viewHoursReportsAndCSV : 'viewHoursReportsAndCSV'
         }
