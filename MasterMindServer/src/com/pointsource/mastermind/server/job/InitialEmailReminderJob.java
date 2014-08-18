@@ -59,9 +59,7 @@ public class InitialEmailReminderJob implements Job {
 						primaryRole = (JSONObject)contact.get(PRIMARY_ROLE_KEY);
 					}
 					catch (Exception jsone) {
-						if (isDebug) {
-							LOGGER.log(Level.FINE, jsone + " for " + fullName);
-						}
+						LOGGER.log(Level.FINE, jsone + " for " + fullName);
 					}
 						
 					LOGGER.log(Level.INFO, "fullName=" + fullName);
@@ -79,10 +77,12 @@ public class InitialEmailReminderJob implements Job {
 						String query = "{\"person\":{\"resource\":\"" + resource + "\"},\"date\":\"" + date + "\"}";
 						JSONArray vacation = Data.getVacations(null, query, "", "");
 						JSONArray hours = Data.getHours(null, query, "", "");
+						LOGGER.log(Level.INFO, "vacation=" + vacation);
 						if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
 							try {
 								List<String> emails = getCCAdresses();
 								LOGGER.log(Level.INFO, "emails=" + emails);
+								LOGGER.log(Level.INFO, "isActive=" + isActive);
 								if (isActive) {
 									LOGGER.log(Level.INFO, "givenName=" + givenName);
 									String message = SmtpHelper.getReminderMessage(givenName);
@@ -93,8 +93,10 @@ public class InitialEmailReminderJob implements Job {
 										SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), emails, "Reminder for " + fullName, message);
 									}
 								}
+								LOGGER.log(Level.INFO, "isDebug=" + isDebug);
 								if (isDebug) {
 									String computerName=InetAddress.getLocalHost().getHostName();
+									LOGGER.log(Level.INFO, "computerName=" + computerName);
 									String ccMail = null;
 									if (emails != null) {
 										ccMail = Arrays.toString(emails.toArray());
@@ -102,8 +104,11 @@ public class InitialEmailReminderJob implements Job {
 									else {
 										ccMail = "";
 									}
+									LOGGER.log(Level.INFO, "ccMail=" + ccMail);
 									String message = SmtpHelper.getReminderDebugMessage(givenName, mBox, ccMail, computerName);
+									LOGGER.log(Level.INFO, "message=" + message);
 									String[] notificationList = Data.getDebugNotificationList(null);
+									LOGGER.log(Level.INFO, "notificationList=" + notificationList);
 									if (notificationList != null && notificationList.length > 0) {
 										SmtpSender.getInstance().sendTLSEmail(Arrays.asList(notificationList), null, "Reminder for " + fullName + " (Limited Notification List)", message);
 									}
