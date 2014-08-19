@@ -58,6 +58,13 @@ var securityResources = {
         	viewRoles : 'viewRoles',
         	editRoles : 'editRoles'
         }         
+    },
+    skills :{
+        resourceName: 'skills',
+        permissions: {
+        	viewSkills : 'viewSkills',
+        	editSkills : 'editSkills'
+        }
     }
 };
 

@@ -25,8 +25,8 @@ module.exports.insertSkill = function(obj, callback) {
     });
 };
 
-module.exports.deleteSkill = function(obj, callback) {
-    dataAccess.deleteItem(obj._id, obj._rev, dataAccess.SKILLS_KEY, function(err, body){
+module.exports.deleteSkill = function(id, callback) {
+    dataAccess.deleteItem(id, null, dataAccess.SKILLS_KEY, function(err, body){
         if (err) {
             console.log(err);
             callback(err, null);
