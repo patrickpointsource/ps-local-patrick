@@ -49,4 +49,16 @@ router.get('/:id', function(req, res) {
     });
 });
 
+router.put('/:id', function(req, res) {
+    var id = req.params.id;
+    req.body._id = id;
+    vacations.insertVacation(req.body, function(err, result){
+        if(err){
+            res.json(500, err);
+        } else {
+            res.json(result);
+        }            
+    });
+});
+
 module.exports = router;

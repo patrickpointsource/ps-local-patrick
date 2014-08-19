@@ -156,7 +156,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
     }
 	
 	VacationsService.addNewVacation(vacation).then(function(result) {
-      $scope.vacations.push(result);
+      $scope.vacations.push(vacation);
       $scope.requestHours();
       $scope.vacations = _.sortBy($scope.vacations, function(vacation) {
         return new Date(vacation.startDate);

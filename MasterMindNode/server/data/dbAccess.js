@@ -203,6 +203,12 @@ module.exports.listVacations = function(callback) {
     });
 };
 
+module.exports.listNotifications = function(callback) {
+    cloudantView('views', 'Notifications', {include_docs : true}, function(err, body){
+         callback(err, prepareResponse(body, 'notifications', 'doc'));
+    });
+};
+
 module.exports.insertItem = insertItem;
 module.exports.deleteItem = deleteItem;
 module.exports.getItem = getItem;

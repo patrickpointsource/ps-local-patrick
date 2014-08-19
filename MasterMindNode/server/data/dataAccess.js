@@ -15,6 +15,7 @@ var CONFIGURATION_KEY = 'Configuration';
 var VACATIONS_KEY = 'Vacations';
 var SKILLS_KEY = 'Skills';
 var LINKS_KEY = 'Links';
+var NOTIFICATIONS_KEY = 'Notifications';
 
 //TODO: fix $oid to _id
 var alignQuery = function( q, qP, pProp, pInd) {
@@ -295,8 +296,29 @@ var listUserRoles = function( q, callback ) {
 
 };
 
+var listNotifications = function( q, callback ) {
+
+    var result = memoryCache.getObject( NOTIFICATIONS_KEY );
+    if( result ) {
+        console.log( "read " + NOTIFICATIONS_KEY + " from memory cache" );
+        callback( null, queryRecords( result, q , "members", "notifications/") );
+    } else {
+        dbAccess.listNotifications( function( err, body) {
+            if( !err ) {
+                console.log( "save " + NOTIFICATIONS_KEY + " to memory cache" );
+                memoryCache.putObject( NOTIFICATIONS_KEY, body );
+            }
+            callback( err, queryRecords( body, q, "members", "vacations/" ) );
+        } );
+    }
+
+};
+
 
 var insertItem = function( id, obj, type, callback ) {
+    if(type) {
+      obj.form = type;
+    }
 	dbAccess.insertItem( id, obj, function( err, body ) {
 		if( !err ) {
 			console.log( "Object with id " + id + " created in db" );
@@ -335,7 +357,11 @@ module.exports.listVacations = listVacations;
 module.exports.listSecurityRoles = listSecurityRoles;
 module.exports.listUserRoles = listUserRoles;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
+module.exports.listNotifications = listNotifications;
 
 module.exports.insertItem = insertItem;
 module.exports.deleteItem = deleteItem;
 module.exports.getItem = getItem;
+
+module.exports.VACATIONS_KEY = VACATIONS_KEY;
+module.exports.NOTIFICATIONS_KEY = NOTIFICATIONS_KEY;
