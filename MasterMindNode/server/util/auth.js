@@ -6,6 +6,7 @@
 var tokenValidator = require('./tokenValidator.js');
 var security = require('./security.js');
 var passport = require('passport');
+var dataAccess = require('../data/dataAccess.js');
 
 
 var isAuthenticated = function(req, res, next){
@@ -18,8 +19,17 @@ var isAuthenticated = function(req, res, next){
 		// TODO should be removed to use local security mechanism between FRONTEND and BACKEND
 		tokenValidator.validateGoogleToken(token, function (err, user) {
 			if (!err) {
-				req.user = user;
-				next();
+				dataAccess.getProfileByGoogleId(user, function (err, profile) {
+					if (!err && profile.isActive) {
+						req.user = user;
+						next();
+					}
+					else {
+				        req.session.error = err;
+		        		res.json(403, 'Unauthorized');
+					}
+				});
+				
 			}
 			else {
 		        req.session.error = err;
