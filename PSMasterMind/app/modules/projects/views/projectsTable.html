@@ -59,7 +59,7 @@
       
         <div class="row item-row project-row" ng-repeat="project in projects | filter:filterText" style="margin-top: 10px; margin-bottom: 0px;">
             <div class="col-xs-9 col-sm-4 col-md-5 item-prop project-row-name">
-                <a href="#{{project.resource}}">{{project.name}}</a>
+                <a href="#{{project.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{project.name}}</a>
             </div>
             <div class="visible-xs col-xs-3 project-icon-xs">
                 <i class="{{projectStateIcon(project)}} fa-2x pull-right"></i>

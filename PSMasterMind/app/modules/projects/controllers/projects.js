@@ -9,7 +9,7 @@ angular.module('Mastermind.controllers.projects')
 
       //Default to no projects
       $scope.projects = [];
-
+      $scope.loc = window.location;
       $scope.fillStatuses = function() {
 
       }

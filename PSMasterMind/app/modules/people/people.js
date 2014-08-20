@@ -5,6 +5,7 @@
  */
 angular.module( 'Mastermind.controllers.people' ).controller( 'PeopleCtrl', [ '$scope', '$state', '$location', '$filter', '$q', 'Resources', 'People', 'ProjectsService', 'ngTableParams',
 function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsService, TableParams ) {
+	$scope.loc = window.location;
 	var getTableData = function( ) {
 		return new TableParams( params, {
 			total: $scope.people.length, // length of data
@@ -54,7 +55,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		var endPart = filterPeople.slice( 1, filterPeople.length );
 		return bigLetter + endPart;
 	};
-
+	
 	$scope.sortType = 'name-desc';
 
 	$scope.switchSort = function( prop ) {

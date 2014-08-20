@@ -985,7 +985,7 @@ else if( role.percentageCovered == 0 )
 				var updatedUrl = $state.href( 'projects.show', {
 					tabId: selectedTabId,
 					edit: $stateParams.edit ? 'edit' : '',
-					filter: null,
+//					filter: null,
 					projectId: $stateParams.projectId
 				} ).replace( '#', '' );
 
@@ -994,7 +994,7 @@ else if( role.percentageCovered == 0 )
 				$state.go( 'projects.show', {
 					tabId: selectedTabId,
 					edit: $stateParams.edit ? 'edit' : '',
-					filter: null,
+//					filter: null,
 					projectId: $stateParams.projectId
 				} );
 

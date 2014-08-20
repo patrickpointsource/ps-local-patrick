@@ -55,16 +55,16 @@ angular.module('Mastermind')
 	  		}
 	  		
 	  		if($scope.state.name == 'projects.show') {
-	  			$scope.breadCrumpParts.push("All Projects");
+	  			$scope.breadCrumpParts.push("Projects");
 	  		}
 	  		
 	  		if($scope.state.name == 'projects.index') {
-	  			$scope.breadCrumpParts.push("All Projects");
+	  			$scope.breadCrumpParts.push("Projects");
 	  			
 	  			if($scope.params.filter) {
 	  				
 	  				if($scope.params.filter == 'all') {
-	  					$scope.breadCrumpParts = ['All Projects'];
+	  					$scope.breadCrumpParts = ['Projects'];
 	  				} else {
 	  					var projectFilters = $scope.params.filter.split(',');
 		  				var filtersText = [];
@@ -108,11 +108,41 @@ angular.module('Mastermind')
 	  		}
 	  		
 	  		if($scope.state.name == 'projects.show' || $scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit') {
-	  			$scope.breadCrumpParts = [ 'All Projects' ];
+	  			$scope.breadCrumpParts = [ 'Projects' ];
+	  			
+	  			if ($scope.params.filter && $scope.params.filter != "all")
+  				{
+	  				var projectFilters = $scope.params.filter.split(',');
+					var filtersText = [];
+					
+					for(var i = 0; i < projectFilters.length; i++) {
+						if(projectFilters[i] == 'active') {
+							filtersText.push("Active");
+						}
+						if(projectFilters[i] == 'backlog') {
+							filtersText.push("Backlog");
+						}
+						if(projectFilters[i] == 'pipeline') {
+							filtersText.push("Pipeline");
+						}
+						if(projectFilters[i] == 'investment') {
+							filtersText.push("Investment");
+						}
+						if(projectFilters[i] == 'complete') {
+							filtersText.push("Complete");
+						}
+						if(projectFilters[i] == 'deallost') {
+							filtersText.push("Deal Lost");
+						}
+					}
+					
+		  			$scope.breadCrumpParts.push(filtersText.join(", "));
+  				}
+	  			
 	  			if($scope.params.projectId) {
 	  				$scope.breadCrumpParts.push("");
 	  				ProjectsService.getForEdit($scope.params.projectId).then(function(project) {
-	  					$scope.breadCrumpParts[1] = project.name;
+	  					$scope.breadCrumpParts.push(project.name);
 	  					$scope.updateBreadCrump();
 	  				})
 	  			}
@@ -155,20 +185,32 @@ angular.module('Mastermind')
 	  		
 	  		if($scope.state.name == 'people.show') {
 	  			var fromPeopleList = false;
-	  			$scope.breadCrumpParts = [ 'People', '' ];
+	  			$scope.breadCrumpParts = [ 'People' ];
+	  			
+	  			if ($scope.fromParams.filter && $scope.fromParams.filter != "all")
+  				{
+  					var filterPeople = $scope.fromParams.filter.split(',');
+					
+					for(var i = 0; i < filterPeople.length; i++) {
+						filterPeople[i] = mapPeopleFilterToUI(filterPeople[i]);
+					}
+					
+					$scope.breadCrumpParts.push(filterPeople.join(', '));
+  				}
+	  			
 	  			if($scope.fromState.name == 'people.index') {
 	  				if($scope.fromParams.filter) {
 	  					var splittedPeopleFilter = $scope.fromParams.filter.split(',');
 	  					if(splittedPeopleFilter.length == 1) {
-	  						$scope.breadCrumpParts = ['People', mapPeopleFilterToUI(splittedPeopleFilter[0]), ''];
+	  						$scope.breadCrumpParts.push(mapPeopleFilterToUI(splittedPeopleFilter[0]));
 	  						
 	  						fromPeopleList = true;
 	  					}
 	  					else {
-	  						$scope.breadCrumpParts = [ 'People', '' ];
+//	  						$scope.breadCrumpParts = [ 'People', '' ];
 	  					}
 	  				} else {
-	  					$scope.breadCrumpParts = [ 'People', '' ];
+//	  					$scope.breadCrumpParts = [ 'People', '' ];
 	  				}
 	  			}
 	  			
@@ -182,12 +224,12 @@ angular.module('Mastermind')
 			  							var mapRoles = rolePeopleGroupMap[$scope.fromParams.filter];
 			  							if(_.contains(mapRoles, roleAbbr)) {
 			  								if($scope.breadCrumpParts[1] != mapPeopleFilterToUI(splittedPeopleFilter[0])) {
-			  									$scope.breadCrumpParts = ['People', profile.name];
+			  									$scope.breadCrumpParts.push(profile.name);
 			  								} else {
-			  									$scope.breadCrumpParts[2] = profile.name;
+			  									$scope.breadCrumpParts.push(profile.name);
 			  								}
 			  							} else {
-			  								$scope.breadCrumpParts = ['People', profile.name];
+			  								$scope.breadCrumpParts.push(profile.name);
 			  							}
 			  							
 				  						$scope.updateBreadCrump();
@@ -195,9 +237,9 @@ angular.module('Mastermind')
 			  							$scope.updateBreadCrump();
 			  						}
 			  					});
-	  							$scope.breadCrumpParts[2] = profile.name;
+	  							$scope.breadCrumpParts.push(profile.name);
 	  						} else {
-	  							$scope.breadCrumpParts[1] = profile.name;
+	  							$scope.breadCrumpParts.push(profile.name);
 	  						}
 	  						
 	  					}
@@ -215,6 +257,24 @@ angular.module('Mastermind')
 	  		}
 	  		
 	  		$scope.updateBreadCrump();
+	  }
+	  
+	  $scope.navigate = function (index)
+	  {
+		  if (index == 0)
+		  {
+			  if ($scope.state.name.indexOf("people.") == 0)
+				  $state.go("people.index", { filter: null });
+			  else if ($scope.state.name.indexOf("projects.") == 0)
+				  $state.go("projects.index", { filter: null });
+		  }
+		  else if (index == 1)
+		  {
+			  if ($scope.state.name.indexOf("people.") == 0)
+				  $state.go("people.index", { filter: $scope.fromParams.filter });
+			  else if ($scope.state.name.indexOf("projects.") == 0)
+				  $state.go("projects.index", { filter: $scope.params.filter });
+		  }
 	  }
 	  
 	  $scope.getBreadCrump();
