@@ -308,7 +308,7 @@ var listNotifications = function( q, callback ) {
                 console.log( "save " + NOTIFICATIONS_KEY + " to memory cache" );
                 memoryCache.putObject( NOTIFICATIONS_KEY, body );
             }
-            callback( err, queryRecords( body, q, "members", "vacations/" ) );
+            callback( err, queryRecords( body, q, "members", "notifications/" ) );
         } );
     }
 
@@ -321,20 +321,47 @@ var insertItem = function( id, obj, type, callback ) {
     }
 	dbAccess.insertItem( id, obj, function( err, body ) {
 		if( !err ) {
-			console.log( "Object with id " + id + " created in db" );
+		    if(obj._deleted) {
+		      console.log( "Object with id " + id + " marked as deleted in db" );
+		    } else {
+		      console.log( "Object with id " + id + " inserted in db" );
+		    }
 			memoryCache.deleteObject( type );
 		}
 		callback( err, body );
 	} );
 }
 var deleteItem = function( id, rev, type, callback ) {
-	dbAccess.deleteItem( id, rev, function( err, body ) {
-		if( !err ) {
-			console.log( "Object with id " + id + " deleted from db" );
-			memoryCache.deleteObject( type );
-		}
-		callback( err, body );
-	} );
+    if(rev) {
+      dbAccess.deleteItem( id, rev, function( err, body ) {
+        if( !err ) {
+            console.log( "Object with id " + id + " deleted from db" );
+            memoryCache.deleteObject( type );
+        }
+        callback( err, body );
+      } );
+    } else {
+      var actualObject = getItem(id, function(err, body) {
+        if(err) {
+          console.log("cannot delete item: " + id);
+        } else {
+          body._deleted = true;
+          
+          insertItem(id, body, type, function(err, body) {
+            if (err) {
+              console.log(err);
+              callback('error delete item by inserting _deleted flag', null);
+            }
+            else {
+              memoryCache.deleteObject( type );
+              
+              callback(null, body);
+            }
+          });
+        }
+      })
+    }
+	
 }
 var getItem = function( id, callback ) {
 	dbAccess.getItem( id, function( err, body ) {

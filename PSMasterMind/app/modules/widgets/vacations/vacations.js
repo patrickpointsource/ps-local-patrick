@@ -289,7 +289,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
         header: "Pending Paid Vacation Request",
         text: "From " + $scope.me.name,
         icon: "fa fa-clock-o",
-        person: { resource: $scope.vacationManager.resource }
+        person: { resource: vacation.vacationManager.resource }
       };
       
       NotificationsService.add(notification).then(function(result) {

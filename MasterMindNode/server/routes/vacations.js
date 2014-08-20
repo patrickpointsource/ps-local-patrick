@@ -28,7 +28,8 @@ router.post('/', function(req, res) {
     });
 });
 
-router.delete('/', function(req, res) {
+router.delete('/:id', function(req, res) {
+    req.body._id = req.params.id;
     vacations.deleteVacation(req.body, function(err, result){
         if(err){
             res.json(500, err);
