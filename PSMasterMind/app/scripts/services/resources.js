@@ -254,7 +254,7 @@ function( $q, $timeout, Restangular ) {
 	/**
 	 * Create a new resource in a collection
 	 */
-	function remove( resourceURL ) {
+	function remove( resourceURL, params ) {
 		var route = '';
 		var id = resourceURL;
 		var lastIndex = resourceURL.indexOf( '/' );
@@ -263,7 +263,7 @@ function( $q, $timeout, Restangular ) {
 			id = resourceURL.substr( lastIndex + 1 );
 		}
 		var resource = ResourcesRestangular.all( route );
-		return resource.customDELETE( id );
+		return resource.customDELETE( id, params );
 	}
 
 	/**

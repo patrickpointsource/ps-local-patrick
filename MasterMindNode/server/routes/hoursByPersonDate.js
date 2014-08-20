@@ -38,6 +38,15 @@ router.get('/', util.isAuthenticated, function(req, res){
 		                res.json(result);
 		            }            
 		        });
+	        else if (params.startkey && params.endkey)
+                // Call to hours service
+                hoursByPersonDate.listHoursByPersonDate(params.startkey, params.endkey, function(err, result){
+                    if(err){
+                        res.json(500, err);
+                    } else {
+                        res.json(result);
+                    }            
+                });
 		    else
 		        res.json(400, {msg: "Incorrect params"});
 		}

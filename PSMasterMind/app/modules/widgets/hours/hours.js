@@ -461,7 +461,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		$scope.selected.hoursEntries.splice( index, 1 );
 
 		if( hourEntry.hoursRecord )
-			Resources.remove( hourEntry.hoursRecord.resource ).then( function( ) {
+			Resources.remove( hourEntry.hoursRecord.resource, hourEntry.hoursRecord ).then( function( ) {
 				// $scope.hoursRequest();
 				$scope.validateAndCalculateTotalHours( );
 				$scope.$emit( 'hours:deleted', $scope.selected );
