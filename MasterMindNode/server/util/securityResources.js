@@ -65,6 +65,22 @@ var securityResources = {
         	viewSkills : 'viewSkills',
         	editSkills : 'editSkills'
         }
+    },
+    vacations :{
+        resourceName: 'vacations',
+        permissions: {
+            viewVacations : 'viewVacations',
+            editVacations : 'editVacations',
+            deleteVacations : 'deleteVacations'
+        }
+    },
+    notifications :{
+        resourceName: 'notifications',
+        permissions: {
+            viewNotifications : 'viewNotifications',
+            editNotifications : 'editNotifications',
+            deleteNotifications : 'deleteNotifications'
+        }
     }
 };
 

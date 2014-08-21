@@ -433,17 +433,16 @@ var deleteItem = function( id, rev, type, callback ) {
 				body._deleted = true;
 
 				insertItem( id, body, type, function( err, body ) {
-					if( err ) {
-						console.log( err );
-						callback( 'error delete item by inserting _deleted flag', null );
+				  memoryCache.deleteObject( type );
+				  if( err ) {
+					console.log( err );
+					  callback( 'error delete item by inserting _deleted flag', null );
 					} else {
-						memoryCache.deleteObject( type );
-
-						callback( null, body );
+					  callback( null, body );
 					}
 				} );
 			}
-		} )
+		} );
 	}
 
 };
@@ -476,3 +475,6 @@ module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;
 module.exports.deleteItem = deleteItem;
 module.exports.getItem = getItem;
+
+module.exports.VACATIONS_KEY = VACATIONS_KEY;
+module.exports.NOTIFICATIONS_KEY = NOTIFICATIONS_KEY;
