@@ -6,7 +6,9 @@ angular.module( 'Mastermind.models.projects' ).factory( 'Terms', function( ) {
 		fixedBidServicesRevenue: 0,
 		type: 'timeAndMaterials',
 		billingFrequency: undefined,
-		billingDate: undefined
+		billingDate: undefined,
+		lastBillingDate: undefined,
+		monthlyInvoiceAmount: undefined
 	};
 
 	function Terms( options ) {
@@ -18,6 +20,9 @@ angular.module( 'Mastermind.models.projects' ).factory( 'Terms', function( ) {
 		this.type = options.type || defaults.type;
 		this.billingFrequency = options.billingFrequency || defaults.billingFrequency;
 		this.billingDate = options.billingDate || defaults.billingDate;
+		
+		this.lastBillingDate = options.lastBillingDate || defaults.lastBillingDate;
+		this.monthlyInvoiceAmount = options.monthlyInvoiceAmount || defaults.monthlyInvoiceAmount;
 	}
 
 	return Terms;

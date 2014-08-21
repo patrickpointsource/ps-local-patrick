@@ -103,7 +103,7 @@
                 
             </div>
           </div>
-          <div class="col-xs-12">
+          <div class="col-xs-12 project-terms">
             <div class="row-fluid terms-rows">
                 <div class="col-xs-12 col-sm-6 col-md-3">
                     <span>Contractually Committed: </span>
@@ -121,6 +121,18 @@
                 <div class="col-xs-12 col-sm-6 col-md-3">
                     <span>Services Margin %:</span> <label style="margin-bottom: 0px;">{{projectMargin() |
                         number:0}}</label>
+                </div>
+            </div>
+          </div>
+          <div class="col-xs-12" ng-if="isFixedBid()">
+            <div class="row-fluid terms-rows">
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <span>Date of last Invoice: </span>
+                    <label ng-if="project.terms.lastBillingDate" style="margin-bottom: 0px;">{{getFormatedLastBillingDate()}}</label>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <span>Monthly invoice amount:</span> <label style="margin-bottom: 0px;">{{(project.terms.monthlyInvoiceAmount)?(project.terms.monthlyInvoiceAmount):0
+                        | currency}}</label>
                 </div>
             </div>
           </div>

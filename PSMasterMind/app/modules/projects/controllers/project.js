@@ -1942,6 +1942,12 @@ else if( role.percentageCovered == 0 )
 
 		return result;
 	};
+	
+	$scope.getFormatedLastBillingDate = function( ) {
+        var result = $scope.project.terms.lastBillingDate;
+
+        return result;
+    };
 
 	$scope.getFormatedBillingFrequency = function( ) {
 		var result = "";
