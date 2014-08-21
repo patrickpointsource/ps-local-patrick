@@ -39,6 +39,20 @@ var insertItem = function(id, item, callback){
     });
 };
 
+/**
+ * Update uses the same insert api - but it is improtant to have _rev setled
+ *  **/
+var updateItem = function(id, item, callback){
+    var db = nano.db.use(database);
+    db.insert(item, id, function(err, body){
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
 var deleteItem = function(id, rev, callback){
     var db = nano.db.use(database);
     db.destroy(id, rev, function(err, body){
@@ -221,6 +235,7 @@ module.exports.listNotifications = function(callback) {
 };
 
 module.exports.insertItem = insertItem;
+module.exports.updateItem = updateItem;
 module.exports.deleteItem = deleteItem;
 module.exports.getItem = getItem;
 

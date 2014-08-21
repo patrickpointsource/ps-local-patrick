@@ -1,9 +1,6 @@
 'use strict';
 
 var config = require( '../config/config.js' );
-var hoursByPerson = require( '../controllers/hoursByPerson' );
-var hoursByPersonDate = require( '../controllers/hoursByPersonDate' );
-
 var util = require( '../util/auth' ).isAuthenticated;
 
 module.exports = function( app, passport ) {

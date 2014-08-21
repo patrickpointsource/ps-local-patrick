@@ -56,6 +56,26 @@ router.post( '/', util.isAuthenticated, function( req, res ) {
 
 } );
 
+router.put( '/:id', util.isAuthenticated, function( req, res ) {
+
+    security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
+        console.log( '\r\nput:hours:\r\n' );
+
+        if( allowed ) {
+            var id = req.params.id;
+            
+            hours.updateHours( id, req.body, function( err, result ) {
+                if( err ) {
+                    res.json( 500, err );
+                } else {
+                    res.json( result );
+                }
+            } );
+        }
+    } );
+
+} );
+
 router.delete( '/:id', util.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.deleteMyHours, function( allowed ) {

@@ -30,6 +30,19 @@ module.exports.insertHours = function(obj, callback) {
     });
 };
 
+module.exports.updateHours = function(id, obj, callback) {
+    console.log('update hours entry:' + JSON.stringify(obj));
+    
+    dataAccess.updateItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error update hours', null);
+        } else {
+            callback(null, _.extend(obj, body));
+        }
+    });
+};
+
 module.exports.deleteHours = function(id, obj, callback) {
     dataAccess.deleteItem(id, obj._rev, dataAccess.HOURS_KEY, function(err, body){
         if (err) {

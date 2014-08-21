@@ -16,6 +16,7 @@ var VACATIONS_KEY = 'Vacations';
 var SKILLS_KEY = 'Skills';
 var LINKS_KEY = 'Links';
 var HOURS_KEY = 'Hours';
+var NOTIFICATIONS_KEY = 'Notifications';
 
 //TODO: fix $oid to _id
 var alignQuery = function( q, qP, pProp, pInd ) {
@@ -398,6 +399,23 @@ var insertItem = function( id, obj, type, callback ) {
 	} );
 };
 
+var updateItem = function( id, obj, type, callback ) {
+    if( type ) {
+        obj.form = type;
+    }
+    dbAccess.updateItem( id, obj, function( err, body ) {
+        if( !err ) {
+            if( obj._deleted ) {
+                console.log( "Object with id " + id + " marked as deleted in db" );
+            } else {
+                console.log( "Object with id " + id + " updated in db" );
+            }
+            memoryCache.deleteObject( type );
+        }
+        callback( err, body );
+    } );
+};
+
 var deleteItem = function( id, rev, type, callback ) {
 	if( rev ) {
 		dbAccess.deleteItem( id, rev, function( err, body ) {
@@ -455,5 +473,6 @@ module.exports.listUserRoles = listUserRoles;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
 
 module.exports.insertItem = insertItem;
+module.exports.updateItem = updateItem;
 module.exports.deleteItem = deleteItem;
 module.exports.getItem = getItem;

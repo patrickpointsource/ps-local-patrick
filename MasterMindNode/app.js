@@ -16,8 +16,6 @@ log4js.configure('server/config/log4js_config.json', {});
 var logger = log4js.getLogger();
 
 //Routes
-var hoursByPerson = require('./server/routes/hoursByPerson');
-var hoursByPersonDate = require('./server/routes/hoursByPersonDate');
 var projects = require('./server/routes/projects');
 var people = require('./server/routes/people');
 var assignments = require('./server/routes/assignments');
@@ -52,8 +50,6 @@ var allowCrossDomain = function(req, res, next) {
     if ('OPTIONS' == req.method) {
       res.header('Access-Control-Allow-Headers', 'accept, authorization, content-type');
       res.header('Access-Control-Allow-Methods', 'POST, PUT, DELETE');
-      //res.header('Access-Control-Allow-Methods', 'DELETE');
-      res.header('Access-Control-Allow-Methods', 'DELETE');
       res.send(200);
     }
     else {
@@ -85,8 +81,6 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/public')); 
 app.use(express.static(__dirname + '/bower_components')); 
 
-app.use('/hoursByPerson', hoursByPerson);
-app.use('/hoursByPersonDate', hoursByPersonDate);
 app.use('/projects', projects);
 app.use('/people', people);
 app.use('/assignments', assignments);
