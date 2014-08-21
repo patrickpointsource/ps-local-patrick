@@ -224,12 +224,15 @@ angular.module('Mastermind')
 			  							var mapRoles = rolePeopleGroupMap[$scope.fromParams.filter];
 			  							if(_.contains(mapRoles, roleAbbr)) {
 			  								if($scope.breadCrumpParts[1] != mapPeopleFilterToUI(splittedPeopleFilter[0])) {
-			  									$scope.breadCrumpParts.push(profile.name);
+			  									if ($scope.breadCrumpParts.indexOf(profile.name) == -1)
+			  										$scope.breadCrumpParts.push(profile.name);
 			  								} else {
-			  									$scope.breadCrumpParts.push(profile.name);
+			  									if ($scope.breadCrumpParts.indexOf(profile.name) == -1)
+			  										$scope.breadCrumpParts.push(profile.name);
 			  								}
 			  							} else {
-			  								$scope.breadCrumpParts.push(profile.name);
+			  								if ($scope.breadCrumpParts.indexOf(profile.name) == -1)
+		  										$scope.breadCrumpParts.push(profile.name);
 			  							}
 			  							
 				  						$scope.updateBreadCrump();
