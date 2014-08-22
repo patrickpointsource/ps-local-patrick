@@ -5,7 +5,7 @@
  */
 angular.module( 'Mastermind' ).factory( 'Resources', [ '$q', '$timeout', 'Restangular',
 function( $q, $timeout, Restangular ) {
-	var ResourcesRestangular = Restangular.withConfig( Util.fixRestAngularPathMethod() );
+	var ResourcesRestangular = Restangular.withConfig( Util.fixRestAngularPathMethod( ) );
 
 	// Cache Constants
 	var ONE_HOUR = 60 * 60 * 1000;
@@ -278,17 +278,18 @@ function( $q, $timeout, Restangular ) {
 		var latestTime = localStorage[ "LATEST_LOCAL_STORAGE_CHECK" ];
 		var now = new Date( );
 		var ONE_DAY = CONSTS.ONE_DAY;
+		var ONE_HOUR = CONSTS.ONE_HOUR;
 
 		if( !latestTime )
 			localStorage[ "LATEST_LOCAL_STORAGE_CHECK" ] = now.toString( );
 
-		if( !latestTime || ( ( now.getTime( ) - ( new Date( latestTime ) ).getTime( ) ) > ONE_DAY ) ) {
+		if( !latestTime || ( ( now.getTime( ) - ( new Date( latestTime ) ).getTime( ) ) > 2 * ONE_HOUR ) ) {
 			var currentSize = unescape( encodeURIComponent( JSON.stringify( localStorage ) ) ).length;
 
 			// if greater than 1mb
 			if( currentSize > 1024 * 1024 ) {
 				// clean half of cached properties
-				var countOfProps = (      _.map( localStorage, function( l ) {
+				var countOfProps = (       _.map( localStorage, function( l ) {
 						return l
 					} ) ).length;
 
