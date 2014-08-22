@@ -543,8 +543,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					for( var m = 0; m < myProjects.length; m++ ) {
 						var myProj = myProjects[ m ];
 
+						console.log("project state", ProjectsService.getProjectState( myProj ));
+						
 						if( ProjectsService.getProjectState( myProj ) == 'Active' ) {
 							$scope.activeProjectsCount++;
+							
+							console.log("active projects", $scope.activeProjectsCount);
 						}
 
 						for( var rolesCounter = 0; rolesCounter < myProj.roles.length; rolesCounter++ ) {
@@ -616,6 +620,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 				};
 
 				$scope.hasAssignments = assignments.length > 0;
+				
+				console.log("getMyCurrentAssignments: assignments.length", assignments.length);
 
 				if( $scope.hasAssignments ) {
 					// Project Params
