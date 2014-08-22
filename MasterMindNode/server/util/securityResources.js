@@ -81,7 +81,14 @@ var securityResources = {
             editNotifications : 'editNotifications',
             deleteNotifications : 'deleteNotifications'
         }
+    },
+	upgrade :{
+        resourceName: 'upgrade',
+        permissions: {
+            executeUpgrade : 'executeUpgrade'
+        }
     }
+
 };
 
 module.exports = securityResources;

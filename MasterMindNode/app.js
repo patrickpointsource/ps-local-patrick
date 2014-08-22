@@ -29,6 +29,7 @@ var links = require('./server/routes/links');
 var vacations = require('./server/routes/vacations');
 var securityRoles = require('./server/routes/securityRoles');
 var userRoles = require('./server/routes/userRoles');
+var upgrade = require('./server/routes/upgrade');
 
 var security = require('./server/util/security.js');
 
@@ -94,6 +95,7 @@ app.use('/skills', skills);
 app.use('/vacations', vacations);
 app.use('/securityRoles', securityRoles);
 app.use('/userRoles', userRoles);
+app.use('/upgrade', upgrade);
 
 
 // Setup routes
