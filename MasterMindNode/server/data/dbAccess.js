@@ -151,7 +151,7 @@ module.exports.listHoursByPersonDate = function(callback) {
          callback(err, prepareResponse(body, 'hours', 'doc'));
     });
 };
-
+/*
 module.exports.listHours = function(q, callback) {
     var start = ["ProjectPersonDate", "projects/52aba189e4b0fd2a8d13002e", "people/52ab7005e4b0fd2a8d130017", "2014-01-01"];
     var end = ["ProjectPersonDate", "projects/52aba189e4b0fd2a8d13002e", "people/52ab7005e4b0fd2a8d130017", "2014-01-01"];
@@ -161,7 +161,7 @@ module.exports.listHours = function(q, callback) {
          //callback(err, body);
     });
 };
-
+*/
 module.exports.listProjects = function(callback) {
     cloudantView('views', 'Projects', null, function(err, body){
         callback(err, prepareResponse(body, 'projects', 'value'));

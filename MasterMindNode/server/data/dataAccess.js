@@ -350,7 +350,7 @@ var listHours = function( q, callback ) {
 			}
 		} );
 	} else if( !q.person && q.project && q.project.resource && startDate && endDate && orEmpty && onlyAndDates ) {
-		dbAccess.listHoursByStartEndDates( [ "DateProject", startDate, q.project.resource ], [ "DateProject", endDate, q.project.resource ], function( err, body ) {
+		dbAccess.listHoursByStartEndDates( [ "ProjectDate", q.project.resource, startDate ], [ "ProjectDate", q.project.resource, endDate ], function( err, body ) {
 			if( err ) {
 				console.log( err );
 				callback( 'error loading hours by start and end dates', null );
