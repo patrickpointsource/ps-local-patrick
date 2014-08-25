@@ -205,6 +205,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 				"resource": profile.manager.resource
 			}
 		}
+		
+		// hell with string representation of boolean field
+		if( profile.isActive == true || profile.isActive === 'true') {
+		  profile.isActive = 'true';
+		} else {
+		  profile.isActive = 'false';
+		}
 
 		Resources.update( profile ).then( function( person ) {
 			var fields = {
