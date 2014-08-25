@@ -223,14 +223,14 @@ module.exports = function(grunt) {
             // By default, your `index.html` <!-- Usemin Block --> will take care of
             // minification. This option is pre-configured if you do not wish to use
             // Usemin blocks.
-            // dist: {
-            //   files: {
-            //     '<%= yeoman.dist %>/styles/main.css': [
-            //       '.tmp/styles/{,*/}*.css',
-            //       '<%= yeoman.app %>/styles/{,*/}*.css'
-            //     ]
-            //   }
-            // }
+             dist: {
+               files: {
+                 '<%= yeoman.dist %>/styles/main.css': [
+                   '.tmp/styles/{,*/}*.css',
+                   '<%= yeoman.app %>/styles/{,*/}*.css'
+                 ]
+               }
+            }
         },
         htmlmin: {
             dist: {
@@ -270,6 +270,34 @@ module.exports = function(grunt) {
                         'template/{,*/}*',
                         'login/{,*/}*',
                         'modules/{,*/}*.html', 'modules/{,*/}*/{,*/}*.html',
+                        '*.html', 'views/{,*/}*.html', 'views/{,*/}*/{,*/}*.html'
+                    ]
+                }, {
+                    expand: true,
+                    cwd: '.tmp/images',
+                    dest: '<%= yeoman.dist %>/images',
+                    src: [
+                        'generated/*'
+                    ]
+                }]
+            },
+            distnomin: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    dest: '<%= yeoman.dist %>',
+                    src: [
+                        '*.{ico,png,txt}',
+                        '.htaccess',
+                        'bower_components/**/*',
+                        'images/{,*/}*.{gif,webp}',
+                        'fonts/**/*',
+                        'template/{,*/}*',
+                        'login/{,*/}*',
+                        'scripts/**/*',
+                        'modules/**/*',
+                        //'modules/{,*/}*.html', 'modules/{,*/}*/{,*/}*.html',
                         '*.html', 'views/{,*/}*.html', 'views/{,*/}*/{,*/}*.html'
                     ]
                 }, {
@@ -395,10 +423,26 @@ module.exports = function(grunt) {
         'copy:dist',
         //'cdnify',
         'ngmin',
-        'cssmin',
+        //'cssmin',
         'uglify',
         'rev',
         'usemin'
+    ]);
+
+    grunt.registerTask('build-nomin', [
+        'clean:dist',
+        'useminPrepare',
+        'concurrent:dist',
+        'autoprefixer',
+        'less',
+        //'concat',
+        'copy:distnomin',
+        //'cdnify',
+        //'ngmin',
+        'cssmin',
+        //'uglify',
+        //'rev',
+        //'usemin'
     ]);
 
     grunt.registerTask('default', [
