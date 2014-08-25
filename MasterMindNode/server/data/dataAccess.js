@@ -389,9 +389,13 @@ var insertItem = function( id, obj, type, callback ) {
 	dbAccess.insertItem( id, obj, function( err, body ) {
 		if( !err ) {
 			if( obj._deleted ) {
-				console.log( "Object with id " + id + " marked as deleted in db" );
+			  if(body.id) {
+			    console.log( "Object with id " + body.id + " marked as deleted in db" );
+			  }
 			} else {
+			  if(body.id) {
 				console.log( "Object with id " + id + " inserted in db" );
+			  }
 			}
 			memoryCache.deleteObject( type );
 		}
@@ -478,3 +482,4 @@ module.exports.getItem = getItem;
 
 module.exports.VACATIONS_KEY = VACATIONS_KEY;
 module.exports.NOTIFICATIONS_KEY = NOTIFICATIONS_KEY;
+module.exports.SECURITY_ROLES_KEY = SECURITY_ROLES_KEY;

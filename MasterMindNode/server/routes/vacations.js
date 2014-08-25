@@ -10,7 +10,7 @@ var security = require('../util/security');
 var securityResources = require('../util/securityResources');
 
 router.get('/', util.isAuthenticated, function(req, res){
-    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewVacations, function(allowed){
+    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewMyVacations, function(allowed){
       if (allowed) {
         var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
         // Call to vacations service
@@ -40,7 +40,7 @@ router.post('/', function(req, res) {
 });
 
 router.delete('/:id', function(req, res) {
-    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.deleteVacations, function(allowed){
+    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editMyVacations, function(allowed){
       if (allowed) {
         req.body._id = req.params.id;
         vacations.deleteVacation(req.body, function(err, result){
@@ -70,7 +70,7 @@ router.get('/:id', function(req, res) {
 });
 
 router.put('/:id', function(req, res) {
-    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editVacations, function(allowed){
+    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editMyVacations, function(allowed){
       if (allowed) {
         var id = req.params.id;
         req.body._id = id;

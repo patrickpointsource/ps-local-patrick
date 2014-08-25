@@ -70,8 +70,9 @@ var securityResources = {
         resourceName: 'vacations',
         permissions: {
             viewVacations : 'viewVacations',
+            viewMyVacations: 'viewMyVacations',
             editVacations : 'editVacations',
-            deleteVacations : 'deleteVacations'
+            editMyVacations : 'editMyVacations',
         }
     },
     notifications :{
@@ -86,6 +87,13 @@ var securityResources = {
         resourceName: 'upgrade',
         permissions: {
             executeUpgrade : 'executeUpgrade'
+        }
+    },
+    securityRoles :{
+        resourceName: 'securityRoles',
+        permissions: {
+            viewSecurityRoles: 'viewSecurityRoles',
+            editSecurityRoles: 'editSecurityRoles'
         }
     }
 
