@@ -745,7 +745,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				{
 					var assignee = role.assignees[j];
 					
-					if (assignee.person.resource == currentUser.about)
+					if (assignee.person && assignee.person.resource == currentUser.about)
 					{
 						hourEntry.expectedHours = Math.round(assignee.hoursPerWeek / 5);
 						hoursSet = true;
