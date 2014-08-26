@@ -57,10 +57,10 @@ public class Data implements CONSTS {
 	private static AtomicReference<JSONObject> serviceConfigReference = new AtomicReference<JSONObject>(
 			null);
 
+	// private static String DATE_PATETRN = "yyyy-MM-dd";
+	// private static SimpleDateFormat DATE_FORMAT = new
+	// SimpleDateFormat(DATE_PATETRN);
 
-	//private static String DATE_PATETRN = "yyyy-MM-dd";
-	//private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATETRN);
-	
 	private final static String REMINDER_DEBUG_NOTIFICATION_LIST_KEY = "reminder.debug.notification.list";
 	private final static String REMINDER_INTERESTED_PARTIES = "reminder.interested.parties";
 	private final static String REMINDER_ACTIVE = "reminder.active";
@@ -385,55 +385,55 @@ public class Data implements CONSTS {
 		return config;
 	}
 
-//	private static ArrayList<String> DEFAULT_SSAs = new ArrayList<String>();
-//	private static ArrayList<String> DEFAULT_BAs = new ArrayList<String>();
-//	private static ArrayList<String> DEFAULT_PMs = new ArrayList<String>();
-//	private static ArrayList<String> DEFAULT_SSEs = new ArrayList<String>();
-//	private static ArrayList<String> DEFAULT_SEs = new ArrayList<String>();
-//	private static ArrayList<String> DEFAULT_SUXDs = new ArrayList<String>();
-//	private static ArrayList<String> DEFAULT_UXDs = new ArrayList<String>();
-//	static {
-//		Collections.addAll(DEFAULT_SSAs, "115659942511507270693",
-//				"106368930450799539126", "107681682076275621618",
-//				"100521746243465967724", "108416099312244834291");
-//		Collections.addAll(DEFAULT_BAs, "118024801441852864610");
-//		Collections.addAll(DEFAULT_PMs, "105187489722733399928",
-//				"103362960874176228355");
-//		Collections.addAll(DEFAULT_SSEs, "102037350018901696245",
-//				"112959653203369443291");
-//		Collections.addAll(DEFAULT_SEs, "100090968878728629777",
-//				"105526065653554855193");
-//		Collections.addAll(DEFAULT_SUXDs, "102728171905005423498",
-//				"112917239891456752571");
-//		Collections.addAll(DEFAULT_UXDs, "103450144552825063641",
-//				"107385689810002496434");
-//	}
-//
-//	private static void initPrimaryRole(JSONObject person, String googleID)
-//			throws JSONException {
-//		String primaryRole = null;
-//		if (DEFAULT_SSAs.contains(googleID)) {
-//			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSA_ID;
-//		} else if (DEFAULT_BAs.contains(googleID)) {
-//			primaryRole = RESOURCE_ROLES + "/" + ROLE_BA_ID;
-//		} else if (DEFAULT_PMs.contains(googleID)) {
-//			primaryRole = RESOURCE_ROLES + "/" + ROLE_PM_ID;
-//		} else if (DEFAULT_SSEs.contains(googleID)) {
-//			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
-//		} else if (DEFAULT_SEs.contains(googleID)) {
-//			primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
-//		} else if (DEFAULT_SUXDs.contains(googleID)) {
-//			primaryRole = RESOURCE_ROLES + "/" + ROLE_SUXD_ID;
-//		} else if (DEFAULT_UXDs.contains(googleID)) {
-//			primaryRole = RESOURCE_ROLES + "/" + ROLE_UXD_ID;
-//		}
-//
-//		if (primaryRole != null) {
-//			JSONObject roleRef = new JSONObject();
-//			roleRef.put(PROP_RESOURCE, primaryRole);
-//			person.put(PROP_PRIMARY_ROLE, roleRef);
-//		}
-//	}
+	// private static ArrayList<String> DEFAULT_SSAs = new ArrayList<String>();
+	// private static ArrayList<String> DEFAULT_BAs = new ArrayList<String>();
+	// private static ArrayList<String> DEFAULT_PMs = new ArrayList<String>();
+	// private static ArrayList<String> DEFAULT_SSEs = new ArrayList<String>();
+	// private static ArrayList<String> DEFAULT_SEs = new ArrayList<String>();
+	// private static ArrayList<String> DEFAULT_SUXDs = new ArrayList<String>();
+	// private static ArrayList<String> DEFAULT_UXDs = new ArrayList<String>();
+	// static {
+	// Collections.addAll(DEFAULT_SSAs, "115659942511507270693",
+	// "106368930450799539126", "107681682076275621618",
+	// "100521746243465967724", "108416099312244834291");
+	// Collections.addAll(DEFAULT_BAs, "118024801441852864610");
+	// Collections.addAll(DEFAULT_PMs, "105187489722733399928",
+	// "103362960874176228355");
+	// Collections.addAll(DEFAULT_SSEs, "102037350018901696245",
+	// "112959653203369443291");
+	// Collections.addAll(DEFAULT_SEs, "100090968878728629777",
+	// "105526065653554855193");
+	// Collections.addAll(DEFAULT_SUXDs, "102728171905005423498",
+	// "112917239891456752571");
+	// Collections.addAll(DEFAULT_UXDs, "103450144552825063641",
+	// "107385689810002496434");
+	// }
+	//
+	// private static void initPrimaryRole(JSONObject person, String googleID)
+	// throws JSONException {
+	// String primaryRole = null;
+	// if (DEFAULT_SSAs.contains(googleID)) {
+	// primaryRole = RESOURCE_ROLES + "/" + ROLE_SSA_ID;
+	// } else if (DEFAULT_BAs.contains(googleID)) {
+	// primaryRole = RESOURCE_ROLES + "/" + ROLE_BA_ID;
+	// } else if (DEFAULT_PMs.contains(googleID)) {
+	// primaryRole = RESOURCE_ROLES + "/" + ROLE_PM_ID;
+	// } else if (DEFAULT_SSEs.contains(googleID)) {
+	// primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
+	// } else if (DEFAULT_SEs.contains(googleID)) {
+	// primaryRole = RESOURCE_ROLES + "/" + ROLE_SSE_ID;
+	// } else if (DEFAULT_SUXDs.contains(googleID)) {
+	// primaryRole = RESOURCE_ROLES + "/" + ROLE_SUXD_ID;
+	// } else if (DEFAULT_UXDs.contains(googleID)) {
+	// primaryRole = RESOURCE_ROLES + "/" + ROLE_UXD_ID;
+	// }
+	//
+	// if (primaryRole != null) {
+	// JSONObject roleRef = new JSONObject();
+	// roleRef.put(PROP_RESOURCE, primaryRole);
+	// person.put(PROP_PRIMARY_ROLE, roleRef);
+	// }
+	// }
 
 	/**
 	 * Get a role by id
@@ -692,8 +692,7 @@ public class Data implements CONSTS {
 
 		return users;
 	}
-	
-	
+
 	/**
 	 * Get an assignment record
 	 * 
@@ -703,27 +702,26 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getAssignment(RequestContext context, String id, String query,
-			String fields) throws JSONException {
+	public static JSONObject getAssignment(RequestContext context, String id,
+			String query, String fields) throws JSONException {
 		JSONObject ret = null;
 
-		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		DBCollection assignmentsCol = db
+				.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		DBObject queryObject = null;
 		DBObject fieldsObject = null;
 		if (query != null) {
 			queryObject = (DBObject) JSON.parse(query);
 			queryObject.put(PROP__ID, new ObjectId(id));
-		}
-		else{
+		} else {
 			queryObject = new BasicDBObject();
 			queryObject.put(PROP__ID, new ObjectId(id));
 		}
 		if (fields != null) {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
-		
-		fieldsObject = filterManagmentProperty(PROP_RATE, context,
-				fieldsObject);
+
+		fieldsObject = filterManagmentProperty(PROP_RATE, context, fieldsObject);
 
 		DBObject object = assignmentsCol.findOne(queryObject, fieldsObject);
 
@@ -740,7 +738,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get all the assignment records
 	 * 
@@ -750,11 +748,13 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static Map<String, JSONObject> getAssignments(RequestContext context,
-			String query, String fields) throws JSONException {
+	public static Map<String, JSONObject> getAssignments(
+			RequestContext context, String query, String fields)
+			throws JSONException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 
-		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		DBCollection assignmentsCol = db
+				.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		DBObject queryObject = null;
 		DBObject fieldsObject = null;
 		if (query != null) {
@@ -763,9 +763,8 @@ public class Data implements CONSTS {
 		if (fields != null) {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
-		
-		fieldsObject = filterManagmentProperty(PROP_RATE, context,
-				fieldsObject);
+
+		fieldsObject = filterManagmentProperty(PROP_RATE, context, fieldsObject);
 
 		DBCursor cursur = assignmentsCol.find(queryObject, fieldsObject);
 
@@ -814,7 +813,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get an hours record
 	 * 
@@ -824,7 +823,8 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getHoursRecord(RequestContext context, String id) throws JSONException {
+	public static JSONObject getHoursRecord(RequestContext context, String id)
+			throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_HOURS);
@@ -840,7 +840,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get an vacation record
 	 * 
@@ -850,10 +850,12 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getVacationRecord(RequestContext context, String id) throws JSONException {
+	public static JSONObject getVacationRecord(RequestContext context, String id)
+			throws JSONException {
 		JSONObject ret = null;
 
-		DBCollection vacationsCol = db.getCollection(COLLECTION_TITLE_VACATIONS);
+		DBCollection vacationsCol = db
+				.getCollection(COLLECTION_TITLE_VACATIONS);
 		BasicDBObject query = new BasicDBObject();
 		query.put(PROP__ID, new ObjectId(id));
 		DBObject dbObj = vacationsCol.findOne(query);
@@ -866,7 +868,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get a notification record
 	 * 
@@ -876,10 +878,12 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getNotificationRecord(RequestContext context, String id) throws JSONException {
+	public static JSONObject getNotificationRecord(RequestContext context,
+			String id) throws JSONException {
 		JSONObject ret = null;
 
-		DBCollection notificationsCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
+		DBCollection notificationsCol = db
+				.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
 		BasicDBObject query = new BasicDBObject();
 		query.put(PROP__ID, new ObjectId(id));
 		DBObject dbObj = notificationsCol.findOne(query);
@@ -893,7 +897,6 @@ public class Data implements CONSTS {
 		return ret;
 	}
 
-	
 	/**
 	 * Get all the hours
 	 * 
@@ -948,7 +951,6 @@ public class Data implements CONSTS {
 		return ret;
 	}
 
-	
 	/**
 	 * Get tasks by query
 	 * 
@@ -966,15 +968,15 @@ public class Data implements CONSTS {
 		DBObject queryObject = null;
 		DBObject fieldsObject = null;
 		DBObject sortObject = null;
-		
+
 		if (query != null) {
 			queryObject = (DBObject) JSON.parse(query);
 		}
-		
+
 		if (fields != null) {
 			fieldsObject = (DBObject) JSON.parse(fields);
 		}
-		
+
 		if (sort != null) {
 			sortObject = (DBObject) JSON.parse(sort);
 		}
@@ -1005,7 +1007,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get all the vacations
 	 * 
@@ -1059,7 +1061,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get all the notifications
 	 * 
@@ -1069,11 +1071,12 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONArray getNotifications(RequestContext context, String query,
-			String fields, String sort) throws JSONException {
+	public static JSONArray getNotifications(RequestContext context,
+			String query, String fields, String sort) throws JSONException {
 		JSONArray ret = new JSONArray();
 
-		DBCollection notificationsCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
+		DBCollection notificationsCol = db
+				.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
 		DBObject queryObject = null;
 		DBObject fieldsObject = null;
 		DBObject sortObject = null;
@@ -1101,7 +1104,8 @@ public class Data implements CONSTS {
 				JSONObject jsonObject = new JSONObject(json);
 
 				ObjectId _id = (ObjectId) object.get(PROP__ID);
-				jsonObject.put(PROP_RESOURCE, RESOURCE_NOTIFICATIONS + "/" + _id);
+				jsonObject.put(PROP_RESOURCE, RESOURCE_NOTIFICATIONS + "/"
+						+ _id);
 
 				ret.put(jsonObject);
 			} else {
@@ -1113,7 +1117,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get an task record
 	 * 
@@ -1121,7 +1125,8 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getTask(RequestContext context, String id) throws JSONException {
+	public static JSONObject getTask(RequestContext context, String id)
+			throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection tasksCol = db.getCollection(COLLECTION_TITLE_TASKS);
@@ -1137,7 +1142,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Get an task by name
 	 * 
@@ -1145,7 +1150,8 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getTaskByName(RequestContext context, String name) throws JSONException {
+	public static JSONObject getTaskByName(RequestContext context, String name)
+			throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection tasksCol = db.getCollection(COLLECTION_TITLE_TASKS);
@@ -1156,7 +1162,8 @@ public class Data implements CONSTS {
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
-			ret.put(PROP_ABOUT, RESOURCE_TASKS + "/" + ret.get(PROP__ID).toString());
+			ret.put(PROP_ABOUT, RESOURCE_TASKS + "/"
+					+ ret.get(PROP__ID).toString());
 		}
 
 		return ret;
@@ -1250,47 +1257,49 @@ public class Data implements CONSTS {
 			String json = JSON.serialize(object);
 			JSONObject jsonObject = new JSONObject(json);
 
-			//Add the resource property to each link
+			// Add the resource property to each link
 			JSONArray members = jsonObject.getJSONArray(PROP_MEMBERS);
 			for (int i = 0; i < members.length(); i++) {
 				JSONObject link = members.getJSONObject(i);
-				if(link.has(PROP_ID)){
+				if (link.has(PROP_ID)) {
 					String lid = link.getString(PROP_ID);
-					String lRef = projectResourceURL+"/"+RESOURCE_LINKS+"/"+lid;
+					String lRef = projectResourceURL + "/" + RESOURCE_LINKS
+							+ "/" + lid;
 					link.put(PROP_RESOURCE, lRef);
 				}
 			}
-			
+
 			ret = jsonObject;
 		}
 
 		return ret;
 	}
-	
-	public static JSONArray getProjectRoles(RequestContext context, String id) 
+
+	public static JSONArray getProjectRoles(RequestContext context, String id)
 			throws JSONException {
 		JSONObject project = getProject(context, id, false);
 		JSONArray ret = null;
-		
+
 		if (project.has(PROP_ROLES)) {
 			removeRoleInjectedProps(project);
 			ret = project.getJSONArray(PROP_ROLES);
 		}
-		
+
 		return ret;
 	}
-	
-	public static JSONObject getProjectRoleById(RequestContext context, String id, String roleId) 
-			throws JSONException {
+
+	public static JSONObject getProjectRoleById(RequestContext context,
+			String id, String roleId) throws JSONException {
 		JSONObject ret = null;
-		
+
 		JSONObject project = getProject(context, id, false);
-		JSONArray roles = project.has(PROP_ROLES) ? project.getJSONArray(PROP_ROLES): null;
+		JSONArray roles = project.has(PROP_ROLES) ? project
+				.getJSONArray(PROP_ROLES) : null;
 		JSONObject role = null;
-		
-		for (int i = 0; i < roles.length(); i ++){
+
+		for (int i = 0; i < roles.length(); i++) {
 			role = roles.getJSONObject(i);
-			
+
 			if (role.has(PROP__ID) && role.get(PROP__ID).toString() == roleId) {
 				ret = role;
 				break;
@@ -1298,7 +1307,7 @@ public class Data implements CONSTS {
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * Get project assignments by passed role
 	 * 
@@ -1308,20 +1317,21 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getProjectAssignments(RequestContext context, String projectId) 
-			throws JSONException {
+	public static JSONObject getProjectAssignments(RequestContext context,
+			String projectId) throws JSONException {
 		JSONObject ret = null;
 
-		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
-		
+		DBCollection assignmentsCol = db
+				.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+
 		DBObject queryObject = new BasicDBObject();
-		
+
 		// Add the project query
 		String projectResourceURL = RESOURCE_PROJECTS + "/" + projectId;
 		DBObject resourceQuery = new BasicDBObject(PROP_RESOURCE,
 				projectResourceURL);
 		queryObject.put(PROP_PROJECT, resourceQuery);
-		
+
 		DBObject object = assignmentsCol.findOne(queryObject);
 
 		if (object != null) {
@@ -1379,18 +1389,21 @@ public class Data implements CONSTS {
 
 	private static boolean hasProjectManagementAccess(RequestContext context)
 			throws JSONException {
-		return context.getCurrentUser() != null && (isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
-				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) || isMember(context.getCurrentUser(), GROUPS_PROJECT_MANAGEMENT_TITLE));
+		return context.getCurrentUser() != null
+				&& (isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
+						|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) || isMember(
+							context.getCurrentUser(),
+							GROUPS_PROJECT_MANAGEMENT_TITLE));
 	}
-	
+
 	private static boolean hasFinancialAccess(RequestContext context)
 			throws JSONException {
-		return context.getCurrentUser() != null && (isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
-				|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) || isMember(context.getCurrentUser(), GROUPS_SALES_TITLE));
+		return context.getCurrentUser() != null
+				&& (isMember(context.getCurrentUser(), GROUPS_MANAGEMENT_TITLE)
+						|| isMember(context.getCurrentUser(), GROUPS_EXEC_TITLE) || isMember(
+							context.getCurrentUser(), GROUPS_SALES_TITLE));
 	}
 
-
-	
 	private static void checkForCollisionAndIncrementETag(JSONObject newRecord,
 			DBObject oldRecord) throws ConflictException {
 		int newEtag = 0;
@@ -1566,8 +1579,8 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject getProject(RequestContext context, String id, Boolean allFields)
-			throws JSONException {
+	public static JSONObject getProject(RequestContext context, String id,
+			Boolean allFields) throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
@@ -1592,7 +1605,7 @@ public class Data implements CONSTS {
 
 			ret.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + id);
 		}
-		
+
 		return ret;
 	}
 
@@ -1685,16 +1698,16 @@ public class Data implements CONSTS {
 		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
 		BasicDBObject fields = new BasicDBObject(PROP_PERSON, 1);
 		DBObject dbObj = hoursCol.findOne(query, fields);
-		
-		if(dbObj == null){
+
+		if (dbObj == null) {
 			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
 					.entity("Hours not found to delete").build());
 		}
-		
-		DBObject person = (DBObject)dbObj.get(PROP_PERSON);
+
+		DBObject person = (DBObject) dbObj.get(PROP_PERSON);
 		String about = String.valueOf(context.getCurrentUser().get(PROP_ABOUT));
-		String resource = (String)person.get(PROP_RESOURCE);
-		
+		String resource = (String) person.get(PROP_RESOURCE);
+
 		// Only admins or owners person who cerated it can delete hours
 		if (!hasProjectManagementAccess(context) && !about.endsWith(resource)) {
 			throw new WebApplicationException(
@@ -1702,7 +1715,7 @@ public class Data implements CONSTS {
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-		
+
 		dbObj = hoursCol.findAndRemove(query);
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
@@ -1716,7 +1729,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Delete an hours by id
 	 * 
@@ -1724,24 +1737,24 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject deleteVacationRecord(RequestContext context, String id)
-			throws JSONException {
+	public static JSONObject deleteVacationRecord(RequestContext context,
+			String id) throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection vacsCol = db.getCollection(COLLECTION_TITLE_VACATIONS);
 		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
 		BasicDBObject fields = new BasicDBObject(PROP_PERSON, 1);
 		DBObject dbObj = vacsCol.findOne(query, fields);
-		
-		if(dbObj == null){
+
+		if (dbObj == null) {
 			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
 					.entity("Vacation to delete is not found").build());
 		}
-		
-		DBObject person = (DBObject)dbObj.get(PROP_PERSON);
+
+		DBObject person = (DBObject) dbObj.get(PROP_PERSON);
 		String about = String.valueOf(context.getCurrentUser().get(PROP_ABOUT));
-		String resource = (String)person.get(PROP_RESOURCE);
-		
+		String resource = (String) person.get(PROP_RESOURCE);
+
 		// Only admins or owners person who created it can delete vacation
 		if (!hasProjectManagementAccess(context) && !about.endsWith(resource)) {
 			throw new WebApplicationException(
@@ -1749,7 +1762,7 @@ public class Data implements CONSTS {
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-		
+
 		dbObj = vacsCol.findAndRemove(query);
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
@@ -1763,7 +1776,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Delete a notification by id
 	 * 
@@ -1771,24 +1784,24 @@ public class Data implements CONSTS {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static JSONObject deleteNotificationRecord(RequestContext context, String id)
-			throws JSONException {
+	public static JSONObject deleteNotificationRecord(RequestContext context,
+			String id) throws JSONException {
 		JSONObject ret = null;
 
 		DBCollection vacsCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
 		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
 		BasicDBObject fields = new BasicDBObject(PROP_PERSON, 1);
 		DBObject dbObj = vacsCol.findOne(query, fields);
-		
-		if(dbObj == null){
+
+		if (dbObj == null) {
 			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
 					.entity("Notification to delete is not found").build());
 		}
-		
-		DBObject person = (DBObject)dbObj.get(PROP_PERSON);
+
+		DBObject person = (DBObject) dbObj.get(PROP_PERSON);
 		String about = String.valueOf(context.getCurrentUser().get(PROP_ABOUT));
-		String resource = (String)person.get(PROP_RESOURCE);
-		
+		String resource = (String) person.get(PROP_RESOURCE);
+
 		// Only admins or owners person who created it can delete vacation
 		if (!hasProjectManagementAccess(context) && !about.endsWith(resource)) {
 			throw new WebApplicationException(
@@ -1796,7 +1809,7 @@ public class Data implements CONSTS {
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-		
+
 		dbObj = vacsCol.findAndRemove(query);
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
@@ -1810,7 +1823,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Delete an task by id
 	 * 
@@ -1826,26 +1839,27 @@ public class Data implements CONSTS {
 		BasicDBObject query = new BasicDBObject(PROP__ID, new ObjectId(id));
 		BasicDBObject fields = new BasicDBObject(PROP_PERSON, 1);
 		DBObject dbObj = tasksCol.findOne(query, fields);
-		
-		if(dbObj == null){
+
+		if (dbObj == null) {
 			throw new WebApplicationException(Response.status(Status.NOT_FOUND)
 					.entity("Task not found to delete").build());
 		}
-		
-		//DBObject person = (DBObject)dbObj.get(PROP_PERSON);
-		//String about = String.valueOf(context.getCurrentUser().get(PROP_ABOUT));
-		//String resource = (String)person.get(PROP_RESOURCE);
-		
+
+		// DBObject person = (DBObject)dbObj.get(PROP_PERSON);
+		// String about =
+		// String.valueOf(context.getCurrentUser().get(PROP_ABOUT));
+		// String resource = (String)person.get(PROP_RESOURCE);
+
 		// Only admins can delete task
-		if (!hasProjectManagementAccess(context) ) {
+		if (!hasProjectManagementAccess(context)) {
 			throw new WebApplicationException(
 					Response.status(Status.FORBIDDEN)
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-		
+
 		dbObj = tasksCol.findAndRemove(query);
-		
+
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
@@ -1858,8 +1872,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
-	
+
 	/**
 	 * Delete a person by id
 	 * 
@@ -1885,8 +1898,7 @@ public class Data implements CONSTS {
 
 		return ret;
 	}
-	
-	
+
 	/**
 	 * Delete an assignments by project id
 	 * 
@@ -1897,14 +1909,15 @@ public class Data implements CONSTS {
 	public static void deleteProjectAssignments(RequestContext context,
 			String projectId) throws JSONException {
 
-		DBCollection assignmentCollection = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		DBCollection assignmentCollection = db
+				.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		BasicDBObject query = new BasicDBObject();
-		
-		query.put(PROP_PROJECT, new BasicDBObject(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + projectId));
+
+		query.put(PROP_PROJECT, new BasicDBObject(PROP_RESOURCE,
+				RESOURCE_PROJECTS + "/" + projectId));
 		assignmentCollection.remove(query);
 	}
 
-	
 	/**
 	 * Create a new hours record
 	 * 
@@ -1914,7 +1927,6 @@ public class Data implements CONSTS {
 	public static JSONObject createHours(RequestContext context,
 			JSONObject newHoursRecord) throws JSONException {
 
-		
 		newHoursRecord.put(PROP_ETAG, "0");
 		newHoursRecord.put(PROP_CREATED, new Date());
 
@@ -1922,12 +1934,11 @@ public class Data implements CONSTS {
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_HOURS);
 		WriteResult result = hoursCol.insert(dbObject);
-		
-		//Handle Error Message
+
+		// Handle Error Message
 		CommandResult error = result.getLastError();
 		if (error != null && error.getErrorMessage() != null) {
-			System.err.println("Add Hours Failed:"
-					+ error.getErrorMessage());
+			System.err.println("Add Hours Failed:" + error.getErrorMessage());
 			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
@@ -1938,35 +1949,32 @@ public class Data implements CONSTS {
 		}
 
 		/*
-		//Find the hours Record that was just created
-		DBCursor cursorDoc = hoursCol.find();
-		while (cursorDoc.hasNext()) {
-			DBObject created = cursorDoc.next();
-			// System.out.println("Found: " + created);
+		 * //Find the hours Record that was just created DBCursor cursorDoc =
+		 * hoursCol.find(); while (cursorDoc.hasNext()) { DBObject created =
+		 * cursorDoc.next(); // System.out.println("Found: " + created);
+		 * 
+		 * ObjectId oId = (ObjectId) created.get(PROP__ID); String idVal =
+		 * oId.toString(); newHoursRecord.put(PROP_ABOUT, RESOURCE_HOURS + "/" +
+		 * idVal); }
+		 */
 
-			ObjectId oId = (ObjectId) created.get(PROP__ID);
-			String idVal = oId.toString();
-			newHoursRecord.put(PROP_ABOUT, RESOURCE_HOURS + "/" + idVal);
-		}
-		*/
-		
 		// after hours record insertion its "_id" became available
 		if (dbObject.get(PROP__ID) != null) {
 			String idVal = dbObject.get(PROP__ID).toString();
-			
+
 			newHoursRecord.put(PROP_ABOUT, RESOURCE_HOURS + "/" + idVal);
-			
+
 			JSONObject _id = new JSONObject();
-			
+
 			_id.put(PROP_$OID, idVal);
-			
-			newHoursRecord.put(PROP__ID, _id );
+
+			newHoursRecord.put(PROP__ID, _id);
 			newHoursRecord.put(PROP_RESOURCE, RESOURCE_HOURS + "/" + idVal);
 		}
 
 		return newHoursRecord;
 	}
-	
+
 	/**
 	 * Update an hours record
 	 * 
@@ -1977,14 +1985,17 @@ public class Data implements CONSTS {
 			JSONObject newVacation) throws JSONException {
 		if (!newVacation.has(PROP__ID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Vacation Record does not conatin an id property").build();
+					.entity("Vacation Record does not conatin an id property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
 		JSONObject _id = newVacation.getJSONObject(PROP__ID);
 		if (!_id.has(PROP_$OID)) {
-			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Vacation Record does not conatin an $oid property").build();
+			Response response = Response
+					.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an $oid property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -1997,8 +2008,10 @@ public class Data implements CONSTS {
 		}
 
 		if (!newVacation.has(PROP_ETAG)) {
-			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Vacation Record does not conatin an etag property").build();
+			Response response = Response
+					.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an etag property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -2039,7 +2052,7 @@ public class Data implements CONSTS {
 
 		return newVacation;
 	}
-	
+
 	/**
 	 * Update a notification record
 	 * 
@@ -2049,15 +2062,19 @@ public class Data implements CONSTS {
 	public static JSONObject updateNotification(RequestContext context,
 			JSONObject newNotification) throws JSONException {
 		if (!newNotification.has(PROP__ID)) {
-			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Notification Record does not conatin an id property").build();
+			Response response = Response
+					.status(Status.BAD_REQUEST)
+					.entity("Notification Record does not conatin an id property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
 		JSONObject _id = newNotification.getJSONObject(PROP__ID);
 		if (!_id.has(PROP_$OID)) {
-			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Notification Record does not conatin an $oid property").build();
+			Response response = Response
+					.status(Status.BAD_REQUEST)
+					.entity("Notification Record does not conatin an $oid property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -2070,8 +2087,10 @@ public class Data implements CONSTS {
 		}
 
 		if (!newNotification.has(PROP_ETAG)) {
-			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Notification Record does not conatin an etag property").build();
+			Response response = Response
+					.status(Status.BAD_REQUEST)
+					.entity("Notification Record does not conatin an etag property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -2092,7 +2111,8 @@ public class Data implements CONSTS {
 
 		String json = newNotification.toString();
 		DBObject dbObject = (DBObject) JSON.parse(json);
-		DBCollection hoursCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
+		DBCollection hoursCol = db
+				.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
 
 		BasicDBObject query = new BasicDBObject();
 		query.put(PROP__ID, new ObjectId(id));
@@ -2112,7 +2132,7 @@ public class Data implements CONSTS {
 
 		return newNotification;
 	}
-	
+
 	/**
 	 * Update an hours record
 	 * 
@@ -2123,14 +2143,16 @@ public class Data implements CONSTS {
 			JSONObject newHours) throws JSONException {
 		if (!newHours.has(PROP__ID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Hours Record does not conatin an id property").build();
+					.entity("Hours Record does not conatin an id property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
 		JSONObject _id = newHours.getJSONObject(PROP__ID);
 		if (!_id.has(PROP_$OID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Hours Record does not conatin an $oid property").build();
+					.entity("Hours Record does not conatin an $oid property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -2144,7 +2166,8 @@ public class Data implements CONSTS {
 
 		if (!newHours.has(PROP_ETAG)) {
 			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Hours Record does not conatin an etag property").build();
+					.entity("Hours Record does not conatin an etag property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -2185,7 +2208,7 @@ public class Data implements CONSTS {
 
 		return newHours;
 	}
-	
+
 	/**
 	 * Update an vacation record
 	 * 
@@ -2196,14 +2219,17 @@ public class Data implements CONSTS {
 			JSONObject newVacation) throws JSONException {
 		if (!newVacation.has(PROP__ID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Vacation Record does not conatin an id property").build();
+					.entity("Vacation Record does not conatin an id property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
 		JSONObject _id = newVacation.getJSONObject(PROP__ID);
 		if (!_id.has(PROP_$OID)) {
-			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Vacation Record does not conatin an $oid property").build();
+			Response response = Response
+					.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an $oid property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -2216,8 +2242,10 @@ public class Data implements CONSTS {
 		}
 
 		if (!newVacation.has(PROP_ETAG)) {
-			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Vacation Record does not conatin an etag property").build();
+			Response response = Response
+					.status(Status.BAD_REQUEST)
+					.entity("Vacation Record does not conatin an etag property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -2258,7 +2286,7 @@ public class Data implements CONSTS {
 
 		return newVacation;
 	}
-	
+
 	/**
 	 * Create a new vacation record
 	 * 
@@ -2275,8 +2303,8 @@ public class Data implements CONSTS {
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection vacsCol = db.getCollection(COLLECTION_TITLE_VACATIONS);
 		WriteResult result = vacsCol.insert(dbObject);
-		
-		//Handle Error Message
+
+		// Handle Error Message
 		CommandResult error = result.getLastError();
 		if (error != null && error.getErrorMessage() != null) {
 			System.err.println("Add Vacations Failed:"
@@ -2289,24 +2317,25 @@ public class Data implements CONSTS {
 					.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(error.getErrorMessage()).build());
 		}
-		
+
 		// after vacation record insertion its "_id" became available
 		if (dbObject.get(PROP__ID) != null) {
 			String idVal = dbObject.get(PROP__ID).toString();
-			
+
 			newVacationRecord.put(PROP_ABOUT, RESOURCE_VACATIONS + "/" + idVal);
-			
+
 			JSONObject _id = new JSONObject();
-			
+
 			_id.put(PROP_$OID, idVal);
-			
-			newVacationRecord.put(PROP__ID, _id );
-			newVacationRecord.put(PROP_RESOURCE, RESOURCE_VACATIONS + "/" + idVal);
+
+			newVacationRecord.put(PROP__ID, _id);
+			newVacationRecord.put(PROP_RESOURCE, RESOURCE_VACATIONS + "/"
+					+ idVal);
 		}
 
 		return newVacationRecord;
 	}
-	
+
 	/**
 	 * Create a new notification record
 	 * 
@@ -2323,8 +2352,8 @@ public class Data implements CONSTS {
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection vacsCol = db.getCollection(COLLECTION_TITLE_NOTIFICATIONS);
 		WriteResult result = vacsCol.insert(dbObject);
-		
-		//Handle Error Message
+
+		// Handle Error Message
 		CommandResult error = result.getLastError();
 		if (error != null && error.getErrorMessage() != null) {
 			System.err.println("Add Notification Failed:"
@@ -2337,25 +2366,26 @@ public class Data implements CONSTS {
 					.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(error.getErrorMessage()).build());
 		}
-		
+
 		// after notification record insertion its "_id" became available
 		if (dbObject.get(PROP__ID) != null) {
 			String idVal = dbObject.get(PROP__ID).toString();
-			
-			newNotificationRecord.put(PROP_ABOUT, RESOURCE_NOTIFICATIONS + "/" + idVal);
-			
+
+			newNotificationRecord.put(PROP_ABOUT, RESOURCE_NOTIFICATIONS + "/"
+					+ idVal);
+
 			JSONObject _id = new JSONObject();
-			
+
 			_id.put(PROP_$OID, idVal);
-			
-			newNotificationRecord.put(PROP__ID, _id );
-			newNotificationRecord.put(PROP_RESOURCE, RESOURCE_NOTIFICATIONS + "/" + idVal);
+
+			newNotificationRecord.put(PROP__ID, _id);
+			newNotificationRecord.put(PROP_RESOURCE, RESOURCE_NOTIFICATIONS
+					+ "/" + idVal);
 		}
 
 		return newNotificationRecord;
 	}
 
-	
 	/**
 	 * Create a new hours record
 	 * 
@@ -2372,7 +2402,7 @@ public class Data implements CONSTS {
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-				
+
 		newTask.put(PROP_ETAG, "0");
 		newTask.put(PROP_CREATED, new Date());
 
@@ -2380,12 +2410,11 @@ public class Data implements CONSTS {
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection tasksCol = db.getCollection(COLLECTION_TITLE_TASKS);
 		WriteResult result = tasksCol.insert(dbObject);
-		
-		//Handle Error Message
+
+		// Handle Error Message
 		CommandResult error = result.getLastError();
 		if (error != null && error.getErrorMessage() != null) {
-			System.err.println("Add Tasks Failed:"
-					+ error.getErrorMessage());
+			System.err.println("Add Tasks Failed:" + error.getErrorMessage());
 			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
@@ -2395,7 +2424,7 @@ public class Data implements CONSTS {
 					.entity(error.getErrorMessage()).build());
 		}
 
-		//Find the hours Record that was just created
+		// Find the hours Record that was just created
 		DBCursor cursorDoc = tasksCol.find();
 		while (cursorDoc.hasNext()) {
 			DBObject created = cursorDoc.next();
@@ -2408,24 +2437,24 @@ public class Data implements CONSTS {
 
 		return newTask;
 	}
-	
+
 	/**
 	 * Update an task
 	 * 
 	 * @param newHours
 	 * @throws JSONException
 	 */
-	public static JSONObject updateTask(RequestContext context,
-			JSONObject task) throws JSONException {
-		
+	public static JSONObject updateTask(RequestContext context, JSONObject task)
+			throws JSONException {
+
 		// Only admins can delete task
-		if (!hasProjectManagementAccess(context) ) {
+		if (!hasProjectManagementAccess(context)) {
 			throw new WebApplicationException(
 					Response.status(Status.FORBIDDEN)
 							.entity("You need admin athority to perform this operation")
 							.build());
 		}
-				
+
 		if (!task.has(PROP__ID)) {
 			Response response = Response.status(Status.BAD_REQUEST)
 					.entity("Task does not conatin an id property").build();
@@ -2449,7 +2478,8 @@ public class Data implements CONSTS {
 
 		if (!task.has(PROP_ETAG)) {
 			Response response = Response.status(Status.BAD_REQUEST)
-					.entity("Task Record does not conatin an etag property").build();
+					.entity("Task Record does not conatin an etag property")
+					.build();
 			throw new WebApplicationException(response);
 		}
 
@@ -2489,7 +2519,7 @@ public class Data implements CONSTS {
 
 		return task;
 	}
-	
+
 	/**
 	 * Create a new person
 	 * 
@@ -2507,8 +2537,7 @@ public class Data implements CONSTS {
 
 		CommandResult error = result.getLastError();
 		if (error != null && error.getErrorMessage() != null) {
-			System.err.println("Add Project Failed:"
-					+ error.getErrorMessage());
+			System.err.println("Add Project Failed:" + error.getErrorMessage());
 			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
@@ -2517,7 +2546,7 @@ public class Data implements CONSTS {
 					.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(error.getErrorMessage()).build());
 		}
-		
+
 		DBCursor cursorDoc = peopleCol.find();
 		DBObject created = null;
 		while (cursorDoc.hasNext()) {
@@ -2553,11 +2582,10 @@ public class Data implements CONSTS {
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		WriteResult result = projectsCol.insert(dbObject);
 
-		//Handle Error Message
+		// Handle Error Message
 		CommandResult error = result.getLastError();
 		if (error != null && error.getErrorMessage() != null) {
-			System.err.println("Add Project Failed:"
-					+ error.getErrorMessage());
+			System.err.println("Add Project Failed:" + error.getErrorMessage());
 			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
@@ -2566,11 +2594,11 @@ public class Data implements CONSTS {
 					.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(error.getErrorMessage()).build());
 		}
-		
+
 		// after object insertion its "_id" became available
 		if (dbObject.get(PROP__ID) != null) {
 			String idVal = dbObject.get(PROP__ID).toString();
-			
+
 			newProject.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + idVal);
 			newProject.put(PROP__ID, new ObjectId(idVal));
 		}
@@ -2643,40 +2671,44 @@ public class Data implements CONSTS {
 	 * @param newRole
 	 * @throws JSONException
 	 */
-	public static JSONObject createProjectAssignments(RequestContext context, String projectId, 
-			JSONArray assignments) throws JSONException {
-		
+	public static JSONObject createProjectAssignments(RequestContext context,
+			String projectId, JSONArray assignments) throws JSONException {
+
 		ObjectId id = null;
 		JSONObject assignment = null;
-		
-		for (int i = 0; i < assignments.length(); i ++){
+
+		for (int i = 0; i < assignments.length(); i++) {
 			assignment = assignments.getJSONObject(i);
-			
+
 			if (!assignment.has(PROP__ID)) {
 				id = new ObjectId();
 				assignment.put(PROP__ID, id);
 			}
-			
+
 			if (!assignment.has(PROP_ABOUT)) {
-				assignment.put(PROP_ABOUT, RESOURCE_ASSIGNMENTS + "/" + assignment.get(PROP__ID).toString());
+				assignment.put(PROP_ABOUT, RESOURCE_ASSIGNMENTS + "/"
+						+ assignment.get(PROP__ID).toString());
 			}
-			
+
 		}
-		
+
 		JSONObject newAssignment = new JSONObject();
-		
-		newAssignment.put(PROP_PROJECT, new BasicDBObject(PROP_RESOURCE, RESOURCE_PROJECTS + "/" + projectId));
+
+		newAssignment.put(PROP_PROJECT, new BasicDBObject(PROP_RESOURCE,
+				RESOURCE_PROJECTS + "/" + projectId));
 		newAssignment.put(PROP_ETAG, "0");
 		newAssignment.put(PROP_MEMBERS, assignments);
-		newAssignment.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + projectId + "/" + RESOURCE_ASSIGNMENTS);
-		
+		newAssignment.put(PROP_ABOUT, RESOURCE_PROJECTS + "/" + projectId + "/"
+				+ RESOURCE_ASSIGNMENTS);
+
 		String json = newAssignment.toString();
 		DBObject dbObject = (DBObject) JSON.parse(json);
-		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+		DBCollection assignmentsCol = db
+				.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		WriteResult result = assignmentsCol.insert(dbObject);
 
 		CommandResult error = result.getLastError();
-		
+
 		if (error != null && error.getErrorMessage() != null) {
 			System.err.println("Add Project Assignment Failed:"
 					+ error.getErrorMessage());
@@ -2691,7 +2723,7 @@ public class Data implements CONSTS {
 
 		return newAssignment;
 	}
-	
+
 	/**
 	 * Create a new role
 	 * 
@@ -2710,11 +2742,10 @@ public class Data implements CONSTS {
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_ROLES);
 		WriteResult result = projectsCol.insert(dbObject);
-		
+
 		CommandResult error = result.getLastError();
 		if (error != null && error.getErrorMessage() != null) {
-			System.err.println("Add Project Failed:"
-					+ error.getErrorMessage());
+			System.err.println("Add Project Failed:" + error.getErrorMessage());
 			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
@@ -2758,8 +2789,7 @@ public class Data implements CONSTS {
 
 		CommandResult error = result.getLastError();
 		if (error != null && error.getErrorMessage() != null) {
-			System.err.println("Add Project Failed:"
-					+ error.getErrorMessage());
+			System.err.println("Add Project Failed:" + error.getErrorMessage());
 			if (error.getException() != null) {
 				error.getException().printStackTrace();
 			}
@@ -2768,7 +2798,7 @@ public class Data implements CONSTS {
 					.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(error.getErrorMessage()).build());
 		}
-		
+
 		DBCursor cursorDoc = projectsCol.find();
 		while (cursorDoc.hasNext()) {
 			DBObject created = cursorDoc.next();
@@ -3061,10 +3091,9 @@ public class Data implements CONSTS {
 
 		// Only admins can update a users groups
 		if (!PermissionUtil.hasAdminAccess(context)) {
-			if(existing.has(PROP_GROUPS)){
+			if (existing.has(PROP_GROUPS)) {
 				newPerson.put(PROP_GROUPS, existing.get(PROP_GROUPS));
-			}
-			else{
+			} else {
 				newPerson.put(PROP_GROUPS, new JSONArray());
 			}
 		}
@@ -3135,23 +3164,23 @@ public class Data implements CONSTS {
 
 		if (!hasFinancialAccess(context) && newProject.has(PROP_ROLES)) {
 			newProject.remove(PROP_TERMS);
-			
+
 			// manually remove passed by default amount value
 			JSONArray roles = newProject.getJSONArray(PROP_ROLES);
 			JSONObject r = null;
-			
-			for (int i = 0; i < roles.length(); i ++) {
+
+			for (int i = 0; i < roles.length(); i++) {
 				r = roles.getJSONObject(i);
-				
+
 				if (r.has(PROP_RATE))
 					r.getJSONObject(PROP_RATE).remove(PROP_AMOUNT);
 			}
-			
+
 		}
-		
+
 		extendJSONObject(existing, newProject);
-		
-		//String json = newProject.toString();
+
+		// String json = newProject.toString();
 		String json = existing.toString();
 		DBObject dbObject = (DBObject) JSON.parse(json);
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
@@ -3176,7 +3205,8 @@ public class Data implements CONSTS {
 			String configName) {
 		JSONObject ret = null;
 
-		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_CONFIGURATION);
+		DBCollection projectsCol = db
+				.getCollection(COLLECTION_TITLE_CONFIGURATION);
 		BasicDBObject query = new BasicDBObject();
 		query.put(PROP_NAME, configName);
 		DBObject dbObj = projectsCol.findOne(query);
@@ -3184,39 +3214,41 @@ public class Data implements CONSTS {
 		if (dbObj != null) {
 			String json = JSON.serialize(dbObj);
 			ret = new JSONObject(json);
-			//ret.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + id);
+			// ret.put(PROP_ABOUT, RESOURCE_PEOPLE + "/" + id);
 		}
 
 		return ret;
 	}
-	
-	public static void updateProjectLink(RequestContext context, String projectId, String linkId, JSONObject newLink){
-		DBCollection linksCollection = db.getCollection(COLLECTION_TITLE_LINKS);
-		//db.Links.update({project:{resource:'projects/52a614933004580b24e3121e'},'members.id':52d010513004978f48669a75},{$set:{'members.$.url':'http://example/new'...},$inc:{etag:1}})
 
-		//TODO should check the etag
-		
+	public static void updateProjectLink(RequestContext context,
+			String projectId, String linkId, JSONObject newLink) {
+		DBCollection linksCollection = db.getCollection(COLLECTION_TITLE_LINKS);
+		// db.Links.update({project:{resource:'projects/52a614933004580b24e3121e'},'members.id':52d010513004978f48669a75},{$set:{'members.$.url':'http://example/new'...},$inc:{etag:1}})
+
+		// TODO should check the etag
+
 		String projectResourceURL = RESOURCE_PROJECTS + "/" + projectId;
 		DBObject queryObject = new BasicDBObject(PROP_PROJECT,
-				new BasicDBObject(PROP_RESOURCE, projectResourceURL))
-				.append(PROP_MEMBERS+"."+PROP_ID, linkId);
-		
-		//Remove etag from the property list
+				new BasicDBObject(PROP_RESOURCE, projectResourceURL)).append(
+				PROP_MEMBERS + "." + PROP_ID, linkId);
+
+		// Remove etag from the property list
 		BasicDBObject set = new BasicDBObject();
 		@SuppressWarnings("unchecked")
 		Iterator<String> keys = newLink.keySet().iterator();
-		while(keys.hasNext()){
+		while (keys.hasNext()) {
 			String key = keys.next();
-			//Filter out id, resource and etag properties
-			if(!key.equals(PROP_ETAG) && !key.equals(PROP_RESOURCE) && !key.equals(PROP_ID)){
-				String qualified = PROP_MEMBERS+".$."+key;
+			// Filter out id, resource and etag properties
+			if (!key.equals(PROP_ETAG) && !key.equals(PROP_RESOURCE)
+					&& !key.equals(PROP_ID)) {
+				String qualified = PROP_MEMBERS + ".$." + key;
 				Object value = newLink.get(key);
 				set.put(qualified, value);
 			}
 		}
 
-		DBObject update = new BasicDBObject("$set", set).append(
-				"$inc", new BasicDBObject(PROP_ETAG, 1));
+		DBObject update = new BasicDBObject("$set", set).append("$inc",
+				new BasicDBObject(PROP_ETAG, 1));
 
 		WriteResult result = linksCollection.update(queryObject, update);
 
@@ -3234,192 +3266,196 @@ public class Data implements CONSTS {
 					.entity(error.getErrorMessage()).build());
 		}
 	}
-	
-	public static JSONObject syncProjectAssignments(RequestContext context,  String id, JSONObject projectAssignment)
-			throws JSONException {
-		
+
+	public static JSONObject syncProjectAssignments(RequestContext context,
+			String id, JSONObject projectAssignment) throws JSONException {
+
 		deleteProjectAssignments(context, id);
-		
-		JSONArray assignments = projectAssignment.has(PROP_MEMBERS)? projectAssignment.getJSONArray(PROP_MEMBERS): new JSONArray();
-		
-		return createProjectAssignments(context, id, assignments);	
+
+		JSONArray assignments = projectAssignment.has(PROP_MEMBERS) ? projectAssignment
+				.getJSONArray(PROP_MEMBERS) : new JSONArray();
+
+		return createProjectAssignments(context, id, assignments);
 	}
 
-//	public static void synchDefaultRoles(RequestContext context)
-//			throws JSONException {
-//		List<String> DEFAULT_ROLES = new ArrayList<String>();
-//		List<String> DEFAULT_ROLE_ABRS = new ArrayList<String>();
-//		Collections.addAll(DEFAULT_ROLES, ROLE_BA_TITLE, ROLE_PM_TITLE,
-//				ROLE_SE_TITLE, ROLE_SSA_TITLE, ROLE_SSE_TITLE, ROLE_SUXD_TITLE,
-//				ROLE_UXD_TITLE);
-//		Collections
-//				.addAll(DEFAULT_ROLE_ABRS, ROLE_BA_ID, ROLE_PM_ID, ROLE_SE_ID,
-//						ROLE_SSA_ID, ROLE_SSE_ID, ROLE_SUXD_ID, ROLE_UXD_ID);
-//		Map<String, String> newRoleMapping = new HashMap<String, String>();
-//
-//		DBCollection roleCollection = db.getCollection(COLLECTION_TITLE_ROLES);
-//		DBCollection peopleCollection = db
-//				.getCollection(COLLECTION_TITLE_PEOPLE);
-//		DBCollection projectsCollection = db
-//				.getCollection(COLLECTION_TITLE_PROJECTS);
-//
-//		for (int i = 0; i < DEFAULT_ROLES.size(); i++) {
-//			String roleName = DEFAULT_ROLES.get(i);
-//			String roleAbr = DEFAULT_ROLE_ABRS.get(i);
-//
-//			BasicDBObject newRole = new BasicDBObject(PROP_TITLE, roleName);
-//
-//			// Look for role
-//			DBObject existingRole = roleCollection.findOne(newRole);
-//			if (existingRole == null) {
-//				newRole.append(PROP_ABBREVIATION, roleAbr).append(PROP_ETAG,
-//						"0");
-//
-//				// Create one
-//				WriteResult result = roleCollection.insert(newRole);
-//
-//				CommandResult error = result.getLastError();
-//				if (error != null) {
-//					System.err.println("Insert Failed:"
-//							+ error.getErrorMessage());
-//					if (error.getException() != null) {
-//						error.getException().printStackTrace();
-//					}
-//				}
-//
-//				// Try again
-//				existingRole = roleCollection.findOne(newRole);
-//			}
-//
-//			if (existingRole == null) {
-//				throw new WebApplicationException(Response
-//						.status(Status.INTERNAL_SERVER_ERROR)
-//						.entity("Failed to find Role: " + roleName).build());
-//			}
-//
-//			// Update any people that have this primary role
-//			String newRoleURL = RESOURCE_ROLES + "/"
-//					+ ((ObjectId) existingRole.get(PROP__ID)).toString();
-//			String oldRoleURL = RESOURCE_ROLES + "/" + roleAbr;
-//
-//			// Map it for later
-//			newRoleMapping.put(oldRoleURL, newRoleURL);
-//
-//			DBObject query = new BasicDBObject(PROP_PRIMARY_ROLE,
-//					new BasicDBObject(PROP_RESOURCE, oldRoleURL));
-//			BasicDBObject update = new BasicDBObject("$set", new BasicDBObject(
-//					PROP_PRIMARY_ROLE, new BasicDBObject(PROP_RESOURCE,
-//							newRoleURL)));
-//			WriteResult result = peopleCollection.updateMulti(query, update);
-//
-//			CommandResult error = result.getLastError();
-//			if (error != null) {
-//				System.err.println("Insert Query:" + query);
-//				System.err.println("Insert Update:" + update);
-//				System.err.println("Insert Failed:" + error);
-//				if (error.getException() != null) {
-//					error.getException().printStackTrace();
-//				}
-//			}
-//		}
-//
-//		// Update any projects that have this primary role
-//		DBObject query = new BasicDBObject(PROP_ROLES, new BasicDBObject(
-//				"$exists", true));
-//		DBObject fields = new BasicDBObject(PROP_ROLES, 1);
-//		System.out.println("Find: " + query + ", " + fields);
-//		DBCursor cursor = projectsCollection.find(query, fields);
-//
-//		// For eacch project update all the roles on the project
-//		while (cursor.hasNext()) {
-//			DBObject fetched = cursor.next();
-//			List<DBObject> newRoles = new ArrayList<DBObject>();
-//
-//			@SuppressWarnings({ "unchecked" })
-//			List<DBObject> roles = (List<DBObject>) fetched.get(PROP_ROLES);
-//			for (Iterator<DBObject> iterator = roles.iterator(); iterator
-//					.hasNext();) {
-//				DBObject role = iterator.next();
-//				@SuppressWarnings({ "unchecked", "rawtypes" })
-//				DBObject newRole = new BasicDBObject(new HashMap(role.toMap()));
-//
-//				DBObject type = (DBObject) newRole.get(PROP_TYPE);
-//				Object resource = type.get(PROP_RESOURCE);
-//				if (newRoleMapping.containsKey(resource)) {
-//					type.put(PROP_RESOURCE, newRoleMapping.get(resource));
-//				}
-//
-//				newRoles.add(newRole);
-//			}
-//
-//			fetched.removeField(PROP_ROLES);
-//
-//			DBObject update = new BasicDBObject("$set", new BasicDBObject(
-//					PROP_ROLES, newRoles));
-//
-//			// Update the project
-//			System.out.println("Insert Query:" + fetched);
-//			System.out.println("Insert Update:" + update);
-//			projectsCollection.update(fetched, update);
-//		}
-//	}
-//
-//	public static void synchDefaultGroups(RequestContext context)
-//			throws JSONException {
-//		DBCollection peopleCollection = db
-//				.getCollection(COLLECTION_TITLE_PEOPLE);
-//
-//		// The executive group
-//		String checkExecsStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688']},groups:{$ne:'"
-//				+ GROUPS_EXEC_TITLE + "'}}";
-//		DBObject checkExecs = (DBObject) JSON.parse(checkExecsStr);
-//
-//		DBObject addExec = new BasicDBObject("$push", new BasicDBObject(
-//				PROP_GROUPS, GROUPS_EXEC_TITLE));
-//
-//		WriteResult errors = peopleCollection.updateMulti(checkExecs, addExec);
-//		CommandResult error = errors.getLastError();
-//		if (error != null && errors.getN() > 0) {
-//			System.err.println("Insert Result:" + error);
-//			if (error.getException() != null) {
-//				error.getException().printStackTrace();
-//			}
-//		}
-//
-//		// The executive group
-//		String checkSalesStr = "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']},groups:{$ne:'"
-//				+ GROUPS_SALES_TITLE + "'}}";
-//		DBObject checkSales = (DBObject) JSON.parse(checkSalesStr);
-//
-//		DBObject addSales = new BasicDBObject("$push", new BasicDBObject(
-//				PROP_GROUPS, GROUPS_SALES_TITLE));
-//
-//		errors = peopleCollection.updateMulti(checkSales, addSales);
-//		if (errors != null && errors.getN() > 0) {
-//			error = errors.getLastError();
-//			System.err.println("Insert Result:" + error);
-//			if (error.getException() != null) {
-//				error.getException().printStackTrace();
-//			}
-//		}
-//
-//		// The management group
-//		String checkManagementStr = "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688','103362960874176228355','112147186764436526995']},groups:{$ne:'"
-//				+ GROUPS_MANAGEMENT_TITLE + "'}}";
-//		DBObject checkManagement = (DBObject) JSON.parse(checkManagementStr);
-//
-//		DBObject addManagement = new BasicDBObject("$push", new BasicDBObject(
-//				PROP_GROUPS, GROUPS_MANAGEMENT_TITLE));
-//
-//		errors = peopleCollection.updateMulti(checkManagement, addManagement);
-//		if (errors != null && errors.getN() > 0) {
-//			error = errors.getLastError();
-//			System.err.println("Insert Result:" + error);
-//			if (error.getException() != null) {
-//				error.getException().printStackTrace();
-//			}
-//		}
-//	}
+	// public static void synchDefaultRoles(RequestContext context)
+	// throws JSONException {
+	// List<String> DEFAULT_ROLES = new ArrayList<String>();
+	// List<String> DEFAULT_ROLE_ABRS = new ArrayList<String>();
+	// Collections.addAll(DEFAULT_ROLES, ROLE_BA_TITLE, ROLE_PM_TITLE,
+	// ROLE_SE_TITLE, ROLE_SSA_TITLE, ROLE_SSE_TITLE, ROLE_SUXD_TITLE,
+	// ROLE_UXD_TITLE);
+	// Collections
+	// .addAll(DEFAULT_ROLE_ABRS, ROLE_BA_ID, ROLE_PM_ID, ROLE_SE_ID,
+	// ROLE_SSA_ID, ROLE_SSE_ID, ROLE_SUXD_ID, ROLE_UXD_ID);
+	// Map<String, String> newRoleMapping = new HashMap<String, String>();
+	//
+	// DBCollection roleCollection = db.getCollection(COLLECTION_TITLE_ROLES);
+	// DBCollection peopleCollection = db
+	// .getCollection(COLLECTION_TITLE_PEOPLE);
+	// DBCollection projectsCollection = db
+	// .getCollection(COLLECTION_TITLE_PROJECTS);
+	//
+	// for (int i = 0; i < DEFAULT_ROLES.size(); i++) {
+	// String roleName = DEFAULT_ROLES.get(i);
+	// String roleAbr = DEFAULT_ROLE_ABRS.get(i);
+	//
+	// BasicDBObject newRole = new BasicDBObject(PROP_TITLE, roleName);
+	//
+	// // Look for role
+	// DBObject existingRole = roleCollection.findOne(newRole);
+	// if (existingRole == null) {
+	// newRole.append(PROP_ABBREVIATION, roleAbr).append(PROP_ETAG,
+	// "0");
+	//
+	// // Create one
+	// WriteResult result = roleCollection.insert(newRole);
+	//
+	// CommandResult error = result.getLastError();
+	// if (error != null) {
+	// System.err.println("Insert Failed:"
+	// + error.getErrorMessage());
+	// if (error.getException() != null) {
+	// error.getException().printStackTrace();
+	// }
+	// }
+	//
+	// // Try again
+	// existingRole = roleCollection.findOne(newRole);
+	// }
+	//
+	// if (existingRole == null) {
+	// throw new WebApplicationException(Response
+	// .status(Status.INTERNAL_SERVER_ERROR)
+	// .entity("Failed to find Role: " + roleName).build());
+	// }
+	//
+	// // Update any people that have this primary role
+	// String newRoleURL = RESOURCE_ROLES + "/"
+	// + ((ObjectId) existingRole.get(PROP__ID)).toString();
+	// String oldRoleURL = RESOURCE_ROLES + "/" + roleAbr;
+	//
+	// // Map it for later
+	// newRoleMapping.put(oldRoleURL, newRoleURL);
+	//
+	// DBObject query = new BasicDBObject(PROP_PRIMARY_ROLE,
+	// new BasicDBObject(PROP_RESOURCE, oldRoleURL));
+	// BasicDBObject update = new BasicDBObject("$set", new BasicDBObject(
+	// PROP_PRIMARY_ROLE, new BasicDBObject(PROP_RESOURCE,
+	// newRoleURL)));
+	// WriteResult result = peopleCollection.updateMulti(query, update);
+	//
+	// CommandResult error = result.getLastError();
+	// if (error != null) {
+	// System.err.println("Insert Query:" + query);
+	// System.err.println("Insert Update:" + update);
+	// System.err.println("Insert Failed:" + error);
+	// if (error.getException() != null) {
+	// error.getException().printStackTrace();
+	// }
+	// }
+	// }
+	//
+	// // Update any projects that have this primary role
+	// DBObject query = new BasicDBObject(PROP_ROLES, new BasicDBObject(
+	// "$exists", true));
+	// DBObject fields = new BasicDBObject(PROP_ROLES, 1);
+	// System.out.println("Find: " + query + ", " + fields);
+	// DBCursor cursor = projectsCollection.find(query, fields);
+	//
+	// // For eacch project update all the roles on the project
+	// while (cursor.hasNext()) {
+	// DBObject fetched = cursor.next();
+	// List<DBObject> newRoles = new ArrayList<DBObject>();
+	//
+	// @SuppressWarnings({ "unchecked" })
+	// List<DBObject> roles = (List<DBObject>) fetched.get(PROP_ROLES);
+	// for (Iterator<DBObject> iterator = roles.iterator(); iterator
+	// .hasNext();) {
+	// DBObject role = iterator.next();
+	// @SuppressWarnings({ "unchecked", "rawtypes" })
+	// DBObject newRole = new BasicDBObject(new HashMap(role.toMap()));
+	//
+	// DBObject type = (DBObject) newRole.get(PROP_TYPE);
+	// Object resource = type.get(PROP_RESOURCE);
+	// if (newRoleMapping.containsKey(resource)) {
+	// type.put(PROP_RESOURCE, newRoleMapping.get(resource));
+	// }
+	//
+	// newRoles.add(newRole);
+	// }
+	//
+	// fetched.removeField(PROP_ROLES);
+	//
+	// DBObject update = new BasicDBObject("$set", new BasicDBObject(
+	// PROP_ROLES, newRoles));
+	//
+	// // Update the project
+	// System.out.println("Insert Query:" + fetched);
+	// System.out.println("Insert Update:" + update);
+	// projectsCollection.update(fetched, update);
+	// }
+	// }
+	//
+	// public static void synchDefaultGroups(RequestContext context)
+	// throws JSONException {
+	// DBCollection peopleCollection = db
+	// .getCollection(COLLECTION_TITLE_PEOPLE);
+	//
+	// // The executive group
+	// String checkExecsStr =
+	// "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688']},groups:{$ne:'"
+	// + GROUPS_EXEC_TITLE + "'}}";
+	// DBObject checkExecs = (DBObject) JSON.parse(checkExecsStr);
+	//
+	// DBObject addExec = new BasicDBObject("$push", new BasicDBObject(
+	// PROP_GROUPS, GROUPS_EXEC_TITLE));
+	//
+	// WriteResult errors = peopleCollection.updateMulti(checkExecs, addExec);
+	// CommandResult error = errors.getLastError();
+	// if (error != null && errors.getN() > 0) {
+	// System.err.println("Insert Result:" + error);
+	// if (error.getException() != null) {
+	// error.getException().printStackTrace();
+	// }
+	// }
+	//
+	// // The executive group
+	// String checkSalesStr =
+	// "{googleId:{ $in:['117612942628688959688','109518736702317118019','111396763357009038073']},groups:{$ne:'"
+	// + GROUPS_SALES_TITLE + "'}}";
+	// DBObject checkSales = (DBObject) JSON.parse(checkSalesStr);
+	//
+	// DBObject addSales = new BasicDBObject("$push", new BasicDBObject(
+	// PROP_GROUPS, GROUPS_SALES_TITLE));
+	//
+	// errors = peopleCollection.updateMulti(checkSales, addSales);
+	// if (errors != null && errors.getN() > 0) {
+	// error = errors.getLastError();
+	// System.err.println("Insert Result:" + error);
+	// if (error.getException() != null) {
+	// error.getException().printStackTrace();
+	// }
+	// }
+	//
+	// // The management group
+	// String checkManagementStr =
+	// "{googleId:{ $in:['114352410049076130019','104614151280118313239','101315305679730171732','102699799438113157547','117612942628688959688','103362960874176228355','112147186764436526995']},groups:{$ne:'"
+	// + GROUPS_MANAGEMENT_TITLE + "'}}";
+	// DBObject checkManagement = (DBObject) JSON.parse(checkManagementStr);
+	//
+	// DBObject addManagement = new BasicDBObject("$push", new BasicDBObject(
+	// PROP_GROUPS, GROUPS_MANAGEMENT_TITLE));
+	//
+	// errors = peopleCollection.updateMulti(checkManagement, addManagement);
+	// if (errors != null && errors.getN() > 0) {
+	// error = errors.getLastError();
+	// System.err.println("Insert Result:" + error);
+	// if (error.getException() != null) {
+	// error.getException().printStackTrace();
+	// }
+	// }
+	// }
 
 	/**
 	 * Default the database with a list of skills
@@ -3461,17 +3497,21 @@ public class Data implements CONSTS {
 		// }
 		// }
 	}
-	
+
 	/**
-	 * Sprint 8 to sprint 9 migrate Project 'terms.servicesEstimate' to 'terms.fixedBidServicesRevenue' 
+	 * Sprint 8 to sprint 9 migrate Project 'terms.servicesEstimate' to
+	 * 'terms.fixedBidServicesRevenue'
 	 */
-	public static void migrateServicesEstimate(RequestContext context) throws IOException{
-		//Update all Projects with terms.committed to committed
-		//db.Projects.update({"terms.committed":{"$exists":true}},{"$rename":{"terms.committed":"committed"}},false,true)
+	public static void migrateServicesEstimate(RequestContext context)
+			throws IOException {
+		// Update all Projects with terms.committed to committed
+		// db.Projects.update({"terms.committed":{"$exists":true}},{"$rename":{"terms.committed":"committed"}},false,true)
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
-		DBObject query =  (DBObject) JSON.parse("{\"terms.servicesEstimate\":{\"$exists\":true}}");
-		DBObject update =  (DBObject) JSON.parse("{\"$rename\":{\"terms.servicesEstimate\":\"terms.fixedBidServicesRevenue\"}}");
-		
+		DBObject query = (DBObject) JSON
+				.parse("{\"terms.servicesEstimate\":{\"$exists\":true}}");
+		DBObject update = (DBObject) JSON
+				.parse("{\"$rename\":{\"terms.servicesEstimate\":\"terms.fixedBidServicesRevenue\"}}");
+
 		WriteResult result = projectsCol.updateMulti(query, update);
 		CommandResult error = result.getLastError();
 		// System.out.println("Add project link: " + result);
@@ -3487,11 +3527,12 @@ public class Data implements CONSTS {
 					.entity(error.getErrorMessage()).build());
 		}
 	}
-	
+
 	/**
 	 * Sprint 7 to sprint 8 migrate Roles assignees
 	 */
-	public static void migrateAssignees(RequestContext context) throws IOException{
+	public static void migrateAssignees(RequestContext context)
+			throws IOException {
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		DBCollection rolesCol = db.getCollection(COLLECTION_TITLE_ROLES);
 		JSONObject jsonProject = null;
@@ -3501,7 +3542,7 @@ public class Data implements CONSTS {
 		int COUNT_HOURS_PER_MONTH = CONSTS.HOURS_PER_MONTH;
 		int COUNT_HOURS_PER_WEEK = 40;
 		boolean projectChanged = false;
-		
+
 		while (projectsCursor.hasNext()) {
 			DBObject object = projectsCursor.next();
 
@@ -3509,145 +3550,177 @@ public class Data implements CONSTS {
 				ObjectId oId = (ObjectId) object.get(PROP__ID);
 				String json = JSON.serialize(object);
 				jsonProject = new JSONObject(json);
-				
+
 				projectChanged = false;
-						
-				
+
 				JSONObject role = null;
 				JSONObject assignee = null;
 				JSONObject rate = null;
 				JSONArray assignments = new JSONArray();
-				
+
 				ObjectId id;
 				int percentage;
-				
+
 				JSONArray roles = (JSONArray) jsonProject.get("roles");
-				
-				for (int i = 0; i < roles.length(); i ++) {
+
+				for (int i = 0; i < roles.length(); i++) {
 					role = roles.getJSONObject(i);
-					DBCursor rolesCursor = rolesCol.find();					
-					
+					DBCursor rolesCursor = rolesCol.find();
+
 					if (!role.has(PROP__ID)) {
 						id = new ObjectId();
 						role.put(PROP__ID, id);
 						projectChanged = true;
 					}
-					
+
 					if (!role.has(PROP_ABOUT) && role.has(PROP__ID)) {
-						role.put(PROP_ABOUT, "projects/"+String.valueOf(oId)+"/roles/"+String.valueOf(role.get(PROP__ID)));
-					} 
-					else{
+						role.put(PROP_ABOUT,
+								"projects/" + String.valueOf(oId) + "/roles/"
+										+ String.valueOf(role.get(PROP__ID)));
+					} else {
 						System.err.println("Bad Role? " + String.valueOf(role));
 					}
-					
+
 					if (role.has("assignee")) {
 						assignee = role.getJSONObject("assignee");
-						//Check if the assinees have a resource
-						if(assignee.has(PROP_RESOURCE)){
+						// Check if the assinees have a resource
+						if (assignee.has(PROP_RESOURCE)) {
 							// set default percentage to 100
 							percentage = 100;
-							
+
 							if (role.has(PROP_RATE)) {
 								rate = role.getJSONObject(PROP_RATE);
-								
-								if(rate.has("fullyUtilized") && rate.getBoolean("fullyUtilized")){
+
+								if (rate.has("fullyUtilized")
+										&& rate.getBoolean("fullyUtilized")) {
 									percentage = 100;
-								}
-								else if(rate.has(PROP_TYPE) && "weekly".equals(rate.get(PROP_TYPE))){
-									if(rate.has(PROP_HOURS)){
-										percentage = Math.round(100 * Integer.parseInt(rate.get(PROP_HOURS).toString()) / COUNT_HOURS_PER_WEEK);
-									}
-									else if(rate.has("hoursPerWeek")){
-										percentage = Math.round(100 * Integer.parseInt(rate.get("hoursPerWeek").toString()) / COUNT_HOURS_PER_WEEK);
-									}
-									else{
+								} else if (rate.has(PROP_TYPE)
+										&& "weekly".equals(rate.get(PROP_TYPE))) {
+									if (rate.has(PROP_HOURS)) {
+										percentage = Math.round(100
+												* Integer.parseInt(rate.get(
+														PROP_HOURS).toString())
+												/ COUNT_HOURS_PER_WEEK);
+									} else if (rate.has("hoursPerWeek")) {
+										percentage = Math.round(100
+												* Integer.parseInt(rate.get(
+														"hoursPerWeek")
+														.toString())
+												/ COUNT_HOURS_PER_WEEK);
+									} else {
 										percentage = 100;
 									}
-								}
-								else if(rate.has(PROP_TYPE) && "hourly".equals(rate.get(PROP_TYPE))){
-									if(rate.has(PROP_HOURS)){
-										percentage = Math.round(100 * Integer.parseInt(rate.get(PROP_HOURS).toString()) / COUNT_HOURS_PER_MONTH);
-									}
-									else if(rate.has("hoursPerMth")){
-										percentage = Math.round(100 * Integer.parseInt(rate.get("hoursPerMth").toString()) / COUNT_HOURS_PER_MONTH);
-									}
-									else{
+								} else if (rate.has(PROP_TYPE)
+										&& "hourly".equals(rate.get(PROP_TYPE))) {
+									if (rate.has(PROP_HOURS)) {
+										percentage = Math.round(100
+												* Integer.parseInt(rate.get(
+														PROP_HOURS).toString())
+												/ COUNT_HOURS_PER_MONTH);
+									} else if (rate.has("hoursPerMth")) {
+										percentage = Math.round(100
+												* Integer.parseInt(rate.get(
+														"hoursPerMth")
+														.toString())
+												/ COUNT_HOURS_PER_MONTH);
+									} else {
 										percentage = 100;
 									}
-								}else{
+								} else {
 									percentage = 100;
 								}
 							}
-							
+
 							assignee.put("percentage", percentage);
-							assignee.put(PROP_PERSON, new BasicDBObject(PROP_RESOURCE, assignee.get(PROP_RESOURCE).toString()));
-							assignee.put("role", new BasicDBObject(PROP_RESOURCE, role.get(PROP_ABOUT).toString()));
-							assignee.put(PROP_START_DATE, String.valueOf(role.get(PROP_START_DATE)));
-							if(role.has(PROP_END_DATE)){assignee.put(PROP_END_DATE, String.valueOf(role.get(PROP_END_DATE)));}
-							
-							
+							assignee.put(PROP_PERSON, new BasicDBObject(
+									PROP_RESOURCE, assignee.get(PROP_RESOURCE)
+											.toString()));
+							assignee.put("role", new BasicDBObject(
+									PROP_RESOURCE, role.get(PROP_ABOUT)
+											.toString()));
+							assignee.put(PROP_START_DATE,
+									String.valueOf(role.get(PROP_START_DATE)));
+							if (role.has(PROP_END_DATE)) {
+								assignee.put(PROP_END_DATE,
+										String.valueOf(role.get(PROP_END_DATE)));
+							}
+
 							assignments.put(assignee);
 							assignee.remove(PROP_RESOURCE);
-							
+
 							role.remove("assignee");
-							
+
 							projectChanged = true;
 						}
 					}
-					
+
 					// make additional cleanup
 					if (role.has("assignees")) {
 						role.remove("assignees");
 						projectChanged = true;
 					}
-					
+
 					if (role.has("rate")) {
 						rate = role.getJSONObject("rate");
 						String type = rate.getString("type");
 						if (type.equals("hourly")) {
 							int hours = rate.optInt("hours");
 							int hoursPerMth = rate.optInt("hoursPerMth");
-							
-							if (hours!=0 && hoursPerMth==0) {
-									rate.put("hoursPerMth", hours);
-									hoursPerMth = hours;
-									projectChanged = true;
+
+							if (hours != 0 && hoursPerMth == 0) {
+								rate.put("hoursPerMth", hours);
+								hoursPerMth = hours;
+								projectChanged = true;
 							}
-							
+
 							/*
 							 * Load the loadedAmount data field in the rate
 							 */
 							int loadedAmount = rate.optInt("loadedAmount");
-							if(loadedAmount ==0) {
-								while(rolesCursor.hasNext()) {
+							if (loadedAmount == 0) {
+								while (rolesCursor.hasNext()) {
 									DBObject adminRole = rolesCursor.next();
 									if (adminRole.containsField(PROP__ID)) {
-										ObjectId adminRoleOId = (ObjectId) adminRole.get(PROP__ID);
-										String adminRoleJSON = JSON.serialize(adminRole);
-										jsonAdminRole = new JSONObject(adminRoleJSON);
-										String adminRolesIDString = "roles/" + String.valueOf(adminRoleOId);
-									
-										JSONObject roleType = role.getJSONObject("type");
-										//String adminRolesIDString = jsonAdminRole.optString("resource");
-										String projRolesIDString = roleType.optString("resource");
+										ObjectId adminRoleOId = (ObjectId) adminRole
+												.get(PROP__ID);
+										String adminRoleJSON = JSON
+												.serialize(adminRole);
+										jsonAdminRole = new JSONObject(
+												adminRoleJSON);
+										String adminRolesIDString = "roles/"
+												+ String.valueOf(adminRoleOId);
 
-										if(adminRolesIDString.equals(projRolesIDString)) {
-											rate.put("loadedAmount", jsonAdminRole.optInt("hourlyLoadedRate"));
+										JSONObject roleType = role
+												.getJSONObject("type");
+										// String adminRolesIDString =
+										// jsonAdminRole.optString("resource");
+										String projRolesIDString = roleType
+												.optString("resource");
+
+										if (adminRolesIDString
+												.equals(projRolesIDString)) {
+											rate.put(
+													"loadedAmount",
+													jsonAdminRole
+															.optInt("hourlyLoadedRate"));
 											projectChanged = true;
 											break;
 										}
 									}
 								}
 							}
-							
+
 							/*
-							 * Correct the estimatedTotal in the Rate object as well.
+							 * Correct the estimatedTotal in the Rate object as
+							 * well.
 							 */
 							String startDate = role.getString("startDate");
 							String endDate = role.optString("endDate");
-							if(!endDate.equals("")) {
-								//int numMonths = monthDiff(startDate, endDate);
-								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+							if (!endDate.equals("")) {
+								// int numMonths = monthDiff(startDate,
+								// endDate);
+								SimpleDateFormat sdf = new SimpleDateFormat(
+										"yyyy-MM-dd");
 								Date startD = null, endD = null;
 								try {
 									startD = sdf.parse(startDate);
@@ -3656,66 +3729,84 @@ public class Data implements CONSTS {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								
-								long numMillis = endD.getTime() - startD.getTime();
-								double dnumMonths = (double)numMillis/(1000L * 60 * 60 * 24 * 31);
-								int numMonths = (int)Math.ceil(dnumMonths);
-								//int numMonths = (int)Math.ceil(numMts);
+
+								long numMillis = endD.getTime()
+										- startD.getTime();
+								double dnumMonths = (double) numMillis
+										/ (1000L * 60 * 60 * 24 * 31);
+								int numMonths = (int) Math.ceil(dnumMonths);
+								// int numMonths = (int)Math.ceil(numMts);
 								int hourlyRate = rate.optInt("amount");
-								boolean fullyUtilized = rate.optBoolean("fullyUtilized");
-								hoursPerMth = fullyUtilized? CONSTS.HOURS_PER_MONTH: hoursPerMth;
-								
-								rate.put("estimatedTotal", hoursPerMth * numMonths * hourlyRate);
+								boolean fullyUtilized = rate
+										.optBoolean("fullyUtilized");
+								hoursPerMth = fullyUtilized ? CONSTS.HOURS_PER_MONTH
+										: hoursPerMth;
+
+								rate.put("estimatedTotal", hoursPerMth
+										* numMonths * hourlyRate);
 								projectChanged = true;
-								
+
 							}
-							
-							
+
 						}
-						
+
 						if (type.equals("weekly")) {
 							int hours = rate.optInt("hours");
 							int hoursPerWeek = rate.optInt("hoursPerWeek");
-							
-							if (hours!=0 && hoursPerWeek==0) {
+
+							if (hours != 0 && hoursPerWeek == 0) {
 								rate.put("hoursPerWeek", hours);
 								projectChanged = true;
 							}
-							
+
 							/*
 							 * Load the loadedAmount date field in the rate
 							 */
 							int loadedAmount = rate.optInt("loadedAmount");
-							if(loadedAmount ==0) {
-								while(rolesCursor.hasNext()) {
+							if (loadedAmount == 0) {
+								while (rolesCursor.hasNext()) {
 									DBObject adminRole = rolesCursor.next();
 									if (adminRole.containsField(PROP__ID)) {
-										ObjectId adminRoleOId = (ObjectId) adminRole.get(PROP__ID);
-										String adminRoleJSON = JSON.serialize(adminRole);
-										jsonAdminRole = new JSONObject(adminRoleJSON);
-										String adminRolesIDString = "roles/" + String.valueOf(adminRoleOId);
-									
-										JSONObject roleType = role.getJSONObject("type");
-										//String adminRolesIDString = jsonAdminRole.optString("resource");
-										String projRolesIDString = roleType.optString("resource");
+										ObjectId adminRoleOId = (ObjectId) adminRole
+												.get(PROP__ID);
+										String adminRoleJSON = JSON
+												.serialize(adminRole);
+										jsonAdminRole = new JSONObject(
+												adminRoleJSON);
+										String adminRolesIDString = "roles/"
+												+ String.valueOf(adminRoleOId);
 
-										if(adminRolesIDString.equals(projRolesIDString)) {
-											rate.put("loadedAmount", jsonAdminRole.optInt("hourlyLoadedRate"));
+										JSONObject roleType = role
+												.getJSONObject("type");
+										// String adminRolesIDString =
+										// jsonAdminRole.optString("resource");
+										String projRolesIDString = roleType
+												.optString("resource");
+
+										if (adminRolesIDString
+												.equals(projRolesIDString)) {
+											rate.put(
+													"loadedAmount",
+													jsonAdminRole
+															.optInt("hourlyLoadedRate"));
 											projectChanged = true;
 											break;
 										}
 									}
 								}
 							}
-							
+
 							/*
-							 * Correct the estimatedTotal in the Rate object as well.
+							 * Correct the estimatedTotal in the Rate object as
+							 * well.
 							 */
 							String startDate = role.getString("startDate");
 							String endDate = role.optString("endDate");
-							if(!endDate.equals("")) {
-								//int numMonths = monthDiff(startDate, endDate);
-								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+							if (!endDate.equals("")) {
+								// int numMonths = monthDiff(startDate,
+								// endDate);
+								SimpleDateFormat sdf = new SimpleDateFormat(
+										"yyyy-MM-dd");
 								Date startD = null, endD = null;
 								try {
 									startD = sdf.parse(startDate);
@@ -3725,54 +3816,74 @@ public class Data implements CONSTS {
 									e.printStackTrace();
 								}
 
-								long numMillis = endD.getTime() - startD.getTime();
-								double dnumWeeks = (double)numMillis/(1000L * 60 * 60 * 24 * 7);
-								int numWeeks = (int)Math.ceil(dnumWeeks);
-								//double numWks = (double)((numMillis)/(1000L * 60 * 60 * 24 * 7));
-								//int numWeeks = (int)Math.ceil(numWks);
+								long numMillis = endD.getTime()
+										- startD.getTime();
+								double dnumWeeks = (double) numMillis
+										/ (1000L * 60 * 60 * 24 * 7);
+								int numWeeks = (int) Math.ceil(dnumWeeks);
+								// double numWks = (double)((numMillis)/(1000L *
+								// 60 * 60 * 24 * 7));
+								// int numWeeks = (int)Math.ceil(numWks);
 								int hourlyRate = rate.optInt("amount");
-								boolean fullyUtilized = rate.optBoolean("fullyUtilized");
-								hoursPerWeek = fullyUtilized?50:hoursPerWeek;
-								
-								rate.put("estimatedTotal", hoursPerWeek * numWeeks * hourlyRate);
+								boolean fullyUtilized = rate
+										.optBoolean("fullyUtilized");
+								hoursPerWeek = fullyUtilized ? 50
+										: hoursPerWeek;
+
+								rate.put("estimatedTotal", hoursPerWeek
+										* numWeeks * hourlyRate);
 								projectChanged = true;
-								
+
 							}
 
 						}
-						
-						if(type.equals("monthly")) {
+
+						if (type.equals("monthly")) {
 							int loadedAmount = rate.optInt("loadedAmount");
-							if(loadedAmount ==0) {
-								while(rolesCursor.hasNext()) {
+							if (loadedAmount == 0) {
+								while (rolesCursor.hasNext()) {
 									DBObject adminRole = rolesCursor.next();
 									if (adminRole.containsField(PROP__ID)) {
-										ObjectId adminRoleOId = (ObjectId) adminRole.get(PROP__ID);
-										String adminRoleJSON = JSON.serialize(adminRole);
-										jsonAdminRole = new JSONObject(adminRoleJSON);
-										String adminRolesIDString = "roles/" + String.valueOf(adminRoleOId);
-									
-										JSONObject roleType = role.getJSONObject("type");
-										//String adminRolesIDString = jsonAdminRole.optString("resource");
-										String projRolesIDString = roleType.optString("resource");
+										ObjectId adminRoleOId = (ObjectId) adminRole
+												.get(PROP__ID);
+										String adminRoleJSON = JSON
+												.serialize(adminRole);
+										jsonAdminRole = new JSONObject(
+												adminRoleJSON);
+										String adminRolesIDString = "roles/"
+												+ String.valueOf(adminRoleOId);
 
-										if(adminRolesIDString.equals(projRolesIDString)) {
-											rate.put("loadedAmount", jsonAdminRole.optInt("monthlyLoadedRate"));
+										JSONObject roleType = role
+												.getJSONObject("type");
+										// String adminRolesIDString =
+										// jsonAdminRole.optString("resource");
+										String projRolesIDString = roleType
+												.optString("resource");
+
+										if (adminRolesIDString
+												.equals(projRolesIDString)) {
+											rate.put(
+													"loadedAmount",
+													jsonAdminRole
+															.optInt("monthlyLoadedRate"));
 											projectChanged = true;
 											break;
 										}
 									}
 								}
 							}
-							
+
 							/*
-							 * Correct the estimatedTotal in the Rate object as well.
+							 * Correct the estimatedTotal in the Rate object as
+							 * well.
 							 */
 							String startDate = role.getString("startDate");
 							String endDate = role.optString("endDate");
-							if(!endDate.equals("")) {
-								//int numMonths = monthDiff(startDate, endDate);
-								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+							if (!endDate.equals("")) {
+								// int numMonths = monthDiff(startDate,
+								// endDate);
+								SimpleDateFormat sdf = new SimpleDateFormat(
+										"yyyy-MM-dd");
 								Date startD = null, endD = null;
 								try {
 									startD = sdf.parse(startDate);
@@ -3782,112 +3893,122 @@ public class Data implements CONSTS {
 									e.printStackTrace();
 								}
 
-								long numMillis = endD.getTime() - startD.getTime();
-								double dnumMonths = (double)numMillis/(1000L * 60 * 60 * 24 * 31);
-								int numMonths = (int)Math.ceil(dnumMonths);
-								
-								//double numMts = ((numMillis)/(1000L * 60 * 60 * 24 * 30));
-								//int numMonths = (int)Math.ceil(numMts);
+								long numMillis = endD.getTime()
+										- startD.getTime();
+								double dnumMonths = (double) numMillis
+										/ (1000L * 60 * 60 * 24 * 31);
+								int numMonths = (int) Math.ceil(dnumMonths);
+
+								// double numMts = ((numMillis)/(1000L * 60 * 60
+								// * 24 * 30));
+								// int numMonths = (int)Math.ceil(numMts);
 								int monthlyRate = rate.optInt("amount");
-								rate.put("estimatedTotal", numMonths * monthlyRate);
+								rate.put("estimatedTotal", numMonths
+										* monthlyRate);
 								projectChanged = true;
-								
+
 							}
 
 						}
-						
-						if(rate.remove("hours") != null) {
+
+						if (rate.remove("hours") != null) {
 							projectChanged = true;
 						}
 					}
 				}
-				
+
 				if (assignments.length() > 0) {
 					deleteProjectAssignments(context, oId.toString());
-					createProjectAssignments(context, oId.toString(), assignments);
+					createProjectAssignments(context, oId.toString(),
+							assignments);
 				}
-				
+
 				if (projectChanged)
-					updateProject(context,  oId.toString(), jsonProject);
-				
+					updateProject(context, oId.toString(), jsonProject);
+
 			} else {
 				System.out
 						.println("Project not included because it did not return an _id property: "
 								+ object);
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Sprint 9 to sprint 10 migrate Removes roles about
 	 */
-	public static void migrateFullyUtilizedAssignees(RequestContext context) throws IOException{
-DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
-		
+	public static void migrateFullyUtilizedAssignees(RequestContext context)
+			throws IOException {
+		DBCollection assignmentsCol = db
+				.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+
 		JSONObject jsonAssignment = null;
 		DBCursor assignmentsCursor = assignmentsCol.find();
 
 		boolean assignmentsChanged = false;
-		
+
 		while (assignmentsCursor.hasNext()) {
 			DBObject object = assignmentsCursor.next();
 
 			if (object.containsField(PROP__ID)) {
-				String oId =  "";
-				
+				String oId = "";
+
 				String json = JSON.serialize(object);
 				jsonAssignment = new JSONObject(json);
-				
+
 				if (jsonAssignment.has(PROP_PROJECT)) {
-					JSONObject proj = jsonAssignment.getJSONObject(PROP_PROJECT);
-					oId = proj.getString(PROP_RESOURCE).replaceAll(RESOURCE_PROJECTS + "/", "");
+					JSONObject proj = jsonAssignment
+							.getJSONObject(PROP_PROJECT);
+					oId = proj.getString(PROP_RESOURCE).replaceAll(
+							RESOURCE_PROJECTS + "/", "");
 				}
-				
+
 				assignmentsChanged = false;
-						
+
 				JSONObject assignment = null;
 				JSONArray members = (JSONArray) jsonAssignment.get("members");
 				JSONObject assignmentsMap = new JSONObject();
 				JSONObject role = null;
 				JSONArray tmpAssignments;
-				
-				for (int k = 0; k < members.length(); k ++) {
+
+				for (int k = 0; k < members.length(); k++) {
 					role = members.getJSONObject(k).getJSONObject("role");
-					
+
 					if (role != null && role.has(PROP_RESOURCE)) {
-						if (!assignmentsMap.has(role.getString(PROP_RESOURCE))){
-								tmpAssignments = new JSONArray();
-								assignmentsMap.put( role.getString(PROP_RESOURCE), tmpAssignments);
+						if (!assignmentsMap.has(role.getString(PROP_RESOURCE))) {
+							tmpAssignments = new JSONArray();
+							assignmentsMap.put(role.getString(PROP_RESOURCE),
+									tmpAssignments);
 						} else
-							tmpAssignments = assignmentsMap.getJSONArray(role.getString(PROP_RESOURCE));
-						
+							tmpAssignments = assignmentsMap.getJSONArray(role
+									.getString(PROP_RESOURCE));
+
 						tmpAssignments.put(members.getJSONObject(k));
-						
+
 					}
 				}
 				Iterator<?> keys = assignmentsMap.keys();
 				String roleId;
-				
-		        while( keys.hasNext() ){
-		        	roleId = (String)keys.next();
-		        	
-		            if( assignmentsMap.get(roleId) instanceof JSONArray ){
-		            	tmpAssignments = assignmentsMap.getJSONArray(roleId);
-		            	
-		            	if (tmpAssignments.length() == 1) {
+
+				while (keys.hasNext()) {
+					roleId = (String) keys.next();
+
+					if (assignmentsMap.get(roleId) instanceof JSONArray) {
+						tmpAssignments = assignmentsMap.getJSONArray(roleId);
+
+						if (tmpAssignments.length() == 1) {
 							assignment = tmpAssignments.getJSONObject(0);
-							
-							if (assignment.has("hoursPerWeek") && assignment.getInt("hoursPerWeek") == 40) {
+
+							if (assignment.has("hoursPerWeek")
+									&& assignment.getInt("hoursPerWeek") == 40) {
 								assignment.put("hoursPerWeek", 45);
 								assignmentsChanged = true;
 							}
 						}
-		            }
-		        }
-				
-				
-				
+					}
+				}
+
 				if (assignmentsChanged) {
 					deleteProjectAssignments(context, oId.toString());
 					createProjectAssignments(context, oId.toString(), members);
@@ -3900,16 +4021,18 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 			}
 		}
 	}
+
 	/**
 	 * Sprint 8 to sprint 9 migrate Removes roles about
 	 */
-	public static void removeRolesAbout(RequestContext context) throws IOException{
+	public static void removeRolesAbout(RequestContext context)
+			throws IOException {
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		JSONObject jsonProject = null;
 		DBCursor projectsCursor = projectsCol.find();
 
 		boolean projectChanged = false;
-		
+
 		while (projectsCursor.hasNext()) {
 			DBObject object = projectsCursor.next();
 
@@ -3917,46 +4040,44 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 				ObjectId oId = (ObjectId) object.get(PROP__ID);
 				String json = JSON.serialize(object);
 				jsonProject = new JSONObject(json);
-				
+
 				projectChanged = false;
 				JSONObject role = null;
 
-
-				
 				JSONArray roles = (JSONArray) jsonProject.get("roles");
-				
-				for (int i = 0; i < roles.length(); i ++) {
+
+				for (int i = 0; i < roles.length(); i++) {
 					role = roles.getJSONObject(i);
-					
-					
-					if (role.has(PROP_ABOUT) ) {
+
+					if (role.has(PROP_ABOUT)) {
 						role.remove(PROP_ABOUT);
 						projectChanged = true;
-					} 
+					}
 				}
-				
+
 				if (projectChanged)
-					updateProject(context,  oId.toString(), jsonProject);
-				
+					updateProject(context, oId.toString(), jsonProject);
+
 			} else {
 				System.out
 						.println("Project not included because it did not return an _id property: "
 								+ object);
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Sprint 8 to sprint 9 migrate Removes roles about
 	 */
-	public static void removeProjectEstimateFields(RequestContext context) throws IOException{
+	public static void removeProjectEstimateFields(RequestContext context)
+			throws IOException {
 		DBCollection projectsCol = db.getCollection(COLLECTION_TITLE_PROJECTS);
 		JSONObject jsonProject = null;
 		DBCursor projectsCursor = projectsCol.find();
 
 		boolean projectChanged = false;
-		
+
 		while (projectsCursor.hasNext()) {
 			DBObject object = projectsCursor.next();
 
@@ -3964,121 +4085,114 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 				ObjectId oId = (ObjectId) object.get(PROP__ID);
 				String json = JSON.serialize(object);
 				jsonProject = new JSONObject(json);
-				
+
 				projectChanged = false;
 				JSONObject role = null;
 
 				/*
-				if (jsonProject.has(PROP_TERMS)) {
-					JSONObject propTerms = jsonProject.getJSONObject(PROP_TERMS);
-					
-					if (propTerms.has("servicesEstimate")) {
-						propTerms.remove("servicesEstimate");
-						projectChanged = true;
-					}
-				} 
-				*/
+				 * if (jsonProject.has(PROP_TERMS)) { JSONObject propTerms =
+				 * jsonProject.getJSONObject(PROP_TERMS);
+				 * 
+				 * if (propTerms.has("servicesEstimate")) {
+				 * propTerms.remove("servicesEstimate"); projectChanged = true;
+				 * } }
+				 */
 				JSONArray roles = (JSONArray) jsonProject.get("roles");
-				
-				for (int i = 0; i < roles.length(); i ++) {
+
+				for (int i = 0; i < roles.length(); i++) {
 					role = roles.getJSONObject(i);
-					
-					
+
 					if (role.has(PROP_RATE)) {
 						JSONObject propRate = role.getJSONObject(PROP_RATE);
-						
+
 						if (propRate.has("estimatedTotal")) {
 							propRate.remove("estimatedTotal");
 							projectChanged = true;
 						}
-					} 
+					}
 				}
-				
+
 				if (projectChanged)
-					updateProject(context,  oId.toString(), jsonProject);
-				
+					updateProject(context, oId.toString(), jsonProject);
+
 			} else {
 				System.out
 						.println("Project not included because it did not return an _id property: "
 								+ object);
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Sprint 11 migrate Task prepolation
 	 */
-	public static void initTasks(RequestContext context) throws IOException{
-		String[] prePopulatedTasks = new String[] {
-				  "Meetings", 
-				  "Design", 
-				  "Sales", 
-				  "Pre-sales support",
-				  "Sick time",
-				  "Training",
-				  "Marketing",
-				  "Administration",
-				  "Documentation"
-				};
+	public static void initTasks(RequestContext context) throws IOException {
+		String[] prePopulatedTasks = new String[] { "Meetings", "Design",
+				"Sales", "Pre-sales support", "Sick time", "Training",
+				"Marketing", "Administration", "Documentation" };
 		JSONObject task;
-		
-		for (int i = 0; i < prePopulatedTasks.length; i ++) {
+
+		for (int i = 0; i < prePopulatedTasks.length; i++) {
 			task = getTaskByName(context, prePopulatedTasks[i]);
-			
+
 			if (task == null) {
 				task = new JSONObject();
-				
+
 				task.put(PROP_NAME, prePopulatedTasks[i]);
 				Data.createTask(context, task, true);
 			}
 		}
 	}
-	
-	public static void convertAssignmentPercentageToHoursPerWeek(RequestContext context) throws IOException{
-		DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
-		
+
+	public static void convertAssignmentPercentageToHoursPerWeek(
+			RequestContext context) throws IOException {
+		DBCollection assignmentsCol = db
+				.getCollection(COLLECTION_TITLE_ASSIGNMENT);
+
 		JSONObject jsonAssignment = null;
 		DBCursor assignmentsCursor = assignmentsCol.find();
 
 		boolean assignmentsChanged = false;
-		
+
 		while (assignmentsCursor.hasNext()) {
 			DBObject object = assignmentsCursor.next();
 
 			if (object.containsField(PROP__ID)) {
-				String oId =  "";
-				
+				String oId = "";
+
 				String json = JSON.serialize(object);
 				jsonAssignment = new JSONObject(json);
-				
+
 				if (jsonAssignment.has(PROP_PROJECT)) {
-					JSONObject proj = jsonAssignment.getJSONObject(PROP_PROJECT);
-					oId = proj.getString(PROP_RESOURCE).replaceAll(RESOURCE_PROJECTS + "/", "");
+					JSONObject proj = jsonAssignment
+							.getJSONObject(PROP_PROJECT);
+					oId = proj.getString(PROP_RESOURCE).replaceAll(
+							RESOURCE_PROJECTS + "/", "");
 				}
-				
+
 				assignmentsChanged = false;
-						
+
 				JSONObject assignment = null;
-				//JSONArray assignments = null;
+				// JSONArray assignments = null;
 				int percentage;
 				int hoursPerWeek = 0;
-				
+
 				JSONArray members = (JSONArray) jsonAssignment.get("members");
-				
-				for (int i = 0; i < members.length(); i ++) {
+
+				for (int i = 0; i < members.length(); i++) {
 					assignment = members.getJSONObject(i);
-					
+
 					if (assignment.has("percentage")) {
 						percentage = assignment.getInt("percentage");
-						
+
 						hoursPerWeek = Math.round(percentage * 40 / 100);
-						
+
 						assignment.put("hoursPerWeek", hoursPerWeek);
 						assignmentsChanged = true;
 					}
 				}
-				
+
 				if (assignmentsChanged) {
 					deleteProjectAssignments(context, oId.toString());
 					createProjectAssignments(context, oId.toString(), members);
@@ -4090,7 +4204,7 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 								+ object);
 			}
 		}
-		
+
 	}
 
 	/**
@@ -4108,7 +4222,7 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 
 		URI base = context.getBaseURI();
 		URI genericImage = base.resolve("images/generic.png");
-		
+
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		Date syncDate = Calendar.getInstance().getTime();
 		String timeStamp = dateFormat.format(syncDate);
@@ -4128,155 +4242,174 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 				person = existingPerson;
 			}
 
-			// Set the account type as Google
-			googleUserDef.put(PROP_TYPE, VALUES_ACCOUNT_TYPES_GOOGLE);
+			if (existingPerson == null
+					|| existingPerson.has(PROP_ISACTIVE)
+					&& existingPerson.get(PROP_ISACTIVE).toString()
+							.equals("true")) {
 
-			/**
-			 * Set the base user properties from the Google user
-			 */
-			person.put(PROP_GOOGLE_ID, googleUserDef.getString(PROP_ID));
-			person.put(PROP_MBOX, googleUserDef.getString(PROP_PRIMARY_EMAIL));
-			JSONObject name = googleUserDef.getJSONObject(PROP_NAME);
-			person.put(PROP_NAME, name.getString(PROP_FULL_NAME));
-			person.put(PROP_FAMILY_NAME, name.getString(PROP_FAMILY_NAME));
-			person.put(PROP_GIVEN_NAME, name.getString(PROP_GIVEN_NAME));
-			if (googleUserDef.has(PROP_THUMBNAIL_PHOTO_URL)) {
-				person.put(PROP_THUMBNAIL, googleUserDef.getString(PROP_THUMBNAIL_PHOTO_URL));
-			} else {
-				// Set as generic profileImage
-				person.put(PROP_THUMBNAIL, genericImage);
-			}
+				// Set the account type as Google
+				googleUserDef.put(PROP_TYPE, VALUES_ACCOUNT_TYPES_GOOGLE);
 
-			// setting the last synchronized date
-			person.put(PROP_LAST_SYNCHRONIZED, timeStamp);
-			
-			//initPrimaryRole(person, googleUserDef.getString(PROP_ID));
-
-			/**
-			 * If the user did not exist just create it
-			 */
-			if (existingPerson == null) {
-				JSONArray accounts = new JSONArray();
-				accounts.put(googleUserDef);
-				person.put(PROP_ACCOUNTS, accounts);
-				createPerson(context, person);
-			}
-			/**
-			 * If Update the existing user
-			 */
-			else {
-				// Get the accounts
-				JSONArray accounts = person.getJSONArray(PROP_ACCOUNTS);
-				if (accounts == null) {
-					accounts = new JSONArray();
-					person.put(PROP_ACCOUNTS, accounts);
+				/**
+				 * Set the base user properties from the Google user
+				 */
+				person.put(PROP_GOOGLE_ID, googleUserDef.getString(PROP_ID));
+				person.put(PROP_MBOX,
+						googleUserDef.getString(PROP_PRIMARY_EMAIL));
+				JSONObject name = googleUserDef.getJSONObject(PROP_NAME);
+				person.put(PROP_NAME, name.getString(PROP_FULL_NAME));
+				person.put(PROP_FAMILY_NAME, name.getString(PROP_FAMILY_NAME));
+				person.put(PROP_GIVEN_NAME, name.getString(PROP_GIVEN_NAME));
+				if (googleUserDef.has(PROP_THUMBNAIL_PHOTO_URL)) {
+					person.put(PROP_THUMBNAIL,
+							googleUserDef.getString(PROP_THUMBNAIL_PHOTO_URL));
+				} else {
+					// Set as generic profileImage
+					person.put(PROP_THUMBNAIL, genericImage);
 				}
 
-				// Find the Google account
-				boolean found = false;
-				for (int i = 0; i < accounts.length(); i++) {
-					JSONObject ithAccount = accounts.getJSONObject(i);
-					String type = ithAccount.getString(PROP_TYPE);
-					if (VALUES_ACCOUNT_TYPES_GOOGLE.equals(type)) {
-						found = true;
-						// Override the Google account
-						accounts.put(i, googleUserDef);
-						break;
-					}
-				}
+				// setting the last synchronized date
+				person.put(PROP_LAST_SYNCHRONIZED, timeStamp);
 
-				// Account not found
-				if (!found) {
+				// initPrimaryRole(person, googleUserDef.getString(PROP_ID));
+
+				/**
+				 * If the user did not exist just create it
+				 */
+				if (existingPerson == null) {
+					JSONArray accounts = new JSONArray();
 					accounts.put(googleUserDef);
+					person.put(PROP_ACCOUNTS, accounts);
+					createPerson(context, person);
+				}
+				/**
+				 * If Update the existing user
+				 */
+				else {
+					// Get the accounts
+					JSONArray accounts = person.getJSONArray(PROP_ACCOUNTS);
+					if (accounts == null) {
+						accounts = new JSONArray();
+						person.put(PROP_ACCOUNTS, accounts);
+					}
+
+					// Find the Google account
+					boolean found = false;
+					for (int i = 0; i < accounts.length(); i++) {
+						JSONObject ithAccount = accounts.getJSONObject(i);
+						String type = ithAccount.getString(PROP_TYPE);
+						if (VALUES_ACCOUNT_TYPES_GOOGLE.equals(type)) {
+							found = true;
+							// Override the Google account
+							accounts.put(i, googleUserDef);
+							break;
+						}
+					}
+
+					// Account not found
+					if (!found) {
+						accounts.put(googleUserDef);
+					}
+
+					updatePerson(context, person);
+
 				}
 
-				updatePerson(context, person);
 			}
 		}
-		
+
 	}
-	
+
 	/**
-	 * Sprint 15 to sprint 16 marking all inactive people 
+	 * Sprint 15 to sprint 16 marking all inactive people
 	 */
-	public static void markInactivePeople(RequestContext context) throws IOException,
-		JSONException, GeneralSecurityException, ParseException  {
+	public static void markInactivePeople(RequestContext context)
+			throws IOException, JSONException, GeneralSecurityException,
+			ParseException {
 		// store all inactive people in constant array
-		JSONArray inactivePeople = new JSONArray("[{\"fullName\": \"Mike Albano\", \"date\": \"20140627_000000\"}, " + 
-						"{\"fullName\": \"Chelsea Bosworth\", \"date\": \"20140627_000000\"}," +
-						"{\"fullName\": \"Raj Daswani\", \"date\": \"20140627_000000\"}," +
-						"{\"fullName\": \"Vahe Kesoyan\", \"date\": \"20140627_000000\"}," +
-						"{\"fullName\": \"Vera Veramei\", \"date\": \"20140627_000000\"}," +
-						"{\"fullName\": \"Maksim Leshkevich\", \"date\": \"20140627_000000\"}," +
-						"{\"fullName\": \"Lorrie Garbarz\", \"date\": \"20140627_000000\"}," +
-						"{\"fullName\": \"Caroline Lewis\", \"date\": \"20140627_000000\"}," +
-						"{\"fullName\": \"Phil List\", \"date\": \"20140627_000000\"}," +
-						"{\"fullName\": \"Melissa Lyon\", \"date\": \"20140627_000000\"}," +
-						"{\"fullName\": \"Ben Schell\", \"date\": \"20140627_000000\"}," +
-						
+		JSONArray inactivePeople = new JSONArray(
+				"[{\"fullName\": \"Mike Albano\", \"date\": \"20140627_000000\"}, "
+						+ "{\"fullName\": \"Chelsea Bosworth\", \"date\": \"20140627_000000\"},"
+						+ "{\"fullName\": \"Raj Daswani\", \"date\": \"20140627_000000\"},"
+						+ "{\"fullName\": \"Vahe Kesoyan\", \"date\": \"20140627_000000\"},"
+						+ "{\"fullName\": \"Vera Veramei\", \"date\": \"20140627_000000\"},"
+						+ "{\"fullName\": \"Maksim Leshkevich\", \"date\": \"20140627_000000\"},"
+						+ "{\"fullName\": \"Lorrie Garbarz\", \"date\": \"20140627_000000\"},"
+						+ "{\"fullName\": \"Caroline Lewis\", \"date\": \"20140627_000000\"},"
+						+ "{\"fullName\": \"Phil List\", \"date\": \"20140627_000000\"},"
+						+ "{\"fullName\": \"Melissa Lyon\", \"date\": \"20140627_000000\"},"
+						+ "{\"fullName\": \"Ben Schell\", \"date\": \"20140627_000000\"},"
+						+
+
 						"{\"fullName\": \"Chelsea Bosworth\", \"date\": \"20140627_000000\"}]");
-		
+
 		try {
 			JSONArray people = Data.getPeople(context, "{}", "{}", "{}");
 			String foundStamp = "";
-			
+
 			for (int i = 0; i < people.length(); i++) {
 				JSONObject userDef = people.getJSONObject(i);
-				
+
 				foundStamp = "";
-				
-				if (userDef.has(PROP_NAME) && !userDef.get(PROP_NAME).toString().equals("")) {
-					for (int j = 0; foundStamp.equals("") && j < inactivePeople.length(); j ++) {
-						if (userDef.get(PROP_NAME).toString().equals(inactivePeople.getJSONObject(j).get(PROP_FULL_NAME).toString())) {
-							foundStamp = inactivePeople.getJSONObject(j).get(PROP_DATE).toString();
+
+				if (userDef.has(PROP_NAME)
+						&& !userDef.get(PROP_NAME).toString().equals("")) {
+					for (int j = 0; foundStamp.equals("")
+							&& j < inactivePeople.length(); j++) {
+						if (userDef
+								.get(PROP_NAME)
+								.toString()
+								.equals(inactivePeople.getJSONObject(j)
+										.get(PROP_FULL_NAME).toString())) {
+							foundStamp = inactivePeople.getJSONObject(j)
+									.get(PROP_DATE).toString();
 						}
 					}
 				}
-				
+
 				if (!foundStamp.equals("")) {
 					userDef.put(PROP_ISACTIVE, "false");
 					userDef.put(PROP_LAST_SYNCHRONIZED, foundStamp);
 				} else {
 					userDef.put(PROP_ISACTIVE, "true");
 				}
-				
+
 				updatePerson(context, userDef);
 			}
 		} finally {
-			
+
 		}
 	}
-	
+
 	private static String getValueFromConfigurationByKey(String key) {
 		String result = null;
 		DBObject dbObject = internalFetchConfig(VALUES_SERIVCES_CONFIGURATION);
 		JSONObject config = null;
-		
+
 		if (dbObject != null) {
 			config = decodeJSON(toJson(dbObject));
 		}
-		
-		
+
 		JSONArray properties = config.getJSONArray(PROP_PROPERTIES);
 		JSONObject entry;
-		
-		for (int j = 0; j < properties.length(); j ++) {
+
+		for (int j = 0; j < properties.length(); j++) {
 			entry = properties.getJSONObject(j);
-			
-			if (entry.has(PROP_NAME) && entry.get(PROP_NAME).toString().equals(key) && !entry.get(PROP_VALUE).toString().equals(""))
+
+			if (entry.has(PROP_NAME)
+					&& entry.get(PROP_NAME).toString().equals(key)
+					&& !entry.get(PROP_VALUE).toString().equals(""))
 				result = entry.get(PROP_VALUE).toString();
 		}
-				
+
 		return result;
 	}
-
-	
 
 	private static String[] getStringArrayFromConfigurationByKey(String key) {
 		String value = getValueFromConfigurationByKey(key);
 		if (value != null) {
 			String[] result = value.split(",");
-			for (int j = 0; j < result.length; j ++)
+			for (int j = 0; j < result.length; j++)
 				result[j].trim();
 			return result;
 		}
@@ -4307,56 +4440,59 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		return getBooleanFromConfigurationByKey(REMINDER_DEBUG);
 	}
 
-	
-	//TODO: refactor this method to generate only _id, put about property filling  separatly
-	public static void refreshRoleIds (JSONObject project)
-			throws JSONException {
+	// TODO: refactor this method to generate only _id, put about property
+	// filling separatly
+	public static void refreshRoleIds(JSONObject project) throws JSONException {
 		JSONArray roles = (JSONArray) project.get("roles");
 		JSONObject role = null;
 		ObjectId id;
 		boolean syncImmediatly = false;
-		
-		for (int i = 0; i < roles.length(); i ++) {
+
+		for (int i = 0; i < roles.length(); i++) {
 			role = roles.getJSONObject(i);
 
-			if (role != null && role.has(PROP_ABOUT) && project.has(PROP_ABOUT) && role.has(PROP__ID))
-				syncImmediatly = role.get(PROP_ABOUT).toString().indexOf(role.get(PROP__ID).toString()) == -1;
-				
+			if (role != null && role.has(PROP_ABOUT) && project.has(PROP_ABOUT)
+					&& role.has(PROP__ID))
+				syncImmediatly = role.get(PROP_ABOUT).toString()
+						.indexOf(role.get(PROP__ID).toString()) == -1;
+
 			if (role != null && (!role.has(PROP__ID) || syncImmediatly)) {
 				id = new ObjectId();
 				role.put(PROP__ID, id);
 			}
 		}
 	}
-	
-	public static void injectRoleResource (JSONArray roles, String baseResource)
+
+	public static void injectRoleResource(JSONArray roles, String baseResource)
 			throws JSONException {
 		JSONObject role = null;
-		
-		for (int i = 0; i < roles.length(); i ++) {
+
+		for (int i = 0; i < roles.length(); i++) {
 			role = roles.getJSONObject(i);
 
-			if (role != null && (!role.has(PROP_RESOURCE) && role.has(PROP__ID))) {
-				role.put(PROP_RESOURCE, baseResource + role.get(PROP__ID).toString());
-			} 
+			if (role != null
+					&& (!role.has(PROP_RESOURCE) && role.has(PROP__ID))) {
+				role.put(PROP_RESOURCE, baseResource
+						+ role.get(PROP__ID).toString());
+			}
 		}
 	}
-	
-	public static void removeRoleInjectedProps (JSONObject project)
+
+	public static void removeRoleInjectedProps(JSONObject project)
 			throws JSONException {
 		JSONArray roles = (JSONArray) project.get("roles");
 		JSONObject role = null;
-		
-		for (int i = 0; i < roles.length(); i ++) {
+
+		for (int i = 0; i < roles.length(); i++) {
 			role = roles.getJSONObject(i);
 
 			if (role != null && role.has(PROP_ABOUT)) {
 				role.remove(PROP_ABOUT);
-			} 
-			
+			}
+
 			if (role != null && role.has(PROP_RESOURCE)) {
 				role.remove(PROP_RESOURCE);
-			} 
+			}
 		}
 	}
 
@@ -4469,7 +4605,7 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 			}
 		}// for
 	}
-	
+
 	private static String encodeJSON(JSONObject obj) {
 		return obj.toString().replaceAll("\\.", "%2E");
 	}
@@ -4478,78 +4614,91 @@ DBCollection assignmentsCol = db.getCollection(COLLECTION_TITLE_ASSIGNMENT);
 		return new JSONObject(obj.toString().replaceAll("%2E", "\\."));
 	}
 
-	public static void extendJSONObject(JSONObject destination, JSONObject source) {
+	public static void extendJSONObject(JSONObject destination,
+			JSONObject source) {
 		Iterator<?> keys = source.keys();
 		String propertyName;
 		JSONArray tmpSoureArr, tmpDestinationArr, tmpDestinationArrCopy;
-		
-		
-        while( keys.hasNext() ){
-        	propertyName = (String)keys.next();
-        	
-        	if( source.get(propertyName) instanceof String ){
-        		destination.put(propertyName, source.get(propertyName));
-        	} else if( source.get(propertyName) instanceof JSONArray ){
-        		
-        		if (destination.has(propertyName) && destination.get(propertyName) instanceof JSONArray){
-        			tmpSoureArr = source.getJSONArray(propertyName);
-        			tmpDestinationArr = destination.getJSONArray(propertyName);
-	            	
-        			tmpDestinationArrCopy = new JSONArray();
-        			// remove all
-        			for (int k = (tmpDestinationArr.length() - 1); k >= 0; k --) {
-        				tmpDestinationArrCopy.put(tmpDestinationArr.get(k));
-        				tmpDestinationArr.remove(k);
-        			}
-        			
-        			if (tmpSoureArr.length() > 0 && tmpSoureArr.get(0) instanceof JSONObject) {
-        				JSONObject tmpSourceObj, tmpDestinationObj;
-        				
-		            	for (int j = (tmpSoureArr.length() - 1); j >= 0; j --) {
-		            		tmpSourceObj = tmpSoureArr.getJSONObject(j);
-		            		
-		            		if (tmpSourceObj.has(PROP__ID)) {
-		            			tmpDestinationObj = null;
-		            			
-		            			for (int k = 0; k < tmpDestinationArrCopy.length(); k ++) {
-		            				if (tmpDestinationArrCopy.get(k) instanceof JSONObject) {
-		            					tmpDestinationObj = tmpDestinationArrCopy.getJSONObject(k);
-		            					
-		            					if (tmpDestinationObj.has(PROP__ID) && 
-		            							tmpDestinationObj.get(PROP__ID).toString().equals(tmpSourceObj.get(PROP__ID).toString()))
-		            						break;
-		            					else
-		            						tmpDestinationObj = null;
-		            				} else
-		            					tmpDestinationObj = null;
-		            					
-		            					
-		            			}
-		            			
-		            			if (tmpDestinationObj != null) {
-		            				extendJSONObject(tmpDestinationObj, tmpSourceObj);
-		            				tmpDestinationArr.put(tmpDestinationObj);
-		            			} else
-		            				// simply put object if it hasn't old version in destination arr
-			            			tmpDestinationArr.put(tmpSourceObj);
-		            		} else
-		            			// simply put object if it is new
-		            			tmpDestinationArr.put(tmpSourceObj);
-		            	}
-        			} else 
-        				destination.put(propertyName, source.get(propertyName));
-        		} else
-        			destination.put(propertyName, source.get(propertyName));
-        		
-            } else if( source.get(propertyName) instanceof JSONObject ){ 
-            	if (destination.has(propertyName) && destination.get(propertyName) instanceof JSONObject)
-            		extendJSONObject((JSONObject)destination.get(propertyName), (JSONObject)source.get(propertyName));
-            	else
-            		destination.put(propertyName, source.get(propertyName));
-            		
-            } else
-            	destination.put(propertyName, source.get(propertyName));
-        }
-		
+
+		while (keys.hasNext()) {
+			propertyName = (String) keys.next();
+
+			if (source.get(propertyName) instanceof String) {
+				destination.put(propertyName, source.get(propertyName));
+			} else if (source.get(propertyName) instanceof JSONArray) {
+
+				if (destination.has(propertyName)
+						&& destination.get(propertyName) instanceof JSONArray) {
+					tmpSoureArr = source.getJSONArray(propertyName);
+					tmpDestinationArr = destination.getJSONArray(propertyName);
+
+					tmpDestinationArrCopy = new JSONArray();
+					// remove all
+					for (int k = (tmpDestinationArr.length() - 1); k >= 0; k--) {
+						tmpDestinationArrCopy.put(tmpDestinationArr.get(k));
+						tmpDestinationArr.remove(k);
+					}
+
+					if (tmpSoureArr.length() > 0
+							&& tmpSoureArr.get(0) instanceof JSONObject) {
+						JSONObject tmpSourceObj, tmpDestinationObj;
+
+						for (int j = (tmpSoureArr.length() - 1); j >= 0; j--) {
+							tmpSourceObj = tmpSoureArr.getJSONObject(j);
+
+							if (tmpSourceObj.has(PROP__ID)) {
+								tmpDestinationObj = null;
+
+								for (int k = 0; k < tmpDestinationArrCopy
+										.length(); k++) {
+									if (tmpDestinationArrCopy.get(k) instanceof JSONObject) {
+										tmpDestinationObj = tmpDestinationArrCopy
+												.getJSONObject(k);
+
+										if (tmpDestinationObj.has(PROP__ID)
+												&& tmpDestinationObj
+														.get(PROP__ID)
+														.toString()
+														.equals(tmpSourceObj
+																.get(PROP__ID)
+																.toString()))
+											break;
+										else
+											tmpDestinationObj = null;
+									} else
+										tmpDestinationObj = null;
+
+								}
+
+								if (tmpDestinationObj != null) {
+									extendJSONObject(tmpDestinationObj,
+											tmpSourceObj);
+									tmpDestinationArr.put(tmpDestinationObj);
+								} else
+									// simply put object if it hasn't old
+									// version in destination arr
+									tmpDestinationArr.put(tmpSourceObj);
+							} else
+								// simply put object if it is new
+								tmpDestinationArr.put(tmpSourceObj);
+						}
+					} else
+						destination.put(propertyName, source.get(propertyName));
+				} else
+					destination.put(propertyName, source.get(propertyName));
+
+			} else if (source.get(propertyName) instanceof JSONObject) {
+				if (destination.has(propertyName)
+						&& destination.get(propertyName) instanceof JSONObject)
+					extendJSONObject(
+							(JSONObject) destination.get(propertyName),
+							(JSONObject) source.get(propertyName));
+				else
+					destination.put(propertyName, source.get(propertyName));
+
+			} else
+				destination.put(propertyName, source.get(propertyName));
+		}
+
 	}
 }

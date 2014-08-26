@@ -101,7 +101,7 @@ public class AuthFilter implements Filter {
 					String query = "{"+CONSTS.PROP_GOOGLE_ID+":'"+id+"'}";
 					domainUser = Data.getPerson(context, query, fields);
 
-					if(domainUser == null){
+					if(domainUser == null || domainUser.has("isActive") && domainUser.get("isActive").toString().equals("false")){
 						System.err.println(403 + ": "+ domainUser + " is not a member of the PointSource domain");
 						throw new WebApplicationException(
 								Response.status(Status.FORBIDDEN)
