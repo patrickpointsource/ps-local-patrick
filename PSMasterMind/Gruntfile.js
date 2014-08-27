@@ -423,7 +423,7 @@ module.exports = function(grunt) {
         'copy:dist',
         //'cdnify',
         'ngmin',
-        //'cssmin',
+        'cssmin',
         'uglify',
         'rev',
         'usemin'
