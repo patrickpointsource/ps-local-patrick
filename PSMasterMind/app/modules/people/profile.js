@@ -535,7 +535,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		Resources.get( 'people/' + $scope.profileId ).then( function( person ) {
 			$scope.setProfile( person );
 
-			ProjectsService.getOngoingProjects( function( result ) {
+			ProjectsService.getUnfinishedProjects( function( result ) {
 				$scope.ongoingProjects = result.data;
 				//console.log("main.js ongoingProjects:", $scope.ongoingProjects);
 				$scope.availableProjects = $scope.availableProjects.concat( result.data );
@@ -612,7 +612,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 			AssignmentService.getMyCurrentAssignments( person ).then( function( assignments ) {
 				$scope.assignments = assignments;
-
+                
+                console.log("getMyCurrentAssignments before cut: assignments.length", assignments.length);
+                
 				var k = 0;
 				var found = false;
 
@@ -628,7 +630,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 				$scope.hasAssignments = assignments.length > 0;
 				
-				console.log("getMyCurrentAssignments: assignments.length", assignments.length);
+				console.log("getMyCurrentAssignments after cut: assignments.length", assignments.length);
 
 				if( $scope.hasAssignments ) {
 					// Project Params

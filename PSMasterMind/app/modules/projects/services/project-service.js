@@ -762,6 +762,37 @@ angular.module('Mastermind.services.projects')
     }
 
     /**
+     * Query to get the list of unfinished projects
+     */
+    this.getUnfinishedProjects = function (onSuccess){
+        //Get todays date formatted as yyyy-MM-dd
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd<10){
+          dd='0'+dd;
+        }
+        if (mm<10){
+          mm='0'+mm;
+        }
+        today = yyyy+'-'+mm+'-'+dd;
+
+        var apQuery = 
+            {$and: [
+                    { $or:[
+                           {endDate:{$exists:false}},   
+                           {endDate:{$gt:today}}
+                           ]
+                    }
+                    ]
+            };
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
+
+        return Resources.query('projects', apQuery, apFields, onSuccess);
+    }
+    
+    /**
      * Query to get the list of investment projects
      */
     this.getInvestmentProjects = function (onSuccess){
