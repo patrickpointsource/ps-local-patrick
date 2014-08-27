@@ -613,6 +613,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			AssignmentService.getMyCurrentAssignments( person ).then( function( assignments ) {
 				$scope.assignments = assignments;
                 
+                console.log("You can see this if code is up to date.");
                 console.log("getMyCurrentAssignments before cut: assignments.length", assignments.length);
                 
 				var k = 0;
