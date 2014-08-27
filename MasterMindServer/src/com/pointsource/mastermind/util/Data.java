@@ -655,7 +655,7 @@ public class Data implements CONSTS {
 	}
 
 	/**
-	 * Get the current list of users from our Google Apps domain
+	 * Get the current list of users from our Google Apps domain - api ref https://developers.google.com/admin-sdk/directory/v1/reference/users/list
 	 * 
 	 * @param context
 	 * @return
@@ -688,6 +688,9 @@ public class Data implements CONSTS {
 		Directory admin = new Directory(TRANSPORT, JSON_FACTORY, credential);
 		Directory.Users.List request = admin.users().list();
 		request.setDomain("pointsource.com");
+		// default value is 100, max - 500, set to max so that we willn't miss any users
+		request.setMaxResults(500);
+		
 		Users users = request.execute();
 
 		return users;
