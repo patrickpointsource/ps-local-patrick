@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -53,7 +52,11 @@ public class InitialEmailReminderJob implements Job {
 					String givenName = (String) contact.get(GIVENNAME_KEY);
 					String fullName = (String) contact.get(NAME_KEY);
 					String mBox = (String) contact.get(MAILBOX_KEY);
-					Boolean isActiveContact = Boolean.valueOf((String)contact.get(ACTIVE_KEY));
+					Boolean isActiveContact = false;
+					
+					if (contact.has(ACTIVE_KEY) && contact.get(ACTIVE_KEY).toString().toLowerCase().equals("true"))
+						isActiveContact = true;
+					
 					JSONObject primaryRole = null;
 					try {
 						primaryRole = (JSONObject)contact.get(PRIMARY_ROLE_KEY);
