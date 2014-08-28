@@ -8,10 +8,14 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var passport = require('passport');
+var fs = require('fs');
+var https = require('https');
+
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 
 // Setup logging
 var log4js = require('log4js');
+
 log4js.configure('server/config/log4js_config.json', {});
 var logger = log4js.getLogger();
 
@@ -33,6 +37,12 @@ var upgrade = require('./server/routes/upgrade');
 
 var security = require('./server/util/security.js');
 
+
+var privateKey  = fs.readFileSync('server/cert/server.key', 'utf8');
+var certificate = fs.readFileSync('server/cert/server.crt', 'utf8');
+var credentials = {key: privateKey, cert: certificate};
+
+var HTTPS_PORT = 8443;
 
 // Configure passport
 require('./server/config/passport.js')(passport);
@@ -127,6 +137,11 @@ var host = (process.env.VCAP_APP_HOST || 'localhost');
 var port = (process.env.VCAP_APP_PORT || 3000);
 // Start server
 app.listen(port, host);
+
+// start https server
+var httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(HTTPS_PORT);
 
 // Initialize security layer
 security.initialize();
