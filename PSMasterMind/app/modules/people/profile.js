@@ -23,31 +23,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	};
 
 	$scope.loadAvailableTasks( );
-
-	var managersQuery = {
-		'groups': 'Management'
-	};
-
-	$scope.managers = [ ];
-
-	Resources.query( 'people', managersQuery, {
-		_id: 1,
-		resource: 1,
-		name: 1
-	}, function( result ) {
-		for( var i = 0; i < result.members.length; i++ ) {
-			var manager = result.members[ i ];
-			$scope.managers.push( {
-				name: manager.name,
-				resource: manager.resource
-			} );
-		}
-
-		$scope.managers = _.sortBy( $scope.managers, function( manager ) {
-			return manager.name;
-		} );
-	} );
-
 	/**
 	 * Load Role definitions to display names
 	 */
@@ -93,14 +68,40 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	 */
 	$scope.setProfile = function( person ) {
 		$scope.profile = person;
+		
+		var managersQuery = {
+          'groups': 'Management'
+        };
 
-		if( $scope.profile.manager ) {
-			$scope.profile.manager = _.findWhere( $scope.managers, {
-				resource: $scope.profile.manager.resource
-			} );
-			$scope.$emit( 'profile:loaded' );
-		} else
-			$scope.$emit( 'profile:loaded' );
+        $scope.managers = [ ];
+
+        Resources.query( 'people', managersQuery, {
+          _id: 1,
+          resource: 1,
+          name: 1
+        }, function( result ) {
+          for( var i = 0; i < result.members.length; i++ ) {
+            var manager = result.members[ i ];
+            $scope.managers.push( {
+                name: manager.name,
+                resource: manager.resource
+            } );
+          }
+
+          $scope.managers = _.sortBy( $scope.managers, function( manager ) {
+            return manager.name;
+          } );
+          
+          if( $scope.profile.manager ) {
+            $scope.profile.manager = _.findWhere( $scope.managers, {
+                resource: $scope.profile.manager.resource
+            } );
+            $scope.$emit( 'profile:loaded' );
+          } else
+            $scope.$emit( 'profile:loaded' );
+      } );
+
+		
 
 		//      $scope.skillsList = person.skills;
 		//
