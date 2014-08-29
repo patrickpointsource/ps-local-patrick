@@ -42,7 +42,8 @@ var privateKey  = fs.readFileSync('server/cert/server.key', 'utf8');
 var certificate = fs.readFileSync('server/cert/server.crt', 'utf8');
 var credentials = {key: privateKey, cert: certificate};
 
-var HTTPS_PORT = 8443;
+var httpsPort = 8443;
+var hostName = 'localhost';
 
 // Configure passport
 require('./server/config/passport.js')(passport);
@@ -129,10 +130,25 @@ var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
 // this application. For details of its content, please refer to
 // the document or sample of each service.
 var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
-// TODO: Get service credentials serProvided);and communicate with bluemix services.
+
+// parse command line arguments
+var tmpArg;
+var i;
+
+for (i = 0; i < process.argv.length; i ++) {
+    tmpArg = process.argv[i].toString().replace('-', '');
+    tmpArg = tmpArg.split('=');
+    
+    if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'hostname')
+        hostName = tmpArg[1];
+    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'httpsport')
+        httpsPort = tmpArg[1];   
+}
+
+console.log('hostName=' + hostName + ': httpsPort: ' + httpsPort);
 
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
-var host = (process.env.VCAP_APP_HOST || 'localhost');
+var host = (process.env.VCAP_APP_HOST || hostName);
 // The port on the DEA for communication with the application:
 var port = (process.env.VCAP_APP_PORT || 3000);
 // Start server
@@ -141,7 +157,8 @@ app.listen(port, host);
 // start https server
 var httpsServer = https.createServer(credentials, app);
 
-httpsServer.listen(HTTPS_PORT);
+
+httpsServer.listen(httpsPort);
 
 // Initialize security layer
 security.initialize();
