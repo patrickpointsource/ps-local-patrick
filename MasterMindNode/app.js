@@ -157,8 +157,7 @@ app.listen(port, host);
 // start https server
 var httpsServer = https.createServer(credentials, app);
 
-
-httpsServer.listen(httpsPort);
+httpsServer.listen(httpsPort, hostName);
 
 // Initialize security layer
 security.initialize();

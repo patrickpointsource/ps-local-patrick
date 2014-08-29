@@ -18,13 +18,6 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 
 			console.log( '\r\nget:hours:query:' + JSON.stringify( query ) + '\r\n' );
 
-			/*
-			 res.json( {
-			 count: 0,
-			 about: "hours",
-			 members: [ ]
-			 } );
-			 */
 			hours.listHours( query, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
@@ -58,21 +51,21 @@ router.post( '/', util.isAuthenticated, function( req, res ) {
 
 router.put( '/:id', util.isAuthenticated, function( req, res ) {
 
-    security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
-        console.log( '\r\nput:hours:\r\n' );
+	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
+		console.log( '\r\nput:hours:\r\n' );
 
-        if( allowed ) {
-            var id = req.params.id;
-            
-            hours.updateHours( id, req.body, function( err, result ) {
-                if( err ) {
-                    res.json( 500, err );
-                } else {
-                    res.json( result );
-                }
-            } );
-        }
-    } );
+		if( allowed ) {
+			var id = req.params.id;
+
+			hours.updateHours( id, req.body, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	} );
 
 } );
 
@@ -82,8 +75,8 @@ router.delete( '/:id', util.isAuthenticated, function( req, res ) {
 		console.log( '\r\ndelete:hours:\r\n' );
 
 		if( allowed ) {
-		    var id = req.params.id;
-		    
+			var id = req.params.id;
+
 			hours.deleteHours( id, req.query, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
