@@ -87,6 +87,34 @@
 </div>
 
 <!-- Monthly view -->
+<div class="panel panel-default dashboard-widget">
+  <div class="panel-heading">
+    Out of Offices this period: {{showVacationsStartPeriod}} - {{showVacationsEndPeriod}}
+  </div>
+  <div class="panel-body">
+    <div class="row col-xs-12 no-margin" ng-if="!organizedHours">
+      <div class="alert alert-warning no-margin">There are no out-of-office requests for this period.</div>
+    </div>
+    <div class="row peopleList" ng-repeat="vacation in projectVacations">
+      <div class="col-xs-9 col-sm-3">
+        <a href="#{{vacation.person.resource}}">
+          <img class="profileImage" ng-src="{{vacation.person.thumbnail}}" />
+        </a>
+        <a href="#{{vacation.person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{vacation.person.familyName}}, {{vacation.person.givenName}}</a>
+      </div>
+      <div class="col-xs-12 col-sm-3 padding-top-5">
+        {{roleGroups[ vacation.person.primaryRole.resource ].title}}
+      </div>
+      <div class="col-xs-12 col-sm-3 padding-top-5">
+        Out {{moment(vacation.startDate).format("MMM D")}} - {{moment(vacation.endDate).format("MMM D")}}
+      </div>
+      <div class="col-xs-12 col-sm-2 padding-top-5">
+        Hours lost: {{getHoursLost(vacation)}}
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row" ng-if="hoursViewType == 'monthly' || hoursViewType == 'billings' || hoursViewType == 'customDates'">
   <div class="col-xs-12" ng-if="!organizedHours">
     <div class="alert alert-warning">There are no logged hours for this project.</div>

@@ -204,6 +204,40 @@ function( $q, Resources, HoursService ) {
     return deferred.promise;
   }
   
+  this.getHoursLost = function(vacation) {
+    var start = moment(vacation.startDate);
+    var end = moment(vacation.endDate);
+    var actualDays = this.getActualDays(vacation.startDate, vacation.endDate);
+    
+    if(actualDays == 1) {
+      var hours = end.diff(start ,'hours');
+      
+      var oneDayHours = 0;
+      if(hours <= 8) {
+        oneDayHours = hours;
+      } else {
+        oneDayHours = 8;
+      }
+      
+      return oneDayHours;
+    } else {
+      var allDays = end.diff(start ,'days');
+      actualDays = 0;
+      var totalHours = 0;
+      for(var d = 0; d <= allDays; d++) {
+        if(d != 0) {
+          start.add('days', 1);
+        }
+      
+        if(start.day() != 0 && start.day() != 6) {
+          totalHours += 8;
+        }
+      }
+      
+      return totalHours;
+    }
+  }
+  
   this.commitHours = function(request, updateHoursNotification) {
     var $this = this;
     this.getTaskForVacation(request.type).then(function(task) {

@@ -3,8 +3,8 @@
 /**
  * Controller for modifying an existing project.
  */
-angular.module( 'Mastermind' ).controller( 'ProjectCtrl', [ '$q', '$rootScope', '$scope', '$state', '$stateParams', '$location', '$filter', '$controller', 'ProjectsService', 'Resources', 'People', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode', 'AssignmentService', 'HoursService',
-function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $controller, ProjectsService, Resources, People, RoleTypes, Rates, TableParams, editMode, AssignmentService, HoursService ) {
+angular.module( 'Mastermind' ).controller( 'ProjectCtrl', [ '$q', '$rootScope', '$scope', '$state', '$stateParams', '$location', '$filter', '$controller', 'ProjectsService', 'Resources', 'People', 'RoleTypes', 'Rates', 'ngTableParams', 'editMode', 'AssignmentService', 'HoursService', 'VacationsService', 
+function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $controller, ProjectsService, Resources, People, RoleTypes, Rates, TableParams, editMode, AssignmentService, HoursService, VacationsService ) {
 	var detailsValid = false, rolesValid = false;
 
 	$scope.stopWatchingProjectChanges = function( ) {
@@ -1169,6 +1169,7 @@ else if( role.percentageCovered == 0 )
 	$scope.selectedHoursPeriod = "";
 	$scope.currentMonth = "";
 	$scope.currentDisplayedHours = [ ];
+	$scope.vacationHours = [ ];
 
 	$scope.handleHoursPeriodChanged = function( propName ) {
 		var period = propName ? this[ propName ] : "";
@@ -1197,6 +1198,8 @@ else if( role.percentageCovered == 0 )
 
 		for( var i = 0; i < $scope.organizedHours.length; i++ )
 			$scope.organizedHours[ i ].collapsed = false;
+			
+		$scope.initVacationHours(this.selectedHoursStartDate, this.selectedHoursEndDate);
 	};
 
 	$scope.monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
@@ -1567,6 +1570,25 @@ else if( role.percentageCovered == 0 )
 		return result.join( ', ' );
 
 	};
+	
+	$scope.getPersonProjectRolesFull = function( person ) {
+        var result = [ ];
+        var assignees;
+        var entry;
+
+        for( var i = 0; i < $scope.project.roles.length; i++ ) {
+            assignees = $scope.project.roles[ i ].assignees;
+            entry = _.find( assignees, function( a ) {
+                if( a.person && a.person.resource == person.resource )
+                    return true;
+            } );
+            if( entry )
+                result.push( $scope.roleGroups[ $scope.project.roles[ i ].type.resource ].title );
+        }
+
+        return result.join( ', ' );
+
+    };
 
 	$scope.getProjectHours = function( currentHours, month ) {
 		var now = new Date( );
@@ -1656,7 +1678,74 @@ else if( role.percentageCovered == 0 )
 
 		}, sort );
 	};
-
+    
+    $scope.vacationPeople = [ ];
+    
+    $scope.initVacationHours = function(periodStart, periodEnd) {
+      // this code grabs hours entries for vacations for project assignees
+      /*if($scope.projectPeopleResources.length > 0) {
+        // get or create tasks for vacations (Vacation and Appointment)
+        var tasks = [ ];
+        
+        VacationsService.getTaskForVacation(VacationsService.VACATION_TYPES.Vacation).then(function(vacTaskResult) {
+          tasks.push({resource: vacTaskResult.resource, name: vacTaskResult.name});
+          VacationsService.getTaskForVacation(VacationsService.VACATION_TYPES.Appointment).then(function(appointmentTaskResult) {
+            tasks.push({resource: appointmentTaskResult.resource, name: appointmentTaskResult.name});
+            
+            var vacHoursQuery = {
+              $and: [
+                { person: { $in: $scope.projectPeopleResources} },
+                { task: { $in: tasks } }
+              ]
+            };
+            
+            // query hours for vacation
+            Resources.query('hours', vacHoursQuery, {}, function(result) {
+              $scope.vacationPeople = result.members;
+            });
+            
+          });
+        });
+      }*/
+     $scope.showVacationsStartPeriod = moment(periodStart).format("MMM D");
+     $scope.showVacationsEndPeriod = moment(periodEnd).format("MMM D");
+     
+      if($scope.projectPeopleResources.length > 0) {
+        var vacationsQuery = {
+          $and: [
+            { person: { $in: $scope.projectPeopleResources } },
+            { $or: [
+              { $and: [
+                { startDate: { $gte: periodStart }},
+                { startDate: { $lte: periodEnd }},
+              ]},
+              { $and: [
+                { endDate: { $gte: periodStart }},
+                { endDate: { $lte: periodEnd }},
+              ]},
+            ] }
+          ]
+        };
+        
+        Resources.query('vacations', vacationsQuery, {}, function(result) {
+          $scope.projectVacations = result.members;
+          
+          for(var k = 0; k < $scope.projectVacations.length; k++) {
+            var projVac = $scope.projectVacations[k];
+            /*var peopleFound = _.filter($scope.organizedHours, function(person) {
+              return person.resource == projVac.person.resource;
+            });*/
+            Resources.resolve(projVac.person);
+            //projVac.person = peopleFound[0];
+          }
+        })
+      }
+    }
+    
+    $scope.getHoursLost = function(vacation) {
+      return VacationsService.getHoursLost(vacation);
+    }
+    
 	$scope.hoursMode = "filtered";
 
 	$scope.handleProjectSelected = function( ) {
@@ -1802,8 +1891,15 @@ else if( role.percentageCovered == 0 )
 		var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
 		var roles = $scope.project.roles;
 		var runningTotal = 0;
+		
+		$scope.projectPeopleResources = [ ];
 		for( var i = 0; roles && i < roles.length; i++ ) {
 			var role = roles[ i ];
+			
+			for(var j = 0; j < role.assignees.length; j++) {
+			  $scope.projectPeopleResources.push(role.assignees[j].person);
+			}
+			
 			var roleType = $scope.roleGroups[ role.type.resource ];
 			var rate = role.rate;
 			var numMonths;
@@ -1856,7 +1952,8 @@ else if( role.percentageCovered == 0 )
 			}
 			$scope.servicesLoadedTotal = runningTotal;
 		}
-
+        
+        $scope.initVacationHours(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
 		// sort roles inside project
 		var today = new Date( );
 
@@ -1967,6 +2064,12 @@ else if( role.percentageCovered == 0 )
 
 		$scope.initHoursPeriods( $scope.hours );
 		$scope.handleHoursPeriodChanged( );
+		if($scope.hoursViewType == 'weekly') {
+		  $scope.initVacationHours($scope.startWeekDate, $scope.endWeekDate);
+		}
+		if($scope.hoursViewType == 'monthly') {
+		  $scope.initVacationHours(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
+		}
 	};
 
 	$scope.hoursViewType = 'monthly';
@@ -1983,6 +2086,10 @@ else if( role.percentageCovered == 0 )
 	$scope.showWeek = function( ) {
 		$scope.startWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex ).format( 'YYYY-MM-DD' );
 		$scope.endWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex + 6 ).format( 'YYYY-MM-DD' );
+		
+		if($scope.hoursViewType === 'weekly') {
+		  $scope.initVacationHours($scope.startWeekDate, $scope.endWeekDate);
+		}
 
 		var hoursQuery = {
 			'project.resource': $scope.project.about,
