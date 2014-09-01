@@ -18,7 +18,7 @@ var LINKS_KEY = 'Links';
 var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
 
-//TODO: fix $oid to _id
+//TODO: fix $oid to _id, and move from "$exists: 1" to "$exists: 0"
 var alignQuery = function( q, qP, pProp, pInd ) {
 
 	if( _.isArray( q ) )
@@ -34,6 +34,8 @@ var alignQuery = function( q, qP, pProp, pInd ) {
 					qP[ pRop ] = q[ prop ];
 				else
 					qP[pProp][ pInd ] = q[ prop ];
+			} else if( prop == "$exists" ) {
+				q[ prop ] = q[ prop ] ? true : false;
 			} else if( _.isArray( q[ prop ] ) )
 				for( var j = 0; j < q[ prop ].length; j++ )
 					alignQuery( q[prop][ j ], q, prop, j );
@@ -389,13 +391,13 @@ var insertItem = function( id, obj, type, callback ) {
 	dbAccess.insertItem( id, obj, function( err, body ) {
 		if( !err ) {
 			if( obj._deleted ) {
-			  if(body.id) {
-			    console.log( "Object with id " + body.id + " marked as deleted in db" );
-			  }
+				if( body.id ) {
+					console.log( "Object with id " + body.id + " marked as deleted in db" );
+				}
 			} else {
-			  if(body.id) {
-				console.log( "Object with id " + id + " inserted in db" );
-			  }
+				if( body.id ) {
+					console.log( "Object with id " + id + " inserted in db" );
+				}
 			}
 			memoryCache.deleteObject( type );
 		}
@@ -404,20 +406,20 @@ var insertItem = function( id, obj, type, callback ) {
 };
 
 var updateItem = function( id, obj, type, callback ) {
-    if( type ) {
-        obj.form = type;
-    }
-    dbAccess.updateItem( id, obj, function( err, body ) {
-        if( !err ) {
-            if( obj._deleted ) {
-                console.log( "Object with id " + id + " marked as deleted in db" );
-            } else {
-                console.log( "Object with id " + id + " updated in db" );
-            }
-            memoryCache.deleteObject( type );
-        }
-        callback( err, body );
-    } );
+	if( type ) {
+		obj.form = type;
+	}
+	dbAccess.updateItem( id, obj, function( err, body ) {
+		if( !err ) {
+			if( obj._deleted ) {
+				console.log( "Object with id " + id + " marked as deleted in db" );
+			} else {
+				console.log( "Object with id " + id + " updated in db" );
+			}
+			memoryCache.deleteObject( type );
+		}
+		callback( err, body );
+	} );
 };
 
 var deleteItem = function( id, rev, type, callback ) {
@@ -437,12 +439,12 @@ var deleteItem = function( id, rev, type, callback ) {
 				body._deleted = true;
 
 				insertItem( id, body, type, function( err, body ) {
-				  memoryCache.deleteObject( type );
-				  if( err ) {
-					console.log( err );
-					  callback( 'error delete item by inserting _deleted flag', null );
+					memoryCache.deleteObject( type );
+					if( err ) {
+						console.log( err );
+						callback( 'error delete item by inserting _deleted flag', null );
 					} else {
-					  callback( null, body );
+						callback( null, body );
 					}
 				} );
 			}
