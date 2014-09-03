@@ -115,7 +115,7 @@
   </div>
 </div>
 
-<div class="row" ng-if="hoursViewType == 'monthly' || hoursViewType == 'billings' || hoursViewType == 'customDates'">
+<!-- <div class="row" ng-if="hoursViewType == 'monthly' || hoursViewType == 'billings' || hoursViewType == 'customDates'">
   <div class="col-xs-12" ng-if="!organizedHours">
     <div class="alert alert-warning">There are no logged hours for this project.</div>
   </div>
@@ -184,6 +184,122 @@
     </div>
 
   </div>
+</div>-->
+
+<div class="row" ng-if="hoursViewType == 'monthly'" style="margin-top: 10px;">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="panel panel-default dashboard-widget">
+      <div class="panel-heading">
+        <i class="fa fa-calendar-o"></i>
+        <span>Hours Summary</span>
+        <span class="centered-widget-header-text">{{moment().month(selectedMonthIndex).format("MMMM, YYYY")}}</span>
+        <div class="pull-right btn-group btn-group-sm dashboard-actions">
+          <a class="multi-btn" ng-class="{'active': selectedMonthIndex < 0 }" ng-click="prevMonth()">
+            <i class="fa fa-angle-left"></i>
+          </a>
+          <a ng-class="{'active': selectedMonthIndex == 0 }" ng-click="currentMonth()">
+            Today
+          </a>
+          <a class="multi-btn" ng-class="{'active': selectedMonthIndex > 0 }" ng-click="nextMonth()">
+              <i class="fa fa-angle-right"></i>
+          </a>
+        </div>
+      </div>
+      <div class="panel-body peopleList">
+        <!--            <h3> {{dayFormatted(startWeekDate)}} &ndash; {{dayFormatted(endWeekDate, "MMM D, YYYY")}} </h3>-->
+        <div class="row">
+          <div class="col-xs-12" ng-if="monthPersonHours2.length == 0">
+            <div class="alert alert-warning">There are no logged hours for that week.</div>
+          </div>
+          <div class="col-xs-12" ng-if="monthPersonHours2.length > 0">
+            <div class="row hidden-xs">
+              <!-- <div class="hidden-xs col-sm-2"></div> -->
+              <div class="col-xs-2 col-md-2" style="padding-left: 20px;">Roles</div>
+              <div class="col-xs-1 col-md-1" ng-repeat="dayLabel in thisMonthDayLabels" style="padding-left: 20px;">{{thisMonthDayLabels[$index]}}</div>
+            </div>
+            <div ng-repeat="roleHours in monthPersonHours2" style="margin-bottom: 5px;">
+           	  <div class="row">
+	              <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
+	                <a href="#{{personHours.person.resource}}">
+	                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />
+	                  
+	                </a>
+	                <span>{{personHours.person.name}}</span>
+	                <span> Total: {{personHours.hoursPerWeek}} h/w</span>
+	                <span> Logged: {{getLoggedHoursForWeek(personHours)}} hours</span>
+	                <span> Remaining: {{getExpectedHoursForWeek(personHours)}} hours</span>
+	          		
+	          
+	              </div>
+	              <div class="row hidden-sm hidden-md hidden-lg hidden-sm">
+	                <hr style="margin: 0;" />
+	                <div style="margin-left: 30px;">
+	                  <a href="#{{personHours.person.resource}}">
+	                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />{{personHours.person.name}}
+	                  </a>
+	                </div>
+	              </div> -->
+	              <div class="col-xs-2 col-md-2 col-lg-2" ng-click="roleHours.collapsed=!roleHours.collapsed">
+	              	<span style="margin-right: 12px;" ng-if="roleHours.collapsed"><i class="fa fa-caret-right"></i></span>
+	          		<span style="margin-right: 12px;" ng-if="!roleHours.collapsed"><i class="fa fa-caret-down"></i></span>
+	                A Role
+	              </div>
+	              <div class="col-xs-1 col-md-1 col-lg-1" ng-repeat="day in roleHours.hours">
+	                <button class="btn btn-hours btn-default" ng-class="{'btn-danger':day.totalHours===0 && $index > 0 && $index<6,'btn-warning': day.totalHours < 8 && $index > 0 && $index<6, 'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6, 'todaysClass': moment().format('YYYY-MM-DD') == day.date }">{{day.totalHours}}</button>
+	              </div>
+	              <div class="col-xs-1 col-md-1 col-lg-1">
+	                <button class="btn btn-hours btn-default">{{roleHours.actualHours}}</button>
+	              </div>
+	              <div class="col-xs-1 col-md-1 col-lg-1">
+	                <button class="btn btn-hours btn-default">{{roleHours.expectedHours}}</button>
+	              </div>
+	              <div class="col-xs-1 col-md-1 col-lg-1">
+	                {{roleHours.actualHours == roleHours.expectedHours}}
+	              </div>
+              </div>
+              <div ng-repeat="personHours in roleHours.persons" ng-if="!roleHours.collapsed" style="margin-top: 5px;" class="row">
+              <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
+                <a href="#{{personHours.person.resource}}">
+                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />
+                  
+                </a>
+                <span>{{personHours.person.name}}</span>
+                <span> Total: {{personHours.hoursPerWeek}} h/w</span>
+                <span> Logged: {{getLoggedHoursForWeek(personHours)}} hours</span>
+                <span> Remaining: {{getExpectedHoursForWeek(personHours)}} hours</span>
+          		
+          
+              </div>
+              <div class="row hidden-sm hidden-md hidden-lg hidden-sm">
+                <hr style="margin: 0;" />
+                <div style="margin-left: 30px;">
+                  <a href="#{{personHours.person.resource}}">
+                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />{{personHours.person.name}}
+                  </a>
+                </div>
+              </div> -->
+              <div class="col-xs-2 col-md-2 col-lg-2">
+                {{personHours.person.name}}
+              </div>
+              <div class="col-xs-1 col-md-1 col-lg-1" ng-repeat="day in personHours.hours">
+                <button class="btn btn-hours btn-default" ng-class="{'btn-danger':day.totalHours===0 && $index > 0 && $index<6,'btn-warning': day.totalHours < 8 && $index > 0 && $index<6, 'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6, 'todaysClass': moment().format('YYYY-MM-DD') == day.date }">{{day.totalHours}}</button>
+              </div>
+              <div class="col-xs-1 col-md-1 col-lg-1">
+                <button class="btn btn-hours btn-default">{{personHours.actualHours}}</button>
+              </div>
+              <div class="col-xs-1 col-md-1 col-lg-1">
+                <button class="btn btn-hours btn-default">{{personHours.expectedHours}}</button>
+              </div>
+              <div class="col-xs-1 col-md-1 col-lg-1">
+                {{personHours.actualHours == personHours.expectedHours}}
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Weekly view -->
@@ -218,45 +334,47 @@
               <div class="col-xs-2 col-md-2" style="padding-left: 20px;">Roles</div>
               <div class="col-xs-1 col-md-1" ng-repeat="dayLabel in thisWeekDayLabels" style="padding-left: 20px;">{{thisWeekDayLabels[$index]}}</div>
             </div>
-            <div class="row" ng-repeat="roleHours in weekPersonHours2" style="margin-bottom: 5px;">
-              <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
-                <a href="#{{personHours.person.resource}}">
-                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />
-                  
-                </a>
-                <span>{{personHours.person.name}}</span>
-                <span> Total: {{personHours.hoursPerWeek}} h/w</span>
-                <span> Logged: {{getLoggedHoursForWeek(personHours)}} hours</span>
-                <span> Remaining: {{getExpectedHoursForWeek(personHours)}} hours</span>
-          		
-          
+            <div ng-repeat="roleHours in weekPersonHours2" style="margin-bottom: 5px;">
+              <div class="row">
+	              <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
+	                <a href="#{{personHours.person.resource}}">
+	                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />
+	                  
+	                </a>
+	                <span>{{personHours.person.name}}</span>
+	                <span> Total: {{personHours.hoursPerWeek}} h/w</span>
+	                <span> Logged: {{getLoggedHoursForWeek(personHours)}} hours</span>
+	                <span> Remaining: {{getExpectedHoursForWeek(personHours)}} hours</span>
+	          		
+	          
+	              </div>
+	              <div class="row hidden-sm hidden-md hidden-lg hidden-sm">
+	                <hr style="margin: 0;" />
+	                <div style="margin-left: 30px;">
+	                  <a href="#{{personHours.person.resource}}">
+	                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />{{personHours.person.name}}
+	                  </a>
+	                </div>
+	              </div> -->
+	              <div class="col-xs-2 col-md-2 col-lg-2" ng-click="roleHours.collapsed=!roleHours.collapsed">
+	              	<span style="margin-right: 12px;" ng-if="roleHours.collapsed"><i class="fa fa-caret-right"></i></span>
+	          		<span style="margin-right: 12px;" ng-if="!roleHours.collapsed"><i class="fa fa-caret-down"></i></span>
+	                A Role
+	              </div>
+	              <div class="col-xs-1 col-md-1 col-lg-1" ng-repeat="day in roleHours.hours">
+	                <button class="btn btn-hours btn-default" ng-class="{'btn-danger':day.totalHours===0 && $index > 0 && $index<6,'btn-warning': day.totalHours < 8 && $index > 0 && $index<6, 'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6, 'todaysClass': moment().format('YYYY-MM-DD') == day.date }">{{day.totalHours}}</button>
+	              </div>
+	              <div class="col-xs-1 col-md-1 col-lg-1">
+	                <button class="btn btn-hours btn-default">{{roleHours.actualHours}}</button>
+	              </div>
+	              <div class="col-xs-1 col-md-1 col-lg-1">
+	                <button class="btn btn-hours btn-default">{{roleHours.expectedHours}}</button>
+	              </div>
+	              <div class="col-xs-1 col-md-1 col-lg-1">
+	                {{roleHours.actualHours == roleHours.expectedHours}}
+	              </div>
               </div>
-              <div class="row hidden-sm hidden-md hidden-lg hidden-sm">
-                <hr style="margin: 0;" />
-                <div style="margin-left: 30px;">
-                  <a href="#{{personHours.person.resource}}">
-                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />{{personHours.person.name}}
-                  </a>
-                </div>
-              </div> -->
-              <div class="col-xs-2 col-md-2 col-lg-2" ng-click="roleHours.collapsed=!roleHours.collapsed">
-              	<span style="margin-right: 12px;" ng-if="roleHours.collapsed"><i class="fa fa-caret-right"></i></span>
-          		<span style="margin-right: 12px;" ng-if="!roleHours.collapsed"><i class="fa fa-caret-down"></i></span>
-                A Role
-              </div>
-              <div class="col-xs-1 col-md-1 col-lg-1" ng-repeat="day in roleHours.hours">
-                <button class="btn btn-hours btn-default" ng-class="{'btn-danger':day.totalHours===0 && $index > 0 && $index<6,'btn-warning': day.totalHours < 8 && $index > 0 && $index<6, 'btn-default' : days.totalHours >= 8 && $index > 0 && $index<6, 'todaysClass': moment().format('YYYY-MM-DD') == day.date }">{{day.totalHours}}</button>
-              </div>
-              <div class="col-xs-1 col-md-1 col-lg-1">
-                <button class="btn btn-hours btn-default">{{roleHours.actualHours}}</button>
-              </div>
-              <div class="col-xs-1 col-md-1 col-lg-1">
-                <button class="btn btn-hours btn-default">{{roleHours.expectedHours}}</button>
-              </div>
-              <div class="col-xs-1 col-md-1 col-lg-1">
-                {{roleHours.actualHours == roleHours.expectedHours}}
-              </div>
-              <div ng-repeat="personHours in roleHours.persons" ng-if="!roleHours.collapsed" style="margin-top: 5px;">
+              <div ng-repeat="personHours in roleHours.persons" ng-if="!roleHours.collapsed" style="margin-top: 5px;" class="row">
               <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
                 <a href="#{{personHours.person.resource}}">
                   <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />

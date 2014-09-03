@@ -2079,6 +2079,7 @@ else if( role.percentageCovered == 0 )
 
 	$scope.moment = moment;
 
+	$scope.selectedMonthIndex = $scope.moment().month();
 	$scope.selectedWeekIndex = 0;
 	$scope.startWeekDate = $scope.moment( ).day( 0 ).format( 'YYYY-MM-DD' );
 	$scope.endWeekDate = $scope.moment( ).day( 6 ).format( 'YYYY-MM-DD' );
@@ -2220,7 +2221,166 @@ else if( role.percentageCovered == 0 )
 			} );
 		} );
 	};
+	
+	$scope.showMonth = function( ) {
+		var mmm = "";//$scope.moment.monthsShort($scope.selectedMonthIndex);
+		var selectedDate = $scope.moment().month($scope.selectedMonthIndex);
+		var daysInMonth = selectedDate.daysInMonth();
+		$scope.thisMonthDayLabels = [ mmm + " 1-7", mmm + " 8-14", mmm + " 15-21", mmm + " 22-28" ];
+		
+		if (daysInMonth > 28)
+			$scope.thisMonthDayLabels.push(mmm + " 29" + (daysInMonth > 29 ? "-" + daysInMonth : ""));
+		
+		$scope.thisMonthDayLabels.push("Actual Hours", "Expected Hours", "On Target");
+		
+		$scope.startMonthDate = selectedDate.startOf("month").format( 'YYYY-MM-DD' );
+		$scope.endMonthDate = selectedDate.endOf("month").format( 'YYYY-MM-DD' );
+		
+		if($scope.hoursViewType === 'monthly') {
+		  $scope.initVacationHours($scope.startMonthDate, $scope.endMonthDate);
+		}
 
+		var hoursQuery = {
+			'project.resource': $scope.project.about,
+
+			$and: [ {
+				date: {
+					$lte: $scope.endMonthDate
+				}
+			}, {
+				date: {
+					$gte: $scope.startMonthDate
+				}
+			} ]
+
+		};
+
+		AssignmentService.getAssignmentsByPeriod( "all", {
+			project: {
+				resource: $scope.project.about
+			}
+		} ).then( function( data ) {
+			$scope.projectAssignments = data;
+			$scope.updateOrganizedHours( );
+
+			Resources.query( 'hours', hoursQuery, {} ).then( function( result ) {
+				$scope.monthPersonHours = [ ];
+				$scope.weekHours = [ ];
+				$scope.monthPersonHours2 = [];
+
+				if( result.count > 0 ) {
+					$scope.thisWeekHours = result.members;
+					//_.sortBy($scope.thisWeekHours, function(h) { return new Date(h.date); });
+
+					// resolve persons to fill csv fields
+					for( var i = 0; i < $scope.thisWeekHours.length; i++ ) {
+						Resources.resolve( $scope.thisWeekHours[ i ].person );
+					}
+
+					var distinctRoles = [];
+					var uniqPersons = _.pluck( _.pluck( $scope.thisWeekHours, 'person' ), 'resource' );
+					var hoursStartEndDatesMap = {};
+
+					for( var i = 0; i < $scope.projectAssignments.members.length; i++ ) {
+						if( $scope.projectAssignments.members[ i ].endDate >= $scope.startMonthDate && $scope.projectAssignments.members[ i ].startDate < $scope.endMonthDate ) {
+							uniqPersons.push( $scope.projectAssignments.members[ i ].person.resource );
+							
+							if (distinctRoles.indexOf($scope.projectAssignments.members[ i ].role.resource) == -1)
+								distinctRoles.push($scope.projectAssignments.members[ i ].role.resource);
+							
+							if( !hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] )
+								hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] = {
+									role: $scope.projectAssignments.members[ i ].role ? $scope.projectAssignments.members[ i ].role.resource : null,
+									hoursPerWeek: $scope.projectAssignments.members[ i ].hoursPerWeek,
+									startDate: $scope.projectAssignments.members[ i ].startDate,
+									endDate: $scope.projectAssignments.members[ i ].endDate
+								};
+							else {
+								if( $scope.projectAssignments.members[ i ].startDate < hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].startDate )
+									hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].startDate = $scope.projectAssignments.members[ i ].startDate;
+
+								if( $scope.projectAssignments.members[ i ].endDate > hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].endDate )
+									hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].endDate = $scope.projectAssignments.members[ i ].endDate;
+
+								if( $scope.projectAssignments.members[ i ].hoursPerWeek > hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].hoursPerWeek )
+									hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].hoursPerWeek = $scope.projectAssignments.members[ i ].hoursPerWeek;
+							}
+						}
+					}
+
+					uniqPersons = _.uniq( uniqPersons );
+
+					for( var i = 0; i < uniqPersons.length; i++ ) {
+						$scope.monthPersonHours.push( {
+							person: {
+								resource: uniqPersons[ i ]
+							},
+							role: hoursStartEndDatesMap[ uniqPersons[ i ] ].role,
+							hours: [ ],
+							startDate: hoursStartEndDatesMap[ uniqPersons[ i ] ].startDate,
+							endDate: hoursStartEndDatesMap[ uniqPersons[ i ] ].endDate,
+							hoursPerWeek: hoursStartEndDatesMap[ uniqPersons[ i ] ].hoursPerWeek
+						} );
+
+						Resources.resolve( $scope.monthPersonHours[ i ].person );
+
+						var personRecord = $scope.monthPersonHours[ i ];
+						var roleIndex = distinctRoles.indexOf(personRecord.role);
+						
+						if ($scope.monthPersonHours2[roleIndex] == null)
+						{
+							var hours = [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ];
+							
+							if (daysInMonth > 28)
+								hours.push({ totalHours: 0 })
+							
+							$scope.monthPersonHours2[roleIndex] = {
+								role: { resource: $scope.monthPersonHours[i].role },
+								hours: hours,
+								actualHours: 0,
+								expectedHours: 0,
+								collapsed: true,
+								persons: []
+							};
+						}
+						
+						var roleInfo = $scope.monthPersonHours2[roleIndex];
+						
+						roleInfo.persons.push(personRecord);
+						
+						personRecord.actualHours = 0;
+						personRecord.expectedHours = personRecord.hoursPerWeek * 4 + personRecord.hoursPerWeek * (daysInMonth - 28) / 5;
+						
+						roleInfo.expectedHours += personRecord.expectedHours;
+						
+						for( var k = 0; k < $scope.thisMonthDayLabels.length - 3; k++ ) {
+							personRecord.hours.push( {} );
+							personRecord.hours[ k ].totalHours = 0;
+							personRecord.hours[ k ].hoursEntries = [ ];
+
+//							var futureness = $scope.checkForFutureness( $scope.moment( $scope.startMonthDate ).add( 'days', k ).format( 'YYYY-MM-DD' ) );
+//							personRecord.hours[ k ].futureness = futureness;
+							for( var j = 0; j < $scope.thisWeekHours.length; j++ ) {
+								var date = new Date(Date.parse($scope.thisWeekHours[j].date));
+								if ((date.getDate() >= 1 + 7 * k && date.getDate() <= 7 + 7 * k)
+									&& ($scope.thisWeekHours[j].person.resource == uniqPersons[i])) {
+									personRecord.hours[ k ].hoursEntries.push( $scope.thisWeekHours[ j ] );
+									personRecord.hours[ k ].totalHours += $scope.thisWeekHours[ j ].hours;
+								}
+							}
+							
+							personRecord.actualHours += personRecord.hours[k].totalHours;
+							
+							roleInfo.hours[k].totalHours += personRecord.hours[k].totalHours;
+							roleInfo.actualHours += personRecord.hours[k].totalHours;
+						}
+					}
+				}
+			} );
+		} );
+	};
+
+	
 	$scope.checkForFutureness = function( date ) {
 		//flux capacitor
 		var a = moment( ).subtract( 'days', 1 );
@@ -2274,6 +2434,21 @@ else if( role.percentageCovered == 0 )
 	$scope.prevWeek = function( ) {
 		$scope.selectedWeekIndex -= 7;
 		$scope.showWeek( );
+	};
+	
+	$scope.currentMonth = function( ) {
+		$scope.selectedMonthIndex = $scope.moment().month();
+		$scope.showMonth();
+	};
+	
+	$scope.nextMonth = function( ) {
+		$scope.selectedMonthIndex++;
+		$scope.showMonth();
+	};
+
+	$scope.prevMonth = function( ) {
+		$scope.selectedMonthIndex--;
+		$scope.showMonth();
 	};
 	/**
 	 * Get Existing Project
