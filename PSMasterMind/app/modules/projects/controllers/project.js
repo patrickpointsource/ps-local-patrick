@@ -2213,6 +2213,7 @@ else if( role.percentageCovered == 0 )
 							
 							personRecord.actualHours += personRecord.hours[k].totalHours;
 							
+							roleInfo.lastPersonInfo = personRecord;
 							roleInfo.hours[k].totalHours += personRecord.hours[k].totalHours;
 							roleInfo.actualHours += personRecord.hours[k].totalHours;
 						}
@@ -2322,7 +2323,7 @@ else if( role.percentageCovered == 0 )
 							hoursPerWeek: hoursStartEndDatesMap[ uniqPersons[ i ] ].hoursPerWeek
 						} );
 
-						Resources.resolve( $scope.monthPersonHours[ i ].person );
+						
 
 						var personRecord = $scope.monthPersonHours[ i ];
 						var roleIndex = distinctRoles.indexOf(personRecord.role);
@@ -2346,6 +2347,8 @@ else if( role.percentageCovered == 0 )
 						
 						var roleInfo = $scope.monthPersonHours2[roleIndex];
 						
+						Resources.resolve( $scope.monthPersonHours[ i ].person );
+						
 						roleInfo.persons.push(personRecord);
 						
 						personRecord.actualHours = 0;
@@ -2362,6 +2365,7 @@ else if( role.percentageCovered == 0 )
 //							personRecord.hours[ k ].futureness = futureness;
 							for( var j = 0; j < $scope.thisWeekHours.length; j++ ) {
 								var date = new Date(Date.parse($scope.thisWeekHours[j].date));
+								
 								if ((date.getDate() >= 1 + 7 * k && date.getDate() <= 7 + 7 * k)
 									&& ($scope.thisWeekHours[j].person.resource == uniqPersons[i])) {
 									personRecord.hours[ k ].hoursEntries.push( $scope.thisWeekHours[ j ] );
@@ -2371,6 +2375,7 @@ else if( role.percentageCovered == 0 )
 							
 							personRecord.actualHours += personRecord.hours[k].totalHours;
 							
+							roleInfo.lastPersonInfo = personRecord;
 							roleInfo.hours[k].totalHours += personRecord.hours[k].totalHours;
 							roleInfo.actualHours += personRecord.hours[k].totalHours;
 						}
