@@ -69,6 +69,26 @@ var allowCrossDomain = function(req, res, next) {
     }
 };
 
+var appNames = ['MMNodeServer', 'MMNodeStaging', 'MMNodeDemo'];
+
+// parse command line arguments
+var useAppNames = false;
+
+var tmpArg;
+var i;
+
+for (i = 0; i < process.argv.length; i ++) {
+    tmpArg = process.argv[i].toString().replace('-', '');
+    tmpArg = tmpArg.split('=');
+    
+    if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'hostname')
+        hostName = tmpArg[1];
+    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'httpsport')
+        httpsPort = tmpArg[1];   
+    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'useappnames')
+        useAppNames = tmpArg[1].toLowerCase() == 'true';   
+}
+
 // setup middleware
 var app = express();
 
@@ -93,29 +113,58 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/public')); 
 app.use(express.static(__dirname + '/bower_components')); 
 
-app.use('/projects', projects);
-app.use('/people', people);
-app.use('/assignments', assignments);
-app.use('/notifications', notifications);
-app.use('/tasks', tasks);
-app.use('/roles', roles);
-app.use('/hours', hours);
-app.use('/configuration', configuration);
-app.use('/links', links);
-app.use('/skills', skills);
-app.use('/vacations', vacations);
-app.use('/securityRoles', securityRoles);
-app.use('/userRoles', userRoles);
-app.use('/upgrade', upgrade);
-
+if (!useAppNames) {
+    // Application paths that are protected
+    app.get('/', ensureLoggedIn('/login'),
+      function(req, res){
+             res.render('index');
+    });
+    
+    app.use('/projects', projects);
+    app.use('/people', people);
+    app.use('/assignments', assignments);
+    app.use('/notifications', notifications);
+    app.use('/tasks', tasks);
+    app.use('/roles', roles);
+    app.use('/hours', hours);
+    app.use('/configuration', configuration);
+    app.use('/links', links);
+    app.use('/skills', skills);
+    app.use('/vacations', vacations);
+    app.use('/securityRoles', securityRoles);
+    app.use('/userRoles', userRoles);
+    app.use('/upgrade', upgrade);
+} else {
+    var  i = 0;
+    
+    for (i = 0; i < appNames.length; i ++) {
+        // Application paths that are protected
+        app.get('/' + appNames[i] + '/', ensureLoggedIn('/' + appNames[i] + '/login'),
+          function(req, res){
+                 res.render('index');
+        });
+        
+        app.use('/' + appNames[i] + '/projects', projects);
+        app.use('/' + appNames[i] + '/people', people);
+        app.use('/' + appNames[i] + '/assignments', assignments);
+        app.use('/' + appNames[i] + '/notifications', notifications);
+        app.use('/' + appNames[i] + '/tasks', tasks);
+        app.use('/' + appNames[i] + '/roles', roles);
+        app.use('/' + appNames[i] + '/hours', hours);
+        app.use('/' + appNames[i] + '/configuration', configuration);
+        app.use('/' + appNames[i] + '/links', links);
+        app.use('/' + appNames[i] + '/skills', skills);
+        app.use('/' + appNames[i] + '/vacations', vacations);
+        app.use('/' + appNames[i] + '/securityRoles', securityRoles);
+        app.use('/' + appNames[i] + '/userRoles', userRoles);
+        app.use('/' + appNames[i] + '/upgrade', upgrade);
+    }
+}
 
 // Setup routes
-require('./server/routes/auth')(app, passport);
-
-// Application paths that are protected
-app.get('/', ensureLoggedIn('/login'),
-  function(req, res){
-	     res.render('index');
+require('./server/routes/auth')(app, passport, {
+    useAppNames: useAppNames,
+    appNames: appNames
 });
 
 // There are many useful environment variables available in process.env,
@@ -131,21 +180,7 @@ var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
 // the document or sample of each service.
 var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
 
-// parse command line arguments
-var tmpArg;
-var i;
-
-for (i = 0; i < process.argv.length; i ++) {
-    tmpArg = process.argv[i].toString().replace('-', '');
-    tmpArg = tmpArg.split('=');
-    
-    if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'hostname')
-        hostName = tmpArg[1];
-    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'httpsport')
-        httpsPort = tmpArg[1];   
-}
-
-console.log('hostName=' + hostName + ': httpsPort: ' + httpsPort);
+console.log('hostName=' + hostName + ': httpsPort: ' + httpsPort + ': useAppNames:');
 
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || hostName);
