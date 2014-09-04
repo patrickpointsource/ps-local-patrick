@@ -1,0 +1,47 @@
+<div ng-controller="SecurityGroupsCtrl">
+  <div class="row alert alert-success" ng-show="messages.length > 0">
+    <i class="fa fa-times pull-right cursor-pointer" ng-click="messages = []"></i>
+    <ul>
+      <li ng-repeat="message in messages">{{message}}</li>
+    </ul>
+  </div>
+  <div class="row security-roles">
+    <div style="margin-right: 25px;display: inline;">Select a group</div>
+    <div ng-repeat="group in securityGroups" style="display: inline;margin-left: 15px;">
+      <input type="radio" name="securityGroups" value="{{group.name}}" ng-model="selectedGroup.name" ng-click="selectGroup(group, $index)" ng-disabled="editMode"/> {{group.name}}
+    </div>
+    <div class="pull-right">
+      <button class="btn btn-default" ng-click="createGroup()" ng-disabled="creatingGroup">Create a group</button>
+    </div>
+  </div>
+  <div ng-show="editMode || creatingGroup">
+    <div ng-include src="'modules/admin/partials/editSecurityGroup.html'"></div>
+  </div>
+  <div class="row" ng-show="!editMode && !creatingGroup">
+    <div class="col-xs-12 col-sm-4">
+      <h4>GROUP NAME</h4>
+      <div style="padding-top: 10px;padding-left: 10px;font-size: 16px;font-weight: bold;">
+        {{selectedGroup.name}}
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-4">
+      <h4>MEMBERS</h4>
+      <div class="row security-members" ng-repeat="member in selectedGroupMembers">
+        <div class="col-xs-12">
+          <a href="#{{member.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{member.familyName}}, {{member.givenName}}</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-4">
+      <h4>PERMISSIONS</h4>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6" ng-repeat="permission in selectedGroup.resources">
+          <h5>{{permission.name.toUpperCase()}}</h5>
+          <ul>
+            <li ng-repeat="permissionName in permission.permissions" style="list-style-type: none;">{{mapPermission(permissionName)}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

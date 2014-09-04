@@ -485,3 +485,4 @@ module.exports.getItem = getItem;
 module.exports.VACATIONS_KEY = VACATIONS_KEY;
 module.exports.NOTIFICATIONS_KEY = NOTIFICATIONS_KEY;
 module.exports.SECURITY_ROLES_KEY = SECURITY_ROLES_KEY;
+module.exports.USER_ROLES_KEY = USER_ROLES_KEY;

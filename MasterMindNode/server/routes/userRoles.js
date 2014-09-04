@@ -27,6 +27,20 @@ router.post( '/', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
+router.put( '/:id', util.isAuthenticated, function( req, res ) {
+    var id = req.params.id;
+    if( id ) {
+        req.body._id = id;
+    }
+    userRoles.insertUserRoles( req.body, function( err, result ) {
+        if( err ) {
+            res.json( 500, err );
+        } else {
+            res.json( result );
+        }
+    } );
+} );
+
 router.delete( '/', util.isAuthenticated, function( req, res ) {
 	userRoles.deleteUserRoles( req.body, function( err, result ) {
 		if( err ) {

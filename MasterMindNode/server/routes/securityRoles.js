@@ -38,7 +38,7 @@ router.post( '/', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
-router.put( '/', util.isAuthenticated, function( req, res ) {
+router.put( '/:id', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.securityRoles.resourceName, securityResources.securityRoles.permissions.editSecurityRoles, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
@@ -57,9 +57,13 @@ router.put( '/', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
-router.delete( '/', util.isAuthenticated, function( req, res ) {
+router.delete( '/:id', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.securityRoles.resourceName, securityResources.securityRoles.permissions.editSecurityRoles, function( allowed ) {
 		if( allowed ) {
+		    var id = req.params.id;
+            if( id ) {
+                req.body._id = id;
+            }
 			securityRoles.deleteSecurityRole( req.body, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );

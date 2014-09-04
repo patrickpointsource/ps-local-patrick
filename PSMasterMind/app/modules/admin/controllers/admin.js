@@ -147,4 +147,31 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
       });
     };
     
+    $scope.editMode = false;
+    
+    $scope.edit = function() {
+      $scope.editMode = true;
+      
+      $scope.$broadcast("admin:edit");
+    };
+    
+    $scope.save = function() {
+      $scope.editMode = false;
+      
+      $scope.$broadcast("admin:save");
+    };
+    
+    $scope.cancel = function() {
+      $scope.editMode = false;
+      
+      $scope.$broadcast("admin:cancel");
+    };
+    
+    $scope.$on("securitygroups:create", function() {
+      $scope.editMode = true;
+    });
+    
+    $scope.$on("securitygroups:delete", function() {
+      $scope.editMode = false;
+    });
 }]);
