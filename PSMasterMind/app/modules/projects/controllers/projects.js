@@ -89,6 +89,7 @@ angular.module('Mastermind.controllers.projects')
         //          $scope.tableParams.total($scope.projects.length);
         //          $scope.tableParams.reload();
         //        }
+        $scope.hideSpinner = true;
       };
 
       $scope.toggleTableView = function() {

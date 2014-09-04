@@ -1,5 +1,9 @@
 <div class="row people-list" style="padding-top: 0px;">
-    <div class="col-xs-12">
+    <div class="col-xs-12 people-list-container">
+    	<div class="spinner-container" style="width: calc(100% - 30px);" ng-hide="hideSpinner">
+			<i class="fa fa-spinner fa-spin fa-3x"></i>
+		</div>
+	
         <div class="row people-header">
             <div class="col-xs-4 col-sm-4 col-md-5">
               <a class="header-name projects-header" ng-class="{ 'active': sortType == 'proj-asc' || sortType == 'proj-desc'}" ng-click="switchSort('proj')">PROJECT</a>

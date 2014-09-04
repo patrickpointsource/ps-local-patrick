@@ -348,6 +348,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		}
 
 		$scope.changeSort( $scope.sortType );
+		$scope.hideSpinner = true;
 	}
 	/**
 	 * display the month name from a month number (0 - 11)

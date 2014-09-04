@@ -588,9 +588,11 @@ else if( role.percentageCovered == 0 )
 
 						deferred.resolve( $scope.project );
 
-						$scope.$emit( 'project:loaded' );
+						
 
-						$scope.loadExecAndPeople( );
+						$scope.loadExecAndPeople( function() {
+						    $scope.$emit( 'project:loaded' );
+						});
 					} );
 				}, function( response ) {
 					if( response.data.reasons ) {
@@ -2401,20 +2403,33 @@ else if( role.percentageCovered == 0 )
 		return futureness;
 	};
 
-	$scope.loadExecAndPeople = function( ) {
+	$scope.loadExecAndPeople = function( cb ) {
+	    var execLoaded = false;
+	    var salesLoaded = false;
+	    
 		Resources.query( 'people', execQuery, fields, function( result ) {
 			$scope.execs = result;
 
 			$scope.getExecutiveSponsor( );
 			$scope.getExecutiveSponsorEmail( );
+			
+			execLoaded = true;
+			
+			if (execLoaded && salesLoaded && cb)
+                 cb();
 		} );
 		Resources.query( 'people', salesQuery, fields, function( result ) {
 			$scope.sales = result;
 
-			// $scope.$apply(function() {
+			
 			$scope.getSalesSponsor( );
 			$scope.getSalesSponsorEmail( );
-			// })
+			
+			salesLoaded = true;
+			
+			if (execLoaded && salesLoaded && cb)
+			     cb();
+			
 		} );
 
 	};
@@ -2472,10 +2487,11 @@ else if( role.percentageCovered == 0 )
 					$scope.tabSelected( '/summary' );
 				}
 
-				$scope.$emit( 'project:loaded' );
-
 				reloadShortDesc( );
-				$scope.loadExecAndPeople( );
+				
+				$scope.loadExecAndPeople( function() {
+				    $scope.$emit( 'project:loaded' );
+				});
 			} );
 		} );
 	}
@@ -2486,9 +2502,10 @@ else if( role.percentageCovered == 0 )
 		$scope.getAllRoleTypes( function( ) {
 			$scope.project = ProjectsService.create( );
 			$scope.handleProjectSelected( );
-			$scope.$emit( 'project:loaded' );
 
-			$scope.loadExecAndPeople( );
+			$scope.loadExecAndPeople( function() {
+			    $scope.$emit( 'project:loaded' );
+			});
 		} );
 	}
 
@@ -2683,6 +2700,10 @@ else if( role.percentageCovered == 0 )
 		}
 	};
 
+    $scope.$on('project:loaded', function() {
+        $scope.hideSpinner = true;
+    });
+    
 	$scope.JSON2CSV = function( project, hours ) {
 		var str = '';
 		var line = '';

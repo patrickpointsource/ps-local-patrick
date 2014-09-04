@@ -37,6 +37,8 @@ angular.module('Mastermind').controller('BookingForecastCtrl', ['$scope', '$stat
           tooltipMode: "default"
         };
         $scope.data = result;
+        
+        $scope.$emit('bookingforecast:loaded');
       });
     };
   }

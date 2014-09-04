@@ -1205,7 +1205,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			return 0;
 
 		};
-
+		$scope.hideSpinner = false;
+		
 		if( $scope.isDisplayedWeek( ) )
 			$scope.showWeekDates( function( result ) {
 				HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), $scope.thisWeekDates[ 0 ], $scope.thisWeekDates[ 6 ] ).then( function( result ) {
@@ -1265,7 +1266,12 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 						if( cb )
 							cb( );
+							
+						
 					}
+					
+					$scope.hideSpinner = true;
+					$scope.$emit( 'hours:loaded');
 				} );
 			} );
 		else
@@ -1317,6 +1323,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						if( cb )
 							cb( );
 					}
+					
+					$scope.hideSpinner = true;
+					$scope.$emit( 'hours:loaded');
 				} );
 			} );
 	};

@@ -4,6 +4,8 @@ angular.module('Mastermind').controller('StaffingDeficitWidgetCtrl', ['$scope', 
 
     AssignmentService.getActiveProjectStaffingDeficits().then(function(count){
       $scope.activeProjectDeficitCount = count;
+      
+      $scope.$emit('staffingdeficit:loaded');
     });
 
   }

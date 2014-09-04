@@ -957,6 +957,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.recalculateCircle( selectedDay );
 	} );
 
+    $scope.$on('profile:loaded', function() {
+        $scope.hideProfileSpinner = true;
+    });
+    
 	$scope.recalculateCircle = function( day ) {
 		var selectedMoment = moment( day.date );
 		var startOfSelectedWeek = selectedMoment.day( 0 );
@@ -967,122 +971,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		} );
 
 	}
-	//    /**
-	//     * Load Skill Definitions to display names
-	//     */
-	//    Resources.get('skills').then(function(result){
-	//     var members = result.members;
-	//     var skillsMap = {};
-	//     for(var i = 0; i < members.length;i++){
-	//       var role = members[i];
-	//       skillsMap[members[i].resource] = members[i];
-	//     }
-	//     $scope.skillsMap = skillsMap;
-	//
-	//     $scope.getSkillsName = function(resource){
-	//       var ret = 'Unspecified';
-	//       if(resource && $scope.skillsMap[resource]){
-	//         ret = $scope.skillsMap[resource].title;
-	//       }
-	//       return ret;
-	//     }
-	//    });
-	//
-	//    /**
-	//     * Get the display label for a skill proficiency value
-	//     */
-	//    $scope.getSkillProficiencyLabel = function(proficiency){
-	//      var ret = 'Unspecified';
-	//
-	//      if(proficiency == 1){
-	//        ret = 'Some';
-	//      }
-	//      else if(proficiency == 2){
-	//        ret = 'Moderate';
-	//      }
-	//      else if(proficiency == 3){
-	//        ret = 'Mastered';
-	//      }
-	//
-	//      return ret;
-	//    };
-	//
-	//    /**
-	//     * Remove a skill from the profile
-	//     */
-	//    $scope.removeSkill = function(skill){
-	//      var list = $scope.skillsList;
-	//      var i = list.length;
-	//      while( i-- ) {
-	//          if( list[i].type.resource == skill.type.resource ) break;
-	//      }
-	//
-	//      list.splice(i, 1);
-	//    };
-	//    /**
-	//     * Initalizes the skills table this should only be done of the first skill
-	// add
-	//     */
-	//    $scope.initSkillsTable = function(){
-	//    //Table Parameters
-	//        var params = {
-	//          page: 1,            // show first page
-	//          count: 10,           // count per page
-	//          sorting: {
-	//            title: 'asc'     // initial sorting
-	//          }
-	//        };
-	//        $scope.skillsParams = new TableParams(params, {
-	//          counts: [],
-	//          total: $scope.skillsList?$scope.skillsList.length:0, // length of
-	// data
-	//          getData: function ($defer, params) {
-	//            var ret = $scope.skillsList?$scope.skillsList:[];
-	//            $defer.resolve(ret);
-	//          }
-	//        });
-	//    };
-	//    /**
-	//     * Get the list of Skill Types
-	//     */
-	//    Resources.get('skills').then(function(result){
-	//      $scope.skillTypes = result.members;
-	//    });
-	//
-	//    /**
-	//     * New Skill Object
-	//     */
-	//    $scope.newSkill = {type:{}, proficiency:0};
-	//
-	//    $scope.cancelAddSkill = function () {
-	//      $('#newSkillDialog').collapse('hide');
-	//    };
-	//
-	//    /**
-	//     * Add a new Skill to the profile
-	//     */
-	//    $scope.addSkill = function(){
-	//      //If skills array is missing default it to an empty array
-	//      if(!$scope.profile.skills){
-	//        $scope.profile.skills = [];
-	//        $scope.skillsList = $scope.profile.skills;
-	//      }
-	//
-	//      //Add skill to the list
-	//      $scope.profile.skills.push($scope.newSkill);
-	//
-	//      //Default the template for the next skill entry
-	//      $scope.newSkill = {type:{}, proficiency:0};
-	//
-	//      //Init skills table if not already done so
-	//      if(!$scope.skillsParams){
-	//        $scope.initSkillsTable();
-	//      }
-	//      else{
-	//        var total = $scope.skillsList?$scope.skillsList.length:0;
-	//        $scope.skillsParams.total(total);
-	//        $scope.skillsParams.reload();
-	//      }
-	//    };
+	
 
 } ] );

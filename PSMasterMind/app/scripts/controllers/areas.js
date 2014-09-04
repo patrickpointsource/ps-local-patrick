@@ -194,6 +194,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	 * Navigate to the dashboard.
 	 */
 	$scope.showHome = function( ) {
+	    $scope.hideDashboardSpinner = false;
+	    $scope.hoursLoaded = false;
+        $scope.bookingForecastLoaded = false;
+        $scope.staffingDeficitLoaded = false;
+    
 		ProjectsService.getMyCurrentProjects( $scope.me ).then( function( result ) {
 			$scope.myActiveProjects = result.data;
 			if( result.data.length > 0 ) {
@@ -319,6 +324,33 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	    $scope.notifications.splice(index, 1);
 	  });
 	}
+	
+	$scope.hoursLoaded = false;
+	$scope.bookingForecastLoaded = false;
+	$scope.staffingDeficitLoaded = false;
+	
+	$scope.checkAllLoaded = function() {
+	    if ($scope.hoursLoaded && $scope.bookingForecastLoaded && $scope.staffingDeficitLoaded)
+	       $scope.hideDashboardSpinner = true;
+	};
+	
+	$scope.$on('hours:loaded', function() {
+	    $scope.hoursLoaded = true;
+	    
+	    $scope.checkAllLoaded();
+	});
+	
+	$scope.$on('bookingforecast:loaded', function() {
+        $scope.bookingForecastLoaded = true;
+        
+        $scope.checkAllLoaded();
+    });
+    
+    $scope.$on('staffingdeficit:loaded', function() {
+        $scope.staffingDeficitLoaded = true;
+        
+        $scope.checkAllLoaded();
+    });
 
 } ] ).directive( 'backImg', function( ) {
 	return function( scope, element, attrs ) {
