@@ -6,9 +6,15 @@
     </ul>
   </div>
   <div class="row security-roles">
-    <div style="margin-right: 25px;display: inline;">Select a group</div>
-    <div ng-repeat="group in securityGroups" style="display: inline;margin-left: 15px;">
-      <input type="radio" name="securityGroups" value="{{group.name}}" ng-model="selectedGroup.name" ng-click="selectGroup(group, $index)" ng-disabled="editMode"/> {{group.name}}
+    <div class="col-xs-6 col-sm-1" style="margin-right: 25px;display: inline;">Select a group</div>
+    <div class="col-xs-6 col-sm-4" style="margin-left: 15px;display: inline;">
+      <select class="form-control"
+        name="securityGroups"
+        ng-options="g.name for g in securityGroups"
+        ng-model="selectedGroup"
+        ng-change="updateSelectedGroupMembers()"
+        ng-disabled="editMode">
+      </select>
     </div>
     <div class="pull-right">
       <button class="btn btn-default" ng-click="createGroup()" ng-disabled="creatingGroup">Create a group</button>

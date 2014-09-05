@@ -8,12 +8,6 @@ angular.module('Mastermind')
   .controller('SecurityGroupsCtrl',['$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'TasksService', '$location', 'ngTableParams',
   function ($scope, $rootScope, $filter, Resources, $state, $stateParams, TasksService, $location, TableParams) {
     
-    $scope.selectGroup = function(group, index) {
-      $scope.selectedGroup = group;
-      $scope.selectedGroupIndex = index;
-      $scope.updateSelectedGroupMembers();
-    };
-    
     $scope.getGroups = function() {
       Resources.query('securityroles', {}, {}, function(result) {
         $scope.securityGroups = result.members;
@@ -56,7 +50,7 @@ angular.module('Mastermind')
       } else {
         return key;
       }
-    }
+    };
     
     $scope.permissionDisplayMap = {
       viewTasks: "View Tasks",
@@ -95,7 +89,7 @@ angular.module('Mastermind')
       executeUpgrade: "Execute upgrade",
       viewSecurityRoles: "View permissions",
       editSecurityRoles: "Edit permissions"
-    }
+    };
     
     $scope.permissionChecked = function(collection, permission) {
       if($scope.selectedGroup) {
@@ -108,7 +102,7 @@ angular.module('Mastermind')
       }
       
       return false;
-    }
+    };
     
     $scope.setPermission = function(collection, permission) {
       if($scope.selectedGroup) {
@@ -122,7 +116,7 @@ angular.module('Mastermind')
           }
         }
       }
-    }
+    };
     
     $scope.fullResourcesMap = [
     {
@@ -225,6 +219,7 @@ angular.module('Mastermind')
         $scope.checkForDeletedMembers();
         $scope.checkForAddedMembers();
         $scope.messages.push("Your changes have been saved successfully.");
+        $scope.refreshGroups();
       });
     } else {
       $scope.checkForDeletedMembers();
@@ -314,13 +309,30 @@ angular.module('Mastermind')
   };
   
   $scope.deleteGroup = function() {
+    for(var i = 0; i < $scope.userRoles.length; i++) {
+      var userRole = $scope.userRoles[i];
+      var index = userRole.roles.indexOf($scope.selectedGroup.name);
+      if(index > -1) {
+        userRole.roles.splice(index, 1);
+        
+        Resources.update(userRole);
+      }
+    }
+    
     Resources.remove($scope.selectedGroup.resource).then(function(result) {
-      $scope.securityGroups.splice($scope.selectedGroupIndex, 1);
       $scope.$emit("securitygroups:delete");
+      $scope.refreshGroups();
+    });
+  };
+  
+  $scope.refreshGroups = function() {
+    Resources.query('securityroles', {}, {}, function(result) {
+      $scope.securityGroups = result.members;
+        
       if($scope.securityGroups.length > 0) {
-        $scope.selectGroup($scope.securityGroups[0], 0);
+        $scope.selectedGroup = $scope.securityGroups[0];
       }
     });
-  }
+  };
     
   }]);

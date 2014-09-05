@@ -16,6 +16,16 @@
             typeahead-on-select="memberToAddSelected($item, $model, $label)"/>
         </div>
       </div>
+      
+      <!--<div class="row">
+        <div class="col-xs-12">ADD OTHER GROUPS</div>
+        <div class="col-xs-12">
+          <input class="form-control" type="text" 
+            ng-model="groupToAdd" 
+            typeahead="group as group.name for group in peopleGroups | filter:{name:$viewValue}"
+            typeahead-on-select="groupToAddSelected($item, $model, $label)"/>
+        </div>
+      </div>-->
       <div class="row" ng-show="!creatingGroup">
         <div class="col-xs-6 col-sm3">
           <button class="btn btn-default" ng-click="deleteGroup()">Delete Group</button>
