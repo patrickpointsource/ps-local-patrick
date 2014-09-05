@@ -33,7 +33,7 @@ var validateGoogleToken = function( token, done ) {
 	} );
 };
 
-module.exports = function( passport ) {
+module.exports = function( passport, params ) {
 
 	passport.serializeUser( function( user, done ) {
 		done( null, user );
@@ -48,11 +48,16 @@ module.exports = function( passport ) {
 	passport.use( new BearerStrategy( {
 	}, validateGoogleToken ) );
 
+    var callbackUrl  = config.google.callbackHost + config.google.callbackURL;
+    
+    if (params.appName)
+        callbackUrl = 'https://' + params.hostName + ':' + params.httpsPort + config.google.callbackURL;
+        
 	// Google strategy automatically redirects to collect the token
 	passport.use( new GoogleStrategy( {
 		clientID: config.google.clientID,
 		clientSecret: config.google.clientSecret,
-		callbackURL: config.google.callbackURL
+		callbackURL: callbackUrl
 	}, function( accessToken, refreshToken, profile, done ) {
 		validateGoogleToken( accessToken, done );
 	} ) );

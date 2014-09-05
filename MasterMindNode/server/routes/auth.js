@@ -50,7 +50,7 @@ module.exports = function( app, passport, params ) {
 			// the process by verifying the assertion.  If valid, the user will be
 			// logged in.  Otherwise, authentication has failed.
 			app.get( '/' + params.appNames[ i ] + '/oauth2callback', passport.authenticate( 'google', {
-				successReturnToOrRedirect: '/',
+				successReturnToOrRedirect: '/'  + params.appNames[ i ] + '/',
 				failureRedirect: '/' + params.appNames[ i ] + '/login'
 			} ) );
 

@@ -14,7 +14,8 @@ var devenv = {
         google: {
             clientID: '141952851027.apps.googleusercontent.com',
             clientSecret: 'Jiy0OMx_vOzHK1mXSIGSoog1',
-            callbackURL: 'http://localhost:3000/oauth2callback',
+            callbackURL: '/oauth2callback',
+            callbackHost: 'http://localhost:3000',
             scope: ['https://www.googleapis.com/auth/plus.login'] 
         },
         cloudant: {

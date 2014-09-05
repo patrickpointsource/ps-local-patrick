@@ -819,11 +819,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.endWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex + 6 ).format( 'YYYY-MM-DD' );
 
 		var profileWeekHours = [ ];
-		for( var i = 0; i < $scope.hours.length; i++ ) {
+		
+		for( var i = 0; $scope.hours && i < $scope.hours.length; i++ ) {
 			var hour = $scope.hours[ i ];
 			var date = moment( hour.date );
 			var start = moment( $scope.startWeekDate );
 			var end = moment( $scope.endWeekDate );
+			
 			if( ( date.isAfter( start ) || date.isSame( start ) ) && ( date.isBefore( end ) || date.isSame( end ) ) ) {
 				profileWeekHours.push( hour );
 			}
@@ -947,7 +949,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		} else {
 			activeBorder.css( 'background-image', 'linear-gradient(' + ( degrees - 90 ) + 'deg, transparent 50%, #69DBCC 50%),linear-gradient(90deg, #ececec 50%, transparent 50%)' );
 		}
-	}
+	};
 
 	$scope.$on( 'hours:added', function( event, selectedDay ) {
 		$scope.recalculateCircle( selectedDay );
@@ -969,8 +971,5 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.initHours( true, function( ) {
 			$scope.handleHoursPeriodChanged( );
 		} );
-
-	}
-	
-
+	};
 } ] );

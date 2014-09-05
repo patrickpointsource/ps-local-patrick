@@ -408,6 +408,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			hoursLoggedEntry.find( '.mobile-visible' ).removeClass( 'mobile-visible' );
 			hoursLoggedEntry.find( '.fa-chevron-up' ).removeClass( 'fa-chevron-up' ).addClass( 'fa-chevron-down' );
 		}
+
 		hourEntry.hoursRecord.editMode = true;
 
 		hourEntry.hoursRecord.hoursEdited = hourEntry.hoursRecord.hours;
@@ -415,8 +416,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		// if (!hourEntry.hoursRecord.isAdded){
 		hourEntry.selectedItem = hourEntry.hoursRecord.project ? hourEntry.project : hourEntry.hoursRecord.task;
-		
-		setExpectedHoursPrompt(hourEntry, hourEntry.hoursRecord.project ? hourEntry.project : hourEntry.hoursRecord.task);
+
+		setExpectedHoursPrompt( hourEntry, hourEntry.hoursRecord.project ? hourEntry.project : hourEntry.hoursRecord.task );
 		// }
 
 		tagetInput = tagetInput ? tagetInput : hoursLoggedEntry.find( '[name="project-task-select"]' );
@@ -722,45 +723,40 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		$scope.$apply( function( ) {
 			hourEntry.selectedItem = item;
-			
-			setExpectedHoursPrompt(hourEntry, item);
+
+			setExpectedHoursPrompt( hourEntry, item );
 		} );
 
 	};
-	
-	function setExpectedHoursPrompt(hourEntry, selectedProject)
-	{
+
+	function setExpectedHoursPrompt( hourEntry, selectedProject ) {
 		var hoursSet = false;
-		
-		if (selectedProject && selectedProject.resource.indexOf("projects/") == 0 && selectedProject.roles)
-		{
-			var currentUser = $scope.getCurrentPerson();
-			
-			
-			for (var i = 0, count = selectedProject.roles.length; i < count; i++)
-			{
-				var role = selectedProject.roles[i];
-				
-				for (var j = 0, assigneeCount = role.assignees.length; j < assigneeCount; j++)
-				{
-					var assignee = role.assignees[j];
-					
-					if (assignee.person && assignee.person.resource == currentUser.about)
-					{
-						hourEntry.expectedHours = Math.round(assignee.hoursPerWeek / 5);
+
+		if( selectedProject && selectedProject.resource && selectedProject.resource.indexOf( "projects/" ) == 0 && selectedProject.roles ) {
+			var currentUser = $scope.getCurrentPerson( );
+
+			for( var i = 0, count = selectedProject.roles.length; i < count; i++ ) {
+				var role = selectedProject.roles[ i ];
+
+				for( var j = 0, assigneeCount = role.assignees.length; j < assigneeCount; j++ ) {
+					var assignee = role.assignees[ j ];
+
+					if( assignee.person && assignee.person.resource == currentUser.about ) {
+						hourEntry.expectedHours = Math.round( assignee.hoursPerWeek / 5 );
 						hoursSet = true;
 						break;
 					}
 				}
-				
-				if (hoursSet)
+
+				if( hoursSet )
 					break;
 			}
 		}
-		
-		if (!hoursSet)
+
+		if( !hoursSet )
 			hourEntry.expectedHours = null;
 	}
+
 
 	$scope.handleDocClick = function( e ) {
 		e = e ? e : window.event;
@@ -923,8 +919,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[                                 t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[                                 t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[                                   t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[                                   t.name.toLowerCase( ) ];
 				t.visible = t.name != "Vacation" && t.name != "Appointment";
 			} );
 
@@ -1148,14 +1144,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		var d1 = new Date( firstDay );
 		d1.setDate( d1.getDate( ) + 1 );
 		var day1 = d1.getDate( );
-		var month1 = $scope.months[                                 d1.getMonth( ) ];
+		var month1 = $scope.months[                                   d1.getMonth( ) ];
 		var month1Short = month1.substring( 0, 3 );
 		$scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
 
 		var d2 = new Date( lastDay );
 		d2.setDate( d2.getDate( ) + 1 );
 		var day2 = d2.getDate( );
-		var month2 = $scope.months[                                 d2.getMonth( ) ];
+		var month2 = $scope.months[                                   d2.getMonth( ) ];
 		var month2Short = month2.substring( 0, 3 );
 		var year = d2.getFullYear( );
 		$scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
@@ -1206,7 +1202,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		};
 		$scope.hideSpinner = false;
-		
+
 		if( $scope.isDisplayedWeek( ) )
 			$scope.showWeekDates( function( result ) {
 				HoursService.getHoursRecordsBetweenDates( $scope.getCurrentPerson( ), $scope.thisWeekDates[ 0 ], $scope.thisWeekDates[ 6 ] ).then( function( result ) {
@@ -1266,12 +1262,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 						if( cb )
 							cb( );
-							
-						
+
 					}
-					
+
 					$scope.hideSpinner = true;
-					$scope.$emit( 'hours:loaded');
+					$scope.$emit( 'hours:loaded' );
 				} );
 			} );
 		else
@@ -1323,9 +1318,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						if( cb )
 							cb( );
 					}
-					
+
 					$scope.hideSpinner = true;
-					$scope.$emit( 'hours:loaded');
+					$scope.$emit( 'hours:loaded' );
 				} );
 			} );
 	};
@@ -1654,8 +1649,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.$on( "$destroy", function( ) {
 		$scope.unbindEventHandlers( );
 	} );
-	
-	$rootScope.$on("hours:requiredRefresh", function() {
-	  $scope.hoursRequest( );
-	});
+
+	$rootScope.$on( "hours:requiredRefresh", function( ) {
+		$scope.hoursRequest( );
+	} );
 } ] );

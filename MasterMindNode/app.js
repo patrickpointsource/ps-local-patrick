@@ -44,30 +44,8 @@ var credentials = {key: privateKey, cert: certificate};
 
 var httpsPort = 8443;
 var hostName = 'localhost';
-
-// Configure passport
-require('./server/config/passport.js')(passport);
-
-var allowCrossDomain = function(req, res, next) {
-    //res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Origin', 'http://localhost:9000');
-
-    //res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Methods', 'GET');
-    res.header('Access-Control-Allow-Headers', 'accept, authorization');
-    //res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-
-    // intercept OPTIONS method
-    if ('OPTIONS' == req.method) {
-      res.header('Access-Control-Allow-Headers', 'accept, authorization, content-type');
-      res.header('Access-Control-Allow-Methods', 'POST, PUT, DELETE');
-      res.send(200);
-    }
-    else {
-      next();
-    }
-};
+var webSiteUrl = 'http://localhost:9000';
+var appName = '';
 
 var appNames = ['MMNodeServer', 'MMNodeStaging', 'MMNodeDemo'];
 
@@ -86,8 +64,46 @@ for (i = 0; i < process.argv.length; i ++) {
     else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'httpsport')
         httpsPort = tmpArg[1];   
     else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'useappnames')
-        useAppNames = tmpArg[1].toLowerCase() == 'true';   
+        useAppNames = tmpArg[1].toLowerCase() == 'true'; 
+    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'appname')
+        appName = tmpArg[1]; 
+    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'websiteurl')
+        webSiteUrl = tmpArg[1];   
 }
+
+if (appName) {
+   appNames = [appName];
+   useAppNames = true;
+}
+// Configure passport
+require('./server/config/passport.js')(passport, {
+    appName: appName,
+    hostName: hostName,
+    httpsPort: httpsPort
+});
+
+var allowCrossDomain = function(req, res, next) {
+    //res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Origin', webSiteUrl);
+
+    //res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Methods', 'GET');
+    res.header('Access-Control-Allow-Headers', 'accept, authorization');
+    //res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.header('Access-Control-Allow-Headers', 'accept, authorization, content-type');
+      res.header('Access-Control-Allow-Methods', 'POST, PUT, DELETE');
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
+
+
 
 // setup middleware
 var app = express();
@@ -180,7 +196,7 @@ var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
 // the document or sample of each service.
 var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
 
-console.log('hostName=' + hostName + ': httpsPort: ' + httpsPort + ': useAppNames:');
+console.log('hostName=' + hostName + ': httpsPort=' + httpsPort + ' : useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + webSiteUrl);
 
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || hostName);
