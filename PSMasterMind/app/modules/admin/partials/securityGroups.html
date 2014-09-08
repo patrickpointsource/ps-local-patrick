@@ -37,6 +37,11 @@
           <a href="#{{member.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{member.familyName}}, {{member.givenName}}</a>
         </div>
       </div>
+      <div class="row security-members" ng-repeat="group in selectedGroupGroups">
+        <div class="col-xs-12">
+          <a>{{group.name}}</a>
+        </div>
+      </div>
     </div>
     <div class="col-xs-12 col-sm-4">
       <h4>PERMISSIONS</h4>

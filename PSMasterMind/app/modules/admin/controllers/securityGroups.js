@@ -28,17 +28,45 @@ angular.module('Mastermind')
       });
     };
     
+    $scope.filterPeople = function() {
+      if($scope.selectedGroupMembers && $scope.selectedGroupMembers.length > 0) {
+        $scope.filteredPeople = _.filter($scope.people, function(person) {
+          for(var i = 0; i < $scope.selectedGroupMembers.length; i++) {
+            if($scope.selectedGroupMembers[i].resource == person.resource) {
+              return false;
+            }
+          }
+          
+          return true;
+        });
+      }
+    }
+    
     $scope.updateSelectedGroupMembers = function() {
       if($scope.selectedGroup) {
         $scope.selectedGroupMembers = [];
+        $scope.selectedGroupGroups = [];
         for(var i = 0; i < $scope.userRoles.length; i++) {
           var userRole = $scope.userRoles[i];
-          if(userRole.roles.indexOf($scope.selectedGroup.name) > -1) {
-            var person = _.findWhere($scope.people, { googleId: userRole.userId });
+          if(userRole.userId) {
+            if(_.findWhere(userRole.roles, { resource: $scope.selectedGroup.resource })) {
+              var person = _.findWhere($scope.people, { googleId: userRole.userId });
             
-            $scope.selectedGroupMembers.push(person);
+              $scope.selectedGroupMembers.push(person);
+            }
           }
+          
+          if(userRole.groupId) {
+            if(_.findWhere(userRole.roles, { resource: $scope.selectedGroup.resource })) {
+              var group = _.findWhere($scope.securityGroups, { resource: userRole.groupId });
+            
+              $scope.selectedGroupGroups.push(group);
+            }
+          }
+          
         }
+        
+        $scope.filterPeople();
       }
     };
     
@@ -210,6 +238,9 @@ angular.module('Mastermind')
   $scope.$on("admin:edit", function() {
     $scope.membersToDelete = [];
     $scope.membersToAdd = [];
+    $scope.groupsToAdd = [];
+    $scope.groupsToDelete = [];
+    $scope.filterGroups();
   });
   
   $scope.$on("admin:save", function() {
@@ -240,46 +271,99 @@ angular.module('Mastermind')
     $scope.selectedGroupMembers.splice(index, 1);
   };
   
+  $scope.removeGroup = function(group, index) {
+    $scope.groupsToDelete.push(group);
+    
+    $scope.selectedGroupGroups.splice(index, 1);
+  };
+  
   $scope.checkForDeletedMembers = function() {
+    // deleted people as members
     for(var i = 0; i < $scope.membersToDelete.length; i++) {
       var member = $scope.membersToDelete[i];
       
       var userRoleEntry = _.findWhere($scope.userRoles, { userId: member.googleId });
       
       if(userRoleEntry) {
-        var indexOfRole = userRoleEntry.roles.indexOf($scope.selectedGroup.name);
-        
-        if(indexOfRole > -1) {
-          userRoleEntry.roles.splice(indexOfRole, 1);
+        for(var j = 0; j < userRoleEntry.roles.length; j++) {
+          var role = userRoleEntry.roles[j];
+          if(role.resource && role.resource == $scope.selectedGroup.resource) {
+            userRoleEntry.roles.splice(j, 1);
           
-          Resources.update(userRoleEntry);
+            Resources.update(userRoleEntry);
+            
+            break;
+          }
+        }
+      }
+    }
+    
+    // deleted groups as members
+    for(var i = 0; i < $scope.groupsToDelete.length; i++) {
+      var group = $scope.groupsToDelete[i];
+      
+      var userRoleEntry = _.findWhere($scope.userRoles, { groupId: group.resource });
+      
+      if(userRoleEntry) {
+        for(var j = 0; j < userRoleEntry.roles.length; j++) {
+          var role = userRoleEntry.roles[j];
+          if(role.resource && role.resource == $scope.selectedGroup.resource) {
+            userRoleEntry.roles.splice(j, 1);
+          
+            Resources.update(userRoleEntry);
+            
+            break;
+          }
         }
       }
     }
   };
   
   $scope.checkForAddedMembers = function() {
+    //added people as members
     for(var i = 0; i < $scope.membersToAdd.length; i++) {
       var member = $scope.membersToAdd[i];
       
       var userRoleEntry = _.findWhere($scope.userRoles, { userId: member.googleId });
       
       if(userRoleEntry) {
-        var indexOfRole = userRoleEntry.roles.indexOf($scope.selectedGroup.name);
-        
-        if(indexOfRole == -1) {
-          userRoleEntry.roles.push($scope.selectedGroup.name);
+        if(!_.findWhere(userRoleEntry.roles, { resource: $scope.selectedGroup.resource })) {
+          userRoleEntry.roles.push({ name: $scope.selectedGroup.name, resource: $scope.selectedGroup.resource });
           
           Resources.update(userRoleEntry);
         }
       } else {
         var userRole = {
           userId: member.googleId,
-          roles: [ $scope.selectedGroup.name ]
+          roles: [ { name: $scope.selectedGroup.name, resource: $scope.selectedGroup.resource } ]
         };
         
         Resources.create('userroles', userRole).then(function(result) {
-          console.log("UserRoles entry for " + member.name + " created.");
+          console.log("UserRoles person entry for " + member.name + " created.");
+        });
+      }
+    }
+    
+    //added groups as members
+    for(var i = 0; i < $scope.groupsToAdd.length; i++) {
+      var group = $scope.groupsToAdd[i];
+      
+      var userRoleEntry = _.findWhere($scope.userRoles, { groupId: group.resource });
+      
+      if(userRoleEntry) {
+        if(!_.findWhere(userRoleEntry.roles, { resource: $scope.selectedGroup.resource })) {
+          userRoleEntry.roles.push({ name: $scope.selectedGroup.name, resource: $scope.selectedGroup.resource });
+          
+          Resources.update(userRoleEntry);
+        }
+      } else {
+        var userRole = {
+          groupId: group.resource,
+          roles: [ { name: $scope.selectedGroup.name, resource: $scope.selectedGroup.resource } ]
+        };
+        
+        Resources.create('userroles', userRole).then(function(result) {
+          console.log("UserRoles group entry for " + group.name + " created.");
         });
       }
     }
@@ -291,6 +375,43 @@ angular.module('Mastermind')
     $scope.selectedGroupMembers.push(model);
     
     this.memberToAdd = null;
+    
+    $scope.filterPeople();
+  };
+  
+  $scope.groupToAddSelected = function(item, model, label) {
+    $scope.groupsToAdd.push(model);
+    
+    $scope.selectedGroupGroups.push(model);
+    
+    this.groupToAdd = null;
+    
+    $scope.filterGroups();
+  };
+  
+  $scope.filterGroups = function() {
+    $scope.filteredGroups = _.filter($scope.securityGroups, function(group) {
+      if(group.resource == $scope.selectedGroup.resource) {
+        return false;
+      }
+      if($scope.groupsToAdd && $scope.groupsToAdd.length > 0) {
+        for(var i = 0; i < $scope.groupsToAdd.length; i++) {
+          if($scope.groupsToAdd[i].resource == group.resource) {
+            return false;
+          }
+        }
+        
+        return true;
+      }
+      
+      for(var i = 0; i < $scope.selectedGroupGroups.length; i++) {
+        if($scope.selectedGroupGroups[i].resource == group.resource) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
   };
   
   $scope.creatingGroup = false;
