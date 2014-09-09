@@ -1,6 +1,7 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
+var util = require('../util/util');
 
 module.exports.listPeople = function(query, callback) {
     dataAccess.listPeople(query, function(err, body){
@@ -75,3 +76,28 @@ module.exports.getMyPerson = function(callback) {
         }
     });
 };
+
+module.exports.getGivenNameByPersonResource = function(resource, callback) {
+	if (!resource) {
+		callback('No resource', null);
+	}
+	else {
+		util.getIDfromResource(resource, function (err, ID) {
+			if (err) {
+				callback (err, null);
+			}
+			else {
+				dataAccess.getItem(ID, function(err, person) {
+					if (!err) {
+						callback(null, person.name);
+					}
+					else {
+						callback(err, null);
+					}
+				});
+			}
+		});
+	}
+			
+};
+

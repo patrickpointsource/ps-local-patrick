@@ -52,7 +52,10 @@ module.exports.initialize = function() {
 			dataAccess.listUserRoles(null, function (err, roles) {
 				var userRoles = roles["members"];
 				for (var i=0; i < userRoles.length; i++) {
-					addRole(userRoles[i].userId, userRoles[i].roles)
+					var userId = userRoles[i].userId;
+					if (userId) {
+						addRole(userId, userRoles[i].roles)
+					}
 				}
 			});
 		
