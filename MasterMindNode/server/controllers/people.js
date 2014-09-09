@@ -77,7 +77,7 @@ module.exports.getMyPerson = function(callback) {
     });
 };
 
-module.exports.getGivenNameByPersonResource = function(resource, callback) {
+module.exports.getNameByPersonResource = function(resource, callback) {
 	if (!resource) {
 		callback('No resource', null);
 	}

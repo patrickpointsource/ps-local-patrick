@@ -137,25 +137,25 @@ module.exports.deleteProjectLink = function(projectId, linkId, obj, callback) {
 
 module.exports.insertProject = function(obj, callback) {
 	
-	// get given name for executiveSponsor person
+	// get name for executiveSponsor person
 	people.getGivenNameByPersonResource(obj.executiveSponsor.resource, function (err, executiveSponsorName) {		
 		if (!err) {
 			obj.executiveSponsor.name = executiveSponsorName;
 		}
 
-		// get given name for created person
+		// get name for created person
 		people.getGivenNameByPersonResource(obj.created.resource, function (err, createdName) {
 			if (!err) {
 				obj.created.name = createdName;
 			}
 
-			// get given name for modified person
-			people.getGivenNameByPersonResource(obj.modified.resource, function (err, modifiedName) {
+			// get name for modified person
+			people.getNameByPersonResource(obj.modified.resource, function (err, modifiedName) {
 				if (!err) {
 					obj.modified.name = modifiedName;
 				}
 				
-				// insert person
+				// insert project
 			    dataAccess.insertItem(obj._id, obj, dataAccess.PROJECTS_KEY, function(err, body){
 			        if (err) {
 			            console.log(err);
