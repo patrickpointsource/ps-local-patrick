@@ -1421,6 +1421,9 @@ else if( role.percentageCovered == 0 )
 					return assignments.members[ i ].person.resource == o.resource;
 				} );
 
+				if (!person)
+					continue;
+				
 				startD = new Date( assignments.members[ i ].startDate );
 				endD = new Date( assignments.members[ i ].endDate );
 
@@ -1661,6 +1664,7 @@ else if( role.percentageCovered == 0 )
 			$scope.organizeHours( $scope.hours );
 			$scope.initHoursPeriods( $scope.hours );
 			$scope.currentWeek( );
+			$scope.currentMonth();
 
 			if( $scope.hoursTableParams ) {
 				$scope.hoursTableParams.total( $scope.hours.length );
