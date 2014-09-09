@@ -50,8 +50,10 @@ module.exports = function( passport, params ) {
 
     var callbackUrl  = config.google.callbackHost + config.google.callbackURL;
     
-    if (params.appName)
-        callbackUrl = 'https://' + params.hostName + ':' + params.httpsPort + config.google.callbackURL;
+    if (params.callbackBaseUrl)
+        callbackUrl = params.callbackBaseUrl + config.google.callbackURL;
+    else if (params.appName)
+        callbackUrl = 'https://' + params.hostName + ':' + params.httpsPort + '/' + params.appName + config.google.callbackURL;
         
 	// Google strategy automatically redirects to collect the token
 	passport.use( new GoogleStrategy( {

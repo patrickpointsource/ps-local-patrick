@@ -46,7 +46,7 @@ var alignQuery = function( q, qP, pProp, pInd ) {
 	//return q;
 };
 
-var queryRecords = function( data, q, propName, resourcePrefix ) {
+var queryRecords = function( data, q, propName, resourcePrefix, postfix ) {
 	var res = {
 		about: data.about
 	};
@@ -57,12 +57,12 @@ var queryRecords = function( data, q, propName, resourcePrefix ) {
 
 	if( !propName ) {
 		//res.data = _.query( data.data,  q);
-		res.data = addResourceProperty( sift( q, data.data ), resourcePrefix );
+		res.data = addResourceProperty( sift( q, data.data ), resourcePrefix, postfix );
 
 		res.count = res.data.length;
 	} else {
 		//res[propName] = _.query( data.data,  q);
-		res[ propName ] = addResourceProperty( sift( q, data.data ), resourcePrefix );
+		res[ propName ] = addResourceProperty( sift( q, data.data ), resourcePrefix, postfix );
 
 		res.count = res[ propName ].length;
 	}
@@ -70,7 +70,7 @@ var queryRecords = function( data, q, propName, resourcePrefix ) {
 	return res;
 };
 
-var addResourceProperty = function( collection, resourcePrefix ) {
+var addResourceProperty = function( collection, resourcePrefix, postfix ) {
 	var tmpId;
 
 	for( var i = 0; i < collection.length; i++ ) {
@@ -81,6 +81,7 @@ var addResourceProperty = function( collection, resourcePrefix ) {
 
 		collection[ i ].resource = resourcePrefix + tmpId;
 	}
+	
 	return collection;
 };
 
@@ -142,14 +143,14 @@ var listAssignments = function( q, callback ) {
 	var result = memoryCache.getObject( ASSIGNMENTS_KEY );
 	if( result ) {
 		console.log( "read " + ASSIGNMENTS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, null, "assignments/" ) );
+		callback( null, queryRecords( result, q, null, "assignments/", "assignments" ) );
 	} else {
 		dbAccess.listAssignments( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + ASSIGNMENTS_KEY + " to memory cache" );
 				memoryCache.putObject( ASSIGNMENTS_KEY, body );
 			}
-			callback( err, queryRecords( body, q, null, "assignments/" ) );
+			callback( err, queryRecords( body, q, null, "assignments/", "assignments" ) );
 		} );
 	}
 

@@ -46,7 +46,7 @@ var httpsPort = 8443;
 var hostName = 'localhost';
 var webSiteUrl = 'http://localhost:9000';
 var appName = '';
-
+var oauthcbbaseurl = '';
 var appNames = ['MMNodeServer', 'MMNodeStaging', 'MMNodeDemo'];
 
 // parse command line arguments
@@ -68,16 +68,20 @@ for (i = 0; i < process.argv.length; i ++) {
     else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'appname')
         appName = tmpArg[1]; 
     else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'websiteurl')
-        webSiteUrl = tmpArg[1];   
+        webSiteUrl = tmpArg[1];  
+    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'oauthcbbaseurl')
+        oauthcbbaseurl = tmpArg[1];   
 }
 
 if (appName) {
    appNames = [appName];
    useAppNames = true;
 }
+
 // Configure passport
 require('./server/config/passport.js')(passport, {
     appName: appName,
+    callbackBaseUrl: oauthcbbaseurl,
     hostName: hostName,
     httpsPort: httpsPort
 });
@@ -196,7 +200,7 @@ var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
 // the document or sample of each service.
 var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
 
-console.log('hostName=' + hostName + ': httpsPort=' + httpsPort + ' : useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + webSiteUrl);
+console.log('hostName=' + hostName + ': httpsPort=' + httpsPort + ' : useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
 
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || hostName);
