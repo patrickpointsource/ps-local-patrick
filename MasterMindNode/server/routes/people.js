@@ -11,6 +11,8 @@ var context = require('../util/context');
 var router = express.Router();
 
 router.get('/', util.isAuthenticated, function(req, res){
+    
+	security.initialize();
 	
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 

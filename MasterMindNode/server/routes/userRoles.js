@@ -4,51 +4,73 @@ var userRoles = require( '../controllers/userRoles' );
 var express = require( 'express' );
 var util = require( '../util/auth' );
 
+var security = require( '../util/security' );
+var securityResources = require( '../util/securityResources' );
+
 var router = express.Router( );
 
 router.get( '/', util.isAuthenticated, function( req, res ) {
-	var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-	userRoles.listUserRoles( query, function( err, result ) {
+  security.isAllowed( req.user, res, securityResources.securityRoles.resourceName, securityResources.securityRoles.permissions.viewSecurityRoles, function( allowed ) {
+    if( allowed ) {
+	  var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
+	  userRoles.listUserRoles( query, function( err, result ) {
 		if( err ) {
 			res.json( 500, err );
 		} else {
 			res.json( result );
 		}
-	} );
+	  } );
+	}
+  } );
 } );
 
 router.post( '/', util.isAuthenticated, function( req, res ) {
-	userRoles.insertUserRoles( req.body, function( err, result ) {
+  security.isAllowed( req.user, res, securityResources.securityRoles.resourceName, securityResources.securityRoles.permissions.editSecurityRoles, function( allowed ) {
+    if( allowed ) {
+	  userRoles.insertUserRoles( req.body, function( err, result ) {
 		if( err ) {
 			res.json( 500, err );
 		} else {
-			res.json( result );
+		  security.initialize();
+	      res.json( result );
 		}
-	} );
+	  } );
+    }
+  } );
 } );
 
 router.put( '/:id', util.isAuthenticated, function( req, res ) {
-    var id = req.params.id;
-    if( id ) {
+  security.isAllowed( req.user, res, securityResources.securityRoles.resourceName, securityResources.securityRoles.permissions.editSecurityRoles, function( allowed ) {
+    if( allowed ) {
+      var id = req.params.id;
+      if( id ) {
         req.body._id = id;
-    }
-    userRoles.insertUserRoles( req.body, function( err, result ) {
+      }
+      userRoles.insertUserRoles( req.body, function( err, result ) {
         if( err ) {
             res.json( 500, err );
         } else {
-            res.json( result );
+          security.initialize();
+          res.json( result );
         }
-    } );
+      } );
+    }
+  } );
 } );
 
 router.delete( '/', util.isAuthenticated, function( req, res ) {
-	userRoles.deleteUserRoles( req.body, function( err, result ) {
+  security.isAllowed( req.user, res, securityResources.securityRoles.resourceName, securityResources.securityRoles.permissions.editSecurityRoles, function( allowed ) {
+    if( allowed ) {
+	  userRoles.deleteUserRoles( req.body, function( err, result ) {
 		if( err ) {
 			res.json( 500, err );
 		} else {
-			res.json( result );
+		  security.initialize();
+		  res.json( result );
 		}
-	} );
+	  } );
+	}
+  } );
 } );
 
 module.exports = router;

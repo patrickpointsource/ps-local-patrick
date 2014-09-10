@@ -31,7 +31,8 @@ router.post( '/', util.isAuthenticated, function( req, res ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
-					res.json( result );
+				  security.initialize();
+				  res.json( result );
 				}
 			} );
 		}
@@ -50,7 +51,8 @@ router.put( '/:id', util.isAuthenticated, function( req, res ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
-					res.json( result );
+				  security.initialize();
+			      res.json( result );
 				}
 			} );
 		}
@@ -68,7 +70,8 @@ router.delete( '/:id', util.isAuthenticated, function( req, res ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
-					res.json( result );
+				  security.initialize();
+				  res.json( result );
 				}
 			} );
 		}

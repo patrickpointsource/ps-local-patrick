@@ -2,6 +2,8 @@ var dataAccess = require('../data/dataAccess.js');
 
 var acl = require('acl');
 
+var _ = require('underscore');
+
 acl = new acl(new acl.memoryBackend());
 
 module.exports.isAllowed = function(userId, response, resource, permissions, callback) {
@@ -53,9 +55,23 @@ module.exports.initialize = function() {
 				var userRoles = roles["members"];
 				for (var i=0; i < userRoles.length; i++) {
 					var userId = userRoles[i].userId;
+					
+					var roleNames = getRoleNames(userRoles[i].roles);
+					
+					// give permissions to one member
 					if (userId) {
-						addRole(userId, userRoles[i].roles)
+						addRole(userId, roleNames);
 					}
+					
+					// give permissions to each member of group
+					var groupId = userRoles[i].groupId;
+					
+					try {
+					  givePermissionToGroup(groupId, userRoles, roleNames);
+					} catch(err) {
+					  console.log("Error in giving permissions to group: " + err);
+					}
+					
 				}
 			});
 		
@@ -63,7 +79,49 @@ module.exports.initialize = function() {
 	});
 };
 
+var getRoleNames = function(roles) {
+  var roleNames = [];
+  if(roles) {
+    for(var j = 0; j < roles.length; j++) {
+      roleNames.push(roles[j].name);
+    }
+  }
+  
+  return roleNames;
+}
 
+var givePermissionToGroup = function(groupId, userRoles, roleNames) {
+  if(groupId) {
+    var usersFromGroupMember = [];
+    var groupsFromGroupMember = [];
+
+    for(var i = 0; i < userRoles.length; i++) {
+      var userRole = userRoles[i];
+      if(_.findWhere(userRole.roles, { resource: groupId })) {
+        if(userRole.userId) {
+          usersFromGroupMember.push(userRole);
+        }
+        if(userRole.groupId) {
+          groupsFromGroupMember.push(userRole);
+        }
+      }
+    }
+    
+    // console.log("Giving permissions to users from group " + groupId);
+    if(usersFromGroupMember && usersFromGroupMember.length > 0) {
+      for(var u = 0; u < usersFromGroupMember.length; u++) {
+        addRole(usersFromGroupMember[u].userId, roleNames);
+      }
+    }
+    
+    if(groupsFromGroupMember && groupsFromGroupMember.length > 0) {
+      for(var u = 0; u < groupsFromGroupMember.length; u++) {
+        // console.log("Giving permissions to nested group " + groupsFromGroupMember[u].groupId);
+        givePermissionToGroup(groupsFromGroupMember[u].groupId, userRoles, getRoleNames(groupsFromGroupMember[u].roles));
+      }
+    }
+  }
+};
 
 var allow = function(role, resource, permission, callback) {
     acl.allow(role, resource, permission, function(err){
