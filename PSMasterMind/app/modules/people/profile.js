@@ -697,9 +697,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			resource: $scope.profile.about
 		};
 
-		if( !$scope.newHoursRecord.description ) {
-			$scope.newHoursRecord.description = 'No Description Entered';
-		}
+		//if( !$scope.newHoursRecord.description ) {
+		//	$scope.newHoursRecord.description = 'No Description Entered';
+		//}
 
 		Resources.create( 'hours', $scope.newHoursRecord ).then( function( ) {
 			$scope.initHours( );

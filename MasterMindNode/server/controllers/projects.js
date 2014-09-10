@@ -2,6 +2,7 @@
 
 var dataAccess = require('../data/dataAccess');
 var people = require('./people.js');
+var util = require('../util/util');
 
 module.exports.listProjects = function(query, callback) {
     dataAccess.listProjects(query, function(err, body){
@@ -138,19 +139,19 @@ module.exports.deleteProjectLink = function(projectId, linkId, obj, callback) {
 module.exports.insertProject = function(obj, callback) {
 	
 	// get name for executiveSponsor person
-	people.getGivenNameByPersonResource(obj.executiveSponsor.resource, function (err, executiveSponsorName) {		
+	people.getNameByResource(obj.executiveSponsor.resource, function (err, executiveSponsorName) {		
 		if (!err) {
 			obj.executiveSponsor.name = executiveSponsorName;
 		}
 
 		// get name for created person
-		people.getGivenNameByPersonResource(obj.created.resource, function (err, createdName) {
+		people.getNameByResource(obj.created.resource, function (err, createdName) {
 			if (!err) {
 				obj.created.name = createdName;
 			}
 
 			// get name for modified person
-			people.getNameByPersonResource(obj.modified.resource, function (err, modifiedName) {
+			people.getNameByResource(obj.modified.resource, function (err, modifiedName) {
 				if (!err) {
 					obj.modified.name = modifiedName;
 				}
@@ -183,4 +184,28 @@ module.exports.insertProjectLink = function(projectId, linkId, obj, callback) {
             callback(null, body);
         }
     });
+};
+
+module.exports.getNameByResource = function(resource, callback) {
+	if (!resource) {
+		callback('No resource', null);
+	}
+	else {
+		util.getIDfromResource(resource, function (err, ID) {
+			if (err) {
+				callback (err, null);
+			}
+			else {
+				dataAccess.getItem(ID, function(err, item) {
+					if (!err) {
+						callback(null, item.name);
+					}
+					else {
+						callback(err, null);
+					}
+				});
+			}
+		});
+	}
+			
 };
