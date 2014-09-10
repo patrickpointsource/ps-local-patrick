@@ -57,12 +57,12 @@ var queryRecords = function( data, q, propName, resourcePrefix, postfix ) {
 
 	if( !propName ) {
 		//res.data = _.query( data.data,  q);
-		res.data = addResourceProperty( sift( q, data.data ), resourcePrefix, postfix );
+		res.data = generateProperties( sift( q, data.data ), resourcePrefix, postfix );
 
 		res.count = res.data.length;
 	} else {
 		//res[propName] = _.query( data.data,  q);
-		res[ propName ] = addResourceProperty( sift( q, data.data ), resourcePrefix, postfix );
+		res[ propName ] = generateProperties( sift( q, data.data ), resourcePrefix, postfix );
 
 		res.count = res[ propName ].length;
 	}
@@ -70,7 +70,7 @@ var queryRecords = function( data, q, propName, resourcePrefix, postfix ) {
 	return res;
 };
 
-var addResourceProperty = function( collection, resourcePrefix, postfix ) {
+var generateProperties = function( collection, resourcePrefix, postfix ) {
 	var tmpId;
 
 	for( var i = 0; i < collection.length; i++ ) {
@@ -79,9 +79,15 @@ var addResourceProperty = function( collection, resourcePrefix, postfix ) {
 		else
 			tmpId = collection[ i ]._id.toString( );
 
-		collection[ i ].resource = resourcePrefix + tmpId;
+		if( postfix )
+			tmpId = resourcePrefix + tmpId + postfix;
+		else
+			tmpId = resourcePrefix + tmpId;
+
+		collection[ i ].resource = tmpId;
+		collection[ i ].about = tmpId;
 	}
-	
+
 	return collection;
 };
 
@@ -139,18 +145,31 @@ var listPeople = function( q, callback ) {
 };
 
 var listAssignments = function( q, callback ) {
-
 	var result = memoryCache.getObject( ASSIGNMENTS_KEY );
+	var finalRecords = [];
+	var i = 0;
+	
 	if( result ) {
 		console.log( "read " + ASSIGNMENTS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, null, "assignments/", "assignments" ) );
+		finalRecords = queryRecords( result, q, null, "projects/", "/assignments" );
+		
+		for (i = 0; i < finalRecords.data.length; i ++)
+		      generateProperties(finalRecords.data[i].members, "assignments/");
+		      
+		callback( null, finalRecords );
 	} else {
 		dbAccess.listAssignments( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + ASSIGNMENTS_KEY + " to memory cache" );
 				memoryCache.putObject( ASSIGNMENTS_KEY, body );
 			}
-			callback( err, queryRecords( body, q, null, "assignments/", "assignments" ) );
+			
+			finalRecords = queryRecords( body, q, null, "projects/", "/assignments" );
+			
+			for (i = 0; i < finalRecords.data.length; i ++)
+              generateProperties(finalRecords.data[i].members, "assignments/");
+              
+			callback( err, finalRecords );
 		} );
 	}
 
