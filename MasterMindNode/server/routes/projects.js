@@ -131,8 +131,8 @@ router.get( '/:id/roles/:roleId', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.put( '/:id/assigments', util.isAuthenticated, function( req, res ) {
-	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.editProjects, function( allowed ) {
+router.put( '/:id/assignments', util.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.editAssignments, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
 			projects.insertAssignment( id, req.body, function( err, result ) {

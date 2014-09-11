@@ -330,7 +330,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	$scope.staffingDeficitLoaded = false;
 	
 	$scope.checkAllLoaded = function() {
-	    if ($scope.hoursLoaded && $scope.bookingForecastLoaded && $scope.staffingDeficitLoaded)
+	    if ($scope.hoursLoaded && (!$scope.bookingForecastAvailable || $scope.bookingForecastLoaded) && (!$scope.staffingDeficitAvailable || $scope.staffingDeficitLoaded))
 	       $scope.hideDashboardSpinner = true;
 	};
 	

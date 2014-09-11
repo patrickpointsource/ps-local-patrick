@@ -14,41 +14,42 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 			title: 'asc' // initial sorting
 		}
 	};
-	
-	$scope.navigateToResourceTab = function (selectedRoleAndProject)
-    {
-        var params = {
-          tab: 'resourcefinder',
-          projectName: selectedRoleAndProject.projectName, 
-          projectResource: selectedRoleAndProject.projectResource,
-          roleId: selectedRoleAndProject.roleId,
-          role: selectedRoleAndProject.role,
-          startDate: selectedRoleAndProject.startDate,
-          endDate: selectedRoleAndProject.endDate
-        };
-        
-        $state.go("staffing", params);
-    };
-	
+
+	$scope.navigateToResourceTab = function( selectedRoleAndProject ) {
+		var params = {
+			tab: 'resourcefinder',
+			projectName: selectedRoleAndProject.projectName,
+			projectResource: selectedRoleAndProject.projectResource,
+			roleId: selectedRoleAndProject.roleId,
+			role: selectedRoleAndProject.role,
+			startDate: selectedRoleAndProject.startDate,
+			endDate: selectedRoleAndProject.endDate
+		};
+
+		$state.go( "staffing", params );
+	};
+
 	$scope.activeTab = 'staffing';
-	
+
 	var tab = $state.params.tab;
-	if(tab) {
-	  if(tab == 'resourcefinder') {
-	    $scope.activeTab = 'resourcefinder';
-	  }
+	if( tab ) {
+		if( tab == 'resourcefinder' ) {
+			$scope.activeTab = 'resourcefinder';
+		}
 	}
-	
-	$scope.tabSelected = function(tab) {
-	  $scope.activeTab = tab;
-	  
-	  $state.go('staffing', { tab: tab });
+
+	$scope.tabSelected = function( tab ) {
+		$scope.activeTab = tab;
+
+		$state.go( 'staffing', {
+			tab: tab
+		} );
 	}
-	
+
 	$scope.summarySwitcher = 'projects';
 	$scope.startDate = new Date( );
 	$scope.activeAndBacklogProjects = [ ];
-	
+
 	// TODO: change to css class
 	$scope.getProjectItemCss = function( isProjectItem ) {
 		var ret = "";
@@ -234,12 +235,12 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 				 * Loop through all the roles in the backlog projects
 				 */
 				var projectRolesInfo = {};
-								
+
 				for( var b = 0; b < roles.length; b++ ) {
 					var activeRole = roles[ b ];
 
 					if( activeRole.hoursNeededToCover > 0 || addAllRoles ) {
-						$scope.backlogProjectsList.push({
+						$scope.backlogProjectsList.push( {
 							clientName: proj.customerName,
 							projectName: proj.name,
 							title: proj.customerName + ': ' + proj.name,
@@ -251,21 +252,20 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 							endDate: activeRole.endDate,
 							rate: activeRole.rate.amount,
 							_rate: activeRole.rate
-						});
+						} );
 					}
-				
-					if( !projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] )
-                            projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] = 0;
 
-                    projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] += 1;
+					if( !projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] )
+						projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] = 0;
+
+					projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] += 1;
 				};
 
 				var rolesInfo = _.map( projectRolesInfo, function( val, key ) {
 					return key + '(' + val + ')';
 				} );
-				
-				
-				$scope.backlogProjectsList.push({
+
+				$scope.backlogProjectsList.push( {
 					clientName: proj.customerName,
 					projectName: proj.name,
 					title: proj.customerName + ': ' + proj.name,
@@ -317,21 +317,20 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 				if( !found )
 					fillBacklogDeficit( true );
 			}
-			
-			$scope.backlogProjectsList.sort(function(p1, p2){
-			    if (p1.projectName > p2.projectName ) 
-			         return 1;
-			    else if (p1.projectName < p2.projectName ) 
-                     return -1;
-                
-                else if (p1.projectName == p2.projectName && p1.isProjectItem && !p2.isProjectItem)
-                    return -1;
-                else if (p1.projectName == p2.projectName && !p1.isProjectItem && p2.isProjectItem)
-                    return 1;
-                    
-                
-                return 0;
-			});
+
+			$scope.backlogProjectsList.sort( function( p1, p2 ) {
+				if( p1.projectName > p2.projectName )
+					return 1;
+				else if( p1.projectName < p2.projectName )
+					return -1;
+				
+else if( p1.projectName == p2.projectName && p1.isProjectItem && !p2.isProjectItem )
+					return -1;
+				else if( p1.projectName == p2.projectName && !p1.isProjectItem && p2.isProjectItem )
+					return 1;
+
+				return 0;
+			} );
 
 			/*
 			 * Build out the table that contains the backlog Projects with resource deficits
@@ -386,34 +385,35 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 				/*
 				 * Loop through all the roles in the pipeline projects
 				 */
-				
+
 				var projectRolesInfo = {};
 
 				for( var b = 0; b < roles.length; b++ ) {
 					var activeRole = roles[ b ];
 
-					if( !projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] )
-                            projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] = 0;
+					if( $scope.rolesMap[ activeRole.type.resource ] && !projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] )
+						projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] = 0;
 
-                    projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] += 1;
+					if( $scope.rolesMap[ activeRole.type.resource ] )
+						projectRolesInfo[ $scope.rolesMap[ activeRole.type.resource ].abbreviation ] += 1;
 				};
-				
+
 				var rolesInfo = _.map( projectRolesInfo, function( val, key ) {
-                    return key + '(' + val + ')';
-                } );
-                
-                $scope.pipelineProjectsList.splice( unassignedIndex ++, 0, {
-                    clientName: proj.customerName,
-                    projectName: proj.name,
-                    title: proj.customerName + ': ' + proj.name,
-                    projectResource: proj.resource,
-                    hours: '-',
-                    role: rolesInfo.join( ', ' ),
-                    startDate: activeRole ? activeRole.startDate : null,
-                    endDate: activeRole ? activeRole.endDate : null,
-                    rate: activeRole ? activeRole.rate.amount : null,
-                    isProjectItem: true
-                } );
+					return key + '(' + val + ')';
+				} );
+
+				$scope.pipelineProjectsList.splice( unassignedIndex++, 0, {
+					clientName: proj.customerName,
+					projectName: proj.name,
+					title: proj.customerName + ': ' + proj.name,
+					projectResource: proj.resource,
+					hours: '-',
+					role: rolesInfo.join( ', ' ),
+					startDate: activeRole ? activeRole.startDate : null,
+					endDate: activeRole ? activeRole.endDate : null,
+					rate: activeRole ? activeRole.rate.amount : null,
+					isProjectItem: true
+				} );
 			};
 
 			var found = false;

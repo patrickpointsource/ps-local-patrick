@@ -207,6 +207,8 @@ router.put('/:id', util.isAuthenticated, function(req, res) {
                 if(err){
                     res.json(500, err);
                 } else {
+                    result.about = "people/" + result.id;
+                    
                     res.json(result);
                 }            
             });
