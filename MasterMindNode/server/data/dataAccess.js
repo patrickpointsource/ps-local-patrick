@@ -401,7 +401,8 @@ var listHours = function( q, callback ) {
 				callback( err, queryRecords( body, q, "members", "hours/" ) );
 			}
 		} );
-	}
+	} else 
+	   callback( 'error loading hours by passed query', null );
 };
 
 var insertItem = function( id, obj, type, callback ) {

@@ -48,7 +48,19 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			}
 
 			$scope.projectStates[ "active" ] = true;
+		} else if( tabName == 'hours' ) {
+			for( var state in $scope.projectStates )
+			$scope.projectStates[ state ] = false;
+
+			$scope.projectStates[ "all" ] = true;
+			$scope.projectStatesDisabled = false;
 		} else {
+			for( var state in $scope.projectStates )
+			$scope.projectStates[ state ] = false;
+
+            $scope.projectStatesDisabled = false;
+            
+			$scope.projectStates[ "all" ] = true;
 			$scope.reportTypes[ "custom" ] = true;
 			$scope.projectStatesDisabled = false;
 		}
@@ -73,7 +85,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 	$scope.reportPerson = '';
 
 	$scope.projectStates = {
-		all: false,
+		all: true,
 		active: false,
 		backlog: false,
 		forecasted: false,
@@ -390,8 +402,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				roles = groupRoleMapping[ prop ];
 
 				for( i = 0; roles && i < roles.length; i++ )
-					if( $scope.userRoles[                                                roles[ i ].toLowerCase( ) ] )
-						$scope.userRoles[                                                roles[ i ].toLowerCase( ) ].value = true;
+					if( $scope.userRoles[                                                 roles[ i ].toLowerCase( ) ] )
+						$scope.userRoles[                                                 roles[ i ].toLowerCase( ) ].value = true;
 			}
 		}
 
@@ -1082,7 +1094,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 								line += '--,';
 
 								var hoursPerMonth = Util.getHoursPerMonthFromRate( record.roles[ j ].rate );
-								
+
 								var monthTotal = 0;
 
 								if( record.roles[ j ].rate.type == 'monthly' )
@@ -1113,16 +1125,16 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 								line += record.roles[ j ].persons[ k ].name + ',';
 								line += hoursLogged + ',';
 								line += expectedHours + ',';
-                                
-                                var hourRate = 0;
-                                
-                                if( record.roles[ j ].rate.type == 'monthly' )
-                                    hourRate = record.roles[ j ].rate.amount / CONSTS.HOURS_PER_MONTH;
-                                else if( record.roles[ j ].rate.type == 'hourly' )
-                                    hourRate = record.roles[ j ].rate.amount;
-                                else if( record.roles[ j ].rate.type == 'weekly' )
-                                    hourRate = record.roles[ j ].rate.amount / CONSTS.HOURS_PER_WEEK;
-                                    
+
+								var hourRate = 0;
+
+								if( record.roles[ j ].rate.type == 'monthly' )
+									hourRate = record.roles[ j ].rate.amount / CONSTS.HOURS_PER_MONTH;
+								else if( record.roles[ j ].rate.type == 'hourly' )
+									hourRate = record.roles[ j ].rate.amount;
+								else if( record.roles[ j ].rate.type == 'weekly' )
+									hourRate = record.roles[ j ].rate.amount / CONSTS.HOURS_PER_WEEK;
+
 								var revenueExpected = ( expectedHours + hoursLogged ) * hourRate;
 
 								line += $scope.hoursToCSV.stringify( Util.formatCurrency( revenueExpected ) ) + ',';

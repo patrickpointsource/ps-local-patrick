@@ -1,7 +1,7 @@
 angular.module('Mastermind').controller('BookingForecastCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService',
   function ($scope, $state, $rootScope, Resources, ProjectsService) {
 
-    $scope.bookingForecastAvailable = true;
+    $rootScope.bookingForecastAvailable = true;
     
     /**
      * Booking Forecast Data
