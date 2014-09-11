@@ -2372,7 +2372,7 @@ else if( role.percentageCovered == 0 )
 							for( var j = 0; j < $scope.thisWeekHours.length; j++ ) {
 								var date = new Date(Date.parse($scope.thisWeekHours[j].date));
 								
-								if ((date.getDate() >= 1 + 7 * k && date.getDate() <= 7 + 7 * k)
+								if ((date.getUTCDate() >= 1 + 7 * k && date.getUTCDate() <= 7 + 7 * k)
 									&& ($scope.thisWeekHours[j].person.resource == uniqPersons[i])) {
 									personRecord.hours[ k ].hoursEntries.push( $scope.thisWeekHours[ j ] );
 									personRecord.hours[ k ].totalHours += $scope.thisWeekHours[ j ].hours;
