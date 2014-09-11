@@ -606,73 +606,77 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						nextProj.title = nextProj.customerName + ': ' + nextProj.name;
 						$scope.projects.push( nextProj );
 					}
-
+                    
+                    $scope.loadCurrentAssignments(person);
+                    
 					$scope.initHours( );
 				} );
 			} );
-
-			AssignmentService.getMyCurrentAssignments( person ).then( function( assignments ) {
-				$scope.assignments = assignments;
+		} );
+	};
+	
+	$scope.loadCurrentAssignments = function(person) {
+	  AssignmentService.getMyCurrentAssignments( person ).then( function( assignments ) {
+                $scope.assignments = assignments;
                 
                 console.log("Version: 9/10/2014");
                 console.log("getMyCurrentAssignments before cut: assignments.length", assignments.length);
                 
-				var k = 0;
-				var found = false;
+                var k = 0;
+                var found = false;
 
-				for( k = $scope.assignments.length - 1; k >= 0; k-- ) {
-					found = false;
+                for( k = $scope.assignments.length - 1; k >= 0; k-- ) {
+                    found = false;
 
-					found = _.find( $scope.availableProjects, function( p ) {
-						return p.resource == $scope.assignments[ k ].project.resource;
-					} )
-					if( !found )
-						$scope.assignments.splice( k, 1 );
-				};
+                    found = _.find( $scope.availableProjects, function( p ) {
+                        return p.resource == $scope.assignments[ k ].project.resource;
+                    } );
+                    if( !found )
+                        $scope.assignments.splice( k, 1 );
+                };
 
-				$scope.hasAssignments = assignments.length > 0;
-				
-				console.log("getMyCurrentAssignments after cut: assignments.length", assignments.length);
+                $scope.hasAssignments = assignments.length > 0;
+                
+                console.log("getMyCurrentAssignments after cut: assignments.length", assignments.length);
 
-				if( $scope.hasAssignments ) {
-					// Project Params
-					var params = {
-						page: 1, // show first page
-						count: 10, // count per page
-						sorting: {
-							startDate: 'asc' // initial sorting
-						}
-					};
-					$scope.tableParams = new TableParams( params, {
-						counts: [ ],
-						total: $scope.assignments.length, // length of data
-						getData: function( $defer, params ) {
-							var start = ( params.page( ) - 1 ) * params.count( ), end = params.page( ) * params.count( ),
+                if( $scope.hasAssignments ) {
+                    // Project Params
+                    var params = {
+                        page: 1, // show first page
+                        count: 10, // count per page
+                        sorting: {
+                            startDate: 'asc' // initial sorting
+                        }
+                    };
+                    $scope.tableParams = new TableParams( params, {
+                        counts: [ ],
+                        total: $scope.assignments.length, // length of data
+                        getData: function( $defer, params ) {
+                            var start = ( params.page( ) - 1 ) * params.count( ), end = params.page( ) * params.count( ),
 
-							// use build-in angular filter
-							orderedData = params.sorting( ) ? $filter('orderBy')( $scope.assignments, params.orderBy( ) ) : $scope.assignments, ret = orderedData.slice( start, end );
+                            // use build-in angular filter
+                            orderedData = params.sorting( ) ? $filter('orderBy')( $scope.assignments, params.orderBy( ) ) : $scope.assignments, ret = orderedData.slice( start, end );
 
-							$defer.resolve( ret );
-						}
-					} );
+                            $defer.resolve( ret );
+                        }
+                    } );
 
-					var cnt = 0;
-					for( var i = 0; i < assignments.length; i++ ) {
-						var myAssignment = assignments[ i ];
-						var now = moment( );
-						var start = moment( myAssignment.startDate );
-						if( start.isBefore( now ) || start.isSame( now, 'day' ) ) {
-							if( !myAssignment.endDate || moment( myAssignment.endDate ).isAfter( now ) || moment( myAssignment.endDate ).isSame( now, 'day' ) ) {
-								cnt += myAssignment.hoursPerWeek;
-							}
-						}
-					}
-					$scope.hoursRateValue = cnt;
-					$scope.hoursRateFromProjects = Math.round( 100 * cnt / HOURS_PER_WEEK );
-				}
-			} );
-		} );
-	}
+                    var cnt = 0;
+                    for( var i = 0; i < assignments.length; i++ ) {
+                        var myAssignment = assignments[ i ];
+                        var now = moment( );
+                        var start = moment( myAssignment.startDate );
+                        if( start.isBefore( now ) || start.isSame( now, 'day' ) ) {
+                            if( !myAssignment.endDate || moment( myAssignment.endDate ).isAfter( now ) || moment( myAssignment.endDate ).isSame( now, 'day' ) ) {
+                                cnt += myAssignment.hoursPerWeek;
+                            }
+                        }
+                    }
+                    $scope.hoursRateValue = cnt;
+                    $scope.hoursRateFromProjects = Math.round( 100 * cnt / HOURS_PER_WEEK );
+                }
+            } );
+	};
 
 	$scope.initProfile( );
 
