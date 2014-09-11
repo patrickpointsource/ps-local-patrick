@@ -28,7 +28,22 @@ angular.module('Mastermind').controller('BookingForecastCtrl', ['$scope', '$stat
 
         $scope.options = {
           axes: {
-            x: {key: 'x', type: 'date', tooltipFormatter: function (d) {return moment(d).fromNow();}},
+            x: { 
+                  key: 'x', 
+                  type: 'date', 
+                  labelFunction: function(t) {
+                    var momentX = moment(t);
+                    
+                    if(momentX.month() == 0) {
+                      return momentX.format("YYYY MMM");
+                    }
+                    
+                    return momentX.format("MMM");
+                  },
+                  tooltipFormatter: function (d) {
+                    return moment(d).fromNow();
+                  }
+                },
             y: {type: 'linear'}
           },
           series: [
