@@ -20,7 +20,8 @@ module.exports.listPeople = function(query, callback) {
 module.exports.insertPerson = function(obj, callback) {
 	
 	// get name for role
-	roles.getNameByResource(obj.primaryRole.resource, function (err, roleName) {		
+	var resource = (obj.primaryRole) ? obj.primaryRole.resource : "";
+	roles.getNameByResource(resource, function (err, roleName) {		
 		if (!err) {
 			obj.primaryRole.name = roleName;
 		}

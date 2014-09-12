@@ -3,6 +3,7 @@
 var dataAccess = require('../data/dataAccess');
 var people = require('./people');
 var projects = require('./projects');
+var google = require('googleapis');
 
 var inactivePeople = [
 	{fullName : "Mike Albano", date: "20140627_000000"},
@@ -20,18 +21,117 @@ var inactivePeople = [
 						
 						
 module.exports.executeUpgrade = function(callback) {
-	migrateServicesEstimate(function(err, body) {
-		if (!err) {
+	
+	syncPeople(function (err, resp) {
+		if (err) {
+			console.log("Error while sync people: " + err);
+		}
+		
+		migrateServicesEstimate(function(err, body) {
+			if (!err) {
+				console.log("Error while migrating service estimates: " + err);
+			}	
+
 			removeProjectEstimateFields(function (err, body) {
 				if (!err) {
-					markInactivePeople(callback);
+					console.log("Error while removing project estimate fields: " + err);
 				}
+				markInactivePeople(function (err, body) {
+					if (!err) {
+						console.log("Error while marking inactive people: " + err);
+					}
+					callback(null, null);
+				});
 			});
-		}	
+		});
+		
 	});
 	
 };
 
+var syncPeople = function(callback) {
+	
+	getGoogleProfiles( 
+		function(err, profiles) {
+			if (err) {
+				console.log("Error while getting google profiles: " + err);
+			}
+			else {
+	        	profiles.users.forEach(function(profile) {
+	        		var person = {};
+	        		people.getPersonByGoogleId (profile.id, function (err, personDB) {
+	        			if (!err) {
+	        				if (personDB.members) {
+	        					person = personDB.members[0];
+	        				}
+	        			}
+ 	        			if (personDB == null || (personDB.members[0] && personDB.members[0].isActive)) {
+		        			//profile.type = 'Google';
+		        			person.googleId = profile.id;
+		        			person.mBox = profile.primaryEmail;
+		        			person.name = profile.name;
+		        			if (profile.thumbnailPhotoUrl) {
+		        				person.thumbnail = profile.thumbnailPhotoUrl;
+		        			}
+		        			upgradeNameProperties(person);
+		        			console.log("insert data for person");
+		        			
+ 					        people.insertPerson(person, function (err, resp) {
+ 					        	if (err) {
+ 					        		console.log("error'" + err + "' for person " + person.name.fullName)
+ 					        	}
+ 					        	else {
+ 					        		console.log("User'" + person.name.fullName + "' has been updated");
+ 					        	}
+ 					        });
+
+	        			} 
+	        		});
+	        		
+	        	})
+				
+			}
+		}
+	);
+	callback(null, null);
+	
+}
+
+var upgradeNameProperties = function(obj) {
+	if (obj.givenName) {
+		delete obj.givenName;
+		delete obj.familyName;
+	}
+}
+
+var getGoogleProfiles = function(callback) {
+
+	var authClient = new google.auth.JWT(
+    '141952851027-1u88oc96rik8l6islr44ha65o984tn3q@developer.gserviceaccount.com',
+    'server/cert/key.pem',
+    null,
+    ['https://www.googleapis.com/auth/admin.directory.user.readonly', 'https://www.googleapis.com/auth/admin.directory.user.readonly'],
+    'psapps@pointsourcellc.com');
+
+	google
+	    .discover('admin', 'directory_v1')
+	    .execute(function(err, client) {
+	
+	        authClient.authorize(function(err, result) {
+	            if(err) {
+	            	callback (err, null);
+	            }
+	
+	            client.admin.users.list({
+	            	"domain": "pointsource.com" 
+	        	})
+	                .withAuthClient(authClient)
+	                .execute(function(err, result) {
+	                    callback (err, result);
+	            });
+	        });
+	    });    
+}
 
 var migrateServicesEstimate = function(callback) {
 	projects.listProjects(null, function(err, body){
