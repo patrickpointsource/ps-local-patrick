@@ -1,6 +1,7 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
+var util = require('../util/util');
 
 module.exports.listRoles = function(q, callback) {
     dataAccess.listRoles(q, function(err, body){
@@ -45,4 +46,28 @@ module.exports.getRole = function(id, callback) {
             callback(null, body);
         }
     });
+};
+
+module.exports.getNameByResource = function(resource, callback) {
+	if (!resource) {
+		callback('No resource', null);
+	}
+	else {
+		util.getIDfromResource(resource, function (err, ID) {
+			if (err) {
+				callback (err, null);
+			}
+			else {
+				dataAccess.getItem(ID, function(err, item) {
+					if (!err) {
+						callback(null, item.title);
+					}
+					else {
+						callback(err, null);
+					}
+				});
+			}
+		});
+	}
+			
 };
