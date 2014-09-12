@@ -100,9 +100,14 @@ var cloudantSearchByKeys = function(designName, viewName, startKeys, endKeys, ca
     */
 
     var db = nano.db.use(database);
+    var query = '{}';
     
-    var query = '{ "queries" : [ {"startkey" :  ' + JSON.stringify(startKeys) + ', "endkey" :    ' + JSON.stringify(endKeys) + ', "include_docs" : true}]}';
-
+    if (startKeys && endKeys)
+        query = '{ "queries" : [ {"startkey" :  ' + JSON.stringify(startKeys) + ', "endkey" :    ' + JSON.stringify(endKeys) + ', "include_docs" : true}]}';
+    else
+        //query = JSON.stringify({queries: [{keys: startKeys}]});
+        query = JSON.stringify({keys: startKeys});
+        
     nano.request({ db: database,
             method : 'post',
             path : '/_design/' + designName + '/_view/' + viewName,
@@ -137,6 +142,19 @@ module.exports.listHoursByStartEndDates = function(start, end, callback) {
          //callback(err, body);
     });
 };
+
+module.exports.listHoursByProjects = function(projects, callback) {
+    var processedProjects = _.map(projects, function(val, ind){
+        return ["Project", val];
+    });
+    
+    cloudantSearchByKeys('views', 'AllHoursInOne', processedProjects, null, function(err, body){
+         callback(err, prepareResponse(body.results && body.results.length == 1 ? body.results[0]: {}, 'hours', 'doc'));
+         //callback(err, body);
+    });
+};
+
+
 
 
 module.exports.listHoursByPerson = function(callback) {

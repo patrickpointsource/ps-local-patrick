@@ -335,18 +335,15 @@ var listNotifications = function( q, callback ) {
 
 };
 var listHours = function( q, callback ) {
-	/*
-	 dbAccess.listHours( q, function( err, body) {
-
-	 callback( err, queryRecords( body, q, "members", "hours/" ) );
-	 } );
-	 */
 	var onlyAndDates = q.$and && q.$and.length > 0;
 	var orEmpty = !q.$or || q.$or.length > 0;
-
+    var onlyProjects = q.$or && q.$or.length > 0;
+    
 	var startDate = null;
 	var endDate = null;
 
+    var projects = [];
+    
 	for( var i = 0; q.$and && i < q.$and.length; i++ ) {
 		onlyAndDates = onlyAndDates && q.$and[ i ].date;
 
@@ -360,6 +357,14 @@ var listHours = function( q, callback ) {
 			startDate = onlyAndDates && q.$and[ i ].date.$gte;
 
 	}
+	
+	// init onlyProjects flag
+	for( var i = 0; q.$or && i < q.$or.length; i++ ) {
+        onlyProjects = onlyProjects && q.$or[ i ]['project.resource'];
+
+        if (onlyProjects)
+            projects.push(q.$or[ i ]['project.resource']);
+    }
 
 	if( !q.project && q.person && q.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
 		dbAccess.listHoursByStartEndDates( [ "PersonDate", q.person.resource, startDate ], [ "PersonDate", q.person.resource, endDate ], function( err, body ) {
@@ -401,7 +406,17 @@ var listHours = function( q, callback ) {
 				callback( err, queryRecords( body, q, "members", "hours/" ) );
 			}
 		} );
-	} else 
+	} else if (onlyProjects) 
+	   dbAccess.listHoursByProjects( projects, function( err, body ) {
+            if( err ) {
+                console.log( err );
+                callback( 'error loading hours by start and end dates', null );
+            } else {
+                console.log( body );
+                callback( err, queryRecords( body, q, "members", "hours/" ) );
+            }
+        } );
+	else 
 	   callback( 'error loading hours by passed query', null );
 };
 
