@@ -21,14 +21,12 @@ module.exports.insertPerson = function(obj, callback) {
 	
 	// get name for role
 	roles.getNameByResource(obj.primaryRole.resource, function (err, roleName) {		
-		console.log("roleName=" + roleName);
 		if (!err) {
 			obj.primaryRole.name = roleName;
 		}
 
 		// upgrade name properties
 		upgradeNameProperties(obj, function (err, upgradedObj) {		
-			console.log("upgradedObj=" + upgradedObj);
 			if (!err) {
 				obj = upgradedObj;
 			}
