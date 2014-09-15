@@ -217,7 +217,7 @@
               <div class="col-xs-2 col-md-2" style="padding-left: 20px;">Roles</div>
               <div class="col-xs-1 col-md-1" ng-repeat="dayLabel in thisMonthDayLabels" style="padding-left: 20px;">{{thisMonthDayLabels[$index]}}</div>
             </div>
-            <div ng-repeat="roleHours in monthPersonHours2" style="margin-bottom: 5px;">
+            <div ng-repeat="roleHours in monthPersonHours2 track by $index" style="margin-bottom: 5px;">
            	  <div class="row">
 	              <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
 	                <a href="#{{personHours.person.resource}}">
