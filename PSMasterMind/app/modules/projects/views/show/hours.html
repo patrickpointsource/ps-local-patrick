@@ -373,8 +373,8 @@
 	                <button class="btn btn-hours btn-default">{{roleHours.expectedHours}}</button>
 	              </div>
 	              <div class="col-xs-1 col-md-1 col-lg-1">
-	              	<i class="fa fa-times" ng-if="roleHours.actualHours != roleHours.expectedHours"></i>
-              		<i class="fa fa-check" ng-if="roleHours.actualHours == roleHours.expectedHours"></i>
+	              	<i class="fa fa-times" ng-if="roleHours.actualHours < roleHours.expectedHours"></i>
+              		<i class="fa fa-check" ng-if="roleHours.actualHours >= roleHours.expectedHours"></i>
 	              </div>
               </div>
               <div ng-repeat="personHours in roleHours.persons" ng-if="!roleHours.collapsed" style="margin-top: 5px;" class="row">
@@ -411,8 +411,8 @@
                 <button class="btn btn-hours btn-default">{{personHours.hoursPerWeek}}</button>
               </div>
               <div class="col-xs-1 col-md-1 col-lg-1">
-              	<i class="fa fa-times" ng-if="personHours.actualHours != personHours.hoursPerWeek"></i>
-            	<i class="fa fa-check" ng-if="personHours.actualHours == personHours.hoursPerWeek"></i>
+              	<i class="fa fa-times" ng-if="personHours.actualHours < personHours.hoursPerWeek"></i>
+            	<i class="fa fa-check" ng-if="personHours.actualHours >= personHours.hoursPerWeek"></i>
               </div>
             </div>
             </div>
