@@ -2174,11 +2174,11 @@ else if( role.percentageCovered == 0 )
 							person: {
 								resource: uniqPersons[ i ]
 							},
-							role: hoursStartEndDatesMap[ uniqPersons[ i ] ].role,
+							role: hoursStartEndDatesMap[ uniqPersons[ i ] ] ? hoursStartEndDatesMap[ uniqPersons[ i ] ].role : null,
 							hours: [ ],
-							startDate: hoursStartEndDatesMap[ uniqPersons[ i ] ].startDate,
-							endDate: hoursStartEndDatesMap[ uniqPersons[ i ] ].endDate,
-							hoursPerWeek: hoursStartEndDatesMap[ uniqPersons[ i ] ].hoursPerWeek
+							startDate: hoursStartEndDatesMap[ uniqPersons[ i ] ] ? hoursStartEndDatesMap[ uniqPersons[ i ] ].startDate : null,
+							endDate: hoursStartEndDatesMap[ uniqPersons[ i ] ] ? hoursStartEndDatesMap[ uniqPersons[ i ] ].endDate : null,
+							hoursPerWeek: hoursStartEndDatesMap[ uniqPersons[ i ] ] ? hoursStartEndDatesMap[ uniqPersons[ i ] ].hoursPerWeek : 0
 						} );
 
 						Resources.resolve( $scope.weekPersonHours[ i ].person );
