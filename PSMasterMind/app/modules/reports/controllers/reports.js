@@ -4,7 +4,7 @@
  * Controller for Reports.
  */
 angular.module( 'Mastermind' ).controller( 'ReportsCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', 'Resources', 'AssignmentService', 'ProjectsService', 'TasksService', 'RolesService', 'HoursService', 'People', 'ngTableParams',
-function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentService, ProjectsService, TasksService, RolesService, HoursService, PeopleService, TableParams ) {
+function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentService, ProjectsService, TasksService, RolesService, HoursService, People, TableParams ) {
 
 	$scope.activeTab = {
 		'hours': true
@@ -25,7 +25,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 	$scope.peopleMap = {};
 	$scope.projectStatesDisabled = false;
 
-	$scope.roleDepartementMapping = PeopleService.getPeopleGroupMapping( );
+	$scope.roleDepartementMapping = People.getPeopleGroupMapping( );
 
 	$scope.tabSelected = function( tabName ) {
 		var prop;
@@ -212,7 +212,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			thumbnail: 1
 		};
 
-		Resources.query( 'people', peopleInRoleQuery, peopleInRoleFields, function( result ) {
+        People( peopleInRoleQuery, peopleInRoleFields, function( result ) {
+		//Resources.query( 'people', peopleInRoleQuery, peopleInRoleFields, function( result ) {
 			$scope.peopleList = _.map( result.members, function( m ) {
 				$scope.peopleMap[ m.resource ] = {
 					name: m.name
@@ -390,7 +391,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 		// map between people group names and roles: {"DEVELOPMENT": ["SSE", "SSA", "SE
 		// ...]}
-		var groupRoleMapping = PeopleService.getPeopleGroupMapping( );
+		var groupRoleMapping = People.getPeopleGroupMapping( );
 
 		var prop;
 		var roles;

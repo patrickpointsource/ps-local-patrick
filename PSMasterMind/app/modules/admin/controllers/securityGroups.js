@@ -5,8 +5,8 @@
  * Controller for handling the Details form.
  */
 angular.module('Mastermind')
-  .controller('SecurityGroupsCtrl',['$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'TasksService', '$location', 'ngTableParams',
-  function ($scope, $rootScope, $filter, Resources, $state, $stateParams, TasksService, $location, TableParams) {
+  .controller('SecurityGroupsCtrl',['$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'TasksService', '$location', 'People', 'ngTableParams',
+  function ($scope, $rootScope, $filter, Resources, $state, $stateParams, TasksService, $location, People, TableParams) {
     
     $scope.getGroups = function() {
       Resources.query('securityroles', {}, {}, function(result) {
@@ -19,7 +19,7 @@ angular.module('Mastermind')
         Resources.query('userroles', {}, {}, function(userRoles) {
           $scope.userRoles = userRoles.members;
           
-          Resources.query('people', {}, {}, function(people) {
+          People.query( {}, {}).then( function(people) {
             $scope.people = people.members;
             
             $scope.updateSelectedGroupMembers();

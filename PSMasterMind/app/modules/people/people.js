@@ -74,13 +74,13 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 		if( type == 'name-desc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return person.familyName.toLowerCase( );
+				return person.familyName ? person.familyName.toLowerCase( ): '';
 			} );
 		}
 
 		if( type == 'name-asc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return person.familyName.toLowerCase( );
+				return person.familyName ? person.familyName.toLowerCase( ): '';
 			} ).reverse( );
 		}
 
@@ -216,7 +216,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				thumbnail: 1
 			};
 
-			Resources.query( 'people', peopleInRoleQuery, peopleInRoleFields, function( result ) {
+			People.query( peopleInRoleQuery, peopleInRoleFields).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );
@@ -274,7 +274,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				thumbnail: 1
 			};
 
-			Resources.query( 'people', peopleQuery, peopleInRoleFields, function( result ) {
+			People.query( peopleQuery, peopleInRoleFields).then( function( result ) {
 				$scope.people = result.members;
 
 				$scope.fillPeopleProps( );
@@ -294,7 +294,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			};
 			//var fieldsEncoded = encodeURIComponent(JSON.stringify(fields));
 			//var url = 'people?fields='+fieldsEncoded;
-			Resources.query( 'people', {
+			People.query( {
 				'$and': [ {
 					'isActive': 'true'
 				} ]

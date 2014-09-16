@@ -75,11 +75,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
         $scope.managers = [ ];
 
-        Resources.query( 'people', managersQuery, {
+        //Resources.query( 'people', managersQuery, {
+        People.query({
           _id: 1,
           resource: 1,
           name: 1
-        }, function( result ) {
+        }).then( function( result ) {
           for( var i = 0; i < result.members.length; i++ ) {
             var manager = result.members[ i ];
             $scope.managers.push( {

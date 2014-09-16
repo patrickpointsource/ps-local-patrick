@@ -178,7 +178,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 				primaryRole: 1,
 				thumbnail: 1
 			};
-			Resources.query( 'people', pepInRolesQuery, pepInRolesFields, function( result ) {
+			query(pepInRolesQuery, pepInRolesFields).then( function( result ) {
 				deferred.resolve( result );
 			} );
 		} );
@@ -380,7 +380,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 			};
 		}
 
-		Resources.query( 'people', pepInRolesQuery, fields, function( result ) {
+		query( pepInRolesQuery, fields).then( function( result ) {
 			deferred.resolve( result );
 		} );
 
@@ -496,7 +496,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 						primaryRole: 1,
 						thumbnail: 1
 					};
-					Resources.query( 'people', pepInRolesQuery, pepInRolesFields, function( result ) {
+					query( pepInRolesQuery, pepInRolesFields).then( function( result ) {
 						deferred.resolve( result.members );
 					} );
 				}

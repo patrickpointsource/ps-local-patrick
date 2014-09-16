@@ -4,13 +4,15 @@
  * Handles application state in regards to the currently accessed Projects.
  */
 angular.module('Mastermind.services.projects')
-  .service('ProjectsService', ['$q', '$sanitize', 'Restangular', 'Resources', 'Project', function ($q, $sanitize, Restangular, Resources, Project) {
+  .service('ProjectsService', ['$q', '$sanitize', 'Restangular', 'Resources', 'Project', '$injector', function ($q, $sanitize, Restangular, Resources, Project, $injector) {
       /**
        * Create a reference to a server side resource for Projects.
        *
        * The query method returns an object with a property 'data' containing
        * the list of projects.
        */
+    var People;
+    
     var Resource,
 
       /**
@@ -1058,7 +1060,11 @@ angular.module('Mastermind.services.projects')
     		
     		var fields = {name : 1, primaryRole: 1, partTimeHours: 1};
         	
-        	Resources.query('people',query,fields,function(result){
+        	// avoid circular reference
+        	if (!People) { People = $injector.get('People'); }
+        	
+        	//Resources.query('people',query,fields,function(result){
+    	    People.query(query,fields).then(function(result){
         		var total = 0;
         		var roleType = null;
 				var utilizationRate = 100;

@@ -1060,7 +1060,8 @@ else if( role.percentageCovered == 0 )
 				'givenName': 1
 			};
 
-			Resources.query( 'people', roleQuery, fields, function( peopleResults ) {
+			//Resources.query( 'people', roleQuery, fields, function( peopleResults ) {
+	      People.query(roleQuery, fields).then( function( peopleResults ) {
 				var people = peopleResults.members;
 				//Set up lists of people in roles
 				for( var i = 0; i < people.length; i++ ) {
@@ -2411,7 +2412,10 @@ else if( role.percentageCovered == 0 )
 	    var execLoaded = false;
 	    var salesLoaded = false;
 	    
-		Resources.query( 'people', execQuery, fields, function( result ) {
+	    var fields = {};
+	    
+		//Resources.query( 'people', execQuery, fields, function( result ) {
+		People.query(execQuery, fields).then( function( result ) {
 			$scope.execs = result;
 
 			$scope.getExecutiveSponsor( );
@@ -2422,7 +2426,8 @@ else if( role.percentageCovered == 0 )
 			if (execLoaded && salesLoaded && cb)
                  cb();
 		} );
-		Resources.query( 'people', salesQuery, fields, function( result ) {
+		//Resources.query( 'people', salesQuery, fields, function( result ) {
+	   People.query(salesQuery, fields).then( function( result ) {
 			$scope.sales = result;
 
 			
