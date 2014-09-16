@@ -14,13 +14,13 @@ var emailSender = require('../util/emailSender');
 
 router.get('/', util.isAuthenticated, function(req, res){
     
-	/*emailSender.sendEmailFromPsapps('daniil.dziaruhin@pointsource.com', 'test subject', '<h1>test body</h1><br/><br/>PointSource (c)', function(err, info) {
+	emailSender.sendEmailFromPsapps('daniil.dziaruhin@pointsource.com', 'test subject', '<h1>test body</h1><br/><br/>PointSource (c)', function(err, info) {
 	  if(err) {
 	    console.log("error: ", err);
 	  }
 	  
 	  console.log("info: ", info);
-	});*/
+	});
 	
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 

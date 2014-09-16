@@ -16,10 +16,8 @@ var options = {
   //name: "pointsource.com",
   port: 465,
   auth: { 
-    //user: "psapps@pointsourcellc.com",
-    //pass: "ps@pp$777"
-    user: "donila2008@gmail.com",
-    pass: "Nuttertools123"
+    user: "psapps@pointsourcellc.com",
+    pass: "ps@pp$777"
   },
   //ignoreTLS: false,
   secure: true,
@@ -35,20 +33,10 @@ var transporter = nodemailer.createTransport(smtpTransport(options));
 var wellknown = require('nodemailer-wellknown');
 
 var config = wellknown("Gmail");
-console.log(config);
-
-/*var transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-      user: "psapps@pointsourcellc.com",
-      pass: "ps@pp$777"
-    }
-});*/
 
 module.exports.sendEmailFromPsapps = function(to, subject, body, callback) {
   var mailOptions = { 
-    //from: "MasterMind Notice <system@pointsourcellc.com>",
-    from: "donila2008@gmail.com",
+    from: "MasterMind Notice <system@pointsourcellc.com>",
     to: to,
     subject: subject,
     html: body,
