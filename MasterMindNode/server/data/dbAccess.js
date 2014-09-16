@@ -123,8 +123,11 @@ var cloudantSearchByKeys = function(designName, viewName, startKeys, endKeys, ca
 
 var prepareResponse = function(data, about, valProp) {
     var result = {};
-        
-    result.data = _.map(data.rows, function(val, key) {return val[valProp]});
+    
+    if(data) {
+      result.data = _.map(data.rows, function(val, key) {return val[valProp]});
+    }
+    
     result.count = result.data.length;
     result.about = about;
     
