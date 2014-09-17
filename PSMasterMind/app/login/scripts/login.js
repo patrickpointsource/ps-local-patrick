@@ -6,6 +6,12 @@ window.serverLocation = 'http://localhost:8080';
 window.clientBaseURL = 'http://0.0.0.0:9000/';
 window.restPath = '/MasterMindStaging/rest/';
 
+//local nodejs based development
+//window.serverLocation = 'https://dmz.mastermind.pointsource.us';
+//window.restPath = '/MMNodeServer/';
+//window.clientBaseURL = 'http://0.0.0.0:9000/';
+//window.fixUrl = true;
+
 //stage only
 //window.restPath = '/MasterMindStaging/rest/';
 //window.clientBaseURL = 'https://mastermind.pointsource.us/stage/';
@@ -20,6 +26,7 @@ window.restPath = '/MasterMindStaging/rest/';
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
 //window.restPath = '/MasterMindDemo/rest/';
 //window.clientBaseURL = 'https://mastermind.pointsource.us/demo/';
+
 
 var helper = (function () {
   var authResult = undefined;
