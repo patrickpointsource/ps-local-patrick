@@ -396,8 +396,13 @@ var listHours = function( q, callback ) {
 				callback( err, queryRecords( body, q, "members", "hours/" ) );
 			}
 		} );
-	} else if( q.person && !q.project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
-		dbAccess.listHoursByStartEndDates( [ "PersonDate", q.person.resource, '1900-01-01' ], [ "PersonDate", q.person.resource, '2050-01-01' ], function( err, body ) {
+	} else if( (q.person || q['person.resource']) && !q.project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
+		var resource = q['person.resource'] ? q['person.resource']: null;
+		
+		if (!resource)
+		  resource = q.person ? q.person.resource: null;
+		  
+		dbAccess.listHoursByStartEndDates( [ "PersonDate", resource, '1900-01-01' ], [ "PersonDate", resource, '2050-01-01' ], function( err, body ) {
 			if( err ) {
 				console.log( err );
 				callback( 'error loading hours by start and end dates', null );

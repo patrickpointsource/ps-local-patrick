@@ -129,7 +129,11 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				name = '';
 			}
 
-			$scope.executiveSponsor = name;
+            if (_.isString(name))
+			     $scope.executiveSponsor = name;
+			else if (_.isObject(name) && name.fullName)
+                 $scope.executiveSponsor = name.fullName;
+			
 			return name;
 		}
 	};
@@ -164,7 +168,12 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			name = '';
 		}
 
-		$scope.salesSponsor = name;
+        if (_.isString(name))
+             $scope.salesSponsor = name;
+        else if (_.isObject(name) && name.fullName)
+             $scope.salesSponsor = name.fullName;
+                 
+		//$scope.salesSponsor = name;
 
 		return name;
 	};
