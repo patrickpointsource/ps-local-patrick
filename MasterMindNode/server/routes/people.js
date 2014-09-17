@@ -13,7 +13,7 @@ var router = express.Router();
 var emailSender = require('../util/emailSender');
 
 router.get('/', util.isAuthenticated, function(req, res){
-    
+
 	emailSender.sendEmailFromPsapps('daniil.dziaruhin@pointsource.com', 'test subject', '<h1>test body</h1><br/><br/>PointSource (c)', function(err, info) {
 	  if(err) {
 	    console.log("error: ", err);
@@ -93,11 +93,11 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 				people.getPersonByGoogleId(req.user, function(err, result){
 			        if(err){
 			            res.json(500, err);
-			        } else {
-			            var me = result.members.length == 1 ? result.members[0]: {};
-			            
+			        } else {        
+			        	var me = result.members.length == 1 ? result.members[0]: {};
+			        	
 			            // todo: move this stuff into controller
-			            me.about = "people/" + me._id;
+			        	me.about = "people/" + me._id;
 			            
 			            res.json(me);
 			        }            
@@ -118,6 +118,38 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 	});
 
 });
+
+router.get('/:id/accessRights', util.isAuthenticated, function(req, res) {
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function(allowed){
+		if (allowed) 
+		{
+			console.log("Load access rights for user: " + req.user);
+			var id = req.params.id;
+			console.log("id=" + id);
+			if (id == 'me') {
+				
+				people.getAccessRightsByGoogleId(req.user, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {			            
+			            res.json(result);
+			        }            
+		   	 	});
+			}
+			else {
+			    people.getAccessRights(id, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+		}
+	});
+
+});
+
 /*
 router.get('/:id', function(req, res) {
 

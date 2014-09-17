@@ -16,84 +16,116 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 		'templateLocation': 'modules/widgets/hours/hours.html',
 		'available': [ 'you', 'me', 'them' ]
 	} ];
+	
+	// Should be set to true if we will use NodeJS backend.
+	$scope.useNodeJSAccessRightsService = false;
 
 	// Default dashboard view overwritten below if Exec or Management
 	$scope.dashboardScreen = 'views/dashboards/baseDashboard.html';
-
+		
 	//Load my profile for group and role checking
 	Resources.refresh( 'people/me' ).then( function( me ) {
 		$scope.me = me;
 
-		/**
-		 * Members of the 'Executives' group...
-		 *
-		 * Is in the Executive Sponsor List (queried from People collection)
-		 * Can edit any project (projectManagementAccess)
-		 * Can view all financial info (financeAccess)
-		 * Can make project assignments (projectManagementAccess)
-		 * View Staffing Deficits (projectManagementAccess)
-		 * Update Role Types (adminAccess)
-		 * Can Assign Users to Groups (adminAccess)
-		 */
-		if( me.groups && me.groups.indexOf( 'Executives' ) !== -1 ) {
-			$scope.financeAccess = true;
-			$scope.adminAccess = true;
-			$scope.projectManagementAccess = true;
-			$scope.executivesAccess = true;
-			$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
-		}
+		if (!$scope.useNodeJSAccessRightsService) {
+			/**
+			 * Members of the 'Executives' group...
+			 *
+			 * Is in the Executive Sponsor List (queried from People collection)
+			 * Can edit any project (projectManagementAccess)
+			 * Can view all financial info (financeAccess)
+			 * Can make project assignments (projectManagementAccess)
+			 * View Staffing Deficits (projectManagementAccess)
+			 * Update Role Types (adminAccess)
+			 * Can Assign Users to Groups (adminAccess)
+			 */
+			if( me.groups && me.groups.indexOf( 'Executives' ) !== -1 ) {
+				$scope.financeAccess = true;
+				$scope.adminAccess = true;
+				$scope.projectManagementAccess = true;
+				$scope.executivesAccess = true;
+				$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
+			}
 
-		/**
-		 * Members of the 'Management' group...
-		 *
-		 * Can edit any project (projectManagementAccess)
-		 * Can view all financial info (financeAccess)
-		 * Can make project assignments (projectManagementAccess)
-		 * View Staffing Deficits (projectManagementAccess)
-		 * Update Role Types (adminAccess)
-		 * Can Assign Users to Groups (adminAccess)
-		 */
-		if( me.groups && me.groups.indexOf( 'Management' ) !== -1 ) {
-			$scope.financeAccess = true;
-			$scope.adminAccess = true;
-			$scope.projectManagementAccess = true;
-			$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
-		}
+			/**
+			 * Members of the 'Management' group...
+			 *
+			 * Can edit any project (projectManagementAccess)
+			 * Can view all financial info (financeAccess)
+			 * Can make project assignments (projectManagementAccess)
+			 * View Staffing Deficits (projectManagementAccess)
+			 * Update Role Types (adminAccess)
+			 * Can Assign Users to Groups (adminAccess)
+			 */
+			if( me.groups && me.groups.indexOf( 'Management' ) !== -1 ) {
+				$scope.financeAccess = true;
+				$scope.adminAccess = true;
+				$scope.projectManagementAccess = true;
+				$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
+			}
 
-		/**
-		 * Members of the 'Project Management' group...
-		 *
-		 * Can edit any project (projectManagementAccess)
-		 * Can make project assignments (projectManagementAccess)
-		 * View Staffing Deficits (projectManagementAccess)
-		 */
-		if( me.groups && me.groups.indexOf( 'Project Management' ) !== -1 ) {
-			$scope.projectManagementAccess = true;
-			$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
-		}
+			/**
+			 * Members of the 'Project Management' group...
+			 *
+			 * Can edit any project (projectManagementAccess)
+			 * Can make project assignments (projectManagementAccess)
+			 * View Staffing Deficits (projectManagementAccess)
+			 */
+			if( me.groups && me.groups.indexOf( 'Project Management' ) !== -1 ) {
+				$scope.projectManagementAccess = true;
+				$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
+			}
 
-		/**
-		 * Members of the 'Sales' group...
-		 *
-		 * Is in the Sales Sponsor List (queried from People collection)
-		 * Can view all financial info (financeAccess)
-		 */
-		if( me.groups && me.groups.indexOf( 'Sales' ) !== -1 ) {
-			$scope.financeAccess = true;
-		}
+			/**
+			 * Members of the 'Sales' group...
+			 *
+			 * Is in the Sales Sponsor List (queried from People collection)
+			 * Can view all financial info (financeAccess)
+			 */
+			if( me.groups && me.groups.indexOf( 'Sales' ) !== -1 ) {
+				$scope.financeAccess = true;
+			}
 
-		//console.log('Logged In');
-		$scope.authState = true;
-		
-		$scope.notifications = [];
-        
-        if( me.groups && me.groups.indexOf( 'Management' ) !== -1 ) {
-          NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
-            $scope.notifications = result.members;
-          });
-        }
+			$scope.notifications = [];
+			if( me.groups && me.groups.indexOf( 'Management' ) !== -1 ) {
+				NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
+					$scope.notifications = result.members;
+				});
+			}
+			
+			//console.log('Logged In');
+			$scope.authState = true;
+			$scope.$emit( 'me:loaded' );
+		}
       
-		$scope.$emit( 'me:loaded' );
+		if ($scope.useNodeJSAccessRightsService) {
+			//Load profile access rights using NodeJS service
+			Resources.refresh( 'people/me/accessRights' ).then( function( accessRights ) {	
+				$scope.financeAccess = accessRights.hasFinanceRights;
+				$scope.adminAccess = accessRights.hasAdminRights;
+				$scope.projectManagementAccess = accessRights.hasProjectManagementRights;
+				$scope.executivesAccess = accessRights.hasExecutiveRights;
+
+				if( accessRights.hasExecutiveRights ) {
+					$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
+				}
+				if( accessRights.hasManagementRights || accessRights.hasProjectManagementRights ) {
+					$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
+				}
+
+				$scope.notifications = [];
+				if( accessRights.hasManagementRights) {
+					NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
+						$scope.notifications = result.members;
+					});
+				}	
+				
+				//console.log('Logged In');
+				$scope.authState = true;
+				$scope.$emit( 'me:loaded' );
+			});
+		}
+       
 	} );
 
 	/**
