@@ -19,9 +19,9 @@ var devenv = {
 			scope: [ 'https://www.googleapis.com/auth/plus.login' ]
 		},
 		cloudant: {
-			user: 'mmoroz76',
-			password: 'passw0rd',
-			url: 'https://mmoroz76:passw0rd@mmoroz76.cloudant.com'
+			user: 'tathendersheaderefortati',
+            password: 'e7wRT4nm0IgHGeWu07benG36',
+            url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/'
 		}
 	}
 };
