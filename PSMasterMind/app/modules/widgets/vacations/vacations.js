@@ -146,7 +146,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       var notification = {
         type: "Vacation",
         header: "Pending Paid Vacation Request",
-        text: "From " + $scope.me.name,
+        text: "From " + $scope.me.name.fullName,
         icon: "fa fa-clock-o",
         person: { resource: $scope.vacationManager.resource }
       };
@@ -241,7 +241,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	var notification = {
       type: "VacationCancel",
       header: "Cancelled Paid Vacation Request",
-      text: $scope.me.name + " has deleted out-of-office entry: " + vacation.startDate + " - " + vacation.endDate + ", " + vacation.type + ". Reason: " + $scope.cancellationReason,
+      text: $scope.me.name.fullName + " has deleted out-of-office entry: " + vacation.startDate + " - " + vacation.endDate + ", " + vacation.type + ". Reason: " + $scope.cancellationReason,
       icon: "fa fa-times-circle",
       person: { resource: vacation.vacationManager.resource }
     };
@@ -287,7 +287,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       var notification = {
         type: "Vacation",
         header: "Pending Paid Vacation Request",
-        text: "From " + $scope.me.name,
+        text: "From " + $scope.me.name.fullName,
         icon: "fa fa-clock-o",
         person: { resource: vacation.vacationManager.resource }
       };
