@@ -76,7 +76,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
         $scope.managers = [ ];
 
         //Resources.query( 'people', managersQuery, {
-        People.query({
+        People.query(managersQuery, {
           _id: 1,
           resource: 1,
           name: 1
