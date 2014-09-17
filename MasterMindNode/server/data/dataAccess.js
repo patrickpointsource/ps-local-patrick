@@ -3,6 +3,7 @@ var memoryCache = require( '../data/memoryCache.js' );
 var _ = require( 'underscore' );
 var sift = require( 'sift' );
 var config = require( '../config/config.js' );
+var dataFilter = require( './dataFilter' );
 
 var PROJECTS_KEY = 'Projects';
 var PEOPLE_KEY = 'People';
@@ -67,6 +68,21 @@ var queryRecords = function( data, q, propName, resourcePrefix, postfix ) {
 		res.count = res[ propName ].length;
 	}
 
+	return res;
+};
+
+var prepareRecords = function( data, propName, resourcePrefix, postfix ) {
+	var res = {
+		about: data.about
+	};
+
+	if( !propName ) {
+		res.data = generateProperties( data, resourcePrefix, postfix );
+		res.count = res.data.length;
+	} else {
+		res[ propName ] = generateProperties( data, resourcePrefix, postfix );
+		res.count = res[ propName ].length;
+	}
 	return res;
 };
 
@@ -139,6 +155,42 @@ var listPeople = function( q, callback ) {
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
 			callback( err, queryRecords( body, q, "members", "people/" ) );
+		} );
+	}
+
+};
+
+var listActivePeopleByRoleResources = function( roleResources, callback ) {
+
+	var result = memoryCache.getObject( PEOPLE_KEY );
+	if( result ) {
+		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterActivePeopleByRoleResources(roleResources, result.data), "members", "people/" ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterActivePeopleByRoleResources(roleResources, result.data), "members", "people/" ) );
+		} );
+	}
+
+};
+
+var listActivePeople = function(callback ) {
+
+	var result = memoryCache.getObject( PEOPLE_KEY );
+	if( result ) {
+		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterActivePeople(result.data), "members", "people/" ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterActivePeople(result.data), "members", "people/" ) );
 		} );
 	}
 
@@ -505,6 +557,8 @@ var getItem = function( id, callback ) {
 
 module.exports.listProjects = listProjects;
 module.exports.listPeople = listPeople;
+module.exports.listActivePeopleByRoleResources = listActivePeopleByRoleResources;
+module.exports.listActivePeople = listActivePeople;
 module.exports.listAssignments = listAssignments;
 module.exports.listTasks = listTasks;
 module.exports.listHours = listHours;

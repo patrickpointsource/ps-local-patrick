@@ -8,6 +8,7 @@ var security = require('../util/security');
 var securityResources = require('../util/securityResources');
 
 var context = require('../util/context');
+var attribute = require('../util/attribute');
 var router = express.Router();
 
 var emailSender = require('../util/emailSender');
@@ -17,15 +18,41 @@ router.get('/', util.isAuthenticated, function(req, res){
 		if (allowed) 
 		{
 		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-		    console.log("query=" + JSON.stringify(query));
-		
-		    people.listPeople(query, function(err, result){
-		        if(err){
-		            res.json(500, err);
-		        } else {
-		            res.json(result);
-		        }            
-		    });
+			var roleResources = attribute.getRootAttribute(query, 'primaryRole.resource');
+			if (!roleResources) {
+				roleResources = attribute.getORAttributes(query, 'primaryRole.resource');
+			}
+			if (roleResources) {
+			    people.listActivePeopleByRoleResources(roleResources, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+
+			}
+			else {
+				var googleId = attribute.getRootAttribute(query, 'googleId');
+				if (googleId) {
+					people.getPersonByGoogleId(googleId, function(err, result){
+			        if(err){
+				            res.json(500, err);
+				        } else {
+				            res.json(result);
+				        }            
+				    });
+				}
+				else {
+				    people.listActivePeople(function(err, result){
+				        if(err){
+				            res.json(500, err);
+				        } else {
+				            res.json(result);
+				        }            
+				    });
+				}
+			}
 		}
 	});
 }); 

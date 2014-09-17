@@ -16,6 +16,29 @@ module.exports.listPeople = function(query, callback) {
     });
 };
 
+module.exports.listActivePeopleByRoleResources = function(roleResources, callback) {
+	console.log("listActivePeopleByRoleResources.roleResources=" + roleResources);
+    dataAccess.listActivePeopleByRoleResources(roleResources, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading people', null);
+        } else {
+            //console.log(body);
+            callback(null, body);
+        }
+    });
+};
+
+module.exports.listActivePeople = function(callback) {
+    dataAccess.listActivePeople(function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading people', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
 
 module.exports.insertPerson = function(obj, callback) {
 	
