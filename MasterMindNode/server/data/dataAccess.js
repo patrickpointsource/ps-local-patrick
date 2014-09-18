@@ -131,6 +131,44 @@ var listProjects = function( q, callback ) {
 
 };
 
+var listProjectsByExecutiveSponsor = function( roleResource, callback ) {
+
+	var result = memoryCache.getObject( PROJECTS_KEY );
+	if( result ) {
+		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, result.data), null, "project/" ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, result.data), null, "project/" ) );
+		} );
+	}
+
+};
+
+
+var listProjectsBetweenDatesByTypesAndSponsors = function( startDate, endDate, types, isCommited, roleResources, callback ) {
+
+	var result = memoryCache.getObject( PROJECTS_KEY );
+	if( result ) {
+		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "project/" ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "project/" ) );
+		} );
+	}
+
+};
+
+
 var getProfileByGoogleId = function( id, callback ) {
 	var query = {
 		googleId: id
@@ -558,6 +596,7 @@ var getItem = function( id, callback ) {
 };
 
 module.exports.listProjects = listProjects;
+module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
 module.exports.listPeople = listPeople;
 module.exports.listActivePeopleByRoleResources = listActivePeopleByRoleResources;
 module.exports.listActivePeople = listActivePeople;

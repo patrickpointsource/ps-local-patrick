@@ -18,43 +18,52 @@ router.get('/', util.isAuthenticated, function(req, res){
 		if (allowed) 
 		{
 		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-			var roleResources = attribute.getRootAttribute(query, 'primaryRole.resource');
-			if (!roleResources) {
-				roleResources = attribute.getORAttributes(query, 'primaryRole.resource');
-			}
-			if (roleResources) {
-			    people.listActivePeopleByRoleResources(roleResources, function(err, result){
-			        if(err){
-			            res.json(500, err);
-			        } else {
-			            res.json(result);
-			        }            
-			    });
-
-			}
-			else {
-				var googleId = attribute.getRootAttribute(query, 'googleId');
-				if (googleId) {
-					people.getPersonByGoogleId(googleId, function(err, result){
-			        if(err){
-				            res.json(500, err);
-				        } else {
-				            res.json(result);
-				        }            
-				    });
-				}
-				else {
-				    people.listActivePeople(function(err, result){
-				        if(err){
-				            res.json(500, err);
-				        } else {
-				            res.json(result);
-				        }            
-				    });
-				}
-			}
+		    console.log("query=" + JSON.stringify(query));
+		
+		    people.listPeople(query, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
 		}
 	});
+}); 
+
+
+router.get('/roles/:roles', util.isAuthenticated, function(req, res){
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
+		if (allowed) 
+		{
+		    var roles = req.params.roles;
+		    people.listActivePeopleByRoleResources(roles, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+		            res.json(result);
+		        }            
+		    });
+		}
+	});
+}); 
+
+router.get('/google/:id', util.isAuthenticated, function(req, res){
+
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
+		if (allowed) 
+		{
+			var id = req.params.id;
+			people.getPersonByGoogleId(id, function(err, result){
+		        if(err){
+		            res.json(500, err);
+		        } else {
+				    res.json(result);
+				}            
+			});
+		}
+	});
+	
 }); 
 
 router.post('/', util.isAuthenticated, function(req, res) {
@@ -94,17 +103,11 @@ router.delete('/', util.isAuthenticated, function(req, res) {
 });
 
 router.get('/:id', util.isAuthenticated, function(req, res) {
-	console.log("req.headers=" + req.headers.authorization);
-	console.log("req.user=" + req.user);
-	console.log("securityResources=" + securityResources);
-	console.log("res=" + res);
 
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function(allowed){
 		if (allowed) 
 		{
-			console.log("test");
 			var id = req.params.id;
-			console.log("id=" + id);
 			if (id == 'me') {
 				
 				people.getPersonByGoogleId(req.user, function(err, result){

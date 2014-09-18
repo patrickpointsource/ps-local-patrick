@@ -1,33 +1,12 @@
 /**
- * Returns $or attribute values by attribute name
+ * Returns $or attribute values by parameter name
  * 
  * @param {Object} query
  * @param {Object} callback
  */
 
-module.exports.getORAttributes = function(query, attributeName) {
-	console.log(query);
-	console.log(attributeName);
-	
-	var result = [];
-	var orAttributes = query["$or"];
-
-	if (orAttributes instanceof Array) {
-		orAttributes.forEach(function (attribute) {
-			var val = attribute[attributeName];
-			if (val) {
-				result.push(val);
-			}
-		});
-	}
-	else {
-		var val = (orAttributes) ? orAttributes[attributeName] : null;
-		if (val) {
-			result.push(val);
-		}
-	}
-	
-	return (result.length > 0) ? result : null;
+module.exports.getORAttributes = function(query, parameterName) {
+	return getValuesByAttributeAndParameter(query, '$or', parameterName);
 };
 
 
@@ -41,4 +20,26 @@ module.exports.getORAttributes = function(query, attributeName) {
 module.exports.getRootAttribute = function(query, attributeName) {
 	var result = query[attributeName];
 	return (result) ? result : null;
+};
+
+
+getValuesByAttributeAndParameter = function(query, attributeName, parameterName) {
+	var result = [];
+	var attrs = query[attributeName];
+
+	if (attrs instanceof Array) {
+		attrs.forEach(function (attribute) {
+			var val = attribute[parameterName];
+			if (val) {
+				result.push(val);
+			}
+		});
+	}
+	else {
+		var val = (attrs) ? attrs[attributeName] : null;
+		if (val) {
+			result.push(val);
+		}
+	}
+	return (result.length > 0) ? result : null;
 };
