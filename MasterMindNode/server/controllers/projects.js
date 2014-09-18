@@ -20,6 +20,40 @@ module.exports.listProjects = function(query, callback) {
     });
 };
 
+
+module.exports.listProjectsByExecutiveSponsor = function(executiveSponsor, callback) {
+    dataAccess.listProjectsByExecutiveSponsor(executiveSponsor, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading listProjectsByExecutiveSponsor', null);
+        } else {
+            var result = body.data;
+            for (var i in result) {
+       		    result[i].resource = "projects/" + result[i]._id;
+        		result[i].about = "projects/" + result[i]._id;
+            }
+            callback(null, body);
+        }
+    });
+};
+
+module.exports.listProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, types, isCommited, roleResources, callback) {
+    dataAccess.listProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading listProjectsBetweenDatesByTypesAndSponsors', null);
+        } else {
+            var result = body.data;
+            for (var i in result) {
+       		    result[i].resource = "projects/" + result[i]._id;
+        		result[i].about = "projects/" + result[i]._id;
+            }
+            callback(null, body);
+        }
+    });
+};
+
+
 module.exports.getProject = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {

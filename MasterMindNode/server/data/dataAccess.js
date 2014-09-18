@@ -138,12 +138,12 @@ var listProjectsByExecutiveSponsor = function( roleResource, callback ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, result.data), null, "project/" ) );
 	} else {
-		dbAccess.listPeople( function( err, body ) {
+		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
-				memoryCache.putObject( PEOPLE_KEY, body );
+				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, result.data), null, "project/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, body.data), null, "project/" ) );
 		} );
 	}
 
@@ -157,12 +157,12 @@ var listProjectsBetweenDatesByTypesAndSponsors = function( startDate, endDate, t
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "project/" ) );
 	} else {
-		dbAccess.listPeople( function( err, body ) {
+		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
-				memoryCache.putObject( PEOPLE_KEY, body );
+				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "project/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, body.data), null, "project/" ) );
 		} );
 	}
 
@@ -597,6 +597,7 @@ var getItem = function( id, callback ) {
 
 module.exports.listProjects = listProjects;
 module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
+module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
 module.exports.listPeople = listPeople;
 module.exports.listActivePeopleByRoleResources = listActivePeopleByRoleResources;
 module.exports.listActivePeople = listActivePeople;

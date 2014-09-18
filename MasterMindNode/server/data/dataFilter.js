@@ -6,7 +6,7 @@
  * @param {Object} callback
  */
 
-module.exports.filterActivePeopleByRoleResources = function(roleResources, people) {
+var filterActivePeopleByRoleResources = function(roleResources, people) {
 	var result = [];
 	people.forEach(function(person) {
 		if (person.isActive && person.primaryRole && roleResources.toString().indexOf(person.primaryRole.resource) != -1) {
@@ -24,7 +24,7 @@ module.exports.filterActivePeopleByRoleResources = function(roleResources, peopl
  * @param {Object} callback
  */
 
-module.exports.filterActivePeople = function(people) {
+var filterActivePeople = function(people) {
 	var result = [];
 	people.forEach(function(person) {
 		if (person.isActive) {
@@ -42,7 +42,7 @@ module.exports.filterActivePeople = function(people) {
  * @param {Object} projects
  */
 
-module.exports.filterProjectsByExecutiveSponsor = function(roleResources, projects) {
+var filterProjectsByExecutiveSponsor = function(roleResources, projects) {
 	return filterProjectsByRoleResources('executiveSponsor', roleResources, projects);
 };
 
@@ -54,7 +54,7 @@ module.exports.filterProjectsByExecutiveSponsor = function(roleResources, projec
  * @param {Object} projects
  */
 
-module.exports.filterProjectsBySponsors = function(roleResources, projects) {
+var filterProjectsBySponsors = function(roleResources, projects) {
 	return filterProjectsByRoleResources(['executiveSponsor','salesSponsor'], roleResources, projects);
 };
 
@@ -82,14 +82,20 @@ var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, 
 	if (roleTypes instanceof Array) {
 		roleTypes.forEach(function(roleType) {
 			var res = project[roleType];
-			if (res && roleResources.toString().indexOf(res.resource) != 1) {
+			console.log("roleType=" + roleType);
+			console.log("res=" + JSON.stringify(res));
+			console.log("roleResources=" + roleResources);
+			console.log("project=" + project.name);
+			console.log("(res && roleResources.toString().indexOf(res.resource) != -1)=" + (res && roleResources.toString().indexOf(res.resource) != -1));
+			
+			if (res && roleResources.toString().indexOf(res.resource) != -1) {
 				return true;
 			}
 		});
 	}
 	else {
 		var res = project[roleTypes];
-		if (res && roleResources.toString().indexOf(res.resource) != 1) {
+		if (res && roleResources.toString().indexOf(res.resource) != -1) {
 			return true;
 		}
 	}
@@ -106,7 +112,7 @@ var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, 
  * @param {Object} projects
  */
 
-module.exports.filterProjectsBetweenDatesByTypes = function(startDate, endDate, types, isCommited, projects) {
+var filterProjectsBetweenDatesByTypes = function(startDate, endDate, types, isCommited, projects) {
 	var result = [];
 	projects.forEach(function(project) {
 		if (	
@@ -133,7 +139,19 @@ module.exports.filterProjectsBetweenDatesByTypes = function(startDate, endDate, 
  * @param {Object} projects
  */
 
-module.exports.filterProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, types, isCommited, roleResources, projects) {
+var filterProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, types, isCommited, roleResources, projects) {
+	console.log("projects=" + projects.length);
 	var filtered = ( roleResources != null ) ? filterProjectsBySponsors(roleResources, projects) : projects;
+	console.log("filtered=" + JSON.stringify(filtered));
 	return filterProjectsBetweenDatesByTypes(startDate, endDate, types, isCommited, filtered);
 };
+
+
+
+module.exports.filterActivePeopleByRoleResources = filterActivePeopleByRoleResources;
+module.exports.filterActivePeople = filterActivePeople;
+module.exports.filterProjectsByExecutiveSponsor = filterProjectsByExecutiveSponsor;
+module.exports.filterProjectsBySponsors = filterProjectsBySponsors;
+module.exports.filterProjectsByRoleResources = filterProjectsByRoleResources;
+module.exports.filterProjectsBetweenDatesByTypes = filterProjectsBetweenDatesByTypes;
+module.exports.filterProjectsBetweenDatesByTypesAndSponsors = filterProjectsBetweenDatesByTypesAndSponsors;

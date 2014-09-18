@@ -2,14 +2,16 @@
 
 var projects = require( '../controllers/projects' );
 var express = require( 'express' );
-var util = require( '../util/auth' );
+var auth = require( '../util/auth' );
+var util = require( '../util/util' );
 
 var security = require( '../util/security' );
 var securityResources = require( '../util/securityResources' );
+var attribute = require('../util/attribute');
 
 var router = express.Router( );
 
-router.get( '/', util.isAuthenticated, function( req, res ) {
+router.get( '/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
@@ -26,7 +28,59 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/:id', util.isAuthenticated, function( req, res ) {
+router.get( '/executiveSponsor/:executiveSponsor', auth.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
+		if( allowed ) {
+			var executiveSponsor = req.params.executiveSponsor;
+			if (executiveSponsor) {
+				projects.listProjectsByExecutiveSponsor( util.getFullID(executiveSponsor,'people'), function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json( result );
+					}
+				} );
+			}
+			else {
+				res.json( 500, 'No required id' );
+			}
+		}
+	} );
+
+} );
+
+router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
+		if( allowed ) {
+
+			var startDate = req.query.startDate;
+			var endDate = req.query.startDate;
+			var types = req.query.types;
+			var isCommited = req.query.isCommited;
+			var roleResources = req.query.roleResources;
+			
+			console.log("startDate=" + startDate);
+			console.log("endDate=" + endDate);
+			console.log("types=" + types);
+			console.log("isCommited=" + isCommited);
+			console.log("roleResources=" + roleResources);
+			
+			
+			projects.listProjectsBetweenDatesByTypesAndSponsors( startDate, endDate, types, isCommited, roleResources, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	} );
+
+} );
+
+router.get( '/:id', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
@@ -43,7 +97,7 @@ router.get( '/:id', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.post( '/:id/links', util.isAuthenticated, function( req, res ) {
+router.post( '/:id/links', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function( allowed ) {
 		if( allowed ) {
@@ -60,7 +114,7 @@ router.post( '/:id/links', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/:id/links', util.isAuthenticated, function( req, res ) {
+router.get( '/:id/links', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjectLinks, function( allowed ) {
 		if( allowed ) {
@@ -78,7 +132,7 @@ router.get( '/:id/links', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/:id/assignments', util.isAuthenticated, function( req, res ) {
+router.get( '/:id/assignments', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
@@ -96,7 +150,7 @@ router.get( '/:id/assignments', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/:id/roles', util.isAuthenticated, function( req, res ) {
+router.get( '/:id/roles', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewRoles, function( allowed ) {
 		if( allowed ) {
@@ -113,7 +167,7 @@ router.get( '/:id/roles', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/:id/roles/:roleId', util.isAuthenticated, function( req, res ) {
+router.get( '/:id/roles/:roleId', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewRoles, function( allowed ) {
 		if( allowed ) {
@@ -131,7 +185,7 @@ router.get( '/:id/roles/:roleId', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.put( '/:id/assignments', util.isAuthenticated, function( req, res ) {
+router.put( '/:id/assignments', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.editAssignments, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
@@ -147,7 +201,7 @@ router.put( '/:id/assignments', util.isAuthenticated, function( req, res ) {
 } );
 
 router.
-delete ( '/', util.isAuthenticated,
+delete ( '/', auth.isAuthenticated,
 function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function( allowed ) {
@@ -165,7 +219,7 @@ function( req, res ) {
 } );
 
 router.
-delete ( '/:id/links/:linkId', util.isAuthenticated,
+delete ( '/:id/links/:linkId', auth.isAuthenticated,
 function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function( allowed ) {
@@ -184,7 +238,7 @@ function( req, res ) {
 
 } );
 
-router.post( '/', util.isAuthenticated, function( req, res ) {
+router.post( '/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function( allowed ) {
 		if( allowed ) {
@@ -202,7 +256,7 @@ router.post( '/', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.put( '/:id/links/:linkId', util.isAuthenticated, function( req, res ) {
+router.put( '/:id/links/:linkId', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function( allowed ) {
 		if( allowed ) {
@@ -220,7 +274,7 @@ router.put( '/:id/links/:linkId', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.put( '/:id', util.isAuthenticated, function( req, res ) {
+router.put( '/:id', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function( allowed ) {
 		if( allowed ) {
