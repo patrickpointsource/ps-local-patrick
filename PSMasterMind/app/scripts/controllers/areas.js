@@ -17,17 +17,34 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 		'available': [ 'you', 'me', 'them' ]
 	} ];
 	
-	// Should be set to true if we will use NodeJS backend.
-	$scope.useNodeJSAccessRightsService = false;
-
 	// Default dashboard view overwritten below if Exec or Management
 	$scope.dashboardScreen = 'views/dashboards/baseDashboard.html';
 		
 	//Load my profile for group and role checking
 	Resources.refresh( 'people/me' ).then( function( me ) {
-		$scope.me = me;
+		$scope.me = me;   
 
-		if (!$scope.useNodeJSAccessRightsService) {
+		//Load profile access rights using NodeJS service
+		Resources.refresh( 'people/me/accessRights' ).then( function success( accessRights ) {	
+			$scope.financeAccess = accessRights.hasFinanceRights;
+			$scope.adminAccess = accessRights.hasAdminRights;
+			$scope.projectManagementAccess = accessRights.hasProjectManagementRights;
+			$scope.executivesAccess = accessRights.hasExecutiveRights;
+
+			if( accessRights.hasExecutiveRights ) {
+				$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
+			}
+			if( accessRights.hasManagementRights || accessRights.hasProjectManagementRights ) {
+				$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
+			}
+
+			$scope.notifications = [];
+			if( accessRights.hasManagementRights) {
+				NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
+					$scope.notifications = result.members;
+				});
+			}	
+		}).catch(function error(msg) {
 			/**
 			 * Members of the 'Executives' group...
 			 *
@@ -91,42 +108,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 				NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
 					$scope.notifications = result.members;
 				});
-			}
-			
+			}			
+		}).then(function notification(notification) { 
 			//console.log('Logged In');
 			$scope.authState = true;
 			$scope.$emit( 'me:loaded' );
-		}
-      
-		if ($scope.useNodeJSAccessRightsService) {
-			//Load profile access rights using NodeJS service
-			Resources.refresh( 'people/me/accessRights' ).then( function( accessRights ) {	
-				$scope.financeAccess = accessRights.hasFinanceRights;
-				$scope.adminAccess = accessRights.hasAdminRights;
-				$scope.projectManagementAccess = accessRights.hasProjectManagementRights;
-				$scope.executivesAccess = accessRights.hasExecutiveRights;
-
-				if( accessRights.hasExecutiveRights ) {
-					$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
-				}
-				if( accessRights.hasManagementRights || accessRights.hasProjectManagementRights ) {
-					$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
-				}
-
-				$scope.notifications = [];
-				if( accessRights.hasManagementRights) {
-					NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
-						$scope.notifications = result.members;
-					});
-				}	
-				
-				//console.log('Logged In');
-				$scope.authState = true;
-				$scope.$emit( 'me:loaded' );
-			});
-		}
-       
-	} );
+		});
+	});
 
 	/**
 	 * Determine the active area of the application for the user.

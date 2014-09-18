@@ -79,7 +79,10 @@ function( $q, $timeout, Restangular ) {
 				localStorage[ TIME_PREFIX + resource ] = new Date( );
 
 				deferred.resolve( newValue );
-			} );
+			})
+			.catch(function error(msg) {
+				deferred.reject(msg);
+			});
 		}, 10 );
 
 		return deferred.promise;
