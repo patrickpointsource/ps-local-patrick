@@ -90,6 +90,7 @@ var generateProperties = function( collection, resourcePrefix, postfix ) {
 	var tmpId;
 
 	for( var i = 0; i < collection.length; i++ ) {
+	  if(collection[ i ]._id) {
 		if( _.isObject( collection[ i ]._id ) )
 			tmpId = collection[i]._id[ "$oid" ].toString( );
 		else
@@ -102,6 +103,7 @@ var generateProperties = function( collection, resourcePrefix, postfix ) {
 
 		collection[ i ].resource = tmpId;
 		collection[ i ].about = tmpId;
+	  }
 	}
 
 	return collection;
