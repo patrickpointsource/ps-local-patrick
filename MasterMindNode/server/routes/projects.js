@@ -57,9 +57,9 @@ router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 
 			var startDate = req.query.startDate;
 			var endDate = req.query.endDate;
-			var types = req.query.types;
+			var types = req.query.type;
 			var isCommited = req.query.isCommited;
-			var roleResources = req.query.roleResources;
+			var roleResources = req.query.roleResource;
 			
 			projects.listProjectsBetweenDatesByTypesAndSponsors( startDate, endDate, types, isCommited, roleResources, function( err, result ) {
 				if( err ) {
