@@ -32,11 +32,11 @@ router.get('/', util.isAuthenticated, function(req, res){
 }); 
 
 
-router.get('/roles/:roles', util.isAuthenticated, function(req, res){
+router.get('/filter/', util.isAuthenticated, function(req, res){
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 
 		{
-		    var roles = req.params.roles;
+			var role = req.query.role;
 		    people.listActivePeopleByRoleResources(roles, function(err, result){
 		        if(err){
 		            res.json(500, err);
