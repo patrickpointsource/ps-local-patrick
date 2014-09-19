@@ -6,8 +6,8 @@ window.serverLocation = 'http://localhost:8080';
 window.clientBaseURL = 'http://0.0.0.0:9000/';
 window.restPath = '/MasterMindStaging/rest/';
 
-window.fixUrl = true;
-window.useAdoptedServices = true;
+window.fixUrl = false;
+window.useAdoptedServices = false;
 //local nodejs based development
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
 //window.restPath = '/MMNodeServer/';
