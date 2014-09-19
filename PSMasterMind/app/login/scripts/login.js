@@ -6,6 +6,8 @@ window.serverLocation = 'http://localhost:8080';
 window.clientBaseURL = 'http://0.0.0.0:9000/';
 window.restPath = '/MasterMindStaging/rest/';
 
+window.fixUrl = true;
+window.useAdoptedServices = true;
 //local nodejs based development
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
 //window.restPath = '/MMNodeServer/';
@@ -88,9 +90,9 @@ var helper = (function () {
             delete window.localStorage['access_token'];
             window.location = window.clientBaseURL+"login.html";
 
-            //		    	//Show the home page
-            //				$('#welcomeContent').show();
-            //				$('#appContent').hide();
+            //              //Show the home page
+            //              $('#welcomeContent').show();
+            //              $('#appContent').hide();
           },
           error: function (e) {
             // Handle the error
@@ -102,7 +104,7 @@ var helper = (function () {
           }
         });
       }else{
-      	window.location = window.clientBaseURL+"login.html";
+        window.location = window.clientBaseURL+"login.html";
       }
     }
   };
