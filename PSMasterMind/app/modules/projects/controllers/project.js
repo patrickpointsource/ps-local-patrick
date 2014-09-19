@@ -2091,7 +2091,7 @@ else if( role.percentageCovered == 0 )
 
 	$scope.hoursViewType = 'monthly';
 	$scope.selectedWeek = 0;
-	$scope.thisWeekDayLabels = [ "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT", "Actual Hours", "Expected Hours", "On Target" ];
+	$scope.thisWeekDayLabels = [ "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT", "Actual Hours", "Expected Hours", "Projected Hours" ];
 	$scope.newHoursRecord = {};
 
 	$scope.moment = moment;
@@ -2203,17 +2203,28 @@ else if( role.percentageCovered == 0 )
 								hours: [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ],
 								actualHours: 0,
 								expectedHours: 0,
+								projectedHours: 0,
 								collapsed: true,
 								persons: []
 							};
 						
 						var roleInfo = $scope.weekPersonHours2[roleIndex];
+						var role = _.find($scope.project.roles, function (role)
+						{
+							return role._id == roleInfo.role.resource.substring(roleInfo.role.resource.lastIndexOf("/") + 1);
+						});
 						
 						roleInfo.persons.push(personRecord);
 						
-						roleInfo.expectedHours += personRecord.hoursPerWeek;
-						
 						personRecord.actualHours = 0;
+						personRecord.expectedHours = personRecord.hoursPerWeek;
+						
+						if (role.rate.type == "monthly")
+							roleInfo.expectedHours = 180;
+						else if (role.rate.type == "weekly")
+							roleInfo.expectedHours = role.rate.fullyUtilized ? 45 : role.rate.hoursPerWeek;
+						else if (role.rate.type == "hourly")
+							roleInfo.expectedHours = role.rate.fullyUtilized ? 45 : role.rate.hoursPerMth * .25; // .25 == 12 / 48
 						
 						for( var k = 0; k < 7; k++ ) {
 							personRecord.hours.push( {} );
@@ -2235,6 +2246,20 @@ else if( role.percentageCovered == 0 )
 							roleInfo.hours[k].totalHours += personRecord.hours[k].totalHours;
 							roleInfo.actualHours += personRecord.hours[k].totalHours;
 						}
+						
+						var remainingWorkdays = 0;
+						var eDate = moment.min(personRecord.endDate, moment($scope.endMonthDate));
+						
+						if (personRecord.endDate && eDate.diff(new Date(), "days") > 0)
+							for (var d = moment(new Date()); d.month() == eDate.month(); d.add("1", "day"))
+								if (d.weekday() < 6)
+									remainingWorkdays++;
+						
+						personRecord.projectedHours = personRecord.actualHours + personRecord.hoursPerWeek / 5 * remainingWorkdays;
+						personRecord.capacity = personRecord.expectedHours - personRecord.actualHours <= remainingWorkdays * 9;
+						
+						roleInfo.projectedHours += personRecord.projectedHours;
+						roleInfo.capacity = roleInfo.expectedHours - roleInfo.actualHours <= remainingWorkdays * 9;
 					}
 				}
 			} );
@@ -2250,7 +2275,7 @@ else if( role.percentageCovered == 0 )
 		if (daysInMonth > 28)
 			$scope.thisMonthDayLabels.push(mmm + " 29" + (daysInMonth > 29 ? "-" + daysInMonth : ""));
 		
-		$scope.thisMonthDayLabels.push("Actual Hours", "Expected Hours", "On Target");
+		$scope.thisMonthDayLabels.push("Actual Hours", "Expected Hours", "Projected Hours");
 		
 		$scope.startMonthDate = selectedDate.startOf("month").format( 'YYYY-MM-DD' );
 		$scope.endMonthDate = selectedDate.endOf("month").format( 'YYYY-MM-DD' );
@@ -2341,8 +2366,6 @@ else if( role.percentageCovered == 0 )
 							hoursPerWeek: hoursStartEndDatesMap[ uniqPersons[ i ] ] ? hoursStartEndDatesMap[ uniqPersons[ i ] ].hoursPerWeek : 0
 						} );
 
-						
-
 						var personRecord = $scope.monthPersonHours[ i ];
 						var roleIndex = distinctRoles.indexOf(personRecord.role);
 						
@@ -2358,23 +2381,33 @@ else if( role.percentageCovered == 0 )
 								hours: hours,
 								actualHours: 0,
 								expectedHours: 0,
+								projectedHours: 0,
 								collapsed: true,
 								persons: []
 							};
 						}
 						
 						var roleInfo = $scope.monthPersonHours2[roleIndex];
+						var role = _.find($scope.project.roles, function (role)
+						{
+							return role._id == roleInfo.role.resource.substring(roleInfo.role.resource.lastIndexOf("/") + 1);
+						});
 						
 						Resources.resolve( $scope.monthPersonHours[ i ].person );
 						
 						roleInfo.persons.push(personRecord);
 						
 						personRecord.actualHours = 0;
-						personRecord.expectedHours = personRecord.hoursPerWeek * 4 + personRecord.hoursPerWeek * (daysInMonth - 28) / 5;
+						personRecord.expectedHours = personRecord.hoursPerWeek * 4; // 4 == 48 / 12
 						
-						roleInfo.expectedHours += personRecord.expectedHours;
+						if (role.rate.type == "monthly")
+							roleInfo.expectedHours = 180;
+						else if (role.rate.type == "weekly")
+							roleInfo.expectedHours = role.rate.fullyUtilized ? 180 : role.rate.hoursPerWeek * 4; // 4 == 48 / 12
+						else if (role.rate.type == "hourly")
+							roleInfo.expectedHours = role.rate.fullyUtilized ? 180 : role.rate.hoursPerMth;
 						
-						for( var k = 0; k < $scope.thisMonthDayLabels.length - 3; k++ ) {
+						for( var k = 0; k < $scope.thisMonthDayLabels.length - 3; k++ ) { // 3 is the number of non-days columns
 							personRecord.hours.push( {} );
 							personRecord.hours[ k ].totalHours = 0;
 							personRecord.hours[ k ].hoursEntries = [ ];
@@ -2397,6 +2430,20 @@ else if( role.percentageCovered == 0 )
 							roleInfo.hours[k].totalHours += personRecord.hours[k].totalHours;
 							roleInfo.actualHours += personRecord.hours[k].totalHours;
 						}
+						
+						var remainingWorkdays = 0;
+						var eDate = moment.min(personRecord.endDate, moment($scope.endMonthDate));
+						
+						if (personRecord.endDate && eDate.diff(new Date(), "days") > 0)
+							for (var d = moment(new Date()); d.month() == eDate.month(); d.add("1", "day"))
+								if (d.weekday() < 6)
+									remainingWorkdays++;
+						
+						personRecord.projectedHours = personRecord.actualHours + personRecord.hoursPerWeek / 5 * remainingWorkdays;
+						personRecord.capacity = personRecord.expectedHours - personRecord.actualHours <= remainingWorkdays * 9;
+						
+						roleInfo.projectedHours += personRecord.projectedHours;
+						roleInfo.capacity = roleInfo.expectedHours - roleInfo.actualHours <= remainingWorkdays * 9;
 					}
 				}
 			} );
