@@ -70,36 +70,33 @@ var filterProjectsBySponsors = function(roleResources, projects) {
 var filterProjectsByRoleResources = function(roleTypes, roleResources, projects) {
 	var result = [];
 	projects.forEach(function(project) {
-		if (checkRoleResourcesByRoleTypesInProject(roleTypes, roleResources, project)) {
-			result.push(project);
-		}
+		checkRoleResourcesByRoleTypesInProject(roleTypes, roleResources, project, function (checked){
+			if (checked) {
+				result.push(project);
+			}
+		});
 	});
 	return result;
 };
 
 
-var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, project) {
+var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, project, callback) {
 	if (roleTypes instanceof Array) {
 		roleTypes.forEach(function(roleType) {
 			var res = project[roleType];
-			console.log("roleType=" + roleType);
-			console.log("res=" + JSON.stringify(res));
-			console.log("roleResources=" + roleResources);
-			console.log("project=" + project.name);
-			console.log("(res && roleResources.toString().indexOf(res.resource) != -1)=" + (res && roleResources.toString().indexOf(res.resource) != -1));
-			
 			if (res && roleResources.toString().indexOf(res.resource) != -1) {
-				return true;
+				console.log("return true");
+				callback(true);
 			}
 		});
 	}
 	else {
 		var res = project[roleTypes];
 		if (res && roleResources.toString().indexOf(res.resource) != -1) {
-			return true;
+			callback(true);
 		}
 	}
-	return false;
+	callback(false);
 };
 
 
@@ -140,9 +137,7 @@ var filterProjectsBetweenDatesByTypes = function(startDate, endDate, types, isCo
  */
 
 var filterProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, types, isCommited, roleResources, projects) {
-	console.log("projects=" + projects.length);
 	var filtered = ( roleResources != null ) ? filterProjectsBySponsors(roleResources, projects) : projects;
-	console.log("filtered=" + JSON.stringify(filtered));
 	return filterProjectsBetweenDatesByTypes(startDate, endDate, types, isCommited, filtered);
 };
 
