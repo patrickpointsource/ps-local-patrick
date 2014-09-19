@@ -212,7 +212,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			thumbnail: 1
 		};
 
-        People( peopleInRoleQuery, peopleInRoleFields, function( result ) {
+        People.query( peopleInRoleQuery, peopleInRoleFields).then( function( result ) {
 		//Resources.query( 'people', peopleInRoleQuery, peopleInRoleFields, function( result ) {
 			$scope.peopleList = _.map( result.members, function( m ) {
 				$scope.peopleMap[ m.resource ] = {
@@ -684,7 +684,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			};
 
 			if( hoursQ[ "$or" ].length > 0 )
-				HoursService.customQuery( hoursQ ).then( function( reportHours ) {
+				HoursService.query( hoursQ ).then( function( result ) {
+				    var reportHours = result.members;
 					var person;
 					var mappingEntry;
 
@@ -845,7 +846,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			};
 
 			if( hoursQ[ "$or" ].length > 0 )
-				HoursService.customQuery( hoursQ ).then( function( reportHours ) {
+				HoursService.query( hoursQ ).then( function( result ) {
+                    var reportHours = result.members;
 					var person;
 					var mappingEntry;
 

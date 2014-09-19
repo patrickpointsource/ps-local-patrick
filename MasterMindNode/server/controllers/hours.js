@@ -17,7 +17,49 @@ module.exports.listHours = function(q, callback) {
     });
 };
 
+module.exports.listHoursByPersonAndDates = function(person, startDate, endDate, callback) {
+    dataAccess.listHoursByPersonAndDates(person, startDate, endDate, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading hours', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
 
+module.exports.listHoursByProjectAndDates = function(project, startDate, endDate, callback) {
+    dataAccess.listHoursByProjectAndDates(project, startDate, endDate, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading hours', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
+module.exports.listHoursByPerson = function(person, callback) {
+    dataAccess.listHoursByPerson(person, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading hours', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
+module.exports.listHoursByProjects = function(projects, callback) {
+    dataAccess.listHoursByProjects(projects, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading hours', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
 
 module.exports.insertHours = function(obj, callback) {
     obj.form = "Hours";
@@ -30,20 +72,33 @@ module.exports.insertHours = function(obj, callback) {
 		}
 		console.log("personName=" + personName);
 	    // get name for project
-		projects.getNameByResource(obj.project.resource, function (err, projectName) {		
-			if (!err) {
-				obj.project.name = projectName;
-			}
-			console.log("projectName=" + projectName);
-		    dataAccess.insertItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
-		        if (err) {
-		            console.log(err);
-		            callback('error insert hours', null);
-		        } else {
-		            callback(null, _.extend(obj, body));
-		        }
-		    });
-		});
+	    
+	    
+		if (obj.project && obj.project.name || obj.task)
+		  dataAccess.insertItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
+                if (err) {
+                    console.log(err);
+                    callback('error insert hours', null);
+                } else {
+                    callback(null, _.extend(obj, body));
+                }
+            });
+        else if (obj.project && obj.project.resource)
+            projects.getNameByResource(obj.project.resource, function (err, projectName) {      
+                if (!err) {
+                    obj.project.name = projectName;
+                }
+                console.log("projectName=" + projectName);
+                
+                dataAccess.insertItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
+                    if (err) {
+                        console.log(err);
+                        callback('error insert hours', null);
+                    } else {
+                        callback(null, _.extend(obj, body));
+                    }
+                });
+            });
 		
 	});
 

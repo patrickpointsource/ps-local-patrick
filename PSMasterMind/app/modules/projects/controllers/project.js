@@ -1668,7 +1668,8 @@ else if( role.percentageCovered == 0 )
 		var sort = {
 			'created': 1
 		};
-		Resources.query( 'hours', hoursQuery, fields, function( hoursResult ) {
+		
+		HoursService.query(hoursQuery, fields).then(function( hoursResult ) {
 			$scope.hours = hoursResult.members;
 
 			$scope.organizeHours( $scope.hours );
@@ -2131,7 +2132,8 @@ else if( role.percentageCovered == 0 )
 			$scope.projectAssignments = data;
 			$scope.updateOrganizedHours( );
 
-			Resources.query( 'hours', hoursQuery, {} ).then( function( result ) {
+			//Resources.query( 'hours', hoursQuery, {} ).then( function( result ) {
+		    HoursService.query( hoursQuery, {} ).then( function( result ) {
 				$scope.weekPersonHours = [ ];
 				$scope.weekHours = [ ];
 				$scope.weekPersonHours2 = [];
@@ -2280,7 +2282,7 @@ else if( role.percentageCovered == 0 )
 			$scope.projectAssignments = data;
 			$scope.updateOrganizedHours( );
 
-			Resources.query( 'hours', hoursQuery, {} ).then( function( result ) {
+			HoursService.query(hoursQuery, {} ).then( function( result ) {
 				$scope.monthPersonHours = [ ];
 				$scope.weekHours = [ ];
 				$scope.monthPersonHours2 = [];

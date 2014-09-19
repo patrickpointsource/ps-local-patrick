@@ -128,11 +128,12 @@ var prepareResponse = function(data, about, valProp) {
       result.data = _.map(data.rows, function(val, key) {return val[valProp]});
     }
     
-    result.count = result.data.length;
+    result.count = result && result.data ? result.data.length: 0;
     result.about = about;
     
     return result;
-}
+};
+
 //designName = "views"
 
 //viewName = "AllHoursInOne"
@@ -141,7 +142,7 @@ var prepareResponse = function(data, about, valProp) {
 
 module.exports.listHoursByStartEndDates = function(start, end, callback) {
     cloudantSearchByKeys('views', 'AllHoursInOne', start, end, function(err, body){
-         callback(err, prepareResponse(body.results.length == 1 ? body.results[0]: {}, 'hours', 'doc'));
+         callback(err, prepareResponse(body && body.results.length == 1 ? body.results[0]: {}, 'hours', 'doc'));
          //callback(err, body);
     });
 };
@@ -152,7 +153,7 @@ module.exports.listHoursByProjects = function(projects, callback) {
     });
     
     cloudantSearchByKeys('views', 'AllHoursInOne', processedProjects, null, function(err, body){
-         callback(err, prepareResponse(body.results && body.results.length == 1 ? body.results[0]: {}, 'hours', 'doc'));
+         callback(err, prepareResponse(body && body.results && body.results.length == 1 ? body.results[0]: {}, 'hours', 'doc'));
          //callback(err, body);
     });
 };

@@ -150,7 +150,10 @@ function( $q, $timeout, Restangular ) {
 
 		var Resource = ResourcesRestangular.one( route, id, params );
 
-		return Resource.get( );
+        if (params)
+		  return Resource.get(params );
+		
+		 return Resource.get( );
 	}
 
 	/**

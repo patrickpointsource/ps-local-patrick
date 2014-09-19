@@ -3,8 +3,8 @@
 /**
  * Controller for handling creation of Roles.
  */
-angular.module( 'Mastermind.controllers.people' ).controller( 'ProfileCtrl', [ '$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService', 'TasksService', 'ngTableParams', '$rootScope',
-function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, TableParams, $rootScope ) {
+angular.module( 'Mastermind.controllers.people' ).controller( 'ProfileCtrl', [ '$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService', 'TasksService', 'HoursService', 'ngTableParams', '$rootScope',
+function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, HoursService, TableParams, $rootScope ) {
 
 	$scope.moment = moment;
 	var UNSPECIFIED = 'Unspecified';
@@ -264,7 +264,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		var sort = {
 			'created': 1
 		};
-		Resources.query( 'hours', hoursQuery, fields, function( hoursResult ) {
+		
+		//Resources.query( 'hours', hoursQuery, fields, function( hoursResult ) {
+	    HoursService.query(hoursQuery, fields).then(function( hoursResult ) {
 			$scope.hours = hoursResult.members;
 			$scope.initHoursPeriods( $scope.hours );
 			$scope.hasHours = $scope.hours.length > 0;

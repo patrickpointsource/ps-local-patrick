@@ -427,84 +427,39 @@ var listNotifications = function( q, callback ) {
 
 };
 var listHours = function( q, callback ) {
-	var onlyAndDates = q.$and && q.$and.length > 0;
-	var orEmpty = !q.$or || q.$or.length > 0;
+    var onlyAndDates = q.$and && q.$and.length > 0;
+    var orEmpty = !q.$or || q.$or.length > 0;
     var onlyProjects = q.$or && q.$or.length > 0;
-    
-	var startDate = null;
-	var endDate = null;
 
-    var projects = [];
-    
-	for( var i = 0; q.$and && i < q.$and.length; i++ ) {
-		onlyAndDates = onlyAndDates && q.$and[ i ].date;
+    var startDate = null;
+    var endDate = null;
 
-		if( onlyAndDates && q.$and[ i ].date.$lte )
-			endDate = onlyAndDates && q.$and[ i ].date.$lte;
-		else if( onlyAndDates && q.$and[ i ].date.$lt )
-			endDate = onlyAndDates && q.$and[ i ].date.$lt;
-		else if( onlyAndDates && q.$and[ i ].date.$gt )
-			startDate = onlyAndDates && q.$and[ i ].date.$gt;
-		else if( onlyAndDates && q.$and[ i ].date.$gte )
-			startDate = onlyAndDates && q.$and[ i ].date.$gte;
+    var projects = [ ];
 
-	}
-	
-	// init onlyProjects flag
-	for( var i = 0; q.$or && i < q.$or.length; i++ ) {
-        onlyProjects = onlyProjects && q.$or[ i ]['project.resource'];
+    for( var i = 0; q.$and && i < q.$and.length; i++ ) {
+        onlyAndDates = onlyAndDates && q.$and[ i ].date;
 
-        if (onlyProjects)
-            projects.push(q.$or[ i ]['project.resource']);
+        if( onlyAndDates && q.$and[ i ].date.$lte )
+            endDate = onlyAndDates && q.$and[ i ].date.$lte;
+        else if( onlyAndDates && q.$and[ i ].date.$lt )
+            endDate = onlyAndDates && q.$and[ i ].date.$lt;
+        else if( onlyAndDates && q.$and[ i ].date.$gt )
+            startDate = onlyAndDates && q.$and[ i ].date.$gt;
+        else if( onlyAndDates && q.$and[ i ].date.$gte )
+            startDate = onlyAndDates && q.$and[ i ].date.$gte;
+
     }
 
-	if( !q.project && q.person && q.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
-		dbAccess.listHoursByStartEndDates( [ "PersonDate", q.person.resource, startDate ], [ "PersonDate", q.person.resource, endDate ], function( err, body ) {
-			if( err ) {
-				console.log( err );
-				callback( 'error loading hours by start and end dates', null );
-			} else {
-				console.log( body );
-				callback( err, queryRecords( body, q, "members", "hours/" ) );
-			}
-		} );
-	} else if( !q.person && q.project && q.project.resource && startDate && endDate && orEmpty && onlyAndDates ) {
-		dbAccess.listHoursByStartEndDates( [ "ProjectDate", q.project.resource, startDate ], [ "ProjectDate", q.project.resource, endDate ], function( err, body ) {
-			if( err ) {
-				console.log( err );
-				callback( 'error loading hours by start and end dates', null );
-			} else {
-				console.log( body );
-				callback( err, queryRecords( body, q, "members", "hours/" ) );
-			}
-		} );
-	} else if( q.person && q.person.resource && q.project && q.project.resource && startDate && endDate && orEmpty && onlyAndDates ) {
-		dbAccess.listHoursByStartEndDates( [ "ProjectPersonDate", q.project.resource, q.person.resource, startDate ], [ "ProjectPersonDate", q.project.resource, q.person.resource, startDate ], function( err, body ) {
-			if( err ) {
-				console.log( err );
-				callback( 'error loading hours by start and end dates', null );
-			} else {
-				console.log( body );
-				callback( err, queryRecords( body, q, "members", "hours/" ) );
-			}
-		} );
-	} else if( (q.person || q['person.resource']) && !q.project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
-		var resource = q['person.resource'] ? q['person.resource']: null;
-		
-		if (!resource)
-		  resource = q.person ? q.person.resource: null;
-		  
-		dbAccess.listHoursByStartEndDates( [ "PersonDate", resource, '1900-01-01' ], [ "PersonDate", resource, '2050-01-01' ], function( err, body ) {
-			if( err ) {
-				console.log( err );
-				callback( 'error loading hours by start and end dates', null );
-			} else {
-				console.log( body );
-				callback( err, queryRecords( body, q, "members", "hours/" ) );
-			}
-		} );
-	} else if (onlyProjects) 
-	   dbAccess.listHoursByProjects( projects, function( err, body ) {
+    // init onlyProjects flag
+    for( var i = 0; q.$or && i < q.$or.length; i++ ) {
+        onlyProjects = onlyProjects && q.$or[ i ][ 'project.resource' ];
+
+        if( onlyProjects )
+            projects.push( q.$or[ i ][ 'project.resource' ] );
+    }
+    /*
+    if( !q.project && q.person && q.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
+        dbAccess.listHoursByStartEndDates( [ "PersonDate", q.person.resource, startDate ], [ "PersonDate", q.person.resource, endDate ], function( err, body ) {
             if( err ) {
                 console.log( err );
                 callback( 'error loading hours by start and end dates', null );
@@ -513,8 +468,105 @@ var listHours = function( q, callback ) {
                 callback( err, queryRecords( body, q, "members", "hours/" ) );
             }
         } );
-	else 
-	   callback( 'error loading hours by passed query', null );
+    } else if( !q.person && q.project && q.project.resource && startDate && endDate && orEmpty && onlyAndDates ) {
+        dbAccess.listHoursByStartEndDates( [ "ProjectDate", q.project.resource, startDate ], [ "ProjectDate", q.project.resource, endDate ], function( err, body ) {
+            if( err ) {
+                console.log( err );
+                callback( 'error loading hours by start and end dates', null );
+            } else {
+                console.log( body );
+                callback( err, queryRecords( body, q, "members", "hours/" ) );
+            }
+        } );
+    } else if( q.person && q.person.resource && q.project && q.project.resource && startDate && endDate && orEmpty && onlyAndDates ) {
+        dbAccess.listHoursByStartEndDates( [ "ProjectPersonDate", q.project.resource, q.person.resource, startDate ], [ "ProjectPersonDate", q.project.resource, q.person.resource, startDate ], function( err, body ) {
+            if( err ) {
+                console.log( err );
+                callback( 'error loading hours by start and end dates', null );
+            } else {
+                console.log( body );
+                callback( err, queryRecords( body, q, "members", "hours/" ) );
+            }
+        } );
+    } else if( ( q.person || q[ 'person.resource' ] ) && !q.project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
+        var resource = q[ 'person.resource' ] ? q[ 'person.resource' ] : null;
+
+        if( !resource )
+            resource = q.person ? q.person.resource : null;
+
+        dbAccess.listHoursByStartEndDates( [ "PersonDate", resource, '1900-01-01' ], [ "PersonDate", resource, '2050-01-01' ], function( err, body ) {
+            if( err ) {
+                console.log( err );
+                callback( 'error loading hours by start and end dates', null );
+            } else {
+                console.log( body );
+                callback( err, queryRecords( body, q, "members", "hours/" ) );
+            }
+        } );
+    } else if( onlyProjects )
+        dbAccess.listHoursByProjects( projects, function( err, body ) {
+            if( err ) {
+                console.log( err );
+                callback( 'error loading hours by start and end dates', null );
+            } else {
+                console.log( body );
+                callback( err, queryRecords( body, q, "members", "hours/" ) );
+            }
+        } );
+    else*/
+    callback( 'error loading hours by passed query', null );
+};
+
+var listHoursByPersonAndDates = function( person, startDate, endDate, callback ) {
+
+    dbAccess.listHoursByStartEndDates( [ "PersonDate", person, startDate ], [ "PersonDate", person, endDate ], function( err, body ) {
+        if( err ) {
+            console.log( err );
+            callback( 'error loading hours by start and end dates', null );
+        } else {
+            console.log( body );
+            callback( err, queryRecords( body, {}, "members", "hours/" ) );
+        }
+    } );
+};
+
+var listHoursByProjectAndDates = function( project, startDate, endDate, callback ) {
+
+    dbAccess.listHoursByStartEndDates( [ "ProjectDate", project, startDate ], [ "ProjectDate", project, endDate ], function( err, body ) {
+        if( err ) {
+            console.log( err );
+            callback( 'error loading hours by start and end dates', null );
+        } else {
+            console.log( body );
+            callback( err, queryRecords( body, {}, "members", "hours/" ) );
+        }
+    } );
+};
+
+var listHoursByPerson = function( person, callback ) {
+
+    dbAccess.listHoursByStartEndDates( [ "PersonDate", person, '1900-01-01' ], [ "PersonDate", person, '2050-01-01' ], function( err, body ) {
+        if( err ) {
+            console.log( err );
+            callback( 'error loading hours by start and end dates', null );
+        } else {
+            console.log( body );
+            callback( err, queryRecords( body, {}, "members", "hours/" ) );
+        }
+    } );
+
+};
+
+var listHoursByProjects = function( projects, callback ) {
+    dbAccess.listHoursByProjects( projects, function( err, body ) {
+        if( err ) {
+            console.log( err );
+            callback( 'error loading hours by start and end dates', null );
+        } else {
+            console.log( body );
+            callback( err, queryRecords( body, {}, "members", "hours/" ) );
+        }
+    } );
 };
 
 var insertItem = function( id, obj, type, callback ) {
@@ -603,7 +655,13 @@ module.exports.listActivePeopleByRoleResources = listActivePeopleByRoleResources
 module.exports.listActivePeople = listActivePeople;
 module.exports.listAssignments = listAssignments;
 module.exports.listTasks = listTasks;
+
 module.exports.listHours = listHours;
+module.exports.listHoursByPersonAndDates = listHoursByPersonAndDates;
+module.exports.listHoursByProjectAndDates = listHoursByProjectAndDates;
+module.exports.listHoursByPerson = listHoursByPerson;
+module.exports.listHoursByProjects = listHoursByProjects;
+
 module.exports.listRoles = listRoles;
 module.exports.listLinks = listLinks;
 module.exports.listNotifications = listNotifications;

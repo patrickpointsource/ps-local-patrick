@@ -19,7 +19,7 @@ function( $q, Resources ) {
 			var record = hoursRecords[ i ];
 			var id = record[ '_id' ];
 
-			if( record.hours && (    parseInt( record.hours ) ).toString( ) == record.hours.toString( ) )
+			if( record.hours && (        parseInt( record.hours ) ).toString( ) == record.hours.toString( ) )
 				record.hours = parseInt( record.hours );
 			else if( record.hours && !isNaN( parseFloat( record.hours ) ) )
 				record.hours = parseFloat( record.hours );
@@ -35,17 +35,17 @@ function( $q, Resources ) {
 				} else {
 					// Default description
 					/*if( !record.description ) {
-						record.description = 'No Description Entered';
-					}
-					*/
+					 record.description = 'No Description Entered';
+					 }
+					 */
 					requests.push( Resources.update( record ) );
 				}
 			} else if( record.hours >= 0 ) {
 				// Default description
 				/*if( !record.description ) {
-					record.description = 'No Description Entered';
-				}
-				*/
+				 record.description = 'No Description Entered';
+				 }
+				 */
 				requests.push( Resources.create( 'hours', record ) );
 			}
 		}
@@ -81,6 +81,7 @@ function( $q, Resources ) {
 	this.getHoursRecordsBetweenDates = function( person, startDate, endDate ) {
 		var deferred = $q.defer( );
 
+		var _this = this;
 		// Start by getting all assignments for a person between two dates
 		var personURI = person.about ? person.about : person.resource;
 		var startDateMoment = moment( startDate );
@@ -145,7 +146,8 @@ function( $q, Resources ) {
 			};
 
 			var hoursFields = {};
-			Resources.query( 'hours', hoursQuery, hoursFields, function( result ) {
+
+			_this.query( hoursQuery, hoursFields ).then( function( result ) {
 				var hoursResults = result.members;
 				var ret = [ ], i;
 				// Init the array
@@ -425,17 +427,100 @@ function( $q, Resources ) {
 		return deferred.promise;
 	};
 
-	this.customQuery = function( query, fields ) {
+	this.query = function( query, fields ) {
 		var deferred = $q.defer( );
 		var hoursFields = {};
 		var hoursQuery = {};
 
-		fields = fields ? fields : {};
+		if( window.useAdoptedServices ) {
+			var onlyAndDates = query.$and && query.$and.length > 0;
+			var orEmpty = !query.$or || query.$or.length > 0;
+			var onlyProjects = query.$or && query.$or.length > 0;
 
-		Resources.query( 'hours', _.extend( hoursQuery, query ), _.extend( hoursFields, fields ), function( result ) {
-			deferred.resolve( result.members );
-		} )
+			var startDate = null;
+			var endDate = null;
 
+			var projects = [ ];
+
+			for( var i = 0; query.$and && i < query.$and.length; i++ ) {
+				onlyAndDates = onlyAndDates && query.$and[ i ].date;
+
+				if( onlyAndDates && query.$and[ i ].date.$lte )
+					endDate = onlyAndDates && query.$and[ i ].date.$lte;
+				else if( onlyAndDates && query.$and[ i ].date.$lt )
+					endDate = onlyAndDates && query.$and[ i ].date.$lt;
+				else if( onlyAndDates && query.$and[ i ].date.$gt )
+					startDate = onlyAndDates && query.$and[ i ].date.$gt;
+				else if( onlyAndDates && query.$and[ i ].date.$gte )
+					startDate = onlyAndDates && query.$and[ i ].date.$gte;
+
+			}
+
+			// init onlyProjects flag
+			for( var i = 0; query.$or && i < query.$or.length; i++ ) {
+				onlyProjects = onlyProjects && query.$or[ i ][ 'project.resource' ];
+
+				if( onlyProjects )
+					projects.push( query.$or[ i ][ 'project.resource' ] );
+			}
+
+			fields = fields ? fields : {};
+
+			if( !query.project && query.person && query.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
+				Resources.get( 'hours/persondates', {
+					person: query.person.resource,
+					startDate: startDate,
+					endDate: endDate,
+					fields: fields,
+					// to prevent from getting values from cache
+					t: ( new Date( ) ).getMilliseconds( )
+				} ).then( function( result ) {
+					deferred.resolve( result );
+				} );
+			} else if( !query.person && query.project && query.project.resource && startDate && endDate && orEmpty && onlyAndDates ) {
+				Resources.get( 'hours/projectdates', {
+					project: query.project.resource,
+					startDate: startDate,
+					endDate: endDate,
+					fields: fields,
+					// to prevent from getting values from cache
+					t: ( new Date( ) ).getMilliseconds( )
+				} ).then( function( result ) {
+					deferred.resolve( result );
+				} );
+			} else if( ( query.person || query[ 'person.resource' ] ) && !query.project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
+				var resource = query[ 'person.resource' ] ? query[ 'person.resource' ] : null;
+
+				if( !resource )
+					resource = query.person ? query.person.resource : null;
+
+				Resources.get( 'hours/person', {
+					person: resource,
+					fields: fields,
+					// to prevent from getting values from cache
+					t: ( new Date( ) ).getMilliseconds( )
+				} ).then( function( result ) {
+					deferred.resolve( result );
+				} );
+
+			} else if( onlyProjects ) {
+				Resources.get( 'hours/projects', {
+					projects: projects,
+					fields: fields,
+					// to prevent from getting values from cache
+					t: ( new Date( ) ).getMilliseconds( )
+				} ).then( function( result ) {
+					deferred.resolve( result );
+				} );
+
+			} else
+				Resources.query( 'hours', _.extend( hoursQuery, query ), _.extend( hoursFields, fields ), function( result ) {
+					deferred.resolve( result );
+				} );
+		} else
+			Resources.query( 'hours', _.extend( hoursQuery, query ), _.extend( hoursFields, fields ), function( result ) {
+				deferred.resolve( result );
+			} );
 		return deferred.promise;
-	}
+	};
 } ] );

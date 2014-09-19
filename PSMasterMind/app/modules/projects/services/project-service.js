@@ -4,7 +4,7 @@
  * Handles application state in regards to the currently accessed Projects.
  */
 angular.module('Mastermind.services.projects')
-  .service('ProjectsService', ['$q', '$sanitize', 'Restangular', 'Resources', 'Project', '$injector', function ($q, $sanitize, Restangular, Resources, Project, $injector) {
+  .service('ProjectsService', ['$q', '$sanitize', 'Restangular', 'Resources', 'Project', 'HoursService', '$injector', function ($q, $sanitize, Restangular, Resources, Project, HoursService, $injector) {
       /**
        * Create a reference to a server side resource for Projects.
        *
@@ -602,7 +602,8 @@ angular.module('Mastermind.services.projects')
 					  }
 				};
 	        	var hoursFields = {hours:1,project:1,date:1};
-	        	Resources.query('hours',hoursQuery,hoursFields,function(result){
+	        	
+	        	HoursService.query(hoursQuery,hoursFields).then(function(result){
 	        		//Iterate through all the hours records and append the hours to total hours logged
 	        		var members = result.members;
 	        		for(var i = 0; i < members.length;i++){
