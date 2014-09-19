@@ -9,11 +9,23 @@
 var filterActivePeopleByRoleResources = function(roleResources, people) {
 	var result = [];
 	people.forEach(function(person) {
-		if (person.isActive && person.primaryRole && roleResources.toString().indexOf(person.primaryRole.resource) != -1) {
-			result.push(person);
-		}
+		checkActivePeopleByRoleResources(person, roleResources, function (checked) {
+			if (checked) {
+				result.push(person);
+			}
+		});
 	});
+	console.log("result.length=" + result.length);
 	return result;
+};
+
+var checkActivePeopleByRoleResources = function (person, roleResources, callback) {
+	if (person.isActive && person.primaryRole && roleResources.toString().indexOf(person.primaryRole.resource) != -1) {
+		callback(true);
+	}
+	else {
+		callback(false);
+	}
 };
 
 

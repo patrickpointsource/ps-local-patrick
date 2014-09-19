@@ -36,7 +36,7 @@ router.get('/filter/', util.isAuthenticated, function(req, res){
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 
 		{
-			var role = req.query.role;
+			var roles = req.query.role;
 		    people.listActivePeopleByRoleResources(roles, function(err, result){
 		        if(err){
 		            res.json(500, err);

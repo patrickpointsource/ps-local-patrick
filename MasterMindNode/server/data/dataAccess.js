@@ -212,7 +212,7 @@ var listActivePeopleByRoleResources = function( roleResources, callback ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterActivePeopleByRoleResources(roleResources, result.data), "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterActivePeopleByRoleResources(roleResources, body.data), "members", "people/" ) );
 		} );
 	}
 
