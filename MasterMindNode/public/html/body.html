@@ -1,24 +1,19 @@
 <h2>Available rest services</h2>
 <div>
-	<a href="projects">All projects</a><br />
-	<a href="people">All people</a><br />
-	<a href="assignments">All assignments</a><br />
-	<a href="tasks">All tasks</a><br />
-	<a href="roles">All roles</a><br />
-	<a href="javascript:void(0)" class="hoursByPerson">Hours by person</a><br />
-	<textarea rows="10" cols="50" name="hoursByPersonParams" >{"startKeys":  ["ProjectPersonDate", "projects/52aba189e4b0fd2a8d13002e", "people/52ab7005e4b0fd2a8d130017", "2014-01-01"],
-		"endKeys":  ["ProjectPersonDate", "projects/52aba189e4b0fd2a8d13002e", "people/52ab7005e4b0fd2a8d130017", "2014-01-20"]}</textarea>
+  <a href="assignments">All assignments</a><br />
+  <a href="configuration">All configurations</a><br />
+  <a href="hours">All hours</a><br />
+  <a href="links">All links</a><br />
+  <a href="notifications">All notifications</a><br />
+  <a href="people">All people</a><br />
+  <a href="projects">All projects</a><br />
+  <a href="roles">All roles</a><br />
+  <a href="securityRoles">All security roles</a><br />
+  <a href="skills">All skills</a><br />
+  <a href="tasks">All tasks</a><br />
+  <a href="userRoles">All user roles</a><br />
+  <a href="vacations">All vacations (out-of-office entries)</a><br />
+  <br/>
+  <br/>
+  <a href="upgrade">Execute Upgrade</a><br />
 </div>
-<script>
-	var trim = function(s) {
-		return s.toString().replace(/^\s+|\s+$/g, "");
-	};
-			
-	document.querySelector('.hoursByPerson').onclick = function(e) {
-		e = e ? e: window.eevent;
-		
-		var txt = document.querySelector('*[name="hoursByPersonParams"]');
-		window.location.href = 'hoursByPersonDate?params=' + encodeURIComponent(trim(txt.value));
-	};
-	
-</script>
