@@ -44,6 +44,7 @@ module.exports.listProjectsBetweenDatesByTypesAndSponsors = function(startDate, 
             callback('error loading listProjectsBetweenDatesByTypesAndSponsors', null);
         } else {
             var result = body.data;
+            body.about = "projects";
             for (var i in result) {
        		    result[i].resource = "projects/" + result[i]._id;
         		result[i].about = "projects/" + result[i]._id;

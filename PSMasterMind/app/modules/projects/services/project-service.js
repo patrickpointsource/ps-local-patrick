@@ -267,11 +267,35 @@ angular.module('Mastermind.services.projects')
      * Query to get the list of all projects
      */
     this.getAllProjects = function (onSuccess){
+	    if (window.useAdoptedServices) {
+			return getAllProjectsUsingFilter(onSuccess);
+		}
+		else {
+			return getAllProjectsUsingQuery(onSuccess);
+		}
+    };
+
+
+    /**
+     * Query to get the list of all projects (using query)
+     */
+    function getAllProjectsUsingQuery (onSuccess){
         var apQuery = {};
         // terms will be checked on backend and loaded only for allowed persons
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description:1, terms:1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
+    };
+
+
+    /**
+     * Query to get the list of all projects (using filter)
+     */
+    function getAllProjectsUsingFilter(onSuccess){
+        // terms will be checked on backend and loaded only for allowed persons
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description:1, terms:1};
+
+        return Resources.filter('projects', null, apFields, onSuccess);
     };
    
     
@@ -289,6 +313,7 @@ angular.module('Mastermind.services.projects')
       
     	return deferred.promise;
     }
+
     
     /**
      * Get today for queries

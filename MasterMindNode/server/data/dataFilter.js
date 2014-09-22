@@ -81,14 +81,15 @@ var filterProjectsBySponsors = function(roleResources, projects) {
 
 var filterProjectsByRoleResources = function(roleTypes, roleResources, projects) {
 	var result = [];
-	projects.forEach(function(project) {
+	projects.data.forEach(function(project) {
 		checkRoleResourcesByRoleTypesInProject(roleTypes, roleResources, project, function (checked){
 			if (checked) {
 				result.push(project);
 			}
 		});
 	});
-	return result;
+	projects.data = result;
+	return projects;
 };
 
 
@@ -123,7 +124,7 @@ var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, 
 
 var filterProjectsBetweenDatesByTypes = function(startDate, endDate, types, isCommited, projects) {
 	var result = [];
-	projects.forEach(function(project) {
+	projects.data.forEach(function(project) {
 		if (	
 			(startDate == null  || project.startDate >= startDate) && 
 				(endDate == null || project.endDate < endDate) && 
@@ -133,7 +134,8 @@ var filterProjectsBetweenDatesByTypes = function(startDate, endDate, types, isCo
 			result.push(project);
 		}
 	});
-	return result;
+	projects.data = result;
+	return projects;
 };
 
 
