@@ -61,6 +61,47 @@ function( $q, $timeout, Restangular ) {
 		 });*/
 	}
 
+
+	/**
+	 * Service function for querying a resource member.
+	 *
+	 * @returns {*}
+	 */
+	function filter( resource, queryParams, fields, onSuccess, sort ) {
+		var startDate = new Date( );
+
+		var Resource = ResourcesRestangular.one( resource, 'filter').one('');
+		var params = {};
+
+		if( queryParams ) {
+			params = queryParams;
+		}
+
+		if( fields ) {
+			fields = JSON.stringify( fields );
+			//fields = encodeURIComponent(fields);
+			params.fields = fields;
+		}
+
+		if( sort ) {
+			sort = JSON.stringify( sort );
+			params.sort = sort;
+		}
+
+		if( onSuccess ) {
+			Resource.get( params ).then( onSuccess )/*.then(function() {
+
+			 console.log('end: ' + ((new Date()).getTime() - startDate.getTime()) + ': query:
+			 ' + resource + ':' + JSON.stringify(queryString) + ':' + counter);
+			 });*/
+		} else
+			return Resource.get( params )
+		/*.then(function() {
+		 console.log('end: ' + ((new Date()).getTime() - startDate.getTime()) + ': query:
+		 ' + resource + ':' + JSON.stringify(queryString) + ':' + counter);
+		 });*/
+	}
+
 	/**
 	 * Service function for retrieving a resource member.
 	 *
@@ -318,6 +359,7 @@ function( $q, $timeout, Restangular ) {
 	return {
 		create: create,
 		query: query,
+		filter: filter,
 		get: get,
 		refresh: refresh,
 		resolve: resolve,

@@ -29,6 +29,18 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		return deferred.promise;
 	}
 
+
+	function filter( roleResources, fields ) {
+		var deferred = $q.defer( );
+		fields = fields ? fields : {};
+
+		Resources.filter( 'people', roleResources, fields, function( result ) {
+			deferred.resolve( result );
+		} );
+
+		return deferred.promise;
+	}
+
 	function get( id ) {
 		return Resource.get( id );
 	}
@@ -365,6 +377,22 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 * fields: if the mongo filter to limit the fields returned for each person
 	 */
 	function getPeoplePerRole( role, fields ) {
+		if (window.useAdoptedServices) {
+			getPeoplePerRoleUsingQuery(role, fields );
+		}
+		else {
+			getPeoplePerRoleUsingFilter(role, fields );
+		}
+	}
+	
+
+	/**
+	 * Returns a list of people per role for display (using query)
+	 *
+	 * role: is the URI for a role i.e. 'roles/{roleid}'
+	 * fields: if the mongo filter to limit the fields returned for each person
+	 */
+	function getPeoplePerRoleUsingQuery( role, fields ) {
 		var deferred = $q.defer( );
 
 		var pepInRolesQuery = {};
@@ -379,11 +407,26 @@ function( $q, Restangular, Resources, ProjectsService ) {
 				}
 			};
 		}
-
+						
 		query( pepInRolesQuery, fields).then( function( result ) {
 			deferred.resolve( result );
 		} );
+		
+		return deferred.promise;
+	}
 
+
+	/**
+	 * Returns a list of people per role using filter for display (using filter)
+	 *
+	 * role: is the URI for a role i.e. 'roles/{roleid}'
+	 * fields: if the mongo filter to limit the fields returned for each person
+	 */
+	function getPeoplePerRoleUsingFilter( role, fields ) {
+		var deferred = $q.defer( );
+		filter( role, fields).then( function( result ) {
+			deferred.resolve( result );
+		} );
 		return deferred.promise;
 	}
 
@@ -521,6 +564,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 
 	return {
 		query: query,
+		filter: filter,
 		get: get,
 		getActivePeople: getActivePeople,
 		getPeoplePerRole: getPeoplePerRole,

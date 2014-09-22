@@ -198,10 +198,24 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			} );
 		}
 	}
+
+
 	/**
 	 * Changes list of people on a filter change
 	 */
 	$scope.handlePeopleFilterChanged = function( ) {
+		if (window.useAdoptedServices) {
+			$scope.handlePeopleFilterUsingFilterResource( );
+		}
+		else {
+			$scope.handlePeopleFilterChangedUsingQuery( );
+		}
+	};
+
+	/**
+	 * Changes list of people on a filter change (using query)
+	 */
+	$scope.handlePeopleFilterChangedUsingQuery = function( ) {
 		//Check if the filter is a valid role
 		if( $scope.roleGroups && $scope.roleGroups[ $scope.peopleFilter ] ) {
 			var peopleInRoleQuery = {
@@ -276,7 +290,6 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 			People.query( peopleQuery, peopleInRoleFields).then( function( result ) {
 				$scope.people = result.members;
-
 				$scope.fillPeopleProps( );
 			} );
 
@@ -294,13 +307,90 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			};
 			//var fieldsEncoded = encodeURIComponent(JSON.stringify(fields));
 			//var url = 'people?fields='+fieldsEncoded;
+			
 			People.query( {
 				'$and': [ {
 					'isActive': 'true'
 				} ]
 			}, fields ).then( function( result ) {
 				$scope.people = result.members;
+				$scope.fillPeopleProps( );
+			} );
+		}
 
+		//Replace the URL in history with the filter
+		if( $state.current && $state.current.name.indexOf('people') > -1 && $scope.peopleFilter != $state.params.filter ) {
+			var view = false;
+			if( $scope.showGraphView ) {
+				view = 'graph';
+			} else {
+				view = 'table';
+			}
+			var updatedUrl = $state.href( 'people.index', {
+				'filter': $scope.peopleFilter,
+				'view': view
+			} ).replace( '#', '' );
+			
+			$location.url( updatedUrl ).replace( );
+		}
+	};
+
+
+
+
+	/**
+	 * Changes list of people on a filter change (using filter resource)
+	 */
+	$scope.handlePeopleFilterUsingFilterResource = function( ) {
+
+		var peopleInRoleFields = {
+			resource: 1,
+			name: 1,
+			familyName: 1,
+			givenName: 1,
+			primaryRole: 1,
+			thumbnail: 1
+		};
+
+		//Check if the filter is a valid role
+		if( $scope.roleGroups && $scope.roleGroups[ $scope.peopleFilter ] ) {
+
+			People.filter( $scope.peopleFilter, peopleInRoleFields).then( function( result ) {
+				$scope.people = result.members;
+				$scope.fillPeopleProps( );
+			} );
+
+		} else if( $scope.peopleFilter == 'my' ) {
+			$scope.peopleFilter = 'my';
+
+			People.getMyPeople( $scope.me ).then( function( people ) {
+				$scope.people = people;
+				$scope.fillPeopleProps( );
+			} );
+		} else if( $scope.peopleFilter && $scope.peopleFilter != 'all' && ( $scope.peopleFilter.indexOf( ':' ) > -1 || $scope.peopleFilter.indexOf( ',' ) > -1 || !$scope.roleGroups[ $scope.peopleFilter ] ) ) {
+
+			var tmp = $scope.peopleFilter.split( ':' );
+			tmp = tmp[ tmp.length - 1 ];
+			tmp = tmp.split( ',' );
+			var includeInactive = _.indexOf( tmp, 'inactive' ) > -1;
+
+            if( !$scope.projectManagementAccess)
+                includeInactive = false;
+        
+			var roles = $scope.mapPeopleGroupToRoles( tmp );
+			var isActive = !includeInactive;
+
+			People.filter( roles, peopleInRoleFields).then( function( result ) {
+				$scope.people = result.members;
+				$scope.fillPeopleProps( );
+			} );
+			
+		}
+		//Otherwise just show all
+		else {
+			$scope.peopleFilter = 'all';
+			People.filter(null, peopleInRoleFields ).then( function( result ) {
+				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );
 		}
@@ -401,6 +491,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 				//Once we have the active people apply the default filter
 				//Trigger initial filter change
+				
 				$scope.handlePeopleFilterChanged( );
 			} );
 		}
@@ -414,6 +505,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 				//Trigger initial filter change
 				$scope.handlePeopleFilterChanged( );
+
 				//
 				//	    		  var peopleIds = [];
 				//    			  for(var resource in peopleAssignments){

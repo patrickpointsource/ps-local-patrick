@@ -20,7 +20,7 @@ var filterActivePeopleByRoleResources = function(roleResources, people) {
 };
 
 var checkActivePeopleByRoleResources = function (person, roleResources, callback) {
-	if (person.isActive && person.primaryRole && roleResources.toString().indexOf(person.primaryRole.resource) != -1) {
+	if (!roleResources || person.isActive && person.primaryRole && roleResources.toString().indexOf(person.primaryRole.resource) != -1) {
 		callback(true);
 	}
 	else {
