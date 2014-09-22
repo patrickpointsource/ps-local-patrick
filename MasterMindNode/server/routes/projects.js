@@ -205,12 +205,13 @@ router.put( '/:id/assignments', auth.isAuthenticated, function( req, res ) {
 	} );
 } );
 
-router.
-delete ( '/', auth.isAuthenticated,
+router.delete ( '/:id', auth.isAuthenticated,
 function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function( allowed ) {
 		if( allowed ) {
+		    var id = req.params.id;s
+		    req.body.id = id;
 			projects.deleteProject( req.body, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
@@ -223,8 +224,7 @@ function( req, res ) {
 
 } );
 
-router.
-delete ( '/:id/links/:linkId', auth.isAuthenticated,
+router.delete ( '/:id/links/:linkId', auth.isAuthenticated,
 function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function( allowed ) {
