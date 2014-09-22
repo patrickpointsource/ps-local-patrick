@@ -457,7 +457,7 @@ var listHours = function( q, callback ) {
         if( onlyProjects )
             projects.push( q.$or[ i ][ 'project.resource' ] );
     }
-    /*
+    // TODO: remove it later when all hours services will be finaly migrated
     if( !q.project && q.person && q.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
         dbAccess.listHoursByStartEndDates( [ "PersonDate", q.person.resource, startDate ], [ "PersonDate", q.person.resource, endDate ], function( err, body ) {
             if( err ) {
@@ -513,7 +513,7 @@ var listHours = function( q, callback ) {
                 callback( err, queryRecords( body, q, "members", "hours/" ) );
             }
         } );
-    else*/
+    else
     callback( 'error loading hours by passed query', null );
 };
 
