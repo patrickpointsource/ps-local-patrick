@@ -54,6 +54,23 @@ module.exports.listProjectsBetweenDatesByTypesAndSponsors = function(startDate, 
     });
 };
 
+module.exports.listProjectsByStatuses = function(statuses, callback) {
+    dataAccess.listProjectsByStatuses(statuses, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading listProjectsByStatuses', null);
+        } else {
+            var result = body.data;
+            body.about = "projects";
+            for (var i in result) {
+       		    result[i].resource = "projects/" + result[i]._id;
+        		result[i].about = "projects/" + result[i]._id;
+            }
+            callback(null, body);
+        }
+    });
+};
+
 
 module.exports.getProject = function(id, callback) {
     dataAccess.getItem(id, function(err, body){

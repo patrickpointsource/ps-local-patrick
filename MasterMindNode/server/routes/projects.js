@@ -60,14 +60,26 @@ router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 			var types = req.query.type;
 			var isCommited = req.query.isCommited;
 			var roleResources = req.query.roleResource;
+			var status = req.query.status;
 			
-			projects.listProjectsBetweenDatesByTypesAndSponsors( startDate, endDate, types, isCommited, roleResources, function( err, result ) {
-				if( err ) {
-					res.json( 500, err );
-				} else {
-					res.json( result );
-				}
-			} );
+			if (status) {
+				projects.listProjectsByStatuses( status, function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json( result );
+					}
+				} );
+			}
+			else { 
+				projects.listProjectsBetweenDatesByTypesAndSponsors( startDate, endDate, types, isCommited, roleResources, function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json( result );
+					}
+				} );
+			}
 		}
 	} );
 

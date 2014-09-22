@@ -318,6 +318,22 @@ angular.module('Mastermind.services.projects')
     	return deferred.promise;
     }
 
+
+    /**
+     * Service function for querying projects
+     *
+     * @returns {*}
+     */
+    function filter(queryParams,fields) {
+    	var deferred = $q.defer();
+    	
+    	Resources.filter('projects',queryParams,fields,function(result){
+    		deferred.resolve(result);
+    	});
+      
+    	return deferred.promise;
+    }
+
     
     /**
      * Get today for queries
@@ -356,10 +372,19 @@ angular.module('Mastermind.services.projects')
 	     return sixMontsFromNowQuery;
     }
 
-    /**
-     * Query to get the list of active+backlog projects
-     */
     this.getActiveAndBacklogProjects = function (onSuccess){
+	    if (window.useAdoptedServices) {
+			return getActiveAndBacklogProjectsUsingFilter(onSuccess);
+		}
+		else {
+			return getActiveAndBacklogProjectsUsingQuery(onSuccess);
+		}
+	}
+	
+    /**
+     * Query to get the list of active+backlog projects (using query)
+     */
+    this.getActiveAndBacklogProjectsUsingQuery = function (onSuccess){
         //Get todays date formatted as yyyy-MM-dd
         var today = new Date();
         var dd = today.getDate();
@@ -390,6 +415,25 @@ angular.module('Mastermind.services.projects')
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
+    }
+
+
+
+    /**
+     * Query to get the list of active+backlog projects (using filter)
+     */
+    this.getActiveAndBacklogProjectsUsingFilter = function (onSuccess){
+        //Get todays date formatted as yyyy-MM-dd
+        today = getToday();
+
+		var queryParams = {};
+		queryParams.endDate = today;
+		queryParams.type = 'paid';
+		queryParams.isCommited = true;
+		
+        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
+
+        return Resources.filter('projects', queryParams, apFields, onSuccess);
     }
     
     /**
@@ -686,6 +730,20 @@ angular.module('Mastermind.services.projects')
      * Query to get the list of active projects
      */
     this.getActiveClientProjects = function (onSuccess){
+		if (window.useAdoptedServices) {
+			return this.getActiveClientProjectsUsingFilter(onSuccess);
+		}
+		else {
+			return this.getActiveClientProjectsUsingQuery(onSuccess);
+		}
+		
+    }
+
+
+    /**
+     * Query to get the list of active projects (using query)
+     */
+    this.getActiveClientProjectsUsingQuery = function (onSuccess){
       var today = this.getToday();
 
       /*
@@ -697,6 +755,18 @@ angular.module('Mastermind.services.projects')
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
     }
+
+    /**
+     * Query to get the list of active projects (using filter)
+     */
+    this.getActiveClientProjectsUsingFilter = function (onSuccess){
+      var queryParams = {};
+      queryParams.status = "active";
+      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
+      
+      return Resources.filter('projects', queryParams, apFields, onSuccess);
+    }
+
 
     /**
      * Query to get the list of backlogged projects

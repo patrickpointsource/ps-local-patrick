@@ -1,3 +1,6 @@
+'use strict';
+
+var util = require('../util/util');
 
 /**
  * Returns active people filtered by role resources
@@ -156,6 +159,86 @@ var filterProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, 
 };
 
 
+/**
+ * Returns projects filtered by statuses
+ * 
+ * @param {Object} statuses
+ */
+
+var filterProjectsByStatuses = function(statuses, projects) {
+	var result = [];
+	console.log("util.getTodayDate()=" + util.getTodayDate());
+	projects.data.forEach(function(project) {
+		checkProjectByStatuses(statuses, project, function (checked) {
+			if (checked) {
+				result.push(project);
+			}
+		});
+	});
+	projects.data = result;
+	return projects;
+};
+
+
+var checkProjectByStatuses = function(statuses, project, callback) {
+	if (statuses instanceof Array) {
+		statuses.forEach(function(status) {
+			
+			// checks for active projects
+			if (status == "active"  &&
+					project.startDate <= util.getTodayDate() &&
+						(!project.endDate || project.endDate >= util.getTodayDate() ) &&
+							project.type == "paid" &&
+								project.committed == true ) {
+				callback(true);				
+			}
+
+			// checks for backlog projects
+			if (status == "backlog" &&
+					project.startDate > util.getTodayDate() &&
+						project.type == "paid" &&
+							project.committed == true ) {
+				callback(true);				
+			}
+
+			// checks for pipeline projects
+			if (status == "pipeline" &&
+					(!project.endDate || project.endDate >= util.getTodayDate() ) &&
+						project.type == "paid" &&
+							project.committed == false ) {
+				callback(true);				
+			}
+
+			// checks for investment projects
+			if (status == "investment" &&
+					(!project.endDate || project.endDate >= util.getTodayDate() ) &&
+						( project.type == "invest" || project.type == "poc" ) ) {
+				callback(true);				
+			}
+
+			// checks for complete projects
+			if (status == "investment" &&
+					project.endDate < util.getTodayDate()  &&
+							project.committed == true ) {
+				callback(true);				
+			}
+
+			// checks for deallost projects
+			if (status == 'deallost' &&
+					project.endDate < util.getTodayDate()  &&
+							project.committed == false ) {
+				callback(true);				
+			}
+			
+		});
+		callback(false);				
+	}
+	else {
+		checkProjectByStatuses([statuses], project, callback);
+	}
+}
+
+
 
 module.exports.filterActivePeopleByRoleResources = filterActivePeopleByRoleResources;
 module.exports.filterActivePeople = filterActivePeople;
@@ -164,3 +247,4 @@ module.exports.filterProjectsBySponsors = filterProjectsBySponsors;
 module.exports.filterProjectsByRoleResources = filterProjectsByRoleResources;
 module.exports.filterProjectsBetweenDatesByTypes = filterProjectsBetweenDatesByTypes;
 module.exports.filterProjectsBetweenDatesByTypesAndSponsors = filterProjectsBetweenDatesByTypesAndSponsors;
+module.exports.filterProjectsByStatuses = filterProjectsByStatuses;
