@@ -556,7 +556,7 @@ else if( role.percentageCovered == 0 )
 					resource: me.about
 				};
 
-				ProjectsService.save( $scope.project ).then( function( updatedProject ) {
+				ProjectsService.save( $scope.project ).then( function( result ) {
 					$rootScope.hideModals( );
 					if( $rootScope.projectEdit && $rootScope.needsTonavigateOut && $scope.editDone ) {
 						$rootScope.navigateOutFunc( );
@@ -565,10 +565,10 @@ else if( role.percentageCovered == 0 )
 
 					//On Create the project ID will be null.  Pull it from the about.
 					if( !$scope.projectId ) {
-						var projectURI = updatedProject.about;
-						var oid = projectURI.substring( projectURI.lastIndexOf( '/' ) + 1 );
 						//Set our currently viewed project to the one resolved by the service.
-						$scope.projectId = oid;
+						if(result.ok) {
+						  $scope.projectId = result.id;
+						}
 
 						// after creating a project, if clicked Done, go to projects list
 						// if clicked Save, make project editable (redirect to Edit page)
@@ -577,6 +577,7 @@ else if( role.percentageCovered == 0 )
 							$state.go( 'projects.index', {
 								filter: 'all'
 							} );
+							return;
 						} else {
 							$rootScope.formDirty = false;
 							$state.go( 'projects.edit', {

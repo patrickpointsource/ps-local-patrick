@@ -160,7 +160,7 @@ angular.module('Mastermind.services.projects')
      * @param project
      */
     this.save = function (project) {
-      var val;
+      var deferred = $q.defer();
       
       //Fix project description 
       if(project.description){
@@ -187,16 +187,20 @@ angular.module('Mastermind.services.projects')
       }
 
       if (this.isTransient(project)) {
-        val = Resource.post(project);
+        Resources.create('projects', project).then(function(result) {
+          deferred.resolve(result);
+        });
       } else {
         // Add properties for the server.
         project._id = project.$meta._id;
         project.etag = project.$meta.etag;
 
-        val = Resources.update(project);
+        Resources.update(project).then(function(result) {
+          deferred.resolve(result);
+        });
       }
 
-      return val;
+      return deferred.promise;
     };
 
     /**
