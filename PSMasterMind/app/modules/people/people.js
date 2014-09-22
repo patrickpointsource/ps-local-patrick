@@ -435,11 +435,22 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 					$scope.people[ i ].group = '';
 				}
 			}
+			
+			// fix cases when name passed as compound string
+			if (_.isString($scope.people[ i ].name)) {
+			     var tmp = $scope.people[ i ].name.split(/\s+/g);
+			     
+			     $scope.people[ i ].name = {
+			         givenName: tmp[0],
+			         familyName: tmp[1],
+			         fullName: $scope.people[ i ].name
+			     };
+			 }
 		}
 
 		$scope.changeSort( $scope.sortType );
 		$scope.hideSpinner = true;
-	}
+	};
 	/**
 	 * display the month name from a month number (0 - 11)
 	 */

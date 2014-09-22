@@ -58,8 +58,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			for( var state in $scope.projectStates )
 			$scope.projectStates[ state ] = false;
 
-            $scope.projectStatesDisabled = false;
-            
+			$scope.projectStatesDisabled = false;
+
 			$scope.projectStates[ "all" ] = true;
 			$scope.reportTypes[ "custom" ] = true;
 			$scope.projectStatesDisabled = false;
@@ -212,8 +212,9 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			thumbnail: 1
 		};
 
-        People.query( peopleInRoleQuery, peopleInRoleFields).then( function( result ) {
-		//Resources.query( 'people', peopleInRoleQuery, peopleInRoleFields, function( result ) {
+		People.query( peopleInRoleQuery, peopleInRoleFields ).then( function( result ) {
+			//Resources.query( 'people', peopleInRoleQuery, peopleInRoleFields, function(
+			// result ) {
 			$scope.peopleList = _.map( result.members, function( m ) {
 				$scope.peopleMap[ m.resource ] = {
 					name: m.name
@@ -403,8 +404,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				roles = groupRoleMapping[ prop ];
 
 				for( i = 0; roles && i < roles.length; i++ )
-					if( $scope.userRoles[                                                 roles[ i ].toLowerCase( ) ] )
-						$scope.userRoles[                                                 roles[ i ].toLowerCase( ) ].value = true;
+					if( $scope.userRoles[                                                  roles[ i ].toLowerCase( ) ] )
+						$scope.userRoles[                                                  roles[ i ].toLowerCase( ) ].value = true;
 			}
 		}
 
@@ -685,7 +686,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 			if( hoursQ[ "$or" ].length > 0 )
 				HoursService.query( hoursQ ).then( function( result ) {
-				    var reportHours = result.members;
+					var reportHours = result.members;
 					var person;
 					var mappingEntry;
 
@@ -847,7 +848,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 			if( hoursQ[ "$or" ].length > 0 )
 				HoursService.query( hoursQ ).then( function( result ) {
-                    var reportHours = result.members;
+					var reportHours = result.members;
 					var person;
 					var mappingEntry;
 
@@ -1200,12 +1201,16 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 		generate: function( e ) {
 			e = e ? e : window.event;
-			var btn = $( e.target ).closest( '.btn-export a' );
+			var btn = $( e.target ).closest( '.btn-export' ).find( 'a' );
+
+			console.log( 'report:generate:1:' + btn.get( 0 ) );
 
 			e.preventDefault( );
 			e.stopPropagation( );
 
 			var reportDataCb = function( reportData ) {
+				console.log( 'report:generate:2:' + btn.get( 0 ) );
+
 				$scope.csvData = $scope.JSON2CSV( reportData );
 
 				var evt = document.createEvent( "MouseEvents" );

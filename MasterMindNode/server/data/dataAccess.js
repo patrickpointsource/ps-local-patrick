@@ -1,6 +1,7 @@
 var dbAccess = require( '../data/dbAccess.js' );
 var memoryCache = require( '../data/memoryCache.js' );
 var _ = require( 'underscore' );
+var q = require('q');
 var sift = require( 'sift' );
 var config = require( '../config/config.js' );
 var dataFilter = require( './dataFilter' );
@@ -18,6 +19,22 @@ var SKILLS_KEY = 'Skills';
 var LINKS_KEY = 'Links';
 var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
+
+/*
+ * 
+ * Example of usage q lib
+    var deferred = q.defer();
+   
+    input.on('end', function() {
+        // since you're done, you would resolve the promise, passing back the 
+        // thing that would be passed to the next part of the chain, e.g. .then()
+        deferred.resolve("Wouldn't you want to return something to 'then' with?");
+    });
+
+    // you return the promise from the deferred - not the deferred itself
+    return deferred.promise;
+
+*/
 
 //TODO: fix $oid to _id, and move from "$exists: 1" to "$exists: 0"
 var alignQuery = function( q, qP, pProp, pInd ) {

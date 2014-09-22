@@ -48,6 +48,7 @@
     "memory-cache": "^0.0.5",
     "acl": "^0.4.3",
     "sift": "*",
+    "q": "*",
     "nodemailer": "*",
     "nodemailer-smtp-transport": "*",
     "nodemailer-wellknown": "*"
