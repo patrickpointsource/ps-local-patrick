@@ -25,7 +25,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 		$scope.me = me;   
 
 		//Load profile access rights using NodeJS service
-		if (window.useNodeJSAccessRightsServices) {
+		if (window.useAdoptedServices) {
 			Resources.refresh( 'people/me/accessRights' ).then( function success( accessRights ) {	
 				$scope.financeAccess = accessRights.hasFinanceRights;
 				$scope.adminAccess = accessRights.hasAdminRights;
