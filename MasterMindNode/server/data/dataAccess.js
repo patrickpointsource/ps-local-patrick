@@ -472,6 +472,8 @@ var listHours = function( q, callback ) {
     var endDate = null;
 
     var projects = [ ];
+    var project = q.project ? q.project.resource: q['project.resource'];
+    var person = q.person ? q.person.resource: q['person.resource'];
 
     for( var i = 0; q.$and && i < q.$and.length; i++ ) {
         onlyAndDates = onlyAndDates && q.$and[ i ].date;
@@ -494,9 +496,20 @@ var listHours = function( q, callback ) {
         if( onlyProjects )
             projects.push( q.$or[ i ][ 'project.resource' ] );
     }
+    
+    if (!onlyProjects && !q.$or && !q.$and && !q.person) {
+        project = q.project ? q.project.resource: q['project.resource'];
+        
+        if (project) {
+            onlyProjects = true;
+            
+            projects.push(project);
+        }
+        
+    }
     // TODO: remove it later when all hours services will be finaly migrated
-    if( !q.project && q.person && q.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
-        dbAccess.listHoursByStartEndDates( [ "PersonDate", q.person.resource, startDate ], [ "PersonDate", q.person.resource, endDate ], function( err, body ) {
+    if( !project && person && startDate && endDate && orEmpty && onlyAndDates ) {
+        dbAccess.listHoursByStartEndDates( [ "PersonDate", person, startDate ], [ "PersonDate", person, endDate ], function( err, body ) {
             if( err ) {
                 console.log( err );
                 callback( 'error loading hours by start and end dates', null );
@@ -505,8 +518,8 @@ var listHours = function( q, callback ) {
                 callback( err, queryRecords( body, q, "members", "hours/" ) );
             }
         } );
-    } else if( !q.person && q.project && q.project.resource && startDate && endDate && orEmpty && onlyAndDates ) {
-        dbAccess.listHoursByStartEndDates( [ "ProjectDate", q.project.resource, startDate ], [ "ProjectDate", q.project.resource, endDate ], function( err, body ) {
+    } else if( !person && project && startDate && endDate && orEmpty && onlyAndDates ) {
+        dbAccess.listHoursByStartEndDates( [ "ProjectDate", project, startDate ], [ "ProjectDate", project, endDate ], function( err, body ) {
             if( err ) {
                 console.log( err );
                 callback( 'error loading hours by start and end dates', null );
@@ -515,8 +528,8 @@ var listHours = function( q, callback ) {
                 callback( err, queryRecords( body, q, "members", "hours/" ) );
             }
         } );
-    } else if( q.person && q.person.resource && q.project && q.project.resource && startDate && endDate && orEmpty && onlyAndDates ) {
-        dbAccess.listHoursByStartEndDates( [ "ProjectPersonDate", q.project.resource, q.person.resource, startDate ], [ "ProjectPersonDate", q.project.resource, q.person.resource, startDate ], function( err, body ) {
+    } else if( person && project && startDate && endDate && orEmpty && onlyAndDates ) {
+        dbAccess.listHoursByStartEndDates( [ "ProjectPersonDate", project, person, startDate ], [ "ProjectPersonDate", project, person, startDate ], function( err, body ) {
             if( err ) {
                 console.log( err );
                 callback( 'error loading hours by start and end dates', null );
@@ -525,13 +538,9 @@ var listHours = function( q, callback ) {
                 callback( err, queryRecords( body, q, "members", "hours/" ) );
             }
         } );
-    } else if( ( q.person || q[ 'person.resource' ] ) && !q.project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
-        var resource = q[ 'person.resource' ] ? q[ 'person.resource' ] : null;
+    } else if( person && !project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
 
-        if( !resource )
-            resource = q.person ? q.person.resource : null;
-
-        dbAccess.listHoursByStartEndDates( [ "PersonDate", resource, '1900-01-01' ], [ "PersonDate", resource, '2050-01-01' ], function( err, body ) {
+        dbAccess.listHoursByStartEndDates( [ "PersonDate", person, '1900-01-01' ], [ "PersonDate", person, '2050-01-01' ], function( err, body ) {
             if( err ) {
                 console.log( err );
                 callback( 'error loading hours by start and end dates', null );
