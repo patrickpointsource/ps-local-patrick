@@ -759,7 +759,6 @@ angular.module('Mastermind.services.projects')
      * Query to get the list of active projects
      */
     this.getActiveClientProjects = function (onSuccess){
-   		window.useAdoptedServices = true;
 		if (window.useAdoptedServices) {
 			return this.getProjectsByStatuses("active", onSuccess);
 		}
