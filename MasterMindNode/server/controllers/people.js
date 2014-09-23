@@ -16,9 +16,8 @@ module.exports.listPeople = function(query, callback) {
     });
 };
 
-module.exports.listActivePeopleByRoleResources = function(roleResources, callback) {
-	console.log("listActivePeopleByRoleResources.roleResources=" + roleResources);
-    dataAccess.listActivePeopleByRoleResources(roleResources, function(err, body){
+module.exports.listActivePeopleByRoleIds = function(roleIds, callback) {
+    dataAccess.listActivePeopleByRoleIds(roleIds, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people', null);

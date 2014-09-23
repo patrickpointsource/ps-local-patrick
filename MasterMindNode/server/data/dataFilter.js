@@ -9,26 +9,39 @@ var util = require('../util/util');
  * @param {Object} callback
  */
 
-var filterActivePeopleByRoleResources = function(roleResources, people) {
+var filterActivePeopleByRoleIds = function(roleIds, people) {
 	var result = [];
 	people.forEach(function(person) {
-		checkActivePeopleByRoleResources(person, roleResources, function (checked) {
+		checkActivePeopleByRoleIds(person, roleIds, function (checked) {
 			if (checked) {
 				result.push(person);
 			}
 		});
 	});
-	console.log("result.length=" + result.length);
 	return result;
 };
 
-var checkActivePeopleByRoleResources = function (person, roleResources, callback) {
-	if (!roleResources || person.isActive && person.primaryRole && roleResources.toString().indexOf(person.primaryRole.resource) != -1) {
-		callback(true);
-	}
-	else {
+var checkActivePeopleByRoleIds = function (person, roleIds, callback) {
+	if (roleIds instanceof Array) {
+		roleIds.forEach(function(roleId) {
+			checkPersonByRoleId (person, roleId, function (checked) {
+				if (checked) {
+					callback(checked);
+				}
+			});
+		});
 		callback(false);
 	}
+	else {
+		checkActivePeopleByRoleIds(person, [roleIds], callback);
+	}
+};
+
+var checkPersonByRoleId = function(person, roleId, callback) {
+	if (person.primaryRole && person.primaryRole.resource == util.getFullID( roleId, "roles") ) {
+		callback(true);
+	}
+	callback(false);
 };
 
 
@@ -256,7 +269,7 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 
 
 
-module.exports.filterActivePeopleByRoleResources = filterActivePeopleByRoleResources;
+module.exports.filterActivePeopleByRoleIds = filterActivePeopleByRoleIds;
 module.exports.filterActivePeople = filterActivePeople;
 module.exports.filterProjectsByExecutiveSponsor = filterProjectsByExecutiveSponsor;
 module.exports.filterProjectsBySponsors = filterProjectsBySponsors;

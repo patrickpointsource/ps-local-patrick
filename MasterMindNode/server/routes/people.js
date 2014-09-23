@@ -36,14 +36,35 @@ router.get('/filter/', util.isAuthenticated, function(req, res){
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 
 		{
-			var roles = req.query.role;
-		    people.listActivePeopleByRoleResources(roles, function(err, result){
+			var roleId = req.query.roleId;
+		    people.listActivePeopleByRoleIds(roleId, function(err, result){
 		        if(err){
 		            res.json(500, err);
 		        } else {
 		            res.json(result);
 		        }            
 		    });
+		}
+	});
+}); 
+
+router.get('/byroleid/:roleId', util.isAuthenticated, function(req, res){
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
+		if (allowed) 
+		{
+			var roleId = req.params.roleId;
+			if (roleId) {
+			    people.listActivePeopleByRoleIds(roleId.split(','), function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else {
+	            res.json(500, 'No required roleId attribute');
+			}
 		}
 	});
 }); 

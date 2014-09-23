@@ -237,19 +237,19 @@ var listPeople = function( q, callback ) {
 
 };
 
-var listActivePeopleByRoleResources = function( roleResources, callback ) {
+var listActivePeopleByRoleIds = function( roleIds, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterActivePeopleByRoleResources(roleResources, result.data), "members", "people/" ) );
+		callback( null, prepareRecords( dataFilter.filterActivePeopleByRoleIds(roleIds, result.data), "members", "people/" ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterActivePeopleByRoleResources(roleResources, body.data), "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterActivePeopleByRoleIds(roleIds, body.data), "members", "people/" ) );
 		} );
 	}
 
@@ -689,7 +689,7 @@ module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
 module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
 module.exports.listProjectsByStatuses = listProjectsByStatuses;
 module.exports.listPeople = listPeople;
-module.exports.listActivePeopleByRoleResources = listActivePeopleByRoleResources;
+module.exports.listActivePeopleByRoleIds = listActivePeopleByRoleIds;
 module.exports.listActivePeople = listActivePeople;
 module.exports.listAssignments = listAssignments;
 module.exports.listTasks = listTasks;

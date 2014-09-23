@@ -30,11 +30,11 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	}
 
 
-	function filter( roleResources, fields ) {
+	function filter( roleIds, fields ) {
 		var deferred = $q.defer( );
 		fields = fields ? fields : {};
 
-		Resources.filter( 'people', roleResources, fields, function( result ) {
+		Resources.get( 'people/filter', roleIds, fields, function( result ) {
 			deferred.resolve( result );
 		} );
 
@@ -125,6 +125,18 @@ function( $q, Restangular, Resources, ProjectsService ) {
 
 		return sixMontsFromNowQuery;
 	}
+	
+	var getIDfromResource = function(resource) {
+		
+		var ind = resource.lastIndexOf("/");
+		if (ind != -1) {
+			var id = resource.substring(ind + 1, resource.length);
+			return id;
+		}
+		return;
+	};
+	
+	
 	/**
 	 * Query to get the list of people working on
 	 * active projects.
@@ -378,10 +390,10 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 	function getPeoplePerRole( role, fields ) {
 		if (window.useAdoptedServices) {
-			getPeoplePerRoleUsingQuery(role, fields );
+			getPeoplePerRoleUsingByRoleIdService(role, fields );
 		}
 		else {
-			getPeoplePerRoleUsingFilter(role, fields );
+			getPeoplePerRoleUsingQuery(role, fields );
 		}
 	}
 	
@@ -417,16 +429,17 @@ function( $q, Restangular, Resources, ProjectsService ) {
 
 
 	/**
-	 * Returns a list of people per role using filter for display (using filter)
+	 * Returns a list of people per role using filter for display (using byroleid service)
 	 *
 	 * role: is the URI for a role i.e. 'roles/{roleid}'
 	 * fields: if the mongo filter to limit the fields returned for each person
 	 */
-	function getPeoplePerRoleUsingFilter( role, fields ) {
+	function getPeoplePerRoleUsingByRoleIdService( role, fields ) {
 		var deferred = $q.defer( );
-		filter( role, fields).then( function( result ) {
-			deferred.resolve( result );
-		} );
+		
+		Resources.get( 'people/byroleid/' + getIDfromResource(role), null, fields, function( result ) {
+  	 		deferred.resolve( result );
+  		} );
 		return deferred.promise;
 	}
 
