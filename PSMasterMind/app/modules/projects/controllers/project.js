@@ -2212,8 +2212,11 @@ else if( role.percentageCovered == 0 )
 						var roleInfo = $scope.weekPersonHours2[roleIndex];
 						var role = _.find($scope.project.roles, function (role)
 						{
-							return role._id == roleInfo.role.resource.substring(roleInfo.role.resource.lastIndexOf("/") + 1);
+							return roleInfo.role.resource && role._id == roleInfo.role.resource.substring(roleInfo.role.resource.lastIndexOf("/") + 1);
 						});
+						
+						if (!role)
+							continue;
 						
 						roleInfo.persons.push(personRecord);
 						
@@ -2391,8 +2394,11 @@ else if( role.percentageCovered == 0 )
 						var roleInfo = $scope.monthPersonHours2[roleIndex];
 						var role = _.find($scope.project.roles, function (role)
 						{
-							return role._id == roleInfo.role.resource.substring(roleInfo.role.resource.lastIndexOf("/") + 1);
+							return roleInfo.role.resource && role._id == roleInfo.role.resource.substring(roleInfo.role.resource.lastIndexOf("/") + 1);
 						});
+						
+						if (!role)
+							continue;
 						
 						Resources.resolve( $scope.monthPersonHours[ i ].person );
 						
