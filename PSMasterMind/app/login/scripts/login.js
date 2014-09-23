@@ -8,6 +8,7 @@ window.restPath = '/MasterMindStaging/rest/';
 
 window.fixUrl = false;
 window.useAdoptedServices = false;
+window.useNodeJSAccessRightsServices = false;
 //local nodejs based development
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
 //window.restPath = '/MMNodeServer/';

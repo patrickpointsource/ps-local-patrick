@@ -25,26 +25,33 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 		$scope.me = me;   
 
 		//Load profile access rights using NodeJS service
-		Resources.refresh( 'people/me/accessRights' ).then( function success( accessRights ) {	
-			$scope.financeAccess = accessRights.hasFinanceRights;
-			$scope.adminAccess = accessRights.hasAdminRights;
-			$scope.projectManagementAccess = accessRights.hasProjectManagementRights;
-			$scope.executivesAccess = accessRights.hasExecutiveRights;
+		if (window.useNodeJSAccessRightsServices) {
+			Resources.refresh( 'people/me/accessRights' ).then( function success( accessRights ) {	
+				$scope.financeAccess = accessRights.hasFinanceRights;
+				$scope.adminAccess = accessRights.hasAdminRights;
+				$scope.projectManagementAccess = accessRights.hasProjectManagementRights;
+				$scope.executivesAccess = accessRights.hasExecutiveRights;
 
-			if( accessRights.hasExecutiveRights ) {
-				$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
-			}
-			if( accessRights.hasManagementRights || accessRights.hasProjectManagementRights ) {
-				$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
-			}
+				if( accessRights.hasExecutiveRights ) {
+					$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
+				}
+				if( accessRights.hasManagementRights || accessRights.hasProjectManagementRights ) {
+					$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
+				}
 
-			$scope.notifications = [];
-			if( accessRights.hasManagementRights) {
-				NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
-					$scope.notifications = result.members;
-				});
-			}	
-		}).catch(function error(msg) {
+				$scope.notifications = [];
+				if( accessRights.hasManagementRights) {
+					NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
+						$scope.notifications = result.members;
+					});
+				}
+
+				//console.log('Logged In');
+				$scope.authState = true;
+				$scope.$emit( 'me:loaded' );
+			});
+		}
+		else {
 			/**
 			 * Members of the 'Executives' group...
 			 *
@@ -108,12 +115,12 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 				NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
 					$scope.notifications = result.members;
 				});
-			}			
-		}).then(function notification(notification) { 
+			}
+
 			//console.log('Logged In');
 			$scope.authState = true;
 			$scope.$emit( 'me:loaded' );
-		});
+		};
 	});
 
 	/**
