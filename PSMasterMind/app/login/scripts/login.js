@@ -1,33 +1,45 @@
 //Define the global URLs for this app
 
 // local dev
-
 window.serverLocation = 'http://localhost:8080';
 window.clientBaseURL = 'http://0.0.0.0:9000/';
 window.restPath = '/MasterMindStaging/rest/';
-
 window.fixUrl = false;
 window.useAdoptedServices = false;
+
 //local nodejs based development
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
 //window.restPath = '/MMNodeServer/';
 //window.clientBaseURL = 'http://0.0.0.0:9000/';
 //window.fixUrl = true;
 
+//stage nodejs 
+//window.serverLocation = 'https://dmz.mastermind.pointsource.us';
+//window.restPath = '/MMNodeServer/';
+//window.clientBaseURL = 'https://mastermind.pointsource.us/nodestage/';
+//window.fixUrl = true;
+//window.useAdoptedServices = false;
+
 //stage only
 //window.restPath = '/MasterMindStaging/rest/';
 //window.clientBaseURL = 'https://mastermind.pointsource.us/stage/';
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
+//window.fixUrl = false;
+//window.useAdoptedServices = false;
 
 //prod (dmz)
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
 //window.restPath = '/MasterMindServer/rest/';
 //window.clientBaseURL = 'https://mastermind.pointsource.us/web/';
+//window.fixUrl = false;
+//window.useAdoptedServices = false;
 
 //demo
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
 //window.restPath = '/MasterMindDemo/rest/';
 //window.clientBaseURL = 'https://mastermind.pointsource.us/demo/';
+//window.fixUrl = false;
+//window.useAdoptedServices = false;
 
 
 var helper = (function () {
