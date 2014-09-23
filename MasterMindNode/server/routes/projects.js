@@ -85,6 +85,33 @@ router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 
 } );
 
+
+router.get( '/bystatus/:status', auth.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
+		if( allowed ) {
+			var statusString = req.params.status;
+			if (statusString) {
+				console.log("statusString=" + statusString);
+				var statuses = statusString.split(',');
+				console.log("statuses=" + JSON.stringify(statuses));
+				projects.listProjectsByStatuses( statuses, function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json( result );
+					}
+				} );
+			}
+			else {
+				res.json( 500, 'No required status attribute');
+			}
+			
+		}
+	} );
+
+} );
+
 router.get( '/:id', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {

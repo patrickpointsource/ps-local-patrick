@@ -84,15 +84,14 @@ var filterProjectsBySponsors = function(roleResources, projects) {
 
 var filterProjectsByRoleResources = function(roleTypes, roleResources, projects) {
 	var result = [];
-	projects.data.forEach(function(project) {
+	projects.forEach(function(project) {
 		checkRoleResourcesByRoleTypesInProject(roleTypes, roleResources, project, function (checked){
 			if (checked) {
 				result.push(project);
 			}
 		});
 	});
-	projects.data = result;
-	return projects;
+	return result;
 };
 
 
@@ -127,7 +126,7 @@ var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, 
 
 var filterProjectsBetweenDatesByTypes = function(startDate, endDate, types, isCommited, projects) {
 	var result = [];
-	projects.data.forEach(function(project) {
+	projects.forEach(function(project) {
 		if (	
 			(startDate == null  || project.startDate >= startDate) && 
 				(endDate == null || project.endDate < endDate) && 
@@ -137,8 +136,7 @@ var filterProjectsBetweenDatesByTypes = function(startDate, endDate, types, isCo
 			result.push(project);
 		}
 	});
-	projects.data = result;
-	return projects;
+	return result;
 };
 
 
@@ -167,16 +165,14 @@ var filterProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, 
 
 var filterProjectsByStatuses = function(statuses, projects) {
 	var result = [];
-	console.log("util.getTodayDate()=" + util.getTodayDate());
-	projects.data.forEach(function(project) {
-		checkProjectByStatuses(statuses, project, function (checked) {
+	projects.forEach(function(project) {
+		checkProjectByStatuses(statuses, project, function(checked) {
 			if (checked) {
 				result.push(project);
 			}
 		});
 	});
-	projects.data = result;
-	return projects;
+	return result;
 };
 
 
@@ -217,21 +213,41 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 			}
 
 			// checks for complete projects
-			if (status == "investment" &&
+			if (status == "complete" &&
 					project.endDate < util.getTodayDate()  &&
 							project.committed == true ) {
 				callback(true);				
 			}
 
 			// checks for deallost projects
-			if (status == 'deallost' &&
+			if (status == "deallost" &&
 					project.endDate < util.getTodayDate()  &&
 							project.committed == false ) {
 				callback(true);				
 			}
-			
+
+			// checks for ongoing projects
+			if (status == "ongoing" &&
+					(!project.endDate || project.endDate >= util.getTodayDate() ) &&
+						(  project.type == "invest" || project.type == "poc"  || ( project.committed == true && project.type == "paid" ) )  ) {
+				callback(true);				
+			}
+
+			// checks for unfinished projects
+			if (status == "unfinished" &&
+					(!project.endDate || project.endDate >= util.getTodayDate() ) ) {
+				callback(true);				
+			}
+
+			// checks for kick-off projects
+			if (status == "kick-off" &&
+					project.startDateDate >= util.getTodayDate() &&
+						project.committed == true ) {
+				callback(true);				
+			}
 		});
-		callback(false);				
+		
+		callback(false);
 	}
 	else {
 		checkProjectByStatuses([statuses], project, callback);

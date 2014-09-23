@@ -172,14 +172,14 @@ var listProjectsBetweenDatesByTypesAndSponsors = function( startDate, endDate, t
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result).data, null, "project/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "project/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, body).data, null, "project/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, body.data), null, "project/" ) );
 		} );
 	}
 
@@ -191,14 +191,15 @@ var listProjectsByStatuses = function( statuses, callback ) {
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, result).data, null, "project/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, result.data), null, "project/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, body).data, null, "project/" ) );
+			
+			callback( err, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, body.data), null, "project/" ) );
 		} );
 	}
 

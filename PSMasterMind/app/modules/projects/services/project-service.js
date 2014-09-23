@@ -272,7 +272,7 @@ angular.module('Mastermind.services.projects')
      */
     this.getAllProjects = function (onSuccess){
 	    if (window.useAdoptedServices) {
-			return getAllProjectsUsingFilter(onSuccess);
+			return getAllProjectsUsingGet(onSuccess);
 		}
 		else {
 			return getAllProjectsUsingQuery(onSuccess);
@@ -295,11 +295,15 @@ angular.module('Mastermind.services.projects')
     /**
      * Query to get the list of all projects (using filter)
      */
-    function getAllProjectsUsingFilter(onSuccess){
+    function getAllProjectsUsingGet(onSuccess){
         // terms will be checked on backend and loaded only for allowed persons
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description:1, terms:1};
-
-        return Resources.filter('projects', null, apFields, onSuccess);
+		if (onSuccess) {
+	        return Resources.get('projects', null, apFields).then(onSuccess);
+		}
+		else {
+	        return Resources.get('projects', null, apFields);
+		}
     };
    
     
@@ -327,7 +331,7 @@ angular.module('Mastermind.services.projects')
     function filter(queryParams,fields) {
     	var deferred = $q.defer();
     	
-    	Resources.filter('projects',queryParams,fields,function(result){
+    	Resources.get('projects/filter',queryParams,fields,function(result){
     		deferred.resolve(result);
     	});
       
@@ -372,12 +376,25 @@ angular.module('Mastermind.services.projects')
 	     return sixMontsFromNowQuery;
     }
 
+
+    /**
+     * Query to get the list of projects by statuses (using filter)
+     */
+    this.getProjectsByStatuses = function (statuses, onSuccess){
+    	var statusString = (statuses instanceof Array) ? statuses.join(',') : statuses;
+        var fields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
+        
+		Resources.get( 'projects/bystatus/' + statusString, null, fields, function( result ) {
+  	 		deferred.resolve( result );
+  		} ).then(onSuccess);
+    }
+
     this.getActiveAndBacklogProjects = function (onSuccess){
 	    if (window.useAdoptedServices) {
-			return getActiveAndBacklogProjectsUsingFilter(onSuccess);
+			return this.getProjectsByStatuses(["active","backlog"], onSuccess);
 		}
 		else {
-			return getActiveAndBacklogProjectsUsingQuery(onSuccess);
+			return this.getActiveAndBacklogProjectsUsingQuery(onSuccess);
 		}
 	}
 	
@@ -415,31 +432,25 @@ angular.module('Mastermind.services.projects')
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
+    }    
 
 
-
-    /**
-     * Query to get the list of active+backlog projects (using filter)
-     */
-    this.getActiveAndBacklogProjectsUsingFilter = function (onSuccess){
-        //Get todays date formatted as yyyy-MM-dd
-        today = getToday();
-
-		var queryParams = {};
-		queryParams.endDate = today;
-		queryParams.type = 'paid';
-		queryParams.isCommited = true;
-		
-        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
-
-        return Resources.filter('projects', queryParams, apFields, onSuccess);
-    }
-    
     /**
      * Query to get the list of active+backlog projects
      */
     this.getActiveBacklogAndPipelineProjects = function (onSuccess){
+	    if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses(["active", "backlog", "pipeline"], onSuccess);
+		}
+		else {
+			return this.getActiveBacklogAndPipelineProjectsUsingQuery(onSuccess);
+		}
+	}
+	
+    /**
+     * Query to get the list of active+backlog projects (using query)
+     */
+    this.getActiveBacklogAndPipelineProjectsUsingQuery = function (onSuccess){
         //Get todays date formatted as yyyy-MM-dd
         var today = new Date();
         var dd = today.getDate();
@@ -466,6 +477,8 @@ angular.module('Mastermind.services.projects')
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
     }
+
+
     
     
     /**
@@ -714,7 +727,22 @@ angular.module('Mastermind.services.projects')
     /**
      * Query to get the list of active projects
      */
+
     this.getProjectsByStatusFilter = function (filter, onSuccess){
+	    if (window.useAdoptedServices) {
+      		return this.getProjectsByStatuses(filter.split(','), onSuccess)
+		}
+		else {
+			return this.getProjectsByStatusFilterUsingQuery(filter, onSuccess);
+		}
+	}
+ 
+
+    /**
+     * Query to get the list of active projects (using query)
+     */
+
+    this.getProjectsByStatusFilterUsingQuery = function (filter, onSuccess){
       var apQuery = {$or: []};
       var tmp = filter.split(',')
       
@@ -725,13 +753,15 @@ angular.module('Mastermind.services.projects')
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
     }
+
     
     /**
      * Query to get the list of active projects
      */
     this.getActiveClientProjects = function (onSuccess){
+   		window.useAdoptedServices = true;
 		if (window.useAdoptedServices) {
-			return this.getActiveClientProjectsUsingFilter(onSuccess);
+			return this.getProjectsByStatuses("active", onSuccess);
 		}
 		else {
 			return this.getActiveClientProjectsUsingQuery(onSuccess);
@@ -756,22 +786,24 @@ angular.module('Mastermind.services.projects')
       return Resources.query('projects', apQuery, apFields, onSuccess);
     }
 
-    /**
-     * Query to get the list of active projects (using filter)
-     */
-    this.getActiveClientProjectsUsingFilter = function (onSuccess){
-      var queryParams = {};
-      queryParams.status = "active";
-      var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
-      
-      return Resources.filter('projects', queryParams, apFields, onSuccess);
-    }
-
-
+ 
     /**
      * Query to get the list of backlogged projects
      */
     this.getBacklogProjects = function (onSuccess){
+		if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses("backlog", onSuccess);
+		}
+		else {
+			return this.getBacklogProjectsUsingQuery(onSuccess);
+		}
+	}
+	
+	
+    /**
+     * Query to get the list of backlogged projects (using query)
+     */
+    this.getBacklogProjectsUsingQuery = function (onSuccess){
       //Get todays date formatted as yyyy-MM-dd
       var today = new Date();
       var dd = today.getDate();
@@ -794,11 +826,27 @@ angular.module('Mastermind.services.projects')
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
     }
+
     
     /**
      * Query to get the list of pipeline projects
      */
+
     this.getPipelineProjects = function (onSuccess){
+		if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses("pipeline", onSuccess);
+		}
+		else {
+			return this.getPipelineProjectsUsingQuery(onSuccess);
+		}
+	}
+
+
+    /**
+     * Query to get the list of pipeline projects (using query)
+     */
+     
+    this.getPipelineProjectsUsingQuery = function (onSuccess){
       //Get todays date formatted as yyyy-MM-dd
       var today = new Date();
       var dd = today.getDate();
@@ -826,6 +874,16 @@ angular.module('Mastermind.services.projects')
      * Query to get the list of active+backlog projects
      */
     this.getOngoingProjects = function (onSuccess){
+		if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses("ongoing", onSuccess);
+		}
+		else {
+			return this.getOngoingProjectsUsingQuery(onSuccess);
+		}
+	}
+
+
+    this.getOngoingProjectsUsingQuery = function (onSuccess){
         //Get todays date formatted as yyyy-MM-dd
         var today = new Date();
         var dd = today.getDate();
@@ -867,6 +925,18 @@ angular.module('Mastermind.services.projects')
      * Query to get the list of unfinished projects
      */
     this.getUnfinishedProjects = function (onSuccess){
+		if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses("unfinished", onSuccess);
+		}
+		else {
+			return this.getUnfinishedProjectsUsingQuery(onSuccess);
+		}
+	}
+
+    /**
+     * Query to get the list of unfinished projects (using query)
+     */
+    this.getUnfinishedProjectsUsingQuery = function (onSuccess){
         //Get todays date formatted as yyyy-MM-dd
         var today = new Date();
         var dd = today.getDate();
@@ -894,10 +964,23 @@ angular.module('Mastermind.services.projects')
         return Resources.query('projects', apQuery, apFields, onSuccess);
     }
     
+
     /**
      * Query to get the list of investment projects
      */
     this.getInvestmentProjects = function (onSuccess){
+		if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses("investment", onSuccess);
+		}
+		else {
+			return this.getInvestmentProjectsUsingQuery(onSuccess);
+		}
+	}
+
+    /**
+     * Query to get the list of investment projects (using query)
+     */
+    this.getInvestmentProjectsUsingQuery = function (onSuccess){
       //Get todays date formatted as yyyy-MM-dd
       var today = new Date();
       var dd = today.getDate();
@@ -921,9 +1004,21 @@ angular.module('Mastermind.services.projects')
     };
 
     /**
-     * Query to get the list of investment projects
+     * Query to get the list of completed projects
      */
     this.getCompletedProjects = function (onSuccess){
+		if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses("complete", onSuccess);
+		}
+		else {
+			return this.getCompletedProjectsUsingQuery(onSuccess);
+		}
+	}
+
+    /**
+     * Query to get the list of completed projects (using query)
+     */
+    this.getCompletedProjectsUsingQuery = function (onSuccess){
       //Get todays date formatted as yyyy-MM-dd
       var today = new Date();
       var dd = today.getDate();
@@ -946,7 +1041,23 @@ angular.module('Mastermind.services.projects')
       return Resources.query('projects', apQuery, apFields, onSuccess);
     };
     
+
+    /**
+     * Query to get the list of deallost projects
+     */
     this.getDealLostProjects = function (onSuccess){
+		if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses("deallost", onSuccess);
+		}
+		else {
+			return this.getDealLostProjectsUsingQuery(onSuccess);
+		}
+	}
+
+    /**
+     * Query to get the list of deallost projects
+     */
+    this.getDealLostProjectsUsingQuery = function (onSuccess){
     	//Get todays date formatted as yyyy-MM-dd
         var today = new Date();
         var dd = today.getDate();
@@ -1038,10 +1149,23 @@ angular.module('Mastermind.services.projects')
     	return ret;
     };
     
+    
     /**
      * Returns the counts for active, backlog, pipeline and investment projects
      */
     this.getProjectCounts = function(){
+		if (window.useAdoptedServices) {
+			return this.getProjectCountsUsingByStatus();
+		}
+		else {
+			return this.getProjectCountsUsingQuery();
+		}
+	}
+	
+    /**
+     * Returns the counts for active, backlog, pipeline and investment projects (using query)
+     */
+    this.getProjectCountsUsingQuery = function(){
     	var deferred = $q.defer();
     	var getProjectState = this.getProjectState;
     	
@@ -1088,12 +1212,54 @@ angular.module('Mastermind.services.projects')
     	
     	return deferred.promise;
     };
+
+
+    /**
+     * Returns the counts for active, backlog, pipeline and investment projects (using filter)
+     */
+    this.getProjectCountsUsingByStatus = function(){
+    	var deferred = $q.defer();
+    	var getProjectState = this.getProjectState;
+ 
+ 		var queryParams = {};
+ 		var statusString = "active,backlog,pipeline,investment,deallost";   	
+        var fields = {resource:1,startDate:1,endDate:1,committed:1,type:1};
+
+        Resources.get('projects/bystatus' + statusString, queryParams, fields, function(results){
+        	var projects = results.data;
+        	var ret = {active:0,backlog:0,pipeline:0,investment:0,deallost:0};
+        	for(var i = 0; i < projects.length;i++){
+        		var project = projects[i];
+        		var state = getProjectState(project);
+        		
+        		if(state == 'Active')ret.active++;
+        		if(state == 'Backlog')ret.backlog++;
+        		if(state == 'Pipeline')ret.pipeline++;
+        		if(state == 'Investment')ret.investment++;
+        		if(state == 'Deal Lost')ret.deallost++;
+        	}
+        	
+        	deferred.resolve(ret);
+        });
+    	
+    	return deferred.promise;
+    };
     
     
     /**
      * Get a list of projects about to kick off
      */
-    this.getProjectsKickingOff = function (){
+    this.getProjectsKickingOff = function (onSuccess){
+		if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses("kick-off", onSuccess);
+		}
+		else {
+			return this.getProjectsKickingOffUsingQuery(onSuccess);
+		}
+	}
+
+
+    this.getProjectsKickingOffUsingQuery = function (){
     	var deferred = $q.defer();
     	
         //Get todays date formatted as yyyy-MM-dd
