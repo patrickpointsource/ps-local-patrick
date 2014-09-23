@@ -1253,7 +1253,6 @@ angular.module('Mastermind.services.projects')
      * Get a list of projects about to kick off
      */
     this.getProjectsKickingOff = function (onSuccess){
-    	window.useAdoptedServices = true;
 		if (window.useAdoptedServices) {
 			return this.getProjectsByStatuses("kick-off", onSuccess);
 		}
