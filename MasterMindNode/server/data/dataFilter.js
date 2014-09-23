@@ -254,7 +254,7 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 
 			// checks for kick-off projects
 			if (status == "kick-off" &&
-					project.startDateDate >= util.getTodayDate() &&
+					project.startDate >= util.getTodayDate() &&
 						project.committed == true ) {
 				callback(true);				
 			}

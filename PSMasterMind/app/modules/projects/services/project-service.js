@@ -384,9 +384,13 @@ angular.module('Mastermind.services.projects')
     	var statusString = (statuses instanceof Array) ? statuses.join(',') : statuses;
         var fields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
         
-		Resources.get( 'projects/bystatus/' + statusString, null, fields, function( result ) {
-  	 		deferred.resolve( result );
-  		} ).then(onSuccess);
+        if (onSuccess) {
+			Resources.get( 'projects/bystatus/' + statusString).then(onSuccess);
+  		}
+  		else {
+			return Resources.get( 'projects/bystatus/' + statusString);
+	  		
+  		}
     }
 
     this.getActiveAndBacklogProjects = function (onSuccess){
@@ -1249,6 +1253,7 @@ angular.module('Mastermind.services.projects')
      * Get a list of projects about to kick off
      */
     this.getProjectsKickingOff = function (onSuccess){
+    	window.useAdoptedServices = true;
 		if (window.useAdoptedServices) {
 			return this.getProjectsByStatuses("kick-off", onSuccess);
 		}
