@@ -147,7 +147,7 @@ if (!useAppNames) {
     app.use('/tasks', tasks);
     app.use('/roles', roles);
     app.use('/hours', hours);
-    app.use('/configuration', configuration);
+    app.use('/config', configuration);
     app.use('/links', links);
     app.use('/skills', skills);
     app.use('/vacations', vacations);

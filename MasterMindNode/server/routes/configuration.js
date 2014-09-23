@@ -25,6 +25,35 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
+router.get( '/:id', util.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.viewConfiguration, function( allowed ) {
+		if( allowed ) {
+			var id = req.params.id;
+			if (id == "services") {
+				var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
+				configuration.getConfigurationByName( query, 'services', function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json(result);
+					}
+				} );
+			}
+			else {
+				configuration.getConfiguration( id, function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json( result );
+					}
+				} );
+			}
+		}
+	} );
+
+} );
+
 router.post( '/', util.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.editConfiguration, function( allowed ) {
@@ -41,9 +70,24 @@ router.post( '/', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.
-delete ( '/', util.isAuthenticated,
-function( req, res ) {
+router.put( '/:id', util.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.editConfiguration, function( allowed ) {
+		if( allowed ) {
+			configuration.insertConfiguration( req.body, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	} );
+
+} );
+
+
+router.delete( '/', util.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.editConfiguration, function( allowed ) {
 		if( allowed ) {
@@ -59,21 +103,5 @@ function( req, res ) {
 
 } );
 
-router.get( '/:id', util.isAuthenticated, function( req, res ) {
-
-	security.isAllowed( req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.viewConfiguration, function( allowed ) {
-		if( allowed ) {
-			var id = req.params.id;
-			configuration.getConfiguration( id, function( err, result ) {
-				if( err ) {
-					res.json( 500, err );
-				} else {
-					res.json( result );
-				}
-			} );
-		}
-	} );
-
-} );
 
 module.exports = router;

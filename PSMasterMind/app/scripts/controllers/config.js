@@ -15,7 +15,7 @@ angular.module('Mastermind').controller('ConfigCtrl', ['$scope', '$filter', '$q'
 			} else {
 				$scope.editIndex = index;
 			}
-		}
+		};
 		
 		$scope.save = function(index) {
 			$scope.config.resource = 'config/services';
@@ -24,12 +24,12 @@ angular.module('Mastermind').controller('ConfigCtrl', ['$scope', '$filter', '$q'
 			});
 			
 			$scope.editIndex = null;
-		}
+		};
 		
 		$scope.cancel = function() {
 			$scope.editIndex = null;
 			$scope.refreshConfig();
-		}
+		};
 		
 		$scope.config = {};
 		
@@ -46,7 +46,7 @@ angular.module('Mastermind').controller('ConfigCtrl', ['$scope', '$filter', '$q'
                         return 0;
     				});
 			});
-		}
+		};
 		
 		$scope.refreshConfig();
 }]);
