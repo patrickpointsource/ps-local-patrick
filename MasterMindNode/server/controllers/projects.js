@@ -5,7 +5,7 @@ var people = require('./people.js');
 var util = require('../util/util');
 var _ = require( 'underscore' );
 
-module.exports.listProjects = function(query, callback) {
+var listProjects = function(query, callback) {
     dataAccess.listProjects(query, function(err, body){
         if (err) {
             console.log(err);
@@ -22,7 +22,7 @@ module.exports.listProjects = function(query, callback) {
 };
 
 
-module.exports.listProjectsByExecutiveSponsor = function(executiveSponsor, callback) {
+var listProjectsByExecutiveSponsor = function(executiveSponsor, callback) {
     dataAccess.listProjectsByExecutiveSponsor(executiveSponsor, function(err, body){
         if (err) {
             console.log(err);
@@ -38,7 +38,7 @@ module.exports.listProjectsByExecutiveSponsor = function(executiveSponsor, callb
     });
 };
 
-module.exports.listProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, types, isCommited, roleResources, callback) {
+var listProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, types, isCommited, roleResources, callback) {
     dataAccess.listProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, function(err, body){
         if (err) {
             console.log(err);
@@ -55,7 +55,7 @@ module.exports.listProjectsBetweenDatesByTypesAndSponsors = function(startDate, 
     });
 };
 
-module.exports.listProjectsByStatuses = function(statuses, callback) {
+var listProjectsByStatuses = function(statuses, callback) {
     dataAccess.listProjectsByStatuses(statuses, function(err, body){
         if (err) {
             console.log(err);
@@ -72,19 +72,18 @@ module.exports.listProjectsByStatuses = function(statuses, callback) {
     });
 };
 
-module.exports.listCurrentProjectsByPerson = function(resource, callback) {
+var listCurrentProjectsByPerson = function(resource, callback) {
 
-	module.exports.listAssignmentsByPerson( resource, function( err, assignments ) {
+	listAssignmentsByPerson( resource, function( err, assignments ) {
 		if( err ) {
-			res.json( 500, err );
+			callback( err, null );
 		} else {
 									
 			var currentProjects = [];
-			module.exports.listProjectsByStatuses("unfinished", function( err, unfinishedProjects ) {
+			listProjectsByStatuses("unfinished", function( err, unfinishedProjects ) {
 				if( err ) {
-					callback( [], 500, err );
+					callback( err, null );
 				} else {
-					var result = [];											
 					_.each(unfinishedProjects, function (project){
 						checkProjectForAssignmentsAndPerson(project, assignments, resource, function (checked) {
 							if (checked) {
@@ -95,7 +94,7 @@ module.exports.listCurrentProjectsByPerson = function(resource, callback) {
 				}
 			} );
 										
-			callback( currentProjects );
+			callback(null, currentProjects );
 		}
 	} );
 };
@@ -104,6 +103,7 @@ var checkProjectForAssignmentsAndPerson = function(project, assignments, personR
 
 	// checks for project in assignments
 	_.each(assignments, function (assignment) {
+
 		if (assignment.project && 
 					assignment.project.resource == project.resource ) {
 			callback(true);
@@ -126,7 +126,7 @@ var checkProjectForAssignmentsAndPerson = function(project, assignments, personR
 	callback(false)
 }
 
-module.exports.getProject = function(id, callback) {
+var getProject = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
             console.log(err);
@@ -139,7 +139,7 @@ module.exports.getProject = function(id, callback) {
     });
 };
 
-module.exports.addProjectLink = function(id, obj, callback) {
+var addProjectLink = function(id, obj, callback) {
 	obj.project.resource = "projects/" + id;
     dataAccess.insertItem(obj._id, obj, dataAccess.Links, function(err, body){
         if (err) {
@@ -152,7 +152,7 @@ module.exports.addProjectLink = function(id, obj, callback) {
 };
 
 
-module.exports.listLinks = function(id, query, callback) {
+var listLinks = function(id, query, callback) {
     dataAccess.listLinks(query, function(err, body){
         if (err) {
             console.log(err);
@@ -165,7 +165,7 @@ module.exports.listLinks = function(id, query, callback) {
 
 };
 
-module.exports.listAssignments = function(id, callback) {
+var listAssignments = function(id, callback) {
 	
 	//TODO filter by project id
 	
@@ -182,7 +182,7 @@ module.exports.listAssignments = function(id, callback) {
 };
 
 
-module.exports.listAssignmentsByPerson = function(resource, callback) {
+var listAssignmentsByPerson = function(resource, callback) {
 	
     dataAccess.listAssignments(null, function(err, result){
         if (err) {
@@ -204,7 +204,7 @@ module.exports.listAssignmentsByPerson = function(resource, callback) {
 
 };
 
-module.exports.listRoles = function(callback) {
+var listRoles = function(callback) {
 
 	//TODO filter by project id
 
@@ -219,7 +219,7 @@ module.exports.listRoles = function(callback) {
     });
 };
 
-module.exports.getRole = function(projectId, roleId, callback) {
+var getRole = function(projectId, roleId, callback) {
     dataAccess.getItem(roleId, function(err, body){
         if (err) {
             console.log(err);
@@ -230,7 +230,7 @@ module.exports.getRole = function(projectId, roleId, callback) {
     });
 };
 
-module.exports.insertAssignment = function(projectId, obj, callback) {
+var insertAssignment = function(projectId, obj, callback) {
     dataAccess.insertItem(obj._id, obj, dataAccess.ASSIGNMENTS_KEY, function(err, body){
         if (err) {
             console.log(err);
@@ -241,7 +241,7 @@ module.exports.insertAssignment = function(projectId, obj, callback) {
     });
 };
 
-module.exports.deleteProject = function(obj, callback) {
+var deleteProject = function(obj, callback) {
     dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PROJECTS_KEY, function(err, body){
         if (err) {
             console.log(err);
@@ -252,7 +252,7 @@ module.exports.deleteProject = function(obj, callback) {
     });
 };
 
-module.exports.deleteProjectLink = function(projectId, linkId, obj, callback) {
+var deleteProjectLink = function(projectId, linkId, obj, callback) {
     dataAccess.deleteItem(linkId, null, dataAccess.LINKS_KEY, function(err, body){
         if (err) {
             console.log(err);
@@ -265,7 +265,7 @@ module.exports.deleteProjectLink = function(projectId, linkId, obj, callback) {
 
 
 
-module.exports.insertProject = function(obj, callback) {
+var insertProject = function(obj, callback) {
 	
 	// get name for executiveSponsor person
 	people.getNameByResource(obj.executiveSponsor.resource, function (err, executiveSponsorName) {		
@@ -303,7 +303,7 @@ module.exports.insertProject = function(obj, callback) {
 	
 };
 
-module.exports.insertProjectLink = function(projectId, linkId, obj, callback) {
+var insertProjectLink = function(projectId, linkId, obj, callback) {
 	obj._id = linkId;
     dataAccess.insertItem(obj._id, obj, dataAccess.LINKS_KEY, function(err, body){
         if (err) {
@@ -315,7 +315,7 @@ module.exports.insertProjectLink = function(projectId, linkId, obj, callback) {
     });
 };
 
-module.exports.getNameByResource = function(resource, callback) {
+var getNameByResource = function(resource, callback) {
 	if (!resource) {
 		callback('No resource', null);
 	}
@@ -338,3 +338,22 @@ module.exports.getNameByResource = function(resource, callback) {
 	}
 			
 };
+
+module.exports.listProjects = listProjects;
+module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
+module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
+module.exports.listProjectsByStatuses = listProjectsByStatuses;
+module.exports.listCurrentProjectsByPerson = listCurrentProjectsByPerson;
+module.exports.getProject = getProject;
+module.exports.addProjectLink = addProjectLink;
+module.exports.listLinks = listLinks;
+module.exports.listAssignments = listAssignments;
+module.exports.listAssignmentsByPerson = listAssignmentsByPerson;
+module.exports.listRoles = listRoles;
+module.exports.getRole = getRole;
+module.exports.insertAssignment = insertAssignment;
+module.exports.deleteProject = deleteProject;
+module.exports.deleteProjectLink = deleteProjectLink;
+module.exports.insertProject = insertProject;
+module.exports.insertProjectLink = insertProjectLink;
+module.exports.getNameByResource = getNameByResource;
