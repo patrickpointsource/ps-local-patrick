@@ -32,11 +32,12 @@ function( $q, Restangular, Resources, ProjectsService ) {
 
 	function filter( roleIds, fields ) {
 		var deferred = $q.defer( );
+		roleIds = roleIds ? roleIds : {};
 		fields = fields ? fields : {};
 
-		Resources.get( 'people/filter', roleIds, fields, function( result ) {
-			deferred.resolve( result );
-		} );
+		Resources.get( 'people/filter', roleIds, fields).then(function( result ) {
+				deferred.resolve( result );
+			} );			
 
 		return deferred.promise;
 	}

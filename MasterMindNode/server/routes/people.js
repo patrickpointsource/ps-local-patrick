@@ -32,18 +32,36 @@ router.get('/', util.isAuthenticated, function(req, res){
 }); 
 
 
-router.get('/filter/', util.isAuthenticated, function(req, res){
+router.get('/filter', util.isAuthenticated, function(req, res){
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 
 		{
-			var roleId = req.query.roleId;
-		    people.listActivePeopleByRoleIds(roleId, function(err, result){
-		        if(err){
-		            res.json(500, err);
-		        } else {
-		            res.json(result);
-		        }            
-		    });
+			var roleIds = [];
+			for(var roleIndex in req.query) {
+				var roleId = req.query[roleIndex].replace("roles/", '');
+				roleIds.push(roleId);
+			}
+			
+			if (roleIds.length == 0) {
+				//Get list of people if filter is empty
+				var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
+				people.listPeople(query, function(err, result){
+					if(err){
+						res.json(500, err);
+					} else {
+						res.json(result);
+					}            
+				});
+			} else {
+				//Get active people by roles from filter
+				people.listActivePeopleByRoleIds(roleIds, function(err, result){
+					if(err){
+						res.json(500, err);
+					} else {
+						res.json(result);
+					}            
+				});
+			}
 		}
 	});
 }); 
