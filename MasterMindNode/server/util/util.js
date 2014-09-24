@@ -34,23 +34,33 @@ module.exports.getFullID = function(id, resource) {
 /**
  * Returns today date in YYYY-MM-DD format
  * 
- * @param {Object} id
- * @param {Object} resource
  */
  
 module.exports.getTodayDate = function(){
-	var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
-    var yyyy = today.getFullYear();
-    if (dd<10){
-    	dd='0'+dd;
+	return getDateFromNow();
+};
+
+/**
+ * Returns date that was a certain number of months ago in YYYY-MM-DD format
+ * 
+ * @param {Object} monthCountAgo - number of months
+ */
+     
+module.exports.getDateFromNow = function(monthCountAgo){
+	var dateFromNow = new Date();
+	if (monthCountAgo) {
+    	dateFromNow.setMonth(dateFromNow.getMonth() + monthCountAgo);
+    }
+	var dd = dateFromNow.getDate();
+	var mm = dateFromNow.getMonth()+1; //January is 0!
+	var yyyy = dateFromNow.getFullYear();
+	if (dd<10){
+		dd='0'+dd;
 	}
-    if (mm<10){
-    	mm='0'+mm;
+	if (mm<10){
+		mm='0'+mm;
 	}
-    today = yyyy+'-'+mm+'-'+dd;
-        
-    return today;
+	var result = yyyy+'-'+mm+'-'+dd;
+	return result;
 };
     

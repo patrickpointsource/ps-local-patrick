@@ -258,6 +258,14 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 						project.committed == true ) {
 				callback(true);				
 			}
+
+			// checks for quickview projects
+			if (status == "quickview" &&
+					project.startDate <= util.getDateFromNow(6) &&
+						( !project.endDate || project.endDate > util.getTodayDate() ) ) {
+				callback(true);				
+			}
+
 		});
 		
 		callback(false);

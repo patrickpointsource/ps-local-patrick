@@ -71,6 +71,59 @@ module.exports.listProjectsByStatuses = function(statuses, callback) {
     });
 };
 
+module.exports.listCurrentProjectsByPerson = function(resource, callback) {
+
+	projects.listAssignmentsByPerson( resource, function( err, assignments ) {
+		if( err ) {
+			res.json( 500, err );
+		} else {
+									
+			var currentProjects = [];
+			projects.listProjectsByStatuses("unfinished", function( err, unfinishedProjects ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					var result = [];											
+					unfinishedProjects.forEach(function (project){
+						checkProjectForAssignmentsAndPerson(project, assignments, resource, function (checked) {
+							if (checked) {
+								currentProjects.push(project);
+							}
+						});							
+					});
+				}
+			} );
+										
+			res.json( currentProjects );
+		}
+	} );
+};
+
+var checkProjectForAssignmentsAndPerson = function(project, assignments, personResource, callback) {
+
+	// checks for project in assignments
+	assignments.forEach(function (assignment) {
+		if (assignment.project && 
+					assignment.project.resource == project.resource ) {
+			callback(true);
+		}
+	});
+
+	// checks whether required user is executive sponsor
+	if (project.executiveSponsor &&
+			project.executiveSponsor.resource = personResource ) {
+		callback(true);
+	}
+
+	// checks whether required user is sales sponsor
+	if (project.salesSponsor &&
+			project.salesSponsor.resource = personResource ) {
+		callback(true);
+	}
+	
+	// if found nothing returns false
+	callback(false)
+}
 
 module.exports.getProject = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
@@ -122,6 +175,29 @@ module.exports.listAssignments = function(id, callback) {
         } else {
             //console.log(body);
             callback(null, body);
+        }
+    });
+
+};
+
+
+module.exports.listAssignmentsByPerson = function(resource, callback) {
+	
+    dataAccess.listAssignments(null, function(err, result){
+        if (err) {
+            console.log(err);
+            callback('error loading assignments by person', null);
+        } else {
+			var assignments = [];
+			result.data.forEach(function(assignment){
+				if (assignment.person && 
+						assignment.person.resource && 
+							assignment.person.resource == resource ) {
+						assignments.push(assignment);
+				}
+			});
+			
+            callback(null, assignments);
         }
     });
 

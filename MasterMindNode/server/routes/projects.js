@@ -1,6 +1,8 @@
 'use strict';
 
 var projects = require( '../controllers/projects' );
+var people = require('../controllers/people');
+
 var express = require( 'express' );
 var auth = require( '../util/auth' );
 var util = require( '../util/util' );
@@ -50,6 +52,51 @@ router.get( '/executiveSponsor/:executiveSponsor', auth.isAuthenticated, functio
 
 } );
 
+router.get( '/my/:type', auth.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
+		if( allowed ) {
+			var type = req.params.type;
+			if (type) {
+				people.getPersonByGoogleId(req.user, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {        
+			        	var me = result.members.length == 1 ? result.members[0]: {};
+
+						// returns projects where auth user is executive sponsor			        	
+						if (type && type == "executiveSponsor") {
+							projects.listProjectsByExecutiveSponsor( util.getFullID(me._id,'people'), function( err, result ) {
+								if( err ) {
+									res.json( 500, err );
+								} else {
+									res.json( result );
+								}
+							} );
+						}
+
+						// returns current projects for auth user			        	
+						if (type && type == "current") {
+							projects.listCurrentProjectsByPerson( util.getFullID(me._id,'people'), function( err, projects ) {
+								if( err ) {
+									res.json( 500, err );
+								} else {
+									res.json( projects );
+								}
+							} );
+						}
+			            
+			        }            
+		   	 	});
+			}
+			else {
+				res.json( 500, 'No required type' );
+			}
+		}
+	} );
+
+} );
+
 router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
@@ -92,9 +139,7 @@ router.get( '/bystatus/:status', auth.isAuthenticated, function( req, res ) {
 		if( allowed ) {
 			var statusString = req.params.status;
 			if (statusString) {
-				console.log("statusString=" + statusString);
 				var statuses = statusString.split(',');
-				console.log("statuses=" + JSON.stringify(statuses));
 				projects.listProjectsByStatuses( statuses, function( err, result ) {
 					if( err ) {
 						res.json( 500, err );

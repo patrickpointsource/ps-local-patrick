@@ -483,12 +483,25 @@ angular.module('Mastermind.services.projects')
     }
 
 
-    
-    
     /**
      * Get Projects that will be in progress over the next six months
      */
+     
     this.getQickViewProjects = function(){
+	    if (window.useAdoptedServices) {
+			return this.getProjectsByStatuses(["quickview"]);
+		}
+		else {
+			return this.getQickViewProjectsUsingQuery();
+		}
+	}
+	    
+    
+    /**
+     * Get Projects that will be in progress over the next six months (using query)
+     */
+     
+    this.getQickViewProjectsUsingQuery = function(){
     	var deferred = $q.defer();
     	var today = this.getToday();
     	var sixMonthsFromNow = this.getQueryDateSixMonthsFromNow();
@@ -519,6 +532,19 @@ angular.module('Mastermind.services.projects')
      */
     
     this.getMyExecSponsoredProjects = function(me) {
+	    if (window.useAdoptedServices) {
+	        return Resources.get('projects/my/executiveSponsor');
+		}
+		else {
+			return this.getMyExecSponsoredProjectsUsingQuery(me);
+		}
+	}
+
+    /**
+     * Get Projects wich I am an exec sponsor
+     */
+    
+    this.getMyExecSponsoredProjectsUsingQuery = function(me) {
       var deferred = $q.defer();
       var query = {
     	  executiveSponsor:{
@@ -533,11 +559,24 @@ angular.module('Mastermind.services.projects')
       
       return deferred.promise;
     }
-    
+
     /**
      * Get My Current Projects (projects I have a current role on)
      */
     this.getMyCurrentProjects = function(me){
+	    if (window.useAdoptedServices) {
+	        return Resources.get('projects/my/current');
+		}
+		else {
+			return this.getMyExecSponsoredProjectsUsingQuery(me);
+		}
+	}
+	
+    
+    /**
+     * Get My Current Projects (projects I have a current role on)
+     */
+    this.getMyCurrentProjectsUsingQuery = function(me){
     	var deferred = $q.defer();
     	var startDateQuery = this.getToday();
     	
