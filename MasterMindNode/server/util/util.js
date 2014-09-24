@@ -6,7 +6,7 @@
  * @param {Object} callback
  */
 
-module.exports.getIDfromResource = function(resource, callback) {
+var getIDfromResource = function(resource, callback) {
 	
 	var ind = resource.lastIndexOf("/");
 	if (ind != -1) {
@@ -26,7 +26,7 @@ module.exports.getIDfromResource = function(resource, callback) {
  * @param {Object} resource
  */
 
-module.exports.getFullID = function(id, resource) {
+var getFullID = function(id, resource) {
 	return resource + "/" + id;
 };
 
@@ -36,7 +36,7 @@ module.exports.getFullID = function(id, resource) {
  * 
  */
  
-module.exports.getTodayDate = function(){
+var getTodayDate = function(){
 	return getDateFromNow();
 };
 
@@ -46,7 +46,7 @@ module.exports.getTodayDate = function(){
  * @param {Object} monthCountAgo - number of months
  */
      
-module.exports.getDateFromNow = function(monthCountAgo){
+var getDateFromNow = function(monthCountAgo){
 	var dateFromNow = new Date();
 	if (monthCountAgo) {
     	dateFromNow.setMonth(dateFromNow.getMonth() + monthCountAgo);
@@ -63,4 +63,10 @@ module.exports.getDateFromNow = function(monthCountAgo){
 	var result = yyyy+'-'+mm+'-'+dd;
 	return result;
 };
+
+module.exports.getIDfromResource = getIDfromResource;
+module.exports.getFullID = getFullID;
+module.exports.getTodayDate = getTodayDate;
+module.exports.getDateFromNow = getDateFromNow;
+
     
