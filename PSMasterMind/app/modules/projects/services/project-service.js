@@ -1267,7 +1267,7 @@ angular.module('Mastermind.services.projects')
  		var statusString = "active,backlog,pipeline,investment,deallost";   	
         var fields = {resource:1,startDate:1,endDate:1,committed:1,type:1};
 
-        Resources.get('projects/bystatus' + statusString, queryParams, fields, function(results){
+        Resources.get('projects/bystatus/' + statusString, queryParams, fields, function(results){
         	var projects = results.data;
         	var ret = {active:0,backlog:0,pipeline:0,investment:0,deallost:0};
         	for(var i = 0; i < projects.length;i++){
