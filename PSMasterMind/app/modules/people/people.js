@@ -666,9 +666,9 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				var searchStr = "";
 				var addToSearchStr = function( searchStr, str ) {
 					return searchStr += " " + str.toLowerCase( ).replace( / /g, '' );
-				}
+				};
 				if( person.name ) {
-					searchStr = addToSearchStr( searchStr, person.name );
+					searchStr = addToSearchStr( searchStr, person.name.fullName );
 				}
 				if( person.primaryRole && person.primaryRole.abbreviation ) {
 					searchStr = addToSearchStr( searchStr, person.primaryRole.abbreviation );
