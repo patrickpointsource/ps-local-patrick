@@ -44,6 +44,9 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		 $scope.breadCrumpParts[i] = $scope.breadCrumpParts[i].substring(0, 67) + '...';
 		 }
 		 }*/
+		
+		// remove duplicates
+		$scope.breadCrumpParts = _.uniq($scope.breadCrumpParts);
 	}
 
 	$scope.getBreadCrump = function( ) {

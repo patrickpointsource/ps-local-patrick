@@ -619,6 +619,10 @@ var insertItem = function( id, obj, type, callback ) {
 	if( type ) {
 		obj.form = type;
 	}
+	
+	if (!obj.form)
+	   callback( "Form field is missing", {} );
+	  
 	dbAccess.insertItem( id, obj, function( err, body ) {
 		if( !err ) {
 			if( obj._deleted ) {

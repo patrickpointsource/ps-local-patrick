@@ -1,7 +1,7 @@
 'use strict';
 
 var projects = require( '../controllers/projects' );
-var people = require('../controllers/people');
+var people = require( '../controllers/people' );
 
 var express = require( 'express' );
 var auth = require( '../util/auth' );
@@ -9,7 +9,7 @@ var util = require( '../util/util' );
 
 var security = require( '../util/security' );
 var securityResources = require( '../util/securityResources' );
-var attribute = require('../util/attribute');
+var attribute = require( '../util/attribute' );
 
 var router = express.Router( );
 
@@ -35,16 +35,15 @@ router.get( '/executiveSponsor/:executiveSponsor', auth.isAuthenticated, functio
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
 			var executiveSponsor = req.params.executiveSponsor;
-			if (executiveSponsor) {
-				projects.listProjectsByExecutiveSponsor( util.getFullID(executiveSponsor,'people'), function( err, result ) {
+			if( executiveSponsor ) {
+				projects.listProjectsByExecutiveSponsor( util.getFullID( executiveSponsor, 'people' ), function( err, result ) {
 					if( err ) {
 						res.json( 500, err );
 					} else {
 						res.json( result );
 					}
 				} );
-			}
-			else {
+			} else {
 				res.json( 500, 'No required id' );
 			}
 		}
@@ -57,16 +56,16 @@ router.get( '/my/:type', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
 			var type = req.params.type;
-			if (type) {
-				people.getPersonByGoogleId(req.user, function(err, result){
-			        if(err){
-			            res.json(500, err);
-			        } else {        
-			        	var me = result.members.length == 1 ? result.members[0]: {};
+			if( type ) {
+				people.getPersonByGoogleId( req.user, function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						var me = result.members.length == 1 ? result.members[ 0 ] : {};
 
-						// returns projects where auth user is executive sponsor			        	
-						if (type && type == "executiveSponsor") {
-							projects.listProjectsByExecutiveSponsor( util.getFullID(me._id,'people'), function( err, result ) {
+						// returns projects where auth user is executive sponsor
+						if( type && type == "executiveSponsor" ) {
+							projects.listProjectsByExecutiveSponsor( util.getFullID( me._id, 'people' ), function( err, result ) {
 								if( err ) {
 									res.json( 500, err );
 								} else {
@@ -75,9 +74,9 @@ router.get( '/my/:type', auth.isAuthenticated, function( req, res ) {
 							} );
 						}
 
-						// returns current projects for auth user			        	
-						if (type && type == "current") {
-							projects.listCurrentProjectsByPerson( util.getFullID(me._id,'people'), function( err, projects ) {
+						// returns current projects for auth user
+						if( type && type == "current" ) {
+							projects.listCurrentProjectsByPerson( util.getFullID( me._id, 'people' ), function( err, projects ) {
 								if( err ) {
 									res.json( 500, err );
 								} else {
@@ -85,11 +84,10 @@ router.get( '/my/:type', auth.isAuthenticated, function( req, res ) {
 								}
 							} );
 						}
-			            
-			        }            
-		   	 	});
-			}
-			else {
+
+					}
+				} );
+			} else {
 				res.json( 500, 'No required type' );
 			}
 		}
@@ -108,8 +106,8 @@ router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 			var isCommited = req.query.isCommited;
 			var roleResources = req.query.roleResource;
 			var status = req.query.status;
-			
-			if (status) {
+
+			if( status ) {
 				projects.listProjectsByStatuses( status, function( err, result ) {
 					if( err ) {
 						res.json( 500, err );
@@ -117,8 +115,7 @@ router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 						res.json( result );
 					}
 				} );
-			}
-			else { 
+			} else {
 				projects.listProjectsBetweenDatesByTypesAndSponsors( startDate, endDate, types, isCommited, roleResources, function( err, result ) {
 					if( err ) {
 						res.json( 500, err );
@@ -132,14 +129,13 @@ router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 
 } );
 
-
 router.get( '/bystatus/:status', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
 			var statusString = req.params.status;
-			if (statusString) {
-				var statuses = statusString.split(',');
+			if( statusString ) {
+				var statuses = statusString.split( ',' );
 				projects.listProjectsByStatuses( statuses, function( err, result ) {
 					if( err ) {
 						res.json( 500, err );
@@ -147,11 +143,10 @@ router.get( '/bystatus/:status', auth.isAuthenticated, function( req, res ) {
 						res.json( result );
 					}
 				} );
+			} else {
+				res.json( 500, 'No required status attribute' );
 			}
-			else {
-				res.json( 500, 'No required status attribute');
-			}
-			
+
 		}
 	} );
 
@@ -277,13 +272,14 @@ router.put( '/:id/assignments', auth.isAuthenticated, function( req, res ) {
 	} );
 } );
 
-router.delete ( '/:id', auth.isAuthenticated,
+router.
+delete ( '/:id', auth.isAuthenticated,
 function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function( allowed ) {
 		if( allowed ) {
-		    var id = req.params.id;
-		    req.body._id = id;
+			var id = req.params.id;
+			req.body._id = id;
 			projects.deleteProject( req.body, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
@@ -296,7 +292,8 @@ function( req, res ) {
 
 } );
 
-router.delete ( '/:id/links/:linkId', auth.isAuthenticated,
+router.
+delete ( '/:id/links/:linkId', auth.isAuthenticated,
 function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function( allowed ) {
@@ -357,7 +354,10 @@ router.put( '/:id', auth.isAuthenticated, function( req, res ) {
 		if( allowed ) {
 			var id = req.params.id;
 			var project = req.body;
+
 			project._id = id;
+			project.form = 'Projects';
+
 			projects.insertProject( project, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
