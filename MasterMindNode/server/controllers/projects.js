@@ -3,6 +3,7 @@
 var dataAccess = require('../data/dataAccess');
 var people = require('./people.js');
 var util = require('../util/util');
+var _ = require( 'underscore' );
 
 module.exports.listProjects = function(query, callback) {
     dataAccess.listProjects(query, function(err, body){
@@ -73,18 +74,18 @@ module.exports.listProjectsByStatuses = function(statuses, callback) {
 
 module.exports.listCurrentProjectsByPerson = function(resource, callback) {
 
-	projects.listAssignmentsByPerson( resource, function( err, assignments ) {
+	module.exports.listAssignmentsByPerson( resource, function( err, assignments ) {
 		if( err ) {
 			res.json( 500, err );
 		} else {
 									
 			var currentProjects = [];
-			projects.listProjectsByStatuses("unfinished", function( err, unfinishedProjects ) {
+			module.exports.listProjectsByStatuses("unfinished", function( err, unfinishedProjects ) {
 				if( err ) {
-					res.json( 500, err );
+					callback( [], 500, err );
 				} else {
 					var result = [];											
-					unfinishedProjects.forEach(function (project){
+					_.each(unfinishedProjects, function (project){
 						checkProjectForAssignmentsAndPerson(project, assignments, resource, function (checked) {
 							if (checked) {
 								currentProjects.push(project);
@@ -94,7 +95,7 @@ module.exports.listCurrentProjectsByPerson = function(resource, callback) {
 				}
 			} );
 										
-			res.json( currentProjects );
+			callback( currentProjects );
 		}
 	} );
 };
@@ -102,7 +103,7 @@ module.exports.listCurrentProjectsByPerson = function(resource, callback) {
 var checkProjectForAssignmentsAndPerson = function(project, assignments, personResource, callback) {
 
 	// checks for project in assignments
-	assignments.forEach(function (assignment) {
+	_.each(assignments, function (assignment) {
 		if (assignment.project && 
 					assignment.project.resource == project.resource ) {
 			callback(true);
@@ -111,13 +112,13 @@ var checkProjectForAssignmentsAndPerson = function(project, assignments, personR
 
 	// checks whether required user is executive sponsor
 	if (project.executiveSponsor &&
-			project.executiveSponsor.resource = personResource ) {
+			project.executiveSponsor.resource == personResource ) {
 		callback(true);
 	}
 
 	// checks whether required user is sales sponsor
 	if (project.salesSponsor &&
-			project.salesSponsor.resource = personResource ) {
+			project.salesSponsor.resource == personResource ) {
 		callback(true);
 	}
 	
@@ -189,7 +190,7 @@ module.exports.listAssignmentsByPerson = function(resource, callback) {
             callback('error loading assignments by person', null);
         } else {
 			var assignments = [];
-			result.data.forEach(function(assignment){
+			_.each(result.data, function(assignment){
 				if (assignment.person && 
 						assignment.person.resource && 
 							assignment.person.resource == resource ) {

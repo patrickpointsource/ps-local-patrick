@@ -37,7 +37,7 @@ var getFullID = function(id, resource) {
  */
  
 var getTodayDate = function(){
-	return getDateFromNow();
+	return module.exports.getDateFromNow();
 };
 
 /**
