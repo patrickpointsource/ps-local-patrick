@@ -69,12 +69,12 @@ function( $q, $timeout, Restangular ) {
 	 *
 	 * @returns {*}
 	 */
-	function refresh( resource ) {
+	function refresh( resource, params ) {
 		//console.log( 'counter: refresh:' + resource + ':' + ( counter++ ) );
 		var deferred = $q.defer( );
 
 		$timeout( function( ) {
-			fetch( resource ).then( function( newValue ) {
+			fetch( resource, params ).then( function( newValue ) {
 				//Save to localStorage
 				localStorage[ resource ] = JSON.stringify( newValue );
 				localStorage[ TIME_PREFIX + resource ] = new Date( );

@@ -299,10 +299,10 @@ angular.module('Mastermind.services.projects')
         // terms will be checked on backend and loaded only for allowed persons
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description:1, terms:1};
 		if (onSuccess) {
-	        return Resources.get('projects', null, apFields).then(onSuccess);
+	        return Resources.refresh('projects', null, apFields).then(onSuccess);
 		}
 		else {
-	        return Resources.get('projects', null, apFields);
+	        return Resources.refresh('projects', null, apFields);
 		}
     };
    
@@ -374,7 +374,7 @@ angular.module('Mastermind.services.projects')
 	      var sixMontsFromNowQuery = yyyy6+'-'+mm6+'-'+dd6;
 	     
 	     return sixMontsFromNowQuery;
-    }
+    };
 
 
     /**
@@ -385,13 +385,13 @@ angular.module('Mastermind.services.projects')
         var fields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
         
         if (onSuccess) {
-			Resources.get( 'projects/bystatus/' + statusString).then(onSuccess);
+			Resources.refresh( 'projects/bystatus/' + statusString).then(onSuccess);
   		}
   		else {
-			return Resources.get( 'projects/bystatus/' + statusString);
+			return Resources.refresh( 'projects/bystatus/' + statusString);
 	  		
   		}
-    }
+    };
 
     this.getActiveAndBacklogProjects = function (onSuccess){
 	    if (window.useAdoptedServices) {
@@ -400,7 +400,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getActiveAndBacklogProjectsUsingQuery(onSuccess);
 		}
-	}
+	};
 	
     /**
      * Query to get the list of active+backlog projects (using query)
@@ -436,7 +436,7 @@ angular.module('Mastermind.services.projects')
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
-    }    
+    };   
 
 
     /**
@@ -449,7 +449,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getActiveBacklogAndPipelineProjectsUsingQuery(onSuccess);
 		}
-	}
+	};
 	
     /**
      * Query to get the list of active+backlog projects (using query)
@@ -480,7 +480,7 @@ angular.module('Mastermind.services.projects')
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
+    };
 
 
     /**
@@ -494,7 +494,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getQickViewProjectsUsingQuery();
 		}
-	}
+	};
 	    
     
     /**
