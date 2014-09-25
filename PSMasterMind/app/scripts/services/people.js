@@ -143,10 +143,10 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 	function getActivePeople( ) {
 		if (window.useAdoptedServices) {
-			getActivePeopleUsingGet();
+			return getActivePeopleUsingGet();
 		}
 		else {
-			getActivePeopleUsingQuery();
+			return getActivePeopleUsingQuery();
 		}
 		
 	}
@@ -347,10 +347,35 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		return deferred.promise;
 	}
 
+
+	
 	/**
 	 * Get a map per user with all of there current assignment records
 	 */
+
 	function getPeopleCurrentAssignments( ) {
+		if (window.useAdoptedServices) {
+			return getPeopleCurrentAssignmentsUsingGet();
+		}
+		else {
+			return getPeopleCurrentAssignmentsUsingQuery();
+		}
+	}
+	
+
+	/**
+	 * Get a map per user with all of there current assignment records ( using Resource.get() )
+	 */
+
+	function getPeopleCurrentAssignmentsUsingGet() {
+		return Resources.get( 'assignments/bytypes/currentAssignments');
+	}
+	
+	/**
+	 * Get a map per user with all of there current assignment records ( using Resource.query() )
+	 */
+	
+	function getPeopleCurrentAssignmentsUsingQuery( ) {
 		var deferred = $q.defer( );
 		var startDateQuery = getToday( );
 
@@ -413,10 +438,10 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 	function getPeoplePerRole( role, fields ) {
 		if (window.useAdoptedServices) {
-			getPeoplePerRoleUsingGet(role, fields );
+			return getPeoplePerRoleUsingGet(role, fields );
 		}
 		else {
-			getPeoplePerRoleUsingQuery(role, fields );
+			return getPeoplePerRoleUsingQuery(role, fields );
 		}
 	}
 	

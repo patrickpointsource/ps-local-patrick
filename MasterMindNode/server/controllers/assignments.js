@@ -25,9 +25,9 @@ var getAssignment = function(id, callback) {
     });
 };
 
-var listAssignmentsByTypes = function(types, callback) {
+var listCurrentAssigmentsByPeople = function(callback) {
 	
-    dataAccess.listAssignmentsByTypes(types, function(err, body){
+    dataAccess.listCurrentAssigmentsByPeople(function(err, body){
         if (err) {
             console.log(err);
             callback('error loading assignments by types :' + JSON.stringify(types), null);
@@ -41,4 +41,4 @@ var listAssignmentsByTypes = function(types, callback) {
 
 module.exports.listAssignments = listAssignments;
 module.exports.getAssignment = getAssignment;
-module.exports.listAssignmentsByTypes = listAssignmentsByTypes;
+module.exports.listCurrentAssigmentsByPeople = listCurrentAssigmentsByPeople;

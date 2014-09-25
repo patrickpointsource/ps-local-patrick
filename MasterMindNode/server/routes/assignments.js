@@ -48,11 +48,8 @@ router.get( '/bytypes/:type', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewAssignments, function( allowed ) {
 		if( allowed ) {
 			var type = req.params.type;
-			if (type) {
-				var types = type.split(',');
-
-				// returns assignments by types			        	
-				assignments.listAssignmentsByTypes( types, function( err, assignments ) {
+			if ( type && type == "currentAssignments" ) {
+				assignments.listCurrentAssigmentsByPeople( function( err, assignments ) {
 					if( err ) {
 						res.json( 500, err );
 					} else {

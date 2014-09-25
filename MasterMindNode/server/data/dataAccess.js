@@ -144,7 +144,7 @@ var listProjects = function( q, callback ) {
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
 
-		callback( null, queryRecords( result, q, null, "project/" ) );
+		callback( null, queryRecords( result, q, null, "projects/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
@@ -152,7 +152,7 @@ var listProjects = function( q, callback ) {
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 
-			callback( err, queryRecords( body, q, null, "project/" ) );
+			callback( err, queryRecords( body, q, null, "projects/" ) );
 		} );
 	}
 
@@ -163,14 +163,14 @@ var listProjectsByExecutiveSponsor = function( roleResource, callback ) {
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, result.data), null, "project/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, result.data), null, "projects/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, body.data), null, "project/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, body.data), null, "projects/" ) );
 		} );
 	}
 
@@ -182,14 +182,14 @@ var listProjectsBetweenDatesByTypesAndSponsors = function( startDate, endDate, t
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "project/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "projects/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, body.data), null, "project/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, body.data), null, "projects/" ) );
 		} );
 	}
 
@@ -201,7 +201,7 @@ var listProjectsByStatuses = function( statuses, callback ) {
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, result.data), null, "project/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, result.data), null, "projects/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
@@ -209,12 +209,64 @@ var listProjectsByStatuses = function( statuses, callback ) {
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 			
-			callback( err, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, body.data), null, "project/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, body.data), null, "projects/" ) );
 		} );
 	}
 
 };
 
+var listCurrentProjectsByPerson = function(resource, callback) {
+
+	listAssignmentsByPerson( resource, function( err, assignments ) {
+		if( err ) {
+			callback( err, null );
+		} else {
+									
+			listProjectsByStatuses("unfinished", function( err, unfinishedProjects ) {
+				if( err ) {
+					callback( err, null );
+				} else {
+					var currentProjects = [];
+					_.each(unfinishedProjects.data, function (project){
+						checkProjectForAssignmentsAndPerson(project, assignments, resource, function (checked) {
+							if (checked) {
+								currentProjects.push(project);
+							}
+						});							
+					});
+					callback(null, prepareRecords( currentProjects , null, "projects/" ) );
+				}
+			} );
+										
+		}
+	} );
+};
+
+var checkProjectForAssignmentsAndPerson = function(project, assignments, personResource, callback) {
+
+	// checks for project in assignments
+	_.each(assignments, function (assignment) {
+		if (assignment.project && 
+					assignment.project.resource == project.resource ) {
+			callback(true);
+		}
+	});
+
+	// checks whether required user is executive sponsor
+	if (project.executiveSponsor &&
+			project.executiveSponsor.resource == personResource ) {
+		callback(true);
+	}
+
+	// checks whether required user is sales sponsor
+	if (project.salesSponsor &&
+			project.salesSponsor.resource == personResource ) {
+		callback(true);
+	}
+	
+	// if found nothing returns false
+	callback(false)
+}
 
 var getProfileByGoogleId = function( id, callback ) {
 	var query = {
@@ -330,6 +382,65 @@ var listActivePeopleByAssignments = function(callback ) {
 	});
 	
 };
+
+var listCurrentAssigmentsByPeople = function(callback ) {
+
+	listAssignments(null, function (err, assignments) {
+		if (err) {
+			callback(err, null);
+		} else {
+			var result = {};
+			_.each(assignments.data, function (assignment){
+				if (assignment.members) {
+					_.each(assignment.members, function (member){
+					
+						if ( member.person && 
+								member.startDate <= util.getTodayDate() &&
+									( !member.endDate || member.endDate > util.getTodayDate() ) ) {
+							var personResource = member.person.resource;
+							
+							if( result.hasOwnProperty( personResource ) ) {
+								result[ personResource ].push( member );
+							} else {
+								result[ personResource ] = [ member ];
+							}
+						}
+					});
+						
+				}
+			});
+			callback (null, result);
+		}
+	});
+
+}
+
+var listAssignmentsByPerson = function(resource, callback) {
+	
+    listAssignments(null, function(err, result){
+        if (err) {
+            console.log(err);
+            callback('error loading assignments by person', null);
+        } else {
+			var assignments = [];
+			_.each(result.data, function(assignment){
+				if (assignment.members) {
+					_.each(assignment.members, function (member){
+						if (member.person && 
+								member.person.resource && 
+									member.person.resource == resource ) {
+								assignments.push(assignment);
+						}
+					});
+				}
+			});
+			
+            callback(null, assignments);
+        }
+    });
+
+};
+
 
 var listAssignments = function( q, callback ) {
     if( !validQuery( q ) ) {
@@ -768,11 +879,16 @@ module.exports.listProjects = listProjects;
 module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
 module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
 module.exports.listProjectsByStatuses = listProjectsByStatuses;
+module.exports.listCurrentProjectsByPerson = listCurrentProjectsByPerson;
+
 module.exports.listPeople = listPeople;
 module.exports.listActivePeopleByRoleIds = listActivePeopleByRoleIds;
 module.exports.listActivePeople = listActivePeople;
 module.exports.listActivePeopleByAssignments = listActivePeopleByAssignments;
 module.exports.listAssignments = listAssignments;
+module.exports.listCurrentAssigmentsByPeople = listCurrentAssigmentsByPeople;
+module.exports.listAssignmentsByPerson = listAssignmentsByPerson;
+
 module.exports.listTasks = listTasks;
 
 module.exports.listHours = listHours;

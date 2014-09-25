@@ -74,57 +74,16 @@ var listProjectsByStatuses = function(statuses, callback) {
 
 var listCurrentProjectsByPerson = function(resource, callback) {
 
-	listAssignmentsByPerson( resource, function( err, assignments ) {
+	dataAccess.listCurrentProjectsByPerson( resource, function( err, projects ) {
 		if( err ) {
 			callback( err, null );
 		} else {
-									
-			var currentProjects = [];
-			listProjectsByStatuses("unfinished", function( err, unfinishedProjects ) {
-				if( err ) {
-					callback( err, null );
-				} else {
-					_.each(unfinishedProjects, function (project){
-						checkProjectForAssignmentsAndPerson(project, assignments, resource, function (checked) {
-							if (checked) {
-								currentProjects.push(project);
-							}
-						});							
-					});
-				}
-			} );
-										
-			callback(null, currentProjects );
+			callback(null, projects );
 		}
 	} );
+	
 };
 
-var checkProjectForAssignmentsAndPerson = function(project, assignments, personResource, callback) {
-
-	// checks for project in assignments
-	_.each(assignments, function (assignment) {
-
-		if (assignment.project && 
-					assignment.project.resource == project.resource ) {
-			callback(true);
-		}
-	});
-
-	// checks whether required user is executive sponsor
-	if (project.executiveSponsor &&
-			project.executiveSponsor.resource == personResource ) {
-		callback(true);
-	}
-
-	// checks whether required user is sales sponsor
-	if (project.salesSponsor &&
-			project.salesSponsor.resource == personResource ) {
-		callback(true);
-	}
-	
-	// if found nothing returns false
-	callback(false)
-}
 
 var getProject = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
@@ -191,6 +150,10 @@ var listAssignmentsByPerson = function(resource, callback) {
         } else {
 			var assignments = [];
 			_.each(result.data, function(assignment){
+				console.log("assignment=" + JSON.stringify(assignment));
+				if (assignment.person) {
+					console.log("assignment.person.resource=" + JSON.stringify(assignment.person.resource) );
+				}
 				if (assignment.person && 
 						assignment.person.resource && 
 							assignment.person.resource == resource ) {
