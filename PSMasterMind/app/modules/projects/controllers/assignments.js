@@ -299,6 +299,13 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 			// concatenate hided assingnee members
 			$scope.projectAssignment.members = assignments.concat( $scope.projectAssignment.excludedMembers ? $scope.projectAssignment.excludedMembers : [ ] );
 
+            if (!$scope.projectAssignment.about || $scope.projectAssignment.about && $scope.projectAssignment.about.indexOf('undefined') > -1) {
+                $scope.projectAssignment.about = $scope.project.about + '/assignments';
+                $scope.projectAssignment.project = {
+                    resource: $scope.project.about
+                };
+            }
+                
 			return AssignmentService.save( $scope.project, $scope.projectAssignment ).then( function( result ) {
 				saveInProgress = false;
 
@@ -309,7 +316,10 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 				//window.setTimeout(function(){
 				//  $scope.hideMessages();
 				//}, 7 * 1000);
-
+				
+				// update rev value
+				$scope.projectAssignment._rev = result.rev;
+				
 				$scope.refreshAssignmentsData( AssignmentService.filterAssignmentsByPeriod( $scope.projectAssignment, $scope.selectedAssignmentsFilter ) );
 
 				var params = {
@@ -602,8 +612,13 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 			 */
 		}
 	};
+	
+	// it is important to unbind project load because handler uses properties like $scope.project, and in case of calling not unbinded handler 
+	// it will be used value from previous context! according to js closures
+	var unbindProjectLoad = null;
+	
 	if( !$scope.project )
-		$rootScope.$on( "project:loaded", initAssignments );
+		unbindProjectLoad = $rootScope.$on( "project:loaded", initAssignments );
 	else
 		initAssignments( );
 
@@ -617,5 +632,8 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	$scope.$on( "$destroy", function( ) {
 		unbindSave( );
 		unbindCancel( );
+		
+		if (unbindProjectLoad)
+		  unbindProjectLoad();
 	} );
 } ] ); 

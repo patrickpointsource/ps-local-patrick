@@ -65,6 +65,15 @@ var alignQuery = function( q, qP, pProp, pInd ) {
 	//return q;
 };
 
+var validQuery = function(q) {
+    var valid = true;
+    
+    if (q && (q.person && !q.person.resource || q.project && !q.project.resource))
+        valid = false;
+        
+    return valid;
+};
+
 var queryRecords = function( data, q, propName, resourcePrefix, postfix ) {
 	var res = {
 		about: data.about
@@ -323,6 +332,15 @@ var listActivePeopleByAssignments = function(callback ) {
 };
 
 var listAssignments = function( q, callback ) {
+    if( !validQuery( q ) ) {
+        callback( null, {
+            about: 'assignments',
+            count: 0,
+            data: [ ]
+        } );
+        return;
+    }
+    
 	var result = memoryCache.getObject( ASSIGNMENTS_KEY );
 	var finalRecords = [];
 	var i = 0;

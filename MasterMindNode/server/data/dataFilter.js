@@ -1,6 +1,7 @@
 'use strict';
 
 var util = require('../util/util');
+var _ = require( 'underscore' );
 
 /**
  * Returns active people filtered by role resources
@@ -226,7 +227,7 @@ var checkAssignmentByTypes = function(types, assignment, callback) {
 
 var filterProjectsByStatuses = function(statuses, projects) {
 	var result = [];
-	projects.forEach(function(project) {
+	_.each(projects, function(project) {
 		checkProjectByStatuses(statuses, project, function(checked) {
 			if (checked) {
 				result.push(project);

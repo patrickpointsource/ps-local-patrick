@@ -568,8 +568,11 @@ else if( role.percentageCovered == 0 )
 						//Set our currently viewed project to the one resolved by the service.
 						if(result.ok) {
 						  $scope.projectId = result.id;
+						  $scope.project.about = 'projects/' + $scope.projectId;
 						}
 
+                        $scope.$emit( 'project:save' );
+                        
 						// after creating a project, if clicked Done, go to projects list
 						// if clicked Save, make project editable (redirect to Edit page)
 						if( $scope.editDone ) {
@@ -584,11 +587,12 @@ else if( role.percentageCovered == 0 )
 								projectId: $scope.projectId
 							} );
 						}
-					}
+					} else 
+					   $scope.$emit( 'project:save' );
 
 					$scope.showInfo( [ 'Project successfully saved' ] );
 
-					$scope.$emit( 'project:save' );
+					
 
 					ProjectsService.getForEdit( $scope.projectId ).then( function( project ) {
 						$scope.project = project;
