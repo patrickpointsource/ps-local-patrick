@@ -2,7 +2,7 @@
 
 var dataAccess = require('../data/dataAccess');
 
-module.exports.listAssignments = function(q, callback) {
+var listAssignments = function(q, callback) {
     dataAccess.listAssignments(q, function(err, body){
         if (err) {
             console.log(err);
@@ -14,7 +14,7 @@ module.exports.listAssignments = function(q, callback) {
     });
 };
 
-module.exports.getAssignment = function(id, callback) {
+var getAssignment = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
             console.log(err);
@@ -24,3 +24,21 @@ module.exports.getAssignment = function(id, callback) {
         }
     });
 };
+
+var listAssignmentsByTypes = function(types, callback) {
+	
+    dataAccess.listAssignmentsByTypes(types, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading assignments by types :' + JSON.stringify(types), null);
+        } else {
+            //console.log(body);
+            callback(null, body);
+        }
+    });
+
+};
+
+module.exports.listAssignments = listAssignments;
+module.exports.getAssignment = getAssignment;
+module.exports.listAssignmentsByTypes = listAssignmentsByTypes;

@@ -339,21 +339,30 @@ var getNameByResource = function(resource, callback) {
 			
 };
 
+// main project functions
 module.exports.listProjects = listProjects;
 module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
 module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
 module.exports.listProjectsByStatuses = listProjectsByStatuses;
 module.exports.listCurrentProjectsByPerson = listCurrentProjectsByPerson;
 module.exports.getProject = getProject;
-module.exports.addProjectLink = addProjectLink;
-module.exports.listLinks = listLinks;
-module.exports.listAssignments = listAssignments;
-module.exports.listAssignmentsByPerson = listAssignmentsByPerson;
-module.exports.listRoles = listRoles;
-module.exports.getRole = getRole;
-module.exports.insertAssignment = insertAssignment;
 module.exports.deleteProject = deleteProject;
-module.exports.deleteProjectLink = deleteProjectLink;
+
+// project links functions
+module.exports.listLinks = listLinks;
+module.exports.addProjectLink = addProjectLink;
 module.exports.insertProject = insertProject;
 module.exports.insertProjectLink = insertProjectLink;
+module.exports.deleteProjectLink = deleteProjectLink;
+
+// project assignments functions
+module.exports.listAssignments = listAssignments;
+module.exports.listAssignmentsByPerson = listAssignmentsByPerson;
+module.exports.insertAssignment = insertAssignment;
+
+// project roles functions
+module.exports.listRoles = listRoles;
+module.exports.getRole = getRole;
+
+// common project functions
 module.exports.getNameByResource = getNameByResource;

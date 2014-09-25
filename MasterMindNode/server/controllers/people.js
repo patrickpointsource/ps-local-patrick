@@ -39,6 +39,18 @@ module.exports.listActivePeople = function(callback) {
     });
 };
 
+
+module.exports.listActivePeopleByAssignments = function(callback) {
+    dataAccess.listActivePeopleByAssignments(function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading active people by assignments', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
 module.exports.insertPerson = function(obj, callback) {
 	
 	// get name for role

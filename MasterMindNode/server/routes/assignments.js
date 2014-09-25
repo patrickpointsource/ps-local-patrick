@@ -3,13 +3,13 @@
 var assignments = require( '../controllers/assignments' );
 
 var express = require( 'express' );
-var util = require( '../util/auth' );
+var auth = require( '../util/auth' );
 var security = require( '../util/security' );
 var securityResources = require( '../util/securityResources' );
 
 var router = express.Router( );
 
-router.get( '/', util.isAuthenticated, function( req, res ) {
+router.get( '/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewAssignments, function( allowed ) {
 		if( allowed ) {
@@ -27,7 +27,7 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/:id', util.isAuthenticated, function( req, res ) {
+router.get( '/:id', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewAssignments, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
@@ -38,6 +38,32 @@ router.get( '/:id', util.isAuthenticated, function( req, res ) {
 					res.json( result );
 				}
 			} );
+		}
+	} );
+
+} );
+
+router.get( '/bytypes/:type', auth.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewAssignments, function( allowed ) {
+		if( allowed ) {
+			var type = req.params.type;
+			if (type) {
+				var types = type.split(',');
+
+				// returns assignments by types			        	
+				assignments.listAssignmentsByTypes( types, function( err, assignments ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json( assignments );
+					}
+				} );
+
+			}
+			else {
+				res.json( 500, 'No required type' );
+			}
 		}
 	} );
 

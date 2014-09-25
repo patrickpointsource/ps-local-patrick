@@ -171,9 +171,57 @@ var filterProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, 
 
 
 /**
+ * Returns assignments filtered by type
+ * 
+ * @param {Object} types (for example 'active')
+ * @param {Object} assignments
+ */
+
+var filterAssignmentsByTypes = function(types, assignments) {
+	var result = [];
+	assignments.data.forEach(function(assignment) {
+		checkAssignmentByTypes(types, assignment, function(checked) {
+			if (checked) {
+				result.push(assignment);
+			}
+		});
+	});
+	return result;
+};
+
+
+
+var checkAssignmentByTypes = function(types, assignment, callback) {
+	if (types instanceof Array) {
+		types.forEach(function(type) {
+			
+			// checks for active assignments
+			if (type == "active") {
+				assignment.members.forEach(function(member) {
+					if ( member.startDate <= util.getTodayDate() &&
+							(!member.endDate || member.endDate > util.getTodayDate() ) ) {
+						callback(true);				
+					}
+
+				});
+			}
+
+		});
+		
+		callback(false);
+	}
+	else {
+		checkAssignmentByTypes([types], assignment, callback);
+	}
+}
+
+
+
+/**
  * Returns projects filtered by statuses
  * 
  * @param {Object} statuses
+ * @param {Object} projects
  */
 
 var filterProjectsByStatuses = function(statuses, projects) {
@@ -276,12 +324,17 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 }
 
 
-
+// people filter functions
 module.exports.filterActivePeopleByRoleIds = filterActivePeopleByRoleIds;
 module.exports.filterActivePeople = filterActivePeople;
+
+// projects filter functions
 module.exports.filterProjectsByExecutiveSponsor = filterProjectsByExecutiveSponsor;
 module.exports.filterProjectsBySponsors = filterProjectsBySponsors;
 module.exports.filterProjectsByRoleResources = filterProjectsByRoleResources;
 module.exports.filterProjectsBetweenDatesByTypes = filterProjectsBetweenDatesByTypes;
 module.exports.filterProjectsBetweenDatesByTypesAndSponsors = filterProjectsBetweenDatesByTypesAndSponsors;
 module.exports.filterProjectsByStatuses = filterProjectsByStatuses;
+
+// assignments filter functions
+module.exports.filterAssignmentsByTypes = filterAssignmentsByTypes;

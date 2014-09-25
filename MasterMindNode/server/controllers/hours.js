@@ -72,9 +72,7 @@ module.exports.insertHours = function(obj, callback) {
 		}
 		console.log("personName=" + personName);
 	    // get name for project
-	    
-	    
-		if (obj.project && obj.project.name || obj.task)
+	    if (obj.project && obj.project.name || obj.task)
 		  dataAccess.insertItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
                 if (err) {
                     console.log(err);

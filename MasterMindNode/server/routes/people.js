@@ -87,6 +87,38 @@ router.get('/byroleid/:roleId', util.isAuthenticated, function(req, res){
 	});
 }); 
 
+
+router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
+	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
+		if (allowed) 
+		{
+			var type = req.params.type;
+			if (type && type == "activeAssignments") {
+			    people.listActivePeopleByAssignments(function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else 
+			if (type && type == "active") {
+			    people.listActivePeople(function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else {
+	            res.json(500, 'No required roleId attribute');
+			}
+		}
+	});
+}); 
+
 router.get('/google/:id', util.isAuthenticated, function(req, res){
 
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){

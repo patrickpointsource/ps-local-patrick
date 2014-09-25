@@ -5,6 +5,7 @@ var q = require('q');
 var sift = require( 'sift' );
 var config = require( '../config/config.js' );
 var dataFilter = require( './dataFilter' );
+var util = require( '../util/util.js' );
 
 var PROJECTS_KEY = 'Projects';
 var PEOPLE_KEY = 'People';
@@ -267,10 +268,58 @@ var listActivePeople = function(callback ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterActivePeople(result.data), "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterActivePeople(body.data), "members", "people/" ) );
 		} );
 	}
 
+};
+
+
+var listActivePeopleByAssignments = function(callback ) {
+	var activePeopleResources = [];
+	listAssignments(null, function (err, assignments) {
+		if (err) {
+			callback(err, null);
+		} else {
+			_.each(assignments.data, function (assignment){
+				if (assignment.members) {
+					_.each(assignment.members, function (member){
+						if ( member.person &&
+								member.person.resource && 
+									activePeopleResources.indexOf(member.person.resource) == -1 ) {
+							activePeopleResources.push(member.person.resource);
+						}
+					
+					});
+					
+				}
+			});
+			
+			listActivePeople(function (err, activePeople) {
+				if (err) {
+					callback(err, null);
+				} else {
+					var result = [];
+					_.each(activePeople.members, function (person){
+						if ( person.primaryRole && 
+								person.primaryRole.resource && 
+									activePeopleResources.indexOf(util.getFullID(person._id, "people")) != -1 ) {
+							result.push(person);
+						}
+					});
+				
+				}
+				callback( err, prepareRecords( result, "members", "people/" ) );
+//				callback (err, activePeople);
+			
+			});
+			
+				
+			//console.log("result=" + JSON.stringify(result));
+			
+		}
+	});
+	
 };
 
 var listAssignments = function( q, callback ) {
@@ -704,6 +753,7 @@ module.exports.listProjectsByStatuses = listProjectsByStatuses;
 module.exports.listPeople = listPeople;
 module.exports.listActivePeopleByRoleIds = listActivePeopleByRoleIds;
 module.exports.listActivePeople = listActivePeople;
+module.exports.listActivePeopleByAssignments = listActivePeopleByAssignments;
 module.exports.listAssignments = listAssignments;
 module.exports.listTasks = listTasks;
 

@@ -137,12 +137,34 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		return;
 	};
 	
-	
 	/**
 	 * Query to get the list of people working on
 	 * active projects.
 	 */
 	function getActivePeople( ) {
+		if (window.useAdoptedServices) {
+			getActivePeopleUsingGet();
+		}
+		else {
+			getActivePeopleUsingQuery();
+		}
+		
+	}
+		
+		
+	/**
+	 * Query to get the list of people working on
+	 * active projects ( using Resources.get() ).
+	 */
+	function getActivePeopleUsingGet() {
+		return Resources.get( 'people/bytypes/activeAssignments');
+	}
+		
+	/**
+	 * Query to get the list of people working on
+	 * active projects ( using Resources.query() ).
+	 */
+	function getActivePeopleUsingQuery( ) {
 		var deferred = $q.defer( );
 		var today = getToday( );
 		var assignmentsQuery = {
@@ -391,7 +413,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 	function getPeoplePerRole( role, fields ) {
 		if (window.useAdoptedServices) {
-			getPeoplePerRoleUsingByRoleIdService(role, fields );
+			getPeoplePerRoleUsingGet(role, fields );
 		}
 		else {
 			getPeoplePerRoleUsingQuery(role, fields );
@@ -400,7 +422,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	
 
 	/**
-	 * Returns a list of people per role for display (using query)
+	 * Returns a list of people per role for display ( using Resources.query() )
 	 *
 	 * role: is the URI for a role i.e. 'roles/{roleid}'
 	 * fields: if the mongo filter to limit the fields returned for each person
@@ -430,18 +452,14 @@ function( $q, Restangular, Resources, ProjectsService ) {
 
 
 	/**
-	 * Returns a list of people per role using filter for display (using byroleid service)
+	 * Returns a list of people per role using filter for display ( using Resources.get() )
 	 *
 	 * role: is the URI for a role i.e. 'roles/{roleid}'
 	 * fields: if the mongo filter to limit the fields returned for each person
 	 */
-	function getPeoplePerRoleUsingByRoleIdService( role, fields ) {
-		var deferred = $q.defer( );
-		
-		Resources.get( 'people/byroleid/' + getIDfromResource(role), null, fields, function( result ) {
-  	 		deferred.resolve( result );
-  		} );
-		return deferred.promise;
+	 
+	function getPeoplePerRoleUsingGet( role, fields ) {
+		return Resources.get( "people/byroleid/" + getIDfromResource(role) );
 	}
 
 	/**
