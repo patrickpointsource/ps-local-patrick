@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require( 'underscore' );
 var dataAccess = require('../data/dataAccess');
 var people = require('./people');
 var projects = require('./projects');
@@ -57,7 +58,7 @@ var syncPeople = function(callback) {
 				console.log("Error while getting google profiles: " + err);
 			}
 			else {
-	        	profiles.users.forEach(function(profile) {
+	        	_.each(profiles.users, function(profile) {
 	        		var person = {};
 	        		people.getPersonByGoogleId (profile.id, function (err, personDB) {
 	        			if (!err) {
@@ -139,7 +140,7 @@ var migrateServicesEstimate = function(callback) {
             callback('error loading projects', null);
         } else {
         	var projectMembers = body.data;
-        	projectMembers.forEach(function(project) {
+        	_.each(projectMembers, function(project) {
         		if (project.terms.servicesEstimate) {
         			delete project.terms.servicesEstimate;
         			project.terms.fixedBidServicesRevenue = true;
@@ -161,7 +162,7 @@ var removeProjectEstimateFields = function(callback) {
             callback('error loading projects', null);
         } else {
         	var projectMembers = body.data;
-        	projectMembers.forEach(function(project) {
+        	_.each(projectMembers, function(project) {
         		if (project.estimatedTotal) {
         			delete project.estimatedTotal;
 					projects.insertProject(project, function (err, res) {
@@ -191,7 +192,7 @@ var markInactivePeople = function(callback) {
             callback('error loading people', null);
         } else {
         	var peopleMembers = body.members;
-        	peopleMembers.forEach(function(person) {
+        	_.each(peopleMembers, function(person) {
 				getInactivePersonByName(person.name, function (result) {
 					if (result) {
 						person.isActive = 'false';
@@ -212,7 +213,7 @@ var markInactivePeople = function(callback) {
 
 
 var getInactivePersonByName = function(name, callback) {
-   	inactivePeople.forEach(function(person) {
+   	_.each(inactivePeople, function(person) {
 		if (person.fullName == name) {
 			callback(person);
 		}

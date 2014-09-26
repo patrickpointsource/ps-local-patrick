@@ -12,7 +12,7 @@ var _ = require( 'underscore' );
 
 var filterActivePeopleByRoleIds = function(roleIds, people) {
 	var result = [];
-	people.forEach(function(person) {
+	_.each(people, function(person) {
 		checkActivePeopleByRoleIds(person, roleIds, function (checked) {
 			if (checked) {
 				result.push(person);
@@ -24,7 +24,7 @@ var filterActivePeopleByRoleIds = function(roleIds, people) {
 
 var checkActivePeopleByRoleIds = function (person, roleIds, callback) {
 	if (roleIds instanceof Array) {
-		roleIds.forEach(function(roleId) {
+		_.each(roleIds, function(roleId) {
 			checkPersonByRoleId (person, roleId, function (checked) {
 				if (checked) {
 					callback(checked);
@@ -55,7 +55,7 @@ var checkPersonByRoleId = function(person, roleId, callback) {
 
 var filterActivePeople = function(people) {
 	var result = [];
-	people.forEach(function(person) {
+	_.each(people, function(person) {
 		if (person.isActive) {
 			result.push(person);
 		}
@@ -98,7 +98,7 @@ var filterProjectsBySponsors = function(roleResources, projects) {
 
 var filterProjectsByRoleResources = function(roleTypes, roleResources, projects) {
 	var result = [];
-	projects.forEach(function(project) {
+	_.each(projects, function(project) {
 		checkRoleResourcesByRoleTypesInProject(roleTypes, roleResources, project, function (checked){
 			if (checked) {
 				result.push(project);
@@ -111,7 +111,7 @@ var filterProjectsByRoleResources = function(roleTypes, roleResources, projects)
 
 var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, project, callback) {
 	if (roleTypes instanceof Array) {
-		roleTypes.forEach(function(roleType) {
+		_.each(roleTypes, function(roleType) {
 			var res = project[roleType];
 			if (res && roleResources.toString().indexOf(res.resource) != -1) {
 				console.log("return true");
@@ -140,7 +140,7 @@ var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, 
 
 var filterProjectsBetweenDatesByTypes = function(startDate, endDate, types, isCommited, projects) {
 	var result = [];
-	projects.forEach(function(project) {
+	_.each(projects, function(project) {
 		if (	
 			(startDate == null  || project.startDate >= startDate) && 
 				(endDate == null || project.endDate < endDate) && 
@@ -180,7 +180,7 @@ var filterProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, 
 
 var filterAssignmentsByTypes = function(types, assignments) {
 	var result = [];
-	assignments.data.forEach(function(assignment) {
+	_.each(assignments.data, function(assignment) {
 		checkAssignmentByTypes(types, assignment, function(checked) {
 			if (checked) {
 				result.push(assignment);
@@ -194,11 +194,11 @@ var filterAssignmentsByTypes = function(types, assignments) {
 
 var checkAssignmentByTypes = function(types, assignment, callback) {
 	if (types instanceof Array) {
-		types.forEach(function(type) {
+		_.each(types, function(type) {
 			
 			// checks for active assignments
 			if (type == "active") {
-				assignment.members.forEach(function(member) {
+				_.each(assignment.members, function(member) {
 					if ( member.startDate <= util.getTodayDate() &&
 							(!member.endDate || member.endDate > util.getTodayDate() ) ) {
 						callback(true);				
@@ -240,7 +240,7 @@ var filterProjectsByStatuses = function(statuses, projects) {
 
 var checkProjectByStatuses = function(statuses, project, callback) {
 	if (statuses instanceof Array) {
-		statuses.forEach(function(status) {
+		_.each(statuses, function(status) {
 			
 			// checks for active projects
 			if (status == "active"  &&

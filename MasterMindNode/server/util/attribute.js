@@ -1,3 +1,5 @@
+var _ = require( 'underscore' );
+
 /**
  * Returns $or attribute values by parameter name
  * 
@@ -28,7 +30,7 @@ getValuesByAttributeAndParameter = function(query, attributeName, parameterName)
 	var attrs = query[attributeName];
 
 	if (attrs instanceof Array) {
-		attrs.forEach(function (attribute) {
+		_.each(attrs, function (attribute) {
 			var val = attribute[parameterName];
 			if (val) {
 				result.push(val);
