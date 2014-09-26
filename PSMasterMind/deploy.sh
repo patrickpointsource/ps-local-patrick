@@ -1,6 +1,6 @@
 #/bin/bash
-SOURCEDIR=/Users/aditya/Documents/workspaces/Mastermind/PSMasterMind/dist/
-DESTINATIONDIR=mm:/home/aditya/dist/
+SOURCEDIR=/Users/anthonysegretto/Documents/workspace/PSMasterMind/dist/
+DESTINATIONDIR=mastermind.pointsource.us:/home/anthonysegretto/dist/
 echo -e "\nDeploying mastermind build FROM:\n$SOURCEDIR\nTO:\n$DESTINATIONDIR"
 if [ -d "$DESTINATIONDIR" ]; then
   rm -r "$DESTINATIONDIR"

@@ -174,14 +174,14 @@ public interface CONSTS {
 	public int DB_PORT_DEFAULT  = 27017;
 	
 	//Local Host
-		public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
-		public String WEB_SITE_URL = "http://localhost:9000";
-		//public String WEB_SITE_URL = "http://localhost:9000";
-		public String DB_NAME_DEFAULT  = "mm_db_stage";
-	//Staging Only
-//		public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindStaging/";
+//		public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
+//		public String WEB_SITE_URL = "http://localhost:9000";
+//		//public String WEB_SITE_URL = "http://localhost:9000";
 //		public String DB_NAME_DEFAULT  = "mm_db_stage";
-//		public String WEB_SITE_URL = "https://mastermind.pointsource.us";
+	//Staging Only
+		public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindStaging/";
+		public String DB_NAME_DEFAULT  = "mm_db_stage";
+		public String WEB_SITE_URL = "https://mastermind.pointsource.us";
 	//Demo Only
 //		public String PUBLIC_BASE_URL = "https://dmz.mastermind.pointsource.us/MasterMindDemo/";
 //		public String DB_NAME_DEFAULT  = "mm_db_demo";
