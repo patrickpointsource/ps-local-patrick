@@ -57,6 +57,20 @@ angular.module('Mastermind').controller('GroupsCtrl',['$scope',
 	        }
 	    });
   
+  $scope.groupsEditMode = false;
+  
+  $scope.$on("admin:edit", function() {
+    $scope.groupsEditMode = true;
+  });
+  
+  $scope.$on("admin:save", function() {
+    $scope.groupsEditMode = false;
+  });
+  
+  $scope.$on("admin:cancel", function() {
+    $scope.groupsEditMode = false;
+  });
+  
   $scope.addToGroupIndex = -1;
 	    
   $scope.triggerAddToGroup = function(index) {
