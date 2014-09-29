@@ -2256,12 +2256,16 @@ else if( role.percentageCovered == 0 )
 						}
 						
 						var remainingWorkdays = 0;
-						var eDate = moment.min(personRecord.endDate, moment($scope.endMonthDate));
+						var eDate = moment(personRecord.endDate);
 						
-						if (personRecord.endDate && eDate.diff(new Date(), "days") > 0)
-							for (var d = moment(new Date()); d.month() == eDate.month(); d.add("1", "day"))
-								if (d.weekday() < 6)
-									remainingWorkdays++;
+						for (var d = moment(new Date()); d.weekday() < 6; d.add("1", "day"))
+						{
+							if (personRecord.endDate && eDate.diff(d, "days") < 0)
+								break;
+							
+							remainingWorkdays++;
+						}
+							
 						
 						personRecord.projectedHours = personRecord.actualHours + personRecord.hoursPerWeek / 5 * remainingWorkdays;
 						personRecord.capacity = personRecord.expectedHours - personRecord.actualHours <= remainingWorkdays * 9;
@@ -2445,7 +2449,7 @@ else if( role.percentageCovered == 0 )
 						var remainingWorkdays = 0;
 						var eDate = moment.min(personRecord.endDate, moment($scope.endMonthDate));
 						
-						if (personRecord.endDate && eDate.diff(new Date(), "days") > 0)
+						if (personRecord.endDate && eDate.diff(new Date(), "days") >= 0)
 							for (var d = moment(new Date()); d.month() == eDate.month(); d.add("1", "day"))
 								if (d.weekday() < 6)
 									remainingWorkdays++;
