@@ -61,7 +61,7 @@ function( req, res ) {
 } );
 
 router.get( '/:id', util.isAuthenticated, function( req, res ) {
-	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.viewTasks, function( allowed ) {
+	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions.viewTasks, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
 			tasks.getTask( id, function( err, result ) {
