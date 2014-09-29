@@ -30,6 +30,10 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 	};
 
 	$scope.activeTab = 'staffing';
+	
+	$scope.activeLoaded = false;
+	$scope.backlogLoaded = false;
+	$scope.pipelineLoaded = false;
 
 	var tab = $state.params.tab;
 	if( tab ) {
@@ -199,7 +203,8 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 				// use build-in angular filter
 				var orderedData = params.sorting( ) ? $filter('orderBy')( data, params.orderBy( ) ) : data;
 				var ret = orderedData.slice( start, end );
-
+                
+                $scope.activeLoaded = true;
 				$defer.resolve( ret );
 			}
 		} );
@@ -352,7 +357,8 @@ else if( p1.projectName == p2.projectName && p1.isProjectItem && !p2.isProjectIt
 					var orderedData = params.sorting( ) ? $filter('orderBy')( data, params.orderBy( ) ) : data;
 					var ret = orderedData.slice( start, end );
 					//console.log("Ret value for Backlog Role list:",ret);
-
+                    
+                    $scope.backlogLoaded = true;
 					$defer.resolve( ret );
 				}
 			} );
@@ -471,6 +477,7 @@ else if( p1.projectName == p2.projectName && p1.isProjectItem && !p2.isProjectIt
 					var ret = orderedData.slice( start, end );
 					//console.log("Ret value for Backlog Role list:",ret);
 
+                    $scope.pipelineLoaded = true;
 					$defer.resolve( ret );
 				}
 			} );

@@ -4,6 +4,9 @@
 		<input class="form-control" placeholder="Filter Projects" ng-model="filterText" autofocus />
 	</div>
 </div>
+<div class="spinner-container" ng-hide="pipelineLoaded && activeLoaded && backlogLoaded" style="width: calc(100% - 30px);">
+  <i class="fa fa-spinner fa-spin fa-3x"></i>
+</div>
 <div id="content">
 	<div class="row-fluid" ng-if="projectManagementAccess">
 	<div class="panel panel-danger dashboard-widget">
@@ -107,6 +110,7 @@
         </script>
 	</div>
 </div>
+
 <div class="row-fluid" ng-if="projectManagementAccess">
 	<div class="panel panel-warning dashboard-widget" >
 		<div class="panel-heading">Staffing Deficits: 

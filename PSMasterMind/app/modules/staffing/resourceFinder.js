@@ -9,6 +9,8 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 	
 	$scope.showTableView = true;
 	
+	$scope.$parent.hideSpinner = false;
+	
 	$scope.findResources = function(args) {
       $scope.projectToAssignTo = { name: args.projectName, resource: args.projectResource, roleId: args.roleId};
         $scope.filterStartDate = args.startDate || $scope.formatDate(new Date());
@@ -274,7 +276,10 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 .directive('resRepeater', function() {
 	return function($scope, element, attrs)
 	{
-	    if ($scope.$last)
-	    	$scope.changeSort($scope.sortType);
+	    if ($scope.$last) {
+	      $scope.changeSort($scope.sortType);
+            
+          $scope.$parent.hideSpinner = true;
+	    }
 	};
 });
