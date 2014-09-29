@@ -1,11 +1,11 @@
 //Define the global URLs for this app
 
 // local dev
-window.serverLocation = 'http://localhost:8080';
-window.clientBaseURL = 'http://0.0.0.0:9000/';
-window.restPath = '/MasterMindStaging/rest/';
-window.fixUrl = false;
-window.useAdoptedServices = false;
+//window.serverLocation = 'http://localhost:8080';
+//window.clientBaseURL = 'http://0.0.0.0:9000/';
+//window.restPath = '/MasterMindStaging/rest/';
+//window.fixUrl = false;
+//window.useAdoptedServices = false;
 
 //local nodejs based development
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
