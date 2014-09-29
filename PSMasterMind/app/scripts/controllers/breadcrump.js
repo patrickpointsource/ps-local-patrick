@@ -213,8 +213,18 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				}
 			}
 
+			
 			if( $scope.params.profileId ) {
 				People.get( $scope.params.profileId ).then( function( profile ) {
+					// fix cases when name passed as compound string
+					if (_.isString(profile.name)) {
+					     var tmp = profile.name.split(/\s+/g);    
+					     profile.name = {
+					         givenName: tmp[0],
+					         familyName: tmp[1],
+					         fullName: profile.name
+					     };
+					 }
 					if( profile.accounts.length > 0 ) {
 						if( fromPeopleList ) {
 							RolesService.getRolesMapByResource( ).then( function( map ) {
@@ -223,15 +233,15 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 									var mapRoles = rolePeopleGroupMap[ $scope.fromParams.filter ];
 									if( _.contains( mapRoles, roleAbbr ) ) {
 										if( $scope.breadCrumpParts[ 1 ] != mapPeopleFilterToUI( splittedPeopleFilter[ 0 ] ) ) {
-											if( $scope.breadCrumpParts.indexOf( profile.name ) == -1 )
-												$scope.breadCrumpParts.push( profile.name );
+											if( $scope.breadCrumpParts.indexOf( profile.name.fullName ) == -1 )
+												$scope.breadCrumpParts.push( profile.name.fullName );
 										} else {
-											if( $scope.breadCrumpParts.indexOf( profile.name ) == -1 )
-												$scope.breadCrumpParts.push( profile.name );
+											if( $scope.breadCrumpParts.indexOf( profile.name.fullName ) == -1 )
+												$scope.breadCrumpParts.push( profile.name.fullName );
 										}
 									} else {
-										if( $scope.breadCrumpParts.indexOf( profile.name ) == -1 )
-											$scope.breadCrumpParts.push( profile.name );
+										if( $scope.breadCrumpParts.indexOf( profile.name.fullName ) == -1 )
+											$scope.breadCrumpParts.push( profile.name.fullName );
 									}
 
 									$scope.updateBreadCrump( );
@@ -239,9 +249,9 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 									$scope.updateBreadCrump( );
 								}
 							} );
-							$scope.breadCrumpParts.push( profile.name );
+							$scope.breadCrumpParts.push( profile.name.fullName );
 						} else {
-							$scope.breadCrumpParts.push( profile.name );
+							$scope.breadCrumpParts.push( profile.name.fullName );
 						}
 
 					}
@@ -283,7 +293,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 					filter: $scope.params.filter
 				} );
 		}
-	}
+	};
 
 	$scope.getBreadCrump( );
 
@@ -294,5 +304,5 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		$scope.fromParams = fromParams;
 
 		$scope.getBreadCrump( );
-	} ) )
+	} ) );
 } ] ); 

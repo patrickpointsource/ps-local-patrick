@@ -491,11 +491,13 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				for( var person in activeAssignments ) {
 					var cnt = 0;
 					var assignments = activeAssignments[ person ];
-					for( var i = 0; i < assignments.length; i++ ) {
-						var assignment = assignments[ i ];
-						cnt += assignment.hoursPerWeek;
+					if (assignments) {
+						for( var i = 0; i < assignments.length; i++ ) {
+							var assignment = assignments[ i ];
+							cnt += assignment.hoursPerWeek;
+						}
+						activePercentages[ person ] = Math.round( 100 * cnt / HOURS_PER_WEEK );
 					}
-					activePercentages[ person ] = Math.round( 100 * cnt / HOURS_PER_WEEK );
 				}
 
 				$scope.activePercentages = activePercentages;
