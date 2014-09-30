@@ -199,7 +199,7 @@ var insertAssignment = function(projectId, obj, callback) {
             console.log(err);
             callback('error insert assignment into project', null);
         } else {
-            callback(null, body);
+            callback(null, _.extend(obj, body));
         }
     });
 };
