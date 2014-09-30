@@ -8,17 +8,18 @@
 //window.useAdoptedServices = false;
 
 //local nodejs based development
-//window.serverLocation = 'https://dmz.mastermind.pointsource.us';
-//window.restPath = '/MMNodeServer/';
-//window.clientBaseURL = 'http://0.0.0.0:9000/';
-//window.fixUrl = true;
-
-//stage nodejs 
-window.serverLocation = 'https://dmz.mastermind.pointsource.us';
-window.restPath = '/MMNodeServer/';
-window.clientBaseURL = 'https://mastermind.pointsource.us/nodestage/';
+window.serverLocation = 'http://localhost:3000';
+window.clientBaseURL = 'http://localhost:9000/';
+window.restPath = '';
 window.fixUrl = true;
 window.useAdoptedServices = false;
+
+//stage nodejs 
+//window.serverLocation = 'https://dmz.mastermind.pointsource.us';
+//window.restPath = '/MMNodeServer/';
+//window.clientBaseURL = 'https://mastermind.pointsource.us/nodestage/';
+//window.fixUrl = true;
+//window.useAdoptedServices = false;
 
 //stage only
 //window.restPath = '/MasterMindStaging/rest/';
