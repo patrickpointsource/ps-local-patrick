@@ -496,6 +496,8 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		var startDateQuery = getToday( );
 		var personURI = me.about ? me.about : me.resource;
 		var now = moment( );
+		var _this = this;
+		
 		var query = {
 			members: {
 				'$elemMatch': {
@@ -596,7 +598,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 						primaryRole: 1,
 						thumbnail: 1
 					};
-					query( pepInRolesQuery, pepInRolesFields).then( function( result ) {
+					_this.query( pepInRolesQuery, pepInRolesFields).then( function( result ) {
 						deferred.resolve( result.members );
 					} );
 				}

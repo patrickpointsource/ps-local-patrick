@@ -19,7 +19,7 @@ function( $q, Resources ) {
 			var record = hoursRecords[ i ];
 			var id = record[ '_id' ];
 
-			if( record.hours && (        parseInt( record.hours ) ).toString( ) == record.hours.toString( ) )
+			if( record.hours && (            parseInt( record.hours ) ).toString( ) == record.hours.toString( ) )
 				record.hours = parseInt( record.hours );
 			else if( record.hours && !isNaN( parseFloat( record.hours ) ) )
 				record.hours = parseFloat( record.hours );
@@ -88,8 +88,6 @@ function( $q, Resources ) {
 		var endDateMoment = moment( endDate );
 		// Adding one to be inclusive
 		var numDays = endDateMoment.diff( startDateMoment, 'days' ) + 1;
-
-		var personURI = person.about ? person.about : person.resource;
 
 		var projectURIs = [ ];
 		var projectOIDs = [ ];
@@ -199,6 +197,7 @@ function( $q, Resources ) {
 							$oid: resource.substring( resource.lastIndexOf( '/' ) + 1 )
 						};
 						projectOIDs.push( oid );
+
 					}
 
 				}
@@ -292,9 +291,10 @@ function( $q, Resources ) {
 										var resource = assignmentProjectURI;
 										projectURIs.push( resource );
 										var oid = {
-											$oid: resource.substring( resource.lastIndexOf( '/' ) + 1 )
+											"$oid": resource.substring( resource.lastIndexOf( '/' ) + 1 )
 										};
 										projectOIDs.push( oid );
+
 									}
 								}
 							}
@@ -309,6 +309,7 @@ function( $q, Resources ) {
 						$in: projectOIDs
 					}
 				};
+
 				var projectsFields = {
 					resource: 1,
 					name: 1,
@@ -318,10 +319,7 @@ function( $q, Resources ) {
 					type: 1,
 					committed: 1
 				};
-				Resources.get( 'projects', {
-					query: projectsQuery,
-					fields: projectsFields
-				} ).then( function( result ) {
+				Resources.query( 'projects', projectsQuery, projectsFields ).then( function( result ) {
 					var projects = result.data;
 
 					// Fill in all the resolved projects

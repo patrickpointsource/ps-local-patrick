@@ -566,8 +566,9 @@ else if( role.percentageCovered == 0 )
 					//On Create the project ID will be null.  Pull it from the about.
 					if( !$scope.projectId ) {
 						//Set our currently viewed project to the one resolved by the service.
-						if(result.ok) {
-						  $scope.projectId = result.id;
+						// in case of java backend analyze for returned _id
+						if(result.ok || result._id) {
+						  $scope.projectId = result.id ? result.id: result._id;
 						  $scope.project.about = 'projects/' + $scope.projectId;
 						}
 
