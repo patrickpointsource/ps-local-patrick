@@ -229,15 +229,15 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
      */
     $scope.getMyProjectSummaryLine = function (project) {
       var roles = [];
-      if (project.status.isExecutiveSponsor) {
+      if (project.status && project.status.isExecutiveSponsor) {
         roles.push('EXEC');
       }
 
-      if (project.status.isSalesSponsor) {
+      if (project.status && project.status.isSalesSponsor) {
         roles.push('SALES');
       }
 
-      var projectAssignments = project.status.assignments;
+      var projectAssignments = (project.status) ? project.status.assignments : [];
       var totalHoursPerWeek = 0, now = moment();
       for (var i = 0; i < projectAssignments.length; i++) {
         var projectAssignment = projectAssignments[i];
@@ -269,7 +269,7 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
 
       //Get the total hours logged
       var hoursLogged = '';
-      if (project.status.hoursLogged) {
+      if (project.status &&  project.status.hoursLogged) {
         hoursLogged = ' - ' + project.status.hoursLogged + ' hrs logged';
       }
 
