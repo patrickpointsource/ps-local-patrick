@@ -74,11 +74,253 @@ function( $q, Resources ) {
 		return today;
 	};
 
+
 	/**
 	 * Returns a set of hours entries for all day between 2 dates for a
 	 * given user
 	 */
 	this.getHoursRecordsBetweenDates = function( person, startDate, endDate ) {
+
+		if (window.useAdoptedServices) {
+			return this.getHoursRecordsBetweenDatesUsingGet(person, startDate, endDate);
+		}
+		else {
+			return this.getHoursRecordsBetweenDatesUsingQuery(person, startDate, endDate);
+		}
+	
+	}
+	
+	/**
+	 * Returns a set of hours entries for all day between 2 dates for a
+	 * given user
+	 */
+	this.getHoursRecordsBetweenDatesUsingGet = function( person, startDate, endDate ) {
+		
+		var deferred = $q.defer( );
+
+		var startDateMoment = moment( startDate );
+		var endDateMoment = moment( endDate );
+		// Adding one to be inclusive
+		var numDays = endDateMoment.diff( startDateMoment, 'days' ) + 1;
+
+		var projectURIs = [ ];
+		
+		var params = {};
+		var personURI = person.about ? person.about : person.resource;
+		params.personResource = personURI;
+		params.startDate = startDate;
+		params.endDate = endDate;
+		
+		Resources.refresh( 'assignments/bytypes/assignmentsByPerson', params ).then( function( result ) {
+
+				var projectAssignments = result;
+
+				params.person = personURI;
+				Resources.refresh( 'hours/persondates', params ).then( function( result ) {
+
+						var hoursResults = result.members;
+						var ret = [ ], i;
+
+						// Init the array
+						for( i = 0; i < numDays; i++ ) {
+							var dateMoment = moment( startDate ).add( 'days', i );
+							var date = dateMoment.format( 'YYYY-MM-DD' );
+							ret[ i ] = {
+								totalHours: 0,
+								date: date,
+								hoursEntries: [ ]
+							};
+						}
+
+						
+						// Go through all the hours results and add them to the
+						// return array
+						for( var i = 0; i < hoursResults.length; i++ ) {
+							var hoursRecord = hoursResults[ i ];
+							var hoursMoment = moment( hoursRecord.date );
+
+							// Get the difference in days
+							var diff = hoursMoment.diff( startDateMoment, 'days' );
+							var entries = ret[ diff ];
+
+							// Create the new entry if it does not exist
+							if( !entries ) {
+								console.warn( 'Adding for hours out side inital array: ' + hoursRecord.date + ' ' + startDate + ' ' + endDate );
+
+								entries = {
+									totalHours: 0,
+									date: hoursRecord.date,
+									hoursEntries: [ ]
+								};
+								ret[ diff ] = entries;
+							}
+
+							// Increment the total hours
+							entries.totalHours += hoursRecord.hours;
+
+							entries.hoursEntries.push( {
+								project: hoursRecord.project,
+								hoursRecord: hoursRecord
+							} );
+
+							// Add this to the list of project we need to resolve
+							if( hoursRecord.project && projectURIs.indexOf( hoursRecord.project.resource ) === -1 ) {
+								var resource = hoursRecord.project.resource;
+								projectURIs.push( resource );
+							}
+
+						}
+						
+						
+						// Go through all the assignments and add them to the return
+						// array
+						for( var i = 0; i < projectAssignments.length; i++ ) {
+							var assignments = projectAssignments[ i ].members;
+							var assignmentProjectURI = projectAssignments[ i ].project.resource;
+							var assignmentRecord = null;
+
+							for( var p = 0; p < assignments.length; p++ ) {
+								var assignment = assignments[ p ];
+
+								if( assignment.person && assignment.person.resource && personURI == assignment.person.resource ) {
+									// Check if it is a current assignment
+									var assignmentStartDate = moment( assignment.startDate );
+									// If no end date default to the passed in end
+									// date
+									var assignmentEndDate = assignment.endDate ? moment( assignment.endDate ) : endDateMoment;
+
+									if( endDateMoment.unix( ) >= assignmentStartDate.unix( ) && startDateMoment.unix( ) <= assignmentEndDate.unix( ) ) {
+										assignmentRecord = assignment;
+										break;
+									}
+								}
+							}
+
+							// if we found a matching assignment
+							if( assignmentRecord ) {
+								// Loop through all the days
+								for( var j = 0; j < numDays; j++ ) {
+									var entries = ret[ j ];
+									// Create the new entry if it does not exist
+									var dateMoment = moment( startDate ).add( 'days', j );
+
+									if( !entries ) {
+										console.warn( 'Adding for assignment out side inital array: ' + date + ' ' + startDate + ' ' + endDate );
+										var date = dateMoment.format( 'YYYY-MM-DD' );
+										entries = {
+											totalHours: 0,
+											date: date,
+											hoursEntries: [ ]
+										};
+										ret[ j ] = entries;
+									}
+
+									// Check if it is a current assignment
+									var assignmentStartDate = moment( assignment.startDate );
+									// If no end date default to the passed in end
+									// date
+									var assignmentEndDate = assignment.endDate ? moment( assignment.endDate ) : endDateMoment;
+									if( dateMoment.unix( ) >= assignmentStartDate.unix( ) && dateMoment.unix( ) <= assignmentEndDate.unix( ) ) {
+										// Look through the hours records to see if
+										// there is one for this assignments project
+										var existingEntry = null;
+										for( var k = 0; k < entries.hoursEntries.length; k++ ) {
+											var entry = entries.hoursEntries[ k ];
+
+											if( entry.project ) {
+												var hoursProjectURI = entry.project.resource;
+
+												if( hoursProjectURI == assignmentProjectURI ) {
+													existingEntry = entry.assignment = assignmentRecord;
+													break;
+												}
+											}
+
+										}
+
+										// Not Found
+										if( !existingEntry ) {
+
+											// add empty record with recored hours equal 0
+											entries.hoursEntries.push( {
+												project: {
+													resource: assignmentProjectURI
+												},
+												assignment: assignmentRecord,
+												hoursRecord: {
+													//hours: 0,
+													hours: "",
+													project: {
+														resource: assignmentProjectURI
+													}
+												}
+											} );
+											// Add this to the list of project we
+											// need to resolve
+											if( projectURIs.indexOf( assignmentProjectURI ) === -1 ) {
+												var resource = assignmentProjectURI;
+												projectURIs.push( resource );
+											}
+										}
+									}
+								}
+							}
+
+						}
+
+						
+						var params = {};
+						params.resource = projectURIs;
+						Resources.refresh( 'projects/filter//', params).then( function( result ) {
+							var projects = result.data;
+
+							// Fill in all the resolved projects
+							for( var i = 0; i < ret.length; i++ ) {
+								var day = ret[ i ];
+								if( day && day.hoursEntries ) {
+									for( var j = day.hoursEntries.length - 1; j >= 0; j-- ) {
+										var entry = day.hoursEntries[ j ];
+
+										if( entry.project ) {
+											var entryProjectURI = entry.project.resource;
+											// Find the matching resolved project
+											var found = false;
+
+											for( var k = 0; k < projects.length; k++ ) {
+												var project = projects[ k ];
+												if( entryProjectURI == project.resource ) {
+													// Replace the project
+													entry.project = project;
+													found = true;
+													break;
+												}
+											}
+
+											if( !found )
+												day.hoursEntries.splice( j, 1 );
+										}
+									}
+								}
+							}
+
+							deferred.resolve( ret );
+												
+						} );
+						
+					} );
+				} );
+	
+			
+		return deferred.promise;
+	
+	};
+	
+		
+	/**
+	 * Returns a set of hours entries for all day between 2 dates for a
+	 * given user
+	 */
+	this.getHoursRecordsBetweenDatesUsingQuery = function( person, startDate, endDate ) {
 		var deferred = $q.defer( );
 
 		var _this = this;
@@ -360,7 +602,22 @@ function( $q, Resources ) {
 		return deferred.promise;
 	};
 
+	
 	this.getCurrentPersonProjects = function( person ) {
+		
+		if (window.useAdoptedServices) {
+			var resource = person.about ? person.about : person.resource;
+			var id = resource.substring( resource.lastIndexOf( '/' ) + 1 );
+			return Resources.refresh("projects/byperson/" + id  + "/current");
+		}
+		else {
+			return this.getCurrentPersonProjectsUsingQuery(person);
+		}
+
+	}
+	
+	
+	this.getCurrentPersonProjectsUsingQuery = function( person ) {
 		var deferred = $q.defer( );
 
 		// Start by getting all assignments for a person between two dates

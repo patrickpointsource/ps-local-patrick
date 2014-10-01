@@ -90,10 +90,24 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		return new Date( yyyy, mm, dd );
 	};
 
+
 	/**
 	 * Get all the assignments for a given project
 	 */
+
 	this.getCurrentAndFurtureAssignmentsForProject = function( projectURI ) {
+		if (window.useAdoptedServices) {
+			var params = {};
+			params.projectResource = projectURI;
+			return Resources.refresh("assignments/bytypes/assignmentsByProject", params);
+		}
+		else {
+			return this.getCurrentAndFurtureAssignmentsForProjectUsingQuery(projectURI);
+		}
+
+	};
+		
+	this.getCurrentAndFurtureAssignmentsForProjectUsingQuery = function( projectURI ) {
 		var deferred = $q.defer( );
 
 		var query = {
@@ -112,12 +126,31 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 
 		return deferred.promise;
 	}
+
+	
+	
 	/**
 	 * Get the assignment records for a set of projects
 	 *
 	 * project records that include the about or resource properties set
 	 */
+	
 	this.getAssignments = function( projects, timePeriod ) {
+
+		if (window.useAdoptedServices) {
+			var params = {};
+			params.projectResource = projects;
+			params.timePeriod = timePeriod;
+			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params);
+		}
+		else {
+			return this.getAssignmentsUsingQuery(projects, timePeriod);
+		}
+		
+	};
+	
+	
+	this.getAssignmentsUsingQuery = function( projects, timePeriod ) {
 		var deferred = $q.defer( );
 		var projectURIs = [ ];
 
@@ -186,10 +219,24 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		return deferred.promise;
 	};
 
+
 	/**
 	 * Get A person's Assignments today and going forward
 	 */
+
 	this.getMyCurrentAssignments = function( person ) {
+		if (window.useAdoptedServices) {
+			var params = {};
+			params.personResource = person.about ? person.about : person.resource;
+			return Resources.refresh("assignments/bytypes/assignmentsByPerson", params);
+		}
+		else {
+			return this.getMyCurrentAssignmentsUsingQuery(person);
+		}
+
+	};
+	
+	this.getMyCurrentAssignmentsUsingQuery = function( person ) {
 		var deferred = $q.defer( );
 		var startDateQuery = this.getToday( );
 		var personURI = person.about ? person.about : person.resource;
@@ -283,6 +330,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		return deferred.promise;
 	};
 
+	
 	/**
 	 * Filters out a set of assignments based on time period
 	 *
@@ -291,7 +339,21 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	 * 'past' == all assignments that have already ends
 	 *
 	 */
+	
 	this.getAssignmentsByPeriod = function( timePeriod, projectQuery ) {
+		if (window.useAdoptedServices) {
+			var params = {};
+			params.projectResource = projectQuery.project.resource;
+			params.timePeriod = timePeriod;
+			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params);
+		}
+		else {
+			return this.getAssignmentsByPeriodUsingQuery(timePeriod, projectQuery);
+		}
+	}
+		
+
+	this.getAssignmentsByPeriodUsingQuery = function( timePeriod, projectQuery ) {
 		var deferred = $q.defer( );
 		var apQuery = {};
 		var apFields = {};

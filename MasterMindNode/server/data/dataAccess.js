@@ -215,6 +215,25 @@ var listProjectsByStatuses = function( statuses, callback ) {
 
 };
 
+var listProjectsByResources = function( resources, callback ) {
+
+	var result = memoryCache.getObject( PROJECTS_KEY );
+	if( result ) {
+		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterProjectsByResources(resources, result.data), null, "projects/" ) );
+	} else {
+		dbAccess.listProjects( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				memoryCache.putObject( PROJECTS_KEY, body );
+			}
+			
+			callback( err, prepareRecords( dataFilter.filterProjectsByResources(resources, body.data), null, "projects/" ) );
+		} );
+	}
+
+};
+
 var listCurrentProjectsByPerson = function(resource, callback) {
 
 	listAssignmentsByPerson( resource, function( err, assignments ) {
@@ -879,6 +898,7 @@ module.exports.listProjects = listProjects;
 module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
 module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
 module.exports.listProjectsByStatuses = listProjectsByStatuses;
+module.exports.listProjectsByResources = listProjectsByResources;
 module.exports.listCurrentProjectsByPerson = listCurrentProjectsByPerson;
 
 module.exports.listPeople = listPeople;

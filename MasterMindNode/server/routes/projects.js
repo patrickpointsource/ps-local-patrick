@@ -95,6 +95,34 @@ router.get( '/my/:type', auth.isAuthenticated, function( req, res ) {
 
 } );
 
+
+router.get( '/byperson/:id/:type', auth.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
+		if( allowed ) {
+			var type = req.params.type;
+			var id = req.params.id;
+			if( id && type ) {
+				
+				// returns current projects for required user
+				if( type && type == "current" ) {
+					projects.listCurrentProjectsByPerson( util.getFullID( id, 'people' ), function( err, projects ) {
+						if( err ) {
+							res.json( 500, err );
+						} else {
+							res.json( projects );
+						}
+					} );
+				}
+				
+			} else {
+				res.json( 500, 'No required type' );
+			}
+		}
+	} );
+
+} );
+
 router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
@@ -106,8 +134,20 @@ router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 			var isCommited = req.query.isCommited;
 			var roleResources = req.query.roleResource;
 			var status = req.query.status;
+			var resource = req.query.resource;
+			if (resource) {
 
-			if( status ) {
+				projects.listProjectsByResources(resource, function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json( result );
+					}
+				} );
+				
+			}
+			else if( status ) {
+				
 				projects.listProjectsByStatuses( status, function( err, result ) {
 					if( err ) {
 						res.json( 500, err );
@@ -115,7 +155,9 @@ router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 						res.json( result );
 					}
 				} );
+			
 			} else {
+			
 				projects.listProjectsBetweenDatesByTypesAndSponsors( startDate, endDate, types, isCommited, roleResources, function( err, result ) {
 					if( err ) {
 						res.json( 500, err );
@@ -123,6 +165,7 @@ router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 						res.json( result );
 					}
 				} );
+			
 			}
 		}
 	} );

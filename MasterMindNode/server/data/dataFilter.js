@@ -238,6 +238,29 @@ var filterProjectsByStatuses = function(statuses, projects) {
 };
 
 
+/**
+ * Returns projects filtered by project resources
+ * 
+ * @param {Object} resources
+ * @param {Object} projects
+ */
+
+var filterProjectsByResources = function(resources, projects) {
+	
+	var result = [];
+	resources = (resources instanceof Array) ? resources : [resources];
+	
+	_.each(projects, function(project) {
+		_.each(resources, function(resource) {
+			if (project.resource == resource) {
+				result.push(project);
+			}
+		});
+	});
+	return result;
+};
+
+
 var checkProjectByStatuses = function(statuses, project, callback) {
 	if (statuses instanceof Array) {
 		_.each(statuses, function(status) {
@@ -336,6 +359,8 @@ module.exports.filterProjectsByRoleResources = filterProjectsByRoleResources;
 module.exports.filterProjectsBetweenDatesByTypes = filterProjectsBetweenDatesByTypes;
 module.exports.filterProjectsBetweenDatesByTypesAndSponsors = filterProjectsBetweenDatesByTypesAndSponsors;
 module.exports.filterProjectsByStatuses = filterProjectsByStatuses;
+module.exports.filterProjectsByResources = filterProjectsByResources;
+
 
 // assignments filter functions
 module.exports.filterAssignmentsByTypes = filterAssignmentsByTypes;

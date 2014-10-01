@@ -72,6 +72,24 @@ var listProjectsByStatuses = function(statuses, callback) {
     });
 };
 
+
+var listProjectsByResources = function(resources, callback) {
+    dataAccess.listProjectsByResources(resources, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading listProjectsByResources', null);
+        } else {
+            var result = body.data;
+            body.about = "projects";
+            for (var i in result) {
+       		    result[i].resource = "projects/" + result[i]._id;
+        		result[i].about = "projects/" + result[i]._id;
+            }
+            callback(null, body);
+        }
+    });
+};
+
 var listCurrentProjectsByPerson = function(resource, callback) {
 
 	dataAccess.listCurrentProjectsByPerson( resource, function( err, projects ) {
@@ -307,6 +325,7 @@ module.exports.listProjects = listProjects;
 module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
 module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
 module.exports.listProjectsByStatuses = listProjectsByStatuses;
+module.exports.listProjectsByResources = listProjectsByResources;
 module.exports.listCurrentProjectsByPerson = listCurrentProjectsByPerson;
 module.exports.getProject = getProject;
 module.exports.deleteProject = deleteProject;
