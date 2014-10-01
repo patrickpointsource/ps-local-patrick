@@ -305,6 +305,10 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
                     resource: $scope.project.about
                 };
             }
+            
+            if(!$scope.projectAssignment.project) {
+              $scope.projectAssignment.project = { resource: $scope.project.about };
+            }
                 
 			return AssignmentService.save( $scope.project, $scope.projectAssignment ).then( function( result ) {
 				saveInProgress = false;

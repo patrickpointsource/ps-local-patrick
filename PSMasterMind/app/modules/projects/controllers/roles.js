@@ -199,6 +199,11 @@ angular.module('Mastermind.controllers.projects')
         $scope.addRoleMessages = errors;
       }
       else{
+        // generating id for role (previously it was created by java-server)
+        if(!$scope.newRole._id) {
+          $scope.newRole._id = generateId();
+        }
+        
         // Bubble an event up to add this role.
         $scope.$emit('roles:add', $scope.newRole);
 
@@ -248,7 +253,7 @@ angular.module('Mastermind.controllers.projects')
         	$scope.refreshAdvAmount();
     	}
     	$scope.fullyUtilizedChanged();
-    }
+    };
     
     /**
      * Set default values for hours when 100% utilized
@@ -324,6 +329,17 @@ angular.module('Mastermind.controllers.projects')
       var rolesFormField = $scope.rolesForm[fieldName];
       return (rolesFormField.$dirty || ($scope.submitAttempted && rolesFormField.$pristine)) &&
         rolesFormField.$invalid;
+    };
+    
+    var generateId = function() {
+      var s = [];
+      var hexDigits = "0123456789abcdef";
+      for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+      }
+      
+      var id = s.join("");
+      return id;
     };
 
   }]);

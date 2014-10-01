@@ -556,13 +556,20 @@ else if( role.percentageCovered == 0 )
 					resource: me.about
 				};
 
+                // removing assignees before saving project to db
+                for(var i = 0; i < $scope.project.roles; i++) {
+                  if($scope.project.roles[i].assignees) {
+                    delete $scope.project.roles[i].assignees;
+                  }
+                }
+
 				ProjectsService.save( $scope.project ).then( function( result ) {
 					$rootScope.hideModals( );
 					if( $rootScope.projectEdit && $rootScope.needsTonavigateOut && $scope.editDone ) {
 						$rootScope.navigateOutFunc( );
 						return;
 					}
-
+                    
 					//On Create the project ID will be null.  Pull it from the about.
 					if( !$scope.projectId ) {
 						//Set our currently viewed project to the one resolved by the service.
