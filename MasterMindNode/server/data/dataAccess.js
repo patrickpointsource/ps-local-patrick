@@ -939,3 +939,4 @@ module.exports.USER_ROLES_KEY = USER_ROLES_KEY;
 module.exports.ASSIGNMENTS_KEY = ASSIGNMENTS_KEY;
 module.exports.PROJECTS_KEY = PROJECTS_KEY;
 module.exports.PEOPLE_KEY = PEOPLE_KEY;
+module.exports.ROLES_KEY = ROLES_KEY;

@@ -2,6 +2,7 @@
 
 var dataAccess = require('../data/dataAccess');
 var util = require('../util/util');
+var _ = require('underscore');
 
 module.exports.listRoles = function(q, callback) {
     dataAccess.listRoles(q, function(err, body){
@@ -26,8 +27,19 @@ module.exports.insertRole = function(obj, callback) {
     });
 };
 
-module.exports.deleteRole = function(obj, callback) {
-    dataAccess.deleteItem(obj._id, obj._rev, dataAccess.ROLES_KEY, function(err, body){
+module.exports.udpateRole = function(id, obj, callback) {
+    dataAccess.updateItem(id, obj, dataAccess.ROLES_KEY, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error update role', null);
+        } else {
+            callback(null, _.extend(obj, body));
+        }
+    });
+};
+
+module.exports.deleteRole = function(id, obj, callback) {
+    dataAccess.deleteItem(id, obj._rev, dataAccess.ROLES_KEY, function(err, body){
         if (err) {
             console.log(err);
             callback(err, null);

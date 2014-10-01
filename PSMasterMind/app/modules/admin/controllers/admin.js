@@ -98,16 +98,8 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
         Resources.refresh('roles').then(function(result){
           $scope.roles = result.members;
           $scope.rolesTableParams.total($scope.roles.length);
-          $scope.rolesTableParams.reload();
-
-          //Reset New Role Object
-          $scope.newRole = {};
-
-          $scope.editingRole = false;
-          $scope.editRoleIndex = null;
-
-          //Clear New Role Form
-          $scope.newRoleForm.$setPristine();
+          $scope.rolesTableParams.reload();      
+          $scope.cancelRole();
         });
       });
     };
@@ -121,15 +113,7 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
           $scope.roles = result.members;
           $scope.rolesTableParams.total($scope.roles.length);
           $scope.rolesTableParams.reload();
-
-          //Reset New Role Object
-          $scope.newRole = {};
-
-          $scope.editingRole = false;
-          $scope.editRoleIndex = null;
-
-          //Clear New Role Form
-          $scope.newRoleForm.$setPristine();
+          $scope.cancelRole();
         });
       });
     };
