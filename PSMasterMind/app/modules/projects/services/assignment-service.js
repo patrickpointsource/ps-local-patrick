@@ -139,7 +139,17 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 
 		if (window.useAdoptedServices) {
 			var params = {};
-			params.projectResource = projects;
+			var projectResources = [];
+			for( var i = 0; i < projects.length; i++ ) {
+				var project = projects[ i ];
+				var uri = project.about ? project.about : project.resource;
+
+				if( uri && projectResources.indexOf( uri ) == -1 ) {
+					projectResources.push( uri );
+				}
+			}
+
+			params.projectResource = projectResources;
 			params.timePeriod = timePeriod;
 			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params);
 		}
