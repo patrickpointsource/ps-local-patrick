@@ -144,81 +144,77 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params);
 		}
 		else {
-			return this.getAssignmentsUsingQuery(projects, timePeriod);
+
+			var deferred = $q.defer( );
+			var projectURIs = [ ];
+
+			timePeriod = timePeriod ? timePeriod : "all";
+
+			for( var i = 0; i < projects.length; i++ ) {
+				var project = projects[ i ];
+				var uri = project.about ? project.about : project.resource;
+
+				if( uri && projectURIs.indexOf( uri ) == -1 ) {
+					projectURIs.push( uri );
+				}
+			}
+
+			var query = {
+				'project.resource': {
+					$in: projectURIs
+				}
+			};
+			var _this = this;
+
+			Resources.query( 'assignments', query, null, function( result ) {
+				//Get todays date formatted as yyyy-MM-dd
+				var today = new Date( );
+				var dd = today.getDate( );
+				var mm = today.getMonth( );
+				//January is 0!
+				var yyyy = today.getFullYear( );
+				today = new Date( yyyy, mm, dd );
+
+				for( var i = 0; result.data && i < result.data.length; i++ ) {
+					var assignmentsObject = result.data[ i ];
+
+					if( assignmentsObject && assignmentsObject.members ) {
+						var excluded = [ ];
+						var included = [ ];
+
+						_.each( assignmentsObject.members, function( m ) {
+							if( timePeriod == "current" ) {
+								if( new Date( m.startDate ) <= today && ( !m.endDate || new Date( m.endDate ) > today ) )
+									included.push( m )
+								else
+									excluded.push( m )
+							} else if( timePeriod == "future" ) {
+								if( new Date( m.startDate ) >= today && ( !m.endDate || new Date( m.endDate ) > today ) )
+									included.push( m )
+								else
+									excluded.push( m )
+							} else if( timePeriod == "past" ) {
+								if( new Date( m.startDate ) < today && ( !m.endDate || new Date( m.endDate ) < today ) )
+									included.push( m )
+								else
+									excluded.push( m )
+							} else if( timePeriod == "all" )
+								included.push( m )
+						} )
+
+						assignmentsObject.members = included;
+						assignmentsObject.excludedMembers = excluded;
+					}
+					result.data[ i ] = assignmentsObject;
+				}
+				deferred.resolve( result.data );
+			} );
+
+			return deferred.promise;
 		}
 		
 	};
 	
-	
-	this.getAssignmentsUsingQuery = function( projects, timePeriod ) {
-		var deferred = $q.defer( );
-		var projectURIs = [ ];
-
-		timePeriod = timePeriod ? timePeriod : "all";
-
-		for( var i = 0; i < projects.length; i++ ) {
-			var project = projects[ i ];
-			var uri = project.about ? project.about : project.resource;
-
-			if( uri && projectURIs.indexOf( uri ) == -1 ) {
-				projectURIs.push( uri );
-			}
-		}
-
-		var query = {
-			'project.resource': {
-				$in: projectURIs
-			}
-		};
-		var _this = this;
-
-		Resources.query( 'assignments', query, null, function( result ) {
-			//Get todays date formatted as yyyy-MM-dd
-			var today = new Date( );
-			var dd = today.getDate( );
-			var mm = today.getMonth( );
-			//January is 0!
-			var yyyy = today.getFullYear( );
-			today = new Date( yyyy, mm, dd );
-
-			for( var i = 0; result.data && i < result.data.length; i++ ) {
-				var assignmentsObject = result.data[ i ];
-
-				if( assignmentsObject && assignmentsObject.members ) {
-					var excluded = [ ];
-					var included = [ ];
-
-					_.each( assignmentsObject.members, function( m ) {
-						if( timePeriod == "current" ) {
-							if( new Date( m.startDate ) <= today && ( !m.endDate || new Date( m.endDate ) > today ) )
-								included.push( m )
-							else
-								excluded.push( m )
-						} else if( timePeriod == "future" ) {
-							if( new Date( m.startDate ) >= today && ( !m.endDate || new Date( m.endDate ) > today ) )
-								included.push( m )
-							else
-								excluded.push( m )
-						} else if( timePeriod == "past" ) {
-							if( new Date( m.startDate ) < today && ( !m.endDate || new Date( m.endDate ) < today ) )
-								included.push( m )
-							else
-								excluded.push( m )
-						} else if( timePeriod == "all" )
-							included.push( m )
-					} )
-
-					assignmentsObject.members = included;
-					assignmentsObject.excludedMembers = excluded;
-				}
-				result.data[ i ] = assignmentsObject;
-			}
-			deferred.resolve( result.data );
-		} );
-
-		return deferred.promise;
-	};
-
 
 	/**
 	 * Get A person's Assignments today and going forward
