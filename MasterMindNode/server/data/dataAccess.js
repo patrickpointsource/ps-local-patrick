@@ -490,6 +490,8 @@ var listAssignments = function( q, callback ) {
 				memoryCache.putObject( ASSIGNMENTS_KEY, body );
 			}
 			
+			console.log('\r\n\r\nloading:assignments:q=' + JSON.stringify(q) + '\r\n');
+			
 			finalRecords = queryRecords( body, q, null, "projects/", "/assignments" );
 			
 			for (i = 0; i < finalRecords.data.length; i ++)
