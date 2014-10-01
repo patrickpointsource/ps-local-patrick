@@ -227,7 +227,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	this.getMyCurrentAssignments = function( person ) {
 		if (window.useAdoptedServices) {
 			var params = {};
-			params.personResource = person.about ? person.about : person.resource;
+			params.person = person.about ? person.about : person.resource;
 			return Resources.refresh("assignments/bytypes/assignmentsByPerson", params);
 		}
 		else {

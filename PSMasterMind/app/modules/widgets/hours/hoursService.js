@@ -107,7 +107,7 @@ function( $q, Resources ) {
 		
 		var params = {};
 		var personURI = person.about ? person.about : person.resource;
-		params.personResource = personURI;
+		params.person = personURI;
 		params.startDate = startDate;
 		params.endDate = endDate;
 		
@@ -115,7 +115,6 @@ function( $q, Resources ) {
 
 				var projectAssignments = result;
 
-				params.person = personURI;
 				Resources.refresh( 'hours/persondates', params ).then( function( result ) {
 
 						var hoursResults = result.members;
