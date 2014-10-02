@@ -2267,7 +2267,7 @@ else if( role.percentageCovered == 0 )
 								var date = new Date(Date.parse($scope.thisWeekHours[j].date));
 								
 								if (!isTodayAlreadyTracked)
-									isTodayAlreadyTracked = date.getUTCDate() == now.getUTCDate() && date.getUTCMonth() == now.getUTCMonth();
+									isTodayAlreadyTracked = date.getUTCDate() == now.getUTCDate() && date.getUTCMonth() == now.getUTCMonth() && $scope.thisWeekHours[j].hours > 0;
 								
 								if( ( $scope.thisWeekHours[ j ].date == $scope.moment( $scope.startWeekDate ).day( k ).format( 'YYYY-MM-DD' ) ) && ( $scope.thisWeekHours[ j ].person.resource == uniqPersons[ i ] ) ) {
 									personRecord.hours[ k ].hoursEntries.push( $scope.thisWeekHours[ j ] );
@@ -2285,7 +2285,7 @@ else if( role.percentageCovered == 0 )
 						var remainingWorkdays = 0;
 						var eDate = moment(personRecord.endDate);
 						
-						for (var d = moment(new Date()).add(isTodayAlreadyTracked ? 1 : 0); d.weekday() < 6; d.add(1, "day"))
+						for (var d = moment(new Date()).add(isTodayAlreadyTracked ? 1 : 0); d.isoWeekday() < 6; d.add(1, "day"))
 						{
 							if (personRecord.endDate && eDate.diff(d, "days") < 0)
 								break;
@@ -2471,7 +2471,7 @@ else if( role.percentageCovered == 0 )
 								var date = new Date(Date.parse($scope.thisWeekHours[j].date));
 								
 								if (!isTodayAlreadyTracked)
-									isTodayAlreadyTracked = date.getUTCDate() == now.getUTCDate() && date.getUTCMonth() == now.getUTCMonth();
+									isTodayAlreadyTracked = date.getUTCDate() == now.getUTCDate() && date.getUTCMonth() == now.getUTCMonth() && $scope.thisWeekHours[j].hours > 0;
 								
 								if ((date.getUTCDate() >= 1 + 7 * k && date.getUTCDate() <= 7 + 7 * k)
 									&& ($scope.thisWeekHours[j].person.resource == uniqPersons[i])) {
@@ -2492,7 +2492,7 @@ else if( role.percentageCovered == 0 )
 						
 						if (personRecord.endDate && eDate.diff(new Date(), "days") >= 0)
 							for (var d = moment(new Date()).add(isTodayAlreadyTracked ? 1 : 0, "day"); d.month() == eDate.month(); d.add(1, "day"))
-								if (d.weekday() < 6)
+								if (d.isoWeekday() < 6)
 									remainingWorkdays++;
 						
 						personRecord.projectedHours = personRecord.actualHours + personRecord.hoursPerWeek / 5 * remainingWorkdays;
