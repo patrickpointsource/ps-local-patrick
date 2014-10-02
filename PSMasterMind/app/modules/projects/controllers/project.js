@@ -1739,6 +1739,8 @@ else if( role.percentageCovered == 0 )
           });
         });
       }*/
+     
+     $scope.hideVacationSpinner = false;
      $scope.showVacationsStartPeriod = moment(periodStart).format("MMM D");
      $scope.showVacationsEndPeriod = moment(periodEnd).format("MMM D");
      
@@ -1770,6 +1772,8 @@ else if( role.percentageCovered == 0 )
             Resources.resolve(projVac.person);
             //projVac.person = peopleFound[0];
           }
+          
+          $scope.hideVacationSpinner = true;
         })
       }
     }
@@ -2117,6 +2121,7 @@ else if( role.percentageCovered == 0 )
 	$scope.endWeekDate = $scope.moment( ).day( 6 ).format( 'YYYY-MM-DD' );
 
 	$scope.showWeek = function( ) {
+        $scope.hideWeekSpinner = false;
 		$scope.startWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex ).format( 'YYYY-MM-DD' );
 		$scope.endWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex + 6 ).format( 'YYYY-MM-DD' );
 		
@@ -2284,6 +2289,8 @@ else if( role.percentageCovered == 0 )
 						roleInfo.capacity = roleInfo.expectedHours - roleInfo.actualHours <= remainingWorkdays * 9;
 					}
 				}
+				
+				$scope.hideWeekSpinner = true;
 			} );
 		} );
 	};
@@ -2292,6 +2299,9 @@ else if( role.percentageCovered == 0 )
 		var mmm = "";//$scope.moment.monthsShort($scope.selectedMonthIndex);
 		var selectedDate = $scope.moment().month($scope.selectedMonthIndex);
 		var daysInMonth = selectedDate.daysInMonth();
+		
+		$scope.hideMonthSpinner = false;
+		
 		$scope.thisMonthDayLabels = [ mmm + " 1-7", mmm + " 8-14", mmm + " 15-21", mmm + " 22-28" ];
 		
 		if (daysInMonth > 28)
@@ -2471,6 +2481,8 @@ else if( role.percentageCovered == 0 )
 						roleInfo.capacity = roleInfo.expectedHours - roleInfo.actualHours <= remainingWorkdays * 9;
 					}
 				}
+				
+				$scope.hideMonthSpinner = true;
 			} );
 		} );
 	};
@@ -2647,20 +2659,31 @@ else if( role.percentageCovered == 0 )
 		generate: function( ) {
 			var project = $scope.project;
 			var hours = [ ];
-
+			
 			if( $scope.hoursViewType == 'monthly' || $scope.hoursViewType == 'billings' || $scope.hoursViewType == 'customDates' ) {
 				if( $scope.currentDisplayedHours ) {
 					for( var i = 0; i < $scope.currentDisplayedHours.length; i++ ) {
 						hours = hours.concat( $scope.currentDisplayedHours[ i ] );
 					}
 				}
-			}
 
+			}
+			
+			if ($scope.hoursViewType == 'monthly') {
+                $scope.currentPeriod = $scope.monthNames[$scope.moment($scope.startMonthDate).month()];
+            } else if ($scope.hoursViewType == 'weekly') {
+                $scope.currentPeriod = $scope.moment($scope.startWeekDate).format('MM/DD/YY') + '-' + $scope.moment($scope.endWeekDate).format('MM/DD/YY');
+            }
+
+            //console.log('generate:' + $scope.currentPeriod);
+            
 			if( $scope.hoursViewType == 'weekly' ) {
 				if( $scope.weekPersonHours ) {
 					hours = $scope.thisWeekHours;
 				}
 			}
+			
+			
 
 			$scope.csvData = $scope.JSON2CSV( project, hours );
 		},
@@ -2796,7 +2819,7 @@ else if( role.percentageCovered == 0 )
         $scope.hideSpinner = true;
     });
     
-	$scope.JSON2CSV = function( project, hours ) {
+	$scope.JSON2CSV = function( project, hours, reportPeriod ) {
 		var str = '';
 		var line = '';
 

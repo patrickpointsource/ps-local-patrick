@@ -290,7 +290,9 @@ function( $q, $timeout, Restangular ) {
 		if( !latestTime )
 			localStorage[ "LATEST_LOCAL_STORAGE_CHECK" ] = now.toString( );
 
-		if( !latestTime || ( ( now.getTime( ) - ( new Date( latestTime ) ).getTime( ) ) > 2 * ONE_HOUR ) ) {
+		if( !latestTime || ( ( now.getTime( ) - ( new Date( latestTime ) ).getTime( ) ) > 0 ) ) {
+		    var now = new Date();
+		    
 			var currentSize = unescape( encodeURIComponent( JSON.stringify( localStorage ) ) ).length;
 
 			// if greater than 1mb
@@ -311,6 +313,8 @@ function( $q, $timeout, Restangular ) {
 				};
 
 			}
+			
+			console.log('storage: time:' + ((new Date()).getTime() - now.getTime()) + ':size:' + currentSize);
 		}
 	}
 

@@ -55,7 +55,7 @@
   </div>
 
   <div class="actions col-xs-2 col-sm-1 col-md-3 pageActions pull-right">
-    <a ng-if="financeAccess || projectManagementAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="{{project.name}}-{{currentMonth}}.csv">
+    <a ng-if="financeAccess || projectManagementAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="{{project.name}}-{{currentPeriod}}.csv">
       <div class="hidden-xs"><i class="fa fa-table"></i><span class="hidden-sm hidden-xs"> Download to Excel</span>
       </div>
       <div class="visible-xs"><i class="fa fa-table"></i>
@@ -87,11 +87,14 @@
 </div>
 
 <!-- Monthly view -->
-<div class="panel panel-default dashboard-widget">
+<div class="panel panel-default dashboard-widget vacation">
   <div class="panel-heading">
     Out of Offices this period: {{showVacationsStartPeriod}} - {{showVacationsEndPeriod}}
   </div>
   <div class="panel-body">
+  	<div class="spinner-container" ng-hide="hideVacationSpinner" style="width: calc(100% - 30px);">
+		<i class="fa fa-spinner fa-spin fa-3x"></i>
+	</div>
     <div class="row col-xs-12 no-margin" ng-if="!organizedHours">
       <div class="alert alert-warning no-margin">There are no out-of-office requests for this period.</div>
     </div>
@@ -188,7 +191,7 @@
 
 <div class="row" ng-if="hoursViewType == 'monthly'" style="margin-top: 10px;">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="panel panel-default dashboard-widget">
+    <div class="panel panel-default dashboard-widget month">
       <div class="panel-heading">
         <i class="fa fa-calendar-o"></i>
         <span>Hours Summary</span>
@@ -206,6 +209,9 @@
         </div>
       </div>
       <div class="panel-body peopleList">
+      	<div class="spinner-container" ng-hide="hideMonthSpinner" style="width: calc(100% - 30px);">
+			<i class="fa fa-spinner fa-spin fa-3x"></i>
+		</div>
         <!--            <h3> {{dayFormatted(startWeekDate)}} &ndash; {{dayFormatted(endWeekDate, "MMM D, YYYY")}} </h3>-->
         <div class="row">
           <div class="col-xs-12" ng-if="monthPersonHours2.length == 0">
@@ -305,7 +311,7 @@
 <!-- Weekly view -->
 <div class="row" ng-if="hoursViewType == 'weekly'" style="margin-top: 10px;">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="panel panel-default dashboard-widget">
+    <div class="panel panel-default dashboard-widget week">
       <div class="panel-heading">
         <i class="fa fa-calendar-o"></i>
         <span>Hours Summary</span>
@@ -323,6 +329,9 @@
         </div>
       </div>
       <div class="panel-body peopleList">
+      	<div class="spinner-container" ng-hide="hideWeekSpinner" style="width: calc(100% - 30px);">
+			<i class="fa fa-spinner fa-spin fa-3x"></i>
+		</div>
         <!--            <h3> {{dayFormatted(startWeekDate)}} &ndash; {{dayFormatted(endWeekDate, "MMM D, YYYY")}} </h3>-->
         <div class="row">
           <div class="col-xs-12" ng-if="weekPersonHours2.length == 0">
