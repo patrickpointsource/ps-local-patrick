@@ -2249,6 +2249,8 @@ else if( role.percentageCovered == 0 )
 						else if (role.rate.type == "hourly")
 							roleInfo.expectedHours = role.rate.fullyUtilized ? 45 : role.rate.hoursPerMth * .25; // .25 == 12 / 48
 						
+						var isTodayAlreadyTracked = false;
+						
 						for( var k = 0; k < 7; k++ ) {
 							personRecord.hours.push( {} );
 							personRecord.hours[ k ].totalHours = 0;
@@ -2257,6 +2259,10 @@ else if( role.percentageCovered == 0 )
 							var futureness = $scope.checkForFutureness( $scope.moment( $scope.startWeekDate ).add( 'days', k ).format( 'YYYY-MM-DD' ) );
 							personRecord.hours[ k ].futureness = futureness;
 							for( var j = 0; j < $scope.thisWeekHours.length; j++ ) {
+								
+								if (!isTodayAlreadyTracked)
+									isTodayAlreadyTracked = date.getUTCDate() == now.getUTCDate() && date.getUTCMonth() == now.getUTCMonth();
+								
 								if( ( $scope.thisWeekHours[ j ].date == $scope.moment( $scope.startWeekDate ).day( k ).format( 'YYYY-MM-DD' ) ) && ( $scope.thisWeekHours[ j ].person.resource == uniqPersons[ i ] ) ) {
 									personRecord.hours[ k ].hoursEntries.push( $scope.thisWeekHours[ j ] );
 									personRecord.hours[ k ].totalHours += $scope.thisWeekHours[ j ].hours;
@@ -2273,7 +2279,7 @@ else if( role.percentageCovered == 0 )
 						var remainingWorkdays = 0;
 						var eDate = moment(personRecord.endDate);
 						
-						for (var d = moment(new Date()); d.weekday() < 6; d.add("1", "day"))
+						for (var d = moment(new Date()).add(isTodayAlreadyTracked ? 1 : 0); d.weekday() < 6; d.add(1, "day"))
 						{
 							if (personRecord.endDate && eDate.diff(d, "days") < 0)
 								break;
@@ -2299,6 +2305,7 @@ else if( role.percentageCovered == 0 )
 		var mmm = "";//$scope.moment.monthsShort($scope.selectedMonthIndex);
 		var selectedDate = $scope.moment().month($scope.selectedMonthIndex);
 		var daysInMonth = selectedDate.daysInMonth();
+		var now = new Date();
 		
 		$scope.hideMonthSpinner = false;
 		
@@ -2442,6 +2449,8 @@ else if( role.percentageCovered == 0 )
 						else if (role.rate.type == "hourly")
 							roleInfo.expectedHours = role.rate.fullyUtilized ? 180 : role.rate.hoursPerMth;
 						
+						var isTodayAlreadyTracked = false;
+						
 						for( var k = 0; k < $scope.thisMonthDayLabels.length - 3; k++ ) { // 3 is the number of non-days columns
 							personRecord.hours.push( {} );
 							personRecord.hours[ k ].totalHours = 0;
@@ -2451,6 +2460,9 @@ else if( role.percentageCovered == 0 )
 //							personRecord.hours[ k ].futureness = futureness;
 							for( var j = 0; j < $scope.thisWeekHours.length; j++ ) {
 								var date = new Date(Date.parse($scope.thisWeekHours[j].date));
+								
+								if (!isTodayAlreadyTracked)
+									isTodayAlreadyTracked = date.getUTCDate() == now.getUTCDate() && date.getUTCMonth() == now.getUTCMonth();
 								
 								if ((date.getUTCDate() >= 1 + 7 * k && date.getUTCDate() <= 7 + 7 * k)
 									&& ($scope.thisWeekHours[j].person.resource == uniqPersons[i])) {
@@ -2467,10 +2479,10 @@ else if( role.percentageCovered == 0 )
 						}
 						
 						var remainingWorkdays = 0;
-						var eDate = moment.min(personRecord.endDate, moment($scope.endMonthDate));
+						var eDate = moment.min(moment(personRecord.endDate), moment($scope.endMonthDate));
 						
 						if (personRecord.endDate && eDate.diff(new Date(), "days") >= 0)
-							for (var d = moment(new Date()); d.month() == eDate.month(); d.add("1", "day"))
+							for (var d = moment(new Date()).add(isTodayAlreadyTracked ? 1 : 0, "day"); d.month() == eDate.month(); d.add(1, "day"))
 								if (d.weekday() < 6)
 									remainingWorkdays++;
 						
