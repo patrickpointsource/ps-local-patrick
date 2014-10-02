@@ -564,6 +564,7 @@ else if( role.percentageCovered == 0 )
                 }
 
 				ProjectsService.save( $scope.project ).then( function( result ) {
+				    console.log("saved: " + result._id);
 					$rootScope.hideModals( );
 					if( $rootScope.projectEdit && $rootScope.needsTonavigateOut && $scope.editDone ) {
 						$rootScope.navigateOutFunc( );
@@ -614,6 +615,7 @@ else if( role.percentageCovered == 0 )
 
 						$scope.loadExecAndPeople( function() {
 						    $scope.$emit( 'project:loaded' );
+						    $rootScope.formDirty = false;
 						});
 					} );
 				}, function( response ) {
