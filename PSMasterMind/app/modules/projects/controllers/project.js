@@ -2124,6 +2124,7 @@ else if( role.percentageCovered == 0 )
         $scope.hideWeekSpinner = false;
 		$scope.startWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex ).format( 'YYYY-MM-DD' );
 		$scope.endWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex + 6 ).format( 'YYYY-MM-DD' );
+		var now = new Date();
 		
 		if($scope.hoursViewType === 'weekly') {
 		  $scope.initVacationHours($scope.startWeekDate, $scope.endWeekDate);
@@ -2262,6 +2263,8 @@ else if( role.percentageCovered == 0 )
 							var futureness = $scope.checkForFutureness( $scope.moment( $scope.startWeekDate ).add( 'days', k ).format( 'YYYY-MM-DD' ) );
 							personRecord.hours[ k ].futureness = futureness;
 							for( var j = 0; j < $scope.thisWeekHours.length; j++ ) {
+								
+								var date = new Date(Date.parse($scope.thisWeekHours[j].date));
 								
 								if (!isTodayAlreadyTracked)
 									isTodayAlreadyTracked = date.getUTCDate() == now.getUTCDate() && date.getUTCMonth() == now.getUTCMonth();
