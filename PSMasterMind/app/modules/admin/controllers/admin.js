@@ -87,7 +87,8 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
       $scope.editRoleIndex = null;
 
       //Clear New Role Form
-      $scope.newRoleForm.$setPristine();
+      if ($scope.newRoleForm)
+    	  $scope.newRoleForm.$setPristine();
     };
 
     /**
