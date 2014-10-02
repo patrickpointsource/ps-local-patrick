@@ -260,7 +260,7 @@
 	                <button class="btn btn-hours btn-default">{{roleHours.expectedHours}}</button>
 	              </div>
 	              <div class="col-xs-1 col-md-1 col-lg-1">
-	                <button class="btn btn-hours btn-default" ng-class="{'btn-danger': roleHours.projectedHours < roleHours.expectedHours && !roleHours.capacity,'btn-warning': roleHours.projectedHours < roleHours.expectedHours && roleHours.capacity, 'btn-default' : roleHours.projectedHours >= roleHours.expectedHours }">{{roleHours.projectedHours.toPrecision(2)}}</button>
+	                <button class="btn btn-hours btn-default" ng-class="{'btn-danger': roleHours.projectedHours < roleHours.expectedHours && !roleHours.capacity,'btn-warning': roleHours.projectedHours < roleHours.expectedHours && roleHours.capacity, 'btn-default' : roleHours.projectedHours >= roleHours.expectedHours }">{{roleHours.projectedHours.toFixed(2).replace(".00", "")}}</button>
 	              </div>
               </div>
               <div ng-repeat="personHours in roleHours.persons" ng-if="!roleHours.collapsed" style="margin-top: 5px;" class="row">
@@ -297,7 +297,7 @@
                 <button class="btn btn-hours btn-default">{{personHours.expectedHours}}</button>
               </div>
               <div class="col-xs-1 col-md-1 col-lg-1">
-                <button class="btn btn-hours btn-default" ng-class="{'btn-danger': personHours.projectedHours < personHours.expectedHours && !personHours.capacity,'btn-warning': personHours.projectedHours < personHours.expectedHours && personHours.capacity, 'btn-default' : personHours.projectedHours >= personHours.expectedHours }">{{personHours.projectedHours.toPrecision(2)}}</button>
+                <button class="btn btn-hours btn-default" ng-class="{'btn-danger': personHours.projectedHours < personHours.expectedHours && !personHours.capacity,'btn-warning': personHours.projectedHours < personHours.expectedHours && personHours.capacity, 'btn-default' : personHours.projectedHours >= personHours.expectedHours }">{{personHours.projectedHours.toFixed(2).replace(".00", "")}}</button>
               </div>
             </div>
             </div>
@@ -380,7 +380,7 @@
 	                <button class="btn btn-hours btn-default">{{roleHours.expectedHours}}</button>
 	              </div>
 	              <div class="col-xs-1 col-md-1 col-lg-1">
-	                <button class="btn btn-hours btn-default" ng-class="{'btn-danger': roleHours.projectedHours < roleHours.expectedHours && !roleHours.capacity,'btn-warning': roleHours.projectedHours < roleHours.expectedHours && roleHours.capacity, 'btn-default' : roleHours.projectedHours >= roleHours.expectedHours }">{{roleHours.projectedHours.toPrecision(2)}}</button>
+	                <button class="btn btn-hours btn-default" ng-class="{'btn-danger': roleHours.projectedHours < roleHours.expectedHours && !roleHours.capacity,'btn-warning': roleHours.projectedHours < roleHours.expectedHours && roleHours.capacity, 'btn-default' : roleHours.projectedHours >= roleHours.expectedHours }">{{roleHours.projectedHours.toFixed(2).replace(".00", "")}}</button>
 	              </div>
               </div>
               <div ng-repeat="personHours in roleHours.persons" ng-if="!roleHours.collapsed" style="margin-top: 5px;" class="row">
@@ -417,7 +417,7 @@
                 <button class="btn btn-hours btn-default">{{personHours.expectedHours}}</button>
               </div>
               <div class="col-xs-1 col-md-1 col-lg-1">
-                <button class="btn btn-hours btn-default" ng-class="{'btn-danger': personHours.projectedHours < personHours.expectedHours && !personHours.capacity,'btn-warning': personHours.projectedHours < personHours.expectedHours && personHours.capacity, 'btn-default' : personHours.projectedHours >= personHours.expectedHours }">{{personHours.projectedHours.toPrecision(2)}}</button>
+                <button class="btn btn-hours btn-default" ng-class="{'btn-danger': personHours.projectedHours < personHours.expectedHours && !personHours.capacity,'btn-warning': personHours.projectedHours < personHours.expectedHours && personHours.capacity, 'btn-default' : personHours.projectedHours >= personHours.expectedHours }">{{personHours.projectedHours.toFixed(2).replace(".00", "")}}</button>
               </div>
             </div>
             </div>
