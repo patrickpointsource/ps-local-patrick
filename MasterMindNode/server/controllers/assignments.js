@@ -53,7 +53,7 @@ var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources,
 			callback (err, null);
 		}
 		
-		var assignments = [];
+		var result;
 		_.each(result.data, function(assignment){
 
 			_.each(projectResources, function (projectResource){
@@ -103,14 +103,14 @@ var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources,
 
 						assignment.members = included;
 						assignment.excludedMembers = excluded;
-						assignments.push(assignment);
+						result = assignment;
 					}
 
 				}
 			});
 				
 		});
-		callback (null, assignments);
+		callback (null, result);
 	});
 };
 
