@@ -2217,6 +2217,9 @@ else if( role.percentageCovered == 0 )
 						var personRecord = $scope.weekPersonHours[ i ];
 						var roleIndex = distinctRoles.indexOf(personRecord.role);
 						
+						if (roleIndex == -1)
+							continue;
+						
 						if ($scope.weekPersonHours2[roleIndex] == null)
 							$scope.weekPersonHours2[roleIndex] = {
 								role: { resource: $scope.weekPersonHours[i].role },
@@ -2407,6 +2410,9 @@ else if( role.percentageCovered == 0 )
 
 						var personRecord = $scope.monthPersonHours[ i ];
 						var roleIndex = distinctRoles.indexOf(personRecord.role);
+						
+						if (roleIndex == -1)
+							continue;
 						
 						if ($scope.monthPersonHours2[roleIndex] == null)
 						{
