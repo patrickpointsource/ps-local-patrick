@@ -2216,14 +2216,23 @@ else if( role.percentageCovered == 0 )
 						Resources.resolve( $scope.weekPersonHours[ i ].person );
 
 						var personRecord = $scope.weekPersonHours[ i ];
-						var roleIndex = distinctRoles.indexOf(personRecord.role);
+						var role = _.find($scope.project.roles, function (role)
+						{
+							return role._id == personRecord.role.substring(personRecord.role.lastIndexOf("/") + 1);
+						});
 						
-						if (roleIndex == -1)
+						if (!role)
 							continue;
 						
-						if ($scope.weekPersonHours2[roleIndex] == null)
-							$scope.weekPersonHours2[roleIndex] = {
-								role: { resource: $scope.weekPersonHours[i].role },
+						var roleInfo = _.find($scope.weekPersonHours2, function (roleInfo)
+						{
+							return roleInfo.role.resource == role.type.resource;
+						});
+						
+						if (roleInfo == null)
+						{
+							roleInfo = {
+								role: { resource: role.type.resource },
 								hours: [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ],
 								actualHours: 0,
 								expectedHours: 0,
@@ -2231,15 +2240,9 @@ else if( role.percentageCovered == 0 )
 								collapsed: true,
 								persons: []
 							};
-						
-						var roleInfo = $scope.weekPersonHours2[roleIndex];
-						var role = _.find($scope.project.roles, function (role)
-						{
-							return roleInfo.role.resource && role._id == roleInfo.role.resource.substring(roleInfo.role.resource.lastIndexOf("/") + 1);
-						});
-						
-						if (!role)
-							continue;
+							
+							$scope.weekPersonHours2.push(roleInfo);
+						}
 						
 						roleInfo.persons.push(personRecord);
 						
@@ -2366,16 +2369,12 @@ else if( role.percentageCovered == 0 )
 						Resources.resolve( $scope.thisWeekHours[ i ].person );
 					}
 
-					var distinctRoles = [];
 					var uniqPersons = _.pluck( _.pluck( $scope.thisWeekHours, 'person' ), 'resource' );
 					var hoursStartEndDatesMap = {};
 
 					for( var i = 0; i < $scope.projectAssignments.members.length; i++ ) {
 						if( $scope.projectAssignments.members[ i ].endDate >= $scope.startMonthDate && $scope.projectAssignments.members[ i ].startDate < $scope.endMonthDate ) {
 							uniqPersons.push( $scope.projectAssignments.members[ i ].person.resource );
-							
-							if (distinctRoles.indexOf($scope.projectAssignments.members[ i ].role.resource) == -1)
-								distinctRoles.push($scope.projectAssignments.members[ i ].role.resource);
 							
 							if( !hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] )
 								hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] = {
@@ -2412,20 +2411,28 @@ else if( role.percentageCovered == 0 )
 						} );
 
 						var personRecord = $scope.monthPersonHours[ i ];
-						var roleIndex = distinctRoles.indexOf(personRecord.role);
+						var role = _.find($scope.project.roles, function (role)
+						{
+							return role._id == personRecord.role.substring(personRecord.role.lastIndexOf("/") + 1);
+						});
 						
-						if (roleIndex == -1)
+						if (!role)
 							continue;
 						
-						if ($scope.monthPersonHours2[roleIndex] == null)
+						var roleInfo = _.find($scope.monthPersonHours2, function (roleInfo)
+						{
+							return roleInfo.role.resource == role.type.resource;
+						});
+						
+						if (roleInfo == null)
 						{
 							var hours = [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ];
 							
 							if (daysInMonth > 28)
 								hours.push({ totalHours: 0 })
 							
-							$scope.monthPersonHours2[roleIndex] = {
-								role: { resource: $scope.monthPersonHours[i].role },
+							roleInfo = {
+								role: { resource: role.type.resource },
 								hours: hours,
 								actualHours: 0,
 								expectedHours: 0,
@@ -2433,16 +2440,9 @@ else if( role.percentageCovered == 0 )
 								collapsed: true,
 								persons: []
 							};
+							
+							$scope.monthPersonHours2.push(roleInfo);
 						}
-						
-						var roleInfo = $scope.monthPersonHours2[roleIndex];
-						var role = _.find($scope.project.roles, function (role)
-						{
-							return roleInfo.role.resource && role._id == roleInfo.role.resource.substring(roleInfo.role.resource.lastIndexOf("/") + 1);
-						});
-						
-						if (!role)
-							continue;
 						
 						Resources.resolve( $scope.monthPersonHours[ i ].person );
 						
