@@ -12,8 +12,8 @@ var devenv = {
 			name: 'PS MasterMind'
 		},
 		google: {
-			clientID: '141952851027.apps.googleusercontent.com',
-			clientSecret: 'Jiy0OMx_vOzHK1mXSIGSoog1',
+			clientID: '141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com',
+			clientSecret: 'xx9Om8aLgwzlmeBmSGoOqwdh',
 			callbackURL: '/oauth2callback',
 			callbackHost: 'http://localhost:3000',
 			scope: [ 'https://www.googleapis.com/auth/plus.login' ]

@@ -175,7 +175,7 @@ public interface CONSTS {
 	
 	//Local Host
 //		public String PUBLIC_BASE_URL = "http://localhost:8080/MasterMindStaging/";
-//		public String WEB_SITE_URL = "http://localhost:9000";
+	//	public String WEB_SITE_URL = "http://localhost:9000";
 //		//public String WEB_SITE_URL = "http://localhost:9000";
 //		public String DB_NAME_DEFAULT  = "mm_db_stage";
 	//Staging Only
@@ -205,8 +205,8 @@ public interface CONSTS {
 	/**
 	 * Google Constants
 	 */
-	public String CLIENT_ID = "141952851027.apps.googleusercontent.com";
-	public String CLIENT_SECRET = "Jiy0OMx_vOzHK1mXSIGSoog1";
+	public String CLIENT_ID = "141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com";
+	public String CLIENT_SECRET = "xx9Om8aLgwzlmeBmSGoOqwdh";
 	public String APPLICATION_NAME = "PS MasterMind";
 	public String COOKIE_NAME_ACCESS_TOKEN = "access_token";
 	public String SESSION_USER_KEY = "current_user";
