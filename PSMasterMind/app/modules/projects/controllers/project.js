@@ -2168,16 +2168,12 @@ else if( role.percentageCovered == 0 )
 						Resources.resolve( $scope.thisWeekHours[ i ].person );
 					}
 
-					var distinctRoles = [];
 					var uniqPersons = _.pluck( _.pluck( $scope.thisWeekHours, 'person' ), 'resource' );
 					var hoursStartEndDatesMap = {};
 
 					for( var i = 0; i < $scope.projectAssignments.members.length; i++ ) {
 						if( $scope.projectAssignments.members[ i ].endDate >= $scope.startWeekDate && $scope.projectAssignments.members[ i ].startDate < $scope.endWeekDate ) {
 							uniqPersons.push( $scope.projectAssignments.members[ i ].person.resource );
-							
-							if (distinctRoles.indexOf($scope.projectAssignments.members[ i ].role.resource) == -1)
-								distinctRoles.push($scope.projectAssignments.members[ i ].role.resource);
 							
 							if( !hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] )
 								hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] = {
