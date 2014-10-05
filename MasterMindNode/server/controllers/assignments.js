@@ -29,12 +29,12 @@ var getAssignment = function(id, callback) {
     });
 };
 
-var listCurrentAssigmentsByPeople = function(callback) {
+var listCurrentAssigments = function(callback) {
 	
-    dataAccess.listCurrentAssigmentsByPeople(function(err, body){
+    dataAccess.listCurrentAssigments(function(err, body){
         if (err) {
             console.log(err);
-            callback('error loading assignments by types :' + JSON.stringify(types), null);
+            callback("error loading current assignments", null);
         } else {
             //console.log(body);
             callback(null, body);
@@ -142,7 +142,6 @@ var listAssignmentsByPersonResource = function(personResource, startDateMoment, 
 				//Find all the assignments for this person
 				for( var j = 0; j < projectAssignment.members.length; j++ ) {
 					var assignment = projectAssignment.members[ j ];
-
 					var endDate = assignment.endDate ? assignment.endDate : null;
 					if( personResource == assignment.person.resource && ( !endDate || endDate > util.getTodayDate() ) ) {
 						//Associate the project directly with the an assignment
@@ -151,7 +150,7 @@ var listAssignmentsByPersonResource = function(personResource, startDateMoment, 
 						}
 						assignment.percentage = Math.round( 100 * assignment.hoursPerWeek / HOURS_PER_WEEK );
 						if ( 
-								( !startDateMoment || (assignment.endDate <= startDateMoment ) ) && 
+								( !startDateMoment || !endDate || ( endDate <= startDateMoment ) ) && 
 								( !endDateMoment || (assignment.startDate >= endDateMoment ) ) 
 							) {
 							assignments.push( assignment );
@@ -192,6 +191,6 @@ var listAssignmentsByPersonResource = function(personResource, startDateMoment, 
 
 module.exports.listAssignments = listAssignments;
 module.exports.getAssignment = getAssignment;
-module.exports.listCurrentAssigmentsByPeople = listCurrentAssigmentsByPeople;
+module.exports.listCurrentAssigments = listCurrentAssigments;
 module.exports.listAssignmentsByPersonResource = listAssignmentsByPersonResource;
 module.exports.listAssignmentsByProjectResourcesAndTimePeriod = listAssignmentsByProjectResourcesAndTimePeriod;

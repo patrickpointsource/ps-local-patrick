@@ -49,7 +49,7 @@ router.get( '/bytypes/:type', auth.isAuthenticated, function( req, res ) {
 		if( allowed ) {
 			var type = req.params.type;
 			if ( type && type == "currentAssignments" ) {
-				assignments.listCurrentAssigmentsByPeople( function( err, assignments ) {
+				assignments.listCurrentAssigments( function( err, assignments ) {
 					if( err ) {
 						res.json( 500, err );
 					} else {

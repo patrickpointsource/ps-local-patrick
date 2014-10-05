@@ -491,6 +491,25 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 * Return the list of people you work with
 	 */
 	function getMyPeople( me ) {
+		if (window.useAdoptedServices) {
+			return getMyPeopleUsingGet(me);
+		}
+		else {
+			return getMyPeopleUsingQuery(me);
+		}
+	}
+	
+	function getMyPeopleUsingGet( me ) {
+		var deferred = $q.defer( );
+		Resources.get( "people/bytypes/myPeople").then( function( result ) {
+			deferred.resolve( result.members );
+		});
+		return deferred.promise;
+	};
+	
+
+		
+	function getMyPeopleUsingQuery( me ) {
 		var deferred = $q.defer( );
 
 		var startDateQuery = getToday( );

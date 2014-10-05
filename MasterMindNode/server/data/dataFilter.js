@@ -347,6 +347,23 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 	}
 }
 
+/**
+ * Returns notifications filtered by person
+ * 
+ * @param {Object} person
+ * @param {Object} notifications
+ */
+
+var filterNotificationsByPerson = function(person, notifications) {
+	var result = [];	
+	_.each(notifications, function(notification) {
+		if (notification.person && notification.person.resource == person) {
+			result.push(project);
+		}
+	});
+	return result;
+};
+
 
 // people filter functions
 module.exports.filterActivePeopleByRoleIds = filterActivePeopleByRoleIds;
@@ -361,6 +378,8 @@ module.exports.filterProjectsBetweenDatesByTypesAndSponsors = filterProjectsBetw
 module.exports.filterProjectsByStatuses = filterProjectsByStatuses;
 module.exports.filterProjectsByResources = filterProjectsByResources;
 
-
-// assignments filter functions
+//assignments filter functions
 module.exports.filterAssignmentsByTypes = filterAssignmentsByTypes;
+
+//notifications filter functions
+module.exports.filterNotificationsByPerson = filterNotificationsByPerson;

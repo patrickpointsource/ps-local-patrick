@@ -24,7 +24,23 @@ angular.module('Mastermind.services.projects')
       return Resources.create('notifications', notification);
     }
     
+    
     this.getPersonsNotifications = function(personResource) {
+		if (window.useAdoptedServices) {
+			return this.getPersonsNotificationsUsingGet(personResource);
+		}
+		else {
+			return this.getPersonsNotificationsUsingQuery(personResource);
+		}
+    }
+
+    this.getPersonsNotificationsUsingGet = function(personResource) {
+    	var params = {};
+    	params.person = personResource;
+        return Resources.get('notifications/bytypes/byPerson', params);
+    }
+    	
+    this.getPersonsNotificationsUsingQuery = function(personResource) {
       var query = {
         person: {
             resource: personResource

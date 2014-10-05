@@ -336,6 +336,7 @@ var listActivePeopleByRoleIds = function( roleIds, callback ) {
 
 };
 
+
 var listActivePeople = function(callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
@@ -352,6 +353,53 @@ var listActivePeople = function(callback ) {
 		} );
 	}
 
+};
+
+
+var listPeopleByPerson = function(person, callback ) {
+	
+	listAssignmentsByPerson(person, function (err, result) {
+		if (err) {
+			callback(err, null);
+		} else {
+
+			var peopleURIs = [ ];
+			for( var i = 0; i < result.length; i++ ) {
+
+				var projectAssignment = result[ i ];
+				for( var j = 0; j < projectAssignment.members.length; j++ ) {
+					var assignment = projectAssignment.members[ j ];
+					if( ( !assignment.endDate || assignment.endDate > util.getTodayDate() ) && 
+							assignment.startDate <= util.getTodayDate()  
+							) {
+						var uri = assignment.person.resource;
+						if( person != uri && !_.contains( peopleURIs, uri ) ) {
+							peopleURIs.push( uri );
+						}
+					}
+				}
+			}
+			
+			
+			var peopleResult = [];
+			listActivePeople(function(err, people) {
+				if (err) {
+					callback(err, null);
+				}
+				_.each(people.members, function (person){
+					var uri = person.resource;
+					if( _.contains( peopleURIs, uri ) ) {
+						peopleResult.push (person);
+					}
+				});
+
+				callback( err, prepareRecords( peopleResult, "members", "people/" ) );
+				
+			});
+			
+		}
+	});
+	
 };
 
 
@@ -402,7 +450,7 @@ var listActivePeopleByAssignments = function(callback ) {
 	
 };
 
-var listCurrentAssigmentsByPeople = function(callback ) {
+var listCurrentAssigments = function(callback ) {
 
 	listAssignments(null, function (err, assignments) {
 		if (err) {
@@ -662,6 +710,26 @@ var listNotifications = function( q, callback ) {
 	}
 
 };
+
+
+var listNotificationsByPerson = function( person, callback ) {
+
+	var result = memoryCache.getObject( NOTIFICATIONS_KEY );
+	if( result ) {
+		console.log( "read " + NOTIFICATIONS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, result.members), "members", "notifications/" ) );
+	} else {
+		dbAccess.listNotifications( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + NOTIFICATIONS_KEY + " to memory cache" );
+				memoryCache.putObject( NOTIFICATIONS_KEY, body );
+			}
+			callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, body.members), "members", "notifications/" ) );
+		} );
+	}
+
+};
+
 var listHours = function( q, callback ) {
     var onlyAndDates = q.$and && q.$and.length > 0;
     var orEmpty = !q.$or || q.$or.length > 0;
@@ -904,11 +972,12 @@ module.exports.listProjectsByResources = listProjectsByResources;
 module.exports.listCurrentProjectsByPerson = listCurrentProjectsByPerson;
 
 module.exports.listPeople = listPeople;
+module.exports.listPeopleByPerson = listPeopleByPerson;
 module.exports.listActivePeopleByRoleIds = listActivePeopleByRoleIds;
 module.exports.listActivePeople = listActivePeople;
 module.exports.listActivePeopleByAssignments = listActivePeopleByAssignments;
 module.exports.listAssignments = listAssignments;
-module.exports.listCurrentAssigmentsByPeople = listCurrentAssigmentsByPeople;
+module.exports.listCurrentAssigments = listCurrentAssigments;
 module.exports.listAssignmentsByPerson = listAssignmentsByPerson;
 
 module.exports.listTasks = listTasks;
@@ -922,6 +991,7 @@ module.exports.listHoursByProjects = listHoursByProjects;
 module.exports.listRoles = listRoles;
 module.exports.listLinks = listLinks;
 module.exports.listNotifications = listNotifications;
+module.exports.listNotificationsByPerson = listNotificationsByPerson;
 module.exports.listSkills = listSkills;
 module.exports.listConfiguration = listConfiguration;
 module.exports.listVacations = listVacations;

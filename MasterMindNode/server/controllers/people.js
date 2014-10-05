@@ -28,6 +28,18 @@ module.exports.listActivePeopleByRoleIds = function(roleIds, callback) {
     });
 };
 
+module.exports.listPeopleByPerson = function(person, callback) {
+    dataAccess.listPeopleByPerson(person, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading people by person ' + person, null);
+        } else {
+            //console.log(body);
+            callback(null, body);
+        }
+    });
+};
+
 module.exports.listActivePeople = function(callback) {
     dataAccess.listActivePeople(function(err, body){
         if (err) {

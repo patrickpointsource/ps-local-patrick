@@ -25,6 +25,29 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
+router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
+	security.isAllowed(req.user, res, securityResources.notifications.resourceName, securityResources.notifications.permissions.viewNotifications, function(allowed){
+		if (allowed) 
+		{
+			var type = req.params.type;
+			if (type && type == "byPerson") {
+				var person = req.query.person;
+			    notifications.listNotificationsByPerson(person, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else {
+	            res.json(500, 'No required type attribute');
+			}
+		}
+	});
+}); 
+
+
 router.post( '/', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.notifications.resourceName, securityResources.notifications.permissions.editNotifications, function( allowed ) {
 		if( allowed ) {

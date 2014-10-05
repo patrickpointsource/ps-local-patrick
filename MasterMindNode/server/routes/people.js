@@ -112,8 +112,34 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			        }            
 			    });
 			}
+			else 
+				if (type && type == "myPeople") {
+					
+					people.getPersonByGoogleId(req.user, function(err, result){
+				        if(err){
+				            res.json(500, err);
+				        } else {        
+				        	var me = result.members.length == 1 ? result.members[0]: null;
+				        	if (me) {
+					        	people.listPeopleByPerson("people/" + me._id, function(err, result){
+							        if(err){
+							            res.json(500, err);
+							        } else {
+							            res.json(result);
+							        }            
+							    });
+				        	}
+							else {
+					            res.json(500, "Profile not found");
+							}
+
+				        }            
+			   	 	});
+
+					
+				}
 			else {
-	            res.json(500, 'No required roleId attribute');
+	            res.json(500, "No required type attribute");
 			}
 		}
 	});

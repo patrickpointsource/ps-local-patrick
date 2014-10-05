@@ -15,6 +15,17 @@ module.exports.listNotifications = function(q, callback) {
     });
 };
 
+module.exports.listNotificationsByPerson = function(person, callback) {
+    dataAccess.listNotificationsByPerson(person, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading notifications by person', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
 module.exports.insertNotification = function(obj, callback) {
     dataAccess.insertItem(obj._id, obj, dataAccess.NOTIFICATIONS_KEY, function(err, body){
         if (err) {

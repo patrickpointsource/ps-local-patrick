@@ -1335,7 +1335,130 @@ angular.module('Mastermind.services.projects')
      * For a given set of projects cerate a data set of roles versus aviable billable hours to be used for the
      * booking forecast widget
      */
+    
     this.getBookingForecastData = function(projects, showPipeline){
+		if (window.useAdoptedServices) {
+			return this.getBookingForecastDataUsingGet(projects, showPipeline);
+		}
+		else {
+			return this.getBookingForecastDataUsingQuery(projects, showPipeline);
+		}
+    };
+    
+    
+    this.getBookingForecastDataUsingGet = function(projects, showPipeline){
+    	var deferred = $q.defer();
+		Resources.get( "roles").then( function( roles ) {
+
+			var nonBillableRolesArray = [];
+    		var memberLength = roles.members.length;
+    		
+    		for(var i=0; i< memberLength; i++) {
+    			if (roles.members[i].isNonBillable)
+    				nonBillableRolesArray.push(roles.members[i].resource);
+    		}
+    		
+    		var roleList = roles.members;
+    		Resources.get( "people/bytypes/active").then( function( result ) {
+
+        		var total = 0;
+        		var roleType = null;
+				var utilizationRate = 100;
+        		var currentValue = 1;
+        		
+        		for (var k = 0; k < result.members.length; k ++) {
+        			utilizationRate = 100;
+        			roleType = _.find(roleList, function(r) {return result.members[k].primaryRole && result.members[k].primaryRole.resource && result.members[k].primaryRole.resource.indexOf(r.resource) > -1})
+        			
+        			currentValue = 1;
+        			
+        			if (roleType && roleType.utilizationRate)
+                        currentValue = Math.round(roleType.utilizationRate * 10 / 100) / 10;
+                    
+                        
+        			if (result.members[k].partTimeHours && !isNaN(parseFloat(result.members[k].partTimeHours)))
+        			     currentValue = Math.round(currentValue * 100 * parseFloat(result.members[k].partTimeHours) / CONSTS.HOURS_PER_WEEK) / 100;
+        			
+        			
+    				total += currentValue;
+        		};
+        		
+        		// align floating point arithmetic
+        		total = parseFloat(total.toFixed(1));
+        		
+        		//total = result.members.length;
+        		
+        		var comitments = [0,0,0,0,0,0];
+        		var dateChecks = getSixMonthsOfDates();
+        		for(var i = 0; i < projects.length; i++){
+        			var project = projects[i];
+        			if(project.committed || showPipeline){
+    	    			var roles = project.roles;
+    	    			for(var j = 0; j < roles.length; j++){
+    	    				var role = roles[j];
+    	    				var hoursPerMonth = 0;
+    	    				
+    	    				if(role.rate.fullyUtilized){
+    	    					hoursPerMonth = 180;
+    	    				}
+    	    				else if(role.rate.hoursPerMth){
+    	    					hoursPerMonth = role.rate.hoursPerMth;
+    	    				}
+    	    				else if(role.rate.hoursPerWeek){
+    	    					hoursPerMonth = role.rate.hoursPerWeek*4;
+    	    				}
+    	    				
+    	    				//hoursPerMonth  = Math.round(hoursPerMonth * utilizationRate / 100);
+    	    				
+    	    				//Check if roles if now active
+    	    				if(role.startDate <= dateChecks[0] && (!role.endDate || role.endDate >= dateChecks[0])){
+    	    					comitments[0]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[1] && (!role.endDate || role.endDate >= dateChecks[1])){
+    	    					comitments[1]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[2] && (!role.endDate || role.endDate >= dateChecks[2])){
+    	    					comitments[2]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[3] && (!role.endDate || role.endDate >= dateChecks[3])){
+    	    					comitments[3]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[4] && (!role.endDate || role.endDate >= dateChecks[4])){
+    	    					comitments[4]+=hoursPerMonth;
+    	    				}
+    	    				if(role.startDate <= dateChecks[5] && (!role.endDate || role.endDate >= dateChecks[5])){
+    	    					comitments[5]+=hoursPerMonth;
+    	    				}
+    	    			}
+        			}
+        		}
+        	
+        		var peopleInMonth1 = Math.ceil(comitments[0]/180);
+        		var peopleInMonth2 = Math.ceil(comitments[1]/180);
+        		var peopleInMonth3 = Math.ceil(comitments[2]/180);
+        		var peopleInMonth4 = Math.ceil(comitments[3]/180);
+        		var peopleInMonth5 = Math.ceil(comitments[4]/180);
+        		var peopleInMonth6 = Math.ceil(comitments[5]/180);
+        		
+        		var ret = [
+    		          {x: new Date(dateChecks[0]), value: peopleInMonth1, otherValue: total},
+    		          {x: new Date(dateChecks[1]), value: peopleInMonth2, otherValue: total},
+    		          {x: new Date(dateChecks[2]), value: peopleInMonth3, otherValue: total},
+    		          {x: new Date(dateChecks[3]), value: peopleInMonth4, otherValue: total},
+    		          {x: new Date(dateChecks[4]), value: peopleInMonth5, otherValue: total},
+    		          {x: new Date(dateChecks[5]), value: peopleInMonth6, otherValue: total}
+        		];
+        		
+        		deferred.resolve(ret);
+    			
+    		});
+
+		});
+		
+    	return deferred.promise;
+    };
+    
+    this.getBookingForecastDataUsingQuery = function(projects, showPipeline){
     	
     	//First get the total nuber of billable hours per month
     	var deferred = $q.defer();
