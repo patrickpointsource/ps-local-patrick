@@ -174,97 +174,75 @@ function( $q, Resources ) {
 						// Go through all the assignments and add them to the return
 						// array
 						for( var i = 0; i < projectAssignments.length; i++ ) {
-							var assignments = projectAssignments[ i ].members;
-							var assignmentProjectURI = projectAssignments[ i ].project.resource;
-							var assignmentRecord = null;
+							var assignmentRecord = projectAssignments[ i ];
+							var assignmentProjectURI = assignmentRecord.project.resource;
 
-							for( var p = 0; p < assignments.length; p++ ) {
-								var assignment = assignments[ p ];
+							// Loop through all the days
+							for( var j = 0; j < numDays; j++ ) {
+								var entries = ret[ j ];
+								// Create the new entry if it does not exist
+								var dateMoment = moment( startDate ).add( 'days', j );
 
-								if( assignment.person && assignment.person.resource && personURI == assignment.person.resource ) {
-									// Check if it is a current assignment
-									var assignmentStartDate = moment( assignment.startDate );
-									// If no end date default to the passed in end
-									// date
-									var assignmentEndDate = assignment.endDate ? moment( assignment.endDate ) : endDateMoment;
-
-									if( endDateMoment.unix( ) >= assignmentStartDate.unix( ) && startDateMoment.unix( ) <= assignmentEndDate.unix( ) ) {
-										assignmentRecord = assignment;
-										break;
-									}
-								}
-							}
-
-							// if we found a matching assignment
-							if( assignmentRecord ) {
-								// Loop through all the days
-								for( var j = 0; j < numDays; j++ ) {
-									var entries = ret[ j ];
-									// Create the new entry if it does not exist
-									var dateMoment = moment( startDate ).add( 'days', j );
-
-									if( !entries ) {
-										console.warn( 'Adding for assignment out side inital array: ' + date + ' ' + startDate + ' ' + endDate );
-										var date = dateMoment.format( 'YYYY-MM-DD' );
-										entries = {
+								if( !entries ) {
+									console.warn( 'Adding for assignment out side inital array: ' + date + ' ' + startDate + ' ' + endDate );
+									var date = dateMoment.format( 'YYYY-MM-DD' );
+									entries = {
 											totalHours: 0,
 											date: date,
 											hoursEntries: [ ]
-										};
-										ret[ j ] = entries;
-									}
+									};
+									ret[ j ] = entries;
+								}
 
-									// Check if it is a current assignment
-									var assignmentStartDate = moment( assignment.startDate );
-									// If no end date default to the passed in end
-									// date
-									var assignmentEndDate = assignment.endDate ? moment( assignment.endDate ) : endDateMoment;
-									if( dateMoment.unix( ) >= assignmentStartDate.unix( ) && dateMoment.unix( ) <= assignmentEndDate.unix( ) ) {
-										// Look through the hours records to see if
-										// there is one for this assignments project
-										var existingEntry = null;
-										for( var k = 0; k < entries.hoursEntries.length; k++ ) {
-											var entry = entries.hoursEntries[ k ];
+								// Check if it is a current assignment
+								var assignmentStartDate = moment( assignmentRecord.startDate );
+								// If no end date default to the passed in end
+								// date
+								var assignmentEndDate = assignmentRecord.endDate ? moment( assignmentRecord.endDate ) : endDateMoment;
+								if( dateMoment.unix( ) >= assignmentStartDate.unix( ) && dateMoment.unix( ) <= assignmentEndDate.unix( ) ) {
+									// Look through the hours records to see if
+									// there is one for this assignments project
+									var existingEntry = null;
+									for( var k = 0; k < entries.hoursEntries.length; k++ ) {
+										var entry = entries.hoursEntries[ k ];
 
-											if( entry.project ) {
-												var hoursProjectURI = entry.project.resource;
+										if( entry.project ) {
+											var hoursProjectURI = entry.project.resource;
 
-												if( hoursProjectURI == assignmentProjectURI ) {
-													existingEntry = entry.assignment = assignmentRecord;
-													break;
-												}
+											if( hoursProjectURI == assignmentProjectURI ) {
+												existingEntry = entry.assignment = assignmentRecord;
+												break;
 											}
-
 										}
 
-										// Not Found
-										if( !existingEntry ) {
+									}
 
-											// add empty record with recored hours equal 0
-											entries.hoursEntries.push( {
+									// Not Found
+									if( !existingEntry ) {
+
+										// add empty record with recored hours equal 0
+										entries.hoursEntries.push( {
+											project: {
+												resource: assignmentProjectURI
+											},
+											assignment: assignmentRecord,
+											hoursRecord: {
+												//hours: 0,
+												hours: "",
 												project: {
 													resource: assignmentProjectURI
-												},
-												assignment: assignmentRecord,
-												hoursRecord: {
-													//hours: 0,
-													hours: "",
-													project: {
-														resource: assignmentProjectURI
-													}
 												}
-											} );
-											// Add this to the list of project we
-											// need to resolve
-											if( projectURIs.indexOf( assignmentProjectURI ) === -1 ) {
-												var resource = assignmentProjectURI;
-												projectURIs.push( resource );
 											}
+										} );
+										// Add this to the list of project we
+										// need to resolve
+										if( projectURIs.indexOf( assignmentProjectURI ) === -1 ) {
+											var resource = assignmentProjectURI;
+											projectURIs.push( resource );
 										}
 									}
 								}
 							}
-
 						}
 
 						

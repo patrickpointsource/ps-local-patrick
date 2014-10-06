@@ -150,8 +150,8 @@ var listAssignmentsByPersonResource = function(personResource, startDateMoment, 
 						}
 						assignment.percentage = Math.round( 100 * assignment.hoursPerWeek / HOURS_PER_WEEK );
 						if ( 
-								( !startDateMoment || !endDate || ( endDate <= startDateMoment ) ) && 
-								( !endDateMoment || (assignment.startDate >= endDateMoment ) ) 
+								( !endDateMoment || ( endDateMoment >= assignment.startDate  ) ) && 
+								( !startDateMoment || !endDate || ( startDateMoment <= assignment.endDate ) ) 
 							) {
 							assignments.push( assignment );
 						}
