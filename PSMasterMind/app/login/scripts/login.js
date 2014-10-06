@@ -14,11 +14,11 @@
 //window.fixUrl = true;
 
 //stage nodejs 
-//window.serverLocation = 'https://dmz.mastermind.pointsource.us';
-//window.restPath = '/MMNodeServer/';
-//window.clientBaseURL = 'https://mastermind.pointsource.us/nodestage/';
-//window.fixUrl = true;
-//window.useAdoptedServices = false;
+window.serverLocation = 'https://dmz.mastermind.pointsource.us';
+window.restPath = '/MMNodeServer/';
+window.clientBaseURL = 'https://mastermind.pointsource.us/nodestage/';
+window.fixUrl = true;
+window.useAdoptedServices = false;
 
 //stage only
 //window.restPath = '/MasterMindStaging/rest/';
@@ -35,11 +35,11 @@
 //window.useAdoptedServices = false;
 
 //demo
-window.serverLocation = 'https://dmz.mastermind.pointsource.us';
-window.restPath = '/MasterMindDemo/rest/';
-window.clientBaseURL = 'https://mastermind.pointsource.us/demo/';
-window.fixUrl = false;
-window.useAdoptedServices = false;
+//window.serverLocation = 'https://dmz.mastermind.pointsource.us';
+//window.restPath = '/MasterMindDemo/rest/';
+//window.clientBaseURL = 'https://mastermind.pointsource.us/demo/';
+//window.fixUrl = false;
+//window.useAdoptedServices = false;
 
 
 var helper = (function () {
