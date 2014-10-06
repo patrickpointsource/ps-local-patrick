@@ -1745,9 +1745,12 @@ else if( role.percentageCovered == 0 )
      $scope.showVacationsEndPeriod = moment(periodEnd).format("MMM D");
      
       if($scope.projectPeopleResources.length > 0) {
+        var peopleResourcesOnly = _.map($scope.projectPeopleResources, function(person) { 
+                                    return { resource: person.resource };
+                                  });
         var vacationsQuery = {
           $and: [
-            { person: { $in: $scope.projectPeopleResources } },
+            { person: { $in: peopleResourcesOnly } },
             { $or: [
               { $and: [
                 { startDate: { $gte: periodStart }},
