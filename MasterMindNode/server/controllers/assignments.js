@@ -110,7 +110,14 @@ var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources,
 			});
 				
 		});
-		var result = ( assignments && assignments.length == 1 ) ? assignments[0] : assignments;
+		var result;
+		if ( assignments && assignments.length == 1 )  {
+			result =assignments[0];
+		}
+		else if ( assignments && assignments.length > 1 )  {
+			result = {};
+			result.members = assignments;
+		}
 		callback (null, result);
 	});
 };
