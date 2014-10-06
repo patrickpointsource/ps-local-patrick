@@ -2265,18 +2265,28 @@ else if( role.percentageCovered == 0 )
 							return personRecord.role && role._id == personRecord.role.substring(personRecord.role.lastIndexOf("/") + 1);
 						});
 						
-						if (!role && !personRecord.isUnassigned)
-							continue;
+						if (!role)
+						{
+							if (personRecord.isUnassigned)
+							{
+								role = hoursStartEndDatesMap[ uniqPersons[ i ] ].roleRecord;
+								
+								if (!role)
+									continue;
+							}
+							else
+								continue;
+						}
 						
 						var roleInfo = _.find($scope.weekPersonHours2, function (roleInfo)
 						{
 							return roleInfo.role.resource == role.type.resource;
 						});
 						
-						if (roleInfo == null && !personRecord.isUnassigned)
+						if (roleInfo == null)
 						{
 							roleInfo = {
-								role: { resource: role.type.resource },
+								role: personRecord.isUnassigned ? { resource: personRecord.role } : { resource: role.type.resource },
 								hours: [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ],
 								actualHours: 0,
 								expectedHours: 0,
@@ -2286,21 +2296,7 @@ else if( role.percentageCovered == 0 )
 							};
 							
 							$scope.weekPersonHours2.push(roleInfo);
-						} else if (roleInfo == null && personRecord.isUnassigned){
-                            role = hoursStartEndDatesMap[ uniqPersons[ i ] ].roleRecord;
-                            
-                            roleInfo = {
-                                role: { resource: personRecord.role },
-                                hours: [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ],
-                                actualHours: 0,
-                                expectedHours: 0,
-                                projectedHours: 0,
-                                collapsed: true,
-                                persons: []
-                            };
-                            
-                            $scope.weekPersonHours2.push(roleInfo);
-                        }
+						}
 						
 						roleInfo.persons.push(personRecord);
 						
@@ -2494,15 +2490,25 @@ else if( role.percentageCovered == 0 )
 							return personRecord.role && role._id == personRecord.role.substring(personRecord.role.lastIndexOf("/") + 1);
 						});
 						
-						if (!role && !personRecord.isUnassigned)
-							continue;
+						if (!role)
+						{
+							if (personRecord.isUnassigned)
+							{
+								role = hoursStartEndDatesMap[ uniqPersons[ i ] ].roleRecord;
+								
+								if (!role)
+									continue;
+							}
+							else
+								continue;
+						}
 						
 						var roleInfo = _.find($scope.monthPersonHours2, function (roleInfo)
 						{
 							return roleInfo.role.resource == role.type.resource;
 						});
 						
-						if (roleInfo == null && !personRecord.isUnassigned)
+						if (roleInfo == null)
 						{
 							var hours = [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ];
 							
@@ -2510,7 +2516,7 @@ else if( role.percentageCovered == 0 )
 								hours.push({ totalHours: 0 })
 							
 							roleInfo = {
-								role: { resource: role.type.resource },
+								role: personRecord.isUnassigned ? { resource: personRecord.role } : { resource: role.type.resource },
 								hours: hours,
 								actualHours: 0,
 								expectedHours: 0,
@@ -2520,25 +2526,6 @@ else if( role.percentageCovered == 0 )
 							};
 							
 							$scope.monthPersonHours2.push(roleInfo);
-						} else if (roleInfo == null && personRecord.isUnassigned){
-						    role = hoursStartEndDatesMap[ uniqPersons[ i ] ].roleRecord;
-						    
-                            var hours = [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ];
-                            
-                            if (daysInMonth > 28)
-                                hours.push({ totalHours: 0 })
-                            
-                            roleInfo = {
-                                role: { resource: personRecord.role },
-                                hours: hours,
-                                actualHours: 0,
-                                expectedHours: 0,
-                                projectedHours: 0,
-                                collapsed: true,
-                                persons: []
-                            };
-                            
-                            $scope.monthPersonHours2.push(roleInfo);
                         }
 						
 						Resources.resolve( $scope.monthPersonHours[ i ].person );
