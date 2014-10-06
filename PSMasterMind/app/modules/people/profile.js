@@ -204,7 +204,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		if( profile.manager ) {
 			profile.manager = {
-				"resource": profile.manager.resource
+				resource: profile.manager.resource,
+				name: profile.manager.name
 			}
 		}
 		
@@ -231,16 +232,19 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			delete localStorage[ key ];
 
 			var getBack = localStorage[ key ];
+            
+            Resources.refresh( 'people/' + $scope.profileId ).then( function( person ) {
+              $scope.setProfile( person );
+              $scope.editMode = false;
 
-			$scope.setProfile( person );
-			$scope.editMode = false;
-
-			//If you updated your self refresh the local copy of me
-			if( $scope.me.about === profile.about ) {
-				Resources.refresh( 'people/me' ).then( function( me ) {
-					$scope.me = me;
-				} );
-			}
+              //If you updated your self refresh the local copy of me
+              if( $scope.me.about === profile.about ) {
+                Resources.refresh( 'people/me' ).then( function( me ) {
+                    $scope.me = me;
+                } );
+              }
+            } );
+			
 		} );
 	};
 
