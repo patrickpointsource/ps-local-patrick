@@ -2308,11 +2308,11 @@ else if( role.percentageCovered == 0 )
 						personRecord.expectedHours = personRecord.hoursPerWeek;
 						
 						if (role.rate.type == "monthly")
-							roleInfo.expectedHours = 180;
+							roleInfo.expectedHours += 180;
 						else if (role.rate.type == "weekly")
-							roleInfo.expectedHours = role.rate.fullyUtilized ? 45 : role.rate.hoursPerWeek;
+							roleInfo.expectedHours += role.rate.fullyUtilized ? 45 : role.rate.hoursPerWeek;
 						else if (role.rate.type == "hourly")
-							roleInfo.expectedHours = role.rate.fullyUtilized ? 45 : role.rate.hoursPerMth * .25; // .25 == 12 / 48
+							roleInfo.expectedHours += role.rate.fullyUtilized ? 45 : role.rate.hoursPerMth * .25; // .25 == 12 / 48
 						
 						var isTodayAlreadyTracked = false;
 						
@@ -2549,11 +2549,11 @@ else if( role.percentageCovered == 0 )
 						personRecord.expectedHours = personRecord.hoursPerWeek * 4; // 4 == 48 / 12
 						
 						if (role.rate.type == "monthly")
-							roleInfo.expectedHours = 180;
+							roleInfo.expectedHours += 180;
 						else if (role.rate.type == "weekly")
-							roleInfo.expectedHours = role.rate.fullyUtilized ? 180 : role.rate.hoursPerWeek * 4; // 4 == 48 / 12
+							roleInfo.expectedHours += role.rate.fullyUtilized ? 180 : role.rate.hoursPerWeek * 4; // 4 == 48 / 12
 						else if (role.rate.type == "hourly")
-							roleInfo.expectedHours = role.rate.fullyUtilized ? 180 : role.rate.hoursPerMth;
+							roleInfo.expectedHours += role.rate.fullyUtilized ? 180 : role.rate.hoursPerMth;
 						
 						var isTodayAlreadyTracked = false;
 						
