@@ -1134,12 +1134,19 @@ else if( role.percentageCovered == 0 )
     $scope.getDefaultPersonRole = function(resource) {
         var result = null;
         var p;
+        var foundPerson = null;
         
         for (var role in $scope.roleGroups) {
             
             p = _.find($scope.roleGroups[role].assiganble, function(el, ind){
                 return el.resource == resource && el.isPrimary;
+                //return el.resource == resource;
             });
+            
+            if (!foundPerson)
+                foundPerson = _.find($scope.roleGroups[role].assiganble, function(el, ind){
+                    return el.resource == resource;
+                });
             
             if (p) {
                 result = _.extend({
@@ -1148,6 +1155,12 @@ else if( role.percentageCovered == 0 )
                 
                 delete result.assiganble;
             }
+        }
+        
+        if (!result && foundPerson && foundPerson.primaryRole) {
+            result = _.extend({
+                    rate: {}
+            }, $scope.roleGroups[foundPerson.primaryRole.resource]);
         }
         
         return result;
@@ -1802,8 +1815,10 @@ else if( role.percentageCovered == 0 )
           
           $scope.hideVacationSpinner = true;
         })
-      }
-    }
+      } else
+        $scope.hideVacationSpinner = true;
+        
+    };
     
     $scope.getHoursLost = function(vacation) {
       return VacationsService.getHoursLost(vacation);
