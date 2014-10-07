@@ -2273,6 +2273,8 @@ else if( role.percentageCovered == 0 )
 								
 								if (!role)
 									continue;
+								
+								role.type = { resource: role.resource };
 							}
 							else
 								continue;
@@ -2498,6 +2500,8 @@ else if( role.percentageCovered == 0 )
 								
 								if (!role)
 									continue;
+								
+								role.type = { resource: role.resource };
 							}
 							else
 								continue;
