@@ -1782,9 +1782,13 @@ else if( role.percentageCovered == 0 )
       if($scope.projectPeopleResources.length > 0) {
         $scope.projectPeopleResources = _.filter($scope.projectPeopleResources);
           
-        var peopleResourcesOnly = _.map($scope.projectPeopleResources, function(person) { 
-                                    return { resource: person.resource };
-                                  });
+        var peopleResourcesOnly = _.compact(_.map($scope.projectPeopleResources, function(person) { 
+                                    if(person) {
+                                      return { resource: person.resource };
+                                    } else {
+                                      return undefined;
+                                    }
+                                  }));
         var vacationsQuery = {
           $and: [
             { person: { $in: peopleResourcesOnly } },

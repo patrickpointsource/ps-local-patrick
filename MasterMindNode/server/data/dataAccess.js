@@ -6,6 +6,7 @@ var sift = require( 'sift' );
 var config = require( '../config/config.js' );
 var dataFilter = require( './dataFilter' );
 var util = require( '../util/util.js' );
+var validation = require( '../data/validation.js' );
 
 var PROJECTS_KEY = 'Projects';
 var PEOPLE_KEY = 'People';
@@ -889,6 +890,11 @@ var insertItem = function( id, obj, type, callback ) {
 	
 	if (!obj.form)
 	   callback( "Form field is missing", {} );
+	
+	if(!validation.validate(obj, type)) {
+	  callback( "Validation for " + type + " failed.", {} );
+	  return;
+	}
 	  
 	dbAccess.insertItem( id, obj, function( err, body ) {
 		if( !err ) {
@@ -911,6 +917,11 @@ var updateItem = function( id, obj, type, callback ) {
 	if( type ) {
 		obj.form = type;
 	}
+	if(!validation.validate(obj, type)) {
+      callback( "Validation for " + type + " failed.", {} );
+      return;
+    }
+	
 	dbAccess.updateItem( id, obj, function( err, body ) {
 		if( !err ) {
 			if( obj._deleted ) {
