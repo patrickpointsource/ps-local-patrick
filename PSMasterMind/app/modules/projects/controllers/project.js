@@ -2333,7 +2333,7 @@ else if( role.percentageCovered == 0 )
 						personRecord.actualHours = 0;
 						personRecord.expectedHours = personRecord.hoursPerWeek;
 						
-						var recalcExpectedHours = !_.some($scope.weekPersonHours2, function (roleInfo) { return roleInfo.role.resource2 == role._id; });
+						var recalcExpectedHours = !_.some(roleInfo.persons, function (person) { return person.role == personRecord.role; });
 						
 						if (!personRecord.isUnassigned && (isNewRoleInfo || recalcExpectedHours))
 						{
@@ -2577,7 +2577,7 @@ else if( role.percentageCovered == 0 )
 						personRecord.actualHours = 0;
 						personRecord.expectedHours = personRecord.hoursPerWeek * 4; // 4 == 48 / 12
 						
-						var recalcExpectedHours = !_.some($scope.monthPersonHours2, function (roleInfo) { return roleInfo.role.resource2 == role._id; });
+						var recalcExpectedHours = !_.some(roleInfo.persons, function (person) { return person.role == personRecord.role; });
 						
 						if (!personRecord.isUnassigned && (isNewRoleInfo || recalcExpectedHours))
 						{
