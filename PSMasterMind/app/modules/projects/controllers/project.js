@@ -2541,7 +2541,9 @@ else if( role.percentageCovered == 0 )
 							return roleInfo.role.resource == role.type.resource;
 						});
 						
-						if (roleInfo == null)
+						var isNewRoleInfo = !roleInfo;
+						
+						if (isNewRoleInfo)
 						{
 							var hours = [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ];
 							
@@ -2549,7 +2551,7 @@ else if( role.percentageCovered == 0 )
 								hours.push({ totalHours: 0 })
 							
 							roleInfo = {
-								role: personRecord.isUnassigned ? { resource: personRecord.role } : { resource: role.type.resource },
+								role: personRecord.isUnassigned ? { resource: personRecord.role } : { resource: role.type.resource, resource2: role._id },
 								hours: hours,
 								actualHours: 0,
 								expectedHours: 0,
@@ -2568,12 +2570,17 @@ else if( role.percentageCovered == 0 )
 						personRecord.actualHours = 0;
 						personRecord.expectedHours = personRecord.hoursPerWeek * 4; // 4 == 48 / 12
 						
-						if (role.rate.type == "monthly")
-							roleInfo.expectedHours += 180;
-						else if (role.rate.type == "weekly")
-							roleInfo.expectedHours += role.rate.fullyUtilized ? 180 : role.rate.hoursPerWeek * 4; // 4 == 48 / 12
-						else if (role.rate.type == "hourly")
-							roleInfo.expectedHours += role.rate.fullyUtilized ? 180 : role.rate.hoursPerMth;
+						var recalcExpectedHours = !_.some($scope.monthPersonHours2, function (roleInfo) { return roleInfo.role.resource2 == role._id; });
+						
+						if (isNewRoleInfo || recalcExpectedHours)
+						{
+							if (role.rate.type == "monthly")
+								roleInfo.expectedHours += 180;
+							else if (role.rate.type == "weekly")
+								roleInfo.expectedHours += role.rate.fullyUtilized ? 180 : role.rate.hoursPerWeek * 4; // 4 == 48 / 12
+							else if (role.rate.type == "hourly")
+								roleInfo.expectedHours += role.rate.fullyUtilized ? 180 : role.rate.hoursPerMth;
+						}
 						
 						var isTodayAlreadyTracked = false;
 						
