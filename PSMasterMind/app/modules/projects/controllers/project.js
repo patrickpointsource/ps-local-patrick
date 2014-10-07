@@ -2232,6 +2232,9 @@ else if( role.percentageCovered == 0 )
                         if( !hoursStartEndDatesMap[ uniqPersons[k] ] ) {
                             r = $scope.getDefaultPersonRole(uniqPersons[k]);
                             
+                            if (!r)
+					        	continue;
+                            
                             hoursStartEndDatesMap[ uniqPersons[k] ] = {
                                 role: r.resource,
                                 hoursPerWeek: null,
@@ -2460,6 +2463,9 @@ else if( role.percentageCovered == 0 )
 					for (var k = 0; k < uniqPersons.length; k ++) {
 					    if( !hoursStartEndDatesMap[ uniqPersons[k] ] ) {
 					        r = $scope.getDefaultPersonRole(uniqPersons[k]);
+					        
+					        if (!r)
+					        	continue;
 					        
                             hoursStartEndDatesMap[ uniqPersons[k] ] = {
                                 role: r.resource,
