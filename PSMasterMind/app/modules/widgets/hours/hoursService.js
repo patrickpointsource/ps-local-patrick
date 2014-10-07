@@ -344,6 +344,15 @@ function( $q, Resources ) {
 		// fields:fields}).then(function(result){
 		Resources.query( 'assignments', query, fields ).then( function( result ) {
 			var projectAssignments = result.data;
+			if (!result.data) {	
+				projectAssignments = [];
+				for (var i = 0; i < result.length; i++) {
+					projectAssignments.push({
+						members : [result[i]],
+						project : result[i].project
+					});
+				}
+			}
 
 			// Fetch all hours entries between these two dates
 			var hoursQuery = {

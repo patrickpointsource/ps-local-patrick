@@ -7,15 +7,38 @@ var _ = require( 'underscore' );
 
 
 var listAssignments = function(q, callback) {
-    dataAccess.listAssignments(q, function(err, body){
-        if (err) {
-            console.log(err);
-            callback('error loading assignments', null);
-        } else {
-            //console.log(body);
-            callback(null, body);
-        }
-    });
+	// Get assignments by persons
+	if (q.members) {
+		var member = q.members.$elemMatch;
+		var person = member.person.resource;
+		var endDate;
+		var startDate;
+		if (member.startDate) {
+			var startDate = member.startDate.lt ? member.startDate.$lt : 
+				member.startDate.$lte? member.startDate.$lte : null;
+		}
+		if (member.$or) {
+			for( var i = 0; i < member.$or.length; i++ ) {
+				if (member.$or[i].endDate) {
+					endDate = member.$or[i].endDate.$gt ? member.$or[i].endDate.$gt : 
+						member.$or[i].endDate.$gte ? member.$or[i].endDate.$gte : null;
+				}
+			}
+		}
+		listAssignmentsByPersonResource( person, startDate, endDate, callback );
+	}
+	else {
+		// Get assignments by projects
+		dataAccess.listAssignments(q, function(err, body){
+			if (err) {
+				console.log(err);
+				callback('error loading assignments', null);
+			} else {
+				//console.log(body);
+				callback(null, body);
+			}
+		});
+	}
 };
 
 var getAssignment = function(id, callback) {
@@ -134,6 +157,11 @@ var listAssignmentsByPersonResource = function(personResource, startDateMoment, 
 			var myProjects = [ ];
 			var assignments = [ ];
 			var HOURS_PER_WEEK = 45;
+			
+			//Fixing date order (frontend use incorrect order in some cases for the old backend)
+			if (endDateMoment < startDateMoment) {
+				endDateMoment = [startDateMoment, startDateMoment = endDateMoment][0];
+			}
 			
 			for( var i = 0; i < result.length; i++ ) {
 
