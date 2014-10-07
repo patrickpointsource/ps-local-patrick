@@ -638,7 +638,11 @@ else if( role.percentageCovered == 0 )
 
 			} );
 		};
-
+        
+        if($scope.editDone && !$rootScope.formDirty) {
+          $scope.close();
+        }
+        
 		$scope.submitAttempted = true;
 
 		if( !$scope.validateFields( ) ) {
