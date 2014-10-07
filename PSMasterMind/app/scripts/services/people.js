@@ -617,7 +617,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 						primaryRole: 1,
 						thumbnail: 1
 					};
-					_this.query( pepInRolesQuery, pepInRolesFields).then( function( result ) {
+					resultAPI.query( pepInRolesQuery, pepInRolesFields).then( function( result ) {
 						deferred.resolve( result.members );
 					} );
 				}
@@ -640,16 +640,18 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		};
 	}
 
-	return {
-		query: query,
-		filter: filter,
-		get: get,
-		getActivePeople: getActivePeople,
-		getPeoplePerRole: getPeoplePerRole,
-		getMyPeople: getMyPeople,
-		getPeoleAssignments: getPeoleAssignments,
-		getPeopleCurrentAssignments: getPeopleCurrentAssignments,
-		getPerson: getPerson,
-		getPeopleGroupMapping: getPeopleGroupMapping
-	};
+    var resultAPI = {
+        query: query,
+        filter: filter,
+        get: get,
+        getActivePeople: getActivePeople,
+        getPeoplePerRole: getPeoplePerRole,
+        getMyPeople: getMyPeople,
+        getPeoleAssignments: getPeoleAssignments,
+        getPeopleCurrentAssignments: getPeopleCurrentAssignments,
+        getPerson: getPerson,
+        getPeopleGroupMapping: getPeopleGroupMapping
+    };
+    
+	return resultAPI;
 } ] );

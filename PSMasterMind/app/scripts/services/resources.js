@@ -290,32 +290,32 @@ function( $q, $timeout, Restangular ) {
 		if( !latestTime )
 			localStorage[ "LATEST_LOCAL_STORAGE_CHECK" ] = now.toString( );
 
-		if( !latestTime || ( ( now.getTime( ) - ( new Date( latestTime ) ).getTime( ) ) > 0 ) ) {
-		    var now = new Date();
-		    
-			var currentSize = unescape( encodeURIComponent( JSON.stringify( localStorage ) ) ).length;
+		//if( !latestTime || ( ( now.getTime( ) - ( new Date( latestTime ) ).getTime( ) ) > 0 ) ) {
+	    var now = new Date();
+	    
+		var currentSize = unescape( encodeURIComponent( JSON.stringify( localStorage ) ) ).length;
 
-			// if greater than 1mb
-			if( currentSize > 1024 * 1024 ) {
-				// clean half of cached properties
-				var countOfProps = (       _.map( localStorage, function( l ) {
-						return l
-					} ) ).length;
+		// if greater than 1mb
+		if( currentSize > 1024 * 1024 ) {
+			// clean half of cached properties
+			var countOfProps = (       _.map( localStorage, function( l ) {
+					return l
+				} ) ).length;
 
-				var i = 0, prop;
+			var i = 0, prop;
 
-				for( prop in localStorage ) {
-					delete localStorage[ prop ];
-					i += 1;
+			for( prop in localStorage ) {
+				delete localStorage[ prop ];
+				i += 1;
 
-					if( i > ( countOfProps / 2 ) )
-						break;
-				};
+				if( i > ( countOfProps / 2 ) )
+					break;
+			};
 
-			}
-			
-			console.log('storage: time:' + ((new Date()).getTime() - now.getTime()) + ':size:' + currentSize);
 		}
+			
+		//console.log('storage: time:' + ((new Date()).getTime() - now.getTime()) + ':size:' + currentSize);
+		//}
 	}
 
 	cleanLocalStorageIfNeeded( );

@@ -6849,13 +6849,7 @@ header .navbar .navbar-breadcrumb .breadcrumb > .active {
   width: 100%;
   position: relative;
 }
-.dashboard-widget.hours .panel-heading .inner-heading .start-end {
-  display: inline-block;
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  text-align: center;
-}
+
 .dashboard-widget.hours .dropdown-menu.ddProjectsTasksMenu {
   left: 6%;
   width: 24%;
