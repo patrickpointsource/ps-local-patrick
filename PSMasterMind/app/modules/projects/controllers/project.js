@@ -2311,12 +2311,10 @@ else if( role.percentageCovered == 0 )
 							return roleInfo.role.resource == role.type.resource;
 						});
 						
-						var isNewRoleInfo = !roleInfo;
-						
-						if (isNewRoleInfo)
+						if (!roleInfo)
 						{
 							roleInfo = {
-								role: personRecord.isUnassigned ? { resource: personRecord.role } : { resource: role.type.resource, resource2: role._id },
+								role: personRecord.isUnassigned ? { resource: personRecord.role } : { resource: role.type.resource },
 								hours: [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ],
 								actualHours: 0,
 								expectedHours: 0,
@@ -2328,14 +2326,12 @@ else if( role.percentageCovered == 0 )
 							$scope.weekPersonHours2.push(roleInfo);
 						}
 						
-						roleInfo.persons.push(personRecord);
-						
 						personRecord.actualHours = 0;
 						personRecord.expectedHours = personRecord.hoursPerWeek;
 						
-						var recalcExpectedHours = !_.some(roleInfo.persons, function (person) { return person.role == personRecord.role; });
+						var recalcExpectedHours = !_.some(roleInfo.persons, function (person) {	return person.role == personRecord.role; });
 						
-						if (!personRecord.isUnassigned && (isNewRoleInfo || recalcExpectedHours))
+						if (!personRecord.isUnassigned && recalcExpectedHours)
 						{
 							if (role.rate.type == "monthly")
 								roleInfo.expectedHours += 180;
@@ -2384,10 +2380,11 @@ else if( role.percentageCovered == 0 )
 							
 							remainingWorkdays++;
 						}
-							
 						
 						personRecord.projectedHours = personRecord.actualHours + personRecord.hoursPerWeek / 5 * remainingWorkdays;
 						personRecord.capacity = personRecord.expectedHours - personRecord.actualHours <= remainingWorkdays * 9;
+						
+						roleInfo.persons.push(personRecord);
 						
 						roleInfo.projectedHours += personRecord.projectedHours;
 						roleInfo.capacity = roleInfo.expectedHours - roleInfo.actualHours <= remainingWorkdays * 9;
@@ -2548,9 +2545,7 @@ else if( role.percentageCovered == 0 )
 							return roleInfo.role.resource == role.type.resource;
 						});
 						
-						var isNewRoleInfo = !roleInfo;
-						
-						if (isNewRoleInfo)
+						if (!roleInfo)
 						{
 							var hours = [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ];
 							
@@ -2572,14 +2567,12 @@ else if( role.percentageCovered == 0 )
 						
 						Resources.resolve( $scope.monthPersonHours[ i ].person );
 						
-						roleInfo.persons.push(personRecord);
-						
 						personRecord.actualHours = 0;
 						personRecord.expectedHours = personRecord.hoursPerWeek * 4; // 4 == 48 / 12
 						
 						var recalcExpectedHours = !_.some(roleInfo.persons, function (person) { return person.role == personRecord.role; });
 						
-						if (!personRecord.isUnassigned && (isNewRoleInfo || recalcExpectedHours))
+						if (!personRecord.isUnassigned && recalcExpectedHours)
 						{
 							if (role.rate.type == "monthly")
 								roleInfo.expectedHours += 180;
@@ -2628,6 +2621,8 @@ else if( role.percentageCovered == 0 )
 						
 						personRecord.projectedHours = personRecord.actualHours + personRecord.hoursPerWeek / 5 * remainingWorkdays;
 						personRecord.capacity = personRecord.expectedHours - personRecord.actualHours <= remainingWorkdays * 9;
+						
+						roleInfo.persons.push(personRecord);
 						
 						roleInfo.projectedHours += personRecord.projectedHours;
 						roleInfo.capacity = roleInfo.expectedHours - roleInfo.actualHours <= remainingWorkdays * 9;
