@@ -641,6 +641,7 @@ else if( role.percentageCovered == 0 )
         
         if($scope.editDone && !$rootScope.formDirty) {
           $scope.close();
+          return;
         }
         
 		$scope.submitAttempted = true;
