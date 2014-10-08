@@ -437,6 +437,23 @@ var checkRequest = function(vacation, manager, statuses, startDate, endDate, cal
 	callback (true);
 };
 
+/**
+ * Returns tasks filtered by name
+ * 
+ * @param {Object} name
+ * @param {Object} tasks
+ */
+
+var filterTasksByName = function(name, tasks) {
+	var result = [];	
+	_.each(tasks, function(task) {
+		if (task.name == name) {
+			result.push(task);
+		}
+	});
+	return result;
+};
+
 // people filter functions
 module.exports.filterActivePeopleByRoleIds = filterActivePeopleByRoleIds;
 module.exports.filterActivePeople = filterActivePeople;
@@ -459,3 +476,6 @@ module.exports.filterNotificationsByPerson = filterNotificationsByPerson;
 // vacations filter functions
 module.exports.filterVacationsByPerson = filterVacationsByPerson;
 module.exports.filterRequests = filterRequests;
+
+// tasks filter functions
+module.exports.filterTasksByName = filterTasksByName;

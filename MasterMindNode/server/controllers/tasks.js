@@ -13,6 +13,17 @@ module.exports.listTasks = function(q, callback) {
     });
 };
 
+module.exports.listTasksByName = function(name, callback) {
+    dataAccess.listTasksByName(name, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading tasks by ' + name, null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
 
 
 module.exports.insertTask = function(obj, callback) {

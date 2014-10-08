@@ -244,6 +244,35 @@ function( $q, Resources, HoursService ) {
   }
   
   this.getTaskForVacation = function(type) {
+	  if (window.useAdoptedServices) {
+		  return this.getTaskForVacationUsingGet(type);
+	  }
+	  else {
+		  return this.getTaskForVacationUsingQuery(type);
+	  }
+  };
+
+  this.getTaskForVacationUsingGet = function(type) {
+	    
+	  	var deferred = $q.defer();
+	    var taskName = (type == this.VACATION_TYPES.Appointment) ? "Appointment" : "Vacation";
+		
+	    Resources.get( "tasks/byname/" + taskName).then(function(result) {
+	        if(result.count == 0) {
+	            Resources.create('tasks', taskQuery).then(function() {
+	              this.getTaskForVacation(type).then(function(res) {
+	                deferred.resolve(res);
+	              });
+	            });
+	          } else {
+	            deferred.resolve(result.members[0]);
+	          }
+	    });
+	    return deferred.promise;
+
+  };
+  
+  this.getTaskForVacationUsingQuery = function(type) {
     var deferred = $q.defer();
     
     var taskQuery = { name: "Vacation" };

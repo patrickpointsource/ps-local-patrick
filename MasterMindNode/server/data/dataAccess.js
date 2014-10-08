@@ -570,6 +570,24 @@ var listTasks = function( q, callback ) {
 
 };
 
+var listTasksByName = function( name, callback ) {
+
+	var result = memoryCache.getObject( TASKS_KEY );
+	if( result ) {
+		console.log( "read " + TASKS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterTasksByName(name, result.data), "members", "tasks/" ) );
+	} else {
+		dbAccess.listTasks( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + TASKS_KEY + " to memory cache" );
+				memoryCache.putObject( TASKS_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterTasksByName(name, body.data), "members", "tasks/" ) );
+		} );
+	}
+
+};
+
 var listRoles = function( q, callback ) {
 
 	var result = memoryCache.getObject( ROLES_KEY );
