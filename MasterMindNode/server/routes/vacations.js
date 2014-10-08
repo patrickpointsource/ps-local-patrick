@@ -2,14 +2,15 @@
 
 var vacations = require( '../controllers/vacations' );
 var express = require( 'express' );
-var util = require( '../util/auth' );
+var util = require( '../util/util' );
+var auth = require( '../util/auth' );
 
 var router = express.Router( );
 
 var security = require( '../util/security' );
 var securityResources = require( '../util/securityResources' );
 
-router.get( '/', util.isAuthenticated, function( req, res ) {
+router.get( '/', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewMyVacations, function( allowed ) {
 		if( allowed ) {
 			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
@@ -25,7 +26,56 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
-router.post( '/', util.isAuthenticated, function( req, res ) {
+router.get( '/byperson/:person', auth.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewVacations, function( allowed ) {
+		if( allowed ) {
+			var person = req.params.person;
+			if (person) {
+				var personResource = util.getFullID(person, "people");
+				vacations.listVacationsByPerson( personResource, function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json( result );
+					}
+				} );
+			}
+			else {
+				res.json( 500, "No required person id attribute");
+			}
+		}
+	} );
+} );
+
+router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
+	security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewVacations, function(allowed){
+		if (allowed) 
+		{
+			var type = req.params.type;
+			if (type && type == "getRequests") {
+				
+				var manager = req.query.manager;
+				var statuses = req.query.status;
+				var startDate = req.query.startDate;
+				var endDate = req.query.endDate;
+				
+			    vacations.listRequests(manager, statuses, startDate, endDate, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else {
+	            res.json(500, "No required type attribute");
+			}
+		}
+	});
+}); 
+
+
+router.post( '/', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editVacations, function( allowed ) {
 		if( allowed ) {
 			vacations.insertVacation( req.body, function( err, result ) {
@@ -39,7 +89,7 @@ router.post( '/', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
-router.delete ( '/:id', util.isAuthenticated, function( req, res ) {
+router.delete ( '/:id', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editMyVacations, function( allowed ) {
 		if( allowed ) {
 			req.body._id = req.params.id;
@@ -54,7 +104,7 @@ router.delete ( '/:id', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
-router.get( '/:id', util.isAuthenticated, function( req, res ) {
+router.get( '/:id', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewVacations, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
@@ -69,7 +119,7 @@ router.get( '/:id', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
-router.put( '/:id', util.isAuthenticated, function( req, res ) {
+router.put( '/:id', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editMyVacations, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;

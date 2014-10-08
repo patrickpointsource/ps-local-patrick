@@ -8,7 +8,7 @@ var _ = require( 'underscore' );
 
 var listAssignments = function(q, callback) {
 	// Get assignments by persons
-	if (q.members) {
+	if (q && q.members) {
 		var member = q.members.$elemMatch;
 		var person = member.person.resource;
 		var endDate;

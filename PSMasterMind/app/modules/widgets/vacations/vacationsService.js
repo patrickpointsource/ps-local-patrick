@@ -20,7 +20,25 @@ function( $q, Resources, HoursService ) {
     Training: "Conference/Training"
   }
   
+  
   this.getVacations = function(profileId) {
+	  if (window.useAdoptedServices) {
+		  return this.getVacationsUsingGet(profileId);
+	  }
+	  else {
+		  return this.getVacationsUsingQuery(profileId);
+	  }
+  }
+
+  this.getVacationsUsingGet = function(profileId) {
+      var deferred = $q.defer( );
+	  Resources.get( "vacations/byperson/" + profileId).then(function(result) {
+		  deferred.resolve( result.members );
+	  });
+	  return deferred.promise;
+  };
+  
+  this.getVacationsUsingQuery = function(profileId) {
 	var deferred = $q.defer( );
 	
 	var query = {
@@ -46,7 +64,29 @@ function( $q, Resources, HoursService ) {
 	return deferred.promise;
   }
   
+  
+  
   this.getRequests = function(manager) {
+	  if (window.useAdoptedServices) {
+		  return this.getRequestsUsingGet(manager);
+	  }
+	  else {
+		  return this.getRequestsUsingQuery(manager);
+	  }
+  };
+  
+  this.getRequestsUsingGet = function(manager) {
+      var deferred = $q.defer( );
+	  var params = {};
+	  params.manager = manager.about;
+	  params.status = [this.STATUS.Pending, this.STATUS.Cancelled];
+	  Resources.get( "vacations/bytypes/getRequests", params).then(function(result) {
+		  deferred.resolve( result.members );
+	  });
+	  return deferred.promise;
+  };
+  
+  this.getRequestsUsingQuery = function(manager) {
     var deferred = $q.defer( );
     
     var query = { 
@@ -74,7 +114,30 @@ function( $q, Resources, HoursService ) {
     return deferred.promise;
   }
   
+
   this.getOtherRequestsThisPeriod = function(manager, request) {
+	  if (window.useAdoptedServices) {
+		  return this.getOtherRequestsThisPeriodUsingGet(manager, request);
+	  }
+	  else {
+		  return this.getOtherRequestsThisPeriodUsingQuery(manager, request);
+	  }
+  };
+
+  this.getOtherRequestsThisPeriodUsingGet = function(manager, request) {
+      var deferred = $q.defer( );
+	  var params = {};
+	  params.manager = manager.about;
+	  params.startDate = request.startDate;
+	  params.endDate = request.endDate;
+	  Resources.get( "vacations/bytypes/getRequests", params).then(function(result) {
+		  deferred.resolve( result.members );
+	  });
+	  return deferred.promise;
+
+  };
+  
+  this.getOtherRequestsThisPeriodUsingQuery = function(manager, request) {
     var deferred = $q.defer( );
     
     //var today = moment().format("YYYY-MM-DD");

@@ -358,12 +358,84 @@ var filterNotificationsByPerson = function(person, notifications) {
 	var result = [];	
 	_.each(notifications, function(notification) {
 		if (notification.person && notification.person.resource == person) {
-			result.push(project);
+			result.push(notification);
 		}
 	});
 	return result;
 };
 
+/**
+ * Returns vacations filtered by person
+ * 
+ * @param {Object} person
+ * @param {Object} vacations
+ */
+
+var filterVacationsByPerson = function(person, vacations) {
+	var result = [];	
+	_.each(vacations, function(vacation) {
+		if (vacation.person && vacation.person.resource == person) {
+			result.push(vacation);
+		}
+	});
+	return result;
+};
+
+/**
+ * Returns filtered requests
+ * 
+ * @param {Object} manager
+ * @param {Object} statuses
+ * @param {Object} startDate
+ * @param {Object} endDate
+ * @param {Object} vacations
+ */
+
+var filterRequests = function(manager, statuses, startDate, endDate, vacations) {
+	var result = [];	
+	_.each(vacations, function(vacation) {
+		checkRequest(vacation, manager, statuses, startDate, endDate, function (checked) {
+			if (checked) {
+				result.push (vacation);
+			}
+		});
+	});
+	return result;
+};
+
+var checkRequest = function(vacation, manager, statuses, startDate, endDate, callback) {
+
+	if (statuses) {
+		var checked = false;
+		if (!(statuses instanceof Array)) {
+			statuses = [statuses];
+		}
+
+		_.each(statuses, function(status) {
+			if (vacation.status == status) {
+				checked = true;
+			}
+		});
+		
+		if (!checked) {
+			callback (false);
+		}
+	}
+	
+	if (manager && ( !vacation.vacationManager || vacation.vacationManager.resource != manager ) ) {
+		callback (false);
+	}
+	
+	if (startDate && vacation.endDate > startDate) {
+		callback (false);
+	}
+	
+	if (endDate && vacation.startDate < endDate) {
+		callback (false);
+	}
+	
+	callback (true);
+};
 
 // people filter functions
 module.exports.filterActivePeopleByRoleIds = filterActivePeopleByRoleIds;
@@ -378,8 +450,12 @@ module.exports.filterProjectsBetweenDatesByTypesAndSponsors = filterProjectsBetw
 module.exports.filterProjectsByStatuses = filterProjectsByStatuses;
 module.exports.filterProjectsByResources = filterProjectsByResources;
 
-//assignments filter functions
+// assignments filter functions
 module.exports.filterAssignmentsByTypes = filterAssignmentsByTypes;
 
-//notifications filter functions
+// notifications filter functions
 module.exports.filterNotificationsByPerson = filterNotificationsByPerson;
+
+// vacations filter functions
+module.exports.filterVacationsByPerson = filterVacationsByPerson;
+module.exports.filterRequests = filterRequests;
