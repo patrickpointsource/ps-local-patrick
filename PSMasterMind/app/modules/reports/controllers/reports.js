@@ -404,8 +404,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				roles = groupRoleMapping[ prop ];
 
 				for( i = 0; roles && i < roles.length; i++ )
-					if( $scope.userRoles[                                                  roles[ i ].toLowerCase( ) ] )
-						$scope.userRoles[                                                  roles[ i ].toLowerCase( ) ].value = true;
+					if( $scope.userRoles[                                                   roles[ i ].toLowerCase( ) ] )
+						$scope.userRoles[                                                   roles[ i ].toLowerCase( ) ].value = true;
 			}
 		}
 
@@ -784,6 +784,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		var projectMapping = filtered.projectMapping;
 
 		var i, j;
+		//var hoursData = [];
+
 		// load assignments for filtered projects
 		AssignmentService.getAssignments( result ).then( function( assignments ) {
 			var persons = [ ];
@@ -835,20 +837,20 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			// find by person_resource person in {roles_mapping}-[persons]
 			var findPersonOnProject = function( rolesPersonMapping, resource ) {
 				var prop;
-				var result = null;
+				var res = null;
 
 				for( prop in rolesPersonMapping ) {
-					result = result || _.find( rolesPersonMapping[ prop ], function( p ) {
+					res = res || _.find( rolesPersonMapping[ prop ], function( p ) {
 						return p.resource == resource;
 					} );
 				}
 
-				return result;
+				return res;
 			};
 
 			if( hoursQ[ "$or" ].length > 0 )
-				HoursService.query( hoursQ ).then( function( result ) {
-					var reportHours = result.members;
+				HoursService.query( hoursQ ).then( function( hoursResult ) {
+					var reportHours = hoursResult.members;
 					var person;
 					var mappingEntry;
 
