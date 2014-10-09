@@ -22,9 +22,19 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	function query( query, fields ) {
 		var deferred = $q.defer( );
 
-		Resources.query( 'people', query, fields, function( result ) {
-			deferred.resolve( result );
-		} );
+		if (window.useAdoptedServices) {
+			Resources.get( 'people').then (function( result ) {
+				deferred.resolve( result );
+			} );
+			
+		}
+		else {
+			Resources.query( 'people', query, fields, function( result ) {
+				deferred.resolve( result );
+			} );
+		}
+
+		
 
 		return deferred.promise;
 	}

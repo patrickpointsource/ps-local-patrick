@@ -9,23 +9,48 @@ angular.module('Mastermind')
   function ($scope, $rootScope, $filter, Resources, $state, $stateParams, TasksService, $location, People, TableParams) {
     
     $scope.getGroups = function() {
-      Resources.query('securityroles', {}, {}, function(result) {
-        $scope.securityGroups = result.members;
-        
-        if($scope.securityGroups.length > 0) {
-          $scope.selectedGroup = $scope.securityGroups[0];
-        }
-        
-        Resources.query('userroles', {}, {}, function(userRoles) {
-          $scope.userRoles = userRoles.members;
-          
-          People.query( {}, {}).then( function(people) {
-            $scope.people = people.members;
-            
-            $scope.updateSelectedGroupMembers();
-          });
-        });
-      });
+
+	  if (window.useAdoptedServices) {
+		  
+	      Resources.get('securityRoles').then(function(result) {
+	          $scope.securityGroups = result.members;
+	          
+	          if($scope.securityGroups.length > 0) {
+	            $scope.selectedGroup = $scope.securityGroups[0];
+	          }
+	          
+	          Resources.get('userRoles').then(function(userRoles) {
+	            $scope.userRoles = userRoles.members;
+	            
+	            People.query( {}, {}).then( function(people) {
+	              $scope.people = people.members;
+	              
+	              $scope.updateSelectedGroupMembers();
+	            });
+	          });
+	      });
+		  
+	  } else {
+		  
+	      Resources.query('securityroles', {}, {}, function(result) {
+	          $scope.securityGroups = result.members;
+	          
+	          if($scope.securityGroups.length > 0) {
+	            $scope.selectedGroup = $scope.securityGroups[0];
+	          }
+	          
+	          Resources.query('userroles', {}, {}, function(userRoles) {
+	            $scope.userRoles = userRoles.members;
+	            
+	            People.query( {}, {}).then( function(people) {
+	              $scope.people = people.members;
+	              
+	              $scope.updateSelectedGroupMembers();
+	            });
+	          });
+	      });	  
+	  }
+    	
     };
     
     $scope.filterPeople = function() {
