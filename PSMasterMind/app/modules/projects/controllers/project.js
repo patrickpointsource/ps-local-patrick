@@ -1068,74 +1068,96 @@ else if( role.percentageCovered == 0 )
 
 			$scope.roleGroups = roleGroups;
 
-			//Query all people with a primary role
-			var roleQuery = {
-				'primaryRole.resource': {
-					$exists: 1
-				}
-			};
-			var fields = {
-				resource: 1,
-				name: 1,
-				familyName: 1,
-				givenName: 1,
-				primaryRole: 1,
-				thumbnail: 1,
-				isActive: 1
-			};
 			var sort = {
 				'primaryRole.resource': 1,
 				'familyName': 1,
 				'givenName': 1
 			};
-
-			//Resources.query( 'people', roleQuery, fields, function( peopleResults ) {
-	      Resources.get("people/bytypes/withPrimaryRole").then( function( peopleResults ) {
-				var people = peopleResults.members;
-				//Set up lists of people in roles
-				for( var i = 0; i < people.length; i++ ) {
-					var person = people[ i ];
-					var personsRole = roleGroups[ person.primaryRole.resource ];
-					person.title = ( personsRole ? ( personsRole.abbreviation + ': ' ) : '' ) + person.familyName + ', ' + person.givenName;
-
-					for( var j = 0; j < result.members.length; j++ ) {
-						var roleJ = result.members[ j ];
-
-						//Primary role match place it at the front of the array in sort order
-						if( roleJ.resource === person.primaryRole.resource ) {
-							//assignable list was empty add it to the front
-							if( roleGroups[ roleJ.resource ].assiganble.length === 0 ) {
-								roleGroups[roleJ.resource].assiganble[ 0 ] = person;
-							}
-							//First match just add it to the font
-							else if( roleGroups[roleJ.resource].assiganble[ 0 ].primaryRole.resource !== roleJ.resource ) {
-								roleGroups[ roleJ.resource ].assiganble.unshift( person );
-							}
-							//Add it after the last match
-							else {
-								var index = 0;
-								while( roleGroups[ roleJ.resource ].assiganble.length > index && roleGroups[roleJ.resource].assiganble[ index ].primaryRole.resource === roleJ.resource ) {
-									index++;
-								}
-								roleGroups[ roleJ.resource ].assiganble.splice( index, 0, _.extend({isPrimary: true}, person) );
-							}
-						}
-						//Not the primary role leave it in sort order
-						else {
-							roleGroups[ roleJ.resource ].assiganble.push( person );
-						}
+			
+		    if (window.useAdoptedServices) {
+				Resources.get("people/bytypes/withPrimaryRole").then(
+					function (peopleResults) {
+						$scope.mapRoleGroups(roleGroups, result, peopleResults, rolesCb);
 					}
-				}
-
-				//Set a map of role types to members
-				$scope.roleGroups = roleGroups;
-
-				if( rolesCb )
-					rolesCb( );
-			}, sort );
-		} );
+					, sort
+				);
+		    }
+		    else {
+				//Query all people with a primary role
+				var roleQuery = {
+					'primaryRole.resource': {
+						$exists: 1
+					}
+				};
+				var fields = {
+					resource: 1,
+					name: 1,
+					familyName: 1,
+					givenName: 1,
+					primaryRole: 1,
+					thumbnail: 1,
+					isActive: 1
+				};
+				
+				Resources.get(roleQuery, fields).then(
+					function (peopleResults) {
+						$scope.mapRoleGroups(roleGroups, result, peopleResults, rolesCb);
+					}
+					, sort
+				);
+		    }
+		});
 	};
 
+	
+	
+	$scope.mapRoleGroups = function(roleGroups, roleResults, peopleResults, rolesCb ) {
+		
+		var people = peopleResults.members;
+		//Set up lists of people in roles
+		for( var i = 0; i < people.length; i++ ) {
+			var person = people[ i ];
+			var personsRole = roleGroups[ person.primaryRole.resource ];
+			person.title = ( personsRole ? ( personsRole.abbreviation + ': ' ) : '' ) + person.familyName + ', ' + person.givenName;
+
+			for( var j = 0; j < roleResults.members.length; j++ ) {
+				var roleJ = roleResults.members[ j ];
+
+				//Primary role match place it at the front of the array in sort order
+				if( roleJ.resource === person.primaryRole.resource ) {
+					//assignable list was empty add it to the front
+					if( roleGroups[ roleJ.resource ].assiganble.length === 0 ) {
+						roleGroups[roleJ.resource].assiganble[ 0 ] = person;
+					}
+					//First match just add it to the font
+					else if( roleGroups[roleJ.resource].assiganble[ 0 ].primaryRole.resource !== roleJ.resource ) {
+						roleGroups[ roleJ.resource ].assiganble.unshift( person );
+					}
+					//Add it after the last match
+					else {
+						var index = 0;
+						while( roleGroups[ roleJ.resource ].assiganble.length > index && roleGroups[roleJ.resource].assiganble[ index ].primaryRole.resource === roleJ.resource ) {
+							index++;
+						}
+						roleGroups[ roleJ.resource ].assiganble.splice( index, 0, _.extend({isPrimary: true}, person) );
+					}
+				}
+				//Not the primary role leave it in sort order
+				else {
+					roleGroups[ roleJ.resource ].assiganble.push( person );
+				}
+			}
+		}
+
+		//Set a map of role types to members
+		$scope.roleGroups = roleGroups;
+
+		if( rolesCb )
+			rolesCb( );
+
+	}
+	
+	
     $scope.getDefaultPersonRole = function(resource) {
         var result = null;
         var p;
