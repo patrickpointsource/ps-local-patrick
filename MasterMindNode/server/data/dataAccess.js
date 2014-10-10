@@ -356,6 +356,24 @@ var listActivePeople = function(callback ) {
 
 };
 
+var listPeopleWithPrimaryRole = function(callback ) {
+
+	var result = memoryCache.getObject( PEOPLE_KEY );
+	if( result ) {
+		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterPeopleWithPrimaryRole(result.data), "members", "people/" ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterPeopleWithPrimaryRole(body.data), "members", "people/" ) );
+		} );
+	}
+
+};
+
 
 var listPeopleByPerson = function(person, callback ) {
 	
@@ -1042,6 +1060,7 @@ module.exports.listPeople = listPeople;
 module.exports.listPeopleByPerson = listPeopleByPerson;
 module.exports.listActivePeopleByRoleIds = listActivePeopleByRoleIds;
 module.exports.listActivePeople = listActivePeople;
+module.exports.listPeopleWithPrimaryRole = listPeopleWithPrimaryRole;
 module.exports.listActivePeopleByAssignments = listActivePeopleByAssignments;
 module.exports.listAssignments = listAssignments;
 module.exports.listCurrentAssigments = listCurrentAssigments;

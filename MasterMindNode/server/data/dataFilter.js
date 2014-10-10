@@ -65,6 +65,24 @@ var filterActivePeople = function(people) {
 
 
 /**
+ * Returns people people with primary role
+ * 
+ * @param {Object} roleResources
+ * @param {Object} callback
+ */
+
+var filterPeopleWithPrimaryRole = function(people) {
+	var result = [];
+	_.each(people, function(person) {
+		if (person.primaryRole && person.primaryRole.resource) {
+			result.push(person);
+		}
+	});
+	return result;
+};
+
+
+/**
  * Returns projects filtered by executive sponsor roles
  * 
  * @param {Object} roleResources
@@ -457,6 +475,7 @@ var filterTasksByName = function(name, tasks) {
 // people filter functions
 module.exports.filterActivePeopleByRoleIds = filterActivePeopleByRoleIds;
 module.exports.filterActivePeople = filterActivePeople;
+module.exports.filterPeopleWithPrimaryRole = filterPeopleWithPrimaryRole;
 
 // projects filter functions
 module.exports.filterProjectsByExecutiveSponsor = filterProjectsByExecutiveSponsor;

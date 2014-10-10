@@ -51,6 +51,17 @@ module.exports.listActivePeople = function(callback) {
     });
 };
 
+module.exports.listPeopleWithPrimaryRole = function(callback) {
+    dataAccess.listPeopleWithPrimaryRole(function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading people', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
 
 module.exports.listActivePeopleByAssignments = function(callback) {
     dataAccess.listActivePeopleByAssignments(function(err, body){

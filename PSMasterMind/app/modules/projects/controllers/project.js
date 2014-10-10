@@ -1090,7 +1090,7 @@ else if( role.percentageCovered == 0 )
 			};
 
 			//Resources.query( 'people', roleQuery, fields, function( peopleResults ) {
-	      People.query(roleQuery, fields).then( function( peopleResults ) {
+	      Resources.get("people/bytypes/withPrimaryRole").then( function( peopleResults ) {
 				var people = peopleResults.members;
 				//Set up lists of people in roles
 				for( var i = 0; i < people.length; i++ ) {
