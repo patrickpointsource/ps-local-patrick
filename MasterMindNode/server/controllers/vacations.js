@@ -24,6 +24,17 @@ module.exports.listVacationsByPerson = function(personResource, callback) {
     });
 };
 
+module.exports.listVacationsByPeriod = function(people, startDate, endDate, callback) {
+    dataAccess.listVacationsByPeriod(people, startDate, endDate, function(err, body){
+        if (err) {
+            console.log(err);
+            callback("error loading vacations by period", null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
 module.exports.listRequests = function(manager, statuses, startDate, endDate, callback) {
     dataAccess.listRequests(manager, statuses, startDate, endDate, function(err, body){
         if (err) {

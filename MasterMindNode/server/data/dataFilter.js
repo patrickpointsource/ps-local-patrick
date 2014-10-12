@@ -81,6 +81,47 @@ var filterPeopleWithPrimaryRole = function(people) {
 	return result;
 };
 
+/**
+ * Returns people filtered by groups
+ * 
+ * @param {Object} groups
+ * @param {Object} people
+ */
+
+var filterPeopleByGroups = function(groups, people) {
+	var result = [];
+	_.each(people, function(person) {
+		checkPerson(person, groups, function (checked){
+			if (checked) {
+				result.push(person);
+			}
+		});
+	});
+	return result;
+};
+
+
+var checkPerson = function(person, groups, callback) {
+
+	if (groups) {
+		var checked = false;
+		if (!(groups instanceof Array)) {
+			groups = [groups];
+		}
+
+		_.each(groups, function(initialGroup) {
+			if ( _.contains(person.groups, initialGroup) ) {
+				callback (true);
+			}
+		});
+		
+		callback (false);
+	}
+	
+	callback (true);
+
+};
+
 
 /**
  * Returns projects filtered by executive sponsor roles
@@ -400,6 +441,57 @@ var filterVacationsByPerson = function(person, vacations) {
 };
 
 /**
+ * Returns filtered vacations by people and period
+ * 
+ * @param {Object} people
+ * @param {Object} startDate
+ * @param {Object} endDate
+ * @param {Object} vacations
+ */
+
+var filterVacationsByPeriod = function(people, startDate, endDate, vacations) {
+	var result = [];	
+	_.each(vacations, function(vacation) {
+		checkVacation(vacation, people, startDate, endDate, function (checked) {
+			if (checked) {
+				result.push (vacation);
+			}
+		});
+	});
+	return result;
+};
+
+var checkVacation = function(vacation, people, startDate, endDate, callback) {
+
+	if (people) {
+		var checked = false;
+		if (!(people instanceof Array)) {
+			people = [people];
+		}
+
+		_.each(people, function(person) {
+			if (vacation.person && vacation.person.resource == person) {
+				checked = true;
+			}
+		});
+		
+		if (!checked) {
+			callback (false);
+		}
+	}
+	
+	if (startDate && vacation.endDate > startDate) {
+		callback (false);
+	}
+	
+	if (endDate && vacation.startDate < endDate) {
+		callback (false);
+	}
+	
+	callback (true);
+};
+
+/**
  * Returns filtered requests
  * 
  * @param {Object} manager
@@ -476,6 +568,7 @@ var filterTasksByName = function(name, tasks) {
 module.exports.filterActivePeopleByRoleIds = filterActivePeopleByRoleIds;
 module.exports.filterActivePeople = filterActivePeople;
 module.exports.filterPeopleWithPrimaryRole = filterPeopleWithPrimaryRole;
+module.exports.filterPeopleByGroups = filterPeopleByGroups;
 
 // projects filter functions
 module.exports.filterProjectsByExecutiveSponsor = filterProjectsByExecutiveSponsor;
@@ -494,6 +587,7 @@ module.exports.filterNotificationsByPerson = filterNotificationsByPerson;
 
 // vacations filter functions
 module.exports.filterVacationsByPerson = filterVacationsByPerson;
+module.exports.filterVacationsByPeriod = filterVacationsByPeriod;
 module.exports.filterRequests = filterRequests;
 
 // tasks filter functions

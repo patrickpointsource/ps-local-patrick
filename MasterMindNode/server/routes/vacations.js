@@ -66,6 +66,21 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 			            res.json(result);
 			        }            
 			    });
+			    
+			} else if (type && type == "byPeriod") {
+				
+				var people = req.query.person;
+				var startDate = req.query.startDate;
+				var endDate = req.query.endDate;
+				
+			    vacations.listVacationsByPeriod(people, startDate, endDate, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			    
 			}
 			else {
 	            res.json(500, "No required type attribute");

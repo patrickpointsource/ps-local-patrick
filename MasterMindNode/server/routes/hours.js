@@ -2,14 +2,14 @@
 
 var hours = require( '../controllers/hours' );
 var express = require( 'express' );
-var util = require( '../util/auth' );
+var auth = require( '../util/auth' );
 
 var security = require( '../util/security' );
 var securityResources = require( '../util/securityResources' );
 
 var router = express.Router( );
 
-router.get( '/', util.isAuthenticated, function( req, res ) {
+router.get( '/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
 		if( allowed ) {
@@ -30,7 +30,7 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/persondates', util.isAuthenticated, function( req, res ) {
+router.get( '/persondates', auth.isAuthenticated, function( req, res ) {
 
     security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
         if( allowed ) {
@@ -55,7 +55,7 @@ router.get( '/persondates', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/projectdates', util.isAuthenticated, function( req, res ) {
+router.get( '/projectdates', auth.isAuthenticated, function( req, res ) {
 
     security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
         if( allowed ) {
@@ -80,7 +80,7 @@ router.get( '/projectdates', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/person', util.isAuthenticated, function( req, res ) {
+router.get( '/person', auth.isAuthenticated, function( req, res ) {
 
     security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
         if( allowed ) {
@@ -104,7 +104,7 @@ router.get( '/person', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.get( '/projects', util.isAuthenticated, function( req, res ) {
+router.get( '/projects', auth.isAuthenticated, function( req, res ) {
 
     security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
         if( allowed ) {
@@ -128,7 +128,7 @@ router.get( '/projects', util.isAuthenticated, function( req, res ) {
 } );
 
 
-router.post( '/', util.isAuthenticated, function( req, res ) {
+router.post( '/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
 		console.log( '\r\npost:hours:\r\n' );
@@ -147,7 +147,7 @@ router.post( '/', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.put( '/:id', util.isAuthenticated, function( req, res ) {
+router.put( '/:id', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
 		console.log( '\r\nput:hours:\r\n' );
@@ -167,7 +167,7 @@ router.put( '/:id', util.isAuthenticated, function( req, res ) {
 
 } );
 
-router.delete( '/:id', util.isAuthenticated, function( req, res ) {
+router.delete( '/:id', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.deleteMyHours, function( allowed ) {
 		console.log( '\r\ndelete:hours:\r\n' );

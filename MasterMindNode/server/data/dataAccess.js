@@ -374,6 +374,24 @@ var listPeopleWithPrimaryRole = function(callback ) {
 
 };
 
+var listPeopleByGroups = function(groups, callback ) {
+
+	var result = memoryCache.getObject( PEOPLE_KEY );
+	if( result ) {
+		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterPeopleByGroups(groups, result.data), "members", "people/" ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterPeopleByGroups(groups, body.data), "members", "people/" ) );
+		} );
+	}
+
+};
+
 
 var listPeopleByPerson = function(person, callback ) {
 	
@@ -709,6 +727,25 @@ var listVacationsByPerson = function( personResource, callback ) {
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
 			callback( null, prepareRecords( dataFilter.filterVacationsByPerson(personResource, body.data), "members", "vacations/" ) );
+		} );
+	}
+
+};
+
+
+var listVacationsByPeriod = function( people, startDate, endDate, callback ) {
+
+	var result = memoryCache.getObject( VACATIONS_KEY );
+	if( result ) {
+		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterVacationsByPeriod(people, startDate, endDate, result.data), "members", "vacations/" ) );
+	} else {
+		dbAccess.listVacations( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				memoryCache.putObject( VACATIONS_KEY, body );
+			}
+			callback( null, prepareRecords( dataFilter.filterVacationsByPeriod(people, startDate, endDate, body.data), "members", "vacations/" ) );
 		} );
 	}
 
@@ -1061,6 +1098,7 @@ module.exports.listPeopleByPerson = listPeopleByPerson;
 module.exports.listActivePeopleByRoleIds = listActivePeopleByRoleIds;
 module.exports.listActivePeople = listActivePeople;
 module.exports.listPeopleWithPrimaryRole = listPeopleWithPrimaryRole;
+module.exports.listPeopleByGroups = listPeopleByGroups;
 module.exports.listActivePeopleByAssignments = listActivePeopleByAssignments;
 module.exports.listAssignments = listAssignments;
 module.exports.listCurrentAssigments = listCurrentAssigments;
@@ -1082,6 +1120,7 @@ module.exports.listSkills = listSkills;
 module.exports.listConfiguration = listConfiguration;
 module.exports.listVacations = listVacations;
 module.exports.listVacationsByPerson = listVacationsByPerson;
+module.exports.listVacationsByPeriod = listVacationsByPeriod;
 module.exports.listRequests = listRequests;
 module.exports.listSecurityRoles = listSecurityRoles;
 module.exports.listUserRoles = listUserRoles;
