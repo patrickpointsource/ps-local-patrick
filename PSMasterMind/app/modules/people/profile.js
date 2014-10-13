@@ -63,44 +63,58 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	 */
 	$scope.editMode = $state.params.edit ? $state.params.edit : false;
 
-	/**
-	 * Populate the form with fetch profile information
-	 */
-	$scope.setProfile = function( person ) {
-		$scope.profile = person;
-		
-		var managersQuery = {
-          'groups': 'Management'
-        };
-
-        $scope.managers = [ ];
-
-        //Resources.query( 'people', managersQuery, {
-        People.query(managersQuery, {
-          _id: 1,
-          resource: 1,
-          name: 1
-        }).then( function( result ) {
-          for( var i = 0; i < result.members.length; i++ ) {
+	
+	$scope.populateManagers = function( result ) {
+		for( var i = 0; i < result.members.length; i++ ) {
             var manager = result.members[ i ];
             $scope.managers.push( {
                 name: manager.name,
                 resource: manager.resource
             } );
-          }
+        }
 
-          $scope.managers = _.sortBy( $scope.managers, function( manager ) {
-            return manager.name;
-          } );
+        $scope.managers = _.sortBy( $scope.managers, function( manager ) {
+        	return manager.name;
+        } );
           
-          if( $scope.profile.manager ) {
-            $scope.profile.manager = _.findWhere( $scope.managers, {
+        if( $scope.profile.manager ) {
+        	$scope.profile.manager = _.findWhere( $scope.managers, {
                 resource: $scope.profile.manager.resource
             } );
             $scope.$emit( 'profile:loaded' );
-          } else
+        } else
             $scope.$emit( 'profile:loaded' );
-      } );
+	}
+	
+	/**
+	 * Populate the form with fetch profile information
+	 */
+	$scope.setProfile = function( person ) {
+		$scope.profile = person;
+		$scope.managers = [ ];
+
+		if (window.useAdoptedServices) {
+			var params = {};
+			params.group = "Management";
+			Resources.get("people/bytypes/byGroups", params).then(
+				function (result) {
+					$scope.populateManagers(result);
+				}
+			);
+		}
+		else {
+			var managersQuery = {
+				'groups': 'Management'
+			};
+
+			People.query(managersQuery, { _id: 1, resource: 1, name: 1} ).then( 
+				function( result ) {
+					$scope.populateManagers(result);
+				} 
+			);
+		}
+		
+		
 
 		
 
