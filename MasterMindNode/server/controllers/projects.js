@@ -283,13 +283,21 @@ var insertProject = function(obj, callback) {
 					obj.modified.name = modifiedName;
 				}
 				
+				var isNew = !obj._id;
+				
 				// insert project
 			    dataAccess.insertItem(obj._id, obj, dataAccess.PROJECTS_KEY, function(err, body){
 			        if (err) {
 			            console.log(err);
 			            callback('error insert project', null);
 			        } else {
-			            callback(null, body);
+			        	if (!isNew)
+			        		callback(null, body);
+			        	else {
+			        		obj._id = body.id;
+			        		
+			        		callback(null, _.extend(obj, body));
+			        	}
 			        }
 			    });
 				
