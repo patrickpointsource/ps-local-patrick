@@ -117,8 +117,9 @@ var checkPerson = function(person, groups, callback) {
 		
 		callback (false);
 	}
-	
-	callback (true);
+	else {
+		callback (true);
+	}
 
 };
 
