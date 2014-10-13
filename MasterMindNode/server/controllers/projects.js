@@ -4,6 +4,7 @@ var dataAccess = require('../data/dataAccess');
 var people = require('./people.js');
 var util = require('../util/util');
 var _ = require( 'underscore' );
+var validation = require( '../data/validation.js' );
 
 var listProjects = function(query, callback) {
     dataAccess.listProjects(query, function(err, body){
@@ -212,6 +213,13 @@ var getRole = function(projectId, roleId, callback) {
 };
 
 var insertAssignment = function(projectId, obj, callback) {
+    
+    var validationMessages = validation.validate(obj, dataAccess.ASSIGNMENTS_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
     dataAccess.insertItem(obj._id, obj, dataAccess.ASSIGNMENTS_KEY, function(err, body){
         if (err) {
             console.log(err);
@@ -247,6 +255,12 @@ var deleteProjectLink = function(projectId, linkId, obj, callback) {
 
 
 var insertProject = function(obj, callback) {
+	
+	var validationMessages = validation.validate(obj, dataAccess.PROJECTS_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
 	
 	// get name for executiveSponsor person
 	people.getNameByResource(obj.executiveSponsor.resource, function (err, executiveSponsorName) {		
@@ -285,6 +299,12 @@ var insertProject = function(obj, callback) {
 };
 
 var insertProjectLink = function(projectId, linkId, obj, callback) {
+    var validationMessages = validation.validate(obj, dataAccess.LINKS_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
 	obj._id = linkId;
     dataAccess.insertItem(obj._id, obj, dataAccess.LINKS_KEY, function(err, body){
         if (err) {

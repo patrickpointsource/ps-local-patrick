@@ -3,6 +3,7 @@
 var dataAccess = require('../data/dataAccess');
 var util = require('../util/util');
 var _ = require('underscore');
+var validation = require( '../data/validation.js' );
 
 module.exports.listRoles = function(q, callback) {
     dataAccess.listRoles(q, function(err, body){
@@ -17,6 +18,13 @@ module.exports.listRoles = function(q, callback) {
 };
 
 module.exports.insertRole = function(obj, callback) {
+    
+    var validationMessages = validation.validate(obj, dataAccess.ROLES_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
     dataAccess.insertItem(obj._id, obj, dataAccess.ROLES_KEY, function(err, body){
         if (err) {
             console.log(err);

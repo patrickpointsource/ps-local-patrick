@@ -4,6 +4,8 @@ var dataAccess = require('../data/dataAccess');
 
 var emailSender = require('../util/emailSender');
 
+var validation = require( '../data/validation.js' );
+
 module.exports.listNotifications = function(q, callback) {
     dataAccess.listNotifications(q, function(err, body){
         if (err) {
@@ -27,6 +29,13 @@ module.exports.listNotificationsByPerson = function(person, callback) {
 };
 
 module.exports.insertNotification = function(obj, callback) {
+    
+    var validationMessages = validation.validate(obj, dataAccess.NOTIFICATIONS_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
     dataAccess.insertItem(obj._id, obj, dataAccess.NOTIFICATIONS_KEY, function(err, body){
         if (err) {
             console.log(err);

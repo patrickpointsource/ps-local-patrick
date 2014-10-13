@@ -4,7 +4,7 @@ var dataAccess = require('../data/dataAccess');
 var people = require('./people.js');
 var projects = require('./projects.js');
 var _ = require('underscore');
-
+var validation = require( '../data/validation.js' );
 
 module.exports.listHours = function(q, callback) {
     dataAccess.listHours(q, function(err, body){
@@ -62,7 +62,14 @@ module.exports.listHoursByProjects = function(projects, callback) {
 };
 
 module.exports.insertHours = function(obj, callback) {
-    obj.form = "Hours";
+    
+    var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
+    obj.form = dataAccess.HOURS_KEY;
     console.log('create hours entry:' + JSON.stringify(obj));
     
     // get name for person
@@ -103,6 +110,13 @@ module.exports.insertHours = function(obj, callback) {
 };
 
 module.exports.updateHours = function(id, obj, callback) {
+    
+    var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
     console.log('update hours entry:' + JSON.stringify(obj));
     
     dataAccess.updateItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
