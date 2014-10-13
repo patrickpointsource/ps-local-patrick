@@ -8,11 +8,12 @@ var _ = require( 'underscore' );
 
 var listAssignments = function(q, callback) {
 	// Get assignments by persons
-	if (q && q.members) {
+	if (q && q.members && q.members.$elemMatch && q.members.$elemMatch.person) {
 		var member = q.members.$elemMatch;
 		var person = member.person.resource;
 		var endDate;
 		var startDate;
+		
 		if (member.startDate) {
 			var startDate = member.startDate.lt ? member.startDate.$lt : 
 				member.startDate.$lte? member.startDate.$lte : null;
