@@ -142,11 +142,12 @@ function( $q, $timeout, Restangular ) {
 	 */
 	function fetch( resource, params ) {
 		var route = '';
-		var id = resource;
-		var lastIndex = resource.lastIndexOf( '/' );
+		var resourceURL = resource.about ? resource.about : resource;
+		var id = resourceURL;
+		var lastIndex = resourceURL.lastIndexOf( '/' );
 		if( lastIndex !== -1 ) {
-			route = resource.substr( 0, lastIndex );
-			id = resource.substr( lastIndex + 1 );
+			route = resourceURL.substr( 0, lastIndex );
+			id = resourceURL.substr( lastIndex + 1 );
 		}
 
 		var Resource = ResourcesRestangular.one( route, id, params );

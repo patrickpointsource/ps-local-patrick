@@ -1087,7 +1087,8 @@ else if( role.percentageCovered == 0 )
 				var roleQuery = {
 					'primaryRole.resource': {
 						$exists: 1
-					}
+					},
+					'about': "people/bytypes/withPrimaryRole"
 				};
 				var fields = {
 					resource: 1,
@@ -2159,8 +2160,8 @@ else if( role.percentageCovered == 0 )
 				console.warn( 'Roles has and unknown type: ' + JSON.stringify( role ) );
 			} else {
 				var type = rate.type;
-				var startDate = new Date( role.startDate );
-				var endDate = new Date( role.endDate );
+				var startDate = role.startDate ? new Date( role.startDate ) : null;
+				var endDate = role.endDate ? new Date( role.endDate ) : null;
 				var amount;
 
 				if( startDate && endDate ) {
