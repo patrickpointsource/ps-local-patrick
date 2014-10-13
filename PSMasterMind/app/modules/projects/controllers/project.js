@@ -921,8 +921,8 @@ else if( role.percentageCovered == 0 )
 	 * handle it by updating the supplied role's assignments in our project.
 	 */
 	$scope.$on( 'roles:assignments:change', function( event, index, role ) {
+		$scope.refreshProjectAssignments( );
 		$scope.updateHoursPersons( );
-
 	} );
 
 	/**
@@ -2070,79 +2070,8 @@ else if( role.percentageCovered == 0 )
 			}
 		} );
 
-		if( !editMode ) {
-			$scope.initHours( );
-		}
-
-		/**
-		 * Calculate total loaded cost in plan
-		 */
-		var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
-		var roles = $scope.project.roles;
-		var runningTotal = 0;
 		
-		$scope.projectPeopleResources = [ ];
-		for( var i = 0; roles && i < roles.length; i++ ) {
-			var role = roles[ i ];
-			
-			for(var j = 0; j < role.assignees.length; j++) {
-			  $scope.projectPeopleResources.push(role.assignees[j].person);
-			}
-			
-			var roleType = $scope.roleGroups[ role.type.resource ];
-			var rate = role.rate;
-			var numMonths;
-			var roleTotal;
-			if( roleType === null ) {
-				console.warn( 'Roles has and unknown type: ' + JSON.stringify( role ) );
-			} else {
-				var type = rate.type;
-				var startDate = new Date( role.startDate );
-				var endDate = new Date( role.endDate );
-				var amount;
 
-				if( startDate && endDate ) {
-					//Hourly Charge rate
-					if( type && type === 'monthly' ) {
-						amount = role.rate.loadedAmount;
-						if( amount === null ) {
-							console.warn( 'Role Type has no monthly loaded rate: ' + roleType.title );
-						} else {
-							numMonths = $scope.monthDif( startDate, endDate );
-							roleTotal = numMonths * amount;
-							runningTotal += roleTotal;
-						}
-					}
-					//Weekly Charge rate
-					else if( type && type === 'weekly' ) {
-						amount = role.rate.loadedAmount;
-						if( amount === null ) {
-							console.warn( 'Role Type has no hourly loaded rate: ' + roleType.title );
-						} else {
-							var numWeeks = $scope.weeksDif( startDate, endDate );
-							var hoursPerWeek = rate.fullyUtilized ? HOURS_PER_WEEK : rate.hoursPerWeek;
-							roleTotal = numWeeks * hoursPerWeek * amount;
-							runningTotal += roleTotal;
-						}
-					}
-					//Hourly Charge rate
-					else if( type && type === 'hourly' ) {
-						amount = role.rate.loadedAmount;
-						if( amount === null ) {
-							console.warn( 'Role Type has no hourly loaded rate: ' + roleType.title );
-						} else {
-							numMonths = $scope.monthDif( startDate, endDate );
-							var hoursPerMonth = rate.fullyUtilized ? 180 : rate.hoursPerMth;
-							roleTotal = numMonths * hoursPerMonth * amount;
-							runningTotal += roleTotal;
-						}
-					}
-				}
-			}
-			$scope.servicesLoadedTotal = runningTotal;
-		}
-        
-        $scope.initVacationHours(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
 		// sort roles inside project
 		var today = new Date( );
 
@@ -2208,6 +2137,77 @@ else if( role.percentageCovered == 0 )
 
 			return 0;
 		} );
+	};
+	
+	$scope.refreshProjectAssignments = function(){
+		$scope.projectPeopleResources = [ ];
+		var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
+		var roles = $scope.project.roles;
+		var runningTotal = 0;
+		for( var i = 0; roles && i < roles.length; i++ ) {
+			var role = roles[ i ];
+			
+			for(var j = 0; j < role.assignees.length; j++) {
+			  $scope.projectPeopleResources.push(role.assignees[j].person);
+			}
+			
+			var roleType = $scope.roleGroups[ role.type.resource ];
+			var rate = role.rate;
+			var numMonths;
+			var roleTotal;
+			if( roleType === null ) {
+				console.warn( 'Roles has and unknown type: ' + JSON.stringify( role ) );
+			} else {
+				var type = rate.type;
+				var startDate = new Date( role.startDate );
+				var endDate = new Date( role.endDate );
+				var amount;
+
+				if( startDate && endDate ) {
+					//Hourly Charge rate
+					if( type && type === 'monthly' ) {
+						amount = role.rate.loadedAmount;
+						if( amount === null ) {
+							console.warn( 'Role Type has no monthly loaded rate: ' + roleType.title );
+						} else {
+							numMonths = $scope.monthDif( startDate, endDate );
+							roleTotal = numMonths * amount;
+							runningTotal += roleTotal;
+						}
+					}
+					//Weekly Charge rate
+					else if( type && type === 'weekly' ) {
+						amount = role.rate.loadedAmount;
+						if( amount === null ) {
+							console.warn( 'Role Type has no hourly loaded rate: ' + roleType.title );
+						} else {
+							var numWeeks = $scope.weeksDif( startDate, endDate );
+							var hoursPerWeek = rate.fullyUtilized ? HOURS_PER_WEEK : rate.hoursPerWeek;
+							roleTotal = numWeeks * hoursPerWeek * amount;
+							runningTotal += roleTotal;
+						}
+					}
+					//Hourly Charge rate
+					else if( type && type === 'hourly' ) {
+						amount = role.rate.loadedAmount;
+						if( amount === null ) {
+							console.warn( 'Role Type has no hourly loaded rate: ' + roleType.title );
+						} else {
+							numMonths = $scope.monthDif( startDate, endDate );
+							var hoursPerMonth = rate.fullyUtilized ? 180 : rate.hoursPerMth;
+							roleTotal = numMonths * hoursPerMonth * amount;
+							runningTotal += roleTotal;
+						}
+					}
+				}
+			}
+			$scope.servicesLoadedTotal = runningTotal;
+		}
+		
+		if( !editMode ) {
+			$scope.initHours( );
+		}
+		$scope.initVacationHours(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
 	};
 
 	$scope.billingFrequencyOptions = [ {
@@ -2596,6 +2596,10 @@ else if( role.percentageCovered == 0 )
 	
 	$scope.calcMonthHours = function( result ) {
 	
+		var selectedDate = $scope.moment().month($scope.selectedMonthIndex);
+		var daysInMonth = selectedDate.daysInMonth();
+		var now = new Date();
+		
 		$scope.monthPersonHours = [ ];
 		$scope.weekHours = [ ];
 		$scope.monthPersonHours2 = [];
@@ -2704,7 +2708,7 @@ else if( role.percentageCovered == 0 )
 					var hours = [ { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 }, { totalHours: 0 } ];
 					
 					if (daysInMonth > 28)
-						hours.push({ totalHours: 0 })
+						hours.push({ totalHours: 0 });
 					
 					roleInfo = {
 						role: personRecord.isUnassigned ? { resource: personRecord.role } : { resource: role.type.resource, resource2: role._id },
@@ -2767,7 +2771,7 @@ else if( role.percentageCovered == 0 )
 				
 				var remainingWorkdays = 0;
 				var eDate = moment.min(moment(personRecord.endDate), moment($scope.endMonthDate));
-				
+					
 				if (personRecord.endDate && eDate.diff(new Date(), "days") >= 0)
 					for (var d = moment(new Date()).add(isTodayAlreadyTracked ? 1 : 0, "day"); d.month() == eDate.month(); d.add(1, "day"))
 						if (d.isoWeekday() < 6)
