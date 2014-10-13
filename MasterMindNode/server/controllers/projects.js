@@ -118,8 +118,11 @@ var getProject = function(id, callback) {
 };
 
 var addProjectLink = function(id, obj, callback) {
+    if(!obj.project) {
+      obj.project = {};
+    }
 	obj.project.resource = "projects/" + id;
-    dataAccess.insertItem(obj._id, obj, dataAccess.Links, function(err, body){
+    dataAccess.insertItem(obj._id, obj, dataAccess.LINKS_KEY, function(err, body){
         if (err) {
             console.log(err);
             callback('error insert skill', null);
