@@ -90,8 +90,8 @@ var isAssignmentValid = function(assignment) {
   if(!assignment.project.resource) {
     messages.push("'project.resource' field is required");
   }
-  if(assignment.members && assignment.members.length) {
-    for(var i = 0; i <= assignment.members.length; i++) {
+  if(assignment.members && assignment.members.length > 0) {
+    for(var i = 0; i < assignment.members.length; i++) {
       var member = assignment.members[i];
       
       if(!member.role) {
@@ -190,7 +190,7 @@ var isProjectValid = function(project) {
         if(!actualRole) {
           messages.push("Unknown role type: " + role.type.resource);
         } else {
-          if(ALLOWED_ROLES_TO_CREATE_PROJECT.indexOf(actualRole.abbreviation) > 0) {
+          if(ALLOWED_ROLES_TO_CREATE_PROJECT.indexOf(actualRole.abbreviation) > -1) {
             isRequiredRoleIncluded = true;
           }
         }
