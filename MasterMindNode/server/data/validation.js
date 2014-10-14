@@ -84,6 +84,14 @@ var validate = function(obj, type) {
       validationMessages = isTaskValid(obj);
       break;
       
+    case USER_ROLES_KEY:
+      validationMessages = isUserRoleValid(obj);
+      break;
+      
+    case SECURITY_ROLES_KEY:
+      validationMessages = isSecurityRoleValid(obj);
+      break;
+      
     default: 
       break;
   }
@@ -444,6 +452,46 @@ var isTaskValid = function(task) {
   
   if(!task.name) {
     messages.push("Name is required");
+  }
+  
+  return messages;
+};
+
+var isUserRoleValid = function(userRole) {
+  var messages = [];
+  
+  if(!userRole.userId) {
+    messages.push("userId is required");
+  }
+  
+  if(!userRole.roles) {
+    messages.push("roles is required");
+  }
+  
+  return messages;
+};
+
+var isSecurityRoleValid = function(securityRole) {
+  var messages = [];
+  
+  if(!securityRole.name) {
+    messages.push("Name is required");
+  }
+  
+  if(!securityRole.resources) {
+    messages.push("'resources' field is required");
+  } else {
+    for(var i = 0; i < securityRole.resources.length; i++) {
+      var resource = securityRole.resources[i];
+      if(!resource.name) {
+        messages.push("Missing 'name' field in one of the resources.");
+        return messages;
+      }
+      if(!resource.permissions) {
+        messages.push("Missing 'permissions' field in one of the resources.");
+        return messages;
+      }
+    }
   }
   
   return messages;
