@@ -18,6 +18,13 @@ module.exports.listConfiguration = function(q, callback) {
 };
 
 module.exports.insertConfiguration = function(obj, callback) {
+    
+    var validationMessages = validation.validate(obj, dataAccess.CONFIGURATION_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
 	encodeConfig(obj);
     dataAccess.insertItem(obj._id, obj, dataAccess.CONFIGURATION_KEY, function(err, body){
         if (err) {

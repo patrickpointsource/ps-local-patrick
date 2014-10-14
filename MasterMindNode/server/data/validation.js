@@ -71,7 +71,19 @@ var validate = function(obj, type) {
     case NOTIFICATIONS_KEY:
       validationMessages = isNotificationValid(obj);
       break;
+      
+    case CONFIGURATION_KEY:
+      validationMessages = isConfigurationValid(obj);
+      break;
     
+    case SKILLS_KEY:
+      validationMessages = isSkillValid(obj);
+      break;
+      
+    case TASKS_KEY:
+      validationMessages = isTaskValid(obj);
+      break;
+      
     default: 
       break;
   }
@@ -294,6 +306,22 @@ var isHoursValid = function(hours) {
 var isLinkValid = function(link) {
   var messages = [];
   
+  if(!link.url) {
+    messages.push("Url is required");
+  }
+  
+  if(!link.label) {
+    messages.push("Label is required");
+  }
+  
+  if(!link.project) {
+    messages.push("'project' field is required");
+  } else {
+    if(!link.project.resource) {
+      messages.push("'project.resource' field is required");
+    }
+  }
+  
   return messages;
 };
 
@@ -374,6 +402,48 @@ var isNotificationValid = function(notification) {
   
   if(!notification.text || notification.text === '') {
     messages.push("Notification entry should have a text.");
+  }
+  
+  return messages;
+};
+
+var isConfigurationValid = function(obj) {
+  var messages = [];
+  
+  if(!obj.config) {
+    messages.push("'config' field is required");
+  }
+  
+  if(!obj.properties || !obj.properties.length) {
+    messages.push("'properties' field is required");
+  } else {
+    for(var i = 0; i < obj.properties.length; i++) {
+      var property = obj.properties[i];
+      if(!property.name) {
+        messages.push("'properties.name' field is required");
+        return messages;
+      }
+      if(!property.value) {
+        messages.push("'properties.value' field is required");
+        return messages;
+      }
+    }
+  }
+  
+  return messages;
+};
+
+var isSkillValid = function(skill) {
+  var messages = [];
+  
+  return messages;
+};
+
+var isTaskValid = function(task) {
+  var messages = [];
+  
+  if(!task.name) {
+    messages.push("Name is required");
   }
   
   return messages;

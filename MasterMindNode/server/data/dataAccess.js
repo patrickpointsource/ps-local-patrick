@@ -1131,3 +1131,6 @@ module.exports.PEOPLE_KEY = PEOPLE_KEY;
 module.exports.ROLES_KEY = ROLES_KEY;
 module.exports.HOURS_KEY = HOURS_KEY;
 module.exports.LINKS_KEY = LINKS_KEY;
+module.exports.CONFIGURATION_KEY = CONFIGURATION_KEY;
+module.exports.SKILLS_KEY = SKILLS_KEY;
+module.exports.TASKS_KEY = TASKS_KEY;

@@ -27,6 +27,13 @@ module.exports.listTasksByName = function(name, callback) {
 
 
 module.exports.insertTask = function(obj, callback) {
+    
+    var validationMessages = validation.validate(obj, dataAccess.TASKS_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
     dataAccess.insertItem(obj._id, obj, dataAccess.TASKS_KEY, function(err, body){
         if (err) {
             console.log(err);

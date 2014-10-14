@@ -15,6 +15,13 @@ module.exports.listSkills = function(q, callback) {
 };
 
 module.exports.insertSkill = function(obj, callback) {
+    
+    var validationMessages = validation.validate(obj, dataAccess.SKILLS_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
     dataAccess.insertItem(obj._id, obj, dataAccess.SKILLS_KEY, function(err, body){
         if (err) {
             console.log(err);
