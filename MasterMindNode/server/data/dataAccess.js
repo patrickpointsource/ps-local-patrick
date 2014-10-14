@@ -576,7 +576,7 @@ var listAssignments = function( q, callback ) {
 			
 			console.log('\r\n\r\nloading:assignments:q=' + JSON.stringify(q) + '\r\n');
 			
-			finalRecords = queryRecords( body, q, null, "projects/", "/assignments" );
+			 finalRecords = queryRecords( body, q, null, "projects/", "/assignments" );
 			
 			for (i = 0; i < finalRecords.data.length; i ++)
               generateProperties(finalRecords.data[i].members, "assignments/");
@@ -1134,3 +1134,5 @@ module.exports.LINKS_KEY = LINKS_KEY;
 module.exports.CONFIGURATION_KEY = CONFIGURATION_KEY;
 module.exports.SKILLS_KEY = SKILLS_KEY;
 module.exports.TASKS_KEY = TASKS_KEY;
+
+module.exports.prepareRecords = prepareRecords;

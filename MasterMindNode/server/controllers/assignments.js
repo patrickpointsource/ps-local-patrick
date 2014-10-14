@@ -26,7 +26,14 @@ var listAssignments = function(q, callback) {
 				}
 			}
 		}
-		listAssignmentsByPersonResource( person, startDate, endDate, callback );
+		listAssignmentsByPersonResource( person, startDate, endDate, function (err, result) {
+			if (!err) {
+				callback(null,  dataAccess.prepareRecords( result, null, "projects/", "/assignments" ));
+			}
+			else {
+				callback (err, null);
+			}
+		} );
 	}
 	else {
 		// Get assignments by projects
@@ -35,7 +42,6 @@ var listAssignments = function(q, callback) {
 				console.log(err);
 				callback('error loading assignments', null);
 			} else {
-				//console.log(body);
 				callback(null, body);
 			}
 		});
