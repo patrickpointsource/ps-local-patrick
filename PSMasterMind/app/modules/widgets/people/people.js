@@ -127,6 +127,9 @@ angular.module('Mastermind').controller('PeopleWidgetCtrl', ['$scope', '$state',
       findNineAvailablePeople();
     };
 
+	$scope.getPersonName = function(person, isSimply, isFirst) {
+		return Util.getPersonName(person, isSimply, isFirst);
+	};
 
   }
 ]);

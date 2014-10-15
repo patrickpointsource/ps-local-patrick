@@ -153,6 +153,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	$scope.getActiveAreaFilter = function( ) {
 		return $state.params ? $state.params.filter : 'all';
 	};
+	
+	$scope.getPersonName = function(person, isSimply, isFirst) {
+		return Util.getPersonName(person, isSimply, isFirst);
+	};
 
 	$scope.showHideMenu = function( ) {
 

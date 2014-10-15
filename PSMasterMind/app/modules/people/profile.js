@@ -755,7 +755,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			}
 		} );
 	};
-
+	
+	$scope.getPersonName = function(person, isSimply, isFirst) {
+		return Util.getPersonName(person, isSimply, isFirst);
+	};
+	
 	$scope.handleHoursTypeChanged = function( type ) {
 		if( type === 'task' && $scope.newHoursRecord.project ) {
 			delete $scope.newHoursRecord.project;

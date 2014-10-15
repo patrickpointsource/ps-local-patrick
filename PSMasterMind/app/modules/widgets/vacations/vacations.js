@@ -44,6 +44,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.nextPage = function() {
 	  $scope.vacationsPage++;
 	  $scope.showVacations();
+  };
+  
+  $scope.getPersonName = function(person, isSimply, isFirst) {
+	return Util.getPersonName(person, isSimply, isFirst);
   }
   
   $scope.showVacations = function() {

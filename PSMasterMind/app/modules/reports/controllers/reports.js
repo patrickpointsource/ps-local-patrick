@@ -599,7 +599,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 							hoursPerWeek: assignments[ i ].members[ j ].hoursPerWeek,
 							startDate: assignments[ i ].members[ j ].startDate,
 							endDate: assignments[ i ].members[ j ].endDate,
-							name: $scope.peopleMap[ assignments[ i ].members[ j ].person.resource ].name
+							name: Util.getPersonName($scope.peopleMap[ assignments[ i ].members[ j ].person.resource ])
 						};
 
 						var project = _.find( projects, function( p ) {
@@ -709,7 +709,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 							if( !person ) {
 								person = {
-									name: $scope.peopleMap[ reportHours[ i ].person.resource ].name,
+									name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
 									resource: reportHours[ i ].person.resource
 								};
 
@@ -804,7 +804,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 						projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ].push( {
 							resource: assignments[ i ].members[ j ].person.resource,
-							name: $scope.peopleMap[ assignments[ i ].members[ j ].person.resource ].name
+							name:  Util.getPersonName($scope.peopleMap[ assignments[ i ].members[ j ].person.resource ])
 						} );
 
 						//if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j
@@ -873,7 +873,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 							if( !person ) {
 								person = {
-									name: $scope.peopleMap[ reportHours[ i ].person.resource ].name,
+									name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
 									resource: reportHours[ i ].person.resource
 								};
 

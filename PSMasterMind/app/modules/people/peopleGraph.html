@@ -16,7 +16,7 @@
             ng-hide="(peopleFilter.indexOf('role') !== -1 && peopleFilter !== person.primaryRole.resource)">
             <div class="row" ng-if="qvPeopleAssignments[person.resource]">
 				<div class="title col-xs-2 col-sm-1 col-md-1 col-lg-1">
-					<a href="#{{person.resource}}"><img title="{{person.name}}" class="profileImage" ng-src="{{person.thumbnail}}"/><br/>{{person.name}}</a>
+					<a href="#{{person.resource}}"><img title="{{getPersonName(person)}}" class="profileImage" ng-src="{{person.thumbnail}}"/><br/>{{getPersonName(person)}}</a>
 				</div>
 				
 				<div class="col-xs-10 col-sm-11">

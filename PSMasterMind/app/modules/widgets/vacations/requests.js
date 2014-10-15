@@ -148,7 +148,7 @@ function( $q, $scope, $state, $rootScope, Resources, ProjectsService, VacationsS
     });
     
     return deferred.promise;
-  }
+  };
   
   $scope.queryVacationTask = function() {
     var deferred = $q.defer();
@@ -158,30 +158,34 @@ function( $q, $scope, $state, $rootScope, Resources, ProjectsService, VacationsS
     });
     
     return deferred.promise;
-  }
+  };
   
   $scope.getStatusText = function(status) {
     return VacationsService.getStatusText(status);
-  }
+  };
   
   $scope.getTypeText = function(type) {
     return VacationsService.getTypeText(type);
-  }
+  };
   
   $scope.displayDate = function(date) {
     var mom = moment(date);
     
     return mom.format("dddd, MMMM Do, YYYY hh:mm A");
-  }
+  };
   
   $scope.isSameDay = function(date1, date2) {
     return moment(date1).isSame(date2, 'days');
-  }
+  };
   
   $scope.getDays = function(start, end) {
     return VacationsService.getDays(start, end);
-  }
+  };
   
+  $scope.getPersonName = function(person, isSimply, isFirst) {
+	return Util.getPersonName(person, isSimply, isFirst);
+  };
+	
   $scope.displayShortPeriod = function(period) {
     var start = moment(period.startDate);
     var end = moment(period.endDate);
@@ -191,7 +195,7 @@ function( $q, $scope, $state, $rootScope, Resources, ProjectsService, VacationsS
     } else {
       return $scope.displayDate(period.startDate) + " - " + $scope.displayDate(period.endDate);
     }
-  }
+  };
   
   $scope.deleteVacation = function(index) {
     var request = $scope.requests[index];
@@ -200,11 +204,11 @@ function( $q, $scope, $state, $rootScope, Resources, ProjectsService, VacationsS
       $scope.requests.splice(index, 1);
       $scope.expandedIndex = -1;
     });
-  }
+  };
   
   $scope.getResourceFinderLink = function(request) {
     var startDate = moment(request.startDate).format('YYYY-MM-DD');
     var endDate = moment(request.endDate).format('YYYY-MM-DD');
     $state.go('staffing', { tab:'resourcefinder', startDate: startDate, endDate: endDate });
-  }
+  };
 } ] );

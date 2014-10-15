@@ -9,6 +9,34 @@ var Util = {
 
 		return s + ( j ? i.substr( 0, j ) + t : "" ) + i.substr( j ).replace( /(\d{3})(?=\d)/g, "$1" + t ) + ( c ? d + Math.abs( n - i ).toFixed( c ).slice( 2 ) : "" );
 	},
+	
+	getPersonName: function(person, isSimply, isFirst) {
+		var result = '';
+		var tmpName;
+		
+		if (!person || !person.name)
+			return '';
+		
+		
+		if (_.isString(person.name)) {
+		     var tmp = person.name.split(/\s+/g);
+		     
+		     tmpName = {
+		         givenName: tmp[0],
+		         familyName: tmp[1],
+		         fullName: person.name
+		     };
+		     
+		 } else
+			 tmpName = person.name
+			 
+		result = isSimply ? (tmpName.givenName + ' ' + tmpName.familyName): (tmpName.familyName + ', ' + tmpName.givenName);
+		
+		if (isFirst)
+			result = tmpName.givenName;
+		
+		return result;
+	},
 
 	getHoursPerMonthFromRate: function( rate ) {
 		var result = 0;

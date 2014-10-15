@@ -2333,6 +2333,9 @@ else if( role.percentageCovered == 0 )
 		} );
 	};
 	
+	$scope.getPersonName = function(person, isSimply, isFirst) {
+		return Util.getPersonName(person, isSimply, isFirst);
+	};
 	
 	$scope.calcWeekHours = function (result) {
 
@@ -2340,6 +2343,8 @@ else if( role.percentageCovered == 0 )
 		$scope.weekHours = [ ];
 		$scope.weekPersonHours2 = [];
 
+		var now = new Date( );
+		
 		if( result.count > 0 ) {
 			$scope.thisWeekHours = result.members;
 			//_.sortBy($scope.thisWeekHours, function(h) { return new Date(h.date); });

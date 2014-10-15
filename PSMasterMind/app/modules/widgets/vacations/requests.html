@@ -16,7 +16,7 @@
       </div>
       <div class="row vac-row no-horizontal-margin-xs" ng-repeat="request in requests">
         <div class="row no-horizontal-margin margin-bottom-md">
-          <div class="col-xs-4 vac-first-col">{{request.person.name}}</div>
+          <div class="col-xs-4 vac-first-col">{{getPersonName(request.person)}}</div>
           <div class="col-xs-4 vac-type no-horizontal-padding">{{getTypeText(request.type)}} <span class="color-gray-image-border">({{getDays(request.startDate, request.endDate)}})</span></div>
           <div class="col-xs-3 bold no-horizontal-padding" ng-class="{'assignment-green': request.status === 'Approved', 'assignment-red': request.status === 'Denied', 'color-yellow': request.status === 'Pending'}">
             <i class="fa fa-check" ng-show="request.status === 'Approved'"></i>
@@ -49,7 +49,7 @@
              <span ng-repeat-end ng-hide="$index == peopleOutThisDay.length - 1">,&nbsp;</span>
           </div>
           <div class="row no-horizontal-margin vac-type margin-bottom-md">
-            <a href="#{{request.person.about}}">{{request.person.givenName}}'s Projects</a> | 
+            <a href="#{{request.person.about}}">{{getPersonName(request.person, false, true)}}'s Projects</a> | 
             <a class="cursor-pointer" ng-click="getResourceFinderLink(request)">People available to cover</a>
           </div>
           <div class="row no-horizontal-margin color-gray-image-border margin-bottom-md">

@@ -451,6 +451,10 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		$scope.changeSort( $scope.sortType );
 		$scope.hideSpinner = true;
 	};
+	
+	$scope.getPersonName = function(person, isSimply, isFirst) {
+		return Util.getPersonName(person, isSimply, isFirst);
+	};
 	/**
 	 * display the month name from a month number (0 - 11)
 	 */
