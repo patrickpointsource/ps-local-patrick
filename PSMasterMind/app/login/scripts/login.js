@@ -5,13 +5,34 @@
 //window.clientBaseURL = 'http://0.0.0.0:9000/';
 //window.restPath = '/MasterMindStaging/rest/';
 //window.fixUrl = false;
-//window.useAdoptedServices = false;
+//window.useAdoptedServices = true;
 
 //local nodejs based development
-window.serverLocation = 'http://localhost:3000/';
-window.restPath = '';
-window.clientBaseURL = 'http://localhost:9000/';
-window.fixUrl = true;
+//window.serverLocation = 'http://localhost:3000/';
+//window.restPath = '';
+//window.clientBaseURL = 'http://localhost:9000/';
+//window.fixUrl = true;
+
+//new prod nodejs 
+//window.serverLocation = 'https://mastermind.mypointsource.com';
+//window.restPath = '/MMNodeServer/';
+//window.clientBaseURL = 'https://mastermind.mypointsource.com/';
+//window.fixUrl = true;
+//window.useAdoptedServices = true;
+
+//new stage nodejs 
+//window.serverLocation = 'https://stage.mastermind.pointsource.com';
+//window.restPath = '/MMNodeStaging/';
+//window.clientBaseURL = 'https://stage.mastermind.pointsource.com/';
+//window.fixUrl = true;
+//window.useAdoptedServices = true;
+
+//new demo nodejs 
+//window.serverLocation = 'https://demo.mastermind.pointsource.com';
+//window.restPath = '/MMNodeDemo/';
+//window.clientBaseURL = 'https://demo.mastermind.pointsource.com/';
+//window.fixUrl = true;
+//window.useAdoptedServices = true;
 
 //old stage nodejs 
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
@@ -20,19 +41,12 @@ window.fixUrl = true;
 //window.fixUrl = true;
 //window.useAdoptedServices = false;
 
-//new prod nodejs 
-//window.serverLocation = 'https://mastermind.mypointsource.com';
-//window.restPath = '/MMNodeServer/';
-//window.clientBaseURL = 'https://mastermind.mypointsource.com';
-//window.fixUrl = true;
-//window.useAdoptedServices = false;
-
 //stage only
-window.restPath = '/MasterMindStaging/rest/';
-window.clientBaseURL = 'https://mastermind.pointsource.us/stage/';
-window.serverLocation = 'https://dmz.mastermind.pointsource.us';
-window.fixUrl = false;
-window.useAdoptedServices = false;
+//window.restPath = '/MasterMindStaging/rest/';
+//window.clientBaseURL = 'https://mastermind.pointsource.us/stage/';
+//window.serverLocation = 'https://dmz.mastermind.pointsource.us';
+//window.fixUrl = false;
+//window.useAdoptedServices = false;
 
 //prod (dmz)
 //window.serverLocation = 'https://dmz.mastermind.pointsource.us';
