@@ -23,7 +23,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		var deferred = $q.defer( );
 
 		if (window.useAdoptedServices) {
-			Resources.get( 'people').then (function( result ) {
+			Resources.get( 'people/byTypes/active').then (function( result ) {
 				deferred.resolve( result );
 			} );
 			

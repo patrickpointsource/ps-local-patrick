@@ -123,7 +123,7 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			}
 			else if (type && type == "byRoles") {
 				var roles = req.query.role;
-			    people.listActivePeopleByRoleIds(roles, function(err, result){
+			    people.listActivePeopleByRoles(roles, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {

@@ -4,16 +4,16 @@ var util = require('../util/util');
 var _ = require( 'underscore' );
 
 /**
- * Returns active people filtered by role resources
+ * Returns active people filtered by roles
  * 
  * @param {Object} roleResources
  * @param {Object} callback
  */
 
-var filterActivePeopleByRoleIds = function(roleIds, people) {
+var filterActivePeopleByRoles = function(roleIds, people) {
 	var result = [];
 	_.each(people, function(person) {
-		checkActivePeopleByRoleIds(person, roleIds, function (checked) {
+		checkActivePeopleByRoles(person, roleIds, function (checked) {
 			if (checked) {
 				result.push(person);
 			}
@@ -22,24 +22,27 @@ var filterActivePeopleByRoleIds = function(roleIds, people) {
 	return result;
 };
 
-var checkActivePeopleByRoleIds = function (person, roleIds, callback) {
+var checkActivePeopleByRoles = function (person, roleIds, callback) {
 	if (roleIds instanceof Array) {
 		_.each(roleIds, function(roleId) {
-			checkPersonByRoleId (person, roleId, function (checked) {
-				if (checked) {
-					callback(checked);
-				}
-			});
+			if (roleId) {
+	 			checkPersonByRole (person, roleId, function (checked) {
+					if (checked) {
+						callback(checked);
+					}
+				});
+			}
 		});
 		callback(false);
 	}
 	else {
-		checkActivePeopleByRoleIds(person, [roleIds], callback);
+		checkActivePeopleByRoles(person, [roleIds], callback);
 	}
 };
 
-var checkPersonByRoleId = function(person, roleId, callback) {
-	if (person.primaryRole && person.primaryRole.resource == util.getFullID( roleId, "roles") ) {
+var checkPersonByRole = function(person, roleId, callback) {
+	var roleResource = roleId.indexOf("roles") == 0 ? roleId : util.getFullID( roleId, "roles");
+	if (person.isActive && person.isActive != "false" && person.primaryRole && person.primaryRole.resource == roleResource ) {
 		callback(true);
 	}
 	callback(false);
@@ -56,7 +59,7 @@ var checkPersonByRoleId = function(person, roleId, callback) {
 var filterActivePeople = function(people) {
 	var result = [];
 	_.each(people, function(person) {
-		if (person.isActive) {
+		if (person.isActive && person.isActive != "false") {
 			result.push(person);
 		}
 	});
@@ -566,7 +569,7 @@ var filterTasksByName = function(name, tasks) {
 };
 
 // people filter functions
-module.exports.filterActivePeopleByRoleIds = filterActivePeopleByRoleIds;
+module.exports.filterActivePeopleByRoles = filterActivePeopleByRoles;
 module.exports.filterActivePeople = filterActivePeople;
 module.exports.filterPeopleWithPrimaryRole = filterPeopleWithPrimaryRole;
 module.exports.filterPeopleByGroups = filterPeopleByGroups;
