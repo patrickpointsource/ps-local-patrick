@@ -121,6 +121,16 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			        }            
 			    });
 			}
+			else if (type && type == "byRoles") {
+				var roles = req.query.role;
+			    people.listActivePeopleByRoleIds(roles, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
 			else if (type && type == "withPrimaryRole") {
 			    people.listPeopleWithPrimaryRole(function(err, result){
 			        if(err){

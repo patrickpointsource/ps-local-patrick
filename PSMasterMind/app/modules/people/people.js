@@ -355,7 +355,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		//Check if the filter is a valid role
 		if( $scope.roleGroups && $scope.roleGroups[ $scope.peopleFilter ] ) {
 
-			People.filter( $scope.peopleFilter, peopleInRoleFields).then( function( result ) {
+			Resources.get("people/bytypes/byRoles", $scope.peopleFilter).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );
@@ -380,7 +380,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			var roles = $scope.mapPeopleGroupToRoles( tmp );
 			var isActive = !includeInactive;
 
-			People.filter( roles, peopleInRoleFields).then( function( result ) {
+			Resources.get( "people/bytypes/byRoles", roles).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );
@@ -389,7 +389,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		//Otherwise just show all
 		else {
 			$scope.peopleFilter = 'all';
-			People.filter(null, peopleInRoleFields ).then( function( result ) {
+			Resources.get("people").then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );

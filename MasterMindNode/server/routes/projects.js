@@ -123,6 +123,54 @@ router.get( '/byperson/:id/:type', auth.isAuthenticated, function( req, res ) {
 
 } );
 
+
+router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
+		if (allowed) 
+		{
+			var type = req.params.type;
+			if (type && type == "projectsByResources") {
+				var resource = req.query.resource;
+				projects.listProjectsByResources(resource, function( err, result ) {
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else if (type && type == "projectsByStatuses") {
+				var status = req.query.status;
+				projects.listProjectsByStatuses( status, function( err, result ) {
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else if (type && type == "projectsBetweenDatesByTypesAndSponsors") {
+				var startDate = req.query.startDate;
+				var endDate = req.query.endDate;
+				var types = req.query.type;
+				var isCommited = req.query.isCommited;
+				var roleResources = req.query.roleResource;
+				projects.listProjectsBetweenDatesByTypesAndSponsors( startDate, endDate, types, isCommited, roleResources, function( err, result ) {
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else {
+	            res.json(500, "No required type attribute");
+			}
+		}
+	});
+}); 
+
+
 router.get( '/filter/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {

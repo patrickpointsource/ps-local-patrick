@@ -39,19 +39,6 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		return deferred.promise;
 	}
 
-
-	function filter( roleIds, fields ) {
-		var deferred = $q.defer( );
-		roleIds = roleIds ? roleIds : {};
-		fields = fields ? fields : {};
-
-		Resources.get( 'people/filter', roleIds, fields).then(function( result ) {
-				deferred.resolve( result );
-			} );			
-
-		return deferred.promise;
-	}
-
 	function get( id ) {
 		return Resource.get( id );
 	}
@@ -652,7 +639,6 @@ function( $q, Restangular, Resources, ProjectsService ) {
 
     var resultAPI = {
         query: query,
-        filter: filter,
         get: get,
         getActivePeople: getActivePeople,
         getPeoplePerRole: getPeoplePerRole,

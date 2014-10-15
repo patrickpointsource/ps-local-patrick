@@ -248,7 +248,7 @@ function( $q, Resources ) {
 						
 						var params = {};
 						params.resource = projectURIs;
-						Resources.refresh( 'projects/filter//', params).then( function( result ) {
+						Resources.refresh( 'projects/byTypes/projectsByResources', params).then( function( result ) {
 							var projects = result.data;
 
 							// Fill in all the resolved projects
