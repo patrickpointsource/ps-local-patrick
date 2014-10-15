@@ -625,7 +625,8 @@ else if( role.percentageCovered == 0 )
 						var error = response.status + ": " + response.data.message;
 						$scope.showErrors( [ error ] );
 					} else if( response.status && response.data ) {
-						var error = response.status + ": " + JSON.stringify( response.data );
+						//var error = response.status + ": " + JSON.stringify( response.data );
+						var error = response.status + ": " + JSON.parse(response.data);
 						$scope.showErrors( [ error ] );
 					}
 
