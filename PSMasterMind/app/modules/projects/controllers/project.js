@@ -1851,6 +1851,8 @@ else if( role.percentageCovered == 0 )
      $scope.showVacationsStartPeriod = moment(periodStart).format("MMM D");
      $scope.showVacationsEndPeriod = moment(periodEnd).format("MMM D");
      
+     $scope.projectPeopleResources = _.compact($scope.projectPeopleResources);
+     
       if($scope.projectPeopleResources.length > 0) {
         $scope.projectPeopleResources = _.filter($scope.projectPeopleResources);
           
