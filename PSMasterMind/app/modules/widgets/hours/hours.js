@@ -1354,7 +1354,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		if( hourEntry.hoursRecord && hourEntry.hoursRecord.editMode && !hourEntry.selectedItem )
 			$scope.hoursValidation.push( "Project or task hasn't been selected" );
-
+        
+        if( !hourEntry.hoursRecord.description ) {
+          $scope.hoursValidation.push( "Hours description is empty" );
+        }
+        
 		for( var i = 0; i < entries.length; i++ ) {
 			if( entries[ i ].hoursRecord && entries[ i ].hoursRecord.hours )
 				totalHours += parseFloat( entries[ i ].hoursRecord.hours );
