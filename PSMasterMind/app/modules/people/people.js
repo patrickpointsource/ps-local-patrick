@@ -380,10 +380,11 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
                 includeInactive = false;
         
 			var roles = $scope.mapPeopleGroupToRoles( tmp );
-			var isActive = !includeInactive;
 			var params = {};
 			params.role = roles;
-			
+			if (includeInactive) {
+				params.includeInactive = includeInactive;
+			}
 			Resources.get( "people/bytypes/byRoles", params).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );

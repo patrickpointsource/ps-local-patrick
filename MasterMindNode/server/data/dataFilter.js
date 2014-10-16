@@ -10,10 +10,10 @@ var _ = require( 'underscore' );
  * @param {Object} callback
  */
 
-var filterActivePeopleByRoles = function(roleIds, people) {
+var filterPeopleByRoles = function(roleIds, includeInactive, people) {
 	var result = [];
 	_.each(people, function(person) {
-		checkActivePeopleByRoles(person, roleIds, function (checked) {
+		checkPeopleByRoles(person, roleIds, includeInactive, function (checked) {
 			if (checked) {
 				result.push(person);
 			}
@@ -22,11 +22,11 @@ var filterActivePeopleByRoles = function(roleIds, people) {
 	return result;
 };
 
-var checkActivePeopleByRoles = function (person, roleIds, callback) {
+var checkPeopleByRoles = function (person, roleIds, includeInactive, callback) {
 	if (roleIds instanceof Array) {
 		_.each(roleIds, function(roleId) {
 			if (roleId) {
-	 			checkPersonByRole (person, roleId, function (checked) {
+	 			checkPersonByRole (person, roleId, includeInactive, function (checked) {
 					if (checked) {
 						callback(checked);
 					}
@@ -36,13 +36,14 @@ var checkActivePeopleByRoles = function (person, roleIds, callback) {
 		callback(false);
 	}
 	else {
-		checkActivePeopleByRoles(person, [roleIds], callback);
+		checkPeopleByRoles(person, [roleIds], includeInactive, callback);
 	}
 };
 
-var checkPersonByRole = function(person, roleId, callback) {
+var checkPersonByRole = function(person, roleId, includeInactive, callback) {
 	var roleResource = roleId.indexOf("roles") == 0 ? roleId : util.getFullID( roleId, "roles");
-	if (person.isActive && person.isActive != "false" && person.primaryRole && person.primaryRole.resource == roleResource ) {
+	if ( (includeInactive && ( !person.isActive || person.isActive == "false") ) 
+			|| ( person.isActive && person.isActive != "false" && person.primaryRole && person.primaryRole.resource == roleResource ) ) {
 		callback(true);
 	}
 	callback(false);
@@ -569,7 +570,7 @@ var filterTasksByName = function(name, tasks) {
 };
 
 // people filter functions
-module.exports.filterActivePeopleByRoles = filterActivePeopleByRoles;
+module.exports.filterPeopleByRoles = filterPeopleByRoles;
 module.exports.filterActivePeople = filterActivePeople;
 module.exports.filterPeopleWithPrimaryRole = filterPeopleWithPrimaryRole;
 module.exports.filterPeopleByGroups = filterPeopleByGroups;
