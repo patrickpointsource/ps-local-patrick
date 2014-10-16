@@ -2622,27 +2622,29 @@ else if( role.percentageCovered == 0 )
 
 			var uniqPersons = _.pluck( _.pluck( $scope.thisWeekHours, 'person' ), 'resource' );
 			var hoursStartEndDatesMap = {};
+			
+			if ($scope.projectAssignments) {
+				for( var i = 0; i < $scope.projectAssignments.members.length; i++ ) {
+					if( $scope.projectAssignments.members[ i ].endDate >= $scope.startMonthDate && $scope.projectAssignments.members[ i ].startDate < $scope.endMonthDate ) {
+						uniqPersons.push( $scope.projectAssignments.members[ i ].person.resource );
 
-			for( var i = 0; i < $scope.projectAssignments.members.length; i++ ) {
-				if( $scope.projectAssignments.members[ i ].endDate >= $scope.startMonthDate && $scope.projectAssignments.members[ i ].startDate < $scope.endMonthDate ) {
-					uniqPersons.push( $scope.projectAssignments.members[ i ].person.resource );
-					
-					if( !hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] )
-						hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] = {
-							role: $scope.projectAssignments.members[ i ].role ? $scope.projectAssignments.members[ i ].role.resource : null,
-							hoursPerWeek: $scope.projectAssignments.members[ i ].hoursPerWeek,
-							startDate: $scope.projectAssignments.members[ i ].startDate,
-							endDate: $scope.projectAssignments.members[ i ].endDate
+						if( !hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] )
+							hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ] = {
+								role: $scope.projectAssignments.members[ i ].role ? $scope.projectAssignments.members[ i ].role.resource : null,
+										hoursPerWeek: $scope.projectAssignments.members[ i ].hoursPerWeek,
+										startDate: $scope.projectAssignments.members[ i ].startDate,
+										endDate: $scope.projectAssignments.members[ i ].endDate
 						};
-					else {
-						if( $scope.projectAssignments.members[ i ].startDate < hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].startDate )
-							hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].startDate = $scope.projectAssignments.members[ i ].startDate;
+						else {
+							if( $scope.projectAssignments.members[ i ].startDate < hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].startDate )
+								hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].startDate = $scope.projectAssignments.members[ i ].startDate;
 
-						if( $scope.projectAssignments.members[ i ].endDate > hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].endDate )
-							hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].endDate = $scope.projectAssignments.members[ i ].endDate;
+							if( $scope.projectAssignments.members[ i ].endDate > hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].endDate )
+								hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].endDate = $scope.projectAssignments.members[ i ].endDate;
 
-						if( $scope.projectAssignments.members[ i ].hoursPerWeek > hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].hoursPerWeek )
-							hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].hoursPerWeek = $scope.projectAssignments.members[ i ].hoursPerWeek;
+							if( $scope.projectAssignments.members[ i ].hoursPerWeek > hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].hoursPerWeek )
+								hoursStartEndDatesMap[ $scope.projectAssignments.members[ i ].person.resource ].hoursPerWeek = $scope.projectAssignments.members[ i ].hoursPerWeek;
+						}
 					}
 				}
 			}
@@ -2777,12 +2779,17 @@ else if( role.percentageCovered == 0 )
 				}
 				
 				var remainingWorkdays = 0;
-				var eDate = moment.min(moment(personRecord.endDate), moment($scope.endMonthDate));
-					
-				if (personRecord.endDate && eDate.diff(new Date(), "days") >= 0)
-					for (var d = moment(new Date()).add(isTodayAlreadyTracked ? 1 : 0, "day"); d.month() == eDate.month(); d.add(1, "day"))
-						if (d.isoWeekday() < 6)
-							remainingWorkdays++;
+				
+				if (personRecord.endDate) {
+					var endDateTime = (new Date(personRecord.endDate)).getTime();
+					var endMonthDateTime = $scope.endMonthDate ? (new Date($scope.endMonthDate)).getTime() : endDateTime;
+					var eDate =  endDateTime < endMonthDateTime ? moment(personRecord.endDate) :  moment($scope.endMonthDate);
+					if (eDate.diff(new Date(), "days") >= 0) {
+						for (var d = moment(new Date()).add(isTodayAlreadyTracked ? 1 : 0, "day"); d.month() == eDate.month(); d.add(1, "day"))
+							if (d.isoWeekday() < 6)
+								remainingWorkdays++;
+					}
+				}
 				
 				personRecord.projectedHours = personRecord.actualHours + personRecord.hoursPerWeek / 5 * remainingWorkdays;
 				personRecord.capacity = personRecord.expectedHours - personRecord.actualHours <= remainingWorkdays * 9;

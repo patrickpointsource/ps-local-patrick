@@ -20,7 +20,7 @@ var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
 
 var PROJECT_TYPES = [ "invest", "poc", "paid" ];
-var PROJECT_STATES = [ "planning", "active", "done", "poc", "supportActive" ];
+var PROJECT_STATES = [ "planning", "active", "done", "poc", "supportActive", "clientActive" ];
 var ALLOWED_ROLES_TO_CREATE_PROJECT = [ "PM", "BA", "SBA" ];
 
 var HOURS_PER_MONTH = 180;
