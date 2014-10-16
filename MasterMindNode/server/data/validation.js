@@ -145,33 +145,33 @@ var isProjectValid = function(project) {
   var messages = [];
   
   if(!project.customerName || project.customerName === '') {
-    messages.push("'customerName' field is required");
+    messages.push("Customer name is required");
   }
   
   if(!project.name || project.name === '') {
-    messages.push("'name' field is required");
+    messages.push("Name is required");
   }
   
   if(!project.type) {
-    messages.push("'type' field is required");
-  }
-  
-  if(PROJECT_TYPES.indexOf(project.type) < 0) {
-    messages.push("unknown project type: " + project.type);
+    messages.push("Project type is required");
+  } else {
+    if(PROJECT_TYPES.indexOf(project.type) < 0) {
+      messages.push("Unknown project type: " + project.type);
+    }
   }
   
   if(!project.startDate) {
-    messages.push("'startDate' field is required");
+    messages.push("Start date is required");
   } else {
     if(!isDate(project.startDate)) {
-      messages.push("'startDate' field is not a date");
+      messages.push("Start date field is not a date");
     } else {
       if(project.endDate) {
         if(!isDate(project.endDate)) {
-          messages.push("'endDate' field is not a date");
+          messages.push("End date field is not a date");
         } else {
           if(new Date(project.endDate) < new Date(project.startDate)) {
-            messages.push("startDate cannot be after endDate");
+            messages.push("Start date cannot be after end date");
           }
         }
       }
@@ -183,16 +183,16 @@ var isProjectValid = function(project) {
     project.state = PROJECT_STATES[0];
   } else {
     if(PROJECT_STATES.indexOf(project.state) < 0) {
-      messages.push("unknown project state: " + project.state);
+      messages.push("Unknown project state: " + project.state);
     }
   }
   
   // TODO: add checking executive sponsor for new nodejs security
   if(!project.executiveSponsor) {
-    messages.push("'executiveSponsor' field is required");
+    messages.push("Executive sponsor is required");
   } else {
     if(!project.executiveSponsor.resource) {
-      messages.push("'executiveSponsor.resource' field is required");
+      messages.push("ExecutiveSponsor's resource field is required");
     }
   }
   
@@ -229,10 +229,10 @@ var isProjectValid = function(project) {
         }
         
         if(!role.rate) {
-          messages.push("'role.rate' is required");
+          messages.push("Role's rate field is required");
         } else {
           if(!role.rate.type) {
-            messages.push("'role.rate.type' is required");
+            messages.push("Role rate's type field is required");
           } else {
             switch(role.rate.type) {
               case "hourly":
