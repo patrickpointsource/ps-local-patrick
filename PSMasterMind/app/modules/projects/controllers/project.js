@@ -122,33 +122,35 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	$scope.getExecutiveSponsor = function( ) {
 		if( $scope.project && $scope.project.executiveSponsor && $scope.execs && $scope.execs.members ) {
 			var resource = $scope.project.executiveSponsor.resource;
-			var name = _.findWhere( $scope.execs.members, {
+			var execName = _.findWhere( $scope.execs.members, {
 				resource: resource
-			} ).name;
-			if( typeof name === 'undefined' ) {
-				name = '';
-			}
-
-            if (_.isString(name))
-			     $scope.executiveSponsor = name;
-			else if (_.isObject(name) && name.fullName)
-                 $scope.executiveSponsor = name.fullName;
+			} );
 			
-			return name;
+			$scope.executiveSponsor = '';
+			
+			if(execName) {
+			  if (_.isString(execName.name))
+                $scope.executiveSponsor = execName;
+              else if (_.isObject(execName.name) && execName.name.fullName)
+                $scope.executiveSponsor = execName.name.fullName;
+			} 
+			  
+			return $scope.executiveSponsor;
 		}
 	};
 
 	$scope.getExecutiveSponsorEmail = function( ) {
 		if( $scope.project && $scope.project.executiveSponsor && $scope.execs && $scope.execs.members ) {
 			var resource = $scope.project.executiveSponsor.resource;
-			var name = _.findWhere( $scope.execs.members, {
+			$scope.executiveSponsorEmail = '';
+			var execName = _.findWhere( $scope.execs.members, {
 				resource: resource
-			} ).mBox;
-			if( typeof name === 'undefined' ) {
-				name = '';
+			} );
+			
+			if(execName) {
+			  $scope.executiveSponsorEmail = execName.mBox;
 			}
-
-			$scope.executiveSponsorEmail = name;
+			
 			return name;
 		}
 	};
