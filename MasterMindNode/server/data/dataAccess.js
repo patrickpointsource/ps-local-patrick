@@ -835,7 +835,7 @@ var listNotificationsByPerson = function( person, callback ) {
 				console.log( "save " + NOTIFICATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( NOTIFICATIONS_KEY, body );
 			}
-			callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, body.members), "members", "notifications/" ) );
+			callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, body.data), "members", "notifications/" ) );
 		} );
 	}
 
@@ -1115,6 +1115,7 @@ module.exports.listRequests = listRequests;
 module.exports.listSecurityRoles = listSecurityRoles;
 module.exports.listUserRoles = listUserRoles;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
+module.exports.listTasksByName = listTasksByName;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;

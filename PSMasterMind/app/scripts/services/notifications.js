@@ -18,11 +18,11 @@ angular.module('Mastermind.services.projects')
         } );
 
         return deferred.promise;
-    }
+    };
     
     this.add = function(notification) {
       return Resources.create('notifications', notification);
-    }
+    };
     
     
     this.getPersonsNotifications = function(personResource) {
@@ -32,13 +32,13 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getPersonsNotificationsUsingQuery(personResource);
 		}
-    }
+    };
 
     this.getPersonsNotificationsUsingGet = function(personResource) {
     	var params = {};
     	params.person = personResource;
         return Resources.get('notifications/bytypes/byPerson', params);
-    }
+    };
     	
     this.getPersonsNotificationsUsingQuery = function(personResource) {
       var query = {
@@ -48,5 +48,5 @@ angular.module('Mastermind.services.projects')
       };
       
       return this.query(query);
-    }
+    };
 } ] );

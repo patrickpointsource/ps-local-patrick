@@ -39,7 +39,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.prevPage = function() {
 	  $scope.vacationsPage--;
 	  $scope.showVacations();
-  }
+  };
   
   $scope.nextPage = function() {
 	  $scope.vacationsPage++;
@@ -48,7 +48,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.getPersonName = function(person, isSimply, isFirst) {
 	return Util.getPersonName(person, isSimply, isFirst);
-  }
+  };
   
   $scope.showVacations = function() {
 	if($scope.vacations.length > VACATIONS_PER_PAGE) {
@@ -64,23 +64,23 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.displayedVacations = $scope.vacations;
 	  $scope.vacationsPage = 1;
 	}
-  }
+  };
   
   $scope.getDays = function(start, end) {
     return VacationsService.getDays(start, end);
-  }
+  };
   
   $scope.getNewVacationDuration = function() {
     return $scope.getDays($scope.vacationStartDate + " " + $scope.vacationStartTime, this.vacationEndDate + " " + this.vacationEndTime);
-  }
+  };
   
   $scope.getEditVacationDuration = function() {
     return $scope.getDays(this.vacationEditStartDate + " " + this.vacationEditStartTime, this.vacationEditEndDate + " " + this.vacationEditEndTime);
-  }
+  };
   
   $scope.getActualDays = function(startDate, endDate) {
 	return VacationsService.getActualDays(startDate, endDate);
-  }
+  };
   
   $scope.requestHours = function() {
 	$scope.errors = [];
@@ -107,13 +107,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       } else {
         $scope.editManager = true;
       }
-	}
+	};
 	
 	$('.select-vacation-start-date').selectpicker();
 	$('.select-vacation-start-date').selectpicker('render');
 	
 	$('.select-vacation-manager').selectpicker();
-  }
+  };
   
   $scope.addVacation = function() {
 	if($scope.validateNewVacation()) {
@@ -135,7 +135,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  person: { resource: $scope.profile.about},
 	  type: $scope.vacationType,
 	  vacationManager: { resource: $scope.vacationManager.resource }
-	}
+	};
 	
 	if($scope.isApproved(vacation)) {
       vacation.status = STATUS.Approved;
@@ -150,7 +150,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       var notification = {
         type: "Vacation",
         header: "Pending Paid Vacation Request",
-        text: "From " + $scope.me.name,
+        text: "From " + Util.getPersonName($scope.me),
         icon: "fa fa-clock-o",
         person: { resource: $scope.vacationManager.resource }
       };
@@ -164,7 +164,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       
       $scope.requestNew = false;
 	});
-  }
+  };
   
   $scope.validateNewVacation = function() {
 	$scope.errors = [];
@@ -196,13 +196,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	$scope.checkForConflictDates($scope.vacationStartDate, $scope.vacationEndDate, $scope.vacationStartTime, $scope.vacationEndTime);
 	
 	return $scope.errors.length > 0;
-  }
+  };
   
   $scope.displayDate = function(date) {
 	var mom = moment(date);
 	
 	return mom.format("MMM D");
-  }
+  };
   
   $scope.editVacationIndex = -1;
   
@@ -226,7 +226,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $('.select-vacation-start-date-edit').selectpicker();
 	  $('.select-vacation-manager-' + index).selectpicker();
 	}
-  }
+  };
   
   $scope.deleteVacation = function() {
 	$scope.cancelValidation = "";
@@ -241,7 +241,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	var notification = {
       type: "VacationCancel",
       header: "Cancelled Paid Vacation Request",
-      text: $scope.me.name + " has deleted out-of-office entry: " + vacation.startDate + " - " + vacation.endDate + ", " + vacation.type + ". Reason: " + $scope.cancellationReason,
+      text: Util.getPersonName($scope.me) + " has deleted out-of-office entry: " + vacation.startDate + " - " + vacation.endDate + ", " + vacation.type + ". Reason: " + $scope.cancellationReason,
       icon: "fa fa-times-circle",
       person: { resource: vacation.vacationManager.resource }
     };
@@ -254,7 +254,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
         $scope.showVacations();
       });
     });
-  }
+  };
   
   $scope.updateVacation = function(vacation) {
     $scope.errors = [];
@@ -300,7 +300,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.editVacationIndex = -1;
 	  $scope.getVacations();
 	});
-  }
+  };
   
   $scope.isApproved = function(vacation) {
     if((vacation.type == VACATION_TYPES.Appointment && moment(vacation.endDate).diff(vacation.startDate, 'hours') <= 4)
@@ -308,7 +308,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
        return true;
     else
       return false;
-  }
+  };
   
   $scope.getCurrentYearVacationDays = function() {
 	var now = moment();
@@ -359,7 +359,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	} else {
 	  return roundHours.toFixed(1);
 	}
-  }
+  };
   
   $scope.checkForConflictDates = function(startDate, endDate, startTime, endTime, editedVacation) {
 	$scope.errors = [];
@@ -406,19 +406,19 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	}
 	
 	return true;
-  }
+  };
   
   $scope.getStatusText = function(status) {
 	return VacationsService.getStatusText(status);
-  }
+  };
   
   $scope.getTypeText = function(type) {
     return VacationsService.getTypeText(type);
-  }
+  };
   
   $scope.getStartVacDate = function(date) {
 	return date;
-  }
+  };
   
   $scope.startDateChanged = function(index) {
 	if(index) {
