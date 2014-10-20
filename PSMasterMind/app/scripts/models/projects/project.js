@@ -256,7 +256,7 @@ function( Terms, Role ) {
 	}, {
 		description: 'Must have a start date.',
 		check: function( ) {
-			return _.isDate( this.startDate );
+			return !_.isEmpty( this.startDate );
 		}
 	}, {
 		description: 'Must have an executive sponsor.',
