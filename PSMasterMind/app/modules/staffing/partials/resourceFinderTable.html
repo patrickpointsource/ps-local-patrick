@@ -77,7 +77,7 @@
 	  		<img class="smallProfileImage" ng-src="{{person.thumbnail}}" />
 		</a>
 		<div class="col-xs-8 col-sm-3 res-person-name" style="height: 85px;">
-	  		<a href="#{{person.resource}}">{{person.familyName}}, {{person.givenName}}</a>
+	  		<a href="#{{person.resource}}">{{getPersonName(person)}}</a>
 		</div>
 		<div class="col-xs-7 col-sm-1 res-people-prop">
 		  <div>

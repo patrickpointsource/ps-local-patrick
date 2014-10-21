@@ -10,6 +10,11 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 	$scope.showTableView = true;
 
 	$scope.$parent.hideSpinner = false;
+	
+	$scope.getPersonName = function (person)
+	{
+		return Util.getPersonName(person);
+	};
 
 	$scope.findResources = function( args ) {
 		$scope.projectToAssignTo = {
