@@ -39,7 +39,6 @@ angular.module('Mastermind.controllers.projects')
       var type = $scope.newRole.type.resource;
       var roleType = $scope.roleGroups[type];
 
-      $scope.newRole.type.id = roleType.abbreviation;
       var rateType = $scope.newRole.rate.type;
       if(rateType === Rates.MONTHLY){
         $scope.newRole.rate.amount =  roleType.monthlyAdvertisedRate;

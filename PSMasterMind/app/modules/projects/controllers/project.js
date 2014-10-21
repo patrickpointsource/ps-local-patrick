@@ -665,12 +665,19 @@ else if( role.percentageCovered == 0 )
 
 	$scope.validateFields = function( ) {
 		$scope.messages = [ ];
-
+		
+		prepareProjectBeforeValidation($scope.project);
 		var validationResult = $scope.project.validate();
         
         $scope.messages = validationResult.messages;
         
 		return validationResult.valid;
+	};
+	
+	var prepareProjectBeforeValidation = function ( project ) {
+		project.roles.forEach(function(role) {
+			role.type.id =  $scope.getAbbreviation(role);
+		});
 	};
 	
 	var SYMBOLS_FOR_DESCRIPTION = 400;
