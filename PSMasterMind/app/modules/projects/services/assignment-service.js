@@ -151,7 +151,15 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 
 			params.projectResource = projectResources;
 			params.timePeriod = timePeriod;
-			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params);
+			
+			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
+				
+				// in case when collection of assignments objects
+				if (_.isObject(assignments) && assignments.members && assignments.members[0].members)
+					return assignments.members;
+				
+				return assignments;
+			});
 		}
 		else {
 

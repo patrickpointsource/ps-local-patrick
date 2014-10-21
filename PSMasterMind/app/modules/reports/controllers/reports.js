@@ -792,7 +792,6 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 			for( i = 0; i < assignments.length; i++ ) {
 
-				//result[ i ].hour.hours = 1;
 				for( j = 0; j < assignments[ i ].members.length; j++ ) {
 
 					if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j ].person.resource ) {
@@ -807,8 +806,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 							name:  Util.getPersonName($scope.peopleMap[ assignments[ i ].members[ j ].person.resource ])
 						} );
 
-						//if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j
-						// ].person.resource )
+						
 						persons.push( assignments[ i ].members[ j ].person.resource );
 					}
 				}

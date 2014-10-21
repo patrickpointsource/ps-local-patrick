@@ -84,6 +84,8 @@ var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources,
 		}
 		
 		var assignments = [];
+		var processedAssignment;
+		
 		_.each(result.data, function(assignment){
 
 			_.each(projectResources, function (projectResource){
@@ -125,21 +127,27 @@ var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources,
 								}
 							}
 
-							if ( timePeriod == "all" ) {
+							// in case if timePeriod not provided
+							if ( !timePeriod || timePeriod == "all" ) {
 								included.push(member);
 							}
 
 						});
-
-						assignment.members = included;
-						assignment.excludedMembers = excluded;
-						assignments.push(assignment);
+						
+						// clone assignment before changing its properties to prevent from global modification
+						processedAssignment = _.clone(assignment);
+						
+						processedAssignment.members = included;
+						processedAssignment.excludedMembers = excluded;
+						
+						assignments.push(processedAssignment);
 					}
 
 				}
 			});
 				
 		});
+		
 		var result;
 		if ( assignments && assignments.length == 1 )  {
 			result =assignments[0];
@@ -161,7 +169,7 @@ var listAssignmentsByPersonResource = function(personResource, startDateMoment, 
         } else {
             //console.log(body);
         	
-			var myProjects = [ ];
+			
 			var assignments = [ ];
 			var HOURS_PER_WEEK = 45;
 			
@@ -173,29 +181,24 @@ var listAssignmentsByPersonResource = function(personResource, startDateMoment, 
 			for( var i = 0; i < result.length; i++ ) {
 
 				//Add the project to the list of projects to resolve
-				var projectAssignment = result[ i ];
-				if( projectAssignment.project && projectAssignment.project.resource && myProjects.indexOf( projectAssignment.project.resource ) === -1 ) {
-					//Push the assignee onto the active list
-					var resource = projectAssignment.project.resource;
-					var oid = resource.substring( resource.lastIndexOf( '/' ) + 1 );
-					myProjects.push( oid );
-				}
-
+				var projectAssignment = _.clone(result[ i ]);
+				
 				//Find all the assignments for this person
 				for( var j = 0; j < projectAssignment.members.length; j++ ) {
 					var assignment = projectAssignment.members[ j ];
 					var endDate = assignment.endDate ? assignment.endDate : null;
+					
 					if( personResource == assignment.person.resource && ( !endDate || endDate > util.getTodayDate() ) ) {
 						//Associate the project directly with the an assignment
 						if (projectAssignment.project) {
 							assignment.project = projectAssignment.project;
 						}
 						assignment.percentage = Math.round( 100 * assignment.hoursPerWeek / HOURS_PER_WEEK );
-						if ( 
-								( !endDateMoment || ( endDateMoment >= assignment.startDate  ) ) && 
+						
+						if ( ( !endDateMoment || ( endDateMoment >= assignment.startDate  ) ) && 
 								( !startDateMoment || !endDate || ( startDateMoment <= assignment.endDate ) ) 
 							) {
-							assignments.push( assignment );
+							assignments.push( projectAssignment );
 						}
 					}
 				}
