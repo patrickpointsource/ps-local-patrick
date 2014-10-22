@@ -51,7 +51,8 @@
     "q": "*",
     "nodemailer": "*",
     "nodemailer-smtp-transport": "*",
-    "nodemailer-wellknown": "*"
+    "nodemailer-wellknown": "*",
+    "cloudant": "*"
   },
   "engines": {
     "node": "0.10.25"
