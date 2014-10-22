@@ -195,10 +195,10 @@ function( $q, Resources ) {
 								}
 
 								// Check if it is a current assignment
-								var assignmentStartDate = moment( assignmentRecord.startDate );
+								var assignmentStartDate = moment( assignmentRecord.project.startDate );
 								// If no end date default to the passed in end
 								// date
-								var assignmentEndDate = assignmentRecord.endDate ? moment( assignmentRecord.endDate ) : endDateMoment;
+								var assignmentEndDate = assignmentRecord.project.endDate ? moment( assignmentRecord.project.endDate ) : endDateMoment;
 								if( dateMoment.unix( ) >= assignmentStartDate.unix( ) && dateMoment.unix( ) <= assignmentEndDate.unix( ) ) {
 									// Look through the hours records to see if
 									// there is one for this assignments project
