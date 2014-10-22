@@ -222,7 +222,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		if( assignable )
 			for( var i = 0; i < assignable.length; i++ ) {
 				if( assignable[ i ].resource == personId ) {
-					result = assignable[ i ].familyName + ', ' + assignable[ i ].givenName;
+					result = Util.getPersonName(assignable[i], false, false);
 					break;
 				}
 			}
