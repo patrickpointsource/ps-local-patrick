@@ -25,6 +25,7 @@ var devenv = {
             url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/'
 		}*/
 		cloudant: {
+			account: 'psdev1',
 		    user: 'tathendersheaderefortati',
             password: 'e7wRT4nm0IgHGeWu07benG36',
             url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/'
