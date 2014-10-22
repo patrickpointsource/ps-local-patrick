@@ -111,13 +111,29 @@
                       <label class="profilePartTimeLabel">Is Active:</label>
                       <input type="checkbox" name="profileIsActive" ng-model="profile.isActive" ng-checked="profile.isActive == 'true'" ng-disabled="!editMode"/>
                     </div>
+                    
+                    <div ng-show="canEditCapacity && editMode" class="col-xs-12 col-md-10 col-lg-6 edit padding-top-10 pull-right">
+                      
+                      <select class="selectpicker select-user-groups form-control" multiple data-selected-text-format="count>3" ng-model="userSecurityGroups" ng-options="g.name for g in securityGroups">
+                        <!--<option selected value="" ng-if="!profile.manager">Select Manager</option>-->
+                      </select>
+                    </div>
+                    
+                    <div ng-if="canSeeCapacity"  class="col-xs-12 col-md-6 col-lg-6 view no-left-padding-sm padding-top-10">
+                      
+                      <label for="profileManager" class="profilePartTimeLabel" style="margin-bottom: 10px;">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</label>
+                      <span ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</span>
+                      <div ng-repeat="userRole in userSecurityGroups" class="user-security-role">
+                        {{userRole.name}} <a ng-show="editMode" ng-click="removeUserRole($index)" class="cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-3 profile-graph-container">
-              <div ng-if="adminAccess" ng-show="editMode">
+              <!--<div ng-if="adminAccess" ng-show="editMode">
                 <label class="personDetailLabel">Groups:</label>
                 <ul class="personDetailList">
                   <li>
@@ -133,7 +149,7 @@
                     <input type="checkbox" ng-model="isSales" ng-click="handleGroupChange($event, 'Sales')" /><span class="checkboxText">Sales</span>
                   </li>
                 </ul>
-              </div>
+              </div> -->
               <h3 class="profile-graph-header">Hours this week</h3>
               <div class="percentage-container">
                 <div id="percentage-activeBorder" class="percentage-active-border">

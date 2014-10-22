@@ -72,6 +72,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                 resource: manager.resource
             } );
         }
+        
+        $scope.getSecurityInformation();
 
         $scope.managers = _.sortBy( $scope.managers, function( manager ) {
         	return manager.name;
@@ -84,7 +86,59 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             $scope.$emit( 'profile:loaded' );
         } else
             $scope.$emit( 'profile:loaded' );
-	}
+	};
+	
+	$scope.getSecurityInformation = function() {
+	  $scope.userSecurityGroups = [];
+	  Resources.get('securityRoles').then(function(result) {
+        $scope.securityGroups = result.members;
+              
+        Resources.get('userRoles').then(function(userRoles) {
+          $scope.userRoles = userRoles.members;
+          
+          var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
+          
+          if(userRole) {
+            $scope.userRole = userRole;
+            $scope.prepareUserRoles();
+          } else {
+            Resources.create('userroles', {userId: $scope.profile.googleId, roles: []}).then(function(result){
+              $scope.userRole = result;
+              $scope.updateUserRoles();
+            });
+          }
+        });
+      });
+	};
+	
+	$scope.prepareUserRoles = function() {
+	  $scope.initialUserGroups = [];
+      _.extend($scope.initialUserGroups, $scope.userRole.roles);
+      $scope.userSecurityGroups = _.filter($scope.securityGroups, function(userRole) {
+        return $scope.userRole.roles.indexOf(userRole.name) > -1;
+      });
+	};
+	
+	$scope.updateUserRoles = function() {
+	  Resources.get('userRoles').then(function(userRoles) {
+          $scope.userRoles = userRoles.members;
+          
+          $scope.userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
+          
+          $scope.prepareUserRoles();
+      });
+	};
+	
+	$scope.removeUserRole = function(index) {
+	  var removedGroup = $scope.userSecurityGroups[index];
+	  var indexInGroups = $scope.securityGroups.indexOf(removedGroup).toString();
+	  var selectValue = $('.select-user-groups').selectpicker('val');
+	  var indexInSelect = selectValue.indexOf(indexInGroups);
+	  selectValue.splice(indexInSelect, 1);
+	  $scope.userSecurityGroups.splice(index, 1);
+	  $('.select-user-groups').selectpicker('val', selectValue);
+	  $('.select-user-groups').selectpicker('refresh');
+	};
 	
 	/**
 	 * Populate the form with fetch profile information
@@ -193,6 +247,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		Resources.refresh( 'people/' + $scope.profileId ).then( function( person ) {
 			$scope.setProfile( person );
 			$scope.editMode = true;
+			$(".select-user-groups").selectpicker();
 		} );
 	};
 
@@ -229,23 +284,54 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		} else {
 		  profile.isActive = 'false';
 		}
+		
+		// check if security groups needs to be updated
+		var rolesNeedsToBeUpdated = false;
+		var securityGroups = _.map($scope.userSecurityGroups, function(userSecurityGroup){
+		  return userSecurityGroup.name;
+		});
+		
+		if(securityGroups.length != $scope.initialUserGroups.length) {
+		  rolesNeedsToBeUpdated = true;
+		} else {
+		  for(var i = 0; i < securityGroups.length; i++) {
+		    if($scope.initialUserGroups.indexOf(securityGroups[i]) < 0) {
+		      rolesNeedsToBeUpdated = true;
+		      break;
+		    }
+		  }
+		}
+		
+		if(rolesNeedsToBeUpdated) {
+          $scope.userRole.roles = securityGroups;
+          Resources.update($scope.userRole).then(function(result) {
+            $scope.userRole = result;
+            
+            $scope.saveProfile(profile);
+          });
+        } else {
+          $scope.saveProfile(profile);
+        }	
+	};
 
-		Resources.update( profile ).then( function( person ) {
-			var fields = {
-				resource: 1,
-				name: 1,
-				familyName: 1,
-				givenName: 1,
-				primaryRole: 1,
-				thumbnail: 1
-			};
-			var params = {
-				'fields': fields
-			};
-			var key = 'people?' + JSON.stringify( params );
-			delete localStorage[ key ];
 
-			var getBack = localStorage[ key ];
+    $scope.saveProfile = function(profile) {
+      Resources.update( profile ).then( function( person ) {
+            var fields = {
+                resource: 1,
+                name: 1,
+                familyName: 1,
+                givenName: 1,
+                primaryRole: 1,
+                thumbnail: 1
+            };
+            var params = {
+                'fields': fields
+            };
+            var key = 'people?' + JSON.stringify( params );
+            delete localStorage[ key ];
+
+            var getBack = localStorage[ key ];
             
             Resources.refresh( 'people/' + $scope.profileId ).then( function( person ) {
               $scope.setProfile( person );
@@ -258,10 +344,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                 } );
               }
             } );
-			
-		} );
-	};
-
+            
+      } );
+    };
+    
 	$scope.monthNames = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
 
 	$scope.initHours = function( isReinit, cb ) {

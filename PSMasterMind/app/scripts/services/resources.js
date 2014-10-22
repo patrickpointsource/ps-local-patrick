@@ -202,6 +202,9 @@ function( $q, $timeout, Restangular ) {
 				var updated = $.extend( true, result, resource );
 
 				result.customPUT( updated, id ).then( function( newResult ) {
+				    //Clean local storage collection
+                    delete localStorage[ route ];
+                    delete localStorage[ TIME_PREFIX + route ];
 					//Save to localStorage
 					localStorage[ resourceURL ] = JSON.stringify( newResult );
 					localStorage[ TIME_PREFIX + resourceURL ] = new Date( );
@@ -227,15 +230,26 @@ function( $q, $timeout, Restangular ) {
 			var resourceURL = toUpdate.about ? toUpdate.about : toUpdate.resource;
 
 			var route = '';
-			var id = resourceURL;
-			var lastIndex = resourceURL.indexOf( '/' );
-			if( lastIndex !== -1 ) {
-				route = resourceURL.substr( 0, lastIndex );
-				id = resourceURL.substr( lastIndex + 1 );
+			var id;
+			var route;
+			if(resourceURL) {
+			  id = resourceURL;
+              var lastIndex = resourceURL.indexOf( '/' );
+              if( lastIndex !== -1 ) {
+                route = resourceURL.substr( 0, lastIndex );
+                id = resourceURL.substr( lastIndex + 1 );
+              }
+			} else {
+			  route = toUpdate.route ? toUpdate.route : toUpdate.form;
+			  id = toUpdate._id;
 			}
+			
 			var resource = ResourcesRestangular.all( route );
 
 			resource.customPUT( toUpdate, id ).then( function( newResult ) {
+			    //Clean local storage collection
+			    delete localStorage[ route ];
+			    delete localStorage[ TIME_PREFIX + route ];
 				//Save to localStorage
 				localStorage[ resourceURL ] = JSON.stringify( newResult );
 				localStorage[ TIME_PREFIX + resourceURL ] = new Date( );
@@ -256,6 +270,18 @@ function( $q, $timeout, Restangular ) {
 	 */
 	function create( collection, toCreate ) {
 		var resource = ResourcesRestangular.all( collection );
+		//Clean local storage collection
+		var keyToClean = '';
+		if(collection == "userroles") {
+		  keyToClean = "userRoles";
+		} else {
+		  keyToClean = collection;
+		}
+		if(keyToClean) {
+		  delete localStorage[ keyToClean ];
+          delete localStorage[ TIME_PREFIX + keyToClean ];
+		}
+        
 		return resource.post( toCreate );
 	}
 
@@ -270,6 +296,9 @@ function( $q, $timeout, Restangular ) {
 			route = resourceURL.substr( 0, lastIndex );
 			id = resourceURL.substr( lastIndex + 1 );
 		}
+		//Clean local storage collection
+        delete localStorage[ route ];
+        delete localStorage[ TIME_PREFIX + route ];
 		var resource = ResourcesRestangular.all( route );
 		return resource.customDELETE( id, params );
 	}

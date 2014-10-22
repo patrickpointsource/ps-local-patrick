@@ -2,6 +2,7 @@
 
 var dataAccess = require('../data/dataAccess');
 var validation = require( '../data/validation.js' );
+var _ = require( 'underscore' );
 
 module.exports.listUserRoles = function(q, callback) {
     dataAccess.listUserRoles(q, function(err, body){
@@ -26,9 +27,11 @@ module.exports.insertUserRoles = function(obj, callback) {
     dataAccess.insertItem(obj._id, obj, dataAccess.USER_ROLES_KEY, function(err, body){
         if (err) {
             console.log(err);
-            callback('error loading security roles', null);
+            callback('error loading user roles: ' + err, null);
         } else {
-            callback(null, body);
+            obj._id = body.id;
+            
+            callback(null, _.extend(obj, body));
         }
     });
 };
