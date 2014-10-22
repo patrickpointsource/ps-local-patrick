@@ -41,7 +41,7 @@
             Other People out this period.
           </div>
           <div class="row no-horizontal-margin margin-bottom-md">
-            <a ng-repeat-start="otherVacPerson in peopleOutThisDay" href="#{{otherVacPerson.about}}">{{otherVacPerson.name}}</a>
+            <a ng-repeat-start="otherVacPerson in peopleOutThisDay" href="#{{otherVacPerson.about}}">{{getPersonName(otherVacPerson)}}</a>
             (<span class="smallDates" ng-repeat="period in otherVacPerson.periods">
               {{displayShortPeriod(period)}}
               <span class="smallDates" ng-hide="$index == otherVacPerson.periods.length - 1">|</span>
