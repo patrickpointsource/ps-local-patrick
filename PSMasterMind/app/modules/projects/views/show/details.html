@@ -97,7 +97,7 @@
                     <select id="executiveSponsor" name="executiveSponsor"
                         class="col-xs-12 form-control"
                         ng-model="project.executiveSponsor.resource" required
-                        ng-options="m.resource as  getPersonName(m) for m in execs.members | orderBy:'name.familyName'">
+                        ng-options="m.resource as getPersonName(m) for m in execs.members | orderBy:orderByName">
                     </select>
                 </div>
             </div>
@@ -110,7 +110,7 @@
             <div class="col-xs-8 col-sm-9">
                 <select id="salesSponsor" class="col-xs-12 form-control"
                     ng-model="project.salesSponsor.resource"
-                    ng-options="m.resource as (m.familyName+', '+m.givenName) for m in sales.members | orderBy:'familyName'">
+                    ng-options="m.resource as getPersonName(m) for m in sales.members | orderBy:orderByName">
                 </select>
             </div>
           </div>

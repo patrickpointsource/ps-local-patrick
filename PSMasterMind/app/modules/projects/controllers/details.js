@@ -10,6 +10,14 @@ angular.module('Mastermind.controllers.projects', [])
     }, function (newValidity) {
       $scope.$emit('detailsForm:valid:change', newValidity);
     });
+    
+    $scope.getPersonName = function(person, isSimply, isFirst) {
+		return Util.getPersonName(person, isSimply, isFirst);
+	};
+	
+	$scope.orderByName = function(person) {
+		return $scope.getPersonName(person);
+	};
 
     $scope.isFieldInError = function (fieldName) {
       var detailsFormField = $scope.detailsForm[fieldName];
