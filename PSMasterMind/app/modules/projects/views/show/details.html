@@ -97,7 +97,7 @@
                     <select id="executiveSponsor" name="executiveSponsor"
                         class="col-xs-12 form-control"
                         ng-model="project.executiveSponsor.resource" required
-                        ng-options="m.resource as (m.familyName+', '+m.givenName) for m in execs.members | orderBy:'familyName'">
+                        ng-options="m.resource as  getPersonName(m) for m in execs.members | orderBy:'name.familyName'">
                     </select>
                 </div>
             </div>
