@@ -95,7 +95,7 @@
   	<div class="spinner-container" ng-hide="hideVacationSpinner" style="width: calc(100% - 30px);">
 		<i class="fa fa-spinner fa-spin fa-3x"></i>
 	</div>
-    <div class="row col-xs-12 no-margin" ng-if="!organizedHours">
+    <div class="row col-xs-12 no-margin" ng-if="!projectVacations || projectVacations.length == 0">
       <div class="alert alert-warning no-margin">There are no out-of-office requests for this period.</div>
     </div>
     <div class="row peopleList" ng-repeat="vacation in projectVacations">

@@ -432,9 +432,18 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				if( !cond )
 					result[ i ].roles.splice( j, 1 );
 			}
-
+			
+			// add role on which we will assign hours from all unassigned persons
+			result[ i ].roles.push({
+				type: {
+					resource: CONSTS.UNKNOWN_ROLE
+				},
+				abbreviation: CONSTS.UNKNOWN_ROLE
+			});
+			
 			if( result[ i ].roles.length == 0 )
 				result.splice( i, 1 );
+			
 
 		}
 
@@ -828,7 +837,22 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 					"project.resource": key
 				};
 			} );
+			
+			// include all projects not only on which we have assignments
+			hoursQ.$or = _.map( result, function( val ) {
+				if( val.resource.indexOf( 'tasks' ) > -1 )
+					return {
+						"task.resource": val.resource
+					};
+				return {
+					"project.resource": val.resource
+				};
+			} );
+			
 			hoursQ.$or = _.uniq( hoursQ.$or, function( p ) {
+				if (p[ "task.resource" ])
+					return p[ "task.resource" ];
+				
 				return p[ "project.resource" ];
 			} );
 
@@ -851,6 +875,26 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 					var reportHours = hoursResult.members;
 					var person;
 					var mappingEntry;
+					var personEntry;
+					
+					//init projectMapping with entries related to hours which were logged by persons who are not assigned on project
+					for (i = 0; i < reportHours.length; i ++) {
+						if(  reportHours[ i ].project && reportHours[ i ].project.resource && !projectMapping[ reportHours[ i ].project.resource ] )
+							projectMapping[ reportHours[ i ].project.resource ] = {};
+
+						if( !projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] )
+							projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] = [ ];
+
+						personEntry = _.find(projectMapping[ reportHours[ i ].project.resource ][CONSTS.UNKNOWN_ROLE], function(p) { 
+							return p.resource == reportHours[ i ].person.resource;
+						});
+						
+						if (!personEntry)
+							projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
+								resource: reportHours[ i ].person.resource,
+								name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ])
+							} );
+					}
 
 					for( i = 0; i < reportHours.length; i++ ) {
 
@@ -897,7 +941,11 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 					// each project role
 					for( i = 0; i < result.length; i++ )
 						for( j = 0; j < result[ i ].roles.length; j++ ) {
-							roleResource = result[ i ].resource + '/roles/' + result[i].roles[ j ]._id;
+							
+							if (result[i].roles[ j ]._id)
+								roleResource = result[ i ].resource + '/roles/' + result[i].roles[ j ]._id;
+							else
+								roleResource = CONSTS.UNKNOWN_ROLE;
 
 							if( projectMapping[ result[ i ].resource ] && projectMapping[ result[ i ].resource ][ roleResource ] ) {
 								result[i].roles[ j ].persons = projectMapping[ result[i].resource ][ roleResource ];
@@ -1018,7 +1066,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 							//line += [ '--' ].join( ',' );
 							line += $scope.hoursToCSV.stringify( record.name ) + ',';
 							line += record.roles[ j ].persons[ k ].name + ',';
-							line += record.roles[ j ].abbreviation + ',';
+							line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': record.roles[ j ].abbreviation) + ',';
 							line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].abbreviation ) ) + ',';
 							line += [ '--', '--', '--', '--' ].join( ',' );
 							line += '\r\n';
@@ -1029,7 +1077,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 							//line += [ '--' ].join( ',' );
 							line += $scope.hoursToCSV.stringify( record.name ) + ',';
 							line += record.roles[ j ].persons[ k ].name + ',';
-							line += record.roles[ j ].abbreviation + ',';
+							line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': record.roles[ j ].abbreviation) + ',';
 							line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].abbreviation ) ) + ',';
 
 							line += record.roles[ j ].persons[ k ].hours[ l ].date + ',';

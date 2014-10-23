@@ -359,7 +359,16 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			var params = {};
 			params.projectResource = projectQuery.project.resource;
 			params.timePeriod = timePeriod;
-			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params);
+			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
+				
+				// in case when we get "data" collection instead of "members"
+				if (_.isObject(assignments) && assignments.data && !assignments.members){
+					assignments.members = assignments.data;
+					delete assignments.data
+				}
+				
+				return assignments;
+			});
 		}
 		else {
 			return this.getAssignmentsByPeriodUsingQuery(timePeriod, projectQuery);
