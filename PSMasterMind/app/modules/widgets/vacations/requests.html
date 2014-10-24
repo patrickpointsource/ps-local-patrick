@@ -7,14 +7,14 @@
         <h4 class="align-center" ng-show="requests.length > 0">
           <span class="color-yellow">
             <i class="fa fa-exclamation-circle"></i>
-            {{requests.length}} Pending request<span ng-hide="requests.length == 1">s</span>
+             {{getRequestsByStatus("Pending").length}} Pending request<span ng-hide="requests.length == 1">s</span>
           </span> awaiting your response.
         </h4>
         <h4 class="align-center" ng-hide="requests.length > 0">
           There are no Pending requests.
         </h4>
       </div>
-      <div class="row vac-row no-horizontal-margin-xs" ng-repeat="request in requests">
+      <div class="row vac-row no-horizontal-margin-xs" ng-repeat="request in requests" ng-show="request.status === 'Pending'">
         <div class="row no-horizontal-margin margin-bottom-md">
           <div class="col-xs-4 vac-first-col">{{getPersonName(request.person)}}</div>
           <div class="col-xs-4 vac-type no-horizontal-padding">{{getTypeText(request.type)}} <span class="color-gray-image-border">({{getDays(request.startDate, request.endDate)}})</span></div>

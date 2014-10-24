@@ -160,6 +160,10 @@ function( $q, $scope, $state, $rootScope, Resources, ProjectsService, VacationsS
     return deferred.promise;
   };
   
+  $scope.getRequestsByStatus = function(statusTitle) {
+	 return _.where($scope.requests, {status: statusTitle});
+  };
+	  
   $scope.getStatusText = function(status) {
     return VacationsService.getStatusText(status);
   };
