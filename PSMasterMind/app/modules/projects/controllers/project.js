@@ -3024,6 +3024,25 @@ else if( role.percentageCovered == 0 )
 					for( var i = 0; i < $scope.currentDisplayedHours.length; i++ ) {
 						hours = hours.concat( $scope.currentDisplayedHours[ i ] );
 					}
+					
+					if ($scope.currentDisplayedHours.length == 0) {
+						for( var i = 0; i < $scope.thisWeekHours.length; i++ ) {
+							hours = hours.concat( $scope.thisWeekHours[ i ] );
+						}
+						
+						hours.sort( function( h1, h2 ) {
+							if (h1.person.resource > h2.person.resource)
+								return 1;
+							else if (h1.person.resource < h2.person.resource)
+									return -1
+							else if( new Date( h1.date ) > new Date( h2.date ) )
+								return 1;
+							else if( new Date( h1.date ) < new Date( h2.date ) )
+								return -1;
+
+							return 0;
+						} );
+					}
 				}
 
 			}
@@ -3199,7 +3218,7 @@ else if( role.percentageCovered == 0 )
 
 			var record = hours[ x ];
 
-			line += $scope.hoursToCSV.stringify( record.person.name ) + ',';
+			line += $scope.hoursToCSV.stringify( $scope.getPersonName(record.person) ) + ',';
 			line += $scope.hoursToCSV.stringify( $scope.getPersonProjectRoles( record.person ) ) + ',';
 			line += record.date + ',';
 			line += record.hours + ',';
