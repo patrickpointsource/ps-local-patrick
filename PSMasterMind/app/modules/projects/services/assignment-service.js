@@ -155,8 +155,10 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
 				
 				// in case when collection of assignments objects
-				if (_.isObject(assignments) && assignments.members && assignments.members[0].members)
+				if (_.isObject(assignments) && assignments.members &&
+					assignments.members.length > 0 && assignments.members[0].members) {
 					return assignments.members;
+				}
 				
 				return assignments;
 			});
