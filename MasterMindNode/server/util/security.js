@@ -6,6 +6,16 @@ var _ = require('underscore');
 
 acl = new acl(new acl.memoryBackend());
 
+var DEFAULT_ROLES = {
+  EXECUTIVES: "Execs",
+  MANAGEMENT: "Managers",
+  PM: "PM",
+  MINION: "Minion",
+  SALES: "Sales"
+};
+
+module.exports.DEFAULT_ROLES = DEFAULT_ROLES;
+
 module.exports.isAllowed = function(userId, response, resource, permissions, callback) {
     acl.isAllowed(userId, resource, permissions, function(err, allowed){
         //TODO: remove this later
@@ -32,7 +42,6 @@ module.exports.allowedPermissions = function(userId, resources, callback) {
         callback(err, obj);
     });
 };
-
 
 module.exports.initialize = function() {
 	console.log("initializing security");
@@ -79,6 +88,20 @@ module.exports.initialize = function() {
 	});
 };
 
+module.exports.getUserRoles = function(user, callback) {
+  var query = { userId: user.googleId };
+  dataAccess.listUserRoles(query, function(err, body) {
+    if (err) {
+      console.log(err);
+      callback('error loading getUserRoles', null);
+    } else {
+      var userRoles = body.members.length == 1 ? body.members[0]: {};
+    }
+    
+    callback(err, userRoles);
+  });
+};
+
 var getRoleNames = function(roles) {
   var roleNames = [];
   if(roles) {
@@ -88,7 +111,7 @@ var getRoleNames = function(roles) {
   }
   
   return roleNames;
-}
+};
 
 var givePermissionToGroup = function(groupId, userRoles, roleNames) {
   if(groupId) {
@@ -123,6 +146,48 @@ var givePermissionToGroup = function(groupId, userRoles, roleNames) {
   }
 };
 
+var createDeaultRoles = function() {
+  dataAccess.listSecurityRoles({}, function(err, body) {
+    var securityGroups = body.members;
+    
+    // check for 4 default roles (Management, Executives, PM, Sales)
+    var executivesGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.EXECUTIVES });
+    var managementGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.MANAGEMENT });
+    var projectManagementGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.PM });
+    var salesGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.SALES });
+    
+    if(!executivesGroup) {
+      createGroup(DEFAULT_ROLES.EXECUTIVES);
+    }
+    if(!managementGroup) {
+      createGroup(DEFAULT_ROLES.MANAGEMENT);
+    }
+    if(!projectManagementGroup) {
+      createGroup(DEFAULT_ROLES.PM);
+    }
+    if(!salesGroup) {
+      createGroup(DEFAULT_ROLES.SALES);
+    }
+  });
+};
+
+module.exports.createDeaultRoles = createDeaultRoles;
+
+var createGroup = function(name) {
+  var group = { 
+    name: name,
+    resources: fullResourcesMap
+  };
+  
+  dataAccess.insertItem(null, group, dataAccess.SECURITY_ROLES_KEY, function(err, body){
+    if (err) {
+      console.log('Error in creating default security group: ' + group.name + ". Error: " + err);
+    } else {
+      console.log("Added default security group: " + group.name);
+    }
+  });
+};
+
 var allow = function(role, resource, permission, callback) {
     acl.allow(role, resource, permission, function(err){
         if (err) {
@@ -140,3 +205,92 @@ var addRole = function(userId, roles, callback) {
         }
     });
 };
+
+var fullResourcesMap = [
+    {
+      "name": "tasks",
+      "permissions": [
+        "viewTasks",
+        "editTasks"
+      ]
+    },
+    {
+      "name": "assignments",
+      "permissions": [
+        "viewAssignments",
+        "editAssignments"
+      ]
+    },
+    {
+      "name": "configuration",
+      "permissions": [
+        "viewConfiguration",
+        "editConfiguration"
+      ]
+    },
+    {
+      "name": "hours",
+      "permissions": [
+        "viewHours",
+        "editHours",
+        "deleteMyHours",
+        "editMyHours",
+        "viewHoursReportsAndCSV"
+      ]
+    },
+    {
+      "name": "people",
+      "permissions": [
+        "viewPeople",
+        "viewProfile",
+        "editProfile",
+        "viewMyProfile",
+        "editMyProfile",
+        "viewPersonnelData",
+        "editPersonnelData",
+        "viewGroups",
+        "editGroups"
+      ]
+    },
+    {
+      "name": "projects",
+      "permissions": [
+        "viewProjects",
+        "editProjects",
+        "viewProjectLinks",
+        "editProjectLinks",
+        "viewRoles",
+        "editRoles"
+      ]
+    },
+    {
+      "name": "vacations",
+      "permissions": [
+        "viewVacations",
+        "viewMyVacations",
+        "editVacations",
+        "editMyVacations"
+      ]
+    },
+    {
+      "name": "notifications",
+      "permissions": [
+        "viewNotifications",
+        "editNotifications",
+        "deleteNotifications"
+      ]
+    },
+    {
+      "name": "upgrade",
+      "permissions": [
+        "executeUpgrade"
+      ]
+    },
+    {
+      "name": "securityRoles",
+      "permissions": [
+        "viewSecurityRoles",
+        "editSecurityRoles"
+      ]
+    }
+];

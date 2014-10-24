@@ -4,6 +4,8 @@ var dataAccess = require('../data/dataAccess');
 var roles = require('./roles');
 var util = require('../util/util');
 
+var security = require('../util/security');
+
 module.exports.listPeople = function(query, callback) {
     dataAccess.listPeople(query, function(err, body){
         if (err) {
@@ -218,6 +220,9 @@ module.exports.getAccessRights = function(id, callback) {
 };
 
 module.exports.getAccessRightsByGoogleId = function(id, callback) {
+    
+    security.createDeaultRoles();
+    
     var query = {googleId: id};
     dataAccess.listPeople(query, function(err, body){
         if (err) {
@@ -231,14 +236,22 @@ module.exports.getAccessRightsByGoogleId = function(id, callback) {
 };
 
 var getAccessRights = function(user, callback) {
-	var accessRights = {
-			hasFinanceRights: false,
-			hasAdminRights: false,
-			hasManagementRights: false,
-			hasProjectManagementRights: false,
-			hasExecutiveRights: false,
-	};
+  var accessRights = {
+	hasFinanceRights: false,
+	hasAdminRights: false,
+	hasManagementRights: false,
+	hasProjectManagementRights: false,
+	hasExecutiveRights: false,
+  };
 	
+  security.getUserRoles(user, function(err, userRole) {
+    
+    if(err) {
+      callback(err, null);
+    } else {
+    
+    
+    
 	/**
 	 * Members of the 'Executives' group...
 	 *
@@ -250,7 +263,7 @@ var getAccessRights = function(user, callback) {
 	 * Update Role Types (adminAccess)
 	 * Can Assign Users to Groups (adminAccess)
 	 */
-	if( user.groups && user.groups.indexOf( 'Executives' ) !== -1 ) {
+	if( userRole.roles.indexOf( security.DEFAULT_ROLES.EXECUTIVES ) !== -1 ) {
 		accessRights.hasFinanceRights = true;
 		accessRights.hasAdminRights = true;
 		accessRights.hasProjectManagementRights = true;
@@ -268,7 +281,7 @@ var getAccessRights = function(user, callback) {
 	 * Update Role Types (adminAccess)
 	 * Can Assign Users to Groups (adminAccess)
 	 */
-	if( user.groups && user.groups.indexOf( 'Management' ) !== -1 ) {
+	if( userRole.roles.indexOf( security.DEFAULT_ROLES.MANAGEMENT ) !== -1 ) {
 		accessRights.hasFinanceRights = true;
 		accessRights.hasAdminRights = true;
 		accessRights.hasProjectManagementRights = true;
@@ -282,7 +295,7 @@ var getAccessRights = function(user, callback) {
 	 * Can make project assignments (projectManagementAccess)
 	 * View Staffing Deficits (projectManagementAccess)
 	 */
-	if( user.groups && user.groups.indexOf( 'Project Management' ) !== -1 ) {
+	if( userRole.roles.indexOf( security.DEFAULT_ROLES.PM ) !== -1 ) {
 		accessRights.hasProjectManagementRights = true;
 	}
 
@@ -292,11 +305,14 @@ var getAccessRights = function(user, callback) {
 	 * Is in the Sales Sponsor List (queried from People collection)
 	 * Can view all financial info (financeAccess)
 	 */
-	if( user.groups && user.groups.indexOf( 'Sales' ) !== -1 ) {
+	if( userRole.roles.indexOf( security.DEFAULT_ROLES.SALES ) !== -1 ) {
 		accessRights.hasFinanceRights = true;
 	}
 	
 	callback(null, accessRights);
+	
+	}
+  });
 };
 
 
