@@ -263,7 +263,7 @@ var getAccessRights = function(user, callback) {
 	 * Update Role Types (adminAccess)
 	 * Can Assign Users to Groups (adminAccess)
 	 */
-	if( userRole.roles.indexOf( security.DEFAULT_ROLES.EXECUTIVES ) !== -1 ) {
+	if( userRole && userRole.roles && userRole.roles.indexOf( security.DEFAULT_ROLES.EXECUTIVES ) !== -1 ) {
 		accessRights.hasFinanceRights = true;
 		accessRights.hasAdminRights = true;
 		accessRights.hasProjectManagementRights = true;
