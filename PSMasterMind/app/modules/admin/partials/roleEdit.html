@@ -1,5 +1,5 @@
 <div ng-form="RoleEditForm">
-    <div id="messages" class="alert alert-danger" ng-show="(!RoleEditForm.abbreviation.$dirty && RoleEditForm.abbreviation.$error.required ) || (!RoleEditForm.name.$dirty && RoleEditForm.name.$error.required)">
+    <div id="messages" class="alert alert-danger" ng-show="(RoleEditForm.abbreviation.$dirty && RoleEditForm.abbreviation.$error.required ) || (RoleEditForm.name.$dirty && RoleEditForm.name.$error.required)">
        <!--  <a class="close" ng-click="addRoleMessages = []">&times;</a> -->
         <ul>
              <li ng-show="RoleEditForm.abbreviation.$error.required">Role abbreviation is required</li>
