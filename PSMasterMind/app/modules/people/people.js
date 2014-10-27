@@ -382,8 +382,9 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			var roles = $scope.mapPeopleGroupToRoles( tmp );
 			
 			if (roles.length == 0 && includeInactive) {
-				// checks for all people (with inactive) if the roles are not specified
-				Resources.get( "people", params).then( function( result ) {
+				var includeAll = _.indexOf( tmp, 'all' ) > -1;
+				var res = (includeAll) ? "people" : "people/bytypes/inactive";
+				Resources.get( res, params).then( function( result ) {
 					$scope.people = result.members;
 					$scope.fillPeopleProps( );
 				} );
