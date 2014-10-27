@@ -254,6 +254,11 @@ function( Terms, Role ) {
 			return !_.isEmpty( this.name );
 		}
 	}, {
+		description: 'Must have a project type.',
+		check: function( ) {
+			return !_.isEmpty( this.type );
+		}
+	}, {
 		description: 'Must have a start date.',
 		check: function( ) {
 			return !_.isEmpty( this.startDate );
