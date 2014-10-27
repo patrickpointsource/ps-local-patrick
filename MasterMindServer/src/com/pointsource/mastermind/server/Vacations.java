@@ -166,7 +166,7 @@ public class Vacations extends BaseResource {
 			String description = (String) vacationRecord.get(CONSTS.PROP_DESCRIPTION);
 			String personName = (String) personProfile.get(CONSTS.PROP_NAME);
 			String userName = (String) vManagerProfile.get(CONSTS.PROP_GIVEN_NAME);
-			String title = "Pending Paid " + requestType + " Request";
+			String title = requestType.equals("Customer Travel") ? "Paid " + requestType + " hours logged" : "Pending " + requestType + " Request";
 			String message = SmtpHelper.getOutOfOfficeRequestMessage(userName, personName, requestType, startDate, endDate, description);
 			try {
 				SmtpSender.getInstance().sendTLSEmail(Arrays.asList(new String[]{mBox}), null, title, message);

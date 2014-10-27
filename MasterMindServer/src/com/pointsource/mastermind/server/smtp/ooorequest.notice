@@ -1,6 +1,8 @@
 !userName!,
 
-You have received a notification on MasterMind the details of which are as follows. 
+!personName! has !requested! !requestTypeLabel!.
+
+Further action needed: !actionNeeded!
 
 Type of request : !requestType!
 From : !startDate!

@@ -60,10 +60,17 @@ public class SmtpHelper {
 			LOGGER.log(Level.WARNING, e.getMessage());
 		}
 		
+		String requested = ( requestType.equals("Vacation") || requestType.equals("Conference/Training") ) ? "requested" : "logged";
+		String requestTypeLabel = ( requestType.equals("Vacation") ) ? requestType + "days" : requestType ;
+		String actionNeeded = requestType.equals("Customer Travel")  ? "none" : "Review and approve or deny";
+		
 		String msg = buf.toString();
 		msg = msg.replaceAll("!userName!", userName);
 		msg = msg.replaceAll("!personName!", personName);
 		msg = msg.replaceAll("!requestType!", requestType);
+		msg = msg.replaceAll("!requestTypeLabel!", requestTypeLabel);
+		msg = msg.replaceAll("!requested!", requested);
+		msg = msg.replaceAll("!actionNeeded!", actionNeeded);
 		msg = msg.replaceAll("!startDate!", startDate);
 		msg = msg.replaceAll("!endDate!", endDate);
 		msg = msg.replaceAll("!description!", description);
