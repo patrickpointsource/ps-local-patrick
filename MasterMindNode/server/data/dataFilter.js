@@ -51,16 +51,19 @@ var checkPersonByRole = function(person, roleId, includeInactive, callback) {
 
 
 /**
- * Returns active people
+ * Returns people by isActive flag
  * 
  * @param {Object} roleResources
  * @param {Object} callback
  */
 
-var filterActivePeople = function(people) {
+var filterPeopleByIsActiveFlag = function(people, isActive) {
 	var result = [];
 	_.each(people, function(person) {
-		if (person.isActive && person.isActive != "false") {
+		if (isActive && person.isActive && person.isActive != "false") {
+			result.push(person);
+		}
+		else if (!isActive && ( !person.isActive || person.isActive == "false") ) {
 			result.push(person);
 		}
 	});
@@ -571,7 +574,7 @@ var filterTasksByName = function(name, tasks) {
 
 // people filter functions
 module.exports.filterPeopleByRoles = filterPeopleByRoles;
-module.exports.filterActivePeople = filterActivePeople;
+module.exports.filterPeopleByIsActiveFlag = filterPeopleByIsActiveFlag;
 module.exports.filterPeopleWithPrimaryRole = filterPeopleWithPrimaryRole;
 module.exports.filterPeopleByGroups = filterPeopleByGroups;
 

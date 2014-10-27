@@ -60,13 +60,14 @@ var syncPeople = function(callback) {
 			else {
 	        	_.each(profiles.users, function(profile) {
 	        		var person = {};
-	        		people.getPersonByGoogleId (profile.id, function (err, personDB) {
+	        		people.getPersonByGoogleId (profile.id, function (err, result) {
 	        			if (!err) {
-	        				if (personDB.members) {
-	        					person = personDB.members[0];
+				        	var personDB = result.members.length == 1 ? result.members[0]: null;
+	        				if (personDB) {
+	        					person = personDB;
 	        				}
 	        			}
- 	        			if (personDB == null || (personDB.members[0] && personDB.members[0].isActive)) {
+ 	        			if (personDB == null || (personDB && personDB.isActive)) {
 		        			//profile.type = 'Google';
 		        			person.googleId = profile.id;
 		        			person.mBox = profile.primaryEmail;

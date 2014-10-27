@@ -380,21 +380,31 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
                 includeInactive = false;
         
 			var roles = $scope.mapPeopleGroupToRoles( tmp );
-			var params = {};
-			params.role = roles;
-			if (includeInactive) {
-				params.includeInactive = includeInactive;
-			}
-			Resources.get( "people/bytypes/byRoles", params).then( function( result ) {
-				$scope.people = result.members;
-				$scope.fillPeopleProps( );
-			} );
 			
+			if (roles.length == 0 && includeInactive) {
+				// checks for inactive people only
+				Resources.get( "people/bytypes/inactive", params).then( function( result ) {
+					$scope.people = result.members;
+					$scope.fillPeopleProps( );
+				} );
+			}
+			else {
+				var params = {};
+				params.role = roles;
+				if (includeInactive) {
+					params.includeInactive = includeInactive;
+				}
+				Resources.get( "people/bytypes/byRoles", params).then( function( result ) {
+					$scope.people = result.members;
+					$scope.fillPeopleProps( );
+				} );
+				
+			}
 		}
 		//Otherwise just show all
 		else {
 			$scope.peopleFilter = 'all';
-			Resources.get("people/byTypes/active").then( function( result ) {
+			Resources.get("people").then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );

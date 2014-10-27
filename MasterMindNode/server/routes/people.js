@@ -103,7 +103,16 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			    });
 			}
 			else if (type && type == "active") {
-			    people.listActivePeople(function(err, result){
+			    people.listPeopleByIsActiveFlag(true, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else if (type && type == "inactive") {
+			    people.listPeopleByIsActiveFlag(false, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {

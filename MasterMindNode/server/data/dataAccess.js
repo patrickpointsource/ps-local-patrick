@@ -337,19 +337,19 @@ var listPeopleByRoles = function( roleIds, includeInactive, callback ) {
 };
 
 
-var listActivePeople = function(callback ) {
+var listPeopleByIsActiveFlag = function(isActive, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterActivePeople(result.data), "members", "people/" ) );
+		callback( null, prepareRecords( dataFilter.filterPeopleByIsActiveFlag(result.data, isActive), "members", "people/" ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterActivePeople(body.data), "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterPeopleByIsActiveFlag(body.data, isActive), "members", "people/" ) );
 		} );
 	}
 
@@ -418,7 +418,7 @@ var listPeopleByPerson = function(person, callback ) {
 			
 			
 			var peopleResult = [];
-			listActivePeople(function(err, people) {
+			listPeopleByIsActiveFlag(true, function(err, people) {
 				if (err) {
 					callback(err, null);
 				}
@@ -459,7 +459,7 @@ var listActivePeopleByAssignments = function(callback ) {
 				}
 			});
 			
-			listActivePeople(function (err, activePeople) {
+			listPeopleByIsActiveFlag(true, function (err, activePeople) {
 				if (err) {
 					callback(err, null);
 				} else {
@@ -1086,7 +1086,7 @@ module.exports.listCurrentProjectsByPerson = listCurrentProjectsByPerson;
 module.exports.listPeople = listPeople;
 module.exports.listPeopleByPerson = listPeopleByPerson;
 module.exports.listPeopleByRoles = listPeopleByRoles;
-module.exports.listActivePeople = listActivePeople;
+module.exports.listPeopleByIsActiveFlag = listPeopleByIsActiveFlag;
 module.exports.listPeopleWithPrimaryRole = listPeopleWithPrimaryRole;
 module.exports.listPeopleByGroups = listPeopleByGroups;
 module.exports.listActivePeopleByAssignments = listActivePeopleByAssignments;

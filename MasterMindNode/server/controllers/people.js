@@ -42,8 +42,8 @@ module.exports.listPeopleByPerson = function(person, callback) {
     });
 };
 
-module.exports.listActivePeople = function(callback) {
-    dataAccess.listActivePeople(function(err, body){
+module.exports.listPeopleByIsActiveFlag = function(isActive, callback) {
+    dataAccess.listPeopleByIsActiveFlag(isActive, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people', null);
