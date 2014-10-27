@@ -6,6 +6,7 @@ var auth = require( '../util/auth' );
 
 var security = require( '../util/security' );
 var securityResources = require( '../util/securityResources' );
+var _ = require( 'underscore' );
 
 var router = express.Router( );
 
@@ -110,6 +111,9 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
         if( allowed ) {
             var projects = req.query[ "projects" ] ? req.query[ "projects" ] : "";
 
+            if (_.isString(projects))
+            	projects = [projects];
+            
             console.log( '\r\nget:projects:\r\n' );
 
             if (projects)
