@@ -42,8 +42,8 @@ var checkPeopleByRoles = function (person, roleIds, includeInactive, callback) {
 
 var checkPersonByRole = function(person, roleId, includeInactive, callback) {
 	var roleResource = roleId.indexOf("roles") == 0 ? roleId : util.getFullID( roleId, "roles");
-	if ( (includeInactive && ( !person.isActive || person.isActive == "false") ) 
-			|| ( person.isActive && person.isActive != "false" && person.primaryRole && person.primaryRole.resource == roleResource ) ) {
+	if ( (includeInactive || ( person.isActive && person.isActive != "false" ) )
+			&& ( person.primaryRole && person.primaryRole.resource == roleResource ) ) {
 		callback(true);
 	}
 	callback(false);
