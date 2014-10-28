@@ -73,7 +73,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             } );
         }
         
-        $scope.getSecurityInformation();
+        if($scope.isManager) {
+          $scope.getSecurityInformation();
+        }
 
         $scope.managers = _.sortBy( $scope.managers, function( manager ) {
         	return manager.name;
@@ -146,6 +148,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.setProfile = function( person ) {
 		$scope.profile = person;
 		$scope.managers = [ ];
+		
+		$scope.isManager = $scope.executivesAccess || $scope.hasManagementRights;
 
 		if (window.useAdoptedServices) {
 			var params = {};
@@ -197,9 +201,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.isSales = groups && $.inArray( 'Sales', groups ) !== -1;
 		$scope.isProjectManagement = groups && $.inArray( 'Project Management', groups ) !== -1;
 
-		$scope.canEditCapacity = $.inArray( 'Executives', $scope.me.groups ) !== -1 || $.inArray( 'Management', $scope.me.groups ) !== -1 || $.inArray( 'Sales', $scope.me.groups ) !== -1;
+		$scope.canEditCapacity = $scope.executivesAccess || $scope.hasManagementRights || $scope.financeAccess;
 
-		$scope.canSeeCapacity = $scope.canEditCapacity || $scope.profileId == $scope.me._id.$oid;
+		$scope.canSeeCapacity = $scope.canEditCapacity || $scope.profileId == $scope.me._id;
 
 		var url = person.about + '/' + 'gplus';
 
