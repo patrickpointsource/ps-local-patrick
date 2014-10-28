@@ -112,14 +112,14 @@
                       <input type="checkbox" name="profileIsActive" ng-model="profile.isActive" ng-checked="profile.isActive == 'true'" ng-disabled="!editMode"/>
                     </div>
                     
-                    <div ng-if="isManager && editMode" class="col-xs-12 col-md-10 col-lg-6 edit padding-top-10 pull-right">
+                    <div ng-show="isManager && editMode" class="col-xs-12 col-md-10 col-lg-6 edit padding-top-10 pull-right">
                       
                       <select class="selectpicker select-user-groups form-control" multiple data-selected-text-format="count>3" ng-model="userSecurityGroups" ng-options="g.name for g in securityGroups">
                         <!--<option selected value="" ng-if="!profile.manager">Select Manager</option>-->
                       </select>
                     </div>
                     
-                    <div ng-if="isManager"  class="col-xs-12 col-md-6 col-lg-6 view no-left-padding-sm padding-top-10">
+                    <div ng-show="isManager"  class="col-xs-12 col-md-6 col-lg-6 view no-left-padding-sm padding-top-10">
                       
                       <label for="profileManager" class="profilePartTimeLabel" style="margin-bottom: 10px;">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</label>
                       <span ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</span>
