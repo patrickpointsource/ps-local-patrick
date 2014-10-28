@@ -61,11 +61,9 @@ router.get( '/my/:type', auth.isAuthenticated, function( req, res ) {
 					if( err ) {
 						res.json( 500, err );
 					} else {
-						var me = result.members.length == 1 ? result.members[ 0 ] : {};
-
 						// returns projects where auth user is executive sponsor
 						if( type && type == "executiveSponsor" ) {
-							projects.listProjectsByExecutiveSponsor( util.getFullID( me._id, 'people' ), function( err, result ) {
+							projects.listProjectsByExecutiveSponsor( util.getFullID( result._id, 'people' ), function( err, result ) {
 								if( err ) {
 									res.json( 500, err );
 								} else {
@@ -76,7 +74,7 @@ router.get( '/my/:type', auth.isAuthenticated, function( req, res ) {
 
 						// returns current projects for auth user
 						if( type && type == "current" ) {
-							projects.listCurrentProjectsByPerson( util.getFullID( me._id, 'people' ), function( err, projects ) {
+							projects.listCurrentProjectsByPerson( util.getFullID( result._id, 'people' ), function( err, projects ) {
 								if( err ) {
 									res.json( 500, err );
 								} else {

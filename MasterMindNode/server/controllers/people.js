@@ -151,7 +151,7 @@ module.exports.getPerson = function(id, callback) {
             console.log(err);
             callback(err, null);
         } else {
-            callback(null, body);
+        	callback(null, body);
         }
     });
 };
@@ -164,8 +164,10 @@ module.exports.getPersonByGoogleId = function(id, callback) {
             console.log(err);
             callback('error loading getPersonByGoogleId', null);
         } else {
-            //console.log(body);
-            callback(null, body);
+        	
+        	var person = body && body.members.length > 0 ? body.members[0]: {};
+        	person.about = "people/" + person._id;
+        	callback(null, person);
         }
     });
 };

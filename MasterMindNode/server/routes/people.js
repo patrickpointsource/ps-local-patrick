@@ -157,9 +157,8 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 				        if(err){
 				            res.json(500, err);
 				        } else {        
-				        	var me = result.members.length == 1 ? result.members[0]: null;
-				        	if (me) {
-					        	people.listPeopleByPerson("people/" + me._id, function(err, result){
+				        	if (result) {
+					        	people.listPeopleByPerson("people/" + result._id, function(err, result){
 							        if(err){
 							            res.json(500, err);
 							        } else {
@@ -249,12 +248,7 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 			        if(err){
 			            res.json(500, err);
 			        } else {        
-			        	var me = result.members.length == 1 ? result.members[0]: {};
-			        	
-			            // todo: move this stuff into controller
-			        	me.about = "people/" + me._id;
-			            
-			            res.json(me);
+			            res.json(result);
 			        }            
 		   	 	});
 			}
@@ -305,43 +299,6 @@ router.get('/:id/accessRights', util.isAuthenticated, function(req, res) {
 
 });
 
-/*
-router.get('/:id', function(req, res) {
-
-    security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
-        if (allowed) 
-        {
-            var id = req.params.id;
-            if (id == 'me') {
-                
-                people.getPersonByGoogleId(req.user, function(err, result){
-                    if(err){
-                        res.json(500, err);
-                    } else {
-                        var me = result.members.length == 1 ? result.members[0]: {};
-                        
-                        me.about = "people/" + me._id;
-                        
-                        res.json(me);
-                    }            
-                });
-            }
-            else {
-                people.getPerson(id, function(err, result){
-                    if(err){
-                        res.json(500, err);
-                    } else {
-                        result.about = "people/" + result._id;
-                        res.json(result);
-                    }            
-                });
-            }
-        }
-    });
-
-});
-
-*/
 router.get('/:id/gplus', util.isAuthenticated, function(req, res) {
     var id = req.params.id;
     security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
