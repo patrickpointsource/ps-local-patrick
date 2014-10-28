@@ -146,11 +146,15 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       });
     } else {
       vacation.status = STATUS.Pending;
+      var title = ( vacation.type == "Customer Travel" ) ? "Paid " + vacation.type + " hours logged" : "Pending " + vacation.type + " Request";
+      var personName = $scope.profile.name.fullName;
+      var userName = $scope.vacationManager.name.givenName;
+      var message = SmtpHelper.getOutOfOfficeRequestMessage( userName, personName, vacation.type, vacation.startDate, vacation.endDate, vacation.description );
       
       var notification = {
         type: "Vacation",
-        header: "Pending Paid Vacation Request",
-        text: "From " + Util.getPersonName($scope.me),
+        header: title,
+        text: message,
         icon: "fa fa-clock-o",
         person: { resource: $scope.vacationManager.resource }
       };
