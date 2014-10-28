@@ -31,6 +31,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 				$scope.adminAccess = accessRights.hasAdminRights;
 				$scope.projectManagementAccess = accessRights.hasProjectManagementRights;
 				$scope.executivesAccess = accessRights.hasExecutiveRights;
+				$scope.hasManagementRights = accessRights.hasManagementRights;
 
 				if( accessRights.hasExecutiveRights ) {
 					$scope.dashboardScreen = 'views/dashboards/execDashboard.html';

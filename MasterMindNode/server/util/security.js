@@ -17,15 +17,20 @@ var DEFAULT_ROLES = {
 module.exports.DEFAULT_ROLES = DEFAULT_ROLES;
 
 module.exports.isAllowed = function(userId, response, resource, permissions, callback) {
+    
+    acl.allowedPermissions(userId, resource, function(err, permissions){
+      console.log(permissions);
+    });
+    
     acl.isAllowed(userId, resource, permissions, function(err, allowed){
-        //TODO: remove this later
-        allowed = true;
+        // TODO: remove it after implementing 403 error
+        // allowed = true;
         
         if (err) {
           	response.json(500, err);
         }
         else if (!allowed) {
-          	response.json(403, 'Content ' + resource + ' is not allowed');
+          	response.json(401, 'Content ' + resource + ' is not allowed');
         }
         else {
         	callback(true);
@@ -65,7 +70,7 @@ module.exports.initialize = function() {
 				for (var i=0; i < userRoles.length; i++) {
 					var userId = userRoles[i].userId;
 					
-					var roleNames = getRoleNames(userRoles[i].roles);
+					var roleNames = userRoles[i].roles; //getRoleNames(userRoles[i].roles);
 					
 					// give permissions to one member
 					if (userId) {

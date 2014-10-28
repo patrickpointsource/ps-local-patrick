@@ -20,7 +20,7 @@ var isAuthenticated = function(req, res, next){
 		tokenValidator.validateGoogleToken(token, function (err, user) {
 			if (!err) {
 				dataAccess.getProfileByGoogleId(user, function (err, profile) {
-					if (!err && profile.isActive) {
+					if (!err && profile && profile.isActive) {
 						req.user = user;
 						next();
 					}

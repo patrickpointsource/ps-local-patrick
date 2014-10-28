@@ -151,7 +151,7 @@ module.exports.getPerson = function(id, callback) {
             console.log(err);
             callback(err, null);
         } else {
-        	callback(null, body);
+            callback(null, body);
         }
     });
 };
@@ -164,10 +164,9 @@ module.exports.getPersonByGoogleId = function(id, callback) {
             console.log(err);
             callback('error loading getPersonByGoogleId', null);
         } else {
-        	
-        	var person = body && body.members.length > 0 ? body.members[0]: {};
-        	person.about = "people/" + person._id;
-        	callback(null, person);
+           var person = body && body.members.length > 0 ? body.members[0]: {};
+          person.about = "people/" + person._id;
+          callback(null, person);
         }
     });
 };
@@ -252,67 +251,68 @@ var getAccessRights = function(user, callback) {
       callback(err, null);
     } else {
     
+      if(!userRole || !userRole.roles || userRole.roles.length == 0) {
+        callback(null, accessRights);
+      } else {
+        /**
+     * Members of the 'Executives' group...
+     *
+     * Is in the Executive Sponsor List (queried from People collection)
+     * Can edit any project (projectManagementAccess)
+     * Can view all financial info (financeAccess)
+     * Can make project assignments (projectManagementAccess)
+     * View Staffing Deficits (projectManagementAccess)
+     * Update Role Types (adminAccess)
+     * Can Assign Users to Groups (adminAccess)
+     */
+        if( userRole.roles.indexOf( security.DEFAULT_ROLES.EXECUTIVES ) !== -1 ) {
+          accessRights.hasFinanceRights = true;
+          accessRights.hasAdminRights = true;
+          accessRights.hasProjectManagementRights = true;
+          accessRights.hasManagementRights = true;
+          accessRights.hasExecutiveRights = true;
+        }
+
+    /**
+     * Members of the 'Management' group...
+     *
+     * Can edit any project (projectManagementAccess)
+     * Can view all financial info (financeAccess)
+     * Can make project assignments (projectManagementAccess)
+     * View Staffing Deficits (projectManagementAccess)
+     * Update Role Types (adminAccess)
+     * Can Assign Users to Groups (adminAccess)
+     */
+        if( userRole.roles.indexOf( security.DEFAULT_ROLES.MANAGEMENT ) !== -1 ) {
+          accessRights.hasFinanceRights = true;
+          accessRights.hasAdminRights = true;
+          accessRights.hasProjectManagementRights = true;
+          accessRights.hasManagementRights = true;
+        }
+
+    /**
+     * Members of the 'Project Management' group...
+     *
+     * Can edit any project (projectManagementAccess)
+     * Can make project assignments (projectManagementAccess)
+     * View Staffing Deficits (projectManagementAccess)
+     */
+        if( userRole.roles.indexOf( security.DEFAULT_ROLES.PM ) !== -1 ) {
+          accessRights.hasProjectManagementRights = true;
+        }
+
+    /**
+     * Members of the 'Sales' group...
+     *
+     * Is in the Sales Sponsor List (queried from People collection)
+     * Can view all financial info (financeAccess)
+     */
+        if( userRole.roles.indexOf( security.DEFAULT_ROLES.SALES ) !== -1 ) {
+          accessRights.hasFinanceRights = true;
+        }
     
-    
-	/**
-	 * Members of the 'Executives' group...
-	 *
-	 * Is in the Executive Sponsor List (queried from People collection)
-	 * Can edit any project (projectManagementAccess)
-	 * Can view all financial info (financeAccess)
-	 * Can make project assignments (projectManagementAccess)
-	 * View Staffing Deficits (projectManagementAccess)
-	 * Update Role Types (adminAccess)
-	 * Can Assign Users to Groups (adminAccess)
-	 */
-	if( userRole && userRole.roles && userRole.roles.indexOf( security.DEFAULT_ROLES.EXECUTIVES ) !== -1 ) {
-		accessRights.hasFinanceRights = true;
-		accessRights.hasAdminRights = true;
-		accessRights.hasProjectManagementRights = true;
-		accessRights.hasManagementRights = true;
-		accessRights.hasExecutiveRights = true;
-	}
-
-	/**
-	 * Members of the 'Management' group...
-	 *
-	 * Can edit any project (projectManagementAccess)
-	 * Can view all financial info (financeAccess)
-	 * Can make project assignments (projectManagementAccess)
-	 * View Staffing Deficits (projectManagementAccess)
-	 * Update Role Types (adminAccess)
-	 * Can Assign Users to Groups (adminAccess)
-	 */
-	if( userRole && userRole.roles && userRole.roles.indexOf( security.DEFAULT_ROLES.MANAGEMENT ) !== -1 ) {
-		accessRights.hasFinanceRights = true;
-		accessRights.hasAdminRights = true;
-		accessRights.hasProjectManagementRights = true;
-		accessRights.hasManagementRights = true;
-	}
-
-	/**
-	 * Members of the 'Project Management' group...
-	 *
-	 * Can edit any project (projectManagementAccess)
-	 * Can make project assignments (projectManagementAccess)
-	 * View Staffing Deficits (projectManagementAccess)
-	 */
-	if( userRole && userRole.roles && userRole.roles.indexOf( security.DEFAULT_ROLES.PM ) !== -1 ) {
-		accessRights.hasProjectManagementRights = true;
-	}
-
-	/**
-	 * Members of the 'Sales' group...
-	 *
-	 * Is in the Sales Sponsor List (queried from People collection)
-	 * Can view all financial info (financeAccess)
-	 */
-	if( userRole && userRole.roles && userRole.roles.indexOf( security.DEFAULT_ROLES.SALES ) !== -1 ) {
-		accessRights.hasFinanceRights = true;
-	}
-	
-	callback(null, accessRights);
-	
+        callback(null, accessRights);
+      }
 	}
   });
 };

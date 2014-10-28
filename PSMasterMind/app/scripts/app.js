@@ -195,12 +195,12 @@
               console.log('Failed to login to MasterMind:');
             }
             if (status === 403) {
-            	console.log('You are not a member of the PointSource domain');
+              console.log('You are not a member of the PointSource domain');
+              
+              accessToken = localStorage.getItem('access_token');
+              helper.disconnectUser(accessToken);
+              ret = false;
             }
-
-            accessToken = localStorage.getItem('access_token');
-            helper.disconnectUser(accessToken);
-            ret = false;
           }
 
           return ret; // false to stop the promise chain

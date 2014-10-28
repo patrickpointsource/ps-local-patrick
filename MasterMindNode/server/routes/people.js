@@ -238,34 +238,33 @@ router.delete('/', util.isAuthenticated, function(req, res) {
 
 router.get('/:id', util.isAuthenticated, function(req, res) {
 
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function(allowed){
-		if (allowed) 
-		{
-			var id = req.params.id;
-			if (id == 'me') {
-				
-				people.getPersonByGoogleId(req.user, function(err, result){
-			        if(err){
-			            res.json(500, err);
-			        } else {        
-			            res.json(result);
-			        }            
-		   	 	});
-			}
-			else {
-			    people.getPerson(id, function(err, result){
-			        if(err){
-			            res.json(500, err);
-			        } else {
-			            // todo: move this stuff into controller
-			            result.about = "people/" + result._id;
-			            res.json(result);
-			        }            
-			    });
-			}
-		}
-	});
-
+  security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function(allowed){
+    if (allowed) 
+    {
+      var id = req.params.id;
+      if (id == 'me') {
+    
+      people.getPersonByGoogleId(req.user, function(err, result){
+           if(err){
+               res.json(500, err);
+           } else {        
+               res.json(result);
+           }            
+        });
+      }
+      else {
+        people.getPerson(id, function(err, result){
+          if(err){
+            res.json(500, err);
+          } else {
+            // todo: move this stuff into controller
+            result.about = "people/" + result._id;
+            res.json(result);
+          }            
+        });
+      }
+    }
+  });
 });
 
 router.get('/:id/accessRights', util.isAuthenticated, function(req, res) {

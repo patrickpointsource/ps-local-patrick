@@ -51,7 +51,7 @@ router.get( '/byname/:name', auth.isAuthenticated, function( req, res ) {
 
 router.post( '/', auth.isAuthenticated, function( req, res ) {
 
-	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.editTasks, function( allowed ) {
+	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions.editTasks, function( allowed ) {
 		if( allowed ) {
 			tasks.insertTask( req.body, function( err, result ) {
 				if( err ) {
@@ -69,7 +69,7 @@ router.
 delete ( '/', auth.isAuthenticated,
 function( req, res ) {
 
-	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.editTasks, function( allowed ) {
+	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions.editTasks, function( allowed ) {
 		if( allowed ) {
 			tasks.deleteTask( req.body, function( err, result ) {
 				if( err ) {

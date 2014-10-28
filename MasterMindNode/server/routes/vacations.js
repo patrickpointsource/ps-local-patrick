@@ -27,7 +27,7 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 } );
 
 router.get( '/byperson/:person', auth.isAuthenticated, function( req, res ) {
-	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewVacations, function( allowed ) {
+	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewMyVacations, function( allowed ) {
 		if( allowed ) {
 			var person = req.params.person;
 			if (person) {

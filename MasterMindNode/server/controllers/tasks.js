@@ -1,6 +1,7 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
+var validation = require( '../data/validation.js' );
 
 module.exports.listTasks = function(q, callback) {
     dataAccess.listTasks(q, function(err, body){
