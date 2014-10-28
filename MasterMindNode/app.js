@@ -200,7 +200,7 @@ var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
 // the document or sample of each service.
 var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
 
-console.log('hostName=' + hostName + ': httpsPort=' + httpsPort + ' : useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
+console.log('hostName=' + hostName + ':httpsPort=' + httpsPort + ':useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
 
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || hostName);
