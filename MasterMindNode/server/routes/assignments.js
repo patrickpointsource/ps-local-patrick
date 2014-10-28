@@ -14,6 +14,9 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewAssignments, function( allowed ) {
 		if( allowed ) {
 			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
+			
+			//query = JSON.parse("{\"members\":{\"$elemMatch\":{\"person\":{\"resource\":\"people/52e12adee4b0a9efe8d7b5dc\"},\"startDate\":{\"$lte\":\"2014-10-01\"},\"$or\":[{\"endDate\":{\"$exists\":false}},{\"endDate\":{\"$gte\":\"2014-09-25\"}}]}}}");
+			
 			// Call to assignments service
 			assignments.listAssignments( query, function( err, result ) {
 				if( err ) {

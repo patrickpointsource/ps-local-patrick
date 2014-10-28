@@ -547,6 +547,7 @@ function( $q, Resources ) {
 					type: 1,
 					committed: 1
 				};
+				
 				Resources.query( 'projects', projectsQuery, projectsFields ).then( function( result ) {
 					var projects = result.data;
 
