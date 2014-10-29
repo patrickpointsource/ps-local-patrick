@@ -28,7 +28,7 @@
     <div class="row" style="margin-left: 15px; margin-right: 15px;">
 	<div class="col-sm-3 col-xs-6 form-group" ng-class="{error: isFieldInError('role')}" ng-if="roleGroups[role.type.resource] != undefined">
 		<select ng-model="currentAssignee.person.resource"
-                 ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble | filter:m.isActive='true'"
+                 ng-options="m.resource as m.title for m in roleGroups[role.type.resource].assiganble | filter: {isActive: 'true'}"
                  ng-change="assigneeChanged($index, role)"
                  class="form-control" name="person">
          </select>
