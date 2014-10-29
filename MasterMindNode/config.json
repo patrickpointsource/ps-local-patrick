@@ -1,0 +1,9 @@
+{
+    "logToFileStream": false,
+    "logFileName": "/var/www/www.log",
+    "hostName": "localhost",
+    "httpsPort": 8443,
+    "appName": "",
+    "webSiteUrl": "http://localhost:9000",
+    "oauthcbbaseurl": ""
+}

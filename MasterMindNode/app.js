@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var fs = require('fs');
 var https = require('https');
+var cluster = require('cluster');
 
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 
@@ -42,11 +43,18 @@ var privateKey  = fs.readFileSync('server/cert/server.key', 'utf8');
 var certificate = fs.readFileSync('server/cert/server.crt', 'utf8');
 var credentials = {key: privateKey, cert: certificate};
 
-var httpsPort = 8443;
-var hostName = 'localhost';
-var webSiteUrl = 'http://localhost:9000';
-var appName = '';
-var oauthcbbaseurl = '';
+
+function loadConfig() {
+    return JSON.parse(fs.readFileSync(__dirname + "/config.json"));
+}
+
+var appConfig = loadConfig();
+
+var httpsPort = appConfig.httpsPort;
+var hostName = appConfig.hostName;
+var webSiteUrl = appConfig.webSiteUrl;
+var appName = appConfig.appName;
+var oauthcbbaseurl = appConfig.oauthcbbaseurl;
 var appNames = ['MMNodeServer', 'MMNodeStaging', 'MMNodeDemo'];
 
 // parse command line arguments
@@ -108,6 +116,25 @@ var allowCrossDomain = function(req, res, next) {
 };
 
 
+function openLog(logfile) {
+    return fs.createWriteStream(logfile, {
+        flags: "a", encoding: "utf8", mode: 644
+    });
+}
+
+function log(msg) {
+	if (appConfig.logToFileStream)
+		logStream.write(msg + "\n");
+	else
+		console.log(msg);
+}
+
+var logStream = null;
+
+if (appConfig.logToFileStream)
+	logStream = openLog(appConfig.logFileName);
+
+log("Starting...");
 
 // setup middleware
 var app = express();
