@@ -131,8 +131,12 @@ function log(msg) {
 
 var logStream = null;
 
-if (appConfig.logToFileStream)
+if (appConfig.logToFileStream) {
 	logStream = openLog(appConfig.logFileName);
+	
+	// override log function
+	console.log = log;
+}
 
 log("Starting...");
 
