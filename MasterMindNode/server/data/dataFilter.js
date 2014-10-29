@@ -28,12 +28,12 @@ var checkPeopleByRoles = function (person, roleIds, includeInactive, callback) {
 			if (roleId) {
 	 			checkPersonByRole (person, roleId, includeInactive, function (checked) {
 					if (checked) {
-						callback(checked);
+						return callback(checked);
 					}
 				});
 			}
 		});
-		callback(false);
+		return callback(false);
 	}
 	else {
 		checkPeopleByRoles(person, [roleIds], includeInactive, callback);
@@ -44,9 +44,9 @@ var checkPersonByRole = function(person, roleId, includeInactive, callback) {
 	var roleResource = roleId.indexOf("roles") == 0 ? roleId : util.getFullID( roleId, "roles");
 	if ( (includeInactive || ( person.isActive && person.isActive != "false" ) )
 			&& ( person.primaryRole && person.primaryRole.resource == roleResource ) ) {
-		callback(true);
-	}
-	callback(false);
+		return callback(true);
+	} 
+	return callback(false);
 };
 
 
@@ -118,14 +118,14 @@ var checkPerson = function(person, groups, callback) {
 
 		_.each(groups, function(initialGroup) {
 			if ( _.contains(person.groups, initialGroup) ) {
-				callback (true);
+				return callback (true);
 			}
 		});
 		
-		callback (false);
+		return callback (false);
 	}
 	else {
-		callback (true);
+		return callback (true);
 	}
 
 };
@@ -182,17 +182,17 @@ var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, 
 			var res = project[roleType];
 			if (res && roleResources.toString().indexOf(res.resource) != -1) {
 				console.log("return true");
-				callback(true);
+				return callback(true);
 			}
 		});
 	}
 	else {
 		var res = project[roleTypes];
 		if (res && roleResources.toString().indexOf(res.resource) != -1) {
-			callback(true);
+			return callback(true);
 		}
 	}
-	callback(false);
+	return callback(false);
 };
 
 
@@ -268,7 +268,7 @@ var checkAssignmentByTypes = function(types, assignment, callback) {
 				_.each(assignment.members, function(member) {
 					if ( member.startDate <= util.getTodayDate() &&
 							(!member.endDate || member.endDate > util.getTodayDate() ) ) {
-						callback(true);				
+						return callback(true);				
 					}
 
 				});
@@ -276,7 +276,7 @@ var checkAssignmentByTypes = function(types, assignment, callback) {
 
 		});
 		
-		callback(false);
+		return callback(false);
 	}
 	else {
 		checkAssignmentByTypes([types], assignment, callback);
@@ -338,7 +338,7 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 						(!project.endDate || project.endDate >= util.getTodayDate() ) &&
 							project.type == "paid" &&
 								project.committed == true ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 			// checks for backlog projects
@@ -346,7 +346,7 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 					project.startDate > util.getTodayDate() &&
 						project.type == "paid" &&
 							project.committed == true ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 			// checks for pipeline projects
@@ -354,60 +354,60 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 					(!project.endDate || project.endDate >= util.getTodayDate() ) &&
 						project.type == "paid" &&
 							project.committed == false ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 			// checks for investment projects
 			if (status == "investment" &&
 					(!project.endDate || project.endDate >= util.getTodayDate() ) &&
 						( project.type == "invest" || project.type == "poc" ) ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 			// checks for complete projects
 			if (status == "complete" &&
 					project.endDate < util.getTodayDate()  &&
 							project.committed == true ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 			// checks for deallost projects
 			if (status == "deallost" &&
 					project.endDate < util.getTodayDate()  &&
 							project.committed == false ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 			// checks for ongoing projects
 			if (status == "ongoing" &&
 					(!project.endDate || project.endDate >= util.getTodayDate() ) &&
 						(  project.type == "invest" || project.type == "poc"  || ( project.committed == true && project.type == "paid" ) )  ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 			// checks for unfinished projects
 			if (status == "unfinished" &&
 					(!project.endDate || project.endDate >= util.getTodayDate() ) ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 			// checks for kick-off projects
 			if (status == "kick-off" &&
 					project.startDate >= util.getTodayDate() &&
 						project.committed == true ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 			// checks for quickview projects
 			if (status == "quickview" &&
 					project.startDate <= util.getDateFromNow(6) &&
 						( !project.endDate || project.endDate > util.getTodayDate() ) ) {
-				callback(true);				
+				return callback(true);				
 			}
 
 		});
 		
-		callback(false);
+		return callback(false);
 	}
 	else {
 		checkProjectByStatuses([statuses], project, callback);
@@ -484,19 +484,19 @@ var checkVacation = function(vacation, people, startDate, endDate, callback) {
 		});
 		
 		if (!checked) {
-			callback (false);
+			return callback (false);
 		}
 	}
 	
 	if (startDate && vacation.endDate > startDate) {
-		callback (false);
+		return callback (false);
 	}
 	
 	if (endDate && vacation.startDate < endDate) {
-		callback (false);
+		return callback (false);
 	}
 	
-	callback (true);
+	return callback (true);
 };
 
 /**
@@ -536,23 +536,23 @@ var checkRequest = function(vacation, manager, statuses, startDate, endDate, cal
 		});
 		
 		if (!checked) {
-			callback (false);
+			return callback (false);
 		}
 	}
 	
 	if (manager && ( !vacation.vacationManager || vacation.vacationManager.resource != manager ) ) {
-		callback (false);
+		return callback (false);
 	}
 	
 	if (startDate && vacation.endDate > startDate) {
-		callback (false);
+		return callback (false);
 	}
 	
 	if (endDate && vacation.startDate < endDate) {
-		callback (false);
+		return callback (false);
 	}
 	
-	callback (true);
+	return callback (true);
 };
 
 /**
