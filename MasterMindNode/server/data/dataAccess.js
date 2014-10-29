@@ -1009,7 +1009,7 @@ var insertItem = function( id, obj, type, callback ) {
 				}
 			} else {
 				if( body.id ) {
-					console.log( "Object with id " + id + " inserted in db" );
+					console.log( "Object with id " + body.id + " inserted in db" );
 				}
 			}
 			memoryCache.deleteObject( type );
