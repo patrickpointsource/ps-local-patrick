@@ -142,6 +142,10 @@ angular.module('Mastermind').controller('GroupsCtrl',['$scope',
   $scope.collapseGroup = function(index) {
 	$scope.groups[index].collapsed = $scope.groups[index].collapsed ? false : true;
   }
+  
+  $scope.getPersonName = function(person) {
+	return Util.getPersonName(person, true);
+  };
 }]);
 
 

@@ -40,7 +40,7 @@
           </a>
         </div>
         <div class="col-xs-7" style="padding-top: 10px;">
-          <a href="#{{member.resource}}">{{member.familyName}}, {{member.givenName}}</a>
+          <a href="#{{member.resource}}">{{getPersonName(member)}}</a>
         </div>
         <div class="col-xs-2">
           <button class="btn" ng-show="groupsEditMode" ng-click="deleteMember(member, $parent.$index)"><i class="fa fa-trash-o"></i></button>
