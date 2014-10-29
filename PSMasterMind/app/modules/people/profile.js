@@ -73,9 +73,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             } );
         }
         
-        if($scope.isManager) {
-          $scope.getSecurityInformation();
-        }
+        $scope.getSecurityInformation();
 
         $scope.managers = _.sortBy( $scope.managers, function( manager ) {
         	return manager.name;
@@ -92,10 +90,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	
 	$scope.getSecurityInformation = function() {
 	  $scope.userSecurityGroups = [];
-	  Resources.get('securityRoles').then(function(result) {
+	  Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
         $scope.securityGroups = result.members;
               
-        Resources.get('userRoles').then(function(userRoles) {
+        Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
           $scope.userRoles = userRoles.members;
           
           var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
