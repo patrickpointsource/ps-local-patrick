@@ -378,6 +378,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	};
 
 	$scope.handleAssignmentsFilterChanged = function( ) {
+		$scope.hideAssignmentsSpinner = false;
 		AssignmentService.getAssignmentsByPeriod( "all", {
 			project: {
 				resource: $scope.project.about
@@ -387,6 +388,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 			$scope.refreshAssignmentSentinel( );
 			$scope.setSentinel( );
 			$rootScope.formDirty = false;
+			$scope.hideAssignmentsSpinner = true;
 		} );
 		if( $scope.projectTabId == "assignments" && !$state.is( "projects.show.edit" ) ) {
 			// in case when we simply converting url "assignments" to
@@ -640,4 +642,5 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		if (unbindProjectLoad)
 		  unbindProjectLoad();
 	} );
+	
 } ] ); 
