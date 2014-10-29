@@ -1419,22 +1419,23 @@ else if( role.percentageCovered == 0 )
 
 		for( var i = 0; i < ret.length; i++ ) {
 			var ithHoursRecord = ret[ i ];
-			defers.push( Resources.resolve( ithHoursRecord.person ) );
-
-			//See if the user had a role in the project at the time of the record
-			for( var j = 0; j < projectRoles.length; j++ ) {
-				var role = projectRoles[ j ];
-				//Found a role for this person
-				if( role.assignee && ithHoursRecord.person.resource === role.assignee.resource ) {
-					var roleStartDate = new Date( role.startDate );
-					var hoursDate = new Date( ithHoursRecord.date );
-					//record was after role start date
-					if( hoursDate >= roleStartDate ) {
-						var roleEndDate = role.endDate ? new Date( role.endDate ) : null;
-						//Record was before the end of role date
-						if( !roleEndDate || roleEndDate >= hoursDate ) {
-							ithHoursRecord.role = Resources.deepCopy( role );
-							defers.push( Resources.resolve( ithHoursRecord.role.type ) );
+			if (ithHoursRecord.person.resource) {
+				defers.push( Resources.resolve( ithHoursRecord.person ) );
+				//See if the user had a role in the project at the time of the record
+				for( var j = 0; j < projectRoles.length; j++ ) {
+					var role = projectRoles[ j ];
+					//Found a role for this person
+					if( role.assignee && ithHoursRecord.person.resource === role.assignee.resource ) {
+						var roleStartDate = new Date( role.startDate );
+						var hoursDate = new Date( ithHoursRecord.date );
+						//record was after role start date
+						if( hoursDate >= roleStartDate ) {
+							var roleEndDate = role.endDate ? new Date( role.endDate ) : null;
+							//Record was before the end of role date
+							if( !roleEndDate || roleEndDate >= hoursDate ) {
+								ithHoursRecord.role = Resources.deepCopy( role );
+								defers.push( Resources.resolve( ithHoursRecord.role.type ) );
+							}
 						}
 					}
 				}
