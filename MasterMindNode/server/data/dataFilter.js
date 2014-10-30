@@ -24,16 +24,18 @@ var filterPeopleByRoles = function(roleIds, includeInactive, people) {
 
 var checkPeopleByRoles = function (person, roleIds, includeInactive, callback) {
 	if (roleIds instanceof Array) {
+		var found = false;
 		_.each(roleIds, function(roleId) {
 			if (roleId) {
 	 			checkPersonByRole (person, roleId, includeInactive, function (checked) {
 					if (checked) {
-						return callback(checked);
+						found = true;
+						return;
 					}
 				});
 			}
 		});
-		return callback(false);
+		return callback(found);
 	}
 	else {
 		checkPeopleByRoles(person, [roleIds], includeInactive, callback);
@@ -115,14 +117,14 @@ var checkPerson = function(person, groups, callback) {
 		if (!(groups instanceof Array)) {
 			groups = [groups];
 		}
-
 		_.each(groups, function(initialGroup) {
 			if ( _.contains(person.groups, initialGroup) ) {
-				return callback (true);
+				checked = true;
+				return;
 			}
 		});
 		
-		return callback (false);
+		return callback (checked);
 	}
 	else {
 		return callback (true);
@@ -177,22 +179,23 @@ var filterProjectsByRoleResources = function(roleTypes, roleResources, projects)
 
 
 var checkRoleResourcesByRoleTypesInProject = function(roleTypes, roleResources, project, callback) {
+	var checked = false;
 	if (roleTypes instanceof Array) {
 		_.each(roleTypes, function(roleType) {
 			var res = project[roleType];
 			if (res && roleResources.toString().indexOf(res.resource) != -1) {
-				console.log("return true");
-				return callback(true);
+				checked = true;
+				return;
 			}
 		});
 	}
 	else {
 		var res = project[roleTypes];
 		if (res && roleResources.toString().indexOf(res.resource) != -1) {
-			return callback(true);
+			checked = true;
 		}
 	}
-	return callback(false);
+	return callback(checked);
 };
 
 
@@ -260,6 +263,7 @@ var filterAssignmentsByTypes = function(types, assignments) {
 
 
 var checkAssignmentByTypes = function(types, assignment, callback) {
+	var checked = false;
 	if (types instanceof Array) {
 		_.each(types, function(type) {
 			
@@ -268,7 +272,8 @@ var checkAssignmentByTypes = function(types, assignment, callback) {
 				_.each(assignment.members, function(member) {
 					if ( member.startDate <= util.getTodayDate() &&
 							(!member.endDate || member.endDate > util.getTodayDate() ) ) {
-						return callback(true);				
+						checked = true;
+						return;				
 					}
 
 				});
@@ -276,7 +281,7 @@ var checkAssignmentByTypes = function(types, assignment, callback) {
 
 		});
 		
-		return callback(false);
+		return callback(checked);
 	}
 	else {
 		checkAssignmentByTypes([types], assignment, callback);
@@ -330,6 +335,7 @@ var filterProjectsByResources = function(resources, projects) {
 
 var checkProjectByStatuses = function(statuses, project, callback) {
 	if (statuses instanceof Array) {
+		var checked = false;
 		_.each(statuses, function(status) {
 			
 			// checks for active projects
@@ -338,7 +344,8 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 						(!project.endDate || project.endDate >= util.getTodayDate() ) &&
 							project.type == "paid" &&
 								project.committed == true ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 			// checks for backlog projects
@@ -346,7 +353,8 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 					project.startDate > util.getTodayDate() &&
 						project.type == "paid" &&
 							project.committed == true ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 			// checks for pipeline projects
@@ -354,60 +362,68 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 					(!project.endDate || project.endDate >= util.getTodayDate() ) &&
 						project.type == "paid" &&
 							project.committed == false ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 			// checks for investment projects
 			if (status == "investment" &&
 					(!project.endDate || project.endDate >= util.getTodayDate() ) &&
 						( project.type == "invest" || project.type == "poc" ) ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 			// checks for complete projects
 			if (status == "complete" &&
 					project.endDate < util.getTodayDate()  &&
 							project.committed == true ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 			// checks for deallost projects
 			if (status == "deallost" &&
 					project.endDate < util.getTodayDate()  &&
 							project.committed == false ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 			// checks for ongoing projects
 			if (status == "ongoing" &&
 					(!project.endDate || project.endDate >= util.getTodayDate() ) &&
 						(  project.type == "invest" || project.type == "poc"  || ( project.committed == true && project.type == "paid" ) )  ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 			// checks for unfinished projects
 			if (status == "unfinished" &&
 					(!project.endDate || project.endDate >= util.getTodayDate() ) ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 			// checks for kick-off projects
 			if (status == "kick-off" &&
 					project.startDate >= util.getTodayDate() &&
 						project.committed == true ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 			// checks for quickview projects
 			if (status == "quickview" &&
 					project.startDate <= util.getDateFromNow(6) &&
 						( !project.endDate || project.endDate > util.getTodayDate() ) ) {
-				return callback(true);				
+				checked = true;
+				return;				
 			}
 
 		});
 		
-		return callback(false);
+		return callback(checked);
 	}
 	else {
 		checkProjectByStatuses([statuses], project, callback);
