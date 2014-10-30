@@ -2,6 +2,9 @@
     Project Details
 </div>
 <div ng-form="detailsForm" ng-controller="DetailsCtrl">
+	<div class="spinner-container" ng-hide="hideSpinner" style="width: calc(100% - 30px);">
+		<i class="fa fa-spinner fa-spin fa-3x"></i>
+	</div>
 	<div class="row">
 		<div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('projectName')}">
 		  <div class="row">

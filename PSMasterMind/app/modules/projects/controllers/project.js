@@ -535,7 +535,9 @@ else if( role.percentageCovered == 0 )
 	$scope.save = function( dateShiftNeeded ) {
 		$( "#dateShiftConfirm" ).modal( 'hide' );
 		var deferred = $q.defer( );
-
+		
+		$scope.hideSpinner = false;
+		
 		var savingCallback = function( ) {
 			var wasCreated = $scope.projectId ? false : true;
 
@@ -612,8 +614,6 @@ else if( role.percentageCovered == 0 )
 
 						deferred.resolve( $scope.project );
 
-						
-
 						$scope.loadExecAndPeople( function() {
 						    $scope.$emit( 'project:loaded' );
 						    $rootScope.formDirty = false;
@@ -634,10 +634,11 @@ else if( role.percentageCovered == 0 )
 					//Decode the description
 					$scope.project.description = decodeURIComponent( $scope.project.description );
 
+					$scope.hideSpinner = true;
 					deferred.reject( $scope.project );
 
 				} );
-
+				
 			} );
 		};
         
@@ -649,6 +650,7 @@ else if( role.percentageCovered == 0 )
 		$scope.submitAttempted = true;
 
 		if( !$scope.validateFields( ) ) {
+			$scope.hideSpinner = true;
 			return deferred.promise;
 		}
 
@@ -657,6 +659,7 @@ else if( role.percentageCovered == 0 )
 
 			$( "#dateShiftConfirm" ).modal( 'hide' );
 		} else {
+			
 			savingCallback( );
 		}
 

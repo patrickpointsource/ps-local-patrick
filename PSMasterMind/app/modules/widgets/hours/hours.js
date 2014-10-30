@@ -1203,7 +1203,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			return 0;
 
 		};
-		$scope.hideSpinner = false;
+		$scope.hideHoursSpinner = false;
 
 		if( $scope.isDisplayedWeek( ) )
 			$scope.showWeekDates( function( result ) {
@@ -1261,13 +1261,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						}
 
 						$( '.dashboard-widget.hours .row.hours-logged' ).show( );
-
+						
 						if( cb )
 							cb( );
 
 					}
-
-					$scope.hideSpinner = true;
+					
+					$scope.hideHoursSpinner = true;
 					$scope.$emit( 'hours:loaded' );
 				} );
 			} );
@@ -1321,7 +1321,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 							cb( );
 					}
 
-					$scope.hideSpinner = true;
+					$scope.hideHoursSpinner = true;
 					$scope.$emit( 'hours:loaded' );
 				} );
 			} );

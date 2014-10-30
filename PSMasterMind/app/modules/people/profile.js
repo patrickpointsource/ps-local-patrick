@@ -266,7 +266,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	/**
 	 * Save the user profile changes
 	 */
-	$scope.save = function( ) {
+	$scope.save = function( ) {		
 		var profile = $scope.profile;
 
 		if( !profile.primaryRole || !profile.primaryRole.resource ) {
@@ -277,8 +277,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			profile.manager = {
 				resource: profile.manager.resource,
 				name: profile.manager.name
-			}
-		}
+			};
+		};
 		
 		// hell with string representation of boolean field
 		if( profile.isActive == true || profile.isActive === 'true') {
@@ -318,6 +318,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 
     $scope.saveProfile = function(profile) {
+    	$scope.hideProfileSpinner = false;
       Resources.update( profile ).then( function( person ) {
             var fields = {
                 resource: 1,
@@ -338,11 +339,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             Resources.refresh( 'people/' + $scope.profileId ).then( function( person ) {
               $scope.setProfile( person );
               $scope.editMode = false;
-
+              $scope.hideProfileSpinner = true;
               //If you updated your self refresh the local copy of me
               if( $scope.me.about === profile.about ) {
+            	  $scope.hideProfileSpinner = false;
                 Resources.refresh( 'people/me' ).then( function( me ) {
                     $scope.me = me;
+                    $scope.hideProfileSpinner = true;
                 } );
               }
             } );
