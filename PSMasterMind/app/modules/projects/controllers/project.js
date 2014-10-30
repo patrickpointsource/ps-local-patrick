@@ -651,6 +651,7 @@ else if( role.percentageCovered == 0 )
 
 		if( !$scope.validateFields( ) ) {
 			$scope.hideSpinner = true;
+			$scope.showErrors( $scope.messages );
 			return deferred.promise;
 		}
 
@@ -674,7 +675,10 @@ else if( role.percentageCovered == 0 )
         
         $scope.messages = validationResult.messages;
         
-		return validationResult.valid;
+        for( var i = 0; i < $scope.project.roles.length; i++ )
+        	$scope.messages = $scope.messages.concat( AssignmentService.validateAssignments( $scope.project, $scope.project.roles[ i ].assignees ) );
+        
+		return $scope.messages.length == 0;
 	};
 	
 	var prepareProjectBeforeValidation = function ( project ) {
