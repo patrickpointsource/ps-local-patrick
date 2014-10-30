@@ -33,7 +33,7 @@ var isAuthenticated = function(req, res, next){
 			}
 			else {
 		        req.session.error = err;
-        		res.json(403, 'Unauthorized');
+        		res.json(403, 'Invalid Token');
 			}	
 		});
 	}

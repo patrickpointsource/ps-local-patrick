@@ -184,6 +184,7 @@
           var ret = true;
 
           var status = resp.status,
+            data = resp.data,
             method = resp.method,
             url = resp.url,
             accessToken;
@@ -195,7 +196,9 @@
               console.log('Failed to login to MasterMind:');
             }
             if (status === 403) {
-              console.log('You are not a member of the PointSource domain');
+              if (data.indexOf("Unauthorized") != -1) {
+                  alert('You are not a member of the PointSource domain');
+              }	
               
               accessToken = localStorage.getItem('access_token');
               helper.disconnectUser(accessToken);
