@@ -352,7 +352,7 @@
                 <small>{{execProject.endDate | date:'shortDate'}}</small></span>  <span ng-hide="execProject.endDate"> - N/A</span>
               </td>
             </tr>
-            <tr ng-repeat="assignment in assignments" ng-show="hasAssignments">
+            <tr ng-repeat="assignment in myAssignments" ng-show="hasAssignments">
               <td data-title="'Project'">
                 <a href="#{{assignment.project.resource}}"><i class="{{projectStateIcon(assignment.project)}}"></i> {{assignment.project.name}}: {{assignment.project.customerName}}</a>
                 <!-- <div ng-repeat="role in project.roles" ng-show="profile.about == role.assignee.resource">

@@ -749,6 +749,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
                 $scope.hasAssignments = assignments.length > 0;
                 
+                $scope.myAssignments = [];
+                if(window.useAdoptedServices) {
+                  $scope.myAssignments = AssignmentService.getActualAssignmentsForPerson($scope.assignments, $scope.profile);
+                } else {
+                  $scope.myAssignments = assignments;
+                }
+                
                 console.log("getMyCurrentAssignments after cut: assignments.length", assignments.length);
 
                 if( $scope.hasAssignments ) {
@@ -774,8 +781,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                     } );
 
                     var cnt = 0;
-                    for( var i = 0; i < assignments.length; i++ ) {
-                        var myAssignment = assignments[ i ];
+                    for( var i = 0; i < $scope.myAssignments.length; i++ ) {
+                        var myAssignment = $scope.myAssignments[ i ];
                         var now = moment( );
                         var start = moment( myAssignment.startDate );
                         if( start.isBefore( now ) || start.isSame( now, 'day' ) ) {

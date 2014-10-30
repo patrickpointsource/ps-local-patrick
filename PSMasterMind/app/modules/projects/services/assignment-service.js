@@ -252,6 +252,24 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 
 	};
 	
+	this.getActualAssignmentsForPerson = function(assignments, profile) {
+	  var myAssignments = [];
+	  
+	  for(var projectAssignmentsCounter = 0; projectAssignmentsCounter < assignments.length; projectAssignmentsCounter++) {
+        var projectAssignment = assignments[projectAssignmentsCounter];
+        for(var membersCounter = 0; membersCounter < projectAssignment.members.length; membersCounter++) {
+          var member = projectAssignment.members[membersCounter];
+       
+          if(profile.about == member.person.resource) {
+            member.project = projectAssignment.project;
+            myAssignments.push(member);
+          }
+        }
+      }
+      
+      return myAssignments;
+	};
+	
 	this.getMyCurrentAssignmentsUsingQuery = function( person ) {
 		var deferred = $q.defer( );
 		var startDateQuery = this.getToday( );
