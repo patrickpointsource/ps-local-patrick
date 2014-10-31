@@ -1515,7 +1515,6 @@ else if( role.percentageCovered == 0 )
 
 			var startOfMonthDate = moment( monthDate ).startOf( 'month' ).format( 'YYYY-MM-DD' );
 			var endOfMonthDate = moment( monthDate ).endOf( 'month' ).format( 'YYYY-MM-DD' );
-			;
 
 			var i;
 
