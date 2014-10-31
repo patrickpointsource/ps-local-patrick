@@ -4,7 +4,7 @@ var dataAccess = require('../data/dataAccess');
 var validation = require( '../data/validation.js' );
 
 module.exports.listLinks = function(q, callback) {
-    dataAccess.listConfiguration(q, function(err, body){
+    dataAccess.listLinks(q, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading links', null);
