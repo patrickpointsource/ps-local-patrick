@@ -125,7 +125,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		} );
 
 		return deferred.promise;
-	}
+	};
 
 	
 	
@@ -153,13 +153,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			params.timePeriod = timePeriod;
 			
 			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
-				
-				// in case when collection of assignments objects
-				if (_.isObject(assignments) && assignments.members &&
-					assignments.members.length > 0 && assignments.members[0].members) {
-					return assignments.members;
-				}
-				
+				prepareAssignment(assignments);
 				return assignments;
 			});
 		}
@@ -205,22 +199,22 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 						_.each( assignmentsObject.members, function( m ) {
 							if( timePeriod == "current" ) {
 								if( new Date( m.startDate ) <= today && ( !m.endDate || new Date( m.endDate ) > today ) )
-									included.push( m )
+									included.push( m );
 								else
-									excluded.push( m )
+									excluded.push( m );
 							} else if( timePeriod == "future" ) {
 								if( new Date( m.startDate ) >= today && ( !m.endDate || new Date( m.endDate ) > today ) )
-									included.push( m )
+									included.push( m );
 								else
-									excluded.push( m )
+									excluded.push( m );
 							} else if( timePeriod == "past" ) {
 								if( new Date( m.startDate ) < today && ( !m.endDate || new Date( m.endDate ) < today ) )
-									included.push( m )
+									included.push( m );
 								else
-									excluded.push( m )
+									excluded.push( m );
 							} else if( timePeriod == "all" )
-								included.push( m )
-						} )
+								included.push( m );
+						} );
 
 						assignmentsObject.members = included;
 						assignmentsObject.excludedMembers = excluded;
@@ -235,6 +229,24 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		
 	};
 	
+	var prepareAssignment = function ( assignments ) {
+		
+		// in case when we get "data" collection instead of "members"
+		if (_.isObject(assignments) && assignments.data && !assignments.members){
+			assignments.members = assignments.data;
+			delete assignments.data;
+		}
+		
+		//Get assignment members excluding empty.
+		if (assignments.members) {
+			var members = [];
+			_.each( assignments.members, function( a ) {
+				var ms = a.members ? a.members : [ a ]; // in case when we get a collection of assignments objects
+				members = _.union(members, _.filter(ms, function( member ){ return member.person && member.person.resource; }));
+			} );
+			assignments.members = members;
+		}
+	};
 
 	/**
 	 * Get A person's Assignments today and going forward
@@ -380,20 +392,14 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			params.projectResource = projectQuery.project.resource;
 			params.timePeriod = timePeriod;
 			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
-				
-				// in case when we get "data" collection instead of "members"
-				if (_.isObject(assignments) && assignments.data && !assignments.members){
-					assignments.members = assignments.data;
-					delete assignments.data
-				}
-				
+				prepareAssignment(assignments);
 				return assignments;
 			});
 		}
 		else {
 			return this.getAssignmentsByPeriodUsingQuery(timePeriod, projectQuery);
 		}
-	}
+	};
 		
 
 	this.getAssignmentsByPeriodUsingQuery = function( timePeriod, projectQuery ) {
@@ -416,7 +422,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		} );
 
 		return deferred.promise;
-	}
+	};
 
 	this.filterAssignmentsByPeriod = function( assignmentsObject, period ) {
 
@@ -428,21 +434,21 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			_.each( assignmentsObject.members, function( m ) {
 				if( period == "current" ) {
 					if( new Date( m.startDate ) <= today && ( !m.endDate || new Date( m.endDate ) > today ) )
-						included.push( m )
+						included.push( m );
 					else
-						excluded.push( m )
+						excluded.push( m );
 				} else if( period == "future" ) {
 					if( new Date( m.startDate ) >= today && ( !m.endDate || new Date( m.endDate ) > today ) )
-						included.push( m )
+						included.push( m );
 					else
-						excluded.push( m )
+						excluded.push( m );
 				} else if( period == "past" ) {
 					if( new Date( m.startDate ) < today && ( !m.endDate || new Date( m.endDate ) < today ) )
-						included.push( m )
+						included.push( m );
 					else
-						excluded.push( m )
+						excluded.push( m );
 				} else if( period == "all" )
-					included.push( m )
+					included.push( m );
 			} );
 
 			assignmentsObject.members = included;

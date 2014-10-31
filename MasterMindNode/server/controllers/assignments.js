@@ -4,6 +4,7 @@ var dataAccess = require('../data/dataAccess');
 var projects = require('./projects');
 var util = require('../util/util');
 var _ = require( 'underscore' );
+var validation = require( '../data/validation.js' );
 
 
 var listAssignments = function(q, callback) {
@@ -26,7 +27,7 @@ var listAssignments = function(q, callback) {
 				}
 			}
 		}
-		listAssignmentsByPersonResource( person, startDate, endDate, function (err, result) {
+		listAssignmentsByProjectResourcesAndTimePeriod( person, startDate, endDate, function (err, result) {
 			if (!err) {
 				callback(null,  dataAccess.prepareRecords( result, null, "projects/", "/assignments" ));
 			}
@@ -59,6 +60,26 @@ var getAssignment = function(id, callback) {
     });
 };
 
+var insertAssignment = function(assignmentId, obj, callback) {
+    
+    var validationMessages = validation.validate(obj, dataAccess.ASSIGNMENTS_KEY);
+    if(validationMessages.length > 0) {
+      callback( validationMessages.join(', '), {} );
+      return;
+    }
+    
+    listAssignmentsByProjectResourcesAndTimePeriod(obj.project.resource, "all", function(err, assignment) {
+    	 dataAccess.insertItem(assignment ? assignment._id : assignmentId, obj, dataAccess.ASSIGNMENTS_KEY, function(err, body) {
+    	        if (err) {
+    	            console.log(err);
+    	            callback('error insert assignment into project', null);
+    	        } else {
+    	            callback(null, _.extend(obj, body));
+    	        }
+    	    });
+    });
+};
+
 var listCurrentAssigments = function(callback) {
 	
     dataAccess.listCurrentAssigments(function(err, body){
@@ -73,6 +94,31 @@ var listCurrentAssigments = function(callback) {
 
 };
 
+var listAssignmentsByPersonResource = function(resource, callback) {
+	
+    dataAccess.listAssignments(null, function(err, result){
+        if (err) {
+            console.log(err);
+            callback('error loading assignments by person', null);
+        } else {
+			var assignments = [];
+			_.each(result.data, function(assignment){
+				console.log("assignment=" + JSON.stringify(assignment));
+				if (assignment.person) {
+					console.log("assignment.person.resource=" + JSON.stringify(assignment.person.resource) );
+				}
+				if (assignment.person && 
+						assignment.person.resource && 
+							assignment.person.resource == resource ) {
+						assignments.push(assignment);
+				}
+			});
+			
+            callback(null, assignments);
+        }
+    });
+
+};
 
 var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources, timePeriod, callback) {
 	if (!(projectResources instanceof Array)) {
@@ -148,9 +194,9 @@ var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources,
 				
 		});
 		
-		var result;
+		var result = assignments;
 		if ( assignments && assignments.length == 1 )  {
-			result =assignments[0];
+			result = assignments[0];
 		}
 		else if ( assignments && assignments.length > 1 )  {
 			result = {};
@@ -160,7 +206,7 @@ var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources,
 	});
 };
 
-var listAssignmentsByPersonResource = function(personResource, startDateMoment, endDateMoment, callback) {
+var listAssignmentsByPersonResourceAndTimePeriod = function(personResource, startDateMoment, endDateMoment, callback) {
 	
     dataAccess.listAssignmentsByPerson(personResource, function(err, result){
         if (err) {
@@ -236,6 +282,8 @@ var listAssignmentsByPersonResource = function(personResource, startDateMoment, 
 
 module.exports.listAssignments = listAssignments;
 module.exports.getAssignment = getAssignment;
+module.exports.insertAssignment = insertAssignment;
 module.exports.listCurrentAssigments = listCurrentAssigments;
 module.exports.listAssignmentsByPersonResource = listAssignmentsByPersonResource;
+module.exports.listAssignmentsByPersonResourceAndTimePeriod = listAssignmentsByPersonResourceAndTimePeriod;
 module.exports.listAssignmentsByProjectResourcesAndTimePeriod = listAssignmentsByProjectResourcesAndTimePeriod;

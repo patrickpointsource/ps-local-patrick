@@ -299,19 +299,21 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 			// concatenate hided assingnee members
 			$scope.projectAssignment.members = assignments.concat( $scope.projectAssignment.excludedMembers ? $scope.projectAssignment.excludedMembers : [ ] );
 
-            if (!$scope.projectAssignment.about || $scope.projectAssignment.about && $scope.projectAssignment.about.indexOf('undefined') > -1) {
-                $scope.projectAssignment.about = $scope.project.about + '/assignments';
-                $scope.projectAssignment.project = {
-                    resource: $scope.project.about
-                };
-            }
+			if (!$scope.projectAssignment.about ||
+				$scope.projectAssignment.about.indexOf('/assignments') == -1  ||
+				$scope.projectAssignment.about.indexOf('undefined') > -1) {
+						$scope.projectAssignment.about = $scope.project.about + '/assignments';
+						$scope.projectAssignment.resource = $scope.projectAssignment.about;
+						$scope.projectAssignment.project = {
+						resource: $scope.project.about
+				};
+			}
             
             if(!$scope.projectAssignment.project) {
               $scope.projectAssignment.project = { resource: $scope.project.about };
             }
                 
 			return AssignmentService.save( $scope.project, $scope.projectAssignment ).then( function( result ) {
-				saveInProgress = false;
 
 				//$scope.showInfo(['Assignments successfully saved']);
 				//TODO removing dirty handler
@@ -342,6 +344,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 				}
 
 				$scope.pushState( params );
+				saveInProgress = false;
 			} );
 			// Reset the form to being pristine.
 			for( var i = 0; i < 10 && $scope[ "newPersonToRoleForm" + i ]; i++ )
@@ -461,7 +464,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	};
 
 	$scope.peopleList = [ ];
-
+	
 	$scope.refreshAssignmentsData = function( result ) {
 		for( var i = 0; i < $scope.project.roles.length; i++ ) {
 			$scope.project.roles[ i ].assignees = [ ];
@@ -469,12 +472,8 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 
 		if( result && result.members ) {
 			$scope.projectAssignment = result;
-
+			
 			var assignments = result.members ? result.members : [ ];
-
-			result.members = _.filter( result.members, function( a ) {
-				return a.person && a.person.resource;
-			} );
 
 			var findRole = function( roleResource ) {
 				return _.find( $scope.project.roles, function( r ) {

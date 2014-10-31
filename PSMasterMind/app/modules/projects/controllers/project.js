@@ -1521,7 +1521,7 @@ else if( role.percentageCovered == 0 )
 
 			for( i = 0; i < assignments.members.length; i++ ) {
 				person = _.find( $scope.organizedHours, function( o ) {
-					return assignments.members[ i ].person.resource == o.resource;
+					return assignments.members[ i ].person.resource && assignments.members[ i ].person.resource == o.resource;
 				} );
 
 				if (!person)

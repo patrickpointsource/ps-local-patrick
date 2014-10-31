@@ -5,6 +5,7 @@ var people = require('./people.js');
 var util = require('../util/util');
 var _ = require( 'underscore' );
 var validation = require( '../data/validation.js' );
+var assignments = require( '../controllers/assignments.js' );
 
 var listProjects = function(query, callback) {
     dataAccess.listProjects(query, function(err, body){
@@ -150,7 +151,7 @@ var listAssignments = function(id, callback) {
 	
 	//TODO filter by project id
 	
-    dataAccess.listAssignments(query, function(err, body){
+	assignments.listAssignments(query, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading assignments by project', null);
@@ -165,25 +166,12 @@ var listAssignments = function(id, callback) {
 
 var listAssignmentsByPerson = function(resource, callback) {
 	
-    dataAccess.listAssignments(null, function(err, result){
+	assignments.listAssignmentsByPersonResource(resource, function(err, result){
         if (err) {
             console.log(err);
             callback('error loading assignments by person', null);
-        } else {
-			var assignments = [];
-			_.each(result.data, function(assignment){
-				console.log("assignment=" + JSON.stringify(assignment));
-				if (assignment.person) {
-					console.log("assignment.person.resource=" + JSON.stringify(assignment.person.resource) );
-				}
-				if (assignment.person && 
-						assignment.person.resource && 
-							assignment.person.resource == resource ) {
-						assignments.push(assignment);
-				}
-			});
-			
-            callback(null, assignments);
+        } else {			
+            callback(null, result);
         }
     });
 
@@ -215,20 +203,13 @@ var getRole = function(projectId, roleId, callback) {
     });
 };
 
-var insertAssignment = function(projectId, obj, callback) {
-    
-    var validationMessages = validation.validate(obj, dataAccess.ASSIGNMENTS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
-    
-    dataAccess.insertItem(obj._id, obj, dataAccess.ASSIGNMENTS_KEY, function(err, body){
+var insertAssignment = function(assignmentId, obj, callback) {
+    assignments.insertAssignment(assignmentId, obj, function(err, body){
         if (err) {
             console.log(err);
             callback('error insert assignment into project', null);
         } else {
-            callback(null, _.extend(obj, body));
+            callback(null, body);
         }
     });
 };

@@ -88,7 +88,7 @@ router.get( '/bytypes/:type', auth.isAuthenticated, function( req, res ) {
 				var person = req.query.person;
 				var startDate = req.query.startDate;
 				var endDate = req.query.endDate;
-				assignments.listAssignmentsByPersonResource( person, startDate, endDate, function( err, assignments ) {
+				assignments.listAssignmentsByPersonResourceAndTimePeriod( person, startDate, endDate, function( err, assignments ) {
 					if( err ) {
 						res.json( 500, err );
 					} else {
