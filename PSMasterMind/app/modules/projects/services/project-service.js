@@ -137,13 +137,13 @@ angular.module('Mastermind.services.projects')
                                    ]
             				}
 	    	          
-	    }
+	    };
     	
     	if (key)
-    		return map[ key.toLowerCase() ]
+    		return map[ key.toLowerCase() ];
     	
     	return map;
-    }
+    };
     /**
      * Service function for retrieving all projects.
      *
@@ -535,12 +535,12 @@ angular.module('Mastermind.services.projects')
     
     this.getMyExecSponsoredProjects = function(me) {
 	    if (window.useAdoptedServices) {
-	        return Resources.get('projects/my/executiveSponsor');
+	        return Resources.refresh('projects/my/executiveSponsor');
 		}
 		else {
 			return this.getMyExecSponsoredProjectsUsingQuery(me);
 		}
-	}
+	};
 
     /**
      * Get Projects wich I am an exec sponsor
@@ -552,7 +552,7 @@ angular.module('Mastermind.services.projects')
     	  executiveSponsor:{
     		resource:me.about
     	}
-      }
+      };
       var projectsFields = {resource:1,name:1,customerName:1,startDate:1,endDate:1,type:1,committed:1,roles:1,executiveSponsor:1,salesSponsor:1};
       
       Resources.query('projects',query,projectsFields,function(result){
@@ -560,19 +560,19 @@ angular.module('Mastermind.services.projects')
       });
       
       return deferred.promise;
-    }
+    };
 
     /**
      * Get My Current Projects (projects I have a current role on)
      */
-    this.getMyCurrentProjects = function(me){
+    this.getMyCurrentProjects = function(me) {
 	    if (window.useAdoptedServices) {
-	        return Resources.get('projects/my/current');
+	        return Resources.refresh('projects/my/current');
 		}
 		else {
 			return this.getMyExecSponsoredProjectsUsingQuery(me);
 		}
-	}
+	};
 	
     
     /**
@@ -775,12 +775,12 @@ angular.module('Mastermind.services.projects')
 
     this.getProjectsByStatusFilter = function (filter, onSuccess){
 	    if (window.useAdoptedServices) {
-      		return this.getProjectsByStatuses(filter.split(','), onSuccess)
+      		return this.getProjectsByStatuses(filter.split(','), onSuccess);
 		}
 		else {
 			return this.getProjectsByStatusFilterUsingQuery(filter, onSuccess);
 		}
-	}
+	};
  
 
     /**
@@ -789,15 +789,15 @@ angular.module('Mastermind.services.projects')
 
     this.getProjectsByStatusFilterUsingQuery = function (filter, onSuccess){
       var apQuery = {$or: []};
-      var tmp = filter.split(',')
+      var tmp = filter.split(',');
       
       for (var i = 0; i < tmp.length; i ++) 
-    	  apQuery["$or"].push(projectsQueryMap( tmp[i].trim()))
+    	  apQuery["$or"].push(projectsQueryMap( tmp[i].trim()));
       
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
+    };
 
     
     /**
@@ -811,7 +811,7 @@ angular.module('Mastermind.services.projects')
 			return this.getActiveClientProjectsUsingQuery(onSuccess);
 		}
 		
-    }
+    };
 
 
     /**
@@ -828,7 +828,7 @@ angular.module('Mastermind.services.projects')
       var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
+    };
 
  
     /**
@@ -841,7 +841,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getBacklogProjectsUsingQuery(onSuccess);
 		}
-	}
+	};
 	
 	
     /**
@@ -869,7 +869,7 @@ angular.module('Mastermind.services.projects')
       //console.log("Project-service.getBacklogProjects() apQuery=", apQuery);
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
+    };
 
     
     /**
@@ -883,7 +883,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getPipelineProjectsUsingQuery(onSuccess);
 		}
-	}
+	};
 
 
     /**
@@ -912,7 +912,7 @@ angular.module('Mastermind.services.projects')
       //console.log("Project-service.getPipeline() apQuery=", apQuery);
 
       return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
+    };
     
     /**
      * Query to get the list of active+backlog projects
@@ -924,7 +924,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getOngoingProjectsUsingQuery(onSuccess);
 		}
-	}
+	};
 
 
     this.getOngoingProjectsUsingQuery = function (onSuccess){
@@ -963,7 +963,7 @@ angular.module('Mastermind.services.projects')
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
+    };
 
     /**
      * Query to get the list of unfinished projects
@@ -975,7 +975,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getUnfinishedProjectsUsingQuery(onSuccess);
 		}
-	}
+	};
 
     /**
      * Query to get the list of unfinished projects (using query)
@@ -1006,7 +1006,7 @@ angular.module('Mastermind.services.projects')
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
+    };
     
 
     /**
@@ -1019,7 +1019,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getInvestmentProjectsUsingQuery(onSuccess);
 		}
-	}
+	};
 
     /**
      * Query to get the list of investment projects (using query)
@@ -1057,7 +1057,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getCompletedProjectsUsingQuery(onSuccess);
 		}
-	}
+	};
 
     /**
      * Query to get the list of completed projects (using query)
@@ -1096,7 +1096,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getDealLostProjectsUsingQuery(onSuccess);
 		}
-	}
+	};
 
     /**
      * Query to get the list of deallost projects
@@ -1120,7 +1120,7 @@ angular.module('Mastermind.services.projects')
         var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,description: 1};
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
-    }
+    };
     
     
     var getSixMonthsOfDates = function(monthInc){
@@ -1144,7 +1144,7 @@ angular.module('Mastermind.services.projects')
 	        ret.push(dateStr);
         }
         return ret;
-    }
+    };
     
     /**
      * Retiurns the state of a project
@@ -1204,7 +1204,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getProjectCountsUsingQuery();
 		}
-	}
+	};
 	
     /**
      * Returns the counts for active, backlog, pipeline and investment projects (using query)
@@ -1300,7 +1300,7 @@ angular.module('Mastermind.services.projects')
 		else {
 			return this.getProjectsKickingOffUsingQuery(onSuccess);
 		}
-	}
+	};
 
 
     this.getProjectsKickingOffUsingQuery = function (){
@@ -1331,7 +1331,7 @@ angular.module('Mastermind.services.projects')
         });
         
         return deferred.promise;
-    }
+    };
     
     /**
      * For a given set of projects cerate a data set of roles versus aviable billable hours to be used for the
@@ -1370,7 +1370,7 @@ angular.module('Mastermind.services.projects')
         		
         		for (var k = 0; k < result.members.length; k ++) {
         			utilizationRate = 100;
-        			roleType = _.find(roleList, function(r) {return result.members[k].primaryRole && result.members[k].primaryRole.resource && result.members[k].primaryRole.resource.indexOf(r.resource) > -1})
+        			roleType = _.find(roleList, function(r) {return result.members[k].primaryRole && result.members[k].primaryRole.resource && result.members[k].primaryRole.resource.indexOf(r.resource) > -1;});
         			
         			currentValue = 1;
         			
@@ -1505,7 +1505,7 @@ angular.module('Mastermind.services.projects')
         		
         		for (var k = 0; k < result.members.length; k ++) {
         			utilizationRate = 100;
-        			roleType = _.find(roleList, function(r) {return result.members[k].primaryRole && result.members[k].primaryRole.resource && result.members[k].primaryRole.resource.indexOf(r.resource) > -1})
+        			roleType = _.find(roleList, function(r) {return result.members[k].primaryRole && result.members[k].primaryRole.resource && result.members[k].primaryRole.resource.indexOf(r.resource) > -1;});
         			
         			currentValue = 1;
         			
