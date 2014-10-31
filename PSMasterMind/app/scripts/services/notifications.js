@@ -35,8 +35,12 @@ angular.module('Mastermind.services.projects')
     };
 
     this.getPersonsNotificationsUsingGet = function(personResource) {
-    	var params = {};
+    	var params = {
+    			t: (new Date()).getMilliseconds()
+    	};
+    	
     	params.person = personResource;
+    	
         return Resources.get('notifications/bytypes/byPerson', params);
     };
     	

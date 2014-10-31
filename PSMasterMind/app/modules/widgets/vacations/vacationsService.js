@@ -77,7 +77,10 @@ function( $q, Resources, HoursService ) {
   
   this.getRequestsUsingGet = function(manager) {
       var deferred = $q.defer( );
-	  var params = {};
+	  var params = {
+		  t: (new Date()).getMilliseconds()
+	  };
+	  
 	  params.manager = manager.about;
 	  params.status = [this.STATUS.Pending, this.STATUS.Cancelled];
 	  Resources.get( "vacations/bytypes/getRequests", params).then(function(result) {
@@ -126,7 +129,9 @@ function( $q, Resources, HoursService ) {
 
   this.getOtherRequestsThisPeriodUsingGet = function(manager, request) {
       var deferred = $q.defer( );
-	  var params = {};
+	  var params = {
+			  t: (new Date()).getMilliseconds()
+	  };
 	  params.manager = manager.about;
 	  params.startDate = request.startDate;
 	  params.endDate = request.endDate;
@@ -257,7 +262,9 @@ function( $q, Resources, HoursService ) {
 	  	var deferred = $q.defer();
 	    var taskName = (type == this.VACATION_TYPES.Appointment) ? "Appointment" : "Vacation";
 		
-	    Resources.get( "tasks/byname/" + taskName).then(function(result) {
+	    Resources.get( "tasks/byname/" + taskName, {
+	    	t: (new Date()).getMilliseconds()
+	    }).then(function(result) {
 	        if(result.count == 0) {
 	            Resources.create('tasks', taskQuery).then(function() {
 	              this.getTaskForVacation(type).then(function(res) {
@@ -296,10 +303,16 @@ function( $q, Resources, HoursService ) {
     return deferred.promise;
   }
   
-  this.getHoursLost = function(vacation) {
+  this.getHoursLost = function(vacation, startDate, endDate) {
     var start = moment(vacation.startDate);
     var end = moment(vacation.endDate);
-    var actualDays = this.getActualDays(vacation.startDate, vacation.endDate);
+    
+    if (vacation.endDate > endDate)
+    	end = moment(endDate);
+    if (vacation.startDate < startDate)
+    	start = moment(startDate)
+    	
+    var actualDays = this.getActualDays(start, end);
     
     if(actualDays == 1) {
       var hours = end.diff(start ,'hours');

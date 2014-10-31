@@ -828,7 +828,7 @@ var listNotificationsByPerson = function( person, callback ) {
 	var result = memoryCache.getObject( NOTIFICATIONS_KEY );
 	if( result ) {
 		console.log( "read " + NOTIFICATIONS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, result.members), "members", "notifications/" ) );
+		callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, result.data), "members", "notifications/" ) );
 	} else {
 		dbAccess.listNotifications( function( err, body ) {
 			if( !err ) {

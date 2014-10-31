@@ -1,0 +1,23 @@
+ <div id="notifications" class="dropdown-toggle" data-toggle="dropdown" style="width: 50px; height: 50px;">
+    <div class="drop-cover"></div>
+    <i class="fa fa-bell-o fa-2x notification-bell"></i>
+    <div ng-if="notifications.length > 0" style="position: absolute; right: 20px; top: 15px; color: white; background-color: red; border-radius: 50%; width:25px;height:25px; padding-left: 8px; font-weight:bold;">{{notifications.length}}</div>
+  </div>
+  <div class="dropdown-menu notifications" role="menu" aria-labelledby="notifications">
+      <div ng-repeat="notification in notifications" ng-class="{'notification-request': notification.type == 'Vacation', 'notification-request-cancel': notification.type == 'VacationCancel'}">
+        <div class="col-xs-2 notification-icon">
+          <i class="{{notification.icon}}"></i>
+        </div>
+        <div class="col-xs-9 notification-container">
+          <div class="bold">{{notification.header}}</div>
+          <div class="notification-text" ng-bind-html="notification.text"></div>
+        </div>
+        <div class="col-xs-1 no-horizontal-padding padding-top-10">
+          <i class="fa fa-times cursor-pointer" ng-click="removeNotification($index)"></i>
+        </div>
+        
+      </div>
+      <div ng-if="notifications.length == 0" class="color-gray-image-border no-notifications">
+        There are no notifications.
+      </div>
+  </div>

@@ -27,7 +27,8 @@ var listAssignments = function(q, callback) {
 				}
 			}
 		}
-		listAssignmentsByProjectResourcesAndTimePeriod( person, startDate, endDate, function (err, result) {
+		//listAssignmentsByProjectResourcesAndTimePeriod( person, startDate, endDate,function (err, result) {
+		listAssignmentsByProjectResourcesAndTimePeriod( person, startDate, function (err, result) {
 			if (!err) {
 				callback(null,  dataAccess.prepareRecords( result, null, "projects/", "/assignments" ));
 			}
