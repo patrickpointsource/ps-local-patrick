@@ -71,7 +71,7 @@ module.exports.initialize = function(callback) {
                 for (var i=0; i < userRoles.length; i++) {
                     var userId = userRoles[i].userId;
                     
-                    var roleNames = userRoles[i].roles; //getRoleNames(userRoles[i].roles);
+                    var roleNames = getRoleNames(userRoles[i].roles);
                     
                     // give permissions to one member
                     if (userId) {

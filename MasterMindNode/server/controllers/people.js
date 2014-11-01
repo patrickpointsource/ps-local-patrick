@@ -3,6 +3,7 @@
 var dataAccess = require('../data/dataAccess');
 var roles = require('./roles');
 var util = require('../util/util');
+var _ = require( 'underscore' );
 
 var security = require('../util/security');
 
@@ -265,7 +266,7 @@ var getAccessRights = function(user, callback) {
      * Update Role Types (adminAccess)
      * Can Assign Users to Groups (adminAccess)
      */
-        if( userRole.roles.indexOf( security.DEFAULT_ROLES.EXECUTIVES ) !== -1 ) {
+        if( _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.EXECUTIVES }) ) {
           accessRights.hasFinanceRights = true;
           accessRights.hasAdminRights = true;
           accessRights.hasProjectManagementRights = true;
@@ -283,7 +284,7 @@ var getAccessRights = function(user, callback) {
      * Update Role Types (adminAccess)
      * Can Assign Users to Groups (adminAccess)
      */
-        if( userRole.roles.indexOf( security.DEFAULT_ROLES.MANAGEMENT ) !== -1 ) {
+        if( _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.MANAGEMENT }) ) {
           accessRights.hasFinanceRights = true;
           accessRights.hasAdminRights = true;
           accessRights.hasProjectManagementRights = true;
@@ -297,7 +298,7 @@ var getAccessRights = function(user, callback) {
      * Can make project assignments (projectManagementAccess)
      * View Staffing Deficits (projectManagementAccess)
      */
-        if( userRole.roles.indexOf( security.DEFAULT_ROLES.PM ) !== -1 ) {
+        if( _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.PM }) ) {
           accessRights.hasProjectManagementRights = true;
         }
 
@@ -307,7 +308,7 @@ var getAccessRights = function(user, callback) {
      * Is in the Sales Sponsor List (queried from People collection)
      * Can view all financial info (financeAccess)
      */
-        if( userRole.roles.indexOf( security.DEFAULT_ROLES.SALES ) !== -1 ) {
+        if( _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.SALES }) ) {
           accessRights.hasFinanceRights = true;
         }
     

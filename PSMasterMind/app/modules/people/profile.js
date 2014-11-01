@@ -114,8 +114,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.prepareUserRoles = function() {
 	  $scope.initialUserGroups = [];
       _.extend($scope.initialUserGroups, $scope.userRole.roles);
-      $scope.userSecurityGroups = _.filter($scope.securityGroups, function(userRole) {
-        return $scope.userRole.roles.indexOf(userRole.name) > -1;
+      $scope.userSecurityGroups = _.filter($scope.securityGroups, function(securityGroup) {
+        return _.findWhere($scope.userRole.roles, { resource: securityGroup.resource }) ? true : false;
       });
 	};
 	
@@ -290,14 +290,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		// check if security groups needs to be updated
 		var rolesNeedsToBeUpdated = false;
 		var securityGroups = _.map($scope.userSecurityGroups, function(userSecurityGroup){
-		  return userSecurityGroup.name;
+		  return { name: userSecurityGroup.name, resource: userSecurityGroup.resource };
 		});
 		
 		if(securityGroups.length != $scope.initialUserGroups.length) {
 		  rolesNeedsToBeUpdated = true;
 		} else {
 		  for(var i = 0; i < securityGroups.length; i++) {
-		    if($scope.initialUserGroups.indexOf(securityGroups[i]) < 0) {
+		    if($scope.initialUserGroups.indexOf(securityGroups[i].name) < 0) {
 		      rolesNeedsToBeUpdated = true;
 		      break;
 		    }

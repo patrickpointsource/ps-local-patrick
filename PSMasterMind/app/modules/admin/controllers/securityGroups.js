@@ -12,14 +12,14 @@ angular.module('Mastermind')
 
 	  if (window.useAdoptedServices) {
 		  
-	      Resources.get('securityRoles').then(function(result) {
+	      Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
 	          $scope.securityGroups = result.members;
 	          
 	          if($scope.securityGroups.length > 0) {
 	            $scope.selectedGroup = $scope.securityGroups[0];
 	          }
 	          
-	          Resources.get('userRoles').then(function(userRoles) {
+	          Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
 	            $scope.userRoles = userRoles.members;
 	            
 	            People.query( {}, {}).then( function(people) {
@@ -65,7 +65,7 @@ angular.module('Mastermind')
           return true;
         });
       }
-    }
+    };
     
     $scope.updateSelectedGroupMembers = function() {
       if($scope.selectedGroup) {
@@ -266,25 +266,44 @@ angular.module('Mastermind')
     $scope.groupsToAdd = [];
     $scope.groupsToDelete = [];
     $scope.filterGroups();
+    $scope.initialName = _.extend($scope.selectedGroup.name);
   });
   
   $scope.$on("admin:save", function() {
     $scope.messages = [];
-    if($scope.creatingGroup) {
-      Resources.create('securityroles', $scope.selectedGroup).then(function(result) {
+    
+    $scope.validateGroup();
+    
+    if($scope.errors.length == 0) {
+      if($scope.creatingGroup) {
+        Resources.create('securityroles', $scope.selectedGroup).then(function(result) {
+          $scope.checkForDeletedMembers();
+          $scope.checkForAddedMembers();
+          $scope.messages.push("Your changes have been saved successfully.");
+          $scope.refreshGroups();
+        });
+      } else {
         $scope.checkForDeletedMembers();
         $scope.checkForAddedMembers();
-        $scope.messages.push("Your changes have been saved successfully.");
-        $scope.refreshGroups();
-      });
+        Resources.update($scope.selectedGroup).then(function(result){
+          $scope.messages.push("Your changes have been saved successfully.");
+        });
+      }
     } else {
-      $scope.checkForDeletedMembers();
-      $scope.checkForAddedMembers();
-      Resources.update($scope.selectedGroup).then(function(result){
-        $scope.messages.push("Your changes have been saved successfully.");
-      });
+      $scope.selectedGroup.name = $scope.initialName;
+      $scope.$emit("securitygroups:editmode:true");
     }
+    
   });
+  
+  $scope.validateGroup = function() {
+    $scope.errors = [];
+    if(_.findWhere($scope.securityGroups, { name: $scope.selectedGroup.name })) {
+      if($scope.initialName != $scope.selectedGroup.name) {
+        $scope.errors.push("Security group with name '" + $scope.selectedGroup.name + "' already exist");
+      }
+    }
+  };
   
   $scope.$on("admin:cancel", function() {
     $scope.creatingGroup = false;
@@ -457,17 +476,21 @@ angular.module('Mastermind')
   $scope.deleteGroup = function() {
     for(var i = 0; i < $scope.userRoles.length; i++) {
       var userRole = $scope.userRoles[i];
-      var index = userRole.roles.indexOf($scope.selectedGroup.name);
-      if(index > -1) {
-        userRole.roles.splice(index, 1);
+      
+      for(var j = 0; j < userRole.roles.length; j++) {
+        var role = userRole.roles[j];
         
-        Resources.update(userRole);
+        if($scope.selectedGroup.resource == role.resource) {
+          userRole.roles.splice(j, 1);
+          
+          Resources.update(userRole);
+        }
       }
     }
     
     Resources.remove($scope.selectedGroup.resource).then(function(result) {
       $scope.$emit("securitygroups:delete");
-      $scope.refreshGroups();
+      $scope.getGroups();
     });
   };
   
@@ -477,8 +500,14 @@ angular.module('Mastermind')
         
       if($scope.securityGroups.length > 0) {
         $scope.selectedGroup = $scope.securityGroups[0];
+        
+        $scope.updateSelectedGroupMembers();
       }
     });
+  };
+  
+  $scope.getPersonName = function(person) {
+    return Util.getPersonName(person);
   };
     
   }]);

@@ -5,6 +5,12 @@
       <li ng-repeat="message in messages">{{message}}</li>
     </ul>
   </div>
+  <div class="row alert alert-danger" ng-show="errors.length > 0">
+    <i class="fa fa-times pull-right cursor-pointer" ng-click="errors = []"></i>
+    <ul>
+      <li ng-repeat="error in errors">{{error}}</li>
+    </ul>
+  </div>
   <div class="row security-roles">
     <div class="col-xs-6 col-sm-1" style="margin-right: 25px;display: inline;">Select a group</div>
     <div class="col-xs-6 col-sm-4" style="margin-left: 15px;display: inline;">
@@ -34,7 +40,7 @@
       <h4>MEMBERS</h4>
       <div class="row security-members" ng-repeat="member in selectedGroupMembers">
         <div class="col-xs-12">
-          <a href="#{{member.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{member.familyName}}, {{member.givenName}}</a>
+          <a href="#{{member.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(member)}}</a>
         </div>
       </div>
       <div class="row security-members" ng-repeat="group in selectedGroupGroups">

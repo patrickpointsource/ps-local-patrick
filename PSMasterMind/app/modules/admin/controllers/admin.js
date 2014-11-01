@@ -156,6 +156,14 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
       $scope.editMode = true;
     });
     
+    $scope.$on("securitygroups:editmode:false", function() {
+      $scope.editMode = false;
+    });
+    
+    $scope.$on("securitygroups:editmode:true", function() {
+      $scope.editMode = true;
+    });
+    
     $scope.$on("securitygroups:delete", function() {
       $scope.editMode = false;
     });
