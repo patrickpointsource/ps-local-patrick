@@ -17,6 +17,21 @@ module.exports.listSecurityRoles = function(q, callback) {
 
 module.exports.insertSecurityRole = function(obj, callback) {
     
+	if(obj._id) {
+		var tmpId;
+		
+		if( _.isObject( obj._id ) )
+			tmpId = obj._id[ "$oid" ].toString( );
+		else
+			tmpId = obj._id.toString( );
+
+		
+		tmpId = 'securityroles/' + tmpId;
+
+		obj.resource = tmpId;
+		obj.about = tmpId;
+	}
+	
     var validationMessages = validation.validate(obj, dataAccess.SECURITY_ROLES_KEY);
     if(validationMessages.length > 0) {
       callback( validationMessages.join(', '), {} );
