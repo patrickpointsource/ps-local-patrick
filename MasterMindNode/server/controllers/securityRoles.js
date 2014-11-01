@@ -1,5 +1,7 @@
 'use strict';
 
+var _ = require('underscore');
+
 var dataAccess = require('../data/dataAccess');
 var validation = require( '../data/validation.js' );
 

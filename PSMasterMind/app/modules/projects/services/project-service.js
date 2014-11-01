@@ -1361,7 +1361,9 @@ angular.module('Mastermind.services.projects')
     		}
     		
     		var roleList = roles.members;
-    		Resources.get( "people/bytypes/active").then( function( result ) {
+    		Resources.get( "people/bytypes/active", {
+    			  t: (new Date()).getMilliseconds()
+    		  }).then( function( result ) {
 
         		var total = 0;
         		var roleType = null;

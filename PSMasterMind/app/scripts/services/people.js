@@ -23,7 +23,9 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		var deferred = $q.defer( );
 
 		if (window.useAdoptedServices) {
-			Resources.get( 'people/byTypes/active').then (function( result ) {
+			Resources.get( 'people/byTypes/active', {
+				  t: (new Date()).getMilliseconds()
+			  }).then (function( result ) {
 				deferred.resolve( result );
 			} );
 			

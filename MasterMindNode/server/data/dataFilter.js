@@ -62,10 +62,16 @@ var checkPersonByRole = function(person, roleId, includeInactive, callback) {
 var filterPeopleByIsActiveFlag = function(people, isActive) {
 	var result = [];
 	_.each(people, function(person) {
-		if (isActive && person.isActive && person.isActive != "false") {
+		/*if (isActive && person.isActive && person.isActive != "false") {
 			result.push(person);
 		}
 		else if (!isActive && ( !person.isActive || person.isActive == "false") ) {
+			result.push(person);
+		}*/
+		if (isActive && person.isActive != "false") {
+			result.push(person);
+		}
+		else if (!isActive && ( person.isActive == "false") ) {
 			result.push(person);
 		}
 	});
@@ -501,15 +507,18 @@ var checkVacation = function(vacation, people, startDate, endDate, callback) {
 		
 		if (!checked) {
 			return callback (false);
+			return;
 		}
 	}
 	
-	if (startDate && vacation.endDate > startDate) {
+	if (startDate && vacation.endDate < startDate) {
 		return callback (false);
+		return;
 	}
 	
-	if (endDate && vacation.startDate < endDate) {
+	if (endDate && vacation.startDate > endDate) {
 		return callback (false);
+		return;
 	}
 	
 	return callback (true);

@@ -405,7 +405,9 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		//Otherwise just show all active people
 		else {
 			$scope.peopleFilter = 'all';
-			Resources.get("people/bytypes/active").then( function( result ) {
+			Resources.get("people/bytypes/active", {
+				  t: (new Date()).getMilliseconds()
+			  }).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );
