@@ -74,13 +74,13 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 		if( type == 'name-desc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return person.familyName ? person.familyName.toLowerCase( ): '';
+				return $scope.getPersonName(person) || '';
 			} );
 		}
 
 		if( type == 'name-asc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return person.familyName ? person.familyName.toLowerCase( ): '';
+				return $scope.getPersonName(person) || '';
 			} ).reverse( );
 		}
 
