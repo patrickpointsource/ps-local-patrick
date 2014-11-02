@@ -115,6 +115,7 @@
                 <select id="salesSponsor" class="col-xs-12 form-control"
                     ng-model="project.salesSponsor.resource"
                     ng-options="m.resource as getPersonName(m) for m in sales.members | orderBy:orderByName">
+                    <option selected disabled hidden value=''></option>"
                 </select>
             </div>
           </div>
