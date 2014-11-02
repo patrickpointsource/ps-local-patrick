@@ -659,6 +659,25 @@ var listLinks = function( q, callback ) {
 
 };
 
+
+var listLinksByProject = function( project, callback ) {
+
+	var result = memoryCache.getObject( LINKS_KEY );
+	if( result ) {
+		console.log( "read " + LINKS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterLinksByProject(project, result.data), "members", "tasks/" ) );
+	} else {
+		dbAccess.listLinks( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + LINKS_KEY + " to memory cache" );
+				memoryCache.putObject( LINKS_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterLinksByProject(project, body.data), "members", "tasks/" ) );
+		} );
+	}
+
+};
+
 var listConfiguration = function( q, callback ) {
 
 	var result = memoryCache.getObject( CONFIGURATION_KEY );
@@ -1104,6 +1123,7 @@ module.exports.listHoursByProjects = listHoursByProjects;
 
 module.exports.listRoles = listRoles;
 module.exports.listLinks = listLinks;
+module.exports.listLinksByProject = listLinksByProject;
 module.exports.listNotifications = listNotifications;
 module.exports.listNotificationsByPerson = listNotificationsByPerson;
 module.exports.listSkills = listSkills;

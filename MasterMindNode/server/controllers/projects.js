@@ -138,6 +138,21 @@ var listLinks = function(id, query, callback) {
     dataAccess.listLinks(query, function(err, body){
         if (err) {
             console.log(err);
+            callback('error loading links', null);
+        } else {
+            //console.log(body);
+            callback(null, body);
+        }
+    });
+
+};
+
+
+var listLinksByProject = function(id, callback) {
+	
+    dataAccess.listLinksByProject( util.getFullID(id, 'projects'), function(err, body){
+        if (err) {
+            console.log(err);
             callback('error loading links by project', null);
         } else {
             //console.log(body);
@@ -344,6 +359,7 @@ module.exports.deleteProject = deleteProject;
 
 // project links functions
 module.exports.listLinks = listLinks;
+module.exports.listLinksByProject = listLinksByProject;
 module.exports.addProjectLink = addProjectLink;
 module.exports.insertProject = insertProject;
 module.exports.insertProjectLink = insertProjectLink;

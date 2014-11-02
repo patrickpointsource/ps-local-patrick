@@ -282,7 +282,7 @@ router.get( '/:id/links', auth.isAuthenticated, function( req, res ) {
 		if( allowed ) {
 			var id = req.params.id;
 			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-			projects.listLinks( id, query, function( err, result ) {
+			projects.listLinksByProject( id, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

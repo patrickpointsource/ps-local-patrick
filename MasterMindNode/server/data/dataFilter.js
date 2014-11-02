@@ -597,6 +597,24 @@ var filterTasksByName = function(name, tasks) {
 	return result;
 };
 
+
+/**
+ * Returns links filtered by project
+ * 
+ * @param {Object} project
+ * @param {Object} links
+ */
+
+var filterLinksByProject = function(project, links) {
+	var result = [];	
+	_.each(links, function(link) {
+		if (link.project && link.project.resource == project ) {
+			result.push(link);
+		}
+	});
+	return result;
+};
+
 // people filter functions
 module.exports.filterPeopleByRoles = filterPeopleByRoles;
 module.exports.filterPeopleByIsActiveFlag = filterPeopleByIsActiveFlag;
@@ -623,5 +641,8 @@ module.exports.filterVacationsByPerson = filterVacationsByPerson;
 module.exports.filterVacationsByPeriod = filterVacationsByPeriod;
 module.exports.filterRequests = filterRequests;
 
-// tasks filter functions
+//tasks filter functions
 module.exports.filterTasksByName = filterTasksByName;
+
+//links filter functions
+module.exports.filterLinksByProject = filterLinksByProject;
