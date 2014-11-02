@@ -102,7 +102,10 @@
                     
                     <div ng-show="canEditCapacity && editMode" class="col-xs-12 col-md-10 col-lg-6 edit padding-top-10">
                       <label for="profileManager" class="profilePartTimeLabel">Manager</label>
-                      <select class="form-control" ng-model="profile.manager" ng-options="c as getPersonName(c) for c in managers| orderBy:'name.familyName'">
+                      <select class="form-control" 
+                      			ng-model="profile.manager" required 
+                      			ng-options="c as getPersonName(c) for c in managers| orderBy:'name.familyName'">
+                      		<option selected disabled hidden value=''></option>"
                         <!--<option selected value="" ng-if="!profile.manager">Select Manager</option>-->
                       </select>
                     </div>

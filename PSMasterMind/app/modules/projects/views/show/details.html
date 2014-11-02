@@ -101,6 +101,7 @@
                         class="col-xs-12 form-control"
                         ng-model="project.executiveSponsor.resource" required
                         ng-options="m.resource as getPersonName(m) for m in execs.members | orderBy:orderByName">
+                       <option selected disabled hidden value=''></option>"
                     </select>
                 </div>
             </div>
