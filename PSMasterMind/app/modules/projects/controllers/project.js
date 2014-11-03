@@ -2842,11 +2842,7 @@ else if( role.percentageCovered == 0 )
 	    var salesLoaded = false;
 	    
 	    if (window.useAdoptedServices) {
-	    	
-	    	var params = {};
-
-	    	params.group = "Executives";
-			Resources.get("people/bytypes/byGroups", params).then(
+			Resources.refresh("people/bytypes/byGroups", { group : "Execs" } ).then(
 				function (result) {
 					$scope.execs = result;
 					$scope.getExecutiveSponsor( );
@@ -2856,9 +2852,7 @@ else if( role.percentageCovered == 0 )
 		                 cb();
 				}
 			);
-
-	    	params.group = "Sales";
-			Resources.get("people/bytypes/byGroups", params).then(
+			Resources.refresh("people/bytypes/byGroups", { group : "Sales" } ).then(
 				function (result) {
 					$scope.sales = result;
 					$scope.getSalesSponsor( );
