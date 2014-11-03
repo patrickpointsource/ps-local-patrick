@@ -460,8 +460,8 @@ var isTaskValid = function(task) {
 var isUserRoleValid = function(userRole) {
   var messages = [];
   
-  if(!userRole.userId) {
-    messages.push("userId is required");
+  if(!userRole.userId && !userRole.groupId) {
+    messages.push("userId or groupId is required");
   }
   
   if(!userRole.roles) {

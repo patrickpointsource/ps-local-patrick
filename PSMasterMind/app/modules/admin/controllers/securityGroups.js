@@ -54,8 +54,13 @@ angular.module('Mastermind')
     };
     
     $scope.filterPeople = function() {
-      if($scope.selectedGroupMembers && $scope.selectedGroupMembers.length > 0) {
+      if($scope.selectedGroupMembers) {
         $scope.filteredPeople = _.filter($scope.people, function(person) {
+          if(!person.name || !person.name.fullName) {
+            person.name = {
+              fullName: $scope.getPersonName(person)
+            };
+          }
           for(var i = 0; i < $scope.selectedGroupMembers.length; i++) {
             if($scope.selectedGroupMembers[i].resource == person.resource) {
               return false;
@@ -282,6 +287,7 @@ angular.module('Mastermind')
     $scope.membersToAdd = [];
     $scope.groupsToAdd = [];
     $scope.groupsToDelete = [];
+    $scope.filterPeople();
     $scope.filterGroups();
     $scope.initialName = _.extend($scope.selectedGroup.name);
   });
@@ -330,6 +336,15 @@ angular.module('Mastermind')
   };
   
   $scope.$on("admin:cancel", function() {
+    if($scope.creatingGroup) {
+      var notCreatedGroup = $scope.securityGroups[$scope.securityGroups.length - 1];
+      if(!notCreatedGroup.id) {
+        $scope.securityGroups.splice($scope.securityGroups.length - 1, 1);
+      }
+      if($scope.securityGroups.length > 0) {
+        $scope.selectedGroup = $scope.securityGroups[$scope.securityGroups.length - 1];
+      }
+    }
     $scope.creatingGroup = false;
   });
   
@@ -487,6 +502,8 @@ angular.module('Mastermind')
   $scope.createGroup = function() {
     $scope.creatingGroup = true;
     $scope.$emit("securitygroups:create");
+    $scope.filterPeople();
+    $scope.filterGroups();
     
     $scope.membersToDelete = [];
     $scope.membersToAdd = [];
