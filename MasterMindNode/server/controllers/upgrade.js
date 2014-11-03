@@ -93,7 +93,7 @@ var syncPeople = function(callback) {
 			console.log("Error while getting google profiles: " + err);
 		} else {
 			_.each(profiles.users, function(profile) {
-				var person = {};
+				var person = {isActive : 'true' };
 				people.getPersonByGoogleId(profile.id, function(err, result) {
 					if (!err) {
 						if (result) {
