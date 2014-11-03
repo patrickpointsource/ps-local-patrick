@@ -76,8 +76,11 @@ angular.module('Mastermind')
           if(userRole.userId) {
             if(_.findWhere(userRole.roles, { resource: $scope.selectedGroup.resource })) {
               var person = _.findWhere($scope.people, { googleId: userRole.userId });
-            
-              $scope.selectedGroupMembers.push(person);
+              
+              if(person) {
+                $scope.selectedGroupMembers.push(person);
+              }
+              
             }
           }
           
