@@ -1835,34 +1835,14 @@ else if( role.percentageCovered == 0 )
     
     $scope.initVacationHours = function(periodStart, periodEnd) {
       // this code grabs hours entries for vacations for project assignees
-      /*if($scope.projectPeopleResources.length > 0) {
-        // get or create tasks for vacations (Vacation and Appointment)
-        var tasks = [ ];
-        
-        VacationsService.getTaskForVacation(VacationsService.VACATION_TYPES.Vacation).then(function(vacTaskResult) {
-          tasks.push({resource: vacTaskResult.resource, name: vacTaskResult.name});
-          VacationsService.getTaskForVacation(VacationsService.VACATION_TYPES.Appointment).then(function(appointmentTaskResult) {
-            tasks.push({resource: appointmentTaskResult.resource, name: appointmentTaskResult.name});
-            
-            var vacHoursQuery = {
-              $and: [
-                { person: { $in: $scope.projectPeopleResources} },
-                { task: { $in: tasks } }
-              ]
-            };
-            
-            // query hours for vacation
-            Resources.query('hours', vacHoursQuery, {}, function(result) {
-              $scope.vacationPeople = result.members;
-            });
-            
-          });
-        });
-      }*/
+     
      
      $scope.hideVacationSpinner = false;
      $scope.showVacationsStartPeriod = moment(periodStart).format("MMM D");
      $scope.showVacationsEndPeriod = moment(periodEnd).format("MMM D");
+     
+     $scope.showVacationsStartDate = periodStart;
+     $scope.showVacationsEndDate = periodEnd;
      
      $scope.projectPeopleResources = _.compact($scope.projectPeopleResources);
      
@@ -1871,7 +1851,9 @@ else if( role.percentageCovered == 0 )
           
 	    if (window.useAdoptedServices) {
 	    	
-	    	var params = {};
+	    	var params = {
+	    			t: (new Date()).getMilliseconds()
+	    	};
 	    	params.startDate = periodStart;
 	    	params.endDate = periodEnd;
 
@@ -1882,7 +1864,7 @@ else if( role.percentageCovered == 0 )
                   return undefined;
                 }
             }));
-	        params.people = peopleResourcesOnly;
+	        params.person = peopleResourcesOnly;
 	        
 			Resources.get("vacations/bytypes/byPeriod", params).then(
 				function (result) {
@@ -1949,7 +1931,7 @@ else if( role.percentageCovered == 0 )
     };
     
     $scope.getHoursLost = function(vacation) {
-      return VacationsService.getHoursLost(vacation);
+      return VacationsService.getHoursLost(vacation, $scope.showVacationsStartDate, $scope.showVacationsEndDate);
     }
     
 	$scope.hoursMode = "filtered";
@@ -3026,7 +3008,7 @@ else if( role.percentageCovered == 0 )
 						hours = hours.concat( $scope.currentDisplayedHours[ i ] );
 					}
 					
-					if ($scope.currentDisplayedHours.length == 0) {
+					if ($scope.currentDisplayedHours.length == 0 || hours.length == 0) {
 						for( var i = 0; i < $scope.thisWeekHours.length; i++ ) {
 							hours = hours.concat( $scope.thisWeekHours[ i ] );
 						}
