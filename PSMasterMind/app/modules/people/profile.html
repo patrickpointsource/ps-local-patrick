@@ -127,10 +127,12 @@
                     </div>
                     
                     <div ng-show="isManager"  class="col-xs-12 col-md-6 col-lg-6 view no-left-padding-sm padding-top-10">
+                      <div class="row col-xs-12 no-margin-bottom">
+                        <label for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</label>
+                        <span ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</span>
+                      </div>
                       
-                      <label for="profileManager" class="profilePartTimeLabel" style="margin-bottom: 10px;">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</label>
-                      <span ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</span>
-                      <div ng-repeat="userRole in userSecurityGroups" class="user-security-role">
+                      <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-2 col-md-3 col-sm-4 col-xs-6">
                         {{userRole.name}} <a ng-show="editMode" ng-click="removeUserRole($index)" class="cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
                       </div>
                     </div>
