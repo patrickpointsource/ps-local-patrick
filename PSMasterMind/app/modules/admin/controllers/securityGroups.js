@@ -280,7 +280,8 @@ angular.module('Mastermind')
           $scope.checkForDeletedMembers();
           $scope.checkForAddedMembers();
           $scope.messages.push("Your changes have been saved successfully.");
-          $scope.refreshGroups();
+          $scope.creatingGroup = false;
+          $scope.getGroups();
         });
       } else {
         $scope.checkForDeletedMembers();
@@ -298,11 +299,17 @@ angular.module('Mastermind')
   
   $scope.validateGroup = function() {
     $scope.errors = [];
-    if(_.findWhere($scope.securityGroups, { name: $scope.selectedGroup.name })) {
-      if($scope.initialName != $scope.selectedGroup.name) {
-        $scope.errors.push("Security group with name '" + $scope.selectedGroup.name + "' already exist");
+      if($scope.creatingGroup) {
+        if(_.where($scope.securityGroups, { name: $scope.selectedGroup.name }).length > 1) {
+          $scope.errors.push("Security group with name '" + $scope.selectedGroup.name + "' already exist");
+        }
+      } else {
+        if($scope.initialName != $scope.selectedGroup.name) {
+          if(_.where($scope.securityGroups, { name: $scope.selectedGroup.name }).length > 1) {
+            $scope.errors.push("Security group with name '" + $scope.selectedGroup.name + "' already exist");
+          }
+        }
       }
-    }
   };
   
   $scope.$on("admin:cancel", function() {
