@@ -1,6 +1,7 @@
 'use strict';
 
 var util = require('../util/util');
+var security = require('../util/security');
 var _ = require( 'underscore' );
 
 /**
@@ -123,12 +124,16 @@ var checkPerson = function(person, groups, callback) {
 		if (!(groups instanceof Array)) {
 			groups = [groups];
 		}
-		_.each(groups, function(initialGroup) {
-			if ( _.contains(person.groups, initialGroup) ) {
-				checked = true;
-				return;
+		security.getUserRoles(person, function(err, userRole) {	    
+			if ( userRole ) {
+				_.each(groups, function(initialGroup) {		
+					if ( _.findWhere(userRole.roles, { name: initialGroup }) ) {
+						checked = true;
+						return;
+					}
+				});
 			}
-		});
+		});		
 		
 		return callback (checked);
 	}

@@ -151,8 +151,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		if (window.useAdoptedServices) {
 			var params = {};
-			params.group = "Management";
-			Resources.get("people/bytypes/byGroups", params).then(
+			params.group = "Managers";
+			Resources.refresh("people/bytypes/byGroups", params).then(
 				function (result) {
 					$scope.populateManagers(result);
 				}
