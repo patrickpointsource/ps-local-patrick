@@ -80,7 +80,6 @@ angular.module('Mastermind')
               if(person) {
                 $scope.selectedGroupMembers.push(person);
               }
-              
             }
           }
           
@@ -93,6 +92,21 @@ angular.module('Mastermind')
           }
           
         }
+        
+        $scope.selectedGroupMembers.sort(function(a, b) {
+          var aName = $scope.getPersonName(a);
+          var bName = $scope.getPersonName(b);
+          
+          if(aName < bName) {
+            return -1;
+          }
+          
+          if(aName > bName) {
+            return 1;
+          }
+          
+          return 0;
+        });
         
         $scope.filterPeople();
       }
