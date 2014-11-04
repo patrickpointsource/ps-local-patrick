@@ -229,6 +229,20 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 
 		return result;
 	};
+	
+	$scope.sortAssignees = function (role, personResource)
+	{
+		var assignees = _.sortBy($scope.roleGroups[role.type.resource].assiganble, function (a) { return a.title; });
+		var assignee = _.find(assignees, function (a) { return a.resource == personResource; });
+		
+		if (assignee != null)
+		{
+			assignees.splice(assignees.indexOf(assignee), 1);
+			assignees.unshift(assignee);
+		}
+		
+		return assignees;
+	};
 
 	$scope.getPerson = function( personId, role ) {
 		var result = undefined;
