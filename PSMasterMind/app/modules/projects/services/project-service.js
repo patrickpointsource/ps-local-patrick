@@ -533,9 +533,9 @@ angular.module('Mastermind.services.projects')
      * Get Projects wich I am an exec sponsor
      */
     
-    this.getMyExecSponsoredProjects = function(me) {
+    this.getMyExecSponsoredProjects = function(person) {
 	    if (window.useAdoptedServices) {
-	        return Resources.refresh('projects/my/executiveSponsor');
+	        return Resources.refresh('projects/' + person._id + '/executiveSponsor');
 		}
 		else {
 			return this.getMyExecSponsoredProjectsUsingQuery(me);
@@ -565,9 +565,9 @@ angular.module('Mastermind.services.projects')
     /**
      * Get My Current Projects (projects I have a current role on)
      */
-    this.getMyCurrentProjects = function(me) {
+    this.getMyCurrentProjects = function(person) {
 	    if (window.useAdoptedServices) {
-	        return Resources.refresh('projects/my/current');
+	        return Resources.refresh('projects/' + person._id + '/current');
 		}
 		else {
 			return this.getMyExecSponsoredProjectsUsingQuery(me);

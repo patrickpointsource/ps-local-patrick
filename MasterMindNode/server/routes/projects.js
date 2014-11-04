@@ -52,47 +52,37 @@ router.get( '/executiveSponsor/:executiveSponsor', auth.isAuthenticated, functio
 
 } );
 
-router.get( '/my/:type', auth.isAuthenticated, function( req, res ) {
-
+router.get( '/:id/executiveSponsor', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
-			var type = req.params.type;
-			if( type ) {
-				people.getPersonByGoogleId( req.user, function( err, result ) {
-					if( err ) {
-						res.json( 500, err );
-					} else {
-						// returns projects where auth user is executive sponsor
-						if( type && type == "executiveSponsor" ) {
-							projects.listProjectsByExecutiveSponsor( util.getFullID( result._id, 'people' ), function( err, result ) {
-								if( err ) {
-									res.json( 500, err );
-								} else {
-									res.json( result );
-								}
-							} );
-						}
+			var id = req.params.id;
+			projects.listProjectsByExecutiveSponsor( util.getFullID( id, 'people' ), function( err, projects ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( projects );
+				}
+			} );
 
-						// returns current projects for auth user
-						if( type && type == "current" ) {
-							projects.listCurrentProjectsByPerson( util.getFullID( result._id, 'people' ), function( err, projects ) {
-								if( err ) {
-									res.json( 500, err );
-								} else {
-									res.json( projects );
-								}
-							} );
-						}
-
-					}
-				} );
-			} else {
-				res.json( 500, 'No required type' );
-			}
 		}
-	} );
+	});
+});
 
-} );
+router.get( '/:id/current', auth.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
+		if( allowed ) {
+			var id = req.params.id;
+			projects.listCurrentProjectsByPerson( util.getFullID( id, 'people' ), function( err, projects ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( projects );
+				}
+			} );
+
+		}
+	});
+});
 
 
 router.get( '/byperson/:id/:type', auth.isAuthenticated, function( req, res ) {
