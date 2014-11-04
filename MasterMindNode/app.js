@@ -202,7 +202,7 @@ if (!useAppNames) {
         app.use('/' + appNames[i] + '/tasks', tasks);
         app.use('/' + appNames[i] + '/roles', roles);
         app.use('/' + appNames[i] + '/hours', hours);
-        app.use('/' + appNames[i] + '/configuration', configuration);
+        app.use('/' + appNames[i] + '/config', configuration);
         app.use('/' + appNames[i] + '/links', links);
         app.use('/' + appNames[i] + '/skills', skills);
         app.use('/' + appNames[i] + '/vacations', vacations);
