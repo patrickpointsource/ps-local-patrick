@@ -119,25 +119,40 @@
                       <input type="checkbox" name="profileIsActive" ng-model="profile.isActive" ng-checked="profile.isActive == 'true'" ng-disabled="!editMode"/>
                     </div>
                     
-                    <div ng-show="isManager && editMode" class="col-xs-12 col-md-10 col-lg-6 edit padding-top-10 pull-right">
-                      
+                    <div ng-show="isManager && editMode" class="col-xs-12 col-md-12 col-lg-6 edit padding-top-30 pull-right">
+                      <label>Select permissions groups:</label>
                       <select class="selectpicker select-user-groups form-control" multiple data-selected-text-format="count>3" ng-model="userSecurityGroups" ng-options="g.name for g in securityGroups">
                         <!--<option selected value="" ng-if="!profile.manager">Select Manager</option>-->
                       </select>
                     </div>
                     
-                    <div ng-show="isManager"  class="col-xs-12 col-md-6 col-lg-6 view no-left-padding-sm padding-top-10">
+                    <!-- Start of security roles section -->
+                    <div ng-show="isManager && editMode" class="col-xs-12 col-md-12 col-lg-6 view no-left-padding-sm padding-top-10">
                       <div class="row col-xs-12 no-margin-bottom">
                         <label for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</label>
                         <span ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</span>
                       </div>
                       
-                      <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                      <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-2 col-md-6 col-xs-12">
                         <div class="col-xs-12 no-padding" ng-show="!editMode">{{userRole.name}}</div>
-                        <div class="col-xs-10 no-padding" ng-show="editMode">{{userRole.name}}</div>
-                        <a ng-show="editMode" ng-click="removeUserRole($index)" class="col-xs-2 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
+                        <div class="col-xs-11 col-sm-11 col-md-10 no-padding" ng-show="editMode">{{userRole.name}}</div>
+                        <a ng-show="editMode" ng-click="removeUserRole($index)" class="col-xs-1 col-sm-1 col-md-2 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
                       </div>
                     </div>
+                    
+                    <div ng-show="isManager && !editMode" class="col-xs-12 view no-left-padding-sm padding-top-10">
+                      <div class="row col-xs-12 no-margin-bottom">
+                        <label for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</label>
+                        <span ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</span>
+                      </div>
+                      
+                      <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-2 col-md-6 col-xs-12">
+                        <div class="col-xs-12 no-padding" ng-show="!editMode">{{userRole.name}}</div>
+                        <div class="col-xs-11 col-sm-11 col-md-10 no-padding" ng-show="editMode">{{userRole.name}}</div>
+                        <a ng-show="editMode" ng-click="removeUserRole($index)" class="col-xs-1 col-sm-1 col-md-2 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
+                      </div>
+                    </div>
+                    <!-- End of security roles section -->
                   </div>
                 </div>
               </div>
