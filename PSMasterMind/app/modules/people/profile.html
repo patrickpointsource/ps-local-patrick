@@ -133,7 +133,9 @@
                       </div>
                       
                       <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        {{userRole.name}} <a ng-show="editMode" ng-click="removeUserRole($index)" class="cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
+                        <div class="col-xs-12 no-padding" ng-show="!editMode">{{userRole.name}}</div>
+                        <div class="col-xs-10 no-padding" ng-show="editMode">{{userRole.name}}</div>
+                        <a ng-show="editMode" ng-click="removeUserRole($index)" class="col-xs-2 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
                       </div>
                     </div>
                   </div>
