@@ -491,7 +491,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
         $(".select-vacation-manager-" + index).selectpicker();
       }, 5);
     }
-  }
+  };
+  
+  $scope.getPersonName = function(person) {
+	  return Util.getPersonName(person);
+  };
   
   $scope.newDescChanged = function() {
     $scope.newDescription = this.newDescription;

@@ -10,7 +10,7 @@
 <!-- Available vacation days -->
       <div class="row" style="margin-bottom: 0px;" ng-if="profile.vacationCapacity" ng-show="me.about == profile.about">
         <div class="col-xs-12 align-center" style="border-bottom: 1px solid #ededed; padding-bottom: 10px;">
-          <h4><span ng-show="me.about == profile.about">You</span><span ng-hide="me.about == profile.about">{{profile.name}}</span> have 
+          <h4><span ng-show="me.about == profile.about">You</span><span ng-hide="me.about == profile.about">{{getPersonName(profile)}}</span> have 
              <strong ng-class="{ 'black-text': getCurrentYearVacationDays() > 0, 'gray-text': getCurrentYearVacationDays() <= 0 }">
                {{getCurrentYearVacationDays()}} days 
              </strong>of vacation available for use.
@@ -199,7 +199,7 @@
             </div>
           </div>
           <div class="row col-xs-12 no-horizontal-margin no-horizontal-padding">
-            <div class="col-xs-12" ng-if="vacation.comment">Comment from {{vacationManagerEdit.name}}:</div>
+            <div class="col-xs-12" ng-if="vacation.comment">Comment from {{getPersonName(vacationManagerEdit)}}:</div>
             <div class="col-xs-12 color-gray-image-border italic margin-bottom-xs padding-left-xs" ng-if="vacation.comment">
               "{{vacation.comment}}"
             </div>

@@ -1198,7 +1198,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.hoursRequest = function( cb ) {
 		var numberVal = function( v ) {
 			if( !isNaN( parseFloat( v ) ) )
-				return parseFloat( v );
+				return  Util.formatFloat( v );
 
 			return 0;
 
@@ -1387,7 +1387,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 			if( entry.hoursRecord ) {
 				hoursRecords.push( entry.hoursRecord );
-				totalHours += !isNaN( parseFloat( entry.hoursRecord.hours ) ) ? parseFloat( entry.hoursRecord.hours ) : 0;
+				totalHours += !isNaN( parseFloat( entry.hoursRecord.hours ) ) ? Util.formatFloat( entry.hoursRecord.hours ) : 0;
 				// if (!entry.hoursRecord.person) {
 				entry.hoursRecord.person = {
 					resource: $scope.getCurrentPerson( ).about
@@ -1451,7 +1451,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 					date: updatedRecords[ 0 ].date,
 					etag: updatedRecords[ 0 ].etag,
 					description: updatedRecords[ 0 ].description,
-					hours: updatedRecords[ 0 ].hours,
+					hours:  Util.formatFloat(updatedRecords[ 0 ].hours),
 					person: updatedRecords[ 0 ].person,
 					project: updatedRecords[ 0 ].project,
 					task: updatedRecords[ 0 ].task
