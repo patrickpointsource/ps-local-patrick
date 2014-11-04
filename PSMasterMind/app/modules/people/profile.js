@@ -690,7 +690,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 								break;
 							}
 						}
-						if( myProj.executiveSponsor.resource === 'people/' + $scope.profileId ) {
+						
+						//Get project where person is a executive sponsor 
+						//without duplicates - when the person is a exec and assign to project roles simultaneously.
+						if( myProj.executiveSponsor.resource === 'people/' + $scope.profileId &&
+							!_.findWhere( $scope.execProjects, {resource : myProj.resource})) {
 							$scope.execProjects.push( myProj );
 						}
 					};
