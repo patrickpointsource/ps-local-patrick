@@ -32,7 +32,7 @@ function( $q, Resources, HoursService ) {
 
   this.getVacationsUsingGet = function(profileId) {
       var deferred = $q.defer( );
-	  Resources.get( "vacations/byperson/" + profileId).then(function(result) {
+	  Resources.get( "vacations/byperson/" + profileId, { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
 		  deferred.resolve( result.members );
 	  });
 	  return deferred.promise;
