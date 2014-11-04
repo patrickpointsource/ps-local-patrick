@@ -1,6 +1,7 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
+var memoryCache = require('../data/memoryCache.js')
 var projects = require('./projects');
 var util = require('../util/util');
 var _ = require( 'underscore' );
@@ -68,15 +69,17 @@ var insertAssignment = function(assignmentId, obj, callback) {
       return;
     }
     
+    //TODO: Duplicate assignment check should be moved to the database
+    memoryCache.deleteObject( dataAccess.ASSIGNMENTS_KEY );
     listAssignmentsByProjectResourcesAndTimePeriod(obj.project.resource, "all", function(err, assignment) {
-    	 dataAccess.insertItem(assignment ? assignment._id : assignmentId, obj, dataAccess.ASSIGNMENTS_KEY, function(err, body) {
-    	        if (err) {
-    	            console.log(err);
-    	            callback('error insert assignment into project', null);
-    	        } else {
-    	            callback(null, _.extend(obj, body));
-    	        }
-    	    });
+    	dataAccess.insertItem(assignment ? assignment._id : assignmentId, obj, dataAccess.ASSIGNMENTS_KEY, function(err, body) {
+    		if (err) {
+    			console.log(err);
+    			callback('error insert assignment into project', null);
+    		} else {
+    			callback(null, _.extend(obj, body));
+    		}
+    	});
     });
 };
 
