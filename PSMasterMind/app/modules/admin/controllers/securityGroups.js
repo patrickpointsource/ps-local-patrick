@@ -113,6 +113,8 @@ angular.module('Mastermind')
           return 0;
         });
         
+        $scope.selectedGroupGroups = _.sortBy($scope.selectedGroupGroups, function(group) { return group.name; });
+        
         $scope.filterPeople();
       }
     };
