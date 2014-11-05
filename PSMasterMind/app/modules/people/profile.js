@@ -362,7 +362,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.selectedHoursPeriod = -1;
 
 		var now = moment( );
-		$scope.totalMonthHours = 0;
 
 		//Query all hours against the project
 		var hoursQuery = {
@@ -379,13 +378,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			$scope.hours = hoursResult.members;
 			$scope.initHoursPeriods( $scope.hours );
 			$scope.hasHours = $scope.hours.length > 0;
-
+			
 			for( var i = 0; i < $scope.hours.length; i++ ) {
 				var hour = $scope.hours[ i ];
-				var date = moment( hour.date );
-				if( now.isSame( date, 'month' ) ) {
-					$scope.totalMonthHours += hour.hours;
-				}
 				if( hour.task && hour.task.resource ) {
 					var taskRes = $scope.hours[ i ].task.resource;
 					var task = _.findWhere( $scope.hoursTasks, {
@@ -510,13 +505,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 	$scope.initHoursPeriods = function( hours ) {
 		$scope.hoursPeriods = [ ];
-
-		var now = new Date( );
-
-		if( !$scope.isDisplayedWeek( ) )
-			$scope.selectedHoursPeriod = $scope.selectedMonth;
-		else
-			$scope.selectedHoursPeriod = now.getMonth( );
+		$scope.selectedHoursPeriod = $scope.selectedMonth;
+		
 		var minDate = null;
 		var maxDate = null;
 
@@ -879,6 +869,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 	$scope.hoursViewType = 'weekly';
 	$scope.selectedWeekIndex = 0;
+	$scope.selectedMonth = $scope.moment().month();
 	$scope.thisWeekDayLabels = [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT' ];
 	$scope.newHoursRecord = {};
 
@@ -924,30 +915,17 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	} );
 
 	$scope.$on( 'hours:selectedNew', function( event, day ) {
-		var month = moment( day.date ).month( );
-		if( $scope.selectedMonth != month ) {
-			$scope.selectedMonth = month;
-
-			if( $scope.hours ) {
-				$scope.totalMonthHours = 0;
-				for( var i = 0; i < $scope.hours.length; i++ ) {
-					var hour = $scope.hours[ i ];
-					var date = moment( hour.date );
-					if( moment( day.date ).isSame( date, 'month' ) ) {
-						$scope.totalMonthHours += hour.hours;
-					}
-				}
-			}
-
-		}
+		$scope.recalculateCircle( day );
 	} );
 
 	$scope.weekHoursByProject = [ ];
 	$scope.weekHoursByTask = [ ];
 
 	$scope.showWeek = function( ) {
+		$scope.totalMonthHours = 0;
 		$scope.startWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex ).format( 'YYYY-MM-DD' );
 		$scope.endWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex + 6 ).format( 'YYYY-MM-DD' );
+		$scope.selectedMonth = moment( $scope.startWeekDate ).day(1).month(); //Get month by the first day of the workweek.
 
 		var profileWeekHours = [ ];
 		
@@ -956,6 +934,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			var date = moment( hour.date );
 			var start = moment( $scope.startWeekDate );
 			var end = moment( $scope.endWeekDate );
+			if( $scope.selectedMonth === date.month() ) {
+				$scope.totalMonthHours += hour.hours;
+			}
 			
 			if( ( date.isAfter( start ) || date.isSame( start ) ) && ( date.isBefore( end ) || date.isSame( end ) ) ) {
 				profileWeekHours.push( hour );
@@ -1096,11 +1077,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
     
 	$scope.recalculateCircle = function( day ) {
 		var selectedMoment = moment( day.date );
-		var startOfSelectedWeek = selectedMoment.day( 0 );
-		var todaysStartWeek = moment( ).day( 0 )
+		var startOfSelectedWeek = selectedMoment.startOf( 'week' );
+		var todaysStartWeek = moment( ).startOf( 'week' );
 		$scope.selectedWeekIndex = startOfSelectedWeek.diff( todaysStartWeek, 'days' );
 		$scope.initHours( true, function( ) {
 			$scope.handleHoursPeriodChanged( );
-		} );
+		} );		
 	};
+	
 } ] );
