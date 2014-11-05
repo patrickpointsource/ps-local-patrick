@@ -17,7 +17,13 @@ var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 // Setup logging
 var log4js = require('log4js');
 
-log4js.configure('server/config/log4js_config.json', {});
+function loadConfig() {
+    return JSON.parse(fs.readFileSync(__dirname + "/config.json"));
+}
+
+var appConfig = loadConfig();
+
+log4js.configure(appConfig.log4jsPath, {});
 var logger = log4js.getLogger();
 
 //Routes
@@ -37,12 +43,6 @@ var userRoles = require('./server/routes/userRoles');
 var upgrade = require('./server/routes/upgrade');
 
 var security = require('./server/util/security.js');
-
-function loadConfig() {
-    return JSON.parse(fs.readFileSync(__dirname + "/config.json"));
-}
-
-var appConfig = loadConfig();
 
 
 var privateKey  = fs.readFileSync(appConfig.privateKeyPath, 'utf8');
@@ -239,6 +239,11 @@ if (!useAppNames) {
 require('./server/routes/auth')(app, passport, {
     useAppNames: useAppNames,
     appNames: appNames
+});
+
+//Setup routes
+require('./server/util/emailSender')({
+    appConfig: appConfig
 });
 
 // There are many useful environment variables available in process.env,

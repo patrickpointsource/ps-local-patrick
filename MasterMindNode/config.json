@@ -2,6 +2,7 @@
     "logToFileStream": false,
     "logFileName": "/var/www/www.log",
     "errorFileName": "/var/www/www.err",
+    "log4jsPath": "server/config/log4js_config.json",
     "hostName": "localhost",
     "httpsPort": 8443,
     "appName": "",
