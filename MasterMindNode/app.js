@@ -38,17 +38,19 @@ var upgrade = require('./server/routes/upgrade');
 
 var security = require('./server/util/security.js');
 
-
-var privateKey  = fs.readFileSync('server/cert/server.key', 'utf8');
-var certificate = fs.readFileSync('server/cert/server.crt', 'utf8');
-var credentials = {key: privateKey, cert: certificate};
-
-
 function loadConfig() {
     return JSON.parse(fs.readFileSync(__dirname + "/config.json"));
 }
 
 var appConfig = loadConfig();
+
+
+var privateKey  = fs.readFileSync(appConfig.privateKeyPath, 'utf8');
+var certificate = fs.readFileSync(appConfig.certificatePath, 'utf8');
+var credentials = {key: privateKey, cert: certificate};
+
+
+
 
 var httpsPort = appConfig.httpsPort;
 var hostName = appConfig.hostName;
@@ -118,7 +120,13 @@ var allowCrossDomain = function(req, res, next) {
 
 function openLog(logfile) {
     return fs.createWriteStream(logfile, {
-        flags: "a", encoding: "utf8", mode: 644
+        flags: "w", encoding: "utf8", mode: 644
+    });
+}
+
+function openError(errorfile) {
+    return fs.createWriteStream(errorfile, {
+        flags: "w", encoding: "utf8", mode: 644
     });
 }
 
@@ -129,13 +137,28 @@ function log(msg) {
 		console.log(msg);
 }
 
+function logError(msg) {
+	if (appConfig.logToFileStream)
+		errorStream.write(msg + "\n");
+	else
+		console.error(msg);
+}
+
+
+
 var logStream = null;
+var errorStream = null;
 
 if (appConfig.logToFileStream) {
 	logStream = openLog(appConfig.logFileName);
+	errorStream = openError(appConfig.errorFileName);
 	
 	// override log function
 	console.log = log;
+	console.warn = log;
+	console.info = log;
+	
+	console.error = logError;
 }
 
 log("Starting...");

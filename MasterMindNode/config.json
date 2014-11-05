@@ -1,9 +1,12 @@
 {
     "logToFileStream": false,
     "logFileName": "/var/www/www.log",
+    "errorFileName": "/var/www/www.err",
     "hostName": "localhost",
     "httpsPort": 8443,
     "appName": "",
     "webSiteUrl": "http://localhost:9000",
-    "oauthcbbaseurl": ""
+    "oauthcbbaseurl": "",
+    "privateKeyPath": "server/cert/server.key",
+    "certificatePath": "server/cert/server.crt"
 }
