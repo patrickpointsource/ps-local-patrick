@@ -1033,7 +1033,7 @@ var insertItem = function( id, obj, type, callback ) {
 			}
 		}
 		memoryCache.deleteObject( type );
-		callback( err, body );
+		callback( err, _.extend(obj, body) );
 	} );
 };
 

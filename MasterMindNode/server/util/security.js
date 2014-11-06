@@ -179,14 +179,17 @@ var createDeaultRoles = function(callback) {
     }
     // create userRoles for those who dont have it yet.
     if(!minion) {
-      console.log("Creating Minion role.");
-      createGroup(DEFAULT_ROLES.MINION, function() {
-        console.log("Minion just role created.");
-        createMinionUserRoles(callback);
+      console.log("Creating Minion group.");
+      createGroup(DEFAULT_ROLES.MINION, function(body) {
+        console.log("Minion group just created.");
+        var minionGroup = { name: DEFAULT_ROLES.MINION, resource: "securityroles/" + body.id };
+        console.log("Minion group object to insert into userRoles: { name: " + minionGroup.name + ", resource: '" + minionGroup.resource + "' }");
+        createMinionUserRoles(callback, minionGroup);
       });
     } else {
-      console.log("Minion role already created.");
-      createMinionUserRoles(callback);
+      var minionGroup = { name: DEFAULT_ROLES.MINION, resource: minion.resource };
+      console.log("Minion group already created.");
+      createMinionUserRoles(callback, minionGroup);
     }
   });
 };
@@ -204,14 +207,14 @@ var createGroup = function(name, actionAfter) {
       console.log('Error in creating default security group: ' + group.name + ". Error: " + err);
     } else {
       if(actionAfter) {
-        actionAfter();
+        actionAfter(body);
       }
       console.log("Added default security group: " + group.name);
     }
   });
 };
 
-var createMinionUserRoles = function(callback) {
+var createMinionUserRoles = function(callback, minionRole) {
   console.log("Creating Minion default roles.");
   dataAccess.listPeople({}, function(err, peopleBody) {
     if(!err) {
@@ -222,15 +225,14 @@ var createMinionUserRoles = function(callback) {
         
         var countChecked = 0;
         console.log("People length: " + people.length);
-        var createdCount = 0;
-        var updatedCount = 0;
+        
         for(var i = 0; i < people.length; i++) {
           var person = people[i];
           
           var userRole = _.findWhere(userRoles, { userId: person.googleId });
           
           if(!userRole) {
-            var uRole = { userId: person.googleId, roles: [DEFAULT_ROLES.MINION]};
+            var uRole = { userId: person.googleId, roles: [minionRole]};
             dataAccess.insertItem(null, uRole, dataAccess.USER_ROLES_KEY, function(err, body){
               if (err) {
                 console.log('Error in creating default userRole: ' + err);
@@ -239,7 +241,6 @@ var createMinionUserRoles = function(callback) {
               }
               
               countChecked++;
-              createdCount++;
               if(callback && countChecked == people.length) {
                 console.log("CALLBACK REACHED!");
                 callback();
@@ -247,8 +248,7 @@ var createMinionUserRoles = function(callback) {
             });
           } else {
             if(!userRole.roles || userRole.roles.length == 0) {
-              userRole.roles = [];
-              userRole.roles.push(DEFAULT_ROLES.MINION);
+              userRole.roles = [minionRole];
               
               dataAccess.insertItem(userRole.id, userRole, dataAccess.USER_ROLES_KEY, function(err, body){
                 if (err) {
@@ -258,7 +258,6 @@ var createMinionUserRoles = function(callback) {
                 }
               
                 countChecked++;
-                updatedCount++;
                 if(callback && countChecked == people.length) {
                   console.log("CALLBACK REACHED!");
                   callback();
@@ -268,13 +267,6 @@ var createMinionUserRoles = function(callback) {
               countChecked++;
               if(callback && countChecked == people.length) {
                 console.log("CALLBACK REACHED!");
-                if(createdCount > 0) {
-                  console.log("Default roles added: " + createdCount);
-                }
-                if(updatedCount > 0) {
-                  console.log("Default roles updated: " + updatedCount);
-                }
-                
                 callback();
               }
             }
