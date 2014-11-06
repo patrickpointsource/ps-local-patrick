@@ -202,6 +202,10 @@ var createGroup = function(name, actionAfter) {
     resources: fullResourcesMap
   };
   
+  if(group.name == DEFAULT_ROLES.MINION) {
+    group.resources = minionResouresMap;
+  }
+  
   dataAccess.insertItem(null, group, dataAccess.SECURITY_ROLES_KEY, function(err, body){
     if (err) {
       console.log('Error in creating default security group: ' + group.name + ". Error: " + err);
@@ -296,6 +300,77 @@ var addRole = function(userId, roles, callback) {
         }
     });
 };
+
+var minionResouresMap = [
+    {
+      "name": "tasks",
+      "permissions": [
+        "viewTasks"
+      ]
+    },
+    {
+      "name": "assignments",
+      "permissions": [
+        "viewAssignments"
+      ]
+    },
+    {
+      "name": "configuration",
+      "permissions": [
+      ]
+    },
+    {
+      "name": "hours",
+      "permissions": [
+        "viewHours",
+        "deleteMyHours",
+        "editMyHours"
+      ]
+    },
+    {
+      "name": "people",
+      "permissions": [
+        "viewPeople",
+        "viewProfile",
+        "viewMyProfile",
+        "editMyProfile",
+        "viewPersonnelData"
+      ]
+    },
+    {
+      "name": "projects",
+      "permissions": [
+        "viewProjects",
+        "editProjects",
+        "viewProjectLinks"
+      ]
+    },
+    {
+      "name": "vacations",
+      "permissions": [
+        "viewMyVacations",
+        "editMyVacations"
+      ]
+    },
+    {
+      "name": "notifications",
+      "permissions": [
+        "viewNotifications",
+        "editNotifications",
+        "deleteNotifications"
+      ]
+    },
+    {
+      "name": "upgrade",
+      "permissions": [
+      ]
+    },
+    {
+      "name": "securityRoles",
+      "permissions": [
+      ]
+    }
+];
 
 var fullResourcesMap = [
     {
