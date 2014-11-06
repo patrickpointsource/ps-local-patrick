@@ -1518,36 +1518,37 @@ else if( role.percentageCovered == 0 )
 
 			var i;
 
-			for( i = 0; i < assignments.members.length; i++ ) {
-				person = _.find( $scope.organizedHours, function( o ) {
-					return assignments.members[ i ].person.resource && assignments.members[ i ].person.resource == o.resource;
-				} );
-
-				if (!person)
-					continue;
-				
-				startD = new Date( assignments.members[ i ].startDate );
-				endD = new Date( assignments.members[ i ].endDate );
-
-				if( !person.hoursPerWeek && !person.endDate && !person.startDate ) {
-					person.hoursPerWeek = assignments.members[ i ].hoursPerWeek;
-					person.endDate = assignments.members[ i ].endDate;
-					person.startDate = assignments.members[ i ].startDate;
-				} else {
-					person.hoursPerWeek = assignments.members[ i ].hoursPerWeek > person.hoursPerWeek ? assignments.members[ i ].hoursPerWeek : person.hoursPerWeek;
-					person.endDate = assignments.members[ i ].endDate > person.endDate ? assignments.members[ i ].endDate : person.endDate;
-					person.startDate = assignments.members[ i ].startDate < person.startDate ? assignments.members[ i ].startDate : person.startDate;
+			if (assignments.members)
+				for( i = 0; i < assignments.members.length; i++ ) {
+					person = _.find( $scope.organizedHours, function( o ) {
+						return assignments.members[ i ].person.resource && assignments.members[ i ].person.resource == o.resource;
+					} );
+	
+					if (!person)
+						continue;
+					
+					startD = new Date( assignments.members[ i ].startDate );
+					endD = new Date( assignments.members[ i ].endDate );
+	
+					if( !person.hoursPerWeek && !person.endDate && !person.startDate ) {
+						person.hoursPerWeek = assignments.members[ i ].hoursPerWeek;
+						person.endDate = assignments.members[ i ].endDate;
+						person.startDate = assignments.members[ i ].startDate;
+					} else {
+						person.hoursPerWeek = assignments.members[ i ].hoursPerWeek > person.hoursPerWeek ? assignments.members[ i ].hoursPerWeek : person.hoursPerWeek;
+						person.endDate = assignments.members[ i ].endDate > person.endDate ? assignments.members[ i ].endDate : person.endDate;
+						person.startDate = assignments.members[ i ].startDate < person.startDate ? assignments.members[ i ].startDate : person.startDate;
+					}
+	
+					if( person.endDate > endOfMonthDate )
+						person.endDate = endOfMonthDate;
+	
+					if( person.startDate < startOfMonthDate )
+						person.startDate = startOfMonthDate;
+	
+					if( !person && endD.getMonth( ) >= $scope.currentMonth && startD.getMonth( ) <= $scope.currentMonth )
+						additionalPersons.push( assignments.members[ i ].person.resource );
 				}
-
-				if( person.endDate > endOfMonthDate )
-					person.endDate = endOfMonthDate;
-
-				if( person.startDate < startOfMonthDate )
-					person.startDate = startOfMonthDate;
-
-				if( !person && endD.getMonth( ) >= $scope.currentMonth && startD.getMonth( ) <= $scope.currentMonth )
-					additionalPersons.push( assignments.members[ i ].person.resource );
-			}
 
 			additionalPersons = _.uniq( additionalPersons );
 

@@ -538,7 +538,7 @@ angular.module('Mastermind.services.projects')
 	        return Resources.refresh('projects/' + person._id + '/executiveSponsor');
 		}
 		else {
-			return this.getMyExecSponsoredProjectsUsingQuery(me);
+			return this.getMyExecSponsoredProjectsUsingQuery(person);
 		}
 	};
 
@@ -570,7 +570,7 @@ angular.module('Mastermind.services.projects')
 	        return Resources.refresh('projects/' + person._id + '/current');
 		}
 		else {
-			return this.getMyExecSponsoredProjectsUsingQuery(me);
+			return this.getMyExecSponsoredProjectsUsingQuery(person);
 		}
 	};
 	

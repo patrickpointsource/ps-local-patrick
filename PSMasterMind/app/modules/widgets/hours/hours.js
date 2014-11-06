@@ -288,6 +288,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 					}
 
 					$scope.projectTasksList = $scope.projectTasksList.concat( projectsWithMyAssignments );
+					$scope.projectsWithMyAssignments = projectsWithMyAssignments;
 
 					$scope.sortProjectTaskList( );
 				} );
@@ -729,34 +730,36 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	};
 
-	function setExpectedHoursPrompt( hourEntry, selectedProject ) {
-		var hoursSet = false;
+	function setExpectedHoursPrompt(hourEntry, selectedProject)
+	{
+		hourEntry.expectedHours = null;
 
-		if( selectedProject && selectedProject.resource && selectedProject.resource.indexOf( "projects/" ) == 0 && selectedProject.roles ) {
-			var currentUser = $scope.getCurrentPerson( );
-
-			for( var i = 0, count = selectedProject.roles.length; i < count; i++ ) {
-				var role = selectedProject.roles[ i ];
-
-				if (role.originalAssignees) {
-					for( var j = 0, assigneeCount = role.originalAssignees.length; j < assigneeCount; j++ ) {
-						var assignee = role.originalAssignees[ j ];
-
-						if( assignee.person && assignee.person.resource == currentUser.about ) {
-							hourEntry.expectedHours = Math.round( assignee.hoursPerWeek / 5 );
-							hoursSet = true;
-							break;
+		if (selectedProject && selectedProject.resource && selectedProject.resource.indexOf("projects/") == 0 && selectedProject.roles)
+		{
+			var currentUser = $scope.getCurrentPerson();
+			
+			for (var i = 0, projCount = $scope.projectsWithMyAssignments.length; i < projCount; i++)
+			{
+				var proj = $scope.projectsWithMyAssignments[i];
+				
+				if (selectedProject.resource == proj.about)
+					for (var j = 0, roleCount = proj.roles ? proj.roles.length : 0; j < roleCount; j++)
+					{
+						var role = proj.roles[j];
+						
+						for (var k = 0, assigneeCount = role.originalAssignees ? role.originalAssignees.length : 0; k < assigneeCount; k++)
+						{
+							var assignee = role.originalAssignees[k];
+							
+							if (assignee.person && assignee.person.resource == currentUser.about)
+							{
+								hourEntry.expectedHours = Math.round(assignee.hoursPerWeek / 5);
+								return;
+							}
 						}
 					}
-				}
-
-				if( hoursSet )
-					break;
 			}
 		}
-
-		if( !hoursSet )
-			hourEntry.expectedHours = null;
 	}
 
 
