@@ -29,14 +29,14 @@ var devenv = {
 			    user: 'istraustandivillownedome',
 	            password: 'uuVXxmARXdpLYkU7X1T0yS7D',
 	            url: 'https://istraustandivillownedome:uuVXxmARXdpLYkU7X1T0yS7D@psprod1.cloudant.com/',
-	            db: 'mm_db_demo'
+	            db: 'mm_db_stage'
 			},
 			prod: {
 				account: 'psprod1',
 			    user: 'beentorestoldiseandeamed',
 	            password: 'mXuflwvgb3G003jjKnraqasb',
 	            url: 'https://beentorestoldiseandeamed:mXuflwvgb3G003jjKnraqasb@psprod1.cloudant.com/',
-	            db: 'mm_db_demo'
+	            db: 'mm_db_prod'
 			}, 
 			demo: {
 				account: 'psdev1',
