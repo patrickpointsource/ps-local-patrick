@@ -98,29 +98,13 @@ var listCurrentAssigments = function(callback) {
 };
 
 var listAssignmentsByPersonResource = function(resource, callback) {
-	
-    dataAccess.listAssignments(null, function(err, result){
+	dataAccess.listAssignmentsByPerson(personResource, function(err, result){
         if (err) {
             console.log(err);
-            callback('error loading assignments by person', null);
+            callback('error loading assignments by person :' + JSON.stringify(resource), null);
         } else {
-			var assignments = [];
-			_.each(result.data, function(assignment){
-				console.log("assignment=" + JSON.stringify(assignment));
-				if (assignment.person) {
-					console.log("assignment.person.resource=" + JSON.stringify(assignment.person.resource) );
-				}
-				if (assignment.person && 
-						assignment.person.resource && 
-							assignment.person.resource == resource ) {
-						assignments.push(assignment);
-				}
-			});
-			
-            callback(null, assignments);
-        }
-    });
-
+        	 callback(null, result);
+        }});
 };
 
 var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources, timePeriod, callback) {
@@ -247,7 +231,9 @@ var listAssignmentsByPersonResourceAndTimePeriod = function(personResource, star
 						if ( ( !endDateMoment || ( endDateMoment >= assignment.startDate  ) ) && 
 								( !startDateMoment || !endDate || ( startDateMoment <= assignment.endDate ) ) 
 							) {
-							assignments.push( projectAssignment );
+							var duplicateAssignments = _.filter(assignments, function(assign) { return assign.project.resource == assignment.project.resource; });
+							if (duplicateAssignments.length == 0)
+								assignments.push( projectAssignment );
 						}
 					}
 				}

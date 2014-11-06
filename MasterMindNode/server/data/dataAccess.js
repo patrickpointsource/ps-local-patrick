@@ -516,7 +516,7 @@ var listCurrentAssigments = function(callback ) {
 		}
 	});
 
-}
+};
 
 var listAssignmentsByPerson = function(resource, callback) {
 	
@@ -529,9 +529,10 @@ var listAssignmentsByPerson = function(resource, callback) {
 			_.each(result.data, function(assignment){
 				if (assignment.members) {
 					_.each(assignment.members, function (member){
-						if (member.person && 
-								member.person.resource && 
-									member.person.resource == resource ) {
+						if (member.person && member.person.resource && 
+							member.person.resource == resource) {
+							var duplicateAssignments = _.filter(assignments, function(assign) { return assign.project.resource == assignment.project.resource; });
+							if (duplicateAssignments.length == 0)
 								assignments.push(assignment);
 						}
 					});
