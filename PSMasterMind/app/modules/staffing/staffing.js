@@ -120,13 +120,15 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 
 		/* Next, run through the list of projects and set the active projects and people.
 		 * */
-		return AssignmentService.getAssignments( activeProjects );
+		return AssignmentService.getAssignments( activeProjects, undefined, true );
 	} ).then( function( data ) {
 		/*
 		 * Finally set projects without any assigned people.
 		 *
 		 */
 
+		data = data.members != undefined && data.length == undefined ? data.members: data;
+		
 		var fillDeficit = function( addAllRoles ) {
 			/*
 			 * Loop through all the roles in the active projects

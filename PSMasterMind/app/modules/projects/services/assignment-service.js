@@ -135,7 +135,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	 * project records that include the about or resource properties set
 	 */
 	
-	this.getAssignments = function( projects, timePeriod ) {
+	this.getAssignments = function( projects, timePeriod, skipPrepare ) {
 
 		if (window.useAdoptedServices) {
 			var params = {};
@@ -153,7 +153,9 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			params.timePeriod = timePeriod;
 			
 			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
-				prepareAssignment(assignments);
+				if (!skipPrepare)
+					prepareAssignment(assignments);
+				
 				return assignments;
 			});
 		}
