@@ -222,6 +222,8 @@ var createMinionUserRoles = function(callback) {
         
         var countChecked = 0;
         console.log("People length: " + people.length);
+        var createdCount = 0;
+        var updatedCount = 0;
         for(var i = 0; i < people.length; i++) {
           var person = people[i];
           
@@ -237,6 +239,7 @@ var createMinionUserRoles = function(callback) {
               }
               
               countChecked++;
+              createdCount++;
               if(callback && countChecked == people.length) {
                 console.log("CALLBACK REACHED!");
                 callback();
@@ -255,6 +258,7 @@ var createMinionUserRoles = function(callback) {
                 }
               
                 countChecked++;
+                updatedCount++;
                 if(callback && countChecked == people.length) {
                   console.log("CALLBACK REACHED!");
                   callback();
@@ -264,6 +268,13 @@ var createMinionUserRoles = function(callback) {
               countChecked++;
               if(callback && countChecked == people.length) {
                 console.log("CALLBACK REACHED!");
+                if(createdCount > 0) {
+                  console.log("Default roles added: " + createdCount);
+                }
+                if(updatedCount > 0) {
+                  console.log("Default roles updated: " + updatedCount);
+                }
+                
                 callback();
               }
             }

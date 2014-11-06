@@ -1031,8 +1031,8 @@ var insertItem = function( id, obj, type, callback ) {
 					console.log( "Object with id " + body.id + " inserted in db" );
 				}
 			}
-			memoryCache.deleteObject( type );
 		}
+		memoryCache.deleteObject( type );
 		callback( err, body );
 	} );
 };
@@ -1049,8 +1049,8 @@ var updateItem = function( id, obj, type, callback ) {
 			} else {
 				console.log( "Object with id " + id + " updated in db" );
 			}
-			memoryCache.deleteObject( type );
 		}
+		memoryCache.deleteObject( type );
 		callback( err, body );
 	} );
 };
@@ -1060,8 +1060,8 @@ var deleteItem = function( id, rev, type, callback ) {
 		dbAccess.deleteItem( id, rev, function( err, body ) {
 			if( !err ) {
 				console.log( "Object with id " + id + " deleted from db" );
-				memoryCache.deleteObject( type );
 			}
+			memoryCache.deleteObject( type );
 			callback( err, body );
 		} );
 	} else {
@@ -1072,7 +1072,6 @@ var deleteItem = function( id, rev, type, callback ) {
 				body._deleted = true;
 
 				insertItem( id, body, type, function( err, body ) {
-					memoryCache.deleteObject( type );
 					if( err ) {
 						console.log( err );
 						callback( 'error delete item by inserting _deleted flag', null );
@@ -1081,6 +1080,7 @@ var deleteItem = function( id, rev, type, callback ) {
 					}
 				} );
 			}
+			memoryCache.deleteObject( type );
 		} );
 	}
 
