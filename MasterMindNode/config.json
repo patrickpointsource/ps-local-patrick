@@ -9,5 +9,6 @@
     "webSiteUrl": "http://localhost:9000",
     "oauthcbbaseurl": "",
     "privateKeyPath": "server/cert/server.key",
-    "certificatePath": "server/cert/server.crt"
+    "certificatePath": "server/cert/server.crt",
+    "envinronment": "dev"
 }

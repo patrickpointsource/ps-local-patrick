@@ -7,7 +7,6 @@ var devenv = {
 		sessionSecret: 'thepointe',
 		sessionMaxAge: 60 * 10000,
 
-		db: 'mm_db_demo',
 		app: {
 			name: 'PS MasterMind'
 		},
@@ -25,10 +24,34 @@ var devenv = {
             url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/'
 		}*/
 		cloudant: {
-			account: 'psdev1',
-		    user: 'tathendersheaderefortati',
-            password: 'e7wRT4nm0IgHGeWu07benG36',
-            url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/'
+			stage: {
+				account: 'psprod1',
+			    user: 'istraustandivillownedome',
+	            password: 'uuVXxmARXdpLYkU7X1T0yS7D',
+	            url: 'https://istraustandivillownedome:uuVXxmARXdpLYkU7X1T0yS7D@psprod1.cloudant.com/',
+	            db: 'mm_db_demo'
+			},
+			prod: {
+				account: 'psprod1',
+			    user: 'beentorestoldiseandeamed',
+	            password: 'mXuflwvgb3G003jjKnraqasb',
+	            url: 'https://beentorestoldiseandeamed:mXuflwvgb3G003jjKnraqasb@psprod1.cloudant.com/',
+	            db: 'mm_db_demo'
+			}, 
+			demo: {
+				account: 'psdev1',
+			    user: 'tathendersheaderefortati',
+	            password: 'e7wRT4nm0IgHGeWu07benG36',
+	            url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/',
+	            db: 'mm_db_demo'
+			},
+			dev: {
+				account: 'psdev1',
+			    user: 'tathendersheaderefortati',
+	            password: 'e7wRT4nm0IgHGeWu07benG36',
+	            url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/',
+	            db: 'mm_db_demo'
+			}
 		}
 	}
 };
