@@ -39,7 +39,7 @@ var logger = log4js.getLogger();
 
 //Setup routes
 require('./server/data/dbAccess')({
-	envinronment: appConfig.envinronment
+	env: appConfig.env
 });
 
 //Routes

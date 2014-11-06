@@ -6,10 +6,10 @@ var _ = require('underscore');
 
 module.exports = function(params) {
 	// cloudant module
-	var dbName = config.cloudant[params.envinronment].db;
-	var dbAccount = config.cloudant[params.envinronment].account;
-	var dbApiKey = config.cloudant[params.envinronment].user;
-	var dbPwd = config.cloudant[params.envinronment].password;
+	var dbName = config.cloudant[params.env].db;
+	var dbAccount = config.cloudant[params.env].account;
+	var dbApiKey = config.cloudant[params.env].user;
+	var dbPwd = config.cloudant[params.env].password;
 	
 	var dbConnParams = {account:dbAccount, key:dbApiKey,password:dbPwd}; 
 	var Cloudant = require("cloudant")(dbConnParams);

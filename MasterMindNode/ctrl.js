@@ -70,5 +70,5 @@ switch (process.argv[2]) {
         break;
 
     default:
-        console.log("Usage: [start|stop|kill|restart|reload|status]");
+        console.log("Usage: [start|stop|kill|restart|reload|status] (optionaly, configFile=config.json)");
 }
