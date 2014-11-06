@@ -1451,7 +1451,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 					date: updatedRecords[ 0 ].date,
 					etag: updatedRecords[ 0 ].etag,
 					description: updatedRecords[ 0 ].description,
-					hours:  Util.formatFloat(updatedRecords[ 0 ].hours),
+					hours:  Util.formatFloat(updatedRecords[ 0 ].hours, true),
 					person: updatedRecords[ 0 ].person,
 					project: updatedRecords[ 0 ].project,
 					task: updatedRecords[ 0 ].task
