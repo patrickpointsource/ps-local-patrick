@@ -18,7 +18,11 @@
         <span class="visible-xs"><i class="fa fa-floppy-o"></i></span>
       </button>
     </div>
-
+    
+    <div ng-show="errors.length > 0" class="alert alert-danger" style="margin-left: 20px; margin-right: 20px;">
+      <div ng-repeat="error in errors">{{error}}</div>
+    </div>
+    
     <div class="col-xs-12">
       <div class="row padded-row">
         <div class="well">

@@ -262,7 +262,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			$scope.editMode = false;
 		} );
 	};
-
+    
+    $scope.errors = [];
+    
 	/**
 	 * Save the user profile changes
 	 */
@@ -307,6 +309,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		if(rolesNeedsToBeUpdated) {
           $scope.userRole.roles = securityGroups;
           Resources.update($scope.userRole).then(function(result) {
+            if(!result.ok) {
+              console.log(result);
+              $scope.errors.push("While you were working, this document was updated.  Please refresh the page to see the latest changes.");
+            }
             $scope.userRole = result;
             
             $scope.saveProfile(profile);
