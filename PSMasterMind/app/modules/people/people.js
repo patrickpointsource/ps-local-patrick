@@ -428,46 +428,70 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			
 			$location.url( updatedUrl ).replace( );
 		}
+		
 	};
 
 	$scope.fillPeopleProps = function( ) {
-		for( var i = 0; i < $scope.people.length; i++ ) {
-			//Annotate people with additional information
-			$scope.people[ i ].activeHours = $scope.activeHours ? $scope.activeHours[ $scope.people[ i ].resource ] : '?';
+		$scope.fillPeopleActivePercentages().then( function( ) {
+			for( var i = 0; i < $scope.people.length; i++ ) {
+				//Annotate people with additional information
+				$scope.people[ i ].activeHours = $scope.activeHours ? $scope.activeHours[ $scope.people[ i ].resource ] : '?';
 
-			$scope.people[ i ].activePercentage = $scope.activePercentages ? ( $scope.activePercentages[ $scope.people[ i ].resource ] ? $scope.activePercentages[ $scope.people[ i ].resource ] : 0 ) : '?';
+				$scope.people[ i ].activePercentage = $scope.activePercentages ? ( $scope.activePercentages[ $scope.people[ i ].resource ] ? $scope.activePercentages[ $scope.people[ i ].resource ] : 0 ) : '?';
 
-			if( $scope.people[ i ].primaryRole && $scope.people[ i ].primaryRole.resource ) {
-				// add the role to the person so we can display it in the table and sort by it
-				$scope.people[ i ].primaryRole = $scope.roleGroups[ $scope.people[ i ].primaryRole.resource ];
+				if( $scope.people[ i ].primaryRole && $scope.people[ i ].primaryRole.resource ) {
+					// add the role to the person so we can display it in the table and sort by it
+					$scope.people[ i ].primaryRole = $scope.roleGroups[ $scope.people[ i ].primaryRole.resource ];
 
-				var group = "";
-				_.each( rolePeopleGroupMap, function( rolesArray, key ) {
-					if( $scope.people[ i ].primaryRole && $scope.people[ i ].primaryRole.abbreviation && _.contains( rolesArray, $scope.people[ i ].primaryRole.abbreviation ) ) {
-						group = key;
+					var group = "";
+					_.each( rolePeopleGroupMap, function( rolesArray, key ) {
+						if( $scope.people[ i ].primaryRole && $scope.people[ i ].primaryRole.abbreviation && _.contains( rolesArray, $scope.people[ i ].primaryRole.abbreviation ) ) {
+							group = key;
+						}
+					} );
+					if( group.length > 0 ) {
+						$scope.people[ i ].group = mapPeopleFilterToUI( group );
+					} else {
+						$scope.people[ i ].group = '';
 					}
-				} );
-				if( group.length > 0 ) {
-					$scope.people[ i ].group = mapPeopleFilterToUI( group );
-				} else {
-					$scope.people[ i ].group = '';
+				}
+
+				// fix cases when name passed as compound string
+				if (_.isString($scope.people[ i ].name)) {
+					var tmp = $scope.people[ i ].name.split(/\s+/g);
+
+					$scope.people[ i ].name = {
+							givenName: tmp[0],
+							familyName: tmp[1],
+							fullName: $scope.people[ i ].name
+					};
 				}
 			}
-			
-			// fix cases when name passed as compound string
-			if (_.isString($scope.people[ i ].name)) {
-			     var tmp = $scope.people[ i ].name.split(/\s+/g);
-			     
-			     $scope.people[ i ].name = {
-			         givenName: tmp[0],
-			         familyName: tmp[1],
-			         fullName: $scope.people[ i ].name
-			     };
-			 }
-		}
 
-		$scope.changeSort( $scope.sortType );
-		$scope.hideSpinner = true;
+			$scope.changeSort( $scope.sortType );
+			$scope.hideSpinner = true;
+		} );
+	};
+	
+	$scope.fillPeopleActivePercentages = function( ) {
+		return People.getPeopleCurrentAssignments( ).then( function( activeAssignments ) {
+			//Sum the percentages for all of the active assignments
+			var activePercentages = {};
+			for( var person in activeAssignments ) {
+				var cnt = 0;
+				var assignments = activeAssignments[ person ];
+				if (assignments) {
+					for( var i = 0; i < assignments.length; i++ ) {
+						var assignment = assignments[ i ];
+						cnt += assignment.hoursPerWeek;
+					}
+					activePercentages[ person ] = Math.round( 100 * cnt / CONSTS.HOURS_PER_WEEK );
+				}
+			}
+
+			$scope.activePercentages = activePercentages;
+
+		} );
 	};
 	
 	$scope.getPersonName = function(person, isSimply, isFirst) {
@@ -503,30 +527,12 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 	 * build table view
 	 */
 	$scope.buildTableView = function( ) {
-		var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
-
+		
 		//Actual Table View Data
 		if( $scope.showTableView ) {
-			People.getPeopleCurrentAssignments( ).then( function( activeAssignments ) {
-				//Sum the percentages for all of the active assignments
-				var activePercentages = {};
-				for( var person in activeAssignments ) {
-					var cnt = 0;
-					var assignments = activeAssignments[ person ];
-					if (assignments) {
-						for( var i = 0; i < assignments.length; i++ ) {
-							var assignment = assignments[ i ];
-							cnt += assignment.hoursPerWeek;
-						}
-						activePercentages[ person ] = Math.round( 100 * cnt / HOURS_PER_WEEK );
-					}
-				}
-
-				$scope.activePercentages = activePercentages;
-
+			$scope.fillPeopleActivePercentages().then( function( ) {
 				//Once we have the active people apply the default filter
 				//Trigger initial filter change
-				
 				$scope.handlePeopleFilterChanged( );
 			} );
 		}
@@ -605,7 +611,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		var map = _.map( $scope.roleGroups, function( val, key ) {
 			if (val)
 			     mapRoles[ val.abbreviation ] = key;
-		} )
+		} );
 		var abbrs = [ ];
 
 		for( var i = 0; i < peopleGroups.length; i++ ) {
@@ -613,11 +619,11 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 			for( var j = 0; abbrs && j < abbrs.length; j++ )
 				if( mapRoles[ abbrs[ j ] ] )
-					result.push( mapRoles[ abbrs[ j ] ] )
-		}
+					result.push( mapRoles[ abbrs[ j ] ] );
+		};
 
 		return result;
-	}
+	};
 	/**
 	 * Move the starting date back 5 months
 	 */

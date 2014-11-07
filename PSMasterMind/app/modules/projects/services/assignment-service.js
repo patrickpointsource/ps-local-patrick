@@ -258,22 +258,26 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	};
 	
 	this.getActualAssignmentsForPerson = function(assignments, profile) {
-	  var myAssignments = [];
-	  
-	  for(var projectAssignmentsCounter = 0; projectAssignmentsCounter < assignments.length; projectAssignmentsCounter++) {
-        var projectAssignment = assignments[projectAssignmentsCounter];
-        for(var membersCounter = 0; membersCounter < projectAssignment.members.length; membersCounter++) {
-          var member = projectAssignment.members[membersCounter];
-       
-          if(profile.about == member.person.resource) {
-            member.project = projectAssignment.project;
-            myAssignments.push(member);
-          }
-        }
-      }
-      
-      return myAssignments;
-	};
+		var myAssignments = [];
+
+		for(var projectAssignmentsCounter = 0; projectAssignmentsCounter < assignments.length; projectAssignmentsCounter++) {
+			var projectAssignment = assignments[projectAssignmentsCounter];
+			for(var membersCounter = 0; membersCounter < projectAssignment.members.length; membersCounter++) {
+				var member = projectAssignment.members[membersCounter];
+				if(profile.about == member.person.resource) {
+					var now = moment( );
+					var start = moment( member.startDate );
+					if( start.isBefore( now ) || start.isSame( now, 'day' ) ) {
+						if( !member.endDate || moment( member.endDate ).isAfter( now ) || moment( member.endDate ).isSame( now, 'day' ) ) {
+							member.project = projectAssignment.project;
+							myAssignments.push(member);
+						}
+					}
+				}
+			} 
+		}
+		return myAssignments;
+	};      
 	
 	this.getMyCurrentAssignmentsUsingQuery = function( person ) {
 		var deferred = $q.defer( );

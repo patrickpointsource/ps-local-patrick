@@ -747,14 +747,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                         $scope.assignments.splice( k, 1 );
                 };
 
-                $scope.hasAssignments = assignments.length > 0;
                 
-                $scope.myAssignments = [];
                 if(window.useAdoptedServices) {
                   $scope.myAssignments = AssignmentService.getActualAssignmentsForPerson($scope.assignments, $scope.profile);
                 } else {
                   $scope.myAssignments = assignments;
                 }
+                
+                $scope.hasAssignments =  $scope.myAssignments.length > 0;
                 
                 console.log("getMyCurrentAssignments after cut: assignments.length", assignments.length);
 
