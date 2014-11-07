@@ -51,9 +51,20 @@ var getDateFromNow = function(monthCountAgo){
 	if (monthCountAgo) {
     	dateFromNow.setMonth(dateFromNow.getMonth() + monthCountAgo);
     }
-	var dd = dateFromNow.getDate();
-	var mm = dateFromNow.getMonth()+1; //January is 0!
-	var yyyy = dateFromNow.getFullYear();
+	return getFormattedDate(dateFromNow);
+};
+
+
+/**
+ * Returns date in YYYY-MM-DD format
+ * 
+ * @param {Object} date
+ */
+
+var getFormattedDate = function(date) {
+	var dd = date.getDate();
+	var mm = date.getMonth()+1; //January is 0!
+	var yyyy = date.getFullYear();
 	if (dd<10){
 		dd='0'+dd;
 	}
@@ -62,11 +73,30 @@ var getDateFromNow = function(monthCountAgo){
 	}
 	var result = yyyy+'-'+mm+'-'+dd;
 	return result;
+}
+
+
+/**
+ * Returns previous working date (excluding Saturdays & Sundays)
+ */
+
+var getPreviousWorkingDay = function(){
+	var cDate = new Date();
+    var dayOfWeek;
+    
+    do {
+    	cDate.setDate(cDate.getDate()-1);
+    	dayOfWeek = cDate.getDay();
+    } while (dayOfWeek == 5 || dayOfWeek == 6 )
+    
+    return cDate;
 };
 
 module.exports.getIDfromResource = getIDfromResource;
 module.exports.getFullID = getFullID;
 module.exports.getTodayDate = getTodayDate;
 module.exports.getDateFromNow = getDateFromNow;
+module.exports.getPreviousWorkingDay = getPreviousWorkingDay;
+module.exports.getFormattedDate = getFormattedDate;
 
     

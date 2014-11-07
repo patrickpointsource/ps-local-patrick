@@ -56,8 +56,8 @@ var checkPersonByRole = function(person, roleId, includeInactive, callback) {
 /**
  * Returns people by isActive flag
  * 
- * @param {Object} roleResources
- * @param {Object} callback
+ * @param {Object} people
+ * @param {Object} isActive
  */
 
 var filterPeopleByIsActiveFlag = function(people, isActive) {
@@ -83,8 +83,7 @@ var filterPeopleByIsActiveFlag = function(people, isActive) {
 /**
  * Returns people people with primary role
  * 
- * @param {Object} roleResources
- * @param {Object} callback
+ * @param {Object} people
  */
 
 var filterPeopleWithPrimaryRole = function(people) {
@@ -498,8 +497,8 @@ var filterVacationsByPeriod = function(people, startDate, endDate, vacations) {
 
 var checkVacation = function(vacation, people, startDate, endDate, callback) {
 
+	var checked = false;
 	if (people) {
-		var checked = false;
 		if (!(people instanceof Array)) {
 			people = [people];
 		}
@@ -510,23 +509,17 @@ var checkVacation = function(vacation, people, startDate, endDate, callback) {
 			}
 		});
 		
-		if (!checked) {
-			return callback (false);
-			return;
-		}
+	}
+			
+	if (checked && startDate && (new Date(vacation.endDate) < startDate )) {
+		checked = false;
 	}
 	
-	if (startDate && vacation.endDate < startDate) {
-		return callback (false);
-		return;
+	if (checked && endDate && (new Date(vacation.startDate) > endDate ) ) {
+		checked = false;
 	}
-	
-	if (endDate && vacation.startDate > endDate) {
-		return callback (false);
-		return;
-	}
-	
-	return callback (true);
+
+	return callback (checked);
 };
 
 /**
@@ -620,6 +613,23 @@ var filterLinksByProject = function(project, links) {
 	return result;
 };
 
+/**
+ * Returns non-billable roles
+ * 
+ * @param {Object} roles
+ */
+
+var filterNonBillableRoles = function(roles) {
+	var result = [];
+	_.each(roles, function(role) {
+		if (role.isNonBillable) {
+			result.push(role);
+		}
+	});
+	return result;
+};
+
+
 // people filter functions
 module.exports.filterPeopleByRoles = filterPeopleByRoles;
 module.exports.filterPeopleByIsActiveFlag = filterPeopleByIsActiveFlag;
@@ -651,3 +661,6 @@ module.exports.filterTasksByName = filterTasksByName;
 
 //links filter functions
 module.exports.filterLinksByProject = filterLinksByProject;
+
+//roles filter functions
+module.exports.filterNonBillableRoles = filterNonBillableRoles;

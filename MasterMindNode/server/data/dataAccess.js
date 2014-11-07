@@ -642,6 +642,24 @@ var listRoles = function( q, callback ) {
 
 };
 
+var listNonBillableRoles = function( callback ) {
+
+	var result = memoryCache.getObject( ROLES_KEY );
+	if( result ) {
+		console.log( "read " + ROLES_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterNonBillableRoles(result.data), "members", "roles/" ) );
+	} else {
+		dbAccess.listRoles( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + ROLES_KEY + " to memory cache" );
+				memoryCache.putObject( ROLES_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterNonBillableRoles(body.data), "members", "roles/" ) );
+		} );
+	}
+
+};
+
 var listLinks = function( q, callback ) {
 
 	var result = memoryCache.getObject( LINKS_KEY );
@@ -1123,6 +1141,7 @@ module.exports.listHoursByPerson = listHoursByPerson;
 module.exports.listHoursByProjects = listHoursByProjects;
 
 module.exports.listRoles = listRoles;
+module.exports.listNonBillableRoles = listNonBillableRoles;
 module.exports.listLinks = listLinks;
 module.exports.listLinksByProject = listLinksByProject;
 module.exports.listNotifications = listNotifications;

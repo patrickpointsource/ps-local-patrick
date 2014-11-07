@@ -82,7 +82,7 @@ var sendEmailTo = function(notification) {
         user = result.members[0];
         
         emailSender.sendEmailFromPsapps(
-                    user.mBox, 
+                    user.mBox, null,
                     notification.header, 
                     '<h3>' + notification.header + '</h3><br/><br/>'  + notification.text + '<br/><br/>' + 'Sincerely Yours, <br/><strong>MasterMind Notice.</strong>', 
         function(err, info) {

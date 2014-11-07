@@ -59,6 +59,7 @@ var userRoles = require('./server/routes/userRoles');
 var upgrade = require('./server/routes/upgrade');
 
 var security = require('./server/util/security.js');
+var reminder = require('./server/util/reminder.js');
 
 
 var privateKey  = fs.readFileSync(appConfig.privateKeyPath, 'utf8');
@@ -290,6 +291,9 @@ app.listen(port, host);
 var httpsServer = https.createServer(credentials, app);
 
 httpsServer.listen(httpsPort, hostName);
+
+//Initialize reminders
+reminder.initialize();
 
 // Initialize security layer
 security.initialize();

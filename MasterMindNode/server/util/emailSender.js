@@ -35,10 +35,11 @@ module.exports = function(params) {
 
 	var config = wellknown("Gmail");
 
-	module.exports.sendEmailFromPsapps = function(to, subject, body, callback) {
+	module.exports.sendEmailFromPsapps = function(to, cc, subject, body, callback) {
 		var mailOptions = {
 			from : "MasterMind Notice <system@pointsourcellc.com>",
 			to : to,
+			cc : cc,
 			subject : subject,
 			html : body,
 		};
