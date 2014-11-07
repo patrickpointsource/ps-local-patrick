@@ -296,7 +296,7 @@ httpsServer.listen(httpsPort, hostName);
 reminder.initialize();
 
 // Initialize security layer
-security.initialize();
+security.initialize(false);
 
 console.log('App started on port ' + port);
 
