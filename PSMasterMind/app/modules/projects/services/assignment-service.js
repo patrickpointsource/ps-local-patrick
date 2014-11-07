@@ -135,7 +135,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	 * project records that include the about or resource properties set
 	 */
 	
-	this.getAssignments = function( projects, timePeriod, skipPrepare ) {
+	this.getAssignments = function( projects, timePeriod ) {
 
 		if (window.useAdoptedServices) {
 			var params = {};
@@ -153,8 +153,8 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			params.timePeriod = timePeriod;
 			
 			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
-				if (!skipPrepare)
-					prepareAssignment(assignments);
+				
+				prepareAssignment(assignments);
 				
 				return assignments;
 			});
@@ -239,15 +239,6 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			delete assignments.data;
 		}
 		
-		//Get assignment members excluding empty.
-		if (assignments.members) {
-			var members = [];
-			_.each( assignments.members, function( a ) {
-				var ms = a.members ? a.members : [ a ]; // in case when we get a collection of assignments objects
-				members = _.union(members, _.filter(ms, function( member ){ return member.person && member.person.resource; }));
-			} );
-			assignments.members = members;
-		}
 	};
 
 	/**

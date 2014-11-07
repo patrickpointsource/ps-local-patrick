@@ -120,7 +120,7 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 
 		/* Next, run through the list of projects and set the active projects and people.
 		 * */
-		return AssignmentService.getAssignments( activeProjects, undefined, true );
+		return AssignmentService.getAssignments( activeProjects );
 	} ).then( function( data ) {
 		/*
 		 * Finally set projects without any assigned people.
