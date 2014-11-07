@@ -1,5 +1,5 @@
-angular.module('Mastermind').controller('MyProjectsCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService',
-  function ($scope, $state, $rootScope, Resources, ProjectsService) {
+angular.module('Mastermind').controller('MyProjectsCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'AssignmentService', 'ProjectsService',
+  function ($scope, $state, $rootScope, Resources, AssignmentService, ProjectsService) {
 
     /**
      * Get the list of projects kicking off
@@ -11,8 +11,12 @@ angular.module('Mastermind').controller('MyProjectsCtrl', ['$scope', '$state', '
 
       $scope.ongoingProjects = result.data;
 
-      ProjectsService.getMyCurrentProjects($scope.me).then(function(myCurrentProjects) {
-        $scope.myProjects = myCurrentProjects.data;
+      AssignmentService.getMyCurrentAssignments($scope.me).then(function(assignments) {
+    	$scope.myProjects = [];
+    	_.each(assignments, function (assign) {
+    		$scope.myProjects.push(assign.project);
+    	});
+    	
         if($scope.myProjects.length>0){
           $rootScope.hasActiveProjects = true;
         }
