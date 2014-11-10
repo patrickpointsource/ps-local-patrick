@@ -1,10 +1,45 @@
 var daemon = require("daemonize2").setup({
+    //***************
+	//dev deployment
+	//***************
+	//main: "app.js",
+    //name: "mastermindnode",
+    //pidfile: "/var/run/mastermindapp.pid",
+    //user: "www",
+    //group: "www",
+    //silent: true
+	
+	//****************
+	//demo deployment
+	//****************
+    //main: "app.js",
+    //name: "mmnode",
+    //args: "configFile=config_demo.json",
+    //pidfile: "/var/run/mmnode.pid",
+    
+    //*****************
+	//stage deployment
+	//*****************
+    //main: "app.js",
+    //args: "configFile=config_stage.json",
+    //name: "mmnode",
+    //pidfile: "/var/run/mmnode.pid",
+	
+	//***********************
+	//production deployment
+	//***********************
+    //main: "app.js",
+    //args: "configFile=config_prod.json",
+    //name: "mmnode",
+    //pidfile: "/var/run/mmnode.pid",
+	
+	//************************
+	//generic deployment
+	//  - configFile=config.json
+	//************************
     main: "app.js",
-    name: "mastermindnode",
-    pidfile: "/var/run/mastermindapp.pid",
-    user: "www",
-    group: "www",
-    silent: true
+    name: "mmnode",
+    pidfile: "/var/run/mmnode.pid",
 });
 
 if (process.getuid() != 0) {

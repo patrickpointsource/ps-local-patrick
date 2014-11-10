@@ -14,18 +14,18 @@
 //window.fixUrl = true;
 
 //new prod nodejs 
-//window.serverLocation = 'https://mastermind.mypointsource.com';
+//window.serverLocation = 'https://mastermind.pointsource.com';
 //window.restPath = '/MMNodeServer/';
-//window.clientBaseURL = 'https://mastermind.mypointsource.com/';
+//window.clientBaseURL = 'https://mastermind.pointsource.com/';
 //window.fixUrl = true;
 //window.useAdoptedServices = true;
 
 //new stage nodejs 
-//window.serverLocation = 'https://stage.mastermind.pointsource.com';
-//window.restPath = '/MMNodeStaging/';
-//window.clientBaseURL = 'https://stage.mastermind.pointsource.com/';
-//window.fixUrl = true;
-//window.useAdoptedServices = true;
+window.serverLocation = 'https://stage.mastermind.pointsource.com';
+window.restPath = '/MMNodeStaging/';
+window.clientBaseURL = 'https://stage.mastermind.pointsource.com/';
+window.fixUrl = true;
+window.useAdoptedServices = true;
 
 //new demo nodejs 
 //window.serverLocation = 'https://demo.mastermind.pointsource.com';
