@@ -76,8 +76,8 @@ function( $q, $timeout, Restangular ) {
 		$timeout( function( ) {
 			fetch( resource, params ).then( function( newValue ) {
 				//Save to localStorage
-				localStorage[ resource ] = JSON.stringify( newValue );
-				localStorage[ TIME_PREFIX + resource ] = new Date( );
+				setLocalStorageValue(resource, JSON.stringify( newValue ));
+				setLocalStorageValue( TIME_PREFIX + resource, new Date( ));
 
 				deferred.resolve( newValue );
 			})
@@ -122,8 +122,8 @@ function( $q, $timeout, Restangular ) {
 			if( !resolved ) {
 				fetch( resource, params ).then( function( newValue ) {
 					//Save to localStorage
-					localStorage[ key ] = JSON.stringify( newValue );
-					localStorage[ TIME_PREFIX + key ] = new Date( );
+					setLocalStorageValue( key, JSON.stringify( newValue ));
+					setLocalStorageValue(TIME_PREFIX + key, new Date( ));
 
 					//console.log('GET '+resource+'='+localStorage[resource]);
 
@@ -206,8 +206,8 @@ function( $q, $timeout, Restangular ) {
                     delete localStorage[ route ];
                     delete localStorage[ TIME_PREFIX + route ];
 					//Save to localStorage
-					localStorage[ resourceURL ] = JSON.stringify( newResult );
-					localStorage[ TIME_PREFIX + resourceURL ] = new Date( );
+                    setLocalStorageValue(resourceURL, JSON.stringify( newResult ));
+                    setLocalStorageValue(TIME_PREFIX + resourceURL,  new Date( ));
 
 					//console.log('PUT '+resourceURL+'='+localStorage[resourceURL]);
 					deferred.resolve( newResult );
@@ -251,8 +251,8 @@ function( $q, $timeout, Restangular ) {
 			    delete localStorage[ route ];
 			    delete localStorage[ TIME_PREFIX + route ];
 				//Save to localStorage
-				localStorage[ resourceURL ] = JSON.stringify( newResult );
-				localStorage[ TIME_PREFIX + resourceURL ] = new Date( );
+			    setLocalStorageValue(resourceURL, JSON.stringify( newResult ));
+			    setLocalStorageValue(TIME_PREFIX + resourceURL, new Date( ));
 
 				//console.log('PUT '+resourceURL+'='+localStorage[resourceURL]);
 				deferred.resolve( newResult );
@@ -311,6 +311,13 @@ function( $q, $timeout, Restangular ) {
 		return copy;
 	}
 
+	function setLocalStorageValue(key, value) {
+		// if passed value less than 1mb
+		if (unescape( encodeURIComponent(value.toString())).length < 1024 * 1024) {
+			localStorage[key] = value;
+		}
+			
+	}
 	function cleanLocalStorageIfNeeded( ) {
 		var latestTime = localStorage[ "LATEST_LOCAL_STORAGE_CHECK" ];
 		var now = new Date( );
@@ -325,10 +332,10 @@ function( $q, $timeout, Restangular ) {
 	    
 		var currentSize = unescape( encodeURIComponent( JSON.stringify( localStorage ) ) ).length;
 
-		// if greater than 1mb
-		if( currentSize > 1024 * 1024 ) {
+		// if greater than 2mb
+		if( currentSize > 2 * 1024 * 1024 ) {
 			// clean half of cached properties
-			var countOfProps = (       _.map( localStorage, function( l ) {
+			var countOfProps = (_.map( localStorage, function( l ) {
 					return l
 				} ) ).length;
 
@@ -341,7 +348,6 @@ function( $q, $timeout, Restangular ) {
 				if( i > ( countOfProps / 2 ) )
 					break;
 			};
-
 		}
 			
 		//console.log('storage: time:' + ((new Date()).getTime() - now.getTime()) + ':size:' + currentSize);
