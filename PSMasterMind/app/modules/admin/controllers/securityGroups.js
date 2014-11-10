@@ -312,6 +312,7 @@ angular.module('Mastermind')
         $scope.checkForDeletedMembers();
         $scope.checkForAddedMembers();
         Resources.update($scope.selectedGroup).then(function(result){
+          $scope.selectedGroup._rev = result.rev;
           $scope.messages.push("Your changes have been saved successfully.");
         });
       }
