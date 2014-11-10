@@ -790,6 +790,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 				}
 			};
 
+			
 			/*
 			 * Helps to filter past entries - roles and assignees
 			 **/
@@ -806,6 +807,8 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 				return true;
 			};
 
+			data = data.members != undefined && data.length == undefined ? data.members: data;
+			
 			var found = false;
 
 			for( var i = 0; i < activeProjects.length; i++ ) {
