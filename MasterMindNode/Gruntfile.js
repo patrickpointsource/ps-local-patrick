@@ -298,7 +298,9 @@ module.exports = function(grunt) {
                     cwd: '.',
                     dest: '<%= yeoman.dist %>/',
                     src: [
-                        'app.js'
+                        'app.js',
+                        'config*.json',
+                        'ctrl.js'
                     ]
                 }, {
                     expand: true,
