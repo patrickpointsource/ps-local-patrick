@@ -349,6 +349,7 @@ router.get('/:id/gplus', util.isAuthenticated, function(req, res) {
 router.put('/:id', util.isAuthenticated, function(req, res) {
     var id = req.params.id;
     req.body._id = id;
+    
     security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
         if (allowed) 
         {
@@ -363,9 +364,26 @@ router.put('/:id', util.isAuthenticated, function(req, res) {
                     res.json(result);
                 }            
             });
+        } else {
+          if(req.body.googleId == req.user) {
+            security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editMyProfile, function(allowed){
+              if (allowed) {
+                var person = req.body;
+                person.about = "people/" + person._id;
+                people.insertPerson(person, function(err, result){
+                  if(err){
+                    res.json(500, "You can edit only your own profile: " + err);
+                  } else {
+                    result.about = "people/" + result.id;
+                    
+                    res.json(result);
+                  }            
+                });
+              }
+            });
+          }
         }
-    });
-
+      });
 });
 
 

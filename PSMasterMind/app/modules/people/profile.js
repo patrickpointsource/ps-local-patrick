@@ -295,15 +295,17 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		  return { name: userSecurityGroup.name, resource: userSecurityGroup.resource };
 		});
 		
-		if(securityGroups.length != $scope.initialUserGroups.length) {
-		  rolesNeedsToBeUpdated = true;
-		} else {
-		  for(var i = 0; i < securityGroups.length; i++) {
-		    if($scope.initialUserGroups.indexOf(securityGroups[i].name) < 0) {
-		      rolesNeedsToBeUpdated = true;
-		      break;
-		    }
-		  }
+		if($scope.initialUserGroups) {
+		  if(securityGroups.length != $scope.initialUserGroups.length) {
+            rolesNeedsToBeUpdated = true;
+          } else {
+            for(var i = 0; i < securityGroups.length; i++) {
+              if($scope.initialUserGroups.indexOf(securityGroups[i].name) < 0) {
+                rolesNeedsToBeUpdated = true;
+                break;
+              }
+            }
+          }
 		}
 		
 		if(rolesNeedsToBeUpdated) {
