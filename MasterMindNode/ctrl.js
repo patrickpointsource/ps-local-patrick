@@ -35,7 +35,7 @@ var daemon = require("daemonize2").setup({
 	
 	//************************
 	//generic deployment
-	//  - configFile=config.json
+	argv: "configFile=config_demo.json",
 	//************************
     main: "app.js",
     name: "mmnode",
