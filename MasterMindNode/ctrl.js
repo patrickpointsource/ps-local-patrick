@@ -35,11 +35,10 @@ var daemon = require("daemonize2").setup({
 	
 	//************************
 	//generic deployment
-	argv: "configFile=config_demo.json",
 	//************************
-    main: "app.js",
-    name: "mmnode",
-    pidfile: "/var/run/mmnode.pid",
+//    main: "app.js",
+//    name: "mmnode",
+//    pidfile: "/var/run/mmnode.pid",
 });
 
 if (process.getuid() != 0) {
