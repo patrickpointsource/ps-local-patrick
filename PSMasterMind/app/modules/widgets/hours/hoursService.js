@@ -595,7 +595,12 @@ function( $q, Resources ) {
 		if (window.useAdoptedServices) {
 			var resource = person.about ? person.about : person.resource;
 			var id = resource.substring( resource.lastIndexOf( '/' ) + 1 );
-			return Resources.refresh("projects/byperson/" + id  + "/current");
+			return Resources.refresh("projects/byperson/" + id  + "/current").then(function(projects) {
+				if (projects && projects.data && projects.data.length > 0)
+					return projects.data;
+				
+				return projects;
+			});
 		}
 		else {
 			return this.getCurrentPersonProjectsUsingQuery(person);
