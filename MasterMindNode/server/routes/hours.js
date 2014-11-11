@@ -116,14 +116,16 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
             
             console.log( '\r\nget:projects:\r\n' );
 
-            if (projects)
-                hours.listHoursByProjects( projects, function( err, result ) {
+            if (projects) {
+            	var fields = req.query.fields;
+            	hours.listHoursByProjects( projects, fields, function( err, result ) {
                     if( err ) {
                         res.json( 500, err );
                     } else {
                         res.json( result );
                     }
                 } );
+            }
             else 
                  res.json( 500, "missed params" );
         }

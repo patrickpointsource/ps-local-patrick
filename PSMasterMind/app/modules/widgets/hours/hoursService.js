@@ -746,9 +746,17 @@ function( $q, Resources ) {
 				} );
 
 			} else if( onlyProjects ) {
+
+				var updFields = [];
+				for (var attr in fields) {
+					if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
+						updFields.push(attr);
+					}
+				}
+				
 				Resources.get( 'hours/projects', {
 					projects: projects,
-					fields: fields,
+					fields: updFields,
 					// to prevent from getting values from cache
 					t: ( new Date( ) ).getMilliseconds( )
 				} ).then( function( result ) {

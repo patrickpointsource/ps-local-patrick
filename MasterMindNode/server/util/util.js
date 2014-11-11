@@ -92,11 +92,21 @@ var getPreviousWorkingDay = function(){
     return cDate;
 };
 
+
+/**
+ *  Checks whether object is a string
+ */
+
+var isString = function isString(o) {
+    return (Object.prototype.toString.call(o) === '[object String]');
+}
+
 module.exports.getIDfromResource = getIDfromResource;
 module.exports.getFullID = getFullID;
 module.exports.getTodayDate = getTodayDate;
 module.exports.getDateFromNow = getDateFromNow;
 module.exports.getPreviousWorkingDay = getPreviousWorkingDay;
 module.exports.getFormattedDate = getFormattedDate;
+module.exports.isString = isString;
 
     

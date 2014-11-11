@@ -50,8 +50,8 @@ module.exports.listHoursByPerson = function(person, callback) {
     });
 };
 
-module.exports.listHoursByProjects = function(projects, callback) {
-    dataAccess.listHoursByProjects(projects, function(err, body){
+module.exports.listHoursByProjects = function(projects, fields, callback) {
+    dataAccess.listHoursByProjects(projects, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading hours', null);

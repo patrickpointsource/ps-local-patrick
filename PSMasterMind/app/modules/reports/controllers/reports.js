@@ -871,7 +871,15 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			};
 
 			if( hoursQ[ "$or" ].length > 0 )
-				HoursService.query( hoursQ ).then( function( hoursResult ) {
+				HoursService.query( hoursQ, {
+						project: 1,
+						person: 1,
+						task: 1,
+						date: 1,
+						hours: 1,
+						description: 1
+					}
+				 ).then( function( hoursResult ) {
 					var reportHours = hoursResult.members;
 					var person;
 					var mappingEntry;

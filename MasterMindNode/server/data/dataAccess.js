@@ -5,6 +5,7 @@ var q = require('q');
 var sift = require( 'sift' );
 var config = require( '../config/config.js' );
 var dataFilter = require( './dataFilter' );
+var fieldFilter = require( './fieldFilter' );
 var util = require( '../util/util.js' );
 
 var PROJECTS_KEY = 'Projects';
@@ -74,7 +75,7 @@ var validQuery = function(q) {
     return valid;
 };
 
-var queryRecords = function( data, q, propName, resourcePrefix, postfix ) {
+var queryRecords = function( data, q, propName, resourcePrefix, postfix, fields ) {
 	var res = {
 		about: data.about
 	};
@@ -85,12 +86,12 @@ var queryRecords = function( data, q, propName, resourcePrefix, postfix ) {
 
 	if( !propName ) {
 		//res.data = _.query( data.data,  q);
-		res.data = generateProperties( sift( q, data.data ), resourcePrefix, postfix );
+		res.data = generateProperties( sift( q, data.data ), resourcePrefix, postfix, fields );
 
 		res.count = res.data.length;
 	} else {
 		//res[propName] = _.query( data.data,  q);
-		res[ propName ] = generateProperties( sift( q, data.data ), resourcePrefix, postfix );
+		res[ propName ] = generateProperties( sift( q, data.data ), resourcePrefix, postfix, fields );
 
 		res.count = res[ propName ].length;
 	}
@@ -113,7 +114,7 @@ var prepareRecords = function( data, propName, resourcePrefix, postfix ) {
 	return res;
 };
 
-var generateProperties = function( collection, resourcePrefix, postfix ) {
+var generateProperties = function( collection, resourcePrefix, postfix, fields ) {
 	var tmpId;
 
 	for( var i = 0; i < collection.length; i++ ) {
@@ -132,7 +133,9 @@ var generateProperties = function( collection, resourcePrefix, postfix ) {
 		collection[ i ].about = tmpId;
 	  }
 	}
-
+	if (fields) {
+		collection = fieldFilter.filterByFields(collection, fields);
+	}
 	return collection;
 };
 
@@ -1019,14 +1022,13 @@ var listHoursByPerson = function( person, callback ) {
 
 };
 
-var listHoursByProjects = function( projects, callback ) {
+var listHoursByProjects = function( projects, fields, callback ) {
     dbAccess.listHoursByProjects( projects, function( err, body ) {
         if( err ) {
             console.log( err );
             callback( 'error loading hours by start and end dates', null );
         } else {
-            console.log( body );
-            callback( err, queryRecords( body, {}, "members", "hours/" ) );
+            callback( err, queryRecords( body, {}, "members", "hours/", null, fields ) );
         }
     } );
 };
