@@ -54,7 +54,8 @@ public class InitialEmailReminderJob implements Job {
 					String mBox = (String) contact.get(MAILBOX_KEY);
 					Boolean isActiveContact = false;
 					
-					if (contact.has(ACTIVE_KEY) && contact.get(ACTIVE_KEY).toString().toLowerCase().equals("true"))
+					if (( givenName != null && !givenName.equals("undefined") ) && 
+							contact.has(ACTIVE_KEY) && contact.get(ACTIVE_KEY).toString().toLowerCase().equals("true"))
 						isActiveContact = true;
 					
 					JSONObject primaryRole = null;

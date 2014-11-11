@@ -84,10 +84,10 @@ function emailReminderJob(withInterestedParties) {
             						        					
 	            												var givenName = person.name.givenName;
             						        					var fullName = person.name.fullName;
-            						        					var title = "Reminder for " + fullName;
 
             						        					// send email reminders
-	            												if (isActive) {
+	            												if (mBox && givenName && isActive) {
+	            						        					var title = "Reminder for " + fullName;
 	            						        					var message = smtpHelper.getReminderMessage(givenName);
    	            						        					emailSender.sendEmailFromPsapps(mBox, ccList, title, message, function (err, info) {
    	            						        						if(err) {
@@ -99,9 +99,9 @@ function emailReminderJob(withInterestedParties) {
  	            												}
 	            												
 	            												//send debug email reminders
-	            												if (isDebug && notificationList) {
+	            												if (givenName && isDebug && notificationList) {
+	            						        					var title = "Reminder for " + fullName + " (Limited Notification List)";
 	            						        					var message = smtpHelper.getReminderDebugMessage(givenName, mBox, ccList, os.hostname());
-	            													title += " (Limited Notification List)";
 	            						        					emailSender.sendEmailFromPsapps(notificationList, null, title, message, function (err, info) {
 	            						        						if(err) {
 	            						        							console.log("error sending email to: ", err);
