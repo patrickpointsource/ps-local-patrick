@@ -1,0 +1,14 @@
+{
+    "logToFileStream": true,
+    "logFileName": "/var/www/www.log",
+    "errorFileName": "/var/www/www.err",
+    "log4jsPath": "/var/www/node/server/config/log4js_config.json",
+    "hostName": "mm.pointsource.vpc",
+    "httpsPort": 3001,
+    "appName": "MMNodeServer",
+    "webSiteUrl": "https://mastermind.pointsource.com",
+    "oauthcbbaseurl": "https://mastermind.pointsource.com/MMNodeServer",
+    "privateKeyPath": "/var/www/node/server/cert/server.key",
+    "certificatePath": "/var/www/node/server/cert/server.crt",
+    "env": "prod"
+}
