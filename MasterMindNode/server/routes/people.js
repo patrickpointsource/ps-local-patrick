@@ -300,10 +300,9 @@ router.get('/:id/accessRights', util.isAuthenticated, function(req, res) {
 
 router.get('/:id/gplus', util.isAuthenticated, function(req, res) {
     var id = req.params.id;
-    security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
+    security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function(allowed){
         if (allowed) 
         {
-
             people.getPerson(id, function(err, result){
                 if(err){
                     res.json(500, err);
