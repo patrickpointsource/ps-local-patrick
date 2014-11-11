@@ -14,14 +14,14 @@ var daemon = require("daemonize2").setup({
 	//****************
     //main: "app.js",
     //name: "mmnode",
-    //args: "configFile=config_demo.json",
+    //argv: "configFile=config_demo.json",
     //pidfile: "/var/run/mmnode.pid",
     
     //*****************
 	//stage deployment
 	//*****************
     //main: "app.js",
-    //args: "configFile=config_stage.json",
+    //argv: "configFile=config_stage.json",
     //name: "mmnode",
     //pidfile: "/var/run/mmnode.pid",
 	
@@ -29,12 +29,13 @@ var daemon = require("daemonize2").setup({
 	//production deployment
 	//***********************
     //main: "app.js",
-    //args: "configFile=config_prod.json",
+    //argv: "configFile=config_prod.json",
     //name: "mmnode",
     //pidfile: "/var/run/mmnode.pid",
 	
 	//************************
-	//generic deployment
+	//default deployment
+	//  - app.js will try to load in config.json
 	//************************
 //    main: "app.js",
 //    name: "mmnode",
