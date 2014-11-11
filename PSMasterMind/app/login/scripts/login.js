@@ -1,17 +1,19 @@
 //Define the global URLs for this app
-
+/*
 // local dev
-//window.serverLocation = 'http://localhost:8080';
-//window.clientBaseURL = 'http://0.0.0.0:9000/';
-//window.restPath = '/MasterMindStaging/rest/';
-//window.fixUrl = false;
-//window.useAdoptedServices = true;
+window.serverLocation = 'http://localhost:8080';
+window.clientBaseURL = 'http://localhost:9000/';
+window.restPath = '/MasterMindStaging/rest/';
+window.fixUrl = false;
+window.useAdoptedServices = false;
+*/
 
 //local nodejs based development
-//window.serverLocation = 'http://localhost:3000/';
-//window.restPath = '';
-//window.clientBaseURL = 'http://localhost:9000/';
-//window.fixUrl = true;
+window.serverLocation = 'http://localhost:3000/';
+window.restPath = '';
+window.clientBaseURL = 'http://localhost:9000/';
+window.fixUrl = true;
+window.useAdoptedServices = true;
 
 //new prod nodejs 
 //window.serverLocation = 'https://mastermind.pointsource.com';
@@ -101,9 +103,12 @@ var helper = (function () {
       }
       //console.log('authResult', authResult);
     },
-    
 
-    disconnectUser: function (access_token) {
+    disconnectUser: function (access_token, disconnectEntryPoint) {
+    	if (!disconnectEntryPoint) {
+    		disconnectEntryPoint = function(cb){ if (cb) cb()};
+    	}
+    	
       if (access_token) {
         var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' +
           access_token;
@@ -118,10 +123,13 @@ var helper = (function () {
           success: function (nullResponse) {
             // Do something now that user is disconnected
             // The response is always undefined.
-
-            //remove the token
-            delete window.localStorage['access_token'];
-            window.location = window.clientBaseURL+"login.html";
+        	 
+        	  disconnectEntryPoint(function() {
+        		//remove the token
+                  delete window.localStorage['access_token'];
+                  window.location = window.clientBaseURL+"login.html";
+        	  });
+            
 
             //              //Show the home page
             //              $('#welcomeContent').show();
@@ -130,14 +138,18 @@ var helper = (function () {
           error: function (e) {
             // Handle the error
             console.log(e);
-            // You could point users to manually disconnect if unsuccessful
-            // https://plus.google.com/apps
-            delete window.localStorage['access_token'];
-            window.location = window.clientBaseURL+"login.html";
+         
+            disconnectEntryPoint(function() {
+        		//remove the token
+                  delete window.localStorage['access_token'];
+                  window.location = window.clientBaseURL+"login.html";
+        	});
           }
         });
       }else{
-        window.location = window.clientBaseURL+"login.html";
+    	  disconnectEntryPoint(function() {
+    		  window.location = window.clientBaseURL+"login.html";
+    	  });
       }
     }
   };

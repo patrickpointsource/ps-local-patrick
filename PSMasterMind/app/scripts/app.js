@@ -210,8 +210,8 @@
         }
       );
     }])
-    .run(['$rootScope', '$state',
-      function ($rootScope, $state) {
+    .run(['$rootScope', '$state', 'Resources',
+      function ($rootScope, $state, Resources) {
     	//Handle browser navigate away
     	window.onbeforeunload = function (event) {
     		if($rootScope.formDirty){
@@ -287,7 +287,15 @@
           //Clear Local Storage
           localStorage.clear();
 
-          helper.disconnectUser(accessToken);
+          helper.disconnectUser(accessToken, function(cb) {
+        	  Resources.get('resetuser').then(function() {
+        		  console.log('user resetted');
+        		  cb(true);
+        	  }).catch(function(e) {
+        		  console.log('error:');
+        		  cb(false);
+        	  });
+          });
         };
 
         // fix bootstrap responsive navbar not collapsing when being clicked in single page apps

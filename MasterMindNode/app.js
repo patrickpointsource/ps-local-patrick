@@ -134,6 +134,13 @@ var allowCrossDomain = function(req, res, next) {
     }
 };
 
+var restoreUser = function(req, res, next) {
+	
+	if (req.session && req.session.user)
+		req.user = req.session.user;
+	
+	next();
+};
 
 function openLog(logfile) {
     return fs.createWriteStream(logfile, {
@@ -198,11 +205,20 @@ app.use(session({ secret: config.sessionSecret,
                       }));
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(restoreUser);
 
 // Public paths, mainly UI code
 app.use(express.static(__dirname + '/public')); 
 app.use(express.static(__dirname + '/bower_components')); 
+
+var resetUser = function(req, res) {
+	if (req.session && req.session.user)
+		delete req.session.user;
+	
+	res.json( {
+		result: true
+	} );
+}
 
 if (!useAppNames) {
     // Application paths that are protected
@@ -225,6 +241,8 @@ if (!useAppNames) {
     app.use('/securityRoles', securityRoles);
     app.use('/userRoles', userRoles);
     app.use('/upgrade', upgrade);
+    
+    app.get( '/resetuser', resetUser);
 } else {
     var  i = 0;
     
@@ -249,6 +267,8 @@ if (!useAppNames) {
         app.use('/' + appNames[i] + '/securityRoles', securityRoles);
         app.use('/' + appNames[i] + '/userRoles', userRoles);
         app.use('/' + appNames[i] + '/upgrade', upgrade);
+        
+        app.get( '/' + appNames[i] + '/resetuser', resetUser);
     }
 }
 

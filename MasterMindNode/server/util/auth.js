@@ -22,6 +22,8 @@ var isAuthenticated = function(req, res, next){
 				dataAccess.getProfileByGoogleId(user, function (err, profile) {
 					if (!err && profile && profile.isActive) {
 						req.user = user;
+						req.session.user = user;
+						
 						next();
 					}
 					else {
