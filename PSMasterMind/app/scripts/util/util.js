@@ -30,20 +30,20 @@ var Util = {
 		
 		
 		if (_.isString(person.name)) {
-		     var tmp = person.name.split(/\s+/g);
+		     var tmp = person.name.indexOf(",") == -1 ? person.name.split(/\s+/g) : person.name.split(",");
 		     
 		     tmpName = {
-		         givenName: tmp[0],
-		         familyName: tmp[1],
+		         givenName: tmp[0].trim(),
+		         familyName: tmp[1].trim(),
 		         fullName: person.name
 		     };
 		     
 		 } else if (person.name && _.isObject(person.name) && !person.name.familyName && !person.name.givenName && person.name.fullName) {
-		     var tmp = person.name.fullName.split(/\s+/g);
+		     var tmp = person.name.fullName.indexOf(",") == -1 ? person.name.fullName.split(/\s+/g) : person.name.fullName.split(",");
 		     
 		     tmpName = {
-		         givenName: tmp[0],
-		         familyName: tmp[1],
+		         givenName: tmp[0].trim(),
+		         familyName: tmp[1].trim(),
 		         fullName: person.name.fullName
 		     };
 		     
