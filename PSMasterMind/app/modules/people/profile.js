@@ -278,7 +278,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		if( profile.manager ) {
 			profile.manager = {
 				resource: profile.manager.resource,
-				name: profile.manager.name
+				name: _.isObject(profile.manager.name) ? profile.manager.name.fullName : profile.manager.name
 			};
 		};
 		
