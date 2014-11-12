@@ -1,49 +1,10 @@
 var configFileNameParam = process.argv[3] ? process.argv[3]: '';
 
 var daemon = require("daemonize2").setup({
-    //***************
-	//dev deployment
-	//***************
-	//main: "app.js",
-    //name: "mastermindnode",
-	//argv: configFileNameParam ? ("configFile=" + configFileNameParam): "configFile=config.json",
-    //pidfile: "/var/run/mastermindapp.pid",
-    //user: "www",
-    //group: "www",
-    //silent: true
-	
-	//****************
-	//demo deployment
-	//****************
-    //main: "app.js",
-    //name: "mmnode",
-	//argv: configFileNameParam ? ("configFile=" + configFileNameParam): "configFile=config_demo.json",
-    //pidfile: "/var/run/mmnode.pid",
-    
-    //*****************
-	//stage deployment
-	//*****************
-    //main: "app.js",
-	//argv: configFileNameParam ? ("configFile=" + configFileNameParam): "configFile=config_stage.json",
-    //name: "mmnode",
-    //pidfile: "/var/run/mmnode.pid",
-	
-	//***********************
-	//production deployment
-	//***********************
-    //main: "app.js",
-	//argv: configFileNameParam ? ("configFile=" + configFileNameParam): "configFile=config_prod.json",
-    //name: "mmnode",
-    //pidfile: "/var/run/mmnode.pid",
-	
-	//************************
-	//default deployment
-	//  - app.js will try to load in config.json
-	//************************
-//    main: "app.js",
-//    name: "mmnode",
-//	  argv: configFileNameParam ? ("configFile=" + configFileNameParam): "configFile=config_demo.json",
-//    pidfile: "/var/run/mmnode.pid",
+    main: "app.js",
+    name: "mmnode",
+	argv: configFileNameParam ? ("configFile=" + configFileNameParam): "configFile=config.json",
+    pidfile: "/var/run/mmnode.pid",
 });
 
 if (process.getuid() != 0) {
