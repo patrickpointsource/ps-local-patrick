@@ -38,8 +38,17 @@ var Util = {
 		         fullName: person.name
 		     };
 		     
+		 } else if (person.name && _.isObject(person.name) && !person.name.familyName && !person.name.givenName && person.name.fullName) {
+		     var tmp = person.name.fullName.split(/\s+/g);
+		     
+		     tmpName = {
+		         givenName: tmp[0],
+		         familyName: tmp[1],
+		         fullName: person.name.fullName
+		     };
+		     
 		 } else
-			 tmpName = person.name
+			 tmpName = person.name;
 			 
 		result = isSimply ? (tmpName.givenName + ' ' + tmpName.familyName): (tmpName.familyName + ', ' + tmpName.givenName);
 		
