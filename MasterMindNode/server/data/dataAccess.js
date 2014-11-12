@@ -99,16 +99,16 @@ var queryRecords = function( data, q, propName, resourcePrefix, postfix, fields 
 	return res;
 };
 
-var prepareRecords = function( data, propName, resourcePrefix, postfix ) {
+var prepareRecords = function( data, propName, resourcePrefix, postfix, fields ) {
 	var res = {
 		about: data.about
 	};
 
 	if( !propName ) {
-		res.data = generateProperties( data, resourcePrefix, postfix );
+		res.data = generateProperties( data, resourcePrefix, postfix, fields );
 		res.count = res.data.length;
 	} else {
-		res[ propName ] = generateProperties( data, resourcePrefix, postfix );
+		res[ propName ] = generateProperties( data, resourcePrefix, postfix, fields );
 		res.count = res[ propName ].length;
 	}
 	return res;
@@ -321,74 +321,73 @@ var listPeople = function( q, callback ) {
 
 };
 
-var listPeopleByRoles = function( roleIds, includeInactive, callback ) {
-
+var listPeopleByRoles = function( roleIds, includeInactive, fields, callback ) {
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterPeopleByRoles(roleIds, includeInactive, result.data), "members", "people/" ) );
+		callback( null, prepareRecords( dataFilter.filterPeopleByRoles(roleIds, includeInactive, result.data), "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterPeopleByRoles(roleIds, includeInactive, body.data), "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterPeopleByRoles(roleIds, includeInactive, body.data), "members", "people/", null, fields ) );
 		} );
 	}
 
 };
 
 
-var listPeopleByIsActiveFlag = function(isActive, callback ) {
+var listPeopleByIsActiveFlag = function(isActive, fields, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterPeopleByIsActiveFlag(result.data, isActive), "members", "people/" ) );
+		callback( null, prepareRecords( dataFilter.filterPeopleByIsActiveFlag(result.data, isActive), "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterPeopleByIsActiveFlag(body.data, isActive), "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterPeopleByIsActiveFlag(body.data, isActive), "members", "people/", null, fields ) );
 		} );
 	}
 
 };
 
-var listPeopleWithPrimaryRole = function(callback ) {
+var listPeopleWithPrimaryRole = function(fields, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterPeopleWithPrimaryRole(result.data), "members", "people/" ) );
+		callback( null, prepareRecords( dataFilter.filterPeopleWithPrimaryRole(result.data), "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterPeopleWithPrimaryRole(body.data), "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterPeopleWithPrimaryRole(body.data), "members", "people/", null, fields ) );
 		} );
 	}
 
 };
 
-var listPeopleByGroups = function(groups, callback ) {
+var listPeopleByGroups = function(groups, fields, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterPeopleByGroups(groups, result.data), "members", "people/" ) );
+		callback( null, prepareRecords( dataFilter.filterPeopleByGroups(groups, result.data), "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterPeopleByGroups(groups, body.data), "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterPeopleByGroups(groups, body.data), "members", "people/", null, fields ) );
 		} );
 	}
 
@@ -421,7 +420,7 @@ var listPeopleByPerson = function(person, callback ) {
 			
 			
 			var peopleResult = [];
-			listPeopleByIsActiveFlag(true, function(err, people) {
+			listPeopleByIsActiveFlag(true, null, function(err, people) {
 				if (err) {
 					callback(err, null);
 				}
@@ -442,7 +441,7 @@ var listPeopleByPerson = function(person, callback ) {
 };
 
 
-var listActivePeopleByAssignments = function(callback ) {
+var listActivePeopleByAssignments = function(fields, callback ) {
 	var activePeopleResources = [];
 	listAssignments(null, function (err, assignments) {
 		if (err) {
@@ -462,7 +461,7 @@ var listActivePeopleByAssignments = function(callback ) {
 				}
 			});
 			
-			listPeopleByIsActiveFlag(true, function (err, activePeople) {
+			listPeopleByIsActiveFlag(true, null, function (err, activePeople) {
 				if (err) {
 					callback(err, null);
 				} else {
@@ -476,7 +475,7 @@ var listActivePeopleByAssignments = function(callback ) {
 					});
 				
 				}
-				callback( err, prepareRecords( result, "members", "people/" ) );
+				callback( err, prepareRecords( result, "members", "people/", null, fields ) );
 //				callback (err, activePeople);
 			
 			});

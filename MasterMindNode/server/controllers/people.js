@@ -19,8 +19,8 @@ module.exports.listPeople = function(query, callback) {
     });
 };
 
-module.exports.listPeopleByRoles = function(roleIds, includeInactive, callback) {
-    dataAccess.listPeopleByRoles(roleIds, includeInactive, function(err, body){
+module.exports.listPeopleByRoles = function(roleIds, includeInactive, fields, callback) {
+    dataAccess.listPeopleByRoles(roleIds, includeInactive, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people', null);
@@ -43,8 +43,8 @@ module.exports.listPeopleByPerson = function(person, callback) {
     });
 };
 
-module.exports.listPeopleByIsActiveFlag = function(isActive, callback) {
-    dataAccess.listPeopleByIsActiveFlag(isActive, function(err, body){
+module.exports.listPeopleByIsActiveFlag = function(isActive, fields, callback) {
+    dataAccess.listPeopleByIsActiveFlag(isActive, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people', null);
@@ -54,8 +54,8 @@ module.exports.listPeopleByIsActiveFlag = function(isActive, callback) {
     });
 };
 
-module.exports.listPeopleWithPrimaryRole = function(callback) {
-    dataAccess.listPeopleWithPrimaryRole(function(err, body){
+module.exports.listPeopleWithPrimaryRole = function(fields, callback) {
+    dataAccess.listPeopleWithPrimaryRole(fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people', null);
@@ -65,8 +65,8 @@ module.exports.listPeopleWithPrimaryRole = function(callback) {
     });
 };
 
-module.exports.listPeopleByGroups = function(groups, callback) {
-    dataAccess.listPeopleByGroups(groups, function(err, body){
+module.exports.listPeopleByGroups = function(groups, fields, callback) {
+    dataAccess.listPeopleByGroups(groups, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people by groups', null);
@@ -77,8 +77,8 @@ module.exports.listPeopleByGroups = function(groups, callback) {
 };
 
 
-module.exports.listActivePeopleByAssignments = function(callback) {
-    dataAccess.listActivePeopleByAssignments(function(err, body){
+module.exports.listActivePeopleByAssignments = function(fields, callback) {
+    dataAccess.listActivePeopleByAssignments(fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading active people by assignments', null);

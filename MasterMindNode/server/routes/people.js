@@ -93,8 +93,9 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 		if (allowed) 
 		{
 			var type = req.params.type;
+			var fields = req.query.fields;
 			if (type && type == "activeAssignments") {
-			    people.listActivePeopleByAssignments(function(err, result){
+			    people.listActivePeopleByAssignments(fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -103,7 +104,7 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			    });
 			}
 			else if (type && type == "active") {
-			    people.listPeopleByIsActiveFlag(true, function(err, result){
+			    people.listPeopleByIsActiveFlag(true, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -112,7 +113,7 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			    });
 			}
 			else if (type && type == "inactive") {
-			    people.listPeopleByIsActiveFlag(false, function(err, result){
+			    people.listPeopleByIsActiveFlag(false, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -122,7 +123,7 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			}
 			else if (type && type == "byGroups") {
 				var groups = req.query.group;
-			    people.listPeopleByGroups(groups, function(err, result){
+			    people.listPeopleByGroups(groups, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -133,7 +134,7 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			else if (type && type == "byRoles") {
 				var roles = req.query.role;
 				var includeInactive = req.query.includeInactive;
-			    people.listPeopleByRoles(roles, includeInactive, function(err, result){
+			    people.listPeopleByRoles(roles, includeInactive, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -142,7 +143,7 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			    });
 			}
 			else if (type && type == "withPrimaryRole") {
-			    people.listPeopleWithPrimaryRole(function(err, result){
+			    people.listPeopleWithPrimaryRole(fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {

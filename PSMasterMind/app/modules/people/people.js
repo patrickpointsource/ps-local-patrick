@@ -343,18 +343,11 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 	 */
 	$scope.handlePeopleFilterUsingFilterResource = function( ) {
 
-		var peopleInRoleFields = {
-			resource: 1,
-			name: 1,
-			familyName: 1,
-			givenName: 1,
-			primaryRole: 1,
-			thumbnail: 1
-		};
+		var peopleInRoleFields = [ "resource", "name", "familyName", "givenName", "primaryRole", "thumbnail" ];
+		var params = {fields : peopleInRoleFields };
 
 		//Check if the filter is a valid role
 		if( $scope.roleGroups && $scope.roleGroups[ $scope.peopleFilter ] ) {
-			var params = {};
 			params.role = $scope.peopleFilter;
 			
 			Resources.get("people/bytypes/byRoles", params).then( function( result ) {
@@ -390,7 +383,6 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				} );
 			}
 			else {
-				var params = {};
 				params.role = roles;
 				if (includeInactive) {
 					params.includeInactive = includeInactive;
@@ -404,10 +396,9 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		}
 		//Otherwise just show all active people
 		else {
+			params.t = (new Date()).getMilliseconds();
 			$scope.peopleFilter = 'all';
-			Resources.get("people/bytypes/active", {
-				  t: (new Date()).getMilliseconds()
-			  }).then( function( result ) {
+			Resources.get("people/bytypes/active", params).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );

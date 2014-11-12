@@ -23,9 +23,16 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		var deferred = $q.defer( );
 
 		if (window.useAdoptedServices) {
-			Resources.get( 'people/byTypes/active', {
-				  t: (new Date()).getMilliseconds()
-			  }).then (function( result ) {
+			
+			var updFields = [];
+			for (var attr in fields) {
+				if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
+					updFields.push(attr);
+				}
+			}
+			var params = { fields : updFields };
+			params.t = (new Date()).getMilliseconds();
+			Resources.get( 'people/byTypes/active', params ).then (function( result ) {
 				deferred.resolve( result );
 			} );
 			
@@ -483,7 +490,15 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 	 
 	function getPeoplePerRoleUsingGet( role, fields ) {
-		return Resources.get( "people/byroleid/" + getIDfromResource(role) );
+
+		var updFields = [];
+		for (var attr in fields) {
+			if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
+				updFields.push(attr);
+			}
+		}
+
+		return Resources.get( "people/byroleid/" + getIDfromResource(role), { field : fields } );
 	}
 
 	/**

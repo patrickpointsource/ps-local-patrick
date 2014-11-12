@@ -6,7 +6,6 @@ var util = require('../util/util');
  */
 
 var filterByFields = function(collection, fields) {
-	
 	if (fields) {
 		var updFields;
 		if (fields instanceof Array) {
