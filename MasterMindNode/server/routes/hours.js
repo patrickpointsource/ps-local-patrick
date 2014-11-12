@@ -1,6 +1,7 @@
 'use strict';
 
 var hours = require( '../controllers/hours' );
+var people = require('../controllers/people');
 var express = require( 'express' );
 var auth = require( '../util/auth' );
 
@@ -133,24 +134,52 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
 
 } );
 
-
 router.post( '/', auth.isAuthenticated, function( req, res ) {
 
-	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
-		console.log( '\r\npost:hours:\r\n' );
+    var personResource = req.body.person ? req.body.person.resource : undefined;
+          
+          if(personResource) {
+            people.getPersonByResource(personResource, function(err, person) {
+              if(!err) {
+                if(person.googleId == req.user) {
+                  security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
+                    if( allowed ) {
+                        hours.insertHours( req.body, function( err, result ) {
+                            if( err ) {
+                                res.json( 500, err );
+                            } else {
+                                res.json( result );
+                            }
+                        } );
+                    }
+                  });
+                } else {
+                  security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editHours, function( allowed ) {
+                    console.log( '\r\npost:hours:\r\n' );
 
-		if( allowed ) {
+                    if( allowed ) {
 
-			hours.insertHours( req.body, function( err, result ) {
-				if( err ) {
-					res.json( 500, err );
-				} else {
-					res.json( result );
-				}
-			} );
-		}
-	} );
-
+                        hours.insertHours( req.body, function( err, result ) {
+                            if( err ) {
+                                res.json( 500, err );
+                            } else {
+                                res.json( result );
+                            }
+                        } );
+                    }
+                  });
+                }
+              } else {
+                var errMsg = "Can't get person by resource from hours entry.";
+                console.log(errMsg);
+                res.json( 500, errMsg );
+              }
+            });
+          } else {
+            var errMsg = "Can't get person by resource from hours entry.";
+            console.log(errMsg);
+            res.json( 500, errMsg );
+          }
 } );
 
 router.put( '/:id', auth.isAuthenticated, function( req, res ) {

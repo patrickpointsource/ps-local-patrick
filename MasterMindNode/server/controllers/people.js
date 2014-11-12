@@ -210,6 +210,30 @@ module.exports.getNameByResource = function(resource, callback) {
 			
 };
 
+module.exports.getPersonByResource = function(resource, callback) {
+    if (!resource) {
+        callback('No resource', null);
+    }
+    else {
+        util.getIDfromResource(resource, function (err, ID) {
+            if (err) {
+                callback (err, null);
+            }
+            else {
+                dataAccess.getItem(ID, function(err, person) {
+                    if (!err) {
+                        callback(null, person);
+                    }
+                    else {
+                        callback(err, null);
+                    }
+                });
+            }
+        });
+    }
+            
+};
+
 module.exports.getAccessRights = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {

@@ -30,6 +30,7 @@ module.exports.isAllowed = function(userId, response, resource, permissions, cal
           	response.json(500, err);
         }
         else if (!allowed) {
+            callback(false);
           	response.json(401, 'Content ' + resource + ' is not allowed');
         }
         else {
