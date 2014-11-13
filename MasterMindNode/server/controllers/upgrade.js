@@ -7,6 +7,7 @@ var projects = require('./projects');
 var securityRolesCtrl = require('./securityRoles');
 var userRolesCtrl = require('./userRoles');
 var google = require('googleapis');
+var security = require( '../util/security' );
 
 var inactivePeople = [ {
 	fullName : "Mike Albano",
@@ -55,35 +56,51 @@ module.exports.executeUpgrade = function(callback) {
 	syncPeople(function(err, resp) {
 		if (err) {
 			console.log("Error while sync people: " + err);
+		} else {
+		  console.log("Upgrade: People sync-ed");
 		}
+		
 
 		migrateServicesEstimate(function(err, body) {
-			if (!err) {
+			if (err) {
 				console.log("Error while migrating service estimates: " + err);
-			}
+			} else {
+              console.log("Upgrade: Services estimates migrated.");
+            }
 
 			removeProjectEstimateFields(function(err, body) {
-				if (!err) {
-					console
-							.log("Error while removing project estimate fields: "
-									+ err);
-				}
+				if (err) {
+					console.log("Error while removing project estimate fields: " + err);
+				} else {
+                  console.log("Upgrade: Project estimates fields removed.");
+                }
 				markInactivePeople(function(err, body) {
-					if (!err) {
-						console.log("Error while marking inactive people: "
-								+ err);
-					}
+					if (err) {
+					    console.log("Error while marking inactive people: " + err);
+					} else {
+                      console.log("Upgrade: Inactive people marked.");
+                    }
 
 					fixSecurityRolesIds(function(err, body) {
-						callback(null, null);
+					    if (err) {
+                          console.log("Error while fixing security roles id's: " + err);
+                        } else {
+                          console.log("Upgrade: Security(User) Roles fixed.");
+                        }
+					    security.createDeaultRoles(function(err, isOk) {
+					        if(err) {
+					            console.log(err);
+					        } else {
+                              console.log("Upgrade: Default security roles created.");
+					        }
+					        
+					        callback(null, null);
+					    });
 					});
-
 				});
 			});
 		});
-
 	});
-
 };
 
 var syncPeople = function(callback) {
@@ -236,10 +253,10 @@ var removeProjectEstimateFields = function(callback) {
 };
 
 var fixSecurityRolesIds = function(callback) {
-	securityRolesCtrl.listSecurityRoles({}, function(err, body) {
+	dataAccess.listSecurityRoles({}, function(err, body) {
 		var securityRoles = body.members;
 
-		userRolesCtrl.listUserRoles({}, function(err, body) {
+		dataAccess.listUserRoles({}, function(err, body) {
 			var userRoles = body.members;
 			var anyFound = false;
 			var roleName;
@@ -275,7 +292,7 @@ var fixSecurityRolesIds = function(callback) {
 
 				else
 					updateFn.push(_.bind(function() {
-						userRolesCtrl.insertUserRoles(userRoles[this.ind],
+						dataAccess.insertItem(userRoles[this.ind].id, userRoles[this.ind], dataAccess.USER_ROLES_KEY,
 								function(err) {
 									if (!err)
 										countUpdated += 1;
@@ -297,8 +314,11 @@ var fixSecurityRolesIds = function(callback) {
 			}
 			
 
-			if (updateFn[0])
+			if (updateFn[0]) {
 				updateFn[0]();
+			} else {
+			  callback();
+			}
 
 		});
 

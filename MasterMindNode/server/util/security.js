@@ -30,7 +30,6 @@ module.exports.isAllowed = function(userId, response, resource, permissions, cal
           	response.json(500, err);
         }
         else if (!allowed) {
-            callback(false);
           	response.json(401, 'Content ' + resource + ' is not allowed');
         }
         else {
@@ -50,11 +49,10 @@ module.exports.allowedPermissions = function(userId, resources, callback) {
 };
 
 module.exports.initialize = function(isReinitialization) {
-  createDeaultRoles(isReinitialization, function(callback) {
     console.log("Initializing security. Reinitialization: " + isReinitialization);
     var errStr = [];
     dataAccess.listSecurityRoles(null, function (err, roles) {
-        var securityRoles = roles["members"];
+        var securityRoles = roles.members;
         
         initializeSecurityRoles(securityRoles, isReinitialization, function() {
           /*acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
@@ -87,14 +85,12 @@ module.exports.initialize = function(isReinitialization) {
         
         
     });
-  });
 };
 
 var initializeSecurityRoles = function(securityRoles, isReinitialization, callback) {
   /*acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
     console.log("Daniil allows on project before initSecurityRoles: " + permissions["projects"]);
   });*/
-  
   if(isReinitialization) {
     var removedRolesCount = 0;
     for(var i = 0; i < securityRoles.length; i++) {
@@ -124,23 +120,18 @@ var initializeAllows = function(securityRoles, callback) {
   for (var i=0; i < securityRoles.length; i++) {
     var allowsCount = 0;
     var resources = securityRoles[i].resources;
-   
       for (var k=0; k < resources.length; k++) {
-          /*if(securityRoles[i].name == "Execs" && resources[k].name == "projects") {
-            console.log('allowing for Execs and project:' + resources[k].permissions);
-            acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
-              console.log("Daniil allows on project before new allowing: " + permissions["projects"]);
-            });
-          }
-          console.log("allowing " + securityRoles[i].name + " " + resources[k].name + " " + resources[k].permissions);*/
+          //console.log("allowing " + securityRoles[i].name + " " + resources[k].name + " " + resources[k].permissions);
           allow(securityRoles[i].name, resources[k].name, resources[k].permissions, function(err) {
             if(err) {
               console.log("Error while allowing permissions for groups: " + err);
             }
             allowsCount++;
-            //console.log("allows: " + allowsCount);
             if(allowsCount == allAllowsCount) {
-              //console.log("Callback reached: "+ allAllowsCount);
+              /*acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
+                console.log("Daniil allows on project before new allowing: " + permissions["projects"]);
+              });*/
+              console.log("(Re-)Allowing security roles completed.");
               callback();
             }
           });
@@ -206,11 +197,7 @@ var givePermissionToGroup = function(groupId, userRoles, roleNames) {
   }
 };
 
-var createDeaultRoles = function(isReinitialization, callback) {
-  if(isReinitialization) {
-    callback();
-    return;
-  }
+var createDeaultRoles = function(callback) {
   console.log("Creating default roles.");
   dataAccess.listSecurityRoles({}, function(err, body) {
     var securityGroups = body.members;
@@ -304,7 +291,7 @@ var createMinionUserRoles = function(callback, minionRole) {
               countChecked++;
               if(callback && countChecked == people.length) {
                 console.log("CALLBACK REACHED!");
-                callback();
+                callback(null, true);
               }
             });
           } else {
@@ -320,15 +307,15 @@ var createMinionUserRoles = function(callback, minionRole) {
               
                 countChecked++;
                 if(callback && countChecked == people.length) {
-                  console.log("CALLBACK REACHED!");
-                  callback();
+                  console.log("Every person has at least 'Minion' permissions now.");
+                  callback(null, true);
                 }
               });
             } else {
               countChecked++;
               if(callback && countChecked == people.length) {
-                console.log("CALLBACK REACHED!");
-                callback();
+                console.log("Every person now has at least 'Minion' permissions now.");
+                callback(null, true);
               }
             }
           }
@@ -370,14 +357,14 @@ var addRole = function(userId, roles, isReinitialization, callback) {
     
     if(isReinitialization) {
       acl.userRoles( userId, function(err, actualRoles) {
-        /*if(userId == "110740462676845328422") {
+        if(userId == "110740462676845328422") {
           console.log("Daniil role: " + actualRoles);
-        }*/
+        }
         if(!err) {
           acl.removeUserRoles( userId, actualRoles, function(err) {
             if(!err) {
               acl.addUserRoles(userId, roles, function(err){
-                /*if(userId == "110740462676845328422") {
+                if(userId == "110740462676845328422") {
                   console.log("Daniil new role: " + roles);
                   acl.userRoles("110740462676845328422", function(err, realRoles) {
                     console.log("Daniil actual roles after update: " + realRoles);
@@ -385,7 +372,7 @@ var addRole = function(userId, roles, isReinitialization, callback) {
                   acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
                     console.log("Daniil allows on project after refresh: " + permissions["projects"]);
                   });
-                }*/
+                }
                 if (err) {
                   console.log(err);
                   callback(err);
