@@ -61,6 +61,17 @@ module.exports.listHoursByProjects = function(projects, fields, callback) {
     });
 };
 
+module.exports.listHoursByProjectsAndDates = function(projects, startDate, endDate, fields, callback) {
+    dataAccess.listHoursByProjectsAndDates(projects, startDate, endDate, fields, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading hours', null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
 module.exports.insertHours = function(obj, callback) {
     
     var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);

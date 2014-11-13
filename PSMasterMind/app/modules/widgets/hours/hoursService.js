@@ -713,23 +713,31 @@ function( $q, Resources ) {
 
 			fields = fields ? fields : {};
 
+			var updFields = [];
+			for (var attr in fields) {
+				if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
+					updFields.push(attr);
+				}
+			}
+
 			if( !query.project && query.person && query.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
 				Resources.get( 'hours/persondates', {
 					person: query.person.resource,
 					startDate: startDate,
 					endDate: endDate,
-					fields: fields,
+					fields: updFields,
 					// to prevent from getting values from cache
 					t: ( new Date( ) ).getMilliseconds( )
 				} ).then( function( result ) {
 					deferred.resolve( result );
 				} );
-			} else if( !query.person && query.project && query.project.resource && startDate && endDate && orEmpty && onlyAndDates ) {
+			} else if( !query.person && (onlyProjects || (query.project && query.project.resource) )  && startDate && endDate && orEmpty && onlyAndDates ) {
+				var prj = (query.project && query.project.resource) ? query.project.resource : projects;
 				Resources.get( 'hours/projectdates', {
-					project: query.project.resource,
+					project: prj,
 					startDate: startDate,
 					endDate: endDate,
-					fields: fields,
+					fields: updFields,
 					// to prevent from getting values from cache
 					t: ( new Date( ) ).getMilliseconds( )
 				} ).then( function( result ) {
@@ -743,7 +751,7 @@ function( $q, Resources ) {
 
 				Resources.get( 'hours/person', {
 					person: resource,
-					fields: fields,
+					fields: updFields,
 					// to prevent from getting values from cache
 					t: ( new Date( ) ).getMilliseconds( )
 				} ).then( function( result ) {
@@ -751,14 +759,6 @@ function( $q, Resources ) {
 				} );
 
 			} else if( onlyProjects ) {
-
-				var updFields = [];
-				for (var attr in fields) {
-					if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
-						updFields.push(attr);
-					}
-				}
-				
 				Resources.get( 'hours/projects', {
 					projects: projects,
 					fields: updFields,

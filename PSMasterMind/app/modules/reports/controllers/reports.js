@@ -678,7 +678,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			hoursQ.$or = _.uniq( hoursQ.$or, function( p ) {
 				return p[ "project.resource" ];
 			} );
-
+			
 			// find by person_resource person in {roles_mapping}-[persons]
 			var findPersonOnProject = function( rolesPersonMapping, resource ) {
 				var prop;
@@ -855,6 +855,10 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				
 				return p[ "project.resource" ];
 			} );
+
+			if ($scope.reportCustomStartDate && $scope.reportCustomEndDate ) {
+				hoursQ.$and = [ { date: { $gte: $scope.reportCustomStartDate }}, { date: { $lte: $scope.reportCustomEndDate }}  ];
+			}
 
 			// find by person_resource person in {roles_mapping}-[persons]
 			var findPersonOnProject = function( rolesPersonMapping, resource ) {

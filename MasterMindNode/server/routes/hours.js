@@ -61,14 +61,19 @@ router.get( '/projectdates', auth.isAuthenticated, function( req, res ) {
 
     security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
         if( allowed ) {
-            var project = req.query[ "project" ] ? req.query[ "project" ] : "";
+            var projects = req.query[ "project" ] ? req.query[ "project" ] : "";
             var startDate = req.query[ "startDate" ] ? req.query[ "startDate" ] : "";
             var endDate = req.query[ "endDate" ] ? req.query[ "endDate" ] : "";
+            var fields = req.query[ "field" ];
              
+    		if (!_.isArray(projects)) {
+    			projects = [projects];
+    		}
+    		
             console.log( '\r\nget:projectdates:\r\n' );
 
-            if (project && startDate && endDate)
-                hours.listHoursByProjectAndDates( project, startDate, endDate, function( err, result ) {
+            if (projects && startDate && endDate)
+                hours.listHoursByProjectsAndDates( projects, startDate, endDate, fields, function( err, result ) {
                     if( err ) {
                         res.json( 500, err );
                     } else {

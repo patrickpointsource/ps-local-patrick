@@ -1032,6 +1032,17 @@ var listHoursByProjects = function( projects, fields, callback ) {
     } );
 };
 
+var listHoursByProjectsAndDates = function( projects, startDate, endDate, fields, callback ) {
+    dbAccess.listHoursByProjectsAndDates( projects, startDate, endDate, function( err, body ) {
+        if( err ) {
+            console.log( err );
+            callback( 'error loading hours by start and end dates', null );
+        } else {
+            callback( err, queryRecords( body, {}, "members", "hours/", null, fields ) );
+        }
+    } );
+};
+
 var insertItem = function( id, obj, type, callback ) {
 	if( type ) {
 		obj.form = type;
@@ -1138,6 +1149,7 @@ module.exports.listTasks = listTasks;
 module.exports.listHours = listHours;
 module.exports.listHoursByPersonAndDates = listHoursByPersonAndDates;
 module.exports.listHoursByProjectAndDates = listHoursByProjectAndDates;
+module.exports.listHoursByProjectsAndDates = listHoursByProjectsAndDates;
 module.exports.listHoursByPerson = listHoursByPerson;
 module.exports.listHoursByProjects = listHoursByProjects;
 

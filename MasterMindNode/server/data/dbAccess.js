@@ -229,7 +229,20 @@ module.exports = function(params) {
 	    });
 	};
 	
+
+	module.exports.listHoursByProjectsAndDates = function(projects, startDate, endDate, callback) {
+	    var q = {
+	    		"form": "Hours", 
+	    		"project.resource": {"$in" : projects},
+	    		"date": {"$gte": startDate, "$lte": endDate  } 
+	    };
+
+	    cloudantQuerySearch(q, function (err, body){
+	    	callback(err, { data : body.docs } );
+	    });
+	};
 	
+
 	
 	
 	module.exports.listHoursByPerson = function(callback) {
