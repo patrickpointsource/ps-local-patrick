@@ -319,8 +319,12 @@ function( $q, $timeout, Restangular ) {
 		
 		console.log('setLocalStorageValue:totalSize=' + totalSize);
 		
-		if (totalSize > 4 * 1024 * 1024)
-			cleanLocalStorageIfNeeded();
+		if (totalSize > 4 * 1024 * 1024) {
+			totalSize = unescape( encodeURIComponent( JSON.stringify( localStorage ) ) ).length;
+			
+			if (totalSize > 4 * 1024 * 1024)
+				cleanLocalStorageIfNeeded();
+		}
 		
 		if (valueLength < 1024 * 1024) {
 			localStorage[key] = value;
@@ -329,6 +333,7 @@ function( $q, $timeout, Restangular ) {
 		}
 			
 	}
+	
 	function cleanLocalStorageIfNeeded( ) {
 		var latestTime = localStorage[ "LATEST_LOCAL_STORAGE_CHECK" ];
 		var now = new Date( );
@@ -356,8 +361,8 @@ function( $q, $timeout, Restangular ) {
 				delete localStorage[ prop ];
 				i += 1;
 
-				if( i > ( countOfProps / 2 ) )
-					break;
+				//if( i > ( countOfProps / 2 ) )
+				//	break;
 			};
 			
 			totalSize = unescape( encodeURIComponent( JSON.stringify( localStorage ) ) ).length;

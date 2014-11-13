@@ -6,6 +6,8 @@ var util = require('../util/util');
  */
 
 var filterByFields = function(collection, fields) {
+	var resultCollection = [];
+	
 	if (fields) {
 		var updFields;
 		if (fields instanceof Array) {
@@ -16,18 +18,27 @@ var filterByFields = function(collection, fields) {
 		}
 
 		if (updFields) {
+			var clonedItem = null;
+			
 			_.each(collection, function(item) {
-				for (var attr in item) {
-				    if (item.hasOwnProperty(attr)) {
+				
+				clonedItem = _.clone(item);
+				
+				for (var attr in clonedItem) {
+				    if (clonedItem.hasOwnProperty(attr)) {
 						if (!_.contains(fields, attr)) {
-							delete item[attr];
+							delete clonedItem[attr];
 						}
 				    }
 				}
+				
+				resultCollection.push(clonedItem);
 			});
+			
+			
 		}
 	}
-	return collection;
+	return resultCollection;
 	
 };
 
