@@ -14,7 +14,6 @@ module.exports = function(params) {
 	var dbConnParams = {account:dbAccount, key:dbApiKey,password:dbPwd}; 
 	var Cloudant = require("cloudant")(dbConnParams);
 	
-	
 	var insertItem = function(id, item, callback){
 	    //var db = nano.db.use(database);
 		var db = Cloudant.db.use(dbName);
@@ -23,7 +22,7 @@ module.exports = function(params) {
 				callback(err, null);
 			} else {
 	        	callback(null, body);
-			}
+			};
 	    });
 	};
 	
@@ -163,14 +162,34 @@ module.exports = function(params) {
 	};
 	
 	
+	/*=================================================================================
+	 * Method performs QuerySearch over predefined indexes.
+	 * INPUT: 	JSON object of search criteria. Works almost the same as MongoDB query.
+	 * OUTPUT:	result.docs[]
+	 */
+	var cloudantQuerySearch = function(searchQuery, callback) {
+//		searchQuery = {"form": "Hours", "person.resource" : "", "project.resource": {"$in" : ["projects/52b0a6c2e4b02565de24922d"]}, "date": {"$gt":"2014-10-01"}};
+		//searchQuery = {"form": "Hours", "project.resource": {"$in" : ["projects/52b0a6c2e4b02565de24922d"]}, "date": {"$gt":"2014-10-01"}};
+		var q = {selector : searchQuery};
+		
+		var db = Cloudant.db.use(dbName);
+		db.find(q, function(err, result) {
+			if (err) {
+				callback(err, null);
+			} else {
+				callback(null, result);
+			}
+		});
+	};
+
 	
 	//=============================================================================
 	var prepareResponse = function(data, about, valProp) {
 	    var result = {};
 	    
 	    if(data) {
-	      result.data = _.map(data.rows, function(val, key) {return val[valProp]});
-	    }
+	      result.data = _.map(data.rows, function(val, key) {return val[valProp];});
+	    };
 	    
 	    result.count = result && result.data ? result.data.length: 0;
 	    result.about = about;
@@ -308,9 +327,15 @@ module.exports = function(params) {
 	    });
 	};
 	
+	module.exports.searchHoursByProjectsPeopleDate = function(query, callback){
+		cloudantQuerySearch(query, function(err, body) {
+			callback(err, prepareResponse(body, 'hours', 'doc'));
+		});
+	};
+	
 	module.exports.insertItem = insertItem;
 	module.exports.updateItem = updateItem;
 	module.exports.deleteItem = deleteItem;
 	module.exports.getItem = getItem;
-}
+};
 
