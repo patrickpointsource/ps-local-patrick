@@ -346,7 +346,7 @@ var markInactivePeople = function(callback) {
 				getInactivePersonByName(person.name, function(result) {
 					if (result) {
 						person.isActive = 'false';
-						person.lastSychronized = result.date;
+						person.lastSynchronized = result.date;
 						people.insertPerson(person, function(err, res) {
 							if (err) {
 								console.log(err);

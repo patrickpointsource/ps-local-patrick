@@ -1,0 +1,77 @@
+{
+	"type": "object",
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"id": "Hours",
+	"properties": {
+		"_id": {
+			"type": "string"
+		},
+		"_rev": {
+			"type": "string"
+		},
+		"etag": {
+			"type": "string"
+		},
+		"form": {
+			"type": "string"
+		},
+		"date": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"editMode": {
+			"type": "boolean"
+		},
+		"hours": {
+			"type": "number"
+		},
+		"person": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"resource": {
+					"type": "string"
+				}
+			},
+			"required": ["name", "resource"]
+		},
+		"task": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"resource": {
+					"type": "string"
+				}
+			},
+			"required": ["name", "resource"]
+		},
+		"project": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"resource": {
+					"type": "string"
+				}
+			},
+			"required": ["name", "resource"]
+		},
+		"created": {
+			"type": "string"
+		},
+		"resource": {
+			"type": "string"
+		},
+		"about": {
+			"type": "string"
+		}
+	},
+	"required": ["form", "hours", "person"]
+}

@@ -1,0 +1,36 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"id": "Vacations",
+	"required":true,
+	"properties":{
+		"_id": {"type":"string"},
+		"_rev": {"type":"string"},
+		"etag": {"type": ["string", "number"]},
+		"form": {"type":"string"},
+		"created": {"type": "string", "format": "date-time"},
+		"startDate": {"type":"string", "format": "date-time"},
+		"endDate": {"type":"string", "format": "date-time"},
+		"person": { "$ref" : "#/definitions/resource"},
+		"vacationManager": { "$ref" : "#/definitions/resource"},		
+		"description": {"type":"string"},
+		"type": {"type":"string"},
+		"status": {"type":"string"},
+		"resource": {"type":"string"},
+		"about": {"type":"string"},
+		"days": {"type":"string"},
+		"comment": {"type":"string"}
+	},
+	"definitions": {
+		"resource": {
+			"type":"object",
+			"properties":{
+				"resource": {"type":"string"},
+				"name": {"type":"string"}
+			},
+			"required": ["resource"]
+		}
+	},	
+	"required": ["form", "person", "vacationManager", "type", "status",
+		"startDate", "endDate"]
+}

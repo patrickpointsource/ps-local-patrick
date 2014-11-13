@@ -52,7 +52,8 @@ var devenv = {
 	            url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/',
 	            db: 'mm_db_demo'
 			}
-		}
+		},
+		dataValidation_BanUnknownProperties : true
 	}
 };
 

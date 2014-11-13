@@ -1,0 +1,45 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"id": "UserRoles",
+	"required":true,
+	"properties":{
+		"_id": {"type":"string"},
+		"_rev": {"type":"string"},
+		"etag": {"type": ["string", "number"]},
+		"form": {"type":"string"},
+		"userId": {"type":"string"},
+		"groupId": {"type":"string"},
+		"resource": {"type":"string"},
+		"about": {"type":"string"},
+		"roles": { 
+			"type": "array",
+			"items": {"$ref" : "#/definitions/resource"}
+		}
+	},
+	"definitions": {
+		"resource": {
+			"type":"object",
+			"properties":{
+				"resource": {"type":"string"},
+				"name": {"type":"string"}
+			},
+			"required": ["resource"]
+		}
+	},	
+	"required": ["form", "roles"],
+	"oneOf": [
+		{"type":"object",
+        "$schema": "http://json-schema.org/draft-04/schema",
+        "properties": {
+        	"userId": {"type":"string"}}, 
+        	"required": ["userId"]
+        },
+		{"type":"object",
+        "$schema": "http://json-schema.org/draft-04/schema",
+        "properties": {
+        	"groupId": {"type":"string"}},
+        	 "required": ["groupId"]
+        }
+	]
+}
