@@ -144,28 +144,22 @@ router.post( '/', auth.isAuthenticated, function( req, res ) {
                 if(person.googleId == req.user) {
                   security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
                     if( allowed ) {
-                        hours.insertHours( req.body, function( err, result ) {
-                            if( err ) {
-                                res.json( 500, err );
-                            } else {
-                                res.json( result );
-                            }
-                        } );
+                      insertHours(req.body, res);
                     }
+                  //if not allowed for editMyHours
+                  }, function() {
+                    security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editHours, function( allowed ) {
+                      console.log( '\r\npost:hours:\r\n' );
+                      if(allowed) {
+                        insertHours(req.body, res);
+                      }
+                    });
                   });
                 } else {
                   security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editHours, function( allowed ) {
                     console.log( '\r\npost:hours:\r\n' );
-
-                    if( allowed ) {
-
-                        hours.insertHours( req.body, function( err, result ) {
-                            if( err ) {
-                                res.json( 500, err );
-                            } else {
-                                res.json( result );
-                            }
-                        } );
+                    if(allowed) {
+                      insertHours(req.body, res);
                     }
                   });
                 }
@@ -181,6 +175,16 @@ router.post( '/', auth.isAuthenticated, function( req, res ) {
             res.json( 500, errMsg );
           }
 } );
+
+var insertHours = function(body, res) {
+  hours.insertHours( body, function( err, result ) {
+    if( err ) {
+      res.json( 500, err );
+    } else {
+      res.json( result );
+    }
+  } );
+};
 
 router.put( '/:id', auth.isAuthenticated, function( req, res ) {
 

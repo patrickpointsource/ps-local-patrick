@@ -16,21 +16,22 @@ var DEFAULT_ROLES = {
 
 module.exports.DEFAULT_ROLES = DEFAULT_ROLES;
 
-module.exports.isAllowed = function(userId, response, resource, permissions, callback) {
+module.exports.isAllowed = function(userId, response, resource, permissions, callback, notAllowedCallback) {
     
     acl.allowedPermissions(userId, resource, function(err, permissions){
       console.log(permissions);
     });
     
     acl.isAllowed(userId, resource, permissions, function(err, allowed){
-        // TODO: remove it after implementing 403 error
-        // allowed = true;
-        
         if (err) {
           	response.json(500, err);
         }
         else if (!allowed) {
-          	response.json(401, 'Content ' + resource + ' is not allowed');
+            if(notAllowedCallback) {
+              notAllowedCallback();
+            } else {
+          	  response.json(401, 'Content ' + resource + ' is not allowed');
+          	}
         }
         else {
         	callback(true);
@@ -357,21 +358,21 @@ var addRole = function(userId, roles, isReinitialization, callback) {
     
     if(isReinitialization) {
       acl.userRoles( userId, function(err, actualRoles) {
-        if(userId == "110740462676845328422") {
+        /*if(userId == "110740462676845328422") {
           console.log("Daniil role: " + actualRoles);
-        }
+        }*/
         if(!err) {
           acl.removeUserRoles( userId, actualRoles, function(err) {
             if(!err) {
               acl.addUserRoles(userId, roles, function(err){
                 if(userId == "110740462676845328422") {
-                  console.log("Daniil new role: " + roles);
+                  /*console.log("Daniil new role: " + roles);
                   acl.userRoles("110740462676845328422", function(err, realRoles) {
                     console.log("Daniil actual roles after update: " + realRoles);
                   });
                   acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
                     console.log("Daniil allows on project after refresh: " + permissions["projects"]);
-                  });
+                  });*/
                 }
                 if (err) {
                   console.log(err);
