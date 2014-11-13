@@ -65,9 +65,9 @@ var security = require('./server/util/security.js');
 var reminder = require('./server/util/reminder.js');
 
 
-var privateKey  = fs.readFileSync(appConfig.privateKeyPath, 'utf8');
-var certificate = fs.readFileSync(appConfig.certificatePath, 'utf8');
-var credentials = {key: privateKey, cert: certificate};
+//var privateKey  = fs.readFileSync(appConfig.privateKeyPath, 'utf8');
+//var certificate = fs.readFileSync(appConfig.certificatePath, 'utf8');
+//var credentials = {key: privateKey, cert: certificate};
 
 
 
