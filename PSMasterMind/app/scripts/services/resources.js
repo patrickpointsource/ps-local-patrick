@@ -14,6 +14,8 @@ function( $q, $timeout, Restangular ) {
 	var TIME_PREFIX = 'time:';
 
 	var counter = 0;
+	var totalSize = 0;
+	
 
 	/**
 	 * Service function for querying a resource member.
@@ -313,8 +315,17 @@ function( $q, $timeout, Restangular ) {
 
 	function setLocalStorageValue(key, value) {
 		// if passed value less than 1mb
-		if (unescape( encodeURIComponent(value.toString())).length < 1024 * 1024) {
+		var valueLength = value.toString().length;
+		
+		//console.log('setLocalStorageValue:totalSize=' + totalSize);
+		
+		if (totalSize > 4 * 1024 * 1024)
+			cleanLocalStorageIfNeeded();
+		
+		if (valueLength < 1024 * 1024) {
 			localStorage[key] = value;
+			
+			totalSize += valueLength;
 		}
 			
 	}
@@ -332,8 +343,8 @@ function( $q, $timeout, Restangular ) {
 	    
 		var currentSize = unescape( encodeURIComponent( JSON.stringify( localStorage ) ) ).length;
 
-		// if greater than 2mb
-		if( currentSize > 2 * 1024 * 1024 ) {
+		// if greater than 4mb
+		if( currentSize > 4 * 1024 * 1024 ) {
 			// clean half of cached properties
 			var countOfProps = (_.map( localStorage, function( l ) {
 					return l
@@ -348,6 +359,8 @@ function( $q, $timeout, Restangular ) {
 				if( i > ( countOfProps / 2 ) )
 					break;
 			};
+			
+			totalSize = unescape( encodeURIComponent( JSON.stringify( localStorage ) ) ).length;
 		}
 			
 		//console.log('storage: time:' + ((new Date()).getTime() - now.getTime()) + ':size:' + currentSize);
