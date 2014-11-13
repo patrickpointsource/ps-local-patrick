@@ -317,7 +317,7 @@ function( $q, $timeout, Restangular ) {
 		// if passed value less than 1mb
 		var valueLength = value.toString().length;
 		
-		//console.log('setLocalStorageValue:totalSize=' + totalSize);
+		console.log('setLocalStorageValue:totalSize=' + totalSize);
 		
 		if (totalSize > 4 * 1024 * 1024)
 			cleanLocalStorageIfNeeded();

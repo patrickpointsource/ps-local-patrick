@@ -9,7 +9,10 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var fs = require('fs');
+
 var https = require('https');
+var http = require('http');
+
 var cluster = require('cluster');
 
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
@@ -70,6 +73,8 @@ var credentials = {key: privateKey, cert: certificate};
 
 
 var httpsPort = appConfig.httpsPort;
+var httpPort = appConfig.httpPort;
+
 var hostName = appConfig.hostName;
 var webSiteUrl = appConfig.webSiteUrl;
 var appName = appConfig.appName;
@@ -303,20 +308,25 @@ console.log('hostName=' + hostName + ':httpsPort=' + httpsPort + ':useAppNames='
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || hostName);
 // The port on the DEA for communication with the application:
-var port = (process.env.VCAP_APP_PORT || 3000);
+var port = httpPort;
 // Start server
 app.listen(port, host);
 
+/*
 // start https server
 var httpsServer = https.createServer(credentials, app);
 
 httpsServer.listen(httpsPort, hostName);
 
+var httpServer = http.createServer( app);
+
+httpServer.listen(httpPort, hostName);
+*/
 //Initialize reminders
 reminder.initialize();
 
 // Initialize security layer
 security.initialize(false);
 
-console.log('App started on port ' + port);
+console.log('App started on httpPort=' + httpPort);
 

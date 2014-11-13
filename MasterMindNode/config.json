@@ -5,6 +5,7 @@
     "log4jsPath": "server/config/log4js_config.json",
     "hostName": "localhost",
     "httpsPort": 8443,
+    "httpPort": 8442,
     "appName": "",
     "webSiteUrl": "http://localhost:9000",
     "oauthcbbaseurl": "",
