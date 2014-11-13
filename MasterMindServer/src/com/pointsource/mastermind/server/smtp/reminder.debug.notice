@@ -9,4 +9,6 @@ https://mastermind.pointsource.us
 TO : !userMail!
 CC : !ccMail!
 
-Message sent from !computerName! for Limited Notification List
+This email was sent by a service machine. Service details follow : 
+Service name: Java service
+Machine address: !computerName!

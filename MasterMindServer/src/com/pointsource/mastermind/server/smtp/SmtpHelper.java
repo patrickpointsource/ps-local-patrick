@@ -11,7 +11,7 @@ public class SmtpHelper {
 	private static final String REMINDER_DEBUG_NOTICE = "/com/pointsource/mastermind/server/smtp/reminder.debug.notice";
 	private static final String OOO_REQUEST_NOTICE = "/com/pointsource/mastermind/server/smtp/ooorequest.notice";
 
-	public static String getReminderMessage(String userName) {
+	public static String getReminderMessage(String userName, String computerName) {
 		BufferedInputStream bis = new BufferedInputStream(SmtpHelper.class.getResourceAsStream(REMINDER_NOTICE));
 		StringBuffer buf = new StringBuffer();
 		int x;
@@ -25,6 +25,7 @@ public class SmtpHelper {
 		
 		String msg = buf.toString();
 		msg = msg.replaceAll("!userName!", userName);
+		msg = msg.replaceAll("!computerName!", computerName);
 		return msg;
 	}
 

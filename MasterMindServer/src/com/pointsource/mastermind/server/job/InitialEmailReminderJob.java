@@ -84,12 +84,14 @@ public class InitialEmailReminderJob implements Job {
 						LOGGER.log(Level.INFO, "vacation=" + vacation);
 						if ((vacation == null || vacation.length() == 0 ) && (hours == null || hours.length() == 0)) {
 							try {
+								String computerName=InetAddress.getLocalHost().getHostName();
+								
 								List<String> emails = getCCAdresses();
 								LOGGER.log(Level.INFO, "emails=" + emails);
 								LOGGER.log(Level.INFO, "isActive=" + isActive);
 								if (isActive) {
 									LOGGER.log(Level.INFO, "givenName=" + givenName);
-									String message = SmtpHelper.getReminderMessage(givenName);
+									String message = SmtpHelper.getReminderMessage(givenName, computerName);
 									LOGGER.log(Level.INFO, "message=" + message);
 									LOGGER.log(Level.INFO, "mBox=" + mBox);
 									LOGGER.log(Level.INFO, "fullName=" + fullName);
@@ -99,7 +101,6 @@ public class InitialEmailReminderJob implements Job {
 								}
 								LOGGER.log(Level.INFO, "isDebug=" + isDebug);
 								if (isDebug) {
-									String computerName=InetAddress.getLocalHost().getHostName();
 									LOGGER.log(Level.INFO, "computerName=" + computerName);
 									String ccMail = null;
 									if (emails != null) {
