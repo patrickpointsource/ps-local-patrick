@@ -1,9 +1,67 @@
 
 /**
  * Returns reminder message
+ *
+ * @param {Object} userName
+ * @param {Object} service
+ * @param {Object} host
+ * @param {Object} environment
  */
 
-var getReminderMessage = function(userName) {
+var getReminderMessage = function(userName, service, host, environment) {
+	var result = getInternalReminderMessage(userName) +
+				 getServerInformation(service, host, environment);
+	return result;
+}
+
+
+/**
+ * Returns reminder debug message
+ *
+ * @param {Object} userName
+ * @param {Object} userMail
+ * @param {Object} ccMail
+ * @param {Object} service
+ * @param {Object} host
+ * @param {Object} environment
+ */
+
+var getReminderDebugMessage = function(userName, userMail, ccMail, service, host, environment) {
+	var result = getInternalReminderMessage(userName) +
+		"<br/>" +
+		"TO : " + userMail + "<br/>" +
+		"CC : " + ccMail + "<br/>" +
+		"<br/>" +
+		getServerInformation(service, host, environment);
+	return result;
+}
+
+
+/**
+ * Returns server information
+ *
+ * @param {Object} service
+ * @param {Object} host
+ * @param {Object} environment
+ */
+
+var getServerInformation = function(service, host, environment) {
+	var result = "<br/>" + 
+		"This email was sent by a service machine. Service details follow :<br/>" + 
+		"Service name: " + service + "<br/>" +
+		"Machine address: " + host + "<br/>" + 
+		"Environment: " + environment;
+	return result;
+}
+
+
+/**
+ * Returns internal message
+ *
+ * @param {Object} userName
+ */
+
+var getInternalReminderMessage = function(userName) {
 	var result = 
 		userName +",<br/>" +
 		"<br/>" +
@@ -13,21 +71,6 @@ var getReminderMessage = function(userName) {
 		"<br/>" +
 		"For your convenience, a link to submit hours is included below:<br/>" + 
 		"https://mastermind.pointsource.us" + "<br/>";
-	return result;
-}
-
-
-/**
- * Returns reminder debug message
- */
-
-var getReminderDebugMessage = function(userName, userMail, ccMail, computerName) {
-	var result = getReminderMessage(userName) +
-		"<br/>" +
-		"TO : " + userMail + "<br/>" +
-		"CC : " + ccMail + "<br/>" +
-		"<br/>" +
-		"Message sent from " + computerName + " for Limited Notification List" + "<br/>";
 	return result;
 }
 

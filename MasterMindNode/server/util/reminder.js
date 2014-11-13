@@ -5,6 +5,7 @@ var smtpHelper = require('../util/smtpHelper');
 var emailSender = require('../util/emailSender');
 var _ = require( 'underscore' );
 var os = require('os');
+var configProperties = require('../../config.json');
 
 // Configuration properties
 var REMINDER_ACTIVE = "reminder.active";
@@ -45,8 +46,8 @@ function emailReminderJob(withInterestedParties) {
 	    	var isDebug = getPropertyValueByName(REMINDER_DEBUG, props) == "true";
 	    	var notificationList = getPropertyValueByName(REMINDER_NOTIFICATION_LIST, props);
 	    	var ccList = (withInterestedParties) ? getPropertyValueByName(REMINDER_INTERESTED_PARTIES, props) : null;
-	    	
-			console.log("isActive : " + isActive);
+
+	    	console.log("isActive : " + isActive);
 			console.log("isDebug : " + isDebug);
 			console.log("ccList : " + JSON.stringify(ccList));
 			console.log("notificationList : " + JSON.stringify(notificationList));
@@ -56,7 +57,7 @@ function emailReminderJob(withInterestedParties) {
 			}
 
 			// gets active people
-	        dataAccess.listPeopleByIsActiveFlag(true, function (err, people) {
+	        dataAccess.listPeopleByIsActiveFlag(true, null, function (err, people) {
 	        	if (!err) {
 
 	        		// gets non-billable roles
@@ -72,6 +73,7 @@ function emailReminderJob(withInterestedParties) {
 
 	        							// checks whether person had a vacation 
 	        							dataAccess.listVacationsByPeriod(person.resource, util.getPreviousWorkingDay(), util.getPreviousWorkingDay(), function (err, vacations) {
+
 	        								if (!err) {
 	        									if (!vacations || vacations.members.length == 0) {
 
@@ -79,17 +81,20 @@ function emailReminderJob(withInterestedParties) {
 	        										dataAccess.listHoursByPersonAndDates(person.resource, 
 	        												util.getPreviousWorkingDay(), 
 	        													util.getPreviousWorkingDay(), function (err, hours) {
+
 	        											if (!err) {
 	            											if (!hours || hours.members.length == 0) {
             						        					
-	            												var givenName = person.name.givenName;
-            						        					var fullName = person.name.fullName;
-
+	            												var givenName = ( person.name.givenName) ? person.name.givenName : person.accounts[0].name.givenName;
+            						        					var fullName = ( person.name.fullName) ? person.name.fullName : person.accounts[0].name.fullName;
+        	        		    	        					
             						        					// send email reminders
 	            												if (mBox && givenName && isActive) {
 	            						        					var title = "Reminder for " + fullName;
-	            						        					var message = smtpHelper.getReminderMessage(givenName);
-   	            						        					emailSender.sendEmailFromPsapps(mBox, ccList, title, message, function (err, info) {
+
+	            						        					var message = smtpHelper.getReminderMessage(givenName, "Node.JS service", os.hostname(), configProperties.env);
+
+	        	        		    	        					emailSender.sendEmailFromPsapps(mBox, ccList, title, message, function (err, info) {
    	            						        						if(err) {
    	            						        							console.log("error sending email to: ", err);
    	            						        						} else {
@@ -101,7 +106,7 @@ function emailReminderJob(withInterestedParties) {
 	            												//send debug email reminders
 	            												if (givenName && isDebug && notificationList) {
 	            						        					var title = "Reminder for " + fullName + " (Limited Notification List)";
-	            						        					var message = smtpHelper.getReminderDebugMessage(givenName, mBox, ccList, os.hostname());
+	            						        					var message = smtpHelper.getReminderDebugMessage(givenName, mBox, ccList, "Node.JS service", os.hostname(), configProperties.env);
 	            						        					emailSender.sendEmailFromPsapps(notificationList, null, title, message, function (err, info) {
 	            						        						if(err) {
 	            						        							console.log("error sending email to: ", err);
