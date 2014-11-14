@@ -285,7 +285,7 @@ var fixSecurityRolesIds = function(callback) {
 	});
 };
 
-@deprecated
+//@deprecated
 var markInactivePeople = function(callback) {
 
 	var names = [];
