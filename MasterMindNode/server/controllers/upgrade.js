@@ -9,41 +9,6 @@ var userRolesCtrl = require('./userRoles');
 var google = require('googleapis');
 var security = require( '../util/security' );
 
-var inactivePeople = [ {
-	fullName : "Mike Albano",
-	date : "20140627_000000"
-}, {
-	fullName : "Chelsea Bosworth",
-	date : "20140627_000000"
-}, {
-	fullName : "Raj Daswani",
-	date : "20140627_000000"
-}, {
-	fullName : "Vahe Kesoyan",
-	date : "20140627_000000"
-}, {
-	fullName : "Vera Veramei",
-	date : "20140627_000000"
-}, {
-	fullName : "Maksim Leshkevich",
-	date : "20140627_000000"
-}, {
-	fullName : "Lorrie Garbarz",
-	date : "20140627_000000"
-}, {
-	fullName : "Caroline Lewis",
-	date : "20140627_000000"
-}, {
-	fullName : "Phil List",
-	date : "20140627_000000"
-}, {
-	fullName : "Melissa Lyon",
-	date : "20140627_000000"
-}, {
-	fullName : "Ben Schell",
-	date : "20140627_000000"
-} ];
-
 var SERVICE_ACCOUNT_EMAIL = '141952851027-1u88oc96rik8l6islr44ha65o984tn3q@developer.gserviceaccount.com';
 var SERVICE_ACCOUNT_KEY_FILE = 'server/cert/key.pem';
 var SERVICE_SCOPE = [
@@ -74,32 +39,25 @@ module.exports.executeUpgrade = function(callback) {
 				} else {
                   console.log("Upgrade: Project estimates fields removed.");
                 }
-				markInactivePeople(function(err, body) {
-					if (err) {
-					    console.log("Error while marking inactive people: " + err);
-					} else {
-                      console.log("Upgrade: Inactive people marked.");
-                    }
 
-					fixSecurityRolesIds(function(err, body) {
-					    if (err) {
-                          console.log("Error while fixing security roles id's: " + err);
-                        } else {
-                          console.log("Upgrade: Security(User) Roles fixed.");
-                        }
-					    security.createDefaultRoles(function(err, isOk) {
-					        if(err) {
-					            console.log(err);
-					        } else {
-                              console.log("Upgrade: Default security roles created.");
-					        }
-					        
-					        security.initialize(true);
-					        
-					        callback(null, null);
-					    });
-					});
+				fixSecurityRolesIds(function(err, body) {
+					if (err) {
+						console.log("Error while fixing security roles id's: " + err);
+					} else {
+						console.log("Upgrade: Security(User) Roles fixed.");
+					}
+					security.createDefaultRoles(function(err, isOk) {
+						if(err) {
+							console.log(err);
+					    } else {
+					        console.log("Upgrade: Default security roles created.");
+				        }
+						security.initialize(true);
+				        
+				        callback(null, null);
+				    });
 				});
+				
 			});
 		});
 	});
@@ -327,6 +285,7 @@ var fixSecurityRolesIds = function(callback) {
 	});
 };
 
+@deprecated
 var markInactivePeople = function(callback) {
 
 	var names = [];
