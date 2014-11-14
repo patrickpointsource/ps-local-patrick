@@ -271,12 +271,28 @@ var listCurrentProjectsByPerson = function(resource, callback) {
 
 var checkProjectForAssignmentsAndPerson = function(project, assignments, personResource, callback) {
 
+	var cDate = new Date();
+	
 	var checked = false;
 	// checks for project in assignments
 	_.each(assignments, function (assignment) {
+		
 		if (assignment.project && 
-					assignment.project.resource == project.resource ) {
-
+				assignment.project.resource == project.resource 
+		) {
+			if (assignment.members) {
+				_.each(assignment.members, function (member) {
+					if (member.person && member.person.resource == personResource && 
+							( !member.startDate || new Date(member.startDate) <= cDate ) &&
+								( !member.endDate || new Date(member.endDate) >= cDate )
+					) {
+						checked = true;
+					} 
+					
+					
+				});
+				
+			}
 			project.status = {}
 			// checks whether required user is executive sponsor
 			if (project.executiveSponsor &&
@@ -290,7 +306,6 @@ var checkProjectForAssignmentsAndPerson = function(project, assignments, personR
         		project.status.isSalesSponsor = true;
 			}
 
-			checked = true;
 		}
 	});
 
