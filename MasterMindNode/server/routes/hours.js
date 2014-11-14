@@ -148,17 +148,10 @@ router.post( '/', auth.isAuthenticated, function( req, res ) {
               if(!err) {
                 if(person.googleId == req.user) {
                   security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
+                    console.log( '\r\npost:hours:\r\n' );
                     if( allowed ) {
                       insertHours(req.body, res);
                     }
-                  //if not allowed for editMyHours
-                  }, function() {
-                    security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editHours, function( allowed ) {
-                      console.log( '\r\npost:hours:\r\n' );
-                      if(allowed) {
-                        insertHours(req.body, res);
-                      }
-                    });
                   });
                 } else {
                   security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editHours, function( allowed ) {
@@ -175,7 +168,7 @@ router.post( '/', auth.isAuthenticated, function( req, res ) {
               }
             });
           } else {
-            var errMsg = "Can't get person by resource from hours entry.";
+            var errMsg = "Can't get person resource from hours entry.";
             console.log(errMsg);
             res.json( 500, errMsg );
           }
