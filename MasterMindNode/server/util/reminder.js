@@ -163,7 +163,13 @@ var decodeProperties = function (properties) {
 
 
 function checkRole(person, nonBillableRoles, callback) {
-	if (person.primaryRole &&  ! _.findWhere(nonBillableRoles, person.primaryRole) ) {
+	if (person.primaryRole &&  
+		! _.find(nonBillableRoles, 
+			function (role) {
+				return role.resource == person.primaryRole.resource;
+			})
+		) 
+	{
 		callback (true);
 	} else {
 		callback (false);
