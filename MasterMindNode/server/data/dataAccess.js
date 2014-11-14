@@ -909,10 +909,13 @@ var listHours = function( q, callback ) {
 
     // init onlyProjects flag
     for( var i = 0; q.$or && i < q.$or.length; i++ ) {
-        onlyProjects = onlyProjects && q.$or[ i ][ 'project.resource' ];
+        onlyProjects = onlyProjects && (q.$or[ i ][ 'project.resource' ] || q.$or[ i ][ 'task.resource' ]);
 
-        if( onlyProjects )
+        if( onlyProjects && q.$or[ i ][ 'project.resource' ])
             projects.push( q.$or[ i ][ 'project.resource' ] );
+        else if( onlyProjects && q.$or[ i ][ 'task.resource' ])
+            projects.push( q.$or[ i ][ 'task.resource' ] );
+        	
     }
     
     if (!onlyProjects && !q.$or && !q.$and && !q.person) {

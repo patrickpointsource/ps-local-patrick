@@ -154,8 +154,9 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			
 			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
 				
-				prepareAssignment(assignments);
+				assignments = prepareAssignment(assignments);
 				
+				assignments = assignments.members && assignments.members.length != undefined? assignments.members: assignments;
 				return assignments;
 			});
 		}
@@ -237,8 +238,21 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		if (_.isObject(assignments) && assignments.data && !assignments.members){
 			assignments.members = assignments.data;
 			delete assignments.data;
+		} else if (_.isObject(assignments) && assignments.project && assignments.members) {
+			assignments = {members:[{
+				id: assignments._id,
+				rev: assignments._rev,
+				project: assignments.project,
+				form: assignments.form,
+				about: assignments.about,
+				members: assignments.members,
+				
+			}]};
+					
+			
 		}
 		
+		return assignments;
 	};
 
 	/**

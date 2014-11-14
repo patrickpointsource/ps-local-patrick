@@ -77,10 +77,11 @@ function( $q, $timeout, Restangular ) {
 
 		$timeout( function( ) {
 			fetch( resource, params ).then( function( newValue ) {
-				//Save to localStorage
-				setLocalStorageValue(resource, JSON.stringify( newValue ));
-				setLocalStorageValue( TIME_PREFIX + resource, new Date( ));
-
+				//Save to localStorage if params doesn't contain temp param "t", which is used to prevent from cashing
+				if (!params || !params.t) {
+					setLocalStorageValue(resource, JSON.stringify( newValue ));
+					setLocalStorageValue( TIME_PREFIX + resource, new Date( ));
+				}
 				deferred.resolve( newValue );
 			})
 			.catch(function error(msg) {
@@ -123,10 +124,12 @@ function( $q, $timeout, Restangular ) {
 
 			if( !resolved ) {
 				fetch( resource, params ).then( function( newValue ) {
-					//Save to localStorage
-					setLocalStorageValue( key, JSON.stringify( newValue ));
-					setLocalStorageValue(TIME_PREFIX + key, new Date( ));
-
+					
+					//Save to localStorage if params doesn't contain temp param "t", which is used to prevent from cashing
+					if (!params || !params.t) {
+						setLocalStorageValue( key, JSON.stringify( newValue ));
+						setLocalStorageValue(TIME_PREFIX + key, new Date( ));
+					}
 					//console.log('GET '+resource+'='+localStorage[resource]);
 
 					deferred.resolve( newValue );

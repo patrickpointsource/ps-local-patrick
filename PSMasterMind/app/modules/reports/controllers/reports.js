@@ -215,9 +215,17 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		People.query( peopleInRoleQuery, peopleInRoleFields ).then( function( result ) {
 			//Resources.query( 'people', peopleInRoleQuery, peopleInRoleFields, function(
 			// result ) {
+			var abbr;
+			
 			$scope.peopleList = _.map( result.members, function( m ) {
+				abbr =  m.primaryRole && m.primaryRole.resource ? $scope.rolesMapping[m.primaryRole.resource]: CONSTS.UNDETERMINED_ROLE;
+				
+				if (abbr)
+					abbr = abbr.toUpperCase();
+				
 				$scope.peopleMap[ m.resource ] = {
-					name: m.name
+					name: m.name,
+					abbreviation: abbr
 				};
 
 				return {
@@ -375,7 +383,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		// get map between project resources and string statuses - {project_resource} -
 		// {"active" | "investment" | "deallost" | ...}
 		var projectStatuses = ProjectsService.getProjectsStatus( $scope.originalProjects );
-
+		
 		// filter all projects according to selected values
 		for( i = 0; i < $scope.originalProjects.length; i++ ) {
 			cond = false;
@@ -447,6 +455,12 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 		}
 
+		// put tasks into result collection
+		if (reportProject.resource && reportProject.resource.indexOf('tasks') > -1)
+			result.push(_.extend({
+				name: reportProject.value
+			}, reportProject));
+		
 		// map between {project_resource - [roles_list] - [associated_persons]}
 		var projectMapping = {};
 
@@ -891,21 +905,44 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 					
 					//init projectMapping with entries related to hours which were logged by persons who are not assigned on project
 					for (i = 0; i < reportHours.length; i ++) {
-						if(  reportHours[ i ].project && reportHours[ i ].project.resource && !projectMapping[ reportHours[ i ].project.resource ] )
-							projectMapping[ reportHours[ i ].project.resource ] = {};
-
-						if( !projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] )
-							projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] = [ ];
-
-						personEntry = _.find(projectMapping[ reportHours[ i ].project.resource ][CONSTS.UNKNOWN_ROLE], function(p) { 
-							return p.resource == reportHours[ i ].person.resource;
-						});
 						
-						if (!personEntry)
-							projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
-								resource: reportHours[ i ].person.resource,
-								name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ])
-							} );
+						// when we have project logged entry
+						if (reportHours[ i ].project) {
+							if(  reportHours[ i ].project.resource && !projectMapping[ reportHours[ i ].project.resource ] )
+								projectMapping[ reportHours[ i ].project.resource ] = {};
+	
+							if( !projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] )
+								projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] = [ ];
+	
+							personEntry = _.find(projectMapping[ reportHours[ i ].project.resource ][CONSTS.UNKNOWN_ROLE], function(p) { 
+								return p.resource == reportHours[ i ].person.resource;
+							});
+							
+							if (!personEntry)
+								projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
+									resource: reportHours[ i ].person.resource,
+									name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ])
+								} );
+						
+						// when we have logged entry for tasks
+						} else if (reportHours[ i ].task) {
+							if(  reportHours[ i ].task.resource && !projectMapping[ reportHours[ i ].task.resource ] )
+								projectMapping[ reportHours[ i ].task.resource ] = {};
+							
+							if( !projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ] )
+								projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ] = [ ];
+	
+							personEntry = _.find(projectMapping[ reportHours[ i ].task.resource ][CONSTS.UNKNOWN_ROLE], function(p) { 
+								return p.resource == reportHours[ i ].person.resource;
+							});
+							
+							if (!personEntry)
+								projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
+									resource: reportHours[ i ].person.resource,
+									name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
+									abbreviation: $scope.peopleMap[ reportHours[ i ].person.resource ].abbreviation
+								} );
+						}
 					}
 
 					for( i = 0; i < reportHours.length; i++ ) {
@@ -918,7 +955,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 							person = null;
 
 							if( projectMapping[ reportHours[ i ].task.resource ].persons )
-								person = _.find( projectMapping[ reportHours[ i ].task.resource ].persons, function( p ) {
+								person = _.find( projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ], function( p ) {
 									return p.resource == reportHours[ i ].person.resource;
 								} );
 
@@ -951,7 +988,12 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 					var roleResource;
 					// migrate initialized persons collection with associated hours for each role to
 					// each project role
-					for( i = 0; i < result.length; i++ )
+					for( i = 0; i < result.length; i++ ) {
+						
+						// add empty - will be treated as undetermined
+						if (!result[ i ].roles)
+							 result[ i ].roles = [{abbreviation: CONSTS.UNDETERMINED_ROLE}];
+					
 						for( j = 0; j < result[ i ].roles.length; j++ ) {
 							
 							if (result[i].roles[ j ]._id)
@@ -977,6 +1019,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 								result[i].roles[ j ].persons = [ ];
 
 						}
+					}
 
 					if( result.length == 0 )
 						// put tasks info
@@ -1089,7 +1132,12 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 							//line += [ '--' ].join( ',' );
 							line += $scope.hoursToCSV.stringify( record.name ) + ',';
 							line += record.roles[ j ].persons[ k ].name + ',';
-							line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': record.roles[ j ].abbreviation) + ',';
+							
+							if (record.roles[ j ].persons[ k ].abbreviation)
+								line += record.roles[ j ].persons[ k ].abbreviation + ',';
+							else
+								line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': record.roles[ j ].abbreviation) + ',';
+							
 							line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].abbreviation ) ) + ',';
 
 							line += record.roles[ j ].persons[ k ].hours[ l ].date + ',';
