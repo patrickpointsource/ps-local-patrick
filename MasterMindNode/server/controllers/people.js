@@ -246,9 +246,6 @@ module.exports.getAccessRights = function(id, callback) {
 };
 
 module.exports.getAccessRightsByGoogleId = function(id, callback) {
-    
-    security.createDefaultRoles();
-    
     var query = {googleId: id};
     dataAccess.listPeople(query, function(err, body){
         if (err) {
