@@ -186,21 +186,53 @@ var insertHours = function(body, res) {
 
 router.put( '/:id', auth.isAuthenticated, function( req, res ) {
 
-	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
-		console.log( '\r\nput:hours:\r\n' );
+    var personResource = req.body.person ? req.body.person.resource : undefined;
+    
+        if(personResource) {
+            people.getPersonByResource(personResource, function(err, person) {
+              if(!err) {
+                if(person.googleId == req.user) {
+                  security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
+                    console.log( '\r\npost:hours:\r\n' );
+                    if( allowed ) {
+                      var id = req.params.id;
 
-		if( allowed ) {
-			var id = req.params.id;
+                      hours.updateHours( id, req.body, function( err, result ) {
+                        if( err ) {
+                            res.json( 500, err );
+                        } else {
+                            res.json( result );
+                        }
+                      } );
+                    }
+                  });
+                } else {
+                  security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editHours, function( allowed ) {
+                    console.log( '\r\npost:hours:\r\n' );
+                    if(allowed) {
+                      var id = req.params.id;
 
-			hours.updateHours( id, req.body, function( err, result ) {
-				if( err ) {
-					res.json( 500, err );
-				} else {
-					res.json( result );
-				}
-			} );
-		}
-	} );
+                      hours.updateHours( id, req.body, function( err, result ) {
+                        if( err ) {
+                            res.json( 500, err );
+                        } else {
+                            res.json( result );
+                        }
+                      } );
+                    }
+                  });
+                }
+              } else {
+                var errMsg = "Can't get person by resource from hours entry.";
+                console.log(errMsg);
+                res.json( 500, errMsg );
+              }
+            });
+          } else {
+            var errMsg = "Can't get person resource from hours entry.";
+            console.log(errMsg);
+            res.json( 500, errMsg );
+          }
 
 } );
 
