@@ -570,7 +570,7 @@ angular.module('Mastermind.services.projects')
 	        return Resources.refresh('projects/' + person._id + '/current');
 		}
 		else {
-			return this.getMyExecSponsoredProjectsUsingQuery(person);
+			return this.getMyCurrentProjectsUsingQuery(person);
 		}
 	};
 	

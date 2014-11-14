@@ -271,28 +271,31 @@ var listCurrentProjectsByPerson = function(resource, callback) {
 
 var checkProjectForAssignmentsAndPerson = function(project, assignments, personResource, callback) {
 
+	var checked = false;
 	// checks for project in assignments
 	_.each(assignments, function (assignment) {
 		if (assignment.project && 
 					assignment.project.resource == project.resource ) {
-			callback(true);
+
+			project.status = {}
+			// checks whether required user is executive sponsor
+			if (project.executiveSponsor &&
+					project.executiveSponsor.resource == personResource ) {
+				project.status.isExecutiveSponsor = true;
+			}
+
+			// checks whether required user is sales sponsor
+			if (project.salesSponsor &&
+					project.salesSponsor.resource == personResource ) {
+        		project.status.isSalesSponsor = true;
+			}
+
+			checked = true;
 		}
 	});
 
-	// checks whether required user is executive sponsor
-	if (project.executiveSponsor &&
-			project.executiveSponsor.resource == personResource ) {
-		callback(true);
-	}
-
-	// checks whether required user is sales sponsor
-	if (project.salesSponsor &&
-			project.salesSponsor.resource == personResource ) {
-		callback(true);
-	}
 	
-	// if found nothing returns false
-	callback(false)
+	return callback(checked)
 }
 
 var getProfileByGoogleId = function( id, callback ) {
