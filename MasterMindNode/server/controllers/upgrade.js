@@ -10,7 +10,7 @@ var google = require('googleapis');
 var security = require( '../util/security' );
 
 var SERVICE_ACCOUNT_EMAIL = '141952851027-1u88oc96rik8l6islr44ha65o984tn3q@developer.gserviceaccount.com';
-var SERVICE_ACCOUNT_KEY_FILE = 'server/cert/key.pem';
+var SERVICE_ACCOUNT_KEY_FILE = '/var/www/node/server/cert/key.pem';
 var SERVICE_SCOPE = [
 		'https://www.googleapis.com/auth/admin.directory.user.readonly',
 		'https://www.googleapis.com/auth/admin.directory.user.readonly' ];

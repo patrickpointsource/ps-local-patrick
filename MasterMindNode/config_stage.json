@@ -9,5 +9,6 @@
     "appName": "MMNodeStaging",
     "webSiteUrl": "https://stage.mastermind.pointsource.com",
     "oauthcbbaseurl": "https://stage.mastermind.pointsource.com/MMNodeStaging",
+    "privateKeyPath": "/var/www/node/server/cert/key.pem",
     "env": "stage"
 }
