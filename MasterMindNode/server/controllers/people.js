@@ -247,7 +247,7 @@ module.exports.getAccessRights = function(id, callback) {
 
 module.exports.getAccessRightsByGoogleId = function(id, callback) {
     
-    security.createDeaultRoles();
+    security.createDefaultRoles();
     
     var query = {googleId: id};
     dataAccess.listPeople(query, function(err, body){

@@ -49,6 +49,7 @@ module.exports.allowedPermissions = function(userId, resources, callback) {
     });
 };
 
+// false - start up call, true - reinitialization
 module.exports.initialize = function(isReinitialization) {
     console.log("Initializing security. Reinitialization: " + isReinitialization);
     var errStr = [];
