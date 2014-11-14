@@ -9,7 +9,5 @@
     "appName": "MMNodeServer",
     "webSiteUrl": "https://mastermind.pointsource.com",
     "oauthcbbaseurl": "https://mastermind.pointsource.com/MMNodeServer",
-    "privateKeyPath": "/var/www/node/server/cert/server.key",
-    "certificatePath": "/var/www/node/server/cert/server.crt",
     "env": "prod"
 }

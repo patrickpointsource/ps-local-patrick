@@ -8,7 +8,5 @@
     "appName": "",
     "webSiteUrl": "http://localhost:9000",
     "oauthcbbaseurl": "",
-    "privateKeyPath": "server/cert/server.key",
-    "certificatePath": "server/cert/server.crt",
     "env": "dev"
 }

@@ -8,8 +8,6 @@ var smtpTransport = require('nodemailer-smtp-transport');
 var fs = require('fs');
 
 module.exports = function(params) {
-	var privateKey = fs.readFileSync(params.appConfig.privateKeyPath, 'utf8');
-	var certificate = fs.readFileSync(params.appConfig.certificatePath, 'utf8');
 
 	var options = {
 		from : "MasterMind Notice <system@pointsourcellc.com>",
@@ -21,11 +19,7 @@ module.exports = function(params) {
 			pass : "ps@pp$777"
 		},
 		// ignoreTLS: false,
-		secure : true,
-		tls : {
-			key : privateKey,
-			cert : certificate
-		}
+		secureConnection: true, // use SSL
 	// debug: true
 	};
 
