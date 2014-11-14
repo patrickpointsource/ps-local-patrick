@@ -10,5 +10,5 @@
     "oauthcbbaseurl": "",
     "privateKeyPath": "server/cert/server.key",
     "certificatePath": "server/cert/server.crt",
-    "env": "stage"
+    "env": "dev"
 }
