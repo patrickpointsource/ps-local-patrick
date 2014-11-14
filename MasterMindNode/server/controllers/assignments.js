@@ -85,13 +85,38 @@ var insertAssignment = function(assignmentId, obj, callback) {
 
 var listCurrentAssigments = function(callback) {
 	
-    dataAccess.listCurrentAssigments(function(err, body){
+    dataAccess.listCurrentAssigments(function(err, listCurrentAssigments){
         if (err) {
             console.log(err);
             callback("error loading current assignments", null);
         } else {
             //console.log(body);
-            callback(null, body);
+        	projects.listProjects(null, function (err, projectsResult) {
+				if (err) {
+					callback (err, null);
+				}
+				var projects = projectsResult.data;
+				
+				for( var index in listCurrentAssigments ) {
+					var assignments = listCurrentAssigments[ index ];
+					//Collate projects with assignments
+					for( var i = 0; i < assignments.length; i++ ) {
+						var assignment = assignments[ i ];
+
+						//Find the matching project
+						for( var j = 0; j < projects.length; j++ ) {
+							var project = projects[ j ];
+							if( assignment.project && project.resource == assignment.project.resource ) {
+								assignment.project = project;
+								break;
+							}
+						}
+					}
+				}
+
+				callback(null, listCurrentAssigments);
+
+			});
         }
     });
 

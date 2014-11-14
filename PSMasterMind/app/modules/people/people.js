@@ -3,8 +3,8 @@
 /**
  * Controller for handling creation of Roles.
  */
-angular.module( 'Mastermind.controllers.people' ).controller( 'PeopleCtrl', [ '$scope', '$state', '$location', '$filter', '$q', 'Resources', 'People', 'ProjectsService', 'ngTableParams',
-function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsService, TableParams ) {
+angular.module( 'Mastermind.controllers.people' ).controller( 'PeopleCtrl', [ '$scope', '$state', '$location', '$filter', '$q', 'Resources', 'People', 'ProjectsService', 'AssignmentService', 'ngTableParams',
+function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsService, AssignmentService, TableParams ) {
 	$scope.loc = window.location;
 	var getTableData = function( ) {
 		return new TableParams( params, {
@@ -472,11 +472,8 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				var cnt = 0;
 				var assignments = activeAssignments[ person ];
 				if (assignments) {
-					for( var i = 0; i < assignments.length; i++ ) {
-						var assignment = assignments[ i ];
-						cnt += assignment.hoursPerWeek;
-					}
-					activePercentages[ person ] = Math.round( 100 * cnt / CONSTS.HOURS_PER_WEEK );
+					var hoursRateValue = AssignmentService.getAssignmentsHoursRate( assignments );
+					activePercentages[ person ] = Math.round( 100 * hoursRateValue / CONSTS.HOURS_PER_WEEK );
 				}
 			}
 

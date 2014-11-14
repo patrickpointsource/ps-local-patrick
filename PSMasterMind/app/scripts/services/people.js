@@ -374,7 +374,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 
 	function getPeopleCurrentAssignmentsUsingGet() {
-		return Resources.get( 'assignments/bytypes/currentAssignments');
+		return Resources.refresh( 'assignments/bytypes/currentAssignments');
 	}
 	
 	/**

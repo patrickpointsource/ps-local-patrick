@@ -8,7 +8,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 	$scope.moment = moment;
 	var UNSPECIFIED = 'Unspecified';
-	var HOURS_PER_WEEK = 45;
 	$scope.projects = [ ];
 	$scope.hoursTasks = [ ];
 	$scope.execProjects = [ ];
@@ -782,19 +781,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                         }
                     } );
 
-                    var cnt = 0;
-                    for( var i = 0; i < $scope.myAssignments.length; i++ ) {
-                        var myAssignment = $scope.myAssignments[ i ];
-                        var now = moment( );
-                        var start = moment( myAssignment.startDate );
-                        if( start.isBefore( now ) || start.isSame( now, 'day' ) ) {
-                            if( !myAssignment.endDate || moment( myAssignment.endDate ).isAfter( now ) || moment( myAssignment.endDate ).isSame( now, 'day' ) ) {
-                                cnt += myAssignment.hoursPerWeek;
-                            }
-                        }
-                    }
-                    $scope.hoursRateValue = cnt;
-                    $scope.hoursRateFromProjects = Math.round( 100 * cnt / HOURS_PER_WEEK );
+                    $scope.hoursRateValue = AssignmentService.getAssignmentsHoursRate( $scope.myAssignments );
+                    $scope.hoursRateFromProjects = Math.round( 100 * $scope.hoursRateValue / CONSTS.HOURS_PER_WEEK );
                 }
             } );
 	};

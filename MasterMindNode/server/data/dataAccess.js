@@ -503,7 +503,7 @@ var listCurrentAssigments = function(callback ) {
 								member.startDate <= util.getTodayDate() &&
 									( !member.endDate || member.endDate > util.getTodayDate() ) ) {
 							var personResource = member.person.resource;
-							
+							member.project = assignment.project;
 							if( result.hasOwnProperty( personResource ) ) {
 								result[ personResource ].push( member );
 							} else {

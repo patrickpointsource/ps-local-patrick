@@ -293,6 +293,25 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		return myAssignments;
 	};      
 	
+	this.getAssignmentsHoursRate = function( assignments ) {
+		var cnt = 0;
+        for( var i = 0; i < assignments.length; i++ ) {
+            var assignment = assignments[ i ];
+            var now = moment( );
+            if (assignment.project) {
+            	if ( !assignment.project.endDate || moment( assignment.project.endDate ).isAfter( now ) ) {
+            		var start = moment( assignment.startDate );
+            		if( start.isBefore( now ) || start.isSame( now, 'day' ) ) {
+            			if( !assignment.endDate || moment( assignment.endDate ).isAfter( now ) || moment( assignment.endDate ).isSame( now, 'day' ) ) {
+            				cnt += assignment.hoursPerWeek;
+            			}
+            		}
+            	}
+            }
+        }
+       return cnt;
+	};     
+	
 	this.getMyCurrentAssignmentsUsingQuery = function( person ) {
 		var deferred = $q.defer( );
 		var startDateQuery = this.getToday( );
