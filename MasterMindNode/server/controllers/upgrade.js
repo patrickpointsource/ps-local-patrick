@@ -87,12 +87,14 @@ module.exports.executeUpgrade = function(callback) {
                         } else {
                           console.log("Upgrade: Security(User) Roles fixed.");
                         }
-					    security.createDeaultRoles(function(err, isOk) {
+					    security.createDefaultRoles(function(err, isOk) {
 					        if(err) {
 					            console.log(err);
 					        } else {
                               console.log("Upgrade: Default security roles created.");
 					        }
+					        
+					        security.initialize(true);
 					        
 					        callback(null, null);
 					    });

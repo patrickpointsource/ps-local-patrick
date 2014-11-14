@@ -198,7 +198,7 @@ var givePermissionToGroup = function(groupId, userRoles, roleNames) {
   }
 };
 
-var createDeaultRoles = function(callback) {
+var createDefaultRoles = function(callback) {
   console.log("Creating default roles.");
   dataAccess.listSecurityRoles({}, function(err, body) {
     var securityGroups = body.members;
@@ -239,7 +239,7 @@ var createDeaultRoles = function(callback) {
   });
 };
 
-module.exports.createDeaultRoles = createDeaultRoles;
+module.exports.createDefaultRoles = createDefaultRoles;
 
 var createGroup = function(name, actionAfter) {
   var group = { 
