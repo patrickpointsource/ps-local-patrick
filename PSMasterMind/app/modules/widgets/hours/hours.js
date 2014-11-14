@@ -1,5 +1,5 @@
-angular.module( 'Mastermind' ).controller( 'HoursCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'HoursService', 'TasksService', 'RolesService',
-function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, TasksService, RolesService ) {
+angular.module( 'Mastermind' ).controller( 'HoursCtrl', [ '$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'HoursService', 'TasksService', 'RolesService', 'AssignmentService',
+function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, TasksService, RolesService, AssignmentService ) {
 
 	$scope.checkForFutureness = function( date ) {
 		var a = moment( );
@@ -286,9 +286,15 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						if( found )
 							delete found.isOtherProj;
 					}
+					
+					AssignmentService.getMyCurrentAssignments($scope.getCurrentPerson()).then(function (assignments)
+					{
+			        	$scope.myAssignments = assignments;
+			                
+			            $scope.sortProjectTaskList();
+					});
 
 					$scope.projectTasksList = $scope.projectTasksList.concat( projectsWithMyAssignments );
-					$scope.projectsWithMyAssignments = projectsWithMyAssignments;
 
 					$scope.sortProjectTaskList( );
 				} );
@@ -734,32 +740,25 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	{
 		hourEntry.expectedHours = null;
 
-		if (selectedProject && selectedProject.resource && selectedProject.resource.indexOf("projects/") == 0 && selectedProject.roles)
+		if (selectedProject && selectedProject.resource && selectedProject.resource.indexOf("projects/") == 0)
 		{
 			var currentUser = $scope.getCurrentPerson();
 			
-			if ($scope.projectsWithMyAssignments) {
-				for (var i = 0, projCount = $scope.projectsWithMyAssignments.length; i < projCount; i++) {
-					var proj = $scope.projectsWithMyAssignments[i];
-
-					if (selectedProject.resource == proj.about && proj.roles) {
-						for (var j = 0, roleCount = proj.roles ? proj.roles.length : 0; j < roleCount; j++)
+			for (var i = 0, assignmentCount = $scope.myAssignments.length; i < assignmentCount; i++)
+			{
+				var assignment = $scope.myAssignments[i];
+				
+				if (assignment.project && assignment.project.about == selectedProject.resource)
+					for (var j = 0, memberCount = assignment.members.length; j < memberCount; j++)
+					{
+						var member = assignment.members[j];
+							
+						if (member.person && member.person.resource == currentUser.about)
 						{
-							var role = proj.roles[j];
-
-							for (var k = 0, assigneeCount = role.originalAssignees ? role.originalAssignees.length : 0; k < assigneeCount; k++)
-							{
-								var assignee = role.originalAssignees[k];
-
-								if (assignee.person && assignee.person.resource == currentUser.about)
-								{
-									hourEntry.expectedHours = Math.round(assignee.hoursPerWeek / 5);
-									return;
-								}
-							}
+							hourEntry.expectedHours = Math.round(member.hoursPerWeek / 5);
+							return;
 						}
 					}
-				}
 			}
 		}
 	}
