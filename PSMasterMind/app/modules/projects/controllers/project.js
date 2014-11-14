@@ -3091,7 +3091,8 @@ else if( role.percentageCovered == 0 )
 			}
 			// future proj
 			else {
-				result.setMonth( projStart.getMonth( ) + offset );
+				projStart.setMonth( projStart.getMonth( ) + offset );
+				result = projStart;
 			}
 
 			return result;
