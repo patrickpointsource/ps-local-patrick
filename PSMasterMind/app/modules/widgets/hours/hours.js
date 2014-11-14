@@ -738,26 +738,28 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		{
 			var currentUser = $scope.getCurrentPerson();
 			
-			for (var i = 0, projCount = $scope.projectsWithMyAssignments.length; i < projCount; i++)
-			{
-				var proj = $scope.projectsWithMyAssignments[i];
-				
-				if (selectedProject.resource == proj.about)
-					for (var j = 0, roleCount = proj.roles ? proj.roles.length : 0; j < roleCount; j++)
-					{
-						var role = proj.roles[j];
-						
-						for (var k = 0, assigneeCount = role.originalAssignees ? role.originalAssignees.length : 0; k < assigneeCount; k++)
+			if ($scope.projectsWithMyAssignments) {
+				for (var i = 0, projCount = $scope.projectsWithMyAssignments.length; i < projCount; i++) {
+					var proj = $scope.projectsWithMyAssignments[i];
+
+					if (selectedProject.resource == proj.about && proj.roles) {
+						for (var j = 0, roleCount = proj.roles ? proj.roles.length : 0; j < roleCount; j++)
 						{
-							var assignee = role.originalAssignees[k];
-							
-							if (assignee.person && assignee.person.resource == currentUser.about)
+							var role = proj.roles[j];
+
+							for (var k = 0, assigneeCount = role.originalAssignees ? role.originalAssignees.length : 0; k < assigneeCount; k++)
 							{
-								hourEntry.expectedHours = Math.round(assignee.hoursPerWeek / 5);
-								return;
+								var assignee = role.originalAssignees[k];
+
+								if (assignee.person && assignee.person.resource == currentUser.about)
+								{
+									hourEntry.expectedHours = Math.round(assignee.hoursPerWeek / 5);
+									return;
+								}
 							}
 						}
 					}
+				}
 			}
 		}
 	}
