@@ -19,7 +19,7 @@ module.exports = function(params) {
 			pass : "ps@pp$777"
 		},
 		// ignoreTLS: false,
-		secureConnection: true // use SSL
+		secure : true // use SSL
 	// debug: true
 	};
 
