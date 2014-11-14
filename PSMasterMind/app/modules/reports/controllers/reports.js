@@ -456,7 +456,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		}
 
 		// put tasks into result collection
-		if (reportProject.resource && reportProject.resource.indexOf('tasks') > -1)
+		if (reportProject && reportProject.resource && reportProject.resource.indexOf('tasks') > -1)
 			result.push(_.extend({
 				name: reportProject.value
 			}, reportProject));
