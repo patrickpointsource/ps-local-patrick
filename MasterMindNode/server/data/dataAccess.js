@@ -117,6 +117,11 @@ var prepareRecords = function( data, propName, resourcePrefix, postfix, fields )
 var generateProperties = function( collection, resourcePrefix, postfix, fields ) {
 	var tmpId;
 
+	for( var i = collection.length - 1; i >= 0; i-- ) {
+		  if(!collection[ i ])
+			  collection.splice(i, 1);  
+	}
+		  
 	for( var i = 0; i < collection.length; i++ ) {
 	  if(collection[ i ]._id) {
 		if( _.isObject( collection[ i ]._id ) )

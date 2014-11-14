@@ -759,7 +759,10 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		};
 
 		for( var i = 0; i < roles.length; i++ ) {
-			assignmentsMap[ roles[ i ]._id ] = [ ];
+			if (!assignmentsMap[ roles[ i ]._id ])	
+				assignmentsMap[ roles[ i ]._id ] = [ ];
+			else
+				roles[ i ]._duplicated = true;
 		};
 
 		var role;
@@ -777,13 +780,15 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		var currentResult;
 
 		for( var i = 0; i < roles.length; i++ ) {
-			currentResult = this.calculateSingleRoleCoverage( roles[ i ], assignmentsMap[ roles[ i ]._id ], analysePastCoverage );
-
-			roles[ i ].percentageCovered = currentResult.percentageCovered;
-			roles[ i ].hoursExtraCovered = currentResult.hoursExtraCovered;
-			roles[ i ].hoursNeededToCover = currentResult.hoursNeededToCover;
-			roles[ i ].daysGap = currentResult.daysGap;
-			roles[ i ].coveredKMin = currentResult.coveredKMin;
+			if (!roles[ i ]._duplicated) {
+				currentResult = this.calculateSingleRoleCoverage( roles[ i ], assignmentsMap[ roles[ i ]._id ], analysePastCoverage );
+	
+				roles[ i ].percentageCovered = currentResult.percentageCovered;
+				roles[ i ].hoursExtraCovered = currentResult.hoursExtraCovered;
+				roles[ i ].hoursNeededToCover = currentResult.hoursNeededToCover;
+				roles[ i ].daysGap = currentResult.daysGap;
+				roles[ i ].coveredKMin = currentResult.coveredKMin;
+			}
 		}
 
 		//return result;

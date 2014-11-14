@@ -116,9 +116,13 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 			}
 		} ).then( function( data ) {
 		    // use data from existing assignment entry
-		    assignment.members = data.members;
-		    assignment._id = data._id;
-		    assignment._rev = data._rev;
+			
+			if (data.members && data.members.length > 0) {
+				assignment.members = data.members;
+				assignment._id = data._id;
+				assignment._rev = data._rev;
+			} else
+				assignment.members = [];
 		    
 		    assignment.members.push(newMember);
 		    
