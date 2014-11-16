@@ -45,6 +45,12 @@ require('./server/data/dbAccess')({
 	env: appConfig.env
 });
 
+//Setup routes
+require('./server/controllers/upgrade')({
+	privateKeyPath: appConfig.privateKeyPath,
+	accountEmail: appConfig.accountEmail
+});
+
 //Routes
 var projects = require('./server/routes/projects');
 var people = require('./server/routes/people');
