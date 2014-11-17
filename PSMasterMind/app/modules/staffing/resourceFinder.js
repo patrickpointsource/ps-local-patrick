@@ -108,6 +108,8 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 				resource: project.resource
 			}
 		};
+		
+		$scope.hideSpinner = false;
 
         // initially load all list of assignments  (collection of memebers), then add to it our new member
 		AssignmentService.getAssignmentsByPeriod( "all", {
@@ -154,6 +156,8 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 				        $scope.people.splice( ind, 1 );
 				    }
 				}
+				
+				$scope.hideSpinner = true;
 			} );
 
 		} );

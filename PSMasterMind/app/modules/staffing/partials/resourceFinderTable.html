@@ -101,7 +101,7 @@
 		</div>
 		<div class="col-xs-12 col-sm-1 res-people-prop res-person-btn-assign">
 		  <div>
-		    <div><button class="btn" ng-click="assignProject(projectToAssignTo, person, filterStartDate, filterEndDate)">Assign</button></div>
+		    <div><button class="btn" ng-if="hideSpinner" ng-click="assignProject(projectToAssignTo, person, filterStartDate, filterEndDate)">Assign</button></div>
 	      </div>
 		</div>
 	</div>
