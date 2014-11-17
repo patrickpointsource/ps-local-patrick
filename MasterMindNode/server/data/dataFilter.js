@@ -511,11 +511,11 @@ var checkVacation = function(vacation, people, startDate, endDate, callback) {
 		
 	}
 			
-	if (checked && startDate && (new Date(vacation.endDate) < startDate )) {
+	if (checked && startDate && (new Date(vacation.endDate) < (new Date(startDate)) )) {
 		checked = false;
 	}
 	
-	if (checked && endDate && (new Date(vacation.startDate) > endDate ) ) {
+	if (checked && endDate && (new Date(vacation.startDate) > (new Date(endDate)) ) ) {
 		checked = false;
 	}
 
