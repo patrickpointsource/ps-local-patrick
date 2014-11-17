@@ -3055,43 +3055,43 @@ else if( role.percentageCovered == 0 )
 	};
 
 	$scope.inMonth = function( month, year ) {
-		var nextMonth = month === 11 ? 0 : ( month + 1 ), nextYear = month === 11 ? ( year + 1 ) : year, startDay = new Date( year, month, 1 ), endDay = new Date( nextYear, nextMonth, 0 );
+		var nextMonth = month === 11 ? 0 : ( month + 1 ), nextYear = month === 11 ? ( year + 1 ) : year, startDay = new moment([ year, month, 1 ]), endDay = new moment([ nextYear, nextMonth, 0 ]);
 
 		// If the project start day is before the last day of this month
 		// and its end date is after the first day of this month.
-		var projectStarted = new Date( $scope.project.startDate ) <= endDay;
-		var projectEnded = $scope.project.endDate && new Date( $scope.project.endDate ) <= startDay;
+		var projectStarted = new moment( $scope.project.startDate ) <= endDay;
+		var projectEnded = $scope.project.endDate && new moment( $scope.project.endDate ) <= startDay;
 		var returnValue = projectStarted && !projectEnded;
 		return returnValue;
 	};
 
 	$scope.getTimelineStartDate = function( offset ) {
-		var result = new Date( );
+		var result = new moment( );
 
 		if( $scope.project ) {
-			var today = new Date( );
-			var projStart = new Date( $scope.project.startDate );
+			var today = new moment( );
+			var projStart = new moment( $scope.project.startDate );
 			// done or active
 			if( projStart <= today ) {
 				if( $scope.project.endDate ) {
-					var projEnd = new Date( $scope.project.endDate );
+					var projEnd = new moment( $scope.project.endDate );
 					//done proj
 					if( projEnd < today ) {
-						result.setMonth( projEnd.getMonth( ) - 11 + offset );
+						result.set('month', projEnd.get('month') - 11 + offset );
 					}
 					// active proj
 					else {
-						result.setMonth( today.getMonth( ) - 5 + offset );
+						result.set('month', today.get('month') - 5 + offset );
 					}
 				}
 				// active proj
 				else {
-					result.setMonth( today.getMonth( ) - 5 + offset );
+					result.set('month', today.get('month') - 5 + offset );
 				}
 			}
 			// future proj
 			else {
-				projStart.setMonth( projStart.getMonth( ) + offset );
+				projStart.set('month', projStart.get('month') + offset );
 				return projStart;
 			}
 
@@ -3115,16 +3115,16 @@ else if( role.percentageCovered == 0 )
 	$scope.isActiveMonth = function( offset ) {
 		if( $scope.project ) {
 			var startDate = $scope.getTimelineStartDate( offset );
-			return $scope.inMonth( startDate.getMonth( ), startDate.getFullYear( ) );
+			return $scope.inMonth( startDate.get('month'), startDate.get('year') );
 		}
 	};
 
 	$scope.isCurrentMonth = function( offset ) {
 		if( $scope.project ) {
 			var startDate = $scope.getTimelineStartDate( offset );
-			var today = new Date( );
+			var today = new moment( );
 
-			return startDate.getMonth( ) == today.getMonth( ) && startDate.getFullYear( ) == today.getFullYear( );
+			return startDate.get('month') == today.get('month') && startDate.get('year') == today.get('year');
 		}
 	};
 
@@ -3132,9 +3132,9 @@ else if( role.percentageCovered == 0 )
 		if( $scope.project ) {
 			var startDate = $scope.getTimelineStartDate( offset );
 
-			var today = new Date( );
+			var today = new moment( );
 
-			return today < startDate;
+			return today.isBefore(startDate);
 		}
 	};
 	var monthNamesShort = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
@@ -3142,7 +3142,7 @@ else if( role.percentageCovered == 0 )
 	$scope.getMonthName = function( offset ) {
 		if( $scope.project ) {
 			var firstMonthDate = $scope.getTimelineStartDate( offset );
-			var startDateMonth = firstMonthDate.getMonth( );
+			var startDateMonth = firstMonthDate.get('month');
 			if( startDateMonth > 11 ) {
 				startDateMonth = startDateMonth - 12;
 			}
