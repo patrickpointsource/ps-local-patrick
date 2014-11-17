@@ -113,18 +113,41 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 
 
 router.post( '/', auth.isAuthenticated, function( req, res ) {
-	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editVacations, function( allowed ) {
-		if( allowed ) {
-			vacations.insertVacation( req.body, function( err, result ) {
-				if( err ) {
-					res.json( 500, err );
-				} else {
-					res.json( result );
-				}
-			} );
-		}
-	} );
+    var personResource = req.body.person ? req.body.person.resource : undefined;
+    people.getPersonByResource(personResource, function(err, person) {
+      if(!err) {
+        if(person.googleId == req.user) {
+          security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editMyVacations, function( allowed ) {
+            if( allowed ) {
+              addVacation(req, res);
+            }
+          } );
+        } else {
+          security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editVacations, function( allowed ) {
+            if( allowed ) {
+              addVacation(req, res);
+            }
+          } );
+        }
+      } else {
+        var errMsg = "Can't get person from vacation entry.";
+        console.log(errMsg);
+        res.json( 500, errMsg );
+      }
+    });
 } );
+
+var addVacation = function(req, res) {
+  
+      vacations.insertVacation( req.body, function( err, result ) {
+        if( err ) {
+          res.json( 500, err );
+        } else {
+          res.json( result );
+        }
+      } );
+
+};
 
 router.delete ( '/:id', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editMyVacations, function( allowed ) {
