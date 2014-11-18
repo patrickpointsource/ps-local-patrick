@@ -144,7 +144,7 @@ var generateProperties = function( collection, resourcePrefix, postfix, fields )
 	return collection;
 };
 
-var listProjects = function( q, callback ) {
+var listProjects = function( q, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	var data = null;
@@ -152,7 +152,7 @@ var listProjects = function( q, callback ) {
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
 
-		callback( null, queryRecords( result, q, null, "projects/" ) );
+		callback( null, queryRecords( result, q, null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
@@ -160,56 +160,56 @@ var listProjects = function( q, callback ) {
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 
-			callback( err, queryRecords( body, q, null, "projects/" ) );
+			callback( err, queryRecords( body, q, null, "projects/", null, fields ) );
 		} );
 	}
 
 };
 
-var listProjectsByExecutiveSponsor = function( roleResource, callback ) {
+var listProjectsByExecutiveSponsor = function( roleResource, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, result.data), null, "projects/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, result.data), null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, body.data), null, "projects/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, body.data), null, "projects/", null, fields ) );
 		} );
 	}
 
 };
 
 
-var listProjectsBetweenDatesByTypesAndSponsors = function( startDate, endDate, types, isCommited, roleResources, callback ) {
+var listProjectsBetweenDatesByTypesAndSponsors = function( startDate, endDate, types, isCommited, roleResources, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "projects/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, body.data), null, "projects/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, body.data), null, "projects/", null, fields ) );
 		} );
 	}
 
 };
 
 
-var listProjectsByStatuses = function( statuses, callback ) {
+var listProjectsByStatuses = function( statuses, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, result.data), null, "projects/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, result.data), null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
@@ -217,18 +217,18 @@ var listProjectsByStatuses = function( statuses, callback ) {
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 			
-			callback( err, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, body.data), null, "projects/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, body.data), null, "projects/", null, fields ) );
 		} );
 	}
 
 };
 
-var listProjectsByResources = function( resources, callback ) {
+var listProjectsByResources = function( resources, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsByResources(resources, result.data), null, "projects/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsByResources(resources, result.data), null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
@@ -236,20 +236,20 @@ var listProjectsByResources = function( resources, callback ) {
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 			
-			callback( err, prepareRecords( dataFilter.filterProjectsByResources(resources, body.data), null, "projects/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsByResources(resources, body.data), null, "projects/", null, fields ) );
 		} );
 	}
 
 };
 
-var listCurrentProjectsByPerson = function(resource, callback) {
+var listCurrentProjectsByPerson = function(resource, fields, callback) {
 
 	listAssignmentsByPerson( resource, function( err, assignments ) {
 		if( err ) {
 			callback( err, null );
 		} else {
 									
-			listProjectsByStatuses("unfinished", function( err, unfinishedProjects ) {
+			listProjectsByStatuses("unfinished", null, function( err, unfinishedProjects ) {
 				if( err ) {
 					callback( err, null );
 				} else {
@@ -261,7 +261,7 @@ var listCurrentProjectsByPerson = function(resource, callback) {
 							}
 						});							
 					});
-					callback(null, prepareRecords( currentProjects , null, "projects/" ) );
+					callback(null, prepareRecords( currentProjects , null, "projects/", null, fields ) );
 				}
 			} );
 										

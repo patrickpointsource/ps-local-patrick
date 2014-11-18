@@ -215,7 +215,7 @@ module.exports = function(params) {
 	};
 	
 	var migrateServicesEstimate = function(callback) {
-		projects.listProjects(null, function(err, body) {
+		projects.listProjects(null, null, function(err, body) {
 			if (err) {
 				callback('error loading projects', null);
 			} else {
@@ -237,7 +237,7 @@ module.exports = function(params) {
 	};
 	
 	var removeProjectEstimateFields = function(callback) {
-		projects.listProjects(null, function(err, body) {
+		projects.listProjects(null, null, function(err, body) {
 			if (err) {
 				callback('error loading projects', null);
 			} else {

@@ -18,8 +18,8 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
 			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-			
-			projects.listProjects( query, function( err, result ) {
+			var fields = req.query.fields;
+			projects.listProjects( query, fields, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
@@ -36,8 +36,9 @@ router.get( '/executiveSponsor/:executiveSponsor', auth.isAuthenticated, functio
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
 			var executiveSponsor = req.params.executiveSponsor;
+			var fields = req.query.fields;
 			if( executiveSponsor ) {
-				projects.listProjectsByExecutiveSponsor( util.getFullID( executiveSponsor, 'people' ), function( err, result ) {
+				projects.listProjectsByExecutiveSponsor( util.getFullID( executiveSponsor, 'people' ), fields, function( err, result ) {
 					if( err ) {
 						res.json( 500, err );
 					} else {
@@ -56,7 +57,8 @@ router.get( '/:id/executiveSponsor', auth.isAuthenticated, function( req, res ) 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
-			projects.listProjectsByExecutiveSponsor( util.getFullID( id, 'people' ), function( err, projects ) {
+			var fields = req.query.fields;
+			projects.listProjectsByExecutiveSponsor( util.getFullID( id, 'people' ), fields, function( err, projects ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
@@ -72,7 +74,8 @@ router.get( '/:id/current', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
-			projects.listCurrentProjectsByPerson( util.getFullID( id, 'people' ), function( err, projects ) {
+			var fields = req.query.fields;
+			projects.listCurrentProjectsByPerson( util.getFullID( id, 'people' ), fields, function( err, projects ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
@@ -92,10 +95,10 @@ router.get( '/byperson/:id/:type', auth.isAuthenticated, function( req, res ) {
 			var type = req.params.type;
 			var id = req.params.id;
 			if( id && type ) {
-				
+				var fields = req.query.fields;
 				// returns current projects for required user
 				if( type && type == "current" ) {
-					projects.listCurrentProjectsByPerson( util.getFullID( id, 'people' ), function( err, projects ) {
+					projects.listCurrentProjectsByPerson( util.getFullID( id, 'people' ), fields, function( err, projects ) {
 						if( err ) {
 							res.json( 500, err );
 						} else {
@@ -118,9 +121,10 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 		if (allowed) 
 		{
 			var type = req.params.type;
+			var fields = req.query.fields;
 			if (type && type == "projectsByResources") {
 				var resource = req.query.resource;
-				projects.listProjectsByResources(resource, function( err, result ) {
+				projects.listProjectsByResources(resource, fields, function( err, result ) {
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -130,7 +134,7 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 			}
 			else if (type && type == "projectsByStatuses") {
 				var status = req.query.status;
-				projects.listProjectsByStatuses( status, function( err, result ) {
+				projects.listProjectsByStatuses( status, fields, function( err, result ) {
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -144,7 +148,7 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 				var types = req.query.type;
 				var isCommited = req.query.isCommited;
 				var roleResources = req.query.roleResource;
-				projects.listProjectsBetweenDatesByTypesAndSponsors( startDate, endDate, types, isCommited, roleResources, function( err, result ) {
+				projects.listProjectsBetweenDatesByTypesAndSponsors( startDate, endDate, types, isCommited, roleResources, fields, function( err, result ) {
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -214,9 +218,10 @@ router.get( '/bystatus/:status', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
 			var statusString = req.params.status;
+			var fields = req.query.fields;
 			if( statusString ) {
 				var statuses = statusString.split( ',' );
-				projects.listProjectsByStatuses( statuses, function( err, result ) {
+				projects.listProjectsByStatuses( statuses, fields, function( err, result ) {
 					if( err ) {
 						res.json( 500, err );
 					} else {

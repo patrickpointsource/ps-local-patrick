@@ -7,94 +7,67 @@ var _ = require( 'underscore' );
 var validation = require( '../data/validation.js' );
 var assignments = require( '../controllers/assignments.js' );
 
-var listProjects = function(query, callback) {
-    dataAccess.listProjects(query, function(err, body){
+var listProjects = function(query, fields, callback) {
+    dataAccess.listProjects(query, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading projects', null);
         } else {
-            var result = body.data;
-            for (var i in result) {
-       		    result[i].resource = "projects/" + result[i]._id;
-        		result[i].about = "projects/" + result[i]._id;
-            }
             callback(null, body);
         }
     });
 };
 
 
-var listProjectsByExecutiveSponsor = function(executiveSponsor, callback) {
-    dataAccess.listProjectsByExecutiveSponsor(executiveSponsor, function(err, body){
+var listProjectsByExecutiveSponsor = function(executiveSponsor, fields, callback) {
+    dataAccess.listProjectsByExecutiveSponsor(executiveSponsor, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading listProjectsByExecutiveSponsor', null);
         } else {
-            var result = body.data;
-            for (var i in result) {
-       		    result[i].resource = "projects/" + result[i]._id;
-        		result[i].about = "projects/" + result[i]._id;
-            }
             callback(null, body);
         }
     });
 };
 
-var listProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, types, isCommited, roleResources, callback) {
-    dataAccess.listProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, function(err, body){
+var listProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, types, isCommited, roleResources, fields, callback) {
+    dataAccess.listProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading listProjectsBetweenDatesByTypesAndSponsors', null);
         } else {
             var result = body.data;
-            body.about = "projects";
-            for (var i in result) {
-       		    result[i].resource = "projects/" + result[i]._id;
-        		result[i].about = "projects/" + result[i]._id;
-            }
             callback(null, body);
         }
     });
 };
 
-var listProjectsByStatuses = function(statuses, callback) {
-    dataAccess.listProjectsByStatuses(statuses, function(err, body){
+var listProjectsByStatuses = function(statuses, fields, callback) {
+    dataAccess.listProjectsByStatuses(statuses, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading listProjectsByStatuses', null);
         } else {
-            var result = body.data;
-            body.about = "projects";
-            for (var i in result) {
-       		    result[i].resource = "projects/" + result[i]._id;
-        		result[i].about = "projects/" + result[i]._id;
-            }
             callback(null, body);
         }
     });
 };
 
 
-var listProjectsByResources = function(resources, callback) {
-    dataAccess.listProjectsByResources(resources, function(err, body){
+var listProjectsByResources = function(resources, fields, callback) {
+    dataAccess.listProjectsByResources(resources, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading listProjectsByResources', null);
         } else {
-            var result = body.data;
-            body.about = "projects";
-            for (var i in result) {
-       		    result[i].resource = "projects/" + result[i]._id;
-        		result[i].about = "projects/" + result[i]._id;
-            }
             callback(null, body);
         }
     });
 };
 
-var listCurrentProjectsByPerson = function(resource, callback) {
+var listCurrentProjectsByPerson = function(resource, fields, callback) {
 
-	dataAccess.listCurrentProjectsByPerson( resource, function( err, projects ) {
+	dataAccess.listCurrentProjectsByPerson( resource, fields, function( err, projects ) {
 		if( err ) {
 			callback( err, null );
 		} else {

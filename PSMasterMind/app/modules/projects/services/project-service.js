@@ -299,12 +299,13 @@ angular.module('Mastermind.services.projects')
      */
     function getAllProjectsUsingGet(onSuccess){
         // terms will be checked on backend and loaded only for allowed persons
-        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description:1, terms:1};
+        var params = {};
+        params.fields = ["resource", "name", "startDate", "endDate", "roles", "customerName", "committed", "type", "description", "terms"]
 		if (onSuccess) {
-	        return Resources.refresh('projects', null, apFields).then(onSuccess);
+	        return Resources.refresh('projects', params).then(onSuccess);
 		}
 		else {
-	        return Resources.refresh('projects', null, apFields);
+	        return Resources.refresh('projects', params);
 		}
     };
    
@@ -384,13 +385,14 @@ angular.module('Mastermind.services.projects')
      */
     this.getProjectsByStatuses = function (statuses, onSuccess){
     	var statusString = (statuses instanceof Array) ? statuses.join(',') : statuses;
-        var fields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description: 1};
+        var params = {};
+    	params.fields = [ "resource", "name", "startDate", "endDate", "roles", "customerName", "committed", "type", "description" ];
         
         if (onSuccess) {
-			Resources.refresh( 'projects/bystatus/' + statusString).then(onSuccess);
+			Resources.refresh( 'projects/bystatus/' + statusString, params).then(onSuccess);
   		}
   		else {
-			return Resources.refresh( 'projects/bystatus/' + statusString);
+			return Resources.refresh( 'projects/bystatus/' + statusString, params);
 	  		
   		}
     };
@@ -535,7 +537,9 @@ angular.module('Mastermind.services.projects')
     
     this.getMyExecSponsoredProjects = function(person) {
 	    if (window.useAdoptedServices) {
-	        return Resources.refresh('projects/' + person._id + '/executiveSponsor');
+	    	var params = {};
+	        params.fields = [ "resource", "name", "startDate", "endDate", "roles", "customerName", "committed", "type", "description" ];
+	        return Resources.refresh('projects/' + person._id + '/executiveSponsor', params);
 		}
 		else {
 			return this.getMyExecSponsoredProjectsUsingQuery(person);
@@ -567,7 +571,9 @@ angular.module('Mastermind.services.projects')
      */
     this.getMyCurrentProjects = function(person) {
 	    if (window.useAdoptedServices) {
-	        return Resources.refresh('projects/' + person._id + '/current');
+	    	var params = {};
+	        params.fields = [ "resource", "name", "startDate", "endDate", "roles", "customerName", "committed", "type", "description" ];
+	        return Resources.refresh('projects/' + person._id + '/current', params);
 		}
 		else {
 			return this.getMyCurrentProjectsUsingQuery(person);
@@ -1267,9 +1273,9 @@ angular.module('Mastermind.services.projects')
  
  		var queryParams = {};
  		var statusString = "active,backlog,pipeline,investment,deallost";   	
-        var fields = {resource:1,startDate:1,endDate:1,committed:1,type:1};
+        queryParams.fields = ["resource", "startDate", "endDate", "committed", "type"];
 
-        Resources.get('projects/bystatus/' + statusString, queryParams, fields).then( function(results){
+        Resources.get('projects/bystatus/' + statusString, queryParams).then( function(results){
         	var projects = results.data;
         	var ret = {active:0,backlog:0,pipeline:0,investment:0,deallost:0};
         	for(var i = 0; i < projects.length;i++){
