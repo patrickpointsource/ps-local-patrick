@@ -386,7 +386,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 						var tmpDate = new Date( assignment.endDate );
 						tmpDate = new Date( tmpDate.getTime( ) + endDelta );
 						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-						assignment.startDate = getShortDate( tmpDate );
+						assignment.endDate = getShortDate( tmpDate );
 					}
 
 					// if endDate was set or removed, change assignment endDate
@@ -415,7 +415,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 					var tmpDate = new Date( assignment.endDate );
 					tmpDate = new Date( tmpDate.getTime( ) + endDelta );
 					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-					assignment.startDate = getShortDate( tmpDate );
+					assignment.endDate = getShortDate( tmpDate );
 				}
 
 				// if endDate was set or removed, change assignment endDate
