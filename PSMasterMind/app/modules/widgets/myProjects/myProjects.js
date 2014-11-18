@@ -13,8 +13,11 @@ angular.module('Mastermind').controller('MyProjectsCtrl', ['$scope', '$state', '
 
       AssignmentService.getMyCurrentAssignments($scope.me).then(function(assignments) {
     	$scope.myProjects = [];
+    	$scope.myAssignments = [];
+    	
     	_.each(assignments, function (assign) {
     		$scope.myProjects.push(assign.project);
+    		$scope.myAssignments.push(assign);
     	});
     	
         if($scope.myProjects.length>0){
@@ -68,6 +71,19 @@ angular.module('Mastermind').controller('MyProjectsCtrl', ['$scope', '$state', '
 
         $scope.hoursProjects = myProjects.concat(otherProjects);
 
+        Resources.get( 'roles' ).then( function( result ) {
+    		var roleGroups = {};
+    		//Save the list of role types in the scope
+    		$scope.rolesFilterOptions = result.members;
+    		//Get list of roles to query members
+    		for( var i = 0; i < result.members.length; i++ ) {
+    			var role = result.members[ i ];
+    			var resource = role.resource;
+    			roleGroups[ resource ] = role;
+    		}
+    		$scope.roleGroups = roleGroups;
+    	} );
+        
       });
     });
 
