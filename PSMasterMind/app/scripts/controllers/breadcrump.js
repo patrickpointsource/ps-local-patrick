@@ -108,6 +108,10 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		if( $scope.state.name == 'reports' ) {
 			$scope.breadCrumpParts.push( "Reports" );
 		}
+		
+		if( $scope.state.name == 'reportsshell' ) {
+			$scope.breadCrumpParts.push( "Reports Dashboard" );
+		}
 
 		if( $scope.state.name == 'projects.show' || $scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit' ) {
 			$scope.breadCrumpParts = [ 'Projects' ];

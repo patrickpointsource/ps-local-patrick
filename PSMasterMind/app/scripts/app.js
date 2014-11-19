@@ -128,6 +128,11 @@
           url: '/reports',
           templateUrl: 'modules/reports/views/reports.html',
           controller: 'ReportsCtrl'
+        })
+      .state('reportsshell', {
+          url: '/reportsshell',
+          templateUrl: 'modules/reports/views/reportsShell.html',
+          controller: 'ReportsCtrl'
         });
      }])
     .config(['$compileProvider',
