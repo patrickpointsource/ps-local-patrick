@@ -1367,9 +1367,10 @@ angular.module('Mastermind.services.projects')
     		}
     		
     		var roleList = roles.members;
-    		Resources.get( "people/bytypes/active", {
-    			  t: (new Date()).getMilliseconds()
-    		  }).then( function( result ) {
+    		var params = {};
+    		params.t = (new Date()).getMilliseconds();
+    		params.fields = ["name", "primaryRole", "partTimeHours"];
+    		Resources.get( "people/bytypes/active", params ).then( function( result ) {
 
         		var total = 0;
         		var roleType = null;
