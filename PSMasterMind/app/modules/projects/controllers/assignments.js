@@ -252,14 +252,35 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	
 	$scope.sortAssignees = function (role, personResource)
 	{
-		var assignees = _.sortBy($scope.roleGroups[role.type.resource].assiganble, function (a) { return a.title; });
-		var assignee = _.find(assignees, function (a) { return a.resource == personResource; });
+		var assignees = $scope.roleGroups[role.type.resource].assiganble.slice();
+		var theAssignee = _.find(assignees, function (a) { return a.resource == personResource; });
 		
-		if (assignee != null)
+		if (theAssignee == null)
+			return _.sortBy(assignees, function (a) { return a.title; });
+		
+		assignees.splice(assignees.indexOf(theAssignee), 1);
+		
+		assignees = _.map(assignees, function (a)
 		{
-			assignees.splice(assignees.indexOf(assignee), 1);
-			assignees.unshift(assignee);
-		}
+			var order = 2;
+			
+			if (a.primaryRole && theAssignee.primaryRole && a.primaryRole.resource == theAssignee.primaryRole.resource)
+				order = 0;
+			else if (a.groups && theAssignee.groups)
+				for (var i = 0, count = theAssignee.groups.length; i < count; i++)
+					if (a.groups.indexOf(theAssignee.groups[i]) != -1)
+					{
+						order = 1;
+						break;
+					}
+			
+			return { order: order, assignee: a };
+		});
+		
+		assignees = _.sortBy(assignees, function (a) { return a.order + a.assignee.title; });
+		assignees = _.map(assignees, function (a) { return a.assignee; });
+		
+		assignees.unshift(theAssignee);
 		
 		return assignees;
 	};
