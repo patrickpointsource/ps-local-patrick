@@ -367,35 +367,35 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	};
 
 	$scope.shiftAssignments = function( role, startDelta, endDelta ) {
-		for( var i = 0; i < $scope.project.roles.length; i++ ) {
-			for( var j = 0; j < $scope.project.roles[ i ].assignees.length; j++ ) {
-				var assignment = $scope.project.roles[i].assignees[ j ];
-				if( assignment.role && assignment.role.resource.indexOf( role._id ) > -1 ) {
-					// if start date changed
-					if( startDelta != 0 ) {
-						// shift start
-						var tmpDate = new Date( assignment.startDate );
-						tmpDate = new Date( tmpDate.getTime( ) + startDelta );
-						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-						assignment.startDate = getShortDate( tmpDate );
-					}
+		
+		for( var i = 0; i < $scope.roleAssigneesMap[ role._id ].length; i++ ) {
+			var assignment = $scope.roleAssigneesMap[ role._id ][ i ];
+			if( assignment ) {
+				// if start date changed
+				if( startDelta != 0 ) {
+					// shift start
+					var tmpDate = new Date( assignment.startDate );
+					tmpDate = new Date( tmpDate.getTime( ) + startDelta );
+					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
+					assignment.startDate = getShortDate( tmpDate );
+				}
 
-					// if end date changed
-					if( endDelta != 0 ) {
-						//shift end
-						var tmpDate = new Date( assignment.endDate );
-						tmpDate = new Date( tmpDate.getTime( ) + endDelta );
-						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-						assignment.endDate = getShortDate( tmpDate );
-					}
+				// if end date changed
+				if( endDelta != 0 ) {
+					//shift end
+					var tmpDate = new Date( assignment.endDate );
+					tmpDate = new Date( tmpDate.getTime( ) + endDelta );
+					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
+					assignment.endDate = getShortDate( tmpDate );
+				}
 
-					// if endDate was set or removed, change assignment endDate
-					if( ( role.endDate && !assignment.endDate ) || ( !role.endDate && assignment.endDate ) ) {
-						assignment.endDate = role.endDate;
-					}
+				// if endDate was set or removed, change assignment endDate
+				if( ( role.endDate && !assignment.endDate ) || ( !role.endDate && assignment.endDate ) ) {
+					assignment.endDate = role.endDate;
 				}
 			}
 		}
+		
 
 		for( var i = 0; $scope.projectAssignments && i < $scope.projectAssignments.members.length; i++ ) {
 			var assignment = $scope.projectAssignments.members[ i ];
@@ -559,13 +559,6 @@ else if( role.percentageCovered == 0 )
 					resource: me.about
 				};
 
-                // removing assignees before saving project to db
-                for(var i = 0; i < $scope.project.roles; i++) {
-                  if($scope.project.roles[i].assignees) {
-                    delete $scope.project.roles[i].assignees;
-                  }
-                }
-
 				ProjectsService.save( $scope.project ).then( function( result ) {
 				    console.log("saved: " + result._id);
 					$rootScope.hideModals( );
@@ -676,7 +669,7 @@ else if( role.percentageCovered == 0 )
         $scope.messages = validationResult.messages;
         
         for( var i = 0; i < $scope.project.roles.length; i++ )
-        	$scope.messages = $scope.messages.concat( AssignmentService.validateAssignments( $scope.project, $scope.project.roles[ i ].assignees ) );
+        	$scope.messages = $scope.messages.concat( AssignmentService.validateAssignments( $scope.project,  $scope.roleAssigneesMap[ $scope.project.roles[ i ]._id ] ) );
         
 		return $scope.messages.length == 0;
 	};
@@ -933,7 +926,8 @@ else if( role.percentageCovered == 0 )
 	 * Whenever the roles:assignments:change event is fired from a child controller,
 	 * handle it by updating the supplied role's assignments in our project.
 	 */
-	$scope.$on( 'roles:assignments:change', function( event, index, role ) {
+	$scope.$on( 'roles:assignments:change', function( event, roleAssigneesMap ) {
+		$scope.roleAssigneesMap = roleAssigneesMap;
 		$scope.refreshProjectAssignments( );
 		$scope.updateHoursPersons( );
 	} );
@@ -1431,17 +1425,22 @@ else if( role.percentageCovered == 0 )
 				//See if the user had a role in the project at the time of the record
 				for( var j = 0; j < projectRoles.length; j++ ) {
 					var role = projectRoles[ j ];
-					//Found a role for this person
-					if( role.assignee && ithHoursRecord.person.resource === role.assignee.resource ) {
-						var roleStartDate = new Date( role.startDate );
-						var hoursDate = new Date( ithHoursRecord.date );
-						//record was after role start date
-						if( hoursDate >= roleStartDate ) {
-							var roleEndDate = role.endDate ? new Date( role.endDate ) : null;
-							//Record was before the end of role date
-							if( !roleEndDate || roleEndDate >= hoursDate ) {
-								ithHoursRecord.role = Resources.deepCopy( role );
-								defers.push( Resources.resolve( ithHoursRecord.role.type ) );
+					if ( $scope.roleAssigneesMap[ role._id ] ) {
+						for( var k = 0; k < $scope.roleAssigneesMap[ role._id ].length; k++ ) {
+							var assignee = $scope.roleAssigneesMap[ role._id ][k];
+							//Found a role for this person
+							if( assignee && ithHoursRecord.person.resource === assignee.resource ) {
+								var roleStartDate = new Date( role.startDate );
+								var hoursDate = new Date( ithHoursRecord.date );
+								//record was after role start date
+								if( hoursDate >= roleStartDate ) {
+									var roleEndDate = role.endDate ? new Date( role.endDate ) : null;
+									//Record was before the end of role date
+									if( !roleEndDate || roleEndDate >= hoursDate ) {
+										ithHoursRecord.role = Resources.deepCopy( role );
+										defers.push( Resources.resolve( ithHoursRecord.role.type ) );
+									}
+								}
 							}
 						}
 					}
@@ -1571,7 +1570,7 @@ else if( role.percentageCovered == 0 )
 			var assignees = [ ];
 
 			for( var i = 0; i < $scope.project.roles.length; i++ ) {
-				assignees = assignees.concat( _.map( $scope.project.roles[ i ].assignees, function( a ) {
+				assignees = assignees.concat( _.map( $scope.roleAssigneesMap[ $scope.project.roles[ i ]._id ], function( a ) {
 					return a.person;
 				} ) );
 			}
@@ -1666,7 +1665,7 @@ else if( role.percentageCovered == 0 )
 		var entry;
 
 		for( var i = 0; i < $scope.project.roles.length; i++ ) {
-			assignees = $scope.project.roles[ i ].assignees;
+			assignees = $scope.roleAssigneesMap[ $scope.project.roles[ i ]._id ];
 			entry = _.find( assignees, function( a ) {
 				if( a.person && a.person.resource == person.resource )
 					return true;
@@ -1685,7 +1684,7 @@ else if( role.percentageCovered == 0 )
         var entry;
 
         for( var i = 0; i < $scope.project.roles.length; i++ ) {
-            assignees = $scope.project.roles[ i ].assignees;
+            assignees =$scope.roleAssigneesMap[ $scope.project.roles[ i ]._id ];
             entry = _.find( assignees, function( a ) {
                 if( a.person && a.person.resource == person.resource )
                     return true;
@@ -2147,8 +2146,10 @@ else if( role.percentageCovered == 0 )
 		for( var i = 0; roles && i < roles.length; i++ ) {
 			var role = roles[ i ];
 			
-			for(var j = 0; j < role.assignees.length; j++) {
-			  $scope.projectPeopleResources.push(role.assignees[j].person);
+			if ($scope.roleAssigneesMap[ role._id ]){
+				for(var j = 0; j < $scope.roleAssigneesMap[ role._id ].length; j++) {
+					$scope.projectPeopleResources.push($scope.roleAssigneesMap[ role._id ][j].person);
+				}
 			}
 			
 			var roleType = $scope.roleGroups[ role.type.resource ];
@@ -3018,7 +3019,7 @@ else if( role.percentageCovered == 0 )
 							if (h1.person.resource > h2.person.resource)
 								return 1;
 							else if (h1.person.resource < h2.person.resource)
-									return -1
+									return -1;
 							else if( new Date( h1.date ) > new Date( h2.date ) )
 								return 1;
 							else if( new Date( h1.date ) < new Date( h2.date ) )

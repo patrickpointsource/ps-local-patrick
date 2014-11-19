@@ -29,8 +29,11 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		value: "all"
 	} ];
 
+	$scope.roleAssigneesMap = [];
+	$scope.originalAssigneesMap = [];
+		
 	$scope.selectedAssignmentsFilter = "all";
-
+	
 	$scope.currentTabStates = [ {
 		tabId: $state.params.tabId,
 		edit: $state.params.edit
@@ -51,23 +54,39 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	};
 
 	$scope.addNewAssignmentToRole = function( index, role ) {
-		var coverageInfo = AssignmentService.calculateSingleRoleCoverage( role, role.assignees );
+		var coverageInfo = AssignmentService.calculateSingleRoleCoverage( 
+				role,  
+				$scope.roleAssigneesMap[ role._id ] ? $scope.roleAssigneesMap[ role._id ] : []
+			);
 
-		role.assignees.push( AssignmentService.create( {
+		var assignment = AssignmentService.create( {
 			startDate: role.startDate,
 			endDate: role.endDate,
 			//percentage: $scope.getDefaultRolePercentage(role)
 			hoursPerWeek: $scope.getDefaultRoleHoursPerWeek( coverageInfo )
-		} ) );
+		} );
+		
+		if( $scope.roleAssigneesMap.hasOwnProperty( role._id ) ) {
+			$scope.roleAssigneesMap[ role._id ].push( assignment );
+		} else {
+			$scope.roleAssigneesMap[ role._id ] = [ assignment ];
+		}
+		
+		$scope.projectAssignment.members = _.values($scope.roleAssigneesMap);
 	};
 
 	$scope.removeAssignmentFromRole = function( index, role, parent ) {
-		if( role.assignees.length > 1 )
-			role.assignees.splice( index, 1 );
-		else if( role.assignees.length == 1 && role.assignees[ 0 ].person && role.assignees[ 0 ].person.resource ) {
-			role.assignees[ 0 ].person = {};
+		
+		if( $scope.roleAssigneesMap.hasOwnProperty( role._id ) ) {
+			if( $scope.roleAssigneesMap[ role._id ].length > 1 )
+				$scope.roleAssigneesMap[ role._id ].splice( index, 1 );
+			else {
+				$scope.roleAssigneesMap[ role._id ] = [];
+			}
 		}
 
+		$scope.projectAssignment.members = _.values($scope.roleAssigneesMap);
+		
 		$( "#roleAssignmentDelete" + parent + index ).collapse( 'hide' );
 	};
 
@@ -108,11 +127,11 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 
 		for( var i = 0; i < $scope.project.roles.length; i++ ) {
 			role = $scope.project.roles[ i ];
-			role.assignees = _.toArray( role.originalAssignees );
+			$scope.roleAssigneesMap[ role._id ] = _.toArray( $scope.originalAssigneesMap[ role._id ] );
 
 			//assignments = assignments.concat(role.assignees);
 
-			delete role.originalAssignees;
+			delete $scope.originalAssigneesMap[ role._id ];
 		}
 
 		//AssignmentService.calculateRolesCoverage($scope.project.roles, assignments)
@@ -162,8 +181,6 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 			}
 		} );
 		// $scope.fillOriginalAssignees();
-
-		$scope.refreshAssignmentSentinel( );
 	};
 
 	$scope.stopWatchingAssignmentChanges = function( ) {
@@ -175,44 +192,47 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	};
 
 	$scope.refreshAssignmentSentinel = function( ) {
-		$scope.stopWatchingAssignmentChanges( );
+		//Watch for model changes
+		if( $scope.editMode ) {
+			$scope.stopWatchingAssignmentChanges( );
 
-		//Create a new watch
-		$scope.assignmentsSentinel = $scope.$watch( 'project.roles', function( newValue, oldValue ) {
-			if( !$rootScope.formDirty && $scope.editMode ) {
-				//Do not include anthing in the $meta property in the comparison
-				if( oldValue.hasOwnProperty( '$meta' ) ) {
-					var oldClone = Resources.deepCopy( oldValue );
-					delete oldClone[ '$meta' ];
-					oldValue = oldClone;
-				}
-				if( newValue.hasOwnProperty( '$meta' ) ) {
-					var newClone = Resources.deepCopy( newValue );
-					delete newClone[ '$meta' ];
-					newValue = newClone;
+			//Create a new watch
+			$scope.assignmentsSentinel = $scope.$watch( 'projectAssignment.members', function( newValue, oldValue ) {
+				if( !$rootScope.formDirty && $scope.editMode ) {
+					//Do not include anthing in the $meta property in the comparison
+					if( oldValue.hasOwnProperty( '$meta' ) ) {
+						var oldClone = Resources.deepCopy( oldValue );
+						delete oldClone[ '$meta' ];
+						oldValue = oldClone;
+					}
+					if( newValue.hasOwnProperty( '$meta' ) ) {
+						var newClone = Resources.deepCopy( newValue );
+						delete newClone[ '$meta' ];
+						newValue = newClone;
+					}
+
+					//Text Angular seems to add non white space characters for some reason
+					if( newValue.description ) {
+						newValue.description = newValue.description.trim( );
+					}
+					if( oldValue.description ) {
+						oldValue.description = oldValue.description.trim( );
+					}
+
+					var oldStr = JSON.stringify( oldValue );
+					var newStr = JSON.stringify( newValue );
+
+					if( oldStr != newStr ) {
+						console.debug( 'assignment is now dirty' );
+						$rootScope.formDirty = true;
+						$rootScope.dirtySaveHandler = function( ) {
+							return $scope.saveAssignment( true );
+						};
+					}
 				}
 
-				//Text Angular seems to add non white space characters for some reason
-				if( newValue.description ) {
-					newValue.description = newValue.description.trim( );
-				}
-				if( oldValue.description ) {
-					oldValue.description = oldValue.description.trim( );
-				}
-
-				var oldStr = JSON.stringify( oldValue );
-				var newStr = JSON.stringify( newValue );
-
-				if( oldStr != newStr ) {
-					console.debug( 'assignment is now dirty' );
-					$rootScope.formDirty = true;
-					$rootScope.dirtySaveHandler = function( ) {
-						return $scope.saveAssignment( true );
-					};
-				}
-			}
-
-		}, true );
+			}, true );
+		}
 	};
 
 	$scope.getPersonName = function( personId, role ) {
@@ -260,7 +280,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	};
 
 	var saveInProgress = false;
-
+	
 	/**
 	 * Save role assignements
 	 */
@@ -273,45 +293,41 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		var errors = [ ];
 
 		for( var i = 0; i < $scope.project.roles.length; i++ )
-			errors = errors.concat( $scope.validateAssignments( $scope.project.roles[ i ].assignees ) );
+			errors = errors.concat( $scope.validateAssignments( $scope.roleAssigneesMap[ $scope.project.roles[ i ]._id ] ) );
 
 		if( errors.length > 0 )
 			$scope.assignmentsErrorMessages = _.uniq( errors );
 		else {
+			saveInProgress = true;
+			
 			var assignments = [ ];
 			var role;
-
-			saveInProgress = true;
-
 			for( var i = 0; i < $scope.project.roles.length; i++ ) {
 				role = $scope.project.roles[ i ];
+				if ( $scope.roleAssigneesMap[ role._id ] ) {
+					for( var j = 0; j < $scope.roleAssigneesMap[ role._id ].length; j++ ) {
+						$scope.roleAssigneesMap[ role._id ][ j ].role = {
+								resource: $scope.project.about + '/roles/' + role._id
+						};
+					}
+					// remove empty assignments
+					assignments = assignments.concat( _.filter( $scope.roleAssigneesMap[ role._id ], function( a ) {
+						if( !( a.person && a.person.resource ) )
+							return false;
 
-				for( var j = 0; j < role.assignees.length; j++ ) {
-					role.assignees[ j ].role = {
-						//resource: role.about
-						resource: $scope.project.about + '/roles/' + role._id
-					};
-
+						return true;
+					} ) );
 				}
-
-				// remove empty assignments
-				assignments = assignments.concat( _.filter( role.assignees, function( a ) {
-					if( !( a.person && a.person.resource ) )
-						return false;
-
-					return true;
-				} ) );
-
 			}
-
-			$scope.cleanupAssignmentsExtraInfo( );
+			
+			// concatenate hided assignee members
+			$scope.projectAssignment.members = assignments.concat( $scope.projectAssignment.excludedMembers ? $scope.projectAssignment.excludedMembers : [ ] );
+			
+			//Remove from saved objects unnecessary properties
+			//$scope.cleanupAssignmentsExtraInfo( );
 
 			//Clear any messages
 			$scope.assignmentsErrorMessages = [ ];
-			//$scope.editMode = false;
-
-			// concatenate hided assingnee members
-			$scope.projectAssignment.members = assignments.concat( $scope.projectAssignment.excludedMembers ? $scope.projectAssignment.excludedMembers : [ ] );
 
 			if (!$scope.projectAssignment.about ||
 				$scope.projectAssignment.about.indexOf('/assignments') == -1  ||
@@ -369,30 +385,31 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	/*
 	 * Remove from saved objects unnecessary properties
 	 */
-	$scope.cleanupAssignmentsExtraInfo = function( ) {
-		var role;
-
-		for( var i = 0; i < $scope.project.roles.length; i++ ) {
-			role = $scope.project.roles[ i ];
-
-			for( var j = 0; j < role.assignees.length; j++ ) {
-				for( var propP in role.assignees[ j ].person )
-				if( propP != "resource" )
-					delete role.assignees[j].person[ propP ];
-
-			}
-
-			if( role.originalAssignees )
-				delete role.originalAssignees;
-
-			if( role.about )
-				delete role.about;
-
-		}
-
-		if( $scope.projectAssignment.excludedMembers )
-			delete $scope.projectAssignment.excludedMembers;
-	};
+//	$scope.cleanupAssignmentsExtraInfo = function( ) {
+//		var role;
+//
+//		for( var i = 0; i < $scope.project.roles.length; i++ ) {
+//			role = $scope.project.roles[ i ];
+//
+//			if ( $scope.roleAssigneesMap[ role._id ] ) {
+//				for( var j = 0; j < $scope.roleAssigneesMap[ role._id ].length; j++ ) {
+//					for( var propP in $scope.roleAssigneesMap[ role._id ][ j ].person )
+//						if( propP != "resource" )
+//							delete $scope.roleAssigneesMap[ role._id ][j].person[ propP ];
+//				}
+//			}
+//
+//			if( $scope.originalAssigneesMap[ role._id ]  )
+//				delete $scope.originalAssigneesMap[ role._id ];
+//
+//			if( role.about )
+//				delete role.about;
+//
+//		}
+//
+//		if( $scope.projectAssignment.excludedMembers )
+//			delete $scope.projectAssignment.excludedMembers;
+//	};
 
 	$scope.handleAssignmentsFilterChanged = function( ) {
 		$scope.hideAssignmentsSpinner = false;
@@ -402,7 +419,6 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 			}
 		} ).then( function( data ) {
 			$scope.refreshAssignmentsData( data );
-			$scope.refreshAssignmentSentinel( );
 			$scope.setSentinel( );
 			$rootScope.formDirty = false;
 			$scope.hideAssignmentsSpinner = true;
@@ -442,12 +458,18 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		// to support cancel functionality
 		for( var i = 0; i < $scope.project.roles.length; i++ ) {
 			role = $scope.project.roles[ i ];
+	
+			if( !$scope.originalAssigneesMap ) {
+				$scope.originalAssigneesMap = [ ];
 
-			if( !role.originalAssignees ) {
-				role.originalAssignees = [ ];
-
-				for( var j = 0; role.assignees && role.assignees.length && j < role.assignees.length; j++ ) {
-					role.originalAssignees.push( AssignmentService.create( role.assignees[ j ] ) );
+				var assignees = $scope.roleAssigneesMap[ role._id ];
+				for( var j = 0; assignees && assignees.length && j < assignees.length; j++ ) {
+					var assignment = AssignmentService.create( assignees[ j ] );
+					if( $scope.originalAssigneesMap.hasOwnProperty( role._id ) ) {
+						$scope.originalAssigneesMap[ role._id ].push( assignment );
+					} else {
+						$scope.originalAssigneesMap[ role._id ] = [ assignment ];
+					}
 				}
 			}
 		}
@@ -460,7 +482,8 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		for( var i = 0; i < $scope.project.roles.length; i++ ) {
 			role = $scope.project.roles[ i ];
 
-			result = result.concat( role.assignees );
+			if ($scope.roleAssigneesMap[ role._id ])
+				result = result.concat( $scope.roleAssigneesMap[ role._id ] );
 		}
 
 		return result;
@@ -480,9 +503,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	$scope.peopleList = [ ];
 	
 	$scope.refreshAssignmentsData = function( result ) {
-		for( var i = 0; i < $scope.project.roles.length; i++ ) {
-			$scope.project.roles[ i ].assignees = [ ];
-		}
+		$scope.roleAssigneesMap = [];
 
 		if( result && result.members ) {
 			$scope.projectAssignment = result;
@@ -528,18 +549,24 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 					assignments[ i ].person.name = person.familyName + ', ' + person.givenName;
 				}
 
-				if( role )
-					role.assignees.push( assignments[ i ] );
+				if( role ) {
+					if( $scope.roleAssigneesMap.hasOwnProperty( role._id ) ) {
+						$scope.roleAssigneesMap[ role._id ].push( assignments[ i ] );
+					} else {
+						$scope.roleAssigneesMap[ role._id ] = [ assignments[ i ] ];
+					}
+				}
 
 			}
 			
 			for( var i = 0; i < $scope.project.roles.length; i++ ) {
-              if($scope.project.roles[ i ].assignees.length > 1) {
-                _.sortBy($scope.project.roles[ i ].assignees, function(assignment) {
-                  return new Date(assignment.endDate);
-                });
-              }
-            }
+				var assignees = $scope.roleAssigneesMap[ $scope.project.roles[ i ]._id ];
+				if(  assignees && assignees.length > 1 ) {
+					_.sortBy(assignees, function(assignment) {
+						return new Date(assignment.endDate);
+					});
+				}
+			}
 
 			$scope.fillOriginalAssignees( );
 
@@ -557,9 +584,9 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 
 		for( var i = 0; i < $scope.project.roles.length; i++ ) {
 			role = $scope.project.roles[ i ];
-
-			if( !role.assignees || role.assignees.length == 0 ) {
-				role.assignees = [ ];
+			var assignees = $scope.roleAssigneesMap[ role._id ];
+			if( !assignees || assignees.length == 0 ) {
+				assignees = [ ];
 
 				var props = {
 					startDate: role.startDate,
@@ -570,9 +597,9 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 
 				var newAssignee = AssignmentService.create( props );
 
-				role.assignees.push( newAssignee );
+				assignees.push( newAssignee );
 			} else {
-				_.each( role.assignees, function( a ) {
+				_.each( assignees, function( a ) {
 					a.isCurrent = a.isFuture = a.isPast = false;
 					if( new Date( a.startDate ) <= today && ( !a.endDate || new Date( a.endDate ) > today ) )
 						a.isCurrent = true;
@@ -581,7 +608,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 					else if( new Date( a.startDate ) < today && ( !a.endDate || new Date( a.endDate ) < today ) )
 						a.isPast = true;
 				} );
-				role.assignees.sort( function( a1, a2 ) {
+				assignees.sort( function( a1, a2 ) {
 					if( !a1.isCurrent && a2.isCurrent )
 						return 1;
 					else if( a1.isCurrent && !a2.isCurrent )
@@ -604,12 +631,13 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 			}
 		}
 
-		$scope.$emit( 'roles:assignments:change' );
+		$scope.refreshAssignmentSentinel( );
+		$scope.$emit( 'roles:assignments:change', $scope.roleAssigneesMap );
 	};
+	
 	var initAssignments = function( ) {
 		if( $scope.project && $scope.project.roles ) {
-			for( var i = 0; i < $scope.project.roles.length; i++ )
-				$scope.project.roles[ i ].assignees = [ ];
+			$scope.roleAssigneesMap = [];
 
 			$scope.roleTableParams = new TableParams( params, {
 				counts: [ ], // hide page counts control

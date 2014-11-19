@@ -28,6 +28,8 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	 */
 	this.validateAssignments = function( project, assignments ) {
 		var errors = [ ];
+		if ( !assignments )
+			return errors;
 
 		//Assignee for each entry is Required
 		var anyResourceUnassigned = false;

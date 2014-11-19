@@ -24,7 +24,7 @@
 	</div>
 	<hr/>
 </div>
-<div class="row" ng-repeat="currentAssignee in role.assignees">
+<div class="row" ng-repeat="currentAssignee in roleAssigneesMap[role._id]">
     <div class="row" style="margin-left: 15px; margin-right: 15px;">
 	<div class="col-sm-3 col-xs-6 form-group" ng-class="{error: isFieldInError('role')}" ng-if="roleGroups[role.type.resource] != undefined">
 		<select ng-model="currentAssignee.person.resource"
@@ -43,7 +43,7 @@
 	</div>
 	
 	<div class="col-xs-3 form-group visible-xs">
-		 <button ng-show="role.assignees.length > 0 && role.assignees[0].person && role.assignees[0].person.resource"  class="btn btn-default" data-toggle="collapse" data-target="#roleAssignmentDel{{$parent.$index}}{{$index}}">
+		 <button ng-show="roleAssigneesMap[role._id].length > 0 && roleAssigneesMap[role._id][0].person && roleAssigneesMap[role._id][0].person.resource"  class="btn btn-default" data-toggle="collapse" data-target="#roleAssignmentDel{{$parent.$index}}{{$index}}">
             <i class="fa fa-trash-o"></i>
         </button>
 	</div>
@@ -70,7 +70,7 @@
 	</div>
 	
 	<div class="col-sm-1 form-group hidden-xs" >
-        <button ng-show="role.assignees.length > 0 && role.assignees[0].person && role.assignees[0].person.resource"  class="btn btn-default pull-right" data-toggle="collapse" data-target="#roleAssignmentDelete{{$parent.$index}}{{$index}}">
+        <button ng-show="roleAssigneesMap[role._id].length > 0 && roleAssigneesMap[role._id][0].person && roleAssigneesMap[role._id][0].person.resource"  class="btn btn-default pull-right" data-toggle="collapse" data-target="#roleAssignmentDelete{{$parent.$index}}{{$index}}">
             <i class="fa fa-trash-o"></i>
         </button>
 	</div>

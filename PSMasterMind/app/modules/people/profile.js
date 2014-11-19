@@ -656,7 +656,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					$scope.availableProjects = $scope.availableProjects.concat( myProjects );
 
 					$scope.activeProjectsCount = 0;
-					var hoursRate = 0;
 					for( var m = 0; m < myProjects.length; m++ ) {
 						var myProj = myProjects[ m ];
 
@@ -666,14 +665,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							$scope.activeProjectsCount++;
 							
 							console.log("active projects", $scope.activeProjectsCount);
-						}
-
-						for( var rolesCounter = 0; rolesCounter < myProj.roles.length; rolesCounter++ ) {
-							_.each( myProj.roles[ rolesCounter ].assignees, function( assignee ) {
-								if( assignee.person && assignee.person.resource == $scope.profile.about ) {
-									hoursRate += assignee.hoursPerWeek;
-								}
-							} );
 						}
 
 						var found = undefined;
@@ -690,14 +681,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						
 						//Get project where person is a executive sponsor 
 						//without duplicates - when the person is a exec and assign to project roles simultaneously.
-						if( myProj.executiveSponsor.resource === 'people/' + $scope.profileId &&
+						if( myProj.executiveSponsor && myProj.executiveSponsor.resource === 'people/' + $scope.profileId &&
 							!_.findWhere( $scope.execProjects, {resource : myProj.resource})) {
 							$scope.execProjects.push( myProj );
 						}
 					};
-
-					//$scope.hoursRateValue = hoursRate;
-					//$scope.hoursRateFromProjects = Math.round(100*hoursRate/HOURS_PER_WEEK);
 
 					function compare( a, b ) {
 						var titleA = a.customerName + ': ' + a.name;
