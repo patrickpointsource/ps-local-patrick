@@ -21,7 +21,7 @@ var SmtpHelper = {
 			"Description : " + description + "<br/>" +
 			"<br/>" +
 			"Please log on to Mastermind for details by visiting the URL below." + "<br/>" + 
-			"https://mastermind.pointsource.us" + "<br/>";
+			"https://mastermind.pointsource.com" + "<br/>";
 		
 		return result;
 	}
