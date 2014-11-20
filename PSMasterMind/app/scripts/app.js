@@ -124,10 +124,29 @@
           templateUrl: 'modules/staffing/staffing.html',
           controller: 'StaffingCtrl'
         })
-      .state('reports', {
+      
+        .state('reports', {
           url: '/reports',
-          templateUrl: 'modules/reports/views/reports.html',
+          abstract: true,
+          template: '<ui-view />'
+        })
+        .state('reports.shell', {
+          url: '/?view',
+          templateUrl: '/modules/reports/views/reports.html',
           controller: 'ReportsCtrl'
+        })
+        .state('reports.people', {
+          url: '/people',
+          abstract: true,
+          template: '<ui-view />'
+        })
+        .state('reports.people.choice', {
+          url: '/choice',
+          templateUrl: '/modules/reports/views/reportsPeopleChoice.html'
+        })
+        .state('reports.people.output', {
+          url: '/output',
+          templateUrl: '/modules/reports/views/reportsPeopleOutput.html'
         })
       .state('reportsshell', {
           url: '/reportsshell',

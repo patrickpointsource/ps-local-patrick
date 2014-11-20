@@ -112,6 +112,16 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		if( $scope.state.name == 'reportsshell' ) {
 			$scope.breadCrumpParts.push( "Reports Dashboard" );
 		}
+		
+		if( $scope.state.name == 'reports.people.choice' ) {
+			$scope.breadCrumpParts.push( "Reports Dashboard" );
+			$scope.breadCrumpParts.push( "People Report Choice" );
+		}
+		
+		if( $scope.state.name == 'reports.people.output' ) {
+			$scope.breadCrumpParts.push( "Reports Dashboard" );
+			$scope.breadCrumpParts.push( "People Report" );
+		}
 
 		if( $scope.state.name == 'projects.show' || $scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit' ) {
 			$scope.breadCrumpParts = [ 'Projects' ];

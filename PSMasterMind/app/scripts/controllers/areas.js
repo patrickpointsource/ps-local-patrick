@@ -288,7 +288,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	 * Navigate to the report index.
 	 */
 	$scope.showReports = function( ) {
-		$state.go( 'reports' );
+		$state.go( 'reports.shell' );
 	};
 
 	/**
