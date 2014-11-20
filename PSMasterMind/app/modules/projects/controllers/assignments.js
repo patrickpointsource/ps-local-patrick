@@ -326,21 +326,21 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 			for( var i = 0; i < $scope.project.roles.length; i++ ) {
 				role = $scope.project.roles[ i ];
 				if ( $scope.roleAssigneesMap[ role._id ] ) {
-					for( var j = 0; j < $scope.roleAssigneesMap[ role._id ].length; j++ ) {
-						$scope.roleAssigneesMap[ role._id ][ j ].role = {
+					// remove empty assignments
+					assignments = assignments.concat( _.filter( $scope.roleAssigneesMap[ role._id ], function( assign ) {
+						delete assign.project;
+						assign.project = { resource: $scope.project.about };
+						assign.role = {
 								resource: $scope.project.about + '/roles/' + role._id
 						};
-					}
-					// remove empty assignments
-					assignments = assignments.concat( _.filter( $scope.roleAssigneesMap[ role._id ], function( a ) {
-						if( !( a.person && a.person.resource ) )
+						if( !( assign.person && assign.person.resource ) )
 							return false;
 
 						return true;
 					} ) );
 				}
 			}
-			
+
 			// concatenate hided assignee members
 			$scope.projectAssignment.members = assignments.concat( $scope.projectAssignment.excludedMembers ? $scope.projectAssignment.excludedMembers : [ ] );
 			
