@@ -12,6 +12,7 @@
   angular.module('Mastermind.controllers.people', []);
   angular.module('Mastermind.controllers.projects', []);
   angular.module('Mastermind.controllers.staffing', []);
+  angular.module('Mastermind.controllers.reports', []);
   angular.module('Mastermind.models.projects', []);
   angular.module('Mastermind.services.projects', []);
   angular.module('d3', []);
@@ -29,6 +30,7 @@
     'Mastermind.controllers.people',
     'Mastermind.controllers.projects',
     'Mastermind.controllers.staffing',
+    'Mastermind.controllers.reports',
     'Mastermind.models.projects',
     'Mastermind.services.projects',
   ])
@@ -128,7 +130,8 @@
         .state('reports', {
           url: '/reports',
           abstract: true,
-          template: '<ui-view />'
+          template: '<ui-view />',
+          controller: 'ReportsCtrl'
         })
         .state('reports.shell', {
           url: '/?view',
