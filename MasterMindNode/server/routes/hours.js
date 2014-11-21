@@ -64,7 +64,7 @@ router.get( '/projectdates', auth.isAuthenticated, function( req, res ) {
             var projects = req.query[ "project" ] ? req.query[ "project" ] : "";
             var startDate = req.query[ "startDate" ] ? req.query[ "startDate" ] : "";
             var endDate = req.query[ "endDate" ] ? req.query[ "endDate" ] : "";
-            var fields = req.query[ "field" ];
+            var fields = req.query[ "fields" ];
              
     		if (!_.isArray(projects)) {
     			projects = [projects];
@@ -96,14 +96,16 @@ router.get( '/person', auth.isAuthenticated, function( req, res ) {
              
             console.log( '\r\nget:person:\r\n' );
 
-            if (person)
-                hours.listHoursByPerson( person, function( err, result ) {
+            if (person) {
+            	var fields = req.query.fields;
+                hours.listHoursByPerson( person, fields, function( err, result ) {
                     if( err ) {
                         res.json( 500, err );
                     } else {
                         res.json( result );
                     }
                 } );
+            }
             else 
                  res.json( 500, "missed params" );
         }

@@ -795,38 +795,38 @@ var listVacationsByPerson = function( personResource, callback ) {
 };
 
 
-var listVacationsByPeriod = function( people, startDate, endDate, callback ) {
+var listVacationsByPeriod = function( people, startDate, endDate, fields, callback ) {
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
 		console.log( "read " + VACATIONS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterVacationsByPeriod(people, startDate, endDate, result.data), "members", "vacations/" ) );
+		callback( null, prepareRecords( dataFilter.filterVacationsByPeriod(people, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
-			callback( null, prepareRecords( dataFilter.filterVacationsByPeriod(people, startDate, endDate, body.data), "members", "vacations/" ) );
+			callback( null, prepareRecords( dataFilter.filterVacationsByPeriod(people, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
 		} );
 	}
 
 };
 
 
-var listRequests = function( manager, statuses, startDate, endDate, callback ) {
+var listRequests = function( manager, statuses, startDate, endDate, fields, callback ) {
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
 		console.log( "read " + VACATIONS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterRequests(manager, statuses, startDate, endDate, result.data), "members", "vacations/" ) );
+		callback( null, prepareRecords( dataFilter.filterRequests(manager, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
-			callback( null, prepareRecords( dataFilter.filterRequests(manager, statuses, startDate, endDate, body.data), "members", "vacations/" ) );
+			callback( null, prepareRecords( dataFilter.filterRequests(manager, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
 		} );
 	}
 
@@ -886,19 +886,19 @@ var listNotifications = function( q, callback ) {
 };
 
 
-var listNotificationsByPerson = function( person, callback ) {
+var listNotificationsByPerson = function( person, fields, callback ) {
 
 	var result = memoryCache.getObject( NOTIFICATIONS_KEY );
 	if( result ) {
 		console.log( "read " + NOTIFICATIONS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, result.data), "members", "notifications/" ) );
+		callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, result.data), "members", "notifications/", null, fields ) );
 	} else {
 		dbAccess.listNotifications( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + NOTIFICATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( NOTIFICATIONS_KEY, body );
 			}
-			callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, body.data), "members", "notifications/" ) );
+			callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, body.data), "members", "notifications/", null, fields ) );
 		} );
 	}
 
@@ -1033,7 +1033,7 @@ var listHoursByProjectAndDates = function( project, startDate, endDate, callback
     } );
 };
 
-var listHoursByPerson = function( person, callback ) {
+var listHoursByPerson = function( person, fields, callback ) {
 
     dbAccess.listHoursByStartEndDates( [ "PersonDate", person, '1900-01-01' ], [ "PersonDate", person, '2050-01-01' ], function( err, body ) {
         if( err ) {
@@ -1041,7 +1041,7 @@ var listHoursByPerson = function( person, callback ) {
             callback( 'error loading hours by start and end dates', null );
         } else {
             console.log( body );
-            callback( err, queryRecords( body, {}, "members", "hours/" ) );
+            callback( err, queryRecords( body, {}, "members", "hours/", null, fields ) );
         }
     } );
 

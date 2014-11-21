@@ -39,8 +39,8 @@ module.exports.listHoursByProjectAndDates = function(project, startDate, endDate
     });
 };
 
-module.exports.listHoursByPerson = function(person, callback) {
-    dataAccess.listHoursByPerson(person, function(err, body){
+module.exports.listHoursByPerson = function(person, fields, callback) {
+    dataAccess.listHoursByPerson(person, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading hours', null);

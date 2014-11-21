@@ -30,9 +30,10 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 		if (allowed) 
 		{
 			var type = req.params.type;
+        	var fields = req.query.fields;
 			if (type && type == "byPerson") {
 				var person = req.query.person;
-			    notifications.listNotificationsByPerson(person, function(err, result){
+			    notifications.listNotificationsByPerson(person, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {

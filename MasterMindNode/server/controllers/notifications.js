@@ -19,8 +19,8 @@ module.exports.listNotifications = function(q, callback) {
     });
 };
 
-module.exports.listNotificationsByPerson = function(person, callback) {
-    dataAccess.listNotificationsByPerson(person, function(err, body){
+module.exports.listNotificationsByPerson = function(person, fields, callback) {
+    dataAccess.listNotificationsByPerson(person, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading notifications by person', null);

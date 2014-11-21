@@ -72,7 +72,7 @@ function emailReminderJob(withInterestedParties) {
 	        							var date = util.getFormattedDate(util.getPreviousWorkingDay());
 
 	        							// checks whether person had a vacation 
-	        							dataAccess.listVacationsByPeriod(person.resource, util.getPreviousWorkingDay(), util.getPreviousWorkingDay(), function (err, vacations) {
+	        							dataAccess.listVacationsByPeriod(person.resource, util.getPreviousWorkingDay(), util.getPreviousWorkingDay(), null, function (err, vacations) {
 
 	        								if (!err) {
 	        									if (!vacations || vacations.members.length == 0) {
