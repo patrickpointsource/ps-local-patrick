@@ -709,14 +709,14 @@ var listLinksByProject = function( project, callback ) {
 	var result = memoryCache.getObject( LINKS_KEY );
 	if( result ) {
 		console.log( "read " + LINKS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterLinksByProject(project, result.data), "members", "tasks/" ) );
+		callback( null, prepareRecords( dataFilter.filterLinksByProject(project, result.data), "members", "links/" ) );
 	} else {
 		dbAccess.listLinks( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + LINKS_KEY + " to memory cache" );
 				memoryCache.putObject( LINKS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterLinksByProject(project, body.data), "members", "tasks/" ) );
+			callback( err, prepareRecords( dataFilter.filterLinksByProject(project, body.data), "members", "links/" ) );
 		} );
 	}
 

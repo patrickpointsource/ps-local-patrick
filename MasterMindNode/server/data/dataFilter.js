@@ -607,7 +607,9 @@ var filterLinksByProject = function(project, links) {
 	var result = [];	
 	_.each(links, function(link) {
 		if (link.project && link.project.resource == project ) {
-			result.push(link);
+			_.each(link.members, function(member) {
+				result.push(member);
+			});
 		}
 	});
 	return result;
