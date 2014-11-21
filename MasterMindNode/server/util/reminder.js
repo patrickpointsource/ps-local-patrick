@@ -55,26 +55,46 @@ function emailReminderJob(withInterestedParties) {
 			if (!isActive && !isDebug) {
 				return;
 			}
-
+			
 			// gets active people
 	        dataAccess.listPeopleByIsActiveFlag(true, null, function (err, people) {
-	        	if (!err) {
-
+	        	if (err) {
+					console.log("error while getting active people : " + err);
+	        	}
+	        	else {
+	        		var count;
+	        		var successful;
+	        		var failed;
+	        		
 	        		// gets non-billable roles
 	        		dataAccess.listNonBillableRoles(function (err, nonBillableRoles) {
-	        			if (!err) {
+	    	        	if (err) {
+	    					console.log("error while getting non-billable roles : " + err);
+	    	        	}
+	    	        	else {
 	        				_.each(people.members, function(person) {
+								
+	        					var givenName = ( person.name.givenName) ? person.name.givenName : person.accounts[0].name.givenName;
+	        					var fullName = ( person.name.fullName) ? person.name.fullName : person.accounts[0].name.fullName;
+	        					var mBox = person.mBox;
+
+	        					console.log("name : " + fullName);
+	        					console.log(fullName + "'s mail : " + mBox);
 
 	        					// checks role of each person
 	        					checkRole(person, nonBillableRoles.members, function (checked) {
-		        					var mBox = person.mBox;
+		        					console.log("check role of " + fullName + " (whether should it be sent) : " + checked);
 	        						if (checked) {
 	        							var date = util.getFormattedDate(util.getPreviousWorkingDay());
 
 	        							// checks whether person had a vacation 
 	        							dataAccess.listVacationsByPeriod(person.resource, util.getPreviousWorkingDay(), util.getPreviousWorkingDay(), null, function (err, vacations) {
 
-	        								if (!err) {
+	    		        					console.log(fullName + "'s vacation : " + JSON.stringify(vacations));
+	    		        					if (err) {
+		    		        					console.log("error while getting vacations of " + fullName + " : " + err);
+	    		        					}
+	    		        					else {
 	        									if (!vacations || vacations.members.length == 0) {
 
 	        										// checks filled hours of person
@@ -82,30 +102,43 @@ function emailReminderJob(withInterestedParties) {
 	        												util.getPreviousWorkingDay(), 
 	        													util.getPreviousWorkingDay(), function (err, hours) {
 
-	        											if (!err) {
+	        	    		        					console.log(fullName + "'s hours : " + JSON.stringify(hours));
+	        	    		        					if (err) {
+	        		    		        					console.log("error while getting hours of " + fullName + " : " + err);
+	        	    		        					}
+	        	    		        					else {
 	            											if (!hours || hours.members.length == 0) {
             						        					
-	            												var givenName = ( person.name.givenName) ? person.name.givenName : person.accounts[0].name.givenName;
-            						        					var fullName = ( person.name.fullName) ? person.name.fullName : person.accounts[0].name.fullName;
-        	        		    	        					
+
             						        					// send email reminders
 	            												if (mBox && givenName && isActive) {
-	            						        					var title = "Reminder for " + fullName;
+	            													count++;
+		            												console.log("mail should be sent to " + fullName);
+
+		            												var title = "Reminder for " + fullName;
+
+	            						        					console.log(fullName + "'s mail title : " + title);
 
 	            						        					var message = smtpHelper.getReminderMessage(givenName, "Node.JS service", os.hostname(), configProperties.env);
 
 	        	        		    	        					emailSender.sendEmailFromPsapps(mBox, ccList, title, message, function (err, info) {
    	            						        						if(err) {
    	            						        							console.log("error sending email to: ", err);
+   	            						        							failed++;
    	            						        						} else {
    	            						        							console.log("Email sent. Info: ", info);
+   	            						        							successful++;
    	            						        						}
    	            						        					});
  	            												}
 	            												
 	            												//send debug email reminders
 	            												if (givenName && isDebug && notificationList) {
-	            						        					var title = "Reminder for " + fullName + " (Limited Notification List)";
+		            												var title = "Reminder for " + fullName + " (Limited Notification List)";
+		            	
+		            												console.log("debug mail should be sent to " + notificationList);
+	            						        					console.log("debug mail title : " + title);
+
 	            						        					var message = smtpHelper.getReminderDebugMessage(givenName, mBox, ccList, "Node.JS service", os.hostname(), configProperties.env);
 	            						        					emailSender.sendEmailFromPsapps(notificationList, null, title, message, function (err, info) {
 	            						        						if(err) {
@@ -129,8 +162,15 @@ function emailReminderJob(withInterestedParties) {
 	        				
 	        			}
 	        		});
+
+	        		console.log("Mails to send : " + count);
+	        		console.log("Mails that sent successful : " + successful);
+	        		console.log("Mails with SMTP failures : " + failed);
+	        		
+	        	
 	        	}
 	        	
+	        
 	        });
 
 	    	
