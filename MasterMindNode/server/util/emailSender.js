@@ -10,7 +10,7 @@ var fs = require('fs');
 module.exports = function(params) {
 
 	var options = {
-		from : "MasterMind Notice <system@pointsourcellc.com>",
+		from : "MasterMind Notice <psapps@pointsourcellc.com>",
 		host : "smtp.gmail.com",
 		// name: "pointsource.com",
 		port : 465,
