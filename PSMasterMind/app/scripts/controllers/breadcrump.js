@@ -56,11 +56,11 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			$scope.breadCrumpParts.push( "Dashboard" );
 		}
 
-		if( $scope.state.name == 'projects.show' ) {
+		else if( $scope.state.name == 'projects.show' ) {
 			$scope.breadCrumpParts.push( "Projects" );
 		}
 
-		if( $scope.state.name == 'projects.index' ) {
+		else if( $scope.state.name == 'projects.index' ) {
 			$scope.breadCrumpParts.push( "Projects" );
 
 			if( $scope.params.filter ) {
@@ -75,19 +75,19 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 						if( projectFilters[ i ] == 'active' ) {
 							filtersText.push( "Active" );
 						}
-						if( projectFilters[ i ] == 'backlog' ) {
+						else if( projectFilters[ i ] == 'backlog' ) {
 							filtersText.push( "Backlog" );
 						}
-						if( projectFilters[ i ] == 'pipeline' ) {
+						else if( projectFilters[ i ] == 'pipeline' ) {
 							filtersText.push( "Pipeline" );
 						}
-						if( projectFilters[ i ] == 'investment' ) {
+						else if( projectFilters[ i ] == 'investment' ) {
 							filtersText.push( "Investment" );
 						}
-						if( projectFilters[ i ] == 'complete' ) {
+						else if( projectFilters[ i ] == 'complete' ) {
 							filtersText.push( "Complete" );
 						}
-						if( projectFilters[ i ] == 'deallost' ) {
+						else if( projectFilters[ i ] == 'deallost' ) {
 							filtersText.push( "Deal Lost" );
 						}
 					}
@@ -97,33 +97,39 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			}
 		}
 
-		if( $scope.state.name == 'staffing' ) {
+		else if( $scope.state.name == 'staffing' ) {
 			$scope.breadCrumpParts.push( "Staffing" );
 		}
 
-		if( $scope.state.name == 'admin' ) {
+		else if( $scope.state.name == 'admin' ) {
 			$scope.breadCrumpParts.push( "Administration" );
 		}
 
-		if( $scope.state.name == 'reports' ) {
+		else if( $scope.state.name == 'reports' ) {
 			$scope.breadCrumpParts.push( "Reports" );
 		}
 		
-		if( $scope.state.name == 'reportsshell' ) {
+		else if( $scope.state.name == 'reportsshell' ) {
 			$scope.breadCrumpParts.push( "Reports Dashboard" );
 		}
 		
-		if( $scope.state.name == 'reports.people.choice' ) {
+		// Must be 'else if' everywhere instead of just 'if'.
+		else if( $scope.state.name == 'reports.people.select' ) {
+			$scope.breadCrumpParts.push( "Reports Dashboard" );
+			$scope.breadCrumpParts.push( "People Report" );
+		}
+		
+		else if( $scope.state.name == 'reports.people.choice' ) {
 			$scope.breadCrumpParts.push( "Reports Dashboard" );
 			$scope.breadCrumpParts.push( "People Report Choice" );
 		}
 		
-		if( $scope.state.name == 'reports.people.output' ) {
+		else if( $scope.state.name == 'reports.people.output' ) {
 			$scope.breadCrumpParts.push( "Reports Dashboard" );
 			$scope.breadCrumpParts.push( "People Report" );
 		}
 
-		if( $scope.state.name == 'projects.show' || $scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit' ) {
+		else if( $scope.state.name == 'projects.show' || $scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit' ) {
 			$scope.breadCrumpParts = [ 'Projects' ];
 
 			if( $scope.params.filter && $scope.params.filter != "all" ) {
@@ -134,19 +140,19 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 					if( projectFilters[ i ] == 'active' ) {
 						filtersText.push( "Active" );
 					}
-					if( projectFilters[ i ] == 'backlog' ) {
+					else if( projectFilters[ i ] == 'backlog' ) {
 						filtersText.push( "Backlog" );
 					}
-					if( projectFilters[ i ] == 'pipeline' ) {
+					else if( projectFilters[ i ] == 'pipeline' ) {
 						filtersText.push( "Pipeline" );
 					}
-					if( projectFilters[ i ] == 'investment' ) {
+					else if( projectFilters[ i ] == 'investment' ) {
 						filtersText.push( "Investment" );
 					}
-					if( projectFilters[ i ] == 'complete' ) {
+					else if( projectFilters[ i ] == 'complete' ) {
 						filtersText.push( "Complete" );
 					}
-					if( projectFilters[ i ] == 'deallost' ) {
+					else if( projectFilters[ i ] == 'deallost' ) {
 						filtersText.push( "Deal Lost" );
 					}
 				}
@@ -163,7 +169,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			}
 		}
 
-		if( $scope.state.name == 'people.index' ) {
+		else if( $scope.state.name == 'people.index' ) {
 			$scope.breadCrumpParts = [ 'People' ];
 			if( $scope.params.filter ) {
 				if( $scope.params.filter == 'none' ) {
@@ -198,7 +204,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			}
 		}
 
-		if( $scope.state.name == 'people.show' ) {
+		else if( $scope.state.name == 'people.show' ) {
 			var fromPeopleList = false;
 			$scope.breadCrumpParts = [ 'People' ];
 

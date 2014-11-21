@@ -143,6 +143,10 @@
           abstract: true,
           template: '<ui-view />'
         })
+        .state('reports.people.select', {
+          url: '/select',
+          templateUrl: '/modules/reports/views/peopleSelect.html'
+        })
         .state('reports.people.choice', {
           url: '/choice',
           templateUrl: '/modules/reports/views/reportsPeopleChoice.html'
