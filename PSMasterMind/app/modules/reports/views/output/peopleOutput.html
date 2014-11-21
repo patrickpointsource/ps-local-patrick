@@ -1,0 +1,51 @@
+        <!-- Start of People Details section -->
+        
+            <div class="report-output-well well450">
+                <div class="report-output-well header">
+                    <h1>People Details</h1>
+                </div>
+                <div class="report-output-well body body100">
+                    <div class="col-sm-4">
+                        <label>People on Client</label>
+                        <div>
+                          {{output.peopleDetails.peopleOnClient}}
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label>People on Investment</label>
+                        <div>
+                          {{output.peopleDetails.peopleOnInvestment}}
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="no-margin">Total # People</label>
+                        <div class="people-total">
+                          {{output.peopleDetails.totalPeople}}
+                        </div>
+                    </div>
+                </div>
+                <div class="report-output-well header small">
+                    <h2>Utilization by role</h2>
+                </div>
+                <div class="report-output-well body body100">
+                    <div ng-repeat="role in output.peopleDetails.utilizationByRole" class="col-xs-12 col-sm-6 col-md-4">
+                        <label>{{role.name}}</label>
+                        <div>
+                          {{role.value}} %
+                        </div>
+                    </div>
+                </div>
+                <div class="report-output-well header small">
+                    <h2>Individual hours and utilization</h2>
+                </div>
+                <div class="report-output-well body">
+                    <div class="col-xs-11 report-output-well-footer">
+                        <span>Click the arrow to view individual hours and utilization statistics for [
+                        {{selectedGroups.join(', ')}}]</span>
+                    </div>
+                    <div class="col-xs-1">
+                        <i class="fa fa-chevron-right fa-3x color-smoothBlueRegular"></i>
+                    </div>
+                </div>
+            </div>
+        <!-- End of People Details section -->
