@@ -10,13 +10,13 @@ var fs = require('fs');
 module.exports = function(params) {
 
 	var options = {
-		from : "MasterMind Notice <psapps@pointsourcellc.com>",
+		from : "MasterMind Notice <mmapps@pointsource.com>",
 		host : "smtp.gmail.com",
 		// name: "pointsource.com",
 		port : 465,
 		auth : {
-			user : "psapps@pointsourcellc.com",
-			pass : "ps@pp$777"
+			user : "mmapps@pointsource.com",
+			pass : "MMapps777"
 		},
 		// ignoreTLS: false,
 		secure : true // use SSL
@@ -31,7 +31,7 @@ module.exports = function(params) {
 
 	module.exports.sendEmailFromPsapps = function(to, cc, subject, body, callback) {
 		var mailOptions = {
-			from : "MasterMind Notice <system@pointsourcellc.com>",
+			from : "MasterMind Notice <mmapps@pointsource.com>",
 			to : to,
 			cc : cc,
 			subject : subject,
