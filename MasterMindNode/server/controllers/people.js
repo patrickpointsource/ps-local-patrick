@@ -287,7 +287,8 @@ var getAccessRights = function(user, callback) {
      * Update Role Types (adminAccess)
      * Can Assign Users to Groups (adminAccess)
      */
-        if( _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.EXECUTIVES }) ) {
+        if( _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.EXECUTIVES }) 
+          || _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.ADMIN })) {
           accessRights.hasFinanceRights = true;
           accessRights.hasAdminRights = true;
           accessRights.hasProjectManagementRights = true;
@@ -319,7 +320,8 @@ var getAccessRights = function(user, callback) {
      * Can make project assignments (projectManagementAccess)
      * View Staffing Deficits (projectManagementAccess)
      */
-        if( _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.PM }) ) {
+        if( _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.PM }) 
+          || _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.SSA }) ) {
           accessRights.hasProjectManagementRights = true;
         }
 

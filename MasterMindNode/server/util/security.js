@@ -11,7 +11,9 @@ var DEFAULT_ROLES = {
   MANAGEMENT: "Managers",
   PM: "PM",
   MINION: "Minion",
-  SALES: "Sales"
+  SALES: "Sales",
+  ADMIN: "Admin",
+  SSA: "SSA"
 };
 
 module.exports.DEFAULT_ROLES = DEFAULT_ROLES;
@@ -210,6 +212,8 @@ var createDefaultRoles = function(callback) {
     var projectManagementGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.PM });
     var salesGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.SALES });
     var minion = _.findWhere(securityGroups, { name: DEFAULT_ROLES.MINION });
+    var adminGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.ADMIN });
+    var ssaGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.SSA });
     
     if(!executivesGroup) {
       createGroup(DEFAULT_ROLES.EXECUTIVES);
@@ -222,6 +226,12 @@ var createDefaultRoles = function(callback) {
     }
     if(!salesGroup) {
       createGroup(DEFAULT_ROLES.SALES);
+    }
+    if(!adminGroup) {
+      createGroup(DEFAULT_ROLES.ADMIN);
+    }
+    if(!ssaGroup) {
+      createGroup(DEFAULT_ROLES.SSA);
     }
     // create userRoles for those who dont have it yet.
     if(!minion) {
