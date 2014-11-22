@@ -186,9 +186,22 @@ angular.module('Mastermind.services.projects')
           project.endDate = undefined;
         }
         
-        if (project.roles[k].assignees) {
-        	project.roles[k].assignees = null;
+        if (project.roles[k].assignees && project.roles[k].assignees.length > 0) {
+        	//project.roles[k].assignees = null;
+        	var proj;
+        	var person;
         	
+        	for (var l = 0; l < project.roles[k].assignees.length; l ++) {
+        		if (project.roles[k].assignees[l].project)
+        			project.roles[k].assignees[l].project = {
+        				resource: project.roles[k].assignees[l].project.resource
+        			}
+        		
+        		if (project.roles[k].assignees[l].person)
+        			project.roles[k].assignees[l].person = {
+        				resource: project.roles[k].assignees[l].person.resource
+        			}
+        	}
         	//delete project.roles[k].assignees;
         }
         		
