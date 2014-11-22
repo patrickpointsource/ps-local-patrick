@@ -11,7 +11,7 @@ module.exports = function(params) {
 
 	var options = {
 		from : "MasterMind Notice <mmapps@pointsource.com>",
-		host : "smtp.gmail.com",
+		host : "smtp-relay.gmail.com",
 		// name: "pointsource.com",
 		port : 465,
 		auth : {
