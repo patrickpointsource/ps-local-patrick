@@ -2567,6 +2567,7 @@ else if( role.percentageCovered == 0 )
 		    	params.project = $scope.project.about;
 		    	params.startDate = $scope.startMonthDate;
 		    	params.endDate = $scope.endMonthDate;
+		    	params.t = (new Date( )).getMilliseconds( );
 		    	
 				Resources.get("hours/projectdates", params).then(
 					function (result) {
