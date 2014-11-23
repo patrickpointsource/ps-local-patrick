@@ -2561,7 +2561,7 @@ else if( role.percentageCovered == 0 )
 			$scope.projectAssignments = data;
 			$scope.updateOrganizedHours( );
 
-		    if (window.useAdoptedServices) {
+		    /*if (window.useAdoptedServices) {
 		    	
 		    	var params = {};
 		    	params.project = $scope.project.about;
@@ -2575,7 +2575,7 @@ else if( role.percentageCovered == 0 )
 					}
 				);
 
-		    } else {
+		    } else {*/
 
 		    	var hoursQuery = {
 						'project.resource': $scope.project.about,
@@ -2596,7 +2596,7 @@ else if( role.percentageCovered == 0 )
 					$scope.calcMonthHours(result); 
 				} );
 				
-		    }
+		    //}
 		} );
 	};
 
