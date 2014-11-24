@@ -24,6 +24,27 @@ function( $scope, $q, $state, $stateParams, $filter, Resources ) {
       { name: "Senior Software Engineer", value: "78" },
     ]
   };
-
-
+  
+  $scope.output.projectHours = {
+    capacity: 10920,
+    estimatedClientHours: 4100,
+    estimatedInvestHours: 3430,
+    actualClientHours: 3979,
+    actualInvestHours: 3668,
+    
+    estimatedClient: 72,
+    estimatedInvest: 69,
+    estimatedAverage: 70,
+    estimatedAllUtilization: 70,
+    
+    actualClient: 68,
+    actualInvest: 73,
+    actualAverage: 70,
+    actualAllUtilization: 70,
+  };
+  
+  $scope.output.projectHours.totalHoursEstimated = $scope.output.projectHours.estimatedClientHours + $scope.output.projectHours.estimatedInvestHours;
+  $scope.output.projectHours.totalActualHours = $scope.output.projectHours.actualClientHours + $scope.output.projectHours.actualInvestHours;
+  
+  
 } ] );

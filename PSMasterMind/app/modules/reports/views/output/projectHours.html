@@ -1,0 +1,111 @@
+<div class="report-output-well well650">
+    <div class="report-output-well header">
+        <h1>Project Hours Details</h1>
+    </div>
+    <div class="report-output-well body body100">
+        <div class="row no-margin no-padding">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent no-margin">Capacity</label>
+                <div class="big-number">
+                    {{output.projectHours.capacity}}
+                </div>
+            </div>
+        </div>
+        
+        <div class="report-output-inside-row project-hours-row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Estimated Client Hours</label>
+                <div>
+                    {{output.projectHours.estimatedClientHours}}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Estimated Invest Hours</label>
+                <div>
+                    {{output.projectHours.estimatedInvestHours}}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+               <label class="underlined width50percent">Total Client/Invest Hours Estimated</label>
+                <div class="big-number">
+                    {{output.projectHours.totalHoursEstimated}}
+                </div>
+            </div>
+        </div>
+        <div class="report-output-inside-row project-hours-row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Actual Client Hours</label>
+                <div>
+                    {{output.projectHours.actualClientHours}}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Actual Invest Hours</label>
+                <div>
+                    {{output.projectHours.actualInvestHours}}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+               <label class="underlined width50percent">Total Client/Invest Hours Spent</label>
+                <div class="big-number">
+                    {{output.projectHours.totalActualHours}}
+                </div>
+            </div>
+        </div>
+        <div class="report-output-well header small no-margin">
+            <h2 class="upperlined">Utilization details</h2>
+        </div>
+        <div class="report-output-inside-row">
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <label class="underlined width50percent">Estimated Client</label>
+                <div class="big-number">
+                    {{output.projectHours.estimatedClient}}%
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <label class="underlined width50percent">Estimated Invest</label>
+                <div class="big-number">
+                    {{output.projectHours.estimatedInvest}}%
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <label class="underlined width50percent">Estimated Average</label>
+                <div class="big-number">
+                    {{output.projectHours.estimatedAverage}}%
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <label class="underlined width50percent">Estimated All Utilization</label>
+                <div class="big-number">
+                    {{output.projectHours.estimatedAllUtilization}}%
+                </div>
+            </div>
+        </div>
+        <div class="report-output-inside-row">
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <label class="underlined width50percent">Actual Client</label>
+                <div class="big-number">
+                    {{output.projectHours.actualClient}}%
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <label class="underlined width50percent">Actual Invest</label>
+                <div class="big-number">
+                    {{output.projectHours.actualInvest}}%
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <label class="underlined width50percent">Actual Average</label>
+                <div class="big-number">
+                    {{output.projectHours.actualAverage}}%
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <label class="underlined width50percent">Actual All Utilization</label>
+                <div class="big-number">
+                    {{output.projectHours.actualAllUtilization}}%
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
