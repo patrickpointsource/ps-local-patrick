@@ -192,14 +192,31 @@
 
 .report-output-well.well450 {
   height: 450px;
+  @media (max-width: @screen-sm) {
+    height: 800px;
+  }
+}
+
+.report-output-well.well500 {
+  height: 500px;
+  @media (max-width: @screen-sm) {
+    height: 650px;
+  }
 }
 
 .report-output-well.well650 {
   height: 650px;
+  @media (max-width: @screen-sm) {
+    height: 1250px;
+  }
 }
 
 .report-output-well.header {
   height: 58px;
+  
+  @media (max-width: @screen-sm) {
+    height: auto;
+  }
   
   padding-top: 20px;
   border-bottom: 2px solid @gray-outline;
@@ -220,6 +237,9 @@
 
 .report-output-well.header.small {
   height: 48px;
+  @media (max-width: @screen-sm) {
+    height: auto;
+  }
 }
 
 .report-output-well-inside {
@@ -264,6 +284,9 @@
 
 .upperlined {
   border-top: 1px solid @gray-outline;
+  @media (max-width: @screen-sm) {
+    border-top: 0;
+  }
 }
 
 .big-number {
