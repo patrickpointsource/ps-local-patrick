@@ -21,6 +21,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 	$scope.reportClick = function( item ) {
 		//alert( item.name );
 	};
+	
+	$scope.hideReportSpinner = true;
 
 	$scope.peopleMap = {};
 	$scope.projectStatesDisabled = false;
@@ -1308,6 +1310,9 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		},
 
 		generate: function( e ) {
+			
+			$scope.hideReportSpinner = false;
+			
 			e = e ? e : window.event;
 			var btn = $( e.target ).closest( '.btn-export' ).find( 'a' );
 
@@ -1333,6 +1338,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 				var allowDefault = btn.get( 0 ).dispatchEvent( evt );
 
+				$scope.hideReportSpinner = true;
 				/*
 				 window.setTimeout( function( ) {
 				 skipGenerate = false;
@@ -1353,6 +1359,8 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				$scope.getBillingAccrualsReportData( function( reportData ) {
 					reportDataCb( reportData );
 				} );
+			else
+				$scope.hideReportSpinner = true;
 
 		},
 
