@@ -75,16 +75,6 @@ function( Rates, RateFactory, Assignment ) {
 		this.shore = options.shore || defaults.shore;
 		this.startDate = options.startDate ? formatDate( options.startDate ) : defaults.startDate;
 		this.endDate = options.endDate ? formatDate( options.endDate ) : defaults.endDate;
-
-		this.assignees = [ ];
-
-		if( options.assignees ) {
-
-			for( var i = 0; i < options.assignees.length; i++ )
-				this.assignees.push( new Assignment( options.assignees[ i ] ) )
-		} else if( options.assignee )
-			this.assignees = [ new Assignment( options.assignee ) ];
-
 	}
 
 	return Role;
