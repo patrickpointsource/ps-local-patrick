@@ -1047,8 +1047,11 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			else if( $scope.reportTypes[ 'customaccruals' ] )
 				return [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid revenue', 'Role', 'Role quantity', 'Theoretical monthly total', 'Assignment name', 'Hours logged', 'Theoretical hours remaining', 'Total Revenue expected for month' ];
 		}
-	};
 
+	};
+	
+	$scope.CSVSplitter = ',';
+	
 	$scope.JSON2CSV = function( reportData ) {
 		var str = '';
 		var line = '';
@@ -1057,7 +1060,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		var head = $scope.getHoursHeader( );
 		var i = 0;
 
-		line += head.join( ',' );
+		line += head.join( $scope.CSVSplitter );
 		str += line + '\r\n';
 
 		var i;
@@ -1073,14 +1076,14 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			if( $scope.reportTypes[ 'customaccruals' ] || $scope.reportTypes[ 'customforecast' ] ) {
 
 				if( record.terms && record.terms.type == 'fixed' ) {
-					line += $scope.hoursToCSV.stringify( record.name ) + ',';
+					line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
 
-					line += 'fixed,';
+					line += 'fixed' + $scope.CSVSplitter;
 
 					if( record.terms.billingDate )
-						line += record.terms.billingDate + ',';
+						line += record.terms.billingDate + $scope.CSVSplitter;
 					else
-						line += '--,';
+						line += '--' + $scope.CSVSplitter;
 
 					var projectDuration = moment( record.endDate ).diff( record.startDate, 'days' ) / 30;
 
@@ -1088,10 +1091,10 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 						//line += $scope.hoursToCSV.stringify( Util.formatCurrency( Math.round(
 						// record.terms.fixedBidServicesRevenue / projectDuration ) ) + '$ per month' ) +
 						// ',';
-						line += $scope.hoursToCSV.stringify( Util.formatCurrency( record.terms.monthlyInvoiceAmount ) ) + ',';
-						line += [ '--', '--', '--', '--', '--', '--', '--' ].join( ',' ) + ',';
+						line += $scope.hoursToCSV.stringify( Util.formatCurrency( record.terms.monthlyInvoiceAmount ) ) + $scope.CSVSplitter;
+						line += [ '--', '--', '--', '--', '--', '--', '--' ].join( $scope.CSVSplitter ) + $scope.CSVSplitter;
 					} else
-						line += '--,';
+						line += '--' + $scope.CSVSplitter;
 
 					line += '\r\n';
 
@@ -1110,7 +1113,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 					}
 				}
 
-				return result.join( ',' );
+				return result.join( $scope.CSVSplitter );
 			};
 			for( j = 0; record.roles && j < record.roles.length; j++ ) {
 
@@ -1121,30 +1124,30 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 						if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
 							//line += [ '--' ].join( ',' );
-							line += $scope.hoursToCSV.stringify( record.name ) + ',';
-							line += record.roles[ j ].persons[ k ].name + ',';
-							line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': record.roles[ j ].abbreviation) + ',';
-							line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].abbreviation ) ) + ',';
-							line += [ '--', '--', '--', '--' ].join( ',' );
+							line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
+							line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
+							line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.hoursToCSV.stringify( record.roles[ j ].abbreviation )) + $scope.CSVSplitter;
+							line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].abbreviation ) ) + $scope.CSVSplitter;
+							line += [ '--', '--', '--', '--' ].join( $scope.CSVSplitter );
 							line += '\r\n';
 						}
 						var l = 0;
 
 						for( l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
 							//line += [ '--' ].join( ',' );
-							line += $scope.hoursToCSV.stringify( record.name ) + ',';
-							line += record.roles[ j ].persons[ k ].name + ',';
+							line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
+							line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
 							
 							if (record.roles[ j ].persons[ k ].abbreviation)
-								line += record.roles[ j ].persons[ k ].abbreviation + ',';
+								line += record.roles[ j ].persons[ k ].abbreviation + $scope.CSVSplitter;
 							else
-								line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': record.roles[ j ].abbreviation) + ',';
+								line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.hoursToCSV.stringify( record.roles[ j ].abbreviation )) + $scope.CSVSplitter;
 							
-							line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].abbreviation ) ) + ',';
+							line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].abbreviation ) ) + $scope.CSVSplitter;
 
-							line += record.roles[ j ].persons[ k ].hours[ l ].date + ',';
-							line += record.roles[ j ].persons[ k ].hours[ l ].hours + ',';
-							line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + ',';
+							line += record.roles[ j ].persons[ k ].hours[ l ].date + $scope.CSVSplitter;
+							line += record.roles[ j ].persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
+							line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
 							line += '\r\n';
 						}
 
@@ -1152,17 +1155,17 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				} else if( $scope.activeTab[ 'billing' ] ) {
 					// for financial reports
 					if( !record.roles[ j ].persons && record.terms && record.terms.type != 'fixed' ) {
-						line += $scope.hoursToCSV.stringify( record.name ) + ',';
+						line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
 
 						if( record.terms && record.terms.type == 'timeAndMaterials' )
-							line += 't&m,';
+							line += 't&m' + $scope.CSVSplitter;
 
 						if( record.terms.billingDate )
-							line += record.terms.billingDate + ',';
+							line += record.terms.billingDate + $scope.CSVSplitter;
 						else
-							line += '--,';
+							line += '--' + $scope.CSVSplitter;
 
-						line += '--,';
+						line += '--' + $scope.CSVSplitter;
 
 						var hoursPerMonth = Util.getHoursPerMonthFromRate( record.roles[ j ].rate );
 
@@ -1175,9 +1178,9 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 						else if( record.roles[ j ].rate.type == 'weekly' )
 							monthTotal = record.roles[ j ].rate.amount * 4.5;
 
-						line += record.roles[ j ].abbreviation + ',';
-						line += hoursPerMonth + ' h/m ,';
-						line += $scope.hoursToCSV.stringify( Util.formatCurrency( monthTotal ) ) + ',';
+						line += record.roles[ j ].abbreviation + $scope.CSVSplitter;
+						line += hoursPerMonth + ' h/m ' + $scope.CSVSplitter;
+						line += $scope.hoursToCSV.stringify( Util.formatCurrency( monthTotal ) ) + $scope.CSVSplitter;
 						line += '\r\n';
 					} else if( record.roles[ j ].persons && record.terms && record.terms.type != 'fixed' ) {
 
@@ -1195,17 +1198,17 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 						for( k = 0; k < record.roles[ j ].persons.length; k++ ) {
 							if( record.roles[ j ].persons[ k ].startBillingDate < now ) {
-								line += $scope.hoursToCSV.stringify( record.name ) + ',';
+								line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
 
 								if( record.terms && record.terms.type == 'timeAndMaterials' )
-									line += 't&m,';
+									line += 't&m' + $scope.CSVSplitter;
 
 								if( record.terms.billingDate )
-									line += record.terms.billingDate + ',';
+									line += record.terms.billingDate + $scope.CSVSplitter;
 								else
-									line += '--,';
+									line += '--' + $scope.CSVSplitter;
 
-								line += '--,';
+								line += '--' + $scope.CSVSplitter;
 
 								var hoursPerMonth = Util.getHoursPerMonthFromRate( record.roles[ j ].rate );
 
@@ -1218,9 +1221,9 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 								else if( record.roles[ j ].rate.type == 'weekly' )
 									monthTotal = record.roles[ j ].rate.amount * 4.5;
 
-								line += record.roles[ j ].abbreviation + ',';
-								line += hoursPerMonth + ' h/m ,';
-								line += $scope.hoursToCSV.stringify( Util.formatCurrency( monthTotal ) ) + ',';
+								line += record.roles[ j ].abbreviation + $scope.CSVSplitter;
+								line += hoursPerMonth + ' h/m ' + $scope.CSVSplitter;
+								line += $scope.hoursToCSV.stringify( Util.formatCurrency( monthTotal ) ) + $scope.CSVSplitter;
 
 								var hoursLogged = 0;
 								var l = 0;
@@ -1236,9 +1239,9 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 								var expectedHours = Math.round( weeks * record.roles[ j ].persons[ k ].hoursPerWeek );
 
-								line += record.roles[ j ].persons[ k ].name + ',';
-								line += hoursLogged + ',';
-								line += expectedHours + ',';
+								line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
+								line += hoursLogged + $scope.CSVSplitter;
+								line += expectedHours + $scope.CSVSplitter;
 
 								var hourRate = 0;
 
@@ -1251,7 +1254,7 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 								var revenueExpected = ( expectedHours + hoursLogged ) * hourRate;
 
-								line += $scope.hoursToCSV.stringify( Util.formatCurrency( revenueExpected ) ) + ',';
+								line += $scope.hoursToCSV.stringify( Util.formatCurrency( revenueExpected ) ) + $scope.CSVSplitter;
 
 								line += '\r\n';
 							}
@@ -1266,12 +1269,12 @@ function( $scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
 					for( l = 0; record.persons[ k ].hours && l < record.persons[ k ].hours.length; l++ ) {
 						//line += [ '--' ].join( ',' );
-						line += $scope.hoursToCSV.stringify( record.name ) + ',';
-						line += '--,';
-						line += record.persons[ k ].name + ',';
-						line += record.persons[ k ].hours[ l ].date + ',';
-						line += record.persons[ k ].hours[ l ].hours + ',';
-						line += $scope.hoursToCSV.stringify( record.persons[ k ].hours[ l ].description ) + ',';
+						line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
+						line += '--' + $scope.CSVSplitter;
+						line += $scope.hoursToCSV.stringify( record.persons[ k ].name ) + $scope.CSVSplitter;
+						line += record.persons[ k ].hours[ l ].date + $scope.CSVSplitter;
+						line += record.persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
+						line += $scope.hoursToCSV.stringify( record.persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
 						line += '\r\n';
 					}
 
