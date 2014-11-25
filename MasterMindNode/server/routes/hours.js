@@ -70,7 +70,7 @@ router.get( '/projectdates', auth.isAuthenticated, function( req, res ) {
     			projects = [projects];
     		}
     		
-            console.log( '\r\nget:projectdates:\r\n' );
+            console.log( '\r\nget:hours:projectdates:start:' + JSON.stringify(projects) + ':' + startDate + ':' + endDate + ':' + fields + '\r\n' );
 
             if (projects && startDate && endDate)
                 hours.listHoursByProjectsAndDates( projects, startDate, endDate, fields, function( err, result ) {
@@ -79,6 +79,8 @@ router.get( '/projectdates', auth.isAuthenticated, function( req, res ) {
                     } else {
                         res.json( result );
                     }
+                    
+                    console.log( '\r\nget:hours:projectdates:end:' + JSON.stringify(projects) + ':' + startDate + ':' + endDate + ':' + fields + '\r\n' );
                 } );
             else 
                  res.json( 500, "missed params" );
@@ -94,7 +96,7 @@ router.get( '/person', auth.isAuthenticated, function( req, res ) {
             var person = req.query[ "person" ] ? req.query[ "person" ] : "";
             
              
-            console.log( '\r\nget:person:\r\n' );
+            console.log( '\r\nget:hours:person:\r\n' );
 
             if (person) {
             	var fields = req.query.fields;
@@ -122,7 +124,7 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
             if (_.isString(projects))
             	projects = [projects];
             
-            console.log( '\r\nget:projects:\r\n' );
+            console.log( '\r\nget:hours:start:projects:'  + JSON.stringify(projects) + '\r\n' );
 
             if (projects) {
             	var fields = req.query.fields;
@@ -132,6 +134,8 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
                     } else {
                         res.json( result );
                     }
+                    
+                    console.log( '\r\nget:hours:end:projects:' + JSON.stringify(projects) );
                 } );
             }
             else 

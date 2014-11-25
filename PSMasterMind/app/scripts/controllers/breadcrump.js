@@ -56,9 +56,9 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			$scope.breadCrumpParts.push( "Dashboard" );
 		}
 
-		else if( $scope.state.name == 'projects.show' ) {
+		/*else if( $scope.state.name == 'projects.show' ) {
 			$scope.breadCrumpParts.push( "Projects" );
-		}
+		}*/
 
 		else if( $scope.state.name == 'projects.index' ) {
 			$scope.breadCrumpParts.push( "Projects" );

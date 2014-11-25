@@ -999,6 +999,10 @@ else if( role.percentageCovered == 0 )
 		"/links": $state.params.tabId == "/links"
 	};
 
+	$scope.isHoursTabActive = function() {
+		return $scope.activeTab["/hours"];
+	};
+	
 	$scope.getDefaultAssignmentsFilter = function( ) {
 		var result = "current";
 		var now = new Date( );
@@ -1765,8 +1769,11 @@ else if( role.percentageCovered == 0 )
 
 					$scope.organizeHours( $scope.hours );
 					$scope.initHoursPeriods( $scope.hours );
-					$scope.currentWeek( );
-					$scope.currentMonth();
+					$scope.currentWeek( function() {
+						// load month hours just after week
+						$scope.currentMonth();
+					} );
+					
 
 					if( $scope.hoursTableParams ) {
 						$scope.hoursTableParams.total( $scope.hours.length );
@@ -1805,8 +1812,10 @@ else if( role.percentageCovered == 0 )
 
 				$scope.organizeHours( $scope.hours );
 				$scope.initHoursPeriods( $scope.hours );
-				$scope.currentWeek( );
-				$scope.currentMonth();
+				$scope.currentWeek(function() {
+					// load month hours just after week
+					$scope.currentMonth();
+				} );
 
 				if( $scope.hoursTableParams ) {
 					$scope.hoursTableParams.total( $scope.hours.length );
@@ -2205,10 +2214,12 @@ else if( role.percentageCovered == 0 )
 			$scope.servicesLoadedTotal = runningTotal;
 		}
 		
-		if( !editMode ) {
-			$scope.initHours( );
+		if ($scope.isHoursTabActive()) {
+			if( !editMode ) {
+				$scope.initHours( );
+			}
+			$scope.initVacationHours(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
 		}
-		$scope.initVacationHours(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
 	};
 
 	$scope.billingFrequencyOptions = [ {
@@ -2274,7 +2285,7 @@ else if( role.percentageCovered == 0 )
 	$scope.startWeekDate = $scope.moment( ).day( 0 ).format( 'YYYY-MM-DD' );
 	$scope.endWeekDate = $scope.moment( ).day( 6 ).format( 'YYYY-MM-DD' );
 
-	$scope.showWeek = function( ) {
+	$scope.showWeek = function( cb ) {
         $scope.hideWeekSpinner = false;
 		$scope.startWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex ).format( 'YYYY-MM-DD' );
 		$scope.endWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex + 6 ).format( 'YYYY-MM-DD' );
@@ -2303,6 +2314,9 @@ else if( role.percentageCovered == 0 )
 				Resources.get("hours/projectdates", params).then(
 					function (result) {
 						$scope.calcWeekHours(result); 
+						
+						if (cb)
+							cb()
 					}
 				);
 
@@ -2325,6 +2339,9 @@ else if( role.percentageCovered == 0 )
 
 		    	HoursService.query( hoursQuery, {} ).then( function( result ) {
 			    	$scope.calcWeekHours(result);
+			    	
+			    	if (cb)
+						cb()
 			    } );
 		    	
 		    }
@@ -2890,9 +2907,9 @@ else if( role.percentageCovered == 0 )
 		return moment( yyyymmdd ).format( "MMM D" );
 	};
 
-	$scope.currentWeek = function( ) {
+	$scope.currentWeek = function( cb ) {
 		$scope.selectedWeekIndex = 0;
-		$scope.showWeek( );
+		$scope.showWeek( cb );
 	};
 
 	$scope.nextWeek = function( ) {

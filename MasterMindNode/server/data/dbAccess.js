@@ -231,7 +231,8 @@ module.exports = function(params) {
 	
 
 	module.exports.listHoursByProjectsAndDates = function(projects, startDate, endDate, callback) {
-	    var q = {
+	    /*
+		var q = {
 	    		"form": "Hours", 
 	    		"project.resource": {"$in" : projects},
 	    		"date": {"$gte": startDate, "$lte": endDate  } 
@@ -239,6 +240,15 @@ module.exports = function(params) {
 
 	    cloudantQuerySearch(q, function (err, body){
 	    	callback(err, { data : body.docs } );
+	    });
+	    */
+	    
+		var projects = _.map(projects, function(val, ind){
+	        return ["Project", val];
+	    });
+		
+	    cloudantGetDocumentsByKeys('views', 'AllHoursInOne', projects, true, function(err, body){
+	    	callback(err, prepareResponse(body, 'hours', 'doc'));
 	    });
 	};
 	

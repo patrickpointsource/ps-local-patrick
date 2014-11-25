@@ -144,6 +144,24 @@ var generateProperties = function( collection, resourcePrefix, postfix, fields )
 	return collection;
 };
 
+var filterRecordsByStartEndDates = function(data, startDate, endDate) {
+	var result = {
+			about: data.about,
+			members: []
+	};
+	
+	for (var k= 0; k < data.members.length; k ++) {
+		if (data.members[k].date <= endDate && data.members[k].date >= startDate) {
+			result.members.push(data.members[k]);
+		}
+	}
+	
+	result.count = result.members.length;
+	
+	
+	return result;
+};
+
 var listProjects = function( q, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
@@ -1064,7 +1082,9 @@ var listHoursByProjectsAndDates = function( projects, startDate, endDate, fields
             console.log( err );
             callback( 'error loading hours by start and end dates', null );
         } else {
-            callback( err, queryRecords( body, {}, "members", "hours/", null, fields ) );
+        	var hours = queryRecords( body, {}, "members", "hours/", null, fields );
+        	
+            callback( err, filterRecordsByStartEndDates(hours, startDate, endDate) );
         }
     } );
 };
