@@ -190,6 +190,13 @@
   background-color: white;
 }
 
+.report-output-well.well300 {
+  height: 300px;
+  @media (max-width: @screen-sm) {
+    height: 550px;
+  }
+}
+
 .report-output-well.well450 {
   height: 450px;
   @media (max-width: @screen-sm) {
@@ -233,6 +240,15 @@
     font-weight: bold;
     color: #333333;
   }
+  > h3 {
+    font-weight: normal;
+    font-size: 20px;
+    padding-left: 15px;
+    margin-top: 10px;
+  }
+}
+.report-output-well.header.no-underline {
+  border: 0;
 }
 
 .report-output-well.header.small {

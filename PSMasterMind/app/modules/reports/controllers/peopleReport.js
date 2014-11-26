@@ -13,6 +13,21 @@ function( $scope, $q, $state, $stateParams, $filter, Resources ) {
   
   $scope.output = {};
   
+  // Summary Section
+  var created = moment();
+  
+  $scope.output.summary = {
+    createdDate: created.format("MM/D/YYYY"),
+    createdTime: created.format("H:mm:ss a"),
+    reportName: "Bi-monthly Department with Graphs Report",
+    createdBy: { name: "Krista Meyer" },
+    reportStartDate: moment("September 9, 2014").format("MMM D, YYYY"),
+    reportEndDate: moment("September 30, 2014").format("MMM D, YYYY"),
+    workingDays: 21,
+    workingHoursPerPerson: 176,
+    workingHoursForTeam: 10920
+  };
+  
   // People Details Section
   $scope.output.peopleDetails = {
     peopleOnClient: 35,
