@@ -10,5 +10,6 @@
     "appName": "MMNodeDemo",
     "webSiteUrl": "https://demo.mastermind.pointsource.com",
     "oauthcbbaseurl": "https://demo.mastermind.pointsource.com/MMNodeDemo",
+    "serverTimeout": "10",
     "env": "demo"
 }

@@ -10,5 +10,6 @@
     "appName": "MMNodeStaging",
     "webSiteUrl": "https://stage.mastermind.pointsource.com",
     "oauthcbbaseurl": "https://stage.mastermind.pointsource.com/MMNodeStaging",
+    "serverTimeout": "10",
     "env": "stage"
 }
