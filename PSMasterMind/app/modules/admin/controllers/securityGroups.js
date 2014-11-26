@@ -505,6 +505,7 @@ angular.module('Mastermind')
   $scope.createGroup = function() {
     $scope.creatingGroup = true;
     $scope.$emit("securitygroups:create");
+    $scope.$emit("admin:edit");
     $scope.filterPeople();
     $scope.filterGroups();
     
