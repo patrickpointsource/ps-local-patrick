@@ -4,8 +4,8 @@
  * Controller for people report.
  */
 
-angular.module( 'Mastermind.controllers.reports' ).controller( 'PeopleReportCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', 'Resources', 
-function( $scope, $q, $state, $stateParams, $filter, Resources ) {
+angular.module( 'Mastermind.controllers.reports' ).controller( 'PeopleReportCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'Resources', 
+function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, Resources ) {
 
   $scope.choiceLocationLabel = "Select one or more location";
   
@@ -76,5 +76,10 @@ function( $scope, $q, $state, $stateParams, $filter, Resources ) {
   
   $scope.output.categoryHours.totalOOOOHHoursEstimated = $scope.output.categoryHours.estimatedOOOHours + $scope.output.categoryHours.estimatedOHHours;
   $scope.output.categoryHours.totalOOOOHHoursActual = $scope.output.categoryHours.actualOOOHours + $scope.output.categoryHours.actualOHHours;
+  
+  $scope.scrollTo = function(id) {
+      $location.hash(id);
+      $anchorScroll();
+   };
   
 } ] );
