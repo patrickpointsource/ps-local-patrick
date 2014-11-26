@@ -368,34 +368,36 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 
 	$scope.shiftAssignments = function( role, startDelta, endDelta ) {
 		
-		for( var i = 0; i < $scope.roleAssigneesMap[ role._id ].length; i++ ) {
-			var assignment = $scope.roleAssigneesMap[ role._id ][ i ];
-			if( assignment ) {
-				// if start date changed
-				if( startDelta != 0 ) {
-					// shift start
-					var tmpDate = new Date( assignment.startDate );
-					tmpDate = new Date( tmpDate.getTime( ) + startDelta );
-					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-					assignment.startDate = getShortDate( tmpDate );
-				}
+		if ($scope.roleAssigneesMap[ role._id ]) {
+			for( var i = 0; i < $scope.roleAssigneesMap[ role._id ].length; i++ ) {
+				var assignment = $scope.roleAssigneesMap[ role._id ][ i ];
+				if( assignment ) {
+					// if start date changed
+					if( startDelta != 0 ) {
+						// shift start
+						var tmpDate = new Date( assignment.startDate );
+						tmpDate = new Date( tmpDate.getTime( ) + startDelta );
+						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
+						assignment.startDate = getShortDate( tmpDate );
+					}
 
-				// if end date changed
-				if( endDelta != 0 ) {
-					//shift end
-					var tmpDate = new Date( assignment.endDate );
-					tmpDate = new Date( tmpDate.getTime( ) + endDelta );
-					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-					assignment.endDate = getShortDate( tmpDate );
-				}
+					// if end date changed
+					if( endDelta != 0 ) {
+						//shift end
+						var tmpDate = new Date( assignment.endDate );
+						tmpDate = new Date( tmpDate.getTime( ) + endDelta );
+						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
+						assignment.endDate = getShortDate( tmpDate );
+					}
 
-				// if endDate was set or removed, change assignment endDate
-				if( ( role.endDate && !assignment.endDate ) || ( !role.endDate && assignment.endDate ) ) {
-					assignment.endDate = role.endDate;
+					// if endDate was set or removed, change assignment endDate
+					if( ( role.endDate && !assignment.endDate ) || ( !role.endDate && assignment.endDate ) ) {
+						assignment.endDate = role.endDate;
+					}
 				}
 			}
 		}
-		
+
 
 		for( var i = 0; $scope.projectAssignments && i < $scope.projectAssignments.members.length; i++ ) {
 			var assignment = $scope.projectAssignments.members[ i ];
@@ -3199,6 +3201,7 @@ else if( role.percentageCovered == 0 )
 
     $scope.$on('project:loaded', function() {
         $scope.hideSpinner = true;
+        $rootScope.formDirty = false;
     });
     
 	$scope.JSON2CSV = function( project, hours, reportPeriod ) {
