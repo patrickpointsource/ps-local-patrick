@@ -198,7 +198,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 
 			//Create a new watch
 			$scope.assignmentsSentinel = $scope.$watch( 'projectAssignment.members', function( newValue, oldValue ) {
-				if( !$rootScope.formDirty && $scope.editMode ) {
+				if( !$rootScope.formDirty && $scope.editMode && newValue && oldValue) {
 					//Do not include anthing in the $meta property in the comparison
 					if( oldValue.hasOwnProperty( '$meta' ) ) {
 						var oldClone = Resources.deepCopy( oldValue );
