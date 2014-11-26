@@ -608,8 +608,8 @@ else if( role.percentageCovered == 0 )
 						deferred.resolve( $scope.project );
 
 						$scope.loadExecAndPeople( function() {
+							$rootScope.formDirty = false;
 						    $scope.$emit( 'project:loaded' );
-						    $rootScope.formDirty = false;
 						});
 					} );
 				}, function( response ) {
