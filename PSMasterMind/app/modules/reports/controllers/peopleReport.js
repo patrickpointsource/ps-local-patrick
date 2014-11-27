@@ -77,6 +77,13 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, R
   $scope.output.categoryHours.totalOOOOHHoursEstimated = $scope.output.categoryHours.estimatedOOOHours + $scope.output.categoryHours.estimatedOHHours;
   $scope.output.categoryHours.totalOOOOHHoursActual = $scope.output.categoryHours.actualOOOHours + $scope.output.categoryHours.actualOHHours;
   
+  // Goals section
+  $scope.output.goals = {
+    clientUtilization: 80,
+    investmentUtilization: 75,
+    teamUtilization: 71
+  };
+  
   $scope.scrollTo = function(id) {
       $location.hash(id);
       $anchorScroll();
