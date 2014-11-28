@@ -84,6 +84,48 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, R
     teamUtilization: 71
   };
   
+  // Projections section
+  $scope.output.projections = {
+    firstMonth: { 
+      name: "October",
+      actual: {
+        capacity: 10920,
+        clientHours: 4100,
+        investHours: 3430,
+        totalHours: 7530,
+        OOO: 36,
+        utilization: 70
+      },
+      estimated: {
+        capacity: 10920,
+        clientHours: 3979,
+        investHours: 3668,
+        totalHours: 7465,
+        OOO: 48,
+        utilization: 70
+      }
+    },
+    months: [
+      {
+        name: "November",
+        capacity: 11520,
+        clientHours: 6160,
+        investHours: 5280,
+        totalHours: 11440,
+        OOO: 80,
+        utilization: 68
+      },
+      {
+        name: "December",
+        capacity: 11520,
+        clientHours: 6660,
+        investHours: 6020,
+        totalHours: 12680,
+        OOO: 360,
+        utilization: 68
+      }
+    ]
+  };
   $scope.scrollTo = function(id) {
       $location.hash(id);
       $anchorScroll();

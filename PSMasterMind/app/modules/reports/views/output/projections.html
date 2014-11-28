@@ -2,4 +2,44 @@
     <div class="report-output-well header">
         <h1>Projections - 3 month outlook</h1>
     </div>
+    <div class="report-output-inside-row no-margin">
+        <div class="col-xs-12 report-output-well-footer">
+            <span>Estimations are based off previous month's projections. 
+            Projections are based on hours booked on active, backlog and pipeline projects. 
+            Capacity is based on the current number of employees as of the date of this report.</span>
+        </div>
+    </div>
+    <div class="report-output-inside-row">
+        <table class="table table-striped">
+            <thead>
+                <th></th>
+                <th>Capacity</th>
+                <th>Client Hours</th>
+                <th>Invest Hours</th>
+                <th>Total Hours</th>
+                <th>OOO</th>
+                <th>Utilization</th>
+            </thead>
+            <tbody>
+                <tr>
+                  <td>{{output.projections.firstMonth.name}} (<sup>Actual</sup>&frasl;<sub>Estimated</sub>)</td>
+                  <td>{{output.projections.firstMonth.actual.capacity}}</td>
+                  <td><sup>{{output.projections.firstMonth.actual.clientHours}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.clientHours}}</sub></td>
+                  <td><sup>{{output.projections.firstMonth.actual.investHours}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.investHours}}</sub></td>
+                  <td><sup>{{output.projections.firstMonth.actual.totalHours}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.totalHours}}</sub></td>
+                  <td><sup>{{output.projections.firstMonth.actual.OOO}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.OOO}}</sub></td>
+                  <td><sup>{{output.projections.firstMonth.actual.utilization}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.utilization}}</sub></td>
+                </tr>
+                <tr ng-repeat="month in output.projections.months">
+                  <td>{{month.name}}</td>
+                  <td>{{month.capacity}}</td>
+                  <td>{{month.clientHours}}</td>
+                  <td>{{month.investHours}}</td>
+                  <td>{{month.totalHours}}</td>
+                  <td>{{month.OOO}}</td>
+                  <td>{{month.utilization}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
