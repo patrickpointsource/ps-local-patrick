@@ -7,17 +7,25 @@
 				</div>
 				<br />
 				<div class="groups">
-					<input type="checkbox" id="rep-loc-onshore" name="onshore" ng-model="" ng-click="" />
-					<label for="rep-loc-onshore">Onshore, not including Chicago</label>
+					<label>
+						<input type="checkbox" />
+						Onshore, not including Chicago
+					</label>
 					<br />
-					<input type="checkbox" id="rep-loc-chicago" name="chicago" ng-model="" ng-click="" />
-					<label for="rep-loc-chicago">Chicago</label>
+					<label>
+						<input type="checkbox" />
+						Chicago
+					</label>
 					<br />
-					<input type="checkbox" id="rep-loc-offshore" name="offshore" ng-model="" ng-click="" />
-					<label for="rep-loc-offshore">Offshore</label>
+					<label>
+						<input type="checkbox" />
+						Offshore
+					</label>
 					<br />
-					<input type="checkbox" id="rep-loc-allLocations" name="allLocations" ng-model="" ng-click="" />
-					<label for="rep-loc-allLocations">All locations</label>
+					<label>
+						<input type="checkbox" />
+						All locations
+					</label>
 				</div>
 			</div>
 		</div>
@@ -28,30 +36,51 @@
 			<br />
 			<div class="row groups">
 				<div class="col-xs-12 col-md-6">
-					<input type="checkbox" id="rep-loc-onshore" name="onshore" ng-model="" ng-click="" />
-					<label for="rep-loc-onshore">Administration</label>
+					<label>
+						<input type="checkbox" />
+						Administration
+					</label>
 					<br />
-					<input type="checkbox" id="rep-loc-chicago" name="chicago" ng-model="" ng-click="" />
-					<label for="rep-loc-chicago">Chicago</label>
+					<label>
+						<input type="checkbox" />
+						Architects
+					</label>
 					<br />
-					<input type="checkbox" id="rep-loc-offshore" name="offshore" ng-model="" ng-click="" />
-					<label for="rep-loc-offshore">Offshore</label>
+					<label>
+						<input type="checkbox" />
+						Delivery Services
+					</label>
 					<br />
-					<input type="checkbox" id="rep-loc-allLocations" name="allLocations" ng-model="" ng-click="" />
-					<label for="rep-loc-allLocations">All locations</label>
+					<label>
+						<input type="checkbox" />
+						Development
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" />
+						Digital Experience
+					</label>
 				</div>
 				<div class="col-xs-12 col-md-6">
-					<input type="checkbox" id="rep-loc-onshore" name="onshore" ng-model="" ng-click="" />
-					<label for="rep-loc-onshore">Onshore, not including Chicago</label>
+					<label>
+						<input type="checkbox" />
+						Executive Management
+					</label>
 					<br />
-					<input type="checkbox" id="rep-loc-chicago" name="chicago" ng-model="" ng-click="" />
-					<label for="rep-loc-chicago">Chicago</label>
+					<label>
+						<input type="checkbox" />
+						Marketing
+					</label>
 					<br />
-					<input type="checkbox" id="rep-loc-offshore" name="offshore" ng-model="" ng-click="" />
-					<label for="rep-loc-offshore">Offshore</label>
+					<label>
+						<input type="checkbox" />
+						Sales
+					</label>
 					<br />
-					<input type="checkbox" id="rep-loc-allLocations" name="allLocations" ng-model="" ng-click="" />
-					<label for="rep-loc-allLocations">All locations</label>
+					<label>
+						<input type="checkbox" />
+						All Departments
+					</label>
 				</div>
 			</div>
 		</div>
@@ -63,7 +92,25 @@
 					<h3>Select roles</h3>
 				</div>
 				<br />
-				<div>Select a department to view roles, or select All departments to select from all available roles.</div>
+				<div ng-if="false">Select a department to view roles, or select All departments to select from all available roles.</div>
+				<div class="row groups">
+					<div class="col-md-6">
+						<div ng-repeat="role in roles | filter: { isRight: false }">
+		                    <label>
+		                        <input type="checkbox" />
+		                        {{role.item.title}}
+		                    </label>
+		                </div>
+	                </div>
+	                <div class="col-md-6">
+		                <div ng-repeat="role in roles | filter: { isRight: true }">
+		                    <label>
+		                        <input type="checkbox" />
+		                        {{role.item.title}}
+		                    </label>
+		                </div>
+	                </div>
+				</div>
 			</div>
 		</div>
 		<div class="well col-md-5">
@@ -73,36 +120,46 @@
 			<br />
 			<div class="row groups">
 				<div class="col-xs-12 col-md-4">
-					<input type="radio" id="rep-date-oneWeek" name="dateRange" ng-model="" ng-click="" />
-					<label for="rep-date-oneWeek">One week</label>
-					<br />
-					<input type="radio" id="rep-date-twoWeeks" name="dateRange" ng-model="" ng-click="" />
-					<label for="rep-date-twoWeeks">Two weeks</label>
-					<br />
-					<input type="radio" id="rep-date-oneMonth" name="dateRange" ng-model="" ng-click="" />
-					<label for="rep-date-oneMonth">One month</label>
-					<br />
-					<input type="radio" id="rep-date-custom" name="dateRange" ng-model="" ng-click="" />
-					<label for="rep-date-custom">Custom</label>
+					<label>
+	                	<input type="radio" name="date" ng-model="dateRange" value="week" />
+	                	One week
+                	</label>
+                	<br />
+                	<label>
+	                	<input type="radio" name="date" ng-model="dateRange" value="weeks" />
+	                	Two weeks
+                	</label>
+                	<br />
+                	<label>
+	                	<input type="radio" name="date" ng-model="dateRange" value="month" />
+	                	One month
+                	</label>
+                	<br />
+                	<label>
+	                	<input type="radio" name="date" ng-model="dateRange" value="custom" />
+	                	Custom
+                	</label>
 				</div>
-				<div class="col-xs-12 col-md-8">
+				<div class="col-xs-12 col-md-8" ng-show="dateRange == 'custom'">
 					<div class="row">
-						<div class="col-md-2">
-							<label class="control-label" for="rep-date-start">Start:</label>
-						</div>
-						<div class="col-md-8">
-							<input id="rep-date-start" name="startDate" class="form-control datepicker" type="text" ng-model="" data-date-format="yyyy-mm-dd"
-	                			data-provide="datepicker" />
-						</div>
+						<label class="control-label">
+							<div class="col-md-2">
+								Start:
+							</div>
+							<div class="col-md-8">
+								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+							</div>
+						</label>
 					</div>
 					<div class="row">
-						<div class="col-md-2">
-							<label class="control-label" for="rep-date-end">End:</label>
-						</div>
-						<div class="col-md-8">
-							<input id="rep-date-end" name="endDate" class="form-control datepicker" type="text" ng-model="" data-date-format="yyyy-mm-dd"
-	                			data-provide="datepicker" />
-						</div>
+						<label class="control-label">
+							<div class="col-md-2">
+								End:
+							</div>
+							<div class="col-md-8">
+								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+							</div>
+						</label>
 					</div>
 				</div>
 			</div>
@@ -115,127 +172,196 @@
 			</div>
 			<br />
 			<div>
-				<input type="checkbox" id="rep-fields-all" name="rep-fields-all" ng-model="" ng-click="" />
-				<label for="rep-fields-all">Select all fields</label>
+				<label>
+					<input type="checkbox" ng-click="selectAllFields(!fields.all);" ng-model="fields.all" />
+					All fields
+				</label>
 			</div>
 			<div class="row groups">
 				<div class="col-xs-12 col-md-4">
 					<h5>PROJECT HOURS</h5>
 					<br />
-					<input type="checkbox" id="rep-fields-allProject" name="allProject" ng-model="" ng-click="" />
-					<label for="rep-fields-allProject">All project hours</label>
+					<label>
+						<input type="checkbox" ng-click="selectAllProjectHours(!fields.projectHours.all);" ng-model="fields.projectHours.all" />
+						All project hours
+					</label>
 					<br />
 					<div style="margin-left: 20px;">
-						<input type="checkbox" id="rep-fields-projActualClient" name="projActualClient" ng-model="" ng-click="" />
-						<label for="rep-fields-projActualClient">Actual client</label>
+						<label>
+							<input type="checkbox" ng-model="fields.projectHours.actualClient" />
+							Actual client
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-projActualInvest" name="projActualInvest" ng-model="" ng-click="" />
-						<label for="rep-fields-projActualInvest">Actual investment</label>
+						<label>
+							<input type="checkbox" ng-model="fields.projectHours.actualInvestment" />
+							Actual investment
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-projUtilClientWork" name="projUtilClientWork" ng-model="" ng-click="" />
-						<label for="rep-fields-projUtilClientWork">Utilization - client work</label>
+						<label>
+							<input type="checkbox" ng-model="fields.projectHours.utilClientWork" />
+							Utilization - client work
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-projUtilInvestWork" name="projUtilInvestWork" ng-model="" ng-click="" />
-						<label for="rep-fields-projUtilInvestWork">Utilization - investment work</label>
+						<label>
+							<input type="checkbox" ng-model="fields.projectHours.utilInvestmentWork" />
+							Utilization - investment work
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-projUtilRole" name="projUtilRole" ng-model="" ng-click="" />
-						<label for="rep-fields-projUtilRole">Utilization by Role</label>
+						<label>
+							<input type="checkbox" ng-model="fields.projectHours.utilRole" />
+							Utilization by role
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-projEstClientHrs" name="projEstClientHrs" ng-model="" ng-click="" />
-						<label for="rep-fields-projEstClientHrs">Estimated client hours</label>
+						<label>
+							<input type="checkbox" ng-model="fields.projectHours.estimatedClientHrs" />
+							Estimated client hours
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-projEstInvestHrs" name="projEstInvestHrs" ng-model="" ng-click="" />
-						<label for="rep-fields-projEstInvestHrs">Estimated investment hours</label>
+						<label>
+							<input type="checkbox" ng-model="fields.projectHours.estimatedInvestmentHrs" />
+							Estimated investment hours
+						</label>
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-4">
 					<h5>CATEGORY HOURS</h5>
 					<br />
-					<input type="checkbox" id="rep-fields-outAll" name="outAll" ng-model="" ng-click="" />
-					<label for="rep-fields-outAll">Out of office</label>
+					<label>
+						<input type="checkbox" ng-click="selectAllOutOfOfficeHours(!fields.categoryHours.out.all);" ng-model="fields.categoryHours.out.all" />
+						Out of office
+					</label>
 					<br />
 					<div style="margin-left: 20px;">
-						<input type="checkbox" id="rep-fields-outSick" name="outSick" ng-model="" ng-click="" />
-						<label for="rep-fields-outSick">Sick time</label>
+						<label>
+							<input type="checkbox" ng-model="fields.categoryHours.out.sick" />
+							Sick time
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-outVac" name="outVac" ng-model="" ng-click="" />
-						<label for="rep-fields-outVac">Vacation</label>
+						<label>
+							<input type="checkbox" ng-model="fields.categoryHours.out.vacation" />
+							Vacation
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-outHoliday" name="outHoliday" ng-model="" ng-click="" />
-						<label for="rep-fields-outHoliday">Holiday</label>
+						<label>
+							<input type="checkbox" ng-model="fields.categoryHours.out.holiday" />
+							Holiday
+						</label>
 					</div>
 					<br />
-					<input type="checkbox" id="rep-fields-overhead" name="overhead" ng-model="" ng-click="" />
-					<label for="rep-fields-overhead">Overhead</label>
+					<label>
+						<input type="checkbox" ng-click="selectAllOverheadHours(!fields.categoryHours.overhead.all);" ng-model="fields.categoryHours.overhead.all" />
+						Overhead
+					</label>
 					<br />
 					<div style="margin-left: 20px;">
-						<input type="checkbox" id="rep-fields-overheadMeet" name="overheadMeet" ng-model="" ng-click="" />
-						<label for="rep-fields-overheadMeet">Meetings</label>
+						<label>
+							<input type="checkbox" ng-model="fields.categoryHours.overhead.meetings" />
+							Meetings
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-overheadTrain" name="overheadTrain" ng-model="" ng-click="" />
-						<label for="rep-fields-overheadTrain">Trainings</label>
+						<label>
+							<input type="checkbox" ng-model="fields.categoryHours.overhead.trainings" />
+							Trainings
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-overheadRD" name="overheadRD" ng-model="" ng-click="" />
-						<label for="rep-fields-overheadRD">R&D</label>
+						<label>
+							<input type="checkbox" ng-model="fields.categoryHours.overhead.rd" />
+							R&D
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-overheadDesign" name="overheadDesign" ng-model="" ng-click="" />
-						<label for="rep-fields-overheadDesign">Design</label>
+						<label>
+							<input type="checkbox" ng-model="fields.categoryHours.overhead.design" />
+							Design
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-overheadAdmin" name="overheadAdmin" ng-model="" ng-click="" />
-						<label for="rep-fields-overheadAdmin">Administration</label>
+						<label>
+							<input type="checkbox" ng-model="fields.categoryHours.overhead.admin" />
+							Administration
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-overheadHire" name="overheadHire" ng-model="" ng-click="" />
-						<label for="rep-fields-overheadHire">Hire & recruiting</label>
+						<label>
+							<input type="checkbox" ng-model="fields.categoryHours.overhead.hr" />
+							Hire & recruiting
+						</label>
+						
 					</div>
-					<input type="checkbox" id="rep-fields-overheadMarket" name="overheadMarket" ng-model="" ng-click="" />
-					<label for="rep-fields-overheadMarket">Marketing</label>
+					<label>
+						<input type="checkbox" ng-model="fields.categoryHours.marketing" />
+						Marketing
+					</label>
 					<br />
-					<input type="checkbox" id="rep-fields-overheadSales" name="overheadSales" ng-model="" ng-click="" />
-					<label for="rep-fields-overheadSales">Sales</label>
+					<label>
+						<input type="checkbox" ng-model="fields.categoryHours.sales" />
+						Sales
+					</label>
 				</div>
 				<div class="col-xs-12 col-md-4">
 					<h5>GOALS & PROJECTIONS</h5>
 					<br />
-					<input type="checkbox" id="rep-fields-goalAll" name="goalAll" ng-model="" ng-click="" />
-					<label for="rep-fields-goalAll">All goals & projections</label>
+					<label>
+						<input type="checkbox" ng-click="selectAllGoalsHours(!fields.goals.all);" ng-model="fields.goals.all" />
+						All goals & projections
+					</label>
 					<br />
 					<div style="margin-left: 20px;">
-						<input type="checkbox" id="rep-fields-goalClientHrs" name="goalClientHrs" ng-model="" ng-click="" />
-						<label for="rep-fields-goalClientHrs">Projected client hours</label>
+						<label>
+							<input type="checkbox" ng-model="fields.goals.projectedClientHrs" />
+							Projected client hours
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-goalInvestHrs" name="goalInvestHrs" ng-model="" ng-click="" />
-						<label for="rep-fields-goalInvestHrs">Projected investment hours</label>
+						<label>
+							<input type="checkbox" ng-model="fields.goals.projectedInvestmentHrs" />
+							Projected investment hours
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-goalUtilProj" name="goalUtilProj" ng-model="" ng-click="" />
-						<label for="rep-fields-goalUtilProj">Utilization projections by category</label>
+						<label>
+							<input type="checkbox" ng-model="fields.goals.utilProjections" />
+							Utilization projections by category
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-goalHrs" name="goalHrs" ng-model="" ng-click="" />
-						<label for="rep-fields-goalHrs">Hours and utilization goals</label>
+						<label>
+							<input type="checkbox" ng-model="fields.goals.utilGoals" />
+							Hours and utilization goals
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-goalOOO" name="goalOOO" ng-model="" ng-click="" />
-						<label for="rep-fields-goalOOO">Projected OOO</label>
+						<label>
+							<input type="checkbox" ng-model="fields.goals.projectedOOO" />
+							Projected OOO
+						</label>
 					</div>
 					<br />
 					<h5>GRAPHS</h5>
 					<br />
-					<input type="checkbox" id="rep-fields-graphPercent" name="graphPercent" ng-model="" ng-click="" />
-					<label for="rep-fields-graphPercent">% hours in category, incl. client and invest</label>
+					<label>
+						<input type="checkbox" ng-click="selectAllGraphPercentHours(!fields.graphs.percent.all);" ng-model="fields.graphs.percent.all" />
+						% hours in category, incl. client and invest
+					</label>
 					<br />
 					<div style="margin-left: 20px;">
-						<input type="checkbox" id="rep-fields-graphOverhead" name="graphOverhead" ng-model="" ng-click="" />
-						<label for="rep-fields-graphOverhead">overhead as % of available hours</label>
+						<label>
+							<input type="checkbox" ng-model="fields.graphs.percent.overhead" />
+							overhead as % of available hours
+						</label>
 						<br />
-						<input type="checkbox" id="rep-fields-graphOut" name="graphOut" ng-model="" ng-click="" />
-						<label for="rep-fields-graphOut">out of office as % of available hours</label>
+						<label>
+							<input type="checkbox" ng-model="fields.graphs.percent.out" />
+							out of office as % of available hours
+						</label>
 					</div>
-					<input type="checkbox" id="rep-fields-graphTrendHrsMonth" name="graphTrendHrsMonth" ng-model="" ng-click="" />
-					<label for="rep-fields-graphTrendHrsMonth">Trend line - category hours x month</label>
+					<label>
+						<input type="checkbox" ng-model="fields.graphs.trendHrs" />
+						Trend line - category hours x month
+					</label>
 					<br />
-					<input type="checkbox" id="rep-fields-graphTrendHrsGoals" name="graphTrendHrsGoals" ng-model="" ng-click="" />
-					<label for="rep-fields-graphTrendHrsGoals">Trend line - % category hours, incl. goals x month</label>
+					<label>
+						<input type="checkbox" ng-model="fields.graphs.trendGoals" />
+						Trend line - % category hours, incl. goals x month
+					</label>
 					<br />
-					<input type="checkbox" id="rep-fields-graphHrsBar" name="graphHrsBar" ng-model="" ng-click="" />
-					<label for="rep-fields-graphHrsBar">Hours bar graph - expected, actual, projected</label>
+					<label>
+						<input type="checkbox" ng-model="fields.graphs.graph" />
+						Hours bar graph - expected, actual, projected
+					</label>
 				</div>
 			</div>
 		</div>
@@ -253,14 +379,20 @@
 				</div>
 				<br />
 				<div class="groups">
-					<input type="checkbox" id="rep-fields-outputCSV" name="outputCSV" ng-model="" ng-click="" />
-					<label for="rep-fields-outputCSV">CSV, no graphs</label>
+					<label>
+						<input type="checkbox" />
+						CSV, no graphs
+					</label>
 					<br />
-					<input type="checkbox" id="rep-fields-outputCSVGraphs" name="outputCSVGraphs" ng-model="" ng-click="" />
-					<label for="rep-fields-outputCSVGraphs">CSV & Graphs</label>
+					<label>
+						<input type="checkbox" />
+						CSV & Graphs
+					</label>
 					<br />
-					<input type="checkbox" id="rep-fields-outputGraphs" name="outputGraphs" ng-model="" ng-click="" />
-					<label for="rep-fields-outputGraphs">Graphs only</label>
+					<label>
+						<input type="checkbox" />
+						Graphs only
+					</label>
 				</div>
 			</div>
 		</div>
@@ -276,9 +408,11 @@
 				</div>
 				<br />
 				<div class="groups">
-					<label for="rep-fields-name">Name this report</label>
-					<br />
-					<input id="rep-fields-nam" name="reportName" class="form-control" type="text" ng-model="" />
+					<label>
+						Name this report
+						<br />
+						<input class="form-control" type="text" />
+					</label>
 				</div>
 			</div>
 		</div>
