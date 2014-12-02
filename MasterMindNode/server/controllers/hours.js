@@ -96,6 +96,7 @@ module.exports.insertHours = function(obj, callback) {
                     console.log(err);
                     callback('error insert hours', null);
                 } else {
+                	prepareItem(obj, body);
                     callback(null, _.extend(obj, body));
                 }
             });
@@ -111,6 +112,7 @@ module.exports.insertHours = function(obj, callback) {
                         console.log(err);
                         callback('error insert hours', null);
                     } else {
+                    	prepareItem(obj, body);
                         callback(null, _.extend(obj, body));
                     }
                 });
@@ -135,10 +137,17 @@ module.exports.updateHours = function(id, obj, callback) {
             console.log(err);
             callback('error update hours', null);
         } else {
+        	prepareItem(obj, body);
             callback(null, _.extend(obj, body));
         }
     });
 };
+
+var prepareItem = function (obj, body) {
+    obj._id = body.id;
+    obj._rev = body.rev;
+    obj.resource = "hours/" + obj._id;
+}
 
 module.exports.deleteHours = function(id, obj, callback) {
     dataAccess.deleteItem(id, obj._rev, dataAccess.HOURS_KEY, function(err, body){
