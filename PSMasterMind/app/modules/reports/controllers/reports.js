@@ -704,8 +704,12 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 				return p[ "project.resource" ];
 			} );
 			
-			if( hoursQ[ "$or" ].length > 0 )
-				HoursService.query( hoursQ );
+			if( hoursQ[ "$or" ].length > 0 ) {
+				var fields = {
+					hoursQ: hoursQ,
+				};
+				Resources.refresh("/reports/project/generate", null, fields);
+			}
 			else
 				$scope.cancelReportGeneration( );
 
@@ -908,16 +912,18 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 				return res;
 			};
 
-			if( hoursQ[ "$or" ].length > 0 )
-				HoursService.query( hoursQ, {
+			if( hoursQ[ "$or" ].length > 0 ) {
+				var fields = {
+						hoursQ: hoursQ,
 						project: 1,
 						person: 1,
 						task: 1,
 						date: 1,
 						hours: 1,
 						description: 1
-					}
-				 );
+				};
+				Resources.refresh("/reports/project/generate", null, fields);
+			}
 			else
 				$scope.cancelReportGeneration( );
 
