@@ -87,7 +87,8 @@ var getPreviousWorkingDay = function(){
     do {
     	cDate.setDate(cDate.getDate()-1);
     	dayOfWeek = cDate.getDay();
-    } while (dayOfWeek == 5 || dayOfWeek == 6 )
+    //} while (dayOfWeek == 5 || dayOfWeek == 6 )
+    } while (dayOfWeek == 0 || dayOfWeek == 6 )
     
     return cDate;
 };
