@@ -115,8 +115,9 @@ var generateReport = function(personId, type, params, reqSession, callback) {
   } else {
     reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_RUNNING);
     
-    reportAccess.startGenerateReport(personId, type, function(err, result) {
+    reportAccess.startGenerateReport(personId, type, params, function(err, result) {
       if(err) {
+        reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_CANCELLED);
         callback(err, null);
       } else {
         reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_COMPLETED);
@@ -126,8 +127,8 @@ var generateReport = function(personId, type, params, reqSession, callback) {
   }
 };
 
-var cancelReport = function(reqSession) {
-  session.update(reqSession, reportAccess.REPORT_STATUS_KEY, reportAccess.REPORT_IS_CANCELLED);
+var cancelReport = function(personId, type) {
+  reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_CANCELLED);
   return { status: reportAccess.REPORT_IS_CANCELLED };
 };
 

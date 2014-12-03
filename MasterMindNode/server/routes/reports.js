@@ -105,8 +105,15 @@ router.get( '/:type/cancel', util.isAuthenticated, function( req, res ) {
 			
 		}
 	});*/
-	var result = reports.cancelReport(req.session);
-    res.json( result );
+	people.getPersonByGoogleId(req.user, function(err, person){
+      if(err){
+        res.json(500, err);
+      } else {
+        var type = req.params.type;
+        var result = reports.cancelReport(person._id, type);
+        res.json( result );
+      }
+    });
 } );
 
 router.get( '/:type/get', util.isAuthenticated, function( req, res ) {

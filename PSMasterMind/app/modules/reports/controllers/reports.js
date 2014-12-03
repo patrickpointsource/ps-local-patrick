@@ -818,6 +818,20 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		cb( projects );
 
 	};
+	
+	$scope.getProjectResources = function(projects) {
+	  var projectResources = [];
+      for( var i = 0; i < projects.length; i++ ) {
+        var project = projects[ i ];
+        var uri = project.about ? project.about : project.resource;
+
+        if( uri && projectResources.indexOf( uri ) == -1 ) {
+          projectResources.push( uri );
+        }
+      }
+      
+      return projectResources;
+	};
 
 	$scope.generateHoursReport = function( ) {
 		$scope.csvData = null;
@@ -829,12 +843,27 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		var reportProject = filtered.reportProject;
 		var reportPerson = filtered.reportPerson;
 		var projectMapping = filtered.projectMapping;
-
+        
 		var i, j;
 		//var hoursData = [];
+		
+		var params = {
+		  projectResources: $scope.getProjectResources(result),
+		  reportClient: reportClient,
+		  reportProject: reportProject,
+		  reportPerson: reportPerson,
+		  projectMapping: projectMapping
+		};
+		
+		if ($scope.reportCustomStartDate && $scope.reportCustomEndDate ) {
+          params.startDate = $scope.reportCustomStartDate;
+          params.endDate = $scope.reportCustomEndDate;
+        }
+        
+        Resources.refresh("/reports/project/generate", params, {});
 
 		// load assignments for filtered projects
-		AssignmentService.getAssignments( result ).then( function( assignments ) {
+		/*AssignmentService.getAssignments( result ).then( function( assignments ) {
 			var persons = [ ];
 
 			for( i = 0; i < assignments.length; i++ ) {
@@ -927,7 +956,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			else
 				$scope.cancelReportGeneration( );
 
-		} );
+		} );*/
 
 	};
 
@@ -1397,7 +1426,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			}
 			if (result.status == "Completed") {
 				Resources.refresh("/reports/project/get").then(function( result ){
-					$scope.onReportGenerated( result );				
+				    if(result && result.data && result.data.hours && result.data.hours.members) {
+				      $scope.onReportGenerated( result.data.hours.members );
+				    }
 				});
 			}
 			return result.status;

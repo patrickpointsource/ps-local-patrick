@@ -6,6 +6,8 @@
  * @param {Object} callback
  */
 
+var _ = require('underscore');
+
 var getIDfromResource = function(resource, callback) {
 	
 	var ind = resource.lastIndexOf("/");
@@ -73,7 +75,7 @@ var getFormattedDate = function(date) {
 	}
 	var result = yyyy+'-'+mm+'-'+dd;
 	return result;
-}
+};
 
 
 /**
@@ -100,7 +102,44 @@ var getPreviousWorkingDay = function(){
 
 var isString = function isString(o) {
     return (Object.prototype.toString.call(o) === '[object String]');
-}
+};
+
+var getPersonName = function(person, isSimply, isFirst) {
+        var result = '';
+        var tmpName;
+        
+        if (!person || !person.name)
+            return '';
+        
+        
+        if (_.isString(person.name)) {
+             var tmp = person.name.indexOf(",") == -1 ? person.name.split(/\s+/g) : person.name.split(",");
+             
+             tmpName = {
+                 givenName: tmp[0].trim(),
+                 familyName: tmp[1].trim(),
+                 fullName: person.name
+             };
+             
+         } else if (person.name && _.isObject(person.name) && !person.name.familyName && !person.name.givenName && person.name.fullName) {
+             var tmp = person.name.fullName.indexOf(",") == -1 ? person.name.fullName.split(/\s+/g) : person.name.fullName.split(",");
+             
+             tmpName = {
+                 givenName: tmp[0].trim(),
+                 familyName: tmp[1].trim(),
+                 fullName: person.name.fullName
+             };
+             
+         } else
+             tmpName = person.name;
+             
+        result = isSimply ? (tmpName.givenName + ' ' + tmpName.familyName): (tmpName.familyName + ', ' + tmpName.givenName);
+        
+        if (isFirst)
+            result = tmpName.givenName;
+        
+        return result;
+};
 
 module.exports.getIDfromResource = getIDfromResource;
 module.exports.getFullID = getFullID;
@@ -109,5 +148,4 @@ module.exports.getDateFromNow = getDateFromNow;
 module.exports.getPreviousWorkingDay = getPreviousWorkingDay;
 module.exports.getFormattedDate = getFormattedDate;
 module.exports.isString = isString;
-
-    
+module.exports.getPersonName = getPersonName;
