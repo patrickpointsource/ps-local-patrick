@@ -343,10 +343,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 
 	$scope.init = function( ) {
 
-		$scope.checkGenerationStatus().then(function ( status ) {
-			if (status == "Running")
-				$scope.startGenerationTimers();
-		});
+		$scope.startGenerationTimers();
+		$scope.checkGenerationStatus();
 
 		$scope.loadRoles( );
 		$scope.loadAndInitPeople( );
@@ -1421,7 +1419,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	
 	$scope.checkGenerationStatus = function ( ) {
 		return Resources.refresh("/reports/project/status").then(function( result ){
-			if (result.status != "Running") {
+			if (result.status != "Running" && result.status != "Completed") {
 				$scope.cancelReportGeneration();
 			}
 			if (result.status == "Completed") {
