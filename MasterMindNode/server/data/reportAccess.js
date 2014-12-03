@@ -127,8 +127,14 @@ var startGenerateReport = function(personId, type, params, callback) {
       
       var projMapping = JSON.parse(params.projectMapping);
       
+      var assignmentsMembers = [];
+      
+      if(assignments && assignments.length > 0) {
+        assignmentsMembers = assignments.members;
+      }
+      
       getPeopleAndHoursQuery(
-        assignments,
+        assignmentsMembers,
         params.reportPerson,
         projMapping,
         projects,
@@ -225,8 +231,6 @@ var getPeopleAndHoursQuery = function(assignments, reportPerson, projectMapping,
             };
           } );
           
-          assignments = assignments.members;
-          
           for( i = 0; i < assignments.length; i++ ) {
 
                 for( j = 0; j < assignments[ i ].members.length; j++ ) {
@@ -288,6 +292,10 @@ var getPeopleAndHoursQuery = function(assignments, reportPerson, projectMapping,
                 
                 return p[ "project.resource" ];
             } );
+          
+          if (startDate && endDate ) {
+            hoursQ.$and = [ { date: { $gte: startDate }}, { date: { $lte: endDate }}  ];
+          }
       
           callback(null, { hoursQ: hoursQ, people: people });
         }
