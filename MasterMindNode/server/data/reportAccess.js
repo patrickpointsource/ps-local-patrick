@@ -1,5 +1,6 @@
 var dbAccess = require( '../data/dbAccess.js' );
 var dataAccess = require( '../data/dataAccess.js' );
+var memoryCache = require( '../data/memoryCache.js' );
 
 // Report types
 var REPORT_TYPE_PEOPLE = "people";
@@ -14,7 +15,6 @@ var REPORT_IS_COMPLETED = "Completed";
 
 var REPORT_PREFIX = "report_";
 var STATUS_SUFFIX = "_status";
-
 
 /**
  * Returns report status of required type for required person
@@ -81,7 +81,13 @@ var updateStatusByPersonIdAndType = function (personId, type, status, callback) 
 	var statusId = getReportId(personId, type) + STATUS_SUFFIX;
     dataAccess.getItem(statusId, function(err, obj){
         if (err) {
-        	callback(err, null);
+        	//callback(err, null);
+        	if(!obj) {
+        	  obj = { status: status };
+        	}
+        	dataAccess.insertItem(statusId, obj, null, function(err, result){
+                callback(err, result);
+            });
         }
         else {
         	obj.status = status;
@@ -90,17 +96,52 @@ var updateStatusByPersonIdAndType = function (personId, type, status, callback) 
             });
         }
     });
-} 
+};
 
 var getReportId = function (personId, type) {
 	return REPORT_PREFIX + personId + "_" + type;
-}
+};
 
+var startGenerateReport = function(personId, type, callback) {
+  
+  // To do: migrate functionality from front-end
+  
+  var reportId = getReportId(personId, type);
+  var result = { data: { hours: [], people: [] } };
+  
+  setTimeout(function() {
+    memoryCache.putObject(reportId, result);
+    callback(null, "Report " + reportId + " sucessfully generated");
+  }, 15000);
+};
+
+var getReportFromMemoryCache = function(personId, type, callback) {
+  var reportId = getReportId(personId, type);
+  callback(null, memoryCache.getObject(reportId));
+};
+
+var getStatusFromMemoryCache = function(personId, type) {
+  var reportId = getReportId(personId, type) + STATUS_SUFFIX;
+  var status = memoryCache.getObject(reportId);
+  if(!status) {
+    status = REPORT_IS_NOT_STARTED;
+  }
+  return status;
+};
+
+var updateStatus = function(personId, type, status) {
+  var reportId = getReportId(personId, type) + STATUS_SUFFIX;
+  memoryCache.putObject(reportId, status);
+};
 
 module.exports.getStatusByPersonIdAndType = getStatusByPersonIdAndType;
 module.exports.generateReportByPersonIdAndType = generateReportByPersonIdAndType;
 module.exports.getReportByPersonIdAndType = getReportByPersonIdAndType;
 module.exports.updateStatusByPersonIdAndType = updateStatusByPersonIdAndType;
+module.exports.startGenerateReport = startGenerateReport;
+module.exports.getReportFromMemoryCache = getReportFromMemoryCache;
+module.exports.getStatusFromMemoryCache = getStatusFromMemoryCache;
+module.exports.updateStatus = updateStatus;
 
 module.exports.REPORT_IS_NOT_STARTED = REPORT_IS_NOT_STARTED;
 module.exports.REPORT_IS_RUNNING = REPORT_IS_RUNNING;

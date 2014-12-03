@@ -1,7 +1,9 @@
 'use strict';
 
 var reportAccess = require('../data/reportAccess');
+var session = require('../util/session');
 
+// Report status in database implementation
 /**
  * Returns report status of required type for required person
  * 
@@ -96,7 +98,55 @@ var getReportByPersonIdAndType = function(personId, type, callback) {
 	
 };
 
+/*
+* Report status in session implementation
+*/
+
+var getStatus = function(personId, type) {
+  var status = reportAccess.getStatusFromMemoryCache(personId, type);
+  
+  return { status: status };
+};
+
+var generateReport = function(personId, type, params, reqSession, callback) {
+  var status = reportAccess.getStatusFromMemoryCache(personId, type);
+  if(status == reportAccess.REPORT_IS_RUNNING) {
+    callback("Report generation is already running.", null);
+  } else {
+    reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_RUNNING);
+    
+    reportAccess.startGenerateReport(personId, type, function(err, result) {
+      if(err) {
+        callback(err, null);
+      } else {
+        reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_COMPLETED);
+        callback(null, { status: reportAccess.REPORT_IS_COMPLETED });
+      }
+    });
+  }
+};
+
+var cancelReport = function(reqSession) {
+  session.update(reqSession, reportAccess.REPORT_STATUS_KEY, reportAccess.REPORT_IS_CANCELLED);
+  return { status: reportAccess.REPORT_IS_CANCELLED };
+};
+
+var getReport = function(personId, type, callback) {
+  reportAccess.getReportFromMemoryCache(personId, type, function(err, result) {
+    if(err) {
+      callback(err, null);
+    } else {
+      callback(null, result);
+    }
+  });
+};
+
 module.exports.getStatusByPersonIdAndType = getStatusByPersonIdAndType;
 module.exports.generateReportByPersonIdAndType = generateReportByPersonIdAndType;
 module.exports.cancelReportByPersonIdAndType = cancelReportByPersonIdAndType;
 module.exports.getReportByPersonIdAndType = getReportByPersonIdAndType;
+
+module.exports.getStatus = getStatus;
+module.exports.generateReport = generateReport;
+module.exports.cancelReport = cancelReport;
+module.exports.getReport = getReport;
