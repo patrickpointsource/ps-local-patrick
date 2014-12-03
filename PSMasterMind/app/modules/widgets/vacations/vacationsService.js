@@ -11,14 +11,14 @@ function( $q, Resources, HoursService ) {
     Approved: "Approved",
     Denied: "Denied",
     Cancelled: "Cancelled"
-  }
+  };
   
   this.VACATION_TYPES = {
     Appointment: "Appointment",
     Vacation: "Vacation",
     Travel: "Customer Travel",
     Training: "Conference/Training"
-  }
+  };
   
   
   this.getVacations = function(profileId) {
@@ -28,7 +28,7 @@ function( $q, Resources, HoursService ) {
 	  else {
 		  return this.getVacationsUsingQuery(profileId);
 	  }
-  }
+  };
 
   this.getVacationsUsingGet = function(profileId) {
       var deferred = $q.defer( );
@@ -265,15 +265,17 @@ function( $q, Resources, HoursService ) {
 	    Resources.get( "tasks/byname/" + taskName, {
 	    	t: (new Date()).getMilliseconds()
 	    }).then(function(result) {
-	        if(result.count == 0) {
-	            Resources.create('tasks', taskQuery).then(function() {
-	              this.getTaskForVacation(type).then(function(res) {
-	                deferred.resolve(res);
-	              });
-	            });
-	          } else {
-	            deferred.resolve(result.members[0]);
-	          }
+	    	if(result.count == 0) {
+	    		//Create new task
+	    		Resources.create('tasks',  { name: taskName } ).then(function() {
+	    			Resources.get( "tasks/byname/" + taskName, { t: (new Date()).getMilliseconds()} )
+	    			.then(function(result) { 
+	    				deferred.resolve(result.members[0]); 
+	    			});
+	    		});
+	    	} else {
+	    		deferred.resolve(result.members[0]);
+	    	}
 	    });
 	    return deferred.promise;
 
@@ -301,7 +303,7 @@ function( $q, Resources, HoursService ) {
     });
     
     return deferred.promise;
-  }
+  };
   
   this.getHoursLost = function(vacation, startDate, endDate) {
     var start = moment(vacation.startDate);
@@ -310,7 +312,7 @@ function( $q, Resources, HoursService ) {
     if (vacation.endDate > endDate)
     	end = moment(endDate);
     if (vacation.startDate < startDate)
-    	start = moment(startDate)
+    	start = moment(startDate);
     	
     var actualDays = this.getActualDays(start, end);
     
@@ -341,7 +343,7 @@ function( $q, Resources, HoursService ) {
       
       return totalHours;
     }
-  }
+  };
   
   this.commitHours = function(request, updateHoursNotification) {
     var $this = this;
@@ -367,7 +369,7 @@ function( $q, Resources, HoursService ) {
         description: task.name + ": " + request.description,
         hours: oneDayHours,
         task: {resource: task.resource, name: task.name}
-      }
+      };
       
       HoursService.updateHours([hoursEntry]).then(updateHoursNotification);
     // hours add for many days
@@ -387,7 +389,7 @@ function( $q, Resources, HoursService ) {
             description: task.name + ": " + request.description,
             hours: 8,
             task: {resource: task.resource, name: task.name}
-          }
+          };
           
           hoursEntries.push(hoursEntry);
         }
@@ -396,6 +398,6 @@ function( $q, Resources, HoursService ) {
       HoursService.updateHours(hoursEntries).then(updateHoursNotification);
     }
     });
-  }
+  };
   
 } ] );
