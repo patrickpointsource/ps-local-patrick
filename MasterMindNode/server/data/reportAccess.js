@@ -22,6 +22,10 @@ var STATUS_SUFFIX = "_status";
 
 var UNDETERMINED_ROLE = 'undetermined_role';
 
+var ASYNC_HOURS = 'asyncHours';
+var ASYNC_BILLING_ACCURALS = 'asyncBillingAccurals';
+var ASYNC_BILLING_FORECAST = 'asyncBillingForecast';
+
 /**
  * Returns report status of required type for required person
  * 
@@ -29,7 +33,7 @@ var UNDETERMINED_ROLE = 'undetermined_role';
  * @param type ('people','project','custom')
  * @param callback ('Not started','Running','Cancelled','Completed')
  */
-var getStatusByPersonIdAndType = function(personId, type, callback) {
+/*var getStatusByPersonIdAndType = function(personId, type, callback) {
 	var statusId = getReportId(personId, type) + STATUS_SUFFIX;
     dataAccess.getItem(statusId, function(err, status){
         if (err || !status) {
@@ -39,7 +43,7 @@ var getStatusByPersonIdAndType = function(personId, type, callback) {
             callback(null, status);
         }
     });
-};
+};*/
 
 /**
  * Generates report of required type for required person
@@ -49,11 +53,11 @@ var getStatusByPersonIdAndType = function(personId, type, callback) {
  * @param queryParams
  * @param callback 
  */
-var generateReportByPersonIdAndType = function(personId, type, queryParams, callback) {
+/*var generateReportByPersonIdAndType = function(personId, type, queryParams, callback) {
 	updateStatusByPersonIdAndType(personId, type, REPORT_IS_RUNNING, function (err, result){
 		callback(err, result);
 	});
-};
+};*/
 
 /**
  * Returns report object of required type for required person
@@ -62,7 +66,7 @@ var generateReportByPersonIdAndType = function(personId, type, queryParams, call
  * @param type ('people','project','custom')
  * @param callback 
  */
-var getReportByPersonIdAndType = function(personId, type, callback) {
+/*var getReportByPersonIdAndType = function(personId, type, callback) {
 	var reportId = getReportId(personId, type);
     dataAccess.getItem(reportId, function(err, result){
         if (err) {
@@ -73,7 +77,7 @@ var getReportByPersonIdAndType = function(personId, type, callback) {
         	callback(null, result);
         }
     });
-};
+};*/
 
 /**
  * Updates report status of required type for required person
@@ -83,7 +87,7 @@ var getReportByPersonIdAndType = function(personId, type, callback) {
  * @param status ('Not started','Running','Cancelled','Completed')
  * @param callback 
  */
-var updateStatusByPersonIdAndType = function (personId, type, status, callback) {
+/*var updateStatusByPersonIdAndType = function (personId, type, status, callback) {
 	var statusId = getReportId(personId, type) + STATUS_SUFFIX;
     dataAccess.getItem(statusId, function(err, obj){
         if (err) {
@@ -102,84 +106,35 @@ var updateStatusByPersonIdAndType = function (personId, type, status, callback) 
             });
         }
     });
-};
+};*/
 
-var getReportId = function (personId, type) {
-	return REPORT_PREFIX + personId + "_" + type;
+var getReportId = function (personId) {
+	return REPORT_PREFIX + personId;
 };
 
 var startGenerateReport = function(personId, type, params, callback) {
+  var reportId = getReportId(personId);
+  params.type = type;
   
-  // To do: migrate functionality from front-end
-  
-  var reportId = getReportId(personId, type);
-  var result = { data: { hours: [], people: [] } };
-  
-  assignments.listAssignmentsByProjectResourcesAndTimePeriod( params.projectResources, params.timePeriod, function( err, assignments ) {
-    if( err ) {
-      callback( 500, "Error in getting assignment while generating report: " + err );
-    } else {
-      // hours query
-      
-      var projects = _.map(params.projectResources, function(p) {
-        return { resource: p };
-      });
-      
-      var projMapping = JSON.parse(params.projectMapping);
-      
-      var assignmentsMembers = [];
-      
-      if(assignments && assignments.length > 0) {
-        assignmentsMembers = assignments.members;
-      }
-      
-      getPeopleAndHoursQuery(
-        assignmentsMembers,
-        params.reportPerson,
-        projMapping,
-        projects,
-        params.startDate,
-        params.endDate,
-        function(err, hoursQAndPeople) {
-          if(err) {
-            callback("Error calculating hours query while generating report: " + err, null);
-          } else {
-            
-            var query = {};
-            
-            if(hoursQAndPeople.hoursQ.$or.length > 0){ 
-              query = hoursQAndPeople.hoursQ;
-            }
-            
-            dataAccess.listHours(hoursQAndPeople.hoursQ, function(err, hours) {
-              if(err) {
-                callback("Error getting hours while generating report: " + err, null);
-              } else {
-                var overallResult = {
-                  data: {
-                    hours: hours,
-                    people: hoursQAndPeople.people
-                  }
-                };
-                
-                memoryCache.putObject(reportId, overallResult);
-                callback(null, "Report " + reportId + " sucessfully generated");
-              }
-            });
-          }
-        }
-      );
-    }
-  } );
+  switch(type) {
+    case ASYNC_HOURS: 
+      generateHoursReportAsync(reportId, params, callback);
+      break;
+    case ASYNC_BILLING_ACCURALS: 
+      generateBillingAccuralsReportAsync(reportId, params, callback);
+      break;
+    default: 
+      callback("Unknown report type: " + type, null);
+  }
 };
 
-var getReportFromMemoryCache = function(personId, type, callback) {
-  var reportId = getReportId(personId, type);
+var getReportFromMemoryCache = function(personId, callback) {
+  var reportId = getReportId(personId);
   callback(null, memoryCache.getObject(reportId));
 };
 
-var getStatusFromMemoryCache = function(personId, type) {
-  var reportId = getReportId(personId, type) + STATUS_SUFFIX;
+var getStatusFromMemoryCache = function(personId) {
+  var reportId = getReportId(personId) + STATUS_SUFFIX;
   var status = memoryCache.getObject(reportId);
   if(!status) {
     status = REPORT_IS_NOT_STARTED;
@@ -187,22 +142,13 @@ var getStatusFromMemoryCache = function(personId, type) {
   return status;
 };
 
-var updateStatus = function(personId, type, status) {
-  var reportId = getReportId(personId, type) + STATUS_SUFFIX;
+var updateStatus = function(personId, status) {
+  var reportId = getReportId(personId) + STATUS_SUFFIX;
   memoryCache.putObject(reportId, status);
 };
 
-var getPeopleAndHoursQuery = function(assignments, reportPerson, projectMapping, projects, startDate, endDate, callback) {
+var getHoursQuery = function(assignments, reportPerson, projectMapping, projects, people, roles, startDate, endDate, callback) {
   var persons = [ ];
-  
-  dataAccess.listPeople({}, function(err, people) {
-    if(err) {
-      callback("Error getting people while generating report: " + err, null);
-    } else {
-      dataAccess.listRoles({}, function(err, roles) {
-        if(err) {
-          callback("Error getting roles while generating report: " + err, null);
-        } else {
           var rolesMapping = {};
           for( i = 0; i < roles.members.length; i++ ) {
             var role = roles.members[ i ];
@@ -297,17 +243,72 @@ var getPeopleAndHoursQuery = function(assignments, reportPerson, projectMapping,
             hoursQ.$and = [ { date: { $gte: startDate }}, { date: { $lte: endDate }}  ];
           }
       
-          callback(null, { hoursQ: hoursQ, people: people });
+          callback(null, hoursQ);
+};
+
+var generateHoursReportAsync = function(reportId, params, callback) {
+  assignments.listAssignmentsByProjectResourcesAndTimePeriod( params.projectResources, params.timePeriod, function( err, assignments ) {
+    if( err ) {
+      callback( 500, "Error in getting assignment while generating report: " + err );
+    } else {
+      dataAccess.listPeople({}, function(err, people) {
+        if(err) {
+          callback("Error getting people while generating report: " + err, null);
+        } else {
+          dataAccess.listRoles({}, function(err, roles) {
+            if(err) {
+              callback("Error getting roles while generating report: " + err, null);
+            } else {
+              var projects = _.map(params.projectResources, function(p) {
+                return { resource: p };
+              });
+      
+              var projMapping = JSON.parse(params.projectMapping);
+      
+              var assignmentsMembers = [];
+      
+              if(assignments && assignments.length > 0) {
+                assignmentsMembers = assignments.members;
+              }
+              
+              getHoursQuery(assignmentsMembers, params.reportPerson, projMapping, projects, people, roles, params.startDate, params.endDate, function(err, hoursQ) {
+                if(err) {
+                  callback("Error calculating hours query while generating report: " + err, null);
+                } else {
+                  dataAccess.listHours(hoursQ, function(err, hours) {
+                    if(err) {
+                      callback("Error getting hours while generating report: " + err, null);
+                    } else {
+                      var overallResult = {
+                        type: params.type,
+                        data: {
+                          hours: hours,
+                          people: people
+                        }
+                      };
+
+                      memoryCache.putObject(reportId, overallResult);
+                      callback(null, "Report " + reportId + " sucessfully generated");
+                    }
+                  });
+                }
+              });
+            }
+          });
         }
       });
     }
-  });
+  } );
 };
 
-module.exports.getStatusByPersonIdAndType = getStatusByPersonIdAndType;
-module.exports.generateReportByPersonIdAndType = generateReportByPersonIdAndType;
-module.exports.getReportByPersonIdAndType = getReportByPersonIdAndType;
-module.exports.updateStatusByPersonIdAndType = updateStatusByPersonIdAndType;
+var generateBillingAccuralsReportAsync = function(reportId, params, callback) {
+  
+};
+
+//module.exports.getStatusByPersonIdAndType = getStatusByPersonIdAndType;
+//module.exports.generateReportByPersonIdAndType = generateReportByPersonIdAndType;
+//module.exports.getReportByPersonIdAndType = getReportByPersonIdAndType;
+//module.exports.updateStatusByPersonIdAndType = updateStatusByPersonIdAndType;
 module.exports.startGenerateReport = startGenerateReport;
 module.exports.getReportFromMemoryCache = getReportFromMemoryCache;
 module.exports.getStatusFromMemoryCache = getStatusFromMemoryCache;

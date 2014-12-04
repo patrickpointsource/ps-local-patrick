@@ -858,7 +858,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
           params.endDate = $scope.reportCustomEndDate;
         }
         
-        Resources.refresh("/reports/project/generate", params, {});
+        Resources.refresh("/reports/asyncHours/generate", params, {});
 
 		// load assignments for filtered projects
 		/*AssignmentService.getAssignments( result ).then( function( assignments ) {
@@ -1418,12 +1418,13 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	};
 	
 	$scope.checkGenerationStatus = function ( ) {
-		return Resources.refresh("/reports/project/status").then(function( result ){
+		return Resources.refresh("/reports/status").then(function( result ){
 			if (result.status != "Running" && result.status != "Completed") {
 				$scope.cancelReportGeneration();
 			}
 			if (result.status == "Completed") {
-				Resources.refresh("/reports/project/get").then(function( result ){
+				Resources.refresh("/reports/get").then(function( result ){
+				    console.log("Generated report type: " + result.type)
 				    if(result && result.data && result.data.hours && result.data.hours.members) {
 				      $scope.onReportGenerated( result.data.hours.members );
 				    }
@@ -1526,7 +1527,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		},
 		
 		cancelGeneration: function( e ) {
-			var a = Resources.refresh("/reports/project/cancel").then(function( result ){
+			var a = Resources.refresh("/reports/cancel").then(function( result ){
 				$scope.cancelReportGeneration();
 			}).catch(function( err ){
 				$scope.cancelReportGeneration();

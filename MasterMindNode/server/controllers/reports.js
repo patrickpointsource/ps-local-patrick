@@ -102,38 +102,38 @@ var getReportByPersonIdAndType = function(personId, type, callback) {
 * Report status in session implementation
 */
 
-var getStatus = function(personId, type) {
-  var status = reportAccess.getStatusFromMemoryCache(personId, type);
+var getStatus = function(personId) {
+  var status = reportAccess.getStatusFromMemoryCache(personId);
   
   return { status: status };
 };
 
 var generateReport = function(personId, type, params, reqSession, callback) {
-  var status = reportAccess.getStatusFromMemoryCache(personId, type);
+  var status = reportAccess.getStatusFromMemoryCache(personId);
   if(status == reportAccess.REPORT_IS_RUNNING) {
     callback("Report generation is already running.", null);
   } else {
-    reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_RUNNING);
+    reportAccess.updateStatus(personId, reportAccess.REPORT_IS_RUNNING);
     
     reportAccess.startGenerateReport(personId, type, params, function(err, result) {
       if(err) {
-        reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_CANCELLED);
+        reportAccess.updateStatus(personId, reportAccess.REPORT_IS_CANCELLED);
         callback(err, null);
       } else {
-        reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_COMPLETED);
+        reportAccess.updateStatus(personId, reportAccess.REPORT_IS_COMPLETED);
         callback(null, { status: reportAccess.REPORT_IS_COMPLETED });
       }
     });
   }
 };
 
-var cancelReport = function(personId, type) {
-  reportAccess.updateStatus(personId, type, reportAccess.REPORT_IS_CANCELLED);
+var cancelReport = function(personId) {
+  reportAccess.updateStatus(personId, reportAccess.REPORT_IS_CANCELLED);
   return { status: reportAccess.REPORT_IS_CANCELLED };
 };
 
-var getReport = function(personId, type, callback) {
-  reportAccess.getReportFromMemoryCache(personId, type, function(err, result) {
+var getReport = function(personId, callback) {
+  reportAccess.getReportFromMemoryCache(personId, function(err, result) {
     if(err) {
       callback(err, null);
     } else {

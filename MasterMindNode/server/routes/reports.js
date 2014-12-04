@@ -10,7 +10,7 @@ var securityResources = require( '../util/securityResources' );
 
 var router = express.Router( );
 
-router.get( '/:type/status', util.isAuthenticated, function( req, res ) {
+router.get( '/status', util.isAuthenticated, function( req, res ) {
 	/*security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
 		if( allowed ) {
 			people.getPersonByGoogleId(req.user, function(err, person){
@@ -37,8 +37,7 @@ router.get( '/:type/status', util.isAuthenticated, function( req, res ) {
 				  if(err){
 			        res.json(500, err);
 			      } else {
-			        var type = req.params.type;
-			        var status = reports.getStatus(person._id, type);
+			        var status = reports.getStatus(person._id);
 			        res.json( status );
 			      }
 			});
@@ -92,7 +91,7 @@ router.get( '/:type/generate', util.isAuthenticated, function( req, res ) {
 	});
 } );
 
-router.get( '/:type/cancel', util.isAuthenticated, function( req, res ) {
+router.get( '/cancel', util.isAuthenticated, function( req, res ) {
 	/*security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
 		if( allowed ) {
 					
@@ -120,8 +119,7 @@ router.get( '/:type/cancel', util.isAuthenticated, function( req, res ) {
 			      if(err){
 			        res.json(500, err);
 			      } else {
-			        var type = req.params.type;
-			        var result = reports.cancelReport(person._id, type);
+			        var result = reports.cancelReport(person._id);
 			        res.json( result );
 			      }
 			    });
@@ -130,7 +128,7 @@ router.get( '/:type/cancel', util.isAuthenticated, function( req, res ) {
 	
 } );
 
-router.get( '/:type/get', util.isAuthenticated, function( req, res ) {
+router.get( '/get', util.isAuthenticated, function( req, res ) {
 	/*security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
 		if( allowed ) {
 					
@@ -158,7 +156,7 @@ router.get( '/:type/get', util.isAuthenticated, function( req, res ) {
 			      res.json(500, err);
 			    } else {
 			      var type = req.params.type;
-				  reports.getReport(person._id, type, function(err, result) {
+				  reports.getReport(person._id, function(err, result) {
 			        if(err) {
 			          res.json( 500, err );
 			        } else {
