@@ -472,6 +472,11 @@ var minionResouresMap = [
       "name": "securityRoles",
       "permissions": [
       ]
+    },
+    {
+      "name": "reports",
+      "permissions": [
+      ]
     }
 ];
 
@@ -561,5 +566,11 @@ var fullResourcesMap = [
         "viewSecurityRoles",
         "editSecurityRoles"
       ]
+    },
+    {
+        "name": "reports",
+        "permissions": [
+          "viewReports"
+        ]
     }
 ];

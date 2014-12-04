@@ -165,7 +165,8 @@ angular.module('Mastermind')
       deleteNotifications: "Delete notifications",
       executeUpgrade: "Execute upgrade",
       viewSecurityRoles: "View permissions",
-      editSecurityRoles: "Edit permissions"
+      editSecurityRoles: "Edit permissions",
+      viewReports: "View reports",
     };
     
     $scope.permissionChecked = function(collection, permission) {
@@ -281,7 +282,14 @@ angular.module('Mastermind')
         "viewSecurityRoles",
         "editSecurityRoles"
       ]
+    },
+    {
+        "name": "reports",
+        "permissions": [
+          "viewReports"
+        ]
     }
+    
   ];
   
   $scope.$on("admin:edit", function() {

@@ -31,15 +31,19 @@ router.get( '/:type/status', util.isAuthenticated, function( req, res ) {
 		}
 	});*/
 	
-	people.getPersonByGoogleId(req.user, function(err, person){
-	  if(err){
-        res.json(500, err);
-      } else {
-        var type = req.params.type;
-        var status = reports.getStatus(person._id, type);
-        res.json( status );
-      }
-	});
+	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+		if( allowed ) {
+			people.getPersonByGoogleId(req.user, function(err, person){
+				  if(err){
+			        res.json(500, err);
+			      } else {
+			        var type = req.params.type;
+			        var status = reports.getStatus(person._id, type);
+			        res.json( status );
+			      }
+			});
+		}
+	});	
 } );
 
 router.get( '/:type/generate', util.isAuthenticated, function( req, res ) {
@@ -65,22 +69,27 @@ router.get( '/:type/generate', util.isAuthenticated, function( req, res ) {
 			
 		}
 	});*/
-  people.getPersonByGoogleId(req.user, function(err, person){
-    if(err){
-      res.json(500, err);
-    } else {        
-      var type = req.params.type;
-      var queryParams = req.query;
-      // Call to reports service
-      reports.generateReport(person._id, type, queryParams, req.session, function(err, result) {
-        if(err) {
-          res.json( 500, err );
-        } else {
-          res.json( result );
-        }
-      });
-    }
-  });
+	
+	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+		if( allowed ) {
+			  people.getPersonByGoogleId(req.user, function(err, person){
+				    if(err){
+				      res.json(500, err);
+				    } else {        
+				      var type = req.params.type;
+				      var queryParams = req.query;
+				      // Call to reports service
+				      reports.generateReport(person._id, type, queryParams, req.session, function(err, result) {
+				        if(err) {
+				          res.json( 500, err );
+				        } else {
+				          res.json( result );
+				        }
+				      });
+				    }
+				  });
+		}
+	});
 } );
 
 router.get( '/:type/cancel', util.isAuthenticated, function( req, res ) {
@@ -105,15 +114,20 @@ router.get( '/:type/cancel', util.isAuthenticated, function( req, res ) {
 			
 		}
 	});*/
-	people.getPersonByGoogleId(req.user, function(err, person){
-      if(err){
-        res.json(500, err);
-      } else {
-        var type = req.params.type;
-        var result = reports.cancelReport(person._id, type);
-        res.json( result );
-      }
-    });
+	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+		if( allowed ) {
+			people.getPersonByGoogleId(req.user, function(err, person){
+			      if(err){
+			        res.json(500, err);
+			      } else {
+			        var type = req.params.type;
+			        var result = reports.cancelReport(person._id, type);
+			        res.json( result );
+			      }
+			    });
+		}
+	});
+	
 } );
 
 router.get( '/:type/get', util.isAuthenticated, function( req, res ) {
@@ -137,20 +151,24 @@ router.get( '/:type/get', util.isAuthenticated, function( req, res ) {
 			});
 		}
 	});*/
-  people.getPersonByGoogleId(req.user, function(err, person){
-    if(err){
-      res.json(500, err);
-    } else {
-      var type = req.params.type;
-	  reports.getReport(person._id, type, function(err, result) {
-        if(err) {
-          res.json( 500, err );
-        } else {
-          res.json( result );
-        }
-      });
-    }
-  });
+	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+		if( allowed ) {
+			people.getPersonByGoogleId(req.user, function(err, person){
+			    if(err){
+			      res.json(500, err);
+			    } else {
+			      var type = req.params.type;
+				  reports.getReport(person._id, type, function(err, result) {
+			        if(err) {
+			          res.json( 500, err );
+			        } else {
+			          res.json( result );
+			        }
+			      });
+			    }
+			  });
+		}
+	});
 } );
 	
 module.exports = router;

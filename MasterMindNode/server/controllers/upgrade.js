@@ -98,8 +98,15 @@ module.exports = function(params) {
 						        }
 						        
 						        security.initialize(true);
-						        
-						        callback(null, null);
+						        addReportResourceInSecurityRole(function (err, body) {
+							        if(err) {
+							            console.log(err);
+							        } else {
+		                              console.log("Upgrade: Report resource added to security roles.");
+							        }
+
+						        	callback(null, null);
+						        });
 						    });
 						});
 					});
@@ -256,6 +263,28 @@ module.exports = function(params) {
 			}
 		});
 	};
+	
+	var addReportResourceInSecurityRole = function (callback) {
+		var reportsResource = {name : "reports", permissions : ["viewReports"]};
+		dataAccess.listSecurityRoles({}, function(err, body) {
+			var securityRoles = body.members;
+			for (var i = 0; i < securityRoles.length; i++) {
+				var securityRole = securityRoles[i];
+			    var hoursResource = _.findWhere(securityRole.resources, { name: "hours"});
+			    var isReportResourceExists = _.findWhere(securityRole.resources, {name : "reports"} );
+			    var isViewHoursReportsAndCSV = _.findWhere(hoursResource.permissions, "viewHoursReportsAndCSV");
+			    if ( isViewHoursReportsAndCSV && !isReportResourceExists) {
+			    	securityRole.resources.push(reportsResource);
+			    	dataAccess.insertItem(securityRole._id, securityRole, dataAccess.SECURITY_ROLES_KEY, function (err, body) {
+			    		if (err) {
+			    			console.log(err);
+			    		}
+			    	});
+			    }
+			}
+			callback(null, body);
+		});
+	}
 	
 	var fixSecurityRolesIds = function(callback) {
 		dataAccess.listSecurityRoles({}, function(err, body) {
