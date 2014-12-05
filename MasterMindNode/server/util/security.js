@@ -451,6 +451,7 @@ var minionResouresMap = [
     {
       "name": "vacations",
       "permissions": [
+        "viewVacations",
         "viewMyVacations",
         "editMyVacations"
       ]
