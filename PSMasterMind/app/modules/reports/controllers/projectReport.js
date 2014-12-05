@@ -4,7 +4,7 @@
  * Controller for people report.
  */
 
-angular.module( 'Mastermind.controllers.reports' ).controller( 'PeopleReportCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'Resources', 
+angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'Resources', 
 function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, Resources ) {
 
   $scope.choiceLocationLabel = "Select one or more location";
@@ -131,90 +131,39 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, R
       $anchorScroll();
    };
    
-	Resources.get("roles").then(function (result)
-	{
-		if (!result)
-			return;
-		
-		var roles = _.sortBy(result.members, function (item) { return item.title; });
-		var mid = roles.length / 2;
-		
-		$scope.roles = _.map(roles, function (item, index, array) { return { item: item, isRight: index >= mid }; });
-	});
-	
 	$scope.fields = {
-		categoryHours: {
-			out: {},
-			overhead: {}
-		},
+		assignmentHours: {},
 		goals: {},
-		graphs: {
-			percent: {}
-		},
 		projectHours: {}
+	};
+	
+	$scope.selectAllAssignmentHours = function (selected)
+	{
+		$scope.fields.assignmentHours.all = selected;
 	};
 	
 	$scope.selectAllProjectHours = function (selected)
 	{
 		$scope.fields.projectHours.all =
-			$scope.fields.projectHours.actualClient =
-			$scope.fields.projectHours.actualInvestment =
-			$scope.fields.projectHours.utilClientWork =
-			$scope.fields.projectHours.utilInvestmentWork =
-			$scope.fields.projectHours.utilRole =
-			$scope.fields.projectHours.estimatedClientHrs =
-			$scope.fields.projectHours.estimatedInvestmentHrs = selected;
-	};
-	
-	$scope.selectAllOutOfOfficeHours = function (selected)
-	{
-		$scope.fields.categoryHours.out.all =
-			$scope.fields.categoryHours.out.sick =
-			$scope.fields.categoryHours.out.vacation =
-			$scope.fields.categoryHours.out.holiday = selected;
-	};
-	
-	$scope.selectAllOverheadHours = function (selected)
-	{
-		$scope.fields.categoryHours.overhead.all =
-			$scope.fields.categoryHours.overhead.meetings =
-			$scope.fields.categoryHours.overhead.trainings =
-			$scope.fields.categoryHours.overhead.rd =
-			$scope.fields.categoryHours.overhead.design =
-			$scope.fields.categoryHours.overhead.admin =
-			$scope.fields.categoryHours.overhead.hr = selected;
+			$scope.fields.projectHours.available =
+			$scope.fields.projectHours.spent =
+			$scope.fields.projectHours.overallUtilRate =
+			$scope.fields.projectHours.assignmentUtilRate = selected;
 	};
 	
 	$scope.selectAllGoalsHours = function (selected)
 	{
-		$scope.fields.goals.all =
-			$scope.fields.goals.projectedClientHrs =
-			$scope.fields.goals.projectedInvestmentHrs =
-			$scope.fields.goals.utilProjections =
-			$scope.fields.goals.utilGoals =
-			$scope.fields.goals.projectedOOO = selected;
-	};
-	
-	$scope.selectAllGraphPercentHours = function (selected)
-	{
-		$scope.fields.graphs.percent.all =
-			$scope.fields.graphs.percent.overhead =
-			$scope.fields.graphs.percent.out = selected;
+		$scope.fields.goals.projectedUtil =
+		$scope.fields.goals.projectedHrs =
+		$scope.fields.goals.projectedInvestment =
+		$scope.fields.goals.projectedRevenue = selected;
 	};
 	
 	$scope.selectAllFields = function (selected)
 	{
+		$scope.selectAllAssignmentHours(selected);
 		$scope.selectAllProjectHours(selected);
-		$scope.selectAllOutOfOfficeHours(selected);
-		$scope.selectAllOverheadHours(selected);
 		$scope.selectAllGoalsHours(selected);
-		$scope.selectAllGraphPercentHours(selected);
-		
-		$scope.fields.categoryHours.marketing =
-			$scope.fields.categoryHours.sales =
-			$scope.fields.graphs.trendHrs =
-			$scope.fields.graphs.trendGoals =
-			$scope.fields.graphs.graph = selected;
 	};
   
 } ] );

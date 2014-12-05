@@ -142,6 +142,11 @@
           abstract: true,
           template: '<ui-view />'
         })
+        .state('reports.project', {
+          url: '/project',
+          abstract: true,
+          template: '<ui-view />'
+        })
         .state('reports.people.select', {
           url: '/select',
           templateUrl: '/modules/reports/views/peopleSelect.html'
@@ -153,6 +158,10 @@
         .state('reports.people.output', {
           url: '/output',
           templateUrl: '/modules/reports/views/reportsPeopleOutput.html'
+        })
+        .state('reports.project.select', {
+          url: '/select',
+          templateUrl: '/modules/reports/views/projectSelect.html'
         })
       .state('reportsshell', {
           url: '/reportsshell',

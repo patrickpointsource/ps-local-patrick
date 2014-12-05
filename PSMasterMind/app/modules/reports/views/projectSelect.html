@@ -1,0 +1,235 @@
+<div class="reports" ng-controller="ProjectReportCtrl">
+	<div class="row padded-row parameters" style="margin-top: 20px;">
+		<div class="col-md-6">
+			<div class="well" style="margin-left: -15px; margin-right: 20px;">
+				<div >
+					<h3>Select all projects in a project state...</h3>
+				</div>
+				<br />
+				<div class="groups row">
+					<div class="col-md-6">
+						<label>
+							<input type="checkbox" />
+							Active
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" />
+							Backlog
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" />
+							Pipeline
+						</label>
+					</div>
+					<div class="col-md-6">
+						<label>
+							<input type="checkbox" />
+							Complete
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" />
+							Deal Lost
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="well col-md-6">
+			<div >
+				<h3>...or one or more project names</h3>
+			</div>
+			<br />
+			<div class="row groups">
+				<select class="form-control" multiple="multiple"></select>
+			</div>
+		</div>
+	</div>
+	<div class="row padded-row parameters">
+		<div class="well col-md-5">
+			<div >
+				<h3>Select a date range</h3>
+			</div>
+			<br />
+			<div class="row groups">
+				<div class="col-xs-12 col-md-4">
+					<label>
+	                	<input type="radio" name="date" ng-model="dateRange" value="week" />
+	                	One week
+                	</label>
+                	<br />
+                	<label>
+	                	<input type="radio" name="date" ng-model="dateRange" value="weeks" />
+	                	Two weeks
+                	</label>
+                	<br />
+                	<label>
+	                	<input type="radio" name="date" ng-model="dateRange" value="month" />
+	                	One month
+                	</label>
+                	<br />
+                	<label>
+	                	<input type="radio" name="date" ng-model="dateRange" value="custom" />
+	                	Custom
+                	</label>
+				</div>
+				<div class="col-xs-12 col-md-8" ng-show="dateRange == 'custom'">
+					<div class="row">
+						<label class="control-label">
+							<div class="col-md-2">
+								Start:
+							</div>
+							<div class="col-md-8">
+								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+							</div>
+						</label>
+					</div>
+					<div class="row">
+						<label class="control-label">
+							<div class="col-md-2">
+								End:
+							</div>
+							<div class="col-md-8">
+								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+							</div>
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row padded-row parameters" style="margin-top: 20px;">
+		<div class="col-md-12 well">
+			<div>
+				<h3>Select fields you want to see in your report</h3>
+			</div>
+			<br />
+			<div>
+				<label>
+					<input type="checkbox" ng-click="selectAllFields(!fields.all);" ng-model="fields.all" />
+					All fields
+				</label>
+			</div>
+			<div class="row groups">
+				<div class="col-xs-12 col-md-4">
+					<h5>ASSIGNMENT HOURS</h5>
+					<br />
+					<label>
+						<input type="checkbox" ng-click="selectAllAssignmentHours(!fields.assignmenttHours.all);" ng-model="fields.assignmentHours.all" />
+						All assignments
+					</label>
+					<br />
+					<div style="margin-left: 20px;">
+						<label>
+							<input type="checkbox" />
+							SSA
+						</label>
+						<br />
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-4">
+					<h5>PROJECT HOURS</h5>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="fields.projectHours.available" />
+						Available hours
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="fields.projectHours.spent" />
+						Spent hours
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="fields.projectHours.overallUtilRate" />
+						Overall utilization rate
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="fields.projectHours.assignmentUtilRate" />
+						Assignment utilization rate
+					</label>
+				</div>
+				<div class="col-xs-12 col-md-4">
+					<h5>GOALS & PROJECTIONS</h5>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="fields.goals.projectedUtil" />
+						Project utilization
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="fields.goals.projectedHrs" />
+						Projected hours
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="fields.goals.projectedInvestment" />
+						Projected investment
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="fields.goals.projectedRevenue" />
+						Projected revenue
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row padded-row parameters" style="margin-top: 20px;">
+		<div class="col-md-4">
+			<div class="well" style="margin-left: -15px; margin-right: 20px;">
+				<div >
+					<h3>Select at least one output</h3>
+				</div>
+				<br />
+				<div>
+					You will see the report as a webpage by default.
+					You can choose external outputs or select none and only see the report within MasterMind.
+				</div>
+				<br />
+				<div class="groups">
+					<label>
+						<input type="radio" name="output" />
+						CSV, no graphs
+					</label>
+					<br />
+					<label>
+						<input type="radio" name="output" />
+						CSV & Graphs
+					</label>
+					<br />
+					<label>
+						<input type="radio" name="output" />
+						Graphs only
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="well" style="margin-left: -15px; margin-right: 20px;">
+				<div >
+					<h3>Favorite this report</h3>
+				</div>
+				<br />
+				<div>
+					You can favorite this report, which means you can run it whenever you need from your report dashboard without having to recreate it.
+					You can name the report to differentiate it from other saved reports.
+				</div>
+				<br />
+				<div class="groups">
+					<label>
+						Name this report
+						<br />
+						<input class="form-control" type="text" />
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<button class="btn">Create Report</button>
+		</div>
+	</div>
+</div>
