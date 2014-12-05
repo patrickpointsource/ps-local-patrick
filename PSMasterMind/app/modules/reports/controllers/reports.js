@@ -396,7 +396,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		for( i = 0; i < $scope.originalProjects.length; i++ ) {
 			cond = false;
 
-			cond = cond || reportProject && reportProject.resource && $scope.originalProjects[ i ].resource == reportProject.resource;
+			cond = cond || !reportProject || (reportProject.resource && $scope.originalProjects[ i ].resource == reportProject.resource);
 			cond = cond || $scope.projectStates[ 'all' ];
 			cond = cond || $scope.projectStates[ projectStatuses[ $scope.originalProjects[ i ].resource ] ];
 			cond = cond || reportClient && $scope.originalProjects[ i ].customerName == reportClient;
@@ -1378,19 +1378,17 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		if ($scope.isGenerationInProgress)
 			return;
 		
-		$scope.isGenerationInProgress = true;	
-		
 		if (!$rootScope.reportGenerationStartTime)
 			$rootScope.reportGenerationStartTime = new moment();
-		
+				
 		$scope.generationTimer = setInterval( function( ) {
-			var timer = document.getElementById('timer');		
+			var timer = document.getElementById('lblTimer');		
 			if (timer) {
 				var now = new moment( );
 				var spentTime = moment.utc(moment(now,"DD/MM/YYYY HH:mm:ss")
 						.diff(moment($rootScope.reportGenerationStartTime,"DD/MM/YYYY HH:mm:ss")))
 						.format("HH:mm:ss");
-				timer.firstChild.textContent = spentTime;	
+				timer.textContent = spentTime;
 			}
 		},
 		1000);
@@ -1399,6 +1397,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			$scope.checkGenerationStatus();
 		},
 		$scope.reportServicePingInterval);
+		
+		$scope.isGenerationInProgress = true;
 	};
 	
 	$scope.stopGenerationTimers = function ( ) {
@@ -1424,7 +1424,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			}
 			if (result.status == "Completed") {
 				Resources.refresh("/reports/get").then(function( result ){
-				    console.log("Generated report type: " + result.type)
+				    console.log("Generated report type: " + result.type);
 				    if(result && result.data && result.data.hours && result.data.hours.members) {
 				      $scope.onReportGenerated( result.data.hours.members );
 				    }

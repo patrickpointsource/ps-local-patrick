@@ -136,7 +136,6 @@
         .state('reports.shell', {
           url: '/?view',
           templateUrl: '/modules/reports/views/reports.html',
-          controller: 'ReportsCtrl'
         })
         .state('reports.people', {
           url: '/people',
