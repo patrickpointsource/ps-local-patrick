@@ -11,14 +11,19 @@ var _ = require( 'underscore' );
 
 var router = express.Router( );
 
+var getExecTime = function(dt){
+	return ((new Date().getTime() - dt.getTime()) / 1000).toFixed(1);
+}
+
 router.get( '/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
 		if( allowed ) {
 
 			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-
-			console.log( '\r\nget:hours:query:' + JSON.stringify( query ) + '\r\n' );
+			var now = new Date();
+			 
+			console.log( '\r\nget:hours:start:query:' + JSON.stringify( query ) + '\r\n' );
 
 			hours.listHours( query, function( err, result ) {
 				if( err ) {
@@ -26,6 +31,8 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 				} else {
 					res.json( result );
 				}
+				
+				console.log( '\r\nget:hours:end:query:' + JSON.stringify( query ) + ':' + getExecTime(now) + '\r\n' );
 			} );
 		}
 	} );
@@ -40,10 +47,14 @@ router.get( '/persondates', auth.isAuthenticated, function( req, res ) {
             var startDate = req.query[ "startDate" ] ? req.query[ "startDate" ] : "";
             var endDate = req.query[ "endDate" ] ? req.query[ "endDate" ] : "";
              
-            console.log( '\r\nget:persondates:\r\n' );
+            var now = new Date();
+            
+            console.log( '\r\nget:hours:start:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate+ '\r\n' );
 
             if (person && startDate && endDate)
                 hours.listHoursByPersonAndDates( person, startDate, endDate, function( err, result ) {
+                	 console.log( '\r\nget:hours:end:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate + ':' + getExecTime(now) + '\r\n' );
+                	 
                     if( err ) {
                         res.json( 500, err );
                     } else {
@@ -70,6 +81,7 @@ router.get( '/projectdates', auth.isAuthenticated, function( req, res ) {
     			projects = [projects];
     		}
     		
+    		var now = new Date();
             console.log( '\r\nget:hours:projectdates:start:' + JSON.stringify(projects) + ':' + startDate + ':' + endDate + ':' + fields + '\r\n' );
 
             if (projects && startDate && endDate)
@@ -80,7 +92,7 @@ router.get( '/projectdates', auth.isAuthenticated, function( req, res ) {
                         res.json( result );
                     }
                     
-                    console.log( '\r\nget:hours:projectdates:end:' + JSON.stringify(projects) + ':' + startDate + ':' + endDate + ':' + fields + '\r\n' );
+                    console.log( '\r\nget:hours:projectdates:end:' + JSON.stringify(projects) + ':' + startDate + ':' + endDate + ':' + fields + ':' + getExecTime(now) + '\r\n' );
                 } );
             else 
                  res.json( 500, "missed params" );
@@ -95,8 +107,9 @@ router.get( '/person', auth.isAuthenticated, function( req, res ) {
         if( allowed ) {
             var person = req.query[ "person" ] ? req.query[ "person" ] : "";
             
-             
-            console.log( '\r\nget:hours:person:\r\n' );
+            var now = new Date();
+            
+            console.log( '\r\nget:hours:start:person:\r\n' );
 
             if (person) {
             	var fields = req.query.fields;
@@ -106,6 +119,8 @@ router.get( '/person', auth.isAuthenticated, function( req, res ) {
                     } else {
                         res.json( result );
                     }
+                    
+                    console.log( '\r\nget:hours:end:person:' + JSON.stringify(person) + ':' + getExecTime(now) + '\r\n');
                 } );
             }
             else 
@@ -124,6 +139,8 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
             if (_.isString(projects))
             	projects = [projects];
             
+            var now = new Date();
+            
             console.log( '\r\nget:hours:start:projects:'  + JSON.stringify(projects) + '\r\n' );
 
             if (projects) {
@@ -135,7 +152,7 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
                         res.json( result );
                     }
                     
-                    console.log( '\r\nget:hours:end:projects:' + JSON.stringify(projects) );
+                    console.log( '\r\nget:hours:end:projects:' + JSON.stringify(projects) + ':' + getExecTime(now) );
                 } );
             }
             else 
