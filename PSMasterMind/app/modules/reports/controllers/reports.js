@@ -1347,6 +1347,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 				});
 			}
 			return result.status;
+		}).catch(function( err ){
+			$scope.cancelReportGeneration();
+			return err.data;
 		});
 	};
 	
