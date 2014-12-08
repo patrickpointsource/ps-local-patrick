@@ -131,16 +131,44 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, R
       $anchorScroll();
    };
    
+   var groupToRolesMap = {
+		"development": [ 'SE', 'SSE', 'SEO', 'SSEO', 'ST', 'SI' ],
+		"architects": [ 'SSA', 'SA', 'ESA', 'SSAO' ],
+		"administration": [ 'ADMIN' ],
+		"clientexpierencemgmt": [ "SBA", "BA", "PM", "CxD" ],
+		"digitalexperience": [ "UXD", "SUXD", "DxM", "CD" ],
+		"executivemgmt": [ "EXEC", "DD", "CxD", "CD", "DMDE" ],
+		"marketing": [ "MKT", "DMDE", "MS" ],
+		"sales": [ "SALES" ]
+	};
+   
+   $scope.filterRolesByGroup = function (groups)
+   {
+	   return function (role)
+	   {
+		   if (!$scope.roles)
+			   return false;
+		   
+		   if (groups.all)
+			   return true;
+		   
+		   for (var group in groups)
+			   if (groups[group] && groupToRolesMap[group] && groupToRolesMap[group].indexOf(role.abbreviation) != -1)
+				   return true;
+		   
+		   return false;
+	   };
+   };
+   
 	Resources.get("roles").then(function (result)
 	{
 		if (!result)
 			return;
 		
-		var roles = _.sortBy(result.members, function (item) { return item.title; });
-		var mid = roles.length / 2;
-		
-		$scope.roles = _.map(roles, function (item, index, array) { return { item: item, isRight: index >= mid }; });
+		$scope.roles = _.sortBy(result.members, function (item) { return item.title; });
 	});
+	
+	$scope.roleGroups = {};
 	
 	$scope.fields = {
 		categoryHours: {

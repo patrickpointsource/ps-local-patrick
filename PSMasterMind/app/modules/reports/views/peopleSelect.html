@@ -37,48 +37,48 @@
 			<div class="row groups">
 				<div class="col-xs-12 col-md-6">
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.administration" />
 						Administration
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.architects" />
 						Architects
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.clientexpierencemgmt" />
 						Client Experience Management
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.development" />
 						Development
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.digitalexperience" />
 						Digital Experience
 					</label>
 				</div>
 				<div class="col-xs-12 col-md-6">
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.executivemgmt" />
 						Executive Management
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.marketing" />
 						Marketing
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.sales" />
 						Sales
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.all" />
 						All Departments
 					</label>
 				</div>
@@ -92,21 +92,23 @@
 					<h3>Select roles</h3>
 				</div>
 				<br />
-				<div ng-if="false">Select a department to view roles, or select All departments to select from all available roles.</div>
+				<div ng-if="!(roleGroups.all || roleGroups.administration || roleGroups.architects ||
+					roleGroups.clientexpierencemgmt || roleGroups.development || roleGroups.digitalexperience ||
+					roleGroups.executivemgmt || roleGroups.marketing || roleGroups.sales)">Select a department to view roles, or select All departments to select from all available roles.</div>
 				<div class="row groups">
 					<div class="col-md-6">
-						<div ng-repeat="role in roles | filter: { isRight: false }">
+						<div ng-repeat="role in roles | filter: filterRolesByGroup(roleGroups)" ng-if="$index < roles.length / 2">
 		                    <label>
 		                        <input type="checkbox" />
-		                        {{role.item.title}}
+		                        {{role.title}}
 		                    </label>
 		                </div>
 	                </div>
 	                <div class="col-md-6">
-		                <div ng-repeat="role in roles | filter: { isRight: true }">
+		                <div ng-repeat="role in roles | filter: filterRolesByGroup(roleGroups)" ng-if="$index >= roles.length / 2">
 		                    <label>
 		                        <input type="checkbox" />
-		                        {{role.item.title}}
+		                        {{role.title}}
 		                    </label>
 		                </div>
 	                </div>
