@@ -198,7 +198,12 @@ module.exports.getNameByResource = function(resource, callback) {
 			else {
 				dataAccess.getItem(ID, function(err, person) {
 					if (!err) {
-						callback(null, person.name);
+						/*
+						 *  12/02/14 Max 
+						 *  THIS IS WRONG: callback(null, person.name);
+						 *  person.name is an Object
+						 */
+						callback(null, person.name.fullName);
 					}
 					else {
 						callback(err, null);
@@ -207,7 +212,6 @@ module.exports.getNameByResource = function(resource, callback) {
 			}
 		});
 	}
-			
 };
 
 module.exports.getPersonByResource = function(resource, callback) {

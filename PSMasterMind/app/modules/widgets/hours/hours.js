@@ -925,8 +925,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				$scope.projectTasksList.push( t );
 
 				t.isTask = true;
-				t.icon = taskIconsMap[                                   t.name.toLowerCase( ) ];
-				t.iconCss = taskIconStylseMap[                                   t.name.toLowerCase( ) ];
+				t.icon = taskIconsMap[ t.name.toLowerCase( ) ];
+				t.iconCss = taskIconStylseMap[ t.name.toLowerCase( ) ];
 				t.visible = t.name != "Vacation" && t.name != "Appointment";
 			} );
 
@@ -1393,9 +1393,38 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				hoursRecords.push( entry.hoursRecord );
 				totalHours += !isNaN( parseFloat( entry.hoursRecord.hours ) ) ? Util.formatFloat( entry.hoursRecord.hours ) : 0;
 				// if (!entry.hoursRecord.person) {
+				/*
+				 * Max 12/02/14
+				 * 1. Added If condition for person.resource update. If value already exists why to override it?
+				 * 2. Added person.name value if it doesn't exist.
+				 * 
+				 *  NOTE: Because there is a mess with Hours constructor (person: $scope.getCurrentPerson( )),
+				 *  we need to erase current person node and re-create it.
+				 *  TODO: Fix this problem in constructor. Do we really need to have full Person object in Hours???
+				 */
+				 
+				 /* ORIGINAL CODE
 				entry.hoursRecord.person = {
 					resource: $scope.getCurrentPerson( ).about
 				};
+				*/
+				 
+				personEntry = $scope.getCurrentPerson( );
+				entry.hoursRecord.person = {};	//	this line should be removed after Constructor fix.
+				
+				// Update current value only if it doesn't exist.
+				if (!entry.hoursRecord.person.resource){
+					entry.hoursRecord.person = {
+							resource: personEntry.about					
+					};
+				}
+				
+				if (!entry.hoursRecord.person.name){
+					if (personEntry.name.fullName) {
+						entry.hoursRecord.person.name = personEntry.name.fullName;	
+					}
+				}
+				
 				// }
 				if( !entry.hoursRecord.date ) {
 					entry.hoursRecord.date = $scope.selected.date;
