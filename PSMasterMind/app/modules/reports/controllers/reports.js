@@ -602,16 +602,29 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 				}
 			}
 		}
-
+        
+        var result = filtered.result;
 		var reportClient = filtered.reportClient;
 		var reportProject = filtered.reportProject;
 		var reportPerson = filtered.reportPerson;
 		var projectMapping = filtered.projectMapping;
-		var person;
+		
+		var params = {
+          projectResources: $scope.getProjectResources(projects),
+          reportClient: reportClient,
+          reportProject: reportProject,
+          reportPerson: reportPerson,
+          projectMapping: projectMapping,
+          startDate: startDate,
+          endDate: endDate,
+          targetType: targetType
+        };
 
-		var i, j;
+        Resources.refresh("/reports/asyncBillingAccurals/generate", params, {});
+        
+		//var i, j;
 		// load assignments for filtered projects
-		AssignmentService.getAssignments( projects ).then( function( assignments ) {
+		/*AssignmentService.getAssignments( projects ).then( function( assignments ) {
 			var persons = [ ];
 
 			for( i = 0; i < assignments.length; i++ ) {
@@ -711,7 +724,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			else
 				$scope.cancelReportGeneration( );
 
-		} );
+		} );*/
 
 	};
 	
@@ -859,103 +872,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
         }
         
         Resources.refresh("/reports/asyncHours/generate", params, {});
-
-		// load assignments for filtered projects
-		/*AssignmentService.getAssignments( result ).then( function( assignments ) {
-			var persons = [ ];
-
-			for( i = 0; i < assignments.length; i++ ) {
-
-				for( j = 0; j < assignments[ i ].members.length; j++ ) {
-
-					if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j ].person.resource ) {
-						if( !projectMapping[ assignments[ i ].project.resource ] )
-							projectMapping[ assignments[ i ].project.resource ] = {};
-
-						if( !projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ] )
-							projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ] = [ ];
-
-						projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ].push( {
-							resource: assignments[ i ].members[ j ].person.resource,
-							name:  Util.getPersonName($scope.peopleMap[ assignments[ i ].members[ j ].person.resource ])
-						} );
-
-						
-						persons.push( assignments[ i ].members[ j ].person.resource );
-					}
-				}
-			}
-
-			// prepare requests to load hours for associated with filtered projects people
-			var hoursQ = {
-				$or: [ ]
-			};
-
-			var prop;
-
-			hoursQ.$or = _.map( projectMapping, function( val, key ) {
-				if( key.indexOf( 'tasks' ) > -1 )
-					return {
-						"task.resource": key
-					};
-				return {
-					"project.resource": key
-				};
-			} );
-			
-			// include all projects not only on which we have assignments
-			hoursQ.$or = _.map( result, function( val ) {
-				if( val.resource.indexOf( 'tasks' ) > -1 )
-					return {
-						"task.resource": val.resource
-					};
-				return {
-					"project.resource": val.resource
-				};
-			} );
-			
-			hoursQ.$or = _.uniq( hoursQ.$or, function( p ) {
-				if (p[ "task.resource" ])
-					return p[ "task.resource" ];
-				
-				return p[ "project.resource" ];
-			} );
-
-			if ($scope.reportCustomStartDate && $scope.reportCustomEndDate ) {
-				hoursQ.$and = [ { date: { $gte: $scope.reportCustomStartDate }}, { date: { $lte: $scope.reportCustomEndDate }}  ];
-			}
-
-			// find by person_resource person in {roles_mapping}-[persons]
-			var findPersonOnProject = function( rolesPersonMapping, resource ) {
-				var prop;
-				var res = null;
-
-				for( prop in rolesPersonMapping ) {
-					res = res || _.find( rolesPersonMapping[ prop ], function( p ) {
-						return p.resource == resource;
-					} );
-				}
-
-				return res;
-			};
-
-			if( hoursQ[ "$or" ].length > 0 ) {
-				var fields = {
-						hoursQ: hoursQ,
-						project: 1,
-						person: 1,
-						task: 1,
-						date: 1,
-						hours: 1,
-						description: 1
-				};
-				Resources.refresh("/reports/project/generate", null, fields);
-			}
-			else
-				$scope.cancelReportGeneration( );
-
-		} );*/
-
 	};
 
 	$scope.getHoursReportData = function ( reportHours, cb ) {

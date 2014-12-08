@@ -1,6 +1,7 @@
 var dbAccess = require( '../data/dbAccess.js' );
 var dataAccess = require( '../data/dataAccess.js' );
 var memoryCache = require( '../data/memoryCache.js' );
+var moment = require('moment');
 
 var assignments = require( '../controllers/assignments' );
 var util = require( '../util/util.js' );
@@ -71,36 +72,8 @@ var updateStatus = function(personId, status) {
 };
 
 // returns caclulated hours query for report or error if happens in callback
-var getHoursQuery = function(assignments, reportPerson, projectMapping, projects, people, roles, startDate, endDate, callback) {
+var getHoursQuery = function(assignments, reportPerson, projectMapping, projects, people, roles, startDate, endDate, rolesMapping, peopleMap, callback) {
   var persons = [ ];
-          var rolesMapping = {};
-          for( i = 0; i < roles.members.length; i++ ) {
-            var role = roles.members[ i ];
-            var resource = role.resource;
-
-            role.value = role.abbreviation.toLowerCase( );
-
-            rolesMapping[ role.resource ] = role.value;
-          }
-          
-          var peopleMap = {};
-          var peopleList = _.map( people.members, function( m ) {
-            abbr =  m.primaryRole && m.primaryRole.resource ? rolesMapping[m.primaryRole.resource]: UNDETERMINED_ROLE;
-                
-            if (abbr)
-              abbr = abbr.toUpperCase();
-                
-            peopleMap[ m.resource ] = {
-              name: m.name,
-              abbreviation: abbr
-            };
-
-            return {
-              value: m.name,
-              resource: m.resource
-            };
-          } );
-          
           for( i = 0; i < assignments.length; i++ ) {
 
                 for( j = 0; j < assignments[ i ].members.length; j++ ) {
@@ -192,9 +165,37 @@ var prepareDataForReports = function(reportId, params, callback) {
       
               var assignmentsMembers = [];
       
-              if(assignments && assignments.length > 0) {
+              if(assignments && assignments.members.length > 0) {
                 assignmentsMembers = assignments.members;
               }
+              
+              var rolesMapping = {};
+              for( i = 0; i < roles.members.length; i++ ) {
+                var role = roles.members[ i ];
+                var resource = role.resource;
+
+                role.value = role.abbreviation.toLowerCase( );
+
+                rolesMapping[ role.resource ] = role.value;
+              }
+          
+              var peopleMap = {};
+              var peopleList = _.map( people.members, function( m ) {
+                abbr =  m.primaryRole && m.primaryRole.resource ? rolesMapping[m.primaryRole.resource]: UNDETERMINED_ROLE;
+                
+                if (abbr)
+                  abbr = abbr.toUpperCase();
+                
+                peopleMap[ m.resource ] = {
+                  name: m.name,
+                  abbreviation: abbr
+                };
+
+                return {
+                  value: m.name,
+                  resource: m.resource
+                };
+              } );
               
               callback(null, {
                 reportId: reportId,
@@ -203,7 +204,9 @@ var prepareDataForReports = function(reportId, params, callback) {
                 projMapping: projMapping,
                 assignmentsMembers: assignmentsMembers,
                 people: people,
-                roles: roles 
+                roles: roles,
+                peopleMap: peopleMap,
+                rolesMapping: rolesMapping
               });
             }
           });
@@ -217,9 +220,9 @@ var prepareDataForReports = function(reportId, params, callback) {
 var generateHoursReportAsync = function(reportId, params, callback) {
   prepareDataForReports(reportId, params, function(err, data) {
     if(err) {
-      callback("Error while getting data for report: " + err);
+      callback("Error while getting data for hours report: " + err);
     } else {
-      getHoursQuery(data.assignmentsMembers, data.params.reportPerson, data.projMapping, data.projects, data.people, data.roles, data.params.startDate, data.params.endDate, function(err, hoursQ) {
+      getHoursQuery(data.assignmentsMembers, data.params.reportPerson, data.projMapping, data.projects, data.people, data.roles, data.params.startDate, data.params.endDate, data.rolesMapping, data.peopleMap, function(err, hoursQ) {
         if(err) {
           callback("Error calculating hours query while generating report: " + err, null);
         } else {
@@ -246,7 +249,130 @@ var generateHoursReportAsync = function(reportId, params, callback) {
 };
 
 var generateBillingAccuralsReportAsync = function(reportId, params, callback) {
-  
+  prepareDataForReports(reportId, params, function(err, data) {
+    if(err) {
+      callback("Error while getting data for billing accurals report: " + err);
+    } else {
+      dataAccess.listProjects({}, ["resource", "name", "startDate", "endDate", "roles", "customerName", "committed", "type", "description", "terms"], function(err, projects) {
+        if(err) {
+          callback("Error while getting projects for billing accurals report: " + err);
+        } else {
+          getBillingAccuralsHoursQuery(data.assignmentsMembers, data.params.reportPerson, data.projMapping, projects.data, data.people, data.roles, data.params.startDate, data.params.endDate, data.rolesMapping, data.peopleMap, data.params.targetType, function(err, hoursQ) {
+            if(err) {
+              callback("Error calculating hours query while generating report: " + err, null);
+            } else {
+              dataAccess.listHours(hoursQ, function(err, hours) {
+                if(err) {
+                  callback("Error getting hours while generating billing accurals report: " + err, null);
+                } else {
+                  var overallResult = {
+                    type: params.type,
+                    data: {
+                      hours: hours,
+                      people: data.people
+                    }
+                  };
+
+                  memoryCache.putObject(reportId, overallResult);
+                  callback(null, "Report " + reportId + " sucessfully generated");
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  });
+};
+
+var getBillingAccuralsHoursQuery = function(assignments, reportPerson, projectMapping, projects, people, roles, startDate, endDate, rolesMapping, peopleMap, targetType, callback) {
+  var persons = [ ];
+
+            for( i = 0; i < assignments.length; i++ ) {
+
+                for( j = 0; j < assignments[ i ].members.length; j++ ) {
+
+                    if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j ].person.resource ) {
+                        if( !projectMapping[ assignments[ i ].project.resource ] )
+                            projectMapping[ assignments[ i ].project.resource ] = {};
+
+                        if( !projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ] )
+                            projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ] = [ ];
+
+                        person = {
+                            resource: assignments[ i ].members[ j ].person.resource,
+                            hoursPerWeek: assignments[ i ].members[ j ].hoursPerWeek,
+                            startDate: assignments[ i ].members[ j ].startDate,
+                            endDate: assignments[ i ].members[ j ].endDate,
+                            name: util.getPersonName(peopleMap[ assignments[ i ].members[ j ].person.resource ])
+                        };
+
+                        var project = _.find( projects, function( p ) {
+                            return p.resource == assignments[ i ].project.resource;
+                        } );
+                        var now = moment( ).format( 'YYYY-MM-DD' );
+
+                        startDate = project.terms.billingDate;
+                        var prev = startDate;
+                        
+                        while( startDate < now ) {
+                            prev = startDate;
+
+                            if( targetType == 'monthly' )
+                                startDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
+                            else if( targetType == 'weekly' )
+                                startDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
+                            else if( targetType == 'quarterly' )
+                                startDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
+                        }
+
+                        startDate = prev;
+
+                        if( targetType == 'monthly' )
+                            endDate = moment( startDate ).add( 'month', 1 ).format( 'YYYY-MM-DD' );
+                        else if( targetType == 'weekly' )
+                            endDate = moment( startDate ).add( 'week', 1 ).format( 'YYYY-MM-DD' );
+                        else if( targetType == 'quarterly' )
+                            endDate = moment( startDate ).add( 'month', 3 ).format( 'YYYY-MM-DD' );
+
+                        projectMapping[ assignments[ i ].project.resource ][ assignments[ i ].members[ j ].role.resource ].push( person );
+
+                        person.hours = person.hours ? person.hours : [ ];
+
+                        person.startBillingDate = startDate;
+                        person.endBillingDate = endDate;
+
+                        if( person.startDate > person.startBillingDate )
+                            person.startBillingDate = person.startDate;
+
+                        if( person.endDate < person.endBillingDate )
+                            person.endBillingDate = person.endDate;
+
+                        persons.push( assignments[ i ].members[ j ].person.resource );
+                    }
+                }
+            }
+
+            var hoursQ = {
+                $or: [ ]
+            };
+
+            var prop;
+
+            hoursQ.$or = _.map( projectMapping, function( val, key ) {
+                if( key.indexOf( 'tasks' ) > -1 )
+                    return {
+                        "task.resource": key
+                    };
+                return {
+                    "project.resource": key
+                };
+            } );
+            hoursQ.$or = _.uniq( hoursQ.$or, function( p ) {
+                return p[ "project.resource" ];
+            } );
+            
+            callback(null, hoursQ);
 };
 
 module.exports.startGenerateReport = startGenerateReport;
