@@ -17,29 +17,69 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	  el = $('<div class="d3Div" id="d3Div' + elId + '"><svg style="font-size: 11px;height:100%;" ' + 
 		' xmlns="http://www.w3.org/2000/svg"></svg></div>').appendTo(el);
 	
-	 var dataMap = {
+	 /*var dataMap = {
 		"developers" : [{
-			label: "count",
+			label: "hours",
 			value: 33
+		}, {
+			label: "hours",
+			value: 39
 		}],
 		"architects" : [{
-			label: "count",
+			label: "hours",
 			value: 5
+		},{
+			label: "hours",
+			value: 10
 		}],
 		"sales" : [{
-			label: "count",
+			label: "hours",
 			value: 4
-		}],
-		"marketing" : [{
-			label: "count",
+		}, {
+			label: "hours",
 			value: 7
 		}],
+		"marketing" : [{
+			label: "hours",
+			value: 7
+		}, {
+			label: "hours",
+			value: 11
+		}],
 		"managers" : [{
-			label: "count",
+			label: "hours",
 			value: 15
+		}, {
+			label: "hours",
+			value: 18
 		}]
-	 };
-	 var axisLabels = ["People", "Count"]
+	  
+	 };*/
+	  
+	  var dataMap = {
+				"hours" : [{
+					label: "managers",
+					value: 33
+				}, {
+					label: "developers",
+					value: 56
+				}, {
+					label: "architects",
+					value: 10
+				}],
+				"expected hours" : [{
+					label: "managers",
+					value: 5
+				}, {
+					label: "developers",
+					value: 12
+				}, {
+					label: "architects",
+					value: 4
+				}]
+	  };
+	  
+	 var axisLabels = ["Role", "Number of hours"]
 	 var chartData = [];
 	 var hideLegend = true;
 	
@@ -55,11 +95,13 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	
 	 var count = chartData.length;
 	 var colorFn = d3.scale.category10(); 
-	 var colors = []
+	 var colors = ['#0071BC', '#96D4F3']
 	
+	 /*
 	 for (var k = 0; k < count; k ++)
-			colors.push(colorFn(k))
-	
+		//colors.push(colorFn(k))
+		 colors.push('#0071BC')
+	*/
 	 nv.addGraph(function() {
 			try {
 				var chart = nv.models.multiBarChart()
@@ -78,6 +120,9 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 				//chart.showLegend(false);
 				
 				chart.showControls(false);
+				//chart.xRange([0, 225]);
+				chart.stacked(true)
+				chart.groupSpacing(0.2);
 				
 				var xAxisLbl = axisLabels && axisLabels[0] ? axisLabels[0] : "X-axis";
 				var yAxisLbl = axisLabels && axisLabels[1] ? axisLabels[1] : "Y-axis";
@@ -101,6 +146,10 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 		 			height: 0,
 		 			width: 0
 		 		};
+		 		
+		 		//d3.selectAll('#' + el.attr('id') + ".nv-bar > rect").attr("width", chart.xAxis.rangeBand()/3);
+		 		
+		 		
 		 		
 		 		//if not data available for this chart
 		 		if ($('#' + el.attr('id') + ' .nv-x').size() == 0 ) {
