@@ -21,11 +21,12 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 		if( allowed ) {
 
 			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
+			var fields = req.query.fields;
 			var now = new Date();
 			 
 			console.log( '\r\nget:hours:start:query:' + JSON.stringify( query ) + '\r\n' );
 
-			hours.listHours( query, function( err, result ) {
+			hours.listHours( query, fields, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

@@ -371,7 +371,7 @@ module.exports = function(params) {
 		var query = {
 			$or : names
 		};
-		people.listPeople(query, function(err, body) {
+		people.listPeople(query, null, function(err, body) {
 			if (err) {
 				callback('error loading people', null);
 			} else {

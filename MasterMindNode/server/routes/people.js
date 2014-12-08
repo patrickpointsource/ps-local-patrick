@@ -18,9 +18,10 @@ router.get('/', util.isAuthenticated, function(req, res){
 		if (allowed) 
 		{
 		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
+		    var fields = req.query.fields;
 		    console.log("query=" + JSON.stringify(query));
 		
-		    people.listPeople(query, function(err, result){
+		    people.listPeople(query, fields, function(err, result){
 		        if(err){
 		            res.json(500, err);
 		        } else {
@@ -45,7 +46,8 @@ router.get('/filter', util.isAuthenticated, function(req, res){
 			if (roleIds.length == 0) {
 				//Get list of people if filter is empty
 				var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-				people.listPeople(query, function(err, result){
+			    var fields = req.query.fields;
+				people.listPeople(query, fields, function(err, result){
 					if(err){
 						res.json(500, err);
 					} else {

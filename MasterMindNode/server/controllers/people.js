@@ -160,7 +160,7 @@ module.exports.getPerson = function(id, callback) {
 
 module.exports.getPersonByGoogleId = function(id, callback) {
     var query = {googleId: id};
-    dataAccess.listPeople(query, function(err, body){
+    dataAccess.listPeople(query, null, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading getPersonByGoogleId', null);
@@ -251,7 +251,7 @@ module.exports.getAccessRights = function(id, callback) {
 
 module.exports.getAccessRightsByGoogleId = function(id, callback) {
     var query = {googleId: id};
-    dataAccess.listPeople(query, function(err, body){
+    dataAccess.listPeople(query, null, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading getPersonByGoogleId', null);

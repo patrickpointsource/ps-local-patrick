@@ -78,7 +78,7 @@ var sendEmailTo = function(notification) {
   
   var user;
   
-  dataAccess.listPeople(query, function(err, result) {
+  dataAccess.listPeople(query, null, function(err, result) {
     if(!err) {
       if(result.members.length > 0) {
         user = result.members[0];

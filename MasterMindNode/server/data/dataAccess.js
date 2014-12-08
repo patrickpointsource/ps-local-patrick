@@ -335,7 +335,7 @@ var getProfileByGoogleId = function( id, callback ) {
 	var query = {
 		googleId: id
 	};
-	listPeople( query, function( err, list ) {
+	listPeople( query, null, function( err, list ) {
 		if( !err ) {
 			callback( null, list["members"][ 0 ] );
 		} else {
@@ -344,19 +344,19 @@ var getProfileByGoogleId = function( id, callback ) {
 	} );
 };
 
-var listPeople = function( q, callback ) {
+var listPeople = function( q, fields, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "people/" ) );
+		callback( null, queryRecords( result, q, "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "people/" ) );
+			callback( err, queryRecords( body, q, "members", "people/", null, fields ) );
 		} );
 	}
 
@@ -922,7 +922,7 @@ var listNotificationsByPerson = function( person, fields, callback ) {
 
 };
 
-var listHours = function( q, callback ) {
+var listHours = function( q, fields, callback ) {
     var onlyAndDates = q.$and && q.$and.length > 0;
     var orEmpty = !q.$or || q.$or.length > 0;
     var onlyProjects = q.$or && q.$or.length > 0;
@@ -977,7 +977,7 @@ var listHours = function( q, callback ) {
                 callback( 'error loading hours by start and end dates', null );
             } else {
                 console.log( body );
-                callback( err, queryRecords( body, q, "members", "hours/" ) );
+                callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
     } else if( !person && project && startDate && endDate && orEmpty && onlyAndDates ) {
@@ -987,7 +987,7 @@ var listHours = function( q, callback ) {
                 callback( 'error loading hours by start and end dates', null );
             } else {
                 console.log( body );
-                callback( err, queryRecords( body, q, "members", "hours/" ) );
+                callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
     } else if( person && project && startDate && endDate && orEmpty && onlyAndDates ) {
@@ -997,7 +997,7 @@ var listHours = function( q, callback ) {
                 callback( 'error loading hours by start and end dates', null );
             } else {
                 console.log( body );
-                callback( err, queryRecords( body, q, "members", "hours/" ) );
+                callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
     } else if( person && !project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
@@ -1008,7 +1008,7 @@ var listHours = function( q, callback ) {
                 callback( 'error loading hours by start and end dates', null );
             } else {
                 console.log( body );
-                callback( err, queryRecords( body, q, "members", "hours/" ) );
+                callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
     } else if( onlyProjects )
@@ -1018,7 +1018,7 @@ var listHours = function( q, callback ) {
                 callback( 'error loading hours by start and end dates', null );
             } else {
                 console.log( body );
-                callback( err, queryRecords( body, q, "members", "hours/" ) );
+                callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
     else

@@ -27,6 +27,8 @@ var ASYNC_HOURS = 'asyncHours';
 var ASYNC_BILLING_ACCURALS = 'asyncBillingAccurals';
 var ASYNC_BILLING_FORECAST = 'asyncBillingForecast';
 
+var HOURS_FIELDS =  ["_id", "date", "description", "project", "person", "task", "hours"];
+
 // generate report id using personId
 var getReportId = function (personId) {
 	return REPORT_PREFIX + personId;
@@ -149,7 +151,8 @@ var prepareDataForReports = function(reportId, params, callback) {
     if( err ) {
       callback( 500, "Error in getting assignment while generating report: " + err );
     } else {
-      dataAccess.listPeople({}, function(err, people) {
+      var fields = ["_id", "groups", "primaryRole", "name", "isActive", "resource", "lastSynchronized", "mBox", "phone", "about", "thumbnail" ]; 
+      dataAccess.listPeople({}, fields, function(err, people) {
         if(err) {
           callback("Error getting people while generating report: " + err, null);
         } else {
@@ -226,7 +229,7 @@ var generateHoursReportAsync = function(reportId, params, callback) {
         if(err) {
           callback("Error calculating hours query while generating report: " + err, null);
         } else {
-          dataAccess.listHours(hoursQ, function(err, hours) {
+          dataAccess.listHours(hoursQ, HOURS_FIELDS, function(err, hours) {
             if(err) {
               callback("Error getting hours while generating report: " + err, null);
             } else {
@@ -261,7 +264,7 @@ var generateBillingAccuralsReportAsync = function(reportId, params, callback) {
             if(err) {
               callback("Error calculating hours query while generating report: " + err, null);
             } else {
-              dataAccess.listHours(hoursQ, function(err, hours) {
+              dataAccess.listHours(hoursQ, HOURS_FIELDS, function(err, hours) {
                 if(err) {
                   callback("Error getting hours while generating billing accurals report: " + err, null);
                 } else {
