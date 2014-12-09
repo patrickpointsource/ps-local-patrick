@@ -40,7 +40,7 @@ angular.module('Mastermind.services.projects')
     	};
     	
     	params.person = personResource;
-    	
+    	params.fields = ["_id", "type", "header", "text", "person", "resource"];
         return Resources.get('notifications/bytypes/byPerson', params);
     };
     	

@@ -248,6 +248,8 @@ function( $q, Resources ) {
 						
 						var params = {};
 						params.resource = projectURIs;
+						params.fields = ["_id", "resource", "customerName", "description", 
+						                 "executiveSponsor", "name", "roles", "startDate", "state", "terms", "type"];
 						Resources.refresh( 'projects/byTypes/projectsByResources', params).then( function( result ) {
 							var projects = result.data;
 
