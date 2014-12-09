@@ -28,6 +28,8 @@ var ASYNC_BILLING_ACCURALS = 'asyncBillingAccurals';
 var ASYNC_BILLING_FORECAST = 'asyncBillingForecast';
 
 var HOURS_FIELDS =  ["_id", "date", "description", "project", "person", "task", "hours"];
+var PROJECT_FIELDS = ["resource", "name", "startDate", "endDate", "roles", "customerName", "committed", "type", "description", "terms"];
+var PEOPLE_FIELDS = ["_id", "groups", "primaryRole", "name", "isActive", "resource", "lastSynchronized", "mBox", "phone", "about", "thumbnail" ];
 
 // generate report id using personId
 var getReportId = function (personId) {
@@ -45,6 +47,9 @@ var startGenerateReport = function(personId, type, params, callback) {
       break;
     case ASYNC_BILLING_ACCURALS: 
       generateBillingAccuralsReportAsync(reportId, params, callback);
+      break;
+    case REPORT_TYPE_PEOPLE: 
+      generatePeopleReport(reportId, params, callback);
       break;
     default: 
       callback("Unknown report type: " + type, null);
@@ -77,7 +82,7 @@ var updateStatus = function(personId, status) {
 var getHoursQuery = function(assignments, reportPerson, projectMapping, projects, people, roles, startDate, endDate, rolesMapping, peopleMap, callback) {
   var persons = [ ];
           for( i = 0; i < assignments.length; i++ ) {
-
+            if(assignments[ i ].members) {
                 for( j = 0; j < assignments[ i ].members.length; j++ ) {
 
                     if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j ].person.resource ) {
@@ -96,6 +101,7 @@ var getHoursQuery = function(assignments, reportPerson, projectMapping, projects
                         persons.push( assignments[ i ].members[ j ].person.resource );
                     }
                 }
+              }
             }
 
             // prepare requests to load hours for associated with filtered projects people
@@ -151,7 +157,7 @@ var prepareDataForReports = function(reportId, params, callback) {
     if( err ) {
       callback( 500, "Error in getting assignment while generating report: " + err );
     } else {
-      var fields = ["_id", "groups", "primaryRole", "name", "isActive", "resource", "lastSynchronized", "mBox", "phone", "about", "thumbnail" ]; 
+      var fields = PEOPLE_FIELDS;
       dataAccess.listPeople({}, fields, function(err, people) {
         if(err) {
           callback("Error getting people while generating report: " + err, null);
@@ -256,7 +262,7 @@ var generateBillingAccuralsReportAsync = function(reportId, params, callback) {
     if(err) {
       callback("Error while getting data for billing accurals report: " + err);
     } else {
-      dataAccess.listProjects({}, ["resource", "name", "startDate", "endDate", "roles", "customerName", "committed", "type", "description", "terms"], function(err, projects) {
+      dataAccess.listProjects({}, PROJECT_FIELDS, function(err, projects) {
         if(err) {
           callback("Error while getting projects for billing accurals report: " + err);
         } else {
@@ -292,7 +298,7 @@ var getBillingAccuralsHoursQuery = function(assignments, reportPerson, projectMa
   var persons = [ ];
 
             for( i = 0; i < assignments.length; i++ ) {
-
+              if(assignments[ i ].members) {
                 for( j = 0; j < assignments[ i ].members.length; j++ ) {
 
                     if( !reportPerson || reportPerson.resource == assignments[ i ].members[ j ].person.resource ) {
@@ -354,6 +360,7 @@ var getBillingAccuralsHoursQuery = function(assignments, reportPerson, projectMa
                         persons.push( assignments[ i ].members[ j ].person.resource );
                     }
                 }
+              }
             }
 
             var hoursQ = {
@@ -376,6 +383,46 @@ var getBillingAccuralsHoursQuery = function(assignments, reportPerson, projectMa
             } );
             
             callback(null, hoursQ);
+};
+
+var generatePeopleReport = function(reportId, params, callback) {
+  dataAccess.listPeople({}, PEOPLE_FIELDS, function(err, people) {
+        if(err) {
+          callback("Error getting people while generating report: " + err, null);
+        } else {
+          dataAccess.listRoles({}, function(err, roles) {
+            if(err) {
+              callback("Error getting roles while generating report: " + err, null);
+            } else {
+              dataAccess.listProjects({}, PROJECT_FIELDS, function(err, projects) {
+                if(err) {
+                  callback("Error while getting projects for billing accurals report: " + err);
+                } else {
+                  var projectsQuery = _.map(projects.data, function(p) {
+                    return { "project.resource": p.resource };
+                  });
+                  dataAccess.listHours({ $or: projectsQuery }, HOURS_FIELDS, function(err, hours) {
+                    if(err) {
+                      callback("Error getting hours while generating report: " + err, null);
+                    } else {
+                      var overallResult = {
+                        type: params.type,
+                        data: {
+                          hours: hours,
+                          people: people
+                        }
+                      };
+
+                      memoryCache.putObject(reportId, overallResult);
+                      callback(null, "Report " + reportId + " sucessfully generated");
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+  });
 };
 
 module.exports.startGenerateReport = startGenerateReport;
