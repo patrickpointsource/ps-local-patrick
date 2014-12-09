@@ -326,6 +326,7 @@ var getAccessRights = function(user, callback) {
      */
         if( _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.PM }) 
           || _.findWhere(userRole.roles, { name: security.DEFAULT_ROLES.SSA }) ) {
+          accessRights.hasFinanceRights = true;
           accessRights.hasProjectManagementRights = true;
         }
 
