@@ -7,6 +7,9 @@
  */
 
 var _ = require('underscore');
+var moment = require('moment');
+
+var REPORT_PREFIX = "report_";
 
 var getIDfromResource = function(resource, callback) {
 	
@@ -139,6 +142,24 @@ var getPersonName = function(person, isSimply, isFirst) {
             result = tmpName.givenName;
         
         return result;
+};
+
+
+
+module.exports.getReportId = function (personId) {
+  return REPORT_PREFIX + personId;
+};
+
+module.exports.getBusinessDaysCount = function ( startDate, endDate ) {
+  var days = endDate.diff(startDate, 'days');
+  var date = moment(startDate);
+  for (var i = 0; i <= days; i++) {
+    date = date.add(1, 'days');
+    if (date.isoWeekday() > 5) {
+      days -= 1;
+    }
+  }
+  return days;
 };
 
 module.exports.getIDfromResource = getIDfromResource;

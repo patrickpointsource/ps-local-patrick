@@ -8,9 +8,15 @@ var util = require( '../util/util.js' );
 var _ = require('underscore');
 
 // Report types
-var REPORT_TYPE_PEOPLE = "people";
-var REPORT_TYPE_PROJECT = "project";
-var REPORT_TYPE_CUSTOM = "custom";
+
+var REPORT_TYPES = {
+  PEOPLE: "people",
+  PROJECT: "project",
+  CUSTOM: "custom"
+};
+
+// Supported new report types
+var SUPPORTED_REPORT_TYPES = [ REPORT_TYPES.PEOPLE ];
 
 // Report statuses
 var REPORT_IS_NOT_STARTED = "Not started";
@@ -27,32 +33,44 @@ var ASYNC_HOURS = 'asyncHours';
 var ASYNC_BILLING_ACCURALS = 'asyncBillingAccurals';
 var ASYNC_BILLING_FORECAST = 'asyncBillingForecast';
 
+// backward compatibility for old report types
+var OLD_TYPES = [ ASYNC_HOURS, ASYNC_BILLING_ACCURALS, ASYNC_BILLING_FORECAST ];
+
 var HOURS_FIELDS =  ["_id", "date", "description", "project", "person", "task", "hours"];
 var PROJECT_FIELDS = ["resource", "name", "startDate", "endDate", "roles", "customerName", "committed", "type", "description", "terms"];
 var PEOPLE_FIELDS = ["_id", "groups", "primaryRole", "name", "isActive", "resource", "lastSynchronized", "mBox", "phone", "about", "thumbnail" ];
 
 // generate report id using personId
 var getReportId = function (personId) {
-	return REPORT_PREFIX + personId;
+  return util.getReportId(personId);
 };
 
 // method that checks type of report and start the process of report data generation
-var startGenerateReport = function(personId, type, params, callback) {
-  var reportId = getReportId(personId);
+var startGenerateReport = function(person, type, params, callback) {
+  var reportId = getReportId(person._id);
   params.type = type;
   
-  switch(type) {
-    case ASYNC_HOURS: 
-      generateHoursReportAsync(reportId, params, callback);
-      break;
-    case ASYNC_BILLING_ACCURALS: 
-      generateBillingAccuralsReportAsync(reportId, params, callback);
-      break;
-    case REPORT_TYPE_PEOPLE: 
-      generatePeopleReport(reportId, params, callback);
-      break;
-    default: 
-      callback("Unknown report type: " + type, null);
+  // new supported types
+  if(SUPPORTED_REPORT_TYPES.indexOf(type) > -1) {
+    // service path is '../services/[name]Report' (e.g. '../services/peopleReport')
+    var supportedReportService = require("../services/" + type + "Report");
+    if(supportedReportService) {
+      supportedReportService.generate(person, params, callback);
+    } else {
+      callback("Error in initializing report generation: report type " + type + " is not supported yet.", null);
+    }
+  } else {
+    // old report types
+    switch(type) {
+      case ASYNC_HOURS: 
+        generateHoursReportAsync(reportId, params, callback);
+        break;
+      case ASYNC_BILLING_ACCURALS: 
+        generateBillingAccuralsReportAsync(reportId, params, callback);
+        break;
+      default: 
+        callback("Unknown report type: " + type, null);
+    }
   }
 };
 
