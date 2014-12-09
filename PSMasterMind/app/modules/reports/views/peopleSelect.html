@@ -1,5 +1,8 @@
-<div class="reports" ng-controller="PeopleReportCtrl">
+<div class="reports">
 	<div class="row padded-row parameters" style="margin-top: 20px;">
+		<div class="spinner-container" ng-show="isGenerationInProgress" style="width: calc(100% - 30px);">
+			<i id="timer" class="fa fa-spinner fa-spin fa-3x"><label></label></i>
+		</div>
 		<div class="col-md-5">
 			<div class="well" style="margin-left: -15px; margin-right: 20px;">
 				<div >
@@ -425,7 +428,7 @@
 			<button class="btn">Save & Create Report</button>
 			<br />
 			<br />
-			<button class="btn">Create Report</button>
+			<button class="btn" ng-click="generateReport()" ng-disabled="isGenerationInProgress">Create Report</button>
 		</div>
 	</div>
 </div>

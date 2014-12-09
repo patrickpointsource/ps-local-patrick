@@ -1,4 +1,4 @@
-<div ng-controller="PeopleReportCtrl" >
+<div>
 	<div class="row report-output-row" >
 		<div class="col-xs-12 col-sm-10">
 		    <div id="report-output-summary" class="row">
@@ -20,12 +20,16 @@
                 <ng-include src="'modules/reports/views/output/projections.html'"/>
             </div>
         </div>
-        <div class="col-xs-12 col-sm-2">
+        <div class="col-xs-12 col-sm-2 " >
             <div class="row">
                 <button class="btn btn-report big">Save Report</button>
             </div>
             <div class="row">
-                <button class="btn btn-report big">Export to CSV</button>
+                <button class="btn btn-report big">
+					<a href="{{output.reportData.link}}" download="Custom.csv" >
+			      		Export to CSV
+			    	</a>
+		    </button>
             </div>
             <div class="row">
                 <button class="btn btn-report big">Export graphs as .png</button>

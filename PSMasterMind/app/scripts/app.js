@@ -140,12 +140,14 @@
         .state('reports.people', {
           url: '/people',
           abstract: true,
-          template: '<ui-view />'
+          template: '<ui-view />',
+          controller: 'PeopleReportCtrl'
         })
         .state('reports.project', {
           url: '/project',
           abstract: true,
-          template: '<ui-view />'
+          template: '<ui-view />',
+          controller: 'ProjectReportCtrl'
         })
         .state('reports.people.select', {
           url: '/select',
