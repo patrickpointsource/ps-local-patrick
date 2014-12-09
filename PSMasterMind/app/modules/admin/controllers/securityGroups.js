@@ -21,8 +21,8 @@ angular.module('Mastermind')
 	          
 	          Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
 	            $scope.userRoles = userRoles.members;
-	            
-	            People.query( {}, {}).then( function(people) {
+	            var fields = {_id : 1, name : 1, googleId : 1, mBox : 1, resource : 1 };
+	            People.query( {}, fields).then( function(people) {
 	              $scope.people = people.members;
 	              
 	              $scope.updateSelectedGroupMembers();
@@ -41,8 +41,8 @@ angular.module('Mastermind')
 	          
 	          Resources.query('userroles', {}, {}, function(userRoles) {
 	            $scope.userRoles = userRoles.members;
-	            
-	            People.query( {}, {}).then( function(people) {
+	            var fields = {_id : 1, name : 1, googleId : 1, mBox : 1, resource : 1 };
+	            People.query( {}, fields).then( function(people) {
 	              $scope.people = people.members;
 	              
 	              $scope.updateSelectedGroupMembers();
