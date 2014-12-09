@@ -409,6 +409,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	
 	};
 	
+	$scope.cancelReport = function () {
+		Resources.refresh("/reports/cancel").then(function( result ){
+			$scope.cancelReportGeneration();
+		}).catch(function( err ){
+			$scope.cancelReportGeneration();
+		});
+	};
+	
 	$scope.onReportGenerated = function ( report ) {
 
 		console.log( 'Report generation completed' );

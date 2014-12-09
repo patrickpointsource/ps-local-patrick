@@ -1508,7 +1508,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		},
 		
 		cancelGeneration: function( e ) {
-			var a = Resources.refresh("/reports/cancel").then(function( result ){
+			Resources.refresh("/reports/cancel").then(function( result ){
 				$scope.cancelReportGeneration();
 			}).catch(function( err ){
 				$scope.cancelReportGeneration();
