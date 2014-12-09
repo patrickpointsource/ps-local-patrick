@@ -25,8 +25,8 @@ module.exports.listVacationsByPerson = function(personResource, callback) {
     });
 };
 
-module.exports.listVacationsByPeriod = function(people, startDate, endDate, callback) {
-    dataAccess.listVacationsByPeriod(people, startDate, endDate, null, function(err, body){
+module.exports.listVacationsByPeriod = function(people, startDate, endDate, fields, callback) {
+    dataAccess.listVacationsByPeriod(people, startDate, endDate, fields, function(err, body){
         if (err) {
             console.log(err);
             callback("error loading vacations by period", null);
@@ -36,8 +36,8 @@ module.exports.listVacationsByPeriod = function(people, startDate, endDate, call
     });
 };
 
-module.exports.listRequests = function(manager, statuses, startDate, endDate, callback) {
-    dataAccess.listRequests(manager, statuses, startDate, endDate, null, function(err, body){
+module.exports.listRequests = function(manager, statuses, startDate, endDate, fields, callback) {
+    dataAccess.listRequests(manager, statuses, startDate, endDate, fields, function(err, body){
         if (err) {
             console.log(err);
             callback("error loading requests", null);

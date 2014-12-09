@@ -83,6 +83,7 @@ function( $q, Resources, HoursService ) {
 	  
 	  params.manager = manager.about;
 	  params.status = [this.STATUS.Pending, this.STATUS.Cancelled];
+	  params.fields = ["_id", "description", "startDate", "endDate", "person", "status", "type", "resource"];
 	  Resources.get( "vacations/bytypes/getRequests", params).then(function(result) {
 		  deferred.resolve( result.members );
 	  });
@@ -135,6 +136,7 @@ function( $q, Resources, HoursService ) {
 	  params.manager = manager.about;
 	  params.startDate = request.startDate;
 	  params.endDate = request.endDate;
+	  params.fields = ["_id", "description", "startDate", "endDate", "person", "status", "type", "resource"];
 	  Resources.get( "vacations/bytypes/getRequests", params).then(function(result) {
 		  deferred.resolve( result.members );
 	  });

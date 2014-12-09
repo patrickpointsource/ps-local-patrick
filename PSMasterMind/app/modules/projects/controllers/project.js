@@ -1876,7 +1876,7 @@ else if( role.percentageCovered == 0 )
                 }
             }));
 	        params.person = peopleResourcesOnly;
-	        
+	  	    params.fields = ["_id", "description", "startDate", "endDate", "person", "status", "type", "resource"];
 			Resources.get("vacations/bytypes/byPeriod", params).then(
 				function (result) {
 

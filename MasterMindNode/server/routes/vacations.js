@@ -74,6 +74,7 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 		if (allowed) 
 		{
 			var type = req.params.type;
+			var fields = req.query.fields;
 			if (type && type == "getRequests") {
 				
 				var manager = req.query.manager;
@@ -81,7 +82,7 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 				var startDate = req.query.startDate;
 				var endDate = req.query.endDate;
 				
-			    vacations.listRequests(manager, statuses, startDate, endDate, function(err, result){
+			    vacations.listRequests(manager, statuses, startDate, endDate, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -95,7 +96,7 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 				var startDate = req.query.startDate;
 				var endDate = req.query.endDate;
 				
-			    vacations.listVacationsByPeriod(people, startDate, endDate, function(err, result){
+			    vacations.listVacationsByPeriod(people, startDate, endDate, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
