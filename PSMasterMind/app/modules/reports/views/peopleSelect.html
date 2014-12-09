@@ -1,4 +1,4 @@
-<div class="reports">
+<div class="reports" ng-controller="PeopleReportCtrl">
 	<div class="row padded-row parameters" style="margin-top: 20px;">
 		<div class="spinner-container" ng-show="isGenerationInProgress" style="width: calc(100% - 30px);">
 			<i id="timer" class="fa fa-spinner fa-spin fa-3x"><label></label></i>
@@ -11,22 +11,22 @@
 				<br />
 				<div class="groups">
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-model="params.locations.onshore" />
 						Onshore, not including Chicago
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-model="params.locations.chicago" />
 						Chicago
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-model="params.locations.offshore" />
 						Offshore
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" />
+						<input type="checkbox" ng-model="params.locations.all" />
 						All locations
 					</label>
 				</div>
@@ -40,48 +40,48 @@
 			<div class="row groups">
 				<div class="col-xs-12 col-md-6">
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.administration" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.administration" />
 						Administration
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.architects" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.architects" />
 						Architects
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.clientexpierencemgmt" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.clientexpierencemgmt" />
 						Client Experience Management
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.development" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.development" />
 						Development
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.digitalexperience" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.digitalexperience" />
 						Digital Experience
 					</label>
 				</div>
 				<div class="col-xs-12 col-md-6">
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.executivemgmt" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.executivemgmt" />
 						Executive Management
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.marketing" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.marketing" />
 						Marketing
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.sales" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.sales" />
 						Sales
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="roleGroups.all" />
+						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.all" />
 						All Departments
 					</label>
 				</div>
@@ -95,22 +95,23 @@
 					<h3>Select roles</h3>
 				</div>
 				<br />
-				<div ng-if="!(roleGroups.all || roleGroups.administration || roleGroups.architects ||
-					roleGroups.clientexpierencemgmt || roleGroups.development || roleGroups.digitalexperience ||
-					roleGroups.executivemgmt || roleGroups.marketing || roleGroups.sales)">Select a department to view roles, or select All departments to select from all available roles.</div>
+				<div ng-if="!(params.departments.all || params.departments.administration || params.departments.architects ||
+					params.departments.clientexpierencemgmt || params.departments.development || params.departments.digitalexperience ||
+					params.departments.executivemgmt || params.departments.marketing || params.departments.sales)">
+					Select a department to view roles, or select All departments to select from all available roles.</div>
 				<div class="row groups">
 					<div class="col-md-6">
-						<div ng-repeat="role in roles | filter: filterRolesByGroup(roleGroups)" ng-if="$index < roles.length / 2">
+						<div ng-repeat="role in result = (roles | filter: filterRolesByGroup(params.departments))" ng-if="$index < result.length / 2">
 		                    <label>
-		                        <input type="checkbox" />
+		                        <input type="checkbox" ng-model="params.roles[role.abbreviation]" />
 		                        {{role.title}}
 		                    </label>
 		                </div>
 	                </div>
 	                <div class="col-md-6">
-		                <div ng-repeat="role in roles | filter: filterRolesByGroup(roleGroups)" ng-if="$index >= roles.length / 2">
+		                <div ng-repeat="role in result = (roles | filter: filterRolesByGroup(params.departments))" ng-if="$index >= result.length / 2">
 		                    <label>
-		                        <input type="checkbox" />
+		                        <input type="checkbox" ng-model="params.roles[role.abbreviation]" />
 		                        {{role.title}}
 		                    </label>
 		                </div>
@@ -126,33 +127,34 @@
 			<div class="row groups">
 				<div class="col-xs-12 col-md-4">
 					<label>
-	                	<input type="radio" name="date" ng-model="dateRange" value="week" />
+	                	<input type="radio" name="date" ng-model="params.date.range" value="week" />
 	                	One week
                 	</label>
                 	<br />
                 	<label>
-	                	<input type="radio" name="date" ng-model="dateRange" value="weeks" />
+	                	<input type="radio" name="date" ng-model="params.date.range" value="weeks" />
 	                	Two weeks
                 	</label>
                 	<br />
                 	<label>
-	                	<input type="radio" name="date" ng-model="dateRange" value="month" />
+	                	<input type="radio" name="date" ng-model="params.date.range" value="month" />
 	                	One month
                 	</label>
                 	<br />
                 	<label>
-	                	<input type="radio" name="date" ng-model="dateRange" value="custom" />
+	                	<input type="radio" name="date" ng-model="params.date.range" value="custom" />
 	                	Custom
                 	</label>
 				</div>
-				<div class="col-xs-12 col-md-8" ng-show="dateRange == 'custom'">
+				<div class="col-xs-12 col-md-8" ng-show="params.date.range == 'custom'">
 					<div class="row">
 						<label class="control-label">
 							<div class="col-md-2">
 								Start:
 							</div>
 							<div class="col-md-8">
-								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker"
+									ng-model="params.date.start" />
 							</div>
 						</label>
 					</div>
@@ -162,7 +164,8 @@
 								End:
 							</div>
 							<div class="col-md-8">
-								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker"
+									ng-model="params.date.end" />
 							</div>
 						</label>
 					</div>
@@ -178,7 +181,7 @@
 			<br />
 			<div>
 				<label>
-					<input type="checkbox" ng-click="selectAllFields(!fields.all);" ng-model="fields.all" />
+					<input type="checkbox" ng-click="selectAllFields();" ng-model="params.fields.all" />
 					All fields
 				</label>
 			</div>
@@ -187,43 +190,43 @@
 					<h5>PROJECT HOURS</h5>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllProjectHours(!fields.projectHours.all);" ng-model="fields.projectHours.all" />
+						<input type="checkbox" ng-click="selectAllProjectHours(params.fields.projectHours.all);" ng-model="params.fields.projectHours.all" />
 						All project hours
 					</label>
 					<br />
 					<div style="margin-left: 20px;">
 						<label>
-							<input type="checkbox" ng-model="fields.projectHours.actualClient" />
+							<input type="checkbox" ng-model="params.fields.projectHours.actualClient" />
 							Actual client
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.projectHours.actualInvestment" />
+							<input type="checkbox" ng-model="params.fields.projectHours.actualInvestment" />
 							Actual investment
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.projectHours.utilClientWork" />
+							<input type="checkbox" ng-model="params.fields.projectHours.utilClientWork" />
 							Utilization - client work
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.projectHours.utilInvestmentWork" />
+							<input type="checkbox" ng-model="params.fields.projectHours.utilInvestmentWork" />
 							Utilization - investment work
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.projectHours.utilRole" />
+							<input type="checkbox" ng-model="params.fields.projectHours.utilRole" />
 							Utilization by role
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.projectHours.estimatedClientHrs" />
+							<input type="checkbox" ng-model="params.fields.projectHours.estimatedClientHrs" />
 							Estimated client hours
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.projectHours.estimatedInvestmentHrs" />
+							<input type="checkbox" ng-model="params.fields.projectHours.estimatedInvestmentHrs" />
 							Estimated investment hours
 						</label>
 					</div>
@@ -232,71 +235,71 @@
 					<h5>CATEGORY HOURS</h5>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllOutOfOfficeHours(!fields.categoryHours.out.all);" ng-model="fields.categoryHours.out.all" />
+						<input type="checkbox" ng-click="selectAllOutOfOfficeHours(params.fields.categoryHours.out.all);" ng-model="params.fields.categoryHours.out.all" />
 						Out of office
 					</label>
 					<br />
 					<div style="margin-left: 20px;">
 						<label>
-							<input type="checkbox" ng-model="fields.categoryHours.out.sick" />
+							<input type="checkbox" ng-model="params.fields.categoryHours.out.sick" />
 							Sick time
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.categoryHours.out.vacation" />
+							<input type="checkbox" ng-model="params.fields.categoryHours.out.vacation" />
 							Vacation
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.categoryHours.out.holiday" />
+							<input type="checkbox" ng-model="params.fields.categoryHours.out.holiday" />
 							Holiday
 						</label>
 					</div>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllOverheadHours(!fields.categoryHours.overhead.all);" ng-model="fields.categoryHours.overhead.all" />
+						<input type="checkbox" ng-click="selectAllOverheadHours(params.fields.categoryHours.overhead.all);" ng-model="params.fields.categoryHours.overhead.all" />
 						Overhead
 					</label>
 					<br />
 					<div style="margin-left: 20px;">
 						<label>
-							<input type="checkbox" ng-model="fields.categoryHours.overhead.meetings" />
+							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.meetings" />
 							Meetings
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.categoryHours.overhead.trainings" />
+							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.trainings" />
 							Trainings
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.categoryHours.overhead.rd" />
+							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.rd" />
 							R&D
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.categoryHours.overhead.design" />
+							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.design" />
 							Design
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.categoryHours.overhead.admin" />
+							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.admin" />
 							Administration
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.categoryHours.overhead.hr" />
+							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.hr" />
 							Hire & recruiting
 						</label>
 						
 					</div>
 					<label>
-						<input type="checkbox" ng-model="fields.categoryHours.marketing" />
+						<input type="checkbox" ng-model="params.fields.categoryHours.marketing" />
 						Marketing
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-model="fields.categoryHours.sales" />
+						<input type="checkbox" ng-model="params.fields.categoryHours.sales" />
 						Sales
 					</label>
 				</div>
@@ -304,33 +307,33 @@
 					<h5>GOALS & PROJECTIONS</h5>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllGoalsHours(!fields.goals.all);" ng-model="fields.goals.all" />
+						<input type="checkbox" ng-click="selectAllGoalsHours(params.fields.goals.all);" ng-model="params.fields.goals.all" />
 						All goals & projections
 					</label>
 					<br />
 					<div style="margin-left: 20px;">
 						<label>
-							<input type="checkbox" ng-model="fields.goals.projectedClientHrs" />
+							<input type="checkbox" ng-model="params.fields.goals.projectedClientHrs" />
 							Projected client hours
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.goals.projectedInvestmentHrs" />
+							<input type="checkbox" ng-model="params.fields.goals.projectedInvestmentHrs" />
 							Projected investment hours
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.goals.utilProjections" />
+							<input type="checkbox" ng-model="params.fields.goals.utilProjections" />
 							Utilization projections by category
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.goals.utilGoals" />
+							<input type="checkbox" ng-model="params.fields.goals.utilGoals" />
 							Hours and utilization goals
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.goals.projectedOOO" />
+							<input type="checkbox" ng-model="params.fields.goals.projectedOOO" />
 							Projected OOO
 						</label>
 					</div>
@@ -338,33 +341,33 @@
 					<h5>GRAPHS</h5>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllGraphPercentHours(!fields.graphs.percent.all);" ng-model="fields.graphs.percent.all" />
+						<input type="checkbox" ng-click="selectAllGraphPercentHours(params.fields.graphs.percent.all);" ng-model="params.fields.graphs.percent.all" />
 						% hours in category, incl. client and invest
 					</label>
 					<br />
 					<div style="margin-left: 20px;">
 						<label>
-							<input type="checkbox" ng-model="fields.graphs.percent.overhead" />
+							<input type="checkbox" ng-model="params.fields.graphs.percent.overhead" />
 							overhead as % of available hours
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="fields.graphs.percent.out" />
+							<input type="checkbox" ng-model="params.fields.graphs.percent.out" />
 							out of office as % of available hours
 						</label>
 					</div>
 					<label>
-						<input type="checkbox" ng-model="fields.graphs.trendHrs" />
+						<input type="checkbox" ng-model="params.fields.graphs.trendHrs" />
 						Trend line - category hours x month
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-model="fields.graphs.trendGoals" />
+						<input type="checkbox" ng-model="params.fields.graphs.trendGoals" />
 						Trend line - % category hours, incl. goals x month
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-model="fields.graphs.graph" />
+						<input type="checkbox" ng-model="params.fields.graphs.graph" />
 						Hours bar graph - expected, actual, projected
 					</label>
 				</div>
@@ -385,17 +388,17 @@
 				<br />
 				<div class="groups">
 					<label>
-						<input type="radio" name="output" />
+						<input type="radio" name="output" ng-model="params.output" value="csv" />
 						CSV, no graphs
 					</label>
 					<br />
 					<label>
-						<input type="radio" name="output" />
+						<input type="radio" name="output" ng-model="params.output" value="both" />
 						CSV & Graphs
 					</label>
 					<br />
 					<label>
-						<input type="radio" name="output" />
+						<input type="radio" name="output" ng-model="params.output" value="graphs" />
 						Graphs only
 					</label>
 				</div>
@@ -416,7 +419,7 @@
 					<label>
 						Name this report
 						<br />
-						<input class="form-control" type="text" />
+						<input class="form-control" ng-model="params.reportName" type="text" />
 					</label>
 				</div>
 			</div>
@@ -428,7 +431,7 @@
 			<button class="btn">Save & Create Report</button>
 			<br />
 			<br />
-			<button class="btn" ng-click="generateReport()" ng-disabled="isGenerationInProgress">Create Report</button>
+			<button class="btn" ng-click="onCreateReportClick();">Create Report</button>
 		</div>
 	</div>
 </div>

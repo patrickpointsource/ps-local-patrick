@@ -62,83 +62,95 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		$scope.roles = _.sortBy(result.members, function (item) { return item.title; });
 	});
 	
-	$scope.roleGroups = {};
-	
-	$scope.fields = {
-		categoryHours: {
-			out: {},
-			overhead: {}
-		},
-		goals: {},
-		graphs: {
-			percent: {}
-		},
-		projectHours: {}
-	};
-	
-	$scope.selectAllProjectHours = function (selected)
-	{
-		$scope.fields.projectHours.all =
-			$scope.fields.projectHours.actualClient =
-			$scope.fields.projectHours.actualInvestment =
-			$scope.fields.projectHours.utilClientWork =
-			$scope.fields.projectHours.utilInvestmentWork =
-			$scope.fields.projectHours.utilRole =
-			$scope.fields.projectHours.estimatedClientHrs =
-			$scope.fields.projectHours.estimatedInvestmentHrs = selected;
-	};
-	
-	$scope.selectAllOutOfOfficeHours = function (selected)
-	{
-		$scope.fields.categoryHours.out.all =
-			$scope.fields.categoryHours.out.sick =
-			$scope.fields.categoryHours.out.vacation =
-			$scope.fields.categoryHours.out.holiday = selected;
-	};
-	
-	$scope.selectAllOverheadHours = function (selected)
-	{
-		$scope.fields.categoryHours.overhead.all =
-			$scope.fields.categoryHours.overhead.meetings =
-			$scope.fields.categoryHours.overhead.trainings =
-			$scope.fields.categoryHours.overhead.rd =
-			$scope.fields.categoryHours.overhead.design =
-			$scope.fields.categoryHours.overhead.admin =
-			$scope.fields.categoryHours.overhead.hr = selected;
-	};
-	
-	$scope.selectAllGoalsHours = function (selected)
-	{
-		$scope.fields.goals.all =
-			$scope.fields.goals.projectedClientHrs =
-			$scope.fields.goals.projectedInvestmentHrs =
-			$scope.fields.goals.utilProjections =
-			$scope.fields.goals.utilGoals =
-			$scope.fields.goals.projectedOOO = selected;
-	};
-	
-	$scope.selectAllGraphPercentHours = function (selected)
-	{
-		$scope.fields.graphs.percent.all =
-			$scope.fields.graphs.percent.overhead =
-			$scope.fields.graphs.percent.out = selected;
-	};
-	
-	$scope.selectAllFields = function (selected)
-	{
-		$scope.selectAllProjectHours(selected);
-		$scope.selectAllOutOfOfficeHours(selected);
-		$scope.selectAllOverheadHours(selected);
-		$scope.selectAllGoalsHours(selected);
-		$scope.selectAllGraphPercentHours(selected);
+	$scope.params = {
+			
+			date: {},
+			departments: {},
+			fields: {
+				categoryHours: {
+					out: {},
+					overhead: {}
+				},
+				goals: {},
+				graphs: {
+					percent: {}
+				},
+				projectHours: {}
+			},
+			locations: {},
+			roles: {}
+		};
 		
-		$scope.fields.categoryHours.marketing =
-			$scope.fields.categoryHours.sales =
-			$scope.fields.graphs.trendHrs =
-			$scope.fields.graphs.trendGoals =
-			$scope.fields.graphs.graph = selected;
+		$scope.selectAllProjectHours = function (selected)
+		{
+			$scope.params.fields.projectHours.all =
+				$scope.params.fields.projectHours.actualClient =
+				$scope.params.fields.projectHours.actualInvestment =
+				$scope.params.fields.projectHours.utilClientWork =
+				$scope.params.fields.projectHours.utilInvestmentWork =
+				$scope.params.fields.projectHours.utilRole =
+				$scope.params.fields.projectHours.estimatedClientHrs =
+				$scope.params.fields.projectHours.estimatedInvestmentHrs = selected;
+		};
+		
+		$scope.selectAllOutOfOfficeHours = function (selected)
+		{
+			$scope.params.fields.categoryHours.out.all =
+				$scope.params.fields.categoryHours.out.sick =
+				$scope.params.fields.categoryHours.out.vacation =
+				$scope.params.fields.categoryHours.out.holiday = selected;
+		};
+		
+		$scope.selectAllOverheadHours = function (selected)
+		{
+			$scope.params.fields.categoryHours.overhead.all = 
+				$scope.params.fields.categoryHours.overhead.meetings =
+				$scope.params.fields.categoryHours.overhead.trainings =
+				$scope.params.fields.categoryHours.overhead.rd =
+				$scope.params.fields.categoryHours.overhead.design =
+				$scope.params.fields.categoryHours.overhead.admin =
+				$scope.params.fields.categoryHours.overhead.hr = selected;
+		};
+		
+		$scope.selectAllGoalsHours = function (selected)
+		{
+			$scope.params.fields.goals.all = 
+				$scope.params.fields.goals.projectedClientHrs =
+				$scope.params.fields.goals.projectedInvestmentHrs =
+				$scope.params.fields.goals.utilProjections =
+				$scope.params.fields.goals.utilGoals =
+				$scope.params.fields.goals.projectedOOO = selected;
+		};
+		
+		$scope.selectAllGraphPercentHours = function (selected)
+		{
+			$scope.params.fields.graphs.percent.all = 
+				$scope.params.fields.graphs.percent.overhead =
+				$scope.params.fields.graphs.percent.out = selected;
+		};
+		
+		$scope.selectAllFields = function ()
+		{
+			var selected = $scope.params.fields.all;
+			
+			$scope.selectAllProjectHours(selected);
+			$scope.selectAllOutOfOfficeHours(selected);
+			$scope.selectAllOverheadHours(selected);
+			$scope.selectAllGoalsHours(selected);
+			$scope.selectAllGraphPercentHours(selected);
+			
+			$scope.params.fields.categoryHours.marketing =
+				$scope.params.fields.categoryHours.sales =
+				$scope.params.fields.graphs.trendHrs =
+				$scope.params.fields.graphs.trendGoals =
+				$scope.params.fields.graphs.graph = selected;
+		};
+		
+	$scope.onCreateReportClick = function ()
+	{
+		console.log(JSON.stringify($scope.params));
 	};
-	
+		
 	$scope.generateReport = function () {
 		
 		if ($scope.isGenerationInProgress)
