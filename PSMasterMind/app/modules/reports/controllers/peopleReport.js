@@ -239,16 +239,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	
 	$scope.getBusinessDaysCount = function ( startDate, endDate ) {
 		var days = endDate.diff(startDate, 'days');
-		var dayNum = startDate.day();
-		var count = 0;
-		for (var i = 0; i < days; i++) {
-			dayNum++;
-			if (dayNum < 6)
-				count++;
-			else
-				dayNum = 0;
+		var date = moment(startDate);
+		for (var i = 0; i <= days; i++) {
+			date = date.add(1, 'days');
+		    if (date.isoWeekday() > 5) {
+		      days -= 1;
+		    }
 		}
-		return count;
+		return days;
 	};
 		
 	$scope.getHoursReportData = function ( reportHours, cb ) {
