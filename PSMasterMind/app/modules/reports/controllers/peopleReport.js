@@ -370,17 +370,12 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		
 		var hoursForTeam = 0;
 		var hoursPerPerson = 0;
-		for(var i in report)
-			for(var j in report[i])
-				for(var k in report[i][j]) {
-					var personReport = report[i][j][k];
-					var hours = 0;
-					for (var k in personReport.hours)
-						hours +=  personReport.hours[k].hours;
-					if (person.resource == personReport.resource)
-						hoursPerPerson += hours;
-					hoursForTeam += hours;
-				}
+		for(var i in report) {
+			var personReport = report[i];
+			if (person.resource == personReport.person.resource)
+				hoursPerPerson += personReport.hours;
+			hoursForTeam += personReport.hours;
+		}
 		
 		$scope.output.summary = {
 				createdDate: moment().format("MM/D/YYYY"),
@@ -390,8 +385,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				reportStartDate: reportStartDate.format("MMM D, YYYY"),
 				reportEndDate: reportEndDate.format("MMM D, YYYY"),
 				workingDays: $scope.getBusinessDaysCount(reportStartDate, reportEndDate),
-				workingHoursPerPerson: hoursPerPerson,
-				workingHoursForTeam: hoursForTeam
+				workingHoursPerPerson: Math.round( hoursPerPerson ),
+				workingHoursForTeam: Math.round( hoursForTeam )
 		};
 	};
 	
@@ -415,21 +410,18 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	};
 	
 	$scope.onReportGenerated = function ( report ) {
+
+		console.log( 'Report generation completed' );
+		$scope.cancelReportGeneration();
 		
-		var created = new moment();
-		var reportDataCb = function( reportData ) {
-			$scope.output.reportData = {
-					CSV : $scope.JSON2CSV( reportData ),
-					link: 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData )
-			};
-			$scope.fillSummaryOutput ( reportData );
-			$scope.cancelReportGeneration();
-			console.log( 'Report generation completed' );
-			$location.path('/reports/people/output');
+		$scope.output.reportData = {
+				CSV : null,
+				link: ''
 		};
-		$scope.getHoursReportData( report, function( reportData ) {
-			reportDataCb( reportData );
-		} );
+		
+		$scope.fillSummaryOutput ( report );
+		$location.path('/reports/people/output');
+
 	};
 
 	$scope.checkGenerationStatus = function ( ) {
