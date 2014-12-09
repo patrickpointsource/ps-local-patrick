@@ -3,14 +3,24 @@
 		<div class="well" style="margin-left:16px;margin-right:16px;">
 			<div style="height:300px;">
 				<div class="col-xs-12 col-sm-6 reportsshell-hours">
-					<div>Hours at a glance for</div>
+					<div>
+						<div class="pull-left">
+	                    	<label>Hours at a glance for:</label>
+	                    </div>
+						 <div class="pull-left">
+		                      <select class="selectpicker select-people-groups form-control" multiple data-selected-text-format="values" ng-model="selectedPeopleGroups" ng-options="g.name for g in peopleGroups">
+		                      </select>
+	                    </div>
+	                    
+					</div>
+					
 					<div><button class="btn btn-report pull-right">save as image</button></div>
-					<div ng-include src="'modules/reports/views/verticalbarChart.html'" onload="elemId='shellVerticalReport'" id="shellVerticalReport"></div>
+					<div ng-include src="'modules/reports/views/verticalbarChart.html'" onload="elemId='shellVerticalReport';chartData=getVerticalbarChartData()" ng-if="'true'" id="shellVerticalReport" style="clear:both;"></div>
 				</div>
 				<div class="col-xs-12 col-sm-6 reportsshell-hours categories">
 					<div>Hours %s across categories</div>
 					<div><button class="btn btn-report pull-right">save as image</button></div>
-					<div ng-include src="'modules/reports/views/pieChart.html'" id="shellPieGraph"></div>
+					<div ng-include src="'modules/reports/views/pieChart.html'" onload="elemId='shellPieGraph';chartData=getPieChartData()" ng-if="'true'" id="shellPieGraph"></div>
 				</div>
 			</div>
 			

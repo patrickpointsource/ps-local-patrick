@@ -17,67 +17,8 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	  el = $('<div class="d3Div" id="d3Div' + elId + '"><svg style="font-size: 11px;height:100%;" ' + 
 		' xmlns="http://www.w3.org/2000/svg"></svg></div>').appendTo(el);
 	
-	 /*var dataMap = {
-		"developers" : [{
-			label: "hours",
-			value: 33
-		}, {
-			label: "hours",
-			value: 39
-		}],
-		"architects" : [{
-			label: "hours",
-			value: 5
-		},{
-			label: "hours",
-			value: 10
-		}],
-		"sales" : [{
-			label: "hours",
-			value: 4
-		}, {
-			label: "hours",
-			value: 7
-		}],
-		"marketing" : [{
-			label: "hours",
-			value: 7
-		}, {
-			label: "hours",
-			value: 11
-		}],
-		"managers" : [{
-			label: "hours",
-			value: 15
-		}, {
-			label: "hours",
-			value: 18
-		}]
-	  
-	 };*/
-	  
-	  var dataMap = {
-				"hours" : [{
-					label: "managers",
-					value: 33
-				}, {
-					label: "developers",
-					value: 56
-				}, {
-					label: "architects",
-					value: 10
-				}],
-				"expected hours" : [{
-					label: "managers",
-					value: 5
-				}, {
-					label: "developers",
-					value: 12
-				}, {
-					label: "architects",
-					value: 4
-				}]
-	  };
+	 
+	  var dataMap = $scope.chartData;
 	  
 	 var axisLabels = ["Role", "Number of hours"]
 	 var chartData = [];
@@ -95,7 +36,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	
 	 var count = chartData.length;
 	 var colorFn = d3.scale.category10(); 
-	 var colors = ['#0071BC', '#96D4F3']
+	 var colors = ['#0071BC', '#96D4F3', '#ED1E79'];
 	
 	 /*
 	 for (var k = 0; k < count; k ++)
@@ -115,13 +56,15 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 				 	.color(colors)
 				 	.reduceXTicks(false)
 				 	.height(300)
+				 	.showXAxis(true)
+				 	.showYAxis(true)
 				 	//.staggerLabels(true);
 				
 				//chart.showLegend(false);
 				
 				chart.showControls(false);
 				//chart.xRange([0, 225]);
-				chart.stacked(true)
+				chart.stacked(true);
 				chart.groupSpacing(0.2);
 				
 				var xAxisLbl = axisLabels && axisLabels[0] ? axisLabels[0] : "X-axis";
@@ -177,6 +120,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 		});
 
   };
+
   
   setTimeout(function() {
 	  var id = $scope.$parent.elemId ? $scope.$parent.elemId: $scope.$parent.$parent.elemId;

@@ -21,6 +21,10 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	$scope.csvData = null;
 	$scope.generationTimer = null;
 	$scope.reportServicePingInterval = 5000;
+	$scope.peopleGroups = null;
+	
+	$scope.peopleGroups = [];
+	$scope.selectedPeopleGroups = null;
 	
 	$scope.reportClick = function( item ) {
 		//alert( item.name );
@@ -204,6 +208,22 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		$scope.reportTerms[ term ] = true;
 	};
 
+	$scope.initPeopleGroups = function() {
+		var peopleGroups = People.getPeopleGroupMapping();
+		
+		$scope.peopleGroups = [];
+		$scope.selectedPeopleGroups = null;
+		
+		for (var group in peopleGroups)
+			$scope.peopleGroups.push({
+				name: group,
+				id: group,
+				roles: peopleGroups[group]
+			});
+		
+		$(".select-people-groups").selectpicker();
+	};
+	
 	$scope.loadAndInitPeople = function( ) {
 		var peopleInRoleQuery = {};
 
@@ -349,6 +369,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		$scope.loadRoles( );
 		$scope.loadAndInitPeople( );
 		$scope.loadAndInitProjectsAndClients( );
+		$scope.initPeopleGroups();
 	};
 
 	$scope.selectReportType = function( e, report ) {
@@ -1400,6 +1421,47 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		}
 		
 	};
+	
+	$scope.getVerticalbarChartData = function() {
+		return {
+			"hours" : [{
+				label: "managers",
+				value: 33
+			}, {
+				label: "developers",
+				value: 56
+			}, {
+				label: "architects",
+				value: 10
+			}],
+			"expected hours" : [{
+				label: "managers",
+				value: 5
+			}, {
+				label: "developers",
+				value: 12
+			}, {
+				label: "architects",
+				value: 4
+			}]
+		}
+  };
+  
+  $scope.getPieChartData = function() {
+		return [{
+			key: "developers",
+			value: 45
+		}, {
+			key: "architects",
+			value: 15
+		}, {
+			key: "managers",
+			value: 30
+		}, {
+			key: "sales",
+			value: 10
+		}];
+	}
 
 	$scope.hoursToCSV = {
 		stringify: function( str ) {
