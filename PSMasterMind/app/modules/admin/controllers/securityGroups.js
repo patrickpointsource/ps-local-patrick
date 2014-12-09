@@ -18,8 +18,9 @@ angular.module('Mastermind')
 	          if($scope.securityGroups.length > 0) {
 	            $scope.selectedGroup = $scope.securityGroups[0];
 	          }
-	          
-	          Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
+	          var params = { t: ( new Date( ) ).getMilliseconds( ) };
+	          params.fields = ["_id", "resource", "userId", "roles"];
+	          Resources.get('userRoles', params ).then(function(userRoles) {
 	            $scope.userRoles = userRoles.members;
 	            var fields = {_id : 1, name : 1, googleId : 1, mBox : 1, resource : 1 };
 	            People.query( {}, fields).then( function(people) {

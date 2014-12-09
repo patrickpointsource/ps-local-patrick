@@ -868,18 +868,18 @@ var listSecurityRoles = function( q, callback ) {
 
 };
 
-var listUserRoles = function( q, callback ) {
+var listUserRoles = function( q, fields, callback ) {
 	var result = memoryCache.getObject( USER_ROLES_KEY );
 	if( result ) {
 		console.log( "read " + USER_ROLES_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "userRoles/" ) );
+		callback( null, queryRecords( result, q, "members", "userRoles/", null, fields ) );
 	} else {
 		dbAccess.listUserRoles( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( USER_ROLES_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "userRoles/" ) );
+			callback( err, queryRecords( body, q, "members", "userRoles/", null, fields ) );
 		} );
 	}
 

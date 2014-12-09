@@ -62,7 +62,7 @@ module.exports.initialize = function(isReinitialization) {
           /*acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
             console.log("Daniil allows on project after initSecurityRoles: " + permissions["projects"]);
           });*/
-          dataAccess.listUserRoles(null, function (err, roles) {
+          dataAccess.listUserRoles(null, null, function (err, roles) {
             var userRoles = roles["members"];
             for (var i=0; i < userRoles.length; i++) {
               var userId = userRoles[i].userId;
@@ -145,7 +145,7 @@ var initializeAllows = function(securityRoles, callback) {
 
 module.exports.getUserRoles = function(user, callback) {
   var query = { userId: user.googleId };
-  dataAccess.listUserRoles(query, function(err, body) {
+  dataAccess.listUserRoles(query, null, function(err, body) {
     if (err) {
       console.log(err);
       callback('error loading getUserRoles', null);
@@ -280,7 +280,7 @@ var createMinionUserRoles = function(callback, minionRole) {
     if(!err) {
       var people = peopleBody.members;
       
-      dataAccess.listUserRoles({}, function(err, userRolesBody) {
+      dataAccess.listUserRoles({}, null, function(err, userRolesBody) {
         var userRoles = userRolesBody.members;
         
         var countChecked = 0;
