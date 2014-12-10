@@ -87,10 +87,12 @@ var getSummarySection = function(data, params) {
   var hoursForTeam = 0;
   var hoursPerPerson = 0;
   for(var i in data.hours) {
-    var personReport = data.hours[i];
-    if (person.resource == personReport.person.resource)
-      hoursPerPerson += personReport.hours;
-    hoursForTeam += personReport.hours;
+	  var personReport = data.hours[i];
+	  if (personReport.hours) {
+		  if (personReport.person && personReport.person.resource == person.resource)
+			  hoursPerPerson += personReport.hours;
+		  hoursForTeam += personReport.hours;
+	  }
   }
   
   var summarySection = {
