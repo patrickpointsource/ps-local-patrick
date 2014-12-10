@@ -9,6 +9,8 @@ var userRolesCtrl = require('./userRoles');
 var google = require('googleapis');
 var security = require( '../util/security' );
 
+var DEFAULT_PROFILE_IMG_LINK = "https://ssl.gstatic.com/s2/profiles/images/silhouette200.png";
+
 var inactivePeople = [ {
 	fullName : "Mike Albano",
 	date : "20140627_000000"
@@ -147,7 +149,7 @@ module.exports = function(params) {
 		var hasChanges = person.googleId != googleProfile.id
 				|| person.mBox != googleProfile.primaryEmail
 				|| (person.name && person.name.fullName != googleProfile.name.fullName)
-				|| (googleProfile.thumbnailPhotoUrl && person.thumbnail != googleProfile.thumbnailPhotoUrl);
+				|| (!person.thumbnail || person.thumbnail != googleProfile.thumbnailPhotoUrl);
 		if (hasChanges) {
 			// profile.type = 'Google';
 			person.googleId = googleProfile.id;
@@ -155,6 +157,8 @@ module.exports = function(params) {
 			person.name = googleProfile.name;
 			if (googleProfile.thumbnailPhotoUrl) {
 				person.thumbnail = googleProfile.thumbnailPhotoUrl;
+			} else {
+				person.thumbnail =  DEFAULT_PROFILE_IMG_LINK;				
 			}
 			upgradeNameProperties(person);
 			people.insertPerson(person, function(err, resp) {
@@ -284,7 +288,7 @@ module.exports = function(params) {
 			}
 			callback(null, body);
 		});
-	}
+	};
 	
 	var fixSecurityRolesIds = function(callback) {
 		dataAccess.listSecurityRoles({}, function(err, body) {
@@ -311,13 +315,13 @@ module.exports = function(params) {
 							role = _.find(securityRoles, function(r) {
 								if (r.name.toLowerCase() == roleName.toLowerCase())
 									return true;
-							})
+							});
 	
 							if (role)
 								userRoles[i].roles[j] = {
 									name : roleName,
 									resource : role.resource
-								}
+								};
 						}
 					}
 	
@@ -403,4 +407,4 @@ module.exports = function(params) {
 		});
 		callback(null);
 	};
-}
+};
