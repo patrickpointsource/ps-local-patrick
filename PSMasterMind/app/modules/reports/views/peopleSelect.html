@@ -11,78 +11,81 @@
 				<br />
 				<div class="groups">
 					<label>
-						<input type="checkbox" ng-model="params.locations.onshore" />
-						Onshore, not including Chicago
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.locations.chicago" />
-						Chicago
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.locations.offshore" />
-						Offshore
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.locations.all" />
+						<input type="checkbox" ng-click="selectAllLocations();" ng-model="params.locations.all" />
 						All locations
 					</label>
+					<br />
+					<div style="margin-left: 20px;">
+						<label>
+							<input type="checkbox" ng-click="selectLocationParent('onshore');" ng-model="params.locations.onshore" />
+							Onshore, not including Chicago
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-click="selectLocationParent('chicago');" ng-model="params.locations.chicago" />
+							Chicago
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-click="selectLocationParent('offshore');" ng-model="params.locations.offshore" />
+							Offshore
+						</label>
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="well col-md-7">
-			<div >
+			<div>
 				<h3>Select one or more department</h3>
 			</div>
 			<br />
-			<div class="row groups">
+			<div  class="groups">
+				<label>
+					<input type="checkbox" ng-click="selectAllDepartments();" ng-model="params.departments.all" />
+					All Departments
+				</label>
+			</div>
+			<div class="row groups" style="margin-left: 20px;">
 				<div class="col-xs-12 col-md-6">
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.administration" />
+						<input type="checkbox" ng-click="selectDepartmentParent('administration');" ng-model="params.departments.administration" />
 						Administration
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.architects" />
+						<input type="checkbox" ng-click="selectDepartmentParent('architects');" ng-model="params.departments.architects" />
 						Architects
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.clientexpierencemgmt" />
+						<input type="checkbox" ng-click="selectDepartmentParent('clientexpierencemgmt');" ng-model="params.departments.clientexpierencemgmt" />
 						Client Experience Management
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.development" />
+						<input type="checkbox" ng-click="selectDepartmentParent('development');" ng-model="params.departments.development" />
 						Development
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.digitalexperience" />
-						Digital Experience
 					</label>
 				</div>
 				<div class="col-xs-12 col-md-6">
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.executivemgmt" />
+						<input type="checkbox" ng-click="selectDepartmentParent('digitalexperience');" ng-model="params.departments.digitalexperience" />
+						Digital Experience
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-click="selectDepartmentParent('executivemgmt');" ng-model="params.departments.executivemgmt" />
 						Executive Management
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.marketing" />
+						<input type="checkbox" ng-click="selectDepartmentParent('marketing');" ng-model="params.departments.marketing" />
 						Marketing
 					</label>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.sales" />
+						<input type="checkbox" ng-click="selectDepartmentParent('sales');" ng-model="params.departments.sales" />
 						Sales
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-click="roles = roles;" ng-model="params.departments.all" />
-						All Departments
 					</label>
 				</div>
 			</div>
@@ -190,7 +193,7 @@
 					<h5>PROJECT HOURS</h5>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllProjectHours(params.fields.projectHours.all);" ng-model="params.fields.projectHours.all" />
+						<input type="checkbox" ng-click="selectAllProjectHours(!params.fields.projectHours.all);" ng-model="params.fields.projectHours.all" />
 						All project hours
 					</label>
 					<br />
@@ -235,7 +238,7 @@
 					<h5>CATEGORY HOURS</h5>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllOutOfOfficeHours(params.fields.categoryHours.out.all);" ng-model="params.fields.categoryHours.out.all" />
+						<input type="checkbox" ng-click="selectAllOutOfOfficeHours(!params.fields.categoryHours.out.all);" ng-model="params.fields.categoryHours.out.all" />
 						Out of office
 					</label>
 					<br />
@@ -257,7 +260,7 @@
 					</div>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllOverheadHours(params.fields.categoryHours.overhead.all);" ng-model="params.fields.categoryHours.overhead.all" />
+						<input type="checkbox" ng-click="selectAllOverheadHours(!params.fields.categoryHours.overhead.all);" ng-model="params.fields.categoryHours.overhead.all" />
 						Overhead
 					</label>
 					<br />
@@ -307,7 +310,7 @@
 					<h5>GOALS & PROJECTIONS</h5>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllGoalsHours(params.fields.goals.all);" ng-model="params.fields.goals.all" />
+						<input type="checkbox" ng-click="selectAllGoalsHours(!params.fields.goals.all);" ng-model="params.fields.goals.all" />
 						All goals & projections
 					</label>
 					<br />
@@ -341,7 +344,7 @@
 					<h5>GRAPHS</h5>
 					<br />
 					<label>
-						<input type="checkbox" ng-click="selectAllGraphPercentHours(params.fields.graphs.percent.all);" ng-model="params.fields.graphs.percent.all" />
+						<input type="checkbox" ng-click="selectAllGraphPercentHours(!params.fields.graphs.percent.all);" ng-model="params.fields.graphs.percent.all" />
 						% hours in category, incl. client and invest
 					</label>
 					<br />
