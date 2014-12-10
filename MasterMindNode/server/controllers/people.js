@@ -7,8 +7,8 @@ var _ = require( 'underscore' );
 
 var security = require('../util/security');
 
-module.exports.listPeople = function(query, callback) {
-    dataAccess.listPeople(query, function(err, body){
+module.exports.listPeople = function(query, fields, callback) {
+    dataAccess.listPeople(query, fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people', null);
