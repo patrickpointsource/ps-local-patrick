@@ -146,17 +146,13 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				$scope.params.fields.graphs.graph = selected;
 		};
 		
-	$scope.onCreateReportClick = function ()
-	{
-		console.log(JSON.stringify($scope.params));
-	};
-		
 	$scope.generateReport = function () {
 		
 		if ($scope.isGenerationInProgress)
 			return;
 		
 		$scope.startGenerationTimers();
+		console.log(JSON.stringify($scope.params));
 		console.log( 'Report generation started' );
 		
 		var params = {};

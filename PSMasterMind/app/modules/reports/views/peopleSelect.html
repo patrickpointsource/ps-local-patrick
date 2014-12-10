@@ -1,4 +1,4 @@
-<div class="reports" ng-controller="PeopleReportCtrl">
+<div class="reports">
 	<div class="row padded-row parameters" style="margin-top: 20px;">
 		<div class="spinner-container" ng-show="isGenerationInProgress" style="width: calc(100% - 30px);">
 			<i id="timer" class="fa fa-spinner fa-spin fa-3x"><label></label></i>
@@ -431,7 +431,7 @@
 			<button class="btn">Save & Create Report</button>
 			<br />
 			<br />
-			<button class="btn" ng-click="onCreateReportClick();">Create Report</button>
+			<button class="btn" ng-click="generateReport()" ng-hide="isGenerationInProgress">Create Report</button>
 		</div>
 	</div>
 </div>
