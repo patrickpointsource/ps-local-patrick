@@ -10,7 +10,7 @@ var DEFAULT_ROLES = {
   EXECUTIVES: "Execs",
   MANAGEMENT: "Managers",
   PM: "PM",
-  MINION: "Minion",
+  MINION: "Employee",
   SALES: "Sales",
   ADMIN: "Admin",
   SSA: "SSA"
@@ -118,7 +118,10 @@ var initializeSecurityRoles = function(securityRoles, isReinitialization, callba
 };
 
 var initializeAllows = function(securityRoles, callback) {
-  var allAllowsCount = securityRoles.length * fullResourcesMap.length;
+  var allAllowsCount = 0; //* fullResourcesMap.length;
+  for(var s = 0; s < securityRoles.length; s++) {
+    allAllowsCount += securityRoles[s].resources.length;
+  }
   //console.log("all allows" + allAllowsCount);
   
   for (var i=0; i < securityRoles.length; i++) {
@@ -211,7 +214,7 @@ var createDefaultRoles = function(callback) {
     var managementGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.MANAGEMENT });
     var projectManagementGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.PM });
     var salesGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.SALES });
-    var minion = _.findWhere(securityGroups, { name: DEFAULT_ROLES.MINION });
+    var employee = _.findWhere(securityGroups, { name: DEFAULT_ROLES.MINION });
     var adminGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.ADMIN });
     var ssaGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.SSA });
     
@@ -234,17 +237,17 @@ var createDefaultRoles = function(callback) {
       createGroup(DEFAULT_ROLES.SSA);
     }
     // create userRoles for those who dont have it yet.
-    if(!minion) {
-      console.log("Creating Minion group.");
+    if(!employee) {
+      console.log("Creating Employee group.");
       createGroup(DEFAULT_ROLES.MINION, function(body) {
-        console.log("Minion group just created.");
+        console.log("Employee group just created.");
         var minionGroup = { name: DEFAULT_ROLES.MINION, resource: "securityroles/" + body.id };
-        console.log("Minion group object to insert into userRoles: { name: " + minionGroup.name + ", resource: '" + minionGroup.resource + "' }");
+        console.log("Employee group object to insert into userRoles: { name: " + minionGroup.name + ", resource: '" + minionGroup.resource + "' }");
         createMinionUserRoles(callback, minionGroup);
       });
     } else {
-      var minionGroup = { name: DEFAULT_ROLES.MINION, resource: minion.resource };
-      console.log("Minion group already created.");
+      var minionGroup = { name: DEFAULT_ROLES.MINION, resource: employee.resource };
+      console.log("Employee group already created.");
       createMinionUserRoles(callback, minionGroup);
     }
   });
@@ -275,7 +278,7 @@ var createGroup = function(name, actionAfter) {
 };
 
 var createMinionUserRoles = function(callback, minionRole) {
-  console.log("Creating Minion default roles.");
+  console.log("Creating Employee default roles.");
   dataAccess.listPeople({}, null, function(err, peopleBody) {
     if(!err) {
       var people = peopleBody.members;
@@ -319,14 +322,14 @@ var createMinionUserRoles = function(callback, minionRole) {
               
                 countChecked++;
                 if(callback && countChecked == people.length) {
-                  console.log("Every person has at least 'Minion' permissions now.");
+                  console.log("Every person has at least 'Employee' permissions now.");
                   callback(null, true);
                 }
               });
             } else {
               countChecked++;
               if(callback && countChecked == people.length) {
-                console.log("Every person now has at least 'Minion' permissions now.");
+                console.log("Every person now has at least 'Employee' permissions now.");
                 callback(null, true);
               }
             }
