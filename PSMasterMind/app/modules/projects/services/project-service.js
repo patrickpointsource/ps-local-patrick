@@ -275,7 +275,7 @@ angular.module('Mastermind.services.projects')
      */
     this.getAllProjects = function (onSuccess){
 	    if (window.useAdoptedServices) {
-			return getAllProjectsUsingGet(onSuccess);
+	    	return this.getProjectsByStatuses(["active", "backlog", "pipeline", "investment"], onSuccess);
 		}
 		else {
 			return getAllProjectsUsingQuery(onSuccess);
@@ -293,24 +293,7 @@ angular.module('Mastermind.services.projects')
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
     };
-
-
-    /**
-     * Query to get the list of all projects (using filter)
-     */
-    function getAllProjectsUsingGet(onSuccess){
-        // terms will be checked on backend and loaded only for allowed persons
-        var params = {};
-        params.fields = ["resource", "name", "startDate", "endDate", "roles", "customerName", "committed", "type", "description", "terms"]
-		if (onSuccess) {
-	        return Resources.refresh('projects', params).then(onSuccess);
-		}
-		else {
-	        return Resources.refresh('projects', params);
-		}
-    };
-   
-    
+  
     /**
      * Service function for querying projects
      *
