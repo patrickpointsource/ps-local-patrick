@@ -101,7 +101,7 @@
     <div class="row peopleList" ng-repeat="vacation in projectVacations">
       <div class="col-xs-9 col-sm-3">
         <a href="#{{vacation.person.resource}}">
-          <img class="profileImage" ng-src="{{vacation.person.thumbnail}}" />
+          <img class="profileImage" ng-src="{{vacation.person.thumbnail}}" err-src="\images\defaultProfileImg.png"/>
         </a>
         <a href="#{{vacation.person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(vacation.person)}}</a>
       </div>
@@ -129,7 +129,7 @@
           <span style="margin-right: 12px;" ng-if="!person.collapsed"><i class="fa fa-caret-right" ng-show="person && person.thumbnail"></i></span>
           <span style="margin-right: 12px;" ng-if="person.collapsed"><i class="fa fa-caret-down" ng-show="person && person.thumbnail"></i></span>
           <a href="#{{person.resource}}">
-            <img ng-show="person && person.thumbnail" class="profileImage" ng-src="{{person.thumbnail}}" />
+            <img ng-show="person && person.thumbnail" class="profileImage" ng-src="{{person.thumbnail}}"  err-src="\images\defaultProfileImg.png" />
             <i class="fa fa-ban" ng-show="!person || !person.thumbnail"></i>
             <span style="display: inline-block;">{{person.name || 'Unknown'}}</span>
           </a>
@@ -227,7 +227,7 @@
            	  <div class="row">
 	              <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
 	                <a href="#{{personHours.person.resource}}">
-	                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />
+	                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}"  err-src="\images\defaultProfileImg.png" style="width: 36px; height: 36px;" />
 	                  
 	                </a>
 	                <span>{{personHours.person.name}}</span>
@@ -241,7 +241,7 @@
 	                <hr style="margin: 0;" />
 	                <div style="margin-left: 30px;">
 	                  <a href="#{{personHours.person.resource}}">
-	                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />{{personHours.person.name}}
+	                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}"  err-src="\images\defaultProfileImg.png" style="width: 36px; height: 36px;" />{{personHours.person.name}}
 	                  </a>
 	                </div>
 	              </div> -->
@@ -266,7 +266,7 @@
               <div ng-repeat="personHours in roleHours.persons" ng-if="!roleHours.collapsed" style="margin-top: 5px;" class="row">
               <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
                 <a href="#{{personHours.person.resource}}">
-                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />
+                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}"  err-src="\images\defaultProfileImg.png" style="width: 36px; height: 36px;" />
                   
                 </a>
                 <span>{{personHours.person.name}}</span>
@@ -280,7 +280,7 @@
                 <hr style="margin: 0;" />
                 <div style="margin-left: 30px;">
                   <a href="#{{personHours.person.resource}}">
-                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />{{personHours.person.name}}
+                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}"  err-src="\images\defaultProfileImg.png" style="width: 36px; height: 36px;" />{{personHours.person.name}}
                   </a>
                 </div>
               </div> -->
@@ -347,7 +347,7 @@
               <div class="row">
 	              <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
 	                <a href="#{{personHours.person.resource}}">
-	                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />
+	                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}"  err-src="\images\defaultProfileImg.png" style="width: 36px; height: 36px;" />
 	                  
 	                </a>
 	                <span>{{personHours.person.name}}</span>
@@ -361,7 +361,7 @@
 	                <hr style="margin: 0;" />
 	                <div style="margin-left: 30px;">
 	                  <a href="#{{personHours.person.resource}}">
-	                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />{{personHours.person.name}}
+	                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}"  err-src="\images\defaultProfileImg.png" style="width: 36px; height: 36px;" />{{personHours.person.name}}
 	                  </a>
 	                </div>
 	              </div> -->
@@ -386,7 +386,7 @@
               <div ng-repeat="personHours in roleHours.persons" ng-if="!roleHours.collapsed" style="margin-top: 5px;" class="row">
               <!-- <div class="hidden-xs col-sm-2" style="margin-top:15px;">
                 <a href="#{{personHours.person.resource}}">
-                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />
+                  <img class="profileImage" ng-src="{{personHours.person.thumbnail}}"  err-src="\images\defaultProfileImg.png" style="width: 36px; height: 36px;" />
                   
                 </a>
                 <span>{{personHours.person.name}}</span>
@@ -400,7 +400,7 @@
                 <hr style="margin: 0;" />
                 <div style="margin-left: 30px;">
                   <a href="#{{personHours.person.resource}}">
-                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}" style="width: 36px; height: 36px;" />{{personHours.person.name}}
+                    <img class="profileImage" ng-src="{{personHours.person.thumbnail}}"  err-src="\images\defaultProfileImg.png" style="width: 36px; height: 36px;" />{{personHours.person.name}}
                   </a>
                 </div>
               </div> -->
