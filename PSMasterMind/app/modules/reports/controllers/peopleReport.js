@@ -207,20 +207,20 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		{
 			case "week":
 				
-				input.startDate = moment.utc();
-				input.endDate = moment.utc(input.startDate).subtract(7, "day");
+				input.startDate = moment.utc().subtract(7, "day");
+				input.endDate = moment.utc();
 				break;
 			
 			case "weeks":
 				
-				input.startDate = moment.utc();
-				input.endDate = moment.utc(input.startDate).subtract(14, "day");
+				input.startDate = moment.utc().subtract(14, "day");
+				input.endDate = moment.utc();
 				break;
 			
 			case "month":
 				
-				input.startDate = moment.utc();
-				input.endDate = moment.utc(input.startDate).subtract(30, "day");
+				input.startDate = moment.utc().subtract(30, "day");
+				input.endDate = moment.utc();
 				break;
 				
 			case "custom":
