@@ -11,6 +11,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
   
   $scope.selectedGroups = [ "DEVELOPMENT", "ARCHITECTS" ];
   
+  $scope.reportServicePingInterval = 5000;
+  
   $scope.output = {};
   
   // Summary Section
