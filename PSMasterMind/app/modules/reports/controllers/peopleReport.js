@@ -208,19 +208,19 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			case "week":
 				
 				input.startDate = moment.utc();
-				input.endDate = moment.utc(input.startDate).add(7, "day");
+				input.endDate = moment.utc(input.startDate).subtract(7, "day");
 				break;
 			
 			case "weeks":
 				
 				input.startDate = moment.utc();
-				input.endDate = moment.utc(input.startDate).add(14, "day");
+				input.endDate = moment.utc(input.startDate).subtract(14, "day");
 				break;
 			
 			case "month":
 				
 				input.startDate = moment.utc();
-				input.endDate = moment.utc(input.startDate).add(30, "day");
+				input.endDate = moment.utc(input.startDate).subtract(30, "day");
 				break;
 				
 			case "custom":
@@ -242,9 +242,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		console.log(JSON.stringify(input));
 		console.log( 'Report generation started' );
 		
-		var params = {};
-		Resources.refresh("/reports/people/generate", params, {});
-	
+		Resources.refresh("/reports/people/generate", input, {});
 	};
 	
 	$scope.cancelReport = function () {
@@ -280,6 +278,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				    console.log("Generated report type: " + result.data.type);
 				    if(result && result.data && result.data.type) {
 				      $scope.onReportGenerated( result.data );
+				      Resources.refresh("/reports/cancel");
 				    } else {
 				      console.log("Server returned broken data for report.");
 				    }

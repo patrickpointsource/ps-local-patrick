@@ -588,6 +588,32 @@ var listAssignmentsByPerson = function(resource, callback) {
 
 };
 
+var listAssignmentsByPeople = function(resources, callback) {
+    
+    listAssignments(null, function(err, result){
+        if (err) {
+            console.log(err);
+            callback('error loading assignments by person', null);
+        } else {
+            var assignments = [];
+            _.each(result.data, function(assignment){
+                if (assignment.members) {
+                    _.each(assignment.members, function (member){
+                        if (member.person && member.person.resource && 
+                            resources.indexOf(member.person.resource) > -1) {
+                            var duplicateAssignments = _.filter(assignments, function(assign) { return assign.project.resource == assignment.project.resource; });
+                            if (duplicateAssignments.length == 0)
+                                assignments.push(assignment);
+                        }
+                    });
+                }
+            });
+            
+            callback(null, assignments);
+        }
+    });
+
+};
 
 var listAssignments = function( q, callback ) {
     if( !validQuery( q ) ) {
@@ -1189,6 +1215,7 @@ module.exports.listActivePeopleByAssignments = listActivePeopleByAssignments;
 module.exports.listAssignments = listAssignments;
 module.exports.listCurrentAssigments = listCurrentAssigments;
 module.exports.listAssignmentsByPerson = listAssignmentsByPerson;
+module.exports.listAssignmentsByPeople = listAssignmentsByPeople;
 
 module.exports.listTasks = listTasks;
 

@@ -12,11 +12,12 @@ var _ = require('underscore');
 var REPORT_TYPES = {
   PEOPLE: "people",
   PROJECT: "project",
-  CUSTOM: "custom"
+  CUSTOM: "custom",
+  DASHBOARD: "dashboard"
 };
 
 // Supported new report types
-var SUPPORTED_REPORT_TYPES = [ REPORT_TYPES.PEOPLE ];
+var SUPPORTED_REPORT_TYPES = [ REPORT_TYPES.PEOPLE, REPORT_TYPES.DASHBOARD ];
 
 // Report statuses
 var REPORT_IS_NOT_STARTED = "Not started";
