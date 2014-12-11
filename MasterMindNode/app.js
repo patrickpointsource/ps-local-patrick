@@ -127,13 +127,15 @@ require('./server/config/passport.js')(passport, {
 
 var allowCrossDomain = function(req, res, next) {
     //res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Credentials', 'true');
+   
     
     // temporary allow acceess to few rest services
     if (req.originalUrl && (req.originalUrl == '/people' || req.originalUrl == '/roles'))
     	res.header('Access-Control-Allow-Origin', '*');
-    else
+    else {
     	res.header('Access-Control-Allow-Origin', webSiteUrl);
+    	res.header('Access-Control-Allow-Credentials', 'true');
+    }
 
     //res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Methods', 'GET');
