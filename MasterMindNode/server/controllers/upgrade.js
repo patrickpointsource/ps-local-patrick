@@ -106,8 +106,17 @@ module.exports = function(params) {
 							        } else {
 		                              console.log("Upgrade: Report resource added to security roles.");
 							        }
+							        
+							        fixLinksInProjects(function (err, body) {
+								        if(err) {
+								            console.log(err);
+								        } else {
+			                              console.log("Upgrade: Links in projects fixed.");
+								        }
+							        	
+							        	callback(null, null);
+							        });
 
-						        	callback(null, null);
 						        });
 						    });
 						});
@@ -289,6 +298,69 @@ module.exports = function(params) {
 			callback(null, body);
 		});
 	};
+	
+	var fixLinksInProjects = function (callback) {
+		projects.listProjects(null, null, function(err, body) {
+			if (err) {
+				callback('error loading projects', null);
+			} else {
+				var projectMembers = body.data;
+				_.each(projectMembers, function(project) {
+					
+					dataAccess.listLinksByProject(project.resource, function (err, result) {
+						if (err) {
+			    			console.log(err);
+						} else 
+						if (result.members && result.members[0]) {
+							var linksObject;
+							var members = [];
+							var initialMembers;
+							var index = 0;
+							if (result.members.length > 1) {
+								linksObject = { project : project };
+								linksObject.form = "Links";
+								initialMembers = result.members;
+							}
+							else if (result.members.length == 1){
+								var linksObject = result.members[0];
+								if (linksObject.members) {
+									initialMembers = linksObject.members;
+								}
+								else {
+									linksObject = { project : project };
+									linksObject.form = "Links";
+									initialMembers = result.members;
+								}
+							}
+							_.each(initialMembers, function(link) {
+								var updatedLink = {url : link.url, label : link.label, icon : link.icon, index : index++, 
+										title : link.title, homePage : link.homePage, currentPlans : link.currentPlans, 
+										type : link.type, resource : link.resource, dashboard : link.dashboard };
+								members.push(updatedLink);
+								if (link._id && link._rev) {
+									dataAccess.deleteItem(link._id, link._rev, 'Links', function (err, body) {
+										if (err) {
+											console.log(err);
+										}
+									})
+								}
+							});
+
+							linksObject.members = members;
+							dataAccess.insertItem(linksObject._id, linksObject, 'Links', function (err, body){
+								if (err) {
+									console.log(err);
+								}
+							});
+
+						}
+					});
+					
+				});
+				callback(null, body);
+			}
+		});
+	}
 	
 	var fixSecurityRolesIds = function(callback) {
 		dataAccess.listSecurityRoles({}, function(err, body) {
