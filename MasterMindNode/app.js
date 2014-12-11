@@ -130,9 +130,10 @@ var allowCrossDomain = function(req, res, next) {
    
     
     // temporary allow acceess to few rest services
-    if (req.originalUrl && (req.originalUrl == '/people' || req.originalUrl == '/roles'))
+   /* if (req.originalUrl && (req.originalUrl == '/people' || req.originalUrl == '/roles')) {
     	res.header('Access-Control-Allow-Origin', '*');
-    else {
+    	res.header('Access-Control-Allow-Credentials', 'false');
+    } else */{
     	res.header('Access-Control-Allow-Origin', webSiteUrl);
     	res.header('Access-Control-Allow-Credentials', 'true');
     }
