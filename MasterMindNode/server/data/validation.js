@@ -322,14 +322,6 @@ var isLinkValid = function(link) {
     messages.push("Label is required");
   }
   
-  if(!link.project) {
-    messages.push("'project' field is required");
-  } else {
-    if(!link.project.resource) {
-      messages.push("'project.resource' field is required");
-    }
-  }
-  
   return messages;
 };
 

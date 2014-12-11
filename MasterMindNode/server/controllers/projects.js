@@ -96,14 +96,35 @@ var addProjectLink = function(id, obj, callback) {
       obj.project = {};
     }
 	obj.project.resource = "projects/" + id;
-    dataAccess.insertItem(obj._id, obj, dataAccess.LINKS_KEY, function(err, body){
-        if (err) {
+	
+	listLinksByProject(id, function (err, result){
+		if (err) {
             console.log(err);
-            callback('error insert skill', null);
-        } else {
-            callback(null, body);
-        }
-    });
+            callback('error add project link', null);
+		} else {
+			var linksObject;
+			var index = 0;
+			if (result && result.members) {
+				linksObject = result.members[0];
+				index = (linksObject.members && linksObject.members.length > 0) ? (linksObject.members[linksObject.members.length - 1].index + 1) : 0;
+			}
+			else {
+				linksObject = {project : { resource : "projects/" + id }};
+				linksObject.members = [];
+			}
+			linksObject.members.push({url : obj.url, label : obj.label, icon : obj.icon, index : index});
+			
+		    dataAccess.insertItem(linksObject._id, linksObject, dataAccess.LINKS_KEY, function(err, body){
+		        if (err) {
+		            console.log(err);
+		            callback('error insert project link', null);
+		        } else {
+		            callback(null, body);
+		        }
+		    });
+		}
+	});
+	
 };
 
 
@@ -213,15 +234,30 @@ var deleteProject = function(obj, callback) {
     });
 };
 
-var deleteProjectLink = function(projectId, linkId, obj, callback) {
-    dataAccess.deleteItem(linkId, null, dataAccess.LINKS_KEY, function(err, body){
-        if (err) {
+var deleteProjectLink = function(projectId, linkIndex, callback) {
+	
+	listLinksByProject(projectId, function (err, result){
+		if (err) {
             console.log(err);
-            callback(err, null);
-        } else {
-            callback(null, body);
-        }
-    });
+            callback('error list project links', null);
+		} else {
+			var linksObject = result.members[0];
+			_.each(linksObject.members, function(link, initialIndex) {
+				if (link.index == linkIndex) {
+					linksObject.members = _.without (linksObject.members, link);					
+				}
+			});
+		    dataAccess.insertItem(linksObject._id, linksObject, dataAccess.LINKS_KEY, function(err, body){
+		        if (err) {
+		            console.log(err);
+		            callback('error delete project link', null);
+		        } else {
+		            callback(null, body);
+		        }
+		    });
+		}
+	});
+
 };
 
 
@@ -278,22 +314,36 @@ var insertProject = function(obj, callback) {
 	
 };
 
-var insertProjectLink = function(projectId, linkId, obj, callback) {
+var insertProjectLink = function(projectId, linkIndex, obj, callback) {
     var validationMessages = validation.validate(obj, dataAccess.LINKS_KEY);
     if(validationMessages.length > 0) {
       callback( validationMessages.join(', '), {} );
       return;
     }
     
-	obj._id = linkId;
-    dataAccess.insertItem(obj._id, obj, dataAccess.LINKS_KEY, function(err, body){
-        if (err) {
+	listLinksByProject(projectId, function (err, result){
+		if (err) {
             console.log(err);
-            callback('error insert project', null);
-        } else {
-            callback(null, body);
-        }
-    });
+            callback('error list project links', null);
+		} else {
+			var linksObject = result.members[0];
+			_.each(linksObject.members, function(link, initIndex) {
+				if (link.index == linkIndex) {
+					linksObject.members[initIndex] = obj;
+				}
+			});
+
+		    dataAccess.insertItem(linksObject._id, linksObject, dataAccess.LINKS_KEY, function(err, body){
+		        if (err) {
+		            console.log(err);
+		            callback('error insert project link', null);
+		        } else {
+		            callback(null, body);
+		        }
+		    });
+		}
+	});
+	
 };
 
 var getNameByResource = function(resource, callback) {

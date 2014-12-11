@@ -606,10 +606,8 @@ var filterTasksByName = function(name, tasks) {
 var filterLinksByProject = function(project, links) {
 	var result = [];	
 	_.each(links, function(link) {
-		if (link.project && link.project.resource == project ) {
-			_.each(link.members, function(member) {
-				result.push(member);
-			});
+		if (link.project && link.project.resource == project) {
+			result.push(link);
 		}
 	});
 	return result;

@@ -22,8 +22,12 @@ angular.module('Mastermind.services.projects')
 			 if(result.members){
 		    	 for(var i = 0; i < result.members.length; i++){
 		        	 var link = result.members[i];
-		        	 if(!link.type || link.type != 'jazzHub'){
-		        		 ret.push(link);
+		        	 if (link.members) {
+			        	 for (var k = 0; k < link.members.length; k++) {
+				        	 if(!link.members[k].type || link.members[k].type != 'jazzHub'){
+				        		 ret.push(link.members[k]);
+				        	 }
+			        	 }
 		        	 }
 		         }
 		      }
@@ -49,9 +53,13 @@ angular.module('Mastermind.services.projects')
 			 if(result.members){
 		    	 for(var i = 0; i < result.members.length; i++){
 		        	 var link = result.members[i];
-		        	 if(link.type && link.type == 'jazzHub'){
-		        		 ret = link;
-		        		 break;
+		        	 if (link.members) {
+			        	 for (var k = 0; k < link.members.length; k++) {
+				        	 if(link.members[k].type && link.members[k].type == 'jazzHub'){
+				        		 ret = link.members[k];
+				        		 break;
+				        	 }
+			        	 }
 		        	 }
 		         }
 		      }
@@ -73,7 +81,7 @@ angular.module('Mastermind.services.projects')
 	  * Delete a project link
 	  */
 	 this.deleteLink = function(projectURL, link){
-		 var resource = projectURL + '/links/' + link.id;
+		 var resource = projectURL + '/links/' + link.index;
 		 return Resources.remove(resource);
 	 };
 }]);

@@ -378,14 +378,14 @@ function( req, res ) {
 } );
 
 router.
-delete ( '/:id/links/:linkId', auth.isAuthenticated,
+delete ( '/:id/links/:linkIndex', auth.isAuthenticated,
 function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
-			var linkId = req.params.linkId;
-			projects.deleteProjectLink( id, linkId, function( err, result ) {
+			var linkIndex = req.params.linkIndex;
+			projects.deleteProjectLink( id, linkIndex, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
@@ -415,13 +415,13 @@ router.post( '/', auth.isAuthenticated, function( req, res ) {
 
 } );
 
-router.put( '/:id/links/:linkId', auth.isAuthenticated, function( req, res ) {
+router.put( '/:id/links/:linkIndex', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjectLinks, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
-			var linkId = req.params.linkId;
-			projects.insertProjectLink( id, linkId, req.body, function( err, result ) {
+			var linkIndex = req.params.linkIndex;
+			projects.insertProjectLink( id, linkIndex, req.body, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

@@ -112,6 +112,7 @@ angular.module('Mastermind.controllers.projects')
      * Update an existing link to the server
      */
     $scope.saveEditLink = function(){
+      $scope.editLink.about = $scope.project.about + '/links/' + $scope.editLink.index;
       Resources.update($scope.editLink).then(function(){
     	 LinksService.getWebLinks($scope.project.about).then(function(result){
           $scope.links = result;
