@@ -11,6 +11,8 @@
 		"url": {"type": "string"},
 		"label": {"type": "string"},
 		"project": { "$ref" : "#/definitions/resource"},
+		"resource": {"type": "string"},
+		"about": {"type": "string"},		
 		"members": {
 			"type": "array",
 			"items": {
@@ -21,6 +23,8 @@
 					"id": {"type": "string"},
 					"icon": {"type": "string"},
 					"resource": {"type": "string"},
+					"about": {"type": "string"},
+					"index": {"type": "number"},
 					"title": {"type": "string"},
 					"homePage": { "$ref" : "#/definitions/resource"},
 					"currentPlans": { "$ref" : "#/definitions/resource"},
