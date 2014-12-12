@@ -21,10 +21,16 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	$scope.csvData = null;
 	$scope.generationTimer = null;
 	$scope.reportServicePingInterval = 5000;
-	$scope.peopleGroups = null;
+	//$scope.peopleGroups = null;
+	$scope.graphDataAvailable = false;
+	$scope.graphDataParams = {
+		groups:['development', 'architects'],
+		startDate: null,
+		endDate: null
+	};
 	
 	$scope.peopleGroups = [];
-	$scope.selectedPeopleGroups = null;
+	$scope.selectedPeopleGroups = [];
 	
 	$scope.reportClick = function( item ) {
 		//alert( item.name );
@@ -209,21 +215,101 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	};
 
 	$scope.initPeopleGroups = function() {
-		var peopleGroups = People.getPeopleGroupMapping();
+		$scope.peopleGroupsMapping = People.getPeopleGroupMapping();
 		
 		$scope.peopleGroups = [];
 		$scope.selectedPeopleGroups = null;
 		
-		for (var group in peopleGroups)
+		for (var group in $scope.peopleGroupsMapping)
 			$scope.peopleGroups.push({
-				name: group,
-				id: group,
-				roles: peopleGroups[group]
+				key: group,
+				value: group,
+				roles: $scope.peopleGroupsMapping[group]
 			});
 		
-		$(".select-people-groups").selectpicker();
+		setTimeout(function() {
+			$(".select-people-groups").selectpicker();
+			
+			$(".select-people-groups").selectpicker('val', $scope.graphDataParams.groups)
+			
+			$(".select-people-groups").on('change', function(){
+	            var selected = $(".select-people-groups").selectpicker('val');
+	            
+	            selected = selected.split ? selected.split(','): selected;
+	            
+	            $scope.graphDataParamsChanged(selected);
+	         });
+			
+			$scope.graphDataAvailable = true;
+		}, 100);
+		
 	};
 	
+	$scope.initShellGrpahs = function() {
+		$scope.initPeopleGroups();
+	}
+
+	$scope.loadGraphData = function() {
+		//alert('load data');
+	}
+	
+	$scope.graphDataParamsChanged = function(groups, period, startDate, endDate) {
+		if (groups)
+			$scope.graphDataParams.groups = groups;
+		
+		if (startDate && endDate) {
+			$scope.graphDataParams.startDate = startDate;
+			$scope.graphDataParams.endDate = endDate;
+		}
+	}
+	
+	$scope.getVerticalbarChartData = function() {
+		return {
+			"hours" : [{
+				label: "managers",
+				value: 33
+			}, {
+				label: "developers",
+				value: 56
+			}, {
+				label: "architects",
+				value: 10
+			}],
+			"expected hours" : [{
+				label: "managers",
+				value: 5
+			}, {
+				label: "developers",
+				value: 12
+			}, {
+				label: "architects",
+				value: 4
+			}]
+		}
+  };
+  
+  $scope.getPieChartData = function() {
+		return [{
+			key: "Client",
+			value: 35
+		}, {
+			key: "Out of Office",
+			value: 10
+		}, {
+			key: "Investment",
+			value: 22
+		}, {
+			key: "Marketing",
+			value: 7
+		}, {
+			key: "Overhead",
+			value: 12
+		}, {
+			key: "Sales",
+			value: 3
+		}];
+	}
+  
 	$scope.loadAndInitPeople = function( ) {
 		var peopleInRoleQuery = {};
 
@@ -369,7 +455,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		$scope.loadRoles( );
 		$scope.loadAndInitPeople( );
 		$scope.loadAndInitProjectsAndClients( );
-		$scope.initPeopleGroups();
+		$scope.initShellGrpahs();
 	};
 
 	$scope.selectReportType = function( e, report ) {
@@ -1421,47 +1507,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		}
 		
 	};
-	
-	$scope.getVerticalbarChartData = function() {
-		return {
-			"hours" : [{
-				label: "managers",
-				value: 33
-			}, {
-				label: "developers",
-				value: 56
-			}, {
-				label: "architects",
-				value: 10
-			}],
-			"expected hours" : [{
-				label: "managers",
-				value: 5
-			}, {
-				label: "developers",
-				value: 12
-			}, {
-				label: "architects",
-				value: 4
-			}]
-		}
-  };
-  
-  $scope.getPieChartData = function() {
-		return [{
-			key: "developers",
-			value: 45
-		}, {
-			key: "architects",
-			value: 15
-		}, {
-			key: "managers",
-			value: 30
-		}, {
-			key: "sales",
-			value: 10
-		}];
-	}
 
 	$scope.hoursToCSV = {
 		stringify: function( str ) {

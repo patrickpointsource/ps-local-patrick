@@ -55,7 +55,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 				 	.tooltips(true)
 				 	.color(colors)
 				 	.reduceXTicks(false)
-				 	.height(300)
+				 	.height(250)
 				 	.showXAxis(true)
 				 	.showYAxis(true)
 				 	//.staggerLabels(true);
