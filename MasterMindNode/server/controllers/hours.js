@@ -4,7 +4,7 @@ var dataAccess = require('../data/dataAccess');
 var people = require('./people.js');
 var projects = require('./projects.js');
 var _ = require('underscore');
-var validation = require( '../data/validation.js' );
+// 12/11/14 MM var validation = require( '../data/validation.js' );
 
 module.exports.listHours = function(q, fields, callback) {
     dataAccess.listHours(q, fields,  function(err, body){
@@ -74,11 +74,11 @@ module.exports.listHoursByProjectsAndDates = function(projects, startDate, endDa
 
 module.exports.insertHours = function(obj, callback) {
     
-    var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	// 12/11/14 MM    var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);
+	// 12/11/14 MM    if(validationMessages.length > 0) {
+	// 12/11/14 MM      callback( validationMessages.join(', '), {} );
+	// 12/11/14 MM      return;
+	// 12/11/14 MM    }
     
     obj.form = dataAccess.HOURS_KEY;
     console.log('create hours entry:' + JSON.stringify(obj));
@@ -88,13 +88,13 @@ module.exports.insertHours = function(obj, callback) {
 		if (!err) {
 			obj.person.name = personName;
 		}
-		console.log("personName=" + personName);
+
 	    // get name for project
 	    if (obj.project && obj.project.name || obj.task)
 		  dataAccess.insertItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
                 if (err) {
                     console.log(err);
-                    callback('error insert hours', null);
+                    callback('error insert hours:' + JSON.stringify(err), null);
                 } else {
                 	prepareItem(obj, body);
                     callback(null, _.extend(obj, body));
@@ -105,12 +105,11 @@ module.exports.insertHours = function(obj, callback) {
                 if (!err) {
                     obj.project.name = projectName;
                 }
-                console.log("projectName=" + projectName);
                 
                 dataAccess.insertItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
                     if (err) {
                         console.log(err);
-                        callback('error insert hours', null);
+                        callback('error insert hours:' + JSON.stringify(err), null);
                     } else {
                     	prepareItem(obj, body);
                         callback(null, _.extend(obj, body));
@@ -124,18 +123,18 @@ module.exports.insertHours = function(obj, callback) {
 
 module.exports.updateHours = function(id, obj, callback) {
     
-    var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	// 12/11/14 MM    var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);
+	// 12/11/14 MM    if(validationMessages.length > 0) {
+	// 12/11/14 MM      callback( validationMessages.join(', '), {} );
+	// 12/11/14 MM      return;
+	// 12/11/14 MM    }
     
     console.log('update hours entry:' + JSON.stringify(obj));
     
     dataAccess.updateItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
         if (err) {
             console.log(err);
-            callback('error update hours', null);
+            callback('error update hours:' + JSON.stringify(err), null);
         } else {
         	prepareItem(obj, body);
             callback(null, _.extend(obj, body));
@@ -147,7 +146,7 @@ var prepareItem = function (obj, body) {
     obj._id = body.id;
     obj._rev = body.rev;
     obj.resource = "hours/" + obj._id;
-}
+};
 
 module.exports.deleteHours = function(id, obj, callback) {
     dataAccess.deleteItem(id, obj._rev, dataAccess.HOURS_KEY, function(err, body){

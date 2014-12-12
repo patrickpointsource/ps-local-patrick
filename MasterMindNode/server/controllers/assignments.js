@@ -5,7 +5,7 @@ var memoryCache = require('../data/memoryCache.js')
 var projects = require('./projects');
 var util = require('../util/util');
 var _ = require( 'underscore' );
-var validation = require( '../data/validation.js' );
+//12/11/14 MM var validation = require( '../data/validation.js' );
 
 
 var listAssignments = function(q, callback) {
@@ -63,11 +63,11 @@ var getAssignment = function(id, callback) {
 
 var insertAssignment = function(assignmentId, obj, callback) {
     
-    var validationMessages = validation.validate(obj, dataAccess.ASSIGNMENTS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.ASSIGNMENTS_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM       return;
+	//12/11/14 MM     }
     
     //TODO: Duplicate assignment check should be moved to the database
     memoryCache.deleteObject( dataAccess.ASSIGNMENTS_KEY );
@@ -75,7 +75,7 @@ var insertAssignment = function(assignmentId, obj, callback) {
     	dataAccess.insertItem(assignment ? assignment._id : assignmentId, obj, dataAccess.ASSIGNMENTS_KEY, function(err, body) {
     		if (err) {
     			console.log(err);
-    			callback('error insert assignment into project', null);
+    			callback('error insert assignment into project:' + JSON.stringify(err), null);
     		} else {
     			callback(null, _.extend(obj, body));
     		}

@@ -5,32 +5,16 @@
 	"properties":{
 		"_id": {"type":"string"},
 		"_rev": {"type":"string"},
+		"_deleted": {"type":"boolean"},
 		"etag": {"type": ["string", "number"]},
-		"form": {"type":"string"},
+		"form": {"enum": ["Assignments"]},
 		"about": {"type":"string"},
 		"resource": {"type":"string"},
-		"members": {
-			"type":"array",
-			"items":
-				{
-					"type":"object",
-					"properties":{
-						"hoursPerWeek": {"type":"number"},
-						"isCurrent": {"type":"boolean"},
-						"isFuture": {"type":"boolean"},
-						"isPast": {"type":"boolean"},
-						"percentage": {"type":"number"},
-						"person": { "$ref": "#/definitions/resource"},
-						"project": { "$ref": "#/definitions/resource"},
-						"role": { "$ref": "#/definitions/resource"},
-						"startDate": {"type":"string"},
-						"endDate": {"type":"string"}
-					},
-					"required": ["role", "person", "startDate"]
-				}
-		},
-		"project": { "$ref": "#/definitions/resource"}
+		"members": {"$ref": "#/definitions/members"},
+		"project": { "$ref": "#/definitions/resource"},
+		"excludedMembers": {"$ref": "#/definitions/members"}
 	},
+	"required":["form", "project"],
 	"definitions": {
 		"resource": {
 			"type":"object",
@@ -39,7 +23,26 @@
 				"name": {"type":"string"}
 			},
 			"required": ["resource"]
+		},
+	"members": {
+		"type":"array",
+		"items":
+			{
+				"type":"object",
+				"properties":{
+					"hoursPerWeek": {"type":"number"},
+					"isCurrent": {"type":"boolean"},
+					"isFuture": {"type":"boolean"},
+					"isPast": {"type":"boolean"},
+					"percentage": {"type":"number"},
+					"person": { "$ref": "#/definitions/resource"},
+					"project": { "$ref": "#/definitions/resource"},
+					"role": { "$ref": "#/definitions/resource"},
+					"startDate": {"type":"string"},
+					"endDate": {"type":"string"}
+				},
+				"required": ["role", "person", "startDate"]
+			}	
 		}
-	},
-	"required":["form", "project"]
+	}
 }

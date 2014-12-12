@@ -2,12 +2,12 @@
 	"type":"object",
 	"$schema": "http://json-schema.org/draft-04/schema",
 	"id": "Notifications",
-	"required":true,
 	"properties":{
 		"_id": {"type":"string"},
 		"_rev": {"type":"string"},
+		"_deleted": {"type":"boolean"},
 		"etag": {"type": ["string", "number"]},
-		"form": {"type":"string"},
+		"form": {"enum": ["Notifications"]},
 		"created": {"type": "string", "format": "date-time"},
 		"header": {"type":"string"},
 		"icon": {"type":"string"},
@@ -19,8 +19,8 @@
 			},
 			"required": ["resource"]
 		},
-		"text": {"type":"string"},
-		"type": {"type":["string", "enum"]}
+		"text": {"type":"string", "prohibited_values": [""]},
+		"type": {"type":"string", "prohibited_values": [""]}
 	},
 	"required": ["person", "type", "text"]
 }

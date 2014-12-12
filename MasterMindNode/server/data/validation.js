@@ -1,9 +1,10 @@
 /**
- * Validation for database objects.
+ * Complex Business Logic validation for database objects that can't be covered by JSON Schema
+ * plus JSON Schema validation
  */
 
 var _ = require( 'underscore' );
-var dataAccess = require( '../data/dataAccess.js' );
+var jsonValidator = require('../data/jsonValidator.js');
 
 var PROJECTS_KEY = 'Projects';
 var PEOPLE_KEY = 'People';
@@ -25,19 +26,12 @@ var ALLOWED_ROLES_TO_CREATE_PROJECT = [ "PM", "BA", "SBA" ];
 
 var HOURS_PER_MONTH = 180;
 
-var rolesFromDb = [];
-
-dataAccess.listRoles({}, function(err, body){
-    if (err) {
-      var msg = "project validation, error loading roles";
-      console.log(msg + ": " + err, null);
-    } else {
-      rolesFromDb = body.members;
-    }
-});
-
 var validate = function(obj, type) {
   var validationMessages = [];
+  
+  if (!obj.form) {
+	  obj.form = type;
+  }
   
   switch(type) {
     case ASSIGNMENTS_KEY: 
@@ -104,37 +98,8 @@ var validate = function(obj, type) {
  */
 var isAssignmentValid = function(assignment) {
   var messages = [];
-  if(!assignment.project) {
-    messages.push("'project' field is required");
-  }
-  if(!assignment.project.resource) {
-    messages.push("'project.resource' field is required");
-  }
-  if(assignment.members && assignment.members.length > 0) {
-    for(var i = 0; i < assignment.members.length; i++) {
-      var member = assignment.members[i];
-      
-      if(!member.role) {
-        messages.push("'member.role' field is required");
-      } else {
-        if(!member.role.resource) {
-          messages.push("'member.role.resource' field is required");
-        }
-      }
-      
-      if(!member.person) {
-        messages.push("'member.person' field is required");
-      } else {
-        if(!member.person.resource) {
-          messages.push("'member.person.resource' field is required");
-        }
-      }
-      
-      if(!member.startDate) {
-        messages.push("'member.startDate' field is required");
-      }
-    }
-  }
+
+  messages = jsonValidator.validateDocument(assignment);
   return messages;
 };
 
@@ -142,350 +107,183 @@ var isAssignmentValid = function(assignment) {
  *  Validation for Project
  */
 var isProjectValid = function(project) {
-  var messages = [];
-  
-  if(!project.customerName || project.customerName === '') {
-    messages.push("Customer name is required");
-  }
-  
-  if(!project.name || project.name === '') {
-    messages.push("Name is required");
-  }
-  
-  if(!project.type) {
-    messages.push("Project type is required");
-  } else {
-    if(PROJECT_TYPES.indexOf(project.type) < 0) {
-      messages.push("Unknown project type: " + project.type);
-    }
-  }
-  
-  if(!project.startDate) {
-    messages.push("Start date is required");
-  } else {
-    if(!isDate(project.startDate)) {
-      messages.push("Start date field is not a date");
-    } else {
-      if(project.endDate) {
-        if(!isDate(project.endDate)) {
-          messages.push("End date field is not a date");
-        } else {
-          if(new Date(project.endDate) < new Date(project.startDate)) {
-            messages.push("Start date cannot be after end date");
-          }
-        }
-      }
-    }
-  }
-  
+	/*
+	 * MM 12/11/14
+	 * require is set here instead of header to avoid cycle module dependency problem.
+	 * If you know better way how to resolve it - feel free to update.
+	 */
+	var dataAccess = require( '../data/dataAccess.js' );	
+	var messages = [];
+	var rolesFromDb = [];
+
+	dataAccess.listRoles({}, function(err, body){
+	    if (err) {
+	      var msg = "project validation, error loading roles";
+	      console.log(msg + ": " + err, null);
+	    } else {
+	      rolesFromDb = body.members;
+	    }
+	});
+	
+  // fix some issues first.
   if(!project.state) {
-    // 'planning' state by default
-    project.state = PROJECT_STATES[0];
-  } else {
-    if(PROJECT_STATES.indexOf(project.state) < 0) {
-      messages.push("Unknown project state: " + project.state);
-    }
-  }
+	    // 'planning' state by default
+	    project.state = PROJECT_STATES[0];
+	  }
+
+  // clean up assignees if they exist in a project.role object
+  // 12/11/14 MM if(role.assignees) {
+  // 12/11/14 MM     delete role.assignees;
+  // 12/11/14 MM   }
+
+	messages = jsonValidator.validateDocument(project);
+	if(new Date(project.endDate) < new Date(project.startDate)) {
+		messages.push("Start date cannot be after end date");
+	};
   
-  // TODO: add checking executive sponsor for new nodejs security
-  if(!project.executiveSponsor) {
-    messages.push("Executive sponsor is required");
-  } else {
-    if(!project.executiveSponsor.resource) {
-      messages.push("ExecutiveSponsor's resource field is required");
-    }
-  }
   
-  if(!project.roles) {
-    messages.push("'roles' field is required");
-  } else {
-    if(!project.roles.length || project.roles.length < 1) {
-      messages.push("Project must include atleast one role");
+  	//TODO: add checking executive sponsor for new nodejs security
+	if(!project.roles.length || project.roles.length < 1) {
+		messages.push("Project must include atleast one role");
     } else {
-      var isRequiredRoleIncluded = false;
-      for(var i = 0; i < project.roles.length; i++) {
-        var role = project.roles[i];
+    	var isRequiredRoleIncluded = false;
+    	for(var i = 0; i < project.roles.length; i++) {
+    		var role = project.roles[i];
+    		
+    		var actualRole = _.findWhere(rolesFromDb, { resource: role.type.resource });        
+    		if(!actualRole) {
+    			messages.push("Unknown role type: " + role.type.resource);
+    		} else {
+    			if(ALLOWED_ROLES_TO_CREATE_PROJECT.indexOf(actualRole.abbreviation) > -1) {
+    				isRequiredRoleIncluded = true;
+    			}
+    		}
         
-        var actualRole = _.findWhere(rolesFromDb, { resource: role.type.resource });
-        if(!actualRole) {
-          messages.push("Unknown role type: " + role.type.resource);
-        } else {
-          if(ALLOWED_ROLES_TO_CREATE_PROJECT.indexOf(actualRole.abbreviation) > -1) {
-            isRequiredRoleIncluded = true;
-          }
-        }
-        
-        if(!role.type) {
-          messages.push("'role.type' is required");
-        } else {
-          if(!role.type.resource) {
-            messages.push("'role.type.resource' is required");
-          }
-        }
-        
-        // clean up assignees if they exist in a project.role object
-        if(role.assignees) {
-          delete role.assignees;
-        }
-        
-        if(!role.rate) {
-          messages.push("Role's rate field is required");
-        } else {
-          if(!role.rate.type) {
-            messages.push("Role rate's type field is required");
-          } else {
-            switch(role.rate.type) {
-              case "hourly":
-                if(!role.rate.fullyUtilized) {
-                  if(!role.rate.hoursPerMth || parseInt(role.rate.hoursPerMth) < 1) {
-                    messages.push("An Hourly Role must specify the number hours per month");
-                  } else {
-                    if(parseInt(role.rate.hoursPerMth) > HOURS_PER_MONTH) {
-                      messages.push( "An Hourly Role cannot exceed " + HOURS_PER_MONTH +" hours per month");
-                    } else {
-                      //TODO: Add validation for SUXD role
-                    }
-                  }
-                }
-                break;
-              case "weekly":
-                if(!role.rate.fullyUtilized) {
-                  if(!role.rate.hoursPerWeek || parseInt(role.rate.hoursPerWeek) < 1) {
-                    messages.push("A Weekly Role must specify the number hours per week");
-                  } else {
-                    if(parseInt(role.rate.hoursPerWeek) > 50) {
-                      messages.push("A Weekly Role cannot exceed 50 hours per week");
-                    } else {
-                      // TODO: add validation for SUXD role
-                    }
-                  }
-                }
-                break;
-              case "monthly":
-                role.rate.fullyUtilized = true;
-                break;
-              default:
-                messages.push("Unknown Role Rate Type: " + role.rate.type);
-                break;
-            }
-          }
-        }
-      }
+    		switch(role.rate.type) {
+    		case "hourly":
+    			if(!role.rate.fullyUtilized) {
+    				if(!role.rate.hoursPerMth || parseInt(role.rate.hoursPerMth) < 1) {
+    					messages.push("An Hourly Role must specify the number hours per month");
+    				} else {
+    					if(parseInt(role.rate.hoursPerMth) > HOURS_PER_MONTH) {
+    						messages.push( "An Hourly Role cannot exceed " + HOURS_PER_MONTH +" hours per month");
+    					} else {
+    						//TODO: Add validation for SUXD role
+    					}
+    				}
+    			}
+    			break;
+    		case "weekly":
+    			if(!role.rate.fullyUtilized) {
+    				if(!role.rate.hoursPerWeek || parseInt(role.rate.hoursPerWeek) < 1) {
+    					messages.push("A Weekly Role must specify the number hours per week");
+    				} else {
+    					if(parseInt(role.rate.hoursPerWeek) > 50) {
+    						messages.push("A Weekly Role cannot exceed 50 hours per week");
+    					} else {
+    						// TODO: add validation for SUXD role
+    					}
+    				}
+    			}
+    			break;
+    		case "monthly":
+    			role.rate.fullyUtilized = true;
+    			break;
+    		default:
+    			messages.push("Unknown Role Rate Type: " + role.rate.type);
+	        	break;
+    		}
+    	}
       
-      if(rolesFromDb.length > 0 && !isRequiredRoleIncluded) {
+    	if(rolesFromDb.length > 0 && !isRequiredRoleIncluded) {
         messages.push("A Project must include Project Managment or Business Analyst oversight");
-      }
-    }
-  }
-    
+    	}
+	}
   return messages;
 };
 
+
 var isPersonValid = function(person) {
   var messages = [];
-  if(!person.name) {
-    messages.push("'name' field is required");
-  }
-  
+
+  messages = jsonValidator.validateDocument(person);
   return messages;
 };
 
 var isHoursValid = function(hours) {
   var messages = [];
-  if(!hours.person || !hours.person.resource) {
-    messages.push("Person is required");
-  }
-  
-  if((!hours.project || !hours.project.resource) && (!hours.task || !hours.task.resource)) {
-    messages.push("Project or Task is required");
-  }
-  
-  if(!hours.hours) {
-    messages.push("Hours is required");
-  }
-  
-  if(!hours.description) {
-    messages.push("Description is required");
-  }
-  
+
+  messages = jsonValidator.validateDocument(hours);
   return messages;
 };
 
 var isLinkValid = function(link) {
   var messages = [];
   
-  if(!link.url) {
-    messages.push("Url is required");
-  }
-  
-  if(!link.label) {
-    messages.push("Label is required");
-  }
-  
+  messages = jsonValidator.validateDocument(link);
   return messages;
 };
 
 var isRolesValid = function(role) {
   var messages = [];
   
-  if(!role.title || role.title === '') {
-    messages.push("Role title is required");
-  }
-  
-  if(!role.abbreviation || role.abbreviation === '') {
-    messages.push("Role abbreviation is required");
-  }
-  
+  messages = jsonValidator.validateDocument(role);
   return messages;
 };
+
 
 var isVacationValid = function(vacation) {
   var messages = [];
   
-  if(!vacation.person) {
-    messages.push("'person' field is required");
-  } else {
-    if(!vacation.person.resource) {
-      messages.push("'person.resource' field is required");
-    }
-  }
-  
-  if(!vacation.vacationManager) {
-    messages.push("'vacationManager' field is required");
-  } else {
-    if(!vacation.vacationManager.resource) {
-      messages.push("'vacationManager.resource' field is required");
-    }
-  }
-  
-  if(!vacation.type || vacation.type === '') {
-    messages.push("Out-of-office entry should have a type.");
-  }
-  
-  if(!vacation.status || vacation.status === '') {
-    messages.push("Out-of-office entry should have a status.");
-  }
-  
-  if(!vacation.startDate) {
-    messages.push("Out-of-office entry should have a start date.");
-  } else {
-    if(!isDate(vacation.startDate)) {
-      messages.push("Start date is not a Date");
-    }
-  }
-  
-  if(!vacation.endDate) {
-    messages.push("Out-of-office entry should have a end date.");
-  } else {
-    if(!isDate(vacation.endDate)) {
-      messages.push("End date is not a Date");
-    }
-  }
-  
+  messages = jsonValidator.validateDocument(vacation);
   return messages;
 };
+
 
 var isNotificationValid = function(notification) {
   var messages = [];
   
-  if(!notification.person) {
-    messages.push("'person' field is required");
-  } else {
-    if(!notification.person.resource) {
-      messages.push("'person.resource' field is required");
-    }
-  }
-  
-  if(!notification.type || notification.type === '') {
-    messages.push("Notification entry should have a type.");
-  }
-  
-  if(!notification.text || notification.text === '') {
-    messages.push("Notification entry should have a text.");
-  }
-  
+  messages = jsonValidator.validateDocument(notification);  
   return messages;
 };
+
 
 var isConfigurationValid = function(obj) {
   var messages = [];
   
-  if(!obj.config) {
-    messages.push("'config' field is required");
-  }
-  
-  if(!obj.properties || !obj.properties.length) {
-    messages.push("'properties' field is required");
-  } else {
-    for(var i = 0; i < obj.properties.length; i++) {
-      var property = obj.properties[i];
-      if(!property.name) {
-        messages.push("'properties.name' field is required");
-        return messages;
-      }
-      if(!property.value) {
-        messages.push("'properties.value' field is required");
-        return messages;
-      }
-    }
-  }
-  
+  messages = jsonValidator.validateDocument(obj);
   return messages;
 };
+
 
 var isSkillValid = function(skill) {
   var messages = [];
   
+  messages = jsonValidator.validateDocument(skill);
   return messages;
 };
+
 
 var isTaskValid = function(task) {
   var messages = [];
   
-  if(!task.name) {
-    messages.push("Name is required");
-  }
-  
+  messages = jsonValidator.validateDocument(task);
   return messages;
 };
+
 
 var isUserRoleValid = function(userRole) {
   var messages = [];
   
-  if(!userRole.userId && !userRole.groupId) {
-    messages.push("userId or groupId is required");
-  }
-  
-  if(!userRole.roles) {
-    messages.push("roles is required");
-  }
-  
+  messages = jsonValidator.validateDocument(userRole);
   return messages;
 };
+
 
 var isSecurityRoleValid = function(securityRole) {
   var messages = [];
   
-  if(!securityRole.name) {
-    messages.push("Name is required");
-  }
-  
-  if(!securityRole.resources) {
-    messages.push("'resources' field is required");
-  } else {
-    for(var i = 0; i < securityRole.resources.length; i++) {
-      var resource = securityRole.resources[i];
-      if(!resource.name) {
-        messages.push("Missing 'name' field in one of the resources.");
-        return messages;
-      }
-      if(!resource.permissions) {
-        messages.push("Missing 'permissions' field in one of the resources.");
-        return messages;
-      }
-    }
-  }
-  
+  messages = jsonValidator.validateDocument(securityRole);    
   return messages;
 };
 

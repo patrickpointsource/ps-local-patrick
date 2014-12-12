@@ -5,9 +5,10 @@
 	"properties": {
 		"_id": {"type": "string"},
 		"_rev": {"type": "string"},
+		"_deleted": {"type":"boolean"},
 		"etag": {"type": ["string", "number"]},
 		"form": {"type": "string"},
-		"date": {"type": "string"},
+		"date": {"type": "string", "format": "date-time"},
 		"description": {"type": "string"},
 		"editMode": {"type": "boolean"},
 		"hours": {"type": "number"},

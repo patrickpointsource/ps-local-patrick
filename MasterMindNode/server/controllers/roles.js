@@ -3,7 +3,7 @@
 var dataAccess = require('../data/dataAccess');
 var util = require('../util/util');
 var _ = require('underscore');
-var validation = require( '../data/validation.js' );
+//12/11/14 MM var validation = require( '../data/validation.js' );
 
 module.exports.listRoles = function(q, callback) {
     dataAccess.listRoles(q, function(err, body){
@@ -19,16 +19,16 @@ module.exports.listRoles = function(q, callback) {
 
 module.exports.insertRole = function(obj, callback) {
     
-    var validationMessages = validation.validate(obj, dataAccess.ROLES_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.ROLES_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM       return;
+	//12/11/14 MM     }
     
     dataAccess.insertItem(obj._id, obj, dataAccess.ROLES_KEY, function(err, body){
         if (err) {
             console.log(err);
-            callback('error loading roles', null);
+            callback('error loading roles:' + JSON.stringify(err), null);
         } else {
             callback(null, body);
         }
@@ -39,7 +39,7 @@ module.exports.udpateRole = function(id, obj, callback) {
     dataAccess.updateItem(id, obj, dataAccess.ROLES_KEY, function(err, body){
         if (err) {
             console.log(err);
-            callback('error update role', null);
+            callback('error update role:' + JSON.stringify(err), null);
         } else {
             callback(null, _.extend(obj, body));
         }

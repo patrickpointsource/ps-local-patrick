@@ -3,7 +3,7 @@
 var _ = require('underscore');
 
 var dataAccess = require('../data/dataAccess');
-var validation = require( '../data/validation.js' );
+//var validation = require( '../data/validation.js' );
 
 module.exports.listSecurityRoles = function(q, callback) {
     dataAccess.listSecurityRoles(q, function(err, body){
@@ -18,7 +18,7 @@ module.exports.listSecurityRoles = function(q, callback) {
 };
 
 module.exports.insertSecurityRole = function(obj, callback) {
-    
+
 	if(obj._id) {
 		var tmpId;
 		
@@ -33,17 +33,18 @@ module.exports.insertSecurityRole = function(obj, callback) {
 		obj.resource = tmpId;
 		obj.about = tmpId;
 	}
+
 	
-    var validationMessages = validation.validate(obj, dataAccess.SECURITY_ROLES_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.SECURITY_ROLES_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM       return;
+	//12/11/14 MM     }
     
     dataAccess.insertItem(obj._id, obj, dataAccess.SECURITY_ROLES_KEY, function(err, body){
         if (err) {
             console.log(err);
-            callback('error loading security roles', null);
+            callback('error loading security roles:' + JSON.stringify(err), null);
         } else {
             callback(null, body);
         }

@@ -1,7 +1,7 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
-var validation = require( '../data/validation.js' );
+//12/11/14 MM var validation = require( '../data/validation.js' );
 var _ = require( 'underscore' );
 
 module.exports.listUserRoles = function(q, fields, callback) {
@@ -18,19 +18,18 @@ module.exports.listUserRoles = function(q, fields, callback) {
 
 module.exports.insertUserRoles = function(obj, callback) {
     
-    var validationMessages = validation.validate(obj, dataAccess.USER_ROLES_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.USER_ROLES_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM       return;
+	//12/11/14 MM     }
     
     dataAccess.insertItem(obj._id, obj, dataAccess.USER_ROLES_KEY, function(err, body){
         if (err) {
             console.log(err);
-            callback('error loading user roles: ' + err, null);
+            callback('error inserting user roles: ' + JSON.stringify(err), null);
         } else {
             obj._id = body.id;
-            
             callback(null, _.extend(obj, body));
         }
     });

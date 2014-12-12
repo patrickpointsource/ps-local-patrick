@@ -3,7 +3,7 @@
 var dataAccess = require('../data/dataAccess');
 var emailSender = require('../util/emailSender');
 var smtpHelper = require('../util/smtpHelper');
-var validation = require( '../data/validation.js' );
+//12/11/14 MM var validation = require( '../data/validation.js' );
 var configProperties = require('../../config.json');
 var os = require('os');
 
@@ -32,11 +32,10 @@ module.exports.listNotificationsByPerson = function(person, fields, callback) {
 
 module.exports.insertNotification = function(obj, callback) {
     
-    var validationMessages = validation.validate(obj, dataAccess.NOTIFICATIONS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.NOTIFICATIONS_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM     }
     
     dataAccess.insertItem(obj._id, obj, dataAccess.NOTIFICATIONS_KEY, function(err, body){
         if (err) {

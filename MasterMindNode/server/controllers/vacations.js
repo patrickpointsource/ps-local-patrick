@@ -1,7 +1,7 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
-var validation = require( '../data/validation.js' );
+//12/11/14 MM var validation = require( '../data/validation.js' );
 
 module.exports.listVacations = function(q, callback) {
     dataAccess.listVacations(q, function(err, body){
@@ -49,16 +49,16 @@ module.exports.listRequests = function(manager, statuses, startDate, endDate, fi
 
 module.exports.insertVacation = function(obj, callback) {
     
-    var validationMessages = validation.validate(obj, dataAccess.VACATIONS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.VACATIONS_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM       return;
+	//12/11/14 MM     }
     
     dataAccess.insertItem(obj._id, obj, dataAccess.VACATIONS_KEY, function(err, body){
         if (err) {
             console.log(err);
-            callback('error insert vacation', null);
+            callback('error insert vacation:' + JSON.stringify(err), null);
         } else {
             callback(null, body);
         }

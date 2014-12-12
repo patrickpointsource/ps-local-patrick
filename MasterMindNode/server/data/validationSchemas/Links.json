@@ -2,14 +2,14 @@
 	"type":"object",
 	"$schema": "http://json-schema.org/draft-04/schema",
 	"id": "Links",
-	"required":true,
 	"properties":{
 		"_id": {"type":"string"},
 		"_rev": {"type":"string"},
+		"_deleted": {"type":"boolean"},
 		"etag": {"type": ["string", "number"]},
-		"form": {"type":"string"},
-		"label": {"type":"string"},
-		"url": {"type":"string"},
+		"form": {"enum": ["Links"]},
+		"url": {"type": "string"},
+		"label": {"type": "string"},
 		"project": { "$ref" : "#/definitions/resource"},
 		"members": {
 			"type": "array",
@@ -27,7 +27,8 @@
 					"details": { "$ref" : "#/definitions/resource"},
 					"type": {"type": "string"},
 					"dashboard": { "$ref" : "#/definitions/resource"}
-				}
+				},
+				"required": ["label", "url"]
 			}
 		}
 	},
@@ -41,5 +42,5 @@
 			"required": ["resource"]
 		}
 	},	
-	"required": ["form", "label", "url", "project"]
+	"required": ["form", "project"]
 }

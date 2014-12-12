@@ -1,7 +1,7 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
-var validation = require( '../data/validation.js' );
+//12/11/14 MM var validation = require( '../data/validation.js' );
 
 module.exports.listLinks = function(q, callback) {
     dataAccess.listLinks(q, function(err, body){
@@ -17,11 +17,10 @@ module.exports.listLinks = function(q, callback) {
 
 module.exports.insertLink = function(obj, callback) {
     
-    var validationMessages = validation.validate(obj, dataAccess.LINKS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.LINKS_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM     }
     
     dataAccess.insertItem(obj._id, obj, dataAccess.LINKS_KEY, function(err, body){
         if (err) {

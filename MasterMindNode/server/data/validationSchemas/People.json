@@ -5,8 +5,9 @@
 	"properties":{
 		"_id": {"type": "string"},
 		"_rev": {"type": "string"},
+		"_deleted": {"type":"boolean"},
 		"etag": {"type": ["string", "number"]},
-		"form": {"type": "string"},
+		"form": {"enum": ["People"]},
 
 		"about": {"type":"string"},
 		"accounts": {
@@ -108,7 +109,7 @@
 			}
 		}
 	},
-	"required": ["form", "name"],
+	"required": ["form", "name", "about"],
 	"definitions": {
 		"resource": {
 			"type":"object",

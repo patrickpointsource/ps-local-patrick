@@ -325,19 +325,6 @@ module.exports = function(params) {
 	    });
 	};
 	
-	var listRoles = function(callback) {
-	    cloudantGetAllViewDocument('views', 'Roles', {include_docs : true}, function(err, body){
-	         callback(err, prepareResponse(body, 'roles', 'doc'));
-	    });
-	};
-	
-	var listSecurityRoles = function(callback) {
-	    cloudantGetAllViewDocument('views', 'SecurityRoles', {include_docs : true}, function(err, body){
-	         callback(err, prepareResponse(body, 'security_roles', 'doc'));
-	    });
-	};
-	
-	
 	module.exports.listUserRoles = function(callback) {
 	    cloudantGetAllViewDocument('views', 'UserRoles', {include_docs : true}, function(err, body){
 	         callback(err, prepareResponse(body, 'user_roles', 'doc'));
@@ -385,3 +372,4 @@ module.exports = function(params) {
 	module.exports.deleteItem = deleteItem;
 	module.exports.getItem = getItem;
 };
+

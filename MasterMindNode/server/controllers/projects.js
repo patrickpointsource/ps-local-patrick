@@ -4,7 +4,7 @@ var dataAccess = require('../data/dataAccess');
 var people = require('./people.js');
 var util = require('../util/util');
 var _ = require( 'underscore' );
-var validation = require( '../data/validation.js' );
+//12/11/14 MM var validation = require( '../data/validation.js' );
 var assignments = require( '../controllers/assignments.js' );
 
 var listProjects = function(query, fields, callback) {
@@ -264,11 +264,11 @@ var deleteProjectLink = function(projectId, linkIndex, callback) {
 
 var insertProject = function(obj, callback) {
 	
-	var validationMessages = validation.validate(obj, dataAccess.PROJECTS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	//12/11/14 MM 	var validationMessages = validation.validate(obj, dataAccess.PROJECTS_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM       return;
+	//12/11/14 MM     }
 	
 	// get name for executiveSponsor person
 	people.getNameByResource(obj.executiveSponsor.resource, function (err, executiveSponsorName) {		
@@ -314,18 +314,25 @@ var insertProject = function(obj, callback) {
 	
 };
 
-var insertProjectLink = function(projectId, linkIndex, obj, callback) {
-    var validationMessages = validation.validate(obj, dataAccess.LINKS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+var insertProjectLink = function(projectId, linkId, obj, callback) {
+	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.LINKS_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM       return;
+	//12/11/14 MM     }
     
 	listLinksByProject(projectId, function (err, result){
 		if (err) {
             console.log(err);
-            callback('error list project links', null);
+            callback('error insert project link:' + JSON.stringify(err), null);
 		} else {
+			var linksObject = result.members[0];
+			_.each(linksObject.members, function(link, initIndex) {
+				if (link.index == linkIndex) {
+					linksObject.members[initIndex] = obj;
+				}
+			});
+			
 			var linksObject = result.members[0];
 			_.each(linksObject.members, function(link, initIndex) {
 				if (link.index == linkIndex) {

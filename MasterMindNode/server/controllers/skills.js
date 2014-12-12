@@ -16,11 +16,11 @@ module.exports.listSkills = function(q, callback) {
 
 module.exports.insertSkill = function(obj, callback) {
     
-    var validationMessages = validation.validate(obj, dataAccess.SKILLS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
+	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.SKILLS_KEY);
+	//12/11/14 MM     if(validationMessages.length > 0) {
+	//12/11/14 MM       callback( validationMessages.join(', '), {} );
+	//12/11/14 MM       return;
+	//12/11/14 MM     }
     
     dataAccess.insertItem(obj._id, obj, dataAccess.SKILLS_KEY, function(err, body){
         if (err) {

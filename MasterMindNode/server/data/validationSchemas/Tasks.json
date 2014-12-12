@@ -2,12 +2,12 @@
 	"$schema": "http://json-schema.org/draft-04/schema",
 	"id": "Tasks",
 	"type": "object",
-	"required": true,
 	"properties": {
 		"_id": {"type":"string"},
 		"_rev": {"type":"string"},
+		"_deleted": {"type":"boolean"},
 		"etag": {"type": ["string", "number"]},
-		"form": {"type":"string"},
+		"form": {"enum": ["Tasks"]},
 		"name": {"type": "string"},
 		"created": {"type": "string"}
 	},
