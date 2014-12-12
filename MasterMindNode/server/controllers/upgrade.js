@@ -335,7 +335,8 @@ module.exports = function(params) {
 							_.each(initialMembers, function(link) {
 								var updatedLink = {url : link.url, label : link.label, icon : link.icon, index : index++, 
 										title : link.title, homePage : link.homePage, currentPlans : link.currentPlans, 
-										type : link.type, resource : link.resource, dashboard : link.dashboard };
+										type : link.type, resource : link.resource, dashboard : link.dashboard, details : link.details };
+								
 								members.push(updatedLink);
 								if (link._id && link._rev) {
 									dataAccess.deleteItem(link._id, link._rev, 'Links', function (err, body) {
