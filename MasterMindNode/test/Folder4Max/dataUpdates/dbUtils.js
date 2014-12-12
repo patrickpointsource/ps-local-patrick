@@ -10,7 +10,7 @@ var dev = {"account": "psdev1", "key" : "tathendersheaderefortati", "password": 
 var stage = {"account": "psprod1", "key" : "istraustandivillownedome", "password": "uuVXxmARXdpLYkU7X1T0yS7D"};
 var prod = {"account": "psprod1", "key" : "beentorestoldiseandeamed", "password": "mXuflwvgb3G003jjKnraqasb"};
 
-var env = "dev";
+var env = "stage";
 
 switch (env) {
 	case "dev":
@@ -27,6 +27,12 @@ switch (env) {
 		dbName = "mm_db_prod";
 		dbConnParams = prod;		
 		break;
+
+	case "bogdan":
+		dbName = "mm_db_test_bogdan";
+		dbConnParams = dev;
+		break;
+
 }
 
 var Cloudant = require("cloudant")(dbConnParams); 
@@ -198,12 +204,21 @@ var cloudantQuerySearch = function(searchQuery, callback) {
 
 
 
-var deleteAllViewDocs = function() {
+var deleteAllViewDocs = function(ddoc, viewName) {
 	var bulkDocs = [];
 	var doc;
 	var db = Cloudant.db.use(dbName);
 	
-	cloudantGetAllViewDocument('Admin', 'docs2delete', {"include_docs" : true }, function(err, body) {
+	if (!ddoc) {
+		ddoc = "Admin";
+	}
+	
+	if (!viewName) {
+		viewName = "docs2delete";
+	}
+	
+	console.log("Start deletion of all docs in view " + ddoc + "/" + viewName + ".");
+	cloudantGetAllViewDocument(ddoc, viewName, {"include_docs" : true }, function(err, body) {
 		if (err) {console.log(err);}
 		else {
 			body.rows.forEach( function (row){
@@ -235,5 +250,6 @@ module.exports.cloudantGetDocumentsByKeys = cloudantGetDocumentsByKeys;
 module.exports.cloudantGetDocumentsByRangeKeys = cloudantGetDocumentsByRangeKeys;
 module.exports.cloudantQuerySearch = cloudantQuerySearch;
 
-//deleteAllViewDocs();
+//deleteAllViewDocs(null, null);
+//deleteAllViewDocs('views', 'Hours');
 //cloudantQuerySearch({});

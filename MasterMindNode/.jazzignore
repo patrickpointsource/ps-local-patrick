@@ -31,4 +31,6 @@ core.ignore.recursive= \
 	{node_modules} 
 
 core.ignore= \
-	{bin} 
+	{bin} \
+	{output.err} \
+	{output.msg} 

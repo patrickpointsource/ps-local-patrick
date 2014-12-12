@@ -20,11 +20,46 @@ tv4.addSchema(require('../../../server/data/validationSchemas/UserRoles.json'));
 tv4.addSchema(require('../../../server/data/validationSchemas/Roles.json'));
 tv4.addSchema(require('../../../server/data/validationSchemas/Projects.json'));
 tv4.addSchema(require('../../../server/data/validationSchemas/People.json'));
+tv4.addSchema(require('../../../server/data/validationSchemas/Configuration.json'));
+
+tv4.defineError('EMPTY_STRING_VALUE', 10002, 'Empty string is not allowed as a value: Schema: {param1}');
+tv4.defineError('PROHIBITED_VALUE', 10003, 'Value "{param1}" is not allowed. ');
+
+tv4.addFormat('date-time', function (data, schema) {
+	return(typeof data === "string" && isValidDate(data))?(null):({message: 'Invalid date-time: ' + data});
+});
+
+
+tv4.defineKeyword('can_be_empty_string', function(data, value, schema) {
+	if (value === "false"){
+		if(typeof(data) === "string" && data.trim().length == 0){
+			return {code: tv4.errorCodes.EMPTY_STRING_VALUE, message: {param1: schema}};
+		}
+	}
+	return null;
+});
+
+
+tv4.defineKeyword('prohibited_values', function(data, value, schema) {
+	var valid = null;
+	
+	value.some( function (v) {
+		if (v == data.trim()) {
+			valid = {code: tv4.errorCodes.PROHIBITED_VALUE, message: {param1: data, param2: schema}};
+			return true;
+		}
+	});
+	return (valid);
+});
+
+var isValidDate = function(string_datetime) {
+	return (new Date(string_datetime) !== "Invalid Date" && !isNaN(new Date(string_datetime)) );
+};
 
 
 var validateDocumentCollection = function(formName) {
-	console.log("Processing form " + formName);
-	console.log("Ban unknown properties:" + banUnknownProperties);
+	console.log("\n\nProcessing form " + formName);
+	//console.log("Ban unknown properties:" + banUnknownProperties);
 	var errs = [];
 	var uniqueErrors = [];
 	
@@ -38,7 +73,7 @@ var validateDocumentCollection = function(formName) {
 				var doc = d.doc;
 				//console.log(doc);
 //				doc = d.doc;
-				errs = validateDocumentSchema(doc);
+				errs = validateDocument(doc);
 				errs.forEach(function (err) {
 					if (uniqueErrors.indexOf(err) == -1){
 						uniqueErrors.push(err);	
@@ -47,13 +82,13 @@ var validateDocumentCollection = function(formName) {
 			});	
 		};
 		
-		console.log("\n\nUnique Errors:");
+		console.log("\n\nUnique Errors:" + formName);
 		uniqueErrors.forEach(function(e) {console.log(e);});
 	});	
 };
 
 
-var validateDocumentSchema = function(doc) {
+var validateDocument = function(doc) {
 	var schema = null;
 	var message;
 	var messages = [];
@@ -61,7 +96,7 @@ var validateDocumentSchema = function(doc) {
 	schema = tv4.getSchema(doc.form);
 		
 	if (schema) {
-		console.log("\nDocument _id:" + doc._id);
+		//console.log("\nDocument _id:" + doc._id);
 		var validationResults = tv4.validateMultiple(doc, schema, false, banUnknownProperties);
 		if (validationResults.errors.length > 0){
 			console.log("\nDocument _id:" + doc._id + " : Total " + validationResults.errors.length + " errors.");
@@ -86,7 +121,7 @@ var validateDocumentSchema = function(doc) {
  * 
  */
 var fixData = function(doc, errs) {
-	//console.log("fixData Start.");
+	console.log("fixData Start.");
 	var andSave = false;
 	
 	fixDataFields(doc, errs).then( function(updatedDoc) 
@@ -247,6 +282,33 @@ var fixDataFields = function(doc, errs) {
 			};
 			break;
 		
+		// LINKS
+		case "links":
+			switch (e.code){
+			case 0:			
+				switch (e.dataPath){
+				case ("/person/name"):
+					if (e.params.type === 'object') {
+						newValue = doc.person.name.fullName;
+						delete doc.person.name;
+						doc.person.name = newValue;
+					}
+					resolvedErrors = resolvedErrors + 1;
+					fixDataIsResolved(doc, totalErrors, resolvedErrors, deferred);
+					break;
+
+				default:
+					resolvedErrors = resolvedErrors + 1;
+					fixDataIsResolved(doc, totalErrors, resolvedErrors, deferred);	
+				};
+				break;
+				
+			default:
+				resolvedErrors = resolvedErrors + 1;
+				fixDataIsResolved(doc, totalErrors, resolvedErrors, deferred);	
+			}
+			break;
+			
 		//	ASSIGNMENTS OBJECT
 		case "assignments":
 			switch (e.code){
@@ -256,11 +318,25 @@ var fixDataFields = function(doc, errs) {
 					tmpNode = doc.members[tmpArr[2]];
 					delete tmpNode.about;
 					delete tmpNode._id;
-					resolvedErrors = resolvedErrors + 1;
-					fixDataIsResolved(doc, totalErrors, resolvedErrors, deferred);
 				}
+				
+				if ((tmpArr.length == 5) && (tmpArr[1] == "members") && (tmpArr[3] == "project")){
+					tmpNode = doc.members[tmpArr[2]].project;
+					delete tmpNode[tmpArr[4]];
+				}
+
+				if ((tmpArr.length == 5) && (tmpArr[1] == "members") && (tmpArr[3] == "person") && (tmpArr[4]=="thumbnail")){
+					tmpNode = doc.members[tmpArr[2]].person;
+					delete tmpNode[tmpArr[4]];
+				}
+				
+				resolvedErrors = resolvedErrors + 1;
+				fixDataIsResolved(doc, totalErrors, resolvedErrors, deferred);
 				break;
-			}	
+			default:
+				resolvedErrors = resolvedErrors + 1;
+				fixDataIsResolved(doc, totalErrors, resolvedErrors, deferred);	
+			}
 			break;
 		
 		//	PROJECTS OBJECT
@@ -337,6 +413,9 @@ var fixDataFields = function(doc, errs) {
 				if ((tmpArr.length >= 4) && (tmpArr[1] == "roles") && ((tmpArr[3] == "assignees") || (tmpArr[3] == "assignee") || (tmpArr[3] == "originalAssignees"))){
 					delete doc.roles[tmpArr[2]][tmpArr[3]];
 				}
+				
+				
+				
 				resolvedErrors = resolvedErrors + 1;
 				fixDataIsResolved(doc, totalErrors, resolvedErrors, deferred);					
 				break;
@@ -408,34 +487,58 @@ test();
 */
 
 /*
-var forms = ['Assignments', 'Roles', 'SecurityRoles', 'Tasks', 'Hours', 'Links', 'Notifications', 'People', 'Projects', 'UserRoles', 'Vacations'];
+var forms = [
+             'Configuration', 'SecurityRoles','Roles', 'Tasks', 'UserRoles', 'Notifications', 'Vacations',  
+             'Links', 
+             'Assignments', 'Hours', 'People', 'Projects'];
 forms.forEach(function(f) {
-	validateDocumentCollection('Tasks');
+	validateDocumentCollection(f);
 });
 */
 
 // STAGE(PROD)
-//+S validateDocumentCollection('Assignments');// synced with validation.js
-//+S validateDocumentCollection('SecurityRoles');
-//-S validateDocumentCollection('Links');
-//+S validateDocumentCollection('Notifications');
-//+S validateDocumentCollection('Tasks');
-//+S validateDocumentCollection('Vacations');
-//-S validateDocumentCollection('UserRoles');
-//+S validateDocumentCollection('Roles');
-//+D+S validateDocumentCollection('Hours');	// synced with validation.js 
-//+D+S validateDocumentCollection('Projects');
-//-S 
-validateDocumentCollection('People');
-
-
+//+D+S validateDocumentCollection('Assignments');// synced with validation.js
+/* 12/02 DEV
+ * New fields that are not in schema: members[]/project/_id, _rev, about
+ */
+//+D+S validateDocumentCollection('SecurityRoles');
+//+D+S validateDocumentCollection('Notifications');
+//+D+S validateDocumentCollection('Tasks');
+//+D+S validateDocumentCollection('Vacations');
+//+D+S validateDocumentCollection('Roles');
+//+D+S validateDocumentCollection('Hours');	
 /*
-//Projects
-//dbAccess.getItem("52aba189e4b0fd2a8d13002e", function (err, doc) {
-dbAccess.getItem("52b06ca5e4b02565de24922b", function (err, doc) {
+ * 11/20 latest code stores somewhere person.name as an object instead of string.
+ * 12/02 new fields not in schema: accounts[]/id, etag, addresses, externalIds, organizations
+ */
+//+D+S 
+validateDocumentCollection('Projects');
+/*
+ * projects.roles.type vmesto "name" ispol'zyetsya "id".
+ * 11/20 vse ostalnoe jisto.
+ * 12/02 executiveSponsor as object
+ * 		created.name as object
+ * 		modified.name as object
+ * 		roles[]/originalAssignees
+ * 
+ */
+
+//+D+S validateDocumentCollection('UserRoles'); // sometimes we have records without userId/groupId
+
+//+D-S validateDocumentCollection('Links');
+/* Error: 302 Missing required property: label : Field:
+ * Error: 302 Missing required property: url : Field:
+ */
+//-D-S validateDocumentCollection('People');
+
+
+//Roles
+/*
+dbAccess.getItem("fa96e2c8d21b7a93ef0633e1dd1b4964", function (err, doc) {
+//dbAccess.getItem("52b06ca5e4b02565de24922b", function (err, doc) {
 	if (err) {console.log(err);};
 	console.log("\nOriginal Doc");
 	console.log(doc);
-	validateDocumentSchema(doc);	
+	validateDocument(doc);	
 });
 */
