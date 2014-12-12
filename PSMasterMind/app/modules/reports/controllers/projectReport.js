@@ -4,8 +4,8 @@
  * Controller for people report.
  */
 
-angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'Resources', 
-function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, Resources ) {
+angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'AssignmentService', 'ProjectsService', 'Resources', 
+function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, AssignmentService, ProjectsService, Resources ) {
 
   $scope.choiceLocationLabel = "Select one or more location";
   
@@ -130,6 +130,11 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, R
       $location.hash(id);
       $anchorScroll();
    };
+   
+   ProjectsService.getAllProjects(function (result)
+   {
+	   $scope.projectList = result.data;
+   });
    
 	$scope.fields = {
 		assignmentHours: {},

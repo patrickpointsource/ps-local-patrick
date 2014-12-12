@@ -43,7 +43,8 @@
 			</div>
 			<br />
 			<div class="row groups">
-				<select class="form-control" multiple="multiple"></select>
+				<select class="form-control" style="height: 235px;" ng-model="selectedProjects" required ng-options="p as p.name for p in projectList"
+					ng-multiple="true" multiple="multiple" size="10"></select>
 			</div>
 		</div>
 	</div>
