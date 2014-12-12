@@ -71,17 +71,39 @@ var getSummarySection = function(data, params) {
 
 // Not implemented (fake data)
 var getPeopleDetailsSection = function(data, params) {
-  return {
-    peopleOnClient: 35,
-    peopleOnInvestment: 30,
-    totalPeople: 65,
-    
-    utilizationByRole: [
-      { name: "Software Engineer", value: "84" },
-      { name: "Senior Software Architect", value: "22" },
-      { name: "Senior Software Engineer", value: "78" },
-    ]
-  };
+
+	var totalPeople = data.people.length;
+	var peopleOnClient = [];
+	var peopleOnInvestment = [];
+	var utilizationByRole = [];
+	
+	for (var i in data.assignments) {
+		var members = data.assignments[i].members;
+		var project = _.findWhere(data.projects, {resource: data.assignments[i].project.resource});
+		if (project) {
+			for (var j in members) {
+				var person = members[j].person;
+				if ( (project.type == "paid" || project.type == "poc") && !_.contains(peopleOnClient, person.resource) )
+					peopleOnClient.push(person.resource);
+				if ( project.type == "invest" && !_.contains(peopleOnInvestment, person.resource) )
+					peopleOnInvestment.push(person.resource);
+			}
+		}
+	}
+	
+	for (var i in data.roles) {
+		var role = data.roles[i];
+		if ( role.utilizationRate && role.utilizationRate > 0 &&
+			(role.title.indexOf("Engineer") > 0 || role.title.indexOf("Architect") > 0))
+			utilizationByRole.push({ name: role.title, value: role.utilizationRate });
+	}
+		
+	return {
+		peopleOnClient: peopleOnClient.length,
+		peopleOnInvestment: peopleOnInvestment.length,
+		totalPeople: totalPeople,
+		utilizationByRole: utilizationByRole
+	};
 };
 
 // Not implemented (fake data)
