@@ -314,7 +314,8 @@ var insertProject = function(obj, callback) {
 	
 };
 
-var insertProjectLink = function(projectId, linkId, obj, callback) {
+var insertProjectLink = function(projectId, linkIndex, obj, callback) {
+	
 	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.LINKS_KEY);
 	//12/11/14 MM     if(validationMessages.length > 0) {
 	//12/11/14 MM       callback( validationMessages.join(', '), {} );
@@ -325,14 +326,7 @@ var insertProjectLink = function(projectId, linkId, obj, callback) {
 		if (err) {
             console.log(err);
             callback('error insert project link:' + JSON.stringify(err), null);
-		} else {
-			var linksObject = result.members[0];
-			_.each(linksObject.members, function(link, initIndex) {
-				if (link.index == linkIndex) {
-					linksObject.members[initIndex] = obj;
-				}
-			});
-			
+		} else {			
 			var linksObject = result.members[0];
 			_.each(linksObject.members, function(link, initIndex) {
 				if (link.index == linkIndex) {
