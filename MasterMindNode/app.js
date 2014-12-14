@@ -67,6 +67,7 @@ var securityRoles = require('./server/routes/securityRoles');
 var userRoles = require('./server/routes/userRoles');
 var upgrade = require('./server/routes/upgrade');
 var reports = require('./server/routes/reports');
+var jazzHub = require('./server/routes/jazzHub');
 
 var security = require('./server/util/security.js');
 var reminder = require('./server/util/reminder.js');
@@ -265,6 +266,7 @@ if (!useAppNames) {
     app.use('/userRoles', userRoles);
     app.use('/upgrade', upgrade);
     app.use('/reports', reports);
+    app.use('/jazzHub', jazzHub);
     
     app.get( '/resetuser', resetUser);
 } else {
@@ -292,6 +294,7 @@ if (!useAppNames) {
         app.use('/' + appNames[i] + '/userRoles', userRoles);
         app.use('/' + appNames[i] + '/upgrade', upgrade);
         app.use('/' + appNames[i] + '/reports', reports);
+        app.use('/' + appNames[i] + '/jazzHub', jazzHub);
         
         app.get( '/' + appNames[i] + '/resetuser', resetUser);
     }
