@@ -27,7 +27,7 @@ var getJazzHubProjects = function (serverUrl, userId, password, callback ) {
 					  callback(err, null);
 				  } else {
 					  var values = result[SOAPENV_ENVELOPE_TAG][SOAPENV_BODY_TAG][0][RESPONSE_TAG][0][RETURN_VALUE_TAG][0][VALUES_TAG];
-					  callback(null, generateProjectsFromValues(values));
+					  callback(null, generateProjectsFromValues(values, serverUrl));
 				  }
 				});
 			  
@@ -39,7 +39,7 @@ var getJazzHubProjects = function (serverUrl, userId, password, callback ) {
 	
 }
 
-var generateProjectsFromValues = function (values) {
+var generateProjectsFromValues = function (values, serverUrl) {
 	var result = [];
 	_.each(values, function(value) {
 		if (value.myProjectArea && value.myProjectArea == 'true') {
@@ -47,10 +47,11 @@ var generateProjectsFromValues = function (values) {
 			var webUrl = value.webUrl;
 			var name = value.name.toString();
 			var project = {};
-			project.name = name;
+			project.title = name;
 			project.details = { resource : webUrl + "/process/project-areas/" + itemId };
 			project.currentPlans = { resource : webUrl + "#action=com.ibm.team.apt.search&predef=current" };
 			project.dashboard = { resource : webUrl + "#action=com.ibm.team.dashboard.viewDashboard" };
+			project.resource = serverUrl + "oslc/contexts/" + itemId + "/workitems/services.xml";
 			var parts = name.split("|");
 			if (parts.length >= 2) {
 				var userPart = parts[0].trim();
