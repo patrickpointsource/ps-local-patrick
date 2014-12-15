@@ -112,8 +112,12 @@ var addProjectLink = function(id, obj, callback) {
 				linksObject = {project : { resource : "projects/" + id }};
 				linksObject.members = [];
 			}
-			linksObject.members.push({url : obj.url, label : obj.label, icon : obj.icon, index : index});
 			
+			var link = {url : obj.url, label : obj.label, icon : obj.icon, index : index, 
+					title : obj.title, homePage : obj.homePage, currentPlans : obj.currentPlans, 
+					type : obj.type, resource : obj.resource, dashboard : obj.dashboard, details : obj.details };
+			linksObject.members.push(link);
+
 		    dataAccess.insertItem(linksObject._id, linksObject, dataAccess.LINKS_KEY, function(err, body){
 		        if (err) {
 		            console.log(err);
