@@ -56,7 +56,7 @@ var generateProjectsFromValues = function (values, serverUrl) {
 			if (parts.length >= 2) {
 				var userPart = parts[0].trim();
 				var projPart = parts[1].trim();
-				project.homepage = { resource : "https://hub.jazz.net/project/" + userPart + "/" + projPart };
+				project.homePage = { resource : "https://hub.jazz.net/project/" + userPart + "/" + projPart };
 			}
 			
 			result.push(project);
