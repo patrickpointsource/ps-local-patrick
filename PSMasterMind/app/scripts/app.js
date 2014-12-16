@@ -169,6 +169,10 @@
           url: '/select',
           templateUrl: '/modules/reports/views/projectSelect.html'
         })
+        .state('reports.project.output', {
+          url: '/output',
+          templateUrl: '/modules/reports/views/projectOutput.html'
+        })
       .state('reportsshell', {
           url: '/reportsshell',
           templateUrl: 'modules/reports/views/reportsShell.html',

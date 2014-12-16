@@ -139,6 +139,11 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			$scope.breadCrumpParts.push( "Reports Dashboard" );
 			$scope.breadCrumpParts.push( "Project Report" );
 		}
+		
+		else if( $scope.state.name == 'reports.project.output' ) {
+            $scope.breadCrumpParts.push( "Reports Dashboard" );
+            $scope.breadCrumpParts.push( "Project Report" );
+        }
 
 		else if( $scope.state.name == 'projects.show' || $scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit' ) {
 			$scope.breadCrumpParts = [ 'Projects' ];
