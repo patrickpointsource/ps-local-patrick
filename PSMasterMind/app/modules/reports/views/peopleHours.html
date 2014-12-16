@@ -1,0 +1,29 @@
+<div>
+	<div class="row report-output-row" >
+		<div class="col-xs-12 col-sm-9">
+			<div id="report-output-summary" class="row">
+				<ng-include src="'modules/reports/views/output/peopleHoursSummary.html'"/>
+			</div>
+			<div id="report-output-projections" class="row">
+				<ng-include src="'modules/reports/views/output/peopleHoursDetails.html'"/>
+			</div>
+		</div>
+
+		<div class="col-xs-10 col-sm-3 " >
+			<label>Select export options</label>
+			<div class="reports groups">
+				<label>
+					<input type="checkbox" ng-click="selectExportAllRoles()" ng-model="exportOptions.allRoles" />
+					All hours data </label>
+				<div ng-repeat="peopleByRole in output.peopleDetails.peopleByRoles">
+					<label>
+						<input type="checkbox" ng-click="selectExportRole(peopleByRole.role);" ng-model="peopleByRole.role.isSelected" />
+						{{peopleByRole.role.abbreviation}} </label>
+				</div>
+				<button class="btn btn-report">
+					<a href="{{output.reportData.link}}" download="Custom.csv" > Export to CSV </a>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

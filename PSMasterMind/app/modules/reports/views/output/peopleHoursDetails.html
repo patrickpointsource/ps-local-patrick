@@ -1,0 +1,97 @@
+<div ng-repeat="peopleByRole in output.peopleDetails.peopleByRoles">
+	<div class="report-expand-well">
+
+		<div class="report-expand-well header">
+			<div class="col-xs-10">
+				<h2 style="">{{peopleByRole.role.title}} Hours and Utilization</h2>
+			</div>
+			<div class="col-xs-2">
+				<i ng-hide="peopleByRole.isCollapsed" ng-click="peopleByRole.isCollapsed = !peopleByRole.isCollapsed" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
+				<i ng-show="peopleByRole.isCollapsed" ng-click="peopleByRole.isCollapsed = !peopleByRole.isCollapsed" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
+			</div>
+		</div>
+
+		<div ng-repeat="person in peopleByRole.members" collapse="!peopleByRole.isCollapsed">
+			<div class="report-expand-well">
+				<div class="report-expand-well header header100 person-detail">
+					<div class="col-xs-10">
+						<div class="personPicColumn">
+							<img class="media-object fullProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultProfileImg.png">
+							</img>
+						</div>
+						<div class="person-contact-info">
+							<div class="personDetailName">
+								{{person.primaryRole.name}}
+							</div>
+							<div class="sub-heading">
+								<a href="#{{person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(person, true)}}</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-2">
+						<i ng-hide="person.isCollapsed" ng-click="person.isCollapsed = !person.isCollapsed" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
+						<i ng-show="person.isCollapsed" ng-click="person.isCollapsed = !person.isCollapsed" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
+					</div>
+				</div>
+
+				<div collapse="!person.isCollapsed" >
+					<div class="report-expand-well body body500">
+						<div class="report-output-inside-row no-margin">
+							<div class="col-xs-12 col-sm-2">
+								<label>Capacity</label>
+								<div>
+									{{output.peopleDetails.peopleOnClient}}
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-2">
+								<label>Hours booked</label>
+								<div>
+									{{output.peopleDetails.peopleOnInvestment}}
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-2">
+								<label class="no-margin">Hours Spent</label>
+								<div>
+									{{output.peopleDetails.peopleOnInvestment}}
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-2">
+								<label>Total OOO</label>
+								<div>
+									{{output.peopleDetails.peopleOnInvestment}}
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-2">
+								<label>Total OH</label>
+								<div>
+									{{output.peopleDetails.peopleOnInvestment}}
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-2">
+								<label>Utilization / Goal</label>
+								<div>
+									{{output.peopleDetails.totalPeople}}% /
+									{{output.peopleDetails.totalPeople}}%
+								</div>
+							</div>
+						</div>
+						<div class="report-output-inside-row">
+							<div class="col-xs-12 col-sm-6 ">
+								<label>Actual, Expected, Projected Hours</label>
+								<div class="report-graph-place" style="height: 300px;">
+									Place for graph
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6 ">
+								<label>Percent Hours Across Categories</label>
+								<div class="report-graph-place" style="height: 300px;">
+									Place for graph
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

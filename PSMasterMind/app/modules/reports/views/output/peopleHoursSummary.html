@@ -1,0 +1,73 @@
+<div class="report-output-well well450">
+  <div class="report-output-well header no-underline">
+      <h1>{{output.summary.reportName}}</h1>
+      <h3>Report pulled {{output.summary.createdDate}} at {{output.summary.createdTime}} by {{output.summary.createdBy.name}}</h3>
+  </div>
+  <div class="report-output-well header margin-top-20">
+      <h1>Individual Hours and Utilization</h1>
+  </div>
+  <div class="report-output-well body body100">
+    <div class="report-output-inside-row project-hours-row no-margin">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <label class="width50percent">Report Start Date</label>
+            <div>
+                {{output.summary.reportStartDate}}
+            </div>
+        </div>
+            
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <label class="width50percent">Report End Date</label>
+            <div>
+                {{output.summary.reportEndDate}}
+            </div>
+        </div>
+        
+    </div>
+    <div class="report-output-inside-row project-hours-row no-margin">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <label class="width50percent">Available Hours</label>
+            <div class="big-number">
+                {{output.peopleDetails.availableHours}}
+            </div>
+        </div>
+            
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <label class="width50percent">Total Client/Invest Hours Spent</label>
+            <div class="big-number">
+                {{output.peopleDetails.totalWorkingHours}}
+            </div>
+        </div>
+        
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <label class="width50percent">Total OOO/OH Hours Spent</label>
+            <div class="big-number">
+                {{output.peopleDetails.totalOOOHours}}
+            </div>
+        </div>
+        
+    </div>
+    <div class="report-output-inside-row project-hours-row">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <label class="width50percent">Utilization Client</label>
+            <div class="big-number">
+                {{output.peopleDetails.utilizationClient}}%
+            </div>
+        </div>
+            
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <label class="width50percent">Utilization Invest</label>
+            <div class="big-number">
+                {{output.peopleDetails.utilizationInvest}}%
+            </div>
+        </div>
+        
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <label class="width50percent">Utilization Total</label>
+            <div class="big-number">
+                {{output.peopleDetails.utilizationTotal}}%
+            </div>
+        </div>
+        
+    </div>
+  </div>
+</div>

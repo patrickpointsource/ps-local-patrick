@@ -76,6 +76,7 @@ var getPeopleDetailsSection = function(data, params) {
 	var peopleOnClient = [];
 	var peopleOnInvestment = [];
 	var utilizationByRole = [];
+	var peopleByRoles = {};
 	
 	for (var i in data.assignments) {
 		var members = data.assignments[i].members;
@@ -91,18 +92,39 @@ var getPeopleDetailsSection = function(data, params) {
 		}
 	}
 	
-	for (var i in data.roles) {
-		var role = data.roles[i];
-		if ( role.utilizationRate && role.utilizationRate > 0 &&
-			(role.title.indexOf("Engineer") > 0 || role.title.indexOf("Architect") > 0))
+	for (var i in params.roles) {		
+		var role = _.findWhere(data.roles, { abbreviation: params.roles[i] }) ;
+		if ( role.utilizationRate )
 			utilizationByRole.push({ name: role.title, value: role.utilizationRate });
-	}
+		
+		for (var i in data.people) {
+			var person = data.people[i];
+			if ( person.primaryRole.resource == role.resource ) {
+				if ( peopleByRoles[person.primaryRole.resource] )
+					peopleByRoles[person.primaryRole.resource].members
+							.push(person);
+				else {
+					peopleByRoles[person.primaryRole.resource] = {
+						role: role,
+						members : [ person ]
+					};
+				}
+			}
+		}
+	}	
 		
 	return {
+		peopleByRoles: peopleByRoles,
 		peopleOnClient: peopleOnClient.length,
 		peopleOnInvestment: peopleOnInvestment.length,
 		totalPeople: totalPeople,
-		utilizationByRole: utilizationByRole
+		utilizationByRole: utilizationByRole,
+		availableHours: 10920,
+		totalWorkingHours: 8800,
+		totalOOOHours: 181,
+		utilizationClient: 68,
+		utilizationInvest: 73,
+		utilizationTotal: 70
 	};
 };
 

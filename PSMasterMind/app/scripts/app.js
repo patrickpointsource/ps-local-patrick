@@ -161,6 +161,10 @@
           url: '/output',
           templateUrl: '/modules/reports/views/reportsPeopleOutput.html'
         })
+        .state('reports.people.hours', {
+          url: '/output/hours',
+          templateUrl: '/modules/reports/views/peopleHours.html'
+        })
         .state('reports.project.select', {
           url: '/select',
           templateUrl: '/modules/reports/views/projectSelect.html'

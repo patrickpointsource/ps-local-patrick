@@ -22,6 +22,10 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
   
   $scope.output.reportData = {};
   
+  $scope.exportOptions = {
+		  allRoles: false
+  };
+  
   $scope.scrollTo = function(id) {
       $location.hash(id);
       $anchorScroll();
@@ -37,6 +41,10 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		"marketing": [ "MKT", "DMDE", "MS" ],
 		"sales": [ "SALES" ]
 	};
+   
+   $scope.getPersonName = function(person, isSimply, isFirst) {
+	   return Util.getPersonName(person, isSimply, isFirst);
+   };
    
    $scope.filterRolesByGroup = function (groups)
    {
@@ -83,6 +91,27 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		locations: {},
 		output: "csv",
 		roles: {}
+	};
+	
+	$scope.selectExportRole = function ( role )
+	{
+		var allSelected = true;
+		role.isSelected = !role.isSelected;
+		for (var i in $scope.output.peopleDetails.peopleByRoles) {
+			if ( !$scope.output.peopleDetails.peopleByRoles[i].role.isSelected ) {
+				allSelected = false;
+				break;
+			}
+		}
+		$scope.exportOptions.allRoles = allSelected;
+	};
+	
+	$scope.selectExportAllRoles = function ( )
+	{
+		var selected = !$scope.exportOptions.allRoles;
+		for (var i in $scope.output.peopleDetails.peopleByRoles) {
+			$scope.output.peopleDetails.peopleByRoles[i].role.isSelected = selected;
+		}
 	};
 	
 	$scope.selectLocationParent = function (location)
@@ -237,7 +266,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		for (var prop in $scope.params.roles)
 			if ($scope.params.roles[prop])
 				input.roles.push(prop);
-		
+
 		$scope.startGenerationTimers();
 		console.log(JSON.stringify(input));
 		console.log( 'Report generation started' );
@@ -278,7 +307,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				    console.log("Generated report type: " + result.data.type);
 				    if(result && result.data && result.data.type) {
 				      $scope.onReportGenerated( result.data );
-				      Resources.refresh("/reports/cancel");
 				    } else {
 				      console.log("Server returned broken data for report.");
 				    }
