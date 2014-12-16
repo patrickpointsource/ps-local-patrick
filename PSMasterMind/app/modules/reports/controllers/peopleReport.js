@@ -9,8 +9,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 
   $scope.choiceLocationLabel = "Select one or more location";
   
-  $scope.selectedGroups = [ "DEVELOPMENT", "ARCHITECTS" ];
-  
   $scope.reportServicePingInterval = 5000;
   
   $scope.output = {};

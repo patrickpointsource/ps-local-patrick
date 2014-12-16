@@ -45,7 +45,10 @@
                     <div class="report-output-well body">
                         <div class="col-xs-11 report-output-well-footer">
                         <span>Click the arrow to view individual hours and utilization statistics for [
-                            {{selectedGroups.join(', ')}}]</span>
+                        	<span ng-repeat="peopleByRole in output.peopleDetails.peopleByRoles">
+                        		{{peopleByRole.role.abbreviation}},
+                        	</span>
+                            ]</span>
                         </div>
                         <div class="col-xs-1">
                         	<a href="#/reports/people/output/hours" >
