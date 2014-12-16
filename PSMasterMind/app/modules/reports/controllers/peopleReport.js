@@ -217,8 +217,30 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			$scope.params.fields.graphs.trendGoals =
 			$scope.params.fields.graphs.graph = selected;
 	};
+	
+	$scope.onGenerateReport = function () {
+		if( $scope.output && $scope.output.type == "people" ) {
+			$rootScope.modalDialog = {
+				title: "Generate report",
+				text: "Report already generated. Would you like to generate new report?",
+				ok: "Yes",
+				no: "No",
+				okHandler: function( ) {
+					$( ".modalYesNoCancel" ).modal( 'hide' );
+					$scope.generateReport( );
+				},
+				noHandler: function( ) {
+					$( ".modalYesNoCancel" ).modal( 'hide' );
+					$location.path('/reports/people/output');
+				}
+			};
+			$( ".modalYesNoCancel" ).modal( 'show' );
+		} else {
+			$scope.generateReport( );
+		}
+	};
 		
-	$scope.generateReport = function () {
+	$scope.generateReport = function () {		
 		
 		if ($scope.isGenerationInProgress)
 			return;
@@ -272,7 +294,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		Resources.refresh("/reports/people/generate", input, {});
 	};
 	
-	$scope.cancelReport = function () {
+	$scope.onCancelReport = function () {
 		Resources.refresh("/reports/cancel").then(function( result ){
 			$scope.cancelReportGeneration();
 		}).catch(function( err ){
@@ -283,7 +305,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	$scope.onReportGenerated = function ( report ) {
 
 		console.log( 'Report generation completed' );
-		$scope.cancelReportGeneration();
 		
 		$scope.output.reportData = {
 				CSV : null,
@@ -292,7 +313,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		
 		$scope.output = report;
 		
-		$location.path('/reports/people/output');
+		if ($scope.isGenerationInProgress)
+			$location.path('/reports/people/output');
 	};
 
 	$scope.checkGenerationStatus = function ( ) {
@@ -308,6 +330,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				    } else {
 				      console.log("Server returned broken data for report.");
 				    }
+				    $scope.cancelReportGeneration();
 				});
 			}
 			return result.status;
@@ -366,8 +389,11 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	});
 	
 	$scope.init = function( ) {
-		$scope.startGenerationTimers();
-		$scope.checkGenerationStatus();
+		$scope.isGenerationInProgress = false;
+		$scope.checkGenerationStatus().then( function ( state ) {
+			if (state == "Running")
+				$scope.startGenerationTimers();
+		});
 	};
 	
 	$scope.init();

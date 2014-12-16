@@ -8,6 +8,8 @@ var memoryCache = require( '../data/memoryCache.js' );
 var moment = require('moment');
 var reportsService = require( '../services/reportsService.js' );
 
+var WORKING_HOURS_IN_DAY = 8;
+
 // generates report output object and calls callback when ready
 module.exports.generate = function(person, params, callback) {
   var report = {};
@@ -41,18 +43,9 @@ var getSummarySection = function(data, params) {
   
   var reportStartDate = moment(params.startDate);
   var reportEndDate = moment(params.endDate);
-  
-  var person = data.profile;
-  var hoursForTeam = 0;
-  var hoursPerPerson = 0;
-  for(var i in data.hours) {
-	  var personReport = data.hours[i];
-	  if (personReport.hours) {
-		  if (personReport.person && personReport.person.resource == person.resource)
-			  hoursPerPerson += personReport.hours;
-		  hoursForTeam += personReport.hours;
-	  }
-  }
+  var businessDaysCount = util.getBusinessDaysCount(reportStartDate, reportEndDate);
+  var hoursForTeam = businessDaysCount * WORKING_HOURS_IN_DAY * data.people.length;
+  var hoursPerPerson = businessDaysCount * WORKING_HOURS_IN_DAY / data.people.length;
   
   var summarySection = {
     createdDate: created.format("MM/D/YYYY"),
@@ -61,7 +54,7 @@ var getSummarySection = function(data, params) {
     createdBy: { name: util.getPersonName(data.profile, true, false) },
     reportStartDate: reportStartDate.format("MMM D, YYYY"),
     reportEndDate: reportEndDate.format("MMM D, YYYY"),
-    workingDays: util.getBusinessDaysCount(reportStartDate, reportEndDate),
+    workingDays: businessDaysCount,
     workingHoursPerPerson: Math.round( hoursPerPerson ),
     workingHoursForTeam: Math.round( hoursForTeam )
   };
