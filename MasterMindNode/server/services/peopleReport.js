@@ -88,8 +88,9 @@ var getPeopleDetailsSection = function(data, params) {
 		}
 	}
 	
-	var processRole = function(roleAbbr) {
-	  var role = _.findWhere(data.roles, { abbreviation: roleAbbr });
+	var rolesInput = _.isArray(params.roles) ? params.roles : params.roles ? [ params.roles ] : [];
+	for (var i in rolesInput) {
+	  var role = _.findWhere(data.roles, { abbreviation: rolesInput[i] });
 	  if ( role.utilizationRate )
             utilizationByRole.push({ name: role.title, value: role.utilizationRate });
         
@@ -107,15 +108,7 @@ var getPeopleDetailsSection = function(data, params) {
                 }
             }
         }
-	};
-	
-	if(_.isArray(params.roles)) {
-	  for (var i in params.roles) {
-	    processRole(params.roles[i]);
-	  }
-	} else {
-	  processRole(params.roles);
-	}	
+	}
 		
 	return {
 		peopleByRoles: peopleByRoles,
