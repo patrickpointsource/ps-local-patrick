@@ -23,6 +23,9 @@ module.exports.prepareData = function(profile, params, callback) {
     callback(validationMessages.join(", "));
   }
   
+  var selectedRoles = [];
+  var selectedPeople = [];
+  
   dataAccess.listPeople({}, PEOPLE_FIELDS, function(err, people) {
     if(err) {
       callback("Error getting people while generating report: " + err, null);
@@ -31,9 +34,9 @@ module.exports.prepareData = function(profile, params, callback) {
             if(err) {
               callback("Error getting roles while generating report: " + err, null);
             } else {
-               
+              
               if(params.roles && params.roles.length > 1) {
-                roles = _.filter(roles.members, function(role) {
+                selectedRoles = _.filter(roles.members, function(role) {
                   if(params.roles.indexOf(role.abbreviation) > -1) {
                     return true;
                   }
@@ -41,21 +44,21 @@ module.exports.prepareData = function(profile, params, callback) {
                   return false;
                 });
               } else {
-                roles = roles.members;
+                selectedRoles = roles.members;
               }
               
-                var roleResources = _.map(roles, function(role) {
+                var roleResources = _.map(selectedRoles, function(role) {
                   return role.resource;
                 });
               
-                people = _.filter(people.members, function(person) {
+                selectedPeople = _.filter(people.members, function(person) {
                   if(person.primaryRole && roleResources.indexOf(person.primaryRole.resource) > -1) {
                     return true;
                   }
                   return false;
                 });
                 
-                var peopleResources = _.map(people, function(person) {
+                var peopleResources = _.map(selectedPeople, function(person) {
                   return person.resource;
                 });
                 
@@ -84,13 +87,24 @@ module.exports.prepareData = function(profile, params, callback) {
                           if(err) {
                             callback("Error getting hours while generating report: " + err, null);
                           } else {
+                            
+                            var hoursFiltered = _.filter(hours.members, function(h) {
+                              if(peopleResources.indexOf(h.person.resource) > -1) {
+                                return true;
+                              }
+                              
+                              return false;
+                            });
+                            
                             var data = {
                               profile: profile,
-                              hours: hours.members,
-                              people: people,
-                              roles: roles,
+                              hours: hoursFiltered,
+                              people: selectedPeople,
+                              roles: selectedRoles,
                               projects: projects.data,
-                              assignments: assignments
+                              assignments: assignments,
+                              allPeople: people.members,
+                              allRoles: roles.members
                             };
 
                             callback(null, data);

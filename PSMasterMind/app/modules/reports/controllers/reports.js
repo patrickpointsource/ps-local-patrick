@@ -1448,8 +1448,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			if (result.status == "Completed") {
 				Resources.refresh("/reports/get").then(function( result ){
 				    console.log("Generated report type: " + result.type);
-				    if(result && result.data && result.data.hours && result.data.hours.members) {
-				      $scope.onReportGenerated( result.data.hours.members );
+				    if(result && result.data && result.data.data && result.data.data.hours && result.data.data.hours.members) {
+				      $scope.onReportGenerated( result.data.data.hours.members );
 				    }
 				});
 			}

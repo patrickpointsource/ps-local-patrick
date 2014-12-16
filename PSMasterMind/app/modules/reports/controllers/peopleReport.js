@@ -306,10 +306,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 
 		console.log( 'Report generation completed' );
 		
-		$scope.output.reportData = {
-				CSV : null,
-				link: ''
-		};
+		$scope.csvData = $scope.JSON2CSV( report.dataForCSV );
+        $scope.csvLink = 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData );
 		
 		$scope.output = report;
 		
@@ -396,6 +394,118 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		});
 	};
 	
+	$scope.roleDepartementMapping = People.getPeopleGroupMapping( );
+	
 	$scope.init();
+	
+	$scope.getHoursHeader = function( ) {
+        if( $scope.activeTab[ 'hours' ] )
+            return [ 'Project/Task', 'Person', 'Role', 'Department', 'Date', 'Hours', 'Description' ];
+
+        if( $scope.activeTab[ 'billing' ] ) {
+            if( $scope.reportTypes[ 'customforecast' ] )
+                return [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid revenue', 'Role', 'Role quantity', 'Theoretical monthly revenue total' ];
+            else if( $scope.reportTypes[ 'customaccruals' ] )
+                return [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid revenue', 'Role', 'Role quantity', 'Theoretical monthly total', 'Assignment name', 'Hours logged', 'Theoretical hours remaining', 'Total Revenue expected for month' ];
+        }
+
+    };
+    
+    $scope.CSVSplitter = ',';
+	
+	$scope.JSON2CSV = function( reportData ) {
+        var str = '';
+        var line = '';
+
+        //Print the header
+        var head = $scope.getHoursHeader( );
+        var i = 0;
+
+        line += head.join( $scope.CSVSplitter );
+        str += line + '\r\n';
+
+        var i;
+        var j;
+        var k;
+
+        for( i = 0; i < reportData.length; i++ ) {
+            line = '';
+
+            var record = reportData[ i ];
+
+            var getDepartment = function( role ) {
+                var group;
+                var result = [ ];
+
+                for( group in $scope.roleDepartementMapping ) {
+                    if( _.find( $scope.roleDepartementMapping[ group ], function( r ) {
+                        return r == role;
+                    } ) ) {
+                        result.push( group );
+                    }
+                }
+
+                return result.join( $scope.CSVSplitter );
+            };
+            for( j = 0; record.roles && j < record.roles.length; j++ ) {
+
+                    // for hours report
+                    for( k = 0; record.roles[ j ].persons && k < record.roles[ j ].persons.length; k++ ) {
+                        //line += [ '--', '--' ].join( ',' );
+
+                        if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
+                            //line += [ '--' ].join( ',' );
+                            line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
+                            line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
+                            line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.hoursToCSV.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
+                            line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
+                            line += [ '--', '--', '--', '--' ].join( $scope.CSVSplitter );
+                            line += '\r\n';
+                        }
+                        var l = 0;
+
+                        for( l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
+                            //line += [ '--' ].join( ',' );
+                            line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
+                            line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
+                            
+                            if (record.roles[ j ].persons[ k ].abbreviation)
+                                line += record.roles[ j ].persons[ k ].abbreviation + $scope.CSVSplitter;
+                            else
+                                line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.hoursToCSV.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
+                            
+                            line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
+
+                            line += record.roles[ j ].persons[ k ].hours[ l ].date + $scope.CSVSplitter;
+                            line += record.roles[ j ].persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
+                            line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
+                            line += '\r\n';
+                        }
+
+                    }
+            }
+
+            // in case of tasks
+            if( !record.roles )
+                for( k = 0; record.persons && k < record.persons.length; k++ ) {
+
+                    for( l = 0; record.persons[ k ].hours && l < record.persons[ k ].hours.length; l++ ) {
+                        //line += [ '--' ].join( ',' );
+                        line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
+                        line += '--' + $scope.CSVSplitter;
+                        line += $scope.hoursToCSV.stringify( record.persons[ k ].name ) + $scope.CSVSplitter;
+                        line += record.persons[ k ].hours[ l ].date + $scope.CSVSplitter;
+                        line += record.persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
+                        line += $scope.hoursToCSV.stringify( record.persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
+                        line += '\r\n';
+                    }
+                }
+
+            if( line )
+                str += line + '\r\n';
+        }
+
+        return str;
+    };
   
 } ] );

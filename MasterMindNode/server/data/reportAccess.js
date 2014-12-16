@@ -404,46 +404,6 @@ var getBillingAccuralsHoursQuery = function(assignments, reportPerson, projectMa
             callback(null, hoursQ);
 };
 
-var generatePeopleReport = function(reportId, params, callback) {
-  dataAccess.listPeople({}, PEOPLE_FIELDS, function(err, people) {
-        if(err) {
-          callback("Error getting people while generating report: " + err, null);
-        } else {
-          dataAccess.listRoles({}, function(err, roles) {
-            if(err) {
-              callback("Error getting roles while generating report: " + err, null);
-            } else {
-              dataAccess.listProjects({}, PROJECT_FIELDS, function(err, projects) {
-                if(err) {
-                  callback("Error while getting projects for billing accurals report: " + err);
-                } else {
-                  var projectsQuery = _.map(projects.data, function(p) {
-                    return { "project.resource": p.resource };
-                  });
-                  dataAccess.listHours({ $or: projectsQuery }, HOURS_FIELDS, function(err, hours) {
-                    if(err) {
-                      callback("Error getting hours while generating report: " + err, null);
-                    } else {
-                      var overallResult = {
-                        type: params.type,
-                        data: {
-                          hours: hours,
-                          people: people
-                        }
-                      };
-
-                      memoryCache.putObject(reportId, overallResult);
-                      callback(null, "Report " + reportId + " sucessfully generated");
-                    }
-                  });
-                }
-              });
-            }
-          });
-        }
-  });
-};
-
 module.exports.startGenerateReport = startGenerateReport;
 module.exports.getReportFromMemoryCache = getReportFromMemoryCache;
 module.exports.getStatusFromMemoryCache = getStatusFromMemoryCache;
