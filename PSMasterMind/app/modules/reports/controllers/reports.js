@@ -1405,7 +1405,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			$rootScope.reportGenerationStartTime = new moment();
 				
 		$scope.generationTimer = setInterval( function( ) {
-			var timer = document.getElementById('lblTimer');		
+			var timer =  $( "#lblTimer" )[ 0 ];
 			if (timer) {
 				var now = new moment( );
 				var spentTime = moment.utc(moment(now,"DD/MM/YYYY HH:mm:ss")

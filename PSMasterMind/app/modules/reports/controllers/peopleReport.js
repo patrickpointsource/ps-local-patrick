@@ -347,7 +347,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			$rootScope.reportGenerationStartTime = new moment();
 				
 		$scope.generationTimer = setInterval( function( ) {
-			var timer = document.getElementById('timer');		
+			var timer =  $( "#timer" )[ 0 ];		
 			if (timer) {
 				var now = new moment( );
 				var spentTime = moment.utc(moment(now,"DD/MM/YYYY HH:mm:ss")
