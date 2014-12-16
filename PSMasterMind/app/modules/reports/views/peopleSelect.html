@@ -2,6 +2,9 @@
 	<div class="row padded-row parameters" style="margin-top: 20px;">
 		<div class="spinner-container" ng-show="isGenerationInProgress" style="width: calc(100% - 30px);">
 			<i id="timer" class="fa fa-spinner fa-spin fa-3x"><label></label></i>
+			<button class="btn btn-report" ng-click="onCancelReport()" ng-show="isGenerationInProgress">
+					Cancel
+			</button>
 		</div>
 		<div class="col-md-5">
 			<div class="well" style="margin-left: -15px; margin-right: 20px;">
