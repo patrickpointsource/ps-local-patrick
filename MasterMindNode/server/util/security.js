@@ -56,13 +56,20 @@ module.exports.initialize = function(isReinitialization) {
     console.log("Initializing security. Reinitialization: " + isReinitialization);
     var errStr = [];
     dataAccess.listSecurityRoles(null, function (err, roles) {
+    	if ( err ) {
+    		console.log("Initializing security: Error in giving security roles " + err);
+    		return err;
+    	}
         var securityRoles = roles.members;
-        
         initializeSecurityRoles(securityRoles, isReinitialization, function() {
           /*acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
             console.log("Daniil allows on project after initSecurityRoles: " + permissions["projects"]);
           });*/
           dataAccess.listUserRoles(null, null, function (err, roles) {
+        	if ( err ) {
+          		console.log("Initializing security: Error in giving user roles " + err);
+          		return err;
+          	}
             var userRoles = roles["members"];
             for (var i=0; i < userRoles.length; i++) {
               var userId = userRoles[i].userId;
@@ -80,7 +87,7 @@ module.exports.initialize = function(isReinitialization) {
               try {
                 givePermissionToGroup(groupId, userRoles, roleNames);
               } catch(err) {
-                console.log("Error in giving permissions to group: " + err);
+                console.log("Initializing security: Error in giving permissions to group: " + err);
               }
 
             }

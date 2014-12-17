@@ -887,8 +887,10 @@ var listSecurityRoles = function( q, callback ) {
 			if( !err ) {
 				console.log( "save " + SECURITY_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( SECURITY_ROLES_KEY, body );
+				callback( null, queryRecords( body, q, "members", "securityroles/" ) );
+			} else {
+				callback( err, null );
 			}
-			callback( err, queryRecords( body, q, "members", "securityroles/" ) );
 		} );
 	}
 
@@ -904,8 +906,10 @@ var listUserRoles = function( q, fields, callback ) {
 			if( !err ) {
 				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( USER_ROLES_KEY, body );
+				callback( null, queryRecords( body, q, "members", "userRoles/", null, fields ) );
+			} else {
+				callback( err, null );
 			}
-			callback( err, queryRecords( body, q, "members", "userRoles/", null, fields ) );
 		} );
 	}
 
