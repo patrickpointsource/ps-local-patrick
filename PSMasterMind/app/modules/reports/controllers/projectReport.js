@@ -29,10 +29,23 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
       $anchorScroll();
    };
    
-   ProjectsService.getAllProjects(function (result)
-   {
+	Resources.get("roles").then(function (result)
+	{
+		if (!result)
+			return;
+		
+		$scope.roles = _.sortBy(result.members, function (item) { return item.title; });
+	});
+	
+	Resources.get("people/bytypes/withPrimaryRole").then(function (data)
+	{
+		$scope.peoples = data.members;
+	});
+   
+	ProjectsService.getAllProjects(function (result)
+	{
 	   $scope.projectList = result.data;
-   });
+	});
    
 	$scope.fields = {
 		assignmentHours: {},
@@ -40,9 +53,42 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 		projectHours: {}
 	};
 	
+	$scope.selectedAssignedRoles = {};
+	
+	$scope.onProjectSelect = function ()
+	{
+		AssignmentService.getAssignments($scope.projectList.selectedProjects).then(function (data)
+		{
+			$scope.selectedAssignments = data;
+			
+			var assignedRoles = [];
+			
+			for (var i = 0, projCount = data.length; i < projCount; i++)
+				for (var j = 0, assignmentCount = data[i].members.length; j < assignmentCount; j++)
+				{
+					var assignment = data[i].members[j];
+					var assignee = _.find($scope.peoples, function (p) { return p.resource == assignment.person.resource; });
+					
+					if (!assignee)
+						continue;
+					
+					var roleName = _.find($scope.roles, function (r) { return assignee.primaryRole && r.resource == assignee.primaryRole.resource; });
+					
+					if (roleName && assignedRoles.indexOf(roleName.abbreviation) == -1)
+						assignedRoles.push(roleName.abbreviation);
+				}
+			
+			$scope.assignedRoles = assignedRoles;
+		});
+	};
+	
 	$scope.selectAllAssignmentHours = function (selected)
 	{
 		$scope.fields.assignmentHours.all = selected;
+		
+		_.each($scope.assignedRoles, function (ar) { $scope.selectedAssignedRoles[ar] = selected; });
+		
+		$scope.assignedRoles = $scope.assignedRoles;
 	};
 	
 	$scope.selectAllProjectHours = function (selected)

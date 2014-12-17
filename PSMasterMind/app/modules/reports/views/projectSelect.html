@@ -1,4 +1,4 @@
-<div class="reports">
+<div class="reports" ng-form="projectReportForm">
 	<div class="row padded-row parameters" style="margin-top: 20px;">
 		<div class="col-md-6">
 			<div class="well" style="margin-left: -15px; margin-right: 20px;">
@@ -43,8 +43,8 @@
 			</div>
 			<br />
 			<div class="row groups">
-				<select class="form-control" style="height: 235px;" ng-model="selectedProjects" required ng-options="p as p.name for p in projectList"
-					ng-multiple="true" multiple="multiple" size="10"></select>
+				<select class="form-control" style="height: 235px;" ng-model="projectList.selectedProjects" required ng-options="p.name for p in projectList"
+					ng-multiple="true" ng-change="onProjectSelect();" multiple="multiple" size="10"></select>
 			</div>
 		</div>
 	</div>
@@ -122,12 +122,11 @@
 						All assignments
 					</label>
 					<br />
-					<div style="margin-left: 20px;">
+					<div style="margin-left: 20px;" ng-repeat="role in assignedRoles">
 						<label>
-							<input type="checkbox" />
-							SSA
+							<input type="checkbox" ng-model="selectedAssignedRoles[role]" />
+							{{role}}
 						</label>
-						<br />
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-4">
