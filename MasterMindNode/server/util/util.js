@@ -151,7 +151,7 @@ module.exports.getReportId = function (personId) {
 };
 
 module.exports.getBusinessDaysCount = function ( startDate, endDate ) {
-  var days = endDate.diff(startDate, 'days');
+  var days = moment(endDate).diff(moment(startDate), 'days');
   var date = moment(startDate);
   for (var i = 0; i <= days; i++) {
     date = date.add(1, 'days');

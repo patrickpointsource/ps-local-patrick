@@ -42,38 +42,38 @@
 							<div class="col-xs-12 col-sm-2">
 								<label>Capacity</label>
 								<div>
-									{{output.peopleDetails.peopleOnClient}}
+									{{person.capacity}}
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-2">
 								<label>Hours booked</label>
 								<div>
-									{{output.peopleDetails.peopleOnInvestment}}
+									{{person.hours.booked}}
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-2">
 								<label class="no-margin">Hours Spent</label>
 								<div>
-									{{output.peopleDetails.peopleOnInvestment}}
+									{{person.hours.spent}}
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-2">
 								<label>Total OOO</label>
 								<div>
-									{{output.peopleDetails.peopleOnInvestment}}
+									{{person.hours.OOO}}
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-2">
 								<label>Total OH</label>
 								<div>
-									{{output.peopleDetails.peopleOnInvestment}}
+									{{person.hours.OH}}
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-2">
 								<label>Utilization / Goal</label>
 								<div>
-									{{output.peopleDetails.totalPeople}}% /
-									{{output.peopleDetails.totalPeople}}%
+									{{person.utilization}}% /
+									{{person.goal}}%
 								</div>
 							</div>
 						</div>

@@ -68,11 +68,19 @@ var getSummarySection = function(data, params) {
 // Not implemented (fake data)
 var getPeopleDetailsSection = function(data, params) {
 
+	var businessDaysCount = util.getBusinessDaysCount(params.startDate, params.endDate);
 	var totalPeople = data.people.length;
 	var peopleOnClient = [];
 	var peopleOnInvestment = [];
 	var utilizationByRole = [];
 	var peopleByRoles = {};
+	var availibleHours = businessDaysCount * WORKING_HOURS_IN_DAY * data.people.length;
+	var totalClientInvestHours = 0;
+	var totalOOOHours = 0;
+	var clientActualHours = 0;
+	var investActualHours = 0;
+	var clientProjectedHours = 0;
+	var investProjectedHours = 0;
 	
 	for (var i in data.assignments) {
 		var members = data.assignments[i].members;
@@ -80,48 +88,96 @@ var getPeopleDetailsSection = function(data, params) {
 		if (project) {
 			for (var j in members) {
 				var person = members[j].person;
-				if ( (project.type == "paid" || project.type == "poc") && !_.contains(peopleOnClient, person.resource) )
+				if ( (project.type == "paid" || project.type == "poc") && !_.contains(peopleOnClient, person.resource) ) {
 					peopleOnClient.push(person.resource);
-				if ( project.type == "invest" && !_.contains(peopleOnInvestment, person.resource) )
+					clientProjectedHours += WORKING_HOURS_IN_DAY;
+					_.each(data.hours, function ( record ) {
+						if ( record.hours &&
+								record.project.resource == project.resource && record.person.resource == person.resource) {
+							clientActualHours += record.hours;
+						};
+					});
+				} else
+				if ( project.type == "invest" && !_.contains(peopleOnInvestment, person.resource) ) {
 					peopleOnInvestment.push(person.resource);
+					investProjectedHours += WORKING_HOURS_IN_DAY;
+					_.each(data.hours, function ( record ) {
+						if ( record.hours &&
+								record.project.resource == project.resource &&  record.person.resource == person.resource) {
+							investActualHours += record.hours;
+						}
+					});
+				}
 			}
 		}
 	}
 	
-	var rolesInput = _.isArray(params.roles) ? params.roles : params.roles ? [ params.roles ] : [];
-	for (var i in rolesInput) {
-	  var role = _.findWhere(data.roles, { abbreviation: rolesInput[i] });
-	  if ( role.utilizationRate )
-            utilizationByRole.push({ name: role.title, value: role.utilizationRate });
-        
-        for (var i in data.people) {
-            var person = data.people[i];
-            if ( person.primaryRole.resource == role.resource ) {
-                if ( peopleByRoles[person.primaryRole.resource] )
-                    peopleByRoles[person.primaryRole.resource].members
-                            .push(person);
-                else {
-                    peopleByRoles[person.primaryRole.resource] = {
-                        role: role,
-                        members : [ person ]
-                    };
-                }
-            }
-        }
+
+	var rolesInput = _.isArray(params.roles) ? params.roles
+											 : params.roles ? [ params.roles ] : [];
+	for ( var i in rolesInput) {
+		var role = _.findWhere(data.allRoles, { abbreviation : rolesInput[i] });
+		utilizationByRole.push({
+			name : role.title,
+			value : role.utilizationRate
+		});
+		for ( var i in data.people) {
+			var person = data.people[i];
+			person.capacity = 18;
+			person.utilization = 37;
+			person.goal = 38;
+			person.hours = { booked : 0, spent : 0, OOO : 0, OH : 0 };
+			_.each(data.hours, function(record) {
+				if (record.hours && record.person.resource == person.resource) {
+					person.hours.booked += record.hours;
+					person.hours.spent += record.hours;
+				}
+			});
+			_.each(data.hours, function(record) {
+				if (record.startDate && record.endDate && record.person.resource == person.resource) {
+					var bussinesDays = util.getBusinessDaysCount(record.startDate, record.endDate);
+					person.hours.OOO +=  bussinesDays;
+					person.hours.OH +=  bussinesDays;
+				}
+			});
+			if (person.primaryRole.resource == role.resource) {
+				if (peopleByRoles[person.primaryRole.resource])
+					peopleByRoles[person.primaryRole.resource].members
+							.push(person);
+				else {
+					peopleByRoles[person.primaryRole.resource] = {
+						role : role,
+						members : [ person ]
+					};
+				}
+			}
+		}
 	}
-		
+	
+	_.each(data.hours, function ( record ) {
+		if ( record.hours )
+			totalClientInvestHours += record.hours;
+	});
+	
+	_.each(data.vacations, function ( record ) {
+		if ( record.startDate && record.endDate  ) {
+			var bussinesDays = util.getBusinessDaysCount(record.startDate, record.endDate);
+			totalOOOHours += bussinesDays * WORKING_HOURS_IN_DAY;
+		}	
+	});
+	
 	return {
 		peopleByRoles: peopleByRoles,
 		peopleOnClient: peopleOnClient.length,
 		peopleOnInvestment: peopleOnInvestment.length,
 		totalPeople: totalPeople,
 		utilizationByRole: utilizationByRole,
-		availableHours: 10920,
-		totalWorkingHours: 8800,
-		totalOOOHours: 181,
-		utilizationClient: 68,
-		utilizationInvest: 73,
-		utilizationTotal: 70
+		availableHours: availibleHours,
+		totalClientInvestHours: Math.round( totalClientInvestHours ),
+		totalOOOHours: Math.round( totalOOOHours ),
+		utilizationClient:  Math.round( clientActualHours / clientProjectedHours * 100 ),
+		utilizationInvest:  Math.round( investActualHours / investProjectedHours * 100 ),
+		utilizationTotal: Math.round((clientActualHours + investActualHours) / (clientProjectedHours + investProjectedHours)  * 100)
 	};
 };
 
