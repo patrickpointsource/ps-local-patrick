@@ -96,18 +96,25 @@ module.exports.prepareData = function(profile, params, callback) {
                               return false;
                             });
                             
-                            var data = {
-                              profile: profile,
-                              hours: hoursFiltered,
-                              people: selectedPeople,
-                              roles: selectedRoles,
-                              projects: projects.data,
-                              assignments: assignments,
-                              allPeople: people.members,
-                              allRoles: roles.members
-                            };
+                            dataAccess.listVacations({}, function(err, vacations) {
+                              if(err) {
+                                callback("Error getting vacations while generating report: " + err, null);
+                              } else {
+                                var data = {
+                                  profile: profile,
+                                  hours: hoursFiltered,
+                                  people: selectedPeople,
+                                  roles: selectedRoles,
+                                  projects: projects.data,
+                                  assignments: assignments,
+                                  allPeople: people.members,
+                                  allRoles: roles.members,
+                                  vacations: vacations.members
+                                };
 
-                            callback(null, data);
+                                callback(null, data);
+                              }
+                            });
                           }
                         });
                       }
