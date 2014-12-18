@@ -7,6 +7,24 @@
 angular.module( 'Mastermind.controllers.reports' ).controller( 'PeopleReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'People', 'Resources', 
 function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, People, Resources ) {
 
+	var months = [];
+	
+	for (var i = 0; i < 12; i++)
+		months.push({ index: i, name: moment().month(i).format("MMM") });
+	
+	$scope.months = months;
+	
+	var years = [];
+	var currentYear = moment().year();
+	
+	for (var i = 5; i >= 0; i--)
+		years.push(currentYear - i);
+	
+	for (var i = 1; i <= 5; i++)
+		years.push(currentYear + i);
+	
+	$scope.years = years;
+	
   $scope.choiceLocationLabel = "Select one or more location";
   
   $scope.reportServicePingInterval = 5000;
@@ -72,7 +90,10 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	
 	$scope.params = {
 		date: {
-			range: "week"
+			range: "week",
+			start: moment.utc().format("YYYY-MM-DD"),
+			month: $scope.months[moment().month()],
+			year: moment().year()
 		},
 		departments: {},
 		fields: {

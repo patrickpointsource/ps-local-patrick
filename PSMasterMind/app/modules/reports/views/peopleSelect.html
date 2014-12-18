@@ -152,8 +152,8 @@
 	                	Custom
                 	</label>
 				</div>
-				<div class="col-xs-12 col-md-8" ng-show="params.date.range == 'custom'">
-					<div class="row">
+				<div class="col-xs-12 col-md-8">
+					<div class="row" ng-show="params.date.range != 'month'">
 						<label class="control-label">
 							<div class="col-md-2">
 								Start:
@@ -164,7 +164,7 @@
 							</div>
 						</label>
 					</div>
-					<div class="row">
+					<div class="row" ng-show="params.date.range == 'custom'">
 						<label class="control-label">
 							<div class="col-md-2">
 								End:
@@ -172,6 +172,16 @@
 							<div class="col-md-8">
 								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker"
 									ng-model="params.date.end" />
+							</div>
+						</label>
+					</div>
+					<div class="row" ng-show="params.date.range == 'month'">
+						<label class="control-label">
+							<div class="col-md-6">
+								<select class="form-control" ng-model="params.date.month" ng-options="m.name for m in months"></select>
+							</div>
+							<div class="col-md-6">
+								<select class="form-control" ng-model="params.date.year" ng-options="y for y in years"></select>
 							</div>
 						</label>
 					</div>
