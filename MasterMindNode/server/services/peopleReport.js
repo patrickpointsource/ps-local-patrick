@@ -92,7 +92,7 @@ var getPeopleDetailsSection = function(data, params) {
 					peopleOnClient.push(person.resource);
 					clientProjectedHours += WORKING_HOURS_IN_DAY;
 					_.each(data.hours, function ( record ) {
-						if ( record.hours &&
+						if ( record.hours && record.project &&
 								record.project.resource == project.resource && record.person.resource == person.resource) {
 							clientActualHours += record.hours;
 						};
@@ -102,7 +102,7 @@ var getPeopleDetailsSection = function(data, params) {
 					peopleOnInvestment.push(person.resource);
 					investProjectedHours += WORKING_HOURS_IN_DAY;
 					_.each(data.hours, function ( record ) {
-						if ( record.hours &&
+						if ( record.hours && record.project && 
 								record.project.resource == project.resource &&  record.person.resource == person.resource) {
 							investActualHours += record.hours;
 						}

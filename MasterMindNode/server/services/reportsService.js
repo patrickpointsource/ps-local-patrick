@@ -3,6 +3,7 @@
  */
 
 var dataAccess = require( '../data/dataAccess.js' );
+var dataFilter = require('../data/dataFilter.js');
 var _ = require('underscore');
 var moment = require('moment');
 
@@ -30,11 +31,14 @@ module.exports.prepareData = function(profile, params, callback) {
     if(err) {
       callback("Error getting people while generating report: " + err, null);
     } else {
-      dataAccess.listRoles({}, function(err, roles) {
+      dataAccess.listTasks({}, function(err, tasks) {
+        if(err) {
+          callback("Error getting tasks while generating report: " + err, null);
+        } else {
+          dataAccess.listRoles({}, function(err, roles) {
             if(err) {
               callback("Error getting roles while generating report: " + err, null);
             } else {
-              
               if(params.roles && params.roles.length > 1) {
                 selectedRoles = _.filter(roles.members, function(role) {
                   if(params.roles.indexOf(role.abbreviation) > -1) {
@@ -76,6 +80,12 @@ module.exports.prepareData = function(profile, params, callback) {
                             return { "project.resource": assignment.project.resource };
                         });
                         
+                        var tasksResources = _.map(tasks.members, function(task) {
+                          return { "task.resource": task.resource };
+                        });
+                        
+                        hoursQ.$or = hoursQ.$or.concat(tasksResources);
+                        
                         if(params.startDate && params.endDate) {
                           params.startDate = moment.utc(JSON.parse(params.startDate)).format("YYYY-MM-DD");
                           params.endDate = moment.utc(JSON.parse(params.endDate)).format("YYYY-MM-DD");
@@ -100,6 +110,8 @@ module.exports.prepareData = function(profile, params, callback) {
                               if(err) {
                                 callback("Error getting vacations while generating report: " + err, null);
                               } else {
+                                var filteredVacations = dataFilter.filterVacationsByDates(params.startDate, params.endDate, vacations.members);
+                                
                                 var data = {
                                   profile: profile,
                                   hours: hoursFiltered,
@@ -109,7 +121,7 @@ module.exports.prepareData = function(profile, params, callback) {
                                   assignments: assignments,
                                   allPeople: people.members,
                                   allRoles: roles.members,
-                                  vacations: vacations.members
+                                  vacations: filteredVacations
                                 };
 
                                 callback(null, data);
@@ -121,10 +133,11 @@ module.exports.prepareData = function(profile, params, callback) {
                     });
                   }
                 });
-              
             }
           });
         }
+      });
+    }
   });
 };
 

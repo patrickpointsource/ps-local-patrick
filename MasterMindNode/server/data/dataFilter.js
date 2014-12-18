@@ -2,6 +2,7 @@
 
 var util = require('../util/util');
 var security = require('../util/security');
+var moment = require('moment');
 var _ = require( 'underscore' );
 
 /**
@@ -495,6 +496,21 @@ var filterVacationsByPeriod = function(people, startDate, endDate, vacations) {
 	return result;
 };
 
+var filterVacationsByDates = function(startDate, endDate, vacations) {
+  var startMoment = moment(startDate);
+  var endMoment = moment(endDate);
+  return _.filter(vacations, function(vac) {
+    var vacStartMoment = moment(vac.startDate);
+    var vacEndMoment = moment(vac.endDate);
+    
+    if(vacStartMoment.isAfter(endMoment) || vacEndMoment.isBefore(startMoment) || vac.status != "Approved") {
+      return false;
+    }
+    
+    return true;
+  });
+};
+
 var checkVacation = function(vacation, people, startDate, endDate, callback) {
 
 	var checked = false;
@@ -655,6 +671,7 @@ module.exports.filterNotificationsByPerson = filterNotificationsByPerson;
 module.exports.filterVacationsByPerson = filterVacationsByPerson;
 module.exports.filterVacationsByPeriod = filterVacationsByPeriod;
 module.exports.filterRequests = filterRequests;
+module.exports.filterVacationsByDates = filterVacationsByDates;
 
 //tasks filter functions
 module.exports.filterTasksByName = filterTasksByName;
