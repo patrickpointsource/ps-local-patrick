@@ -121,7 +121,8 @@ module.exports.prepareData = function(profile, params, callback) {
                                   assignments: assignments,
                                   allPeople: people.members,
                                   allRoles: roles.members,
-                                  vacations: filteredVacations
+                                  vacations: filteredVacations,
+                                  tasks: tasks.members
                                 };
 
                                 callback(null, data);
