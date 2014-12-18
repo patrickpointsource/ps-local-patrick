@@ -91,9 +91,9 @@
 								"id": {"type":"string"}
 								},
 							"required": ["resource"]
-						},
+						}
+					},
 					"required": ["type", "rate"]
-					}
 				}
 			}
 	},

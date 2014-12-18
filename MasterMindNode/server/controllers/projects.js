@@ -92,11 +92,12 @@ var getProject = function(id, callback) {
 };
 
 var addProjectLink = function(id, obj, callback) {
-    if(!obj.project) {
-      obj.project = {};
-    }
-	obj.project.resource = "projects/" + id;
-	
+	// MM 12/1814 Defect 71022 
+	//obj.project.resource = "projects/" + id;
+    //if(!obj.project) {
+    //   obj.project = {};
+    //  }
+
 	listLinksByProject(id, function (err, result){
 		if (err) {
             console.log(err);
@@ -104,19 +105,22 @@ var addProjectLink = function(id, obj, callback) {
 		} else {
 			var linksObject;
 			var index = 0;
-			if (result && result.members) {
+			
+			if (result && result.members && result.members.length > 0) {
 				linksObject = result.members[0];
-				index = (linksObject.members && linksObject.members.length > 0) ? (linksObject.members[linksObject.members.length - 1].index + 1) : 0;
+				index = (linksObject.members) ? (linksObject.members[linksObject.members.length - 1].index + 1) : 0;
 			}
 			else {
 				linksObject = {project : { resource : "projects/" + id }};
 				linksObject.members = [];
 			}
 			
-			var link = {url : obj.url, label : obj.label, icon : obj.icon, index : index, 
-					title : obj.title, homePage : obj.homePage, currentPlans : obj.currentPlans, 
-					type : obj.type, resource : obj.resource, dashboard : obj.dashboard, details : obj.details };
-			linksObject.members.push(link);
+			// MM 12/1814 Defect 71022 
+			//var link = {url : obj.url, label : obj.label, icon : obj.icon, index : index, 
+			//		title : obj.title, homePage : obj.homePage, currentPlans : obj.currentPlans, 
+			//		type : obj.type, resource : obj.resource, dashboard : obj.dashboard, details : obj.details };
+			//linksObject.members.push(link);
+			linksObject.members.push(obj);
 
 		    dataAccess.insertItem(linksObject._id, linksObject, dataAccess.LINKS_KEY, function(err, body){
 		        if (err) {
