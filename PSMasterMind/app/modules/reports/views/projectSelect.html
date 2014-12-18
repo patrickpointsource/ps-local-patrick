@@ -9,28 +9,33 @@
 				<div class="groups row">
 					<div class="col-md-6">
 						<label>
-							<input type="checkbox" />
+							<input type="checkbox" ng-model="projectList.active" ng-change="selectActiveProjects();"
+								ng-disabled="projectList.selectedProjects && projectList.selectedProjects.length > 0" />
 							Active
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" />
+							<input type="checkbox" ng-model="projectList.backlog" ng-change="selectBacklogProjects();"
+								ng-disabled="projectList.selectedProjects && projectList.selectedProjects.length > 0" />
 							Backlog
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" />
+							<input type="checkbox" ng-model="projectList.pipeline" ng-change="selectPipelineProjects();"
+								ng-disabled="projectList.selectedProjects && projectList.selectedProjects.length > 0" />
 							Pipeline
 						</label>
 					</div>
 					<div class="col-md-6">
 						<label>
-							<input type="checkbox" />
+							<input type="checkbox" ng-model="projectList.completed" ng-change="selectCompletedProjects();"
+								ng-disabled="projectList.selectedProjects && projectList.selectedProjects.length > 0" />
 							Complete
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" />
+							<input type="checkbox" ng-model="projectList.dealLost" ng-change="selectDealLostProjects();"
+								ng-disabled="projectList.selectedProjects && projectList.selectedProjects.length > 0" />
 							Deal Lost
 						</label>
 					</div>
@@ -43,7 +48,8 @@
 			</div>
 			<br />
 			<div class="row groups">
-				<select class="form-control" style="height: 235px;" ng-model="projectList.selectedProjects" required ng-options="p.name for p in projectList"
+				<select class="form-control" ng-disabled="projectList.active || projectList.backlog || projectList.pipeline || projectList.completed || projectList.dealLost"
+					style="height: 235px;" ng-model="projectList.selectedProjects" required ng-options="p.name for p in projectList"
 					ng-multiple="true" ng-change="onProjectSelect();" multiple="multiple" size="10"></select>
 			</div>
 		</div>
@@ -128,6 +134,15 @@
 							{{role}}
 						</label>
 					</div>
+					<label>
+						<input type="checkbox" ng-model="fields.assignmentHours.hoursAndDesc" />
+						Include assignment hours and descriptions
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="fields.assignmentHours.oooDetails" />
+						Include OOO details
+					</label>
 				</div>
 				<div class="col-xs-12 col-md-4">
 					<h5>PROJECT HOURS</h5>

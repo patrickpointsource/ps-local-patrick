@@ -29,6 +29,14 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
       $anchorScroll();
    };
    
+	$scope.fields = {
+		assignmentHours: {},
+		goals: {},
+		projectHours: {}
+	};
+	$scope.projectList = {};
+	$scope.selectedAssignedRoles = {};
+   
 	Resources.get("roles").then(function (result)
 	{
 		if (!result)
@@ -46,18 +54,102 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 	{
 	   $scope.projectList = result.data;
 	});
-   
-	$scope.fields = {
-		assignmentHours: {},
-		goals: {},
-		projectHours: {}
+	
+	$scope.selectActiveProjects = function ()
+	{
+		if ($scope.projectList.active)
+			ProjectsService.getActiveClientProjects(function (result)
+			{
+				$scope.projectList.activeProjects = result.data;
+				
+				updateAssignedRoles(getSelectedProjects());
+			});
+		else
+			updateAssignedRoles(getSelectedProjects());
 	};
 	
-	$scope.selectedAssignedRoles = {};
+	$scope.selectBacklogProjects = function ()
+	{
+		if ($scope.projectList.backlog)
+			ProjectsService.getBacklogProjects(function (result)
+			{
+				$scope.projectList.backlogProjects = result.data;
+				
+				updateAssignedRoles(getSelectedProjects());
+			});
+		else
+			updateAssignedRoles(getSelectedProjects());
+	};
+	
+	$scope.selectPipelineProjects = function ()
+	{
+		if ($scope.projectList.pipeline)
+			ProjectsService.getPipelineProjects(function (result)
+			{
+				$scope.projectList.pipelineProjects = result.data;
+				
+				updateAssignedRoles(getSelectedProjects());
+			});
+		else
+			updateAssignedRoles(getSelectedProjects());
+	};
+	
+	$scope.selectCompletedProjects = function ()
+	{
+		if ($scope.projectList.completed)
+			ProjectsService.getCompletedProjects(function (result)
+			{
+				$scope.projectList.completedProjects = result.data;
+				
+				updateAssignedRoles(getSelectedProjects());
+			});
+		else
+			updateAssignedRoles(getSelectedProjects());
+	};
+	
+	$scope.selectDealLostProjects = function ()
+	{
+		if ($scope.projectList.dealLost)
+			ProjectsService.getDealLostProjects(function (result)
+			{
+				$scope.projectList.dealLostProjects = result.data;
+				
+				updateAssignedRoles(getSelectedProjects());
+			});
+		else
+			updateAssignedRoles(getSelectedProjects());
+	};
 	
 	$scope.onProjectSelect = function ()
 	{
-		AssignmentService.getAssignments($scope.projectList.selectedProjects).then(function (data)
+		updateAssignedRoles($scope.projectList.selectedProjects);
+	};
+	
+	function getSelectedProjects()
+	{
+		var projects = [];
+		
+		if ($scope.projectList.active)
+			projects = projects.concat($scope.projectList.activeProjects);
+		
+		if ($scope.projectList.backlog)
+			projects = projects.concat($scope.projectList.backlogProjects);
+		
+		if ($scope.projectList.pipeline)
+			projects = projects.concat($scope.projectList.pipelineProjects);
+		
+		if ($scope.projectList.completed)
+			projects = projects.concat($scope.projectList.completedtProjects);
+		
+		if ($scope.projectList.dealLost)
+			projects = projects.concat($scope.projectList.dealLostProjects);
+		
+		return projects;
+	}
+	
+	function updateAssignedRoles(projects)
+	{
+		AssignmentService.getAssignments(projects || []).then(function (data)
 		{
 			$scope.selectedAssignments = data;
 			
@@ -78,15 +170,18 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 						assignedRoles.push(roleName.abbreviation);
 				}
 			
-			$scope.assignedRoles = assignedRoles;
+			$scope.assignedRoles = _.sortBy(assignedRoles, function (ar) { return ar; });
 		});
-	};
+	}
 	
 	$scope.selectAllAssignmentHours = function (selected)
 	{
 		$scope.fields.assignmentHours.all = selected;
 		
 		_.each($scope.assignedRoles, function (ar) { $scope.selectedAssignedRoles[ar] = selected; });
+		
+		$scope.fields.assignmentHours.hoursAndDesc =
+			$scope.fields.assignmentHours.oooDetails = selected;
 		
 		$scope.assignedRoles = $scope.assignedRoles;
 	};
