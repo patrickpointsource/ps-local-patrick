@@ -12,7 +12,9 @@ var validateGoogleToken = function( token, done ) {
 				console.log( 'Error occurred: ', err );
 				return done( err, null );
 			} else {
-				if( result.audience === config.google.clientID && result.user_id ) {
+				// TODO: make additional investigation in future for validation clientId in analyzed token: result.audience === config.google.clientID
+				// currently switch of it, because tokens which are received from android/ios device have different clientId
+				if( /*result.audience === config.google.clientID && */result.user_id ) {
 					return done( '', result.user_id );
 				} else {
 					return done( 'validation failed', null );
