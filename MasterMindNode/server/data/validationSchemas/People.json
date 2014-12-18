@@ -8,7 +8,6 @@
 		"_deleted": {"type":"boolean"},
 		"etag": {"type": ["string", "number"]},
 		"form": {"enum": ["People"]},
-
 		"about": {"type":"string"},
 		"accounts": {
 			"type":"array",
@@ -16,6 +15,7 @@
 				{
 					"type":"object",
 					"properties":{
+						"id": {"type": "string"},
 						"agreedToTerms": {"type":"boolean"},
 						"aliases": {
 							"type":"array",
@@ -63,7 +63,10 @@
 						"primaryEmail": {"type":"string"},
 						"suspended": {"type":"boolean"},
 						"type": {"type":"string"},
-						"thumbnailPhotoUrl": {"type":"string"}
+						"thumbnailPhotoUrl": {"type":"string"},
+						"addresses": {"type": "array"},
+						"externalIds": {"type": "array"},
+						"organizations": {"type": "array"}
 					}
 				}
 		},
@@ -77,20 +80,7 @@
 		"jazzHubId": {"type":"string"},
 		"lastSynchronized": {"type":"string"},
 		"mBox": {"type":"string"},
-		"manager": {
-			"type":"object",
-			"properties":{
-				"name": {
-					"type":"object",
-					"properties":{
-						"familyName": {"type":"string"},
-						"fullName": {"type":"string"},
-						"givenName": {"type":"string"}
-					}
-				},
-				"resource": {"type":"string"}
-			}
-		},
+		"manager": {"$ref": "#/definitions/resource"},
 		"name": { "$ref": "#/definitions/name"},
 		"phone": {"type":"string"},
 		"primaryRole": { "$ref": "#/definitions/resourceOrNull"}, 

@@ -97,11 +97,12 @@ module.exports.insertPerson = function(obj, callback) {
 			obj.primaryRole.name = roleName;
 		}
 
-		// upgrade name properties
-		upgradeNameProperties(obj, function (err, upgradedObj) {		
-			if (!err) {
-				obj = upgradedObj;
-			}
+			// upgrade name properties
+			// TODO: remove this method after jsonValidation full integration and update of all docs. 
+			upgradeNameProperties(obj, function (err, upgradedObj) {		
+				if (!err) {
+					obj = upgradedObj;
+				}
 
 		    dataAccess.insertItem(obj._id, obj, dataAccess.PEOPLE_KEY, function(err, body){
 		        if (err) {
