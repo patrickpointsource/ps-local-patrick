@@ -23,10 +23,10 @@
 						</div>
 						<div class="person-contact-info">
 							<div class="personDetailName">
-								{{person.primaryRole.name}}
+								<a href="#{{person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(person, true)}}</a>
 							</div>
 							<div class="sub-heading">
-								<a href="#{{person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(person, true)}}</a>
+								{{person.primaryRole.name}}
 							</div>
 						</div>
 					</div>

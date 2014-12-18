@@ -10,6 +10,12 @@ var reportsService = require( '../services/reportsService.js' );
 
 var UNDETERMINED_ROLE = 'undetermined_role';
 var WORKING_HOURS_IN_DAY = 8;
+var TASK_TITLE = {
+		VACATION: "Vacation",
+		SALES: "Sales",
+		MARKETING: "Marketing",
+		SICK: "Sick time"
+};
 
 // generates report output object and calls callback when ready
 module.exports.generate = function(person, params, callback) {
@@ -69,18 +75,18 @@ var getSummarySection = function(data, params) {
 var getPeopleDetailsSection = function(data, params) {
 
 	var businessDaysCount = util.getBusinessDaysCount(params.startDate, params.endDate);
-	var totalPeople = data.people.length;
+	var availibleHours = businessDaysCount * WORKING_HOURS_IN_DAY * data.people.length;
 	var peopleOnClient = [];
 	var peopleOnInvestment = [];
 	var utilizationByRole = [];
-	var peopleByRoles = {};
-	var availibleHours = businessDaysCount * WORKING_HOURS_IN_DAY * data.people.length;
 	var totalClientInvestHours = 0;
 	var totalOOOHours = 0;
+	var totalOHHours = 0;
 	var clientActualHours = 0;
 	var investActualHours = 0;
 	var clientProjectedHours = 0;
 	var investProjectedHours = 0;
+	var peopleByRoles = {};
 	
 	for (var i in data.assignments) {
 		var members = data.assignments[i].members;
@@ -112,34 +118,80 @@ var getPeopleDetailsSection = function(data, params) {
 		}
 	}
 	
-
+	var getTaskByName = function ( taskName ) {
+		var task = _.findWhere(data.tasks, { name : taskName });
+		if ( !task )
+			task = {};
+		return task;
+	};
+	var vacationTask = getTaskByName ( TASK_TITLE.VACATION );
+	var salesTask = getTaskByName ( TASK_TITLE.SALES );
+	var sickTask = getTaskByName ( TASK_TITLE.SICK );
+	var marketingTask = getTaskByName ( TASK_TITLE.MARKETING );
+	
+	_.each(data.hours, function( record ) {
+		if ( record.hours ) {
+			if ( record.project ) {
+				var project = _.findWhere(data.projects, {
+					resource : record.project.resource
+				});
+				if (project.type == "paid" || project.type == "poc"	|| project.type == "invest") {
+					totalClientInvestHours += record.hours;
+				}
+			}
+			if ( record.task ) {
+				if (record.task.resource == vacationTask.resource) {
+					totalOOOHours += record.hours;
+				}
+				if (record.task.resource != vacationTask.resource
+						&& record.task.resource != salesTask.resource
+						&& record.task.resource != sickTask.resource
+						&& record.task.resource != marketingTask.resource) {
+					totalOHHours += record.hours;
+				}
+			}
+		}
+	});	
+	
 	var rolesInput = _.isArray(params.roles) ? params.roles
 											 : params.roles ? [ params.roles ] : [];
-	for ( var i in rolesInput) {
+	for ( var i in rolesInput ) {
 		var role = _.findWhere(data.allRoles, { abbreviation : rolesInput[i] });
 		utilizationByRole.push({
 			name : role.title,
 			value : role.utilizationRate
 		});
-		for ( var i in data.people) {
+		for ( var i in data.people ) {
 			var person = data.people[i];
 			person.capacity = 18;
 			person.utilization = 37;
 			person.goal = 38;
-			person.hours = { booked : 0, spent : 0, OOO : 0, OH : 0 };
+			person.hours = { 
+					booked : 0, 
+					spent : 0, 
+					OOO : 0, 
+					OH : 0 
+			};
 			_.each(data.hours, function(record) {
 				if (record.hours && record.person.resource == person.resource) {
-					person.hours.booked += record.hours;
-					person.hours.spent += record.hours;
+					if ( record.project ) {
+						person.hours.booked += record.hours;
+						person.hours.spent += record.hours;
+					}
+					if ( record.task ) {
+						if ( record.task.resource == vacationTask.resource) {
+							person.hours.OOO += record.hours;
+						}
+						if ( record.task.resource != vacationTask.resource
+								&& record.task.resource != salesTask.resource
+								&& record.task.resource != sickTask.resource
+								&& record.task.resource != marketingTask.resource) {
+							person.hours.OH += record.hours;
+						}
+					}
 				}
 			});
-			_.each(data.hours, function(record) {
-				if (record.startDate && record.endDate && record.person.resource == person.resource) {
-					var bussinesDays = util.getBusinessDaysCount(record.startDate, record.endDate);
-					person.hours.OOO +=  bussinesDays;
-					person.hours.OH +=  bussinesDays;
-				}
-			});
+			
 			if (person.primaryRole.resource == role.resource) {
 				if (peopleByRoles[person.primaryRole.resource])
 					peopleByRoles[person.primaryRole.resource].members
@@ -152,29 +204,17 @@ var getPeopleDetailsSection = function(data, params) {
 				}
 			}
 		}
-	}
-	
-	_.each(data.hours, function ( record ) {
-		if ( record.hours )
-			totalClientInvestHours += record.hours;
-	});
-	
-	_.each(data.vacations, function ( record ) {
-		if ( record.startDate && record.endDate  ) {
-			var bussinesDays = util.getBusinessDaysCount(record.startDate, record.endDate);
-			totalOOOHours += bussinesDays * WORKING_HOURS_IN_DAY;
-		}	
-	});
+	}	
 	
 	return {
 		peopleByRoles: peopleByRoles,
 		peopleOnClient: peopleOnClient.length,
 		peopleOnInvestment: peopleOnInvestment.length,
-		totalPeople: totalPeople,
+		totalPeople: data.people.length,
 		utilizationByRole: utilizationByRole,
 		availableHours: availibleHours,
 		totalClientInvestHours: Math.round( totalClientInvestHours ),
-		totalOOOHours: Math.round( totalOOOHours ),
+		totalTasksHours: Math.round( totalOOOHours + totalOHHours ),
 		utilizationClient:  Math.round( clientActualHours / clientProjectedHours * 100 ),
 		utilizationInvest:  Math.round( investActualHours / investProjectedHours * 100 ),
 		utilizationTotal: Math.round((clientActualHours + investActualHours) / (clientProjectedHours + investProjectedHours)  * 100)
