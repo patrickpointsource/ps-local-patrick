@@ -194,6 +194,154 @@ module.exports = function(params) {
 	};
 
 	
+	//================================================================
+	/* Configuration of different types of Lucine Search indexes
+	 * At this moment we have only Hours.
+	 */
+	function cloudantLucineSearchConfig(Type)
+	{
+		var dbobj = {};
+		switch(Type)
+		{
+		case "Hours":	dbobj.ddoc = 'LuceneSearch';
+				dbobj.lindex = 'HoursByProjectPersonDate';
+				dbobj.func = paramsToLucineQueryHours;
+				dbobj.iserr = false;
+				break;
+
+		default:	dbobj.ddoc = null;
+				dbobj.lindex = null;
+				dbobj.func = null;
+				dbobj.iserr = true;
+				break;
+		}
+		return dbobj;
+	}
+
+	//================================================================
+	function ArrayToLucineString(pArray)
+	{
+		if(pArray)
+			if(Array.isArray(pArray))
+				return "(\"" + pArray.join("\" OR \"") + "\")";
+			else
+			if(typeof(pArray) == "string")
+				return "\"" + pArray + "\"";
+		return "";
+	}
+	
+	
+	/*================================================================
+	 * HOURS-specific conversion of params into Lucine query
+	 */
+	function paramsToLucineQueryHours(params){
+		var query = ""; 
+		var tquery = "";
+		var fand = false;
+		
+		var sday = (params.startDate)?(new Date(params.startDate).getTime()):(0);
+		var eday = (params.endDate)?(new Date(params.endDate).getTime()):(new Date().getTime());
+		
+
+		if(params.startDate || params.endDate)
+		{
+			fand = true;
+			query = "doc_date:[" + sday + " TO " + eday + "]";
+		}
+		if(params.Persons && params.Persons.length > 0)
+		{
+			if(fand) query += " AND ";
+			fand = true;
+			query += "person.resource:" + ArrayToLucineString(params.Persons);
+		}
+
+		if(params.Projects && params.Projects.length > 0)
+		{
+			if(fand) query += " AND ";
+			tquery = ArrayToLucineString(params.Projects);
+			query += "(project.resource:" + tquery + " OR task.resource:" + tquery + ")";
+		}
+		return query;
+	}
+
+	
+	
+	/*================================================================
+	 * Lucine-specific logic. Don't bother with understanding.
+	 * Used for chunked retrieval of data.
+	 */
+	var cloudantLucinePrepareQuery = function(user_params, params, dbobj)
+	{
+		var pquery = {};
+		
+		(params.isIncludeDocs)?(pquery.include_docs = true):(pquery.include_docs = false);
+
+		if(params.limit && parseInt(params.limit) == params.limit && params.limit > 0 && params.limit <= 200)
+			pquery.limit = params.limit;
+		if(params.bookmark && typeof(params.bookmark) == "string")
+			pquery.bookmark = params.bookmark;
+		if(user_params && dbobj && !dbobj.iserr)
+			pquery.q = dbobj.func(user_params); 
+
+		return pquery;
+	};
+
+
+	/* =====================================================================================
+	 * Search via Lucine full-text index
+	 * PARAMS:
+	 * 	user_params: JSON object with list of user-specific input query params (person, project, date, ...) 
+	 * 		For different types of query we may have different number of input params.
+	 * 		Parameters can be Arrays, strings, or dates. 
+	 * 	params: cloudant-specific search params.
+	 *	dbobj:	specifies which index to use for search
+	 *
+	 * RETURN: Array of records
+	 * 
+	 * COMMENT: By default Lucine search returns only first 25 records. 
+	 * 		This behavior can be increased up to 200 (params.limit).
+	 * 		In order to get all records we need to chunk data in 200 rows increments.
+	 */
+	var cloudantLucineSearch = function(user_params, params, dbobj, callback) {
+		var db = Cloudant.db.use(dbName);
+		var tdocs = new Array();
+		
+		if(!params.limit) 
+			params.limit = 200;
+		if(!dbobj || dbobj.iserr)
+			dbobj = cloudantLucineSearchConfig(user_params.Type);
+
+		if(dbobj.iserr)
+			callback("Error: Lucine Index is not specified.", null);
+		else
+		{
+			if(!params.query) params.query = cloudantLucinePrepareQuery(user_params, params, dbobj);
+			if(params.bookmark) params.query.bookmark = params.bookmark;
+		
+//			console.log(params.query);
+			db.search(dbobj.ddoc, dbobj.lindex, params.query, function(err, doc) {
+				if(err)		
+					callback(err, null);
+				else
+				{
+					if(doc.rows.length > 0)
+					{
+						params.bookmark = doc.bookmark;
+						cloudantLucineSearch(user_params, params, dbobj, function(new_err, new_docs) {
+							if(new_err)
+								callback(new_err, null);
+							else
+								callback(null, new_docs.concat(doc.rows));
+						});
+					}
+					else
+						callback(null, doc.rows);
+				}
+			});
+		}
+	};
+	
+	
 	//=============================================================================
 	var prepareResponse = function(data, about, valProp) {
 	    var result = {};
@@ -384,4 +532,5 @@ module.exports = function(params) {
 	module.exports.updateItem = updateItem;
 	module.exports.deleteItem = deleteItem;
 	module.exports.getItem = getItem;
+	module.exports.cloudantLucineSearch = cloudantLucineSearch; 
 };

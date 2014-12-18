@@ -1202,6 +1202,70 @@ var getItem = function( id, callback ) {
 	} );
 };
 
+/*==================================================================
+ * Cloudant Lucine full-text search methods
+ * cloudantSearchHoursIncludeDocs
+ * INPUT: 	Persons and Projects can be arrays or strings
+ * 			StartDate / EndDate should be valid dates or null
+ * Any parameter (except callback) can be set to null if not used for search.
+ * 
+ * RETURNS: method returns full documents as a result of search in addition to predefined fields.
+ * 		Result set: [
+ * 			{ id: 'ddd',
+ * 				fields: { date: '', hours: 1, ...} predefined fields are here.
+ * 				doc: {}	full doc is here.
+ * 			}]
+ * 		Takes about twice more time than retrieval on index data only.
+ * 		Check cloudantSearchHours method first.
+ */
+var cloudantSearchHoursIncludeDocs = function(Persons, Projects, startDate, endDate, callback){
+	var user_params = {};
+	var params = {};
+	user_params.Type = "Hours";
+	user_params.Persons = Persons;
+	user_params.Projects = Projects;
+	user_params.startDate = startDate;
+	user_params.endDate = endDate;
+	params.isIncludeDocs = true;
+	params.limit = 200;
+
+	dbAccess.cloudantLucineSearch(user_params, params, null, callback);
+};
+
+/*==================================================================
+ * Cloudant Lucine full-text search methods
+ * cloudantSearchHours
+ * INPUT: 	Persons and Projects can be arrays or strings
+ * 			StartDate / EndDate should be valid dates or null
+ * Any parameter (except callback) can be set to null if not used for search.
+ * 
+ * RETURNS: method returns a predefined set of fields from index, not a full document.
+ * 		As a result works twice faster then cloudantSearchHoursIncludeDocs
+ * 		Result set: [
+ * 			{ id: 'ddd',
+ * 				fields: { date: '', hours: 1, ...} predefined fields are here.
+ * 			}]
+ 	
+ * List of predefined fields: date, hours, person.name, person.resource,
+ * 		project.name, project.resource, task.name, task.resource
+ * List can be extended upon request.
+ */
+var cloudantSearchHours = function(Persons, Projects, startDate, endDate, callback){
+	var user_params = {};
+	var params = {};
+	user_params.Type = "Hours";
+	user_params.Persons = Persons;
+	user_params.Projects = Projects;
+	user_params.startDate = startDate;
+	user_params.endDate = endDate;
+	params.isIncludeDocs = false;
+	params.limit = 200;
+
+	dbAccess.cloudantLucineSearch(user_params, params, null, callback);
+};
+
+
+
 module.exports.listProjects = listProjects;
 module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
 module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
@@ -1267,3 +1331,5 @@ module.exports.SKILLS_KEY = SKILLS_KEY;
 module.exports.TASKS_KEY = TASKS_KEY;
 
 module.exports.prepareRecords = prepareRecords;
+module.exports.cloudantSearchHoursIncludeDocs = cloudantSearchHoursIncludeDocs;
+module.exports.cloudantSearchHours = cloudantSearchHours;

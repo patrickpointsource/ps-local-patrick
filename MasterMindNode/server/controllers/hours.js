@@ -73,13 +73,6 @@ module.exports.listHoursByProjectsAndDates = function(projects, startDate, endDa
 };
 
 module.exports.insertHours = function(obj, callback) {
-    
-	// 12/11/14 MM    var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);
-	// 12/11/14 MM    if(validationMessages.length > 0) {
-	// 12/11/14 MM      callback( validationMessages.join(', '), {} );
-	// 12/11/14 MM      return;
-	// 12/11/14 MM    }
-    
     obj.form = dataAccess.HOURS_KEY;
     console.log('create hours entry:' + JSON.stringify(obj));
     
@@ -121,14 +114,7 @@ module.exports.insertHours = function(obj, callback) {
 
 };
 
-module.exports.updateHours = function(id, obj, callback) {
-    
-	// 12/11/14 MM    var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);
-	// 12/11/14 MM    if(validationMessages.length > 0) {
-	// 12/11/14 MM      callback( validationMessages.join(', '), {} );
-	// 12/11/14 MM      return;
-	// 12/11/14 MM    }
-    
+module.exports.updateHours = function(id, obj, callback) {    
     console.log('update hours entry:' + JSON.stringify(obj));
     
     dataAccess.updateItem(obj._id, obj, dataAccess.HOURS_KEY, function(err, body){
