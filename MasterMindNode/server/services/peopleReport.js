@@ -259,9 +259,9 @@ var getProjectHours = function(data, params) {
 		});
 	});
 	
-	projectedClientHours = parseInt(projectedClientHours);
-	projectedInvestHours = parseInt(projectedInvestHours);
-	capacity = parseInt(capacity);
+	projectedClientHours = Math.round(projectedClientHours);
+	projectedInvestHours = Math.round(projectedInvestHours);
+	capacity = Math.round(capacity);
 	
 	var vacationTask = getTaskByName ( TASK_TITLE.VACATION, data.tasks );
 	var siteHolidayTask = getTaskByName ( TASK_TITLE.SITE_HOLIDAY, data.tasks );
@@ -290,12 +290,12 @@ var getProjectHours = function(data, params) {
 	var totalProjectedHours = projectedClientHours + projectedInvestHours;
 	var totalActualHours = actualClientHours + actualInvestHours;
 	
-	var projectedClient = parseInt((projectedClientHours / capacity) * 100); 
-	var projectedInvest = parseInt((projectedInvestHours / capacity) * 100); 
+	var projectedClient = Math.round((projectedClientHours / capacity) * 100); 
+	var projectedInvest = Math.round((projectedInvestHours / capacity) * 100); 
 	var projectedAllUtilization = projectedClient + projectedInvest + outOfOffice + overhead;
 	
-	var actualClient = parseInt(( actualClientHours / capacity ) * 100);
-	var actualInvest = parseInt(( actualInvestHours / capacity ) * 100);
+	var actualClient = Math.round(( actualClientHours / capacity ) * 100);
+	var actualInvest = Math.round(( actualInvestHours / capacity ) * 100);
 	var actualAllUtilization = actualClient + actualInvest + outOfOffice + overhead;
 	
 	var projectHours = {
