@@ -6,6 +6,7 @@ var util = require( '../util/util.js' );
 var _ = require('underscore');
 var memoryCache = require( '../data/memoryCache.js' );
 var moment = require('moment');
+var reportCalculations = require( '../services/reportCalculations.js' );
 var reportsService = require( '../services/reportsService.js' );
 
 var UNDETERMINED_ROLE = 'undetermined_role';
@@ -23,6 +24,13 @@ var getTaskByName = function ( taskName, tasks ) {
 	if ( !task )
 		task = {};
 	return task;
+};
+
+var TASKS = {
+  MARKETING: "Marketing",
+  SALES: "Sales",
+  VACATION: "Vacation",
+  SICK: "Sick Time"
 };
 
 // generates report output object and calls callback when ready
@@ -319,28 +327,60 @@ var getProjectHours = function(data, params) {
 
 var isClientProject = function (project) {
 	return ( project && ( project.type == "paid" || project.type == "poc") ) ? true : false;
-}
+};
 
 var isInvestProject = function (project) {
 	return ( project && ( project.type == "invest" ) ) ? true : false;
-}
+};
 
-// Not implemented (fake data)
 var getCategoryHours = function(data, params) {
+
+  var statistics = reportCalculations.getHoursStatistics(data);
+  var capacity = reportCalculations.calculateCapacity(data, params.startDate, params.endDate);
+  
+  // calculating percent of OOO hours
+  var percentOOO = 0;
+  
+  if(statistics.outOfOffice > 0) {
+    percentOOO = Math.round( (statistics.outOfOffice * 100) / statistics.allHours );
+  }
+  
+  // calculating percent of OH hours
+  var percentOH = 0;
+  
+  if(statistics.overhead > 0) {
+    percentOH = Math.round( (statistics.overhead * 100) / statistics.allHours );
+  }
+  
+  //calculating percent of Client hours
+  
+  var percentClient = 0;
+  
+  if(statistics.actualClientHours > 0) {
+    percentClient = Math.round( (statistics.actualClientHours * 100) / statistics.allHours);
+  }
+  
+  //calculating percent of Invest hours
+  
+  var percentInvest = 0;
+  
+  if(statistics.actualInvestHours > 0) {
+    percentInvest = Math.round( (statistics.actualInvestHours * 100) / statistics.allHours );
+  }
+  
+  var percentUnaccounted = 100 - percentOOO - percentOH - percentClient - percentInvest;
+  
   var categoryHours = {
-     estimatedOOOHours: 36,
-     estimatedOHHours: 0,
-     actualOOOHours: 48,
-     actualOHHours: 133,
-     percentClientHours: 35,
-     percentInvestHours: 34,
-     percentOOO: 0.4,
-     percentOH: 1.2,
-     percentHoursUnaccounted: 29.4
+     OOOHours: statistics.outOfOffice,
+     OHHours: statistics.overhead,
+     percentClientHours: percentClient,
+     percentInvestHours: percentInvest,
+     percentOOO: percentOOO,
+     percentOH: percentOH,
+     percentHoursUnaccounted: percentUnaccounted
   };
   
-  categoryHours.totalOOOOHHoursEstimated = categoryHours.estimatedOOOHours + categoryHours.estimatedOHHours;
-  categoryHours.totalOOOOHHoursActual = categoryHours.actualOOOHours + categoryHours.actualOHHours;
+  categoryHours.totalOOOOHHours = categoryHours.OOOHours + categoryHours.OHHours;
   
   return categoryHours;
 };
