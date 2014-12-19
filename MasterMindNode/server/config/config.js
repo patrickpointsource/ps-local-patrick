@@ -12,6 +12,16 @@ var devenv = {
 		},
 		google: {
 			clientID: '141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com',
+			// list available client IDs to validate "audience" when validating token
+			clientIDList: [ // Client IDs for web application
+			               '141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com', 
+			               '141952851027.apps.googleusercontent.com',
+			               // Service account client id
+			               '141952851027-1u88oc96rik8l6islr44ha65o984tn3q.apps.googleusercontent.com',
+			               // Client ID for Android application
+			               '141952851027-biv6kglisgfec5m72v4im6aj4rd2hma4.apps.googleusercontent.com',
+			               // Client ID for iOS application
+			               '141952851027-fihv33jl1j6f1kk8gfs767as8h212k8j.apps.googleusercontent.com'],
 			clientSecret: 'xx9Om8aLgwzlmeBmSGoOqwdh',
 			callbackURL: '/oauth2callback',
 			callbackHost: 'http://localhost:3000',

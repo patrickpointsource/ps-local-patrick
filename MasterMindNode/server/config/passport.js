@@ -5,6 +5,7 @@ var GoogleStrategy = require( 'passport-google-oauth' ).OAuth2Strategy;
 var BearerStrategy = require( 'passport-http-bearer' ).Strategy;
 var ensureLoggedIn = require( 'connect-ensure-login' ).ensureLoggedIn;
 var googleapis = require( 'googleapis' );
+var _ = require( 'underscore' );
 
 var config = require( './config.js' );
 var context = require( '../util/context.js' );
@@ -20,9 +21,8 @@ var validateGoogleToken = function( token, done ) {
 				//console.log('Error occurred: ', err);
 				return done( err, null );
 			} else {
-				// Verify this was issued to our app
-				// Verify this user exists in our DB
-				if( result.audience === config.google.clientID && result.user_id) {
+				// compare list of associated client ids with returned
+				if( _.contains(config.google.clientIDList, result.audience) && result.user_id) {
 					context.authorization = token;
 					return done( '', result.user_id );
 				} else {
