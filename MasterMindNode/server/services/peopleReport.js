@@ -14,7 +14,15 @@ var TASK_TITLE = {
 		VACATION: "Vacation",
 		SALES: "Sales",
 		MARKETING: "Marketing",
-		SICK: "Sick time"
+		SICK: "Sick time",
+		SITE_HOLIDAY: "Site Holiday"
+};
+
+var getTaskByName = function ( taskName, tasks ) {
+	var task = _.findWhere(tasks, { name : taskName });
+	if ( !task )
+		task = {};
+	return task;
 };
 
 // generates report output object and calls callback when ready
@@ -118,16 +126,10 @@ var getPeopleDetailsSection = function(data, params) {
 		}
 	}
 	
-	var getTaskByName = function ( taskName ) {
-		var task = _.findWhere(data.tasks, { name : taskName });
-		if ( !task )
-			task = {};
-		return task;
-	};
-	var vacationTask = getTaskByName ( TASK_TITLE.VACATION );
-	var salesTask = getTaskByName ( TASK_TITLE.SALES );
-	var sickTask = getTaskByName ( TASK_TITLE.SICK );
-	var marketingTask = getTaskByName ( TASK_TITLE.MARKETING );
+	var vacationTask = getTaskByName ( TASK_TITLE.VACATION, data.tasks );
+	var salesTask = getTaskByName ( TASK_TITLE.SALES, data.tasks );
+	var sickTask = getTaskByName ( TASK_TITLE.SICK, data.tasks );
+	var marketingTask = getTaskByName ( TASK_TITLE.MARKETING, data.tasks );
 	
 	_.each(data.hours, function( record ) {
 		if ( record.hours ) {
@@ -221,29 +223,107 @@ var getPeopleDetailsSection = function(data, params) {
 	};
 };
 
-// Not implemented (fake data)
 var getProjectHours = function(data, params) {
-  var projectHours = {
-    capacity: 10920,
-    estimatedClientHours: 4100,
-    estimatedInvestHours: 3430,
-    actualClientHours: 3979,
-    actualInvestHours: 3668,
-    estimatedClient: 72,
-    estimatedInvest: 69,
-    estimatedAverage: 70,
-    estimatedAllUtilization: 70,
-    actualClient: 68,
-    actualInvest: 73,
-    actualAverage: 70,
-    actualAllUtilization: 70,
-  };
-  
-  projectHours.totalHoursEstimated = projectHours.estimatedClientHours + projectHours.estimatedInvestHours;
-  projectHours.totalActualHours = projectHours.actualClientHours + projectHours.actualInvestHours;
-  
-  return projectHours;
+	
+	var reportStartDate = moment(params.startDate);
+	var reportEndDate = moment(params.endDate);
+	
+	var capacity = 0;
+	var projectedClientHours = 0;
+	var projectedInvestHours = 0;
+	var actualClientHours = 0;
+	var actualInvestHours = 0;
+	var outOfOffice = 0;
+	var overhead = 0;
+	
+	_.each(data.assignments, function (assignment){
+		var project = _.findWhere(data.projects, {resource: assignment.project.resource});
+		_.each(assignment.members, function (member){
+			var memberStartDate = moment(member.startDate);
+			var memberEndDate = moment(member.endDate);
+			var initStartDate = (memberStartDate > reportStartDate ) ? memberStartDate : reportStartDate;
+			var initEndDate = (memberEndDate < reportEndDate) ? memberEndDate : reportEndDate;
+			if (initStartDate < initEndDate) {
+				var workingDays = util.getBusinessDaysCount(initStartDate, initEndDate);
+				var weeks = workingDays / 5;
+				var projectedHours = weeks * member.hoursPerWeek;
+							
+				if (isClientProject(project)) {
+					projectedClientHours += projectedHours;
+				}
+				if (isInvestProject(project)) {
+					projectedInvestHours += projectedHours;
+				}
+				capacity += projectedHours;
+			}
+		});
+	});
+	
+	projectedClientHours = parseInt(projectedClientHours);
+	projectedInvestHours = parseInt(projectedInvestHours);
+	capacity = parseInt(capacity);
+	
+	var vacationTask = getTaskByName ( TASK_TITLE.VACATION, data.tasks );
+	var siteHolidayTask = getTaskByName ( TASK_TITLE.SITE_HOLIDAY, data.tasks );
+
+	_.each(data.hours, function (record){
+		if ( record.project ) {
+			var project = _.findWhere(data.projects, {resource: record.project.resource});
+			if (isClientProject(project)) {
+				actualClientHours += record.hours;
+			}
+			if (isInvestProject(project)) {
+				actualInvestHours += record.hours;
+			}
+		}
+		if ( record.task ) {
+			if ( ( vacationTask && record.task.resource == vacationTask.resource ) || 
+					( siteHolidayTask && record.task.resource == siteHolidayTask.resource ) ) {
+				outOfOffice += record.hours;
+			}
+			else {
+				overhead += record.hours;
+			}
+		}
+	});	
+	
+	var totalProjectedHours = projectedClientHours + projectedInvestHours;
+	var totalActualHours = actualClientHours + actualInvestHours;
+	
+	var projectedClient = parseInt((projectedClientHours / capacity) * 100); 
+	var projectedInvest = parseInt((projectedInvestHours / capacity) * 100); 
+	var projectedAllUtilization = projectedClient + projectedInvest + outOfOffice + overhead;
+	
+	var actualClient = parseInt(( actualClientHours / capacity ) * 100);
+	var actualInvest = parseInt(( actualInvestHours / capacity ) * 100);
+	var actualAllUtilization = actualClient + actualInvest + outOfOffice + overhead;
+	
+	var projectHours = {
+		capacity : capacity,
+		projectedClientHours : projectedClientHours,
+		projectedInvestHours : projectedInvestHours,
+		totalProjectedHours : totalProjectedHours,
+		actualClientHours : actualClientHours,
+		actualInvestHours : actualInvestHours,
+		totalActualHours : totalActualHours,
+		projectedClient : projectedClient,
+		projectedInvest : projectedInvest,
+		projectedAllUtilization : projectedAllUtilization,
+		actualClient : actualClient,
+		actualInvest : actualInvest,
+		actualAllUtilization : actualAllUtilization
+		
+	};
+	return projectHours;
 };
+
+var isClientProject = function (project) {
+	return ( project && ( project.type == "paid" || project.type == "poc") ) ? true : false;
+}
+
+var isInvestProject = function (project) {
+	return ( project && ( project.type == "invest" ) ) ? true : false;
+}
 
 // Not implemented (fake data)
 var getCategoryHours = function(data, params) {
