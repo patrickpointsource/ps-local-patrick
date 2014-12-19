@@ -84,8 +84,13 @@ module.exports.getHoursStatistics = function(data) {
 };
 
 module.exports.calculateCapacity = function(data, startDate, endDate) {
-  var days = util.getBusinessDaysCount(startDate, endDate);
-  return days * 8;
+  var capacity = 0;
+  for(var i in data.people) {
+    var days = util.getBusinessDaysCount(startDate, endDate);
+    capacity += days * 8;
+  }
+  
+  return capacity;
 };
 
 var isClientProject = function (project) {
