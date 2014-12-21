@@ -83,6 +83,46 @@ module.exports.getHoursStatistics = function(data) {
   };
 };
 
+module.exports.getAssignmentsStatistics = function (data, startDate, endDate) {
+	var reportStartDate = moment(startDate);
+	var reportEndDate = moment(endDate);
+	
+	var projectedClientHours = 0;
+	var projectedInvestHours = 0;
+	
+	_.each(data.assignments, function (assignment){
+		var project = _.findWhere(data.projects, {resource: assignment.project.resource});
+		_.each(assignment.members, function (member){
+			var memberStartDate = moment(member.startDate);
+			var memberEndDate = moment(member.endDate);
+			var initStartDate = (memberStartDate > reportStartDate ) ? memberStartDate : reportStartDate;
+			var initEndDate = (memberEndDate < reportEndDate) ? memberEndDate : reportEndDate;
+			if (initStartDate < initEndDate) {
+				var workingDays = util.getBusinessDaysCount(initStartDate, initEndDate);
+				var weeks = workingDays / 5;
+				var projectedHours = weeks * member.hoursPerWeek;
+							
+				if (isClientProject(project)) {
+					projectedClientHours += projectedHours;
+				}
+				if (isInvestProject(project)) {
+					projectedInvestHours += projectedHours;
+				}
+			}
+		});
+	});
+	
+	projectedClientHours = Math.round(projectedClientHours); 
+	projectedInvestHours = Math.round(projectedInvestHours); 
+	
+	return {
+		projectedClientHours: projectedClientHours,
+		projectedInvestHours: projectedInvestHours,
+		totalProjectedHours : projectedClientHours + projectedInvestHours
+	};
+	
+}
+
 module.exports.calculateCapacity = function(data, startDate, endDate) {
   var capacity = 0;
   for(var i in data.people) {

@@ -232,88 +232,27 @@ var getPeopleDetailsSection = function(data, params) {
 };
 
 var getProjectHours = function(data, params) {
-	
-	var reportStartDate = moment(params.startDate);
-	var reportEndDate = moment(params.endDate);
-	
-	var capacity = 0;
-	var projectedClientHours = 0;
-	var projectedInvestHours = 0;
-	var actualClientHours = 0;
-	var actualInvestHours = 0;
-	var outOfOffice = 0;
-	var overhead = 0;
-	
-	_.each(data.assignments, function (assignment){
-		var project = _.findWhere(data.projects, {resource: assignment.project.resource});
-		_.each(assignment.members, function (member){
-			var memberStartDate = moment(member.startDate);
-			var memberEndDate = moment(member.endDate);
-			var initStartDate = (memberStartDate > reportStartDate ) ? memberStartDate : reportStartDate;
-			var initEndDate = (memberEndDate < reportEndDate) ? memberEndDate : reportEndDate;
-			if (initStartDate < initEndDate) {
-				var workingDays = util.getBusinessDaysCount(initStartDate, initEndDate);
-				var weeks = workingDays / 5;
-				var projectedHours = weeks * member.hoursPerWeek;
-							
-				if (isClientProject(project)) {
-					projectedClientHours += projectedHours;
-				}
-				if (isInvestProject(project)) {
-					projectedInvestHours += projectedHours;
-				}
-				capacity += projectedHours;
-			}
-		});
-	});
-	
-	projectedClientHours = Math.round(projectedClientHours);
-	projectedInvestHours = Math.round(projectedInvestHours);
-	capacity = Math.round(capacity);
-	
-	var vacationTask = getTaskByName ( TASK_TITLE.VACATION, data.tasks );
-	var siteHolidayTask = getTaskByName ( TASK_TITLE.SITE_HOLIDAY, data.tasks );
 
-	_.each(data.hours, function (record){
-		if ( record.project ) {
-			var project = _.findWhere(data.projects, {resource: record.project.resource});
-			if (isClientProject(project)) {
-				actualClientHours += record.hours;
-			}
-			if (isInvestProject(project)) {
-				actualInvestHours += record.hours;
-			}
-		}
-		if ( record.task ) {
-			if ( ( vacationTask && record.task.resource == vacationTask.resource ) || 
-					( siteHolidayTask && record.task.resource == siteHolidayTask.resource ) ) {
-				outOfOffice += record.hours;
-			}
-			else {
-				overhead += record.hours;
-			}
-		}
-	});	
+	var capacity = reportCalculations.calculateCapacity(data, params.startDate, params.endDate);
+	var hoursStatistics = reportCalculations.getHoursStatistics(data);
+	var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, params.startDate, params.endDate);
 	
-	var totalProjectedHours = projectedClientHours + projectedInvestHours;
-	var totalActualHours = actualClientHours + actualInvestHours;
+	var projectedClient = Math.round((assignmentsStatistics.projectedClientHours / capacity) * 100); 
+	var projectedInvest = Math.round((assignmentsStatistics.projectedInvestHours / capacity) * 100); 
+	var projectedAllUtilization = projectedClient + projectedInvest + hoursStatistics.outOfOffice + hoursStatistics.overhead;
 	
-	var projectedClient = Math.round((projectedClientHours / capacity) * 100); 
-	var projectedInvest = Math.round((projectedInvestHours / capacity) * 100); 
-	var projectedAllUtilization = projectedClient + projectedInvest + outOfOffice + overhead;
-	
-	var actualClient = Math.round(( actualClientHours / capacity ) * 100);
-	var actualInvest = Math.round(( actualInvestHours / capacity ) * 100);
-	var actualAllUtilization = actualClient + actualInvest + outOfOffice + overhead;
+	var actualClient = Math.round(( hoursStatistics.actualClientHours / capacity ) * 100);
+	var actualInvest = Math.round(( hoursStatistics.actualInvestHours / capacity ) * 100);
+	var actualAllUtilization = actualClient + actualInvest + hoursStatistics.outOfOffice + hoursStatistics.overhead;
 	
 	var projectHours = {
 		capacity : capacity,
-		projectedClientHours : projectedClientHours,
-		projectedInvestHours : projectedInvestHours,
-		totalProjectedHours : totalProjectedHours,
-		actualClientHours : actualClientHours,
-		actualInvestHours : actualInvestHours,
-		totalActualHours : totalActualHours,
+		projectedClientHours : assignmentsStatistics.projectedClientHours,
+		projectedInvestHours : assignmentsStatistics.projectedInvestHours,
+		totalProjectedHours : assignmentsStatistics.totalProjectedHours,
+		actualClientHours : hoursStatistics.actualClientHours,
+		actualInvestHours : hoursStatistics.actualInvestHours,
+		totalActualHours : hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours,
 		projectedClient : projectedClient,
 		projectedInvest : projectedInvest,
 		projectedAllUtilization : projectedAllUtilization,
@@ -323,14 +262,6 @@ var getProjectHours = function(data, params) {
 		
 	};
 	return projectHours;
-};
-
-var isClientProject = function (project) {
-	return ( project && ( project.type == "paid" || project.type == "poc") ) ? true : false;
-};
-
-var isInvestProject = function (project) {
-	return ( project && ( project.type == "invest" ) ) ? true : false;
 };
 
 var getCategoryHours = function(data, params) {
