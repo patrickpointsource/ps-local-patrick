@@ -13,15 +13,15 @@
 			<label>Select export options</label>
 			<div class="reports groups">
 				<label>
-					<input type="checkbox" ng-click="selectExportAllRoles()" ng-model="exportOptions.allRoles" />
+					<input type="checkbox" ng-click="selectAllRolesToExport()" ng-model="exportOptions.allRoles" />
 					All hours data </label>
-				<div ng-repeat="peopleByRole in output.peopleDetails.peopleByRoles">
+				<div ng-repeat="utilizationByRole in output.peopleDetails.utilizationDetails">
 					<label>
-						<input type="checkbox" ng-click="selectExportRole(peopleByRole.role);" ng-model="peopleByRole.role.isSelected" />
-						{{peopleByRole.role.abbreviation}} </label>
+						<input type="checkbox" ng-click="selectRoleToExport(utilizationByRole.role);" ng-model="utilizationByRole.role.isSelected" />
+						{{utilizationByRole.role.abbreviation}} </label>
 				</div>
 				<button class="btn btn-report">
-					<a href="{{output.reportData.link}}" download="Custom.csv" > Export to CSV </a>
+					<a href="{{csvLink}}" download="Custom.csv" > Export to CSV </a>
 				</button>
 			</div>
 		</div>

@@ -112,12 +112,12 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		roles: {}
 	};
 	
-	$scope.selectExportRole = function ( role )
+	$scope.selectRoleToExport = function ( role )
 	{
 		var allSelected = true;
 		role.isSelected = !role.isSelected;
-		for (var i in $scope.output.peopleDetails.peopleByRoles) {
-			if ( !$scope.output.peopleDetails.peopleByRoles[i].role.isSelected ) {
+		for (var i in $scope.output.peopleDetails.utilizationDetails) {
+			if ( !$scope.output.peopleDetails.utilizationDetails[i].role.isSelected ) {
 				allSelected = false;
 				break;
 			}
@@ -125,12 +125,13 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		$scope.exportOptions.allRoles = allSelected;
 	};
 	
-	$scope.selectExportAllRoles = function ( )
+	$scope.selectAllRolesToExport = function ( )
 	{
 		var selected = !$scope.exportOptions.allRoles;
-		for (var i in $scope.output.peopleDetails.peopleByRoles) {
-			$scope.output.peopleDetails.peopleByRoles[i].role.isSelected = selected;
+		for (var i in $scope.output.peopleDetails.utilizationDetails) {
+			$scope.output.peopleDetails.utilizationDetails[i].role.isSelected = selected;
 		}
+		$scope.exportOptions.allRoles = selected;
 	};
 	
 	$scope.selectLocationParent = function (location)
@@ -331,6 +332,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
         $scope.csvLink = 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData );
 		
 		$scope.output = report;
+		$scope.selectAllRolesToExport();
 		
 		if ($scope.isGenerationInProgress)
 			$location.path('/reports/people/output');
