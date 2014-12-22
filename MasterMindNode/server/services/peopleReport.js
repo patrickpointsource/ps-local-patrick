@@ -82,8 +82,8 @@ var getPeopleDetailsSection = function(data, params) {
 		
 	var totalClientInvestHours = Math.round( hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours );
 	var totalTasksHours = Math.round( hoursStatistics.overhead + hoursStatistics.allHours );
-	var utilizationClient = Math.round( hoursStatistics.actualClientHours / assignmentsStatistics.projectedClientHours * 100 );
-	var utilizationInvest = Math.round( hoursStatistics.actualInvestHours / assignmentsStatistics.projectedInvestHours * 100 );
+	var utilizationClient = Math.round( (hoursStatistics.actualClientHours / assignmentsStatistics.projectedClientHours) * 100 );
+	var utilizationInvest = Math.round( (hoursStatistics.actualInvestHours / assignmentsStatistics.projectedInvestHours) * 100 );
 	var	utilizationTotal = utilizationClient + utilizationInvest;
 		
 	return {
