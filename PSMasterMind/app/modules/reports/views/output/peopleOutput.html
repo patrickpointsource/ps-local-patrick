@@ -30,9 +30,9 @@
                     </div>
                     <div class="report-output-inside-row">
                         <div class="col-xs-12 col-sm-4">
-                            <label ng-repeat-start="role in output.peopleDetails.utilizationByRole">{{role.name}}</label>
-                            <div ng-repeat-end="role in output.peopleDetails.utilizationByRole">
-                                {{role.value}} %
+                            <label ng-repeat-start="utilizationByRole in output.peopleDetails.utilizationDetails">{{utilizationByRole.role.title}}</label>
+                            <div ng-repeat-end="utilizationByRole in output.peopleDetails.utilizationDetails">
+                                {{utilizationByRole.role.utilizationRate}} %
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-8 report-graph-place" style="height: 300px;">
@@ -45,8 +45,8 @@
                     <div class="report-output-well body">
                         <div class="col-xs-11 report-output-well-footer">
                         <span>Click the arrow to view individual hours and utilization statistics for [
-                        	<span ng-repeat="peopleByRole in output.peopleDetails.peopleByRoles">
-                        		{{peopleByRole.role.abbreviation}},
+                        	<span ng-repeat="utilizationByRole in output.peopleDetails.utilizationDetails">
+                        		{{utilizationByRole.role.abbreviation}},
                         	</span>
                             ]</span>
                         </div>

@@ -1,23 +1,23 @@
-<div ng-repeat="peopleByRole in output.peopleDetails.peopleByRoles">
+<div ng-repeat="utilizationByRole in output.peopleDetails.utilizationDetails">
 	<div class="report-expand-well">
 
 		<div class="report-expand-well header">
 			<div class="col-xs-10">
-				<h2 style="">{{peopleByRole.role.title}} Hours and Utilization</h2>
+				<h2 style="">{{utilizationByRole.role.title}} Hours and Utilization</h2>
 			</div>
 			<div class="col-xs-2">
-				<i ng-hide="peopleByRole.isCollapsed" ng-click="peopleByRole.isCollapsed = !peopleByRole.isCollapsed" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
-				<i ng-show="peopleByRole.isCollapsed" ng-click="peopleByRole.isCollapsed = !peopleByRole.isCollapsed" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
+				<i ng-hide="utilizationByRole.isCollapsed" ng-click="utilizationByRole.isCollapsed = !utilizationByRole.isCollapsed" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
+				<i ng-show="utilizationByRole.isCollapsed" ng-click="utilizationByRole.isCollapsed = !utilizationByRole.isCollapsed" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
 			</div>
 		</div>
 
-		<div ng-repeat="person in peopleByRole.members" collapse="!peopleByRole.isCollapsed">
+		<div ng-repeat="person in utilizationByRole.members" collapse="!utilizationByRole.isCollapsed">
 			<div class="report-expand-well">
 				<div class="report-expand-well header header100 person-detail">
 					<div class="col-xs-10">
 						<div class="personPicColumn">
 							<a class="person-image" href="#{{person.resource}}">
-							<img class="media-object fullProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultProfileImg.png">
+							<img class="fullProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultProfileImg.png">
 							</img>
 							</a>
 						</div>
@@ -46,9 +46,9 @@
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-2">
-								<label>Hours booked</label>
+								<label>Hours Assigned</label>
 								<div>
-									{{person.hours.booked}}
+									{{person.hours.assigned}}
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-2">
@@ -72,8 +72,7 @@
 							<div class="col-xs-12 col-sm-2">
 								<label>Utilization / Goal</label>
 								<div>
-									{{person.utilization}}% /
-									{{person.goal}}%
+									{{person.utilization}}% / {{person.goal}}%
 								</div>
 							</div>
 						</div>

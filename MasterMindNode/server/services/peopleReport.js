@@ -10,21 +10,6 @@ var reportCalculations = require( '../services/reportCalculations.js' );
 var reportsService = require( '../services/reportsService.js' );
 
 var UNDETERMINED_ROLE = 'undetermined_role';
-var WORKING_HOURS_IN_DAY = 8;
-var TASK_TITLE = {
-		VACATION: "Vacation",
-		SALES: "Sales",
-		MARKETING: "Marketing",
-		SICK: "Sick time",
-		SITE_HOLIDAY: "Site Holiday"
-};
-
-var getTaskByName = function ( taskName, tasks ) {
-	var task = _.findWhere(tasks, { name : taskName });
-	if ( !task )
-		task = {};
-	return task;
-};
 
 var TASKS = {
   MARKETING: "Marketing",
@@ -69,8 +54,8 @@ var getSummarySection = function(data, params) {
   var reportStartDate = moment(params.startDate);
   var reportEndDate = moment(params.endDate);
   var businessDaysCount = util.getBusinessDaysCount(reportStartDate, reportEndDate);
-  var hoursForTeam = businessDaysCount * WORKING_HOURS_IN_DAY * data.people.length;
-  var hoursPerPerson = businessDaysCount * WORKING_HOURS_IN_DAY / data.people.length;
+  var hoursForTeam =  reportCalculations.calculateCapacity(data, params.startDate, params.endDate);
+  var hoursPerPerson = hoursForTeam / data.people.length;
   
   var summarySection = {
     createdDate: created.format("MM/D/YYYY"),
@@ -89,145 +74,29 @@ var getSummarySection = function(data, params) {
 
 // Not implemented (fake data)
 var getPeopleDetailsSection = function(data, params) {
-
-	var businessDaysCount = util.getBusinessDaysCount(params.startDate, params.endDate);
-	var availibleHours = businessDaysCount * WORKING_HOURS_IN_DAY * data.people.length;
-	var peopleOnClient = [];
-	var peopleOnInvestment = [];
-	var utilizationByRole = [];
-	var totalClientInvestHours = 0;
-	var totalOOOHours = 0;
-	var totalOHHours = 0;
-	var clientActualHours = 0;
-	var investActualHours = 0;
-	var clientProjectedHours = 0;
-	var investProjectedHours = 0;
-	var peopleByRoles = {};
 	
-	for (var i in data.assignments) {
-		var members = data.assignments[i].members;
-		var project = _.findWhere(data.projects, {resource: data.assignments[i].project.resource});
-		if (project) {
-			for (var j in members) {
-				var person = members[j].person;
-				if ( (project.type == "paid" || project.type == "poc") && !_.contains(peopleOnClient, person.resource) ) {
-					peopleOnClient.push(person.resource);
-					clientProjectedHours += WORKING_HOURS_IN_DAY;
-					_.each(data.hours, function ( record ) {
-						if ( record.hours && record.project &&
-								record.project.resource == project.resource && record.person.resource == person.resource) {
-							clientActualHours += record.hours;
-						};
-					});
-				} else
-				if ( project.type == "invest" && !_.contains(peopleOnInvestment, person.resource) ) {
-					peopleOnInvestment.push(person.resource);
-					investProjectedHours += WORKING_HOURS_IN_DAY;
-					_.each(data.hours, function ( record ) {
-						if ( record.hours && record.project && 
-								record.project.resource == project.resource &&  record.person.resource == person.resource) {
-							investActualHours += record.hours;
-						}
-					});
-				}
-			}
-		}
-	}
-	
-	var vacationTask = getTaskByName ( TASK_TITLE.VACATION, data.tasks );
-	var salesTask = getTaskByName ( TASK_TITLE.SALES, data.tasks );
-	var sickTask = getTaskByName ( TASK_TITLE.SICK, data.tasks );
-	var marketingTask = getTaskByName ( TASK_TITLE.MARKETING, data.tasks );
-	
-	_.each(data.hours, function( record ) {
-		if ( record.hours ) {
-			if ( record.project ) {
-				var project = _.findWhere(data.projects, {
-					resource : record.project.resource
-				});
-				if (project.type == "paid" || project.type == "poc"	|| project.type == "invest") {
-					totalClientInvestHours += record.hours;
-				}
-			}
-			if ( record.task ) {
-				if (record.task.resource == vacationTask.resource) {
-					totalOOOHours += record.hours;
-				}
-				if (record.task.resource != vacationTask.resource
-						&& record.task.resource != salesTask.resource
-						&& record.task.resource != sickTask.resource
-						&& record.task.resource != marketingTask.resource) {
-					totalOHHours += record.hours;
-				}
-			}
-		}
-	});	
-	
-	var rolesInput = _.isArray(params.roles) ? params.roles
-											 : params.roles ? [ params.roles ] : [];
-	for ( var i in rolesInput ) {
-		var role = _.findWhere(data.allRoles, { abbreviation : rolesInput[i] });
-		utilizationByRole.push({
-			name : role.title,
-			value : role.utilizationRate
-		});
-		for ( var i in data.people ) {
-			var person = data.people[i];
-			person.capacity = 18;
-			person.utilization = 37;
-			person.goal = 38;
-			person.hours = { 
-					booked : 0, 
-					spent : 0, 
-					OOO : 0, 
-					OH : 0 
-			};
-			_.each(data.hours, function(record) {
-				if (record.hours && record.person.resource == person.resource) {
-					if ( record.project ) {
-						person.hours.booked += record.hours;
-						person.hours.spent += record.hours;
-					}
-					if ( record.task ) {
-						if ( record.task.resource == vacationTask.resource) {
-							person.hours.OOO += record.hours;
-						}
-						if ( record.task.resource != vacationTask.resource
-								&& record.task.resource != salesTask.resource
-								&& record.task.resource != sickTask.resource
-								&& record.task.resource != marketingTask.resource) {
-							person.hours.OH += record.hours;
-						}
-					}
-				}
-			});
-			
-			if (person.primaryRole.resource == role.resource) {
-				if (peopleByRoles[person.primaryRole.resource])
-					peopleByRoles[person.primaryRole.resource].members
-							.push(person);
-				else {
-					peopleByRoles[person.primaryRole.resource] = {
-						role : role,
-						members : [ person ]
-					};
-				}
-			}
-		}
-	}	
-	
+	var capacity = reportCalculations.calculateCapacity(data, params.startDate, params.endDate);
+	var hoursStatistics = reportCalculations.getHoursStatistics(data);
+	var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, params.startDate, params.endDate);
+	var utilizationDetails = reportCalculations.getUtilizationDetails(data, params.startDate, params.endDate, params.roles);
+		
+	var totalClientInvestHours = Math.round( hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours );
+	var totalTasksHours = Math.round( hoursStatistics.overhead + hoursStatistics.allHours );
+	var utilizationClient = Math.round( hoursStatistics.actualClientHours / assignmentsStatistics.projectedClientHours * 100 );
+	var utilizationInvest = Math.round( hoursStatistics.actualInvestHours / assignmentsStatistics.projectedInvestHours * 100 );
+	var	utilizationTotal = utilizationClient + utilizationInvest;
+		
 	return {
-		peopleByRoles: peopleByRoles,
-		peopleOnClient: peopleOnClient.length,
-		peopleOnInvestment: peopleOnInvestment.length,
 		totalPeople: data.people.length,
-		utilizationByRole: utilizationByRole,
-		availableHours: availibleHours,
-		totalClientInvestHours: Math.round( totalClientInvestHours ),
-		totalTasksHours: Math.round( totalOOOHours + totalOHHours ),
-		utilizationClient:  Math.round( clientActualHours / clientProjectedHours * 100 ),
-		utilizationInvest:  Math.round( investActualHours / investProjectedHours * 100 ),
-		utilizationTotal: Math.round((clientActualHours + investActualHours) / (clientProjectedHours + investProjectedHours)  * 100)
+		utilizationDetails: utilizationDetails,
+		peopleOnClient: assignmentsStatistics.peopleOnClient,
+		peopleOnInvestment: assignmentsStatistics.peopleOnInvestment,
+		availableHours: capacity,
+		totalClientInvestHours: totalClientInvestHours,
+		totalTasksHours: totalTasksHours,
+		utilizationClient:  utilizationClient,
+		utilizationInvest:  utilizationInvest,
+		utilizationTotal: utilizationTotal 
 	};
 };
 

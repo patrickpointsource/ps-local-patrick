@@ -7,7 +7,7 @@ var _ = require('underscore');
 var moment = require('moment');
 
 var UNDETERMINED_ROLE = 'undetermined_role';
-var WORKING_HOURS_IN_DAY = 8;
+var WORKING_HOURS_PER_DAY = 8;
 var TASK_TITLE = {
         VACATION: "Vacation",
         SALES: "Sales",
@@ -40,7 +40,7 @@ var getTaskResourcesByName = function ( taskName, tasksList ) {
 //   overhead hours
 //   out of office hours
 //   all hours
-module.exports.getHoursStatistics = function(data) {
+var getHoursStatistics = function( data, personResource ) {
   var actualClientHours = 0;
   var actualInvestHours = 0;
   var outOfOffice = 0;
@@ -50,7 +50,7 @@ module.exports.getHoursStatistics = function(data) {
   var siteHolidayTask = getTaskByName ( TASK_TITLE.SITE_HOLIDAY, data.tasks );
   
   _.each(data.hours, function (record){
-      if(record.hours) {
+      if( record.hours && (!personResource || record.person.resource == personResource) ) {
         if ( record.project ) {
             var project = _.findWhere(data.projects, {resource: record.project.resource});
             if (isClientProject(project)) {
@@ -83,30 +83,37 @@ module.exports.getHoursStatistics = function(data) {
   };
 };
 
-module.exports.getAssignmentsStatistics = function (data, startDate, endDate) {
+var getAssignmentsStatistics = function (data, startDate, endDate, personResource) {
 	var reportStartDate = moment(startDate);
 	var reportEndDate = moment(endDate);
 	
 	var projectedClientHours = 0;
 	var projectedInvestHours = 0;
 	
+	var peopleOnClient = 0;
+	var peopleOnInvestment = 0;
+	
 	_.each(data.assignments, function (assignment){
 		var project = _.findWhere(data.projects, {resource: assignment.project.resource});
 		_.each(assignment.members, function (member){
-			var memberStartDate = moment(member.startDate);
-			var memberEndDate = moment(member.endDate);
-			var initStartDate = (memberStartDate > reportStartDate ) ? memberStartDate : reportStartDate;
-			var initEndDate = (memberEndDate < reportEndDate) ? memberEndDate : reportEndDate;
-			if (initStartDate < initEndDate) {
-				var workingDays = util.getBusinessDaysCount(initStartDate, initEndDate);
-				var weeks = workingDays / 5;
-				var projectedHours = weeks * member.hoursPerWeek;
+			if ( !personResource || personResource == member.person.resource ) {
+				var memberStartDate = moment(member.startDate);
+				var memberEndDate = moment(member.endDate);
+				var initStartDate = (memberStartDate > reportStartDate ) ? memberStartDate : reportStartDate;
+				var initEndDate = (memberEndDate < reportEndDate) ? memberEndDate : reportEndDate;
+				if (initStartDate < initEndDate) {
+					var workingDays = util.getBusinessDaysCount(initStartDate, initEndDate);
+					var weeks = workingDays / 5;
+					var projectedHours = weeks * member.hoursPerWeek;
 							
-				if (isClientProject(project)) {
-					projectedClientHours += projectedHours;
-				}
-				if (isInvestProject(project)) {
-					projectedInvestHours += projectedHours;
+					if (isClientProject(project)) {
+						projectedClientHours += projectedHours;
+						peopleOnClient++;
+					}
+					if (isInvestProject(project)) {
+						projectedInvestHours += projectedHours;
+						peopleOnInvestment++;
+					}
 				}
 			}
 		});
@@ -116,21 +123,67 @@ module.exports.getAssignmentsStatistics = function (data, startDate, endDate) {
 	projectedInvestHours = Math.round(projectedInvestHours); 
 	
 	return {
+		peopleOnClient: peopleOnClient,
+		peopleOnInvestment: peopleOnInvestment,
 		projectedClientHours: projectedClientHours,
 		projectedInvestHours: projectedInvestHours,
 		totalProjectedHours : projectedClientHours + projectedInvestHours
 	};
 	
-}
+};
 
-module.exports.calculateCapacity = function(data, startDate, endDate) {
-  var capacity = 0;
-  for(var i in data.people) {
-    var days = util.getBusinessDaysCount(startDate, endDate);
-    capacity += days * 8;
-  }
-  
-  return capacity;
+var calculateCapacity = function(data, startDate, endDate, personResource) {
+	var capacity = 0;
+	for ( var i in data.people) {
+		if ( !personResource || personResource == data.people[i].resource ) {
+			var days = util.getBusinessDaysCount(startDate, endDate);
+			capacity += days * WORKING_HOURS_PER_DAY;
+		}
+	}
+
+	return capacity;
+};
+
+var getUtilizationDetails = function(data, startDate, endDate, roles) {
+	
+	var rolesInput = [];
+	if ( _.isArray( roles ) )
+		rolesInput = roles;
+	else
+		rolesInput = roles ? [ params.roles ] : [];
+
+    var utilizationDetails = [];
+    
+	for ( var i in rolesInput ) {
+		var role = _.findWhere(data.allRoles, {	abbreviation : rolesInput[i] });
+		var roleMembers = [];
+		for ( var i in data.people ) {
+			var person = data.people[i];
+						
+			var hoursStatistics = getHoursStatistics( data, person.resource );
+			var assignmentsStatistics = getAssignmentsStatistics( data, startDate, endDate,  person.resource );
+			
+			person.capacity = calculateCapacity( data, startDate, endDate, person.resource );
+			person.hours = {
+					assigned : assignmentsStatistics.projectedClientHours + assignmentsStatistics.projectedInvestHours,
+					spent : hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours,
+					OOO : hoursStatistics.outOfOffice,
+					OH : hoursStatistics.overhead
+				};
+			person.utilization = Math.round(( person.hours.spent / person.capacity ) * 100);
+			person.goal = Math.round(( person.hours.assigned / person.capacity ) * 100);
+
+			if (person.primaryRole.resource == role.resource) {
+				roleMembers.push(person);
+			}
+		}
+		utilizationDetails.push({
+			role : role,
+			members : roleMembers
+		});
+	}
+	
+	return utilizationDetails;
 };
 
 var isClientProject = function (project) {
@@ -143,3 +196,7 @@ var isInvestProject = function (project) {
 
 module.exports.isClientProject = isClientProject;
 module.exports.isInvestProject = isInvestProject;
+module.exports.getHoursStatistics = getHoursStatistics;
+module.exports.getAssignmentsStatistics = getAssignmentsStatistics;
+module.exports.calculateCapacity = calculateCapacity;
+module.exports.getUtilizationDetails = getUtilizationDetails;
