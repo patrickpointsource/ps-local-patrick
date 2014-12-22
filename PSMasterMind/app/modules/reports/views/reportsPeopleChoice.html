@@ -19,10 +19,10 @@
 	</div>
 	<div class="row">
 		<div>
-			<button class="btn btn-report pull-left" ng-click="onGenerateReport()" ng-hide="isGenerationInProgress">
+			<button class="btn btn-report pull-left" ng-click="reportToCSV.generate($event)" ng-hide="isGenerationInProgress">
 					Generate
 			</button>
-			<button class="btn btn-report pull-left" ng-click="onCancelReport()" ng-show="isGenerationInProgress">
+			<button class="btn btn-report pull-left" ng-click="reportToCSV.cancel($event)" ng-show="isGenerationInProgress">
 					Cancel
 			</button>
 		</div>

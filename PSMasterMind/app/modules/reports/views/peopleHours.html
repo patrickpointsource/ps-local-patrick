@@ -20,8 +20,8 @@
 						<input type="checkbox" ng-click="selectRoleToExport(utilizationByRole.role);" ng-model="utilizationByRole.role.isSelected" />
 						{{utilizationByRole.role.abbreviation}} </label>
 				</div>
-				<button class="btn btn-report">
-					<a href="{{csvLink}}" download="Custom.csv" > Export to CSV </a>
+				<button class="btn btn-report" ng-click="reportToCSV.exportHoursByRoles($event)" >
+					<a href="{{reportToCSV.link()}}" download="Custom.csv" > Export to CSV </a>
 				</button>
 			</div>
 		</div>

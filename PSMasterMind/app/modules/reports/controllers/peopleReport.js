@@ -24,6 +24,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		years.push(currentYear + i);
 	
 	$scope.years = years;
+
+	$scope.CSVSplitter = ',';
 	
   $scope.choiceLocationLabel = "Select one or more location";
   
@@ -114,8 +116,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	
 	$scope.selectRoleToExport = function ( role )
 	{
-		var allSelected = true;
 		role.isSelected = !role.isSelected;
+		var allSelected = true;
 		for (var i in $scope.output.peopleDetails.utilizationDetails) {
 			if ( !$scope.output.peopleDetails.utilizationDetails[i].role.isSelected ) {
 				allSelected = false;
@@ -239,29 +241,64 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			$scope.params.fields.graphs.trendGoals =
 			$scope.params.fields.graphs.graph = selected;
 	};
-	
-	$scope.onGenerateReport = function () {
-		if( $scope.output && $scope.output.type == "people" ) {
-			$rootScope.modalDialog = {
-				title: "Generate report",
-				text: "Report already generated. Would you like to generate new report?",
-				ok: "Yes",
-				no: "No",
-				okHandler: function( ) {
-					$( ".modalYesNoCancel" ).modal( 'hide' );
+			
+	$scope.reportToCSV = {
+			stringify: function( str ) {
+				return '"' + str.replace( /^\s\s*/, '' ).replace( /\s*\s$/, '' )// trim spaces
+				.replace( /"/g, '""' ) + // replace quotes with double quotes
+				'"';
+			},
+
+			generate: function( e ) {
+				if( $scope.output && $scope.output.type == "people" ) {
+					$rootScope.modalDialog = {
+						title: "Generate report",
+						text: "Report already generated. Would you like to generate new report?",
+						ok: "Yes",
+						no: "No",
+						okHandler: function( ) {
+							$( ".modalYesNoCancel" ).modal( 'hide' );
+							$scope.generateReport( );
+						},
+						noHandler: function( ) {
+							$( ".modalYesNoCancel" ).modal( 'hide' );
+							$location.path('/reports/people/output');
+						}
+					};
+					$( ".modalYesNoCancel" ).modal( 'show' );
+				} else {
 					$scope.generateReport( );
-				},
-				noHandler: function( ) {
-					$( ".modalYesNoCancel" ).modal( 'hide' );
-					$location.path('/reports/people/output');
 				}
-			};
-			$( ".modalYesNoCancel" ).modal( 'show' );
-		} else {
-			$scope.generateReport( );
-		}
-	};
-		
+			},
+
+			exportHours: function( e ) {
+				$scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV );
+				prepareDocumentToDownload(e, $scope.csvData);
+			},
+			
+			exportHoursByRoles: function( e ) {
+				var rolesToExport = []; 
+		        _.each($scope.output.peopleDetails.utilizationDetails, function( record ) { 
+		        	if ( record.role.isSelected )
+		        		rolesToExport.push(record.role.resource);
+		        });
+				$scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV, rolesToExport );
+				prepareDocumentToDownload(e, $scope.csvData);
+			},
+			
+			cancel:  function( e ) {
+				Resources.refresh("/reports/cancel").then(function( result ){
+					$scope.cancelReportGeneration();
+				}).catch(function( err ){
+					$scope.cancelReportGeneration();
+				});
+			},
+			
+			link: function( ) {
+				return {};
+			}
+		};
+	
 	$scope.generateReport = function () {		
 		
 		if ($scope.isGenerationInProgress)
@@ -316,23 +353,13 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		Resources.refresh("/reports/people/generate", input, {});
 	};
 	
-	$scope.onCancelReport = function () {
-		Resources.refresh("/reports/cancel").then(function( result ){
-			$scope.cancelReportGeneration();
-		}).catch(function( err ){
-			$scope.cancelReportGeneration();
-		});
-	};
-	
 	$scope.onReportGenerated = function ( report ) {
 
 		console.log( 'Report generation completed' );
-		
-		$scope.csvData = $scope.JSON2CSV( report.dataForCSV );
-        $scope.csvLink = 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData );
-		
+				
 		$scope.output = report;
-		$scope.selectAllRolesToExport();
+		
+		$scope.selectAllRolesToExport();		
 		
 		if ($scope.isGenerationInProgress)
 			$location.path('/reports/people/output');
@@ -433,13 +460,11 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
         }
 
     };
-    
-    $scope.CSVSplitter = ',';
 	
-	$scope.JSON2CSV = function( reportData ) {
+	$scope.JSON2CSV = function( reportData, rolesToExport ) {
         var str = '';
         var line = '';
-
+        
         //Print the header
         var head = $scope.getHoursHeader( );
         var i = 0;
@@ -447,11 +472,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
         line += head.join( $scope.CSVSplitter );
         str += line + '\r\n';
 
-        var i;
-        var j;
-        var k;
-
-        for( i = 0; i < reportData.length; i++ ) {
+        for(var i = 0; i < reportData.length; i++ ) {
             line = '';
 
             var record = reportData[ i ];
@@ -470,65 +491,85 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 
                 return result.join( $scope.CSVSplitter );
             };
-            for( j = 0; record.roles && j < record.roles.length; j++ ) {
-
+            
+            for(var j = 0; record.roles && j < record.roles.length; j++ ) {
+            	if ( !rolesToExport || _.contains(rolesToExport, record.roles[ j ].type.resource) ) {
                     // for hours report
-                    for( k = 0; record.roles[ j ].persons && k < record.roles[ j ].persons.length; k++ ) {
+                    for(var k = 0; record.roles[ j ].persons && k < record.roles[ j ].persons.length; k++ ) {
                         //line += [ '--', '--' ].join( ',' );
 
                         if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
                             //line += [ '--' ].join( ',' );
-                            line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
-                            line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
-                            line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.hoursToCSV.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
-                            line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
+                            line += $scope.reportToCSV.stringify( record.name ) + $scope.CSVSplitter;
+                            line += $scope.reportToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
+                            line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.reportToCSV.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
+                            line += $scope.reportToCSV.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
                             line += [ '--', '--', '--', '--' ].join( $scope.CSVSplitter );
                             line += '\r\n';
                         }
-                        var l = 0;
 
-                        for( l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
+                        for(var l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
                             //line += [ '--' ].join( ',' );
-                            line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
-                            line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
+                            line += $scope.reportToCSV.stringify( record.name ) + $scope.CSVSplitter;
+                            line += $scope.reportToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
                             
                             if (record.roles[ j ].persons[ k ].abbreviation)
                                 line += record.roles[ j ].persons[ k ].abbreviation + $scope.CSVSplitter;
                             else
-                                line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.hoursToCSV.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
+                                line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.reportToCSV.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
                             
-                            line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
+                            line += $scope.reportToCSV.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
 
                             line += record.roles[ j ].persons[ k ].hours[ l ].date + $scope.CSVSplitter;
                             line += record.roles[ j ].persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
-                            line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
+                            line += $scope.reportToCSV.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
                             line += '\r\n';
                         }
-
                     }
+            	}
             }
 
             // in case of tasks
-            if( !record.roles )
-                for( k = 0; record.persons && k < record.persons.length; k++ ) {
-
-                    for( l = 0; record.persons[ k ].hours && l < record.persons[ k ].hours.length; l++ ) {
+            if( !record.roles ) {
+                for(var k = 0; record.persons && k < record.persons.length; k++ ) {
+                    for(var l = 0; record.persons[ k ].hours && l < record.persons[ k ].hours.length; l++ ) {
                         //line += [ '--' ].join( ',' );
-                        line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
+                        line += $scope.reportToCSV.stringify( record.name ) + $scope.CSVSplitter;
                         line += '--' + $scope.CSVSplitter;
-                        line += $scope.hoursToCSV.stringify( record.persons[ k ].name ) + $scope.CSVSplitter;
+                        line += $scope.reportToCSV.stringify( record.persons[ k ].name ) + $scope.CSVSplitter;
                         line += record.persons[ k ].hours[ l ].date + $scope.CSVSplitter;
                         line += record.persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
-                        line += $scope.hoursToCSV.stringify( record.persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
+                        line += $scope.reportToCSV.stringify( record.persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
                         line += '\r\n';
                     }
                 }
+            }
 
             if( line )
                 str += line + '\r\n';
         }
 
         return str;
+    };
+    
+    var prepareDocumentToDownload = function ( controlEvent, data ) {
+    	
+    	/*Only called when our custom event fired*/
+    	var onInnerReportLink = function( e ) {
+			e = e ? e : window.event;
+			e.stopPropagation( );
+			$( e.target ).closest( 'a' ).unbind( 'click' );
+		};
+		
+    	var e = controlEvent ? controlEvent : window.event;
+		var btn = $( e.target ).closest( '.btn-report' ).find( 'a' );
+		e.preventDefault( );
+		e.stopPropagation( );
+		var evt = document.createEvent( "MouseEvents" );
+		evt.initMouseEvent( "click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null );
+		btn.attr( 'href', 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData ));
+		btn.click( onInnerReportLink );
+		btn.get( 0 ).dispatchEvent( evt );
     };
   
 } ] );
