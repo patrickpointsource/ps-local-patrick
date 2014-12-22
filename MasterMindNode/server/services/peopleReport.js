@@ -152,20 +152,40 @@ var getCategoryHours = function(data, params) {
     percentOH = Math.round( (statistics.overhead * 100) / statistics.allHours );
   }
   
-  //calculating percent of Client hours
-  
+  //calculating percent of Client and Invest hours
   var percentClient = 0;
-  
-  if(statistics.actualClientHours > 0) {
-    percentClient = Math.round( (statistics.actualClientHours * 100) / statistics.allHours);
-  }
-  
-  //calculating percent of Invest hours
-  
   var percentInvest = 0;
   
-  if(statistics.actualInvestHours > 0) {
-    percentInvest = Math.round( (statistics.actualInvestHours * 100) / statistics.allHours );
+  var now = moment();
+  var isFuture = moment(params.startDate).isAfter(now);
+  
+  var clientHours;
+  var investHours;
+  
+  if(isFuture) {
+    var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, params.startDate, params.endDate);
+    
+    clientHours = assignmentsStatistics.projectedClientHours;
+    investHours = assignmentsStatistics.projectedInvestHours;
+    
+    if(clientHours > 0) {
+      percentClient = Math.round( (clientHours * 100) / assignmentsStatistics.totalProjectedHours);
+    }
+    
+    if(investHours > 0) {
+      percentInvest = Math.round( (investHours * 100) / assignmentsStatistics.totalProjectedHours );
+    }
+  } else {
+    clientHours = statistics.actualClientHours;
+    investHours = statistics.actualInvestHours;
+    
+    if(clientHours > 0) {
+      percentClient = Math.round( (clientHours * 100) / statistics.allHours);
+    }
+    
+    if(investHours > 0) {
+      percentInvest = Math.round( (investHours * 100) / statistics.allHours );
+    }
   }
   
   var percentUnaccounted = 100 - percentOOO - percentOH - percentClient - percentInvest;

@@ -172,8 +172,7 @@ var getUtilizationDetails = function(data, startDate, endDate, roles) {
 				};
 			person.utilization = Math.round(( person.hours.spent / person.capacity ) * 100);
 			person.goal = Math.round(( person.hours.assigned / person.capacity ) * 100);
-
-			if (person.primaryRole.resource == role.resource) {
+		    if (person.primaryRole.resource == role.resource) {
 				roleMembers.push(person);
 			}
 		}
@@ -184,6 +183,22 @@ var getUtilizationDetails = function(data, startDate, endDate, roles) {
 	}
 	
 	return utilizationDetails;
+};
+
+module.exports.calculateCapacity = function(data, startDate, endDate) {
+  var capacity = 0;
+  for(var i in data.people) {
+    if(data.people[i] && data.people[i].isActive) {
+      var days = util.getBusinessDaysCount(startDate, endDate);
+      if(data.people[i] && data.people[i].partTime && data.people[i].partTimeHours) {
+        capacity += days * parseInt(data.people[i].partTimeHours);
+      } else {
+        capacity += days * 8;
+      }
+    }
+  }
+  
+  return capacity;
 };
 
 var isClientProject = function (project) {
