@@ -93,7 +93,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	$scope.params = {
 		date: {
 			range: "week",
-			start: moment.utc().format("YYYY-MM-DD"),
+			start: moment().format("YYYY-MM-DD"),
 			month: $scope.months[moment().month()],
 			year: moment().year()
 		},
@@ -138,13 +138,13 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	
 	$scope.selectLocationParent = function (location)
 	{
-		if (location)
+		if (!$scope.params.locations[location])
 			$scope.params.locations.all = false;
 	};
 	
 	$scope.selectDepartmentParent = function (department)
 	{
-		if ($scope.params.departments[department])
+		if (!$scope.params.departments[department])
 			$scope.params.departments.all = false;
 		
 		// Enforces data bind.
@@ -153,7 +153,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	
 	$scope.selectAllDepartments = function ()
 	{
-		var selected = !$scope.params.departments.all;
+		var selected = $scope.params.departments.all;
 		
 		$scope.params.departments.administration =
 			$scope.params.departments.architects =
@@ -170,7 +170,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	
 	$scope.selectAllLocations = function ()
 	{
-		var selected = !$scope.params.locations.all;
+		var selected = $scope.params.locations.all;
 		
 		$scope.params.locations.onshore =
 			$scope.params.locations.chicago =
@@ -227,7 +227,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	
 	$scope.selectAllFields = function ()
 	{
-		var selected = !$scope.params.fields.all;
+		var selected = $scope.params.fields.all;
 		
 		$scope.selectAllProjectHours(selected);
 		$scope.selectAllOutOfOfficeHours(selected);
@@ -315,20 +315,20 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		{
 			case "week":
 				
-				input.startDate = moment.utc().subtract(7, "day");
-				input.endDate = moment.utc();
+				input.startDate = moment.utc($scope.params.date.start);
+				input.endDate = moment.utc($scope.params.date.start).add(7, "day");
 				break;
 			
 			case "weeks":
 				
-				input.startDate = moment.utc().subtract(14, "day");
-				input.endDate = moment.utc();
+				input.startDate = moment.utc($scope.params.date.start);
+				input.endDate = moment.utc($scope.params.date.start).add(14, "day");
 				break;
 			
 			case "month":
 				
-				input.startDate = moment.utc().subtract(30, "day");
-				input.endDate = moment.utc();
+				input.startDate = moment(Date.UTC($scope.params.date.year, $scope.params.date.month.index));
+				input.endDate = moment(input.startDate).add(1, "month").subtract(1, "day");
 				break;
 				
 			case "custom":
@@ -347,7 +347,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				input.roles.push(prop);
 
 		$scope.startGenerationTimers();
-		console.log(JSON.stringify(input));
+		
 		console.log( 'Report generation started' );
 		
 		Resources.refresh("/reports/people/generate", input, {});

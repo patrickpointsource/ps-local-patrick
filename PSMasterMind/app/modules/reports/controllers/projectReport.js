@@ -7,6 +7,24 @@
 angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'AssignmentService', 'ProjectsService', 'Resources', 
 function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, AssignmentService, ProjectsService, Resources ) {
 
+	var months = [];
+	
+	for (var i = 0; i < 12; i++)
+		months.push({ index: i, name: moment().month(i).format("MMM") });
+	
+	$scope.months = months;
+	
+	var years = [];
+	var currentYear = moment().year();
+	
+	for (var i = 5; i >= 0; i--)
+		years.push(currentYear - i);
+	
+	for (var i = 1; i <= 5; i++)
+		years.push(currentYear + i);
+	
+	$scope.years = years;
+	
   $scope.output = {};
   
   // Summary Section
@@ -29,13 +47,21 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
       $anchorScroll();
    };
    
-	$scope.fields = {
-		assignmentHours: {},
-		goals: {},
-		projectHours: {}
+	$scope.params = {
+		date: {
+			range: "week",
+			start: moment().format("YYYY-MM-DD"),
+			month: $scope.months[moment().month()],
+			year: moment().year()
+		},
+		fields: {
+			assignmentHours: {},
+			goals: {},
+			projectHours: {},
+			selectedAssignedRoles: {}
+		}
 	};
-	$scope.projectList = {};
-	$scope.selectedAssignedRoles = {};
+	$scope.projects = {};
    
 	Resources.get("roles").then(function (result)
 	{
@@ -52,15 +78,15 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
    
 	ProjectsService.getAllProjects(function (result)
 	{
-	   $scope.projectList = result.data;
+	   $scope.projects = result.data;
 	});
 	
 	$scope.selectActiveProjects = function ()
 	{
-		if ($scope.projectList.active)
+		if ($scope.projects.active)
 			ProjectsService.getActiveClientProjects(function (result)
 			{
-				$scope.projectList.activeProjects = result.data;
+				$scope.projects.activeProjects = result.data;
 				
 				updateAssignedRoles(getSelectedProjects());
 			});
@@ -70,10 +96,10 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 	
 	$scope.selectBacklogProjects = function ()
 	{
-		if ($scope.projectList.backlog)
+		if ($scope.projects.backlog)
 			ProjectsService.getBacklogProjects(function (result)
 			{
-				$scope.projectList.backlogProjects = result.data;
+				$scope.projects.backlogProjects = result.data;
 				
 				updateAssignedRoles(getSelectedProjects());
 			});
@@ -83,10 +109,10 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 	
 	$scope.selectPipelineProjects = function ()
 	{
-		if ($scope.projectList.pipeline)
+		if ($scope.projects.pipeline)
 			ProjectsService.getPipelineProjects(function (result)
 			{
-				$scope.projectList.pipelineProjects = result.data;
+				$scope.projects.pipelineProjects = result.data;
 				
 				updateAssignedRoles(getSelectedProjects());
 			});
@@ -96,10 +122,10 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 	
 	$scope.selectCompletedProjects = function ()
 	{
-		if ($scope.projectList.completed)
+		if ($scope.projects.completed)
 			ProjectsService.getCompletedProjects(function (result)
 			{
-				$scope.projectList.completedProjects = result.data;
+				$scope.projects.completedProjects = result.data;
 				
 				updateAssignedRoles(getSelectedProjects());
 			});
@@ -109,10 +135,10 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 	
 	$scope.selectDealLostProjects = function ()
 	{
-		if ($scope.projectList.dealLost)
+		if ($scope.projects.dealLost)
 			ProjectsService.getDealLostProjects(function (result)
 			{
-				$scope.projectList.dealLostProjects = result.data;
+				$scope.projects.dealLostProjects = result.data;
 				
 				updateAssignedRoles(getSelectedProjects());
 			});
@@ -122,27 +148,27 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 	
 	$scope.onProjectSelect = function ()
 	{
-		updateAssignedRoles($scope.projectList.selectedProjects);
+		updateAssignedRoles($scope.projects.selectedProjects);
 	};
 	
 	function getSelectedProjects()
 	{
 		var projects = [];
 		
-		if ($scope.projectList.active)
-			projects = projects.concat($scope.projectList.activeProjects);
+		if ($scope.projects.active)
+			projects = projects.concat($scope.projects.activeProjects);
 		
-		if ($scope.projectList.backlog)
-			projects = projects.concat($scope.projectList.backlogProjects);
+		if ($scope.projects.backlog)
+			projects = projects.concat($scope.projects.backlogProjects);
 		
-		if ($scope.projectList.pipeline)
-			projects = projects.concat($scope.projectList.pipelineProjects);
+		if ($scope.projects.pipeline)
+			projects = projects.concat($scope.projects.pipelineProjects);
 		
-		if ($scope.projectList.completed)
-			projects = projects.concat($scope.projectList.completedtProjects);
+		if ($scope.projects.completed)
+			projects = projects.concat($scope.projects.completedtProjects);
 		
-		if ($scope.projectList.dealLost)
-			projects = projects.concat($scope.projectList.dealLostProjects);
+		if ($scope.projects.dealLost)
+			projects = projects.concat($scope.projects.dealLostProjects);
 		
 		return projects;
 	}
@@ -176,31 +202,31 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 	
 	$scope.selectAllAssignmentHours = function (selected)
 	{
-		$scope.fields.assignmentHours.all = selected;
+		$scope.params.fields.assignmentHours.all = selected;
 		
-		_.each($scope.assignedRoles, function (ar) { $scope.selectedAssignedRoles[ar] = selected; });
+		_.each($scope.assignedRoles, function (ar) { $scope.params.fields.selectedAssignedRoles[ar] = selected; });
 		
-		$scope.fields.assignmentHours.hoursAndDesc =
-			$scope.fields.assignmentHours.oooDetails = selected;
+		$scope.params.fields.assignmentHours.hoursAndDesc =
+			$scope.params.fields.assignmentHours.oooDetails = selected;
 		
 		$scope.assignedRoles = $scope.assignedRoles;
 	};
 	
 	$scope.selectAllProjectHours = function (selected)
 	{
-		$scope.fields.projectHours.all =
-			$scope.fields.projectHours.available =
-			$scope.fields.projectHours.spent =
-			$scope.fields.projectHours.overallUtilRate =
-			$scope.fields.projectHours.assignmentUtilRate = selected;
+		$scope.params.fields.projectHours.all =
+			$scope.params.fields.projectHours.available =
+			$scope.params.fields.projectHours.spent =
+			$scope.params.fields.projectHours.overallUtilRate =
+			$scope.params.fields.projectHours.assignmentUtilRate = selected;
 	};
 	
 	$scope.selectAllGoalsHours = function (selected)
 	{
-		$scope.fields.goals.projectedUtil =
-		$scope.fields.goals.projectedHrs =
-		$scope.fields.goals.projectedInvestment =
-		$scope.fields.goals.projectedRevenue = selected;
+		$scope.params.fields.goals.projectedUtil =
+		$scope.params.fields.goals.projectedHrs =
+		$scope.params.fields.goals.projectedInvestment =
+		$scope.params.fields.goals.projectedRevenue = selected;
 	};
 	
 	$scope.selectAllFields = function (selected)
@@ -208,6 +234,49 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 		$scope.selectAllAssignmentHours(selected);
 		$scope.selectAllProjectHours(selected);
 		$scope.selectAllGoalsHours(selected);
+	};
+	
+	$scope.generateReport = function ()
+	{		
+		var input = {
+			roles: [],
+			fields: $scope.params.fields,
+			output: $scope.params.output,
+			reportName: $scope.params.reportName
+		};
+		
+		switch ($scope.params.date.range)
+		{
+			case "week":
+				
+				input.startDate = moment.utc($scope.params.date.start);
+				input.endDate = moment.utc($scope.params.date.start).add(7, "day");
+				break;
+			
+			case "weeks":
+				
+				input.startDate = moment.utc($scope.params.date.start);
+				input.endDate = moment.utc($scope.params.date.start).add(14, "day");
+				break;
+			
+			case "month":
+				
+				input.startDate = moment(Date.UTC($scope.params.date.year, $scope.params.date.month.index));
+				input.endDate = moment(input.startDate).add(1, "month").subtract(1, "day");
+				break;
+				
+			case "custom":
+				
+				input.startDate = moment.utc($scope.params.date.start);
+				input.endDate = moment.utc($scope.params.date.end);
+				break;
+		}
+		
+		for (var prop in $scope.params.fields.selectedAssignedRoles)
+			if ($scope.params.fields.selectedAssignedRoles[prop])
+				input.roles.push(prop);
+		
+		console.log(JSON.stringify(input));
 	};
   
 } ] );
