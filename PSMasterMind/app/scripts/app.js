@@ -267,9 +267,15 @@
     				    attrs.$set('ngSrc', attrs.errSrc);
     				  }
     				});
+    			attrs.$observe('src', function(value) {
+  				  	if ((!value || value.indexOf("generic") > 0) && attrs.errSrc) {
+  				  		attrs.$set('src', attrs.errSrc);
+  				  	}
+  				});
     			element.bind('error', function() {
-    		        if (attrs.src != attrs.errSrc) {
+    		        if (attrs.ngSrc != attrs.errSrc || attrs.src != attrs.errSrc) {
     		          attrs.$set('ngSrc', attrs.errSrc);
+    		          attrs.$set('src', attrs.errSrc);
     		        }
     		      });
     		}
