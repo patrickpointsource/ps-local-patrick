@@ -132,18 +132,6 @@ var getAssignmentsStatistics = function (data, startDate, endDate, personResourc
 	
 };
 
-var calculateCapacity = function(data, startDate, endDate, personResource) {
-	var capacity = 0;
-	for ( var i in data.people) {
-		if ( !personResource || personResource == data.people[i].resource ) {
-			var days = util.getBusinessDaysCount(startDate, endDate);
-			capacity += days * WORKING_HOURS_PER_DAY;
-		}
-	}
-
-	return capacity;
-};
-
 var getUtilizationDetails = function(data, startDate, endDate, roles) {
 	
 	var rolesInput = [];
@@ -185,7 +173,7 @@ var getUtilizationDetails = function(data, startDate, endDate, roles) {
 	return utilizationDetails;
 };
 
-module.exports.calculateCapacity = function(data, startDate, endDate) {
+var calculateCapacity = function(data, startDate, endDate) {
   var capacity = 0;
   for(var i in data.people) {
     if(data.people[i] && data.people[i].isActive) {
