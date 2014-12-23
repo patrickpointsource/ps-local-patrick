@@ -10,17 +10,36 @@ var reportsService = require( '../services/reportsService.js' );
 
 // generates report output object and calls callback when ready
 module.exports.generate = function(person, params, callback) {
-  var report = {};
-  var reportId = util.getReportId(person._id);
-  report.type = params.type;
+	var report = {};
+	var reportId = util.getReportId(person._id);
+	report.type = params.type;
   
-  reportsService.prepareData(person, params, function(err, data) {
-      
-    report.assignmentsHours = getAssignmentsHours(data, params);
-    memoryCache.putObject(reportId, report);
-    callback(null, "Project report generated.");
+	reportsService.prepareData(person, params, function(err, data) {
+		report.reportDetails = getReportDetails(data, params);
+		report.assignmentsHours = getAssignmentsHours(data, params);
+		memoryCache.putObject(reportId, report);
+		callback(null, "Project report generated.");
   });
 };
+
+var getReportDetails = function (data, params) {
+	var reportStartDate = moment(startDate);
+	var reportEndDate = moment(endDate);
+	var workingDays = util.getBusinessDaysCount(reportStartDate, reportEndDate);
+	var peopleCount = data.people.length;
+	var workingHoursPerPerson = 8 * workingDays;
+	var workingHoursForProject = peopleCount * workingHoursPerPerson;
+	
+	var data = {
+		reportStartDate : reportStartDate.format('MMMM DD, YYYY'),
+		reportEndDate : reportEndDate.format('MMMM DD, YYYY'),
+		workingDays : workingDays,
+		workingHoursPerPerson : workingHoursPerPerson,
+		workingHoursForProject : workingHoursForProject
+	};
+	
+	return data;
+}
 
 var getAssignmentsHours = function(data, params) {
   
