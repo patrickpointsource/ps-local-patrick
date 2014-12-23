@@ -47,32 +47,58 @@ module.exports.generate = function(person, params, callback) {
   });
 };
 
-// Not implemented (fake data)
-var getSummarySection = function(data, params) {
-  var created = moment();
-  
-  var reportStartDate = moment(params.startDate);
-  var reportEndDate = moment(params.endDate);
-  var businessDaysCount = util.getBusinessDaysCount(reportStartDate, reportEndDate);
-  var hoursForTeam =  reportCalculations.calculateCapacity(data, params.startDate, params.endDate);
-  var hoursPerPerson = hoursForTeam / data.people.length;
-  
-  var summarySection = {
-    createdDate: created.format("MM/D/YYYY"),
-    createdTime: created.format("H:mm:ss a"),
-    reportName: "Bi-monthly Department with Graphs Report",
-    createdBy: { name: util.getPersonName(data.profile, true, false) },
-    reportStartDate: reportStartDate.format("MMM D, YYYY"),
-    reportEndDate: reportEndDate.format("MMM D, YYYY"),
-    workingDays: businessDaysCount,
-    workingHoursPerPerson: Math.round( hoursPerPerson ),
-    workingHoursForTeam: Math.round( hoursForTeam )
-  };
-  
-  return summarySection;
+var getReportName = function(data, params) {
+	
+	if (params.reportName)
+		return params.reportName;
+
+	var reportName = "";
+	switch (params.dateRange) {
+		case "week":
+			reportName = "Weekly Department";
+			break;
+		case "weeks":
+			reportName = "Bi-monthly Department";
+			break;
+		case "month":
+			reportName = "Monthly Department";
+			break;
+		case "custom":
+			reportName = "Custom Department";
+			break;
+	}
+
+	if (params.output != "csv")
+		reportName += " with Graphs";
+	
+	return reportName;
 };
 
-// Not implemented (fake data)
+var getSummarySection = function(data, params) {
+	
+	var reportStartDate = moment(params.startDate);
+	var reportEndDate = moment(params.endDate);
+	var businessDaysCount = util.getBusinessDaysCount(reportStartDate, reportEndDate);
+	var hoursForTeam = reportCalculations.calculateCapacity(data, params.startDate, params.endDate);
+	var hoursPerPerson = hoursForTeam / data.people.length;
+
+	var summarySection = {
+		createdDate : moment().format("MM/D/YYYY"),
+		createdTime : moment().format("H:mm:ss a"),
+		reportName : getReportName(data, params),
+		createdBy : {
+			name : util.getPersonName(data.profile, true, false)
+		},
+		reportStartDate : reportStartDate.format("MMM D, YYYY"),
+		reportEndDate : reportEndDate.format("MMM D, YYYY"),
+		workingDays : businessDaysCount,
+		workingHoursPerPerson : Math.round(hoursPerPerson),
+		workingHoursForTeam : Math.round(hoursForTeam)
+	};
+
+	return summarySection;
+};
+
 var getPeopleDetailsSection = function(data, params) {
 	
 	var capacity = reportCalculations.calculateCapacity(data, params.startDate, params.endDate);

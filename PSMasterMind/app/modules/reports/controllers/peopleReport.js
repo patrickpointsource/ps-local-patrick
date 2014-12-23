@@ -307,9 +307,11 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			return;
 		
 		var input = {
+			reportName: $scope.params.reportName,
 			locations: [],
 			fields: $scope.params.fields,
 			output: $scope.params.output,
+			dateRange: $scope.params.date.range,
 			roles: []
 		};
 		
