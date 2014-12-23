@@ -332,8 +332,12 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				$state.go( "projects.index", {
 					filter: $scope.params.filter
 				} );
-			else if( $scope.state.name.indexOf( "reports." ) == 0 )
+			else if( $scope.state.name.indexOf( "reports.people." ) == 0 )
 				$state.go( "reports.people.output", {
+					filter: $scope.fromParams.filter
+				} );
+			else if( $scope.state.name.indexOf( "reports.project." ) == 0 )
+				$state.go( "reports.project.output", {
 					filter: $scope.fromParams.filter
 				} );
 		}
