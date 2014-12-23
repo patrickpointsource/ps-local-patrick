@@ -239,6 +239,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 	$scope.generateReport = function ()
 	{		
 		var input = {
+			projects: [],
 			roles: [],
 			fields: $scope.params.fields,
 			output: $scope.params.output,
@@ -271,6 +272,11 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 				input.endDate = moment.utc($scope.params.date.end);
 				break;
 		}
+		
+		var projectList = $scope.projects.selectedProjects && $scope.projects.selectedProjects.length
+			? $scope.projects.selectedProjects : $scope.projects;
+		
+		_.each(projectList, function (p) { input.projects.push({ resource: p.resource }); });
 		
 		for (var prop in $scope.params.fields.selectedAssignedRoles)
 			if ($scope.params.fields.selectedAssignedRoles[prop])
