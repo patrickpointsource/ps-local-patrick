@@ -23,8 +23,8 @@ module.exports.generate = function(person, params, callback) {
 };
 
 var getReportDetails = function (data, params) {
-	var reportStartDate = moment(startDate);
-	var reportEndDate = moment(endDate);
+	var reportStartDate = moment(params.startDate);
+	var reportEndDate = moment(params.endDate);
 	var workingDays = util.getBusinessDaysCount(reportStartDate, reportEndDate);
 	var peopleCount = data.people.length;
 	var workingHoursPerPerson = 8 * workingDays;
