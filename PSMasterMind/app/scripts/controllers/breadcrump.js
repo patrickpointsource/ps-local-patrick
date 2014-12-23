@@ -319,6 +319,10 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				$state.go( "projects.index", {
 					filter: null
 				} );
+			else if( $scope.state.name.indexOf( "reports." ) == 0 )
+				$state.go( "reports.shell", {
+					filter: $scope.fromParams.filter
+				} );
 		} else if( index == 1 ) {
 			if( $scope.state.name.indexOf( "people." ) == 0 )
 				$state.go( "people.index", {
@@ -327,6 +331,10 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			else if( $scope.state.name.indexOf( "projects." ) == 0 )
 				$state.go( "projects.index", {
 					filter: $scope.params.filter
+				} );
+			else if( $scope.state.name.indexOf( "reports." ) == 0 )
+				$state.go( "reports.people.output", {
+					filter: $scope.fromParams.filter
 				} );
 		}
 	};
