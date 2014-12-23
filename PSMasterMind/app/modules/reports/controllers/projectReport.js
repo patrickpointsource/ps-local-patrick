@@ -4,8 +4,8 @@
  * Controller for people report.
  */
 
-angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'AssignmentService', 'ProjectsService', 'Resources', 
-function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, AssignmentService, ProjectsService, Resources ) {
+angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'AssignmentService', 'ProjectsService', 'Resources', 
+function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, AssignmentService, ProjectsService, Resources ) {
 
 	var months = [];
 	
@@ -283,6 +283,105 @@ function( $scope, $q, $state, $stateParams, $filter, $location, $anchorScroll, A
 				input.roles.push(prop);
 		
 		console.log(JSON.stringify(input));
+        
+        Resources.refresh("/reports/project/generate", input, {});
 	};
+
+    $scope.onReportGenerated = function ( report ) {
+
+        console.log( 'Report generation completed' );
+                
+        $scope.output = report;
+        
+        _.each($scope.output.assignmentsHours.people, function(person) {
+          person.isCollapsed = false;
+        });
+        
+        if ($scope.isGenerationInProgress)
+            $location.path('/reports/project/output');
+    };
+
+    $scope.checkGenerationStatus = function ( ) {
+        return Resources.refresh("/reports/status").then(function( result ){
+            if (result.status != "Running" && result.status != "Completed") {
+                $scope.cancelReportGeneration();
+            }
+            if (result.status == "Completed") {
+                Resources.refresh("/reports/get").then(function( result ){
+                    console.log("Generated report type: " + result.data.type);
+                    if(result && result.data && result.data.type) {
+                      $scope.onReportGenerated( result.data );
+                    } else {
+                      console.log("Server returned broken data for report.");
+                    }
+                    $scope.cancelReportGeneration();
+                });
+            }
+            return result.status;
+        }).catch(function( err ){
+            $scope.cancelReportGeneration();
+            return err.data;
+        });
+    };
+    
+    $scope.reportServicePingInterval = 5000;
+    
+    $scope.startGenerationTimers = function ( ) {
+        
+        if ($scope.isGenerationInProgress)
+            return;
+        
+        if (!$rootScope.reportGenerationStartTime)
+            $rootScope.reportGenerationStartTime = new moment();
+                
+        $scope.generationTimer = setInterval( function( ) {
+            var timer =  $( "#timer" )[ 0 ];
+            if (timer) {
+                var now = new moment( );
+                var spentTime = moment.utc(moment(now,"DD/MM/YYYY HH:mm:ss")
+                        .diff(moment($rootScope.reportGenerationStartTime,"DD/MM/YYYY HH:mm:ss")))
+                        .format("HH:mm:ss");
+                timer.firstChild.textContent = spentTime;
+            }
+        },
+        1000);
+        
+        $scope.generationPing = setInterval( function( ) {
+            $scope.checkGenerationStatus();
+        },
+        $scope.reportServicePingInterval);
+        
+        $scope.isGenerationInProgress = true;
+    };
+    
+    $scope.stopGenerationTimers = function ( ) {
+        if ($scope.generationTimer) {
+            clearInterval($scope.generationTimer);
+        }
+        if ($scope.generationPing) {
+            clearInterval($scope.generationPing);
+        }
+    };
+    
+    $scope.cancelReportGeneration = function ( ) {
+        $scope.stopGenerationTimers();
+        $scope.isGenerationInProgress = false;  
+        $rootScope.reportGenerationStartTime = null;
+        console.log( 'Report generation aborted' );
+    };
+
+    $scope.$on("$destroy", function(){
+        $scope.stopGenerationTimers();
+    });
+    
+    $scope.init = function( ) {
+        $scope.isGenerationInProgress = false;
+        $scope.checkGenerationStatus().then( function ( state ) {
+            if (state == "Running")
+                $scope.startGenerationTimers();
+        });
+    };
+    
+    $scope.init();
   
 } ] );

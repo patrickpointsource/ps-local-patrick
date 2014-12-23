@@ -435,6 +435,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		$rootScope.reportGenerationStartTime = null;
 		console.log( 'Report generation aborted' );
 	};
+	
+	$scope.cancel = function(e) {
+	  Resources.refresh("/reports/cancel").then(function( result ){
+                    $scope.cancelReportGeneration();
+                }).catch(function( err ){
+                    $scope.cancelReportGeneration();
+                });
+	};
 
 	$scope.$on("$destroy", function(){
 		$scope.stopGenerationTimers();
