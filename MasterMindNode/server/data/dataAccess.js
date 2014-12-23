@@ -615,6 +615,26 @@ var listAssignmentsByPeople = function(resources, callback) {
 
 };
 
+var listAssignmentsByProjects = function(resources, callback) {
+    
+    listAssignments(null, function(err, result){
+        if (err) {
+            console.log(err);
+            callback('error loading assignments by projects', null);
+        } else {
+            var assignments = [];
+            _.each(result.data, function(assignment){
+                if (assignment.members && resources.indexOf(assignment.project.resource) > -1) {
+                	assignments.push(assignment);
+                }
+            });
+            
+            callback(null, assignments);
+        }
+    });
+
+};
+
 var listAssignments = function( q, callback ) {
     if( !validQuery( q ) ) {
         callback( null, {
@@ -1284,6 +1304,7 @@ module.exports.listAssignments = listAssignments;
 module.exports.listCurrentAssigments = listCurrentAssigments;
 module.exports.listAssignmentsByPerson = listAssignmentsByPerson;
 module.exports.listAssignmentsByPeople = listAssignmentsByPeople;
+module.exports.listAssignmentsByProjects = listAssignmentsByProjects;
 
 module.exports.listTasks = listTasks;
 
