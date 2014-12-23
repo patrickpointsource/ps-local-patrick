@@ -242,7 +242,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			$scope.params.fields.graphs.graph = selected;
 	};
 			
-	$scope.reportToCSV = {
+	$scope.reportHandler = {
 			stringify: function( str ) {
 				return '"' + str.replace( /^\s\s*/, '' ).replace( /\s*\s$/, '' )// trim spaces
 				.replace( /"/g, '""' ) + // replace quotes with double quotes
@@ -273,7 +273,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 
 			exportHours: function( e ) {
 				$scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV );
-				prepareDocumentToDownload(e, $scope.csvData);
+				prepareDocumentDownloadLink(e, $scope.csvData);
 			},
 			
 			exportHoursByRoles: function( e ) {
@@ -283,7 +283,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		        		rolesToExport.push(record.role.resource);
 		        });
 				$scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV, rolesToExport );
-				prepareDocumentToDownload(e, $scope.csvData);
+				prepareDocumentDownloadLink(e, $scope.csvData);
 			},
 			
 			cancel:  function( e ) {
@@ -500,29 +500,29 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 
                         if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
                             //line += [ '--' ].join( ',' );
-                            line += $scope.reportToCSV.stringify( record.name ) + $scope.CSVSplitter;
-                            line += $scope.reportToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
-                            line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.reportToCSV.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
-                            line += $scope.reportToCSV.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
+                            line += $scope.reportHandler.stringify( record.name ) + $scope.CSVSplitter;
+                            line += $scope.reportHandler.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
+                            line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.reportHandler.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
+                            line += $scope.reportHandler.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
                             line += [ '--', '--', '--', '--' ].join( $scope.CSVSplitter );
                             line += '\r\n';
                         }
 
                         for(var l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
                             //line += [ '--' ].join( ',' );
-                            line += $scope.reportToCSV.stringify( record.name ) + $scope.CSVSplitter;
-                            line += $scope.reportToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
+                            line += $scope.reportHandler.stringify( record.name ) + $scope.CSVSplitter;
+                            line += $scope.reportHandler.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
                             
                             if (record.roles[ j ].persons[ k ].abbreviation)
                                 line += record.roles[ j ].persons[ k ].abbreviation + $scope.CSVSplitter;
                             else
-                                line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.reportToCSV.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
+                                line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.reportHandler.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
                             
-                            line += $scope.reportToCSV.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
+                            line += $scope.reportHandler.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
 
                             line += record.roles[ j ].persons[ k ].hours[ l ].date + $scope.CSVSplitter;
                             line += record.roles[ j ].persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
-                            line += $scope.reportToCSV.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
+                            line += $scope.reportHandler.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
                             line += '\r\n';
                         }
                     }
@@ -534,12 +534,12 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
                 for(var k = 0; record.persons && k < record.persons.length; k++ ) {
                     for(var l = 0; record.persons[ k ].hours && l < record.persons[ k ].hours.length; l++ ) {
                         //line += [ '--' ].join( ',' );
-                        line += $scope.reportToCSV.stringify( record.name ) + $scope.CSVSplitter;
+                        line += $scope.reportHandler.stringify( record.name ) + $scope.CSVSplitter;
                         line += '--' + $scope.CSVSplitter;
-                        line += $scope.reportToCSV.stringify( record.persons[ k ].name ) + $scope.CSVSplitter;
+                        line += $scope.reportHandler.stringify( record.persons[ k ].name ) + $scope.CSVSplitter;
                         line += record.persons[ k ].hours[ l ].date + $scope.CSVSplitter;
                         line += record.persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
-                        line += $scope.reportToCSV.stringify( record.persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
+                        line += $scope.reportHandler.stringify( record.persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
                         line += '\r\n';
                     }
                 }
@@ -552,7 +552,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
         return str;
     };
     
-    var prepareDocumentToDownload = function ( controlEvent, data ) {
+    var prepareDocumentDownloadLink = function ( controlEvent, data ) {
     	
     	/*Only called when our custom event fired*/
     	var onInnerReportLink = function( e ) {
