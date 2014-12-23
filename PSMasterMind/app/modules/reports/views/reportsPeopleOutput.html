@@ -22,17 +22,17 @@
         </div>
         <div class="col-xs-12 col-sm-2 " >
             <div class="row">
-                <button class="btn btn-report big">Save Report</button>
+                <button class="btn btn-report">Save Report</button>
             </div>
             <div class="row">
-                <button class="btn btn-report big" ng-click="reportHandler.exportHours($event)">
+                <button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportHours($event)">
 					<a href="{{reportHandler.link()}}" download="Custom.csv" >
 			      		Export to CSV
 			    	</a>
 		    </button>
             </div>
             <div class="row">
-                <button class="btn btn-report big">Export graphs as .png</button>
+                <button class="btn btn-report" ng-hide="params.output == 'csv'">Export graphs</button>
             </div>
             <div class="row report-output-nav">
                 <label>Go To</label>

@@ -41,7 +41,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
   $scope.output.reportData = {};
   
   $scope.exportOptions = {
-		  allRoles: false
+		  allRoles: false,
+		  csvOnly : false,
+		  graphsOnly: false
   };
   
   $scope.scrollTo = function(id) {
@@ -397,13 +399,13 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			$rootScope.reportGenerationStartTime = new moment();
 				
 		$scope.generationTimer = setInterval( function( ) {
-			var timer =  $( "#timer" )[ 0 ];		
+			var timer =  $( "#lblTimer" )[ 0 ];		
 			if (timer) {
 				var now = new moment( );
 				var spentTime = moment.utc(moment(now,"DD/MM/YYYY HH:mm:ss")
 						.diff(moment($rootScope.reportGenerationStartTime,"DD/MM/YYYY HH:mm:ss")))
 						.format("HH:mm:ss");
-				timer.firstChild.textContent = spentTime;
+				timer.textContent = spentTime;
 			}
 		},
 		1000);

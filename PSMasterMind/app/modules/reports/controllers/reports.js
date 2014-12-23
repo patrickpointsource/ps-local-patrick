@@ -247,11 +247,11 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	
 	$scope.initShellGrpahs = function() {
 		$scope.initPeopleGroups();
-	}
+	};
 
 	$scope.loadGraphData = function() {
 		//alert('load data');
-	}
+	};
 	
 	$scope.graphDataParamsChanged = function(groups, period, startDate, endDate) {
 		if (groups)
@@ -261,7 +261,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			$scope.graphDataParams.startDate = startDate;
 			$scope.graphDataParams.endDate = endDate;
 		}
-	}
+	};
 	
 	$scope.getVerticalbarChartData = function() {
 		return {
@@ -285,7 +285,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 				label: "architects",
 				value: 4
 			}]
-		}
+		};
   };
   
   $scope.getPieChartData = function() {
@@ -308,7 +308,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			key: "Sales",
 			value: 3
 		}];
-	}
+	};
   
 	$scope.loadAndInitPeople = function( ) {
 		var peopleInRoleQuery = {};
@@ -449,8 +449,11 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 
 	$scope.init = function( ) {
 
-		$scope.startGenerationTimers();
-		$scope.checkGenerationStatus();
+		$scope.isGenerationInProgress = false;
+		$scope.checkGenerationStatus().then( function ( state ) {
+			if (state == "Running")
+				$scope.startGenerationTimers();
+		});
 
 		$scope.loadRoles( );
 		$scope.loadAndInitPeople( );
