@@ -13,6 +13,8 @@ var TASK_TITLE = {
         SALES: "Sales",
         MARKETING: "Marketing",
         SICK: "Sick time",
+        SALES: "Sales",
+        MARKETING: "Marketing",
         SITE_HOLIDAY: "Site Holiday"
 };
 
@@ -45,8 +47,12 @@ var getHoursStatistics = function( data, personResource ) {
   var actualInvestHours = 0;
   var outOfOffice = 0;
   var overhead = 0;
+  var marketingHours = 0;
+  var salesHours = 0;
   var allHours = 0;
   var vacationTasks = getTaskResourcesByName ( TASK_TITLE.VACATION, data.tasks );
+  var marketingTasks = getTaskResourcesByName ( TASK_TITLE.MARKETING, data.tasks );
+  var salesTasks = getTaskResourcesByName ( TASK_TITLE.SALES, data.tasks );
   var siteHolidayTask = getTaskByName ( TASK_TITLE.SITE_HOLIDAY, data.tasks );
   
   _.each(data.hours, function (record){
@@ -64,6 +70,10 @@ var getHoursStatistics = function( data, personResource ) {
             if ( ( vacationTasks && vacationTasks.length > 0 && vacationTasks.indexOf(record.task.resource) > -1 ) || 
                     ( siteHolidayTask && record.task.resource == siteHolidayTask.resource ) ) {
                 outOfOffice += record.hours;
+            } else if ( salesTasks && salesTasks.length > 0 && salesTasks.indexOf(record.task.resource) > -1  ) {
+                salesHours += record.hours;
+            } else if ( marketingTasks && marketingTasks.length > 0 && marketingTasks.indexOf(record.task.resource) > -1  ) {
+            	marketingHours += record.hours;
             }
             else {
                 overhead += record.hours;
@@ -78,6 +88,8 @@ var getHoursStatistics = function( data, personResource ) {
     actualClientHours: actualClientHours,
     actualInvestHours: actualInvestHours,
     outOfOffice: outOfOffice,
+    marketing: marketingHours,
+    salesHours: salesHours,
     overhead: overhead,
     allHours: allHours
   };
@@ -135,7 +147,7 @@ var getAssignmentsStatistics = function (data, startDate, endDate, personResourc
 	
 };
 
-var getUtilizationDetails = function(data, startDate, endDate, roles) {
+var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 	
 	var rolesInput = [];
 	if ( _.isArray( roles ) )
@@ -145,32 +157,40 @@ var getUtilizationDetails = function(data, startDate, endDate, roles) {
 
     var utilizationDetails = [];
     
-	for ( var i in rolesInput ) {
-		var role = _.findWhere(data.allRoles, {	abbreviation : rolesInput[i] });
+	for ( var r in rolesInput ) {
+		var role = _.findWhere(data.allRoles, {	abbreviation : rolesInput[r] });
 		var roleMembers = [];
-		for ( var i in data.people ) {
-			var person = data.people[i];
-						
-			var hoursStatistics = getHoursStatistics( data, person.resource );
-			var assignmentsStatistics = getAssignmentsStatistics( data, startDate, endDate,  person.resource );
-			
-			person.capacity = calculateCapacity( data, startDate, endDate, person.resource );
-			person.hours = {
-					assigned : assignmentsStatistics.projectedClientHours + assignmentsStatistics.projectedInvestHours,
-					spent : hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours,
-					OOO : hoursStatistics.outOfOffice,
-					OH : hoursStatistics.overhead
-				};
-			person.utilization = Math.round(( person.hours.spent / person.capacity ) * 100);
-			person.goal = Math.round(( person.hours.assigned / person.capacity ) * 100);
-		    if (person.primaryRole.resource == role.resource) {
-				roleMembers.push(person);
+		
+		if (role) {
+			for ( var i in data.people ) {
+				var person = data.people[i];
+							
+				var hoursStatistics = getHoursStatistics( data, person.resource );
+				var assignmentsStatistics = getAssignmentsStatistics( data, startDate, endDate,  person.resource );
+				var assignmentsStatisticsTD = null;
+				
+				if (today)
+					assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, today,  person.resource )
+				
+				person.capacity = calculateCapacity( data, startDate, endDate, person.resource );
+				person.hours = {
+						assigned : assignmentsStatistics.projectedClientHours + assignmentsStatistics.projectedInvestHours,
+						spent : hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours,
+						assignedTD: assignmentsStatisticsTD.projectedClientHours + assignmentsStatisticsTD.projectedInvestHours,
+						OOO : hoursStatistics.outOfOffice,
+						OH : hoursStatistics.overhead
+					};
+				person.utilization = Math.round(( person.hours.spent / person.capacity ) * 100);
+				person.goal = Math.round(( person.hours.assigned / person.capacity ) * 100);
+			    if (person.primaryRole.resource == role.resource) {
+					roleMembers.push(person);
+				}
 			}
+			utilizationDetails.push({
+				role : role,
+				members : roleMembers
+			});
 		}
-		utilizationDetails.push({
-			role : role,
-			members : roleMembers
-		});
 	}
 	
 	return utilizationDetails;

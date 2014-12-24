@@ -55,7 +55,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 				 	.tooltips(true)
 				 	.color(colors)
 				 	.reduceXTicks(false)
-				 	.height(250)
+				 	.height(220)
 				 	.showXAxis(true)
 				 	.showYAxis(true)
 				 	//.staggerLabels(true);
@@ -74,7 +74,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 				chart.yAxis.axisLabel(yAxisLbl);
 			
 				
-			    chart.xAxis.rotateLabels(-60);
+			    chart.xAxis.rotateLabels(-30);
 			  
 			    var leg = nv.models.legend();
 			    leg.width(280);
@@ -111,7 +111,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 				
 				// fix postion of axis labels
 				$('#' + el.attr('id') + ' .nv-y.nv-axis .nv-axislabel').attr('dy', 28);
-				$('#' + el.attr('id') + ' .nv-x.nv-axis .nv-axislabel').attr('dy', -40);
+				$('#' + el.attr('id') + ' .nv-x.nv-axis .nv-axislabel').attr('dy', -20);
 				
 				return chart;
 			} catch(ex) {

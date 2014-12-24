@@ -1,11 +1,14 @@
 <div  class="reports">
 	<div class="row padded-row " style="margin-top:20px;">
 		<div class="well" style="margin-left:16px;margin-right:16px;">
-			<div style="height:300px;">
+			<div style="height:300px; position:relative;">
+				<div class="spinner-container" ng-hide="hideGraphSpinner" style="width: calc(100% - 30px);margin-top: 40px;height: calc(100% - 20px);">
+		    		<i class="fa fa-spinner fa-spin fa-3x"></i>
+	    		</div>
+    		
 				<div class="col-xs-12 col-sm-6 ">
-					
-					
-					<div>
+
+					<div class="">
 						<div>
 							<div>
 								<div class="pull-left">
@@ -21,26 +24,40 @@
 							</div>
 							
 							<div>
-								<button class="btn btn-report pull-left" ng-click="loadGraphData()">regenerate</button>
+								<button class="btn btn-report pull-left" ng-show="hideGraphSpinner" ng-click="loadGraphData()">regenerate</button>
+								<button class="btn btn-report pull-left" ng-hide="hideGraphSpinner" ng-click="cancelLoadGraphData()">cancel</button>
+								
 								<button class="btn btn-report pull-right">save as image</button>
 							</div>
 						</div>
 						
-						<div style="width:100%; clear: both; height: 20px; padding-left:7px;padding-right:7px; background-color: gray;">
-							<div class="pull-left">
+						<div style="width:100%; clear: both; height: 20px; padding-left:7px;padding-right:7px; background-color: gray;position:relative;">
+							<div class="pull-left" ng-show="isShellGraphActivePeriod(['week', 'month'])" ng-click="prevShellGraphPeriod()" style="position:relative;z-index:1;">
 								<i class="fa fa-caret-left " style="color: white;"></i>
 							</div>
-							<div class="pull-right">
+							<div style="width: 100%; text-align: center;color: white; position:absolute;">{{getGraphFormattedPeriod()}}</div>
+							<div class="pull-right" ng-show="isShellGraphActivePeriod(['week', 'month'])" ng-click="nextShellGraphPeriod()" style="position:relative;">
 								<i class="fa fa-caret-right " style="color: white;"></i>
 							</div>
 						</div>
-					
+						<div class="pull-right" style="margin-top:10px;">
+							<div class="btn-group btn-group-sm tab-buttons">
+				                <button class="btn graph-period-button" ng-class="{'active-tab': isShellGraphActivePeriod('Week')}" ng-click="setShellGraphActivePeriod('week')">Week</button>
+				                <button class="btn graph-period-button" ng-class="{'active-tab': isShellGraphActivePeriod('Month')}" ng-click="setShellGraphActivePeriod('month')">Month</button>
+				                <button class="btn graph-period-button" ng-class="{'active-tab': isShellGraphActivePeriod('YTD')}" ng-click="setShellGraphActivePeriod('ytd')">YTD</button>
+				                <button class="btn graph-period-button" ng-class="{'active-tab': isShellGraphActivePeriod('ProjectTD')}" ng-click="setShellGraphActivePeriod('projecttd')">Project Inception TD</button>
+				            </div>
+			            </div>
+            
 						<div ng-include src="'modules/reports/views/verticalbarChart.html'" onload="elemId='shellVerticalReport';chartData=getVerticalbarChartData()" ng-if="graphDataAvailable" id="shellVerticalReport" style="clear:both;"></div>
 					</div>
 					
 				</div>
 				<div class="col-xs-12 col-sm-6 reportsshell-hours categories">
-					<div>Hours %s across categories</div>
+					<div class="pull-left">
+	                	<label>Hours %s across categories:</label>
+	                </div>
+			                    
 					<div><button class="btn btn-report pull-right">save as image</button></div>
 					<div ng-include src="'modules/reports/views/pieChart.html'" onload="elemId='shellPieGraph';chartData=getPieChartData()" 
 						ng-if="graphDataAvailable" id="shellPieGraph" style="height:100%;"></div>

@@ -1072,7 +1072,19 @@ var listHours = function( q, fields, callback ) {
             }
         } );
     else
-    callback( 'error loading hours by passed query', null );
+    	callback( 'error loading hours by passed query', null );
+};
+
+var listHoursByProjectsTasksAndQuery = function( projectsTasks, q, fields, callback ) {
+	 dbAccess.listHoursByProjects( projectsTasks, function( err, body ) {
+         if( err ) {
+             console.log( err );
+             callback( 'error loading hours by start and end dates', null );
+         } else {
+             console.log( body );
+             callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
+         }
+     } );
 };
 
 var listHoursByPersonAndDates = function( person, startDate, endDate, callback ) {
@@ -1314,6 +1326,7 @@ module.exports.listHoursByProjectAndDates = listHoursByProjectAndDates;
 module.exports.listHoursByProjectsAndDates = listHoursByProjectsAndDates;
 module.exports.listHoursByPerson = listHoursByPerson;
 module.exports.listHoursByProjects = listHoursByProjects;
+module.exports.listHoursByProjectsTasksAndQuery = listHoursByProjectsTasksAndQuery;
 
 module.exports.listRoles = listRoles;
 module.exports.listNonBillableRoles = listNonBillableRoles;

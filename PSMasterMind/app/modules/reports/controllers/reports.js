@@ -213,7 +213,111 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 
 		$scope.reportTerms[ term ] = true;
 	};
-
+	
+	/**
+	 * Stuf related to graphs
+	 */
+	$scope.graphDataAvailable = false;
+	$scope.graphDataParams = {
+		groups:['development', 'architects'],
+		startDate: null,
+		endDate: null
+	};
+	
+	$scope.graphData = {
+		
+	};
+	
+	$scope.peopleGroups = [];
+	$scope.selectedPeopleGroups = [];
+	
+	$scope.shellGraphActivePeriod = "week";
+	$scope.shellGraphStartDate = null;
+	$scope.shellGraphEndDate = null;
+	$scope.hideGraphSpinner = false;
+	
+	$scope.initShellGraphDates = function() {
+		if (!$scope.shellGraphStartDate && !$scope.shellGraphEndDate) {
+			var now = moment();
+			
+			//moment( monthDate ).startOf( 'month' ).format( 'YYYY-MM-DD' )
+			if ($scope.shellGraphActivePeriod == "week") {
+				$scope.shellGraphStartDate = moment(now).startOf('week');
+				$scope.shellGraphEndDate = moment(now).endOf('week');
+			} else if ($scope.shellGraphActivePeriod == "month") {
+				$scope.shellGraphStartDate = moment(now).startOf('month');
+				$scope.shellGraphEndDate = moment(now).endOf('month');
+			} else if ($scope.shellGraphActivePeriod == "ytd") {
+				$scope.shellGraphStartDate = moment(now).startOf('year');
+				$scope.shellGraphEndDate = moment(now);
+			} else if ($scope.shellGraphActivePeriod == "projecttd") {
+				$scope.shellGraphStartDate = moment(now).startOf('year');
+				$scope.shellGraphEndDate = $scope.getStartDateFromLoadedProjects();
+			}
+		}
+	}
+	$scope.prevShellGraphPeriod = function() {
+		
+		if ($scope.shellGraphActivePeriod == "week") {
+			var date = $scope.shellGraphStartDate.date();
+			
+			$scope.shellGraphEndDate = moment($scope.shellGraphStartDate).date(date - 1);
+			$scope.shellGraphStartDate = moment($scope.shellGraphEndDate).startOf('week');
+		} else {
+			var month = $scope.shellGraphEndDate.month();
+			
+			$scope.shellGraphEndDate = moment($scope.shellGraphStartDate).month(month - 1).endOf('month');
+			$scope.shellGraphStartDate = moment($scope.shellGraphEndDate).startOf('month')
+		}
+		
+		$scope.graphDataParamsChanged(null, null, $scope.shellGraphStartDate, $scope.shellGraphEndDate);
+	};
+	
+	$scope.nextShellGraphPeriod = function() {
+		
+		if ($scope.shellGraphActivePeriod == "week") {
+			var date = $scope.shellGraphEndDate.date();
+			
+			$scope.shellGraphStartDate = moment($scope.shellGraphEndDate).date(date + 1);
+			$scope.shellGraphEndDate = moment($scope.shellGraphStartDate).endOf('week');
+		} else if ($scope.shellGraphActivePeriod == "month") {
+			var month = $scope.shellGraphEndDate.month();
+			
+			$scope.shellGraphStartDate = moment($scope.shellGraphEndDate).month(month + 1).startOf('month');
+			$scope.shellGraphEndDate = moment($scope.shellGraphStartDate).endOf('month')
+		}
+		
+		$scope.graphDataParamsChanged(null, null, $scope.shellGraphStartDate, $scope.shellGraphEndDate);
+	};
+	
+	$scope.getGraphFormattedPeriod = function() {
+		var result = '';
+		
+		if ($scope.shellGraphStartDate && $scope.shellGraphEndDate) {
+			
+			if ($scope.shellGraphActivePeriod == "month" ||$scope.shellGraphActivePeriod == "week") {
+				if ($scope.shellGraphStartDate.month() != $scope.shellGraphEndDate.month())
+					result = $scope.shellGraphStartDate.format('MMMM D') + ' to ' + $scope.shellGraphEndDate.format('MMMM D')
+				else 
+					result = $scope.shellGraphStartDate.format('MMMM D') + ' to ' + $scope.shellGraphEndDate.format('D');
+			} else {
+				if ($scope.shellGraphStartDate.month() != $scope.shellGraphEndDate.month())
+					result = $scope.shellGraphStartDate.format('MMMM D, YYYY') + ' to ' + $scope.shellGraphEndDate.format('MMMM D')
+				else 
+					result = $scope.shellGraphStartDate.format('MMMM D, YYYY') + ' to ' + $scope.shellGraphEndDate.format('D');
+			}
+		}
+		return result;
+	}
+	
+	$scope.getStartDateFromLoadedProjects = function() {
+		if ($scope.graphData && $scope.graphData.projects) {
+			// calculate most starting project start date
+		}
+		
+		return moment();
+	}
+	
 	$scope.initPeopleGroups = function() {
 		$scope.peopleGroupsMapping = People.getPeopleGroupMapping();
 		
@@ -233,17 +337,28 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			$(".select-people-groups").selectpicker('val', $scope.graphDataParams.groups)
 			
 			$(".select-people-groups").on('change', function(){
-	            var selected = $(".select-people-groups").selectpicker('val');
 	            
-	            selected = selected.split ? selected.split(','): selected;
-	            
-	            $scope.graphDataParamsChanged(selected);
+	            $scope.graphDataParamsChanged($scope.getSelectedGroups());
 	         });
 			
-			$scope.graphDataAvailable = true;
+			$scope.loadGraphData();
+			
 		}, 100);
 		
+		$scope.initShellGraphDates();
+		
+		$scope.graphDataParams.startDate =  moment($scope.shellGraphStartDate);
+		$scope.graphDataParams.endDate =  moment($scope.shellGraphEndDate);
+		
 	};
+	
+	$scope.getSelectedGroups = function() {
+		var selected = $(".select-people-groups").selectpicker('val');
+        
+        selected = selected.split ? selected.split(','): selected;
+        
+        return selected;
+	}
 	
 	$scope.initShellGrpahs = function() {
 		$scope.initPeopleGroups();
@@ -251,6 +366,82 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 
 	$scope.loadGraphData = function() {
 		//alert('load data');
+		
+		var groupRoleMapping = People.getPeopleGroupMapping( );
+		var roles = [];
+		var selected = $scope.getSelectedGroups();
+		
+		for (var k = 0; k < selected.length; k ++) {
+			roles = roles.concat(groupRoleMapping[ selected[k] ]);
+		}
+		
+		var params = {
+			roles: roles,
+			projectMapping: {}
+		};
+		
+		$scope.hideGraphSpinner = false;
+		$scope.graphDataAvailable = false;
+		
+		if ($scope.graphDataParams.startDate && $scope.graphDataParams.endDate ) {
+          params.startDate = $scope.graphDataParams.startDate.format( 'YYYY-MM-DD' );
+          params.endDate = $scope.graphDataParams.endDate.format( 'YYYY-MM-DD' );
+        }
+        
+        Resources.refresh("/reports/dashboard/generate", params, {});
+		        
+        var checkReport = function() {
+        	$scope.checkGenerationStatus().then(function(data) {
+    			var status = '';
+    			var result;
+    				
+    			if (_.isString(data))
+    				status = data;
+    			else
+    				result = data;
+    			
+    			if (status && status.toLowerCase() != 'completed' && status.toLowerCase() != 'cancelled')
+    				 setTimeout(checkReport, 7000);
+    			
+    			if (status.toLowerCase() != 'running') {
+    				$scope.setVerticalbarHours(result.data);
+    				$scope.setPieChartHours(result.data);
+    				
+    				$scope.hideGraphSpinner = true;
+        			$scope.graphDataAvailable = true;
+    			}
+    		});
+        	
+        	
+        }
+        
+        setTimeout(checkReport, 7000);
+		
+	}
+	
+	$scope.cancelLoadGraphData =  function() {
+		$scope.hideGraphSpinner = true;
+		$scope.graphDataAvailable = true;
+	}
+	
+	$scope.setVerticalbarHours = function(data) {
+		var tmpData = {"expected hours": [], "hours": [], "hours to date": []};
+		
+		$scope.verticalbarChartData = tmpData;
+	}
+	
+	$scope.setPieChartHours = function(data) {
+		
+		
+		if (data.data && data.data.hoursStatistics) {
+			$scope.pieChartData = [{key: "Client", value: data.data.hoursStatistics.actualClientHours}, 
+		               {key: "Investment", value: data.data.hoursStatistics.actualInvestHours}, 
+		               {key: "Marketing", value: data.data.hoursStatistics.marketing}, 
+		               {key:"Out of office", value: data.data.hoursStatistics.outOfOffice},
+		               {key:"Overhead", value: data.data.hoursStatistics.overhead}, 
+		               {key:"Sales", value: data.data.hoursStatistics.salesHours}]
+		}
+		
 	};
 	
 	$scope.graphDataParamsChanged = function(groups, period, startDate, endDate) {
@@ -262,6 +453,24 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			$scope.graphDataParams.endDate = endDate;
 		}
 	};
+	
+	$scope.isShellGraphActivePeriod = function(periodName) {
+		if (_.isArray(periodName))
+			return periodName.join(',').toLowerCase().indexOf($scope.shellGraphActivePeriod) > -1;
+		
+		return $scope.shellGraphActivePeriod == periodName.toLowerCase();
+	}
+	
+	$scope.setShellGraphActivePeriod = function(periodName) {
+		$scope.shellGraphStartDate = null;
+		$scope.shellGraphEndDate = null;
+		
+		$scope.shellGraphActivePeriod = periodName.toLowerCase();
+		
+		$scope.initShellGraphDates();
+		
+		$scope.graphDataParamsChanged(null, periodName, $scope.shellGraphStartDate, $scope.shellGraphEndDate);
+	}
 	
 	$scope.getVerticalbarChartData = function() {
 		return {
@@ -289,7 +498,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
   };
   
   $scope.getPieChartData = function() {
-		return [{
+	  return $scope.pieChartData;
+	  /*
+	  return [{
 			key: "Client",
 			value: 35
 		}, {
@@ -308,6 +519,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			key: "Sales",
 			value: 3
 		}];
+		*/
 	};
   
 	$scope.loadAndInitPeople = function( ) {
@@ -450,8 +662,12 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	$scope.init = function( ) {
 
 		$scope.isGenerationInProgress = false;
-		$scope.checkGenerationStatus().then( function ( state ) {
-			if (state == "Running")
+		$scope.checkGenerationStatus().then( function ( result ) {
+			if(result && result.data && result.data.data && result.data.data.hours && result.data.data.hours.members) {
+		      $scope.onReportGenerated( result.data.data.hours.members );
+		    }
+		    
+			if (result == "Running")
 				$scope.startGenerationTimers();
 		});
 
@@ -1420,7 +1636,11 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		1000);
 		
 		$scope.generationPing = setInterval( function( ) {
-			$scope.checkGenerationStatus();
+			$scope.checkGenerationStatus().then(function(result) {
+				if(result && result.data && result.data.data && result.data.data.hours && (result.data.data.hours.members || result.data.data.hours.length == 0)) {
+			      $scope.onReportGenerated( result.data.data.hours.members ? result.data.data.hours.members: result.data.data.hours );
+			    }
+			});
 		},
 		$scope.reportServicePingInterval);
 		
@@ -1448,22 +1668,26 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			if (result.status != "Running" && result.status != "Completed") {
 				$scope.cancelReportGeneration();
 			}
+			
 			if (result.status == "Completed") {
-				Resources.refresh("/reports/get").then(function( result ){
+				return Resources.refresh("/reports/get").then(function( result ){
 				    console.log("Generated report type: " + result.type);
-				    if(result && result.data && result.data.data && result.data.data.hours && result.data.data.hours.members) {
-				      $scope.onReportGenerated( result.data.data.hours.members );
-				    }
+				    
+				    return result
 				});
 			}
+			
 			return result.status;
 		}).catch(function( err ){
 			$scope.cancelReportGeneration();
+			
 			return err.data;
 		});
 	};
 	
 	$scope.onReportGenerated = function ( report ) {
+		
+		$scope.stopGenerationTimers();
 		
 		var reportDataCb = function( reportData ) {
 			$scope.csvData = $scope.JSON2CSV( reportData );
@@ -1485,6 +1709,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		else {
 			$scope.cancelReportGeneration();
 		}
+		
+		$scope.stopGenerationTimers();
 	};
 	
 	$scope.generateReport = function ( source ) {	

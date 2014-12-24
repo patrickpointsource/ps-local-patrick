@@ -25,7 +25,7 @@ var firstRoundStarted = false;
 var secondRoundStarted = false;
 
 module.exports.initialize = function(callback) {
-    console.log("initializing reminders");
+    console.log(getFormattedTime() + " initializing reminders");
     later.date.UTC();
     var initCronSched = later.parse.cron(INITIAL_CRON_SCHEDULE, true);
     var secondCronSched = later.parse.cron(SECOND_CRON_SCHEDULE, true);
@@ -45,7 +45,13 @@ module.exports.initialize = function(callback) {
     //}, 60 * 1000);
 }
 
-
+var getFormattedTime = function() {
+	var now = new Date();
+	var result = '';
+	
+	return '[' +  ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2) + ']';
+	
+}
 /**
  * Executes email reminder job ( if withInterestedParties set to 'true' REMINDER_INTERESTED_PARTIES will be used in CC)
  * 
@@ -56,7 +62,7 @@ function emailReminderJob(withInterestedParties) {
 	
 	if (reminderJobInprogress) {
 		setTimeout(function() {
-			console.log('\r\nwaited:emailReminderJob\r\n');
+			console.log(getFormattedTime() + ' waited:emailReminderJob\r\n');
 			emailReminderJob(withInterestedParties);
 		}, 60 * 1000);
 		
@@ -64,12 +70,12 @@ function emailReminderJob(withInterestedParties) {
 	}
 	
 	if (withInterestedParties && secondRoundStarted){
-		console.log('emailReminderJob:prevent from starting again:' + withInterestedParties + ':' + (new Date()).toTimeString());
+		console.log(getFormattedTime() + ' emailReminderJob:prevent from starting again:' + withInterestedParties + ':' + (new Date()).toTimeString());
 		return;
 	}
 	
 	if (!withInterestedParties && firstRoundStarted){
-		console.log('emailReminderJob:prevent from starting again:' + withInterestedParties + ':' + (new Date()).toTimeString());
+		console.log(getFormattedTime() + ' emailReminderJob:prevent from starting again:' + withInterestedParties + ':' + (new Date()).toTimeString());
 		
 		return;
 	}
@@ -79,7 +85,7 @@ function emailReminderJob(withInterestedParties) {
 	else
 		firstRoundStarted = true;
 	
-	console.log('emailReminderJob:' + withInterestedParties + ':' + (new Date()).toTimeString());
+	console.log(getFormattedTime() + ' emailReminderJob:' + withInterestedParties + ':' + (new Date()).toTimeString());
 	
 	reminderJobInprogress = true;
 	

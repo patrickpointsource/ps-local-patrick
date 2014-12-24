@@ -135,7 +135,7 @@
         })
         .state('reports.shell', {
           url: '/?view',
-          templateUrl: '/modules/reports/views/reports.html',
+          templateUrl: '/modules/reports/views/reportsShell.html',
         })
         .state('reports.people', {
           url: '/people',
@@ -173,11 +173,11 @@
           url: '/output',
           templateUrl: '/modules/reports/views/projectOutput.html'
         })
-      .state('reportsshell', {
+      /*.state('reportsshell', {
           url: '/reportsshell',
           templateUrl: 'modules/reports/views/reportsShell.html',
           controller: 'ReportsCtrl'
-        });
+        });*/
      }])
     .config(['$compileProvider',
       function( $compileProvider ) {

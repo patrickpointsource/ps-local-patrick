@@ -23,6 +23,7 @@ module.exports.prepareData = function(profile, params, callback) {
   
   if(validationMessages.length > 0) {
     callback(validationMessages.join(", "));
+    return;
   }
   
   var selectedRoles = [];
@@ -77,24 +78,65 @@ module.exports.prepareData = function(profile, params, callback) {
                       } else {
                         var hoursQ = {};
                         
+                        var projectResources = _.map(assignments, function(assignment) {
+                            return { "project.resource": assignment.project.resource };
+                        });
+                        /*
                         hoursQ.$or = _.map(assignments, function(assignment) {
                             return { "project.resource": assignment.project.resource };
                         });
+                        */
+                        hoursQ.$or = projectResources;
                         
                         var tasksResources = _.map(tasks.members, function(task) {
                           return { "task.resource": task.resource };
                         });
                         
-                        hoursQ.$or = hoursQ.$or.concat(tasksResources);
+                        //hoursQ.$or = hoursQ.$or.concat(tasksResources);
                         
                         if(params.startDate && params.endDate) {
-                          params.startDate = moment.utc(JSON.parse(params.startDate)).format("YYYY-MM-DD");
-                          params.endDate = moment.utc(JSON.parse(params.endDate)).format("YYYY-MM-DD");
+                          params.startDate = params.startDate.indexOf("\"") > -1 ? moment.utc(JSON.parse(params.startDate)).format("YYYY-MM-DD"): params.startDate;
+                          params.endDate = params.endDate.indexOf("\"") > -1 ? moment.utc(JSON.parse(params.endDate)).format("YYYY-MM-DD"): params.endDate;
                         }
                         
-                        hoursQ.$and = [ { date: { $gte: params.startDate }}, { date: { $lte: params.endDate }}  ];
+                       // hoursQ.$and = [ { date: { $gte: params.startDate }}, { date: { $lte: params.endDate }}  ];
                         
-                        dataAccess.listHours(hoursQ, HOURS_FIELDS, function(err, hours) {
+                        // provide correct query to load hours
+                        hoursQ = {
+                        		$and:[
+                        		      { date: { $gte: params.startDate, $lte: params.endDate }}, 
+                        		      {
+                        		    	  $or: [{
+                        		    		  "project.resource":{
+                        		    			  $in: _.map(projectResources, function(p) {
+                        	                        	if (p["project.resource"])
+                        	                        		return p["project.resource"]
+
+                        	                        	return ""
+                        	                        })
+                        		    		  	}
+                        		    	  }, {
+                        		    		  "task.resource":{
+                        		    			  $in: _.map(tasksResources, function(p) {
+                        	                        	if (p["task.resource"])
+                        	                        		return p["task.resource"]
+                        	                        	
+                    	                        		return ""
+                        	                        })
+                        		    		  	}
+                        		    	  }]
+                        		      }
+                        		]
+                        };
+                        
+                        var projectsTasks = _.map(projectResources.concat(tasksResources), function(p) {
+                        	if (p["project.resource"])
+                        		return p["project.resource"]
+                        	else
+                        		return p["task.resource"]
+                        });
+                        
+                        dataAccess.listHoursByProjectsTasksAndQuery(projectsTasks, hoursQ, HOURS_FIELDS, function(err, hours) {
                           if(err) {
                             callback("Error getting hours while generating report: " + err, null);
                           } else {
