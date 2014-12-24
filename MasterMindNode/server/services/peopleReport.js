@@ -63,6 +63,12 @@ var getReportName = function(data, params) {
 		case "month":
 			reportName = "Monthly Department";
 			break;
+		case "previousMonth":
+			reportName = "Monthly Department";
+			break;
+		case "currentMonth":
+			reportName = "Monthly Department";
+			break;
 		case "custom":
 			reportName = "Custom Department";
 			break;
