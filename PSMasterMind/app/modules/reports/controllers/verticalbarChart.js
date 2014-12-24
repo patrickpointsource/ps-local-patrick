@@ -64,7 +64,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 				
 				chart.showControls(false);
 				//chart.xRange([0, 225]);
-				chart.stacked(true);
+				//chart.stacked(true);
 				chart.groupSpacing(0.2);
 				
 				var xAxisLbl = axisLabels && axisLabels[0] ? axisLabels[0] : "X-axis";
@@ -111,7 +111,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 				
 				// fix postion of axis labels
 				$('#' + el.attr('id') + ' .nv-y.nv-axis .nv-axislabel').attr('dy', 28);
-				$('#' + el.attr('id') + ' .nv-x.nv-axis .nv-axislabel').attr('dy', -20);
+				$('#' + el.attr('id') + ' .nv-x.nv-axis .nv-axislabel').attr('dy', -10);
 				
 				return chart;
 			} catch(ex) {

@@ -427,6 +427,59 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	$scope.setVerticalbarHours = function(data) {
 		var tmpData = {"expected hours": [], "hours": [], "hours to date": []};
 		
+		if (data.data && data.data.peopleStatistics) {
+			var stats = data.data.peopleStatistics;
+			var label;
+			var localLabel;
+			var valExpected;
+			var valSpent;
+			var valTD;
+			var abbrMap = {};
+			
+			for (var k = 0; k < stats.length; k ++) {
+				label = stats[k].role.abbreviation;
+				
+				
+					
+				for (var l = 0; l < stats[k].members.length; l ++) {
+					valExpected = stats[k].members[l].hours.assigned;
+					valSpent = stats[k].members[l].hours.spent;
+					valTD = stats[k].members[l].hours.assignedTD;
+					
+					
+					
+					if (abbrMap[label] === undefined) {
+						abbrMap[label] = {
+								"expected hours": 0,
+								"hours": 0,
+								"hours to date": 0
+						};
+						
+					} 
+					
+					abbrMap[label]["expected hours"] += valExpected;
+					abbrMap[label]["hours"] += valSpent;
+					abbrMap[label]["hours to date"] += valTD;
+							
+					
+					
+					
+				}
+			}
+			
+			for (var lbl in abbrMap) {
+				valExpected = abbrMap[lbl]["expected hours"];
+				valSpent = abbrMap[lbl]["hours"];
+				valTD = abbrMap[lbl]["hours to date"];
+				
+				tmpData["expected hours"].push({label: lbl, value: valExpected});
+				tmpData["hours"].push({label: lbl, value: Math.abs(valSpent)});
+				tmpData["hours to date"].push({label: lbl, value: Math.abs(valTD )});
+			}
+		}
+		
+		
+		
 		$scope.verticalbarChartData = tmpData;
 	}
 	
@@ -473,7 +526,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	}
 	
 	$scope.getVerticalbarChartData = function() {
-		return {
+		return $scope.verticalbarChartData;
+		
+		/*return {
 			"hours" : [{
 				label: "managers",
 				value: 33
@@ -493,8 +548,19 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			}, {
 				label: "architects",
 				value: 4
+			}],
+			
+			"hours TD" : [{
+				label: "managers",
+				value: 3
+			}, {
+				label: "developers",
+				value: 9
+			}, {
+				label: "architects",
+				value: 2
 			}]
-		};
+		};*/
   };
   
   $scope.getPieChartData = function() {
