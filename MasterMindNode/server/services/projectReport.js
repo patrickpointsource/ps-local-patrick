@@ -60,7 +60,7 @@ var getAssignmentsHours = function(data, params) {
     }
 
 	var capacityByPerson = reportCalculations.calculateCapacity({people : [ people[i] ] }, params.startDate, params.endDate);
-    var assignmentsStatisticsByPerson = reportCalculations.getAssignmentsStatistics((data, params.startDate, params.endDate, people[i].resource));
+    var assignmentsStatisticsByPerson = reportCalculations.getAssignmentsStatistics(data, params.startDate, params.endDate, people[i].resource);
     var hoursStatisticsByPerson = reportCalculations.getHoursStatistics(data, people[i].resource);
     var utilizationRate = ( capacityByPerson > 0 ) ? Math.round( (hoursStatisticsByPerson.allHours / capacityByPerson ) * 100 ) : 0
 
