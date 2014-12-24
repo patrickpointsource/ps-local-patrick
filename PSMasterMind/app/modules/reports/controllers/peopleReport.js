@@ -411,15 +411,15 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		if ($scope.isGenerationInProgress)
 			return;
 		
-		if (!$rootScope.reportGenerationStartTime)
-			$rootScope.reportGenerationStartTime = new moment();
+		if (!$rootScope.peopleReportGenerationStartTime)
+			$rootScope.peopleReportGenerationStartTime = new moment();
 				
 		$scope.generationTimer = setInterval( function( ) {
 			var timer =  $( "#lblTimer" )[ 0 ];		
 			if (timer) {
 				var now = new moment( );
 				var spentTime = moment.utc(moment(now,"DD/MM/YYYY HH:mm:ss")
-						.diff(moment($rootScope.reportGenerationStartTime,"DD/MM/YYYY HH:mm:ss")))
+						.diff(moment($rootScope.peopleReportGenerationStartTime,"DD/MM/YYYY HH:mm:ss")))
 						.format("HH:mm:ss");
 				timer.textContent = spentTime;
 			}
@@ -446,7 +446,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	$scope.cancelReportGeneration = function ( ) {
 		$scope.stopGenerationTimers();
 		$scope.isGenerationInProgress = false;	
-		$rootScope.reportGenerationStartTime = null;
+		$rootScope.peopleReportGenerationStartTime = null;
 		console.log( 'Report generation aborted' );
 	};
 	
