@@ -7,6 +7,7 @@ var _ = require('underscore');
 var memoryCache = require( '../data/memoryCache.js' );
 var moment = require('moment');
 var reportsService = require( '../services/reportsService.js' );
+var reportCalculations = require( '../services/reportCalculations.js' );
 
 // generates report output object and calls callback when ready
 module.exports.generate = function(person, params, callback) {
@@ -19,7 +20,7 @@ module.exports.generate = function(person, params, callback) {
 		report.assignmentsHours = getAssignmentsHours(data, params);
 		memoryCache.putObject(reportId, report);
 		callback(null, "Project report generated.");
-  });
+	});
 };
 
 var getReportDetails = function (data, params) {
@@ -47,32 +48,46 @@ var getAssignmentsHours = function(data, params) {
   
   var people = data.allPeople;
   
+  var hoursOOO = 0 ;
+  var actualHours = 0;
+  var expectedHours = 0;
+  var projectedHours = 0;
+  
   for(var i in people) {
-    var person = {
-      _id: people[i]._id,
-      name: people[i].name,
-      thumbnail: people[i].thumbnail,
-      resource: people[i].resource,
-      utilizationRate: 70,
-      actualHours: 400,
-      expectedHours: 500,
-      projectedHours: 450,
-      OOOHours: 12
-    };
-    
-    if(people[i].primaryRole && people[i].primaryRole.name) {
-      person.role = people[i].primaryRole.name;
+
+	if(people[i].primaryRole && people[i].primaryRole.name) {
+        person.role = people[i].primaryRole.name;
     }
+
+	var capacityByPerson = reportCalculations.calculateCapacity({people : [ people[i] ] }, params.startDate, params.endDate);
+    var assignmentsStatisticsByPerson = reportCalculations.getAssignmentsStatistics((data, params.startDate, params.endDate, people[i].resource));
+    var hoursStatisticsByPerson = reportCalculations.getHoursStatistics(data, people[i].resource);
+    var utilizationRate = ( capacityByPerson > 0 ) ? Math.round( (hoursStatisticsByPerson.allHours / capacityByPerson ) * 100 ) : 0
+
+    hoursOOO += hoursStatisticsByPerson.outOfOffice;
+    actualHours += hoursStatisticsByPerson.allHours;
+    expectedHours += capacityByPerson;
+    projectedHours += assignmentsStatisticsByPerson.allHours;
     
+    var person = {
+    	_id: people[i]._id,
+    	name: people[i].name,
+    	thumbnail: people[i].thumbnail,
+    	resource: people[i].resource,
+    	utilizationRate: utilizationRate,
+    	actualHours: hoursStatisticsByPerson.allHours,
+    	expectedHours: capacityByPerson,
+    	projectedHours: assignmentsStatisticsByPerson.allHours,
+    	OOOHours: hoursStatisticsByPerson.outOfOffice
+    };
     result.people.push(person);
   }
   
-  
-  result.overallUtilizationRate = 78;
-  result.hoursOOO = 250;
-  result.actualHours = 700;
-  result.expectedHours = 730;
-  result.projectedHours = 715;
+  result.overallUtilizationRate = Math.round( (actualHours / expectedHours) * 100 );
+  result.hoursOOO = hoursOOO;
+  result.actualHours = actualHours;
+  result.expectedHours = expectedHours;
+  result.projectedHours = projectedHours;
   
   return result;
 };

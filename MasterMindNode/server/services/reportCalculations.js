@@ -89,6 +89,7 @@ var getAssignmentsStatistics = function (data, startDate, endDate, personResourc
 	
 	var projectedClientHours = 0;
 	var projectedInvestHours = 0;
+	var allHours = 0;
 	
 	var peopleOnClient = 0;
 	var peopleOnInvestment = 0;
@@ -114,6 +115,7 @@ var getAssignmentsStatistics = function (data, startDate, endDate, personResourc
 						projectedInvestHours += projectedHours;
 						peopleOnInvestment++;
 					}
+					allHours += projectedHours;
 				}
 			}
 		});
@@ -127,7 +129,8 @@ var getAssignmentsStatistics = function (data, startDate, endDate, personResourc
 		peopleOnInvestment: peopleOnInvestment,
 		projectedClientHours: projectedClientHours,
 		projectedInvestHours: projectedInvestHours,
-		totalProjectedHours : projectedClientHours + projectedInvestHours
+		totalProjectedHours : projectedClientHours + projectedInvestHours,
+		allHours : allHours
 	};
 	
 };
