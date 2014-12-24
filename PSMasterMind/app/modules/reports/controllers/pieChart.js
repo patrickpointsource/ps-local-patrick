@@ -20,7 +20,11 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	 var hideLegend = true;
 
 	var preparedData = $scope.chartData;
+	var allEmpty = true;
 	
+	for (var k = 0 ; k < preparedData.length;  k++) {
+		allEmpty = allEmpty && preparedData[k].value == 0
+	}
 	var colors = ['#00BBD6', '#5BC9D1', '#92D7E7', '#D0ECF4', '#97D7D9', '#4EC2C7'];
 	
 	
@@ -30,7 +34,8 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	 //for (var k = 0; k < preparedData.length; k ++)
 	//		colors.push(colorFn(k))
 	
-	 nv.addGraph(function() {
+	 if (!allEmpty)
+		 nv.addGraph(function() {
 			try {
 				var chart = nv.models.pieChart()
 	        	.x(function(d) { 
@@ -96,6 +101,8 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 				el.html('Error occured while rendering')
 			}
 		});
+	 else
+		 el.html('<br/><br/><br/><b>Empty data loaded</b>');
 
   };
   

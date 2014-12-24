@@ -176,7 +176,7 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 				person.hours = {
 						assigned : assignmentsStatistics.projectedClientHours + assignmentsStatistics.projectedInvestHours,
 						spent : hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours,
-						assignedTD: assignmentsStatisticsTD.projectedClientHours + assignmentsStatisticsTD.projectedInvestHours,
+						assignedTD: assignmentsStatisticsTD ? (assignmentsStatisticsTD.projectedClientHours + assignmentsStatisticsTD.projectedInvestHours): 0,
 						OOO : hoursStatistics.outOfOffice,
 						OH : hoursStatistics.overhead
 					};
