@@ -295,6 +295,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				input.roles.push(prop);
 		
 		console.log(JSON.stringify(input));
+		
+		$scope.startGenerationTimers();
         
         Resources.refresh("/reports/project/generate", input, {});
 	};
@@ -305,9 +307,11 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
                 
         $scope.output = report;
         
-        _.each($scope.output.assignmentsHours.people, function(person) {
-          person.isCollapsed = false;
-        });
+        if($scope.output.assignmentsHours) {
+          _.each($scope.output.assignmentsHours.people, function(person) {
+            person.isCollapsed = false;
+          });
+        }
         
         if ($scope.isGenerationInProgress)
             $location.path('/reports/project/output');
@@ -395,5 +399,62 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
     };
     
     $scope.init();
+    
+    $scope.reportHandler = {
+            stringify: function( str ) {
+                return '"' + str.replace( /^\s\s*/, '' ).replace( /\s*\s$/, '' )// trim spaces
+                .replace( /"/g, '""' ) + // replace quotes with double quotes
+                '"';
+            },
+
+            generate: function( e ) {
+                if( $scope.output && $scope.output.type == "project" ) {
+                    $rootScope.modalDialog = {
+                        title: "Generate report",
+                        text: "Report already generated. Would you like to generate new report?",
+                        ok: "Yes",
+                        no: "No",
+                        okHandler: function( ) {
+                            $( ".modalYesNoCancel" ).modal( 'hide' );
+                            $scope.generateReport( );
+                        },
+                        noHandler: function( ) {
+                            $( ".modalYesNoCancel" ).modal( 'hide' );
+                            $location.path('/reports/project/output');
+                        }
+                    };
+                    $( ".modalYesNoCancel" ).modal( 'show' );
+                } else {
+                    $scope.generateReport( );
+                }
+            },
+
+            exportHours: function( e ) {
+                $scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV );
+                prepareDocumentDownloadLink(e, $scope.csvData);
+            },
+            
+            exportHoursByRoles: function( e ) {
+                var rolesToExport = []; 
+                _.each($scope.output.peopleDetails.utilizationDetails, function( record ) { 
+                    if ( record.role.isSelected )
+                        rolesToExport.push(record.role.resource);
+                });
+                $scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV, rolesToExport );
+                prepareDocumentDownloadLink(e, $scope.csvData);
+            },
+            
+            cancel:  function( e ) {
+                Resources.refresh("/reports/cancel").then(function( result ){
+                    $scope.cancelReportGeneration();
+                }).catch(function( err ){
+                    $scope.cancelReportGeneration();
+                });
+            },
+            
+            link: function( ) {
+                return {};
+            }
+        };
   
 } ] );

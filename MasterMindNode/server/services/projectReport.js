@@ -40,13 +40,29 @@ var getReportDetails = function (data, params) {
 	};
 	
 	return data;
-}
+};
 
 var getAssignmentsHours = function(data, params) {
   
   var result = { people: [] };
+  var projectResources = [];
   
-  var people = data.allPeople;
+  if(_.isArray(params.projects)) {
+    projectResources = _.map(params.projects, function(p) {
+      return JSON.parse(p).resource;
+    });
+  } else {
+    projectResources.push(JSON.parse(params.projects).resource);
+  }
+  
+  var projects = _.filter(data.projects, function(proj) {
+    if(projectResources.indexOf(proj.resource) > -1) {
+      return true;
+    }
+    return false;
+  });
+  
+  var people = reportCalculations.getProjectsPeople(projects, data.assignments, data.allPeople);
   
   var hoursOOO = 0 ;
   var actualHours = 0;
@@ -54,15 +70,10 @@ var getAssignmentsHours = function(data, params) {
   var projectedHours = 0;
   
   for(var i in people) {
-
-	if(people[i].primaryRole && people[i].primaryRole.name) {
-        person.role = people[i].primaryRole.name;
-    }
-
 	var capacityByPerson = reportCalculations.calculateCapacity({people : [ people[i] ] }, params.startDate, params.endDate);
     var assignmentsStatisticsByPerson = reportCalculations.getAssignmentsStatistics(data, params.startDate, params.endDate, people[i].resource);
     var hoursStatisticsByPerson = reportCalculations.getHoursStatistics(data, people[i].resource);
-    var utilizationRate = ( capacityByPerson > 0 ) ? Math.round( (hoursStatisticsByPerson.allHours / capacityByPerson ) * 100 ) : 0
+    var utilizationRate = ( capacityByPerson > 0 ) ? Math.round( (hoursStatisticsByPerson.allHours / capacityByPerson ) * 100 ) : 0;
 
     hoursOOO += hoursStatisticsByPerson.outOfOffice;
     actualHours += hoursStatisticsByPerson.allHours;
@@ -80,6 +91,11 @@ var getAssignmentsHours = function(data, params) {
     	projectedHours: assignmentsStatisticsByPerson.allHours,
     	OOOHours: hoursStatisticsByPerson.outOfOffice
     };
+    
+    if(people[i].primaryRole && people[i].primaryRole.name) {
+        person.role = people[i].primaryRole.name;
+    }
+    
     result.people.push(person);
   }
   

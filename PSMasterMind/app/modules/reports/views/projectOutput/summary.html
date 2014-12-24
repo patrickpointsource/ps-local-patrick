@@ -1,7 +1,7 @@
 <div class="report-output-well well300">
   <div class="report-output-well header no-underline">
-      <h1>{{output.summary.reportName}}</h1>
-      <h3>Report pulled {{output.summary.createdDate}} at {{output.summary.createdTime}} by {{output.summary.createdBy.name}}</h3>
+      <h1>{{output.reportDetails.reportName}}</h1>
+      <h3>Report pulled {{output.reportDetails.createdDate}} at {{output.reportDetails.createdTime}} by {{output.reportDetails.createdBy.name}}</h3>
   </div>
   <div class="report-output-well header margin-top-20">
       <h1>Report Details</h1>
@@ -11,21 +11,21 @@
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
             <label class="width50percent">Report Start Date</label>
             <div>
-                {{output.summary.reportStartDate}}
+                {{output.reportDetails.reportStartDate}}
             </div>
         </div>
             
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
             <label class="width50percent">Number Working Days in Report period</label>
             <div>
-                {{output.summary.workingDays}}
+                {{output.reportDetails.workingDays}}
             </div>
         </div>
         
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-            <label class="width50percent"># Working Hours for Team</label>
+            <label class="width50percent"># Working Hours for Project</label>
             <div>
-                {{output.summary.workingHoursForTeam}}
+                {{output.reportDetails.workingHoursForProject}}
             </div>
         </div>
     </div>
@@ -33,14 +33,14 @@
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
             <label class="width50percent">Report End Date</label>
             <div>
-                {{output.summary.reportEndDate}}
+                {{output.reportDetails.reportEndDate}}
             </div>
         </div>
             
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
             <label class="width50percent">Number Working Hours in Report period per person</label>
             <div>
-                {{output.summary.workingHoursPerPerson}}
+                {{output.reportDetails.workingHoursPerPerson}}
             </div>
         </div>
         

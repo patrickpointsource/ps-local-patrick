@@ -153,7 +153,7 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 	if ( _.isArray( roles ) )
 		rolesInput = roles;
 	else
-		rolesInput = roles ? [ params.roles ] : [];
+		rolesInput = roles ? [ roles ] : [];
 
     var utilizationDetails = [];
     
@@ -220,9 +220,34 @@ var isInvestProject = function (project) {
     return ( project && ( project.type == "invest" ) ) ? true : false;
 };
 
+var getProjectsPeople = function(projects, assignments, allPeople) {
+  var people = [];
+  
+  var projectResources = _.map(projects, function(p) {
+    return p.resource;
+  });
+  
+  var filteredAssignments = _.filter(assignments, function(a) {
+    if(projectResources.indexOf(a.project.resource) > -1) {
+      return true;
+    }
+    return false;
+  });
+  
+  for(var i in filteredAssignments) {
+    for(var j in filteredAssignments[i].members) {
+      var personResource = filteredAssignments[i].members[j].person.resource;
+      var person = _.findWhere(allPeople, { resource: personResource});
+      people.push(person);
+    }
+  }
+  return people;
+};
+
 module.exports.isClientProject = isClientProject;
 module.exports.isInvestProject = isInvestProject;
 module.exports.getHoursStatistics = getHoursStatistics;
 module.exports.getAssignmentsStatistics = getAssignmentsStatistics;
 module.exports.calculateCapacity = calculateCapacity;
 module.exports.getUtilizationDetails = getUtilizationDetails;
+module.exports.getProjectsPeople = getProjectsPeople;

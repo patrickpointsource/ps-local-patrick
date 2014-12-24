@@ -2,7 +2,7 @@
 	<div class="row padded-row parameters" style="margin-top: 20px;">
 	    <div class="spinner-container" ng-show="isGenerationInProgress" style="width: calc(100% - 30px);">
             <i id="timer" class="fa fa-spinner fa-spin fa-3x"><label></label></i>
-            <button class="btn btn-report" ng-click="cancel($event)" ng-show="isGenerationInProgress">
+            <button class="btn btn-report" ng-click="reportHandler.cancel($event)" ng-show="isGenerationInProgress">
                     Cancel
             </button>
         </div>
@@ -272,7 +272,7 @@
 			</div>
 		</div>
 		<div class="col-md-3">
-			<button class="btn" ng-click="generateReport()">Create Report</button>
+			<button class="btn" ng-click="reportHandler.generate()">Create Report</button>
 		</div>
 	</div>
 </div>

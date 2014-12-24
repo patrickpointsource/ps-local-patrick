@@ -4,16 +4,9 @@
     </div>
     <div class="report-output-inside-row project-hours-row no-margin" style="padding-top: 15px;">
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-2" style="margin-left: 15px;">
-            <label class="width50percent">Overall Utilization Rate</label>
+            <label class="width50percent">Projected Hours</label>
             <div class="big-number">
-                {{output.assignmentsHours.overallUtilizationRate}}
-            </div>
-        </div>
-            
-        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-2">
-            <label class="width50percent">Hours OOO</label>
-            <div class="big-number">
-                {{output.assignmentsHours.hoursOOO}}
+                {{output.assignmentsHours.projectedHours}}
             </div>
         </div>
         
@@ -25,16 +18,16 @@
         </div>
         
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-2">
-            <label class="width50percent">Expected Hours</label>
+            <label class="width50percent">Hours OOO</label>
             <div class="big-number">
-                {{output.assignmentsHours.expectedHours}}
+                {{output.assignmentsHours.hoursOOO}}
             </div>
         </div>
         
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-2">
-            <label class="width50percent">Projected Hours</label>
+            <label class="width50percent">Overall Utilization Rate</label>
             <div class="big-number">
-                {{output.assignmentsHours.projectedHours}}
+                {{output.assignmentsHours.overallUtilizationRate}}
             </div>
         </div>
     </div>
@@ -73,6 +66,14 @@
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6">
+                                <label>Projected Hours</label>
+                                <div>
+                                    {{person.projectedHours}}
+                                </div>
+                                <label>Actual Hours</label>
+                                <div>
+                                    {{person.actualHours}}
+                                </div>
                                 <label>Utilization Rate</label>
                                 <div class="big-number">
                                     {{person.utilizationRate}} %
@@ -81,6 +82,7 @@
                                 <div class="big-number">
                                     {{person.OOOHours}}
                                 </div>
+                                
                             </div>
                         </div>
                         <div class="report-output-well body">
