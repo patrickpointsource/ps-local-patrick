@@ -84,12 +84,22 @@
                 	</label>
                 	<br />
                 	<label>
+	                	<input type="radio" name="date" ng-model="params.date.range" value="previousMonth" />
+	                	Previous month
+                	</label>
+                	<br />
+                	<label>
+	                	<input type="radio" name="date" ng-model="params.date.range" value="currentMonth" />
+	                	Current month
+                	</label>
+                	<br />
+                	<label>
 	                	<input type="radio" name="date" ng-model="params.date.range" value="custom" />
 	                	Custom
                 	</label>
 				</div>
 				<div class="col-xs-12 col-md-8">
-					<div class="row" ng-show="params.date.range != 'month'">
+					<div class="row" ng-show="params.date.range.toLowerCase().indexOf('month') == -1">
 						<label class="control-label">
 							<div class="col-md-2">
 								Start:

@@ -251,19 +251,31 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			case "week":
 				
 				input.startDate = moment.utc($scope.params.date.start);
-				input.endDate = moment.utc($scope.params.date.start).add(7, "day");
+				input.endDate = moment.utc($scope.params.date.start).add(1, "week");
 				break;
 			
 			case "weeks":
 				
 				input.startDate = moment.utc($scope.params.date.start);
-				input.endDate = moment.utc($scope.params.date.start).add(14, "day");
+				input.endDate = moment.utc($scope.params.date.start).add(2, "week");
 				break;
 			
 			case "month":
 				
 				input.startDate = moment(Date.UTC($scope.params.date.year, $scope.params.date.month.index));
-				input.endDate = moment(input.startDate).add(1, "month").subtract(1, "day");
+				input.endDate = moment(input.startDate).endOf("month");
+				break;
+				
+			case "previousMonth":
+				
+				input.startDate = moment.utc().startOf("month").subtract(1, "month");
+				input.endDate = moment(input.startDate).endOf("month");
+				break;
+				
+			case "currentMonth":
+				
+				input.startDate = moment.utc().startOf("month");
+				input.endDate = moment.utc().subtract(1, "day");
 				break;
 				
 			case "custom":
