@@ -153,6 +153,8 @@ var getProjectHours = function(data, params) {
 		totalProjectedHours : assignmentsStatistics.totalProjectedHours,
 		actualClientHours : hoursStatistics.actualClientHours,
 		actualInvestHours : hoursStatistics.actualInvestHours,
+		outOfOfficeHours : hoursStatistics.outOfOffice,
+		overheadHours :  hoursStatistics.overhead,
 		totalActualHours : hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours,
 		projectedClient : projectedClient,
 		projectedInvest : projectedInvest,
@@ -248,6 +250,7 @@ var getGoals = function(data, params) {
 
 // Not implemented (fake data)
 var getProjections = function(data, params) {
+	
   return projections = {
     firstMonth: { 
       name: "October",
