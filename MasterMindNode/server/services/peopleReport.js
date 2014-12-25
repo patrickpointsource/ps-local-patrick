@@ -256,6 +256,44 @@ var getGoals = function(data, params) {
   };
 };
 
+var getProjectionUtilization = function (data, capacity, hoursStatistics, assignmentsStatistics) {
+	var utilization = {};
+	utilization[PROJECTION_MONTH_LABELS[0]] = {
+		name : moment().format('MMMM'),
+		actual : Math.round( ( (hoursStatistics.allHours + hoursStatistics.outOfOffice + hoursStatistics.overhead) / capacity) * 100 ),
+		projected : Math.round( ( (assignmentsStatistics.allHours + hoursStatistics.outOfOffice + hoursStatistics.overhead) / capacity) * 100 )
+	}
+	var futureProjectionUtilizations = getFutureProjectionUtilizations(data, capacity, hoursStatistics);
+	for ( var i in futureProjectionUtilizations ) {
+		utilization[PROJECTION_MONTH_LABELS[parseInt(i) + 1]] = futureProjectionUtilizations[i];
+	}
+	return utilization;
+}
+
+var getFutureProjectionUtilizations = function (data, capacity, hoursStatistics) {
+	var startDate = moment().startOf('month');
+	var endDate = moment().endOf('month');
+	var utilizations = [];
+	var  i = 1; // first month is current
+	while (i < PROJECTION_MONTHS) {
+		var startDate = startDate.add(1, 'months');
+		var endDate = endDate.add(1, 'months');
+		utilizations.push(getFutureProjectionUtilizationByDate(data, capacity, hoursStatistics, startDate, endDate));
+	    i++;
+	}
+	return utilizations;
+}
+
+var getFutureProjectionUtilizationByDate = function (data, capacity, hoursStatistics, startDate, endDate) {
+	var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, startDate, endDate);
+	var projected = Math.round( ( (assignmentsStatistics.allHours + hoursStatistics.outOfOffice + hoursStatistics.overhead) / capacity) * 100 );
+	var utilization = {
+		name : startDate.format('MMMM'),
+		projected : projected
+	}
+	return utilization;
+}
+
 var getProjectionHoursByType = function (data, type, hoursStatistics, assignmentsStatistics ) {
 	var actual = 0;
 	var projected = 0;
@@ -338,7 +376,8 @@ var getProjections = function(data, params) {
 		investHours :  getProjectionHoursByType(data, 'invest', hoursStatistics, assignmentsStatistics),
 		totalHours :  getProjectionHoursByType(data, 'total', hoursStatistics, assignmentsStatistics),
 		outOfOffice : hoursStatistics.outOfOffice,
-		overhead : hoursStatistics.overhead
+		overhead : hoursStatistics.overhead,
+		utilization :  getProjectionUtilization(data, capacity, hoursStatistics, assignmentsStatistics)
 	}
 	
 	return projections;
