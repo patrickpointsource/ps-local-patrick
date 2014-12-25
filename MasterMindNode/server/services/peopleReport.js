@@ -276,8 +276,8 @@ var getFutureProjectionUtilizations = function (data, capacity, hoursStatistics)
 	var utilizations = [];
 	var  i = 1; // first month is current
 	while (i < PROJECTION_MONTHS) {
-		var startDate = startDate.add(1, 'months');
-		var endDate = endDate.add(1, 'months');
+		startDate = startDate.add(1, 'months');
+		endDate = endDate.add(1, 'months');
 		utilizations.push(getFutureProjectionUtilizationByDate(data, capacity, hoursStatistics, startDate, endDate));
 	    i++;
 	}
@@ -331,8 +331,8 @@ var getFutureProjectionHours = function (data, type) {
 	var projections = [];
 	var  i = 1; // first month is current
 	while (i < PROJECTION_MONTHS) {
-		var startDate = startDate.add(1, 'months');
-		var endDate = endDate.add(1, 'months');
+		startDate = startDate.add(1, 'months');
+		endDate = endDate.add(1, 'months');
 		projections.push(getFutureProjectionHoursByTypeAndDate(data, type, startDate, endDate));
 	    i++;
 	}
