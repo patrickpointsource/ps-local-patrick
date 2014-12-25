@@ -10,6 +10,11 @@ var reportCalculations = require( '../services/reportCalculations.js' );
 var reportsService = require( '../services/reportsService.js' );
 
 var UNDETERMINED_ROLE = 'undetermined_role';
+var PREVIOUS_MONTH = 'previousMonth';
+var CURRENT_MONTH = 'currentMonth';
+var PROJECTION_MONTHS = 3;
+var PROJECTION_MONTH_LABELS = [CURRENT_MONTH, 'secondMonth', 'thirdMonth', 'fourthMonth', 
+                               'fifthMonth', 'sixthMonth', 'seventhMonth', 'eighthMonth', 'ninthMonth'];
 
 var TASKS = {
   MARKETING: "Marketing",
@@ -38,7 +43,10 @@ module.exports.generate = function(person, params, callback) {
     report.projectHours = getProjectHours(data, params);
     report.categoryHours = getCategoryHours(data, params);
     report.goals = getGoals(data, params);
-    report.projections = getProjections(data, params);
+    if (params.dateRange == PREVIOUS_MONTH || 
+    		params.dateRange == CURRENT_MONTH ) {
+        report.projections = getProjections(data, params);
+    }
     
     report.rawData = data;
     
@@ -248,50 +256,92 @@ var getGoals = function(data, params) {
   };
 };
 
+var getProjectionHoursByType = function (data, type, hoursStatistics, assignmentsStatistics ) {
+	var actual = 0;
+	var projected = 0;
+	switch (type) {
+		case 'client' :
+			actual = hoursStatistics.actualClientHours;
+			projected = assignmentsStatistics.projectedClientHours;
+			break;
+		case 'invest' :
+			actual = hoursStatistics.actualInvestHours;
+			projected = assignmentsStatistics.projectedInvestHours;
+			break;
+		case 'total' :
+			actual = hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours;
+			projected = assignmentsStatistics.projectedClientHours + assignmentsStatistics.projectedInvestHours;
+			break;
+	}
+	var hours = {};
+	hours[PROJECTION_MONTH_LABELS[0]] = {
+		name : moment().format('MMMM'),
+		actual : actual,
+		projected : projected
+	}
+
+	var futureProjectionHours = getFutureProjectionHours(data, type);
+	for ( var i in futureProjectionHours ) {
+		hours[PROJECTION_MONTH_LABELS[parseInt(i) + 1]] = futureProjectionHours[i];
+	}
+	return hours;
+}
+
+var getFutureProjectionHours = function (data, type) {
+	var startDate = moment().startOf('month');
+	var endDate = moment().endOf('month');
+	var projections = [];
+	var  i = 1; // first month is current
+	while (i < PROJECTION_MONTHS) {
+		var startDate = startDate.add(1, 'months');
+		var endDate = endDate.add(1, 'months');
+		projections.push(getFutureProjectionHoursByTypeAndDate(data, type, startDate, endDate));
+	    i++;
+	}
+	return projections;
+}
+
+var getFutureProjectionHoursByTypeAndDate = function (data, type, startDate, endDate) {
+	var projected = 0;
+	var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, startDate, endDate);
+	switch (type) {
+		case 'client' :
+			projected = assignmentsStatistics.projectedClientHours;
+			break;
+		case 'invest' :
+			projected = assignmentsStatistics.projectedInvestHours;
+			break;
+		case 'total' :
+			projected = assignmentsStatistics.projectedClientHours + assignmentsStatistics.projectedInvestHours;
+			break;
+	}
+	var projection = {
+		name : startDate.format('MMMM'),
+		projected : projected
+	}
+	return projection;
+}
+
 // Not implemented (fake data)
 var getProjections = function(data, params) {
+
+	var startDate = moment().startOf('month');
+	var endDate = moment().endOf('month');
 	
-  return projections = {
-    firstMonth: { 
-      name: "October",
-      actual: {
-        capacity: 10920,
-        clientHours: 4100,
-        investHours: 3430,
-        totalHours: 7530,
-        OOO: 36,
-        utilization: 70
-      },
-      estimated: {
-        capacity: 10920,
-        clientHours: 3979,
-        investHours: 3668,
-        totalHours: 7465,
-        OOO: 48,
-        utilization: 70
-      }
-    },
-    months: [
-      {
-        name: "November",
-        capacity: 11520,
-        clientHours: 6160,
-        investHours: 5280,
-        totalHours: 11440,
-        OOO: 80,
-        utilization: 68
-      },
-      {
-        name: "December",
-        capacity: 11520,
-        clientHours: 6660,
-        investHours: 6020,
-        totalHours: 12680,
-        OOO: 360,
-        utilization: 68
-      }
-    ]
-  };
+	var capacity = reportCalculations.calculateCapacity(data, startDate, endDate);
+	var hoursStatistics = reportCalculations.getHoursStatistics(data);
+	var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, startDate, endDate);
+
+	var projections = {
+		capacity : capacity,
+		clientHours :  getProjectionHoursByType(data, 'client', hoursStatistics, assignmentsStatistics),
+		investHours :  getProjectionHoursByType(data, 'invest', hoursStatistics, assignmentsStatistics),
+		totalHours :  getProjectionHoursByType(data, 'total', hoursStatistics, assignmentsStatistics),
+		outOfOffice : hoursStatistics.outOfOffice,
+		overhead : hoursStatistics.overhead
+	}
+	
+	return projections;
 };
 
 var getDataForCsv = function(data, params) {
