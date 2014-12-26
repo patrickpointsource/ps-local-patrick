@@ -41,8 +41,8 @@ module.exports.generate = function(person, params, callback) {
     report.summary = getSummarySection(data, params);
     report.peopleDetails = getPeopleDetailsSection(data, params);
     report.projectHours = getProjectHours(data, params);
-    report.categoryHours = getCategoryHours(data, params);
-    report.goals = getGoals(data, params);
+    //report.categoryHours = getCategoryHours(data, params);
+    //report.goals = getGoals(data, params);
     if (params.dateRange == PREVIOUS_MONTH || 
     		params.dateRange == CURRENT_MONTH ) {
         report.projections = getProjections(data, params);
