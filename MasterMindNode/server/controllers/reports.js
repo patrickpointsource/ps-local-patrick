@@ -5,33 +5,33 @@ var reportAccess = require('../data/reportAccess');
 var session = require('../util/session');
 
 var getStatus = function(personId) {
-  var status = reportAccess.getStatusFromMemoryCache(personId);
+  var statusObj = reportAccess.getStatusFromMemoryCache(personId);
   
-  return { status: status };
+  return statusObj;
 };
 
 var generateReport = function(person, type, params, reqSession, callback) {
-  var status = reportAccess.getStatusFromMemoryCache(person._id);
-  if(status == reportAccess.REPORT_IS_RUNNING) {
+  var statusObj = reportAccess.getStatusFromMemoryCache(person._id);
+  if(statusObj && statusObj.status == reportAccess.REPORT_IS_RUNNING) {
     callback("Report generation is already running.", null);
   } else {
-    reportAccess.updateStatus(person._id, reportAccess.REPORT_IS_RUNNING);
+    reportAccess.updateStatus(person._id, reportAccess.REPORT_IS_RUNNING, type);
     
     reportAccess.startGenerateReport(person, type, params, function(err, result) {
       if(err) {
-        reportAccess.updateStatus(person._id, reportAccess.REPORT_IS_CANCELLED);
+        reportAccess.updateStatus(person._id, reportAccess.REPORT_IS_CANCELLED, type);
         callback(err, null);
       } else {
-        reportAccess.updateStatus(person._id, reportAccess.REPORT_IS_COMPLETED);
-        callback(null, { status: reportAccess.REPORT_IS_COMPLETED });
+        var statusObj = reportAccess.updateStatus(person._id, reportAccess.REPORT_IS_COMPLETED, type);
+        callback(null, statusObj);
       }
     });
   }
 };
 
 var cancelReport = function(personId) {
-  reportAccess.updateStatus(personId, reportAccess.REPORT_IS_CANCELLED);
-  return { status: reportAccess.REPORT_IS_CANCELLED };
+  var statusObj = reportAccess.updateStatus(personId, reportAccess.REPORT_IS_CANCELLED);
+  return statusObj;
 };
 
 var getReport = function(personId, callback) {

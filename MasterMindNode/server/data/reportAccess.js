@@ -86,15 +86,19 @@ var getStatusFromMemoryCache = function(personId) {
   var reportId = getReportId(personId) + STATUS_SUFFIX;
   var status = memoryCache.getObject(reportId);
   if(!status) {
-    status = REPORT_IS_NOT_STARTED;
+    status = { status: REPORT_IS_NOT_STARTED };
   }
   return status;
 };
 
 // updates status of report for person
-var updateStatus = function(personId, status) {
+var updateStatus = function(personId, status, type) {
   var reportId = getReportId(personId) + STATUS_SUFFIX;
-  memoryCache.putObject(reportId, status);
+  var statusObj = { status: status };
+  if(type) {
+    statusObj.type = type;
+  }
+  memoryCache.putObject(reportId, statusObj);
 };
 
 // returns caclulated hours query for report or error if happens in callback

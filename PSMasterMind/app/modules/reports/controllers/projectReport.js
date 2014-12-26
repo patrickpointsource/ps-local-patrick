@@ -316,6 +316,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
         if ($scope.isGenerationInProgress)
             $location.path('/reports/project/output');
     };
+    
+    $scope.cancel = function(e) {
+      Resources.refresh("/reports/cancel").then(function( result ){
+                    $scope.cancelReportGeneration();
+                }).catch(function( err ){
+                    $scope.cancelReportGeneration();
+                });
+    };
 
     $scope.checkGenerationStatus = function ( ) {
         return Resources.refresh("/reports/status").then(function( result ){
@@ -333,7 +341,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
                     $scope.cancelReportGeneration();
                 });
             }
-            return result.status;
+            return result;
         }).catch(function( err ){
             $scope.cancelReportGeneration();
             return err.data;
@@ -393,8 +401,13 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
     $scope.init = function( ) {
         $scope.isGenerationInProgress = false;
         $scope.checkGenerationStatus().then( function ( state ) {
-            if (state == "Running")
+            if (state.status == "Running") {
+              if(state.type == "project") {
                 $scope.startGenerationTimers();
+              } else {
+                $scope.cancel();
+              }
+            }
         });
     };
     

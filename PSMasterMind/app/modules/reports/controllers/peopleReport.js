@@ -399,7 +399,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				    $scope.cancelReportGeneration();
 				});
 			}
-			return result.status;
+			return result;
 		}).catch(function( err ){
 			$scope.cancelReportGeneration();
 			return err.data;
@@ -465,8 +465,13 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	$scope.init = function( ) {
 		$scope.isGenerationInProgress = false;
 		$scope.checkGenerationStatus().then( function ( state ) {
-			if (state == "Running")
-				$scope.startGenerationTimers();
+			if (state.status == "Running") {
+			  if(state.type == "people") {
+			    $scope.startGenerationTimers();
+			  } else {
+			    $scope.cancel();
+			  }
+			}
 		});
 	};
 	
