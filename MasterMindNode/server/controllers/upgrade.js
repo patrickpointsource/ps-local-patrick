@@ -345,6 +345,9 @@ module.exports = function(params) {
 							});
 
 							linksObject.members = members;
+							if (linksObject.project && linksObject.project.resource) {
+								linksObject.project = {resource : linksObject.project.resource };
+							}
 							dataAccess.insertItem(linksObject._id, linksObject, 'Links', function (err, body){
 								if (err) {
 									console.log(err);
