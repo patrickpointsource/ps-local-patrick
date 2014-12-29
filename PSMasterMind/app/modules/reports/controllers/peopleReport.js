@@ -377,6 +377,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				
 		$scope.output = report;
 		
+		$scope.setPeopleDetailsVerticalbarChartData( report );
 		$scope.selectAllRolesToExport();		
 		
 		if ($scope.isGenerationInProgress)
@@ -602,5 +603,86 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		btn.click( onInnerReportLink );
 		btn.get( 0 ).dispatchEvent( evt );
     };
+    
+	$scope.setPeopleDetailsVerticalbarChartData = function( data ) {
+		var tmpData = {"expected utilization": [], "actual utilization": [], "estimated utilization": []};
+		
+		if (data.peopleDetails && data.peopleDetails.utilizationDetails) {
+			var stats = data.peopleDetails.utilizationDetails;			
+			for (var k = 0; k < stats.length; k ++) {
+				var role = stats[k].role;
+				var expectedUtilization = role.expectedUtilization;
+				var actualUtilization = role.actualUtilization;
+				var estimatedUtilization = role.tdUtilization;
+				tmpData["expected utilization"].push({label: role.abbreviation, value: actualUtilization});
+				tmpData["actual utilization"].push({label: role.abbreviation, value: expectedUtilization});
+				tmpData["estimated utilization"].push({label: role.abbreviation, value: estimatedUtilization});
+			}
+		}
+		
+		$scope.verticalbarChartData = tmpData;
+	};
+	
+    $scope.getPeopleDetailsVerticalbarChartData = function() {
+		return $scope.verticalbarChartData;
+    };
+   
+	$scope.getProjectedHoursVerticalbarChartData = function() {
+			return {
+				"hours" : [{
+					label: "managers",
+					value: 33
+				}, {
+					label: "developers",
+					value: 56
+				}, {
+					label: "architects",
+					value: 10
+				}],
+				"expected hours" : [{
+					label: "managers",
+					value: 5
+				}, {
+					label: "developers",
+					value: 12
+				}, {
+					label: "architects",
+					value: 4
+				}],
+				
+				"hours TD" : [{
+					label: "managers",
+					value: 3
+				}, {
+					label: "developers",
+					value: 9
+				}, {
+					label: "architects",
+					value: 2
+				}]
+			};
+	};
+	
+	$scope.getCategoriesHoursPieChartData = function() {
+		 return [{
+				key: "Client",
+				value: 46
+			}, {
+				key: "Out of Office",
+				value: 10
+			}, {
+				key: "Investment",
+				value: 22
+			}, {
+				key: "Marketing",
+				value: 7
+			}, {
+				key: "Overhead",
+				value: 12
+			}, {
+				key: "Sales",
+				value: 3
+			}];
+	};		
   
 } ] );

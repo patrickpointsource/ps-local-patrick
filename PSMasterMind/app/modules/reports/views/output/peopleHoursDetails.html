@@ -6,12 +6,12 @@
 				<h2 style="">{{utilizationByRole.role.title}} Hours and Utilization</h2>
 			</div>
 			<div class="col-xs-2">
-				<i ng-hide="utilizationByRole.isCollapsed" ng-click="utilizationByRole.isCollapsed = !utilizationByRole.isCollapsed" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
-				<i ng-show="utilizationByRole.isCollapsed" ng-click="utilizationByRole.isCollapsed = !utilizationByRole.isCollapsed" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
+				<i ng-hide="utilizationByRole.isExpanded" ng-click="utilizationByRole.isExpanded = !utilizationByRole.isExpanded" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
+				<i ng-show="utilizationByRole.isExpanded" ng-click="utilizationByRole.isExpanded = !utilizationByRole.isExpanded" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
 			</div>
 		</div>
 
-		<div ng-repeat="person in utilizationByRole.members" collapse="!utilizationByRole.isCollapsed">
+		<div ng-repeat="person in utilizationByRole.members" collapse="!utilizationByRole.isExpanded">
 			<div class="report-expand-well">
 				<div class="report-expand-well header header100 person-detail">
 					<div class="col-xs-10">
@@ -31,12 +31,12 @@
 						</div>
 					</div>
 					<div class="col-xs-2">
-						<i ng-hide="person.isCollapsed" ng-click="person.isCollapsed = !person.isCollapsed" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
-						<i ng-show="person.isCollapsed" ng-click="person.isCollapsed = !person.isCollapsed" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
+						<i ng-hide="person.isExpanded" ng-click="person.isExpanded = !person.isExpanded" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
+						<i ng-show="person.isExpanded" ng-click="person.isExpanded = !person.isExpanded" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
 					</div>
 				</div>
 
-				<div collapse="!person.isCollapsed" >
+				<div collapse="!person.isExpanded" ng-if="person.isExpanded" >
 					<div class="report-expand-well body body500">
 						<div class="report-output-inside-row no-margin">
 							<div class="col-xs-12 col-sm-2">
@@ -79,14 +79,18 @@
 						<div class="report-output-inside-row">
 							<div class="col-xs-12 col-sm-6 ">
 								<label>Actual, Expected, Projected Hours</label>
-								<div class="report-graph-place" style="height: 300px;">
-									Place for graph
+								<div style="height:300px"
+									ng-include src="'modules/reports/views/verticalbarChart.html'" 
+									onload="elemId='projectedHoursVerticalReport';chartData=getProjectedHoursVerticalbarChartData()" 
+									id="projectedHoursVerticalReport">
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 ">
 								<label>Percent Hours Across Categories</label>
-								<div class="report-graph-place" style="height: 300px;">
-									Place for graph
+								<div style="height:300px"
+										ng-include src="'modules/reports/views/pieChart.html'" 
+										onload="elemId='categoriesHoursPieGraph';chartData=getCategoriesHoursPieChartData()" 
+										id="categoriesHoursPieGraph">
 								</div>
 							</div>
 						</div>

@@ -155,9 +155,13 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 	else
 		rolesInput = roles ? [ roles ] : [];
 
+	var capacity = calculateCapacity(data, startDate, endDate);
     var utilizationDetails = [];
     
 	for ( var r in rolesInput ) {
+		var expectedHours = 0;
+		var spentHours = 0;
+		var tdHours = 0;
 		var role = _.findWhere(data.allRoles, {	abbreviation : rolesInput[r] });
 		var roleMembers = [];
 		
@@ -170,7 +174,7 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 				var assignmentsStatisticsTD = null;
 				
 				if (today)
-					assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, today,  person.resource )
+					assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, today,  person.resource );
 				
 				person.capacity = calculateCapacity( data, startDate, endDate, person.resource );
 				person.hours = {
@@ -185,7 +189,16 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 			    if (person.primaryRole.resource == role.resource) {
 					roleMembers.push(person);
 				}
+			    
+			    expectedHours += person.hours.assigned;
+			    spentHours += person.hours.spent;
+			    tdHours += person.hours.assignedTD;
 			}
+			
+			role.expectedUtilization = Math.round( ( expectedHours / capacity ) * 100);
+			role.actualUtilization = Math.round( (Math.abs(spentHours) / capacity) * 100);
+			role.tdUtilization = Math.round( (Math.abs(tdHours) / capacity) * 100);
+			
 			utilizationDetails.push({
 				role : role,
 				members : roleMembers
