@@ -627,7 +627,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		return $scope.verticalbarChartData;
     };
    
-	$scope.getProjectedHoursVerticalbarChartData = function() {
+	$scope.getPersonProjectedHoursVerticalbarChartData = function( person ) {
+		var tmpData = {"expected hours": [], "actual hours": [], "hours to date": []};
+		
 			return {
 				"hours" : [{
 					label: "managers",
@@ -663,26 +665,19 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			};
 	};
 	
-	$scope.getCategoriesHoursPieChartData = function() {
-		 return [{
-				key: "Client",
-				value: 46
-			}, {
-				key: "Out of Office",
-				value: 10
-			}, {
-				key: "Investment",
-				value: 22
-			}, {
-				key: "Marketing",
-				value: 7
-			}, {
-				key: "Overhead",
-				value: 12
-			}, {
-				key: "Sales",
-				value: 3
-			}];
+	$scope.getPersonCategoriesHoursPieChartData = function( person ) {
+	
+		var personHours = person.hours;
+		var unaccountedHours = person.capacity 
+								- personHours.projectedClient
+									- personHours.projectedInvest
+										- personHours.OH 
+											- personHours.OOO;
+		return [{key: "Client Hours", value: personHours.projectedClient}, 
+	            {key: "Investment Hours", value: personHours.projectedInvest}, 
+	            {key: "OH", value:  personHours.OH}, 
+	            {key: "OOO", value: personHours.OOO},
+	            {key:"unaccounted for", value: unaccountedHours}];
 	};		
   
 } ] );

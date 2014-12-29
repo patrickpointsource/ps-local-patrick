@@ -182,7 +182,9 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 						spent : hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours,
 						assignedTD: assignmentsStatisticsTD ? (assignmentsStatisticsTD.projectedClientHours + assignmentsStatisticsTD.projectedInvestHours): 0,
 						OOO : hoursStatistics.outOfOffice,
-						OH : hoursStatistics.overhead
+						OH : hoursStatistics.overhead,
+						projectedClient: assignmentsStatistics.projectedClientHours,
+						projectedInvest: assignmentsStatistics.projectedInvestHours
 					};
 				person.utilization = Math.round(( person.hours.spent / person.capacity ) * 100);
 				person.goal = Math.round(( person.hours.assigned / person.capacity ) * 100);
