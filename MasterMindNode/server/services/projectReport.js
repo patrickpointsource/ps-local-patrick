@@ -27,14 +27,31 @@ module.exports.generate = function(person, params, callback) {
 var getReportDetails = function (data, params) {
 	var reportStartDate = moment(params.startDate);
 	var reportEndDate = moment(params.endDate);
+	var created = moment();
 	var workingDays = util.getBusinessDaysCount(reportStartDate, reportEndDate);
 	var peopleCount = data.people.length;
 	var workingHoursPerPerson = 8 * workingDays;
 	var workingHoursForProject = peopleCount * workingHoursPerPerson;
+	var projects = _.map(data.projects, function(proj) {
+	  return proj.name;
+	});
+	
+	var projectsLine = projects.join(", ");
+	if(projects.length > 3) {
+	  var others = projects.length - 3;
+	  var threeProjects = [ projects[0], projects[1], projects[2] ];
+	  projectsLine = threeProjects.join(", ") + " and " + others + " more.";
+	}
 	
 	var data = {
+	    reportName: projectsLine,
 		reportStartDate : reportStartDate.format('MMMM DD, YYYY'),
 		reportEndDate : reportEndDate.format('MMMM DD, YYYY'),
+		createdDate: created.format("MM/D/YYYY"),
+		createdTime: created.format("H:mm:ss a"),
+		createdBy : {
+            name : util.getPersonName(data.profile, true, false)
+        },
 		workingDays : workingDays,
 		workingHoursPerPerson : workingHoursPerPerson,
 		workingHoursForProject : workingHoursForProject
