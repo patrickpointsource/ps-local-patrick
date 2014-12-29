@@ -15,9 +15,10 @@ module.exports.generate = function(person, params, callback) {
 	var reportId = util.getReportId(person._id);
 	report.type = params.type;
   
-	reportsService.prepareData(person, params, function(err, data) {
+	reportsService.prepareProjectData(person, params, function(err, data) {
 		report.reportDetails = getReportDetails(data, params);
 		report.assignmentsHours = getAssignmentsHours(data, params);
+		report.rawData = data;
 		memoryCache.putObject(reportId, report);
 		callback(null, "Project report generated.");
 	});

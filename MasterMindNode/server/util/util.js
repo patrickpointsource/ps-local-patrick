@@ -23,6 +23,16 @@ var getIDfromResource = function(resource, callback) {
 	}
 };
 
+var getId = function(resource) {
+    var ind = resource.lastIndexOf("/");
+    if (ind != -1) {
+        var id = resource.substring(ind + 1, resource.length);
+        return id;
+    }
+    
+    return null;
+};
+
 
 /**
  * Returns ID with a resource (such as "people/52ab7005e4b0fd2a8d130004")
@@ -162,7 +172,19 @@ module.exports.getBusinessDaysCount = function ( startDate, endDate ) {
   return days;
 };
 
+module.exports.getTaskResourcesByName = function ( taskName, tasksList ) {
+    var tasks = _.compact(_.map(tasksList, function(t) {
+      if(t.name == taskName){
+        return t.resource;
+      }
+    }));
+    if ( !tasks )
+        tasks = [];
+    return tasks;
+};
+
 module.exports.getIDfromResource = getIDfromResource;
+module.exports.getId = getId;
 module.exports.getFullID = getFullID;
 module.exports.getTodayDate = getTodayDate;
 module.exports.getDateFromNow = getDateFromNow;

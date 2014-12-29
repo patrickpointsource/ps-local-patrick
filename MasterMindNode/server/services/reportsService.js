@@ -76,77 +76,36 @@ module.exports.prepareData = function(profile, params, callback) {
                       if(err) {
                         callback("Error getting projects while generating report: " + err);
                       } else {
-                        var hoursQ = {};
-                        
-                        var projectResources = _.map(assignments, function(assignment) {
-                            return { "project.resource": assignment.project.resource };
-                        });
-                        /*
-                        hoursQ.$or = _.map(assignments, function(assignment) {
-                            return { "project.resource": assignment.project.resource };
-                        });
-                        */
-                        hoursQ.$or = projectResources;
-                        
-                        var tasksResources = _.map(tasks.members, function(task) {
-                          return { "task.resource": task.resource };
-                        });
-                        
-                        //hoursQ.$or = hoursQ.$or.concat(tasksResources);
-                        
                         if(params.startDate && params.endDate) {
                           params.startDate = params.startDate.indexOf("\"") > -1 ? moment.utc(JSON.parse(params.startDate)).format("YYYY-MM-DD"): params.startDate;
                           params.endDate = params.endDate.indexOf("\"") > -1 ? moment.utc(JSON.parse(params.endDate)).format("YYYY-MM-DD"): params.endDate;
                         }
                         
-                       // hoursQ.$and = [ { date: { $gte: params.startDate }}, { date: { $lte: params.endDate }}  ];
-                        
-                        // provide correct query to load hours
-                        hoursQ = {
-                        		$and:[
-                        		      { date: { $gte: params.startDate, $lte: params.endDate }}, 
-                        		      {
-                        		    	  $or: [{
-                        		    		  "project.resource":{
-                        		    			  $in: _.map(projectResources, function(p) {
-                        	                        	if (p["project.resource"])
-                        	                        		return p["project.resource"]
-
-                        	                        	return ""
-                        	                        })
-                        		    		  	}
-                        		    	  }, {
-                        		    		  "task.resource":{
-                        		    			  $in: _.map(tasksResources, function(p) {
-                        	                        	if (p["task.resource"])
-                        	                        		return p["task.resource"]
-                        	                        	
-                    	                        		return ""
-                        	                        })
-                        		    		  	}
-                        		    	  }]
-                        		      }
-                        		]
-                        };
-                        
-                        var projectsTasks = _.map(projectResources.concat(tasksResources), function(p) {
-                        	if (p["project.resource"])
-                        		return p["project.resource"]
-                        	else
-                        		return p["task.resource"]
+                        var selectedPeopleIds = _.map(selectedPeople, function(p) {
+                          return p._id;
                         });
                         
-                        dataAccess.listHoursByProjectsTasksAndQuery(projectsTasks, hoursQ, HOURS_FIELDS, function(err, hours) {
+                        dataAccess.cloudantSearchHours(selectedPeopleIds, null, params.startDate, params.endDate, function(err, hoursObj) {
                           if(err) {
                             callback("Error getting hours while generating report: " + err, null);
                           } else {
-                            
-                            var hoursFiltered = _.filter(hours.members, function(h) {
-                              if(peopleResources.indexOf(h.person.resource) > -1) {
-                                return true;
+                            var hoursFiltered = _.map(hoursObj, function(h) {
+                              var hour = {
+                                  id: h.id,
+                                  hours: h.fields.hours,
+                                  person: { resource: h.fields["person.resource"], name: h.fields["person.name"] },
+                                  date: h.fields.date
+                              };
+                              
+                              if(h.fields["task.resource"]) {
+                                hour.task = { resource: h.fields["task.resource"], name: h.fields["task.name"] };
                               }
                               
-                              return false;
+                              if(h.fields["project.resource"]) {
+                                hour.project = { resource: h.fields["project.resource"], name: h.fields["project.name"] };
+                              }
+                              
+                              return hour;
                             });
                             
                             dataAccess.listVacations({}, function(err, vacations) {
@@ -182,6 +141,159 @@ module.exports.prepareData = function(profile, params, callback) {
         }
       });
     }
+  });
+};
+
+// gets needed for project report data depend on input parameters
+// params:
+//   profile:  profile of user that requested report
+//   params:   {startDate, endDate, roles}
+//   callback: function that is called when operation fail or success
+module.exports.prepareProjectData = function(profile, params, callback) {
+  
+  var validationMessages = validateParams(params);
+  
+  if(validationMessages.length > 0) {
+    callback(validationMessages.join(", "));
+    return;
+  }
+  
+  var selectedRoles = [];
+  var selectedPeople = [];
+  
+  dataAccess.listPeople({}, PEOPLE_FIELDS, function(err, people) {
+    if(err) {
+      callback("Error getting people while generating report: " + err, null);
+    } else {
+      dataAccess.listTasks({}, function(err, tasks) {
+        if(err) {
+          callback("Error getting tasks while generating report: " + err, null);
+        } else {
+          dataAccess.listRoles({}, function(err, roles) {
+            if(err) {
+              callback("Error getting roles while generating report: " + err, null);
+            } else {
+                selectedRoles = roles.members;
+
+                var projectResources = [];
+                if(_.isArray(params.projects)) {
+                  projectResources = _.map(params.projects, function(p) {
+                    return JSON.parse(p).resource;
+                  });
+                } else {
+                  projectResources.push(JSON.parse(params.projects).resource);
+                }
+                
+                dataAccess.listAssignmentsByProjects(projectResources, function(err, assignments) {
+                  if(err) {
+                    callback("Error getting assignments while generating report: " + err);
+                  } else {
+                    dataAccess.listProjects({}, PROJECT_FIELDS, function(err, projects) {
+                      if(err) {
+                        callback("Error getting projects while generating report: " + err);
+                      } else {
+                        var selectedProjects = _.filter(projects.data, function(project) {
+                          if(projectResources.indexOf(project.resource) > -1) {
+                            return true;
+                          }
+                          return false;
+                        });
+                          
+                        if(params.startDate && params.endDate) {
+                          params.startDate = params.startDate.indexOf("\"") > -1 ? moment.utc(JSON.parse(params.startDate)).format("YYYY-MM-DD"): params.startDate;
+                          params.endDate = params.endDate.indexOf("\"") > -1 ? moment.utc(JSON.parse(params.endDate)).format("YYYY-MM-DD"): params.endDate;
+                        }
+                        
+                        var projectIds = _.map(projectResources, function(pr) {
+                          return util.getId(pr);
+                        });
+                        
+                        // add vacation task to hours query
+                        var vacationTaskResources = util.getTaskResourcesByName ( "Vacation", tasks.members );
+                        var vacationTaskIds = _.map(vacationTaskResources, function(res) {
+                          return util.getId(res);
+                        });
+                        projectIds = projectIds.concat(vacationTaskIds);
+                        
+                        dataAccess.cloudantSearchHours(null, projectIds, params.startDate, params.endDate, function(err, hoursObj) {
+                          if(err) {
+                            callback("Error getting hours while generating report: " + err, null);
+                          } else {
+                            var hoursFiltered = _.map(hoursObj, function(h) {
+                              var hour = {
+                                  id: h.id,
+                                  hours: h.fields.hours,
+                                  person: { resource: h.fields["person.resource"], name: h.fields["person.name"] },
+                                  date: h.fields.date
+                              };
+                              
+                              if(h.fields["task.resource"]) {
+                                hour.task = { resource: h.fields["task.resource"], name: h.fields["task.name"] };
+                              }
+                              
+                              if(h.fields["project.resource"]) {
+                                hour.project = { resource: h.fields["project.resource"], name: h.fields["project.name"] };
+                              }
+                              
+                              return hour;
+                            });
+                            
+                            var selectedPeople = getSelectedPeopleByQueriedHours(people.members, hoursFiltered);
+                            
+                            dataAccess.listVacations({}, function(err, vacations) {
+                              if(err) {
+                                callback("Error getting vacations while generating report: " + err, null);
+                              } else {
+                                var filteredVacations = dataFilter.filterVacationsByDates(params.startDate, params.endDate, vacations.members);
+                                
+                                var data = {
+                                  profile: profile,
+                                  hours: hoursFiltered,
+                                  people: selectedPeople,
+                                  roles: selectedRoles,
+                                  projects: selectedProjects,
+                                  assignments: assignments,
+                                  allPeople: people.members,
+                                  allRoles: roles.members,
+                                  vacations: filteredVacations,
+                                  tasks: tasks.members
+                                };
+
+                                callback(null, data);
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+            }
+          });
+        }
+      });
+    }
+  });
+};
+
+var getSelectedPeopleByQueriedHours = function(allPeople, hours) {
+  var selectedPeopleResources = [];
+  
+  _.each(hours, function(hour) {
+    var resource = hour.person.resource;
+    if(selectedPeopleResources.indexOf(resource) < 0) {
+      selectedPeopleResources.push(resource);
+    }
+  });
+  
+  var selectedPeople = [];
+  
+  return _.filter(allPeople, function(person) {
+    if(selectedPeopleResources.indexOf(person.resource) > -1) {
+      return true;
+    }
+    
+    return false;
   });
 };
 

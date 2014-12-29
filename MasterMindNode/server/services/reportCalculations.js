@@ -25,17 +25,6 @@ var getTaskByName = function ( taskName, tasks ) {
     return task;
 };
 
-var getTaskResourcesByName = function ( taskName, tasksList ) {
-    var tasks = _.map(tasksList, function(t) {
-      if(t.name == taskName){
-        return t.resource;
-      }
-    });
-    if ( !tasks )
-        tasks = [];
-    return tasks;
-};
-
 // Calculates:
 //   actual Client Hours
 //   actual Invest Hours
@@ -50,9 +39,9 @@ var getHoursStatistics = function( data, personResource ) {
   var marketingHours = 0;
   var salesHours = 0;
   var allHours = 0;
-  var vacationTasks = getTaskResourcesByName ( TASK_TITLE.VACATION, data.tasks );
-  var marketingTasks = getTaskResourcesByName ( TASK_TITLE.MARKETING, data.tasks );
-  var salesTasks = getTaskResourcesByName ( TASK_TITLE.SALES, data.tasks );
+  var vacationTasks = util.getTaskResourcesByName ( TASK_TITLE.VACATION, data.tasks );
+  var marketingTasks = util.getTaskResourcesByName ( TASK_TITLE.MARKETING, data.tasks );
+  var salesTasks = util.getTaskResourcesByName ( TASK_TITLE.SALES, data.tasks );
   var siteHolidayTask = getTaskByName ( TASK_TITLE.SITE_HOLIDAY, data.tasks );
   
   _.each(data.hours, function (record){
