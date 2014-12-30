@@ -56,6 +56,9 @@ var startGenerateReport = function(person, type, params, callback) {
     // service path is '../services/[name]Report' (e.g. '../services/peopleReport')
     var supportedReportService = require("../services/" + type + "Report");
     if(supportedReportService) {
+      if (params.fields) {
+          params.fields = JSON.parse(params.fields);
+      }
       supportedReportService.generate(person, params, callback);
     } else {
       callback("Error in initializing report generation: report type " + type + " is not supported yet.", null);
