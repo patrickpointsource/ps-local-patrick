@@ -629,44 +629,21 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
    
 	$scope.getPersonProjectedHoursVerticalbarChartData = function( person ) {
 		var tmpData = {"expected hours": [], "actual hours": [], "hours to date": []};
-		
-			return {
-				"hours" : [{
-					label: "managers",
-					value: 33
-				}, {
-					label: "developers",
-					value: 56
-				}, {
-					label: "architects",
-					value: 10
-				}],
-				"expected hours" : [{
-					label: "managers",
-					value: 5
-				}, {
-					label: "developers",
-					value: 12
-				}, {
-					label: "architects",
-					value: 4
-				}],
-				
-				"hours TD" : [{
-					label: "managers",
-					value: 3
-				}, {
-					label: "developers",
-					value: 9
-				}, {
-					label: "architects",
-					value: 2
-				}]
-			};
+		if (person.projectsHours && person.projectsHours.length > 0) {
+			for (var i in person.projectsHours) {
+				var projectHours = person.projectsHours[i];
+				var lbl = projectHours.project.name;
+				tmpData["expected hours"].push({label: lbl, value: projectHours.assignedHours});
+				tmpData["actual hours"].push({label: lbl, value: projectHours.spentHours});
+				tmpData["hours to date"].push({label: lbl, value: projectHours.assignedTDHours});
+			}
+		} else {
+			tmpData = {"expected hours": [{label:"", value:0}], "actual hours": [{label:"", value:0}], "hours to date": [{label:"", value:0}]};
+		}
+		return tmpData;
 	};
 	
 	$scope.getPersonCategoriesHoursPieChartData = function( person ) {
-	
 		var personHours = person.hours;
 		var unaccountedHours = person.capacity 
 								- personHours.projectedClient
