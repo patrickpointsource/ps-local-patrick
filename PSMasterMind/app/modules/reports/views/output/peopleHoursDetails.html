@@ -81,16 +81,16 @@
 								<label>Actual, Expected, Projected Hours</label>
 								<div style="height:300px"
 									ng-include src="'modules/reports/views/verticalbarChart.html'" 
-									onload="elemId='projectedHoursVerticalReport';chartData=getPersonProjectedHoursVerticalbarChartData(person)" 
-									id="projectedHoursVerticalReport" ng-if="output.peopleDetails">
+									onload="elemId='projectedHoursVerticalReport' + $index;chartData=getPersonProjectedHoursVerticalbarChartData(person)" 
+									id="{{'projectedHoursVerticalReport' + $index}}" ng-if="output.peopleDetails">
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 ">
 								<label>Percent Hours Across Categories</label>
 								<div style="height:300px"
 										ng-include src="'modules/reports/views/pieChart.html'" 
-										onload="elemId='categoriesHoursPieGraph';chartData=getPersonCategoriesHoursPieChartData(person)" 
-										id="categoriesHoursPieGraph" ng-if="output.peopleDetails">
+										onload="elemId='categoriesHoursPieGraph' + $index;chartData=getPersonCategoriesHoursPieChartData(person)" 
+										id="{{'categoriesHoursPieGraph' + $index}}" ng-if="output.peopleDetails">
 								</div>
 							</div>
 						</div>
