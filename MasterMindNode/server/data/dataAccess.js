@@ -21,6 +21,7 @@ var SKILLS_KEY = 'Skills';
 var LINKS_KEY = 'Links';
 var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
+var REPORT_FAVORITES_KEY = 'ReportFavorites';
 
 /*
  * 
@@ -1149,6 +1150,24 @@ var listHoursByProjectsAndDates = function( projects, startDate, endDate, fields
             callback( err, filterRecordsByStartEndDates(hours, startDate, endDate) );
         }
     } );
+};
+
+var listReportFavorites = function( callback ) {
+
+	var result = memoryCache.getObject( REPORT_FAVORITES_KEY );
+	if( result ) {
+		console.log( "read " + REPORT_FAVORITES_KEY + " from memory cache" );
+		callback( null, queryRecords( result, q, "members", "reports/favorites/" ) );
+	} else {
+		dbAccess.listReportFavorites( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + REPORT_FAVORITES_KEY + " to memory cache" );
+				memoryCache.putObject( REPORT_FAVORITES_KEY, body );
+			}
+			callback( err, queryRecords( body, q, "members", "reports/favorites/" ) );
+		} );
+	}
+
 };
 
 var insertItem = function( id, obj, type, callback ) {

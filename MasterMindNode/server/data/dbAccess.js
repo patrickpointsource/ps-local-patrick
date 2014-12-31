@@ -522,6 +522,12 @@ module.exports = function(params) {
 	    });
 	};
 	
+	module.exports.listReportFavorites = function(callback) {
+	    cloudantGetAllViewDocument('views', 'ReportFavorites', {include_docs : true}, function(err, body){
+	         callback(err, prepareResponse(body, 'reports/favorites', 'doc'));
+	    });
+	};
+
 	module.exports.searchHoursByProjectsPeopleDate = function(query, callback){
 		cloudantQuerySearch(query, function(err, body) {
 			callback(err, prepareResponse(body, 'hours', 'doc'));

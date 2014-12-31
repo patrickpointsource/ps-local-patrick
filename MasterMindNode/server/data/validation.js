@@ -19,6 +19,7 @@ var SKILLS_KEY = 'Skills';
 var LINKS_KEY = 'Links';
 var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
+var REPORT_FAVORITES_KEY = 'ReportFavorites';
 
 var PROJECT_TYPES = [ "invest", "poc", "paid" ];
 var PROJECT_STATES = [ "planning", "active", "done", "poc", "supportActive", "clientActive" ];
@@ -86,6 +87,10 @@ var validate = function(obj, type) {
       validationMessages = isSecurityRoleValid(obj);
       break;
       
+    case REPORT_FAVORITES_KEY:
+        validationMessages = isReportFavoriteValid(obj);
+        break;
+
     default: 
       break;
   }
@@ -284,6 +289,13 @@ var isSecurityRoleValid = function(securityRole) {
   var messages = [];
   
   messages = jsonValidator.validateDocument(securityRole);    
+  return messages;
+};
+
+var isReportFavoriteValid = function(favorite) {
+  var messages = [];
+	  
+  messages = jsonValidator.validateDocument(favorite);    
   return messages;
 };
 

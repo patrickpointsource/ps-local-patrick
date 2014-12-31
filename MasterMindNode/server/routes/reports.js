@@ -85,4 +85,78 @@ router.get( '/get', util.isAuthenticated, function( req, res ) {
 	});
 } );
 	
+
+router.get( '/favorites', util.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+		if( allowed ) {
+			reports.listFavorites( function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	});
+} );
+
+router.get( '/favorites/:id', util.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+		if( allowed ) {
+			var id = req.params.id;
+			reports.getFavorite( id, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	});
+} );
+
+router.post( '/favorites', util.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+		if( allowed ) {
+			reports.insertFavorite( req.body, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	});
+} );
+
+router.put( '/favorites/:id', util.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+		if( allowed ) {
+			var id = req.params.id;
+			reports.updateFavorite(id, req.body, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	});
+} );
+
+router.delete ( '/favorites/:id', util.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+		if( allowed ) {
+			var id = req.params.id;
+			roles.deleteFavorite(id, req.body, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	});
+} );
+
 module.exports = router;

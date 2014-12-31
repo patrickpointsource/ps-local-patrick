@@ -1,0 +1,19 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"id": "ReportFavorites",
+	"type": "object",
+	"properties": {
+		"_id": {"type":"string"},
+		"_rev": {"type":"string"},
+		"_deleted": {"type":"boolean"},
+		"etag": {"type": ["string", "number"]},
+		"form": {"enum": ["ReportFavorites"]},
+		"name": {"type": "string"},
+		"created": {"type": "string"},
+		"dateRange" : {"type": "string"},
+		"type" : {"type": "string"},
+		"fields" : {"type": "object"},
+		"output" : {"type": "string"}
+	},
+	"required": ["form", "name"]
+}

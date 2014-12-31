@@ -2,6 +2,7 @@
 
 
 var reportAccess = require('../data/reportAccess');
+var dataAccess = require('../data/dataAccess');
 var session = require('../util/session');
 
 var getStatus = function(personId) {
@@ -44,7 +45,71 @@ var getReport = function(personId, callback) {
   });
 };
 
+var listFavorites = function(callback) {
+    dataAccess.listReportFavorites( function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading report favorites', null);
+        } else {
+            //console.log(body);
+            callback(null, body);
+        }
+    });
+};
+
+var getFavorite = function(id, callback) {
+    dataAccess.getItem(id, function(err, body){
+        if (err) {
+            console.log(err);
+            callback(err, null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
+var insertFavorite = function(obj, callback) {
+    dataAccess.insertItem(obj._id, obj, dataAccess.REPORT_FAVORITES_KEY, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error inserting report favorite:' + JSON.stringify(err), null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
+var updateFavorite = function(id, obj, callback) {
+    dataAccess.updateItem(id, obj, dataAccess.REPORT_FAVORITES_KEY, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error update report favorite:' + JSON.stringify(err), null);
+        } else {
+            callback(null, _.extend(obj, body));
+        }
+    });
+};
+
+var deleteFavorite = function(id, obj, callback) {
+    dataAccess.deleteItem(id, obj._rev, dataAccess.REPORT_FAVORITES_KEY, function(err, body){
+        if (err) {
+            console.log(err);
+            callback(err, null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
 module.exports.getStatus = getStatus;
 module.exports.generateReport = generateReport;
 module.exports.cancelReport = cancelReport;
 module.exports.getReport = getReport;
+
+// Report favorites
+module.exports.listFavorites = listFavorites;
+module.exports.getFavorite = getFavorite;
+module.exports.insertFavorite = insertFavorite;
+module.exports.updateFavorite = updateFavorite;
+module.exports.deleteFavorite = deleteFavorite;
+
