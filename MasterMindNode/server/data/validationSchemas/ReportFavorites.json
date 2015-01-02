@@ -12,7 +12,23 @@
 		"created": {"type": "string"},
 		"dateRange" : {"type": "string"},
 		"type" : {"type": "string"},
-		"fields" : {"type": "object"},
+		"fields": {
+			"type":"object",
+			"properties":{
+				"projectHours": {
+					"type":"object",
+					"properties":{
+						"estimatedInvestmentHrs": { "type": "boolean" },
+						"estimatedClientHrs": { "type": "boolean" },
+						"utilRole": { "type": "boolean" },
+						"utilInvestmentWork": { "type": "boolean" },
+						"utilClientWork": { "type": "boolean" },
+						"actualInvestment": { "type": "boolean" },
+						"actualClient": { "type": "boolean" }
+					}
+				}
+			}
+		},
 		"output" : {"type": "string"}
 	},
 	"required": ["form", "name"]

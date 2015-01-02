@@ -1363,6 +1363,7 @@ module.exports.listSecurityRoles = listSecurityRoles;
 module.exports.listUserRoles = listUserRoles;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
 module.exports.listTasksByName = listTasksByName;
+module.exports.listReportFavorites = listReportFavorites;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;

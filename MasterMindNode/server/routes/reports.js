@@ -118,7 +118,9 @@ router.get( '/favorites/:id', util.isAuthenticated, function( req, res ) {
 router.post( '/favorites', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
 		if( allowed ) {
-			reports.insertFavorite( req.body, function( err, result ) {
+			var favorite = req.body;
+			favorite.form = 'ReportFavorites';
+			reports.insertFavorite( favorite, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
