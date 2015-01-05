@@ -306,61 +306,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		if ($scope.isGenerationInProgress)
 			return;
 		
-		var input = {
-			reportName: $scope.params.reportName,
-			locations: [],
-			fields: $scope.params.fields,
-			output: $scope.params.output,
-			dateRange: $scope.params.date.range,
-			roles: []
-		};
-		
-		switch ($scope.params.date.range)
-		{
-			case "week":
-				
-				input.startDate = moment.utc($scope.params.date.start);
-				input.endDate = moment.utc($scope.params.date.start).add(1, "week");
-				break;
-			
-			case "weeks":
-				
-				input.startDate = moment.utc($scope.params.date.start);
-				input.endDate = moment.utc($scope.params.date.start).add(2, "week");
-				break;
-			
-			case "month":
-				
-				input.startDate = moment(Date.UTC($scope.params.date.year, $scope.params.date.month.index));
-				input.endDate = moment(input.startDate).endOf("month");
-				break;
-				
-			case "previousMonth":
-				
-				input.startDate = moment.utc().startOf("month").subtract(1, "month");
-				input.endDate = moment(input.startDate).endOf("month");
-				break;
-				
-			case "currentMonth":
-				
-				input.startDate = moment.utc().startOf("month");
-				input.endDate = moment.utc().subtract(1, "day");
-				break;
-				
-			case "custom":
-				
-				input.startDate = moment.utc($scope.params.date.start);
-				input.endDate = moment.utc($scope.params.date.end);
-				break;
-		}
-		
-		for (var prop in $scope.params.locations)
-			if ($scope.params.locations[prop])
-				input.locations.push(prop);
-		
-		for (var prop in $scope.params.roles)
-			if ($scope.params.roles[prop])
-				input.roles.push(prop);
+		var input = $scope.prepareInputParams();
 		
 		console.log(JSON.stringify(input));
 
@@ -370,6 +316,66 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		
 		Resources.refresh("/reports/people/generate", input, {});
 	};
+	
+	$scope.prepareInputParams = function() {
+	    var input = {
+            reportName: $scope.params.reportName,
+            locations: [],
+            fields: $scope.params.fields,
+            output: $scope.params.output,
+            dateRange: $scope.params.date.range,
+            roles: []
+        };
+        
+        switch ($scope.params.date.range)
+        {
+            case "week":
+                
+                input.startDate = moment.utc($scope.params.date.start);
+                input.endDate = moment.utc($scope.params.date.start).add(1, "week");
+                break;
+            
+            case "weeks":
+                
+                input.startDate = moment.utc($scope.params.date.start);
+                input.endDate = moment.utc($scope.params.date.start).add(2, "week");
+                break;
+            
+            case "month":
+                
+                input.startDate = moment(Date.UTC($scope.params.date.year, $scope.params.date.month.index));
+                input.endDate = moment(input.startDate).endOf("month");
+                break;
+                
+            case "previousMonth":
+                
+                input.startDate = moment.utc().startOf("month").subtract(1, "month");
+                input.endDate = moment(input.startDate).endOf("month");
+                break;
+                
+            case "currentMonth":
+                
+                input.startDate = moment.utc().startOf("month");
+                input.endDate = moment.utc().subtract(1, "day");
+                break;
+                
+            case "custom":
+                
+                input.startDate = moment.utc($scope.params.date.start);
+                input.endDate = moment.utc($scope.params.date.end);
+                break;
+        }
+        
+        for (var prop in $scope.params.locations)
+            if ($scope.params.locations[prop])
+                input.locations.push(prop);
+        
+        for (var prop in $scope.params.roles)
+            if ($scope.params.roles[prop])
+                input.roles.push(prop);
+        
+        return input;
+	}
 	
 	$scope.onReportGenerated = function ( report ) {
 
@@ -666,5 +672,33 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				$scope.showPeopleDetailsLargerReport = false;
 			}
 	};
+	
+	$scope.favoriteReports = [];
+	$scope.messageForFavorites = "";
+	
+	$scope.save = function() {
+	  var params = $scope.prepareInputParams();
+	  var person = { resource: $scope.me.resource, name: $scope.getPersonName($scope.me) };
+	  
+	  var favotiteReport = {
+	    person: person,
+	    params: params,
+	    type: "people"
+	  };
+	  
+	  Resources.create("reports/favorites", favotiteReport).then(function(result) {
+	    $scope.messageForFavorites = "Report saved";
+	    $scope.$parent.getFavorites();
+	  });
+	};
+	
+	$scope.saveAndCreate = function() {
+	  $scope.save();
+	  $scope.reportHandler.generate();
+	};
+	
+	$scope.clearMessage = function() {
+      $scope.messageForFavorites = "";
+    }
   
 } ] );

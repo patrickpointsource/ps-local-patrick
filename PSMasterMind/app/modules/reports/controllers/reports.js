@@ -1863,6 +1863,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		$scope.stopGenerationTimers();
 	});
 	
+	$scope.getFavorites = function() {
+	  Resources.refresh("reports/favorites/byPerson/" + $scope.me.googleId).then(function(result) {
+	    $scope.favorites = _.sortBy(result, function(fav){ return fav.params.reportName.toLowerCase(); });
+	  });
+	};
+	
 	$scope.init( );
+	
+	$scope.getFavorites( );
 	
 } ] );

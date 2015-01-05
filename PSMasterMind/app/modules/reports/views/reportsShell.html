@@ -88,6 +88,15 @@
 		<div class="col-sm-6">
 			<div class="reports-well">
 				<div class="reports-well header">Favorited Reports / Report Templates</div>
+				<div ng-repeat="favorite in favorites" class="report-favorite">
+				    <div class="col-xs-11 padding-top-20">
+				        {{favorite.params.reportName}}
+				    </div>
+				    <div class="col-xs-1 padding-top-10">
+				        <a class="cursor-pointer" title="Run report"><i class="fa fa-play-circle fa-3x"></i></a>
+				    </div>
+				    
+				</div>
 			</div>
 		</div>
 	</div>
