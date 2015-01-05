@@ -29,17 +29,41 @@
                         <h2>Utilization by role</h2>
                     </div>
                     <div class="report-output-inside-row">
-                        <div class="col-xs-12 col-sm-5">
-                            <label ng-repeat-start="utilizationByRole in output.peopleDetails.utilizationDetails">{{utilizationByRole.role.title}}</label>
-                            <div ng-repeat-end="utilizationByRole in output.peopleDetails.utilizationDetails">
-                                {{utilizationByRole.role.actualUtilization}} %
-                            </div>
+                    	<div ng-if="!showPeopleDetailsLargerReport">
+                        	<div class="col-xs-12 col-sm-6">
+                            	<label ng-repeat-start="utilizationByRole in output.peopleDetails.utilizationDetails">{{utilizationByRole.role.title}}</label>
+                            	<div ng-repeat-end="utilizationByRole in output.peopleDetails.utilizationDetails">
+                                	{{utilizationByRole.role.actualUtilization}} %
+                            	</div>
+                        	</div>
+                        	<div class="col-xs-12 col-sm-6">
+                        		<a class="btn" 
+                        			ng-if="output.peopleDetails" 
+                        			ng-click="popupHandler.openPeopleDetailsVerticalReport()">
+                        			View Larger
+                        		</a>
+  								<div ng-include src="'modules/reports/views/verticalbarChart.html'" 
+									onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData()" 
+									id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
+								</div>
+                        	</div>
+                       	</div>
+                        <div ng-if="showPeopleDetailsLargerReport">
+                        	<a class="btn" 
+                        		ng-if="output.peopleDetails" 
+                        		ng-click="popupHandler.closePeopleDetailsVerticalReport()">
+                        		View Smaller
+                        	</a>
+                        	<div modal="showPeopleDetailsLargerReport"  
+  								close="popupHandler.closePeopleDetailsVerticalReport()">
+    							<div class="modal-body">
+        							<div ng-include src="'modules/reports/views/verticalbarChart.html'" 
+										onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData()" 
+										id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
+									</div>
+    							</div>
+  							</div> 
                         </div>
-                        <div class="col-xs-12 col-sm-7" 
-							ng-include src="'modules/reports/views/verticalbarChart.html'" 
-							onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData()" 
-							id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
-						</div>
                     </div>
                     <div class="report-output-well header height-auto no-margin">
                         <h2>Individual hours and utilization</h2>

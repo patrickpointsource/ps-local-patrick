@@ -655,6 +655,16 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	            {key: "OH", value:  personHours.OH}, 
 	            {key: "OOO", value: personHours.OOO},
 	            {key:"unaccounted for", value: unaccountedHours}];
-	};		
+	};	
+	
+	$scope.showPeopleDetailsLargerReport = false;
+	$scope.popupHandler = {
+			openPeopleDetailsVerticalReport: function( ) {
+				$scope.showPeopleDetailsLargerReport = true;
+			},
+			closePeopleDetailsVerticalReport: function( ) {
+				$scope.showPeopleDetailsLargerReport = false;
+			}
+	};
   
 } ] );
