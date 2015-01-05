@@ -3,6 +3,7 @@
 
 var reportAccess = require('../data/reportAccess');
 var dataAccess = require('../data/dataAccess');
+var dataFilter = require('../data/dataFilter');
 var session = require('../util/session');
 
 var getStatus = function(personId) {
@@ -52,6 +53,17 @@ var listFavorites = function(callback) {
             callback('error loading report favorites', null);
         } else {
             //console.log(body);
+            callback(null, body);
+        }
+    });
+};
+
+var listFavoritesByPerson = function(person, callback) {
+    dataAccess.listReportFavoritesByPerson( person, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading report favorites', null);
+        } else {
             callback(null, body);
         }
     });
@@ -112,4 +124,5 @@ module.exports.getFavorite = getFavorite;
 module.exports.insertFavorite = insertFavorite;
 module.exports.updateFavorite = updateFavorite;
 module.exports.deleteFavorite = deleteFavorite;
+module.exports.listFavoritesByPerson = listFavoritesByPerson;
 

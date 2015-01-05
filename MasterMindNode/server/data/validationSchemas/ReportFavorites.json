@@ -1,35 +1,119 @@
 {
-	"$schema": "http://json-schema.org/draft-04/schema",
-	"id": "ReportFavorites",
-	"type": "object",
-	"properties": {
-		"_id": {"type":"string"},
-		"_rev": {"type":"string"},
-		"_deleted": {"type":"boolean"},
-		"etag": {"type": ["string", "number"]},
-		"form": {"enum": ["ReportFavorites"]},
-		"name": {"type": "string"},
-		"created": {"type": "string"},
-		"dateRange" : {"type": "string"},
-		"type" : {"type": "string"},
-		"fields": {
-			"type":"object",
-			"properties":{
-				"projectHours": {
-					"type":"object",
-					"properties":{
-						"estimatedInvestmentHrs": { "type": "boolean" },
-						"estimatedClientHrs": { "type": "boolean" },
-						"utilRole": { "type": "boolean" },
-						"utilInvestmentWork": { "type": "boolean" },
-						"utilClientWork": { "type": "boolean" },
-						"actualInvestment": { "type": "boolean" },
-						"actualClient": { "type": "boolean" }
-					}
-				}
-			}
-		},
-		"output" : {"type": "string"}
-	},
-	"required": ["form", "name"]
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "id": "ReportFavorites",
+    "type": "object",
+    "properties": {
+        "_id": {"type":"string"},
+        "_rev": {"type":"string"},
+        "_deleted": {"type":"boolean"},
+        "etag": {"type": ["string", "number"]},
+        "form": {"enum": ["ReportFavorites"]},
+        "type" : {"type": "string"},
+        "params": {
+            "type":"object",
+            "properties":{
+                "dateRange": {"type": "string"},
+                "endDate": {"type": "string", "format": "date-time"},
+                "fields": {
+                    "type":"object",
+                    "properties":{
+                        "all": {"type":"boolean"},
+                        "categoryHours": { 
+                            "type": "object",
+                            "properties": {
+                                "marketing": {"type":"boolean"},
+                                "out": { 
+                                    "type": "object",
+                                    "properties": {
+                                        "all": {"type":"boolean"},
+                                        "holiday": {"type":"boolean"},
+                                        "sick": {"type":"boolean"},
+                                        "vacation": {"type":"boolean"}
+                                    }
+                                },
+                                "overhead": { 
+                                    "type": "object",
+                                    "properties": {
+                                        "admin": {"type":"boolean"},
+                                        "all": {"type":"boolean"},
+                                        "design": {"type":"boolean"},
+                                        "hr": {"type":"boolean"},
+                                        "meetings": {"type":"boolean"},
+                                        "rd": {"type":"boolean"},
+                                        "trainings": {"type":"boolean"}
+                                    }
+                                },
+                                "sales": {"type":"boolean"}
+                            }
+                        },
+                        "goals": { 
+                            "type": "object",
+                            "properties": {
+                                "all": {"type":"boolean"},
+                                "projectedClientHrs": {"type":"boolean"},
+                                "projectedInvestmentHrs": {"type":"boolean"},
+                                "projectedOOO": {"type":"boolean"},
+                                "utilGoals": {"type":"boolean"},
+                                "utilProjections": {"type":"boolean"}
+                            }
+                        },
+                        "graphs": { 
+                            "type": "object",
+                            "properties": {
+                                "graph": {"type":"boolean"},
+                                "percent": { 
+                                    "type": "object",
+                                    "properties": {
+                                        "all": {"type":"boolean"},
+                                        "out": {"type":"boolean"},
+                                        "overhead": {"type":"boolean"}
+                                    }
+                                },
+                                "trendGoals": {"type":"boolean"},
+                                "trendHrs": {"type":"boolean"}
+                            }
+                        },
+                        "projectHours": { 
+                            "type": "object",
+                            "properties": {
+                                "all": {"type":"boolean"},
+                                "actualClient": {"type":"boolean"},
+                                "actualInvestment": {"type":"boolean"},
+                                "estimatedClientHrs": {"type":"boolean"},
+                                "estimatedInvestmentHrs": {"type":"boolean"},
+                                "utilClientWork": {"type":"boolean"},
+                                "utilRole": {"type":"boolean"},
+                                "utilInvestmentWork": {"type":"boolean"}
+                            }
+                        }
+                    }
+                },
+                "locations": { 
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {"type": "string"}
+                },
+                "output": {"type": "string"},
+                "reportName": {"type":"string", "prohibited_values": [""]},
+                "roles": { 
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {"type": "string"}
+                },
+                "startDate": {"type": "string", "format": "date-time"}
+            }
+        },
+        "person": {"$ref" : "#/definitions/resource"}
+    },
+    "required": ["form", "params", "person", "type"],
+    "definitions": {
+        "resource": {
+            "type":"object",
+            "properties":{
+                "resource": {"type":"string"},
+                "name": {"type":"string"}
+            },
+            "required": ["resource"]
+        }
+    }
 }

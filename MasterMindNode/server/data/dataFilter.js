@@ -645,6 +645,17 @@ var filterNonBillableRoles = function(roles) {
 	return result;
 };
 
+var filterReportsByPerson = function(person, favorites) {
+  var result = _.filter(favorites, function(favorite) {
+    if(favorite.person.resource == person.resource) {
+      return true;
+    }
+    return false;
+  });
+  
+  return result;
+};
+
 
 // people filter functions
 module.exports.filterPeopleByRoles = filterPeopleByRoles;
@@ -681,3 +692,6 @@ module.exports.filterLinksByProject = filterLinksByProject;
 
 //roles filter functions
 module.exports.filterNonBillableRoles = filterNonBillableRoles;
+
+//favorite reports functions
+module.exports.filterReportsByPerson = filterReportsByPerson;

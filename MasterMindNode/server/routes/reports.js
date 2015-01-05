@@ -100,6 +100,26 @@ router.get( '/favorites', util.isAuthenticated, function( req, res ) {
 	});
 } );
 
+router.get( '/favorites/byPerson/:googleId', util.isAuthenticated, function( req, res ) {
+    security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
+        if( allowed ) {
+            people.getPersonByGoogleId(req.params.googleId, function(err, person){
+                if(err){
+                  res.json(500, err);
+                } else {
+                  reports.listFavoritesByPerson( person, function( err, result ) {
+                    if( err ) {
+                      res.json( 500, err );
+                    } else {
+                      res.json( result );
+                    }
+                  } );
+                }
+              });
+        }
+    });
+} );
+
 router.get( '/favorites/:id', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.reports.resourceName, securityResources.reports.permissions.viewReports, function( allowed ) {
 		if( allowed ) {

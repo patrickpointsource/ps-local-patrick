@@ -1157,17 +1157,27 @@ var listReportFavorites = function( callback ) {
 	var result = memoryCache.getObject( REPORT_FAVORITES_KEY );
 	if( result ) {
 		console.log( "read " + REPORT_FAVORITES_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "reports/favorites/" ) );
+		callback( null, queryRecords( result, {}, "members", "reports/favorites/" ) );
 	} else {
 		dbAccess.listReportFavorites( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + REPORT_FAVORITES_KEY + " to memory cache" );
 				memoryCache.putObject( REPORT_FAVORITES_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "reports/favorites/" ) );
+			callback( err, queryRecords( body, {}, "members", "reports/favorites/" ) );
 		} );
 	}
 
+};
+
+var listReportFavoritesByPerson = function( person, callback ) {
+  listReportFavorites( function( err, result ) {
+    if(err) {
+      callback( err, null );
+    } else {
+      callback( err, dataFilter.filterReportsByPerson(person, result.members) );
+    }
+  });
 };
 
 var insertItem = function( id, obj, type, callback ) {
@@ -1364,6 +1374,7 @@ module.exports.listUserRoles = listUserRoles;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
 module.exports.listTasksByName = listTasksByName;
 module.exports.listReportFavorites = listReportFavorites;
+module.exports.listReportFavoritesByPerson = listReportFavoritesByPerson;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;
@@ -1383,6 +1394,7 @@ module.exports.LINKS_KEY = LINKS_KEY;
 module.exports.CONFIGURATION_KEY = CONFIGURATION_KEY;
 module.exports.SKILLS_KEY = SKILLS_KEY;
 module.exports.TASKS_KEY = TASKS_KEY;
+module.exports.REPORT_FAVORITES_KEY = REPORT_FAVORITES_KEY;
 
 module.exports.prepareRecords = prepareRecords;
 module.exports.cloudantSearchHoursIncludeDocs = cloudantSearchHoursIncludeDocs;
