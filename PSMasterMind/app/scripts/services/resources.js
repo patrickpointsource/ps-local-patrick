@@ -78,7 +78,7 @@ function( $q, $timeout, Restangular ) {
 		$timeout( function( ) {
 			fetch( resource, params ).then( function( newValue ) {
 				//Save to localStorage if params doesn't contain temp param "t", which is used to prevent from cashing
-				if (!params || !params.t) {
+				if ((!params || !params.t) && newValue) {
 					setLocalStorageValue(resource, JSON.stringify( newValue ));
 					setLocalStorageValue( TIME_PREFIX + resource, new Date( ));
 				}

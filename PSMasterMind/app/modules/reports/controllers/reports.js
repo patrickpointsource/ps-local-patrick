@@ -460,10 +460,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 					abbrMap[label]["expected hours"] += valExpected;
 					abbrMap[label]["hours"] += valSpent;
 					abbrMap[label]["hours to date"] += valTD;
-							
-					
-					
-					
 				}
 			}
 			
@@ -476,8 +472,36 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 				tmpData["hours"].push({label: lbl, value: Math.abs(valSpent)});
 				tmpData["hours to date"].push({label: lbl, value: Math.abs(valTD )});
 			}
-		}
+		};
+		/*
+		var ordered = [];
 		
+		for (var j = 0; j < tmpData["expected hours"].length; j ++) {
+			valExpected = _.extend({}, tmpData["expected hours"][j]);
+			valSpent =  _.extend({}, tmpData["hours"][j]);
+			valTD =  _.extend({}, tmpData["hours to date"][j]);
+			
+			valExpected.type = 'expected hours';
+			valSpent.type = 'hours';
+			valTD.type = 'hours to date';
+			
+			ordered = [valExpected, valSpent, valTD];
+			
+			ordered.sort(function(v1, v2) {
+				return (v1.value - v2.value)
+			})
+			
+			ordered[0].diffVal = ordered[0].value;
+			
+			for (var t = 1; t < ordered.length; t ++)
+				ordered[t].diffVal = ordered[t].value - ordered[t - 1].value;
+			
+			tmpData["expected hours"][j].displayed = ordered[0];
+			tmpData["hours"][j].displayed = ordered[1];
+			tmpData["hours to date"][j].displayed = ordered[2];
+			
+		}
+		*/
 		
 		
 		$scope.verticalbarChartData = tmpData;

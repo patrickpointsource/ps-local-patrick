@@ -43,6 +43,16 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 		//colors.push(colorFn(k))
 		 colors.push('#0071BC')
 	*/
+	 
+	 var getIndByKey = function(key) {
+		 var res = -1;
+		 
+		 for (var k = 0; k < chartData.length; k ++)
+			 if (key == chartData[k].key)
+				 res = k;
+		 
+		 return res;
+	 }
 	 nv.addGraph(function() {
 			try {
 				var chart = nv.models.multiBarChart()
@@ -50,14 +60,31 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 						return d.label 
 					})
 				 	.y(function(d) { 
-				 		return d.value 
+				 		//if (d.displayed && !isNaN(parseFloat(d.displayed.diffVal)))
+				 		//	return d.displayed.diffVal;
+				 		
+				 		return !isNaN(parseFloat(d.value)) ? parseFloat(d.value): 0;
 			 		})
-				 	.tooltips(true)
-				 	.color(colors)
+				 	//.tooltips(true)
+				 	.color(function(d, ind){
+				 		
+				 		
+				 		/*var tmpInd  = getIndByKey(d.values[ind].displayed ? d.values[ind].displayed.type: '');
+				 		
+				 		if (tmpInd >= 0)
+				 			return colors[tmpInd]
+				 		*/
+				 		return colors[ind]
+				 	})
 				 	.reduceXTicks(false)
 				 	.height(220)
 				 	.showXAxis(true)
 				 	.showYAxis(true)
+				 	/*.stackOffset(function() {
+				 		var tmp;
+				 		
+				 		return 10;
+				 	})*/
 				 	//.staggerLabels(true);
 				
 				//chart.showLegend(false);
