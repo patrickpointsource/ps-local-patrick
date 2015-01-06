@@ -132,8 +132,45 @@ module.exports = function(params) {
 			if (err) {
 				console.log("Error while getting google profiles: " + err);
 			} else {
+				var counter = -1;
+				
+				var profileCb = function(resultCb) {
+					var profile = profiles.users[counter];
+					var person = {isActive : 'true' };
+					
+					
+					people.getPersonByGoogleId(profile.id, function(err, result) {
+						if (!err) {
+							if (result) {
+								person = result;
+							}
+						}
+						if (result == null || result.about.indexOf('undefined') > -1 || (result && result.isActive)) {
+							updatePerson(person, profile, function() {
+								if (resultCb)
+									resultCb()
+							});
+						} else if (resultCb)
+							resultCb()
+					});
+	
+				};
+				
+				var executorCb = function() {
+					counter += 1;
+					
+					if (counter < profiles.users.length)
+						profileCb(executorCb);
+					else
+						callback(null, null);
+				};
+				
+				executorCb();
+				/*
 				_.each(profiles.users, function(profile) {
 					var person = {isActive : 'true' };
+					
+					
 					people.getPersonByGoogleId(profile.id, function(err, result) {
 						if (!err) {
 							if (result) {
@@ -146,14 +183,15 @@ module.exports = function(params) {
 					});
 	
 				});
+				*/
 	
 			}
 		});
-		callback(null, null);
+		
 	
 	};
 	
-	var updatePerson = function(person, googleProfile) {
+	var updatePerson = function(person, googleProfile, cb) {
 	
 		var hasChanges = person.googleId != googleProfile.id
 				|| person.mBox != googleProfile.primaryEmail
@@ -178,8 +216,12 @@ module.exports = function(params) {
 					console.log("User'" + person.name.fullName
 							+ "' has been synchronized with google profile");
 				}
+				
+				if (cb)
+					cb();
 			});
-		}
+		} else if (cb)
+			cb();
 	};
 	
 	var upgradeNameProperties = function(obj) {

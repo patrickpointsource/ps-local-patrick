@@ -87,12 +87,12 @@ var queryRecords = function( data, q, propName, resourcePrefix, postfix, fields 
 
 	if( !propName ) {
 		//res.data = _.query( data.data,  q);
-		res.data = generateProperties( sift( q, data.data ), resourcePrefix, postfix, fields );
+		res.data = generateProperties( sift( q, (data.data && _.isArray(data.data) ? data.data: []) ), resourcePrefix, postfix, fields );
 
 		res.count = res.data.length;
 	} else {
 		//res[propName] = _.query( data.data,  q);
-		res[ propName ] = generateProperties( sift( q, data.data ), resourcePrefix, postfix, fields );
+		res[ propName ] = generateProperties( sift( q,  (data.data && _.isArray(data.data) ? data.data: []) ), resourcePrefix, postfix, fields );
 
 		res.count = res[ propName ].length;
 	}
