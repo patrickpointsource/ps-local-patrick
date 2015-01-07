@@ -426,10 +426,10 @@ var getProjections = function(data, params) {
 
 	var fields = params.fields.projections;
 	
-	if (fields.all || fields.clientHours) {
+	if (fields.all || fields.clientHrs) {
 		projections.clientHours = getProjectionHoursByType(data, 'client', hoursStatistics, assignmentsStatistics);
 	}
-	if (fields.all || fields.investHours) {
+	if (fields.all || fields.investHrs) {
 		projections.investHours = getProjectionHoursByType(data, 'invest', hoursStatistics, assignmentsStatistics);
 	}
 	if (fields.all || fields.outOfOffice) {
