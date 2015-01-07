@@ -118,19 +118,15 @@ var getPeopleDetailsSection = function(data, params) {
 	var capacity = reportCalculations.calculateCapacity(data, params.startDate, params.endDate);
 	var hoursStatistics = reportCalculations.getHoursStatistics(data);
 	var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, params.startDate, params.endDate);
-	var utilizationDetails = reportCalculations.getUtilizationDetails(data, params.startDate, params.endDate, params.roles);
 		
 	var totalClientInvestHours = Math.round( hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours );
 	var totalTasksHours = Math.round( hoursStatistics.overhead + hoursStatistics.allHours );
 	var utilizationClient = Math.round( (hoursStatistics.actualClientHours / assignmentsStatistics.projectedClientHours) * 100 );
 	var utilizationInvest = Math.round( (hoursStatistics.actualInvestHours / assignmentsStatistics.projectedInvestHours) * 100 );
 	var	utilizationTotal = utilizationClient + utilizationInvest;
-		
-	return {
+	
+	var peopleDetails = {
 		totalPeople: data.people.length,
-		utilizationDetails: utilizationDetails,
-		peopleOnClient: assignmentsStatistics.peopleOnClient,
-		peopleOnInvestment: assignmentsStatistics.peopleOnInvestment,
 		availableHours: capacity,
 		totalClientInvestHours: totalClientInvestHours,
 		totalTasksHours: totalTasksHours,
@@ -138,6 +134,21 @@ var getPeopleDetailsSection = function(data, params) {
 		utilizationInvest:  utilizationInvest,
 		utilizationTotal: utilizationTotal 
 	};
+	
+	var fields = params.fields.peopleHours;
+	
+	if (fields.all || fields.peopleOnClient) {
+		peopleDetails.peopleOnClient = assignmentsStatistics.peopleOnClient;
+	}
+	if (fields.all || fields.peopleOnInvestment) {
+		peopleDetails.peopleOnInvestment = assignmentsStatistics.peopleOnInvestment;
+	}
+	if (fields.all || fields.utilizationByRole) {
+		var utilizationDetails = reportCalculations.getUtilizationDetails(data, params.startDate, params.endDate, params.roles);
+		peopleDetails.utilizationDetails = utilizationDetails;
+	}
+	
+	return peopleDetails;
 };
 
 var getProjectHours = function(data, params) {
@@ -409,14 +420,25 @@ var getProjections = function(data, params) {
 
 	var projections = {
 		capacity : capacity,
-		clientHours :  getProjectionHoursByType(data, 'client', hoursStatistics, assignmentsStatistics),
-		investHours :  getProjectionHoursByType(data, 'invest', hoursStatistics, assignmentsStatistics),
 		totalHours :  getProjectionHoursByType(data, 'total', hoursStatistics, assignmentsStatistics),
-		outOfOffice : hoursStatistics.outOfOffice,
-		overhead : hoursStatistics.overhead,
 		utilization :  getProjectionUtilization(data, capacity, hoursStatistics, assignmentsStatistics)
 	}
+
+	var fields = params.fields.projections;
 	
+	if (fields.all || fields.clientHours) {
+		projections.clientHours = getProjectionHoursByType(data, 'client', hoursStatistics, assignmentsStatistics);
+	}
+	if (fields.all || fields.investHours) {
+		projections.investHours = getProjectionHoursByType(data, 'invest', hoursStatistics, assignmentsStatistics);
+	}
+	if (fields.all || fields.outOfOffice) {
+		projections.outOfOffice = hoursStatistics.outOfOffice;
+	}
+	if (fields.all || fields.overhead) {
+		projections.overhead = hoursStatistics.overhead;
+	}
+
 	return projections;
 };
 
