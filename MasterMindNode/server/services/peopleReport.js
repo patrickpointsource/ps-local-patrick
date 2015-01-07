@@ -148,47 +148,67 @@ var getProjectHours = function(data, params) {
 	
 	var projectHours = {
 		capacity : capacity,
-		outOfOfficeHours : hoursStatistics.outOfOffice,
-		overheadHours :  hoursStatistics.overhead
 	};
 
 	var fields = params.fields.projectHours;
 
 	// Define actual hours
-	if (fields.all || fields.actualClient) {
+	if (fields.all || fields.actualClientHrs) {
 		projectHours.actualClientHours = hoursStatistics.actualClientHours;
 	}
-	if (fields.all || fields.actualInvestment) {
+	if (fields.all || fields.actualInvestmentHrs) {
 		projectHours.actualInvestHours = hoursStatistics.actualInvestHours;
 	}
-	if (fields.all || fields.actualClient || fields.actualInvestment) {
+	if (fields.all || fields.actualClientHrs || fields.actualInvestmentHrs) {
 		projectHours.totalActualHours = parseInt(projectHours.actualClientHours) + parseInt(projectHours.actualInvestHours);
 	}
 
-	// Define estimated(projected) hours
-	if (fields.all || fields.estimatedClientHrs) {
+	// Define projected hours
+	if (fields.all || fields.projectedClientHrs) {
 		projectHours.projectedClientHours = assignmentsStatistics.projectedClientHours;
 	}
-	if (fields.all || fields.estimatedInvestmentHrs) {
+	if (fields.all || fields.projectedInvestmentHrs) {
 		projectHours.projectedInvestHours = assignmentsStatistics.projectedInvestHours;
 	}
-	if (fields.all || fields.estimatedClientHrs || fields.estimatedInvestmentHrs) {
+	if (fields.all || fields.projectedClientHrs || fields.projectedInvestmentHrs) {
 		projectHours.totalProjectedHours = parseInt(projectHours.projectedClientHours) + parseInt(projectHours.projectedInvestHours);
 	}
 	
 	// Define utilization
-	if (fields.all || fields.utilClientWork) {
+	if (fields.all || fields.projectedClientUtilization) {
 		projectHours.projectedClient = Math.round((assignmentsStatistics.projectedClientHours / capacity) * 100); 
-		projectHours.actualClient = Math.round(( hoursStatistics.actualClientHours / capacity ) * 100);
 	}
-	if (fields.all || fields.utilInvestmentWork) {
-		projectHours.actualInvest = Math.round(( hoursStatistics.actualInvestHours / capacity ) * 100);
+	if (fields.all || fields.projectedInvestUtilization) {
 		projectHours.projectedInvest = Math.round((assignmentsStatistics.projectedInvestHours / capacity) * 100); 
 	}
-	if (fields.all || fields.utilClientWork || fields.utilInvestmentWork) {
-		projectHours.projectedAllUtilization = parseInt(projectHours.projectedClient) + parseInt(projectHours.projectedInvest) + hoursStatistics.outOfOffice + hoursStatistics.overhead;
-		projectHours.actualAllUtilization = parseInt(projectHours.actualClient) + parseInt(projectHours.actualInvest) + hoursStatistics.outOfOffice + hoursStatistics.overhead;
+	if (fields.all || fields.actualClientUtilization) {
+		projectHours.actualClient = Math.round(( hoursStatistics.actualClientHours / capacity ) * 100);
 	}
+	if (fields.all || fields.actualInvestUtilization) {
+		projectHours.actualInvest = Math.round(( hoursStatistics.actualInvestHours / capacity ) * 100);
+	}
+	if (fields.all || fields.outOfOfficeUtilization) {
+		projectHours.outOfOfficeUtilization = Math.round(( hoursStatistics.outOfOffice / capacity ) * 100);
+	}
+	if (fields.all || fields.overheadUtilization) {
+		projectHours.overheadUtilization = Math.round(( hoursStatistics.overhead / capacity ) * 100);
+	}
+	
+	if ( fields.all || fields.projectedClientUtilization || fields.projectedInvestUtilization ||
+				fields.actualClientUtilization || fields.actualInvestUtilization || 
+					fields.outOfOfficeUtilization || fields.overheadUtilization ) {
+		projectHours.projectedAllUtilization = parseInt(projectHours.projectedClient) + parseInt(projectHours.projectedInvest) + parseInt(projectHours.outOfOfficeUtilization) + parseInt(projectHours.overheadUtilization);
+		projectHours.actualAllUtilization = parseInt(projectHours.actualClient) + parseInt(projectHours.actualInvest) + parseInt(projectHours.outOfOfficeUtilization) + parseInt(projectHours.overheadUtilization);
+	}
+	
+	// Define out-of-office & overhead
+	if (fields.all || fields.outOfOffice) {
+		projectHours.outOfOfficeHours = hoursStatistics.outOfOffice;
+	}
+	if (fields.all || fields.overhead) {
+		projectHours.overheadHours = hoursStatistics.overhead;
+	}
+	
 	return projectHours;
 };
 
