@@ -147,8 +147,8 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
     var utilizationDetails = [];
     
 	for ( var r in rolesInput ) {
+		var actualHours = 0;
 		var expectedHours = 0;
-		var spentHours = 0;
 		var tdHours = 0;
 		var role = _.findWhere(data.allRoles, {	abbreviation : rolesInput[r] });
 		var roleMembers = [];
@@ -181,13 +181,13 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 					roleMembers.push(person);
 				}
 			    
+			    actualHours += person.hours.spent + hoursStatistics.outOfOffice + hoursStatistics.overhead;
 			    expectedHours += person.hours.assigned;
-			    spentHours += person.hours.spent;
 			    tdHours += person.hours.assignedTD;
 			}
 			
 			role.expectedUtilization = Math.round( ( expectedHours / capacity ) * 100);
-			role.actualUtilization = Math.round( (Math.abs(spentHours) / capacity) * 100);
+			role.actualUtilization = Math.round( (Math.abs(actualHours) / capacity) * 100);
 			role.tdUtilization = Math.round( (Math.abs(tdHours) / capacity) * 100);
 			
 			utilizationDetails.push({
