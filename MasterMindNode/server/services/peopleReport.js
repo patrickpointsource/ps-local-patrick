@@ -8,13 +8,9 @@ var memoryCache = require( '../data/memoryCache.js' );
 var moment = require('moment');
 var reportCalculations = require( '../services/reportCalculations.js' );
 var reportsService = require( '../services/reportsService.js' );
+var projections = require( '../services/projections.js' );
 
 var UNDETERMINED_ROLE = 'undetermined_role';
-var PREVIOUS_MONTH = 'previousMonth';
-var CURRENT_MONTH = 'currentMonth';
-var PROJECTION_MONTHS = 3;
-var PROJECTION_MONTH_LABELS = [CURRENT_MONTH, 'secondMonth', 'thirdMonth', 'fourthMonth', 
-                               'fifthMonth', 'sixthMonth', 'seventhMonth', 'eighthMonth', 'ninthMonth'];
 
 var TASKS = {
   MARKETING: "Marketing",
@@ -43,9 +39,9 @@ module.exports.generate = function(person, params, callback) {
     report.projectHours = getProjectHours(data, params);
     //report.categoryHours = getCategoryHours(data, params);
     //report.goals = getGoals(data, params);
-    if (params.dateRange == PREVIOUS_MONTH || 
-    		params.dateRange == CURRENT_MONTH ) {
-        report.projections = getProjections(data, params);
+    if (params.dateRange == projections.PREVIOUS_MONTH || 
+    		params.dateRange == projections.CURRENT_MONTH ) {
+        report.projections = projections.getProjections(data, params);
     }
     
     report.rawData = data;
@@ -137,13 +133,13 @@ var getPeopleDetailsSection = function(data, params) {
 	
 	var fields = params.fields;
 	
-	if (fields.all || fields.peopleHours.peopleOnClient) {
+	if (fields.all || (fields.peopleHours && fields.peopleHours.peopleOnClient) ) {
 		peopleDetails.peopleOnClient = assignmentsStatistics.peopleOnClient;
 	}
-	if (fields.all || fields.peopleHours.peopleOnInvestment) {
+	if (fields.all || (fields.peopleHours && fields.peopleHours.peopleOnInvestment) ) {
 		peopleDetails.peopleOnInvestment = assignmentsStatistics.peopleOnInvestment;
 	}
-	if (fields.all || fields.peopleHours.utilizationByRole) {
+	if (fields.all || (fields.peopleHours && fields.peopleHours.utilizationByRole) ) {
 		var utilizationDetails = reportCalculations.getUtilizationDetails(data, params.startDate, params.endDate, params.roles);
 		peopleDetails.utilizationDetails = utilizationDetails;
 	}
@@ -164,44 +160,44 @@ var getProjectHours = function(data, params) {
 	var fields = params.fields;
 
 	// Define actual hours
-	if (fields.all || fields.projectHours.actualClientHrs) {
+	if (fields.all || (fields.projectHours && fields.projectHours.actualClientHrs) ) {
 		projectHours.actualClientHours = hoursStatistics.actualClientHours;
 	}
-	if (fields.all || fields.projectHours.actualInvestmentHrs) {
+	if (fields.all || (fields.projectHours && fields.projectHours.actualInvestmentHrs) ) {
 		projectHours.actualInvestHours = hoursStatistics.actualInvestHours;
 	}
-	if (fields.all || fields.projectHours.actualClientHrs || fields.projectHours.actualInvestmentHrs) {
+	if (fields.all || (fields.projectHours && (fields.projectHours.actualClientHrs || fields.projectHours.actualInvestmentHrs)) ) {
 		projectHours.totalActualHours = parseInt(projectHours.actualClientHours) + parseInt(projectHours.actualInvestHours);
 	}
 
 	// Define projected hours
-	if (fields.all || fields.projectHours.projectedClientHrs) {
+	if (fields.all || (fields.projectHours && fields.projectHours.projectedClientHrs) ) {
 		projectHours.projectedClientHours = assignmentsStatistics.projectedClientHours;
 	}
-	if (fields.all || fields.projectHours.projectedInvestmentHrs) {
+	if (fields.all || (fields.projectHours && fields.projectHours.projectedInvestmentHrs) ) {
 		projectHours.projectedInvestHours = assignmentsStatistics.projectedInvestHours;
 	}
-	if (fields.all || fields.projectHours.projectedClientHrs || fields.projectHours.projectedInvestmentHrs) {
+	if (fields.all || (fields.projectHours &&  (fields.projectHours.projectedClientHrs || fields.projectHours.projectedInvestmentHrs)) ) {
 		projectHours.totalProjectedHours = parseInt(projectHours.projectedClientHours) + parseInt(projectHours.projectedInvestHours);
 	}
 	
 	// Define utilization
-	if (fields.all || fields.projectHours.projectedClientUtilization) {
+	if (fields.all || (fields.projectHours && fields.projectHours.projectedClientUtilization)) {
 		projectHours.projectedClient = Math.round((assignmentsStatistics.projectedClientHours / capacity) * 100); 
 	}
-	if (fields.all || fields.projectHours.projectedInvestUtilization) {
+	if (fields.all || (fields.projectHours && fields.projectHours.projectedInvestUtilization)) {
 		projectHours.projectedInvest = Math.round((assignmentsStatistics.projectedInvestHours / capacity) * 100); 
 	}
-	if (fields.all || fields.projectHours.actualClientUtilization) {
+	if (fields.all || (fields.projectHours && fields.projectHours.actualClientUtilization)) {
 		projectHours.actualClient = Math.round(( hoursStatistics.actualClientHours / capacity ) * 100);
 	}
-	if (fields.all || fields.projectHours.actualInvestUtilization) {
+	if (fields.all || (fields.projectHours && fields.projectHours.actualInvestUtilization)) {
 		projectHours.actualInvest = Math.round(( hoursStatistics.actualInvestHours / capacity ) * 100);
 	}
-	if (fields.all || fields.projectHours.outOfOfficeUtilization) {
+	if (fields.all || (fields.projectHours && fields.projectHours.outOfOfficeUtilization)) {
 		projectHours.outOfOfficeUtilization = Math.round(( hoursStatistics.outOfOffice / capacity ) * 100);
 	}
-	if (fields.all || fields.projectHours.overheadUtilization) {
+	if (fields.all || (fields.projectHours && fields.projectHours.overheadUtilization)) {
 		projectHours.overheadUtilization = Math.round(( hoursStatistics.overhead / capacity ) * 100);
 	}
 	
@@ -213,10 +209,10 @@ var getProjectHours = function(data, params) {
 	}
 	
 	// Define out-of-office & overhead
-	if (fields.all || fields.projectHours.outOfOffice) {
+	if (fields.all || (fields.projectHours && fields.projectHours.outOfOffice)) {
 		projectHours.outOfOfficeHours = hoursStatistics.outOfOffice;
 	}
-	if (fields.all || fields.projectHours.overhead) {
+	if (fields.all || (fields.projectHours && fields.projectHours.overhead)) {
 		projectHours.overheadHours = hoursStatistics.overhead;
 	}
 	
@@ -302,144 +298,6 @@ var getGoals = function(data, params) {
     investmentUtilization: 75,
     teamUtilization: 71
   };
-};
-
-var getProjectionUtilization = function (data, capacity, hoursStatistics, assignmentsStatistics) {
-	var utilization = {};
-	utilization[PROJECTION_MONTH_LABELS[0]] = {
-		name : moment().format('MMMM'),
-		actual : Math.round( ( (hoursStatistics.allHours + hoursStatistics.outOfOffice + hoursStatistics.overhead) / capacity) * 100 ),
-		projected : Math.round( ( (assignmentsStatistics.allHours + hoursStatistics.outOfOffice + hoursStatistics.overhead) / capacity) * 100 )
-	}
-	var futureProjectionUtilizations = getFutureProjectionUtilizations(data, capacity, hoursStatistics);
-	for ( var i in futureProjectionUtilizations ) {
-		utilization[PROJECTION_MONTH_LABELS[parseInt(i) + 1]] = futureProjectionUtilizations[i];
-	}
-	return utilization;
-}
-
-var getFutureProjectionUtilizations = function (data, capacity, hoursStatistics) {
-	var startDate = moment().startOf('month');
-	var endDate = moment().endOf('month');
-	var utilizations = [];
-	var  i = 1; // first month is current
-	while (i < PROJECTION_MONTHS) {
-		startDate = startDate.add(1, 'months');
-		endDate = endDate.add(1, 'months');
-		utilizations.push(getFutureProjectionUtilizationByDate(data, capacity, hoursStatistics, startDate, endDate));
-	    i++;
-	}
-	return utilizations;
-}
-
-var getFutureProjectionUtilizationByDate = function (data, capacity, hoursStatistics, startDate, endDate) {
-	var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, startDate, endDate);
-	var projected = Math.round( ( (assignmentsStatistics.allHours + hoursStatistics.outOfOffice + hoursStatistics.overhead) / capacity) * 100 );
-	var utilization = {
-		name : startDate.format('MMMM'),
-		projected : projected
-	}
-	return utilization;
-}
-
-var getProjectionHoursByType = function (data, type, hoursStatistics, assignmentsStatistics ) {
-	var actual = 0;
-	var projected = 0;
-	switch (type) {
-		case 'client' :
-			actual = hoursStatistics.actualClientHours;
-			projected = assignmentsStatistics.projectedClientHours;
-			break;
-		case 'invest' :
-			actual = hoursStatistics.actualInvestHours;
-			projected = assignmentsStatistics.projectedInvestHours;
-			break;
-		case 'total' :
-			actual = hoursStatistics.actualClientHours + hoursStatistics.actualInvestHours;
-			projected = assignmentsStatistics.projectedClientHours + assignmentsStatistics.projectedInvestHours;
-			break;
-	}
-	var hours = {};
-	hours[PROJECTION_MONTH_LABELS[0]] = {
-		name : moment().format('MMMM'),
-		actual : actual,
-		projected : projected
-	}
-
-	var futureProjectionHours = getFutureProjectionHours(data, type);
-	for ( var i in futureProjectionHours ) {
-		hours[PROJECTION_MONTH_LABELS[parseInt(i) + 1]] = futureProjectionHours[i];
-	}
-	return hours;
-}
-
-var getFutureProjectionHours = function (data, type) {
-	var startDate = moment().startOf('month');
-	var endDate = moment().endOf('month');
-	var projections = [];
-	var  i = 1; // first month is current
-	while (i < PROJECTION_MONTHS) {
-		startDate = startDate.add(1, 'months');
-		endDate = endDate.add(1, 'months');
-		projections.push(getFutureProjectionHoursByTypeAndDate(data, type, startDate, endDate));
-	    i++;
-	}
-	return projections;
-}
-
-var getFutureProjectionHoursByTypeAndDate = function (data, type, startDate, endDate) {
-	var projected = 0;
-	var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, startDate, endDate);
-	switch (type) {
-		case 'client' :
-			projected = assignmentsStatistics.projectedClientHours;
-			break;
-		case 'invest' :
-			projected = assignmentsStatistics.projectedInvestHours;
-			break;
-		case 'total' :
-			projected = assignmentsStatistics.projectedClientHours + assignmentsStatistics.projectedInvestHours;
-			break;
-	}
-	var projection = {
-		name : startDate.format('MMMM'),
-		projected : projected
-	}
-	return projection;
-}
-
-// Not implemented (fake data)
-var getProjections = function(data, params) {
-
-	var startDate = moment().startOf('month');
-	var endDate = moment().endOf('month');
-	
-	var capacity = reportCalculations.calculateCapacity(data, startDate, endDate);
-	var hoursStatistics = reportCalculations.getHoursStatistics(data);
-	var assignmentsStatistics = reportCalculations.getAssignmentsStatistics(data, startDate, endDate);
-
-	var projections = {
-		capacity : capacity,
-		totalHours :  getProjectionHoursByType(data, 'total', hoursStatistics, assignmentsStatistics),
-		utilization :  getProjectionUtilization(data, capacity, hoursStatistics, assignmentsStatistics)
-	}
-
-	var fields = params.fields;
-	
-	if (fields.all || fields.projections.clientHrs) {
-		projections.clientHours = getProjectionHoursByType(data, 'client', hoursStatistics, assignmentsStatistics);
-	}
-	if (fields.all || fields.projections.investHrs) {
-		projections.investHours = getProjectionHoursByType(data, 'invest', hoursStatistics, assignmentsStatistics);
-	}
-	if (fields.all || fields.projections.outOfOffice) {
-		projections.outOfOffice = hoursStatistics.outOfOffice;
-	}
-	if (fields.all || fields.projections.overhead) {
-		projections.overhead = hoursStatistics.overhead;
-	}
-
-	return projections;
 };
 
 var getDataForCsv = function(data, params) {
