@@ -332,18 +332,77 @@ var checkProjectForAssignmentsAndPerson = function(project, assignments, personR
 	return callback(checked)
 }
 
+/*	====================================================
+*	PURPOSE: Get All ACTIVE People by Group(s)
+*	INPUT:  Group name or array of Group names
+*	OUTPUT:	Array of documents
+*/
 var getProfileByGoogleId = function( id, callback ) {
-	var query = {
-		googleId: id
-	};
-	listPeople( query, null, function( err, list ) {
+	// MM 01/07/15
+	dbAccess.listActivePeopleByKeys('googleId', id, true, function( err, body ) {
 		if( !err ) {
-			callback( null, list["members"][ 0 ] );
+			if (body.count <= 1){
+				callback( null, body.data[0]);
+			} else {
+				callback( "ERROR: More then one Person document is found in the DB for the specified GoogleID " + id, null);
+			}
 		} else {
 			callback( err, null );
 		}
-	} );
+	});
 };
+
+/*	====================================================
+*	PURPOSE: Get All ACTIVE People by Group(s)
+*	INPUT:  Group name or array of Group names
+*	OUTPUT:	Array of documents
+*/
+var getPersonByGroups = function (groups, callback) {
+	// MM 01/07/15
+	dbAccess.listActivePeopleByKeys('groups', groups, true, function( err, body ) {
+		if( !err ) {
+			callback( null, body);
+		} else {
+			callback( err, null );
+		}
+	});
+};
+
+
+/*	====================================================
+*	PURPOSE: Get All ACTIVE People by PrimaryRole(s) resource
+*	INPUT:  primaryRole resource or array of primaryRole resources
+*	OUTPUT:	Array of documents
+*/
+var getPersonByGroups = function (groups, callback) {
+	// MM 01/07/15
+	dbAccess.listActivePeopleByKeys('groups', groups, true, function( err, body ) {
+		if( !err ) {
+			callback( null, body);
+		} else {
+			callback( err, null );
+		}
+	});
+};
+
+
+/*	====================================================
+*	PURPOSE: Get All ACTIVE People by resource(s) ("people/whatever")
+*	INPUT:  resource or array of resources
+*	OUTPUT:	Array of documents
+*/
+var getPersonByGroups = function (groups, callback) {
+	// MM 01/07/15
+	dbAccess.listActivePeopleByKeys('groups', groups, true, function( err, body ) {
+		if( !err ) {
+			callback( null, body);
+		} else {
+			callback( err, null );
+		}
+	});
+};
+
+
 
 var listPeople = function( q, fields, callback ) {
 

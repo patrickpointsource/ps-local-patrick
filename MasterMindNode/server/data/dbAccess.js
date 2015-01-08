@@ -110,7 +110,6 @@ module.exports = function(params) {
 	 *	RETURN: All documents that match the key(s).  
 	 */
 	var cloudantGetDocumentsByKeys = function(designName, viewName, params, include_docs, callback){
-		console.log("cloudantGetDocumentsByKeys");
 		var db = Cloudant.db.use(dbName);
 	
 		if (! include_docs) {
@@ -312,7 +311,7 @@ module.exports = function(params) {
 			dbobj = cloudantLucineSearchConfig(user_params.Type);
 
 		if(dbobj.iserr)
-			callback("Error: Lucine Index is not specified.", null);
+			callback("Error: Lucene Index is not specified.", null);
 		else
 		{
 			if(!params.query) params.query = cloudantLucinePrepareQuery(user_params, params, dbobj);
@@ -448,6 +447,32 @@ module.exports = function(params) {
 	        callback(err, prepareResponse(body, 'people', 'value'));
 	    });
 	};
+
+	/* ==============================================================
+	 * Method performs a view lookup for an ACTIVE People record based on different key(s)
+	 * VALID keyNames: googleId, fullName, resource, primaryRole, groups
+	 * 
+	 * More keys can be added upon request (@Max Moroz)
+	 * 
+	 * Input: String or array
+	 * Output: Array of docs (according to prepareResponse format). 
+	 */
+	module.exports.listActivePeopleByKeys = function(keyName, originalKeys, include_docs, callback) {
+		var keys;
+		
+		if(Array.isArray(originalKeys)) {
+			keys = _.map(originalKeys, function(val){
+		        return [keyName, val];
+		    });
+		} else {
+			keys = [[keyName, originalKeys]];
+		}
+
+		cloudantGetDocumentsByKeys('lookupViews', 'PeopleActive', keys, include_docs, function(err, body){
+	        callback(err, prepareResponse(body, 'people', 'doc'));
+	    });
+	};
+	
 	
 	module.exports.listTasks = function(callback) {
 	    cloudantGetAllViewDocument('views', 'Tasks', null, function(err, body){
