@@ -1,4 +1,4 @@
-<div class="report-output-well well300">
+<div class="report-output-well" ng-if="output.projections">
     <div class="report-output-well header">
         <h1>Projections - 3 month outlook</h1>
     </div>
@@ -18,26 +18,39 @@
                 <th>Invest Hours</th>
                 <th>Total Hours</th>
                 <th>OOO</th>
+                <th>Overhead</th>
                 <th>Utilization</th>
             </thead>
             <tbody>
                 <tr>
-                  <td>{{output.projections.firstMonth.name}} (<sup>Actual</sup>&frasl;<sub>Estimated</sub>)</td>
-                  <td>{{output.projections.firstMonth.actual.capacity}}</td>
-                  <td><sup>{{output.projections.firstMonth.actual.clientHours}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.clientHours}}</sub></td>
-                  <td><sup>{{output.projections.firstMonth.actual.investHours}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.investHours}}</sub></td>
-                  <td><sup>{{output.projections.firstMonth.actual.totalHours}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.totalHours}}</sub></td>
-                  <td><sup>{{output.projections.firstMonth.actual.OOO}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.OOO}}</sub></td>
-                  <td><sup>{{output.projections.firstMonth.actual.utilization}}</sup>&frasl;<sub>{{output.projections.firstMonth.estimated.utilization}}</sub></td>
+                  <td>{{output.projections.clientHours.currentMonth.name}} (<sup>Actual</sup>&frasl;<sub>Estimated</sub>)</td>
+                  <td>{{output.projections.capacity}}</td>
+                  <td><sup>{{output.projections.clientHours.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.clientHours.currentMonth.projected}}</sub></td>
+                  <td><sup>{{output.projections.investHours.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.investHours.currentMonth.projected}}</sub></td>
+                  <td><sup>{{output.projections.totalHours.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.totalHours.currentMonth.projected}}</sub></td>
+                  <td>{{output.projections.outOfOffice}}</td>
+                  <td>{{output.projections.overhead}}</td>
+                  <td><sup>{{output.projections.utilization.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.utilization.currentMonth.projected}}</sub></td>
                 </tr>
-                <tr ng-repeat="month in output.projections.months">
-                  <td>{{month.name}}</td>
-                  <td>{{month.capacity}}</td>
-                  <td>{{month.clientHours}}</td>
-                  <td>{{month.investHours}}</td>
-                  <td>{{month.totalHours}}</td>
-                  <td>{{month.OOO}}</td>
-                  <td>{{month.utilization}}</td>
+                <tr>
+                  <td>{{output.projections.clientHours.secondMonth.name}}</td>
+                  <td>{{output.projections.capacity}}</td>
+                  <td>{{output.projections.clientHours.secondMonth.projected}}</td>
+                  <td>{{output.projections.investHours.secondMonth.projected}}</td>
+                  <td>{{output.projections.totalHours.secondMonth.projected}}</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>{{output.projections.utilization.secondMonth.projected}}</td>
+                </tr>
+                <tr>
+                  <td>{{output.projections.clientHours.thirdMonth.name}}</td>
+                  <td>{{output.projections.capacity}}</td>
+                  <td>{{output.projections.clientHours.thirdMonth.projected}}</td>
+                  <td>{{output.projections.investHours.thirdMonth.projected}}</td>
+                  <td>{{output.projections.totalHours.thirdMonth.projected}}</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>{{output.projections.utilization.thirdMonth.projected}}</td>
                 </tr>
             </tbody>
         </table>

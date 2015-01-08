@@ -22,10 +22,10 @@
         </div>
         <div class="col-xs-12 col-sm-2 " >
             <div class="row">
-                <button class="btn btn-report">Save Report</button>
+                <button class="btn btn-report" style="margin-left: 15px;">Save Report</button>
             </div>
             <div class="row">
-                <button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportHours($event)">
+                <button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportHours($event)" style="margin-left: 15px;">
 					<a href="{{reportHandler.link()}}" download="Custom.csv" >
 			      		Export to CSV
 			    	</a>
