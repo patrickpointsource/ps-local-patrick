@@ -15,6 +15,7 @@
   angular.module('Mastermind.controllers.reports', []);
   angular.module('Mastermind.models.projects', []);
   angular.module('Mastermind.services.projects', []);
+  angular.module('Mastermind.services.reports', []);
   angular.module('d3', []);
   angular.module('Mastermind.directives', ['d3']);
   angular.module('Mastermind', [
@@ -33,6 +34,7 @@
     'Mastermind.controllers.reports',
     'Mastermind.models.projects',
     'Mastermind.services.projects',
+    'Mastermind.services.reports'
   ])
     .config( ['$logProvider','$stateProvider','$urlRouterProvider', function($logProvider, $stateProvider, $urlRouterProvider) {
       $logProvider.debugEnabled(false);

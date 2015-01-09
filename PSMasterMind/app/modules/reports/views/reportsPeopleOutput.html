@@ -25,7 +25,7 @@
                 <button class="btn btn-report" style="margin-left: 15px;">Save Report</button>
             </div>
             <div class="row">
-                <button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportHours($event)" style="margin-left: 15px;">
+                <button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportPeopleReport($event)" style="margin-left: 15px;">
 					<a href="{{reportHandler.link()}}" download="Custom.csv" >
 			      		Export to CSV
 			    	</a>

@@ -4,8 +4,8 @@
  * Controller for people report.
  */
 
-angular.module( 'Mastermind.controllers.reports' ).controller( 'PeopleReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'People', 'Resources', 
-function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, People, Resources ) {
+angular.module( 'Mastermind.controllers.reports' ).controller( 'PeopleReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'ReportExportService', 'Resources', 
+function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, ReportExportService, Resources ) {
 
 	var months = [];
 	
@@ -132,8 +132,10 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	$scope.selectAllRolesToExport = function ( )
 	{
 		var selected = !$scope.exportOptions.allRoles;
-		for (var i in $scope.output.peopleDetails.utilizationDetails) {
-			$scope.output.peopleDetails.utilizationDetails[i].role.isSelected = selected;
+		if ($scope.output.peopleDetails) {
+			for (var i in $scope.output.peopleDetails.utilizationDetails) {
+				$scope.output.peopleDetails.utilizationDetails[i].role.isSelected = selected;
+			}
 		}
 		$scope.exportOptions.allRoles = selected;
 	};
@@ -273,18 +275,18 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 				}
 			},
 
-			exportHours: function( e ) {
-				$scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV );
+			exportPeopleReport: function( e ) {
+				$scope.csvData = $scope.getPeopleReportCSVData( $scope.output );
 				prepareDocumentDownloadLink(e, $scope.csvData);
 			},
 			
-			exportHoursByRoles: function( e ) {
+			exportPeopleIndividualReport: function( e ) {
 				var rolesToExport = []; 
 		        _.each($scope.output.peopleDetails.utilizationDetails, function( record ) { 
 		        	if ( record.role.isSelected )
 		        		rolesToExport.push(record.role.resource);
 		        });
-				$scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV, rolesToExport );
+				$scope.csvData = $scope.getPeopleIndividualReportCSVData( $scope.output, rolesToExport );
 				prepareDocumentDownloadLink(e, $scope.csvData);
 			},
 			
@@ -375,7 +377,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
                 input.roles.push(prop);
         
         return input;
-	}
+	};
 	
 	$scope.onReportGenerated = function ( report ) {
 
@@ -482,112 +484,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		});
 	};
 	
-	$scope.roleDepartementMapping = People.getPeopleGroupMapping( );
-	
 	$scope.init();
 	
-	$scope.getHoursHeader = function( ) {
-        if( $scope.activeTab[ 'hours' ] )
-            return [ 'Project/Task', 'Person', 'Role', 'Department', 'Date', 'Hours', 'Description' ];
-
-        if( $scope.activeTab[ 'billing' ] ) {
-            if( $scope.reportTypes[ 'customforecast' ] )
-                return [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid revenue', 'Role', 'Role quantity', 'Theoretical monthly revenue total' ];
-            else if( $scope.reportTypes[ 'customaccruals' ] )
-                return [ 'Project/Task', 'Project type', 'Invoice date', 'Fixed bid revenue', 'Role', 'Role quantity', 'Theoretical monthly total', 'Assignment name', 'Hours logged', 'Theoretical hours remaining', 'Total Revenue expected for month' ];
-        }
-
+	$scope.getPeopleReportCSVData = function( reportData, rolesToExport ) {
+		return ReportExportService.preparePeopleReportCSV( reportData, rolesToExport );
     };
-	
-	$scope.JSON2CSV = function( reportData, rolesToExport ) {
-        var str = '';
-        var line = '';
-        
-        //Print the header
-        var head = $scope.getHoursHeader( );
-        var i = 0;
-
-        line += head.join( $scope.CSVSplitter );
-        str += line + '\r\n';
-
-        for(var i = 0; i < reportData.length; i++ ) {
-            line = '';
-
-            var record = reportData[ i ];
-
-            var getDepartment = function( role ) {
-                var group;
-                var result = [ ];
-
-                for( group in $scope.roleDepartementMapping ) {
-                    if( _.find( $scope.roleDepartementMapping[ group ], function( r ) {
-                        return r == role;
-                    } ) ) {
-                        result.push( group );
-                    }
-                }
-
-                return result.join( $scope.CSVSplitter );
-            };
-            
-            for(var j = 0; record.roles && j < record.roles.length; j++ ) {
-            	if ( !rolesToExport || _.contains(rolesToExport, record.roles[ j ].type.resource) ) {
-                    // for hours report
-                    for(var k = 0; record.roles[ j ].persons && k < record.roles[ j ].persons.length; k++ ) {
-                        //line += [ '--', '--' ].join( ',' );
-
-                        if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
-                            //line += [ '--' ].join( ',' );
-                            line += $scope.reportHandler.stringify( record.name ) + $scope.CSVSplitter;
-                            line += $scope.reportHandler.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
-                            line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.reportHandler.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
-                            line += $scope.reportHandler.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
-                            line += [ '--', '--', '--', '--' ].join( $scope.CSVSplitter );
-                            line += '\r\n';
-                        }
-
-                        for(var l = 0; record.roles[ j ].persons[ k ].hours && l < record.roles[ j ].persons[ k ].hours.length; l++ ) {
-                            //line += [ '--' ].join( ',' );
-                            line += $scope.reportHandler.stringify( record.name ) + $scope.CSVSplitter;
-                            line += $scope.reportHandler.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
-                            
-                            if (record.roles[ j ].persons[ k ].abbreviation)
-                                line += record.roles[ j ].persons[ k ].abbreviation + $scope.CSVSplitter;
-                            else
-                                line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.reportHandler.stringify( record.roles[ j ].type.id )) + $scope.CSVSplitter;
-                            
-                            line += $scope.reportHandler.stringify( getDepartment( record.roles[ j ].type.id ) ) + $scope.CSVSplitter;
-
-                            line += record.roles[ j ].persons[ k ].hours[ l ].date + $scope.CSVSplitter;
-                            line += record.roles[ j ].persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
-                            line += $scope.reportHandler.stringify( record.roles[ j ].persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
-                            line += '\r\n';
-                        }
-                    }
-            	}
-            }
-
-            // in case of tasks
-            if( !record.roles ) {
-                for(var k = 0; record.persons && k < record.persons.length; k++ ) {
-                    for(var l = 0; record.persons[ k ].hours && l < record.persons[ k ].hours.length; l++ ) {
-                        //line += [ '--' ].join( ',' );
-                        line += $scope.reportHandler.stringify( record.name ) + $scope.CSVSplitter;
-                        line += '--' + $scope.CSVSplitter;
-                        line += $scope.reportHandler.stringify( record.persons[ k ].name ) + $scope.CSVSplitter;
-                        line += record.persons[ k ].hours[ l ].date + $scope.CSVSplitter;
-                        line += record.persons[ k ].hours[ l ].hours + $scope.CSVSplitter;
-                        line += $scope.reportHandler.stringify( record.persons[ k ].hours[ l ].description ) + $scope.CSVSplitter;
-                        line += '\r\n';
-                    }
-                }
-            }
-
-            if( line )
-                str += line + '\r\n';
-        }
-
-        return str;
+    
+    $scope.getPeopleIndividualReportCSVData = function( reportData, rolesToExport ) {
+		return ReportExportService.preparePeopleIndividualReportCSV( reportData, rolesToExport );
     };
     
     var prepareDocumentDownloadLink = function ( controlEvent, data ) {
@@ -699,6 +603,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	
 	$scope.clearMessage = function() {
       $scope.messageForFavorites = "";
-    }
+    };
   
 } ] );

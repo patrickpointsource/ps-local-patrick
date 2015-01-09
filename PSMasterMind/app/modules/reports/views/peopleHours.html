@@ -21,7 +21,7 @@
 						{{utilizationByRole.role.abbreviation}} </label>
 				</div>
 				<div class="row">
-					<button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportHoursByRoles($event)" >
+					<button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportPeopleIndividualReport($event)" >
 						<a href="{{reportHandler.link()}}" download="Custom.csv" > Export to CSV </a>
 					</button>
 				</div>
