@@ -223,148 +223,108 @@
 					<br />
 					<div style="margin-left: 20px;">
 						<label>
-							<input type="checkbox" ng-model="params.fields.projectHours.actualClient" />
-							Actual client
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.projectHours.actualInvestment" />
-							Actual investment
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.projectHours.utilClientWork" />
-							Utilization - client work
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.projectHours.utilInvestmentWork" />
-							Utilization - investment work
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.projectHours.utilRole" />
-							Utilization by role
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.projectHours.estimatedClientHrs" />
-							Estimated client hours
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.projectHours.estimatedInvestmentHrs" />
-							Estimated investment hours
-						</label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-md-4">
-					<h5>CATEGORY HOURS</h5>
-					<br />
-					<label>
-						<input type="checkbox" ng-change="selectAllOutOfOfficeHours(params.fields.categoryHours.out.all);" ng-model="params.fields.categoryHours.out.all" />
-						Out of office
-					</label>
-					<br />
-					<div style="margin-left: 20px;">
-						<label>
-							<input type="checkbox" ng-model="params.fields.categoryHours.out.sick" />
-							Sick time
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.categoryHours.out.vacation" />
-							Vacation
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.categoryHours.out.holiday" />
-							Holiday
-						</label>
-					</div>
-					<br />
-					<label>
-						<input type="checkbox" ng-change="selectAllOverheadHours(params.fields.categoryHours.overhead.all);" ng-model="params.fields.categoryHours.overhead.all" />
-						Overhead
-					</label>
-					<br />
-					<div style="margin-left: 20px;">
-						<label>
-							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.meetings" />
-							Meetings
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.trainings" />
-							Trainings
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.rd" />
-							R&D
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.design" />
-							Design
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.admin" />
-							Administration
-						</label>
-						<br />
-						<label>
-							<input type="checkbox" ng-model="params.fields.categoryHours.overhead.hr" />
-							Hire & recruiting
-						</label>
-						
-					</div>
-					<label>
-						<input type="checkbox" ng-model="params.fields.categoryHours.marketing" />
-						Marketing
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.categoryHours.sales" />
-						Sales
-					</label>
-				</div>
-				<div class="col-xs-12 col-md-4">
-					<h5>GOALS & PROJECTIONS</h5>
-					<br />
-					<label>
-						<input type="checkbox" ng-change="selectAllGoalsHours(params.fields.goals.all);" ng-model="params.fields.goals.all" />
-						All goals & projections
-					</label>
-					<br />
-					<div style="margin-left: 20px;">
-						<label>
-							<input type="checkbox" ng-model="params.fields.goals.projectedClientHrs" />
+							<input type="checkbox" ng-model="params.fields.projectHours.projectedClientHrs" />
 							Projected client hours
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="params.fields.goals.projectedInvestmentHrs" />
-							Projected investment hours
+							<input type="checkbox" ng-model="params.fields.projectHours.projectedInvestHrs" />
+							Projected invest hours
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="params.fields.goals.utilProjections" />
-							Utilization projections by category
+							<input type="checkbox" ng-model="params.fields.projectHours.actualClientHrs" />
+							Actual client hours
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="params.fields.goals.utilGoals" />
-							Hours and utilization goals
+							<input type="checkbox" ng-model="params.fields.projectHours.actualInvestmentHrs" />
+							Actual invest hours
 						</label>
 						<br />
 						<label>
-							<input type="checkbox" ng-model="params.fields.goals.projectedOOO" />
-							Projected OOO
+							<input type="checkbox" ng-model="params.fields.projectHours.outOfOffice" />
+							Out of office
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.projectHours.overhead" />
+							Overhead
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.projectHours.projectedClientUtilization" />
+							Projected client utilization
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.projectHours.projectedInvestUtilization" />
+							Projected invest utilization
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.projectHours.actualClientUtilization" />
+							Actual client utilization
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.projectHours.actualInvestUtilization" />
+							Actual invest utilization
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.projectHours.outOfOfficeUtilization" />
+							Out of office utilization
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.projectHours.overheadUtilization" />
+							Overhead Utilization
 						</label>
 					</div>
+				</div>
+				<div class="col-xs-12 col-md-4">
+					<h5>PEOPLE HOURS</h5>
 					<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.peopleHours.peopleOnClient" />
+							People on client
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.peopleHours.peopleOnInvest" />
+							People on invest
+						</label>
+						<br />
+						<label>
+							<input type="checkbox" ng-model="params.fields.peopleHours.utilizationByRole" />
+							Utilization by role
+						</label>
+					<br />
+					<br />
+					<h5>PROJECTIONS</h5>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="params.fields.projectionHours.clientHrs" />
+						Client Hours
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="params.fields.projectionHours.investHrs" />
+						Invest Hours
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="params.fields.projectionHours.outOfOffice" />
+						Out of Office
+					</label>
+					<br />
+					<label>
+						<input type="checkbox" ng-model="params.fields.projectionHours.overhead" />
+						Overhead
+					</label>
+				</div>
+				<div class="col-xs-12 col-md-4">
 					<h5>GRAPHS</h5>
 					<br />
 					<label>
