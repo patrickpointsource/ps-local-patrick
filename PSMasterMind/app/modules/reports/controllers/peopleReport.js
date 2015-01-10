@@ -288,12 +288,16 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			}
 		};
 	
-	$scope.generateReport = function () {		
+	$scope.generateReport = function (params) {		
 		
 		if ($scope.isGenerationInProgress)
 			return;
 		
-		var input = $scope.prepareInputParams();
+		var input = params;
+		
+		if(!input) {
+		  input = $scope.prepareInputParams();
+		}
 		
 		console.log(JSON.stringify(input));
 
@@ -589,5 +593,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	$scope.clearMessage = function() {
       $scope.messageForFavorites = "";
     };
+    
+    $scope.$on('people:report:run', function(event, report) {
+      $scope.generateReport(report.params);
+    })
   
 } ] );

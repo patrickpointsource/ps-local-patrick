@@ -3,8 +3,8 @@
 /**
  * Controller for Reports.
  */
-angular.module( 'Mastermind.controllers.reports' ).controller( 'ReportsCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', 'Resources', 'AssignmentService', 'ProjectsService', 'TasksService', 'RolesService', 'HoursService', 'People', 'ngTableParams',
-function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, AssignmentService, ProjectsService, TasksService, RolesService, HoursService, People, TableParams ) {
+angular.module( 'Mastermind.controllers.reports' ).controller( 'ReportsCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', 'Resources', 'AssignmentService', 'ProjectsService', 'TasksService', 'RolesService', 'HoursService', 'People', 'ngTableParams',
+function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Resources, AssignmentService, ProjectsService, TasksService, RolesService, HoursService, People, TableParams ) {
 
 	$scope.activeTab = {
 		'hours': true
@@ -1748,7 +1748,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	
 	$scope.cancelReportGeneration = function ( ) {
 		$scope.stopGenerationTimers();
-		$scope.isGenerationInProgress = false;	
+		$scope.isGenerationInProgress = false;
 		$rootScope.reportGenerationStartTime = null;
 		console.log( 'Report generation aborted' );
 	};
@@ -1761,9 +1761,15 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 			
 			if (result.status == "Completed") {
 				return Resources.refresh("/reports/get").then(function( result ){
-				    console.log("Generated report type: " + result.type);
+				    if(result.data && result.data.type && result.data.type == "people") {
+				      if($scope.favoriteReportRun) {
+				        $scope.onReportGenerated(result.data);
+				        
+				        $scope.favoriteReportRun = false;
+				      }
+				    }
 				    
-				    return result
+				    return result;
 				});
 			}
 			
@@ -1776,34 +1782,11 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	};
 	
 	$scope.onReportGenerated = function ( report ) {
-		
-		$scope.stopGenerationTimers();
-		
-		var reportDataCb = function( reportData ) {
-			$scope.csvData = $scope.JSON2CSV( reportData );
-			$scope.hoursToCSV.link = 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData );
-			console.log( 'Report generation completed' );
-			$scope.cancelReportGeneration();
-		};
-		
-		if( $scope.activeTab[ 'hours' ] )
-			$scope.getHoursReportData( report, function( reportData ) {
-				reportDataCb( reportData );
-			} );
-		else if( $scope.activeTab[ 'billing' ] && $scope.reportTypes[ 'customaccruals' ] )
-			$scope.getBillingAccrualsReportData( report, function( reportData ) {
-				reportDataCb( reportData );
-			} );
-		else if( $scope.activeTab[ 'billing' ] && $scope.reportTypes[ 'customforecast' ] )
-			reportDataCb( report );
-		else {
-			$scope.cancelReportGeneration();
-		}
-		
-		$scope.stopGenerationTimers();
+	    $scope.stopGenerationTimers();
+		$location.path('/reports/' + report.type + '/output');
 	};
 	
-	$scope.generateReport = function ( source ) {	
+	$scope.generateReport = function ( source, params ) {	
 				
 		if ($scope.isGenerationInProgress)
 			return;
@@ -1812,19 +1795,12 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 		
 		$scope.startGenerationTimers();
 				
-		source.preventDefault( );
-		source.stopPropagation( );
+		//source.preventDefault( );
+		//source.stopPropagation( );
 
-		if( $scope.activeTab[ 'hours' ] )
-			$scope.generateHoursReport( );
-		else if( $scope.activeTab[ 'billing' ] && $scope.reportTypes[ 'customaccruals' ] )
-			$scope.generateBillingAccrualsReport( );
-		else if( $scope.activeTab[ 'billing' ] && $scope.reportTypes[ 'customforecast' ] )
-			$scope.generateBillingForecastReport( );
-		else {
-			$scope.cancelReportGeneration();
+		if(params) {
+		  Resources.refresh("/reports/people/generate", params, {});
 		}
-		
 	};
 
 	$scope.hoursToCSV = {
@@ -1891,6 +1867,25 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, Resources, Assi
 	  Resources.refresh("reports/favorites/byPerson/" + $scope.me.googleId).then(function(result) {
 	    $scope.favorites = _.sortBy(result, function(fav){ return fav.params.reportName.toLowerCase(); });
 	  });
+	};
+	
+	$scope.runFavoriteReport = function(report) {
+	  $scope.cancelLoadGraphData();
+	  $scope.favoriteReportRun = true;
+	  $scope.runnedFavoriteReport = report;
+	  
+	  Resources.refresh("/reports/cancel").then(function(result) {
+	    $scope.cancelReportGeneration();
+	    $scope.generateReport( {}, report.params);
+	  });
+	};
+	
+	$scope.cancelFavoriteReportGeneration = function() {
+	  Resources.refresh("/reports/cancel").then(function(result) {
+	    $scope.favoriteReportRun = false;
+        $scope.runnedFavoriteReport = null;
+        $scope.cancelReportGeneration();
+      });
 	};
 	
 	$scope.init( );

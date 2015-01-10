@@ -93,11 +93,14 @@
 				        <strong>{{favorite.params.reportName}}</strong>
 				    </div>
 				    <div class="col-xs-3 padding-top-10">
-				        <button class="btn btn-report">View Report</button>
-				        
+				        <button class="btn btn-report" ng-click="runFavoriteReport(favorite)" ng-disabled="favoriteReportRun" ng-hide="runnedFavoriteReport == favorite && favoriteReportRun">View Report</button>
+				        <div class="row">
+				            <div class="col-xs-4"><i class="fa fa-spinner fa-spin fa-3x" ng-show="runnedFavoriteReport == favorite && favoriteReportRun"></i></div>
+				            <div class="col-xs-8"><button class="btn btn-report" ng-show="runnedFavoriteReport == favorite && favoriteReportRun" ng-click="cancelFavoriteReportGeneration()">Cancel</button></div>
+				        </div>
 				    </div>
 				    <div class="col-xs-1" style="padding-top: 7px;">
-				      <a class="cursor-pointer" title="Run report"><i class="fa fa-trash-o fa-3x" style="color: red;"></i></a>
+				      <a class="cursor-pointer" title="Delete report"><i class="fa fa-trash-o fa-3x" style="color: red;"></i></a>
 				    </div>
 				</div>
 			</div>
