@@ -566,7 +566,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			}
 	};
 	
-	$scope.favoriteReports = [];
 	$scope.messageForFavorites = "";
 	
 	$scope.save = function() {
@@ -593,9 +592,5 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	$scope.clearMessage = function() {
       $scope.messageForFavorites = "";
     };
-    
-    $scope.$on('people:report:run', function(event, report) {
-      $scope.generateReport(report.params);
-    })
   
 } ] );

@@ -1761,7 +1761,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 			
 			if (result.status == "Completed") {
 				return Resources.refresh("/reports/get").then(function( result ){
-				    if(result.data && result.data.type && result.data.type == "people") {
+				    if(result.data && result.data.type && (result.data.type == "people" || result.data.type == "project")) {
 				      if($scope.favoriteReportRun) {
 				        $scope.onReportGenerated(result.data);
 				        
@@ -1786,7 +1786,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		$location.path('/reports/' + report.type + '/output');
 	};
 	
-	$scope.generateReport = function ( source, params ) {	
+	$scope.generateReport = function ( source, report ) {
 				
 		if ($scope.isGenerationInProgress)
 			return;
@@ -1794,12 +1794,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		console.log( 'Report generation started' );
 		
 		$scope.startGenerationTimers();
-				
-		//source.preventDefault( );
-		//source.stopPropagation( );
+			
+		if(source) {
+		  source.preventDefault( );
+          source.stopPropagation( );
+		}
 
-		if(params) {
-		  Resources.refresh("/reports/people/generate", params, {});
+		if(report.params && report.type) {
+		  Resources.refresh("/reports/" + report.type + "/generate", report.params, {});
 		}
 	};
 
@@ -1863,6 +1865,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		$scope.stopGenerationTimers();
 	});
 	
+	$scope.favoriteReports = [];
+	
 	$scope.getFavorites = function() {
 	  Resources.refresh("reports/favorites/byPerson/" + $scope.me.googleId).then(function(result) {
 	    $scope.favorites = _.sortBy(result, function(fav){ return fav.params.reportName.toLowerCase(); });
@@ -1876,7 +1880,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 	  
 	  Resources.refresh("/reports/cancel").then(function(result) {
 	    $scope.cancelReportGeneration();
-	    $scope.generateReport( {}, report.params);
+	    $scope.generateReport( null, report );
 	  });
 	};
 	

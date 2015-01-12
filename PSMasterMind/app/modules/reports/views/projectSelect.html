@@ -270,9 +270,19 @@
 						<input class="form-control" ng-model="params.reportName" type="text" />
 					</label>
 				</div>
+				<div ng-show="messageForFavorites && messageForFavorites.length > 0" class="alert alert-success">
+                  <span>{{messageForFavorites}}</span> 
+                  <i class="fa fa-times pull-right cursor-pointer" ng-click="clearMessage()"></i>
+                </div>
 			</div>
 		</div>
 		<div class="col-md-3">
+		    <button class="btn" ng-click="save()" ng-disabled="!params.reportName">Save Report</button>
+            <br />
+            <br />
+            <button class="btn" ng-click="saveAndCreate()" ng-disabled="!params.reportName">Save & Create Report</button>
+            <br />
+            <br />
 			<button class="btn" ng-click="reportHandler.generate()">Create Report</button>
 		</div>
 	</div>
