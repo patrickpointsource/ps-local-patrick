@@ -333,8 +333,8 @@ var checkProjectForAssignmentsAndPerson = function(project, assignments, personR
 }
 
 /*	====================================================
-*	PURPOSE: Get All ACTIVE People by Group(s)
-*	INPUT:  Group name or array of Group names
+*	PURPOSE: Get All ACTIVE People by googleID(s)
+*	INPUT:  googleID or array of googleIDs
 *	OUTPUT:	Array of documents
 */
 var getProfileByGoogleId = function( id, callback ) {
@@ -674,6 +674,7 @@ var listAssignmentsByPeople = function(resources, callback) {
     });
 
 };
+
 
 var listAssignmentsByProjects = function(resources, callback) {
     
