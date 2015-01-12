@@ -18,10 +18,10 @@ var devenv = {
 			               '141952851027.apps.googleusercontent.com',
 			               // Service account client id
 			               '141952851027-1u88oc96rik8l6islr44ha65o984tn3q.apps.googleusercontent.com',
-			               // Client ID for Android application
-			               '141952851027-biv6kglisgfec5m72v4im6aj4rd2hma4.apps.googleusercontent.com',
 			               // Client ID for iOS application
-			               '141952851027-fihv33jl1j6f1kk8gfs767as8h212k8j.apps.googleusercontent.com'],
+			               '141952851027-fihv33jl1j6f1kk8gfs767as8h212k8j.apps.googleusercontent.com',
+			               // Client ID for Android application
+			               '141952851027-h5s4srh7ahag0lfmgii6kffrerbf2oem.apps.googleusercontent.com'],
 			clientSecret: 'xx9Om8aLgwzlmeBmSGoOqwdh',
 			callbackURL: '/oauth2callback',
 			callbackHost: 'http://localhost:3000',
