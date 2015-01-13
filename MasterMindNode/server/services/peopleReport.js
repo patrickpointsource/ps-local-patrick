@@ -19,6 +19,8 @@ var TASKS = {
   SICK: "Sick Time"
 };
 
+var FRACTION = 2;
+
 // generates report output object and calls callback when ready
 module.exports.generate = function(person, params, callback) {
   var report = {};
@@ -183,29 +185,29 @@ var getProjectHours = function(data, params) {
 	
 	// Define utilization
 	if (fields.all || (fields.projectHours && fields.projectHours.projectedClientUtilization)) {
-		projectHours.projectedClient = Math.round((assignmentsStatistics.projectedClientHours / capacity) * 100); 
+		projectHours.projectedClient = parseFloat(((assignmentsStatistics.projectedClientHours / capacity) * 100).toFixed(FRACTION)); 
 	}
 	if (fields.all || (fields.projectHours && fields.projectHours.projectedInvestUtilization)) {
-		projectHours.projectedInvest = Math.round((assignmentsStatistics.projectedInvestHours / capacity) * 100); 
+		projectHours.projectedInvest = parseFloat(((assignmentsStatistics.projectedInvestHours / capacity) * 100).toFixed(FRACTION)); 
 	}
 	if (fields.all || (fields.projectHours && fields.projectHours.actualClientUtilization)) {
-		projectHours.actualClient = Math.round(( hoursStatistics.actualClientHours / capacity ) * 100);
+		projectHours.actualClient = parseFloat((( hoursStatistics.actualClientHours / capacity ) * 100).toFixed(FRACTION));
 	}
 	if (fields.all || (fields.projectHours && fields.projectHours.actualInvestUtilization)) {
-		projectHours.actualInvest = Math.round(( hoursStatistics.actualInvestHours / capacity ) * 100);
+		projectHours.actualInvest = parseFloat((( hoursStatistics.actualInvestHours / capacity ) * 100).toFixed(FRACTION));
 	}
 	if (fields.all || (fields.projectHours && fields.projectHours.outOfOfficeUtilization)) {
-		projectHours.outOfOfficeUtilization = Math.round(( hoursStatistics.outOfOffice / capacity ) * 100);
+		projectHours.outOfOfficeUtilization = parseFloat((( hoursStatistics.outOfOffice / capacity ) * 100).toFixed(FRACTION));
 	}
 	if (fields.all || (fields.projectHours && fields.projectHours.overheadUtilization)) {
-		projectHours.overheadUtilization = Math.round(( hoursStatistics.overhead / capacity ) * 100);
+		projectHours.overheadUtilization = parseFloat((( hoursStatistics.overhead / capacity ) * 100).toFixed(FRACTION));
 	}
 	
 	if ( fields.all || fields.projectHours.projectedClientUtilization || fields.projectHours.projectedInvestUtilization ||
 				fields.projectHours.actualClientUtilization || fields.projectHours.actualInvestUtilization || 
 					fields.projectHours.outOfOfficeUtilization || fields.projectHours.overheadUtilization ) {
-		projectHours.projectedAllUtilization = parseInt(projectHours.projectedClient) + parseInt(projectHours.projectedInvest) + parseInt(projectHours.outOfOfficeUtilization) + parseInt(projectHours.overheadUtilization);
-		projectHours.actualAllUtilization = parseInt(projectHours.actualClient) + parseInt(projectHours.actualInvest) + parseInt(projectHours.outOfOfficeUtilization) + parseInt(projectHours.overheadUtilization);
+		projectHours.projectedAllUtilization = (parseFloat(projectHours.projectedClient) + parseFloat(projectHours.projectedInvest) + parseFloat(projectHours.outOfOfficeUtilization) + parseFloat(projectHours.overheadUtilization)).toFixed(FRACTION);
+		projectHours.actualAllUtilization = (parseFloat(projectHours.actualClient) + parseFloat(projectHours.actualInvest) + parseFloat(projectHours.outOfOfficeUtilization) + parseFloat(projectHours.overheadUtilization)).toFixed(FRACTION);
 	}
 	
 	// Define out-of-office & overhead

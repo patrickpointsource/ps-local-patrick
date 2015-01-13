@@ -554,7 +554,20 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	            {key: "OH", value:  personHours.OH}, 
 	            {key: "OOO", value: personHours.OOO},
 	            {key:"unaccounted for", value: unaccountedHours}];
-	};	
+	};
+	
+	$scope.getProjectHoursPieChartData = function( ) {
+	    var client = $scope.output.projectHours.actualClient;
+	    var ooo = $scope.output.projectHours.outOfOfficeUtilization;
+	    var oh = $scope.output.projectHours.overheadUtilization;
+	    var invest = $scope.output.projectHours.actualInvest;
+	    var unaccounted = 100 - client - ooo - oh - invest;
+        return [{key: "Client Hours", value: client}, 
+                {key: "Investment Hours", value: invest}, 
+                {key: "OH", value: oh}, 
+                {key: "OOO", value: ooo},
+                {key:"unaccounted for", value: unaccounted}];
+    };
 	
 	$scope.showPeopleDetailsLargerReport = false;
 	$scope.popupHandler = {
