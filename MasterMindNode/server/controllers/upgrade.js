@@ -66,58 +66,51 @@ module.exports = function(params) {
 			}
 			
 	
-			migrateServicesEstimate(function(err, body) {
+			updateEstimateFields(function(err, body) {
 				if (err) {
-					console.log("Error while migrating service estimates: " + err);
+					console.log("Error while updating estimate fields: " + err);
 				} else {
-	              console.log("Upgrade: Services estimates migrated.");
+	              console.log("Upgrade: Estimate fields updated.");
 	            }
 	
-				removeProjectEstimateFields(function(err, body) {
+				markInactivePeople(function(err, body) {
 					if (err) {
-						console.log("Error while removing project estimate fields: " + err);
+					    console.log("Error while marking inactive people: " + err);
 					} else {
-	                  console.log("Upgrade: Project estimates fields removed.");
+	                    console.log("Upgrade: Inactive people marked.");
 	                }
-					markInactivePeople(function(err, body) {
-						if (err) {
-						    console.log("Error while marking inactive people: " + err);
-						} else {
-	                      console.log("Upgrade: Inactive people marked.");
-	                    }
 	
-						fixSecurityRolesIds(function(err, body) {
-						    if (err) {
-	                          console.log("Error while fixing security roles id's: " + err);
-	                        } else {
-	                          console.log("Upgrade: Security(User) Roles fixed.");
-	                        }
-						    security.createDefaultRoles(function(err, isOk) {
-						        if(err) {
-						            console.log(err);
-						        } else {
-	                              console.log("Upgrade: Default security roles created.");
-						        }
+					fixSecurityRolesIds(function(err, body) {
+					    if (err) {
+					    	console.log("Error while fixing security roles id's: " + err);
+	                    } else {
+	                    	console.log("Upgrade: Security(User) Roles fixed.");
+	                    }
+						security.createDefaultRoles(function(err, isOk) {
+							if(err) {
+								console.log(err);
+						    } else {
+						    	console.log("Upgrade: Default security roles created.");
+						    }
 						        
-						        security.initialize(true);
-						        addReportResourceInSecurityRole(function (err, body) {
-							        if(err) {
-							            console.log(err);
-							        } else {
-		                              console.log("Upgrade: Report resource added to security roles.");
-							        }
+						    security.initialize(true);
+						    addReportResourceInSecurityRole(function (err, body) {
+						    	if(err) {
+						    		console.log(err);
+							    } else {
+							    	console.log("Upgrade: Report resource added to security roles.");
+							    }
 							        
-							        fixLinksInProjects(function (err, body) {
-								        if(err) {
-								            console.log(err);
-								        } else {
-			                              console.log("Upgrade: Links in projects fixed.");
-								        }
+							    fixLinksInProjects(function (err, body) {
+							    	if(err) {
+							    		console.log(err);
+								    } else {
+								    	console.log("Upgrade: Links in projects fixed.");
+								    }
 							        	
-							        	callback(null, null);
-							        });
+							        callback(null, null);
+							    });
 
-						        });
 						    });
 						});
 					});
@@ -276,48 +269,58 @@ module.exports = function(params) {
 		});
 	};
 	
-	var migrateServicesEstimate = function(callback) {
+	var updateEstimateFields = function(callback) {
 		projects.listProjects(null, null, function(err, body) {
 			if (err) {
 				callback('error loading projects', null);
 			} else {
 				var projectMembers = body.data;
-				_.each(projectMembers, function(project) {
+				
+				var counter = -1;
+				
+				var projectCb = function(resultCb) {
+					var project = projectMembers[counter];
+					
+					var isUpdated = false;
+					
+					if (project.estimatedTotal) {
+						delete project.estimatedTotal;
+						isUpdated = true;
+					}
+					else 	
 					if (project.terms.servicesEstimate) {
 						delete project.terms.servicesEstimate;
 						project.terms.fixedBidServicesRevenue = true;
+						isUpdated = true;
+					} 
+					
+					if (isUpdated) {
 						projects.insertProject(project, function(err, res) {
 							if (err) {
 								console.log(err);
 							}
+							if (resultCb)
+								resultCb();
 						});
 					}
-				});
-				callback(null, body);
+					else 
+					if (resultCb)
+						resultCb();
+				};
+				
+				var executorCb = function() {
+					counter += 1;
+					if (counter < projectMembers.length)
+						projectCb(executorCb);
+					else
+						callback(null, null);
+				};
+				
+				executorCb();
 			}
 		});
 	};
 	
-	var removeProjectEstimateFields = function(callback) {
-		projects.listProjects(null, null, function(err, body) {
-			if (err) {
-				callback('error loading projects', null);
-			} else {
-				var projectMembers = body.data;
-				_.each(projectMembers, function(project) {
-					if (project.estimatedTotal) {
-						delete project.estimatedTotal;
-						projects.insertProject(project, function(err, res) {
-							if (err) {
-								console.log(err);
-							}
-						});
-					}
-				});
-				callback(null, body);
-			}
-		});
-	};
 	
 	var addReportResourceInSecurityRole = function (callback) {
 		var reportsResource = {name : "reports", permissions : ["viewReports"]};
@@ -495,7 +498,13 @@ module.exports = function(params) {
 				callback('error loading people', null);
 			} else {
 				var peopleMembers = body.members;
-				_.each(peopleMembers, function(person) {
+				
+				
+				var counter = -1;
+				
+				var personCb = function(resultCb) {
+					var person = peopleMembers[counter];
+					
 					getInactivePersonByName(person.name, function(result) {
 						if (result) {
 							person.isActive = 'false';
@@ -504,11 +513,27 @@ module.exports = function(params) {
 								if (err) {
 									console.log(err);
 								}
+								if (resultCb) {
+									resultCb();
+								}
 							});
 						}
+						else {
+							resultCb();
+						}
 					});
-				});
-				callback(null, body);
+				};
+				
+				var executorCb = function() {
+					counter += 1;
+					
+					if (counter < peopleMembers.length)
+						personCb(executorCb);
+					else
+						callback(null, null);
+				};
+				
+				executorCb();
 			}
 		});
 	
