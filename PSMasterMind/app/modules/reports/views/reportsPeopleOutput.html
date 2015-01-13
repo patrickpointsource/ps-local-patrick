@@ -20,19 +20,21 @@
                 <ng-include src="'modules/reports/views/output/projections.html'"/>
             </div>
         </div>
-        <div class="col-xs-12 col-sm-2 " >
-            <div class="row">
-                <button class="btn btn-report" style="margin-left: 15px;">Save Report</button>
-            </div>
-            <div class="row">
-                <button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportPeopleReport($event)" style="margin-left: 15px;">
+        <div class="col-xs-12 col-sm-2 ">
+        	<div style="margin-left: 15px;">
+            	<div class="row">
+                	<button class="btn btn-report">Save Report</button>
+            	</div>
+            	<div class="row">
+                	<button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportPeopleReport($event)">
 					<a href="{{reportHandler.link()}}" download="Custom.csv" >
 			      		Export to CSV
 			    	</a>
-		    </button>
-            </div>
-            <div class="row">
-                <button class="btn btn-report" ng-hide="params.output == 'csv'">Export graphs</button>
+		    		</button>
+            	</div>
+            	<div class="row">
+                	<button class="btn btn-report" ng-hide="params.output == 'csv'">Export graphs</button>
+            	</div>
             </div>
             <div class="row report-output-nav">
                 <label>Go To</label>

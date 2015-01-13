@@ -136,6 +136,56 @@ function( $q, People ) {
         return str;
     };
     
+    this.prepareProjectReportCSV = function( reportData ) {
+		
+		if ( !reportData.reportDetails )
+			return '';
+			
+        var str = '';
+        var line = '\r\n';
+        
+        str += ',#Report Details' +  '\r\n' +  '\r\n';
+        var header = [ 'Report Start Date', 'Number Working Days in Report period', 'Working Hours for Project' ];
+        line += csvHandler.getLine(csvHandler.stringify( reportData.reportDetails.reportStartDate ));
+        line += csvHandler.getLine(reportData.reportDetails.workingDays);
+        line += csvHandler.getLine(reportData.reportDetails.workingHoursForProject);
+        str += header.join( csvHandler.splitter ) + line + '\r\n';
+        header = [ 'Report End Date', 'Number Working Hours in Report period per person' ];
+        line = '\r\n';
+        line += csvHandler.getLine(csvHandler.stringify( reportData.reportDetails.reportEndDate ));
+        line += csvHandler.getLine(reportData.reportDetails.workingHoursPerPerson);
+        str += header.join( csvHandler.splitter ) + line + '\r\n' + '\r\n';
+        
+        str += ',#Assignments Hours' +  '\r\n' +  '\r\n';
+        header = [ 'Projected Hours', 'Actual Hours', 'Hours OOO', 'Overall Utilization Rate' ];
+        line = '\r\n';
+        line += csvHandler.getLine(reportData.assignmentsHours.projectedHours);
+        line += csvHandler.getLine(reportData.assignmentsHours.actualHours);
+        line += csvHandler.getLine(reportData.assignmentsHours.hoursOOO);
+        line += csvHandler.getLine(reportData.assignmentsHours.overallUtilizationRate);
+        str += header.join( csvHandler.splitter ) + line + '\r\n' + '\r\n';
+        
+        if ( reportData.assignmentsHours ) {
+        	line = '';
+        	header = [ 'Full Name', 'Role', 'Projected Hours', 'Actual Hours', 'Utilization Rate', 'Out of Office Hours' ];
+        	str += header.join( csvHandler.splitter ) + '\r\n';
+        	for(var i = 0; i < reportData.assignmentsHours.people.length; i++ ) {
+        		var person = reportData.assignmentsHours.people[ i ];  
+        		line += csvHandler.getLine(csvHandler.stringify( getPersonName(person, true) ));
+        		line += csvHandler.getLine(csvHandler.stringify( person.role ));
+        		line += csvHandler.getLine(person.projectedHours);
+        		line += csvHandler.getLine(person.actualHours);
+        		line += csvHandler.getLine(person.utilizationRate + '%');
+                line += csvHandler.getLine(person.utilizationRate);
+        		line += '\r\n';
+        	}
+        	if( line && line.length > 0 )
+    			str += line;
+        }
+        
+        return str;
+    };
+    
     this.preparePeopleIndividualReportCSV = function( reportData, rolesToExport ) {
 		
 		if ( !reportData.peopleDetails )
@@ -281,6 +331,10 @@ function( $q, People ) {
         }
 
         return str;
+    };
+    
+    this.prepareProjectHoursReportCSV = function( reportData ) {
+    	return this.prepareProjectHoursReportCSV( reportData );
     };
 
 } ] );

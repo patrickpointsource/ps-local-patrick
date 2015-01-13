@@ -4,8 +4,8 @@
  * Controller for people report.
  */
 
-angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'AssignmentService', 'ProjectsService', 'Resources', 
-function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, AssignmentService, ProjectsService, Resources ) {
+angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'AssignmentService', 'ProjectsService', 'ReportExportService', 'Resources', 
+function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, AssignmentService, ProjectsService, ReportExportService, Resources ) {
 
 	var months = [];
 	
@@ -452,18 +452,18 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
                 }
             },
 
-            exportHours: function( e ) {
-                $scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV );
+            exportProjectReport: function( e ) {
+                $scope.csvData = $scope.getProjectReportCSVData( $scope.output );
                 prepareDocumentDownloadLink(e, $scope.csvData);
             },
             
-            exportHoursByRoles: function( e ) {
+            exportProjectHoursReport: function( e ) {
                 var rolesToExport = []; 
                 _.each($scope.output.peopleDetails.utilizationDetails, function( record ) { 
                     if ( record.role.isSelected )
                         rolesToExport.push(record.role.resource);
                 });
-                $scope.csvData = $scope.JSON2CSV( $scope.output.dataForCSV, rolesToExport );
+                $scope.csvData = $scope.getProjectHoursReportCSVData( $scope.output.dataForCSV, rolesToExport );
                 prepareDocumentDownloadLink(e, $scope.csvData);
             },
             
@@ -505,6 +505,34 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
     
     $scope.clearMessage = function() {
       $scope.messageForFavorites = "";
+    };
+    
+    $scope.getProjectReportCSVData = function( reportData, rolesToExport ) {
+		return ReportExportService.prepareProjectReportCSV( reportData, rolesToExport );
+    };
+    
+    $scope.getProjectHoursReportCSVData = function( reportData, rolesToExport ) {
+		return ReportExportService.prepareProjectHoursReportCSV( reportData, rolesToExport );
+    };
+    
+    var prepareDocumentDownloadLink = function ( controlEvent, data ) {
+    	
+    	/*Only called when our custom event fired*/
+    	var onInnerReportLink = function( e ) {
+			e = e ? e : window.event;
+			e.stopPropagation( );
+			$( e.target ).closest( 'a' ).unbind( 'click' );
+		};
+		
+    	var e = controlEvent ? controlEvent : window.event;
+		var btn = $( e.target ).closest( '.btn-report' ).find( 'a' );
+		e.preventDefault( );
+		e.stopPropagation( );
+		var evt = document.createEvent( "MouseEvents" );
+		evt.initMouseEvent( "click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null );
+		btn.attr( 'href', 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData ));
+		btn.click( onInnerReportLink );
+		btn.get( 0 ).dispatchEvent( evt );
     };
   
 } ] );

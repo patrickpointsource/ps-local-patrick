@@ -9,18 +9,20 @@
             </div>
         </div>
         <div class="col-xs-12 col-sm-2 " >
-            <div class="row">
-                <button class="btn btn-report big">Save Report</button>
-            </div>
-            <div class="row">
-                <button class="btn btn-report big">
-					<a href="{{csvLink}}" download="Custom.csv" >
+        	<div style="margin-left: 15px;">
+            	<div class="row">
+                	<button class="btn btn-report">Save Report</button>
+            	</div>
+            	<div class="row">
+                	<button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportProjectReport($event)">
+					<a href="{{reportHandler.link()}}" download="Custom.csv" >
 			      		Export to CSV
 			    	</a>
-		    </button>
-            </div>
-            <div class="row">
-                <button class="btn btn-report big">Export graphs as .png</button>
+		    		</button>
+            	</div>
+            	<div class="row">
+                	<button class="btn btn-report" ng-hide="params.output == 'csv'">Export graphs</button>
+            	</div>
             </div>
             <div class="row report-output-nav">
                 <label>Go To</label>
