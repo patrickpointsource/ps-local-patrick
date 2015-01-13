@@ -425,7 +425,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 	}
 	
 	$scope.setVerticalbarHours = function(data) {
-		var tmpData = {"expected hours": [], "hours": [], "hours to date": []};
+		var tmpData = {"expected hours for period": [], "actual hours": [], "expected hours to date": []};
 		
 		if (data.data && data.data.peopleStatistics) {
 			var stats = data.data.peopleStatistics;
@@ -468,9 +468,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 				valSpent = abbrMap[lbl]["hours"];
 				valTD = abbrMap[lbl]["hours to date"];
 				
-				tmpData["expected hours"].push({label: lbl, value: valExpected});
-				tmpData["hours"].push({label: lbl, value: Math.abs(valSpent)});
-				tmpData["hours to date"].push({label: lbl, value: Math.abs(valTD )});
+				tmpData["expected hours for period"].push({label: lbl, value: valExpected});
+				tmpData["actual hours"].push({label: lbl, value: valSpent});
+				tmpData["expected hours to date"].push({label: lbl, value: Math.abs(valTD )});
 			}
 		};
 		/*
@@ -612,6 +612,45 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		*/
 	};
   
+	$scope.getProjectionsStackedAreaChartData = function() {
+		return [{
+			month: "Oct-14",
+			hours: 130,
+			"hours type": "Projected Out of Office"
+		}, {
+			month: "Oct-14",
+			hours: 160,
+			"hours type": "Projected Client"
+		}, {
+			month: "Oct-14",
+			hours: 180,
+			"hours type": "Projected Invest"
+		}, {
+			month: "Nov-14",
+			hours: 135,
+			"hours type": "Projected Out of Office"
+		}, {
+			month: "Nov-14",
+			hours: 167,
+			"hours type": "Projected Client"
+		}, {
+			month: "Nov-14",
+			hours: 190,
+			"hours type": "Projected Invest"
+		}, {
+			month: "Dec-14",
+			hours: 140,
+			"hours type": "Projected Out of Office"
+		}, {
+			month: "Dec-14",
+			hours: 170,
+			"hours type": "Projected Client"
+		}, {
+			month: "Dec-14",
+			hours: 199,
+			"hours type": "Projected Invest"
+		}];
+	}
 	$scope.loadAndInitPeople = function( ) {
 		var peopleInRoleQuery = {};
 

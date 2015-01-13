@@ -1,4 +1,4 @@
-<div class="report-output-well" ng-if="output.projections">
+<div class="report-output-well" ng-if="output.projections" style="height:100%">
     <div class="report-output-well header">
         <h1>Projections - 3 month outlook</h1>
     </div>
@@ -55,4 +55,9 @@
             </tbody>
         </table>
     </div>
+    <div class="report-output-inside-row" style="height:450px;">
+    	<h2>Projected hours</h2>
+    	<div ng-include src="'modules/reports/views/stackedAreaChart.html'" onload="elemId='projectionsStackedAreaReport';chartData=getProjectionsStackedAreaChartData()" ng-if="true" id="projectionsStackedAreaReport" style="clear:both;"></div>
+					
+	</div>
 </div>
