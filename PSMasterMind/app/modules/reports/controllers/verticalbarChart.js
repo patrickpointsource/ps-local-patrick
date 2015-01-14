@@ -16,10 +16,14 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	  
 	  el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el);
 	
-	 
-	  var svg = dimple.newSvg("#" + elId + "chartContainer", 580, 210);
-	  
 	  var dataMap = $scope.chartData;
+	  var width = $scope.width ? $scope.width: 580;
+	  var height = $scope.height ? $scope.height: 210;
+	  
+	  //var svg = dimple.newSvg("#" + elId + "chartContainer", 580, 210);
+	 var svg = dimple.newSvg("#" + elId + "chartContainer", width, height);
+	  
+	  
 	  
 	 var axisLabels = ["Role", "Number of hours"]
 	 var chartData = [];
@@ -67,7 +71,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
       
     // Create the chart
     var myChart = new dimple.chart(svg, chartData);
-    myChart.setBounds(50, 15, 400, 160);
+    myChart.setBounds(50, 15, width - 180, height - 50);
     // Add an x and 3 y-axes.  When using multiple axes it's
     // important to assign them to variables to pass to the series
     var x = myChart.addCategoryAxis("x", "label");
@@ -111,7 +115,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
     myChart.draw();
     
 	
-    var myLegend = myChart.addLegend(580, 15, 60, 200, "Right");
+    var myLegend = myChart.addLegend(width, 15, 60, 200, "Right");
     myChart.draw();
     
    
@@ -124,7 +128,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
       .data(["Click legend to","show/hide hours:"])
       .enter()
       .append("text")
-        .attr("x", 480)
+        .attr("x", width - 100)
         .attr("y", function (d, i) { return 7 + i * 14; })
         .style("font-family", "sans-serif")
         .style("font-size", "10px")
