@@ -87,41 +87,75 @@ var getAssignmentsHours = function(data, params) {
   var expectedHours = 0;
   var projectedHours = 0;
   
+  var fields = params.fields;
+  var assignmentRollUpHours = fields.assignmentRollUpHours;
+  var assignmentBreakdownHours = fields.assignmentBreakdownHours;
+  
   for(var i in people) {
 	var capacityByPerson = reportCalculations.calculateCapacity({people : [ people[i] ] }, params.startDate, params.endDate);
     var assignmentsStatisticsByPerson = reportCalculations.getAssignmentsStatistics(data, params.startDate, params.endDate, people[i].resource);
     var hoursStatisticsByPerson = reportCalculations.getHoursStatistics(data, people[i].resource);
     var utilizationRate = ( capacityByPerson > 0 ) ? Math.round( (hoursStatisticsByPerson.allHours / capacityByPerson ) * 100 ) : 0;
-
-    hoursOOO += hoursStatisticsByPerson.outOfOffice;
-    actualHours += hoursStatisticsByPerson.allHours;
-    expectedHours += capacityByPerson;
-    projectedHours += assignmentsStatisticsByPerson.allHours;
     
-    var person = {
-    	_id: people[i]._id,
-    	name: people[i].name,
-    	thumbnail: people[i].thumbnail,
-    	resource: people[i].resource,
-    	utilizationRate: utilizationRate,
-    	actualHours: hoursStatisticsByPerson.allHours,
-    	expectedHours: capacityByPerson,
-    	projectedHours: assignmentsStatisticsByPerson.allHours,
-    	OOOHours: hoursStatisticsByPerson.outOfOffice
-    };
-    
+    var role;
     if(people[i].primaryRole && people[i].primaryRole.name) {
-        person.role = people[i].primaryRole.name;
+    	role  = _.findWhere(data.allRoles, { resource : people[i].primaryRole.resource });
     }
-    
-    result.people.push(person);
+
+	if (fields.all || 
+    		( assignmentRollUpHours && assignmentRollUpHours.all ) || 
+    			( role && assignmentRollUpHours.selectedAssignedRoles[role.abbreviation] ) ) {
+    	
+        var person = {
+            	_id: people[i]._id,
+            	name: people[i].name,
+            	thumbnail: people[i].thumbnail,
+            	resource: people[i].resource,
+            	expectedHours: capacityByPerson
+        };
+        
+        if(people[i].primaryRole && people[i].primaryRole.name) {
+            person.role = people[i].primaryRole.name;
+        }
+         
+        if (fields.all || (assignmentBreakdownHours && assignmentBreakdownHours.projectedHours)) {
+        	person.projectedHours =  assignmentsStatisticsByPerson.allHours;
+        }
+        if (fields.all || (assignmentBreakdownHours && assignmentBreakdownHours.actualHours)) {
+        	person.actualHours = hoursStatisticsByPerson.allHours;
+        }
+        if (fields.all || (assignmentBreakdownHours && assignmentBreakdownHours.oooDetails)) {
+        	person.OOOHours = hoursStatisticsByPerson.outOfOffice;
+        }
+        if (fields.all || (assignmentBreakdownHours && assignmentBreakdownHours.utilization)) {
+        	person.utilizationRate = hoursStatisticsByPerson.utilizationRate;
+        }
+
+        hoursOOO += hoursStatisticsByPerson.outOfOffice;
+        actualHours += hoursStatisticsByPerson.allHours;
+        expectedHours += capacityByPerson;
+        projectedHours += assignmentsStatisticsByPerson.allHours;
+
+        result.people.push(person);
+
+    }
+
   }
   
-  result.overallUtilizationRate = Math.round( (actualHours / expectedHours) * 100 );
-  result.hoursOOO = hoursOOO;
-  result.actualHours = actualHours;
   result.expectedHours = expectedHours;
-  result.projectedHours = projectedHours;
+
+  if (fields.all || (assignmentRollUpHours && assignmentRollUpHours.projectedHours)) {
+	result.projectedHours = projectedHours;
+  }
+  if (fields.all || (assignmentRollUpHours && assignmentRollUpHours.actualHours)) {
+	result.actualHours = actualHours;
+  }
+  if (fields.all || (assignmentRollUpHours && assignmentRollUpHours.oooDetails)) {
+	result.hoursOOO = hoursOOO;
+  }
+  if (fields.all || (assignmentRollUpHours && assignmentRollUpHours.utilization)) {
+    result.overallUtilizationRate = Math.round( (actualHours / expectedHours) * 100 );
+  }
   
   return result;
 };
