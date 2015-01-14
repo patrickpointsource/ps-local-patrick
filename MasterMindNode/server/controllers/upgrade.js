@@ -326,8 +326,13 @@ module.exports = function(params) {
 		var reportsResource = {name : "reports", permissions : ["viewReports"]};
 		dataAccess.listSecurityRoles({}, function(err, body) {
 			var securityRoles = body.members;
-			for (var i = 0; i < securityRoles.length; i++) {
-				var securityRole = securityRoles[i];
+			
+			
+			var counter = -1;
+			
+			var securityRoleCb = function(resultCb) {
+				var securityRole = securityRoles[counter];
+				
 			    var hoursResource = _.findWhere(securityRole.resources, { name: "hours"});
 			    var isReportResourceExists = _.findWhere(securityRole.resources, {name : "reports"} );
 			    var isViewHoursReportsAndCSV = _.findWhere(hoursResource.permissions, "viewHoursReportsAndCSV");
@@ -337,10 +342,25 @@ module.exports = function(params) {
 			    		if (err) {
 			    			console.log(err);
 			    		}
+			    		if (resultCb) {
+							resultCb();
+			    		}
 			    	});
+			    } else if (resultCb) {
+					resultCb();
 			    }
-			}
-			callback(null, body);
+			};
+			
+			var executorCb = function() {
+				counter += 1;
+				if (counter < securityRoles.length)
+					securityRoleCb(executorCb);
+				else
+					callback(null, null);
+			};
+
+			executorCb();
+
 		});
 	};
 	
@@ -350,13 +370,18 @@ module.exports = function(params) {
 				callback('error loading projects', null);
 			} else {
 				var projectMembers = body.data;
-				_.each(projectMembers, function(project) {
-					
+				
+				var counter = -1;
+				
+				var projectCb = function(resultCb) {
+					var project = projectMembers[counter];
+
 					dataAccess.listLinksByProject(project.resource, function (err, result) {
 						if (err) {
 			    			console.log(err);
 						} else 
 						if (result.members && result.members[0]) {
+							
 							var linksObject;
 							var members = [];
 							var initialMembers;
@@ -397,13 +422,28 @@ module.exports = function(params) {
 								if (err) {
 									console.log(err);
 								}
+								if (resultCb) {
+									resultCb();
+					    		}
 							});
 
 						}
+						else if (resultCb) {
+							resultCb();
+					    }
 					});
-					
-				});
-				callback(null, body);
+				};
+				
+				var executorCb = function() {
+					counter += 1;
+					if (counter < projectMembers.length)
+						projectCb(executorCb);
+					else
+						callback(null, null);
+				};
+
+				executorCb();
+
 			}
 		});
 	}
