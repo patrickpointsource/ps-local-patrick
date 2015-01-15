@@ -1391,7 +1391,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 			if( entry.hoursRecord ) {
 				hoursRecords.push( entry.hoursRecord );
-				totalHours += !isNaN( parseFloat( entry.hoursRecord.hours ) ) ? Util.formatFloat( entry.hoursRecord.hours ) : 0;
+				totalHours += ( !isNaN( parseFloat( entry.hoursRecord.hours ) ) && !entry.hoursRecord.editMode) ? Util.formatFloat( entry.hoursRecord.hours ) : 0;
 				// if (!entry.hoursRecord.person) {
 				/*
 				 * Max 12/02/14
