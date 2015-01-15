@@ -63,15 +63,15 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 		 		secondMaxValue = maxValues[lbl][prop];
 	 }
 	
-	 if (maxValue / secondMaxValue > 2 )
-		 maxValue = secondMaxValue;
+	 //if (maxValue / secondMaxValue > 2 )
+	//	 maxValue = secondMaxValue;
 	 
 	 var count = chartData.length;
 		 
       
     // Create the chart
     var myChart = new dimple.chart(svg, chartData);
-    myChart.setBounds(50, 15, width - 180, height - 50);
+    myChart.setBounds(50, 15, width - 200, height - 50);
     // Add an x and 3 y-axes.  When using multiple axes it's
     // important to assign them to variables to pass to the series
     var x = myChart.addCategoryAxis("x", "label");
@@ -129,7 +129,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
       .enter()
       .append("text")
         .attr("x", width - 100)
-        .attr("y", function (d, i) { return 7 + i * 14; })
+        .attr("y", function (d, i) { return 9 + i * 14; })
         .style("font-family", "sans-serif")
         .style("font-size", "10px")
         .style("color", "Black")

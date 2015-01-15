@@ -161,8 +161,17 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 				var assignmentsStatistics = getAssignmentsStatistics( data, startDate, endDate,  person.resource );
 				var assignmentsStatisticsTD = null;
 				
-				if (today)
-					assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, today,  person.resource );
+				if (today) {
+					today = moment(today).format( 'YYYY-MM-DD' );
+					
+					if (today >= startDate && today <= endDate)
+						assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, today,  person.resource );
+					else if (today > endDate)
+						assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, endDate,  person.resource );
+					else if (today < startDate)
+						assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, startDate,  person.resource );
+						
+				}
 				
 				person.capacity = calculateCapacity( data, startDate, endDate, person.resource );
 				person.hours = {
