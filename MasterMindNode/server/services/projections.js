@@ -13,7 +13,7 @@ var PROJECTION_MONTH_LABELS = [CURRENT_MONTH, 'secondMonth', 'thirdMonth', 'four
 
 var getProjectionUtilization = function (data, capacity, hoursStatistics, assignmentsStatistics, dateRange) {
 	var utilization = {};
-	utilization[dateRange] = {
+	utilization[PROJECTION_MONTH_LABELS[0]] = {
 		name : getMonthByDateRange(dateRange).format('MMMM'),
 		actual : Math.round( ( (hoursStatistics.allHours + hoursStatistics.outOfOffice + hoursStatistics.overhead) / capacity) * 100 ),
 		projected : Math.round( ( (assignmentsStatistics.allHours + hoursStatistics.outOfOffice + hoursStatistics.overhead) / capacity) * 100 )
@@ -67,7 +67,7 @@ var getProjectionHoursByType = function (data, type, hoursStatistics, assignment
 			break;
 	}
 	var hours = {};
-	hours[dateRange] = {
+	hours[PROJECTION_MONTH_LABELS[0]] = {
 		name : getMonthByDateRange(dateRange).format('MMMM'),
 		actual : actual,
 		projected : projected
@@ -84,7 +84,8 @@ var getMonthByDateRange = function(dateRange) {
 	var reportMonth;
 	switch(dateRange) {
 		case PREVIOUS_MONTH :
-		reportMonth = moment().subtract(1, 'months');
+		// should be current month even when data range "previous month" is used
+		reportMonth = moment();
 		break;
 		case CURRENT_MONTH :
 		reportMonth = moment();
