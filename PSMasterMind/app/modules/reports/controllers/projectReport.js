@@ -64,7 +64,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			goals: {},
 			projectHours: {},
 			selectedAssignedRoles: {}
-		}
+		},
+		output: "csv"
 	};
 	$scope.projects = {};
    

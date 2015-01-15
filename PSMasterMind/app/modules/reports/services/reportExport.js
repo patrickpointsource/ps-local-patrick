@@ -247,6 +247,9 @@ function( $q, People ) {
         var str = '';
         var line = '';
         
+        if (reportData || reportData.length == 0)
+        	return str;
+        
         //Print the header
         
         var head = [ 'Project/Task', 'Person', 'Role', 'Department', 'Date', 'Hours', 'Description' ];

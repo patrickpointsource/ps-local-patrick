@@ -26,11 +26,12 @@
                 	<button class="btn btn-report">Save Report</button>
             	</div>
             	<div class="row">
-                	<button class="btn btn-report" ng-hide="params.output == 'graphs'" ng-click="reportHandler.exportPeopleReport($event)">
+                	<button class="btn btn-report"
+                		ng-hide="params.output == 'graphs'" 
+                		ng-click="reportHandler.exportPeopleReport($event)">
 					<a href="{{reportHandler.link()}}" download="Custom.csv" >
 			      		Export to CSV
 			    	</a>
-		    		</button>
             	</div>
             	<div class="row">
                 	<button class="btn btn-report" ng-hide="params.output == 'csv'">Export graphs</button>
