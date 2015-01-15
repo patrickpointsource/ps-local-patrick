@@ -46,9 +46,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		  graphsOnly: false
   };
   
-  $scope.scrollTo = function(id) {
+  $scope.scrollTo = function(id, needToScrollUp) {
       $location.hash(id);
       $anchorScroll();
+      if(needToScrollUp) {
+        setTimeout(function() {
+          window.scrollBy(0, -85);
+        }, 10);
+      }
    };
    
    var groupToRolesMap = {

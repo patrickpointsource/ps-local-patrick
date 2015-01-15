@@ -38,11 +38,10 @@
             </div>
             <div class="row report-output-nav">
                 <label>Go To</label>
-                <div><a ng-click="scrollTo('report-output-summary')">Report Details</a></div>
-                <div><a ng-click="scrollTo('report-output-hours')">Hours Details</a></div>
-                <div><a ng-click="scrollTo('report-output-people')">People Details</a></div>
-                <!--<div><a ng-click="scrollTo('report-output-goals')">Percentages and Goals</a></div>-->
-                <div><a ng-click="scrollTo('report-output-projections')">Projections</a></div>
+                <div><a ng-click="scrollTo('report-output-summary', true)">Report Details</a></div>
+                <div><a ng-click="scrollTo('report-output-hours', true)">Hours Details</a></div>
+                <div><a ng-click="scrollTo('report-output-people', true)">People Details</a></div>
+                <div ng-if="output.projections"><a ng-click="scrollTo('report-output-projections')">Projections</a></div>
             </div>
         </div>
 	</div>
