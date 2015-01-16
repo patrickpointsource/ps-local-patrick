@@ -4,6 +4,8 @@
 
 var moment = require('moment');
 var reportCalculations = require( '../services/reportCalculations.js' );
+var util = require( '../util/util.js' );
+
 
 var PREVIOUS_MONTH = 'previousMonth';
 var CURRENT_MONTH = 'currentMonth';
@@ -140,7 +142,8 @@ var getProjections = function(data, params) {
 	var projections = {
 		capacity : capacity,
 		totalHours :  getProjectionHoursByType(data, 'total', hoursStatistics, assignmentsStatistics, params.dateRange),
-		utilization :  getProjectionUtilization(data, capacity, hoursStatistics, assignmentsStatistics, params.dateRange)
+		utilization :  getProjectionUtilization(data, capacity, hoursStatistics, assignmentsStatistics, params.dateRange),
+		graphData :  getGraphData(data, params)
 	}
 
 	var fields = params.fields;
@@ -160,6 +163,34 @@ var getProjections = function(data, params) {
 
 	return projections;
 };
+
+var getGraphData = function (data, params) {
+	var startDate = getMonthByDateRange(params.dateRange).startOf('month');
+	var endDate = getMonthByDateRange(params.dateRange).add(PROJECTION_MONTHS - 1, 'months').endOf('month');
+	var cDate = startDate;
+	var sDay, eDay, result = [];
+	while (cDate < endDate) {
+		sDay = cDate.startOf('day');
+		eDay = moment(cDate).add(1, 'days');
+		var days = util.getBusinessDaysCount(sDay, eDay);
+		if (days == 1 ) {
+			var assignmentsByDay = reportCalculations.getAssignmentsStatistics(data, sDay, eDay);
+			var hoursByDay = reportCalculations.getHoursStatisticsByDate(data, sDay, eDay);
+			var capacityByDay = reportCalculations.calculateCapacity(data, sDay, eDay);
+			var byDay = {
+				date : sDay.format('L'),
+				projectedClient : assignmentsByDay.projectedClientHours,
+				projectedInvest : assignmentsByDay.projectedInvestHours,
+				actualOOO : hoursByDay.outOfOffice,
+				capacity : capacityByDay
+			}
+			result.push(byDay);
+		}
+		cDate.add(1, 'days');
+	}
+	return result;
+}
+
 
 module.exports.PREVIOUS_MONTH = PREVIOUS_MONTH;
 module.exports.CURRENT_MONTH = CURRENT_MONTH;

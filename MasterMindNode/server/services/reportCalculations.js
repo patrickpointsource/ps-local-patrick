@@ -85,6 +85,28 @@ var getHoursStatistics = function( data, personResource ) {
   };
 };
 
+
+
+var getHoursStatisticsByDate = function (data, startDate, endDate) {
+	var vacationTasks = util.getTaskResourcesByName ( TASK_TITLE.VACATION, data.tasks );
+	var siteHolidayTask = getTaskByName ( TASK_TITLE.SITE_HOLIDAY, data.tasks );
+	var outOfOffice = 0;
+	_.each(data.hours, function (record){
+		if (record.date >= startDate && record.date <= endDate) {
+			if (record.task) {
+				if ( ( vacationTasks && vacationTasks.length > 0 && vacationTasks.indexOf(record.task.resource) > -1 ) || 
+	                    ( siteHolidayTask && record.task.resource == siteHolidayTask.resource ) ) {
+	                outOfOffice += record.hours;
+	            }
+			}
+		}
+	});	
+	return {
+		outOfOffice : outOfOffice
+	};
+}
+
+
 var getAssignmentsStatistics = function (data, startDate, endDate, personResource) {
 	var reportStartDate = moment(startDate);
 	var reportEndDate = moment(endDate);
@@ -317,6 +339,7 @@ var getProjectsHours = function(data, startDate, endDate, personResource, today)
 module.exports.isClientProject = isClientProject;
 module.exports.isInvestProject = isInvestProject;
 module.exports.getHoursStatistics = getHoursStatistics;
+module.exports.getHoursStatisticsByDate = getHoursStatisticsByDate;
 module.exports.getAssignmentsStatistics = getAssignmentsStatistics;
 module.exports.calculateCapacity = calculateCapacity;
 module.exports.getUtilizationDetails = getUtilizationDetails;
