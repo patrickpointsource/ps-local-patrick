@@ -58,7 +58,7 @@
 	                	<label>Hours %s across categories:</label>
 	                </div>
 			                    
-					<div><button class="btn btn-report pull-right">save as image</button></div>
+					<div><button class="btn btn-report pull-right" ng-click="onExportGraph('d3DivshellPieGraph', 'Hours %s across categories')">save as image</button></div>
 					<div ng-include src="'modules/reports/views/pieChart.html'" onload="elemId='shellPieGraph';chartData=getPieChartData()" 
 						ng-if="graphDataAvailable" id="shellPieGraph" style="height:100%;"></div>
 				</div>

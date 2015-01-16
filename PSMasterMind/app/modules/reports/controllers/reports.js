@@ -613,43 +613,42 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 	};
   
 	$scope.getProjectionsStackedAreaChartData = function() {
-		return [{
-			month: "Oct-14",
-			hours: 130,
-			"hours type": "Projected Out of Office"
-		}, {
-			month: "Oct-14",
-			hours: 160,
-			"hours type": "Projected Client"
-		}, {
-			month: "Oct-14",
-			hours: 180,
-			"hours type": "Projected Invest"
-		}, {
-			month: "Nov-14",
-			hours: 135,
-			"hours type": "Projected Out of Office"
-		}, {
-			month: "Nov-14",
-			hours: 167,
-			"hours type": "Projected Client"
-		}, {
-			month: "Nov-14",
-			hours: 190,
-			"hours type": "Projected Invest"
-		}, {
-			month: "Dec-14",
-			hours: 140,
-			"hours type": "Projected Out of Office"
-		}, {
-			month: "Dec-14",
-			hours: 170,
-			"hours type": "Projected Client"
-		}, {
-			month: "Dec-14",
-			hours: 199,
-			"hours type": "Projected Invest"
-		}];
+		return [ {
+			"type": "area",
+			"yAxis": 1,
+			"key" : "Projected Out of Office" , 
+			"values" : [ { x:'2014-10-01' , y:20} , {x: '2014-10-10' , y:30},{x: '2014-10-20' , y:80}, { x:'2014-10-30' , y:98}, 
+                      { x:'2014-11-01' , y:25} , { x:'2014-11-10' , y:10}, { x:'2014-11-20' , y:30}, { x:'2014-11-30' , y:30},
+                      { x:'2014-12-01' ,y: 55} , { x:'2014-12-10' , y:60}, { x:'2014-12-20' , y:70}, { x:'2014-12-31' , y:50}]
+		},
+		{
+			"type": "area",
+			"yAxis": 1,
+			"key" : "Projected Client" , 
+			"values" : [ { x:'2014-10-01' , y:120} , {x: '2014-10-10' , y:130},{x: '2014-10-20' , y:180}, { x:'2014-10-30' , y:198}, 
+	                      { x:'2014-11-01' , y:125} , { x:'2014-11-10' , y:110}, { x:'2014-11-20' , y:130}, { x:'2014-11-30' , y:130},
+	                      { x:'2014-12-01' ,y: 155} , { x:'2014-12-10' , y:160}, { x:'2014-12-20' , y:170}, { x:'2014-12-31' , y:170}]
+		},
+		{
+			"type": "area",
+			"yAxis": 1,
+			"key" : "Projected Invest" , 
+			"values" : [ { x:'2014-10-01' , y:200} , {x: '2014-10-10' , y:230},{x: '2014-10-20' , y:280}, { x:'2014-10-30' , y:280}, 
+	                      { x:'2014-11-01' , y:225} , { x:'2014-11-10' , y:220}, { x:'2014-11-20' , y:230}, { x:'2014-11-30' , y:230},
+	                      { x:'2014-12-01' ,y: 215} , { x:'2014-12-10' , y:260}, { x:'2014-12-20' , y:270}, { x:'2014-12-31' , y:270}]
+		},
+		
+		{
+			"type": "line",
+			"yAxis": 1,
+			"key" : "Capacity Ceilling as of todays date" , 
+			"values" : [ { x:'2014-10-01' , y:300} , {x: '2014-10-10' , y:300},{x: '2014-10-20' , y:300}, { x:'2014-10-30' , y:300}, 
+	                      { x:'2014-11-01' , y:300} , { x:'2014-11-10' , y:300}, { x:'2014-11-20' , y:300}, { x:'2014-11-30' , y:300},
+	                      { x:'2014-12-01' ,y: 300} , { x:'2014-12-10' , y:300}, { x:'2014-12-20' , y:300}, { x:'2014-12-31' , y:300}]
+		}
+
+		];
+		
 	}
 	$scope.loadAndInitPeople = function( ) {
 		var peopleInRoleQuery = {};
@@ -1792,6 +1791,32 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		console.log( 'Report generation aborted' );
 	};
 	
+	$scope.onExportGraph = function(graphId, title) {
+		
+		 var form = $('<form target="previewPNG" encoding="application/x-www-form-urlencoded" ' + 
+				 'enctype="application/x-www-form-urlencoded" method="POST" action="converT/svg/png" ></form><iframe src="#" style="width:0;height:0" name="previewPDF" id="previewPNG"></iframe>', {  });
+         
+         form = form.filter('form');
+         
+         $('<input />', {
+             type: 'hidden',
+             name: 'inputContent',
+             value: $('#' + graphId).html()
+         }).appendTo(form);
+         
+         $('<input />', {
+             type: 'hidden',
+             name: 'title',
+             value: title ? title: 'Graph'
+         }).appendTo(form);
+         
+         setTimeout(function() {
+        	 form.appendTo(  $('#' + graphId) ).submit().remove();
+         }, 100)
+         
+	   
+
+	}
 	$scope.checkGenerationStatus = function ( ) {
 		return Resources.refresh("/reports/status").then(function( result ){
 			if (result.status != "Running" && result.status != "Completed") {
