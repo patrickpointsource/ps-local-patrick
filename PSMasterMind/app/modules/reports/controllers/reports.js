@@ -1794,7 +1794,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 	$scope.onExportGraph = function(graphId, title) {
 		
 		 var form = $('<form target="previewPNG" encoding="application/x-www-form-urlencoded" ' + 
-				 'enctype="application/x-www-form-urlencoded" method="POST" action="converT/svg/png" ></form><iframe src="#" style="width:0;height:0" name="previewPDF" id="previewPNG"></iframe>', {  });
+				 'enctype="application/x-www-form-urlencoded" method="POST" action="' + window.serverLocation + '/converT/svg/png" ></form><iframe src="#" style="width:0;height:0" name="previewPDF" id="previewPNG"></iframe>', {  });
          
          form = form.filter('form');
          
