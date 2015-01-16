@@ -427,8 +427,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	 * Hide the messages dialog
 	 */
 	$scope.hideMessages = function( ) {
-		$scope.messages = null;
-		$( '#messages' ).hide( );
+		$scope.messages = [];
 	};
 
 	/**
@@ -665,16 +664,13 @@ else if( role.percentageCovered == 0 )
 	$scope.validateFields = function( ) {
 		$scope.messages = [ ];
 
-		if( !$scope.project.name || $scope.project.name === "" ) {
-			$scope.messages.push( "Project name is required." );
-		}
-
-		if( !$scope.project.customerName || $scope.project.customerName === "" ) {
-			$scope.messages.push( "Customer name is required." );
-		}
-
-		return $scope.messages.length == 0;
-	}
+		var validationResult = $scope.project.validate();
+        
+        $scope.messages = validationResult.messages;
+        
+		return validationResult.valid;
+	};
+	
 	var SYMBOLS_FOR_DESCRIPTION = 400;
 
 	var cutDescription = function( description ) {
