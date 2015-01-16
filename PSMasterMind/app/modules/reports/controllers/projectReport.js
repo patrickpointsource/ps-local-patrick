@@ -540,5 +540,15 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		btn.click( onInnerReportLink );
 		btn.get( 0 ).dispatchEvent( evt );
     };
+    
+    $scope.getPersonAssignedHoursPieChartData = function ( person ) {
+    	return [{
+			key: "Actual Hours",
+			value: person.actualHours
+		}, {
+			key: "Projected Hours",
+			value: person.projectedHours
+		}];
+    };
   
 } ] );

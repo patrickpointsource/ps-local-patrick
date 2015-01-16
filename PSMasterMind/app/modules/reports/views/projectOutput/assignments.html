@@ -52,20 +52,22 @@
                         </div>
                     </div>
                     <div class="col-xs-2">
-                        <i ng-hide="person.isCollapsed" ng-click="person.isCollapsed = !person.isCollapsed" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
-                        <i ng-show="person.isCollapsed" ng-click="person.isCollapsed = !person.isCollapsed" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
+                        <i ng-hide="person.isExpanded" ng-click="person.isExpanded = !person.isExpanded" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
+                        <i ng-show="person.isExpanded" ng-click="person.isExpanded = !person.isExpanded" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
                     </div>
                 </div>
 
-                <div collapse="!person.isCollapsed" >
+                <div ng-if="person.isExpanded" collapse="!person.isExpanded" >
                     <div class="report-expand-well body" style="height: 400px;">
                         <div class="report-output-inside-row no-margin">
-                            <div class="col-xs-12 col-sm-6 ">
-                                <div class="report-graph-place" style="height: 300px;">
-                                    Place for graph
-                                </div>
+                            <div class="col-xs-12 col-sm-7 ">
+                                <div class="personDetailsGraph"
+										ng-include src="'modules/reports/views/pieChart.html'" 
+										onload="elemId='assignedHoursPieGraph' + $index;chartData=getPersonAssignedHoursPieChartData(person);width=400" 
+										id="{{'assignedHoursPieGraph' + $index}}" ng-if="true">
+								</div>
                             </div>
-                            <div class="col-xs-12 col-sm-6">
+                            <div class="col-xs-12 col-sm-5">
                                 <label>Projected Hours</label>
                                 <div>
                                     {{person.projectedHours}}

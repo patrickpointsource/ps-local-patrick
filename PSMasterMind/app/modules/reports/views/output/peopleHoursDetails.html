@@ -37,7 +37,7 @@
 				</div>
 
 				<div collapse="!person.isExpanded" ng-if="person.isExpanded" >
-					<div class="report-expand-well body body500">
+					<div class="report-expand-well body body450">
 						<div class="report-output-inside-row no-margin">
 							<div class="col-xs-12 col-sm-2">
 								<label>Capacity</label>
@@ -79,17 +79,17 @@
 						<div class="report-output-inside-row">
 							<div class="col-xs-12 col-sm-6 ">
 								<label>Actual, Expected, Projected Hours</label>
-								<div style="height:300px"
+								<div class="personDetailsGraph"
 									ng-include src="'modules/reports/views/verticalbarChart.html'" 
-									onload="elemId='projectedHoursVerticalReport' + $index;chartData=getPersonProjectedHoursVerticalbarChartData(person)" 
+									onload="elemId='projectedHoursVerticalReport' + $index;chartData=getPersonProjectedHoursVerticalbarChartData(person);width=300" 
 									id="{{'projectedHoursVerticalReport' + $index}}" ng-if="output.peopleDetails">
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 ">
 								<label>Percent Hours Across Categories</label>
-								<div style="height:300px"
+								<div class="personDetailsGraph"
 										ng-include src="'modules/reports/views/pieChart.html'" 
-										onload="elemId='categoriesHoursPieGraph' + $index;chartData=getPersonCategoriesHoursPieChartData(person)" 
+										onload="elemId='categoriesHoursPieGraph' + $index;chartData=getPersonCategoriesHoursPieChartData(person);width=300" 
 										id="{{'categoriesHoursPieGraph' + $index}}" ng-if="output.peopleDetails">
 								</div>
 							</div>
