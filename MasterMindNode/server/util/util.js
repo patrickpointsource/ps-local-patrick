@@ -1,7 +1,7 @@
 
 /**
  * Returns ID from a resource (such as "people/52ab7005e4b0fd2a8d130004")
- * 
+ *
  * @param {Object} resource
  * @param {Object} callback
  */
@@ -12,7 +12,7 @@ var moment = require('moment');
 var REPORT_PREFIX = "report_";
 
 var getIDfromResource = function(resource, callback) {
-	
+
 	var ind = resource.lastIndexOf("/");
 	if (ind != -1) {
 		var ID = resource.substring(ind + 1, resource.length);
@@ -29,14 +29,14 @@ var getId = function(resource) {
         var id = resource.substring(ind + 1, resource.length);
         return id;
     }
-    
+
     return null;
 };
 
 
 /**
  * Returns ID with a resource (such as "people/52ab7005e4b0fd2a8d130004")
- * 
+ *
  * @param {Object} id
  * @param {Object} resource
  */
@@ -48,19 +48,19 @@ var getFullID = function(id, resource) {
 
 /**
  * Returns today date in YYYY-MM-DD format
- * 
+ *
  */
- 
+
 var getTodayDate = function(){
 	return module.exports.getDateFromNow();
 };
 
 /**
  * Returns date that was a certain number of months ago in YYYY-MM-DD format
- * 
+ *
  * @param {Object} monthCountAgo - number of months
  */
-     
+
 var getDateFromNow = function(monthCountAgo){
 	var dateFromNow = new Date();
 	if (monthCountAgo) {
@@ -72,7 +72,7 @@ var getDateFromNow = function(monthCountAgo){
 
 /**
  * Returns date in YYYY-MM-DD format
- * 
+ *
  * @param {Object} date
  */
 
@@ -98,13 +98,13 @@ var getFormattedDate = function(date) {
 var getPreviousWorkingDay = function(){
 	var cDate = new Date();
     var dayOfWeek;
-    
+
     do {
     	cDate.setDate(cDate.getDate()-1);
     	dayOfWeek = cDate.getDay();
     //} while (dayOfWeek == 5 || dayOfWeek == 6 )
     } while (dayOfWeek == 0 || dayOfWeek == 6 )
-    
+
     return cDate;
 };
 
@@ -120,37 +120,37 @@ var isString = function isString(o) {
 var getPersonName = function(person, isSimply, isFirst) {
         var result = '';
         var tmpName;
-        
+
         if (!person || !person.name)
             return '';
-        
-        
+
+
         if (_.isString(person.name)) {
              var tmp = person.name.indexOf(",") == -1 ? person.name.split(/\s+/g) : person.name.split(",");
-             
+
              tmpName = {
                  givenName: tmp[0].trim(),
                  familyName: tmp[1].trim(),
                  fullName: person.name
              };
-             
+
          } else if (person.name && _.isObject(person.name) && !person.name.familyName && !person.name.givenName && person.name.fullName) {
              var tmp = person.name.fullName.indexOf(",") == -1 ? person.name.fullName.split(/\s+/g) : person.name.fullName.split(",");
-             
+
              tmpName = {
                  givenName: tmp[0].trim(),
                  familyName: tmp[1].trim(),
                  fullName: person.name.fullName
              };
-             
+
          } else
              tmpName = person.name;
-             
+
         result = isSimply ? (tmpName.givenName + ' ' + tmpName.familyName): (tmpName.familyName + ', ' + tmpName.givenName);
-        
+
         if (isFirst)
             result = tmpName.givenName;
-        
+
         return result;
 };
 
@@ -171,6 +171,7 @@ module.exports.getBusinessDaysCount = function ( startDate, endDate ) {
 		}
 		curDate = curDate.add(1, 'days');
 	}
+
 	return count;
 };
 
