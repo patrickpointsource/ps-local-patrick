@@ -32,7 +32,7 @@ var getTaskByName = function ( taskName, tasks ) {
 //   overhead hours
 //   out of office hours
 //   all hours
-var getHoursStatistics = function( data, personResource ) {
+var getHoursStatistics = function( data, personResource, startDate, endDate ) {
   var actualClientHours = 0;
   var actualInvestHours = 0;
   var outOfOffice = 0;
@@ -44,9 +44,22 @@ var getHoursStatistics = function( data, personResource ) {
   var marketingTasks = util.getTaskResourcesByName ( TASK_TITLE.MARKETING, data.tasks );
   var salesTasks = util.getTaskResourcesByName ( TASK_TITLE.SALES, data.tasks );
   var siteHolidayTask = getTaskByName ( TASK_TITLE.SITE_HOLIDAY, data.tasks );
-  
+
   _.each(data.hours, function (record){
-      if( record.hours && (!personResource || record.person.resource == personResource) ) {
+
+	  var check = true;
+	  var recordDate = moment(record.date);
+	  if (personResource && record.person.resource != personResource) {
+		  check = false;
+	  }
+	  if (check && startDate && recordDate < moment(startDate) ) {
+		  check = false;
+	  }
+	  if (check && endDate && recordDate > moment(endDate) ) {
+		  check = false;
+	  }
+
+      if( record.hours && check ) {
         if ( record.project ) {
             var project = _.findWhere(data.projects, {resource: record.project.resource});
             if (isClientProject(project)) {
@@ -57,7 +70,7 @@ var getHoursStatistics = function( data, personResource ) {
             }
         }
         if ( record.task ) {
-            if ( ( vacationTasks && vacationTasks.length > 0 && vacationTasks.indexOf(record.task.resource) > -1 ) || 
+            if ( ( vacationTasks && vacationTasks.length > 0 && vacationTasks.indexOf(record.task.resource) > -1 ) ||
                     ( siteHolidayTask && record.task.resource == siteHolidayTask.resource ) ) {
                 outOfOffice += record.hours;
             } else if ( salesTasks && salesTasks.length > 0 && salesTasks.indexOf(record.task.resource) > -1  ) {
@@ -69,11 +82,11 @@ var getHoursStatistics = function( data, personResource ) {
                 overhead += record.hours;
             }
         }
-        
+
         allHours += record.hours;
       }
   });
-    
+
   return {
     actualClientHours: actualClientHours,
     actualInvestHours: actualInvestHours,
@@ -86,27 +99,6 @@ var getHoursStatistics = function( data, personResource ) {
 };
 
 
-
-var getHoursStatisticsByDate = function (data, startDate, endDate) {
-	var vacationTasks = util.getTaskResourcesByName ( TASK_TITLE.VACATION, data.tasks );
-	var siteHolidayTask = getTaskByName ( TASK_TITLE.SITE_HOLIDAY, data.tasks );
-	var outOfOffice = 0;
-	_.each(data.hours, function (record){
-		if (record.date >= startDate && record.date <= endDate) {
-			if (record.task) {
-				if ( ( vacationTasks && vacationTasks.length > 0 && vacationTasks.indexOf(record.task.resource) > -1 ) || 
-	                    ( siteHolidayTask && record.task.resource == siteHolidayTask.resource ) ) {
-	                outOfOffice += record.hours;
-	            }
-			}
-		}
-	});	
-	return {
-		outOfOffice : outOfOffice
-	};
-}
-
-
 var getAssignmentsStatistics = function (data, startDate, endDate, personResource) {
 	var reportStartDate = moment(startDate);
 	var reportEndDate = moment(endDate);
@@ -114,10 +106,10 @@ var getAssignmentsStatistics = function (data, startDate, endDate, personResourc
 	var projectedClientHours = 0;
 	var projectedInvestHours = 0;
 	var allHours = 0;
-	
+
 	var peopleOnClient = 0;
 	var peopleOnInvestment = 0;
-	
+
 	_.each(data.assignments, function (assignment){
 		var project = _.findWhere(data.projects, {resource: assignment.project.resource});
 		_.each(assignment.members, function (member){
@@ -128,7 +120,7 @@ var getAssignmentsStatistics = function (data, startDate, endDate, personResourc
 				var initEndDate = (memberEndDate < reportEndDate) ? memberEndDate : reportEndDate;
 				if (initStartDate < initEndDate) {
 					var projectedHours = calculateProjectedHours(initStartDate, initEndDate, member.hoursPerWeek);
-						
+
 					if (isClientProject(project)) {
 						projectedClientHours += projectedHours;
 						peopleOnClient++;
@@ -142,10 +134,10 @@ var getAssignmentsStatistics = function (data, startDate, endDate, personResourc
 			}
 		});
 	});
-	
-	projectedClientHours = Math.round(projectedClientHours); 
-	projectedInvestHours = Math.round(projectedInvestHours); 
-	
+
+	projectedClientHours = Math.round(projectedClientHours);
+	projectedInvestHours = Math.round(projectedInvestHours);
+
 	return {
 		peopleOnClient: peopleOnClient,
 		peopleOnInvestment: peopleOnInvestment,
@@ -154,11 +146,11 @@ var getAssignmentsStatistics = function (data, startDate, endDate, personResourc
 		totalProjectedHours : projectedClientHours + projectedInvestHours,
 		allHours : allHours
 	};
-	
+
 };
 
 var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
-	
+
 	var rolesInput = [];
 	if ( _.isArray( roles ) )
 		rolesInput = roles;
@@ -167,34 +159,34 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 
 	var capacity = calculateCapacity(data, startDate, endDate);
     var utilizationDetails = [];
-    
+
 	for ( var r in rolesInput ) {
 		var actualHours = 0;
 		var expectedHours = 0;
 		var tdHours = 0;
 		var role = _.findWhere(data.allRoles, {	abbreviation : rolesInput[r] });
 		var roleMembers = [];
-		
+
 		if (role) {
 			for ( var i in data.people ) {
 				var person = data.people[i];
-							
+
 				var hoursStatistics = getHoursStatistics( data, person.resource );
 				var assignmentsStatistics = getAssignmentsStatistics( data, startDate, endDate,  person.resource );
 				var assignmentsStatisticsTD = null;
-				
+
 				if (today) {
 					today = moment(today).format( 'YYYY-MM-DD' );
-					
+
 					if (today >= startDate && today <= endDate)
 						assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, today,  person.resource );
 					else if (today > endDate)
 						assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, endDate,  person.resource );
 					else if (today < startDate)
 						assignmentsStatisticsTD = getAssignmentsStatistics( data, startDate, startDate,  person.resource );
-						
+
 				}
-				
+
 				person.capacity = calculateCapacity( data, startDate, endDate, person.resource );
 				person.hours = {
 						assigned : assignmentsStatistics.projectedClientHours + assignmentsStatistics.projectedInvestHours,
@@ -211,23 +203,23 @@ var getUtilizationDetails = function(data, startDate, endDate, roles, today) {
 			    if (person.primaryRole.resource == role.resource) {
 					roleMembers.push(person);
 				}
-			    
+
 			    actualHours += person.hours.spent + hoursStatistics.outOfOffice + hoursStatistics.overhead;
 			    expectedHours += person.hours.assigned;
 			    tdHours += person.hours.assignedTD;
 			}
-			
+
 			role.expectedUtilization = Math.round( ( expectedHours / capacity ) * 100);
 			role.actualUtilization = Math.round( (Math.abs(actualHours) / capacity) * 100);
 			role.tdUtilization = Math.round( (Math.abs(tdHours) / capacity) * 100);
-			
+
 			utilizationDetails.push({
 				role : role,
 				members : roleMembers
 			});
 		}
 	}
-	
+
 	return utilizationDetails;
 };
 
@@ -243,7 +235,7 @@ var calculateCapacity = function(data, startDate, endDate) {
       }
     }
   }
-  
+
   return capacity;
 };
 
@@ -265,18 +257,18 @@ var isInvestProject = function (project) {
 
 var getProjectsPeople = function(projects, assignments, allPeople) {
   var people = [];
-  
+
   var projectResources = _.map(projects, function(p) {
     return p.resource;
   });
-  
+
   var filteredAssignments = _.filter(assignments, function(a) {
     if(projectResources.indexOf(a.project.resource) > -1) {
       return true;
     }
     return false;
   });
-  
+
   for(var i in filteredAssignments) {
     for(var j in filteredAssignments[i].members) {
       var personResource = filteredAssignments[i].members[j].person.resource;
@@ -296,9 +288,9 @@ var getProjectsHours = function(data, startDate, endDate, personResource, today)
 	    	  if ( person && project ) {
 	    		  	var projectedHours = 0;
 	    		  	var spentHours = record.hours;
-	    		  	var assignedTDHours = today && ( moment(today).isAfter(moment(record.date)) || moment(today).isSame(moment(record.date)) )  
+	    		  	var assignedTDHours = today && ( moment(today).isAfter(moment(record.date)) || moment(today).isSame(moment(record.date)) )
 	    		  							? record.hours : 0;
-	    		  	
+
 	    		  	_.each(data.assignments, function (assignment) {
 	    		  			if (project.resource == assignment.project.resource) {
 	    		  				_.each(assignment.members, function (member) {
@@ -308,11 +300,11 @@ var getProjectsHours = function(data, startDate, endDate, personResource, today)
 	    		  				});
 	    		  			}
 	    		  	});
-	    		  	
+
 	    		  	if (projectsHours[project.resource]) {
-	    		  		projectsHours[project.resource].assignedHours += projectedHours;	
-	    		  		projectsHours[project.resource].spentHours += spentHours;	
-	    		  		projectsHours[project.resource].assignedTDHours += assignedTDHours;	
+	    		  		projectsHours[project.resource].assignedHours += projectedHours;
+	    		  		projectsHours[project.resource].spentHours += spentHours;
+	    		  		projectsHours[project.resource].assignedTDHours += assignedTDHours;
 	    		  	} else {
 	    		  		projectsHours[project.resource] = {
 	    		  				project: {
@@ -322,24 +314,23 @@ var getProjectsHours = function(data, startDate, endDate, personResource, today)
 	    		  				assignedHours: projectedHours,
 	    		  				spentHours: spentHours,
 	    		  				assignedTDHours: assignedTDHours
-	    		  		};	
+	    		  		};
 	    		  	}
 	    	  }
 	     }
 	});
-	
+
 	var result = [];
 	for (var i in projectsHours) {
 		result.push(projectsHours[i]);
 	};
-	
+
 	return result;
 };
 
 module.exports.isClientProject = isClientProject;
 module.exports.isInvestProject = isInvestProject;
 module.exports.getHoursStatistics = getHoursStatistics;
-module.exports.getHoursStatisticsByDate = getHoursStatisticsByDate;
 module.exports.getAssignmentsStatistics = getAssignmentsStatistics;
 module.exports.calculateCapacity = calculateCapacity;
 module.exports.getUtilizationDetails = getUtilizationDetails;
