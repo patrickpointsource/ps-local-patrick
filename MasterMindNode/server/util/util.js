@@ -161,15 +161,17 @@ module.exports.getReportId = function (personId) {
 };
 
 module.exports.getBusinessDaysCount = function ( startDate, endDate ) {
-  var days = moment(endDate).diff(moment(startDate), 'days');
-  var date = moment(startDate);
-  for (var i = 0; i <= days; i++) {
-    date = date.add(1, 'days');
-    if (date.isoWeekday() > 5) {
-      days -= 1;
-    }
-  }
-  return days;
+	startDate = moment(startDate);
+	endDate = moment(endDate);
+	var curDate = startDate;
+	var count = 0;
+	while (curDate < endDate) {
+		if (curDate.isoWeekday() <= 5) {
+			count++;
+		}
+		curDate = curDate.add(1, 'days');
+	}
+	return count;
 };
 
 module.exports.getTaskResourcesByName = function ( taskName, tasksList ) {
