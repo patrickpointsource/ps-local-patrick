@@ -589,67 +589,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
   
   $scope.getPieChartData = function() {
 	  return $scope.pieChartData;
-	  /*
-	  return [{
-			key: "Client",
-			value: 35
-		}, {
-			key: "Out of Office",
-			value: 10
-		}, {
-			key: "Investment",
-			value: 22
-		}, {
-			key: "Marketing",
-			value: 7
-		}, {
-			key: "Overhead",
-			value: 12
-		}, {
-			key: "Sales",
-			value: 3
-		}];
-		*/
 	};
   
-	$scope.getProjectionsStackedAreaChartData = function() {
-		return [ {
-			"type": "area",
-			"yAxis": 1,
-			"key" : "Projected Out of Office" , 
-			"values" : [ { x:'2014-10-01' , y:20} , {x: '2014-10-10' , y:30},{x: '2014-10-20' , y:80}, { x:'2014-10-30' , y:98}, 
-                      { x:'2014-11-01' , y:25} , { x:'2014-11-10' , y:10}, { x:'2014-11-20' , y:30}, { x:'2014-11-30' , y:30},
-                      { x:'2014-12-01' ,y: 55} , { x:'2014-12-10' , y:60}, { x:'2014-12-20' , y:70}, { x:'2014-12-31' , y:50}]
-		},
-		{
-			"type": "area",
-			"yAxis": 1,
-			"key" : "Projected Client" , 
-			"values" : [ { x:'2014-10-01' , y:120} , {x: '2014-10-10' , y:130},{x: '2014-10-20' , y:180}, { x:'2014-10-30' , y:198}, 
-	                      { x:'2014-11-01' , y:125} , { x:'2014-11-10' , y:110}, { x:'2014-11-20' , y:130}, { x:'2014-11-30' , y:130},
-	                      { x:'2014-12-01' ,y: 155} , { x:'2014-12-10' , y:160}, { x:'2014-12-20' , y:170}, { x:'2014-12-31' , y:170}]
-		},
-		{
-			"type": "area",
-			"yAxis": 1,
-			"key" : "Projected Invest" , 
-			"values" : [ { x:'2014-10-01' , y:200} , {x: '2014-10-10' , y:230},{x: '2014-10-20' , y:280}, { x:'2014-10-30' , y:280}, 
-	                      { x:'2014-11-01' , y:225} , { x:'2014-11-10' , y:220}, { x:'2014-11-20' , y:230}, { x:'2014-11-30' , y:230},
-	                      { x:'2014-12-01' ,y: 215} , { x:'2014-12-10' , y:260}, { x:'2014-12-20' , y:270}, { x:'2014-12-31' , y:270}]
-		},
-		
-		{
-			"type": "line",
-			"yAxis": 1,
-			"key" : "Capacity Ceilling as of todays date" , 
-			"values" : [ { x:'2014-10-01' , y:300} , {x: '2014-10-10' , y:300},{x: '2014-10-20' , y:300}, { x:'2014-10-30' , y:300}, 
-	                      { x:'2014-11-01' , y:300} , { x:'2014-11-10' , y:300}, { x:'2014-11-20' , y:300}, { x:'2014-11-30' , y:300},
-	                      { x:'2014-12-01' ,y: 300} , { x:'2014-12-10' , y:300}, { x:'2014-12-20' , y:300}, { x:'2014-12-31' , y:300}]
-		}
-
-		];
-		
-	}
+	
 	$scope.loadAndInitPeople = function( ) {
 		var peopleInRoleQuery = {};
 

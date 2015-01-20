@@ -1,4 +1,4 @@
-//'use strict';
+'use strict';
 
 /**
  * Controller for people report.
@@ -15,7 +15,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 		' xmlns="http://www.w3.org/2000/svg"></svg></div>').appendTo(el);
 	
 	 
-	 var axisLabels = ["People", "Count"]
+	 //var axisLabels = ["People", "Count"]
 	 
 	 var hideLegend = true;
 
@@ -23,8 +23,12 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	var allEmpty = true;
 	
 	for (var k = 0 ; k < preparedData.length;  k++) {
-		allEmpty = allEmpty && preparedData[k].value == 0
+		allEmpty = allEmpty && preparedData[k].value == 0;
+		
+		if (preparedData[k].value > 0)
+			preparedData[k].value = (parseFloat(preparedData[k].value)).toFixed(1);
 	}
+	
 	var colors = ['#00BBD6', '#5BC9D1', '#92D7E7', '#D0ECF4', '#97D7D9', '#4EC2C7'];
 	
 	
@@ -39,17 +43,8 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 			try {
 				var chart = nv.models.pieChart()
 	        	.x(function(d) { 
-	        		// use hack to analyze who is calling this function and depending on this displays values or labels around the donut
-		        	
-		        	// when caller function renders tooltip
-		        	if (arguments.callee.caller && arguments.callee.caller.toString().toLowerCase().indexOf('tooltip') > -1)
-		        		return d.key;
-		        	// if it is called for legend labels rendering
-				 	if (arguments.callee.arguments.length == 3)
-				 		return d.key;
-				 	// all other cases when for displaying values around donut
-				 	else
-				 		return d.value;
+			 		//return d.value;
+			 		return d.key;
         		})
 		        .y(function(d) { return d.value })
 		        .showLabels(true)

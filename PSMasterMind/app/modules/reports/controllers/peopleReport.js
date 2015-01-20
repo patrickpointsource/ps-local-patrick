@@ -30,6 +30,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
   $scope.choiceLocationLabel = "Select one or more location";
   
   $scope.reportServicePingInterval = 5000;
+  $scope.projectionsGraphData = [];
+  
   
   $scope.output = {};
   
@@ -373,11 +375,106 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
         return input;
 	};
 	
+	$scope.getProjectionsStackedAreaChartData = function() {
+		var data = [ {
+			"key" : "Projected Out of Office" , 
+			"values" : [ ]
+		},
+		{
+			"key" : "Projected Client" , 
+			"values" : []
+		},
+		{
+			"key" : "Projected Invest" , 
+			"values" : [ ]
+		},
+		
+		{
+			"key" : "Capacity Ceilling as of todays date" , 
+			"values" : []
+		}];
+		
+		var dataOOO = {
+				"key" : "Projected Out of Office" , 
+				"values" : [ ]
+			};
+		var dataClient = {
+				"key" : "Projected Client" , 
+				"values" : []
+			};
+		
+		var dataInvest = {
+				"key" : "Projected Invest" , 
+				"values" : [ ]
+			};
+		
+		var dataCeiling = {
+				"key" : "Capacity Ceilling as of todays date" , 
+				"values" : []
+			};
+		
+		for (var i = 0; i < $scope.projectionsGraphData.length; i ++) {
+			dataOOO.values.push({
+				x: moment($scope.projectionsGraphData[i].date, "MM/DD/YYYY").format('YYYY-MM-DD'),
+				y: $scope.projectionsGraphData[i].actualOOO
+			})
+			
+			dataClient.values.push({
+				x: moment($scope.projectionsGraphData[i].date, "MM/DD/YYYY").format('YYYY-MM-DD'),
+				y:  $scope.projectionsGraphData[i].projectedClient
+			})
+			
+			dataInvest.values.push({
+				x: moment($scope.projectionsGraphData[i].date, "MM/DD/YYYY").format('YYYY-MM-DD'),
+				y:  $scope.projectionsGraphData[i].projectedInvest
+			})
+			
+			dataCeiling.values.push({
+				x: moment($scope.projectionsGraphData[i].date, "MM/DD/YYYY").format('YYYY-MM-DD'),
+				y:  $scope.projectionsGraphData[i].capacity
+			})
+		}
+		
+		return [dataOOO, dataClient, dataInvest, dataCeiling];
+		
+		/*
+		 data = [ {
+			"key" : "Projected Out of Office" , 
+			"values" : [ { x:'2014-10-01' , y:20} , {x: '2014-10-10' , y:30},{x: '2014-10-20' , y:80}, { x:'2014-10-30' , y:98}, 
+                      { x:'2014-11-01' , y:25} , { x:'2014-11-10' , y:10}, { x:'2014-11-20' , y:30}, { x:'2014-11-30' , y:30},
+                      { x:'2014-12-01' ,y: 55} , { x:'2014-12-10' , y:60}, { x:'2014-12-20' , y:70}, { x:'2014-12-31' , y:50}]
+		},
+		{
+			"key" : "Projected Client" , 
+			"values" : [ { x:'2014-10-01' , y:120} , {x: '2014-10-10' , y:130},{x: '2014-10-20' , y:180}, { x:'2014-10-30' , y:198}, 
+	                      { x:'2014-11-01' , y:125} , { x:'2014-11-10' , y:110}, { x:'2014-11-20' , y:130}, { x:'2014-11-30' , y:130},
+	                      { x:'2014-12-01' ,y: 155} , { x:'2014-12-10' , y:160}, { x:'2014-12-20' , y:170}, { x:'2014-12-31' , y:170}]
+		},
+		{
+			"key" : "Projected Invest" , 
+			"values" : [ { x:'2014-10-01' , y:200} , {x: '2014-10-10' , y:230},{x: '2014-10-20' , y:280}, { x:'2014-10-30' , y:280}, 
+	                      { x:'2014-11-01' , y:225} , { x:'2014-11-10' , y:220}, { x:'2014-11-20' , y:230}, { x:'2014-11-30' , y:230},
+	                      { x:'2014-12-01' ,y: 215} , { x:'2014-12-10' , y:260}, { x:'2014-12-20' , y:270}, { x:'2014-12-31' , y:270}]
+		},
+		
+		{
+			"key" : "Capacity Ceilling as of todays date" , 
+			"values" : [ { x:'2014-10-01' , y:300} , {x: '2014-10-10' , y:300},{x: '2014-10-20' , y:300}, { x:'2014-10-30' , y:300}, 
+	                      { x:'2014-11-01' , y:300} , { x:'2014-11-10' , y:300}, { x:'2014-11-20' , y:300}, { x:'2014-11-30' , y:300},
+	                      { x:'2014-12-01' ,y: 300} , { x:'2014-12-10' , y:300}, { x:'2014-12-20' , y:300}, { x:'2014-12-31' , y:300}]
+		}];
+		 */
+		
+	};
+	
 	$scope.onReportGenerated = function ( report ) {
 
 		console.log( 'Report generation completed' );
 				
 		$scope.output = report;
+		
+		if (report.projections)
+			$scope.projectionsGraphData = report.projections.graphData;
 		
 		$scope.setPeopleDetailsVerticalbarChartData( report );
 		$scope.selectAllRolesToExport();		
