@@ -156,8 +156,12 @@ var getPersonName = function(person, isSimply, isFirst) {
 
 
 
-module.exports.getReportId = function (personId) {
-  return REPORT_PREFIX + personId;
+module.exports.getReportId = function (personId, type) {
+	var reportId = REPORT_PREFIX + personId;
+	if (type) {
+		reportId = REPORT_PREFIX + type + "_" + personId;
+	}
+	return reportId;
 };
 
 module.exports.getBusinessDaysCount = function ( startDate, endDate ) {

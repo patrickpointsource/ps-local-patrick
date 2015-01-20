@@ -12,7 +12,7 @@ var reportCalculations = require( '../services/reportCalculations.js' );
 // generates report output object and calls callback when ready
 module.exports.generate = function(person, params, callback) {
 	var report = {};
-	var reportId = util.getReportId(person._id);
+	var reportId = util.getReportId(person._id, params.type);
 	report.type = params.type;
   
 	reportsService.prepareProjectData(person, params, function(err, data) {

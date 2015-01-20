@@ -6,8 +6,8 @@ var dataAccess = require('../data/dataAccess');
 var dataFilter = require('../data/dataFilter');
 var session = require('../util/session');
 
-var getStatus = function(personId) {
-  var statusObj = reportAccess.getStatusFromMemoryCache(personId);
+var getStatus = function(personId, type) {
+  var statusObj = reportAccess.getStatusFromMemoryCache(personId, type);
   
   return statusObj;
 };
@@ -31,13 +31,13 @@ var generateReport = function(person, type, params, reqSession, callback) {
   }
 };
 
-var cancelReport = function(personId) {
-  var statusObj = reportAccess.updateStatus(personId, reportAccess.REPORT_IS_CANCELLED);
+var cancelReport = function(personId, type) {
+  var statusObj = reportAccess.updateStatus(personId, reportAccess.REPORT_IS_CANCELLED, type);
   return statusObj;
 };
 
-var getReport = function(personId, callback) {
-  reportAccess.getReportFromMemoryCache(personId, function(err, result) {
+var getReport = function(personId, type, callback) {
+  reportAccess.getReportFromMemoryCache(personId, type, function(err, result) {
     if(err) {
       callback(err, null);
     } else {
