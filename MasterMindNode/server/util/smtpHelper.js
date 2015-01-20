@@ -70,9 +70,10 @@ var getInternalReminderMessage = function(userName) {
 		"Eastern time the next business day.<br/>" +
 		"<br/>" +
 		"For your convenience, a link to submit hours is included below:<br/>" + 
-		"https://mastermind.pointsource.us" + "<br/>";
+		"https://mastermind.pointsource.com" + "<br/>";
 	return result;
 }
 
 module.exports.getReminderMessage = getReminderMessage;
 module.exports.getReminderDebugMessage = getReminderDebugMessage;
+module.exports.getServerInformation = getServerInformation;

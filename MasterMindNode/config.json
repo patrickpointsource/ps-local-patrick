@@ -10,5 +10,6 @@
     "appName": "",
     "webSiteUrl": "http://localhost:9000",
     "oauthcbbaseurl": "",
+    "serverTimeout": "10",
     "env": "dev"
 }

@@ -495,6 +495,7 @@ var filterVacationsByPeriod = function(people, startDate, endDate, vacations) {
 	return result;
 };
 
+// vacation.start-vacation.end date can be "2014-11-23 17:00", startDate only "2014-11-23"
 var checkVacation = function(vacation, people, startDate, endDate, callback) {
 
 	var checked = false;
@@ -607,7 +608,9 @@ var filterLinksByProject = function(project, links) {
 	var result = [];	
 	_.each(links, function(link) {
 		if (link.project && link.project.resource == project ) {
-			result.push(link);
+			_.each(link.members, function(member) {
+				result.push(member);
+			});
 		}
 	});
 	return result;

@@ -88,7 +88,29 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 	}
 
 
-	$scope.assignProject = function( project, person, startDate, endDate ) {
+	$scope.assignProject = function( project, person, startDate, endDate, roleTypeId ) {
+		if (!project.roleId || !project.resource) {
+			var targetRoleId = null;
+			
+			for (var i = 0; $scope.projectToAssignTo.name && $scope.projectToAssignTo.name.roles && i < $scope.projectToAssignTo.name.roles.length; i ++){
+				if ($scope.projectToAssignTo.name.roles[i].type.resource == roleTypeId) {
+					targetRoleId = $scope.projectToAssignTo.name.roles[i]._id;
+					break;
+				}
+			}
+			
+			if (!targetRoleId &&$scope.projectToAssignTo.name && $scope.projectToAssignTo.name.roles && $scope.projectToAssignTo.name.roles.length > 0)
+				targetRoleId = $scope.projectToAssignTo.name.roles[0]._id;
+			
+			project.roleId = targetRoleId;
+			project.resource = $scope.projectToAssignTo.name.resource;
+			project.name = $scope.projectToAssignTo.name.name;
+			
+		}
+		
+		if (!project.roleId)
+			return;
+		
 		var newMember = {
 			startDate: startDate,
 			endDate: endDate,
@@ -119,10 +141,12 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 		} ).then( function( data ) {
 		    // use data from existing assignment entry
 			
+			assignment._id = data._id;
+			assignment._rev = data._rev;
+			
 			if (data.members && data.members.length > 0) {
 				assignment.members = data.members;
-				assignment._id = data._id;
-				assignment._rev = data._rev;
+				
 			} else
 				assignment.members = [];
 		    

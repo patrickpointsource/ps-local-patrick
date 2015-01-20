@@ -118,12 +118,12 @@ var generateProperties = function( collection, resourcePrefix, postfix, fields )
 	var tmpId;
 
 	for( var i = collection.length - 1; i >= 0; i-- ) {
-		  if(!collection[ i ])
+		  if(!collection[ i ] && collection.splice)
 			  collection.splice(i, 1);  
 	}
 		  
 	for( var i = 0; i < collection.length; i++ ) {
-	  if(collection[ i ]._id) {
+	  if(collection[ i ] && collection[ i ]._id) {
 		if( _.isObject( collection[ i ]._id ) )
 			tmpId = collection[i]._id[ "$oid" ].toString( );
 		else
@@ -142,6 +142,25 @@ var generateProperties = function( collection, resourcePrefix, postfix, fields )
 		collection = fieldFilter.filterByFields(collection, fields);
 	}
 	return collection;
+};
+
+
+var filterRecordsByStartEndDates = function(data, startDate, endDate) {
+	var result = {
+			about: data.about,
+			members: []
+	};
+	
+	for (var k= 0; k < data.members.length; k ++) {
+		if (data.members[k].date <= endDate && data.members[k].date >= startDate) {
+			result.members.push(data.members[k]);
+		}
+	}
+	
+	result.count = result.members.length;
+	
+	
+	return result;
 };
 
 var listProjects = function( q, callback ) {
@@ -709,14 +728,14 @@ var listLinksByProject = function( project, callback ) {
 	var result = memoryCache.getObject( LINKS_KEY );
 	if( result ) {
 		console.log( "read " + LINKS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterLinksByProject(project, result.data), "members", "tasks/" ) );
+		callback( null, prepareRecords( dataFilter.filterLinksByProject(project, result.data), "members", "links/" ) );
 	} else {
 		dbAccess.listLinks( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + LINKS_KEY + " to memory cache" );
 				memoryCache.putObject( LINKS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterLinksByProject(project, body.data), "members", "tasks/" ) );
+			callback( err, prepareRecords( dataFilter.filterLinksByProject(project, body.data), "members", "links/" ) );
 		} );
 	}
 
@@ -1064,7 +1083,9 @@ var listHoursByProjectsAndDates = function( projects, startDate, endDate, fields
             console.log( err );
             callback( 'error loading hours by start and end dates', null );
         } else {
-            callback( err, queryRecords( body, {}, "members", "hours/", null, fields ) );
+        	var hours = queryRecords( body, {}, "members", "hours/", null, fields );
+        	
+            callback( err, filterRecordsByStartEndDates(hours, startDate, endDate) );
         }
     } );
 };

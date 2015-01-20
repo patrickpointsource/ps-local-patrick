@@ -322,7 +322,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	
 	for(var i = 0; i < $scope.vacations.length; i++) {
 	  var vacation = $scope.vacations[i];
-	  if(vacation.type == VacationsService.VACATION_TYPES.Vacation) {
+	  if(vacation.type == VacationsService.VACATION_TYPES.Vacation && 
+			  (vacation.status == VacationsService.STATUS.Pending || vacation.status == VacationsService.STATUS.Approved) ) {
 	    var start = moment(vacation.startDate);
         var end = moment(vacation.endDate);
         // check if start and end date in the same year

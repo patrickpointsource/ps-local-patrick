@@ -515,6 +515,8 @@ angular.module('Mastermind')
     $scope.securityGroups.push({resources: []});
     $scope.selectedGroup = $scope.securityGroups[$scope.securityGroups.length - 1];
     $.extend(true, $scope.selectedGroup.resources, $scope.fullResourcesMap);
+    
+    $scope.$emit("admin:edit");
   };
   
   $scope.deleteGroup = function() {

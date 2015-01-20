@@ -173,10 +173,10 @@ function log(msg) {
 }
 
 function logError(msg) {
-	if (appConfig.logToFileStream)
+	//if (appConfig.logToFileStream)
 		errorStream.write(msg + "\n");
-	else
-		console.error(msg);
+	/*else
+		console.error(msg);*/
 }
 
 
@@ -189,11 +189,18 @@ if (appConfig.logToFileStream) {
 	errorStream = openError(appConfig.errorFileName);
 	
 	// override log function
-	console.log = log;
+	/*console.log = log;
 	console.warn = log;
 	console.info = log;
 	
-	console.error = logError;
+	console.error = logError;*/
+	
+	process.stdout.write = log;
+	process.stderr.write = logError;
+	
+	process.on("uncaughtException", function(err) {
+		logError('\r\n' + err + ': Details: \r\n' + JSON.stringify(arguments));
+	});
 }
 
 log("Starting...");
@@ -316,7 +323,9 @@ var host = (process.env.VCAP_APP_HOST || hostName);
 // The port on the DEA for communication with the application:
 var port = httpPort;
 // Start server
-app.listen(port, host);
+var httpServer = app.listen(port, host);
+	
+httpServer.timeout = (appConfig.serverTimeout ? parseInt(appConfig.serverTimeout): 10) * 60 * 1000;
 
 /*
 // start https server
@@ -330,6 +339,8 @@ httpServer.listen(httpPort, hostName);
 */
 //Initialize reminders
 reminder.initialize();
+
+console.log('server:timeout:' + httpServer.timeout);
 
 // Initialize security layer
 security.initialize(false);

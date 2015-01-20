@@ -386,7 +386,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 						var tmpDate = new Date( assignment.endDate );
 						tmpDate = new Date( tmpDate.getTime( ) + endDelta );
 						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-						assignment.startDate = getShortDate( tmpDate );
+						assignment.endDate = getShortDate( tmpDate );
 					}
 
 					// if endDate was set or removed, change assignment endDate
@@ -415,7 +415,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 					var tmpDate = new Date( assignment.endDate );
 					tmpDate = new Date( tmpDate.getTime( ) + endDelta );
 					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-					assignment.startDate = getShortDate( tmpDate );
+					assignment.endDate = getShortDate( tmpDate );
 				}
 
 				// if endDate was set or removed, change assignment endDate
@@ -1005,6 +1005,10 @@ else if( role.percentageCovered == 0 )
 		"/links": $state.params.tabId == "/links"
 	};
 
+	$scope.isHoursTabActive = function() {
+		return $scope.activeTab["/hours"];
+	};
+	
 	$scope.getDefaultAssignmentsFilter = function( ) {
 		var result = "current";
 		var now = new Date( );
@@ -1766,8 +1770,10 @@ else if( role.percentageCovered == 0 )
 
 					$scope.organizeHours( $scope.hours );
 					$scope.initHoursPeriods( $scope.hours );
-					$scope.currentWeek( );
-					$scope.currentMonth();
+					$scope.currentWeek( function() {
+						// load month hours just after week
+						$scope.currentMonth();
+					} );
 
 					if( $scope.hoursTableParams ) {
 						$scope.hoursTableParams.total( $scope.hours.length );
@@ -1806,8 +1812,10 @@ else if( role.percentageCovered == 0 )
 
 				$scope.organizeHours( $scope.hours );
 				$scope.initHoursPeriods( $scope.hours );
-				$scope.currentWeek( );
-				$scope.currentMonth();
+				$scope.currentWeek( function() {
+					// load month hours just after week
+					$scope.currentMonth();
+				} );
 
 				if( $scope.hoursTableParams ) {
 					$scope.hoursTableParams.total( $scope.hours.length );
@@ -2204,11 +2212,13 @@ else if( role.percentageCovered == 0 )
 			$scope.servicesLoadedTotal = runningTotal;
 		}
 		
-		if( !editMode ) {
-			$scope.initHours( );
+		if ($scope.isHoursTabActive()) {
+			if( !editMode ) {
+				$scope.initHours( );
+			}
+			$scope.initVacationHours(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
 		}
-		$scope.initVacationHours(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
-	};
+	};;
 
 	$scope.billingFrequencyOptions = [ {
 		label: "Weekly",
@@ -2273,7 +2283,7 @@ else if( role.percentageCovered == 0 )
 	$scope.startWeekDate = $scope.moment( ).day( 0 ).format( 'YYYY-MM-DD' );
 	$scope.endWeekDate = $scope.moment( ).day( 6 ).format( 'YYYY-MM-DD' );
 
-	$scope.showWeek = function( ) {
+	$scope.showWeek = function( cb ) {
         $scope.hideWeekSpinner = false;
 		$scope.startWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex ).format( 'YYYY-MM-DD' );
 		$scope.endWeekDate = $scope.moment( ).day( $scope.selectedWeekIndex + 6 ).format( 'YYYY-MM-DD' );
@@ -2302,6 +2312,9 @@ else if( role.percentageCovered == 0 )
 				Resources.get("hours/projectdates", params).then(
 					function (result) {
 						$scope.calcWeekHours(result); 
+						
+						if (cb)
+							cb();
 					}
 				);
 
@@ -2324,6 +2337,9 @@ else if( role.percentageCovered == 0 )
 
 		    	HoursService.query( hoursQuery, {} ).then( function( result ) {
 			    	$scope.calcWeekHours(result);
+			    	
+			    	if (cb)
+						cb();
 			    } );
 		    	
 		    }
@@ -2560,12 +2576,13 @@ else if( role.percentageCovered == 0 )
 			$scope.projectAssignments = data;
 			$scope.updateOrganizedHours( );
 
-		    if (window.useAdoptedServices) {
+		    /*if (window.useAdoptedServices) {
 		    	
 		    	var params = {};
 		    	params.project = $scope.project.about;
 		    	params.startDate = $scope.startMonthDate;
 		    	params.endDate = $scope.endMonthDate;
+		    	params.t = (new Date( )).getMilliseconds( );
 		    	
 				Resources.get("hours/projectdates", params).then(
 					function (result) {
@@ -2573,7 +2590,7 @@ else if( role.percentageCovered == 0 )
 					}
 				);
 
-		    } else {
+		    } else {*/
 
 		    	var hoursQuery = {
 						'project.resource': $scope.project.about,
@@ -2594,7 +2611,7 @@ else if( role.percentageCovered == 0 )
 					$scope.calcMonthHours(result); 
 				} );
 				
-		    }
+		    //}
 		} );
 	};
 
@@ -2888,9 +2905,9 @@ else if( role.percentageCovered == 0 )
 		return moment( yyyymmdd ).format( "MMM D" );
 	};
 
-	$scope.currentWeek = function( ) {
+	$scope.currentWeek = function( cb ) {
 		$scope.selectedWeekIndex = 0;
-		$scope.showWeek( );
+		$scope.showWeek( cb );
 	};
 
 	$scope.nextWeek = function( ) {

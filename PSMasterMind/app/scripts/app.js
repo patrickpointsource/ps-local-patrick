@@ -210,8 +210,25 @@
         }
       );
     }])
+    .directive('errSrc', function() {
+    	return {
+    		link: function(scope, element, attrs) {
+    			attrs.$observe('ngSrc', function(value) {
+    				  if ((!value || value.indexOf("generic") > 0) && attrs.errSrc) {
+    				    attrs.$set('ngSrc', attrs.errSrc);
+    				  }
+    				});
+    			
+    			element.bind('error', function() {
+    		        if (attrs.src != attrs.errSrc) {
+    		          attrs.$set('ngSrc', attrs.errSrc);
+    		        }
+    		      });
+    		}
+    	};
+    })
     .run(['$rootScope', '$state', 'Resources',
-      function ($rootScope, $state, Resources) {
+        function ($rootScope, $state, Resources) {
     	//Handle browser navigate away
     	window.onbeforeunload = function (event) {
     		if($rootScope.formDirty){

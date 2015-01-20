@@ -10,5 +10,6 @@
     "appName": "MMNodeServer",
     "webSiteUrl": "https://mastermind.pointsource.com",
     "oauthcbbaseurl": "https://mastermind.pointsource.com/MMNodeServer",
+    "serverTimeout": "10",
     "env": "prod"
 }

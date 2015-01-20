@@ -227,54 +227,83 @@ var mmModule = angular.module('Mastermind').controller('MainCtrl', ['$scope', '$
     /**
      * Returns the text summary per project for the my projects section of the home page
      */
-    $scope.getMyProjectSummaryLine = function (project) {
-      var roles = [];
-      if (project.status && project.status.isExecutiveSponsor) {
-        roles.push('EXEC');
-      }
-
-      if (project.status && project.status.isSalesSponsor) {
-        roles.push('SALES');
-      }
-
-      var projectAssignments = (project.status) ? project.status.assignments : [];
-      var totalHoursPerWeek = 0, now = moment();
-      for (var i = 0; i < projectAssignments.length; i++) {
-        var projectAssignment = projectAssignments[i];
-        var role = projectAssignment.role;
-        if (role.type) {
-          role = $scope.roleGroups ? $scope.roleGroups[role.type.resource] : null;
-
-          if (role && role.abbreviation && $.inArray(role.abbreviation, roles) == -1) {
-            roles.push(role.abbreviation);
-          }
-        }
-
-
-        if (projectAssignment && projectAssignment.hoursPerWeek) {
-          var startDate = moment(projectAssignment.startDate);
-          var endDate = endDate ? moment(projectAssignment.endDate) : now.add('day', 1);
-
-          if (now >= startDate && now <= endDate) {
-            totalHoursPerWeek += projectAssignment.hoursPerWeek;
-          }
-        }
-      }
-
-      if (totalHoursPerWeek > 0) {
-        totalHoursPerWeek = ' @' + totalHoursPerWeek + 'h/w ';
-      } else {
-        totalHoursPerWeek = '';
-      }
-
-      //Get the total hours logged
-      var hoursLogged = '';
-      if (project.status &&  project.status.hoursLogged) {
-        hoursLogged = ' - ' + project.status.hoursLogged + ' hrs logged';
-      }
-
-      var ret = "<span class=\"text-muted\">" + roles + totalHoursPerWeek + hoursLogged + "</span>";
-      return ret;
+    $scope.getMyProjectSummaryLine = function (project, myAssignments, roleGroups) {
+    	
+    	if (roleGroups && !$scope.roleGroups)
+    		$scope.roleGroups = roleGroups;
+    	
+    	if ($scope.roleGroups) {
+		      var roles = [];
+		      if (project.status && project.status.isExecutiveSponsor) {
+		        roles.push('EXEC');
+		      }
+		
+		      if (project.status && project.status.isSalesSponsor) {
+		        roles.push('SALES');
+		      }
+		
+		      var projectAssignments = [];
+		      var totalHoursPerWeek = 0, now = moment();
+		      var totalHoursPerMonth = 0;
+		      
+		      for (var i = 0; i  < myAssignments.length; i ++) {
+		    	  if (project.resource == myAssignments[i].project.resource && myAssignments[i].members)
+		    		  projectAssignments = myAssignments[i].members;
+		      }
+		      
+		      projectAssignments = _.filter(projectAssignments, function(a) {
+		    	  return a.person.resource == $scope.me.resource
+		      });
+		      
+		      var getRole = function(roleResource) {
+		    	  var r = _.find(project.roles, function(pr){
+		    		  return roleResource.indexOf(pr._id) > -1;
+		    	  })
+		    	  
+		    	  return r;
+		      }
+		      for (var i = 0; i < projectAssignments.length; i++) {
+		        var projectAssignment = projectAssignments[i];
+		        var role = getRole(projectAssignment.role.resource);
+		        
+		        if (role && role.type) {
+		          role = $scope.roleGroups ? $scope.roleGroups[role.type.resource] : null;
+		
+		          if (role && role.abbreviation && $.inArray(role.abbreviation, roles) == -1) {
+		            roles.push(role.abbreviation);
+		          }
+		        }
+		
+		
+		        if (projectAssignment && projectAssignment.hoursPerWeek) {
+		          var startDate = moment(projectAssignment.startDate);
+		          var endDate = endDate ? moment(projectAssignment.endDate) : now.add('day', 1);
+		
+		          if (now >= startDate && now <= endDate && projectAssignment.hoursPerWeek) {
+		            totalHoursPerWeek += projectAssignment.hoursPerWeek;
+		          } else if (now >= startDate && now <= endDate && projectAssignment.hoursPerMonth) {
+		            totalHoursPerMonth += projectAssignment.hoursPerMth;
+		          }
+		        }
+		      }
+		
+		      if (totalHoursPerWeek > 0) {
+		        totalHoursPerWeek = ' @' + totalHoursPerWeek + 'h/w ';
+		      } else if (totalHoursPerMonth > 0) {
+		        totalHoursPerWeek = ' @' + totalHoursPerMonth + 'h/m ';
+		      } else {
+		        totalHoursPerWeek = '';
+		      }
+		
+		      //Get the total hours logged
+		      var hoursLogged = '';
+		      if (project.status &&  project.status.hoursLogged) {
+		        hoursLogged = ' - ' + project.status.hoursLogged + ' hrs logged';
+		      }
+		
+		      var ret = "<span class=\"text-muted\">" + roles + totalHoursPerWeek + hoursLogged + "</span>";
+		      return ret;
+    	}
     }
 
   }]);

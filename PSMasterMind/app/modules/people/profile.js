@@ -35,8 +35,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		// sorting roles by title
 		$scope.allRoles.sort( function( a, b ) {
-			var x = a.title.toLowerCase( );
-			var y = b.title.toLowerCase( );
+			var x = a.title ? a.title.toLowerCase( ) : '';
+			var y = b.title ? b.title.toLowerCase( ) : '';
 			return x < y ? -1 : x > y ? 1 : 0;
 		} );
 

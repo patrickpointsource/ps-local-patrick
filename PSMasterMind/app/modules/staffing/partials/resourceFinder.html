@@ -101,7 +101,7 @@
 				<tr ng-repeat="person in $data | filter:filterPerson(filterText)">
 					<td>
 						<a class="col-xs-3 col-sm-2" href="#{{person.resource}}">
-        					<img class="smallProfileImage" ng-src="{{person.thumbnail}}" />
+        					<img class="smallProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultProfileImg.png"/>
       					</a>
 						<div class="col-xs-9 col-sm-10">
 							<a href="#{{person.resource}}">{{person.familyName}}, {{person.givenName}}</a>

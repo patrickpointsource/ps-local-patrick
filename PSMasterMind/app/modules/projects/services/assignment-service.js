@@ -502,10 +502,19 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 			if( projectAssignment.members[ i ].startDate === null || projectAssignment.members[ i ].startDate === '' ) {
 				projectAssignment.members[ i ].startDate = undefined;
 			}
+			
 			if( projectAssignment.members[ i ].endDate === null || projectAssignment.members[ i ].endDate === '' ) {
 				projectAssignment.members[ i ].endDate = undefined;
 			}
 
+			if (projectAssignment.members[ i ].project)
+				projectAssignment.members[ i ].project = {
+					_id: projectAssignment.members[ i ].project._id,
+					_rev: projectAssignment.members[ i ].project._rev,
+					about: projectAssignment.members[ i ].project.about,
+					resource: projectAssignment.members[ i ].project.resource,
+					name: projectAssignment.members[ i ].project.name
+				};
 		}
 
 		val = Resources.update( projectAssignment );

@@ -1448,6 +1448,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			if( updatedRecords[ 0 ] )
 				_.extend( hourEntry.hoursRecord, {
 					_id: updatedRecords[ 0 ]._id,
+					_rev: updatedRecords[ 0 ]._rev,
 					about: updatedRecords[ 0 ].about,
 					resource: updatedRecords[ 0 ].resource,
 					base: updatedRecords[ 0 ].base,

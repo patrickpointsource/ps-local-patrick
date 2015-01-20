@@ -9,6 +9,8 @@ var userRolesCtrl = require('./userRoles');
 var google = require('googleapis');
 var security = require( '../util/security' );
 
+var DEFAULT_PROFILE_IMG_LINK = "https://ssl.gstatic.com/s2/profiles/images/silhouette200.png";
+
 var inactivePeople = [ {
 	fullName : "Mike Albano",
 	date : "20140627_000000"
@@ -107,7 +109,7 @@ module.exports = function(params) {
 			});
 		});
 	};
-	
+	/*
 	var syncPeople = function(callback) {
 	
 		getGoogleProfiles(function(err, profiles) {
@@ -140,7 +142,7 @@ module.exports = function(params) {
 		var hasChanges = person.googleId != googleProfile.id
 				|| person.mBox != googleProfile.primaryEmail
 				|| (person.name && person.name.fullName != googleProfile.name.fullName)
-				|| (googleProfile.thumbnailPhotoUrl && person.thumbnail != googleProfile.thumbnailPhotoUrl);
+				|| (!person.thumbnail || person.thumbnail != googleProfile.thumbnailPhotoUrl);
 		if (hasChanges) {
 			// profile.type = 'Google';
 			person.googleId = googleProfile.id;
@@ -148,6 +150,9 @@ module.exports = function(params) {
 			person.name = googleProfile.name;
 			if (googleProfile.thumbnailPhotoUrl) {
 				person.thumbnail = googleProfile.thumbnailPhotoUrl;
+			} 
+			else {
+				person.thumbnail =  DEFAULT_PROFILE_IMG_LINK;				
 			}
 			upgradeNameProperties(person);
 			people.insertPerson(person, function(err, resp) {
@@ -161,7 +166,87 @@ module.exports = function(params) {
 			});
 		}
 	};
+	*/
 	
+	var syncPeople = function(callback) {
+		
+		getGoogleProfiles(function(err, profiles) {
+			if (err) {
+				console.log("Error while getting google profiles: " + err);
+			} else {
+				var counter = -1;
+				
+				var profileCb = function(resultCb) {
+					var profile = profiles.users[counter];
+					var person = {isActive : 'true' };
+					
+					
+					people.getPersonByGoogleId(profile.id, function(err, result) {
+						if (!err) {
+							if (result) {
+								person = result;
+							}
+						}
+						if (result == null || result.about.indexOf('undefined') > -1 || (result && result.isActive)) {
+							updatePerson(person, profile, function() {
+								if (resultCb)
+									resultCb()
+							});
+						} else if (resultCb)
+							resultCb()
+					});
+	
+				};
+				
+				var executorCb = function() {
+					counter += 1;
+					
+					if (counter < profiles.users.length)
+						profileCb(executorCb);
+					else
+						callback(null, null);
+				};
+				
+				executorCb();
+	
+			}
+		});
+		
+	
+	};
+	
+	var updatePerson = function(person, googleProfile, cb) {
+	
+		var hasChanges = person.googleId != googleProfile.id
+				|| person.mBox != googleProfile.primaryEmail
+				|| (person.name && person.name.fullName != googleProfile.name.fullName)
+				|| (!person.thumbnail || person.thumbnail != googleProfile.thumbnailPhotoUrl);
+		if (hasChanges) {
+			// profile.type = 'Google';
+			person.googleId = googleProfile.id;
+			person.mBox = googleProfile.primaryEmail;
+			person.name = googleProfile.name;
+			if (googleProfile.thumbnailPhotoUrl) {
+				person.thumbnail = googleProfile.thumbnailPhotoUrl;
+			} else {
+				person.thumbnail =  DEFAULT_PROFILE_IMG_LINK;				
+			}
+			upgradeNameProperties(person);
+			people.insertPerson(person, function(err, resp) {
+				if (err) {
+					console.log("Synchronization error'" + err + "' for user "
+							+ person.name.fullName);
+				} else {
+					console.log("User'" + person.name.fullName
+							+ "' has been synchronized with google profile");
+				}
+				
+				if (cb)
+					cb();
+			});
+		} else if (cb)
+			cb();
+	};
 	var upgradeNameProperties = function(obj) {
 		if (obj.givenName) {
 			delete obj.givenName;
@@ -282,13 +367,13 @@ module.exports = function(params) {
 							role = _.find(securityRoles, function(r) {
 								if (r.name.toLowerCase() == roleName.toLowerCase())
 									return true;
-							})
+							});
 	
 							if (role)
 								userRoles[i].roles[j] = {
 									name : roleName,
 									resource : role.resource
-								}
+								};
 						}
 					}
 	
@@ -374,4 +459,4 @@ module.exports = function(params) {
 		});
 		callback(null);
 	};
-}
+};

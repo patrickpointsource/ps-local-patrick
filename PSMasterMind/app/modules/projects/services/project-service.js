@@ -178,13 +178,33 @@ angular.module('Mastermind.services.projects')
         project.endDate = undefined;
       }
 
-      for (var i=0; i<project.roles.length; i++) {
-        if (project.roles[i].startDate === null || project.startDate === '') {
+      for (var k=0; k<project.roles.length; k++) {
+        if (project.roles[k].startDate === null || project.startDate === '') {
           project.startDate = undefined;
         }
-        if (project.roles[i].endDate === null || project.endDate === '') {
+        if (project.roles[k].endDate === null || project.endDate === '') {
           project.endDate = undefined;
         }
+        
+        if (project.roles[k].assignees && project.roles[k].assignees.length > 0) {
+        	//project.roles[k].assignees = null;
+        	var proj;
+        	var person;
+        	
+        	for (var l = 0; l < project.roles[k].assignees.length; l ++) {
+        		if (project.roles[k].assignees[l].project)
+        			project.roles[k].assignees[l].project = {
+        				resource: project.roles[k].assignees[l].project.resource
+        			}
+        		
+        		if (project.roles[k].assignees[l].person)
+        			project.roles[k].assignees[l].person = {
+        				resource: project.roles[k].assignees[l].person.resource
+        			}
+        	}
+        	//delete project.roles[k].assignees;
+        }
+        		
       }
 
       if (this.isTransient(project)) {
@@ -274,7 +294,7 @@ angular.module('Mastermind.services.projects')
      */
     this.getAllProjects = function (onSuccess){
 	    if (window.useAdoptedServices) {
-			return getAllProjectsUsingGet(onSuccess);
+			return this.getProjectsByStatuses(["active", "backlog", "pipeline", "investment"], onSuccess);
 		}
 		else {
 			return getAllProjectsUsingQuery(onSuccess);
@@ -292,22 +312,6 @@ angular.module('Mastermind.services.projects')
 
         return Resources.query('projects', apQuery, apFields, onSuccess);
     };
-
-
-    /**
-     * Query to get the list of all projects (using filter)
-     */
-    function getAllProjectsUsingGet(onSuccess){
-        // terms will be checked on backend and loaded only for allowed persons
-        var apFields = {resource:1,name:1,startDate:1,endDate:1,'roles':1,customerName:1,committed:1,type:1,description:1, terms:1};
-		if (onSuccess) {
-	        return Resources.refresh('projects', null, apFields).then(onSuccess);
-		}
-		else {
-	        return Resources.refresh('projects', null, apFields);
-		}
-    };
-   
     
     /**
      * Service function for querying projects

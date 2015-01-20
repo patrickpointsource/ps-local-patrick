@@ -9,11 +9,11 @@ window.useAdoptedServices = false;
 */
 
 //local nodejs based development
-window.serverLocation = 'http://localhost:3000/';
-window.restPath = '';
-window.clientBaseURL = 'http://localhost:9000/';
-window.fixUrl = true;
-window.useAdoptedServices = true;
+//window.serverLocation = 'http://localhost:3000/';
+//window.restPath = '';
+//window.clientBaseURL = 'http://localhost:9000/';
+//window.fixUrl = true;
+//window.useAdoptedServices = true;
 
 //new prod nodejs 
 //window.serverLocation = 'https://mastermind.pointsource.com';
