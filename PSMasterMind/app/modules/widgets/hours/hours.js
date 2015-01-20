@@ -951,6 +951,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	};
 
+    $scope.formatHours = function (hours)
+    {
+        return hours.toString().indexOf(".") === -1 ? hours : hours.toFixed(1);
+    };
+
 	var me = $scope.getCurrentPerson( ) ? $scope.getCurrentPerson( ).about : '';
 
 	// Doc Brown - time travel.
