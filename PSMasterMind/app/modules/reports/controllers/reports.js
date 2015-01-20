@@ -1896,6 +1896,40 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 	
 	$scope.init( );
 	
-	$scope.getFavorites( );
+	$scope.getFavorites();
+    
+	$scope.saveAsImage = function (container, fileName, inputHeight, inputWidth) {
+	    var div = $("#" + container);
+	    div.find("svg")
+            .attr("version", 1.1)
+            .attr("xmlns", "http://www.w3.org/2000/svg");
+	    var html = div.html();
+
+        var image = new Image();
+        image.src = 'data:image/svg+xml;base64,' + btoa(html);
+        //var url = image.src.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+        //window.open(url);
+        var canvas = document.createElement('canvas');
+        var width = image.width;
+        var height = image.height;
+        
+        if (inputWidth) {
+            width = parseInt(inputWidth);
+        }
+        if (inputHeight) {
+            height = parseInt(inputHeight);
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        var context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0);
+
+        var a = document.createElement('a');
+        a.download = fileName;
+        a.href = canvas.toDataURL('image/png');
+        document.body.appendChild(a);
+        a.click();
+    }
 	
 } ] );
