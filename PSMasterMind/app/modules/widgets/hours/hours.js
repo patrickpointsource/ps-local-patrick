@@ -42,6 +42,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.customHoursEndDate = '';
 
 	$scope.setSubmode = function( e, subMode ) {
+    // should be runned only once when subMode changes
+    if ($scope.subMode == subMode) {
+      return;
+    }
+
 		e = e ? e : window.event;
 
 		e.stopPropagation( );
@@ -286,11 +291,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						if( found )
 							delete found.isOtherProj;
 					}
-					
+
 					AssignmentService.getMyCurrentAssignments($scope.getCurrentPerson()).then(function (assignments)
 					{
 			        	$scope.myAssignments = assignments;
-			                
+
 			            $scope.sortProjectTaskList();
 					});
 
@@ -743,16 +748,16 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		if (selectedProject && selectedProject.resource && selectedProject.resource.indexOf("projects/") == 0)
 		{
 			var currentUser = $scope.getCurrentPerson();
-			
+
 			for (var i = 0, assignmentCount = $scope.myAssignments.length; i < assignmentCount; i++)
 			{
 				var assignment = $scope.myAssignments[i];
-				
+
 				if (assignment.project && assignment.project.about == selectedProject.resource)
 					for (var j = 0, memberCount = assignment.members.length; j < memberCount; j++)
 					{
 						var member = assignment.members[j];
-							
+
 						if (member.person && member.person.resource == currentUser.about)
 						{
 							hourEntry.expectedHours = Math.round(member.hoursPerWeek / 5);
@@ -1270,12 +1275,12 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						}
 
 						$( '.dashboard-widget.hours .row.hours-logged' ).show( );
-						
+
 						if( cb )
 							cb( );
 
 					}
-					
+
 					$scope.hideHoursSpinner = true;
 					$scope.$emit( 'hours:loaded' );
 				} );
@@ -1365,11 +1370,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		if( hourEntry.hoursRecord && hourEntry.hoursRecord.editMode && !hourEntry.selectedItem )
 			$scope.hoursValidation.push( "Project or task hasn't been selected" );
-        
+
         if( !hourEntry.hoursRecord.description ) {
           $scope.hoursValidation.push( "Hours description is empty" );
         }
-        
+
 		for( var i = 0; i < entries.length; i++ ) {
 			if( entries[ i ].hoursRecord && entries[ i ].hoursRecord.hours )
 				totalHours += parseFloat( entries[ i ].hoursRecord.hours );
@@ -1402,34 +1407,34 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 				 * Max 12/02/14
 				 * 1. Added If condition for person.resource update. If value already exists why to override it?
 				 * 2. Added person.name value if it doesn't exist.
-				 * 
+				 *
 				 *  NOTE: Because there is a mess with Hours constructor (person: $scope.getCurrentPerson( )),
 				 *  we need to erase current person node and re-create it.
 				 *  TODO: Fix this problem in constructor. Do we really need to have full Person object in Hours???
 				 */
-				 
+
 				 /* ORIGINAL CODE
 				entry.hoursRecord.person = {
 					resource: $scope.getCurrentPerson( ).about
 				};
 				*/
-				 
+
 				personEntry = $scope.getCurrentPerson( );
 				entry.hoursRecord.person = {};	//	this line should be removed after Constructor fix.
-				
+
 				// Update current value only if it doesn't exist.
 				if (!entry.hoursRecord.person.resource){
 					entry.hoursRecord.person = {
-							resource: personEntry.about					
+							resource: personEntry.about
 					};
 				}
-				
+
 				if (!entry.hoursRecord.person.name){
 					if (personEntry.name.fullName) {
-						entry.hoursRecord.person.name = personEntry.name.fullName;	
+						entry.hoursRecord.person.name = personEntry.name.fullName;
 					}
 				}
-				
+
 				// }
 				if( !entry.hoursRecord.date ) {
 					entry.hoursRecord.date = $scope.selected.date;
