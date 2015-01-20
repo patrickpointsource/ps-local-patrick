@@ -183,3 +183,5 @@ MasterMindServer/
 *.css
 instructions.md
 manifest.yml
+RemoteSystemsTempFiles/.project
+clientdb.xml
