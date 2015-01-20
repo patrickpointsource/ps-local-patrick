@@ -42,6 +42,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.customHoursEndDate = '';
 
 	$scope.setSubmode = function( e, subMode ) {
+
     // should be runned only once when subMode changes
     if ($scope.subMode == subMode) {
       return;
