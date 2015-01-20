@@ -255,8 +255,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 				$scope.shellGraphEndDate = $scope.getStartDateFromLoadedProjects();
 			}
 		}
-	};
-	
+	}
 	$scope.prevShellGraphPeriod = function() {
 		
 		if ($scope.shellGraphActivePeriod == "week") {
@@ -268,7 +267,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 			var month = $scope.shellGraphEndDate.month();
 			
 			$scope.shellGraphEndDate = moment($scope.shellGraphStartDate).month(month - 1).endOf('month');
-			$scope.shellGraphStartDate = moment($scope.shellGraphEndDate).startOf('month');
+			$scope.shellGraphStartDate = moment($scope.shellGraphEndDate).startOf('month')
 		}
 		
 		$scope.graphDataParamsChanged(null, null, $scope.shellGraphStartDate, $scope.shellGraphEndDate);
@@ -285,7 +284,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 			var month = $scope.shellGraphEndDate.month();
 			
 			$scope.shellGraphStartDate = moment($scope.shellGraphEndDate).month(month + 1).startOf('month');
-			$scope.shellGraphEndDate = moment($scope.shellGraphStartDate).endOf('month');
+			$scope.shellGraphEndDate = moment($scope.shellGraphStartDate).endOf('month')
 		}
 		
 		$scope.graphDataParamsChanged(null, null, $scope.shellGraphStartDate, $scope.shellGraphEndDate);
@@ -298,18 +297,18 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 			
 			if ($scope.shellGraphActivePeriod == "month" ||$scope.shellGraphActivePeriod == "week") {
 				if ($scope.shellGraphStartDate.month() != $scope.shellGraphEndDate.month())
-					result = $scope.shellGraphStartDate.format('MMMM D') + ' to ' + $scope.shellGraphEndDate.format('MMMM D');
+					result = $scope.shellGraphStartDate.format('MMMM D') + ' to ' + $scope.shellGraphEndDate.format('MMMM D')
 				else 
 					result = $scope.shellGraphStartDate.format('MMMM D') + ' to ' + $scope.shellGraphEndDate.format('D');
 			} else {
 				if ($scope.shellGraphStartDate.month() != $scope.shellGraphEndDate.month())
-					result = $scope.shellGraphStartDate.format('MMMM D, YYYY') + ' to ' + $scope.shellGraphEndDate.format('MMMM D');
+					result = $scope.shellGraphStartDate.format('MMMM D, YYYY') + ' to ' + $scope.shellGraphEndDate.format('MMMM D')
 				else 
 					result = $scope.shellGraphStartDate.format('MMMM D, YYYY') + ' to ' + $scope.shellGraphEndDate.format('D');
 			}
 		}
 		return result;
-	};
+	}
 	
 	$scope.getStartDateFromLoadedProjects = function() {
 		if ($scope.graphData && $scope.graphData.projects) {
@@ -317,7 +316,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		}
 		
 		return moment();
-	};
+	}
 	
 	$scope.initPeopleGroups = function() {
 		$scope.peopleGroupsMapping = People.getPeopleGroupMapping();
@@ -335,7 +334,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		setTimeout(function() {
 			$(".select-people-groups").selectpicker();
 			
-			$(".select-people-groups").selectpicker('val', $scope.graphDataParams.groups);
+			$(".select-people-groups").selectpicker('val', $scope.graphDataParams.groups)
 			
 			$(".select-people-groups").on('change', function(){
 	            
@@ -359,7 +358,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
         selected = selected.split ? selected.split(','): selected;
         
         return selected;
-	};
+	}
 	
 	$scope.initShellGrpahs = function() {
 		$scope.initPeopleGroups();
@@ -367,11 +366,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 
 	$scope.loadGraphData = function() {
 		//alert('load data');
-		
-		if ($location.path() != '/reports/') {
-			$scope.cancelLoadGraphData();
-			return;
-		}
 		
 		var groupRoleMapping = People.getPeopleGroupMapping( );
 		var roles = [];
@@ -397,7 +391,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
         Resources.refresh("/reports/dashboard/generate", params, {});
 		        
         var checkReport = function() {
-        	$scope.checkGenerationStatus("dashboard").then(function(data) {
+        	$scope.checkGenerationStatus().then(function(data) {
     			var status = '';
     			var result;
     				
@@ -419,16 +413,16 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
     		});
         	
         	
-        };
+        }
         
         setTimeout(checkReport, 7000);
 		
-	};
+	}
 	
 	$scope.cancelLoadGraphData =  function() {
 		$scope.hideGraphSpinner = true;
 		$scope.graphDataAvailable = true;
-	};
+	}
 	
 	$scope.setVerticalbarHours = function(data) {
 		var tmpData = {"expected hours for period": [], "actual hours": [], "expected hours to date": []};
@@ -511,7 +505,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		
 		
 		$scope.verticalbarChartData = tmpData;
-	};
+	}
 	
 	$scope.setPieChartHours = function(data) {
 		
@@ -522,7 +516,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		               {key: "Marketing", value: data.data.hoursStatistics.marketing}, 
 		               {key:"Out of office", value: data.data.hoursStatistics.outOfOffice},
 		               {key:"Overhead", value: data.data.hoursStatistics.overhead}, 
-		               {key:"Sales", value: data.data.hoursStatistics.salesHours}];
+		               {key:"Sales", value: data.data.hoursStatistics.salesHours}]
 		}
 		
 	};
@@ -542,7 +536,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 			return periodName.join(',').toLowerCase().indexOf($scope.shellGraphActivePeriod) > -1;
 		
 		return $scope.shellGraphActivePeriod == periodName.toLowerCase();
-	};
+	}
 	
 	$scope.setShellGraphActivePeriod = function(periodName) {
 		$scope.shellGraphStartDate = null;
@@ -553,7 +547,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		$scope.initShellGraphDates();
 		
 		$scope.graphDataParamsChanged(null, periodName, $scope.shellGraphStartDate, $scope.shellGraphEndDate);
-	};
+	}
 	
 	$scope.getVerticalbarChartData = function() {
 		return $scope.verticalbarChartData;
@@ -738,6 +732,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 	$scope.init = function( ) {
 
 		$scope.isGenerationInProgress = false;
+		$scope.checkGenerationStatus().then( function ( result ) {
+			if(result && result.data && result.data.data && result.data.data.hours && result.data.data.hours.members) {
+		      $scope.onReportGenerated( result.data.data.hours.members );
+		    }
+		    
+			if (result == "Running")
+				$scope.startGenerationTimers();
+		});
 
 		$scope.loadRoles( );
 		$scope.loadAndInitPeople( );
@@ -1752,17 +1754,19 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
          
          setTimeout(function() {
         	 form.appendTo(  $('#' + graphId) ).submit().remove();
-         }, 100);
-	};
-	
-	$scope.checkGenerationStatus = function ( reportType ) {
-		return Resources.refresh( "/reports/" + reportType + "/status" ).then(function( result ){
+         }, 100)
+         
+	   
+
+	}
+	$scope.checkGenerationStatus = function ( ) {
+		return Resources.refresh("/reports/status").then(function( result ){
 			if (result.status != "Running" && result.status != "Completed") {
 				$scope.cancelReportGeneration();
 			}
 			
 			if (result.status == "Completed") {
-				return Resources.refresh( "/reports/" + result.type + "/get" ).then(function( result ){
+				return Resources.refresh("/reports/get").then(function( result ){
 				    if(result.data && result.data.type && (result.data.type == "people" || result.data.type == "project")) {
 				      if($scope.favoriteReportRun) {
 				        $scope.onReportGenerated(result.data);

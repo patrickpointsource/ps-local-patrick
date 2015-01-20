@@ -283,7 +283,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			},
 			
 			cancel:  function( e ) {
-				Resources.refresh("/reports/people/cancel").then(function( result ){
+				Resources.refresh("/reports/cancel").then(function( result ){
 					$scope.cancelReportGeneration();
 				}).catch(function( err ){
 					$scope.cancelReportGeneration();
@@ -484,12 +484,12 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	};
 
 	$scope.checkGenerationStatus = function ( ) {
-		return Resources.refresh("/reports/people/status").then(function( result ){
+		return Resources.refresh("/reports/status").then(function( result ){
 			if (result.status != "Running" && result.status != "Completed") {
 				$scope.cancelReportGeneration();
 			}
 			if (result.status == "Completed") {
-				Resources.refresh("/reports/people/get").then(function( result ){
+				Resources.refresh("/reports/get").then(function( result ){
 				    console.log("Generated report type: " + result.data.type);
 				    if(result && result.data && result.data.type) {
 				      $scope.onReportGenerated( result.data );
@@ -551,7 +551,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 	};
 	
 	$scope.cancel = function(e) {
-	  Resources.refresh("/reports/people/cancel").then(function( result ){
+	  Resources.refresh("/reports/cancel").then(function( result ){
                     $scope.cancelReportGeneration();
                 }).catch(function( err ){
                     $scope.cancelReportGeneration();

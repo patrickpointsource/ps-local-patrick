@@ -11,7 +11,7 @@ var reportsService = require( '../services/reportsService.js' );
 // generates report output object and calls callback when ready
 module.exports.generate = function(person, params, callback) {
   var report = {};
-  var reportId = util.getReportId(person._id, params.type);
+  var reportId = util.getReportId(person._id);
   report.type = params.type;
   
   reportsService.prepareData(person, params, function(err, data) {

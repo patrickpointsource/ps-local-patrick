@@ -42,13 +42,13 @@ var PROJECT_FIELDS = ["resource", "name", "startDate", "endDate", "roles", "cust
 var PEOPLE_FIELDS = ["_id", "groups", "primaryRole", "name", "isActive", "resource", "lastSynchronized", "mBox", "phone", "about", "thumbnail" ];
 
 // generate report id using personId
-var getReportId = function (personId, type) {
-  return util.getReportId(personId, type);
+var getReportId = function (personId) {
+  return util.getReportId(personId);
 };
 
 // method that checks type of report and start the process of report data generation
 var startGenerateReport = function(person, type, params, callback) {
-  var reportId = getReportId(person._id, type);
+  var reportId = getReportId(person._id);
   params.type = type;
   
   // new supported types
@@ -79,40 +79,29 @@ var startGenerateReport = function(person, type, params, callback) {
 };
 
 // gets the report for person by his id
-var getReportFromMemoryCache = function(personId, type, callback) {
-	var report = {};
-	var reportId = getReportId(personId, type);
-	var reportStatusId = getReportId(personId, type) + STATUS_SUFFIX;
-	var statusObj = memoryCache.getObject(reportStatusId);
-	if (statusObj) {
-		if ( !type || statusObj.type == type ) {
-			report = memoryCache.getObject(reportId);
-		}
-	}
-	callback(null, report);
+var getReportFromMemoryCache = function(personId, callback) {
+  var reportId = getReportId(personId);
+  callback(null, memoryCache.getObject(reportId));
 };
 
 // gets the report status for person by his id
-var getStatusFromMemoryCache = function(personId, type) {
-	var reportStatusId = getReportId(personId, type) + STATUS_SUFFIX;
-	var statusObj = memoryCache.getObject(reportStatusId);
-	var status = { status: REPORT_IS_NOT_STARTED };
-	if (statusObj && statusObj.status) {
-	  if ( !type || statusObj.type == type ) {
-	    status = statusObj;
-	  }
-	}
-	return status;
+var getStatusFromMemoryCache = function(personId) {
+  var reportId = getReportId(personId) + STATUS_SUFFIX;
+  var status = memoryCache.getObject(reportId);
+  if(!status) {
+    status = { status: REPORT_IS_NOT_STARTED };
+  }
+  return status;
 };
 
 // updates status of report for person
 var updateStatus = function(personId, status, type) {
-	var reportStatusId = getReportId(personId, type) + STATUS_SUFFIX;
-	var statusObj = { status: status };
-	if(type) {
-		statusObj.type = type;
-	}
-	memoryCache.putObject(reportStatusId, statusObj);
+  var reportId = getReportId(personId) + STATUS_SUFFIX;
+  var statusObj = { status: status };
+  if(type) {
+    statusObj.type = type;
+  }
+  memoryCache.putObject(reportId, statusObj);
 };
 
 // returns caclulated hours query for report or error if happens in callback
