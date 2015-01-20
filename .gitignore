@@ -2,3 +2,10 @@ node_modules
 bower_components
 /.jazz5
 /.metadata
+.nuget
+packages
+*.sln
+*.suo
+*.log
+PSMasterMind/PSMasterMind.csproj
+PSMasterMind/PSMasterMind.csproj.user
