@@ -53,15 +53,20 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 		
 	 }
 	 
-	 for (var lbl in maxValues) {
-		 for (var prop in maxValues[lbl])
-			 if (maxValues[lbl][prop] > maxValue) {
-				 secondMaxValue = maxValue;
-				 maxValue = maxValues[lbl][prop];
-			 }
-		 	if (maxValues[lbl][prop] < maxValue && maxValues[lbl][prop] > secondMaxValue)
-		 		secondMaxValue = maxValues[lbl][prop];
+	 var getMaxValue = function(enabledProps) {
+		 var res = 0;
+		 
+		 for (var lbl in maxValues) {
+			 for (var prop in maxValues[lbl])
+				 if (maxValues[lbl][prop] > res && (!enabledProps || _.indexOf(enabledProps, prop) > -1)) {
+					 res = maxValues[lbl][prop];
+				 }
+		 }
+		 
+		 return res;
 	 }
+	 
+	 maxValue = getMaxValue();
 	
 	 //if (maxValue / secondMaxValue > 2 )
 	//	 maxValue = secondMaxValue;
@@ -172,6 +177,12 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
         	}
         	return cond;
         });
+        
+        maxValue = getMaxValue( filterValues );
+        
+        y2.overrideMax = maxValue;
+        y3.overrideMax = maxValue;
+        y4.overrideMax = maxValue;
         // Passing a duration parameter makes the chart animate. Without
         // it there is no transition
         myChart.draw(300);

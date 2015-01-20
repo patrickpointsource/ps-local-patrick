@@ -17,27 +17,22 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	  el = $('<div class="d3Div stackedArea" style="height:100%" id="d3Div' + elId + '"><svg style="font-size: 11px;height:100%;width:100%;" ' + 
 		' xmlns="http://www.w3.org/2000/svg"></svg></div>').appendTo(el);
 	
-	  //el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el);
-		
-		 
-	  //var svg = dimple.newSvg("#" + elId + "chartContainer", 580, 400);
-	  
 	  var data = $scope.chartData;
+	  var keyChartTypeMapping = $scope.keyChartTypeMapping ? $scope.keyChartTypeMapping: {};
 	  
-	  /*
-      var myChart = new dimple.chart(svg, data);
-      myChart.setBounds(60, 30, 505, 305);
-      var x = myChart.addCategoryAxis("x", "month");
-      
-      x.addOrderRule("Date");
-      
-      myChart.addMeasureAxis("y", "hours");
-      
-      var s = myChart.addSeries("hours type", dimple.plot.area);
-      myChart.addLegend(60, 10, 500, 20, "right");
-      myChart.draw();
-      */
+	  for (var i = 0; i < data.length; i ++) {
+		  
+		  if (!keyChartTypeMapping[data[i].key])
+			  data[i].type = "area";
+		  else
+			  data[i].type = keyChartTypeMapping[data[i].key];
+		  
+		  data[i].yAxis = 1;
+	  }
+	  
 	  var d;
+	  var allValuesLengthSame = true;
+	  var prevLength = data[0] ? data[0].values.length: 0;
 	  
 	  for (var i = 0; i < data.length; i ++) {
 		  
@@ -47,8 +42,48 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 			  d = new Date(data[i].values[j].x);
 			  data[i].values[j].x = d.getTime();
 		  }
+		  
+		  if (i > 0) {
+			  allValuesLengthSame = allValuesLengthSame && prevLength == data[i].values.length;
+			  
+			  
+		  }
+		  
+		  data[i].values.sort(function(v1, v2){
+			  if (v1.x > v2.x)
+				  return 1;
+			  else
+				  return -1;
+			  
+		  });
 	  }
 	  
+	  
+	// remove entries which has similar values for all keys - optimize graph
+	  if (allValuesLengthSame && data[0]){
+		  var j = data[0].values.length - 2;
+		  var distance = Math.round(data[0].values.length / 10);
+		  var k = 0;
+		  
+		  var allValuesSame = true;
+		  
+		  while(j > 1 && distance > 3) {
+			  
+			  allValuesSame = true;
+			  
+			  for (var i = 0; i < data.length; i ++)
+				  allValuesSame = allValuesSame && data[i].values[j].y == data[i].values[j - 1].y;
+			  
+			  if (allValuesSame && k < distance) {
+				  k ++;
+				  for (var i = 0; i < data.length; i ++)
+					  data[i].values.splice(j, 1);
+				  
+			  } else if (k >= distance)
+				  k = 0;
+			  j --;
+		  }
+	  }
 	  var colors = ['#ed1e79', '#8cc63f', '#1b1464', '#ff0000'];
 	  
 	  nv.addGraph(function() {
