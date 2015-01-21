@@ -42,6 +42,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.customHoursEndDate = '';
 
 	$scope.setSubmode = function( e, subMode ) {
+    // should be runned only once when subMode changes
+    if ($scope.subMode == subMode) {
+      return;
+    }
+
 		e = e ? e : window.event;
 
 		e.stopPropagation( );
@@ -286,11 +291,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						if( found )
 							delete found.isOtherProj;
 					}
-					
+
 					AssignmentService.getMyCurrentAssignments($scope.getCurrentPerson()).then(function (assignments)
 					{
 			        	$scope.myAssignments = assignments;
-			                
+
 			            $scope.sortProjectTaskList();
 					});
 
@@ -743,16 +748,16 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		if (selectedProject && selectedProject.resource && selectedProject.resource.indexOf("projects/") == 0)
 		{
 			var currentUser = $scope.getCurrentPerson();
-			
+
 			for (var i = 0, assignmentCount = $scope.myAssignments.length; i < assignmentCount; i++)
 			{
 				var assignment = $scope.myAssignments[i];
-				
+
 				if (assignment.project && assignment.project.about == selectedProject.resource)
 					for (var j = 0, memberCount = assignment.members.length; j < memberCount; j++)
 					{
 						var member = assignment.members[j];
-							
+
 						if (member.person && member.person.resource == currentUser.about)
 						{
 							hourEntry.expectedHours = Math.round(member.hoursPerWeek / 5);
@@ -1265,12 +1270,12 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 						}
 
 						$( '.dashboard-widget.hours .row.hours-logged' ).show( );
-						
+
 						if( cb )
 							cb( );
 
 					}
-					
+
 					$scope.hideHoursSpinner = true;
 					$scope.$emit( 'hours:loaded' );
 				} );
@@ -1360,11 +1365,11 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 		if( hourEntry.hoursRecord && hourEntry.hoursRecord.editMode && !hourEntry.selectedItem )
 			$scope.hoursValidation.push( "Project or task hasn't been selected" );
-        
+
         if( !hourEntry.hoursRecord.description ) {
           $scope.hoursValidation.push( "Hours description is empty" );
         }
-        
+
 		for( var i = 0; i < entries.length; i++ ) {
 			if( entries[ i ].hoursRecord && entries[ i ].hoursRecord.hours )
 				totalHours += parseFloat( entries[ i ].hoursRecord.hours );
