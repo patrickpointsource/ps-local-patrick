@@ -197,8 +197,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				}
 			} );
 		}
-	}
-
+	};
 
 	/**
 	 * Changes list of people on a filter change
@@ -350,7 +349,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		if( $scope.roleGroups && $scope.roleGroups[ $scope.peopleFilter ] ) {
 			params.role = $scope.peopleFilter;
 			
-			Resources.get("people/bytypes/byRoles", params).then( function( result ) {
+			Resources.refresh("people/bytypes/byRoles", params).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );
@@ -377,7 +376,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			if (roles.length == 0 && includeInactive) {
 				var includeAll = _.indexOf( tmp, 'all' ) > -1;
 				var res = (includeAll) ? "people" : "people/bytypes/inactive";
-				Resources.get( res, params).then( function( result ) {
+				Resources.refresh( res, params).then( function( result ) {
 					$scope.people = result.members;
 					$scope.fillPeopleProps( );
 				} );
@@ -387,7 +386,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				if (includeInactive) {
 					params.includeInactive = includeInactive;
 				}
-				Resources.get( "people/bytypes/byRoles", params).then( function( result ) {
+				Resources.refresh( "people/bytypes/byRoles", params).then( function( result ) {
 					$scope.people = result.members;
 					$scope.fillPeopleProps( );
 				} );
@@ -398,7 +397,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		else {
 			params.t = (new Date()).getMilliseconds();
 			$scope.peopleFilter = 'all';
-			Resources.get("people/bytypes/active", params).then( function( result ) {
+			Resources.refresh("people/bytypes/active", params).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );
