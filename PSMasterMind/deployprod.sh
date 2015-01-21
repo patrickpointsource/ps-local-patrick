@@ -1,5 +1,7 @@
 #/bin/bash
-SOURCEDIR=/Users/anthonysegretto/Documents/workspace/PSMasterMind/dist/
+
+# MasterMindNode to prod
+SOURCEDIR=/Users/anthonysegretto/git/MasterMind/PSMasterMind/dist/
 DESTINATIONDIR=mm.pointsource.vpc:/home/anthonysegretto/guidist/
 echo -e "\nDeploying mastermind build FROM:\n$SOURCEDIR\nTO:\n$DESTINATIONDIR"
 if [ -d "$DESTINATIONDIR" ]; then
