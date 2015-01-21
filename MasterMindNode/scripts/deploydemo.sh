@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SOURCEDIR=/Users/anthonysegretto/Documents/workspace/MasterMindNode/dist/
+SOURCEDIR=/Users/anthonysegretto/git/MasterMind/MasterMindNode/dist/
 DESTINATIONDIR=demo.mm.pointsource.vpc:/home/anthonysegretto/dist/
 echo -e "\nDeploying mastermind build FROM:\n$SOURCEDIR\nTO:\n$DESTINATIONDIR"
 if [ -d "$DESTINATIONDIR" ]; then
