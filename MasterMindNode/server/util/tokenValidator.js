@@ -2,6 +2,7 @@
 
 var googleapis = require( 'googleapis' );
 var config = require( '../config/config.js' );
+var _ = require( 'underscore' );
 
 var validateGoogleToken = function( token, done ) {
 	googleapis.discover( 'oauth2', 'v1' ).execute( function( err, client ) {
@@ -12,7 +13,7 @@ var validateGoogleToken = function( token, done ) {
 				console.log( 'Error occurred: ', err );
 				return done( err, null );
 			} else {
-				if( result.audience === config.google.clientID && result.user_id ) {
+				if( _.contains(config.google.clientIDList, result.audience) && result.user_id ) {
 					return done( '', result.user_id );
 				} else {
 					return done( 'validation failed', null );
