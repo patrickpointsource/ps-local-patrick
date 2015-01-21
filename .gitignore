@@ -2,3 +2,5 @@ node_modules
 bower_components
 /.jazz5
 /.metadata
+RemoteSystemsTempFiles/.project
+clientdb.xml
