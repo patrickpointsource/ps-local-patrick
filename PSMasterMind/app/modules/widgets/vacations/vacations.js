@@ -163,10 +163,12 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       });
     }
 	
+	$scope.vacations.push(vacation);
+	$scope.showVacations();
+	$scope.requestNew = false;
+	
 	VacationsService.addNewVacation(vacation).then(function(result) {
       $scope.getVacations();
-      
-      $scope.requestNew = false;
 	});
   };
   
