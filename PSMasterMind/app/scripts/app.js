@@ -82,8 +82,8 @@
           }
         })
         .state('projects.edit', {
-          //url: '/:projectId/edit',
-        	url: '/{projectId}{tabId:(?:/(?!edit)[^/]+)?}/edit',
+          url: '/:projectId/edit',
+        	//url: '/{projectId}{tabId:(?:/(?!edit)[^/]+)?}/edit',
           templateUrl: 'modules/projects/views/edit.html',
           controller: 'ProjectCtrl',
           resolve: {
