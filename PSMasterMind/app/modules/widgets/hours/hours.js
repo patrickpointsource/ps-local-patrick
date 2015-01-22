@@ -1153,7 +1153,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	};
 
-	$scope.months = [ 'Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
+	$scope.months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
 
 	$scope.prettyCalendarFormats = function( firstDay, lastDay ) {
 		$scope.prettyCalendarDates = {};
