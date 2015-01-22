@@ -1,5 +1,7 @@
 node_modules
 bower_components
+PSMasterMind/dist
+MasterMindNode/dist
 /.jazz5
 /.metadata
 RemoteSystemsTempFiles/.project
