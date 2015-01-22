@@ -54,13 +54,14 @@ router.get('/filter', util.isAuthenticated, function(req, res){
 				});
 			} else {
 				//Get active people by roles from filter
-				people.listActivePeopleByRoleIds(roleIds, function(err, result){
-					if(err){
-						res.json(500, err);
-					} else {
-						res.json(result);
-					}            
-				});
+				var fields = req.query.fields;
+				people.listPeopleByRoles(roleIds, true, fields, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
 			}
 		}
 	});
@@ -70,9 +71,10 @@ router.get('/byroleid/:roleId', util.isAuthenticated, function(req, res){
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 
 		{
-			var roleId = req.params.roleId;
-			if (roleId) {
-			    people.listActivePeopleByRoleIds(roleId.split(','), function(err, result){
+			var fields = req.query.fields;
+			var roleIds = req.params.roleId ? req.params.roleId.split(',') : null;
+			if (roleIds) {
+				people.listPeopleByRoles(roleIds, true, fields,  function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
