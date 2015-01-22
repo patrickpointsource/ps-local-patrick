@@ -242,6 +242,12 @@ angular.module('Mastermind.controllers.projects')
       // Bubble up an event to handle removing a role elsewhere
       $scope.$emit('roles:remove', role);
 
+      // prevent from loosing navigation when removing role
+      var countVisible = Math.ceil($scope.project.roles.length / $scope.roleTableParams.count());
+      
+      if (countVisible < $scope.roleTableParams.page())
+    	  $scope.roleTableParams.page(countVisible);
+      
       //Update the tables
       $scope.roleTableParams.total($scope.project.roles.length);
       $scope.roleTableParams.reload();
