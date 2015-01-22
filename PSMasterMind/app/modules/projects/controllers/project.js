@@ -889,7 +889,29 @@ else if( role.percentageCovered == 0 )
 	 * handle it by updating the supplied role in our project.
 	 */
 	$scope.$on( 'roles:change', function( event, index, role ) {
+	    var projectRole = $scope.project.roles[index];
+	    //var endDateShift = !role.endDate || ( role.endDate !=  projectRole.endDate);
+
 		$scope.project.changeRole( index, role );
+		
+		//if(endDateShift) {
+            for(var assigneeIndex in projectRole.assignees) {
+                var assignee = projectRole.assignees[assigneeIndex];
+                if(!assignee.endDate && projectRole.endDate) {
+                    assignee.endDate = projectRole.endDate;
+                }
+            }
+		//}
+		
+		
+        /*AssignmentService.getAssignmentsByPeriod( "all", {
+            project: {
+                resource: $scope.project.about
+            }
+        } ).then( function( data ) {
+            $scope.projectAssignments = data;
+            
+        });*/
 		//$scope.summaryRolesTableParams.total($scope.project.roles.length);
 		//$scope.summaryRolesTableParams.reload();
 
