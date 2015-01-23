@@ -873,15 +873,10 @@ else if( role.percentageCovered == 0 )
 	 * handle it by adding the supplied role to our project.
 	 */
 	$scope.$on( 'roles:add', function( event, role ) {
-		$scope.project.addRole( role );
-		//$scope.summaryRolesTableParams.total($scope.project.roles.length);
-		//$scope.summaryRolesTableParams.reload();
-
-		/*
-		 * as sow table isn't available in edit mode
-		 $scope.sowRolesTableParams.total($scope.project.roles.length);
-		 $scope.sowRolesTableParams.reload();
-		 */
+		// if this role 
+		if (!_.find($scope.project.roles, function(r) {return r._id == role._id}))
+			$scope.project.addRole( role );
+		
 	} );
 
 	/**

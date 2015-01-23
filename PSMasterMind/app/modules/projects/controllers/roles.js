@@ -112,24 +112,31 @@ angular.module('Mastermind.controllers.projects')
       }
     };
     
-    $scope.triggerDuplicateRole = function (role, index) {
-    	 // Create the new Role with the previously selected rate type.
-        var newRole = RolesService.create(
-          {
-            startDate:role.startDate,
-            endDate:role.endDate,
-            rate: Resources.deepCopy(role.rate),
-            shore: role.shore,
-            type:Resources.deepCopy(role.type)
-          }
-        );
+    $scope.triggerDuplicateRole = function (role, index, e) {
+    	var duplicateBtn = $(e.target).closest('.duplicate-btn');
     	
-    	 // Bubble an event up to add this role.
-        $scope.$emit('roles:add', newRole);
-
-        //Update the tables
-        $scope.roleTableParams.total($scope.project.roles.length);
-        $scope.roleTableParams.reload();
+    	if (duplicateBtn.size() > 0) {
+	    	 // Create the new Role with the previously selected rate type.
+	        var newRole = RolesService.create(
+	          {
+	            startDate:role.startDate,
+	            endDate:role.endDate,
+	            rate: Resources.deepCopy(role.rate),
+	            shore: role.shore,
+	            type:Resources.deepCopy(role.type)
+	          }
+	        );
+	    	
+	        if (!newRole._id)
+	        	newRole._id = generateId();
+	        
+	    	 // Bubble an event up to add this role.
+	        $scope.$emit('roles:add', newRole);
+	
+	        //Update the tables
+	        $scope.roleTableParams.total($scope.project.roles.length);
+	        $scope.roleTableParams.reload();
+    	}
     };
     
     $rootScope.$on("project:save", function() {
