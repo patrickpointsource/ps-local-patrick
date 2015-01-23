@@ -418,8 +418,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 			var currentMonth = new Date( ).getMonth( );
 			var currentYear = new Date( ).getFullYear( );
-      var prHours = [];
-      var tkHours = [];
+			var prHours = [];
+			$scope.projectHours = [];
 			for( var projCounter = 0; projCounter < projects.length; projCounter++ ) {
 				var project = ProjectsService.getForEditByURI( projects[ projCounter ] ).then( function( result ) {
 
@@ -480,8 +480,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						return 0;
 					} );
 
-          prHours.push( projectHour );
-
+					prHours.push( projectHour );
+					$scope.taskHours = [ ];
+					
 					for( var taskResource in tasksMap ) {
 						tasksHoursMap[ taskResource ].sort( function( h1, h2 ) {
 							if( new Date( h1.hour.date ) > new Date( h2.hour.date ) ) {
@@ -491,7 +492,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							}
 							return 0;
 						} );
-						tkHours.push( _.extend( {
+						$scope.taskHours.push( _.extend( {
 							hours: tasksHoursMap[ taskResource ],
 							totalHours: tasksHoursMap[ taskResource ].totalHours
 						}, tasksMap[ taskResource ] ) );
@@ -507,10 +508,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						cb( );
 				} );
 			}
-      $scope.projectHours = prHours;
-      $scope.taskHours = tkHours;
-
-
+			$scope.projectHours = prHours;
 		}, sort );
 	};
 
