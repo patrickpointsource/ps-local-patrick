@@ -44,7 +44,7 @@ angular.module('Mastermind').controller('PeopleWidgetCtrl', ['$scope', '$state',
           return person.name;
         }
       }
-    }
+    };
 
 
     /**
@@ -97,7 +97,7 @@ angular.module('Mastermind').controller('PeopleWidgetCtrl', ['$scope', '$state',
       else {
         $scope.availablePeople = people;
       }
-    }
+    };
 
     /**
      * Find available people given the active projects

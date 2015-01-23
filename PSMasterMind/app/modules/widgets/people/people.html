@@ -7,7 +7,6 @@
                       <option value="" selected>Filter By Role</option>
                       <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
                   </select>
-                  <i class="fa fa-chevron-down"></i>
               </div>
           </div>
     </div>
