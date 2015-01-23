@@ -4,8 +4,8 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'Resources', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
-  function ($scope, $filter, $q, RolesService, Resources, RoleTypes, Rates, RateFactory, TableParams) {
+  .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'Resources', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams', '$rootScope',
+  function ($scope, $filter, $q, RolesService, Resources, RoleTypes, Rates, RateFactory, TableParams, $rootScope) {
 	  
 	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
 	var HOURS_PER_MONTH = CONSTS.HOURS_PER_MONTH;
@@ -131,7 +131,11 @@ angular.module('Mastermind.controllers.projects')
         $scope.roleTableParams.total($scope.project.roles.length);
         $scope.roleTableParams.reload();
     };
-
+    
+    $rootScope.$on("project:save", function() {
+        $scope.roleTableParams.reload();
+    });
+    
     /**
      *
      */
