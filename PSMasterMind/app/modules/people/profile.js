@@ -538,13 +538,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		currentDate = new Date( minDate );
 		var o = null;
-
+		var hPeriods = [];
 		while( currentDate <= maxDate ) {
 			o = {
 				name: $scope.monthNames[      currentDate.getMonth( ) ],
 				value: currentDate.getMonth( )
 			};
-			$scope.hoursPeriods.push( o );
+			hPeriods.push( o );
 
 			if( ifAddYear ) {
 				o.name = o.name + ', ' + currentDate.getFullYear( );
@@ -555,6 +555,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			currentDate.setDate( 1 );
 			currentDate.setMonth( currentDate.getMonth( ) + 1 );
 		}
+		$scope.hoursPeriods = hPeriods;
+
 	};
 
 	$scope.setCurrentMonth = function( month ) {
@@ -579,7 +581,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 			for( var j = 0; j < projHour.hours.length; j++ ) {
 				var hour = projHour.hours[ j ];
-				var hoursMonth = new Date( hour.hour.date ).getMonth( );
+				var hoursMonth = moment( hour.hour.date ).month();
 
 				if( $scope.selectedHoursPeriod > -1 )
 					hour.show = this.selectedHoursPeriod == hoursMonth;
