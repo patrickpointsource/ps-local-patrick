@@ -105,13 +105,13 @@
           }
         })
         .state('people', {
-          url: '/people',
+          url: '/people?filter',
           abstract: true,
           template: '<ui-view />'
         })
         .state('people.index', {
-          url: '/?filter&view',
-          templateUrl: 'modules/people/people.html',
+          url: '',
+          templateUrl: 'modules/people/people.html?filter',
           controller: 'PeopleCtrl'
         })
        .state('people.show', {
