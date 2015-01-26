@@ -42,10 +42,6 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.customHoursEndDate = '';
 
 	$scope.setSubmode = function( e, subMode ) {
-    // should be runned only once when subMode changes
-    if ($scope.subMode == subMode) {
-      return;
-    }
 
 		e = e ? e : window.event;
 
@@ -958,7 +954,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	$scope.formatHours = function (hours)
 	{
-	    return hours.toString().indexOf(".") === -1 ? hours : hours.toFixed(1);
+	    return Util.formatFloat(hours);
 	};
 
 	var me = $scope.getCurrentPerson( ) ? $scope.getCurrentPerson( ).about : '';
@@ -1239,7 +1235,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 							for( var j = 0; j < $scope.displayedHours[ i ].hoursEntries.length; j++ ) {
 								if( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord ) {
-									$scope.displayedHours[ i ].totalHours = numberVal( $scope.displayedHours[ i ].totalHours ) + numberVal( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.hours );
+									$scope.displayedHours[i].totalHours += $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours;
 
 									if( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.task ) {
 										$scope.displayedHours[i].hoursEntries[ j ].task = $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.task;

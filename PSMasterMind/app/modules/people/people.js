@@ -402,22 +402,6 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				$scope.fillPeopleProps( );
 			} );
 		}
-
-		//Replace the URL in history with the filter
-		if( $state.current && $state.current.name.indexOf('people') > -1 && $scope.peopleFilter != $state.params.filter ) {
-			var view = false;
-			if( $scope.showGraphView ) {
-				view = 'graph';
-			} else {
-				view = 'table';
-			}
-			var updatedUrl = $state.href( 'people.index', {
-				'filter': $scope.peopleFilter,
-				'view': view
-			} ).replace( '#', '' );
-			
-			$location.url( updatedUrl ).replace( );
-		}
 		
 	};
 
@@ -644,33 +628,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		}
 	};
 
-	var monthNamesShort = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
-
-	$scope.peopleFilter = $state.params.filter ? $state.params.filter : 'all';
-	$scope.startDate = new Date( );
-	//$scope.startDate.setMonth($scope.startDate.getMonth() + 1);
-
-	$scope.showTableView = $state.params.view ? $state.params.view == 'table' : true;
-	$scope.showGraphView = $state.params.view ? $state.params.view == 'graph' : false;
-
-	/**
-	 * Get All the Role Types
-	 */
-	Resources.get( 'roles' ).then( function( result ) {
-		var roleGroups = {};
-		//Save the list of role types in the scope
-		$scope.rolesFilterOptions = result.members;
-		//Get list of roles to query members
-		for( var i = 0; i < result.members.length; i++ ) {
-			var role = result.members[ i ];
-			var resource = role.resource;
-			roleGroups[ resource ] = role;
-		}
-		$scope.roleGroups = roleGroups;
-
-		//Kick off fetch all the people
-		$scope.buildTableView( );
-	} );
+	
 
 	/**
 	 * Custom angular filter for person's searchable attributes
@@ -698,4 +656,38 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				return person;
 		};
 	};
+	
+	var monthNamesShort = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+	
+	var init = function () {
+		
+		$scope.peopleFilter = $state.params.filter ? $state.params.filter : 'all';
+		$scope.startDate = new Date( );
+		//$scope.startDate.setMonth($scope.startDate.getMonth() + 1);
+
+		$scope.showTableView = $state.params.view ? $state.params.view == 'table' : true;
+		$scope.showGraphView = $state.params.view ? $state.params.view == 'graph' : false;
+		
+		/**
+		 * Get All the Role Types
+		 */
+		Resources.get( 'roles' ).then( function( result ) {
+			var roleGroups = {};
+			//Save the list of role types in the scope
+			$scope.rolesFilterOptions = result.members;
+			//Get list of roles to query members
+			for( var i = 0; i < result.members.length; i++ ) {
+				var role = result.members[ i ];
+				var resource = role.resource;
+				roleGroups[ resource ] = role;
+			}
+			$scope.roleGroups = roleGroups;
+
+			//Kick off fetch all the people
+			$scope.buildTableView( );
+		});
+	};
+	
+	init();
+	
 } ] );

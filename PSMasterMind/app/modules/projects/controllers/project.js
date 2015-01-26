@@ -873,15 +873,10 @@ else if( role.percentageCovered == 0 )
 	 * handle it by adding the supplied role to our project.
 	 */
 	$scope.$on( 'roles:add', function( event, role ) {
-		$scope.project.addRole( role );
-		//$scope.summaryRolesTableParams.total($scope.project.roles.length);
-		//$scope.summaryRolesTableParams.reload();
-
-		/*
-		 * as sow table isn't available in edit mode
-		 $scope.sowRolesTableParams.total($scope.project.roles.length);
-		 $scope.sowRolesTableParams.reload();
-		 */
+		// if this role 
+		if (!_.find($scope.project.roles, function(r) {return r._id == role._id}))
+			$scope.project.addRole( role );
+		
 	} );
 
 	/**
@@ -3274,20 +3269,16 @@ else if( role.percentageCovered == 0 )
 						delete newClone[ '$meta' ];
 						newValue = newClone;
 					}
+                    
+                    var cleanedValues = $scope.cleanBeforeCompare(oldValue, newValue);
 
-					//Text Angular seems to add non white space characters for some reason
-					if( newValue.description ) {
-						newValue.description = newValue.description.trim( );
-					}
-					if( oldValue.description ) {
-						oldValue.description = oldValue.description.trim( );
-					}
-
-					var oldStr = JSON.stringify( oldValue );
-					var newStr = JSON.stringify( newValue );
+					var oldStr = JSON.stringify( cleanedValues.oldValue );
+					var newStr = JSON.stringify( cleanedValues.newValue );
 
 					if( oldStr != newStr ) {
 						console.debug( 'project is now dirty' );
+						console.log('old value: ' + oldStr);
+						console.log('new value: ' + newStr);
 						$rootScope.formDirty = true;
 						$rootScope.projectEdit = true;
 						$rootScope.dirtySaveHandler = function( ) {
@@ -3298,5 +3289,41 @@ else if( role.percentageCovered == 0 )
 
 			}, true );
 		}
+	};
+	
+	$scope.cleanBeforeCompare = function(oldValue, newValue) {
+	    //Text Angular seems to add non white space characters for some reason
+        if( newValue.description ) {
+            newValue.description = newValue.description.trim( );
+        }
+        if( oldValue.description ) {
+            oldValue.description = oldValue.description.trim( );
+        }
+                    
+        // Do not compare assignees inside roles and modified fields
+        _.each(oldValue.roles, function(role) {
+            $scope.deleteRoleProperties(role);
+        });
+
+        _.each(newValue.roles, function(role) {
+            $scope.deleteRoleProperties(role);
+        });
+
+         oldValue.modified = {};
+         newValue.modified = {};
+         
+         return { oldValue: oldValue, newValue: newValue };
+	};
+	
+	$scope.deleteRoleProperties = function(role) {
+	    role.assignees = [];
+	    delete role.originalAssignees;
+	    delete role._duplicated;
+	    delete role.$$hashKey;
+	    delete role.percentageCovered;
+	    delete role.hoursExtraCovered;
+	    delete role.hoursNeededToCover;
+	    delete role.daysGap;
+	    delete role.coveredKMin;
 	};
 } ] );

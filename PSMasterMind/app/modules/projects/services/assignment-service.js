@@ -541,7 +541,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		};
 
 		assignments = _.filter( assignments, function( a ) {
-			return a.person && a.person.resource
+			return a.person && a.person.resource;
 		} );
 
 		var ONE_DAY = CONSTS.ONE_DAY;
@@ -602,7 +602,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 				entity: entity,
 				type: 'start',
 				hours: 0
-			} )
+			} );
 
 			if( maxStartDate < entity.startDate )
 				maxStartDate = alignDate( new Date( entity.startDate ) );
@@ -642,7 +642,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		var defaultEndDate;
 
 		if( maxEndDate > maxStartDate )
-			defaultEndDate = alignDate( new Date( maxEndDate ) );
+			defaultEndDate = alignDate( new Date( maxEndDate.getTime( ) + ONE_DAY ) );
 		else
 			defaultEndDate = alignDate( new Date( maxStartDate.getTime( ) + ONE_DAY ) );
 
@@ -661,7 +661,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 				entity: assignmentsWithoutEndDate[ i ],
 				type: 'end',
 				hours: 0
-			} )
+			} );
 		// sort timeline so that we will have all period divided into few small periods
 		// with  stable assignments coverage during this period
 		coverageTimeline.sort( function( o1, o2 ) {
@@ -680,7 +680,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 				return -1;
 
 			return 0;
-		} )
+		} );
 		// calculate for each period its h/w coverage
 		var currentHoursPerWeek = 0;
 
@@ -703,7 +703,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		if( ( !role.rate.fullyUtilized ) && role.rate.type == "hourly" )
 			//ONE_WEEK = Math.round(role.rate.hoursPerMonth() / HOURS_PER_MONTH *
 			// HOURS_PER_WEEK)
-			ONE_WEEK = Math.round( role.rate.hoursPerMth / HOURS_PER_MONTH * HOURS_PER_WEEK )
+			ONE_WEEK = Math.round( role.rate.hoursPerMth / HOURS_PER_MONTH * HOURS_PER_WEEK );
 		else if( !role.rate.fullyUtilized && role.rate.type == "weekly" )
 			//else if (!role.rate.isFullyUtilized() && role.rate.type == "weekly")
 			ONE_WEEK = role.rate.hoursPerWeek;
@@ -764,7 +764,7 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		var findRole = function( roleResource ) {
 			return _.find( roles, function( r ) {
 				return roleResource.indexOf( r._id ) > -1;
-			} )
+			} );
 		};
 
 		for( var i = 0; i < roles.length; i++ ) {
@@ -778,12 +778,12 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 
 		for( var i = 0; i < assignments.length; i++ ) {
 			if( assignments[ i ].role && assignments[ i ].role.resource )
-				role = findRole( assignments[ i ].role.resource )
+				role = findRole( assignments[ i ].role.resource );
 			else
 				role = null;
 
 			if( role )
-				assignmentsMap[ role._id ].push( assignments[ i ] )
+				assignmentsMap[ role._id ].push( assignments[ i ] );
 		}
 
 		var currentResult;
@@ -801,7 +801,8 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 		}
 
 		//return result;
-	}
+	};
+	
 	/**
 	 * Return the set of staffing deficits assignments for active projects
 	 */
