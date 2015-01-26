@@ -581,7 +581,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 			for( var j = 0; j < projHour.hours.length; j++ ) {
 				var hour = projHour.hours[ j ];
-				var hoursMonth = moment( hour.hour.date ).month();
+				var hoursMonth = moment( hour.hour.date ).month() ;
 
 				if( $scope.selectedHoursPeriod > -1 )
 					hour.show = this.selectedHoursPeriod == hoursMonth;
