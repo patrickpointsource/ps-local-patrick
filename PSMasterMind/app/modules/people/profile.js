@@ -7,7 +7,9 @@ angular.module( 'Mastermind.controllers.people' ).controller( 'ProfileCtrl', [ '
 function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, HoursService, TableParams, $rootScope ) {
 
 	$scope.moment = moment;
-	var UNSPECIFIED = 'Unspecified';
+	
+	var UNSPECIFIED = CONSTS.UNSPECIFIED;
+	
 	$scope.projects = [ ];
 	$scope.hoursTasks = [ ];
 	$scope.execProjects = [ ];
@@ -802,6 +804,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		return true;
 	};
 
+	// check for permissions
+	$scope.canEditPersonnelData = function() {
+		return $rootScope.hasPermissions(CONSTS.EDIT_PERSONNEL_DATA);
+	};
+	
 	///////////Profile Hours/////////
 	$scope.newHoursRecord = {};
 

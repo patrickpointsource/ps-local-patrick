@@ -24,6 +24,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	Resources.refresh( 'people/me' ).then( function( me ) {
 		$scope.me = me;   
 
+		// pass permissions
+		$rootScope.setPermissions(me.permissionsMap);
+		
 		//Load profile access rights using NodeJS service
 		if (window.useAdoptedServices) {
 			Resources.refresh( 'people/me/accessRights' ).then( function success( accessRights ) {	

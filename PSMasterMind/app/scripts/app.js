@@ -298,6 +298,30 @@
   	  		$('.modal-backdrop').hide();
   	  	};
   	  	
+  	  	// use it as private variable
+  	  	var currentPermissions = {};
+  	  
+  	  	$rootScope.setPermissions = function(permissions) {
+  	  		currentPermissions = permissions;
+  	  	};
+  	  	
+  	  	$rootScope.hasPermissions = function(permissionName) {
+  	  		
+  			var result = false;
+  			
+  			if (!permissionName) {
+  				throw "Unknown permission passed:" + permissionName;
+  				return;
+  			}
+  			for (var permission in currentPermissions) {
+  				if (!result && _.find(currentPermissions[permission], function(perm) { return perm == permissionName}))
+  					result = true;
+  			}
+  			
+  			return result;
+  		};
+  		
+  	  	
         $rootScope.logout = function () {
           var accessToken = localStorage.getItem('access_token');
 
