@@ -77,7 +77,7 @@ router.get('/byroleid/:roleId', util.isAuthenticated, function(req, res){
 			var fields = req.query.fields;
 			var roleIds = req.params.roleId ? req.params.roleId.split(',') : null;
 			if (roleIds) {
-				people.listPeopleByRoles(roleIds, true, fields,  function(err, result){
+				people.listPeopleByRoles(roleIds, false, fields,  function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
