@@ -18,6 +18,7 @@ exports.config = {
   // to the location of this config. If no other method of starting selenium
   // is found, this will default to
   // node_modules/protractor/selenium/selenium-server...
+  // /opt/selenuim-server-standalone/selenium-server-standalone-2.44.0.jar
   seleniumServerJar: null,
   // The port to start the selenium server on, or null if the server should
   // find its own unused port.
@@ -53,7 +54,7 @@ exports.config = {
   //
   // Spec patterns are relative to the location of this config.
   specs: [
-    'test/e2e/*.spec.js',
+    'test/e2e/googleOAuthTest.spec.js',
   ],
 
   // Patterns to exclude.
@@ -88,6 +89,10 @@ exports.config = {
     // will be available. For example, you can add a Jasmine reporter with:
     //     jasmine.getEnv().addReporter(new jasmine.JUnitXmlReporter(
     //         'outputdir/', true, true));
+	  require('jasmine-reporters');
+	  jasmine.getEnv().addReporter(
+			  new jasmine.JUnitXmlReporter('test/reports/', true, true)
+	  );
   },
 
   // The params object will be passed directly to the protractor instance,
