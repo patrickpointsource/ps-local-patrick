@@ -18,7 +18,7 @@ var DEFAULT_ROLES = {
 
 module.exports.DEFAULT_ROLES = DEFAULT_ROLES;
 
-module.exports.isAllowed = function(userId, response, resource, permissions, callback, notAllowedCallback) {
+module.exports.isAllowed = function(userId, response, resource, permissions, callback, notAllowedCallback, preventNotAllowedInResponce) {
     
     acl.allowedPermissions(userId, resource, function(err, permissions){
       console.log(permissions);
@@ -32,7 +32,10 @@ module.exports.isAllowed = function(userId, response, resource, permissions, cal
             if(notAllowedCallback) {
               notAllowedCallback();
             } else {
-          	  response.json(401, 'Content ' + resource + ' is not allowed');
+            	callback(false);
+            	
+            	if (!preventNotAllowedInResponce)
+          	  		response.json(401, 'Content ' + resource + ' is not allowed');
           	}
         }
         else {
@@ -64,11 +67,14 @@ module.exports.initialize = function(isReinitialization) {
           });*/
           dataAccess.listUserRoles(null, function (err, roles) {
             var userRoles = roles["members"];
+            console.log('\r\nlistUserRoles:count:' + userRoles.length);
+            
             for (var i=0; i < userRoles.length; i++) {
               var userId = userRoles[i].userId;
 
               var roleNames = getRoleNames(userRoles[i].roles);
-
+              
+              console.log('\r\nlistUserRoles:' + i + ':' + JSON.stringify(userRoles[i]))
               // give permissions to one member
               if (userId) {
                 addRole(userId, roleNames, isReinitialization);
@@ -118,6 +124,8 @@ var initializeSecurityRoles = function(securityRoles, isReinitialization, callba
 };
 
 var initializeAllows = function(securityRoles, callback) {
+	console.log('\r\ninitializeAllows:start')
+	
 	var allAllowsCount = 0; //* fullResourcesMap.length;
   
   for(var s = 0; s < securityRoles.length; s++) {
@@ -129,7 +137,8 @@ var initializeAllows = function(securityRoles, callback) {
     var allowsCount = 0;
     var resources = securityRoles[i].resources;
       for (var k=0; k < resources.length; k++) {
-          //console.log("allowing " + securityRoles[i].name + " " + resources[k].name + " " + resources[k].permissions);
+          console.log("allowing " + securityRoles[i].name + " " + resources[k].name + " " + resources[k].permissions);
+          
           allow(securityRoles[i].name, resources[k].name, resources[k].permissions, function(err) {
             if(err) {
               console.log("Error while allowing permissions for groups: " + err);
@@ -176,7 +185,8 @@ var givePermissionToGroup = function(groupId, userRoles, roleNames) {
   if(groupId) {
     var usersFromGroupMember = [];
     var groupsFromGroupMember = [];
-
+    
+    console.log('\r\ngivePermissionToGroup:groupId:' + groupId + ':userRoles:' + JSON.stringify(userRoles) + ':roleNames:' + JSON.stringify(roleNames))
     for(var i = 0; i < userRoles.length; i++) {
       var userRole = userRoles[i];
       if(_.findWhere(userRole.roles, { resource: groupId })) {
@@ -370,7 +380,7 @@ module.exports.removeRole = function(role, callback) {
 };
 
 var addRole = function(userId, roles, isReinitialization, callback) {
-    
+    console.log('\r\naddRole:userId:' + userId + ':roles:' + JSON.stringify(roles))
     if(isReinitialization) {
       acl.userRoles( userId, function(err, actualRoles) {
         /*if(userId == "110740462676845328422") {

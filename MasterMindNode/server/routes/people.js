@@ -1,6 +1,9 @@
 'use strict';
 
 var people = require('../controllers/people');
+var securityRoles = require('../controllers/securityRoles');
+
+var _ = require('underscore');
 var express = require('express');
 var util = require('../util/auth');
 
@@ -247,13 +250,62 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
       var id = req.params.id;
       if (id == 'me') {
     
-      people.getPersonByGoogleId(req.user, function(err, result){
-           if(err){
-               res.json(500, err);
-           } else {        
-               res.json(result);
-           }            
-        });
+    	// initialize permissionsMap
+	      people.getPersonByGoogleId(req.user, function(err, result){
+	    	  
+	    	  security.getUserRoles(result, function(userRoleErr, userRole) {
+	    		  var securityRolesQuery = {resource: { $in: []}};
+	    		  
+	    		  for (var k = 0; k < userRole.roles.length; k ++)
+	    			  securityRolesQuery.resource["$in"].push(userRole.roles[k].resource);
+	    		  
+	    		  securityRoles.listSecurityRoles( securityRolesQuery, function( securityRolesErr, securityRoles ) {
+	    			  var allResource = [];
+	    			  
+	    			  // merge all permissions
+	    			  var existingResource = null;
+	    			  
+	    			  for (var k = 0; k < securityRoles.members.length; k ++) {
+	    				  for (var j = 0; j < securityRoles.members[k].resources.length; j ++){
+	    					  existingResource = _.findWhere(allResource, {name: securityRoles.members[k].resources[j].name});
+	    					  
+	    					  if (existingResource)
+	    						  existingResource.permissions = existingResource.permissions.concat(securityRoles.members[k].resources[j].permissions);
+	    					  else
+	    						  allResource.push(securityRoles.members[k].resources[j]);
+	    				  }
+	    			  }
+	    			  
+	    			  var permissionsMap = {};
+	    			  
+	    			  for (var k = 0; k < allResource.length; k ++) {
+	    				  allResource[k].permissions = _.uniq( allResource[k].permissions);
+	    				  
+	    				  permissionsMap[allResource[k].name] = allResource[k].permissions;
+	    			  }
+
+	    			  
+	    			  if(err){
+	    				  res.json(500, err);
+	    			  } else {  
+	    				  result.permissionsMap = permissionsMap;
+	    				  res.json(result);
+	    			  } 
+	    			  
+	    			  console.log('\r\npeople:me:after:');
+	    		  });
+	    		  
+	    		  
+	    	  });
+	           
+	        });
+	      
+	      
+	      
+	      
+	      
+	      
+	      
       }
       else {
         people.getPerson(id, function(err, result){
@@ -369,22 +421,57 @@ router.put('/:id', util.isAuthenticated, function(req, res) {
               }
             });
           } else {
-            security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
-                if (allowed) 
-                {
-                    var person = req.body;
-                    person.about = "people/" + person._id;
-                    people.insertPerson(person, function(err, result){
-                      if(err){
-                        res.json(500, err);
-                      } else {
-                        result.about = "people/" + result.id;
-                    
-                        res.json(result);
-                      }            
-                    });
-                }
-            });
+	            security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
+	                console.log('\r\npeople:put:security:' + req.user + ':securityResources.people.permissions.editProfile:' + allowed);
+	            	
+	                if (allowed) {
+	                    var person = req.body;
+	                    person.about = "people/" + person._id;
+	                    
+	                    people.insertPerson(person, function(err, result){
+	                      if(err){
+	                        res.json(500, err);
+	                      } else {
+	                        result.about = "people/" + result.id;
+	                    
+	                        res.json(result);
+	                      }            
+	                    });
+	                } else {
+	                	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editPersonnelData, function(personnelDataAllowed){
+	                		if (personnelDataAllowed) {
+	                			people.getPerson(req.body._id, function(err, originalPerson){
+	                				// apply only specific fields
+	                				//if (req.body.manager)
+	                				originalPerson.manager = req.body.manager;
+	                				
+	                				//if (req.body.vacationCapacity)
+	                				originalPerson.vacationCapacity = req.body.vacationCapacity;
+	                				
+	                				//if (req.body.primaryRole)
+	                				originalPerson.primaryRole = req.body.primaryRole;
+	                				
+	                				//if (req.body.primaryRole)
+	                				originalPerson.partTime = req.body.partTime;
+	                				originalPerson.partTimeHours = req.body.partTimeHours;
+	                				
+	                				originalPerson.isActive = req.body.isActive;
+	                				
+	                				originalPerson.about = "people/" + originalPerson._id;
+	        	                    
+	                				people.insertPerson(originalPerson, function(err, result){
+	          	                      if(err){
+	          	                        res.json(500, err);
+	          	                      } else {
+	          	                        result.about = "people/" + result.id;	          	                    
+	          	                        res.json(result);
+	          	                      }            
+	          	                    });
+	                			});
+	                		}
+	                	}, null, true);
+	                }
+	            }, null, true);
           }
 });
 
