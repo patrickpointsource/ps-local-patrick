@@ -21,6 +21,15 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	if( $stateParams.projectId ) {
 		$scope.projectId = $stateParams.projectId;
 	}
+	
+	$scope.editTab = "summary";
+	if($state.params.editTab && $state.params.editTab == "assignments") {
+	    $scope.editTab = "assignments";
+	}
+	$scope.changeEditTab = function(tab) {
+	    $scope.editTab = tab;
+	};
+	
 	$scope.projectLoaded = false;
 	$scope.projectEstimate = 0;
 	//$scope.servicesEstimate = 0;
@@ -31,8 +40,13 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	 */
 	$scope.edit = function( ) {
 		if( $scope.canEdit( ) ) {
+		    var editTab = "summary";
+		    if($stateParams.tabId == "/assignments") {
+		        editTab = "assignments";
+		    }
 			$state.go( 'projects.edit', {
-				projectId: $scope.projectId
+				projectId: $scope.projectId,
+				editTab: editTab
 			} );
 		}
 	};
@@ -74,7 +88,8 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				$scope.projectEstimate = 0;
 				$state.go( 'projects.show', {
 					projectId: $scope.projectId,
-					edit: null
+					edit: null,
+					tabId: "/" + $scope.editTab
 				} );
 			} );
 		}

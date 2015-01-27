@@ -40,23 +40,20 @@
       <li ng-repeat="message in messages">{{message}}</li>
     </ul>
   </div>
-
+      
+  <div class="btn-group tab-buttons">
+      <button class="btn project-button" ng-class="{ 'active-tab': editTab == 'summary' }" ng-click="changeEditTab('summary')">Summary</button>
+      <button class="btn project-button" ng-class="{ 'active-tab': editTab == 'assignments' }" ng-click="changeEditTab('assignments')">Assignments</button>
+  </div>
+  
   <div>
-  <tabset>
-      <tab id="details" heading="Summary" active="activeTab['/summary']">
-        <div ng-if="projectLoaded">
+      <div ng-if="projectLoaded && editTab == 'summary'">
           <ng-include src="'modules/projects/views/show/details.html'"></ng-include>
-        </div>
-        </tab>
-      <tab id="roles" heading="Assignments" active="activeTab['/assignments']">
-        <div ng-if="projectLoaded">
-        <!-- 
-          <ng-include src="'modules/projects/views/show/roles.html'"></ng-include>
-        -->
-        	 <ng-include src="'modules/projects/views/show/assignments.html'"></ng-include>
-        </div>
-      </tab>
-    </tabset>
+      </div>
+
+      <div ng-if="projectLoaded && editTab == 'assignments'">
+          <ng-include src="'modules/projects/views/show/assignments.html'"></ng-include>
+      </div>
   </div>
   <div class="row">
     <div class="actions col-xs-12 pageActions">
