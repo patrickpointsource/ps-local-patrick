@@ -204,7 +204,8 @@
 	        						'view-entry': !hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded}" 
 	        			ng-if="hourEntry.hoursRecord.hours > 0 || hourEntry.hoursRecord.editMode" 
 	        			_	hourentryindex="{{$index}}" ng-init="initNewHoursEntry(hourEntry)">
-	        			<span class="visible-xs edit-caption" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded">
+	        			
+	        			<span class="visible-xs edit-caption" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded">
 	        				<span class="text">Edit entry</span>
 	        				<span class="close-edit" ng-click="closeEditHoursEntry(e, hourEntry);">
 			                    <i class="fa fa-times"></i>
@@ -256,19 +257,19 @@
 		                <span class="hours-logged-details visible-xs" ng-class="{'visible-mobile': !hourEntry.hoursRecord.editMode}" ng-hide="hourEntry.hoursRecord.editMode" ng-click="showHideDesc(e, hourEntry)">
 		                    <i class="fa fa-chevron-down"></i>
 		                </span>
-		                <span class="hours-logged-action edit" ng-hide="hourEntry.hoursRecord.editMode" ng-click="editHoursEntry($event, hourEntry)">
+		                <span class="hours-logged-action edit" ng-if="canEditHours()" ng-hide="hourEntry.hoursRecord.editMode" ng-click="editHoursEntry($event, hourEntry)">
 		                    <i class="fa fa-pencil"></i>
 		                </span>
-		                <span class="hours-logged-action delete visible-xs" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded" ng-click="deleteHoursEntry($event, hourEntry, $index)">
+		                <span class="hours-logged-action delete visible-xs" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded" ng-click="deleteHoursEntry($event, hourEntry, $index)">
 		                    Delete
 		                </span>
-		                <span class="hours-logged-save" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry)">
+		                <span class="hours-logged-save" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry)">
 		                    Save
 		                </span>
-		                <span class="hours-logged-add" ng-show="hourEntry.hoursRecord.editMode && hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry, true)">
+		                <span class="hours-logged-add" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry, true)">
 		                    Add
 		                </span>
-		                <span class="hours-logged-action hidden-xs" ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
+		                <span class="hours-logged-action hidden-xs" ng-if="canEditHours()" ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
 		                    <i class="fa fa-times"></i>
 		                </span>
 	        		</div>

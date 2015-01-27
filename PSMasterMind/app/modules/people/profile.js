@@ -809,6 +809,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		return $rootScope.hasPermissions(CONSTS.EDIT_PERSONNEL_DATA);
 	};
 	
+	// check for permissions
+	$scope.canEditOtherPeopleHours = function() {
+		return $rootScope.hasPermissions(CONSTS.EDIT_HOURS_PERMISSION);
+	};
+	
 	///////////Profile Hours/////////
 	$scope.newHoursRecord = {};
 

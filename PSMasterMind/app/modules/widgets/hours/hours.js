@@ -41,6 +41,18 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.customHoursStartDate = '';
 	$scope.customHoursEndDate = '';
 
+	$scope.canEditHours = function() {
+		var result = true;
+		
+		result = $scope.canEditOtherPeopleHours ? $scope.canEditOtherPeopleHours(): true;
+		
+		if (!result)
+			result = $scope.profileId && $scope.profileId == $scope.me._id;
+		
+		return result;
+	}
+
+		
 	$scope.setSubmode = function( e, subMode ) {
 
 		e = e ? e : window.event;
@@ -791,6 +803,18 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	};
 
 	$scope.initNewHoursEntry = function( hourEntry ) {
+		if (!$scope.canEditHours()) {
+			if (hourEntry.hoursRecord) {
+				hourEntry.hoursRecord.isAdded = false;
+				hourEntry.hoursRecord.isEdit = false;
+				hourEntry.hoursRecord.isDefault = false;
+				hourEntry.hoursRecord.editMode = false;
+			
+			}
+			
+			return;
+		}
+		
 		if( hourEntry.hoursRecord && ( hourEntry.hoursRecord.isAdded || hourEntry.hoursRecord && hourEntry.hoursRecord.isCopied || hourEntry.hoursRecord.isDefault ) ) {
 			// use timeout to perform code after init
 			window.setTimeout( function( ) {
