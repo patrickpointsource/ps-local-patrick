@@ -32,7 +32,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		var bigLetter = filterPeople[ 0 ].toUpperCase( );
 		var endPart = filterPeople.slice( 1, filterPeople.length );
 		return bigLetter + endPart;
-	}
+	};
 
 	$scope.updateBreadCrump = function( ) {
 		$scope.breadCrumpParts = _.filter( $scope.breadCrumpParts, function( part ) {
@@ -47,7 +47,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		
 		// remove duplicates
 		$scope.breadCrumpParts = _.uniq($scope.breadCrumpParts);
-	}
+	};
 
 	$scope.getBreadCrump = function( ) {
 		$scope.breadCrumpParts = [ ];
@@ -109,7 +109,8 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			$scope.breadCrumpParts.push( "Reports" );
 		}
 
-		if( $scope.state.name == 'projects.show' || $scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit' ) {
+		if( $scope.state.name == 'projects.show' || $scope.state.name == 'projects.new' || 
+			$scope.state.name == 'projects.edit' || $scope.state.name == 'projects.show.tabEdit' ) {
 			$scope.breadCrumpParts = [ 'Projects' ];
 
 			if( $scope.params.filter && $scope.params.filter != "all" ) {
@@ -145,7 +146,12 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				ProjectsService.getForEdit( $scope.params.projectId ).then( function( project ) {
 					$scope.breadCrumpParts.push( project.name );
 					$scope.updateBreadCrump( );
-				} )
+				} );
+			} else {
+				if( $scope.state.name == 'projects.new' ) {
+					$scope.breadCrumpParts.push( "New" );
+					$scope.updateBreadCrump( );
+				}
 			}
 		}
 
