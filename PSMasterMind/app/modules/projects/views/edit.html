@@ -47,11 +47,11 @@
   </div>
   
   <div>
-      <div ng-if="projectLoaded && editTab == 'summary'">
+      <div ng-if="projectLoaded" ng-show="editTab == 'summary'">
           <ng-include src="'modules/projects/views/show/details.html'"></ng-include>
       </div>
 
-      <div ng-if="projectLoaded && editTab == 'assignments'">
+      <div ng-if="projectLoaded" ng-show="editTab == 'assignments'">
           <ng-include src="'modules/projects/views/show/assignments.html'"></ng-include>
       </div>
   </div>

@@ -3270,30 +3270,14 @@ else if( role.percentageCovered == 0 )
 
 			//Create a new watch
 			$scope.sentinel = $scope.$watch( 'project', function( newValue, oldValue ) {
-				//console.debug(JSON.stringify(oldValue) + ' changed to ' +
-				// JSON.stringify(newValue));
 				if( !$rootScope.formDirty && $scope.editMode ) {
-					//Do not include anthing in the $meta property in the comparison
-					if( oldValue.hasOwnProperty( '$meta' ) ) {
-						var oldClone = Resources.deepCopy( oldValue );
-						delete oldClone[ '$meta' ];
-						oldValue = oldClone;
-					}
-					if( newValue.hasOwnProperty( '$meta' ) ) {
-						var newClone = Resources.deepCopy( newValue );
-						delete newClone[ '$meta' ];
-						newValue = newClone;
-					}
-                    
-                    var cleanedValues = $scope.cleanBeforeCompare(oldValue, newValue);
+					var changedByUser = $scope.hasChangesInFields(
+                        ["committed", "executiveSponsor", "salesSponsor", "name", "customerName", "type", "description", "endDate", "primaryContact", "state", "startDate", "terms"],
+                        newValue,
+                        oldValue);
 
-					var oldStr = JSON.stringify( cleanedValues.oldValue );
-					var newStr = JSON.stringify( cleanedValues.newValue );
-
-					if( oldStr != newStr ) {
+					if( changedByUser ) {
 						console.debug( 'project is now dirty' );
-						console.log('old value: ' + oldStr);
-						console.log('new value: ' + newStr);
 						$rootScope.formDirty = true;
 						$rootScope.projectEdit = true;
 						$rootScope.dirtySaveHandler = function( ) {
@@ -3306,39 +3290,31 @@ else if( role.percentageCovered == 0 )
 		}
 	};
 	
-	$scope.cleanBeforeCompare = function(oldValue, newValue) {
-	    //Text Angular seems to add non white space characters for some reason
-        if( newValue.description ) {
-            newValue.description = newValue.description.trim( );
-        }
-        if( oldValue.description ) {
-            oldValue.description = oldValue.description.trim( );
-        }
+    $scope.hasChangesInFields = function(fields, obj1, obj2) {
+	    if(fields) {
+            for(var fieldIndex in fields) {
+                var field = fields[fieldIndex];
+                if(field) {
+                    var field1 = obj1[field];
+                    var field2 = obj2[field];
                     
-        // Do not compare assignees inside roles and modified fields
-        _.each(oldValue.roles, function(role) {
-            $scope.deleteRoleProperties(role);
-        });
+                    if(_.isBoolean(field1) || _.isBoolean(field2)) {
+                        if(field1 != field2) {
+                            return true;
+                        }
+                    } else {
+                        if( field1 && field2) {
+                            var string1 = JSON.stringify(field1).trim();
+                            var string2 = JSON.stringify(field2).trim();
+                            if(string1 != string2) {
+                                return true;
+	                       }
+	                   }
+                    }
+	            }
+	        }
+        }
 
-        _.each(newValue.roles, function(role) {
-            $scope.deleteRoleProperties(role);
-        });
-
-         oldValue.modified = {};
-         newValue.modified = {};
-         
-         return { oldValue: oldValue, newValue: newValue };
-	};
-	
-	$scope.deleteRoleProperties = function(role) {
-	    role.assignees = [];
-	    delete role.originalAssignees;
-	    delete role._duplicated;
-	    delete role.$$hashKey;
-	    delete role.percentageCovered;
-	    delete role.hoursExtraCovered;
-	    delete role.hoursNeededToCover;
-	    delete role.daysGap;
-	    delete role.coveredKMin;
+	    return false;
 	};
 } ] );
