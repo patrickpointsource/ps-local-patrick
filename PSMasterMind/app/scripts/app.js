@@ -242,7 +242,9 @@
     			return message;
     		}
     	};
-	  	  
+
+            helper.authorize(null, Resources);
+        
   	  	$rootScope.$on('$stateChangeStart', 
   	  		_.bind(function(event, toState, toParams, fromState, fromParams) {
   		  	if($rootScope.formDirty){

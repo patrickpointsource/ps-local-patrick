@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>
@@ -31,7 +31,7 @@
   <!-- endbuild -->
 </head>
 
-<body ng-app="Mastermind">
+<body>
   <!--[if lt IE 8]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
     your browser</a> to improve your experience.</p>
@@ -189,8 +189,13 @@
   <script type="text/javascript" src="bower_components/typeahead.js/dist/typeahead.bundle.js"></script>
 	<script type="text/javascript" src="bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>
 	<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script type="text/javascript" src="login/scripts/login.js"></script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=__onPlatformLoad" async defer></script>
+    <script>
+        window.___gcfg = { lang: "en-US", parsetags: "onload" };
 
-  <script type="text/javascript" src="login/scripts/login.js"></script>
+        function __onPlatformLoad() { angular.bootstrap(document, ["Mastermind"]); }
+    </script>
 
   <!-- build:js({.tmp,app}) scripts/scripts.js -->
   <script src="scripts/app.js"></script>

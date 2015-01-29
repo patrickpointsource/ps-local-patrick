@@ -9,11 +9,11 @@ window.useAdoptedServices = false;
 */
 
 //local nodejs based development
-//window.serverLocation = 'http://localhost:3000/';
-//window.restPath = '';
-//window.clientBaseURL = 'http://localhost:9000/';
-//window.fixUrl = true;
-//window.useAdoptedServices = true;
+window.serverLocation = 'http://localhost:3000/';
+window.restPath = '';
+window.clientBaseURL = 'http://localhost:9000/';
+window.fixUrl = true;
+window.useAdoptedServices = true;
 
 //new prod nodejs 
 //window.serverLocation = 'https://mastermind.pointsource.com';
@@ -23,11 +23,11 @@ window.useAdoptedServices = false;
 //window.useAdoptedServices = true;
 
 //new stage nodejs 
-window.serverLocation = 'https://stage.mastermind.pointsource.com';
-window.restPath = '/MMNodeStaging/';
-window.clientBaseURL = 'https://stage.mastermind.pointsource.com/';
-window.fixUrl = true;
-window.useAdoptedServices = true;
+//window.serverLocation = 'https://stage.mastermind.pointsource.com';
+//window.restPath = '/MMNodeStaging/';
+//window.clientBaseURL = 'https://stage.mastermind.pointsource.com/';
+//window.fixUrl = true;
+//window.useAdoptedServices = true;
 
 //new demo nodejs 
 //window.serverLocation = 'https://demo.mastermind.pointsource.com';
@@ -66,7 +66,6 @@ window.useAdoptedServices = true;
 
 
 var helper = (function () {
-  var authResult = undefined;
 
   return {
     /**
@@ -85,7 +84,9 @@ var helper = (function () {
         var existingToken = localStorage['access_token'];
         //Save the access token
         localStorage["access_token"] = authResult['access_token'];
-
+        localStorage["client_id"] = authResult.client_id;
+        localStorage["scope"] = authResult.scope;
+        localStorage["expires_in"] = authResult.expires_in;
         window.location = window.clientBaseURL+"index.html";
       
 
@@ -109,6 +110,13 @@ var helper = (function () {
     		disconnectEntryPoint = function(cb){ if (cb) cb()};
     	}
     	
+    	if (this.authTimer)
+	    {
+    	    clearTimeout(this.authTimer);
+
+	        this.authTimer = null;
+	    }
+
       if (access_token) {
         var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' +
           access_token;
@@ -151,6 +159,26 @@ var helper = (function () {
     		  window.location = window.clientBaseURL+"login.html";
     	  });
       }
+    },
+
+    authorize: function (self, Resources)
+    {
+        self = self || this;
+
+        gapi.auth.authorize({ client_id: localStorage.client_id, immediate: true, scope: localStorage.scope },
+            function (authResult)
+            {
+                if (authResult.access_token) {
+                    localStorage.access_token = authResult.access_token;
+                    localStorage.expires_in = authResult.expires_in;
+
+                    Resources.updateAuthToken();
+
+                    self.authTimer = setTimeout(function() { self.authorize(self, Resources); }, localStorage.expires_in * 1000);
+                }
+                else if (authResult.error)
+                    console.log("Login error:", authResult.error);
+            });
     }
   };
 })();
