@@ -346,7 +346,7 @@ module.exports = function(params) {
 		dataAccess.listSecurityRoles({}, function(err, body) {
 			var securityRoles = body.members;
 	
-			dataAccess.listUserRoles({}, function(err, body) {
+			dataAccess.listUserRoles(function(err, body) {
 				var userRoles = body.members;
 				var anyFound = false;
 				var roleName;

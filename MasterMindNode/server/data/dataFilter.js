@@ -458,6 +458,23 @@ var filterNotificationsByPerson = function(person, notifications) {
 };
 
 /**
+ * Returns user roles filtered by google id
+ * 
+ * @param {Object} googleId
+ * @param {Object} userRoles
+ */
+
+var filterUserRolesByGoogleId = function(googleId, userRoles) {
+	var result = [];	
+	_.each(userRoles, function(userRole) {
+		if (userRole.userId && userRole.userId == googleId) {
+			result.push(userRole);
+		}
+	});
+	return result;
+};
+
+/**
  * Returns vacations filtered by person
  * 
  * @param {Object} person
@@ -653,6 +670,9 @@ module.exports.filterAssignmentsByTypes = filterAssignmentsByTypes;
 
 // notifications filter functions
 module.exports.filterNotificationsByPerson = filterNotificationsByPerson;
+
+// user roles filter functions
+module.exports.filterUserRolesByGoogleId = filterUserRolesByGoogleId;
 
 // vacations filter functions
 module.exports.filterVacationsByPerson = filterVacationsByPerson;

@@ -869,18 +869,36 @@ var listSecurityRoles = function( q, callback ) {
 
 };
 
-var listUserRoles = function( q, callback ) {
+var listUserRoles = function( callback ) {
 	var result = memoryCache.getObject( USER_ROLES_KEY );
 	if( result ) {
 		console.log( "read " + USER_ROLES_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "userRoles/" ) );
+		callback( null, prepareRecords( result.data, "members", "userRoles/" ) );
 	} else {
 		dbAccess.listUserRoles( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( USER_ROLES_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "userRoles/" ) );
+			callback( null, prepareRecords( body.data, "members", "userRoles/" ) );
+		} );
+	}
+
+};
+
+var listUserRolesByGoogleId = function( googleId, callback ) {
+	var result = memoryCache.getObject( USER_ROLES_KEY );
+	if( result ) {
+		console.log( "read " + USER_ROLES_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterUserRolesByGoogleId(googleId, result.data), "members", "userRoles/" ) );
+	} else {
+		dbAccess.listUserRoles( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
+				memoryCache.putObject( USER_ROLES_KEY, body );
+			}
+			callback( null, prepareRecords( dataFilter.filterUserRolesByGoogleId(googleId, body.data), "members", "notifications/" ) );
+
 		} );
 	}
 
@@ -1214,6 +1232,7 @@ module.exports.listVacationsByPeriod = listVacationsByPeriod;
 module.exports.listRequests = listRequests;
 module.exports.listSecurityRoles = listSecurityRoles;
 module.exports.listUserRoles = listUserRoles;
+module.exports.listUserRolesByGoogleId = listUserRolesByGoogleId;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
 module.exports.listTasksByName = listTasksByName;
 

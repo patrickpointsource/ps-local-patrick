@@ -19,12 +19,13 @@ var DEFAULT_ROLES = {
 module.exports.DEFAULT_ROLES = DEFAULT_ROLES;
 
 module.exports.isAllowed = function(userId, response, resource, permissions, callback, notAllowedCallback, preventNotAllowedInResponce) {
-    
+
     acl.allowedPermissions(userId, resource, function(err, permissions){
       console.log(permissions);
     });
-    
+
     acl.isAllowed(userId, resource, permissions, function(err, allowed){
+
         if (err) {
           	response.json(500, err);
         }
@@ -33,7 +34,7 @@ module.exports.isAllowed = function(userId, response, resource, permissions, cal
               notAllowedCallback();
             } else {
             	callback(false);
-            	
+
             	if (!preventNotAllowedInResponce)
           	  		response.json(401, 'Content ' + resource + ' is not allowed');
           	}
@@ -60,20 +61,20 @@ module.exports.initialize = function(isReinitialization) {
     var errStr = [];
     dataAccess.listSecurityRoles(null, function (err, roles) {
         var securityRoles = roles.members;
-        
+
         initializeSecurityRoles(securityRoles, isReinitialization, function() {
           /*acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
             console.log("Daniil allows on project after initSecurityRoles: " + permissions["projects"]);
           });*/
-          dataAccess.listUserRoles(null, function (err, roles) {
+          dataAccess.listUserRoles( function (err, roles) {
             var userRoles = roles["members"];
             console.log('\r\nlistUserRoles:count:' + userRoles.length);
-            
+
             for (var i=0; i < userRoles.length; i++) {
               var userId = userRoles[i].userId;
 
               var roleNames = getRoleNames(userRoles[i].roles);
-              
+
               console.log('\r\nlistUserRoles:' + i + ':' + JSON.stringify(userRoles[i]))
               // give permissions to one member
               if (userId) {
@@ -92,8 +93,8 @@ module.exports.initialize = function(isReinitialization) {
             }
           });
         });
-        
-        
+
+
     });
 };
 
@@ -109,7 +110,7 @@ var initializeSecurityRoles = function(securityRoles, isReinitialization, callba
         if(err) {
           console.log("Cannot delete '" + role + "' role.");
         }
-        
+
         removedRolesCount++;
         if(removedRolesCount == securityRoles.length - 1) {
           //console.log("All groups removed");
@@ -120,25 +121,25 @@ var initializeSecurityRoles = function(securityRoles, isReinitialization, callba
   } else {
     initializeAllows(securityRoles, callback);
   }
-  
+
 };
 
 var initializeAllows = function(securityRoles, callback) {
 	console.log('\r\ninitializeAllows:start')
-	
+
 	var allAllowsCount = 0; //* fullResourcesMap.length;
-  
+
   for(var s = 0; s < securityRoles.length; s++) {
     allAllowsCount += securityRoles[s].resources.length;
   }
   //console.log("all allows" + allAllowsCount);
-  
+
   for (var i=0; i < securityRoles.length; i++) {
     var allowsCount = 0;
     var resources = securityRoles[i].resources;
       for (var k=0; k < resources.length; k++) {
           console.log("allowing " + securityRoles[i].name + " " + resources[k].name + " " + resources[k].permissions);
-          
+
           allow(securityRoles[i].name, resources[k].name, resources[k].permissions, function(err) {
             if(err) {
               console.log("Error while allowing permissions for groups: " + err);
@@ -157,15 +158,16 @@ var initializeAllows = function(securityRoles, callback) {
 };
 
 module.exports.getUserRoles = function(user, callback) {
-  var query = { userId: user.googleId };
-  dataAccess.listUserRoles(query, function(err, body) {
+	
+  dataAccess.listUserRolesByGoogleId(user.googleId, function(err, body) {
+	var userRoles;
     if (err) {
       console.log(err);
       callback('error loading getUserRoles', null);
     } else {
-      var userRoles = body.members.length == 1 ? body.members[0]: {};
+      userRoles = body.members.length == 1 ? body.members[0]: {};
     }
-    
+
     callback(err, userRoles);
   });
 };
@@ -177,7 +179,7 @@ var getRoleNames = function(roles) {
       roleNames.push(roles[j].name);
     }
   }
-  
+
   return roleNames;
 };
 
@@ -185,7 +187,7 @@ var givePermissionToGroup = function(groupId, userRoles, roleNames) {
   if(groupId) {
     var usersFromGroupMember = [];
     var groupsFromGroupMember = [];
-    
+
     console.log('\r\ngivePermissionToGroup:groupId:' + groupId + ':userRoles:' + JSON.stringify(userRoles) + ':roleNames:' + JSON.stringify(roleNames))
     for(var i = 0; i < userRoles.length; i++) {
       var userRole = userRoles[i];
@@ -198,14 +200,14 @@ var givePermissionToGroup = function(groupId, userRoles, roleNames) {
         }
       }
     }
-    
+
     // console.log("Giving permissions to users from group " + groupId);
     if(usersFromGroupMember && usersFromGroupMember.length > 0) {
       for(var u = 0; u < usersFromGroupMember.length; u++) {
         addRole(usersFromGroupMember[u].userId, roleNames);
       }
     }
-    
+
     if(groupsFromGroupMember && groupsFromGroupMember.length > 0) {
       for(var u = 0; u < groupsFromGroupMember.length; u++) {
         // console.log("Giving permissions to nested group " + groupsFromGroupMember[u].groupId);
@@ -219,7 +221,7 @@ var createDefaultRoles = function(callback) {
   console.log("Creating default roles.");
   dataAccess.listSecurityRoles({}, function(err, body) {
     var securityGroups = body.members;
-    
+
     // check for 5 default roles (Management, Executives, PM, Sales, Minion)
     var executivesGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.EXECUTIVES });
     var managementGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.MANAGEMENT });
@@ -228,7 +230,7 @@ var createDefaultRoles = function(callback) {
     var minion = _.findWhere(securityGroups, { name: DEFAULT_ROLES.MINION });
     var adminGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.ADMIN });
     var ssaGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.SSA });
-    
+
     if(!executivesGroup) {
       createGroup(DEFAULT_ROLES.EXECUTIVES);
     }
@@ -267,15 +269,15 @@ var createDefaultRoles = function(callback) {
 module.exports.createDefaultRoles = createDefaultRoles;
 
 var createGroup = function(name, actionAfter) {
-  var group = { 
+  var group = {
     name: name,
     resources: fullResourcesMap
   };
-  
+
   if(group.name == DEFAULT_ROLES.MINION) {
     group.resources = minionResouresMap;
   }
-  
+
   dataAccess.insertItem(null, group, dataAccess.SECURITY_ROLES_KEY, function(err, body){
     if (err) {
       console.log('Error in creating default security group: ' + group.name + ". Error: " + err);
@@ -293,18 +295,18 @@ var createMinionUserRoles = function(callback, minionRole) {
   dataAccess.listPeople({}, function(err, peopleBody) {
     if(!err) {
       var people = peopleBody.members;
-      
-      dataAccess.listUserRoles({}, function(err, userRolesBody) {
+
+      dataAccess.listUserRoles( function(err, userRolesBody) {
         var userRoles = userRolesBody.members;
-        
+
         var countChecked = 0;
         console.log("People length: " + people.length);
-        
+
         for(var i = 0; i < people.length; i++) {
           var person = people[i];
-          
+
           var userRole = _.findWhere(userRoles, { userId: person.googleId });
-          
+
           if(!userRole) {
             var uRole = { userId: person.googleId, roles: [minionRole]};
             dataAccess.insertItem(null, uRole, dataAccess.USER_ROLES_KEY, function(err, body){
@@ -313,7 +315,7 @@ var createMinionUserRoles = function(callback, minionRole) {
               } else {
                 console.log("Added default userRole: " + body.id);
               }
-              
+
               countChecked++;
               if(callback && countChecked == people.length) {
                 console.log("CALLBACK REACHED!");
@@ -323,14 +325,14 @@ var createMinionUserRoles = function(callback, minionRole) {
           } else {
             if(!userRole.roles || userRole.roles.length == 0) {
               userRole.roles = [minionRole];
-              
+
               dataAccess.insertItem(userRole.id, userRole, dataAccess.USER_ROLES_KEY, function(err, body){
                 if (err) {
                   console.log("Error in updating userRole: " + err);
                 } else {
                   console.log("Updated default userRole: " + body.id);
                 }
-              
+
                 countChecked++;
                 if(callback && countChecked == people.length) {
                   console.log("Every person has at least 'Minion' permissions now.");
@@ -358,7 +360,7 @@ var allow = function(role, resource, permission, callback) {
     if (err) {
       console.log(err);
     }
-    
+
     callback(err);
   });
 };
