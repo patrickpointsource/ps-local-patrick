@@ -343,7 +343,7 @@ module.exports = function(params) {
 	};
 	
 	var fixSecurityRolesIds = function(callback) {
-		dataAccess.listSecurityRoles({}, function(err, body) {
+		dataAccess.listSecurityRoles( function(err, body) {
 			var securityRoles = body.members;
 	
 			dataAccess.listUserRoles(function(err, body) {

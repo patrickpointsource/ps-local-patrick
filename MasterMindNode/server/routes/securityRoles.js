@@ -12,8 +12,7 @@ var securityResources = require( '../util/securityResources' );
 router.get( '/', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.securityRoles.resourceName, securityResources.securityRoles.permissions.viewSecurityRoles, function( allowed ) {
 		if( allowed ) {
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-			securityRoles.listSecurityRoles( query, function( err, result ) {
+			securityRoles.listSecurityRoles( function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

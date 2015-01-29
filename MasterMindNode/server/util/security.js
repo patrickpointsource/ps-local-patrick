@@ -59,7 +59,7 @@ module.exports.allowedPermissions = function(userId, resources, callback) {
 module.exports.initialize = function(isReinitialization) {
     console.log("Initializing security. Reinitialization: " + isReinitialization);
     var errStr = [];
-    dataAccess.listSecurityRoles(null, function (err, roles) {
+    dataAccess.listSecurityRoles( function (err, roles) {
         var securityRoles = roles.members;
 
         initializeSecurityRoles(securityRoles, isReinitialization, function() {
@@ -219,7 +219,7 @@ var givePermissionToGroup = function(groupId, userRoles, roleNames) {
 
 var createDefaultRoles = function(callback) {
   console.log("Creating default roles.");
-  dataAccess.listSecurityRoles({}, function(err, body) {
+  dataAccess.listSecurityRoles( function(err, body) {
     var securityGroups = body.members;
 
     // check for 5 default roles (Management, Executives, PM, Sales, Minion)

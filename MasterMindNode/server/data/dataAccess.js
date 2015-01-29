@@ -852,18 +852,35 @@ var listRequests = function( manager, statuses, startDate, endDate, callback ) {
 };
 
 
-var listSecurityRoles = function( q, callback ) {
+var listSecurityRoles = function( callback ) {
 	var result = memoryCache.getObject( SECURITY_ROLES_KEY );
 	if( result ) {
 		console.log( "read " + SECURITY_ROLES_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "securityroles/" ) );
+		callback( null, prepareRecords( result.data, "members", "securityroles/" ) );
 	} else {
 		dbAccess.listSecurityRoles( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + SECURITY_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( SECURITY_ROLES_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "securityroles/" ) );
+			callback( null, prepareRecords( body.data, "members", "securityroles/" ) );
+		} );
+	}
+
+};
+
+var listSecurityRolesByResources = function( resources, callback ) {
+	var result = memoryCache.getObject( SECURITY_ROLES_KEY );
+	if( result ) {
+		console.log( "read " + SECURITY_ROLES_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterSecurityRolesByResources(resources, result.data), "members", "securityroles/" ) );
+	} else {
+		dbAccess.listSecurityRoles( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + SECURITY_ROLES_KEY + " to memory cache" );
+				memoryCache.putObject( SECURITY_ROLES_KEY, body );
+			}
+			callback( null, prepareRecords( dataFilter.filterSecurityRolesByResources(resources, body.data), "members", "securityroles/" ) );
 		} );
 	}
 
@@ -1231,6 +1248,7 @@ module.exports.listVacationsByPerson = listVacationsByPerson;
 module.exports.listVacationsByPeriod = listVacationsByPeriod;
 module.exports.listRequests = listRequests;
 module.exports.listSecurityRoles = listSecurityRoles;
+module.exports.listSecurityRolesByResources = listSecurityRolesByResources;
 module.exports.listUserRoles = listUserRoles;
 module.exports.listUserRolesByGoogleId = listUserRolesByGoogleId;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;

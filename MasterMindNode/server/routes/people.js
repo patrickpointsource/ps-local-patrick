@@ -254,12 +254,12 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 	      people.getPersonByGoogleId(req.user, function(err, result){
 	    	  
 	    	  security.getUserRoles(result, function(userRoleErr, userRole) {
-	    		  var securityRolesQuery = {resource: { $in: []}};
+	    		  var resources = [];
 	    		  
 	    		  for (var k = 0; k < userRole.roles.length; k ++)
-	    			  securityRolesQuery.resource["$in"].push(userRole.roles[k].resource);
+	    			  resources.push(userRole.roles[k].resource);
 	    		  
-	    		  securityRoles.listSecurityRoles( securityRolesQuery, function( securityRolesErr, securityRoles ) {
+	    		  securityRoles.listSecurityRolesByResources( resources, function( securityRolesErr, securityRoles ) {
 	    			  var allResource = [];
 	    			  
 	    			  // merge all permissions

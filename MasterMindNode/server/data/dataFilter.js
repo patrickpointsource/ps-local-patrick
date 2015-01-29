@@ -474,6 +474,33 @@ var filterUserRolesByGoogleId = function(googleId, userRoles) {
 	return result;
 };
 
+
+/**
+ * Returns security roles filtered by resources
+ * 
+ * @param {Object} resources
+ * @param {Object} securityRoles
+ */
+
+var filterSecurityRolesByResources = function(resources, securityRoles) {
+	
+	var result = [];
+	resources = (resources instanceof Array) ? resources : [resources];
+	
+	_.each(securityRoles, function(securityRole) {
+		var checked = false;
+		_.each(resources, function(resource) {
+			if (securityRole.resource == resource) {
+				checked = true;
+			}
+		});
+		if (checked) {
+			result.push(securityRole);
+		}
+	});
+	return result;
+};
+
 /**
  * Returns vacations filtered by person
  * 
@@ -673,6 +700,9 @@ module.exports.filterNotificationsByPerson = filterNotificationsByPerson;
 
 // user roles filter functions
 module.exports.filterUserRolesByGoogleId = filterUserRolesByGoogleId;
+
+//security roles filter functions
+module.exports.filterSecurityRolesByResources = filterSecurityRolesByResources;
 
 // vacations filter functions
 module.exports.filterVacationsByPerson = filterVacationsByPerson;

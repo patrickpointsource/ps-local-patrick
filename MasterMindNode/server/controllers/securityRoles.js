@@ -5,13 +5,24 @@ var _ = require('underscore');
 var dataAccess = require('../data/dataAccess');
 var validation = require( '../data/validation.js' );
 
-module.exports.listSecurityRoles = function(q, callback) {
-    dataAccess.listSecurityRoles(q, function(err, body){
+module.exports.listSecurityRoles = function( callback ) {
+    dataAccess.listSecurityRoles( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading security roles', null);
         } else {
             //console.log(body);
+            callback(null, body);
+        }
+    });
+};
+
+module.exports.listSecurityRolesByResources = function(resources, callback ) {
+    dataAccess.listSecurityRolesByResources( resources, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading security roles', null);
+        } else {
             callback(null, body);
         }
     });
