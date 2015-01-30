@@ -7,3 +7,4 @@ MasterMindNode/dist
 RemoteSystemsTempFiles/.project
 clientdb.xml
 PSMasterMind/app/styles/main.css
+PSMasterMind/test/reports/*.xml
