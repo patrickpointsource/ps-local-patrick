@@ -243,7 +243,19 @@
     		}
     	};
 
-            helper.authorize(null, Resources);
+    	if (localStorage.token)
+	    {
+    	    var token = JSON.parse(localStorage.token);
+
+    	    gapi.auth.checkSessionState({ client_id: token.client_id, session_state: token.session_state },
+                function (authenticated)
+                {
+                    if (!authenticated)
+                        helper.authorize(null, Resources);
+                });
+    	}
+    	else
+	        console.log("No access token cached.");
         
   	  	$rootScope.$on('$stateChangeStart', 
   	  		_.bind(function(event, toState, toParams, fromState, fromParams) {
