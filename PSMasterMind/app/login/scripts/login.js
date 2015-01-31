@@ -1,11 +1,11 @@
 //Define the global URLs for this app
 
 //local nodejs based development
-//window.serverLocation = 'http://localhost:3000/';
-//window.restPath = '';
-//window.clientBaseURL = 'http://localhost:9000/';
-//window.fixUrl = true;
-//window.useAdoptedServices = true;
+window.serverLocation = 'http://localhost:3000/';
+window.restPath = '';
+window.clientBaseURL = 'http://localhost:9000/';
+window.fixUrl = true;
+window.useAdoptedServices = true;
 
 //new prod nodejs 
 //window.serverLocation = 'https://mastermind.pointsource.com';
@@ -15,11 +15,11 @@
 //window.useAdoptedServices = true;
 
 //new stage nodejs 
-window.serverLocation = 'https://stage.mastermind.pointsource.com';
-window.restPath = '/MMNodeStaging/';
-window.clientBaseURL = 'https://stage.mastermind.pointsource.com/';
-window.fixUrl = true;
-window.useAdoptedServices = true;
+//window.serverLocation = 'https://stage.mastermind.pointsource.com';
+//window.restPath = '/MMNodeStaging/';
+//window.clientBaseURL = 'https://stage.mastermind.pointsource.com/';
+//window.fixUrl = true;
+//window.useAdoptedServices = true;
 
 //new demo nodejs 
 //window.serverLocation = 'https://demo.mastermind.pointsource.com';
@@ -45,6 +45,9 @@ var helper = (function () {
         // Save the auth result
         this.authResult = authResult;
         //Save the access token
+
+        delete authResult["g-oauth-window"]; // serialization of this property causes a security error
+
         localStorage["access_token"] = authResult['access_token'];
         localStorage.token = JSON.stringify(authResult);
         window.location = window.clientBaseURL+"index.html";
