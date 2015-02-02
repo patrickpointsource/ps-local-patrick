@@ -8,3 +8,4 @@ RemoteSystemsTempFiles/.project
 clientdb.xml
 PSMasterMind/app/styles/main.css
 PSMasterMind/test/reports/*.xml
+PSMasterMind/test1.spec.js
