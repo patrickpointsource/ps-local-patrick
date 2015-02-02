@@ -74,11 +74,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             } );
         }
 
-        $scope.getSecurityInformation();
-
-        $scope.managers = _.sortBy( $scope.managers, function( manager ) {
-        	return manager.name;
-        } );
+        $scope.getSecurityInformation(function() {
+            $scope.managers = _.sortBy( $scope.managers, function( manager ) {
+        	   return manager.name;
+            } );
 
         if( $scope.profile.manager ) {
         	$scope.profile.manager = _.findWhere( $scope.managers, {
@@ -87,9 +86,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             $scope.$emit( 'profile:loaded' );
         } else
             $scope.$emit( 'profile:loaded' );
+        });
 	};
 
-	$scope.getSecurityInformation = function() {
+	$scope.getSecurityInformation = function(callback) {
 	  $scope.userSecurityGroups = [];
 	  Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
         $scope.securityGroups = result.members;
@@ -100,12 +100,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
           var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
 
           if(userRole) {
-            $scope.userRole = userRole;
-            $scope.prepareUserRoles();
+              $scope.userRole = userRole;
+              $scope.prepareUserRoles();
+              callback();
           } else {
             Resources.create('userroles', {userId: $scope.profile.googleId, roles: []}).then(function(result){
-              $scope.userRole = result;
-              $scope.updateUserRoles();
+                $scope.userRole = result;
+                $scope.updateUserRoles();
+                callback();
             });
           }
         });
