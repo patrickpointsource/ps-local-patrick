@@ -132,7 +132,7 @@ var helper = (function () {
         gapi.auth.authorize({ client_id: localStorage.client_id, immediate: true, scope: localStorage.scope },
             function (authResult)
             {
-                if (authResult.state.signed_in)
+                if (authResult.status.signed_in)
                 {
                     localStorage.access_token = authResult.access_token;
                     localStorage.token = JSON.stringify(authResult);
