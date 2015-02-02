@@ -3,8 +3,8 @@
 var dataAccess = require('../data/dataAccess');
 var validation = require( '../data/validation.js' );
 
-module.exports.listVacations = function(q, callback) {
-    dataAccess.listVacations(q, function(err, body){
+module.exports.listVacations = function(callback) {
+    dataAccess.listVacations(function(err, body){
         if (err) {
             console.log(err);
             callback('error loading vacations', null);

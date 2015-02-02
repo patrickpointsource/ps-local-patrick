@@ -14,9 +14,8 @@ var securityResources = require( '../util/securityResources' );
 router.get( '/', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewMyVacations, function( allowed ) {
 		if( allowed ) {
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
 			// Call to vacations service
-			vacations.listVacations( query, function( err, result ) {
+			vacations.listVacations( function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

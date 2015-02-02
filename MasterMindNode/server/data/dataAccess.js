@@ -777,19 +777,19 @@ var listSkills = function( q, callback ) {
 
 };
 
-var listVacations = function( q, callback ) {
+var listVacations = function( callback ) {
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
 		console.log( "read " + VACATIONS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "vacations/" ) );
+		callback( null, prepareRecords( result.data, "members", "vacations/" ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "vacations/" ) );
+			callback( err, prepareRecords( body.data, "members", "vacations/" ) );
 		} );
 	}
 
@@ -807,7 +807,7 @@ var listVacationsByPerson = function( personResource, callback ) {
 				console.log( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
-			callback( null, prepareRecords( dataFilter.filterVacationsByPerson(personResource, body.data), "members", "vacations/" ) );
+			callback( err, prepareRecords( dataFilter.filterVacationsByPerson(personResource, body.data), "members", "vacations/" ) );
 		} );
 	}
 
