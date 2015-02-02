@@ -1,11 +1,11 @@
 //Define the global URLs for this app
 
 //local nodejs based development
-window.serverLocation = 'http://localhost:3000/';
-window.restPath = '';
-window.clientBaseURL = 'http://localhost:9000/';
-window.fixUrl = true;
-window.useAdoptedServices = true;
+//window.serverLocation = 'http://localhost:3000/';
+//window.restPath = '';
+//window.clientBaseURL = 'http://localhost:9000/';
+//window.fixUrl = true;
+//window.useAdoptedServices = true;
 
 //new prod nodejs 
 //window.serverLocation = 'https://mastermind.pointsource.com';
@@ -14,12 +14,13 @@ window.useAdoptedServices = true;
 //window.fixUrl = true;
 //window.useAdoptedServices = true;
 
-//new stage nodejs 
-//window.serverLocation = 'https://stage.mastermind.pointsource.com';
-//window.restPath = '/MMNodeStaging/';
-//window.clientBaseURL = 'https://stage.mastermind.pointsource.com/';
-//window.fixUrl = true;
-//window.useAdoptedServices = true;
+//new stage nodejs
+//uncomment this block before all commits to sprint21 please!
+window.serverLocation = 'https://stage.mastermind.pointsource.com';
+window.restPath = '/MMNodeStaging/';
+window.clientBaseURL = 'https://stage.mastermind.pointsource.com/';
+window.fixUrl = true;
+window.useAdoptedServices = true;
 
 //new demo nodejs 
 //window.serverLocation = 'https://demo.mastermind.pointsource.com';
