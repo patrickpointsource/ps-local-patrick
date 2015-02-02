@@ -632,19 +632,19 @@ var listAssignments = function( q, callback ) {
 
 };
 
-var listTasks = function( q, callback ) {
+var listTasks = function( callback ) {
 
 	var result = memoryCache.getObject( TASKS_KEY );
 	if( result ) {
 		console.log( "read " + TASKS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "tasks/" ) );
+		callback( null, prepareRecords( result.data, "members", "tasks/" ) );
 	} else {
 		dbAccess.listTasks( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + TASKS_KEY + " to memory cache" );
 				memoryCache.putObject( TASKS_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "tasks/" ) );
+			callback( err, prepareRecords( body.data, "members", "tasks/" ) );
 		} );
 	}
 

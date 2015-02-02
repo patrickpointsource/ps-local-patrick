@@ -13,8 +13,7 @@ var router = express.Router( );
 router.get( '/', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions.viewTasks, function( allowed ) {
 		if( allowed ) {
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-			tasks.listTasks( query, function( err, result ) {
+			tasks.listTasks( function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
