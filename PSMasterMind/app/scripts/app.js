@@ -250,12 +250,18 @@
     	    gapi.auth.checkSessionState({ client_id: token.client_id, session_state: token.session_state },
                 function (authenticated)
                 {
-                    if (!authenticated)
+                    if (authenticated)
+                    {
+                        var expTime = helper.calcExpiration();
+                        
+                        helper.authTimer = setTimeout(function () { helper.authorize(null, Resources); }, expTime);
+                    }
+                    else
                         helper.authorize(null, Resources);
                 });
     	}
     	else
-	        console.log("No access token cached.");
+	        console.log("Access token not found.");
         
   	  	$rootScope.$on('$stateChangeStart', 
   	  		_.bind(function(event, toState, toParams, fromState, fromParams) {
