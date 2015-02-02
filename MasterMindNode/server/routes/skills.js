@@ -13,10 +13,8 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.skills.resourceName, securityResources.skills.permissions.viewSkills, function( allowed ) {
 		if( allowed ) {
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-
 			// Call to skills service
-			skills.listSkills( query, function( err, result ) {
+			skills.listSkills( function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

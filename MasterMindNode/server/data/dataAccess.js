@@ -759,19 +759,19 @@ var listConfiguration = function( q, callback ) {
 
 };
 
-var listSkills = function( q, callback ) {
+var listSkills = function( callback ) {
 
 	var result = memoryCache.getObject( SKILLS_KEY );
 	if( result ) {
 		console.log( "read " + SKILLS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "skills/" ) );
+		callback( null, prepareRecords( result.data, "members", "skills/" ) );
 	} else {
 		dbAccess.listSkills( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + SKILLS_KEY + " to memory cache" );
 				memoryCache.putObject( SKILLS_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "skills/" ) );
+			callback( err, prepareRecords( body.data, "members", "skills/" ) );
 		} );
 	}
 
