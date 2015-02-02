@@ -56,6 +56,7 @@ exports.config = {
   specs: [
     'test/e2e/googleOAuthTest.spec.js',
     'test/e2e/dashboardTest.spec.js',
+    'test/e2e/projectTests.spec.js'
   ],
 
   // Patterns to exclude.
