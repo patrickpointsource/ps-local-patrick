@@ -283,7 +283,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		if( index == 0 ) {
 			if( $scope.state.name.indexOf( "people." ) == 0 )
 				$state.go( "people.index", {
-					filter: null
+					filter: 'all'
 				} );
 			else if( $scope.state.name.indexOf( "projects." ) == 0 )
 				$state.go( "projects.index", {
