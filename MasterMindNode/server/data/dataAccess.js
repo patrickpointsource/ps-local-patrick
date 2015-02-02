@@ -921,19 +921,19 @@ var listUserRolesByGoogleId = function( googleId, callback ) {
 
 };
 
-var listNotifications = function( q, callback ) {
+var listNotifications = function( callback ) {
 
 	var result = memoryCache.getObject( NOTIFICATIONS_KEY );
 	if( result ) {
 		console.log( "read " + NOTIFICATIONS_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "notifications/" ) );
+		callback( null, prepareRecords( result.data, "members", "notifications/" ) );
 	} else {
 		dbAccess.listNotifications( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + NOTIFICATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( NOTIFICATIONS_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "notifications/" ) );
+			callback( err, prepareRecords( body.data, "members", "notifications/" ) );
 		} );
 	}
 

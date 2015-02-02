@@ -12,9 +12,8 @@ var securityResources = require( '../util/securityResources' );
 router.get( '/', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.notifications.resourceName, securityResources.notifications.permissions.viewNotifications, function( allowed ) {
 		if( allowed ) {
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
 			// Call to notifications service
-			notifications.listNotifications( query, function( err, result ) {
+			notifications.listNotifications( function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

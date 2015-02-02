@@ -8,8 +8,8 @@ var configProperties = require('../../config.json');
 var os = require('os');
 
 
-module.exports.listNotifications = function(q, callback) {
-    dataAccess.listNotifications(q, function(err, body){
+module.exports.listNotifications = function( callback) {
+    dataAccess.listNotifications( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading notifications', null);
