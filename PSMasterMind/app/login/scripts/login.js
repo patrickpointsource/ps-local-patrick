@@ -30,11 +30,11 @@ window.useAdoptedServices = false;
 //window.useAdoptedServices = true;
 
 //demo
-//window.serverLocation = 'https://demo.mastermind.pointsource.com';
-//window.restPath = '/MMNodeDemo/';
-//window.clientBaseURL = 'https://demo.mastermind.pointsource.com/';
-//window.fixUrl = true;
-//window.useAdoptedServices = true;
+window.serverLocation = 'https://demo.mastermind.pointsource.com';
+window.restPath = '/MMNodeDemo/';
+window.clientBaseURL = 'https://demo.mastermind.pointsource.com/';
+window.fixUrl = true;
+window.useAdoptedServices = true;
 
 var helper = (function () {
   var authResult = undefined;
