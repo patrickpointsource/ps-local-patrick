@@ -85,6 +85,12 @@ module.exports.initialize = function(isReinitialization) {
               // give permissions to one member
               if (userId) {
             	  //targetUserIds.push(userId);
+            	  
+            	  for (var k = 0; k < roleNames.length; k ++) {
+            		  if (roleNames[k].toLowerCase() == 'minion')
+            			  roleNames[k] = 'Employee';
+            	  }
+            	  
             	  for (var k = 0; k < roleNames.length; k ++) {
             		  if (!targetUserIds[ roleNames[k] ])
             			  targetUserIds[ roleNames[k] ] = [];
@@ -142,6 +148,13 @@ module.exports.initialize = function(isReinitialization) {
 				  }
 				  
 				  // filter duplicates from nested roles - start from the end
+				  
+				  for (var k =  extractedRoles.length - 1; k >= 0; k --) {
+					  for (var j = 0; j < extractedRoles[k].length; j ++){
+						  if (extractedRoles[k][j].toLowerCase() == 'minion')
+							  extractedRoles[k][j] = 'Employee';
+					  }
+				  }
 				  for (var k =  extractedRoles.length - 1; k >= 0; k --) {
 
 					  for (var j = (k - 1); j >= 0; j --) {

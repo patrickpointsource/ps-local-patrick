@@ -21,20 +21,27 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.getVacations = function() {
       $scope.profileLoaded = true;
-	  VacationsService.getVacations($scope.profileId).then(function(result) {
-	    $scope.vacations = _.sortBy(result, function(vacation) {
-	      return new Date(vacation.startDate);
-	    });
-	    
-	    for(var i = 0; i < $scope.vacations.length; i++) {
-	      Resources.resolve($scope.vacations[i].vacationManager);
-	    }
-	  
-	    $scope.showVacations();
-	  });
+      
+      if ($scope.canViewOtherVacations() || $scope.canViewMyVacations() && $scope.profileId == $scope.me._id)
+		  VacationsService.getVacations($scope.profileId).then(function(result) {
+		    $scope.vacations = _.sortBy(result, function(vacation) {
+		      return new Date(vacation.startDate);
+		    });
+		    
+		    for(var i = 0; i < $scope.vacations.length; i++) {
+		      Resources.resolve($scope.vacations[i].vacationManager);
+		    }
+		  
+		    $scope.showVacations();
+		  });
+      else {
+    	  
+    	  $scope.vacations = [];
+    	  $scope.showVacations();
+      }
   };
   
-  $scope.getVacations();
+  
   
   $scope.prevPage = function() {
 	  $scope.vacationsPage--;
@@ -49,6 +56,16 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.getPersonName = function(person, isSimply, isFirst) {
 	return Util.getPersonName(person, isSimply, isFirst);
   };
+  
+  $scope.canViewOtherVacations = function() {
+		return $rootScope.hasPermissions(CONSTS.VIEW_VACATIONS);
+  };
+  
+  $scope.canViewMyVacations = function() {
+		return $rootScope.hasPermissions(CONSTS.VIEW_MY_VACATIONS);
+  };
+	
+  $scope.getVacations();
   
   $scope.showVacations = function() {
 	if($scope.vacations.length > VACATIONS_PER_PAGE) {
