@@ -4,8 +4,8 @@
  * */
 describe('E2E: GoogleOAuthTest', function() {
 		
-	var USER_NAME = 'aram.hovhannisyan@pointsource.com';
-	var PASSWORD = '********';
+	var USER_NAME = 'psapps@pointsourcellc.com';
+	var PASSWORD = 'ps@pp$777';
 	
 	var sbutton = by.tagName('button');
 	var logonEmail = by.id('Email');

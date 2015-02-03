@@ -190,12 +190,13 @@
 	<script type="text/javascript" src="bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>
 	<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script type="text/javascript" src="login/scripts/login.js"></script>
-    <script src="https://apis.google.com/js/client:platform.js?onload=__onPlatformLoad" async defer></script>
+    <script type="text/javascript" src="login/scripts/loginHelper.js"></script>
     <script>
-        window.___gcfg = { lang: "en-US", parsetags: "onload" };
+    window.___gcfg = { lang: "en-US", parsetags: "onload" };
 
-        function __onPlatformLoad() { angular.bootstrap(document, ["Mastermind"]); }
+    function __onPlatformLoad() { angular.bootstrap(document, ["Mastermind"]); }
     </script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=__onPlatformLoad" async defer></script>
 
   <!-- build:js({.tmp,app}) scripts/scripts.js -->
   <script src="scripts/app.js"></script>

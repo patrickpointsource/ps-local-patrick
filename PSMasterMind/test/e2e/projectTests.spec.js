@@ -6,8 +6,8 @@ describe('E2E: ProejctTests', function() {
     
     var MINIMUM_PROJECTS_COUNT = 45;
     
-    var USER_NAME = 'daniil.dziaruhin@pointsource.com';
-	var PASSWORD = '********';
+    var USER_NAME = 'psapps@pointsourcellc.com';
+    var PASSWORD = 'ps@pp$777';
     
     var sbutton = by.tagName('button');
 	var logonEmail = by.id('Email');

@@ -768,7 +768,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 						if (member.person && member.person.resource == currentUser.about)
 						{
-							hourEntry.expectedHours = Math.round(member.hoursPerWeek / 5);
+							hourEntry.expectedHours = Math.round((member.hoursPerWeek / 5) * 10) / 10;
 							return;
 						}
 					}

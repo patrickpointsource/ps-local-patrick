@@ -67,15 +67,19 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   };
   
   $scope.getDays = function(start, end) {
-    return VacationsService.getDays(start, end);
+  	  return VacationsService.getDays(start, end);
   };
   
   $scope.getNewVacationDuration = function() {
-    return $scope.getDays($scope.vacationStartDate + " " + $scope.vacationStartTime, this.vacationEndDate + " " + this.vacationEndTime);
+  	if($scope.vacationStartDate && $scope.vacationStartTime && this.vacationEndDate && this.vacationEndTime) {
+  		return $scope.getDays($scope.vacationStartDate + " " + $scope.vacationStartTime, this.vacationEndDate + " " + this.vacationEndTime);
+  	}
   };
   
   $scope.getEditVacationDuration = function() {
-    return $scope.getDays(this.vacationEditStartDate + " " + this.vacationEditStartTime, this.vacationEditEndDate + " " + this.vacationEditEndTime);
+  	  if(this.vacationEditStartDate && this.vacationEditStartTime && this.vacationEditEndDate && this.vacationEditEndTime) {
+  	  	  return $scope.getDays(this.vacationEditStartDate + " " + this.vacationEditStartTime, this.vacationEditEndDate + " " + this.vacationEditEndTime);
+  	  }  
   };
   
   $scope.getActualDays = function(startDate, endDate) {
