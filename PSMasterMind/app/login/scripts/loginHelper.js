@@ -97,25 +97,42 @@ var helper = (function () {
     {
         self = self || this;
 
-        gapi.auth.authorize({ client_id: localStorage.client_id, immediate: true, scope: localStorage.scope },
+        if (!localStorage.token)
+            return;
+
+        var token = JSON.parse(localStorage.token);
+
+        gapi.auth.authorize({ client_id: token.client_id, immediate: true, scope: token.scope },
             function (authResult)
             {
-                if (authResult.state.signed_in)
+                if (authResult.status.signed_in)
                 {
+                    delete authResult["g-oauth-window"]; // serialization of this property causes a security error
+
                     localStorage.access_token = authResult.access_token;
                     localStorage.token = JSON.stringify(authResult);
 
                     Resources.updateAuthToken();
 
-                    var expDate = new Date(authResult.expires_at * 1000);
-                    var expTime = expDate - new Date();
+                    var expTime = self.calcExpiration();
 
-                    self.authTimer = setTimeout(function() { self.authorize(self, Resources); },
-                        Math.min(expTime < 0 ? Number.MAX_VALUE : expTime, authResult.expires_in * 1000));
+                    self.authTimer = setTimeout(function() { self.authorize(self, Resources); }, expTime);
                 }
                 else if (authResult.error)
                     console.log("Login error:", authResult.error);
             });
+    },
+
+    calcExpiration: function()
+    {
+        if (!localStorage.token)
+            throw new Error("Access token expiration cannot be calculated: token not found");
+
+        var token = JSON.parse(localStorage.token);
+        var expDate = new Date(token.expires_at * 1000);
+        var expTime = expDate - new Date();
+        
+        return expTime < 0 ? token.expires_in * 1000 : Math.min(expTime, token.expires_in * 1000);
     }
   };
 })();
