@@ -36,19 +36,59 @@ describe('E2E: Dashboard Test Cases >', function() {
 	var hoursEdit = 'hoursEdit';
 	
 	//Current project widget
-	var activeProjectCount = 'activeProjectCount';
-	var backlogProjectCount = 'backlogProjectCount';
-	var pipelineProjectCount = 'pipelineProjectCount';
-	var investmentProjectCount = 'investmentProjectCount';
+	var activeProjectCount = 'activeCount';
+	var backlogProjectCount = 'backlogCount';
+	var pipelineProjectCount = 'pipelineCount';
+	var investmentProjectCount = 'investmentCount';
+	
+	//Staffing deficits
+	var activeProjectDeficitCount = 'activeProjectDeficitCount';
 	
 
 	beforeEach(function() {
 		browser.driver.getCurrentUrl().then(function(url) {
-			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {
-				login();
+			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
+				browser.driver.get('http://localhost:9000/index.html#/');
+ 	           	browser.driver.sleep(1000);
+ 	           	browser.driver.getCurrentUrl().then(function(loginUrl) {
+ 	           		if ( loginUrl.indexOf('http://localhost:9000/login.html') > -1 ) {  //  Re-login if needed
+ 	           			login();
+ 	           		} 
+ 	           	});
 			}
 		});
 	});
+	
+	it('Hours Widget Test: Add\Remove record.', function() {	
+		console.log('> Running: Hours Widget - Add\Remove record.');
+		dashboardHoursWidgetAddRemoveRecordTest();
+	});
+	
+	it('Hours Widget Test: Edit hours value.', function() {	
+		console.log('> Running: Hours Widget - Edit hours value.');
+		dashboardHoursWidgetEditRecordTest();
+	});
+	
+	it('Hours Widget Test: Add absurd value.', function() {	
+		console.log('> Running: Hours Widget - Add absurd value.');
+		dashboardHoursWidgetAddAbsurdValueTest();
+	});
+
+	it('Hours Widget Test: Copy record.', function() {	
+		console.log('> Running: Hours Widget - Copy record.');
+		dashboardHoursWidgetCopyRecordTest();
+	});
+
+	it('Current Project Widget Test', function() {
+		console.log('> Running: Current Project Widget - Compare projects count.');
+		dashboardCurrentProjectsCountTest();
+    });
+	
+	it('Staffing deficits Widget Test', function() {
+		console.log('> Running: Staffing deficits - Compare deficits count.');
+		dashboardStaffingDeficitsCountTest();
+    });
+	
 	
 	var dashboardHoursWidgetAddRemoveRecordTest = function () {
 		browser.wait(function(){	    		
@@ -147,7 +187,62 @@ describe('E2E: Dashboard Test Cases >', function() {
 		    	expect(browser.findElement(byId(loggedHours)).getInnerHtml()).not.toEqual(' hrs');    	
 	    });
 	};
+
+	var dashboardCurrentProjectsCountTest = function () {
+		browser.wait(function(){	    		
+	    		return browser.isElementPresent(by.binding(activeProjectCount));
+	    	}).then(function(){
+	        	
+	    		console.log("> Check current projects count.");
+	    		browser.findElement(by.binding(activeProjectCount)).getText().then(function( activeProjects ) {
+	    			console.log("> Active projects: " + activeProjects);
+	    			browser.findElement(by.binding(backlogProjectCount)).getText().then(function( backlogProjects ) {
+	    				console.log("> Backlog projects: " + backlogProjects);
+	    				browser.findElement(by.binding(pipelineProjectCount)).getText().then(function( pipelineProjects ) {
+	    	    			console.log("> Pipeline projects: " + pipelineProjects);
+	    	    			browser.findElement(by.binding(investmentProjectCount)).getText().then(function( investmentProjects ) {
+	    		    			console.log("> Investment projects: " + investmentProjects);
+	    		    			
+	    		    			browser.get('http://localhost:9000/#/projects?filter=active');
+	    		 	            browser.sleep(1000);
+	    		 	            expect(element.all(by.repeater('project in projects | filter:filterText')).count()).toBeCloseTo(activeProjects);
+	    		 	            
+	    		 	            browser.get('http://localhost:9000/#/projects?filter=backlog');
+	    		 	            browser.sleep(1000);
+	    		 	            expect(element.all(by.repeater('project in projects | filter:filterText')).count()).toBeCloseTo(backlogProjects);
+	    		 	            
+	    		 	            browser.get('http://localhost:9000/#/projects?filter=pipeline');
+	    		 	            browser.sleep(1000);
+	    		 	            expect(element.all(by.repeater('project in projects | filter:filterText')).count()).toBeCloseTo(pipelineProjects);
+	    		 	            
+	    		 	            browser.get('http://localhost:9000/#/projects?filter=investment');
+	    		 	            browser.sleep(1000);
+	    		 	            expect(element.all(by.repeater('project in projects | filter:filterText')).count()).toBeCloseTo(investmentProjects);
+	    		 	            
+	    	    			});
+	    				});
+	    			});
+	    		});
+	    	});
+	};
 	
+	var dashboardStaffingDeficitsCountTest = function () {
+		browser.wait(function(){	    		
+	    		return browser.isElementPresent(by.binding(activeProjectDeficitCount));
+	    	}).then(function(){
+	        	
+	    		console.log("> Check staffing deficits count.");
+	    		browser.findElement(by.binding(activeProjectDeficitCount)).getText().then(function( activeProjectDeficit ) {
+	    			console.log("> Active projects deficit: " + activeProjectDeficit);
+	    		    
+	    			browser.get('http://localhost:9000/index.html#/staffing');
+	    		 	browser.sleep(1000);
+	    		 	expect(element.all(by.repeater('unassignedRole in $data | filter:filterStaffing(filterText)')).count()).toBeCloseTo(activeProjectDeficit);
+	    		 	
+	    		 	browser.get('http://localhost:9000/index.html#/');
+	    		});
+	    	});
+	};    		
 	
 	var addNewHoursRecord = function (hours) {
 		console.log("> Adding hours record.");
@@ -218,26 +313,5 @@ describe('E2E: Dashboard Test Cases >', function() {
 	    	
 	    });
 	};
-	
-	
-	it('Hours Widget Test: Add\Remove record.', function() {	
-		console.log('> Running: Hours Widget - Add\Remove record.');
-		dashboardHoursWidgetAddRemoveRecordTest();
-	});
-	
-	it('Hours Widget Test: Edit hours value.', function() {	
-		console.log('> Running: Hours Widget - Edit hours value.');
-		dashboardHoursWidgetEditRecordTest();
-	});
-	
-	it('Hours Widget Test: Add absurd value.', function() {	
-		console.log('> Running: Hours Widget - Add absurd value.');
-		dashboardHoursWidgetAddAbsurdValueTest();
-	});
-
-	it('Hours Widget Test: Copy record.', function() {	
-		console.log('> Running: Hours Widget - Copy record.');
-		dashboardHoursWidgetCopyRecordTest();
-	});
 	
 });
