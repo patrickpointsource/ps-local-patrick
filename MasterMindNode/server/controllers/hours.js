@@ -6,17 +6,6 @@ var projects = require('./projects.js');
 var _ = require('underscore');
 var validation = require( '../data/validation.js' );
 
-module.exports.listHours = function(q, callback) {
-    dataAccess.listHours(q, function(err, body){
-        if (err) {
-            console.log(err);
-            callback('error loading hours', null);
-        } else {
-            callback(null, body);
-        }
-    });
-};
-
 module.exports.listHoursByPersonAndDates = function(person, startDate, endDate, callback) {
     dataAccess.listHoursByPersonAndDates(person, startDate, endDate, function(err, body){
         if (err) {

@@ -15,30 +15,6 @@ var getExecTime = function(dt){
 	return ((new Date().getTime() - dt.getTime()) / 1000).toFixed(1);
 }
 
-router.get( '/', auth.isAuthenticated, function( req, res ) {
-
-	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
-		if( allowed ) {
-
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-			var now = new Date();
-			 
-			console.log( '\r\nget:hours:start:query:' + JSON.stringify( query ) + '\r\n' );
-
-			hours.listHours( query, function( err, result ) {
-				if( err ) {
-					res.json( 500, err );
-				} else {
-					res.json( result );
-				}
-				
-				console.log( '\r\nget:hours:end:query:' + JSON.stringify( query ) + ':' + getExecTime(now) + '\r\n' );
-			} );
-		}
-	} );
-
-} );
-
 router.get( '/persondates', auth.isAuthenticated, function( req, res ) {
 
     security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
