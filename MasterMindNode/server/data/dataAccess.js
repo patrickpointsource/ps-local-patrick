@@ -1125,7 +1125,6 @@ module.exports.listAssignmentsByPerson = listAssignmentsByPerson;
 
 module.exports.listTasks = listTasks;
 
-module.exports.listHours = listHours;
 module.exports.listHoursByPersonAndDates = listHoursByPersonAndDates;
 module.exports.listHoursByProjectAndDates = listHoursByProjectAndDates;
 module.exports.listHoursByProjectsAndDates = listHoursByProjectsAndDates;
