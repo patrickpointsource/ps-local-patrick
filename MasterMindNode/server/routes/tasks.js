@@ -47,6 +47,26 @@ router.get( '/byname/:name', auth.isAuthenticated, function( req, res ) {
 
 } );
 
+router.get( '/bysubstr/:substr', auth.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions.viewTasks, function( allowed ) {
+		if( allowed ) {
+			var substr = req.params.substr;
+			if( substr ) {
+				tasks.listTasksBySubstr( substr, function( err, result ) {
+					if( err ) {
+						res.json( 500, err );
+					} else {
+						res.json( result );
+					}
+				} );
+			} else {
+				res.json( 500, 'No required name' );
+			}
+		}
+	} );
+
+} );
 
 router.post( '/', auth.isAuthenticated, function( req, res ) {
 
