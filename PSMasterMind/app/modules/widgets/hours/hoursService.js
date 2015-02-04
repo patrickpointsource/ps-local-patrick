@@ -107,9 +107,11 @@ function( $q, Resources ) {
 		
 		var params = {};
 		var personURI = person.about ? person.about : person.resource;
+		
 		params.person = personURI;
 		params.startDate = startDate;
 		params.endDate = endDate;
+		params.t = ( new Date( ) ).getMilliseconds( );
 		
 		Resources.refresh( 'assignments/bytypes/assignmentsByPerson', params ).then( function( result ) {
 
