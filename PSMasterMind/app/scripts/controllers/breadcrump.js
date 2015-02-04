@@ -231,7 +231,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 					         fullName: profile.name
 					     };
 					 }
-					if( profile.accounts.length > 0 ) {
+					if( profile.accounts && profile.accounts.length > 0 ) {
 						if( fromPeopleList ) {
 							RolesService.getRolesMapByResource( ).then( function( map ) {
 								if( profile.primaryRole ) {

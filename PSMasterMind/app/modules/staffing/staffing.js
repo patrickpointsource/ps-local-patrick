@@ -136,14 +136,14 @@ function( $scope, $state, $filter, $q, Resources, RolesService, ProjectsService,
 			for( var b = 0; b < roles.length; b++ ) {
 				var activeRole = roles[ b ];
 
-				if( activeRole.hoursNeededToCover > 0 || addAllRoles ) {
+				if( activeRole.type && activeRole.rate && (activeRole.hoursNeededToCover > 0 || addAllRoles)) {
 					$scope.activeProjectsWithUnassignedPeople[ unassignedIndex++ ] = {
 						clientName: proj.customerName,
 						projectName: proj.name,
 						title: proj.customerName + ': ' + proj.name,
 						projectResource: proj.resource,
 						hours: getHoursDescription( activeRole.rate.fullyUtilized, activeRole.rate.type, activeRole.rate.hoursPerWeek, activeRole.rate.hoursPerMth ),
-						role: $scope.rolesMap[ activeRole.type.resource ].abbreviation,
+						role: $scope.rolesMap[ activeRole.type.resource ] ? $scope.rolesMap[ activeRole.type.resource ].abbreviation: CONSTS.UNSPECIFIED,
 						roleId: activeRole._id,
 						startDate: activeRole.startDate,
 						endDate: activeRole.endDate,
