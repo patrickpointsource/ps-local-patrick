@@ -61,6 +61,34 @@ var getAssignment = function(id, callback) {
     });
 };
 
+var getProjectAssignment = function (project, callback) {
+    listAssignments({}, function (err, body) {
+        if (err) {
+            callback("Can't find assignment for " + project.about, null);
+        } else {
+            var filteredAssignments = _.filter(body.data, function(assign) {
+                if (assign.project.resource == project.about) {
+                    return true;
+                }
+
+                return false;
+            });
+            
+            if (filteredAssignments.length > 0) {
+                var assignment = filteredAssignments[0];
+
+                if (assignment) {
+                    callback(null, assignment);
+                } else {
+                    callback("Can't find assignment for " + project.about, null);
+                }
+            } else {
+                callback("Can't find assignment for " + project.about, null);
+            }
+        }
+    });
+}
+
 var insertAssignment = function(assignmentId, obj, callback) {
     
     var validationMessages = validation.validate(obj, dataAccess.ASSIGNMENTS_KEY);
@@ -301,3 +329,4 @@ module.exports.listCurrentAssigments = listCurrentAssigments;
 module.exports.listAssignmentsByPersonResource = listAssignmentsByPersonResource;
 module.exports.listAssignmentsByPersonResourceAndTimePeriod = listAssignmentsByPersonResourceAndTimePeriod;
 module.exports.listAssignmentsByProjectResourcesAndTimePeriod = listAssignmentsByProjectResourcesAndTimePeriod;
+module.exports.getProjectAssignment = getProjectAssignment;

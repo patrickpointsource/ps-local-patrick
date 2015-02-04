@@ -229,15 +229,34 @@ var insertAssignment = function(assignmentId, obj, callback) {
     });
 };
 
-var deleteProject = function(obj, callback) {
-    dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PROJECTS_KEY, function(err, body){
-        if (err) {
-            console.log(err);
-            callback(err, null);
+var deleteProject = function (obj, callback) {
+    getProject(obj._id, function(projErr, project) {
+        if (projErr) {
+            callback(projErr, null);
         } else {
-            callback(null, body);
+            assignments.getProjectAssignment(project, function (assignmentErr, assignment) {
+                if (assignmentErr) {
+                    callback(assignmentErr, null);
+                } else {
+                    dataAccess.deleteItem(assignment._id, assignment._rev, dataAccess.ASSIGNMENTS_KEY, function (deleteAssignmentErr, deleteAssignemntBody) {
+                        if (assignmentErr) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PROJECTS_KEY, function (err, body) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    callback(null, body + " " + deleteAssignemntBody);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         }
-    });
+    });      
 };
 
 var deleteProjectLink = function(projectId, linkId, obj, callback) {
