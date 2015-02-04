@@ -741,19 +741,19 @@ var listLinksByProject = function( project, callback ) {
 
 };
 
-var listConfiguration = function( q, callback ) {
+var listConfiguration = function( callback ) {
 
 	var result = memoryCache.getObject( CONFIGURATION_KEY );
 	if( result ) {
 		console.log( "read " + CONFIGURATION_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "configuration/" ) );
+		callback( null, prepareRecords( result.data, "members", "configuration/" ) );
 	} else {
 		dbAccess.listConfiguration( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + CONFIGURATION_KEY + " to memory cache" );
 				memoryCache.putObject( CONFIGURATION_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "configuration/" ) );
+			callback( err, prepareRecords( body.data, "members", "configuration/" ) );
 		} );
 	}
 

@@ -3,8 +3,8 @@
 var dataAccess = require('../data/dataAccess');
 var validation = require( '../data/validation.js' );
 
-module.exports.listConfiguration = function(q, callback) {
-    dataAccess.listConfiguration(q, function(err, body){
+module.exports.listConfiguration = function(callback) {
+    dataAccess.listConfiguration( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading configuration', null);
@@ -61,8 +61,8 @@ module.exports.getConfiguration = function(id, callback) {
     });
 };
 
-module.exports.getConfigurationByName = function(q, sectionName, callback) {
-    dataAccess.listConfiguration(q, function(err, body){
+module.exports.getConfigurationByName = function(sectionName, callback) {
+    dataAccess.listConfiguration( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading configuration', null);
