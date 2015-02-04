@@ -1174,7 +1174,7 @@ angular.module('Mastermind.services.projects')
     		var committed = project.committed;
     		
     		if(endDate && endDate < today){
-    			if(!committed){
+    			if(!committed && (type != "invest")) {
     				ret = 'Deal Lost';
     			}
     			else {

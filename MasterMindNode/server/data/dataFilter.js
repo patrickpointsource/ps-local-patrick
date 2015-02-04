@@ -387,7 +387,7 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 			// checks for complete projects
 			if (status == "complete" &&
 					project.endDate < util.getTodayDate()  &&
-							project.committed == true ) {
+							(project.committed == true || project.type == "invest") ) {
 				checked = true;
 				return;				
 			}
@@ -395,7 +395,8 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 			// checks for deallost projects
 			if (status == "deallost" &&
 					project.endDate < util.getTodayDate()  &&
-							project.committed == false ) {
+							project.committed == false && 
+                                    project.type != "invest") {
 				checked = true;
 				return;				
 			}
