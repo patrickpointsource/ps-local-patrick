@@ -28,7 +28,7 @@
 		        </div>
         
 		        <div class="pull-right btn-group btn-group-sm dashboard-actions" ng-show="subMode != 'custom'">
-		        	<a ng-click="copyHoursEntry()"><i class="fa fa-copy"></i> <span class="hidden-xs hidden-sm">Copy yesterday</span></a> 
+		        	<a id="hoursCopy" ng-click="copyHoursEntry()"><i class="fa fa-copy"></i> <span class="hidden-xs hidden-sm">Copy yesterday</span></a> 
 		        </div>
 	       </div>
 	    </div>
@@ -40,7 +40,7 @@
 		      <div id="hoursValidationDiv" class="alert alert-danger">
                 <a class="close" ng-click="hideMessages()">&times;</a>
                     <ul>
-                        <li ng-repeat="message in hoursValidation">{{message}}</li>
+                        <li ng-repeat="message in hoursValidation" id="hoursValidationMsg{{$index}}">{{message}}</li>
                     </ul>
                 </div>
 		    </div>
@@ -227,13 +227,13 @@
 	                    <span class="search-icon" ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined" >
 			                <i class="fa fa-search"></i>
 			            </span>
-	        			<ul class="dropdown-menu ddProjectsTasksMenu" role="menu" aria-labelledby="ddProjectsTasksMenu">
-						  <li id="loggedProjectSelector{{$index}}" role="presentation" ng-repeat="tp in projectTasksList" ng-show="!tp.isTask || (tp.isTask && tp.visible)">
+	        			<ul id="ddlProjectsTasks{{$index}}" class="dropdown-menu ddProjectsTasksMenu" role="menu" aria-labelledby="ddProjectsTasksMenu">
+						  <li role="presentation" ng-repeat="tp in projectTasksList" ng-show="!tp.isTask || (tp.isTask && tp.visible)">
 						  	<a class="menu-item task-menu-item" role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
 							  	<span class="task-icon" ng-if="tp.icon" style="{{tp.iconCss}}"><i class="fa {{tp.icon}}"></i></span>
 							  	<span class="task-name" style="width: -webkit-calc(100% - 20px);width: calc(100% - 20px);">{{tp.name}}</span>
 						  	</a>
-						  	<a class="menu-item project-menu-item" role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
+						  	<a class="menu-item project-menu-item" role="menuitem" href="javascript:void(0)" ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
 							  	<span class="project-icon" ></span>
 							  	<span class="project-name" style="width: -webkit-calc(100% - 15px);width: calc(100% - 15px);">{{tp.name}}</span>
 							  	<span class="project-customer-name" style="width: -webkit-calc(100% - 25px);width: calc(100% - 25px);">{{tp.customerName}}</span>
@@ -257,7 +257,7 @@
 		                <span class="hours-logged-details visible-xs" ng-class="{'visible-mobile': !hourEntry.hoursRecord.editMode}" ng-hide="hourEntry.hoursRecord.editMode" ng-click="showHideDesc(e, hourEntry)">
 		                    <i class="fa fa-chevron-down"></i>
 		                </span>
-		                <span class="hours-logged-action edit" ng-if="canEditHours()" ng-hide="hourEntry.hoursRecord.editMode" ng-click="editHoursEntry($event, hourEntry)">
+		                <span id="hoursEdit{{$index}}" class="hours-logged-action edit" ng-if="canEditHours()" ng-hide="hourEntry.hoursRecord.editMode" ng-click="editHoursEntry($event, hourEntry)">
 		                    <i class="fa fa-pencil"></i>
 		                </span>
 		                <span class="hours-logged-action delete visible-xs" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded" ng-click="deleteHoursEntry($event, hourEntry, $index)">

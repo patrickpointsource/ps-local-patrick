@@ -91,27 +91,33 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 	$scope.getSecurityInformation = function(callback) {
 	  $scope.userSecurityGroups = [];
-	  Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
-        $scope.securityGroups = result.members;
+	  
+	  if ($scope.canViewSecurityRoles()) {
 
-        Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
-          $scope.userRoles = userRoles.members;
-
-          var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
-
-          if(userRole) {
-              $scope.userRole = userRole;
-              $scope.prepareUserRoles();
-              callback();
-          } else {
-            Resources.create('userroles', {userId: $scope.profile.googleId, roles: []}).then(function(result){
-                $scope.userRole = result;
-                $scope.updateUserRoles();
-                callback();
-            });
-          }
-        });
-      });
+		  Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
+	        $scope.securityGroups = result.members;
+	
+	        Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
+	          $scope.userRoles = userRoles.members;
+	
+	          var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
+	
+	          if(userRole) {
+	              $scope.userRole = userRole;
+	              $scope.prepareUserRoles();
+	              callback();
+	          } else {
+	            Resources.create('userroles', {userId: $scope.profile.googleId, roles: []}).then(function(result){
+	                $scope.userRole = result;
+	                $scope.updateUserRoles();
+	                callback();
+	            });
+	          }
+	        });
+	      });
+	  } else if (callback)
+		  callback();
+	  
 	};
 
 	$scope.prepareUserRoles = function() {
@@ -814,6 +820,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	// check for permissions
 	$scope.canEditOtherPeopleHours = function() {
 		return $rootScope.hasPermissions(CONSTS.EDIT_HOURS_PERMISSION);
+	};
+	
+	$scope.canViewSecurityRoles = function() {
+		return $rootScope.hasPermissions(CONSTS.VIEW_SECURITY_ROLES);
 	};
 	
 	///////////Profile Hours/////////
