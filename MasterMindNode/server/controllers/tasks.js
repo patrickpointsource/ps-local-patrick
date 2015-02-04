@@ -25,6 +25,17 @@ module.exports.listTasksByName = function(name, callback) {
     });
 };
 
+module.exports.listTasksBySubstr = function(substr, callback) {
+    dataAccess.listTasksBySubstr(substr, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading tasks by ' + substr, null);
+        } else {
+            callback(null, body);
+        }
+    });
+};
+
 
 
 module.exports.insertTask = function(obj, callback) {

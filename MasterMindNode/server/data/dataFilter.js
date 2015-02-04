@@ -641,6 +641,24 @@ var filterTasksByName = function(name, tasks) {
 	return result;
 };
 
+/**
+ * Returns tasks filtered by substr
+ * 
+ * @param {Object} name
+ * @param {Object} tasks
+ */
+var filterTasksBySubstr = function(name, tasks) {
+	var result = [];	
+	var regex = new RegExp(name, 'gi');
+	
+	_.each(tasks, function(task) {
+		//if (task.name && task.name.toLowerCase().indexOf(name.toLowerCase()) > -1) {
+		if (task.name && regex.exec(task.name)) {
+			result.push(task);
+		}
+	});
+	return result;
+};
 
 /**
  * Returns links filtered by project
@@ -712,6 +730,7 @@ module.exports.filterRequests = filterRequests;
 
 //tasks filter functions
 module.exports.filterTasksByName = filterTasksByName;
+module.exports.filterTasksBySubstr = filterTasksBySubstr;
 
 //links filter functions
 module.exports.filterLinksByProject = filterLinksByProject;

@@ -668,6 +668,24 @@ var listTasksByName = function( name, callback ) {
 
 };
 
+var listTasksBySubstr = function( substr, callback ) {
+	var result = memoryCache.getObject( TASKS_KEY );
+	
+	if( result ) {
+		console.log( "read " + TASKS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterTasksBySubstr(substr, result.data), "members", "tasks/" ) );
+	} else {
+		dbAccess.listTasks( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + TASKS_KEY + " to memory cache" );
+				memoryCache.putObject( TASKS_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterTasksBySubstr(substr, body.data), "members", "tasks/" ) );
+		} );
+	}
+
+};
+
 var listRoles = function( q, callback ) {
 
 	var result = memoryCache.getObject( ROLES_KEY );
@@ -1149,6 +1167,7 @@ module.exports.listUserRoles = listUserRoles;
 module.exports.listUserRolesByGoogleId = listUserRolesByGoogleId;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
 module.exports.listTasksByName = listTasksByName;
+module.exports.listTasksBySubstr = listTasksBySubstr;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;
