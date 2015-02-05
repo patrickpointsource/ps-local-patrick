@@ -116,7 +116,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			projectHours: {}
 		},
 		locations: {},
-		output: "csv",
+		output: "none",
 		roles: {}
 	};
 	

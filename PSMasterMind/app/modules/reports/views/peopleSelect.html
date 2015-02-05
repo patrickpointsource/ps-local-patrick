@@ -373,22 +373,27 @@
 					You can choose external outputs or select none and only see the report within MasterMind.
 				</div>
 				<br />
-				<div class="groups">
-					<label>
-						<input type="radio" name="output" ng-model="params.output" value="csv" />
-						CSV, no graphs
-					</label>
-					<br />
-					<label>
-						<input type="radio" name="output" ng-model="params.output" value="both" />
-						CSV & Graphs
-					</label>
-					<br />
-					<label>
-						<input type="radio" name="output" ng-model="params.output" value="graphs" />
-						Graphs only
-					</label>
-				</div>
+			    <div class="groups">
+			        <label>
+			            <input type="radio" name="output" ng-model="params.output" value="none"/>
+			            None
+			        </label>
+			        <br/>
+			        <label>
+			            <input type="radio" name="output" ng-model="params.output" value="csv"/>
+			            CSV, no graphs
+			        </label>
+			        <br/>
+			        <label>
+			            <input type="radio" name="output" ng-model="params.output" value="both"/>
+			            CSV & Graphs
+			        </label>
+			        <br/>
+			        <label>
+			            <input type="radio" name="output" ng-model="params.output" value="graphs"/>
+			            Graphs only
+			        </label>
+			    </div>
 			</div>
 		</div>
 		<div class="col-md-4">
