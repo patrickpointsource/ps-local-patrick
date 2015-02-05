@@ -27,7 +27,8 @@ exports.config = {
   // find chromedriver. This will be passed to the selenium jar as
   // the system property webdriver.chrome.driver. If null, selenium will
   // attempt to find chromedriver using PATH.
-  chromeDriver: './selenium/chromedriver',
+  // chromeDriver: './selenium/chromedriver',
+  chromeDriver:'/opt/google/chrome',
   // If true, only chromedriver will be started, not a standalone selenium.
   // Tests for browsers other than chrome will not run.
   chromeOnly: false,
