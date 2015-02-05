@@ -40,7 +40,8 @@
         "karma-ng-html2js-preprocessor": "~0.1.0",
         "grunt-contrib-less": "~0.8.2",
         "grunt-protractor-runner": "~1.2.1",
-        "protractor": "~1.6.1"
+        "protractor": "~1.6.1",
+        "jasmine-reporters": "~1.0.1"
     },
     "engines": {
         "node": ">=0.8.0"
