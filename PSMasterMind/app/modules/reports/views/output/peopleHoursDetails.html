@@ -81,7 +81,7 @@
 								<label>Actual, Expected, Projected Hours</label>
 								<div class="personDetailsGraph"
 									ng-include src="'modules/reports/views/verticalbarChart.html'" 
-									onload="elemId='projectedHoursVerticalReport' + $index;chartData=getPersonProjectedHoursVerticalbarChartData(person);width=300" 
+									onload="elemId='projectedHoursVerticalReport' + $index;chartData=getPersonProjectedHoursVerticalbarChartData(person);width=300;xAxisTitle='projects'" 
 									id="{{'projectedHoursVerticalReport' + $index}}" ng-if="output.peopleDetails">
 								</div>
 							</div>

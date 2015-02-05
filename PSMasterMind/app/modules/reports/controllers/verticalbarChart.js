@@ -19,6 +19,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	  var dataMap = $scope.chartData;
 	  var width = $scope.width ? $scope.width: 580;
 	  var height = $scope.height ? $scope.height: 210;
+	  var xTitle = $scope.xAxisTitle ? $scope.xAxisTitle: 'role';
 	  
 	  //var svg = dimple.newSvg("#" + elId + "chartContainer", 580, 210);
 	 var svg = dimple.newSvg("#" + elId + "chartContainer", width, height);
@@ -84,7 +85,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
     var y3 = myChart.addMeasureAxis("y", "actual hours");
     var y4 = myChart.addMeasureAxis("y", "expected hours to date");
     
-    x.title = 'role';
+    x.title = xTitle;
     
     y4.overrideMin = 0;    
     y4.overrideMax = maxValue;
