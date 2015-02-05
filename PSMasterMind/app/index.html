@@ -140,28 +140,29 @@
       <div class="modal modalYesNoCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <ng-include src="'modalTemplate'" />
       </div>
-
-      <script type="text/ng-template" id="modalTemplate">
-          <div class="modal-dialog">
-              <div class="modal-content panel panel-info">
-                  <div class="modal-header">
-                      <h4 class="modal-title" id="myModalLabel">{{getModal().title}}</h4>
-                  </div>
-                  <div class="modal-body panel-body">
-                  {{getModal().text}}
-                  </div>
-                  <div class="modal-footer">
-                      <div>
-                        <a class="cursor-pointer" ng-click="modalDialog.noHandler()" style="padding-right: 10px;">{{modalDialog.no}}</a>
-                        <a class="cursor-pointer" ng-show="modalDialog.cancel" ng-click="modalDialog.cancelHandler()" data-dismiss="modal">{{modalDialog.cancel}}</a>
-                      </div>
-                      <button type="button" class="btn btn-modal-primary pull-right" ng-click="modalDialog.okHandler()">{{modalDialog.ok}}</button>
-                  </div>
-              </div>
-          </div>
-      </script>
+      
     </div>
   </div>
+
+    <script type="text/ng-template" id="modalTemplate">
+        <div class="modal-dialog">
+            <div class="modal-content panel panel-info">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">{{getModal().title}}</h4>
+                </div>
+                <div class="modal-body panel-body">
+                    {{getModal().text}}
+                </div>
+                <div class="modal-footer">
+                    <div>
+                        <a class="cursor-pointer" ng-click="modalDialog.noHandler()" style="padding-right: 10px;">{{modalDialog.no}}</a>
+                        <a class="cursor-pointer" ng-show="modalDialog.cancel" ng-click="modalDialog.cancelHandler()" data-dismiss="modal">{{modalDialog.cancel}}</a>
+                    </div>
+                    <button type="button" class="btn btn-modal-primary pull-right" ng-click="modalDialog.okHandler()">{{modalDialog.ok}}</button>
+                </div>
+            </div>
+        </div>
+    </script>
 
   <!-- build:js scripts/modules.js -->
   <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
