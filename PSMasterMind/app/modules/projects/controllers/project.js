@@ -1985,8 +1985,7 @@ else if( role.percentageCovered == 0 )
 		Resources.refresh( 'people/me' ).then( function( me ) {
 			$scope.me = me;
 
-			if( $scope.me.groups && ( ( $scope.me.groups.indexOf( 'Management' ) !== -1 ) || ( $scope.me.groups.indexOf( 'Executives' ) !== -1 ) || ( $scope.project.creator && $scope.project.creator.resource === $scope.me.about ) ) ) {
-
+			if( $rootScope.hasPermissions(CONSTS.EDIT_PROJECTS) || ( $scope.project.created && $scope.project.created.resource === $scope.me.about ) ) {
 				$scope.canDeleteProject = true;
 			}
 
