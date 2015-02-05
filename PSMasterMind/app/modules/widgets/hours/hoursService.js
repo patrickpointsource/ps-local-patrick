@@ -98,6 +98,8 @@ function( $q, Resources ) {
 		
 		var deferred = $q.defer( );
 
+		var now = new Date();
+		
 		var startDateMoment = moment( startDate );
 		var endDateMoment = moment( endDate );
 		// Adding one to be inclusive
@@ -111,13 +113,19 @@ function( $q, Resources ) {
 		params.person = personURI;
 		params.startDate = startDate;
 		params.endDate = endDate;
-		params.t = ( new Date( ) ).getMilliseconds( );
+		params.t = now.getMilliseconds( );
+		
+		logger.log('getHoursRecordsBetweenDatesUsingGet:before:0');
 		
 		Resources.refresh( 'assignments/bytypes/assignmentsByPerson', params ).then( function( result ) {
 
-				var projectAssignments = result;
+			logger.log('getHoursRecordsBetweenDatesUsingGet:step:1:' + ((new Date()).getTime() - now.getTime()));
+			
+			var projectAssignments = result;
 
-				Resources.refresh( 'hours/persondates', params ).then( function( result ) {
+			Resources.refresh( 'hours/persondates', params ).then( function( result ) {
+				
+				logger.log('getHoursRecordsBetweenDatesUsingGet:step:2:' + ((new Date()).getTime() - now.getTime()));
 
 						var hoursResults = result.members;
 						var ret = [ ], i;
@@ -247,12 +255,15 @@ function( $q, Resources ) {
 							}
 						}
 
+						logger.log('getHoursRecordsBetweenDatesUsingGet:before:projects:' + ((new Date()).getTime() - now.getTime()));
 						
 						var params = {};
 						params.resource = projectURIs;
 						Resources.refresh( 'projects/byTypes/projectsByResources', params).then( function( result ) {
 							var projects = result.data;
 
+							logger.log('getHoursRecordsBetweenDatesUsingGet:after:projects:' + ((new Date()).getTime() - now.getTime()));
+							
 							// Fill in all the resolved projects
 							for( var i = 0; i < ret.length; i++ ) {
 								var day = ret[ i ];
@@ -721,8 +732,12 @@ function( $q, Resources ) {
 					updFields.push(attr);
 				}
 			}
-
+			
+			var now = new Date();
+			
 			if( !query.project && query.person && query.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
+				logger.log('query:before:hours/persondates:before:' + ((new Date()).getTime() - now.getTime()));
+				
 				Resources.get( 'hours/persondates', {
 					person: query.person.resource,
 					startDate: startDate,
@@ -731,6 +746,8 @@ function( $q, Resources ) {
 					// to prevent from getting values from cache
 					t: ( new Date( ) ).getMilliseconds( )
 				} ).then( function( result ) {
+					logger.log('query:before:hours/persondates:after:' + ((new Date()).getTime() - now.getTime()));
+					
 					deferred.resolve( result );
 				} );
 			} else if( !query.person && (onlyProjects || (query.project && query.project.resource) )  && startDate && endDate && orEmpty && onlyAndDates ) {

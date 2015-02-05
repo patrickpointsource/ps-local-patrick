@@ -50,7 +50,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			result = $scope.profileId && $scope.profileId == $scope.me._id;
 		
 		return result;
-	}
+	};
 
 		
 	$scope.setSubmode = function( e, subMode ) {
@@ -481,7 +481,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		// $scope.deleteHoursRecord(index)
 		$scope.selected.hoursEntries.splice( index, 1 );
 
-		if( hourEntry.hoursRecord )
+		if( hourEntry.hoursRecord && $scope.canDeleteMyHours())
 			Resources.remove( hourEntry.hoursRecord.resource, hourEntry.hoursRecord ).then( function( ) {
 				// $scope.hoursRequest();
 				$scope.validateAndCalculateTotalHours( );
@@ -490,6 +490,15 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		//}
 	};
 
+	$scope.canDeleteMyHours = function() {
+		var result = $rootScope.hasPermissions(CONSTS.DELETE_MY_HOURS_PERMISSION);
+		
+		if (!result)
+			result = $scope.profileId && $scope.profileId == $scope.me._id;
+		
+		return result;
+	};
+		 
 	$scope.saveHoursEntry = function( e, hourEntry, isAdded ) {
 		var tmpHours = hourEntry.hoursRecord.hours;
 		var tmpDesc = hourEntry.hoursRecord.description;

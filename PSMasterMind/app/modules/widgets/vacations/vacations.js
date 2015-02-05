@@ -65,7 +65,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 		return $rootScope.hasPermissions(CONSTS.VIEW_MY_VACATIONS);
   };
 	
-  $scope.getVacations();
+  
   
   $scope.showVacations = function() {
 	if($scope.vacations.length > VACATIONS_PER_PAGE) {
@@ -523,5 +523,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.newDescChanged = function() {
     $scope.newDescription = this.newDescription;
-  }
+  };
+  
+  $scope.getVacations();
 } ] );
