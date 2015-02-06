@@ -70,7 +70,12 @@ exports.config = {
   // and
   // https://code.google.com/p/selenium/source/browse/javascript/webdriver/capabilities.js
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    "chromeOptions": {
+        binary: '/opt/google/chrome/google-chrome',
+        args: [],
+        extensions: [],
+    }
   },
 
   // ----- More information for your tests ----
