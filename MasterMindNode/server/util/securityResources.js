@@ -52,7 +52,8 @@ var securityResources = {
         resourceName: 'projects',
         permissions: {
 	       	viewProjects : 'viewProjects',
-        	editProjects : 'editProjects',
+            editProjects : 'editProjects',
+            deleteProjects : 'deleteProjects',
         	viewProjectLinks : 'viewProjectLinks',
         	editProjectLinks : 'editProjectLinks',
         	viewRoles : 'viewRoles',

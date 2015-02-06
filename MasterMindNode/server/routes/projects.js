@@ -386,7 +386,7 @@ router.
 delete ( '/:id', auth.isAuthenticated,
 function( req, res ) {
 
-	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function( allowed ) {
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.deleteProjects, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
 			req.body._id = id;

@@ -680,6 +680,7 @@ var fullResourcesMap = [
       "permissions": [
         "viewProjects",
         "editProjects",
+        "deleteProjects",
         "viewProjectLinks",
         "editProjectLinks",
         "viewRoles",

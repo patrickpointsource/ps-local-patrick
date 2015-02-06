@@ -235,25 +235,26 @@ var deleteProject = function (obj, callback) {
             callback(projErr, null);
         } else {
             assignments.getProjectAssignment(project, function (assignmentErr, assignment) {
-                if (assignmentErr) {
-                    callback(assignmentErr, null);
-                } else {
+                if (!assignmentErr) {
+                    console.log(assignmentErr);
+
                     dataAccess.deleteItem(assignment._id, assignment._rev, dataAccess.ASSIGNMENTS_KEY, function (deleteAssignmentErr, deleteAssignemntBody) {
-                        if (assignmentErr) {
-                            console.log(err);
-                            callback(err, null);
+                        if (deleteAssignmentErr) {
+                            console.log(deleteAssignmentErr);
                         } else {
-                            dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PROJECTS_KEY, function (err, body) {
-                                if (err) {
-                                    console.log(err);
-                                    callback(err, null);
-                                } else {
-                                    callback(null, body + " " + deleteAssignemntBody);
-                                }
-                            });
+                            console.log("Assignment deleted: " + deleteAssignemntBody);
                         }
                     });
-                }
+                } 
+                
+                dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PROJECTS_KEY, function (err, body) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        callback(null, body);
+                    }
+                });
             });
         }
     });      
