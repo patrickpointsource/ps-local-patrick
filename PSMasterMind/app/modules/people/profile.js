@@ -429,8 +429,112 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			var currentMonth = new Date( ).getMonth( );
 			var currentYear = new Date( ).getFullYear( );
 			var prHours = [];
+			
 			$scope.projectHours = [];
+			
+			ProjectsService.getProjectsByIds(projects).then(function(resultProjects){
+				resultProjects = resultProjects.data ? resultProjects.data: [];
+				
+				for( var projCounter = 0; projCounter < resultProjects.length; projCounter++ ) {
+				
+					var projectHour = {
+						projectURI: resultProjects[projCounter].about,
+						project: resultProjects[projCounter],
+						hours: [ ],
+						collapsed: false,
+						icon: $scope.projectStateIcon( resultProjects[projCounter] ),
+						totalHours: 0
+					};
+					var taskHour = null;
+					var tasksMap = {};
+					var tasksHoursMap = {
+						hours: [ ],
+						show: true
+					};
+
+					for( var hoursCounter = 0; hoursCounter < $scope.hours.length; hoursCounter++ ) {
+						taskHour = null;
+						var hoursData = $scope.hours[ hoursCounter ];
+						var tmpD = hoursData.date.split( '-' );
+						var hoursMonth = parseInt( tmpD[ 1 ] ) - 1;
+						var hoursYear = parseInt( tmpD[ 0 ] );
+						var timeValue = 0;
+
+						if( hoursData.project && hoursData.project.resource == resultProjects[projCounter].about ) {
+							timeValue = hoursData.hours;
+							projectHour.totalHours += timeValue;
+							projectHour.hours.push( {
+								hour: hoursData,
+								show: ( currentMonth === hoursMonth && currentYear === hoursYear ),
+								value: timeValue
+							} );
+						} else if( hoursData.task ) {
+							timeValue = hoursData.hours;
+							if( !tasksMap[ hoursData.task.resource ] ) {
+								tasksMap[ hoursData.task.resource ] = hoursData.task;
+							}
+							if( !tasksHoursMap[ hoursData.task.resource ] ) {
+								tasksHoursMap[ hoursData.task.resource ] = [ ];
+								tasksHoursMap[ hoursData.task.resource ].totalHours = 0;
+							}
+							tasksHoursMap[ hoursData.task.resource ].totalHours += timeValue;
+							tasksHoursMap[ hoursData.task.resource ].push( {
+								hour: hoursData,
+								show: ( currentMonth == hoursMonth && currentYear == hoursYear )
+							} );
+						}
+					}
+
+					projectHour.hours.sort( function( h1, h2 ) {
+						if( new Date( h1.hour.date ) > new Date( h2.hour.date ) ) {
+							return -1;
+						} else if( new Date( h1.hour.date ) < new Date( h2.hour.date ) ) {
+							return 1;
+						}
+						return 0;
+					} );
+
+					prHours.push( projectHour );
+					$scope.taskHours = [ ];
+					
+					for( var taskResource in tasksMap ) {
+						tasksHoursMap[ taskResource ].sort( function( h1, h2 ) {
+							if( new Date( h1.hour.date ) > new Date( h2.hour.date ) ) {
+								return -1;
+							} else if( new Date( h1.hour.date ) < new Date( h2.hour.date ) ) {
+								return 1;
+							}
+							return 0;
+						} );
+						$scope.taskHours.push( _.extend( {
+							hours: tasksHoursMap[ taskResource ],
+							totalHours: tasksHoursMap[ taskResource ].totalHours
+						}, tasksMap[ taskResource ] ) );
+					}
+			
+					
+				}
+				
+				
+				$scope.projectHours = prHours;
+				
+				if( !isReinit ) {
+					$scope.currentWeek( );
+				} else {
+					$scope.showWeek( );
+				}
+				
+				if( cb )
+					cb( );
+					
+					
+			});
+			
+			/*
 			for( var projCounter = 0; projCounter < projects.length; projCounter++ ) {
+				
+				
+				
 				var project = ProjectsService.getForEditByURI( projects[ projCounter ] ).then( function( result ) {
 
 					var projectHour = {
@@ -517,8 +621,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					if( cb )
 						cb( );
 				} );
+				
+				
+				
 			}
 			$scope.projectHours = prHours;
+			*/
+			
 		}, sort );
 	};
 
@@ -939,7 +1048,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	} );
 
 	$scope.$on( 'hours:selectedNew', function( event, day ) {
-		$scope.recalculateCircle( day );
+		// todo: perform a bunch of db requests on each click on UI: disable it 
+		//$scope.recalculateCircle( day );
 	} );
 
 	$scope.weekHoursByProject = [ ];

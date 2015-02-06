@@ -1466,6 +1466,16 @@ angular.module('Mastermind.services.projects')
     	return deferred.promise;
     };
     
+    this.getProjectsByIds = function(projectIds) {
+    	
+    	for (var k = 0; k < projectIds.length; k ++)
+    		projectIds[k] = projectIds[k].replace('projects/', '');
+    	
+    	return Resources.get( "projects/byids/" + projectIds.join(','), {
+		  t: (new Date()).getMilliseconds()
+    	});
+    };
+	  
     this.getBookingForecastDataUsingQuery = function(projects, showPipeline){
     	
     	//First get the total nuber of billable hours per month

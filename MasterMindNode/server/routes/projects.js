@@ -31,6 +31,36 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 
 } );
 
+router.get( '/byids/:ids', auth.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
+		if( allowed ) {
+			
+			var query = {_id: { $in: []}};
+			
+			var ids = req.params.ids ? req.params.ids: '';
+			
+			ids = ids.split(',');
+			
+			for (var k = 0; k < ids.length; k ++){
+				//if (ids[k].indexOf('projects') == -1)
+				//	ids[k] = 'projects/' + ids[k];
+				
+				query['_id']['$in'].push(ids[k]);
+			}
+			
+			projects.listProjects( query, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	} );
+
+} );
+
 router.get( '/executiveSponsor/:executiveSponsor', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {

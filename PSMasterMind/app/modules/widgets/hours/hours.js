@@ -1480,6 +1480,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.addHours = function( hourEntry, isAdded ) {
 		$scope.validateAndCalculateTotalHours( );
 
+		//$scope.hideHoursSpinner = false;
+		
 		// update only passed hourEntry
 		HoursService.updateHours( [ hourEntry.hoursRecord ] ).then( function( updatedRecords ) {
 			// update with received
@@ -1504,6 +1506,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			if( isAdded )
 				$scope.addNewHoursRecord( $scope.selected );
 
+			//$scope.hideHoursSpinner = true;
 			$scope.$emit( 'hours:added', $scope.selected );
 		} );
 
