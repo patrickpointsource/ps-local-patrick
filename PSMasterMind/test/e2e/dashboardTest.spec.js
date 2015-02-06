@@ -3,9 +3,9 @@
  * 
  * */
 describe('E2E: Dashboard Test Cases >', function() {
-	
-	var USER_NAME = 'psapps@pointsourcellc.com';
-	var PASSWORD = 'ps@pp$777';
+	 
+    var USER_NAME = 'psapps@pointsourcellc.com';
+    var PASSWORD = 'ps@pp$777';
 	
 	var HOURS_PROJECT = "MasterMind";
 	var HOURS_VALUE = 8;
@@ -41,8 +41,12 @@ describe('E2E: Dashboard Test Cases >', function() {
 	var pipelineProjectCount = 'pipelineCount';
 	var investmentProjectCount = 'investmentCount';
 	
-	//Staffing deficits
+	//Staffing deficits widget
 	var activeProjectDeficitCount = 'activeProjectDeficitCount';
+	
+	//My projects widget
+	var projectNameBinding = 'project.name';
+	var myProjects = [];
 	
 
 	beforeEach(function() {
@@ -183,8 +187,12 @@ describe('E2E: Dashboard Test Cases >', function() {
 	    		browser.findElement(by.id(hoursCopy)).click();
 	    		browser.sleep(2000);	
 	    		
-	    		console.log("> Verifying that hours are not empty.");
-		    	expect(browser.findElement(byId(loggedHours)).getInnerHtml()).not.toEqual(' hrs');    	
+	    		console.log("> Verifying that copy button was clicked.");
+	    		browser.findElement(byId(hoursValidationMsg)).then(function ( msg ) {
+			    	expect(msg.getInnerHtml()).toEqual('No hours to copy found for the last week.');  
+	    		}, function( err ) {
+	    			expect(browser.findElement(byId(loggedHours)).getInnerHtml()).not.toEqual(' hrs');
+	    	    }); 
 	    });
 	};
 
@@ -242,7 +250,39 @@ describe('E2E: Dashboard Test Cases >', function() {
 	    		 	browser.get('http://localhost:9000/index.html#/');
 	    		});
 	    	});
-	};    		
+	};  
+	
+	var dashboardMyProjectsTest = function () {
+		browser.wait(function(){	    		
+	    		return browser.isElementPresent(by.binding(projectNameBinding));
+	    	}).then(function(){
+	        	
+	    		console.log("> Check My projects.");
+	    		browser.findElements(by.binding(projectNameBinding)).then(function( projects ) {
+	    			var projectsCount = 0;
+	    			for (var i in projects){
+	    				var project = projects[i];
+	    				project.getText().then(function( projectTitle ) {
+	    					if (projectTitle) {
+	    						projectsCount++;
+	    						console.log("> Project title: " + projectTitle);
+	    						var isMyProject = false;
+	    						for (var j in myProjects) {
+	    							if (projectTitle.indexOf(myProjects[j]) > -1) {
+	    								isMyProject = true;
+	    								break;
+	    							}
+	    						}
+	    						expect(isMyProject).toBe(true);
+	    					}
+	    					expect(projectsCount).not.toBeGreaterThan(myProjects.length);
+	    				});
+	    			}
+	    			
+	    		});
+	    		
+	    	});
+	}; 
 	
 	var addNewHoursRecord = function (hours) {
 		console.log("> Adding hours record.");
