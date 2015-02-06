@@ -4,8 +4,8 @@
  * */
 describe('E2E: Dashboard Test Cases >', function() {
 	 
-    var USER_NAME = 'psapps@pointsourcellc.com';
-    var PASSWORD = 'ps@pp$777';
+	var USER_NAME = 'psapps@pointsourcellc.com';
+	var PASSWORD = 'ps@pp$777';
 	
 	var HOURS_PROJECT = "MasterMind";
 	var HOURS_VALUE = 8;
@@ -40,6 +40,7 @@ describe('E2E: Dashboard Test Cases >', function() {
 	var backlogProjectCount = 'backlogCount';
 	var pipelineProjectCount = 'pipelineCount';
 	var investmentProjectCount = 'investmentCount';
+	var addProjectBehaviour = by.css('[ng-click="createProject()"]');
 	
 	//Staffing deficits widget
 	var activeProjectDeficitCount = 'activeProjectDeficitCount';
@@ -83,9 +84,14 @@ describe('E2E: Dashboard Test Cases >', function() {
 		dashboardHoursWidgetCopyRecordTest();
 	});
 
-	it('Current Project Widget Test', function() {
+	it('Current Project Widget Test: Projects count.', function() {
 		console.log('> Running: Current Project Widget - Compare projects count.');
 		dashboardCurrentProjectsCountTest();
+    });
+	
+	it('Current Project Widget Test: Add project', function() {
+		console.log('> Running: Current Project Widget - Add project.');
+		dashboardCurrentProjectsAddProjectTest();
     });
 	
 	it('Staffing deficits Widget Test', function() {
@@ -230,6 +236,18 @@ describe('E2E: Dashboard Test Cases >', function() {
 	    	    			});
 	    				});
 	    			});
+	    		});
+	    	});
+	};
+	
+	var dashboardCurrentProjectsAddProjectTest = function () {
+		browser.wait(function() {	    		
+	    		return browser.isElementPresent(addProjectBehaviour);
+	    	}).then(function() {
+	    		console.log("> Click add project.");
+	    		browser.findElement(addProjectBehaviour).click().then(function () {
+	    			expect(browser.getCurrentUrl()).toContain('http://localhost:9000/index.html#/projects/new');
+	    			browser.get('http://localhost:9000/index.html#/');
 	    		});
 	    	});
 	};
