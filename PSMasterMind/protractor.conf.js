@@ -28,7 +28,7 @@ exports.config = {
   // the system property webdriver.chrome.driver. If null, selenium will
   // attempt to find chromedriver using PATH.
   // chromeDriver: './selenium/chromedriver',
-  chromeDriver:'/opt/google/chrome/google-chrome',
+  chromeDriver:'/opt/google/chrome',
   // If true, only chromedriver will be started, not a standalone selenium.
   // Tests for browsers other than chrome will not run.
   chromeOnly: false,
@@ -70,12 +70,7 @@ exports.config = {
   // and
   // https://code.google.com/p/selenium/source/browse/javascript/webdriver/capabilities.js
   capabilities: {
-    'browserName': 'chrome',
-    "chromeOptions": {
-        binary: '/opt/google/chrome/google-chrome',
-        args: [],
-        extensions: [],
-    }
+    'browserName': 'chrome'
   },
 
   // ----- More information for your tests ----
