@@ -573,12 +573,12 @@ else if( role.percentageCovered == 0 )
 
                         $scope.$emit( 'project:save' );
                         
-						// after creating a project, if clicked Done, go to projects list
+						// after creating a project, if clicked Done, go to the read-only page of the project you just created (JH: 80555)
 						// if clicked Save, make project editable (redirect to Edit page)
 						if( $scope.editDone ) {
 							$rootScope.formDirty = false;
-							$state.go( 'projects.index', {
-								filter: 'all'
+							$state.go( 'projects.show', {
+								projectId: $scope.projectId
 							} );
 							return;
 						} else {
