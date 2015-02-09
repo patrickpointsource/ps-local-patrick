@@ -248,6 +248,7 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
     
     	// initialize permissionsMap
 	      people.getPersonByGoogleId(req.user, function(err, result){
+	    	  console.log('inside:me:user:' + req.user);
 	    	  
 	    	  security.getUserRoles(result, function(userRoleErr, userRole) {
 	    		  var resources = [];
@@ -255,15 +256,22 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 	    		  for (var k = 0; k < userRole.roles.length; k ++)
 	    			  resources.push(userRole.roles[k].resource);
 	    		  
+	    		  console.log('inside:me:resources:' + resources.join(','));
+	    		  
 	    		  securityRoles.listSecurityRolesByResources( resources, function( securityRolesErr, securityRoles ) {
 	    			  var allResource = [];
 	    			  
 	    			  // merge all permissions
 	    			  var existingResource = null;
 	    			  
+	    			  console.log('inside:me:securityRoles.members:' + (_.map(securityRoles.members, function(m){ return (m.name + ':' + m.about)})).join(','));
+	    			  
 	    			  for (var k = 0; k < securityRoles.members.length; k ++) {
 	    				  for (var j = 0; j < securityRoles.members[k].resources.length; j ++){
 	    					  existingResource = _.findWhere(allResource, {name: securityRoles.members[k].resources[j].name});
+	    					  
+	    					  console.log('inside:me:resource:name:' + securityRoles.members[k].resources[j].name + ':permissions=' + securityRoles.members[k].resources[j].permissions.join(','));
+	    	    			  
 	    					  
 	    					  if (existingResource)
 	    						  existingResource.permissions = existingResource.permissions.concat(securityRoles.members[k].resources[j].permissions);

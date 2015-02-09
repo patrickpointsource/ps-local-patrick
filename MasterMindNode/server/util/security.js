@@ -57,8 +57,9 @@ module.exports.allowedPermissions = function(userId, resources, callback) {
 
 // false - start up call, true - reinitialization
 module.exports.initialize = function(isReinitialization) {
-    console.log("Initializing security. Reinitialization: " + isReinitialization);
+    console.log("initialize:Initializing security. Reinitialization: " + isReinitialization);
     var errStr = [];
+    
     dataAccess.listSecurityRoles( function (err, roles) {
         var securityRoles = roles.members;
 
@@ -212,6 +213,8 @@ module.exports.initialize = function(isReinitialization) {
 					  processedGroupsMap[role] = true;
 				  }
 			  }
+			  
+			  console.log('initialize:' + (_.map(targetUserIds, function(val, key){return (key + ':' + val.length)})).join(','));
           });
 
         });
@@ -221,9 +224,7 @@ module.exports.initialize = function(isReinitialization) {
 };
 
 var initializeSecurityRoles = function(securityRoles, isReinitialization, callback) {
-  /*acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
-    console.log("Daniil allows on project before initSecurityRoles: " + permissions["projects"]);
-  });*/
+			 
   if(isReinitialization) {
     var removedRolesCount = 0;
     for(var i = 0; i < securityRoles.length; i++) {
@@ -249,6 +250,8 @@ var initializeSecurityRoles = function(securityRoles, isReinitialization, callba
 var initializeAllows = function(securityRoles, callback) {
 	//console.log('\r\ninitializeAllows:start')
 
+	//console.log('initializeAllows:'
+			
 	var allAllowsCount = 0; //* fullResourcesMap.length;
 
   for(var s = 0; s < securityRoles.length; s++) {
@@ -260,11 +263,11 @@ var initializeAllows = function(securityRoles, callback) {
     var allowsCount = 0;
     var resources = securityRoles[i].resources;
       for (var k=0; k < resources.length; k++) {
-          //console.log("allowing " + securityRoles[i].name + " " + resources[k].name + " " + resources[k].permissions);
+          console.log("initializeAllows:name=" + securityRoles[i].name + ':' + securityRoles[i]._id + ":resource=" + resources[k].name + ":permissions=" + resources[k].permissions.join(','));
 
           allow(securityRoles[i].name, resources[k].name, resources[k].permissions, function(err) {
             if(err) {
-              console.log("Error while allowing permissions for groups: " + err);
+              console.log("initializeAllows:Error while allowing permissions for groups: " + err);
             }
             allowsCount++;
             if(allowsCount == allAllowsCount) {
