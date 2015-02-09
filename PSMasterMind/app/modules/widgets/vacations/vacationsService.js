@@ -262,17 +262,32 @@ function( $q, Resources, HoursService ) {
   this.getTaskForVacationUsingGet = function(type) {
 	    
 	  	var deferred = $q.defer();
-	    var taskName = (type == this.VACATION_TYPES.Appointment) ? "Appointment" : "Vacation";
+	    //var taskName = (type == this.VACATION_TYPES.Appointment) ? "Appointment" : "Vacation";
 		
-	    Resources.get( "tasks/byname/" + taskName, {
+	    //Resources.get( "tasks/byname/" + taskName, {
+	    var substr = type = type.replace('/', '|');
+	    substr = substr.replace(/\s+/g, '|');
+	    
+	    Resources.get( "tasks/bysubstr/" + substr, {
 	    	t: (new Date()).getMilliseconds()
 	    }).then(function(result) {
 	        if(result.count == 0) {
-	            Resources.create('tasks', taskQuery).then(function() {
-	              this.getTaskForVacation(type).then(function(res) {
-	                deferred.resolve(res);
-	              });
+	            var taskQuery = {
+            		name : type
+	            };
+	            
+	        	Resources.create('tasks', taskQuery).then(function(createdTask) {
+	              //this.getTaskForVacation(type).then(function(res) {
+	                deferred.resolve({
+	                	_id: createdTask._id,
+	                	name: createdTask.name,
+	                	rev: createdTask.rev,
+	                	route: createdTask.route
+	                });
+	              //});
 	            });
+	            
+	        	deferred.resolve(null);
 	          } else {
 	            deferred.resolve(result.members[0]);
 	          }

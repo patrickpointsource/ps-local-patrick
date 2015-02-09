@@ -275,21 +275,21 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		} ).then( function( data ) {
 			$scope.projectAssignments = data;
 
-			var startDate = new Date( project.startDate );
-			var initStartDate = new Date( project.initStartDate );
+			var startDate = moment( project.startDate );
+			var initStartDate = moment( project.initStartDate );
 			var endDate;
 			var initEndDate;
 			if( project.endDate ) {
-				endDate = new Date( project.endDate );
+				endDate = moment( project.endDate );
 			}
 			if( project.initEndDate ) {
-				initEndDate = new Date( project.initEndDate );
+				initEndDate = moment( project.initEndDate );
 			}
 			var roles = project.roles;
 
 			//Check if the START date has been updated.
 			if( startDateShifted ) {
-				var delta = startDate - initStartDate;
+			    var delta = startDate.diff(initStartDate, 'days');
 				for( var i = 0; i < roles.length; i++ ) {
 					var role = roles[ i ];
 					//Shift the start date
@@ -298,19 +298,10 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 						if( role.startDate == project.initStartDate ) {
 							role.startDate = project.startDate;
 						} else {
-							var tmpDate = new Date( role.startDate );
-							tmpDate = new Date( tmpDate.getTime( ) + delta );
-							tmpDate = $scope.validateShiftDates( startDate, endDate, tmpDate );
-							role.startDate = getShortDate( tmpDate );
+						    var shiftedDate = moment(role.startDate).add(delta, 'days');
+						    role.startDate = $scope.validateShiftDates(startDate, endDate, shiftedDate).format('YYYY-MM-DD');
 						}
 					}
-					//Shift the end date
-					/*if(role.endDate){
-					 var tmpDate = new Date(role.endDate);
-					 tmpDate = new Date(tmpDate.getTime() + delta);
-					 tmpDate = $scope.validateShiftDates(startDate, endDate, tmpDate);
-					 role.endDate = getShortDate(tmpDate);
-					 }*/
 
 					$scope.shiftAssignments( role, delta, 0 );
 				}
@@ -319,8 +310,8 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			//Check if the END date has been updated.
 			if( endDateShifted ) {
 				// end date just shifted
-				if( initEndDate ) {
-					var delta = endDate - initEndDate;
+			    if (initEndDate) {
+			        var delta = endDate.diff(initEndDate, 'days');
 					for( var i = 0; i < roles.length; i++ ) {
 						var role = roles[ i ];
 						//Shift the end date
@@ -328,21 +319,12 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 							if( role.endDate == project.initEndDate ) {
 								role.endDate = project.endDate;
 							} else {
-								var tmpDate = new Date( role.endDate );
-								tmpDate = new Date( tmpDate.getTime( ) + delta );
-								tmpDate = $scope.validateShiftDates( startDate, endDate, tmpDate );
-								role.endDate = getShortDate( tmpDate );
+							    var shiftedDate = moment(role.endDate).add(delta, 'days');
+							    role.endDate = $scope.validateShiftDates(startDate, endDate, shiftedDate).format('YYYY-MM-DD');
 							}
 						} else {
 							role.endDate = project.endDate;
 						}
-						//Shift the start date
-						/*if(role.start){
-						 var tmpDate = new Date(role.startDate);
-						 tmpDate = new Date(tmpDate.getTime() + delta);
-						 tmpDate = $scope.validateShiftDates(startDate, endDate, tmpDate);
-						 role.startDate = getShortDate(tmpDate);
-						 }*/
 
 						$scope.shiftAssignments( role, 0, delta );
 					}
@@ -360,48 +342,43 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				}
 			}
 
-			// save assignments after project
-			//if ($scope.projectAssignments)
-			//	AssignmentService.save($scope.project, $scope.projectAssignments);
-
 			callback( );
 		} );
 	};
 
-	$scope.validateShiftDates = function( projectStartDate, projectEndDate, tmpDate ) {
+	$scope.validateShiftDates = function (projectStartDate, projectEndDate, date) {
+	    var returnDate = date;
+	    if (date.isBefore(projectStartDate)) {
+	        returnDate = projectStartDate;
+	    }
 		if( projectEndDate ) {
-			if( tmpDate > projectEndDate ) {
-				tmpDate = projectEndDate;
-			}
-		}
-		if( tmpDate < projectStartDate ) {
-			tmpDate = projectStartDate;
+		    if (date.isAfter(projectEndDate)) {
+		        returnDate = projectEndDate;
+		    }
 		}
 
-		return tmpDate;
+		return returnDate;
 	};
 
 	$scope.shiftAssignments = function( role, startDelta, endDelta ) {
-		for( var i = 0; i < $scope.project.roles.length; i++ ) {
+	    for( var i = 0; i < $scope.project.roles.length; i++ ) {
+	        var roleStartDate = moment($scope.project.roles[i].startDate);
+	        var roleEndDate = moment($scope.project.roles[i].endDate);
 			for( var j = 0; j < $scope.project.roles[ i ].assignees.length; j++ ) {
 				var assignment = $scope.project.roles[i].assignees[ j ];
 				if( assignment.role && assignment.role.resource.indexOf( role._id ) > -1 ) {
 					// if start date changed
 					if( startDelta != 0 ) {
-						// shift start
-						var tmpDate = new Date( assignment.startDate );
-						tmpDate = new Date( tmpDate.getTime( ) + startDelta );
-						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-						assignment.startDate = getShortDate( tmpDate );
+					    // shift start
+					    var shiftedDate = moment(assignment.startDate).add(startDelta, 'days');
+					    assignment.startDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
 					}
 
 					// if end date changed
 					if( endDelta != 0 ) {
-						//shift end
-						var tmpDate = new Date( assignment.endDate );
-						tmpDate = new Date( tmpDate.getTime( ) + endDelta );
-						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-						assignment.endDate = getShortDate( tmpDate );
+					    //shift end
+					    var shiftedDate = moment(assignment.endDate).add(endDelta, 'days');
+					    assignment.endDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
 					}
 
 					// if endDate was set or removed, change assignment endDate
@@ -417,20 +394,16 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			if( assignment.role.resource.indexOf( role._id ) > -1 ) {
 				// if start date changed
 				if( startDelta != 0 ) {
-					// shift start
-					var tmpDate = new Date( assignment.startDate );
-					tmpDate = new Date( tmpDate.getTime( ) + startDelta );
-					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-					assignment.startDate = getShortDate( tmpDate );
+				    // shift start
+				    var shiftedDate = moment(assignment.startDate).add(startDelta, 'days');
+				    assignment.startDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
 				}
 
 				// if end date changed
 				if( endDelta != 0 ) {
 					//shift end
-					var tmpDate = new Date( assignment.endDate );
-					tmpDate = new Date( tmpDate.getTime( ) + endDelta );
-					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-					assignment.endDate = getShortDate( tmpDate );
+				    var shiftedDate = moment(assignment.endDate).add(endDelta, 'days');
+				    assignment.endDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
 				}
 
 				// if endDate was set or removed, change assignment endDate
@@ -1985,8 +1958,7 @@ else if( role.percentageCovered == 0 )
 		Resources.refresh( 'people/me' ).then( function( me ) {
 			$scope.me = me;
 
-			if( $scope.me.groups && ( ( $scope.me.groups.indexOf( 'Management' ) !== -1 ) || ( $scope.me.groups.indexOf( 'Executives' ) !== -1 ) || ( $scope.project.creator && $scope.project.creator.resource === $scope.me.about ) ) ) {
-
+			if ($rootScope.hasPermissions(CONSTS.DELETE_PROJECTS) || ($scope.project.created && $scope.project.created.resource === $scope.me.about)) {
 				$scope.canDeleteProject = true;
 			}
 

@@ -152,6 +152,7 @@ angular.module('Mastermind')
       editGroups: "Edit groups",
       viewProjects: "View projects",
       editProjects: "Edit projects",
+      deleteProjects: "Delete projects",
       viewProjectLinks: "View project links",
       editProjectLinks: "Edit project links",
       viewRoles: "View project roles",
@@ -246,6 +247,7 @@ angular.module('Mastermind')
       "permissions": [
         "viewProjects",
         "editProjects",
+        "deleteProjects",
         "viewProjectLinks",
         "editProjectLinks",
         "viewRoles",

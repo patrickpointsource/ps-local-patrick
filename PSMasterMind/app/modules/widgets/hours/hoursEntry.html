@@ -269,7 +269,7 @@
 		                <span id="hoursAdd{{$index}}" class="hours-logged-add" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry, true)">
 		                    Add
 		                </span>
-		                <span id="hoursDelete{{$index}}" class="hours-logged-action hidden-xs" ng-if="canEditHours()" ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
+		                <span id="hoursDelete{{$index}}" class="hours-logged-action hidden-xs" ng-if="canEditHours() && canDeleteMyHours()" ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
 		                    <i class="fa fa-times"></i>
 		                </span>
 	        		</div>

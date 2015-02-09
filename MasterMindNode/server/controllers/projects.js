@@ -181,7 +181,6 @@ var listLinksByProject = function(id, callback) {
 var listAssignments = function(id, callback) {
 	
 	//TODO filter by project id
-	
 	assignments.listAssignments( function(err, body){
         if (err) {
             console.log(err);
