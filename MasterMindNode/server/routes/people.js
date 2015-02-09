@@ -20,10 +20,7 @@ router.get('/', util.isAuthenticated, function(req, res){
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 
 		{
-		    var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-		    console.log("query=" + JSON.stringify(query));
-		
-		    people.listPeople(query, function(err, result){
+		    people.listPeople( function(err, result){
 		        if(err){
 		            res.json(500, err);
 		        } else {
@@ -47,8 +44,7 @@ router.get('/filter', util.isAuthenticated, function(req, res){
 			
 			if (roleIds.length == 0) {
 				//Get list of people if filter is empty
-				var query = req.query["query"] ? JSON.parse(req.query["query"]): {};
-				people.listPeople(query, function(err, result){
+				people.listPeople( function(err, result){
 					if(err){
 						res.json(500, err);
 					} else {

@@ -5,8 +5,8 @@ var util = require('../util/util');
 var _ = require('underscore');
 var validation = require( '../data/validation.js' );
 
-module.exports.listRoles = function(q, callback) {
-    dataAccess.listRoles(q, function(err, body){
+module.exports.listRoles = function(callback) {
+    dataAccess.listRoles( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading roles', null);

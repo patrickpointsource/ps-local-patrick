@@ -27,7 +27,7 @@ var HOURS_PER_MONTH = 180;
 
 var rolesFromDb = [];
 
-dataAccess.listRoles({}, function(err, body){
+dataAccess.listRoles( function(err, body){
     if (err) {
       var msg = "project validation, error loading roles";
       console.log(msg + ": " + err, null);

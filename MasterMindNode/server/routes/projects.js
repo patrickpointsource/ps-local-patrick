@@ -17,9 +17,25 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-			
-			projects.listProjects( query, function( err, result ) {
+			projects.listProjects( function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	} );
+
+} );
+
+router.get( '/byids/:ids', auth.isAuthenticated, function( req, res ) {
+
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
+		if( allowed ) {
+			var ids = req.params.ids ? req.params.ids: '';
+			ids = ids.split(',');
+			projects.listProjectsByIds( ids, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
@@ -289,8 +305,7 @@ router.get( '/:id/assignments', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.assignments.resourceName, securityResources.assignments.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-			projects.listAssignments( id, query, function( err, result ) {
+			projects.listAssignments( id, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
@@ -356,7 +371,7 @@ router.
 delete ( '/:id', auth.isAuthenticated,
 function( req, res ) {
 
-	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function( allowed ) {
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.deleteProjects, function( allowed ) {
 		if( allowed ) {
 			var id = req.params.id;
 			req.body._id = id;

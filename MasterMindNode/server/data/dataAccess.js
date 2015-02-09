@@ -163,15 +163,14 @@ var filterRecordsByStartEndDates = function(data, startDate, endDate) {
 	return result;
 };
 
-var listProjects = function( q, callback ) {
+var listProjects = function( callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	var data = null;
 
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-
-		callback( null, queryRecords( result, q, null, "projects/" ) );
+		callback( null, prepareRecords( result.data, null, "projects/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
@@ -179,11 +178,28 @@ var listProjects = function( q, callback ) {
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 
-			callback( err, queryRecords( body, q, null, "projects/" ) );
+			callback( err, prepareRecords( body.data, null, "projects/" ) );
 		} );
 	}
 
 };
+
+var listProjectsByIds = function( ids, callback ) {
+	var result = memoryCache.getObject( PROJECTS_KEY );
+	if( result ) {
+		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterProjectsByIds(ids, result.data), "members", "people/" ) );
+	} else {
+		dbAccess.listProjects( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				memoryCache.putObject( PROJECTS_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterProjectsByIds(ids, body.data), "members", "people/" ) );
+		} );
+	}
+};
+
 
 var listProjectsByExecutiveSponsor = function( roleResource, callback ) {
 
@@ -333,34 +349,68 @@ var checkProjectForAssignmentsAndPerson = function(project, assignments, personR
 }
 
 var getProfileByGoogleId = function( id, callback ) {
-	var query = {
-		googleId: id
-	};
-	listPeople( query, function( err, list ) {
-		if( !err ) {
-			callback( null, list["members"][ 0 ] );
-		} else {
-			callback( err, null );
-		}
-	} );
-};
-
-var listPeople = function( q, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "people/" ) );
+		callback( null, prepareRecords( dataFilter.filterPeopleByGoogleIds(id, result.data), "members", "people/" )["members"][ 0 ] );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterPeopleByGoogleIds(id, body.data), "members", "people/" )["members"][ 0 ] );
 		} );
 	}
+};
 
+var listPeople = function( callback ) {
+	var result = memoryCache.getObject( PEOPLE_KEY );
+	if( result ) {
+		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		callback( null, prepareRecords( result.data, "members", "people/" ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( body.data, "members", "people/" ) );
+		} );
+	}
+};
+
+var listPeopleByNames = function( names, callback ) {
+	var result = memoryCache.getObject( PEOPLE_KEY );
+	if( result ) {
+		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterPeopleByNames(names, result.data), "members", "people/" ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterPeopleByNames(names, body.data), "members", "people/" ) );
+		} );
+	}
+};
+
+var listPeopleByGoogleIds = function( googleIds, callback ) {
+	var result = memoryCache.getObject( PEOPLE_KEY );
+	if( result ) {
+		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterPeopleByGoogleIds(googleIds, result.data), "members", "people/" ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterPeopleByGoogleIds(googleIds, body.data), "members", "people/" ) );
+		} );
+	}
 };
 
 var listPeopleByRoles = function( roleIds, includeInactive, fields, callback ) {
@@ -485,7 +535,7 @@ var listPeopleByPerson = function(person, callback ) {
 
 var listActivePeopleByAssignments = function(fields, callback ) {
 	var activePeopleResources = [];
-	listAssignments(null, function (err, assignments) {
+	listAssignments( function (err, assignments) {
 		if (err) {
 			callback(err, null);
 		} else {
@@ -532,7 +582,7 @@ var listActivePeopleByAssignments = function(fields, callback ) {
 
 var listCurrentAssigments = function(callback ) {
 
-	listAssignments(null, function (err, assignments) {
+	listAssignments( function (err, assignments) {
 		if (err) {
 			callback(err, null);
 		} else {
@@ -564,7 +614,7 @@ var listCurrentAssigments = function(callback ) {
 
 var listAssignmentsByPerson = function(resource, callback) {
 	
-    listAssignments(null, function(err, result){
+    listAssignments( function(err, result){
         if (err) {
             console.log(err);
             callback('error loading assignments by person', null);
@@ -590,15 +640,7 @@ var listAssignmentsByPerson = function(resource, callback) {
 };
 
 
-var listAssignments = function( q, callback ) {
-    if( !validQuery( q ) ) {
-        callback( null, {
-            about: 'assignments',
-            count: 0,
-            data: [ ]
-        } );
-        return;
-    }
+var listAssignments = function( callback ) {
     
 	var result = memoryCache.getObject( ASSIGNMENTS_KEY );
 	var finalRecords = [];
@@ -606,7 +648,7 @@ var listAssignments = function( q, callback ) {
 	
 	if( result ) {
 		console.log( "read " + ASSIGNMENTS_KEY + " from memory cache" );
-		finalRecords = queryRecords( result, q, null, "projects/", "/assignments" );
+		finalRecords = prepareRecords( result.data, null, "projects/", "/assignments" );
 		
 		for (i = 0; i < finalRecords.data.length; i ++)
 		      generateProperties(finalRecords.data[i].members, "assignments/");
@@ -621,7 +663,7 @@ var listAssignments = function( q, callback ) {
 			
 			console.log('\r\n\r\nloading:assignments:q=' + JSON.stringify(q) + '\r\n');
 			
-			 finalRecords = queryRecords( body, q, null, "projects/", "/assignments" );
+			finalRecords = prepareRecords( body.data, null, "projects/", "/assignments" );
 			
 			for (i = 0; i < finalRecords.data.length; i ++)
               generateProperties(finalRecords.data[i].members, "assignments/");
@@ -668,19 +710,55 @@ var listTasksByName = function( name, callback ) {
 
 };
 
-var listRoles = function( q, callback ) {
+var listTasksBySubstr = function( substr, callback ) {
+	var result = memoryCache.getObject( TASKS_KEY );
+	
+	if( result ) {
+		console.log( "read " + TASKS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterTasksBySubstr(substr, result.data), "members", "tasks/" ) );
+	} else {
+		dbAccess.listTasks( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + TASKS_KEY + " to memory cache" );
+				memoryCache.putObject( TASKS_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterTasksBySubstr(substr, body.data), "members", "tasks/" ) );
+		} );
+	}
+
+};
+
+var listTasksBySubstr = function( substr, callback ) {
+	var result = memoryCache.getObject( TASKS_KEY );
+	
+	if( result ) {
+		console.log( "read " + TASKS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterTasksBySubstr(substr, result.data), "members", "tasks/" ) );
+	} else {
+		dbAccess.listTasks( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + TASKS_KEY + " to memory cache" );
+				memoryCache.putObject( TASKS_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterTasksBySubstr(substr, body.data), "members", "tasks/" ) );
+		} );
+	}
+
+};
+
+var listRoles = function( callback ) {
 
 	var result = memoryCache.getObject( ROLES_KEY );
 	if( result ) {
 		console.log( "read " + ROLES_KEY + " from memory cache" );
-		callback( null, queryRecords( result, q, "members", "roles/" ) );
+		callback( null, prepareRecords( result.data, "members", "roles/" ) );
 	} else {
 		dbAccess.listRoles( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( ROLES_KEY, body );
 			}
-			callback( err, queryRecords( body, q, "members", "roles/" ) );
+			callback( err, prepareRecords( body.data, "members", "roles/" ) );
 		} );
 	}
 
@@ -1106,6 +1184,7 @@ var getItem = function( id, callback ) {
 };
 
 module.exports.listProjects = listProjects;
+module.exports.listProjectsByIds = listProjectsByIds;
 module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
 module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
 module.exports.listProjectsByStatuses = listProjectsByStatuses;
@@ -1118,6 +1197,8 @@ module.exports.listPeopleByRoles = listPeopleByRoles;
 module.exports.listPeopleByIsActiveFlag = listPeopleByIsActiveFlag;
 module.exports.listPeopleWithPrimaryRole = listPeopleWithPrimaryRole;
 module.exports.listPeopleByGroups = listPeopleByGroups;
+module.exports.listPeopleByNames = listPeopleByNames;
+module.exports.listPeopleByGoogleIds = listPeopleByGoogleIds;
 module.exports.listActivePeopleByAssignments = listActivePeopleByAssignments;
 module.exports.listAssignments = listAssignments;
 module.exports.listCurrentAssigments = listCurrentAssigments;
@@ -1149,6 +1230,7 @@ module.exports.listUserRoles = listUserRoles;
 module.exports.listUserRolesByGoogleId = listUserRolesByGoogleId;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
 module.exports.listTasksByName = listTasksByName;
+module.exports.listTasksBySubstr = listTasksBySubstr;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;

@@ -300,7 +300,7 @@ module.exports = function(params) {
 	};
 	
 	var migrateServicesEstimate = function(callback) {
-		projects.listProjects(null, function(err, body) {
+		projects.listProjects( function(err, body) {
 			if (err) {
 				callback('error loading projects', null);
 			} else {
@@ -322,7 +322,7 @@ module.exports = function(params) {
 	};
 	
 	var removeProjectEstimateFields = function(callback) {
-		projects.listProjects(null, function(err, body) {
+		projects.listProjects( function(err, body) {
 			if (err) {
 				callback('error loading projects', null);
 			} else {
@@ -419,15 +419,10 @@ module.exports = function(params) {
 	
 		var names = [];
 		for (var i = 0; i < inactivePeople.length; i++) {
-			names[i] = {
-				name : inactivePeople[i].fullName
-			};
+			names[i] = inactivePeople[i].fullName;
 		}
-	
-		var query = {
-			$or : names
-		};
-		people.listPeople(query, function(err, body) {
+		
+		dataAccess.listPeopleByNames(names, function(err, body) {
 			if (err) {
 				callback('error loading people', null);
 			} else {

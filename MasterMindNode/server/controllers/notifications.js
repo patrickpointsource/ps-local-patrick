@@ -1,6 +1,7 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
+var util = require('../util/util');
 var emailSender = require('../util/emailSender');
 var smtpHelper = require('../util/smtpHelper');
 var validation = require( '../data/validation.js' );
@@ -78,10 +79,9 @@ var sendEmailTo = function(notification) {
   
   var user;
   
-  dataAccess.listPeople(query, function(err, result) {
+  dataAccess.getItem(util.getIDfromResource(notification.person.resource), function(err, user) {
     if(!err) {
-      if(result.members.length > 0) {
-        user = result.members[0];
+      if(user) {
         var message = "<h3>" + notification.header + "</h3><br/><br/>"  + notification.text + "<br/>";
         message += smtpHelper.getServerInformation("NodeJS service", os.hostname(), configProperties.env);
         message += "<br/><br/>Sincerely Yours, <br/><strong>MasterMind Notice.</strong>";

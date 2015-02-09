@@ -53,6 +53,50 @@ var checkPersonByRole = function(person, roleId, includeInactive, callback) {
 };
 
 
+
+/**
+ * Returns people filtered by google ids
+ * 
+ * @param {Object} googleIds
+ * @param {Object} people
+ */
+
+var filterPeopleByGoogleIds = function(googleIds, people) {
+	
+	var result = [];
+	googleIds = (googleIds instanceof Array) ? googleIds : [googleIds];
+	
+	_.each(people, function(person) {
+		_.each(googleIds, function(googleId) {
+			if (person.googleId == googleId) {
+				result.push(person);
+			}
+		});
+	});
+	return result;
+};
+
+
+/**
+ * Returns people filtered by names
+ * 
+ * @param {Object} names
+ * @param {Object} people
+ */
+
+var filterPeopleByNames = function(names, people) {
+	var result = [];
+	names = (names instanceof Array) ? names : [names];
+	_.each(people, function(person) {
+		_.each(names, function(name) {
+			if (person.name == name) {
+				result.push(person);
+			}
+		});
+	});
+	return result;
+};
+
 /**
  * Returns people by isActive flag
  * 
@@ -166,6 +210,28 @@ var filterProjectsBySponsors = function(roleResources, projects) {
 	return filterProjectsByRoleResources(['executiveSponsor','salesSponsor'], roleResources, projects);
 };
 
+
+/**
+ * Returns projects filtered by ids
+ * 
+ * @param {Object} ids
+ * @param {Object} projects
+ */
+
+var filterProjectsByIds = function(ids, projects) {
+	
+	var result = [];
+	ids = (ids instanceof Array) ? ids : [ids];
+	
+	_.each(projects, function(project) {
+		_.each(ids, function(id) {
+			if (project._id == id) {
+				result.push(project);
+			}
+		});
+	});
+	return result;
+};
 
 /**
  * Returns projects filtered by role resources
@@ -641,6 +707,24 @@ var filterTasksByName = function(name, tasks) {
 	return result;
 };
 
+/**
+ * Returns tasks filtered by substr
+ * 
+ * @param {Object} name
+ * @param {Object} tasks
+ */
+var filterTasksBySubstr = function(name, tasks) {
+	var result = [];	
+	var regex = new RegExp(name, 'gi');
+	
+	_.each(tasks, function(task) {
+		//if (task.name && task.name.toLowerCase().indexOf(name.toLowerCase()) > -1) {
+		if (task.name && regex.exec(task.name)) {
+			result.push(task);
+		}
+	});
+	return result;
+};
 
 /**
  * Returns links filtered by project
@@ -683,8 +767,11 @@ module.exports.filterPeopleByRoles = filterPeopleByRoles;
 module.exports.filterPeopleByIsActiveFlag = filterPeopleByIsActiveFlag;
 module.exports.filterPeopleWithPrimaryRole = filterPeopleWithPrimaryRole;
 module.exports.filterPeopleByGroups = filterPeopleByGroups;
+module.exports.filterPeopleByGoogleIds = filterPeopleByGoogleIds;
+module.exports.filterPeopleByNames = filterPeopleByNames;
 
 // projects filter functions
+module.exports.filterProjectsByIds = filterProjectsByIds;
 module.exports.filterProjectsByExecutiveSponsor = filterProjectsByExecutiveSponsor;
 module.exports.filterProjectsBySponsors = filterProjectsBySponsors;
 module.exports.filterProjectsByRoleResources = filterProjectsByRoleResources;
@@ -712,6 +799,7 @@ module.exports.filterRequests = filterRequests;
 
 //tasks filter functions
 module.exports.filterTasksByName = filterTasksByName;
+module.exports.filterTasksBySubstr = filterTasksBySubstr;
 
 //links filter functions
 module.exports.filterLinksByProject = filterLinksByProject;
