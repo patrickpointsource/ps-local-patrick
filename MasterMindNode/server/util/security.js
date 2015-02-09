@@ -532,7 +532,8 @@ module.exports.removeRole = function(role, callback) {
 };
 
 var addRole = function(userId, roles, isReinitialization, callback) {
-    //console.log('\r\naddRole:userId:' + userId + ':roles:' + JSON.stringify(roles))
+    console.log('\r\naddRole:userId:' + userId + ':roles:' + JSON.stringify(roles) + ':isReinitialization=' + isReinitialization);
+    
     if(isReinitialization) {
       acl.userRoles( userId, function(err, actualRoles) {
         /*if(userId == "110740462676845328422") {
