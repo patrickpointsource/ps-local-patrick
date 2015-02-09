@@ -96,38 +96,11 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	 */
 
 	this.getCurrentAndFurtureAssignmentsForProject = function( projectURI ) {
-		if (window.useAdoptedServices) {
-			var params = {};
-			params.projectResource = projectURI;
-			return Resources.refresh("assignments/bytypes/assignmentsByProject", params);
-		}
-		else {
-			return this.getCurrentAndFurtureAssignmentsForProjectUsingQuery(projectURI);
-		}
-
+		var params = {};
+		params.projectResource = projectURI;
+		return Resources.refresh("assignments/bytypes/assignmentsByProject", params);
 	};
 		
-	this.getCurrentAndFurtureAssignmentsForProjectUsingQuery = function( projectURI ) {
-		var deferred = $q.defer( );
-
-		var query = {
-			'project.resource': projectURI
-		};
-
-		Resources.query( 'assignments', query, null, function( result ) {
-			if( !result || !result.data || !result.data.length <= 0 ) {
-				deferred.reject( 'Not Found' );
-			} else {
-				var ret = result.data[ 0 ];
-				deferred.resolve( ret );
-			}
-
-		} );
-
-		return deferred.promise;
-	};
-
-	
 	
 	/**
 	 * Get the assignment records for a set of projects
@@ -136,100 +109,27 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	 */
 	
 	this.getAssignments = function( projects, timePeriod ) {
+		var params = {};
+		var projectResources = [];
+		for( var i = 0; i < projects.length; i++ ) {
+			var project = projects[ i ];
+			var uri = project.about ? project.about : project.resource;
 
-		if (window.useAdoptedServices) {
-			var params = {};
-			var projectResources = [];
-			for( var i = 0; i < projects.length; i++ ) {
-				var project = projects[ i ];
-				var uri = project.about ? project.about : project.resource;
-
-				if( uri && projectResources.indexOf( uri ) == -1 ) {
-					projectResources.push( uri );
-				}
+			if( uri && projectResources.indexOf( uri ) == -1 ) {
+				projectResources.push( uri );
 			}
-
-			params.projectResource = projectResources;
-			params.timePeriod = timePeriod;
-			
-			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
-				
-				assignments = prepareAssignment(assignments);
-				
-				assignments = assignments.members && assignments.members.length != undefined? assignments.members: assignments;
-				return assignments;
-			});
 		}
-		else {
 
-			var deferred = $q.defer( );
-			var projectURIs = [ ];
-
-			timePeriod = timePeriod ? timePeriod : "all";
-
-			for( var i = 0; i < projects.length; i++ ) {
-				var project = projects[ i ];
-				var uri = project.about ? project.about : project.resource;
-
-				if( uri && projectURIs.indexOf( uri ) == -1 ) {
-					projectURIs.push( uri );
-				}
-			}
-
-			var query = {
-				'project.resource': {
-					$in: projectURIs
-				}
-			};
-			var _this = this;
-
-			Resources.query( 'assignments', query, null, function( result ) {
-				//Get todays date formatted as yyyy-MM-dd
-				var today = new Date( );
-				var dd = today.getDate( );
-				var mm = today.getMonth( );
-				//January is 0!
-				var yyyy = today.getFullYear( );
-				today = new Date( yyyy, mm, dd );
-
-				for( var i = 0; result.data && i < result.data.length; i++ ) {
-					var assignmentsObject = result.data[ i ];
-
-					if( assignmentsObject && assignmentsObject.members ) {
-						var excluded = [ ];
-						var included = [ ];
-
-						_.each( assignmentsObject.members, function( m ) {
-							if( timePeriod == "current" ) {
-								if( new Date( m.startDate ) <= today && ( !m.endDate || new Date( m.endDate ) > today ) )
-									included.push( m );
-								else
-									excluded.push( m );
-							} else if( timePeriod == "future" ) {
-								if( new Date( m.startDate ) >= today && ( !m.endDate || new Date( m.endDate ) > today ) )
-									included.push( m );
-								else
-									excluded.push( m );
-							} else if( timePeriod == "past" ) {
-								if( new Date( m.startDate ) < today && ( !m.endDate || new Date( m.endDate ) < today ) )
-									included.push( m );
-								else
-									excluded.push( m );
-							} else if( timePeriod == "all" )
-								included.push( m );
-						} );
-
-						assignmentsObject.members = included;
-						assignmentsObject.excludedMembers = excluded;
-					}
-					result.data[ i ] = assignmentsObject;
-				}
-				deferred.resolve( result.data );
-			} );
-
-			return deferred.promise;
-		}
+		params.projectResource = projectResources;
+		params.timePeriod = timePeriod;
 		
+		return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
+			
+			assignments = prepareAssignment(assignments);
+			
+			assignments = assignments.members && assignments.members.length != undefined? assignments.members: assignments;
+			return assignments;
+		});
 	};
 	
 	var prepareAssignment = function ( assignments ) {
@@ -260,15 +160,9 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	 */
 
 	this.getMyCurrentAssignments = function( person ) {
-		if (window.useAdoptedServices) {
-			var params = {};
-			params.person = person.about ? person.about : person.resource;
-			return Resources.refresh("assignments/bytypes/assignmentsByPerson", params);
-		}
-		else {
-			return this.getMyCurrentAssignmentsUsingQuery(person);
-		}
-
+		var params = {};
+		params.person = person.about ? person.about : person.resource;
+		return Resources.refresh("assignments/bytypes/assignmentsByPerson", params);
 	};
 	
 	this.getActualAssignmentsForPerson = function(assignments, profile) {
@@ -312,100 +206,6 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
        return cnt;
 	};     
 	
-	this.getMyCurrentAssignmentsUsingQuery = function( person ) {
-		var deferred = $q.defer( );
-		var startDateQuery = this.getToday( );
-		var personURI = person.about ? person.about : person.resource;
-
-		var apQuery = {
-			members: {
-				'$elemMatch': {
-					person: {
-						resource: person.about
-					},
-					$or: [ {
-						endDate: {
-							$exists: false
-						}
-					}, {
-						endDate: {
-							$gt: startDateQuery
-						}
-					} ]
-				}
-			}
-		};
-		var apFields = {};
-		Resources.query( 'assignments', apQuery, apFields, function( result ) {
-			var projectAssignments = result.data;
-			var myProjects = [ ];
-			var assignments = [ ];
-			var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
-
-			//Loop through all the project level assignment documents that this person has an
-			// assignment in
-			for( var i = 0; i < projectAssignments.length; i++ ) {
-				//Add the project to the list of projects to resolve
-				var projectAssignment = projectAssignments[ i ];
-				if( projectAssignment.project && projectAssignment.project.resource && myProjects.indexOf( projectAssignment.project.resource ) === -1 ) {
-					//Push the assignee onto the active list
-					var resource = projectAssignment.project.resource;
-					//{_id:{$nin:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
-					var oid = {
-						$oid: resource.substring( resource.lastIndexOf( '/' ) + 1 )
-					};
-					myProjects.push( oid );
-				}
-
-				//Find all the assignments for this person
-				for( var j = 0; j < projectAssignment.members.length; j++ ) {
-					var assignment = projectAssignment.members[ j ];
-					var endDate = assignment.endDate ? assignment.endDate : null;
-					if( personURI == assignment.person.resource && ( !endDate || endDate > startDateQuery ) ) {
-						//Associate the project directly with the an assignment
-						assignment.project = projectAssignment.project;
-						assignment.percentage = Math.round( 100 * assignment.hoursPerWeek / HOURS_PER_WEEK );
-						assignments.push( assignment );
-					}
-				}
-			}
-
-			var projectsQuery = {
-				_id: {
-					$in: myProjects
-				}
-			};
-			var projectsFields = {
-				resource: 1,
-				name: 1,
-				customerName: 1,
-				startDate: 1,
-				endDate: 1,
-				type: 1,
-				committed: 1
-			};
-			Resources.query( 'projects', projectsQuery, projectsFields, function( result ) {
-				var projects = result.data;
-
-				//Collate projects with assignments
-				for( var i = 0; i < assignments.length; i++ ) {
-					var assignment = assignments[ i ];
-					//Find the matching project
-					for( var j = 0; j < projects.length; j++ ) {
-						var project = projects[ j ];
-						if( project.resource == assignment.project.resource ) {
-							assignment.project = project;
-							break;
-						}
-					}
-				}
-
-				deferred.resolve( assignments );
-			} );
-		} );
-		return deferred.promise;
-	};
-
 	
 	/**
 	 * Filters out a set of assignments based on time period
@@ -417,42 +217,15 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 	 */
 	
 	this.getAssignmentsByPeriod = function( timePeriod, projectQuery ) {
-		if (window.useAdoptedServices) {
-			var params = {};
-			params.projectResource = projectQuery.project.resource;
-			params.timePeriod = timePeriod;
-			return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
-				prepareAssignment(assignments);
-				return assignments;
-			});
-		}
-		else {
-			return this.getAssignmentsByPeriodUsingQuery(timePeriod, projectQuery);
-		}
+		var params = {};
+		params.projectResource = projectQuery.project.resource;
+		params.timePeriod = timePeriod;
+		return Resources.refresh("assignments/bytypes/assignmentsByProjectsAndTimePeriod", params).then(function(assignments){
+			prepareAssignment(assignments);
+			return assignments;
+		});
 	};
 		
-
-	this.getAssignmentsByPeriodUsingQuery = function( timePeriod, projectQuery ) {
-		var deferred = $q.defer( );
-		var apQuery = {};
-		var apFields = {};
-
-		_.extend( apQuery, projectQuery );
-
-		var _this = this;
-
-		Resources.query( 'assignments', apQuery, apFields ).then( function( result ) {
-			var role;
-
-			if( result && result.data && result.data.length > 0 )
-				deferred.resolve( _this.filterAssignmentsByPeriod( result.data[ 0 ], timePeriod ) );
-			else
-				deferred.resolve( null );
-
-		} );
-
-		return deferred.promise;
-	};
 
 	this.filterAssignmentsByPeriod = function( assignmentsObject, period ) {
 
