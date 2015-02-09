@@ -311,114 +311,108 @@ function( $q, Resources ) {
 		var now = new Date();
 		
 		//logger.log('hoursService:query:before:' + JSON.stringify(query));
+		var onlyAndDates = query.$and && query.$and.length > 0;
+		var orEmpty = !query.$or || query.$or.length > 0;
+		var onlyProjects = query.$or && query.$or.length > 0;
+
+		var startDate = null;
+		var endDate = null;
+
+		var projects = [ ];
+
+		for( var i = 0; query.$and && i < query.$and.length; i++ ) {
+			onlyAndDates = onlyAndDates && query.$and[ i ].date;
+
+			if( onlyAndDates && query.$and[ i ].date.$lte )
+				endDate = onlyAndDates && query.$and[ i ].date.$lte;
+			else if( onlyAndDates && query.$and[ i ].date.$lt )
+				endDate = onlyAndDates && query.$and[ i ].date.$lt;
+			else if( onlyAndDates && query.$and[ i ].date.$gt )
+				startDate = onlyAndDates && query.$and[ i ].date.$gt;
+			else if( onlyAndDates && query.$and[ i ].date.$gte )
+				startDate = onlyAndDates && query.$and[ i ].date.$gte;
+
+		}
+
+		// init onlyProjects flag
+		for( var i = 0; query.$or && i < query.$or.length; i++ ) {
+			onlyProjects = onlyProjects && query.$or[ i ][ 'project.resource' ];
+
+			if( onlyProjects )
+				projects.push( query.$or[ i ][ 'project.resource' ] );
+		}
+
+		fields = fields ? fields : {};
+
+		var updFields = [];
+		for (var attr in fields) {
+			if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
+				updFields.push(attr);
+			}
+		}
 		
-		if( window.useAdoptedServices ) {
-			var onlyAndDates = query.$and && query.$and.length > 0;
-			var orEmpty = !query.$or || query.$or.length > 0;
-			var onlyProjects = query.$or && query.$or.length > 0;
-
-			var startDate = null;
-			var endDate = null;
-
-			var projects = [ ];
-
-			for( var i = 0; query.$and && i < query.$and.length; i++ ) {
-				onlyAndDates = onlyAndDates && query.$and[ i ].date;
-
-				if( onlyAndDates && query.$and[ i ].date.$lte )
-					endDate = onlyAndDates && query.$and[ i ].date.$lte;
-				else if( onlyAndDates && query.$and[ i ].date.$lt )
-					endDate = onlyAndDates && query.$and[ i ].date.$lt;
-				else if( onlyAndDates && query.$and[ i ].date.$gt )
-					startDate = onlyAndDates && query.$and[ i ].date.$gt;
-				else if( onlyAndDates && query.$and[ i ].date.$gte )
-					startDate = onlyAndDates && query.$and[ i ].date.$gte;
-
-			}
-
-			// init onlyProjects flag
-			for( var i = 0; query.$or && i < query.$or.length; i++ ) {
-				onlyProjects = onlyProjects && query.$or[ i ][ 'project.resource' ];
-
-				if( onlyProjects )
-					projects.push( query.$or[ i ][ 'project.resource' ] );
-			}
-
-			fields = fields ? fields : {};
-
-			var updFields = [];
-			for (var attr in fields) {
-				if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
-					updFields.push(attr);
-				}
-			}
+		var now = new Date();
+		
+		if( !query.project && query.person && query.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
+			//logger.log('query:before:hours/persondates:before:' + ((new Date()).getTime() - now.getTime()));
 			
-			var now = new Date();
-			
-			if( !query.project && query.person && query.person.resource && startDate && endDate && orEmpty && onlyAndDates ) {
-				//logger.log('query:before:hours/persondates:before:' + ((new Date()).getTime() - now.getTime()));
+			Resources.get( 'hours/persondates', {
+				person: query.person.resource,
+				startDate: startDate,
+				endDate: endDate,
+				fields: updFields,
+				// to prevent from getting values from cache
+				t: ( new Date( ) ).getMilliseconds( )
+			} ).then( function( result ) {
+				//logger.log('query:hours/persondates:after:1:' + ((new Date()).getTime() - now.getTime()));
 				
-				Resources.get( 'hours/persondates', {
-					person: query.person.resource,
-					startDate: startDate,
-					endDate: endDate,
-					fields: updFields,
-					// to prevent from getting values from cache
-					t: ( new Date( ) ).getMilliseconds( )
-				} ).then( function( result ) {
-					//logger.log('query:hours/persondates:after:1:' + ((new Date()).getTime() - now.getTime()));
+				deferred.resolve( result );
+			} );
+		} else if( !query.person && (onlyProjects || (query.project && query.project.resource) )  && startDate && endDate && orEmpty && onlyAndDates ) {
+			var prj = (query.project && query.project.resource) ? query.project.resource : projects;
+			Resources.get( 'hours/projectdates', {
+				project: prj,
+				startDate: startDate,
+				endDate: endDate,
+				fields: updFields,
+				// to prevent from getting values from cache
+				t: ( new Date( ) ).getMilliseconds( )
+			} ).then( function( result ) {
+				//logger.log('query:hours/persondates:after:2:' + ((new Date()).getTime() - now.getTime()));
+				deferred.resolve( result );
+			} );
+		} else if( ( query.person || query[ 'person.resource' ] ) && !query.project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
+			var resource = query[ 'person.resource' ] ? query[ 'person.resource' ] : null;
+
+			logger.log('query:hours/persondates:before:3:');
 					
-					deferred.resolve( result );
-				} );
-			} else if( !query.person && (onlyProjects || (query.project && query.project.resource) )  && startDate && endDate && orEmpty && onlyAndDates ) {
-				var prj = (query.project && query.project.resource) ? query.project.resource : projects;
-				Resources.get( 'hours/projectdates', {
-					project: prj,
-					startDate: startDate,
-					endDate: endDate,
-					fields: updFields,
-					// to prevent from getting values from cache
-					t: ( new Date( ) ).getMilliseconds( )
-				} ).then( function( result ) {
-					//logger.log('query:hours/persondates:after:2:' + ((new Date()).getTime() - now.getTime()));
-					deferred.resolve( result );
-				} );
-			} else if( ( query.person || query[ 'person.resource' ] ) && !query.project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
-				var resource = query[ 'person.resource' ] ? query[ 'person.resource' ] : null;
+			if( !resource )
+				resource = query.person ? query.person.resource : null;
 
-				logger.log('query:hours/persondates:before:3:');
-						
-				if( !resource )
-					resource = query.person ? query.person.resource : null;
+			Resources.get( 'hours/person', {
+				person: resource,
+				fields: updFields,
+				// to prevent from getting values from cache
+				t: ( new Date( ) ).getMilliseconds( )
+			} ).then( function( result ) {
+				logger.log('query:hours/persondates:after:3:' + ((new Date()).getTime() - now.getTime()));
+				deferred.resolve( result );
+			} );
 
-				Resources.get( 'hours/person', {
-					person: resource,
-					fields: updFields,
-					// to prevent from getting values from cache
-					t: ( new Date( ) ).getMilliseconds( )
-				} ).then( function( result ) {
-					logger.log('query:hours/persondates:after:3:' + ((new Date()).getTime() - now.getTime()));
-					deferred.resolve( result );
-				} );
+		} else if( onlyProjects ) {
+			Resources.get( 'hours/projects', {
+				projects: projects,
+				fields: updFields,
+				// to prevent from getting values from cache
+				t: ( new Date( ) ).getMilliseconds( )
+			} ).then( function( result ) {
+				//logger.log('query:hours/persondates:after:4:' + ((new Date()).getTime() - now.getTime()));
+				deferred.resolve( result );
+			} );
 
-			} else if( onlyProjects ) {
-				Resources.get( 'hours/projects', {
-					projects: projects,
-					fields: updFields,
-					// to prevent from getting values from cache
-					t: ( new Date( ) ).getMilliseconds( )
-				} ).then( function( result ) {
-					//logger.log('query:hours/persondates:after:4:' + ((new Date()).getTime() - now.getTime()));
-					deferred.resolve( result );
-				} );
-
-			} else
-				Resources.query( 'hours', _.extend( hoursQuery, query ), _.extend( hoursFields, fields ), function( result ) {
-					//logger.log('query:hours/persondates:after:5:' + ((new Date()).getTime() - now.getTime()));
-					deferred.resolve( result );
-				} );
 		} else
 			Resources.query( 'hours', _.extend( hoursQuery, query ), _.extend( hoursFields, fields ), function( result ) {
+				//logger.log('query:hours/persondates:after:5:' + ((new Date()).getTime() - now.getTime()));
 				deferred.resolve( result );
 			} );
 		return deferred.promise;

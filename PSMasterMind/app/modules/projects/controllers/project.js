@@ -1096,39 +1096,13 @@ else if( role.percentageCovered == 0 )
 				'givenName': 1
 			};
 			
-		    if (window.useAdoptedServices) {
-				Resources.get("people/bytypes/withPrimaryRole").then(
+			Resources.get("people/bytypes/withPrimaryRole").then(
 					function (peopleResults) {
 						$scope.mapRoleGroups(roleGroups, result, peopleResults, rolesCb);
 					}
 					, sort
-				);
-		    }
-		    else {
-				//Query all people with a primary role
-				var roleQuery = {
-					'primaryRole.resource': {
-						$exists: 1
-					},
-					'about': "people/bytypes/withPrimaryRole"
-				};
-				var fields = {
-					resource: 1,
-					name: 1,
-					familyName: 1,
-					givenName: 1,
-					primaryRole: 1,
-					thumbnail: 1,
-					isActive: 1
-				};
-				
-				Resources.get(roleQuery, fields).then(
-					function (peopleResults) {
-						$scope.mapRoleGroups(roleGroups, result, peopleResults, rolesCb);
-					}
-					, sort
-				);
-		    }
+			);
+
 		});
 	};
 
@@ -1762,57 +1736,13 @@ else if( role.percentageCovered == 0 )
 
 	$scope.initHours = function( ) {
 		
-	    if (window.useAdoptedServices) {
-	    	
-	    	var params = {};
-	    	params.projects = $scope.project.about;
-	        
-			Resources.get("hours/projects", params).then(
-				
-				function (hoursResult) {
-
-					$scope.hours = hoursResult.members;
-
-					$scope.organizeHours( $scope.hours );
-					$scope.initHoursPeriods( $scope.hours );
-					$scope.currentWeek( function() {
-						// load month hours just after week
-						$scope.currentMonth();
-					} );
-
-					if( $scope.hoursTableParams ) {
-						$scope.hoursTableParams.total( $scope.hours.length );
-						$scope.hoursTableParams.reload( );
-
-					} else {
-						// Table Parameters
-						var params = {
-							page: 1, // show first page
-							count: 25, // count per page
-							sorting: {
-								created: 'des' // initial sorting
-							}
-						};
-
-					}
-
-				}, 
-				sort
-			);
-	    
-	    } else {
-	    	
-			//Query all hours against the project
-			var hoursQuery = {
-				'project.resource': $scope.project.about
-			};
-			//All Fields
-			var fields = {};
-			var sort = {
-				'created': 1
-			};
+    	var params = {};
+    	params.projects = $scope.project.about;
+        
+		Resources.get("hours/projects", params).then(
 			
-			HoursService.query(hoursQuery, fields).then(function( hoursResult ) {
+			function (hoursResult) {
+
 				$scope.hours = hoursResult.members;
 
 				$scope.organizeHours( $scope.hours );
@@ -1838,11 +1768,10 @@ else if( role.percentageCovered == 0 )
 
 				}
 
-			}, sort );
+			}, 
+			sort
+		);
 
-	    	
-	    }		
-	    
 	};
     
     $scope.vacationPeople = [ ];
@@ -1862,83 +1791,41 @@ else if( role.percentageCovered == 0 )
      
       if($scope.projectPeopleResources.length > 0) {
         $scope.projectPeopleResources = _.filter($scope.projectPeopleResources);
-          
-	    if (window.useAdoptedServices) {
-	    	
-	    	var params = {
-	    			t: (new Date()).getMilliseconds()
-	    	};
-	    	params.startDate = periodStart;
-	    	params.endDate = periodEnd;
 
-	        var peopleResourcesOnly = _.compact(_.map($scope.projectPeopleResources, function(person) { 
-                if(person) {
-                  return person.resource ;
-                } else {
-                  return undefined;
-                }
-            }));
-	        params.person = peopleResourcesOnly;
-	        
-			Resources.get("vacations/bytypes/byPeriod", params).then(
-				function (result) {
+    	var params = {
+    			t: (new Date()).getMilliseconds()
+    	};
+    	params.startDate = periodStart;
+    	params.endDate = periodEnd;
 
-					$scope.projectVacations = result.members;
-			          
-			        for(var k = 0; k < $scope.projectVacations.length; k++) {
-			        	var projVac = $scope.projectVacations[k];
-			            /*var peopleFound = _.filter($scope.organizedHours, function(person) {
-			              return person.resource == projVac.person.resource;
-			            });*/
-			            Resources.resolve(projVac.person);
-			            //projVac.person = peopleFound[0];
-			        }
-			          
-			        $scope.hideVacationSpinner = true;
+        var peopleResourcesOnly = _.compact(_.map($scope.projectPeopleResources, function(person) { 
+            if(person) {
+              return person.resource ;
+            } else {
+              return undefined;
+            }
+        }));
+        params.person = peopleResourcesOnly;
+        
+		Resources.get("vacations/bytypes/byPeriod", params).then(
+			function (result) {
 
-				}
-				
-			);
-	    } else {
-	    	
-	        var peopleResourcesOnly = _.compact(_.map($scope.projectPeopleResources, function(person) { 
-	                                    if(person) {
-	                                      return { resource: person.resource };
-	                                    } else {
-	                                      return undefined;
-	                                    }
-	                                  }));
-	        var vacationsQuery = {
-	          $and: [
-	            { person: { $in: peopleResourcesOnly } },
-	            { $or: [
-	              { $and: [
-	                { startDate: { $gte: periodStart }},
-	                { startDate: { $lte: periodEnd }},
-	              ]},
-	              { $and: [
-	                { endDate: { $gte: periodStart }},
-	                { endDate: { $lte: periodEnd }},
-	              ]},
-	            ] }
-	          ]
-	        };
-	        
-	        Resources.query('vacations', vacationsQuery, {}, function(result) {
-	          $scope.projectVacations = result.members;
-	          
-	          for(var k = 0; k < $scope.projectVacations.length; k++) {
-	            var projVac = $scope.projectVacations[k];
-	            /*var peopleFound = _.filter($scope.organizedHours, function(person) {
-	              return person.resource == projVac.person.resource;
-	            });*/
-	            Resources.resolve(projVac.person);
-	            //projVac.person = peopleFound[0];
-	          }
-	          
-	          $scope.hideVacationSpinner = true;
-	        })
-      	 }
+				$scope.projectVacations = result.members;
+		          
+		        for(var k = 0; k < $scope.projectVacations.length; k++) {
+		        	var projVac = $scope.projectVacations[k];
+		            /*var peopleFound = _.filter($scope.organizedHours, function(person) {
+		              return person.resource == projVac.person.resource;
+		            });*/
+		            Resources.resolve(projVac.person);
+		            //projVac.person = peopleFound[0];
+		        }
+		          
+		        $scope.hideVacationSpinner = true;
+
+			}
+			
+		);
       } else
         $scope.hideVacationSpinner = true;
         
@@ -2306,47 +2193,19 @@ else if( role.percentageCovered == 0 )
 			$scope.projectAssignments = data;
 			$scope.updateOrganizedHours( );
 
-		    if (window.useAdoptedServices) {
-		    	
-		    	var params = {};
-		    	params.project = $scope.project.about;
-		    	params.startDate = $scope.startWeekDate;
-		    	params.endDate = $scope.endWeekDate;
-		    	
-				Resources.get("hours/projectdates", params).then(
-					function (result) {
-						$scope.calcWeekHours(result); 
-						
-						if (cb)
-							cb();
-					}
-				);
-
-		    } else {
-
-		    	var hoursQuery = {
-						'project.resource': $scope.project.about,
-
-						$and: [ {
-							date: {
-								$lte: $scope.endWeekDate
-							}
-						}, {
-							date: {
-								$gte: $scope.startWeekDate
-							}
-						} ]
-
-					};
-
-		    	HoursService.query( hoursQuery, {} ).then( function( result ) {
-			    	$scope.calcWeekHours(result);
-			    	
-			    	if (cb)
+	    	var params = {};
+	    	params.project = $scope.project.about;
+	    	params.startDate = $scope.startWeekDate;
+	    	params.endDate = $scope.endWeekDate;
+	    	
+			Resources.get("hours/projectdates", params).then(
+				function (result) {
+					$scope.calcWeekHours(result); 
+					
+					if (cb)
 						cb();
-			    } );
-		    	
-		    }
+				}
+			);
 			
 		} );
 	};
@@ -2580,42 +2439,18 @@ else if( role.percentageCovered == 0 )
 			$scope.projectAssignments = data;
 			$scope.updateOrganizedHours( );
 
-		    if (window.useAdoptedServices) {
-		    	
-		    	var params = {};
-		    	params.project = $scope.project.about;
-		    	params.startDate = $scope.startMonthDate;
-		    	params.endDate = $scope.endMonthDate;
-		    	params.t = (new Date( )).getMilliseconds( );
-		    	
-				Resources.get("hours/projectdates", params).then(
-					function (result) {
-						$scope.calcMonthHours(result); 
-					}
-				);
-
-		    } else {
-
-		    	var hoursQuery = {
-						'project.resource': $scope.project.about,
-
-						$and: [ {
-							date: {
-								$lte: $scope.endMonthDate
-							}
-						}, {
-							date: {
-								$gte: $scope.startMonthDate
-							}
-						} ]
-
-					};
-		    	
-				HoursService.query(hoursQuery, {} ).then( function( result ) {
+	    	var params = {};
+	    	params.project = $scope.project.about;
+	    	params.startDate = $scope.startMonthDate;
+	    	params.endDate = $scope.endMonthDate;
+	    	params.t = (new Date( )).getMilliseconds( );
+	    	
+			Resources.get("hours/projectdates", params).then(
+				function (result) {
 					$scope.calcMonthHours(result); 
-				} );
-				
-		    }
+				}
+			);
+
 		} );
 	};
 
@@ -2845,8 +2680,7 @@ else if( role.percentageCovered == 0 )
 		var execLoaded = false;
 	    var salesLoaded = false;
 	    
-	    if (window.useAdoptedServices) {
-			Resources.refresh("people/bytypes/byGroups", { group : "Execs" } ).then(
+		Resources.refresh("people/bytypes/byGroups", { group : "Execs" } ).then(
 				function (result) {
 					$scope.execs = result;
 					$scope.getExecutiveSponsor( );
@@ -2855,8 +2689,9 @@ else if( role.percentageCovered == 0 )
 					if (execLoaded && salesLoaded && cb)
 		                 cb();
 				}
-			);
-			Resources.refresh("people/bytypes/byGroups", { group : "Sales" } ).then(
+		);
+		
+		Resources.refresh("people/bytypes/byGroups", { group : "Sales" } ).then(
 				function (result) {
 					$scope.sales = result;
 					$scope.getSalesSponsor( );
@@ -2865,40 +2700,7 @@ else if( role.percentageCovered == 0 )
 					if (execLoaded && salesLoaded && cb)
 					     cb();
 				}
-			);
-	    } else {
-	    	
-		    var fields = {};
-		    
-			//Resources.query( 'people', execQuery, fields, function( result ) {
-			People.query(execQuery, fields).then( function( result ) {
-				$scope.execs = result;
-
-				$scope.getExecutiveSponsor( );
-				$scope.getExecutiveSponsorEmail( );
-				
-				execLoaded = true;
-				
-				if (execLoaded && salesLoaded && cb)
-	                 cb();
-			} );
-			//Resources.query( 'people', salesQuery, fields, function( result ) {
-		   People.query(salesQuery, fields).then( function( result ) {
-				$scope.sales = result;
-
-				
-				$scope.getSalesSponsor( );
-				$scope.getSalesSponsorEmail( );
-				
-				salesLoaded = true;
-				
-				if (execLoaded && salesLoaded && cb)
-				     cb();
-				
-			} );
-	    	
-	    }
-	    
+		);
 	};
 
 	$scope.dayFormatted = function( yyyymmdd, params ) {
