@@ -1097,10 +1097,10 @@ else if( role.percentageCovered == 0 )
 			};
 			
 			Resources.get("people/bytypes/withPrimaryRole").then(
-					function (peopleResults) {
-						$scope.mapRoleGroups(roleGroups, result, peopleResults, rolesCb);
-					}
-					, sort
+				function (peopleResults) {
+					$scope.mapRoleGroups(roleGroups, result, peopleResults, rolesCb);
+				}
+				, sort
 			);
 
 		});
@@ -1739,6 +1739,10 @@ else if( role.percentageCovered == 0 )
     	var params = {};
     	params.projects = $scope.project.about;
         
+    	var sort = {		
+    		'created': 1		
+    	};
+    	
 		Resources.get("hours/projects", params).then(
 			
 			function (hoursResult) {
