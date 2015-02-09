@@ -258,25 +258,25 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 	    		  
 	    		  console.log('inside:me:resources:' + resources.join(','));
 	    		  
-	    		  securityRoles.listSecurityRolesByResources( resources, function( securityRolesErr, securityRoles ) {
+	    		  securityRoles.listSecurityRolesByResources( resources, function( securityRolesErr, userSecurityRoles ) {
 	    			  var allResource = [];
 	    			  
 	    			  // merge all permissions
 	    			  var existingResource = null;
 	    			  
-	    			  console.log('inside:me:securityRoles.members:' + (_.map(securityRoles.members, function(m){ return (m.name + ':' + m.about)})).join(','));
+	    			  console.log('inside:me:securityRoles.members:' + (_.map(userSecurityRoles.members, function(m){ return (m.name + ':' + m.about)})).join(','));
 	    			  
-	    			  for (var k = 0; k < securityRoles.members.length; k ++) {
-	    				  for (var j = 0; j < securityRoles.members[k].resources.length; j ++){
-	    					  existingResource = _.findWhere(allResource, {name: securityRoles.members[k].resources[j].name});
+	    			  for (var k = 0; k < userSecurityRoles.members.length; k ++) {
+	    				  for (var j = 0; j < userSecurityRoles.members[k].resources.length; j ++){
+	    					  existingResource = _.findWhere(allResource, {name: userSecurityRoles.members[k].resources[j].name});
 	    					  
-	    					  console.log('inside:me:resource:name:' + securityRoles.members[k].resources[j].name + ':permissions=' + securityRoles.members[k].resources[j].permissions.join(','));
+	    					  console.log('inside:me:resource:name:' + userSecurityRoles.members[k].resources[j].name + ':permissions=' + userSecurityRoles.members[k].resources[j].permissions.join(','));
 	    	    			  
 	    					  
 	    					  if (existingResource)
-	    						  existingResource.permissions = existingResource.permissions.concat(securityRoles.members[k].resources[j].permissions);
+	    						  existingResource.permissions = existingResource.permissions.concat(userSecurityRoles.members[k].resources[j].permissions);
 	    					  else
-	    						  allResource.push(securityRoles.members[k].resources[j]);
+	    						  allResource.push(userSecurityRoles.members[k].resources[j]);
 	    				  }
 	    			  }
 	    			  

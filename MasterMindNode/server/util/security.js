@@ -107,6 +107,14 @@ module.exports.initialize = function(isReinitialization) {
             }
             
             var processedGroupsMap = {};
+            var userToRolesMap = {};
+            
+            var addUserRoleToMap = function(uId, rNameAr) {
+            	if (!userToRolesMap[uId])
+            		userToRolesMap[uId] = [];
+            	
+            	userToRolesMap[uId] = userToRolesMap[uId].concat(rNameAr);
+            };
             
             // find and process nested groups
             for (var i=0; i < userRoles.length; i++) {
@@ -188,7 +196,7 @@ module.exports.initialize = function(isReinitialization) {
 						  // starts iterating from end of hierarchy from most simple roles and assign to users apropriate access roles
 						  for (var j = extractedRoles.length - 1; j >= 0; j --) {
 							  for (var t = 0; t < targetUsers.length; t ++)
-								  addRole(targetUsers[t], extractedRoles[j], isReinitialization);
+								  addUserRoleToMap(targetUsers[t], extractedRoles[j], isReinitialization);
 								  
 						  }
 						  
@@ -208,10 +216,15 @@ module.exports.initialize = function(isReinitialization) {
 					  targetUsers = targetUserIds[role];
 					  
 					  for (var t = 0; t < targetUsers.length; t ++)
-						  addRole(targetUsers[t], [role], isReinitialization);
+						  //addRole(targetUsers[t], [role], isReinitialization);
+						  addUserRoleToMap(targetUsers[t], [role], isReinitialization);
 					  
 					  processedGroupsMap[role] = true;
 				  }
+			  }
+			  
+			  for (var uId in userToRolesMap) {
+				  addRole(uId, _.uniq(userToRolesMap[uId]), isReinitialization);
 			  }
 			  
 			  console.log('initialize:' + (_.map(targetUserIds, function(val, key){return (key + ':' + val.length)})).join(','));
