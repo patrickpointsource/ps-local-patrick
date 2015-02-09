@@ -157,31 +157,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.managers = [ ];
 
 		$scope.isManager = $scope.executivesAccess || $scope.hasManagementRights;
-
-		if (window.useAdoptedServices) {
-			var params = {};
-			params.group = "Managers";
-			Resources.refresh("people/bytypes/byGroups", params).then(
-				function (result) {
-					$scope.populateManagers(result);
-				}
-			);
-		}
-		else {
-			var managersQuery = {
-				'groups': 'Management'
-			};
-
-			People.query(managersQuery, { _id: 1, resource: 1, name: 1} ).then(
-				function( result ) {
-					$scope.populateManagers(result);
-				}
-			);
-		}
-
-
-
-
+		var params = {};
+		params.group = "Managers";
+		Resources.refresh("people/bytypes/byGroups", params).then(
+			function (result) {
+				$scope.populateManagers(result);
+			}
+		);
 
 		//      $scope.skillsList = person.skills;
 		//
@@ -871,13 +853,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                         $scope.assignments.splice( k, 1 );
                 };
 
-
-                if(window.useAdoptedServices) {
-                  $scope.myAssignments = AssignmentService.getActualAssignmentsForPerson($scope.assignments, $scope.profile);
-                } else {
-                  $scope.myAssignments = assignments;
-                }
-
+                $scope.myAssignments = AssignmentService.getActualAssignmentsForPerson($scope.assignments, $scope.profile);
                 $scope.hasAssignments =  $scope.myAssignments.length > 0;
 
                 console.log("getMyCurrentAssignments after cut: assignments.length", assignments.length);

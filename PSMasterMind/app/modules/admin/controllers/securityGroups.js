@@ -10,8 +10,6 @@ angular.module('Mastermind')
     
     $scope.getGroups = function() {
 
-	  if (window.useAdoptedServices) {
-		  
 	      Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
 	          $scope.securityGroups = result.members;
 	          
@@ -29,28 +27,6 @@ angular.module('Mastermind')
 	            });
 	          });
 	      });
-		  
-	  } else {
-		  
-	      Resources.query('securityroles', {}, {}, function(result) {
-	          $scope.securityGroups = result.members;
-	          
-	          if($scope.securityGroups.length > 0) {
-	            $scope.selectedGroup = $scope.securityGroups[0];
-	          }
-	          
-	          Resources.query('userroles', {}, {}, function(userRoles) {
-	            $scope.userRoles = userRoles.members;
-	            
-	            People.query( {}, {}).then( function(people) {
-	              $scope.people = people.members;
-	              
-	              $scope.updateSelectedGroupMembers();
-	            });
-	          });
-	      });	  
-	  }
-    	
     };
     
     $scope.filterPeople = function() {
