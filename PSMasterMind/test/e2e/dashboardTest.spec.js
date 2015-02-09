@@ -49,6 +49,9 @@ describe('E2E: Dashboard Test Cases >', function() {
 	var projectNameBinding = 'project.name';
 	var myProjects = [];
 	
+	//People widget
+	var showAllPeopleBehaviour = by.css('[ng-click="handleShowPeopleClick()"]');
+	
 
 	beforeEach(function() {
 		browser.driver.getCurrentUrl().then(function(url) {
@@ -97,6 +100,11 @@ describe('E2E: Dashboard Test Cases >', function() {
 	it('Staffing deficits Widget Test', function() {
 		console.log('> Running: Staffing deficits - Compare deficits count.');
 		dashboardStaffingDeficitsCountTest();
+    });
+	
+	it('People Widget Test', function() {
+		console.log('> Running: People - Show all.');
+		dashboardPeopleShowAllTest();
     });
 	
 	
@@ -301,6 +309,18 @@ describe('E2E: Dashboard Test Cases >', function() {
 	    		
 	    	});
 	}; 
+	
+	var dashboardPeopleShowAllTest = function () {
+		browser.wait(function() {	    		
+	    		return browser.isElementPresent(showAllPeopleBehaviour);
+	    	}).then(function() {
+	    		console.log("> Click show all people.");
+	    		browser.findElement(showAllPeopleBehaviour).click().then(function () {
+	    			expect(browser.getCurrentUrl()).toContain('http://localhost:9000/index.html#/people?filter=all');
+	    			browser.get('http://localhost:9000/index.html#/');
+	    		});
+	    	});
+	};
 	
 	var addNewHoursRecord = function (hours) {
 		console.log("> Adding hours record.");
