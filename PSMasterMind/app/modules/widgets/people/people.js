@@ -73,7 +73,15 @@ angular.module('Mastermind').controller('PeopleWidgetCtrl', ['$scope', '$state',
      * Go to the people page filter by selected role
      */
     $scope.handleShowPeopleClick = function () {
-      $state.go('people.index', {filter: $scope.peopleFilter});
+    	if ($scope.peopleFilter) {
+    		$state.go('people.index', {
+    			filter: $scope.peopleFilter
+    		});
+    	} else {
+    		$state.go('people.index', {
+    			filter: 'all'
+    		});
+    	}
     };
 
     /**

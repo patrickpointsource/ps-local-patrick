@@ -14,6 +14,11 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 	var Resource = Restangular.withConfig( Util.fixRestAngularPathMethod() ).all( 'people' );
 
+	var roles = [];
+	Resources.get('roles').then(function (result) {
+	     roles = result.members;
+	});
+	
 	/**
 	 * Service function for retrieving all people.
 	 *
@@ -305,6 +310,30 @@ function( $q, Restangular, Resources, ProjectsService ) {
 			"sales": [ "SALES" ]
 		};
 	}
+	
+	function mapPeopleFilterToUI( filterPeople ) {
+		if( filterPeople == 'businessdevelopment' ) {
+			return 'Business Development';
+		}
+		if( filterPeople == 'clientexpierencemgmt' ) {
+			return 'Client Experience Mgmt';
+		}
+		if( filterPeople == 'digitalexperience' ) {
+			return 'Digital Experience';
+		}
+		if( filterPeople == 'executivemgmt' ) {
+			return 'Executive Mgmt';
+		}
+		
+		var role = _.findWhere(roles, { about: filterPeople } );
+		if ( role ) {
+			return role.title;
+		}
+		
+		var bigLetter = filterPeople[ 0 ].toUpperCase( );
+		var endPart = filterPeople.slice( 1, filterPeople.length );
+		return bigLetter + endPart;
+	};
 
     var resultAPI = {
         query: query,
@@ -315,7 +344,8 @@ function( $q, Restangular, Resources, ProjectsService ) {
         getPeoleAssignments: getPeoleAssignments,
         getPeopleCurrentAssignments: getPeopleCurrentAssignments,
         getPerson: getPerson,
-        getPeopleGroupMapping: getPeopleGroupMapping
+        getPeopleGroupMapping: getPeopleGroupMapping,
+        mapPeopleFilterToUI: mapPeopleFilterToUI
     };
     
 	return resultAPI;

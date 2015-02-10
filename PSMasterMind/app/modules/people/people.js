@@ -35,26 +35,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		} );
 	};
 
-	var rolePeopleGroupMap = People.getPeopleGroupMapping( )
-
-	var mapPeopleFilterToUI = function( filterPeople ) {
-		if( filterPeople == 'businessdevelopment' ) {
-			return 'Business Development';
-		}
-		if( filterPeople == 'clientexpierencemgmt' ) {
-			return 'Client Experience Mgmt';
-		}
-		if( filterPeople == 'digitalexperience' ) {
-			return 'Digital Experience';
-		}
-		if( filterPeople == 'executivemgmt' ) {
-			return 'Executive Mgmt';
-		}
-
-		var bigLetter = filterPeople[ 0 ].toUpperCase( );
-		var endPart = filterPeople.slice( 1, filterPeople.length );
-		return bigLetter + endPart;
-	};
+	var rolePeopleGroupMap = People.getPeopleGroupMapping( );
 	
 	$scope.sortType = 'name-desc';
 
@@ -64,7 +45,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		} else {
 			$scope.changeSort( prop + "-desc" );
 		}
-	}
+	};
 
 	$scope.changeSort = function( type ) {
 
@@ -286,7 +267,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 						}
 					} );
 					if( group.length > 0 ) {
-						$scope.people[ i ].group = mapPeopleFilterToUI( group );
+						$scope.people[ i ].group = People.mapPeopleFilterToUI( group );
 					} else {
 						$scope.people[ i ].group = '';
 					}
