@@ -1,6 +1,7 @@
 var dataAccess = require('../data/dataAccess.js');
 
 var acl = require('acl');
+var q = require('q');
 
 var _ = require('underscore');
 
@@ -542,6 +543,52 @@ module.exports.removeRole = function(role, callback) {
   acl.removeRole(role, function(err) {
     console.log("Cannot delete '" + role + "' role.");
   });
+};
+
+/**
+ * Loads from acl permissions map by passed list of roles
+ * @param roles
+ * @param resource
+ * @returns
+ */
+module.exports.getPermissions = function(roles) {
+	var deferred = q.defer();
+	
+	var resourcePermissionsMap = {};
+	
+	acl._rolesResources(roles).then(function(resources) {
+		
+		resources = _.uniq(resources);
+		
+		var errrorOccured = false;
+		
+		var ind = 0;
+		
+		var promise = q.fcall(_.bind(function(){
+			return acl._resourcePermissions(roles, resources[this.ind]);
+		}, {ind: ind}));
+		
+		for (var k = 1; k < resources.length; k ++)
+			promise = promise.then(_.bind(function(result){
+				resourcePermissionsMap[resources[this.ind - 1]] = [].concat(result);
+				
+				return acl._resourcePermissions(roles, resources[this.ind]);
+			}, {ind: k}));
+		
+		promise.catch(function(err) {
+			deferred.reject(err);
+			errrorOccured = true;
+			
+		}).done(function(result){
+			if (!errrorOccured) {
+				resourcePermissionsMap[resources[resources.length - 1]] = [].concat(result);
+			
+				deferred.resolve(resourcePermissionsMap);
+			}
+		});
+		
+	});
+	return deferred.promise;
 };
 
 var addRole = function(userId, roles, isReinitialization, callback) {

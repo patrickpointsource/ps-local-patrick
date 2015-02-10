@@ -250,6 +250,7 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 	      people.getPersonByGoogleId(req.user, function(err, result){
 	    	  console.log('inside:me:user:' + req.user);
 	    	  
+	    	  
 	    	  security.getUserRoles(result, function(userRoleErr, userRole) {
 	    		  var resources = [];
 	    		  
@@ -258,11 +259,30 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 	    		  
 	    		  console.log('inside:me:resources:' + resources.join(','));
 	    		  
+	    		  
+	    		  
 	    		  securityRoles.listSecurityRolesByResources( resources, function( securityRolesErr, userSecurityRoles ) {
 	    			  var allResource = [];
 	    			  
 	    			  // merge all permissions
 	    			  var existingResource = null;
+	    			  
+	    			  security.getPermissions(_.map(userSecurityRoles.members, function(m){ return m.name })).catch(function(err){
+	    				  err = err ? err: 'error occured while loaded user permissions';
+	    				  res.json(500, err);
+	    				  
+	    				  console.log('\r\npeople:me:from:acl:after:error');
+	    			  }).done(function(permissions) {
+	    				  console.log('inside:me:loaded:from:acl:permissions:' + (permissions ? JSON.stringify(permissions): permissions));
+	    				  
+	    				  if (permissions) {
+	    					  result.permissionsMap = permissions;
+		    				  res.json(result);
+	    				  }
+		    			  
+	    				  console.log('\r\npeople:me:after:');
+	    				 
+	    			  });
 	    			  
 	    			  console.log('inside:me:securityRoles.members:' + (_.map(userSecurityRoles.members, function(m){ return (m.name + ':' + m.about)})).join(','));
 	    			  
@@ -288,15 +308,15 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 	    				  permissionsMap[allResource[k].name] = allResource[k].permissions;
 	    			  }
 
-	    			  
+	    			  /*
 	    			  if(err){
 	    				  res.json(500, err);
 	    			  } else {  
 	    				  result.permissionsMap = permissionsMap;
 	    				  res.json(result);
 	    			  } 
-	    			  
-	    			  console.log('\r\npeople:me:after:');
+	    			  */
+	    			  console.log('\r\npeople:me:interim:after:');
 	    		  });
 	    		  
 	    		  
