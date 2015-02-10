@@ -73,33 +73,35 @@ module.exports.getNotification = function(id, callback) {
 };
 
 var sendEmailTo = function(notification) {
-  var query = {
-    resource: notification.person.resource
-  };
-  
   var user;
-  
-  dataAccess.getItem(util.getIDfromResource(notification.person.resource), function(err, user) {
-    if(!err) {
-      if(user) {
-        var message = "<h3>" + notification.header + "</h3><br/><br/>"  + notification.text + "<br/>";
-        message += smtpHelper.getServerInformation("NodeJS service", os.hostname(), configProperties.env);
-        message += "<br/><br/>Sincerely Yours, <br/><strong>MasterMind Notice.</strong>";
-        emailSender.sendEmailFromPsapps(
-                    user.mBox, null,
-                    notification.header, message, 
-        function(err, info) {
-          if(err) {
-            console.log("error sending email to: ", err);
-          }
-      
-          console.log("Email sent. Info: ", info);
-        });
-      } else {
-        console.log("Cant find user with resource: " + notification.person.resource + " while trying to send an email.");
-      }
-    } else {
-      console.log("Error: " + err);
-    }
+  util.getIDfromResource(notification.person.resource, function (err, userId){
+	  if (err) {
+          console.log("error getting id : ", err);
+	  }
+	  else {
+		  dataAccess.getItem(userId, function(err, user) {
+			    if(!err) {
+			      if(user) {
+			        var message = "<h3>" + notification.header + "</h3><br/><br/>"  + notification.text + "<br/>";
+			        message += smtpHelper.getServerInformation("NodeJS service", os.hostname(), configProperties.env);
+			        message += "<br/><br/>Sincerely Yours, <br/><strong>MasterMind Notice.</strong>";
+			        emailSender.sendEmailFromPsapps(
+			                    user.mBox, null,
+			                    notification.header, message, 
+			        function(err, info) {
+			          if(err) {
+			            console.log("error sending email to: ", err);
+			          }
+			      
+			          console.log("Email sent. Info: ", info);
+			        });
+			      } else {
+			        console.log("Cant find user with resource: " + notification.person.resource + " while trying to send an email.");
+			      }
+			    } else {
+			      console.log("Error: " + err);
+			    }
+		  });		  
+	  }
   });
 };
