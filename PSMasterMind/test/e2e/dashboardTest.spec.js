@@ -51,6 +51,10 @@ describe('E2E: Dashboard Test Cases >', function() {
 	
 	//People widget
 	var showAllPeopleBehaviour = by.css('[ng-click="handleShowPeopleClick()"]');
+	var peopleRoles = by.repeater("roleOption in rolesFilterOptions | orderBy:'title'");
+	
+	//Breadcrumb
+	var breadcrumbCtrl = by.className('breadcrumb');
 	
 
 	beforeEach(function() {
@@ -102,9 +106,14 @@ describe('E2E: Dashboard Test Cases >', function() {
 		dashboardStaffingDeficitsCountTest();
     });
 	
-	it('People Widget Test', function() {
+	it('People Widget Test: Show all', function() {
 		console.log('> Running: People - Show all.');
 		dashboardPeopleShowAllTest();
+    });
+	
+	it('People Widget Test: Show people by role', function() {
+		console.log('> Running: People - Show people by role.');
+		dashboardPeopleShowPeopleByRoleTest();
     });
 	
 	
@@ -318,6 +327,29 @@ describe('E2E: Dashboard Test Cases >', function() {
 	    		browser.findElement(showAllPeopleBehaviour).click().then(function () {
 	    			expect(browser.getCurrentUrl()).toContain('http://localhost:9000/index.html#/people?filter=all');
 	    			browser.get('http://localhost:9000/index.html#/');
+	    		});
+	    	});
+	};
+	
+	var dashboardPeopleShowPeopleByRoleTest = function () {
+		browser.wait(function() {	    		
+	    		return browser.isElementPresent(peopleRoles);
+	    	}).then(function() {
+	    		console.log("> Select role.");
+	    		browser.findElements(peopleRoles).then(function (roles) {
+	    			var role = roles[0];
+	    			role.getText().then(function (roleTitle) {
+	    				role.click().then(function (roles) {
+		    				console.log("> Show people by role: " + roleTitle);
+			    			browser.findElement(showAllPeopleBehaviour).click();
+			    			browser.sleep(1000);
+			    			expect(browser.getCurrentUrl()).toContain('http://localhost:9000/index.html#/people?filter=roles');
+			    			browser.findElement(breadcrumbCtrl).getText().then(function(breadcrumbTitle) {
+			    				expect(breadcrumbTitle).toContain(roleTitle);
+					    		browser.get('http://localhost:9000/index.html#/');
+			    			});
+		    			});
+	    			});
 	    		});
 	    	});
 	};
