@@ -6,6 +6,8 @@ var dataAccess = require('../data/dataAccess');
 var validation = require( '../data/validation.js' );
 
 module.exports.listSecurityRoles = function( callback ) {
+	console.log('securityRoles:listSecurityRoles');
+	
     dataAccess.listSecurityRoles( function(err, body){
         if (err) {
             console.log(err);
@@ -18,6 +20,8 @@ module.exports.listSecurityRoles = function( callback ) {
 };
 
 module.exports.listSecurityRolesByResources = function(resources, callback ) {
+	 console.log('securityRoles:listSecurityRolesByResources:resources=' + resources.join(','));
+	 
     dataAccess.listSecurityRolesByResources( resources, function(err, body){
         if (err) {
             console.log(err);
@@ -51,6 +55,8 @@ module.exports.insertSecurityRole = function(obj, callback) {
       return;
     }
     
+    console.log('securityRoles:insert:_id=' + obj._id + ':resource=' + obj.resource + ':name=' + obj.name);
+    
     dataAccess.insertItem(obj._id, obj, dataAccess.SECURITY_ROLES_KEY, function(err, body){
         if (err) {
             console.log(err);
@@ -62,6 +68,8 @@ module.exports.insertSecurityRole = function(obj, callback) {
 };
 
 module.exports.deleteSecurityRole = function(obj, callback) {
+	console.log('securityRoles:delete:_id=' + obj._id + ':resource=' + obj.resource + ':name=' + obj.name);
+	 
     dataAccess.deleteItem(obj._id, obj._rev, dataAccess.SECURITY_ROLES_KEY, function(err, body){
         if (err) {
             console.log(err);
@@ -73,6 +81,8 @@ module.exports.deleteSecurityRole = function(obj, callback) {
 };
 
 module.exports.getSecurityRole = function(id, callback) {
+	 console.log('securityRoles:get:_id=' + id);
+	 
     dataAccess.getItem(id, function(err, body){
         if (err) {
             console.log(err);

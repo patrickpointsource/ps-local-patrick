@@ -61,6 +61,9 @@ module.exports.initialize = function(isReinitialization) {
     console.log("initialize:Initializing security. Reinitialization: " + isReinitialization);
     var errStr = [];
     
+    // to prevent from applying "corrupted" security roles from memory cache - clean memory cache
+    dataAccess.clearCacheForSecurityRoles();
+    
     dataAccess.listSecurityRoles( function (err, roles) {
         var securityRoles = roles.members;
 
@@ -592,7 +595,7 @@ module.exports.getPermissions = function(roles) {
 };
 
 var addRole = function(userId, roles, isReinitialization, callback) {
-    console.log('\r\naddRole:userId:' + userId + ':roles:' + JSON.stringify(roles) + ':isReinitialization=' + isReinitialization);
+    //console.log('\r\naddRole:userId:' + userId + ':roles:' + JSON.stringify(roles) + ':isReinitialization=' + isReinitialization);
     
     if(isReinitialization) {
       acl.userRoles( userId, function(err, actualRoles) {

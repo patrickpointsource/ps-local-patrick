@@ -964,6 +964,10 @@ var listSecurityRolesByResources = function( resources, callback ) {
 
 };
 
+var clearCacheForSecurityRoles = function( resources, callback ) {
+	memoryCache.deleteObject( SECURITY_ROLES_KEY );
+}
+
 var listUserRoles = function( callback ) {
 	var result = memoryCache.getObject( USER_ROLES_KEY );
 	if( result ) {
@@ -1226,6 +1230,7 @@ module.exports.listVacationsByPeriod = listVacationsByPeriod;
 module.exports.listRequests = listRequests;
 module.exports.listSecurityRoles = listSecurityRoles;
 module.exports.listSecurityRolesByResources = listSecurityRolesByResources;
+module.exports.clearCacheForSecurityRoles = clearCacheForSecurityRoles;
 module.exports.listUserRoles = listUserRoles;
 module.exports.listUserRolesByGoogleId = listUserRolesByGoogleId;
 module.exports.getProfileByGoogleId = getProfileByGoogleId;
