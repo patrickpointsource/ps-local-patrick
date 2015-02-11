@@ -1746,7 +1746,7 @@ else if( role.percentageCovered == 0 )
     		'created': 1		
     	};
     	
-		Resources.get("hours/projects", params).then(
+		Resources.refresh("hours/projects", params).then(
 			
 			function (hoursResult) {
 
@@ -1814,7 +1814,7 @@ else if( role.percentageCovered == 0 )
         }));
         params.person = peopleResourcesOnly;
         
-		Resources.get("vacations/bytypes/byPeriod", params).then(
+		Resources.refresh("vacations/bytypes/byPeriod", params).then(
 			function (result) {
 
 				$scope.projectVacations = result.members;
@@ -2205,7 +2205,7 @@ else if( role.percentageCovered == 0 )
 	    	params.startDate = $scope.startWeekDate;
 	    	params.endDate = $scope.endWeekDate;
 	    	
-			Resources.get("hours/projectdates", params).then(
+			Resources.refresh("hours/projectdates", params).then(
 				function (result) {
 					$scope.calcWeekHours(result); 
 					
@@ -2452,7 +2452,7 @@ else if( role.percentageCovered == 0 )
 	    	params.endDate = $scope.endMonthDate;
 	    	params.t = (new Date( )).getMilliseconds( );
 	    	
-			Resources.get("hours/projectdates", params).then(
+			Resources.refresh("hours/projectdates", params).then(
 				function (result) {
 					$scope.calcMonthHours(result); 
 				}
