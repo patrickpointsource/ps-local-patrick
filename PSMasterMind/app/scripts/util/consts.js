@@ -28,6 +28,7 @@ var CONSTS = {
     VIEW_GROUPS: "viewGroups",
     EDIT_GROUPS: "editGroups",
     VIEW_PROJECTS: "viewProjects",
+    ADD_PROJECTS: "addProjects",
     EDIT_PROJECTS: "editProjects",
     DELETE_PROJECTS: "deleteProjects",
     VIEW_PROJECT_LINKS: "viewProjectLinks",

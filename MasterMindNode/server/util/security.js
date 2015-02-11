@@ -746,6 +746,7 @@ var fullResourcesMap = [
       "name": "projects",
       "permissions": [
         "viewProjects",
+        "addProjects",
         "editProjects",
         "deleteProjects",
         "viewProjectLinks",

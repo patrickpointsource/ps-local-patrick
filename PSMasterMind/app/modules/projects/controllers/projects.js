@@ -10,6 +10,7 @@ angular.module('Mastermind.controllers.projects')
       //Default to no projects
       $scope.projects = [];
       $scope.loc = window.location;
+        $scope.canCreateProject = $rootScope.hasPermissions(CONSTS.ADD_PROJECTS);
       $scope.fillStatuses = function() {
 
       }
