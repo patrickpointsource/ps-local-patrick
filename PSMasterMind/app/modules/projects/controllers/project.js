@@ -1458,7 +1458,7 @@ else if( role.percentageCovered == 0 )
 			}
 
 			// merge all other persons from assignees
-			$scope.updateHoursPersons( );
+			//$scope.updateHoursPersons( );
 			$scope.updateOrganizedHours( );
 		};
 		// use simply callback logic to wait until everyone will load
@@ -1507,8 +1507,11 @@ else if( role.percentageCovered == 0 )
 						return assignments.members[ i ].person.resource && assignments.members[ i ].person.resource == o.resource;
 					} );
 	
-					if (!person)
+					if (!person) {
+						$scope.organizedHours.push(assignments.members[ i ].person);
+						Resources.resolve($scope.organizedHours[$scope.organizedHours.length - 1]);
 						continue;
+					}	
 					
 					startD = new Date( assignments.members[ i ].startDate );
 					endD = new Date( assignments.members[ i ].endDate );
@@ -2454,10 +2457,8 @@ else if( role.percentageCovered == 0 )
 					$scope.calcMonthHours(result); 
 				}
 			);
-
 		} );
 	};
-
 	
 	$scope.calcMonthHours = function( result ) {
 	

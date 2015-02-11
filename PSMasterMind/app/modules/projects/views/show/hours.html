@@ -118,7 +118,8 @@
   </div>
 </div>
 
-<!-- <div class="row" ng-if="hoursViewType == 'monthly' || hoursViewType == 'billings' || hoursViewType == 'customDates'">
+<!-- Custom Hours View -->
+<div class="row" ng-if="hoursViewType == 'customDates'">
   <div class="col-xs-12" ng-if="!organizedHours">
     <div class="alert alert-warning">There are no logged hours for this project.</div>
   </div>
@@ -131,7 +132,7 @@
           <a href="#{{person.resource}}">
             <img ng-show="person && person.thumbnail" class="profileImage" ng-src="{{person.thumbnail}}" />
             <i class="fa fa-ban" ng-show="!person || !person.thumbnail"></i>
-            <span style="display: inline-block;">{{person.name || 'Unknown'}}</span>
+            <span style="display: inline-block;">{{getPersonName(person)}}</span>
           </a>
           <span>: {{getPersonProjectRoles(person)}}</span>
           <span>- {{getPersonTotalHours($index)}} hours</span>
@@ -156,38 +157,38 @@
           Description
         </div>
       </div>
-      <div ng-repeat="hoursRecord in currentDisplayedHours[$index]" ng-show="person.collapsed">
-        <div class="cos-xs-12">
-          <div class="row" style="border-bottom: 1px solid #dddddd; margin: 0px;">
-            <div class="col-xs-4 col-md-3 col-lg-3">
-              <span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
+        <div ng-repeat="hoursRecord in currentDisplayedHours[$index]" ng-show="person.collapsed">
+            <div class="cos-xs-12">
+                <div class="row" style="border-bottom: 1px solid #dddddd; margin: 0px;">
+                    <div class="col-xs-4 col-md-3 col-lg-3">
+                        <span class="hidden-xs">{{hoursRecord.date | date}}</span><span class="visible-xs">{{hoursRecord.date | date:'shortDate'}}</span>
+                    </div>
+                    <div class="col-xs-4 col-md-3 col-lg-3">
+                        {{hoursRecord.hours}}
+                    </div>
+                    <div class="col-xs-4 visible-xs">
+                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.resource)">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </div>
+                    <div class="col-xs-9 col-md-3 col-lg-3">
+                        {{hoursRecord.description}}
+                    </div>
+                    <div class="col-md-3 col-lg-3 hidden-xs">
+                        <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.resource)">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-4 col-md-3 col-lg-3">
-              {{hoursRecord.hours}}
-            </div>
-            <div class="col-xs-4 visible-xs">
-              <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.resource)">
-                <i class="fa fa-trash-o"></i>
-              </button>
-            </div>
-            <div class="col-xs-9 col-md-3 col-lg-3">
-              {{hoursRecord.description}}
-            </div>
-            <div class="col-md-3 col-lg-3 hidden-xs">
-              <button class="btn btn-default pull-right" ng-click="deleteHours(hoursRecord.resource)">
-                <i class="fa fa-trash-o"></i>
-              </button>
-            </div>
-          </div>
         </div>
-      </div>
-      <div ng-if="currentDisplayedHours[$index].length == 0 && person.collapsed">
-        <span>There are no logged hours</span>
-      </div>
+        <div ng-if="(!currentDisplayedHours[$index] || currentDisplayedHours[$index].length == 0) && person.collapsed">
+            <span>There are no logged hours</span>
+        </div>
     </div>
 
   </div>
-</div>-->
+</div>
 
 <div class="row" ng-if="hoursViewType == 'monthly'" style="margin-top: 10px;">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
