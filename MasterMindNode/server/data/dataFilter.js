@@ -394,7 +394,7 @@ var filterProjectsByStatuses = function(statuses, projects) {
  */
 
 var filterProjectsByResources = function(resources, projects) {
-	
+	/*
 	var result = [];
 	resources = (resources instanceof Array) ? resources : [resources];
 	
@@ -405,7 +405,9 @@ var filterProjectsByResources = function(resources, projects) {
 			}
 		});
 	});
-	return result;
+	return result;*/
+	// make more extended filetring using underscore
+	return _.filter(projects, function(pr){ return (_.filter(resources, function(r) { return r == pr.resource | r.indexOf(pr._id) > -1})).length > 0});
 };
 
 
