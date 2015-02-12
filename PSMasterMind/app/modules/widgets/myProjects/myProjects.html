@@ -1,9 +1,9 @@
-<div class="panel panel-default dashboard-widget" ng-controller="MyProjectsCtrl" ng-show="hasActiveProjects">
+<div class="panel panel-default dashboard-widget" ng-controller="MyProjectsCtrl" >
     <div class="panel-heading">
         <i class="fa fa-briefcase"></i> My Projects
     </div>
     <div class="panel-body">
-        <div class="graph">
+        <div class="graph" ng-show="hasActiveProjects">
             <div id="projectsSummaryGraph">
                 <div class="row" ng-repeat="project in myProjects | orderBy:'customerName'">
                     <div class="title col-xs-12">
@@ -29,6 +29,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <div ng-show="!hasActiveProjects">
+        	There are no active projects
         </div>
     </div>
 </div>

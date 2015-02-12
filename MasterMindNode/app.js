@@ -149,6 +149,8 @@ var restoreUser = function(req, res, next) {
 	
 	if (req.session && req.session.user)
 		req.user = req.session.user;
+		// TODO: use specific user google id to impersonificate session
+		//req.user = '106599856894681365142';
 	
 	next();
 };
@@ -236,7 +238,7 @@ var resetUser = function(req, res) {
 	res.json( {
 		result: true
 	} );
-}
+};
 
 if (!useAppNames) {
     // Application paths that are protected
