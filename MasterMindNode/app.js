@@ -340,7 +340,9 @@ var httpServer = http.createServer( app);
 httpServer.listen(httpPort, hostName);
 */
 //Initialize reminders
-reminder.initialize();
+reminder.initialize({
+	env: appConfig.env
+});
 
 console.log('server:timeout:' + httpServer.timeout);
 

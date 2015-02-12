@@ -5,7 +5,6 @@ var smtpHelper = require('../util/smtpHelper');
 var emailSender = require('../util/emailSender');
 var _ = require( 'underscore' );
 var os = require('os');
-var configProperties = require('../../config.json');
 
 // Configuration properties
 var REMINDER_ACTIVE = "reminder.active";
@@ -23,8 +22,11 @@ var ONE_HOUR = 60 * 60 * 1000;
 var reminderJobInprogress = false;
 var firstRoundStarted = false;
 var secondRoundStarted = false;
+var env;
 
-module.exports.initialize = function(callback) {
+module.exports.initialize = function(params, callback) {
+    console.log("initializing reminders");
+	env = params.env;
     console.log("initializing reminders");
     later.date.UTC();
     var initCronSched = later.parse.cron(INITIAL_CRON_SCHEDULE, true);
@@ -324,7 +326,7 @@ function emailReminderJob(withInterestedParties) {
 		            												if (mBox && givenName && isActive) {
 		            						        					var title = "Reminder for " + fullName;
 	
-		            						        					var message = smtpHelper.getReminderMessage(givenName, "Node.JS service", os.hostname(), configProperties.env);
+		            						        					var message = smtpHelper.getReminderMessage(givenName, "Node.JS service", os.hostname(), env);
 		            						        					
 		            						        					this.emailReminders.push({
 		            						        						mBox: mBox,
@@ -346,7 +348,7 @@ function emailReminderJob(withInterestedParties) {
 		            												//send debug email reminders
 		            												if (givenName && isDebug && notificationList) {
 		            						        					var title = "Reminder for " + fullName + " (Limited Notification List)";
-		            						        					var message = smtpHelper.getReminderDebugMessage(givenName, mBox, ccList, "Node.JS service", os.hostname(), configProperties.env);
+		            						        					var message = smtpHelper.getReminderDebugMessage(givenName, mBox, ccList, "Node.JS service", os.hostname(), env);
 		            						        					
 		            						        					this.emailNotifications.push({
 		            						        						notificationList: notificationList,
