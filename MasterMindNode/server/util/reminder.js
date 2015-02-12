@@ -27,7 +27,6 @@ var env;
 module.exports.initialize = function(params, callback) {
     console.log("initializing reminders");
 	env = params.env;
-    console.log("initializing reminders");
     later.date.UTC();
     var initCronSched = later.parse.cron(INITIAL_CRON_SCHEDULE, true);
     var secondCronSched = later.parse.cron(SECOND_CRON_SCHEDULE, true);
