@@ -292,7 +292,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 	function getMyPeople( me ) {
 		var deferred = $q.defer( );
-		Resources.get( "people/bytypes/myPeople").then( function( result ) {
+		Resources.get( "people/bytypes/myPeople", {t : (new Date()).getMilliseconds()}).then( function( result ) {
 			deferred.resolve( result.members );
 		});
 		return deferred.promise;
