@@ -101,7 +101,7 @@
     <div class="row peopleList" ng-repeat="vacation in projectVacations">
       <div class="col-xs-9 col-sm-3">
         <a href="#{{vacation.person.resource}}">
-          <img class="profileImage" ng-src="{{vacation.person.thumbnail}}" err-src="\images\defaultProfileImg.png" />
+          <img class="profileImage" ng-src="{{vacation.person.thumbnail}}" err-src="\images\defaultprofile.png" />
         </a>
         <a href="#{{vacation.person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(vacation.person)}}</a>
       </div>
