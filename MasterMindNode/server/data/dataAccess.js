@@ -188,14 +188,14 @@ var listProjectsByIds = function( ids, callback ) {
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
 		console.log( "read " + PROJECTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterProjectsByIds(ids, result.data), "members", "people/" ) );
+		callback( null, prepareRecords( dataFilter.filterProjectsByIds(ids, result.data), "members", "projects/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterProjectsByIds(ids, body.data), "members", "people/" ) );
+			callback( err, prepareRecords( dataFilter.filterProjectsByIds(ids, body.data), "members", "projects/" ) );
 		} );
 	}
 };
@@ -728,24 +728,6 @@ var listTasksBySubstr = function( substr, callback ) {
 
 };
 
-var listTasksBySubstr = function( substr, callback ) {
-	var result = memoryCache.getObject( TASKS_KEY );
-	
-	if( result ) {
-		console.log( "read " + TASKS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterTasksBySubstr(substr, result.data), "members", "tasks/" ) );
-	} else {
-		dbAccess.listTasks( function( err, body ) {
-			if( !err ) {
-				console.log( "save " + TASKS_KEY + " to memory cache" );
-				memoryCache.putObject( TASKS_KEY, body );
-			}
-			callback( err, prepareRecords( dataFilter.filterTasksBySubstr(substr, body.data), "members", "tasks/" ) );
-		} );
-	}
-
-};
-
 var listRoles = function( callback ) {
 
 	var result = memoryCache.getObject( ROLES_KEY );
@@ -966,7 +948,7 @@ var listSecurityRolesByResources = function( resources, callback ) {
 
 var clearCacheForSecurityRoles = function( resources, callback ) {
 	memoryCache.deleteObject( SECURITY_ROLES_KEY );
-}
+};
 
 var listUserRoles = function( callback ) {
 	var result = memoryCache.getObject( USER_ROLES_KEY );
@@ -996,7 +978,7 @@ var listUserRolesByGoogleId = function( googleId, callback ) {
 				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( USER_ROLES_KEY, body );
 			}
-			callback( null, prepareRecords( dataFilter.filterUserRolesByGoogleId(googleId, body.data), "members", "notifications/" ) );
+			callback( null, prepareRecords( dataFilter.filterUserRolesByGoogleId(googleId, body.data), "members", "userRoles/" ) );
 
 		} );
 	}
