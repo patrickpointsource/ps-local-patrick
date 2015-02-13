@@ -409,7 +409,7 @@ function( req, res ) {
 
 router.post( '/', auth.isAuthenticated, function( req, res ) {
 
-	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.editProjects, function( allowed ) {
+	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.addProjects, function( allowed ) {
 		if( allowed ) {
 			var project = req.body;
 			project.form = 'Projects';
