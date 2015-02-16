@@ -1,6 +1,7 @@
 node_modules
 bower_components
 PSMasterMind/dist
+PSMasterMind/test/reports
 MasterMindNode/dist
 /.jazz5
 /.metadata
