@@ -100,6 +100,12 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
             isNotRender: !$scope.projectManagementAccess
         }]
 	}, {
+		text: "Calendar",
+		value: "calendar",
+		handler: "showCalendar",
+		iconCss: "icon-calendar",
+		isRender: "true"
+	}, {
 		text: "Staffing",
 		value: "staffing",
 		handler: "showStaffing",
@@ -145,7 +151,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		subItem.active = result;
 
 		return result;
-	}
+	};
 
 	$scope.handleClick = function(e, handler, menuItem, subItem, subIndex) {
 		var e = e || window.event;
@@ -188,12 +194,10 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 
 		}
 
-
-
 		if (e) {
 			e.stopPropagation()
 		}
-	}
+	};
 
 	if (!$scope.additionalClass)
 		$scope.additionalClass = 'navbar-inverse visible-xs visible-sm';

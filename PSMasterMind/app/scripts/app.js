@@ -123,6 +123,11 @@
           templateUrl: 'modules/people/profile.html',
           controller: 'ProfileCtrl'
         })
+        .state('calendar', {
+          url: '/calendar',
+          templateUrl: 'modules/calendar/views/calendar.html',
+          controller: 'CalendarCtrl'
+        })
        .state('staffing', {
           url: '/staffing?tab&startDate&endDate&projectName&projectResource&roleId&role',
           templateUrl: 'modules/staffing/staffing.html',

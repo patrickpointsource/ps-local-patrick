@@ -276,6 +276,13 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	$scope.showStaffing = function( ) {
 		$state.go( 'staffing' );
 	};
+	
+	/*
+	 * Navigates to calendar view
+	 */
+	$scope.showCalendar = function( ) {
+		$state.go( 'calendar' );
+	};
 
 	/*
 	 * Navigate to the projects index.
