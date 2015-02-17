@@ -1,4 +1,4 @@
-describe("E2E: Create project, check projects list, delete project, check project list.", function () {
+describe("E2E: Project test cases.", function () {
 
     var USER_NAME = 'psapps@pointsourcellc.com';
     var PASSWORD = 'ps@pp$777';
@@ -10,6 +10,13 @@ describe("E2E: Create project, check projects list, delete project, check projec
     var PIPELINE_PROJECT_NAME = "E2E Pipeline Project";
     var COMPLETED_PROJECT_NAME = "E2E Completed Project";
     var INVEST_PROJECT_NAME = "E2E Investment Project";
+    
+    var allProjectsPath = "/index.html#/projects?filter=all";
+    var activeProjectsPath = "/index.html#/projects?filter=active";
+    var backlogProjectsPath = "/index.html#/projects?filter=backlog";
+    var investProjectsPath = "/index.html#/projects?filter=investment";
+    var completedProjectsPath = "/index.html#/projects?filter=complete";
+    var createProjectPath = "/index.html#/projects/new?filter=all";
 
     //login
     var sbutton = by.tagName('button');
@@ -20,9 +27,9 @@ describe("E2E: Create project, check projects list, delete project, check projec
 
     beforeEach(function () {
         browser.driver.getCurrentUrl().then(function (url) {
-            if (url.indexOf('http://localhost:9000/index.html#/') == -1) { //Go to the dashboard page
-                browser.driver.get('http://localhost:9000/index.html#/');
-                browser.driver.sleep(1000);
+            if (url.indexOf('http://localhost:9000/index.html#/projects') == -1) { //Go to the projects page
+                browser.driver.get('http://localhost:9000/index.html#/projects?filter=all');
+                browser.driver.sleep(2000);
                 browser.driver.getCurrentUrl().then(function (loginUrl) {
                     if (loginUrl.indexOf('http://localhost:9000/login.html') > -1) { //  Re-login if needed
                         console.log("> RE-LOGGING");
@@ -33,111 +40,77 @@ describe("E2E: Create project, check projects list, delete project, check projec
         });
     });
 
-    var ProjectsPage = function () {
-        this.url = browser.baseUrl + "/index.html#/projects?filter=all";
-        this.newUrl = browser.baseUrl + "/index.html#/projects/new?filter=all";
-        this.get = function () {
-            browser.get(this.url);
-        };
-        this.projects = element.all(by.repeater('project in projects | filter:filterText'));
-        this.addProjectButton = element(by.css('[ng-click="createProject()"]'));
-        this.findProject = function (projectName) {
-            var $this = this;
-            $this.projects.filter(function (elem) {
-                return elem.getText().then(function (text) {
-                    return text.indexOf(projectName) > -1;
-                });
-            }).then(function (filteredElements) {
-                return filteredElements[0];
-            });
-        }
-    };
-
-    var ProjectPage = function () {
-        this.editButton = element(by.css('[ng-click="edit()"]'));
-        this.deleteButton = element(by.css('[ng-show="canDeleteProject"]'));
-        this.deleteButtonOk = element(by.css('[ng-click="deleteProject()"]'));
-    };
-
-    var NewProjectPage = function () {
-        this.nameInput = element(by.model('project.name'));
-        this.customerInput = element(by.model('project.customerName'));
-        this.projectTypesRadio = element.all(by.model('project.type'));
-        this.calendarToday = element(by.css('.day active'));
-        this.startDate = element(by.model('project.startDate'));
-        this.endDate = element(by.model('project.endDate'));
-        this.projectCommited = element(by.model('project.committed'));
-        this.execSponsorSelect = function (number) {
-            element(by.model('project.executiveSponsor.resource')).all(by.tagName('option'))
-                .then(function (options) {
-                    options[number].click();
-                });
-        };
-        //this.rolesTab = element(by.id('roles'));
-        this.triggerAddRoleButton = element(by.css('[ng-click="triggerAddRole()"]'));
-        this.roleSelect = function (name) {
-            element(by.cssContainingText('option', name)).click();
-        };
-        // 0 - PAID, 1 - POC, 2 - INVEST
-        this.selectType = function (index) {
-            element(by.css(".project-edit-buttons")).all(by.tagName("label")).get(0).click();
-        };
-        this.roleStartDate = element(by.model('newRole.startDate'));
-        this.hoursPerMonth = element(by.model('newRole.rate.hoursPerMth'));
-        this.addRoleButton = element(by.css('[ng-click="add()"]'));
-        this.doneButton = element(by.css('[ng-click="checkShiftDates(false)"]'));
-        this.doneButtonBottom = element.all(by.css('[ng-click="checkShiftDates(true)"]')).get(1);
-        this.saveButtonTop = element.all(by.css('[ng-click="checkShiftDates(false)"]')).first();
-        this.saveButtonBottom = element.all(by.css('[ng-click="checkShiftDates(false)"]')).get(1);
-        this.saveButton = element(by.css('[ng-click="checkShiftDates(true)"]'));
-        this.successMessage = element.all(by.repeater('message in messages'));
-    };
-
     it('Test All projects listed by default', function () {
-         browser.driver.get('http://localhost:9000/#/projects');
-         browser.driver.sleep(1000);
-         expect(browser.driver.getCurrentUrl()).toContain('?filter=all');
-         var projects = element.all(by.repeater('project in projects | filter:filterText'));
-
-         console.log("> Calculating projects count. Should be equal to " + DEFAULT_PROJECTS_COUNT);
-        projects.count().then(function (projectsCount) {
-            console.log("> Projects count is " + projectsCount);
-            expect(projectsCount).toEqual(DEFAULT_PROJECTS_COUNT);
-        });
-
+    	checkAllProjectsListedByDefault();
     });
 
     // IMPORTANT: required at lest 1 sponsor in sponsor's list, 
     //            required at "Project Manager" role in roles dropdown
+    
     it('Should create active project.', function () {
         createProject(ACTIVE_PROJECT_NAME, fillActiveProjectPageFields);
-    }, 30000);
+    });
+    
+    it('Check and remove active project.', function () {
+    	projectCheckAndRemove(ACTIVE_PROJECT_NAME, activeProjectsPath);
+    });
 
-    /*it('Should create backlog project.', function () {
+    it('Should create backlog project.', function () {
         createProject(BACKLOG_PROJECT_NAME, fillBacklogProjectPageFields);
-    }, 30000);
+    });
+    
+    it('Check and remove backlog project.', function () {
+    	projectCheckAndRemove(BACKLOG_PROJECT_NAME, backlogProjectsPath);
+    });
 
-    it('Should create pipeline project.', function () {
-        createProject(PIPELINE_PROJECT_NAME, fillPipelineProjectPageFields);
-    }, 30000);
-
-    it('Should create completed project.', function () {
-        createProject(COMPLETED_PROJECT_NAME, fillCompletedProjectPageFields);
-    }, 30000);
-
-    it('Should create investment project.', function () {
-        createProject(INVEST_PROJECT_NAME, fillInvestmentProjectPageFields);
-    }, 30000);*/
+//    it('Should create pipeline project.', function () {
+//        createProject(PIPELINE_PROJECT_NAME, fillPipelineProjectPageFields);
+//    });
+//    
+//    it('Check and remove pipeline project.', function () {
+//    	projectCheckAndRemove(PIPELINE_PROJECT_NAME, pipelineProjectsPath);
+//    });
+//
+//    it('Should create completed project.', function () {
+//        createProject(COMPLETED_PROJECT_NAME, fillCompletedProjectPageFields);
+//    });
+//    
+//    it('Check and remove completed project.', function () {
+//    	projectCheckAndRemove(COMPLETED_PROJECT_NAME, completedProjectsPath);
+//    });
+//
+//    it('Should create investment project.', function () {
+//        createProject(INVEST_PROJECT_NAME, fillInvestmentProjectPageFields);
+//    });
+//    
+//    it('Check and remove investment project.', function () {
+//    	projectCheckAndRemove(INVEST_PROJECT_NAME, investmentProjectsPath);
+//    });
+    
+    var checkAllProjectsListedByDefault = function () {
+    	var projectsPage = new ProjectsPage();
+    	projectsPage.get();
+        
+        var projects = element.all(by.repeater('project in projects | filter:filterText'));
+        console.log("> Calculating projects count. Should be equal to " + DEFAULT_PROJECTS_COUNT);
+        projects.count().then(function (projectsCount) {
+           console.log("> Projects count is " + projectsCount);
+           expect(projectsCount).toEqual(DEFAULT_PROJECTS_COUNT);
+       });
+    };
 
     var createProject = function (projectName, fillCustomFieldsCallback) {
-        var projectsPage = new ProjectsPage();
-        var newProjectPage = new NewProjectPage();
+    	console.log("> Create project: " + projectName);
+        
+    	var projectsPage = new ProjectsPage();
+        var newProjectPage = new EditCreateProjectPage();
 
         projectsPage.get(); // going to projects
         browser.wait(function () {
-            return browser.isElementPresent(by.css('[ng-click="createProject()"]'));
+            return browser.isElementPresent(projectsPage.addProjectButton);
         }).then(function () {
             projectsPage.addProjectButton.click();
+            browser.sleep(2000);
 
             // assert for "project/new" url
             browser.getCurrentUrl().then(function (url) {
@@ -150,118 +123,16 @@ describe("E2E: Create project, check projects list, delete project, check projec
             });
 
             newProjectPage.doneButtonBottom.click();
-
-            // clean up the environment: delete project
-            browser.wait(function () {
-                browser.isElementPresent(by.binding("project.customer"));
-            }).then(function () {
-                browser.driver.getCurrentUrl().then(function (createdProjectUrl) {
-                    console.log("> Created project url: " + createdProjectUrl);
-                    // check if project added
-                    projectsPage.get();
-                    var projects = element.all(by.repeater('project in projects | filter:filterText'));
-                    projects.count().then(function (projectsCount) {
-                        console.log("> Projects count is " + projectsCount);
-                        expect(projectsCount).toEqual(DEFAULT_PROJECTS_COUNT + 1);
-                    });
-
-                    //deleteProject(createdProjectUrl);
-                });
-            });
-
-            /*newProjectPage.successMessage.then(function (arr) {
-                expect(arr[0].getText()).toEqual('Project successfully saved');
-            });*/
+            browser.sleep(10000);
+            
+            expect(browser.getCurrentUrl()).toContain('/summary');
         });
-    }
-
-    /*it('Should create backlog project.', function() {
-        var projectsPage = new ProjectsPage();
-        var newProjectPage = new NewProjectPage();
-
-        projectsPage.get(); // going to projects
-        browser.sleep(1000); // wait until it loads
-        projectsPage.addProjectButton.click();
-
-        // assert for "project/new" url
-        browser.getCurrentUrl().then(function(url) {
-            expect(url).toEqual(projectsPage.newUrl);
-        });
-
-        fillCommonFields(newProjectPage, function() {
-            fillBacklogProjectPageFields(newProjectPage);
-        });
-
-        newProjectPage.successMessage.then(function(arr) {
-            expect(arr[0].getText()).toEqual('Project successfully saved');
-        });
-    }, 30000);
-
-    it('Should create pipeline project.', function() {
-        var projectsPage = new ProjectsPage();
-        var newProjectPage = new NewProjectPage();
-
-        projectsPage.get(); // going to projects
-        browser.sleep(1000); // wait until it loads
-        projectsPage.addProjectButton.click();
-
-        // assert for "project/new" url
-        browser.getCurrentUrl().then(function(url) {
-            expect(url).toEqual(projectsPage.newUrl);
-        });
-
-        fillCommonFields(newProjectPage, function() {
-            fillPipelineProjectPageFields(newProjectPage);
-        });
-
-        newProjectPage.successMessage.then(function(arr) {
-            expect(arr[0].getText()).toEqual('Project successfully saved');
-        });
-    }, 30000);
-
-    it('Should create completed project.', function() {
-        var projectsPage = new ProjectsPage();
-        var newProjectPage = new NewProjectPage();
-
-        projectsPage.get(); // going to projects
-        browser.sleep(1000); // wait until it loads
-        projectsPage.addProjectButton.click();
-
-        // assert for "project/new" url
-        browser.getCurrentUrl().then(function(url) {
-            expect(url).toEqual(projectsPage.newUrl);
-        });
-
-        fillCommonFields(newProjectPage, function() {
-            fillCompletedProjectPageFields(newProjectPage);
-        });
-
-        newProjectPage.successMessage.then(function(arr) {
-            expect(arr[0].getText()).toEqual('Project successfully saved');
-        });
-    }, 30000);
-
-    it('Open projects page, shoud display created projects.', function() {
-        var projectsPage = new ProjectsPage();
-        projectsPage.get();
-        browser.getCurrentUrl().then(function(url) {
-            expect(url).toEqual(projectsPage.url);
-        });
-        browser.sleep(1000);
-        browser.waitForAngular().then(function() {
-            expect(projectsPage.projects.count()).toEqual(3);
-        });
-    }, 30000);
-
-    it('Should delete created project', function() {
-        deleteProjectByName(ACTIVE_PROJECT_NAME);
-    }, 30000*/
+    };
 
     var fillCommonFields = function (newProjectPage, fillOtherFieldsCallback) {
         newProjectPage.execSponsorSelect(1); // assume that we have at least 1 sponsor in list.
 
         newProjectPage.customerInput.sendKeys("E2E Test Customer Name");
-        newProjectPage.selectType(0);
 
         fillOtherFieldsCallback();
 
@@ -280,10 +151,12 @@ describe("E2E: Create project, check projects list, delete project, check projec
         today.setDate(today.getDate() - 2);
         var startDate = getShortDate(new Date(today));
 
-        newProjectPage.startDate.sendKeys(startDate);
         newProjectPage.nameInput.sendKeys(ACTIVE_PROJECT_NAME);
-        newProjectPage.projectCommited.click();
-        console.log("> Active project fields entered.");
+        newProjectPage.selectType(0).then(function () {
+            newProjectPage.projectCommited.click();
+            console.log("> Active project fields entered.");
+        });
+        newProjectPage.startDate.sendKeys(startDate);
     };
 
     var fillBacklogProjectPageFields = function (newProjectPage) {
@@ -292,9 +165,12 @@ describe("E2E: Create project, check projects list, delete project, check projec
         today.setDate(today.getDate() + 2);
         var startDate = getShortDate(new Date(today));
 
-        newProjectPage.startDate.sendKeys(startDate);
         newProjectPage.nameInput.sendKeys(BACKLOG_PROJECT_NAME);
-        newProjectPage.projectCommited.click();
+        newProjectPage.selectType(0).then(function () {
+            newProjectPage.projectCommited.click();
+            console.log("> Backlog project fields entered.");
+        });
+        newProjectPage.startDate.sendKeys(startDate);
     };
 
     var fillPipelineProjectPageFields = function (newProjectPage) {
@@ -302,15 +178,31 @@ describe("E2E: Create project, check projects list, delete project, check projec
         var today = new Date();
         today.setDate(today.getDate() + 2);
         var startDate = getShortDate(new Date(today));
-
+ 
         newProjectPage.nameInput.sendKeys(PIPELINE_PROJECT_NAME);
+        newProjectPage.selectType(0).then(function () {
+        	// not contractually commited
+            //newProjectPage.projectCommited.click();
+            console.log("> Pipeline project fields entered.");
+        });
         newProjectPage.startDate.sendKeys(startDate);
-        // not contractually commited
-        //newProjectPage.projectCommited.click();
+    };
+    
+    var fillInvestmentProjectPageFields = function (newProjectPage) {
+        // start date in the future
+        var today = new Date();
+        today.setDate(today.getDate() + 2);
+        var startDate = getShortDate(new Date(today));
+
+        newProjectPage.nameInput.sendKeys(INVEST_PROJECT_NAME);
+        newProjectPage.selectType(2).then(function () {
+        	newProjectPage.projectCommited.click();
+            console.log("> Investment project fields entered.");
+        });
+        newProjectPage.startDate.sendKeys(startDate);
     };
 
     var fillCompletedProjectPageFields = function (newProjectPage) {
-        newProjectPage.nameInput.sendKeys(COMPLETED_PROJECT_NAME);
         // start date in the past
         var start = new Date();
         start.setDate(start.getDate() - 4);
@@ -321,49 +213,59 @@ describe("E2E: Create project, check projects list, delete project, check projec
         end.setDate(end.getDate() - 2);
         var endDate = getShortDate(new Date(end));
 
+        newProjectPage.nameInput.sendKeys(COMPLETED_PROJECT_NAME);
+        newProjectPage.selectType(0).then(function () {
+        	newProjectPage.projectCommited.click();
+        	console.log("> Completed project fields entered.");
+        });
         newProjectPage.startDate.sendKeys(startDate);
-        newProjectPage.endDate.sendKeys(endDate);
-        newProjectPage.projectCommited.click();
+    	newProjectPage.endDate.sendKeys(endDate);
+    };
+    
+    var projectCheckAndRemove = function (projectName, filterPath) {
+    	console.log("> Check that project " + projectName + " was saved and remove it.");
+    	var projectsPage = new ProjectsPage(filterPath);
+    	projectsPage.get();
+    	browser.driver.wait(function () {
+            return browser.isElementPresent(element(by.repeater('project in projects | filter:filterText')));
+        }).then(function () {
+        	projectsPage.findProject(projectName).then(function (filteredElements) {
+        		var project = filteredElements[0];
+        		
+        		expect(project.getText()).toContain(projectName);
+        		
+        		project.element(by.tagName('a')).click();
+        		browser.sleep(5000);
+        		console.log("> Project selected ");
+
+        		removeProject(filterPath);
+        	});
+        });
     };
 
-    var fillInvestmentProjectPageFields = function (newProjectPage) {
-        // start date in the future
-        var today = new Date();
-        today.setDate(today.getDate() + 2);
-        var startDate = getShortDate(new Date(today));
-
-        newProjectPage.selectType(2);
-        newProjectPage.startDate.sendKeys(startDate);
-        newProjectPage.nameInput.sendKeys(INVEST_PROJECT_NAME);
-        newProjectPage.projectCommited.click();
-    };
-
-    var deleteProjectByName = function (name) {
-        var projectsPage = new ProjectsPage();
-        projectsPage.get();
-
-        // now we are on project page
-        var projectPage = new ProjectPage();
-        browser.sleep(500);
-        projectPage.editButton.click();
-        browser.sleep(500);
-        projectPage.deleteButton.click();
-        browser.sleep(500);
-        projectPage.deleteButtonOk.click();
-        // check that we are redirected to /projects
-        browser.getCurrentUrl().then(function (url) {
-            expect(url).toEqual(projectsPage.url);
-        });
-        // check that there are no projects now
-        browser.waitForAngular().then(function () {
-            expect(projectsPage.projects.count()).toEqual(0);
-        });
-        browser.sleep(4000); // for demo
+    var removeProject = function (filterPath) {
+    	var projectPage = new ProjectPage();
+		browser.wait(function () {
+			return browser.isElementPresent(projectPage.editButton);
+		}).then(function () {
+			console.log("> Project removing ");
+			projectPage.editButton.click();
+			browser.sleep(2000);
+			browser.wait(function () {
+    			return browser.isElementPresent(projectPage.deleteButton);
+    		}).then(function () {
+    			browser.sleep(500);
+    	        projectPage.deleteButton.click();
+    	        browser.sleep(500);
+    	        projectPage.deleteButtonOk.click();
+    	        browser.sleep(2000);
+    	        expect(browser.getCurrentUrl()).toContain(filterPath);
+    	    });
+	    });
     };
 
     var login = function () {
         browser.driver.ignoreSynchronization = true;
-        browser.driver.get('http://localhost:9000');
 
         browser.driver.wait(function () {
             return browser.driver.isElementPresent(sbutton);
@@ -426,5 +328,70 @@ describe("E2E: Create project, check projects list, delete project, check projec
         }
         date = yyyy + '-' + mm + '-' + dd;
         return date;
+    };
+    
+    var ProjectsPage = function ( filterPath ) {
+    	if ( filterPath ) {
+    		this.url = browser.baseUrl + filterPath;
+    	} else {
+    		this.url = browser.baseUrl + allProjectsPath;
+    	}
+        this.newUrl = browser.baseUrl + createProjectPath;
+        
+        this.get = function () {
+            browser.get(this.url);
+            browser.sleep(2000);
+        };
+        
+        this.projects = element.all(by.repeater('project in projects | filter:filterText'));
+        this.addProjectButton = element(by.css('[ng-click="createProject()"]'));
+        this.findProject = function (projectName) {
+            var $this = this;
+            return $this.projects.filter(function (elem) {
+                return elem.getText().then(function (text) {
+                    return text.indexOf(projectName) > -1;
+                });
+            });
+        };
+    };
+
+    var ProjectPage = function () {
+        this.editButton = element(by.css('[ng-click="editProject()"]'));
+        this.deleteButton = element(by.css('[ng-show="canDeleteProject"]'));
+        this.deleteButtonOk = element(by.css('[ng-click="deleteProject()"]'));
+    };
+
+    var EditCreateProjectPage = function () {
+        this.nameInput = element(by.model('project.name'));
+        this.customerInput = element(by.model('project.customerName'));
+        this.projectTypesRadio = element.all(by.model('project.type'));
+        this.calendarToday = element(by.css('.day active'));
+        this.startDate = element(by.model('project.startDate'));
+        this.endDate = element(by.model('project.endDate'));
+        this.projectCommited = element(by.model('project.committed'));
+        this.execSponsorSelect = function (number) {
+            element(by.model('project.executiveSponsor.resource')).all(by.tagName('option'))
+            	.then(function (options) {
+                        options[number].click();
+                });
+        };
+        //this.rolesTab = element(by.id('roles'));
+        this.triggerAddRoleButton = element(by.css('[ng-click="triggerAddRole()"]'));
+        this.roleSelect = function (name) {
+            element(by.cssContainingText('option', name)).click();
+        };
+        // 0 - PAID, 1 - POC, 2 - INVEST
+        this.selectType = function (index) {
+            return element(by.css(".project-edit-buttons")).all(by.tagName("label")).get(0).click();
+        };
+        this.roleStartDate = element(by.model('newRole.startDate'));
+        this.hoursPerMonth = element(by.model('newRole.rate.hoursPerMth'));
+        this.addRoleButton = element(by.css('[ng-click="add()"]'));
+        this.doneButton = element(by.css('[ng-click="checkShiftDates(false)"]'));
+        this.doneButtonBottom = element.all(by.css('[ng-click="checkShiftDates(true)"]')).get(1);
+        this.saveButtonTop = element.all(by.css('[ng-click="checkShiftDates(false)"]')).first();
+        this.saveButtonBottom = element.all(by.css('[ng-click="checkShiftDates(false)"]')).get(1);
+        this.saveButton = element(by.css('[ng-click="checkShiftDates(true)"]'));
+        this.successMessage = element.all(by.repeater('message in messages'));
     };
 });

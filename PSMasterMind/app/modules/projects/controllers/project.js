@@ -29,7 +29,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	/**
 	 * Set the profile view in edit mode
 	 */
-	$scope.edit = function( ) {
+	$scope.editProject = function( ) {
 		if( $scope.canEdit( ) ) {
 			$state.go( 'projects.edit', {
 				projectId: $scope.projectId
