@@ -66,8 +66,8 @@
 	                		<span>{{thisWeekDayLables[$index] | uppercase}}</span>
 	                		<span class="month-day">{{day.dayOfMonth}}</span><sup>th</sup>
 	                	</div>
-	                	<div class="hours-day-content">
-	                		<span>{{formatHours(day.totalHours)}}</span>
+	                	<div class='hours-day-content' >
+	                		<span ng-class="{'longcontent': day.totalHours >= 10 }">{{formatHours(day.totalHours)}}</span>
 	                		<span class="hours-day-check" ng-if="day.totalHours >= 8" >
 		                		<i class="fa fa-check fa-2x"></i>
 		                	</span>
