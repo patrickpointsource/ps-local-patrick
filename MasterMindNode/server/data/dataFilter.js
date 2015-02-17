@@ -394,6 +394,7 @@ var filterProjectsByStatuses = function(statuses, projects) {
  */
 
 var filterProjectsByResources = function(resources, projects) {
+	resources = (resources instanceof Array) ? resources : [resources];
 	/*
 	var result = [];
 	resources = (resources instanceof Array) ? resources : [resources];
