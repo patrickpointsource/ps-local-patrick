@@ -3,7 +3,12 @@ describe("E2E: Project test cases.", function () {
     var USER_NAME = 'psapps@pointsourcellc.com';
     var PASSWORD = 'ps@pp$777';
 
-    var DEFAULT_PROJECTS_COUNT = 46;
+    //login
+    var sbutton = by.tagName('button');
+    var logonEmail = by.id('Email');
+    var logonPswd = by.id('Passwd');
+    var signIn = by.id('signIn');
+    var submit_approve_access = by.id('submit_approve_access');
 
     var ACTIVE_PROJECT_NAME = "E2E Active Project";
     var BACKLOG_PROJECT_NAME = "E2E Backlog Project";
@@ -11,19 +16,31 @@ describe("E2E: Project test cases.", function () {
     var COMPLETED_PROJECT_NAME = "E2E Completed Project";
     var INVEST_PROJECT_NAME = "E2E Investment Project";
     
-    var allProjectsPath = "/index.html#/projects?filter=all";
-    var activeProjectsPath = "/index.html#/projects?filter=active";
-    var backlogProjectsPath = "/index.html#/projects?filter=backlog";
-    var investProjectsPath = "/index.html#/projects?filter=investment";
-    var completedProjectsPath = "/index.html#/projects?filter=complete";
-    var createProjectPath = "/index.html#/projects/new?filter=all";
+    var projectsPath = {
+    	url: "/index.html#/projects?filter=",
+    	createUrl: "/index.html#/projects/new?filter=all",
+    	all: 'all',
+    	active: 'active',
+    	backlog: 'backlog',
+    	invest: 'invest',
+    	completed: 'complete'
+    };
+    
+    var DEFAULT_PROJECTS_COUNT = 46;
+    var projectsList = {
+    		active: [ "All Apps",
+    	              "Firewire Project Team",
+    	              "MasterMind",
+    	              "Navigation",
+    	              "SC Test",
+    	              "SIBC Condo Assoc. API & Database",
+    	              "Test Assignments",
+    	              "Test shift dates",
+    	              "TestProj#byVlad" 
+    	             ],
+    	    backlog: [ "TestRoleAssignees" ]
+    };
 
-    //login
-    var sbutton = by.tagName('button');
-    var logonEmail = by.id('Email');
-    var logonPswd = by.id('Passwd');
-    var signIn = by.id('signIn');
-    var submit_approve_access = by.id('submit_approve_access');
 
     beforeEach(function () {
         browser.driver.getCurrentUrl().then(function (url) {
@@ -44,6 +61,14 @@ describe("E2E: Project test cases.", function () {
     	checkAllProjectsListedByDefault();
     });
 
+    it('Click on Active projects, check that only active projects listed', function () {
+    	checkActiveProjectsList();
+    });
+    
+    it('Click on Active&Backlog projects, check that only active&backlog projects listed', function () {
+    	checkActiveBacklogProjectsList();
+    });
+    
     // IMPORTANT: required at lest 1 sponsor in sponsor's list, 
     //            required at "Project Manager" role in roles dropdown
     
@@ -52,7 +77,7 @@ describe("E2E: Project test cases.", function () {
     });
     
     it('Check and remove active project.', function () {
-    	projectCheckAndRemove(ACTIVE_PROJECT_NAME, activeProjectsPath);
+    	projectCheckAndRemove(ACTIVE_PROJECT_NAME, projectsPath.active);
     });
 
     it('Should create backlog project.', function () {
@@ -60,7 +85,7 @@ describe("E2E: Project test cases.", function () {
     });
     
     it('Check and remove backlog project.', function () {
-    	projectCheckAndRemove(BACKLOG_PROJECT_NAME, backlogProjectsPath);
+    	projectCheckAndRemove(BACKLOG_PROJECT_NAME, projectsPath.backlog);
     });
 
 //    it('Should create pipeline project.', function () {
@@ -76,7 +101,7 @@ describe("E2E: Project test cases.", function () {
 //    });
 //    
 //    it('Check and remove completed project.', function () {
-//    	projectCheckAndRemove(COMPLETED_PROJECT_NAME, completedProjectsPath);
+//    	projectCheckAndRemove(COMPLETED_PROJECT_NAME, projectsPath.completed);
 //    });
 //
 //    it('Should create investment project.', function () {
@@ -98,6 +123,43 @@ describe("E2E: Project test cases.", function () {
            expect(projectsCount).toEqual(DEFAULT_PROJECTS_COUNT);
        });
     };
+    
+    var checkActiveProjectsList = function () {
+    	var projectsPage = new ProjectsPage(projectsPath.active);
+    	projectsPage.get();
+    	
+    	//* Log projects names to console. *//
+//    	var projects = element.all(by.repeater('project in projects | filter:filterText')).then(function (projList) {
+//    		for (var index in projList) {
+//    			projList[index].element(by.tagName('a')).getText().then(function (projName) {
+//    				console.log('"' + projName + '",');
+//    			});
+//    		}
+//    	});
+
+    	console.log("> Check Active projects list.");
+        for (var index in projectsList.active) {
+        	var projectName = projectsList.active[index];
+        	projectsPage.findProject(projectName).then(function (filteredElements) {
+        		expect(filteredElements[0]).toBeDefined();
+        	});
+        }
+    };
+    
+    var checkActiveBacklogProjectsList = function () {
+    	var projectsPage = new ProjectsPage([projectsPath.active, projectsPath.backlog].join(','));
+    	projectsPage.get();
+        
+    	console.log("> Check Active&Backlog projects list.");
+    	var activeBacklogProjects = projectsList.active.concat(projectsList.backlog);
+        for (var index in activeBacklogProjects) {
+        	var projectName = activeBacklogProjects[index];
+        	projectsPage.findProject(projectName).then(function (filteredElements) {
+        		expect(filteredElements[0]).toBeDefined();
+        	});
+        }
+    };
+
 
     var createProject = function (projectName, fillCustomFieldsCallback) {
     	console.log("> Create project: " + projectName);
@@ -231,14 +293,16 @@ describe("E2E: Project test cases.", function () {
         }).then(function () {
         	projectsPage.findProject(projectName).then(function (filteredElements) {
         		var project = filteredElements[0];
+        		expect(project).toBeDefined();
         		
-        		expect(project.getText()).toContain(projectName);
-        		
-        		project.element(by.tagName('a')).click();
-        		browser.sleep(5000);
-        		console.log("> Project selected ");
+        		if (project) {
+        			var projLink = project.element(by.tagName('a'));
+        			projLink.click();
+        			browser.sleep(5000);
+        			console.log("> Project selected ");
 
-        		removeProject(filterPath);
+        			removeProject(filterPath);
+        		}
         	});
         });
     };
@@ -332,11 +396,11 @@ describe("E2E: Project test cases.", function () {
     
     var ProjectsPage = function ( filterPath ) {
     	if ( filterPath ) {
-    		this.url = browser.baseUrl + filterPath;
+    		this.url = browser.baseUrl + projectsPath.url + filterPath;
     	} else {
-    		this.url = browser.baseUrl + allProjectsPath;
+    		this.url = browser.baseUrl + projectsPath.url + projectsPath.all;
     	}
-        this.newUrl = browser.baseUrl + createProjectPath;
+        this.newUrl = browser.baseUrl + projectsPath.createUrl;
         
         this.get = function () {
             browser.get(this.url);
