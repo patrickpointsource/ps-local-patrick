@@ -42,10 +42,10 @@ var REPORT_FAVORITES_KEY = 'ReportFavorites';
 //TODO: fix $oid to _id, and move from "$exists: 1" to "$exists: 0"
 var alignQuery = function( q, qP, pProp, pInd ) {
 
-	if( _.isArray( q ) )
+	if( _.isArray( q ) ){
 		for( var j = 0; j < q.length; q++ )
 			alignQuery( q[ j ], q, null, j );
-	else if( _.isObject( q ) )
+	}else if( _.isObject( q ) ){
 		for( var prop in q ) {
 			if( prop == "$oid" ) {
 				//q[ "_id" ] = q[ prop ];
@@ -57,13 +57,15 @@ var alignQuery = function( q, qP, pProp, pInd ) {
 					qP[pProp][ pInd ] = q[ prop ];
 			} else if( prop == "$exists" ) {
 				q[ prop ] = q[ prop ] ? true : false;
-			} else if( _.isArray( q[ prop ] ) )
+			} else if( _.isArray( q[ prop ] ) ){
 				for( var j = 0; j < q[ prop ].length; j++ )
 					alignQuery( q[prop][ j ], q, prop, j );
-			else if( _.isObject( q[ prop ] ) )
+			}
+			else if( _.isObject( q[ prop ] ) ){
 				alignQuery( q[ prop ], q, prop );
+			}
 		}
-	;
+	}
 	//return q;
 };
 
@@ -145,7 +147,6 @@ var generateProperties = function( collection, resourcePrefix, postfix, fields )
 	return collection;
 };
 
-
 var filterRecordsByStartEndDates = function(data, startDate, endDate) {
 	var result = {
 			about: data.about,
@@ -202,7 +203,6 @@ var listProjectsByIds = function( ids, callback ) {
 	}
 };
 
-
 var listProjectsByExecutiveSponsor = function( roleResource, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
@@ -221,7 +221,6 @@ var listProjectsByExecutiveSponsor = function( roleResource, fields, callback ) 
 
 };
 
-
 var listProjectsBetweenDatesByTypesAndSponsors = function( startDate, endDate, types, isCommited, roleResources, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
@@ -239,7 +238,6 @@ var listProjectsBetweenDatesByTypesAndSponsors = function( startDate, endDate, t
 	}
 
 };
-
 
 var listProjectsByStatuses = function( statuses, fields, callback ) {
 
@@ -348,7 +346,7 @@ var checkProjectForAssignmentsAndPerson = function(project, assignments, personR
 
 	
 	return callback(checked)
-}
+};
 
 /*	====================================================
 *	PURPOSE: Get All ACTIVE People by googleID(s)
@@ -380,52 +378,19 @@ var getPersonByGroups = function (groups, callback) {
 	dbAccess.listActivePeopleByKeys('groups', groups, true, function( err, body ) {
 		if( !err ) {
 			callback( null, body);
-	} else {
-		dbAccess.listPeople( function( err, body ) {
-			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
-				memoryCache.putObject( PEOPLE_KEY, body );
-			}
-			callback( err, prepareRecords( dataFilter.filterPeopleByGoogleIds(id, body.data), "members", "people/" )["members"][ 0 ] );
-	});
-	}
-};
-
-
-/*	====================================================
-*	PURPOSE: Get All ACTIVE People by PrimaryRole(s) resource
-*	INPUT:  primaryRole resource or array of primaryRole resources
-*	OUTPUT:	Array of documents
-*/
-var getPersonByGroups = function (groups, callback) {
-	// MM 01/07/15
-	dbAccess.listActivePeopleByKeys('groups', groups, true, function( err, body ) {
-		if( !err ) {
-			callback( null, body);
 		} else {
-			callback( err, null );
+			dbAccess.listPeople( function( err, body ) {
+				if( !err ) {
+					console.log( "save " + PEOPLE_KEY + " to memory cache" );
+					memoryCache.putObject( PEOPLE_KEY, body );
+				}
+				callback( err, prepareRecords( dataFilter.filterPeopleByGoogleIds(id, body.data), "members", "people/" )["members"][ 0 ] );
+			});
 		}
 	});
 };
 
-
-/*	====================================================
-*	PURPOSE: Get All ACTIVE People by resource(s) ("people/whatever")
-*	INPUT:  resource or array of resources
-*	OUTPUT:	Array of documents
-*/
-var getPersonByGroups = function (groups, callback) {
-	// MM 01/07/15
-	dbAccess.listActivePeopleByKeys('groups', groups, true, function( err, body ) {
-		if( !err ) {
-			callback( null, body);
-		} else {
-			callback( err, null );
-		}
-	});
-};
-
-var listPeople = function( q, fields, callback ) {var listPeople = function( callback ) {
+var listPeople = function( q, fields, callback ) {
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
@@ -490,7 +455,6 @@ var listPeopleByRoles = function( roleIds, includeInactive, fields, callback ) {
 
 };
 
-
 var listPeopleByIsActiveFlag = function(isActive, fields, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
@@ -545,7 +509,6 @@ var listPeopleByGroups = function(groups, fields, callback ) {
 
 };
 
-
 var listPeopleByPerson = function(person, callback ) {
 	
 	listAssignmentsByPerson(person, function (err, result) {
@@ -591,7 +554,6 @@ var listPeopleByPerson = function(person, callback ) {
 	});
 	
 };
-
 
 var listActivePeopleByAssignments = function(fields, callback ) {
 	var activePeopleResources = [];
@@ -725,7 +687,6 @@ var listAssignmentsByPeople = function(resources, callback) {
     });
 
 };
-
 
 var listAssignmentsByProjects = function(resources, callback) {
     
@@ -888,7 +849,6 @@ var listLinks = function( q, callback ) {
 	}
 
 };
-
 
 var listLinksByProject = function( project, callback ) {
 

@@ -14,17 +14,18 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
     if( allowed ) {
 	  var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
 	  userRoles.listUserRoles( function( err, result ) {
-	  var fields = req.query.fields;
-	  userRoles.listUserRoles( query, fields, function( err, result ) {
-		if( err ) {
-			res.json( 500, err );
-		} else {
-			res.json( result );
-		}
-	  } );
-	}
-  } );
-} );
+		  var fields = req.query.fields;
+		  userRoles.listUserRoles( query, fields, function( err, result ) {
+			if( err ) {
+				res.json( 500, err );
+			} else {
+				res.json( result );
+			}
+		  });
+	  });
+    }
+  });
+});
 
 router.post( '/', util.isAuthenticated, function( req, res ) {
   security.isAllowed( req.user, res, securityResources.securityRoles.resourceName, securityResources.securityRoles.permissions.editSecurityRoles, function( allowed ) {
