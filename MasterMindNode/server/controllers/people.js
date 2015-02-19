@@ -7,8 +7,8 @@ var _ = require( 'underscore' );
 
 var security = require('../util/security');
 
-module.exports.listPeople = function(query, fields, callback) {
-    dataAccess.listPeople(query, fields, function(err, body){
+module.exports.listPeople = function(callback) {
+    dataAccess.listPeople( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading people', null);
@@ -160,8 +160,7 @@ module.exports.getPerson = function(id, callback) {
 
 
 module.exports.getPersonByGoogleId = function(id, callback) {
-    var query = {googleId: id};
-    dataAccess.listPeople(query, null, function(err, body){
+    dataAccess.listPeopleByGoogleIds(id, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading getPersonByGoogleId', null);
@@ -251,13 +250,11 @@ module.exports.getAccessRights = function(id, callback) {
 };
 
 module.exports.getAccessRightsByGoogleId = function(id, callback) {
-    var query = {googleId: id};
-    dataAccess.listPeople(query, null, function(err, body){
+    dataAccess.getProfileByGoogleId(id, function(err, user){
         if (err) {
             console.log(err);
             callback('error loading getPersonByGoogleId', null);
         } else {
-        	var user = body.members.length == 1 ? body.members[0]: {};
         	getAccessRights(user, callback);
         }
     });

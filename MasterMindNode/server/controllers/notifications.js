@@ -1,15 +1,19 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
+var util = require('../util/util');
 var emailSender = require('../util/emailSender');
 var smtpHelper = require('../util/smtpHelper');
 //12/11/14 MM var validation = require( '../data/validation.js' );
 var configProperties = require('../../config.json');
 var os = require('os');
+var validation = require( '../data/validation.js' );
+var configProperties = require('../../config.json');
+var os = require('os');
 
 
-module.exports.listNotifications = function(q, callback) {
-    dataAccess.listNotifications(q, function(err, body){
+module.exports.listNotifications = function( callback) {
+    dataAccess.listNotifications( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading notifications', null);
@@ -71,34 +75,35 @@ module.exports.getNotification = function(id, callback) {
 };
 
 var sendEmailTo = function(notification) {
-  var query = {
-    resource: notification.person.resource
-  };
-  
   var user;
-  
-  dataAccess.listPeople(query, null, function(err, result) {
-    if(!err) {
-      if(result.members.length > 0) {
-        user = result.members[0];
-        var message = "<h3>" + notification.header + "</h3><br/><br/>"  + notification.text + "<br/>";
-        message += smtpHelper.getServerInformation("NodeJS service", os.hostname(), configProperties.env);
-        message += "<br/><br/>Sincerely Yours, <br/><strong>MasterMind Notice.</strong>";
-        emailSender.sendEmailFromPsapps(
-                    user.mBox, null,
-                    notification.header, message, 
-        function(err, info) {
-          if(err) {
-            console.log("error sending email to: ", err);
-          }
-      
-          console.log("Email sent. Info: ", info);
-        });
-      } else {
-        console.log("Cant find user with resource: " + notification.person.resource + " while trying to send an email.");
-      }
-    } else {
-      console.log("Error: " + err);
-    }
+  util.getIDfromResource(notification.person.resource, function (err, userId){
+	  if (err) {
+          console.log("error getting id : ", err);
+	  }
+	  else {
+		  dataAccess.getItem(userId, function(err, user) {
+			    if(!err) {
+			      if(user) {
+			        var message = "<h3>" + notification.header + "</h3><br/><br/>"  + notification.text + "<br/>";
+			        message += smtpHelper.getServerInformation("NodeJS service", os.hostname(), configProperties.env);
+			        message += "<br/><br/>Sincerely Yours, <br/><strong>MasterMind Notice.</strong>";
+			        emailSender.sendEmailFromPsapps(
+			                    user.mBox, null,
+			                    notification.header, message, 
+			        function(err, info) {
+			          if(err) {
+			            console.log("error sending email to: ", err);
+			          }
+			      
+			          console.log("Email sent. Info: ", info);
+			        });
+			      } else {
+			        console.log("Cant find user with resource: " + notification.person.resource + " while trying to send an email.");
+			      }
+			    } else {
+			      console.log("Error: " + err);
+			    }
+		  });		  
+	  }
   });
 };

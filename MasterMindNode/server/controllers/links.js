@@ -3,8 +3,8 @@
 var dataAccess = require('../data/dataAccess');
 //12/11/14 MM var validation = require( '../data/validation.js' );
 
-module.exports.listLinks = function(q, callback) {
-    dataAccess.listLinks(q, function(err, body){
+module.exports.listLinks = function(callback) {
+    dataAccess.listLinks(function(err, body){
         if (err) {
             console.log(err);
             callback('error loading links', null);

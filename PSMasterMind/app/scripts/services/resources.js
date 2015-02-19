@@ -375,6 +375,11 @@ function( $q, $timeout, Restangular ) {
 		//}
 	}
 
+	function updateAuthToken()
+	{
+	    ResourcesRestangular.setDefaultHeaders({ "Authorization": "Bearer " + localStorage.access_token });
+	}
+
 	cleanLocalStorageIfNeeded( );
 
 	return {
@@ -386,6 +391,7 @@ function( $q, $timeout, Restangular ) {
 		deepCopy: deepCopy,
 		update: update,
 		forceUpdate: forceUpdate,
-		remove: remove
+		remove: remove,
+        updateAuthToken: updateAuthToken
 	};
 } ] );

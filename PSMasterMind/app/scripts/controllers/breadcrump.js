@@ -15,25 +15,6 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 
 	var rolePeopleGroupMap = People.getPeopleGroupMapping( );
 
-	var mapPeopleFilterToUI = function( filterPeople ) {
-		if( filterPeople == 'businessdevelopment' ) {
-			return 'Business Development';
-		}
-		if( filterPeople == 'clientexpierencemgmt' ) {
-			return 'Client Experience Mgmt';
-		}
-		if( filterPeople == 'digitalexperience' ) {
-			return 'Digital Experience';
-		}
-		if( filterPeople == 'executivemgmt' ) {
-			return 'Executive Mgmt';
-		}
-
-		var bigLetter = filterPeople[ 0 ].toUpperCase( );
-		var endPart = filterPeople.slice( 1, filterPeople.length );
-		return bigLetter + endPart;
-	}
-
 	$scope.updateBreadCrump = function( ) {
 		$scope.breadCrumpParts = _.filter( $scope.breadCrumpParts, function( part ) {
 			return part;
@@ -47,7 +28,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		
 		// remove duplicates
 		$scope.breadCrumpParts = _.uniq($scope.breadCrumpParts);
-	}
+	};
 
 	$scope.getBreadCrump = function( ) {
 		$scope.breadCrumpParts = [ ];
@@ -56,11 +37,11 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			$scope.breadCrumpParts.push( "Dashboard" );
 		}
 
-		/*else if( $scope.state.name == 'projects.show' ) {
+		if( $scope.state.name == 'projects.show' ) {
 			$scope.breadCrumpParts.push( "Projects" );
-		}*/
+		}
 
-		else if( $scope.state.name == 'projects.index' ) {
+		if( $scope.state.name == 'projects.index' ) {
 			$scope.breadCrumpParts.push( "Projects" );
 
 			if( $scope.params.filter ) {
@@ -181,7 +162,12 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				ProjectsService.getForEdit( $scope.params.projectId ).then( function( project ) {
 					$scope.breadCrumpParts.push( project.name );
 					$scope.updateBreadCrump( );
-				} )
+				} );
+			} else {
+				if( $scope.state.name == 'projects.new' ) {
+					$scope.breadCrumpParts.push( "New" );
+					$scope.updateBreadCrump( );
+				}
 			}
 		}
 
@@ -207,7 +193,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 							var filterPeople = $scope.params.filter.split( ',' );
 
 							for( var i = 0; i < filterPeople.length; i++ ) {
-								filterPeople[ i ] = mapPeopleFilterToUI( filterPeople[ i ] );
+								filterPeople[ i ] = People.mapPeopleFilterToUI( filterPeople[ i ] );
 							}
 
 							$scope.breadCrumpParts.push( filterPeople.join( ', ' ) );
@@ -228,7 +214,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				var filterPeople = $scope.fromParams.filter.split( ',' );
 
 				for( var i = 0; i < filterPeople.length; i++ ) {
-					filterPeople[ i ] = mapPeopleFilterToUI( filterPeople[ i ] );
+					filterPeople[ i ] = People.mapPeopleFilterToUI( filterPeople[ i ] );
 				}
 
 				$scope.breadCrumpParts.push( filterPeople.join( ', ' ) );
@@ -238,7 +224,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				if( $scope.fromParams.filter ) {
 					var splittedPeopleFilter = $scope.fromParams.filter.split( ',' );
 					if( splittedPeopleFilter.length == 1 ) {
-						$scope.breadCrumpParts.push( mapPeopleFilterToUI( splittedPeopleFilter[ 0 ] ) );
+						$scope.breadCrumpParts.push( People.mapPeopleFilterToUI( splittedPeopleFilter[ 0 ] ) );
 
 						fromPeopleList = true;
 					} else {
@@ -261,14 +247,14 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 					         fullName: profile.name
 					     };
 					 }
-					if( profile.accounts.length > 0 ) {
+					if( profile.accounts && profile.accounts.length > 0 ) {
 						if( fromPeopleList ) {
 							RolesService.getRolesMapByResource( ).then( function( map ) {
 								if( profile.primaryRole ) {
 									var roleAbbr = map[ profile.primaryRole.resource ] ? map[ profile.primaryRole.resource ].abbreviation : '';
 									var mapRoles = rolePeopleGroupMap[ $scope.fromParams.filter ];
 									if( _.contains( mapRoles, roleAbbr ) ) {
-										if( $scope.breadCrumpParts[ 1 ] != mapPeopleFilterToUI( splittedPeopleFilter[ 0 ] ) ) {
+										if( $scope.breadCrumpParts[ 1 ] != People.mapPeopleFilterToUI( splittedPeopleFilter[ 0 ] ) ) {
 											if( $scope.breadCrumpParts.indexOf( profile.name.fullName ) == -1 )
 												$scope.breadCrumpParts.push( profile.name.fullName );
 										} else {
@@ -313,7 +299,7 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		if( index == 0 ) {
 			if( $scope.state.name.indexOf( "people." ) == 0 )
 				$state.go( "people.index", {
-					filter: null
+					filter: 'all'
 				} );
 			else if( $scope.state.name.indexOf( "projects." ) == 0 )
 				$state.go( "projects.index", {

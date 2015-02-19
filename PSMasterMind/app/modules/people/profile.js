@@ -7,7 +7,9 @@ angular.module( 'Mastermind.controllers.people' ).controller( 'ProfileCtrl', [ '
 function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, HoursService, TableParams, $rootScope ) {
 
 	$scope.moment = moment;
-	var UNSPECIFIED = 'Unspecified';
+	
+	var UNSPECIFIED = CONSTS.UNSPECIFIED;
+	
 	$scope.projects = [ ];
 	$scope.hoursTasks = [ ];
 	$scope.execProjects = [ ];
@@ -62,7 +64,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	 */
 	$scope.editMode = $state.params.edit ? $state.params.edit : false;
 
-	
+
 	$scope.populateManagers = function( result ) {
 		for( var i = 0; i < result.members.length; i++ ) {
             var manager = result.members[ i ];
@@ -71,13 +73,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                 resource: manager.resource
             } );
         }
-        
-        $scope.getSecurityInformation();
 
-        $scope.managers = _.sortBy( $scope.managers, function( manager ) {
-        	return manager.name;
-        } );
-          
+        $scope.getSecurityInformation(function() {
+            $scope.managers = _.sortBy( $scope.managers, function( manager ) {
+        	   return manager.name;
+            } );
+
         if( $scope.profile.manager ) {
         	$scope.profile.manager = _.findWhere( $scope.managers, {
                 resource: $scope.profile.manager.resource
@@ -85,31 +86,40 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             $scope.$emit( 'profile:loaded' );
         } else
             $scope.$emit( 'profile:loaded' );
-	};
-	
-	$scope.getSecurityInformation = function() {
-	  $scope.userSecurityGroups = [];
-	  Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
-        $scope.securityGroups = result.members;
-              
-        Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
-          $scope.userRoles = userRoles.members;
-          
-          var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
-          
-          if(userRole) {
-            $scope.userRole = userRole;
-            $scope.prepareUserRoles();
-          } else {
-            Resources.create('userroles', {userId: $scope.profile.googleId, roles: []}).then(function(result){
-              $scope.userRole = result;
-              $scope.updateUserRoles();
-            });
-          }
         });
-      });
 	};
+
+	$scope.getSecurityInformation = function(callback) {
+	  $scope.userSecurityGroups = [];
+	  
+	  if ($scope.canViewSecurityRoles()) {
+
+		  Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
+	        $scope.securityGroups = result.members;
 	
+	        Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
+	          $scope.userRoles = userRoles.members;
+	
+	          var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
+	
+	          if(userRole) {
+	              $scope.userRole = userRole;
+	              $scope.prepareUserRoles();
+	              callback();
+	          } else {
+	            Resources.create('userroles', {userId: $scope.profile.googleId, roles: []}).then(function(result){
+	                $scope.userRole = result;
+	                $scope.updateUserRoles();
+	                callback();
+	            });
+	          }
+	        });
+	      });
+	  } else if (callback)
+		  callback();
+	  
+	};
+
 	$scope.prepareUserRoles = function() {
 	  $scope.initialUserGroups = [];
       _.extend($scope.initialUserGroups, $scope.userRole.roles);
@@ -117,17 +127,17 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
         return _.findWhere($scope.userRole.roles, { resource: securityGroup.resource }) ? true : false;
       });
 	};
-	
+
 	$scope.updateUserRoles = function() {
 	  Resources.get('userRoles').then(function(userRoles) {
           $scope.userRoles = userRoles.members;
-          
+
           $scope.userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
-          
+
           $scope.prepareUserRoles();
       });
 	};
-	
+
 	$scope.removeUserRole = function(index) {
 	  var removedGroup = $scope.userSecurityGroups[index];
 	  var indexInGroups = $scope.securityGroups.indexOf(removedGroup).toString();
@@ -138,40 +148,22 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	  $('.select-user-groups').selectpicker('val', selectValue);
 	  $('.select-user-groups').selectpicker('refresh');
 	};
-	
+
 	/**
 	 * Populate the form with fetch profile information
 	 */
 	$scope.setProfile = function( person ) {
 		$scope.profile = person;
 		$scope.managers = [ ];
-		
+
 		$scope.isManager = $scope.executivesAccess || $scope.hasManagementRights;
-
-		if (window.useAdoptedServices) {
-			var params = {};
-			params.group = "Managers";
-			Resources.refresh("people/bytypes/byGroups", params).then(
-				function (result) {
-					$scope.populateManagers(result);
-				}
-			);
-		}
-		else {
-			var managersQuery = {
-				'groups': 'Management'
-			};
-
-			People.query(managersQuery, { _id: 1, resource: 1, name: 1} ).then( 
-				function( result ) {
-					$scope.populateManagers(result);
-				} 
-			);
-		}
-		
-		
-
-		
+		var params = {};
+		params.group = "Managers";
+		Resources.refresh("people/bytypes/byGroups", params).then(
+			function (result) {
+				$scope.populateManagers(result);
+			}
+		);
 
 		//      $scope.skillsList = person.skills;
 		//
@@ -261,13 +253,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			$scope.editMode = false;
 		} );
 	};
-    
+
     $scope.errors = [];
-    
+
 	/**
 	 * Save the user profile changes
 	 */
-	$scope.save = function( ) {		
+	$scope.save = function( ) {
 		var profile = $scope.profile;
 
 		if( !profile.primaryRole || !profile.primaryRole.resource ) {
@@ -280,20 +272,20 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 				name: _.isObject(profile.manager.name) ? profile.manager.name.fullName : profile.manager.name
 			};
 		};
-		
+
 		// hell with string representation of boolean field
 		if( profile.isActive == true || profile.isActive === 'true') {
 		  profile.isActive = 'true';
 		} else {
 		  profile.isActive = 'false';
 		}
-		
+
 		// check if security groups needs to be updated
 		var rolesNeedsToBeUpdated = false;
 		var securityGroups = _.map($scope.userSecurityGroups, function(userSecurityGroup){
 		  return { name: userSecurityGroup.name, resource: userSecurityGroup.resource };
 		});
-		
+
 		if($scope.initialUserGroups) {
 		  if(securityGroups.length != $scope.initialUserGroups.length) {
             rolesNeedsToBeUpdated = true;
@@ -306,7 +298,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             }
           }
 		}
-		
+
 		if(rolesNeedsToBeUpdated) {
           $scope.userRole.roles = securityGroups;
           Resources.update($scope.userRole).then(function(result) {
@@ -315,12 +307,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
               $scope.errors.push("While you were working, this document was updated.  Please refresh the page to see the latest changes.");
             }
             $scope.userRole = result;
-            
+
             $scope.saveProfile(profile);
           });
         } else {
           $scope.saveProfile(profile);
-        }	
+        }
 	};
 
 
@@ -342,7 +334,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             delete localStorage[ key ];
 
             var getBack = localStorage[ key ];
-            
+
             Resources.refresh( 'people/' + $scope.profileId ).then( function( person ) {
               $scope.setProfile( person );
               $scope.editMode = false;
@@ -356,10 +348,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                 } );
               }
             } );
-            
+
       } );
     };
-    
+
 	$scope.monthNames = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
 
 	$scope.initHours = function( isReinit, cb ) {
@@ -379,13 +371,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		var sort = {
 			'created': 1
 		};
-		
+
 		//Resources.query( 'hours', hoursQuery, fields, function( hoursResult ) {
 	    HoursService.query(hoursQuery, fields).then(function( hoursResult ) {
 			$scope.hours = hoursResult.members;
 			$scope.initHoursPeriods( $scope.hours );
 			$scope.hasHours = $scope.hours.length > 0;
-			
+
 			for( var i = 0; i < $scope.hours.length; i++ ) {
 				var hour = $scope.hours[ i ];
 				if( hour.task && hour.task.resource ) {
@@ -418,8 +410,113 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 			var currentMonth = new Date( ).getMonth( );
 			var currentYear = new Date( ).getFullYear( );
+			var prHours = [];
+			
+			$scope.projectHours = [];
+			
+			ProjectsService.getProjectsByIds(projects).then(function(resultProjects){
+				resultProjects = resultProjects.data ? resultProjects.data: [];
+				
+				for( var projCounter = 0; projCounter < resultProjects.length; projCounter++ ) {
+				
+					var projectHour = {
+						projectURI: resultProjects[projCounter].about,
+						project: resultProjects[projCounter],
+						hours: [ ],
+						collapsed: false,
+						icon: $scope.projectStateIcon( resultProjects[projCounter] ),
+						totalHours: 0
+					};
+					var taskHour = null;
+					var tasksMap = {};
+					var tasksHoursMap = {
+						hours: [ ],
+						show: true
+					};
 
+					for( var hoursCounter = 0; hoursCounter < $scope.hours.length; hoursCounter++ ) {
+						taskHour = null;
+						var hoursData = $scope.hours[ hoursCounter ];
+						var tmpD = hoursData.date.split( '-' );
+						var hoursMonth = parseInt( tmpD[ 1 ] ) - 1;
+						var hoursYear = parseInt( tmpD[ 0 ] );
+						var timeValue = 0;
+
+						if( hoursData.project && hoursData.project.resource == resultProjects[projCounter].about ) {
+							timeValue = hoursData.hours;
+							projectHour.totalHours += timeValue;
+							projectHour.hours.push( {
+								hour: hoursData,
+								show: ( currentMonth === hoursMonth && currentYear === hoursYear ),
+								value: timeValue
+							} );
+						} else if( hoursData.task ) {
+							timeValue = hoursData.hours;
+							if( !tasksMap[ hoursData.task.resource ] ) {
+								tasksMap[ hoursData.task.resource ] = hoursData.task;
+							}
+							if( !tasksHoursMap[ hoursData.task.resource ] ) {
+								tasksHoursMap[ hoursData.task.resource ] = [ ];
+								tasksHoursMap[ hoursData.task.resource ].totalHours = 0;
+							}
+							tasksHoursMap[ hoursData.task.resource ].totalHours += timeValue;
+							tasksHoursMap[ hoursData.task.resource ].push( {
+								hour: hoursData,
+								show: ( currentMonth == hoursMonth && currentYear == hoursYear )
+							} );
+						}
+					}
+
+					projectHour.hours.sort( function( h1, h2 ) {
+						if( new Date( h1.hour.date ) > new Date( h2.hour.date ) ) {
+							return -1;
+						} else if( new Date( h1.hour.date ) < new Date( h2.hour.date ) ) {
+							return 1;
+						}
+						return 0;
+					} );
+
+					prHours.push( projectHour );
+					$scope.taskHours = [ ];
+					
+					for( var taskResource in tasksMap ) {
+						tasksHoursMap[ taskResource ].sort( function( h1, h2 ) {
+							if( new Date( h1.hour.date ) > new Date( h2.hour.date ) ) {
+								return -1;
+							} else if( new Date( h1.hour.date ) < new Date( h2.hour.date ) ) {
+								return 1;
+							}
+							return 0;
+						} );
+						$scope.taskHours.push( _.extend( {
+							hours: tasksHoursMap[ taskResource ],
+							totalHours: tasksHoursMap[ taskResource ].totalHours
+						}, tasksMap[ taskResource ] ) );
+					}
+			
+					
+				}
+				
+				
+				$scope.projectHours = prHours;
+				
+				if( !isReinit ) {
+					$scope.currentWeek( );
+				} else {
+					$scope.showWeek( );
+				}
+				
+				if( cb )
+					cb( );
+					
+					
+			});
+			
+			/*
 			for( var projCounter = 0; projCounter < projects.length; projCounter++ ) {
+				
+				
+				
 				var project = ProjectsService.getForEditByURI( projects[ projCounter ] ).then( function( result ) {
 
 					var projectHour = {
@@ -479,9 +576,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						return 0;
 					} );
 
-					$scope.projectHours.push( projectHour );
+					prHours.push( projectHour );
 					$scope.taskHours = [ ];
-
+					
 					for( var taskResource in tasksMap ) {
 						tasksHoursMap[ taskResource ].sort( function( h1, h2 ) {
 							if( new Date( h1.hour.date ) > new Date( h2.hour.date ) ) {
@@ -506,14 +603,20 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					if( cb )
 						cb( );
 				} );
+				
+				
+				
 			}
+			$scope.projectHours = prHours;
+			*/
+			
 		}, sort );
 	};
 
 	$scope.initHoursPeriods = function( hours ) {
 		$scope.hoursPeriods = [ ];
 		$scope.selectedHoursPeriod = $scope.selectedMonth;
-		
+
 		var minDate = null;
 		var maxDate = null;
 
@@ -536,13 +639,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 		currentDate = new Date( minDate );
 		var o = null;
-
+		var hPeriods = [];
 		while( currentDate <= maxDate ) {
 			o = {
 				name: $scope.monthNames[      currentDate.getMonth( ) ],
 				value: currentDate.getMonth( )
 			};
-			$scope.hoursPeriods.push( o );
+			hPeriods.push( o );
 
 			if( ifAddYear ) {
 				o.name = o.name + ', ' + currentDate.getFullYear( );
@@ -553,6 +656,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			currentDate.setDate( 1 );
 			currentDate.setMonth( currentDate.getMonth( ) + 1 );
 		}
+		$scope.hoursPeriods = hPeriods;
+
 	};
 
 	$scope.setCurrentMonth = function( month ) {
@@ -577,7 +682,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 			for( var j = 0; j < projHour.hours.length; j++ ) {
 				var hour = projHour.hours[ j ];
-				var hoursMonth = new Date( hour.hour.date ).getMonth( );
+				var hoursMonth = moment( hour.hour.date ).month() ;
 
 				if( $scope.selectedHoursPeriod > -1 )
 					hour.show = this.selectedHoursPeriod == hoursMonth;
@@ -660,10 +765,10 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						var myProj = myProjects[ m ];
 
 						console.log("project state", ProjectsService.getProjectState( myProj ));
-						
+
 						if( ProjectsService.getProjectState( myProj ) == 'Active' ) {
 							$scope.activeProjectsCount++;
-							
+
 							console.log("active projects", $scope.activeProjectsCount);
 						}
 
@@ -678,8 +783,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 								break;
 							}
 						}
-						
-						//Get project where person is a executive sponsor 
+
+						//Get project where person is a executive sponsor
 						//without duplicates - when the person is a exec and assign to project roles simultaneously.
 						if( myProj.executiveSponsor && myProj.executiveSponsor.resource === 'people/' + $scope.profileId &&
 							!_.findWhere( $scope.execProjects, {resource : myProj.resource})) {
@@ -707,22 +812,22 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 						nextProj.title = nextProj.customerName + ': ' + nextProj.name;
 						$scope.projects.push( nextProj );
 					}
-                    
+
                     $scope.loadCurrentAssignments(person);
-                    
+
 					$scope.initHours( );
 				} );
 			} );
 		} );
 	};
-	
+
 	$scope.loadCurrentAssignments = function(person) {
 	  AssignmentService.getMyCurrentAssignments( person ).then( function( assignments ) {
                 $scope.assignments = assignments;
-                
+
                 console.log("Version: 9/10/2014");
                 console.log("getMyCurrentAssignments before cut: assignments.length", assignments.length);
-                
+
                 var k = 0;
                 var found = false;
 
@@ -736,15 +841,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                         $scope.assignments.splice( k, 1 );
                 };
 
-                
-                if(window.useAdoptedServices) {
-                  $scope.myAssignments = AssignmentService.getActualAssignmentsForPerson($scope.assignments, $scope.profile);
-                } else {
-                  $scope.myAssignments = assignments;
-                }
-                
+                $scope.myAssignments = AssignmentService.getActualAssignmentsForPerson($scope.assignments, $scope.profile);
                 $scope.hasAssignments =  $scope.myAssignments.length > 0;
-                
+
                 console.log("getMyCurrentAssignments after cut: assignments.length", assignments.length);
 
                 if( $scope.hasAssignments ) {
@@ -786,6 +885,20 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		return true;
 	};
 
+	// check for permissions
+	$scope.canEditPersonnelData = function() {
+		return $rootScope.hasPermissions(CONSTS.EDIT_PERSONNEL_DATA);
+	};
+	
+	// check for permissions
+	$scope.canEditOtherPeopleHours = function() {
+		return $rootScope.hasPermissions(CONSTS.EDIT_HOURS_PERMISSION);
+	};
+	
+	$scope.canViewSecurityRoles = function() {
+		return $rootScope.hasPermissions(CONSTS.VIEW_SECURITY_ROLES);
+	};
+	
 	///////////Profile Hours/////////
 	$scope.newHoursRecord = {};
 
@@ -831,11 +944,11 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			}
 		} );
 	};
-	
+
 	$scope.getPersonName = function(person, isSimply, isFirst) {
 		return Util.getPersonName(person, isSimply, isFirst);
 	};
-	
+
 	$scope.handleHoursTypeChanged = function( type ) {
 		if( type === 'task' && $scope.newHoursRecord.project ) {
 			delete $scope.newHoursRecord.project;
@@ -899,7 +1012,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	} );
 
 	$scope.$on( 'hours:selectedNew', function( event, day ) {
-		$scope.recalculateCircle( day );
+		// todo: perform a bunch of db requests on each click on UI: disable it 
+		//$scope.recalculateCircle( day );
 	} );
 
 	$scope.weekHoursByProject = [ ];
@@ -912,7 +1026,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.selectedMonth = moment( $scope.startWeekDate ).day(1).month(); //Get month by the first day of the workweek.
 
 		var profileWeekHours = [ ];
-		
+
 		for( var i = 0; $scope.hours && i < $scope.hours.length; i++ ) {
 			var hour = $scope.hours[ i ];
 			var date = moment( hour.date );
@@ -921,7 +1035,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			if( $scope.selectedMonth === date.month() ) {
 				$scope.totalMonthHours += hour.hours;
 			}
-			
+
 			if( ( date.isAfter( start ) || date.isSame( start ) ) && ( date.isBefore( end ) || date.isSame( end ) ) ) {
 				profileWeekHours.push( hour );
 			}
@@ -1058,7 +1172,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
     $scope.$on('profile:loaded', function() {
         $scope.hideProfileSpinner = true;
     });
-    
+
 	$scope.recalculateCircle = function( day ) {
 		var selectedMoment = moment( day.date );
 		var startOfSelectedWeek = selectedMoment.startOf( 'week' );
@@ -1066,7 +1180,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.selectedWeekIndex = startOfSelectedWeek.diff( todaysStartWeek, 'days' );
 		$scope.initHours( true, function( ) {
 			$scope.handleHoursPeriodChanged( );
-		} );		
+		} );
 	};
-	
+
 } ] );

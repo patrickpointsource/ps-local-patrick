@@ -54,8 +54,8 @@
         <div class="col-xs-12 col-sm-6" ng-repeat="permission in fullResourcesMap">
           <h5>{{permission.name.toUpperCase()}}</h5>
           <ul>
-            <li ng-repeat="permissionName in permission.permissions" style="list-style-type: none;">
-              <input type="checkbox" ng-checked="permissionChecked(permission.name, permissionName)" ng-click="setPermission(permission.name, permissionName)"/>
+            <li ng-repeat="permissionName in permission.permissions" style="list-style-type: none; margin-bottom: 20px;">
+              <input type="checkbox" ng-checked="permissionChecked(permission.name, permissionName)" ng-click="setPermission(permission.name, permissionName)" style="margin-bottom: 0px;"/>
               {{mapPermission(permissionName)}}
             </li>
           </ul>
@@ -65,7 +65,7 @@
 </div>
 <script type="text/ng-template" id="customPeopleTmpl.html">
   <a>
-      <img ng-src="{{match.model.thumbnail}}" err-src="\images\defaultProfileImg.png" width="30">
+      <img ng-src="{{match.model.thumbnail}}" err-src="\images\defaultprofile.png" width="30">
       <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
   </a>
 </script>

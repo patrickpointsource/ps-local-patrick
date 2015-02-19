@@ -4,8 +4,8 @@ var dataAccess = require('../data/dataAccess');
 //12/11/14 MM var validation = require( '../data/validation.js' );
 var _ = require( 'underscore' );
 
-module.exports.listUserRoles = function(q, fields, callback) {
-    dataAccess.listUserRoles(q, fields, function(err, body){
+module.exports.listUserRoles = function(callback) {
+    dataAccess.listUserRoles(function(err, body){
         if (err) {
             console.log(err);
             callback('error loading user roles', null);
@@ -30,6 +30,7 @@ module.exports.insertUserRoles = function(obj, callback) {
             callback('error inserting user roles: ' + JSON.stringify(err), null);
         } else {
             obj._id = body.id;
+            
             callback(null, _.extend(obj, body));
         }
     });

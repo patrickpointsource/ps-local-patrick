@@ -5,7 +5,6 @@ var smtpHelper = require('../util/smtpHelper');
 var emailSender = require('../util/emailSender');
 var _ = require( 'underscore' );
 var os = require('os');
-var configProperties = require('../../config.json');
 
 // Configuration properties
 var REMINDER_ACTIVE = "reminder.active";
@@ -24,8 +23,13 @@ var reminderJobInprogress = false;
 var firstRoundStarted = false;
 var secondRoundStarted = false;
 
-module.exports.initialize = function(callback) {
-    console.log(getFormattedTime() + " initializing reminders");
+var reminderJobInprogress = false;
+var firstRoundStarted = false;
+var secondRoundStarted = false;
+var env;
+
+module.exports.initialize = function(params, callback) {
+	env = params.env;
     later.date.UTC();
     var initCronSched = later.parse.cron(INITIAL_CRON_SCHEDULE, true);
     var secondCronSched = later.parse.cron(SECOND_CRON_SCHEDULE, true);
@@ -62,7 +66,7 @@ function emailReminderJob(withInterestedParties) {
 	
 	if (reminderJobInprogress) {
 		setTimeout(function() {
-			console.log(getFormattedTime() + ' waited:emailReminderJob\r\n');
+			console.log('\r\nwaited:emailReminderJob\r\n');
 			emailReminderJob(withInterestedParties);
 		}, 60 * 1000);
 		
@@ -259,6 +263,8 @@ function emailReminderJob(withInterestedParties) {
 	    	var notificationList = getPropertyValueByName(REMINDER_NOTIFICATION_LIST, props);
 	    	var ccList = (withInterestedParties) ? getPropertyValueByName(REMINDER_INTERESTED_PARTIES, props) : null;
 	    	
+	    	//ccList = "vladimir.yancharuk@pointsource.com";
+	    	
 	    	console.log("isActive : " + isActive);
 			console.log("isDebug : " + isDebug);
 			console.log("ccList : " + JSON.stringify(ccList));
@@ -301,8 +307,8 @@ function emailReminderJob(withInterestedParties) {
 	        							var previousWorkingDate = util.getFormattedDate(util.getPreviousWorkingDay());
 
 	        							// checks whether person had a vacation 
-	        							dataAccess.listVacationsByPeriod(person.resource, previousWorkingDate, 
-	        									util.getFormattedDate(new Date(util.getPreviousWorkingDay().getTime() + 24 * ONE_HOUR)), null, 
+	        							dataAccess.listVacationsByPeriod(person.resource, util.getFormattedDate(util.getPreviousWorkingDay()), 
+	        									util.getFormattedDate(new Date(util.getPreviousWorkingDay().getTime() + 24 * ONE_HOUR)), 
 	        							_.bind(function (err, vacations) {
 
 	        								if (!err) {
@@ -313,8 +319,8 @@ function emailReminderJob(withInterestedParties) {
 	        										
 		        										// checks filled hours of person
 		        										dataAccess.listHoursByPersonAndDates(this.person.resource, 
-		        												previousWorkingDate, 
-		        												previousWorkingDate, 
+		        												util.getFormattedDate(util.getPreviousWorkingDay()), 
+		        												util.getFormattedDate(util.getPreviousWorkingDay()), 
 	    												_.bind(function (err, hours) {
 	
 		        											if (!err) {
@@ -328,7 +334,7 @@ function emailReminderJob(withInterestedParties) {
 		            												if (mBox && givenName && isActive) {
 		            						        					var title = "Reminder for " + fullName;
 	
-		            						        					var message = smtpHelper.getReminderMessage(givenName, "Node.JS service", os.hostname(), configProperties.env);
+		            						        					var message = smtpHelper.getReminderMessage(givenName, "Node.JS service", os.hostname(), env);
 		            						        					
 		            						        					this.emailReminders.push({
 		            						        						mBox: mBox,
@@ -350,7 +356,7 @@ function emailReminderJob(withInterestedParties) {
 		            												//send debug email reminders
 		            												if (givenName && isDebug && notificationList) {
 		            						        					var title = "Reminder for " + fullName + " (Limited Notification List)";
-		            						        					var message = smtpHelper.getReminderDebugMessage(givenName, mBox, ccList, "Node.JS service", os.hostname(), configProperties.env);
+		            						        					var message = smtpHelper.getReminderDebugMessage(givenName, mBox, ccList, "Node.JS service", os.hostname(), env);
 		            						        					
 		            						        					this.emailNotifications.push({
 		            						        						notificationList: notificationList,
@@ -409,6 +415,12 @@ function emailReminderJob(withInterestedParties) {
 	        										
 	        									//console.log('inside:vacations:' + (this.getCountProcessed() + postponedCalls.length) + 
 	        									//		':postponed=' + postponedCalls.length + ':processed:' + this.getCountProcessed());
+	        									
+		    	        						if ((this.getCountProcessed() + postponedCalls.length) == people.members.length)
+        											this.callPostponed();
+		    	        						
+		    	        						if (this.isAllProcessed())
+    												this.processReminders();
 	        									
 		    	        						if ((this.getCountProcessed() + postponedCalls.length) == people.members.length)
         											this.callPostponed();

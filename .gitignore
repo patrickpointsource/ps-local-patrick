@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 node_modules
 bower_components
 PSMasterMind/dist
@@ -188,3 +189,16 @@ instructions.md
 manifest.yml
 RemoteSystemsTempFiles/.project
 clientdb.xml
+=======
+node_modules
+bower_components
+PSMasterMind/dist
+MasterMindNode/dist
+/.jazz5
+/.metadata
+RemoteSystemsTempFiles/.project
+clientdb.xml
+PSMasterMind/app/styles/main.css
+PSMasterMind/test/reports/*.xml
+PSMasterMind/test1.spec.js
+>>>>>>> sprint21

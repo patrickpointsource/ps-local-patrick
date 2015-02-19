@@ -13,8 +13,7 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.configuration.resourceName, securityResources.configuration.permissions.viewConfiguration, function( allowed ) {
 		if( allowed ) {
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-			configuration.listConfiguration( query, function( err, result ) {
+			configuration.listConfiguration( function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
@@ -31,8 +30,7 @@ router.get( '/:id', util.isAuthenticated, function( req, res ) {
 		if( allowed ) {
 			var id = req.params.id;
 			if (id == "services") {
-				var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-				configuration.getConfigurationByName( query, 'services', function( err, result ) {
+				configuration.getConfigurationByName( 'services', function( err, result ) {
 					if( err ) {
 						res.json( 500, err );
 					} else {

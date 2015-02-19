@@ -409,8 +409,8 @@ module.exports = function(grunt) {
         'concurrent:test',
         'autoprefixer',
         'connect:test',
-        'karma:unit'
-        // 'protractor'
+        // 'karma:unit'
+         'protractor'
     ]);
 
     grunt.registerTask('build', [

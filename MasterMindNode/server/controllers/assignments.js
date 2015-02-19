@@ -5,49 +5,19 @@ var memoryCache = require('../data/memoryCache.js')
 var projects = require('./projects');
 var util = require('../util/util');
 var _ = require( 'underscore' );
-//12/11/14 MM var validation = require( '../data/validation.js' );
+var validation = require( '../data/validation.js' );
 
 
-var listAssignments = function(q, callback) {
-	// Get assignments by persons
-	if (q && q.members && q.members.$elemMatch && q.members.$elemMatch.person) {
-		var member = q.members.$elemMatch;
-		var person = member.person.resource;
-		var endDate;
-		var startDate;
-		
-		if (member.startDate) {
-			var startDate = member.startDate.lt ? member.startDate.$lt : 
-				member.startDate.$lte? member.startDate.$lte : null;
+var listAssignments = function(callback) {
+	// Get assignments by projects
+	dataAccess.listAssignments( function(err, body){
+		if (err) {
+			console.log(err);
+			callback('error loading assignments', null);
+		} else {
+			callback(null, body);
 		}
-		if (member.$or) {
-			for( var i = 0; i < member.$or.length; i++ ) {
-				if (member.$or[i].endDate) {
-					endDate = member.$or[i].endDate.$gt ? member.$or[i].endDate.$gt : 
-						member.$or[i].endDate.$gte ? member.$or[i].endDate.$gte : null;
-				}
-			}
-		}
-		listAssignmentsByPersonResourceAndTimePeriod( person, startDate, endDate,function (err, result) {
-			if (!err) {
-				callback(null,  dataAccess.prepareRecords( result, null, "projects/", "/assignments" ));
-			}
-			else {
-				callback (err, null);
-			}
-		} );
-	}
-	else {
-		// Get assignments by projects
-		dataAccess.listAssignments(q, function(err, body){
-			if (err) {
-				console.log(err);
-				callback('error loading assignments', null);
-			} else {
-				callback(null, body);
-			}
-		});
-	}
+	});
 };
 
 var getAssignment = function(id, callback) {
@@ -60,6 +30,34 @@ var getAssignment = function(id, callback) {
         }
     });
 };
+
+var getProjectAssignment = function (project, callback) {
+    listAssignments( function (err, body) {
+        if (err) {
+            callback("Can't find assignment for " + project.about, null);
+        } else {
+            var filteredAssignments = _.filter(body.data, function(assign) {
+                if (assign.project.resource == project.about) {
+                    return true;
+                }
+
+                return false;
+            });
+            
+            if (filteredAssignments.length > 0) {
+                var assignment = filteredAssignments[0];
+
+                if (assignment) {
+                    callback(null, assignment);
+                } else {
+                    callback("Can't find assignment for " + project.about, null);
+                }
+            } else {
+                callback("Can't find assignment for " + project.about, null);
+            }
+        }
+    });
+}
 
 var insertAssignment = function(assignmentId, obj, callback) {
     
@@ -91,7 +89,7 @@ var listCurrentAssigments = function(callback) {
             callback("error loading current assignments", null);
         } else {
             //console.log(body);
-        	projects.listProjects(null, null, function (err, projectsResult) {
+        	projects.listProjects(function (err, projectsResult) {
 				if (err) {
 					callback (err, null);
 				}
@@ -136,7 +134,7 @@ var listAssignmentsByProjectResourcesAndTimePeriod = function (projectResources,
 	if (!(projectResources instanceof Array)) {
 		projectResources = [projectResources];
 	}
-	listAssignments( null, function (err, result) {
+	listAssignments( function (err, result) {
 		if (err) {
 			callback (err, null);
 		}
@@ -264,7 +262,7 @@ var listAssignmentsByPersonResourceAndTimePeriod = function(personResource, star
 				}
 			}
 			
-			projects.listProjects(null, null, function (err, projectsResult) {
+			projects.listProjects(function (err, projectsResult) {
 				if (err) {
 					callback (err, null);
 				}
@@ -301,3 +299,4 @@ module.exports.listCurrentAssigments = listCurrentAssigments;
 module.exports.listAssignmentsByPersonResource = listAssignmentsByPersonResource;
 module.exports.listAssignmentsByPersonResourceAndTimePeriod = listAssignmentsByPersonResourceAndTimePeriod;
 module.exports.listAssignmentsByProjectResourcesAndTimePeriod = listAssignmentsByProjectResourcesAndTimePeriod;
+module.exports.getProjectAssignment = getProjectAssignment;

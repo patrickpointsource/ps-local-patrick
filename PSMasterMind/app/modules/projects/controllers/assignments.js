@@ -396,6 +396,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 
 				$scope.pushState( params );
 				saveInProgress = false;
+				$scope.refreshAssignmentSentinel( );
 			} );
 			// Reset the form to being pristine.
 			for( var i = 0; i < 10 && $scope[ "newPersonToRoleForm" + i ]; i++ )

@@ -47,7 +47,7 @@ router.get( '/persondates', auth.isAuthenticated, function( req, res ) {
             var person = req.query[ "person" ] ? req.query[ "person" ] : "";
             var startDate = req.query[ "startDate" ] ? req.query[ "startDate" ] : "";
             var endDate = req.query[ "endDate" ] ? req.query[ "endDate" ] : "";
-             
+            
             var now = new Date();
             
             console.log( '\r\nget:hours:start:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate+ '\r\n' );
@@ -61,6 +61,9 @@ router.get( '/persondates', auth.isAuthenticated, function( req, res ) {
                     } else {
                         res.json( result );
                     }
+					
+					console.log( '\r\nget:hours:end:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate + ':' + getExecTime(now) + '\r\n' );
+					
                 } );
             else 
                  res.json( 500, "missed params" );
@@ -108,9 +111,10 @@ router.get( '/person', auth.isAuthenticated, function( req, res ) {
         if( allowed ) {
             var person = req.query[ "person" ] ? req.query[ "person" ] : "";
             
+             
             var now = new Date();
             
-            console.log( '\r\nget:hours:start:person:\r\n' );
+            console.log( '\r\nget:hours:start:person:' + JSON.stringify(person) + '\r\n' );
 
             if (person) {
             	var fields = req.query.fields;
@@ -122,6 +126,7 @@ router.get( '/person', auth.isAuthenticated, function( req, res ) {
                     }
                     
                     console.log( '\r\nget:hours:end:person:' + JSON.stringify(person) + ':' + getExecTime(now) + '\r\n');
+					
                 } );
             }
             else 
@@ -154,6 +159,7 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
                     }
                     
                     console.log( '\r\nget:hours:end:projects:' + JSON.stringify(projects) + ':' + getExecTime(now) );
+					
                 } );
             }
             else 

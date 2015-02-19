@@ -1,0 +1,80 @@
+<div class="row">
+    <div class="col-xs-12 col-sm-4">
+      <h4>GROUP NAME</h4>
+      <div class="row" style="padding-top: 10px;font-size: 16px;font-weight: bold;">
+        <div class="col-xs-12">
+          <input class="form-control" type="text" placeholder="Security group name" ng-model="selectedGroup.name"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">ADD GROUP MEMBERS</div>
+        <div class="col-xs-12">
+          <input class="form-control" type="text" id="memberToAdd"
+            ng-model="memberToAdd" 
+            typeahead="p as p.name.fullName for p in filteredPeople | filter:{name:$viewValue}"
+            typeahead-template-url="customPeopleTmpl.html"
+            typeahead-on-select="memberToAddSelected($item, $model, $label)"/>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-12">ADD OTHER GROUPS</div>
+        <div class="col-xs-12">
+          <input class="form-control" type="text" id="groupToAdd"
+            ng-model="groupToAdd" 
+            typeahead="group as group.name for group in filteredGroups | filter:{name:$viewValue}"
+            typeahead-template-url="customGroupTmpl.html"
+            typeahead-on-select="groupToAddSelected($item, $model, $label)"/>
+        </div>
+      </div>
+      <div class="row" ng-show="!creatingGroup">
+        <div class="col-xs-6 col-sm3">
+          <button class="btn btn-default" ng-click="deleteGroup()">Delete Group</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-4">
+      <h4>MEMBERS</h4>
+      <div class="row security-members-edit" ng-repeat="member in selectedGroupMembers">
+        <div class="col-xs-11">
+          <a href="#{{member.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(member)}}</a>
+        </div>
+        <div class="col-xs-1"><i class="fa fa-times cursor-pointer" ng-click="removeMember(member, $index)"></i></div>
+      </div>
+      <div class="row security-members-edit" ng-repeat="group in selectedGroupGroups">
+        <div class="col-xs-11">
+          <a>{{group.name}}</a>
+        </div>
+        <div class="col-xs-1"><i class="fa fa-times cursor-pointer" ng-click="removeGroup(group, $index)"></i></div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-4">
+      <h4>PERMISSIONS</h4>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6" ng-repeat="permission in fullResourcesMap">
+          <h5>{{permission.name.toUpperCase()}}</h5>
+          <ul>
+            <li ng-repeat="permissionName in permission.permissions" style="list-style-type: none; margin-bottom: 20px;">
+              <input type="checkbox" ng-checked="permissionChecked(permission.name, permissionName)" ng-click="setPermission(permission.name, permissionName)" style="margin-bottom: 0px;"/>
+              {{mapPermission(permissionName)}}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+</div>
+<script type="text/ng-template" id="customPeopleTmpl.html">
+  <a>
+<<<<<<< HEAD
+      <img ng-src="{{match.model.thumbnail}}" err-src="\images\defaultProfileImg.png" width="30">
+=======
+      <img ng-src="{{match.model.thumbnail}}" err-src="\images\defaultprofile.png" width="30">
+>>>>>>> sprint21
+      <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
+<script type="text/ng-template" id="customGroupTmpl.html">
+  <a>
+      <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>

@@ -54,6 +54,50 @@ var checkPersonByRole = function(person, roleId, includeInactive, callback) {
 };
 
 
+
+/**
+ * Returns people filtered by google ids
+ * 
+ * @param {Object} googleIds
+ * @param {Object} people
+ */
+
+var filterPeopleByGoogleIds = function(googleIds, people) {
+	
+	var result = [];
+	googleIds = (googleIds instanceof Array) ? googleIds : [googleIds];
+	
+	_.each(people, function(person) {
+		_.each(googleIds, function(googleId) {
+			if (person.googleId == googleId) {
+				result.push(person);
+			}
+		});
+	});
+	return result;
+};
+
+
+/**
+ * Returns people filtered by names
+ * 
+ * @param {Object} names
+ * @param {Object} people
+ */
+
+var filterPeopleByNames = function(names, people) {
+	var result = [];
+	names = (names instanceof Array) ? names : [names];
+	_.each(people, function(person) {
+		_.each(names, function(name) {
+			if (person.name == name) {
+				result.push(person);
+			}
+		});
+	});
+	return result;
+};
+
 /**
  * Returns people by isActive flag
  * 
@@ -167,6 +211,28 @@ var filterProjectsBySponsors = function(roleResources, projects) {
 	return filterProjectsByRoleResources(['executiveSponsor','salesSponsor'], roleResources, projects);
 };
 
+
+/**
+ * Returns projects filtered by ids
+ * 
+ * @param {Object} ids
+ * @param {Object} projects
+ */
+
+var filterProjectsByIds = function(ids, projects) {
+	
+	var result = [];
+	ids = (ids instanceof Array) ? ids : [ids];
+	
+	_.each(projects, function(project) {
+		_.each(ids, function(id) {
+			if (project._id == id) {
+				result.push(project);
+			}
+		});
+	});
+	return result;
+};
 
 /**
  * Returns projects filtered by role resources
@@ -329,7 +395,8 @@ var filterProjectsByStatuses = function(statuses, projects) {
  */
 
 var filterProjectsByResources = function(resources, projects) {
-	
+	resources = (resources instanceof Array) ? resources : [resources];
+	/*
 	var result = [];
 	resources = (resources instanceof Array) ? resources : [resources];
 	
@@ -340,7 +407,11 @@ var filterProjectsByResources = function(resources, projects) {
 			}
 		});
 	});
-	return result;
+	return result;*/
+	
+	resources = _.filter(resources, function(r){ return r });
+	// make more extended filetring using underscore
+	return _.filter(projects, function(pr){ return (_.filter(resources, function(r) { return r == pr.resource | r.indexOf(pr._id) > -1})).length > 0});
 };
 
 
@@ -388,7 +459,7 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 			// checks for complete projects
 			if (status == "complete" &&
 					project.endDate < util.getTodayDate()  &&
-							project.committed == true ) {
+							(project.committed == true || project.type == "invest") ) {
 				checked = true;
 				return;				
 			}
@@ -396,7 +467,8 @@ var checkProjectByStatuses = function(statuses, project, callback) {
 			// checks for deallost projects
 			if (status == "deallost" &&
 					project.endDate < util.getTodayDate()  &&
-							project.committed == false ) {
+							project.committed == false && 
+                                    project.type != "invest") {
 				checked = true;
 				return;				
 			}
@@ -453,6 +525,50 @@ var filterNotificationsByPerson = function(person, notifications) {
 	_.each(notifications, function(notification) {
 		if (notification.person && notification.person.resource == person) {
 			result.push(notification);
+		}
+	});
+	return result;
+};
+
+/**
+ * Returns user roles filtered by google id
+ * 
+ * @param {Object} googleId
+ * @param {Object} userRoles
+ */
+
+var filterUserRolesByGoogleId = function(googleId, userRoles) {
+	var result = [];	
+	_.each(userRoles, function(userRole) {
+		if (userRole.userId && userRole.userId == googleId) {
+			result.push(userRole);
+		}
+	});
+	return result;
+};
+
+
+/**
+ * Returns security roles filtered by resources
+ * 
+ * @param {Object} resources
+ * @param {Object} securityRoles
+ */
+
+var filterSecurityRolesByResources = function(resources, securityRoles) {
+	
+	var result = [];
+	resources = (resources instanceof Array) ? resources : [resources];
+	
+	_.each(securityRoles, function(securityRole) {
+		var checked = false;
+		_.each(resources, function(resource) {
+			if (securityRole.resource == resource) {
+				checked = true;
+			}
+		});
+		if (checked) {
+			result.push(securityRole);
 		}
 	});
 	return result;
@@ -611,6 +727,24 @@ var filterTasksByName = function(name, tasks) {
 	return result;
 };
 
+/**
+ * Returns tasks filtered by substr
+ * 
+ * @param {Object} name
+ * @param {Object} tasks
+ */
+var filterTasksBySubstr = function(name, tasks) {
+	var result = [];	
+	var regex = new RegExp(name, 'gi');
+	
+	_.each(tasks, function(task) {
+		//if (task.name && task.name.toLowerCase().indexOf(name.toLowerCase()) > -1) {
+		if (task.name && regex.exec(task.name)) {
+			result.push(task);
+		}
+	});
+	return result;
+};
 
 /**
  * Returns links filtered by project
@@ -623,7 +757,9 @@ var filterLinksByProject = function(project, links) {
 	var result = [];	
 	_.each(links, function(link) {
 		if (link.project && link.project.resource == project) {
-			result.push(link);
+			_.each(link.members, function(member) {
+				result.push(member);
+			});
 		}
 	});
 	return result;
@@ -662,8 +798,11 @@ module.exports.filterPeopleByRoles = filterPeopleByRoles;
 module.exports.filterPeopleByIsActiveFlag = filterPeopleByIsActiveFlag;
 module.exports.filterPeopleWithPrimaryRole = filterPeopleWithPrimaryRole;
 module.exports.filterPeopleByGroups = filterPeopleByGroups;
+module.exports.filterPeopleByGoogleIds = filterPeopleByGoogleIds;
+module.exports.filterPeopleByNames = filterPeopleByNames;
 
 // projects filter functions
+module.exports.filterProjectsByIds = filterProjectsByIds;
 module.exports.filterProjectsByExecutiveSponsor = filterProjectsByExecutiveSponsor;
 module.exports.filterProjectsBySponsors = filterProjectsBySponsors;
 module.exports.filterProjectsByRoleResources = filterProjectsByRoleResources;
@@ -678,6 +817,12 @@ module.exports.filterAssignmentsByTypes = filterAssignmentsByTypes;
 // notifications filter functions
 module.exports.filterNotificationsByPerson = filterNotificationsByPerson;
 
+// user roles filter functions
+module.exports.filterUserRolesByGoogleId = filterUserRolesByGoogleId;
+
+//security roles filter functions
+module.exports.filterSecurityRolesByResources = filterSecurityRolesByResources;
+
 // vacations filter functions
 module.exports.filterVacationsByPerson = filterVacationsByPerson;
 module.exports.filterVacationsByPeriod = filterVacationsByPeriod;
@@ -686,6 +831,7 @@ module.exports.filterVacationsByDates = filterVacationsByDates;
 
 //tasks filter functions
 module.exports.filterTasksByName = filterTasksByName;
+module.exports.filterTasksBySubstr = filterTasksBySubstr;
 
 //links filter functions
 module.exports.filterLinksByProject = filterLinksByProject;

@@ -182,6 +182,9 @@
         text-align: left;
         padding-left: 5px;
         padding-top: 5px;
+        .longcontent {
+          font-size: 12px;
+        }
       }
       
       .hours-day-footer {
@@ -366,18 +369,28 @@
   }
   
   .hours-day-content {
-    font-size: 60px;
-    line-height:60px;
-    position:relative;
-  }
+      font-size: 54px;
+      line-height:60px;
+      position:relative;
+      .longcontent {
+        font-size: 44px;
+        line-height:50px;
+      }
+   }
   
+
   @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
     .hours-day-content {
-      font-size: 50px;
+      font-size: 44px;
       line-height:50px;
-      
+      .longcontent {
+        font-size: 32px;
+        line-height:40px;
+      }
     }
   }
+
+  
   .hours-day-check {
       position:absolute;
       color: #1bc156; 

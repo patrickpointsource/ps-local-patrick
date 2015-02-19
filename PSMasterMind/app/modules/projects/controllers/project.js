@@ -21,6 +21,15 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	if( $stateParams.projectId ) {
 		$scope.projectId = $stateParams.projectId;
 	}
+	
+	$scope.editTab = "summary";
+	if($state.params.editTab && $state.params.editTab == "assignments") {
+	    $scope.editTab = "assignments";
+	}
+	$scope.changeEditTab = function(tab) {
+	    $scope.editTab = tab;
+	};
+	
 	$scope.projectLoaded = false;
 	$scope.projectEstimate = 0;
 	//$scope.servicesEstimate = 0;
@@ -29,10 +38,15 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	/**
 	 * Set the profile view in edit mode
 	 */
-	$scope.editProject = function( ) {
+	$scope.edit = function( ) {
 		if( $scope.canEdit( ) ) {
+		    var editTab = "summary";
+		    if($stateParams.tabId == "/assignments") {
+		        editTab = "assignments";
+		    }
 			$state.go( 'projects.edit', {
-				projectId: $scope.projectId
+				projectId: $scope.projectId,
+				editTab: editTab
 			} );
 		}
 	};
@@ -74,7 +88,8 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				$scope.projectEstimate = 0;
 				$state.go( 'projects.show', {
 					projectId: $scope.projectId,
-					edit: null
+					edit: null,
+					tabId: "/" + $scope.editTab
 				} );
 			} );
 		}
@@ -260,21 +275,21 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 		} ).then( function( data ) {
 			$scope.projectAssignments = data;
 
-			var startDate = new Date( project.startDate );
-			var initStartDate = new Date( project.initStartDate );
+			var startDate = moment( project.startDate );
+			var initStartDate = moment( project.initStartDate );
 			var endDate;
 			var initEndDate;
 			if( project.endDate ) {
-				endDate = new Date( project.endDate );
+				endDate = moment( project.endDate );
 			}
 			if( project.initEndDate ) {
-				initEndDate = new Date( project.initEndDate );
+				initEndDate = moment( project.initEndDate );
 			}
 			var roles = project.roles;
 
 			//Check if the START date has been updated.
 			if( startDateShifted ) {
-				var delta = startDate - initStartDate;
+			    var delta = startDate.diff(initStartDate, 'days');
 				for( var i = 0; i < roles.length; i++ ) {
 					var role = roles[ i ];
 					//Shift the start date
@@ -283,19 +298,10 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 						if( role.startDate == project.initStartDate ) {
 							role.startDate = project.startDate;
 						} else {
-							var tmpDate = new Date( role.startDate );
-							tmpDate = new Date( tmpDate.getTime( ) + delta );
-							tmpDate = $scope.validateShiftDates( startDate, endDate, tmpDate );
-							role.startDate = getShortDate( tmpDate );
+						    var shiftedDate = moment(role.startDate).add(delta, 'days');
+						    role.startDate = $scope.validateShiftDates(startDate, endDate, shiftedDate).format('YYYY-MM-DD');
 						}
 					}
-					//Shift the end date
-					/*if(role.endDate){
-					 var tmpDate = new Date(role.endDate);
-					 tmpDate = new Date(tmpDate.getTime() + delta);
-					 tmpDate = $scope.validateShiftDates(startDate, endDate, tmpDate);
-					 role.endDate = getShortDate(tmpDate);
-					 }*/
 
 					$scope.shiftAssignments( role, delta, 0 );
 				}
@@ -304,8 +310,8 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			//Check if the END date has been updated.
 			if( endDateShifted ) {
 				// end date just shifted
-				if( initEndDate ) {
-					var delta = endDate - initEndDate;
+			    if (initEndDate) {
+			        var delta = endDate.diff(initEndDate, 'days');
 					for( var i = 0; i < roles.length; i++ ) {
 						var role = roles[ i ];
 						//Shift the end date
@@ -313,21 +319,12 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 							if( role.endDate == project.initEndDate ) {
 								role.endDate = project.endDate;
 							} else {
-								var tmpDate = new Date( role.endDate );
-								tmpDate = new Date( tmpDate.getTime( ) + delta );
-								tmpDate = $scope.validateShiftDates( startDate, endDate, tmpDate );
-								role.endDate = getShortDate( tmpDate );
+							    var shiftedDate = moment(role.endDate).add(delta, 'days');
+							    role.endDate = $scope.validateShiftDates(startDate, endDate, shiftedDate).format('YYYY-MM-DD');
 							}
 						} else {
 							role.endDate = project.endDate;
 						}
-						//Shift the start date
-						/*if(role.start){
-						 var tmpDate = new Date(role.startDate);
-						 tmpDate = new Date(tmpDate.getTime() + delta);
-						 tmpDate = $scope.validateShiftDates(startDate, endDate, tmpDate);
-						 role.startDate = getShortDate(tmpDate);
-						 }*/
 
 						$scope.shiftAssignments( role, 0, delta );
 					}
@@ -345,49 +342,43 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				}
 			}
 
-			// save assignments after project
-			//if ($scope.projectAssignments)
-			//	AssignmentService.save($scope.project, $scope.projectAssignments);
-
 			callback( );
 		} );
 	};
 
-	$scope.validateShiftDates = function( projectStartDate, projectEndDate, tmpDate ) {
+	$scope.validateShiftDates = function (projectStartDate, projectEndDate, date) {
+	    var returnDate = date;
+	    if (date.isBefore(projectStartDate)) {
+	        returnDate = projectStartDate;
+	    }
 		if( projectEndDate ) {
-			if( tmpDate > projectEndDate ) {
-				tmpDate = projectEndDate;
-			}
-		}
-		if( tmpDate < projectStartDate ) {
-			tmpDate = projectStartDate;
+		    if (date.isAfter(projectEndDate)) {
+		        returnDate = projectEndDate;
+		    }
 		}
 
-		return tmpDate;
+		return returnDate;
 	};
 
 	$scope.shiftAssignments = function( role, startDelta, endDelta ) {
-		
-		if ($scope.roleAssigneesMap[ role._id ]) {
-			for( var i = 0; i < $scope.roleAssigneesMap[ role._id ].length; i++ ) {
-				var assignment = $scope.roleAssigneesMap[ role._id ][ i ];
-				if( assignment ) {
+	    for( var i = 0; i < $scope.project.roles.length; i++ ) {
+	        var roleStartDate = moment($scope.project.roles[i].startDate);
+	        var roleEndDate = moment($scope.project.roles[i].endDate);
+			for( var j = 0; j < $scope.project.roles[ i ].assignees.length; j++ ) {
+				var assignment = $scope.project.roles[i].assignees[ j ];
+				if( assignment.role && assignment.role.resource.indexOf( role._id ) > -1 ) {
 					// if start date changed
 					if( startDelta != 0 ) {
-						// shift start
-						var tmpDate = new Date( assignment.startDate );
-						tmpDate = new Date( tmpDate.getTime( ) + startDelta );
-						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-						assignment.startDate = getShortDate( tmpDate );
+					    // shift start
+					    var shiftedDate = moment(assignment.startDate).add(startDelta, 'days');
+					    assignment.startDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
 					}
 
 					// if end date changed
 					if( endDelta != 0 ) {
-						//shift end
-						var tmpDate = new Date( assignment.endDate );
-						tmpDate = new Date( tmpDate.getTime( ) + endDelta );
-						tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-						assignment.endDate = getShortDate( tmpDate );
+					    //shift end
+					    var shiftedDate = moment(assignment.endDate).add(endDelta, 'days');
+					    assignment.endDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
 					}
 
 					// if endDate was set or removed, change assignment endDate
@@ -404,20 +395,16 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			if( assignment.role.resource.indexOf( role._id ) > -1 ) {
 				// if start date changed
 				if( startDelta != 0 ) {
-					// shift start
-					var tmpDate = new Date( assignment.startDate );
-					tmpDate = new Date( tmpDate.getTime( ) + startDelta );
-					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-					assignment.startDate = getShortDate( tmpDate );
+				    // shift start
+				    var shiftedDate = moment(assignment.startDate).add(startDelta, 'days');
+				    assignment.startDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
 				}
 
 				// if end date changed
 				if( endDelta != 0 ) {
 					//shift end
-					var tmpDate = new Date( assignment.endDate );
-					tmpDate = new Date( tmpDate.getTime( ) + endDelta );
-					tmpDate = $scope.validateShiftDates( new Date( role.startDate ), new Date( role.endDate ), tmpDate );
-					assignment.endDate = getShortDate( tmpDate );
+				    var shiftedDate = moment(assignment.endDate).add(endDelta, 'days');
+				    assignment.endDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
 				}
 
 				// if endDate was set or removed, change assignment endDate
@@ -580,12 +567,12 @@ else if( role.percentageCovered == 0 )
 
                         $scope.$emit( 'project:save' );
                         
-						// after creating a project, if clicked Done, go to projects list
+						// after creating a project, if clicked Done, go to the read-only page of the project you just created (JH: 80555)
 						// if clicked Save, make project editable (redirect to Edit page)
 						if( $scope.editDone ) {
 							$rootScope.formDirty = false;
-							$state.go( 'projects.index', {
-								filter: 'all'
+							$state.go( 'projects.show', {
+								projectId: $scope.projectId
 							} );
 							return;
 						} else {
@@ -868,15 +855,10 @@ else if( role.percentageCovered == 0 )
 	 * handle it by adding the supplied role to our project.
 	 */
 	$scope.$on( 'roles:add', function( event, role ) {
-		$scope.project.addRole( role );
-		//$scope.summaryRolesTableParams.total($scope.project.roles.length);
-		//$scope.summaryRolesTableParams.reload();
-
-		/*
-		 * as sow table isn't available in edit mode
-		 $scope.sowRolesTableParams.total($scope.project.roles.length);
-		 $scope.sowRolesTableParams.reload();
-		 */
+		// if this role 
+		if (!_.find($scope.project.roles, function(r) {return r._id == role._id}))
+			$scope.project.addRole( role );
+		
 	} );
 
 	/**
@@ -884,7 +866,29 @@ else if( role.percentageCovered == 0 )
 	 * handle it by updating the supplied role in our project.
 	 */
 	$scope.$on( 'roles:change', function( event, index, role ) {
+	    var projectRole = $scope.project.roles[index];
+	    //var endDateShift = !role.endDate || ( role.endDate !=  projectRole.endDate);
+
 		$scope.project.changeRole( index, role );
+		
+		//if(endDateShift) {
+            for(var assigneeIndex in projectRole.assignees) {
+                var assignee = projectRole.assignees[assigneeIndex];
+                if(!assignee.endDate && projectRole.endDate) {
+                    assignee.endDate = projectRole.endDate;
+                }
+            }
+		//}
+		
+		
+        /*AssignmentService.getAssignmentsByPeriod( "all", {
+            project: {
+                resource: $scope.project.about
+            }
+        } ).then( function( data ) {
+            $scope.projectAssignments = data;
+            
+        });*/
 		//$scope.summaryRolesTableParams.total($scope.project.roles.length);
 		//$scope.summaryRolesTableParams.reload();
 
@@ -1087,39 +1091,13 @@ else if( role.percentageCovered == 0 )
 				'givenName': 1
 			};
 			
-		    if (window.useAdoptedServices) {
-				Resources.get("people/bytypes/withPrimaryRole").then(
-					function (peopleResults) {
-						$scope.mapRoleGroups(roleGroups, result, peopleResults, rolesCb);
-					}
-					, sort
-				);
-		    }
-		    else {
-				//Query all people with a primary role
-				var roleQuery = {
-					'primaryRole.resource': {
-						$exists: 1
-					},
-					'about': "people/bytypes/withPrimaryRole"
-				};
-				var fields = {
-					resource: 1,
-					name: 1,
-					familyName: 1,
-					givenName: 1,
-					primaryRole: 1,
-					thumbnail: 1,
-					isActive: 1
-				};
-				
-				Resources.get(roleQuery, fields).then(
-					function (peopleResults) {
-						$scope.mapRoleGroups(roleGroups, result, peopleResults, rolesCb);
-					}
-					, sort
-				);
-		    }
+			Resources.get("people/bytypes/withPrimaryRole").then(
+				function (peopleResults) {
+					$scope.mapRoleGroups(roleGroups, result, peopleResults, rolesCb);
+				}
+				, sort
+			);
+
 		});
 	};
 
@@ -1480,7 +1458,7 @@ else if( role.percentageCovered == 0 )
 			}
 
 			// merge all other persons from assignees
-			$scope.updateHoursPersons( );
+			//$scope.updateHoursPersons( );
 			$scope.updateOrganizedHours( );
 		};
 		// use simply callback logic to wait until everyone will load
@@ -1529,8 +1507,11 @@ else if( role.percentageCovered == 0 )
 						return assignments.members[ i ].person.resource && assignments.members[ i ].person.resource == o.resource;
 					} );
 	
-					if (!person)
+					if (!person) {
+						$scope.organizedHours.push(assignments.members[ i ].person);
+						Resources.resolve($scope.organizedHours[$scope.organizedHours.length - 1]);
 						continue;
+					}	
 					
 					startD = new Date( assignments.members[ i ].startDate );
 					endD = new Date( assignments.members[ i ].endDate );
@@ -1758,40 +1739,42 @@ else if( role.percentageCovered == 0 )
 
 	$scope.initHours = function( ) {
 		
-	    if (window.useAdoptedServices) {
-	    	
-	    	var params = {};
-	    	params.projects = $scope.project.about;
-	        
-			Resources.get("hours/projects", params).then(
-				
-				function (hoursResult) {
+    	var params = {};
+    	params.projects = $scope.project.about;
+        
+    	var sort = {		
+    		'created': 1		
+    	};
+    	
+		Resources.refresh("hours/projects", params).then(
+			
+			function (hoursResult) {
 
-					$scope.hours = hoursResult.members;
+				$scope.hours = hoursResult.members;
 
-					$scope.organizeHours( $scope.hours );
-					$scope.initHoursPeriods( $scope.hours );
-					$scope.currentWeek( function() {
-						// load month hours just after week
+				$scope.organizeHours( $scope.hours );
+				$scope.initHoursPeriods( $scope.hours );
+				$scope.currentWeek( function() {
+					// load month hours just after week
 						$scope.currentMonth();
-					} );
+				} );
 					
 
-					if( $scope.hoursTableParams ) {
-						$scope.hoursTableParams.total( $scope.hours.length );
-						$scope.hoursTableParams.reload( );
+				if( $scope.hoursTableParams ) {
+					$scope.hoursTableParams.total( $scope.hours.length );
+					$scope.hoursTableParams.reload( );
 
-					} else {
-						// Table Parameters
-						var params = {
-							page: 1, // show first page
-							count: 25, // count per page
-							sorting: {
-								created: 'des' // initial sorting
-							}
-						};
+				} else {
+					// Table Parameters
+					var params = {
+						page: 1, // show first page
+						count: 25, // count per page
+						sorting: {
+							created: 'des' // initial sorting
+						}
+					};
 
-					}
+				}
 
 				}, 
 				sort
@@ -1859,83 +1842,41 @@ else if( role.percentageCovered == 0 )
      
       if($scope.projectPeopleResources.length > 0) {
         $scope.projectPeopleResources = _.filter($scope.projectPeopleResources);
-          
-	    if (window.useAdoptedServices) {
-	    	
-	    	var params = {
-	    			t: (new Date()).getMilliseconds()
-	    	};
-	    	params.startDate = periodStart;
-	    	params.endDate = periodEnd;
 
-	        var peopleResourcesOnly = _.compact(_.map($scope.projectPeopleResources, function(person) { 
-                if(person) {
-                  return person.resource ;
-                } else {
-                  return undefined;
-                }
-            }));
-	        params.person = peopleResourcesOnly;
+    	var params = {
+    			t: (new Date()).getMilliseconds()
+    	};
+    	params.startDate = periodStart;
+    	params.endDate = periodEnd;
+
+        var peopleResourcesOnly = _.compact(_.map($scope.projectPeopleResources, function(person) { 
+            if(person) {
+              return person.resource ;
+            } else {
+              return undefined;
+            }
+        }));
+        params.person = peopleResourcesOnly;
 	  	    params.fields = ["_id", "description", "startDate", "endDate", "person", "status", "type", "resource"];
-			Resources.get("vacations/bytypes/byPeriod", params).then(
-				function (result) {
+		Resources.refresh("vacations/bytypes/byPeriod", params).then(
+			function (result) {
 
-					$scope.projectVacations = result.members;
-			          
-			        for(var k = 0; k < $scope.projectVacations.length; k++) {
-			        	var projVac = $scope.projectVacations[k];
-			            /*var peopleFound = _.filter($scope.organizedHours, function(person) {
-			              return person.resource == projVac.person.resource;
-			            });*/
-			            Resources.resolve(projVac.person);
-			            //projVac.person = peopleFound[0];
-			        }
-			          
-			        $scope.hideVacationSpinner = true;
+				$scope.projectVacations = result.members;
+		          
+		        for(var k = 0; k < $scope.projectVacations.length; k++) {
+		        	var projVac = $scope.projectVacations[k];
+		            /*var peopleFound = _.filter($scope.organizedHours, function(person) {
+		              return person.resource == projVac.person.resource;
+		            });*/
+		            Resources.resolve(projVac.person);
+		            //projVac.person = peopleFound[0];
+		        }
+		          
+		        $scope.hideVacationSpinner = true;
 
-				}
-				
-			);
-	    } else {
-	    	
-	        var peopleResourcesOnly = _.compact(_.map($scope.projectPeopleResources, function(person) { 
-	                                    if(person) {
-	                                      return { resource: person.resource };
-	                                    } else {
-	                                      return undefined;
-	                                    }
-	                                  }));
-	        var vacationsQuery = {
-	          $and: [
-	            { person: { $in: peopleResourcesOnly } },
-	            { $or: [
-	              { $and: [
-	                { startDate: { $gte: periodStart }},
-	                { startDate: { $lte: periodEnd }},
-	              ]},
-	              { $and: [
-	                { endDate: { $gte: periodStart }},
-	                { endDate: { $lte: periodEnd }},
-	              ]},
-	            ] }
-	          ]
-	        };
-	        
-	        Resources.query('vacations', vacationsQuery, {}, function(result) {
-	          $scope.projectVacations = result.members;
-	          
-	          for(var k = 0; k < $scope.projectVacations.length; k++) {
-	            var projVac = $scope.projectVacations[k];
-	            /*var peopleFound = _.filter($scope.organizedHours, function(person) {
-	              return person.resource == projVac.person.resource;
-	            });*/
-	            Resources.resolve(projVac.person);
-	            //projVac.person = peopleFound[0];
-	          }
-	          
-	          $scope.hideVacationSpinner = true;
-	        })
-      	 }
+			}
+			
+		);
       } else
         $scope.hideVacationSpinner = true;
         
@@ -1955,8 +1896,7 @@ else if( role.percentageCovered == 0 )
 		Resources.refresh( 'people/me' ).then( function( me ) {
 			$scope.me = me;
 
-			if( $scope.me.groups && ( ( $scope.me.groups.indexOf( 'Management' ) !== -1 ) || ( $scope.me.groups.indexOf( 'Executives' ) !== -1 ) || ( $scope.project.creator && $scope.project.creator.resource === $scope.me.about ) ) ) {
-
+			if ($rootScope.hasPermissions(CONSTS.DELETE_PROJECTS) || ($scope.project.created && $scope.project.created.resource === $scope.me.about)) {
 				$scope.canDeleteProject = true;
 			}
 
@@ -2306,47 +2246,19 @@ else if( role.percentageCovered == 0 )
 			$scope.projectAssignments = data;
 			$scope.updateOrganizedHours( );
 
-		    if (window.useAdoptedServices) {
-		    	
-		    	var params = {};
-		    	params.project = $scope.project.about;
-		    	params.startDate = $scope.startWeekDate;
-		    	params.endDate = $scope.endWeekDate;
-		    	
-				Resources.get("hours/projectdates", params).then(
-					function (result) {
-						$scope.calcWeekHours(result); 
-						
-						if (cb)
-							cb()
-					}
-				);
-
-		    } else {
-
-		    	var hoursQuery = {
-						'project.resource': $scope.project.about,
-
-						$and: [ {
-							date: {
-								$lte: $scope.endWeekDate
-							}
-						}, {
-							date: {
-								$gte: $scope.startWeekDate
-							}
-						} ]
-
-					};
-
-		    	HoursService.query( hoursQuery, {} ).then( function( result ) {
-			    	$scope.calcWeekHours(result);
-			    	
-			    	if (cb)
-						cb()
-			    } );
-		    	
-		    }
+	    	var params = {};
+	    	params.project = $scope.project.about;
+	    	params.startDate = $scope.startWeekDate;
+	    	params.endDate = $scope.endWeekDate;
+	    	
+			Resources.refresh("hours/projectdates", params).then(
+				function (result) {
+					$scope.calcWeekHours(result); 
+					
+					if (cb)
+						cb();
+				}
+			);
 			
 		} );
 	};
@@ -2580,45 +2492,19 @@ else if( role.percentageCovered == 0 )
 			$scope.projectAssignments = data;
 			$scope.updateOrganizedHours( );
 
-		    /*if (window.useAdoptedServices) {
-		    	
-		    	var params = {};
-		    	params.project = $scope.project.about;
-		    	params.startDate = $scope.startMonthDate;
-		    	params.endDate = $scope.endMonthDate;
-		    	params.t = (new Date( )).getMilliseconds( );
-		    	
-				Resources.get("hours/projectdates", params).then(
-					function (result) {
-						$scope.calcMonthHours(result); 
-					}
-				);
-
-		    } else {*/
-
-		    	var hoursQuery = {
-						'project.resource': $scope.project.about,
-
-						$and: [ {
-							date: {
-								$lte: $scope.endMonthDate
-							}
-						}, {
-							date: {
-								$gte: $scope.startMonthDate
-							}
-						} ]
-
-					};
-		    	
-				HoursService.query(hoursQuery, {} ).then( function( result ) {
+	    	var params = {};
+	    	params.project = $scope.project.about;
+	    	params.startDate = $scope.startMonthDate;
+	    	params.endDate = $scope.endMonthDate;
+	    	params.t = (new Date( )).getMilliseconds( );
+	    	
+			Resources.refresh("hours/projectdates", params).then(
+				function (result) {
 					$scope.calcMonthHours(result); 
-				} );
-				
-		    //}
+				}
+			);
 		} );
 	};
-
 	
 	$scope.calcMonthHours = function( result ) {
 	
@@ -2845,8 +2731,7 @@ else if( role.percentageCovered == 0 )
 		var execLoaded = false;
 	    var salesLoaded = false;
 	    
-	    if (window.useAdoptedServices) {
-			Resources.refresh("people/bytypes/byGroups", { group : "Execs" } ).then(
+		Resources.refresh("people/bytypes/byGroups", { group : "Execs" } ).then(
 				function (result) {
 					$scope.execs = result;
 					$scope.getExecutiveSponsor( );
@@ -2855,8 +2740,9 @@ else if( role.percentageCovered == 0 )
 					if (execLoaded && salesLoaded && cb)
 		                 cb();
 				}
-			);
-			Resources.refresh("people/bytypes/byGroups", { group : "Sales" } ).then(
+		);
+		
+		Resources.refresh("people/bytypes/byGroups", { group : "Sales" } ).then(
 				function (result) {
 					$scope.sales = result;
 					$scope.getSalesSponsor( );
@@ -2865,40 +2751,7 @@ else if( role.percentageCovered == 0 )
 					if (execLoaded && salesLoaded && cb)
 					     cb();
 				}
-			);
-	    } else {
-	    	
-		    var fields = {};
-		    
-			//Resources.query( 'people', execQuery, fields, function( result ) {
-			People.query(execQuery, fields).then( function( result ) {
-				$scope.execs = result;
-
-				$scope.getExecutiveSponsor( );
-				$scope.getExecutiveSponsorEmail( );
-				
-				execLoaded = true;
-				
-				if (execLoaded && salesLoaded && cb)
-	                 cb();
-			} );
-			//Resources.query( 'people', salesQuery, fields, function( result ) {
-		   People.query(salesQuery, fields).then( function( result ) {
-				$scope.sales = result;
-
-				
-				$scope.getSalesSponsor( );
-				$scope.getSalesSponsorEmail( );
-				
-				salesLoaded = true;
-				
-				if (execLoaded && salesLoaded && cb)
-				     cb();
-				
-			} );
-	    	
-	    }
-	    
+		);
 	};
 
 	$scope.dayFormatted = function( yyyymmdd, params ) {
@@ -3243,33 +3096,13 @@ else if( role.percentageCovered == 0 )
 
 			//Create a new watch
 			$scope.sentinel = $scope.$watch( 'project', function( newValue, oldValue ) {
-				//console.debug(JSON.stringify(oldValue) + ' changed to ' +
-				// JSON.stringify(newValue));
 				if( !$rootScope.formDirty && $scope.editMode ) {
-					//Do not include anthing in the $meta property in the comparison
-					if( oldValue.hasOwnProperty( '$meta' ) ) {
-						var oldClone = Resources.deepCopy( oldValue );
-						delete oldClone[ '$meta' ];
-						oldValue = oldClone;
-					}
-					if( newValue.hasOwnProperty( '$meta' ) ) {
-						var newClone = Resources.deepCopy( newValue );
-						delete newClone[ '$meta' ];
-						newValue = newClone;
-					}
+					var changedByUser = $scope.hasChangesInFields(
+                        ["committed", "executiveSponsor", "salesSponsor", "name", "customerName", "type", "description", "endDate", "primaryContact", "state", "startDate", "terms"],
+                        newValue,
+                        oldValue);
 
-					//Text Angular seems to add non white space characters for some reason
-					if( newValue.description ) {
-						newValue.description = newValue.description.trim( );
-					}
-					if( oldValue.description ) {
-						oldValue.description = oldValue.description.trim( );
-					}
-
-					var oldStr = JSON.stringify( oldValue );
-					var newStr = JSON.stringify( newValue );
-
-					if( oldStr != newStr ) {
+					if( changedByUser ) {
 						console.debug( 'project is now dirty' );
 						$rootScope.formDirty = true;
 						$rootScope.projectEdit = true;
@@ -3281,5 +3114,33 @@ else if( role.percentageCovered == 0 )
 
 			}, true );
 		}
+	};
+	
+    $scope.hasChangesInFields = function(fields, obj1, obj2) {
+	    if(fields) {
+            for(var fieldIndex in fields) {
+                var field = fields[fieldIndex];
+                if(field) {
+                    var field1 = obj1[field];
+                    var field2 = obj2[field];
+                    
+                    if(_.isBoolean(field1) || _.isBoolean(field2)) {
+                        if(field1 != field2) {
+                            return true;
+                        }
+                    } else {
+                        if( field1 && field2) {
+                            var string1 = JSON.stringify(field1).trim();
+                            var string2 = JSON.stringify(field2).trim();
+                            if(string1 != string2) {
+                                return true;
+	                       }
+	                   }
+                    }
+	            }
+	        }
+        }
+
+	    return false;
 	};
 } ] );

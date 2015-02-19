@@ -86,7 +86,7 @@
           }
         })
         .state('projects.edit', {
-          url: '/:projectId/edit',
+          url: '/:projectId/edit/:editTab',
         	//url: '/{projectId}{tabId:(?:/(?!edit)[^/]+)?}/edit',
           templateUrl: 'modules/projects/views/edit.html',
           controller: 'ProjectCtrl',
@@ -109,13 +109,13 @@
           }
         })
         .state('people', {
-          url: '/people',
+          url: '/people?filter',
           abstract: true,
           template: '<ui-view />'
         })
         .state('people.index', {
-          url: '/?filter&view',
-          templateUrl: 'modules/people/people.html',
+          url: '',
+          templateUrl: 'modules/people/people.html?filter',
           controller: 'PeopleCtrl'
         })
        .state('people.show', {
@@ -289,7 +289,7 @@
     	};
     })
     .run(['$rootScope', '$state', 'Resources',
-      function ($rootScope, $state, Resources) {
+        function ($rootScope, $state, Resources) {
     	//Handle browser navigate away
     	window.onbeforeunload = function (event) {
     		if($rootScope.formDirty){
@@ -303,7 +303,27 @@
     			return message;
     		}
     	};
-	  	  
+
+    	if (localStorage.token)
+	    {
+    	    var token = JSON.parse(localStorage.token);
+
+    	    gapi.auth.checkSessionState({ client_id: token.client_id, session_state: token.session_state },
+                function (authenticated)
+                {
+                    if (authenticated)
+                    {
+                        var expTime = helper.calcExpiration();
+                        
+                        helper.authTimer = setTimeout(function () { helper.authorize(null, Resources); }, expTime);
+                    }
+                    else
+                        helper.authorize(null, Resources);
+                });
+    	}
+    	else
+	        console.log("Access token not found.");
+        
   	  	$rootScope.$on('$stateChangeStart', 
   	  		_.bind(function(event, toState, toParams, fromState, fromParams) {
   		  	if($rootScope.formDirty){
@@ -358,6 +378,30 @@
   	  		$('#dateShiftConfirm').modal('hide');
   	  		$('.modal-backdrop').hide();
   	  	};
+  	  	
+  	  	// use it as private variable
+  	  	var currentPermissions = {};
+  	  
+  	  	$rootScope.setPermissions = function(permissions) {
+  	  		currentPermissions = permissions;
+  	  	};
+  	  	
+  	  	$rootScope.hasPermissions = function(permissionName) {
+  	  		
+  			var result = false;
+  			
+  			if (!permissionName) {
+  				throw "Unknown permission passed:" + permissionName;
+  				return;
+  			}
+  			for (var permission in currentPermissions) {
+  				if (!result && _.find(currentPermissions[permission], function(perm) { return perm == permissionName}))
+  					result = true;
+  			}
+  			
+  			return result;
+  		};
+  		
   	  	
         $rootScope.logout = function () {
           var accessToken = localStorage.getItem('access_token');

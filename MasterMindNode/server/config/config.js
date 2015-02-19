@@ -61,6 +61,13 @@ var devenv = {
 	            password: 'e7wRT4nm0IgHGeWu07benG36',
 	            url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/',
 	            db: 'mm_db_demo'
+			},
+			test: {
+				account: 'psdev1',
+			    user: 'tathendersheaderefortati',
+	            password: 'e7wRT4nm0IgHGeWu07benG36',
+	            url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/',
+	            db: 'mm_unittest_sprint25'
 			}
 		},
 		dataValidation_BanUnknownProperties : true

@@ -128,16 +128,8 @@ require('./server/config/passport.js')(passport, {
 
 var allowCrossDomain = function(req, res, next) {
     //res.header('Access-Control-Allow-Origin', '*');
-   
-    
-    // temporary allow acceess to few rest services
-   /* if (req.originalUrl && (req.originalUrl == '/people' || req.originalUrl == '/roles')) {
-    	res.header('Access-Control-Allow-Origin', '*');
-    	res.header('Access-Control-Allow-Credentials', 'false');
-    } else */{
-    	res.header('Access-Control-Allow-Origin', webSiteUrl);
-    	res.header('Access-Control-Allow-Credentials', 'true');
-    }
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Origin', webSiteUrl);
 
     //res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Methods', 'GET');
@@ -159,6 +151,8 @@ var restoreUser = function(req, res, next) {
 	
 	if (req.session && req.session.user)
 		req.user = req.session.user;
+		// TODO: use specific user google id to impersonificate session
+		//req.user = '106599856894681365142';
 	
 	next();
 };
@@ -183,10 +177,10 @@ function log(msg) {
 }
 
 function logError(msg) {
-	if (appConfig.logToFileStream)
+	//if (appConfig.logToFileStream)
 		errorStream.write(msg + "\n");
-	else
-		console.error(msg);
+	/*else
+		console.error(msg);*/
 }
 
 
@@ -207,6 +201,10 @@ if (appConfig.logToFileStream) {
 	
 	process.stdout.write = log;
 	process.stderr.write = logError;
+	
+	process.on("uncaughtException", function(err) {
+		logError('\r\n' + err + ': Details: \r\n' + JSON.stringify(arguments));
+	});
 }
 
 log("Starting...");
@@ -242,7 +240,7 @@ var resetUser = function(req, res) {
 	res.json( {
 		result: true
 	} );
-}
+};
 
 if (!useAppNames) {
     // Application paths that are protected
@@ -348,7 +346,9 @@ var httpServer = http.createServer( app);
 httpServer.listen(httpPort, hostName);
 */
 //Initialize reminders
-reminder.initialize();
+reminder.initialize({
+	env: appConfig.env
+});
 
 console.log('server:timeout:' + httpServer.timeout);
 

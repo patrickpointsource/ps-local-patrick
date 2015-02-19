@@ -155,7 +155,11 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 
 	$scope.handleClick = function(e, handler, menuItem, subItem, subIndex) {
 		var e = e || window.event;
-
+		if (e) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+		
 		if (this[handler]) {
 			var li = $(e.target).closest('li');
 
@@ -184,19 +188,16 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 
 			for (var i = 0; i < menuItem.subItems.length; i ++)
 				if (menuItem.subItems[i].active)
-					selected.push(menuItem.subItems[i].value)
+					selected.push(menuItem.subItems[i].value);
 
-			if (_.find(selected, function(v) {return v == "all"}))
-				this[menuItem.handler]("all")
+			if (_.find(selected, function(v) {return v == "all";}))
+				this[menuItem.handler]("all");
 			else
 				this[menuItem.handler](selected.join(','));
 
 
 		}
 
-		if (e) {
-			e.stopPropagation()
-		}
 	};
 
 	if (!$scope.additionalClass)

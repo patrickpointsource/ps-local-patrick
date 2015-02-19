@@ -7,8 +7,8 @@ var _ = require( 'underscore' );
 //12/11/14 MM var validation = require( '../data/validation.js' );
 var assignments = require( '../controllers/assignments.js' );
 
-var listProjects = function(query, fields, callback) {
-    dataAccess.listProjects(query, fields, function(err, body){
+var listProjects = function(callback) {
+    dataAccess.listProjects( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading projects', null);
@@ -19,8 +19,24 @@ var listProjects = function(query, fields, callback) {
 };
 
 
-var listProjectsByExecutiveSponsor = function(executiveSponsor, fields, callback) {
-    dataAccess.listProjectsByExecutiveSponsor(executiveSponsor, fields, function(err, body){
+var listProjectsByIds = function(ids, callback) {
+    dataAccess.listProjectsByIds(ids, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading projects', null);
+        } else {
+            var result = body.data;
+            for (var i in result) {
+       		    result[i].resource = "projects/" + result[i]._id;
+        		result[i].about = "projects/" + result[i]._id;
+            }
+            callback(null, body);
+        }
+    });
+};
+
+var listProjectsByExecutiveSponsor = function(executiveSponsor, callback) {
+    dataAccess.listProjectsByExecutiveSponsor(executiveSponsor, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading listProjectsByExecutiveSponsor', null);
@@ -136,8 +152,8 @@ var addProjectLink = function(id, obj, callback) {
 };
 
 
-var listLinks = function(id, query, callback) {
-    dataAccess.listLinks(query, function(err, body){
+var listLinks = function(id, callback) {
+    dataAccess.listLinks(function(err, body){
         if (err) {
             console.log(err);
             callback('error loading links', null);
@@ -167,8 +183,7 @@ var listLinksByProject = function(id, callback) {
 var listAssignments = function(id, callback) {
 	
 	//TODO filter by project id
-	
-	assignments.listAssignments(query, function(err, body){
+	assignments.listAssignments( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading assignments by project', null);
@@ -198,7 +213,7 @@ var listRoles = function(callback) {
 
 	//TODO filter by project id
 
-    dataAccess.listRoles(null, function(err, body){
+    dataAccess.listRoles( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading roles', null);
@@ -231,15 +246,35 @@ var insertAssignment = function(assignmentId, obj, callback) {
     });
 };
 
-var deleteProject = function(obj, callback) {
-    dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PROJECTS_KEY, function(err, body){
-        if (err) {
-            console.log(err);
-            callback(err, null);
+var deleteProject = function (obj, callback) {
+    getProject(obj._id, function(projErr, project) {
+        if (projErr) {
+            callback(projErr, null);
         } else {
-            callback(null, body);
+            assignments.getProjectAssignment(project, function (assignmentErr, assignment) {
+                if (!assignmentErr) {
+                    console.log(assignmentErr);
+
+                    dataAccess.deleteItem(assignment._id, assignment._rev, dataAccess.ASSIGNMENTS_KEY, function (deleteAssignmentErr, deleteAssignemntBody) {
+                        if (deleteAssignmentErr) {
+                            console.log(deleteAssignmentErr);
+                        } else {
+                            console.log("Assignment deleted: " + deleteAssignemntBody);
+                        }
+                    });
+                } 
+                
+                dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PROJECTS_KEY, function (err, body) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        callback(null, body);
+                    }
+                });
+            });
         }
-    });
+    });      
 };
 
 var deleteProjectLink = function(projectId, linkIndex, callback) {
@@ -381,6 +416,7 @@ var getNameByResource = function(resource, callback) {
 
 // main project functions
 module.exports.listProjects = listProjects;
+module.exports.listProjectsByIds = listProjectsByIds;
 module.exports.listProjectsByExecutiveSponsor = listProjectsByExecutiveSponsor;
 module.exports.listProjectsBetweenDatesByTypesAndSponsors = listProjectsBetweenDatesByTypesAndSponsors;
 module.exports.listProjectsByStatuses = listProjectsByStatuses;

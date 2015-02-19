@@ -22,38 +22,15 @@ function( $q, Resources, HoursService ) {
   
   
   this.getVacations = function(profileId) {
-	  if (window.useAdoptedServices) {
-		  return this.getVacationsUsingGet(profileId);
-	  }
-	  else {
-		  return this.getVacationsUsingQuery(profileId);
-	  }
-  };
-
-  this.getVacationsUsingGet = function(profileId) {
       var deferred = $q.defer( );
+      
 	  Resources.get( "vacations/byperson/" + profileId, { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
 		  deferred.resolve( result.members );
 	  });
+	  
 	  return deferred.promise;
-  };
-  
-  this.getVacationsUsingQuery = function(profileId) {
-	var deferred = $q.defer( );
-	
-	var query = {
-		person: {
-			resource: 'people/' + profileId
-		}
-	};
-	
-	Resources.query('vacations', query, {}).then(function(result) {
-	  deferred.resolve( result.members );
-	});
-	
-	return deferred.promise;
   }
-  
+	
   this.addNewVacation = function(vacation) {
 	var deferred = $q.defer( );
 	
@@ -65,17 +42,7 @@ function( $q, Resources, HoursService ) {
   }
   
   
-  
   this.getRequests = function(manager) {
-	  if (window.useAdoptedServices) {
-		  return this.getRequestsUsingGet(manager);
-	  }
-	  else {
-		  return this.getRequestsUsingQuery(manager);
-	  }
-  };
-  
-  this.getRequestsUsingGet = function(manager) {
       var deferred = $q.defer( );
 	  var params = {
 		  t: (new Date()).getMilliseconds()
@@ -90,45 +57,8 @@ function( $q, Resources, HoursService ) {
 	  return deferred.promise;
   };
   
-  this.getRequestsUsingQuery = function(manager) {
-    var deferred = $q.defer( );
-    
-    var query = { 
-      $and: [ 
-        {
-          vacationManager: {
-            resource: manager.about
-          }
-        }
-      ],
-      $or: [
-        {
-          status: "Pending"
-        },
-        {
-          status: "Cancelled"
-        }
-      ]
-    };
-    
-    Resources.query('vacations', query, {}).then(function(result) {
-      deferred.resolve( result.members );
-    });
-    
-    return deferred.promise;
-  }
-  
 
   this.getOtherRequestsThisPeriod = function(manager, request) {
-	  if (window.useAdoptedServices) {
-		  return this.getOtherRequestsThisPeriodUsingGet(manager, request);
-	  }
-	  else {
-		  return this.getOtherRequestsThisPeriodUsingQuery(manager, request);
-	  }
-  };
-
-  this.getOtherRequestsThisPeriodUsingGet = function(manager, request) {
       var deferred = $q.defer( );
 	  var params = {
 			  t: (new Date()).getMilliseconds()
@@ -141,36 +71,7 @@ function( $q, Resources, HoursService ) {
 		  deferred.resolve( result.members );
 	  });
 	  return deferred.promise;
-
   };
-  
-  this.getOtherRequestsThisPeriodUsingQuery = function(manager, request) {
-    var deferred = $q.defer( );
-    
-    //var today = moment().format("YYYY-MM-DD");
-    
-    var query = { 
-      $and: [ 
-        {
-          vacationManager: {
-            resource: manager.about
-          }
-        },
-        {
-          startDate: {$lte: request.endDate}
-        },
-        {
-          endDate: {$gte: request.startDate}
-        }
-      ]
-    };
-    
-    Resources.query('vacations', query, {}).then(function(result) {
-      deferred.resolve( result.members );
-    });
-    
-    return deferred.promise;
-  }
   
   this.getDays = function(start, end) {
     if(!start || !end) {
@@ -251,62 +152,40 @@ function( $q, Resources, HoursService ) {
   }
   
   this.getTaskForVacation = function(type) {
-	  if (window.useAdoptedServices) {
-		  return this.getTaskForVacationUsingGet(type);
-	  }
-	  else {
-		  return this.getTaskForVacationUsingQuery(type);
-	  }
-  };
-
-  this.getTaskForVacationUsingGet = function(type) {
-	    
 	  	var deferred = $q.defer();
-	    var taskName = (type == this.VACATION_TYPES.Appointment) ? "Appointment" : "Vacation";
+	    //var taskName = (type == this.VACATION_TYPES.Appointment) ? "Appointment" : "Vacation";
 		
-	    Resources.get( "tasks/byname/" + taskName, {
+	    //Resources.get( "tasks/byname/" + taskName, {
+	    var substr = type = type.replace('/', '|');
+	    substr = substr.replace(/\s+/g, '|');
+	    
+	    Resources.get( "tasks/bysubstr/" + substr, {
 	    	t: (new Date()).getMilliseconds()
 	    }).then(function(result) {
-	    	if(result.count == 0) {
-	    		//Create new task
-	    		Resources.create('tasks',  { name: taskName } ).then(function() {
-	    			Resources.get( "tasks/byname/" + taskName, { t: (new Date()).getMilliseconds()} )
-	    			.then(function(result) { 
-	    				deferred.resolve(result.members[0]); 
-	    			});
-	    		});
-	    	} else {
-	    		deferred.resolve(result.members[0]);
-	    	}
+	        if(result.count == 0) {
+	            var taskQuery = {
+            		name : type
+	            };
+	            
+	        	Resources.create('tasks', taskQuery).then(function(createdTask) {
+	              //this.getTaskForVacation(type).then(function(res) {
+	                deferred.resolve({
+	                	_id: createdTask._id,
+	                	name: createdTask.name,
+	                	rev: createdTask.rev,
+	                	route: createdTask.route
+	                });
+	              //});
+	            });
+	            
+	        	deferred.resolve(null);
+	          } else {
+	            deferred.resolve(result.members[0]);
+	          }
 	    });
 	    return deferred.promise;
+  };
 
-  };
-  
-  this.getTaskForVacationUsingQuery = function(type) {
-    var deferred = $q.defer();
-    
-    var taskQuery = { name: "Vacation" };
-    
-    if(type == this.VACATION_TYPES.Appointment) {
-      taskQuery = { name: "Appointment" };
-    }
-    
-    Resources.query('tasks', taskQuery, null, function(result) {
-      if(result.count == 0) {
-        Resources.create('tasks', taskQuery).then(function() {
-          this.getTaskForVacation(type).then(function(res) {
-            deferred.resolve(res);
-          });
-        });
-      } else {
-        deferred.resolve(result.members[0]);
-      }
-    });
-    
-    return deferred.promise;
-  };
-  
   this.getHoursLost = function(vacation, startDate, endDate) {
     var start = moment(vacation.startDate);
     var end = moment(vacation.endDate);

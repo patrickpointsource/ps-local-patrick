@@ -1,0 +1,16 @@
+{
+  "_id": "5378b340e4b0c58093cf3e37",
+  "_rev": "1-754307c0be96391254ef0a1472bcf77d",
+  "hours": 8,
+  "description": "Financial Calculator (Sprint 1 build finalization)",
+  "form": "Hours",
+  "created": "Sun May 18 13:18:56 UTC 2014",
+  "project": {
+    "resource": "projects/52efbba9e4b0509014b1d981"
+  },
+  "person": {
+    "resource": "people/52ab7005e4b0fd2a8d13002b"
+  },
+  "etag": "0",
+  "date": "2014-05-14"
+}

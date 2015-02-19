@@ -35,26 +35,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		} );
 	};
 
-	var rolePeopleGroupMap = People.getPeopleGroupMapping( )
-
-	var mapPeopleFilterToUI = function( filterPeople ) {
-		if( filterPeople == 'businessdevelopment' ) {
-			return 'Business Development';
-		}
-		if( filterPeople == 'clientexpierencemgmt' ) {
-			return 'Client Experience Mgmt';
-		}
-		if( filterPeople == 'digitalexperience' ) {
-			return 'Digital Experience';
-		}
-		if( filterPeople == 'executivemgmt' ) {
-			return 'Executive Mgmt';
-		}
-
-		var bigLetter = filterPeople[ 0 ].toUpperCase( );
-		var endPart = filterPeople.slice( 1, filterPeople.length );
-		return bigLetter + endPart;
-	};
+	var rolePeopleGroupMap = People.getPeopleGroupMapping( );
 	
 	$scope.sortType = 'name-desc';
 
@@ -64,7 +45,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		} else {
 			$scope.changeSort( prop + "-desc" );
 		}
-	}
+	};
 
 	$scope.changeSort = function( type ) {
 
@@ -197,152 +178,12 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				}
 			} );
 		}
-	}
-
+	};
 
 	/**
 	 * Changes list of people on a filter change
 	 */
 	$scope.handlePeopleFilterChanged = function( ) {
-		if (window.useAdoptedServices) {
-			$scope.handlePeopleFilterUsingFilterResource( );
-		}
-		else {
-			$scope.handlePeopleFilterChangedUsingQuery( );
-		}
-	};
-
-	/**
-	 * Changes list of people on a filter change (using query)
-	 */
-	$scope.handlePeopleFilterChangedUsingQuery = function( ) {
-		//Check if the filter is a valid role
-		if( $scope.roleGroups && $scope.roleGroups[ $scope.peopleFilter ] ) {
-			var peopleInRoleQuery = {
-				'primaryRole.resource': $scope.peopleFilter
-			};
-			var peopleInRoleFields = {
-				resource: 1,
-				name: 1,
-				familyName: 1,
-				givenName: 1,
-				primaryRole: 1,
-				thumbnail: 1
-			};
-
-			People.query( peopleInRoleQuery, peopleInRoleFields).then( function( result ) {
-				$scope.people = result.members;
-				$scope.fillPeopleProps( );
-			} );
-		} else if( $scope.peopleFilter == 'my' ) {
-			$scope.peopleFilter = 'my';
-
-			People.getMyPeople( $scope.me ).then( function( people ) {
-				$scope.people = people;
-				$scope.fillPeopleProps( );
-			} );
-		} else if( $scope.peopleFilter && $scope.peopleFilter != 'all' && ( $scope.peopleFilter.indexOf( ':' ) > -1 || $scope.peopleFilter.indexOf( ',' ) > -1 || !$scope.roleGroups[ $scope.peopleFilter ] ) ) {
-			var peopleQuery = {
-				$or: [ ]
-			};
-			var tmp = $scope.peopleFilter.split( ':' );
-
-			tmp = tmp[ tmp.length - 1 ];
-
-			tmp = tmp.split( ',' );
-
-			var includeInactive = _.indexOf( tmp, 'inactive' ) > -1;
-
-            if( !$scope.projectManagementAccess)
-                includeInactive = false;
-        
-			tmp = $scope.mapPeopleGroupToRoles( tmp );
-
-			if( tmp.length > 0 )
-				for( var i = 0; i < tmp.length; i++ ) {
-					peopleQuery.$or.push( {
-						'primaryRole.resource': tmp[ i ]
-					} );
-				}
-			else
-				peopleQuery.$or.push( {
-					'primaryRole.resource': 'null'
-				} );
-
-			if( includeInactive )
-				peopleQuery.$or.push( {
-					'isActive': 'false'
-				} );
-			else {
-				peopleQuery.$and = [ {
-					'isActive': 'true'
-				} ];
-			}
-
-			var peopleInRoleFields = {
-				resource: 1,
-				name: 1,
-				familyName: 1,
-				givenName: 1,
-				primaryRole: 1,
-				thumbnail: 1
-			};
-
-			People.query( peopleQuery, peopleInRoleFields).then( function( result ) {
-				$scope.people = result.members;
-				$scope.fillPeopleProps( );
-			} );
-
-		}
-		//Otherwise just show all
-		else {
-			$scope.peopleFilter = 'all';
-			var fields = {
-				resource: 1,
-				name: 1,
-				familyName: 1,
-				givenName: 1,
-				primaryRole: 1,
-				thumbnail: 1
-			};
-			//var fieldsEncoded = encodeURIComponent(JSON.stringify(fields));
-			//var url = 'people?fields='+fieldsEncoded;
-			
-			People.query( {
-				'$and': [ {
-					'isActive': 'true'
-				} ]
-			}, fields ).then( function( result ) {
-				$scope.people = result.members;
-				$scope.fillPeopleProps( );
-			} );
-		}
-
-		//Replace the URL in history with the filter
-		if( $state.current && $state.current.name.indexOf('people') > -1 && $scope.peopleFilter != $state.params.filter ) {
-			var view = false;
-			if( $scope.showGraphView ) {
-				view = 'graph';
-			} else {
-				view = 'table';
-			}
-			var updatedUrl = $state.href( 'people.index', {
-				'filter': $scope.peopleFilter,
-				'view': view
-			} ).replace( '#', '' );
-			
-			$location.url( updatedUrl ).replace( );
-		}
-	};
-
-
-
-
-	/**
-	 * Changes list of people on a filter change (using filter resource)
-	 */
-	$scope.handlePeopleFilterUsingFilterResource = function( ) {
-
 		var peopleInRoleFields = [ "resource", "name", "familyName", "givenName", "primaryRole", "thumbnail" ];
 		var params = {fields : peopleInRoleFields };
 
@@ -350,7 +191,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		if( $scope.roleGroups && $scope.roleGroups[ $scope.peopleFilter ] ) {
 			params.role = $scope.peopleFilter;
 			
-			Resources.get("people/bytypes/byRoles", params).then( function( result ) {
+			Resources.refresh("people/bytypes/byRoles", params).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );
@@ -377,7 +218,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			if (roles.length == 0 && includeInactive) {
 				var includeAll = _.indexOf( tmp, 'all' ) > -1;
 				var res = (includeAll) ? "people" : "people/bytypes/inactive";
-				Resources.get( res, params).then( function( result ) {
+				Resources.refresh( res, params).then( function( result ) {
 					$scope.people = result.members;
 					$scope.fillPeopleProps( );
 				} );
@@ -387,7 +228,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				if (includeInactive) {
 					params.includeInactive = includeInactive;
 				}
-				Resources.get( "people/bytypes/byRoles", params).then( function( result ) {
+				Resources.refresh( "people/bytypes/byRoles", params).then( function( result ) {
 					$scope.people = result.members;
 					$scope.fillPeopleProps( );
 				} );
@@ -398,29 +239,14 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		else {
 			params.t = (new Date()).getMilliseconds();
 			$scope.peopleFilter = 'all';
-			Resources.get("people/bytypes/active", params).then( function( result ) {
+			Resources.refresh("people/bytypes/active", params).then( function( result ) {
 				$scope.people = result.members;
 				$scope.fillPeopleProps( );
 			} );
 		}
-
-		//Replace the URL in history with the filter
-		if( $state.current && $state.current.name.indexOf('people') > -1 && $scope.peopleFilter != $state.params.filter ) {
-			var view = false;
-			if( $scope.showGraphView ) {
-				view = 'graph';
-			} else {
-				view = 'table';
-			}
-			var updatedUrl = $state.href( 'people.index', {
-				'filter': $scope.peopleFilter,
-				'view': view
-			} ).replace( '#', '' );
-			
-			$location.url( updatedUrl ).replace( );
-		}
 		
 	};
+
 
 	$scope.fillPeopleProps = function( ) {
 		$scope.fillPeopleActivePercentages().then( function( ) {
@@ -441,7 +267,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 						}
 					} );
 					if( group.length > 0 ) {
-						$scope.people[ i ].group = mapPeopleFilterToUI( group );
+						$scope.people[ i ].group = People.mapPeopleFilterToUI( group );
 					} else {
 						$scope.people[ i ].group = '';
 					}
@@ -645,33 +471,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		}
 	};
 
-	var monthNamesShort = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
-
-	$scope.peopleFilter = $state.params.filter ? $state.params.filter : 'all';
-	$scope.startDate = new Date( );
-	//$scope.startDate.setMonth($scope.startDate.getMonth() + 1);
-
-	$scope.showTableView = $state.params.view ? $state.params.view == 'table' : true;
-	$scope.showGraphView = $state.params.view ? $state.params.view == 'graph' : false;
-
-	/**
-	 * Get All the Role Types
-	 */
-	Resources.get( 'roles' ).then( function( result ) {
-		var roleGroups = {};
-		//Save the list of role types in the scope
-		$scope.rolesFilterOptions = result.members;
-		//Get list of roles to query members
-		for( var i = 0; i < result.members.length; i++ ) {
-			var role = result.members[ i ];
-			var resource = role.resource;
-			roleGroups[ resource ] = role;
-		}
-		$scope.roleGroups = roleGroups;
-
-		//Kick off fetch all the people
-		$scope.buildTableView( );
-	} );
+	
 
 	/**
 	 * Custom angular filter for person's searchable attributes
@@ -699,4 +499,38 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				return person;
 		};
 	};
+	
+	var monthNamesShort = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+	
+	var init = function () {
+		
+		$scope.peopleFilter = $state.params.filter ? $state.params.filter : 'all';
+		$scope.startDate = new Date( );
+		//$scope.startDate.setMonth($scope.startDate.getMonth() + 1);
+
+		$scope.showTableView = $state.params.view ? $state.params.view == 'table' : true;
+		$scope.showGraphView = $state.params.view ? $state.params.view == 'graph' : false;
+		
+		/**
+		 * Get All the Role Types
+		 */
+		Resources.get( 'roles' ).then( function( result ) {
+			var roleGroups = {};
+			//Save the list of role types in the scope
+			$scope.rolesFilterOptions = result.members;
+			//Get list of roles to query members
+			for( var i = 0; i < result.members.length; i++ ) {
+				var role = result.members[ i ];
+				var resource = role.resource;
+				roleGroups[ resource ] = role;
+			}
+			$scope.roleGroups = roleGroups;
+
+			//Kick off fetch all the people
+			$scope.buildTableView( );
+		});
+	};
+	
+	init();
+	
 } ] );

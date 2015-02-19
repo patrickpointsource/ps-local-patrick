@@ -18,6 +18,7 @@ exports.config = {
   // to the location of this config. If no other method of starting selenium
   // is found, this will default to
   // node_modules/protractor/selenium/selenium-server...
+  // /opt/selenuim-server-standalone/selenium-server-standalone-2.44.0.jar
   seleniumServerJar: null,
   // The port to start the selenium server on, or null if the server should
   // find its own unused port.
@@ -26,7 +27,8 @@ exports.config = {
   // find chromedriver. This will be passed to the selenium jar as
   // the system property webdriver.chrome.driver. If null, selenium will
   // attempt to find chromedriver using PATH.
-  chromeDriver: './selenium/chromedriver',
+  // chromeDriver: './selenium/chromedriver',
+  chromeDriver:'/opt/google/chrome',
   // If true, only chromedriver will be started, not a standalone selenium.
   // Tests for browsers other than chrome will not run.
   chromeOnly: false,
@@ -53,7 +55,9 @@ exports.config = {
   //
   // Spec patterns are relative to the location of this config.
   specs: [
-    'test/e2e/*.spec.js',
+    'test/e2e/googleOAuthTest.spec.js',
+    'test/e2e/dashboardTest.spec.js',
+    'test/e2e/projectTests.spec.js'
   ],
 
   // Patterns to exclude.
@@ -88,6 +92,10 @@ exports.config = {
     // will be available. For example, you can add a Jasmine reporter with:
     //     jasmine.getEnv().addReporter(new jasmine.JUnitXmlReporter(
     //         'outputdir/', true, true));
+	  require('jasmine-reporters');
+	  jasmine.getEnv().addReporter(
+			  new jasmine.JUnitXmlReporter('test/reports/', true, true)
+	  );
   },
 
   // The params object will be passed directly to the protractor instance,

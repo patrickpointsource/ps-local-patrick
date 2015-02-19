@@ -21,8 +21,9 @@ var validateGoogleToken = function( token, done ) {
 				//console.log('Error occurred: ', err);
 				return done( err, null );
 			} else {
-				// compare list of associated client ids with returned
-				if( _.contains(config.google.clientIDList, result.audience) && result.user_id) {
+				// Verify this was issued to our app
+				// Verify this user exists in our DB
+				if( _.contains(config.google.clientIDList, result.audience) && result.user_id ) {
 					context.authorization = token;
 					return done( '', result.user_id );
 				} else {

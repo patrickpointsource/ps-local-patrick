@@ -1,0 +1,87 @@
+<<<<<<< HEAD
+{
+	"type": "object",
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"id": "Hours",
+	"properties": {
+		"_id": {"type": "string"},
+		"_rev": {"type": "string"},
+		"_deleted": {"type":"boolean"},
+		"etag": {"type": ["string", "number"]},
+		"form": {"type": "string"},
+		"date": {"type": "string", "format": "date-time"},
+		"description": {"type": "string"},
+		"editMode": {"type": "boolean"},
+		"hours": {"type": "number"},
+		"person": { "$ref": "#/definitions/resource"},
+		"created": {"type": "string"},
+		"resource": {"type": "string"},
+		"about": {"type": "string"}
+	},
+	"definitions": {
+		"resource": {
+			"type":"object",
+			"properties":{
+				"resource": {"type":"string"},
+				"name": {"type":"string"}
+			},
+			"required": ["resource"]
+		}
+	},
+	"required": ["form", "hours", "description", "person"],
+	"oneOf": [
+		{"$schema": "http://json-schema.org/draft-04/schema",
+		"type": "object",
+		"properties": {"task": {"$ref": "#/definitions/resource"}},
+		"required": ["task"]
+		},
+		{"$schema": "http://json-schema.org/draft-04/schema",
+		"type": "object",
+		"properties": {	"project": {"$ref": "#/definitions/resource"}},
+		"required": ["project"]
+		}
+	]
+=======
+{
+	"type": "object",
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"id": "Hours",
+	"properties": {
+		"_id": {"type": "string"},
+		"_rev": {"type": "string"},
+		"etag": {"type": ["string", "number"]},
+		"form": {"type": "string"},
+		"date": {"type": "string"},
+		"description": {"type": "string"},
+		"editMode": {"type": "boolean"},
+		"hours": {"type": "number"},
+		"person": { "$ref": "#/definitions/resource"},
+		"created": {"type": "string"},
+		"resource": {"type": "string"},
+		"about": {"type": "string"}
+	},
+	"definitions": {
+		"resource": {
+			"type":"object",
+			"properties":{
+				"resource": {"type":"string"},
+				"name": {"type":"string"}
+			},
+			"required": ["resource"]
+		}
+	},
+	"required": ["form", "hours", "description", "person"],
+	"oneOf": [
+		{"$schema": "http://json-schema.org/draft-04/schema",
+		"type": "object",
+		"properties": {"task": {"$ref": "#/definitions/resource"}},
+		"required": ["task"]
+		},
+		{"$schema": "http://json-schema.org/draft-04/schema",
+		"type": "object",
+		"properties": {	"project": {"$ref": "#/definitions/resource"}},
+		"required": ["project"]
+		}
+	]
+>>>>>>> sprint21
+}

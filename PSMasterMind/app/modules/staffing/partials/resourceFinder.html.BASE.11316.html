@@ -1,0 +1,143 @@
+<br />
+<div class="row">
+	<div class="col-xs-6 col-md-7 xs-padding-top" style="text-align: right;">
+		<div class="btn-group">
+			<button type="button" class="btn btn-default" ng-class="{active: showTableView}" ng-click="toggleTableView()"><i class="fa fa-table"></i> <span class="hidden-xs hidden-sm">Table</span></button>
+			<button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> <span class="hidden-xs hidden-sm">Graph</span></button>
+		</div> 
+	</div>
+	<div class="col-xs-12 col-sm-3 col-md-3 xs-padding-top pull-right">
+		<input class="form-control" placeholder="Filter Projects" ng-model="filterText" autofocus />
+	</div>
+</div>
+<div class="row-fluid" ng-if="projectManagementAccess">
+	<div class="panel panel-danger dashboard-widget">
+		<div class="row">
+			<div class="col-xs-2 col-md-2">
+				<input class="form-control" placeholder="Select a group" />
+			</div>
+			<div class="col-xs-2 col-md-2">
+				<input class="form-control" placeholder="Find project" />
+			</div>
+			<div class="col-xs-2 ">
+    			<input class="form-control datepicker" placeholder="Start Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+			</div>
+			<div class="col-xs-2 ">
+    			<input class="form-control datepicker" placeholder="End Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+			</div>
+			<div class="col-xs-2 ">
+    			<input class="form-control" placeholder="Availability %" />
+			</div>
+			<div class="col-xs-2 checkbox">
+    			<input id="rf-show-hidden-chk" type="checkbox" class="checkbox pull-left" />
+    			<label for="rf-show-hidden-chk">show people on commitment investment projects</label>
+			</div>
+			<!-- <div class="col-xs-3 col-md-3">
+				<form class="form-horizontal">
+      				<label class="hidden-xs control-label col-xs-3 col-sm-3 col-md-3 pull-left">Available</label>
+      				<div class="col-xs-6 col-sm-6 col-md-6">
+      					<input class="form-control datepicker" placeholder="Start Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+      				</div>
+    			</form>
+			</div>
+			<div class="col-xs-3 col-md-3">
+				<form class="form-group">
+      				<label class="hidden-xs control-label col-xs-2 col-sm-2 col-md-2 pull-left">until</label>
+      				<div class="col-xs-6 col-sm-6 col-md-6">
+      					<input class="form-control datepicker" placeholder="End Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" />
+      				</div>
+    			</form>
+			</div>
+			<div class="col-xs-2 col-md-2">
+    			<input class="form-control" placeholder="Availability %" />
+			</div>-->
+		</div>
+		<table ng-table="peopleList" template-pagination="activeDeficit/pager" class="table margin-top">
+			<thead>
+				<th class="text-center sortable" ng-class="{
+                   'sort-asc': peopleList.isSortBy('familyName', 'asc'),
+                   'sort-desc': peopleList.isSortBy('familyName', 'desc')
+                 }"
+                 ng-click="peopleList.sorting({'familyName' : peopleList.isSortBy('familyName', 'asc') ? 'desc' : 'asc'})">
+                 <div>Name</div>
+               </th>
+               <th class="text-center sortable" ng-class="{
+                   'sort-asc': peopleList.isSortBy('role', 'asc'),
+                   'sort-desc': peopleList.isSortBy('role', 'desc')
+                 }"
+                 ng-click="peopleList.sorting({'role' : peopleList.isSortBy('role', 'asc') ? 'desc' : 'asc'})">
+                 <div>Role</div>
+               </th>
+               <th class="text-center sortable" ng-class="{
+                   'sort-asc': peopleList.isSortBy('hours', 'asc'),
+                   'sort-desc': peopleList.isSortBy('hours', 'desc')
+                 }"
+                 ng-click="peopleList.sorting({'hours' : peopleList.isSortBy('hours', 'asc') ? 'desc' : 'asc'})">
+                 <div>Group</div>
+               </th>
+               <th class="hidden-xs text-center sortable" ng-class="{
+                   'sort-asc': peopleList.isSortBy('startDate', 'asc'),
+                   'sort-desc': peopleList.isSortBy('startDate', 'desc')
+                 }"
+                 ng-click="peopleList.sorting({'startDate' : peopleList.isSortBy('startDate', 'asc') ? 'desc' : 'asc'})">
+                 <div>Available Date</div>
+               </th>
+               <th class="hidden-xs text-center sortable" ng-class="{
+                   'sort-asc': peopleList.isSortBy('endDate', 'asc'),
+                   'sort-desc': peopleList.isSortBy('endDate', 'desc')
+                 }"
+                 ng-click="peopleList.sorting({'endDate' : peopleList.isSortBy('endDate', 'asc') ? 'desc' : 'asc'})">
+                 <div>Availability %</div>
+               </th>
+               <th class="visible-xs text-center sortable" ng-class="{
+                   'sort-asc': peopleList.isSortBy('startDate', 'asc'),
+                   'sort-desc': peopleList.isSortBy('startDate', 'desc')
+                 }"
+                 ng-click="peopleList.sorting({'startDate' : peopleList.isSortBy('startDate', 'asc') ? 'desc' : 'asc'})">
+                 <div>Show Hidden</div>
+               </th>
+			</thead>
+			<tbody>
+				<tr ng-repeat="person in $data | filter:filterPerson(filterText)">
+					<td>
+						<a class="col-xs-3 col-sm-2" href="#{{person.resource}}">
+        					<img class="smallProfileImage" ng-src="{{person.thumbnail}}" />
+      					</a>
+						<div class="col-xs-9 col-sm-10">
+							<a href="#{{person.resource}}">{{person.familyName}}, {{person.givenName}}</a>
+						</div></td>
+					<td>
+						{{person.primaryRole.title}}</td>
+					<td>
+						-</td>
+					<td class="hidden-xs">
+						-</td>
+					<td class="hidden-xs">
+						{{person.activePercentage}}<span class="percent">%</span></td>
+					<td class="visible-xs">
+	                    -
+	                </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+		<script type="text/ng-template" id="activeDeficit/pager">
+            <ul class="pager ng-cloak">
+              <li ng-repeat="page in pages"
+                    ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
+                    ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
+                <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
+                <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
+              </li>
+                <li>
+                <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
+                    <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
+                    <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
+                    <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
+                    <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
+                </div>
+                </li>
+            </ul>
+        </script>
+	</div>
+</div>

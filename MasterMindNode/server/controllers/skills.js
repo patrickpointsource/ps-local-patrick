@@ -2,8 +2,8 @@
 
 var dataAccess = require('../data/dataAccess');
 
-module.exports.listSkills = function(q, callback) {
-    dataAccess.listSkills(q, function(err, body){
+module.exports.listSkills = function(callback) {
+    dataAccess.listSkills( function(err, body){
         if (err) {
             console.log(err);
             callback('error loading skills', null);

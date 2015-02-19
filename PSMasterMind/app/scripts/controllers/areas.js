@@ -24,95 +24,26 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	Resources.refresh( 'people/me' ).then( function( me ) {
 		$scope.me = me;   
 
+		// pass permissions
+		$rootScope.setPermissions(me.permissionsMap);
+		
 		//Load profile access rights using NodeJS service
-		if (window.useAdoptedServices) {
-			Resources.refresh( 'people/me/accessRights' ).then( function success( accessRights ) {	
-				$scope.financeAccess = accessRights.hasFinanceRights;
-				$scope.adminAccess = accessRights.hasAdminRights;
-				$scope.projectManagementAccess = accessRights.hasProjectManagementRights;
-				$scope.executivesAccess = accessRights.hasExecutiveRights;
-				$scope.hasManagementRights = accessRights.hasManagementRights;
+		Resources.refresh( 'people/me/accessRights' ).then( function success( accessRights ) {	
+			$scope.financeAccess = accessRights.hasFinanceRights;
+			$scope.adminAccess = accessRights.hasAdminRights;
+			$scope.projectManagementAccess = accessRights.hasProjectManagementRights;
+			$scope.executivesAccess = accessRights.hasExecutiveRights;
+			$scope.hasManagementRights = accessRights.hasManagementRights;
 
-				if( accessRights.hasExecutiveRights ) {
-					$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
-				}
-				if( accessRights.hasManagementRights || accessRights.hasProjectManagementRights ) {
-					$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
-				}
-
-				$scope.notifications = [];
-				if( accessRights.hasManagementRights) {
-					NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
-						$scope.notifications = result.members;
-					});
-				}
-
-				//console.log('Logged In');
-				$scope.authState = true;
-				$scope.$emit( 'me:loaded' );
-			});
-		}
-		else {
-			/**
-			 * Members of the 'Executives' group...
-			 *
-			 * Is in the Executive Sponsor List (queried from People collection)
-			 * Can edit any project (projectManagementAccess)
-			 * Can view all financial info (financeAccess)
-			 * Can make project assignments (projectManagementAccess)
-			 * View Staffing Deficits (projectManagementAccess)
-			 * Update Role Types (adminAccess)
-			 * Can Assign Users to Groups (adminAccess)
-			 */
-			if( me.groups && me.groups.indexOf( 'Executives' ) !== -1 ) {
-				$scope.financeAccess = true;
-				$scope.adminAccess = true;
-				$scope.projectManagementAccess = true;
-				$scope.executivesAccess = true;
+			if( accessRights.hasExecutiveRights ) {
 				$scope.dashboardScreen = 'views/dashboards/execDashboard.html';
 			}
-
-			/**
-			 * Members of the 'Management' group...
-			 *
-			 * Can edit any project (projectManagementAccess)
-			 * Can view all financial info (financeAccess)
-			 * Can make project assignments (projectManagementAccess)
-			 * View Staffing Deficits (projectManagementAccess)
-			 * Update Role Types (adminAccess)
-			 * Can Assign Users to Groups (adminAccess)
-			 */
-			if( me.groups && me.groups.indexOf( 'Management' ) !== -1 ) {
-				$scope.financeAccess = true;
-				$scope.adminAccess = true;
-				$scope.projectManagementAccess = true;
+			if( accessRights.hasManagementRights || accessRights.hasProjectManagementRights ) {
 				$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
-			}
-
-			/**
-			 * Members of the 'Project Management' group...
-			 *
-			 * Can edit any project (projectManagementAccess)
-			 * Can make project assignments (projectManagementAccess)
-			 * View Staffing Deficits (projectManagementAccess)
-			 */
-			if( me.groups && me.groups.indexOf( 'Project Management' ) !== -1 ) {
-				$scope.projectManagementAccess = true;
-				$scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
-			}
-
-			/**
-			 * Members of the 'Sales' group...
-			 *
-			 * Is in the Sales Sponsor List (queried from People collection)
-			 * Can view all financial info (financeAccess)
-			 */
-			if( me.groups && me.groups.indexOf( 'Sales' ) !== -1 ) {
-				$scope.financeAccess = true;
 			}
 
 			$scope.notifications = [];
-			if( me.groups && me.groups.indexOf( 'Management' ) !== -1 ) {
+			if( accessRights.hasManagementRights) {
 				NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
 					$scope.notifications = result.members;
 				});
@@ -121,7 +52,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 			//console.log('Logged In');
 			$scope.authState = true;
 			$scope.$emit( 'me:loaded' );
-		};
+		});
 	});
 
 	/**

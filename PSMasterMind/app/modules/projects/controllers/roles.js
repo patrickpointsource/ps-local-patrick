@@ -4,8 +4,8 @@
  * Controller for handling creation of Roles.
  */
 angular.module('Mastermind.controllers.projects')
-  .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'Resources', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams',
-  function ($scope, $filter, $q, RolesService, Resources, RoleTypes, Rates, RateFactory, TableParams) {
+  .controller('RolesCtrl', ['$scope', '$filter', '$q', 'RolesService', 'Resources', 'RoleTypes', 'Rates', 'RateFactory', 'ngTableParams', '$rootScope',
+  function ($scope, $filter, $q, RolesService, Resources, RoleTypes, Rates, RateFactory, TableParams, $rootScope) {
 	  
 	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
 	var HOURS_PER_MONTH = CONSTS.HOURS_PER_MONTH;
@@ -112,26 +112,37 @@ angular.module('Mastermind.controllers.projects')
       }
     };
     
-    $scope.triggerDuplicateRole = function (role, index) {
-    	 // Create the new Role with the previously selected rate type.
-        var newRole = RolesService.create(
-          {
-            startDate:role.startDate,
-            endDate:role.endDate,
-            rate: Resources.deepCopy(role.rate),
-            shore: role.shore,
-            type:Resources.deepCopy(role.type)
-          }
-        );
+    $scope.triggerDuplicateRole = function (role, index, e) {
+    	var duplicateBtn = $(e.target).closest('.duplicate-btn');
     	
-    	 // Bubble an event up to add this role.
-        $scope.$emit('roles:add', newRole);
-
-        //Update the tables
-        $scope.roleTableParams.total($scope.project.roles.length);
-        $scope.roleTableParams.reload();
+    	if (duplicateBtn.size() > 0) {
+	    	 // Create the new Role with the previously selected rate type.
+	        var newRole = RolesService.create(
+	          {
+	            startDate:role.startDate,
+	            endDate:role.endDate,
+	            rate: Resources.deepCopy(role.rate),
+	            shore: role.shore,
+	            type:Resources.deepCopy(role.type)
+	          }
+	        );
+	    	
+	        if (!newRole._id)
+	        	newRole._id = generateId();
+	        
+	    	 // Bubble an event up to add this role.
+	        $scope.$emit('roles:add', newRole);
+	
+	        //Update the tables
+	        $scope.roleTableParams.total($scope.project.roles.length);
+	        $scope.roleTableParams.reload();
+    	}
     };
-
+    
+    $rootScope.$on("project:save", function() {
+        $scope.roleTableParams.reload();
+    });
+    
     /**
      *
      */
@@ -242,6 +253,12 @@ angular.module('Mastermind.controllers.projects')
       // Bubble up an event to handle removing a role elsewhere
       $scope.$emit('roles:remove', role);
 
+      // prevent from loosing navigation when removing role
+      var countVisible = Math.ceil($scope.project.roles.length / $scope.roleTableParams.count());
+      
+      if (countVisible < $scope.roleTableParams.page())
+    	  $scope.roleTableParams.page(countVisible);
+      
       //Update the tables
       $scope.roleTableParams.total($scope.project.roles.length);
       $scope.roleTableParams.reload();

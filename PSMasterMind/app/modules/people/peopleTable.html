@@ -48,7 +48,7 @@
     </div>
     <div class="row people-row" ng-repeat="person in people | filter:filterPerson(filterText)">
       <a class="col-xs-3 col-sm-2 person-image" href="#{{person.resource}}">
-        <img class="fullProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultProfileImg.png"/>
+        <img class="fullProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultprofile.png"/>
       </a>
       <div class="col-xs-9 col-sm-4 person-name">
         <a href="#{{person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(person)}}</a>

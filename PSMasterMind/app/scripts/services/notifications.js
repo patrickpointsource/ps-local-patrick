@@ -26,15 +26,6 @@ angular.module('Mastermind.services.projects')
     
     
     this.getPersonsNotifications = function(personResource) {
-		if (window.useAdoptedServices) {
-			return this.getPersonsNotificationsUsingGet(personResource);
-		}
-		else {
-			return this.getPersonsNotificationsUsingQuery(personResource);
-		}
-    };
-
-    this.getPersonsNotificationsUsingGet = function(personResource) {
     	var params = {
     			t: (new Date()).getMilliseconds()
     	};
@@ -42,15 +33,5 @@ angular.module('Mastermind.services.projects')
     	params.person = personResource;
     	params.fields = ["_id", "type", "header", "text", "person", "resource"];
         return Resources.get('notifications/bytypes/byPerson', params);
-    };
-    	
-    this.getPersonsNotificationsUsingQuery = function(personResource) {
-      var query = {
-        person: {
-            resource: personResource
-        }
-      };
-      
-      return this.query(query);
     };
 } ] );

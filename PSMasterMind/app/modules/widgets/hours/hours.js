@@ -41,6 +41,18 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.customHoursStartDate = '';
 	$scope.customHoursEndDate = '';
 
+	$scope.canEditHours = function() {
+		var result = true;
+		
+		result = $scope.canEditOtherPeopleHours ? $scope.canEditOtherPeopleHours(): true;
+		
+		if (!result)
+			result = $scope.profileId && $scope.profileId == $scope.me._id;
+		
+		return result;
+	};
+
+		
 	$scope.setSubmode = function( e, subMode ) {
     // should be runned only once when subMode changes
     if ($scope.subMode == subMode) {
@@ -473,7 +485,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		// $scope.deleteHoursRecord(index)
 		$scope.selected.hoursEntries.splice( index, 1 );
 
-		if( hourEntry.hoursRecord )
+		if( hourEntry.hoursRecord && $scope.canDeleteMyHours())
 			Resources.remove( hourEntry.hoursRecord.resource, hourEntry.hoursRecord ).then( function( ) {
 				// $scope.hoursRequest();
 				$scope.validateAndCalculateTotalHours( );
@@ -482,6 +494,15 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 		//}
 	};
 
+	$scope.canDeleteMyHours = function() {
+		var result = $rootScope.hasPermissions(CONSTS.DELETE_MY_HOURS_PERMISSION);
+		
+		if (!result)
+			result = $scope.profileId && $scope.profileId == $scope.me._id;
+		
+		return result;
+	};
+		 
 	$scope.saveHoursEntry = function( e, hourEntry, isAdded ) {
 		var tmpHours = hourEntry.hoursRecord.hours;
 		var tmpDesc = hourEntry.hoursRecord.description;
@@ -760,7 +781,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 						if (member.person && member.person.resource == currentUser.about)
 						{
-							hourEntry.expectedHours = Math.round(member.hoursPerWeek / 5);
+							hourEntry.expectedHours = Math.round((member.hoursPerWeek / 5) * 10) / 10;
 							return;
 						}
 					}
@@ -795,6 +816,18 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	};
 
 	$scope.initNewHoursEntry = function( hourEntry ) {
+		if (!$scope.canEditHours()) {
+			if (hourEntry.hoursRecord) {
+				hourEntry.hoursRecord.isAdded = false;
+				hourEntry.hoursRecord.isEdit = false;
+				hourEntry.hoursRecord.isDefault = false;
+				hourEntry.hoursRecord.editMode = false;
+			
+			}
+			
+			return;
+		}
+		
 		if( hourEntry.hoursRecord && ( hourEntry.hoursRecord.isAdded || hourEntry.hoursRecord && hourEntry.hoursRecord.isCopied || hourEntry.hoursRecord.isDefault ) ) {
 			// use timeout to perform code after init
 			window.setTimeout( function( ) {
@@ -956,10 +989,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	};
 
-    $scope.formatHours = function (hours)
-    {
-        return hours.toString().indexOf(".") === -1 ? hours : hours.toFixed(1);
-    };
+	$scope.formatHours = function (hours)
+	{
+	    return Util.formatFloat(hours);
+	};
 
 	var me = $scope.getCurrentPerson( ) ? $scope.getCurrentPerson( ).about : '';
 
@@ -1153,7 +1186,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 	};
 
-	$scope.months = [ 'Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
+	$scope.months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
 
 	$scope.prettyCalendarFormats = function( firstDay, lastDay ) {
 		$scope.prettyCalendarDates = {};
@@ -1239,7 +1272,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 
 							for( var j = 0; j < $scope.displayedHours[ i ].hoursEntries.length; j++ ) {
 								if( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord ) {
-									$scope.displayedHours[ i ].totalHours = numberVal( $scope.displayedHours[ i ].totalHours ) + numberVal( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.hours );
+									$scope.displayedHours[i].totalHours += $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours;
+									//$scope.displayedHours[ i ].totalHours = numberVal( $scope.displayedHours[ i ].totalHours ) + numberVal( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.hours );
 
 									if( $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.task ) {
 										$scope.displayedHours[i].hoursEntries[ j ].task = $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.task;
@@ -1480,6 +1514,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 	$scope.addHours = function( hourEntry, isAdded ) {
 		$scope.validateAndCalculateTotalHours( );
 
+		//$scope.hideHoursSpinner = false;
+		
 		// update only passed hourEntry
 		HoursService.updateHours( [ hourEntry.hoursRecord ] ).then( function( updatedRecords ) {
 			// update with received
@@ -1504,6 +1540,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, HoursService, 
 			if( isAdded )
 				$scope.addNewHoursRecord( $scope.selected );
 
+			//$scope.hideHoursSpinner = true;
 			$scope.$emit( 'hours:added', $scope.selected );
 		} );
 

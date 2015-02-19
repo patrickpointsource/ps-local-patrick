@@ -12,9 +12,8 @@ var router = express.Router( );
 router.get( '/', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.viewHours, function( allowed ) {
 		if( allowed ) {
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
 			// Call to projects service
-			roles.listRoles( query, function( err, result ) {
+			roles.listRoles( function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

@@ -1,0 +1,32 @@
+<<<<<<< HEAD
+{
+    "logToFileStream": true,
+    "logFileName": "/var/www/www.log",
+    "errorFileName": "/var/www/www.err",
+    "log4jsPath": "/var/www/node/server/config/log4js_config.json",
+    "hostName": "demo.mm.pointsource.vpc",
+    "httpPort": 3000,
+    "privateKeyPath": "/var/www/node/server/cert/key.pem",
+    "accountEmail": "141952851027-1u88oc96rik8l6islr44ha65o984tn3q@developer.gserviceaccount.com",
+    "appName": "MMNodeDemo",
+    "webSiteUrl": "https://demo.mastermind.pointsource.com",
+    "oauthcbbaseurl": "https://demo.mastermind.pointsource.com/MMNodeDemo",
+    "serverTimeout": "10",
+    "env": "demo"
+=======
+{
+    "logToFileStream": true,
+    "logFileName": "/var/www/www.log",
+    "errorFileName": "/var/www/www.err",
+    "log4jsPath": "/var/www/node/server/config/log4js_config.json",
+    "hostName": "demo.mm.pointsource.vpc",
+    "httpPort": 3000,
+    "privateKeyPath": "/var/www/node/server/cert/key.pem",
+    "accountEmail": "141952851027-1u88oc96rik8l6islr44ha65o984tn3q@developer.gserviceaccount.com",
+    "appName": "MMNodeDemo",
+    "webSiteUrl": "https://demo.mastermind.pointsource.com",
+    "oauthcbbaseurl": "https://demo.mastermind.pointsource.com/MMNodeDemo",
+    "serverTimeout": "10",
+    "env": "demo"
+>>>>>>> sprint21
+}

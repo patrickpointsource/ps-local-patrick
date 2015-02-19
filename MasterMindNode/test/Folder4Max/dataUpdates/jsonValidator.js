@@ -73,7 +73,7 @@ var validateDocumentCollection = function(formName) {
 				var doc = d.doc;
 				//console.log(doc);
 //				doc = d.doc;
-				errs = validateDocument(doc);
+				errs = validateDocumentSchema(doc);
 				errs.forEach(function (err) {
 					if (uniqueErrors.indexOf(err) == -1){
 						uniqueErrors.push(err);	
@@ -88,7 +88,7 @@ var validateDocumentCollection = function(formName) {
 };
 
 
-var validateDocument = function(doc) {
+var validateDocumentSchema = function(doc) {
 	var schema = null;
 	var message;
 	var messages = [];
@@ -121,7 +121,7 @@ var validateDocument = function(doc) {
  * 
  */
 var fixData = function(doc, errs) {
-	console.log("fixData Start.");
+	//console.log("fixData Start.");
 	var andSave = false;
 	
 	fixDataFields(doc, errs).then( function(updatedDoc) 

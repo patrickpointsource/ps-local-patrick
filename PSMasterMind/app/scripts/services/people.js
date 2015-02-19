@@ -14,6 +14,11 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 	var Resource = Restangular.withConfig( Util.fixRestAngularPathMethod() ).all( 'people' );
 
+	var roles = [];
+	Resources.get('roles').then(function (result) {
+	     roles = result.members;
+	});
+	
 	/**
 	 * Service function for retrieving all people.
 	 *
@@ -21,30 +26,17 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 	function query( query, fields ) {
 		var deferred = $q.defer( );
-
-		if (window.useAdoptedServices) {
-			
-			var updFields = [];
-			for (var attr in fields) {
-				if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
-					updFields.push(attr);
-				}
+		var updFields = [];
+		for (var attr in fields) {
+			if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
+				updFields.push(attr);
 			}
-			var params = { fields : updFields };
-			params.t = (new Date()).getMilliseconds();
-			Resources.get( 'people/byTypes/active', params ).then (function( result ) {
-				deferred.resolve( result );
-			} );
-			
 		}
-		else {
-			Resources.query( 'people', query, fields, function( result ) {
-				deferred.resolve( result );
-			} );
-		}
-
-		
-
+		var params = { fields : updFields };
+		params.t = (new Date()).getMilliseconds();
+		Resources.get( 'people/byTypes/active', params ).then (function( result ) {
+			deferred.resolve( result );
+		} );
 		return deferred.promise;
 	}
 
@@ -148,97 +140,10 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 * active projects.
 	 */
 	function getActivePeople( ) {
-		if (window.useAdoptedServices) {
-			return getActivePeopleUsingGet();
-		}
-		else {
-			return getActivePeopleUsingQuery();
-		}
-		
-	}
-		
-		
-	/**
-	 * Query to get the list of people working on
-	 * active projects ( using Resources.get() ).
-	 */
-	function getActivePeopleUsingGet() {
 		return Resources.get( 'people/bytypes/activeAssignments');
 	}
 		
-	/**
-	 * Query to get the list of people working on
-	 * active projects ( using Resources.query() ).
-	 */
-	function getActivePeopleUsingQuery( ) {
-		var deferred = $q.defer( );
-		var today = getToday( );
-		var assignmentsQuery = {
-			members: {
-				$elemMatch: {
-					startDate: {
-						$lte: today
-					},
-					$or: [ {
-						endDate: {
-							$exists: false
-						}
-					}, {
-						endDate: {
-							$gt: today
-						}
-					} ]
-				}
-			}
-		};
-
-		//Fetch all the active assignments
-		Resources.query( 'assignments', assignmentsQuery, {}, function( result ) {
-			var projectAssignments = result.data;
-			var activePeople = [ ];
-			//For each project find the active assignments and add it to the people
-			for( var i = 0; i < projectAssignments.length; i++ ) {
-				var projectAssignment = projectAssignments[ i ];
-
-				//Loop over the assignments for a project
-				for( var j = 0; j < projectAssignment.members.length; j++ ) {
-					var assignment = projectAssignment.members[ j ];
-					if( assignment.person && assignment.person.resource && activePeople.indexOf( assignment.person.resource ) === -1 ) {
-						//Push the assignee onto the active list
-						var resource = assignment.person.resource;
-						//{_id:{$nin:[{$oid:'52a1eeec30044a209c47646b'},{$oid:'52a1eeec30044a209c476452'}]}}
-						var oid = {
-							$oid: resource.substring( resource.lastIndexOf( '/' ) + 1 )
-						};
-						activePeople.push( oid );
-					}
-				}
-			}
-
-			var pepInRolesQuery = {
-				_id: {
-					$nin: activePeople
-				},
-				'primaryRole.resource': {
-					$exists: true
-				}
-			};
-			var pepInRolesFields = {
-				resource: 1,
-				name: 1,
-				familyName: 1,
-				givenName: 1,
-				primaryRole: 1,
-				thumbnail: 1
-			};
-			query(pepInRolesQuery, pepInRolesFields).then( function( result ) {
-				deferred.resolve( result );
-			} );
-		} );
-
-		return deferred.promise;
-	}
-
+		
 	/**
 	 * Gets the next six months of assignments mapped per person URI starting form a
 	 * given date
@@ -360,81 +265,9 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 */
 
 	function getPeopleCurrentAssignments( ) {
-		if (window.useAdoptedServices) {
-			return getPeopleCurrentAssignmentsUsingGet();
-		}
-		else {
-			return getPeopleCurrentAssignmentsUsingQuery();
-		}
-	}
-	
-
-	/**
-	 * Get a map per user with all of there current assignment records ( using Resource.get() )
-	 */
-
-	function getPeopleCurrentAssignmentsUsingGet() {
 		return Resources.refresh( 'assignments/bytypes/currentAssignments');
 	}
 	
-	/**
-	 * Get a map per user with all of there current assignment records ( using Resource.query() )
-	 */
-	
-	function getPeopleCurrentAssignmentsUsingQuery( ) {
-		var deferred = $q.defer( );
-		var startDateQuery = getToday( );
-
-		var apQuery = {
-			members: {
-				'$elemMatch': {
-					startDate: {
-						$lte: startDateQuery
-					},
-					$or: [ {
-						endDate: {
-							$exists: false
-						}
-					}, {
-						endDate: {
-							$gt: startDateQuery
-						}
-					} ]
-				}
-			}
-		};
-		var apFields = {};
-		Resources.query( 'assignments', apQuery, apFields, function( result ) {
-			var projectAssignments = result.data;
-			//Map to return
-			var ret = {};
-			var today = new Date( );
-			for( var i = 0; i < projectAssignments.length; i++ ) {
-				var projectAssignment = projectAssignments[ i ];
-				//Loop through all the assignments in for a project
-				for( var j = 0; j < projectAssignment.members.length; j++ ) {
-					var assignment = projectAssignment.members[ j ];
-
-					var startDate = new Date( assignment.startDate );
-					var endDate = assignment.endDate ? new Date( assignment.endDate ) : null;
-					//Only include current assignments
-					if( assignment.person && startDate <= today && ( !endDate || endDate > today ) ) {
-						var personURI = assignment.person.resource;
-
-						if( ret.hasOwnProperty( personURI ) ) {
-							ret[ personURI ].push( assignment );
-						} else {
-							ret[ personURI ] = [ assignment ];
-						}
-					}
-				}
-			}
-
-			deferred.resolve( ret );
-		} );
-
-		return deferred.promise;
-	}
 
 	/**
 	 * Returns a list of people per role for display
@@ -443,201 +276,25 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 * fields: if the mongo filter to limit the fields returned for each person
 	 */
 	function getPeoplePerRole( role, fields ) {
-		if (window.useAdoptedServices) {
-			return getPeoplePerRoleUsingGet(role, fields );
-		}
-		else {
-			return getPeoplePerRoleUsingQuery(role, fields );
-		}
-	}
-	
-
-	/**
-	 * Returns a list of people per role for display ( using Resources.query() )
-	 *
-	 * role: is the URI for a role i.e. 'roles/{roleid}'
-	 * fields: if the mongo filter to limit the fields returned for each person
-	 */
-	function getPeoplePerRoleUsingQuery( role, fields ) {
-		var deferred = $q.defer( );
-
-		var pepInRolesQuery = {};
-		if( role ) {
-			pepInRolesQuery = {
-				'primaryRole.resource': role
-			};
-		} else {
-			pepInRolesQuery = {
-				'primaryRole.resource': {
-					$exists: true
-				}
-			};
-		}
-						
-		query( pepInRolesQuery, fields).then( function( result ) {
-			deferred.resolve( result );
-		} );
-		
-		return deferred.promise;
-	}
-
-
-	/**
-	 * Returns a list of people per role using filter for display ( using Resources.get() )
-	 *
-	 * role: is the URI for a role i.e. 'roles/{roleid}'
-	 * fields: if the mongo filter to limit the fields returned for each person
-	 */
-	 
-	function getPeoplePerRoleUsingGet( role, fields ) {
-
 		var updFields = [];
 		for (var attr in fields) {
 			if (fields.hasOwnProperty(attr) && fields[attr] == 1) {
 				updFields.push(attr);
 			}
 		}
-
 		return Resources.get( "people/byroleid/" + getIDfromResource(role), { field : fields } );
 	}
+	
+
 
 	/**
 	 * Return the list of people you work with
 	 */
 	function getMyPeople( me ) {
-		if (window.useAdoptedServices) {
-			return getMyPeopleUsingGet(me);
-		}
-		else {
-			return getMyPeopleUsingQuery(me);
-		}
-	}
-	
-	function getMyPeopleUsingGet( me ) {
 		var deferred = $q.defer( );
-		Resources.get( "people/bytypes/myPeople").then( function( result ) {
+		Resources.get( "people/bytypes/myPeople", {t : (new Date()).getMilliseconds()}).then( function( result ) {
 			deferred.resolve( result.members );
 		});
-		return deferred.promise;
-	};
-	
-
-		
-	function getMyPeopleUsingQuery( me ) {
-		var deferred = $q.defer( );
-
-		var startDateQuery = getToday( );
-		var personURI = me.about ? me.about : me.resource;
-		var now = moment( );
-		var _this = this;
-		
-		var query = {
-			members: {
-				'$elemMatch': {
-					person: {
-						resource: personURI
-					},
-					$or: [ {
-						endDate: {
-							$exists: false
-						}
-					}, {
-						endDate: {
-							$gt: startDateQuery
-						}
-					} ]
-				}
-			}
-		};
-		var fields = {
-			project: 1,
-			"members.startDate": 1,
-			"members.endDate": 1,
-			"members.person": 1
-		};
-		Resources.query( 'assignments', query, fields, function( result ) {
-			var projectAssignments = result.data;
-			var peopleIds = [ ];
-			var peopleURIs = [ ];
-			//Loop through all the project assignments
-			var peopleIds = [ ];
-			//Loop through all the project assignments
-			for( var i = 0; i < projectAssignments.length; i++ ) {
-				var projectAssignment = projectAssignments[ i ];
-				//console.log('Project:' + projectAssignment.project.resource);
-				var members = projectAssignment.members;
-				//Loop though all the assignment records
-				for( var j = 0; j < members.length; j++ ) {
-					var assignment = members[ j ];
-					var uri = assignment.person.resource;
-					//Check if we have already added this person
-					if( personURI != uri && $.inArray( uri, peopleURIs ) == -1 ) {
-						//contruct oids for query over people
-						var oid = {
-							$oid: uri.substring( uri.lastIndexOf( '/' ) + 1 )
-						};
-						//Check the assignment end data to see if it is a past related employee
-						var endDate = assignment.endDate ? moment( assignment.endDate ) : now.add( 'day', 1 );
-						if( now.unix( ) <= endDate.unix( ) ) {
-							peopleIds.push( oid );
-							peopleURIs.push( uri );
-						}
-					}
-				}
-			}
-
-			// get exec sponsors projects
-			ProjectsService.getMyExecSponsoredProjects( me ).then( function( execSponsoredProjects ) {
-				for( var p = 0; p < execSponsoredProjects.count; p++ ) {
-					var roles = execSponsoredProjects.data[ p ].roles;
-					for( var r = 0; r < roles.length; r++ ) {
-						var assignees = roles[ r ].assignees;
-						for( var s = 0; s < assignees.length; s++ ) {
-							if( assignees[ s ].person.resource ) {
-								var uri = assignees[ s ].person.resource;
-								//Check if we have already added this person
-								if( personURI != uri && $.inArray( uri, peopleURIs ) == -1 ) {
-									//contruct oids for query over people
-									var oid = {
-										$oid: uri.substring( uri.lastIndexOf( '/' ) + 1 )
-									};
-									//Check the assignment end data to see if it is a past related employee
-									var endDate = assignees[ s ].endDate ? moment( assignees[ s ].endDate ) : now.add( 'day', 1 );
-									if( now.unix( ) <= endDate.unix( ) ) {
-
-										peopleIds.push( oid );
-										peopleURIs.push( uri );
-									}
-								}
-							}
-						}
-					}
-				}
-
-				if( peopleIds.length <= 0 ) {
-					deferred.resolve( [ ] );
-				} else {
-					//Fetch all the people
-					var pepInRolesQuery = {
-						_id: {
-							$in: peopleIds
-						}
-					};
-					var pepInRolesFields = {
-						resource: 1,
-						name: 1,
-						familyName: 1,
-						givenName: 1,
-						primaryRole: 1,
-						thumbnail: 1
-					};
-					resultAPI.query( pepInRolesQuery, pepInRolesFields).then( function( result ) {
-						deferred.resolve( result.members );
-					} );
-				}
-			} );
-		} );
-
 		return deferred.promise;
 	}
 
@@ -653,6 +310,30 @@ function( $q, Restangular, Resources, ProjectsService ) {
 			"sales": [ "SALES" ]
 		};
 	}
+	
+	function mapPeopleFilterToUI( filterPeople ) {
+		if( filterPeople == 'businessdevelopment' ) {
+			return 'Business Development';
+		}
+		if( filterPeople == 'clientexpierencemgmt' ) {
+			return 'Client Experience Mgmt';
+		}
+		if( filterPeople == 'digitalexperience' ) {
+			return 'Digital Experience';
+		}
+		if( filterPeople == 'executivemgmt' ) {
+			return 'Executive Mgmt';
+		}
+		
+		var role = _.findWhere(roles, { about: filterPeople } );
+		if ( role ) {
+			return role.title;
+		}
+		
+		var bigLetter = filterPeople[ 0 ].toUpperCase( );
+		var endPart = filterPeople.slice( 1, filterPeople.length );
+		return bigLetter + endPart;
+	};
 
     var resultAPI = {
         query: query,
@@ -663,7 +344,8 @@ function( $q, Restangular, Resources, ProjectsService ) {
         getPeoleAssignments: getPeoleAssignments,
         getPeopleCurrentAssignments: getPeopleCurrentAssignments,
         getPerson: getPerson,
-        getPeopleGroupMapping: getPeopleGroupMapping
+        getPeopleGroupMapping: getPeopleGroupMapping,
+        mapPeopleFilterToUI: mapPeopleFilterToUI
     };
     
 	return resultAPI;

@@ -197,7 +197,8 @@ module.exports = function(params) {
 			person.name = googleProfile.name;
 			if (googleProfile.thumbnailPhotoUrl) {
 				person.thumbnail = googleProfile.thumbnailPhotoUrl;
-			} else {
+			} 
+			else {
 				person.thumbnail =  DEFAULT_PROFILE_IMG_LINK;				
 			}
 			upgradeNameProperties(person);
@@ -270,7 +271,7 @@ module.exports = function(params) {
 	};
 	
 	var updateEstimateFields = function(callback) {
-		projects.listProjects(null, null, function(err, body) {
+		projects.listProjects(function(err, body) {
 			if (err) {
 				callback('error loading projects', null);
 			} else {
@@ -449,10 +450,10 @@ module.exports = function(params) {
 	}
 	
 	var fixSecurityRolesIds = function(callback) {
-		dataAccess.listSecurityRoles({}, function(err, body) {
+		dataAccess.listSecurityRoles( function(err, body) {
 			var securityRoles = body.members;
 	
-			dataAccess.listUserRoles({}, null, function(err, body) {
+			dataAccess.listUserRoles(function(err, body) {
 				var userRoles = body.members;
 				var anyFound = false;
 				var roleName;
@@ -525,15 +526,10 @@ module.exports = function(params) {
 	
 		var names = [];
 		for (var i = 0; i < inactivePeople.length; i++) {
-			names[i] = {
-				name : inactivePeople[i].fullName
-			};
+			names[i] = inactivePeople[i].fullName;
 		}
-	
-		var query = {
-			$or : names
-		};
-		people.listPeople(query, null, function(err, body) {
+		
+		dataAccess.listPeopleByNames(names, function(err, body) {
 			if (err) {
 				callback('error loading people', null);
 			} else {

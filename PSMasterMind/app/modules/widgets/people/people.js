@@ -44,7 +44,7 @@ angular.module('Mastermind').controller('PeopleWidgetCtrl', ['$scope', '$state',
           return person.name;
         }
       }
-    }
+    };
 
 
     /**
@@ -73,7 +73,15 @@ angular.module('Mastermind').controller('PeopleWidgetCtrl', ['$scope', '$state',
      * Go to the people page filter by selected role
      */
     $scope.handleShowPeopleClick = function () {
-      $state.go('people.index', {filter: $scope.peopleFilter});
+    	if ($scope.peopleFilter) {
+    		$state.go('people.index', {
+    			filter: $scope.peopleFilter
+    		});
+    	} else {
+    		$state.go('people.index', {
+    			filter: 'all'
+    		});
+    	}
     };
 
     /**
@@ -97,12 +105,13 @@ angular.module('Mastermind').controller('PeopleWidgetCtrl', ['$scope', '$state',
       else {
         $scope.availablePeople = people;
       }
-    }
+    };
 
     /**
      * Find available people given the active projects
      */
     var findNineAvailablePeople = function () {
+    	
       if ($scope.peopleFilter) {
         var peopleFilter = $scope.peopleFilter;
         var fields = {resource: 1, name: 1, primaryRole: 1, thumbnail: 1};
@@ -112,8 +121,35 @@ angular.module('Mastermind').controller('PeopleWidgetCtrl', ['$scope', '$state',
         });
       }
       else {
+    	  /*
+	   		var today = new Date();
+    	  	var seed = Math.ceil((today.getDay() + 1) * (today.getMonth() + 1) * today.getFullYear());
+    	   */
+    	 
+            
         People.getMyPeople($scope.me).then(function (peopleResult) {
-          randomizePeople(peopleResult);
+        	//if (!peopleResult || !peopleResult.length || peopleResult.length < 12) {
+        	if (!peopleResult || !peopleResult.length) {
+        		var len = peopleResult && peopleResult.length ? (12 - peopleResult.length): 12;
+        		
+        		
+        		 
+        		People.getActivePeople().then(function (allpeopleResult) {
+        			var peopleList = allpeopleResult.members ? allpeopleResult.members: allpeopleResult;
+        			/*
+        			seed = seed % (peopleList.length - len);
+        			
+        			peopleResult =  peopleResult && peopleResult.length > 0 ? peopleResult: allpeopleResult;
+        			
+        			if ( peopleResult.length < 12)
+        				peopleResult = peopleResult.concat(peopleList.splice(seed, 12 - peopleResult.length));
+        			
+        			randomizePeople(peopleResult);
+        			*/
+        			randomizePeople(peopleList);
+        		});
+        	} else
+        		randomizePeople(peopleResult);
         });
       }
     };

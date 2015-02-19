@@ -10,8 +10,6 @@ angular.module('Mastermind')
     
     $scope.getGroups = function() {
 
-	  if (window.useAdoptedServices) {
-		  
 	      Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
 	          $scope.securityGroups = result.members;
 	          
@@ -30,28 +28,6 @@ angular.module('Mastermind')
 	            });
 	          });
 	      });
-		  
-	  } else {
-		  
-	      Resources.query('securityroles', {}, {}, function(result) {
-	          $scope.securityGroups = result.members;
-	          
-	          if($scope.securityGroups.length > 0) {
-	            $scope.selectedGroup = $scope.securityGroups[0];
-	          }
-	          
-	          Resources.query('userroles', {}, {}, function(userRoles) {
-	            $scope.userRoles = userRoles.members;
-	            var fields = {_id : 1, name : 1, googleId : 1, mBox : 1, resource : 1 };
-	            People.query( {}, fields).then( function(people) {
-	              $scope.people = people.members;
-	              
-	              $scope.updateSelectedGroupMembers();
-	            });
-	          });
-	      });	  
-	  }
-    	
     };
     
     $scope.filterPeople = function() {
@@ -152,7 +128,9 @@ angular.module('Mastermind')
       viewGroups: "View groups",
       editGroups: "Edit groups",
       viewProjects: "View projects",
+      addProjects: "Add new projects",
       editProjects: "Edit projects",
+      deleteProjects: "Delete projects",
       viewProjectLinks: "View project links",
       editProjectLinks: "Edit project links",
       viewRoles: "View project roles",
@@ -247,7 +225,9 @@ angular.module('Mastermind')
       "name": "projects",
       "permissions": [
         "viewProjects",
+        "addProjects",
         "editProjects",
+        "deleteProjects",
         "viewProjectLinks",
         "editProjectLinks",
         "viewRoles",
@@ -525,6 +505,8 @@ angular.module('Mastermind')
     $scope.securityGroups.push({resources: []});
     $scope.selectedGroup = $scope.securityGroups[$scope.securityGroups.length - 1];
     $.extend(true, $scope.selectedGroup.resources, $scope.fullResourcesMap);
+    
+    $scope.$emit("admin:edit");
   };
   
   $scope.deleteGroup = function() {
