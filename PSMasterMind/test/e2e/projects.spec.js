@@ -15,6 +15,7 @@ describe("E2E: Project test cases.", function () {
     var PIPELINE_PROJECT_NAME = "E2E Pipeline Project";
     var COMPLETED_PROJECT_NAME = "E2E Completed Project";
     var INVEST_PROJECT_NAME = "E2E Investment Project";
+    var BROKEN_PROJECT_NAME = "E2E Broken Project";
     
     var projectsPath = {
     	url: "/index.html#/projects?filter=",
@@ -22,7 +23,8 @@ describe("E2E: Project test cases.", function () {
     	all: 'all',
     	active: 'active',
     	backlog: 'backlog',
-    	invest: 'invest',
+    	pipeline: 'pipeline',
+    	investment: 'invest',
     	completed: 'complete'
     };
     
@@ -62,18 +64,18 @@ describe("E2E: Project test cases.", function () {
     });
 
     it('Click on Active projects, check that only active projects listed', function () {
-    	checkActiveProjectsList();
+    	checkProjectsList(projectsPath.active, projectsList.active);
     });
     
     it('Click on Active&Backlog projects, check that only active&backlog projects listed', function () {
-    	checkActiveBacklogProjectsList();
+    	checkProjectsList([projectsPath.active, projectsPath.backlog].join(','), projectsList.active.concat(projectsList.backlog));
     });
     
     // IMPORTANT: required at lest 1 sponsor in sponsor's list, 
     //            required at "Project Manager" role in roles dropdown
     
     it('Should create active project.', function () {
-        createProject(ACTIVE_PROJECT_NAME, fillActiveProjectPageFields);
+        createProject(fillActiveProjectPageFields);
     });
     
     it('Check and remove active project.', function () {
@@ -81,23 +83,23 @@ describe("E2E: Project test cases.", function () {
     });
 
     it('Should create backlog project.', function () {
-        createProject(BACKLOG_PROJECT_NAME, fillBacklogProjectPageFields);
+        createProject(fillBacklogProjectPageFields);
     });
     
     it('Check and remove backlog project.', function () {
     	projectCheckAndRemove(BACKLOG_PROJECT_NAME, projectsPath.backlog);
     });
 
-//    it('Should create pipeline project.', function () {
-//        createProject(PIPELINE_PROJECT_NAME, fillPipelineProjectPageFields);
-//    });
-//    
-//    it('Check and remove pipeline project.', function () {
-//    	projectCheckAndRemove(PIPELINE_PROJECT_NAME, pipelineProjectsPath);
-//    });
-//
+    it('Should create pipeline project.', function () {
+        createProject(fillPipelineProjectPageFields);
+    });
+    
+    it('Check and remove pipeline project.', function () {
+    	projectCheckAndRemove(PIPELINE_PROJECT_NAME, projectsPath.pipeline);
+    });
+
 //    it('Should create completed project.', function () {
-//        createProject(COMPLETED_PROJECT_NAME, fillCompletedProjectPageFields);
+//        createProject(fillCompletedProjectPageFields);
 //    });
 //    
 //    it('Check and remove completed project.', function () {
@@ -105,12 +107,16 @@ describe("E2E: Project test cases.", function () {
 //    });
 //
 //    it('Should create investment project.', function () {
-//        createProject(INVEST_PROJECT_NAME, fillInvestmentProjectPageFields);
+//        createProject(fillInvestmentProjectPageFields);
 //    });
 //    
 //    it('Check and remove investment project.', function () {
-//    	projectCheckAndRemove(INVEST_PROJECT_NAME, investmentProjectsPath);
+//    	projectCheckAndRemove(INVEST_PROJECT_NAME, projectsPath.investment);
 //    });
+//    
+    it('Should verify mandatory fields for project.', function () {
+        createProject(fillBrokenProjectPageFields, []);
+    });
     
     var checkAllProjectsListedByDefault = function () {
     	var projectsPage = new ProjectsPage();
@@ -124,10 +130,18 @@ describe("E2E: Project test cases.", function () {
        });
     };
     
-    var checkActiveProjectsList = function () {
-    	var projectsPage = new ProjectsPage(projectsPath.active);
+    var checkProjectsList = function (filterPath, projectsList) {
+    	var projectsPage = new ProjectsPage(filterPath);
     	projectsPage.get();
     	
+    	console.log("> Check " + filterPath + " projects.");
+        for (var index in projectsList) {
+        	var projectName = projectsList[index];
+        	projectsPage.findProject(projectName).then(function (filteredElements) {
+        		expect(filteredElements[0]).toBeDefined();
+        	});
+        }
+        
     	//* Log projects names to console. *//
 //    	var projects = element.all(by.repeater('project in projects | filter:filterText')).then(function (projList) {
 //    		for (var index in projList) {
@@ -136,33 +150,10 @@ describe("E2E: Project test cases.", function () {
 //    			});
 //    		}
 //    	});
-
-    	console.log("> Check Active projects list.");
-        for (var index in projectsList.active) {
-        	var projectName = projectsList.active[index];
-        	projectsPage.findProject(projectName).then(function (filteredElements) {
-        		expect(filteredElements[0]).toBeDefined();
-        	});
-        }
     };
     
-    var checkActiveBacklogProjectsList = function () {
-    	var projectsPage = new ProjectsPage([projectsPath.active, projectsPath.backlog].join(','));
-    	projectsPage.get();
-        
-    	console.log("> Check Active&Backlog projects list.");
-    	var activeBacklogProjects = projectsList.active.concat(projectsList.backlog);
-        for (var index in activeBacklogProjects) {
-        	var projectName = activeBacklogProjects[index];
-        	projectsPage.findProject(projectName).then(function (filteredElements) {
-        		expect(filteredElements[0]).toBeDefined();
-        	});
-        }
-    };
-
-
-    var createProject = function (projectName, fillCustomFieldsCallback) {
-    	console.log("> Create project: " + projectName);
+    var createProject = function (fillCustomFieldsCallback, errorMsgs) {
+    	console.log("> Create project");
         
     	var projectsPage = new ProjectsPage();
         var newProjectPage = new EditCreateProjectPage();
@@ -185,9 +176,14 @@ describe("E2E: Project test cases.", function () {
             });
 
             newProjectPage.doneButtonBottom.click();
-            browser.sleep(10000);
-            
-            expect(browser.getCurrentUrl()).toContain('/summary');
+
+            if ( !errorMsgs ) {
+            	browser.sleep(10000);
+            	expect(browser.getCurrentUrl()).toContain('/summary');
+            } else {
+            	browser.sleep(1000);
+           	 	expect(newProjectPage.errorMsgs).toBeDefined();
+            }
         });
     };
 
@@ -284,8 +280,16 @@ describe("E2E: Project test cases.", function () {
     	newProjectPage.endDate.sendKeys(endDate);
     };
     
+    var fillBrokenProjectPageFields = function (newProjectPage) {
+        newProjectPage.nameInput.sendKeys(BROKEN_PROJECT_NAME);
+        newProjectPage.selectType(0).then(function () {
+            newProjectPage.projectCommited.click();
+            console.log("> Broken project fields entered.");
+        });
+    };
+    
     var projectCheckAndRemove = function (projectName, filterPath) {
-    	console.log("> Check that project " + projectName + " was saved and remove it.");
+    	console.log("> Check that " + projectName + " project was saved and remove it.");
     	var projectsPage = new ProjectsPage(filterPath);
     	projectsPage.get();
     	browser.driver.wait(function () {
@@ -426,6 +430,7 @@ describe("E2E: Project test cases.", function () {
     };
 
     var EditCreateProjectPage = function () {
+    	this.errorMsgs = element(by.id('projectMsgs')).element(by.className('alert-danger')).element(by.tagName('ul'));
         this.nameInput = element(by.model('project.name'));
         this.customerInput = element(by.model('project.customerName'));
         this.projectTypesRadio = element.all(by.model('project.type'));
