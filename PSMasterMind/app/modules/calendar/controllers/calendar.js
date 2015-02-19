@@ -60,7 +60,26 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
         $scope.moment = window.moment ? window.moment: moment;
         $scope.currentMonth = $scope.moment();
+        $scope.editableVacation = null;
+        $scope.newVacationCreation = false;
         
+        $scope.requestNewVacation = function() {
+            $scope.newVacationCreation = true;
+        }
+        
+        $scope.editManager = false;
+        
+        $scope.editManagerCallback = function() {
+            $scope.editManager = true;
+            setTimeout(function() { 
+                $(".select-vacation-manager").selectpicker();
+            }, 5);
+        }
+        
+        $scope.managerSelected = function() {
+            $scope.vacationManager = this.vacationManager;
+            $scope.editManager = false;
+        }
         /**
          * Go back
          */

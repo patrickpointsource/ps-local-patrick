@@ -3,49 +3,12 @@
     <div class="panel-body">
         <!-- Vacation entries -->
         <div class="col-xs-12 col-sm-6 ooo-recent">
-            <div class="ooo-recent-header">
-                Your recent out of office requests
-            </div>
-            <div ng-repeat="period in oooPeriods" class="ooo-item">
-                <div class="ooo-line row no-margin">
-                    <div class="col-xs-4 no-horizontal-padding">
-                        <strong>{{period.name}} {{period.year}}</strong>
-                    </div>
-                    <div class="col-xs-7 no-horizontal-padding align-center">
-                        {{getTotalDays(period)}} days
-                    </div>
-                    <div class="col-xs-1 no-horizontal-padding">
-                        <a ng-click="collapsePeriod($index)"><i class="fa fa-caret-left fa-2x cursor-pointer" ng-hide="$index == collapsedPeriodIndex"></i></a>
-                        <a ng-click="collapsePeriod($index)"><i class="fa fa-caret-down fa-2x cursor-pointer" ng-show="$index == collapsedPeriodIndex"></i></a>
-                    </div>
-                    
-                    
-                </div>
-                <div class="panel-body no-padding" ng-show="$index == collapsedPeriodIndex">
-                    <div ng-repeat="vacation in period.vacations">
-                        <div class="row ooo-row no-margin">
-                            <div class="col-xs-4">
-                                <strong>{{getShortDate(vacation.startDate)}}</strong> ({{getDays(vacation)}})
-                            </div>
-                                <div class="col-xs-7 no-horizontal-padding align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied' || vacation.status === 'Cancelled', 'color-yellow': vacation.status === 'Pending'}">
-                                    <i class="fa fa-check" ng-show="vacation.status === 'Approved'"></i>
-                                    <i class="fa fa-clock-o" ng-show="vacation.status === 'Pending'"></i>
-                                    <span ng-class="{'bold-text': vacation.status == 'Approved' || vacation.status == 'Denied'}">{{getStatusText(vacation.status)}}</span>
-                                </div>
-                            <div class="col-xs-1 no-horizontal-padding">
-                                <i class="fa fa-pencil cursor-pointer"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ng-include src="'modules/calendar/views/partial/vacations.html'"/>
         </div>
 
         <!-- Edit/New vacation entry -->
         <div class="col-xs-12 col-sm-6">
-            <div class="ooo-recent-header">
-                You have {{oooDaysLeft}} days of vacation available for use. <i class="fa fa-question-circle" style="margin-left: 15px; color: #1074BC;"></i>
-            </div>
+            <ng-include src="'modules/calendar/views/partial/editVacation.html'"/>
         </div>
     </div>
 </div>

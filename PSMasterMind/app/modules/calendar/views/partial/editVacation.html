@@ -1,0 +1,22 @@
+<div class="ooo-recent-header">
+    You have {{oooDaysLeft}} days of vacation available for use. <i class="fa fa-question-circle" style="margin-left: 15px; color: #1074BC;"></i>
+</div>
+<div ng-show="!editableVacation && newVacationCreation == false" style="text-align: center;">
+    <button class="btn btn-info" ng-click="requestNewVacation()">Request out of office time</button>
+</div>
+<div ng-show="newVacationCreation == true || editableVacation">
+    <div class="row" ng-show="newVacationCreation == true">
+        <strong>New out of office request</strong>
+    </div>
+    <div class="row" ng-show="editableVacation">
+        <strong>Edit out of office request</strong>
+    </div>
+    <div class="row">
+        <div ng-show="vacationManager && !editManager" class="vac-approving-manager">Your request will be sent to <span class="color-gray-less bold">{{getPersonName(vacationManager)}}</span><i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerCallback()" ng-show="!editManager"></i></div>
+    </div>
+    <div class="row" ng-show="editManager">
+        <select ng-options="getPersonName(m) for m in managers" class="selectpicker select-vacation-manager" data-style="btn-info" ng-model="vacationManager" ng-change="managerSelected()" name="vacationManager">
+            <option selected value="" ng-hide="vacationManager">Select manager</option>
+        </select>
+    </div>
+</div>

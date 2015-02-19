@@ -9,11 +9,11 @@ window.useAdoptedServices = false;
 */
 
 //local nodejs based development
-//window.serverLocation = 'http://localhost:3000/';
-//window.restPath = '';
-//window.clientBaseURL = 'http://localhost:9000/';
-//window.fixUrl = true;
-//window.useAdoptedServices = true;
+window.serverLocation = 'http://localhost:3000/';
+window.restPath = '';
+window.clientBaseURL = 'http://localhost:9000/';
+window.fixUrl = true;
+window.useAdoptedServices = true;
 
 //prod 
 //window.serverLocation = 'https://mastermind.pointsource.com';
@@ -30,11 +30,11 @@ window.useAdoptedServices = false;
 //window.useAdoptedServices = true;
 
 //demo
-window.serverLocation = 'https://demo.mastermind.pointsource.com';
+/*window.serverLocation = 'https://demo.mastermind.pointsource.com';
 window.restPath = '/MMNodeDemo/';
 window.clientBaseURL = 'https://demo.mastermind.pointsource.com/';
 window.fixUrl = true;
-window.useAdoptedServices = true;
+window.useAdoptedServices = true;*/
 
 var helper = (function () {
   var authResult = undefined;
