@@ -190,6 +190,14 @@ module.exports.getTaskResourcesByName = function ( taskName, tasksList ) {
     return tasks;
 };
 
+module.exports.inTimeRange = function (compareDate, start, end, unit) {
+    var momentToCompare = moment(compareDate);
+    var startMoment = moment(start);
+    var endMoment = moment(end);
+    return (momentToCompare.isBefore(endMoment, unit) || momentToCompare.isSame(endMoment, unit)) &&
+           (momentToCompare.isAfter(startMoment, unit) || momentToCompare.isSame(startMoment, unit));
+};
+
 module.exports.getIDfromResource = getIDfromResource;
 module.exports.getId = getId;
 module.exports.getFullID = getFullID;

@@ -1,0 +1,14 @@
+<div class="panel panel-default dashboard-widget" ng-controller="OOOCtrl">
+    <div class="panel-heading">Out of Office</div>
+    <div class="panel-body">
+        <!-- Vacation entries -->
+        <div class="col-xs-12 col-sm-6 ooo-recent">
+            <ng-include src="'modules/calendar/views/partial/vacations.html'"/>
+        </div>
+
+        <!-- Edit/New vacation entry -->
+        <div class="col-xs-12 col-sm-6">
+            <ng-include src="'modules/calendar/views/partial/editVacation.html'"/>
+        </div>
+    </div>
+</div>

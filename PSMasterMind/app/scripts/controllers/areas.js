@@ -72,6 +72,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 			area = 'staffing';
 		} else if( $state.includes( 'admin' ) ) {
 			area = 'admin';
+		} else if( $state.includes( 'calendar' ) ) {
+			area = 'calendar';
 		} else if( $state.includes( 'reports' ) ) {
 			area = 'reports';
 		}

@@ -15,9 +15,8 @@ var securityResources = require( '../util/securityResources' );
 router.get( '/', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewMyVacations, function( allowed ) {
 		if( allowed ) {
-			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
 			// Call to vacations service
-			vacations.listVacations( query, function( err, result ) {
+			vacations.listVacations( function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
@@ -237,8 +236,9 @@ var securityResources = require( '../util/securityResources' );
 router.get( '/', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewMyVacations, function( allowed ) {
 		if( allowed ) {
+			var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
 			// Call to vacations service
-			vacations.listVacations( function( err, result ) {
+			vacations.listVacations( query, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
@@ -247,7 +247,23 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 			} );
 		}
 	} );
-} );
+});
+
+router.get('/my', auth.isAuthenticated, function(req, res) {
+    people.getPersonByGoogleId(req.user, function(err, me) {
+        if (!err) {
+            vacations.getMyVacations(me, function(vacErr, body) {
+                if (err) {
+                    res.json(500, vacErr);
+                } else {
+                    res.json(body);
+                }
+            });
+        } else {
+            res.json(500, "Can't get vacations information: " + err);
+        }
+    });
+});
 
 router.get( '/byperson/:person', auth.isAuthenticated, function( req, res ) {
   var person = req.params.person;
@@ -296,6 +312,7 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 		if (allowed) 
 		{
 			var type = req.params.type;
+			var fields = req.query.fields;
 			if (type && type == "getRequests") {
 				
 				var manager = req.query.manager;
@@ -303,7 +320,7 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 				var startDate = req.query.startDate;
 				var endDate = req.query.endDate;
 				
-			    vacations.listRequests(manager, statuses, startDate, endDate, function(err, result){
+			    vacations.listRequests(manager, statuses, startDate, endDate, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -317,7 +334,7 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 				var startDate = req.query.startDate;
 				var endDate = req.query.endDate;
 				
-			    vacations.listVacationsByPeriod(people, startDate, endDate, function(err, result){
+			    vacations.listVacationsByPeriod(people, startDate, endDate, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {
@@ -440,4 +457,4 @@ var updateVacation = function(req, res) {
 };
 
 module.exports = router;
->>>>>>> sprint21
+>>>>>>> 5fd5ecd4ab13a883fbf26750e1ba9889beb4c5e1

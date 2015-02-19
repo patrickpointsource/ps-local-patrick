@@ -190,9 +190,9 @@ function( $q, Resources, HoursService ) {
     var start = moment(vacation.startDate);
     var end = moment(vacation.endDate);
     
-    if (vacation.endDate > endDate)
+    if (endDate && vacation.endDate > endDate)
     	end = moment(endDate);
-    if (vacation.startDate < startDate)
+    if (startDate && vacation.startDate < startDate)
     	start = moment(startDate);
     	
     var actualDays = this.getActualDays(start, end);

@@ -34,11 +34,13 @@
     </div>
   </div>
 
-  <div id="messages" class="alert alert-danger" ng-show="messages && messages.length > 0">
-    <a class="close" ng-click="hideMessages()">&times;</a>
-    <ul>
-      <li ng-repeat="message in messages">{{message}}</li>
-    </ul>
+  <div id="projectMsgs">
+  	<div id="messages" class="alert alert-danger" ng-show="messages && messages.length > 0">
+    	<a class="close" ng-click="hideMessages()">&times;</a>
+    	<ul>
+      		<li ng-repeat="message in messages">{{message}}</li>
+    	</ul>
+  	</div>
   </div>
       
   <div class="btn-group tab-buttons">
