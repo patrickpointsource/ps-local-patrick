@@ -25,7 +25,23 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 			} );
 		}
 	} );
-} );
+});
+
+router.get('/my', auth.isAuthenticated, function(req, res) {
+    people.getPersonByGoogleId(req.user, function(err, me) {
+        if (!err) {
+            vacations.getMyVacations(me, function(vacErr, body) {
+                if (err) {
+                    res.json(500, vacErr);
+                } else {
+                    res.json(body);
+                }
+            });
+        } else {
+            res.json(500, "Can't get vacations information: " + err);
+        }
+    });
+});
 
 router.get( '/byperson/:person', auth.isAuthenticated, function( req, res ) {
   var person = req.params.person;
