@@ -1,93 +1,5 @@
 
-<ng-include src="'modules/calendar/views/ooo.html'" />
 
-<div class="panel panel-default dashboard-widget hours" >
-    <div class="panel-heading">
-        <div class="inner-heading">
-	    	
-	        
-            <div class="header-container" >
-                <div ng-click="backMonth()" class="back-month">
-                    <div >
-                        <i class="fa fa-caret-left fa-2x"></i>
-                    </div>
-                </div>
-		        
-                <div class="start-end" > 
-                    {{startDate}} &ndash; {{endDate}}  
-                </div>
-		        
-                <div ng-click="nextMonth()"  class="next-month" style="float:right">
-                    <div>
-                        <i class="fa fa-caret-right fa-2x"></i>
-                    </div>
-                </div>
-        	
-            </div>
-        </div>
-    </div>
-    <div class="panel-body" >
-        <div class="spinner-container" ng-hide="hideCalendarSpinner" style="width: calc(100% - 30px);">
-            <i class="fa fa-spinner fa-spin fa-3x"></i>
-        </div>
-
-        <div class="row hours-month-container hidden-xs hidden-sm" ng-class="{}">
-        	
-            <div class="current-month" style="width:-webkit-calc(100% - 170px);width: calc(100% - 170px);">
-                <span>{{months[currentMonth.month()]}}</span> {{currentMonth.year()}}
-            </div>
-        	
-        	 
-            <div class="day-labels">
-                <div class="hours-day-caption empty">
-                    <div class="hours-day-header" >&nbsp;</div>
-                </div>
-                <div ng-repeat="lbl in thisWeekDayLables" class="hours-day-caption">
-                    <div class="hours-day-header" >{{thisWeekDayLables[$index] | uppercase}}</div>
-                </div>
-                <div class="hours-day-caption empty">
-                    <div class="hours-day-header" >&nbsp;</div>
-                </div>
-	        	
-            </div>
-            <div ng-repeat-start="day in displayedMonthDays" ng-show="{{$index % 7 == 0}}" class="text-center hours-day-empty">
-                <div class="hours-day-entry"></div>
-            </div>
-  
-            <div class="text-center hours-day" ng-class="{'active': selected.date === day.date}">
-                <div class="hours-day-entry"  
-                     ng-class="{'hours-day-active': selected.date === day.date, 
-                				'hours-day-first-in-week': $index % 7 == 0 && $index > 0,
-                				'hours-day-not-logged': day.totalHours == 0}"  ng-click="setSelected(e, day, $index)">
-                	
-                    <div class="hours-day-content">
-                        <span class="month-day">{{day.dayOfMonth}}</span>
-                    </div>
-                	
-                    <div class="hours-day-footer">
-                        <span class="hours">{{day.totalHours}}</span>
-                		
-                        hours
-                        <span class="hours-day-check" ng-if="day.totalHours >= 8" >
-                            <i class="fa fa-check"></i>
-                        </span>
-                    </div>
-                	
-                    <div class="active-circle" ng-class="{'bottom': $index < 21}" >
-                        <div class="inner-circle"></div>
-                    </div>
-                </div>
-            </div>
-             
-             
-            <div ng-repeat-end ng-show="{{$index % 7 == 6 }}" class="text-center hours-day-empty last">
-                <div class="hours-day-entry">
-                	
-                </div>
-            </div>
-        </div>
-    </div>
-=======
 <div class="container calendar" ng-controller="CalendarCtrl">
 	
 		<div class="panel panel-default dashboard-widget widget calendar" >
@@ -169,3 +81,5 @@
 		    </div>
 		</div>
 </div>
+
+<ng-include src="'modules/calendar/views/ooo.html'"/>
