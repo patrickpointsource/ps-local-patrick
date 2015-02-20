@@ -7,8 +7,8 @@ var _ = require( 'underscore' );
 //12/11/14 MM var validation = require( '../data/validation.js' );
 var assignments = require( '../controllers/assignments.js' );
 
-var listProjects = function(callback) {
-    dataAccess.listProjects( function(err, body){
+var listProjects = function(fields, callback) {
+    dataAccess.listProjects( fields, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading projects', null);

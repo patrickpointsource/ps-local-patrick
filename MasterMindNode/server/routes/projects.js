@@ -17,7 +17,8 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.projects.resourceName, securityResources.projects.permissions.viewProjects, function( allowed ) {
 		if( allowed ) {
-			projects.listProjects( function( err, result ) {
+			var fields = req.query.fields;
+			projects.listProjects( fields, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

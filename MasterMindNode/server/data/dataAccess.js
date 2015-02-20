@@ -179,9 +179,7 @@ var listProjects = function( fields, callback ) {
 				console.log( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
-
-			callback( err, queryRecords( body, q, null, "projects/", null, fields ) );
-			//callback( err, prepareRecords( body.data, null, "projects/" ) );
+			callback( err, prepareRecords( body.data, null, "projects/", null, fields ) );
 		} );
 	}
 
