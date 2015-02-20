@@ -388,18 +388,18 @@ var getPersonByGroups = function (groups, callback) {
 	});
 };
 
-var listPeople = function( q, fields, callback ) {
+var listPeople = function( fields, callback ) {
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
 		console.log( "read " + PEOPLE_KEY + " from memory cache" );
-		callback( null, prepareRecords( result.data, "members", "people/" ) );
+		callback( null, prepareRecords( result.data, "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
-			callback( err, prepareRecords( body.data, "members", "people/" ) );
+			callback( err, prepareRecords( body.data, "members", "people/", null, fields ) );
 		} );
 	}
 };

@@ -20,7 +20,8 @@ router.get('/', util.isAuthenticated, function(req, res){
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
 		if (allowed) 
 		{
-		    people.listPeople( function(err, result){
+		    var fields = req.query.fields;
+		    people.listPeople( fields, function(err, result){
 		        if(err){
 		            res.json(500, err);
 		        } else {
