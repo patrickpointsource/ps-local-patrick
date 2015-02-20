@@ -89,7 +89,7 @@ var listCurrentAssigments = function(callback) {
             callback("error loading current assignments", null);
         } else {
             //console.log(body);
-        	projects.listProjects(null, function (err, projectsResult) {
+        	projects.listProjects( null, function (err, projectsResult) {
 				if (err) {
 					callback (err, null);
 				}
