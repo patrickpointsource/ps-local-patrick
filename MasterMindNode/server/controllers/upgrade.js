@@ -271,7 +271,7 @@ module.exports = function(params) {
 	};
 	
 	var updateEstimateFields = function(callback) {
-		projects.listProjects(function(err, body) {
+		projects.listProjects(null, function(err, body) {
 			if (err) {
 				callback('error loading projects', null);
 			} else {
@@ -366,7 +366,7 @@ module.exports = function(params) {
 	};
 	
 	var fixLinksInProjects = function (callback) {
-		projects.listProjects(null, null, function(err, body) {
+		projects.listProjects(null, function(err, body) {
 			if (err) {
 				callback('error loading projects', null);
 			} else {

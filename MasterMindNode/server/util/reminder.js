@@ -255,7 +255,7 @@ function emailReminderJob(withInterestedParties) {
     } 
     
     // gets configuration properties
-    dataAccess.listConfiguration(null, _.bind(function (err, configuration) {
+    dataAccess.listConfiguration( _.bind(function (err, configuration) {
 	    if (!err) {
 	    	var props = decodeProperties(configuration.members[0].properties);
 	    	var isActive = getPropertyValueByName(REMINDER_ACTIVE, props) == "true";
