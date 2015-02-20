@@ -1018,20 +1018,21 @@ var clearCacheForSecurityRoles = function( resources, callback ) {
 	memoryCache.deleteObject( SECURITY_ROLES_KEY );
 };
 
-var listUserRoles = function(fields, callback ) {
+var listUserRoles = function( callback ) {
 	var result = memoryCache.getObject( USER_ROLES_KEY );
 	if( result ) {
 		console.log( "read " + USER_ROLES_KEY + " from memory cache" );
-		callback( null, prepareRecords( result.data, "members", "userRoles/", null, fields ) );
+		callback( null, queryRecords( result, q, "members", "userRoles/", null, fields ) );
 	} else {
 		dbAccess.listUserRoles( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( USER_ROLES_KEY, body );
-				callback( null, prepareRecords( body.data, "members", "userRoles/", null, fields ) );
+				callback( null, queryRecords( body, q, "members", "userRoles/" ) );
 			} else {
 				callback( err, null );
 			}
+			callback( null, prepareRecords( body.data, "members", "userRoles/" ) );
 		} );
 	}
 
