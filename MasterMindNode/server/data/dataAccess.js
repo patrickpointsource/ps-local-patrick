@@ -661,7 +661,7 @@ var listAssignmentsByPerson = function(resource, callback) {
 
 var listAssignmentsByPeople = function(resources, callback) {
     
-    listAssignments(null, function(err, result){
+    listAssignments(function(err, result){
         if (err) {
             console.log(err);
             callback('error loading assignments by person', null);
@@ -688,7 +688,7 @@ var listAssignmentsByPeople = function(resources, callback) {
 
 var listAssignmentsByProjects = function(resources, callback) {
     
-    listAssignments(null, function(err, result){
+    listAssignments(function(err, result){
         if (err) {
             console.log(err);
             callback('error loading assignments by projects', null);
