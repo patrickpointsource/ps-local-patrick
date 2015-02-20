@@ -1030,7 +1030,7 @@ var listUserRoles = function( callback ) {
 			if( !err ) {
 				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( USER_ROLES_KEY, body );
-				callback( null, queryRecords( body, q, "members", "userRoles/", null, fields ) );
+				callback( null, queryRecords( body, q, "members", "userRoles/" ) );
 			} else {
 				callback( err, null );
 			}
