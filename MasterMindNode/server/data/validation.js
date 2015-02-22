@@ -121,7 +121,7 @@ var isProjectValid = function(project) {
 	var messages = [];
 	var rolesFromDb = [];
 
-	dataAccess.listRoles({}, function(err, body){
+	dataAccess.listRoles( function(err, body){
 	    if (err) {
 	      var msg = "project validation, error loading roles";
 	      console.log(msg + ": " + err, null);
