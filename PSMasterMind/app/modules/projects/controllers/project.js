@@ -1742,11 +1742,7 @@ else if( role.percentageCovered == 0 )
     	var params = {};
     	params.projects = $scope.project.about;
         
-    	var sort = {		
-    		'created': 1		
-    	};
-    	
-		Resources.refresh("hours/projects", params).then(
+		Resources.get("hours/projects", params).then(
 			
 			function (hoursResult) {
 
@@ -1756,51 +1752,9 @@ else if( role.percentageCovered == 0 )
 				$scope.initHoursPeriods( $scope.hours );
 				$scope.currentWeek( function() {
 					// load month hours just after week
-						$scope.currentMonth();
-				} );
-					
-
-				if( $scope.hoursTableParams ) {
-					$scope.hoursTableParams.total( $scope.hours.length );
-					$scope.hoursTableParams.reload( );
-
-				} else {
-					// Table Parameters
-					var params = {
-						page: 1, // show first page
-						count: 25, // count per page
-						sorting: {
-							created: 'des' // initial sorting
-						}
-					};
-
-				}
-
-				}, 
-				sort
-			);
-	    
-	    } else {
-	    	
-			//Query all hours against the project
-			var hoursQuery = {
-				'project.resource': $scope.project.about
-			};
-			//All Fields
-			var fields = {};
-			var sort = {
-				'created': 1
-			};
-			
-			HoursService.query(hoursQuery, fields).then(function( hoursResult ) {
-				$scope.hours = hoursResult.members;
-
-				$scope.organizeHours( $scope.hours );
-				$scope.initHoursPeriods( $scope.hours );
-				$scope.currentWeek(function() {
-					// load month hours just after week
 					$scope.currentMonth();
 				} );
+				
 
 				if( $scope.hoursTableParams ) {
 					$scope.hoursTableParams.total( $scope.hours.length );
@@ -1818,11 +1772,9 @@ else if( role.percentageCovered == 0 )
 
 				}
 
-			}, sort );
-
-	    	
-	    }		
-	    
+			}, 
+			sort
+		);
 	};
     
     $scope.vacationPeople = [ ];
