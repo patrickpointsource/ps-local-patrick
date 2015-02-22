@@ -12,16 +12,13 @@ var router = express.Router( );
 router.get( '/', util.isAuthenticated, function( req, res ) {
   security.isAllowed( req.user, res, securityResources.securityRoles.resourceName, securityResources.securityRoles.permissions.viewSecurityRoles, function( allowed ) {
     if( allowed ) {
-	  var query = req.query[ "query" ] ? JSON.parse( req.query[ "query" ] ) : {};
-	  userRoles.listUserRoles( function( err, result ) {
-		  var fields = req.query.fields;
-		  userRoles.listUserRoles( query, fields, function( err, result ) {
+	  var fields = req.query.fields;
+	  userRoles.listUserRoles( fields, function( err, result ) {
 			if( err ) {
 				res.json( 500, err );
 			} else {
 				res.json( result );
 			}
-		  });
 	  });
     }
   });

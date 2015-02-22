@@ -71,7 +71,7 @@ module.exports.initialize = function(isReinitialization) {
           /*acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
             console.log("Daniil allows on project after initSecurityRoles: " + permissions["projects"]);
           });*/
-          dataAccess.listUserRoles( function (err, roles) {
+          dataAccess.listUserRoles( null, function (err, roles) {
         	if ( err ) {
           		console.log("Initializing security: Error in giving user roles " + err);
           		return err;

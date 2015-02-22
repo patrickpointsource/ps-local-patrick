@@ -73,13 +73,7 @@ module.exports.listHoursByProjectsAndDates = function(projects, startDate, endDa
 };
 
 module.exports.insertHours = function(obj, callback) {
-    
-    var validationMessages = validation.validate(obj, dataAccess.HOURS_KEY);
-    if(validationMessages.length > 0) {
-      callback( validationMessages.join(', '), {} );
-      return;
-    }
-    
+
     obj.form = dataAccess.HOURS_KEY;
     console.log('create hours entry:' + JSON.stringify(obj));
     
