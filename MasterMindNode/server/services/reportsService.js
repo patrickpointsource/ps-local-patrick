@@ -29,15 +29,15 @@ module.exports.prepareData = function(profile, params, callback) {
   var selectedRoles = [];
   var selectedPeople = [];
   
-  dataAccess.listPeople({}, PEOPLE_FIELDS, function(err, people) {
+  dataAccess.listPeople(PEOPLE_FIELDS, function(err, people) {
     if(err) {
       callback("Error getting people while generating report: " + err, null);
     } else {
-      dataAccess.listTasks({}, function(err, tasks) {
+      dataAccess.listTasks( function(err, tasks) {
         if(err) {
           callback("Error getting tasks while generating report: " + err, null);
         } else {
-          dataAccess.listRoles({}, function(err, roles) {
+          dataAccess.listRoles( function(err, roles) {
             if(err) {
               callback("Error getting roles while generating report: " + err, null);
             } else {
@@ -72,7 +72,7 @@ module.exports.prepareData = function(profile, params, callback) {
                   if(err) {
                     callback("Error getting assignments while generating report: " + err);
                   } else {
-                    dataAccess.listProjects({}, PROJECT_FIELDS, function(err, projects) {
+                    dataAccess.listProjects( PROJECT_FIELDS, function(err, projects) {
                       if(err) {
                         callback("Error getting projects while generating report: " + err);
                       } else {
@@ -108,7 +108,7 @@ module.exports.prepareData = function(profile, params, callback) {
                               return hour;
                             });
                             
-                            dataAccess.listVacations({}, function(err, vacations) {
+                            dataAccess.listVacations( function(err, vacations) {
                               if(err) {
                                 callback("Error getting vacations while generating report: " + err, null);
                               } else {
@@ -161,15 +161,15 @@ module.exports.prepareProjectData = function(profile, params, callback) {
   var selectedRoles = [];
   var selectedPeople = [];
   
-  dataAccess.listPeople({}, PEOPLE_FIELDS, function(err, people) {
+  dataAccess.listPeople( PEOPLE_FIELDS, function(err, people) {
     if(err) {
       callback("Error getting people while generating report: " + err, null);
     } else {
-      dataAccess.listTasks({}, function(err, tasks) {
+      dataAccess.listTasks( function(err, tasks) {
         if(err) {
           callback("Error getting tasks while generating report: " + err, null);
         } else {
-          dataAccess.listRoles({}, function(err, roles) {
+          dataAccess.listRoles( function(err, roles) {
             if(err) {
               callback("Error getting roles while generating report: " + err, null);
             } else {
@@ -188,7 +188,7 @@ module.exports.prepareProjectData = function(profile, params, callback) {
                   if(err) {
                     callback("Error getting assignments while generating report: " + err);
                   } else {
-                    dataAccess.listProjects({}, PROJECT_FIELDS, function(err, projects) {
+                    dataAccess.listProjects( PROJECT_FIELDS, function(err, projects) {
                       if(err) {
                         callback("Error getting projects while generating report: " + err);
                       } else {
@@ -240,7 +240,7 @@ module.exports.prepareProjectData = function(profile, params, callback) {
                             
                             var selectedPeople = getSelectedPeopleByQueriedHours(people.members, hoursFiltered);
                             
-                            dataAccess.listVacations({}, function(err, vacations) {
+                            dataAccess.listVacations( function(err, vacations) {
                               if(err) {
                                 callback("Error getting vacations while generating report: " + err, null);
                               } else {
