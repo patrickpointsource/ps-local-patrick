@@ -1,7 +1,7 @@
 describe("E2E: Project test cases.", function () {
 
-    var USER_NAME = 'psapps@pointsourcellc.com';
-    var PASSWORD = 'ps@pp$777';
+	var USER_NAME = 'psapps@pointsourcellc.com';
+	var PASSWORD = 'ps@pp$777';
 
     //login
     var sbutton = by.tagName('button');
@@ -15,7 +15,7 @@ describe("E2E: Project test cases.", function () {
     var PIPELINE_PROJECT_NAME = "E2E Pipeline Project";
     var COMPLETED_PROJECT_NAME = "E2E Completed Project";
     var INVEST_PROJECT_NAME = "E2E Investment Project";
-    var BROKEN_PROJECT_NAME = "E2E Broken Project";
+    var TEST_PROJECT_NAME = "E2E Test Project";
     
     var projectsPath = {
     	url: "/index.html#/projects?filter=",
@@ -41,6 +41,12 @@ describe("E2E: Project test cases.", function () {
     	              "TestProj#byVlad" 
     	             ],
     	    backlog: [ "TestRoleAssignees" ]
+    };
+    
+    var projectRoles = {
+    		PM: "Project Manager",
+    		SSEO: "Senior Software Engineer Offshore",
+    		SEO: "Software Engineer Offshore"
     };
 
 
@@ -98,14 +104,14 @@ describe("E2E: Project test cases.", function () {
     	projectCheckAndRemove(PIPELINE_PROJECT_NAME, projectsPath.pipeline);
     });
 
-//    it('Should create completed project.', function () {
-//        createProject(fillCompletedProjectPageFields);
-//    });
-//    
-//    it('Check and remove completed project.', function () {
-//    	projectCheckAndRemove(COMPLETED_PROJECT_NAME, projectsPath.completed);
-//    });
-//
+    it('Should create completed project.', function () {
+        createProject(fillCompletedProjectPageFields);
+    });
+    
+    it('Check and remove completed project.', function () {
+    	projectCheckAndRemove(COMPLETED_PROJECT_NAME, projectsPath.completed);
+    });
+
 //    it('Should create investment project.', function () {
 //        createProject(fillInvestmentProjectPageFields);
 //    });
@@ -114,8 +120,17 @@ describe("E2E: Project test cases.", function () {
 //    	projectCheckAndRemove(INVEST_PROJECT_NAME, projectsPath.investment);
 //    });
 //    
+    
+    it('Should create project with 3 roles.', function () {
+    	createProject(fill3RolesPageFields, []);
+    });
+    
+    it('Check and remove project with 3 roles.', function () {
+    	projectCheckAndRemove(TEST_PROJECT_NAME, projectsPath.all);
+    });
+    
     it('Should verify mandatory fields for project.', function () {
-        createProject(fillBrokenProjectPageFields, []);
+    	createProject(fillBrokenProjectPageFields, []);
     });
     
     var checkAllProjectsListedByDefault = function () {
@@ -178,7 +193,7 @@ describe("E2E: Project test cases.", function () {
             newProjectPage.doneButtonBottom.click();
 
             if ( !errorMsgs ) {
-            	browser.sleep(10000);
+            	browser.sleep(9000);
             	expect(browser.getCurrentUrl()).toContain('/summary');
             } else {
             	browser.sleep(1000);
@@ -197,8 +212,9 @@ describe("E2E: Project test cases.", function () {
         // roles tab filling
         //newProjectPage.rolesTab.click();
         newProjectPage.triggerAddRoleButton.click();
-        newProjectPage.roleSelect("Project Manager"); // select project manager
+        newProjectPage.roleSelect(projectRoles.PM); // select project manager
         newProjectPage.addRoleButton.click();
+        browser.sleep(1000);
 
         console.log("> Common project fields filled in.");
     };
@@ -281,11 +297,32 @@ describe("E2E: Project test cases.", function () {
     };
     
     var fillBrokenProjectPageFields = function (newProjectPage) {
-        newProjectPage.nameInput.sendKeys(BROKEN_PROJECT_NAME);
+        newProjectPage.nameInput.sendKeys(TEST_PROJECT_NAME);
         newProjectPage.selectType(0).then(function () {
             newProjectPage.projectCommited.click();
             console.log("> Broken project fields entered.");
         });
+    };
+    
+    var fill3RolesPageFields = function (newProjectPage) {    	
+    	var today = new Date();
+        today.setDate(today.getDate() - 2);
+        var startDate = getShortDate(new Date(today));
+
+        newProjectPage.nameInput.sendKeys(TEST_PROJECT_NAME);
+        newProjectPage.selectType(0).then(function () {
+            newProjectPage.projectCommited.click();
+            console.log("> Active project fields entered.");
+        });
+        newProjectPage.startDate.sendKeys(startDate);
+        
+        newProjectPage.triggerAddRoleButton.click();
+        newProjectPage.roleSelect(projectRoles.SSEO);
+        newProjectPage.addRoleButton.click();
+        
+        newProjectPage.triggerAddRoleButton.click();
+        newProjectPage.roleSelect(projectRoles.SEO);
+        newProjectPage.addRoleButton.click();
     };
     
     var projectCheckAndRemove = function (projectName, filterPath) {
