@@ -24,7 +24,7 @@ describe("E2E: Project test cases.", function () {
     	active: 'active',
     	backlog: 'backlog',
     	pipeline: 'pipeline',
-    	investment: 'invest',
+    	investment: 'investment',
     	completed: 'complete'
     };
     
@@ -112,14 +112,13 @@ describe("E2E: Project test cases.", function () {
     	projectCheckAndRemove(COMPLETED_PROJECT_NAME, projectsPath.completed);
     });
 
-//    it('Should create investment project.', function () {
-//        createProject(fillInvestmentProjectPageFields);
-//    });
-//    
-//    it('Check and remove investment project.', function () {
-//    	projectCheckAndRemove(INVEST_PROJECT_NAME, projectsPath.investment);
-//    });
-//    
+    it('Should create investment project.', function () {
+        createProject(fillInvestmentProjectPageFields);
+    });
+    
+    it('Check and remove investment project.', function () {
+    	projectCheckAndRemove(INVEST_PROJECT_NAME, projectsPath.investment);
+    });
     
     it('Should create project with 3 roles.', function () {
     	createProject(fill3RolesPageFields, []);
@@ -180,16 +179,18 @@ describe("E2E: Project test cases.", function () {
             projectsPage.addProjectButton.click();
             browser.sleep(2000);
 
-            // assert for "project/new" url
+            // assert for "project/new" url and button Save (should be disabled for empty project)
             browser.getCurrentUrl().then(function (url) {
                 expect(url).toEqual(projectsPage.newUrl);
+                expect(newProjectPage.saveButtonTop.isEnabled()).toBe(false);
+           	 	expect(newProjectPage.saveButtonBottom.isEnabled()).toBe(false);
             });
 
             // filling project fields
             fillCommonFields(newProjectPage, function () {
                 fillCustomFieldsCallback(newProjectPage);
             });
-
+            
             newProjectPage.doneButtonBottom.click();
 
             if ( !errorMsgs ) {
@@ -254,12 +255,9 @@ describe("E2E: Project test cases.", function () {
         var startDate = getShortDate(new Date(today));
  
         newProjectPage.nameInput.sendKeys(PIPELINE_PROJECT_NAME);
-        newProjectPage.selectType(0).then(function () {
-        	// not contractually commited
-            //newProjectPage.projectCommited.click();
-            console.log("> Pipeline project fields entered.");
-        });
+        newProjectPage.selectType(0);
         newProjectPage.startDate.sendKeys(startDate);
+        console.log("> Pipeline project fields entered.");
     };
     
     var fillInvestmentProjectPageFields = function (newProjectPage) {
@@ -269,11 +267,9 @@ describe("E2E: Project test cases.", function () {
         var startDate = getShortDate(new Date(today));
 
         newProjectPage.nameInput.sendKeys(INVEST_PROJECT_NAME);
-        newProjectPage.selectType(2).then(function () {
-        	newProjectPage.projectCommited.click();
-            console.log("> Investment project fields entered.");
-        });
+        newProjectPage.selectType(1);
         newProjectPage.startDate.sendKeys(startDate);
+        console.log("> Investment project fields entered.");
     };
 
     var fillCompletedProjectPageFields = function (newProjectPage) {
@@ -488,7 +484,7 @@ describe("E2E: Project test cases.", function () {
         };
         // 0 - PAID, 1 - POC, 2 - INVEST
         this.selectType = function (index) {
-            return element(by.css(".project-edit-buttons")).all(by.tagName("label")).get(0).click();
+            return element(by.css(".project-edit-buttons")).all(by.tagName("label")).get(index).click();
         };
         this.roleStartDate = element(by.model('newRole.startDate'));
         this.hoursPerMonth = element(by.model('newRole.rate.hoursPerMth'));
