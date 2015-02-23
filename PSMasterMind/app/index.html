@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>
@@ -10,284 +10,284 @@
 <!--<![endif]-->
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>MasterMind</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link rel="icon" type="image/png" href="images/favicon.png">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MasterMind</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="images/favicon.png">
 
-  <!-- Fonts -->
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="fonts/icomoon/style.css" />
+    <link rel="stylesheet" href="fonts/icomoon/style.css" />
 
-  <!-- build:css styles/site.css -->
-  <link rel="stylesheet" href="bower_components/ng-table/ng-table.css" />
-  <link rel="stylesheet" href="bower_components/bootstrap-datepicker/css/datepicker.css" />
-  <link rel="stylesheet" href="bower_components/bootstrap-select/bootstrap-select.css" />
-  <link rel="stylesheet" href="bower_components/nvd3/nv.d3.css" />
-  <link rel="stylesheet" href="styles/main.css">
-  <!-- endbuild -->
+    <!-- build:css styles/site.css -->
+    <link rel="stylesheet" href="bower_components/ng-table/ng-table.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-datepicker/css/datepicker.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-select/bootstrap-select.css" />
+    <link rel="stylesheet" href="bower_components/nvd3/nv.d3.css" />
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
 </head>
 
-<body ng-app="Mastermind">
-  <!--[if lt IE 8]>
-<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-    your browser</a> to improve your experience.</p>
-<![endif]-->
-
-  <!--[if lt IE 9]>
-<script src="bower_components/es5-shim/es5-shim.js"></script>
-<script src="bower_components/json3/lib/json3.min.js"></script>
-<![endif]-->
-  <div ng-controller="AreasCtrl">
-    <div id="loadingMessage" ng-if="!authState">
-      <div id="welcomeContent" class="jumbotron">
-        <h1>PointSource MasterMind</h1>
-        <p>Loading Please Wait...</p>
-      </div>
-    </div>
-    <div id="appContent" ng-if="authState">
-      <header>
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar1">
-          <div class="nav-bar-container col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="visible-md visible-lg navbar-breadcrumb">
-              <ng-include src="'views/breadcrumb.html'"></ng-include>
+<body>
+    <!--[if lt IE 8]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+        your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+    <div ng-controller="AreasCtrl">
+        <div id="loadingMessage" ng-if="!authState">
+            <div id="welcomeContent" class="jumbotron">
+                <h1>PointSource MasterMind</h1>
+                <p>Loading Please Wait...</p>
             </div>
-            <div class="visible-sm visible-xs navbar-header">
-              <button type="button" class="navbar-toggle" ng-click="showHideMenu()">
-                <span class="sr-only">Toggle navigation</span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>
-              </button>
-              <div class="hidden-md hidden-lg" style="white-space: nowrap;">
-                <a class="appTitle navbar-brand" href="#"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
-              </div>
-            </div>
-            <div class="collapse navbar-collapse width" id="navbar-collapse-mobile">
-              <ng-include src="'views/mainMenu.html'" onload="this.additionalClass='navbar-inverse visible-xs visible-sm'"></ng-include>
-            </div>
-            
-            <div class="user-info-container" style="right: 90px;">
-            	<ng-include src="'modules/widgets/vacations/notifications.html'"></ng-include>
-            	
-             
-            </div>
-            <!-- /.navbar-collapse -->
-            <div class="user-info-container dropdown">
-              <div id="profile-photo" back-img="{{me.thumbnail}}" class="dropdown-toggle" data-toggle="dropdown" style="width: 50px; height: 50px;">
-                <div class="drop-cover"></div>
-              </div>
-              <div class="dropdown-menu" role="menu">
-                <a href="#{{me.about}}">
-                  <div id="profile-photo-full" back-img="{{me.thumbnail}}" class="pull-left"></div>
-                </a>
-                <div id="user-info">
-                  <h4>{{getPersonName(me, true)}}</h4>
-                  <a href="#{{me.about}}">MasterMind Preferences</a>
-                  <a href="http://plus.google.com/{{me.googleId}}" target="_blank">Google+ Account Settings</a> 
-                </div>
-                <div class="employee-since">Active employee since {{me.accounts[0].creationTime | date:'MMMM yyyy'}}</div>
-                <div class="panel-actions">
-                  <a class="btn btn-info" href="#{{me.about}}">VIEW PROFILE</a>
-                  <a class="btn btn-info" ng-click="logout()">SIGN OUT</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-        </nav>
-        
-        <!-- Fixed Z-index to make sure the user menu can pop over it -->
-        <nav class="navbar navbar-inverse navbar-fixed-top hidden-xs hidden-sm" style="z-index: 900; top: 0px;" id="navbar2">
-
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>
-            </button>
-            <div>
-              <a class="appTitle navbar-brand" href="#"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
-            </div>
-          </div>
-
-          <div class="navbar-search">
-            <form class="navbar-form" role="search">
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-2x fa-fw fa-search"></i></span>
-                <input type="text" class="form-control" placeholder="Search" ng-keypress="search($event)">
-                <!-- <div class="input-group-btn">
-					                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-					            </div> -->
-              </div>
-            </form>
-          </div>
-
-          <ng-include src="'views/mainMenu.html'" onload="this.additionalClass=''"></ng-include>
-        </nav>
-      </header>
-
-      <main id="mainContent" class="container">
-        <div class="row">
-          <article class="col-xs-12" ui-view></article>
         </div>
-      </main>
+        <div id="appContent" ng-if="authState">
+            <header>
+                <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar1">
+                    <div class="nav-bar-container col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="visible-md visible-lg navbar-breadcrumb">
+                            <ng-include src="'views/breadcrumb.html'"></ng-include>
+                        </div>
+                        <div class="visible-sm visible-xs navbar-header">
+                            <button type="button" class="navbar-toggle" ng-click="showHideMenu()">
+                                <span class="sr-only">Toggle navigation</span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>
+                            </button>
+                            <div class="hidden-md hidden-lg" style="white-space: nowrap;">
+                                <a class="appTitle navbar-brand" href="#"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
+                            </div>
+                        </div>
+                        <div class="collapse navbar-collapse width" id="navbar-collapse-mobile">
+                            <ng-include src="'views/mainMenu.html'" onload=" this.additionalClass = 'navbar-inverse visible-xs visible-sm' "></ng-include>
+                        </div>
 
-      <div class="modal modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <ng-include src="'modalTemplate'" />
-      </div>
+                        <div class="user-info-container" style="right: 90px;">
+                            <ng-include src="'modules/widgets/vacations/notifications.html'"></ng-include>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <div class="user-info-container dropdown">
+                            <div id="profile-photo" back-img="{{me.thumbnail}}" class="dropdown-toggle" data-toggle="dropdown" style="width: 50px; height: 50px;">
+                                <div class="drop-cover"></div>
+                            </div>
+                            <div class="dropdown-menu" role="menu">
+                                <a href="#{{me.about}}">
+                                    <div id="profile-photo-full" back-img="{{me.thumbnail}}" class="pull-left"></div>
+                                </a>
+                                <div id="user-info">
+                                    <h4>{{getPersonName(me, true)}}</h4>
+                                    <a href="#{{me.about}}">MasterMind Preferences</a>
+                                    <a href="http://plus.google.com/{{me.googleId}}" target="_blank">Google+ Account Settings</a>
+                                </div>
+                                <div class="employee-since">Active employee since {{me.accounts[0].creationTime | date:'MMMM yyyy'}}</div>
+                                <div class="panel-actions">
+                                    <a class="btn btn-info" href="#{{me.about}}">VIEW PROFILE</a>
+                                    <a class="btn btn-info" ng-click="logout()">SIGN OUT</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-      <div class="modal modalYesNoCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <ng-include src="'modalTemplate'" />
-      </div>
+                </nav>
 
-      <script type="text/ng-template" id="modalTemplate">
-          <div class="modal-dialog">
-              <div class="modal-content panel panel-info">
-                  <div class="modal-header">
-                      <h4 class="modal-title" id="myModalLabel">{{getModal().title}}</h4>
-                  </div>
-                  <div class="modal-body panel-body">
-                  {{getModal().text}}
-                  </div>
-                  <div class="modal-footer">
-                      <div>
+                <!-- Fixed Z-index to make sure the user menu can pop over it -->
+                <nav class="navbar navbar-inverse navbar-fixed-top hidden-xs hidden-sm" style="z-index: 900; top: 0px;" id="navbar2">
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>
+                        </button>
+                        <div>
+                            <a class="appTitle navbar-brand" href="#"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
+                        </div>
+                    </div>
+
+                    <div class="navbar-search">
+                        <form class="navbar-form" role="search">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-2x fa-fw fa-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Search" ng-keypress="search($event)">
+                                <!-- <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </div> -->
+                            </div>
+                        </form>
+                    </div>
+
+                    <ng-include src="'views/mainMenu.html'" onload=" this.additionalClass = '' "></ng-include>
+                </nav>
+            </header>
+
+            <main id="mainContent" class="container">
+                <div class="row">
+                    <article class="col-xs-12" ui-view></article>
+                </div>
+            </main>
+
+            <div class="modal modalYesNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <ng-include src="'modalTemplate'"/>
+            </div>
+
+            <div class="modal modalYesNoCancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <ng-include src="'modalTemplate'"/>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/ng-template" id="modalTemplate">
+        <div class="modal-dialog">
+            <div class="modal-content panel panel-info">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">{{getModal().title}}</h4>
+                </div>
+                <div class="modal-body panel-body">
+                    {{getModal().text}}
+                </div>
+                <div class="modal-footer">
+                    <div>
                         <a class="cursor-pointer" ng-click="modalDialog.noHandler()" style="padding-right: 10px;">{{modalDialog.no}}</a>
                         <a class="cursor-pointer" ng-show="modalDialog.cancel" ng-click="modalDialog.cancelHandler()" data-dismiss="modal">{{modalDialog.cancel}}</a>
-                      </div>
-                      <button type="button" class="btn btn-modal-primary pull-right" ng-click="modalDialog.okHandler()">{{modalDialog.ok}}</button>
-                  </div>
-              </div>
-          </div>
-      </script>
-    </div>
-  </div>
+                    </div>
+                    <button type="button" class="btn btn-modal-primary pull-right" ng-click="modalDialog.okHandler()">{{modalDialog.ok}}</button>
+                </div>
+            </div>
+        </div>
+    </script>
 
-  <!-- build:js scripts/modules.js -->
-  <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
-  <script type="text/javascript" src="bower_components/marked/lib/marked.js"></script>
-  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-  <script type="text/javascript" src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-  <script type="text/javascript" src="bower_components/bootstrap-select/bootstrap-select.js"></script>
-  <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
-  <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-  <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
-  <script type="text/javascript" src="bower_components/ng-table/ng-table.js"></script>
-  <script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
-  <script type="text/javascript" src="bower_components/restangular/dist/restangular.js"></script>
-  
-  <script type="text/javascript" src="bower_components/textAngular/dist/textAngular.min.js"></script>
-  <script type="text/javascript" src="bower_components/textAngular/dist/textAngular-sanitize.min.js"></script>
-  <script type='application/javascript' src='bower_components/fastclick/lib/fastclick.js'></script>
-  <script type="text/javascript" src="bower_components/d3/d3.js"></script>
-  <script type="text/javascript" src="bower_components/nvd3/nv.d3.js"></script>
-  <script type="text/javascript" src="bower_components/dimple/dist/dimple.latest.js"></script>
-  
-  <!-- 	<script type="text/javascript" src="bower_components/twix/bin/twix.js"></script> -->
-  <script type="text/javascript" src="bower_components/moment/moment.js"></script>
-  <script type="text/javascript" src="bower_components/masonry/dist/masonry.pkgd.js"></script>
-  <script type="text/javascript" src="bower_components/imagesloaded/imagesloaded.js"></script>
-  <!-- endbuild -->
-  <script type="text/javascript" src="bower_components/typeahead.js/dist/typeahead.bundle.js"></script>
-	<script type="text/javascript" src="bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>
-	<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <!-- build:js scripts/modules.js -->
+    <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+    <script type="text/javascript" src="bower_components/marked/lib/marked.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap-select/bootstrap-select.js"></script>
+    <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
+    <script type="text/javascript" src="bower_components/ng-table/ng-table.js"></script>
+    <script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
+    <script type="text/javascript" src="bower_components/restangular/dist/restangular.js"></script>
 
-  <script type="text/javascript" src="login/scripts/login.js"></script>
-  <script type="text/javascript" src="login/scripts/loginHelper.js"></script>
-  
+    <script type="text/javascript" src="bower_components/textAngular/dist/textAngular.min.js"></script>
+    <script type="text/javascript" src="bower_components/textAngular/dist/textAngular-sanitize.min.js"></script>
+    <script type='application/javascript' src='bower_components/fastclick/lib/fastclick.js'></script>
+    <script type="text/javascript" src="bower_components/d3/d3.js"></script>
+    <script type="text/javascript" src="bower_components/nvd3/nv.d3.js"></script>
+    <script type="text/javascript" src="bower_components/dimple/dist/dimple.latest.js"></script>
 
-  <!-- build:js({.tmp,app}) scripts/scripts.js -->
-  <script src="scripts/app.js"></script>
+    <!-- 	<script type="text/javascript" src="bower_components/twix/bin/twix.js"></script> -->
+    <script type="text/javascript" src="bower_components/moment/moment.js"></script>
+    <script type="text/javascript" src="bower_components/masonry/dist/masonry.pkgd.js"></script>
+    <script type="text/javascript" src="bower_components/imagesloaded/imagesloaded.js"></script>
+    <!-- endbuild -->
+    <script type="text/javascript" src="bower_components/typeahead.js/dist/typeahead.bundle.js"></script>
+    <script type="text/javascript" src="bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>
+    <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 
-  <!-- Utils -->
-  <script src="scripts/util/consts.js"></script>
-  <script src="scripts/util/util.js"></script>
-  <script src="scripts/util/smtpHelper.js"></script>
-  
-  <!-- Filters -->
-  <script src="scripts/filters/markdown.js"></script>
+    <script type="text/javascript" src="login/scripts/login.js"></script>
+    <script type="text/javascript" src="login/scripts/loginHelper.js"></script>
+    <script>
+        window.___gcfg = { lang: "en-US", parsetags: "onload" };
 
-  <!-- Services -->
-  <script src="scripts/services/resources.js"></script>
-  <script src="scripts/services/people.js"></script>
-  <script src="scripts/services/roleTypes.js"></script>
-  <script src="scripts/services/jazzHubService.js"></script>
-  <script src="scripts/services/notifications.js"></script>
-  <script src="scripts/services/d3.js"></script>
+        function __onPlatformLoad() { angular.bootstrap(document, ["Mastermind"]); }
+    </script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=__onPlatformLoad" async defer></script>
 
-  <!-- Controllers -->
-  <script src="scripts/controllers/main.js"></script>
-  <script src="scripts/controllers/areas.js"></script>
-  <script src="scripts/controllers/config.js"></script>
-  <script src="scripts/controllers/breadcrump.js"></script>
-  <script src="scripts/controllers/menu.js"></script>
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
 
-  <!-- MODULES -->
-  <!-- modules/admin -->
-  <script src="modules/admin/controllers/admin.js"></script>
-  <script src="modules/admin/controllers/groups.js"></script>
-  <script src="modules/admin/controllers/tasks.js"></script>
-  <script src="modules/admin/controllers/securityGroups.js"></script>
-  <!-- modules/people -->
-  <script src="modules/people/people.js"></script>
-  <script src="modules/people/profile.js"></script>
-   <!-- modules/calendar -->
-  <script src="modules/calendar/controllers/calendar.js"></script>
-  <script src="modules/calendar/controllers/ooo.js"></script>
-  <!-- modules/staffing -->
-  <script src="modules/staffing/staffing.js"></script>
-  <script src="modules/staffing/resourceFinder.js"></script>
-  <!-- modules/projects -->
-  <script src="modules/projects/controllers/project.js"></script>
-  <script src="modules/projects/controllers/details.js"></script>
-  <script src="modules/projects/controllers/roles.js"></script>
-  <script src="modules/projects/controllers/projects.js"></script>
-  <script src="modules/projects/controllers/links.js"></script>
-  <script src="modules/projects/controllers/assignments.js"></script>
-  <script src="modules/projects/services/roles-service.js"></script>
-  <script src="modules/projects/services/project-service.js"></script>
-  <script src="modules/projects/services/assignment-service.js"></script>
-  <script src="modules/projects/services/tasks-service.js"></script>
-  <script src="modules/projects/services/linksService.js"></script>
-  <!-- modules/reports -->
-  <script src="modules/reports/controllers/reports.js"></script>
-  <script src="modules/reports/controllers/peopleReport.js"></script>
-  <script src="modules/reports/controllers/projectReport.js"></script>
-  <script src="modules/reports/controllers/verticalbarChart.js"></script>
- <script src="modules/reports/controllers/stackedAreaChart.js"></script>
-  <script src="modules/reports/controllers/pieChart.js"></script>
-  <script src="modules/reports/services/reportExport.js"></script>
-  
-  <!-- WIDGETS (modules/widgets) -->
-  <script src="modules/widgets/vacations/vacations.js"></script>
-  <script src="modules/widgets/vacations/vacationsService.js"></script>
-  <script src="modules/widgets/vacations/requests.js"></script>
-  <script src="modules/widgets/hours/hours.js"></script>
-  <script src="modules/widgets/hours/hoursService.js"></script>
-  <script src="modules/widgets/staffingDeficit/staffingdeficit.js"></script>
-  <script src="modules/widgets/currentProjects/currentProjects.js"></script>
-  <script src="modules/widgets/projectKickoffs/projectKickoffs.js"></script>
-  <script src="modules/widgets/bookingForecast/bookingForecast.js"></script>
-  <script src="modules/widgets/myProjects/myProjects.js"></script>
-  <script src="modules/widgets/people/people.js"></script>
+    <!-- Utils -->
+    <script src="scripts/util/consts.js"></script>
+    <script src="scripts/util/util.js"></script>
+    <script src="scripts/util/smtpHelper.js"></script>
 
-  <!-- Directives -->
-  <script type="text/javascript" src="bower_components/angular-ui-bootstrap/src/tabs/tabs.js"></script>
-  <script type="text/javascript" src="bower_components/angular-ui-bootstrap/src/timepicker/timepicker.js"></script>
-  <script type="text/javascript" src="modules/reports/directives/d3Basic.js"></script>
+    <!-- Filters -->
+    <script src="scripts/filters/markdown.js"></script>
 
-  <!-- Models -->
-  <script src="scripts/models/projects/project.js"></script>
-  <script src="scripts/models/projects/rates.js"></script>
-  
-  
+    <!-- Services -->
+    <script src="scripts/services/resources.js"></script>
+    <script src="scripts/services/people.js"></script>
+    <script src="scripts/services/roleTypes.js"></script>
+    <script src="scripts/services/jazzHubService.js"></script>
+    <script src="scripts/services/notifications.js"></script>
+    <script src="scripts/services/d3.js"></script>
 
-  <!-- libs -->
-  <script src="scripts/libs/line-chart.js"></script>
-  <!-- endbuild -->
+    <!-- Controllers -->
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/areas.js"></script>
+    <script src="scripts/controllers/config.js"></script>
+    <script src="scripts/controllers/breadcrump.js"></script>
+    <script src="scripts/controllers/menu.js"></script>
 
-  <!-- libs (not compiled)-->
-  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="wmbvg9mkhukv6m0"></script>
-  <script src="https://assets.yammer.com/assets/platform_embed.js"></script>
+    <!-- MODULES -->
+    <!-- modules/admin -->
+    <script src="modules/admin/controllers/admin.js"></script>
+    <script src="modules/admin/controllers/groups.js"></script>
+    <script src="modules/admin/controllers/tasks.js"></script>
+    <script src="modules/admin/controllers/securityGroups.js"></script>
+    <!-- modules/people -->
+    <script src="modules/people/people.js"></script>
+    <script src="modules/people/profile.js"></script>
+    <!-- modules/calendar -->
+    <script src="modules/calendar/controllers/calendar.js"></script>
+    <script src="modules/calendar/controllers/ooo.js"></script>
+    <!-- modules/staffing -->
+    <script src="modules/staffing/staffing.js"></script>
+    <script src="modules/staffing/resourceFinder.js"></script>
+    <!-- modules/projects -->
+    <script src="modules/projects/controllers/project.js"></script>
+    <script src="modules/projects/controllers/details.js"></script>
+    <script src="modules/projects/controllers/roles.js"></script>
+    <script src="modules/projects/controllers/projects.js"></script>
+    <script src="modules/projects/controllers/links.js"></script>
+    <script src="modules/projects/controllers/assignments.js"></script>
+    <script src="modules/projects/services/roles-service.js"></script>
+    <script src="modules/projects/services/project-service.js"></script>
+    <script src="modules/projects/services/assignment-service.js"></script>
+    <script src="modules/projects/services/tasks-service.js"></script>
+    <script src="modules/projects/services/linksService.js"></script>
+    <!-- modules/reports -->
+    <script src="modules/reports/controllers/reports.js"></script>
+    <script src="modules/reports/controllers/peopleReport.js"></script>
+    <script src="modules/reports/controllers/projectReport.js"></script>
+    <script src="modules/reports/controllers/verticalbarChart.js"></script>
+    <script src="modules/reports/controllers/stackedAreaChart.js"></script>
+    <script src="modules/reports/controllers/pieChart.js"></script>
+    <script src="modules/reports/services/reportExport.js"></script>
+
+    <!-- WIDGETS (modules/widgets) -->
+    <script src="modules/widgets/vacations/vacations.js"></script>
+    <script src="modules/widgets/vacations/vacationsService.js"></script>
+    <script src="modules/widgets/vacations/requests.js"></script>
+    <script src="modules/widgets/hours/hours.js"></script>
+    <script src="modules/widgets/hours/hoursService.js"></script>
+    <script src="modules/widgets/staffingDeficit/staffingdeficit.js"></script>
+    <script src="modules/widgets/currentProjects/currentProjects.js"></script>
+    <script src="modules/widgets/projectKickoffs/projectKickoffs.js"></script>
+    <script src="modules/widgets/bookingForecast/bookingForecast.js"></script>
+    <script src="modules/widgets/myProjects/myProjects.js"></script>
+    <script src="modules/widgets/people/people.js"></script>
+
+    <!-- Directives -->
+    <script type="text/javascript" src="bower_components/angular-ui-bootstrap/src/tabs/tabs.js"></script>
+    <script type="text/javascript" src="bower_components/angular-ui-bootstrap/src/timepicker/timepicker.js"></script>
+    <script type="text/javascript" src="modules/reports/directives/d3Basic.js"></script>
+
+    <!-- Models -->
+    <script src="scripts/models/projects/project.js"></script>
+    <script src="scripts/models/projects/rates.js"></script>
+
+    <!-- libs -->
+    <script src="scripts/libs/line-chart.js"></script>
+    <!-- endbuild -->
+    <!-- libs (not compiled)-->
+    <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="wmbvg9mkhukv6m0"></script>
+    <script src="https://assets.yammer.com/assets/platform_embed.js"></script>
 </body>
 </html>
