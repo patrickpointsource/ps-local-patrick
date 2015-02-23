@@ -23,10 +23,8 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	  
 	  //var svg = dimple.newSvg("#" + elId + "chartContainer", 580, 210);
 	 var svg = dimple.newSvg("#" + elId + "chartContainer", width, height);
-	  
-	  
-	  
-	 var axisLabels = ["Role", "Number of hours"]
+
+     var axisLabels = ["Role", "Number of hours"];
 	 var chartData = [];
 	 var hideLegend = true;
 	 var maxValues = {};
