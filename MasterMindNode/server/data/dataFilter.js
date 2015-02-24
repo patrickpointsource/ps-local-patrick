@@ -591,6 +591,36 @@ var filterVacationsByPerson = function(person, vacations) {
 	return result;
 };
 
+
+/**
+ * Returns vacations filtered by person
+ * 
+ * @param {Object} person
+ * @param {Object} vacations
+ */
+
+var filterVacations = function(people, statuses, startDate, endDate, vacations) {	
+	
+	return _.filter(vacations, function(vacation) {
+		var result = false;
+		
+		if (!people || people && vacation.person && _.indexOf(people, vacation.person.resource) > -1)
+			result = true;
+		
+		if (result && (!statuses || statuses && vacation.status && _.indexOf(statuses, vacation.status) > -1))
+			result = true;
+		else
+			result = false;
+		
+		if (result && (!(startDate && endDate) || startDate && endDate && (vacation.startDate >= startDate && vacation.startDate <= endDate 
+				|| vacation.endDate >= startDate && vacation.endDate <= endDate) ) )
+			result = true;
+		else
+			result = false;
+		
+		return result
+	});
+};
 /**
  * Returns filtered vacations by people and period
  * 
@@ -828,6 +858,7 @@ module.exports.filterVacationsByPerson = filterVacationsByPerson;
 module.exports.filterVacationsByPeriod = filterVacationsByPeriod;
 module.exports.filterRequests = filterRequests;
 module.exports.filterVacationsByDates = filterVacationsByDates;
+module.exports.filterVacations = filterVacations;
 
 //tasks filter functions
 module.exports.filterTasksByName = filterTasksByName;

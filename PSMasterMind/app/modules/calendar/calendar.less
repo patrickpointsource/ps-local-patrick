@@ -23,6 +23,9 @@
     border: 1px solid #bfbfbf;
     border-bottom: 0px;
 }
+.ooo-row:hover {
+    background-color: #808080;
+}
 .container.calendar {
   padding:0px;
   margin:0px;
@@ -84,7 +87,28 @@
   bottom: 0px;
   left: 5px;
 }
+
+.widget.calendar .hours-day-entry .hours-day-content
+{
+  position: absolute;
+  width:100%;
+}
+
 .widget.calendar .last .hours-day-entry {
   border-right-width: 0px;
 
+}
+
+.selected-ooo {
+    background-color: #666666;
+}
+
+.widget.calendar .vacation-day-entry {
+  font-size: 11px !important;
+  line-height: 14px;
+  width: 100%;
+  margin-top: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 2px;
 }

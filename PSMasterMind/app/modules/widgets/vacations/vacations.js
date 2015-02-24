@@ -152,7 +152,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	var vacation = {
 	  startDate: $scope.vacationStartDate + " " + vacStartTime,
 	  endDate: $scope.vacationEndDate + " " + vacEndTime,
-	  description: $scope.newDescription ? $scope.newDescription : "No description entered.",
+	  description: $scope.newDescription ? $scope.newDescription : "",
 	  person: { resource: $scope.profile.about},
 	  type: $scope.vacationType,
 	  vacationManager: { resource: $scope.vacationManager.resource }

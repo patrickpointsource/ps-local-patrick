@@ -240,7 +240,13 @@ angular.module('Mastermind')
         "viewVacations",
         "viewMyVacations",
         "editVacations",
-        "editMyVacations"
+        "editMyVacations",
+        "viewMyApprovedOOO",
+        "viewOthersApprovedOOO",
+        "viewMyPendingOOO",
+        "viewOthersPendingOOO",
+        "viewMyRemovedOOO",
+        "viewOtherRemovedOOO"
       ]
     },
     {

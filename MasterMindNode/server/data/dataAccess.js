@@ -165,7 +165,7 @@ var filterRecordsByStartEndDates = function(data, startDate, endDate) {
 	return result;
 };
 
-var listProjects = function( fields, callback ) {
+var listProjects = function( callback, fields ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	var data = null;
@@ -976,6 +976,23 @@ var listRequests = function( manager, statuses, startDate, endDate, fields, call
 
 };
 
+var listAllEmployeeVacations = function( statuses, startDate, endDate, fields, callback ) {
+
+	var result = memoryCache.getObject( VACATIONS_KEY );
+	if( result ) {
+		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterVacations(null, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
+	} else {
+		dbAccess.listVacations( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				memoryCache.putObject( VACATIONS_KEY, body );
+			}
+			callback( null, prepareRecords( dataFilter.filterVacations(null, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
+		} );
+	}
+
+};
 
 var listSecurityRoles = function( callback ) {
 	var result = memoryCache.getObject( SECURITY_ROLES_KEY );
@@ -1017,6 +1034,7 @@ var listSecurityRolesByResources = function( resources, callback ) {
 var clearCacheForSecurityRoles = function( resources, callback ) {
 	memoryCache.deleteObject( SECURITY_ROLES_KEY );
 };
+
 
 var listUserRoles = function( fields, callback ) {
 	var result = memoryCache.getObject( USER_ROLES_KEY );
@@ -1492,6 +1510,7 @@ module.exports.listVacations = listVacations;
 module.exports.listVacationsByPerson = listVacationsByPerson;
 module.exports.listVacationsByPeriod = listVacationsByPeriod;
 module.exports.listRequests = listRequests;
+module.exports.listAllEmployeeVacations = listAllEmployeeVacations;
 module.exports.listSecurityRoles = listSecurityRoles;
 module.exports.listSecurityRolesByResources = listSecurityRolesByResources;
 module.exports.clearCacheForSecurityRoles = clearCacheForSecurityRoles;
