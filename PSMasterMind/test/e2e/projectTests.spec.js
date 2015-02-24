@@ -128,9 +128,14 @@ describe("E2E: Project test cases.", function () {
     	projectCheckAndRemove(TEST_PROJECT_NAME, projectsPath.all);
     });
     
+    it('Cancel project creation: should redirect to the projects list.', function () {
+    	cancelProjectCreation();
+    });
+    
     it('Should verify mandatory fields for project.', function () {
     	createProject(fillBrokenProjectPageFields, []);
     });
+
     
     var checkAllProjectsListedByDefault = function () {
     	var projectsPage = new ProjectsPage();
@@ -191,15 +196,41 @@ describe("E2E: Project test cases.", function () {
                 fillCustomFieldsCallback(newProjectPage);
             });
             
-            newProjectPage.doneButtonBottom.click();
-
+            newProjectPage.saveButtonBottom.click();
             if ( !errorMsgs ) {
-            	browser.sleep(9000);
-            	expect(browser.getCurrentUrl()).toContain('/summary');
+            	browser.sleep(6000);            	
+            	expect(browser.getCurrentUrl()).toContain('/edit');
+            	newProjectPage.doneButtonBottom.click();
+                browser.sleep(2000); 
+                expect(browser.getCurrentUrl()).toContain('/summary');
             } else {
             	browser.sleep(1000);
            	 	expect(newProjectPage.errorMsgs).toBeDefined();
             }
+            
+        });
+    };
+    
+    var cancelProjectCreation = function () {
+    	var projectsPage = new ProjectsPage();
+    	var newProjectPage = new EditCreateProjectPage();
+    	projectsPage.get();
+    	browser.wait(function () {
+            return browser.isElementPresent(projectsPage.addProjectButton);
+        }).then(function () {
+        	 projectsPage.addProjectButton.click();
+             browser.sleep(2000);
+             
+             var startDate = getShortDate(new Date());
+             newProjectPage.nameInput.sendKeys(TEST_PROJECT_NAME);
+             newProjectPage.selectType(0);
+             newProjectPage.startDate.sendKeys(startDate);
+             console.log("> Test project fields entered.");
+        	
+             newProjectPage.cancelButton.click();
+             browser.sleep(2000); 
+             console.log("> Project canceled.");
+             expect(browser.getCurrentUrl()).toContain('/projects?filter');
         });
     };
 
@@ -494,6 +525,7 @@ describe("E2E: Project test cases.", function () {
         this.saveButtonTop = element.all(by.css('[ng-click="checkShiftDates(false)"]')).first();
         this.saveButtonBottom = element.all(by.css('[ng-click="checkShiftDates(false)"]')).get(1);
         this.saveButton = element(by.css('[ng-click="checkShiftDates(true)"]'));
+        this.cancelButton = element(by.css('[ng-click="close()"]'));
         this.successMessage = element.all(by.repeater('message in messages'));
     };
 });
