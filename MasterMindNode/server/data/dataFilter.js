@@ -699,11 +699,11 @@ var checkRequest = function(vacation, manager, statuses, startDate, endDate, cal
 		return callback (false);
 	}
 	
-	if (startDate && vacation.endDate > startDate) {
+	if (startDate && vacation.endDate < startDate) {
 		return callback (false);
 	}
 	
-	if (endDate && vacation.startDate < endDate) {
+	if (endDate && vacation.startDate > endDate) {
 		return callback (false);
 	}
 	
