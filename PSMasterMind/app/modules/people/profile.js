@@ -7,9 +7,9 @@ angular.module( 'Mastermind.controllers.people' ).controller( 'ProfileCtrl', [ '
 function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, HoursService, TableParams, $rootScope ) {
 
 	$scope.moment = moment;
-	
+
 	var UNSPECIFIED = CONSTS.UNSPECIFIED;
-	
+
 	$scope.projects = [ ];
 	$scope.hoursTasks = [ ];
 	$scope.execProjects = [ ];
@@ -91,17 +91,17 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 	$scope.getSecurityInformation = function(callback) {
 	  $scope.userSecurityGroups = [];
-	  
+
 	  if ($scope.canViewSecurityRoles()) {
 
 		  Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
 	        $scope.securityGroups = result.members;
-	
+
 	        Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
 	          $scope.userRoles = userRoles.members;
-	
+
 	          var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
-	
+
 	          if(userRole) {
 	              $scope.userRole = userRole;
 	              $scope.prepareUserRoles();
@@ -117,7 +117,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	      });
 	  } else if (callback)
 		  callback();
-	  
+
 	};
 
 	$scope.prepareUserRoles = function() {
@@ -411,14 +411,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			var currentMonth = new Date( ).getMonth( );
 			var currentYear = new Date( ).getFullYear( );
 			var prHours = [];
-			
+
 			$scope.projectHours = [];
-			
+
 			ProjectsService.getProjectsByIds(projects).then(function(resultProjects){
-				resultProjects = resultProjects.data ? resultProjects.data: [];
-				
+				resultProjects = resultProjects.members || [];
+
 				for( var projCounter = 0; projCounter < resultProjects.length; projCounter++ ) {
-				
+
 					var projectHour = {
 						projectURI: resultProjects[projCounter].about,
 						project: resultProjects[projCounter],
@@ -478,7 +478,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 					prHours.push( projectHour );
 					$scope.taskHours = [ ];
-					
+
 					for( var taskResource in tasksMap ) {
 						tasksHoursMap[ taskResource ].sort( function( h1, h2 ) {
 							if( new Date( h1.hour.date ) > new Date( h2.hour.date ) ) {
@@ -493,30 +493,30 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 							totalHours: tasksHoursMap[ taskResource ].totalHours
 						}, tasksMap[ taskResource ] ) );
 					}
-			
-					
+
+
 				}
-				
-				
+
+
 				$scope.projectHours = prHours;
-				
+
 				if( !isReinit ) {
 					$scope.currentWeek( );
 				} else {
 					$scope.showWeek( );
 				}
-				
+
 				if( cb )
 					cb( );
-					
-					
+
+
 			});
-			
+
 			/*
 			for( var projCounter = 0; projCounter < projects.length; projCounter++ ) {
-				
-				
-				
+
+
+
 				var project = ProjectsService.getForEditByURI( projects[ projCounter ] ).then( function( result ) {
 
 					var projectHour = {
@@ -578,7 +578,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 					prHours.push( projectHour );
 					$scope.taskHours = [ ];
-					
+
 					for( var taskResource in tasksMap ) {
 						tasksHoursMap[ taskResource ].sort( function( h1, h2 ) {
 							if( new Date( h1.hour.date ) > new Date( h2.hour.date ) ) {
@@ -603,13 +603,13 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 					if( cb )
 						cb( );
 				} );
-				
-				
-				
+
+
+
 			}
 			$scope.projectHours = prHours;
 			*/
-			
+
 		}, sort );
 	};
 
@@ -889,16 +889,16 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.canEditPersonnelData = function() {
 		return $rootScope.hasPermissions(CONSTS.EDIT_PERSONNEL_DATA);
 	};
-	
+
 	// check for permissions
 	$scope.canEditOtherPeopleHours = function() {
 		return $rootScope.hasPermissions(CONSTS.EDIT_HOURS_PERMISSION);
 	};
-	
+
 	$scope.canViewSecurityRoles = function() {
 		return $rootScope.hasPermissions(CONSTS.VIEW_SECURITY_ROLES);
 	};
-	
+
 	///////////Profile Hours/////////
 	$scope.newHoursRecord = {};
 
@@ -1012,7 +1012,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	} );
 
 	$scope.$on( 'hours:selectedNew', function( event, day ) {
-		// todo: perform a bunch of db requests on each click on UI: disable it 
+		// todo: perform a bunch of db requests on each click on UI: disable it
 		//$scope.recalculateCircle( day );
 	} );
 
