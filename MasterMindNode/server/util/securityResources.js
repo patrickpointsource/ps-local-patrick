@@ -75,6 +75,12 @@ var securityResources = {
             viewMyVacations: 'viewMyVacations',
             editVacations : 'editVacations',
             editMyVacations : 'editMyVacations',
+            viewMyApprovedOOO : 'viewMyApprovedOOO',
+            viewOthersApprovedOOO : 'viewOthersApprovedOOO',
+            viewMyPendingOOO : 'viewMyPendingOOO',
+            viewOthersPendingOOO : 'viewOthersPendingOOO',
+            viewMyRemovedOOO : 'viewMyRemovedOOO',
+            viewOtherRemovedOOO : 'viewOtherRemovedOOO'
         }
     },
     notifications :{
