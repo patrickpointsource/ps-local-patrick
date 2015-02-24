@@ -119,7 +119,7 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 			        }            
 			    });
 			    
-			}
+			} 
 			else {
 	            res.json(500, "No required type attribute");
 			}
@@ -127,6 +127,44 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 	});
 }); 
 
+
+router.get('/all', auth.isAuthenticated, function(req, res){
+	security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewVacations, function(allowed){
+		if (allowed) 
+		{
+			var startDate = req.query.startDate;
+			var endDate = req.query.endDate;
+			var statuses = req.query.status;
+			var fields = req.query.fields;
+			
+			var defaultStatuses = ['Approved', 'Pending'];
+			
+			if (!statuses)
+				// return only approved and pending
+				statuses = defaultStatuses;
+			else
+				statuses = _.filter(statuses, function(s) {
+					return _.indexOf(defaultStatuses, s) > -1;
+				});
+				
+			
+			if (startDate && endDate) {
+				
+			    vacations.listAllEmployeeVacations(statuses, startDate, endDate, fields, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			    
+		
+			} else {
+	            res.json(500, "No required params for vacations");
+			}
+		}
+	});
+}); 
 
 router.post( '/', auth.isAuthenticated, function( req, res ) {
     var personResource = req.body.person ? req.body.person.resource : undefined;
