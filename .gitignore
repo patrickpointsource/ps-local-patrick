@@ -9,6 +9,7 @@ PSMasterMind/test/reports/
 ## Eclipse workspace and project files
 .metadata/
 .settings/
+.project
 
 ## Visual Studio solution and project files
 *.sln
