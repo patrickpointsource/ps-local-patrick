@@ -45,7 +45,7 @@
       
   <div class="btn-group tab-buttons">
       <button class="btn project-button" ng-class="{ 'active-tab': editTab == 'summary' }" ng-click="changeEditTab('summary')">Summary</button>
-      <button class="btn project-button" ng-class="{ 'active-tab': editTab == 'assignments' }" ng-click="changeEditTab('assignments')">Assignments</button>
+      <button id="assignmentsButton" class="btn project-button" ng-class="{ 'active-tab': editTab == 'assignments' }" ng-click="changeEditTab('assignments')">Assignments</button>
   </div>
   
   <div>
@@ -60,7 +60,7 @@
   <div class="row">
     <div class="actions col-xs-12 pageActions">
       <button class="btn" ng-click="checkShiftDates(true)"><i class="fa fa-chevron-left"></i> <span>Done</span></button>
-      <button class="btn" ng-click="checkShiftDates(false)" ng-disabled="!formDirty"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
+      <button id="saveProjectButton" class="btn" ng-click="checkShiftDates(false)" ng-disabled="!formDirty"><i class="fa fa-floppy-o"></i> <span>Save</span></button>
     </div>
   </div>
   <div class="modal fade" id="dateShiftConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
