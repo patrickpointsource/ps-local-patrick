@@ -178,6 +178,7 @@ module.exports.getMyVacations = function (me, callback) {
             var today = moment();
             var year = today.year();
             var period = monthInPeriod(today.months());
+            returnedObject.vacations = vacations.members;
             if (period == 0) {
                 returnedObject.periods.push({
                     name: PERIOD_NAMES[0],
