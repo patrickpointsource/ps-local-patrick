@@ -386,7 +386,7 @@ function( $q, Resources ) {
 		} else if( ( query.person || query[ 'person.resource' ] ) && !query.project && !startDate && !endDate && orEmpty && !onlyAndDates ) {
 			var resource = query[ 'person.resource' ] ? query[ 'person.resource' ] : null;
 
-			logger.log('query:hours/persondates:before:3:');
+			//logger.log('query:hours/persondates:before:3:');
 					
 			if( !resource )
 				resource = query.person ? query.person.resource : null;
@@ -397,7 +397,7 @@ function( $q, Resources ) {
 				// to prevent from getting values from cache
 				t: ( new Date( ) ).getMilliseconds( )
 			} ).then( function( result ) {
-				logger.log('query:hours/persondates:after:3:' + ((new Date()).getTime() - now.getTime()));
+				//logger.log('query:hours/persondates:after:3:' + ((new Date()).getTime() - now.getTime()));
 				deferred.resolve( result );
 			} );
 
