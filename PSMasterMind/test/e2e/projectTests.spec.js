@@ -84,58 +84,66 @@ describe("E2E: Project test cases.", function () {
         createProject(fillActiveProjectPageFields);
     });
     
-    it('Check and remove active project.', function () {
-    	projectCheckAndRemove(ACTIVE_PROJECT_NAME, projectsPath.active);
+    it('Check that Services Estimate field is readonly for the created active project.', function () {
+    	selectProject(ACTIVE_PROJECT_NAME, projectsPath.active, checkServicesEstimateField);
+    });
+    
+    it('Select and remove active project.', function () {
+    	selectProject(ACTIVE_PROJECT_NAME, projectsPath.active, removeProject);
     });
 
     it('Should create backlog project.', function () {
         createProject(fillBacklogProjectPageFields);
     });
     
-    it('Check and remove backlog project.', function () {
-    	projectCheckAndRemove(BACKLOG_PROJECT_NAME, projectsPath.backlog);
+    it('Select and remove backlog project.', function () {
+    	selectProject(BACKLOG_PROJECT_NAME, projectsPath.backlog, removeProject);
     });
 
     it('Should create pipeline project.', function () {
         createProject(fillPipelineProjectPageFields);
     });
     
-    it('Check and remove pipeline project.', function () {
-    	projectCheckAndRemove(PIPELINE_PROJECT_NAME, projectsPath.pipeline);
+    it('Select and remove pipeline project.', function () {
+    	selectProject(PIPELINE_PROJECT_NAME, projectsPath.pipeline, removeProject);
     });
 
     it('Should create completed project.', function () {
         createProject(fillCompletedProjectPageFields);
     });
     
-    it('Check and remove completed project.', function () {
-    	projectCheckAndRemove(COMPLETED_PROJECT_NAME, projectsPath.completed);
+    it('Select and remove completed project.', function () {
+    	selectProject(COMPLETED_PROJECT_NAME, projectsPath.completed, removeProject);
     });
 
     it('Should create investment project.', function () {
         createProject(fillInvestmentProjectPageFields);
     });
     
-    it('Check and remove investment project.', function () {
-    	projectCheckAndRemove(INVEST_PROJECT_NAME, projectsPath.investment);
+    it('Select and remove investment project.', function () {
+    	selectProject(INVEST_PROJECT_NAME, projectsPath.investment, removeProject);
     });
     
     it('Should create project with 3 roles.', function () {
     	createProject(fill3RolesPageFields, []);
     });
     
-    it('Check and remove project with 3 roles.', function () {
-    	projectCheckAndRemove(TEST_PROJECT_NAME, projectsPath.all);
+    it('Select and remove project with 3 roles.', function () {
+    	selectProject(TEST_PROJECT_NAME, projectsPath.all, removeProject);
     });
     
     it('Cancel project creation: should redirect to the projects list.', function () {
     	cancelProjectCreation();
     });
     
+    it('Check for modal dialog asking us about saving changes before leaving.', function () {
+    	checkForSavingDialog();
+    });
+    
     it('Should verify mandatory fields for project.', function () {
     	createProject(fillBrokenProjectPageFields, []);
     });
-
+ 
     
     var checkAllProjectsListedByDefault = function () {
     	var projectsPage = new ProjectsPage();
@@ -221,17 +229,58 @@ describe("E2E: Project test cases.", function () {
         	 projectsPage.addProjectButton.click();
              browser.sleep(2000);
              
-             var startDate = getShortDate(new Date());
-             newProjectPage.nameInput.sendKeys(TEST_PROJECT_NAME);
-             newProjectPage.selectType(0);
-             newProjectPage.startDate.sendKeys(startDate);
-             console.log("> Test project fields entered.");
+             fillBrokenProjectPageFields(newProjectPage);
         	
              newProjectPage.cancelButton.click();
              browser.sleep(2000); 
              console.log("> Project canceled.");
              expect(browser.getCurrentUrl()).toContain('/projects?filter');
         });
+    };
+    
+    var selectProject = function (projectName, filterPath, callback) {
+    	var projectsPage = new ProjectsPage(filterPath);
+    	projectsPage.get();
+    	browser.driver.wait(function () {
+            return browser.isElementPresent(element(by.repeater('project in projects | filter:filterText')));
+        }).then(function () {
+        	projectsPage.findProject(projectName).then(function (filteredElements) {
+        		var project = filteredElements[0];
+        		expect(project).toBeDefined();
+        		
+        		if (project) {
+        			var projLink = project.element(by.tagName('a'));
+        			projLink.click();
+        			browser.sleep(5000);
+        			console.log("> Project selected ");
+
+        			if (callback) {
+        				callback();
+        			}
+        		}
+        	});
+        });
+    };
+    
+    var removeProject = function () {
+    	var projectPage = new ProjectPage();
+		browser.wait(function () {
+			return browser.isElementPresent(projectPage.editButton);
+		}).then(function () {
+			console.log("> Project removing ");
+			projectPage.editButton.click();
+			browser.sleep(2000);
+			browser.wait(function () {
+    			return browser.isElementPresent(projectPage.deleteButton);
+    		}).then(function () {
+    			browser.sleep(500);
+    	        projectPage.deleteButton.click();
+    	        browser.sleep(500);
+    	        projectPage.deleteButtonOk.click();
+    	        browser.sleep(2000);
+    	        expect(browser.getCurrentUrl()).toContain('/projects?filter');
+    	    });
+	    });
     };
 
     var fillCommonFields = function (newProjectPage, fillOtherFieldsCallback) {
@@ -352,50 +401,47 @@ describe("E2E: Project test cases.", function () {
         newProjectPage.addRoleButton.click();
     };
     
-    var projectCheckAndRemove = function (projectName, filterPath) {
-    	console.log("> Check that " + projectName + " project was saved and remove it.");
-    	var projectsPage = new ProjectsPage(filterPath);
-    	projectsPage.get();
-    	browser.driver.wait(function () {
-            return browser.isElementPresent(element(by.repeater('project in projects | filter:filterText')));
-        }).then(function () {
-        	projectsPage.findProject(projectName).then(function (filteredElements) {
-        		var project = filteredElements[0];
-        		expect(project).toBeDefined();
-        		
-        		if (project) {
-        			var projLink = project.element(by.tagName('a'));
-        			projLink.click();
-        			browser.sleep(5000);
-        			console.log("> Project selected ");
-
-        			removeProject(filterPath);
-        		}
-        	});
-        });
-    };
-
-    var removeProject = function (filterPath) {
+    var checkServicesEstimateField = function () {
+    	console.log("Check that Services Estimate field is readonly for the created active project.");
     	var projectPage = new ProjectPage();
 		browser.wait(function () {
 			return browser.isElementPresent(projectPage.editButton);
 		}).then(function () {
-			console.log("> Project removing ");
+			var editProjectPage = new EditCreateProjectPage();
 			projectPage.editButton.click();
 			browser.sleep(2000);
 			browser.wait(function () {
-    			return browser.isElementPresent(projectPage.deleteButton);
-    		}).then(function () {
-    			browser.sleep(500);
-    	        projectPage.deleteButton.click();
-    	        browser.sleep(500);
-    	        projectPage.deleteButtonOk.click();
-    	        browser.sleep(2000);
-    	        expect(browser.getCurrentUrl()).toContain(filterPath);
-    	    });
-	    });
+	    		return browser.isElementPresent(projectPage.deleteButton);
+	    	}).then(function () {
+	    		expect( editProjectPage.servicesEstimated.isDisplayed() ).toEqual( true );
+	    	    expect( editProjectPage.servicesEstimated.isEnabled() ).toEqual( true );
+	    	    expect( editProjectPage.servicesEstimated.getAttribute('readonly') ).toEqual( 'true' );
+	    	});
+		});
+    };
+    
+    var checkForSavingDialog = function () {
+    	var projectsPage = new ProjectsPage();
+    	var newProjectPage = new EditCreateProjectPage();
+    	projectsPage.get();
+    	browser.wait(function () {
+            return browser.isElementPresent(projectsPage.addProjectButton);
+        }).then(function () {
+        	 projectsPage.addProjectButton.click();
+             browser.sleep(2000);
+             
+             fillBrokenProjectPageFields(newProjectPage);
+             element.all(by.className('appTitle')).get(1).click(); // go to the home page
+             browser.sleep(1000);
+             
+             expect(newProjectPage.saveDialog.getAttribute('aria-hidden')).toEqual( 'false' );
+             newProjectPage.saveDialogNo.click();
+             browser.sleep(2000);
+             expect(browser.getCurrentUrl()).toContain('/index.html');
+        });
     };
 
+    
     var login = function () {
         browser.driver.ignoreSynchronization = true;
 
@@ -501,6 +547,7 @@ describe("E2E: Project test cases.", function () {
         this.calendarToday = element(by.css('.day active'));
         this.startDate = element(by.model('project.startDate'));
         this.endDate = element(by.model('project.endDate'));
+        this.servicesEstimated = element(by.id("servicesEstimatedValue"));
         this.projectCommited = element(by.model('project.committed'));
         this.execSponsorSelect = function (number) {
             element(by.model('project.executiveSponsor.resource')).all(by.tagName('option'))
@@ -527,5 +574,10 @@ describe("E2E: Project test cases.", function () {
         this.saveButton = element(by.css('[ng-click="checkShiftDates(true)"]'));
         this.cancelButton = element(by.css('[ng-click="close()"]'));
         this.successMessage = element.all(by.repeater('message in messages'));
+        
+        this.saveDialog = element(by.className("modalYesNo"));
+        this.saveDialogYes = element(by.css('[ng-click="modalDialog.okHandler()"]'));
+        this.saveDialogNo = element(by.css('[ng-click="modalDialog.noHandler()"]'));
+        this.saveDialogCancel = element(by.css('[ng-click="modalDialog.cancelHandler()"]'));
     };
 });
