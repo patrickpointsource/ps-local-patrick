@@ -6,6 +6,9 @@ PSMasterMind/dist/
 PSMasterMind/test/reports/
 *.css
 
+# Merge files
+*.orig
+
 ## Eclipse workspace and project files
 .metadata/
 .settings/
