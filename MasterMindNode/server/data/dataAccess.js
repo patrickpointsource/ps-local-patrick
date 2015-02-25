@@ -165,7 +165,7 @@ var filterRecordsByStartEndDates = function(data, startDate, endDate) {
 	return result;
 };
 
-var listProjects = function( callback, fields ) {
+var listProjects = function( fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	var data = null;

@@ -142,6 +142,13 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	function getActivePeople( ) {
 		return Resources.get( 'people/bytypes/activeAssignments');
 	}
+	
+	/**
+	 * Loads the list of all active people
+	 */
+	function getAllActivePeople( ) {
+		return Resources.get( 'people/bytypes/active');
+	}
 		
 		
 	/**
@@ -339,6 +346,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
         query: query,
         get: get,
         getActivePeople: getActivePeople,
+        getAllActivePeople: getAllActivePeople,
         getPeoplePerRole: getPeoplePerRole,
         getMyPeople: getMyPeople,
         getPeoleAssignments: getPeoleAssignments,

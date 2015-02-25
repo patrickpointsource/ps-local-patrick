@@ -35,7 +35,13 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     		$scope.initCalendar();
         };
         
-        
+        $scope.getVacationPeriod = function(vac) {
+        	//return 'test'
+        	if ($scope.moment(vac.startDate).date() != $scope.moment(vac.endDate).date())
+        		return ($scope.moment(vac.startDate).format('MMM D') + '-' + $scope.moment(vac.endDate).format('MMM D'));
+        	
+        	return $scope.moment(vac.startDate).format('MMM D');
+        };
         
         $scope.initCalendar = function() {
         	$scope.hideCalendarSpinner = false;
@@ -57,7 +63,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     			return Math.round(result * max);
 			}
     		
-    		var colors = ['#A4D49C', '#EA959D', '#9FCFEF', '#BD8C8F', '#E8EC99'];
+    		var colors = ['#A4D49C', '#EA959D', '#9FCFEF', '#BD8C8F', '#E8EC99', '#F69679'];
     		
     		var currentVacations;
     		
@@ -66,19 +72,14 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' )
 	   		 }).then(function(result) {
 	   			 	$scope.hideCalendarSpinner = true;
-	   			 	
-	   			 	
+	   			 	 	
 		            if (result && result.members) {
-		           	
-		           	 
 		            	currentVacations = result.members;
 		            	
 		            	for (var k = 0; k < currentVacations.length; k++)
 		            		currentVacations[k].background = colors[getRandom(colors.length - 1)];
 		            }
-		            
-		           
-		    		
+
 		    		var current;
 		    		var day = 0;
 		    		var currentDay;
@@ -93,27 +94,53 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 		    			currentDay = {
 		    				date: currentDate,
 		    				dayOfMonth: current.format( 'D' ),
-		    				vacations: [],
-		    				startOnDateVacations: []
+		    				vacations: []
 		    			};
 		    			
 		    			var tmpStart;
 		    			var tmpEnd;
 		    			
-		    			currentDay.vacations = _.filter(currentVacations, function(v) {
+		    			currentDay.vacations = _.filter(currentVacations, function(v, ind) {
 		    				var res = false;
 		    				
 		    				tmpStart = v.startDate.split(/\s+/gi)[0];
-		    				tmpEnd = v.startDate.split(/\s+/gi)[0];
+		    				tmpEnd = v.endDate.split(/\s+/gi)[0];
 		    				
 		    				if (currentDate >= tmpStart && currentDate <= tmpEnd)
 		    					res = true;
 		    				
-		    				if (currentDate == tmpStart)
-		    					currentDay.startOnDateVacations.push(v);
+		    				if (currentDate == tmpStart) {
+		    					//currentDay.startOnDateVacations.push(v);
+		    					v.startDateOfMultidays = currentDate;
+		    					//v.order = ind;
+		    				}
 		    				
 		    				return res;
 		    			});
+		    			
+		    			for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
+		    				if (currentDate.indexOf(currentDay.vacations[k].startDateOfMultidays) > -1 )
+		    					currentDay.vacations[k].order = k;
+		    			}
+		    			
+		    			var tmpVac;
+		    			
+		    			for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
+		    				if (!isNaN(parseInt(currentDay.vacations[k].order)) && k != currentDay.vacations[k].order) {
+		    					tmpVac = currentDay.vacations[ currentDay.vacations[k].order ];
+		    					
+		    					currentDay.vacations[ currentDay.vacations[k].order ] = currentDay.vacations[k];
+		    					
+		    					currentDay.vacations[k] = tmpVac;
+		    				}
+		    			}
+		    			
+		    			for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
+		    				if (!currentDay.vacations[k])
+		    					currentDay.vacations[k] = {
+		    						isEmpty: true
+		    				}
+		    			}
 		    			
 		    			$scope.displayedMonthDays.push(currentDay );
 		    		}
@@ -121,7 +148,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	        }).then(function() {
 	        	currentVacations;
 	        	
-	        	People.getActivePeople().then(function(result) {
+	        	People.getAllActivePeople().then(function(result) {
 	        		var tmpPerson;
 	        		
 	 	        	for (var k = 0; k < currentVacations.length; k ++) {
@@ -131,7 +158,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	 	        		});
 	 	        		
 	 	        		if (tmpPerson)
-	 	        			currentVacations[k].person.name = Util.getPersonName(tmpPerson);
+	 	        			currentVacations[k].person.name = Util.getPersonName(tmpPerson, true);
 	 	        	}
 	 	        		
 	 	        });

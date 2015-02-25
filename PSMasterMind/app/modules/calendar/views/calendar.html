@@ -60,8 +60,10 @@
 		                				'hours-day-not-logged': day.totalHours == 0}"  ng-click="setSelected(e, day, $index)">
 		                	
 		                	<div class="hours-day-content">
-		                		<div ng-repeat="vac in day.vacations" ng-show="{{$index <= 4}}" class="text-left vacation-day-entry {{$index}}" style="background-color:{{vac.background}}">
-					            	<span>{{vac.person.name ? vac.person.name: 'UNKNOWN'}}</span>
+		                		<div ng-repeat="vac in day.vacations" ng-show="{{!vac.isEmpty && $index <= 4}}" class="text-left vacation-day-entry {{$index}}" style="background-color:{{vac.background}}">
+					            	<span ng-show="{{vac.startDateOfMultidays == day.date}}">{{vac.person.name ? vac.person.name: 'UNKNOWN'}}</span>
+					            	<span class="vacation-day-period" ng-show="{{vac.startDateOfMultidays == day.date}}">{{getVacationPeriod(vac)}}</span>
+					            	<span ng-show="{{vac.startDateOfMultidays != day.date}}">&nbsp;&nbsp;&nbsp;</span>
 					            </div>
 		                	</div>
 		                	
