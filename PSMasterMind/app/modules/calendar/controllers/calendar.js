@@ -43,6 +43,17 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	return $scope.moment(vac.startDate).format('MMM D');
         };
         
+        $scope.onVacationClicked = function(e, vac, ind){
+        	e = e ? e: window.event;
+        	var entry = $(e.target).closest('.vacation-day-entry');
+        	
+        	entry.popover({
+        		content: vac.person.name,
+        		placement: 'right',
+        		container: '.vacation-day-entry.' + ind
+        	});
+        };
+        
         $scope.initCalendar = function() {
         	$scope.hideCalendarSpinner = false;
         	
