@@ -12,7 +12,8 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     	$scope.months = [ 'Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
     	$scope.weekDayLables = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
     	$scope.displayedMonthDays = [];
-
+    	$scope.hidePendingVacations = false;
+    	
     	$scope.filterVacationsBy = [{
     		label: 'All employees',
     		value: 'all'
@@ -90,8 +91,48 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         		
         };
         
-        $scope.onShowMoreClicked = function(e, vacations, ind) {
+        $scope.onShowMoreClicked = function(e, vacations, ind, vacInd) {
+        	e = e ? e: window.event;
+        	var entry = $(e.target).closest('.vacation-day-entry');
         	
+        	//e.preventDefault();
+        	e.stopPropagation();
+        	
+        	logger.log('onShowMoreClicked:' + ind + ':target.size=' + entry.size());
+        	
+        	var popover;
+        	
+        	if (!entry.data('popover')) {
+        		var out;
+        		var html = '<div class="vacation-entry-popup"><div><b>Out of Office</b></div>';
+        		var vac;
+        		
+        		for (var k = 0; k < vacations.length; k ++) {
+        			vac = vacations[k];
+        			
+        			out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
+        			
+        			html += '<div><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div><b>Type:</b> ' + vac.type + '</div></div>';
+        		}
+        			
+        		html += '</div>';
+        		
+	        	popover = entry.popover({
+	        		content: html,
+	        		html: true,
+	        		placement: 'auto left',
+	        		container: '.vacation-day-entry.entry_' + ind + '_' + vacInd
+	        	});
+	        	
+	        	entry.data('popover', popover);
+	        	entry.popover('show');
+	        	
+	        	entry.on('hidden.bs.popover', _.bind(function () {
+	        		this.context.popover('destroy');
+	        		this.context.data('popover', false);
+        		}, {context: entry}));
+        	}else
+        		entry.popover('toogle');
         };
         
         $scope.getRandomBackground = function() {
@@ -217,17 +258,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	 	        	}
 	 	        		
 	 	        });
-	        });
-	        
-	       
-        	
-        	
-        	
-        	
-        	
-    		
-    		 
-    		 
+	        }); 
     		
         };
         
