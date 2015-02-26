@@ -1,7 +1,19 @@
 
 
 <div class="container calendar" ng-controller="CalendarCtrl">
-	
+	<div class="row" style="margin-top:10px;">
+		<div class="col-md-9"></div>
+		<div class="col-md-3 ">
+			<form class="form-inline">
+				<label class="control-label" style="margin-top:7px;">Filter by:</label>
+				<select name="filterVacationBy" class="form-control pull-right" 
+						ng-model="filterVacationsByCurrent"
+						ng-required="true"
+						ng-options="f.value as f.label for f in filterVacationsBy">
+					</select>
+			</form>
+		</div>
+	</div>
 		<div class="panel panel-default dashboard-widget widget calendar" >
 		    <div class="panel-heading">
 		    	<div class="inner-heading">
@@ -28,13 +40,13 @@
 		       </div>
 		    </div>
 		    <div class="panel-body" >
-		    	<div class="spinner-container" ng-hide="hideCalendarSpinner" style="width: calc(100% - 30px);">
-		    		<i class="fa fa-spinner fa-spin fa-3x"></i>
-				</div>
+		    	
 		
 				<div class="row hours-month-container hidden-xs hidden-sm" ng-class="{}">
 		        	
-		        	
+		        	<div class="spinner-container" ng-hide="hideCalendarSpinner" style="width: calc(100% - 30px);">
+			    		<i class="fa fa-spinner fa-spin fa-3x"></i>
+					</div>
 		        	
 		        	 
 		        	<div class="day-labels">
@@ -60,12 +72,16 @@
 		                				'hours-day-not-logged': day.totalHours == 0}"  ng-click="setSelected(e, day, $index)">
 		                	
 		                	<div class="hours-day-content">
-		                		<div ng-repeat="vac in day.vacations" ng-show="{{!vac.isEmpty && $index <= 4}}" 
-		                			class="text-left vacation-day-entry {{$parent.$index}}" style="background-color:{{vac.background}}"
-		                			ng-click="onVacationClicked(event, vac, $parent.$index)">
+		                		<div ng-repeat="vac in day.vacations" ng-show="{{$index <= 4}}" ng-class="{'empty-vacation': vac.isEmpty}"
+		                			class="text-left vacation-day-entry entry_{{$parent.$index}}_{{$index}}" style="background-color:{{vac.background}}"
+		                			ng-click="onVacationClicked(event, vac, $parent.$index, $index)">
 					            	<span ng-show="{{vac.startDateOfMultidays == day.date}}">{{vac.person.name ? vac.person.name: 'UNKNOWN'}}</span>
 					            	<span class="vacation-day-period" ng-show="{{vac.startDateOfMultidays == day.date}}">{{getVacationPeriod(vac)}}</span>
 					            	<span ng-show="{{vac.startDateOfMultidays != day.date}}">&nbsp;&nbsp;&nbsp;</span>
+					            </div>
+					            
+					            <div ng-show="{{day.vacations.length > 4}}" class="text-left vacation-day-entry entry_more" style="background-color:orange;" >
+					            	<span>show {{day.vacations.length - 4}} more...</span>
 					            </div>
 		                	</div>
 		                	

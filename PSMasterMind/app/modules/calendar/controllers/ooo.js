@@ -159,7 +159,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
         };
 
         $scope.getSubmitText = function() {
-            if ($scope.editableVacation._id) {
+            if ($scope.editableVacation && $scope.editableVacation._id) {
                 return "RE-SUBMIT";
             } else {
                 return "SUBMIT";

@@ -13,6 +13,13 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     	$scope.weekDayLables = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
     	$scope.displayedMonthDays = [];
 
+    	$scope.filterVacationsBy = [{
+    		label: 'All employees',
+    		value: 'all'
+    	}];
+    	
+    	$scope.filterVacationsByCurrent = 'all';
+    	
         $scope.moment = window.moment ? window.moment: moment;
         $scope.currentMonth = $scope.moment();
         
@@ -43,15 +50,60 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	return $scope.moment(vac.startDate).format('MMM D');
         };
         
-        $scope.onVacationClicked = function(e, vac, ind){
+        $scope.onVacationClicked = function(e, vac, ind, vacIndex){
         	e = e ? e: window.event;
         	var entry = $(e.target).closest('.vacation-day-entry');
         	
-        	entry.popover({
-        		content: vac.person.name,
-        		placement: 'right',
-        		container: '.vacation-day-entry.' + ind
-        	});
+        	//e.preventDefault();
+        	e.stopPropagation();
+        	
+        	logger.log('onVacationClicked:' + ind + ':person.name=' + vac.person.name + ':' + $('.vacation-day-entry.entry_' + ind).size() + ':target.size=' + entry.size());
+        	
+        	var popover;
+        	
+        	if (!entry.data('popover')) {
+        		var out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
+	        	popover = entry.popover({
+	        		content: '<div class="vacation-entry-popup"><div class="name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div><b>Category:</b> ' + vac.type + '</div>' + '<div>',
+	        		html: true,
+	        		placement: 'auto left',
+	        		container: '.vacation-day-entry.entry_' + ind + '_' + vacIndex
+	        	});
+	        	
+	        	entry.data('popover', popover);
+	        	entry.popover('show');
+	        	
+	        	entry.on('hidden.bs.popover', _.bind(function () {
+	        		this.context.popover('destroy');
+	        		this.context.data('popover', false);
+        		}, {context: entry}));
+        	} else
+        		entry.popover('toogle');
+        	/*
+        	if (!entry.data('popover_shown')) {
+        		entry.popover('show');
+        		entry.data('popover_shown', true);
+        	} else {
+        		entry.popover('hide');
+        		entry.data('popover_shown', false);
+        	}*/
+        		
+        };
+        
+        $scope.onShowMoreClicked = function(e, vacations, ind) {
+        	
+        };
+        
+        $scope.getRandomBackground = function() {
+        	var colors = ['#A4D49C', '#EA959D', '#9FCFEF', '#BD8C8F', '#E8EC99', '#F69679'];
+        	
+        	function getRandom(max) {
+    			var result = Math.random();
+    			
+    			return Math.round(result * max);
+			}
+        	
+        	return colors[getRandom(colors.length - 1)];
         };
         
         $scope.initCalendar = function() {
@@ -67,15 +119,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
     		$scope.startDate = $scope.moment( $scope.currentMonth ).startOf( 'month' );
     		$scope.endDate = $scope.moment( $scope.currentMonth ).endOf( 'month' );
-	    	
-    		function getRandom(max) {
-    			var result = Math.random();
-    			
-    			return Math.round(result * max);
-			}
-    		
-    		var colors = ['#A4D49C', '#EA959D', '#9FCFEF', '#BD8C8F', '#E8EC99', '#F69679'];
-    		
+	    
     		var currentVacations;
     		
 	        Resources.refresh("vacations/all", {
@@ -88,7 +132,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 		            	currentVacations = result.members;
 		            	
 		            	for (var k = 0; k < currentVacations.length; k++)
-		            		currentVacations[k].background = colors[getRandom(colors.length - 1)];
+		            		currentVacations[k].background = $scope.getRandomBackground();
 		            }
 
 		    		var current;
@@ -150,7 +194,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 		    				if (!currentDay.vacations[k])
 		    					currentDay.vacations[k] = {
 		    						isEmpty: true
-		    				}
+		    					};
 		    			}
 		    			
 		    			$scope.displayedMonthDays.push(currentDay );

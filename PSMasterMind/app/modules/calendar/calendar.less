@@ -108,12 +108,33 @@
   font-weight: bold;
   line-height: 14px;
   width: 100%;
-  margin-top: 4px;
+  margin-top: 2px;
   padding-top: 2px;
   padding-bottom: 2px;
   padding-left: 2px;
+  cursot: pointer;
   
   .vacation-day-period {
+    font-weight: normal;
+    float: right;
+    padding-right: 3px;
+  }
+}
+
+.widget.calendar .empty-vacation {
+  visibility: hidden;
+}
+
+.widget.calendar .vacation-entry-popup{
+  font-size: 12px;
+  font-weight: normal;
+  div {
+    margin-top: 4px;
+    white-space: nowrap;
+  }
+  .name {
+    white-space: nowrap;
+    color: blue;
     font-weight: normal;
   }
 }
