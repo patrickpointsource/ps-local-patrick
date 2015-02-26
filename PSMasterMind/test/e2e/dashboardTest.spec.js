@@ -1,13 +1,10 @@
-/**
- * @Author vitali prakapchuk
- * 
- * */
 describe('E2E: Dashboard Test Cases >', function() {
 	 
 	var USER_NAME = 'psapps@pointsourcellc.com';
 	var PASSWORD = 'ps@pp$777';
 	
-	var HOURS_PROJECT = "MasterMind";
+	var ACTIVE_PROJECT_NAME = "E2E Hours widget - Active Project";
+	var BACKLOG_PROJECT_NAME = "E2E Hours widget - Backlog Project";
 	var HOURS_VALUE = 8;
 	var HOURS_ABSURD_VALUE = 50;
 	var HOURS_NULL_VALUE = 0;
@@ -56,6 +53,10 @@ describe('E2E: Dashboard Test Cases >', function() {
 	//Breadcrumb
 	var breadcrumbCtrl = by.className('breadcrumb');
 	
+	//ProjectKickoffs
+	var projectKickoffsCtrl = by.id('projectKickoffsWidget');
+	var projectKickoffs =  by.repeater("project in projectsKickingOff | orderBy:'startDate'");
+	
 
 	beforeEach(function() {
 		browser.driver.getCurrentUrl().then(function(url) {
@@ -90,7 +91,12 @@ describe('E2E: Dashboard Test Cases >', function() {
 		console.log('> Running: Hours Widget - Copy record.');
 		dashboardHoursWidgetCopyRecordTest();
 	});
-
+	
+	it('Project Kickoffs Widget Test: Should show my future projects', function() {
+		console.log('> Running: Project Kickoffse - Show my future projects.');
+		dashboardProjectKickoffsShowMyFutureProjectTest();
+    });
+	
 	it('Current Project Widget Test: Projects count.', function() {
 		console.log('> Running: Current Project Widget - Compare projects count.');
 		dashboardCurrentProjectsCountTest();
@@ -129,7 +135,7 @@ describe('E2E: Dashboard Test Cases >', function() {
 		    		return browser.isElementPresent(byId(hoursDelete, elementIndex));
 		    	}).then(function(){
 		    		console.log("> Verifying hours record.");
-		    		expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(HOURS_PROJECT);
+		    		expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(ACTIVE_PROJECT_NAME );
 		    		expect(browser.findElement(byId(loggedHours, elementIndex)).getText()).toEqual(HOURS_VALUE + ' hrs');
 		    		expect(browser.findElement(byId(loggedDescription, elementIndex)).getInnerHtml()).toEqual(HOURS_DESCRIPTION);
 		    		
@@ -354,9 +360,25 @@ describe('E2E: Dashboard Test Cases >', function() {
 	    	});
 	};
 	
+	var dashboardProjectKickoffsShowMyFutureProjectTest = function () {
+		browser.wait(function() {	    		
+	    		return browser.isElementPresent(projectKickoffsCtrl);
+	    	}).then(function() {
+	    		var projectName = BACKLOG_PROJECT_NAME;
+	    		console.log("> Project kickoffs should contain: " + projectName);
+	    		element.all(projectKickoffs).filter(function (elem) {
+	                return elem.getText().then(function (text) {
+	                    return text.indexOf(projectName) > -1;
+	                });
+	            }).then(function (filteredElements) {
+	        		expect(filteredElements[0]).toBeDefined();
+	        	});
+	    	});
+	};
+	
 	var addNewHoursRecord = function (hours) {
 		console.log("> Adding hours record.");
-		browser.findElement(byId(loggedProjectInput)).sendKeys(HOURS_PROJECT);
+		browser.findElement(byId(loggedProjectInput)).sendKeys(ACTIVE_PROJECT_NAME );
 		browser.wait(function(){	    		
     		return browser.isElementPresent(byId(ddlProjectsTasks));
     	}).then(function(){
@@ -364,7 +386,7 @@ describe('E2E: Dashboard Test Cases >', function() {
     		browser.findElement(byId(loggedHoursInput)).sendKeys(hours);
     		browser.findElement(byId(loggedDescriptionInput)).sendKeys(HOURS_DESCRIPTION);
     		browser.findElement(byId(hoursAdd)).click();
-    		browser.sleep(4000);
+    		browser.sleep(5000);
     	});
 	};
 	
