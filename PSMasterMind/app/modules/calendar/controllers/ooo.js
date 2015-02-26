@@ -286,5 +286,38 @@ angular.module('Mastermind').controller('OOOCtrl', [
                 });
             });
         };
+
+        $scope.showRequests = function() {
+            VacationsService.getRequests($scope.me).then(function(result) {
+                $scope.requests = result;
+
+                for (var i = 0; i < $scope.requests.length; i++) {
+                    var request = $scope.requests[i];
+
+                    Resources.resolve(request.person);
+                    request.days = VacationsService.getDays(request.startDate, request.endDate);
+                }
+            });
+        };
+
+        $scope.getRequestsByStatus = function (statusTitle) {
+            return _.where($scope.requests, { status: statusTitle });
+        };
+
+        $scope.getSwitchButtonText = function () {
+            if ($scope.showRequestsTab) {
+                return "Request OOO";
+            }
+            return "View requests";
+        };
+
+        $scope.showRequestsTab = false;
+        $scope.switchView = function() {
+            $scope.showRequestsTab = !$scope.showRequestsTab;
+        };
+
+        if ($scope.hasManagementRights || $rootScope.hasManagementRights) {
+            $scope.showRequests();
+        }
     }
 ]);
