@@ -70,8 +70,8 @@ describe('E2E: Staffing Tests', function() {
 		updateAndCheckMonthlyAttributes();
 	});	
 
-	it('Role Test: Delete role ', function() {	
-		console.log('> Running: Role - Delete role');
+	it('Role Test: Delete role & check ', function() {	
+		console.log('> Running: Role - Delete role & check');
 		deleteRoleAndCheck();
 	});	
 
