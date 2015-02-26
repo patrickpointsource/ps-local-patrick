@@ -28,19 +28,20 @@ describe("E2E: Project test cases.", function () {
     	completed: 'complete'
     };
     
-    var DEFAULT_PROJECTS_COUNT = 46;
     var projectsList = {
     		active: [ "All Apps",
+    		          "E2E Hours widget - Active Project",
     	              "Firewire Project Team",
     	              "MasterMind",
     	              "Navigation",
     	              "SC Test",
     	              "SIBC Condo Assoc. API & Database",
     	              "Test Assignments",
-    	              "Test shift dates",
-    	              "TestProj#byVlad" 
+    	              "Test for Daniil",
+    	              "TestProj#byVlad",
+    	              "TestRoleAssignees"
     	             ],
-    	    backlog: [ "TestRoleAssignees" ]
+    	    backlog: [ "E2E Hours widget - Backlog Project" ]
     };
     
     var projectRoles = {
@@ -54,7 +55,7 @@ describe("E2E: Project test cases.", function () {
         browser.driver.getCurrentUrl().then(function (url) {
             if (url.indexOf('http://localhost:9000/index.html#/projects') == -1) { //Go to the projects page
                 browser.driver.get('http://localhost:9000/index.html#/projects?filter=all');
-                browser.driver.sleep(2000);
+                browser.driver.sleep(1000);
                 browser.driver.getCurrentUrl().then(function (loginUrl) {
                     if (loginUrl.indexOf('http://localhost:9000/login.html') > -1) { //  Re-login if needed
                         console.log("> RE-LOGGING");
@@ -64,10 +65,10 @@ describe("E2E: Project test cases.", function () {
             }
         });
     });
-
-    it('Test All projects listed by default', function () {
-    	checkAllProjectsListedByDefault();
-    });
+    
+ 	it('Test Projects sorting', function () {
+ 		checkProjectsSorting();
+ 	});
 
     it('Click on Active projects, check that only active projects listed', function () {
     	checkProjectsList(projectsPath.active, projectsList.active);
@@ -143,18 +144,48 @@ describe("E2E: Project test cases.", function () {
     it('Should verify mandatory fields for project.', function () {
     	createProject(fillBrokenProjectPageFields, []);
     });
- 
-    
-    var checkAllProjectsListedByDefault = function () {
-    	var projectsPage = new ProjectsPage();
+      
+
+    var checkProjectsSorting = function ( ) {
+    	var checkSorting = function (projects, validationRow, isASC) {
+    		console.log("checkSorting");
+    		projects.then( function (projects) {
+        		 var firstProj = projects[0].element(by.binding(validationRow));
+        		 var lastProj = projects[projects.length - 1].element(by.binding(validationRow));
+        		 firstProj.getText().then( function (firstProjTitle) {
+                   	 lastProj.getText().then( function (lastProjTitle) {
+                       	 var isSorted = isASC ? firstProjTitle <= lastProjTitle : firstProjTitle >= lastProjTitle;
+                       	 console.log("First proj:" + firstProjTitle);
+                       	 console.log("Last proj:" + lastProjTitle);
+                       	 expect(isSorted).toBe(true);
+                     });
+                 });
+        	});
+   	 	};
+   	 	
+   	 	var projectsPage = new ProjectsPage();
     	projectsPage.get();
-        
-        var projects = element.all(by.repeater('project in projects | filter:filterText'));
-        console.log("> Calculating projects count. Should be equal to " + DEFAULT_PROJECTS_COUNT);
-        projects.count().then(function (projectsCount) {
-           console.log("> Projects count is " + projectsCount);
-           expect(projectsCount).toEqual(DEFAULT_PROJECTS_COUNT);
-       });
+    	browser.wait(function () {
+            return browser.isElementPresent(projectsPage.addProjectButton);
+        }).then(function () {
+        	
+        	var sortBy = function(sortField, validationRow) {
+        		sortField.click();
+            	checkSorting(projectsPage.projects, validationRow, true);
+            	browser.sleep(1000);
+            	sortField.click();
+                checkSorting(projectsPage.projects, validationRow, false);
+                browser.sleep(1000);
+        	};
+        	
+        	projectsPage.sortByProject.click();
+        	sortBy(projectsPage.sortByProject, projectsPage.sortRow.project);
+        	sortBy(projectsPage.sortByClient, projectsPage.sortRow.client);
+        	sortBy(projectsPage.sortByStartDate, projectsPage.sortRow.startDate);
+        	projectsPage.sortByProject.click();
+        	sortBy(projectsPage.sortByStatus, projectsPage.sortRow.project);
+     
+        });
     };
     
     var checkProjectsList = function (filterPath, projectsList) {
@@ -374,10 +405,7 @@ describe("E2E: Project test cases.", function () {
     
     var fillBrokenProjectPageFields = function (newProjectPage) {
         newProjectPage.nameInput.sendKeys(TEST_PROJECT_NAME);
-        newProjectPage.selectType(0).then(function () {
-            newProjectPage.projectCommited.click();
-            console.log("> Broken project fields entered.");
-        });
+        console.log("> Broken project fields entered.");
     };
     
     var fill3RolesPageFields = function (newProjectPage) {    	
@@ -523,6 +551,17 @@ describe("E2E: Project test cases.", function () {
         
         this.projects = element.all(by.repeater('project in projects | filter:filterText'));
         this.addProjectButton = element(by.css('[ng-click="createProject()"]'));
+        this.sortByProject = element(by.css('[ng-click="switchSort(\'proj\')"]'));
+        this.sortByClient = element(by.css('[ng-click="switchSort(\'cust\')"]'));
+        this.sortByStartDate = element.all(by.css('[ng-click="switchSort(\'sd\')"]')).get(0);
+        this.sortByEndDate = element.all(by.css('[ng-click="switchSort(\'ed\')"]')).get(0);
+        this.sortByStatus = element.all(by.css('[ng-click="switchSort(\'stat\')"]')).get(1);
+        this.sortRow = {
+        		project: '{{project.name}}',
+        		client: '{{project.customerName ? project.customerName : \'No customer\'}}',
+        		startDate: '{{project.startDate | date}}',
+        		endDate: '{{project.endDate | date}}'
+        };
         this.findProject = function (projectName) {
             var $this = this;
             return $this.projects.filter(function (elem) {
