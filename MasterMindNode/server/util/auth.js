@@ -28,20 +28,26 @@ var isAuthenticated = function(req, res, next){
 					}
 					else {
 				        req.session.error = err;
-		        		res.json(403, 'Unauthorized');
+				        // Wed, 25 Feb 2015 19:54:39 GMT express deprecated res.json(status, obj): 
+				        // Use res.status(status).json(obj) instead at server/util/auth.js:38:15
+				        res.status(403).json('Unauthorized');
 					}
 				});
 				
 			}
 			else {
 		        req.session.error = err;
-        		res.json(403, 'Invalid Token');
+		        // Wed, 25 Feb 2015 19:54:39 GMT express deprecated res.json(status, obj): 
+		        // Use res.status(status).json(obj) instead at server/util/auth.js:38:15
+        		res.status(403).json('Invalid Token');
 			}	
 		});
 	}
     else {
         req.session.error = 'Access denied!';
-        res.json(403, 'Unauthorized');
+        // Wed, 25 Feb 2015 19:54:39 GMT express deprecated res.json(status, obj): 
+        // Use res.status(status).json(obj) instead at server/util/auth.js:38:15
+        rres.status(403).json('Unauthorized');
     }
 };
 
