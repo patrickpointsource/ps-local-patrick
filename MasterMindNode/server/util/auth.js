@@ -47,7 +47,7 @@ var isAuthenticated = function(req, res, next){
         req.session.error = 'Access denied!';
         // Wed, 25 Feb 2015 19:54:39 GMT express deprecated res.json(status, obj): 
         // Use res.status(status).json(obj) instead at server/util/auth.js:38:15
-        rres.status(403).json('Unauthorized');
+        res.status(403).json('Unauthorized');
     }
 };
 
