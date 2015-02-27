@@ -31,6 +31,7 @@ describe('E2E: Dashboard Test Cases >', function() {
 	var hoursDelete = 'hoursDelete';	
 	var hoursCopy = 'hoursCopy';
 	var hoursEdit = 'hoursEdit';
+	var clearProject = by.css('[ng-click="clearSelectedItem(e, hourEntry)"]');
 	
 	//Current project widget
 	var activeProjectCount = 'activeCount';
@@ -86,12 +87,17 @@ describe('E2E: Dashboard Test Cases >', function() {
 		console.log('> Running: Hours Widget - Add absurd value.');
 		dashboardHoursWidgetAddAbsurdValueTest();
 	});
+	
+	it('Hours Widget Test: Add hours for backlog project.', function() {	
+		console.log('> Running: Hours Widget - Add hours for backlog project.');
+		dashboardHoursWidgetAddHoursForBacklogProjectTest();
+	});
 
 	it('Hours Widget Test: Copy record.', function() {	
 		console.log('> Running: Hours Widget - Copy record.');
 		dashboardHoursWidgetCopyRecordTest();
 	});
-	
+
 	it('Project Kickoffs Widget Test: Should show my future projects', function() {
 		console.log('> Running: Project Kickoffse - Show my future projects.');
 		dashboardProjectKickoffsShowMyFutureProjectTest();
@@ -180,31 +186,32 @@ describe('E2E: Dashboard Test Cases >', function() {
 		browser.wait(function(){	    		
 	    		return browser.isElementPresent(byId(loggedProjectInput));
 	    	}).then(function(){
-	    		
 	    		addNewHoursRecord(HOURS_ABSURD_VALUE);
-	    		
 		    	console.log("> Verifying that the absurd value wasn't added.");
-		    	var validationMsgCtrl = browser.findElement(byId(hoursValidationMsg));
-		    	var loggedDescriptionCtrl = browser.findElement(byId(loggedDescription));
-		    	var validationMsg = validationMsgCtrl ? validationMsgCtrl.getInnerHtml() : null;
-		    	var description = loggedDescriptionCtrl ? loggedDescriptionCtrl.getInnerHtml() : null;
-		    	expect(validationMsg).toEqual('Hours logged on a given day cannot exceed 24 hours.');
-		    	expect(description).not.toEqual(HOURS_DESCRIPTION);
+		    	verifyErrorMsg('Hours logged on a given day cannot exceed 24 hours.');
+		    	element(clearProject).click();
 		    	
-		    	console.log("> Adding null value.");
-		    	var hoursInput = browser.findElement(byId(loggedHoursInput));
-		    	hoursInput.clear().then( function () { hoursInput.sendKeys(HOURS_NULL_VALUE); } );
-	    		browser.findElement(byId(hoursAdd)).click();
-	    		browser.sleep(1000);	
-	    		
+		    	addNewHoursRecord(HOURS_NULL_VALUE);
 		    	console.log("> Verifying that the null value wasn't added.");
-		    	var validationMsgCtrl = browser.findElement(byId(hoursValidationMsg));
-		    	var loggedDescriptionCtrl = browser.findElement(byId(loggedDescription));
-		    	var validationMsg = validationMsgCtrl ? validationMsgCtrl.getInnerHtml() : null;
-		    	var description = loggedDescriptionCtrl ? loggedDescriptionCtrl.getInnerHtml() : null;
-		    	expect(validationMsg).toEqual('Hours value is empty');
-		    	expect(description).not.toEqual(HOURS_DESCRIPTION);
+		    	verifyErrorMsg('Hours value is empty');
+		    	element(clearProject).click();
 	    });
+	};
+	
+	var dashboardHoursWidgetAddHoursForBacklogProjectTest = function () {
+		browser.wait(function(){	    		
+    		return browser.isElementPresent(byId(loggedProjectInput));
+    	}).then(function(){
+    		addNewHoursRecord(HOURS_VALUE, BACKLOG_PROJECT_NAME);
+	    	console.log("> Verifying that the absurd value wasn't added.");
+	    	verifyErrorMsg('You are logging hours for project which is already ended or not started');
+    	});
+	};
+	
+	var verifyErrorMsg = function ( errMsg ) {
+    	var validationMsgCtrl = browser.findElement(byId(hoursValidationMsg));
+    	expect(validationMsgCtrl.getInnerHtml()).toBeDefined();
+    	expect(validationMsgCtrl.getInnerHtml()).toEqual(errMsg);
 	};
 	
 	var dashboardHoursWidgetCopyRecordTest = function () {
@@ -376,15 +383,18 @@ describe('E2E: Dashboard Test Cases >', function() {
 	    	});
 	};
 	
-	var addNewHoursRecord = function (hours) {
+	var addNewHoursRecord = function (hours, projectName) {
 		console.log("> Adding hours record.");
-		browser.findElement(byId(loggedProjectInput)).sendKeys(ACTIVE_PROJECT_NAME );
+		var projectInput = browser.findElement(byId(loggedProjectInput));
+		var hoursInput = browser.findElement(byId(loggedHoursInput));
+		var descriptionInput = browser.findElement(byId(loggedDescriptionInput));
+		projectInput.clear().then( function () { projectInput.sendKeys(projectName ? projectName : ACTIVE_PROJECT_NAME); } );
 		browser.wait(function(){	    		
     		return browser.isElementPresent(byId(ddlProjectsTasks));
     	}).then(function(){
     		browser.findElement(byId(ddlProjectsTasks)).click();
-    		browser.findElement(byId(loggedHoursInput)).sendKeys(hours);
-    		browser.findElement(byId(loggedDescriptionInput)).sendKeys(HOURS_DESCRIPTION);
+    		hoursInput.clear().then( function () { hoursInput.sendKeys(hours); });
+    		descriptionInput.clear().then( function () { descriptionInput.sendKeys(HOURS_DESCRIPTION); });
     		browser.findElement(byId(hoursAdd)).click();
     		browser.sleep(5000);
     	});
