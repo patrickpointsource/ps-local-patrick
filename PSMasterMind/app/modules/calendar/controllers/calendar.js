@@ -63,8 +63,9 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	var popover;
         	
         	if (!entry.data('popover')) {
-        		var out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
-	        	popover = entry.popover({
+        		var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')): $scope.moment(vac.startDate).format('M/D');
+	        	
+        		popover = entry.popover({
 	        		content: '<div class="vacation-entry-popup"><div class="name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div><b>Category:</b> ' + vac.type + '</div>' + '<div>',
 	        		html: true,
 	        		placement: 'auto left',
@@ -104,21 +105,25 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	
         	if (!entry.data('popover')) {
         		var out;
-        		var html = '<div class="vacation-entry-popup"><div><b>Out of Office</b></div>';
+        		var html = '<div class="vacation-entry-popup"><div class="vacation-popup-body">';
         		var vac;
         		
         		for (var k = 0; k < vacations.length; k ++) {
         			vac = vacations[k];
         			
-        			out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
+        			if (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
+        				out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
+        			else
+        				out = $scope.moment(vac.startDate).format('M/D');
         			
-        			html += '<div><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div><b>Type:</b> ' + vac.type + '</div></div>';
+        			html += '<div class="vacation-person-name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div class="vacation-person-type"><b>Type:</b> ' + vac.type + '</div>';
         		}
         			
-        		html += '</div>';
+        		html += '</div></div>';
         		
 	        	popover = entry.popover({
 	        		content: html,
+	        		title: 'Out of Office',
 	        		html: true,
 	        		placement: 'auto left',
 	        		container: '.vacation-day-entry.entry_' + ind + '_' + vacInd
@@ -213,7 +218,18 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 		    				
 		    				return res;
 		    			});
-		    			
+		    			/*
+		    			if (currentDate == '2014-11-27') {
+		    				//people/52ab7005e4b0fd2a8d130015
+		    				var tmpVac = _.extend({}, currentDay.vacations[currentDay.vacations.length - 1]);
+		    				
+		    				tmpVac.person.resource = 'people/52ab7005e4b0fd2a8d130015';
+		    				tmpVac.description = 'Test vacation';
+		    				
+		    				 currentDay.vacations.push(tmpVac);
+		    				
+		    			}
+		    			*/
 		    			for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
 		    				if (currentDate.indexOf(currentDay.vacations[k].startDateOfMultidays) > -1 )
 		    					currentDay.vacations[k].order = k;
@@ -237,6 +253,9 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 		    						isEmpty: true
 		    					};
 		    			}
+		    			
+		    			if (currentDay.vacations.length > 4)
+		    				currentDay.moreBackground = $scope.getRandomBackground();
 		    			
 		    			$scope.displayedMonthDays.push(currentDay );
 		    		}

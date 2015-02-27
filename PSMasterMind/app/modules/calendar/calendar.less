@@ -106,7 +106,7 @@
 .widget.calendar .vacation-day-entry {
   font-size: 9px !important;
   font-weight: bold;
-  line-height: 14px;
+  line-height: 12px;
   width: 100%;
   margin-top: 2px;
   padding-top: 2px;
@@ -121,13 +121,31 @@
   }
 }
 
+.widget.calendar .vacation-day-entry:first-child {
+  margin-top: 0px;
+}
+
 .widget.calendar .empty-vacation {
   visibility: hidden;
 }
 
+.widget.calendar .popover-content{
+  overflow-y:auto;
+  max-height:400px;
+  overflow-x: hidden;
+  padding-top:0px;
+}
+
+.widget.calendar .popover-title {
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 12px;
+}
 .widget.calendar .vacation-entry-popup{
   font-size: 12px;
   font-weight: normal;
+ 
+
   div {
     margin-top: 4px;
     white-space: nowrap;
@@ -136,5 +154,15 @@
     white-space: nowrap;
     color: blue;
     font-weight: normal;
+  }
+  
+  .vacation-person-name {
+    margin-top:12px;
+  }
+  
+  .vacation-person-type:not(:last-child) {
+    border-bottom: 1px solid #dbdbdb;
+    padding-bottom: 4px;
+    
   }
 }
