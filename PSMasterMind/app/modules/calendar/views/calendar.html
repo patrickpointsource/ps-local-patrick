@@ -86,13 +86,13 @@
 					            	<span ng-show="{{vac.startDateOfMultidays != day.date}}">&nbsp;&nbsp;&nbsp;</span>
 					            </div>
 					            
-					            <div ng-show="{{day.vacations.length > 4}}" ng-click="onShowMoreClicked($event, day.vacations, $index, 5)" class="text-left vacation-day-entry entry_{{$index}}_5" style="background-color:orange;" >
+					            <div ng-show="{{day.vacations.length > 4}}" ng-click="onShowMoreClicked($event, day.vacations, $index, 5)" class="text-left vacation-day-entry entry_{{$index}}_5" style="background-color:{{day.moreBackground}};" >
 					            	<span>show {{day.vacations.length - 4}} more...</span>
 					            </div>
 		                	</div>
 		                	
 		                	<div class="hours-day-footer">
-		                		<span class="month-day">{{day.dayOfMonth}}</span>
+		                		<span ng-hide="{{day.vacations.length > 4}}" class="month-day">{{day.dayOfMonth}}</span>
 		                	</div>
 		                	
 		                	
