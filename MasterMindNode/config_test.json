@@ -1,4 +1,4 @@
-// adding some test comments to test via review board
+// adding some test comments to test via rbcommons
 {
     "logToFileStream": false,
     "logFileName": "/var/www/www.log",
