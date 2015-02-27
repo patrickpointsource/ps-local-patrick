@@ -3,7 +3,6 @@
 var _ = require('underscore');
 
 var dataAccess = require('../data/dataAccess');
-//var validation = require( '../data/validation.js' );
 
 module.exports.listSecurityRoles = function( callback ) {
 	console.log('securityRoles:listSecurityRoles');
