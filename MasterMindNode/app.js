@@ -140,7 +140,9 @@ var allowCrossDomain = function(req, res, next) {
     if ('OPTIONS' == req.method) {
       res.header('Access-Control-Allow-Headers', 'accept, authorization, content-type');
       res.header('Access-Control-Allow-Methods', 'POST, PUT, DELETE');
-      res.send(200);
+      
+      // res.send(status) is deprecated      
+      res.sendStatus(200);
     }
     else {
       next();
