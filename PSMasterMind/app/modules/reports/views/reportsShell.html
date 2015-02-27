@@ -1,11 +1,11 @@
 <div  class="reports">
     <div class="row padded-row " style="margin-top:20px;">
         <div class="well" style="margin-left:16px;margin-right:16px;">
-            <div style="height:300px; position:relative;">
+            <div style="height:430px; position:relative;">
                 <div class="spinner-container" ng-hide="hideGraphSpinner" style="width: calc(100% - 30px);margin-top: 40px;height: calc(100% - 20px);">
                     <i class="fa fa-spinner fa-spin fa-3x"></i>
                 </div>
-    		
+
                 <div class="col-xs-12 col-sm-6 ">
 
                     <div class="">
@@ -15,22 +15,22 @@
                                     <label>Hours at a glance for:</label>
                                 </div>
                                 <div class="pull-left" style="max-width:170px;">
-                                    <select class="selectpicker select-people-groups form-control" data-size="false" multiple data-selected-text-format="values" 
+                                    <select class="selectpicker select-people-groups form-control" data-size="false" multiple data-selected-text-format="values"
                                             ng-model="selectedPeopleGroups" ng-options="g.value for g in peopleGroups track by g.value">
-				                      		
+
                                     </select>
                                 </div>
-			                    
+
                             </div>
-							
+
                             <div>
                                 <button class="btn btn-report pull-left" ng-show="hideGraphSpinner" ng-click="loadGraphData()">regenerate</button>
                                 <button class="btn btn-report pull-left" ng-hide="hideGraphSpinner" ng-click="cancelLoadGraphData()">cancel</button>
-								
+
                                 <button class="btn btn-report pull-right" ng-click="saveAsImage('shellVerticalReportchartContainer', 'hours-at-glance');">save as image</button>
                             </div>
                         </div>
-						
+
                         <div style="width:100%; clear: both; height: 20px; padding-left:7px;padding-right:7px; background-color: gray;position:relative;">
                             <div class="pull-left" ng-show="isShellGraphActivePeriod(['week', 'month'])" ng-click="prevShellGraphPeriod()" style="position:relative;z-index:1;">
                                 <i class="fa fa-caret-left " style="color: white;"></i>
@@ -48,27 +48,27 @@
                                 <button class="btn graph-period-button" ng-class="{'active-tab': isShellGraphActivePeriod('ProjectTD')}" ng-click="setShellGraphActivePeriod('projecttd')">Project Inception TD</button>
                             </div>
                         </div>
-            
+
                         <div ng-include src="'modules/reports/views/verticalbarChart.html'" onload="elemId='shellVerticalReport';chartData=getVerticalbarChartData()" ng-if="graphDataAvailable" id="shellVerticalReport" style="clear:both;"></div>
                     </div>
-					
+
                 </div>
                 <div class="col-xs-12 col-sm-6 reportsshell-hours categories">
                     <div class="pull-left">
                         <label>Hours %s across categories:</label>
                     </div>
-			                    
+
                     <div><button class="btn btn-report pull-right" ng-click="saveAsImage('d3DivshellPieGraph', 'Hours across categories', 300, 1000)">save as image</button></div>
-                    <div ng-include src="'modules/reports/views/pieChart.html'" onload="elemId='shellPieGraph';chartData=getPieChartData()" 
+                    <div ng-include src="'modules/reports/views/pieChart.html'" onload="elemId='shellPieGraph';chartData=getPieChartData()"
                          ng-if="graphDataAvailable" id="shellPieGraph" style="height:100%;"></div>
                 </div>
             </div>
-			
+
         </div>
     </div>
-	
+
     <div class="row padded-row parameters" >
-		
+
         <div class="col-sm-6">
             <div class="reports-well">
                 <div class="reports-well header">Create a report</div>
@@ -84,7 +84,7 @@
                 </div>
             </div>
         </div>
-		
+
         <div class="col-sm-6">
             <div class="reports-well">
                 <div class="reports-well header">Favorited Reports / Report Templates</div>
