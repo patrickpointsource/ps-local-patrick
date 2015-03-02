@@ -164,7 +164,27 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 			}
 		}
 	});
-}); 
+});
+
+router.get('/requests', auth.isAuthenticated, function (req, res) {
+    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewOthersPendingOOO, function (allowed) {
+        if (allowed) {
+            people.getPersonByGoogleId(req.user, function (personErr, manager) {
+                if (!personErr && manager) {
+                    vacations.getMyRequests(manager, function (err, result) {
+                        if (err) {
+                            res.json(500, err);
+                        } else {
+                            res.json(result);
+                        }
+                    });
+                } else {
+                    res.json(500, personErr);
+                }
+            });
+        }
+    });
+});
 
 router.post( '/', auth.isAuthenticated, function( req, res ) {
     var personResource = req.body.person ? req.body.person.resource : undefined;

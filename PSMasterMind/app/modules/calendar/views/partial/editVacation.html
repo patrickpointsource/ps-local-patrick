@@ -4,7 +4,7 @@
     </ul>
 </div>
 <div class="ooo-recent-header">
-    You have {{oooDaysLeft}} days of vacation available for use. <i class="fa fa-question-circle" style="margin-left: 15px; color: #1074BC;"></i>
+    You have {{oooDaysLeft}} days of vacation available for use. <i class="fa fa-question-circle" style="margin-left: 15px; color: #1074BC;" popover="{{pointSourcePolicy}}" popover-trigger="mouseenter" popover-placement="right"></i>
 </div>
 <div ng-show="!editableVacation && newVacationCreation == false" style="text-align: center;">
     <button class="btn btn-info" ng-click="requestNewVacation()">Request out of office time</button>
@@ -61,11 +61,11 @@
     <div ng-show="editableVacation.type" class="row no-horizontal-margin">
         <div class="col-xs-12 no-horizontal-padding" style="padding-bottom: 5px; font-weight: bold;">Description:</div>
         <div class="col-xs-12 no-horizontal-padding margin-bottom-xs padding-left-xs">
-            <input type="text" placeholder="Description" ng-model="editableVacation.description" class="form-control" ng-change="newDescChanged()" />
+            <input type="text" placeholder="Description" ng-model="editableVacation.description" class="form-control" />
         </div>
     </div>
     
-    <div ng-show="editableVacation.type" class="row col-xs-12 no-horizontal-padding margin-bottom-xs margin-right-xs vertical-margin-md">
+    <div ng-show="editableVacation.type" class="row col-xs-12 no-horizontal-margin no-horizontal-padding margin-bottom-xs margin-right-xs vertical-margin-md">
         <button ng-show="editableVacation._id" class="btn btn-default" data-toggle="modal" data-target="#vacCancelModal" style="color: red; border: 0px; background-color: #f7f7f7;">Cancel Request</button>
         <button class="btn btn-info pull-right" ng-click="submit()" style="color: white; font-weight: bold; font-size: 16px;">{{getSubmitText()}}</button>
         <span class="pull-right gray-text vac-requested"><span class="color-gray-less bold">{{getNewVacationDuration()}}</span> requested</span>

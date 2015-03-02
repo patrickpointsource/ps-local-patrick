@@ -1,14 +1,26 @@
 <div class="panel panel-default dashboard-widget" ng-controller="OOOCtrl">
-    <div class="panel-heading">Out of Office</div>
+    <div class="panel-heading">
+        <div style="display: inline;">Out of Office</div>    
+        <button class="btn btn-info" ng-click="switchView()" ng-show="hasManagementRights" style="margin-left: calc(100% - 230px);">{{getSwitchButtonText()}}</button>
+    </div>
     <div class="panel-body">
         <!-- Vacation entries -->
-        <div class="col-xs-12 col-sm-6 ooo-recent">
-            <ng-include src="'modules/calendar/views/partial/vacations.html'"/>
+        <div class="col-xs-12 col-sm-6 ooo-recent" ng-show="!showRequestsTab">
+            <ng-include src="'modules/calendar/views/partial/vacations.html'" />
         </div>
 
         <!-- Edit/New vacation entry -->
-        <div class="col-xs-12 col-sm-6">
-            <ng-include src="'modules/calendar/views/partial/editVacation.html'"/>
+        <div class="col-xs-12 col-sm-6" ng-show="!showRequestsTab">
+            <ng-include src="'modules/calendar/views/partial/editVacation.html'" />
+        </div>
+        
+        <!-- OOO Requests -->
+        <div class="col-xs-12 col-sm-6 ooo-recent" ng-show="hasManagementRights && showRequestsTab">
+            <ng-include src="'modules/calendar/views/partial/requests.html'" />
+        </div>
+        <!-- Request Details -->
+        <div class="col-xs-12 col-sm-6" ng-show="hasManagementRights && showRequestsTab">
+            <ng-include src="'modules/calendar/views/partial/request.html'" />
         </div>
     </div>
 </div>

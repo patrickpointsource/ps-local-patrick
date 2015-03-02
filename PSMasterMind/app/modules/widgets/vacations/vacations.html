@@ -14,7 +14,7 @@
              <strong ng-class="{ 'black-text': getCurrentYearVacationDays() > 0, 'gray-text': getCurrentYearVacationDays() <= 0 }">
                {{getCurrentYearVacationDays()}} days 
              </strong>of vacation available for use.
-             <i class="fa fa-question-circle" style="color: #1ba2c1;"></i>
+              <i class="fa fa-question-circle" style="color: #1ba2c1;" popover="{{pointSourcePolicy}}" popover-trigger="mouseenter"></i>
            </h4>
         </div>
       </div>

@@ -25,6 +25,10 @@ angular.module('Mastermind').controller('OOOCtrl', [
                     $scope.oooPeriods = result.periods;
                     $scope.oooDaysLeft = result.daysLeft;
                     $scope.myVacations = result.vacations;
+
+                    if ($scope.hasManagementRights || $rootScope.hasManagementRights) {
+                        $scope.showRequests();
+                    }
                 }
             });
             var params = {};
@@ -61,7 +65,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
         $scope.initOOO();
 
         $scope.editableVacation = null;
-        $scope.collapsedPeriodIndex = 0;
+        $scope.collapsedPeriodIndex = 1;
 
         $scope.collapsePeriod = function(index) {
             if ($scope.collapsedPeriodIndex == index) {
@@ -90,6 +94,10 @@ angular.module('Mastermind').controller('OOOCtrl', [
             });
             
             return (hours / 8).toFixed(1);
+        };
+
+        $scope.getDaysLost = function(vacation) {
+            return (VacationsService.getHoursLost(vacation) / 8).toFixed(1);
         };
 
         $scope.editableVacation = null;
@@ -123,8 +131,8 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
         $scope.vacationTypes = VacationsService.VACATION_TYPES;
 
-        $scope.getPersonName = function (person) {
-            return Util.getPersonName(person);
+        $scope.getPersonName = function (person, isSimply, isFirst) {
+            return Util.getPersonName(person, isSimply, isFirst);
         };
 
         $scope.getNewVacationDuration = function () {
@@ -285,6 +293,97 @@ angular.module('Mastermind').controller('OOOCtrl', [
                     $scope.messages.push("Out of office request deleted.");
                 });
             });
+        };
+
+        $scope.loadingRequests = false;
+        $scope.showRequests = function () {
+            $scope.loadingRequests = true;
+            VacationsService.getMyRequests().then(function (result) {
+                $scope.requestsData = result;
+
+                for (var i = 0; i < $scope.requestsData.length; i++) {
+                    var request = $scope.requestsData[i].request;
+
+                    request.days = VacationsService.getDays(request.startDate, request.endDate);
+
+                    $scope.cachedProjects = [];
+                    for (var j = 0; j < $scope.requestsData[i].projects.length; j++) {
+                        var projResource = $scope.requestsData[i].projects[j].resource;
+                        var project = _.findWhere($scope.cachedProjects, { resource: projResource });
+                        if (!project) {
+                            Resources.resolve($scope.requestsData[i].projects[j]).then(function (result) {
+                                if (!result.message && result.message !== "deleted") {
+                                    if (!_.findWhere($scope.cachedProjects, { _id: result._id })) {
+                                        $scope.cachedProjects.push(result);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+
+                $scope.loadingRequests = false;
+            });
+        };
+
+        $scope.getSwitchButtonText = function () {
+            if ($scope.showRequestsTab) {
+                return "Request OOO";
+            }
+            return "View requests";
+        };
+
+        $scope.showRequestsTab = false;
+        $scope.switchView = function() {
+            $scope.showRequestsTab = !$scope.showRequestsTab;
+        };
+
+        $scope.selectedRequest = null;
+        $scope.collapseRequest = function (data) {
+            if ($scope.selectedRequest && $scope.selectedRequest._id == request._id) {
+                $scope.selectedRequest = null;
+                $scope.personsProjects = null;
+            } else {
+                $scope.selectedRequest = data.request;
+                $scope.personsProjects = data.projects;
+            }
+        };
+
+        $scope.formatDate = function(date, format) {
+            return moment(date).format(format);
+        };
+
+        $scope.decide = function(request, isApproved) {
+            var status;
+            if (isApproved) {
+                status = VacationsService.STATUS.Approved;
+            } else {
+                status = VacationsService.STATUS.Denied;
+            }
+
+            request.status = status;
+            request.person = { resource: request.person.resource, name: $scope.getPersonName(request.person) };
+
+            $scope.selectedRequest = null;
+            $scope.loadingRequests = true;
+
+            Resources.update(request).then(function(result) {
+                $scope.showRequests();
+
+                if (isApproved) {
+                    VacationsService.commitHours(request);
+                }
+            });
+
+            $scope.$emit('request-processed', request.resource);
+        };
+
+        $scope.pointSourcePolicy = "PointSource provides a paid vacation benefit to regular full-time employees who regularly work a minimum of thirty (30) hours per week. Vacation time is allotted per calendar year and is accrued each pay period (i.e. 1/24th of allotted vacation time per pay period).";
+
+        $scope.getResourceFinderLink = function (request) {
+            var startDate = moment(request.startDate).format('YYYY-MM-DD');
+            var endDate = moment(request.endDate).format('YYYY-MM-DD');
+            $state.go('staffing', { tab: 'resourcefinder', startDate: startDate, endDate: endDate });
         };
     }
 ]);

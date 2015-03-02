@@ -3,15 +3,6 @@
         <h1>Project Hours Details</h1>
     </div>
     <div class="report-output-well body">
-        <div class="row no-margin no-padding">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                <label class="underlined width50percent no-margin">Actual Capacity</label>
-                <div class="big-number">
-                    {{output.projectHours.capacity}}
-                </div>
-            </div>
-        </div>
-        
         <div class="report-output-inside-row project-hours-row">
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                 <label class="underlined width50percent">Projected Client Hours</label>
@@ -45,20 +36,6 @@
                     {{output.projectHours.actualInvestHours}}
                 </div>
             </div>
-        </div>
-        <div class="report-output-inside-row project-hours-row">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                <label class="underlined width50percent">Out Of Office Hours</label>
-                <div>
-                    {{output.projectHours.outOfOfficeHours}}
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                <label class="underlined width50percent">Overhead Hours</label>
-                <div>
-                    {{output.projectHours.overheadHours}}
-                </div>
-            </div>
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                <label class="underlined width50percent">Total Client/Invest Hours Spent</label>
                 <div class="big-number">
@@ -66,92 +43,93 @@
                 </div>
             </div>
         </div>
+        <div class="report-output-inside-row project-hours-row">
+        	<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Overhead</label>
+                <div>
+                    {{output.projectHours.overheadHours}}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Out Of Office</label>
+                <div>
+                    {{output.projectHours.outOfOfficeHours}}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Actual Capacity</label>
+                <div class="big-number">
+                    {{output.projectHours.capacity}}
+                </div>
+            </div>
+        </div>
         <div class="report-output-well header small no-margin">
             <h2 class="upperlined">Utilization details</h2>
         </div>
         <div class="report-output-inside-row">
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                 <label class="underlined width50percent">Projected Client</label>
-                <div class="big-number">
+                <div>
                     {{output.projectHours.projectedClient}}%
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                 <label class="underlined width50percent">Projected Invest</label>
-                <div class="big-number">
+                <div>
                     {{output.projectHours.projectedInvest}}%
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                <label class="underlined width50percent">Actual Client</label>
-                <div class="big-number">
-                    {{output.projectHours.actualClient}}%
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                <label class="underlined width50percent">Actual Invest</label>
-                <div class="big-number">
-                    {{output.projectHours.actualInvest}}%
-                </div>
-            </div>
-        </div>
-        <div class="report-output-inside-row">
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                <label class="underlined width50percent">Out Of Office</label>
-                <div class="big-number">
-                    {{output.projectHours.outOfOfficeUtilization}}%
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                <label class="underlined width50percent">Overhead</label>
-                <div class="big-number">
-                    {{output.projectHours.overheadUtilization}}%
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                 <label class="underlined width50percent">Projected All Utilization</label>
                 <div class="big-number">
                     {{output.projectHours.projectedAllUtilization}}%
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        </div>
+        <div class="report-output-inside-row">
+        	<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Actual Client</label>
+                <div>
+                    {{output.projectHours.actualClient}}%
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Actual Invest</label>
+                <div>
+                    {{output.projectHours.actualInvest}}%
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                 <label class="underlined width50percent">Actual All Utilization</label>
                 <div class="big-number">
                     {{output.projectHours.actualAllUtilization}}%
                 </div>
             </div>
         </div>
-        <div class="report-output-inside-row" style="height: 350px;">
-            <div class="col-xs-12 col-sm-3">
-                <label class="width50percent padding-top-30">Percent Client Hours</label>
-                <div>
-                    {{output.projectHours.actualClient}}%
-                </div>
-                <label class="width50percent padding-top-10">Percent Invest Hours</label>
-                <div>
-                    <strong>{{output.projectHours.actualInvest}}%</strong>
-                </div>
-                <label class="width50percent padding-top-10">Percent OOO</label>
-                <div>
-                    {{output.projectHours.outOfOfficeUtilization}}%
-                </div>
-                <label class="width50percent padding-top-10">Percent OH</label>
+        <div class="report-output-inside-row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">Overhead</label>
                 <div>
                     {{output.projectHours.overheadUtilization}}%
                 </div>
-                <label class="width50percent padding-top-10">Percent Hours unaccounted for</label>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <label class="underlined width50percent">OOO</label>
                 <div>
-                    {{100 - output.projectHours.overheadUtilization - output.projectHours.outOfOfficeUtilization - output.projectHours.actualInvest - output.projectHours.actualClient}}%
+                    {{output.projectHours.outOfOfficeUtilization}}%
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-9">
-                <label>Percent Hours</label>
-                <div style="height:300px"
-                    ng-include src="'modules/reports/views/pieChart.html'" 
-                    onload="elemId='projectHoursPieGraph';chartData=getProjectHoursPieChartData()" 
-                    id="projectHoursPieGraph" ng-if="output.projectHours">
-                </div>
+            
+        </div>
+        <div class="report-output-inside-row" style="height: 350px;">
+        	<div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
+            <label>Percent Hours</label>
+            <div style="height:300px"
+                  ng-include src="'modules/reports/views/pieChart.html'" 
+                  onload="elemId='projectHoursPieGraph';chartData=getProjectHoursPieChartData();" 
+                  id="projectHoursPieGraph" ng-if="output.projectHours">
             </div>
+           </div>
         </div>
     </div>
 </div>
