@@ -136,6 +136,9 @@ module.exports = function(params) {
 						if (!err) {
 							if (result) {
 								person = result;
+								// The line above overrides {isActive : 'true'} set earlier
+								// resulting into new users being inserted without this field set
+								person.isActive = 'true';
 							}
 						}
 						if (result == null || result.about.indexOf('undefined') > -1 || (result && result.isActive)) {
