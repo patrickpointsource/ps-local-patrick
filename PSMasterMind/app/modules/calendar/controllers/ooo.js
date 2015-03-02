@@ -379,5 +379,11 @@ angular.module('Mastermind').controller('OOOCtrl', [
         };
 
         $scope.pointSourcePolicy = "PointSource provides a paid vacation benefit to regular full-time employees who regularly work a minimum of thirty (30) hours per week. Vacation time is allotted per calendar year and is accrued each pay period (i.e. 1/24th of allotted vacation time per pay period).";
+
+        $scope.getResourceFinderLink = function (request) {
+            var startDate = moment(request.startDate).format('YYYY-MM-DD');
+            var endDate = moment(request.endDate).format('YYYY-MM-DD');
+            $state.go('staffing', { tab: 'resourcefinder', startDate: startDate, endDate: endDate });
+        };
     }
 ]);
