@@ -364,29 +364,31 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 	    for( var i = 0; i < $scope.project.roles.length; i++ ) {
 	        var roleStartDate = moment($scope.project.roles[i].startDate);
 	        var roleEndDate = moment($scope.project.roles[i].endDate);
-			for( var j = 0; j < $scope.project.roles[ i ].assignees.length; j++ ) {
-				var assignment = $scope.project.roles[i].assignees[ j ];
-				if( assignment.role && assignment.role.resource.indexOf( role._id ) > -1 ) {
-					// if start date changed
-					if( startDelta != 0 ) {
-					    // shift start
-					    var shiftedDate = moment(assignment.startDate).add(startDelta, 'days');
-					    assignment.startDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
-					}
+	        if ($scope.project.roles[ i ].assignees) {
+				for( var j = 0; j < $scope.project.roles[ i ].assignees.length; j++ ) {
+					var assignment = $scope.project.roles[i].assignees[ j ];
+					if( assignment.role && assignment.role.resource.indexOf( role._id ) > -1 ) {
+						// if start date changed
+						if( startDelta != 0 ) {
+						    // shift start
+						    var shiftedDate = moment(assignment.startDate).add(startDelta, 'days');
+						    assignment.startDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
+						}
 
-					// if end date changed
-					if( endDelta != 0 ) {
-					    //shift end
-					    var shiftedDate = moment(assignment.endDate).add(endDelta, 'days');
-					    assignment.endDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
-					}
+						// if end date changed
+						if( endDelta != 0 ) {
+						    //shift end
+						    var shiftedDate = moment(assignment.endDate).add(endDelta, 'days');
+						    assignment.endDate = $scope.validateShiftDates(roleStartDate, roleEndDate, shiftedDate).format('YYYY-MM-DD');
+						}
 
-					// if endDate was set or removed, change assignment endDate
-					if( ( role.endDate && !assignment.endDate ) || ( !role.endDate && assignment.endDate ) ) {
-						assignment.endDate = role.endDate;
+						// if endDate was set or removed, change assignment endDate
+						if( ( role.endDate && !assignment.endDate ) || ( !role.endDate && assignment.endDate ) ) {
+							assignment.endDate = role.endDate;
+						}
 					}
 				}
-			}
+	        }
 		}
 
 
