@@ -46,13 +46,13 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 			 		//return d.value;
 			 		return d.key;
         		})
-		        .y(function(d) { return d.value })
+		        .y(function(d) { return d.value; })
 		        .showLabels(true)
 		        .labelThreshold(0.02)
 		        .color(colors)
-		        //.donut(true)
-		        .height(300)
-		 		.values(function(d) { return d })
+		        .height(300);
+				//.donut(true)
+		 		//.values(function(d) { return d }) // Error occurred
 
 				
 				//chart.showLegend(false);
