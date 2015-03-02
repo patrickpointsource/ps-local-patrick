@@ -4,7 +4,7 @@
     </ul>
 </div>
 <div class="ooo-recent-header">
-    You have {{oooDaysLeft}} days of vacation available for use. <i class="fa fa-question-circle" style="margin-left: 15px; color: #1074BC;"></i>
+    You have {{oooDaysLeft}} days of vacation available for use. <i class="fa fa-question-circle" style="margin-left: 15px; color: #1074BC;" popover="{{pointSourcePolicy}}" popover-trigger="mouseenter" popover-placement="right"></i>
 </div>
 <div ng-show="!editableVacation && newVacationCreation == false" style="text-align: center;">
     <button class="btn btn-info" ng-click="requestNewVacation()">Request out of office time</button>
