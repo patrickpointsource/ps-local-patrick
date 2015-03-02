@@ -85,7 +85,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
             }
 
             return res;
-        }
+        };
 
         maxValue = getMaxValue();
 
@@ -100,15 +100,15 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         // Add an x and 3 y-axes.  When using multiple axes it's
         // important to assign them to variables to pass to the series
         var x = myChart.addCategoryAxis("x", "label");
-        var y2 = myChart.addMeasureAxis("y", "expected hours for period");
-        var y3 = myChart.addMeasureAxis("y", "actual hours");
-        var y4 = myChart.addMeasureAxis("y", "expected hours to date");
+        var yKeys = Object.keys(dataMap);
+        var y2 = myChart.addMeasureAxis("y", yKeys[0].toLowerCase());
+        var y3 = myChart.addMeasureAxis("y", yKeys[1].toLowerCase());
+        var y4 = myChart.addMeasureAxis("y", yKeys[2].toLowerCase());
 
         x.title = xTitle;
 
         y4.overrideMin = 0;
         y4.overrideMax = maxValue;
-
         y4.hidden = true;
 
         y3.overrideMin = 0;
@@ -120,19 +120,19 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
 
         // Order the x axis by sales value desc
         x.addOrderRule("label", true);
+        
         // Color the sales bars to be highly transparent
-        myChart.assignColor("Expected hours for period", "#96D4F3", "#7FCCF0", 0.5);
+        myChart.assignColor(capitalizeString(y2.measure), "#96D4F3", "#7FCCF0", 0.5);
         // Add the bars mapped to the second y axis
-        var s1 = myChart.addSeries("Expected hours for period", dimple.plot.bar, [x, y2]);
+        var s1 = myChart.addSeries(capitalizeString(y2.measure), dimple.plot.bar, [x, y2]);
 
         // Color the sales bars to be highly transparent
-        myChart.assignColor("Actual hours", "#0071BC", "#0071BC", 0.7);
+        myChart.assignColor(capitalizeString(y3.measure), "#0071BC", "#0071BC", 0.7);
         // Add the bars mapped to the third y axis
-        var s2 = myChart.addSeries("Actual hours", dimple.plot.bar, [x, y3]);
+        var s2 = myChart.addSeries(capitalizeString(y3.measure), dimple.plot.bar, [x, y3]);
 
-        var td = myChart.addSeries("Expected hours to date", dimple.plot.bubble, [x, y4]);
-
-        myChart.assignColor("Expected hours to date", "red", "#ED1E79", 0.4);
+        myChart.assignColor(capitalizeString(y4.measure), "red", "#ED1E79", 0.4);
+        var td = myChart.addSeries(capitalizeString(y4.measure), dimple.plot.bubble, [x, y4]);
 
         myChart.draw();
 
@@ -155,7 +155,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
             .text(function (d) { return d; });
 
         // Get a unique list of Owner values to use when filtering
-        var filterValues = ["actual hours", "expected hours for period", "expected hours to date"];
+        var filterValues = [y2.measure, y3.measure, y4.measure];
         // Get all the rectangles from our now orphaned legend
         myLegend.shapes.selectAll("rect")
             // Add a click event to each rectangle
@@ -208,5 +208,13 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
 
         $scope.render(id);
     }, 1 * 1000);
+    
+    var capitalizeString = function (str) {
+    	if (str && str.length > 1) {
+    		return str.charAt(0).toUpperCase() + str.slice(1);
+    	} else {
+    		return str ? str.charAt(0).toUpperCase() : '';
+    	}
+    };
 
 }]);
