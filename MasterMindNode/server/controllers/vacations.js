@@ -184,14 +184,14 @@ module.exports.getMyVacations = function (me, callback) {
             returnedObject.vacations = vacations.members;
             if (period == 0) {
                 returnedObject.periods.push({
-                    name: PERIOD_NAMES[0],
-                    year: year,
-                    vacations: filterVacationsForPeriod(0, year, vacations)
-                });
-                returnedObject.periods.push({
                     name: PERIOD_NAMES[2],
                     year: year - 1,
                     vacations: filterVacationsForPeriod(2, year - 1, vacations)
+                });
+                returnedObject.periods.push({
+                    name: PERIOD_NAMES[0],
+                    year: year,
+                    vacations: filterVacationsForPeriod(0, year, vacations)
                 });
                 returnedObject.periods.push({
                     name: PERIOD_NAMES[1],
@@ -201,14 +201,14 @@ module.exports.getMyVacations = function (me, callback) {
             }
             if (period == 1) {
                 returnedObject.periods.push({
+                    name: PERIOD_NAMES[0],
+                    year: year - 1,
+                    vacations: filterVacationsForPeriod(0, year - 1, vacations)
+                });
+                returnedObject.periods.push({
                     name: PERIOD_NAMES[1],
                     year: year,
                     vacations: filterVacationsForPeriod(1, year, vacations)
-                });
-                returnedObject.periods.push({
-                    name: PERIOD_NAMES[0],
-                    year: year,
-                    vacations: filterVacationsForPeriod(0, year - 1, vacations)
                 });
                 returnedObject.periods.push({
                     name: PERIOD_NAMES[2],
@@ -218,14 +218,14 @@ module.exports.getMyVacations = function (me, callback) {
             }
             if (period == 2) {
                 returnedObject.periods.push({
-                    name: PERIOD_NAMES[2],
-                    year: year,
-                    vacations: filterVacationsForPeriod(2, year, vacations)
-                });
-                returnedObject.periods.push({
                     name: PERIOD_NAMES[1],
                     year: year,
                     vacations: filterVacationsForPeriod(1, year, vacations)
+                });
+                returnedObject.periods.push({
+                    name: PERIOD_NAMES[2],
+                    year: year,
+                    vacations: filterVacationsForPeriod(2, year, vacations)
                 });
                 returnedObject.periods.push({
                     name: PERIOD_NAMES[0],

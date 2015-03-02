@@ -65,7 +65,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
         $scope.initOOO();
 
         $scope.editableVacation = null;
-        $scope.collapsedPeriodIndex = 0;
+        $scope.collapsedPeriodIndex = 1;
 
         $scope.collapsePeriod = function(index) {
             if ($scope.collapsedPeriodIndex == index) {
