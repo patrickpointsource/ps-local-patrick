@@ -121,7 +121,7 @@ var listCurrentAssigments = function(callback) {
 };
 
 var listAssignmentsByPersonResource = function(resource, callback) {
-	dataAccess.listAssignmentsByPerson(personResource, function(err, result){
+	dataAccess.listAssignmentsByPerson(resource, function(err, result){
         if (err) {
             console.log(err);
             callback('error loading assignments by person :' + JSON.stringify(resource), null);

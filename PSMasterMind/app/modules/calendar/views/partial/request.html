@@ -1,0 +1,9 @@
+﻿<div>
+    <div class="ooo-recent-header" ng-show="!loading">
+        Request details
+    </div>
+</div>
+<div ng-show="selectedRequest">
+    <div style="margin-bottom: 15px;"><strong>{{getPersonName(selectedRequest.person, true)}}'s Projects</strong></div>
+    <div ng-repeat="project in personsProjects" ng-hide="!project.name" style="display:inline;"><a href="{{project.resource}}">{{project.customerName}}: {{project.name}}</a><span ng-hide="$index == personsProjects.length - 1">, </span></div>
+</div>

@@ -60,6 +60,15 @@ function ($q, Resources, HoursService) {
         return deferred.promise;
     };
 
+    this.getMyRequests = function () {
+        var deferred = $q.defer();
+
+        Resources.refresh("vacations/requests", {}).then(function (result) {
+            deferred.resolve(result);
+        });
+        return deferred.promise;
+    };
+
 
     this.getOtherRequestsThisPeriod = function(manager, request) {
         var deferred = $q.defer();

@@ -4,6 +4,9 @@ var dataAccess = require('../data/dataAccess');
 var moment = require('moment');
 var _ = require('underscore');
 var util = require("../util/util");
+var people = require("../controllers/people");
+var Q = require('q');
+var assignmentsService = require("../controllers/assignments");
 //12/11/14 MM var validation = require( '../data/validation.js' );
 
 module.exports.listVacations = function(callback) {
@@ -236,4 +239,54 @@ module.exports.getMyVacations = function (me, callback) {
             callback(null, returnedObject);
         }
     });
+};
+
+module.exports.getMyRequests = function(me, callback) {
+    var returnedObjects = [];
+
+    dataAccess.listRequests(me.resource, "Pending", null, null, null, function (err, result) {
+        if (err) {
+            callback(err, null);
+        } else {
+            var promises = [];
+            _.each(result.members, function (vacation) {
+                var promise = getReturnedObject(vacation);
+                promise.then(function (returnedObject) {
+                    returnedObjects.push(returnedObject);
+                });
+
+                promises.push(promise);
+            });
+
+            Q.all(promises).then(function() {
+                callback(null, returnedObjects);
+            });
+        }
+    });
+};
+
+var getReturnedObject = function(vacation) {
+    var deffered = Q.defer();
+    var returnedObject = { request: vacation };
+    people.getPersonByResource(vacation.person.resource, function (personErr, person) {
+        if (!personErr) {
+            returnedObject.request.person = person;
+            assignmentsService.listAssignmentsByPersonResource(person.about, function (err, assignments) {
+                if (!err) {
+                    returnedObject.projects = _.map(assignments, function(assignment) {
+                        return assignment.project;
+                    });
+
+                    deffered.resolve(returnedObject);
+                } else {
+                    deffered.reject(personErr);
+                }
+                
+            });
+        } else {
+            deffered.reject(personErr);
+        }
+    });
+
+    return deffered.promise;
 };

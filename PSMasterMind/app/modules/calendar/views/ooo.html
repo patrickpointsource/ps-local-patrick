@@ -1,6 +1,6 @@
 <div class="panel panel-default dashboard-widget" ng-controller="OOOCtrl">
     <div class="panel-heading">
-        <div>Out of Office</div>      
+        <div style="display: inline;">Out of Office</div>    
         <button class="btn btn-info" ng-click="switchView()" ng-show="hasManagementRights" style="margin-left: calc(100% - 230px);">{{getSwitchButtonText()}}</button>
     </div>
     <div class="panel-body">
@@ -15,11 +15,11 @@
         </div>
         
         <!-- OOO Requests -->
-        <div class="col-xs-12 col-sm-6 ooo-recent" ng-if="hasManagementRights" ng-show="hasManagementRights && showRequestsTab">
+        <div class="col-xs-12 col-sm-6 ooo-recent" ng-show="hasManagementRights && showRequestsTab">
             <ng-include src="'modules/calendar/views/partial/requests.html'" />
         </div>
         <!-- Request Details -->
-        <div class="col-xs-12 col-sm-6" ng-if="hasManagementRights" ng-show="hasManagementRights && showRequestsTab">
+        <div class="col-xs-12 col-sm-6" ng-show="hasManagementRights && showRequestsTab">
             <ng-include src="'modules/calendar/views/partial/request.html'" />
         </div>
     </div>

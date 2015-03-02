@@ -25,6 +25,10 @@ angular.module('Mastermind').controller('OOOCtrl', [
                     $scope.oooPeriods = result.periods;
                     $scope.oooDaysLeft = result.daysLeft;
                     $scope.myVacations = result.vacations;
+
+                    if ($scope.hasManagementRights || $rootScope.hasManagementRights) {
+                        $scope.showRequests();
+                    }
                 }
             });
             var params = {};
@@ -92,6 +96,10 @@ angular.module('Mastermind').controller('OOOCtrl', [
             return (hours / 8).toFixed(1);
         };
 
+        $scope.getDaysLost = function(vacation) {
+            return (VacationsService.getHoursLost(vacation) / 8).toFixed(1);
+        };
+
         $scope.editableVacation = null;
         $scope.newVacationCreation = false;
         
@@ -123,8 +131,8 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
         $scope.vacationTypes = VacationsService.VACATION_TYPES;
 
-        $scope.getPersonName = function (person) {
-            return Util.getPersonName(person);
+        $scope.getPersonName = function (person, isSimply, isFirst) {
+            return Util.getPersonName(person, isSimply, isFirst);
         };
 
         $scope.getNewVacationDuration = function () {
@@ -287,21 +295,35 @@ angular.module('Mastermind').controller('OOOCtrl', [
             });
         };
 
-        $scope.showRequests = function() {
-            VacationsService.getRequests($scope.me).then(function(result) {
-                $scope.requests = result;
+        $scope.loadingRequests = false;
+        $scope.showRequests = function () {
+            $scope.loadingRequests = true;
+            VacationsService.getMyRequests().then(function (result) {
+                $scope.requestsData = result;
 
-                for (var i = 0; i < $scope.requests.length; i++) {
-                    var request = $scope.requests[i];
+                for (var i = 0; i < $scope.requestsData.length; i++) {
+                    var request = $scope.requestsData[i].request;
 
-                    Resources.resolve(request.person);
                     request.days = VacationsService.getDays(request.startDate, request.endDate);
-                }
-            });
-        };
 
-        $scope.getRequestsByStatus = function (statusTitle) {
-            return _.where($scope.requests, { status: statusTitle });
+                    $scope.cachedProjects = [];
+                    for (var j = 0; j < $scope.requestsData[i].projects.length; j++) {
+                        var projResource = $scope.requestsData[i].projects[j].resource;
+                        var project = _.findWhere($scope.cachedProjects, { resource: projResource });
+                        if (!project) {
+                            Resources.resolve($scope.requestsData[i].projects[j]).then(function (result) {
+                                if (!result.message && result.message !== "deleted") {
+                                    if (!_.findWhere($scope.cachedProjects, { _id: result._id })) {
+                                        $scope.cachedProjects.push(result);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+
+                $scope.loadingRequests = false;
+            });
         };
 
         $scope.getSwitchButtonText = function () {
@@ -316,8 +338,44 @@ angular.module('Mastermind').controller('OOOCtrl', [
             $scope.showRequestsTab = !$scope.showRequestsTab;
         };
 
-        if ($scope.hasManagementRights || $rootScope.hasManagementRights) {
-            $scope.showRequests();
-        }
+        $scope.selectedRequest = null;
+        $scope.collapseRequest = function (data) {
+            if ($scope.selectedRequest && $scope.selectedRequest._id == request._id) {
+                $scope.selectedRequest = null;
+                $scope.personsProjects = null;
+            } else {
+                $scope.selectedRequest = data.request;
+                $scope.personsProjects = data.projects;
+            }
+        };
+
+        $scope.formatDate = function(date, format) {
+            return moment(date).format(format);
+        };
+
+        $scope.decide = function(request, isApproved) {
+            var status;
+            if (isApproved) {
+                status = VacationsService.STATUS.Approved;
+            } else {
+                status = VacationsService.STATUS.Denied;
+            }
+
+            request.status = status;
+            request.person = { resource: request.person.resource, name: $scope.getPersonName(request.person) };
+
+            $scope.selectedRequest = null;
+            $scope.loadingRequests = true;
+
+            Resources.update(request).then(function(result) {
+                $scope.showRequests();
+
+                if (isApproved) {
+                    VacationsService.commitHours(request);
+                }
+            });
+
+            $scope.$emit('request-processed', request.resource);
+        };
     }
 ]);
