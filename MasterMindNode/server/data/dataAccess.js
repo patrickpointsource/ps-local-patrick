@@ -1004,11 +1004,10 @@ var listSecurityRoles = function( callback ) {
 			if( !err ) {
 				console.log( "save " + SECURITY_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( SECURITY_ROLES_KEY, body );
-				callback( null, queryRecords( body, q, "members", "securityroles/" ) );
+				callback( null, prepareRecords( body.data, "members", "securityroles/" ) );
 			} else {
 				callback( err, null );
 			}
-			callback( null, prepareRecords( body.data, "members", "securityroles/" ) );
 		} );
 	}
 
@@ -1046,11 +1045,10 @@ var listUserRoles = function( fields, callback ) {
 			if( !err ) {
 				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( USER_ROLES_KEY, body );
-				callback( null, queryRecords( body, q, "members", "userRoles/" ) );
+				callback( null, prepareRecords( body.data, "members", "userRoles/", null, fields ) );
 			} else {
 				callback( err, null );
 			}
-			callback( null, prepareRecords( body.data, "members", "userRoles/", null, fields ) );
 		} );
 	}
 
