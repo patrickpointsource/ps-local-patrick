@@ -467,7 +467,7 @@ var createMinionUserRoles = function(callback, minionRole) {
     if(!err) {
       var people = peopleBody.members;
 
-      dataAccess.listUserRoles( function(err, userRolesBody) {
+      dataAccess.listUserRoles( null, function(err, userRolesBody) {
         var userRoles = userRolesBody.members;
 
         var countChecked = 0;
