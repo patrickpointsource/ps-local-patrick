@@ -1,5 +1,5 @@
         <!-- Start of People Details section -->
-        
+
             <div class="report-output-well">
                 <div class="report-output-well header">
                     <h1>People Details</h1>
@@ -37,32 +37,32 @@
                             	</div>
                         	</div>
                         	<div class="col-xs-12 col-sm-7">
-                        		<a class="btn" 
-                        			ng-if="output.peopleDetails" 
+                        		<a class="btn"
+                        			ng-if="output.peopleDetails"
                         			ng-click="popupHandler.openPeopleDetailsVerticalReport()">
                         			View Larger
                         		</a>
-  								<div ng-include src="'modules/reports/views/verticalbarChart.html'" 
-									onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=400" 
+  								<div ng-include src="'modules/reports/views/verticalbarChart.html'"
+									onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=620"
 									id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
 								</div>
                         	</div>
                        	</div>
                         <div ng-if="showPeopleDetailsLargerReport">
-                        	<a class="btn" 
-                        		ng-if="output.peopleDetails" 
+                        	<a class="btn"
+                        		ng-if="output.peopleDetails"
                         		ng-click="popupHandler.closePeopleDetailsVerticalReport()">
                         		View Smaller
                         	</a>
-                        	<div modal="showPeopleDetailsLargerReport"  
+                        	<div modal="showPeopleDetailsLargerReport"
   								close="popupHandler.closePeopleDetailsVerticalReport()">
     							<div class="modal-body">
-        							<div ng-include src="'modules/reports/views/verticalbarChart.html'" 
-										onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=700" 
+        							<div ng-include src="'modules/reports/views/verticalbarChart.html'"
+										onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=700"
 										id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
 									</div>
     							</div>
-  							</div> 
+  							</div>
                         </div>
                     </div>
                     <div class="report-output-well header height-auto no-margin">
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-                
-                
+
+
             </div>
         <!-- End of People Details section -->

@@ -136,7 +136,8 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
 
         myChart.draw();
 
-        var myLegend = myChart.addLegend(50, height - 55, width - 80, 20, "left");
+        var myLegend = myChart.addLegend(50, height - 55, width - 140, 20, "left");
+
         myChart.draw();
 
         myChart.legends = [];
@@ -152,6 +153,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
             .attr("y", function (d, i) { return height - 17 + i * 14; })
             .style("font-family", "sans-serif")
             .style("font-size", "10px")
+            .style("font-weight", "normal")
             .text(function (d) { return d; });
 
         // Get a unique list of Owner values to use when filtering
@@ -176,7 +178,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
                     d3.select(this).style("opacity", 0.1);
                 } else {
                     newFilters.push(e.aggField.slice(-1)[0].toLowerCase());
-                    d3.select(this).style("opacity", 0.4);
+                    d3.select(this).style("opacity", 0.8);
                 }
                 // Update the filters
                 filterValues = newFilters;
@@ -295,7 +297,7 @@ dimple.plot.bigDash = {
                 return returnValue;
             })
             .attr("width", function (d) { return (cat === "x" ? dimple._helpers.width(d, chart, series) : 0); })
-            .attr("height", function (d) { return weight; })
+            .attr("height", function (d) { return (cat === "y" ? dimple._helpers.height(d, chart, series) : 0) ? weight : 0; })
             .on("mouseover", function (e) { dimple._showBarTooltip(e, this, chart, series); })
             .on("mouseleave", function (e) { dimple._removeTooltip(e, this, chart, series); })
             .call(function () {
@@ -311,7 +313,7 @@ dimple.plot.bigDash = {
             .attr("x", function (d) { return xFloat ? dimple._helpers.cx(d, chart, series) - series.x.floatingBarWidth / 2 : dimple._helpers.x(d, chart, series); })
             .attr("y", function (d) { return (yFloat ? dimple._helpers.cy(d, chart, series) - series.y.floatingBarWidth / 2 : dimple._helpers.y(d, chart, series)) - weight; })
             .attr("width", function (d) { return (xFloat ? series.x.floatingBarWidth : dimple._helpers.width(d, chart, series)); })
-            .attr("height", function (d) { return weight; })
+            .attr("height", function (d) { return (yFloat ? series.y.floatingBarWidth : dimple._helpers.height(d, chart, series)) ? weight : 0; })
             .call(function () {
                 if (!chart.noFormats) {
                     this.attr("fill", function (d) { return dimple._helpers.fill(d, chart, series); })
@@ -340,7 +342,7 @@ dimple.plot.bigDash = {
                 return returnValue;
             })
             .attr("width", function (d) { return (cat === "x" ? dimple._helpers.width(d, chart, series) : 0); })
-            .attr("height", function (d) { return weight; });
+            .attr("height", function (d) { return (cat === "y" ? dimple._helpers.height(d, chart, series) : 0) ? weight : 0; });
 
         dimple._postDrawHandling(series, updated, removed, duration);
 
