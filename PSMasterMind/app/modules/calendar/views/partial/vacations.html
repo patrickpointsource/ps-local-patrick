@@ -5,16 +5,16 @@
     Your recent out of office requests
 </div>
 <div ng-repeat="period in oooPeriods" class="ooo-item" ng-show="!loading">
-    <div class="ooo-line row no-margin">
+    <div class="ooo-line row no-margin cursor-pointer" ng-click="collapsePeriod($index)">
         <div class="col-xs-4 no-horizontal-padding">
             <strong>{{period.name}} {{period.year}}</strong>
         </div>
         <div class="col-xs-7 no-horizontal-padding align-center">
             {{getTotalDays(period)}} days
         </div>
-        <div class="col-xs-1 no-horizontal-padding">
-            <a ng-click="collapsePeriod($index)"><i class="fa fa-caret-left fa-2x cursor-pointer" ng-hide="$index == collapsedPeriodIndex"></i></a>
-            <a ng-click="collapsePeriod($index)"><i class="fa fa-caret-down fa-2x cursor-pointer" ng-show="$index == collapsedPeriodIndex"></i></a>
+        <div class="col-xs-1 no-horizontal-padding" style="color: #60c5db;">
+            <i class="fa fa-caret-left fa-2x" ng-hide="$index == collapsedPeriodIndex"></i>
+            <i class="fa fa-caret-down fa-2x" ng-show="$index == collapsedPeriodIndex"></i>
         </div>
     </div>
     <div class="panel-body no-padding" ng-show="$index == collapsedPeriodIndex">

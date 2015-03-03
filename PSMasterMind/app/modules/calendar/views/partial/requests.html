@@ -1,0 +1,62 @@
+<div class="spinner-container" ng-show="loadingRequests" style="width: calc(100% - 30px);margin-top: 40px;height: calc(100% - 20px);">
+    <i class="fa fa-spinner fa-spin fa-3x"></i>
+</div>
+<div class="ooo-recent-header" ng-show="!loading">
+    <h4 class="align-center" style="margin-top: 0; margin-bottom: 1px;">
+        <span class="color-yellow">
+            <i class="fa fa-exclamation-circle"></i>
+            {{requestsData.length}} Pending request<span ng-hide="requestsData.length == 1">s</span>
+        </span> awaiting your response.
+    </h4>
+</div>
+<div ng-repeat="data in requestsData" class="ooo-item" ng-show="!loadingRequests">
+    <div class="ooo-line row no-margin cursor-pointer" ng-click="collapseRequest(data)">
+        <div class="col-xs-4 no-horizontal-padding">
+            <strong>{{getPersonName(data.request.person)}}</strong>
+        </div>
+        <div class="col-xs-7 no-horizontal-padding align-center">
+            {{data.request.type}} ({{getDaysLost(data.request)}} days)
+        </div>
+        <div class="col-xs-1 no-horizontal-padding" style="color: #60c5db;">
+            <i class="fa fa-caret-left fa-2x" ng-hide="selectedRequest._id == data.request._id"></i>
+            <i class="fa fa-caret-down fa-2x cursor-pointer" ng-show="selectedRequest._id == data.request._id"></i>
+        </div>
+    </div>
+    <div ng-show="selectedRequest._id == data.request._id" style="border: 1px solid #ececec; background-color: #f7f7f7; padding-left: 15px; padding-right: 15px;">
+        <div class="row">
+            <div class="col-xs-6">
+                <div style="font-weight: bold; font-size: 16px; padding: 15px 0 15px 0;">From</div>
+                <div>
+                    {{formatDate(data.request.startDate, "dddd, MMM D")}}
+                </div>
+                <div>
+                    {{formatDate(data.request.startDate, "h:mm A")}}
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div style="font-weight: bold; font-size: 16px; padding: 15px 0 15px 0;">Until</div>
+                <div>
+                    {{formatDate(data.request.endDate, "dddd, MMM D")}}
+                </div>
+                <div>
+                    {{formatDate(data.request.endDate, "h:mm A")}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12" style="padding-bottom: 5px; font-weight: bold;">Description:</div>
+            <div class="col-xs-12" style="padding-bottom: 15px;">{{data.request.description}}</div>
+            <div class="col-xs-12 margin-bottom-xs padding-left-xs">
+                <input type="text" placeholder="Manager comment (optional)" ng-model="data.request.comment" class="form-control" />
+            </div>
+        </div>
+        <div class="row no-horizontal-margin color-gray-image-border">
+            <button class="btn btn-approve pull-right" ng-click="decide(data.request, true)">
+                <i class="fa fa-check"></i> <span>APPROVE</span>
+            </button>
+            <button class="btn btn-deny pull-right" ng-click="decide(data.request, false)">
+                <i class="fa fa-times"></i> <span>DENY</span>
+            </button>
+        </div>
+    </div>
+</div>
