@@ -463,7 +463,7 @@ var createGroup = function(name, actionAfter) {
 
 var createMinionUserRoles = function(callback, minionRole) {
   console.log("Creating Employee default roles.");
-  dataAccess.listPeople(function(err, peopleBody) {
+  dataAccess.listPeople(null, function(err, peopleBody) {
     if(!err) {
       var people = peopleBody.members;
 
