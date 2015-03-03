@@ -1,7 +1,9 @@
 <div class="panel panel-default dashboard-widget" ng-controller="OOOCtrl">
     <div class="panel-heading">
-        <div style="display: inline;">Out of Office</div>    
-        <button class="btn btn-info" ng-click="switchView()" ng-show="hasManagementRights" style="margin-left: calc(100% - 230px);">{{getSwitchButtonText()}}</button>
+        <div style="display: inline;">Out of Office</div>
+        <div class="hidden-xs" style="display: inline; margin-left: calc(100% - 570px);" ng-show="requestsData.length > 0">You have {{requestsData.length}} new out of office requests.</div>
+        <div class="hidden-xs" style="display: inline; margin-left: calc(100% - 250px);" ng-hide="requestsData.length > 0"></div>
+        <button class="btn btn-info" ng-click="switchView()" ng-show="hasManagementRights && requestsData.length > 0" style="margin-left: 15px;">{{getSwitchButtonText()}}</button>
     </div>
     <div class="panel-body">
         <!-- Vacation entries -->
