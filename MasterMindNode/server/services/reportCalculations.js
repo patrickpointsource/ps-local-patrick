@@ -281,43 +281,54 @@ var getProjectsPeople = function(projects, assignments, allPeople) {
 
 var getProjectsHours = function(data, startDate, endDate, personResource, today) {
 	var projectsHours = [];
+	
+	var addProjectHours =  function (projectResource, projectHours) {
+		var project = _.findWhere(data.projects, { resource: projectResource });
+		if ( !project ) return;
+		
+		if (projectsHours[project.resource]) {
+	  		projectsHours[project.resource].assignedHours += projectHours.projectedHours;
+	  		projectsHours[project.resource].spentHours += projectHours.spentHours;
+	  		projectsHours[project.resource].assignedTDHours += projectHours.assignedTDHours;
+	  	} else {
+	  		projectsHours[project.resource] = {
+	  				project: {
+	  					name: project.name,
+	  					resource: project.resource
+	  				},
+	  				assignedHours: projectHours.projectedHours,
+	  				spentHours: projectHours.spentHours,
+	  				assignedTDHours: projectHours.assignedTDHours
+	  		};
+	  	}
+	};
+	
 	_.each(data.hours, function (record) {
-	      if( record.hours && record.project && record.person.resource == personResource ) {
-	    	  var person = _.findWhere(data.people, { resource: record.person.resource});
-	    	  var project = _.findWhere(data.projects, { resource: record.project.resource });
-	    	  if ( person && project ) {
-	    		  	var projectedHours = 0;
-	    		  	var spentHours = record.hours;
-	    		  	var assignedTDHours = today && ( moment(today).isAfter(moment(record.date)) || moment(today).isSame(moment(record.date)) )
-	    		  							? record.hours : 0;
-
-	    		  	_.each(data.assignments, function (assignment) {
-	    		  			if (project.resource == assignment.project.resource) {
-	    		  				_.each(assignment.members, function (member) {
-	    		  					if ( person.resource == member.resource ) {
-	    		  						projectedHours += calculateProjectedHours(startDate, endDate, member.hoursPerWeek);
-	    		  					}
-	    		  				});
-	    		  			}
-	    		  	});
-
-	    		  	if (projectsHours[project.resource]) {
-	    		  		projectsHours[project.resource].assignedHours += projectedHours;
-	    		  		projectsHours[project.resource].spentHours += spentHours;
-	    		  		projectsHours[project.resource].assignedTDHours += assignedTDHours;
-	    		  	} else {
-	    		  		projectsHours[project.resource] = {
-	    		  				project: {
-	    		  					name: project.name,
-	    		  					resource: project.resource
-	    		  				},
-	    		  				assignedHours: projectedHours,
-	    		  				spentHours: spentHours,
-	    		  				assignedTDHours: assignedTDHours
-	    		  		};
-	    		  	}
-	    	  }
-	     }
+		if( record.hours && record.project && record.person.resource == personResource ) {
+			var person = _.findWhere(data.people, { resource: record.person.resource});
+	    	if ( person ) {
+	    		var projectHours = {
+	    		  	spentHours: record.hours,
+	    		  	projectedHours: 0,
+	    	    	assignedTDHours: today && ( moment(today).isAfter(moment(record.date)) || moment(today).isSame(moment(record.date)) )
+	    	    		  				? record.hours : 0	
+	    		};
+	    		addProjectHours(record.project.resource, projectHours);    		  	
+	    	}
+	    }
+	});
+	
+	_.each(data.assignments, function (assignment) {
+		_.each(assignment.members, function (member) {
+			if ( member.project && member.person.resource == personResource ) {
+				var projectHours = {
+					spentHours: 0,
+					assignedTDHours: 0,
+					projectedHours: calculateProjectedHours(startDate, endDate, member.hoursPerWeek)
+		    	};
+		    	addProjectHours(member.project.resource, projectHours);   
+			}
+		});
 	});
 
 	var result = [];

@@ -27,14 +27,14 @@
             	</div>
             	<div class="row">
                 	<button class="btn btn-report"
-                		ng-hide="params.output == 'graphs'" 
+                		ng-hide="params.output == 'graphs' || params.output == 'none'" 
                 		ng-click="reportHandler.exportPeopleReport($event)">
 					<a href="{{reportHandler.link()}}" download="Custom.csv" >
 			      		Export to CSV
 			    	</a>
             	</div>
             	<div class="row">
-                	<button class="btn btn-report" ng-hide="params.output == 'csv'">Export graphs</button>
+                	<button class="btn btn-report" ng-hide="params.output == 'csv' || params.output == 'none'">Export graphs</button>
             	</div>
             </div>
             <div class="row report-output-nav">
