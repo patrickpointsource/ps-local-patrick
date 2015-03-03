@@ -80,16 +80,16 @@
 							<div class="col-xs-12 col-sm-6 ">
 								<label>Actual, Expected, Projected Hours</label>
 								<div class="personDetailsGraph"
-									ng-include src="'modules/reports/views/verticalbarChart.html'" 
-									onload="elemId='projectedHoursVerticalReport' + $index;chartData=getPersonProjectedHoursVerticalbarChartData(person);width=300;xAxisTitle='projects'" 
+									ng-include src="'modules/reports/views/verticalbarChart.html'"
+									onload="elemId='projectedHoursVerticalReport' + $index;chartData=getPersonProjectedHoursVerticalbarChartData(person);width=620;xAxisTitle='projects'"
 									id="{{'projectedHoursVerticalReport' + $index}}" ng-if="output.peopleDetails">
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 ">
 								<label>Percent Hours Across Categories</label>
 								<div class="personDetailsGraph"
-										ng-include src="'modules/reports/views/pieChart.html'" 
-										onload="elemId='categoriesHoursPieGraph' + $index;chartData=getPersonCategoriesHoursPieChartData(person);width=300" 
+										ng-include src="'modules/reports/views/pieChart.html'"
+										onload="elemId='categoriesHoursPieGraph' + $index;chartData=getPersonCategoriesHoursPieChartData(person);width=300"
 										id="{{'categoriesHoursPieGraph' + $index}}" ng-if="output.peopleDetails">
 								</div>
 							</div>
