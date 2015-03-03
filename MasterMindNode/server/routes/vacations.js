@@ -6,6 +6,7 @@ var util = require( '../util/util' );
 var auth = require( '../util/auth' );
 var people = require('../controllers/people');
 
+var _ = require('underscore');
 var router = express.Router( );
 
 var security = require( '../util/security' );
@@ -134,7 +135,7 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 		{
 			var startDate = req.query.startDate;
 			var endDate = req.query.endDate;
-			var statuses = req.query.status;
+			var statuses = req.query.status ? req.query.status.split(','): '';
 			var fields = req.query.fields;
 			
 			var defaultStatuses = ['Approved', 'Pending'];

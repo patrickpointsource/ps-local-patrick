@@ -92,6 +92,48 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         		
         };
         
+        $scope.onVacationHide  = function(e, vac, ind, vacIndex){
+        	e = e ? e: window.event;
+        	var entry = $(e.target).closest('.vacation-day-entry');
+        	
+        	//e.preventDefault();
+        	e.stopPropagation();
+        	
+        	logger.log('onVacationHide:' + ind + ':person.name=' + vac.person.name + ':' + $('.vacation-day-entry.entry_' + ind).size() + ':target.size=' + entry.size());
+        	
+        	var popover;
+        	
+        	if (entry.data('popover')) {
+        		/*var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')): $scope.moment(vac.startDate).format('M/D');
+	        	
+        		popover = entry.popover({
+	        		content: '<div class="vacation-entry-popup"><div class="name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div><b>Category:</b> ' + vac.type + '</div>' + '<div>',
+	        		html: true,
+	        		placement: 'auto left',
+	        		container: '.vacation-day-entry.entry_' + ind + '_' + vacIndex
+	        	});
+	        	
+	        	entry.data('popover', popover);
+	        	entry.popover('show');
+	        	
+	        	entry.on('hidden.bs.popover', _.bind(function () {
+	        		this.context.popover('destroy');
+	        		this.context.data('popover', false);
+        		}, {context: entry}));*/
+        		entry.popover('hide');
+        	} /*else
+        		entry.popover('toogle');*/
+        	/*
+        	if (!entry.data('popover_shown')) {
+        		entry.popover('show');
+        		entry.data('popover_shown', true);
+        	} else {
+        		entry.popover('hide');
+        		entry.data('popover_shown', false);
+        	}*/
+        		
+        };
+        
         $scope.onShowMoreClicked = function(e, vacations, ind, vacInd) {
         	e = e ? e: window.event;
         	var entry = $(e.target).closest('.vacation-day-entry');
@@ -152,7 +194,14 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	return colors[getRandom(colors.length - 1)];
         };
         
-        $scope.initCalendar = function() {
+        $scope.showHidePending = function() {
+        	if ($scope.hidePendingVacations)
+        		 $scope.initCalendar('Approved');
+    		 else
+    			 $scope.initCalendar();
+        };
+        
+        $scope.initCalendar = function(status) {
         	$scope.hideCalendarSpinner = false;
         	
         	 $scope.displayedMonthDays = [ ];
@@ -170,15 +219,32 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     		
 	        Resources.refresh("vacations/all", {
 	   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
-	   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' )
+	   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+	   			 status: status? status: ''
 	   		 }).then(function(result) {
 	   			 	$scope.hideCalendarSpinner = true;
 	   			 	 	
 		            if (result && result.members) {
+		            	var c;
+		            	
 		            	currentVacations = result.members;
 		            	
-		            	for (var k = 0; k < currentVacations.length; k++)
-		            		currentVacations[k].background = $scope.getRandomBackground();
+		            	var lightColors = randomColor({luminosity: 'light',count: currentVacations.length});
+		            	var darkColors = randomColor({luminosity: 'dark',count: currentVacations.length});
+		            	var dColor;
+		            	
+		            	for (var k = 0; k < currentVacations.length; k++) {
+		            		if (currentVacations[k].status && currentVacations[k].status.toLowerCase() != 'pending')
+		            			//currentVacations[k].background = $scope.getRandomBackground();
+		            			currentVacations[k].background = lightColors[k];
+		            		else {
+		            			dColor = Util.darkColorFrom(lightColors[k], 0.4);
+		            			
+		            			currentVacations[k].background = 'repeating-linear-gradient( -45deg, ' + lightColors[k] + ', ' + lightColors[k] + 
+		            				' 3px, ' + dColor + ' 3px, ' + dColor + ' 15px)';
+		            		}
+		            	}
+		            		
 		            }
 
 		    		var current;
