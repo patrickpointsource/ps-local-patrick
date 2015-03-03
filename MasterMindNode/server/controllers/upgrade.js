@@ -328,7 +328,7 @@ module.exports = function(params) {
 	
 	var addReportResourceInSecurityRole = function (callback) {
 		var reportsResource = {name : "reports", permissions : ["viewReports"]};
-		dataAccess.listSecurityRoles({}, function(err, body) {
+		dataAccess.listSecurityRoles( function(err, body) {
 			var securityRoles = body.members;
 			
 			
