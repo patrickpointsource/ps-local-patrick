@@ -340,7 +340,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
         $scope.selectedRequest = null;
         $scope.collapseRequest = function (data) {
-            if ($scope.selectedRequest && $scope.selectedRequest._id == request._id) {
+            if ($scope.selectedRequest && $scope.selectedRequest._id == data.request._id) {
                 $scope.selectedRequest = null;
                 $scope.personsProjects = null;
             } else {
