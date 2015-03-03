@@ -417,22 +417,22 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			dataOOO.values.push({
 				x: moment($scope.projectionsGraphData[i].date, "MM/DD/YYYY").format('YYYY-MM-DD'),
 				y: $scope.projectionsGraphData[i].actualOOO
-			})
+			});
 			
 			dataClient.values.push({
 				x: moment($scope.projectionsGraphData[i].date, "MM/DD/YYYY").format('YYYY-MM-DD'),
 				y:  $scope.projectionsGraphData[i].projectedClient
-			})
+			});
 			
 			dataInvest.values.push({
 				x: moment($scope.projectionsGraphData[i].date, "MM/DD/YYYY").format('YYYY-MM-DD'),
 				y:  $scope.projectionsGraphData[i].projectedInvest
-			})
+			});
 			
 			dataCeiling.values.push({
 				x: moment($scope.projectionsGraphData[i].date, "MM/DD/YYYY").format('YYYY-MM-DD'),
 				y:  $scope.projectionsGraphData[i].capacity
-			})
+			});
 		}
 		
 		return [dataOOO, dataClient, dataInvest, dataCeiling];
@@ -629,17 +629,17 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
     };
    
 	$scope.getPersonProjectedHoursVerticalbarChartData = function( person ) {
-		var tmpData = {"expected hours": [], "actual hours": [], "hours to date": []};
+		var tmpData = {"expected hours for period": [], "actual hours": [], "expected hours to date": []};
 		if (person.projectsHours && person.projectsHours.length > 0) {
 			for (var i in person.projectsHours) {
 				var projectHours = person.projectsHours[i];
 				var lbl = projectHours.project.name;
-				tmpData["expected hours"].push({label: lbl, value: projectHours.assignedHours});
+				tmpData["expected hours for period"].push({label: lbl, value: projectHours.assignedHours});
 				tmpData["actual hours"].push({label: lbl, value: projectHours.spentHours});
-				tmpData["hours to date"].push({label: lbl, value: projectHours.assignedTDHours});
+				tmpData["expected hours to date"].push({label: lbl, value: projectHours.assignedTDHours});
 			}
 		} else {
-			tmpData = {"expected hours": [{label:"", value:0}], "actual hours": [{label:"", value:0}], "hours to date": [{label:"", value:0}]};
+			tmpData = {"expected hours for period": [{label:"", value:0}], "actual hours": [{label:"", value:0}], "expected hours to date": [{label:"", value:0}]};
 		}
 		return tmpData;
 	};

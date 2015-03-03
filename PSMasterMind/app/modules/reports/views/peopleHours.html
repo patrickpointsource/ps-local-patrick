@@ -1,6 +1,6 @@
 <div>
 	<div class="row report-output-row" >
-		<div class="col-xs-12 col-sm-10">
+		<div class="col-xs-12 col-sm-12" ng-class="{'col-xs-12 col-sm-10' : params.output != 'none'}">
 			<div id="report-output-summary" class="row">
 				<ng-include src="'modules/reports/views/output/peopleHoursSummary.html'"/>
 			</div>
@@ -9,7 +9,7 @@
 			</div>
 		</div>
 
-		<div class="col-xs-10 col-sm-2 " >
+		<div class="col-xs-10 col-sm-2 " ng-hide="params.output == 'none'" >
 			<label>Export options</label>
 			<div class="reports groups">
 				<label>
