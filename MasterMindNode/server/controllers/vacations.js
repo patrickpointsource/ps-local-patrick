@@ -43,8 +43,8 @@ module.exports.listVacationsByPeriod = function(people, startDate, endDate, fiel
 };
 
 
-module.exports.listAllEmployeeVacations = function(statuses, startDate, endDate, fields, callback) {
-    dataAccess.listAllEmployeeVacations(statuses, startDate, endDate, fields, function(err, body){
+module.exports.listAllEmployeeVacations = function(statuses, startDate, endDate, persons, fields, callback) {
+    dataAccess.listAllEmployeeVacations(statuses, startDate, endDate, persons,  fields, function(err, body){
         if (err) {
             console.log(err);
             callback("error loading requests", null);
