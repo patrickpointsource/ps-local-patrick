@@ -5,18 +5,29 @@
  */
 
 angular.module('Mastermind').controller('CalendarCtrl', [
-    '$scope', '$state', '$filter', '$q', 'VacationsService', 'People', 'Resources',
-    function($scope, $state, $filter, $q, VacationsService, People, Resources) {
+    '$scope', '$state', '$filter', '$q', 'VacationsService', 'People', 'Resources', 'ProjectsService', 'AssignmentService',
+    function($scope, $state, $filter, $q, VacationsService, People, Resources, ProjectsService, AssignmentService) {
         $scope.startDate = '';
     	$scope.endDate = "";
     	$scope.months = [ 'Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
     	$scope.weekDayLables = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
     	$scope.displayedMonthDays = [];
     	$scope.hidePendingVacations = false;
+    	$scope.managersList = [];
+    	$scope.selectedManager = null;
     	
     	$scope.filterVacationsBy = [{
     		label: 'All employees',
     		value: 'all'
+    	}, {
+    		label: "Manager name",
+    		value: 'manager_name'
+    	}, {
+    		label: "Project name",
+    		value: 'project_name'
+    	}, {
+    		label: "Role name",
+    		value: 'role_name'
     	}];
     	
     	$scope.filterVacationsByCurrent = 'all';
@@ -62,9 +73,12 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	
         	var popover;
         	
-        	if (!entry.data('popover')) {
+        	
+        	if (!entry.data('bs.popover')) {
         		var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')): $scope.moment(vac.startDate).format('M/D');
 	        	
+        		
+        		
         		popover = entry.popover({
 	        		content: '<div class="vacation-entry-popup"><div class="name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div><b>Category:</b> ' + vac.type + '</div>' + '<div>',
 	        		html: true,
@@ -80,7 +94,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	        		this.context.data('popover', false);
         		}, {context: entry}));
         	} else
-        		entry.popover('toogle');
+        		entry.popover('show');
         	/*
         	if (!entry.data('popover_shown')) {
         		entry.popover('show');
@@ -103,7 +117,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	
         	var popover;
         	
-        	if (entry.data('popover')) {
+        	if (entry.data('bs.popover')) {
         		/*var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')): $scope.moment(vac.startDate).format('M/D');
 	        	
         		popover = entry.popover({
@@ -201,6 +215,41 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     			 $scope.initCalendar();
         };
         
+        $scope.filterVacationsByChanged = function(e) {
+        	if ($scope.filterVacationsByCurrent == 'manager_name') {
+        		
+        		if ($scope.managersList.length == 0)
+	        		Resources.refresh("people/bytypes/byGroups", { group: "Managers"}).then(
+	        			function (result) {
+	        				for( var i = 0; result &&  result.members && i < result.members.length; i++ ) {
+	        		            var manager = result.members[ i ];
+	        		           
+	        		            $scope.managersList.push( {
+	        		                label: Util.getPersonName(manager, true),
+	        		                value: manager.resource
+	        		            } );
+	        		        }
+	        			}
+	        		);
+        	} else if ($scope.filterVacationsByCurrent == 'project_name') {
+        		if (!$scope.projectList || $scope.projectList.length == 0)
+	        		ProjectsService.getAllProjects( function( result ) {
+	        			$scope.projectList = result.data;
+	        		} );
+        	} else
+        		$scope.initCalendar();
+        };
+        
+        $scope.filterVacationsByManagerChanged = function(e, passedScope) {
+        	$scope.selectedManager = passedScope.selectedManager;
+        	$scope.initCalendar();
+        };
+        
+        $scope.filterVacationsByProjectChanged = function(e, selected) {
+        	$scope.selectedProject = selected;
+        	$scope.initCalendar();
+        };
+        
         $scope.initCalendar = function(status) {
         	$scope.hideCalendarSpinner = false;
         	
@@ -215,19 +264,65 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     		$scope.startDate = $scope.moment( $scope.currentMonth ).startOf( 'month' );
     		$scope.endDate = $scope.moment( $scope.currentMonth ).endOf( 'month' );
 	    
-    		var currentVacations;
+    		var currentVacations = [];
+    		var loadPromise;
     		
-	        Resources.refresh("vacations/all", {
-	   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
-	   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
-	   			 status: status? status: ''
-	   		 }).then(function(result) {
+    		if ($scope.filterVacationsByCurrent == 'manager_name' && $scope.selectedManager) {
+    			var p = {
+    					startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+   		   			 	endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+    					includeApproved: true
+				};
+    			
+    			if (!$scope.hidePendingVacations)
+					p.includePending = true;
+    			
+    			loadPromise = VacationsService.getRequests({about: $scope.selectedManager}, p);
+    		} else if ($scope.filterVacationsByCurrent == 'project_name' && $scope.selectedProject) {
+    			loadPromise = AssignmentService.getAssignmentsByPeriod('all', {project: {resource: $scope.selectedProject.resource}});
+    			
+    			loadPromise = loadPromise.then(function(result) {
+    				 var assignments = result && result.members ? result.members: [];
+    				 var persons = [];
+    				 var start = $scope.startDate.format( 'YYYY-MM-DD' );
+    				 var end = $scope.endDate.format( 'YYYY-MM-DD' );
+    				 
+    				 for (var k = 0; k < assignments.length; k ++) {
+    					 if (!assignments[k].endDate && assignments[k].startDate <= end)
+    						 persons.push(assignments[k].person.resource);
+    					 else if (assignments[k].endDate && assignments[k].startDate <= end && assignments[k].endDate >= start)
+    						 persons.push(assignments[k].person.resource);
+    						 
+    				 }
+    				 
+    				 return persons;
+    				 
+    			 });
+    			
+    			loadPromise = loadPromise.then(function(persons) {
+    				if (persons.length > 0)
+	    				return Resources.refresh("vacations/all", {
+		   		   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+		   		   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+		   		   			 status: status? status: '',
+		   		   			 persons: persons.join(',')
+		   		   		 });
+    			});
+    		} else
+    			loadPromise = Resources.refresh("vacations/all", {
+		   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+		   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+		   			 status: status? status: ''
+		   		 });
+	   		 
+		   		 
+	   		 loadPromise.then(function(result) {
 	   			 	$scope.hideCalendarSpinner = true;
 	   			 	 	
-		            if (result && result.members) {
+		            if (result && (result.members || _.isArray(result))) {
 		            	var c;
 		            	
-		            	currentVacations = result.members;
+		            	currentVacations = _.isArray(result) ? result: result.members;
 		            	
 		            	var lightColors = randomColor({luminosity: 'light',count: currentVacations.length});
 		            	var darkColors = randomColor({luminosity: 'dark',count: currentVacations.length});
@@ -327,7 +422,6 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 		    		}
 	                	
 	        }).then(function() {
-	        	currentVacations;
 	        	
 	        	People.getAllActivePeople().then(function(result) {
 	        		var tmpPerson;
