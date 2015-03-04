@@ -311,7 +311,7 @@ module.exports.getUserRoles = function(user, callback) {
       console.log(err);
       callback('error loading getUserRoles', null);
     } else {
-      userRoles = body.members.length == 1 ? body.members[0]: {};
+      userRoles = body.members.length >= 1 ? body.members[0]: {'roles':[]};
     }
 
     callback(err, userRoles);
