@@ -244,7 +244,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         		.attr("height", height)
         		.attr("rx", 5)
         		.attr("ry", 5)
-        		.attr("fill-opacity", 0.7)
+        		.attr("fill-opacity", 0.8)
         		.style("fill", fill)
         		.style("stroke", stroke)
         		.style("stroke-width", 2);
