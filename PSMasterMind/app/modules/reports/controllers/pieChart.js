@@ -22,7 +22,7 @@ function( $scope, $q, $state, $stateParams, $filter, $location, Resources) {
 	var preparedData = $scope.chartData;
 	var allEmpty = true;
 	
-	for (var k = 0 ; k < preparedData.length;  k++) {
+	for (var k = 0 ;  preparedData && k < preparedData.length;  k++) {
 		allEmpty = allEmpty && preparedData[k].value == 0;
 		
 		if (preparedData[k].value > 0)

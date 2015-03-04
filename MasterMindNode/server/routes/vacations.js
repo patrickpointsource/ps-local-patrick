@@ -137,6 +137,7 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 			var endDate = req.query.endDate;
 			var statuses = req.query.status ? req.query.status.split(','): '';
 			var fields = req.query.fields;
+			var persons = req.query.persons ? req.query.persons.split(','): '';
 			
 			var defaultStatuses = ['Approved', 'Pending'];
 			
@@ -151,7 +152,7 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 			
 			if (startDate && endDate) {
 				
-			    vacations.listAllEmployeeVacations(statuses, startDate, endDate, fields, function(err, result){
+			    vacations.listAllEmployeeVacations(statuses, startDate, endDate, persons, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {

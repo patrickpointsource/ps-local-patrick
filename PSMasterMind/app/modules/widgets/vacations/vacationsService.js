@@ -45,7 +45,7 @@ function ($q, Resources, HoursService) {
     };
 
 
-    this.getRequests = function(manager) {
+    this.getRequests = function(manager, vacationParams) {
         var deferred = $q.defer();
         var params = {
             t: (new Date()).getMilliseconds()
@@ -54,12 +54,31 @@ function ($q, Resources, HoursService) {
         params.manager = manager.about;
         params.status = [this.STATUS.Pending, this.STATUS.Cancelled];
         params.fields = ["_id", "description", "startDate", "endDate", "person", "status", "type", "resource"];
+        
+        var customStatuses = [];
+        
+        if (vacationParams && vacationParams.includePending)
+        	customStatuses.push(this.STATUS.Pending);
+        	
+        if (vacationParams && vacationParams.includeApproved)
+        	customStatuses.push(this.STATUS.Approved);
+        
+        if (vacationParams && vacationParams.startDate)
+        	params.startDate = vacationParams.startDate;
+        
+        if (vacationParams && vacationParams.endDate)
+        	params.endDate = vacationParams.endDate;
+        
+        if (customStatuses.length > 0)
+        	params.status = customStatuses;
+        
         Resources.get("vacations/bytypes/getRequests", params).then(function(result) {
             deferred.resolve(result.members);
         });
         return deferred.promise;
     };
 
+    
     this.getMyRequests = function () {
         var deferred = $q.defer();
 

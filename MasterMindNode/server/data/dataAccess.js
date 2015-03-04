@@ -976,19 +976,19 @@ var listRequests = function( manager, statuses, startDate, endDate, fields, call
 
 };
 
-var listAllEmployeeVacations = function( statuses, startDate, endDate, fields, callback ) {
+var listAllEmployeeVacations = function( statuses, startDate, endDate, persons, fields, callback ) {
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
 		console.log( "read " + VACATIONS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterVacations(null, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
+		callback( null, prepareRecords( dataFilter.filterVacations(persons, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
-			callback( null, prepareRecords( dataFilter.filterVacations(null, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
+			callback( null, prepareRecords( dataFilter.filterVacations(persons, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
 		} );
 	}
 

@@ -43,7 +43,7 @@
                         			View Larger
                         		</a>
   								<div ng-include src="'modules/reports/views/verticalbarChart.html'"
-									onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=620"
+									onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=500;yAxisTitle='utilization';"
 									id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
 								</div>
                         	</div>
@@ -58,7 +58,7 @@
   								close="popupHandler.closePeopleDetailsVerticalReport()">
     							<div class="modal-body">
         							<div ng-include src="'modules/reports/views/verticalbarChart.html'"
-										onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=700"
+										onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=700;yAxisTitle='utilization';"
 										id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
 									</div>
     							</div>
