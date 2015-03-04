@@ -11,6 +11,17 @@ var validation = require( '../data/validation.js' );
 var configProperties = require('../../config.json');
 var os = require('os');
 
+var OLD_TYPES = {
+    Vacation: "Vacation",
+    VacationCancel: "VacationCancel"
+};
+
+var TYPES = {
+    VACATION_PENDING: "ooo-pending",
+    VACATION_APPROVED: "ooo-approved",
+    VACATION_CANCELLED: "ooo-cancelled"
+};
+
 
 module.exports.listNotifications = function( callback) {
     dataAccess.listNotifications( function(err, body){

@@ -20,7 +20,8 @@
 			"required": ["resource"]
 		},
 		"text": {"type":"string", "prohibited_values": [""]},
-		"type": {"type":"string", "prohibited_values": [""]}
-	},
+		"type": {"type":"string", "prohibited_values": [""]},
+	    "details": {"type": "object"}
+    },
 	"required": ["person", "type", "text"]
 }
