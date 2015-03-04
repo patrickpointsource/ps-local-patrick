@@ -20,6 +20,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         var width = $scope.width ? $scope.width : 620;
         var height = $scope.height ? $scope.height : 300;
         var xTitle = $scope.xAxisTitle ? $scope.xAxisTitle : 'role';
+        var yTitle = $scope.yAxisTitle ? $scope.yAxisTitle : 'hours';
 
         //var svg = dimple.newSvg("#" + elId + "chartContainer", 580, 210);
         var svg = dimple.newSvg("#" + elId + "chartContainer", width, height + 50);
@@ -100,12 +101,14 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         // Add an x and 3 y-axes.  When using multiple axes it's
         // important to assign them to variables to pass to the series
         var x = myChart.addCategoryAxis("x", "label");
-        var yKeys = Object.keys(dataMap);
+        var yKeys = dataMap ? Object.keys(dataMap) : ['', '', ''];
         var y2 = myChart.addMeasureAxis("y", yKeys[2].toLowerCase());
         var y3 = myChart.addMeasureAxis("y", yKeys[1].toLowerCase());
         var y4 = myChart.addMeasureAxis("y", yKeys[0].toLowerCase());
 
         x.title = xTitle;
+        // Order the x axis by sales value desc
+        x.addOrderRule("label", true);
 
         y4.overrideMin = 0;
         y4.overrideMax = maxValue;
@@ -118,21 +121,21 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         y2.overrideMax = maxValue;
         //y2.hidden = true;
 
-        // Order the x axis by sales value desc
-        x.addOrderRule("label", true);
-
         // Color the sales bars to be highly transparent
         myChart.assignColor(capitalizeString(y4.measure), "#96D4F3", "#7FCCF0", 0.5);
         // Add the bars mapped to the second y axis
-        myChart.addSeries(capitalizeString(y4.measure), dimple.plot.bar, [x, y4]);
+        var bar = myChart.addSeries(capitalizeString(y4.measure), dimple.plot.bar, [x, y4]);
+        configBarTooltip(svg, bar, xTitle, yTitle);
 
         // Color the sales bars to be highly transparent
         myChart.assignColor(capitalizeString(y3.measure), "#0071BC", "#0071BC", 0.7);
         // Add the bars mapped to the third y axis
-        myChart.addSeries(capitalizeString(y3.measure), dimple.plot.bar, [x, y3]);
+        bar = myChart.addSeries(capitalizeString(y3.measure), dimple.plot.bar, [x, y3]);
+        configBarTooltip(svg, bar, xTitle, yTitle);
 
         myChart.assignColor(capitalizeString(y2.measure), "red", "#ED1E79", 0.8);
-        myChart.addSeries(capitalizeString(y2.measure), dimple.plot.bigDash, [x, y2]);
+        bar = myChart.addSeries(capitalizeString(y2.measure), dimple.plot.bigDash, [x, y2]);
+        configBarTooltip(svg, bar, xTitle, yTitle);
 
         myChart.draw();
 
@@ -205,6 +208,76 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
             });
     };
 
+    var configBarTooltip = function ( svg, bar, xTitle, yTitle ) {
+    	var popup;
+        bar.addEventHandler("mouseover", onBarHover);
+        bar.addEventHandler("mouseleave", onBarLeave);
+    	
+    	function onBarHover(e) {
+    		
+    		if (!e.yValue || e.yValue == 0)
+    			return;
+    		
+    		// Get the properties of the selected shape
+    		var cx = parseFloat(e.selectedShape.attr("x")),
+        		cy = parseFloat(e.selectedShape.attr("y")),
+        		cwidth = parseFloat(e.selectedShape.attr("width")),
+        		cheight = parseFloat(e.selectedShape.attr("height"));
+    		var fill = e.selectedShape.attr("fill");
+    		var stroke = e.selectedShape.attr("stroke");
+
+    		// Set the size and position of the popup
+    		var width = 150,
+				height = 55,
+				x = (cx + 2 * width < svg.attr("width") ? cx + cwidth : cx - width - 10),
+        		y = (cy - height < height ? height : cy - height);
+
+        	// Create a group for the popup
+        	popup = svg.append("g");
+
+        	// Add a rectangle surrounding the tooltip content
+        	popup
+        		.append("rect")
+        		.attr("x", x + 5)
+        		.attr("y", y - 5)
+        		.attr("width", width)
+        		.attr("height", height)
+        		.attr("rx", 5)
+        		.attr("ry", 5)
+        		.attr("fill-opacity", 0.8)
+        		.style("fill", fill)
+        		.style("stroke", stroke)
+        		.style("stroke-width", 2);
+        		
+        	// Add custom tooltip content
+        	popup
+        		.append('text')
+        		.style("font-family", "sans-serif")
+        		.style("font-size", 10)
+        		.attr('x', x + 10)
+        		.attr('y', y + 5)
+        		.append('tspan')
+        		.attr('x', x + 10)
+        		.attr('y', y + 10)
+        		.text(e.seriesValue[0])
+        		.append('tspan')
+        		.attr('x', x + 10)
+        		.attr('y', y + 25)
+        		.text(capitalizeString(xTitle) + ": " + e.xValue)
+        		.append('tspan')
+        		.attr('x', x + 10)
+        		.attr('y', y + 40)
+        		.text(capitalizeString(yTitle) + ": " + e.yValue);
+    	};
+    
+    	function onBarLeave(e) {
+    		if ( popup && popup.remove() ) {
+    			popup.remove();
+    		}
+    	};
+    	
+    };
+    
     setTimeout(function () {
         var id = $scope.$parent.elemId ? $scope.$parent.elemId : $scope.$parent.$parent.elemId;
 
