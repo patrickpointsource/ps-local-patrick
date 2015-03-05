@@ -12,7 +12,7 @@ module.exports = function(params) {
 	var dbApiKey = config.cloudant[params.env].user;
 	var dbPwd = config.cloudant[params.env].password;
 	
-	var dbConnParams = {account:dbAccount, key:dbApiKey,password:dbPwd}; 
+	var dbConnParams = {account:dbAccount, key:dbApiKey,password:dbPwd, request_defaults:{maxSockets:30}}; 
 	var Cloudant = require("cloudant")(dbConnParams);
 	
 	var insertItem = function(id, item, callback){
