@@ -4,32 +4,32 @@
  * Controller for people report.
  */
 
-angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'AssignmentService', 'ProjectsService', 'ReportExportService', 'Resources', 
+angular.module( 'Mastermind.controllers.reports' ).controller( 'ProjectReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'AssignmentService', 'ProjectsService', 'ReportExportService', 'Resources',
 function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, AssignmentService, ProjectsService, ReportExportService, Resources ) {
 
 	var months = [];
-	
+
 	for (var i = 0; i < 12; i++)
 		months.push({ index: i, name: moment().month(i).format("MMM") });
-	
+
 	$scope.months = months;
-	
+
 	var years = [];
 	var currentYear = moment().year();
-	
+
 	for (var i = 5; i >= 0; i--)
 		years.push(currentYear - i);
-	
+
 	for (var i = 1; i <= 5; i++)
 		years.push(currentYear + i);
-	
+
 	$scope.years = years;
-	
+
   $scope.output = {};
-  
+
   // Summary Section
   var created = moment();
-  
+
   $scope.output.summary = {
     createdDate: created.format("MM/D/YYYY"),
     createdTime: created.format("H:mm:ss a"),
@@ -41,7 +41,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
     workingHoursPerPerson: 176,
     workingHoursForTeam: 10920
   };
-  
+
   $scope.scrollTo = function(id, needToScrollUp) {
       $location.hash(id);
       $anchorScroll();
@@ -51,7 +51,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
         }, 10);
       }
    };
-   
+
 	$scope.params = {
 		date: {
 			range: "week",
@@ -68,156 +68,156 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		output: "csv"
 	};
 	$scope.projects = {};
-   
+
 	Resources.get("roles").then(function (result)
 	{
 		if (!result)
 			return;
-		
+
 		$scope.roles = _.sortBy(result.members, function (item) { return item.title; });
 	});
-	
+
 	Resources.get("people/bytypes/withPrimaryRole").then(function (data)
 	{
 		$scope.peoples = data.members;
 	});
-   
+
 	ProjectsService.getAllProjects(function (result)
 	{
 	   $scope.projects = result.data;
 	});
-	
+
 	$scope.selectActiveProjects = function ()
 	{
 		if ($scope.projects.active)
 			ProjectsService.getActiveClientProjects(function (result)
 			{
 				$scope.projects.activeProjects = result.data;
-				
+
 				updateAssignedRoles(getSelectedProjects());
 			});
 		else
 			updateAssignedRoles(getSelectedProjects());
 	};
-	
+
 	$scope.selectBacklogProjects = function ()
 	{
 		if ($scope.projects.backlog)
 			ProjectsService.getBacklogProjects(function (result)
 			{
 				$scope.projects.backlogProjects = result.data;
-				
+
 				updateAssignedRoles(getSelectedProjects());
 			});
 		else
 			updateAssignedRoles(getSelectedProjects());
 	};
-	
+
 	$scope.selectPipelineProjects = function ()
 	{
 		if ($scope.projects.pipeline)
 			ProjectsService.getPipelineProjects(function (result)
 			{
 				$scope.projects.pipelineProjects = result.data;
-				
+
 				updateAssignedRoles(getSelectedProjects());
 			});
 		else
 			updateAssignedRoles(getSelectedProjects());
 	};
-	
+
 	$scope.selectCompletedProjects = function ()
 	{
 		if ($scope.projects.completed)
 			ProjectsService.getCompletedProjects(function (result)
 			{
 				$scope.projects.completedProjects = result.data;
-				
+
 				updateAssignedRoles(getSelectedProjects());
 			});
 		else
 			updateAssignedRoles(getSelectedProjects());
 	};
-	
+
 	$scope.selectDealLostProjects = function ()
 	{
 		if ($scope.projects.dealLost)
 			ProjectsService.getDealLostProjects(function (result)
 			{
 				$scope.projects.dealLostProjects = result.data;
-				
+
 				updateAssignedRoles(getSelectedProjects());
 			});
 		else
 			updateAssignedRoles(getSelectedProjects());
 	};
-	
+
 	$scope.onProjectSelect = function ()
 	{
 		updateAssignedRoles($scope.projects.selectedProjects);
 	};
-	
+
 	function getSelectedProjects()
 	{
 		var projects = [];
-		
+
 		if ($scope.projects.active)
 			projects = projects.concat($scope.projects.activeProjects);
-		
+
 		if ($scope.projects.backlog)
 			projects = projects.concat($scope.projects.backlogProjects);
-		
+
 		if ($scope.projects.pipeline)
 			projects = projects.concat($scope.projects.pipelineProjects);
-		
+
 		if ($scope.projects.completed)
 			projects = projects.concat($scope.projects.completedtProjects);
-		
+
 		if ($scope.projects.dealLost)
 			projects = projects.concat($scope.projects.dealLostProjects);
-		
+
 		return projects;
 	}
-	
+
 	function updateAssignedRoles(projects)
 	{
 		AssignmentService.getAssignments(projects || []).then(function (data)
 		{
 			$scope.selectedAssignments = data;
-			
+
 			var assignedRoles = [];
-			
+
 			for (var i = 0, projCount = data.length; i < projCount; i++)
 				for (var j = 0, assignmentCount = data[i].members.length; j < assignmentCount; j++)
 				{
 					var assignment = data[i].members[j];
 					var assignee = _.find($scope.peoples, function (p) { return p.resource == assignment.person.resource; });
-					
+
 					if (!assignee)
 						continue;
-					
+
 					var roleName = _.find($scope.roles, function (r) { return assignee.primaryRole && r.resource == assignee.primaryRole.resource; });
-					
+
 					if (roleName && assignedRoles.indexOf(roleName.abbreviation) == -1)
 						assignedRoles.push(roleName.abbreviation);
 				}
-			
+
 			$scope.assignedRoles = _.sortBy(assignedRoles, function (ar) { return ar; });
 		});
 	}
-	
+
 	$scope.selectAllAssignmentHours = function (selected)
 	{
 		$scope.params.fields.assignmentHours.all = selected;
-		
+
 		_.each($scope.assignedRoles, function (ar) { $scope.params.fields.selectedAssignedRoles[ar] = selected; });
-		
+
 		$scope.params.fields.assignmentHours.hoursAndDesc =
 			$scope.params.fields.assignmentHours.oooDetails = selected;
-		
+
 		$scope.assignedRoles = $scope.assignedRoles;
 	};
-	
+
 	$scope.selectAllProjectHours = function (selected)
 	{
 		$scope.params.fields.projectHours.all =
@@ -226,7 +226,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			$scope.params.fields.projectHours.overallUtilRate =
 			$scope.params.fields.projectHours.assignmentUtilRate = selected;
 	};
-	
+
 	$scope.selectAllGoalsHours = function (selected)
 	{
 		$scope.params.fields.goals.projectedUtil =
@@ -234,27 +234,27 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		$scope.params.fields.goals.projectedInvestment =
 		$scope.params.fields.goals.projectedRevenue = selected;
 	};
-	
+
 	$scope.selectAllFields = function (selected)
 	{
 		$scope.selectAllAssignmentHours(selected);
 		$scope.selectAllProjectHours(selected);
 		$scope.selectAllGoalsHours(selected);
 	};
-	
+
 	$scope.generateReport = function (params)
 	{
 		var input = params;
-		
+
 		if(!input) {
           input = $scope.prepareInputParams();
         }
-		
+
 		$scope.startGenerationTimers();
-        
+
         Resources.refresh("/reports/project/generate", input, {});
 	};
-	
+
 	$scope.prepareInputParams = function() {
 	  var input = {
         projects: [],
@@ -263,76 +263,76 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
         output: $scope.params.output,
         reportName: $scope.params.reportName
       };
-      
+
       switch ($scope.params.date.range)
         {
             case "week":
-                
+
                 input.startDate = moment.utc($scope.params.date.start);
                 input.endDate = moment.utc($scope.params.date.start).add(1, "week");
                 break;
-            
+
             case "weeks":
-                
+
                 input.startDate = moment.utc($scope.params.date.start);
                 input.endDate = moment.utc($scope.params.date.start).add(2, "week");
                 break;
-            
+
             case "month":
-                
+
                 input.startDate = moment(Date.UTC($scope.params.date.year, $scope.params.date.month.index));
                 input.endDate = moment(input.startDate).endOf("month");
                 break;
-                
+
             case "previousMonth":
-                
+
                 input.startDate = moment.utc().startOf("month").subtract(1, "month");
                 input.endDate = moment(input.startDate).endOf("month");
                 break;
-                
+
             case "currentMonth":
-                
+
                 input.startDate = moment.utc().startOf("month");
                 input.endDate = moment.utc().subtract(1, "day");
                 break;
-                
+
             case "custom":
-                
+
                 input.startDate = moment.utc($scope.params.date.start);
                 input.endDate = moment.utc($scope.params.date.end);
                 break;
         }
-        
+
         var projectList = $scope.projects.selectedProjects && $scope.projects.selectedProjects.length
             ? $scope.projects.selectedProjects : $scope.projects;
-        
+
         _.each(projectList, function (p) { input.projects.push({ resource: p.resource }); });
-        
+
         for (var prop in $scope.params.fields.selectedAssignedRoles)
             if ($scope.params.fields.selectedAssignedRoles[prop])
                 input.roles.push(prop);
-        
-        console.log(JSON.stringify(input));
-        
+
+        //console.log(JSON.stringify(input));
+
         return input;
 	}
 
     $scope.onReportGenerated = function ( report ) {
 
-        console.log( 'Report generation completed' );
-                
+        //console.log( 'Report generation completed' );
+
         $scope.output = report;
-        
+
         if($scope.output.assignmentsHours) {
           _.each($scope.output.assignmentsHours.people, function(person) {
             person.isCollapsed = false;
           });
         }
-        
+
         if ($scope.isGenerationInProgress)
             $location.path('/reports/project/output');
     };
-    
+
     $scope.cancel = function(e) {
       Resources.refresh("/reports/project/cancel").then(function( result ){
                     $scope.cancelReportGeneration();
@@ -348,7 +348,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
             }
             if (result.status == "Completed") {
                 Resources.refresh("/reports/project/get").then(function( result ){
-                    console.log("Generated report type: " + result.data.type);
+                    //console.log("Generated report type: " + result.data.type);
                     if(result && result.data && result.data.type) {
                       $scope.onReportGenerated( result.data );
                     } else {
@@ -363,19 +363,19 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
             return err.data;
         });
     };
-    
+
     $scope.reportServicePingInterval = 5000;
-    
+
     $scope.startGenerationTimers = function ( ) {
-        
+
         if ($scope.isGenerationInProgress)
             return;
-        
+
         if (!$rootScope.projectReportGenerationStartTime)
             $rootScope.projectReportGenerationStartTime = new moment();
-                
+
         $scope.generationTimer = setInterval( function( ) {
-        	var timer =  $( "#lblTimer" )[ 0 ];	
+        	var timer =  $( "#lblTimer" )[ 0 ];
             if (timer) {
                 var now = new moment( );
                 var spentTime = moment.utc(moment(now,"DD/MM/YYYY HH:mm:ss")
@@ -385,15 +385,15 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
             }
         },
         1000);
-        
+
         $scope.generationPing = setInterval( function( ) {
             $scope.checkGenerationStatus();
         },
         $scope.reportServicePingInterval);
-        
+
         $scope.isGenerationInProgress = true;
     };
-    
+
     $scope.stopGenerationTimers = function ( ) {
         if ($scope.generationTimer) {
             clearInterval($scope.generationTimer);
@@ -402,18 +402,18 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
             clearInterval($scope.generationPing);
         }
     };
-    
+
     $scope.cancelReportGeneration = function ( ) {
         $scope.stopGenerationTimers();
-        $scope.isGenerationInProgress = false;  
+        $scope.isGenerationInProgress = false;
         $rootScope.projectReportGenerationStartTime = null;
-        console.log( 'Report generation aborted' );
+        //console.log( 'Report generation aborted' );
     };
 
     $scope.$on("$destroy", function(){
         $scope.stopGenerationTimers();
     });
-    
+
     $scope.init = function( ) {
         $scope.isGenerationInProgress = false;
         $scope.checkGenerationStatus().then( function ( state ) {
@@ -426,9 +426,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
             }
         });
     };
-    
+
     $scope.init();
-    
+
     $scope.reportHandler = {
             stringify: function( str ) {
                 return '"' + str.replace( /^\s\s*/, '' ).replace( /\s*\s$/, '' )// trim spaces
@@ -462,17 +462,17 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
                 $scope.csvData = $scope.getProjectReportCSVData( $scope.output );
                 prepareDocumentDownloadLink(e, $scope.csvData);
             },
-            
+
             exportProjectHoursReport: function( e ) {
-                var rolesToExport = []; 
-                _.each($scope.output.peopleDetails.utilizationDetails, function( record ) { 
+                var rolesToExport = [];
+                _.each($scope.output.peopleDetails.utilizationDetails, function( record ) {
                     if ( record.role.isSelected )
                         rolesToExport.push(record.role.resource);
                 });
                 $scope.csvData = $scope.getProjectHoursReportCSVData( $scope.output.dataForCSV, rolesToExport );
                 prepareDocumentDownloadLink(e, $scope.csvData);
             },
-            
+
             cancel:  function( e ) {
                 Resources.refresh("/reports/project/cancel").then(function( result ){
                     $scope.cancelReportGeneration();
@@ -480,56 +480,56 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
                     $scope.cancelReportGeneration();
                 });
             },
-            
+
             link: function( ) {
                 return {};
             }
         };
-  
+
     $scope.messageForFavorites = "";
-    
+
     $scope.save = function() {
       var params = $scope.prepareInputParams();
       var person = { resource: $scope.me.resource, name: $scope.getPersonName($scope.me) };
-      
+
       var favotiteReport = {
         person: person,
         params: params,
         type: "project"
       };
-      
+
       Resources.create("reports/favorites", favotiteReport).then(function(result) {
         $scope.messageForFavorites = "Report saved";
         $scope.$parent.getFavorites();
       });
     };
-    
+
     $scope.saveAndCreate = function() {
       $scope.save();
       $scope.reportHandler.generate();
     };
-    
+
     $scope.clearMessage = function() {
       $scope.messageForFavorites = "";
     };
-    
+
     $scope.getProjectReportCSVData = function( reportData, rolesToExport ) {
 		return ReportExportService.prepareProjectReportCSV( reportData, rolesToExport );
     };
-    
+
     $scope.getProjectHoursReportCSVData = function( reportData, rolesToExport ) {
 		return ReportExportService.prepareProjectHoursReportCSV( reportData, rolesToExport );
     };
-    
+
     var prepareDocumentDownloadLink = function ( controlEvent, data ) {
-    	
+
     	/*Only called when our custom event fired*/
     	var onInnerReportLink = function( e ) {
 			e = e ? e : window.event;
 			e.stopPropagation( );
 			$( e.target ).closest( 'a' ).unbind( 'click' );
 		};
-		
+
     	var e = controlEvent ? controlEvent : window.event;
 		var btn = $( e.target ).closest( '.btn-report' ).find( 'a' );
 		e.preventDefault( );
@@ -540,7 +540,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		btn.click( onInnerReportLink );
 		btn.get( 0 ).dispatchEvent( evt );
     };
-    
+
     $scope.getPersonAssignedHoursPieChartData = function ( person ) {
     	return [{
 			key: "Actual Hours",
@@ -550,5 +550,5 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 			value: person.projectedHours
 		}];
     };
-  
+
 } ] );
