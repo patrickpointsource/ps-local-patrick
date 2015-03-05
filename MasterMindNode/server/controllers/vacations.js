@@ -54,8 +54,58 @@ module.exports.listAllEmployeeVacations = function(statuses, startDate, endDate,
     });
 };
 
-module.exports.listRequests = function(manager, statuses, startDate, endDate, fields, callback) {
-    dataAccess.listRequests(manager, statuses, startDate, endDate, fields, function(err, body){
+module.exports.listRequests = function(manager, statuses, startDate, endDate, showSubordinateManagerRequests, fields, callback) {
+	if (showSubordinateManagerRequests) {
+		dataAccess.listPeople(null, function (err, people) {
+			if (err) {
+				return callback("error loading requests", null);
+			}
+			
+			getSubordinateManagers([manager], people.members, function (managerResources) {
+				managerResources.push(manager);
+	            console.log("managerResourses : " + JSON.stringify(managerResources));
+				listRequestsByManagers(managerResources, statuses, startDate, endDate, fields, callback);
+			})
+		});
+	}
+	else {
+		listRequestsByManagers(manager, statuses, startDate, endDate, fields, callback);
+	}
+};
+
+
+var getSubordinateManagers = function (managers, people, callback ) {
+	findSubordinateManagers(managers, people, [], callback);
+}
+
+var findSubordinateManagers = function (initialManagerResources, people, result, callback ) {
+    var subordinateManagers = _.filter(people, function(person) {
+    	var check =  _.find(initialManagerResources, function(manager){ 
+    		if (person.manager && person.manager.resource == manager) {
+    			return true;
+    		}
+            return false;
+        });
+    	if (check) {
+    		return true;
+    	}
+    	return false;
+    });
+    if (subordinateManagers && subordinateManagers.length > 0) {
+    	var managerResources = _.map(subordinateManagers, function(person) {
+            return person.resource;
+        });
+    	for (var i in managerResources) {
+        	result.push(managerResources[i]);
+    	}
+       	findSubordinateManagers(managerResources, people, result, callback);
+    } else {
+    	callback(result);
+    }
+};
+
+var listRequestsByManagers = function(managers, statuses, startDate, endDate, fields, callback) {
+    dataAccess.listRequests(managers, statuses, startDate, endDate, fields, function(err, body){
         if (err) {
             console.log(err);
             callback("error loading requests", null);

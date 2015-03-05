@@ -694,10 +694,10 @@ var checkVacation = function(vacation, people, startDate, endDate, callback) {
  * @param {Object} vacations
  */
 
-var filterRequests = function(manager, statuses, startDate, endDate, vacations) {
+var filterRequests = function(managers, statuses, startDate, endDate, vacations) {
 	var result = [];	
 	_.each(vacations, function(vacation) {
-		checkRequest(vacation, manager, statuses, startDate, endDate, function (checked) {
+		checkRequest(vacation, managers, statuses, startDate, endDate, function (checked) {
 			if (checked) {
 				result.push (vacation);
 			}
@@ -706,7 +706,7 @@ var filterRequests = function(manager, statuses, startDate, endDate, vacations) 
 	return result;
 };
 
-var checkRequest = function(vacation, manager, statuses, startDate, endDate, callback) {
+var checkRequest = function(vacation, managers, statuses, startDate, endDate, callback) {
 
 	if (statuses) {
 		var checked = false;
@@ -725,8 +725,20 @@ var checkRequest = function(vacation, manager, statuses, startDate, endDate, cal
 		}
 	}
 	
-	if (manager && ( !vacation.vacationManager || vacation.vacationManager.resource != manager ) ) {
-		return callback (false);
+	
+	if (managers) {
+		var checked = false;
+		if (!(managers instanceof Array)) {
+			managers = [managers];
+		}
+		_.each(managers, function(manager) {
+			if (vacation.vacationManager &&  vacation.vacationManager.resource == manager ) {
+				checked = true;
+			}
+		});
+		if (!checked) {
+			return callback (false);
+		}
 	}
 	
 	if (startDate && vacation.endDate < startDate) {
