@@ -49,11 +49,11 @@
 		<div class="col-md-3" ng-if="filterVacationsByCurrent == 'role_name'">
 			<form class="form-inline">
 				<label class="control-label" style="margin-top:7px;">Role name:</label>
-				<select name="managersList" style="width:165px;" class="form-control pull-right" 
-						ng-model="selectedManager"
+				<select name="rolesList" style="width:165px;" class="form-control pull-right" 
+						ng-model="selectedRole"
 						ng-required="true"
-						ng-change="filterVacationsByManagerChanged($event)"
-						ng-options="f.value as f.label for f in managersList">
+						ng-change="filterVacationsByRoleChanged($event, this)"
+						ng-options="f.value as f.label for f in rolesList">
 					</select>
 		
 			</form>

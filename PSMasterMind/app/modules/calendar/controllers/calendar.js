@@ -5,16 +5,20 @@
  */
 
 angular.module('Mastermind').controller('CalendarCtrl', [
-    '$scope', '$state', '$filter', '$q', 'VacationsService', 'People', 'Resources', 'ProjectsService', 'AssignmentService',
-    function($scope, $state, $filter, $q, VacationsService, People, Resources, ProjectsService, AssignmentService) {
+    '$scope', '$state', '$filter', '$q', 'VacationsService', 'People', 'Resources', 'ProjectsService', 'AssignmentService', 'RolesService', 'People',
+    function($scope, $state, $filter, $q, VacationsService, People, Resources, ProjectsService, AssignmentService, RolesService, PeopleService) {
         $scope.startDate = '';
     	$scope.endDate = "";
     	$scope.months = [ 'Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
     	$scope.weekDayLables = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
     	$scope.displayedMonthDays = [];
     	$scope.hidePendingVacations = false;
+    	
     	$scope.managersList = [];
     	$scope.selectedManager = null;
+    	
+    	$scope.rolesList = [];
+    	$scope.selectedRole = null;
     	
     	$scope.filterVacationsBy = [{
     		label: 'All employees',
@@ -28,6 +32,9 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     	}, {
     		label: "Role name",
     		value: 'role_name'
+    	}, {
+    		label: "Direct Reports",
+    		value: 'direct_reports'
     	}];
     	
     	$scope.filterVacationsByCurrent = 'all';
@@ -76,13 +83,12 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	
         	if (!entry.data('bs.popover')) {
         		var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')): $scope.moment(vac.startDate).format('M/D');
-	        	
-        		
-        		
+	        	var placement = ind % 7 == 6 ? 'auto top': 'auto left';
+
         		popover = entry.popover({
 	        		content: '<div class="vacation-entry-popup"><div class="name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div><b>Category:</b> ' + vac.type + '</div>' + '<div>',
 	        		html: true,
-	        		placement: 'auto left',
+	        		placement: placement,
 	        		container: '.vacation-day-entry.entry_' + ind + '_' + vacIndex
 	        	});
 	        	
@@ -95,15 +101,6 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         		}, {context: entry}));
         	} else
         		entry.popover('show');
-        	/*
-        	if (!entry.data('popover_shown')) {
-        		entry.popover('show');
-        		entry.data('popover_shown', true);
-        	} else {
-        		entry.popover('hide');
-        		entry.data('popover_shown', false);
-        	}*/
-        		
         };
         
         $scope.onVacationHide  = function(e, vac, ind, vacIndex){
@@ -118,33 +115,8 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	var popover;
         	
         	if (entry.data('bs.popover')) {
-        		/*var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')): $scope.moment(vac.startDate).format('M/D');
-	        	
-        		popover = entry.popover({
-	        		content: '<div class="vacation-entry-popup"><div class="name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div><b>Category:</b> ' + vac.type + '</div>' + '<div>',
-	        		html: true,
-	        		placement: 'auto left',
-	        		container: '.vacation-day-entry.entry_' + ind + '_' + vacIndex
-	        	});
-	        	
-	        	entry.data('popover', popover);
-	        	entry.popover('show');
-	        	
-	        	entry.on('hidden.bs.popover', _.bind(function () {
-	        		this.context.popover('destroy');
-	        		this.context.data('popover', false);
-        		}, {context: entry}));*/
         		entry.popover('hide');
-        	} /*else
-        		entry.popover('toogle');*/
-        	/*
-        	if (!entry.data('popover_shown')) {
-        		entry.popover('show');
-        		entry.data('popover_shown', true);
-        	} else {
-        		entry.popover('hide');
-        		entry.data('popover_shown', false);
-        	}*/
+        	}
         		
         };
         
@@ -236,12 +208,32 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	        		ProjectsService.getAllProjects( function( result ) {
 	        			$scope.projectList = result.data;
 	        		} );
+        	} else if ($scope.filterVacationsByCurrent == 'role_name') {
+        		if (!$scope.roleList || $scope.roleList.length == 0)
+	        		RolesService.getRolesMapByResource().then( function( result ) {
+	        			var roleMap = result;
+	        			
+	        			$scope.rolesList = [];
+	        			
+	        			for (var roleResource in roleMap) {
+	        				$scope.rolesList.push({
+	        					value: roleResource,
+	        					label: roleMap[roleResource].abbreviation
+	        				});
+	        			}
+	        			
+	        		} );
         	} else
         		$scope.initCalendar();
         };
         
         $scope.filterVacationsByManagerChanged = function(e, passedScope) {
         	$scope.selectedManager = passedScope.selectedManager;
+        	$scope.initCalendar();
+        };
+        
+        $scope.filterVacationsByRoleChanged = function(e, passedScope) {
+        	$scope.selectedRole = passedScope.selectedRole;
         	$scope.initCalendar();
         };
         
@@ -308,6 +300,38 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 		   		   			 persons: persons.join(',')
 		   		   		 });
     			});
+    		} else if ($scope.filterVacationsByCurrent == 'role_name' && $scope.selectedRole) {
+    			loadPromise = PeopleService.getPeoplePerRole($scope.selectedRole);
+    			
+    			loadPromise = loadPromise.then(function(result) {
+    				 var persons = result.members ? result.members: [];
+    				 
+    				 persons = _.map(persons, function(p){ return p.resource });
+    				 
+    				 return persons;
+    				 
+    			 });
+    			
+    			loadPromise = loadPromise.then(function(persons) {
+    				if (persons.length > 0)
+	    				return Resources.refresh("vacations/all", {
+		   		   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+		   		   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+		   		   			 status: status? status: '',
+		   		   			 persons: persons.join(',')
+		   		   		 });
+    			});
+    		} if ($scope.filterVacationsByCurrent == 'direct_reports' && $scope.me) {
+    			var p = {
+    					startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+   		   			 	endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+    					includeApproved: true
+				};
+    			
+    			if (!$scope.hidePendingVacations)
+					p.includePending = true;
+    			
+    			loadPromise = VacationsService.getRequests({about: $scope.me.about}, p);
     		} else
     			loadPromise = Resources.refresh("vacations/all", {
 		   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
@@ -320,23 +344,56 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	   			 	$scope.hideCalendarSpinner = true;
 	   			 	 	
 		            if (result && (result.members || _.isArray(result))) {
-		            	var c;
 		            	
 		            	currentVacations = _.isArray(result) ? result: result.members;
+
+		            	var persons = _.map(currentVacations, function(v) { if (v && v.person) return v.person.resource})
 		            	
-		            	var lightColors = randomColor({luminosity: 'light',count: currentVacations.length});
-		            	var darkColors = randomColor({luminosity: 'dark',count: currentVacations.length});
+		            	persons = _.uniq(persons);
+		            	
+		            	var lightColors = randomColor({luminosity: 'light',count: persons.length});
+		            
+		            	var t = 0;
+		            	
+		            	// go throug colors and remove similar, and then add newly generated
+		            	while(t < 20) {
+		            		var sim = 0;
+		            		
+		            		for (var k = lightColors.length - 1; k >= 0; k --) {
+		            			for (var j = k - 1; j >= 0; j --) {
+		            				sim = Util.getColorDistance(lightColors[k], lightColors[j]) / 256;
+		            				
+		            				if (sim < 0.2){
+		            					lightColors.splice(k, 1);
+		            					break;
+		            				}
+		            					
+		            			}
+		            		}
+		            		
+		            		if (lightColors.length < persons.length)
+		            			lightColors = lightColors.concat(randomColor({luminosity: 'light',count: (persons.length - lightColors.length)}))
+		            		t ++;
+		            	};
+		            	
+		            	var colorsMap = {};
+		            	
+		            	for (var k = 0; k < persons.length; k++)
+		            		colorsMap[ persons[k] ] = lightColors[k];
+
 		            	var dColor;
+		            	var c;
 		            	
 		            	for (var k = 0; k < currentVacations.length; k++) {
+		            		c = colorsMap[ currentVacations[k].person.resource ];
+		            		
 		            		if (currentVacations[k].status && currentVacations[k].status.toLowerCase() != 'pending')
 		            			//currentVacations[k].background = $scope.getRandomBackground();
-		            			currentVacations[k].background = lightColors[k];
+		            			currentVacations[k].background = c;
 		            		else {
-		            			dColor = Util.darkColorFrom(lightColors[k], 0.4);
-		            			
-		            			currentVacations[k].background = 'repeating-linear-gradient( -45deg, ' + lightColors[k] + ', ' + lightColors[k] + 
-		            				' 3px, ' + dColor + ' 3px, ' + dColor + ' 15px)';
+		            			dColor = Util.darkColorFrom(c, 0.4);
+		            			currentVacations[k].background = 'repeating-linear-gradient( -45deg, ' + dColor + ', ' + dColor + 
+		            				' 3px, ' + c + ' 3px, ' + c + ' 15px)';
 		            		}
 		            	}
 		            		
