@@ -12,16 +12,26 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
     $scope.elemId = null;
 
     $scope.render = function (elId) {
+        var width = $scope.width || 400;
+        var height = $scope.height || 250;
+
         var el = $('#' + elId + ' div');
 
-        el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el);
+        el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el).css("width", width);
 
         var chartData = $scope.chartData;
-        var width = $scope.width ? $scope.width : 400;
-        var height = $scope.height ? $scope.height : 250;
+        var isEmpty = true;
+
+        if (chartData)
+            isEmpty = !_.find(chartData, function (item) { return item.value !== 0; });
+
+        if (isEmpty)
+            return;
+
+        
         var svg = dimple.newSvg("#" + elId + "chartContainer", width, height + 50);
         var legendBoxHeight = height * .65;
-
+        
         var g = svg.append("g")
             .attr("x", width / 2 + 20)
             .attr("y", (height - legendBoxHeight) / 2)
@@ -47,6 +57,16 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
             .style("font-weight", "bold")
             .text("Key");
 
+        g.append("text")
+            .attr("x", 7)
+            .attr("y", legendBoxHeight - 10)
+            .attr("width", width / 2)
+            .attr("height", 14)
+            .style("font-size", "10px")
+            .style("font-family", "sans-serif")
+            .style("font-weight", "normal")
+            .text("Click legend to show/hide hours.");
+
         // Create the chart
         var myChart = new dimple.chart(svg, chartData);
         myChart.setBounds(20, 25, width / 2 - 20, height - 50);
@@ -60,25 +80,11 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
 
         myChart.draw();
 
-        var myLegend = myChart.addLegend(width / 2, (height - legendBoxHeight) / 2 + 30, width / 2 - 40, height / 2 - 60, "right");
+        var myLegend = myChart.addLegend(width / 2 + 30, (height - legendBoxHeight) / 2 + 30, width / 2 - 40, height / 2 - 60, "left");
 
         myChart.draw();
 
         myChart.legends = [];
-
-        // This block simply adds the legend title. I put it into a d3 data
-        // object to split it onto 2 lines.  This technique works with any
-        // number of lines, it isn't dimple specific.
-        svg.selectAll("title_text")
-            .data(["Click legend to show/hide hours."])
-            .enter()
-            .append("text")
-            .attr("x", width / 2 + 30)
-            .attr("y", function (d, i) { return height / 2 + legendBoxHeight / 2 - 7; })
-            .style("font-family", "sans-serif")
-            .style("font-size", "10px")
-            .style("font-weight", "normal")
-            .text(function (d) { return d; });
 
         // Get a unique list of Owner values to use when filtering
         var filterValues = dimple.getUniqueValues(chartData, "key");
