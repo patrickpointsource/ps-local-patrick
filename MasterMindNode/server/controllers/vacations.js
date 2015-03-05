@@ -78,13 +78,12 @@ var getSubordinateManagers = function (managers, people, callback ) {
 
 var findSubordinateManagers = function (initialManagerResources, people, result, callback ) {
     var subordinateManagers = _.filter(people, function(person) {
-    	var check =  _.find(initialManagerResources, function(manager){ 
+    	if (_.find(initialManagerResources, function(manager){ 
     		if (person.manager && person.manager.resource == manager) {
     			return true;
     		}
             return false;
-        });
-    	if (check) {
+        })) {
     		return true;
     	}
     	return false;
