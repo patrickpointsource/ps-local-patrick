@@ -60,10 +60,8 @@ module.exports.listRequests = function(manager, statuses, startDate, endDate, sh
 			if (err) {
 				return callback("error loading requests", null);
 			}
-			
 			getSubordinateManagers([manager], people.members, function (managerResources) {
 				managerResources.push(manager);
-	            console.log("managerResourses : " + JSON.stringify(managerResources));
 				listRequestsByManagers(managerResources, statuses, startDate, endDate, fields, callback);
 			})
 		});
