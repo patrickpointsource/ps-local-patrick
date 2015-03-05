@@ -92,7 +92,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 	$scope.arrangedRoles = [ [ {
 		abbreviation: "Select all roles",
 		value: "all"
-	} ], [ ], [ ] ];
+	} ], [ ], [ ], [ ] ];
 
 	$scope.reportClient = '';
 	$scope.reportProject = '';
