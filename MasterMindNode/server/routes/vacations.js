@@ -131,42 +131,52 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 
 
 router.get('/all', auth.isAuthenticated, function(req, res){
-	security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewVacations, function(allowed){
-		if (allowed) 
-		{
-			var startDate = req.query.startDate;
-			var endDate = req.query.endDate;
-			var statuses = req.query.status ? req.query.status.split(','): '';
-			var fields = req.query.fields;
-			var persons = req.query.persons ? req.query.persons.split(','): '';
-			
-			var defaultStatuses = ['Approved', 'Pending'];
-			
-			if (!statuses)
-				// return only approved and pending
-				statuses = defaultStatuses;
-			else
-				statuses = _.filter(statuses, function(s) {
-					return _.indexOf(defaultStatuses, s) > -1;
-				});
-				
-			
-			if (startDate && endDate) {
-				
-			    vacations.listAllEmployeeVacations(statuses, startDate, endDate, persons, fields, function(err, result){
-			        if(err){
-			            res.json(500, err);
-			        } else {
-			            res.json(result);
-			        }            
-			    });
-			    
+		var startDate = req.query.startDate;
+		var endDate = req.query.endDate;
+		var statuses = req.query.status ? req.query.status.split(','): '';
+		var fields = req.query.fields;
+		var persons = req.query.persons ? req.query.persons.split(','): '';
 		
-			} else {
-	            res.json(500, "No required params for vacations");
-			}
+		var defaultStatuses = ['Approved', 'Pending'];
+		
+		if (!statuses)
+			// return only approved and pending
+			statuses = defaultStatuses;
+		else
+			statuses = _.filter(statuses, function(s) {
+				return _.indexOf(defaultStatuses, s) > -1;
+			});
+			
+		var targetPermissions = [];
+		
+		for (var k = 0; k < statuses.length; k ++) {
+			if (statuses[k].toLowerCase() == 'approved')
+				targetPermissions.push(securityResources.vacations.permissions.viewOthersApprovedOOO);
+			if (statuses[k].toLowerCase() == 'pending')
+				targetPermissions.push(securityResources.vacations.permissions.viewOthersPendingOOO);
 		}
-	});
+		
+		security.isAllowed(req.user, res, securityResources.vacations.resourceName, targetPermissions, function(allowed){
+			if (allowed) {
+				if (startDate && endDate) {
+					
+				    vacations.listAllEmployeeVacations(statuses, startDate, endDate, persons, fields, function(err, result){
+				        if(err){
+				            res.json(500, err);
+				        } else {
+				            res.json(result);
+				        }            
+				    });
+				    
+			
+				} else {
+		            res.json(500, "No required params for vacations");
+				}
+			} else
+				res.json(401, "You don't have enough permissions");
+		});
+		
+	
 });
 
 router.get('/requests', auth.isAuthenticated, function (req, res) {
