@@ -21,6 +21,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         var height = $scope.height ? $scope.height : 300;
         var xTitle = $scope.xAxisTitle ? $scope.xAxisTitle : 'role';
         var yTitle = $scope.yAxisTitle ? $scope.yAxisTitle : 'hours';
+        var yKeys = dataMap ? Object.keys(dataMap) : ['', '', ''];
 
         //var svg = dimple.newSvg("#" + elId + "chartContainer", 580, 210);
         var svg = dimple.newSvg("#" + elId + "chartContainer", width, height + 50);
@@ -101,7 +102,6 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         // Add an x and 3 y-axes.  When using multiple axes it's
         // important to assign them to variables to pass to the series
         var x = myChart.addCategoryAxis("x", "label");
-        var yKeys = dataMap ? Object.keys(dataMap) : ['', '', ''];
         var y2 = myChart.addMeasureAxis("y", yKeys[2].toLowerCase());
         var y3 = myChart.addMeasureAxis("y", yKeys[1].toLowerCase());
         var y4 = myChart.addMeasureAxis("y", yKeys[0].toLowerCase());
@@ -125,17 +125,17 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         myChart.assignColor(capitalizeString(y4.measure), "#96D4F3", "#7FCCF0", 0.5);
         // Add the bars mapped to the second y axis
         var bar = myChart.addSeries(capitalizeString(y4.measure), dimple.plot.bar, [x, y4]);
-        configBarTooltip(svg, bar, xTitle, yTitle);
+        configBarTooltip(myChart, bar, xTitle, yTitle);
 
         // Color the sales bars to be highly transparent
         myChart.assignColor(capitalizeString(y3.measure), "#0071BC", "#0071BC", 0.7);
         // Add the bars mapped to the third y axis
         bar = myChart.addSeries(capitalizeString(y3.measure), dimple.plot.bar, [x, y3]);
-        configBarTooltip(svg, bar, xTitle, yTitle);
+        configBarTooltip(myChart, bar, xTitle, yTitle);
 
         myChart.assignColor(capitalizeString(y2.measure), "red", "#ED1E79", 0.8);
         bar = myChart.addSeries(capitalizeString(y2.measure), dimple.plot.bigDash, [x, y2]);
-        configBarTooltip(svg, bar, xTitle, yTitle);
+        configBarTooltip(myChart, bar, xTitle, yTitle);
 
         myChart.draw();
 
@@ -208,8 +208,10 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
             });
     };
 
-    var configBarTooltip = function ( svg, bar, xTitle, yTitle ) {
+    var configBarTooltip = function ( chart, bar, xTitle, yTitle ) {
     	var popup;
+    	var axisLine;
+    	var yKeys = $scope.chartData ? Object.keys($scope.chartData) : ['', '', ''];
         bar.addEventHandler("mouseover", onBarHover);
         bar.addEventHandler("mouseleave", onBarLeave);
     	
@@ -229,11 +231,11 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
     		// Set the size and position of the popup
     		var width = 150,
 				height = 55,
-				x = (cx + 2 * width < svg.attr("width") ? cx + cwidth : cx - width - 10),
+				x = (cx + 2 * width < chart.svg.attr("width") ? cx + cwidth : cx - width - 10),
         		y = (cy - height < height ? height : cy - height);
 
         	// Create a group for the popup
-        	popup = svg.append("g");
+        	popup = chart.svg.append("g");
 
         	// Add a rectangle surrounding the tooltip content
         	popup
@@ -244,7 +246,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         		.attr("height", height)
         		.attr("rx", 5)
         		.attr("ry", 5)
-        		.attr("fill-opacity", 0.7)
+        		.style("fill-opacity", 0.7)
         		.style("fill", fill)
         		.style("stroke", stroke)
         		.style("stroke-width", 2);
@@ -268,11 +270,29 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         		.attr('x', x + 10)
         		.attr('y', y + 40)
         		.text(capitalizeString(yTitle) + ": " + e.yValue);
+        	
+        	//Draw dotted line to the left or right yAxis 
+        	var cx1 = yKeys.indexOf(e.seriesValue[0].toLowerCase()) != 1 ? cx : cx + cwidth;
+        	var cx2 = yKeys.indexOf(e.seriesValue[0].toLowerCase()) != 1 ? 50 : chart.svg.attr("width") - 150; 
+        	axisLine = chart.svg.append("line")
+             	.attr("class", 'd3-dp-line')
+             	.attr("x1", cx1)
+             	.attr("y1", cy + 1)
+             	.attr("x2", cx2)
+             	.attr("y2", cy + 1)
+             	.style("stroke-dasharray", ("3, 3"))
+             	.style("stroke-opacity", 0.7)
+             	.style("fill", fill)
+             	.style("stroke", stroke)
+             	.style("stroke-width", 2);
     	};
     
     	function onBarLeave(e) {
     		if ( popup && popup.remove() ) {
     			popup.remove();
+    		}
+    		if ( axisLine && axisLine.remove() ) {
+    			axisLine.remove();
     		}
     	};
     	
