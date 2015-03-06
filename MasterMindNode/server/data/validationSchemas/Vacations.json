@@ -19,7 +19,8 @@
 		"resource": {"type":"string"},
 		"about": {"type":"string"},
 		"days": {"type":"string"},
-		"comment": {"type":"string"}
+        "comment": { "type": "string" },
+        "reason": {"type":"string"}
 	},
 	"definitions": {
 		"resource": {

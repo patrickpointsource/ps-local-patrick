@@ -7,7 +7,9 @@ var projects = require('./projects');
 var securityRolesCtrl = require('./securityRoles');
 var userRolesCtrl = require('./userRoles');
 var google = require('googleapis');
-var security = require( '../util/security' );
+var security = require('../util/security');
+var notifications = require('./notifications.js');
+var Q = require('q');
 
 var DEFAULT_PROFILE_IMG_LINK = "https://ssl.gstatic.com/s2/profiles/images/silhouette200.png";
 
@@ -107,8 +109,16 @@ module.exports = function(params) {
 								    } else {
 								    	console.log("Upgrade: Links in projects fixed.");
 								    }
-							        	
-							        callback(null, null);
+
+							        deleteOldNotifications(function(err, body) {
+							            if (err) {
+							                console.log(err);
+							            } else {
+							                console.log("Upgrade: Old notifications were deleted.");
+							            }
+
+							            callback(null, null);
+							        });
 							    });
 
 						    });
@@ -585,5 +595,36 @@ module.exports = function(params) {
 			}
 		});
 		callback(null);
-	};
+    };
+
+    var deleteOldNotifications = function(callback) {
+        notifications.listNotifications(function(err, body) {
+            if (!err) {
+                var ns = body.members;
+                var promises = [];
+
+                _.each(ns, function(notification) {
+                    if (notification.type == "Vacation" || notification.type == "VacationCancel") {
+                        var promise = deleteNotificationPromise(notification);
+
+                        promises.push(promise);
+                    }
+                });
+
+                if (promises.length > 0) {
+                    Q.all(promises).then(callback);
+                } else {
+                    callback();
+                }
+            }
+        });
+    };
+
+    var deleteNotificationPromise = function (notification) {
+        var deferred = Q.defer();
+        dataAccess.deleteItem(notification._id, notification.rev, "Notifications", function(err, body) {
+            deferred.resolve(body);
+        });
+        return deferred.promise;
+    }
 };

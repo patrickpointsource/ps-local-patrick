@@ -43,17 +43,30 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 			}
 
 			$scope.notifications = [];
-			if( accessRights.hasManagementRights) {
-				NotificationsService.getPersonsNotifications($scope.me.about).then(function(result) {
-					$scope.notifications = result.members;
-				});
-			}
+
+		    NotificationsService.getNotifications().then(function(result) {
+		    	$scope.notificationsLoaded = true;
+		    	$scope.checkAllLoaded();
+		        $scope.notifications = result;
+		    });
 
 			//console.log('Logged In');
 			$scope.authState = true;
 			$scope.$emit( 'me:loaded' );
 		});
 	});
+
+    $scope.refreshNotifications = function() {
+        NotificationsService.getNotifications().then(function(result) {
+            $scope.notificationsLoaded = true;
+            $scope.checkAllLoaded();
+            $scope.notifications = result;
+        });
+    };
+
+    $scope.getVacationDays = function(start, end) {
+        return VacationsService.getDays(start, end);
+    };
 
 	/**
 	 * Determine the active area of the application for the user.
@@ -268,12 +281,24 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 		return $rootScope.modalDialog;
 	};
 	
-	$scope.$on('request-processed', function(event, resource) {
-	  for(var i = 0; i < $scope.notifications.length; i++) {
-	    if(resource == $scope.notifications[i].resource) {
-	      $scope.notifications.splice(i, 1);
+	$scope.$on('request-processed', function (event, request) {
+	    var updated = false;
+	    for (var i = 0; i < $scope.notifications.length; i++) {
+	        if (request._id == $scope.notifications[i].details._id) {
+	            
+	            Resources.remove($scope.notifications[i]).then(function (result) {
+	                updated = true;
+	                $scope.refreshNotifications();
+	            });
+
+	            $scope.notifications.splice(i, 1);
+	            break;
+	        }
 	    }
-	  }
+
+	    if (!updated) {
+	        $scope.refreshNotifications();
+	    }
 	});
 	
 	$scope.search = function (event)
@@ -289,22 +314,56 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 			}, 200); // temporary hack
 		}
 	};
-	
-	$scope.removeNotification = function(index) {
-	  var notification = $scope.notifications[index];
-	  Resources.remove(notification.resource).then(function(result) {
-	    $scope.notifications.splice(index, 1);
-	  });
-	}
+
+    $scope.removeNotification = function(index) {
+        var notification = $scope.notifications[index];
+
+        // if removing cancelled ooo notification - also delete this ooo
+        if (notification.details && notification.details.status == "Cancelled") {
+            Resources.remove(notification.details.resource).then(function() {
+            });
+        }
+
+        $scope.notifications.splice(index, 1);
+        Resources.remove(notification.resource).then(function(result) {
+        });
+    };
+
+    $scope.oooDecide = function (index, isApproved) {
+        var notification = $scope.notifications[index];
+        var status;
+        if (isApproved) {
+            status = VacationsService.STATUS.Approved;
+        } else {
+            status = VacationsService.STATUS.Denied;
+        }
+        var request = notification.details;
+        request.status = status;
+        request.person = { resource: request.person.resource, name: $scope.getPersonName(request.person) };
+
+        Resources.update(request).then(function(result) {
+            $scope.$broadcast("ooo-needs-update");
+
+            if (isApproved) {
+                VacationsService.commitHours(request);
+            }
+        });
+
+        $scope.removeNotification(index);
+    };
 	
 	$scope.hoursLoaded = false;
 	$scope.bookingForecastLoaded = false;
 	$scope.staffingDeficitLoaded = false;
 	
 	$scope.checkAllLoaded = function() {
-	    if ($scope.hoursLoaded && (!$rootScope.bookingForecastAvailable || $scope.bookingForecastLoaded) && (!$rootScope.staffingDeficitAvailable || $scope.staffingDeficitLoaded))
+	    if ($scope.hoursLoaded && (!$rootScope.bookingForecastAvailable || $scope.bookingForecastLoaded) && (!$rootScope.staffingDeficitAvailable || $scope.staffingDeficitLoaded) && $scope.notificationsLoaded)
 	       $scope.hideDashboardSpinner = true;
 	};
+
+    $scope.$on('required-notifications-update', function() {
+        $scope.refreshNotifications();
+    });
 	
 	$scope.$on('hours:loaded', function() {
 	    $scope.hoursLoaded = true;
@@ -323,6 +382,10 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
         
         $scope.checkAllLoaded();
     });
+
+    $scope.formatDate = function(date, format) {
+        return moment(date).format(format);
+    };
 
 } ] ).directive( 'backImg', function( ) {
 	return function( scope, element, attrs ) {

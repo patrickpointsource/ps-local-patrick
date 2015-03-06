@@ -21,7 +21,7 @@
         <div class="row ooo-row no-margin" ng-show="!period.vacations || period.vacations.length < 1">
             Nothing to show.
         </div>
-        <div ng-repeat="vacation in period.vacations" ng-click="editVacation(vacation)" ng-class="{'selected-ooo': vacation._id == editableVacation._id}">
+        <div ng-repeat="vacation in period.vacations" ng-click="editVacation(vacation)" ng-class="{'selected-ooo': vacation._id == editableVacation._id}" ng-hide="vacation.status == 'Cancelled'">
             <div class="row ooo-row no-margin cursor-pointer">
                 <div class="col-xs-5">
                     <strong>{{getShortDate(vacation.startDate)}}</strong> ({{getDays(vacation)}})

@@ -7,7 +7,8 @@ var util = require( '../util/auth' );
 var router = express.Router( );
 
 var security = require( '../util/security' );
-var securityResources = require( '../util/securityResources' );
+var securityResources = require('../util/securityResources');
+var people = require('../controllers/people');
 
 router.get( '/', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.notifications.resourceName, securityResources.notifications.permissions.viewNotifications, function( allowed ) {
@@ -24,15 +25,36 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 	} );
 } );
 
+router.get('/my', util.isAuthenticated, function (req, res) {
+    security.isAllowed(req.user, res, securityResources.notifications.resourceName, securityResources.notifications.permissions.viewNotifications, function (allowed) {
+        if (allowed) {
+            var googleId = req.user;
+            people.getPersonByGoogleId(googleId, function(err, person) {
+                if (!err) {
+                    notifications.listNotificationsByPerson(person.resource, null, function(notificationErr, result) {
+                        if (err) {
+                            res.json(500, notificationErr);
+                        } else {
+                            res.json(result);
+                        }
+                    });
+                } else {
+                    res.json(500, 'Error getting person by googleId.');
+                }
+            }); 
+        }
+    });
+}); 
+
+// deprecated, most likely not used anymore
 router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 	security.isAllowed(req.user, res, securityResources.notifications.resourceName, securityResources.notifications.permissions.viewNotifications, function(allowed){
 		if (allowed) 
 		{
 			var type = req.params.type;
-        	var fields = req.query.fields;
 			if (type && type == "byPerson") {
 				var person = req.query.person;
-			    notifications.listNotificationsByPerson(person, fields, function(err, result){
+			    notifications.listNotificationsByPerson(person, null, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {

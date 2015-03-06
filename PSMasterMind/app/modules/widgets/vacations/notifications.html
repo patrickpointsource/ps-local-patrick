@@ -5,7 +5,8 @@
   </div>
   <div class="dropdown-menu notifications" role="menu" aria-labelledby="notifications">
       <div ng-repeat="notification in notifications" ng-class="{'notification-request': notification.type == 'Vacation', 'notification-request-cancel': notification.type == 'VacationCancel'}">
-          <div ng-show="notification.type == 'Vacation' || notification.type == 'VacationCancel'">
+          <!-- Deprecated ooo notifications -->
+          <div ng-if="notification.type == 'Vacation' || notification.type == 'VacationCancel'">
               <div class="col-xs-2 notification-icon">
                   <i class="{{notification.icon}}"></i>
               </div>
@@ -16,6 +17,63 @@
               <div class="col-xs-1 no-horizontal-padding padding-top-10">
                   <i class="fa fa-times cursor-pointer" ng-click="removeNotification($index)"></i>
               </div>
+          </div>
+          
+          <!-- Actual ooo notifications -->
+          <div ng-if="notification.type == 'ooo-pending' || notification.type == 'ooo-approved' || notification.type == 'ooo-cancelled' || notification.type == 'ooo-denied'">
+              <div class="row no-horizontal-margin" style="margin-bottom: 10px;" ng-class="{'color-yellow': notification.type == 'ooo-pending', 'notification-request-cancel': notification.type == 'ooo-cancelled' || notification.type == 'ooo-denied', 'color-green': notification.type == 'ooo-approved'}">
+                  <div class="col-xs-1" style="padding-right: 0; padding-top: 15px;">
+                      <i ng-class="{'fa fa-clock-o': notification.type == 'ooo-pending', 'fa fa-check': notification.type == 'ooo-approved', 'fa fa-times-circle': notification.type == 'ooo-cancelled', 'fa fa-minus-circle': notification.type == 'ooo-denied'}"></i>
+                  </div>
+                  <div class="col-xs-11 bold" style="padding-top: 15px;">{{notification.header}}<i class="fa fa-times cursor-pointer pull-right" ng-click="removeNotification($index)" ng-hide="notification.type == 'ooo-pending'"></i></div>
+              </div>
+              <div class="row no-margin">
+                  <div class="col-xs-11 col-xs-offset-1" style="padding: 0 0 5px 15px;">
+                      <div style="color: #4a4a4a">
+                          <div>
+                              <strong>{{notification.details.person.name}}</strong>
+                          </div>
+                          <div>
+                              <span>{{notification.details.type}}</span> <span>{{getVacationDays(notification.details.startDate, notification.details.endDate)}}</span>
+                          </div>
+                          <div>
+                              <span>{{formatDate(notification.details.startDate, "MMMM D")}}</span>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-xs-11 col-xs-offset-1" style="padding: 0 0 15px 15px;" ng-if="notification.type == 'ooo-denied'">
+                      <div style="color: #4a4a4a">
+                          <div>
+                              <strong>Note from manager:</strong>
+                          </div>
+                          <div>
+                              <span>{{notification.details.comment}}</span>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-xs-11 col-xs-offset-1" style="padding: 0 0 15px 15px;" ng-if="notification.type == 'ooo-cancelled'">
+                      <div style="color: #4a4a4a">
+                          <div>
+                              <strong>Reason:</strong>
+                          </div>
+                          <div>
+                              <span>{{notification.details.reason}}</span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row no-horizontal-margin" style="font-size: 15px;" ng-if="notification.type == 'ooo-pending'">
+                  <button class="btn btn-approve pull-right" ng-click="oooDecide($index, true)" style="margin-right: 15px; border-radius: 5px;">
+                      <i class="fa fa-check"></i> <span>Approve</span>
+                  </button>
+                  <button class="btn btn-deny pull-right" ng-click="oooDecide($index, false)" style="border-radius: 5px;">
+                      <i class="fa fa-times"></i> <span>Deny</span>
+                  </button>
+              </div>
+              
+              <!--<div class="col-xs-1 no-horizontal-padding padding-top-10">
+                      <i class="fa fa-times cursor-pointer" ng-click="removeNotification($index)"></i>
+                  </div>-->
           </div>
       </div>
       <div ng-if="notifications.length == 0" class="color-gray-image-border no-notifications">

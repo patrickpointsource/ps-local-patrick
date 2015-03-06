@@ -182,7 +182,7 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 });
 
 router.get('/requests', auth.isAuthenticated, function (req, res) {
-    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewOthersPendingOOO, function (allowed) {
+    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editVacations, function (allowed) {
         if (allowed) {
             people.getPersonByGoogleId(req.user, function (personErr, manager) {
                 if (!personErr && manager) {
