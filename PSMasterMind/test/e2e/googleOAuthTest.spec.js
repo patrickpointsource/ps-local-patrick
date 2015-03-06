@@ -17,6 +17,10 @@ describe('E2E: GoogleOAuthTest', function() {
 		browser.driver.ignoreSynchronization = true;
 	    browser.driver.get('http://localhost:9000');
 	    
+	    var width = 1900;
+	    var height = 1200;
+	    browser.driver.manage().window().setSize(width, height);
+	    
 	    browser.driver.wait(function() {	    	
 	    	return browser.driver.isElementPresent(sbutton);
 	    	
