@@ -80,7 +80,6 @@ var getSubordinateManagers = function (managers, people, callback ) {
 }
 
 var findSubordinateManagers = function (initialManagerResources, people, depth, result, callback ) {
-	console.log("Depth : " + depth);
 	if (depth < SUBORDINATE_MANAGER_DEPTH) {
 		var subordinateManagers = _.filter(people, function(person) {
 	    	if (_.find(initialManagerResources, function(manager){ 
