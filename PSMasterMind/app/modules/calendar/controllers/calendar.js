@@ -263,7 +263,8 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     			var p = {
     					startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
    		   			 	endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
-    					includeApproved: true
+    					includeApproved: true,
+    					showSubordinateManagerRequests: true
 				};
     			
     			if (!$scope.hidePendingVacations)
@@ -321,11 +322,12 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 		   		   			 persons: persons.join(',')
 		   		   		 });
     			});
-    		} if ($scope.filterVacationsByCurrent == 'direct_reports' && $scope.me) {
+    		} else if ($scope.filterVacationsByCurrent == 'direct_reports' && $scope.me) {
     			var p = {
     					startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
    		   			 	endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
-    					includeApproved: true
+    					includeApproved: true,
+    					showSubordinateManagerRequests: true
 				};
     			
     			if (!$scope.hidePendingVacations)

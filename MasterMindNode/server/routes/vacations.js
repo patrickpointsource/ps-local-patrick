@@ -156,7 +156,7 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 				targetPermissions.push(securityResources.vacations.permissions.viewOthersPendingOOO);
 		}
 		
-		targetPermissions = [securityResources.vacations.permissions.viewVacations];
+		///targetPermissions = [securityResources.vacations.permissions.viewVacations];
 		
 		security.isAllowed(req.user, res, securityResources.vacations.resourceName, targetPermissions, function(allowed){
 			if (allowed) {
