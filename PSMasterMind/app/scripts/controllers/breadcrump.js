@@ -90,6 +90,10 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			$scope.breadCrumpParts.push( "Reports" );
 		}
 		
+		else if( $scope.state.name == 'calendar' ) {
+			$scope.breadCrumpParts.push( "Calendar" );
+		}
+		
 		else if( $scope.state.name == 'reportsshell' ) {
 			$scope.breadCrumpParts.push( "Reports Dashboard" );
 		}
