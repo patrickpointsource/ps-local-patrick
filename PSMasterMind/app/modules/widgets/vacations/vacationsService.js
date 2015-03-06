@@ -55,7 +55,7 @@ function ($q, Resources, HoursService) {
         params.status = [this.STATUS.Pending, this.STATUS.Cancelled];
         params.fields = ["_id", "description", "startDate", "endDate", "person", "status", "type", "resource"];
         
-        if (vacationParams.showSubordinateManagerRequests)
+        if (vacationParams && vacationParams.showSubordinateManagerRequests)
         	params.showSubordinateManagerRequests = true;
         
         var customStatuses = [];
