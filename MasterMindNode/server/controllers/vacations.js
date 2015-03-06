@@ -9,6 +9,8 @@ var Q = require('q');
 var assignmentsService = require("../controllers/assignments");
 //12/11/14 MM var validation = require( '../data/validation.js' );
 
+var SUBORDINATE_MANAGER_DEPTH = 5;
+
 module.exports.listVacations = function(callback) {
     dataAccess.listVacations(function(err, body){
         if (err) {
@@ -61,6 +63,7 @@ module.exports.listRequests = function(manager, statuses, startDate, endDate, sh
 				return callback("error loading requests", null);
 			}
 			getSubordinateManagers([manager], people.members, function (managerResources) {
+				console.log("managerResources :" + managerResources);
 				managerResources.push(manager);
 				listRequestsByManagers(managerResources, statuses, startDate, endDate, fields, callback);
 			})
@@ -73,32 +76,38 @@ module.exports.listRequests = function(manager, statuses, startDate, endDate, sh
 
 
 var getSubordinateManagers = function (managers, people, callback ) {
-	findSubordinateManagers(managers, people, [], callback);
+	findSubordinateManagers(managers, people, 0, [], callback);
 }
 
-var findSubordinateManagers = function (initialManagerResources, people, result, callback ) {
-    var subordinateManagers = _.filter(people, function(person) {
-    	if (_.find(initialManagerResources, function(manager){ 
-    		if (person.manager && person.manager.resource == manager) {
-    			return true;
-    		}
-            return false;
-        })) {
-    		return true;
-    	}
-    	return false;
-    });
-    if (subordinateManagers && subordinateManagers.length > 0) {
-    	var managerResources = _.map(subordinateManagers, function(person) {
-            return person.resource;
-        });
-    	for (var i in managerResources) {
-        	result.push(managerResources[i]);
-    	}
-       	findSubordinateManagers(managerResources, people, result, callback);
-    } else {
+var findSubordinateManagers = function (initialManagerResources, people, depth, result, callback ) {
+	console.log("Depth : " + depth);
+	if (depth < SUBORDINATE_MANAGER_DEPTH) {
+		var subordinateManagers = _.filter(people, function(person) {
+	    	if (_.find(initialManagerResources, function(manager){ 
+	    		if (person.manager && person.manager.resource == manager) {
+	    			return true;
+	    		}
+	            return false;
+	        })) {
+	    		return true;
+	    	}
+	    	return false;
+	    });
+	    if ( subordinateManagers && subordinateManagers.length > 0 ) {
+	    	var managerResources = _.map(subordinateManagers, function(person) {
+	            return person.resource;
+	        });
+	    	for (var i in managerResources) {
+	        	result.push(managerResources[i]);
+	    	}
+	       	findSubordinateManagers(managerResources, people, ++depth, result, callback);
+	    } else {
+	    	callback(result);
+	    }		
+	}
+	else {
     	callback(result);
-    }
+	}
 };
 
 var listRequestsByManagers = function(managers, statuses, startDate, endDate, fields, callback) {
