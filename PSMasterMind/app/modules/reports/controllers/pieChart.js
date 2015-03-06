@@ -12,12 +12,12 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
     $scope.elemId = null;
 
     $scope.render = function (elId) {
-        var width = $scope.width || 400;
+        var width = $scope.width || 300;
         var height = $scope.height || 250;
 
         var el = $('#' + elId + ' div');
 
-        el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el).css("width", width);
+        el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el).css({ height: height, width: width });
 
         var chartData = $scope.chartData;
         var isEmpty = true;
@@ -28,30 +28,34 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         if (isEmpty)
             return;
 
-        
-        var svg = dimple.newSvg("#" + elId + "chartContainer", width, height + 50);
-        var legendBoxHeight = height * .65;
-        
+        var filterValues = dimple.getUniqueValues(chartData, "key");
+        var svg = dimple.newSvg("#" + elId + "chartContainer", width, height);
+        var legendBoxHeight = 50 + filterValues.length * 14;
+        var paddingLeft = 5;
+        var gap = 10;
+        var strokeWidth = 1;
+        var legendBoxWidth = width / 2 - gap - strokeWidth;
+
         var g = svg.append("g")
-            .attr("x", width / 2 + 20)
+            .attr("x", width / 2 + gap)
             .attr("y", (height - legendBoxHeight) / 2)
-            .attr("width", width / 2)
-            .attr("height", height * .75)
-            .attr("transform", "translate(" + (width / 2 + 20) + ", " + ((height - legendBoxHeight) / 2) + ")");
+            .attr("width", legendBoxWidth)
+            .attr("height", legendBoxHeight)
+            .attr("transform", "translate(" + (width / 2 + gap) + ", " + ((height - legendBoxHeight) / 2) + ")");
 
         g.append("rect")
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", width / 2)
+            .attr("width", legendBoxWidth)
             .attr("height", legendBoxHeight)
             .attr("stroke", "#CCCCCC")
-            .attr("stroke-width", 1)
+            .attr("stroke-width", strokeWidth)
             .attr("fill-opacity", 0);
 
         g.append("text")
             .attr("x", 7)
             .attr("y", 15)
-            .attr("width", 100)
+            .attr("width", legendBoxWidth - 7)
             .attr("height", 22)
             .style("font-size", "10px")
             .style("font-weight", "bold")
@@ -60,7 +64,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         g.append("text")
             .attr("x", 7)
             .attr("y", legendBoxHeight - 10)
-            .attr("width", width / 2)
+            .attr("width", legendBoxWidth - 7)
             .attr("height", 14)
             .style("font-size", "10px")
             .style("font-family", "sans-serif")
@@ -69,7 +73,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
 
         // Create the chart
         var myChart = new dimple.chart(svg, chartData);
-        myChart.setBounds(20, 25, width / 2 - 20, height - 50);
+        myChart.setBounds(paddingLeft, 0, legendBoxWidth - paddingLeft, height);
         // Add an x and 3 y-axes.  When using multiple axes it's
         // important to assign them to variables to pass to the series
         myChart.addMeasureAxis("p", "value");
@@ -80,14 +84,14 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
 
         myChart.draw();
 
-        var myLegend = myChart.addLegend(width / 2 + 30, (height - legendBoxHeight) / 2 + 30, width / 2 - 40, height / 2 - 60, "left");
+        var myLegend = myChart.addLegend(width / 2 + gap + 10, (height - legendBoxHeight) / 2 + 30, legendBoxWidth - 10, legendBoxHeight - 30, "left");
 
         myChart.draw();
 
         myChart.legends = [];
 
         // Get a unique list of Owner values to use when filtering
-        var filterValues = dimple.getUniqueValues(chartData, "key");
+
         // Get all the rectangles from our now orphaned legend
         myLegend.shapes.selectAll("rect")
           // Add a click event to each rectangle
