@@ -60,6 +60,10 @@ describe('E2E: Dashboard Test Cases >', function() {
 	
 
 	beforeEach(function() {
+	    var width = 1900;
+	    var height = 1200;
+	    browser.driver.manage().window().setSize(width, height);
+		
 		browser.driver.getCurrentUrl().then(function(url) {
 			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
 				browser.driver.get('http://localhost:9000/index.html#/');
