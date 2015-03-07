@@ -122,13 +122,13 @@
 		                		<div ng-repeat="vac in day.vacations" ng-show="{{$index <= 4}}" ng-class="{'empty-vacation': vac.isEmpty}"
 		                			class="text-left vacation-day-entry entry_{{$parent.$index}}_{{$index}}" style="background:{{vac.background}}"
 		                			ng-mouseover="onVacationClicked(event, vac, $parent.$index, $index)" ng-mouseleave="onVacationHide(event, vac, $parent.$index, $index)">
-					            	<span ng-show="{{vac.startDateOfMultidays == day.date}}">{{vac.person.name ? vac.person.name: 'UNKNOWN'}}</span>
+					            	<span ng-show="{{vac.startDateOfMultidays == day.date}}">{{vac.person.name ? vac.person.name: '...'}}</span>
 					            	<span class="vacation-day-period" ng-show="{{vac.startDateOfMultidays == day.date}}">{{getVacationPeriod(vac)}}</span>
 					            	<span ng-show="{{vac.startDateOfMultidays != day.date}}">&nbsp;&nbsp;&nbsp;</span>
 					            </div>
 					            
-					            <div ng-show="{{day.vacations.length > 4}}" ng-click="onShowMoreClicked($event, day.vacations, $index, 5)" class="text-left vacation-day-entry entry_{{$index}}_5" style="background-color:{{day.moreBackground}};" >
-					            	<span>show {{day.vacations.length - 4}} more...</span>
+					            <div ng-show="{{getCountNotEmptyVacations(day.vacations)> 4}}" ng-click="onShowMoreClicked($event, day.vacations, $index, 5)" class="text-left vacation-day-entry entry_{{$index}}_5" style="background-color:{{day.moreBackground}};" >
+					            	<span>show {{getCountNotEmptyVacations(day.vacations) - 4}} more...</span>
 					            </div>
 		                	</div>
 		                	
