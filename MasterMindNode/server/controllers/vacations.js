@@ -62,8 +62,6 @@ module.exports.listRequestsByManager = function(manager, statuses, startDate, en
 		if (err) {
 			return callback("error loading people by manager : " + manager, null);
 		}
-		console.log("manager : " + manager);
-		console.log("people : " + people.members.length);
 		var peopleResources = _.map(people.members, function(person) {
             return person.resource;
         });
