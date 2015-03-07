@@ -453,6 +453,23 @@ var listPeopleByRoles = function( roleIds, includeInactive, fields, callback ) {
 
 };
 
+var listPeopleByManager = function( manager, fields, callback ) {
+	var result = memoryCache.getObject( PEOPLE_KEY );
+	if( result ) {
+		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterPeopleByManager(manager, result.data), "members", "people/", null, fields ) );
+	} else {
+		dbAccess.listPeople( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				memoryCache.putObject( PEOPLE_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterPeopleByManager(manager, body.data), "members", "people/", null, fields ) );
+		} );
+	}
+
+};
+
 var listPeopleByIsActiveFlag = function(isActive, fields, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
@@ -958,19 +975,37 @@ var listVacationsByPeriod = function( people, startDate, endDate, fields, callba
 };
 
 
-var listRequests = function( managers, statuses, startDate, endDate, fields, callback ) {
+var listRequestsByVacationManagers = function( managers, statuses, startDate, endDate, fields, callback ) {
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
 		console.log( "read " + VACATIONS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterRequests(managers, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
+		callback( null, prepareRecords( dataFilter.filterRequestsByVacationManagers(managers, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
-			callback( null, prepareRecords( dataFilter.filterRequests(managers, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
+			callback( null, prepareRecords( dataFilter.filterRequestsByVacationManagers(managers, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
+		} );
+	}
+
+};
+
+var listRequestsByPeople = function( people, statuses, startDate, endDate, fields, callback ) {
+
+	var result = memoryCache.getObject( VACATIONS_KEY );
+	if( result ) {
+		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterRequestsByPeople(people, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
+	} else {
+		dbAccess.listVacations( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				memoryCache.putObject( VACATIONS_KEY, body );
+			}
+			callback( null, prepareRecords( dataFilter.filterRequestsByPeople(people, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
 		} );
 	}
 
@@ -1474,6 +1509,7 @@ module.exports.listCurrentProjectsByPerson = listCurrentProjectsByPerson;
 module.exports.listPeople = listPeople;
 module.exports.listPeopleByPerson = listPeopleByPerson;
 module.exports.listPeopleByRoles = listPeopleByRoles;
+module.exports.listPeopleByManager = listPeopleByManager;
 module.exports.listPeopleByIsActiveFlag = listPeopleByIsActiveFlag;
 module.exports.listPeopleWithPrimaryRole = listPeopleWithPrimaryRole;
 module.exports.listPeopleByGroups = listPeopleByGroups;
@@ -1507,7 +1543,8 @@ module.exports.listConfiguration = listConfiguration;
 module.exports.listVacations = listVacations;
 module.exports.listVacationsByPerson = listVacationsByPerson;
 module.exports.listVacationsByPeriod = listVacationsByPeriod;
-module.exports.listRequests = listRequests;
+module.exports.listRequestsByVacationManagers = listRequestsByVacationManagers;
+module.exports.listRequestsByPeople = listRequestsByPeople;
 module.exports.listAllEmployeeVacations = listAllEmployeeVacations;
 module.exports.listSecurityRoles = listSecurityRoles;
 module.exports.listSecurityRolesByResources = listSecurityRolesByResources;
