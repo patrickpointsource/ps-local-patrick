@@ -274,7 +274,7 @@ module.exports.getMyVacations = function (me, callback) {
 module.exports.getMyRequests = function(me, callback) {
     var returnedObjects = [];
 
-    dataAccess.listRequestsByPeople(me.resource, "Pending", null, null, null, function (err, result) {
+    dataAccess.listRequestsByVacationManagers(me.resource, "Pending", null, null, null, function (err, result) {
         if (err) {
             callback(err, null);
         } else {
