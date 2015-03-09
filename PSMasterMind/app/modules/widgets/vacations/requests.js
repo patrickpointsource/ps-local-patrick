@@ -69,7 +69,7 @@ function( $q, $scope, $state, $rootScope, Resources, ProjectsService, VacationsS
       }
     });
     
-    $scope.$emit('request-processed', request.resource);
+    $scope.$emit('request-processed', request);
   }
   
   $scope.commitHours = function(request) {

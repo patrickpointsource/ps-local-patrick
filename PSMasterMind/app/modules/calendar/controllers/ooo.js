@@ -17,6 +17,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
         $scope.loading = true;
 
         $scope.initOOO = function () {
+            $scope.submitting = false;
             $scope.cancelEdit();
             $scope.loading = true;
             Resources.refresh("vacations/my").then(function(result) {
@@ -178,6 +179,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
         $scope.submit = function() {
             $scope.clean();
+            $scope.submitting = true;
 
             // validate dates
             if (this.vacationStartDate && this.vacationEndDate && this.vacationStartTime && this.vacationEndTime) {
@@ -266,9 +268,11 @@ angular.module('Mastermind').controller('OOOCtrl', [
             var vacation = $scope.editableVacation;
 
             $("#vacCancelModal").modal('hide');
+            $scope.submitting = true;
             
             vacation.status = "Cancelled";
             vacation.reason = this.cancellationReason;
+            vacation.vacationManager = { resource: vacation.vacationManager.resource, name: Util.getPersonName(vacation.vacationManager) };
             Resources.update(vacation).then(function (result) {
                 $scope.initOOO();
                 $scope.messages.push("Out of office request cancelled.");

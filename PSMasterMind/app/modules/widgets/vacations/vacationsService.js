@@ -53,7 +53,7 @@ function ($q, Resources, HoursService) {
 
         params.manager = manager.about;
         params.status = [this.STATUS.Pending, this.STATUS.Cancelled];
-        params.fields = ["_id", "description", "startDate", "endDate", "person", "status", "type", "resource"];
+        //params.fields = ["_id", "description", "startDate", "endDate", "person", "status", "type", "resource"];
         
         if (vacationParams && vacationParams.showSubordinateManagerRequests)
         	params.showSubordinateManagerRequests = true;

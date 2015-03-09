@@ -21,23 +21,26 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   
   $scope.getVacations = function() {
       $scope.profileLoaded = true;
-      
+
       if ($scope.canViewOtherVacations() || $scope.canViewMyVacations() && $scope.profileId == $scope.me._id)
-		  VacationsService.getVacations($scope.profileId).then(function(result) {
-		    $scope.vacations = _.sortBy(result, function(vacation) {
-		      return new Date(vacation.startDate);
-		    });
-		    
-		    for(var i = 0; i < $scope.vacations.length; i++) {
-		      Resources.resolve($scope.vacations[i].vacationManager);
-		    }
-		  
-		    $scope.showVacations();
-		  });
+          VacationsService.getVacations($scope.profileId).then(function(result) {
+              $scope.vacations = _.filter(result, function(vacation) {
+                  return vacation.status != "Cancelled";
+              });
+              $scope.vacations = _.sortBy($scope.vacations, function(vacation) {
+                  return new Date(vacation.startDate);
+              });
+
+              for (var i = 0; i < $scope.vacations.length; i++) {
+                  Resources.resolve($scope.vacations[i].vacationManager);
+              }
+
+              $scope.showVacations();
+          });
       else {
-    	  
-    	  $scope.vacations = [];
-    	  $scope.showVacations();
+
+          $scope.vacations = [];
+          $scope.showVacations();
       }
   };
   
@@ -64,24 +67,24 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
   $scope.canViewMyVacations = function() {
 		return $rootScope.hasPermissions(CONSTS.VIEW_MY_VACATIONS);
   };
-	
-  
-  
-  $scope.showVacations = function() {
-	if($scope.vacations.length > VACATIONS_PER_PAGE) {
-		var startIndex = ($scope.vacationsPage - 1) * VACATIONS_PER_PAGE;
-		$scope.allPages = Math.ceil($scope.vacations.length / VACATIONS_PER_PAGE);
-		$scope.displayedVacations = [];
-		for(var i = 0; i < VACATIONS_PER_PAGE; i++) {
-		  if($scope.vacations[startIndex + i]) {
-			$scope.displayedVacations.push($scope.vacations[startIndex + i]);
-		  }
-		}
-	} else {
-	  $scope.displayedVacations = $scope.vacations;
-	  $scope.vacationsPage = 1;
-	}
-  };
+
+
+    $scope.showVacations = function() {
+        $scope.submitting = false;
+        if ($scope.vacations.length > VACATIONS_PER_PAGE) {
+            var startIndex = ($scope.vacationsPage - 1) * VACATIONS_PER_PAGE;
+            $scope.allPages = Math.ceil($scope.vacations.length / VACATIONS_PER_PAGE);
+            $scope.displayedVacations = [];
+            for (var i = 0; i < VACATIONS_PER_PAGE; i++) {
+                if ($scope.vacations[startIndex + i]) {
+                    $scope.displayedVacations.push($scope.vacations[startIndex + i]);
+                }
+            }
+        } else {
+            $scope.displayedVacations = $scope.vacations;
+            $scope.vacationsPage = 1;
+        }
+    };
   
   $scope.getDays = function(start, end) {
   	  return VacationsService.getDays(start, end);
@@ -187,6 +190,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	$scope.vacations.push(vacation);
 	$scope.showVacations();
 	$scope.requestNew = false;
+	$scope.submitting = true;
 	
 	VacationsService.addNewVacation(vacation).then(function(result) {
       $scope.getVacations();
@@ -254,80 +258,62 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $('.select-vacation-manager-' + index).selectpicker();
 	}
   };
-  
-  $scope.deleteVacation = function() {
-	$scope.cancelValidation = "";
-	
-	if(!$scope.cancellationReason) {
-	  $scope.cancelValidation = "Please enter a reason.";
-	  return;
-	}
-	
-	var vacation = $scope.displayedVacations[$scope.editVacationIndex];
-	
-	var notification = {
-      type: "VacationCancel",
-      header: "Cancelled Paid Vacation Request",
-      text: Util.getPersonName($scope.me) + " has deleted out-of-office entry: " + vacation.startDate + " - " + vacation.endDate + ", " + vacation.type + ". Reason: " + $scope.cancellationReason,
-      icon: "fa fa-times-circle",
-      person: { resource: vacation.vacationManager.resource }
+
+    $scope.deleteVacation = function() {
+        $scope.cancelValidation = "";
+
+        if (!$scope.cancellationReason) {
+            $scope.cancelValidation = "Please enter a reason.";
+            return;
+        }
+
+        var vacation = $scope.displayedVacations[$scope.editVacationIndex];
+        vacation.vacationManager = { resource: vacation.vacationManager.resource, name: Util.getPersonName(vacation.vacationManager) };
+        vacation.status = "Cancelled";
+        $("#vacCancelModal").modal('hide');
+        Resources.update(vacation).then(function(result) {
+            $scope.vacations.splice($scope.editVacationIndex, 1);
+            $scope.editVacationIndex = -1;
+            $scope.showVacations();
+        });
     };
-	
-	NotificationsService.add(notification).then(function(result) {
-	  $("#vacCancelModal").modal('hide');
-	  Resources.remove(vacation.resource).then(function(result) {
-        $scope.vacations.splice($scope.editVacationIndex, 1);
-        $scope.editVacationIndex = -1;
-        $scope.showVacations();
-      });
-    });
-  };
-  
-  $scope.updateVacation = function(vacation) {
-    $scope.errors = [];
-    if(this.vacationEditStartDate && this.vacationEditEndDate && this.vacationEditStartTime && this.vacationEditEndTime) {
-      vacation.startDate = this.vacationEditStartDate + " " + this.vacationEditStartTime;
-      vacation.endDate = this.vacationEditEndDate + " " + this.vacationEditEndTime;
-    } else {
-      $scope.errors.push("Dates validation failed.");
-      return;
-    }
-    
-	if(!$scope.checkForConflictDates($scope.vacationEditStartDate, $scope.vacationEditEndDate, $scope.vacationEditStartTime, $scope.vacationEditEndTime, vacation.resource)) {
-	  return;
-	}
-	
-	if($scope.vacationManagerEdit) {
-      vacation.vacationManager = { resource: $scope.vacationManagerEdit.resource };
-    }
-    
-    if($scope.isApproved(vacation)) {
-      vacation.status = STATUS.Approved;
-      
-      // commit hours after updating vacation entry if it is gets approved instantly
-      VacationsService.commitHours(vacation, function() { 
-        $rootScope.$emit("hours:requiredRefresh");
-      });
-    } else {
-      vacation.status = STATUS.Pending;
-      
-      var notification = {
-        type: "Vacation",
-        header: "Pending Paid Vacation Request",
-        text: "From " + Util.getPersonName($scope.me),
-        icon: "fa fa-clock-o",
-        person: { resource: vacation.vacationManager.resource }
-      };
-      
-      NotificationsService.add(notification).then(function(result) {
-      });
-    }
-    
-	Resources.update(vacation).then(function(result) {
-	  $scope.editVacationIndex = -1;
-	  $scope.getVacations();
-	});
-  };
+
+    $scope.updateVacation = function(vacation) {
+        $scope.errors = [];
+        if (this.vacationEditStartDate && this.vacationEditEndDate && this.vacationEditStartTime && this.vacationEditEndTime) {
+            vacation.startDate = this.vacationEditStartDate + " " + this.vacationEditStartTime;
+            vacation.endDate = this.vacationEditEndDate + " " + this.vacationEditEndTime;
+        } else {
+            $scope.errors.push("Dates validation failed.");
+            return;
+        }
+
+        $scope.submitting = true;
+
+        if (!$scope.checkForConflictDates($scope.vacationEditStartDate, $scope.vacationEditEndDate, $scope.vacationEditStartTime, $scope.vacationEditEndTime, vacation.resource)) {
+            return;
+        }
+
+        if ($scope.vacationManagerEdit) {
+            vacation.vacationManager = { resource: $scope.vacationManagerEdit.resource };
+        }
+
+        if ($scope.isApproved(vacation)) {
+            vacation.status = STATUS.Approved;
+
+            // commit hours after updating vacation entry if it is gets approved instantly
+            VacationsService.commitHours(vacation, function() {
+                $rootScope.$emit("hours:requiredRefresh");
+            });
+        } else {
+            vacation.status = STATUS.Pending;
+        }
+
+        Resources.update(vacation).then(function(result) {
+            $scope.editVacationIndex = -1;
+            $scope.getVacations();
+        });
+    };
   
   $scope.isApproved = function(vacation) {
     if((vacation.type == VACATION_TYPES.Appointment && moment(vacation.endDate).diff(vacation.startDate, 'hours') <= 4)

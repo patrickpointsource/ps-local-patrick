@@ -86,18 +86,22 @@ var resolveVacation = function(notification) {
     }
 
     var id = "";
-    if (notification.details || notification.details.resource) {
+    if (notification.details && notification.details.resource) {
         id = util.getId(notification.details.resource);
     }
     
-    dataAccess.getItem(id, function(err, vacation) {
-        if (!err) {
-            notification.details = vacation;
-            deferred.resolve(notification);
-        } else {
-            deferred.reject(err);
-        }
-    });
+    if (id) {
+        dataAccess.getItem(id, function(err, vacation) {
+            if (!err) {
+                notification.details = vacation;
+                deferred.resolve(notification);
+            } else {
+                deferred.reject(err);
+            }
+        });
+    } else {
+        deferred.reject("Error resolving vacation for notification.");
+    }
 
     return deferred.promise;
 };
@@ -175,10 +179,12 @@ module.exports.constructVacationNotification = function(vacation) {
 };
 
 var isOOONotification = function(notification) {
-    if (notification.type == TYPES.VACATION_APPROVED ||
+    if ((notification.type == TYPES.VACATION_APPROVED ||
         notification.type == TYPES.VACATION_CANCELLED ||
         notification.type == TYPES.VACATION_DENIED ||
-        notification.type == TYPES.VACATION_PENDING) {
+        notification.type == TYPES.VACATION_PENDING)&&
+        notification.details &&
+        notification.details.resource) {
         return true;
     }
 
@@ -192,6 +198,11 @@ var sendEmailTo = function(notification) {
 
     dataAccess.getItem(userId, function(err, user) {
         if (!err) {
+            if (!notification.details || !notification.details.resource) {
+                var msg = "error sending notification email.";
+                console.log("error sending notification email.");
+                return;
+            }
             var vacationId = util.getId(notification.details.resource);
             dataAccess.getItem(vacationId, function(vacErr, vacation) {
                 if (!err) {

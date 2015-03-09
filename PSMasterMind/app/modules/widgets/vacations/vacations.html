@@ -103,7 +103,7 @@
           </div>
         </div>
         <div ng-if="vacationType" class="row col-xs-12 no-horizontal-padding margin-bottom-xs margin-right-xs vertical-margin-md">
-          <button class="btn btn-info pull-right" ng-click="addVacation()" style="color: white; font-weight: bold; font-size: 16px;">SUBMIT</button>
+          <button class="btn btn-info pull-right" ng-click="addVacation()" style="color: white; font-weight: bold; font-size: 16px;" ng-disabled="submitting">SUBMIT</button>
           <span class="pull-right gray-text vac-requested"><span class="color-gray-less bold">{{getNewVacationDuration()}}</span> requested</span>
         </div>
       </div>
@@ -206,8 +206,8 @@
           </div>
           
           <div class="row col-xs-12 no-horizontal-margin margin-bottom-xs vertical-margin-md">
-            <button class="btn btn-default" data-toggle="modal" data-target="#vacCancelModal" style="color: red; border: 0px; background-color: #f7f7f7;">Cancel Request</button>
-            <button class="btn btn-info pull-right" ng-click="updateVacation(vacation)" style="background-color: #1ba2c1; color: white; font-size: 16px; font-weight: bold;">RESUBMIT</button>
+              <button class="btn btn-default" data-toggle="modal" data-target="#vacCancelModal" style="color: red; border: 0px; background-color: #f7f7f7;" ng-disabled="submitting">Cancel Request</button>
+              <button class="btn btn-info pull-right" ng-click="updateVacation(vacation)" style="background-color: #1ba2c1; color: white; font-size: 16px; font-weight: bold;" ng-disabled="submitting">RESUBMIT</button>
             <span class="pull-right gray-text vac-requested"><span class="color-gray-less bold">{{getEditVacationDuration()}}</span> requested</span>
           </div>
         </div>

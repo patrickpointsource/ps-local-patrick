@@ -20,6 +20,24 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	// Default dashboard view overwritten below if Exec or Management
 	$scope.dashboardScreen = 'views/dashboards/baseDashboard.html';
 		
+	$scope.refreshNotifications = function () {
+	    $scope.notificationsLoaded = false;
+	    NotificationsService.getNotifications().then(function (result) {
+            try {
+                $scope.notifications = result;
+                _.each($scope.notifications, function(notification) {
+                    if (!notification.details.person.name || notification.details.person.name == "") {
+                        Resources.resolve(notification.details.person);
+                    }
+                });
+            } catch (err) {
+                console.log(err);
+            } finally {
+                $scope.notificationsLoaded = true;
+            }
+        });
+    };
+
 	//Load my profile for group and role checking
 	Resources.refresh( 'people/me' ).then( function( me ) {
 		$scope.me = me;   
@@ -43,26 +61,14 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 			}
 
 			$scope.notifications = [];
-
-		    NotificationsService.getNotifications().then(function(result) {
-		    	$scope.notificationsLoaded = true;
-		    	$scope.checkAllLoaded();
-		        $scope.notifications = result;
-		    });
+			
+			$scope.refreshNotifications();
 
 			//console.log('Logged In');
 			$scope.authState = true;
 			$scope.$emit( 'me:loaded' );
 		});
 	});
-
-    $scope.refreshNotifications = function() {
-        NotificationsService.getNotifications().then(function(result) {
-            $scope.notificationsLoaded = true;
-            $scope.checkAllLoaded();
-            $scope.notifications = result;
-        });
-    };
 
     $scope.getVacationDays = function(start, end) {
         return VacationsService.getDays(start, end);
@@ -357,7 +363,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	$scope.staffingDeficitLoaded = false;
 	
 	$scope.checkAllLoaded = function() {
-	    if ($scope.hoursLoaded && (!$rootScope.bookingForecastAvailable || $scope.bookingForecastLoaded) && (!$rootScope.staffingDeficitAvailable || $scope.staffingDeficitLoaded) && $scope.notificationsLoaded)
+	    if ($scope.hoursLoaded && (!$rootScope.bookingForecastAvailable || $scope.bookingForecastLoaded) && (!$rootScope.staffingDeficitAvailable || $scope.staffingDeficitLoaded))
 	       $scope.hideDashboardSpinner = true;
 	};
 

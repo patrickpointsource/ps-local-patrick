@@ -66,8 +66,10 @@
     </div>
     
     <div ng-show="editableVacation.type" class="row col-xs-12 no-horizontal-margin no-horizontal-padding margin-bottom-xs margin-right-xs vertical-margin-md">
-        <button ng-show="editableVacation._id" class="btn btn-default" data-toggle="modal" data-target="#vacCancelModal" style="color: red; border: 0px; background-color: #f7f7f7;">Cancel Request</button>
-        <button class="btn btn-info pull-right" ng-click="submit()" style="color: white; font-weight: bold; font-size: 16px;">{{getSubmitText()}}</button>
+        <button ng-show="editableVacation._id" class="btn btn-default" data-toggle="modal" data-target="#vacCancelModal" style="color: red; border: 0px; background-color: #f7f7f7;" ng-disabled="submitting">Cancel Request</button>
+        <button class="btn btn-info pull-right" ng-click="submit()" style="color: white; font-weight: bold; font-size: 16px;" ng-disabled="submitting">
+            {{getSubmitText()}}
+        </button>
         <span class="pull-right gray-text vac-requested"><span class="color-gray-less bold">{{getNewVacationDuration()}}</span> requested</span>
     </div>
 </div>

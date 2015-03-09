@@ -32,8 +32,8 @@ router.get('/my', util.isAuthenticated, function (req, res) {
             people.getPersonByGoogleId(googleId, function(err, person) {
                 if (!err) {
                     notifications.listNotificationsByPerson(person.resource, null, function(notificationErr, result) {
-                        if (err) {
-                            res.json(500, notificationErr);
+                        if (notificationErr) {
+                            res.json(500, "Error getting notifications: " + notificationErr);
                         } else {
                             res.json(result);
                         }
