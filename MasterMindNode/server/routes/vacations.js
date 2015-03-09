@@ -97,9 +97,24 @@ router.get('/bytypes/:type', auth.isAuthenticated, function(req, res){
 				var statuses = req.query.status;
 				var startDate = req.query.startDate;
 				var endDate = req.query.endDate;
-				var showSubordinateManagerRequests = req.query.showSubordinateManagerRequests;
 				
-			    vacations.listRequests(manager, statuses, startDate, endDate, showSubordinateManagerRequests, fields, function(err, result){
+			    vacations.listRequests(manager, statuses, startDate, endDate, fields, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			    
+			}		
+			else if (type && type == "getRequestsByManager") {
+				
+				var manager = req.query.manager;
+				var statuses = req.query.status;
+				var startDate = req.query.startDate;
+				var endDate = req.query.endDate;
+				
+			    vacations.listRequestsByManager(manager, statuses, startDate, endDate, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {

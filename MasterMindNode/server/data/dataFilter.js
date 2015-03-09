@@ -126,7 +126,7 @@ var filterPeopleByIsActiveFlag = function(people, isActive) {
 
 
 /**
- * Returns people people with primary role
+ * Returns people with primary role
  * 
  * @param {Object} people
  */
@@ -135,6 +135,22 @@ var filterPeopleWithPrimaryRole = function(people) {
 	var result = [];
 	_.each(people, function(person) {
 		if (person.primaryRole && person.primaryRole.resource) {
+			result.push(person);
+		}
+	});
+	return result;
+};
+
+/**
+ * Returns people by manager
+ * 
+ * @param {Object} people
+ */
+
+var filterPeopleByManager = function(manager, people) {
+	var result = [];
+	_.each(people, function(person) {
+		if (person.manager && person.manager.resource == manager) {
 			result.push(person);
 		}
 	});
@@ -685,19 +701,19 @@ var checkVacation = function(vacation, people, startDate, endDate, callback) {
 };
 
 /**
- * Returns filtered requests
+ * Returns filtered requests by vacation managers
  * 
- * @param {Object} manager
+ * @param {Object} managers
  * @param {Object} statuses
  * @param {Object} startDate
  * @param {Object} endDate
  * @param {Object} vacations
  */
 
-var filterRequests = function(managers, statuses, startDate, endDate, vacations) {
+var filterRequestsByVacationManagers = function(managers, statuses, startDate, endDate, vacations) {
 	var result = [];	
 	_.each(vacations, function(vacation) {
-		checkRequest(vacation, managers, statuses, startDate, endDate, function (checked) {
+		checkRequestByVacationManagers(vacation, managers, statuses, startDate, endDate, function (checked) {
 			if (checked) {
 				result.push (vacation);
 			}
@@ -706,7 +722,29 @@ var filterRequests = function(managers, statuses, startDate, endDate, vacations)
 	return result;
 };
 
-var checkRequest = function(vacation, managers, statuses, startDate, endDate, callback) {
+/**
+ * Returns filtered requests by people
+ * 
+ * @param {Object} managers
+ * @param {Object} statuses
+ * @param {Object} startDate
+ * @param {Object} endDate
+ * @param {Object} vacations
+ */
+
+var filterRequestsByPeople = function(people, statuses, startDate, endDate, vacations) {
+	var result = [];	
+	_.each(vacations, function(vacation) {
+		checkRequestsByPeople(vacation, people, statuses, startDate, endDate, function (checked) {
+			if (checked) {
+				result.push (vacation);
+			}
+		});
+	});
+	return result;
+};
+
+var checkRequestByVacationManagers = function(vacation, managers, statuses, startDate, endDate, callback) {
 
 	if (statuses) {
 		var checked = false;
@@ -733,6 +771,52 @@ var checkRequest = function(vacation, managers, statuses, startDate, endDate, ca
 		}
 		_.each(managers, function(manager) {
 			if (vacation.vacationManager &&  vacation.vacationManager.resource == manager ) {
+				checked = true;
+			}
+		});
+		if (!checked) {
+			return callback (false);
+		}
+	}
+	
+	if (startDate && vacation.endDate < startDate) {
+		return callback (false);
+	}
+	
+	if (endDate && vacation.startDate > endDate) {
+		return callback (false);
+	}
+	
+	return callback (true);
+};
+
+var checkRequestsByPeople = function(vacation, people, statuses, startDate, endDate, callback) {
+
+	if (statuses) {
+		var checked = false;
+		if (!(statuses instanceof Array)) {
+			statuses = [statuses];
+		}
+
+		_.each(statuses, function(status) {
+			if (vacation.status == status) {
+				checked = true;
+			}
+		});
+		
+		if (!checked) {
+			return callback (false);
+		}
+	}
+	
+	
+	if (people) {
+		var checked = false;
+		if (!(people instanceof Array)) {
+			people = [people];
+		}
+		_.each(people, function(person) {
+			if (vacation.person &&  vacation.person.resource == person ) {
 				checked = true;
 			}
 		});
@@ -842,6 +926,7 @@ module.exports.filterPeopleWithPrimaryRole = filterPeopleWithPrimaryRole;
 module.exports.filterPeopleByGroups = filterPeopleByGroups;
 module.exports.filterPeopleByGoogleIds = filterPeopleByGoogleIds;
 module.exports.filterPeopleByNames = filterPeopleByNames;
+module.exports.filterPeopleByManager = filterPeopleByManager;
 
 // projects filter functions
 module.exports.filterProjectsByIds = filterProjectsByIds;
@@ -868,7 +953,8 @@ module.exports.filterSecurityRolesByResources = filterSecurityRolesByResources;
 // vacations filter functions
 module.exports.filterVacationsByPerson = filterVacationsByPerson;
 module.exports.filterVacationsByPeriod = filterVacationsByPeriod;
-module.exports.filterRequests = filterRequests;
+module.exports.filterRequestsByVacationManagers = filterRequestsByVacationManagers;
+module.exports.filterRequestsByPeople = filterRequestsByPeople;
 module.exports.filterVacationsByDates = filterVacationsByDates;
 module.exports.filterVacations = filterVacations;
 

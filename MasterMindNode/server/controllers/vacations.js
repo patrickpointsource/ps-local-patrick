@@ -57,61 +57,29 @@ module.exports.listAllEmployeeVacations = function(statuses, startDate, endDate,
     });
 };
 
-module.exports.listRequests = function(manager, statuses, startDate, endDate, showSubordinateManagerRequests, fields, callback) {
-	if (showSubordinateManagerRequests) {
-		dataAccess.listPeople(null, function (err, people) {
-			if (err) {
-				return callback("error loading requests", null);
-			}
-			getSubordinateManagers([manager], people.members, function (managerResources) {
-				console.log("managerResources :" + managerResources);
-				managerResources.push(manager);
-				listRequestsByManagers(managerResources, statuses, startDate, endDate, fields, callback);
-			})
-		});
-	}
-	else {
-		listRequestsByManagers(manager, statuses, startDate, endDate, fields, callback);
-	}
-};
-
-
-var getSubordinateManagers = function (managers, people, callback ) {
-	findSubordinateManagers(managers, people, 0, [], callback);
-}
-
-var findSubordinateManagers = function (initialManagerResources, people, depth, result, callback ) {
-	if (depth < SUBORDINATE_MANAGER_DEPTH) {
-		var subordinateManagers = _.filter(people, function(person) {
-	    	if (_.find(initialManagerResources, function(manager){ 
-	    		if (person.manager && person.manager.resource == manager) {
-	    			return true;
-	    		}
-	            return false;
-	        })) {
-	    		return true;
-	    	}
-	    	return false;
+module.exports.listRequestsByManager = function(manager, statuses, startDate, endDate, fields, callback) {
+	dataAccess.listPeopleByManager(manager, null, function (err, people) {
+		if (err) {
+			return callback("error loading people by manager : " + manager, null);
+		}
+		var peopleResources = _.map(people.members, function(person) {
+            return person.resource;
+        });
+		console.log("peopleResources : " + JSON.stringify(peopleResources));
+		dataAccess.listRequestsByPeople(peopleResources, statuses, startDate, endDate, fields, function(err, body){
+	        if (err) {
+	            console.log(err);
+	            callback("error loading requests", null);
+	        } else {
+	            callback(null, body);
+	        }
 	    });
-	    if ( subordinateManagers && subordinateManagers.length > 0 ) {
-	    	var managerResources = _.map(subordinateManagers, function(person) {
-	            return person.resource;
-	        });
-	    	for (var i in managerResources) {
-	        	result.push(managerResources[i]);
-	    	}
-	       	findSubordinateManagers(managerResources, people, ++depth, result, callback);
-	    } else {
-	    	callback(result);
-	    }		
-	}
-	else {
-    	callback(result);
-	}
+		
+	});
 };
 
-var listRequestsByManagers = function(managers, statuses, startDate, endDate, fields, callback) {
-    dataAccess.listRequests(managers, statuses, startDate, endDate, fields, function(err, body){
+module.exports.listRequests = function(manager, statuses, startDate, endDate, fields, callback) {
+    dataAccess.listRequestsByVacationManagers(manager, statuses, startDate, endDate, fields, function(err, body){
         if (err) {
             console.log(err);
             callback("error loading requests", null);
@@ -306,7 +274,7 @@ module.exports.getMyVacations = function (me, callback) {
 module.exports.getMyRequests = function(me, callback) {
     var returnedObjects = [];
 
-    dataAccess.listRequests(me.resource, "Pending", null, null, null, function (err, result) {
+    dataAccess.listRequestsByPeople(me.resource, "Pending", null, null, null, function (err, result) {
         if (err) {
             callback(err, null);
         } else {
