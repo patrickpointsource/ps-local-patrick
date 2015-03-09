@@ -165,9 +165,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       VacationsService.commitHours(vacation, function() { 
         $rootScope.$emit("hours:requiredRefresh");
       });
-    } /*else {
+    } else {
       vacation.status = STATUS.Pending;
-      var title = ( vacation.type == "Customer Travel" ) ? "Paid " + vacation.type + " hours logged" : "Pending " + vacation.type + " Request";
+      /*var title = ( vacation.type == "Customer Travel" ) ? "Paid " + vacation.type + " hours logged" : "Pending " + vacation.type + " Request";
       var personName = $scope.profile.name.fullName;
       var userName = $scope.vacationManager.name.givenName;
       var message = SmtpHelper.getOutOfOfficeRequestMessage( userName, personName, vacation.type, vacation.startDate, vacation.endDate, vacation.description );
@@ -181,8 +181,8 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
       };
       
       NotificationsService.add(notification).then(function(result) {
-      });
-    }*/
+      });*/
+    }
 	
 	$scope.vacations.push(vacation);
 	$scope.showVacations();
