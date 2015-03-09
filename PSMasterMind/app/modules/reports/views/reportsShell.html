@@ -49,7 +49,7 @@
                             </div>
                         </div>
 
-                        <div ng-include src="'modules/reports/views/verticalbarChart.html'" onload="elemId='shellVerticalReport';chartData=getVerticalbarChartData()" ng-if="graphDataAvailable" id="shellVerticalReport" style="clear:both;"></div>
+                        <div ng-include src="'modules/reports/views/verticalbarChart.html'" onload="elemId = 'shellVerticalReport'; chartData = getVerticalbarChartData();" ng-if="graphDataAvailable" id="shellVerticalReport" style="clear:both;"></div>
                     </div>
 
                 </div>
@@ -59,7 +59,7 @@
                     </div>
 
                     <div><button class="btn btn-report pull-right" ng-click="saveAsImage('d3DivshellPieGraph', 'Hours across categories', 300, 1000)">save as image</button></div>
-                    <div ng-include src="'modules/reports/views/pieChart.html'" onload="elemId='shellPieGraph';chartData=getPieChartData()"
+                    <div ng-include src="'modules/reports/views/pieChart.html'" onload="elemId = 'shellPieGraph'; chartData = getPieChartData();"
                          ng-if="graphDataAvailable" id="shellPieGraph" style="height:100%;"></div>
                 </div>
             </div>

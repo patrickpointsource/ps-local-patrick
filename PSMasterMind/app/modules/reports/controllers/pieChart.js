@@ -12,12 +12,12 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
     $scope.elemId = null;
 
     $scope.render = function (elId) {
-        var width = $scope.width || 300;
+        var width = $scope.width || 0;
         var height = $scope.height || 250;
 
         var el = $('#' + elId + ' div');
 
-        el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el).css({ height: height, width: width });
+        el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el).height(height);
 
         var chartData = $scope.chartData;
         var isEmpty = true;
@@ -28,10 +28,12 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         if (isEmpty)
             return;
 
+        width = el.width();
+
         var filterValues = dimple.getUniqueValues(chartData, "key");
         var svg = dimple.newSvg("#" + elId + "chartContainer", width, height);
         var legendBoxHeight = 50 + filterValues.length * 14;
-        var paddingLeft = 5;
+        var padding = 5;
         var gap = 10;
         var strokeWidth = 1;
         var legendBoxWidth = width / 2 - gap - strokeWidth;
@@ -73,7 +75,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
 
         // Create the chart
         var myChart = new dimple.chart(svg, chartData);
-        myChart.setBounds(paddingLeft, 0, legendBoxWidth - paddingLeft, height);
+        myChart.setBounds(padding, padding, legendBoxWidth - padding, height - padding * 2);
         // Add an x and 3 y-axes.  When using multiple axes it's
         // important to assign them to variables to pass to the series
         myChart.addMeasureAxis("p", "value");

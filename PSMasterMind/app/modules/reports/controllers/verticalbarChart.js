@@ -12,51 +12,63 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
     $scope.elemId = null;
 
     $scope.render = function (elId) {
+        var width = $scope.width || 0;
+        var height = $scope.height || 300;
+
         var el = $('#' + elId + ' div');
 
-        el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el);
+        el = $('<div id="' + elId + 'chartContainer" ></div>').appendTo(el).css({ height: height });
 
         var dataMap = $scope.chartData;
-        var width = $scope.width ? $scope.width : 620;
-        var height = $scope.height ? $scope.height : 300;
-        var xTitle = $scope.xAxisTitle ? $scope.xAxisTitle : 'role';
-        var yTitle = $scope.yAxisTitle ? $scope.yAxisTitle : 'hours';
+        var xTitle = $scope.xAxisTitle || 'role';
+        var yTitle = $scope.yAxisTitle || 'hours';
         var yKeys = dataMap ? Object.keys(dataMap) : ['', '', ''];
+        var svg = dimple.newSvg("#" + elId + "chartContainer", width, height);
 
-        //var svg = dimple.newSvg("#" + elId + "chartContainer", 580, 210);
-        var svg = dimple.newSvg("#" + elId + "chartContainer", width, height + 50);
+        width = el.width();
 
-        var axisLabels = ["Role", "Number of hours"];
         var chartData = [];
-        var hideLegend = true;
         var maxValues = {};
         var maxValue = 0;
-        var secondMaxValue = 0;
+        var gap = 10;
+        var strokeWidth = 1;
+        var legendBoxHeight = 100;
 
         var g = svg.append("g")
-            .attr("x", 35)
-            .attr("y", height - 90)
-            .attr("width", 450)
-            .attr("height", 100)
-            .attr("transform", "translate(35, " + (height - 90) + ")");
+            .attr("x", 50)
+            .attr("y", height - legendBoxHeight)
+            .attr("width", width - 100)
+            .attr("height", legendBoxHeight)
+            .attr("transform", "translate(50, " + (height - legendBoxHeight) + ")");
 
         g.append("rect")
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", 450)
-            .attr("height", 80)
-            .attr("stroke", "#666666")
-            .attr("stroke-width", .1)
+            .attr("width", width - 100 - 2 * strokeWidth)
+            .attr("height", legendBoxHeight - 2 * strokeWidth)
+            .attr("stroke", "#CCCCCC")
+            .attr("stroke-width", strokeWidth)
             .attr("fill-opacity", 0);
 
         g.append("text")
             .attr("x", 7)
             .attr("y", 15)
             .attr("width", 100)
-            .attr("height", 22)
+            .attr("height", 20)
             .style("font-size", "10px")
+            .style("font-family", "sans-serif")
             .style("font-weight", "bold")
             .text("Key");
+
+        g.append("text")
+            .attr("x", 7)
+            .attr("y", legendBoxHeight - 10)
+            .attr("width", width - 7)
+            .attr("height", 14)
+            .style("font-size", "10px")
+            .style("font-family", "sans-serif")
+            .style("font-weight", "normal")
+            .text("Click legend to show/hide hours.");
 
         for (var prop in dataMap) {
             chartData = chartData.concat(dataMap[prop]);
@@ -98,7 +110,7 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
 
         // Create the chart
         var myChart = new dimple.chart(svg, chartData);
-        myChart.setBounds(50, 15, width - 200, height - 150);
+        myChart.setBounds(50, 15, width - 100, height - legendBoxHeight - gap - 15 - 30);
         // Add an x and 3 y-axes.  When using multiple axes it's
         // important to assign them to variables to pass to the series
         var x = myChart.addCategoryAxis("x", "label");
@@ -139,25 +151,11 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
 
         myChart.draw();
 
-        var myLegend = myChart.addLegend(50, height - 55, width - 140, 20, "left");
+        var myLegend = myChart.addLegend(65, height - legendBoxHeight + 30, width - 130, 20, "left");
 
         myChart.draw();
 
         myChart.legends = [];
-
-        // This block simply adds the legend title. I put it into a d3 data
-        // object to split it onto 2 lines.  This technique works with any
-        // number of lines, it isn't dimple specific.
-        svg.selectAll("title_text")
-            .data(["Click legend to show/hide hours."])
-            .enter()
-            .append("text")
-            .attr("x", 42)
-            .attr("y", function (d, i) { return height - 17 + i * 14; })
-            .style("font-family", "sans-serif")
-            .style("font-size", "10px")
-            .style("font-weight", "normal")
-            .text(function (d) { return d; });
 
         // Get a unique list of Owner values to use when filtering
         var filterValues = [y2.measure, y3.measure, y4.measure];
@@ -208,37 +206,37 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
             });
     };
 
-    var configBarTooltip = function ( chart, bar, xTitle, yTitle ) {
-    	var popup;
-    	var axisLine;
-    	var yKeys = $scope.chartData ? Object.keys($scope.chartData) : ['', '', ''];
+    var configBarTooltip = function (chart, bar, xTitle, yTitle) {
+        var popup;
+        var axisLine;
+        var yKeys = $scope.chartData ? Object.keys($scope.chartData) : ['', '', ''];
         bar.addEventHandler("mouseover", onBarHover);
         bar.addEventHandler("mouseleave", onBarLeave);
-    	
-    	function onBarHover(e) {
-    		
-    		if (!e.yValue || e.yValue == 0)
-    			return;
-    		
-    		// Get the properties of the selected shape
-    		var cx = parseFloat(e.selectedShape.attr("x")),
+
+        function onBarHover(e) {
+
+            if (!e.yValue || e.yValue == 0)
+                return;
+
+            // Get the properties of the selected shape
+            var cx = parseFloat(e.selectedShape.attr("x")),
         		cy = parseFloat(e.selectedShape.attr("y")),
         		cwidth = parseFloat(e.selectedShape.attr("width")),
         		cheight = parseFloat(e.selectedShape.attr("height"));
-    		var fill = e.selectedShape.attr("fill");
-    		var stroke = e.selectedShape.attr("stroke");
+            var fill = e.selectedShape.attr("fill");
+            var stroke = e.selectedShape.attr("stroke");
 
-    		// Set the size and position of the popup
-    		var width = 150,
+            // Set the size and position of the popup
+            var width = 150,
 				height = 55,
 				x = (cx + 2 * width < chart.svg.attr("width") ? cx + cwidth : cx - width - 10),
         		y = (cy - height < height ? height : cy - height);
 
-        	// Create a group for the popup
-        	popup = chart.svg.append("g");
+            // Create a group for the popup
+            popup = chart.svg.append("g");
 
-        	// Add a rectangle surrounding the tooltip content
-        	popup
+            // Add a rectangle surrounding the tooltip content
+            popup
         		.append("rect")
         		.attr("x", x + 5)
         		.attr("y", y - 5)
@@ -250,9 +248,9 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         		.style("fill", fill)
         		.style("stroke", stroke)
         		.style("stroke-width", 2);
-        		
-        	// Add custom tooltip content
-        	popup
+
+            // Add custom tooltip content
+            popup
         		.append('text')
         		.style("font-family", "sans-serif")
         		.style("font-size", 10)
@@ -270,11 +268,11 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         		.attr('x', x + 10)
         		.attr('y', y + 40)
         		.text(capitalizeString(yTitle) + ": " + e.yValue);
-        	
-        	//Draw dotted line to the left or right yAxis 
-        	var cx1 = yKeys.indexOf(e.seriesValue[0].toLowerCase()) != 1 ? cx : cx + cwidth;
-        	var cx2 = yKeys.indexOf(e.seriesValue[0].toLowerCase()) != 1 ? 50 : chart.svg.attr("width") - 150; 
-        	axisLine = chart.svg.append("line")
+
+            //Draw dotted line to the left or right yAxis 
+            var cx1 = yKeys.indexOf(e.seriesValue[0].toLowerCase()) != 1 ? cx : cx + cwidth;
+            var cx2 = yKeys.indexOf(e.seriesValue[0].toLowerCase()) != 1 ? 50 : chart.svg.attr("width") - 150;
+            axisLine = chart.svg.append("line")
              	.attr("class", 'd3-dp-line')
              	.attr("x1", cx1)
              	.attr("y1", cy + 1)
@@ -285,19 +283,19 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
              	.style("fill", fill)
              	.style("stroke", stroke)
              	.style("stroke-width", 2);
-    	};
-    
-    	function onBarLeave(e) {
-    		if ( popup && popup.remove() ) {
-    			popup.remove();
-    		}
-    		if ( axisLine && axisLine.remove() ) {
-    			axisLine.remove();
-    		}
-    	};
-    	
+        };
+
+        function onBarLeave(e) {
+            if (popup && popup.remove()) {
+                popup.remove();
+            }
+            if (axisLine && axisLine.remove()) {
+                axisLine.remove();
+            }
+        };
+
     };
-    
+
     setTimeout(function () {
         var id = $scope.$parent.elemId ? $scope.$parent.elemId : $scope.$parent.$parent.elemId;
 
@@ -305,11 +303,11 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
     }, 1 * 1000);
 
     var capitalizeString = function (str) {
-    	if (str && str.length > 1) {
-    		return str.charAt(0).toUpperCase() + str.slice(1);
-    	} else {
-    		return str ? str.charAt(0).toUpperCase() : '';
-    	}
+        if (str && str.length > 1) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        } else {
+            return str ? str.charAt(0).toUpperCase() : '';
+        }
     };
 
 }]);
