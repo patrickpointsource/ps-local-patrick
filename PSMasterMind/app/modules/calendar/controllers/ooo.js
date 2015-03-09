@@ -5,9 +5,9 @@
  */
 
 angular.module('Mastermind').controller('OOOCtrl', [
-    '$scope', '$state', '$filter', '$q', 'VacationsService',
+    '$scope', '$state', '$filter', '$q', '$rootScope', 'VacationsService',
     'Resources', 'ngTableParams', 'NotificationsService', 
-    function($scope, $state, $filter, $q, VacationsService, Resources, TableParams, NotificationsService) {
+    function($scope, $state, $filter, $q, $rootScope, VacationsService, Resources, TableParams, NotificationsService) {
         $scope.START_TIME_DEFAULT = "09:00";
 
         $scope.END_TIME_DEFAULT = "17:00";
@@ -26,7 +26,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
                     $scope.oooDaysLeft = result.daysLeft;
                     $scope.myVacations = result.vacations;
 
-                    if ($scope.hasManagementRights || $rootScope.hasManagementRights) {
+                    if ($rootScope.hasPermissions(CONSTS.VIEW_VACATIONS)) {
                         $scope.showRequests();
                     }
                 }
@@ -353,7 +353,9 @@ angular.module('Mastermind').controller('OOOCtrl', [
             $scope.loadingRequests = true;
 
             Resources.update(request).then(function(result) {
-                $scope.showRequests();
+                if ($rootScope.hasPermissions(CONSTS.VIEW_VACATIONS)) {
+                    $scope.showRequests();
+                }
 
                 if (isApproved) {
                     VacationsService.commitHours(request);

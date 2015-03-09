@@ -23,7 +23,10 @@ var getIDfromResource = function(resource, callback) {
 	}
 };
 
-var getId = function(resource) {
+var getId = function (resource) {
+    if (!resource || !resource.lastIndexOf) {
+        return null;
+    }
     var ind = resource.lastIndexOf("/");
     if (ind != -1) {
         var id = resource.substring(ind + 1, resource.length);
