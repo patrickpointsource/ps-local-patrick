@@ -159,6 +159,7 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 		///targetPermissions = [securityResources.vacations.permissions.viewVacations];
 		
 		security.isAllowed(req.user, res, securityResources.vacations.resourceName, targetPermissions, function(allowed){
+			
 			if (allowed) {
 				if (startDate && endDate) {
 					
@@ -176,7 +177,7 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 				}
 			} else
 				res.json(401, "You don't have enough permissions");
-		});
+		}, null, true);
 		
 	
 });
