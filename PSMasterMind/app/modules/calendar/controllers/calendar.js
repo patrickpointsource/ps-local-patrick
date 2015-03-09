@@ -363,18 +363,42 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 						//v.order = ind;
 					}
 					
+					v.countDays = parseInt($scope.moment(v.endDate).diff($scope.moment(v.startDate)) / (24 * 60*60 * 1000));
+					
 					return res;
 				});
 				
-				for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
-					if (currentDate.indexOf(currentDay.vacations[k].startDateOfMultidays) > -1 )
-						currentDay.vacations[k].order = k;
-				}
-				
+				currentDay.vacations.sort(function(v1, v2) {
+					if (v1.countDays > v2.countDays)
+						return -1;
+					else
+						return 1;
+					
+				});
+				// before setting mutlidays order for current vacations check if ther are vacation with visual "order" from 
+				// previous days and set them on correct positions
 				var tmpVac;
 				
 				for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
 					if (!isNaN(parseInt(currentDay.vacations[k].order)) && k != currentDay.vacations[k].order) {
+						tmpVac = currentDay.vacations[ currentDay.vacations[k].order ];
+						
+						currentDay.vacations[ currentDay.vacations[k].order ] = currentDay.vacations[k];
+						
+						currentDay.vacations[k] = tmpVac;
+					}
+				}
+				
+				// for all multidays vacations set it's "visual" order
+				for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
+					if (currentDay.vacations[k] && currentDate.indexOf(currentDay.vacations[k].startDateOfMultidays) > -1 && currentDate.indexOf(currentDay.vacations[k].endDate) == -1 )
+						currentDay.vacations[k].order = k;
+				}
+				
+				
+				// after setting order value make reordering
+				for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
+					if (currentDay.vacations[k] && !isNaN(parseInt(currentDay.vacations[k].order)) && k != currentDay.vacations[k].order) {
 						tmpVac = currentDay.vacations[ currentDay.vacations[k].order ];
 						
 						currentDay.vacations[ currentDay.vacations[k].order ] = currentDay.vacations[k];
