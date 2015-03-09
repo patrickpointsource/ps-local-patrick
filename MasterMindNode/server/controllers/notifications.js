@@ -68,8 +68,9 @@ module.exports.listNotificationsByPerson = function(person, fields, callback) {
             if (promises.length > 0) {
                 Q.all(promises).then(function(results) {
                     callback(null, notifications);
-                }, function(err) {
-                    callback(err, null);
+                }, function (err) {
+                    console.log("Error resolving vacation inside notification: " + err);
+                    callback(null, notifications);
                 });
             } else {
                 callback(null, notifications);
@@ -96,7 +97,13 @@ var resolveVacation = function(notification) {
                 notification.details = vacation;
                 deferred.resolve(notification);
             } else {
-                deferred.reject(err);
+                if (err.message == "deleted") {
+                    dataAccess.deleteItem(notification._id, notification.rev, dataAccess.NOTIFICATIONS_KEY, function(err, body) {
+                        deferred.reject(err);
+                    });
+                } else {
+                    deferred.reject(err);
+                }
             }
         });
     } else {

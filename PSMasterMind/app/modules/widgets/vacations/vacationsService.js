@@ -370,7 +370,8 @@ function ($q, Resources, HoursService) {
             var start = moment(vacation.startDate);
             var end = moment(vacation.endDate);
 
-            if (!editedVacation || editedVacation._id != vacation._id) {
+            // ignore you own vacation if you edit it and not deleted "Cancelled" vacations
+            if ((!editedVacation || editedVacation._id != vacation._id) && vacation.status != "Cancelled") {
                 /*
                *          ----------start----------end----------
                *  

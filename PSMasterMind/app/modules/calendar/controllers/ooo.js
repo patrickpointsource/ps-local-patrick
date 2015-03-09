@@ -189,6 +189,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
                 $scope.editableVacation.endDate = this.vacationEndDate + " " + this.vacationEndTime;
             } else {
                 $scope.errors.push("Dates validation failed.");
+                $scope.submitting = false;
                 return;
             }
 
@@ -202,7 +203,8 @@ angular.module('Mastermind').controller('OOOCtrl', [
             // validate your vacation conflicts
             var conflicts = VacationsService.checkForConflictDates(this.vacationStartDate, this.vacationEndDate, this.vacationStartTime, this.vacationEndTime, $scope.editableVacation, $scope.myVacations);
             if (conflicts.length > 0) {
-            	$scope.errors.push(conflicts);
+                $scope.errors.push(conflicts);
+                $scope.submitting = false;
                 return;
             }
 
@@ -275,6 +277,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
             vacation.status = "Cancelled";
             vacation.reason = this.cancellationReason;
             vacation.vacationManager = { resource: vacation.vacationManager.resource, name: Util.getPersonName(vacation.vacationManager) };
+            vacation.person = { resource: vacation.person.resource, name: Util.getPersonName(vacation.person) }
             Resources.update(vacation).then(function (result) {
                 $scope.initOOO();
                 $scope.messages.push("Out of office request cancelled.");
