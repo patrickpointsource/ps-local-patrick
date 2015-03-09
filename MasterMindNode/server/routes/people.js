@@ -297,7 +297,8 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 	    					  if (existingResource)
 	    						  existingResource.permissions = existingResource.permissions.concat(userSecurityRoles.members[k].resources[j].permissions);
 	    					  else
-	    						  allResource.push(userSecurityRoles.members[k].resources[j]);
+	    						  // make a copy of passed resource and permissions
+	    						  allResource.push(_.extend({}, userSecurityRoles.members[k].resources[j]));
 	    				  }
 	    			  }
 	    			  
@@ -309,14 +310,7 @@ router.get('/:id', util.isAuthenticated, function(req, res) {
 	    				  permissionsMap[allResource[k].name] = allResource[k].permissions;
 	    			  }
 
-	    			  /*
-	    			  if(err){
-	    				  res.json(500, err);
-	    			  } else {  
-	    				  result.permissionsMap = permissionsMap;
-	    				  res.json(result);
-	    			  } 
-	    			  */
+	    			 
 	    			  console.log('\r\npeople:me:interim:after:');
 	    		  });
 	    		  
