@@ -7,6 +7,7 @@ var util = require("../util/util");
 var people = require("../controllers/people");
 var Q = require('q');
 var assignmentsService = require("../controllers/assignments");
+var notifications = require('./notifications');
 //12/11/14 MM var validation = require( '../data/validation.js' );
 
 var SUBORDINATE_MANAGER_DEPTH = 5;
@@ -133,7 +134,13 @@ module.exports.insertVacation = function(obj, callback) {
             console.log(err);
             callback('error insert vacation:' + JSON.stringify(err), null);
         } else {
-            callback(null, body);
+            var notification = notifications.constructVacationNotification(body);
+            notifications.insertNotification(notification, function(notificationErr, notificationBody) {
+                if (!notificationErr) {
+                    callback(null, body);
+                }
+            });
+            
         }
     });
 };

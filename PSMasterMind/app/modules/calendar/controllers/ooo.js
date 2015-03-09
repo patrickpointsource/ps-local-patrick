@@ -222,33 +222,20 @@ angular.module('Mastermind').controller('OOOCtrl', [
                 });
             } else {
                 $scope.editableVacation.status = VacationsService.STATUS.Pending;
-                var title = ($scope.editableVacation.type == "Customer Travel") ? "Paid " + $scope.editableVacation.type + " hours logged" : "Pending " + $scope.editableVacation.type + " Request";
-                var personName = $scope.me.name.fullName;
-                var userName = $scope.vacationManager.name.givenName;
-                var message = SmtpHelper.getOutOfOfficeRequestMessage(userName, personName, $scope.editableVacation.type, $scope.editableVacation.startDate, $scope.editableVacation.endDate, $scope.editableVacation.description);
-
-                var notification = {
-                    type: "Vacation",
-                    header: title,
-                    text: message,
-                    icon: "fa fa-clock-o",
-                    person: { resource: $scope.vacationManager.resource }
-                };
-
-                NotificationsService.add(notification).then(function (result) {
-                });
             }
 
             if ($scope.editableVacation._id) {
                 // update
                 Resources.update($scope.editableVacation).then(function (result) {
                     $scope.initOOO();
+                    $scope.$emit('required-notifications-update');
                     $scope.messages.push("Re-submit of edited out of office request was successfull!");
                 });
             } else {
                 // create
                 VacationsService.addNewVacation($scope.editableVacation).then(function (result) {
                     $scope.initOOO();
+                    $scope.$emit('required-notifications-update');
                     $scope.messages.push("Out of office request created successfully!");
                 });
             }
@@ -278,20 +265,14 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
             var vacation = $scope.editableVacation;
 
-            var notification = {
-                type: "VacationCancel",
-                header: "Cancelled Paid Vacation Request",
-                text: Util.getPersonName($scope.me) + " has deleted out-of-office entry: " + vacation.startDate + " - " + vacation.endDate + ", " + vacation.type + ". Reason: " + this.cancellationReason,
-                icon: "fa fa-times-circle",
-                person: { resource: vacation.vacationManager.resource }
-            };
-
-            NotificationsService.add(notification).then(function (result) {
-                $("#vacCancelModal").modal('hide');
-                Resources.remove(vacation.resource).then(function (result) {
-                    $scope.initOOO();
-                    $scope.messages.push("Out of office request deleted.");
-                });
+            $("#vacCancelModal").modal('hide');
+            
+            vacation.status = "Cancelled";
+            vacation.reason = this.cancellationReason;
+            Resources.update(vacation).then(function (result) {
+                $scope.initOOO();
+                $scope.messages.push("Out of office request cancelled.");
+                $scope.$emit('request-processed', request);
             });
         };
 
@@ -323,6 +304,10 @@ angular.module('Mastermind').controller('OOOCtrl', [
                 }
 
                 $scope.loadingRequests = false;
+
+                if ($scope.requestsData.length == 0) {
+                    $scope.showRequestsTab = false;
+                }
             });
         };
 
@@ -373,9 +358,9 @@ angular.module('Mastermind').controller('OOOCtrl', [
                 if (isApproved) {
                     VacationsService.commitHours(request);
                 }
-            });
 
-            $scope.$emit('request-processed', request.resource);
+                $scope.$emit('request-processed', request);
+            });
         };
 
         $scope.pointSourcePolicy = "PointSource provides a paid vacation benefit to regular full-time employees who regularly work a minimum of thirty (30) hours per week. Vacation time is allotted per calendar year and is accrued each pay period (i.e. 1/24th of allotted vacation time per pay period).";
@@ -385,5 +370,11 @@ angular.module('Mastermind').controller('OOOCtrl', [
             var endDate = moment(request.endDate).format('YYYY-MM-DD');
             $state.go('staffing', { tab: 'resourcefinder', startDate: startDate, endDate: endDate });
         };
+
+        $scope.$on("ooo-needs-update", function() {
+            $scope.initOOO();
+        });
+
+        $scope.$emit('required-notifications-update');
     }
 ]);

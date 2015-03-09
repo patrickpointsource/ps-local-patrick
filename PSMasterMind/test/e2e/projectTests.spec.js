@@ -52,6 +52,11 @@ describe("E2E: Project test cases.", function () {
 
 
     beforeEach(function () {
+    	
+	    var width = 1900;
+	    var height = 1200;
+	    browser.driver.manage().window().setSize(width, height);
+    	
         browser.driver.getCurrentUrl().then(function (url) {
             if (url.indexOf('http://localhost:9000/index.html#/projects') == -1) { //Go to the projects page
                 browser.driver.get('http://localhost:9000/index.html#/projects?filter=all');

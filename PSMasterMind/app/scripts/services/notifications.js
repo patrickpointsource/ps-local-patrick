@@ -25,13 +25,11 @@ angular.module('Mastermind.services.projects')
     };
     
     
-    this.getPersonsNotifications = function(personResource) {
+    this.getNotifications = function() {
     	var params = {
     			t: (new Date()).getMilliseconds()
     	};
-    	
-    	params.person = personResource;
-    	params.fields = ["_id", "type", "header", "text", "person", "resource"];
-        return Resources.get('notifications/bytypes/byPerson', params);
+        
+        return Resources.get('notifications/my', params);
     };
 } ] );

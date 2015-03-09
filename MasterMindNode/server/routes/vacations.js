@@ -159,6 +159,7 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 		///targetPermissions = [securityResources.vacations.permissions.viewVacations];
 		
 		security.isAllowed(req.user, res, securityResources.vacations.resourceName, targetPermissions, function(allowed){
+			
 			if (allowed) {
 				if (startDate && endDate) {
 					
@@ -176,13 +177,13 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 				}
 			} else
 				res.json(401, "You don't have enough permissions");
-		});
+		}, null, true);
 		
 	
 });
 
 router.get('/requests', auth.isAuthenticated, function (req, res) {
-    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewOthersPendingOOO, function (allowed) {
+    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editVacations, function (allowed) {
         if (allowed) {
             people.getPersonByGoogleId(req.user, function (personErr, manager) {
                 if (!personErr && manager) {

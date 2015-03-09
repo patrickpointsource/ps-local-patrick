@@ -76,10 +76,12 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	//e.preventDefault();
         	e.stopPropagation();
         	
-        	logger.log('onVacationClicked:' + ind + ':person.name=' + vac.person.name + ':' + $('.vacation-day-entry.entry_' + ind).size() + ':target.size=' + entry.size());
+        	//logger.log('onVacationClicked:' + ind + ':person.name=' + vac.person.name + ':'  + entry.size() + ':shown=' + entry.data('popover_shown'));
+        	
+        	if (entry.data('popover_shown'))
+        		return;
         	
         	var popover;
-        	
         	
         	if (!entry.data('bs.popover')) {
         		var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')): $scope.moment(vac.startDate).format('M/D');
@@ -92,15 +94,17 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	        		container: '.vacation-day-entry.entry_' + ind + '_' + vacIndex
 	        	});
 	        	
-	        	entry.data('popover', popover);
+	        	entry.data('popover_shown', true);
 	        	entry.popover('show');
 	        	
 	        	entry.on('hidden.bs.popover', _.bind(function () {
 	        		this.context.popover('destroy');
 	        		this.context.data('popover', false);
         		}, {context: entry}));
-        	} else
+        	} else {
+        		entry.data('popover_shown', true);
         		entry.popover('show');
+        	}
         };
         
         $scope.onVacationHide  = function(e, vac, ind, vacIndex){
@@ -110,14 +114,21 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	//e.preventDefault();
         	e.stopPropagation();
         	
-        	logger.log('onVacationHide:' + ind + ':person.name=' + vac.person.name + ':' + $('.vacation-day-entry.entry_' + ind).size() + ':target.size=' + entry.size());
+        	//logger.log('onVacationHide:' + ind + ':person.name=' + vac.person.name + ':shown=' + entry.data('popover_shown'));
         	
         	var popover;
         	
         	if (entry.data('bs.popover')) {
         		entry.popover('hide');
-        	}
         		
+        	}
+        	
+        	entry.data('popover_shown', false);
+        		
+        };
+        
+        $scope.getCountNotEmptyVacations = function(vacations) {
+        	return (_.filter(vacations, function(v) { return !v.isEmpty})).length;
         };
         
         $scope.onShowMoreClicked = function(e, vacations, ind, vacInd) {
@@ -139,13 +150,15 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         		for (var k = 0; k < vacations.length; k ++) {
         			vac = vacations[k];
         			
-        			if (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
-        				out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
-        			else
-        				out = $scope.moment(vac.startDate).format('M/D');
-        			
-        			html += '<div class="vacation-person-name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div class="vacation-person-type"><b>Type:</b> ' + vac.type + '</div>';
-        		}
+        			if (!vac.isEmpty) {
+	        			if (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
+	        				out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
+	        			else
+	        				out = $scope.moment(vac.startDate).format('M/D');
+	        			
+	        			html += '<div class="vacation-person-name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div class="vacation-person-type"><b>Type:</b> ' + vac.type + '</div>';
+        			}
+    			}
         			
         		html += '</div></div>';
         		
@@ -242,16 +255,152 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	$scope.initCalendar();
         };
         
+        $scope.fillCalendarDays = function(currentVacations) {
+        	//currentVacations = _.isArray(result) ? result: result.members;
+        	var moment = $scope.moment( $scope.currentMonth );
+
+        	var origLength = currentVacations.length;
+        	
+        	currentVacations = _.uniq(currentVacations, function(v) {
+        		if (v.person)
+        			return v.person.resource + '-' + v.startDate + '-' + v.endDate;
+        		
+        		return v.startDate + '-' + v.endDate;
+        	});
+        	
+        	if (origLength != currentVacations.length)
+        		logger.log('!!!vacation duplicates loaded');
+        	
+    		var startOfMonth = moment.startOf( 'month' );
+    		var starOfFirstWeek = startOfMonth.startOf( 'week' );
+    		
+        	var persons = _.map(currentVacations, function(v) { if (v && v.person) return v.person.resource});
+        	
+        	persons = _.uniq(persons);
+        	
+        	var lightColors = randomColor({luminosity: 'light',count: persons.length});
+        
+        	var t = 0;
+        	
+        	// go throug colors and remove similar, and then add newly generated
+        	while(t < 20) {
+        		var sim = 0;
+        		
+        		for (var k = lightColors.length - 1; k >= 0; k --) {
+        			for (var j = k - 1; j >= 0; j --) {
+        				sim = Util.getColorDistance(lightColors[k], lightColors[j]) / 256;
+        				
+        				if (sim < 0.2){
+        					lightColors.splice(k, 1);
+        					break;
+        				}
+        					
+        			}
+        		}
+        		
+        		if (lightColors.length < persons.length)
+        			lightColors = lightColors.concat(randomColor({luminosity: 'light',count: (persons.length - lightColors.length)}));
+        		
+        		t ++;
+        	};
+        	
+        	var colorsMap = {};
+        	
+        	for (var k = 0; k < persons.length; k++)
+        		colorsMap[ persons[k] ] = lightColors[k];
+
+        	var dColor;
+        	var c;
+        	
+        	for (var k = 0; k < currentVacations.length; k++) {
+        		c = colorsMap[ currentVacations[k].person.resource ];
+        		
+        		if (currentVacations[k].status && currentVacations[k].status.toLowerCase() != 'pending')
+        			//currentVacations[k].background = $scope.getRandomBackground();
+        			currentVacations[k].background = c;
+        		else {
+        			dColor = Util.darkColorFrom(c, 0.4);
+        			currentVacations[k].background = 'repeating-linear-gradient( -45deg, ' + dColor + ', ' + dColor + 
+        				' 3px, ' + c + ' 3px, ' + c + ' 15px)';
+        		}
+        		
+        		if (currentVacations[k].person && _.isObject(currentVacations[k].person.name))
+        			currentVacations[k].person.name = Util.getPersonName(currentVacations[k].person, true);
+        	}
+
+			var current;
+			var day = 0;
+			var currentDay;
+			var currentDate;
+		
+			while( day < 35 ) {
+				current = $scope.moment( starOfFirstWeek ).add( day, 'days' );
+				day += 1;
+				
+				currentDate = current.format( 'YYYY-MM-DD' );
+				
+				currentDay = {
+					date: currentDate,
+					dayOfMonth: current.format( 'D' ),
+					vacations: []
+				};
+				
+				var tmpStart;
+				var tmpEnd;
+				
+				currentDay.vacations = _.filter(currentVacations, function(v, ind) {
+					var res = false;
+					
+					tmpStart = v.startDate.split(/\s+/gi)[0];
+					tmpEnd = v.endDate.split(/\s+/gi)[0];
+					
+					if (currentDate >= tmpStart && currentDate <= tmpEnd)
+						res = true;
+					
+					if (currentDate == tmpStart) {
+						//currentDay.startOnDateVacations.push(v);
+						v.startDateOfMultidays = currentDate;
+						//v.order = ind;
+					}
+					
+					return res;
+				});
+				
+				for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
+					if (currentDate.indexOf(currentDay.vacations[k].startDateOfMultidays) > -1 )
+						currentDay.vacations[k].order = k;
+				}
+				
+				var tmpVac;
+				
+				for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
+					if (!isNaN(parseInt(currentDay.vacations[k].order)) && k != currentDay.vacations[k].order) {
+						tmpVac = currentDay.vacations[ currentDay.vacations[k].order ];
+						
+						currentDay.vacations[ currentDay.vacations[k].order ] = currentDay.vacations[k];
+						
+						currentDay.vacations[k] = tmpVac;
+					}
+				}
+				
+				for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
+					if (!currentDay.vacations[k])
+						currentDay.vacations[k] = {
+							isEmpty: true
+						};
+				}
+				
+				if (currentDay.vacations.length > 4)
+					currentDay.moreBackground = $scope.getRandomBackground();
+				
+				$scope.displayedMonthDays.push(currentDay );
+			}
+        };
+        
         $scope.initCalendar = function(status) {
         	$scope.hideCalendarSpinner = false;
         	
-        	 $scope.displayedMonthDays = [ ];
-	        	
-	        	
-    		var moment = $scope.moment( $scope.currentMonth );
-
-    		var startOfMonth = moment.startOf( 'month' );
-    		var starOfFirstWeek = startOfMonth.startOf( 'week' );
+        	$scope.displayedMonthDays = [ ];
 
     		$scope.startDate = $scope.moment( $scope.currentMonth ).startOf( 'month' );
     		$scope.endDate = $scope.moment( $scope.currentMonth ).endOf( 'month' );
@@ -347,156 +496,34 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	   			 	 	
 		            if (result && (result.members || _.isArray(result))) {
 		            	
-		            	currentVacations = _.isArray(result) ? result: result.members;
-
-		            	var persons = _.map(currentVacations, function(v) { if (v && v.person) return v.person.resource})
-		            	
-		            	persons = _.uniq(persons);
-		            	
-		            	var lightColors = randomColor({luminosity: 'light',count: persons.length});
-		            
-		            	var t = 0;
-		            	
-		            	// go throug colors and remove similar, and then add newly generated
-		            	while(t < 20) {
-		            		var sim = 0;
-		            		
-		            		for (var k = lightColors.length - 1; k >= 0; k --) {
-		            			for (var j = k - 1; j >= 0; j --) {
-		            				sim = Util.getColorDistance(lightColors[k], lightColors[j]) / 256;
-		            				
-		            				if (sim < 0.2){
-		            					lightColors.splice(k, 1);
-		            					break;
-		            				}
-		            					
-		            			}
-		            		}
-		            		
-		            		if (lightColors.length < persons.length)
-		            			lightColors = lightColors.concat(randomColor({luminosity: 'light',count: (persons.length - lightColors.length)}))
-		            		t ++;
-		            	};
-		            	
-		            	var colorsMap = {};
-		            	
-		            	for (var k = 0; k < persons.length; k++)
-		            		colorsMap[ persons[k] ] = lightColors[k];
-
-		            	var dColor;
-		            	var c;
-		            	
-		            	for (var k = 0; k < currentVacations.length; k++) {
-		            		c = colorsMap[ currentVacations[k].person.resource ];
-		            		
-		            		if (currentVacations[k].status && currentVacations[k].status.toLowerCase() != 'pending')
-		            			//currentVacations[k].background = $scope.getRandomBackground();
-		            			currentVacations[k].background = c;
-		            		else {
-		            			dColor = Util.darkColorFrom(c, 0.4);
-		            			currentVacations[k].background = 'repeating-linear-gradient( -45deg, ' + dColor + ', ' + dColor + 
-		            				' 3px, ' + c + ' 3px, ' + c + ' 15px)';
-		            		}
-		            	}
-		            		
-		            }
-
-		    		var current;
-		    		var day = 0;
-		    		var currentDay;
-		    		var currentDate;
-		    		
-		    		while( day < 35 ) {
-		    			current = $scope.moment( starOfFirstWeek ).add( day, 'days' );
-		    			day += 1;
-		    			
-		    			currentDate = current.format( 'YYYY-MM-DD' );
-		    			
-		    			currentDay = {
-		    				date: currentDate,
-		    				dayOfMonth: current.format( 'D' ),
-		    				vacations: []
-		    			};
-		    			
-		    			var tmpStart;
-		    			var tmpEnd;
-		    			
-		    			currentDay.vacations = _.filter(currentVacations, function(v, ind) {
-		    				var res = false;
-		    				
-		    				tmpStart = v.startDate.split(/\s+/gi)[0];
-		    				tmpEnd = v.endDate.split(/\s+/gi)[0];
-		    				
-		    				if (currentDate >= tmpStart && currentDate <= tmpEnd)
-		    					res = true;
-		    				
-		    				if (currentDate == tmpStart) {
-		    					//currentDay.startOnDateVacations.push(v);
-		    					v.startDateOfMultidays = currentDate;
-		    					//v.order = ind;
-		    				}
-		    				
-		    				return res;
-		    			});
-		    			/*
-		    			if (currentDate == '2014-11-27') {
-		    				//people/52ab7005e4b0fd2a8d130015
-		    				var tmpVac = _.extend({}, currentDay.vacations[currentDay.vacations.length - 1]);
-		    				
-		    				tmpVac.person.resource = 'people/52ab7005e4b0fd2a8d130015';
-		    				tmpVac.description = 'Test vacation';
-		    				
-		    				 currentDay.vacations.push(tmpVac);
-		    				
-		    			}
-		    			*/
-		    			for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
-		    				if (currentDate.indexOf(currentDay.vacations[k].startDateOfMultidays) > -1 )
-		    					currentDay.vacations[k].order = k;
-		    			}
-		    			
-		    			var tmpVac;
-		    			
-		    			for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
-		    				if (!isNaN(parseInt(currentDay.vacations[k].order)) && k != currentDay.vacations[k].order) {
-		    					tmpVac = currentDay.vacations[ currentDay.vacations[k].order ];
-		    					
-		    					currentDay.vacations[ currentDay.vacations[k].order ] = currentDay.vacations[k];
-		    					
-		    					currentDay.vacations[k] = tmpVac;
-		    				}
-		    			}
-		    			
-		    			for (var k = currentDay.vacations.length - 1; k >= 0; k --) {
-		    				if (!currentDay.vacations[k])
-		    					currentDay.vacations[k] = {
-		    						isEmpty: true
-		    					};
-		    			}
-		    			
-		    			if (currentDay.vacations.length > 4)
-		    				currentDay.moreBackground = $scope.getRandomBackground();
-		    			
-		    			$scope.displayedMonthDays.push(currentDay );
+		            	$scope.fillCalendarDays(_.isArray(result) ? result: result.members);
 		    		}
-	                	
-	        }).then(function() {
+		            
+	                return 	(_.isArray(result) ? result: result.members);
+	   		 }).then(function(currentVacations) {
 	        	
-	        	People.getAllActivePeople().then(function(result) {
-	        		var tmpPerson;
-	        		
-	 	        	for (var k = 0; k < currentVacations.length; k ++) {
-	 	        		tmpPerson = _.find(result.members, function(p) {
-	 	        			return p.resource == currentVacations[k].person.resource;
-	 	        			
-	 	        		});
-	 	        		
-	 	        		if (tmpPerson)
-	 	        			currentVacations[k].person.name = Util.getPersonName(tmpPerson, true);
-	 	        	}
-	 	        		
-	 	        });
-	        }); 
+	   			//setTimeout(function() {
+	   				People.getAllActivePeople().then(function(result) {
+		        		var tmpPerson;
+		        		
+		 	        	for (var k = 0; k < currentVacations.length; k ++) {
+		 	        		tmpPerson = _.find(result.members, function(p) {
+		 	        			return p.resource == currentVacations[k].person.resource;
+		 	        			
+		 	        		});
+		 	        		
+		 	        		if (tmpPerson)
+		 	        			currentVacations[k].person.name = Util.getPersonName(tmpPerson, true);
+		 	        	}
+		 	        		
+		 	        });
+	   			//}, 10000);
+	        	
+	 		}).catch(function(){
+   		 		// show empty calendar, in case when something wrong happens
+   		 		$scope.hideCalendarSpinner = true;
+   		 		$scope.fillCalendarDays([]);
+   		 	});
     		
         };
         
