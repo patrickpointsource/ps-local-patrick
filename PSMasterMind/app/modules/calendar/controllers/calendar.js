@@ -443,7 +443,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     			if (!$scope.hidePendingVacations)
 					p.includePending = true;
     			
-    			loadPromise = VacationsService.getRequests({about: $scope.selectedManager}, p);
+    			loadPromise = VacationsService.getRequestsByManager({about: $scope.selectedManager}, p);
     		} else if ($scope.filterVacationsByCurrent == 'project_name' && $scope.selectedProject) {
     			loadPromise = AssignmentService.getAssignmentsByPeriod('all', {project: {resource: $scope.selectedProject.resource}});
     			
@@ -506,7 +506,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     			if (!$scope.hidePendingVacations)
 					p.includePending = true;
     			
-    			loadPromise = VacationsService.getRequests({about: $scope.me.about}, p);
+    			loadPromise = VacationsService.getRequestsByManager({about: $scope.me.about}, p);
     		} else
     			loadPromise = Resources.refresh("vacations/all", {
 		   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
