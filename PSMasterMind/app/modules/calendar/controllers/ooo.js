@@ -90,8 +90,10 @@ angular.module('Mastermind').controller('OOOCtrl', [
         
         $scope.getTotalDays = function(period) {
             var hours = 0;
-            _.each(period.vacations, function(vacation) {
-                hours += VacationsService.getHoursLost(vacation);
+            _.each(period.vacations, function (vacation) {
+                if (vacation.status == "Approved" || vacation.status == "Pending") {
+                    hours += VacationsService.getHoursLost(vacation);
+                }
             });
             
             return (hours / 8).toFixed(1);
