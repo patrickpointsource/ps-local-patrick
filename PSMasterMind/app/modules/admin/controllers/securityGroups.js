@@ -164,6 +164,7 @@ angular.module('Mastermind')
     $scope.setPermission = function(collection, permission) {
       if($scope.selectedGroup) {
         var selectedCollection = _.findWhere($scope.selectedGroup.resources, { name: collection } );
+        
         if(selectedCollection) {
           var index = selectedCollection.permissions.indexOf(permission);
           if(index > -1) {
@@ -171,7 +172,13 @@ angular.module('Mastermind')
           } else {
             selectedCollection.permissions.push(permission);
           }
+        } else {
+        	$scope.selectedGroup.resources.push({
+        		name: collection,
+        		permissions: [permission]
+        	});
         }
+        	
       }
     };
     
