@@ -25,11 +25,20 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	    NotificationsService.getNotifications().then(function (result) {
             try {
                 $scope.notifications = result;
-                _.each($scope.notifications, function(notification) {
+                var i = $scope.notifications.length;
+                while (i--) {
+                    var notification = $scope.notifications[i];
                     if (!notification.details.person.name || notification.details.person.name == "") {
                         Resources.resolve(notification.details.person);
                     }
-                });
+
+                    // delete notification of type "Pending" if request was already cancelled
+                    if (notification.details.status == "Cancelled" && notification.type == "ooo-pending") {
+                        $scope.notifications.splice(i, 1);
+                        Resources.remove(notification.resource).then(function () {
+                        });
+                    }
+                };
             } catch (err) {
                 console.log(err);
             } finally {

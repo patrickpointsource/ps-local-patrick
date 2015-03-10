@@ -180,15 +180,22 @@ var calculateDaysLeft = function(entitlements, vacations) {
     _.each(vacations.members, function(vacation) {
         var vacStartMoment = moment(vacation.startDate);
         var vacEndMoment = moment(vacation.endDate);
-        if (vacStartMoment.year() == year) {
+        if (vacStartMoment.year() == year && (vacation.status == "Pending" || vacation.status == "Approved")) {
+            var hoursToDecrease = 0;
             var duration = moment.duration(vacEndMoment.diff(vacStartMoment));
             var hoursDiff = duration.asHours();
-            if (hoursDiff > 8) {
-                hoursDiff = 8;
+            var daysDiff = Math.floor(duration.asDays());
+            if (hoursDiff >= 24) {
+                hoursToDecrease = 8 * daysDiff + (hoursDiff - (24 * daysDiff));
+            } else {
+                if (hoursDiff > 8) {
+                    hoursToDecrease = 8;
+                } else {
+                    hoursToDecrease = hoursDiff;
+                }
             }
-            if (hoursDiff >= 0) {
-                hoursLeft -= hoursDiff;
-            }
+
+            hoursLeft -= hoursToDecrease;
         }
     });
 
