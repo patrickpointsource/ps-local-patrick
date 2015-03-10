@@ -38,40 +38,46 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
         var strokeWidth = 1;
         var legendBoxWidth = width / 2 - gap - strokeWidth;
 
-        var g = svg.append("g")
+        var drawLegendBox = function (width, height, gap, legendBoxWidth, strokeWidth)
+        {
+            var g = svg.append("g")
+            .attr("class", "mm-legend-box")
             .attr("x", width / 2 + gap)
             .attr("y", (height - legendBoxHeight) / 2)
             .attr("width", legendBoxWidth)
             .attr("height", legendBoxHeight)
             .attr("transform", "translate(" + (width / 2 + gap) + ", " + ((height - legendBoxHeight) / 2) + ")");
 
-        g.append("rect")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", legendBoxWidth)
-            .attr("height", legendBoxHeight)
-            .attr("stroke", "#CCCCCC")
-            .attr("stroke-width", strokeWidth)
-            .attr("fill-opacity", 0);
+            g.append("rect")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", legendBoxWidth)
+                .attr("height", legendBoxHeight)
+                .attr("stroke", "#CCCCCC")
+                .attr("stroke-width", strokeWidth)
+                .attr("fill-opacity", 0);
 
-        g.append("text")
-            .attr("x", 7)
-            .attr("y", 15)
-            .attr("width", legendBoxWidth - 7)
-            .attr("height", 22)
-            .style("font-size", "10px")
-            .style("font-weight", "bold")
-            .text("Key");
+            g.append("text")
+                .attr("x", 7)
+                .attr("y", 15)
+                .attr("width", legendBoxWidth - 7)
+                .attr("height", 22)
+                .style("font-size", "10px")
+                .style("font-weight", "bold")
+                .text("Key");
 
-        g.append("text")
-            .attr("x", 7)
-            .attr("y", legendBoxHeight - 10)
-            .attr("width", legendBoxWidth - 7)
-            .attr("height", 14)
-            .style("font-size", "10px")
-            .style("font-family", "sans-serif")
-            .style("font-weight", "normal")
-            .text("Click legend to show/hide hours.");
+            g.append("text")
+                .attr("x", 7)
+                .attr("y", legendBoxHeight - 10)
+                .attr("width", legendBoxWidth - 7)
+                .attr("height", 14)
+                .style("font-size", "10px")
+                .style("font-family", "sans-serif")
+                .style("font-weight", "normal")
+                .text("Click legend to show/hide hours.");
+        };
+
+        drawLegendBox(width, height, gap, legendBoxWidth, strokeWidth);
 
         // Create the chart
         var myChart = new dimple.chart(svg, chartData);
@@ -125,6 +131,24 @@ function ($scope, $q, $state, $stateParams, $filter, $location, Resources) {
               myChart.draw(800);
           });
 
+        $(window).resize(function()
+        {
+            var width = el.width();
+            var legendBoxWidth = width / 2 - gap - strokeWidth;
+
+            myChart.setBounds(padding, padding, legendBoxWidth - padding, height - padding * 2);
+            myChart.legends = [];
+            myChart.draw(0, true);
+
+            el.find("g.dimple-legend").remove();
+
+            myChart.addLegend(width / 2 + gap + 10, (height - legendBoxHeight) / 2 + 30, legendBoxWidth - 10, legendBoxHeight - 30, "left");
+            myChart.draw(0, true);
+
+            el.find("g.mm-legend-box").remove();
+
+            drawLegendBox(width, height, gap, legendBoxWidth, strokeWidth);
+        });
     };
 
     var configBarTooltip = function (svg, bar, xTitle, yTitle) {
