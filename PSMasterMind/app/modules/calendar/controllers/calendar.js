@@ -213,6 +213,14 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 	        		                label: Util.getPersonName(manager, true),
 	        		                value: manager.resource
 	        		            } );
+	        		            
+	        		            $scope.managersList.sort(function(m1, m2) {
+	        		            	if (m1.label.toLowerCase() < m2.label.toLowerCase())
+	        		            		return -1;
+	        		            	else if (m1.label.toLowerCase() > m2.label.toLowerCase())
+	        		            		return 1;
+	        		            	
+	        		            });
 	        		        }
 	        			}
 	        		);
@@ -256,10 +264,20 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         };
         
         $scope.fillCalendarDays = function(currentVacations) {
-        	//currentVacations = _.isArray(result) ? result: result.members;
+        	
         	var moment = $scope.moment( $scope.currentMonth );
-
         	var origLength = currentVacations.length;
+        	
+        	// align start/end dates and filter vacations if needed
+        	currentVacations = _.filter(currentVacations, function(v){
+        		if (v.startDate && !_.isString(v.startDate))
+        			v.startDate = $scope.moment( v.startDate ).format( 'YYYY-MM-DD' );
+        		
+        		if (v.endDate && !_.isString(v.endDate))
+        			v.endDate = $scope.moment( v.endDate ).format( 'YYYY-MM-DD' );
+        		
+        		return v.startDate && v.endDate;
+        	});
         	
         	currentVacations = _.uniq(currentVacations, function(v) {
         		if (v.person)
@@ -269,7 +287,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         	});
         	
         	if (origLength != currentVacations.length)
-        		logger.log('!!!vacation duplicates loaded');
+        		logger.log('!!!vacation duplicates or empty dates loaded');
         	
     		var startOfMonth = moment.startOf( 'month' );
     		var starOfFirstWeek = startOfMonth.startOf( 'week' );
@@ -429,13 +447,20 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     		$scope.startDate = $scope.moment( $scope.currentMonth ).startOf( 'month' );
     		$scope.endDate = $scope.moment( $scope.currentMonth ).endOf( 'month' );
 	    
+    		var moment = $scope.moment( $scope.currentMonth );
+
+    		var starOfFirstWeek =  $scope.moment( $scope.currentMonth ).startOf( 'month' ).startOf( 'week' );
+    		var endOfLastWeek =  $scope.moment( starOfFirstWeek ).add( 34, 'days' );
+    		
     		var currentVacations = [];
     		var loadPromise;
     		
     		if ($scope.filterVacationsByCurrent == 'manager_name' && $scope.selectedManager) {
     			var p = {
-    					startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
-   		   			 	endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+    					//startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+   		   			 	//endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+    					startDate: starOfFirstWeek.format( 'YYYY-MM-DD' ),
+    					endDate: endOfLastWeek.format( 'YYYY-MM-DD' ),
     					includeApproved: true,
     					showSubordinateManagerRequests: true
 				};
@@ -450,9 +475,11 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     			loadPromise = loadPromise.then(function(result) {
     				 var assignments = result && result.members ? result.members: [];
     				 var persons = [];
-    				 var start = $scope.startDate.format( 'YYYY-MM-DD' );
-    				 var end = $scope.endDate.format( 'YYYY-MM-DD' );
-    				 
+    				 //var start = $scope.startDate.format( 'YYYY-MM-DD' );
+    				 //var end = $scope.endDate.format( 'YYYY-MM-DD' );
+    				 var start = starOfFirstWeek.format( 'YYYY-MM-DD' );
+    				 var endDate = endOfLastWeek.format( 'YYYY-MM-DD' );
+ 					
     				 for (var k = 0; k < assignments.length; k ++) {
     					 if (!assignments[k].endDate && assignments[k].startDate <= end)
     						 persons.push(assignments[k].person.resource);
@@ -468,10 +495,12 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     			loadPromise = loadPromise.then(function(persons) {
     				if (persons.length > 0)
 	    				return Resources.refresh("vacations/all", {
-		   		   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
-		   		   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
-		   		   			 status: status? status: '',
-		   		   			 persons: persons.join(',')
+		   		   			 //startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+		   		   			 //endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+    						startDate: starOfFirstWeek.format( 'YYYY-MM-DD' ),
+	    					endDate: endOfLastWeek.format( 'YYYY-MM-DD' ),
+	   		   			 	status: status? status: '',
+	   			 			persons: persons.join(',')
 		   		   		 });
     			});
     		} else if ($scope.filterVacationsByCurrent == 'role_name' && $scope.selectedRole) {
@@ -489,16 +518,20 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     			loadPromise = loadPromise.then(function(persons) {
     				if (persons.length > 0)
 	    				return Resources.refresh("vacations/all", {
-		   		   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
-		   		   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
-		   		   			 status: status? status: '',
-		   		   			 persons: persons.join(',')
+		   		   			 //startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+		   		   			 //endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+	    					startDate: starOfFirstWeek.format( 'YYYY-MM-DD' ),
+    						endDate: endOfLastWeek.format( 'YYYY-MM-DD' ),
+	   		   			 	status: status? status: '',
+	   			 			persons: persons.join(',')
 		   		   		 });
     			});
     		} else if ($scope.filterVacationsByCurrent == 'direct_reports' && $scope.me) {
     			var p = {
-    					startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
-   		   			 	endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+    					//startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+   		   			 	//endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+    					startDate: starOfFirstWeek.format( 'YYYY-MM-DD' ),
+    					endDate: endOfLastWeek.format( 'YYYY-MM-DD' ),
     					includeApproved: true,
     					showSubordinateManagerRequests: true
 				};
@@ -509,9 +542,11 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     			loadPromise = VacationsService.getRequestsByManager({about: $scope.me.about}, p);
     		} else
     			loadPromise = Resources.refresh("vacations/all", {
-		   			 startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
-		   			 endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
-		   			 status: status? status: ''
+		   			 //startDate: $scope.startDate.format( 'YYYY-MM-DD' ),
+		   			 //endDate: $scope.endDate.format( 'YYYY-MM-DD' ),
+					startDate: starOfFirstWeek.format( 'YYYY-MM-DD' ),
+					endDate: endOfLastWeek.format( 'YYYY-MM-DD' ),
+	   			 	status: status? status: ''
 		   		 });
 	   		 
 		   		 
