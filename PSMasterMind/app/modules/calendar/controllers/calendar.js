@@ -5,8 +5,8 @@
  */
 
 angular.module('Mastermind').controller('CalendarCtrl', [
-    '$scope', '$state', '$filter', '$q', 'VacationsService', 'People', 'Resources', 'ProjectsService', 'AssignmentService', 'RolesService', 'People',
-    function($scope, $state, $filter, $q, VacationsService, People, Resources, ProjectsService, AssignmentService, RolesService, PeopleService) {
+    '$scope', '$state', '$filter', '$q', '$rootScope', 'VacationsService', 'People', 'Resources', 'ProjectsService', 'AssignmentService', 'RolesService', 'People',
+    function ($scope, $state, $filter, $q, $rootScope, VacationsService, People, Resources, ProjectsService, AssignmentService, RolesService, PeopleService) {
         $scope.startDate = '';
     	$scope.endDate = "";
     	$scope.months = [ 'Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
@@ -585,6 +585,10 @@ angular.module('Mastermind').controller('CalendarCtrl', [
    		 	});
     		
         };
+
+        $rootScope.$on('calendar:update', function () {
+            $scope.initCalendar();
+        });
         
         //if (!$scope.initialized) {
         	$scope.initCalendar();

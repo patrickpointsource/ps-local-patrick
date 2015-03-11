@@ -280,6 +280,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
             vacation.person = { resource: vacation.person.resource, name: Util.getPersonName(vacation.person) }
             Resources.update(vacation).then(function (result) {
                 $scope.initOOO();
+                $rootScope.$emit('calendar:update');
                 $scope.messages.push("Out of office request cancelled.");
                 $scope.$emit('request-processed', request);
             });
