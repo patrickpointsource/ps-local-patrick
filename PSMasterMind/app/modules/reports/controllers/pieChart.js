@@ -128,6 +128,7 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
             width = el.width();
             legendBoxWidth = width / 2 - gap - strokeWidth;
 
+            legend.width = legendBoxWidth - 10;
             legend.x = width / 2 + gap + 10;
             legend.y = (height - legendBoxHeight) / 2 + 30;
 
