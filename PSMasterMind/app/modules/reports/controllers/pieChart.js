@@ -38,7 +38,12 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
         var legend = chart.addLegend(width / 2 + gap + 10, (height - legendBoxHeight) / 2 + 30, legendBoxWidth - 10, legendBoxHeight - 30, "left");
 
         chart.addMeasureAxis("p", "value");
-        chart.addSeries("key", dimple.plot.pie);
+        chart.addSeries("key", dimple.plot.pie).getTooltipText = function (e)
+        {
+            return [
+                e.aggField[0] + ": " + e.p + " (" + Math.round(e.piePct * 100) + "%)"
+            ];
+        };
         chart.setBounds(padding, padding, legendBoxWidth - padding, height - padding * 2);
         chart.draw();
 
