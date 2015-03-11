@@ -17,6 +17,11 @@ describe("E2E: Project test cases.", function () {
     var INVEST_PROJECT_NAME = "E2E Investment Project";
     var TEST_PROJECT_NAME = "E2E Test Project";
     
+    var SEARCH_TEST = {
+    		Project: "MasterMind",
+    		Client:  "PointSource LLC"
+    };
+    
     var projectsPath = {
     	url: "/index.html#/projects?filter=",
     	createUrl: "/index.html#/projects/new?filter=all",
@@ -73,6 +78,10 @@ describe("E2E: Project test cases.", function () {
     
  	it('Test Projects sorting', function () {
  		checkProjectsSorting();
+ 	});
+ 	
+ 	it('Test Projects searching', function () {
+ 		checkProjectsSearching();
  	});
 
     it('Click on Active projects, check that only active projects listed', function () {
@@ -153,15 +162,13 @@ describe("E2E: Project test cases.", function () {
 
     var checkProjectsSorting = function ( ) {
     	var checkSorting = function (projects, validationRow, isASC) {
-    		console.log("checkSorting");
+    		console.log("> Check sorting");
     		projects.then( function (projects) {
         		 var firstProj = projects[0].element(by.binding(validationRow));
         		 var lastProj = projects[projects.length - 1].element(by.binding(validationRow));
         		 firstProj.getText().then( function (firstProjTitle) {
                    	 lastProj.getText().then( function (lastProjTitle) {
                        	 var isSorted = isASC ? firstProjTitle <= lastProjTitle : firstProjTitle >= lastProjTitle;
-                       	 console.log("First proj:" + firstProjTitle);
-                       	 console.log("Last proj:" + lastProjTitle);
                        	 expect(isSorted).toBe(true);
                      });
                  });
@@ -190,6 +197,22 @@ describe("E2E: Project test cases.", function () {
         	projectsPage.sortByProject.click();
         	sortBy(projectsPage.sortByStatus, projectsPage.sortRow.project);
      
+        });
+    };
+    
+    var checkProjectsSearching = function () {
+    	console.log("> Check searching");
+    	var projectsPage = new ProjectsPage();
+    	projectsPage.get();
+    	
+    	projectsPage.searchProject.clear().then( function () { projectsPage.searchProject.sendKeys(SEARCH_TEST.Project); } );
+    	projectsPage.findProject(SEARCH_TEST.Project).then(function (filteredElements) {
+        	expect(filteredElements[0]).toBeDefined();
+        });
+    	
+    	projectsPage.searchProject.clear().then( function () { projectsPage.searchProject.sendKeys(SEARCH_TEST.Client); } );
+    	projectsPage.findProject(SEARCH_TEST.Project).then(function (filteredElements) {
+        	expect(filteredElements[0]).toBeDefined();
         });
     };
     
@@ -556,6 +579,7 @@ describe("E2E: Project test cases.", function () {
         
         this.projects = element.all(by.repeater('project in projects | filter:filterText'));
         this.addProjectButton = element(by.css('[ng-click="createProject()"]'));
+        this.searchProject =  element(by.model('filterText'));
         this.sortByProject = element(by.css('[ng-click="switchSort(\'proj\')"]'));
         this.sortByClient = element(by.css('[ng-click="switchSort(\'cust\')"]'));
         this.sortByStartDate = element.all(by.css('[ng-click="switchSort(\'sd\')"]')).get(0);

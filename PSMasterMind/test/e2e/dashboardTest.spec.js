@@ -5,6 +5,7 @@ describe('E2E: Dashboard Test Cases >', function() {
 	
 	var ACTIVE_PROJECT_NAME = "E2E Hours widget - Active Project";
 	var BACKLOG_PROJECT_NAME = "E2E Hours widget - Backlog Project";
+	var TASK_NAME = "E2E Hours widget - Task";
 	var HOURS_VALUE = 8;
 	var HOURS_ABSURD_VALUE = 50;
 	var HOURS_NULL_VALUE = 0;
@@ -19,6 +20,7 @@ describe('E2E: Dashboard Test Cases >', function() {
 	
 	//Hours widget
 	var loggedProject = 'loggedProject';
+	var loggedTask = 'loggedTask';
 	var ddlProjectsTasks = 'ddlProjectsTasks';
 	var loggedHours = 'loggedHours';
 	var loggedDescription = 'loggedDescription';
@@ -77,9 +79,14 @@ describe('E2E: Dashboard Test Cases >', function() {
 		});
 	});
 	
-	it('Hours Widget Test: Add\Remove record.', function() {	
-		console.log('> Running: Hours Widget - Add\Remove record.');
+	it('Hours Widget Test: Add\Remove project.', function() {	
+		console.log('> Running: Hours Widget - Add\Remove project.');
 		dashboardHoursWidgetAddRemoveRecordTest();
+	});
+	
+	it('Hours Widget Test: Add\Remove task.', function() {	
+		console.log('> Running: Hours Widget - Add\Remove task.');
+		dashboardHoursWidgetAddRemoveRecordTest(true);
 	});
 	
 	it('Hours Widget Test: Edit hours value.', function() {	
@@ -133,19 +140,23 @@ describe('E2E: Dashboard Test Cases >', function() {
     });
 	
 	
-	var dashboardHoursWidgetAddRemoveRecordTest = function () {
+	var dashboardHoursWidgetAddRemoveRecordTest = function ( isTask ) {
 		browser.wait(function(){	    		
 	    		return browser.isElementPresent(byId(loggedProjectInput));
 	    	}).then(function(){
-	    		
-	    		addNewHoursRecord(HOURS_VALUE);
+	    		var hoursTitle = !isTask ? ACTIVE_PROJECT_NAME : TASK_NAME;
+	    		addNewHoursRecord(HOURS_VALUE, hoursTitle);
 	    		
 	    		var elementIndex = "1";
 	    		browser.wait(function(){	    		
 		    		return browser.isElementPresent(byId(hoursDelete, elementIndex));
 		    	}).then(function(){
 		    		console.log("> Verifying hours record.");
-		    		expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(ACTIVE_PROJECT_NAME );
+		    		if (!isTask) {
+		    			expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(hoursTitle);
+		    		} else {
+		    			expect(browser.findElement(byId(loggedTask, elementIndex)).getInnerHtml()).toEqual(hoursTitle);
+		    		}
 		    		expect(browser.findElement(byId(loggedHours, elementIndex)).getText()).toEqual(HOURS_VALUE + ' hrs');
 		    		expect(browser.findElement(byId(loggedDescription, elementIndex)).getInnerHtml()).toEqual(HOURS_DESCRIPTION);
 		    		
