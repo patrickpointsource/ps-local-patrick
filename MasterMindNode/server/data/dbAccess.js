@@ -488,7 +488,15 @@ module.exports = function(params) {
 	    cloudantGetAllViewDocument('views', 'Roles', {include_docs : true}, function(err, body){
 	         callback(err, prepareResponse(body, 'roles', 'doc'));
 	    });
-	};
+    };
+    
+    var listJobTitles = function (callback) {
+        cloudantGetAllViewDocument('views', 'JobTitles', { include_docs : true }, function (err, body) {
+            callback(err, prepareResponse(body, 'jobTitles', 'doc'));
+        });
+    };
+
+    module.exports.listJobTitles = listJobTitles;
 	
 	var listSecurityRoles = function(callback) {
 	    cloudantGetAllViewDocument('views', 'SecurityRoles', {include_docs : true}, function(err, body){

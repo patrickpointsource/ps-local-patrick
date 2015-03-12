@@ -22,6 +22,7 @@ var LINKS_KEY = 'Links';
 var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
 var REPORT_FAVORITES_KEY = 'ReportFavorites';
+var JOB_TITLE_KEY = "JobTitle";
 
 /*
  * 
@@ -829,6 +830,24 @@ var listRoles = function( callback ) {
 
 };
 
+var listJobTitles = function (callback) {
+    
+    var result = memoryCache.getObject(JOB_TITLE_KEY);
+    if (result) {
+        console.log("read " + JOB_TITLE_KEY + " from memory cache");
+        callback(null, prepareRecords(result.data, "members", "jobTitles/"));
+    } else {
+        dbAccess.listJobTitles(function (err, body) {
+            if (!err) {
+                console.log("save " + JOB_TITLE_KEY + " to memory cache");
+                memoryCache.putObject(JOB_TITLE_KEY, body);
+            }
+            callback(err, prepareRecords(body.data, "members", "jobTitles/"));
+        });
+    }
+
+};
+
 var listNonBillableRoles = function( callback ) {
 
 	var result = memoryCache.getObject( ROLES_KEY );
@@ -1533,6 +1552,7 @@ module.exports.listHoursByProjects = listHoursByProjects;
 module.exports.listHoursByProjectsTasksAndQuery = listHoursByProjectsTasksAndQuery;
 
 module.exports.listRoles = listRoles;
+module.exports.listJobTitles = listJobTitles;
 module.exports.listNonBillableRoles = listNonBillableRoles;
 module.exports.listLinks = listLinks;
 module.exports.listLinksByProject = listLinksByProject;
@@ -1576,6 +1596,7 @@ module.exports.CONFIGURATION_KEY = CONFIGURATION_KEY;
 module.exports.SKILLS_KEY = SKILLS_KEY;
 module.exports.TASKS_KEY = TASKS_KEY;
 module.exports.REPORT_FAVORITES_KEY = REPORT_FAVORITES_KEY;
+module.exports.JOB_TITLES_KEY = JOB_TITLES_KEY;
 
 module.exports.prepareRecords = prepareRecords;
 module.exports.cloudantSearchHoursIncludeDocs = cloudantSearchHoursIncludeDocs;
