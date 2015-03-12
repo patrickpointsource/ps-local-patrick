@@ -292,6 +292,14 @@ angular.module('Mastermind')
         "permissions": [
           "viewReports"
         ]
+    },
+    {
+        "name": "departments",
+        "permissions": [
+          "viewDepartments",
+          "editDepartments",
+          "deleteDepartments"
+        ]
     }
     
   ];

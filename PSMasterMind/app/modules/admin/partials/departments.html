@@ -1,1 +1,76 @@
-<div>Departments</div>
+<div class="departments-container" ng-controller="DepartmentsCtrl">
+	<div class="row">
+		<div class="col-md-4">
+			<div class="section-header">
+				<label>Department</label>
+				<div>Search or a select a department to see details</div>
+				
+				<div class="input-group search-department-control">
+			        <input type="text" class="form-control" ng-model="searchDeptStr" placeholder="Search a manager, nickname or code" ng-change="searchDepartments($event)">
+			        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+			   </div>
+			</div>
+			<div class="section-content">
+				<div ng-repeat="dep in availableDepartments"></div>
+			</div>
+			
+		</div>
+		<div class="col-md-4">
+			
+			
+			<div ng-form="selectedDepartmentForm" class="department-edit-container" ng-if="selectedDepartment.isNew || selectedDepartment._id">
+			    <div class="row">
+			    	<div class="col-xs-7">
+			    		<label>Department Details</label>
+			    	</div>
+			        <div class="col-xs-5">
+			            <input type="submit" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Cancel" ng-click="cancelDepartment()">
+			            <input type="submit" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Save" ng-click="saveDepartment()" >
+			        </div>
+			    </div>
+			    <div class="row">
+			    	<div class="col-xs-12">
+		               <label class="required-label control-label" for="role">Department code:</label>
+		               <input class="form-control" name="deptCode" ng-required="true" placeholder="Search for an availalble code" 
+		               	ng-model="selectedDepartment.departmentCode" typeahead-min-length="1" highlight="true" typeahead="p as p.name for p in departmentCodes | filter:{name:$viewValue}"/>
+		           </div>
+			        <div class="col-xs-12 ">
+		               <label class="required-label control-label" for="role">Department category:</label>
+		               <input class="form-control" name="deptCategory" ng-required="true" placeholder="Select a category"  ng-model="selectedDepartment.departmentCategory"
+		               	typeahead-min-length="1" highlight="true" typeahead="p as p.name for p in departmentCategories | filter:{name:$viewValue}"/>
+		           </div>
+		           <div class="col-xs-12">
+		               <label class="required-label control-label" for="role">Department nickname:</label>
+		               <input class="form-control" name="deptName" ng-required="true" placeholder="Nicknames must be unique"  ng-model="selectedDepartment.departmentNickname"/>
+		           </div>
+			       <div class="col-xs-12">
+		               <label class="required-label control-label" for="role">Department manager:</label>
+		              
+		           		<input  class="form-control" name="deptManager" ng-model="selectedDepartment.departmentManager" required typeahead-on-select="selectedManagerChanged($event, $item)"
+							placeholder="Search for a person" typeahead-min-length="1" highlight="true" typeahead="p as p.name for p in managersList | filter:{name:$viewValue}" />
+		
+		
+		           </div>
+			       
+			              
+			    </div>
+			    
+			</div>
+			
+			
+	
+			
+		</div>
+		<div class="col-md-4">
+			<div class="section-header"> 
+				<label>Available people</label>
+				<div>These people are not assigned to any department</div>
+			</div>
+			<div class="section-content">
+				<div ng-repeat="p in availablePeopleList">{{p.name}}</div>
+				<div>etc.</div>
+			</div>
+		</div>
+	</div>
+	
+</div>

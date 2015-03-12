@@ -134,6 +134,16 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
     
     $scope.editMode = false;
     
+    $scope.tabSelected = function(tabName) {
+    	$scope.selectedTab = tabName;
+    	
+    	 $scope.$broadcast("admin:tab:selected", tabName);
+    };
+    
+    $scope.commandTrigerred = function(commandName) {
+    	$scope.$broadcast("admin:" + $scope.selectedTab, commandName);
+    };
+    
     $scope.edit = function() {
       $scope.editMode = true;
       
