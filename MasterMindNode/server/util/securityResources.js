@@ -115,6 +115,15 @@ var securityResources = {
         permissions: {
             viewReports: 'viewReports'
         }
+    },
+    
+    departments :{
+        resourceName: 'departments',
+        permissions: {
+        	viewDepartments: 'viewDepartments',
+        	editDepartments: 'editDepartments',
+    		deleteDepartments: 'deleteDepartments'
+        }
     }
 
 };

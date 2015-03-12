@@ -704,7 +704,13 @@ var minionResouresMap = [
       "name": "reports",
       "permissions": [
       ]
-    }
+    },
+    {
+        "name": "departments",
+        "permissions": [
+                        
+        ]
+      }
 ];
 
 var fullResourcesMap = [
@@ -805,6 +811,14 @@ var fullResourcesMap = [
         "name": "reports",
         "permissions": [
           "viewReports"
+        ]
+    },
+    {
+        "name": "departments",
+        "permissions": [
+          "viewDepartments",
+          "editDepartments",
+          "deleteDepartments"
         ]
     }
 ];

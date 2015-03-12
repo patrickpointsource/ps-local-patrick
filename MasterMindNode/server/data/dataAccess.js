@@ -23,6 +23,7 @@ var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
 var REPORT_FAVORITES_KEY = 'ReportFavorites';
 var JOB_TITLE_KEY = "JobTitle";
+var DEPARTMENTS_KEY = 'Departments';
 
 /*
  * 
@@ -1370,6 +1371,24 @@ var listReportFavoritesByPerson = function( person, callback ) {
   });
 };
 
+var listDepartments = function( callback ) {
+	var result = memoryCache.getObject( DEPARTMENTS_KEY );
+	
+	if( result ) {
+		console.log( "read " + DEPARTMENTS_KEY + " from memory cache" );
+		callback( null, prepareRecords( result.data, "members", "departments/" ) );
+	} else {
+		dbAccess.listDepartments( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + DEPARTMENTS_KEY + " to memory cache" );
+				memoryCache.putObject( DEPARTMENTS_KEY, body );
+			}
+			callback( err, prepareRecords( body.data, "members", "departments/" ) );
+		} );
+	}
+
+};
+
 var insertItem = function( id, obj, type, callback ) {
 	if( type ) {
 		obj.form = type;
@@ -1576,6 +1595,7 @@ module.exports.listTasksByName = listTasksByName;
 module.exports.listReportFavorites = listReportFavorites;
 module.exports.listTasksBySubstr = listTasksBySubstr;
 module.exports.listReportFavoritesByPerson = listReportFavoritesByPerson;
+module.exports.listDepartments = listDepartments;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;
@@ -1597,6 +1617,7 @@ module.exports.SKILLS_KEY = SKILLS_KEY;
 module.exports.TASKS_KEY = TASKS_KEY;
 module.exports.REPORT_FAVORITES_KEY = REPORT_FAVORITES_KEY;
 module.exports.JOB_TITLE_KEY = JOB_TITLE_KEY;
+module.exports.DEPARTMENTS_KEY = DEPARTMENTS_KEY;
 
 module.exports.prepareRecords = prepareRecords;
 module.exports.cloudantSearchHoursIncludeDocs = cloudantSearchHoursIncludeDocs;

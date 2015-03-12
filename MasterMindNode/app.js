@@ -63,6 +63,7 @@ var configuration = require('./server/routes/configuration');
 var skills = require('./server/routes/skills');
 var links = require('./server/routes/links');
 var vacations = require('./server/routes/vacations');
+var departments = require('./server/routes/departments');
 var securityRoles = require('./server/routes/securityRoles');
 var userRoles = require('./server/routes/userRoles');
 var upgrade = require('./server/routes/upgrade');
@@ -264,6 +265,7 @@ if (!useAppNames) {
     app.use('/links', links);
     app.use('/skills', skills);
     app.use('/vacations', vacations);
+    app.use('/departments', departments);
     app.use('/securityRoles', securityRoles);
     app.use('/userRoles', userRoles);
     app.use('/upgrade', upgrade);
@@ -293,6 +295,7 @@ if (!useAppNames) {
         app.use('/' + appNames[i] + '/links', links);
         app.use('/' + appNames[i] + '/skills', skills);
         app.use('/' + appNames[i] + '/vacations', vacations);
+        app.use('/' + appNames[i] + '/departments', departments);
         app.use('/' + appNames[i] + '/securityRoles', securityRoles);
         app.use('/' + appNames[i] + '/userRoles', userRoles);
         app.use('/' + appNames[i] + '/upgrade', upgrade);
