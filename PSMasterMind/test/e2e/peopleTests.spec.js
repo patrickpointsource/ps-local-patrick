@@ -60,11 +60,59 @@ describe("E2E: People test cases.", function () {
         });
     });
     
+ 	it('Test People sorting', function () {
+ 		checkPeopleSorting();
+ 	});
+    
  	it('Test People searching', function () {
  		checkPeopleSearching();
  	});
+ 	
+ 	it('Click on Administration group, check that only admins listed', function () {
+    	checkPeopleList(PeoplePath.administration, PeopleList.administration);
+    });
+    
+    it('Click on Administration&Development check that only admins&developer listed', function () {
+    	checkPeopleList([PeoplePath.administration, PeoplePath.clientexpierencemgmt].join(','), PeopleList.administration.concat(PeopleList.clientexpierencemgmt));
+    });
+    
+    var checkPeopleSorting = function ( ) {
+    	var checkSorting = function (people, validationRow, isASC) {
+    		console.log("> Check sorting");
+    		people.then( function (people) {
+        		 var firstRecord = people[0].element(by.binding(validationRow));
+        		 var lastRecord = people[people.length - 1].element(by.binding(validationRow));
+        		 firstRecord.getText().then( function (firstRecord) {
+        			 lastRecord.getText().then( function (lastRecord) {
+                   		 var isSorted = lastRecord == '' ? true : 
+                   					 	isASC ? firstRecord <= lastRecord : firstRecord >= lastRecord;
+                       
+                       	 expect(isSorted).toBe(true);
+                     });
+                 });
+        	});
+   	 	};
+   	 	
+   	 	var peoplePage = new PeoplePage();
+    	peoplePage.get();
+    	
+        	var sortBy = function(sortField, validationRow) {
+        		sortField.click();
+            	checkSorting(peoplePage.people, validationRow, true);
+            	browser.sleep(1000);
+            	sortField.click();
+                checkSorting(peoplePage.people, validationRow, false);
+                browser.sleep(1000);
+        	};
+        	
+        	peoplePage.sortByPerson.click();
+        	sortBy(peoplePage.sortByPerson, peoplePage.sortRow.person);
+        	sortBy(peoplePage.sortByRole, peoplePage.sortRow.role);
+        	sortBy(peoplePage.sortByGroup, peoplePage.sortRow.title);
+        	sortBy(peoplePage.sortByRate, peoplePage.sortRow.utilization);
 
-
+    };
+    
     var checkPeopleSearching = function () {
     	var peoplePage = new PeoplePage();
     	peoplePage.get();
@@ -80,6 +128,19 @@ describe("E2E: People test cases.", function () {
     	peoplePage.findPerson(SEARCH_TEST.Role).then(function (filteredElements) {
         	expect(filteredElements[0]).toBeDefined();
         });
+    };
+    
+    var checkPeopleList = function (filterPath, peopleList) {
+    	var peoplePage = new PeoplePage(filterPath);
+    	peoplePage.get();
+    	
+    	console.log("> Check " + filterPath + " role list.");
+        for (var index in peopleList) {
+        	var personName = peopleList[index];
+        	peoplePage.findPerson(personName).then(function (filteredElements) {
+        		expect(filteredElements[0]).toBeDefined();
+        	});
+        }
     };
 
     var PeoplePage = function ( filterPath ) {
