@@ -40,9 +40,7 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
         chart.addMeasureAxis("p", "value");
         chart.addSeries("key", dimple.plot.pie).getTooltipText = function (e)
         {
-            return [
-                e.aggField[0] + ": " + e.p + " (" + Math.round(e.piePct * 100) + "%)"
-            ];
+            return [ e.aggField[0] + ": " + e.p + " (" + Math.round(e.piePct * 100) + "%)" ];
         };
         chart.setBounds(padding, padding, legendBoxWidth - padding, height - padding * 2);
         chart.draw();
@@ -107,7 +105,7 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
         };
         var updateLegendBoxLayout = function ()
         {
-            g.attr("transform", "translate(" + (width / 2 + gap) + ", " + (height - legendBoxHeight) / 2 + ")");
+            g.attr("transform", "translate(" + (width / 2 + gap) + "," + (height - legendBoxHeight) / 2 + ")");
 
             g.select("rect")
                 .attr("width", legendBoxWidth)
@@ -151,8 +149,6 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
 
     setTimeout(function ()
     {
-        var id = $scope.$parent.elemId ? $scope.$parent.elemId : $scope.$parent.$parent.elemId;
-
-        $scope.render(id);
+        $scope.render($scope.$parent.elemId || $scope.$parent.$parent.elemId);
     }, 1 * 1000);
 }]);
