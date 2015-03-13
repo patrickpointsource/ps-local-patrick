@@ -3,7 +3,7 @@
 <div class="container calendar" ng-controller="CalendarCtrl">
 	<div class="row" style="margin-top:10px;">
 		<div class="col-md-9">
-			<form class="form-inline" style="margin-top:4px;">
+			<form class="form-inline hide-pending" style="margin-top:4px;">
 				<input type="checkbox" ng-model="hidePendingVacations" ng-change="showHidePending($event)"/>
 				<label class="control-label" style="margin-top:-5px;">Hide pending vacation requests</label>
 				
@@ -100,8 +100,11 @@
 		        		<div class="hours-day-caption empty">
 			        		<div class="hours-day-header" >&nbsp;</div>
 			        	</div>
-			        	<div ng-repeat="dayLbl in weekDayLables" class="hours-day-caption">
-			        		<div class="hours-day-header" >{{dayLbl | uppercase}}</div>
+			        	<div ng-repeat="dayLbl in weekDayLables" class="hours-day-caption long">
+			        		<div class="hours-day-header long" >{{dayLbl | uppercase}}</div>
+			        	</div>
+			        	<div ng-repeat="dayLbl in weekDayLablesShort" class="hours-day-caption short">
+			        		<div class="hours-day-header short" >{{dayLbl | uppercase}}</div>
 			        	</div>
 			        	<div class="hours-day-caption empty">
 			        		<div class="hours-day-header" >&nbsp;</div>
@@ -121,7 +124,8 @@
 		                	<div class="hours-day-content">
 		                		<div ng-repeat="vac in day.vacations" ng-show="{{$index <= 4}}" ng-class="{'empty-vacation': vac.isEmpty}"
 		                			class="text-left vacation-day-entry entry_{{$parent.$index}}_{{$index}}" style="background:{{vac.background}}"
-		                			ng-mouseover="onVacationClicked(event, vac, $parent.$index, $index)" ng-mouseleave="onVacationHide(event, vac, $parent.$index, $index)">
+		                			ng-mouseover="onVacationClicked(event, vac, $parent.$index, $index)"  ng-mouseleave="onVacationHide(event, vac, $parent.$index, $index)"
+		                			>
 					            	<span ng-show="{{vac.startDateOfMultidays == day.date}}">{{vac.person.name ? vac.person.name: '...'}}</span>
 					            	<span class="vacation-day-period" ng-show="{{vac.startDateOfMultidays == day.date}}">{{getVacationPeriod(vac)}}</span>
 					            	<span ng-show="{{vac.startDateOfMultidays != day.date}}">&nbsp;&nbsp;&nbsp;</span>

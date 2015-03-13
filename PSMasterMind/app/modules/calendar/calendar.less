@@ -30,6 +30,27 @@
   padding:0px;
   margin:0px;
   width:100%;
+  
+  form.hide-pending {
+    @media (max-width: @screen-lg) {
+      margin-top: 25px !important;
+    }
+    
+    input[type="checkbox"] {
+       @media (max-width: @screen-lg) {
+        margin-top: 6px;
+        width:18px;
+        height:18px;
+      }
+    }
+    
+    label {
+      @media (max-width: @screen-lg) {
+        margin-top: -10px !important;
+        
+      }
+    }
+  }
 }
 
 .widget.calendar .panel-heading .start-end {
@@ -64,10 +85,24 @@
   width: 6%;
   float: left;
 }
-.widget.calendar .hours-day-caption .hours-day-header{
+.widget.calendar  {
+  .hours-day-caption .hours-day-header {
   text-align: center;
   border-bottom: 1px solid #efefef;
   font-size: 20px;
+  }
+  
+  .hours-day-caption.long {
+    @media (max-width: @screen-lg) {
+      display: none;
+    }
+  }
+  
+  .hours-day-caption.short {
+    @media (min-width: @screen-lg) {
+      display: none;
+    }
+  }
 }
 .widget.calendar .header-container {
   display:inline-block;
@@ -114,6 +149,11 @@
   padding-left: 2px;
   cursor: pointer;
   
+   @media (max-width: @screen-lg) {
+      span {
+        white-space: nowrap;
+      }
+    }
   .vacation-day-period {
     font-weight: normal;
     float: right;
@@ -121,6 +161,10 @@
     position: absolute;
     white-space: nowrap;
     right: 0px;
+    
+     @media (max-width: @screen-lg) {
+      display: none;
+    }
   }
 }
 

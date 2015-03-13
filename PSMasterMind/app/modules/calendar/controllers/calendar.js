@@ -11,6 +11,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     	$scope.endDate = "";
     	$scope.months = [ 'Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
     	$scope.weekDayLables = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+    	$scope.weekDayLablesShort = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     	$scope.displayedMonthDays = [];
     	$scope.hidePendingVacations = false;
     	
