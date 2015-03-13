@@ -95,12 +95,12 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
         series = chart.addSeries(capitalizeString(y3Axis.measure), dimple.plot.bar, [xAxis, y3Axis]);
         configBarTooltip(chart, series, xTitle, yTitle);
 
-        chart.assignColor(capitalizeString(y2Axis.measure), "#0071BC", "#0071BC", 0.7);
-        series = chart.addSeries(capitalizeString(y2Axis.measure), dimple.plot.bar, [xAxis, y2Axis]);
-        configBarTooltip(chart, series, xTitle, yTitle);
-
         chart.assignColor(capitalizeString(y1Axis.measure), "red", "#ED1E79", 0.8);
         series = chart.addSeries(capitalizeString(y1Axis.measure), dimple.plot.bigDash, [xAxis, y1Axis]);
+        configBarTooltip(chart, series, xTitle, yTitle);
+
+        chart.assignColor(capitalizeString(y2Axis.measure), "#0071BC", "#0071BC", 0.7);
+        series = chart.addSeries(capitalizeString(y2Axis.measure), dimple.plot.bar, [xAxis, y2Axis]);
         configBarTooltip(chart, series, xTitle, yTitle);
 
         chart.setBounds(50, 15, width - 100, height - legendBoxHeight - gap - 15 - 30);
