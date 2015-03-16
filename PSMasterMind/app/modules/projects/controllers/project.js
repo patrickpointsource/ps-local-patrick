@@ -1743,6 +1743,9 @@ else if( role.percentageCovered == 0 )
 		
     	var params = {};
     	params.projects = $scope.project.about;
+    	var sort = {  
+    		      'created': 1  
+    		     };
         
 		Resources.get("hours/projects", params).then(
 			

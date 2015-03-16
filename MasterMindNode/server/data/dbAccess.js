@@ -386,19 +386,9 @@ module.exports = function(params) {
 	         //callback(err, body);
 	    });
 	};
-	
 
+	
 	module.exports.listHoursByProjectsAndDates = function(projects, startDate, endDate, callback) {
-	    
-		var projects = _.map(projects, function(val, ind){
-	        return ["Project", val];
-	    });
-		
-	    cloudantGetDocumentsByKeys('views', 'AllHoursInOne', projects, true, function(err, body){
-	    	callback(err, prepareResponse(body, 'hours', 'doc'));
-	    });
-	   
-	    
 		var projects = _.map(projects, function(val, ind){
 	        return ["Project", val];
 	    });
@@ -407,8 +397,6 @@ module.exports = function(params) {
 	    	callback(err, prepareResponse(body, 'hours', 'doc'));
 	    });
 	};
-	
-
 	
 	
 	module.exports.listHoursByPerson = function(callback) {
