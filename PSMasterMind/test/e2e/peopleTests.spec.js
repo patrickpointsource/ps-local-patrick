@@ -10,6 +10,7 @@ describe("E2E: People test cases.", function () {
     var signIn = by.id('signIn');
     var submit_approve_access = by.id('submit_approve_access');
     
+    var ACTIVE_PEOPLE_COUNT = 124;
     var PeoplePath = {
     	url: "/index.html#/people?filter=",
     	createUrl: "/index.html#/people?filter=all",
@@ -73,6 +74,10 @@ describe("E2E: People test cases.", function () {
         });
     });
     
+ 	it('Check default people listing', function () {
+		checkDefaultPeopleListing();
+	});
+    
  	it('Test People sorting', function () {
  		checkPeopleSorting();
  	});
@@ -97,6 +102,16 @@ describe("E2E: People test cases.", function () {
     	checkPeopleList(PeoplePath.all, PeopleList.inactive, true);
     });
     
+ 	var checkDefaultPeopleListing = function () {
+ 		var peoplePage = new PeoplePage();
+    	peoplePage.get();
+    	
+    	expect(browser.driver.getCurrentUrl()).toContain('http://localhost:9000/index.html#/people?filter=all');
+    	peoplePage.people.then(function (peopleList){
+    		expect(peopleList.length).toEqual(ACTIVE_PEOPLE_COUNT);
+    	});
+ 	};
+ 	
     var checkPeopleSorting = function ( ) {
     	var checkSorting = function (people, validationRow, isASC) {
     		console.log("> Check sorting");
@@ -164,7 +179,7 @@ describe("E2E: People test cases.", function () {
     		}
     	});
     };
-
+   
     var PeoplePage = function ( filterPath ) {
     	if ( filterPath ) {
     		this.url = browser.baseUrl + PeoplePath.url + filterPath;
