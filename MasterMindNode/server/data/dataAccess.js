@@ -1389,6 +1389,51 @@ var listDepartments = function( callback ) {
 
 };
 
+var filterDepartments = function(code, manager, nickname, callback) {
+	var result = memoryCache.getObject( DEPARTMENTS_KEY );
+	
+	if( result ) {
+		console.log( "read " + DEPARTMENTS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, result.data), "members", "departments/" ) );
+	} else {
+		dbAccess.listDepartments( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + DEPARTMENTS_KEY + " to memory cache" );
+				memoryCache.putObject( DEPARTMENTS_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, body.data), "members", "departments/" ) );
+		} );
+	}
+};
+
+var listDepartmentsAvailablePeople = function(callback) {
+	listDepartments( function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading departments', null);
+        } else {
+        	var assignedPeople = [];
+        	
+        	for (var k = 0; k < body.members.length; k ++) {
+        		if (body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople))
+        			assignedPeople = assignedPeople.concat(body.members[k].departmentPeople);
+        	}
+        	
+        	listPeopleByIsActiveFlag(true, {}, function(err, result){
+		        if(!err){
+		        	var availablePeople = _.filter(result.members, function(p) {
+		        		return (_.filter(assignedPeople, function(ap){ return ap == p.resource})).length == 0
+		        	});
+		        	
+		        	callback(null, prepareRecords( assignedPeople, "members", "departments/people" ) );
+		        }            
+		    });
+        	
+            
+        }
+    });
+};
+
 var insertItem = function( id, obj, type, callback ) {
 	if( type ) {
 		obj.form = type;
@@ -1596,6 +1641,8 @@ module.exports.listReportFavorites = listReportFavorites;
 module.exports.listTasksBySubstr = listTasksBySubstr;
 module.exports.listReportFavoritesByPerson = listReportFavoritesByPerson;
 module.exports.listDepartments = listDepartments;
+module.exports.filterDepartments = filterDepartments;
+module.exports.listDepartmentsAvailablePeople = listDepartmentsAvailablePeople;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;

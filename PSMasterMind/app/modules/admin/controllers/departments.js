@@ -18,8 +18,15 @@ angular.module('Mastermind')
 		  var tmp;
 	  };
 	  
+	  $scope.editDepartment = function() {
+		  $scope.selectedDepartment.isEdit = true;
+		  
+	  }
 	  $scope.cancelDepartment = function () {
 		  $scope.selectedDepartment = {};
+		  $scope.selectedDepartment.isEdit = false;
+		  $scope.selectedDepartment.isNew = false;
+		  $scope.selectedDepartment.isEdit = false;
 		  //Clear New Task Form
 		  $scope.selectedDepartmentForm.$setPristine();
 	  };
@@ -33,7 +40,8 @@ angular.module('Mastermind')
 	  
 	  $scope.selectDepartment = function(e, department) {
 		  $scope.selectedDepartment = department;
-		  
+		  $scope.selectedDepartment.isNew = false;
+		  $scope.selectedDepartment.isEdit = false;
 		  $scope.selectedDepartmentPeople = [];
 		  var found;
 		  
@@ -177,7 +185,8 @@ angular.module('Mastermind')
         		);
 	    	
 	    	if ($scope.availablePeopleList.length == 0)
-	    		PeopleService.getAllActivePeople().then(function(result) {
+	    		//PeopleService.getAllActivePeople().then(function(result) {
+	    		Resources.refresh("departments/available/people", function(result) {
 	        		var tmpPerson;
 	        		
 	        		$scope.availablePeopleList = _.map(result.members, function(p) {
@@ -195,7 +204,7 @@ angular.module('Mastermind')
 	    	if ($scope.departmentCodes.length == 0)
 	    		DepartmentsService.loadDepartmentCodes().then(function(res) {
 	    			$scope.departmentCodes = res;
-	    		})
+	    		});
 	    		
 	    	if ($scope.departmentCategories.length == 0)
 	    		DepartmentsService.loadDepartmentCategories().then(function(res) {

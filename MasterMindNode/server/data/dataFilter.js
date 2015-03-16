@@ -919,6 +919,33 @@ var filterReportsByPerson = function(person, favorites) {
 };
 
 
+var filterDepartmentsBy = function(code, manager, nickname, departments) {
+	
+	return _.filter(departments, function(d) {
+		var result = true;
+		
+		if (code && d.departmentCode.name.toLowerCase().indexOf(code.toLowerCase()) > -1)
+			result = true
+		else
+			result = false;
+		
+		if (result && manager && d.departmentManager.name.toLowerCase().indexOf(manager.toLowerCase()) > -1)
+			result = true
+		else
+			result = false;
+		
+		if (result && nickname && d.departmentNickname.toLowerCase().indexOf(nickname.toLowerCase()) > -1)
+			result = true
+		else
+			result = false;
+		
+		
+		return result;
+	});
+	
+	
+};
+
 // people filter functions
 module.exports.filterPeopleByRoles = filterPeopleByRoles;
 module.exports.filterPeopleByIsActiveFlag = filterPeopleByIsActiveFlag;
@@ -970,3 +997,5 @@ module.exports.filterNonBillableRoles = filterNonBillableRoles;
 
 //favorite reports functions
 module.exports.filterReportsByPerson = filterReportsByPerson;
+
+module.exports.filterDepartmentsBy = filterDepartmentsBy;

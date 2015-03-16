@@ -22,7 +22,7 @@
 		<div class="col-md-4">
 			
 			
-			<div ng-form="selectedDepartmentForm" class="department-edit-container" ng-if="selectedDepartment.isNew || selectedDepartment._id">
+			<div ng-form="selectedDepartmentForm" class="department-edit-container" ng-if="selectedDepartment.isNew || selectedDepartment._id && selectedDepartment.isEdit">
 			    <div class="row">
 			    	<div class="col-xs-7">
 			    		<label>Department Details</label>
@@ -90,6 +90,76 @@
 			    </div>
 			</div>
 			
+			
+			<div ng-form="selectedDepartmentForm" class="department-edit-container" ng-if="selectedDepartment._id && !selectedDepartment.isEdit">
+			    <div class="row">
+			    	<div class="col-xs-7">
+			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span> Details</label>
+			    	</div>
+			        <div class="col-xs-5">
+			            <input type="submit" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Edit" ng-click="editDepartment()">
+			          
+			        </div>
+			    </div>
+			    <div class="row">
+			    	<div class="col-xs-12">
+		               <label class="required-label control-label" for="departmentCode.name">Department code:</label>
+		               <br/>
+		               <span>{{selectedDepartment.departmentCode.name}}</span>
+		               
+		           </div>
+			        <div class="col-xs-12 ">
+		               <label class="required-label control-label" for="departmentCategory.name">Department category:</label>
+		               <br/>
+		               <span>{{selectedDepartment.departmentCategory.name}}</span>
+		               
+		           </div>
+		           <div class="col-xs-12">
+		               <label class="required-label control-label" for="departmentNickname">Department nickname:</label>
+		               <br/>
+		               <span>{{selectedDepartment.departmentNickname}}</span>
+		              
+		           </div>
+			       <div class="col-xs-12">
+		               <label class="required-label control-label" for="departmentManager.name">Department manager:</label>
+		               <br/>
+		               <span>{{selectedDepartment.departmentManager.name}}</span>
+		           		
+		           </div>
+			       
+			              
+			    </div>
+			    
+			    <div class="row">
+			    	<div class="col-xs-7">
+			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span>People</label>
+			    	</div>
+			        <div class="col-xs-5">
+			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Cancel" ng-click="cancelDepartmentPeople()">
+			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Save" ng-click="saveDepartmentPeople()" >
+			            <input type="submit" ng-show="!selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Edit" ng-click="editDepartmentPeople()" >
+			        </div>
+			    </div>
+			    <div class="row">
+			    	<div ng-if="selectedDepartment.editDepartmenPeople">
+			    		<div ng-repeat="p in selectedDepartmentPeople" class="available-person">
+			    			<span class="name">{{p.name}}</span>
+								<span class="add pull-right" ng-click="removeDepartmentPerson(p)">
+									<i class="fa fa-times"></i>
+								</span>
+		    			</div>
+			    	</div>
+			    	
+			    	<div ng-if="!selectedDepartment.editDepartmenPeople">
+			    		<div ng-repeat="p in selectedDepartmentPeople">
+			    			{{p.name}}
+			    			</div>
+			    	</div>
+			    	
+			    	
+			    	
+			    </div>
+			</div>
 			
 	
 			
