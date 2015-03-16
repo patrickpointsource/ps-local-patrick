@@ -37,7 +37,20 @@ describe("E2E: People test cases.", function () {
     		                        "Reynolds",
     		                        "Trimandilis",
     		                        "Winders",
-    		                        "York" ]
+    		                        "York" ],
+    		inactive: [ "Bosworth",
+    		           "Daswani",
+    		           "Garbarz",
+    		           "Kesoyan",
+    		           "Leshkevich",
+    		           "Lewis",
+    		           "List",
+    		           "Lyon",
+    		           "Matsukow",
+    		           "Meyer",
+    		           "Schell",
+    		           "Taber",
+    		           "Veramei" ]
     };
 
     beforeEach(function () {
@@ -74,6 +87,14 @@ describe("E2E: People test cases.", function () {
     
     it('Click on Administration&Development check that only admins&developer listed', function () {
     	checkPeopleList([PeoplePath.administration, PeoplePath.clientexpierencemgmt].join(','), PeopleList.administration.concat(PeopleList.clientexpierencemgmt));
+    });
+    
+    it('Click on Inactive group, check that only inactive people listed', function () {
+    	checkPeopleList(PeoplePath.inactive, PeopleList.inactive);
+    });
+    
+    it('Click on Inactive group, check that only inactive people listed', function () {
+    	checkPeopleList(PeoplePath.all, PeopleList.inactive, true);
     });
     
     var checkPeopleSorting = function ( ) {
@@ -130,17 +151,18 @@ describe("E2E: People test cases.", function () {
         });
     };
     
-    var checkPeopleList = function (filterPath, peopleList) {
+    var checkPeopleList = function (filterPath, peopleList, shouldExclude) {
     	var peoplePage = new PeoplePage(filterPath);
     	peoplePage.get();
     	
-    	console.log("> Check " + filterPath + " role list.");
-        for (var index in peopleList) {
-        	var personName = peopleList[index];
-        	peoplePage.findPerson(personName).then(function (filteredElements) {
-        		expect(filteredElements[0]).toBeDefined();
-        	});
-        }
+    	console.log("> Check " + filterPath + " people list.");
+    	peoplePage.isPeopleExist(peopleList).then(function (res) {
+    		if (!shouldExclude) {
+    			expect(res[0]).toBeDefined();
+    		} else {
+    			expect(res[0]).toBeUndefined();
+    		}
+    	});
     };
 
     var PeoplePage = function ( filterPath ) {
@@ -173,6 +195,21 @@ describe("E2E: People test cases.", function () {
             return $this.people.filter(function (elem) {
                 return elem.getText().then(function (text) {
                     return text.toLowerCase().indexOf(personName.toLowerCase()) > -1;
+                });
+            });
+        };
+        this.isPeopleExist = function (peopleList) {
+            var $this = this;
+            var res = [];
+            return $this.people.filter(function (elem) {
+                return elem.getText().then(function (text) {
+                	for (var index in peopleList) {
+                    	var personName = peopleList[index];
+                    	if (text.toLowerCase().indexOf(personName.toLowerCase()) > -1)
+                    		res.push(personName);
+                	}
+                	if (res.length == peopleList.length)
+                		return true;
                 });
             });
         };

@@ -97,7 +97,7 @@ describe("E2E: Project test cases.", function () {
     
     it('Should create active project.', function () {
         createProject(fillActiveProjectPageFields);
-    });
+    }, 60000);
     
     it('Check that Services Estimate field is readonly for the created active project.', function () {
     	selectProject(ACTIVE_PROJECT_NAME, projectsPath.active, checkServicesEstimateField);
@@ -105,47 +105,47 @@ describe("E2E: Project test cases.", function () {
     
     it('Select and remove active project.', function () {
     	selectProject(ACTIVE_PROJECT_NAME, projectsPath.active, removeProject);
-    });
+    }, 60000);
 
     it('Should create backlog project.', function () {
         createProject(fillBacklogProjectPageFields);
-    });
+    }, 60000);
     
     it('Select and remove backlog project.', function () {
     	selectProject(BACKLOG_PROJECT_NAME, projectsPath.backlog, removeProject);
-    });
+    }, 60000);
 
     it('Should create pipeline project.', function () {
         createProject(fillPipelineProjectPageFields);
-    });
+    }, 60000);
     
     it('Select and remove pipeline project.', function () {
     	selectProject(PIPELINE_PROJECT_NAME, projectsPath.pipeline, removeProject);
-    });
+    }, 60000);
 
     it('Should create completed project.', function () {
         createProject(fillCompletedProjectPageFields);
-    });
+    }, 60000);
     
     it('Select and remove completed project.', function () {
     	selectProject(COMPLETED_PROJECT_NAME, projectsPath.completed, removeProject);
-    });
+    }, 60000);
 
     it('Should create investment project.', function () {
         createProject(fillInvestmentProjectPageFields);
-    });
+    }, 60000);
     
     it('Select and remove investment project.', function () {
     	selectProject(INVEST_PROJECT_NAME, projectsPath.investment, removeProject);
-    });
+    }, 60000);
     
     it('Should create project with 3 roles.', function () {
     	createProject(fill3RolesPageFields, []);
-    });
+    }, 60000);
     
     it('Select and remove project with 3 roles.', function () {
     	selectProject(TEST_PROJECT_NAME, projectsPath.all, removeProject);
-    });
+    }, 60000);
     
     it('Cancel project creation: should redirect to the projects list.', function () {
     	cancelProjectCreation();
