@@ -88,16 +88,25 @@
 		"skypeId": {"type":"string"},
 		"thumbnail": {"type":"string"},
 		"vacationCapacity": {"type":"number"},
-		"skills":  {
-			"type":"array",
-			"items": {
-				"type": "object",
-				"properties": {
-					"proficiency": "number",
-					"type": {"$ref" : "#/definitions/resource"}
-				}
-			}
-		}
+        "skills": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "proficiency": "number",
+                    "type": { "$ref": "#/definitions/resource" }
+                }
+            }
+        },
+        "jobTitle": { "$ref": "#/definitions/resource" },
+        "secondaryRoles": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/resource"
+            }
+        },
+        "partTimeHours": { "type": "number" },
+        "partTime": {"type":"boolean"}
 	},
 	"required": ["form", "name", "about"],
 	"definitions": {

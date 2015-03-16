@@ -62,12 +62,15 @@
   }
 
   .person-contact-info {
-    margin-left: 110px;
+    margin-left: -15px; 
+    margin-right: -15px; 
+    padding-left: 130px;
     select.form-control {
       width: 95%;
     }
      @media (max-width: @screen-sm) {
-       margin-left: 80px;
+       margin-left: 0px;
+       padding-left: 0px;
      }
   }
 
@@ -549,4 +552,57 @@ a.header-name {
 
 .people-list-container {
   min-height: 120px;
+}
+
+div.select-secondary-roles {
+    width: 95% !important;
+    @media(min-width: @screen-lg-min) {
+        width: 50% !important; 
+    }
+}
+
+div.select-user-groups {
+    width: 95% !important;
+    @media(min-width: @screen-lg-min) {
+        width: 50% !important; 
+    }
+}
+
+.user-security-role {
+  display: inline;
+  padding: 5px; 
+  margin-right: 10px;
+  background-color: #1ba2c1; 
+  color: white; 
+  font-weight: bold;
+  margin-top: 5px;
+  white-space: nowrap;
+  
+  > div {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+  }
+}
+
+.profile-edit-select {
+    @media(min-width: @screen-lg-min) {
+        width: 50%;
+    }
+    > select {
+        @media(min-width: @screen-lg-min) {
+            width: 100% !important;
+        }
+    }
+}
+
+.btn-toggle {
+    border: 1px solid #1ba2c1 !important;
+    color: #1ba2c1 !important;
+}
+
+.btn-toggle.active {
+    background-color: #1ba2c1 !important;
+    border: 1px solid #1ba2c1 !important;
+    color: white !important;
 }

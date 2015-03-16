@@ -10,6 +10,7 @@ var google = require('googleapis');
 var security = require('../util/security');
 var notifications = require('./notifications.js');
 var Q = require('q');
+var jobTitlesCtrl = require('./jobTitles.js');
 
 var DEFAULT_PROFILE_IMG_LINK = "https://ssl.gstatic.com/s2/profiles/images/silhouette200.png";
 
@@ -117,7 +118,15 @@ module.exports = function(params) {
 							                console.log("Upgrade: Old notifications were deleted.");
 							            }
 
-							            callback(null, null);
+							            insertDefaultJobTitles(function(err, body) {
+							                if (err) {
+							                    console.log(err);
+							                } else {
+							                    console.log("Upgrade: Default Job Titles created.");
+							                }
+
+							                callback(null, null);
+							            });
 							        });
 							    });
 
@@ -620,11 +629,45 @@ module.exports = function(params) {
         });
     };
 
-    var deleteNotificationPromise = function (notification) {
+    var deleteNotificationPromise = function(notification) {
         var deferred = Q.defer();
         dataAccess.deleteItem(notification._id, notification.rev, "Notifications", function(err, body) {
             deferred.resolve(body);
         });
         return deferred.promise;
-    }
+    };
+
+    var insertDefaultJobTitles = function (callback) {
+        jobTitlesCtrl.listJobTitles(function(err, body) {
+            if (!err) {
+                var jobTitles = body.members;
+                var counter = jobTitlesCtrl.defaultJobTitles.length;
+                _.each(jobTitlesCtrl.defaultJobTitles, function(defaultJobTitle) {
+                    if (!_.findWhere(jobTitles, { title: defaultJobTitle.title }) &&
+                        !_.findWhere(jobTitles, { abbreviation: defaultJobTitle.abbreviation })) {
+                        jobTitlesCtrl.insertJobTitle(defaultJobTitle, function(err, body) {
+                            if (err) {
+                                console.log("Can't insert default jobTitle: " + err);
+                            } else {
+                                console.log("Default jobTitle have been inserted: " + body.title);
+                            }
+
+                            counter--;
+                            if (counter == 0) {
+                                callback(null, null);
+                            }
+                        });
+                    } else {
+                        counter--;
+                    }
+
+                    if (counter == 0) {
+                        callback(null, null);      
+                    }
+                });
+            } else {
+                callback(err, null);
+            }
+        });
+    };
 };

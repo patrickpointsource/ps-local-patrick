@@ -56,7 +56,27 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			}
 			return ret;
 		};
-	} );
+
+		$scope.getSecondaryRoleName = function (secondaryRole) {
+		    if (secondaryRole) {
+		        if (secondaryRole.title) {
+		            return secondaryRole.title;
+		        } else {
+		            if (secondaryRole.resource) {
+		                return $scope.getRoleName(secondaryRole.resource);
+		            }
+		        }
+		    }
+		};
+	});
+
+    $scope.getJobTitle = function(resource) {
+        var ret = UNSPECIFIED;
+        if (resource && $scope.titlesMap && $scope.titlesMap[resource]) {
+            ret = $scope.titlesMap[resource].title;
+        }
+        return ret;
+    };
 
 	/**
 	 * Controls the edit state of teh profile form (an edit URL param can control
@@ -149,6 +169,17 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	  $('.select-user-groups').selectpicker('refresh');
 	};
 
+	$scope.removeSecondaryRole = function (index) {
+	    var removedRole = $scope.profile.secondaryRoles[index];
+	    var indexInGroups = $scope.profile.secondaryRoles.indexOf(removedRole).toString();
+	    var selectValue = $('.select-secondary-roles').selectpicker('val');
+	    var indexInSelect = selectValue.indexOf(indexInGroups);
+	    selectValue.splice(indexInSelect, 1);
+	    $scope.profile.secondaryRoles.splice(index, 1);
+	    $('.select-secondary-roles').selectpicker('val', selectValue);
+	    $('.select-secondary-roles').selectpicker('refresh');
+	};
+
 	/**
 	 * Populate the form with fetch profile information
 	 */
@@ -164,6 +195,33 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 				$scope.populateManagers(result);
 			}
 		);
+
+		if(!$scope.profile.partTime) {
+			$scope.profile.partTime = false;
+		}
+
+		Resources.get('jobTitles').then(function (result) {
+		    var members = result.members;
+		    $scope.allTitles = members;
+		    var titlesMap = {};
+		    for (var i = 0; i < members.length; i++) {
+		        titlesMap[members[i].resource] = members[i];
+		    }
+
+		    // sorting titles by title
+		    $scope.allTitles.sort(function (a, b) {
+		        var x = a.title ? a.title.toLowerCase() : '';
+		        var y = b.title ? b.title.toLowerCase() : '';
+		        return x < y ? -1 : x > y ? 1 : 0;
+		    });
+
+		    $scope.titlesMap = titlesMap;
+
+		    for (var i in $scope.profile.secondaryRoles) {
+		        var secondaryRole = $scope.profile.secondaryRoles[i];
+		        $scope.profile.secondaryRoles[i] = $scope.rolesMap[secondaryRole.resource];
+		    };
+		});
 
 		//      $scope.skillsList = person.skills;
 		//
@@ -241,6 +299,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			$scope.setProfile( person );
 			$scope.editMode = true;
 			$(".select-user-groups").selectpicker();
+			$(".select-secondary-roles").selectpicker();
 		} );
 	};
 
@@ -280,6 +339,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		  profile.isActive = 'false';
 		}
 
+	    // correct secondary roles
+		for(var i in profile.secondaryRoles) {
+		    var secondaryRole = profile.secondaryRoles[i];
+		    profile.secondaryRoles[i] = { name: secondaryRole.title, resource: secondaryRole.resource };
+		}
+
 		// check if security groups needs to be updated
 		var rolesNeedsToBeUpdated = false;
 		var securityGroups = _.map($scope.userSecurityGroups, function(userSecurityGroup){
@@ -291,7 +356,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             rolesNeedsToBeUpdated = true;
           } else {
             for(var i = 0; i < securityGroups.length; i++) {
-              if($scope.initialUserGroups.indexOf(securityGroups[i].name) < 0) {
+              if(!_.findWhere($scope.initialUserGroups, {name: securityGroups[i].name})) {
                 rolesNeedsToBeUpdated = true;
                 break;
               }
@@ -325,7 +390,9 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
                 familyName: 1,
                 givenName: 1,
                 primaryRole: 1,
-                thumbnail: 1
+                thumbnail: 1,
+                jobTitle: 1,
+                secondaryRoles: 1
             };
             var params = {
                 'fields': fields

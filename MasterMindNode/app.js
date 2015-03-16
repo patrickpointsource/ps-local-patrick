@@ -68,9 +68,11 @@ var userRoles = require('./server/routes/userRoles');
 var upgrade = require('./server/routes/upgrade');
 var reports = require('./server/routes/reports');
 var jazzHub = require('./server/routes/jazzHub');
+var jobTitles = require('./server/routes/jobTitles');
 
 var security = require('./server/util/security.js');
 var reminder = require('./server/util/reminder.js');
+
 
 
 //var privateKey  = fs.readFileSync(appConfig.privateKeyPath, 'utf8');
@@ -267,6 +269,7 @@ if (!useAppNames) {
     app.use('/upgrade', upgrade);
     app.use('/reports', reports);
     app.use('/jazzHub', jazzHub);
+    app.use('/jobTitles', jobTitles);
     
     app.get( '/resetuser', resetUser);
 } else {
@@ -295,6 +298,7 @@ if (!useAppNames) {
         app.use('/' + appNames[i] + '/upgrade', upgrade);
         app.use('/' + appNames[i] + '/reports', reports);
         app.use('/' + appNames[i] + '/jazzHub', jazzHub);
+        app.use('/' + appNames[i] + '/jobTitles', jobTitles);
         
         app.get( '/' + appNames[i] + '/resetuser', resetUser);
     }

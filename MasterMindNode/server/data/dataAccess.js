@@ -1596,7 +1596,7 @@ module.exports.CONFIGURATION_KEY = CONFIGURATION_KEY;
 module.exports.SKILLS_KEY = SKILLS_KEY;
 module.exports.TASKS_KEY = TASKS_KEY;
 module.exports.REPORT_FAVORITES_KEY = REPORT_FAVORITES_KEY;
-module.exports.JOB_TITLES_KEY = JOB_TITLES_KEY;
+module.exports.JOB_TITLE_KEY = JOB_TITLE_KEY;
 
 module.exports.prepareRecords = prepareRecords;
 module.exports.cloudantSearchHoursIncludeDocs = cloudantSearchHoursIncludeDocs;
