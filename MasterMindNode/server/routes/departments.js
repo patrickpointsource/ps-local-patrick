@@ -39,14 +39,30 @@ router.get( '/available/people', util.isAuthenticated, function( req, res ) {
 	});
 } );
 
+router.get( '/available/code', util.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.departments.resourceName, securityResources.departments.permissions.viewDepartments, function( allowed ) {
+		if( allowed ) {
+			// Call to projects service
+			departments.listAvailableCode( function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	});
+} );
+
 router.get( '/search', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.departments.resourceName, securityResources.departments.permissions.viewDepartments, function( allowed ) {
 		if( allowed ) {
 			var code = req.query[ "code" ] ? req.query[ "code" ] : "";
             var manager = req.query[ "manager" ] ? req.query[ "manager" ] : "";
             var nickname = req.query[ "nickname" ] ? req.query[ "nickname" ] : "";
+            var substr = req.query[ "substr" ] ? req.query[ "substr" ] : "";
 			// Call to projects service
-			departments.filterDepartments( code, manager, nickname, function( err, result ) {
+			departments.filterDepartments( code, manager, nickname, substr, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

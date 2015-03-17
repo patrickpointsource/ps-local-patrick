@@ -1389,19 +1389,19 @@ var listDepartments = function( callback ) {
 
 };
 
-var filterDepartments = function(code, manager, nickname, callback) {
+var filterDepartments = function(code, manager, nickname, substr, callback) {
 	var result = memoryCache.getObject( DEPARTMENTS_KEY );
 	
 	if( result ) {
 		console.log( "read " + DEPARTMENTS_KEY + " from memory cache" );
-		callback( null, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, result.data), "members", "departments/" ) );
+		callback( null, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, substr, result.data), "members", "departments/" ) );
 	} else {
 		dbAccess.listDepartments( function( err, body ) {
 			if( !err ) {
 				console.log( "save " + DEPARTMENTS_KEY + " to memory cache" );
 				memoryCache.putObject( DEPARTMENTS_KEY, body );
 			}
-			callback( err, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, body.data), "members", "departments/" ) );
+			callback( err, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, substr, body.data), "members", "departments/" ) );
 		} );
 	}
 };
@@ -1419,13 +1419,13 @@ var listDepartmentsAvailablePeople = function(callback) {
         			assignedPeople = assignedPeople.concat(body.members[k].departmentPeople);
         	}
         	
-        	listPeopleByIsActiveFlag(true, {}, function(err, result){
+        	listPeopleByIsActiveFlag(true, null, function(err, result){
 		        if(!err){
 		        	var availablePeople = _.filter(result.members, function(p) {
 		        		return (_.filter(assignedPeople, function(ap){ return ap == p.resource})).length == 0
 		        	});
 		        	
-		        	callback(null, prepareRecords( assignedPeople, "members", "departments/people" ) );
+		        	callback(null, prepareRecords( availablePeople, "members", "departments/people" ) );
 		        }            
 		    });
         	

@@ -26,13 +26,35 @@ module.exports.listAvailablePeople = function(callback) {
             //console.log(body);
             callback(null, body);
         }
-    });
-	 
-    
+    });  
 };
 
-module.exports.filterDepartments = function(code, manager, nickname, callback) {
-    dataAccess.filterDepartments( code, manager, nickname, function(err, body){
+module.exports.listAvailableCode = function(callback) {
+	var list = [];
+	
+	for (var k = 0; k < 9; k ++) {
+		for (var i = 0; i < 30; i ++) {
+			var letter = String.fromCharCode(97 + i);
+			
+			list.push({name: (k + letter).toUpperCase()});
+		}
+	}
+	
+	 dataAccess.listDepartments( function(err, body){
+       if (!err) {
+           var usedCodes = _.map(body.members, function(c) { return c.departmentCode.name; });
+           
+           list = _.filter(list, function(item) { 
+        	   return (_.filter(usedCodes, function(c) { return c == item.name})).length == 0;
+    	   });
+           
+           callback(null, {members: list});
+       }
+   });  
+};
+
+module.exports.filterDepartments = function(code, manager, nickname, substr, callback) {
+    dataAccess.filterDepartments( code, manager, nickname, substr, function(err, body){
         if (err) {
             console.log(err);
             callback('error filtering departments', null);
