@@ -314,9 +314,7 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
 
     setTimeout(function ()
     {
-        var id = $scope.$parent.elemId ? $scope.$parent.elemId : $scope.$parent.$parent.elemId;
-
-        $scope.render(id);
+        $scope.render($scope.$parent.elemId || $scope.$parent.$parent.elemId);
     }, 1 * 1000);
 
     var capitalizeString = function (str)
