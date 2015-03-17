@@ -141,11 +141,12 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	};
 
 	$scope.prepareUserRoles = function() {
-	  $scope.initialUserGroups = [];
-      _.extend($scope.initialUserGroups, $scope.userRole.roles);
       $scope.userSecurityGroups = _.filter($scope.securityGroups, function(securityGroup) {
         return _.findWhere($scope.userRole.roles, { resource: securityGroup.resource }) ? true : false;
       });
+      
+      $scope.initialUserGroups = [];
+      _.extend($scope.initialUserGroups, $scope.userSecurityGroups);
 	};
 
 	$scope.updateUserRoles = function() {
@@ -167,6 +168,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	  $scope.userSecurityGroups.splice(index, 1);
 	  $('.select-user-groups').selectpicker('val', selectValue);
 	  $('.select-user-groups').selectpicker('refresh');
+	  $scope.userSecurityGroupsChanged(this);
 	};
 
 	$scope.removeSecondaryRole = function (index) {
@@ -179,6 +181,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	    $('.select-secondary-roles').selectpicker('val', selectValue);
 	    $('.select-secondary-roles').selectpicker('refresh');
 	};
+
+    $scope.userSecurityGroupsChanged = function($this) {
+    	if($this) {
+    		$scope.userSecurityGroups = $this.userSecurityGroups;
+    	} else {
+    		$scope.userSecurityGroups = this.userSecurityGroups;
+    	}
+    };
 
 	/**
 	 * Populate the form with fetch profile information

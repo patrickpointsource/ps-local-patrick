@@ -107,16 +107,16 @@
                             <div ng-show="!profile.partTime" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding">
                                 <i class="fa fa-check fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Full time</span>
                             </div>
-                            <div ng-show="profile.partTime" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding">
-                                <span ng-show="profile.partTime">Part time: {{profile.partTimeHours}} h/w</span>
+                            <div ng-show="profile.partTime" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding padding-top-10">
+                                <span ng-show="profile.partTime"><strong>Part time: </strong>{{profile.partTimeHours}} h/w</span>
                             </div>
                             
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding">
                                 <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'true'">
-                                    <i class="fa fa-check fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Active</span>
+                                    <i class="fa fa-check fa-2x" style="color: #60c5db; margin-right: 15px;"></i><strong>Active</strong>
                                 </div>
                                 <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'false'">
-                                    <i class="fa fa-times-circle fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Active</span>
+                                    <i class="fa fa-times-circle fa-2x" style="color: #60c5db; margin-right: 15px;"></i><strong>Inactive</strong>
                                 </div>
                             </div>
                         </div>
@@ -155,7 +155,7 @@
                             <div>
                                 <strong>Select permissions groups:</strong>
                             </div>
-                            <select class="selectpicker select-user-groups form-control" multiple data-selected-text-format="count>3" ng-model="userSecurityGroups" ng-options="g.name for g in securityGroups"></select>
+                            <select class="selectpicker select-user-groups form-control" multiple data-selected-text-format="count>3" ng-model="userSecurityGroups" ng-options="g.name for g in securityGroups" ng-change="userSecurityGroupsChanged(this)"></select>
                         </div>
                         
                         <div class="row col-xs-12 no-margin-bottom">
