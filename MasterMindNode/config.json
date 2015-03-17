@@ -11,5 +11,5 @@
     "webSiteUrl": "http://localhost:9000",
     "oauthcbbaseurl": "",
     "serverTimeout": "10",
-    "env": "test"
+    "env": "dev"
 }
