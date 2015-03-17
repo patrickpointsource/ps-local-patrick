@@ -919,7 +919,7 @@ var filterReportsByPerson = function(person, favorites) {
 };
 
 
-var filterDepartmentsBy = function(code, manager, nickname, departments) {
+var filterDepartmentsBy = function(code, manager, nickname, substr, departments) {
 	
 	return _.filter(departments, function(d) {
 		var result = true;
@@ -935,6 +935,12 @@ var filterDepartmentsBy = function(code, manager, nickname, departments) {
 			result = false;
 		
 		if (result && nickname && d.departmentNickname.toLowerCase().indexOf(nickname.toLowerCase()) > -1)
+			result = true
+		else
+			result = false;
+		
+		if (result && substr && (d.departmentNickname.toLowerCase().indexOf(substr.toLowerCase()) > -1 
+				|| d.departmentManager.name.toLowerCase().indexOf(substr.toLowerCase()) > -1 || d.departmentCode.name.toLowerCase().indexOf(substr.toLowerCase())) > -1)
 			result = true
 		else
 			result = false;

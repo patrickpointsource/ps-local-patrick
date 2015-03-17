@@ -28,7 +28,7 @@
 			    		<label>Department Details</label>
 			    	</div>
 			        <div class="col-xs-5">
-			            <input type="submit" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Cancel" ng-click="cancelDepartment()">
+			            <input type="submit"  class="btn" value="Cancel" ng-click="cancelDepartment()">
 			            <input type="submit" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Save" ng-click="saveDepartment()" >
 			        </div>
 			    </div>
@@ -36,12 +36,19 @@
 			    	<div class="col-xs-12">
 		               <label class="required-label control-label" for="role">Department code:</label>
 		               <input class="form-control" name="deptCode" ng-required="true" placeholder="Search for an availalble code" 
-		               	ng-model="selectedDepartment.departmentCode" typeahead-min-length="1" highlight="true" typeahead="p as p.name for p in departmentCodes | filter:{name:$viewValue}"/>
+		               	ng-model="selectedDepartment.departmentCode" typeahead-min-length="1" highlight="true" typeahead="p as p.name for p in currentDepartmentCodes | filter:{name:$viewValue}"/>
 		           </div>
 			        <div class="col-xs-12 ">
 		               <label class="required-label control-label" for="role">Department category:</label>
-		               <input class="form-control" name="deptCategory" ng-required="true" placeholder="Select a category"  ng-model="selectedDepartment.departmentCategory"
-		               	typeahead-min-length="1" highlight="true" typeahead="p as p.name for p in departmentCategories | filter:{name:$viewValue}"/>
+		               
+		               
+		               	
+		               	<select name="deptCategory" class="form-control pull-right" 
+								ng-model="selectedDepartment.departmentCategory"
+								ng-required="true"
+								ng-options="p as p.name for p in departmentCategories | filter:{name:$viewValue}">
+							</select>
+					
 		           </div>
 		           <div class="col-xs-12">
 		               <label class="required-label control-label" for="role">Department nickname:</label>
@@ -92,37 +99,38 @@
 			
 			
 			<div ng-form="selectedDepartmentForm" class="department-edit-container" ng-if="selectedDepartment._id && !selectedDepartment.isEdit">
-			    <div class="row">
+			    <div class="section-header">
 			    	<div class="col-xs-7">
 			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span> Details</label>
 			    	</div>
 			        <div class="col-xs-5">
 			            <input type="submit" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Edit" ng-click="editDepartment()">
+			            <input type="submit" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Delete" ng-click="deleteDepartment()" style="margin-right:4px;">
 			          
 			        </div>
 			    </div>
-			    <div class="row">
+			    <div class="section-content view-container">
 			    	<div class="col-xs-12">
-		               <label class="required-label control-label" for="departmentCode.name">Department code:</label>
-		               <br/>
+		               <label class="control-label" >Department code:</label>
+		               
 		               <span>{{selectedDepartment.departmentCode.name}}</span>
 		               
 		           </div>
 			        <div class="col-xs-12 ">
-		               <label class="required-label control-label" for="departmentCategory.name">Department category:</label>
-		               <br/>
+		               <label class="control-label" >Department category:</label>
+		               
 		               <span>{{selectedDepartment.departmentCategory.name}}</span>
 		               
 		           </div>
 		           <div class="col-xs-12">
-		               <label class="required-label control-label" for="departmentNickname">Department nickname:</label>
-		               <br/>
+		               <label class="control-label" >Department nickname:</label>
+		               
 		               <span>{{selectedDepartment.departmentNickname}}</span>
 		              
 		           </div>
 			       <div class="col-xs-12">
-		               <label class="required-label control-label" for="departmentManager.name">Department manager:</label>
-		               <br/>
+		               <label class="control-label" for="departmentManager.name">Department manager:</label>
+		              
 		               <span>{{selectedDepartment.departmentManager.name}}</span>
 		           		
 		           </div>
@@ -130,9 +138,9 @@
 			              
 			    </div>
 			    
-			    <div class="row">
+			    <div class="section-header" style="top:50px;z-index:10;">
 			    	<div class="col-xs-7">
-			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span>People</label>
+			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span>  People</label>
 			    	</div>
 			        <div class="col-xs-5">
 			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Cancel" ng-click="cancelDepartmentPeople()">
@@ -140,7 +148,7 @@
 			            <input type="submit" ng-show="!selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Edit" ng-click="editDepartmentPeople()" >
 			        </div>
 			    </div>
-			    <div class="row">
+			    <div class="section-content">
 			    	<div ng-if="selectedDepartment.editDepartmenPeople">
 			    		<div ng-repeat="p in selectedDepartmentPeople" class="available-person">
 			    			<span class="name">{{p.name}}</span>

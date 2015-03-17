@@ -24,6 +24,7 @@ angular.module('Mastermind')
     	setTimeout(function() {
     		deferred.resolve([{name: 'Executives'},
     		                  {name: 'Management'},
+    		                  {name: 'Admin'},
     			{name: 'Digital'},
     		                	  {name: 'Development'},
     				{name: 'Delivery Services'},
@@ -36,25 +37,12 @@ angular.module('Mastermind')
     };
     
     this.loadDepartmentCodes = function(){
-    	var deferred = $q.defer();
+    	//var deferred = $q.defer();
     	
-    	setTimeout(function() {
-    		
-    		var list = [];
-    		
-    		for (var k = 0; k < 9; k ++) {
-    			for (var i = 0; i < 30; i ++) {
-        			var letter = String.fromCharCode(97 + i);
-        			
-        			list.push({name: (k + letter).toUpperCase()});
-        		}
-    		}
-    		
-    		deferred.resolve(list);
-    	}, 100);
+    	return Resources.refresh("departments/available/code");
     	
     	
-    	return deferred.promise;
+    	//return deferred.promise;
     };
     
     this.addDepartment = function(department){
@@ -83,10 +71,10 @@ angular.module('Mastermind')
       /**
        * Update department to the server
        */
-      this.removeDepartment = function(department){
+      this.removeDepartment = function(departmentResource){
     	  var deferred = $q.defer();
     	  
-    	  Resources.remove(department).then(function(result){
+    	  Resources.remove(departmentResource).then(function(result){
     		  deferred.resolve(result);
     	  });
         

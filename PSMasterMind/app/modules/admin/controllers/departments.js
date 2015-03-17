@@ -20,15 +20,39 @@ angular.module('Mastermind')
 	  
 	  $scope.editDepartment = function() {
 		  $scope.selectedDepartment.isEdit = true;
+		  $scope.currentDepartmentCodes = ([]).concat($scope.departmentCodes);
 		  
-	  }
+		  $scope.currentDepartmentCodes.push($scope.selectedDepartment.departmentCode);
+		  
+	  };
+	  
+	  
 	  $scope.cancelDepartment = function () {
-		  $scope.selectedDepartment = {};
+		  //$scope.selectedDepartment = {};
+		 
+		  
+		  $scope.selectedDepartment = $scope.selectedDepartmentOrig;
+		  
 		  $scope.selectedDepartment.isEdit = false;
 		  $scope.selectedDepartment.isNew = false;
 		  $scope.selectedDepartment.isEdit = false;
-		  //Clear New Task Form
-		  $scope.selectedDepartmentForm.$setPristine();
+		  
+		  Resources.refresh("departments/available/people").then( function(result) {
+      		var tmpPerson;
+      		
+      		$scope.availablePeopleList = _.map(result.members, function(p) {
+      			return {
+      				resource: p.resource,
+      				name: Util.getPersonName(p, true)
+      			};
+      			
+      		});
+	        	
+      		//$scope.availablePeopleList.splice(0, $scope.availablePeopleList.length - 7);
+	        		
+	        });
+
+		 // $scope.selectedDepartmentForm.$setPristine();
 	  };
 
 	  $scope.$on("admin:departments", function(event, command) {
@@ -38,8 +62,19 @@ angular.module('Mastermind')
 		  }
 	  });
 	  
+	  $scope.searchDepartments = function(e) {
+		  var tmp = $scope.searchDeptStr;
+		  
+		  if ($scope.searchDeptStr.length >= 2) {
+			  
+		  }
+	  };
+	  
 	  $scope.selectDepartment = function(e, department) {
-		  $scope.selectedDepartment = department;
+		  $scope.selectedDepartment = _.extend({}, department);
+		  
+		  $scope.selectedDepartmentOrig = department;
+		  
 		  $scope.selectedDepartment.isNew = false;
 		  $scope.selectedDepartment.isEdit = false;
 		  $scope.selectedDepartmentPeople = [];
@@ -93,11 +128,15 @@ angular.module('Mastermind')
 		  
 		  $scope.selectedDepartmentPeople.push(p);
 		  
+		  $scope.availablePeopleList = _.filter($scope.availablePeopleList, function(ap) { return ap.resource != p.resource});
+		  
 		  p.added = true;
 	  };
 	  
 	  $scope.removeDepartmentPerson = function(person) {
 		  $scope.selectedDepartmentPeople = _.filter($scope.selectedDepartmentPeople, function(p){ return p.resource != person.resource});
+		  
+		  $scope.availablePeopleList.push(person);
 	  };
 	    /**
 	     * Add a new task to the server
@@ -120,6 +159,14 @@ angular.module('Mastermind')
 	     * Update a new Role to the server
 	     */
 	    $scope.saveDepartment = function(){
+	    	var correctCode = (_.filter($scope.currentDepartmentCodes, function(c) { return c.name == $scope.selectedDepartment.departmentCode.name})).length > 0;
+	    	
+	    	if (!correctCode) {
+	    		//$scope.selectedDepartmentForm.$invalid = true;
+	    		
+	    		return;
+	    	}
+	    		
 	    	if (!$scope.selectedDepartment.isNew)
 		      Resources.update($scope.selectedDepartment).then(function(){
 		        $scope.loadDepartments().then(function(result){
@@ -142,13 +189,29 @@ angular.module('Mastermind')
 			          
 		    		});
 		    	});
+	    	
+	    	
+	    	Resources.refresh("departments/available/people").then( function(result) {
+        		var tmpPerson;
+        		
+        		$scope.availablePeopleList = _.map(result.members, function(p) {
+        			return {
+        				resource: p.resource,
+        				name: Util.getPersonName(p, true)
+        			};
+        			
+        		});
+ 	        	
+        		//$scope.availablePeopleList.splice(0, $scope.availablePeopleList.length - 7);
+ 	        		
+ 	        });
 	    };
 
 	    /**
 	     * Delete a task
 	     */
 	    $scope.deleteDepartment = function () {
-	      DepartmentsService.removeDepartment($scope.selectedDepartment).then(function(){
+	      return DepartmentsService.removeDepartment($scope.selectedDepartment.resource).then(function(){
 	        $scope.loadDepartments();
 	      });
 	    };
@@ -186,7 +249,7 @@ angular.module('Mastermind')
 	    	
 	    	if ($scope.availablePeopleList.length == 0)
 	    		//PeopleService.getAllActivePeople().then(function(result) {
-	    		Resources.refresh("departments/available/people", function(result) {
+	    		Resources.refresh("departments/available/people").then( function(result) {
 	        		var tmpPerson;
 	        		
 	        		$scope.availablePeopleList = _.map(result.members, function(p) {
@@ -203,7 +266,7 @@ angular.module('Mastermind')
 	    	
 	    	if ($scope.departmentCodes.length == 0)
 	    		DepartmentsService.loadDepartmentCodes().then(function(res) {
-	    			$scope.departmentCodes = res;
+	    			$scope.departmentCodes = _.isArray(res) ? res: res.members;
 	    		});
 	    		
 	    	if ($scope.departmentCategories.length == 0)
