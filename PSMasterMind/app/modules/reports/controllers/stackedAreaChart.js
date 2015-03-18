@@ -158,12 +158,12 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
 
         areaSeries.getTooltipText = function(e)
         {
-            return [e.aggField[0], "Hours: " + e.y, "Date: " + d3.time.format("%B %_d, %Y")(e.x)];
+            return [e.aggField[0], , "\xA0", e.y + " hours", "\xA0", d3.time.format("%B %_d, %Y")(e.x)];
         };
 
         lineSeries.getTooltipText = function (e)
         {
-            return [e.aggField[0] + ": " + e.y + " hours"];
+            return [e.aggField[0], "\xA0", e.y + " hours"];
         };
 
         legend.series = [areaSeries];
