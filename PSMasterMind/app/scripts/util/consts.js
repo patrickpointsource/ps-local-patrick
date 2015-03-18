@@ -44,6 +44,10 @@ var CONSTS = {
     DELETE_NOTIFICATIONS: "deleteNotifications", 
     EXECUTE_UPGRADE: "executeUpgrade",
     VIEW_SECURITY_ROLES: "viewSecurityRoles",
-    EDIT_SECURITY_ROLES: "editSecurityRoles"
-        
+    EDIT_SECURITY_ROLES: "editSecurityRoles",
+    VIEW_MY_ROLE_TITLE: "viewMyRoleTitle",
+    VIEW_MY_SECONDARY_ROLE: "viewMySecondaryRole",
+    VIEW_OTHERS_ROLE_TITLE: "viewOthersRoleTitle",
+    VIEW_OTHERS_SECONDARY_ROLE: 'viewOthersSecondaryRole',
+    EDIT_ROLES_TITLES: 'editRolesTitles'
 };

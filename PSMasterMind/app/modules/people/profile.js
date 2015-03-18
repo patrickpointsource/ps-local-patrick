@@ -197,7 +197,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		$scope.profile = person;
 		$scope.managers = [ ];
 
-		$scope.isManager = $scope.executivesAccess || $scope.hasManagementRights;
+		$scope.isManager = $scope.executivesAccess || $scope.hasManagementRights || $scope.adminAccess;
 		var params = {};
 		params.group = "Managers";
 		Resources.refresh("people/bytypes/byGroups", params).then(
@@ -975,6 +975,30 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	$scope.canViewSecurityRoles = function() {
 		return $rootScope.hasPermissions(CONSTS.VIEW_SECURITY_ROLES);
 	};
+
+    $scope.canViewMyRolesTitles = function() {
+        return $rootScope.hasPermissions(CONSTS.VIEW_MY_ROLE_TITLE) && $scope.isMe;
+    };
+
+    $scope.canViewMySecondaryRoles = function() {
+        return $rootScope.hasPermissions(CONSTS.VIEW_MY_SECONDARY_ROLE) && $scope.isMe;
+    };
+
+    $scope.canViewOthersRolesTitles = function() {
+        return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_ROLE_TITLE) && !$scope.isMe;
+    };
+
+    $scope.canViewOthersSecondaryRoles = function() {
+        return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_SECONDARY_ROLE) && !$scope.isMe;
+    };
+
+    $scope.canEditRolesTitles = function() {
+        return $rootScope.hasPermissions(CONSTS.EDIT_ROLES_TITLES);
+    };
+
+    $scope.isMe = function() {
+        return $scope.profileId == $scope.me._id;
+    };
 
 	///////////Profile Hours/////////
 	$scope.newHoursRecord = {};

@@ -45,7 +45,12 @@ var securityResources = {
         	viewPersonnelData : 'viewPersonnelData',
         	editPersonnelData : 'editPersonnelData',
         	viewGroups : 'viewGroups',
-        	editGroups : 'editGroups'
+            editGroups : 'editGroups',
+            viewMyRoleTitle: 'viewMyRoleTitle',
+            viewMySecondaryRole: 'viewMySecondaryRole',
+            viewOthersRoleTitle: 'viewOthersRoleTitle',
+            viewOthersSecondaryRole: 'viewOthersSecondaryRole',
+            editRolesTitles: 'editRolesTitles'
         } 
     },
     projects :{
@@ -58,7 +63,7 @@ var securityResources = {
         	viewProjectLinks : 'viewProjectLinks',
         	editProjectLinks : 'editProjectLinks',
         	viewRoles : 'viewRoles',
-        	editRoles : 'editRoles'
+            editRoles : 'editRoles'
         }         
     },
     skills :{

@@ -662,7 +662,9 @@ var minionResouresMap = [
         "viewProfile",
         "viewMyProfile",
         "editMyProfile",
-        "viewPersonnelData"
+        "viewPersonnelData",
+        "viewMyRoleTitle",
+        "viewMySecondaryRole"
       ]
     },
     {
@@ -749,7 +751,12 @@ var fullResourcesMap = [
         "viewPersonnelData",
         "editPersonnelData",
         "viewGroups",
-        "editGroups"
+        "editGroups",
+        "viewMyRoleTitle",
+        "viewMySecondaryRole",
+        "viewOthersRoleTitle",
+        "viewOthersSecondaryRole",
+        "editRolesTitles"
       ]
     },
     {
