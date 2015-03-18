@@ -42,6 +42,15 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
         {
             return [ e.aggField[0] + ": " + e.p + " (" + Math.round(e.piePct * 100) + "%)" ];
         };
+
+        chart.defaultColors = [
+            new dimple.color("#0071BC"),
+            new dimple.color("#29ABE2"),
+            new dimple.color("#9AD1E5"),
+            new dimple.color("#E5E5E5"),
+            new dimple.color("#9F9F9F")
+        ];
+
         chart.setBounds(padding, padding, legendBoxWidth - padding, height - padding * 2);
         chart.draw();
 
