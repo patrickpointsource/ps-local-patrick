@@ -22,9 +22,10 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         var ceilKey = $scope.ceilKey || "Capacity Ceilling as of todays date";
         var data = $scope.chartData;
         var chartData = [];
+
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Original logic left intact
         var keyChartTypeMapping = $scope.keyChartTypeMapping ? $scope.keyChartTypeMapping : {};
 
-        // Original logic left intact -----------------------------------------
         for (var i = 0; i < data.length; i++)
         {
             if (!keyChartTypeMapping[data[i].key])
@@ -52,12 +53,12 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
             if (i > 0)
                 allValuesLengthSame = allValuesLengthSame && prevLength == data[i].values.length;
 
-            //data[i].values.sort(function(v1, v2){
+            //data[i].values.sort(function (v1, v2)
+            //{
             //    if (v1.x > v2.x)
-            //  	  return 1;
+            //        return 1;
             //    else
-            //  	  return -1;
-
+            //        return -1;
             //});
         }
 
@@ -87,7 +88,7 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
                 j--;
             }
         }
-        // end ----------------------------------------------------------------
+        // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         for (var i = 0, count = data.length; i < count; i++)
         {
@@ -115,7 +116,7 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
             }
         }
 
-        var calcMax = function()
+        var calcMax = function ()
         {
             var ceil = 0;
             var max = 0;
@@ -149,12 +150,32 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         y2Axis.overrideMin = y1Axis.overrideMin = 0;
         y2Axis.hidden = true;
 
+        xAxis.title = "Months";
+        y1Axis.title = "Hours";
+
         var areaSeries = chart.addSeries("key", dimple.plot.area, [xAxis, y1Axis]);
-        var linSeries = chart.addSeries("key2", dimple.plot.line, [xAxis, y2Axis]);
+        var lineSeries = chart.addSeries("key2", dimple.plot.line, [xAxis, y2Axis]);
 
-        legend.series = [ areaSeries ];
+        areaSeries.getTooltipText = function(e)
+        {
+            return [e.aggField[0], "Hours: " + e.y, "Date: " + d3.time.format("%B %_d, %Y")(e.x)];
+        };
 
-        chart.defaultColors = [new dimple.color("#ed1e79"), new dimple.color("#8cc63f"), new dimple.color("#1b1464"), new dimple.color("#ff0000")];
+        lineSeries.getTooltipText = function (e)
+        {
+            return [e.aggField[0] + ": " + e.y + " hours"];
+        };
+
+        legend.series = [areaSeries];
+
+        chart.defaultColors = [
+            new dimple.color("#8CC63F"),
+            new dimple.color("#1B1464"),
+            new dimple.color("#ED1E79"),
+            new dimple.color("#FF0000"),
+            new dimple.color("#FF0000"),
+            new dimple.color("#FF0000")
+        ];
 
         chart.setBounds(50, 15, width - 100, height - legendBoxHeight - gap - 15 - 30);
         chart.draw();
