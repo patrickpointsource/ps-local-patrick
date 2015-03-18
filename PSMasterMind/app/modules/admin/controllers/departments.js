@@ -66,8 +66,11 @@ angular.module('Mastermind')
 		  var tmp = $scope.searchDeptStr;
 		  
 		  if ($scope.searchDeptStr.length >= 2) {
-			  
-		  }
+			  DepartmentsService.searchDepartments($scope.searchDeptStr).then(function(result) {
+				  $scope.availableDepartments = result;
+			  });
+		  } else if ($scope.searchDeptStr.length == 0)
+			  $scope.loadDepartments();
 	  };
 	  
 	  $scope.selectDepartment = function(e, department) {
