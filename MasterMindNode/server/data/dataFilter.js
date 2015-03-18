@@ -925,24 +925,24 @@ var filterDepartmentsBy = function(code, manager, nickname, substr, departments)
 		var result = true;
 		
 		if (code && d.departmentCode.name.toLowerCase().indexOf(code.toLowerCase()) > -1)
-			result = true
-		else
+			result = true;
+		else if (code)
 			result = false;
 		
 		if (result && manager && d.departmentManager.name.toLowerCase().indexOf(manager.toLowerCase()) > -1)
-			result = true
-		else
+			result = true;
+		else if (manager)
 			result = false;
 		
 		if (result && nickname && d.departmentNickname.toLowerCase().indexOf(nickname.toLowerCase()) > -1)
-			result = true
-		else
+			result = true;
+		else if (nickname)
 			result = false;
 		
 		if (result && substr && (d.departmentNickname.toLowerCase().indexOf(substr.toLowerCase()) > -1 
 				|| d.departmentManager.name.toLowerCase().indexOf(substr.toLowerCase()) > -1 || d.departmentCode.name.toLowerCase().indexOf(substr.toLowerCase())) > -1)
-			result = true
-		else
+			result = true;
+		else if (substr)
 			result = false;
 		
 		

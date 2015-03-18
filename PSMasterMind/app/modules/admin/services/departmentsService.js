@@ -18,6 +18,17 @@ angular.module('Mastermind')
     	return deferred.promise;
     };
     
+    this.searchDepartments = function(substr){
+    	var deferred = $q.defer();
+
+    	Resources.refresh('departments/search', {substr: substr}).then(function(result){
+    		
+    		deferred.resolve(result.members);
+    	});
+    	
+    	return deferred.promise;
+    };
+    
     this.loadDepartmentCategories = function(){
     	var deferred = $q.defer();
     	
@@ -25,11 +36,11 @@ angular.module('Mastermind')
     		deferred.resolve([{name: 'Executives'},
     		                  {name: 'Management'},
     		                  {name: 'Admin'},
-    			{name: 'Digital'},
-    		                	  {name: 'Development'},
-    				{name: 'Delivery Services'},
-    		                		  {name: 'Sales'},
-    					{name: 'Other'}]);
+    		                  {name: 'Digital'}, 
+    		                  {name: 'Development'},
+    		                  {name: 'Delivery Services'},
+    		                  {name: 'Sales'},
+    		                  {name: 'Other'}]);
     	}, 100);
     	
     	
