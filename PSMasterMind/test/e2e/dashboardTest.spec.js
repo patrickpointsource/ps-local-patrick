@@ -10,6 +10,7 @@ describe('E2E: Dashboard Test Cases >', function() {
 	var HOURS_ABSURD_VALUE = 50;
 	var HOURS_NULL_VALUE = 0;
 	var HOURS_DESCRIPTION = "Hours Widget: E2E Testing";
+	var HOURS_PROJECTTEST_DESCRIPTION = "Record for the Project E2E testing";
 	
 	//login
 	var sbutton = by.tagName('button');
@@ -79,6 +80,11 @@ describe('E2E: Dashboard Test Cases >', function() {
 		});
 	});
 	
+	it('Hours Widget Test: Add Value for the Project Tests.', function() {	
+		console.log('> Hours Widget Test: Add Value for the Project Tests.');
+		dashboardHoursWidgetAddValueToProjectTest();
+	});
+	
 	it('Hours Widget Test: Add\Remove project.', function() {	
 		console.log('> Running: Hours Widget - Add\Remove project.');
 		dashboardHoursWidgetAddRemoveRecordTest();
@@ -139,6 +145,18 @@ describe('E2E: Dashboard Test Cases >', function() {
 		dashboardPeopleShowPeopleByRoleTest();
     });
 	
+	var dashboardHoursWidgetAddValueToProjectTest = function ( ) {
+		browser.wait(function(){	    		
+    		return browser.isElementPresent(byId(loggedProjectInput));
+    	}).then(function() {
+    		findRecordByProjectName().then(function(res) {
+    			console.log('> Record found.');
+    			if (!res[0]) {
+    				addNewHoursRecord(HOURS_VALUE, ACTIVE_PROJECT_NAME, HOURS_PROJECTTEST_DESCRIPTION);
+    			}
+    		});    
+    	});
+	};
 	
 	var dashboardHoursWidgetAddRemoveRecordTest = function ( isTask ) {
 		browser.wait(function(){	    		
@@ -398,77 +416,88 @@ describe('E2E: Dashboard Test Cases >', function() {
 	    	});
 	};
 	
-	var addNewHoursRecord = function (hours, projectName) {
+	var addNewHoursRecord = function (hours, hoursTitle, description) {
 		console.log("> Adding hours record.");
 		var projectInput = browser.findElement(byId(loggedProjectInput));
 		var hoursInput = browser.findElement(byId(loggedHoursInput));
 		var descriptionInput = browser.findElement(byId(loggedDescriptionInput));
-		projectInput.clear().then( function () { projectInput.sendKeys(projectName ? projectName : ACTIVE_PROJECT_NAME); } );
+		projectInput.clear().then( function () { projectInput.sendKeys(hoursTitle ? hoursTitle : ACTIVE_PROJECT_NAME); } );
 		browser.wait(function(){	    		
     		return browser.isElementPresent(byId(ddlProjectsTasks));
     	}).then(function(){
     		browser.findElement(byId(ddlProjectsTasks)).click();
     		hoursInput.clear().then( function () { hoursInput.sendKeys(hours); });
-    		descriptionInput.clear().then( function () { descriptionInput.sendKeys(HOURS_DESCRIPTION); });
+    		descriptionInput.clear().then( function () { descriptionInput.sendKeys(description ? description : HOURS_DESCRIPTION); });
     		browser.findElement(byId(hoursAdd)).click();
     		browser.sleep(5000);
     	});
 	};
+	
+	var findRecordByProjectName = function (projectName) {
+         var records = element.all(by.repeater('hourEntry in selected.hoursEntries'));
+         return records.filter(function (elem) {
+             return elem.getText().then(function (text) {
+                 return text.indexOf(projectName) > -1;
+             });
+         });
+     };
 	
 	var byId = function (id, index) {
 		return index ? by.id(id + index) : by.id(id + '0');
 	};
 	
 	var login = function () {
-		browser.driver.ignoreSynchronization = true;
-	    browser.driver.get('http://localhost:9000');
+    	browser.driver.ignoreSynchronization = true;
+	    browser.driver.get('http://localhost:9000/login.html');
+	    
+	    var width = 1900;
+	    var height = 1200;
+	    browser.driver.manage().window().setSize(width, height);
 	    
 	    browser.driver.wait(function() {	    	
 	    	return browser.driver.isElementPresent(sbutton);
-	    	
 	    }).then(function(){
 		    // expect the signin button to be present
 	    	// expect(browser.driver.isElementPresent(sbutton)).toBeTruthy();
 		    console.log('login button is available. Clicking it');
 	    	// find the signin button and click it
-		    browser.driver.findElement(sbutton).click();		    
-
+		    browser.driver.findElement(sbutton).click();	
+		    
+		    // expect the popup window to open and check that its url contains accounts.google.com
+		    browser.driver.getAllWindowHandles().then(function (handles) {		    	
+		    	browser.driver.switchTo().window(handles[1]).then(function(){
+		    		console.log("> Swicthed window control to the popup.");
+		    	});
+		    	
+		    	expect(browser.driver.getCurrentUrl()).toContain('https://accounts.google.com/ServiceLogin?');
+		    	
+		    	browser.driver.wait(function(){	    		
+		    		return browser.driver.isElementPresent(logonEmail);
+		    	}).then(function(){
+		    		console.log("> Input fields found. Populating and submitting");
+		    		browser.driver.findElement(logonEmail).sendKeys(USER_NAME);
+		    		browser.driver.findElement(logonPswd).sendKeys(PASSWORD);
+		    		browser.driver.findElement(signIn).click();	   
+		    		browser.driver.sleep(2000);	
+		    		
+		    		// At this moment the accept window might be closed. 
+		    		// So, check the total amount of windows again. If it is more than one,
+		    		// goahead and click the accept button, otherwise do nothing.
+		    		browser.driver.getAllWindowHandles().then(function (handles) {
+		    			
+		    			if(handles.length > 1){
+		    	    		browser.driver.findElement(submit_approve_access).click();    		    			
+		    			}   			
+		    			
+		    		});
+		    		
+		    		// back to the main window
+					browser.driver.switchTo().window(handles[0]);
+		    		browser.driver.sleep(5000);	    		
+		    	});
+		    	
+		    });
 	    }); 
-
-	    // expect the popup window to open and check that its url contains accounts.google.com
-	    browser.driver.getAllWindowHandles().then(function (handles) {		    	
-	    	browser.driver.switchTo().window(handles[1]).then(function(){
-	    		console.log("> Swicthed window control to the popup.");
-	    	});
-	    	
-	    	expect(browser.driver.getCurrentUrl()).toContain('https://accounts.google.com/ServiceLogin?');
-	    	
-	    	browser.driver.wait(function(){	    		
-	    		return browser.driver.isElementPresent(logonEmail);
-	    	}).then(function(){
-	    		console.log("> Input fields found. Populating and submitting");
-	    		browser.driver.findElement(logonEmail).sendKeys(USER_NAME);
-	    		browser.driver.findElement(logonPswd).sendKeys(PASSWORD);
-	    		browser.driver.findElement(signIn).click();	   
-	    		browser.driver.sleep(2000);	
-	    		
-	    		// At this moment the accept window might be closed. 
-	    		// So, check the total amount of windows again. If it is more than one,
-	    		// goahead and click the accept button, otherwise do nothing.
-	    		browser.driver.getAllWindowHandles().then(function (handles) {
-	    			
-	    			if(handles.length > 1){
-	    	    		browser.driver.findElement(submit_approve_access).click();    		    			
-	    			}   			
-	    			
-	    		});
-	    		
-	    		// back to the main window
-				browser.driver.switchTo().window(handles[0]);
-	    		browser.driver.sleep(5000);	    		
-	    	});
-	    	
-	    });
-	};
+    };
 	
 });
