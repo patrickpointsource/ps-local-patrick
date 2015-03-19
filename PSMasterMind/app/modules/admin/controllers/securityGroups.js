@@ -17,7 +17,7 @@ angular.module('Mastermind')
 	            $scope.selectedGroup = $scope.securityGroups[0];
 	          }
 	          var params = { t: ( new Date( ) ).getMilliseconds( ) };
-	          params.fields = ["_id", "resource", "userId", "roles"];
+	          params.fields = ["_id", "_rev", "resource", "userId", "roles"];
 	          Resources.get('userRoles', params ).then(function(userRoles) {
 	            $scope.userRoles = userRoles.members;
 	            var fields = {_id : 1, name : 1, googleId : 1, mBox : 1, resource : 1 };
@@ -148,8 +148,8 @@ angular.module('Mastermind')
       viewReports: "View reports",
       viewMyRoleTitle: "View My Primary Role & Job Title",
       viewMySecondaryRole: "View My Secondary Role",
-      viewOthersRoleTitle: "View Other’s Primary Role & Job Title",
-      viewOthersSecondaryRole: "View Other’s Secondary Role",
+      viewOthersRoleTitle: "View Otherï¿½s Primary Role & Job Title",
+      viewOthersSecondaryRole: "View Otherï¿½s Secondary Role",
       editRolesTitles: ""
     };
     
