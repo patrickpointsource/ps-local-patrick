@@ -17,8 +17,8 @@ module.exports.listDepartments = function(callback) {
     });
 };
 
-module.exports.listAvailablePeople = function(callback) {
-	 dataAccess.listDepartmentsAvailablePeople( function(err, body){
+module.exports.listAvailablePeople = function(substr, callback) {
+	 dataAccess.listDepartmentsAvailablePeople(substr, function(err, body){
         if (err) {
             console.log(err);
             callback('error loading departments', null);
@@ -32,7 +32,7 @@ module.exports.listAvailablePeople = function(callback) {
 module.exports.listAvailableCode = function(callback) {
 	var list = [];
 	
-	for (var k = 0; k < 9; k ++) {
+	for (var k = 1; k <= 9; k ++) {
 		for (var i = 0; i < 30; i ++) {
 			var letter = String.fromCharCode(97 + i);
 			
@@ -40,7 +40,7 @@ module.exports.listAvailableCode = function(callback) {
 		}
 	}
 	
-	 dataAccess.listDepartments( function(err, body){
+	dataAccess.listDepartments( function(err, body){
        if (!err) {
            var usedCodes = _.map(body.members, function(c) { return c.departmentCode.name; });
            
@@ -50,7 +50,7 @@ module.exports.listAvailableCode = function(callback) {
            
            callback(null, {members: list});
        }
-   });  
+	});  
 };
 
 module.exports.filterDepartments = function(code, manager, nickname, substr, callback) {
@@ -66,25 +66,56 @@ module.exports.filterDepartments = function(code, manager, nickname, substr, cal
 };
 
 module.exports.insertDepartment = function(obj, callback) {
-    dataAccess.insertItem(obj._id, obj, dataAccess.DEPARTMENTS_KEY, function(err, body){
-        if (err) {
-            console.log(err);
-            callback('error inserting department:' + JSON.stringify(err), null);
-        } else {
-            callback(null, body);
-        }
-    });
+	
+	dataAccess.listDepartments( function(err, body){
+	       if (!err) {
+	           var usedNicknames = _.map(body.members, function(c) { return c.departmentNickname; });
+	           
+	          if ( (_.filter(usedNicknames, function(item) { return obj.departmentNickname == item;})).length > 0 ) {
+	        	  obj.result = false;
+	        	  obj.wrongField = 'departmentNickname';
+	        	  
+	        	  callback("Duplicate nickname", obj);
+	          } else
+	        	  dataAccess.insertItem(obj._id, obj, dataAccess.DEPARTMENTS_KEY, function(err, body){
+	        	        if (err) {
+	        	            console.log(err);
+	        	            callback('error inserting department:' + JSON.stringify(err), null);
+	        	        } else {
+	        	            callback(null, body);
+	        	        }
+	        	    });
+	           
+	       }
+	});  
+	
+    
 };
 
 module.exports.updateDepartment = function(id, obj, callback) {
-    dataAccess.updateItem(id, obj, dataAccess.DEPARTMENTS_KEY, function(err, body){
-        if (err) {
-            console.log(err);
-            callback('error update department:' + JSON.stringify(err), null);
-        } else {
-            callback(null, _.extend(obj, body));
-        }
-    });
+	dataAccess.listDepartments( function(err, body){
+	       if (!err) {
+	           var usedNicknames = _.map(body.members, function(c) { return c.departmentNickname; });
+	           
+	          if ((_.filter(usedNicknames, function(item) { return obj.departmentNickname == item;})).length > 0) {
+	        	  obj.result = false;
+	        	  obj.wrongField = 'departmentNickname';
+	        	  
+	        	  callback("Duplicate nickname", obj);
+	          } else
+	        	  dataAccess.updateItem(id, obj, dataAccess.DEPARTMENTS_KEY, function(err, body){
+	        	        if (err) {
+	        	            console.log(err);
+	        	            callback('error update department:' + JSON.stringify(err), null);
+	        	        } else {
+	        	            callback(null, _.extend(obj, body));
+	        	        }
+	        	    });
+	           
+	       }
+		});  
+	
+    
 };
 
 module.exports.deleteDepartment = function(id, obj, callback) {

@@ -27,8 +27,9 @@ router.get( '/', util.isAuthenticated, function( req, res ) {
 router.get( '/available/people', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.departments.resourceName, securityResources.departments.permissions.viewDepartments, function( allowed ) {
 		if( allowed ) {
+			var substr = req.query[ "substr" ] ? req.query[ "substr" ] : "";
 			// Call to projects service
-			departments.listAvailablePeople( function( err, result ) {
+			departments.listAvailablePeople( substr, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {

@@ -23,7 +23,7 @@ var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
 var REPORT_FAVORITES_KEY = 'ReportFavorites';
 var JOB_TITLE_KEY = "JobTitle";
-var DEPARTMENTS_KEY = 'Departments';
+var DEPARTMENTS_KEY = 'Department';
 
 /*
  * 
@@ -1406,7 +1406,7 @@ var filterDepartments = function(code, manager, nickname, substr, callback) {
 	}
 };
 
-var listDepartmentsAvailablePeople = function(callback) {
+var listDepartmentsAvailablePeople = function(substr, callback) {
 	listDepartments( function(err, body){
         if (err) {
             console.log(err);
@@ -1422,10 +1422,10 @@ var listDepartmentsAvailablePeople = function(callback) {
         	listPeopleByIsActiveFlag(true, null, function(err, result){
 		        if(!err){
 		        	var availablePeople = _.filter(result.members, function(p) {
-		        		return (_.filter(assignedPeople, function(ap){ return ap == p.resource})).length == 0
+		        		return (_.filter(assignedPeople, function(ap){ return ap.replace('departments/people') == p.resource.replace('people/')})).length == 0;
 		        	});
 		        	
-		        	callback(null, prepareRecords( availablePeople, "members", "departments/people" ) );
+		        	callback(null, prepareRecords( dataFilter.filterPeopleBySubstr(substr, availablePeople), "members", "people/" ) );
 		        }            
 		    });
         	

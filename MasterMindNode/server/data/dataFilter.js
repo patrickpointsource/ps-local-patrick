@@ -99,6 +99,22 @@ var filterPeopleByNames = function(names, people) {
 };
 
 /**
+ * Returns people filtered by names with substr
+ * 
+ * @param {Object} names
+ * @param {Object} people
+ */
+
+var filterPeopleBySubstr = function(substr, people) {
+	
+	return _.filter(people, function(p) {
+		var name = _.isObject(p.name) ? (p.name.givenName + p.name.familyName): p.name;
+		
+		return name.toLowerCase().indexOf(substr.toLowerCase()) > -1;
+	});
+};
+
+/**
  * Returns people by isActive flag
  * 
  * @param {Object} people
@@ -960,6 +976,7 @@ module.exports.filterPeopleByGroups = filterPeopleByGroups;
 module.exports.filterPeopleByGoogleIds = filterPeopleByGoogleIds;
 module.exports.filterPeopleByNames = filterPeopleByNames;
 module.exports.filterPeopleByManager = filterPeopleByManager;
+module.exports.filterPeopleBySubstr = filterPeopleBySubstr;
 
 // projects filter functions
 module.exports.filterProjectsByIds = filterProjectsByIds;

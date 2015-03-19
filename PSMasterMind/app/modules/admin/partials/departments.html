@@ -1,27 +1,31 @@
 <div class="departments-container" ng-controller="DepartmentsCtrl">
 	<div class="row">
 		<div class="col-md-4">
-			<div class="section-header">
-				<label>Department</label>
-				<div>Search or a select a department to see details</div>
-				
-				<div class="input-group search-department-control">
-			        <input type="text" class="form-control" ng-model="searchDeptStr" placeholder="Search a manager, nickname or code" ng-change="searchDepartments($event)">
-			        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+			<div class="row section-header">
+				<div class="col-xs-12">
+					<label>Department</label>
+					<div>Search or a select a department to see details</div>
+					
+					<div class="input-group search-department-control">
+				        <input type="text" class="form-control" ng-model="searchDeptStr" placeholder="Search a manager, nickname or code" ng-change="searchDepartments($event)">
+				        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+				   </div>
 			   </div>
 			</div>
-			<div class="section-content">
-				<div ng-repeat="dep in availableDepartments" class="department-entry" ng-click="selectDepartment($event, dep)">
-					<span class="code">{{dep.departmentCode.name}}</span>
-					<span class="manager">{{dep.departmentManager.name}}</span>
-					<span class="nickname">{{dep.departmentNickname}}</span>
+			<div class="row section-content">
+				<div class="col-xs-12">
+					<div ng-repeat="dep in availableDepartments" class="department-entry" ng-click="selectDepartment($event, dep)">
+						<span class="code">{{dep.departmentCode.name}}</span>
+						<span class="manager">{{dep.departmentManager.name}}</span>
+						<span class="nickname">{{dep.departmentNickname}}</span>
+					</div>
 				</div>
 			</div>
 			
 		</div>
 		<div class="col-md-4">
-			
-			
+			<!-- Edit form
+				!-->
 			<div ng-form="selectedDepartmentForm" class="department-edit-container" ng-if="selectedDepartment.isNew || selectedDepartment._id && selectedDepartment.isEdit">
 			    <div class="section-header row">
 			    	<div class="col-xs-7">
@@ -46,7 +50,7 @@
 		               	<select name="deptCategory" class="form-control pull-right" 
 								ng-model="selectedDepartment.departmentCategory"
 								ng-required="true"
-								ng-options="p as p.name for p in departmentCategories | filter:{name:$viewValue}">
+								ng-options="p.name for p in departmentCategories track by p.value">
 							</select>
 					
 		           </div>
@@ -68,11 +72,11 @@
 			    
 			    <div class="section-header row">
 			    	<div class="col-xs-7">
-			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span>People</label>
+			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span>  People</label>
 			    	</div>
 			        <div class="col-xs-5">
-			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Cancel" ng-click="cancelDepartmentPeople()">
-			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Save" ng-click="saveDepartmentPeople()" >
+			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Cancel" ng-click="cancelDepartmentPeople()">
+			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" style="margin-right:4px;" value="Save" ng-click="saveDepartmentPeople()" >
 			            <input type="submit" ng-show="!selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Edit" ng-click="editDepartmentPeople()" >
 			        </div>
 			    </div>
@@ -99,7 +103,9 @@
 			    </div>
 			</div>
 			
-			
+			<!-- 
+				View form
+			!-->
 			<div ng-form="selectedDepartmentForm" class="department-edit-container" ng-if="selectedDepartment._id && !selectedDepartment.isEdit">
 			    <div class="row section-header">
 			    	<div class="col-xs-7">
@@ -145,25 +151,27 @@
 			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span>  People</label>
 			    	</div>
 			        <div class="col-xs-5">
-			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Cancel" ng-click="cancelDepartmentPeople()">
-			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Save" ng-click="saveDepartmentPeople()" >
+			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Cancel" ng-click="cancelDepartmentPeople()">
+			            <input type="submit" ng-show="selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" style="margin-right:4px;" value="Save" ng-click="saveDepartmentPeople()" >
 			            <input type="submit" ng-show="!selectedDepartment.editDepartmenPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Edit" ng-click="editDepartmentPeople()" >
 			        </div>
 			    </div>
 			    <div class="row section-content">
-			    	<div ng-if="selectedDepartment.editDepartmenPeople">
-			    		<div ng-repeat="p in selectedDepartmentPeople" class="available-person">
-			    			<span class="name">{{p.name}}</span>
-								<span class="add pull-right" ng-click="removeDepartmentPerson(p)">
-									<i class="fa fa-times"></i>
-								</span>
-		    			</div>
-			    	</div>
-			    	
-			    	<div ng-if="!selectedDepartment.editDepartmenPeople">
-			    		<div ng-repeat="p in selectedDepartmentPeople">
-			    			{{p.name}}
+			    	<div class="col-xs-12">
+				    	<div ng-if="selectedDepartment.editDepartmenPeople">
+				    		<div ng-repeat="p in selectedDepartmentPeople" class="available-person">
+				    			<span class="name">{{p.name}}</span>
+									<span class="add pull-right" ng-click="removeDepartmentPerson(p)">
+										<i class="fa fa-times"></i>
+									</span>
 			    			</div>
+				    	</div>
+			    	
+				    	<div ng-if="!selectedDepartment.editDepartmenPeople">
+				    		<div ng-repeat="p in selectedDepartmentPeople">
+				    			{{p.name}}
+				    			</div>
+				    	</div>
 			    	</div>
 			    </div>
 			</div>
@@ -172,30 +180,34 @@
 			
 		</div>
 		<div class="col-md-4">
-			<div class="section-header"> 
-				<label>Available people</label>
-				<div ng-if="!selectedDepartment.editDepartmenPeople">These people are not assigned to any department</div>
-				<div ng-if="selectedDepartment.editDepartmenPeople">
-					<div class="input-group search-department-control">
-				        <input type="text" class="form-control" ng-model="searchAvaialbleStr" placeholder="Enter an employee name" ng-change="searchAvailablePeople($event)">
-				        <span class="input-group-addon"><i class="fa fa-search"></i></span>
-				   </div>
+			<div class="row section-header"> 
+				<div class="col-xs-12">
+					<label>Available people</label>
+					<div ng-if="!selectedDepartment.editDepartmenPeople">These people are not assigned to any department</div>
+					<div ng-if="selectedDepartment.editDepartmenPeople">
+						<div class="input-group search-department-control">
+					        <input type="text" class="form-control" ng-model="searchAvaialbleStr" placeholder="Enter an employee name" ng-change="searchAvailablePeople($event, this)">
+					        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+					   </div>
+					</div>
 				</div>
 			</div>
-			<div class="section-content">
-				<div ng-if="!selectedDepartment.editDepartmenPeople">
-					<div  ng-repeat="p in availablePeopleList | limitTo:7">{{p.name}}</div>
-					<div>etc.</div>
-				</div>
-				
-				<div ng-if="selectedDepartment.editDepartmenPeople">
-					<div  ng-repeat="p in availablePeopleList | limitTo:15" class="available-person">
-						<span class="name">{{p.name}}</span>
-						<span class="add pull-right" ng-click="addDepartmentPerson(p)">
-							<i class="fa fa-plus"></i>
-						</span>
+			<div class="row section-content">
+				<div class="col-xs-12">
+					<div ng-if="!selectedDepartment.editDepartmenPeople">
+						<div  ng-repeat="p in availablePeopleList | limitTo:7">{{p.name}}</div>
+						<div>etc.</div>
 					</div>
 					
+					<div ng-if="selectedDepartment.editDepartmenPeople">
+						<div  ng-repeat="p in availablePeopleList | limitTo:15" class="available-person">
+							<span class="name">{{p.name}}</span>
+							<span class="add pull-right" ng-click="addDepartmentPerson(p)">
+								<i class="fa fa-plus"></i>
+							</span>
+						</div>
+						<div ng-show="availablePeopleList.length > 15">etc.</div>
+					</div>
 				</div>
 				
 			</div>
