@@ -202,7 +202,7 @@ module.exports.initialize = function(isReinitialization) {
 						  targetUsers =  targetUserIds[ extractedRoles[0][k] ];
 						  
 						  // starts iterating from end of hierarchy from most simple roles and assign to users apropriate access roles
-						  for (var j = extractedRoles.length - 1; j >= 0; j --) {
+						  for (var j = extractedRoles.length - 1; targetUsers && j >= 0; j --) {
 							  for (var t = 0; t < targetUsers.length; t ++)
 								  addUserRoleToMap(targetUsers[t], extractedRoles[j], isReinitialization);
 								  
@@ -212,8 +212,7 @@ module.exports.initialize = function(isReinitialization) {
 					  }	 
 				  }
 	  
-          	  	}
-               
+          	  	}               
                 
               }
             
