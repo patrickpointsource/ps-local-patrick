@@ -148,8 +148,8 @@ angular.module('Mastermind')
       viewReports: "View reports",
       viewMyRoleTitle: "View My Primary Role & Job Title",
       viewMySecondaryRole: "View My Secondary Role",
-      viewOthersRoleTitle: "View Other�s Primary Role & Job Title",
-      viewOthersSecondaryRole: "View Other�s Secondary Role",
+      viewOthersRoleTitle: "View Other's Primary Role & Job Title",
+      viewOthersSecondaryRole: "View Other's Secondary Role",
       editRolesTitles: ""
     };
     
