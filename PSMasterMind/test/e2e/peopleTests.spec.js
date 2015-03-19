@@ -16,6 +16,7 @@ describe("E2E: People test cases.", function () {
     	createUrl: "/index.html#/people?filter=all",
     	all: 'all',
     	administration: 'administration',
+    	development: 'development',
     	clientexpierencemgmt: 'clientexpierencemgmt',
     	inactive: 'inactive'
     };
@@ -105,6 +106,16 @@ describe("E2E: People test cases.", function () {
     it('Check people utilization values.', function () {
     	checkPeopleUtilization(PeoplePath.administration, PeopleList.administration);
     });
+    
+	it('Set IsActive to false and check Inactive people list.', function() {	
+		console.log('> Running: Set IsActive to false and check Inactive people list.');
+		editIsActiveProperty(false);
+	}, 60000);
+	
+	it('Set IsActive to true and check All people list.', function() {	
+		console.log('> Running: Set IsActive to false and check All people list.');
+		editIsActiveProperty(true);
+	}, 60000);
     
  	var checkDefaultPeopleListing = function () {
  		var peoplePage = new PeoplePage();
@@ -202,6 +213,42 @@ describe("E2E: People test cases.", function () {
     		checkProfileUtilization(peopleList[0]);
     	});
     };
+    
+    var editIsActiveProperty = function (isActive) {
+    	var editButton = by.css('[ng-click="edit()"]');
+    	var saveButton = by.css('[ng-click="save()"]');
+    	
+    	var peoplePage = new PeoplePage(!isActive ? PeoplePath.development : PeoplePath.inactive);
+    	peoplePage.get();
+    	var checkProfileIsActiveFlag = function (profileLine) {
+    		var profile = profileLine.all(by.tagName('a')).get(1);
+    		profile.getText().then(function (profileName){
+    			profile.click();
+       			browser.wait(function(){	    		
+       		    	return browser.isElementPresent(editButton);
+       		    }).then(function(){
+       		    	var isActiveCbx = isActive ? element(by.css('[btn-radio="\'true\'"]')) : element(by.css('[btn-radio="\'false\'"]'));
+       		    	browser.findElement(editButton).click().then(function () {
+       		    		console.log('> Set IsActive to ' + isActive);
+       		    		isActiveCbx.click();
+       		    		browser.findElement(saveButton).click().then(function () {
+       		    			browser.sleep(3000);
+       		    			console.log("> Check people list.");
+       		    			peoplePage = new PeoplePage(isActive ? PeoplePath.development : PeoplePath.inactive);
+       	   		    	    peoplePage.get();
+       	   		    	    peoplePage.findPerson(profileName).then(function (res) {
+       		    				expect(res[0]).toBeDefined();
+       		    			});
+       		    		});
+       		    	});
+       		    });
+    		});
+    	};
+    	
+    	peoplePage.people.then(function(peopleList) {
+    		checkProfileIsActiveFlag(peopleList[0]);
+    	});
+	}; 	
 
     var PeoplePage = function ( filterPath ) {
     	if ( filterPath ) {

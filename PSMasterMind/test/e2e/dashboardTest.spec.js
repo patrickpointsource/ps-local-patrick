@@ -10,7 +10,6 @@ describe('E2E: Dashboard Test Cases >', function() {
 	var HOURS_ABSURD_VALUE = 50;
 	var HOURS_NULL_VALUE = 0;
 	var HOURS_DESCRIPTION = "Hours Widget: E2E Testing";
-	var HOURS_PROJECTTEST_DESCRIPTION = "Record for the Project E2E testing";
 	
 	//login
 	var sbutton = by.tagName('button');
@@ -80,11 +79,6 @@ describe('E2E: Dashboard Test Cases >', function() {
 		});
 	});
 	
-	it('Hours Widget Test: Add Value for the Project Tests.', function() {	
-		console.log('> Hours Widget Test: Add Value for the Project Tests.');
-		dashboardHoursWidgetAddValueToProjectTest();
-	});
-	
 	it('Hours Widget Test: Add\Remove project.', function() {	
 		console.log('> Running: Hours Widget - Add\Remove project.');
 		dashboardHoursWidgetAddRemoveRecordTest();
@@ -144,19 +138,6 @@ describe('E2E: Dashboard Test Cases >', function() {
 		console.log('> Running: People - Show people by role.');
 		dashboardPeopleShowPeopleByRoleTest();
     });
-	
-	var dashboardHoursWidgetAddValueToProjectTest = function ( ) {
-		browser.wait(function(){	    		
-    		return browser.isElementPresent(byId(loggedProjectInput));
-    	}).then(function() {
-    		findRecordByProjectName().then(function(res) {
-    			console.log('> Record found.');
-    			if (!res[0]) {
-    				addNewHoursRecord(HOURS_VALUE, ACTIVE_PROJECT_NAME, HOURS_PROJECTTEST_DESCRIPTION);
-    			}
-    		});    
-    	});
-	};
 	
 	var dashboardHoursWidgetAddRemoveRecordTest = function ( isTask ) {
 		browser.wait(function(){	    		
@@ -432,15 +413,6 @@ describe('E2E: Dashboard Test Cases >', function() {
     		browser.sleep(5000);
     	});
 	};
-	
-	var findRecordByProjectName = function (projectName) {
-         var records = element.all(by.repeater('hourEntry in selected.hoursEntries'));
-         return records.filter(function (elem) {
-             return elem.getText().then(function (text) {
-                 return text.indexOf(projectName) > -1;
-             });
-         });
-     };
 	
 	var byId = function (id, index) {
 		return index ? by.id(id + index) : by.id(id + '0');

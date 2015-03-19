@@ -17,6 +17,7 @@ describe("E2E: Project test cases.", function () {
     var INVEST_PROJECT_NAME = "E2E Investment Project";
     var TEST_PROJECT_NAME = "E2E Test Project";
     var HOURS_WIDGET_PROJECT_NAME = "E2E Hours widget - Active Project";
+    var HOURS_PROJECTTEST_DESCRIPTION = "Record for the Project E2E testing";
     
     var SEARCH_TEST = {
     		Project: "MasterMind",
@@ -73,6 +74,11 @@ describe("E2E: Project test cases.", function () {
         });
     });
     
+    it('Add Hours for the active project to tests.', function() {	
+		console.log('> Add Hours for the active project to tests.');
+		dashboardHoursWidgetAddValueToProjectTest();
+	});
+    
  	it('Test Projects sorting', function () {
  		checkProjectsSorting();
  	});
@@ -98,7 +104,7 @@ describe("E2E: Project test cases.", function () {
     
     it('Should create active project.', function () {
         createProject(fillActiveProjectPageFields);
-    }, 60000);
+    }, 120000);
     
     it('Check that Services Estimate field is readonly for the created active project.', function () {
     	selectProject(ACTIVE_PROJECT_NAME, projectsPath.active, checkServicesEstimateField);
@@ -106,47 +112,47 @@ describe("E2E: Project test cases.", function () {
     
     it('Select and remove active project.', function () {
     	selectProject(ACTIVE_PROJECT_NAME, projectsPath.active, removeProject);
-    }, 60000);
+    }, 120000);
 
     it('Should create backlog project.', function () {
         createProject(fillBacklogProjectPageFields);
-    }, 60000);
+    }, 120000);
     
     it('Select and remove backlog project.', function () {
     	selectProject(BACKLOG_PROJECT_NAME, projectsPath.backlog, removeProject);
-    }, 60000);
+    }, 120000);
 
     it('Should create pipeline project.', function () {
         createProject(fillPipelineProjectPageFields);
-    }, 60000);
+    }, 120000);
     
     it('Select and remove pipeline project.', function () {
     	selectProject(PIPELINE_PROJECT_NAME, projectsPath.pipeline, removeProject);
-    }, 60000);
+    }, 120000);
 
     it('Should create completed project.', function () {
         createProject(fillCompletedProjectPageFields);
-    }, 60000);
+    }, 120000);
     
     it('Select and remove completed project.', function () {
     	selectProject(COMPLETED_PROJECT_NAME, projectsPath.completed, removeProject);
-    }, 60000);
+    }, 120000);
 
     it('Should create investment project.', function () {
         createProject(fillInvestmentProjectPageFields);
-    }, 60000);
+    }, 120000);
     
     it('Select and remove investment project.', function () {
     	selectProject(INVEST_PROJECT_NAME, projectsPath.investment, removeProject);
-    }, 60000);
+    }, 120000);
     
     it('Should create project with 3 roles.', function () {
     	createProject(fill3RolesPageFields, []);
-    }, 60000);
+    }, 120000);
     
     it('Select and remove project with 3 roles.', function () {
     	selectProject(TEST_PROJECT_NAME, projectsPath.all, removeProject);
-    }, 60000);
+    }, 120000);
     
     it('Cancel project creation: should redirect to the projects list.', function () {
     	cancelProjectCreation();
@@ -159,11 +165,33 @@ describe("E2E: Project test cases.", function () {
     it('Should verify mandatory fields for project.', function () {
     	createProject(fillBrokenProjectPageFields, []);
     });
-      
+    
+    var dashboardHoursWidgetAddValueToProjectTest = function ( ) {
+    	var loggedProjectInput = by.id('loggedProjectInput0');
+    	var findHoursRecordByProjectName = function (projectName) {
+             var records = element.all(by.repeater('hourEntry in selected.hoursEntries'));
+             return records.filter(function (elem) {
+                 return elem.getText().then(function (text) {
+                     return text.indexOf(projectName) > -1;
+                 });
+             });
+        };
+         
+    	browser.get(browser.baseUrl);
+		browser.wait(function(){	    		
+    		return browser.isElementPresent(loggedProjectInput);
+    	}).then(function() {
+    		findHoursRecordByProjectName(HOURS_WIDGET_PROJECT_NAME).then(function(res) {
+    			if (!res[0]) {
+    				addNewHoursRecord(8, HOURS_WIDGET_PROJECT_NAME, HOURS_PROJECTTEST_DESCRIPTION);
+    			}
+    		});    
+    	});
+	};
 
     var checkProjectsSorting = function ( ) {
     	var checkSorting = function (projects, validationRow, isASC) {
-    		console.log("> Check sorting");
+    		console.log("> Check sorting by " + validationRow);
     		projects.then( function (projects) {
         		 var firstProj = projects[0].element(by.binding(validationRow));
         		 var lastProj = projects[projects.length - 1].element(by.binding(validationRow));
@@ -182,11 +210,12 @@ describe("E2E: Project test cases.", function () {
             return browser.isElementPresent(projectsPage.addProjectButton);
         }).then(function () {
         	
-        	var sortBy = function(sortField, validationRow) {
-        		sortField.click();
+        	var sortBy = function(sortField, validationRow, reverse) {
+        		sortField.click(); //set active sort field.
+        		sortField.click(); //sort by ASC
             	checkSorting(projectsPage.projects, validationRow, true);
             	browser.sleep(1000);
-            	sortField.click();
+            	sortField.click(); //sort by DESC
                 checkSorting(projectsPage.projects, validationRow, false);
                 browser.sleep(1000);
         	};
@@ -194,10 +223,7 @@ describe("E2E: Project test cases.", function () {
         	projectsPage.sortByProject.click();
         	sortBy(projectsPage.sortByProject, projectsPage.sortRow.project);
         	sortBy(projectsPage.sortByClient, projectsPage.sortRow.client);
-        	sortBy(projectsPage.sortByStartDate, projectsPage.sortRow.startDate);
-        	projectsPage.sortByProject.click();
-        	sortBy(projectsPage.sortByStatus, projectsPage.sortRow.project);
-     
+        	sortBy(projectsPage.sortByStartDate, projectsPage.sortRow.startDate);     
         });
     };
     
@@ -274,6 +300,9 @@ describe("E2E: Project test cases.", function () {
             } else {
             	browser.sleep(1000);
            	 	expect(newProjectPage.errorMsgs).toBeDefined();
+           	 	browser.executeScript('window.scrollTo(0,0);').then(function () {
+           	 		newProjectPage.cancelButton.click();
+           	 	});
             }
             
         });
@@ -621,6 +650,25 @@ describe("E2E: Project test cases.", function () {
         this.saveDialogNo = element(by.css('[ng-click="modalDialog.noHandler()"]'));
         this.saveDialogCancel = element(by.css('[ng-click="modalDialog.cancelHandler()"]'));
     };
+    
+    var addNewHoursRecord = function (hours, hoursTitle, description) {
+    	var hoursAdd =  by.id('hoursAdd0');
+    	var loggedProjectInput = by.id('loggedProjectInput0');
+    	var loggedHoursInput = by.id('loggedHoursInput0');
+    	var loggedDescriptionInput = by.id('loggedDescriptionInput0');
+    	var ddlProjectsTasks = by.id('ddlProjectsTasks0');
+    	
+		element(loggedProjectInput).sendKeys(hoursTitle ? hoursTitle : HOURS_PROJECTTEST_DESCRIPTION);
+		browser.wait(function(){	    		
+    		return browser.isElementPresent(ddlProjectsTasks);
+    	}).then(function(){
+    		element(ddlProjectsTasks).click();
+    		element(loggedHoursInput).sendKeys(hours);
+    		element(loggedDescriptionInput).sendKeys(description ? description : HOURS_PROJECTTEST_DESCRIPTION);
+    		element(hoursAdd).click();
+    		browser.sleep(3000);
+    	});
+	};
     
     var login = function () {
     	browser.driver.ignoreSynchronization = true;

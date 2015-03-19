@@ -9,9 +9,16 @@ describe('E2E: Profile Tests', function() {
     var USER_FULLNAME = 'apps, ps';
     var CSV_FILENAME = 'ps apps.csv';
     
-	var HOURS_PROJECT = "MasterMind";
+	var HOURS_PROJECT = "E2E Hours widget - Active Project";
+	var HOURS_TASK = "E2E Hours widget - Task";
 	var HOURS_VALUE = 8;
 	var HOURS_DESCRIPTION = "Profile hours Widget: E2E Testing";
+	
+	var PeoplePath = {
+	    	url: "/index.html#/people?filter=",
+	    	all: 'all',
+	    	inactive: 'inactive'
+	};
 	
 	var FROM_DATE_STRING = "2015-01-01";
 	var TO_DATE_STRING = "2015-02-01";
@@ -46,6 +53,7 @@ describe('E2E: Profile Tests', function() {
 		
 	var ddlProjectsTasks = 'ddlProjectsTasks';
 	var loggedProject = 'loggedProject';
+	var loggedTask = 'loggedTask';
 	var loggedHours = 'loggedHours';
 	var loggedDescription = 'loggedDescription';
 	var loggedProjectInput = 'loggedProjectInput';
@@ -75,11 +83,12 @@ describe('E2E: Profile Tests', function() {
 	var PRIMARY_USER_GROUPS_TEST = 'PM';
 	var PART_TIME_HOURS_TEST = '25';
 	
-	var profilePrimaryRoleLabel = by.css('[ng-if="profile.primaryRole"]');
-	var profilePhoneLabel = by.css('[ng-if="profile.phone"]');
-	var profileSkypeLabel = by.css('[ng-if="profile.skypeId"]');
-	var profileJazzHubLabel = by.css('[ng-if="profile.jazzHubId"]');
-	var partTimeHoursLabel = by.css('[ng-show="profile.partTime"]');
+	var profilePermisson = by.id('permissionGroup');
+	var profilePrimaryRoleLabel = by.binding('{{getRoleName(profile.primaryRole.resource)}}');
+	var profilePhoneLabel = by.binding('{{profile.phone | tel}}');
+	var profileSkypeLabel = by.binding('{{profile.skypeId}}');
+	var profileJazzHubLabel = by.binding('{{profile.jazzHubId}}');
+	var partTimeHoursLabel = by.binding('{{profile.partTimeHours}}');
 
 	var NO_ACTIVE_PROJECTS = 'There are no active projects';
 	
@@ -112,11 +121,6 @@ describe('E2E: Profile Tests', function() {
 		addHoursTest();
 	});
 	
-	it('Profile Test: Add hours in monthly view.', function() {	
-		console.log('> Running: Profile - Add hours in monthly view.');
-		addHoursInMonthlyViewTest();
-	});
-	
 	it('Profile Test: Display hours and check export.', function() {	
 		console.log('> Running: Profile - Display hours and check export.');
 		displayHoursAndCheckExportTest();
@@ -125,7 +129,25 @@ describe('E2E: Profile Tests', function() {
 	it('Profile Test: Edit profile.', function() {	
 		console.log('> Running: Profile - Edit profile.');
 		editProfileTest();
-	});
+	}, 60000);
+	
+	it('Profile Test: Edit profile permission group.', function() {	
+		console.log('> Running: Profile - Edit profile permission group.');
+		console.log('> Add permission group.');
+		editProfilePermissonsTest();
+		console.log('> Remoe permission group.');
+		editProfilePermissonsTest();
+	}, 60000);
+	
+	it('Profile Test: Add project hours in monthly view.', function() {	
+		console.log('> Running: Profile - Add project hours in monthly view.');
+		addHoursInMonthlyViewTest();
+	}, 60000);
+	
+	it('Profile Test: Add task hours in monthly view.', function() {	
+		console.log('> Running: Profile - Add task hours in monthly view.');
+		addHoursInMonthlyViewTest(true);
+	}, 60000);
 
 	
 	var checkAssignmentsTest = function () {
@@ -155,7 +177,7 @@ describe('E2E: Profile Tests', function() {
 		collection[index].isDisplayed().then(function (isVisible) {
 			callback(isVisible, index);
 		});
-	}
+	};
 	
 	var addHoursTest = function () {
 		console.log("> Add hours in profile (weekly mode).");
@@ -172,42 +194,46 @@ describe('E2E: Profile Tests', function() {
 		 		browser.sleep(1000);
    			});
 		});
-	}; 
+	}; 	
 	
-	
-	
-	
-	var addHoursInMonthlyViewTest = function () {
+	var addHoursInMonthlyViewTest = function (isTask) {
+		var hoursTitle = !isTask ? HOURS_PROJECT : HOURS_TASK;
 		console.log("> Add hours in profile (monthly mode).");
-			browser.findElement(profilePhoto).click().then(function () {
-				browser.findElement(viewProfile).click().then(function () {
-					browser.findElement(monthlyButton).click().then(function () {
-			    		browser.findElements(activeCircle).then(function( dayLinks ) {
-			    			for (var i in dayLinks ) {
-			    				isDisplayed(i, dayLinks, function (isVisible, index) {
-			    					if (isVisible) {
-			    						dayLinks[index].click().then(function () {
-			    							addNewHoursRecord(HOURS_VALUE);
-	   			   					});
-   			    			    } 
-			    				});
-   			    		}
-		   				browser.refresh();
-		   				console.log("> Verifying hours in profile (weekly mode).");
-   						var elementIndex = '1';
-	   					browser.wait(function(){	    		
-	   						return browser.isElementPresent(byId(loggedProject, elementIndex));
-	   					}).then(function(){
-				    		expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(HOURS_PROJECT);
-				    		expect(browser.findElement(byId(loggedHours, elementIndex)).getText()).toEqual(HOURS_VALUE + ' hrs');
-				    		expect(browser.findElement(byId(loggedDescription, elementIndex)).getInnerHtml()).toEqual(HOURS_DESCRIPTION);
-				    		console.log("> Removing hours record (weekly mode).");	
-				    		browser.findElement(byId(hoursDelete, elementIndex)).click();	
-					 		browser.sleep(1000);
-	   					});
-
-			    		});
-					});
+		browser.findElement(profilePhoto).click().then(function () {
+			browser.findElement(viewProfile).click().then(function () {
+				browser.findElement(monthlyButton).click().then(function () {
+			   		browser.findElements(activeCircle).then(function( dayLinks ) {
+			   			for (var i in dayLinks ) {
+			   				isDisplayed(i, dayLinks, function (isVisible, index) {
+			   					if (isVisible) {
+			   						dayLinks[index].click().then(function () {
+			   							addNewHoursRecord(HOURS_VALUE, hoursTitle);
+	   		   					});
+   			   			    } 
+			   				});
+			   			}
+			   			browser.executeScript('window.scrollTo(0,0);').then(function () {
+			   				browser.findElement(weeklyButton).click().then(function () {
+			   					console.log("> Verifying hours in profile (weekly mode).");
+			   					var elementIndex = '1';
+			   					browser.wait(function(){	    		
+			   						return browser.isElementPresent(byId(hoursDelete, elementIndex));
+			   					}).then(function(){
+			   						if (!isTask) {
+			   			    			expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(hoursTitle);
+			   			    		} else {
+			   			    			expect(browser.findElement(byId(loggedTask, elementIndex)).getInnerHtml()).toEqual(hoursTitle);
+			   			    		}
+			   						expect(browser.findElement(byId(loggedHours, elementIndex)).getText()).toEqual(HOURS_VALUE + ' hrs');
+			   						expect(browser.findElement(byId(loggedDescription, elementIndex)).getInnerHtml()).toEqual(HOURS_DESCRIPTION);
+			   						console.log("> Removing hours record (weekly mode).");	
+			   						browser.findElement(byId(hoursDelete, elementIndex)).click();	
+			   						browser.sleep(1000);
+			   					});
+			   				});
+			   			});
+			   		});
+				});
    			});
 		});
 	}; 
@@ -236,52 +262,73 @@ describe('E2E: Profile Tests', function() {
 	    		});
 	     	});
 		});
-	}
+	};
 
-	
 	var editProfileTest = function () {
-			browser.findElement(profilePhoto).click().then(function () {
-   				browser.findElement(viewProfile).click().then(function () {
-   					browser.wait(function(){	    		
-   			    		return browser.isElementPresent(editButton);
-   			    	}).then(function(){
-   			    		browser.findElement(editButton).click().then(function () {
-   			    			
-   			    			browser.findElement(profilePrimaryRole).sendKeys(PRIMARY_ROLE_TEST);
-   			    			var profilePhoneInput = browser.findElement(profilePhone);
-   			    			profilePhoneInput.clear().then( function () { profilePhoneInput.sendKeys(PHONE_TEST); } );
-   			    			var profileSkypeInput = browser.findElement(profileSkype);
-   			    			profileSkypeInput.clear().then( function () { profileSkypeInput.sendKeys(SKYPE_TEST); } );
-   			    			var profileJazzHubInput = browser.findElement(profileJazzHub);
-   			    			profileJazzHubInput.clear().then( function () { profileJazzHubInput.sendKeys(JAZZHUB_TEST); } );
+		browser.refresh();
+		browser.findElement(profilePhoto).click().then(function () {
+   			browser.findElement(viewProfile).click().then(function () {
+   				browser.wait(function(){	    		
+   		    		return browser.isElementPresent(editButton);
+   		    	}).then(function(){
+   		    		browser.findElement(editButton).click().then(function () {
+   		    			
+   		    			browser.findElement(profilePrimaryRole).sendKeys(PRIMARY_ROLE_TEST);
+   			    		var profilePhoneInput = browser.findElement(profilePhone);
+   			    		profilePhoneInput.clear().then( function () { profilePhoneInput.sendKeys(PHONE_TEST); } );
+   			    		var profileSkypeInput = browser.findElement(profileSkype);
+   			    		profileSkypeInput.clear().then( function () { profileSkypeInput.sendKeys(SKYPE_TEST); } );
+   			    		var profileJazzHubInput = browser.findElement(profileJazzHub);
+   			    		profileJazzHubInput.clear().then( function () { profileJazzHubInput.sendKeys(JAZZHUB_TEST); } );
    			    				   			    			
-   			    			if (!browser.findElement(profilePartTime).isSelected()) {
-	   			    			browser.findElement(profilePartTime).click();
-   			    			}
-   			    			
-   			    			var partTimeHoursInput = browser.findElement(partTimeHours);
-   			    			partTimeHoursInput.clear().then( function () { partTimeHoursInput.sendKeys(PART_TIME_HOURS_TEST); } );
+   		    			if (!browser.findElement(profilePartTime).isSelected()) {
+   		    				browser.findElement(profilePartTime).click();
+   		    			}
+   	    			
+   		    			var partTimeHoursInput = browser.findElement(partTimeHours);
+   		    			partTimeHoursInput.clear().then( function () { partTimeHoursInput.sendKeys(PART_TIME_HOURS_TEST); } );
 
-   			    			browser.findElement(saveButton).click().then(function () {
-	    				    	expect(browser.findElement(profilePrimaryRoleLabel).getInnerHtml()).toEqual(PRIMARY_ROLE_LABEL_TEST);
-	    				    	expect(browser.findElement(profilePhoneLabel).getInnerHtml()).toEqual(PHONE_TEST);
-	    				    	expect(browser.findElement(profileSkypeLabel).getInnerHtml()).toEqual(SKYPE_TEST);
-	    				    	expect(browser.findElement(profileJazzHubLabel).getInnerHtml()).toEqual(JAZZHUB_TEST);
-	    				    	expect(browser.findElement(partTimeHoursLabel).getInnerHtml()).toEqual(PART_TIME_HOURS_TEST + 'h/w');
-	    				    	
-	    		    			browser.get('http://localhost:9000/index.html#/people?filter=administration');
-	    			    		browser.wait(function(){	    		
-	    	   			    		return browser.isElementPresent(by.css('.person-name'));
-	    	   			    	}).then(function(){
-		    				    	expect(browser.findElement(by.cssContainingText('.person-name', USER_FULLNAME)).getText()).toEqual(USER_FULLNAME);
-	    	   			    	});
-   			    			});
-   			    		});
-   			    	});
-	   			});
-    		});
+   		    			browser.findElement(saveButton).click().then(function () {
+	   				    	expect(browser.findElement(profilePrimaryRoleLabel).getInnerHtml()).toContain(PRIMARY_ROLE_LABEL_TEST);
+	   				    	expect(browser.findElement(profilePhoneLabel).getInnerHtml()).toContain(PHONE_TEST);
+	   				    	expect(browser.findElement(profileSkypeLabel).getInnerHtml()).toContain(SKYPE_TEST);
+	   				    	expect(browser.findElement(profileJazzHubLabel).getInnerHtml()).toContain(JAZZHUB_TEST);
+	   				    	expect(browser.findElement(partTimeHoursLabel).getInnerHtml()).toContain(PART_TIME_HOURS_TEST);
+	   				    	
+	   		    			browser.get('http://localhost:9000/index.html#/people?filter=administration');
+	   			    		browser.wait(function(){	    		
+	   	   			    		return browser.isElementPresent(by.css('.person-name'));
+	   	   			    	}).then(function(){
+	    				    	expect(browser.findElement(by.cssContainingText('.person-name', USER_FULLNAME)).getText()).toEqual(USER_FULLNAME);
+	   	   			    	});
+   		    			});
+   		    		});
+   		    	});
+	  		});
+    	});
 	}; 
 	
+	var editProfilePermissonsTest = function () {
+		var permissions = element.all(by.repeater("userRole in userSecurityGroups"));
+		browser.refresh();
+		browser.findElement(profilePhoto).click().then(function () {
+   			browser.findElement(viewProfile).click().then(function () {
+   				browser.wait(function(){	    		
+   		    		return browser.isElementPresent(editButton);
+   		    	}).then(function(){
+   		    		var permissionCountBefore = permissions.count();
+   		    		browser.findElement(editButton).click().then(function () {
+   		    			console.log("> Set permission group.");
+   		    			selectDropdownItem(element(profilePermisson));
+   		    			browser.findElement(saveButton).click().then(function () {
+   		    				var permissionCountAfter = permissions.count();
+   		    				expect(permissionCountBefore).not.toEqual(permissionCountAfter);
+   	   		    		});
+   		    		});
+   		    	});
+	  		});
+    	});
+	};
 	
 	var displayHoursAndCheckExportTest = function () {
     	console.log("> Add hours in profile (weekly mode).");
@@ -291,7 +338,7 @@ describe('E2E: Profile Tests', function() {
 		    			browser.findElement(fromDate).sendKeys(FROM_DATE_STRING);
 			   			browser.findElement(toDate).sendKeys(TO_DATE_STRING);
 			    		browser.findElement(applyCustomHoursButton).click().then(function () {
-			   				var entryCount = element.all(by.repeater('hourEntry in selected.hoursEntries')).count()
+			   				var entryCount = element.all(by.repeater('hourEntry in selected.hoursEntries')).count();
 			   				//var csvFile = browser.executeScript('hoursToCSV.generate()');
 			   			});
 		   			});
@@ -299,19 +346,20 @@ describe('E2E: Profile Tests', function() {
 		});
 	}; 
 
-	
-	
-	var addNewHoursRecord = function (hours) {
+	var addNewHoursRecord = function (hours, hoursTitle) {
 		console.log("> Adding hours record.");
-		browser.findElement(byId(loggedProjectInput)).sendKeys(HOURS_PROJECT);
+		var projectInput = browser.findElement(byId(loggedProjectInput));
+		var hoursInput = browser.findElement(byId(loggedHoursInput));
+		var descriptionInput = browser.findElement(byId(loggedDescriptionInput));
+		projectInput.clear().then( function () { projectInput.sendKeys(hoursTitle ? hoursTitle : HOURS_PROJECT); } );
 		browser.wait(function(){	    		
     		return browser.isElementPresent(byId(ddlProjectsTasks));
     	}).then(function(){
     		browser.findElement(byId(ddlProjectsTasks)).click();
-    		browser.findElement(byId(loggedHoursInput)).sendKeys(hours);
-    		browser.findElement(byId(loggedDescriptionInput)).sendKeys(HOURS_DESCRIPTION);
+    		hoursInput.clear().then( function () { hoursInput.sendKeys(hours); });
+    		descriptionInput.clear().then( function () { descriptionInput.sendKeys(HOURS_DESCRIPTION); });
     		browser.findElement(byId(hoursAdd)).click();
-    		browser.sleep(2000);
+    		browser.sleep(5000);
     	});
 	};
 	
@@ -319,56 +367,69 @@ describe('E2E: Profile Tests', function() {
 		return index ? by.id(id + index) : by.id(id + '0');
 	};
 	
+	var selectDropdownItem = function ( ddlArea, optionNum ) {
+		if ( ddlArea ) {
+			ddlArea.element(by.tagName('button')).click();
+			var ddl = ddlArea.element(by.tagName('ul'));
+			ddl.all(by.tagName('li')).then(function(options) {
+				var optionNum = optionNum ? optionNum : options.length - 1;
+				options[optionNum].click();
+			});
+		}
+	};
+	
 	var login = function () {
 		browser.driver.ignoreSynchronization = true;
-	    browser.driver.get('http://localhost:9000');
+	    browser.driver.get('http://localhost:9000/login.html');
+	    
+	    var width = 1900;
+	    var height = 1200;
+	    browser.driver.manage().window().setSize(width, height);
 	    
 	    browser.driver.wait(function() {	    	
 	    	return browser.driver.isElementPresent(sbutton);
-	    	
 	    }).then(function(){
 		    // expect the signin button to be present
 	    	// expect(browser.driver.isElementPresent(sbutton)).toBeTruthy();
 		    console.log('login button is available. Clicking it');
 	    	// find the signin button and click it
-		    browser.driver.findElement(sbutton).click();		    
-
+		    browser.driver.findElement(sbutton).click();	
+		    
+		    // expect the popup window to open and check that its url contains accounts.google.com
+		    browser.driver.getAllWindowHandles().then(function (handles) {		    	
+		    	browser.driver.switchTo().window(handles[1]).then(function(){
+		    		console.log("> Swicthed window control to the popup.");
+		    	});
+		    	
+		    	expect(browser.driver.getCurrentUrl()).toContain('https://accounts.google.com/ServiceLogin?');
+		    	
+		    	browser.driver.wait(function(){	    		
+		    		return browser.driver.isElementPresent(logonEmail);
+		    	}).then(function(){
+		    		console.log("> Input fields found. Populating and submitting");
+		    		browser.driver.findElement(logonEmail).sendKeys(USER_NAME);
+		    		browser.driver.findElement(logonPswd).sendKeys(PASSWORD);
+		    		browser.driver.findElement(signIn).click();	   
+		    		browser.driver.sleep(2000);	
+		    		
+		    		// At this moment the accept window might be closed. 
+		    		// So, check the total amount of windows again. If it is more than one,
+		    		// goahead and click the accept button, otherwise do nothing.
+		    		browser.driver.getAllWindowHandles().then(function (handles) {
+		    			
+		    			if(handles.length > 1){
+		    	    		browser.driver.findElement(submit_approve_access).click();    		    			
+		    			}   			
+		    			
+		    		});
+		    		
+		    		// back to the main window
+					browser.driver.switchTo().window(handles[0]);
+		    		browser.driver.sleep(5000);	    		
+		    	});
+		    	
+		    });
 	    }); 
-
-	    // expect the popup window to open and check that its url contains accounts.google.com
-	    browser.driver.getAllWindowHandles().then(function (handles) {		    	
-	    	browser.driver.switchTo().window(handles[1]).then(function(){
-	    		console.log("> Swicthed window control to the popup.");
-	    	});
-	    	
-	    	expect(browser.driver.getCurrentUrl()).toContain('https://accounts.google.com/ServiceLogin?');
-	    	
-	    	browser.driver.wait(function(){	    		
-	    		return browser.driver.isElementPresent(logonEmail);
-	    	}).then(function(){
-	    		console.log("> Input fields found. Populating and submitting");
-	    		browser.driver.findElement(logonEmail).sendKeys(USER_NAME);
-	    		browser.driver.findElement(logonPswd).sendKeys(PASSWORD);
-	    		browser.driver.findElement(signIn).click();	   
-	    		browser.driver.sleep(2000);	
-	    		
-	    		// At this moment the accept window might be closed. 
-	    		// So, check the total amount of windows again. If it is more than one,
-	    		// goahead and click the accept button, otherwise do nothing.
-	    		browser.driver.getAllWindowHandles().then(function (handles) {
-	    			
-	    			if(handles.length > 1){
-	    	    		browser.driver.findElement(submit_approve_access).click();    		    			
-	    			}   			
-	    			
-	    		});
-	    		
-	    		// back to the main window
-				browser.driver.switchTo().window(handles[0]);
-	    		browser.driver.sleep(5000);	    		
-	    	});
-	    	
-	    });
 	};
 	
 });
