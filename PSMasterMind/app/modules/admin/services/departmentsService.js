@@ -10,7 +10,7 @@ angular.module('Mastermind')
     this.refreshDepartments = function(){
     	var deferred = $q.defer();
 
-    	Resources.refresh('departments').then(function(result){
+    	Resources.refresh('departments', {t: (new Date()).getMilliseconds()}).then(function(result){
     		
     		deferred.resolve(result.members);
     	});
@@ -33,14 +33,14 @@ angular.module('Mastermind')
     	var deferred = $q.defer();
     	
     	setTimeout(function() {
-    		deferred.resolve([{name: 'Executives'},
-    		                  {name: 'Management'},
-    		                  {name: 'Admin'},
-    		                  {name: 'Digital'}, 
-    		                  {name: 'Development'},
-    		                  {name: 'Delivery Services'},
-    		                  {name: 'Sales'},
-    		                  {name: 'Other'}]);
+    		deferred.resolve([{name: 'Executives', value: 'Executives'},
+    		                  {name: 'Management', value: 'Management'},
+    		                  {name: 'Admin', value: 'Admin'},
+    		                  {name: 'Digital', value: 'Digital'}, 
+    		                  {name: 'Development', value: 'Development'},
+    		                  {name: 'Delivery Services', value: 'Delivery Services'},
+    		                  {name: 'Sales', value: 'Sales'},
+    		                  {name: 'Other', value: 'Other'}]);
     	}, 100);
     	
     	
@@ -51,6 +51,15 @@ angular.module('Mastermind')
     	//var deferred = $q.defer();
     	
     	return Resources.refresh("departments/available/code");
+    	
+    	
+    	//return deferred.promise;
+    };
+    
+    this.loadAvailablePeople = function(substr){
+    	//var deferred = $q.defer();
+    	
+    	return Resources.refresh("departments/available/people", {substr: substr});
     	
     	
     	//return deferred.promise;

@@ -30,15 +30,14 @@ angular.module('Mastermind')
 	  $scope.cancelDepartment = function () {
 		  //$scope.selectedDepartment = {};
 		 
-		  
-		  $scope.selectedDepartment = $scope.selectedDepartmentOrig;
+		  if ($scope.selectedDepartmentOrig)
+			  $scope.selectedDepartment = $scope.selectedDepartmentOrig;
 		  
 		  $scope.selectedDepartment.isEdit = false;
 		  $scope.selectedDepartment.isNew = false;
 		  $scope.selectedDepartment.isEdit = false;
 		  
-		  Resources.refresh("departments/available/people").then( function(result) {
-      		var tmpPerson;
+		  DepartmentsService.loadAvailablePeople().then( function(result) {
       		
       		$scope.availablePeopleList = _.map(result.members, function(p) {
       			return {
@@ -47,10 +46,15 @@ angular.module('Mastermind')
       			};
       			
       		});
-	        	
-      		//$scope.availablePeopleList.splice(0, $scope.availablePeopleList.length - 7);
-	        		
-	        });
+	       	
+      		$scope.availablePeopleList.sort(function(p1, p2) {
+      			if (p1.name > p2.name)
+      				return 1;
+      			else if (p1.name < p2.name)
+      				return -1;
+      		});
+      		
+		  });
 
 		 // $scope.selectedDepartmentForm.$setPristine();
 	  };
@@ -58,19 +62,46 @@ angular.module('Mastermind')
 	  $scope.$on("admin:departments", function(event, command) {
 		  if (command == 'create') {
 			  $scope.selectedDepartment = {isNew: true};
+			  $scope.currentDepartmentCodes = ([]).concat($scope.departmentCodes);
 			  $scope.selectedDepartmentPeople = [];
 		  }
 	  });
 	  
 	  $scope.searchDepartments = function(e) {
-		  var tmp = $scope.searchDeptStr;
-		  
 		  if ($scope.searchDeptStr.length >= 2) {
 			  DepartmentsService.searchDepartments($scope.searchDeptStr).then(function(result) {
 				  $scope.availableDepartments = result;
 			  });
 		  } else if ($scope.searchDeptStr.length == 0)
 			  $scope.loadDepartments();
+	  };
+	  
+	  $scope.searchAvailablePeople = function(e, childScope) {
+		  var searchPromise;
+		  $scope.searchAvaialbleStr = childScope.searchAvaialbleStr;
+		  
+		  if ($scope.searchAvaialbleStr && $scope.searchAvaialbleStr.length >= 2) {
+			  searchPromise = DepartmentsService.loadAvailablePeople($scope.searchAvaialbleStr);
+		  } else
+			  searchPromise = DepartmentsService.loadAvailablePeople();
+		  
+		  searchPromise.then(function(result) {
+			  	$scope.availablePeopleList = _.map(result.members, function(p) {
+	      			return {
+	      				resource: p.resource,
+	      				name: Util.getPersonName(p, true)
+	      			};
+	      			
+	      		});
+		       	
+	      		$scope.availablePeopleList.sort(function(p1, p2) {
+	      			if (p1.name > p2.name)
+	      				return 1;
+	      			else if (p1.name < p2.name)
+	      				return -1;
+	      		});
+		  });
+			  
 	  };
 	  
 	  $scope.selectDepartment = function(e, department) {
@@ -84,10 +115,10 @@ angular.module('Mastermind')
 		  var found;
 		  
 		  for (var k = 0; $scope.selectedDepartment.departmentPeople && k < $scope.selectedDepartment.departmentPeople.length; k ++) {
-			  found = _.find($scope.availablePeopleList, function(p){ return p.resource == $scope.selectedDepartment.departmentPeople[k]});
+			  found = _.find($scope.allPeopleList, function(p){ return p.resource == $scope.selectedDepartment.departmentPeople[k]});
 			  $scope.selectedDepartmentPeople.push({
 				  resource: $scope.selectedDepartment.departmentPeople[k],
-				  name: found ? found.name: ''
+				  name: found ? Util.getPersonName(found, true): ''
 			  });
 		  }
 			  
@@ -140,6 +171,13 @@ angular.module('Mastermind')
 		  $scope.selectedDepartmentPeople = _.filter($scope.selectedDepartmentPeople, function(p){ return p.resource != person.resource});
 		  
 		  $scope.availablePeopleList.push(person);
+		  
+		  $scope.availablePeopleList.sort(function(p1, p2) {
+			if (p1.name > p2.name)
+				return 1;
+			else if (p1.name < p2.name)
+				return -1;
+		  });
 	  };
 	    /**
 	     * Add a new task to the server
@@ -171,20 +209,24 @@ angular.module('Mastermind')
 	    	}
 	    		
 	    	if (!$scope.selectedDepartment.isNew)
-		      Resources.update($scope.selectedDepartment).then(function(){
+		      Resources.update($scope.selectedDepartment).then(function(created){
+		    	  $scope.selectedDepartment = created;
+		    	  $scope.selectedDepartment.isEdit = false;
+		    	  $scope.selectedDepartment.isNew = false;
 		        $scope.loadDepartments().then(function(result){
-		          //Reset New Role Object
-		          $scope.selectedDepartment = {};
+		         
+		         
 	
-		          //Clear New Role Form
-		         // $scope.selectedDepartmentForm.$setPristine();
 		        });
 		      });
 	    	else
-	    		DepartmentsService.addDepartment($scope.selectedDepartment).then(function(){
-		    		$scope.loadDepartments().then(function(result){
-			          //Reset New Role Object
-			          $scope.selectedDepartment = {};
+	    		DepartmentsService.addDepartment($scope.selectedDepartment).then(function(updated){
+	    			$scope.selectedDepartment = updated;
+	    			 $scope.selectedDepartment.isEdit = false;
+			    	  $scope.selectedDepartment.isNew = false;
+	    			$scope.loadDepartments().then(function(result){
+			          
+			          
 		
 		
 			          //Clear New Role Form
@@ -206,7 +248,12 @@ angular.module('Mastermind')
         		});
  	        	
         		//$scope.availablePeopleList.splice(0, $scope.availablePeopleList.length - 7);
- 	        		
+        		$scope.availablePeopleList.sort(function(p1, p2) {
+          			if (p1.name > p2.name)
+          				return 1;
+          			else if (p1.name < p2.name)
+          				return -1;
+          		});
  	        });
 	    };
 
@@ -223,6 +270,13 @@ angular.module('Mastermind')
 	    $scope.loadDepartments = function() {
 	    	return DepartmentsService.refreshDepartments().then(function(result) {
 	    		$scope.availableDepartments = result;
+	    		
+	    		for (var k = 0; k < result.length; k ++) {
+	    			if (result[k].departmentPeople)
+		    			result[k].departmentPeople = _.map(result[k].departmentPeople, function(dp) {
+		    				return dp.replace('departments/people', 'people/')
+		    			});
+	    		}
 	    	});
 	    };
 	    
@@ -263,7 +317,12 @@ angular.module('Mastermind')
 	        			
 	        		});
 	 	        	
-	        		//$scope.availablePeopleList.splice(0, $scope.availablePeopleList.length - 7);
+	        		$scope.availablePeopleList.sort(function(p1, p2) {
+	          			if (p1.name > p2.name)
+	          				return 1;
+	          			else if (p1.name < p2.name)
+	          				return -1;
+	          		});
 	 	        		
 	 	        });
 	    	
@@ -277,8 +336,20 @@ angular.module('Mastermind')
 	    			$scope.departmentCategories = res;
 	    		});
 	    	
+	    	if (!$scope.allPeopleList || $scope.allPeopleList.length == 0)
+	    		PeopleService.getAllActivePeople().then(function(result) {
+	    			$scope.allPeopleList = result.members;
+	    		});
+	    	
 	    	DepartmentsService.refreshDepartments().then(function(departments){
 	    		$scope.availableDepartments = departments;
+	    		
+	    		for (var k = 0; k < departments.length; k ++) {
+	    			if (departments[k].departmentPeople)
+	    				departments[k].departmentPeople = _.map(departments[k].departmentPeople, function(dp) {
+		    				return dp.replace('departments/people', 'people/')
+		    			});
+	    		}
 	    	});
 	    };
 
