@@ -9,7 +9,9 @@
 		"etag": {"type": ["string", "number"]},
 		"form": {"enum": ["Tasks"]},
 		"name": {"type": "string"},
-		"created": {"type": "string"}
+		"created": {"type": "string"},
+		"resource": {"type":"string"},
+		"about": {"type":"string"}
 	},
 	"required": ["form", "name"]
 }

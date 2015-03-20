@@ -84,12 +84,11 @@ router.post( '/', auth.isAuthenticated, function( req, res ) {
 
 } );
 
-router.
-delete ( '/', auth.isAuthenticated,
-function( req, res ) {
-
+router.delete ( '/:id', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions.editTasks, function( allowed ) {
 		if( allowed ) {
+			var id = req.params.id;
+			req.body._id = id;
 			tasks.deleteTask( req.body, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
@@ -106,6 +105,23 @@ router.get( '/:id', auth.isAuthenticated, function( req, res ) {
 		if( allowed ) {
 			var id = req.params.id;
 			tasks.getTask( id, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+
+		}
+	} );
+} );
+
+router.put( '/:id', auth.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.tasks.resourceName, securityResources.tasks.permissions.viewTasks, function( allowed ) {
+		if( allowed ) {
+			var id = req.params.id;
+			req.body._id = id;
+			tasks.insertTask( req.body, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
