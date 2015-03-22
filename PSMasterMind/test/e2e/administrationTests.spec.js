@@ -2,7 +2,7 @@
  * @Author Denys Novalenko
  * 
  * */
-describe('E2E: Staffing Tests', function() {	
+describe('E2E: Administration Tests', function() {	
     
 	var USER_NAME = 'psapps@pointsourcellc.com';
     var PASSWORD = 'ps@pp$777';
