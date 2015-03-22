@@ -314,6 +314,7 @@ angular.module('Mastermind')
     if($scope.errors.length == 0) {
       if($scope.creatingGroup) {
         Resources.create('securityroles', $scope.selectedGroup).then(function(result) {
+          $scope.selectedGroup = result;
           $scope.checkForDeletedMembers();
           $scope.checkForAddedMembers();
           $scope.messages.push("Your changes have been saved successfully.");

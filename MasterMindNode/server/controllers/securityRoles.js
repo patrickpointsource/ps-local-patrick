@@ -62,6 +62,10 @@ module.exports.insertSecurityRole = function(obj, callback) {
             console.log(err);
             callback('error loading security roles:' + JSON.stringify(err), null);
         } else {
+        	if (!body.resource) {
+            	body._id = body.id;
+            	body.resource = 'securityroles/' + body._id;
+        	}
             callback(null, body);
         }
     });
