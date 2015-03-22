@@ -26,118 +26,100 @@ describe('E2E: Staffing Tests', function() {
 			}
 		});
 	});
-	
+
+    
 	it('Administration Test: Check Roles page.', function() {	
 		console.log('> Running: Administration - Check Roles page');
-		var rolePage = new RolePage();
 		rolePage.checkRolesPage();
 	});
 
 	it('Administration Test: Check sorting on Roles page.', function() {	
 		console.log('> Running: Administration - Check sorting on Roles page');
-		var rolePage = new RolePage();
 		rolePage.checkSortingOnRolesPage();
 	});
 
 	it('Administration Test: Create new role and verify.', function() {	
 		console.log('> Running: Administration - Create new role and verify');
-		var rolePage = new RolePage();
 		rolePage.createNewRoleAndVerify();
 	});
 
 	it('Administration Test: Edit existing role and verify.', function() {	
 		console.log('> Running: Administration - Edit existing role and verify');
-		var rolePage = new RolePage();
 		rolePage.editExistingRoleAndVerify();
 	});
 		
 	it('Administration Test: Delete role and verify.', function() {	
 		console.log('> Running: Administration - Delete role and verify');
-		var rolePage = new RolePage();
 		rolePage.deleteRoleAndVerify();
 	});
 
 	it('Administration Test: Check Security Groups page.', function() {	
 		console.log('> Running: Administration - Check Security Groups page');
-		var securityGroupPage = new SecurityGroupPage();
 		securityGroupPage.checkSecurityGroupsPage();
 	});
 
 	it('Administration Test: Create new security group and verify.', function() {	
 		console.log('> Running: Administration - Create new security group and verify');
-		var securityGroupPage = new SecurityGroupPage();
 		securityGroupPage.createNewSecurityGroupAndVerify();
 	});
 
 	it('Administration Test: Edit existing security group and verify.', function() {	
 		console.log('> Running: Administration - Edit existing security group and verify');
-		var securityGroupPage = new SecurityGroupPage();
 		securityGroupPage.editExistingSecurityGroupAndVerify();
 	});
 			
 	it('Administration Test: Add members to security group and verify.', function() {	
 		console.log('> Running: Administration - Add members to security group and verify');
-		var securityGroupPage = new SecurityGroupPage();
 		securityGroupPage.addMembersToSecurityGroupAndVerify();
 	});
 		
 	it('Administration Test: Remove members of security group and verify.', function() {	
 		console.log('> Running: Administration - Remove members of security group and verify');
-		var securityGroupPage = new SecurityGroupPage();
 		securityGroupPage.removeMembersInSecurityGroupAndVerify();
 	});
 
 	it('Administration Test: Update permissions in security group and verify.', function() {	
 		console.log('> Running: Administration - Update permissions in security group and verify');
-		var securityGroupPage = new SecurityGroupPage();
 		securityGroupPage.updatePermissionsInSecurityGroupAndVerify();
 	});
 
 	it('Administration Test: Delete permissions in security group and verify.', function() {	
 		console.log('> Running: Administration - Delete permissions in  security group and verify');
-		var securityGroupPage = new SecurityGroupPage();
 		securityGroupPage.deletePermissionsInSecurityGroupAndVerify();
 	});
 
 	it('Administration Test: Delete security group and verify.', function() {	
 		console.log('> Running: Administration - Delete security group and verify');
-		var securityGroupPage = new SecurityGroupPage();
 		securityGroupPage.deleteSecurityGroupAndVerify();
 	});
 		
 	it('Administration Test: Check Tasks page.', function() {	
 		console.log('> Running: Administration - Check Tasks page');
-		var taskPage = new TaskPage();
 		taskPage.checkTasksPage();
 	});
 
 	it('Administration Test: Create new task and verify.', function() {	
 		console.log('> Running: Administration - Create new task and verify');
-		var taskPage = new TaskPage();
 		taskPage.createNewTaskAndVerify();
 	});
 
 	it('Administration Test: Edit existing task and verify.', function() {	
 		console.log('> Running: Administration - Edit existing task and verify');
-		var taskPage = new TaskPage();
 		taskPage.editExistingTaskAndVerify();
 	});
 
 	it('Administration Test: Delete task and verify.', function() {	
 		console.log('> Running: Administration - Delete task and verify');
-		var taskPage = new TaskPage();
 		taskPage.deleteTaskAndVerify();
 	});
 
 	it('Administration Test: Check Configuration page.', function() {	
 		console.log('> Running: Administration - Check Configuration page');
-		var configurationPage = new ConfigurationPage();
 		configurationPage.checkConfigurationPage();
 	});
 
 	it('Administration Test: Update Configuration and verify.', function() {	
 		console.log('> Running: Administration - Update Configuration and verify');
-		var configurationPage = new ConfigurationPage();
 		configurationPage.updateConfigurationAndVerify();
 	});
 
@@ -855,5 +837,10 @@ describe('E2E: Staffing Tests', function() {
 				 
 	}
 	
+    // Pages
+	var rolePage = new RolePage();
+	var securityGroupPage = new SecurityGroupPage();
+	var taskPage = new TaskPage();
+	var configurationPage = new ConfigurationPage();
 
 });
