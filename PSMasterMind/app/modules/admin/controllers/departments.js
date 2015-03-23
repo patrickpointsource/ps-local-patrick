@@ -68,7 +68,7 @@ angular.module('Mastermind')
 	  });
 	  
 	  $scope.searchDepartments = function(e) {
-		  if ($scope.searchDeptStr.length >= 2) {
+		  if ($scope.searchDeptStr.length >= 1) {
 			  DepartmentsService.searchDepartments($scope.searchDeptStr).then(function(result) {
 				  $scope.availableDepartments = result;
 			  });
@@ -80,7 +80,7 @@ angular.module('Mastermind')
 		  var searchPromise;
 		  $scope.searchAvaialbleStr = childScope.searchAvaialbleStr;
 		  
-		  if ($scope.searchAvaialbleStr && $scope.searchAvaialbleStr.length >= 2) {
+		  if ($scope.searchAvaialbleStr && $scope.searchAvaialbleStr.length >= 1) {
 			  searchPromise = DepartmentsService.loadAvailablePeople($scope.searchAvaialbleStr);
 		  } else
 			  searchPromise = DepartmentsService.loadAvailablePeople();
@@ -210,7 +210,7 @@ angular.module('Mastermind')
 	    		
 	    	if (!$scope.selectedDepartment.isNew)
 		      Resources.update($scope.selectedDepartment).then(function(created){
-		    	  $scope.selectedDepartment = created;
+		    	  $scope.selectedDepartment = Util.syncRevProp(created);
 		    	  $scope.selectedDepartment.isEdit = false;
 		    	  $scope.selectedDepartment.isNew = false;
 		        $scope.loadDepartments().then(function(result){
@@ -221,7 +221,7 @@ angular.module('Mastermind')
 		      });
 	    	else
 	    		DepartmentsService.addDepartment($scope.selectedDepartment).then(function(updated){
-	    			$scope.selectedDepartment = updated;
+	    			$scope.selectedDepartment = Util.syncRevProp(updated);
 	    			 $scope.selectedDepartment.isEdit = false;
 			    	  $scope.selectedDepartment.isNew = false;
 	    			$scope.loadDepartments().then(function(result){

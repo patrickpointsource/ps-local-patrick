@@ -95,7 +95,9 @@ module.exports.insertDepartment = function(obj, callback) {
 module.exports.updateDepartment = function(id, obj, callback) {
 	dataAccess.listDepartments( function(err, body){
 	       if (!err) {
-	           var usedNicknames = _.map(body.members, function(c) { return c.departmentNickname; });
+	    	   // remove from departments list current department
+	    	   var depts = _.filter(body.members, function(item) { return obj._id != item._id;});
+	           var usedNicknames = _.map(depts, function(c) { return c.departmentNickname; });
 	           
 	          if ((_.filter(usedNicknames, function(item) { return obj.departmentNickname == item;})).length > 0) {
 	        	  obj.result = false;
