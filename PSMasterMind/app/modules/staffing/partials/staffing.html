@@ -84,9 +84,12 @@
 	                    <span ng-show="unassignedRole.endDate">-<br><small>{{unassignedRole.endDate | date:'shortDate'}}</small></span>
 	                    <span ng-hide="unassignedRole.endDate">- <small>N/A</small></span>
 	                </td>
-	                <td>
-	                    <button class="btn" ng-click="navigateToResourceTab(unassignedRole);">View Candidates</button>
-	                </td>
+				    <td>
+                        <!--ng-click="navigateToResourceTab(unassignedRole);"-->
+				        <a href="{{getResourceFinderUrl(unassignedRole.projectName, unassignedRole.projectResource, unassignedRole.roleId, unassignedRole.role, unassignedRole.startDate, unassignedRole.endDate)}}">
+				            <button class="btn">View Candidates</button>
+				        </a>
+				    </td>
 				</tr>
 			</tbody>
 		</table>
