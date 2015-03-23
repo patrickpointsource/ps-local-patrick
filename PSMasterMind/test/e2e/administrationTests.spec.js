@@ -257,6 +257,7 @@ describe('E2E: Administration Tests', function() {
 		    	    }).then(function(){
 		    	   		browser.findElement($this.addGroupButton).click().then(function () {
 		    	   			$this.updateSecurityGroup(browser, $this.initial);
+		    	   			browser.driver.sleep(1000);	
 		    	   	   		browser.findElement($this.saveButton).click().then(function () {
 		    	   	   			$this.verifySecurityGroup($this.initial);
 		    	   	   		});
@@ -279,6 +280,7 @@ describe('E2E: Administration Tests', function() {
 		    	    	browser.findElement($this.selectGroup).sendKeys($this.initial.name).then( function () {
 		    	    		browser.findElement($this.editButton).click().then(function () {
 		    	    			$this.updateSecurityGroup(browser, $this.updated);
+		    	    			browser.driver.sleep(1000);	
 			    	   	   		browser.findElement($this.saveButton).click().then(function () {
 			    	   	   			$this.verifySecurityGroup($this.updated);
 			    	   	   		});
@@ -304,6 +306,7 @@ describe('E2E: Administration Tests', function() {
 		    	    			// add member to security group
 		    	    			$this.updated.members.push($this.memberToAdd);
 		    	    			$this.updateSecurityGroup(browser, $this.updated);
+		    	    			browser.driver.sleep(1000);	
 			    	   	   		browser.findElement($this.saveButton).click().then(function () {
 			    	   	   			$this.verifySecurityGroup($this.updated);
 			    	   	   		});
@@ -327,13 +330,18 @@ describe('E2E: Administration Tests', function() {
 		    	    	browser.findElement($this.selectGroup).sendKeys($this.updated.name).then( function () {
 		    	    		browser.findElement($this.editButton).click().then(function () {
 		    	    			var nameToRemove = $this.memberToRemove.lastName + ", " + $this.memberToRemove.firstName;
-		    			   		var divElement = browser.findElement(by.cssContainingText('div .security-members-edit', nameToRemove));
-		    			   		divElement.findElement($this.removeGroupMember).click().then(function () {
-		    			   			browser.findElement($this.saveButton).click().then(function () {
-		    		    	    		browser.driver.sleep(3000);	
-		    		    	    		expectByCssToBeAbsent(nameToRemove);
-				    	   	   		});
-		    			   		});
+		    	    			var editElement = by.cssContainingText('div .security-members-edit', nameToRemove);
+		    	    			browser.wait(function(){	    		
+		    		    	    	return browser.isElementPresent(editElement);
+		    		    	    }).then(function(){
+		    		    	    	var divElement = browser.findElement(editElement);
+			    			   		divElement.findElement($this.removeGroupMember).click().then(function () {
+			    			   			browser.findElement($this.saveButton).click().then(function () {
+			    		    	    		browser.driver.sleep(3000);	
+			    		    	    		expectByCssToBeAbsent(nameToRemove);
+					    	   	   		});
+			    			   		});
+		    		    	    });
 			    	   		});	
 		    	    	});
 		    	    });
@@ -385,6 +393,7 @@ describe('E2E: Administration Tests', function() {
 		    	    		browser.findElement($this.editButton).click().then(function () {
 		    	    			browser.findElements(by.cssContainingText('li', $this.permission)).then( function(elements) {
 		    	    				elements[0].findElement($this.checkPermission).click().then( function(){
+				    	    			browser.driver.sleep(1000);	
 				    	    			browser.findElement($this.saveButton).click().then(function() {
 				    		    	    	browser.driver.sleep(1000);	
 				    		    	    	expectByCssToBeAbsent($this.permission);
@@ -722,6 +731,7 @@ describe('E2E: Administration Tests', function() {
 		    			   	}).then(function(){
 		    	    			var formElement = titleElement.findElement(by.xpath('following-sibling::div'));
 		    	    			$this.updateTask(formElement, $this.updated);
+		    	    			browser.driver.sleep(1000);	
 			    	   			formElement.findElement($this.saveTaskButton).click().then(function () {
 			    	   				$this.verifyTask($this.updated);
 			    	   	   		});
