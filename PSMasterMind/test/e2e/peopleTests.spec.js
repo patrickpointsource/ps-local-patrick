@@ -103,10 +103,6 @@ describe("E2E: People test cases.", function () {
     	checkPeopleList(PeoplePath.all, PeopleList.inactive, true);
     });
 
-    it('Check people utilization values.', function () {
-    	checkPeopleUtilization(PeoplePath.administration, PeopleList.administration);
-    });
-    
 	it('Set IsActive to false and check Inactive people list.', function() {	
 		console.log('> Running: Set IsActive to false and check Inactive people list.');
 		editIsActiveProperty(false);
@@ -116,6 +112,11 @@ describe("E2E: People test cases.", function () {
 		console.log('> Running: Set IsActive to false and check All people list.');
 		editIsActiveProperty(true);
 	}, 60000);
+	
+//    it('Check people utilization values.', function () {
+//    	checkPeopleUtilization(PeoplePath.administration, PeopleList.administration);
+//    });
+    
     
  	var checkDefaultPeopleListing = function () {
  		var peoplePage = new PeoplePage();
@@ -203,9 +204,12 @@ describe("E2E: People test cases.", function () {
     	var checkProfileUtilization = function (profile) {
     		profile.all(by.binding(peoplePage.sortRow.utilization)).get(1).getText().then(function(utilizationValue){
     			profile.all(by.tagName('a')).get(0).click();
-    			browser.sleep(3000);
-    			expect(element(by.binding('{{hoursRateFromProjects ? hoursRateFromProjects : 0}}')).getText())
-    				.toEqual(utilizationValue.replace('%', ''));
+    			var hoursRate = element(by.binding('{{hoursRateFromProjects ? hoursRateFromProjects : 0}}'));
+    			return browser.wait(function () {
+                    return browser.isElementPresent(hoursRate);
+                }).then(function () {
+                	expect(hoursRate.getText()).toEqual(utilizationValue.replace('%', ''));
+                });    			
     		});
     	};
     	

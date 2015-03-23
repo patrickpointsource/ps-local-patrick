@@ -620,19 +620,31 @@ describe("E2E: Project test cases.", function () {
         this.servicesEstimated = element(by.id("servicesEstimatedValue"));
         this.projectCommited = element(by.model('project.committed'));
         this.execSponsorSelect = function (number) {
-            element(by.model('project.executiveSponsor.resource')).all(by.tagName('option'))
-            	.then(function (options) {
+        	browser.wait(function () {
+                return browser.isElementPresent(element(by.model('project.executiveSponsor.resource')));
+            }).then(function () {
+            	element(by.model('project.executiveSponsor.resource')).all(by.tagName('option'))
+            		.then(function (options) {
                         options[number].click();
-                });
+            		});
+            });
         };
         //this.rolesTab = element(by.id('roles'));
         this.triggerAddRoleButton = element(by.css('[ng-click="triggerAddRole()"]'));
         this.roleSelect = function (name) {
-            element(by.cssContainingText('option', name)).click();
+        	browser.wait(function () {
+                return browser.isElementPresent(element(by.cssContainingText('option', name)));
+            }).then(function () {
+            	element(by.cssContainingText('option', name)).click();
+            });
         };
         // 0 - PAID, 1 - POC, 2 - INVEST
         this.selectType = function (index) {
-            return element(by.css(".project-edit-buttons")).all(by.tagName("label")).get(index).click();
+        	return browser.wait(function () {
+                return browser.isElementPresent(element(by.css(".project-edit-buttons")));
+            }).then(function () {
+            	return element(by.css(".project-edit-buttons")).all(by.tagName("label")).get(index).click();
+            });
         };
         this.roleStartDate = element(by.model('newRole.startDate'));
         this.hoursPerMonth = element(by.model('newRole.rate.hoursPerMth'));
