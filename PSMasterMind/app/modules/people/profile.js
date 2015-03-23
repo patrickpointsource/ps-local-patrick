@@ -30,6 +30,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	Resources.get( 'roles' ).then( function( result ) {
 		var members = result.members;
 		$scope.allRoles = members;
+        
 		var rolesMap = {};
 		for( var i = 0; i < members.length; i++ ) {
 			rolesMap[ members[ i ].resource ] = members[ i ];
@@ -76,6 +77,18 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             ret = $scope.titlesMap[resource].title;
         }
         return ret;
+    };
+
+    $scope.filterSecondaryRoles = function(role) {
+            return role.resource !== profile.primaryRole.resource;     
+    };
+
+    $scope.isPrimaryRole = function (role) {
+        if ($scope.profile && $scope.profile.primaryRole) {
+            return role.resource == $scope.profile.primaryRole.resource;
+        } else {
+            return false;
+        }
     };
 
 	/**
@@ -190,12 +203,43 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
     	}
     };
 
+    $scope.setSecondaryRoles = function(isRefresh) {
+        $scope.secondaryRoles = _.filter($scope.allRoles, function(role) {
+            if ($scope.profile && $scope.profile.primaryRole && $scope.profile.primaryRole.resource == role.resource) {
+                return false;
+            }
+
+            return true;
+        });
+
+        if (isRefresh) {
+            $scope.profile.secondaryRoles = _.filter($scope.profile.secondaryRoles, function (secondaryRole) {
+                if ($scope.profile && $scope.profile.primaryRole && $scope.profile.primaryRole.resource == secondaryRole.resource) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            setTimeout(function () {
+                $(".select-secondary-roles").selectpicker('refresh');
+            }, 10);
+        }
+    };
+
+    $scope.primaryRoleChanged = function() {
+        var isRefresh = true;
+        $scope.setSecondaryRoles(isRefresh);
+    };
+
 	/**
 	 * Populate the form with fetch profile information
 	 */
 	$scope.setProfile = function( person ) {
 		$scope.profile = person;
 		$scope.managers = [ ];
+
+	    $scope.setSecondaryRoles();
 
 		$scope.isManager = $scope.executivesAccess || $scope.hasManagementRights || $scope.adminAccess;
 		var params = {};
@@ -310,6 +354,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 			$scope.editMode = true;
 			$(".select-user-groups").selectpicker();
 			$(".select-secondary-roles").selectpicker();
+			$(".select-secondary-roles").selectpicker('refresh');
 		} );
 	};
 

@@ -4,7 +4,7 @@ angular.module( 'Mastermind' ).controller( 'ResourceFinderCtrl', [ '$scope', '$s
 function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentService, ProjectsService ) {
 
 	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
-	var ROLE_NOTSELECTED = "Select a role or group";
+	var ROLE_NOTSELECTED = "Select a role";
 	var $parent_changeSort = $scope.$parent.changeSort;
 
 	$scope.showTableView = true;
@@ -221,43 +221,8 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 		$scope.allRoles = members;
 		var rolesMap = {};
 		for( var i = 0; i < members.length; i++ ) {
-			$scope.allRoles[ i ].category = "Roles";
 			rolesMap[ members[ i ].resource ] = members[ i ];
 		}
-
-		$scope.allRoles.push( {
-			title: "Administration",
-			resource: "Administration",
-			category: "Groups"
-		}, {
-			title: "Client Experience Mgmt",
-			resource: "Client Experience Mgmt",
-			category: "Groups"
-		}, {
-			title: "Development",
-			resource: "Development",
-			category: "Groups"
-		}, {
-			title: "Architects",
-			resource: "Architects",
-			category: "Groups"
-		}, {
-			title: "Marketing",
-			resource: "Marketing",
-			category: "Groups"
-		}, {
-			title: "Digital Experience",
-			resource: "Digital Experience",
-			category: "Groups"
-		}, {
-			title: "Executive Mgmt",
-			resource: "Executive Mgmt",
-			category: "Groups"
-		}, {
-			title: "Sales",
-			resource: "Sales",
-			category: "Groups"
-		} );
 
 		// sorting roles by title
 		$scope.allRoles.sort( function( a, b ) {
@@ -303,8 +268,19 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 
 				endDate = new Date( Date.parse( endDate ) );
 
-				if( !person.primaryRole || role && role != person.primaryRole.resource && ( !person.group || role != person.group ) )
-					return false;
+				if (!person.primaryRole || role && role != person.primaryRole.resource) {
+				    if (!person.secondaryRoles) {
+				        return false;
+				    } else {
+				    	var secondaryRoles = _.map(person.secondaryRoles, function(sRole) {
+				            return sRole.resource;
+				        });
+
+				        if (secondaryRoles.indexOf(role) < 0) {
+				            return false;
+				        }
+				    }
+				}
 
 				if( assignments == null ) {
 					person.availabilityDate = startDate;
@@ -351,6 +327,57 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 				return false;
 		};
 	};
+
+    $scope.isPrimaryRole = function(person, roleToCompare) {
+        return person && person.primaryRole && person.primaryRole.resource == roleToCompare;
+    };
+
+    $scope.isSecondaryRole = function (person, roleToCompare) {
+        if (person && person.secondaryRoles) {
+            var secondaryRoles = _.map(person.secondaryRoles, function (sRole) {
+                return sRole.resource;
+            });
+
+            return secondaryRoles.indexOf(roleToCompare) > -1;
+        }
+
+        return false;
+    };
+
+    $scope.roleChanged = function(value) {
+        //$scope.people.sort(function(a, b) {
+        //    if ($scope.isPrimaryRole(a, value) && !$scope.isPrimaryRole(b, value)) {
+        //        return -1;
+        //    }
+
+        //    if ($scope.isPrimaryRole(b, value) && !$scope.isPrimaryRole(a, value)) {
+        //        return 1;
+        //    }
+
+        //    return 0;
+        //});
+        $scope.filterRole2 = value;
+    };
+
+    // primaryRole decrease 200
+    // secondaryRole decrease 100
+    // minus availability
+    // means: first primaryRole then secondaryRoles, inside by availability
+    $scope.rolesOrder = function (person) {
+        var weight = 0;
+        if ($scope.isPrimaryRole(person, $scope.filterRole2)) {
+            weight -= 200;
+        }
+        if ($scope.isSecondaryRole(person, $scope.filterRole2)) {
+            weight -= 100;
+        }
+        if (person.availabilityPercentage) {
+            weight -= person.availabilityPercentage;
+        }
+        
+        return weight;
+    }
+
 } ] ).directive( 'resRepeater', function( ) {
 	return function( $scope, element, attrs ) {
 		if( $scope.$last ) {

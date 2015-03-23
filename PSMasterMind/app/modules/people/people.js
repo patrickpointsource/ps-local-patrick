@@ -184,7 +184,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 	 * Changes list of people on a filter change
 	 */
 	$scope.handlePeopleFilterChanged = function( ) {
-		var peopleInRoleFields = [ "resource", "name", "familyName", "givenName", "primaryRole", "thumbnail" ];
+		var peopleInRoleFields = [ "resource", "name", "familyName", "givenName", "primaryRole", "thumbnail", "secondaryRoles" ];
 		var params = {fields : peopleInRoleFields };
 
 		//Check if the filter is a valid role

@@ -402,6 +402,21 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
         return moment(date).format(format);
     };
 
+    $scope.getResourceFinderUrl = function(projectName, projectResource, roleId, role, startDate, endDate) {
+        var url = window.location.origin + "/index.html#/staffing";
+        url += "?tab=resourcefinder";
+        url += "&projectName=" + encodeURIComponent(projectName);
+        url += "&projectResource=" + encodeURIComponent(projectResource);
+        url += "&roleId=" + encodeURIComponent(roleId);
+        url += "&role=" + encodeURIComponent(role);
+        url += "&startDate=" + encodeURIComponent(startDate);
+        if (endDate) {
+            url += "&endDate" + encodeURIComponent(endDate);
+        }
+
+        return url;
+    };
+
 } ] ).directive( 'backImg', function( ) {
 	return function( scope, element, attrs ) {
 		var url = attrs.backImg;
