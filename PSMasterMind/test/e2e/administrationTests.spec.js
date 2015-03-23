@@ -702,11 +702,15 @@ describe('E2E: Administration Tests', function() {
 		    	    	return browser.isElementPresent($this.addTaskFormButton);
 		    	    }).then(function(){
 		    	   		browser.findElement($this.addTaskFormButton).click().then(function () {
-		    	   			browser.sleep(1000);
-		    	   			$this.updateTask(browser, $this.initial);
-		    	   	   		browser.findElement($this.addTaskButton).click().then(function () {
-		    	   	   			$this.verifyTask($this.initial);
-		    	   	   		});
+		    	   			browser.wait(function(){	    		
+				    	    	return browser.isElementPresent($this.taskName);
+				    	    }).then(function(){
+			    	   			$this.updateTask(browser, $this.initial);
+			    	   			browser.sleep(1000);
+			    	   	   		browser.findElement($this.addTaskButton).click().then(function () {
+			    	   	   			$this.verifyTask($this.initial);
+			    	   	   		});
+				    	    });
 		    	   		});
 		    	    });
 		    	});
