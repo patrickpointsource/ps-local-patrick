@@ -5,7 +5,7 @@
 describe('E2E: Staffing Tests', function() {	
     
 	var ACTIVE_PROJECT_WITH_TWO_ROLES = 'Active project with two unassigned roles';
-	var ACTIVE_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES = 'Active project with unassigned and unassigned roles';
+	var ACTIVE_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES = 'Active project with unassigned and assigned roles';
 	var ACTIVE_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES = 'Active project with unassigned and underassigned roles';
 	var BACKLOG_PROJECT_WITH_TWO_ROLES = 'Backlog project with two unassigned roles';
 	var BACKLOG_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES = 'Backlog project with unassigned and assigned roles';
@@ -80,37 +80,37 @@ describe('E2E: Staffing Tests', function() {
 	it('Staffing Test: Check active project with two unassigned roles.', function() {	
 		console.log('> Running: Staffing - ' + ACTIVE_PROJECT_WITH_TWO_ROLES);
 		checkActiveProjectWithTwoUnassignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check active project with unassigned and assigned roles.', function() {	
 		console.log('> Running: Staffing - ' + ACTIVE_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES);
 		checkActiveProjectWithUnassignedAndAssignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check active project with unassigned and underassigned roles.', function() {	
 		console.log('> Running: Staffing - ' + ACTIVE_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES);
 		checkActiveProjectWithUnassignedAndUnderassignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check backlog project with two unassigned roles.', function() {	
 		console.log('> Running: Staffing - ' + BACKLOG_PROJECT_WITH_TWO_ROLES);
 		checkBacklogProjectWithTwoUnassignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check backlog project with unassigned and assigned roles.', function() {	
 		console.log('> Running: Staffing - ' + BACKLOG_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES);
 		checkBacklogProjectWithUnassignedAndAssignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check backlog project with unassigned and underassigned roles.', function() {	
 		console.log('> Running: Staffing - ' + BACKLOG_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES);
 		checkBacklogProjectWithUnassignedAndUnderassignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check pipeline project with roles.', function() {	
 		console.log('> Running: Staffing - ' + PIPELINE_PROJECT_WITH_TWO_ROLES);
 		checkPipelineProjectWithRoles();
-	});
+	}, 60000);
 
 	var checkActiveProjectWithTwoUnassignedRoles  = function () {
 		var project = getActiveProjectWithTwoUnassignedRoles();
@@ -171,8 +171,11 @@ describe('E2E: Staffing Tests', function() {
 	   	    		return browser.isElementPresent(projectNameInput);
 	   	    	}).then(function(){
 	   	    		addProjectAttributes(project);
+		   			browser.driver.sleep(1000);	
 	   	    		addRoleAttributesToProject(project);
+		   			browser.driver.sleep(1000);	
 	   	    		addAssignmentsAttributes(project);
+		   			browser.driver.sleep(1000);	
 		    	 	browser.findElement(saveProjectButton).click().then(function () {
 		    	 		browser.wait(function(){	    		
 		    	       		return browser.isElementPresent(assignmentsButton);
@@ -207,38 +210,55 @@ describe('E2E: Staffing Tests', function() {
 	var addRoleAttributesToProject = function (project) {
 		for (var i in project.roles) {
 			var roleItem = project.roles[i];
-	   		browser.findElement(addRoleButton).click().then(function () {
-	  		   	browser.wait(function(){	    		
-	   	    		return browser.isElementPresent(roleInput);
-	   	    	}).then(function(){
-		 	    	var role = browser.findElement(roleInput);
-		 	    	role.sendKeys(roleItem.name);
-			    	var roleStartDate = browser.findElement(roleStartDateInput);
-	 		    	roleStartDate.clear().then( function () { roleStartDate.sendKeys(roleItem.startDate); } );
-		    	 	browser.findElement(submitRoleButton).click();
-		   	   	});	
-	   	 	});
+			browser.wait(function(){	    		
+	   			return browser.isElementPresent(addRoleButton);
+	   	   	}).then(function(){
+		   	   	browser.findElement(addRoleButton).click().then(function () {
+		  		   	browser.wait(function(){	    		
+		   	    		return browser.isElementPresent(roleInput);
+		   	    	}).then(function(){
+			 	    	var role = browser.findElement(roleInput);
+			 	    	role.sendKeys(roleItem.name);
+				    	var roleStartDate = browser.findElement(roleStartDateInput);
+		 		    	roleStartDate.clear().then( function () { roleStartDate.sendKeys(roleItem.startDate); } );
+			    	 	browser.findElement(submitRoleButton).click();
+			   	   	});	
+		   	 	});	   	   	    	
+	   	    });
 		}
 	}
 	
 	var addAssignmentsAttributes = function (project) {
 		goToTop();
-   		browser.findElement(assignmentsButton).click().then(function () {
-    		for (var i in project.roles) {
-    			var roleItem = project.roles[i];
-    			if (roleItem.person) {
-    		   		browser.findElements(addAssignmentButton).then(function (addAssignmentButtons) {
-    		   			addAssignmentButtons[i].click().then(function () {
-    		   				browser.findElement(assignmentPersonInput).sendKeys(roleItem.person);
-           		   			if (roleItem.hours) {
-               		   			var assignmentHours = browser.findElement(assignmentHoursInput);
-               		   			assignmentHours.clear().then( function () { assignmentHours.sendKeys(roleItem.hours); } );
-           		   			}	
-    		   			})
-     		   		});
-    			}
-    		}
-   	 	});
+		browser.wait(function(){	    		
+	    	return browser.isElementPresent(assignmentsButton);
+		}).then(function(){
+	   		browser.findElement(assignmentsButton).click().then(function () {
+	    		for (var i in project.roles) {
+	    			var roleItem = project.roles[i];
+	    			addAssigment(roleItem, i);
+	    		}
+	   	 	});
+		});
+	}
+	
+	
+	var addAssigment = function(role, index) {
+		if (role.person) {
+			browser.wait(function(){	    		
+		    	return browser.isElementPresent(addAssignmentButton);
+			}).then(function(){
+				browser.findElements(addAssignmentButton).then(function (addAssignmentButtons) {
+		   			addAssignmentButtons[index].click().then(function () {
+		   				browser.findElement(assignmentPersonInput).sendKeys(role.person);
+	   		   			if (role.hours) {
+	       		   			var assignmentHours = browser.findElement(assignmentHoursInput);
+	       		   			assignmentHours.clear().then( function () { assignmentHours.sendKeys(role.hours); } );
+	   		   			}	
+		   			})
+			   	});
+			});
+		}
 	}
 	
 	var goToTop = function () {
