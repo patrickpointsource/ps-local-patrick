@@ -80,37 +80,37 @@ describe('E2E: Staffing Tests', function() {
 	it('Staffing Test: Check active project with two unassigned roles.', function() {	
 		console.log('> Running: Staffing - ' + ACTIVE_PROJECT_WITH_TWO_ROLES);
 		checkActiveProjectWithTwoUnassignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check active project with unassigned and assigned roles.', function() {	
 		console.log('> Running: Staffing - ' + ACTIVE_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES);
 		checkActiveProjectWithUnassignedAndAssignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check active project with unassigned and underassigned roles.', function() {	
 		console.log('> Running: Staffing - ' + ACTIVE_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES);
 		checkActiveProjectWithUnassignedAndUnderassignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check backlog project with two unassigned roles.', function() {	
 		console.log('> Running: Staffing - ' + BACKLOG_PROJECT_WITH_TWO_ROLES);
 		checkBacklogProjectWithTwoUnassignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check backlog project with unassigned and assigned roles.', function() {	
 		console.log('> Running: Staffing - ' + BACKLOG_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES);
 		checkBacklogProjectWithUnassignedAndAssignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check backlog project with unassigned and underassigned roles.', function() {	
 		console.log('> Running: Staffing - ' + BACKLOG_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES);
 		checkBacklogProjectWithUnassignedAndUnderassignedRoles();
-	});
+	}, 60000);
 
 	it('Staffing Test: Check pipeline project with roles.', function() {	
 		console.log('> Running: Staffing - ' + PIPELINE_PROJECT_WITH_TWO_ROLES);
 		checkPipelineProjectWithRoles();
-	});
+	}, 60000);
 
 	var checkActiveProjectWithTwoUnassignedRoles  = function () {
 		var project = getActiveProjectWithTwoUnassignedRoles();
@@ -207,17 +207,21 @@ describe('E2E: Staffing Tests', function() {
 	var addRoleAttributesToProject = function (project) {
 		for (var i in project.roles) {
 			var roleItem = project.roles[i];
-	   		browser.findElement(addRoleButton).click().then(function () {
-	  		   	browser.wait(function(){	    		
-	   	    		return browser.isElementPresent(roleInput);
-	   	    	}).then(function(){
-		 	    	var role = browser.findElement(roleInput);
-		 	    	role.sendKeys(roleItem.name);
-			    	var roleStartDate = browser.findElement(roleStartDateInput);
-	 		    	roleStartDate.clear().then( function () { roleStartDate.sendKeys(roleItem.startDate); } );
-		    	 	browser.findElement(submitRoleButton).click();
-		   	   	});	
-	   	 	});
+			browser.wait(function(){	    		
+	   			return browser.isElementPresent(addRoleButton);
+	   	   	}).then(function(){
+		   	   	browser.findElement(addRoleButton).click().then(function () {
+		  		   	browser.wait(function(){	    		
+		   	    		return browser.isElementPresent(roleInput);
+		   	    	}).then(function(){
+			 	    	var role = browser.findElement(roleInput);
+			 	    	role.sendKeys(roleItem.name);
+				    	var roleStartDate = browser.findElement(roleStartDateInput);
+		 		    	roleStartDate.clear().then( function () { roleStartDate.sendKeys(roleItem.startDate); } );
+			    	 	browser.findElement(submitRoleButton).click();
+			   	   	});	
+		   	 	});	   	   	    	
+	   	    });
 		}
 	}
 	
