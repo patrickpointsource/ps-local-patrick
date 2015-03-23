@@ -955,7 +955,7 @@ var filterDepartmentsBy = function(code, manager, nickname, substr, departments)
 		else if (nickname)
 			result = false;
 		
-		if (result && substr && (d.departmentNickname.toLowerCase().indexOf(substr.toLowerCase()) > -1 
+		if (result && substr && d.departmentManager && d.departmentManager.name && (d.departmentNickname.toLowerCase().indexOf(substr.toLowerCase()) > -1 
 				|| d.departmentManager.name.toLowerCase().indexOf(substr.toLowerCase()) > -1 || d.departmentCode.name.toLowerCase().indexOf(substr.toLowerCase())) > -1)
 			result = true;
 		else if (substr)

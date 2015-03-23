@@ -33,7 +33,7 @@
 			    	</div>
 			        <div class="col-xs-5">
 			            <input type="submit"  class="btn" value="Cancel" ng-click="cancelDepartment()">
-			            <input type="submit" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Save" ng-click="saveDepartment()" >
+			            <input type="submit" ng-disabled="selectedDepartmentForm.$invalid" class="btn" value="Save" ng-click="saveDepartmentPeople()" >
 			        </div>
 			    </div>
 			    <div class="section-content row">
@@ -201,9 +201,9 @@
 					</div>
 					
 					<div ng-if="selectedDepartment.editDepartmenPeople">
-						<div  ng-repeat="p in availablePeopleList | limitTo:15" class="available-person">
+						<div  ng-repeat="p in availablePeopleList | limitTo:15" class="available-person" ng-click="addDepartmentPerson(p)">
 							<span class="name">{{p.name}}</span>
-							<span class="add pull-right" ng-click="addDepartmentPerson(p)">
+							<span class="add pull-right" >
 								<i class="fa fa-plus"></i>
 							</span>
 						</div>
