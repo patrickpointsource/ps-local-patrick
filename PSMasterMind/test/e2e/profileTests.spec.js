@@ -1,7 +1,3 @@
-/**
- * @Author Denys Novalenko
- * 
- * */
 describe('E2E: Profile Tests', function() {	
     
     var USER_NAME = 'psapps@pointsourcellc.com';
@@ -70,7 +66,6 @@ describe('E2E: Profile Tests', function() {
 	var profilePhone = by.id('profilePhone');
 	var profileSkype = by.id('profileSkype');
 	var profileJazzHub = by.id('profileJazzHub');
-	var profilePrimaryRole = by.model('profile.primaryRole.resource');
 	var profileUserSecurityGroups = by.model('userSecurityGroups');
 	var profilePartTime = by.css('[ng-model="profile.partTime"]');
 	var partTimeHours = by.model('profile.partTimeHours');
@@ -84,7 +79,6 @@ describe('E2E: Profile Tests', function() {
 	var PART_TIME_HOURS_TEST = '25';
 	
 	var profilePermisson = by.id('permissionGroup');
-	var profilePrimaryRoleLabel = by.binding('{{getRoleName(profile.primaryRole.resource)}}');
 	var profilePhoneLabel = by.binding('{{profile.phone | tel}}');
 	var profileSkypeLabel = by.binding('{{profile.skypeId}}');
 	var profileJazzHubLabel = by.binding('{{profile.jazzHubId}}');
@@ -273,7 +267,6 @@ describe('E2E: Profile Tests', function() {
    		    	}).then(function(){
    		    		browser.findElement(editButton).click().then(function () {
    		    			
-   		    			browser.findElement(profilePrimaryRole).sendKeys(PRIMARY_ROLE_TEST);
    			    		var profilePhoneInput = browser.findElement(profilePhone);
    			    		profilePhoneInput.clear().then( function () { profilePhoneInput.sendKeys(PHONE_TEST); } );
    			    		var profileSkypeInput = browser.findElement(profileSkype);
@@ -289,18 +282,10 @@ describe('E2E: Profile Tests', function() {
    		    			partTimeHoursInput.clear().then( function () { partTimeHoursInput.sendKeys(PART_TIME_HOURS_TEST); } );
 
    		    			browser.findElement(saveButton).click().then(function () {
-	   				    	expect(browser.findElement(profilePrimaryRoleLabel).getInnerHtml()).toContain(PRIMARY_ROLE_LABEL_TEST);
 	   				    	expect(browser.findElement(profilePhoneLabel).getInnerHtml()).toContain(PHONE_TEST);
 	   				    	expect(browser.findElement(profileSkypeLabel).getInnerHtml()).toContain(SKYPE_TEST);
 	   				    	expect(browser.findElement(profileJazzHubLabel).getInnerHtml()).toContain(JAZZHUB_TEST);
 	   				    	expect(browser.findElement(partTimeHoursLabel).getInnerHtml()).toContain(PART_TIME_HOURS_TEST);
-	   				    	
-	   		    			browser.get('http://localhost:9000/index.html#/people?filter=administration');
-	   			    		browser.wait(function(){	    		
-	   	   			    		return browser.isElementPresent(by.css('.person-name'));
-	   	   			    	}).then(function(){
-	    				    	expect(browser.findElement(by.cssContainingText('.person-name', USER_FULLNAME)).getText()).toEqual(USER_FULLNAME);
-	   	   			    	});
    		    			});
    		    		});
    		    	});
