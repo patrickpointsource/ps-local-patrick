@@ -1422,7 +1422,7 @@ var listDepartmentsAvailablePeople = function(substr, callback) {
         	listPeopleByIsActiveFlag(true, null, function(err, result){
 		        if(!err){
 		        	var availablePeople = _.filter(result.members, function(p) {
-		        		return (_.filter(assignedPeople, function(ap){ return ap.replace('departments/people') == p.resource.replace('people/')})).length == 0;
+		        		return (_.filter(assignedPeople, function(ap){ return ap == p.resource || ap.replace('departments/people') == p.resource.replace('people/')})).length == 0;
 		        	});
 		        	
 		        	callback(null, prepareRecords( dataFilter.filterPeopleBySubstr(substr, availablePeople), "members", "people/" ) );
@@ -1432,6 +1432,81 @@ var listDepartmentsAvailablePeople = function(substr, callback) {
             
         }
     });
+};
+
+var listPeopleByDepartmentsCategories = function(categories, includeInactive, fields, callback) {
+	listDepartments( function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading departments', null);
+        } else {
+        	var departmentsPeople = [];
+        	var isBelongsTo = false;
+        	
+        	categories = _.filter(categories, function(c) { return c});
+        	
+        	categories = _.map(categories, function(c) {
+        		return c.toLowerCase();
+        	});
+        	
+        	for (var k = 0; k < body.members.length; k ++) {
+        		isBelongsTo = body.members[k].departmentCategory && body.members[k].departmentCategory.name ? 
+        				(_.filter(categories, function(c) { return c == body.members[k].departmentCategory.name.toLowerCase()})).length > 0: false;
+        		
+        		if (isBelongsTo && body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople))
+        			departmentsPeople = departmentsPeople.concat(body.members[k].departmentPeople);
+        	}
+        	
+        	listPeopleByIsActiveFlag(!includeInactive, fields, function(err, result){
+		        if(!err){
+		        	departmentsPeople = _.filter(result.members, function(p) {
+		        		return (_.filter(departmentsPeople, function(ap){ return ap == p.resource || ap.replace('departments/people') == p.resource.replace('people/')})).length > 0;
+		        	});
+		        	
+		        	callback(null, prepareRecords( departmentsPeople, "members", "people/" ) );
+		        }            
+		    });
+        	
+            
+        }
+    });
+};
+
+var listDepartmentsCategories = function(callback) {
+	// todo: temporary make static list of categories
+	var categories = [{name: 'Executives', value: 'Executives'},
+		                  {name: 'Management', value: 'Management'},
+		                  {name: 'Admin', value: 'Admin'},
+		                  {name: 'Digital', value: 'Digital'}, 
+		                  {name: 'Development', value: 'Development'},
+		                  {name: 'Delivery Services', value: 'Delivery Services'},
+		                  {name: 'Sales', value: 'Sales'},
+		                  {name: 'Other', value: 'Other'}];
+	
+	listDepartments( function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading departments', null);
+        } else {
+        	var category = null;
+
+        	for (var k = 0; k < body.members.length; k ++) {
+        		category = _.find(categories, function(mi) {
+    				return body.members[k].departmentCategory && (mi.name ==  body.members[k].departmentCategory.name)
+    			});
+        		
+        		if (category && body.members[k].departmentNickname) {
+        			if (!category.nicknames)
+        				category.nicknames = [];
+        			
+        			category.nicknames.push(body.members[k].departmentNickname)
+        		}
+        	}
+        }
+        callback( null, prepareRecords( categories, "members", "categories/" ) );
+        
+	})
+		
 };
 
 var insertItem = function( id, obj, type, callback ) {
@@ -1643,6 +1718,8 @@ module.exports.listReportFavoritesByPerson = listReportFavoritesByPerson;
 module.exports.listDepartments = listDepartments;
 module.exports.filterDepartments = filterDepartments;
 module.exports.listDepartmentsAvailablePeople = listDepartmentsAvailablePeople;
+module.exports.listDepartmentsCategories = listDepartmentsCategories;
+module.exports.listPeopleByDepartmentsCategories = listPeopleByDepartmentsCategories;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;

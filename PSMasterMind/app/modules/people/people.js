@@ -224,15 +224,21 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				} );
 			}
 			else {
-				params.role = roles;
+				params.categories = $scope.peopleFilter;
+				
 				if (includeInactive) {
 					params.includeInactive = includeInactive;
 				}
+				/*
 				Resources.refresh( "people/bytypes/byRoles", params).then( function( result ) {
 					$scope.people = result.members;
 					$scope.fillPeopleProps( );
 				} );
-				
+				*/
+				Resources.refresh( "people/bytypes/byCategories", params).then( function( result ) {
+					$scope.people = result.members;
+					$scope.fillPeopleProps( );
+				} );
 			}
 		}
 		//Otherwise just show all active people

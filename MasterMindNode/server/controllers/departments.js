@@ -21,12 +21,36 @@ module.exports.listAvailablePeople = function(substr, callback) {
 	 dataAccess.listDepartmentsAvailablePeople(substr, function(err, body){
         if (err) {
             console.log(err);
-            callback('error loading departments', null);
+            callback('error loading departments available people', null);
         } else {
             //console.log(body);
             callback(null, body);
         }
     });  
+};
+
+module.exports.listPeopleByDepartmentsCategories = function(categories, includeInactive, fields, callback) {
+	dataAccess.listPeopleByDepartmentsCategories(categories, includeInactive, fields, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading departments people', null);
+        } else {
+            //console.log(body);
+            callback(null, body);
+        }
+    });  
+};
+	
+module.exports.listCategories = function(callback) {
+	 dataAccess.listDepartmentsCategories(function(err, body){
+       if (err) {
+           console.log(err);
+           callback('error loading department\'s categories', null);
+       } else {
+           //console.log(body);
+           callback(null, body);
+       }
+   });  
 };
 
 module.exports.listAvailableCode = function(callback) {
