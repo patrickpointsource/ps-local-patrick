@@ -222,7 +222,24 @@ router.get('/google/:id', util.isAuthenticated, function(req, res){
 		}
 	});
 	
-}); 
+});
+
+router.get('/manager/:personId', util.isAuthenticated, function (req, res) {
+    
+    security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function (allowed) {
+        if (allowed) {
+            var id = req.params.personId;
+            people.getManager(id, function (err, manager) {
+                if (err) {
+                    res.json(500, err);
+                } else {
+                    res.json(manager);
+                }
+            });
+        }
+    });
+	
+});
 
 router.post('/', util.isAuthenticated, function(req, res) {
 
