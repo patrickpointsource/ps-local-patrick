@@ -61,7 +61,8 @@ exports.config = {
     'test/e2e/staffingTests.spec.js',
   	'test/e2e/roleTests.spec.js',
     'test/e2e/peopleTests.spec.js',
-    'test/e2e/profileTests.spec.js'
+    'test/e2e/profileTests.spec.js',
+    'test/e2e/administrationTests.spec.js'    
   ],
 
 
