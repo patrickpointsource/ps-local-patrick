@@ -820,6 +820,7 @@ describe('E2E: Administration Tests', function() {
 		    	return browser.isElementPresent($this.configurationButton);
 		    }).then(function(){
 		    	browser.findElement($this.configurationButton).click().then(function () {
+		    		browser.driver.sleep(1000);
 	    			var configElement = browser.findElement(by.cssContainingText('div .col-xs-3', $this.INTERESTED_PARTIES));
 	    			var editElement = configElement.findElement(by.xpath('following-sibling::*[2]/self::div')).findElement($this.editConfigurationButton);
 	    		   	editElement.click().then(function () {
@@ -828,6 +829,7 @@ describe('E2E: Administration Tests', function() {
 	    			   	}).then(function(){
 	    	    			var formElement = configElement.findElement(by.xpath('following-sibling::*[1]/self::div'));
 	    			   		$this.updateConfiguration(formElement, $this.interestedParties);
+	    		    		browser.driver.sleep(1000);
 	    			   		configElement.findElement(by.xpath('following-sibling::*[2]/self::div')).findElement($this.saveConfigurationButton).click().then(function () {
 			    	   	   		$this.verifyConfiguration($this.interestedParties);
 		    	   	   		});
