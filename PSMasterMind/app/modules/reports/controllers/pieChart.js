@@ -40,7 +40,7 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
         chart.addMeasureAxis("p", "value");
         chart.addSeries("key", dimple.plot.pie).getTooltipText = function (e)
         {
-            return [ e.aggField[0] + ": " + e.p + " (" + Math.round(e.piePct * 100) + "%)" ];
+            return [ "\xA0", e.aggField[0] + ": " + e.p + " (" + Math.round(e.piePct * 100) + "%)", "\xA0" ];
         };
 
         chart.defaultColors = [
