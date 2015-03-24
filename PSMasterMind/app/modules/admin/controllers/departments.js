@@ -111,6 +111,8 @@ angular.module('Mastermind')
 		  
 		  $scope.selectedDepartment.isNew = false;
 		  $scope.selectedDepartment.isEdit = false;
+		  $scope.selectedDepartment.editDepartmentPeople = false;
+		  							
 		  $scope.selectedDepartmentPeople = [];
 		  var found;
 		  
@@ -124,13 +126,13 @@ angular.module('Mastermind')
 			  
 	  };
 	  
-	  $scope.editDepartmentPeople = function() {
+	  $scope.onEditDepartmentPeople = function() {
 		  //$scope.selectedDepartmentPeople = [];
-		  $scope.selectedDepartment.editDepartmenPeople = true;
+		  $scope.selectedDepartment.editDepartmentPeople = true;
 	  };
 	  
 	  $scope.cancelDepartmentPeople = function() {
-		  $scope.selectedDepartment.editDepartmenPeople = false;
+		  $scope.selectedDepartment.editDepartmentPeople = false;
 		  
 		  var ind;
 		  
@@ -143,7 +145,7 @@ angular.module('Mastermind')
 	  };
 	  
 	  $scope.saveDepartmentPeople = function() {
-		  $scope.selectedDepartment.editDepartmenPeople = false;
+		  $scope.selectedDepartment.editDepartmentPeople = false;
 		  
 		  $scope.selectedDepartment.departmentPeople = [];
 		  for (var k = 0; k < $scope.selectedDepartmentPeople.length; k ++)
