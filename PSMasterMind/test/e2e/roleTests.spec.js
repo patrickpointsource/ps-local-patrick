@@ -2,7 +2,7 @@
  * @Author Denys Novalenko
  * 
  * */
-describe('E2E: Staffing Tests', function() {	
+describe('E2E: Role Tests', function() {	
     
 	var USER_NAME = 'psapps@pointsourcellc.com';
     var PASSWORD = 'ps@pp$777';
@@ -161,7 +161,7 @@ describe('E2E: Staffing Tests', function() {
 	var updateAndCheckMonthlyAttributes  = function () {
 		browser.get('http://localhost:9000/index.html#/admin');
    		browser.wait(function(){	    		
-       		return browser.isElementPresent(addRolesButton);
+       		return browser.isElementPresent(by.cssContainingText('td', DEFAULT_TITLE));
        	}).then(function(){
 	   		var titleElement = browser.findElement(by.cssContainingText('td', DEFAULT_TITLE));
    	   		var parentElement = titleElement.findElement(by.xpath('..'));
@@ -189,7 +189,7 @@ describe('E2E: Staffing Tests', function() {
 	var checkMonthlyAttributes  = function () {
 		browser.get('http://localhost:9000/index.html#/admin');
    		browser.wait(function(){	    		
-       		return browser.isElementPresent(addRolesButton);
+       		return browser.isElementPresent(by.cssContainingText('td', DEFAULT_TITLE));
        	}).then(function(){
 	   		var titleElement = browser.findElement(by.cssContainingText('td', DEFAULT_TITLE));
    	   		var parentElement = titleElement.findElement(by.xpath('..'));
