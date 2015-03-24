@@ -12,7 +12,7 @@ describe('E2E: Administration Tests', function() {
 	var logonPswd = by.id('Passwd');
 	var signIn = by.id('signIn');
 	var submit_approve_access = by.id('submit_approve_access');
-
+	
     beforeEach(function() {
 		browser.driver.getCurrentUrl().then(function(url) {
 			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
@@ -195,7 +195,9 @@ describe('E2E: Administration Tests', function() {
 
 	var SecurityGroupPage = function () {
 		
-	    this.groupsButton = by.id('groups');
+		this.suffix = "_" + new Date().getTime();
+
+		this.groupsButton = by.id('groups');
 	    this.addGroupButton = by.css('[ng-click="createGroup()"]');
 	    this.deleteGroupButton = by.css('[ng-click="deleteGroup()"]');
 	    this.selectGroup = by.model('selectedGroup');
@@ -216,12 +218,12 @@ describe('E2E: Administration Tests', function() {
 	    this.editButton = by.css('[ng-click="edit()"]');
 
 	    this.initial = {
-	    	name : 'TestSecurityGroup',
+	    	name : 'TestSecurityGroup' + this.suffix,
 	    	members : [ { firstName : 'ps', lastName : 'apps'} ]
 	    };
 
 	    this.updated = {
-	        name : 'UpdatedTestSecurityGroup',
+	        name : 'UpdatedTestSecurityGroup' + this.suffix,
 	        members : [ { firstName : 'ps', lastName : 'apps'} ]
 	    }
     	this.memberToAdd = { firstName : 'Brian', lastName : 'Reynolds'};
@@ -473,6 +475,8 @@ describe('E2E: Administration Tests', function() {
 	
 	var RolePage = function () {
 
+		this.suffix = "_" + new Date().getTime();
+
 		this.addRolesButton = by.css('[ng-click="toggleNewRole()"]');
 		this.roleElements = element.all(by.repeater("role in $data"));
 		this.sortByAbbreviation = element(by.cssContainingText('th', 'Abbreviation'));
@@ -504,7 +508,7 @@ describe('E2E: Administration Tests', function() {
 	   
 	    this.initial = {
 	    	abbreviation : 'TROLE',
-	    	title : 'Test Role Title',
+	    	title : 'Test Role Title' + this.suffix,
 	    	hourlyAdvertisedRate : '10',
 	    	hourlyLoadedRate : '20',
 	    	monthlyAdvertisedRate : '30',
@@ -514,7 +518,7 @@ describe('E2E: Administration Tests', function() {
 
 	    this.updated = {
 	        abbreviation : 'TROLEUPD',
-	        title : 'Test Role Title Updated',
+	        title : 'Test Role Title Updated' + this.suffix,
 	        hourlyAdvertisedRate : '11',
 	        hourlyLoadedRate : '21',
 	        monthlyAdvertisedRate : '31',
@@ -534,12 +538,17 @@ describe('E2E: Administration Tests', function() {
 	    
 	    this.createNewRoleAndVerify = function() {
 			var $this = this;
-	   		browser.findElement($this.addRolesButton).click().then(function () {
-	   			$this.updateRole(browser, $this.initial);
-	   	   		browser.findElement($this.addRoleButton).click().then(function () {
-	   	   			$this.verifyRole($this.initial);
-	   	   		});
-	   		});
+			browser.wait(function(){	    		
+		    	return browser.isElementPresent($this.addRolesButton);
+		    }).then(function(){
+		    	browser.findElement($this.addRolesButton).click().then(function () {
+		   			$this.updateRole(browser, $this.initial);
+		   			browser.driver.sleep(1000);
+		   	   		browser.findElement($this.addRoleButton).click().then(function () {
+		   	   			$this.verifyRole($this.initial);
+		   	   		});
+		   		});	
+		    });
 	 	}
 
 		this.updateRole = function (form, role) {
@@ -571,7 +580,6 @@ describe('E2E: Administration Tests', function() {
 			   	    		$this.updateRole(editForms[1], $this.updated);
 			   	    		browser.findElements($this.saveRoleButton).then( function (saveRoleButtons) {
 			   	    			saveRoleButtons[1].click().then(function () {
-						    		browser.driver.sleep(1000);	
 						    		$this.verifyRole($this.updated);
 				   	    		});
 			   	    		});
@@ -583,21 +591,26 @@ describe('E2E: Administration Tests', function() {
 		
 		this.verifyRole = function(role) {
 			var $this = this;
-			var titleElement = browser.findElement(by.cssContainingText('td', role.title));
-		   	var parentElement = titleElement.findElement(by.xpath('..'));
-		   	var editElement = parentElement.findElement($this.editRoleButton);
-		   	editElement.click().then(function () {
-		   		browser.wait(function(){	    		
-		   			return browser.isElementPresent($this.saveRoleButton);
-			   	}).then(function(){
-			   		browser.driver.sleep(1000);	
-			   		browser.findElements($this.roleForm).then( function (editForms) {
-			   			browser.driver.sleep(1000);	
-			   			console.log("editForms : " + editForms);
-			   			$this.verifyRoleElements(editForms[1], role);
-			   		});
-			   	});
-		   	}); 	
+			browser.wait(function(){	    		
+	   			return browser.isElementPresent(by.cssContainingText('td', role.title));
+		   	}).then(function(){
+				var titleElement = browser.findElement(by.cssContainingText('td', role.title));
+			   	var parentElement = titleElement.findElement(by.xpath('..'));
+			   	var editElement = parentElement.findElement($this.editRoleButton);
+			   	editElement.click().then(function () {
+			   		browser.wait(function(){	    		
+			   			return browser.isElementPresent($this.saveRoleButton);
+				   	}).then(function(){
+				   		browser.driver.sleep(1000);	
+				   		browser.findElements($this.roleForm).then( function (editForms) {
+				   			browser.driver.sleep(1000);	
+				   			console.log("editForms : " + editForms);
+				   			$this.verifyRoleElements(editForms[1], role);
+				   		});
+				   	});
+			   	}); 			   		
+		   	});
+
 		}
 		
 		this.verifyRoleElements = function (form, role) {
@@ -658,6 +671,8 @@ describe('E2E: Administration Tests', function() {
 
 	var TaskPage = function () {
 
+		this.suffix = "_" + new Date().getTime();
+
 		this.tasksButton = by.id('tasks');
 		this.addTaskFormButton = by.css('[ng-click="toggleNewTask()"]');
 		this.taskName = by.css('[ng-model="newTask.name"]');
@@ -667,11 +682,11 @@ describe('E2E: Administration Tests', function() {
 		this.deleteTaskButton = by.css('[ng-click="deleteTask(task.resource)"]');
 
 		this.initial = {
-	    	name : 'TestAdministrationTask'
+	    	name : 'TestAdministrationTask' + this.suffix
 	    };
 
 		this.updated = {
-			name : 'UpdatedTestAdministrationTask'
+			name : 'UpdatedTestAdministrationTask' + this.suffix
 	    }
 
 		this.checkTasksPage = function() {
@@ -756,6 +771,7 @@ describe('E2E: Administration Tests', function() {
 		    		browser.wait(function(){	    		
 		    	    	return browser.isElementPresent($this.addTaskFormButton);
 		    	    }).then(function(){
+	    	    		browser.driver.sleep(1000);	
 		    			var titleElement = browser.findElement(by.cssContainingText('div .row-fluid', $this.initial.name));
 		    		   	var deleteElement = titleElement.findElement($this.deleteTaskButton);
 		    		   	deleteElement.click().then(function () {
