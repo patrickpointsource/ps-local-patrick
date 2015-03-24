@@ -4,8 +4,8 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, and roles.
  */
-angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter', '$q',
-  function ($scope, $state, $filter, $q) {
+angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter', '$q', 'DepartmentsService',
+  function ($scope, $state, $filter, $q, DepartmentsService) {
       //$scope.projectManagementAccess = false;
 	$scope.menuItems = [ {
 		text: "Dashboard",
@@ -61,7 +61,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			value: "all",
 			subheader: true,
 			handler: "handleSubitem"
-		}, {
+		}/*, {
 			text: "Administration",
 			value: "administration",
 			handler: "handleSubitem"
@@ -98,7 +98,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
             value: "inactive",
             handler: "handleSubitem",
             isNotRender: !$scope.projectManagementAccess
-        }]
+        }*/]
 	}, {
 		text: "Calendar",
 		value: "calendar",
@@ -125,6 +125,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		isRender: $scope.adminAccess
     }];
 
+	
 	$scope.isSubitemSelected = function(subItem, item) {
 		var result = false;
 		var val = subItem.value;
@@ -202,5 +203,38 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 
 	if (!$scope.additionalClass)
 		$scope.additionalClass = 'navbar-inverse visible-xs visible-sm';
+	
+	$scope.initMenu = function() {
+		DepartmentsService.loadDepartmentCategories().then(function(res) {
+			var peopleMenuItem = _.find($scope.menuItems, function(mi) {
+				return mi.value == 'people';
+			});
+			
+			var categories = res && res.members ? res.members: res;
+			var subItem;
+			
+			for (var k = 0; k < categories.length; k ++) {
+				subItem = {
+					text: categories[k].name,
+					value: categories[k].name.toLowerCase().replace(/\s+/g,'_'),
+					handler: "handleSubitem",
+					subItems: categories[k].nicknames ? categories[k].nicknames: []
+				};
+				
+				peopleMenuItem.subItems.push(subItem);
+			}
+			
+			peopleMenuItem.subItems.push({
+	            text: "Inactive",
+	            value: "inactive",
+	            handler: "handleSubitem",
+	            isNotRender: !$scope.projectManagementAccess
+	        });
+			
+			 
+		});
+	};
 
+	$scope.initMenu();
+	
   }]);

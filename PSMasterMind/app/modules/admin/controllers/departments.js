@@ -335,7 +335,7 @@ angular.module('Mastermind')
 	    		
 	    	if ($scope.departmentCategories.length == 0)
 	    		DepartmentsService.loadDepartmentCategories().then(function(res) {
-	    			$scope.departmentCategories = res;
+	    			$scope.departmentCategories = res && res.members ? res.members: res;
 	    		});
 	    	
 	    	if (!$scope.allPeopleList || $scope.allPeopleList.length == 0)

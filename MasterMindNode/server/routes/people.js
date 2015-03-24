@@ -2,6 +2,7 @@
 
 var people = require('../controllers/people');
 var securityRoles = require('../controllers/securityRoles');
+var departments = require('../controllers/departments');
 
 var _ = require('underscore');
 var express = require('express');
@@ -137,6 +138,26 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 				var roles = req.query.role;
 				var includeInactive = req.query.includeInactive;
 			    people.listPeopleByRoles(roles, includeInactive, fields, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
+			else if (type && type == "byCategories") {
+				var categories = req.query.categories ? req.query.categories.split(','): [];
+				var includeInactive = req.query.includeInactive;
+				/*
+			    people.listPeopleByRoles(roles, includeInactive, fields, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			    */
+				departments.listPeopleByDepartmentsCategories(categories, includeInactive, fields, function(err, result){
 			        if(err){
 			            res.json(500, err);
 			        } else {

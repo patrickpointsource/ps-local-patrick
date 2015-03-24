@@ -55,6 +55,21 @@ router.get( '/available/code', util.isAuthenticated, function( req, res ) {
 	});
 } );
 
+router.get( '/categories', util.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.departments.resourceName, securityResources.departments.permissions.viewDepartments, function( allowed ) {
+		if( allowed ) {
+			// Call to projects service
+			departments.listCategories( function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	});
+} );
+
 router.get( '/search', util.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.departments.resourceName, securityResources.departments.permissions.viewDepartments, function( allowed ) {
 		if( allowed ) {
