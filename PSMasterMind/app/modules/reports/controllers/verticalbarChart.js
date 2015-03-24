@@ -44,6 +44,10 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
 
             return res;
         };
+        var getTooltipText = function (e)
+        {
+            return [e.aggField[0], "\xA0", "Role: " + e.x, "\xA0", "Hours: " + e.y];
+        };
 
         for (var prop in dataMap)
             if (dataMap.hasOwnProperty(prop))
@@ -89,20 +93,13 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
 
         var filterValues = [y1Axis.measure, y2Axis.measure, y3Axis.measure];
         var rebindData = false;
-        var series;
 
         chart.assignColor(capitalizeString(y3Axis.measure), "#96D4F3", "#7FCCF0", 0.5);
-        series = chart.addSeries(capitalizeString(y3Axis.measure), dimple.plot.bar, [xAxis, y3Axis]);
-        configBarTooltip(chart, series, xTitle, yTitle);
-
+        chart.addSeries(capitalizeString(y3Axis.measure), dimple.plot.bar, [xAxis, y3Axis]).getTooltipText = getTooltipText;
         chart.assignColor(capitalizeString(y1Axis.measure), "red", "#ED1E79", 0.8);
-        series = chart.addSeries(capitalizeString(y1Axis.measure), dimple.plot.bigDash, [xAxis, y1Axis]);
-        configBarTooltip(chart, series, xTitle, yTitle);
-
+        chart.addSeries(capitalizeString(y1Axis.measure), dimple.plot.bigDash, [xAxis, y1Axis]).getTooltipText = getTooltipText;
         chart.assignColor(capitalizeString(y2Axis.measure), "#0071BC", "#0071BC", 0.7);
-        series = chart.addSeries(capitalizeString(y2Axis.measure), dimple.plot.bar, [xAxis, y2Axis]);
-        configBarTooltip(chart, series, xTitle, yTitle);
-
+        chart.addSeries(capitalizeString(y2Axis.measure), dimple.plot.bar, [xAxis, y2Axis]).getTooltipText = getTooltipText;
         chart.setBounds(50, 15, width - 100, height - legendBoxHeight - gap - 15 - 30);
         chart.draw();
 
@@ -217,101 +214,6 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
         });
     };
 
-    var configBarTooltip = function (chart, bar, xTitle, yTitle)
-    {
-        var popup;
-        var axisLine;
-        var yKeys = $scope.chartData ? Object.keys($scope.chartData) : ["", "", ""];
-        bar.addEventHandler("mouseover", onBarHover);
-        bar.addEventHandler("mouseleave", onBarLeave);
-
-        function onBarHover(e)
-        {
-
-            if (!e.yValue || e.yValue == 0)
-                return;
-
-            // Get the properties of the selected shape
-            var cx = parseFloat(e.selectedShape.attr("x")),
-        		cy = parseFloat(e.selectedShape.attr("y")),
-        		cwidth = parseFloat(e.selectedShape.attr("width")),
-        		cheight = parseFloat(e.selectedShape.attr("height"));
-            var fill = e.selectedShape.attr("fill");
-            var stroke = e.selectedShape.attr("stroke");
-
-            // Set the size and position of the popup
-            var width = 150,
-				height = 55,
-				x = (cx + 2 * width < chart.svg.attr("width") ? cx + cwidth : cx - width - 10),
-        		y = (cy - height < height ? height : cy - height);
-
-            // Create a group for the popup
-            popup = chart.svg.append("g");
-
-            // Add a rectangle surrounding the tooltip content
-            popup
-        		.append("rect")
-        		.attr("x", x + 5)
-        		.attr("y", y - 5)
-        		.attr("width", width)
-        		.attr("height", height)
-        		.attr("rx", 5)
-        		.attr("ry", 5)
-        		.style("fill-opacity", 0.7)
-        		.style("fill", fill)
-        		.style("stroke", stroke)
-        		.style("stroke-width", 2);
-
-            // Add custom tooltip content
-            popup
-        		.append("text")
-        		.style("font-family", "sans-serif")
-        		.style("font-size", 10)
-        		.attr("x", x + 10)
-        		.attr("y", y + 5)
-        		.append("tspan")
-        		.attr("x", x + 10)
-        		.attr("y", y + 10)
-        		.text(e.seriesValue[0])
-        		.append("tspan")
-        		.attr("x", x + 10)
-        		.attr("y", y + 25)
-        		.text(capitalizeString(xTitle) + ": " + e.xValue)
-        		.append("tspan")
-        		.attr("x", x + 10)
-        		.attr("y", y + 40)
-        		.text(capitalizeString(yTitle) + ": " + e.yValue);
-
-            //Draw dotted line to the left or right yAxis 
-            var cx1 = yKeys.indexOf(e.seriesValue[0].toLowerCase()) != 1 ? cx : cx + cwidth;
-            var cx2 = yKeys.indexOf(e.seriesValue[0].toLowerCase()) != 1 ? 50 : chart.svg.attr("width") - 150;
-            axisLine = chart.svg.append("line")
-             	.attr("class", "d3-dp-line")
-             	.attr("x1", cx1)
-             	.attr("y1", cy + 1)
-             	.attr("x2", cx2)
-             	.attr("y2", cy + 1)
-             	.style("stroke-dasharray", ("3, 3"))
-             	.style("stroke-opacity", 0.7)
-             	.style("fill", fill)
-             	.style("stroke", stroke)
-             	.style("stroke-width", 2);
-        };
-
-        function onBarLeave(e)
-        {
-            if (popup && popup.remove())
-            {
-                popup.remove();
-            }
-            if (axisLine && axisLine.remove())
-            {
-                axisLine.remove();
-            }
-        };
-
-    };
-
     setTimeout(function ()
     {
         $scope.render($scope.$parent.elemId || $scope.$parent.$parent.elemId);
@@ -327,7 +229,6 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
             return str ? str.charAt(0).toUpperCase() : "";
         }
     };
-
 }]);
 
 // Copyright: 2014 PMSI-AlignAlytics
