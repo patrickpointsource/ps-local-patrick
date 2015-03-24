@@ -4,6 +4,7 @@
  * */
 describe('E2E: Staffing Tests', function() {	
     
+	var SUFFIX = "_" + new Date().getTime();
 	var ACTIVE_PROJECT_WITH_TWO_ROLES = 'Active project with two unassigned roles';
 	var ACTIVE_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES = 'Active project with unassigned and assigned roles';
 	var ACTIVE_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES = 'Active project with unassigned and underassigned roles';
@@ -319,7 +320,7 @@ describe('E2E: Staffing Tests', function() {
 	
 	var getActiveProjectWithTwoUnassignedRoles  = function () {
 		var project = getActiveProject();
-		project.name = project.name + ACTIVE_PROJECT_WITH_TWO_ROLES;
+		project.name = project.name + ACTIVE_PROJECT_WITH_TWO_ROLES + SUFFIX;
 		project.roles = [
 			{
 				name : ROLE_BA,
@@ -336,7 +337,7 @@ describe('E2E: Staffing Tests', function() {
 	
 	var getActiveProjectWithUnassignedAndAssignedRoles  = function () {
 		var project = getActiveProject();
-		project.name = project.name + ACTIVE_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES;
+		project.name = project.name + ACTIVE_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES + SUFFIX;
 		project.roles = [
 			{
 				name : ROLE_BA,
@@ -354,7 +355,7 @@ describe('E2E: Staffing Tests', function() {
 
 	var getActiveProjectWithUnassignedAndUnderassignedRoles  = function () {
 		var project = getActiveProject();
-		project.name = project.name + ACTIVE_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES;
+		project.name = project.name + ACTIVE_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES + SUFFIX;
 		project.roles = [
 			{
 				name : ROLE_BA,
@@ -374,7 +375,7 @@ describe('E2E: Staffing Tests', function() {
 	
 	var getBacklogProjectWithTwoUnassignedRoles  = function () {
 		var project = getBacklogProject();
-		project.name = project.name + BACKLOG_PROJECT_WITH_TWO_ROLES;
+		project.name = project.name + BACKLOG_PROJECT_WITH_TWO_ROLES + SUFFIX;
 		project.roles = [
 			{
 				name : ROLE_BA,
@@ -391,7 +392,7 @@ describe('E2E: Staffing Tests', function() {
 
 	var getBacklogProjectWithUnassignedAndAssignedRoles  = function () {
 		var project = getBacklogProject();
-		project.name = project.name + BACKLOG_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES;
+		project.name = project.name + BACKLOG_PROJECT_WITH_UNASSIGNED_AND_ASSIGNED_ROLES + SUFFIX;
 		project.roles = [
 			{
 				name : ROLE_BA,
@@ -409,7 +410,7 @@ describe('E2E: Staffing Tests', function() {
 
 	var getBacklogProjectWithUnassignedAndUnderassignedRoles  = function () {
 		var project = getBacklogProject();
-		project.name = project.name + BACKLOG_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES;
+		project.name = project.name + BACKLOG_PROJECT_WITH_UNASSIGNED_AND_UNDERASSIGNED_ROLES + SUFFIX;
 		project.roles = [
 			{
 				name : ROLE_BA,
@@ -427,7 +428,7 @@ describe('E2E: Staffing Tests', function() {
 
 	var getPipelineProjectWithRoles  = function () {
 		var project = getPipelineProject();
-		project.name = project.name + PIPELINE_PROJECT_WITH_TWO_ROLES;
+		project.name = project.name + PIPELINE_PROJECT_WITH_TWO_ROLES + SUFFIX;
 		project.roles = [
 			{
 				name : ROLE_BA,
