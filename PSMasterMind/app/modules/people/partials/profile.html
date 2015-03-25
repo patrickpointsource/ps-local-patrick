@@ -204,7 +204,7 @@
                                 <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text" />
                             </div>
                             <div style="padding-top: 20px;">
-                                <div ng-show="canEditPersonnelData() && isManager">
+                                <div ng-show="canEditPersonnelData() && isManager" style="padding-top: 10px; height: 40px;">
                                     <!--<input class="form-control" name="managerTypeAhead" ng-model="profile.manager" required placeholder="Select manager" typeahead-min-length="2" highlight="true" typeahead="c as getPersonName(c, true) for c in managers | orderBy:'name.familyName' | filter:$viewValue | limitTo:8" />-->
                                     <!--<select class="form-control" style="width: 100%;"
                                                 ng-model="profile.manager" required
@@ -212,7 +212,7 @@
                                             <option selected disabled hidden value=''></option>"
 
                                         </select>-->
-                                    <input class="form-control" name="managerTypeAhead" value="{{getPersonName(profileManager)}}" placeholder="Select manager" disabled />
+                                    <span>{{getPersonName(profileManager, true) || "Not Selected"}}</span>
                                 </div>
                             </div>
                             <div style="padding-top: 20px;" ng-show="canEditPersonnelData() && isManager">

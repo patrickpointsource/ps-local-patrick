@@ -123,20 +123,23 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	  $scope.vacationStartDate = today;
 	  $scope.vacationEndDate = today;
 	  $scope.requestNew = true;
-	  if($scope.profile.manager) {
-	    $scope.vacationManager = _.findWhere($scope.managers, { resource: $scope.profile.manager.resource });
-	  }
-	  if($scope.vacationManager) {
-        $scope.editManager = false;
-      } else {
-        $scope.editManager = true;
-      }
+	  Resources.refresh("people/manager/" + $scope.me._id).then(function (result) {
+	      if (result) {
+	          $scope.vacationManager = _.findWhere($scope.managers, { resource: result.resource });
+	      }
+
+	      if ($scope.vacationManager) {
+	          $scope.editManager = false;
+	      } else {
+	          $scope.editManager = true;
+	      }
+
+	      $('.select-vacation-manager').selectpicker();
+	  });
 	};
 	
 	$('.select-vacation-start-date').selectpicker();
 	$('.select-vacation-start-date').selectpicker('render');
-	
-	$('.select-vacation-manager').selectpicker();
   };
   
   $scope.addVacation = function() {
