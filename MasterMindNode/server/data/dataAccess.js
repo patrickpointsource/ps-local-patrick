@@ -1442,18 +1442,36 @@ var listPeopleByDepartmentsCategories = function(categories, includeInactive, fi
         } else {
         	var departmentsPeople = [];
         	var isBelongsTo = false;
+        	var nicknames = {};
         	
-        	categories = _.filter(categories, function(c) { return c});
+        	_.map(categories, function(c) { nicknames[ c.split(':')[0].toLowerCase() ]  = c.split(':')[1] ? c.split(':')[1].split(';'):[] });
+        	
+        	//nicknamesTmp = _.filter(nicknamesTmp, function(n) { return n});
+        	/*
+        	var nicknames = [];
+        	
+        	for (var k = 0; k < nicknamesTmp.length; k ++) {
+        		nicknames = nicknames.concat(nicknamesTmp.split(';'));
+        	}
+        	*/
+        	categories = _.map(categories, function(c) { return c.split(':')[0]});
         	
         	categories = _.map(categories, function(c) {
         		return c.toLowerCase();
         	});
         	
+        	var nicknameCond = true;
+        	
         	for (var k = 0; k < body.members.length; k ++) {
         		isBelongsTo = body.members[k].departmentCategory && body.members[k].departmentCategory.name ? 
         				(_.filter(categories, function(c) { return c == body.members[k].departmentCategory.name.toLowerCase()})).length > 0: false;
         		
-        		if (isBelongsTo && body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople))
+        		nicknameCond = !nicknames[body.members[k].departmentCategory.name.toLowerCase()] || nicknames[body.members[k].departmentCategory.name.toLowerCase()].length == 0;
+        		
+        		if (!nicknameCond)
+        			nicknameCond = (_.filter(nicknames[body.members[k].departmentCategory.name.toLowerCase()], function(nc) { return nc == body.members[k].departmentNickname})).length > 0;
+        		
+        		if (isBelongsTo && nicknameCond && body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople))
         			departmentsPeople = departmentsPeople.concat(body.members[k].departmentPeople);
         	}
         	

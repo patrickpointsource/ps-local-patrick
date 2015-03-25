@@ -315,9 +315,10 @@ header {
       }
       li.active-subitem {
         color: white;
-        background-color: @navbar-subnavbar-active-bg;
+        /*background-color: @navbar-subnavbar-active-bg;*/
         height: auto !important;
-        a {
+        
+        >a {
           color: @turquoiseRegular !important;
           i.fa-check {
             display: inline-block;
@@ -331,6 +332,7 @@ header {
           }
         }
       }
+      
       li:hover, li a:hover {
         background-color: @navbar-subnavbar-active-bg !important;
         i.fa-circle-thin {
@@ -354,6 +356,29 @@ header {
         background-color: @navbar-subnavbar-header-bg;
         a {
           background-color: @navbar-subnavbar-header-bg !important;
+        }
+      }
+      
+      ul {
+        padding-left: 0px;
+        /*
+        li:hover, li a:hover {
+          background-color: @navbar-subnavbar-active-bg !important;
+          i.fa-circle-thin {
+            color: @gray-nav-circle-active;
+          }
+        }*/
+      
+        li {
+          height: 32px !important;
+          a {
+            outline: none;
+            text-decoration: none;
+            background-color: transparent !important;
+          }
+          span {
+            font-size: 13px !important;
+          }
         }
       }
     }

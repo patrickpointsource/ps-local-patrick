@@ -205,7 +205,8 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			} );
 		} else if( $scope.peopleFilter && $scope.peopleFilter != 'all' && ( $scope.peopleFilter.indexOf( ':' ) > -1 || $scope.peopleFilter.indexOf( ',' ) > -1 || !$scope.roleGroups[ $scope.peopleFilter ] ) ) {
 
-			var tmp = $scope.peopleFilter.split( ':' );
+			//var tmp = $scope.peopleFilter.split( ':' );
+			var tmp = [$scope.peopleFilter];
 			tmp = tmp[ tmp.length - 1 ];
 			tmp = tmp.split( ',' );
 			var includeInactive = _.indexOf( tmp, 'inactive' ) > -1;
