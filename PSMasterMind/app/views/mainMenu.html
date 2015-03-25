@@ -1,6 +1,6 @@
 <ul ng-controller="MenuCtrl" class="nav navbar-nav {{additionalClass}}">
 	<li ng-repeat="menuItem in menuItems" ng-class="{active: activeArea() === '{{menuItem.value}}'}" ng-if="menuItem.isRender">
-		<a ng-click="handleClick($event, menuItem.handler)" class="{{menuItem.subItems.length > 0 ? 'close-dropdown hasSubmenu': 'close-dropdown'}}">
+		<a ng-click="handleClick($event, menuItem.handler, menuItem)" class="{{menuItem.subItems.length > 0 ? 'close-dropdown hasSubmenu': 'close-dropdown'}}">
 			<i class="fa fa-2x fa-fw {{menuItem.iconCss}}"></i>
 			<span>{{menuItem.text}}</span>
 
@@ -12,16 +12,16 @@
 			<li class="subitems-header subheader">
 				<a class="close-dropdown"> <span>{{menuItem.text}}</span></a>
 			</li>
-			<li ng-repeat="subItem in menuItem.subItems" ng-if="!subItem.isNotRender" ng-class="{'active-subitem': isSubitemSelected(subItem, menuItem), 'subheader': subItem.subheader}">
-				<a ng-click="handleClick($event, subItem.handler, menuItem, subItem, $index)" class="close-dropdown">  
+			<li ng-repeat="subItem in menuItem.subItems" ng-show="subItemShown(menuItem, subItem)" ng-if="!subItem.isNotRender" ng-class="{'active-subitem': isSubitemSelected(subItem, menuItem), 'subheader': subItem.subheader}">
+				<a ng-click="handleClick($event, subItem.handler, menuItem, subItem, $index, subItem.subItems.length > 1)" class="close-dropdown">  
 					<span>{{subItem.text}}</span>
 					<i class="fa fa-circle-thin"></i>
 					<i class="fa fa-check"></i>
 				</a>
 				<ul ng-if="subItem.active && subItem.subItems.length > 1" class="" style="padding-bottom:15px;">
-					<li ng-repeat="si in subItem.subItems" >
-						<a class="close-dropdown">  
-							<span>{{si}}</span>
+					<li ng-repeat="si in subItem.subItems" class="nav" ng-class="{'active-subitem': si.active}">
+						<a class="close-dropdown" ng-click="handleSubcategoryClick($event, menuItem, subItem, si)">  
+							<span>{{si.text}}</span>
 							<i class="fa fa-circle-thin"></i>
 							<i class="fa fa-check"></i>
 						</a>
