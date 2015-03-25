@@ -125,7 +125,7 @@ describe('E2E: Role Tests', function() {
 		   	    		var hourlyLoadedRate = editForms[1].findElement(hourlyLoadedRateInput);
 		   	    		hourlyLoadedRate.clear().then( function () { hourlyLoadedRate.sendKeys(DEFAULT_HOURLY_LOADED_RATE); } );
 		   	    		editForms[1].findElement(saveRoleButton).click().then( function () {
-				    		browser.driver.sleep(1000);	
+				    		browser.driver.sleep(2000);	
    	    					checkHourlyAttributes();
 		   	    		});
 		    		});
@@ -146,7 +146,7 @@ describe('E2E: Role Tests', function() {
    	     		browser.wait(function(){	    		
 	   	    		return browser.isElementPresent(saveRoleButton);
 	   	    	}).then(function(){
-		    		browser.driver.sleep(1000);	
+		    		browser.driver.sleep(2000);	
 		    		browser.findElements(editForm).then( function (editForms) {
 		   	    		var hourlyAdvertisedRate = editForms[1].findElement(hourlyAdvertisedRateInput);
 			    		expect(hourlyAdvertisedRate.getAttribute('value')).toEqual(DEFAULT_HOURLY_ADVERTISED_RATE);
