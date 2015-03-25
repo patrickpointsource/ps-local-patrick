@@ -74,11 +74,13 @@ describe("E2E: Project test cases.", function () {
         });
     });
     
+    // IMPORTANT: Prepare test data 
     it('Add Hours for the active project to tests.', function() {	
 		console.log('> Add Hours for the active project to tests.');
 		dashboardHoursWidgetAddValueToProjectTest();
 	});
     
+   
  	it('Test Projects sorting', function () {
  		checkProjectsSorting();
  	});
@@ -286,25 +288,24 @@ describe("E2E: Project test cases.", function () {
             });
 
             // filling project fields
-            fillCommonFields(newProjectPage, function () {
-                fillCustomFieldsCallback(newProjectPage);
+            fillCustomFieldsCallback(newProjectPage).then(function() {
+            	fillCommonFields(newProjectPage).then(function() {
+                	newProjectPage.saveButtonBottom.click();
+                    if ( !errorMsgs ) {
+                    	browser.sleep(6000);            	
+                    	expect(browser.getCurrentUrl()).toContain('/edit');
+                    	newProjectPage.doneButtonBottom.click();
+                        browser.sleep(2000); 
+                        expect(browser.getCurrentUrl()).toContain('/summary');
+                    } else {
+                    	browser.sleep(1000);
+                   	 	expect(newProjectPage.errorMsgs).toBeDefined();
+                   	 	browser.executeScript('window.scrollTo(0,0);').then(function () {
+                   	 		newProjectPage.cancelButton.click();
+                   	 	});
+                    }
+                });
             });
-            
-            newProjectPage.saveButtonBottom.click();
-            if ( !errorMsgs ) {
-            	browser.sleep(6000);            	
-            	expect(browser.getCurrentUrl()).toContain('/edit');
-            	newProjectPage.doneButtonBottom.click();
-                browser.sleep(2000); 
-                expect(browser.getCurrentUrl()).toContain('/summary');
-            } else {
-            	browser.sleep(1000);
-           	 	expect(newProjectPage.errorMsgs).toBeDefined();
-           	 	browser.executeScript('window.scrollTo(0,0);').then(function () {
-           	 		newProjectPage.cancelButton.click();
-           	 	});
-            }
-            
         });
     };
     
@@ -318,12 +319,12 @@ describe("E2E: Project test cases.", function () {
         	 projectsPage.addProjectButton.click();
              browser.sleep(2000);
              
-             fillBrokenProjectPageFields(newProjectPage);
-        	
-             newProjectPage.cancelButton.click();
-             browser.sleep(2000); 
-             console.log("> Project canceled.");
-             expect(browser.getCurrentUrl()).toContain('/projects?filter');
+             fillBrokenProjectPageFields(newProjectPage).then(function() {
+            	 newProjectPage.cancelButton.click();
+                 browser.sleep(2000); 
+                 console.log("> Project canceled.");
+                 expect(browser.getCurrentUrl()).toContain('/projects?filter');            	 
+             });
         });
     };
     
@@ -393,21 +394,15 @@ describe("E2E: Project test cases.", function () {
 	    });
     };
 
-    var fillCommonFields = function (newProjectPage, fillOtherFieldsCallback) {
-        newProjectPage.execSponsorSelect(1); // assume that we have at least 1 sponsor in list.
-
-        newProjectPage.customerInput.sendKeys("E2E Test Customer Name");
-
-        fillOtherFieldsCallback();
-
-        // roles tab filling
-        //newProjectPage.rolesTab.click();
-        newProjectPage.triggerAddRoleButton.click();
-        newProjectPage.roleSelect(projectRoles.PM); // select project manager
-        newProjectPage.addRoleButton.click();
-        browser.sleep(1000);
-
-        console.log("> Common project fields filled in.");
+    var fillCommonFields = function (newProjectPage) {
+    	 // assume that we have at least 1 sponsor in list.
+        return newProjectPage.execSponsorSelect(1).then(function() {
+        	newProjectPage.customerInput.sendKeys("E2E Test Customer Name").then(function(){
+        		addProjectRole(newProjectPage, projectRoles.PM).then(function() {
+                	console.log("> Common project fields filled in.");
+                });
+            });
+        });
     };
 
     var fillActiveProjectPageFields = function (newProjectPage) {
@@ -416,12 +411,15 @@ describe("E2E: Project test cases.", function () {
         today.setDate(today.getDate() - 2);
         var startDate = getShortDate(new Date(today));
 
-        newProjectPage.nameInput.sendKeys(ACTIVE_PROJECT_NAME);
-        newProjectPage.selectType(0).then(function () {
-            newProjectPage.projectCommited.click();
-            console.log("> Active project fields entered.");
+        return newProjectPage.nameInput.sendKeys(ACTIVE_PROJECT_NAME).then(function() {
+        	newProjectPage.selectType(0).then(function () {
+                newProjectPage.projectCommited.click().then(function(){
+                	  newProjectPage.startDate.sendKeys(startDate);
+                      console.log("> Active project fields entered.");
+                });
+            });
         });
-        newProjectPage.startDate.sendKeys(startDate);
+        
     };
 
     var fillBacklogProjectPageFields = function (newProjectPage) {
@@ -430,12 +428,14 @@ describe("E2E: Project test cases.", function () {
         today.setDate(today.getDate() + 2);
         var startDate = getShortDate(new Date(today));
 
-        newProjectPage.nameInput.sendKeys(BACKLOG_PROJECT_NAME);
-        newProjectPage.selectType(0).then(function () {
-            newProjectPage.projectCommited.click();
-            console.log("> Backlog project fields entered.");
+        return newProjectPage.nameInput.sendKeys(BACKLOG_PROJECT_NAME).then(function() {
+        	newProjectPage.selectType(0).then(function () {
+                newProjectPage.projectCommited.click().then(function(){
+                	  newProjectPage.startDate.sendKeys(startDate);
+                      console.log("> Backlog project fields entered.");
+                });
+            });
         });
-        newProjectPage.startDate.sendKeys(startDate);
     };
 
     var fillPipelineProjectPageFields = function (newProjectPage) {
@@ -444,10 +444,12 @@ describe("E2E: Project test cases.", function () {
         today.setDate(today.getDate() + 2);
         var startDate = getShortDate(new Date(today));
  
-        newProjectPage.nameInput.sendKeys(PIPELINE_PROJECT_NAME);
-        newProjectPage.selectType(0);
-        newProjectPage.startDate.sendKeys(startDate);
-        console.log("> Pipeline project fields entered.");
+        return newProjectPage.nameInput.sendKeys(PIPELINE_PROJECT_NAME).then(function() {
+        	newProjectPage.selectType(0).then(function () {
+                newProjectPage.startDate.sendKeys(startDate);
+                console.log("> Pipeline project fields entered.");
+            });
+        });
     };
     
     var fillInvestmentProjectPageFields = function (newProjectPage) {
@@ -456,10 +458,12 @@ describe("E2E: Project test cases.", function () {
         today.setDate(today.getDate() + 2);
         var startDate = getShortDate(new Date(today));
 
-        newProjectPage.nameInput.sendKeys(INVEST_PROJECT_NAME);
-        newProjectPage.selectType(1);
-        newProjectPage.startDate.sendKeys(startDate);
-        console.log("> Investment project fields entered.");
+        return newProjectPage.nameInput.sendKeys(INVEST_PROJECT_NAME).then(function() {
+        	newProjectPage.selectType(1).then(function () {
+                newProjectPage.startDate.sendKeys(startDate);
+                console.log("> Investment project fields entered.");
+            });
+        });
     };
 
     var fillCompletedProjectPageFields = function (newProjectPage) {
@@ -472,19 +476,23 @@ describe("E2E: Project test cases.", function () {
         var end = new Date();
         end.setDate(end.getDate() - 2);
         var endDate = getShortDate(new Date(end));
-
-        newProjectPage.nameInput.sendKeys(COMPLETED_PROJECT_NAME);
-        newProjectPage.selectType(0).then(function () {
-        	newProjectPage.projectCommited.click();
-        	console.log("> Completed project fields entered.");
+        
+        return newProjectPage.nameInput.sendKeys(COMPLETED_PROJECT_NAME).then(function() {
+        	newProjectPage.selectType(0).then(function () {
+                newProjectPage.projectCommited.click().then(function(){
+                	  newProjectPage.startDate.sendKeys(startDate).then(function() {
+                		  newProjectPage.endDate.sendKeys(endDate);
+                		  console.log("> Completed project fields entered.");
+                	  });
+                });
+            });
         });
-        newProjectPage.startDate.sendKeys(startDate);
-    	newProjectPage.endDate.sendKeys(endDate);
     };
     
     var fillBrokenProjectPageFields = function (newProjectPage) {
-        newProjectPage.nameInput.sendKeys(TEST_PROJECT_NAME);
-        console.log("> Broken project fields entered.");
+        return newProjectPage.nameInput.sendKeys(TEST_PROJECT_NAME).then(function() {
+        	 console.log("> Broken project fields entered.");
+        });
     };
     
     var fill3RolesPageFields = function (newProjectPage) {    	
@@ -492,21 +500,33 @@ describe("E2E: Project test cases.", function () {
         today.setDate(today.getDate() - 2);
         var startDate = getShortDate(new Date(today));
 
-        newProjectPage.nameInput.sendKeys(TEST_PROJECT_NAME);
-        newProjectPage.selectType(0).then(function () {
-            newProjectPage.projectCommited.click();
-            console.log("> Active project fields entered.");
+        return newProjectPage.nameInput.sendKeys(TEST_PROJECT_NAME).then(function() {
+        	newProjectPage.selectType(0).then(function () {
+                newProjectPage.projectCommited.click().then(function(){
+                	  newProjectPage.startDate.sendKeys(startDate).then(function() {
+                          addProjectRole(newProjectPage, projectRoles.SEO).then(function() {
+                        	  addProjectRole(newProjectPage, projectRoles.SSEO).then(function() {
+                        	  	console.log("> 3 Roles test project fields entered.");
+                        	  });
+                          });
+                	  });
+                });
+            });
         });
-        newProjectPage.startDate.sendKeys(startDate);
-        
-        newProjectPage.triggerAddRoleButton.click();
-        newProjectPage.roleSelect(projectRoles.SSEO);
-        newProjectPage.addRoleButton.click();
-        
-        newProjectPage.triggerAddRoleButton.click();
-        newProjectPage.roleSelect(projectRoles.SEO);
-        newProjectPage.addRoleButton.click();
     };
+    
+    var addProjectRole = function (newProjectPage, role) {
+    	return browser.wait(function () {
+				return browser.isElementPresent(newProjectPage.triggerAddRoleButton);
+			}).then(function () {
+				newProjectPage.triggerAddRoleButton.click().then(function() {
+   	  				newProjectPage.roleSelect(role).then(function() {
+   	  					newProjectPage.addRoleButton.click();
+   	  					browser.sleep(1000);
+   	  				});
+				});
+			});
+    }; 
     
     var checkServicesEstimateField = function () {
     	console.log("Check that Services Estimate field is readonly for the created active project.");
@@ -541,10 +561,14 @@ describe("E2E: Project test cases.", function () {
              element.all(by.className('appTitle')).get(1).click(); // go to the home page
              browser.sleep(1000);
              
-             expect(newProjectPage.saveDialog.getAttribute('aria-hidden')).toEqual( 'false' );
-             newProjectPage.saveDialogNo.click();
-             browser.sleep(2000);
-             expect(browser.getCurrentUrl()).toContain('/index.html');
+             return browser.wait(function () {
+                 return browser.isElementPresent(newProjectPage.saveDialog);
+             }).then(function () {
+            	 	expect(newProjectPage.saveDialog.getAttribute('aria-hidden')).toEqual( 'false' );
+            	 	newProjectPage.saveDialogNo.click();
+            	 	browser.sleep(2000);
+            	 	expect(browser.getCurrentUrl()).toContain('/index.html');
+             });
         });
     };
 
@@ -620,7 +644,7 @@ describe("E2E: Project test cases.", function () {
         this.servicesEstimated = element(by.id("servicesEstimatedValue"));
         this.projectCommited = element(by.model('project.committed'));
         this.execSponsorSelect = function (number) {
-        	browser.wait(function () {
+        	return browser.wait(function () {
                 return browser.isElementPresent(element(by.model('project.executiveSponsor.resource')));
             }).then(function () {
             	element(by.model('project.executiveSponsor.resource')).all(by.tagName('option'))
@@ -632,10 +656,10 @@ describe("E2E: Project test cases.", function () {
         //this.rolesTab = element(by.id('roles'));
         this.triggerAddRoleButton = element(by.css('[ng-click="triggerAddRole()"]'));
         this.roleSelect = function (name) {
-        	browser.wait(function () {
-                return browser.isElementPresent(element(by.cssContainingText('option', name)));
+        	return browser.wait(function () {
+                return browser.isElementPresent(element(by.model('newRole.type.resource')));
             }).then(function () {
-            	element(by.cssContainingText('option', name)).click();
+            	element(by.model('newRole.type.resource')).element(by.cssContainingText('option', name)).click();
             });
         };
         // 0 - PAID, 1 - POC, 2 - INVEST
