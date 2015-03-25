@@ -56,8 +56,8 @@ describe('E2E: Role Tests', function() {
 	});
 	
 	var width = 1900;
-    var height = 1200;
-    browser.driver.manage().window().setSize(width, height);
+	var height = 1200;
+	browser.driver.manage().window().setSize(width, height);
 	
 	it('Role Test: Create & check role', function() {	
 		console.log('> Running: Role - Create & check that role exists');
