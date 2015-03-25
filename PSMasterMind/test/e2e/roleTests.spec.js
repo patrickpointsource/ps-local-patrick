@@ -42,6 +42,9 @@ describe('E2E: Role Tests', function() {
 	var submit_approve_access = by.id('submit_approve_access');
 
 	beforeEach(function() {
+		var width = 1900;
+		var height = 1200;
+		browser.driver.manage().window().setSize(width, height);
 		browser.driver.getCurrentUrl().then(function(url) {
 			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
 				browser.driver.get('http://localhost:9000/index.html#/');
@@ -54,11 +57,7 @@ describe('E2E: Role Tests', function() {
 			}
 		});
 	});
-	
-	var width = 1900;
-	var height = 1200;
-	browser.driver.manage().window().setSize(width, height);
-	
+		
 	it('Role Test: Create & check role', function() {	
 		console.log('> Running: Role - Create & check that role exists');
 		createAndCheckRole();
