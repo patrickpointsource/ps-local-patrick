@@ -45,11 +45,12 @@
                 <option selected value="" ng-hide="vacationManager">Select manager</option>
               </select>
             </div>
-            
-             <select class="selectpicker select-vacation-start-date" data-style="btn-info" ng-model="vacationType" name="vacationType">
-                 <option selected value="" ng-hide="vacationType">Type of Request</option>
-                 <option ng-repeat="vacationType in vacationTypes" value="{{vacationType}}">{{vacationType}}</option>
-             </select>
+            <div id="vacationType">
+            	<select class="selectpicker select-vacation-start-date" data-style="btn-info" ng-model="vacationType" name="vacationType">
+              		<option selected value="" ng-hide="vacationType">Type of Request</option>
+               		<option ng-repeat="vacationType in vacationTypes" value="{{vacationType}}">{{vacationType}}</option>
+             	</select>
+            </div>
           </div>
           <div class="col-xs-12 col-md-6">
             <!--<i class="fa fa-pencil cursor-pointer padding-left-10" ng-click="editManagerCallback()" ng-show="editManager"></i>-->
