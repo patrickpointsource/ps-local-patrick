@@ -170,7 +170,6 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 			if (statuses[k].toLowerCase() == 'pending')
 				targetPermissions.push(securityResources.vacations.permissions.viewOthersPendingOOO);
 		}
-		
 		///targetPermissions = [securityResources.vacations.permissions.viewVacations];
 		
 		security.isAllowed(req.user, res, securityResources.vacations.resourceName, targetPermissions, function(allowed){
@@ -198,7 +197,7 @@ router.get('/all', auth.isAuthenticated, function(req, res){
 });
 
 router.get('/requests', auth.isAuthenticated, function (req, res) {
-    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.editVacations, function (allowed) {
+    security.isAllowed(req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewVacations, function (allowed) {
         if (allowed) {
             people.getPersonByGoogleId(req.user, function (personErr, manager) {
                 if (!personErr && manager) {
