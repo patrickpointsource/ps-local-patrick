@@ -219,15 +219,15 @@ describe('E2E: Administration Tests', function() {
 
 	    this.initial = {
 	    	name : 'TestSecurityGroup' + this.suffix,
-	    	members : [ { firstName : 'ps', lastName : 'apps'} ]
+	    	members : [ { firstName : 'Denis', lastName : 'Novalenko'} ]
 	    };
 
 	    this.updated = {
 	        name : 'UpdatedTestSecurityGroup' + this.suffix,
-	        members : [ { firstName : 'ps', lastName : 'apps'} ]
+	        members : [ { firstName : 'Denis', lastName : 'Novalenko'} ]
 	    }
     	this.memberToAdd = { firstName : 'Brian', lastName : 'Reynolds'};
-    	this.memberToRemove = { firstName : 'ps', lastName : 'apps'};
+    	this.memberToRemove = { firstName : 'Denis', lastName : 'Novalenko'};
 	   
 	    this.permission = "View Tasks";
 	    
@@ -452,9 +452,10 @@ describe('E2E: Administration Tests', function() {
 
 		this.verifySecurityGroup = function (securityGroup) {
 			var $this = this;
+    		browser.driver.sleep(1000);	
 			browser.findElement($this.selectGroup).sendKeys(securityGroup.name).then( function () {
-	    		browser.driver.sleep(1000);	
 	       		if (securityGroup.members) {
+	        		browser.driver.sleep(2000);	
 	    			for (var i in securityGroup.members) {
 	    				element.all(by.repeater('member in selectedGroupMembers')).filter(function(elem, index) {
 	    					return elem.getText().then(function(text) {
