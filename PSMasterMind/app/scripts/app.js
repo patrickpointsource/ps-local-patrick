@@ -142,7 +142,8 @@
         })
         .state('reports.shell', {
           url: '/?view',
-          templateUrl: '/modules/reports/views/reportsShell.html',
+          //templateUrl: '/modules/reports/views/reportsShell.html',
+          templateUrl: '/modules/reports/views/reports.html',
         })
         .state('reports.people', {
           url: '/people',
