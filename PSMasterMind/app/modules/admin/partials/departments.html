@@ -201,7 +201,8 @@
 					</div>
 					
 					<div ng-if="selectedDepartment.editDepartmentPeople">
-						<div  ng-repeat="p in availablePeopleList | limitTo:15" class="available-person" ng-click="addDepartmentPerson(p)">
+						<div  ng-repeat="p in availablePeopleList | limitTo:15" class="available-person" 
+							ng-class="{'already-assigned':p.alreadyAssigned}" ng-click="addDepartmentPerson(p)">
 							<span class="name">{{p.name}}</span>
 							<span class="add pull-right" >
 								<i class="fa fa-plus"></i>

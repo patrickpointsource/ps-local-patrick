@@ -17,6 +17,18 @@ module.exports.listDepartments = function(callback) {
     });
 };
 
+module.exports.unassignPeople = function(people, callback) {
+	 dataAccess.unassignDepartmentsPeople(people, function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error unassigning departments people', null);
+        } else {
+            //console.log(body);
+            callback(null, body);
+        }
+    });  
+};
+
 module.exports.listAvailablePeople = function(substr, callback) {
 	 dataAccess.listDepartmentsAvailablePeople(substr, function(err, body){
         if (err) {

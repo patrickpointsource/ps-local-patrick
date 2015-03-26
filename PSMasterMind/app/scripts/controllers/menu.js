@@ -4,8 +4,8 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, and roles.
  */
-angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter', '$q', 'DepartmentsService',
-  function ($scope, $state, $filter, $q, DepartmentsService) {
+angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$state','$filter', '$q', 'DepartmentsService',
+  function ($scope, $rootScope, $state, $filter, $q, DepartmentsService) {
       //$scope.projectManagementAccess = false;
 	$scope.menuItems = [ {
 		text: "Dashboard",
@@ -61,44 +61,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			value: "all",
 			subheader: true,
 			handler: "handleSubitem"
-		}/*, {
-			text: "Administration",
-			value: "administration",
-			handler: "handleSubitem"
-		}, {
-			text: "Client Experience Mgmt",
-			value: "clientexpierencemgmt",
-			handler: "handleSubitem"
-		}, {
-			text: "Development",
-			value: "development",
-			handler: "handleSubitem"
-		}, {
-			text: "Architects",
-			value: "architects",
-			handler: "handleSubitem"
-		},{
-			text: "Marketing",
-			value: "marketing",
-			handler: "handleSubitem"
-		}, {
-			text: "Digital Experience",
-			value: "digitalexperience",
-			handler: "handleSubitem"
-		}, {
-			text: "Executive Mgmt",
-			value: "executivemgmt",
-			handler: "handleSubitem"
-		}, {
-			text: "Sales",
-			value: "sales",
-			handler: "handleSubitem"
-		}, {
-            text: "Inactive",
-            value: "inactive",
-            handler: "handleSubitem",
-            isNotRender: !$scope.projectManagementAccess
-        }*/]
+		}]
 	}, {
 		text: "Calendar",
 		value: "calendar",
@@ -179,7 +142,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		if (this[handler]) {
 			var li = $(e.target).closest('li');
 
-			if (menuItem) {
+			if (menuItem &&  menuItem.subItems) {
 				// show all subitems
 				for (var k = 0; k < menuItem.subItems.length; k ++) {
 					menuItem.subItems[k].hidden = false;
@@ -292,12 +255,17 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			var categories = res && res.members ? res.members: res;
 			var subItem;
 			
+			for (var k = peopleMenuItem.subItems.length - 1; k >= 0; k --)
+				if (peopleMenuItem.subItems[k].dynamic)
+					peopleMenuItem.subItems.splice(k, 1);
+			
 			for (var k = 0; k < categories.length; k ++) {
 				subItem = {
 					text: categories[k].name,
 					value: categories[k].name.toLowerCase().replace(/\s+/g,'_'),
 					handler: "handleSubitem",
-					subItems: categories[k].nicknames ? _.map(categories[k].nicknames, function(n) { return {text: n, active: true}}): []
+					subItems: categories[k].nicknames ? _.map(categories[k].nicknames, function(n) { return {text: n, active: true}}): [],
+					dynamic: true
 				};
 				
 				peopleMenuItem.subItems.push(subItem);
@@ -307,7 +275,8 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 	            text: "Inactive",
 	            value: "inactive",
 	            handler: "handleSubitem",
-	            isNotRender: !$scope.projectManagementAccess
+	            isNotRender: !$scope.projectManagementAccess,
+	            dynamic: true
 	        });
 			
 			 
@@ -315,5 +284,9 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 	};
 
 	$scope.initMenu();
+	
+	$rootScope.$on('department:created', $scope.initMenu);
+	$rootScope.$on('department:updated', $scope.initMenu);
+	$rootScope.$on('department:deleted', $scope.initMenu);
 	
   }]);

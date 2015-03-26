@@ -41,6 +41,10 @@ angular.module('Mastermind')
     	return Resources.refresh("departments/available/people", {substr: substr});
     };
     
+    this.unassignPeople = function(people) {
+    	return Resources.refresh("departments/unassign/people", {people: people});
+    };
+    
     this.addDepartment = function(department){
     	var deferred = $q.defer();
     	

@@ -1406,6 +1406,49 @@ var filterDepartments = function(code, manager, nickname, substr, callback) {
 	}
 };
 
+var unassignDepartmentsPeople = function(people, callback) {
+	
+	listDepartments( function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading departments', null);
+        } else {
+        	var departmentToUpdate = [];
+        	var clearedPeople;
+        	
+        	for (var k = 0; k < body.members.length; k ++) {
+        		if (body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople)) {
+        			clearedPeople = _.filter(body.members[k].departmentPeople, function(dp) {
+        				return (_.filter(people, function(p) { return p == dp || p.replace('departments/people') == dp.replace('people/')})).length == 0;
+        			});
+        			
+        			if (clearedPeople.length != body.members[k].departmentPeople.length) {
+        				body.members[k].departmentPeople = clearedPeople;
+        				departmentToUpdate.push(body.members[k]);
+        			}
+        				
+        		}
+        			
+        	}
+        	
+        	// update needed departments
+        	if (departmentToUpdate.length > 0) {
+        		var id;
+        		
+        		for (var k = 0; k < departmentToUpdate.length; k ++) {
+        			id = departmentToUpdate[k].id ? departmentToUpdate[k].id: departmentToUpdate[k]._id;
+        			
+        			updateItem(id, departmentToUpdate[k], DEPARTMENTS_KEY, function(err, body){});
+        		}
+        		
+        		callback(null, {});
+        	} else
+        		callback("no departments found", {});
+        }
+	});
+	
+};
+
 var listDepartmentsAvailablePeople = function(substr, callback) {
 	listDepartments( function(err, body){
         if (err) {
@@ -1421,9 +1464,22 @@ var listDepartmentsAvailablePeople = function(substr, callback) {
         	
         	listPeopleByIsActiveFlag(true, null, function(err, result){
 		        if(!err){
-		        	var availablePeople = _.filter(result.members, function(p) {
-		        		return (_.filter(assignedPeople, function(ap){ return ap == p.resource || ap.replace('departments/people') == p.resource.replace('people/')})).length == 0;
-		        	});
+		        	var availablePeople;
+		        	
+		        	if (!substr)
+			        	availablePeople = _.filter(result.members, function(p) {
+			        		return (_.filter(assignedPeople, function(ap){ return ap == p.resource || ap.replace('departments/people') == p.resource.replace('people/')})).length == 0;
+			        	});
+		        	else 
+		        		availablePeople = _.map(result.members, function(p) {
+		        			var resultPeople = _.extend({}, p);
+			        		
+		        			if ((_.filter(assignedPeople, function(ap){ return ap == p.resource || ap.replace('departments/people') == p.resource.replace('people/')})).length > 0)
+			        			resultPeople.alreadyAssigned = true;
+			        			
+			        		return resultPeople;
+			        	});
+		        		
 		        	
 		        	callback(null, prepareRecords( dataFilter.filterPeopleBySubstr(substr, availablePeople), "members", "people/" ) );
 		        }            
@@ -1738,6 +1794,7 @@ module.exports.filterDepartments = filterDepartments;
 module.exports.listDepartmentsAvailablePeople = listDepartmentsAvailablePeople;
 module.exports.listDepartmentsCategories = listDepartmentsCategories;
 module.exports.listPeopleByDepartmentsCategories = listPeopleByDepartmentsCategories;
+module.exports.unassignDepartmentsPeople = unassignDepartmentsPeople;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;

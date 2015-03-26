@@ -3,6 +3,7 @@
 var departments = require( '../controllers/departments' );
 var express = require( 'express' );
 var util = require( '../util/auth' );
+var _ = require('underscore');
 
 var security = require( '../util/security' );
 var securityResources = require( '../util/securityResources' );
@@ -30,6 +31,24 @@ router.get( '/available/people', util.isAuthenticated, function( req, res ) {
 			var substr = req.query[ "substr" ] ? req.query[ "substr" ] : "";
 			// Call to projects service
 			departments.listAvailablePeople( substr, function( err, result ) {
+				if( err ) {
+					res.json( 500, err );
+				} else {
+					res.json( result );
+				}
+			} );
+		}
+	});
+} );
+
+router.get( '/unassign/people', util.isAuthenticated, function( req, res ) {
+	security.isAllowed( req.user, res, securityResources.departments.resourceName, securityResources.departments.permissions.viewDepartments, function( allowed ) {
+		if( allowed ) {
+			var people = req.query[ "people" ] ? req.query[ "people" ] : "";
+			
+			people = _.isArray(people) ? people: [people];
+			// Call to projects service
+			departments.unassignPeople( people, function( err, result ) {
 				if( err ) {
 					res.json( 500, err );
 				} else {
