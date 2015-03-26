@@ -1,5 +1,8 @@
 describe('E2E: Dashboard Test Cases >', function() {
 	 
+	var windowWidth = 1900;
+	var windowHeight = 1200;
+	
 	var USER_NAME = 'psapps@pointsourcellc.com';
 	var PASSWORD = 'ps@pp$777';
 	
@@ -62,10 +65,7 @@ describe('E2E: Dashboard Test Cases >', function() {
 	
 
 	beforeEach(function() {
-	    var width = 1900;
-	    var height = 1200;
-	    browser.driver.manage().window().setSize(width, height);
-		
+		browser.driver.manage().window().setSize(windowWidth, windowHeight);
 		browser.driver.getCurrentUrl().then(function(url) {
 			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
 				browser.driver.get('http://localhost:9000/index.html#/');
@@ -422,10 +422,7 @@ describe('E2E: Dashboard Test Cases >', function() {
     	browser.driver.ignoreSynchronization = true;
 	    browser.driver.get('http://localhost:9000/login.html');
 	    
-	    var width = 1900;
-	    var height = 1200;
-	    browser.driver.manage().window().setSize(width, height);
-	    
+	    browser.driver.manage().window().setSize(windowWidth, windowHeight);
 	    browser.driver.wait(function() {	    	
 	    	return browser.driver.isElementPresent(sbutton);
 	    }).then(function(){

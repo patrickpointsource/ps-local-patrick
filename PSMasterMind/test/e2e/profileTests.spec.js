@@ -1,5 +1,8 @@
 describe('E2E: Profile Tests', function() {	
     
+	var windowWidth = 1900;
+	var windowHeight = 1200;
+	 
     var USER_NAME = 'psapps@pointsourcellc.com';
     var PASSWORD = 'ps@pp$777';
     var USER_FULLNAME = 'apps, ps';
@@ -87,6 +90,7 @@ describe('E2E: Profile Tests', function() {
 	var NO_ACTIVE_PROJECTS = 'There are no active projects';
 	
 	beforeEach(function() {
+		browser.driver.manage().window().setSize(windowWidth, windowHeight);
 		browser.driver.getCurrentUrl().then(function(url) {
 			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
 				browser.driver.get('http://localhost:9000/index.html#/');
@@ -177,15 +181,16 @@ describe('E2E: Profile Tests', function() {
 		console.log("> Add hours in profile (weekly mode).");
 		browser.findElement(profilePhoto).click().then(function () {
 			browser.findElement(viewProfile).click().then(function () {
-				addNewHoursRecord(HOURS_VALUE);
-				console.log("> Verifying hours in profile (weekly mode).");
-				var elementIndex = '1';
-				expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(HOURS_PROJECT);
-		   		expect(browser.findElement(byId(loggedHours, elementIndex)).getText()).toEqual(HOURS_VALUE + ' hrs');
-		   		expect(browser.findElement(byId(loggedDescription, elementIndex)).getInnerHtml()).toEqual(HOURS_DESCRIPTION);
-		   		console.log("> Removing hours record (weekly mode).");	
-		   		browser.findElement(byId(hoursDelete, elementIndex)).click();	
-		 		browser.sleep(1000);
+				addNewHoursRecord(HOURS_VALUE).then(function() {
+					console.log("> Verifying hours in profile (weekly mode).");
+					var elementIndex = '1';
+					expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(HOURS_PROJECT);
+			   		expect(browser.findElement(byId(loggedHours, elementIndex)).getText()).toEqual(HOURS_VALUE + ' hrs');
+			   		expect(browser.findElement(byId(loggedDescription, elementIndex)).getInnerHtml()).toEqual(HOURS_DESCRIPTION);
+			   		console.log("> Removing hours record (weekly mode).");	
+			   		browser.findElement(byId(hoursDelete, elementIndex)).click();	
+			 		browser.sleep(1000);
+				});
    			});
 		});
 	}; 	
@@ -201,31 +206,32 @@ describe('E2E: Profile Tests', function() {
 			   				isDisplayed(i, dayLinks, function (isVisible, index) {
 			   					if (isVisible) {
 			   						dayLinks[index].click().then(function () {
-			   							addNewHoursRecord(HOURS_VALUE, hoursTitle);
+			   							addNewHoursRecord(HOURS_VALUE, hoursTitle).then(function(){
+			   								browser.executeScript('window.scrollTo(0,0);').then(function () {
+			   					   				browser.findElement(weeklyButton).click().then(function () {
+			   					   					console.log("> Verifying hours in profile (weekly mode).");
+			   					   					var elementIndex = '1';
+			   					   					browser.wait(function(){	    		
+			   					   						return browser.isElementPresent(byId(hoursDelete, elementIndex));
+			   					   					}).then(function(){
+			   					   						if (!isTask) {
+			   					   			    			expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(hoursTitle);
+			   					   			    		} else {
+			   					   			    			expect(browser.findElement(byId(loggedTask, elementIndex)).getInnerHtml()).toEqual(hoursTitle);
+			   					   			    		}
+			   					   						expect(browser.findElement(byId(loggedHours, elementIndex)).getText()).toEqual(HOURS_VALUE + ' hrs');
+			   					   						expect(browser.findElement(byId(loggedDescription, elementIndex)).getInnerHtml()).toEqual(HOURS_DESCRIPTION);
+			   					   						console.log("> Removing hours record (weekly mode).");	
+			   					   						browser.findElement(byId(hoursDelete, elementIndex)).click();	
+			   					   						browser.sleep(1000);
+			   					   					});
+			   					   				});
+			   					   			});
+			   							});
 	   		   					});
    			   			    } 
 			   				});
 			   			}
-			   			browser.executeScript('window.scrollTo(0,0);').then(function () {
-			   				browser.findElement(weeklyButton).click().then(function () {
-			   					console.log("> Verifying hours in profile (weekly mode).");
-			   					var elementIndex = '1';
-			   					browser.wait(function(){	    		
-			   						return browser.isElementPresent(byId(hoursDelete, elementIndex));
-			   					}).then(function(){
-			   						if (!isTask) {
-			   			    			expect(browser.findElement(byId(loggedProject, elementIndex)).getInnerHtml()).toEqual(hoursTitle);
-			   			    		} else {
-			   			    			expect(browser.findElement(byId(loggedTask, elementIndex)).getInnerHtml()).toEqual(hoursTitle);
-			   			    		}
-			   						expect(browser.findElement(byId(loggedHours, elementIndex)).getText()).toEqual(HOURS_VALUE + ' hrs');
-			   						expect(browser.findElement(byId(loggedDescription, elementIndex)).getInnerHtml()).toEqual(HOURS_DESCRIPTION);
-			   						console.log("> Removing hours record (weekly mode).");	
-			   						browser.findElement(byId(hoursDelete, elementIndex)).click();	
-			   						browser.sleep(1000);
-			   					});
-			   				});
-			   			});
 			   		});
 				});
    			});
@@ -336,16 +342,18 @@ describe('E2E: Profile Tests', function() {
 		var projectInput = browser.findElement(byId(loggedProjectInput));
 		var hoursInput = browser.findElement(byId(loggedHoursInput));
 		var descriptionInput = browser.findElement(byId(loggedDescriptionInput));
-		projectInput.clear().then( function () { projectInput.sendKeys(hoursTitle ? hoursTitle : HOURS_PROJECT); } );
-		browser.wait(function(){	    		
-    		return browser.isElementPresent(byId(ddlProjectsTasks));
-    	}).then(function(){
-    		browser.findElement(byId(ddlProjectsTasks)).click();
-    		hoursInput.clear().then( function () { hoursInput.sendKeys(hours); });
-    		descriptionInput.clear().then( function () { descriptionInput.sendKeys(HOURS_DESCRIPTION); });
-    		browser.findElement(byId(hoursAdd)).click();
-    		browser.sleep(5000);
-    	});
+		return projectInput.clear().then( function () { 
+			projectInput.sendKeys(hoursTitle ? hoursTitle : HOURS_PROJECT); 
+			browser.wait(function(){	    		
+	    		return browser.isElementPresent(byId(ddlProjectsTasks));
+	    	}).then(function(){
+	    		browser.findElement(byId(ddlProjectsTasks)).click();
+	    		hoursInput.clear().then( function () { hoursInput.sendKeys(hours); });
+	    		descriptionInput.clear().then( function () { descriptionInput.sendKeys(HOURS_DESCRIPTION); });
+	    		browser.findElement(byId(hoursAdd)).click();
+	    		browser.sleep(5000);
+	    	});
+		} );
 	};
 	
 	var byId = function (id, index) {
@@ -367,10 +375,7 @@ describe('E2E: Profile Tests', function() {
 		browser.driver.ignoreSynchronization = true;
 	    browser.driver.get('http://localhost:9000/login.html');
 	    
-	    var width = 1900;
-	    var height = 1200;
-	    browser.driver.manage().window().setSize(width, height);
-	    
+	    browser.driver.manage().window().setSize(windowWidth, windowHeight);
 	    browser.driver.wait(function() {	    	
 	    	return browser.driver.isElementPresent(sbutton);
 	    }).then(function(){

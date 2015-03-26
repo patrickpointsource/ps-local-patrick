@@ -1,5 +1,8 @@
 describe('E2E: Vacation Tests', function() {	
     
+	 var windowWidth = 1900;
+	 var windowHeight = 1200;
+	    
     var USER_NAME = 'psapps@pointsourcellc.com';
     var PASSWORD = 'ps@pp$777';
     var USER_FULLNAME = 'apps, ps';
@@ -50,6 +53,7 @@ describe('E2E: Vacation Tests', function() {
 	var REQUEST_CANCELLED_MSG = "Out of office request cancelled";
 	
 	beforeEach(function() {
+		browser.driver.manage().window().setSize(windowWidth, windowHeight);
 		browser.driver.getCurrentUrl().then(function(url) {
 			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
 				browser.driver.get('http://localhost:9000/index.html#/');
@@ -104,28 +108,30 @@ describe('E2E: Vacation Tests', function() {
     	}).then(function() {
     		profilePhoto.click().then(function () {
     			viewProfile.click().then(function () {
-    				browser.wait(function(){	    		
-	    	    		return browser.isElementPresent(vacationDays);
-	    	    	}).then(function() {
-	    	    		vacationDays.getText().then(function( vacDaysBefore ) {
-	    					callback().then(function() {
-		    					if (!errorMsg) {
-		    						browser.wait(function(){	    		
-		    		    	    		return browser.isElementPresent(vacationDays);
-		    		    	    	}).then(function() {
-		    		    	    		expect(vacationDays.getText()).not.toEqual(vacDaysBefore);
-		    		    	    	});
-		    					} else {
-		    						browser.wait(function(){	    		
-		    		    	    		return browser.isElementPresent(submitErrors.get(0));
-		    		    	    	}).then(function() {
-		    		    	    		expect(submitErrors.get(0).getText()).toContain(errorMsg);
-		    		    	    		closeRequest.click();
-		    		    	    	});
-		    					}	
-	    					});
-	    				});
-	    	    	});
+    				browser.executeScript('window.scrollTo(0,' + windowHeight + ');').then(function() {
+    					browser.wait(function(){	    		
+    	    	    		return browser.isElementPresent(vacationDays);
+    	    	    	}).then(function() {
+    	    	    		vacationDays.getText().then(function( vacDaysBefore ) {
+    	    					callback().then(function() {
+    		    					if (!errorMsg) {
+    		    						browser.wait(function(){	    		
+    		    		    	    		return browser.isElementPresent(vacationDays);
+    		    		    	    	}).then(function() {
+    		    		    	    		expect(vacationDays.getText()).not.toEqual(vacDaysBefore);
+    		    		    	    	});
+    		    					} else {
+    		    						browser.wait(function(){	    		
+    		    		    	    		return browser.isElementPresent(submitErrors.get(0));
+    		    		    	    	}).then(function() {
+    		    		    	    		expect(submitErrors.get(0).getText()).toContain(errorMsg);
+    		    		    	    		closeRequest.click();
+    		    		    	    	});
+    		    					}	
+    	    					});
+    	    				});
+    	    	    	});
+    				});
     			});
     		});
     	});
@@ -136,18 +142,24 @@ describe('E2E: Vacation Tests', function() {
 			return browser.isElementPresent(addRequest);
     	}).then(function() {
     		addRequest.click().then(function () {
+    			var startDate = new Date();
+				startDate.setDate(startDate.getDate() - 3);
     			selectRequestType(REQUEST_TYPE).then(function() {
     				requestDescription.clear().then( function () { 
             			requestDescription.sendKeys(VACATION_DESCRIPTION);
-            			vacationEndTime.sendKeys("12");
-            			submitRequest.click().then(function() {
-            				browser.wait(function(){	    		
-            					return browser.isElementPresent(requestList.get(0));
-            		    	}).then(function() {
-            		    		expect(requestList.get(0).getText()).toContain("APPROVED");
-            		    		checkNotification(REQUEST_APPROVED_MSG);
-            		    	});
-            			});
+            			vacationStartDate.clear().then(function() { vacationStartDate.sendKeys(getShortDate(new Date(startDate))); }).then(function() {
+        	    			vacationEndDate.clear().then(function() { vacationEndDate.sendKeys(getShortDate(new Date(startDate))); }).then(function() {    
+        	    				console.log('> Submit request.');
+        	    				submitRequest.click().then(function() {
+                    				browser.wait(function(){	    		
+                    					return browser.isElementPresent(requestList.get(0));
+                    		    	}).then(function() {
+                    		    		expect(requestList.get(0).getText()).toContain("APPROVED");
+                    		    		checkNotification(REQUEST_APPROVED_MSG);
+                    		    	});
+                    			});
+        	    			});
+        	    		});  
             		});
     			});        		
     		});
@@ -324,11 +336,8 @@ describe('E2E: Vacation Tests', function() {
 	var login = function () {
 		browser.driver.ignoreSynchronization = true;
 	    browser.driver.get('http://localhost:9000/login.html');
-	    
-	    var width = 1900;
-	    var height = 1200;
-	    browser.driver.manage().window().setSize(width, height);
-	    
+
+	    browser.driver.manage().window().setSize(windowWidth, windowHeight);
 	    browser.driver.wait(function() {	    	
 	    	return browser.driver.isElementPresent(sbutton);
 	    }).then(function(){
