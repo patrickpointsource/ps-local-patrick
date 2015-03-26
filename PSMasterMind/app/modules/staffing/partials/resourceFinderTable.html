@@ -45,11 +45,11 @@
         </div>
       </div>
       <div class="hidden-xs col-sm-3 person-header">
-        <a class="header-name" ng-class="{ active: sortType=='group-asc' || sortType=='group-desc' }" ng-click="switchSort('group')">GROUP</a>
+          <a class="header-name" ng-class="{ active: sortType=='jobTitle-asc' || sortType=='jobTitle-desc' }" ng-click="switchSort('jobTitle')">JOB TITLE</a>
         <div class="person-sorting">
-          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'group-asc'}" ng-click="changeSort('group-asc')"></i>
+          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'jobTitle-asc'}" ng-click="changeSort('jobTitle-asc')"></i>
           </button>
-          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'group-desc'}" ng-click="changeSort('group-desc')"></i>
+          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'jobTitle-desc'}" ng-click="changeSort('jobTitle-desc')"></i>
           </button>
         </div>
       </div>
@@ -88,7 +88,7 @@
         </div>
         <div class="hidden-xs col-sm-3 res-people-prop">
             <div>
-                <div>{{person.group}}</div>
+                <div>{{getJobTitle(person.jobTitle)}}</div>
             </div>
         </div>
         <div class="col-xs-7 col-sm-2 res-people-prop">
