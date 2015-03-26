@@ -186,7 +186,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 		if (this[handler]) {
 			var li = $(e.target).closest('li');
 
-			if (menuItem &&  menuItem.subItems) {
+			if (menuItem) {
 				// show all subitems
 				for (var k = 0; k < menuItem.subItems.length; k ++) {
 					menuItem.subItems[k].hidden = false;
