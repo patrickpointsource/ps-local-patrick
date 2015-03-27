@@ -89,10 +89,13 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
     }];
 
 	
-	$scope.isSubitemSelected = function(subItem, item) {
+	$scope.isSubitemSelected = function(subItem, menuItem) {
 		var result = false;
 		var val = subItem.value;
 		var f = $scope.getActiveAreaFilter();
+		
+		if (!f)
+			return false;
 		var tmp = f ? f.split(','): [];
 		var tmpVal;
 		
@@ -104,6 +107,20 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 				break;
 			}
 		}
+		
+		var anyOtherWithSubItemsSelected = false;
+		
+		for (var k = 0; menuItem && subItem.value != 'all' && !anyOtherWithSubItemsSelected && k < menuItem.subItems.length; k ++) {
+			if (menuItem.subItems[k] != subItem && menuItem.subItems[k].value != 'all' && $scope.isSubitemSelected(menuItem.subItems[k]) && 
+					menuItem.subItems[k].subItems && menuItem.subItems[k].subItems.length > 1)
+				anyOtherWithSubItemsSelected = true;
+		}
+		
+		// set hidden property when menu rerendered
+		if (f.indexOf('all') > -1 || f.toLowerCase().indexOf(subItem.value.toLowerCase()) > -1 || !anyOtherWithSubItemsSelected)
+			subItem.hidden = false;
+		//else
+		//	subItem.hidden = true;
 		/*
 		if (!result && !subItem.subheader) {
 			var start = _.indexOf(item.subItems, subItem)
@@ -120,6 +137,32 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 		return result;
 	};
 	
+	$scope.is3rdLevelSubitemSelected = function(si, subItem, menuItem) {
+		var result = false;
+		var val = si.value ? si.value: si.text.toLowerCase();
+		var f = $scope.getActiveAreaFilter();
+		var tmp = f ? f.split(','): [];
+		var tmpVal;
+		
+		for (var i = 0; f && val && i < tmp.length; i ++) {
+			tmpVal = tmp[i].trim().split(':');
+			
+			// as 3rd level menu item value is nickname which are uniq check only for substring
+			if (tmpVal[1].toLowerCase().indexOf(val.toLowerCase()) > -1) {
+				result = true;
+				break;
+			}
+		}
+		
+		si.active = result;
+		
+		result = result && subItem.active;
+		
+		return result;
+	};
+	/* 
+	 * Determines whether or not show send and third level menu items
+	 * */
 	$scope.subItemShown = function(menuItem, subItem) {
 		var result = !subItem.hidden;
 		var anyOtherWithSubItemsSelected = false;
@@ -129,7 +172,8 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 					menuItem.subItems[k].subItems && menuItem.subItems[k].subItems.length > 1)
 				anyOtherWithSubItemsSelected = true;
 		}
-		return result && !anyOtherWithSubItemsSelected || subItem.active;
+		//return result && !anyOtherWithSubItemsSelected || subItem.active;
+		return result && !anyOtherWithSubItemsSelected;
 	};
 
 	$scope.handleClick = function(e, handler, menuItem, subItem, subIndex, hideOtherSubItems) {
@@ -182,13 +226,22 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 			};
 			
 			for (var i = 0; i < menuItem.subItems.length; i ++) {
+				
+				
+				if (hideOtherSubItems && menuItem.subItems[i] != subItem && menuItem.subItems[i].value != 'all' && subItem.active) {
+					 menuItem.subItems[i].hidden = true;
+					 
+					 if (menuItem.subItems[i].active )
+						 menuItem.subItems[i].active = false;
+				} else
+					 menuItem.subItems[i].hidden = false;
+			}
+			
+			for (var i = 0; i < menuItem.subItems.length; i ++) {
 				if (menuItem.subItems[i].active)
 					selected.push(getComplexVal(menuItem.subItems[i]));
 				
-				if (hideOtherSubItems && menuItem.subItems[i] != subItem && menuItem.subItems[i].value != 'all' && !menuItem.subItems[i].active && subItem.active) {
-					 menuItem.subItems[i].hidden = true;
-				} else
-					 menuItem.subItems[i].hidden = false;
+
 			}
 			
 

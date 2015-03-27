@@ -76,8 +76,9 @@
 			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span>  People</label>
 			    	</div>
 			        <div class="col-xs-5">
-			            <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Cancel" ng-click="cancelDepartmentPeople()">
+			            
 			            <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" style="margin-right:4px;" value="Save" ng-click="saveDepartmentPeople()" >
+			            <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Cancel" ng-click="cancelDepartmentPeople()">
 			            <input type="submit" ng-show="!selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Edit" ng-click="onEditDepartmentPeople()" >
 			        </div>
 			    </div>
@@ -152,8 +153,9 @@
 			    		<label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span>  People</label>
 			    	</div>
 			        <div class="col-xs-5">
+			            
+			            <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" style="margin-left:4px;" value="Save" ng-click="saveDepartmentPeople()" >
 			            <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Cancel" ng-click="cancelDepartmentPeople()">
-			            <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" style="margin-right:4px;" value="Save" ng-click="saveDepartmentPeople()" >
 			            <input type="submit" ng-show="!selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right" value="Edit" ng-click="onEditDepartmentPeople()" >
 			        </div>
 			    </div>
