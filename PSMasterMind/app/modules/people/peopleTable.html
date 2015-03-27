@@ -9,7 +9,7 @@
 	</div>
     		
     <div class="row people-header">
-      <div class="col-xs-3 col-sm-5 col-md-5 person-header-name">
+      <div class="col-xs-3 col-sm-5 col-md-6 person-header-name">
         <a class="header-name" ng-class="{ active: sortType=='name-asc' || sortType=='name-desc' }" ng-click="switchSort('name')">NAME</a>
         <div class="person-sorting">
           <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'name-asc'}" ng-click="changeSort('name-asc')"></i>
@@ -27,7 +27,7 @@
           </button>
         </div>
       </div>
-      <div class="col-xs-2 col-sm-3 col-md-4 person-header-name person-header-title">
+      <div class="col-xs-2 col-sm-3 col-md-3 person-header-name person-header-title">
         <a class="header-name" ng-class="{ active: sortType=='group-asc' || sortType=='group-desc' }" ng-click="switchSort('group')">TITLE</a>
         <div class="person-sorting">
           <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'group-asc'}" ng-click="changeSort('group-asc')"></i>
@@ -63,7 +63,7 @@
       </div>
       <!--<div class="hidden-xs hidden-sm col-md-2 people-prop">{{person.group}}</div>-->
       <div class="col-xs-9 col-sm-3 person-title">
-        <div>{{person.primaryRole.title}}</div>
+        <div>{{getJobTitle(person.jobTitle)}}</div>
       </div>
       <div class="hidden-xs col-sm-2 pull-right people-utilization-rate">
         {{person.activePercentage}}<span class="percent">%</span>
