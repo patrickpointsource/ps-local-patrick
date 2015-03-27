@@ -14,6 +14,11 @@ describe('E2E: Administration Tests', function() {
 	var submit_approve_access = by.id('submit_approve_access');
 	
     beforeEach(function() {
+    	
+    	var width = 1900;
+	    var height = 1200;
+	    browser.driver.manage().window().setSize(width, height);
+    	
 		browser.driver.getCurrentUrl().then(function(url) {
 			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
 				browser.driver.get('http://localhost:9000/index.html#/');
@@ -41,12 +46,12 @@ describe('E2E: Administration Tests', function() {
 	it('Administration Test: Create new role and verify.', function() {	
 		console.log('> Running: Administration - Create new role and verify');
 		rolePage.createNewRoleAndVerify();
-	});
+	}, 120000);
 
 	it('Administration Test: Edit existing role and verify.', function() {	
 		console.log('> Running: Administration - Edit existing role and verify');
 		rolePage.editExistingRoleAndVerify();
-	});
+	}, 120000);
 		
 	it('Administration Test: Delete role and verify.', function() {	
 		console.log('> Running: Administration - Delete role and verify');
@@ -257,12 +262,16 @@ describe('E2E: Administration Tests', function() {
 		    		browser.wait(function(){	    		
 		    	    	return browser.isElementPresent($this.addGroupButton);
 		    	    }).then(function(){
-		    	   		browser.findElement($this.addGroupButton).click().then(function () {
+		    	    	browser.findElement($this.addGroupButton).click().then(function () {
 		    	   			$this.updateSecurityGroup(browser, $this.initial);
-		    	   			browser.driver.sleep(1000);	
-		    	   	   		browser.findElement($this.saveButton).click().then(function () {
-		    	   	   			$this.verifySecurityGroup($this.initial);
-		    	   	   		});
+		    	   			
+		    	   			browser.wait(function(){	    		
+		    			    	return browser.isElementPresent($this.saveButton);
+		    			    }).then(function(){
+			    	   	   		browser.findElement($this.saveButton).click().then(function () {
+			    	   	   			$this.verifySecurityGroup($this.initial);
+			    	   	   		});
+		    			    });
 		    	   		});
 		    	    });
 		    	});
@@ -279,18 +288,27 @@ describe('E2E: Administration Tests', function() {
 		    		browser.wait(function(){	    		
 		    	    	return browser.isElementPresent($this.addGroupButton);
 		    	    }).then(function(){
-		    	    	browser.findElement($this.selectGroup).sendKeys($this.initial.name).then( function () {
-		    	    		browser.findElement($this.editButton).click().then(function () {
-		    	    			$this.updateSecurityGroup(browser, $this.updated);
-		    	    			browser.driver.sleep(1000);	
-			    	   	   		browser.findElement($this.saveButton).click().then(function () {
-			    	   	   			$this.verifySecurityGroup($this.updated);
-			    	   	   		});
-			    	   		});	
-		    	    	});
-		    	    });
-		    	});
-		    });
+				    	browser.findElement($this.groupsButton).click().then(function () {
+				    		browser.wait(function(){	    		
+				    	    	return browser.isElementPresent($this.addGroupButton);
+				    	    }).then(function(){
+				    	    	browser.findElement($this.selectGroup).sendKeys($this.initial.name).then( function () {
+				    	    		browser.findElement($this.editButton).click().then(function () {
+				    	    			$this.updateSecurityGroup(browser, $this.updated);
+				    	    			
+				    		    		browser.wait(function(){	    		
+				    		    	    	return browser.isElementPresent($this.saveButton);
+				    		    	    }).then(function(){		    		    	    	
+						    	   	   		browser.findElement($this.saveButton).click().then(function () {
+						    	   	   			$this.verifySecurityGroup($this.updated);
+						    	   	   		});		    		    	    	
+				    		    	    });
+					    	   		});	
+				    	    	});
+				    	    });
+				    	});
+				    });
+
 		}
 
 		this.addMembersToSecurityGroupAndVerify = function() {
@@ -308,7 +326,7 @@ describe('E2E: Administration Tests', function() {
 		    	    			// add member to security group
 		    	    			$this.updated.members.push($this.memberToAdd);
 		    	    			$this.updateSecurityGroup(browser, $this.updated);
-		    	    			browser.driver.sleep(1000);	
+		    	    			browser.driver.sleep(3000);	
 			    	   	   		browser.findElement($this.saveButton).click().then(function () {
 			    	   	   			$this.verifySecurityGroup($this.updated);
 			    	   	   		});
@@ -367,7 +385,7 @@ describe('E2E: Administration Tests', function() {
 	    		    	    		expect(elements[0].findElement($this.checkPermission).isSelected()).toBeTruthy();
 	    		    	    	});
 		    	    			browser.findElement($this.saveButton).click().then(function() {
-		    		    	    	browser.driver.sleep(1000);	
+		    		    	    	browser.driver.sleep(3000);	
 			    	    			browser.findElements(by.cssContainingText('li', $this.permission)).then( function(elements) {
 		    		    	    		elements[1].getText().then(function(txt) {
 				    		    			expect(txt).toEqual($this.permission);
@@ -395,7 +413,7 @@ describe('E2E: Administration Tests', function() {
 		    	    		browser.findElement($this.editButton).click().then(function () {
 		    	    			browser.findElements(by.cssContainingText('li', $this.permission)).then( function(elements) {
 		    	    				elements[0].findElement($this.checkPermission).click().then( function(){
-				    	    			browser.driver.sleep(1000);	
+				    	    			browser.driver.sleep(3000);	
 				    	    			browser.findElement($this.saveButton).click().then(function() {
 				    		    	    	browser.driver.sleep(1000);	
 				    		    	    	expectByCssToBeAbsent($this.permission);
@@ -422,7 +440,7 @@ describe('E2E: Administration Tests', function() {
 		    	    	browser.findElement($this.selectGroup).sendKeys($this.updated.name).then( function () {
 		    	    		browser.findElement($this.editButton).click().then(function () {
 		    	    			browser.findElement($this.deleteGroupButton).click().then(function() {
-		    		    	    	browser.driver.sleep(1000);	
+		    		    	    	browser.driver.sleep(3000);	
 		    		    	    	expectByCssToBeAbsent($this.updated.name);
 		    	    			});
 			    	   		});	
@@ -452,10 +470,10 @@ describe('E2E: Administration Tests', function() {
 
 		this.verifySecurityGroup = function (securityGroup) {
 			var $this = this;
-    		browser.driver.sleep(1000);	
+    		browser.driver.sleep(3000);	
 			browser.findElement($this.selectGroup).sendKeys(securityGroup.name).then( function () {
 	       		if (securityGroup.members) {
-	        		browser.driver.sleep(2000);	
+	        		browser.driver.sleep(3000);	
 	    			for (var i in securityGroup.members) {
 	    				element.all(by.repeater('member in selectedGroupMembers')).filter(function(elem, index) {
 	    					return elem.getText().then(function(text) {
@@ -544,7 +562,7 @@ describe('E2E: Administration Tests', function() {
 		    }).then(function(){
 		    	browser.findElement($this.addRolesButton).click().then(function () {
 		   			$this.updateRole(browser, $this.initial);
-		   			browser.driver.sleep(1000);
+		   			browser.driver.sleep(3000);
 		   	   		browser.findElement($this.addRoleButton).click().then(function () {
 		   	   			$this.verifyRole($this.initial);
 		   	   		});
@@ -575,9 +593,9 @@ describe('E2E: Administration Tests', function() {
 	  	     		browser.wait(function(){	    		
 		   	    		return browser.isElementPresent($this.saveRoleButton);
 		   	    	}).then(function(){
-			    		browser.driver.sleep(1000);	
+			    		browser.driver.sleep(3000);	
 			    		browser.findElements($this.roleForm).then( function (editForms) {
-			   	    		browser.driver.sleep(1000);	
+			   	    		browser.driver.sleep(3000);	
 			   	    		$this.updateRole(editForms[1], $this.updated);
 			   	    		browser.findElements($this.saveRoleButton).then( function (saveRoleButtons) {
 			   	    			saveRoleButtons[1].click().then(function () {
@@ -602,9 +620,9 @@ describe('E2E: Administration Tests', function() {
 			   		browser.wait(function(){	    		
 			   			return browser.isElementPresent($this.saveRoleButton);
 				   	}).then(function(){
-				   		browser.driver.sleep(1000);	
+				   		browser.driver.sleep(3000);	
 				   		browser.findElements($this.roleForm).then( function (editForms) {
-				   			browser.driver.sleep(1000);	
+				   			browser.driver.sleep(3000);	
 				   			console.log("editForms : " + editForms);
 				   			$this.verifyRoleElements(editForms[1], role);
 				   		});
@@ -632,10 +650,10 @@ describe('E2E: Administration Tests', function() {
 		this.sortBy = function(sortField, validationRow) {
 			sortField.click();
 	    	this.checkSorting(this.roleElements, validationRow, false);
-	    	browser.sleep(1000);
+	    	browser.sleep(3000);
 	    	sortField.click();
 	    	this.checkSorting(this.roleElements, validationRow, true);
-	        browser.sleep(1000);
+	        browser.sleep(3000);
 		};
 		
 		
@@ -722,7 +740,7 @@ describe('E2E: Administration Tests', function() {
 				    	    	return browser.isElementPresent($this.taskName);
 				    	    }).then(function(){
 			    	   			$this.updateTask(browser, $this.initial);
-			    	   			browser.sleep(1000);
+			    	   			browser.sleep(3000);
 			    	   	   		browser.findElement($this.addTaskButton).click().then(function () {
 			    	   	   			$this.verifyTask($this.initial);
 			    	   	   		});
@@ -751,7 +769,7 @@ describe('E2E: Administration Tests', function() {
 		    			   	}).then(function(){
 		    	    			var formElement = titleElement.findElement(by.xpath('following-sibling::div'));
 		    	    			$this.updateTask(formElement, $this.updated);
-		    	    			browser.driver.sleep(1000);	
+		    	    			browser.driver.sleep(3000);	
 			    	   			formElement.findElement($this.saveTaskButton).click().then(function () {
 			    	   				$this.verifyTask($this.updated);
 			    	   	   		});
@@ -772,7 +790,7 @@ describe('E2E: Administration Tests', function() {
 		    		browser.wait(function(){	    		
 		    	    	return browser.isElementPresent($this.addTaskFormButton);
 		    	    }).then(function(){
-	    	    		browser.driver.sleep(1000);	
+	    	    		browser.driver.sleep(3000);	
 		    			var titleElement = browser.findElement(by.cssContainingText('div .row-fluid', $this.initial.name));
 		    		   	var deleteElement = titleElement.findElement($this.deleteTaskButton);
 		    		   	deleteElement.click().then(function () {
@@ -837,7 +855,7 @@ describe('E2E: Administration Tests', function() {
 		    	return browser.isElementPresent($this.configurationButton);
 		    }).then(function(){
 		    	browser.findElement($this.configurationButton).click().then(function () {
-		    		browser.driver.sleep(1000);
+		    		browser.driver.sleep(3000);
 	    			var configElement = browser.findElement(by.cssContainingText('div .col-xs-3', $this.INTERESTED_PARTIES));
 	    			var editElement = configElement.findElement(by.xpath('following-sibling::*[2]/self::div')).findElement($this.editConfigurationButton);
 	    		   	editElement.click().then(function () {
