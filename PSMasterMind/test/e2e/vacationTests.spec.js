@@ -108,12 +108,13 @@ describe('E2E: Vacation Tests', function() {
     	}).then(function() {
     		profilePhoto.click().then(function () {
     			viewProfile.click().then(function () {
-    				browser.executeScript('window.scrollTo(0,' + windowHeight + ');').then(function() {
+    				var scrollDownScript = 'window.scrollTo(0,' + windowHeight + ');';
+    				browser.executeScript(scrollDownScript).then(function() {
     					browser.wait(function(){	    		
     	    	    		return browser.isElementPresent(vacationDays);
     	    	    	}).then(function() {
     	    	    		vacationDays.getText().then(function( vacDaysBefore ) {
-    	    					callback().then(function() {
+    	    					callback().then(function() { browser.sleep(3000).then(function() {
     		    					if (!errorMsg) {
     		    						browser.wait(function(){	    		
     		    		    	    		return browser.isElementPresent(vacationDays);
@@ -128,7 +129,7 @@ describe('E2E: Vacation Tests', function() {
     		    		    	    		closeRequest.click();
     		    		    	    	});
     		    					}	
-    	    					});
+    	    					}); });
     	    				});
     	    	    	});
     				});
@@ -139,7 +140,7 @@ describe('E2E: Vacation Tests', function() {
 	
 	var checkApproveRules = function () {
 		return browser.wait(function(){	    		
-			return browser.isElementPresent(addRequest);
+			return browser.isElementPresent(element(by.css('[ng-click="requestHours()"]')));
     	}).then(function() {
     		addRequest.click().then(function () {
     			var startDate = new Date();
@@ -169,7 +170,7 @@ describe('E2E: Vacation Tests', function() {
 	var addVacation = function () {	
 		console.log('> Add vacation.');
 		return browser.wait(function(){	    		
-    		return browser.isElementPresent(addRequest);
+    		return browser.isElementPresent(element(by.css('[ng-click="requestHours()"]')));
     	}).then(function() {
     		addRequest.click().then(function () {
     			var startDate = new Date();
@@ -195,7 +196,7 @@ describe('E2E: Vacation Tests', function() {
 	var editVacation = function () {
 		console.log('> Edit vacation.');
 		return browser.wait(function(){	    		
-			return browser.isElementPresent(editRequest);
+			return browser.isElementPresent(element(by.css('[ng-click="editVacation($index)"]')));
     	}).then(function() {
     		editRequest.click().then(function () {
     			var startDate = new Date();
@@ -219,7 +220,7 @@ describe('E2E: Vacation Tests', function() {
 	var removeVacation = function () {
 		console.log('> Remove vacation.');
 		return browser.wait(function(){	    		
-			return browser.isElementPresent(editRequest);
+			return browser.isElementPresent(element(by.css('[ng-click="editVacation($index)"]')));
     	}).then(function() {
     		editRequest.click().then(function () {
     			browser.wait(function(){	    		
@@ -243,43 +244,47 @@ describe('E2E: Vacation Tests', function() {
 	
 	var approveVacation = function () {
 		console.log('> Deny vacation.');
-		return browser.refresh().then(function () {
-			browser.wait(function(){	    		
-				return browser.isElementPresent(notificationCtrl);
-	    	}).then(function() {
-	    		notificationBtn.click().then(function () {
-	    			browser.wait(function(){	    		
-	    	    		return browser.isElementPresent(requestDeny);
-	    	    	}).then(function() {
-	    	    		requestApprove.click().then(function () {
-	    	    			checkNotification(REQUEST_APPROVED_MSG).then(function() {
-	    	    				expect(vacationDays.getText()).not.toEqual('5 days');
-	    	    			});
-	    	    		});
-	    	    	});	
-	    		});
-	    	});
+		return browser.sleep(2000).then(function() {
+			browser.refresh().then(function () {
+				browser.wait(function(){	    		
+					return browser.isElementPresent(notificationCtrl);
+				}).then(function() {
+					notificationBtn.click().then(function () {
+						browser.wait(function(){	    		
+							return browser.isElementPresent(requestDeny);
+						}).then(function() {
+							requestApprove.click().then(function () {
+								checkNotification(REQUEST_APPROVED_MSG).then(function() {
+									expect(vacationDays.getText()).not.toEqual('5 days');
+								});
+							});
+						});	
+					});
+				});
+			});
 		});
 	};
 	
 	var denyVacation = function () {
 		console.log('> Deny vacation.');
-		return browser.refresh().then(function () {
-			browser.wait(function(){	    		
+		return browser.sleep(2000).then(function() { 
+			browser.refresh().then(function () {
+				browser.wait(function(){	    		
 				return browser.isElementPresent(notificationCtrl);
-	    	}).then(function() {
-	    		notificationBtn.click().then(function () {
-	    			browser.wait(function(){	    		
-	    	    		return browser.isElementPresent(requestDeny);
-	    	    	}).then(function() {
-	    	    		requestDeny.click().then(function () {
-	    	    			checkNotification(REQUEST_DENIED_MSG).then(function() {
-	    	    				expect(vacationDays.getText()).toEqual('5 days');
-	    	    			});
-	    	    		});
-	    	    	});	
-	    		});
-	    	});
+				}).then(function() {
+					notificationBtn.click().then(function () {
+						browser.wait(function(){	    		
+							return browser.isElementPresent(requestDeny);
+						}).then(function() {
+							requestDeny.click().then(function () {
+								checkNotification(REQUEST_DENIED_MSG).then(function() {
+									expect(vacationDays.getText()).toEqual('5 days');
+								});
+							});
+						});	
+					});
+				});
+			});
 		});
 	};
 	
@@ -305,16 +310,23 @@ describe('E2E: Vacation Tests', function() {
 		});
 	};
 	
-	
 	var selectRequestType = function ( optionNum ) {
 		return browser.wait(function(){	    		
 			return browser.isElementPresent(requestType);
     	}).then(function() {
-    		requestType.element(by.tagName('button')).click().then(function (){
-    			requestType.all(by.tagName('li')).then(function (options) {
-    				options[optionNum].click();
-    			});
-    		});
+    		return browser.wait(function(){	    		
+    			return browser.isElementPresent(requestType.element(by.tagName('button')));
+        	}).then(function() {
+        		requestType.element(by.tagName('button')).click().then(function () {
+        			return browser.wait(function(){	    		
+            			return browser.isElementPresent(requestType.element(by.tagName('li')));
+                	}).then(function() {
+                		requestType.all(by.tagName('li')).then(function (options) {
+            				options[optionNum].click();
+            			});
+                	});
+        		});
+        	});    		
     	});
 	};
 	
