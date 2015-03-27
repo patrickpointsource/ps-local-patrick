@@ -410,7 +410,7 @@ describe('E2E: Administration Tests', function() {
 		    	    				elements[0].findElement($this.checkPermission).click().then( function(){
 				    	    			browser.driver.sleep(3000);	
 				    	    			browser.findElement($this.saveButton).click().then(function() {
-				    		    	    	browser.driver.sleep(1000);	
+				    		    	    	browser.driver.sleep(3000);	
 				    		    	    	expectByCssToBeAbsent($this.permission);
 				    	    			});
 		    	    				});
@@ -557,13 +557,18 @@ describe('E2E: Administration Tests', function() {
 		    }).then(function(){
 		    	browser.findElement($this.addRolesButton).click().then(function () {
 		   			$this.updateRole(browser, $this.initial);
-		   			browser.driver.sleep(3000);
-		   	   		browser.findElement($this.addRoleButton).click().then(function () {
-		   	   			$this.verifyRole($this.initial);
-		   	   		});
+		   			
+					browser.wait(function(){	    		
+				    	return browser.isElementPresent($this.addRoleButton);
+				    }).then(function(){
+			   	   		browser.findElement($this.addRoleButton).click().then(function () {
+			   	   			$this.verifyRole($this.initial);
+			   	   		});
+				    });
 		   		});	
 		    });
 	 	}
+
 
 		this.updateRole = function (form, role) {
 	   		updateElement(form, this.abbreviation, role.abbreviation);
@@ -590,7 +595,7 @@ describe('E2E: Administration Tests', function() {
 		   	    	}).then(function(){
 			    		browser.driver.sleep(3000);	
 			    		browser.findElements($this.roleForm).then( function (editForms) {
-			   	    		browser.driver.sleep(3000);	
+			   	    		browser.driver.sleep(5000);	
 			   	    		$this.updateRole(editForms[1], $this.updated);
 			   	    		browser.findElements($this.saveRoleButton).then( function (saveRoleButtons) {
 			   	    			saveRoleButtons[1].click().then(function () {
