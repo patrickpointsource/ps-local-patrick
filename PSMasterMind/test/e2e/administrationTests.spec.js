@@ -288,27 +288,22 @@ describe('E2E: Administration Tests', function() {
 		    		browser.wait(function(){	    		
 		    	    	return browser.isElementPresent($this.addGroupButton);
 		    	    }).then(function(){
-				    	browser.findElement($this.groupsButton).click().then(function () {
-				    		browser.wait(function(){	    		
-				    	    	return browser.isElementPresent($this.addGroupButton);
-				    	    }).then(function(){
-				    	    	browser.findElement($this.selectGroup).sendKeys($this.initial.name).then( function () {
-				    	    		browser.findElement($this.editButton).click().then(function () {
-				    	    			$this.updateSecurityGroup(browser, $this.updated);
-				    	    			
-				    		    		browser.wait(function(){	    		
-				    		    	    	return browser.isElementPresent($this.saveButton);
-				    		    	    }).then(function(){		    		    	    	
-						    	   	   		browser.findElement($this.saveButton).click().then(function () {
-						    	   	   			$this.verifySecurityGroup($this.updated);
-						    	   	   		});		    		    	    	
-				    		    	    });
-					    	   		});	
-				    	    	});
-				    	    });
-				    	});
-				    });
-
+		    	    	browser.findElement($this.selectGroup).sendKeys($this.initial.name).then( function () {
+		    	    		browser.findElement($this.editButton).click().then(function () {
+		    	    			$this.updateSecurityGroup(browser, $this.updated);
+		    	    			
+		    		    		browser.wait(function(){	    		
+		    		    	    	return browser.isElementPresent($this.saveButton);
+		    		    	    }).then(function(){		    		    	    	
+				    	   	   		browser.findElement($this.saveButton).click().then(function () {
+				    	   	   			$this.verifySecurityGroup($this.updated);
+				    	   	   		});		    		    	    	
+		    		    	    });
+			    	   		});	
+		    	    	});
+		    	    });
+		    	});
+		    });
 		}
 
 		this.addMembersToSecurityGroupAndVerify = function() {
