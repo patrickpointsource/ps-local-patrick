@@ -185,61 +185,18 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 					if( $scope.params.filter == 'all' ) {
 						$scope.breadCrumpParts = [ 'People', 'All' ];
 					} else {
-						/*RolesService.getRolesMapByResource().then(function(map) {
-
-						 if (map[$scope.params.filter]) {
-						 $scope.breadCrumpParts.push(map[$scope.params.filter].title);
-						 $scope.updateBreadCrump();
-						 }
-						 });*/
-						if( $scope.params.filter.indexOf( "all" ) == 0 ) {
-							$scope.breadCrumpParts.push( "All" );
-						} else {
-							var filterPeople = $scope.params.filter.split( ',' );
-
-							for( var i = 0; i < filterPeople.length; i++ ) {
-								filterPeople[ i ] = People.mapPeopleFilterToUI( filterPeople[ i ] );
-							}
-
-							$scope.breadCrumpParts.push( filterPeople.join( ', ' ) );
-						}
-
+						$scope.breadCrumpParts.push(getBreadCrumpOfPeopleDepartment($scope.params.filter));
 						$scope.updateBreadCrump( );
-
 					}
 				}
 			}
 		}
 
 		else if( $scope.state.name == 'people.show' ) {
-			var fromPeopleList = false;
+			var fromPeopleList = $scope.fromParams.filter;
 			$scope.breadCrumpParts = [ 'People' ];
 
-			if( $scope.fromParams.filter && $scope.fromParams.filter != "all" ) {
-				var filterPeople = $scope.fromParams.filter.split( ',' );
-
-				for( var i = 0; i < filterPeople.length; i++ ) {
-					filterPeople[ i ] = People.mapPeopleFilterToUI( filterPeople[ i ] );
-				}
-
-				$scope.breadCrumpParts.push( filterPeople.join( ', ' ) );
-			}
-
-			if( $scope.fromState.name == 'people.index' ) {
-				if( $scope.fromParams.filter ) {
-					var splittedPeopleFilter = $scope.fromParams.filter.split( ',' );
-					if( splittedPeopleFilter.length == 1 ) {
-						$scope.breadCrumpParts.push( People.mapPeopleFilterToUI( splittedPeopleFilter[ 0 ] ) );
-
-						fromPeopleList = true;
-					} else {
-						//	  						$scope.breadCrumpParts = [ 'People', '' ];
-					}
-				} else {
-					//	  					$scope.breadCrumpParts = [ 'People', '' ];
-				}
-			}
-
+			$scope.breadCrumpParts.push(getBreadCrumpOfPeopleDepartment($scope.fromParams.filter));
 			
 			if( $scope.params.profileId ) {
 				People.get( $scope.params.profileId ).then( function( profile ) {
@@ -331,6 +288,29 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 				$state.go( "reports.project.output", {
 					filter: $scope.fromParams.filter
 				} );
+		}
+	};
+	
+	var getBreadCrumpOfPeopleDepartment = function( peopleFilter ) { 
+		if (!peopleFilter)
+			return "";
+		else
+		if ( peopleFilter.indexOf( "all" ) == 0 )
+			return "All";
+		else {
+			var filter = peopleFilter.split( ':' );
+			var departmentCategories = filter[0].split( ',' );
+			var departmentNicknames = filter[1] ? filter[1].split( ';' ) : null;
+			
+			for( var i = 0; i < departmentCategories.length; i++ ) {
+				departmentCategories[ i ] = People.mapPeopleFilterToUI( departmentCategories[ i ] );
+			}
+			
+			if (departmentNicknames) {
+				return departmentCategories.join( ', ' ) + ": " + departmentNicknames.join( ', ' );
+			} else {
+				return departmentCategories.join( ', ' );
+			}
 		}
 	};
 
