@@ -70,6 +70,7 @@
     -moz-box-shadow: none !important;
     -webkit-box-shadow: none !important;
   }
+ 
   li {
     text-transform: uppercase;
     a {
@@ -333,7 +334,14 @@ header {
         }
       }
       
-      li:hover, li a:hover {
+      li.active-subitem.has-subitems {
+        span {
+          text-transform: uppercase;
+          font-weight: bold;
+        }
+      }
+      
+      >li:hover, >li a:hover {
         background-color: @navbar-subnavbar-active-bg !important;
         i.fa-circle-thin {
           color: @gray-nav-circle-active;
@@ -359,28 +367,22 @@ header {
         }
       }
       
-      ul {
-        padding-left: 0px;
-        
-        li:hover, li a:hover {
-          background-color: @navbar-subnavbar-active-bg !important;
-          i.fa-circle-thin {
-            color: @gray-nav-circle-active;
-          }
-        }
       
-        li {
-          height: 32px !important;
-          a {
-            outline: none;
-            text-decoration: none;
-            background-color: transparent !important;
-          }
-          span {
-            font-size: 13px !important;
-          }
+        
+      li.inner-subitem {
+        height: 32px !important;
+        a {
+          outline: none;
+          text-decoration: none;
+          background-color: transparent !important;
+          padding-top: 0px;
+          padding-bottom: 0px !important;
+        }
+        span {
+          font-size: 13px !important;
         }
       }
+      
     }
     li.active ul.subnavbar {
       display: block;

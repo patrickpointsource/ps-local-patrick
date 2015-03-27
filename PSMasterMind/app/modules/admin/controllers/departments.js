@@ -302,13 +302,13 @@ angular.module('Mastermind')
 	        
 	        return result;
 	       };
-	       
 
 	    /**
 	     * Delete a task
 	     */
 	    $scope.deleteDepartment = function () {
 	      return DepartmentsService.removeDepartment($scope.selectedDepartment.resource).then(function(){
+	    	  $scope.selectedDepartment = {};
 	        $scope.loadDepartments();
 	        
 	        $rootScope.$emit('department:deleted');
