@@ -231,6 +231,9 @@ angular.module('Mastermind')
        		delete department.editDepartmentPeople;
        		delete department.isEdit;
        		delete department.isNew;
+       		if (_.isString(department.departmentManager)) {
+       			delete department.departmentManager;
+       		}
        		return department;
 	    }
 
