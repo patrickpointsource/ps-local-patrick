@@ -66,93 +66,38 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 		}
 
 		if( type == 'role-desc' ) {
-			$scope.people.sort( function( a, b ) {
-
-				if( !a.primaryRole && !b.primaryRole ) {
-					return 0;
+			$scope.people = _.sortBy($scope.people, function(person) {
+				if(person.primaryRole) {
+					return person.primaryRole.abbreviation;
 				}
-				if( !a.primaryRole ) {
-					return 1;
-				}
-				if( !b.primaryRole ) {
-					return -1;
-				}
-
-				if( a.primaryRole.title < b.primaryRole.title ) {
-					return -1;
-				} else if( a.primaryRole.title > b.primaryRole.title ) {
-					return 1;
-				} else {
-					return 0;
-				}
-			} );
+				
+			});
 		}
 
 		if( type == 'role-asc' ) {
-			$scope.people.sort( function( a, b ) {
-
-				if( !a.primaryRole && !b.primaryRole ) {
-					return 0;
+			$scope.people = _.sortBy($scope.people, function(person) {
+				if(person.primaryRole) {
+					return person.primaryRole.abbreviation;
 				}
-				if( !a.primaryRole ) {
-					return 1;
-				}
-				if( !b.primaryRole ) {
-					return -1;
-				}
-
-				if( a.primaryRole.title < b.primaryRole.title ) {
-					return 1;
-				} else if( a.primaryRole.title > b.primaryRole.title ) {
-					return -1;
-				} else {
-					return 0;
-				}
-			} );
+			}).reverse( );
 		}
 
 		if( type == 'group-desc' ) {
-			$scope.people.sort( function( a, b ) {
-				if( !a.group && !b.group ) {
-					return 0;
-				}
-				if( !a.group ) {
-					return 1;
-				}
-				if( !b.group ) {
-					return -1;
-				}
+		    $scope.people = _.sortBy($scope.people, function (person) {
+		        if (person.jobTitle) {
+		            return $scope.getJobTitle(person.jobTitle).toLowerCase();
+		        }
 
-				if( a.group < b.group ) {
-					return -1;
-				} else if( a.group > b.group ) {
-					return 1;
-				} else {
-					return 0;
-				}
-			} );
+		    });
 		}
 
 		if( type == 'group-asc' ) {
-			$scope.people.sort( function( a, b ) {
-				if( !a.group && !b.group ) {
-					return 0;
-				}
-				if( !a.group ) {
-					return 1;
-				}
-				if( !b.group ) {
-					return -1;
-				}
+		    $scope.people = _.sortBy($scope.people, function (person) {
+		        if (person.jobTitle) {
+		            return $scope.getJobTitle(person.jobTitle).toLowerCase();
+		        }
 
-				if( a.group < b.group ) {
-					return 1;
-				} else if( a.group > b.group ) {
-					return -1;
-				} else {
-					return 0;
-				}
-			} );
+		    }).reverse();
 		}
 
 		if( type == 'rate-desc' ) {
@@ -536,8 +481,39 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			//Kick off fetch all the people
 			$scope.buildTableView( );
 		});
+
+		Resources.get('jobTitles').then(function (result) {
+		    var members = result.members;
+		    $scope.allTitles = members;
+		    var titlesMap = {};
+		    for (var i = 0; i < members.length; i++) {
+		        titlesMap[members[i].resource] = members[i];
+		    }
+
+		    // sorting titles by title
+		    $scope.allTitles.sort(function (a, b) {
+		        var x = a.title ? a.title.toLowerCase() : '';
+		        var y = b.title ? b.title.toLowerCase() : '';
+		        return x < y ? -1 : x > y ? 1 : 0;
+		    });
+
+		    $scope.titlesMap = titlesMap;
+		});
 	};
 	
+	$scope.getJobTitle = function (jobTitle) {
+	    var ret = "";
+	    if (jobTitle && jobTitle.resource) {
+	        var resource = jobTitle.resource;
+
+	        if ($scope.titlesMap && $scope.titlesMap[resource]) {
+	            ret = $scope.titlesMap[resource].title;
+	        }
+	    }
+
+	    return ret;
+	};
+
 	init();
 	
 } ] );
