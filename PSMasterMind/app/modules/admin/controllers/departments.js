@@ -224,70 +224,85 @@ angular.module('Mastermind')
 	    	});
 	    };
 
+	    $scope.filterDepartmentBeforeSave = function(department){
+    		delete department.id;
+    		delete department.rev;
+       		delete department.ok;
+       		delete department.editDepartmentPeople;
+       		delete department.isEdit;
+       		delete department.isNew;
+       		return department;
+	    }
+
 	    /**
 	     * Update a new Role to the server
 	     */
 	    $scope.saveDepartment = function(alreadyAssigned){
-	    	var result = true;
-	    	
-	    	var correctCode = $scope.currentDepartmentCodes ? 
-	    			(_.filter($scope.currentDepartmentCodes, function(c) { return c.name == $scope.selectedDepartment.departmentCode.name})).length > 0: true;
-	    	
-	    	if (correctCode) {
-	    		var promise;
-	    		
-	    		if (alreadyAssigned && alreadyAssigned.length > 0)
-	    			promise = DepartmentsService.unassignPeople(alreadyAssigned);
-	    		
-	    		
-		    	if (!$scope.selectedDepartment.isNew)
-		    		promise = promise.then(function() {
-		    			return Resources.update($scope.selectedDepartment)
-	    			});
-		    	
-		    	else
-		    		promise = promise.then(function() {
-		    			return DepartmentsService.addDepartment($scope.selectedDepartment)
-	    			});
-		    	
-		    		//promises.push(DepartmentsService.addDepartment($scope.selectedDepartment));
-		    		
-		    	promise.then(function(updated){
-	    			$scope.selectedDepartment = Util.syncRevProp(updated);
-	    			$scope.selectedDepartment.isEdit = false;
-	    			$scope.selectedDepartment.isNew = false;
-	    			$scope.loadDepartments().then(function(result){
-			        
-		    		});
-	    			
-	    			$rootScope.$emit('department:updated');
-		    	});
-	    	} else
-	    		result = false;
-	    	
-	    	
-	    	Resources.refresh("departments/available/people").then( function(result) {
-        		var tmpPerson;
-        		
-        		$scope.availablePeopleList = _.map(result.members, function(p) {
-        			return {
-        				resource: p.resource,
-        				name: Util.getPersonName(p, true)
-        			};
-        			
-        		});
- 	        	
-        		//$scope.availablePeopleList.splice(0, $scope.availablePeopleList.length - 7);
-        		$scope.availablePeopleList.sort(function(p1, p2) {
-          			if (p1.name > p2.name)
-          				return 1;
-          			else if (p1.name < p2.name)
-          				return -1;
-          		});
- 	        });
-	    	
-	    	return result;
-	    };
+	        var result = true;
+	        
+	        var correctCode = $scope.currentDepartmentCodes ? 
+	          (_.filter($scope.currentDepartmentCodes, function(c) { return c.name == $scope.selectedDepartment.departmentCode.name})).length > 0: true;
+	        
+	        if (correctCode) {
+	         var promise;
+	         
+	         if (alreadyAssigned && alreadyAssigned.length > 0)
+	          promise = DepartmentsService.unassignPeople(alreadyAssigned);
+	         
+	         
+	         if (!$scope.selectedDepartment.isNew && promise)
+	          promise = promise.then(function() {
+	           return Resources.update($scope.filterDepartmentBeforeSave($scope.selectedDepartment))
+	          });
+	         else if (!$scope.selectedDepartment.isNew && !promise)
+	          promise = Resources.update($scope.filterDepartmentBeforeSave($scope.selectedDepartment));
+	         else if ($scope.selectedDepartment.isNew && promise)
+	          promise = promise.then(function() {
+	           return DepartmentsService.addDepartment($scope.filterDepartmentBeforeSave($scope.selectedDepartment))
+	          });
+	         else if ($scope.selectedDepartment.isNew && !promise)
+	          promise = DepartmentsService.addDepartment($scope.filterDepartmentBeforeSave($scope.selectedDepartment))
+	          
+	         
+	          //promises.push(DepartmentsService.addDepartment($scope.selectedDepartment));
+	          
+	         promise.then(function(updated){
+	          $scope.selectedDepartment = Util.syncRevProp(updated);
+	          $scope.selectedDepartment.isEdit = false;
+	          $scope.selectedDepartment.isNew = false;
+	          $scope.loadDepartments().then(function(result){
+	             
+	          });
+	          
+	          $rootScope.$emit('department:updated');
+	         });
+	        } else
+	         result = false;
+	        
+	        
+	        Resources.refresh("departments/available/people").then( function(result) {
+	            var tmpPerson;
+	            
+	            $scope.availablePeopleList = _.map(result.members, function(p) {
+	             return {
+	              resource: p.resource,
+	              name: Util.getPersonName(p, true)
+	             };
+	             
+	            });
+	             
+	            //$scope.availablePeopleList.splice(0, $scope.availablePeopleList.length - 7);
+	            $scope.availablePeopleList.sort(function(p1, p2) {
+	               if (p1.name > p2.name)
+	                return 1;
+	               else if (p1.name < p2.name)
+	                return -1;
+	              });
+	            });
+	        
+	        return result;
+	       };
+	       
 
 	    /**
 	     * Delete a task

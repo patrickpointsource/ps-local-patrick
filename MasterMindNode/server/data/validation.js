@@ -20,6 +20,7 @@ var LINKS_KEY = 'Links';
 var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
 var REPORT_FAVORITES_KEY = 'ReportFavorites';
+var DEPARTMENT_KEY = 'Department';
 
 var PROJECT_TYPES = [ "invest", "poc", "paid" ];
 var PROJECT_STATES = [ "planning", "active", "done", "poc", "supportActive", "clientActive" ];
@@ -89,6 +90,10 @@ var validate = function(obj, type) {
       
     case REPORT_FAVORITES_KEY:
         validationMessages = isReportFavoriteValid(obj);
+        break;
+
+    case DEPARTMENT_KEY:
+        validationMessages = isDepartmentValid(obj);
         break;
 
     default: 
@@ -297,6 +302,12 @@ var isReportFavoriteValid = function(favorite) {
 	  
   messages = jsonValidator.validateDocument(favorite);    
   return messages;
+};
+
+var isDepartmentValid = function(department) {
+	var messages = [];
+	messages = jsonValidator.validateDocument(department);    
+	return messages;
 };
 
 var isDate = function(date) {
