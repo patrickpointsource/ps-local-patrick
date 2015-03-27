@@ -20,6 +20,7 @@ tv4.addSchema(require('../data/validationSchemas/Projects.json'));
 tv4.addSchema(require('../data/validationSchemas/People.json'));
 tv4.addSchema(require('../data/validationSchemas/Configuration.json'));
 tv4.addSchema(require('../data/validationSchemas/ReportFavorites.json'));
+tv4.addSchema(require('../data/validationSchemas/Department.json'));
 
 tv4.defineError('EMPTY_STRING_VALUE', 10002, 'Empty string is not allowed as a value: Schema: {param1}');
 tv4.defineError('PROHIBITED_VALUE', 10003, 'Value "{param1}" is not allowed. ');

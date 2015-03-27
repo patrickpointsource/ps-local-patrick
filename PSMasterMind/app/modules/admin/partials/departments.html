@@ -60,9 +60,9 @@
 		               <input class="form-control" name="deptName" ng-required="true" placeholder="Nicknames must be unique"  ng-model="selectedDepartment.departmentNickname"/>
 		           </div>
 			       <div class="col-xs-12">
-		               <label class="required-label control-label" for="role">Department manager:</label>
+		               <label class="control-label" for="role">Department manager:</label>
 		              
-		           		<input  class="form-control" name="deptManager" ng-model="selectedDepartment.departmentManager" required typeahead-on-select="selectedManagerChanged($event, $item)"
+		           		<input  class="form-control" name="deptManager" ng-model="selectedDepartment.departmentManager" typeahead-on-select="selectedManagerChanged($event, $item)"
 							placeholder="Search for a person" typeahead-min-length="1" highlight="true" typeahead="p as p.name for p in managersList | filter:{name:$viewValue}" />
 		
 		
