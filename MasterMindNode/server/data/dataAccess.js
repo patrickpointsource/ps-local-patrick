@@ -1416,6 +1416,18 @@ var unassignDepartmentsPeople = function(people, callback) {
         	var departmentToUpdate = [];
         	var clearedPeople;
         	
+        	var filterDepartmentBeforeUpdate = function(department){
+        		delete department.id;
+        		delete department.rev;
+           		delete department.ok;
+           		delete department.editDepartmentPeople;
+           		delete department.editDepartmenPeople;
+           		delete department.isEdit;
+           		delete department.isNew;
+           		
+           		return department;
+    	    }
+        	
         	for (var k = 0; k < body.members.length; k ++) {
         		if (body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople)) {
         			clearedPeople = _.filter(body.members[k].departmentPeople, function(dp) {
@@ -1435,13 +1447,21 @@ var unassignDepartmentsPeople = function(people, callback) {
         	if (departmentToUpdate.length > 0) {
         		var id;
         		
+        		var counter = 0;
+        		
         		for (var k = 0; k < departmentToUpdate.length; k ++) {
         			id = departmentToUpdate[k].id ? departmentToUpdate[k].id: departmentToUpdate[k]._id;
         			
-        			updateItem(id, departmentToUpdate[k], DEPARTMENTS_KEY, function(err, body){});
+        			updateItem(id, filterDepartmentBeforeUpdate(departmentToUpdate[k]), DEPARTMENTS_KEY, function(updErr, body){
+        				counter += 1;
+        				
+        				if (counter == departmentToUpdate.length && !updErr)
+        					callback(null, {});
+        				else if (counter == departmentToUpdate.length && updErr)
+        					callback(updErr, {});
+        					
+        			});
         		}
-        		
-        		callback(null, {});
         	} else
         		callback("no departments found", {});
         }

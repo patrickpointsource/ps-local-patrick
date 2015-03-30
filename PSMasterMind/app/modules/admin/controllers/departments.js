@@ -150,7 +150,7 @@ angular.module('Mastermind')
 	  };
 	  
 	  $scope.saveDepartmentPeople = function() {
-		  $scope.selectedDepartment.editDepartmentPeople = false;
+		  
 		  
 		  var prevDepartmentPeople = $scope.selectedDepartment.departmentPeople;
 		  
@@ -166,10 +166,14 @@ angular.module('Mastermind')
 		  }
 			  
 		  
-		  var result = $scope.saveDepartment(alreadyAssigned);
+		  var result = $scope.saveDepartment(alreadyAssigned, function() {
+			  $scope.selectedDepartment.editDepartmentPeople = false;
+		  });
 		  
-		  if (!result)
+		  if (!result) {
 			  $scope.selectedDepartment.departmentPeople = prevDepartmentPeople;
+			  $scope.selectedDepartment.editDepartmentPeople = false;
+		  }
 	  };
 	  
 	  $scope.addDepartmentPerson = function(p) {
@@ -241,7 +245,7 @@ angular.module('Mastermind')
 	    /**
 	     * Update a new Role to the server
 	     */
-	    $scope.saveDepartment = function(alreadyAssigned){
+	    $scope.saveDepartment = function(alreadyAssigned, cb){
 	        var result = true;
 	        
 	        var correctCode = $scope.currentDepartmentCodes ? 
@@ -274,6 +278,10 @@ angular.module('Mastermind')
 	          $scope.selectedDepartment = Util.syncRevProp(updated);
 	          $scope.selectedDepartment.isEdit = false;
 	          $scope.selectedDepartment.isNew = false;
+	          
+	          if (cb)
+	        	  cb();
+	          
 	          $scope.loadDepartments().then(function(result){
 	             
 	          });
