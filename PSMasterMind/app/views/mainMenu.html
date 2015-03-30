@@ -13,8 +13,8 @@
 				<a class="close-dropdown"> <span>{{menuItem.text}}</span></a>
 			</li>
 			<li ng-repeat-start="subItem in menuItem.subItems" ng-show="subItemShown(menuItem, subItem)" ng-if="!subItem.isNotRender" 
-				ng-class="{'active-subitem': isSubitemSelected(subItem, menuItem), 'subheader': subItem.subheader, 'has-subitems':subItem.subItems.length > 1}">
-				<a ng-click="handleClick($event, subItem.handler, menuItem, subItem, $index, subItem.subItems.length > 1)" class="close-dropdown">  
+				ng-class="{'active-subitem': isSubitemSelected(subItem, menuItem), 'subheader': subItem.subheader, 'has-subitems':subItem.subItems.length > 0}">
+				<a ng-click="handleClick($event, subItem.handler, menuItem, subItem, $index, subItem.subItems.length > 0)" class="close-dropdown">  
 					<span>{{subItem.text}}</span>
 					<i class="fa fa-circle-thin"></i>
 					<i class="fa fa-check"></i>
@@ -24,7 +24,7 @@
 				
 			</li>
 			
-			<li ng-repeat="si in subItem.subItems" class="nav inner-subitem" ng-if="subItem.active && subItem.subItems.length > 1" ng-show="subItemShown(menuItem, subItem)" ng-if="!subItem.isNotRender" 
+			<li ng-repeat="si in subItem.subItems" class="nav inner-subitem" ng-if="subItem.active && subItem.subItems.length > 0" ng-show="subItemShown(menuItem, subItem)" ng-if="!subItem.isNotRender" 
 				ng-class="{'active-subitem': is3rdLevelSubitemSelected(si, subItem, menuItem)}">
 				<a class="close-dropdown" ng-click="handleSubcategoryClick($event, menuItem, subItem, si)">  
 					<span>{{si.text}}</span>
