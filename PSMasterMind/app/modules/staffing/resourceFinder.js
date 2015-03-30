@@ -404,15 +404,17 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
     // secondaryRole decrease 100
     // means: first primaryRole then secondaryRoles
     $scope.rolesOrder = function (person) {
-        var weight = 0;
-        if ($scope.isPrimaryRole(person, $scope.filterRole2)) {
-            weight -= 200;
-        }
-        if ($scope.isSecondaryRole(person, $scope.filterRole2)) {
-            weight -= 100;
-        }
-        
-        return weight;
+    	var weight = 0;
+    	if($scope.filterRole2) {
+           	if ($scope.isPrimaryRole(person, $scope.filterRole2)) {
+            	weight -= 200;
+        	}
+        	if ($scope.isSecondaryRole(person, $scope.filterRole2)) {
+            	weight -= 100;
+        	}
+    	}
+
+    	return weight;
     }
 
 } ] ).directive( 'resRepeater', function( ) {
