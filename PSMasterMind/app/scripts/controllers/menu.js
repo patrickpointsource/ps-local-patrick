@@ -112,7 +112,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 		
 		for (var k = 0; menuItem && subItem.value != 'all' && !anyOtherWithSubItemsSelected && k < menuItem.subItems.length; k ++) {
 			if (menuItem.subItems[k] != subItem && menuItem.subItems[k].value != 'all' && $scope.isSubitemSelected(menuItem.subItems[k]) && 
-					menuItem.subItems[k].subItems && menuItem.subItems[k].subItems.length > 1)
+					menuItem.subItems[k].subItems && menuItem.subItems[k].subItems.length > 0)
 				anyOtherWithSubItemsSelected = true;
 		}
 		
@@ -169,7 +169,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 		
 		for (var k = 0; subItem.value != 'all' && !anyOtherWithSubItemsSelected && k < menuItem.subItems.length; k ++) {
 			if (menuItem.subItems[k] != subItem && menuItem.subItems[k].value != 'all' && $scope.isSubitemSelected(menuItem.subItems[k]) && 
-					menuItem.subItems[k].subItems && menuItem.subItems[k].subItems.length > 1)
+					menuItem.subItems[k].subItems && menuItem.subItems[k].subItems.length > 0)
 				anyOtherWithSubItemsSelected = true;
 		}
 		//return result && !anyOtherWithSubItemsSelected || subItem.active;
@@ -215,7 +215,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 				var res = subI.value;
 				var vals;
 				
-				if (subI.subItems && subI.subItems.length > 1) {
+				if (subI.subItems && subI.subItems.length > 0) {
 					vals = _.map(subI.subItems, function(s) { if (s.active){return s.text} else{return null;}});
 					vals = _.filter(vals, function(v) { return v;});
 					
@@ -268,7 +268,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 			var res = subI.value;
 			var vals;
 			
-			if (subI.subItems && subI.subItems.length > 1) {
+			if (subI.subItems && subI.subItems.length > 0) {
 				vals = _.map(subI.subItems, function(s) { if (s.active){return s.text} else{return null;}});
 				vals = _.filter(vals, function(v) { return v;});
 				
@@ -321,6 +321,13 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 					dynamic: true
 				};
 				
+				subItem.subItems.sort(function(si1, si2) {
+					if (si1.text.toLowerCase() > si2.text.toLowerCase())
+						return 1;
+					else if (si1.text.toLowerCase() < si2.text.toLowerCase())
+						return -1;
+						
+				});
 				peopleMenuItem.subItems.push(subItem);
 			}
 			
