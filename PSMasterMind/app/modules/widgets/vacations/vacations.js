@@ -408,9 +408,9 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 		  /* (2) */ (vacStartDate >= start && vacStartDate <= end && vacEndDate >= start && vacEndDate <= end) ||
 		  /* (3) */ (vacStartDate <= end && vacEndDate >= end)) {
 		  if(vacation.startDate == vacation.endDate) {
-			$scope.errors.push("Confict with vacation: [ " + start.format("MMM D") + " ]");
+			$scope.errors.push("Conflict with vacation: [ " + start.format("MMM D") + " ]");
 		  } else {
-			$scope.errors.push("Confict with vacation: [ " + start.format("MMM D") + " - " + end.format("MMM D") + " ]");
+			$scope.errors.push("Conflict with vacation: [ " + start.format("MMM D") + " - " + end.format("MMM D") + " ]");
 		  }
 		  
 		  

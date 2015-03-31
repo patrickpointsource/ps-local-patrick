@@ -383,9 +383,9 @@ function ($q, Resources, HoursService) {
                     /* (2) */ (vacStartDate >= start && vacStartDate <= end && vacEndDate >= start && vacEndDate <= end) ||
                     /* (3) */ (vacStartDate <= end && vacEndDate >= end)) {
                     if (vacation.startDate == vacation.endDate) {
-                        errors.push("Confict with vacation: [ " + start.format("MMM D") + " ]");
+                        errors.push("Conflict with vacation: [ " + start.format("MMM D") + " ]");
                     } else {
-                        errors.push("Confict with vacation: [ " + start.format("MMM D") + " - " + end.format("MMM D") + " ]");
+                        errors.push("Conflict with vacation: [ " + start.format("MMM D") + " - " + end.format("MMM D") + " ]");
                     }
 
 
