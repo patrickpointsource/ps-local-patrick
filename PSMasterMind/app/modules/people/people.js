@@ -55,30 +55,25 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 		if( type == 'name-desc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return person.name.fullName.toLowerCase();
+				return person.name.familyName.toLowerCase();
 			} );
 		}
 
 		if( type == 'name-asc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return person.name.fullName.toLowerCase();
+				return person.name.familyName.toLowerCase();
 			} ).reverse( );
 		}
 
 		if( type == 'role-desc' ) {
-			$scope.people = _.sortBy($scope.people, function(person) {
-				if(person.primaryRole) {
-					return person.primaryRole.abbreviation;
-				}
-				
+			$scope.people = _.sortBy($scope.people, function(person) {		
+			    return person.primaryRole ? person.primaryRole.abbreviation : "";
 			});
 		}
 
 		if( type == 'role-asc' ) {
-			$scope.people = _.sortBy($scope.people, function(person) {
-				if(person.primaryRole) {
-					return person.primaryRole.abbreviation;
-				}
+			$scope.people = _.sortBy($scope.people, function(person) {		
+				return person.primaryRole ? person.primaryRole.abbreviation : "";
 			}).reverse( );
 		}
 

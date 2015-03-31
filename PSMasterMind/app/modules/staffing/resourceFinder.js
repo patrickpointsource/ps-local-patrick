@@ -80,7 +80,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 			});
 	    if (type.indexOf("jobTitle-") == 0) {
 	    	$scope.people = _.sortBy( $scope.people, function( person ) {
-				return $scope.getJobTitle(person.jobTitle).toLowerCase();
+				return $scope.getJobTitle(person.jobTitle);
 			} );
 			if(type.indexOf("asc") > -1) {
 				$scope.people.reverse();
@@ -280,7 +280,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 	});
 
 	$scope.getJobTitle = function (jobTitle) {
-	    var ret = UNSPECIFIED;
+	    var ret;
 	    if (jobTitle && jobTitle.resource) {
 	        var resource = jobTitle.resource;
 
