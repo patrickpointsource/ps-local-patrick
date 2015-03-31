@@ -131,7 +131,8 @@ angular.module('Mastermind')
 	  };
 	  
 	  $scope.onEditDepartmentPeople = function() {
-		  //$scope.selectedDepartmentPeople = [];
+	      //$scope.selectedDepartmentPeople = [];
+	      $scope.departmentPeopleChanged = false;
 		  $scope.selectedDepartment.editDepartmentPeople = true;
 		  $scope.searchAvaialbleStr = '';
 	  };
@@ -176,7 +177,8 @@ angular.module('Mastermind')
 		  }
 	  };
 	  
-	  $scope.addDepartmentPerson = function(p) {
+	  $scope.addDepartmentPerson = function (p) {
+	      $scope.departmentPeopleChanged = true;
 		  if (! $scope.selectedDepartment.departmentPeople)
 			  $scope.selectedDepartment.departmentPeople = [];
 		  
@@ -198,7 +200,8 @@ angular.module('Mastermind')
 		  });
 	  };
 	  
-	  $scope.removeDepartmentPerson = function(person) {
+	  $scope.removeDepartmentPerson = function (person) {
+	      $scope.departmentPeopleChanged = true;
 		  $scope.selectedDepartmentPeople = _.filter($scope.selectedDepartmentPeople, function(p){ return p.resource != person.resource;});
 		  
 		  $scope.availablePeopleList.push(person);
