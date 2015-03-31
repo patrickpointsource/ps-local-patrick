@@ -260,7 +260,7 @@ describe('E2E: Vacation Tests', function() {
 	};
 	
 	var approveVacation = function () {
-		console.log('> Deny vacation.');
+		console.log('> Approve vacation.');
 		return browser.sleep(7000).then(function() {
 			browser.refresh().then(function () {
 				browser.wait(function(){	    		
