@@ -320,14 +320,19 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 					subItems: categories[k].nicknames ? _.map(categories[k].nicknames, function(n) { return {text: n, active: true}}): [],
 					dynamic: true
 				};
-				
+				/*
 				subItem.subItems.sort(function(si1, si2) {
 					if (si1.text.toLowerCase() > si2.text.toLowerCase())
 						return 1;
 					else if (si1.text.toLowerCase() < si2.text.toLowerCase())
 						return -1;
 						
+				});*/
+				
+				subItem.subItems = _.sortBy(subItem.subItems, function(si) {
+					return si.text.toLowerCase();
 				});
+				
 				peopleMenuItem.subItems.push(subItem);
 			}
 			
