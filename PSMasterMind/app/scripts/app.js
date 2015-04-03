@@ -20,6 +20,7 @@
   angular.module('Mastermind.directives', ['d3']);
   angular.module('Mastermind', [
     'ui.router',
+    'ui.select',
     'ui.bootstrap.tabs',
     'ui.bootstrap.timepicker',
     'ui.bootstrap',

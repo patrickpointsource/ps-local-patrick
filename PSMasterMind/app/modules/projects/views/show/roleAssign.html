@@ -1,117 +1,134 @@
 
 <div class="row hidden-xs" >
-	<div class="col-sm-3">
-		<span>
-			* Person
-		</span> 
-	</div>
-	<div class="col-sm-2">
-		<span>
-			* Hours/Week
-		</span> 
-	</div>
+    <div class="col-sm-3">
+        <span>
+            * Person
+        </span> 
+    </div>
+    <div class="col-sm-2">
+        <span>
+            * Hours/Week
+        </span> 
+    </div>
 	
-	<div class="col-sm-3">
-		<span>
-			* Start Date
-		</span> 
-	</div>
+    <div class="col-sm-3">
+        <span>
+            * Start Date
+        </span> 
+    </div>
 	
-	<div class="col-sm-3">
-		<span>
-			* End Date
-		</span> 
-	</div>
-	<hr/>
+    <div class="col-sm-3">
+        <span>
+            * End Date
+        </span> 
+    </div>
+    <hr/>
 </div>
+
 <div class="row" ng-repeat="currentAssignee in roleAssigneesMap[role._id]">
     <div class="row" style="margin-left: 15px; margin-right: 15px;">
-	<div class="col-sm-3 col-xs-6 form-group" ng-class="{error: isFieldInError('role')}" ng-if="roleGroups[role.type.resource] != undefined">
-		<select ng-model="currentAssignee.person.resource"
-                 ng-options="m.resource as m.title for m in sortAssignees(role, currentAssignee.person.resource) | filter: {isActive: 'true'}"
-                 ng-change="assigneeChanged($index, role)"
-                 class="form-control" name="person">
-         </select>
-	</div>
-	
-	
-	
-	
-	
-	<div class="col-sm-2 col-xs-3" >
-		<input name="assigneeHoursPerWeek{{$index}}" class="form-control" style="width: 70px;" type="number" ng-model="currentAssignee.hoursPerWeek" min="0" max="100" placeholder="h/w" required />
-	</div>
-	
-	<div class="col-xs-3 form-group visible-xs">
-		 <button ng-show="roleAssigneesMap[role._id].length > 0 && roleAssigneesMap[role._id][0].person && roleAssigneesMap[role._id][0].person.resource"  class="btn btn-default" data-toggle="collapse" data-target="#roleAssignmentDel{{$parent.$index}}{{$index}}">
-            <i class="fa fa-trash-o"></i>
-        </button>
-	</div>
-	
-	<div class="col-sm-3 col-xs-6 form-group"
-		ng-class="{error: isFieldInError('role')}">
-		
-		<input id="assigneeStartDate" name="assigneeStartDate"
-			class="form-control datepicker" type="text"
-			ng-model="currentAssignee.startDate"
-			data-date-start-date="{{role.startDate}}"
-			data-date-end-date="{{role.endDate}}" todayBtn="true"
-			data-provide="datepicker" data-date-format="yyyy-mm-dd"
-			ng-required="true"/>
-		
-	</div>
-	
-	<div class="col-sm-3 col-xs-6 form-group">
-		<input id="assigneeEndDate" class="form-control datepicker" type="text"
-			ng-model="currentAssignee.endDate"
-			data-date-start-date="{{role.startDate}}"
-			data-date-end-date="{{role.endDate}}" todayBtn="true"
-			data-provide="datepicker" data-date-format="yyyy-mm-dd"/>
-	</div>
-	
-	<div class="col-sm-1 form-group hidden-xs" >
-        <button ng-show="roleAssigneesMap[role._id].length > 0 && roleAssigneesMap[role._id][0].person && roleAssigneesMap[role._id][0].person.resource"  class="btn btn-default pull-right" data-toggle="collapse" data-target="#roleAssignmentDelete{{$parent.$index}}{{$index}}">
-            <i class="fa fa-trash-o"></i>
-        </button>
-	</div>
-	</div>
-	<div class="row hidden-xs" style="height: auto;max-width:400px;min-width:280px;margin-left: auto; margin-right: auto;">
-        <div class="pull-right" >
-        <div id="roleAssignmentDelete{{$parent.$index}}{{$index}}" class="alert alert-danger collapse out">
-            <div style="margin:15px">
-            Are you sure you want to delete this assignment?<br/><br/>
-            <div class="pageActions pull-right">
-                <button class="btn btn-danger" ng-click="removeAssignmentFromRole($index, role, $parent.$index)">
-                 <i class="fa fa-trash-o"></i> <span>Yes</span>
-                </button>
-                <button class="btn btn-default" data-toggle="collapse" data-target="#roleAssignmentDelete{{$parent.$index}}{{$index}}">
-                 <i class="fa fa-chevron-left"></i> <span>No</span>
-                </button>
-            </div>
-            <br/>
-            <br/>
-            </div>
+        <div class="col-sm-3 col-xs-6 form-group assignee-row-select" ng-class="{error: isFieldInError('role')}" ng-if="roleGroups[role.type.resource] != undefined">
+            <ui-select ng-model="currentAssignee.person.resource" theme="bootstrap" style="min-width: 300px;" on-select="assigneeChanged($item, $model, role, $index)">
+                <ui-select-match placeholder="Select a person in the list or search his name...">{{$select.selected.title}}</ui-select-match>
+                <ui-select-choices repeat="m.resource as m in sortAssignees(role, currentAssignee.person.resource) | filter: $selected.search">
+                    <div class="row assignee-row-info">
+                        <div class="col-xs-2 no-horizontal-padding assignee-role-square" ng-class="{ 'background-green': m.roleSign == 'P', 'background-gray': m.roleSign =='S'}">{{m.roleSign}}</div>
+                        <div class="col-xs-7" ng-bind-html="m.title" style="padding-top: 15px;"></div>
+                        <div class="col-xs-3 availability-percentage">{{getAvailability(m.resource)}} % Available</div>
+                    </div>
+                </ui-select-choices>
+            </ui-select>
+            <!--<select ng-model="currentAssignee.person.resource"
+                ng-options="m.resource as m.title for m in sortAssignees(role, currentAssignee.person.resource) | filter: {isActive: 'true'}"
+                ng-change="assigneeChanged($index, role)"
+                class="form-control" name="person">
+            </select>-->
         </div>
+	
+	
+	
+	
+	
+        <div class="col-sm-2 col-xs-3" >
+            <input name="assigneeHoursPerWeek{{$index}}" class="form-control" style="width: 70px;" type="number" ng-model="currentAssignee.hoursPerWeek" min="0" max="100" placeholder="h/w" required />
+        </div>
+	
+        <div class="col-xs-3 form-group visible-xs">
+            <button ng-show="roleAssigneesMap[role._id].length > 0 && roleAssigneesMap[role._id][0].person && roleAssigneesMap[role._id][0].person.resource"  class="btn btn-default" data-toggle="collapse" data-target="#roleAssignmentDel{{$parent.$index}}{{$index}}">
+                <i class="fa fa-trash-o"></i>
+            </button>
+        </div>
+	
+        <div class="col-sm-3 col-xs-6 form-group"
+             ng-class="{error: isFieldInError('role')}">
+		
+            <input id="assigneeStartDate" name="assigneeStartDate"
+                   class="form-control datepicker" type="text"
+                   ng-model="currentAssignee.startDate"
+                   data-date-start-date="{{role.startDate}}"
+                   data-date-end-date="{{role.endDate}}" todayBtn="true"
+                   data-provide="datepicker" data-date-format="yyyy-mm-dd"
+                   ng-required="true"/>
+		
+        </div>
+	
+        <div class="col-sm-3 col-xs-6 form-group">
+            <input id="assigneeEndDate" class="form-control datepicker" type="text"
+                   ng-model="currentAssignee.endDate"
+                   data-date-start-date="{{role.startDate}}"
+                   data-date-end-date="{{role.endDate}}" todayBtn="true"
+                   data-provide="datepicker" data-date-format="yyyy-mm-dd"/>
+        </div>
+	
+        <div class="col-sm-1 form-group hidden-xs" >
+            <button ng-show="roleAssigneesMap[role._id].length > 0 && roleAssigneesMap[role._id][0].person && roleAssigneesMap[role._id][0].person.resource"  class="btn btn-default pull-right" data-toggle="collapse" data-target="#roleAssignmentDelete{{$parent.$index}}{{$index}}">
+                <i class="fa fa-trash-o"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row hidden-xs" style="height: auto;max-width:400px;min-width:280px;margin-left: auto; margin-right: auto;">
+        <div class="pull-right" >
+            <div id="roleAssignmentDelete{{$parent.$index}}{{$index}}" class="alert alert-danger collapse out">
+                <div style="margin:15px">
+                    Are you sure you want to delete this assignment?<br/><br/>
+                    <div class="pageActions pull-right">
+                        <button class="btn btn-danger" ng-click="removeAssignmentFromRole($index, role, $parent.$index)">
+                            <i class="fa fa-trash-o"></i> <span>Yes</span>
+                        </button>
+                        <button class="btn btn-default" data-toggle="collapse" data-target="#roleAssignmentDelete{{$parent.$index}}{{$index}}">
+                            <i class="fa fa-chevron-left"></i> <span>No</span>
+                        </button>
+                    </div>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row visible-xs" style="height: auto;max-width:250px;min-width:170px;margin-left: auto; margin-right: auto;">
         <div class="pull-right" >
-        <div id="roleAssignmentDel{{$parent.$index}}{{$index}}" class="alert alert-danger collapse out">
-            <div style="margin:6px">
-            Are you sure you want to delete this assignment?<br/><br/>
-            <div class="pageActions pull-right">
-                <button class="btn btn-danger" ng-click="removeAssignmentFromRole($index, role, $parent.$index)">
-                 <i class="fa fa-trash-o"></i> <span>Yes</span>
-                </button>
-                <button class="btn btn-default" data-toggle="collapse" data-target="#roleAssignmentDelete{{$parent.$index}}{{$index}}">
-                 <i class="fa fa-chevron-left"></i> <span>No</span>
-                </button>
+            <div id="roleAssignmentDel{{$parent.$index}}{{$index}}" class="alert alert-danger collapse out">
+                <div style="margin:6px">
+                    Are you sure you want to delete this assignment?<br/><br/>
+                    <div class="pageActions pull-right">
+                        <button class="btn btn-danger" ng-click="removeAssignmentFromRole($index, role, $parent.$index)">
+                            <i class="fa fa-trash-o"></i> <span>Yes</span>
+                        </button>
+                        <button class="btn btn-default" data-toggle="collapse" data-target="#roleAssignmentDelete{{$parent.$index}}{{$index}}">
+                            <i class="fa fa-chevron-left"></i> <span>No</span>
+                        </button>
+                    </div>
+                    <br/>
+                    <br/>
+                </div>
             </div>
-            <br/>
-            <br/>
-            </div>
-        </div>
         </div>
     </div>
 </div>
+<script type="text/ng-template" id="customTemplate.html">
+    <a>
+        <span style="width: 16px; height: 16px; color: green;">{{match.model.roleSign}}</span>
+        <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    </a>
+</script>
 	

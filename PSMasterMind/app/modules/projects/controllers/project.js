@@ -1113,7 +1113,7 @@ else if( role.percentageCovered == 0 )
 			var person = people[ i ];
 			var personsRole = roleGroups[ person.primaryRole.resource ];
 
-			person.title = ( personsRole ? ( personsRole.abbreviation + ': ' ) : '' ) + Util.getPersonName(person);
+			person.title = /*( personsRole ? ( personsRole.abbreviation + ': ' ) : '' ) + */Util.getPersonName(person);
 
 			for( var j = 0; j < roleResults.members.length; j++ ) {
 				var roleJ = roleResults.members[ j ];

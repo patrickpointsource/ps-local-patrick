@@ -3,8 +3,8 @@
 /**
  * Controller for handling the Details form.
  */
-angular.module( 'Mastermind.controllers.projects' ).controller( 'AssignmentsCtrl', [ '$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'AssignmentService', '$location', 'ngTableParams',
-function( $scope, $rootScope, $filter, Resources, $state, $stateParams, AssignmentService, $location, TableParams ) {
+angular.module( 'Mastermind.controllers.projects' ).controller( 'AssignmentsCtrl', [ '$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'AssignmentService', '$location', 'ngTableParams', 'People', 
+function( $scope, $rootScope, $filter, Resources, $state, $stateParams, AssignmentService, $location, TableParams, People ) {
 
 	// Table Parameters
 	var params = {
@@ -250,40 +250,71 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		return result;
 	};
 	
-	$scope.sortAssignees = function (role, personResource)
-	{
+	$scope.sortAssignees = function (role, personResource) {
 		var assignees = $scope.roleGroups[role.type.resource].assiganble.slice();
 		var theAssignee = _.find(assignees, function (a) { return a.resource == personResource; });
 		
-		if (theAssignee == null)
-			return _.sortBy(assignees, function (a) { return a.title; });
-		
-		assignees.splice(assignees.indexOf(theAssignee), 1);
-		
-		assignees = _.map(assignees, function (a)
-		{
+		if (theAssignee) {
+			assignees.splice(assignees.indexOf(theAssignee), 1);
+		}
+
+		assignees = _.map(assignees, function (a) {
 			var order = 2;
 			
-			if (a.primaryRole && theAssignee.primaryRole && a.primaryRole.resource == theAssignee.primaryRole.resource)
-				order = 0;
-			else if (a.groups && theAssignee.groups)
-				for (var i = 0, count = theAssignee.groups.length; i < count; i++)
-					if (a.groups.indexOf(theAssignee.groups[i]) != -1)
-					{
-						order = 1;
-						break;
-					}
+			if (a.primaryRole && a.primaryRole.resource == role.type.resource) {
+			    a.roleSign = "P";
+			    order = 0;
+			} else if (a.secondaryRoles) {
+			    var secondaryRoleResources = _.map(a.secondaryRoles, function(s) {
+			        return s.resource;
+			    });
+
+			    if (secondaryRoleResources.indexOf(role.type.resource) > -1) {
+			        a.roleSign = "S";
+			        order = 1;
+			    }
+			} else {
+				delete a.roleSign;
+			}
 			
 			return { order: order, assignee: a };
 		});
-		
+
+		assignees = _.filter(assignees, function (a) { return a.assignee.roleSign; });
 		assignees = _.sortBy(assignees, function (a) { return a.order + a.assignee.title; });
 		assignees = _.map(assignees, function (a) { return a.assignee; });
 		
-		assignees.unshift(theAssignee);
-		
+		if(theAssignee) {
+			assignees.unshift(theAssignee);
+		}
+
 		return assignees;
 	};
+    $scope.getAvailability = function(personResource) {
+        if (!$scope.availabilityPercentage[personResource] && $scope.availabilityPercentage[personResource] != 0) {
+            return 100;
+        } else {
+            return $scope.availabilityPercentage[personResource];
+        }
+    };
+
+    $scope.isPrimaryRole = function(roleResource, person) {
+        return person.primaryRole && person.primaryRole.resource == roleResource;
+    };
+
+    $scope.isSecondaryRole = function(roleResource, person) {
+        if (person.secondaryRoles) {
+            var secondaryRoleResources = _.map(person.secondaryRoles, function(s) {
+                return s.resource;
+            });
+
+            if (secondaryRoleResources.indexOf(role.type.resource) > -1) {
+                return true;
+            }
+        }
+
+        return false;
+    };
 
 	$scope.getPerson = function( personId, role ) {
 		var result = undefined;
@@ -439,11 +470,11 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 			project: {
 				resource: $scope.project.about
 			}
-		} ).then( function( data ) {
-			$scope.refreshAssignmentsData( data );
-			$scope.setSentinel( );
-			$rootScope.formDirty = false;
-			$scope.hideAssignmentsSpinner = true;
+		}).then(function (data) {
+		    $scope.refreshAssignmentsData(data);
+		    $scope.setSentinel();
+		    $rootScope.formDirty = false;
+		    $scope.hideAssignmentsSpinner = true;
 		} );
 		if( $scope.projectTabId == "assignments" && !$state.is( "projects.show.edit" ) ) {
 			// in case when we simply converting url "assignments" to
@@ -473,7 +504,11 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 		}
 
 	};
-
+	
+	$scope.assigneeChanged = function(item, model, role, index) {
+      $scope.$emit('roles:change', index, role);
+    };
+	
 	$scope.fillOriginalAssignees = function( ) {
 		var role;
 
@@ -526,6 +561,23 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 	
 	$scope.refreshAssignmentsData = function( result ) {
 		$scope.roleAssigneesMap = [];
+
+		People.getPeopleCurrentAssignments().then(function (activeAssignments) {
+		    //Sum the percentages for all of the active assignments
+		    var availabilityPercentage = {};
+		    for (var person in activeAssignments) {
+		        var assignments = activeAssignments[person];
+		        if (assignments) {
+		            var hoursRateValue = AssignmentService.getAssignmentsHoursRate(assignments);
+		            availabilityPercentage[person] = 100 - Math.round(100 * hoursRateValue / CONSTS.HOURS_PER_WEEK);
+		            if (availabilityPercentage[person] < 0) {
+		                availabilityPercentage[person] = 0;
+		            }
+		        }
+		    }
+
+		    $scope.availabilityPercentage = availabilityPercentage;
+		});
 
 		if( result && result.members ) {
 			$scope.projectAssignment = result;
@@ -671,7 +723,7 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 				}
 			} );
 
-			$scope.handleAssignmentsFilterChanged( );
+			$scope.handleAssignmentsFilterChanged();
 
 			/*
 			 // switch to edit mode if needed
