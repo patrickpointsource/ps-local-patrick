@@ -89,7 +89,7 @@
 		    <div class="panel-body" >
 		    	
 		
-				<div class="row hours-month-container hidden-xs hidden-sm" ng-class="{}">
+				<div class="row hours-month-container hidden-xs" ng-class="{}">
 		        	
 		        	<div class="spinner-container" ng-hide="hideCalendarSpinner" style="width: calc(100% - 30px);">
 			    		<i class="fa fa-spinner fa-spin fa-3x"></i>
@@ -122,17 +122,17 @@
 		                				'hours-day-not-logged': day.totalHours == 0}"  ng-click="setSelected(e, day, $index)">
 		                	
 		                	<div class="hours-day-content">
-		                		<div ng-repeat="vac in day.vacations" ng-show="{{$index <= 4}}" ng-class="{'empty-vacation': vac.isEmpty}"
+		                		<div ng-repeat="vac in day.vacations" ng-show="{{$index < itemCount}}" ng-class="{'empty-vacation': vac.isEmpty}"
 		                			class="text-left vacation-day-entry entry_{{$parent.$index}}_{{$index}}" style="background:{{vac.background}}"
 		                			ng-mouseover="onVacationClicked(event, vac, $parent.$index, $index)"  ng-mouseleave="onVacationHide(event, vac, $parent.$index, $index)"
 		                			>
-					            	<span ng-show="{{vac.startDateOfMultidays == day.date}}">{{vac.person.name ? vac.person.name: '...'}}</span>
+					            	<span ng-show="{{vac.startDateOfMultidays == day.date}}">{{(itemCount == 3 ? vac.person.lastName.toUpperCase() : vac.person.name) || '...'}}</span>
 					            	<span class="vacation-day-period" ng-show="{{vac.startDateOfMultidays == day.date}}">{{getVacationPeriod(vac)}}</span>
 					            	<span ng-show="{{vac.startDateOfMultidays != day.date}}">&nbsp;&nbsp;&nbsp;</span>
 					            </div>
 					            
-					            <div ng-show="{{getCountNotEmptyVacations(day.vacations)> 4}}" ng-click="onShowMoreClicked($event, day.vacations, $index, 5)" class="text-left vacation-day-entry entry_{{$index}}_5" style="background-color:{{day.moreBackground}};" >
-					            	<span>show {{getCountNotEmptyVacations(day.vacations) - 4}} more...</span>
+					            <div ng-show="{{getCountNotEmptyVacations(day.vacations) > itemCount}}" ng-click="onShowMoreClicked($event, day.vacations, $index, itemCount)" class="text-left vacation-day-entry entry_{{$index}}_{{itemCount}}" style="background-color:{{day.moreBackground}};" >
+					            	<span>+{{getCountNotEmptyVacations(day.vacations) - itemCount}} more...</span>
 					            </div>
 		                	</div>
 		                	
