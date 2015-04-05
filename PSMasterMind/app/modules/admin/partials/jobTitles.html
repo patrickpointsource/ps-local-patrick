@@ -1,0 +1,73 @@
+﻿<div ng-controller="JobTitlesCtrl">
+    <div class="row">
+        <div class="col-xs-8" style="padding-left: 30px;">
+            <h3>Job Titles</h3>
+        </div>
+        <div class="col-xs-4">
+            <button class="btn btn-default pull-right" style="margin-top: 20px;" ng-click="new()">
+                <i class="fa fa-plus-square"></i> Add Job Title
+            </button>
+        </div>
+    </div>
+    <div class="row no-margin" ng-show="message || error">
+        <div class="alert alert-success" ng-show="message">
+            <a class="close" ng-click="message = '';">&times;</a>
+            <div>{{message}}</div>
+        </div>
+        <div class="alert alert-danger" ng-show="error">
+            <a class="close" ng-click="error = '';">&times;</a>
+            <div>{{error}}</div>
+        </div>
+    </div>
+    <div class="spinner-container" ng-show="blockUI" style="width: calc(100% - 30px);margin-top: 40px;height: calc(100% - 20px);">
+        <i class="fa fa-spinner fa-spin fa-3x"></i>
+    </div>
+    <div class="row no-margin" ng-show="creating" style="margin-bottom: 15px;">
+        <div class="col-lg-6 col-sm-12 well">
+            <ng-include src="'modules/admin/partials/jobTitleEdit.html'"></ng-include>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 15px;">
+        <div class="col-lg-6 col-sm-12">
+            <div class="col-xs-3">
+                <strong>Abbreviation</strong>
+            </div>
+            <div class="col-xs-6">
+                <strong>Title</strong>
+            </div>
+            <div class="col-xs-3"></div>
+        </div>
+    </div>
+    <div class="row" ng-repeat="title in jobTitles" style="margin-bottom: 10px;">
+        <div class="col-lg-6 col-sm-12" style="border-top: 2px solid rgb(128, 128, 128); padding-top: 10px; padding-left: 0px;margin-left: 15px;" ng-hide="selectedJobTitle._id == title._id">
+            <div class="col-xs-3" style="padding-top: 5px;">{{title.abbreviation}}</div>
+            <div class="col-xs-6" style="padding-top: 5px;">{{title.title}}</div>
+            <div class="col-xs-3 no-horizontal-padding">
+                <button class="btn btn-default pull-right" ng-click="deleteConfirm = true;" style="margin-left: 5px;">
+                    <i class="fa fa-trash-o"></i>
+                </button>
+                <button class="btn btn-default pull-right" ng-click="edit(title, $index)">
+                    <i class="fa fa-pencil"></i>
+                </button>
+                <div class="alert alert-danger" ng-show="deleteConfirm" style="margin-top: 40px;">
+                    <div style="margin:15px">
+                        Are you sure you want to delete this job title?<br /><br />
+                        <div class="pageActions pull-right">
+                            <button class="btn btn-danger" ng-click="delete($index)">
+                                <i class="fa fa-trash-o"></i> <span>Yes</span>
+                            </button>
+                            <button class="btn btn-default" ng-click="deleteConfirm = false;">
+                                <i class="fa fa-chevron-left"></i> <span>No</span>
+                            </button>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-12" style="border-top: 2px solid rgb(128, 128, 128); padding-top: 10px; padding-left: 0px;margin-left: 15px;" ng-show="selectedJobTitle._id == title._id">
+            <ng-include src="'modules/admin/partials/jobTitleEdit.html'"></ng-include>
+        </div>
+    </div>
+</div>
