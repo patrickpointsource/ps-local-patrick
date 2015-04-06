@@ -39,11 +39,11 @@
         </div>
     </div>
     <div class="row" ng-repeat="title in jobTitles" style="margin-bottom: 10px;">
-        <div class="col-lg-6 col-sm-12" style="border-top: 2px solid rgb(128, 128, 128); padding-top: 10px; padding-left: 0px;margin-left: 15px;" ng-hide="selectedJobTitle._id == title._id">
+        <div class="col-lg-6 col-sm-12" style="border-top: 2px solid #dddddd; padding-top: 10px; padding-left: 0px;margin-left: 15px;" ng-hide="selectedJobTitle._id == title._id">
             <div class="col-xs-3" style="padding-top: 5px;">{{title.abbreviation}}</div>
             <div class="col-xs-6" style="padding-top: 5px;">{{title.title}}</div>
             <div class="col-xs-3 no-horizontal-padding">
-                <button class="btn btn-default pull-right" ng-click="deleteConfirm = true;" style="margin-left: 5px;">
+                <button class="btn btn-default pull-right" ng-click="deleteConfirm = !deleteConfirm;" style="margin-left: 5px;">
                     <i class="fa fa-trash-o"></i>
                 </button>
                 <button class="btn btn-default pull-right" ng-click="edit(title, $index)">
@@ -66,7 +66,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6 col-sm-12" style="border-top: 2px solid rgb(128, 128, 128); padding-top: 10px; padding-left: 0px;margin-left: 15px;" ng-show="selectedJobTitle._id == title._id">
+        <div class="col-lg-6 col-sm-12" style="border-top: 2px solid #dddddd; padding-top: 10px; padding-left: 0px;margin-left: 15px;" ng-show="selectedJobTitle._id == title._id">
             <ng-include src="'modules/admin/partials/jobTitleEdit.html'"></ng-include>
         </div>
     </div>

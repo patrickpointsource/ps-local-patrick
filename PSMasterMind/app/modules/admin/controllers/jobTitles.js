@@ -15,8 +15,10 @@ angular.module('Mastermind').controller('JobTitlesCtrl', ['$scope', '$state','$f
           });
       }
 
+      $scope.creating = false;
+
       $scope.new = function() {
-          $scope.creating = true;
+          $scope.creating = !$scope.creating;
           $scope.selectedJobTitleIndex = -1;
           $scope.selectedJobTitle = { title: "", abbreviation: "" };
       };
@@ -54,6 +56,8 @@ angular.module('Mastermind').controller('JobTitlesCtrl', ['$scope', '$state','$f
               });
           }
       };
+
+      $scope.deleteConfirm = false;
 
       $scope.delete = function(index) {
           var title = $scope.jobTitles[index];
