@@ -108,6 +108,11 @@ describe('E2E: Task Hours Tests', function() {
 	    }); 
 	};
 
+	var prepareAuthCreds = function(creds) {
+		isLogged = false;
+		loggedUser = creds;
+	}
+	
 	var sendCredentials = function(handles) {
    		console.log("> Switched window control to the popup.");
 		browser.sleep(1000);
@@ -165,8 +170,7 @@ describe('E2E: Task Hours Tests', function() {
 
 	it('Additional Task Hours Test: Prepare login creds (Employee).', function() {	
 		console.log('> Running: Additional Task Hours Test - Prepare login creds (Employee)');
-		isLogged = false;
-		loggedUser = employeeUserCreds;
+		prepareAuthCreds(employeeUserCreds);
 	}, 60000);
 
 	it('Additional Task Hours Test: Check hours as Employee.', function() {	
@@ -176,8 +180,7 @@ describe('E2E: Task Hours Tests', function() {
 
 	it('Additional Task Hours Test: Prepare login creds (Employee).', function() {	
 		console.log('> Running: Additional Task Hours Test - Prepare login creds (PM)');
-		isLogged = false;
-		loggedUser = managerUserCreds;
+		prepareAuthCreds(managerUserCreds);
 	}, 60000);
 
 	it('Additional Task Hours Test: Check hours as PM.', function() {	
