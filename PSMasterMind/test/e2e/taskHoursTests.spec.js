@@ -399,10 +399,12 @@ describe('E2E: Task Hours Tests', function() {
 		this.addNewHoursRecord = function (task) {
 	    	var $this = this;
 	    	if (browser.isElementPresent($this.clearTask)) {
-	    		element($this.clearTask).isDisplayed().then(function (isVisible) {
-	    		    if (isVisible) {
-	    	    		browser.findElement($this.clearTask).click();
-	    		    }
+	    		browser.findElements($this.clearTask).then(function (clearTaskElements) {
+	    			clearTaskElements[0].isDisplayed().then(function (isVisible) {
+		    		    if (isVisible) {
+		    	    		clearTaskElements[0].click();
+		    		    }
+		    		});
 	    		});
 	    	}
 	    	browser.sleep(1000);
