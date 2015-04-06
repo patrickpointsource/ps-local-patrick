@@ -61,81 +61,7 @@ describe('E2E: Task Hours Tests', function() {
             });
     	}
 	});	
-
-	it('Additional Task Hours Test: Add hours for task and verify.', function() {	
-		console.log('> Running: Additional Task Hours Test - Add hours for task');
-		taskHoursPage.addHoursForTaskAndVerify();
-	}, 60000);
-
-	it('Additional Task Hours Test: Remove hours for task and verify.', function() {	
-		console.log('> Running: Additional Task Hours Test - Remove hours for task');
-		taskHoursPage.removeHoursForTaskAndVerify();
-	}, 60000);
-
-	it('Additional Task Hours Test: Add hours for task without name and verify.', function() {	
-		console.log('> Running: Additional Task Hours Test - Add hours for task without name');
-		taskHoursPage.addHoursForTaskWithoutNameAndVerify();
-	}, 60000);
-
-	it('Additional Task Hours Test: Add hours for task without description and verify.', function() {	
-		console.log('> Running: Additional Task Hours Test - Add hours for task without description');
-		taskHoursPage.addHoursForTaskWithoutDescriptionAndVerify();
-	}, 60000);
-
-	it('Additional Task Hours Test: Add hours for task without hours value and verify.', function() {	
-		console.log('> Running: Additional Task Hours Test - Add hours for task without hours value');
-		taskHoursPage.addHoursForTaskWithoutHoursValueAndVerify();
-	}, 60000);
-
-	it('Additional Task Hours Test: Add hours for task without hours and verify.', function() {	
-		console.log('> Running: Additional Task Hours Test - Add hours for task with invalid hours value');
-		taskHoursPage.addHoursForTaskWithInvalidHoursValueAndVerify();
-	}, 60000);
-
-	it('Additional Task Hours Test: Add hours for empty task and verify.', function() {	
-		console.log('> Running: Additional Task Hours Test - Add hours for empty task');
-		taskHoursPage.addHoursForEmptyTaskAndVerifyErrors();
-	}, 60000);
-
-	it('Additional Task Hours Test: Prepare login creds (Employee).', function() {	
-		console.log('> Running: Additional Task Hours Test - Prepare login creds (Employee)');
-		isLogged = false;
-		loggedUser = employeeUserCreds;
-	}, 60000);
-
-	it('Additional Task Hours Test: Check hours as Employee.', function() {	
-		console.log('> Running: Additional Task Hours Test - Check hours as Employee');
-		taskHoursPage.checkHoursAsEmployee();
-	}, 60000);
-
-	it('Additional Task Hours Test: Prepare login creds (Employee).', function() {	
-		console.log('> Running: Additional Task Hours Test - Prepare login creds (PM)');
-		isLogged = false;
-		loggedUser = managerUserCreds;
-	}, 60000);
-
-	it('Additional Task Hours Test: Check hours as PM.', function() {	
-		console.log('> Running: Additional Task Hours Test - Check hours as PM');
-		taskHoursPage.checkHoursAsPM();
-	}, 60000);
-
-	
-	var updateElement = function (form, element, value, isClickable) {
-  		var element = form.findElement(element);
-  		element.clear().then( function () { 
-  			element.sendKeys(value); 
-  			if (isClickable) {
-  				browser.findElement(by.cssContainingText('a', value)).click();
-  			}
-  		} );
-	}
-	
-	var expectByCssToBeAbsent = function(css) {
-		browser.driver.isElementPresent(by.css(css)).then(function(present) {
-			expect(present).toBeFalsy();
-		});
-	};
-	 	
+    
 	var relogin = function() {
     	browser.findElement(signOut).click();
     	browser.sleep(2000);
@@ -201,8 +127,65 @@ describe('E2E: Task Hours Tests', function() {
 		browser.driver.sleep(5000);	    		
 	}
 	
-	
 
+	it('Additional Task Hours Test: Add hours for task and verify.', function() {	
+		console.log('> Running: Additional Task Hours Test - Add hours for task');
+		taskHoursPage.addHoursForTaskAndVerify();
+	}, 60000);
+
+	it('Additional Task Hours Test: Remove hours for task and verify.', function() {	
+		console.log('> Running: Additional Task Hours Test - Remove hours for task');
+		taskHoursPage.removeHoursForTaskAndVerify();
+	}, 60000);
+
+	it('Additional Task Hours Test: Add hours for task without name and verify.', function() {	
+		console.log('> Running: Additional Task Hours Test - Add hours for task without name');
+		taskHoursPage.addHoursForTaskWithoutNameAndVerify();
+	}, 60000);
+
+	it('Additional Task Hours Test: Add hours for task without description and verify.', function() {	
+		console.log('> Running: Additional Task Hours Test - Add hours for task without description');
+		taskHoursPage.addHoursForTaskWithoutDescriptionAndVerify();
+	}, 60000);
+
+	it('Additional Task Hours Test: Add hours for task without hours value and verify.', function() {	
+		console.log('> Running: Additional Task Hours Test - Add hours for task without hours value');
+		taskHoursPage.addHoursForTaskWithoutHoursValueAndVerify();
+	}, 60000);
+
+	it('Additional Task Hours Test: Add hours for task without hours and verify.', function() {	
+		console.log('> Running: Additional Task Hours Test - Add hours for task with invalid hours value');
+		taskHoursPage.addHoursForTaskWithInvalidHoursValueAndVerify();
+	}, 60000);
+
+	it('Additional Task Hours Test: Add hours for empty task and verify.', function() {	
+		console.log('> Running: Additional Task Hours Test - Add hours for empty task');
+		taskHoursPage.addHoursForEmptyTaskAndVerifyErrors();
+	}, 60000);
+
+	it('Additional Task Hours Test: Prepare login creds (Employee).', function() {	
+		console.log('> Running: Additional Task Hours Test - Prepare login creds (Employee)');
+		isLogged = false;
+		loggedUser = employeeUserCreds;
+	}, 60000);
+
+	it('Additional Task Hours Test: Check hours as Employee.', function() {	
+		console.log('> Running: Additional Task Hours Test - Check hours as Employee');
+		taskHoursPage.checkHoursAsEmployee();
+	}, 60000);
+
+	it('Additional Task Hours Test: Prepare login creds (Employee).', function() {	
+		console.log('> Running: Additional Task Hours Test - Prepare login creds (PM)');
+		isLogged = false;
+		loggedUser = managerUserCreds;
+	}, 60000);
+
+	it('Additional Task Hours Test: Check hours as PM.', function() {	
+		console.log('> Running: Additional Task Hours Test - Check hours as PM');
+		taskHoursPage.checkHoursAsPM();
+	}, 60000);
+
+	
 	var TaskHoursPage = function () {
 		
 		this.ddlProjectsTasks = 'ddlProjectsTasks';
