@@ -286,7 +286,7 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
             thumbnail: 1
         };
 
-        ProjectsService.getAllProjects(function (result)
+        Resources.refresh("/projects").then(function (result)
         {
             $scope.loadedProjects = result.data;
 
