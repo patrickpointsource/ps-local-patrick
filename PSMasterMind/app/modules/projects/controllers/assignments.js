@@ -505,9 +505,9 @@ function( $scope, $rootScope, $filter, Resources, $state, $stateParams, Assignme
 
 	};
 	
-	$scope.assigneeChanged = function(item, model, role, index) {
-      $scope.$emit('roles:change', index, role);
-    };
+	//$scope.assigneeChanged = function(item, model, role, index) {
+    //  $scope.$emit('roles:change', index, role);
+    //};
 	
 	$scope.fillOriginalAssignees = function( ) {
 		var role;
