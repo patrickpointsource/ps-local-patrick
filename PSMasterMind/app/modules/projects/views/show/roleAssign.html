@@ -30,7 +30,7 @@
         <div class="col-sm-3 col-xs-6 form-group assignee-row-select" ng-class="{error: isFieldInError('role')}" ng-if="roleGroups[role.type.resource] != undefined">
             <ui-select ng-model="currentAssignee.person.resource" theme="bootstrap" style="min-width: 300px;" on-select="assigneeChanged($item, $model, role, $index)">
                 <ui-select-match placeholder="Select a person in the list or search his name...">{{$select.selected.title}}</ui-select-match>
-                <ui-select-choices repeat="m.resource as m in sortAssignees(role, currentAssignee.person.resource) | filter: $selected.search">
+                <ui-select-choices repeat="m.resource as m in sortAssignees(role, currentAssignee.person.resource) | filter: $select.search">
                     <div class="row assignee-row-info">
                         <div class="col-xs-2 no-horizontal-padding assignee-role-square" ng-class="{ 'background-green': m.roleSign == 'P', 'background-gray': m.roleSign =='S'}">{{m.roleSign}}</div>
                         <div class="col-xs-7" ng-bind-html="m.title" style="padding-top: 15px;"></div>
