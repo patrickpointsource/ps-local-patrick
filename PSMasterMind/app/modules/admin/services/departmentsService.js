@@ -33,9 +33,10 @@ angular.module('Mastermind')
     	return Resources.refresh("departmentCategories/").then(function(categories) {
     		categories.members = _.sortBy(categories.members, 'TrimmedValue');
     		
-    		for (var k = 0; categories.members && k < categories.members.length; k ++) {
-    			categories.members[k].name = (k * 1 + 1) + ' - ' + categories.members[k].name;
-    		}
+    		if (categories.members)
+	    		for (var k = 0; k < categories.members.length; k ++) {
+	    			categories.members[k].name = (k * 1 + 1) + ' - ' + categories.members[k].name;
+	    		}
     		
     		return categories;
     	});
