@@ -67,7 +67,6 @@ var securityRoles = require('./server/routes/securityRoles');
 var userRoles = require('./server/routes/userRoles');
 var upgrade = require('./server/routes/upgrade');
 var reports = require('./server/routes/reports');
-var jazzHub = require('./server/routes/jazzHub');
 var jobTitles = require('./server/routes/jobTitles');
 
 var security = require('./server/util/security.js');
@@ -174,6 +173,11 @@ function openError(errorfile) {
 }
 
 function log(msg) {
+	
+	if (arguments && arguments.length > 1) {
+		msg = JSON.stringify(arguments);
+	}
+	
 	if (appConfig.logToFileStream)
 		logStream.write(msg + "\n");
 	else
@@ -181,6 +185,11 @@ function log(msg) {
 }
 
 function logError(msg) {
+	
+	if (arguments && arguments.length > 1) {
+		msg = JSON.stringify(arguments);
+	}
+	
 	//if (appConfig.logToFileStream)
 		errorStream.write(msg + "\n");
 	/*else
@@ -197,11 +206,11 @@ if (appConfig.logToFileStream) {
 	errorStream = openError(appConfig.errorFileName);
 	
 	// override log function
-	/*console.log = log;
+	console.log = log;
 	console.warn = log;
 	console.info = log;
 	
-	console.error = logError;*/
+	console.error = logError;
 	
 	process.stdout.write = log;
 	process.stderr.write = logError;
@@ -268,7 +277,6 @@ if (!useAppNames) {
     app.use('/userRoles', userRoles);
     app.use('/upgrade', upgrade);
     app.use('/reports', reports);
-    app.use('/jazzHub', jazzHub);
     app.use('/jobTitles', jobTitles);
     
     app.get( '/resetuser', resetUser);
