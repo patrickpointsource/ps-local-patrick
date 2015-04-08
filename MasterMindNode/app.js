@@ -277,7 +277,6 @@ if (!useAppNames) {
     app.use('/userRoles', userRoles);
     app.use('/upgrade', upgrade);
     app.use('/reports', reports);
-    app.use('/jazzHub', jazzHub);
     app.use('/jobTitles', jobTitles);
     
     app.get( '/resetuser', resetUser);
