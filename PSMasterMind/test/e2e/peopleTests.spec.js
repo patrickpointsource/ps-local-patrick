@@ -113,7 +113,7 @@ describe("E2E: People test cases.", function () {
 	
 	it('Navigate to non-current user profile, make sure cannot add vacation request.', function() {	
 		console.log('> Running: Navigate to non-current user profile, make sure cannot add vacation request.');
-		checkThatAddVacactionDisabledForNonCurrentUser();
+		checkAddVacationDisabledForNonCurrentUser();
 	}, 60000);
 
 	//Doesn't support by new UI.
@@ -222,7 +222,7 @@ describe("E2E: People test cases.", function () {
     	});
     };
     
-    var checkThatAddVacactionDisabledForNonCurrentUser = function() {
+    var checkAddVacationDisabledForNonCurrentUser = function() {
     	console.log("> Check that add vacation disabled.");
     	var peoplePage = new PeoplePage();
     	peoplePage.get();

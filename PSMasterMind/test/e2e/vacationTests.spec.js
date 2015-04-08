@@ -25,7 +25,8 @@ describe('E2E: Vacation Tests', function() {
 	var editRequestBtn = element.all(by.css('[ng-click="editVacation($index)"]')).get(0);
 	var closeEditRequestBtn =  element.all(by.css('[ng-click="editVacation($index)"]')).get(1);
 	var cancelRequest = element(by.css('[data-target="#vacCancelModal"]'));
-	var cancellationOk = element(by.css('[ng-click="deleteVacation()"]'));
+	var cancellationYes = element(by.css('[ng-click="deleteVacation()"]'));
+	var cancellationNo = element(by.css('[ng-click="clearCancelModal()"]'));
 	var cancellationReason = element(by.model("cancellationReason"));
 	var submitErrors = element.all(by.repeater("error in errors"));
 	
@@ -42,7 +43,7 @@ describe('E2E: Vacation Tests', function() {
 	var vacationEndDate = element.all(by.model("vacationEndDate")).get(0);
 	var vacationEditStartDate = element.all(by.model("vacationEditStartDate")).get(0);
 	var vacationEditEndDate = element.all(by.model("vacationEditEndDate")).get(0);
-	var vacatilonStartTime = element(by.model("vacationStartTime"));
+	var vacationStartTime = element(by.model("vacationStartTime"));
 	var vacationEndTime = element(by.model("vacationEndTime"));
 	
 	var notificationCtrl = element(by.id("notifications"));
@@ -67,6 +68,7 @@ describe('E2E: Vacation Tests', function() {
 	var VACATION_DESCRIPTION = "E2E Vacation Test";
 	var REQUEST_APPROVED = "APPROVED";
 	var REQUEST_DENIED = "DENIED";
+	var REQUEST_PENDING = "PENDING";
 	var REQUEST_APPROVED_MSG = "Out of office request approved";
 	var REQUEST_DENIED_MSG = "Out of office request denied";
 	var REQUEST_CANCELLED_MSG = "Out of office request cancelled";
@@ -112,6 +114,11 @@ describe('E2E: Vacation Tests', function() {
 		checkCreationCancel();
 	});
 	
+	it('Cancel vacation removing', function() {	
+		console.log('> Running: Cancel vacation removing.');
+		checkVacationList(addVacation).then(checkRemovingCancel).then(removeVacation);
+	});
+	
 	it('Verify that you cannot select an end date earlier than the start date.', function() {	
 		console.log('> Running: Verify that you cannot select an end date earlier than the start date.');
 		addEndDateEarlierThanStartDate();
@@ -134,9 +141,14 @@ describe('E2E: Vacation Tests', function() {
 	
 	it('Check auto approve rules.', function() {	
 		console.log('> Running: Check auto approve rules.');
-		checkVacationList(checkApproveRules).then(removeVacation);
+		checkVacationList(function() { return checkAutoApproveRules(-3, null, REQUEST_APPROVED); }).then(removeVacation);
 	}, 60000);
-
+	
+	it('Add an Appointment request with more than 4 hours duration, verify that it does not automatically approve.', function() {	
+		console.log('> Running: Add an Appointment request with more than 4 hours duration, verify that it does not automatically approve.');
+		checkVacationList(function() { return checkAutoApproveRules(0, 3, REQUEST_PENDING); }).then(removeVacation);
+	}, 60000);
+	
 	it('Approve vacation request from notification control.', function() {	
 		console.log('> Running: Approve vacation request from notification control.');
 		checkVacationList(addVacation).then(approveVacationFromNotificationControl).then(removeVacation);
@@ -230,33 +242,54 @@ describe('E2E: Vacation Tests', function() {
     	});
 	};
 	
-	var checkApproveRules = function () {
+	var checkAutoApproveRules = function ( days, hours, requiredState ) {
 		console.log('> Check auto approve rules.');
 		return browser.wait(function(){	    		
 			return browser.isElementPresent(addRequest);
     	}).then(function() {
     		addRequestBtn.click().then(function () {
     			var startDate = new Date();
-				var endDate = new Date();
-    			var shortStartDate = getShortDate(new Date(startDate.setDate(startDate.getDate() - 3)));
-    			var shortEndDate = getShortDate(new Date(endDate.setDate(endDate.getDate() - 1)));
-    			selectDropDownElement(requestType, REQUEST_TYPE_VAC).then(function() {
-    				requestDescription.clear().then( function () { 
-            			requestDescription.sendKeys(VACATION_DESCRIPTION);
-            			vacationStartDate.clear().then(function() { vacationStartDate.sendKeys(shortStartDate); }).then(function() {
-        	    			vacationEndDate.clear().then(function() { vacationEndDate.sendKeys(shortEndDate); }).then(function() {    
-        	    				submitRequest.click().then(function() {
-            	    				console.log('> Submit request.');
-        	    					checkNotification(REQUEST_APPROVED_MSG).then(function() {
-        	    						checkRequestState(REQUEST_APPROVED);
-        	    					});
-                    			});
-        	    			});
-        	    		});  
-            		});
-    			});        		
+    			var endDate = new Date();
+    			var startTime = startDate.getHours();
+    			var endTime = hours ? startTime + hours : null;
+        		var shortStartDate = getShortDate(new Date(startDate.setDate(startDate.getDate() + days)));
+        		var shortEndDate = getShortDate(new Date(endDate.setDate(endDate.getDate() - 1)));
+        		fillVacation(shortStartDate, shortEndDate, startTime, endTime).then(function(){
+        			console.log('> Submit request.');
+        			submitRequest.click().then(function(){
+    	    			if (requiredState == REQUEST_APPROVED) {
+    	    				checkNotification(REQUEST_APPROVED_MSG).then(function() {
+    	    					checkRequestState(REQUEST_APPROVED);
+    	    				});
+    	    			} else
+    	    			if (requiredState == REQUEST_PENDING) {
+    	    				checkRequestState(REQUEST_PENDING);
+    	    			}
+    	    		});
+        		});	
     		});
     	});
+	};
+	
+	var fillVacation = function( shortStartDate, shortEndDate, startHours, endHours  ) {
+		console.log('> Submit vacation.');
+		return selectDropDownElement(requestType, REQUEST_TYPE_VAC).then(function() {
+			sendKeys(requestDescription, VACATION_DESCRIPTION).then( function () {
+    	    	sendKeys(vacationStartDate, shortStartDate).then(function(){
+    	    		sendKeys(vacationEndDate, shortEndDate).then(function(){
+    	    			if (startHours && endHours) {
+    	        			vacationStartTime.sendKeys(startHours).then(function(){
+    	        				vacationEndTime.sendKeys(endHours).then(function(){
+    	        					return true;
+	        					});
+    	        			});
+    	    			} else {
+    	    				return true;
+    	    			}
+	    	    	});
+    	    	});
+			});     					
+		});
 	};
 	
 	var addVacation = function ( days ) {
@@ -270,18 +303,11 @@ describe('E2E: Vacation Tests', function() {
 				var endDate = new Date();
 				var shortStartDate = getShortDate(new Date(startDate.setDate(startDate.getDate() - period)));
 				var shortEndDate = getShortDate(new Date(endDate.setDate(endDate.getDate() + period)));
-    			selectDropDownElement(requestType, REQUEST_TYPE_VAC).then(function() {
-    				requestDescription.clear().then( function () {
-    					requestDescription.sendKeys(VACATION_DESCRIPTION).then(function() {
-            	    		vacationStartDate.clear().then(function() { vacationStartDate.sendKeys(shortStartDate); }).then(function() {
-            	    			vacationEndDate.clear().then(function() { vacationEndDate.sendKeys(shortEndDate); }).then(function() {    
-                					submitRequest.click();
-            	    				console.log('> Submit request.');
-            	    			});
-            	    		});            	    		    	    		
-    					});     					
-    				});
-    			});
+				fillVacation(shortStartDate, shortEndDate).then(function(){
+					submitRequest.click().then(function(){
+	    				console.log('> Vacation was submitted.');
+	    			});
+				});
     		});
     	});
 	};
@@ -299,11 +325,12 @@ describe('E2E: Vacation Tests', function() {
     			browser.wait(function(){	    		
     	    		return browser.isElementPresent(resubmitRequest);
     	    	}).then(function() {
-    	    		vacationEditStartDate.clear().then(function() { vacationEditStartDate.sendKeys(shortStartDate); }).then(function() {
-    	    			vacationEditEndDate.clear().then(function() { vacationEditEndDate.sendKeys(shortEndDate); }).then(function() {    
-    	    	    		resubmitRequest.click();
-    	    				console.log('> Resubmit request.');
-    	    			});
+    	    		sendKeys(vacationEditStartDate, shortStartDate).then(function(){
+        	    		sendKeys(vacationEditEndDate, shortEndDate).then(function(){
+        	    			resubmitRequest.click().then(function(){
+    	    					console.log('> Resubmit request.');
+    	    				});
+        	    		});
     	    		});
     	    	});
     		});
@@ -323,12 +350,15 @@ describe('E2E: Vacation Tests', function() {
     	    			browser.wait(function(){	    		
     	    	    		return browser.isElementPresent(cancellationReason);
     	    	    	}).then(function() {
-    	    	    		cancellationReason.clear().then(function() { cancellationReason.sendKeys(VACATION_DESCRIPTION).then(function() {
-    	    	    			cancellationOk.click().then(function() {
-                    		    	if (!ignoreNotificationCheck)
-                    		    		checkNotification(REQUEST_CANCELLED_MSG);
+    	    	    		console.log('> Check that cancellation reason is empty by default.');
+    	    	    		expect(cancellationReason.getText()).toBe('');
+    	    	    		sendKeys(cancellationReason, VACATION_DESCRIPTION).then(function(){
+    	    	    			console.log('> Confirm deletion.');
+       	    	    			cancellationYes.click().then(function() {
+                    		    if (!ignoreNotificationCheck)
+                    		    	checkNotification(REQUEST_CANCELLED_MSG);
     	    	    			});
-    	    	    		}); });
+    	    	    		});
     	    	    	});
     	    		});
     	    	});	
@@ -391,18 +421,16 @@ describe('E2E: Vacation Tests', function() {
 		return browser.sleep(8000).then(function() { 
 			goToDashboardVacationWidget().then(function () {
 				getVisibleElement(dashboardRequestComment).then(function(requestComment){
-					requestComment.clear().then(function() { 
-						requestComment.sendKeys(VACATION_DESCRIPTION).then(function() {
-							getVisibleElement(dashboardRequestApprove).then(function(requestApprove){
-								requestApprove.click().then(function () {
-//									TODO: Will be used when the Approve/Deny notification issue will fixed.
-//									checkRequestState(REQUEST_APPROVED).then(function(){
-//										checkNotification(REQUEST_APPROVED_MSG);
-//									});
-									checkRequestState(REQUEST_APPROVED);
-								});
-							}); 
-						});
+					sendKeys(requestComment, VACATION_DESCRIPTION).then(function(){
+						getVisibleElement(dashboardRequestApprove).then(function(requestApprove){
+							requestApprove.click().then(function () {
+//								TODO: Will be used when the Approve/Deny notification issue will fixed.
+//								checkRequestState(REQUEST_APPROVED).then(function(){
+//									checkNotification(REQUEST_APPROVED_MSG);
+//								});
+								checkRequestState(REQUEST_APPROVED);
+							});
+						}); 
 					});
 				});
 			});
@@ -414,17 +442,15 @@ describe('E2E: Vacation Tests', function() {
 		return browser.sleep(8000).then(function() { 
 			goToDashboardVacationWidget().then(function () {
 				getVisibleElement(dashboardRequestComment).then(function(requestComment){
-					requestComment.clear().then(function() { 
-						requestComment.sendKeys(VACATION_DESCRIPTION).then(function() {
-							getVisibleElement(dashboardRequestDeny).then(function(requestDeny){
-								requestDeny.click().then(function () {
-//									TODO: Will be used when the Approve/Deny notification issue will fixed.
-//									checkRequestState(REQUEST_DENIED).then(function() {
-//										checkNotification(REQUEST_DENIED_MSG);
-//									});
-									checkRequestState(REQUEST_DENIED);
-								});
-							}); 
+					sendKeys(requestComment, VACATION_DESCRIPTION).then(function(){
+						getVisibleElement(dashboardRequestDeny).then(function(requestDeny){
+							requestDeny.click().then(function () {
+//								TODO: Will be used when the Approve/Deny notification issue will fixed.
+//								checkRequestState(REQUEST_DENIED).then(function() {
+//									checkNotification(REQUEST_DENIED_MSG);
+//								});
+								checkRequestState(REQUEST_DENIED);
+							});
 						});
 					});
 				});
@@ -482,16 +508,48 @@ describe('E2E: Vacation Tests', function() {
 	    		vacationDays.getText().then(function( vacDaysBefore ) {
 	    			addRequestBtn.click().then(function () {
 		    			selectDropDownElement(requestType, REQUEST_TYPE_VAC).then(function() {
-		    				requestDescription.clear().then( function () {
-		    					requestDescription.sendKeys(VACATION_DESCRIPTION).then(function() {
-            	    				console.log('> Cancel request.');
-            	    				closeRequestBtn.click().then(function() {
-            	    					expect(vacationDays.getText()).toEqual(vacDaysBefore);
-            	    				});		
-		    					});
+		    				sendKeys(requestDescription, VACATION_DESCRIPTION).then(function(){
+            	    			console.log('> Cancel request.');
+            	    			closeRequestBtn.click().then(function() {
+            	    				expect(vacationDays.getText()).toEqual(vacDaysBefore);
+            	    			});		
 		    				});
 		    			});
 		    		});
+	    		});
+	    	});
+		});
+	};
+	
+	var checkRemovingCancel = function () {
+		console.log('> Cancel removing.');
+		return goToProfileVacationWidget().then(function() {
+			return browser.wait(function(){	    		
+	    		return browser.isElementPresent(addRequest);
+	    	}).then(function() {
+	    		editRequestBtn.click().then(function () {
+	    			browser.wait(function(){	    		
+	    	    		return browser.isElementPresent(cancelRequest);
+	    	    	}).then(function() {
+	    	    		cancelRequest.click().then(function () {
+	    	    			browser.wait(function(){	    		
+	    	    	    		return browser.isElementPresent(cancellationReason);
+	    	    	    	}).then(function() {
+	    	    	    		
+	    	    	    		console.log('> Click outside of pop box - box should persist - not disappear.');
+	    	    	    		browser.actions().mouseMove({x: 50, y: 50}).doubleClick().perform();
+	    	    	    		expect(cancellationReason.isDisplayed()).toBeTruthy();
+	    	    	    		
+	    	    	    		sendKeys(cancellationReason, VACATION_DESCRIPTION).then(function(){
+	    	    	    			console.log('> Click NO on cancellation popup.');
+	    	    	    			cancellationNo.click().then(function() {
+	    	    	    				expect(resubmitRequest.isDisplayed()).toBeTruthy();
+	    	    	    				closeEditRequestBtn.click();
+	    	    	    			});
+	    	    	    		});
+	    	    	    	});
+	    	    		});
+	    	    	});	
 	    		});
 	    	});
 		});
@@ -537,16 +595,12 @@ describe('E2E: Vacation Tests', function() {
 	    			var startDate = new Date();
 	    			var shortStartDate = getShortDate(startDate);
 					var shortEndDate = getShortDate(new Date(startDate.setDate(startDate.getDate() - 3)));
-	    	    	selectDropDownElement(requestType, REQUEST_TYPE_VAC).then(function() {
-	    	    		vacationStartDate.clear().then(function() { vacationStartDate.sendKeys(shortStartDate); }).then(function() {
-        	    			vacationEndDate.clear().then(function() { vacationEndDate.sendKeys(shortEndDate); }).then(function() {    
-        	    				vacationEndDate.getAttribute('data-date-start-date').then(function(attr) { 
-	    	    					expect(attr).toEqual(shortStartDate);
-	    	    					closeRequestBtn.click();
-	    	    				});
-        	    			});
-        	    		}); 
-	    	    	});
+					fillVacation(shortStartDate, shortEndDate).then(function(){
+						vacationEndDate.getAttribute('data-date-start-date').then(function(attr) { 
+	    					expect(attr).toEqual(shortStartDate);
+	    					closeRequestBtn.click();
+	    				});
+					});
 	    		});
 	    	});
 		});
@@ -572,6 +626,12 @@ describe('E2E: Vacation Tests', function() {
         		});
         	});    		
     	});
+	};
+	
+	var sendKeys = function (element, text){
+		return element.clear().then(function() { 
+			return element.sendKeys(text); 
+		});
 	};
 	
 	var getVisibleElement  = function( elements ) {
