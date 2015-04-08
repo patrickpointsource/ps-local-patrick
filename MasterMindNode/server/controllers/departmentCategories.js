@@ -22,9 +22,16 @@ module.exports.insertDepartmentCategory = function(obj, callback) {
 	
 	dataAccess.listDepartmentCategories( function(err, body){
 	       if (!err) {
-	           var usedCats = _.map(body.members, function(c) { return c.value; });
-	           
-	          if ( (_.filter(usedCats, function(item) { return obj.value == item;})).length > 0 ) {
+	    	   var usedCats = _.map(body.members, function(c) { 
+	    		   if (c.value && c._id != obj._id) 
+	    			   return c.value 
+	    		   else  if (c.TrimmedValue && c._id != obj._id) 
+	    			   return c.TrimmedValue; 
+	    		   });
+	    	   
+	    	   usedCats = _.filter(usedCats, function(c) { return c});
+	    	   
+	          if ( (_.filter(usedCats, function(item) { return obj.TrimmedValue == item;})).length > 0 ) {
 	        	  obj.result = false;
 	        	  obj.wrongField = 'departmentCategory';
 	        	  
@@ -45,12 +52,19 @@ module.exports.insertDepartmentCategory = function(obj, callback) {
     
 };
 
-module.exports.updateDepartment = function(id, obj, callback) {
+module.exports.updateDepartmentCategory = function(id, obj, callback) {
 	dataAccess.listDepartmentCategories( function(err, body){
 	       if (!err) {
-	    	   var usedCats = _.map(body.members, function(c) { return c.value; });
+	    	   var usedCats = _.map(body.members, function(c) { 
+	    		   if (c.value && c._id != obj._id) 
+	    			   return c.value 
+	    		   else  if (c.TrimmedValue && c._id != obj._id) 
+	    			   return c.TrimmedValue; 
+	    		   });
+	    	   
+	    	   usedCats = _.filter(usedCats, function(c) { return c});
 	           
-	          if ( (_.filter(usedCats, function(item) { return obj.value == item;})).length > 0 ) {
+	          if ( (_.filter(usedCats, function(item) { return obj.TrimmedValue == item;})).length > 0 ) {
 	        	  obj.result = false;
 	        	  obj.wrongField = 'departmentCategory';
 	        	  

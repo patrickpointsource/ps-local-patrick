@@ -1582,7 +1582,8 @@ var listDepartmentCategories = function(callback) {
 
 	var attachNicknames = function(categories, err) {
 	
-		categories = _.extend({}, categories);
+		//categories = _.extend({}, categories);
+		categories = ([]).concat(categories);
 		
 		// attach nicknames info
 		listDepartments( function(err, body){

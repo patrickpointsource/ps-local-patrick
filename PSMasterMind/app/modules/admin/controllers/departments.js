@@ -352,11 +352,12 @@ angular.module('Mastermind')
 	    $scope.cleanCategoryBeforeSave = function(category) {
 	    	category = _.extend({}, category);
 	    	
-	    	if (!category.name)
-	    		category.name = category.value;
+	    	//if (!category.name)
+    		category.name = category.TrimmedValue;
 	    	
 	    	delete category.isNew;
 	    	delete category.isEdit;
+	    	delete category.value;
 	    	
 	    	return category;
 	    };
@@ -386,7 +387,7 @@ angular.module('Mastermind')
 	        			$scope.departmentCategories = res && res.members ? res.members: res;
 	        			
 	        			$scope.selectedCategory = _.find($scope.departmentCategories, function(cat) {
-	        				return cat.value == $scope.selectedCategory.value;
+	        				return cat.TrimmedValue == $scope.selectedCategory.TrimmedValue;
 	        			});
 	        		});
 	    		}).catch(function() {
@@ -400,12 +401,12 @@ angular.module('Mastermind')
 	    };
 	    
 	    $scope.onDeleteCategory = function(e) {
-	    	DepartmentsService.deleteDepartmentCategory($scope.selectedCategory).then(function() {
+	    	DepartmentsService.removeDepartmentCategory($scope.selectedCategory.resource).then(function() {
     			DepartmentsService.loadDepartmentCategories().then(function(res) {
         			$scope.departmentCategories = res && res.members ? res.members: res;
         			$scope.selectedCategory = {};
         		});
-    		})
+    		});
 	    	
 	    };
 	    

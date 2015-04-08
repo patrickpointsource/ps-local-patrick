@@ -31,6 +31,8 @@ angular.module('Mastermind')
     
     this.loadDepartmentCategories = function(){
     	return Resources.refresh("departmentCategories/").then(function(categories) {
+    		categories.members = _.sortBy(categories.members, 'TrimmedValue');
+    		
     		for (var k = 0; categories.members && k < categories.members.length; k ++) {
     			categories.members[k].name = (k * 1 + 1) + ' - ' + categories.members[k].name;
     		}
@@ -52,10 +54,23 @@ angular.module('Mastermind')
    /**
     * Update department category on backend
     */
-   this.updateDepartmentCategory = function(department){
+   this.updateDepartmentCategory = function(departmentCategory){
  	  var deferred = $q.defer();
  	  
  	  Resources.update(departmentCategory).then(function(result){
+ 		  deferred.resolve(result);
+ 	  });
+     
+ 	  return deferred.promise;
+   };
+   
+   /**
+    * Remove department category to the server
+    */
+   this.removeDepartmentCategory = function(departmentCategoryResource){
+ 	  var deferred = $q.defer();
+ 	  
+ 	  Resources.remove(departmentCategoryResource).then(function(result){
  		  deferred.resolve(result);
  	  });
      
@@ -102,7 +117,7 @@ angular.module('Mastermind')
       };
       
       /**
-       * Update department to the server
+       * Remove department to the server
        */
       this.removeDepartment = function(departmentResource){
     	  var deferred = $q.defer();

@@ -8,15 +8,15 @@
 						
 						<div class="select-editable">
 							<select name="departmentCategories" class="form-control pull-right" ng-change="onCategoryChanged($event, this)" 
-		                                    ng-model="selectedCategory.value"
+		                                    ng-model="selectedCategory"
 		                                    ng-required="true"
-		                                    ng-options="p.name for p in departmentCategories track by p.value"></select>
+		                                    ng-options="p.name for p in departmentCategories track by p.TrimmedValue"></select>
 	                     
-	                    	 <input type="text" name="format" ng-model="selectedCategory.value" ng-show="selectedCategory.isEdit" />
+	                    	 <input type="text" name="format" ng-model="selectedCategory.TrimmedValue" ng-show="selectedCategory.isEdit" />
 	                    </div>
 	                    
-						<button ng-show="!selectedCategory.isEdit && selectedCategory.name" ng-disabled="false" cng-click="onEditCategory()" class="btn btn-default">Edit</button>
-			   			<button ng-show="selectedCategory.isEdit && selectedCategory.name" ng-disabled="false" cng-click="onDeleteCategory()" class="btn btn-default">Delete</button>
+						<button ng-show="!selectedCategory.isEdit && selectedCategory.name" ng-disabled="false" ng-click="onEditCategory()" class="btn btn-default">Edit</button>
+			   			<button ng-show="selectedCategory.name" ng-disabled="false" ng-click="onDeleteCategory()" class="btn btn-default">Delete</button>
 			   			
 			   			<button ng-show="selectedCategory.isEdit" class="btn btn-default" ng-click="saveDepartmentCategory($event)" >Save changes</button>              
                     </div>
@@ -81,7 +81,7 @@
                             <select name="deptCategory" class="form-control pull-right"
                                     ng-model="selectedDepartment.departmentCategory"
                                     ng-required="true"
-                                    ng-options="p.name for p in departmentCategories track by p.value"></select>
+                                    ng-options="p.name for p in departmentCategories track by p.TrimmedValue"></select>
 
                         </div>
                         <div class="col-xs-12">
