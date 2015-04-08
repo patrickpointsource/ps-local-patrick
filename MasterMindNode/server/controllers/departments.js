@@ -53,6 +53,7 @@ module.exports.listPeopleByDepartmentsCategories = function(categories, includeI
     });  
 };
 	
+/*
 module.exports.listCategories = function(callback) {
 	 dataAccess.listDepartmentsCategories(function(err, body){
        if (err) {
@@ -64,7 +65,7 @@ module.exports.listCategories = function(callback) {
        }
    });  
 };
-
+*/
 module.exports.listAvailableCode = function(callback) {
 	var list = [];
 	

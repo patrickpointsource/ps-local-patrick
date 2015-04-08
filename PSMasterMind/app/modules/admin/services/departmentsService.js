@@ -30,9 +30,38 @@ angular.module('Mastermind')
     };
     
     this.loadDepartmentCategories = function(){
-    	return Resources.refresh("departments/categories");
+    	return Resources.refresh("departmentCategories/").then(function(categories) {
+    		for (var k = 0; categories.members && k < categories.members.length; k ++) {
+    			categories.members[k].name = (k * 1 + 1) + ' - ' + categories.members[k].name;
+    		}
+    		
+    		return categories;
+    	});
     };
     
+    this.addDepartmentCategory = function(departmentCategory){
+		var deferred = $q.defer();
+		
+	    Resources.create('departmentCategories', departmentCategory).then(function(result){
+	    	deferred.resolve(result);
+	    });
+	    
+	    return deferred.promise;
+   };
+    
+   /**
+    * Update department category on backend
+    */
+   this.updateDepartmentCategory = function(department){
+ 	  var deferred = $q.defer();
+ 	  
+ 	  Resources.update(departmentCategory).then(function(result){
+ 		  deferred.resolve(result);
+ 	  });
+     
+ 	  return deferred.promise;
+   };
+   
     this.loadDepartmentCodes = function(){
     	return Resources.refresh("departments/available/code");
     };
@@ -45,18 +74,22 @@ angular.module('Mastermind')
     	return Resources.refresh("departments/unassign/people", {people: people});
     };
     
+    /*
+     * Creates new department category on the backend
+     * 
+     * */
     this.addDepartment = function(department){
-    	var deferred = $q.defer();
-    	
-        Resources.create('departments', department).then(function(result){
-        	deferred.resolve(result);
-        });
-        
-        return deferred.promise;
-      };
+		var deferred = $q.defer();
+		
+	    Resources.create('departments', department).then(function(result){
+	    	deferred.resolve(result);
+	    });
+	    
+	    return deferred.promise;
+   };
 
       /**
-       * Update department to the server
+       * Update department on backend
        */
       this.updateDepartment = function(department){
     	  var deferred = $q.defer();

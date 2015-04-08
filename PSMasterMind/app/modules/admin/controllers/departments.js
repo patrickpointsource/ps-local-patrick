@@ -344,6 +344,71 @@ angular.module('Mastermind')
 	    	});
 	    };
 	    
+	    /**
+	     * Departments categories
+	     */
+	    $scope.selectedCategory = {};
+	    
+	    $scope.cleanCategoryBeforeSave = function(category) {
+	    	category = _.extend({}, category);
+	    	
+	    	if (!category.name)
+	    		category.name = category.value;
+	    	
+	    	delete category.isNew;
+	    	delete category.isEdit;
+	    	
+	    	return category;
+	    };
+	    
+	    $scope.onCategoryChanged = function(e, childScope) {
+	    	e = e ? e: window.event;
+	    };
+	    
+	    $scope.onCreateCategory = function(e) {
+	    	$scope.selectedCategory = {isNew: true, isEdit: true};
+	    };
+	    
+	    $scope.saveDepartmentCategory = function(e) {
+	    	
+	    	var promise;
+	    	
+	    	if ($scope.selectedCategory.isNew && $scope.selectedCategory.isEdit) {
+	    		
+	    		promise = DepartmentsService.addDepartmentCategory($scope.cleanCategoryBeforeSave($scope.selectedCategory));
+	    	} else if (!$scope.selectedCategory.isNew && $scope.selectedCategory.isEdit) {
+	    		promise = DepartmentsService.updateDepartmentCategory($scope.cleanCategoryBeforeSave($scope.selectedCategory));
+	    	} 
+	    	
+	    	if (promise)
+	    		promise.then(function() {
+	    			DepartmentsService.loadDepartmentCategories().then(function(res) {
+	        			$scope.departmentCategories = res && res.members ? res.members: res;
+	        			
+	        			$scope.selectedCategory = _.find($scope.departmentCategories, function(cat) {
+	        				return cat.value == $scope.selectedCategory.value;
+	        			});
+	        		});
+	    		}).catch(function() {
+	    			$scope.selectedCategory = {};
+	    		});
+	    	
+	    };
+	    
+	    $scope.onEditCategory = function(e) {
+	    	$scope.selectedCategory.isEdit = true;
+	    };
+	    
+	    $scope.onDeleteCategory = function(e) {
+	    	DepartmentsService.deleteDepartmentCategory($scope.selectedCategory).then(function() {
+    			DepartmentsService.loadDepartmentCategories().then(function(res) {
+        			$scope.departmentCategories = res && res.members ? res.members: res;
+        			$scope.selectedCategory = {};
+        		});
+    		})
+	    	
+	    };
+	    
 	    $scope.initDepartments =  function () {
 	    	if ($scope.managersList.length == 0)
         		Resources.refresh("people/bytypes/byGroups", { group: "Managers"}).then(

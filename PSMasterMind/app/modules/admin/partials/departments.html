@@ -1,5 +1,33 @@
 <div class="departments-container" ng-controller="DepartmentsCtrl">
 	<div class="row">
+		<div class="col-md-12">
+			<div class="row section-header category-container">
+				<div class="form-inline col-md-6">
+					<div class="form-group">
+						<label class="category-lbl">Select a category</label>
+						
+						<div class="select-editable">
+							<select name="departmentCategories" class="form-control pull-right" ng-change="onCategoryChanged($event, this)" 
+		                                    ng-model="selectedCategory.value"
+		                                    ng-required="true"
+		                                    ng-options="p.name for p in departmentCategories track by p.value"></select>
+	                     
+	                    	 <input type="text" name="format" ng-model="selectedCategory.value" ng-show="selectedCategory.isEdit" />
+	                    </div>
+	                    
+						<button ng-show="!selectedCategory.isEdit && selectedCategory.name" ng-disabled="false" cng-click="onEditCategory()" class="btn btn-default">Edit</button>
+			   			<button ng-show="selectedCategory.isEdit && selectedCategory.name" ng-disabled="false" cng-click="onDeleteCategory()" class="btn btn-default">Delete</button>
+			   			
+			   			<button ng-show="selectedCategory.isEdit" class="btn btn-default" ng-click="saveDepartmentCategory($event)" >Save changes</button>              
+                    </div>
+			   </div>
+			   <div class="col-md-6">
+			   		<button ng-show="!selectedCategory.isEdit" class="btn btn-default pull-right" ng-click="onCreateCategory($event)" >Create new category</button>
+			   	</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-md-4">
 			<div class="row section-header">
 				<div class="col-xs-12">

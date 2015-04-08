@@ -24,7 +24,7 @@ var NOTIFICATIONS_KEY = 'Notifications';
 var REPORT_FAVORITES_KEY = 'ReportFavorites';
 var JOB_TITLE_KEY = "JobTitle";
 var DEPARTMENTS_KEY = 'Department';
-
+var DEPARTMENT_CATEGORY_KEY = 'DepartmentCategory';
 /*
  * 
  * Example of usage q lib
@@ -1566,40 +1566,62 @@ var listPeopleByDepartmentsCategories = function(categories, includeInactive, fi
     });
 };
 
-var listDepartmentsCategories = function(callback) {
+var listDepartmentCategories = function(callback) {
 	// todo: temporary make static list of categories
-	var categories = [{name: 'Executives', value: 'Executives'},
+	/*var categories = [{name: 'Executives', value: 'Executives'},
 		                  {name: 'Management', value: 'Management'},
 		                  {name: 'Admin', value: 'Admin'},
 		                  {name: 'Digital', value: 'Digital'}, 
 		                  {name: 'Development', value: 'Development'},
 		                  {name: 'Delivery Services', value: 'Delivery Services'},
 		                  {name: 'Sales', value: 'Sales'},
-		                  {name: 'Other', value: 'Other'}];
+		                  {name: 'Other', value: 'Other'}];*/
 	
-	listDepartments( function(err, body){
-        if (err) {
-            console.log(err);
-            callback('error loading departments', null);
-        } else {
-        	var category = null;
+	var result = memoryCache.getObject( DEPARTMENT_CATEGORY_KEY );
+	
 
-        	for (var k = 0; k < body.members.length; k ++) {
-        		category = _.find(categories, function(mi) {
-    				return body.members[k].departmentCategory && (mi.name ==  body.members[k].departmentCategory.name)
-    			});
-        		
-        		if (category && body.members[k].departmentNickname) {
-        			if (!category.nicknames)
-        				category.nicknames = [];
-        			
-        			category.nicknames.push(body.members[k].departmentNickname)
-        		}
-        	}
-        }
-        callback( null, prepareRecords( categories, "members", "categories/" ) );
-        
-	})
+	var attachNicknames = function(categories, err) {
+	
+		categories = _.extend({}, categories);
+		
+		// attach nicknames info
+		listDepartments( function(err, body){
+	        if (err) {
+	            console.log(err);
+	            callback('error loading departments', null);
+	        } else {
+	        	var category = null;
+	
+	        	for (var k = 0; k < body.members.length; k ++) {
+	        		category = _.find(categories, function(mi) {
+	    				return body.members[k].departmentCategory && (mi.name ==  body.members[k].departmentCategory.value)
+	    			});
+	        		
+	        		if (category && body.members[k].departmentNickname) {
+	        			if (!category.nicknames)
+	        				category.nicknames = [];
+	        			
+	        			category.nicknames.push(body.members[k].departmentNickname)
+	        		}
+	        	}
+	        }
+	        callback( err, prepareRecords( categories, "members", "departmentcategories/" ) );
+	        
+		});
+	};
+	
+	if( result ) {
+		console.log( "read " + DEPARTMENT_CATEGORY_KEY + " from memory cache" );
+		attachNicknames(result.data, null );
+	} else {
+		dbAccess.listDepartmentCategories( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + DEPARTMENT_CATEGORY_KEY + " to memory cache" );
+				memoryCache.putObject( DEPARTMENT_CATEGORY_KEY, body );
+			}
+			attachNicknames(body.data, err );
+		} );
+	}
 		
 };
 
@@ -1812,7 +1834,7 @@ module.exports.listReportFavoritesByPerson = listReportFavoritesByPerson;
 module.exports.listDepartments = listDepartments;
 module.exports.filterDepartments = filterDepartments;
 module.exports.listDepartmentsAvailablePeople = listDepartmentsAvailablePeople;
-module.exports.listDepartmentsCategories = listDepartmentsCategories;
+module.exports.listDepartmentCategories = listDepartmentCategories;
 module.exports.listPeopleByDepartmentsCategories = listPeopleByDepartmentsCategories;
 module.exports.unassignDepartmentsPeople = unassignDepartmentsPeople;
 
@@ -1837,6 +1859,7 @@ module.exports.TASKS_KEY = TASKS_KEY;
 module.exports.REPORT_FAVORITES_KEY = REPORT_FAVORITES_KEY;
 module.exports.JOB_TITLE_KEY = JOB_TITLE_KEY;
 module.exports.DEPARTMENTS_KEY = DEPARTMENTS_KEY;
+module.exports.DEPARTMENT_CATEGORY_KEY = DEPARTMENT_CATEGORY_KEY;
 
 module.exports.prepareRecords = prepareRecords;
 module.exports.cloudantSearchHoursIncludeDocs = cloudantSearchHoursIncludeDocs;

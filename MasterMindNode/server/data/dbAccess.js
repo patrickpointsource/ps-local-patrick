@@ -484,6 +484,12 @@ module.exports = function(params) {
 	    });
 	};
 	
+	module.exports.listDepartmentCategories = function(callback) {
+	    cloudantGetAllViewDocument('views', 'DepartmentCategories', {include_docs : true}, function(err, body){
+	         callback(err, prepareResponse(body, 'department_categories', 'doc'));
+	    });
+	};
+	
 	module.exports.listSecurityRoles = function(callback) {
 	    cloudantGetAllViewDocument('views', 'SecurityRoles', {include_docs : true}, function(err, body){
 	         callback(err, prepareResponse(body, 'security_roles', 'doc'));
