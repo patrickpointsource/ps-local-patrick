@@ -100,7 +100,9 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
             if (!entry.data('bs.popover'))
             {
-                var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')) : $scope.moment(vac.startDate).format('M/D');
+                var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
+                    ? ($scope.moment(vac.startDate).format('M/D') + ' - ' + $scope.moment(vac.endDate).format('M/D'))
+                    : $scope.moment(vac.startDate).format('M/D');
                 var placement = ind % 7 == 6 ? 'auto top' : 'auto left';
 
                 popover = entry.popover({
@@ -125,13 +127,16 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             }
         };
 
-        $scope.onVacationClick = function (e, vac, ind, vacIndex)
+        $scope.onVacationClick = function (e, vac)
         {
             if ($scope.itemCount != 3)
                 return;
 
-            var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')) : $scope.moment(vac.startDate).format('M/D');
-            var modalInstance = $modal.open({
+            var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
+                ? ($scope.moment(vac.startDate).format('M/D') + ' - ' + $scope.moment(vac.endDate).format('M/D'))
+                : $scope.moment(vac.startDate).format('M/D');
+
+            $modal.open({
                 controller: "OOOModalInstanceCtrl",
                 templateUrl: "oooDetails.html",
                 resolve: {
@@ -217,7 +222,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                     html: true,
                     placement: 'auto left',
                     container: '.vacation-day-entry.entry_' +
-			            '' + ind + '_' + vacInd
+                        '' + ind + '_' + vacInd
                 });
 
                 entry.data('popover', popover);
@@ -261,28 +266,28 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
                 if ($scope.managersList.length == 0)
                     Resources.refresh("people/bytypes/byGroups", { group: "Managers" }).then(
-	        			function (result)
-	        			{
-	        			    for (var i = 0; result && result.members && i < result.members.length; i++)
-	        			    {
-	        			        var manager = result.members[i];
+                        function (result)
+                        {
+                            for (var i = 0; result && result.members && i < result.members.length; i++)
+                            {
+                                var manager = result.members[i];
 
-	        			        $scope.managersList.push({
-	        			            label: Util.getPersonName(manager, true),
-	        			            value: manager.resource
-	        			        });
+                                $scope.managersList.push({
+                                    label: Util.getPersonName(manager, true),
+                                    value: manager.resource
+                                });
 
-	        			        $scope.managersList.sort(function (m1, m2)
-	        			        {
-	        			            if (m1.label.toLowerCase() < m2.label.toLowerCase())
-	        			                return -1;
-	        			            else if (m1.label.toLowerCase() > m2.label.toLowerCase())
-	        			                return 1;
+                                $scope.managersList.sort(function (m1, m2)
+                                {
+                                    if (m1.label.toLowerCase() < m2.label.toLowerCase())
+                                        return -1;
+                                    else if (m1.label.toLowerCase() > m2.label.toLowerCase())
+                                        return 1;
 
-	        			        });
-	        			    }
-	        			}
-	        		);
+                                });
+                            }
+                        }
+                    );
             } else if ($scope.filterVacationsByCurrent == 'project_name')
             {
                 if (!$scope.projectList || $scope.projectList.length == 0)
@@ -415,7 +420,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                 {
                     dColor = Util.darkColorFrom(c, 0.4);
                     currentVacations[k].background = 'repeating-linear-gradient( -45deg, ' + dColor + ', ' + dColor +
-        				' 3px, ' + c + ' 3px, ' + c + ' 15px)';
+                        ' 3px, ' + c + ' 3px, ' + c + ' 15px)';
                 }
 
                 if (currentVacations[k].person && _.isObject(currentVacations[k].person.name))
@@ -704,12 +709,23 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     }
 ]);
 
-angular.module('Mastermind').controller('OOOModalInstanceCtrl', function ($scope, $modalInstance, details)
+angular.module('Mastermind').controller('OOOModalInstanceCtrl', ['$scope', '$modalInstance', 'details', 'ProjectsService', function ($scope, $modalInstance, details, ProjectsService)
 {
+    // This is required to request projects assigned to the specisifed person.
+    details.vac.person._id = details.vac.person.resource.substring(details.vac.person.resource.indexOf("/") + 1);
+
     $scope.details = details;
+
+    ProjectsService.getMyCurrentProjects(details.vac.person).then(function (projects)
+    {
+        if (!projects || !projects.data)
+            return;
+
+        $scope.projects = _.pluck(projects.data, "name");
+    });
 
     $scope.close = function ()
     {
         $modalInstance.dismiss("cancel");
     };
-});
+}]);
