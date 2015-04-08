@@ -27,93 +27,93 @@
   .fivecolumns .col-md-2, .fivecolumns .col-sm-2, .fivecolumns .col-lg-2  {
     width:20%; float:left; padding:0;
   }
- 
+
 }
 
 .dashboard-widget.hours {
   .panel-body {
-    padding-top:0px; 
+    padding-top:0px;
     padding-bottom: 0px;
     position:relative;
-    
+
     .hours-week-container {
-      height: 140px; 
+      height: 140px;
       margin-bottom: 0px;
       display: none;
-      
+
       .back-week, .back-day, .next-week, .next-day {
         float: left;
-        height: 100%; 
-        width: 6%; 
-        border-bottom: 1px solid #dbdbdb; 
+        height: 100%;
+        width: 6%;
+        border-bottom: 1px solid #dbdbdb;
         text-align: center;
         border-right: 1px solid #efefef;
-        
+
         div {
-          width: 100%; 
-          top: 40%; 
+          width: 100%;
+          top: 40%;
           position:relative;
-          
+
           i {
             color: #efefef;
           }
         }
-        
+
         @media (max-width: @screen-sm) {
           border-width: 0px !important;
         }
       }
-      
+
       .next-week, .next-day {
         border-left: 1px solid #efefef;
         border-right-width: 0px;
       }
     }
-    
+
     .hours-month-container {
       margin-bottom: 0px;
-      
+
       .back-month, .next-month {
         float: left;
-        height: 100%; 
-        width: 6%; 
-        
+        height: 100%;
+        width: 6%;
+
         text-align: center;
         margin-top: 20px;
-        
+
         div {
-          width: 100%; 
-          top: 40%; 
+          width: 100%;
+          top: 40%;
           position:relative;
-          
+
           i {
             color: #efefef;
           }
         }
       }
-      
+
       .hours-day-empty {
         width: 6%;
         float:left;
-        
+
         .hours-day-entry {
           border-right-width: 0px;
         }
       }
-      
+
       .hours-day-empty.last .hours-day-entry {
         border-width-right: 0px;
       }
-      
+
       .hours-day-active {
         background-color: #eaf6f9;
       }
-      
+
       .hours-day-entry {
         height: 108px;
         position:relative;
         color: black;
-        
+
         .active-circle {
           display: none;
           position: absolute;
@@ -125,7 +125,7 @@
            border-radius: 50%;
            background-color: #f7f7f7;
            border: 1px solid #c6c6c6;
-           
+
           .inner-circle{
             position: relative;
             top: 7px;
@@ -135,46 +135,46 @@
            border-radius: 50%;
             background-color: #1ba2c1;
           }
-         
+
         }
-        
+
         .active-circle.bottom {
           top: auto;
           bottom: 3px;
         }
-        
+
         .hours {
           color: black;
         }
       }
-      
+
       .hours-day-entry.hours-day-active {
         .active-circle {
           display: inline-block;
         }
       }
-      
+
       .hours-day-caption {
         width: 12.5%;
         float: left;
         height: 28px;
       }
-      
+
       .hours-day-caption.empty {
         width: 6%;
-        
+
         .hours-day-header {
           border-bottom: 1px solid #efefef;
         }
       }
-      
+
       .hours-day-header {
         text-align: center;
         border-bottom: 1px solid #efefef;
         font-size: 20px;
       }
-      
-      
+
+
       .hours-day-content{
         font-size: 14px;
         font-weight: normal;
@@ -186,89 +186,89 @@
           font-size: 12px;
         }
       }
-      
+
       .hours-day-footer {
         position: absolute;
         bottom: 0px;
         width: 100%;
         padding-left: 5px;
         text-align: left;
-        
+
         .hours {
           font-weight: bold;
           //color: black;
         }
       }
-      
-      
+
+
       .day-labels {
         clear: both;
         height: 28px;
       }
-      
+
       .hours-day-check {
         margin-top: 2px;
         right: 7px;
         -webkit-text-stroke-width: 0px;
       }
-      
+
       .current-month {
         height: 90px;
-        display: inline-block; 
-        text-align: center; 
+        display: inline-block;
+        text-align: center;
         font-size: 46px;
-        
+
         span {
           font-weight: bold;
         }
       }
     }
-    
+
     .hours-week-container.week-visible {
       display: block;
     }
-    
+
     .hours-month-container {
       display: none;
     }
-    
+
     .hours-month-container.month-visible {
       display: block;
     }
-    
+
     .hours-custom-container {
       display: none;
       padding-top: 20px;
       padding-bottom: 20px;
     }
-    
+
     .hours-custom-container.custom-visible {
       display: block;
     }
   }
-  
+
   .panel-heading {
     .inner-heading {
-      width:100%; 
+      width:100%;
       position:relative;
-      
+
       .header-container {
         display: inline-block;
-        white-space: nowrap; 
-        position:absolute; 
-        left:0px; 
-        right:0px; 
+        white-space: nowrap;
+        position:absolute;
+        left:0px;
+        right:0px;
         text-align:center;
         margin-top: -3px;
       }
-      
+
        @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
             .inner-heading {
               font-size: 14px;
-             
+
             }
         }
-      
+
       .today-btn-container {
         display: inline-block;
         .btn.today {
@@ -278,59 +278,59 @@
           font-weight: bold;
         }
       }
-      
+
       .start-end {
         display: inline-block;
         margin-left: 12px;
       }
-      
+
       @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
           .start-end {
             font-size: 14px;
             margin-left: 0px;
           }
       }
-      
+
       @media (max-width: @screen-sm) {
           .start-end {
             font-size: 12px;
             margin-left: -8px;
           }
       }
-      
+
       .week-month-radio {
         display: inline-block;
-        
+
         .btn.btn-default {
           font-weight: bold;
           background-color: #1ba2c1 !important;
           border: 1px solid white;
           color: white !important;
-          
+
         }
-        
+
         .btn.active {
           font-weight: bold;
           background-color: white !important;
-          
+
           color: #1ba2c1 !important;
           border: 1px solid white;
         }
       }
     }
   }
-  
+
   .dropdown-menu.ddProjectsTasksMenu {
     width: 24%;
     margin-top: -4px;
     margin-left: 10px;
-    
+
     max-height: 200px;
     overflow-y: auto;
 
     li {
       overflow: hidden;
-      
+
       span.highlight {
         color: #1bc1ac !important;
         font-weight: bold;
@@ -347,27 +347,27 @@
 .hours-day {
   float: left;
   height: 100%;
-  
+
   .hours-day-header{
-    font-size: 25px; 
-    color: #a8a8a8; 
+    font-size: 25px;
+    color: #a8a8a8;
     font-weight: normal;
-    
+
     sup {
       font-size: 14px;
     }
   }
-  
+
   @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
       .hours-day-header {
-        font-size: 18px; 
-        
+        font-size: 18px;
+
         sup {
           font-size: 12px;
         }
       }
   }
-  
+
   .hours-day-content {
       font-size: 54px;
       line-height:60px;
@@ -377,7 +377,7 @@
         line-height:50px;
       }
    }
-  
+
 
   @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
     .hours-day-content {
@@ -390,43 +390,43 @@
     }
   }
 
-  
+
   .hours-day-check {
       position:absolute;
-      color: #1bc156; 
-      margin-left: -16px; 
+      color: #1bc156;
+      margin-left: -16px;
       font-size: 14px;
       margin-top: 16px;
       -webkit-text-stroke-width: 3px;
       -webkit-text-stroke-color: #fff;
     }
-    
+
   .hours-day-footer {
-    font-size: 18px; 
-    color: #a8a8a8; 
+    font-size: 18px;
+    color: #a8a8a8;
     font-weight: normal;
   }
-  
+
   @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
       .hours-day-footer {
-        font-size: 16px; 
-        
+        font-size: 16px;
+
       }
   }
-  
+
   @media (min-width: @screen-sm) {
     width: 12.5%;
   }
-  @media (max-width: @screen-sm) {
+  /*@media (max-width: @screen-sm) { wtf?
     width: 88%;
     display: none;
-  }
+  }*/
 }
 .hours-day.active {
   @media (max-width: @screen-sm) {
     display: block;
   }
-  
+
   .hours-day-entry {
     @media (max-width: @screen-sm) {
       background-color: white !important;
@@ -450,7 +450,7 @@
 
 .hours-day-not-logged {
   color: #eee !important;
-  
+
   .hours {
     color: #a8a8a8 !important;
   }
@@ -459,14 +459,14 @@
   min-height: 50px;
   background-color: #f7f7f7 !important;
   clear: both;
-  
+
   .hours-empty {
     text-align: center;
     font-size: 15px;
     color: #4d4d4d;
     margin-top: 16px;
   }
-  
+
   @media (max-width: @screen-sm) {
     margin-left: -10px;
     margin-right: -10px;
@@ -487,9 +487,9 @@
   border-bottom: 1px solid #fff;
   border-left: 1px solid #fff;
   border-right: 1px solid #fff;
-  
+
   padding-left: 7px;
-  
+
   /*use those styles to verticaly align row content*/
   display: flex;
   display: -webkit-box;
@@ -497,7 +497,7 @@
   display: -ms-flexbox;
   display: -webkit-flex;
   align-items: center;
-  
+
   @media (max-width: @screen-sm) {
     display: block;
     text-align: right;
@@ -509,33 +509,33 @@
       height: 40px;
       width: 100%;
       color: #999999;
-      
+
       .close-edit {
         float: right;
         margin-right: 10px;
       }
     }
   }
-  
+
   .hours-logged-value {
     font-weight: bold;
     font-size: 15px;
     width: 6%;
     text-align: center;
     white-space: nowrap;
-    
+
     @media (min-width: @screen-sm) {
       margin-left: 3px;
       margin-right: 3px;
     }
-    
+
     @media (max-width: @screen-sm) {
       float:left;
       text-align: left;
       width: 20%;
     }
   }
-  
+
   .hours-logged-value.edit-input {
     @media (max-width: @screen-sm) {
       display: block;
@@ -544,8 +544,8 @@
       width: 100%;
     }
   }
-  
-  
+
+
   .edit-input {
     border: 1px solid #efefef;
     border-radius: 3px;
@@ -557,12 +557,12 @@
     margin-right: 3px;
     padding-left: 5px;
     padding-right: 5px;
-    
+
     @media (max-width: @screen-sm) {
       margin-top: 3px;
       margin-bottom: 3px;
       margin-left: 0px;
-      
+
     }
   }
   .edit-input.ng-hide {
@@ -573,23 +573,23 @@
     font-weight: bold;
     font-size: 15px;
     color: #999999;
-    
+
     @media (min-width: @screen-sm) {
       margin-left: 3px;
       margin-right: 3px;
     }
-    
+
     @media (max-width: @screen-sm) {
       float: left;
       text-align: left;
       width: 80%;
-      
+
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
     }
   }
-  
+
   .hours-logged-project.edit-input {
     @media (max-width: @screen-sm) {
       display: block;
@@ -597,12 +597,12 @@
       width: 100%;
     }
   }
-  
+
   .search-icon {
-    position:absolute; 
-    margin-left:-30px; 
+    position:absolute;
+    margin-left:-30px;
     top: 15px;
-    
+
      @media (max-width: @screen-sm) {
       margin-left: 0px;
       margin-top: 10px;
@@ -610,7 +610,7 @@
       right: 10px;
     }
   }
-  
+
   .hours-logged-project.selected-item {
     background-color: #999999;
     color: #fff;
@@ -618,9 +618,9 @@
     top: 7px;
     padding: 4px 8px;
     float: right;
-    
+
     margin-top: 3px;
-    
+
     i {
       position:relative;
       top:-5px;
@@ -630,28 +630,28 @@
       white-space: nowrap;
       overflow: hidden;
     }
-    
+
     @media (max-width: @screen-sm) {
       width: 100%;
       margin-right: 4px;
       margin-left: 1px;
-      
+
       i {
         position: relative;
         top: -3px;
       }
     }
   }
-  
+
   .hours-logged-desc {
     color: #999999;
     font-size: 14px;
-    
+
     @media (min-width: @screen-sm) {
       margin-left: 3px;
       margin-right: 3px;
     }
-    
+
     /*set width inline*/
     @media (max-width: @screen-sm) {
       display: block;
@@ -660,11 +660,11 @@
       clear: both;
     }
   }
-  
+
   .hours-logged-desc.mobile-visible {
     display: block !important;
   }
-  
+
   .hours-logged-action {
     float: right;
     font-size: 15px;
@@ -677,15 +677,15 @@
       display: block;
     }
   }
-  
+
   .hours-logged-action.edit {
      @media (max-width: @screen-sm) {
        align-self: flex-end;
-       
+
        display: none;
     }
   }
-  
+
   .hours-logged-action.delete {
      @media (max-width: @screen-sm) {
        font-size: 14px;
@@ -695,34 +695,34 @@
       bottom: 0px;
     }
   }
-  
+
    .hours-logged-action.delete.ng-hide {
      @media (max-width: @screen-sm) {
        display: none !important;
      }
    }
-  
+
   .hours-logged-action.edit.mobile-visible {
      @media (max-width: @screen-sm) {
-     
+
       display: block !important;
     }
   }
-  
+
   .hours-logged-details {
     position:absolute;
     top:4px;
     right:0px;
     color: #d1d1d1;
     padding: 0px 8px;
-    
+
   }
-  
+
   // provide manual strong selector to make "ng-hide" work
   .hours-logged-details.ng-hide {
     display: none !important;
   }
-  
+
   .hours-logged-save {
     text-transform: uppercase;
     background-color: #1ba2c1;
@@ -730,7 +730,7 @@
     color: #fff;
     font-weight: bold;
     top: 8px;
-    
+
     margin-top: 5px;
     margin-bottom: 5px;
     @media (max-width: @screen-sm) {
@@ -744,7 +744,7 @@
     color: #fff;
     font-weight: bold;
     top: 8px;
-    
+
     @media (max-width: @screen-sm) {
        margin-top: 5px;
        margin-bottom: 5px;
@@ -760,14 +760,14 @@
     display: -webkit-box !important;
     display: -ms-flexbox !important;
     display: -webkit-flex !important;
-    
+
     // make it multiline
     flex-wrap: wrap;
     justify-content: flex-end;*/
    display: block !important;
   }
 }
-  
+
 
 .hours-logged-entry > span,
 .hours-logged-entry > .edit-input {
@@ -783,19 +783,19 @@
   font-size: 14px;
   font-weight: bold;
   text-align: left;
-  
+
   span.text {
     position: absolute;
     top:10px;
     left: 7px;
   }
-  
+
   span.add {
     position: absolute;
     top:10px;
     right: 10px;
   }
-  
+
   span.close-new {
     font-size: 14px;
     display: none;
