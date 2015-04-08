@@ -64,7 +64,8 @@ exports.config = {
   	'test/e2e/roleTests.spec.js',    
     'test/e2e/vacationTests.spec.js',
     'test/e2e/projectUpdateTests.spec.js',    
-    'test/e2e/administrationTests.spec.js'    
+    'test/e2e/administrationTests.spec.js',
+    'test/e2e/taskHoursTests.spec.js'
   ],
 
 
