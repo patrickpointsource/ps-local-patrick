@@ -712,17 +712,17 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 angular.module('Mastermind').controller('OOOModalInstanceCtrl', ['$scope', '$modalInstance', 'details', 'ProjectsService', function ($scope, $modalInstance, details, ProjectsService)
 {
     // This is required to request projects assigned to the specisifed person.
-    details.vac.person._id = details.vac.person.resource.substring(details.vac.person.resource.indexOf("/") + 1);
+    //details.vac.person._id = details.vac.person.resource.substring(details.vac.person.resource.indexOf("/") + 1);
 
     $scope.details = details;
 
-    ProjectsService.getMyCurrentProjects(details.vac.person).then(function (projects)
-    {
-        if (!projects || !projects.data)
-            return;
+    //ProjectsService.getMyCurrentProjects(details.vac.person).then(function (projects)
+    //{
+    //    if (!projects || !projects.data)
+    //        return;
 
-        $scope.projects = _.pluck(projects.data, "name");
-    });
+    //    $scope.projects = _.pluck(projects.data, "name");
+    //});
 
     $scope.close = function ()
     {
