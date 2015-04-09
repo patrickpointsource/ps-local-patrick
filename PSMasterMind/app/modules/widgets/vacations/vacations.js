@@ -262,6 +262,12 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	}
   };
 
+  $scope.clearCancelModal = function() {
+	  $("#vacCancelModal").modal('hide');
+	  $scope.cancelValidation = "";
+	  $scope.cancellationReason = null;
+  };
+  
     $scope.deleteVacation = function() {
         $scope.cancelValidation = "";
 
@@ -273,7 +279,7 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
         var vacation = $scope.displayedVacations[$scope.editVacationIndex];
         vacation.vacationManager = { resource: vacation.vacationManager.resource, name: Util.getPersonName(vacation.vacationManager) };
         vacation.status = "Cancelled";
-        $("#vacCancelModal").modal('hide');
+        $scope.clearCancelModal();
         Resources.update(vacation).then(function(result) {
             $scope.vacations.splice($scope.editVacationIndex, 1);
             $scope.editVacationIndex = -1;

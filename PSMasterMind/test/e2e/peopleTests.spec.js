@@ -110,6 +110,11 @@ describe("E2E: People test cases.", function () {
 		console.log('> Running: Set IsActive to true and check All people list.');
 		editIsActiveProperty(true);
 	}, 60000);
+	
+	it('Navigate to non-current user profile, make sure cannot add vacation request.', function() {	
+		console.log('> Running: Navigate to non-current user profile, make sure cannot add vacation request.');
+		checkAddVacationDisabledForNonCurrentUser();
+	}, 60000);
 
 	//Doesn't support by new UI.
 //    it('Check people utilization values.', function () {
@@ -214,6 +219,28 @@ describe("E2E: People test cases.", function () {
     	
     	peoplePage.people.then(function(peopleList) {
     		checkProfileUtilization(peopleList[0]);
+    	});
+    };
+    
+    var checkAddVacationDisabledForNonCurrentUser = function() {
+    	console.log("> Check that add vacation disabled.");
+    	var peoplePage = new PeoplePage();
+    	peoplePage.get();
+    	
+    	var checkVacationWidget = function (profile) {
+    		profile.all(by.binding(peoplePage.sortRow.utilization)).get(1).getText().then(function(utilizationValue){
+    			profile.all(by.tagName('a')).get(0).click().then(function() {
+    				return browser.wait(function() {	    		
+    		    		return browser.isElementPresent(element(by.css('[ng-controller="VacationsCtrl"]')));
+    		    	}).then(function() {
+    		    		expect(element(by.css('[ng-click="requestHours()"]')).isDisplayed()).toBe(false); 
+    		    	});
+    			}); 			
+    		});
+    	};
+    	
+    	peoplePage.people.then(function(peopleList) {
+    		checkVacationWidget(peopleList[0]);
     	});
     };
     

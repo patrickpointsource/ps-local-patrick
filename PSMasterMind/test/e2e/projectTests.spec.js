@@ -381,10 +381,10 @@ describe("E2E: Project test cases.", function () {
 			projectPage.hoursTab.click();
 			browser.sleep(2000);
 			browser.wait(function () {
-    			return browser.isElementPresent(projectPage.hours.get(0));
+    			return browser.isElementPresent(projectPage.hours);
     		}).then(function () {
-    			projectPage.hours.then(function(hoursList){
-    				hoursList[0].element(by.binding('{{roleHours.actualHours}}')).getText().then(function(hours){
+    			projectPage.hoursAll.first().then(function(hoursRecord){
+    				hoursRecord.element(by.binding('{{roleHours.actualHours}}')).getText().then(function(hours){
     					console.log("> Actual hours: " + hours);
     					expect(hours).toBeGreaterThan(0);
     				});
@@ -629,7 +629,8 @@ describe("E2E: Project test cases.", function () {
         this.deleteButton = element(by.css('[ng-show="canDeleteProject"]'));
         this.deleteButtonOk = element(by.css('[ng-click="deleteProject()"]'));
         this.hoursTab = element.all(by.css('[ng-click="tabSelected(\'/hours\')"]'));
-        this.hours = element.all(by.repeater("roleHours in monthPersonHours2 track by $index"));
+        this.hours = element(by.repeater("roleHours in monthPersonHours2 track by $index"));
+        this.hoursAll = element.all(by.repeater("roleHours in monthPersonHours2 track by $index"));
     };
 
     var EditCreateProjectPage = function () {
