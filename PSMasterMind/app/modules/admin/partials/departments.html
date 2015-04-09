@@ -42,8 +42,9 @@
 			</div>
 			<div class="row section-content">
 				<div class="col-xs-12">
-					<div ng-repeat="dep in availableDepartments" class="department-entry" ng-click="selectDepartment($event, dep)">
-						<span class="code">{{dep.departmentCode.name}}</span>
+					<div ng-repeat="dep in availableDepartments" class="department-entry" ng-click="selectDepartment($event, dep)" ng-show="!dep.hidden">
+						<span class="code" ng-show="!dep.departmentCategory || !dep.departmentCategory.isEmptyCategory">{{dep.departmentCode.name}}</span>
+						<span class="empty-category" ng-show="dep.departmentCategory.isEmptyCategory"><i class="fa fa-exclamation-triangle"></i></span>
 						<span class="manager">{{dep.departmentManager.name}}</span>
 						<span class="nickname">{{dep.departmentNickname}}</span>
 					</div>
@@ -159,8 +160,8 @@
 			        <div class="col-xs-12 ">
 		               <label class="control-label" >Department category:</label>
 		               
-		               <span>{{selectedDepartment.departmentCategory.name}}</span>
-		               
+		               <span ng-show="!selectedDepartment.departmentCategory.isEmptyCategory">{{selectedDepartment.departmentCategory.name}}</span>
+		               <span class="empty-department-category" ng-show="selectedDepartment.departmentCategory.isEmptyCategory">This department does not have an assigned category</span>
 		           </div>
 		           <div class="col-xs-12">
 		               <label class="control-label" >Department nickname:</label>
@@ -245,6 +246,45 @@
 				</div>
 				
 			</div>
+			
+			<div class="modal fade confirm-delete-category">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title">Delete category?</h4>
+			      </div>
+			      <div class="modal-body">
+			        Are you sure you want to delete category {{deleteCategoryName}}? All associated departments will need to be assigned to a new category.
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="button" class="btn btn-primary pull-right" ng-click="onDeleteCategoryCb()">Delete</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class="modal fade confirm-delete-department">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title">Delete department</h4>
+			      </div>
+			      <div class="modal-body">
+			        Are you sure you want to delete this department? All people within department will need to be reassigned to new departments to be included in reports.
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="button" class="btn btn-primary pull-right" ng-click="onDeleteDepartmentCb()">Delete</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+
+			
+
 		</div>
 	</div>
 	

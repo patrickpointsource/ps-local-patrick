@@ -111,6 +111,9 @@ angular.module('Mastermind')
 		  $scope.selectedDepartment.editDepartmentPeople = false;
 		  							
 		  $scope.selectedDepartmentPeople = [];
+		  
+		  department.departmentCategory.TrimmedValue = department.departmentCategory.value;
+		  
 		  var found;
 		  
 		  for (var k = 0; $scope.selectedDepartment.departmentPeople && k < $scope.selectedDepartment.departmentPeople.length; k ++) {
@@ -151,8 +154,6 @@ angular.module('Mastermind')
 	  };
 	  
 	  $scope.saveDepartmentPeople = function() {
-		  
-		  
 		  var prevDepartmentPeople = $scope.selectedDepartment.departmentPeople;
 		  
 		  $scope.selectedDepartment.departmentPeople = [];
@@ -239,11 +240,19 @@ angular.module('Mastermind')
        		delete department.editDepartmenPeople;
        		delete department.isEdit;
        		delete department.isNew;
+       		
        		if (_.isString(department.departmentManager)) {
        			delete department.departmentManager;
        		}
+       		
+       		if (department.departmentCategory.value)
+       			delete department.departmentCategory.value;
+       		
+       		if (department.departmentCategory.isEmptyCategory !== undefined)
+       			delete department.departmentCategory.isEmptyCategory;
+       		
        		return department;
-	    }
+	    };
 
 	    /**
 	     * Update a new Role to the server
@@ -319,15 +328,20 @@ angular.module('Mastermind')
 	       };
 
 	    /**
-	     * Delete a task
+	     * Delete department
 	     */
 	    $scope.deleteDepartment = function () {
-	      return DepartmentsService.removeDepartment($scope.selectedDepartment.resource).then(function(){
-	    	  $scope.selectedDepartment = {};
-	        $scope.loadDepartments();
-	        
-	        $rootScope.$emit('department:deleted');
-	      });
+	    	$('.confirm-delete-department').modal('show');
+	    };
+	    
+	    $scope.onDeleteDepartmentCb = function() {
+	    	return DepartmentsService.removeDepartment($scope.selectedDepartment.resource).then(function(){
+		    	  $scope.selectedDepartment = {};
+		        $scope.loadDepartments();
+		        
+		        $rootScope.$emit('department:deleted');
+		        $('.confirm-delete-department').modal('hide');
+		      });
 	    };
 
 	  
@@ -340,8 +354,20 @@ angular.module('Mastermind')
 		    			result[k].departmentPeople = _.map(result[k].departmentPeople, function(dp) {
 		    				return dp.replace('departments/people', 'people/')
 		    			});
+	    			
+	    			$scope.checkDepartmentCategory(result[k]);
 	    		}
+	    		
+	    		return result;
 	    	});
+	    };
+	    
+	    $scope.checkDepartmentCategory = function(department) {
+	    	if ($scope.departmentCategories) {
+	    		var val = department.departmentCategory.TrimmedValue ? department.departmentCategory.TrimmedValue: department.departmentCategory.value;
+	    		
+	    		department.departmentCategory.isEmptyCategory = !_.find($scope.departmentCategories, function(c) {return c.TrimmedValue == val;});
+	    	}
 	    };
 	    
 	    /**
@@ -364,6 +390,11 @@ angular.module('Mastermind')
 	    
 	    $scope.onCategoryChanged = function(e, childScope) {
 	    	e = e ? e: window.event;
+	    	
+	    	_.each($scope.availableDepartments, function(dep) {
+	    		dep.hidden = !(dep.departmentCategory.TrimmedValue ? $scope.selectedCategory.TrimmedValue == dep.departmentCategory.TrimmedValue: 
+    				$scope.selectedCategory.TrimmedValue == dep.departmentCategory.value);
+	    	});
 	    };
 	    
 	    $scope.onCreateCategory = function(e) {
@@ -390,6 +421,9 @@ angular.module('Mastermind')
 	        				return cat.TrimmedValue == $scope.selectedCategory.TrimmedValue;
 	        			});
 	        		});
+	    		}).then(function() {
+	    			// refresh departments to hide "empty category" warnings if needed
+	    			$scope.loadDepartments();
 	    		}).catch(function() {
 	    			$scope.selectedCategory = {};
 	    		});
@@ -401,13 +435,24 @@ angular.module('Mastermind')
 	    };
 	    
 	    $scope.onDeleteCategory = function(e) {
+	    	$scope.deleteCategoryName = $scope.selectedCategory.name;
+	    	
+	    	$('.confirm-delete-category').modal('show');
+	    	
+	    };
+	    
+	    $scope.onDeleteCategoryCb = function() {
 	    	DepartmentsService.removeDepartmentCategory($scope.selectedCategory.resource).then(function() {
     			DepartmentsService.loadDepartmentCategories().then(function(res) {
         			$scope.departmentCategories = res && res.members ? res.members: res;
         			$scope.selectedCategory = {};
+        			// hide delete confirm dialog
+        			$('.confirm-delete-category').modal('hide');
+        		}).then(function() {
+        			// refresh departments to hide "empty category" warnings if needed
+	    			$scope.loadDepartments();
         		});
     		});
-	    	
 	    };
 	    
 	    $scope.initDepartments =  function () {
@@ -471,7 +516,7 @@ angular.module('Mastermind')
 	    			$scope.allPeopleList = result.members;
 	    		});
 	    	
-	    	DepartmentsService.refreshDepartments().then(function(departments){
+	    	$scope.loadDepartments().then(function(departments){
 	    		$scope.availableDepartments = departments;
 	    		
 	    		for (var k = 0; k < departments.length; k ++) {

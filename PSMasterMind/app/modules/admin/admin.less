@@ -1,21 +1,42 @@
-.departments-container .section-header {
-  
-  /*position: relative;
-  top: 15px;*/
- margin-top:15px;
-
-  label{
-    font-size: 16px;
-    margin-bottom: 10px;
-    
-  }
-  
-  .search-department-control {
-    margin-top: 10px;
-  }
-}
-
 .departments-container  {
+  .section-header {
+  
+    /*position: relative;
+    top: 15px;*/
+   margin-top:15px;
+  
+    label{
+      font-size: 16px;
+      margin-bottom: 10px;
+      
+    }
+    
+    .search-department-control {
+      margin-top: 10px;
+    }
+  }
+
+  .confirm-delete-category, .confirm-delete-department {
+    overflow: hidden;
+    
+    .modal-dialog {
+       width: 350px;
+    }
+    
+    .modal-content {
+      border-radius: 7px;
+    }
+    
+    .btn-primary {
+      background-color: #29ABE1;
+      border-color: #29ABE1;
+    }
+    
+    .btn {
+      width: 120px;
+    }
+  }
+  
   .row {
     margin-bottom: 0px !important;
   }
@@ -25,7 +46,7 @@
       margin-right: 15px;
      
     }
-    
+   
      .select-editable {
          position:relative;
          background-color:white;
@@ -71,7 +92,10 @@
     margin-bottom:3px;
   }
   
- 
+  .empty-department-category {
+    color: #C1272C;
+  }
+    
   .available-person {
     background-color: white;
     padding: 3px 4px;
@@ -103,7 +127,13 @@
       margin-right: 10px;
       margin-left: 3px;
     }
-    
+    .empty-category {
+      color: #C1272C;
+      font-size: 26px;
+      font-weight: bold;
+      margin-right: 10px;
+      margin-left: 3px;
+    }
     .manager {
       position:absolute;
       font-size:12px;
