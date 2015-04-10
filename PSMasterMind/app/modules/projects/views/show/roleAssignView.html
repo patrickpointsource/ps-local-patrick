@@ -3,10 +3,14 @@
 	ng-class="{'past-assignment': isPastAssignment(currentAssignee)}">
 	
 	<div class="col-xs-5 col-sm-4 form-group" ng-class="{error: isFieldInError('role')}">
-	     <a href="#{{currentAssignee.person.resource}}">
-	     	<img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  role).thumbnail}}" err-src="\images\defaultprofile.png" />
-	     		{{getPersonName(currentAssignee.person.resource,  role)}}
-	     </a>           
+	    <a href="#{{currentAssignee.person.resource}}" ng-if="hasPermissions(CONSTS.VIEW_PROFILE)">
+	        <img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  role).thumbnail}}" err-src="\images\defaultprofile.png" />
+	        {{getPersonName(currentAssignee.person.resource,  role)}}
+	    </a>
+        <a href="javascript:void(0);" ng-if="!hasPermissions(CONSTS.VIEW_PROFILE)">
+            <img class="profileImage" ng-src="{{getPerson(currentAssignee.person.resource,  role).thumbnail}}" err-src="\images\defaultprofile.png" />
+            {{getPersonName(currentAssignee.person.resource,  role)}}
+        </a>         
 	</div>
 	
 	<div class="col-xs-12 col-sm-2 form-group person-abbreviation">

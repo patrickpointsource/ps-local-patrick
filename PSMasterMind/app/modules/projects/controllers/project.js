@@ -1407,7 +1407,8 @@ else if( role.percentageCovered == 0 )
 		for( var i = 0; i < ret.length; i++ ) {
 			var ithHoursRecord = ret[ i ];
 			if (ithHoursRecord.person.resource) {
-				defers.push( Resources.resolve( ithHoursRecord.person ) );
+			    ithHoursRecord.person = _.findWhere($scope.people.members, { resource: ithHoursRecord.person.resource });
+				//defers.push( Resources.resolve( ithHoursRecord.person ) );
 				//See if the user had a role in the project at the time of the record
 				for( var j = 0; j < projectRoles.length; j++ ) {
 					var role = projectRoles[ j ];
@@ -2686,7 +2687,8 @@ else if( role.percentageCovered == 0 )
 	$scope.loadExecAndPeople = function( cb ) {
 
 		var execLoaded = false;
-	    var salesLoaded = false;
+		var salesLoaded = false;
+	    var allPeopleLoaded = false;
 	    
 		Resources.refresh("people/bytypes/byGroups", { group : "Execs" } ).then(
 				function (result) {
@@ -2694,7 +2696,7 @@ else if( role.percentageCovered == 0 )
 					$scope.getExecutiveSponsor( );
 					$scope.getExecutiveSponsorEmail( );
 					execLoaded = true;
-					if (execLoaded && salesLoaded && cb)
+					if (execLoaded && salesLoaded && allPeopleLoaded && cb)
 		                 cb();
 				}
 		);
@@ -2705,8 +2707,18 @@ else if( role.percentageCovered == 0 )
 					$scope.getSalesSponsor( );
 					$scope.getSalesSponsorEmail( );
 					salesLoaded = true;
-					if (execLoaded && salesLoaded && cb)
+					if (execLoaded && salesLoaded && allPeopleLoaded && cb)
 					     cb();
+				}
+		);
+
+		Resources.refresh("people/bytypes/active").then(
+				function (result) {
+				    $scope.people = result;
+				    
+				    allPeopleLoaded = true;
+				    if (execLoaded && salesLoaded && allPeopleLoaded && cb)
+				        cb();
 				}
 		);
 	};

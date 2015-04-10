@@ -150,7 +150,10 @@ angular.module('Mastermind')
       viewMySecondaryRole: "View My Secondary Role",
       viewOthersRoleTitle: "View Other's Primary Role & Job Title",
       viewOthersSecondaryRole: "View Other's Secondary Role",
-      editRolesTitles: ""
+      editRolesTitles: "Edit Primary Roles and Job Titles",
+      viewMySecurityRoles: 'View My Permission Groups',
+      viewOthersSecurityRoles: 'View Other’s Permission Groups',
+      editProfileSecurityRoles: 'Edit Permission Groups'
     };
     
     $scope.permissionChecked = function(collection, permission) {
@@ -235,7 +238,10 @@ angular.module('Mastermind')
         "viewMySecondaryRole",
         "viewOthersRoleTitle",
         "viewOthersSecondaryRole",
-        "editRolesTitles"
+        "editRolesTitles",
+        "viewMySecurityRoles",
+        "viewOthersSecurityRoles",
+        "editProfileSecurityRoles"
       ]
     },
     {

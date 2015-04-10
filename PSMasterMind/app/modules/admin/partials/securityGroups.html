@@ -40,7 +40,8 @@
       <h4>MEMBERS</h4>
       <div class="row security-members" ng-repeat="member in selectedGroupMembers">
         <div class="col-xs-12">
-          <a href="#{{member.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(member)}}</a>
+            <a href="#{{member.resource + loc.href.substring(loc.href.indexOf('?'))}}" ng-if="hasPermissions(CONSTS.VIEW_PROFILE)">{{getPersonName(member)}}</a>
+            <span ng-if="!hasPermissions(CONSTS.VIEW_PROFILE)">{{getPersonName(member)}}</span>
         </div>
       </div>
       <div class="row security-members" ng-repeat="group in selectedGroupGroups">

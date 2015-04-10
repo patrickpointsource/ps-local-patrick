@@ -1045,6 +1045,30 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
         return $scope.profileId == $scope.me._id;
     };
 
+    $scope.canEditPhoneSkypeJazz = function() {
+        if ($scope.isMe()) {
+            return $rootScope.hasPermissions(CONSTS.EDIT_MY_PROFILE);
+        } else {
+            return $rootScope.hasPermissions(CONSTS.EDIT_PROFILE);
+        }
+    };
+
+    $scope.canViewPersonnelData = function () {
+        return $rootScope.hasPermissions(CONSTS.VIEW_PERSONNEL_DATA) || $scope.isMe();
+    };
+
+    $scope.canViewPermissions = function() {
+        if ($scope.isMe()) {
+            return $rootScope.hasPermissions(CONSTS.VIEW_MY_SECURITY_ROLES);
+        } else {
+            $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_SECURITY_ROLES);
+        }
+    };
+
+    $scope.canEditSecurityRoles = function() {
+        return $rootScope.hasPermissions(CONSTS.EDIT_PROFILE_SECURITY_ROLES);
+    };
+
 	///////////Profile Hours/////////
 	$scope.newHoursRecord = {};
 

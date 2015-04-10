@@ -4,8 +4,8 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, and roles.
  */
-angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter', '$q',
-  function ($scope, $state, $filter, $q) {
+angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter', '$q', '$rootScope', 
+  function ($scope, $state, $filter, $q, $rootScope) {
       //$scope.projectManagementAccess = false;
 	$scope.menuItems = [ {
 		text: "Dashboard",
@@ -55,7 +55,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 		value: "people",
 		handler: "showPeople",
 		iconCss: "icon-people",
-		isRender: "true",
+		isRender: $rootScope.hasPermissions(CONSTS.VIEW_PEOPLE),
 		subItems: [ {
 			text: "All People",
 			value: "all",

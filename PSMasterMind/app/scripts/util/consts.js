@@ -49,5 +49,8 @@ var CONSTS = {
     VIEW_MY_SECONDARY_ROLE: "viewMySecondaryRole",
     VIEW_OTHERS_ROLE_TITLE: "viewOthersRoleTitle",
     VIEW_OTHERS_SECONDARY_ROLE: 'viewOthersSecondaryRole',
-    EDIT_ROLES_TITLES: 'editRolesTitles'
+    EDIT_ROLES_TITLES: 'editRolesTitles',
+    VIEW_MY_SECURITY_ROLES: 'viewMySecurityRoles',
+    VIEW_OTHERS_SECURITY_ROLES: 'viewOthersSecurityRoles',
+    EDIT_PROFILE_SECURITY_ROLES: 'editProfileSecurityRoles'
 };
