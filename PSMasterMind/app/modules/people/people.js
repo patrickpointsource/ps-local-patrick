@@ -55,17 +55,17 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 		if( type == 'name-desc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return $scope.getPersonName(person) || '';
+				return $scope.getPersonName(person).toLowerCase() || '';
 			} );
 		}
 
 		if( type == 'name-asc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return $scope.getPersonName(person) || '';
+				return $scope.getPersonName(person).toLowerCase() || '';
 			} ).reverse( );
 		}
 
-		if( type == 'role-desc' ) {
+		if( type == 'group-desc' ) {
 			$scope.people.sort( function( a, b ) {
 
 				if( !a.primaryRole && !b.primaryRole ) {
@@ -81,6 +81,52 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				if( a.primaryRole.title < b.primaryRole.title ) {
 					return -1;
 				} else if( a.primaryRole.title > b.primaryRole.title ) {
+					return 1;
+				} else {
+					return 0;
+				}
+			} );
+		}
+
+		if( type == 'group-asc' ) {
+			$scope.people.sort( function( a, b ) {
+
+				if( !a.primaryRole && !b.primaryRole ) {
+					return 0;
+				}
+				if( !a.primaryRole ) {
+					return 1;
+				}
+				if( !b.primaryRole ) {
+					return -1;
+				}
+
+				if( a.primaryRole.title < b.primaryRole.title ) {
+					return 1;
+				} else if( a.primaryRole.title > b.primaryRole.title ) {
+					return -1;
+				} else {
+					return 0;
+				}
+			} );
+		}
+
+		if( type == 'role-desc' ) {
+			$scope.people.sort( function( a, b ) {
+
+				if( !a.primaryRole && !b.primaryRole ) {
+					return 0;
+				}
+				if( !a.primaryRole ) {
+					return 1;
+				}
+				if( !b.primaryRole ) {
+					return -1;
+				}
+
+				if( a.primaryRole.abbreviation < b.primaryRole.abbreviation ) {
+					return -1;
+				} else if( a.primaryRole.abbreviation > b.primaryRole.abbreviation ) {
 					return 1;
 				} else {
 					return 0;
@@ -101,9 +147,9 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 					return -1;
 				}
 
-				if( a.primaryRole.title < b.primaryRole.title ) {
+				if( a.primaryRole.abbreviation < b.primaryRole.abbreviation ) {
 					return 1;
-				} else if( a.primaryRole.title > b.primaryRole.title ) {
+				} else if( a.primaryRole.abbreviation > b.primaryRole.abbreviation ) {
 					return -1;
 				} else {
 					return 0;
@@ -111,49 +157,6 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			} );
 		}
 
-		if( type == 'group-desc' ) {
-			$scope.people.sort( function( a, b ) {
-				if( !a.group && !b.group ) {
-					return 0;
-				}
-				if( !a.group ) {
-					return 1;
-				}
-				if( !b.group ) {
-					return -1;
-				}
-
-				if( a.group < b.group ) {
-					return -1;
-				} else if( a.group > b.group ) {
-					return 1;
-				} else {
-					return 0;
-				}
-			} );
-		}
-
-		if( type == 'group-asc' ) {
-			$scope.people.sort( function( a, b ) {
-				if( !a.group && !b.group ) {
-					return 0;
-				}
-				if( !a.group ) {
-					return 1;
-				}
-				if( !b.group ) {
-					return -1;
-				}
-
-				if( a.group < b.group ) {
-					return 1;
-				} else if( a.group > b.group ) {
-					return -1;
-				} else {
-					return 0;
-				}
-			} );
-		}
 
 		if( type == 'rate-desc' ) {
 			$scope.people.sort( function( a, b ) {
