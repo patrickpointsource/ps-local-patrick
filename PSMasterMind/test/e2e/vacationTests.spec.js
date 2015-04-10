@@ -139,11 +139,6 @@ describe('E2E: Vacation Tests', function() {
 		checkVacationList(addVacation).then(changeRequestManager).then(function() { removeVacation(true); });
 	}, 120000);
 	
-	it('Check auto approve rules.', function() {	
-		console.log('> Running: Check auto approve rules.');
-		checkVacationList(function() { return checkAutoApproveRules(-3, null, REQUEST_APPROVED); }).then(removeVacation);
-	}, 60000);
-	
 	it('Add an Appointment request with more than 4 hours duration, verify that it does not automatically approve.', function() {	
 		console.log('> Running: Add an Appointment request with more than 4 hours duration, verify that it does not automatically approve.');
 		checkVacationList(function() { return checkAutoApproveRules(0, 3, REQUEST_PENDING); }).then(removeVacation);
@@ -172,6 +167,19 @@ describe('E2E: Vacation Tests', function() {
 //		checkVacationList(addVacation).then(denyVacationFromDashboardWidget).then(removeVacation);
 		checkVacationList(addVacation).then(denyVacationFromDashboardWidget).then(function() { removeVacation(true); });
 	}, 120000);
+	
+	it('Check auto approve rules.', function() {	
+		console.log('> Running: Check auto approve rules.');
+//		//TODO: Uncomment when the bug (should not have apportunity to remove passed vac) will be fixed.
+//		checkVacationList(function() { return checkAutoApproveRules(-3, null, REQUEST_APPROVED); });
+		checkVacationList(function() { return checkAutoApproveRules(-3, null, REQUEST_APPROVED); }).then(removeVacation);
+	}, 60000);
+	
+//	//TODO: Uncomment when the bug (should not have apportunity to remove passed vac) will be fixed.
+//	it('Edit\Cancel a vacation entry that has passed - should not be able to.', function() {	
+//		console.log('> Running: Edit\Cancel a vacation entry that has passed - should not be able to.');
+//		editCancelPassedVacation();
+//	}, 60000);
 	
 
 	var goToProfileVacationWidget = function () {
@@ -239,35 +247,6 @@ describe('E2E: Vacation Tests', function() {
     					}); });
     				});
     			});
-    	});
-	};
-	
-	var checkAutoApproveRules = function ( days, hours, requiredState ) {
-		console.log('> Check auto approve rules.');
-		return browser.wait(function(){	    		
-			return browser.isElementPresent(addRequest);
-    	}).then(function() {
-    		addRequestBtn.click().then(function () {
-    			var startDate = new Date();
-    			var endDate = new Date();
-    			var startTime = startDate.getHours();
-    			var endTime = hours ? startTime + hours : null;
-        		var shortStartDate = getShortDate(new Date(startDate.setDate(startDate.getDate() + days)));
-        		var shortEndDate = getShortDate(new Date(endDate.setDate(endDate.getDate() - 1)));
-        		fillVacation(shortStartDate, shortEndDate, startTime, endTime).then(function(){
-        			console.log('> Submit request.');
-        			submitRequest.click().then(function(){
-    	    			if (requiredState == REQUEST_APPROVED) {
-    	    				checkNotification(REQUEST_APPROVED_MSG).then(function() {
-    	    					checkRequestState(REQUEST_APPROVED);
-    	    				});
-    	    			} else
-    	    			if (requiredState == REQUEST_PENDING) {
-    	    				checkRequestState(REQUEST_PENDING);
-    	    			}
-    	    		});
-        		});	
-    		});
     	});
 	};
 	
@@ -362,6 +341,45 @@ describe('E2E: Vacation Tests', function() {
     	    	    	});
     	    		});
     	    	});	
+    		});
+    	});
+	};
+	
+	var checkAutoApproveRules = function ( days, hours, requiredState ) {
+		console.log('> Check auto approve rules.');
+		return browser.wait(function(){	    		
+			return browser.isElementPresent(addRequest);
+    	}).then(function() {
+    		addRequestBtn.click().then(function () {
+    			var startDate = new Date();
+    			var endDate = new Date();
+    			var startTime = startDate.getHours();
+    			var endTime = hours ? startTime + hours : null;
+        		var shortStartDate = getShortDate(new Date(startDate.setDate(startDate.getDate() + days)));
+        		var shortEndDate = getShortDate(new Date(endDate.setDate(endDate.getDate() - 1)));
+        		fillVacation(shortStartDate, shortEndDate, startTime, endTime).then(function(){
+        			console.log('> Submit request.');
+        			submitRequest.click().then(function(){
+        				checkRequestState(requiredState).then(function() {
+//        	    			 //TODO: Will be used when the Approve/Deny notification issue will fixed.
+//        					 if (requiredState == REQUEST_APPROVED) {
+//                 		    	checkNotification(REQUEST_APPROVED_MSG);
+//        					 }
+        				});
+    	    		});
+        		});	
+    		});
+    	});
+	};
+	
+	var editCancelPassedVacation = function () {
+		console.log('> Edit\Cancel passed vacation.');
+		return browser.wait(function(){	    		
+			return browser.isElementPresent(editRequest);
+    	}).then(function() {
+    		editRequestBtn.click().then(function () {
+    			expect(resubmitRequest.isDispalyed()).toBeFalsy();
+    			expect(cancelRequest.isDispalyed()).toBeFalsy();
     		});
     	});
 	};

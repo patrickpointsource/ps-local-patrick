@@ -80,6 +80,7 @@ describe('E2E: Profile Tests', function() {
 	var PRIMARY_ROLE_LABEL_TEST = 'Administration';
 	var PRIMARY_USER_GROUPS_TEST = 'PM';
 	var PART_TIME_HOURS_TEST = '25';
+	var ROLE_TITLE = "Test Profile Role";
 	
 	var profilePermisson = by.id('permissionGroup');
 	var profilePhoneLabel = by.binding('{{profile.phone | tel}}');
@@ -146,12 +147,23 @@ describe('E2E: Profile Tests', function() {
 		console.log('> Running: Profile - Add task hours in monthly view.');
 		addHoursInMonthlyViewTest(true);
 	}, 60000);
+	
+	it('Profile Test: Delete Role & Check the profile.', function() {	
+		console.log('> Running: Profile - Delete Role & Check the profile.');
+		deleteRoleAndCheckProfileField();
+	}, 60000);
 
+	var goToUserProfile = function() {
+		return browser.findElement(profilePhoto).click().then(function () {
+			browser.findElement(viewProfile).click().then(function () { 
+				return true;
+			});
+		});
+	};
 	
 	var checkAssignmentsTest = function () {
 		console.log("> Check my projects in profile.");
-		browser.findElement(profilePhoto).click().then(function () {
-			browser.findElement(viewProfile).click().then(function () {
+		goToUserProfile().then(function () {
 				browser.findElements(by.binding(assignmentNameBinding)).then(function( assignments ) {
 					for (var i in assignments){
 						var assignment = assignments[i];
@@ -168,7 +180,6 @@ describe('E2E: Profile Tests', function() {
 					}
 				});
 			});
-		});
 	}; 
 
 	var isDisplayed = function (index, collection, callback) {
@@ -179,8 +190,7 @@ describe('E2E: Profile Tests', function() {
 	
 	var addHoursTest = function () {
 		console.log("> Add hours in profile (weekly mode).");
-		browser.findElement(profilePhoto).click().then(function () {
-			browser.findElement(viewProfile).click().then(function () {
+		goToUserProfile().then(function () {
 				addNewHoursRecord(HOURS_VALUE).then(function() {
 					console.log("> Verifying hours in profile (weekly mode).");
 					var elementIndex = '1';
@@ -191,15 +201,13 @@ describe('E2E: Profile Tests', function() {
 			   		browser.findElement(byId(hoursDelete, elementIndex)).click();	
 			 		browser.sleep(1000);
 				});
-   			});
 		});
 	}; 	
 	
 	var addHoursInMonthlyViewTest = function (isTask) {
 		var hoursTitle = !isTask ? HOURS_PROJECT : HOURS_TASK;
 		console.log("> Add hours in profile (monthly mode).");
-		browser.findElement(profilePhoto).click().then(function () {
-			browser.findElement(viewProfile).click().then(function () {
+		goToUserProfile().then(function () {
 				browser.findElement(monthlyButton).click().then(function () {
 			   		browser.findElements(activeCircle).then(function( dayLinks ) {
 			   			for (var i in dayLinks ) {
@@ -234,7 +242,6 @@ describe('E2E: Profile Tests', function() {
 			   			}
 			   		});
 				});
-   			});
 		});
 	}; 
 	
@@ -266,8 +273,7 @@ describe('E2E: Profile Tests', function() {
 
 	var editProfileTest = function () {
 		browser.refresh();
-		browser.findElement(profilePhoto).click().then(function () {
-   			browser.findElement(viewProfile).click().then(function () {
+		goToUserProfile().then(function () {
    				browser.wait(function(){	    		
    		    		return browser.isElementPresent(editButton);
    		    	}).then(function(){
@@ -296,14 +302,12 @@ describe('E2E: Profile Tests', function() {
    		    		});
    		    	});
 	  		});
-    	});
 	}; 
 	
 	var editProfilePermissonsTest = function () {
 		var permissions = element.all(by.repeater("userRole in userSecurityGroups"));
 		browser.refresh();
-		browser.findElement(profilePhoto).click().then(function () {
-   			browser.findElement(viewProfile).click().then(function () {
+		goToUserProfile().then(function () {
    				browser.wait(function(){	    		
    		    		return browser.isElementPresent(editButton);
    		    	}).then(function(){
@@ -317,14 +321,12 @@ describe('E2E: Profile Tests', function() {
    	   		    		});
    		    		});
    		    	});
-	  		});
     	});
 	};
 	
 	var displayHoursAndCheckExportTest = function () {
     	console.log("> Add hours in profile (weekly mode).");
-   		browser.findElement(profilePhoto).click().then(function () {
-   			browser.findElement(viewProfile).click().then(function () {
+    	goToUserProfile().then(function () {
    				browser.findElement(customButton).click().then(function () {
 		    			browser.findElement(fromDate).sendKeys(FROM_DATE_STRING);
 			   			browser.findElement(toDate).sendKeys(TO_DATE_STRING);
@@ -332,8 +334,7 @@ describe('E2E: Profile Tests', function() {
 			   				var entryCount = element.all(by.repeater('hourEntry in selected.hoursEntries')).count();
 			   				//var csvFile = browser.executeScript('hoursToCSV.generate()');
 			   			});
-		   			});
-   			});
+		   		});
 		});
 	}; 
 
@@ -354,6 +355,36 @@ describe('E2E: Profile Tests', function() {
 	    		browser.sleep(5000);
 	    	});
 		} );
+	};
+	
+	var deleteRoleAndCheckProfileField  = function () {
+		var addRolesButton = by.css('[ng-click="toggleNewRole()"]');
+		var roles = element.all(by.repeater('secondaryRole in profile.secondaryRoles'));
+		var findRole = function (roleName) {
+	        return roles.filter(function (elem) {
+	        	return elem.getText().then(function (text) {
+	        		return text.indexOf(roleName) > -1;
+	            });
+	        });
+		};
+		
+		browser.get('http://localhost:9000/index.html#/admin').then(function() {
+			browser.wait(function(){	    		
+				return browser.isElementPresent(addRolesButton);
+			}).then(function(){
+				var titleElement = browser.findElement(by.cssContainingText('td', ROLE_TITLE));
+				var parentElement = titleElement.findElement(by.xpath('..'));
+				var deleteElement = parentElement.findElement(by.css('[ng-click="deleteRole(role.resource)"]'));
+   	   			deleteElement.click().then( function() {
+   	   				browser.driver.sleep(3000);	
+   	   				goToUserProfile().then(function(){
+   	   					findRole(ROLE_TITLE).then(function(res){
+   	   						expect(res[0]).toBeUndefined();
+   	   					});
+   	   				});
+   	   			});
+			});
+		});
 	};
 	
 	var byId = function (id, index) {
