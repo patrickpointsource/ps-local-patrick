@@ -1,5 +1,5 @@
 <div class="departments-container" ng-controller="DepartmentsCtrl">
-	<div class="row">
+	<div class="row department-category">
 		<div class="col-md-12">
 			<div class="row section-header category-container">
 				<div class="form-inline col-md-6">
@@ -15,8 +15,9 @@
 	                    	 <input type="text" name="format" ng-model="selectedCategory.TrimmedValue" ng-show="selectedCategory.isEdit" />
 	                    </div>
 	                    
-						<button ng-show="!selectedCategory.isEdit && selectedCategory.name" ng-disabled="false" ng-click="onEditCategory()" class="btn btn-default">Edit</button>
-			   			<button ng-show="selectedCategory.name" ng-disabled="false" ng-click="onDeleteCategory()" class="btn btn-default">Delete</button>
+	                    <button ng-show="selectedCategory.name" ng-disabled="false" ng-click="onDeleteCategory()" class="btn btn-default">Delete</button>
+						<button ng-show="!selectedCategory.isEdit && selectedCategory.name" ng-disabled="false" ng-click="onEditCategory()" class="btn btn-default">Edit category</button>
+			   			
 			   			
 			   			<button ng-show="selectedCategory.isEdit" class="btn btn-default" ng-click="saveDepartmentCategory($event)" >Save changes</button>              
                     </div>
@@ -27,8 +28,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-4">
+	<div class="row departments">
+		<div class="col-md-4 col-xs-6 right">
 			<div class="row section-header">
 				<div class="col-xs-12">
 					<label>Department</label>
@@ -52,7 +53,7 @@
 			</div>
 			
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-4 col-xs-6 middle">
 		    <!-- Edit form
 		        !-->
             
@@ -213,7 +214,7 @@
 	
 			
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-4 col-xs-6 left">
 			<div class="row section-header"> 
 				<div class="col-xs-12">
 					<label>Available people</label>
@@ -229,19 +230,19 @@
 			<div class="row section-content">
 				<div class="col-xs-12">
 					<div ng-if="!selectedDepartment.editDepartmentPeople">
-						<div  ng-repeat="p in availablePeopleList | limitTo:7">{{p.name}}</div>
-						<div>etc.</div>
+						<div  ng-repeat="p in availablePeopleList">{{p.name}}</div>
+						
 					</div>
 					
 					<div ng-if="selectedDepartment.editDepartmentPeople">
-						<div  ng-repeat="p in availablePeopleList | limitTo:15" class="available-person" 
+						<div  ng-repeat="p in availablePeopleList" class="available-person" 
 							ng-class="{'already-assigned':p.alreadyAssigned}" ng-click="addDepartmentPerson(p)">
 							<span class="name">{{p.name}}</span>
 							<span class="add pull-right" >
 								<i class="fa fa-plus"></i>
 							</span>
 						</div>
-						<div ng-show="availablePeopleList.length > 15">etc.</div>
+						
 					</div>
 				</div>
 				
@@ -282,7 +283,23 @@
 			    </div>
 			  </div>
 			</div>
-
+			
+			<div class="modal fade restrict-delete-department">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title">Delete department</h4>
+			      </div>
+			      <div class="modal-body">
+			        You cannot delete a category that has assigned departments. To delete this category, reassign departments to another category first. Assigned departments include {{departmentCodesToReassign}}.
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
 			
 
 		</div>

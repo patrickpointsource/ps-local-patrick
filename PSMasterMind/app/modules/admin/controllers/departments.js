@@ -442,17 +442,49 @@ angular.module('Mastermind')
 	    };
 	    
 	    $scope.onDeleteCategoryCb = function() {
-	    	DepartmentsService.removeDepartmentCategory($scope.selectedCategory.resource).then(function() {
-    			DepartmentsService.loadDepartmentCategories().then(function(res) {
-        			$scope.departmentCategories = res && res.members ? res.members: res;
-        			$scope.selectedCategory = {};
-        			// hide delete confirm dialog
-        			$('.confirm-delete-category').modal('hide');
-        		}).then(function() {
-        			// refresh departments to hide "empty category" warnings if needed
-	    			$scope.loadDepartments();
-        		});
-    		});
+	    	var codes = $scope.getDepartmentsCodeForCategory($scope.selectedCategory.TrimmedValue);
+	    	
+	    	if (codes.length == 0) {
+		    	DepartmentsService.removeDepartmentCategory($scope.selectedCategory.resource).then(function() {
+	    			DepartmentsService.loadDepartmentCategories().then(function(res) {
+	        			$scope.departmentCategories = res && res.members ? res.members: res;
+	        			$scope.selectedCategory = {};
+	        			// hide delete confirm dialog
+	        			$('.confirm-delete-category').modal('hide');
+	        		}).then(function() {
+	        			// refresh departments to hide "empty category" warnings if needed
+		    			$scope.loadDepartments();
+	        		});
+	    		});
+	    	} else {
+	    		$('.confirm-delete-category').modal('hide');
+	    		
+	    		$scope.departmentCodesToReassign = '';
+	    		
+	    		if (codes.length > 1) {
+	    			$scope.departmentCodesToReassign = codes[codes.length - 2] + ' and ' +  codes[codes.length - 1];
+	    			
+	    			codes = codes.splice(0, codes.length - 2);
+	    			
+	    			$scope.departmentCodesToReassign = codes.join(', ') + (codes.length > 0 ? ', ': '') + $scope.departmentCodesToReassign;
+	    			
+	    		} else
+	    			$scope.departmentCodesToReassign = codes[0];
+	    		
+	    		$('.restrict-delete-department').modal('show');
+	    	}
+	    };
+	    
+	    $scope.getDepartmentsCodeForCategory = function(categoryValue) {
+	    	
+	    	var deps = _.filter($scope.availableDepartments, function(dep) {
+	    		return dep.departmentCategory && (dep.departmentCategory.TrimmedValue && dep.departmentCategory.TrimmedValue == categoryValue 
+	    				|| dep.departmentCategory.value && dep.departmentCategory.value == categoryValue);
+	    	});
+	    	
+	    	return _.map(deps, function(dep) {
+	    		return dep.departmentCode.name;
+	    	});
 	    };
 	    
 	    $scope.initDepartments =  function () {

@@ -1,4 +1,19 @@
 .departments-container  {
+  @media (max-width:@screen-sm) {
+    >.row.departments {
+      position: relative;
+      
+      .middle {
+        clear: both
+      }
+      
+      .left {
+        position: absolute;
+        top:0px;
+        right: 0px;
+      }
+    }
+  }
   .section-header {
   
     /*position: relative;
