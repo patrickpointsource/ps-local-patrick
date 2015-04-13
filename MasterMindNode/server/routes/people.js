@@ -243,6 +243,7 @@ router.get('/:id', util.isAuthenticated, function (req, res) {
     var id = req.params.id;
     people.getPersonByGoogleId(req.user, function (err, result) {
         
+        // if getting your own profile
         if (id == 'me' || result._id == id) {
             
             // initialize permissionsMap

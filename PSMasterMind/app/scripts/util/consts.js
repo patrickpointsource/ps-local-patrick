@@ -52,5 +52,9 @@ var CONSTS = {
     EDIT_ROLES_TITLES: 'editRolesTitles',
     VIEW_MY_SECURITY_ROLES: 'viewMySecurityRoles',
     VIEW_OTHERS_SECURITY_ROLES: 'viewOthersSecurityRoles',
-    EDIT_PROFILE_SECURITY_ROLES: 'editProfileSecurityRoles'
+    EDIT_PROFILE_SECURITY_ROLES: 'editProfileSecurityRoles',
+    VIEW_MY_PUBLIC_PERSONNELDATA: 'viewMyPublicPersonnelData',
+    VIEW_OTHERS_PUBLIC_PERSONNELDATA: 'viewOthersPublicPersonnelData',
+    VIEW_MY_PRIVATE_PERSONNELDATA: 'viewMyPrivatePersonnelData',
+    VIEW_OTHERS_PRIVATE_PERSONNELDATA: 'viewOthersPrivatePersonnelData'
 };

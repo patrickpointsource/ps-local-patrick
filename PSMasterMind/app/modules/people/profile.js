@@ -1021,20 +1021,20 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 		return $rootScope.hasPermissions(CONSTS.VIEW_SECURITY_ROLES);
 	};
 
-    $scope.canViewMyRolesTitles = function() {
-        return $rootScope.hasPermissions(CONSTS.VIEW_MY_ROLE_TITLE) && $scope.isMe;
+    $scope.canViewSecondaryRoles = function() {
+        if ($scope.isMe()) {
+            return $rootScope.hasPermissions(CONSTS.VIEW_MY_SECONDARY_ROLE);
+        } else {
+            return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_SECONDARY_ROLE);
+        }
     };
 
-    $scope.canViewMySecondaryRoles = function() {
-        return $rootScope.hasPermissions(CONSTS.VIEW_MY_SECONDARY_ROLE) && $scope.isMe;
-    };
-
-    $scope.canViewOthersRolesTitles = function() {
-        return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_ROLE_TITLE) && !$scope.isMe;
-    };
-
-    $scope.canViewOthersSecondaryRoles = function() {
-        return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_SECONDARY_ROLE) && !$scope.isMe;
+    $scope.canViewPrimaryRole = function() {
+        if ($scope.isMe()) {
+            return $rootScope.hasPermissions(CONSTS.VIEW_MY_ROLE_TITLE);
+        } else {
+            return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_ROLE_TITLE);
+        }
     };
 
     $scope.canEditRolesTitles = function() {
@@ -1043,6 +1043,22 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
     $scope.isMe = function() {
         return $scope.profileId == $scope.me._id;
+    };
+
+    $scope.canViewPublicPersonnelData = function() {
+        if ($scope.isMe) {
+            return $rootScope.hasPermissions(CONSTS.VIEW_MY_PUBLIC_PERSONNELDATA);
+        } else {
+            return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_PUBLIC_PERSONNELDATA);
+        }
+    };
+
+    $scope.canViewPrivatePersonnelData = function () {
+        if ($scope.isMe) {
+            return $rootScope.hasPermissions(CONSTS.VIEW_MY_PRIVATE_PERSONNELDATA);
+        } else {
+            return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_PRIVATE_PERSONNELDATA);
+        }
     };
 
     $scope.canEditPhoneSkypeJazz = function() {
@@ -1067,6 +1083,15 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
     $scope.canEditSecurityRoles = function() {
         return $rootScope.hasPermissions(CONSTS.EDIT_PROFILE_SECURITY_ROLES);
+    };
+
+    $scope.canSeeOnlyBasicProps = function() {
+        var can = !$scope.canViewPermissions() &&
+            !$scope.canViewSecondaryRoles() &&
+            !$scope.canViewPrimaryRole() &&
+            !$scope.canViewPublicPersonnelData();
+
+        return can;
     };
 
 	///////////Profile Hours/////////

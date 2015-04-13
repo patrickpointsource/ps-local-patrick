@@ -53,7 +53,11 @@ var securityResources = {
             editRolesTitles: 'editRolesTitles',
             viewMySecurityRoles: 'viewMySecurityRoles',
             viewOthersSecurityRoles: 'viewOthersSecurityRoles',
-            editProfileSecurityRoles: 'editProfileSecurityRoles'
+            editProfileSecurityRoles: 'editProfileSecurityRoles',
+            viewMyPublicPersonnelData: 'viewMyPublicPersonnelData',
+            viewOthersPublicPersonnelData: 'viewOthersPublicPersonnelData',
+            viewMyPrivatePersonnelData: 'viewMyPrivatePersonnelData',
+            viewOthersPrivatePersonnelData: 'viewOthersPrivatePersonnelData'
         } 
     },
     projects :{
