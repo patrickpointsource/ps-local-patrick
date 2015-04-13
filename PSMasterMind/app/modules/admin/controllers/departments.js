@@ -57,11 +57,17 @@ angular.module('Mastermind')
 
 	  $scope.$on("admin:departments", function(event, command) {
 		  if (command == 'create') {
-			  $scope.selectedDepartment = {isNew: true};
-			  $scope.currentDepartmentCodes = ([]).concat($scope.departmentCodes);
-			  $scope.selectedDepartmentPeople = [];
+			  $scope.onCreateDepartment();
 		  }
 	  });
+	  
+	  $scope.onCreateDepartment = function(e) {
+		  e = e ? e: window.event;
+		  
+		  $scope.selectedDepartment = {isNew: true};
+		  $scope.currentDepartmentCodes = ([]).concat($scope.departmentCodes);
+		  $scope.selectedDepartmentPeople = [];
+	  };
 	  
 	  $scope.searchDepartments = function(e) {
 		  if ($scope.searchDeptStr.length >= 1) {
