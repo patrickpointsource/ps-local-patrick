@@ -10,9 +10,9 @@
 							<select name="departmentCategories" class="form-control pull-right" ng-change="onCategoryChanged($event, this)" 
 		                                    ng-model="selectedCategory"
 		                                    ng-required="true"
-		                                    ng-options="p.name for p in departmentCategories track by p.TrimmedValue"></select>
+		                                    ng-options="p.name for p in departmentCategories track by p.trimmedValue"></select>
 	                     
-	                    	 <input type="text" name="format" ng-model="selectedCategory.TrimmedValue" ng-show="selectedCategory.isEdit" />
+	                    	 <input type="text" name="format" ng-model="selectedCategory.trimmedValue" ng-show="selectedCategory.isEdit" />
 	                    </div>
 	                    
 	                    <button ng-show="selectedCategory.name" ng-disabled="false" ng-click="onDeleteCategory()" class="btn btn-default">Delete</button>
@@ -83,7 +83,7 @@
                             <select name="deptCategory" class="form-control pull-right"
                                     ng-model="selectedDepartment.departmentCategory"
                                     ng-required="true"
-                                    ng-options="p.name for p in departmentCategories track by p.TrimmedValue"></select>
+                                    ng-options="p.name for p in departmentCategories track by p.trimmedValue"></select>
 
                         </div>
                         <div class="col-xs-12">

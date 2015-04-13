@@ -112,8 +112,6 @@ angular.module('Mastermind')
 		  							
 		  $scope.selectedDepartmentPeople = [];
 		  
-		  department.departmentCategory.TrimmedValue = department.departmentCategory.value;
-		  
 		  var found;
 		  
 		  for (var k = 0; $scope.selectedDepartment.departmentPeople && k < $scope.selectedDepartment.departmentPeople.length; k ++) {
@@ -244,9 +242,13 @@ angular.module('Mastermind')
        		if (_.isString(department.departmentManager)) {
        			delete department.departmentManager;
        		}
-       		
-       		if (department.departmentCategory.value)
-       			delete department.departmentCategory.value;
+       		if (department.departmentCategory) {
+       			delete department.departmentCategory._id;
+       			delete department.departmentCategory._rev;
+       			delete department.departmentCategory.form;
+       			delete department.departmentCategory.about;
+       			delete department.departmentCategory.nicknames;
+       		}
        		
        		if (department.departmentCategory.isEmptyCategory !== undefined)
        			delete department.departmentCategory.isEmptyCategory;
@@ -364,9 +366,8 @@ angular.module('Mastermind')
 	    
 	    $scope.checkDepartmentCategory = function(department) {
 	    	if ($scope.departmentCategories) {
-	    		var val = department.departmentCategory.TrimmedValue ? department.departmentCategory.TrimmedValue: department.departmentCategory.value;
-	    		
-	    		department.departmentCategory.isEmptyCategory = !_.find($scope.departmentCategories, function(c) {return c.TrimmedValue == val;});
+	    		var val = department.departmentCategory.trimmedValue;
+	    		department.departmentCategory.isEmptyCategory = !_.find($scope.departmentCategories, function(c) {return c.trimmedValue == val;});
 	    	}
 	    };
 	    
@@ -379,7 +380,7 @@ angular.module('Mastermind')
 	    	category = _.extend({}, category);
 	    	
 	    	//if (!category.name)
-    		category.name = category.TrimmedValue;
+    		category.name = category.trimmedValue;
 	    	
 	    	delete category.isNew;
 	    	delete category.isEdit;
@@ -392,8 +393,8 @@ angular.module('Mastermind')
 	    	e = e ? e: window.event;
 	    	
 	    	_.each($scope.availableDepartments, function(dep) {
-	    		dep.hidden = !(dep.departmentCategory.TrimmedValue ? $scope.selectedCategory.TrimmedValue == dep.departmentCategory.TrimmedValue: 
-    				$scope.selectedCategory.TrimmedValue == dep.departmentCategory.value);
+	    		var val = dep.departmentCategory.trimmedValue;
+	    		dep.hidden = !($scope.selectedCategory.trimmedValue == val);
 	    	});
 	    };
 	    
@@ -418,7 +419,7 @@ angular.module('Mastermind')
 	        			$scope.departmentCategories = res && res.members ? res.members: res;
 	        			
 	        			$scope.selectedCategory = _.find($scope.departmentCategories, function(cat) {
-	        				return cat.TrimmedValue == $scope.selectedCategory.TrimmedValue;
+	        				return cat.trimmedValue == $scope.selectedCategory.trimmedValue;
 	        			});
 	        		});
 	    		}).then(function() {
@@ -442,7 +443,7 @@ angular.module('Mastermind')
 	    };
 	    
 	    $scope.onDeleteCategoryCb = function() {
-	    	var codes = $scope.getDepartmentsCodeForCategory($scope.selectedCategory.TrimmedValue);
+	    	var codes = $scope.getDepartmentsCodeForCategory($scope.selectedCategory.trimmedValue);
 	    	
 	    	if (codes.length == 0) {
 		    	DepartmentsService.removeDepartmentCategory($scope.selectedCategory.resource).then(function() {
@@ -478,8 +479,7 @@ angular.module('Mastermind')
 	    $scope.getDepartmentsCodeForCategory = function(categoryValue) {
 	    	
 	    	var deps = _.filter($scope.availableDepartments, function(dep) {
-	    		return dep.departmentCategory && (dep.departmentCategory.TrimmedValue && dep.departmentCategory.TrimmedValue == categoryValue 
-	    				|| dep.departmentCategory.value && dep.departmentCategory.value == categoryValue);
+	    		return dep.departmentCategory && dep.departmentCategory.trimmedValue && dep.departmentCategory.trimmedValue == categoryValue ;
 	    	});
 	    	
 	    	return _.map(deps, function(dep) {
