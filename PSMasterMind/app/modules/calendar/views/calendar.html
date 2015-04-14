@@ -162,7 +162,6 @@
                                         <div class="row">
                                             <div class="col-sm-4"><span style="font-weight: bold;">Description</span></div>
                                             <div class="col-sm-8">{{details.vac.description}}</div>
-                                            v>
                                         </div>
                                         <!--<div class="row">
                                             <div class="col-sm-4"><span style="font-weight: bold;">Projects</span></div>
@@ -175,15 +174,40 @@
                                         <a ng-click="close();" class="btn btn-modal-primary pull-right">Close</a>
                                     </div>
                                 </script>
+                                
+                                <script type="text/ng-template" id="oooMoreVacations.html">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Out of Office Details</h4>
+                                        <i class="modal-close" ng-click="close();" class="fa fa-times fa-3x"></i>
+                                    </div>
+                                    <div class="modal-body" ng-repeat="vac in details.vacations">
+                                        <div class="row">
+                                            <div class="col-sm-4"><span style="font-weight: bold;">Employee</span></div>
+                                            <div class="col-sm-8"><a href="index.html#/{{vac.person.resource}}" ng-click="close();">{{vac.person.name}}</a></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4"><span style="font-weight: bold;">Dates out</span></div>
+                                            <div class="col-sm-8">{{vac.out}}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4"><span style="font-weight: bold;">Category</span></div>
+                                            <div class="col-sm-8">{{vac.type}}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4"><span style="font-weight: bold;">Description</span></div>
+                                            <div class="col-sm-8">{{vac.description}}</div>
+                                        </div>
+                                    </div>
+                                </script>
                             </div>
 
                             <div ng-show="{{getCountNotEmptyVacations(day.vacations) > itemCount}}" ng-click="onShowMoreClicked($event, day.vacations, $index, itemCount)" class="text-left vacation-day-entry entry_{{$index}}_{{itemCount}}" style="background-color: { {day.moreBackground}}; ">
-                                <span>+{{getCountNotEmptyVacations(day.vacations) - itemCount}} more...</span>
+                                <span class="vacation-notempty-count">+{{getCountNotEmptyVacations(day.vacations) - itemCount}} more...</span>
                             </div>
                         </div>
 
                         <div class="hours-day-footer">
-                            <span ng-hide="{{day.vacations.length > 4}}" class="month-day">{{day.dayOfMonth}}</span>
+                            <span ng-hide="{{day.vacations.length > 4 || (isMobileDevice && day.vacations.length > 3)}}" class="month-day">{{day.dayOfMonth}}</span>
                         </div>
 
 

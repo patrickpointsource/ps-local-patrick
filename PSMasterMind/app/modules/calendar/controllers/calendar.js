@@ -57,6 +57,8 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         $scope.itemCount = el.is(":hidden") ? 3 : 5;
 
         el.remove();
+        
+        $scope.isMobileDevice = window.matchMedia('(max-width: 768px)').matches;
 
         $scope.goToPrevious = function ()
         {
@@ -125,7 +127,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             e.stopPropagation();
 
             //logger.log('onVacationClicked:' + ind + ':person.name=' + vac.person.name + ':'  + entry.size() + ':shown=' + entry.data('popover_shown'));
-
+            
             if (entry.data('popover_shown'))
                 return;
 
@@ -211,7 +213,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
         $scope.getCountNotEmptyVacations = function (vacations)
         {
-            return (_.filter(vacations, function (v) { return !v.isEmpty })).length;
+            return (_.filter(vacations, function (v) { return !v.isEmpty; })).length;
         };
 
         $scope.onShowMoreClicked = function (e, vacations, ind, vacInd)
@@ -223,27 +225,53 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             e.stopPropagation();
 
             logger.log('onShowMoreClicked:' + ind + ':target.size=' + entry.size());
+            
+            for (var k = 0; k < vacations.length; k++)
+            {
+                var vac = vacations[k];
+                if (!vac.isEmpty)
+                {
+                    if (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
+                        var out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
+                    else
+                        var out = $scope.moment(vac.startDate).format('M/D');
+                    vac.out = out;
+                }
+            }
 
-            var popover;
-
+            if ($scope.isMobileDevice) { 
+            	$scope.onShowMoreModal(vacations); // show Modal dialog for mobile devices
+            } else {
+            	$scope.onShowMorePopup(vacations, entry, ind, vacInd);
+            }
+        };
+        
+        $scope.onShowMoreModal = function(vacations){
+        	$modal.open({
+                controller: "OOOModalInstanceCtrl",
+                templateUrl: "oooMoreVacations.html",
+                resolve: {
+                    details: function ()
+                    {
+                        return {
+                            vacations: vacations
+                        };
+                    }
+                }
+            });
+        };
+        
+        $scope.onShowMorePopup = function(vacations, entry, ind, vacInd){
+        	var popover;
             if (!entry.data('popover'))
             {
-                var out;
                 var html = '<div class="vacation-entry-popup"><div class="vacation-popup-body">';
-                var vac;
-
                 for (var k = 0; k < vacations.length; k++)
                 {
-                    vac = vacations[k];
-
+                    var vac = vacations[k];
                     if (!vac.isEmpty)
-                    {
-                        if (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
-                            out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
-                        else
-                            out = $scope.moment(vac.startDate).format('M/D');
-
-                        html += '<div class="vacation-person-name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div class="vacation-person-type"><b>Type:</b> ' + vac.type + '</div>';
+                    { 
+                        html += '<div class="vacation-person-name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + vac.out + '</div><div class="vacation-person-type"><b>Type:</b> ' + vac.type + '</div>';
                     }
                 }
 
