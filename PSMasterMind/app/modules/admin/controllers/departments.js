@@ -57,11 +57,17 @@ angular.module('Mastermind')
 
 	  $scope.$on("admin:departments", function(event, command) {
 		  if (command == 'create') {
-			  $scope.selectedDepartment = {isNew: true};
-			  $scope.currentDepartmentCodes = ([]).concat($scope.departmentCodes);
-			  $scope.selectedDepartmentPeople = [];
+			  $scope.onCreateDepartment();
 		  }
 	  });
+	  
+	  $scope.onCreateDepartment = function(e) {
+		  e = e ? e: window.event;
+		  
+		  $scope.selectedDepartment = {isNew: true};
+		  $scope.currentDepartmentCodes = ([]).concat($scope.departmentCodes);
+		  $scope.selectedDepartmentPeople = [];
+	  };
 	  
 	  $scope.searchDepartments = function(e) {
 		  if ($scope.searchDeptStr.length >= 1) {
@@ -177,6 +183,7 @@ angular.module('Mastermind')
 	  };
 	  
 	  $scope.addDepartmentPerson = function (p) {
+	      $('.confirm-reassign-person').modal('hide');
 	      $scope.departmentPeopleChanged = true;
 		  if (! $scope.selectedDepartment.departmentPeople)
 			  $scope.selectedDepartment.departmentPeople = [];
@@ -198,6 +205,15 @@ angular.module('Mastermind')
 				return -1;
 		  });
 	  };
+
+      $scope.checkAddDepartmentPerson = function(p) {
+          if (p.alreadyAssigned) {
+              $scope.reassignedPerson = p;
+              $('.confirm-reassign-person').modal('show');
+          } else {
+              $scope.addDepartmentPerson(p);
+          }
+      };
 	  
 	  $scope.removeDepartmentPerson = function (person) {
 	      $scope.departmentPeopleChanged = true;
