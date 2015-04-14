@@ -185,6 +185,7 @@ angular.module('Mastermind')
 	  };
 	  
 	  $scope.addDepartmentPerson = function (p) {
+	      $('.confirm-reassign-person').modal('hide');
 	      $scope.departmentPeopleChanged = true;
 		  if (! $scope.selectedDepartment.departmentPeople)
 			  $scope.selectedDepartment.departmentPeople = [];
@@ -206,6 +207,15 @@ angular.module('Mastermind')
 				return -1;
 		  });
 	  };
+
+      $scope.checkAddDepartmentPerson = function(p) {
+          if (p.alreadyAssigned) {
+              $scope.reassignedPerson = p;
+              $('.confirm-reassign-person').modal('show');
+          } else {
+              $scope.addDepartmentPerson(p);
+          }
+      };
 	  
 	  $scope.removeDepartmentPerson = function (person) {
 	      $scope.departmentPeopleChanged = true;
