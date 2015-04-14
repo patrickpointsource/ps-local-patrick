@@ -179,7 +179,8 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                     {
                         return {
                             vac: vac,
-                            out: out
+                            out: out,
+                            isMobileDevice: $scope.isMobileDevice
                         };
                     }
                 }
@@ -254,7 +255,8 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                     details: function ()
                     {
                         return {
-                            vacations: vacations
+                            vacations: vacations,
+                            isMobileDevice: $scope.isMobileDevice
                         };
                     }
                 }

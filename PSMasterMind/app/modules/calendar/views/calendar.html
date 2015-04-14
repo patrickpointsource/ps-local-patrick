@@ -145,6 +145,7 @@
                                 <script type="text/ng-template" id="oooDetails.html">
                                     <div class="modal-header">
                                         <h4 class="modal-title">Out of Office Details</h4>
+                                        <span ng-show="{{details.isMobileDevice}}" class="modal-close"><i ng-click="close();" class="fa fa-times fa-3x"></i></span>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
@@ -171,14 +172,14 @@
 
                                     </div>
                                     <div class="modal-footer">
-                                        <a ng-click="close();" class="btn btn-modal-primary pull-right">Close</a>
+                                        <a ng-hide="{{details.isMobileDevice}}" ng-click="close();" class="btn btn-modal-primary pull-right">Close</a>
                                     </div>
                                 </script>
                                 
                                 <script type="text/ng-template" id="oooMoreVacations.html">
                                     <div class="modal-header">
                                         <h4 class="modal-title">Out of Office Details</h4>
-                                        <i class="modal-close" ng-click="close();" class="fa fa-times fa-3x"></i>
+                                        <span class="modal-close"><i ng-click="close();" class="fa fa-times fa-3x"></i></span>
                                     </div>
                                     <div class="modal-body" ng-repeat="vac in details.vacations">
                                         <div class="row">
@@ -197,6 +198,8 @@
                                             <div class="col-sm-4"><span style="font-weight: bold;">Description</span></div>
                                             <div class="col-sm-8">{{vac.description}}</div>
                                         </div>
+                                    </div>
+                                    <div class="modal-footer">
                                     </div>
                                 </script>
                             </div>
