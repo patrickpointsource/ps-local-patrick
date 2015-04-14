@@ -198,15 +198,28 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 			this[handler]();
 		} else if (handler == "handleSubitem" && subItem){
 
-			if (!subItem.subheader){
-				for (var i = subIndex - 1; menuItem.subItems[i]; i --)
-					if (menuItem.subItems[i].subheader) {
-						menuItem.subItems[i].active = false;
+			var uncheckActiveSubItems = function(menuItem) {
+				switch (menuItem.value) {
+					case 'people' :  
+						for (var i in menuItem.subItems) {
+							menuItem.subItems[i].active = false;
+						}
 						break;
-					}
+					default :
+						for (var i = subIndex - 1; menuItem.subItems[i]; i --) {
+							if (menuItem.subItems[i].subheader) {
+								menuItem.subItems[i].active = false;
+								break;
+							}
+						}
+						break;
+				}
+			}
 
+			if (!subItem.subheader){
+				uncheckActiveSubItems(menuItem);
 			} 
-
+			
 			var selected = [];
 
 			subItem.active = !subItem.active;
@@ -216,10 +229,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 				var vals;
 				
 				if (subI.subItems && subI.subItems.length > 0) {
-					vals = _.map(subI.subItems, function(s) { if (s.active){return s.text} else{return null;}});
-					vals = _.filter(vals, function(v) { return v;});
-					
-					res += ':' + vals.join(';');
+					res += ':';
 				}
 				
 				return res;
