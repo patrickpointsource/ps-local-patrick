@@ -23,8 +23,62 @@ angular.module('Mastermind')
 		  $scope.currentDepartmentCodes = ([]).concat($scope.departmentCodes);
 		  
 		  $scope.currentDepartmentCodes.push($scope.selectedDepartment.departmentCode); 
+		  $scope.setSentinel();
 	  };
 	  
+	  
+	  $scope.setSentinel = function( ) {
+			//Watch for model changes
+			if( $scope.selectedDepartment.isEdit || $scope.selectedDepartment.editDepartmentPeople ) {
+				//Create a new watch
+				$scope.sentinel = $scope.$watch( 'selectedDepartment', function( newValue, oldValue ) {
+					if( !$rootScope.formDirty && ( $scope.selectedDepartment.isEdit || $scope.selectedDepartment.editDepartmentPeople ) ) {
+						var changedByUser = $scope.hasChangesInFields(
+	                        ["departmentCategory",  "departmentNickname", "departmentManager", "departmentCode", "departmentPeople"],
+	                        newValue,
+	                        oldValue);
+
+						if( changedByUser ) {
+							console.debug( 'department is now dirty' );
+							$rootScope.formDirty = true;
+							$rootScope.dirtySaveHandler = function( ) {
+								return $scope.saveDepartmentPeople();
+							};
+						}
+					}
+
+				}, true );
+			}
+	  };
+		
+
+	  $scope.hasChangesInFields = function(fields, obj1, obj2) {
+			if(fields) {
+				for(var fieldIndex in fields) {
+					var field = fields[fieldIndex];
+		            if(field) {
+		            	var field1 = obj1[field];
+		                var field2 = obj2[field];
+		                    
+		                if(_.isBoolean(field1) || _.isBoolean(field2)) {
+		                	if(field1 != field2) {
+		                		return true;
+		                    }
+		                } else {
+		                	if( field1 && field2) {
+		                		var string1 = JSON.stringify(field1).trim();
+		                        var string2 = JSON.stringify(field2).trim();
+		                        if(string1 != string2) {
+		                        	return true;
+			                    }
+			                }
+		                }
+			        }
+			    }
+		    }
+			return false;
+	  };
+		
 	  $scope.cancelDepartment = function () {
 		  if ($scope.selectedDepartmentOrig)
 			  $scope.selectedDepartment = $scope.selectedDepartmentOrig;
@@ -142,6 +196,7 @@ angular.module('Mastermind')
 	      $scope.departmentPeopleChanged = false;
 		  $scope.selectedDepartment.editDepartmentPeople = true;
 		  $scope.searchAvaialbleStr = '';
+		  $scope.setSentinel();
 	  };
 	  
 	  $scope.cancelDepartmentPeople = function() {
