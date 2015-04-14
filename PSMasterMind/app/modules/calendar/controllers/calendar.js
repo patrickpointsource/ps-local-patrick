@@ -8,6 +8,12 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     '$scope', '$state', '$filter', '$q', '$rootScope', '$modal', 'VacationsService', 'People', 'Resources', 'ProjectsService', 'AssignmentService', 'RolesService', 'People',
     function ($scope, $state, $filter, $q, $rootScope, $modal, VacationsService, People, Resources, ProjectsService, AssignmentService, RolesService, PeopleService)
     {
+        $scope.VIEW_MODE_MONTH = 0;
+        $scope.VIEW_MODE_2WEEK = 1;
+        $scope.VIEW_MODE_1WEEK = 2;
+
+        $scope.viewMode = $scope.VIEW_MODE_MONTH;
+
         $scope.startDate = '';
         $scope.endDate = "";
         $scope.months = ['Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -52,21 +58,48 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
         el.remove();
 
-        /**
-         * Go back
-         */
-        $scope.backMonth = function ()
+        $scope.goToPrevious = function ()
         {
-            $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(1, 'month');
+            switch ($scope.viewMode)
+            {
+                case $scope.VIEW_MODE_1WEEK:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(1, "week");
+                    break;
+
+                case $scope.VIEW_MODE_2WEEK:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(2, "week");
+                    break;
+
+                case $scope.VIEW_MODE_MONTH:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(1, "month");
+                    break;
+            }
+            
             $scope.initCalendar();
         };
 
-        /**
-         * Go next month
-         */
-        $scope.nextMonth = function ()
+        $scope.goToNext = function ()
         {
-            $scope.currentMonth = $scope.moment($scope.currentMonth).add(1, 'month');
+            switch ($scope.viewMode)
+            {
+                case $scope.VIEW_MODE_1WEEK:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).add(1, "week");
+                    break;
+
+                case $scope.VIEW_MODE_2WEEK:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).add(2, "week");
+                    break;
+
+                case $scope.VIEW_MODE_MONTH:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).add(1, "month");
+                    break;
+            }
 
             $scope.initCalendar();
         };
@@ -536,10 +569,16 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
             $scope.displayedMonthDays = [];
 
-            $scope.startDate = $scope.moment($scope.currentMonth).startOf('month');
-            $scope.endDate = $scope.moment($scope.currentMonth).endOf('month');
-
-            var moment = $scope.moment($scope.currentMonth);
+            if ($scope.viewMode === $scope.VIEW_MODE_MONTH)
+            {
+                $scope.startDate = $scope.moment($scope.currentMonth).startOf('month');
+                $scope.endDate = $scope.moment($scope.currentMonth).endOf('month');
+            }
+            else if ($scope.viewMode === $scope.VIEW_MODE_1WEEK)
+            {
+                $scope.startDate = $scope.moment($scope.currentMonth).startOf("week");
+                $scope.endDate = $scope.moment($scope.currentMonth).endOf("week");
+            }
 
             var starOfFirstWeek = $scope.moment($scope.currentMonth).startOf('month').startOf('week');
             var endOfLastWeek = $scope.moment(starOfFirstWeek).add(34, 'days');
@@ -695,6 +734,13 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                 $scope.fillCalendarDays([]);
             });
 
+        };
+
+        $scope.changeViewMode = function (viewMode)
+        {
+            $scope.viewMode = viewMode;
+
+            $scope.initCalendar();
         };
 
         $rootScope.$on('calendar:update', function ()
