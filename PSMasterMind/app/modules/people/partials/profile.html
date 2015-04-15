@@ -106,7 +106,7 @@
                                 <span>{{profile.mBox}}</span>
                             </div>
                             <div class="padding-top-10" ng-if="canViewPersonnelData() && canViewPublicPersonnelData()">
-                                <span>{{getPersonName(profile.manager, true) || "Not Selected"}}</span>
+                                <span>{{getPersonName(profileManager, true) || "Not Selected"}}</span>
                             </div>
                             <div class="padding-top-10" ng-show="isManager" ng-if="canViewPersonnelData() && canViewPrivatePersonnelData()">
                                 <span>{{profile.vacationCapacity || 'Not Set'}} <span ng-show="profile.vacationCapacity">days</span></span>
