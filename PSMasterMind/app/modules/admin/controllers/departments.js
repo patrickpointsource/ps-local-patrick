@@ -397,9 +397,17 @@ angular.module('Mastermind')
 	    $scope.onCategoryChanged = function(e, childScope) {
 	    	e = e ? e: window.event;
 	    	
+	    	if (!$scope.selectedCategory) {
+	    		var ind = $('select[name="departmentCategories"]').get(0) ? $('select[name="departmentCategories"]').get(0).selectedIndex: -1;
+	    		
+	    		if (ind > -1) {
+	    			$scope.selectedCategory = $scope.departmentCategories[ind];
+	    		}
+	    	}
+	    	
 	    	_.each($scope.availableDepartments, function(dep) {
 	    		dep.hidden = !(dep.departmentCategory.TrimmedValue ? $scope.selectedCategory.TrimmedValue == dep.departmentCategory.TrimmedValue: 
-    				$scope.selectedCategory.TrimmedValue == dep.departmentCategory.value);
+	    			$scope.selectedCategory && $scope.selectedCategory.TrimmedValue == dep.departmentCategory.value);
 	    	});
 	    };
 	    
@@ -408,13 +416,11 @@ angular.module('Mastermind')
 	    };
 	    
 	    $scope.saveDepartmentCategory = function(e) {
-	    	
 	    	var promise;
 	    	
-	    	if ($scope.selectedCategory.isNew && $scope.selectedCategory.isEdit) {
-	    		
+	    	if ($scope.selectedCategory.isNew && $scope.selectedCategory.isEdit && $scope.selectedCategory.trimmedValue) {
 	    		promise = DepartmentsService.addDepartmentCategory($scope.cleanCategoryBeforeSave($scope.selectedCategory));
-	    	} else if (!$scope.selectedCategory.isNew && $scope.selectedCategory.isEdit) {
+	    	} else if (!$scope.selectedCategory.isNew && $scope.selectedCategory.isEdit && $scope.selectedCategory.trimmedValue) {
 	    		promise = DepartmentsService.updateDepartmentCategory($scope.cleanCategoryBeforeSave($scope.selectedCategory));
 	    	} 
 	    	

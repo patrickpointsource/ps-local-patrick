@@ -11,17 +11,16 @@
 								<div class="select-editable">
 									<select name="departmentCategories" class="form-control pull-right" ng-change="onCategoryChanged($event, this)" 
 				                                    ng-model="selectedCategory"
-				                                    ng-required="true"
 				                                    ng-options="p.name for p in departmentCategories track by p.TrimmedValue"></select>
 			                     
-			                    	 <input type="text" name="format" ng-model="selectedCategory.TrimmedValue" ng-show="selectedCategory.isEdit" />
+			                    	 <input type="text" name="format" ng-required="true" ng-model="selectedCategory.TrimmedValue" ng-show="selectedCategory.isEdit" />
 			                    </div>
 			                    
-			                    <button ng-show="selectedCategory.name" ng-disabled="false" ng-click="onDeleteCategory()" class="btn btn-default">
+			                    <button ng-show="selectedCategory.resource" ng-disabled="false" ng-click="onDeleteCategory()" class="btn btn-default">
 			                    	<span class="hidden-sm hidden-xs visible-lg-inline visible-md-inline">Delete</span>
 			                    	<i class="visible-sm-inline visible-xs-inline hidden-lg hidden-md fa fa-trash-o"></i>
 		                    	</button>
-								<button ng-show="!selectedCategory.isEdit && selectedCategory.name" ng-disabled="false" ng-click="onEditCategory()" class="btn btn-default">
+								<button ng-show="!selectedCategory.isEdit && selectedCategory.resource" ng-disabled="false" ng-click="onEditCategory()" class="btn btn-default">
 									<span class="hidden-sm hidden-xs visible-lg-inline visible-md-inline">Edit category</span>
 									<i class="visible-sm-inline visible-xs-inline hidden-lg hidden-md fa fa-pencil"></i> 
 								</button>
