@@ -1,16 +1,48 @@
 .departments-container  {
   @media (max-width:@screen-sm) {
+    .btn {
+      height: 44px;
+      width: 44px;
+    }
+    
     >.row.departments {
       position: relative;
       
       .middle {
-        clear: both
+        clear: both;
+        width: 240px;
+        margin-left: 20px;
+        padding-right: 0px;
       }
       
       .left {
+        width: 240px;
+        padding-left: 20px;
+        
+        .search-departments-lbl {
+          white-space: nowrap;
+          
+        }
+        
+        .search-department-control input {
+          font-size: 12px;
+        }
+        
+        .code {
+          font-size: 20px;
+        }
+        
+        .manager {
+          font-size: 14px;
+        }
+      }
+      .right {
         position: absolute;
         top:0px;
         right: 0px;
+        
+        
+        
       }
     }
   }
@@ -56,7 +88,31 @@
     margin-bottom: 0px !important;
   }
   
+  .middle {
+    .department-edit-container {
+      .row {
+        div {
+          padding-right:0px;
+          padding-left: 0px;
+        }
+      }
+    }
+  }
   .category-container {
+    .form-inline {
+      width: 100%;
+      display: inline-block;
+      padding-bottom: 7px;
+      border-bottom: 1px solid #dddddd;
+      
+      .create-category-btn {
+        margin-right: -15px;
+      }
+      
+      > div {
+        white-space: nowrap;
+      }
+    }
     .category-lbl {
       margin-right: 15px;
      
@@ -134,7 +190,11 @@
     margin-top:5px;
     border-radius:2px;
     cursor: pointer;
+    position: relative;
     
+    @media (max-width:@screen-sm) {
+      margin-top:10px;
+    }
     .code{
       color: #1CA1C1;
       font-size: 26px;
@@ -152,10 +212,13 @@
     .manager {
       position:absolute;
       font-size:12px;
+      top: -2px;
     }
     
     .nickname {
       font-size:12px;
+      position: absolute;
+      bottom: -1px;
     }
   }
 }
