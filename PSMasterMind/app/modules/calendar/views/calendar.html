@@ -1,17 +1,18 @@
 
 
 <div class="container calendar" ng-controller="CalendarCtrl">
-    <div class="row" style="margin-top:10px;">
+    <div class="row" style="margin-top: 10px;">
         <div class="col-md-9">
-            <form class="form-inline hide-pending" style="margin-top:4px;">
-                <input type="checkbox" ng-model="hidePendingVacations" ng-change="showHidePending($event)" />
-                <label class="control-label" style="margin-top:-5px;">Hide pending vacation requests</label>
-
+            <form class="form-inline hide-pending" style="margin-top: 4px;">
+                <label class="control-label" style="margin-top: -5px;">
+                    <input type="checkbox" ng-model="hidePendingVacations" ng-change="showHidePending($event)" />
+                    Hide pending vacation requests
+                </label>
             </form>
         </div>
         <div class="col-md-3">
             <form class="form-inline">
-                <label class="control-label" style="margin-top:7px;">Filter by:</label>
+                <label class="control-label" style="margin-top: 7px;">Filter by:</label>
                 <select name="filterVacationBy" class="form-control pull-right"
                         ng-model="filterVacationsByCurrent"
                         ng-required="true"
@@ -20,6 +21,21 @@
             </form>
         </div>
     </div>
+    <!--<div class="row">
+        <div class="col-md-9">
+            <div class="btn-group" data-toggle="buttons" style="margin-top: 15px;">
+                <label class="btn btn-default" ng-click="changeViewMode(VIEW_MODE_1WEEK)">
+                    <input type="radio" name="options" />1 Week
+                </label>
+                <label class="btn btn-default" ng-click="changeViewMode(VIEW_MODE_2WEEK)">
+                    <input type="radio" name="options" />2 Weeks
+                </label>
+                <label class="btn btn-default active" ng-click="changeViewMode(VIEW_MODE_MONTH)">
+                    <input type="radio" name="options" />Month
+                </label>
+            </div>
+        </div>
+    </div>-->
 
     <div class="row">
         <div class="col-md-9">
@@ -57,14 +73,13 @@
         </div>
     </div>
 
-
     <div class="panel panel-default dashboard-widget widget calendar">
         <div class="panel-heading">
             <div class="inner-heading">
 
 
                 <div class="header-container">
-                    <div ng-click="backMonth()" class="back-month" style="float:left;">
+                    <div ng-click="goToPrevious()" class="back-month" style="float: left;">
                         <div>
                             <i class="fa fa-caret-left fa-2x"></i>
                         </div>
@@ -74,7 +89,7 @@
                         {{startDate.format('MMMM D')}} &ndash; {{endDate.format('D')}}
                     </div>
 
-                    <div ng-click="nextMonth()" class="next-month" style="float:right">
+                    <div ng-click="goToNext()" class="next-month" style="float: right">
                         <div>
                             <i class="fa fa-caret-right fa-2x"></i>
                         </div>
@@ -83,7 +98,8 @@
                 </div>
             </div>
         </div>
-        <div class="panel-body">
+
+        <div ng-if="viewMode == VIEW_MODE_MONTH" class="panel-body">
 
 
             <div class="row hours-month-container hidden-xs" ng-class="{}">
@@ -120,7 +136,7 @@
 
                         <div class="hours-day-content">
                             <div ng-repeat="vac in day.vacations" ng-show="{{$index < itemCount}}" ng-class="{'empty-vacation': vac.isEmpty}"
-                                 class="text-left vacation-day-entry entry_{{$parent.$index}}_{{$index}}" style="background:{{vac.background}}"
+                                 class="text-left vacation-day-entry entry_{{$parent.$index}}_{{$index}}" style="background: {{vac.background}}"
                                  ng-mouseover="onVacationMouseOver(event, vac, $parent.$index, $index)" ng-mouseleave="onVacationHide(event, vac, $parent.$index, $index)"
                                  ng-click="onVacationClick(event, vac, $parent.$index, $index)">
                                 <span ng-show="{{vac.startDateOfMultidays == day.date}}">{{(itemCount == 3 ? vac.person.lastName.toUpperCase() : vac.person.name) || '...'}}</span>
@@ -129,6 +145,7 @@
                                 <script type="text/ng-template" id="oooDetails.html">
                                     <div class="modal-header">
                                         <h4 class="modal-title">Out of Office Details</h4>
+                                        <span ng-show="{{details.isMobileDevice}}" class="modal-close"><i ng-click="close();" class="fa fa-times fa-3x"></i></span>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
@@ -151,20 +168,49 @@
                                             <div class="col-sm-4"><span style="font-weight: bold;">Projects</span></div>
                                             <div class="col-sm-8">{{projects.join(", ")}}</div>
                                         </div>-->
+
+
                                     </div>
                                     <div class="modal-footer">
-                                        <a ng-click="close();" class="btn btn-modal-primary pull-right">Close</a>
+                                        <a ng-hide="{{details.isMobileDevice}}" ng-click="close();" class="btn btn-modal-primary pull-right">Close</a>
+                                    </div>
+                                </script>
+                                
+                                <script type="text/ng-template" id="oooMoreVacations.html">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Out of Office Details</h4>
+                                        <span class="modal-close"><i ng-click="close();" class="fa fa-times fa-3x"></i></span>
+                                    </div>
+                                    <div class="modal-body" ng-repeat="vac in details.vacations">
+                                        <div class="row">
+                                            <div class="col-sm-4"><span style="font-weight: bold;">Employee</span></div>
+                                            <div class="col-sm-8"><a href="index.html#/{{vac.person.resource}}" ng-click="close();">{{vac.person.name}}</a></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4"><span style="font-weight: bold;">Dates out</span></div>
+                                            <div class="col-sm-8">{{vac.out}}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4"><span style="font-weight: bold;">Category</span></div>
+                                            <div class="col-sm-8">{{vac.type}}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4"><span style="font-weight: bold;">Description</span></div>
+                                            <div class="col-sm-8">{{vac.description}}</div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
                                     </div>
                                 </script>
                             </div>
 
-                            <div ng-show="{{getCountNotEmptyVacations(day.vacations) > itemCount}}" ng-click="onShowMoreClicked($event, day.vacations, $index, itemCount)" class="text-left vacation-day-entry entry_{{$index}}_{{itemCount}}" style="background-color:{{day.moreBackground}};">
-                                <span>+{{getCountNotEmptyVacations(day.vacations) - itemCount}} more...</span>
+                            <div ng-show="{{getCountNotEmptyVacations(day.vacations) > itemCount}}" ng-click="onShowMoreClicked($event, day.vacations, $index, itemCount)" class="text-left vacation-day-entry entry_{{$index}}_{{itemCount}}" style="background-color: { {day.moreBackground}}; ">
+                                <span class="vacation-notempty-count">+{{getCountNotEmptyVacations(day.vacations) - itemCount}} more...</span>
                             </div>
                         </div>
 
                         <div class="hours-day-footer">
-                            <span ng-hide="{{day.vacations.length > 4}}" class="month-day">{{day.dayOfMonth}}</span>
+                            <span ng-hide="{{day.vacations.length > 4 || (isMobileDevice && day.vacations.length > 3)}}" class="month-day">{{day.dayOfMonth}}</span>
                         </div>
 
 

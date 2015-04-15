@@ -304,10 +304,8 @@ if (!useAppNames) {
         app.use('/' + appNames[i] + '/securityRoles', securityRoles);
         app.use('/' + appNames[i] + '/userRoles', userRoles);
         app.use('/' + appNames[i] + '/upgrade', upgrade);
-        app.use('/' + appNames[i] + '/reports', reports);
-        app.use('/' + appNames[i] + '/jazzHub', jazzHub);
-        app.use('/' + appNames[i] + '/jobTitles', jobTitles);
-        
+        app.use('/' + appNames[i] + '/reports', reports);        
+        app.use('/' + appNames[i] + '/jobTitles', jobTitles);        
         app.get( '/' + appNames[i] + '/resetuser', resetUser);
     }
 }
