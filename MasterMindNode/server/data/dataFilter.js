@@ -99,6 +99,22 @@ var filterPeopleByNames = function(names, people) {
 };
 
 /**
+ * Returns people filtered by names with substr
+ * 
+ * @param {Object} names
+ * @param {Object} people
+ */
+
+var filterPeopleBySubstr = function(substr, people) {
+	
+	return _.filter(people, function(p) {
+		var name = _.isObject(p.name) ? (p.name.givenName + p.name.familyName): p.name;
+		
+		return name.toLowerCase().indexOf(substr.toLowerCase()) > -1;
+	});
+};
+
+/**
  * Returns people by isActive flag
  * 
  * @param {Object} people
@@ -919,6 +935,39 @@ var filterReportsByPerson = function(person, favorites) {
 };
 
 
+var filterDepartmentsBy = function(code, manager, nickname, substr, departments) {
+	
+	return _.filter(departments, function(d) {
+		var result = true;
+		
+		if (code && d.departmentCode.name.toLowerCase().indexOf(code.toLowerCase()) > -1)
+			result = true;
+		else if (code)
+			result = false;
+		
+		if (result && manager && d.departmentManager.name.toLowerCase().indexOf(manager.toLowerCase()) > -1)
+			result = true;
+		else if (manager)
+			result = false;
+		
+		if (result && nickname && d.departmentNickname.toLowerCase().indexOf(nickname.toLowerCase()) > -1)
+			result = true;
+		else if (nickname)
+			result = false;
+		
+		if (result && substr && d.departmentManager && d.departmentManager.name && (d.departmentNickname.toLowerCase().indexOf(substr.toLowerCase()) > -1 
+				|| d.departmentManager.name.toLowerCase().indexOf(substr.toLowerCase()) > -1 || d.departmentCode.name.toLowerCase().indexOf(substr.toLowerCase())) > -1)
+			result = true;
+		else if (substr)
+			result = false;
+		
+		
+		return result;
+	});
+	
+	
+};
+
 // people filter functions
 module.exports.filterPeopleByRoles = filterPeopleByRoles;
 module.exports.filterPeopleByIsActiveFlag = filterPeopleByIsActiveFlag;
@@ -927,6 +976,7 @@ module.exports.filterPeopleByGroups = filterPeopleByGroups;
 module.exports.filterPeopleByGoogleIds = filterPeopleByGoogleIds;
 module.exports.filterPeopleByNames = filterPeopleByNames;
 module.exports.filterPeopleByManager = filterPeopleByManager;
+module.exports.filterPeopleBySubstr = filterPeopleBySubstr;
 
 // projects filter functions
 module.exports.filterProjectsByIds = filterProjectsByIds;
@@ -970,3 +1020,5 @@ module.exports.filterNonBillableRoles = filterNonBillableRoles;
 
 //favorite reports functions
 module.exports.filterReportsByPerson = filterReportsByPerson;
+
+module.exports.filterDepartmentsBy = filterDepartmentsBy;

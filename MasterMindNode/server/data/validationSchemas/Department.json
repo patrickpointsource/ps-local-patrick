@@ -1,0 +1,48 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"id": "Department",
+	"type": "object",
+	"properties": {
+		"_id": {"type":"string"},
+		"_rev": {"type":"string"},
+		"_deleted": {"type":"boolean"},
+		"form": {"enum": ["Department"]},
+		"resource": {"type":"string"},
+		"about": {"type":"string"},
+		"departmentNickname": {"type": "string"},
+		"departmentCategory": {"$ref": "#/definitions/departmentCategory"},
+		"departmentCode": {"$ref": "#/definitions/departmentCode"},
+		"departmentManager": {"$ref": "#/definitions/resource"},
+		"departmentPeople": {
+			"type": "array",
+			"items": {"type":"string"}
+		}
+	},
+	"required": ["form", "departmentNickname", "departmentCategory"],
+	"definitions": {
+		"departmentCategory": {
+			"type":"object",
+			"properties":{
+				"name": {"type":"string"},
+				"resource": {"type":"string"},
+				"trimmedValue": {"type":"string"}
+			},
+			"required": ["name", "trimmedValue"]
+		},
+		"departmentCode": {
+			"type":"object",
+			"properties":{
+				"name": {"type":"string"}
+			},
+			"required": ["name"]
+		},
+		"resource": {
+			"type":"object",
+			"properties":{
+				"resource": {"type":"string"},
+				"name": {"type":"string"}
+			},
+			"required": ["resource"]
+		}
+	}
+}

@@ -100,7 +100,7 @@
                                 <span ng-hide="profile.jazzHubId">Not set</span>
                             </div>
                             <div class="padding-top-10">
-                                <span>{{getPersonName(profile.manager, true) || "Not Selected"}}</span>
+                                <span>{{getPersonName(profileManager, true) || "Not Selected"}}</span>
                             </div>
                             <div class="padding-top-10" ng-show="isManager">
                                 <span>{{profile.vacationCapacity || 'Not Set'}} <span ng-show="profile.vacationCapacity">days</span></span>
@@ -204,14 +204,15 @@
                                 <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text" />
                             </div>
                             <div style="padding-top: 20px;">
-                                <div ng-show="canEditPersonnelData() && isManager">
-                                    <input class="form-control" name="managerTypeAhead" ng-model="profile.manager" required placeholder="Select manager" typeahead-min-length="2" highlight="true" typeahead="c as getPersonName(c, true) for c in managers | orderBy:'name.familyName' | filter:$viewValue | limitTo:8" />
+                                <div ng-show="canEditPersonnelData() && isManager" style="padding-top: 10px; height: 40px;">
+                                    <!--<input class="form-control" name="managerTypeAhead" ng-model="profile.manager" required placeholder="Select manager" typeahead-min-length="2" highlight="true" typeahead="c as getPersonName(c, true) for c in managers | orderBy:'name.familyName' | filter:$viewValue | limitTo:8" />-->
                                     <!--<select class="form-control" style="width: 100%;"
-                                            ng-model="profile.manager" required
-                                            ng-options="c as getPersonName(c) for c in managers| orderBy:'name.familyName'">
-                                        <option selected disabled hidden value=''></option>"
+                                                ng-model="profile.manager" required
+                                                ng-options="c as getPersonName(c) for c in managers| orderBy:'name.familyName'">
+                                            <option selected disabled hidden value=''></option>"
 
-                                    </select>-->
+                                        </select>-->
+                                    <span>{{getPersonName(profileManager, true) || "Not Selected"}}</span>
                                 </div>
                             </div>
                             <div style="padding-top: 20px;" ng-show="canEditPersonnelData() && isManager">

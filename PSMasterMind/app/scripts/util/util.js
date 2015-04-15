@@ -21,6 +21,13 @@ var Util = {
 		return parseInt(d);
 	},
 	
+	syncRevProp: function(obj) {
+		obj._rev = obj.rev;
+		
+		return obj;
+	},
+	
+	
 	getPersonName: function(person, isSimply, isFirst) {
 		var result = '';
 		var tmpName;

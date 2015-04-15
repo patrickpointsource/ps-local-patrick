@@ -6,6 +6,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 	var HOURS_PER_WEEK = CONSTS.HOURS_PER_WEEK;
 	var ROLE_NOTSELECTED = "Select a role";
 	var $parent_changeSort = $scope.$parent.changeSort;
+    var UNSPECIFIED = "";
 
 	$scope.showTableView = true;
 
@@ -76,7 +77,16 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 					return sign;
 
 				return 0;
+			});
+	    if (type.indexOf("jobTitle-") == 0) {
+	    	$scope.people = _.sortBy( $scope.people, function( person ) {
+				return $scope.getJobTitle(person.jobTitle);
 			} );
+			if(type.indexOf("asc") > -1) {
+				$scope.people.reverse();
+			}
+	    }
+	        
 	};
 
 	$scope.formatDate = function( date ) {
@@ -249,7 +259,38 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 		//			}
 		//			return ret;
 		//		};
-	} );
+	});
+
+	Resources.get('jobTitles').then(function (result) {
+	    var members = result.members;
+	    $scope.allTitles = members;
+	    var titlesMap = {};
+	    for (var i = 0; i < members.length; i++) {
+	        titlesMap[members[i].resource] = members[i];
+	    }
+
+	    // sorting titles by title
+	    $scope.allTitles.sort(function (a, b) {
+	        var x = a.title ? a.title.toLowerCase() : '';
+	        var y = b.title ? b.title.toLowerCase() : '';
+	        return x < y ? -1 : x > y ? 1 : 0;
+	    });
+
+	    $scope.titlesMap = titlesMap;
+	});
+
+	$scope.getJobTitle = function (jobTitle) {
+	    var ret;
+	    if (jobTitle && jobTitle.resource) {
+	        var resource = jobTitle.resource;
+
+	        if ($scope.titlesMap && $scope.titlesMap[resource]) {
+	            ret = $scope.titlesMap[resource].title;
+	        }
+	    }
+
+	    return ret;
+	};
 
 	$scope.filterResources = function( startDate, endDate, role, availabilityPercentage ) {
 		return function( person ) {
@@ -361,21 +402,19 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 
     // primaryRole decrease 200
     // secondaryRole decrease 100
-    // minus availability
-    // means: first primaryRole then secondaryRoles, inside by availability
+    // means: first primaryRole then secondaryRoles
     $scope.rolesOrder = function (person) {
-        var weight = 0;
-        if ($scope.isPrimaryRole(person, $scope.filterRole2)) {
-            weight -= 200;
-        }
-        if ($scope.isSecondaryRole(person, $scope.filterRole2)) {
-            weight -= 100;
-        }
-        if (person.availabilityPercentage) {
-            weight -= person.availabilityPercentage;
-        }
-        
-        return weight;
+    	var weight = 0;
+    	if($scope.filterRole2) {
+           	if ($scope.isPrimaryRole(person, $scope.filterRole2)) {
+            	weight -= 200;
+        	}
+        	if ($scope.isSecondaryRole(person, $scope.filterRole2)) {
+            	weight -= 100;
+        	}
+    	}
+
+    	return weight;
     }
 
 } ] ).directive( 'resRepeater', function( ) {

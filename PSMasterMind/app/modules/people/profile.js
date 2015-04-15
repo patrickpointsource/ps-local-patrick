@@ -107,19 +107,21 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             } );
         }
 
-        $scope.getSecurityInformation(function() {
-            $scope.managers = _.sortBy( $scope.managers, function( manager ) {
-        	   return manager.name;
-            } );
+	    $scope.getSecurityInformation(function() {
+	        $scope.managers = _.sortBy($scope.managers, function(manager) {
+	            return manager.name;
+	        });
+	        try {
+	            Resources.refresh("people/manager/" + $scope.profile._id).then(function(result) {
+	                $scope.profileManager = result;
 
-        if( $scope.profile.manager ) {
-        	$scope.profile.manager = _.findWhere( $scope.managers, {
-                resource: $scope.profile.manager.resource
-            } );
-            $scope.$emit( 'profile:loaded' );
-        } else
-            $scope.$emit( 'profile:loaded' );
-        });
+	                $scope.$emit('profile:loaded');
+	            });
+	        } catch (err) {
+	            console.log("Error loading manager: " + err);
+	            $scope.$emit('profile:loaded');
+	        }
+	    });
 	};
 
 	$scope.getSecurityInformation = function(callback) {

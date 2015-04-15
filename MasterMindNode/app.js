@@ -63,6 +63,8 @@ var configuration = require('./server/routes/configuration');
 var skills = require('./server/routes/skills');
 var links = require('./server/routes/links');
 var vacations = require('./server/routes/vacations');
+var departments = require('./server/routes/departments');
+var departmentCategories = require('./server/routes/departmentCategories');
 var securityRoles = require('./server/routes/securityRoles');
 var userRoles = require('./server/routes/userRoles');
 var upgrade = require('./server/routes/upgrade');
@@ -172,8 +174,7 @@ function openError(errorfile) {
     });
 }
 
-function log(msg) {
-	
+function log(msg){
 	if (arguments && arguments.length > 1) {
 		msg = JSON.stringify(arguments);
 	}
@@ -185,13 +186,12 @@ function log(msg) {
 }
 
 function logError(msg) {
-	
 	if (arguments && arguments.length > 1) {
 		msg = JSON.stringify(arguments);
 	}
-	
+
 	//if (appConfig.logToFileStream)
-		errorStream.write(msg + "\n");
+	errorStream.write(msg + "\n");
 	/*else
 		console.error(msg);*/
 }
@@ -214,6 +214,7 @@ if (appConfig.logToFileStream) {
 	
 	process.stdout.write = log;
 	process.stderr.write = logError;
+
 	
 	process.on("uncaughtException", function(err) {
 		logError('\r\n' + err + ': Details: \r\n' + JSON.stringify(arguments));
@@ -273,6 +274,8 @@ if (!useAppNames) {
     app.use('/links', links);
     app.use('/skills', skills);
     app.use('/vacations', vacations);
+    app.use('/departments', departments);
+    app.use('/departmentCategories', departmentCategories);
     app.use('/securityRoles', securityRoles);
     app.use('/userRoles', userRoles);
     app.use('/upgrade', upgrade);
@@ -301,11 +304,14 @@ if (!useAppNames) {
         app.use('/' + appNames[i] + '/links', links);
         app.use('/' + appNames[i] + '/skills', skills);
         app.use('/' + appNames[i] + '/vacations', vacations);
+        app.use('/' + appNames[i] + '/departments', departments);
+        app.use('/' + appNames[i] + '/departmentCategories', departmentCategories);
         app.use('/' + appNames[i] + '/securityRoles', securityRoles);
         app.use('/' + appNames[i] + '/userRoles', userRoles);
         app.use('/' + appNames[i] + '/upgrade', upgrade);
-        app.use('/' + appNames[i] + '/reports', reports);        
-        app.use('/' + appNames[i] + '/jobTitles', jobTitles);        
+        app.use('/' + appNames[i] + '/reports', reports);
+        app.use('/' + appNames[i] + '/jobTitles', jobTitles);
+        
         app.get( '/' + appNames[i] + '/resetuser', resetUser);
     }
 }

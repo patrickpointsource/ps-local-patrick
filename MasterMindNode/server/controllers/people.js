@@ -238,6 +238,44 @@ module.exports.getPersonByResource = function(resource, callback) {
             
 };
 
+module.exports.getManager = function(id, callback) {
+    module.exports.getPerson(id, function (err, person) {
+        if (err) {
+            callback(500, err);
+        } else {
+            dataAccess.listDepartments(function (depErr, body) {
+                if (!depErr) {
+                    var departments = body.members;
+                    
+                    var filteredDepartments = _.filter(departments, function (department) {
+                        if (department.departmentPeople && department.departmentPeople.indexOf(person.resource) > -1) {
+                            return true;
+                        }
+                        
+                        return false;
+                    });
+                    
+                    if (filteredDepartments.length > 0) {
+                        var personsDepartment = filteredDepartments[0];
+                        module.exports.getPersonByResource(personsDepartment.departmentManager.resource, function (managerErr, manager) {
+                            if (manager) {
+                                callback(null, manager);
+                            } else {
+                                callback(500, "Cannot get manager by resource: " + managerErr);
+                            }
+                        });
+                                
+                    } else {
+                        callback(null, null);
+                    }
+                } else {
+                    callback(500, "Cannot get departments: " + depErr);
+                }
+            });
+        }
+    });
+}
+
 module.exports.getAccessRights = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {

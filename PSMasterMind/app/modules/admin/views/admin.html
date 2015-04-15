@@ -1,18 +1,24 @@
 <div>
 <!-- Nav tabs -->
   <div style="margin-top: 12px;">
-        <div class="pull-right" style="height: 32px;">
+        <div class="pull-right" style="height: 32px;" ng-if="selectedTab == 'securityGroups'">
           <button class="btn btn-default" ng-click="edit()" ng-show="!editMode" style="padding-top: 3px; padding-bottom: 3px;">Edit</button>
           <button class="btn btn-default" ng-click="cancel()" ng-show="editMode" style="padding-top: 3px; padding-bottom: 3px;">Cancel</button>
           <button class="btn btn-default" ng-click="save()" ng-show="editMode" style="padding-top: 3px; padding-bottom: 3px;">Save</button>
         </div>
+        
+        <div class="pull-right" style="height: 32px;" ng-if="selectedTab == 'departments'">
+          <button class="btn btn-default hidden-sm" ng-click="commandTrigerred('create')" style="margin-top: -5px;">Create new dept</button>
+        </div>
     	 <tabset class="nav nav-pills">
-    	 	<tab id="roles" heading="Roles" >
+    	 	<tab id="roles" heading="Roles" ng-click="tabSelected('roles')">
 	        	<div>
 	            	<ng-include src="'modules/admin/partials/roles.html'"></ng-include>
 	            </div>
 	        </tab>
-	        <tab id="groups" heading="Security Groups" >
+
+	        <tab id="roles" heading="Security Groups" ng-click="tabSelected('securityGroups')">
+
                 <div>
                     <ng-include src="'modules/admin/partials/securityGroups.html'"></ng-include>
                 </div>
@@ -22,14 +28,19 @@
 	            	<ng-include src="'modules/admin/partials/groups.html'"></ng-include>
 	            </div>
 	        </tab> -->
-	        <tab id="tasks" heading="Tasks">
+	        <tab id="tasks" heading="Tasks" ng-click="tabSelected('tasks')">
 	        	<div>
 	            	<ng-include src="'modules/admin/partials/tasks.html'"></ng-include>
 	            </div>
 	        </tab>
-	        	<tab id="config" heading="Configuration">
+        	<tab id="config" heading="Configuration" ng-click="tabSelected('configuration')">
 	        	<div>
 	            	<ng-include src="'modules/admin/partials/config.html'"></ng-include>
+	            </div>
+	        </tab>
+	        <tab id="departments" heading="Departments" ng-click="tabSelected('departments')">
+	        	<div>
+	            	<ng-include src="'modules/admin/partials/departments.html'"></ng-include>
 	            </div>
 	        </tab>
 	    </tabset>

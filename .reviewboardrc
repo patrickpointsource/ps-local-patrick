@@ -1,3 +1,4 @@
-REVIEWBOARD_URL = 'https://rbcommons.com/s/PSMasterMind/'
-REPOSITORY = 'MasterMind'
-
+REVIEWBOARD_URL = "https://rbcommons.com/s/PSMasterMind/"
+REPOSITORY = "MasterMind"
+BRANCH = "departments"
+LAND_DEST_BRANCH = "departments"

@@ -56,14 +56,17 @@ angular.module('Mastermind').controller('OOOCtrl', [
 		        function(result) {
 		            $scope.managers = result.members;
 
-		            if ($scope.me.manager) {
-		                $scope.vacationManager = _.findWhere($scope.managers, { resource: $scope.me.manager.resource });
-		            }
-		            if ($scope.vacationManager) {
-		                $scope.editManager = false;
-		            } else {
-		                $scope.editManager = true;
-		            }
+		            Resources.refresh("people/manager/" + $scope.me._id).then(function (result) {
+		                if (result) {
+		                    $scope.vacationManager = _.findWhere($scope.managers, { resource: result.resource });
+		                }
+
+		                if ($scope.vacationManager) {
+		                    $scope.editManager = false;
+		                } else {
+		                    $scope.editManager = true;
+		                }
+		            });
 
 		            $('.select-vacation-type').selectpicker();
 		            $('.select-vacation-type').selectpicker('render');

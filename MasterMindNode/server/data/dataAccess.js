@@ -23,7 +23,8 @@ var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
 var REPORT_FAVORITES_KEY = 'ReportFavorites';
 var JOB_TITLE_KEY = "JobTitle";
-
+var DEPARTMENTS_KEY = 'Department';
+var DEPARTMENT_CATEGORY_KEY = 'DepartmentCategory';
 /*
  * 
  * Example of usage q lib
@@ -1370,6 +1371,262 @@ var listReportFavoritesByPerson = function( person, callback ) {
   });
 };
 
+var listDepartments = function( callback ) {
+	var result = memoryCache.getObject( DEPARTMENTS_KEY );
+	
+	if( result ) {
+		console.log( "read " + DEPARTMENTS_KEY + " from memory cache" );
+		callback( null, prepareRecords( result.data, "members", "departments/" ) );
+	} else {
+		dbAccess.listDepartments( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + DEPARTMENTS_KEY + " to memory cache" );
+				memoryCache.putObject( DEPARTMENTS_KEY, body );
+			}
+			callback( err, prepareRecords( body.data, "members", "departments/" ) );
+		} );
+	}
+
+};
+
+var filterDepartments = function(code, manager, nickname, substr, callback) {
+	var result = memoryCache.getObject( DEPARTMENTS_KEY );
+	
+	if( result ) {
+		console.log( "read " + DEPARTMENTS_KEY + " from memory cache" );
+		callback( null, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, substr, result.data), "members", "departments/" ) );
+	} else {
+		dbAccess.listDepartments( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + DEPARTMENTS_KEY + " to memory cache" );
+				memoryCache.putObject( DEPARTMENTS_KEY, body );
+			}
+			callback( err, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, substr, body.data), "members", "departments/" ) );
+		} );
+	}
+};
+
+var unassignDepartmentsPeople = function(people, callback) {
+	
+	listDepartments( function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading departments', null);
+        } else {
+        	var departmentToUpdate = [];
+        	var clearedPeople;
+        	
+        	var filterDepartmentBeforeUpdate = function(department){
+        		delete department.id;
+        		delete department.rev;
+           		delete department.ok;
+           		delete department.editDepartmentPeople;
+           		delete department.editDepartmenPeople;
+           		delete department.isEdit;
+           		delete department.isNew;
+           		
+           		return department;
+    	    }
+        	
+        	for (var k = 0; k < body.members.length; k ++) {
+        		if (body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople)) {
+        			clearedPeople = _.filter(body.members[k].departmentPeople, function(dp) {
+        				return (_.filter(people, function(p) { return p == dp || p.replace('departments/people') == dp.replace('people/')})).length == 0;
+        			});
+        			
+        			if (clearedPeople.length != body.members[k].departmentPeople.length) {
+        				body.members[k].departmentPeople = clearedPeople;
+        				departmentToUpdate.push(body.members[k]);
+        			}
+        				
+        		}
+        			
+        	}
+        	
+        	// update needed departments
+        	if (departmentToUpdate.length > 0) {
+        		var id;
+        		
+        		var counter = 0;
+        		
+        		for (var k = 0; k < departmentToUpdate.length; k ++) {
+        			id = departmentToUpdate[k].id ? departmentToUpdate[k].id: departmentToUpdate[k]._id;
+        			
+        			updateItem(id, filterDepartmentBeforeUpdate(departmentToUpdate[k]), DEPARTMENTS_KEY, function(updErr, body){
+        				counter += 1;
+        				
+        				if (counter == departmentToUpdate.length && !updErr)
+        					callback(null, {});
+        				else if (counter == departmentToUpdate.length && updErr)
+        					callback(updErr, {});
+        					
+        			});
+        		}
+        	} else
+        		callback("no departments found", {});
+        }
+	});
+	
+};
+
+var listDepartmentsAvailablePeople = function(substr, callback) {
+	listDepartments( function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading departments', null);
+        } else {
+        	var assignedPeople = [];
+        	
+        	for (var k = 0; k < body.members.length; k ++) {
+        		if (body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople))
+        			assignedPeople = assignedPeople.concat(body.members[k].departmentPeople);
+        	}
+        	
+        	listPeopleByIsActiveFlag(true, null, function(err, result){
+		        if(!err){
+		        	var availablePeople;
+		        	
+		        	if (!substr)
+			        	availablePeople = _.filter(result.members, function(p) {
+			        		return (_.filter(assignedPeople, function(ap){ return ap == p.resource || ap.replace('departments/people') == p.resource.replace('people/')})).length == 0;
+			        	});
+		        	else 
+		        		availablePeople = _.map(result.members, function(p) {
+		        			var resultPeople = _.extend({}, p);
+			        		
+		        			if ((_.filter(assignedPeople, function(ap){ return ap == p.resource || ap.replace('departments/people') == p.resource.replace('people/')})).length > 0)
+			        			resultPeople.alreadyAssigned = true;
+			        			
+			        		return resultPeople;
+			        	});
+		        		
+		        	
+		        	callback(null, prepareRecords( dataFilter.filterPeopleBySubstr(substr, availablePeople), "members", "people/" ) );
+		        }            
+		    });
+        	
+            
+        }
+    });
+};
+
+var listPeopleByDepartmentsCategories = function(categories, includeInactive, fields, callback) {
+	listDepartments( function(err, body){
+        if (err) {
+            console.log(err);
+            callback('error loading departments', null);
+        } else {
+        	var departmentsPeople = [];
+        	var isBelongsTo = false;
+        	var nicknames = {};
+        	
+        	_.map(categories, function(c) { nicknames[ c.split(':')[0].toLowerCase() ]  = c.split(':')[1] ? c.split(':')[1].split(';'):[] });
+        	
+        	//nicknamesTmp = _.filter(nicknamesTmp, function(n) { return n});
+        	/*
+        	var nicknames = [];
+        	
+        	for (var k = 0; k < nicknamesTmp.length; k ++) {
+        		nicknames = nicknames.concat(nicknamesTmp.split(';'));
+        	}
+        	*/
+        	categories = _.map(categories, function(c) { return c.split(':')[0]});
+        	
+        	categories = _.map(categories, function(c) {
+        		return c.toLowerCase();
+        	});
+        	
+        	var nicknameCond = true;
+        	
+        	for (var k = 0; k < body.members.length; k ++) {
+        		isBelongsTo = body.members[k].departmentCategory && body.members[k].departmentCategory.name ? 
+        				(_.filter(categories, function(c) { return c == body.members[k].departmentCategory.name.toLowerCase()})).length > 0: false;
+        		
+        		nicknameCond = !nicknames[body.members[k].departmentCategory.name.toLowerCase()] || nicknames[body.members[k].departmentCategory.name.toLowerCase()].length == 0;
+        		
+        		if (!nicknameCond)
+        			nicknameCond = (_.filter(nicknames[body.members[k].departmentCategory.name.toLowerCase()], function(nc) { return nc == body.members[k].departmentNickname})).length > 0;
+        		
+        		if (isBelongsTo && nicknameCond && body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople))
+        			departmentsPeople = departmentsPeople.concat(body.members[k].departmentPeople);
+        	}
+        	
+        	listPeopleByIsActiveFlag(!includeInactive, fields, function(err, result){
+		        if(!err){
+		        	departmentsPeople = _.filter(result.members, function(p) {
+		        		return (_.filter(departmentsPeople, function(ap){ return ap == p.resource || ap.replace('departments/people') == p.resource.replace('people/')})).length > 0;
+		        	});
+		        	
+		        	callback(null, prepareRecords( departmentsPeople, "members", "people/" ) );
+		        }            
+		    });
+        	
+            
+        }
+    });
+};
+
+var listDepartmentCategories = function(callback) {
+	// todo: temporary make static list of categories
+	/*var categories = [{name: 'Executives', value: 'Executives'},
+		                  {name: 'Management', value: 'Management'},
+		                  {name: 'Admin', value: 'Admin'},
+		                  {name: 'Digital', value: 'Digital'}, 
+		                  {name: 'Development', value: 'Development'},
+		                  {name: 'Delivery Services', value: 'Delivery Services'},
+		                  {name: 'Sales', value: 'Sales'},
+		                  {name: 'Other', value: 'Other'}];*/
+	
+	var result = memoryCache.getObject( DEPARTMENT_CATEGORY_KEY );
+	
+
+	var attachNicknames = function(categories, err) {
+	
+		//categories = _.extend({}, categories);
+		//categories = ([]).concat(categories);
+		categories = categories.slice();
+		
+		// attach nicknames info
+		listDepartments( function(err, body){
+	        if (err) {
+	            console.log(err);
+	            callback('error loading departments', null);
+	        } else {
+	        	var category = null;
+	
+	        	for (var k = 0; k < body.members.length; k ++) {
+	        		category = _.find(categories, function(mi) {
+	    				return body.members[k].departmentCategory && (mi.name ==  body.members[k].departmentCategory.value)
+	    			});
+	        		
+	        		if (category && body.members[k].departmentNickname) {
+	        			if (!category.nicknames)
+	        				category.nicknames = [];
+	        			
+	        			category.nicknames.push(body.members[k].departmentNickname)
+	        		}
+	        	}
+	        }
+	        callback( err, prepareRecords( categories, "members", "departmentcategories/" ) );
+	        
+		});
+	};
+	
+	if( result ) {
+		console.log( "read " + DEPARTMENT_CATEGORY_KEY + " from memory cache" );
+		attachNicknames(result.data, null );
+	} else {
+		dbAccess.listDepartmentCategories( function( err, body ) {
+			if( !err ) {
+				console.log( "save " + DEPARTMENT_CATEGORY_KEY + " to memory cache" );
+				memoryCache.putObject( DEPARTMENT_CATEGORY_KEY, body );
+			}
+			attachNicknames(body.data, err );
+		} );
+	}
+		
+};
+
 var insertItem = function( id, obj, type, callback ) {
 	if( type ) {
 		obj.form = type;
@@ -1576,6 +1833,12 @@ module.exports.listTasksByName = listTasksByName;
 module.exports.listReportFavorites = listReportFavorites;
 module.exports.listTasksBySubstr = listTasksBySubstr;
 module.exports.listReportFavoritesByPerson = listReportFavoritesByPerson;
+module.exports.listDepartments = listDepartments;
+module.exports.filterDepartments = filterDepartments;
+module.exports.listDepartmentsAvailablePeople = listDepartmentsAvailablePeople;
+module.exports.listDepartmentCategories = listDepartmentCategories;
+module.exports.listPeopleByDepartmentsCategories = listPeopleByDepartmentsCategories;
+module.exports.unassignDepartmentsPeople = unassignDepartmentsPeople;
 
 module.exports.insertItem = insertItem;
 module.exports.updateItem = updateItem;
@@ -1597,6 +1860,8 @@ module.exports.SKILLS_KEY = SKILLS_KEY;
 module.exports.TASKS_KEY = TASKS_KEY;
 module.exports.REPORT_FAVORITES_KEY = REPORT_FAVORITES_KEY;
 module.exports.JOB_TITLE_KEY = JOB_TITLE_KEY;
+module.exports.DEPARTMENTS_KEY = DEPARTMENTS_KEY;
+module.exports.DEPARTMENT_CATEGORY_KEY = DEPARTMENT_CATEGORY_KEY;
 
 module.exports.prepareRecords = prepareRecords;
 module.exports.cloudantSearchHoursIncludeDocs = cloudantSearchHoursIncludeDocs;

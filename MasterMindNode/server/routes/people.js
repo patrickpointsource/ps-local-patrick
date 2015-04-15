@@ -2,6 +2,7 @@
 
 var people = require('../controllers/people');
 var securityRoles = require('../controllers/securityRoles');
+var departments = require('../controllers/departments');
 
 var _ = require('underscore');
 var express = require('express');
@@ -144,6 +145,26 @@ router.get('/bytypes/:type', util.isAuthenticated, function(req, res){
 			        }            
 			    });
 			}
+			else if (type && type == "byCategories") {
+				var categories = req.query.categories ? req.query.categories.split(','): [];
+				var includeInactive = req.query.includeInactive;
+				/*
+			    people.listPeopleByRoles(roles, includeInactive, fields, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			    */
+				departments.listPeopleByDepartmentsCategories(categories, includeInactive, fields, function(err, result){
+			        if(err){
+			            res.json(500, err);
+			        } else {
+			            res.json(result);
+			        }            
+			    });
+			}
 			else if (type && type == "withPrimaryRole") {
 			    people.listPeopleWithPrimaryRole(fields, function(err, result){
 			        if(err){
@@ -201,7 +222,24 @@ router.get('/google/:id', util.isAuthenticated, function(req, res){
 		}
 	});
 	
-}); 
+});
+
+router.get('/manager/:personId', util.isAuthenticated, function (req, res) {
+    
+    security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function (allowed) {
+        if (allowed) {
+            var id = req.params.personId;
+            people.getManager(id, function (err, manager) {
+                if (err) {
+                    res.json(500, err);
+                } else {
+                    res.json(manager);
+                }
+            });
+        }
+    });
+	
+});
 
 router.post('/', util.isAuthenticated, function(req, res) {
 

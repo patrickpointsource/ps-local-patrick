@@ -1,0 +1,20 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"id": "DepartmentCategory",
+    "properties": {
+        "_id": { "type": "string" },
+        "_rev": { "type": "string" },
+        "_deleted": { "type": "boolean" },
+        "form": { "enum": [ "DepartmentCategory" ] },
+		"resource": {"type":"string"},
+		"about": {"type":"string"},
+		"name": {"type":"string"},
+		"trimmedValue": {"type": "string"},
+		"nicknames" : {
+			"type": "array",
+			"items": {"type":"string"}
+		}
+    },
+	"required": ["form", "name", "trimmedValue"]
+}
