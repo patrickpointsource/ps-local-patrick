@@ -12,7 +12,7 @@
 									<select name="departmentCategories" class="form-control pull-right" ng-change="onCategoryChanged($event, this)" 
 				                                    ng-model="selectedCategory"
 				                                    ng-required="true"
-				                                    ng-options="p.name for p in departmentCategories track by p.trimmedValue"></select>
+				                                    ng-options="p.name for p in extendCategories(departmentCategories) track by p.trimmedValue"></select>
 			                     
 			                    	 <input type="text" name="format" ng-required="true" ng-model="selectedCategory.trimmedValue" 
 			                    	 	ng-show="selectedCategory.isEdit" />
@@ -112,8 +112,6 @@
                         <div class="col-xs-12 ">
                             <label class="required-label control-label" for="role">Department category:</label>
 
-
-
                             <select name="deptCategory" class="form-control pull-right"
                                     ng-model="selectedDepartment.departmentCategory"
                                     ng-required="true"
@@ -129,11 +127,7 @@
 
                             <input class="form-control" name="deptManager" ng-model="selectedDepartment.departmentManager" typeahead-on-select="selectedManagerChanged($event, $item)"
                                    placeholder="Search for a person" typeahead-min-length="1" highlight="true" typeahead="p as p.name for p in managersList | filter:{name:$viewValue}" />
-
-
                         </div>
-
-
                     </div>
 
                     <div class="section-header row">

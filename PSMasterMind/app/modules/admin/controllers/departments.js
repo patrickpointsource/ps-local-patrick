@@ -301,6 +301,19 @@ angular.module('Mastermind')
 	    	});
 	    };
 
+	    $scope.extendCategories = function(categories) {
+	    	if (!_.find(categories, {trimmedValue: 'all'})) {
+	    		categories = categories.slice();
+	    		
+	    		categories.unshift({
+		    		name: 'All Categories',
+		    		trimmedValue: 'all'
+		    	});
+	    	}
+	    	
+	    	return categories;
+	    };
+	    
 	    $scope.filterDepartmentBeforeSave = function(department){
     		delete department.id;
     		delete department.rev;
@@ -478,7 +491,7 @@ angular.module('Mastermind')
 	    	
 	    	_.each($scope.availableDepartments, function(dep) {
 	    		var val = $scope.selectedCategory? dep.departmentCategory.trimmedValue: '';
-	    		dep.hidden = !($scope.selectedCategory.trimmedValue == val);
+	    		dep.hidden = !($scope.selectedCategory.trimmedValue == val || $scope.selectedCategory.trimmedValue == 'all');
 
 	    	});
 	    };
