@@ -31,6 +31,11 @@ angular.module('Mastermind')
     
     this.loadDepartmentCategories = function(){
     	return Resources.refresh("departmentCategories/").then(function(categories) {
+    		if (categories.members)
+	    		for (var k = 0; k < categories.members.length; k ++) {
+	    			categories.members[k].trimmedValue = categories.members[k].trimmedValue ? categories.members[k].trimmedValue: categories.members[k].TrimmedValue;
+	    		}
+    		
     		categories.members = _.sortBy(categories.members, 'trimmedValue');
     		/*
     		categories.members = _.sortBy(categories.members, 'trimmedValue');

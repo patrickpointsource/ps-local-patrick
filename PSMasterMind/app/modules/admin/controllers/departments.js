@@ -313,12 +313,17 @@ angular.module('Mastermind')
        		if (_.isString(department.departmentManager)) {
        			delete department.departmentManager;
        		}
+       		/*
+       		if (!department.departmentCategory)
+       			if (department.departmentCategory) = {};
+       		*/
        		if (department.departmentCategory) {
        			delete department.departmentCategory._id;
        			delete department.departmentCategory._rev;
        			delete department.departmentCategory.form;
        			delete department.departmentCategory.about;
        			delete department.departmentCategory.nicknames;
+       			delete department.departmentCategory.TrimmedValue;
        		}
        		
        		if (department.departmentCategory.isEmptyCategory !== undefined)
