@@ -50,7 +50,14 @@ var securityResources = {
             viewMySecondaryRole: 'viewMySecondaryRole',
             viewOthersRoleTitle: 'viewOthersRoleTitle',
             viewOthersSecondaryRole: 'viewOthersSecondaryRole',
-            editRolesTitles: 'editRolesTitles'
+            editRolesTitles: 'editRolesTitles',
+            viewMySecurityRoles: 'viewMySecurityRoles',
+            viewOthersSecurityRoles: 'viewOthersSecurityRoles',
+            editProfileSecurityRoles: 'editProfileSecurityRoles',
+            viewMyPublicPersonnelData: 'viewMyPublicPersonnelData',
+            viewOthersPublicPersonnelData: 'viewOthersPublicPersonnelData',
+            viewMyPrivatePersonnelData: 'viewMyPrivatePersonnelData',
+            viewOthersPrivatePersonnelData: 'viewOthersPrivatePersonnelData'
         } 
     },
     projects :{

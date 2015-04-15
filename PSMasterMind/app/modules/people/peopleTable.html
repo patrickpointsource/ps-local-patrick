@@ -47,12 +47,18 @@
       </div>
     </div>
     <div class="row people-row" ng-repeat="person in people | filter:filterPerson(filterText)">
-      <a class="col-xs-3 col-sm-2 person-image" href="#{{person.resource}}">
-        <img class="fullProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultprofile.png"/>
-      </a>
-      <div class="col-xs-9 col-sm-4 person-name">
-        <a href="#{{person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(person)}}</a>
-      </div>
+        <a class="col-xs-3 col-sm-2 person-image" href="#{{person.resource}}" ng-if="hasPermissions(CONSTS.VIEW_PROFILE)">
+            <img class="fullProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultprofile.png" />
+        </a>
+        <a class="col-xs-3 col-sm-2 person-image" href="javascript:void(0);" ng-if="!hasPermissions(CONSTS.VIEW_PROFILE)">
+            <img class="fullProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultprofile.png" />
+        </a>
+        <div class="col-xs-9 col-sm-4 person-name" ng-if="hasPermissions(CONSTS.VIEW_PROFILE)">
+            <a href="#{{person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(person)}}</a>
+        </div>
+        <div class="col-xs-9 col-sm-4 person-name" ng-if="!hasPermissions(CONSTS.VIEW_PROFILE)">
+            <a href="javascript:void(0);">{{getPersonName(person)}}</a>
+        </div>
       <div class="col-xs-2 col-sm-1 people-prop person-prop">
         <div>
           <div>{{person.primaryRole.abbreviation}}</div>

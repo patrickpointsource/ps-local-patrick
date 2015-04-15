@@ -146,11 +146,18 @@ angular.module('Mastermind')
       viewSecurityRoles: "View permissions",
       editSecurityRoles: "Edit permissions",
       viewReports: "View reports",
-      viewMyRoleTitle: "View My Primary Role & Job Title",
+      viewMyRoleTitle: "View My Primary Role",
       viewMySecondaryRole: "View My Secondary Role",
-      viewOthersRoleTitle: "View Other's Primary Role & Job Title",
+      viewOthersRoleTitle: "View Other's Primary Role",
       viewOthersSecondaryRole: "View Other's Secondary Role",
-      editRolesTitles: ""
+      editRolesTitles: "Edit Primary Roles and Job Titles",
+      viewMySecurityRoles: 'View My Permission Groups',
+      viewOthersSecurityRoles: 'View Other’s Permission Groups',
+      editProfileSecurityRoles: 'Edit Permission Groups',
+      viewMyPublicPersonnelData: 'View My Public Personnel Data',
+      viewOthersPublicPersonnelData: 'View Other’s Public Personnel Data',
+      viewMyPrivatePersonnelData: 'View My Private Personnel Data',
+      viewOthersPrivatePersonnelData: 'View Other’s Private Personnel Data'
     };
     
     $scope.permissionChecked = function(collection, permission) {
@@ -235,7 +242,14 @@ angular.module('Mastermind')
         "viewMySecondaryRole",
         "viewOthersRoleTitle",
         "viewOthersSecondaryRole",
-        "editRolesTitles"
+        "editRolesTitles",
+        "viewMySecurityRoles",
+        "viewOthersSecurityRoles",
+        "editProfileSecurityRoles",
+        'viewMyPublicPersonnelData',
+        'viewOthersPublicPersonnelData',
+        'viewMyPrivatePersonnelData',
+        'viewOthersPrivatePersonnelData'
       ]
     },
     {

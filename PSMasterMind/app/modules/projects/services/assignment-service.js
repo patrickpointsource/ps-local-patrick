@@ -282,14 +282,19 @@ function( $q, RateFactory, Assignment, Resources, ProjectsService ) {
 				projectAssignment.members[ i ].endDate = undefined;
 			}
 
-			if (projectAssignment.members[ i ].project)
-				projectAssignment.members[ i ].project = {
-					_id: projectAssignment.members[ i ].project._id,
-					_rev: projectAssignment.members[ i ].project._rev,
-					about: projectAssignment.members[ i ].project.about,
-					resource: projectAssignment.members[ i ].project.resource,
-					name: projectAssignment.members[ i ].project.name
-				};
+			if (projectAssignment.members[i].project) {
+			    projectAssignment.members[i].project = {
+			        _id: projectAssignment.members[i].project._id,
+			        _rev: projectAssignment.members[i].project._rev,
+			        about: projectAssignment.members[i].project.about,
+			        resource: projectAssignment.members[i].project.resource,
+			        name: projectAssignment.members[i].project.name
+			    };
+			}
+				
+			if (projectAssignment.members[i].person.thumbnail) {
+			    delete projectAssignment.members[i].person.thumbnail;
+			}
 		}
 
 		val = Resources.update( projectAssignment );

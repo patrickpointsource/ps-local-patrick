@@ -33,16 +33,25 @@
 	            	<ng-include src="'modules/admin/partials/tasks.html'"></ng-include>
 	            </div>
 	        </tab>
+
         	<tab id="config" heading="Configuration" ng-click="tabSelected('configuration')">
 	        	<div>
 	            	<ng-include src="'modules/admin/partials/config.html'"></ng-include>
 	            </div>
 	        </tab>
+			<tab id="job-titles" heading="Job Titles">
+    	         <div>
+    	             <ng-include src="'modules/admin/partials/jobTitles.html'"></ng-include>
+    	         </div>
+    	     </tab>
+			 
 	        <tab id="departments" heading="Departments" ng-click="tabSelected('departments')">
 	        	<div>
 	            	<ng-include src="'modules/admin/partials/departments.html'"></ng-include>
 	            </div>
 	        </tab>
+
+    	     
 	    </tabset>
   </div>
 </div>

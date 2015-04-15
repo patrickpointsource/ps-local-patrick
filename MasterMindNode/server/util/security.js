@@ -761,7 +761,10 @@ var fullResourcesMap = [
         "viewMySecondaryRole",
         "viewOthersRoleTitle",
         "viewOthersSecondaryRole",
-        "editRolesTitles"
+        "editRolesTitles",
+        "viewMySecurityRoles",
+        "viewOthersSecurityRoles",
+        "editProfileSecurityRoles"
       ]
     },
     {

@@ -22,15 +22,15 @@
       <ng-include src="'modules/widgets/myProjects/myProjects.html'"></ng-include>
     </div>
 
-    <div class="col-xs-12 col-lg-6">
-      <ng-include src="'modules/widgets/people/people.html'"></ng-include>
+    <div class="col-xs-12 col-lg-6" ng-if="hasPermissions(CONSTS.VIEW_PEOPLE)">
+        <ng-include src="'modules/widgets/people/people.html'"></ng-include>
     </div>
 </div>
 
 <div class="row equal">
-  <div class="col-xs-12 col-lg-6">
-    <ng-include src="'modules/widgets/bookingForecast/bookingForecast.html'"></ng-include>
-  </div>
+    <div class="col-xs-12 col-lg-6" ng-if="hasPermissions(CONSTS.VIEW_PEOPLE)">
+        <ng-include src="'modules/widgets/bookingForecast/bookingForecast.html'"></ng-include>
+    </div>
 
   <div class="col-xs-12 col-lg-6">
     <ng-include src="'modules/widgets/projectKickoffs/projectKickoffs.html'"></ng-include>

@@ -55,7 +55,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 		value: "people",
 		handler: "showPeople",
 		iconCss: "icon-people",
-		isRender: "true",
+		isRender: $rootScope.hasPermissions(CONSTS.VIEW_PEOPLE),
 		subItems: [ {
 			text: "All People",
 			value: "all",

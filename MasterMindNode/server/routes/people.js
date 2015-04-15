@@ -277,136 +277,130 @@ router.delete('/', util.isAuthenticated, function(req, res) {
 
 });
 
-router.get('/:id', util.isAuthenticated, function(req, res) {
-
-  security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function(allowed){
-    if (allowed) 
-    {
-      var id = req.params.id;
-      if (id == 'me') {
-    
-    	// initialize permissionsMap
-	      people.getPersonByGoogleId(req.user, function(err, result){
-	    	  console.log('inside:me:user:' + req.user);
-	    	  
-	    	  
-	    	  security.getUserRoles(result, function(userRoleErr, userRole) {
-	    		  var resources = [];
-	    		  
-	    		  for (var k = 0; k < userRole.roles.length; k ++)
-	    			  resources.push(userRole.roles[k].resource);
-	    		  
-	    		  console.log('inside:me:resources:' + resources.join(','));
-	    		  
-	    		  
-	    		  
-	    		  securityRoles.listSecurityRolesByResources( resources, function( securityRolesErr, userSecurityRoles ) {
-	    			  var allResource = [];
-	    			  
-	    			  // merge all permissions
-	    			  var existingResource = null;
-	    			  
-	    			  security.getPermissions(_.map(userSecurityRoles.members, function(m){ return m.name })).catch(function(err){
-	    				  err = err ? err: 'error occured while loaded user permissions';
-	    				  res.json(500, err);
-	    				  
-	    				  console.log('\r\npeople:me:from:acl:after:error');
-	    			  }).done(function(permissions) {
-	    				  console.log('inside:me:loaded:from:acl:permissions:' + (permissions ? JSON.stringify(permissions): permissions));
-	    				  
-	    				  if (permissions) {
-	    					  result.permissionsMap = permissions;
-		    				  res.json(result);
-	    				  }
-		    			  
-	    				  console.log('\r\npeople:me:after:');
+router.get('/:id', util.isAuthenticated, function (req, res) {
+    var id = req.params.id;
+    people.getPersonByGoogleId(req.user, function (err, result) {
+        
+        // if getting your own profile
+        if (id == 'me' || result._id == id) {
+            
+            // initialize permissionsMap
+            
+            console.log('inside:me:user:' + req.user);
+            
+            
+            security.getUserRoles(result, function (userRoleErr, userRole) {
+                var resources = [];
+                
+                for (var k = 0; k < userRole.roles.length; k++)
+                    resources.push(userRole.roles[k].resource);
+                
+                console.log('inside:me:resources:' + resources.join(','));
+                
+                
+                
+                securityRoles.listSecurityRolesByResources(resources, function (securityRolesErr, userSecurityRoles) {
+                    var allResource = [];
+                    
+                    // merge all permissions
+                    var existingResource = null;
+                    
+                    security.getPermissions(_.map(userSecurityRoles.members, function (m) { return m.name })).catch(function (err) {
+                        err = err ? err: 'error occured while loaded user permissions';
+                        res.json(500, err);
+                        
+                        console.log('\r\npeople:me:from:acl:after:error');
+                    }).done(function (permissions) {
+                        console.log('inside:me:loaded:from:acl:permissions:' + (permissions ? JSON.stringify(permissions): permissions));
+                        
+                        if (permissions) {
+                            result.permissionsMap = permissions;
+                            res.json(result);
+                        }
+                        
+                        console.log('\r\npeople:me:after:');
 	    				 
-	    			  });
-	    			  
-	    			  console.log('inside:me:securityRoles.members:' + (_.map(userSecurityRoles.members, function(m){ return (m.name + ':' + m.about)})).join(','));
-	    			  
-	    			  for (var k = 0; k < userSecurityRoles.members.length; k ++) {
-	    				  for (var j = 0; j < userSecurityRoles.members[k].resources.length; j ++){
-	    					  existingResource = _.findWhere(allResource, {name: userSecurityRoles.members[k].resources[j].name});
-	    					  
-	    					  console.log('inside:me:resource:name:' + userSecurityRoles.members[k].resources[j].name + ':permissions=' + userSecurityRoles.members[k].resources[j].permissions.join(','));
-	    	    			  
-	    					  
-	    					  if (existingResource)
-	    						  existingResource.permissions = existingResource.permissions.concat(userSecurityRoles.members[k].resources[j].permissions);
-	    					  else
-	    						  // make a copy of passed resource and permissions
-	    						  allResource.push(_.extend({}, userSecurityRoles.members[k].resources[j]));
-	    				  }
-	    			  }
-	    			  
-	    			  var permissionsMap = {};
-	    			  
-	    			  for (var k = 0; k < allResource.length; k ++) {
-	    				  allResource[k].permissions = _.uniq( allResource[k].permissions);
-	    				  
-	    				  permissionsMap[allResource[k].name] = allResource[k].permissions;
-	    			  }
-
-	    			 
-	    			  console.log('\r\npeople:me:interim:after:');
-	    		  });
+                    });
+                    
+                    console.log('inside:me:securityRoles.members:' + (_.map(userSecurityRoles.members, function (m) { return (m.name + ':' + m.about) })).join(','));
+                    
+                    for (var k = 0; k < userSecurityRoles.members.length; k++) {
+                        for (var j = 0; j < userSecurityRoles.members[k].resources.length; j++) {
+                            existingResource = _.findWhere(allResource, { name: userSecurityRoles.members[k].resources[j].name });
+                            
+                            console.log('inside:me:resource:name:' + userSecurityRoles.members[k].resources[j].name + ':permissions=' + userSecurityRoles.members[k].resources[j].permissions.join(','));
+                            
+                            
+                            if (existingResource)
+                                existingResource.permissions = existingResource.permissions.concat(userSecurityRoles.members[k].resources[j].permissions);
+                            else
+                                // make a copy of passed resource and permissions
+                                allResource.push(_.extend({}, userSecurityRoles.members[k].resources[j]));
+                        }
+                    }
+                    
+                    var permissionsMap = {};
+                    
+                    for (var k = 0; k < allResource.length; k++) {
+                        allResource[k].permissions = _.uniq(allResource[k].permissions);
+                        
+                        permissionsMap[allResource[k].name] = allResource[k].permissions;
+                    }
+                    
+                    
+                    console.log('\r\npeople:me:interim:after:');
+                });
 	    		  
 	    		  
-	    	  });
+            });
 	           
-	        });
-	      
-	      
-	      
-	      
-	      
-	      
-	      
-      }
-      else {
-        people.getPerson(id, function(err, result){
-          if(err){
-            res.json(500, err);
-          } else {
-            // todo: move this stuff into controller
-            result.about = "people/" + result._id;
-            res.json(result);
-          }            
-        });
-      }
-    }
-  });
+        
+        }
+        else {
+            security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function (allowed) {
+                if (allowed) {
+                    people.getPerson(id, function (err, result) {
+                        if (err) {
+                            res.json(500, err);
+                        } else {
+                            // todo: move this stuff into controller
+                            result.about = "people/" + result._id;
+                            res.json(result);
+                        }
+                    });
+                }
+            });
+        }
+    });
 });
 
 router.get('/:id/accessRights', util.isAuthenticated, function(req, res) {
-	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function(allowed){
-		if (allowed) 
-		{
-			console.log("Load access rights for user: " + req.user);
-			var id = req.params.id;
-			console.log("id=" + id);
-			if (id == 'me') {
-				
-				people.getAccessRightsByGoogleId(req.user, function(err, result){
-			        if(err){
-			            res.json(500, err);
-			        } else {			            
-			            res.json(result);
-			        }            
-		   	 	});
-			}
-			else {
-			    people.getAccessRights(id, function(err, result){
-			        if(err){
-			            res.json(500, err);
-			        } else {
-			            res.json(result);
-			        }            
-			    });
-			}
-		}
-	});
+	console.log("Load access rights for user: " + req.user);
+	var id = req.params.id;
+	console.log("id=" + id);
+    if (id == 'me') {
+        
+        people.getAccessRightsByGoogleId(req.user, function (err, result) {
+            if (err) {
+                res.json(500, err);
+            } else {
+                res.json(result);
+            }
+        });
+    }
+    else {
+        security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewProfile, function (allowed) {
+            if (allowed) {
+                people.getAccessRights(id, function (err, result) {
+                    if (err) {
+                        res.json(500, err);
+                    } else {
+                        res.json(result);
+                    }
+                });
+            }
+        });
+    }
 
 });
 
