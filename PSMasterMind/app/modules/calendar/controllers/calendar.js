@@ -55,10 +55,9 @@ angular.module('Mastermind').controller('CalendarCtrl', [
         var el = $("<div>").addClass("hidden-sm").appendTo($("body"));
 
         $scope.itemCount = el.is(":hidden") ? 3 : 5;
+ 	$scope.isMobileDevice = el.is(":hidden");
 
         el.remove();
-        
-        $scope.isMobileDevice = window.matchMedia('(max-width: 768px)').matches;
 
         $scope.goToPrevious = function ()
         {
