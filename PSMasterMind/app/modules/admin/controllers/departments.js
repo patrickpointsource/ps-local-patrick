@@ -381,7 +381,8 @@ angular.module('Mastermind')
 	          $scope.selectedDepartment = Util.syncRevProp(updated);
 	          $scope.selectedDepartment.isEdit = false;
 	          $scope.selectedDepartment.isNew = false;
-	          
+			  $rootScope.formDirty = false;
+
 	          if (cb)
 	        	  cb();
 	          
