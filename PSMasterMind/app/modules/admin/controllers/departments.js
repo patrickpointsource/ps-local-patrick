@@ -437,6 +437,8 @@ angular.module('Mastermind')
 	        			$scope.selectedCategory = _.find($scope.departmentCategories, function(cat) {
 	        				return cat.trimmedValue == $scope.selectedCategory.trimmedValue;
 	        			});
+	        		}).then(function() {
+	        			$scope.onCategoriesLoaded();
 	        		});
 	    		}).then(function() {
 	    			// refresh departments to hide "empty category" warnings if needed
@@ -471,6 +473,8 @@ angular.module('Mastermind')
 	        		}).then(function() {
 	        			// refresh departments to hide "empty category" warnings if needed
 		    			$scope.loadDepartments();
+	        		}).then(function() {
+	        			$scope.onCategoriesLoaded();
 	        		});
 	    		});
 	    	} else {
@@ -501,6 +505,11 @@ angular.module('Mastermind')
 	    	return _.map(deps, function(dep) {
 	    		return dep.departmentCode.name;
 	    	});
+	    };
+	    
+	    $scope.onCategoriesLoaded = function() {
+    		for (var k = 0; k < $scope.availableDepartments.length; k ++)
+    			$scope.checkDepartmentCategory($scope.availableDepartments[k]);
 	    };
 	    
 	    $scope.initDepartments =  function () {
@@ -557,7 +566,9 @@ angular.module('Mastermind')
 	    	if ($scope.departmentCategories.length == 0)
 	    		DepartmentsService.loadDepartmentCategories().then(function(res) {
 	    			$scope.departmentCategories = res && res.members ? res.members: res;
-	    		});
+	    		}).then(function() {
+        			$scope.onCategoriesLoaded();
+        		});
 	    	
 	    	if (!$scope.allPeopleList || $scope.allPeopleList.length == 0)
 	    		PeopleService.getAllActivePeople().then(function(result) {
