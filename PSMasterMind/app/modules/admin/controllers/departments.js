@@ -29,10 +29,11 @@ angular.module('Mastermind')
 	  
 	  $scope.setSentinel = function( ) {
 			//Watch for model changes
-			if( $scope.selectedDepartment.isEdit || $scope.selectedDepartment.editDepartmentPeople ) {
+			if( $scope.selectedDepartment.isNew || $scope.selectedDepartment.isEdit || $scope.selectedDepartment.editDepartmentPeople ) {
 				//Create a new watch
 				$scope.sentinel = $scope.$watch( 'selectedDepartment', function( newValue, oldValue ) {
-					if( !$rootScope.formDirty && ( $scope.selectedDepartment.isEdit || $scope.selectedDepartment.editDepartmentPeople ) ) {
+					if( !$rootScope.formDirty && 
+							( $scope.selectedDepartment.isNew || $scope.selectedDepartment.isEdit || $scope.selectedDepartment.editDepartmentPeople ) ) {
 						var changedByUser = $scope.hasChangesInFields(
 	                        ["departmentCategory",  "departmentNickname", "departmentManager", "departmentCode", "departmentPeople"],
 	                        newValue,
@@ -121,6 +122,7 @@ angular.module('Mastermind')
 		  $scope.selectedDepartment = {isNew: true};
 		  $scope.currentDepartmentCodes = ([]).concat($scope.departmentCodes);
 		  $scope.selectedDepartmentPeople = [];
+		  $scope.setSentinel();
 	  };
 	  
 	  $scope.searchDepartments = function(e) {
