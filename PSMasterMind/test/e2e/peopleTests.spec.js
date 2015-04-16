@@ -4,6 +4,8 @@ describe("E2E: People test cases.", function () {
 	var windowHeight = 1200;
 	
 	var USER_NAME = 'psapps@pointsourcellc.com';
+	var USER_NAME_FIRST_NAME = 'ps';
+	var USER_NAME_LAST_NAME = 'apps';
 	var PASSWORD = 'ps@pp$777';
 
     //login
@@ -20,6 +22,7 @@ describe("E2E: People test cases.", function () {
     	all: 'all',
     	administration: 'administration',
     	development: 'development',
+    	architects: 'architects',
     	clientexpierencemgmt: 'clientexpierencemgmt',
     	inactive: 'inactive'
     };
@@ -78,8 +81,8 @@ describe("E2E: People test cases.", function () {
 	});
     
  	it('Test People sorting', function () {
- 		checkPeopleSorting();
- 	});
+ 		checkPeopleSorting([PeoplePath.all, PeoplePath.inactive, PeoplePath.architects, PeoplePath.development]);
+ 	}, 60000);
     
  	it('Test People searching', function () {
  		checkPeopleSearching();
@@ -110,6 +113,21 @@ describe("E2E: People test cases.", function () {
 		console.log('> Running: Set IsActive to true and check All people list.');
 		editIsActiveProperty(true);
 	}, 60000);
+	
+	it('Navigate to non-current user profile, make sure cannot add vacation request.', function() {	
+		console.log('> Running: Navigate to non-current user profile, make sure cannot add vacation request.');
+		checkAddVacationDisabledForNonCurrentUser();
+	}, 60000);
+
+	it('Verify view fields in profile.', function() {	
+		console.log('> Running: Verify view fields in profile.');
+		verifyViewFieldsInProfile();
+	}, 60000);
+
+	it('Check people elements filtering.', function() {	
+		console.log('> Running: Check people elements filtering.');
+		checkPeopleElementsFiltering();
+	}, 60000);
 
 	//Doesn't support by new UI.
 //    it('Check people utilization values.', function () {
@@ -127,40 +145,16 @@ describe("E2E: People test cases.", function () {
     	});
  	};
  	
-    var checkPeopleSorting = function ( ) {
-    	var checkSorting = function (people, validationRow, isASC) {
-    		console.log("> Check sorting");
-    		people.then( function (people) {
-        		 var firstRecord = people[0].element(by.binding(validationRow));
-        		 var lastRecord = people[people.length - 1].element(by.binding(validationRow));
-        		 firstRecord.getText().then( function (firstRecord) {
-        			 lastRecord.getText().then( function (lastRecord) {
-                   		 var isSorted = lastRecord == '' ? true : 
-                   					 	isASC ? firstRecord <= lastRecord : firstRecord >= lastRecord;
-                       
-                       	 expect(isSorted).toBe(true);
-                     });
-                 });
-        	});
-   	 	};
-   	 	
-   	 	var peoplePage = new PeoplePage();
-    	peoplePage.get();
-    	
-        	var sortBy = function(sortField, validationRow) {
-        		sortField.click();
-            	checkSorting(peoplePage.people, validationRow, true);
-            	browser.sleep(1000);
-            	sortField.click();
-                checkSorting(peoplePage.people, validationRow, false);
-                browser.sleep(1000);
-        	};
-        	
-        	peoplePage.sortByPerson.click();
-        	sortBy(peoplePage.sortByPerson, peoplePage.sortRow.person);
-        	sortBy(peoplePage.sortByRole, peoplePage.sortRow.role);
-        	sortBy(peoplePage.sortByGroup, peoplePage.sortRow.title);
-        	sortBy(peoplePage.sortByRate, peoplePage.sortRow.utilization);
+    var checkPeopleSorting = function (paths ) {
+   	 	for (var i in paths) {
+   	   	 	var peoplePage = new PeoplePage(paths[i]);
+   	    	peoplePage.get();
+   	    	peoplePage.sortByPerson.click();
+   	    	peoplePage.sortBy(peoplePage.sortByPerson, peoplePage.sortRow.person);
+   	    	peoplePage.sortBy(peoplePage.sortByRole, peoplePage.sortRow.role);
+   	    	peoplePage.sortBy(peoplePage.sortByGroup, peoplePage.sortRow.title);
+   	    	peoplePage.sortBy(peoplePage.sortByRate, peoplePage.sortRow.utilization);
+   	 	}
 
     };
     
@@ -179,6 +173,24 @@ describe("E2E: People test cases.", function () {
     	peoplePage.findPerson(SEARCH_TEST.Role).then(function (filteredElements) {
         	expect(filteredElements[0]).toBeDefined();
         });
+    };
+    
+    var checkPeopleElementsFiltering = function () {
+    	var filterText = 'ssa';
+    	var peoplePage = new PeoplePage(PeoplePath.architects);
+    	peoplePage.get();
+    	
+    	var $this = this;
+    	peoplePage.searchPerson.sendKeys(filterText).then(function(){
+    		peoplePage.people.then( function (elements) {
+				for (var i in elements) {
+					var roleAbbreviation = elements[i].element(by.binding(peoplePage.sortRow.role));
+					roleAbbreviation.getText().then( function (role) {
+						expect(role.toLowerCase()).toEqual(filterText);
+					});
+				}
+			});
+		});
     };
     
     var checkPeopleList = function (filterPath, peopleList, shouldExclude) {
@@ -214,6 +226,58 @@ describe("E2E: People test cases.", function () {
     	
     	peoplePage.people.then(function(peopleList) {
     		checkProfileUtilization(peopleList[0]);
+    	});
+    };
+    
+    var verifyViewFieldsInProfile = function() {
+    	var editButton = by.css('[ng-click="edit()"]');
+
+    	var peoplePage = new PeoplePage(PeoplePath.all + "," + PeoplePath.inactive);
+    	peoplePage.get();
+    	
+    	var verifyFieldInProfile = function(field) {
+			var $this = this; 
+			peoplePage.searchPerson.sendKeys(USER_NAME_FIRST_NAME + ' ' + USER_NAME_LAST_NAME).then(function(){
+				peoplePage.people.then( function (elements) {
+					elements[0].element(by.binding(field)).getText().then(function(fieldText){
+						elements[0].element(by.binding(peoplePage.sortRow.person)).click().then(function(){
+							browser.wait(function(){	    		
+					       		return browser.isElementPresent(editButton);
+						  	}).then(function(){
+				 				browser.isElementPresent(by.cssContainingText('div', fieldText)).then(function(present) {
+				 					expect(present).toBeTruthy();
+				 				});
+				 				
+						  	});
+						});
+					})
+				});
+			});
+		}
+    	
+    	verifyFieldInProfile(peoplePage.sortRow.title);
+    };
+    
+    
+    var checkAddVacationDisabledForNonCurrentUser = function() {
+    	console.log("> Check that add vacation disabled.");
+    	var peoplePage = new PeoplePage();
+    	peoplePage.get();
+    	
+    	var checkVacationWidget = function (profile) {
+    		profile.all(by.binding(peoplePage.sortRow.utilization)).get(1).getText().then(function(utilizationValue){
+    			profile.all(by.tagName('a')).get(0).click().then(function() {
+    				return browser.wait(function() {	    		
+    		    		return browser.isElementPresent(element(by.css('[ng-controller="VacationsCtrl"]')));
+    		    	}).then(function() {
+    		    		expect(element(by.css('[ng-click="requestHours()"]')).isDisplayed()).toBe(false); 
+    		    	});
+    			}); 			
+    		});
+    	};
+    	
+    	peoplePage.people.then(function(peopleList) {
+    		checkVacationWidget(peopleList[0]);
     	});
     };
     
@@ -301,6 +365,32 @@ describe("E2E: People test cases.", function () {
                 });
             });
         };
+        
+    	this.checkSorting = function (people, validationRow, isASC) {
+    		console.log("> Check sorting");
+    		people.then( function (people) {
+        		 var firstRecord = people[0].element(by.binding(validationRow));
+        		 var lastRecord = people[people.length - 1].element(by.binding(validationRow));
+        		 firstRecord.getText().then( function (firstRecord) {
+        			 lastRecord.getText().then( function (lastRecord) {
+                   		 var isSorted = lastRecord == '' ? true : 
+                   					 	isASC ? firstRecord <= lastRecord : firstRecord >= lastRecord;
+                       
+                       	 expect(isSorted).toBe(true);
+                     });
+                 });
+        	});
+   	 	};
+   	 	
+        this.sortBy = function(sortField, validationRow) {
+            var $this = this;
+    		sortField.click();
+        	$this.checkSorting($this.people, validationRow, true);
+        	browser.sleep(1000);
+        	sortField.click();
+            $this.checkSorting($this.people, validationRow, false);
+            browser.sleep(1000);
+    	};
     };
     
     

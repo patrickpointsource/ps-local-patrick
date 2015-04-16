@@ -3,7 +3,14 @@
     padding-bottom: 10px;
     margin-bottom: 20px;
     font-size: 15px;
+    @media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
+      font-size: 14px;
+      span {
+        display: none;
+      }
+    }
 }
+
 .ooo-item {
     border: 1px solid #bfbfbf;
 }
@@ -30,12 +37,12 @@
   padding:0px;
   margin:0px;
   width:100%;
-  
+
   form.hide-pending {
     @media (max-width: @screen-lg) {
       margin-top: 25px !important;
     }
-    
+
     input[type="checkbox"] {
        @media (max-width: @screen-lg) {
         margin-top: 6px;
@@ -43,11 +50,11 @@
         height:18px;
       }
     }
-    
+
     label {
       @media (max-width: @screen-lg) {
         margin-top: -10px !important;
-        
+
       }
     }
   }
@@ -91,13 +98,13 @@
   border-bottom: 1px solid #efefef;
   font-size: 20px;
   }
-  
+
   .hours-day-caption.long {
     @media (max-width: @screen-lg) {
       display: none;
     }
   }
-  
+
   .hours-day-caption.short {
     @media (min-width: @screen-lg) {
       display: none;
@@ -107,7 +114,7 @@
 .widget.calendar .header-container {
   display:inline-block;
   width:100%;
-  
+
 }
 
 .widget.calendar .hours-day-entry {
@@ -129,6 +136,16 @@
   width:100%;
 }
 
+@media (min-width: @screen-sm-min) and (max-width: @screen-lg) {
+  .widget.calendar .hours-day-entry .hours-day-footer {
+    font-size: 14px;
+   }
+
+  .widget.calendar .hours-day-entry {
+    height: 98px;
+  }
+}
+
 .widget.calendar .last .hours-day-entry {
   border-right-width: 0px;
 
@@ -148,10 +165,24 @@
   padding-bottom: 2px;
   padding-left: 2px;
   cursor: pointer;
-  
+
+  .modal-dialog {
+    width:400px;
+  }
+
    @media (max-width: @screen-lg) {
+      line-height: 17px;
       span {
         white-space: nowrap;
+      }
+      .vacation-notempty-count {
+        padding-left: 5px;
+      }
+    }
+
+   @media (max-width: @screen-md-max) {
+      span {
+        font-size: 14px;
       }
     }
   .vacation-day-period {
@@ -161,7 +192,7 @@
     position: absolute;
     white-space: nowrap;
     right: 0px;
-    
+
      @media (max-width: @screen-lg) {
       display: none;
     }
@@ -203,14 +234,14 @@
     color: blue;
     font-weight: normal;
   }
-  
+
   .vacation-person-name {
     margin-top:12px;
   }
-  
+
   .vacation-person-type:not(:last-child) {
     border-bottom: 1px solid #dbdbdb;
     padding-bottom: 4px;
-    
+
   }
 }
