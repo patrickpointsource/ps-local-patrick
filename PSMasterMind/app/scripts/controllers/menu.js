@@ -159,7 +159,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 			e.stopPropagation();
 			e.preventDefault();
 		}
-		
+
 		if (this[handler]) {
 			var li = $(e.target).closest('li');
 
@@ -201,6 +201,6 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$state','$filter
 	};
 
 	if (!$scope.additionalClass)
-		$scope.additionalClass = 'navbar-inverse visible-xs visible-sm';
+		$scope.additionalClass = 'navbar-inverse visible-xs visible-sm visible-md';
 
   }]);
