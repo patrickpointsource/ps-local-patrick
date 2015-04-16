@@ -437,7 +437,8 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 
 
     $scope.saveProfile = function(profile) {
-    	$scope.hideProfileSpinner = false;
+        $scope.hideProfileSpinner = false;
+        delete profile.permissionsMap;
       Resources.update( profile ).then( function( person ) {
             var fields = {
                 resource: 1,
