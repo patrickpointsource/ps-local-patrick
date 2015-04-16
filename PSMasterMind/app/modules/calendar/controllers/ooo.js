@@ -382,6 +382,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
             Resources.update(request).then(function(result) {
                 if ($rootScope.hasPermissions(CONSTS.VIEW_VACATIONS)) {
+                    $rootScope.$emit('calendar:update');
                     $scope.showRequests();
                 }
 
