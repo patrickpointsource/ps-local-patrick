@@ -366,7 +366,7 @@
   		  		
   		  		$('.modalYesNo').modal('show').on('hide.bs.modal', function(e) {
   		  			if(!$rootScope.formDirty) {
-  		  				if($rootScope.projectEdit) {
+  		  				if($rootScope.projectEdit || $rootScope.departmentEdit) {
   		  					_this.state.go(toState);
   		  				}
   		  			}
