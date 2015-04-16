@@ -105,60 +105,60 @@ angular.module('Mastermind')
         return key;
       }
     };
-    
-    $scope.permissionDisplayMap = {
-      viewTasks: "View Tasks",
-      editTasks: "Edit Tasks",
-      viewAssignments: "View assignments",
-      editAssignments: "Edit assignments",
-      viewConfiguration: "View Configuration",
-      editConfiguration: "Edit Configuration",
-      viewHours: "View Hours",
-      editHours: "Edit Hours",
-      deleteMyHours: "Delete My Hours",
-      editMyHours: "Edit personal hours",
-      viewHoursReportsAndCSV: "Hours Reports and CSV",
-      viewPeople: "View people",
-      viewProfile: "View profile",
-      editProfile: "Edit other's profiles",
-      viewMyProfile: "View personal profile",
-      editMyProfile: "Edit personal profile",
-      viewPersonnelData: "View personnel data",
-      editPersonnelData: "Edit personnel data",
-      viewGroups: "View groups",
-      editGroups: "Edit groups",
-      viewProjects: "View projects",
-      addProjects: "Add new projects",
-      editProjects: "Edit projects",
-      deleteProjects: "Delete projects",
-      viewProjectLinks: "View project links",
-      editProjectLinks: "Edit project links",
-      viewRoles: "View project roles",
-      editRoles: "Edit project roles",
-      viewVacations: "View Out of Office",
-      viewMyVacations: "View personal Out of Office",
-      editVacations: "Approve / Deny requests",
-      editMyVacations: "Edit personal requests",
-      viewNotifications: "View notifications",
-      editNotifications: "Edit notifications",
-      deleteNotifications: "Delete notifications",
-      executeUpgrade: "Execute upgrade",
-      viewSecurityRoles: "View permissions",
-      editSecurityRoles: "Edit permissions",
-      viewReports: "View reports",
-      viewMyRoleTitle: "View My Primary Role",
-      viewMySecondaryRole: "View My Secondary Role",
-      viewOthersRoleTitle: "View Other's Primary Role",
-      viewOthersSecondaryRole: "View Other's Secondary Role",
-      editRolesTitles: "Edit Primary Roles and Job Titles",
-      viewMySecurityRoles: 'View My Permission Groups',
-      viewOthersSecurityRoles: 'View Other’s Permission Groups',
-      editProfileSecurityRoles: 'Edit Permission Groups',
-      viewMyPublicPersonnelData: 'View My Public Personnel Data',
-      viewOthersPublicPersonnelData: 'View Other’s Public Personnel Data',
-      viewMyPrivatePersonnelData: 'View My Private Personnel Data',
-      viewOthersPrivatePersonnelData: 'View Other’s Private Personnel Data'
-    };
+
+      $scope.permissionDisplayMap = {
+          viewTasks: "View Tasks",
+          editTasks: "Edit Tasks",
+          viewAssignments: "View assignments",
+          editAssignments: "Edit assignments",
+          viewConfiguration: "View Configuration",
+          editConfiguration: "Edit Configuration",
+          viewHours: "View Hours",
+          editHours: "Edit Hours",
+          deleteMyHours: "Delete My Hours",
+          editMyHours: "Edit personal hours",
+          viewHoursReportsAndCSV: "Hours Reports and CSV",
+          viewPeople: "View people",
+          viewProfile: "View profile",
+          editProfile: "Edit other's profiles",
+          viewMyProfile: "View personal profile",
+          editMyProfile: "Edit personal profile",
+          viewPersonnelData: "View personnel data",
+          editPersonnelData: "Edit personnel data",
+          viewGroups: "View groups",
+          editGroups: "Edit groups",
+          viewProjects: "View projects",
+          addProjects: "Add new projects",
+          editProjects: "Edit projects",
+          deleteProjects: "Delete projects",
+          viewProjectLinks: "View project links",
+          editProjectLinks: "Edit project links",
+          viewRoles: "View project roles",
+          editRoles: "Edit project roles",
+          viewVacations: "View Out of Office",
+          viewMyVacations: "View personal Out of Office",
+          editVacations: "Approve / Deny requests",
+          editMyVacations: "Edit personal requests",
+          viewNotifications: "View notifications",
+          editNotifications: "Edit notifications",
+          deleteNotifications: "Delete notifications",
+          executeUpgrade: "Execute upgrade",
+          viewSecurityRoles: "View permissions",
+          editSecurityRoles: "Edit permissions",
+          viewReports: "View reports",
+          viewMyRoleTitle: "View My Primary Role",
+          viewMySecondaryRole: "View My Secondary Role",
+          viewOthersRoleTitle: "View Other's Primary Role",
+          viewOthersSecondaryRole: "View Other's Secondary Role",
+          editRolesTitles: "Edit Roles",
+          viewMySecurityRoles: "View My Permission Groups",
+          viewOthersSecurityRoles: "View Other's Permission Groups",
+          editProfileSecurityRoles: "Edit Permission Groups",
+          viewMyPublicPersonnelData: "View My Public Personnel Data",
+          viewOthersPublicPersonnelData: "View Other's Public Personnel Data",
+          viewMyPrivatePersonnelData: "View My Private Personnel Data",
+          viewOthersPrivatePersonnelData: "View Other's Private Personnel Data"
+      };
     
     $scope.permissionChecked = function(collection, permission) {
       if($scope.selectedGroup) {
@@ -346,9 +346,12 @@ angular.module('Mastermind')
       } else {
         $scope.checkForDeletedMembers();
         $scope.checkForAddedMembers();
-        Resources.update($scope.selectedGroup).then(function(result){
-          $scope.selectedGroup._rev = result.rev;
-          $scope.messages.push("Your changes have been saved successfully.");
+        Resources.update($scope.selectedGroup).then(function (result) {
+            if (typeof result === "string") {
+                $scope.errors.push(result);
+            }
+            $scope.selectedGroup._rev = result.rev;
+            $scope.messages.push("Your changes have been saved successfully.");
         });
       }
     } else {
