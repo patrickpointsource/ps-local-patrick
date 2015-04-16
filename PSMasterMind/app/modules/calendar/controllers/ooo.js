@@ -16,7 +16,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
         $scope.loading = true;
 
-        var el = $("<div>").addClass("hidden-sm").appendTo($("body"));
+        var el = $("<div>").addClass("hidden-sm hidden-md").appendTo($("body"));
 
         $scope.isMobile = el.is(":hidden");
 
