@@ -339,7 +339,7 @@ angular.module('Mastermind')
        			delete department.departmentCategory.TrimmedValue;
        		}
        		
-       		if (department.departmentCategory.isEmptyCategory !== undefined)
+       		if (department.departmentCategory && department.departmentCategory.isEmptyCategory !== undefined)
        			delete department.departmentCategory.isEmptyCategory;
        		
        		return department;
@@ -391,29 +391,38 @@ angular.module('Mastermind')
 	          
 	          $rootScope.$emit('department:updated');
 	         });
+	         
 	        } else
 	         result = false;
 	        
-	        
-	        Resources.refresh("departments/available/people").then( function(result) {
-	            var tmpPerson;
-	            
-	            $scope.availablePeopleList = _.map(result.members, function(p) {
-	             return {
-	              resource: p.resource,
-	              name: Util.getPersonName(p, true)
-	             };
-	             
-	            });
-	             
-	            //$scope.availablePeopleList.splice(0, $scope.availablePeopleList.length - 7);
-	            $scope.availablePeopleList.sort(function(p1, p2) {
-	               if (p1.name > p2.name)
-	                return 1;
-	               else if (p1.name < p2.name)
-	                return -1;
-	              });
-	            });
+	        if (promise)
+	        	promise.then(function() {
+	        		 Resources.refresh("departments/available/people").then( function(result) {
+	     	            var tmpPerson;
+	     	            
+	     	            $scope.availablePeopleList = _.map(result.members, function(p) {
+	     	             return {
+	     	              resource: p.resource,
+	     	              name: Util.getPersonName(p, true)
+	     	             };
+	     	             
+	     	            });
+	     	             
+	     	            //$scope.availablePeopleList.splice(0, $scope.availablePeopleList.length - 7);
+	     	            $scope.availablePeopleList.sort(function(p1, p2) {
+	     	               if (p1.name > p2.name)
+	     	                return 1;
+	     	               else if (p1.name < p2.name)
+	     	                return -1;
+	     	              });
+     	            });
+	        		 
+	        		
+     	    		DepartmentsService.loadDepartmentCodes().then(function(res) {
+     	    			$scope.departmentCodes = _.isArray(res) ? res: res.members;
+     	    		});
+	        	});
+	       
 	        
 	        return result;
 	       };
@@ -463,7 +472,9 @@ angular.module('Mastermind')
 	    /**
 	     * Departments categories
 	     */
-	    $scope.selectedCategory = {};
+	    $scope.selectedCategory = {
+	  		  trimmedValue: 'all'
+	  	  };
 	    
 	    $scope.cleanCategoryBeforeSave = function(category) {
 	    	category = _.extend({}, category);
