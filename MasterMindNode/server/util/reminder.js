@@ -13,10 +13,13 @@ var REMINDER_NOTIFICATION_LIST = "reminder.debug.notification.list";
 var REMINDER_INTERESTED_PARTIES = "reminder.interested.parties";
 
 // Schedulers should be in UTC format
-var INITIAL_CRON_SCHEDULE = "00 30 14 * * 1-5";
-var SECOND_CRON_SCHEDULE = "00 30 15 * * 1-5";
-//var INITIAL_CRON_SCHEDULE = "00 13 17 * * 1-5";
-//var SECOND_CRON_SCHEDULE = "00 47 16 * * 1-5";
+// EST
+//var INITIAL_CRON_SCHEDULE = "00 30 14 * * 1-5";
+//var SECOND_CRON_SCHEDULE = "00 30 15 * * 1-5";
+
+// EDT
+var INITIAL_CRON_SCHEDULE = "00 30 13 * * 1-5";
+var SECOND_CRON_SCHEDULE = "00 30 14 * * 1-5";
 var ONE_HOUR = 60 * 60 * 1000;
 
 var reminderJobInprogress = false;
