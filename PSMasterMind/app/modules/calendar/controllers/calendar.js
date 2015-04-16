@@ -8,6 +8,12 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     '$scope', '$state', '$filter', '$q', '$rootScope', '$modal', 'VacationsService', 'People', 'Resources', 'ProjectsService', 'AssignmentService', 'RolesService', 'People',
     function ($scope, $state, $filter, $q, $rootScope, $modal, VacationsService, People, Resources, ProjectsService, AssignmentService, RolesService, PeopleService)
     {
+        $scope.VIEW_MODE_MONTH = 0;
+        $scope.VIEW_MODE_2WEEK = 1;
+        $scope.VIEW_MODE_1WEEK = 2;
+
+        $scope.viewMode = $scope.VIEW_MODE_MONTH;
+
         $scope.startDate = '';
         $scope.endDate = "";
         $scope.months = ['Janurary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -46,27 +52,55 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
         $scope.currentVacations = [];
 
-        var el = $("<div>").addClass("hidden-sm").appendTo($("body"));
+        var el = $("<div>").addClass("hidden-sm hidden-md").appendTo($("body"));
 
         $scope.itemCount = el.is(":hidden") ? 3 : 5;
+ 	    $scope.isMobileDevice = el.is(":hidden");
 
         el.remove();
 
-        /**
-         * Go back
-         */
-        $scope.backMonth = function ()
+        $scope.goToPrevious = function ()
         {
-            $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(1, 'month');
+            switch ($scope.viewMode)
+            {
+                case $scope.VIEW_MODE_1WEEK:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(1, "week");
+                    break;
+
+                case $scope.VIEW_MODE_2WEEK:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(2, "week");
+                    break;
+
+                case $scope.VIEW_MODE_MONTH:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(1, "month");
+                    break;
+            }
+            
             $scope.initCalendar();
         };
 
-        /**
-         * Go next month
-         */
-        $scope.nextMonth = function ()
+        $scope.goToNext = function ()
         {
-            $scope.currentMonth = $scope.moment($scope.currentMonth).add(1, 'month');
+            switch ($scope.viewMode)
+            {
+                case $scope.VIEW_MODE_1WEEK:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).add(1, "week");
+                    break;
+
+                case $scope.VIEW_MODE_2WEEK:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).add(2, "week");
+                    break;
+
+                case $scope.VIEW_MODE_MONTH:
+
+                    $scope.currentMonth = $scope.moment($scope.currentMonth).add(1, "month");
+                    break;
+            }
 
             $scope.initCalendar();
         };
@@ -92,7 +126,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             e.stopPropagation();
 
             //logger.log('onVacationClicked:' + ind + ':person.name=' + vac.person.name + ':'  + entry.size() + ':shown=' + entry.data('popover_shown'));
-
+            
             if (entry.data('popover_shown'))
                 return;
 
@@ -100,7 +134,9 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
             if (!entry.data('bs.popover'))
             {
-                var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')) : $scope.moment(vac.startDate).format('M/D');
+                var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
+                    ? ($scope.moment(vac.startDate).format('M/D') + ' - ' + $scope.moment(vac.endDate).format('M/D'))
+                    : $scope.moment(vac.startDate).format('M/D');
                 var placement = ind % 7 == 6 ? 'auto top' : 'auto left';
 
                 popover = entry.popover({
@@ -125,13 +161,16 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             }
         };
 
-        $scope.onVacationClick = function (e, vac, ind, vacIndex)
+        $scope.onVacationClick = function (e, vac)
         {
             if ($scope.itemCount != 3)
                 return;
 
-            var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0]) ? ($scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D')) : $scope.moment(vac.startDate).format('M/D');
-            var modalInstance = $modal.open({
+            var out = (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
+                ? ($scope.moment(vac.startDate).format('M/D') + ' - ' + $scope.moment(vac.endDate).format('M/D'))
+                : $scope.moment(vac.startDate).format('M/D');
+
+            $modal.open({
                 controller: "OOOModalInstanceCtrl",
                 templateUrl: "oooDetails.html",
                 resolve: {
@@ -139,7 +178,8 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                     {
                         return {
                             vac: vac,
-                            out: out
+                            out: out,
+                            isMobileDevice: $scope.isMobileDevice
                         };
                     }
                 }
@@ -173,7 +213,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
         $scope.getCountNotEmptyVacations = function (vacations)
         {
-            return (_.filter(vacations, function (v) { return !v.isEmpty })).length;
+            return (_.filter(vacations, function (v) { return !v.isEmpty; })).length;
         };
 
         $scope.onShowMoreClicked = function (e, vacations, ind, vacInd)
@@ -185,27 +225,54 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             e.stopPropagation();
 
             logger.log('onShowMoreClicked:' + ind + ':target.size=' + entry.size());
+            
+            for (var k = 0; k < vacations.length; k++)
+            {
+                var vac = vacations[k];
+                if (!vac.isEmpty)
+                {
+                    if (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
+                        var out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
+                    else
+                        var out = $scope.moment(vac.startDate).format('M/D');
+                    vac.out = out;
+                }
+            }
 
-            var popover;
-
+            if ($scope.isMobileDevice) { 
+            	$scope.onShowMoreModal(vacations); // show Modal dialog for mobile devices
+            } else {
+            	$scope.onShowMorePopup(vacations, entry, ind, vacInd);
+            }
+        };
+        
+        $scope.onShowMoreModal = function(vacations){
+        	$modal.open({
+                controller: "OOOModalInstanceCtrl",
+                templateUrl: "oooMoreVacations.html",
+                resolve: {
+                    details: function ()
+                    {
+                        return {
+                            vacations: vacations,
+                            isMobileDevice: $scope.isMobileDevice
+                        };
+                    }
+                }
+            });
+        };
+        
+        $scope.onShowMorePopup = function(vacations, entry, ind, vacInd){
+        	var popover;
             if (!entry.data('popover'))
             {
-                var out;
                 var html = '<div class="vacation-entry-popup"><div class="vacation-popup-body">';
-                var vac;
-
                 for (var k = 0; k < vacations.length; k++)
                 {
-                    vac = vacations[k];
-
+                    var vac = vacations[k];
                     if (!vac.isEmpty)
-                    {
-                        if (vac.startDate.split(/\s+/g)[0] != vac.endDate.split(/\s+/g)[0])
-                            out = $scope.moment(vac.startDate).format('M/D') + '-' + $scope.moment(vac.endDate).format('M/D');
-                        else
-                            out = $scope.moment(vac.startDate).format('M/D');
-
-                        html += '<div class="vacation-person-name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + out + '</div><div class="vacation-person-type"><b>Type:</b> ' + vac.type + '</div>';
+                    { 
+                        html += '<div class="vacation-person-name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + vac.out + '</div><div class="vacation-person-type"><b>Type:</b> ' + vac.type + '</div>';
                     }
                 }
 
@@ -217,7 +284,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                     html: true,
                     placement: 'auto left',
                     container: '.vacation-day-entry.entry_' +
-			            '' + ind + '_' + vacInd
+                        '' + ind + '_' + vacInd
                 });
 
                 entry.data('popover', popover);
@@ -261,28 +328,28 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
                 if ($scope.managersList.length == 0)
                     Resources.refresh("people/bytypes/byGroups", { group: "Managers" }).then(
-	        			function (result)
-	        			{
-	        			    for (var i = 0; result && result.members && i < result.members.length; i++)
-	        			    {
-	        			        var manager = result.members[i];
+                        function (result)
+                        {
+                            for (var i = 0; result && result.members && i < result.members.length; i++)
+                            {
+                                var manager = result.members[i];
 
-	        			        $scope.managersList.push({
-	        			            label: Util.getPersonName(manager, true),
-	        			            value: manager.resource
-	        			        });
+                                $scope.managersList.push({
+                                    label: Util.getPersonName(manager, true),
+                                    value: manager.resource
+                                });
 
-	        			        $scope.managersList.sort(function (m1, m2)
-	        			        {
-	        			            if (m1.label.toLowerCase() < m2.label.toLowerCase())
-	        			                return -1;
-	        			            else if (m1.label.toLowerCase() > m2.label.toLowerCase())
-	        			                return 1;
+                                $scope.managersList.sort(function (m1, m2)
+                                {
+                                    if (m1.label.toLowerCase() < m2.label.toLowerCase())
+                                        return -1;
+                                    else if (m1.label.toLowerCase() > m2.label.toLowerCase())
+                                        return 1;
 
-	        			        });
-	        			    }
-	        			}
-	        		);
+                                });
+                            }
+                        }
+                    );
             } else if ($scope.filterVacationsByCurrent == 'project_name')
             {
                 if (!$scope.projectList || $scope.projectList.length == 0)
@@ -415,7 +482,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                 {
                     dColor = Util.darkColorFrom(c, 0.4);
                     currentVacations[k].background = 'repeating-linear-gradient( -45deg, ' + dColor + ', ' + dColor +
-        				' 3px, ' + c + ' 3px, ' + c + ' 15px)';
+                        ' 3px, ' + c + ' 3px, ' + c + ' 15px)';
                 }
 
                 if (currentVacations[k].person && _.isObject(currentVacations[k].person.name))
@@ -531,10 +598,16 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
             $scope.displayedMonthDays = [];
 
-            $scope.startDate = $scope.moment($scope.currentMonth).startOf('month');
-            $scope.endDate = $scope.moment($scope.currentMonth).endOf('month');
-
-            var moment = $scope.moment($scope.currentMonth);
+            if ($scope.viewMode === $scope.VIEW_MODE_MONTH)
+            {
+                $scope.startDate = $scope.moment($scope.currentMonth).startOf('month');
+                $scope.endDate = $scope.moment($scope.currentMonth).endOf('month');
+            }
+            else if ($scope.viewMode === $scope.VIEW_MODE_1WEEK)
+            {
+                $scope.startDate = $scope.moment($scope.currentMonth).startOf("week");
+                $scope.endDate = $scope.moment($scope.currentMonth).endOf("week");
+            }
 
             var starOfFirstWeek = $scope.moment($scope.currentMonth).startOf('month').startOf('week');
             var endOfLastWeek = $scope.moment(starOfFirstWeek).add(34, 'days');
@@ -692,6 +765,13 @@ angular.module('Mastermind').controller('CalendarCtrl', [
 
         };
 
+        $scope.changeViewMode = function (viewMode)
+        {
+            $scope.viewMode = viewMode;
+
+            $scope.initCalendar();
+        };
+
         $rootScope.$on('calendar:update', function ()
         {
             $scope.initCalendar();
@@ -704,12 +784,23 @@ angular.module('Mastermind').controller('CalendarCtrl', [
     }
 ]);
 
-angular.module('Mastermind').controller('OOOModalInstanceCtrl', function ($scope, $modalInstance, details)
+angular.module('Mastermind').controller('OOOModalInstanceCtrl', ['$scope', '$modalInstance', 'details', 'ProjectsService', function ($scope, $modalInstance, details, ProjectsService)
 {
+    // This is required to request projects assigned to the specisifed person.
+    //details.vac.person._id = details.vac.person.resource.substring(details.vac.person.resource.indexOf("/") + 1);
+
     $scope.details = details;
+
+    //ProjectsService.getMyCurrentProjects(details.vac.person).then(function (projects)
+    //{
+    //    if (!projects || !projects.data)
+    //        return;
+
+    //    $scope.projects = _.pluck(projects.data, "name");
+    //});
 
     $scope.close = function ()
     {
         $modalInstance.dismiss("cancel");
     };
-});
+}]);

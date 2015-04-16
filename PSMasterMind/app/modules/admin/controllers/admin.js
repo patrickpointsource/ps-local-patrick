@@ -48,7 +48,7 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
         if($('#newRoleDialog').hasClass('in')){
           $('#newRoleDialog').collapse('hide');
         }
-        $scope.newRole = role;
+        $scope.newRole = angular.copy(role);
       }
     };
 
