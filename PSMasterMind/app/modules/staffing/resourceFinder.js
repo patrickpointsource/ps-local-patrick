@@ -52,13 +52,35 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 	};
 
 	$scope.changeSort = function( type ) {
-		$scope.$parent.changeSort( type );
+	    $scope.sortType = type;
 
-		$scope.sortType = type;
+	    var sign = type.indexOf("-asc") == -1 ? -1 : 1;
 
-		var sign = type.indexOf( "-asc" ) == -1 ? -1 : 1;
+	    if (type == 'name-desc') {
+	        $scope.people = _.sortBy($scope.people, function (person) {
+	            return $scope.getPersonName(person) || '';
+	        });
+	    }
 
-		if( type.indexOf( "availabilityDate-" ) == 0 )
+	    if (type == 'name-asc') {
+	        $scope.people = _.sortBy($scope.people, function (person) {
+	            return $scope.getPersonName(person) || '';
+	        }).reverse();
+	    }
+
+	    if (type == 'role-desc') {
+	        $scope.people = _.sortBy($scope.people, function (person) {
+	            return $scope.getRoleName(person) || '';
+	        });
+	    }
+
+	    if (type == 'role-asc') {
+	        $scope.people = _.sortBy($scope.people, function (person) {
+	            return $scope.getRoleName(person) || '';
+	        }).reverse();
+	    }
+
+	    if( type.indexOf( "availabilityDate-" ) == 0 )
 			$scope.people.sort( function( a, b ) {
 				if( a.availabilityDate != null && b.availabilityDate == null || a.availabilityDate < b.availabilityDate )
 					return -sign;
@@ -80,7 +102,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 			});
 	    if (type.indexOf("jobTitle-") == 0) {
 	    	$scope.people = _.sortBy( $scope.people, function( person ) {
-				return $scope.getJobTitle(person.jobTitle);
+				return $scope.getJobTitle(person.jobTitle).toLowerCase() || 'z';
 			} );
 			if(type.indexOf("asc") > -1) {
 				$scope.people.reverse();
@@ -250,15 +272,19 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 			$scope.findResources( $state.params );
 		}
 
-		//		$scope.rolesMap = rolesMap;
-		//
-		//		$scope.getRoleName = function( resource ) {
-		//			var ret = UNSPECIFIED;
-		//			if( resource && $scope.rolesMap[ resource ] ) {
-		//				ret = $scope.rolesMap[ resource ].title;
-		//			}
-		//			return ret;
-		//		};
+		$scope.rolesMap = rolesMap;
+
+		$scope.getRoleName = function (person) {
+		    var resource;
+            if (person.primaryRole) {
+                resource = person.primaryRole.resource;
+            }
+	        var ret = UNSPECIFIED;
+	        if (resource && $scope.rolesMap[resource]) {
+	            ret = $scope.rolesMap[resource].title;
+	        }
+	        return ret;
+	    };
 	});
 
 	Resources.get('jobTitles').then(function (result) {
@@ -280,7 +306,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
 	});
 
 	$scope.getJobTitle = function (jobTitle) {
-	    var ret;
+	    var ret = "";
 	    if (jobTitle && jobTitle.resource) {
 	        var resource = jobTitle.resource;
 
@@ -386,17 +412,6 @@ function( $scope, $state, $location, $filter, $q, Resources, People, AssignmentS
     };
 
     $scope.roleChanged = function(value) {
-        //$scope.people.sort(function(a, b) {
-        //    if ($scope.isPrimaryRole(a, value) && !$scope.isPrimaryRole(b, value)) {
-        //        return -1;
-        //    }
-
-        //    if ($scope.isPrimaryRole(b, value) && !$scope.isPrimaryRole(a, value)) {
-        //        return 1;
-        //    }
-
-        //    return 0;
-        //});
         $scope.filterRole2 = value;
     };
 
