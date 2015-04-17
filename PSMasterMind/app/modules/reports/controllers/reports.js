@@ -99,7 +99,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 	$scope.reportPerson = '';
 
 	$scope.projectStates = {
-		all: true,
+		all: false,
 		active: false,
 		backlog: false,
 		forecasted: false,
@@ -112,12 +112,12 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		all: false,
 		sales: false,
 		administration: false,
-		clientexperience: false,
+		clientexperiencemgmt: false,
 		development: false,
 		architects: false,
 		marketing: false,
 		digitalexperience: false,
-		executives: false
+		executivemgmt: false
 	};
 
 	$scope.selectProjectState = function( e, state ) {
@@ -126,15 +126,16 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		if( $scope.projectStatesDisabled )
 			return;
 
-		if( state == 'all' && !$scope.projectStates[ state ] )
+		$scope.projectStates[ state ] = !$scope.projectStates[ state ];
+		if( state == 'all' && $scope.projectStates[ state ] )
 			for( prop in $scope.projectStates ) {
 				$scope.projectStates[ prop ] = true;
 			}
-		else if( state == 'all' && $scope.projectStates[ state ] )
+		else if( state == 'all' && !$scope.projectStates[ state ] )
 			for( prop in $scope.projectStates ) {
 				$scope.projectStates[ prop ] = false;
 			}
-		else if( state != 'all' && $scope.projectStates[ state ] )
+		else if( state != 'all' && !$scope.projectStates[ state ] )
 			$scope.projectStates[ 'all' ] = false;
 
 		$scope.reportProject = null;
@@ -143,32 +144,56 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 	$scope.selectUserGroup = function( e, group ) {
 		var prop;
 
-		if( group == 'all' && !$scope.userGroups[ group ] )
+		$scope.userGroups[ group ] = !$scope.userGroups[ group ];
+		if( group == 'all' && $scope.userGroups[ group ] )
 			for( prop in $scope.userGroups ) {
 				$scope.userGroups[ prop ] = true;
 			}
-		else if( group == 'all' && $scope.userGroups[ group ] )
+		else if( group == 'all' && !$scope.userGroups[ group ] )
 			for( prop in $scope.userGroups ) {
 				$scope.userGroups[ prop ] = false;
 			}
-		else if( group != 'all' && $scope.userGroups[ group ] )
+		else if( group != 'all' && !$scope.userGroups[ group ] )
 			$scope.userGroups[ 'all' ] = false;
+		
+		mapUserGroupToUserRoles();
 	};
 
 	$scope.selectUserRole = function( e, role ) {
 		var prop;
 
-		if( role == 'all' && !$scope.userRoles[ role ].value )
+		$scope.userRoles[ role ].value = !$scope.userRoles[ role ].value;
+		if( role == 'all' && $scope.userRoles[ role ].value )
 			for( prop in $scope.userRoles ) {
 				$scope.userRoles[ prop ].value = true;
 			}
-		else if( role == 'all' && $scope.userRoles[ role ].value )
+		else if( role == 'all' && !$scope.userRoles[ role ].value )
 			for( prop in $scope.userRoles ) {
 				$scope.userRoles[ prop ].value = false;
 			}
-		else if( role != 'all' && $scope.userRoles[ role ] )
+		else if( role != 'all' && !$scope.userRoles[ role ] )
 			$scope.userRoles[ 'all' ].value = false;
 
+	};
+	
+	// map between people group names and roles: {"DEVELOPMENT": ["SSE", "SSA", "SE
+	// ...]}
+	var mapUserGroupToUserRoles = function() {
+		// clear selected roles
+		_.each($scope.userRoles, function(userRole){
+			userRole.value = false;
+		});
+		
+		// set a selected roles for which were selected apropriate groups - migrate
+		// selection from groups to roles
+		for(var prop in $scope.userGroups ) {
+			if( $scope.userGroups[ prop ] === true ) {
+				var roles = $scope.groupRoleMapping[ prop ];
+				for(var i = 0; roles && i < roles.length; i++ )
+					if( $scope.userRoles[roles[ i ].toLowerCase( ) ] )
+						$scope.userRoles[roles[ i ].toLowerCase( ) ].value = true;
+			}
+		}
 	};
 
 	$scope.loadRoles = function( ) {
@@ -202,6 +227,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 			}
 
 		} );
+		
+		$scope.groupRoleMapping = People.getPeopleGroupMapping( );
 	};
 
 	$scope.selectReportTerms = function( e, term ) {
@@ -627,7 +654,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 				};
 
 				return {
-					value: m.name,
+					value: Util.getPersonName(m, true),
 					resource: m.resource
 				};
 			} );
@@ -732,7 +759,8 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 				} );
 			} );
 		} );
-
+		
+		$scope.selectProjectState(null, 'all');
 	};
 
 	$scope.init = function( ) {
@@ -793,29 +821,10 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 			cond = cond || !reportProject || (reportProject.resource && $scope.originalProjects[ i ].resource == reportProject.resource);
 			cond = cond || $scope.projectStates[ 'all' ];
 			cond = cond || $scope.projectStates[ projectStatuses[ $scope.originalProjects[ i ].resource ] ];
-			cond = cond || reportClient && $scope.originalProjects[ i ].customerName == reportClient;
+			cond = cond && (!reportClient || $scope.originalProjects[ i ].customerName == reportClient);
 
 			if( cond ) {
 				result.push( $scope.originalProjects[ i ] );
-			}
-		}
-
-		// map between people group names and roles: {"DEVELOPMENT": ["SSE", "SSA", "SE
-		// ...]}
-		var groupRoleMapping = People.getPeopleGroupMapping( );
-
-		var prop;
-		var roles;
-
-		// set a selected roles for which were selected apropriate groups - migrate
-		// selection from groups to roles
-		for( prop in $scope.userGroups ) {
-			if( $scope.userGroups[ prop ] === true ) {
-				roles = groupRoleMapping[ prop ];
-
-				for( i = 0; roles && i < roles.length; i++ )
-					if( $scope.userRoles[                                                   roles[ i ].toLowerCase( ) ] )
-						$scope.userRoles[                                                   roles[ i ].toLowerCase( ) ].value = true;
 			}
 		}
 
@@ -1509,13 +1518,14 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 						//line += [ '--', '--' ].join( ',' );
 
 						if( !record.roles[ j ].persons[ k ].hours || record.roles[ j ].persons[ k ].hours.length == 0 ) {
-							//line += [ '--' ].join( ',' );
-							line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
-							line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
-							line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.hoursToCSV.stringify( record.roles[ j ].abbreviation )) + $scope.CSVSplitter;
-							line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].abbreviation ) ) + $scope.CSVSplitter;
-							line += [ '--', '--', '--', '--' ].join( $scope.CSVSplitter );
-							line += '\r\n';
+							//Doesn't show line if hours absent (By Brian confirm)
+							continue;
+//							line += $scope.hoursToCSV.stringify( record.name ) + $scope.CSVSplitter;
+//							line += $scope.hoursToCSV.stringify( record.roles[ j ].persons[ k ].name ) + $scope.CSVSplitter;
+//							line += (record.roles[ j ].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned': $scope.hoursToCSV.stringify( record.roles[ j ].abbreviation )) + $scope.CSVSplitter;
+//							line += $scope.hoursToCSV.stringify( getDepartment( record.roles[ j ].abbreviation ) ) + $scope.CSVSplitter;
+//							line += [ '--', '--', '--', '--' ].join( $scope.CSVSplitter );
+//							line += '\r\n';
 						}
 						var l = 0;
 
@@ -1930,6 +1940,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
         a.href = canvas.toDataURL('image/png');
         document.body.appendChild(a);
         a.click();
-    }
+    };
 	
 } ] );

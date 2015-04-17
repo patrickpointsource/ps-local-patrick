@@ -600,7 +600,9 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 		e.stopPropagation( );
 		var evt = document.createEvent( "MouseEvents" );
 		evt.initMouseEvent( "click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null );
-		btn.attr( 'href', 'data:text/csv;charset=UTF-8,' + encodeURIComponent( $scope.csvData ));
+		var csvData = new Blob([$scope.csvData], { type: 'text/csv' }); //Using Blob object to support large report.
+		var csvUrl = URL.createObjectURL(csvData);
+		btn.attr('href', csvUrl);
 		btn.click( onInnerReportLink );
 		btn.get( 0 ).dispatchEvent( evt );
     };

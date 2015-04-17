@@ -93,7 +93,7 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
     $scope.reportPerson = '';
 
     $scope.projectStates = {
-        all: true,
+        all: false,
         active: false,
         backlog: false,
         forecasted: false,
@@ -103,15 +103,15 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
     };
 
     $scope.userGroups = {
-        all: false,
-        sales: false,
-        administration: false,
-        clientexperience: false,
-        development: false,
-        architects: false,
-        marketing: false,
-        digitalexperience: false,
-        executives: false
+    	all: false,
+    	sales: false,
+    	administration: false,
+    	clientexperiencemgmt: false,
+    	development: false,
+    	architects: false,
+    	marketing: false,
+    	digitalexperience: false,
+    	executivemgmt: false
     };
 
     $scope.selectProjectState = function (e, state)
@@ -121,58 +121,80 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
         if ($scope.projectStatesDisabled)
             return;
 
-        if (state == 'all' && !$scope.projectStates[state])
+        $scope.projectStates[ state ] = !$scope.projectStates[ state ];
+        if (state == 'all' && $scope.projectStates[state])
             for (prop in $scope.projectStates)
             {
                 $scope.projectStates[prop] = true;
             }
-        else if (state == 'all' && $scope.projectStates[state])
+        else if (state == 'all' && !$scope.projectStates[state])
             for (prop in $scope.projectStates)
             {
                 $scope.projectStates[prop] = false;
             }
-        else if (state != 'all' && $scope.projectStates[state])
+        else if (state != 'all' && !$scope.projectStates[state])
             $scope.projectStates['all'] = false;
 
         $scope.reportProject = null;
     };
 
-    $scope.selectUserGroup = function (e, group)
-    {
+    $scope.selectUserGroup = function (e, group) {
         var prop;
 
-        if (group == 'all' && !$scope.userGroups[group])
+        $scope.userGroups[ group ] = !$scope.userGroups[ group ];
+        if (group == 'all' && $scope.userGroups[group])
             for (prop in $scope.userGroups)
             {
                 $scope.userGroups[prop] = true;
             }
-        else if (group == 'all' && $scope.userGroups[group])
+        else if (group == 'all' && !$scope.userGroups[group])
             for (prop in $scope.userGroups)
             {
                 $scope.userGroups[prop] = false;
             }
-        else if (group != 'all' && $scope.userGroups[group])
+        else if (group != 'all' && !$scope.userGroups[group])
             $scope.userGroups['all'] = false;
+
+        mapUserGroupToUserRoles();
     };
 
-    $scope.selectUserRole = function (e, role)
-    {
+    $scope.selectUserRole = function (e, role) {
         var prop;
 
-        if (role == 'all' && !$scope.userRoles[role].value)
+        $scope.userRoles[ role ].value = !$scope.userRoles[ role ].value;
+        if (role == 'all' && $scope.userRoles[role].value)
             for (prop in $scope.userRoles)
             {
                 $scope.userRoles[prop].value = true;
             }
-        else if (role == 'all' && $scope.userRoles[role].value)
+        else if (role == 'all' && !$scope.userRoles[role].value)
             for (prop in $scope.userRoles)
             {
                 $scope.userRoles[prop].value = false;
             }
-        else if (role != 'all' && $scope.userRoles[role])
+        else if (role != 'all' && !$scope.userRoles[role])
             $scope.userRoles['all'].value = false;
-
     };
+    
+	// map between people group names and roles: {"DEVELOPMENT": ["SSE", "SSA", "SE
+	// ...]}
+	var mapUserGroupToUserRoles = function() {
+		// clear selected roles
+		_.each($scope.userRoles, function(userRole){
+			userRole.value = false;
+		});
+		
+		// set a selected roles for which were selected apropriate groups - migrate
+		// selection from groups to roles
+		for(var prop in $scope.userGroups ) {
+			if( $scope.userGroups[ prop ] === true ) {
+				var roles = $scope.groupRoleMapping[ prop ];
+				for(var i = 0; roles && i < roles.length; i++ )
+					if( $scope.userRoles[roles[ i ].toLowerCase( ) ] )
+						$scope.userRoles[roles[ i ].toLowerCase( ) ].value = true;
+			}
+		}
+	};
 
     $scope.loadRoles = function ()
     {
@@ -208,6 +230,8 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
             }
 
         });
+        
+        $scope.groupRoleMapping = People.getPeopleGroupMapping( );
     };
 
     $scope.selectReportTerms = function (e, term)
@@ -254,7 +278,7 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
                 };
 
                 return {
-                    value: m.name,
+                    value: Util.getPersonName(m, true),
                     resource: m.resource
                 };
             });
@@ -371,7 +395,8 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
                 });
             });
         });
-
+        
+        $scope.selectProjectState(null, 'all');
     };
 
     $scope.init = function ()
@@ -435,32 +460,11 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
             cond = cond || reportProject && reportProject.resource && $scope.originalProjects[i].resource == reportProject.resource;
             cond = cond || $scope.projectStates['all'];
             cond = cond || $scope.projectStates[projectStatuses[$scope.originalProjects[i].resource]];
-            cond = cond || reportClient && $scope.originalProjects[i].customerName == reportClient;
+            cond = cond && (!reportClient || $scope.originalProjects[ i ].customerName == reportClient);
 
             if (cond)
             {
                 result.push($scope.originalProjects[i]);
-            }
-        }
-
-        // map between people group names and roles: {"DEVELOPMENT": ["SSE", "SSA", "SE
-        // ...]}
-        var groupRoleMapping = People.getPeopleGroupMapping();
-
-        var prop;
-        var roles;
-
-        // set a selected roles for which were selected apropriate groups - migrate
-        // selection from groups to roles
-        for (prop in $scope.userGroups)
-        {
-            if ($scope.userGroups[prop] === true)
-            {
-                roles = groupRoleMapping[prop];
-
-                for (i = 0; roles && i < roles.length; i++)
-                    if ($scope.userRoles[roles[i].toLowerCase()])
-                        $scope.userRoles[roles[i].toLowerCase()].value = true;
             }
         }
 
@@ -1008,48 +1012,51 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				     //init projectMapping with entries related to hours which were logged by persons who are not assigned on project
 				     for (i = 0; i < reportHours.length; i++)
 				     {
+				    	 if ($scope.peopleMap[ reportHours[ i ].person.resource ] &&
+				    			 (!reportPerson || reportPerson.resource == reportHours[ i ].person.resource)) {
+				        		// when we have project logged entry
+				    		 if (reportHours[i].project && $scope.userRoles[ 'all' ].value) { //Show Unassigned records if 'All roles' selected ONLY.
+					             if (reportHours[i].project.resource && !projectMapping[reportHours[i].project.resource])
+					                 projectMapping[reportHours[i].project.resource] = {};
 
-				         // when we have project logged entry
-				         if (reportHours[i].project)
-				         {
-				             if (reportHours[i].project.resource && !projectMapping[reportHours[i].project.resource])
-				                 projectMapping[reportHours[i].project.resource] = {};
+					             if (!projectMapping[reportHours[i].project.resource][CONSTS.UNKNOWN_ROLE])
+					                 projectMapping[reportHours[i].project.resource][CONSTS.UNKNOWN_ROLE] = [];
 
-				             if (!projectMapping[reportHours[i].project.resource][CONSTS.UNKNOWN_ROLE])
-				                 projectMapping[reportHours[i].project.resource][CONSTS.UNKNOWN_ROLE] = [];
+					             personEntry = _.find(projectMapping[reportHours[i].project.resource][CONSTS.UNKNOWN_ROLE], function (p)
+					             {
+					                 return p.resource == reportHours[i].person.resource;
+					             });
 
-				             personEntry = _.find(projectMapping[reportHours[i].project.resource][CONSTS.UNKNOWN_ROLE], function (p)
-				             {
-				                 return p.resource == reportHours[i].person.resource;
-				             });
+					             if (!personEntry)
+					                 projectMapping[reportHours[i].project.resource][CONSTS.UNKNOWN_ROLE].push({
+					                     resource: reportHours[i].person.resource,
+					                     name: Util.getPersonName($scope.peopleMap[reportHours[i].person.resource])
+					                 });
 
-				             if (!personEntry)
-				                 projectMapping[reportHours[i].project.resource][CONSTS.UNKNOWN_ROLE].push({
-				                     resource: reportHours[i].person.resource,
-				                     name: Util.getPersonName($scope.peopleMap[reportHours[i].person.resource])
-				                 });
+					             // when we have logged entry for tasks
+					         } else if (reportHours[i].task) {
+					             if (reportHours[i].task.resource && !projectMapping[reportHours[i].task.resource])
+					                 projectMapping[reportHours[i].task.resource] = {};
 
-				             // when we have logged entry for tasks
-				         } else if (reportHours[i].task)
-				         {
-				             if (reportHours[i].task.resource && !projectMapping[reportHours[i].task.resource])
-				                 projectMapping[reportHours[i].task.resource] = {};
+					             if (!projectMapping[reportHours[i].task.resource][CONSTS.UNKNOWN_ROLE])
+					                 projectMapping[reportHours[i].task.resource][CONSTS.UNKNOWN_ROLE] = [];
 
-				             if (!projectMapping[reportHours[i].task.resource][CONSTS.UNKNOWN_ROLE])
-				                 projectMapping[reportHours[i].task.resource][CONSTS.UNKNOWN_ROLE] = [];
+					             personEntry = _.find(projectMapping[reportHours[i].task.resource][CONSTS.UNKNOWN_ROLE], function (p)
+					             {
+					                 return p.resource == reportHours[i].person.resource;
+					             });
 
-				             personEntry = _.find(projectMapping[reportHours[i].task.resource][CONSTS.UNKNOWN_ROLE], function (p)
-				             {
-				                 return p.resource == reportHours[i].person.resource;
-				             });
-
-				             if (!personEntry)
-				                 projectMapping[reportHours[i].task.resource][CONSTS.UNKNOWN_ROLE].push({
-				                     resource: reportHours[i].person.resource,
-				                     name: Util.getPersonName($scope.peopleMap[reportHours[i].person.resource]),
-				                     abbreviation: $scope.peopleMap[reportHours[i].person.resource].abbreviation
-				                 });
-				         }
+					             var roleAbbreviation = $scope.peopleMap[ reportHours[ i ].person.resource ].abbreviation ? $scope.peopleMap[ reportHours[ i ].person.resource ].abbreviation.toLowerCase() : 'all'; 
+					             var personRoleSelected = $scope.userRoles[ roleAbbreviation ] ? $scope.userRoles[ roleAbbreviation ].value : $scope.userRoles[ 'all'].value; 
+										
+					             if (!personEntry && personRoleSelected)
+					                 projectMapping[reportHours[i].task.resource][CONSTS.UNKNOWN_ROLE].push({
+					                     resource: reportHours[i].person.resource,
+					                     name: Util.getPersonName($scope.peopleMap[reportHours[i].person.resource]),
+					                     abbreviation: $scope.peopleMap[reportHours[i].person.resource].abbreviation
+					                 });
+					         }
+				    	 }
 				     }
 
 				     for (i = 0; i < reportHours.length; i++)
@@ -1251,13 +1258,14 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
                         if (!record.roles[j].persons[k].hours || record.roles[j].persons[k].hours.length == 0)
                         {
-                            //line += [ '--' ].join( ',' );
-                            line += $scope.hoursToCSV.stringify(record.name) + ',';
-                            line += record.roles[j].persons[k].name + ',';
-                            line += (record.roles[j].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned' : record.roles[j].abbreviation) + ',';
-                            line += $scope.hoursToCSV.stringify(getDepartment(record.roles[j].abbreviation)) + ',';
-                            line += ['--', '--', '--', '--'].join(',');
-                            line += '\r\n';
+//    						//Doesn't show line if hours absent (By Brian confirm)
+							continue;
+//                            line += $scope.hoursToCSV.stringify(record.name) + ',';
+//                            line += record.roles[j].persons[k].name + ',';
+//                            line += (record.roles[j].abbreviation == CONSTS.UNKNOWN_ROLE ? 'Currently Unassigned' : record.roles[j].abbreviation) + ',';
+//                            line += $scope.hoursToCSV.stringify(getDepartment(record.roles[j].abbreviation)) + ',';
+//                            line += ['--', '--', '--', '--'].join(',');
+//                            line += '\r\n';
                         }
                         var l = 0;
 
@@ -1471,9 +1479,9 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 
                 evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 
-                btn.attr('href', 'data:text/csv;charset=UTF-8,' + encodeURIComponent($scope.csvData));
-
-                //skipGenerate = true;
+        		var csvData = new Blob([$scope.csvData], { type: 'text/csv' }); //Using Blob object to support large report.
+        		var csvUrl = URL.createObjectURL(csvData);
+        		btn.attr('href', csvUrl);
 
                 btn.click($scope.hoursToCSV.onInnerReportLink);
 
