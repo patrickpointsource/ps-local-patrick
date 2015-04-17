@@ -381,12 +381,13 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
             return res;
         };
         
+        var isAllRolesSelected = _.find(params.userRoles, function(role){ return role.ToLowerCase() == 'all'; });
         //init projectMapping with entries related to hours which were logged by persons who are not assigned on project
         for (var i = 0; i < reportHours.length; i ++) {
         	if (peopleMap[ reportHours[ i ].person.resource ] &&
 					(!params.person || params.person.resource == reportHours[ i ].person.resource)) {
         		// when we have project logged entry
-                if (reportHours[ i ].project && $scope.userRoles[ 'all' ].value) { //Show Unassigned records if 'All roles' selected ONLY.
+                if (reportHours[ i ].project && isAllRolesSelected) { //Show Unassigned records if 'All roles' selected ONLY.
                     if(  reportHours[ i ].project.resource && !projectMapping[ reportHours[ i ].project.resource ] )
                         projectMapping[ reportHours[ i ].project.resource ] = {};
 
@@ -416,8 +417,9 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
                     });
                     
                     var roleAbbr = peopleMap[ reportHours[ i ].person.resource ].abbreviation ? peopleMap[ reportHours[ i ].person.resource ].abbreviation.toLowerCase() : 'all'; 
+					var roleSelected = _.find(params.userRoles, function(role){ return role.ToLowerCase() == roleAbbr; });
 						
-					if (!personEntry && _.contains(params.userRoles, roleAbbr))
+					if (!personEntry && roleSelected)
                         projectMapping[ reportHours[ i ].task.resource ][ UNDETERMINED_ROLE ].push( {
                             resource: reportHours[ i ].person.resource,
                             name:  util.getPersonName(peopleMap[ reportHours[ i ].person.resource ]),
