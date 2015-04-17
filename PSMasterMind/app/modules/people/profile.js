@@ -1047,7 +1047,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
     };
 
     $scope.canViewPublicPersonnelData = function() {
-        if ($scope.isMe) {
+        if ($scope.isMe()) {
             return $rootScope.hasPermissions(CONSTS.VIEW_MY_PUBLIC_PERSONNELDATA);
         } else {
             return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_PUBLIC_PERSONNELDATA);
@@ -1055,7 +1055,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
     };
 
     $scope.canViewPrivatePersonnelData = function () {
-        if ($scope.isMe) {
+        if ($scope.isMe()) {
             return $rootScope.hasPermissions(CONSTS.VIEW_MY_PRIVATE_PERSONNELDATA);
         } else {
             return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_PRIVATE_PERSONNELDATA);
