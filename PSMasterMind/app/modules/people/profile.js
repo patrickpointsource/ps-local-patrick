@@ -1070,10 +1070,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
         }
     };
 
-    $scope.canViewPersonnelData = function () {
-        return $rootScope.hasPermissions(CONSTS.VIEW_PERSONNEL_DATA) || $scope.isMe();
-    };
-
     $scope.canViewPermissions = function() {
         if ($scope.isMe()) {
             return $rootScope.hasPermissions(CONSTS.VIEW_MY_SECURITY_ROLES);
@@ -1091,6 +1087,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             !$scope.canViewSecondaryRoles() &&
             !$scope.canViewPrimaryRole() &&
             !$scope.canViewPublicPersonnelData();
+
+        return can;
+    };
+
+    $scope.canEditOnlyBasicProps = function () {
+        var can = !$scope.canEditSecurityRoles() &&
+            !$scope.canEditRolesTitles() &&
+            !$scope.canEditPersonnelData();
 
         return can;
     };
