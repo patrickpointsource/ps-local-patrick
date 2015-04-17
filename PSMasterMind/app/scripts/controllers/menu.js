@@ -182,7 +182,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 			e.stopPropagation();
 			e.preventDefault();
 		}
-		
+
 		if (this[handler]) {
 			var li = $(e.target).closest('li');
 
@@ -307,7 +307,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 	};
 	
 	if (!$scope.additionalClass)
-		$scope.additionalClass = 'navbar-inverse visible-xs visible-sm';
+		$scope.additionalClass = 'navbar-inverse visible-xs visible-sm visible-md';
 	
 	$scope.initMenu = function() {
 		DepartmentsService.loadDepartmentCategories().then(function(res) {
