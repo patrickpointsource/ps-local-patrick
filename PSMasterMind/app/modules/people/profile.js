@@ -1049,7 +1049,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
     };
 
     $scope.canViewPublicPersonnelData = function() {
-        if ($scope.isMe) {
+        if ($scope.isMe()) {
             return $rootScope.hasPermissions(CONSTS.VIEW_MY_PUBLIC_PERSONNELDATA);
         } else {
             return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_PUBLIC_PERSONNELDATA);
@@ -1057,7 +1057,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
     };
 
     $scope.canViewPrivatePersonnelData = function () {
-        if ($scope.isMe) {
+        if ($scope.isMe()) {
             return $rootScope.hasPermissions(CONSTS.VIEW_MY_PRIVATE_PERSONNELDATA);
         } else {
             return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_PRIVATE_PERSONNELDATA);
@@ -1070,10 +1070,6 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
         } else {
             return $rootScope.hasPermissions(CONSTS.EDIT_PROFILE);
         }
-    };
-
-    $scope.canViewPersonnelData = function () {
-        return $rootScope.hasPermissions(CONSTS.VIEW_PERSONNEL_DATA) || $scope.isMe();
     };
 
     $scope.canViewPermissions = function() {
@@ -1093,6 +1089,14 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
             !$scope.canViewSecondaryRoles() &&
             !$scope.canViewPrimaryRole() &&
             !$scope.canViewPublicPersonnelData();
+
+        return can;
+    };
+
+    $scope.canEditOnlyBasicProps = function () {
+        var can = !$scope.canEditSecurityRoles() &&
+            !$scope.canEditRolesTitles() &&
+            !$scope.canEditPersonnelData();
 
         return can;
     };

@@ -82,10 +82,10 @@
                             <div style="padding-top: 13px;">
                                 <strong class="personDetailLabel">Email</strong>
                             </div>
-                            <div class="padding-top-10" ng-if="canViewPersonnelData() && canViewPublicPersonnelData()">
+                            <div class="padding-top-10" ng-if="canViewPublicPersonnelData()">
                                 <strong class="profilePartTimeLabel">Manager</strong>
                             </div>
-                            <div ng-show="canSeeCapacity && isManager" class="padding-top-10" ng-if="canViewPersonnelData() && canViewPrivatePersonnelData()">
+                            <div ng-show="canSeeCapacity && isManager" class="padding-top-10" ng-if="canViewPrivatePersonnelData()">
                                 <strong class="profilePartTimeLabel">Vacation days</strong>
                             </div>
                         </div>
@@ -108,11 +108,11 @@
                             <div class="padding-top-10" ng-if="canViewPersonnelData() && canViewPublicPersonnelData()">
                                 <span>{{getPersonName(profileManager, true) || "Not Selected"}}</span>
                             </div>
-                            <div class="padding-top-10" ng-show="isManager" ng-if="canViewPersonnelData() && canViewPrivatePersonnelData()">
+                            <div class="padding-top-10" ng-show="isManager" ng-if="canViewPrivatePersonnelData()">
                                 <span>{{profile.vacationCapacity || 'Not Set'}} <span ng-show="profile.vacationCapacity">days</span></span>
                             </div>
                         </div>
-                        <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;" ng-if="canViewPersonnelData()">
+                        <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;">
                             <div ng-show="!profile.partTime" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding" ng-if="canViewPublicPersonnelData()">
                                 <i class="fa fa-check fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Full time</span>
                             </div>
@@ -132,17 +132,17 @@
                     </div>
                     
                     <!-- Left column EDIT Mode-->
-                    <div class="col-xs-12 col-sm-6 no-padding" ng-show="editMode" ng-if="!canSeeOnlyBasicProps()">
+                    <div class="col-xs-12 col-sm-6 no-padding" ng-show="editMode" ng-if="!canEditOnlyBasicProps()">
 
                         <div ng-if="canEditPersonnelData()" class="padding-top-10 profile-edit-select">
                             <strong>Job Title:</strong>
                             <select class="form-control" ng-model="profile.jobTitle.resource" ng-options="m.resource as m.title for m in allTitles"></select>
                         </div>
-                        <div ng-if="canEditPersonnelData() && canEditRolesTitles()" class="padding-top-10 profile-edit-select">
+                        <div ng-if="canEditRolesTitles()" class="padding-top-10 profile-edit-select">
                             <strong>Primary Role:</strong>
                             <select class="form-control" ng-model="profile.primaryRole.resource" ng-options="m.resource as m.title for m in allRoles" ng-change="primaryRoleChanged()"></select>
                         </div>
-                        <div ng-show="isManager && canEditRolesTitles()" class="padding-top-10">
+                        <div ng-show="canEditRolesTitles()" class="padding-top-10">
                             <div>
                                 <strong>Secondary Roles:</strong>
                             </div>
@@ -160,19 +160,19 @@
                             </div>
                         </div>
 
-                        <div id="permissionGroup" ng-show="isManager" class="padding-top-10" ng-if="canEditSecurityRoles()">
+                        <div id="permissionGroup" class="padding-top-10" ng-if="canEditSecurityRoles()">
                             <div>
                                 <strong>Select permissions groups:</strong>
                             </div>
                             <select class="selectpicker select-user-groups form-control" multiple data-selected-text-format="count>3" ng-model="userSecurityGroups" ng-options="g.name for g in securityGroups" ng-change="userSecurityGroupsChanged(this)"></select>
                         </div>
 
-                        <div class="row col-xs-12 no-margin-bottom" ng-show="isManager" ng-if="canEditSecurityRoles()">
+                        <div class="row col-xs-12 no-margin-bottom" ng-if="canEditSecurityRoles()">
                             <strong for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</strong>
                             <div ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</div>
                         </div>
 
-                        <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-3 col-md-6 col-xs-12" ng-show="isManager" ng-if="canEditSecurityRoles()">
+                        <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-3 col-md-6 col-xs-12" ng-if="canEditSecurityRoles()">
                             <div class="col-xs-12 no-padding" ng-show="!editMode">{{userRole.name}}</div>
                             <div class="col-xs-11 col-sm-11 col-md-10 no-padding" ng-show="editMode">{{userRole.name}}</div>
                             <a ng-show="editMode" ng-click="removeUserRole($index)" class="col-xs-1 col-sm-1 col-md-2 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
