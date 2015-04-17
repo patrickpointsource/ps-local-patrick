@@ -90,12 +90,12 @@
                             <label>Department <span ng-if="selectedDepartment.departmentCode">{{selectedDepartment.departmentCode.name}}</span> Details</label>
                         </div>
                         <div class="col-xs-6">
-                        	<input type="submit" ng-disabled="!selectedDepartmentForm.$dirty || !selectedDepartment.departmentCategory" 
+                        	<input type="submit" ng-disabled="!selectedDepartmentForm.$dirty || notAllDataProvided()" 
                         		class="btn pull-right hidden-xs hidden-sm hidden-md visible-lg-inline-block" value="Save" ng-click="saveDepartmentPeople()">
                             <input type="submit" class="btn pull-right hidden-xs hidden-sm hidden-md visible-lg-inline-block" style="margin-right: 5px;" 
                             	value="Cancel" ng-click="cancelDepartment()">
                             
-                            <button ng-disabled="!selectedDepartmentForm.$dirty || !selectedDepartment.departmentCategory"  
+                            <button ng-disabled="!selectedDepartmentForm.$dirty || notAllDataProvided()"  
                             	class="btn pull-right hidden-lg visible-md-inline-block visible-sm-inline-block visible-xs-inline-block " ng-click="saveDepartmentPeople()">
 				            	<i class="fa fa-save"></i>
 				            </button>
@@ -140,7 +140,7 @@
                         </div>
                         <div class="col-xs-5">
 
-                            <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" 
+                            <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid || notAllDataProvided()" 
                             	class="btn pull-right hidden-xs hidden-sm hidden-md visible-lg-inline-block" style="margin-left:4px;" value="Save" ng-click="saveDepartmentPeople()">
                             <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" 
                             	class="btn pull-right hidden-xs hidden-sm hidden-md visible-lg-inline-block" value="Cancel" ng-click="cancelDepartmentPeople()">
@@ -244,11 +244,11 @@
 			    	</div>
 			        <div class="col-xs-5">
 			            
-                        <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="!departmentPeopleChanged" class="btn pull-right hidden-xs hidden-sm hidden-md visible-lg-inline-block" style="margin-left:4px;" value="Save" ng-click="saveDepartmentPeople()">
+                        <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="!departmentPeopleChanged || notAllDataProvided()" class="btn pull-right hidden-xs hidden-sm hidden-md visible-lg-inline-block" style="margin-left:4px;" value="Save" ng-click="saveDepartmentPeople()">
 			            <input type="submit" ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right hidden-xs hidden-sm hidden-md visible-lg-inline-block" value="Cancel" ng-click="cancelDepartmentPeople()">
 			            <input type="submit" ng-show="!selectedDepartment.editDepartmentPeople" ng-disabled="selectedDepartmentForm.$invalid" class="btn pull-right hidden-xs hidden-sm hidden-md visible-lg-inline-block" value="Edit" ng-click="onEditDepartmentPeople()" >
 			        
-			        	<button ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="!departmentPeopleChanged" 
+			        	<button ng-show="selectedDepartment.editDepartmentPeople" ng-disabled="!departmentPeopleChanged || notAllDataProvided()" 
 			        		class="btn pull-right hidden-lg visible-md-inline-block visible-sm-inline-block visible-xs-inline-block " style="margin-left:4px;" ng-click="saveDepartmentPeople()">
 			            	<i class="fa fa-save"></i>
 			            </button>

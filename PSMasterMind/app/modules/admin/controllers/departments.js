@@ -212,6 +212,8 @@ angular.module('Mastermind')
 			  if (ind >= 0)
 				  $scope.selectedDepartment.departmentPeople.splice(ind, 1);
 		  }
+		  
+		  $scope.selectedDepartmentPeople = [];
 	  };
 	  
 	  $scope.saveDepartmentPeople = function() {
@@ -261,6 +263,15 @@ angular.module('Mastermind')
 			else if (p1.name < p2.name)
 				return -1;
 		  });
+	  };
+	  
+	  $scope.notAllDataProvided = function() {
+		  var result = !$scope.selectedDepartment.departmentCategory;
+		  
+		  result = result || !$scope.selectedDepartment.departmentNickname;
+		  result = result || !$scope.selectedDepartment.departmentCode;
+		  
+		  return result;
 	  };
 
       $scope.checkAddDepartmentPerson = function(p) {
