@@ -272,7 +272,7 @@ describe('E2E: Administration Tests', function() {
 		    			    	return browser.isElementPresent($this.saveButton);
 		    			    }).then(function(){
 			    	   	   		browser.findElement($this.saveButton).click().then(function () {
-			    	   	   			browser.sleep(2000);
+			    	   	   			browser.sleep(3000);
 			    	   	   			$this.verifySecurityGroup($this.initial);
 			    	   	   		});
 		    			    });
@@ -749,7 +749,7 @@ describe('E2E: Administration Tests', function() {
 			    	   			$this.updateTask(browser, $this.initial);
 			    	   			browser.sleep(3000);
 			    	   	   		browser.findElement($this.addTaskButton).click().then(function () {
-				    	   			browser.sleep(1000);
+				    	   			browser.sleep(2000);
 			    	   	   			$this.verifyTask($this.initial);
 			    	   	   		});
 				    	    });
@@ -779,7 +779,7 @@ describe('E2E: Administration Tests', function() {
 		    	    			$this.updateTask(formElement, $this.updated);
 		    	    			browser.driver.sleep(3000);	
 			    	   			formElement.findElement($this.saveTaskButton).click().then(function () {
-			    	   				browser.sleep(1000);
+			    	   				browser.sleep(2000);
 			    	   				$this.verifyTask($this.updated);
 			    	   	   		});
 		    			   	});
