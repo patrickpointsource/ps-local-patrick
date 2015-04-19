@@ -39,12 +39,12 @@ describe('E2E: Administration Tests', function() {
 	it('Administration Test: Check Roles page.', function() {	
 		console.log('> Running: Administration - Check Roles page');
 		rolePage.checkRolesPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Check sorting on Roles page.', function() {	
 		console.log('> Running: Administration - Check sorting on Roles page');
 		rolePage.checkSortingOnRolesPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Create new role and verify.', function() {	
 		console.log('> Running: Administration - Create new role and verify');
@@ -59,77 +59,77 @@ describe('E2E: Administration Tests', function() {
 	it('Administration Test: Delete role and verify.', function() {	
 		console.log('> Running: Administration - Delete role and verify');
 		rolePage.deleteRoleAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Check Security Groups page.', function() {	
 		console.log('> Running: Administration - Check Security Groups page');
 		securityGroupPage.checkSecurityGroupsPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Create new security group and verify.', function() {	
 		console.log('> Running: Administration - Create new security group and verify');
 		securityGroupPage.createNewSecurityGroupAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Edit existing security group and verify.', function() {	
 		console.log('> Running: Administration - Edit existing security group and verify');
 		securityGroupPage.editExistingSecurityGroupAndVerify();
-	});
+	}, 60000);
 			
 	it('Administration Test: Add members to security group and verify.', function() {	
 		console.log('> Running: Administration - Add members to security group and verify');
 		securityGroupPage.addMembersToSecurityGroupAndVerify();
-	});
+	}, 60000);
 		
 	it('Administration Test: Remove members of security group and verify.', function() {	
 		console.log('> Running: Administration - Remove members of security group and verify');
 		securityGroupPage.removeMembersInSecurityGroupAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Update permissions in security group and verify.', function() {	
 		console.log('> Running: Administration - Update permissions in security group and verify');
 		securityGroupPage.updatePermissionsInSecurityGroupAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Delete permissions in security group and verify.', function() {	
 		console.log('> Running: Administration - Delete permissions in  security group and verify');
 		securityGroupPage.deletePermissionsInSecurityGroupAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Delete security group and verify.', function() {	
 		console.log('> Running: Administration - Delete security group and verify');
 		securityGroupPage.deleteSecurityGroupAndVerify();
-	});
+	}, 60000);
 		
 	it('Administration Test: Check Tasks page.', function() {	
 		console.log('> Running: Administration - Check Tasks page');
 		taskPage.checkTasksPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Create new task and verify.', function() {	
 		console.log('> Running: Administration - Create new task and verify');
 		taskPage.createNewTaskAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Edit existing task and verify.', function() {	
 		console.log('> Running: Administration - Edit existing task and verify');
 		taskPage.editExistingTaskAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Delete task and verify.', function() {	
 		console.log('> Running: Administration - Delete task and verify');
 		taskPage.deleteTaskAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Check Configuration page.', function() {	
 		console.log('> Running: Administration - Check Configuration page');
 		configurationPage.checkConfigurationPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Update Configuration and verify.', function() {	
 		console.log('> Running: Administration - Update Configuration and verify');
 		configurationPage.updateConfigurationAndVerify();
-	});
+	}, 60000);
 
 	
 	var updateElement = function (form, element, value, isClickable) {
@@ -471,10 +471,9 @@ describe('E2E: Administration Tests', function() {
 
 		this.verifySecurityGroup = function (securityGroup) {
 			var $this = this;
-    		browser.driver.sleep(3000);	
+    		browser.driver.sleep(5000);	
 			browser.findElement($this.selectGroup).sendKeys(securityGroup.name).then( function () {
 	       		if (securityGroup.members) {
-	        		browser.driver.sleep(3000);	
 	    			for (var i in securityGroup.members) {
 	    				element.all(by.repeater('member in selectedGroupMembers')).filter(function(elem, index) {
 	    					return elem.getText().then(function(text) {
