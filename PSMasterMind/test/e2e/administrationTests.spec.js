@@ -20,15 +20,18 @@ describe('E2E: Administration Tests', function() {
 	    browser.driver.manage().window().setSize(width, height);
     	
 		browser.driver.getCurrentUrl().then(function(url) {
-			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
-				browser.driver.get('http://localhost:9000/index.html#/');
- 	           	browser.driver.sleep(1000);
- 	           	browser.driver.getCurrentUrl().then(function(loginUrl) {
- 	           		if ( loginUrl.indexOf('http://localhost:9000/login.html') > -1 ) {  //  Re-login if needed
- 	           			login();
- 	           		} 
- 	           	});
-			}
+			browser.getAllWindowHandles().then(function (handles) {
+	            browser.switchTo().window(handles[0]);
+	            if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
+					browser.driver.get('http://localhost:9000/index.html#/');
+	 	           	browser.driver.sleep(1000);
+	 	           	browser.driver.getCurrentUrl().then(function(loginUrl) {
+	 	           		if ( loginUrl.indexOf('http://localhost:9000/login.html') > -1 ) {  //  Re-login if needed
+	 	           			login();
+	 	           		} 
+	 	           	});
+				} 
+	        });
 		});
 	});
 
@@ -269,6 +272,7 @@ describe('E2E: Administration Tests', function() {
 		    			    	return browser.isElementPresent($this.saveButton);
 		    			    }).then(function(){
 			    	   	   		browser.findElement($this.saveButton).click().then(function () {
+			    	   	   			browser.sleep(2000);
 			    	   	   			$this.verifySecurityGroup($this.initial);
 			    	   	   		});
 		    			    });
@@ -296,6 +300,7 @@ describe('E2E: Administration Tests', function() {
 		    		    	    	return browser.isElementPresent($this.saveButton);
 		    		    	    }).then(function(){		    		    	    	
 				    	   	   		browser.findElement($this.saveButton).click().then(function () {
+				    	   	   			browser.sleep(2000);
 				    	   	   			$this.verifySecurityGroup($this.updated);
 				    	   	   		});		    		    	    	
 		    		    	    });
@@ -323,6 +328,7 @@ describe('E2E: Administration Tests', function() {
 		    	    			$this.updateSecurityGroup(browser, $this.updated);
 		    	    			browser.driver.sleep(3000);	
 			    	   	   		browser.findElement($this.saveButton).click().then(function () {
+			    	   	   			browser.sleep(2000);
 			    	   	   			$this.verifySecurityGroup($this.updated);
 			    	   	   		});
 			    	   		});	
@@ -739,9 +745,11 @@ describe('E2E: Administration Tests', function() {
 		    	   			browser.wait(function(){	    		
 				    	    	return browser.isElementPresent($this.taskName);
 				    	    }).then(function(){
+			    	   			browser.sleep(1000);
 			    	   			$this.updateTask(browser, $this.initial);
 			    	   			browser.sleep(3000);
 			    	   	   		browser.findElement($this.addTaskButton).click().then(function () {
+				    	   			browser.sleep(1000);
 			    	   	   			$this.verifyTask($this.initial);
 			    	   	   		});
 				    	    });
@@ -771,6 +779,7 @@ describe('E2E: Administration Tests', function() {
 		    	    			$this.updateTask(formElement, $this.updated);
 		    	    			browser.driver.sleep(3000);	
 			    	   			formElement.findElement($this.saveTaskButton).click().then(function () {
+			    	   				browser.sleep(1000);
 			    	   				$this.verifyTask($this.updated);
 			    	   	   		});
 		    			   	});
@@ -866,7 +875,8 @@ describe('E2E: Administration Tests', function() {
 	    			   		$this.updateConfiguration(formElement, $this.interestedParties);
 	    		    		browser.driver.sleep(1000);
 	    			   		configElement.findElement(by.xpath('following-sibling::*[2]/self::div')).findElement($this.saveConfigurationButton).click().then(function () {
-			    	   	   		$this.verifyConfiguration($this.interestedParties);
+	    			   			browser.driver.sleep(2000);
+	    			   			$this.verifyConfiguration($this.interestedParties);
 		    	   	   		});
 	    			   	});
 	    		   	});

@@ -214,16 +214,23 @@ var sendEmailTo = function(notification) {
             dataAccess.getItem(vacationId, function(vacErr, vacation) {
                 if (!err) {
                     if (user) {
+                        // by default email to Manager
                         var personId = util.getId(vacation.person.resource);
+                        
+                        // if email to subordinate
+                        if (notification.type == 'ooo-approved' || notification.type == 'ooo-denied') {
+                            personId = util.getId(vacation.vacationManager.resource);
+                        }
+
                         dataAccess.getItem(personId, function(personErr, person) {
                             if (!personErr) {
                                 var message = "";
                                 if (notification.type == 'ooo-pending' || notification.type == 'ooo-cancelled') {
-                                    message = getOutOfOfficeRequestMessageForManager(util.getPersonName(user), util.getPersonName(person), vacation.type, vacation.startDate, vacation.endDate, vacation.description);
+                                    message = getOutOfOfficeRequestMessageForManager(util.getPersonName(user), util.getPersonName(person), vacation.type, vacation.startDate, vacation.endDate, vacation.description, notification.type);
                                 }
                                 
                                 if (notification.type == 'ooo-approved' || notification.type == 'ooo-denied') {
-                                    message = getOutOfOfficeRequestMessageForSubordinate(util.getPersonName(person), util.getPersonName(user), vacation.type, vacation.startDate, vacation.endDate, vacation.description);
+                                    message = getOutOfOfficeRequestMessageForSubordinate(util.getPersonName(user), util.getPersonName(person), vacation.type, vacation.startDate, vacation.endDate, vacation.description, notification.type);
                                 }
                                 
                                 message += smtpHelper.getServerInformation("NodeJS service", os.hostname(), configProperties.env);
@@ -291,8 +298,8 @@ var getOutOfOfficeRequestMessageForSubordinate = function (userName, personName,
     var result = '';
     
     var action = "approved";
-    if (notificationType == "ooo-cancelled") {
-        action = "cancelled";
+    if (notificationType == "ooo-denied") {
+        action = "denied";
     }
     
     var result = 

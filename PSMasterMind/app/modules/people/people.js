@@ -55,45 +55,108 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 		if( type == 'name-desc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return person.name.familyName.toLowerCase();
+				return $scope.getPersonName(person).toLowerCase() || '';
 			} );
 		}
 
 		if( type == 'name-asc' ) {
 			$scope.people = _.sortBy( $scope.people, function( person ) {
-				return person.name.familyName.toLowerCase();
+				return $scope.getPersonName(person).toLowerCase() || '';
 			} ).reverse( );
 		}
 
-		if( type == 'role-desc' ) {
-			$scope.people = _.sortBy($scope.people, function(person) {		
-			    return person.primaryRole ? person.primaryRole.abbreviation : "";
-			});
-		}
-
-		if( type == 'role-asc' ) {
-			$scope.people = _.sortBy($scope.people, function(person) {		
-				return person.primaryRole ? person.primaryRole.abbreviation : "";
-			}).reverse( );
-		}
-
 		if( type == 'group-desc' ) {
-		    $scope.people = _.sortBy($scope.people, function (person) {
-		        if (person.jobTitle) {
-		            return $scope.getJobTitle(person.jobTitle).toLowerCase();
-		        }
+			$scope.people.sort( function( a, b ) {
 
-		    });
+				if( !a.primaryRole && !b.primaryRole ) {
+					return 0;
+				}
+				if( !a.primaryRole ) {
+					return 1;
+				}
+				if( !b.primaryRole ) {
+					return -1;
+				}
+
+				if( a.primaryRole.title < b.primaryRole.title ) {
+					return -1;
+				} else if( a.primaryRole.title > b.primaryRole.title ) {
+					return 1;
+				} else {
+					return 0;
+				}
+			} );
 		}
 
 		if( type == 'group-asc' ) {
-		    $scope.people = _.sortBy($scope.people, function (person) {
-		        if (person.jobTitle) {
-		            return $scope.getJobTitle(person.jobTitle).toLowerCase();
-		        }
+			$scope.people.sort( function( a, b ) {
 
-		    }).reverse();
+				if( !a.primaryRole && !b.primaryRole ) {
+					return 0;
+				}
+				if( !a.primaryRole ) {
+					return 1;
+				}
+				if( !b.primaryRole ) {
+					return -1;
+				}
+
+				if( a.primaryRole.title < b.primaryRole.title ) {
+					return 1;
+				} else if( a.primaryRole.title > b.primaryRole.title ) {
+					return -1;
+				} else {
+					return 0;
+				}
+			} );
 		}
+
+		if( type == 'role-desc' ) {
+			$scope.people.sort( function( a, b ) {
+
+				if( !a.primaryRole && !b.primaryRole ) {
+					return 0;
+				}
+				if( !a.primaryRole ) {
+					return 1;
+				}
+				if( !b.primaryRole ) {
+					return -1;
+				}
+
+				if( a.primaryRole.abbreviation < b.primaryRole.abbreviation ) {
+					return -1;
+				} else if( a.primaryRole.abbreviation > b.primaryRole.abbreviation ) {
+					return 1;
+				} else {
+					return 0;
+				}
+			} );
+		}
+
+		if( type == 'role-asc' ) {
+			$scope.people.sort( function( a, b ) {
+
+				if( !a.primaryRole && !b.primaryRole ) {
+					return 0;
+				}
+				if( !a.primaryRole ) {
+					return 1;
+				}
+				if( !b.primaryRole ) {
+					return -1;
+				}
+
+				if( a.primaryRole.abbreviation < b.primaryRole.abbreviation ) {
+					return 1;
+				} else if( a.primaryRole.abbreviation > b.primaryRole.abbreviation ) {
+					return -1;
+				} else {
+					return 0;
+				}
+			} );
+		}
+
 
 		if( type == 'rate-desc' ) {
 			$scope.people.sort( function( a, b ) {
@@ -124,7 +187,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 	 * Changes list of people on a filter change
 	 */
 	$scope.handlePeopleFilterChanged = function( ) {
-		var peopleInRoleFields = [ "resource", "name", "familyName", "givenName", "primaryRole", "thumbnail", "jobTitle", "secondaryRoles" ];
+		var peopleInRoleFields = [ "resource", "name", "familyName", "givenName", "primaryRole", "thumbnail", "secondaryRoles" ];
 		var params = {fields : peopleInRoleFields };
 
 		//Check if the filter is a valid role
@@ -145,8 +208,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			} );
 		} else if( $scope.peopleFilter && $scope.peopleFilter != 'all' && ( $scope.peopleFilter.indexOf( ':' ) > -1 || $scope.peopleFilter.indexOf( ',' ) > -1 || !$scope.roleGroups[ $scope.peopleFilter ] ) ) {
 
-			//var tmp = $scope.peopleFilter.split( ':' );
-			var tmp = [$scope.peopleFilter];
+			var tmp = $scope.peopleFilter.split( ':' );
 			tmp = tmp[ tmp.length - 1 ];
 			tmp = tmp.split( ',' );
 			var includeInactive = _.indexOf( tmp, 'inactive' ) > -1;
@@ -165,21 +227,15 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 				} );
 			}
 			else {
-				params.categories = $scope.peopleFilter;
-				
+				params.role = roles;
 				if (includeInactive) {
 					params.includeInactive = includeInactive;
 				}
-				/*
 				Resources.refresh( "people/bytypes/byRoles", params).then( function( result ) {
 					$scope.people = result.members;
 					$scope.fillPeopleProps( );
 				} );
-				*/
-				Resources.refresh( "people/bytypes/byCategories", params).then( function( result ) {
-					$scope.people = result.members;
-					$scope.fillPeopleProps( );
-				} );
+				
 			}
 		}
 		//Otherwise just show all active people
@@ -476,39 +532,8 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 			//Kick off fetch all the people
 			$scope.buildTableView( );
 		});
-
-		Resources.get('jobTitles').then(function (result) {
-		    var members = result.members;
-		    $scope.allTitles = members;
-		    var titlesMap = {};
-		    for (var i = 0; i < members.length; i++) {
-		        titlesMap[members[i].resource] = members[i];
-		    }
-
-		    // sorting titles by title
-		    $scope.allTitles.sort(function (a, b) {
-		        var x = a.title ? a.title.toLowerCase() : '';
-		        var y = b.title ? b.title.toLowerCase() : '';
-		        return x < y ? -1 : x > y ? 1 : 0;
-		    });
-
-		    $scope.titlesMap = titlesMap;
-		});
 	};
 	
-	$scope.getJobTitle = function (jobTitle) {
-	    var ret = "";
-	    if (jobTitle && jobTitle.resource) {
-	        var resource = jobTitle.resource;
-
-	        if ($scope.titlesMap && $scope.titlesMap[resource]) {
-	            ret = $scope.titlesMap[resource].title;
-	        }
-	    }
-
-	    return ret;
-	};
-
 	init();
 	
 } ] );

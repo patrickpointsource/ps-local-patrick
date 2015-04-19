@@ -27,7 +27,6 @@
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css" />
     <link rel="stylesheet" href="bower_components/bootstrap-datepicker/css/datepicker.css" />
     <link rel="stylesheet" href="bower_components/bootstrap-select/bootstrap-select.css" />
-    <link rel="stylesheet" href="bower_components/nvd3/build/nv.d3.css" />
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
 </head>
@@ -52,19 +51,19 @@
             <header>
                 <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar1">
                     <div class="nav-bar-container col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="visible-md visible-lg navbar-breadcrumb">
+                        <div class="visible-lg navbar-breadcrumb">
                             <ng-include src="'views/breadcrumb.html'"></ng-include>
                         </div>
-                        <div class="visible-sm visible-xs navbar-header">
-                            <button type="button" class="navbar-toggle" ng-click="showHideMenu()">
+                        <div class="visible-md visible-sm visible-xs navbar-header">
+                            <button class="navbar-toggle" ng-click="showHideMenu()">
                                 <span class="sr-only">Toggle navigation</span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>  <span class="icon-bar"></span>
                             </button>
-                            <div class="hidden-md hidden-lg" style="white-space: nowrap;">
+                            <div class="hidden-lg" style="white-space: nowrap;">
                                 <a class="appTitle navbar-brand" href="#"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
                             </div>
                         </div>
                         <div class="collapse navbar-collapse width" id="navbar-collapse-mobile">
-                            <ng-include src="'views/mainMenu.html'" onload=" this.additionalClass = 'navbar-inverse visible-xs visible-sm' "></ng-include>
+                            <ng-include src="'views/mainMenu.html'" onload=" this.additionalClass = 'navbar-inverse visible-xs visible-sm visible-md' "></ng-include>
                         </div>
 
                         <div class="user-info-container" style="right: 90px;">
@@ -96,7 +95,7 @@
                 </nav>
 
                 <!-- Fixed Z-index to make sure the user menu can pop over it -->
-                <nav class="navbar navbar-inverse navbar-fixed-top hidden-xs hidden-sm" style="z-index: 900; top: 0px;" id="navbar2">
+                <nav class="navbar navbar-inverse navbar-fixed-top hidden-xs hidden-sm hidden-md" style="z-index: 900; top: 0px;" id="navbar2">
 
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
@@ -178,7 +177,6 @@
     <script type="text/javascript" src="bower_components/textAngular/dist/textAngular-sanitize.min.js"></script>
     <script type='application/javascript' src='bower_components/fastclick/lib/fastclick.js'></script>
     <script type="text/javascript" src="bower_components/d3/d3.js"></script>
-    <script type="text/javascript" src="bower_components/nvd3/build/nv.d3.js"></script>
     <script type="text/javascript" src="bower_components/dimple/dist/dimple.latest.js"></script>
 
     <!-- 	<script type="text/javascript" src="bower_components/twix/bin/twix.js"></script> -->
@@ -260,9 +258,9 @@
     <script src="modules/projects/services/linksService.js"></script>
     <!-- modules/reports -->
     <script src="modules/reports/controllers/reports.old.js"></script>
-    <!--<script src="modules/reports/controllers/reports.js"></script>
+    <!-- <script src="modules/reports/controllers/reports.js"></script>
     <script src="modules/reports/controllers/peopleReport.js"></script>
-    <script src="modules/reports/controllers/projectReport.js"></script>-->
+    <script src="modules/reports/controllers/projectReport.js"></script> -->
     <script src="modules/reports/controllers/verticalbarChart.js"></script>
     <script src="modules/reports/controllers/stackedAreaChart.js"></script>
     <script src="modules/reports/controllers/pieChart.js"></script>
