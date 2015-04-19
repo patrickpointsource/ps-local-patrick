@@ -61,22 +61,22 @@ describe('E2E: Role Tests', function() {
 	it('Role Test: Create & check role', function() {	
 		console.log('> Running: Role - Create & check that role exists');
 		createAndCheckRole();
-	});
+	}, 60000);
 
 	it('Role Test: Update & check hourly role attributes', function() {	
 		console.log('> Running: Role - Update & check hourly role attributes');
 		updateAndCheckHourlyAttributes();
-	});
+	}, 60000);
 
 	it('Role Test: Update & check monthly role attributes', function() {	
 		console.log('> Running: Role - Update & check monthly role attributes');
 		updateAndCheckMonthlyAttributes();
-	});	
+	}, 60000);	
 
 	it('Role Test: Delete role & check ', function() {	
 		console.log('> Running: Role - Delete role & check');
 		deleteRoleAndCheck();
-	});	
+	}, 60000);	
 
 	var createAndCheckRole  = function () {
 		browser.get('http://localhost:9000/index.html#/admin');
@@ -101,6 +101,7 @@ describe('E2E: Role Tests', function() {
 	   	    			isNonBillable.click();
 	   	    		}
 	   	    		browser.findElement(addRoleButton).click().then(function () {
+			    		browser.driver.sleep(2000);	
 	   	    	 		var titleElement = browser.findElement(by.cssContainingText('td', DEFAULT_TITLE));
 			    		expect(titleElement.getText()).toEqual(DEFAULT_TITLE);
 	   	    		});
@@ -142,6 +143,7 @@ describe('E2E: Role Tests', function() {
    		browser.wait(function(){	    		
        		return browser.isElementPresent(addRolesButton);
        	}).then(function(){
+    		browser.driver.sleep(1000);	
 	   		var titleElement = browser.findElement(by.cssContainingText('td', DEFAULT_TITLE));
    	   		var parentElement = titleElement.findElement(by.xpath('..'));
    	   		var editElement = parentElement.findElement(editRoleDialogButton);
