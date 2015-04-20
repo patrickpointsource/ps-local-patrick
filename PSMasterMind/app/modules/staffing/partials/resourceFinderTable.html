@@ -1,78 +1,79 @@
 <br />
 <div class="spinner-container" ng-hide="hideSpinner" style="width: calc(100% - 30px);">
-  <i class="fa fa-spinner fa-spin fa-3x"></i>
+    <i class="fa fa-spinner fa-spin fa-3x"></i>
 </div>
 <div class="row-fluid" ng-if="projectManagementAccess">
-	<div class="row " ng-form="resourceFinderFilterForm" >
-		<div class="col-xs-5 col-sm-2 col-md-2 form-group" ng-class="{'error': resourceFinderFilterForm.projectRole.$invalid}">
+    <div class="row " ng-form="resourceFinderFilterForm" >
+        <div class="col-xs-5 col-sm-2 col-md-2 form-group" ng-class="{'error': resourceFinderFilterForm.projectRole.$invalid}">
             <select class="form-control" ng-model="filterRole2" ng-change="roleChanged(filterRole2)" name="projectRole" required ng-options="m.resource as m.title for m in allRoles"></select>
-		</div>
-		<div class="col-xs-5 col-sm-3 col-md-3 form-group" ng-class="{'error': resourceFinderFilterForm.projectAssignTo.$invalid}">
-			<input  class="form-control" name="projectAssignTo"   ng-model="projectToAssignTo.name" required placeholder="Find project" typeahead-min-length="2" highlight="true" typeahead="p as p.name for p in projectList | filter:{name:$viewValue}" />
-		</div>
-		<div class="col-xs-5 col-sm-2 col-md-2 form-group" ng-class="{'error': resourceFinderFilterForm.assignStartDate.$invalid}">
-   			<input class="form-control datepicker" name="assignStartDate"  required placeholder="Start Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-model="filterStartDate" />
-		</div>
-		<div class="col-xs-5 col-sm-2 col-md-2 form-group" ng-class="{'error': resourceFinderFilterForm.assignEndDate.$invalid}">
-   			<input class="form-control datepicker" name="assignEndDate" placeholder="End Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-model="filterEndDate" />
-		</div>
-		<div class="col-xs-5 col-sm-2 col-md-2">
-   			<input class="form-control" placeholder="Availability %" ng-model="filterAvailabilityPercentage" />
-		</div>
-		<div class="col-xs-2 checkbox">
-   			<!-- <input id="rf-show-hidden-chk" type="checkbox" class="checkbox pull-left" />
-   			<label for="rf-show-hidden-chk">show people on commitment investment projects</label> -->
-		</div>
-	</div>
-		
-	<div class="row people-header">
-      <div class="col-xs-5 col-sm-4 person-header-name">
-        <a class="header-name" ng-class="{ active: sortType=='name-asc' || sortType=='name-desc' }" ng-click="switchSort('name')">NAME</a>
-        <div class="person-sorting">
-          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'name-asc'}" ng-click="changeSort('name-asc')"></i>
-          </button>
-          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'name-desc'}" ng-click="changeSort('name-desc')"></i>
-          </button>
         </div>
-      </div>
-      <div class="col-xs-5 col-sm-1 person-header">
-        <a class="header-name" ng-class="{ active: sortType=='role-asc' || sortType=='role-desc' }" ng-click="switchSort('role')">ROLE</a>
-        <div class="person-sorting">
-          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'role-asc'}" ng-click="changeSort('role-asc')"></i>
-          </button>
-          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'role-desc'}" ng-click="changeSort('role-desc')"></i>
-          </button>
+        <div class="col-xs-5 col-sm-3 col-md-3 form-group" ng-class="{'error': resourceFinderFilterForm.projectAssignTo.$invalid}">
+            <input  class="form-control" name="projectAssignTo"   ng-model="projectToAssignTo.name" required placeholder="Find project" typeahead-min-length="2" highlight="true" typeahead="p as p.name for p in projectList | filter:{name:$viewValue}" />
         </div>
-      </div>
-      <div class="hidden-xs col-sm-3 person-header">
-        <a class="header-name" ng-class="{ active: sortType=='group-asc' || sortType=='group-desc' }" ng-click="switchSort('group')">GROUP</a>
-        <div class="person-sorting">
-          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'group-asc'}" ng-click="changeSort('group-asc')"></i>
-          </button>
-          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'group-desc'}" ng-click="changeSort('group-desc')"></i>
-          </button>
+        <div class="col-xs-5 col-sm-2 col-md-2 form-group" ng-class="{'error': resourceFinderFilterForm.assignStartDate.$invalid}">
+            <input class="form-control datepicker" name="assignStartDate"  required placeholder="Start Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-model="filterStartDate" />
         </div>
-      </div>
-      <div class="col-xs-5 col-sm-2 person-header">
-        <a class="header-name" ng-class="{ active: sortType=='availabilityDate-asc' || sortType=='availabilityDate-desc' }" ng-click="switchSort('availabilityDate')">AVAILABLE DATE</a>
-        <div class="person-sorting">
-          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'availabilityDate-asc'}" ng-click="changeSort('availabilityDate-asc')"></i>
-          </button>
-          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'availabilityDate-desc'}" ng-click="changeSort('availabilityDate-desc')"></i>
-          </button>
+        <div class="col-xs-5 col-sm-2 col-md-2 form-group" ng-class="{'error': resourceFinderFilterForm.assignEndDate.$invalid}">
+            <input class="form-control datepicker" name="assignEndDate" placeholder="End Date" data-date-format="yyyy-mm-dd" data-provide="datepicker" ng-model="filterEndDate" />
         </div>
-      </div>
-      <div class="col-xs-5 col-sm-2 person-header">
-        <a class="header-name" ng-class="{ active: sortType=='availabilityPercentage-asc' || sortType=='availabilityPercentage-desc' }" ng-click="switchSort('availabilityPercentage')">AVAILABILITY</a>
-        <div class="person-sorting">
-          <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'availabilityPercentage-asc'}" ng-click="changeSort('availabilityPercentage-asc')"></i>
-          </button>
-          <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'availabilityPercentage-desc'}" ng-click="changeSort('availabilityPercentage-desc')"></i>
-          </button>
+        <div class="col-xs-5 col-sm-2 col-md-2">
+            <input class="form-control" placeholder="Availability %" ng-model="filterAvailabilityPercentage" />
         </div>
-      </div>
-   	</div>
-    <div res-repeater class="row people-row" ng-repeat="person in people | filter:filterResources(filterStartDate, filterEndDate, filterRole2, filterAvailabilityPercentage) | orderBy:rolesOrder" style="margin-top: 10px; margin-bottom: 0px;">
+        <div class="col-xs-2 checkbox">
+            <!-- <input id="rf-show-hidden-chk" type="checkbox" class="checkbox pull-left" />
+            <label for="rf-show-hidden-chk">show people on commitment investment projects</label> -->
+        </div>
+    </div>
+
+    <div class="row people-header">
+        <div class="col-xs-5 col-sm-4 person-header-name">
+            <a class="header-name" ng-class="{ active: sortType=='name-asc' || sortType=='name-desc' }" ng-click="switchSort('name')">NAME</a>
+            <div class="person-sorting">
+                <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'name-asc'}" ng-click="changeSort('name-asc')"></i>
+                </button>
+                <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'name-desc'}" ng-click="changeSort('name-desc')"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-xs-5 col-sm-1 person-header">
+            <a class="header-name" ng-class="{ active: sortType=='role-asc' || sortType=='role-desc' }" ng-click="switchSort('role')">ROLE</a>
+            <div class="person-sorting">
+                <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'role-asc'}" ng-click="changeSort('role-asc')"></i>
+                </button>
+                <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'role-desc'}" ng-click="changeSort('role-desc')"></i>
+                </button>
+            </div>
+        </div>
+        <div class="hidden-xs col-sm-3 person-header">
+            <a class="header-name" ng-class="{ active: sortType=='jobTitle-asc' || sortType=='jobTitle-desc' }" ng-click="switchSort('jobTitle')">JOB TITLE</a>
+            <div class="person-sorting">
+                <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'jobTitle-asc'}" ng-click="changeSort('jobTitle-asc')"></i>
+                </button>
+                <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'jobTitle-desc'}" ng-click="changeSort('jobTitle-desc')"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-xs-5 col-sm-2 person-header">
+            <a class="header-name" ng-class="{ active: sortType=='availabilityDate-asc' || sortType=='availabilityDate-desc' }" ng-click="switchSort('availabilityDate')">AVAILABLE DATE</a>
+            <div class="person-sorting">
+                <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'availabilityDate-asc'}" ng-click="changeSort('availabilityDate-asc')"></i>
+                </button>
+                <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'availabilityDate-desc'}" ng-click="changeSort('availabilityDate-desc')"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-xs-5 col-sm-2 person-header">
+            <a class="header-name" ng-class="{ active: sortType=='availabilityPercentage-asc' || sortType=='availabilityPercentage-desc' }" ng-click="switchSort('availabilityPercentage')">AVAILABILITY</a>
+            <div class="person-sorting">
+                <button class="sorting-button"><i class="fa fa-caret-up" ng-class="{ 'active': sortType == 'availabilityPercentage-asc'}" ng-click="changeSort('availabilityPercentage-asc')"></i>
+                </button>
+                <button class="sorting-button"><i class="fa fa-caret-down" ng-class="{ 'active': sortType == 'availabilityPercentage-desc'}" ng-click="changeSort('availabilityPercentage-desc')"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div res-repeater class="row people-row" ng-repeat="person in people | filter:filterResources(filterStartDate, filterEndDate, filterRole2, filterAvailabilityPercentage)" style="margin-top: 10px; margin-bottom: 0px;">
+
         <a class="col-xs-2 col-sm-1 person-image" href="#{{person.resource}}">
             <img class="smallProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultprofile.png" />
         </a>
@@ -88,7 +89,7 @@
         </div>
         <div class="hidden-xs col-sm-3 res-people-prop">
             <div>
-                <div>{{person.group}}</div>
+                <div>{{getJobTitle(person.jobTitle)}}</div>
             </div>
         </div>
         <div class="col-xs-7 col-sm-2 res-people-prop">

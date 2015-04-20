@@ -290,6 +290,7 @@ function( $scope, $state, $location, $filter, $q, Resources, People, ProjectsSer
 
 			$scope.changeSort( $scope.sortType );
 			$scope.hideSpinner = true;
+			$scope.$broadcast('people:loaded');
 		} );
 	};
 	
