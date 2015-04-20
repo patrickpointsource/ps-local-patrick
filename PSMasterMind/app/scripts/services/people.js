@@ -307,13 +307,13 @@ function( $q, Restangular, Resources, ProjectsService ) {
 
 	function getPeopleGroupMapping( ) {
 		return {
-			"development": [ 'SE', 'SSE', 'SEO', 'SSEO', 'ST', 'SI', 'Intern' ],
+			"development": [ 'SE', 'SSE', 'SEO', 'SSEO', 'ST', 'SI' ],
 			"architects": [ 'SSA', 'SA', 'ESA', 'SSAO' ],
 			"administration": [ 'ADMIN' ],
-			"clientexperiencemgmt": [ "SBA", "BA", "PM", "CxD", "EMS", "QAA", "QAT", "RM", "SCD", "VP" ],
-			"digitalexperience": [ "UXD", "SUXD", "DxM", "CD", "DUX", "VD" ],
+			"clientexpierencemgmt": [ "SBA", "BA", "PM", "CxD" ],
+			"digitalexperience": [ "UXD", "SUXD", "DxM", "CD" ],
 			"executivemgmt": [ "EXEC", "DD", "CxD", "CD", "DMDE" ],
-			"marketing": [ "MKT", "DMDE", "MS", "BIZDEV", "MKI" ],
+			"marketing": [ "MKT", "DMDE", "MS" ],
 			"sales": [ "SALES" ]
 		};
 	}

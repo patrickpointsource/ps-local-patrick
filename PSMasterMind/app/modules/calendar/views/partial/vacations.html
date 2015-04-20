@@ -6,10 +6,10 @@
 </div>
 <div ng-repeat="period in oooPeriods" class="ooo-item" ng-show="!loading">
     <div class="ooo-line row no-margin cursor-pointer" ng-click="collapsePeriod($index)">
-        <div class="col-xs-5 no-horizontal-padding">
+        <div class="col-xs-4 no-horizontal-padding">
             <strong>{{period.name}} {{period.year}}</strong>
         </div>
-        <div class="col-xs-6 no-horizontal-padding align-center">
+        <div class="col-xs-7 no-horizontal-padding align-center">
             {{getTotalDays(period)}} days
         </div>
         <div class="col-xs-1 no-horizontal-padding" style="color: #60c5db;">
@@ -23,10 +23,10 @@
         </div>
         <div ng-repeat="vacation in period.vacations" ng-click="editVacation(vacation)" ng-class="{'selected-ooo': vacation._id == editableVacation._id}" ng-hide="vacation.status == 'Cancelled'">
             <div class="row ooo-row no-margin cursor-pointer">
-                <div class="col-xs-6">
+                <div class="col-xs-5">
                     <strong>{{getShortDate(vacation.startDate)}}</strong> ({{getDays(vacation)}})
                 </div>
-                <div class="col-xs-6 no-horizontal-padding align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied' || vacation.status === 'Cancelled', 'color-yellow': vacation.status === 'Pending'}">
+                <div class="col-xs-7 no-horizontal-padding align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied' || vacation.status === 'Cancelled', 'color-yellow': vacation.status === 'Pending'}">
                     <i class="fa fa-check" ng-show="vacation.status === 'Approved'"></i>
                     <i class="fa fa-clock-o" ng-show="vacation.status === 'Pending'"></i>
                     <span ng-class="{'bold-text': vacation.status == 'Approved' || vacation.status == 'Denied'}">{{getStatusText(vacation.status)}}</span>

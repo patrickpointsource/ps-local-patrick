@@ -53,14 +53,14 @@ var devenv = {
 			    user: 'tathendersheaderefortati',
 	            password: 'e7wRT4nm0IgHGeWu07benG36',
 	            url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/',
-	            db: 'mm_demo'
+	            db: 'mm_db_demo'
 			},
 			dev: {
 				account: 'psdev1',
 			    user: 'tathendersheaderefortati',
 	            password: 'e7wRT4nm0IgHGeWu07benG36',
 	            url: 'https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/',
-	            db: 'mm_dev'
+	            db: 'mm_db_demo'
 			},
 			test: {
 				account: 'psdev1',
