@@ -43,8 +43,9 @@ angular.module('Mastermind')
 						if( changedByUser ) {
 							console.debug( 'department is now dirty' );
 							$rootScope.formDirty = true;
+							$rootScope.departmentEdit = true;
 							$rootScope.dirtySaveHandler = function( ) {
-								return $scope.saveDepartmentPeople();
+								return $scope.saveDepartmentPeople(true);
 							};
 						}
 					}
@@ -217,7 +218,8 @@ angular.module('Mastermind')
 		  $scope.selectedDepartmentPeople = [];
 	  };
 	  
-	  $scope.saveDepartmentPeople = function() {
+	  $scope.saveDepartmentPeople = function(navigateOut) {
+		  var deferred = $q.defer();
 		  var prevDepartmentPeople = $scope.selectedDepartment.departmentPeople;
 		  
 		  $scope.selectedDepartment.departmentPeople = [];
@@ -235,16 +237,24 @@ angular.module('Mastermind')
 			  
 		  $scope.hideDepartmentsSpinner = false;
 		  
-		  var result = $scope.saveDepartment(alreadyAssigned, function() {
+		  $scope.saveDepartment(alreadyAssigned).then(function(result){
 			  $scope.selectedDepartment.editDepartmentPeople = false;
+			  
+			  if (!result) {
+				  $scope.selectedDepartment.departmentPeople = prevDepartmentPeople;
+				  $scope.selectedDepartment.editDepartmentPeople = false;
+			  } else {
+				  $rootScope.formDirty = false;
+				  if (navigateOut) {
+					  $rootScope.navigateOutFunc( );
+				  }
+			  }
+			  
 			  $scope.hideDepartmentsSpinner = true;
+			  
+			  deferred.resolve(result);
 		  });
-		  
-		  if (!result) {
-			  $scope.selectedDepartment.departmentPeople = prevDepartmentPeople;
-			  $scope.selectedDepartment.editDepartmentPeople = false;
-			  $scope.hideDepartmentsSpinner = true;
-		  }
+		  return deferred.promise;
 	  };
 	  
 	  $scope.addDepartmentPerson = function (p) {
@@ -368,6 +378,7 @@ angular.module('Mastermind')
 	     * Update a new Role to the server
 	     */
 	    $scope.saveDepartment = function(alreadyAssigned, cb){
+	    	var deferred = $q.defer();
 	        var result = true;
 	        
 	        var correctCode = $scope.currentDepartmentCodes ? 
@@ -417,10 +428,10 @@ angular.module('Mastermind')
 	        
 	        if (promise)
 	        	promise.then(function() {
-	        		 Resources.refresh("departments/available/people").then( function(result) {
+	        		 Resources.refresh("departments/available/people").then( function(availablePeople) {
 	     	            var tmpPerson;
 	     	            
-	     	            $scope.availablePeopleList = _.map(result.members, function(p) {
+	     	            $scope.availablePeopleList = _.map(availablePeople.members, function(p) {
 	     	             return {
 	     	              resource: p.resource,
 	     	              name: Util.getPersonName(p, true)
@@ -435,16 +446,19 @@ angular.module('Mastermind')
 	     	               else if (p1.name < p2.name)
 	     	                return -1;
 	     	              });
-     	            });
+
+	     	            DepartmentsService.loadDepartmentCodes().then(function(res) {
+	     	    			$scope.departmentCodes = _.isArray(res) ? res: res.members;
+		     	            deferred.resolve(result);
+	     	    		});
+
+	        		 });
 	        		 
 	        		
-     	    		DepartmentsService.loadDepartmentCodes().then(function(res) {
-     	    			$scope.departmentCodes = _.isArray(res) ? res: res.members;
-     	    		});
 	        	});
 	       
 	        
-	        return result;
+	        return deferred.promise;
 	       };
 
 	    /**
