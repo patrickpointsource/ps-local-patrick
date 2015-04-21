@@ -1584,7 +1584,9 @@ var listDepartmentCategories = function(callback) {
 	
 		//categories = _.extend({}, categories);
 		//categories = ([]).concat(categories);
-		categories = categories.slice();
+		categories = _.map(categories, function(cat) {
+			return _.clone(cat);
+		});
 		
 		// attach nicknames info
 		listDepartments( function(err, body){
@@ -1596,14 +1598,14 @@ var listDepartmentCategories = function(callback) {
 	
 	        	for (var k = 0; k < body.members.length; k ++) {
 	        		category = _.find(categories, function(mi) {
-	    				return body.members[k].departmentCategory && (mi.name ==  body.members[k].departmentCategory.value)
+	    				return body.members[k].departmentCategory && (mi.name ==  body.members[k].departmentCategory.trimmedValue);
 	    			});
 	        		
 	        		if (category && body.members[k].departmentNickname) {
 	        			if (!category.nicknames)
 	        				category.nicknames = [];
 	        			
-	        			category.nicknames.push(body.members[k].departmentNickname)
+	        			category.nicknames.push(body.members[k].departmentNickname);
 	        		}
 	        	}
 	        }

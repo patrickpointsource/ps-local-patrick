@@ -84,7 +84,7 @@ angular.module('Mastermind')
 		
 	  $scope.cancelDepartment = function () {
 		  if ($scope.selectedDepartmentOrig)
-			  $scope.selectedDepartment = $scope.selectedDepartmentOrig;
+			  $scope.selectedDepartment = _.clone($scope.selectedDepartmentOrig);
 		  
 		  $scope.selectedDepartment.isEdit = false;
 		  $scope.selectedDepartment.isNew = false;
@@ -483,18 +483,19 @@ angular.module('Mastermind')
 	    	$scope.hideDepartmentsSpinner = false;
 	    	 
 	    	return DepartmentsService.refreshDepartments().then(function(result) {
-	    		$scope.availableDepartments = result;
-	    		
 	    		for (var k = 0; k < result.length; k ++) {
 	    			if (result[k].departmentPeople)
 		    			result[k].departmentPeople = _.map(result[k].departmentPeople, function(dp) {
-		    				return dp.replace('departments/people', 'people/')
+		    				return dp.replace('departments/people', 'people/');
 		    			});
 	    			
 	    			$scope.checkDepartmentCategory(result[k]);
 	    		}
 	    		
+	    		result = $scope.sortDepartments(result);
+	    		
 	    		$scope.hideDepartmentsSpinner = true; 
+	    		$scope.availableDepartments = result;
 	    		
 	    		return result;
 	    	});
@@ -505,6 +506,15 @@ angular.module('Mastermind')
 	    		var val = department.departmentCategory.trimmedValue;
 	    		department.departmentCategory.isEmptyCategory = !_.find($scope.departmentCategories, function(c) {return c.trimmedValue == val;});
 	    	}
+	    };
+	    
+	    $scope.sortDepartments = function(departments) {
+	    	return _.sortBy(departments, function(dept) {
+    			if (dept.departmentCode && dept.departmentCategory && !dept.departmentCategory.isEmptyCategory)
+    				return dept.departmentCode.name;
+				else 
+					return "z";
+    		});
 	    };
 	    
 	    /**
@@ -649,6 +659,8 @@ angular.module('Mastermind')
 	    $scope.onCategoriesLoaded = function() {
     		for (var k = 0; k < $scope.availableDepartments.length; k ++)
     			$scope.checkDepartmentCategory($scope.availableDepartments[k]);
+    		
+    		$scope.availableDepartments = $scope.sortDepartments($scope.availableDepartments);
 	    };
 	    
 	    $scope.initDepartments =  function () {
