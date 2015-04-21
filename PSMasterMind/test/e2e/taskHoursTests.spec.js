@@ -51,6 +51,10 @@ describe('E2E: Task Hours Tests', function() {
 		        					if (text != userInfoText) {
 		        						relogin();
 		        					}
+		        					else {
+		        						isLogged = true;
+		        						browser.findElement(profilePhoto).click();
+		        					}
 		        				});
 		        			} else {
 		        				relogin();

@@ -297,16 +297,22 @@ function( $scope, $state, $rootScope, Resources, ProjectsService, VacationsServi
 	};
 	
 	$scope.$on('request-processed', function (event, request) {
+	    var updated = false;
 	    for (var i = 0; i < $scope.notifications.length; i++) {
 	        if (request._id == $scope.notifications[i].details._id) {
 	            
-	            Resources.remove($scope.notifications[i].resource).then(function (result) {
+	            Resources.remove($scope.notifications[i]).then(function (result) {
+	                updated = true;
 	                $scope.refreshNotifications();
 	            });
 
 	            $scope.notifications.splice(i, 1);
 	            break;
 	        }
+	    }
+
+	    if (!updated) {
+	        $scope.refreshNotifications();
 	    }
 	});
 	
