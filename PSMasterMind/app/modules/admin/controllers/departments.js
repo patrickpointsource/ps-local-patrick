@@ -166,6 +166,36 @@ angular.module('Mastermind')
 	  };
 	  
 	  $scope.selectDepartment = function(e, department) {
+		  if( $rootScope.formDirty ) {
+			  var modalYesNoCancel = $( ".modalYesNoCancel" );
+			  $rootScope.modalDialog = {
+					  title: "Save Changes",
+					  text: "Would you like to save your changes before leaving?",
+					  ok: "Yes",
+					  no: "No",
+					  cancel: "Cancel",
+					  okHandler: function( ) {
+						  modalYesNoCancel.modal( 'hide' );
+						  $scope.saveDepartmentPeople().then(function(){
+							  $scope.selectDepartmentFunc(e, department);
+						  });
+					  },
+					  noHandler: function( ) {
+						  modalYesNoCancel.modal( 'hide' );
+						  $scope.selectDepartmentFunc(e, department);
+					  },
+					  cancelHandler: function( ) {
+						  modalYesNoCancel.modal( 'hide' );
+					  }
+			  };
+			  modalYesNoCancel.modal( 'show' );
+		  } else {
+			  $scope.selectDepartmentFunc(e, department);
+		  }
+	  };
+		  
+	  $scope.selectDepartmentFunc = function(e, department) {
+		  $rootScope.formDirty = false;
 		  $scope.selectedDepartment = _.extend({}, department);
 		  
 		  $scope.selectedDepartmentOrig = department;
