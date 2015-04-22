@@ -182,7 +182,7 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 			e.stopPropagation();
 			e.preventDefault();
 		}
-
+		
 		if (this[handler]) {
 			var li = $(e.target).closest('li');
 

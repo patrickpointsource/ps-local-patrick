@@ -1536,16 +1536,20 @@ var listPeopleByDepartmentsCategories = function(categories, includeInactive, fi
         		return c.toLowerCase();
         	});
         	
+        	var getTrimmedValue = function(val) {
+        		return val.replace(/\s+/gi, '_').toLowerCase();
+        	}
+        	
         	var nicknameCond = true;
         	
         	for (var k = 0; k < body.members.length; k ++) {
         		isBelongsTo = body.members[k].departmentCategory && body.members[k].departmentCategory.name ? 
-        				(_.filter(categories, function(c) { return c == body.members[k].departmentCategory.name.toLowerCase()})).length > 0: false;
+        				(_.filter(categories, function(c) { return c == getTrimmedValue(body.members[k].departmentCategory.trimmedValue)})).length > 0: false;
         		
-        		nicknameCond = !nicknames[body.members[k].departmentCategory.name.toLowerCase()] || nicknames[body.members[k].departmentCategory.name.toLowerCase()].length == 0;
+        		nicknameCond = !nicknames[ getTrimmedValue(body.members[k].departmentCategory.trimmedValue)] || nicknames[getTrimmedValue(body.members[k].departmentCategory.trimmedValue)].length == 0;
         		
         		if (!nicknameCond)
-        			nicknameCond = (_.filter(nicknames[body.members[k].departmentCategory.name.toLowerCase()], function(nc) { return nc == body.members[k].departmentNickname})).length > 0;
+        			nicknameCond = (_.filter(nicknames[getTrimmedValue(body.members[k].departmentCategory.trimmedValue)], function(nc) { return nc == body.members[k].departmentNickname})).length > 0;
         		
         		if (isBelongsTo && nicknameCond && body.members[k].departmentPeople && _.isArray(body.members[k].departmentPeople))
         			departmentsPeople = departmentsPeople.concat(body.members[k].departmentPeople);
@@ -1584,7 +1588,9 @@ var listDepartmentCategories = function(callback) {
 	
 		//categories = _.extend({}, categories);
 		//categories = ([]).concat(categories);
-		categories = categories.slice();
+		categories = _.map(categories, function(cat) {
+			return _.clone(cat);
+		});
 		
 		// attach nicknames info
 		listDepartments( function(err, body){
@@ -1596,14 +1602,14 @@ var listDepartmentCategories = function(callback) {
 	
 	        	for (var k = 0; k < body.members.length; k ++) {
 	        		category = _.find(categories, function(mi) {
-	    				return body.members[k].departmentCategory && (mi.name ==  body.members[k].departmentCategory.value)
+	    				return body.members[k].departmentCategory && (mi.name ==  body.members[k].departmentCategory.trimmedValue);
 	    			});
 	        		
 	        		if (category && body.members[k].departmentNickname) {
 	        			if (!category.nicknames)
 	        				category.nicknames = [];
 	        			
-	        			category.nicknames.push(body.members[k].departmentNickname)
+	        			category.nicknames.push(body.members[k].departmentNickname);
 	        		}
 	        	}
 	        }

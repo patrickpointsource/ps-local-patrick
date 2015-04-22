@@ -13,6 +13,7 @@ angular.module('Mastermind')
 	  $scope.availablePeopleList = [];
 	  $scope.departmentCodes = [];
 	  $scope.departmentCategories = [];
+	  $scope.hideDepartmentsSpinner = true;
 	  
 	  $scope.selectedManagerChanged = function(e, item){
 		  var tmp;
@@ -83,7 +84,7 @@ angular.module('Mastermind')
 		
 	  $scope.cancelDepartment = function () {
 		  if ($scope.selectedDepartmentOrig)
-			  $scope.selectedDepartment = $scope.selectedDepartmentOrig;
+			  $scope.selectedDepartment = _.clone($scope.selectedDepartmentOrig);
 		  
 		  $scope.selectedDepartment.isEdit = false;
 		  $scope.selectedDepartment.isNew = false;
@@ -165,6 +166,36 @@ angular.module('Mastermind')
 	  };
 	  
 	  $scope.selectDepartment = function(e, department) {
+		  if( $rootScope.formDirty ) {
+			  var modalYesNoCancel = $( ".modalYesNoCancel" );
+			  $rootScope.modalDialog = {
+					  title: "Save Changes",
+					  text: "Would you like to save your changes before leaving?",
+					  ok: "Yes",
+					  no: "No",
+					  cancel: "Cancel",
+					  okHandler: function( ) {
+						  modalYesNoCancel.modal( 'hide' );
+						  $scope.saveDepartmentPeople().then(function(){
+							  $scope.selectDepartmentFunc(e, department);
+						  });
+					  },
+					  noHandler: function( ) {
+						  modalYesNoCancel.modal( 'hide' );
+						  $scope.selectDepartmentFunc(e, department);
+					  },
+					  cancelHandler: function( ) {
+						  modalYesNoCancel.modal( 'hide' );
+					  }
+			  };
+			  modalYesNoCancel.modal( 'show' );
+		  } else {
+			  $scope.selectDepartmentFunc(e, department);
+		  }
+	  };
+		  
+	  $scope.selectDepartmentFunc = function(e, department) {
+		  $rootScope.formDirty = false;
 		  $scope.selectedDepartment = _.extend({}, department);
 		  
 		  $scope.selectedDepartmentOrig = department;
@@ -223,6 +254,8 @@ angular.module('Mastermind')
 		  
 		  $scope.selectedDepartment.departmentPeople = [];
 		  
+		  
+		  
 		  var alreadyAssigned = [];
 		  
 		  for (var k = 0; k < $scope.selectedDepartmentPeople.length; k ++){
@@ -232,11 +265,11 @@ angular.module('Mastermind')
 				  alreadyAssigned.push($scope.selectedDepartmentPeople[k].resource);
 		  }
 			  
+		  $scope.hideDepartmentsSpinner = false;
 		  
-		  $scope.saveDepartment(alreadyAssigned, function() {
+		  $scope.saveDepartment(alreadyAssigned).then(function(result){
 			  $scope.selectedDepartment.editDepartmentPeople = false;
-		  }).then(function(result){
-
+			  
 			  if (!result) {
 				  $scope.selectedDepartment.departmentPeople = prevDepartmentPeople;
 				  $scope.selectedDepartment.editDepartmentPeople = false;
@@ -246,6 +279,9 @@ angular.module('Mastermind')
 					  $rootScope.navigateOutFunc( );
 				  }
 			  }
+			  
+			  $scope.hideDepartmentsSpinner = true;
+			  
 			  deferred.resolve(result);
 		  });
 		  return deferred.promise;
@@ -474,17 +510,22 @@ angular.module('Mastermind')
 
 	  
 	    $scope.loadDepartments = function() {
+	    	$scope.hideDepartmentsSpinner = false;
+	    	 
 	    	return DepartmentsService.refreshDepartments().then(function(result) {
-	    		$scope.availableDepartments = result;
-	    		
 	    		for (var k = 0; k < result.length; k ++) {
 	    			if (result[k].departmentPeople)
 		    			result[k].departmentPeople = _.map(result[k].departmentPeople, function(dp) {
-		    				return dp.replace('departments/people', 'people/')
+		    				return dp.replace('departments/people', 'people/');
 		    			});
 	    			
 	    			$scope.checkDepartmentCategory(result[k]);
 	    		}
+	    		
+	    		result = $scope.sortDepartments(result);
+	    		
+	    		$scope.hideDepartmentsSpinner = true; 
+	    		$scope.availableDepartments = result;
 	    		
 	    		return result;
 	    	});
@@ -495,6 +536,15 @@ angular.module('Mastermind')
 	    		var val = department.departmentCategory.trimmedValue;
 	    		department.departmentCategory.isEmptyCategory = !_.find($scope.departmentCategories, function(c) {return c.trimmedValue == val;});
 	    	}
+	    };
+	    
+	    $scope.sortDepartments = function(departments) {
+	    	return _.sortBy(departments, function(dept) {
+    			if (dept.departmentCode && dept.departmentCategory && !dept.departmentCategory.isEmptyCategory)
+    				return dept.departmentCode.name;
+				else 
+					return "z";
+    		});
 	    };
 	    
 	    /**
@@ -542,6 +592,8 @@ angular.module('Mastermind')
 	    $scope.saveDepartmentCategory = function(e) {
 	    	var promise;
 	    	
+	    	$scope.hideDepartmentsSpinner = false;
+	    	
 	    	if ($scope.selectedCategory.isNew && $scope.selectedCategory.isEdit && $scope.selectedCategory.trimmedValue) {
 	    		promise = DepartmentsService.addDepartmentCategory($scope.cleanCategoryBeforeSave($scope.selectedCategory));
 	    	} else if (!$scope.selectedCategory.isNew && $scope.selectedCategory.isEdit && $scope.selectedCategory.trimmedValue) {
@@ -562,9 +614,13 @@ angular.module('Mastermind')
 	    		}).then(function() {
 	    			// refresh departments to hide "empty category" warnings if needed
 	    			$scope.loadDepartments();
+	    			$scope.hideDepartmentsSpinner = true;
 	    		}).catch(function() {
 	    			$scope.selectedCategory = {};
+	    			$scope.hideDepartmentsSpinner = true;
 	    		});
+	    	else
+	    		$scope.hideDepartmentsSpinner = true;
 	    	
 	    };
 	    
@@ -582,6 +638,8 @@ angular.module('Mastermind')
 	    $scope.onDeleteCategoryCb = function() {
 	    	var codes = $scope.getDepartmentsCodeForCategory($scope.selectedCategory.trimmedValue);
 	    	
+	    	$scope.hideDepartmentsSpinner = false;
+	    	
 	    	if (codes.length == 0) {
 		    	DepartmentsService.removeDepartmentCategory($scope.selectedCategory.resource).then(function() {
 	    			DepartmentsService.loadDepartmentCategories().then(function(res) {
@@ -594,6 +652,7 @@ angular.module('Mastermind')
 		    			$scope.loadDepartments();
 	        		}).then(function() {
 	        			$scope.onCategoriesLoaded();
+	        			$scope.hideDepartmentsSpinner = true;
 	        		});
 	    		});
 	    	} else {
@@ -612,6 +671,7 @@ angular.module('Mastermind')
 	    			$scope.departmentCodesToReassign = codes[0];
 	    		
 	    		$('.restrict-delete-department').modal('show');
+	    		$scope.hideDepartmentsSpinner = true;
 	    	}
 	    };
 	    
@@ -629,6 +689,8 @@ angular.module('Mastermind')
 	    $scope.onCategoriesLoaded = function() {
     		for (var k = 0; k < $scope.availableDepartments.length; k ++)
     			$scope.checkDepartmentCategory($scope.availableDepartments[k]);
+    		
+    		$scope.availableDepartments = $scope.sortDepartments($scope.availableDepartments);
 	    };
 	    
 	    $scope.initDepartments =  function () {

@@ -20,15 +20,18 @@ describe('E2E: Administration Tests', function() {
 	    browser.driver.manage().window().setSize(width, height);
     	
 		browser.driver.getCurrentUrl().then(function(url) {
-			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
-				browser.driver.get('http://localhost:9000/index.html#/');
- 	           	browser.driver.sleep(1000);
- 	           	browser.driver.getCurrentUrl().then(function(loginUrl) {
- 	           		if ( loginUrl.indexOf('http://localhost:9000/login.html') > -1 ) {  //  Re-login if needed
- 	           			login();
- 	           		} 
- 	           	});
-			}
+			browser.getAllWindowHandles().then(function (handles) {
+	            browser.switchTo().window(handles[0]);
+	            if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
+					browser.driver.get('http://localhost:9000/index.html#/');
+	 	           	browser.driver.sleep(1000);
+	 	           	browser.driver.getCurrentUrl().then(function(loginUrl) {
+	 	           		if ( loginUrl.indexOf('http://localhost:9000/login.html') > -1 ) {  //  Re-login if needed
+	 	           			login();
+	 	           		} 
+	 	           	});
+				} 
+	        });
 		});
 	});
 
@@ -36,12 +39,12 @@ describe('E2E: Administration Tests', function() {
 	it('Administration Test: Check Roles page.', function() {	
 		console.log('> Running: Administration - Check Roles page');
 		rolePage.checkRolesPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Check sorting on Roles page.', function() {	
 		console.log('> Running: Administration - Check sorting on Roles page');
 		rolePage.checkSortingOnRolesPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Create new role and verify.', function() {	
 		console.log('> Running: Administration - Create new role and verify');
@@ -56,77 +59,77 @@ describe('E2E: Administration Tests', function() {
 	it('Administration Test: Delete role and verify.', function() {	
 		console.log('> Running: Administration - Delete role and verify');
 		rolePage.deleteRoleAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Check Security Groups page.', function() {	
 		console.log('> Running: Administration - Check Security Groups page');
 		securityGroupPage.checkSecurityGroupsPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Create new security group and verify.', function() {	
 		console.log('> Running: Administration - Create new security group and verify');
 		securityGroupPage.createNewSecurityGroupAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Edit existing security group and verify.', function() {	
 		console.log('> Running: Administration - Edit existing security group and verify');
 		securityGroupPage.editExistingSecurityGroupAndVerify();
-	});
+	}, 60000);
 			
 	it('Administration Test: Add members to security group and verify.', function() {	
 		console.log('> Running: Administration - Add members to security group and verify');
 		securityGroupPage.addMembersToSecurityGroupAndVerify();
-	});
+	}, 60000);
 		
 	it('Administration Test: Remove members of security group and verify.', function() {	
 		console.log('> Running: Administration - Remove members of security group and verify');
 		securityGroupPage.removeMembersInSecurityGroupAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Update permissions in security group and verify.', function() {	
 		console.log('> Running: Administration - Update permissions in security group and verify');
 		securityGroupPage.updatePermissionsInSecurityGroupAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Delete permissions in security group and verify.', function() {	
 		console.log('> Running: Administration - Delete permissions in  security group and verify');
 		securityGroupPage.deletePermissionsInSecurityGroupAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Delete security group and verify.', function() {	
 		console.log('> Running: Administration - Delete security group and verify');
 		securityGroupPage.deleteSecurityGroupAndVerify();
-	});
+	}, 60000);
 		
 	it('Administration Test: Check Tasks page.', function() {	
 		console.log('> Running: Administration - Check Tasks page');
 		taskPage.checkTasksPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Create new task and verify.', function() {	
 		console.log('> Running: Administration - Create new task and verify');
 		taskPage.createNewTaskAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Edit existing task and verify.', function() {	
 		console.log('> Running: Administration - Edit existing task and verify');
 		taskPage.editExistingTaskAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Delete task and verify.', function() {	
 		console.log('> Running: Administration - Delete task and verify');
 		taskPage.deleteTaskAndVerify();
-	});
+	}, 60000);
 
 	it('Administration Test: Check Configuration page.', function() {	
 		console.log('> Running: Administration - Check Configuration page');
 		configurationPage.checkConfigurationPage();
-	});
+	}, 60000);
 
 	it('Administration Test: Update Configuration and verify.', function() {	
 		console.log('> Running: Administration - Update Configuration and verify');
 		configurationPage.updateConfigurationAndVerify();
-	});
+	}, 60000);
 
 	
 	var updateElement = function (form, element, value, isClickable) {
@@ -269,7 +272,7 @@ describe('E2E: Administration Tests', function() {
 		    			    	return browser.isElementPresent($this.saveButton);
 		    			    }).then(function(){
 			    	   	   		browser.findElement($this.saveButton).click().then(function () {
-			    	   	   			browser.sleep(1000);
+			    	   	   			browser.sleep(3000);
 			    	   	   			$this.verifySecurityGroup($this.initial);
 			    	   	   		});
 		    			    });
@@ -297,7 +300,7 @@ describe('E2E: Administration Tests', function() {
 		    		    	    	return browser.isElementPresent($this.saveButton);
 		    		    	    }).then(function(){		    		    	    	
 				    	   	   		browser.findElement($this.saveButton).click().then(function () {
-				    	   	   			browser.sleep(1000);
+				    	   	   			browser.sleep(2000);
 				    	   	   			$this.verifySecurityGroup($this.updated);
 				    	   	   		});		    		    	    	
 		    		    	    });
@@ -325,7 +328,7 @@ describe('E2E: Administration Tests', function() {
 		    	    			$this.updateSecurityGroup(browser, $this.updated);
 		    	    			browser.driver.sleep(3000);	
 			    	   	   		browser.findElement($this.saveButton).click().then(function () {
-			    	   	   			browser.sleep(1000);
+			    	   	   			browser.sleep(2000);
 			    	   	   			$this.verifySecurityGroup($this.updated);
 			    	   	   		});
 			    	   		});	
@@ -468,10 +471,9 @@ describe('E2E: Administration Tests', function() {
 
 		this.verifySecurityGroup = function (securityGroup) {
 			var $this = this;
-    		browser.driver.sleep(3000);	
+    		browser.driver.sleep(5000);	
 			browser.findElement($this.selectGroup).sendKeys(securityGroup.name).then( function () {
 	       		if (securityGroup.members) {
-	        		browser.driver.sleep(3000);	
 	    			for (var i in securityGroup.members) {
 	    				element.all(by.repeater('member in selectedGroupMembers')).filter(function(elem, index) {
 	    					return elem.getText().then(function(text) {
@@ -742,10 +744,11 @@ describe('E2E: Administration Tests', function() {
 		    	   			browser.wait(function(){	    		
 				    	    	return browser.isElementPresent($this.taskName);
 				    	    }).then(function(){
+			    	   			browser.sleep(1000);
 			    	   			$this.updateTask(browser, $this.initial);
 			    	   			browser.sleep(3000);
 			    	   	   		browser.findElement($this.addTaskButton).click().then(function () {
-				    	   			browser.sleep(1000);
+				    	   			browser.sleep(2000);
 			    	   	   			$this.verifyTask($this.initial);
 			    	   	   		});
 				    	    });
@@ -775,7 +778,7 @@ describe('E2E: Administration Tests', function() {
 		    	    			$this.updateTask(formElement, $this.updated);
 		    	    			browser.driver.sleep(3000);	
 			    	   			formElement.findElement($this.saveTaskButton).click().then(function () {
-			    	   				browser.sleep(1000);
+			    	   				browser.sleep(2000);
 			    	   				$this.verifyTask($this.updated);
 			    	   	   		});
 		    			   	});
@@ -871,7 +874,7 @@ describe('E2E: Administration Tests', function() {
 	    			   		$this.updateConfiguration(formElement, $this.interestedParties);
 	    		    		browser.driver.sleep(1000);
 	    			   		configElement.findElement(by.xpath('following-sibling::*[2]/self::div')).findElement($this.saveConfigurationButton).click().then(function () {
-	    			   			browser.driver.sleep(1000);
+	    			   			browser.driver.sleep(2000);
 	    			   			$this.verifyConfiguration($this.interestedParties);
 		    	   	   		});
 	    			   	});

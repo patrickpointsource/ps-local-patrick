@@ -304,10 +304,11 @@ function( $q, $rootScope, $scope, $state, $stateParams, $location, $filter, $con
 			
 			for( var i = 0; i < departmentCategories.length; i++ ) {
 				departmentCategories[ i ] = People.mapPeopleFilterToUI( departmentCategories[ i ] );
+				departmentCategories[ i ] = departmentCategories[ i ] ? departmentCategories[ i ].replace(/\_/gi, ' ').toUpperCase(): '';
 			}
 			
 			if (departmentNicknames) {
-				return departmentCategories.join( ', ' ) + ": " + departmentNicknames.join( ', ' );
+				return departmentCategories.join( ', ' ) + " > " + departmentNicknames.join( ', ' );
 			} else {
 				return departmentCategories.join( ', ' );
 			}

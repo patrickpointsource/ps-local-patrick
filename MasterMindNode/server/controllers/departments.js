@@ -70,7 +70,7 @@ module.exports.listAvailableCode = function(callback) {
 	var list = [];
 	
 	for (var k = 1; k <= 9; k ++) {
-		for (var i = 0; i < 30; i ++) {
+		for (var i = 0; i < 26; i ++) {
 			var letter = String.fromCharCode(97 + i);
 			
 			list.push({name: (k + letter).toUpperCase()});
