@@ -78,7 +78,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                     $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(1, "month");
                     break;
             }
-            
+
             $scope.initCalendar();
         };
 
@@ -126,7 +126,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             e.stopPropagation();
 
             //logger.log('onVacationClicked:' + ind + ':person.name=' + vac.person.name + ':'  + entry.size() + ':shown=' + entry.data('popover_shown'));
-            
+
             if (entry.data('popover_shown'))
                 return;
 
@@ -225,7 +225,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             e.stopPropagation();
 
             logger.log('onShowMoreClicked:' + ind + ':target.size=' + entry.size());
-            
+
             for (var k = 0; k < vacations.length; k++)
             {
                 var vac = vacations[k];
@@ -239,13 +239,13 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                 }
             }
 
-            if ($scope.isMobileDevice) { 
+            if ($scope.isMobileDevice) {
             	$scope.onShowMoreModal(vacations); // show Modal dialog for mobile devices
             } else {
             	$scope.onShowMorePopup(vacations, entry, ind, vacInd);
             }
         };
-        
+
         $scope.onShowMoreModal = function(vacations){
         	$modal.open({
                 controller: "OOOModalInstanceCtrl",
@@ -261,7 +261,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                 }
             });
         };
-        
+
         $scope.onShowMorePopup = function(vacations, entry, ind, vacInd){
         	var popover;
             if (!entry.data('popover'))
@@ -271,7 +271,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                 {
                     var vac = vacations[k];
                     if (!vac.isEmpty)
-                    { 
+                    {
                         html += '<div class="vacation-person-name"><a href="index.html#/' + vac.person.resource + '">' + vac.person.name + '</a></div><div><b>Out:</b> ' + vac.out + '</div><div class="vacation-person-type"><b>Type:</b> ' + vac.type + '</div>';
                     }
                 }
@@ -296,7 +296,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                     this.context.data('popover', false);
                 }, { context: entry }));
             } else
-                entry.popover('toogle');
+                entry.popover('toggle');
         };
 
         $scope.getRandomBackground = function ()
