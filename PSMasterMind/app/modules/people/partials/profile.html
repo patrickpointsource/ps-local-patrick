@@ -85,7 +85,7 @@
                             <div class="padding-top-10" ng-if="canViewPublicPersonnelData()">
                                 <strong class="profilePartTimeLabel">Manager</strong>
                             </div>
-                            <div ng-show="canSeeCapacity && isManager" class="padding-top-10" ng-if="canViewPrivatePersonnelData()">
+                            <div ng-show="canSeeCapacity" class="padding-top-10" ng-if="canViewPrivatePersonnelData()">
                                 <strong class="profilePartTimeLabel">Vacation days</strong>
                             </div>
                         </div>
@@ -105,10 +105,10 @@
                             <div style="padding-top: 13px;">
                                 <span>{{profile.mBox}}</span>
                             </div>
-                            <div class="padding-top-10" ng-if="canViewPersonnelData() && canViewPublicPersonnelData()">
-                                <span>{{getPersonName(profileManager, true) || "Not Selected"}}</span>
+                            <div class="padding-top-10" ng-if="canViewPublicPersonnelData()">
+                                <span>{{getPersonName(profile.manager, true) || "Not Selected"}}</span>
                             </div>
-                            <div class="padding-top-10" ng-show="isManager" ng-if="canViewPrivatePersonnelData()">
+                            <div class="padding-top-10" ng-if="canViewPrivatePersonnelData()">
                                 <span>{{profile.vacationCapacity || 'Not Set'}} <span ng-show="profile.vacationCapacity">days</span></span>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Left column EDIT Mode-->
                     <div class="col-xs-12 col-sm-6 no-padding" ng-show="editMode" ng-if="!canEditOnlyBasicProps()">
 
@@ -178,7 +178,7 @@
                             <a ng-show="editMode" ng-click="removeUserRole($index)" class="col-xs-1 col-sm-1 col-md-2 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
                         </div>
                     </div>
-                    
+
                     <!-- Right column EDIT Mode -->
                     <div class="col-xs-12 col-sm-6 no-padding" ng-show="editMode" style="padding-top: 25px;">
                         <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 no-padding">
@@ -194,10 +194,10 @@
                             <div style="padding-top: 32px;">
                                 <strong class="personDetailLabel">Email</strong>
                             </div>
-                            <div style="padding-top: 40px;" ng-show="canEditPersonnelData() && isManager">
+                            <div style="padding-top: 40px;" ng-show="canEditPersonnelData()">
                                 <strong for="profileManager" class="profilePartTimeLabel">Manager</strong>
                             </div>
-                            <div ng-show="canEditPersonnelData() && isManager" style="padding-top: 40px;">
+                            <div ng-show="canEditPersonnelData()" style="padding-top: 40px;">
                                 <strong for="profilePartTime" class="profilePartTimeLabel">Vacation days</strong>
                             </div>
                         </div>
@@ -215,22 +215,21 @@
                                 <span>{{profile.mBox}}</span>
                             </div>
                             <div style="padding-top: 20px;">
-                                <div ng-show="canEditPersonnelData() && isManager" style="padding-top: 10px; height: 40px;">
-                                    <!--<input class="form-control" name="managerTypeAhead" ng-model="profile.manager" required placeholder="Select manager" typeahead-min-length="2" highlight="true" typeahead="c as getPersonName(c, true) for c in managers | orderBy:'name.familyName' | filter:$viewValue | limitTo:8" />-->
+                                <div ng-show="canEditPersonnelData()">
+                                    <input class="form-control" name="managerTypeAhead" ng-model="profile.manager" required placeholder="Select manager" typeahead-min-length="2" highlight="true" typeahead="c as getPersonName(c, true) for c in managers | orderBy:'name.familyName' | filter:$viewValue | limitTo:8" />
                                     <!--<select class="form-control" style="width: 100%;"
-                                                ng-model="profile.manager" required
-                                                ng-options="c as getPersonName(c) for c in managers| orderBy:'name.familyName'">
-                                            <option selected disabled hidden value=''></option>"
+                                            ng-model="profile.manager" required
+                                            ng-options="c as getPersonName(c) for c in managers| orderBy:'name.familyName'">
+                                        <option selected disabled hidden value=''></option>"
 
-                                        </select>-->
-                                    <span>{{getPersonName(profileManager, true) || "Not Selected"}}</span>
+                                    </select>-->
                                 </div>
                             </div>
-                            <div style="padding-top: 20px;" ng-show="canEditPersonnelData() && isManager">
+                            <div style="padding-top: 20px;" ng-show="canEditPersonnelData()">
                                 <input ng-model="profile.vacationCapacity" placeholder="days" type="number" class="form-control" />
                             </div>
                         </div>
-                        <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;" ng-show="canEditPersonnelData() && isManager && editMode">
+                        <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;" ng-show="canEditPersonnelData() && editMode">
                             <div class="col-xs-12 no-horizontal-padding">
                                 <div class="btn-group col-xs-12 col-sm-10 col-md-8 col-lg-6 no-padding">
                                     <label class="btn btn-toggle" ng-model="profile.partTime" btn-radio="true" style="width: 40%;">Part Time</label>
@@ -244,7 +243,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;" ng-show="editMode && canEditPersonnelData() && isManager">
+                        <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;" ng-show="editMode && canEditPersonnelData()">
                             <div class="col-xs-12 no-horizontal-padding">
                                 <div class="btn-group col-xs-12 col-sm-10 col-md-8 col-lg-6 no-padding">
                                     <label class="btn btn-toggle" ng-model="profile.isActive" btn-radio="'true'" style="width: 40%;">Active</label>
@@ -254,160 +253,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!--<div class="spinner-container" ng-hide="hideProfileSpinner" style="width: calc(100% - 30px);">
-                        <i class="fa fa-spinner fa-spin fa-3x"></i>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-9">
-                        <div class="personPicColumn">
-                            <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}" err-src="\images\defaultprofile.png" />
-                            <div class="verticalGreyLine" ng-show="gplusProfile.url"></div>
-                            <a ng-show="gplusProfile.url" class="googlePlusIcon" ng-href="{{gplusProfile.url}}"><span class="fa fa-google-plus"></span></a>
-                        </div>
-
-                        <div class="person-contact-info">
-                            <div class="personDetailName">{{getPersonName(profile, true)}}</div>
-                            <div ng-if="canEditPersonnelData() && editMode">
-                                <br />
-                                <label>Primary Role:</label>
-                                <select class="form-control" ng-model="profile.primaryRole.resource" ng-options="m.resource as m.title for m in allRoles"></select>
-                            </div>
-                            <div ng-hide="editMode">
-                                <div ng-if="profile.primaryRole" class="sub-heading">{{getRoleName(profile.primaryRole.resource)}}</div>
-                            </div>
-
-                            <div class="col-lg-12 contact-fields">
-                                <div class="row">
-                                    <div ng-hide="editMode" class="col-xs-12 col-md-10 col-lg-4 no-horizontal-padding padding-left-lg">
-                                        <label>Email</label>
-                                        <a ng-href="mailto:{{profile.mBox}}">{{profile.mBox}}</a>
-                                    </div>
-
-                                    
-
-                                    <div ng-show="editMode" class="col-xs-12 col-md-10 col-lg-6">
-                                        <label for="profileSkype" class="personDetailLabel">Skype</label>
-                                        <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="text" />
-                                    </div>
-                                    <div ng-hide="editMode" class="col-xs-12 col-md-10 col-lg-2 no-horizontal-padding">
-                                        <label class="personDetailLabel">Skype Id</label>
-                                        <a ng-if="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
-                                    </div>
-
-                                    <div ng-show="editMode" class="col-xs-12 col-md-10 col-lg-6">
-                                        <label for="profileJazzHub" class="personDetailLabel">JazzHub Id</label>
-                                        <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text" />
-                                    </div>
-                                    <div ng-hide="editMode" class="col-xs-12 col-md-10 col-lg-3 no-horizontal-padding-xs">
-                                        <label class="personDetailLabel">JazzHub</label>
-                                        <span ng-if="profile.jazzHubId">{{profile.jazzHubId}}</span>
-                                    </div>
-
-                                    <div ng-if="canEditPersonnelData()" ng-show="editMode" class="col-xs-12 col-md-10 col-lg-3 part-time-container edit padding-top-10">
-                                        <input type="checkbox" ng-if="canEditPersonnelData()" name="profilePartTime" ng-model="profile.partTime" />
-                                        <label for="profilePartTime" class="profilePartTimeLabel">Part time</label>
-                                        <input ng-model="profile.partTimeHours" ng-if="canEditPersonnelData()" ng-disabled="!profile.partTime" placeholder="h/w" type="number" class="form-control" />
-                                    </div>
-                                    <div ng-hide="editMode" class="col-xs-12 col-md-10 col-lg-3 part-time-container view no-left-padding-sm padding-top-10">
-                                        <label class="profilePartTimeLabel">Part time</label>
-                                        <span ng-show="profile.partTime">{{profile.partTimeHours}}h/w</span>
-                                        <span ng-show="!profile.partTime">NO</span>
-                                    </div>
-
-                                    <div ng-if="canEditPersonnelData() && editMode" class="col-xs-12 col-md-10 col-lg-3 edit padding-top-10">
-                                        <label for="profilePartTime" class="profilePartTimeLabel">Vacation entitlements</label>
-                                        <input ng-model="profile.vacationCapacity" placeholder="days" type="number" class="form-control" />
-                                    </div>
-                                    <div ng-if="canSeeCapacity" ng-hide="editMode" class="col-xs-12 col-md-10 col-lg-3 view no-left-padding-sm padding-top-10">
-                                        <label class="profilePartTimeLabel">Vacation entitlements</label>
-                                        <span>{{profile.vacationCapacity || 'Not Set'}} <span ng-show="profile.vacationCapacity">days</span></span>
-                                    </div>
-
-                                    <div ng-if="canEditPersonnelData() && editMode" class="col-xs-12 col-md-10 col-lg-6 edit padding-top-10">
-                                        <label for="profileManager" class="profilePartTimeLabel">Manager</label>
-                                        <select class="form-control"
-                                                ng-model="profile.manager" required
-                                                ng-options="c as getPersonName(c) for c in managers| orderBy:'name.familyName'">
-                                            <option selected disabled hidden value=''></option>"
-                                        
-                                        </select>
-                                    </div>
-                                    <div ng-if="canSeeCapacity" ng-hide="editMode" class="col-xs-12 col-md-10 col-lg-3 view no-left-padding-sm padding-top-10">
-                                        <label class="profilePartTimeLabel">Manager</label>
-                                        <span>{{getPersonName(profile.manager, true) || "Not Selected"}}</span>
-                                    </div>
-
-                                    <div ng-hide="!canSeeCapacity" class="col-xs-12 col-md-10 col-lg-3 padding-top-10">
-                                        <label class="profilePartTimeLabel">Is Active:</label>
-                                        <input type="checkbox" ng-if="canEditPersonnelData()" name="profileIsActive" ng-model="profile.isActive" ng-checked="profile.isActive == 'true'" ng-disabled="!editMode" />
-                                    </div>
-
-                                    <div ng-show="isManager && editMode" class="col-xs-12 col-md-12 col-lg-6 edit padding-top-30 pull-right">
-                                        <label>Select permissions groups:</label>
-                                        <select class="selectpicker select-user-groups form-control" multiple data-selected-text-format="count>3" ng-model="userSecurityGroups" ng-options="g.name for g in securityGroups">
-                                        </select>
-                                    </div>
-
-                                    <div ng-show="isManager && editMode" class="col-xs-12 col-md-12 col-lg-6 view no-left-padding-sm padding-top-10">
-                                        <div class="row col-xs-12 no-margin-bottom">
-                                            <label for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</label>
-                                            <span ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</span>
-                                        </div>
-
-                                        <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-2 col-md-6 col-xs-12">
-                                            <div class="col-xs-12 no-padding" ng-show="!editMode">{{userRole.name}}</div>
-                                            <div class="col-xs-11 col-sm-11 col-md-10 no-padding" ng-show="editMode">{{userRole.name}}</div>
-                                            <a ng-show="editMode" ng-click="removeUserRole($index)" class="col-xs-1 col-sm-1 col-md-2 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
-                                        </div>
-                                    </div>
-
-                                    <div ng-show="isManager && !editMode" class="col-xs-12 view no-left-padding-sm padding-top-10">
-                                        <div class="row col-xs-12 no-margin-bottom">
-                                            <label for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</label>
-                                            <span ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</span>
-                                        </div>
-
-                                        <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-2 col-md-6 col-xs-12">
-                                            <div class="col-xs-12 no-padding" ng-show="!editMode">{{userRole.name}}</div>
-                                            <div class="col-xs-11 col-sm-11 col-md-10 no-padding" ng-show="editMode">{{userRole.name}}</div>
-                                            <a ng-show="editMode" ng-click="removeUserRole($index)" class="col-xs-1 col-sm-1 col-md-2 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-5 col-md-5 col-lg-3 profile-graph-container">
-                    <h3 class="profile-graph-header">Hours this week</h3>
-                    <div class="percentage-container">
-                        <div id="percentage-activeBorder" class="percentage-active-border">
-                            <div id="percentage-circle" class="percentage-circle">
-                                <h1 class="percentage-circle-week-hours">
-                                    {{totalWeekHours ? totalWeekHours : 0}}
-                                </h1>
-                                <h5 class="percentage-circle-week-hours-rate">of {{hoursRateValue}}</h5>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h5 style="text-align: center;">
-                        <span style="font-weight: bold; font-size: 22px;">{{totalMonthHours ? totalMonthHours : 0}}</span> hrs logged this month
-                    </h5>
-                    <h5 style="text-align: center;">
-                        <span style="font-weight: bold; font-size: 22px;">{{hoursRateFromProjects ? hoursRateFromProjects : 0}}</span> % utilized
-                    </h5>
-                    <h5 style="text-align: center;">
-                        <span style="font-weight: bold; font-size: 22px;">{{activeProjectsCount ? activeProjectsCount : 0}}</span> active projects
-                    </h5>
-                    <!-- <label class="personDetailLabel">Accounts:</label>
-                        <span ng-show="!gplusProfile.url">None</span>
-                        <ul class="personDetailList">
-                            <li ng-show="gplusProfile.url"><a ng-href="{{gplusProfile.url}}">Google+</a>
-                            </li>
-                        </ul> -->
-                <!--</div>-->
             </div>
         </div>
 </div>

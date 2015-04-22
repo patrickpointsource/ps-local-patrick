@@ -30,7 +30,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	Resources.get( 'roles' ).then( function( result ) {
 		var members = result.members;
 		$scope.allRoles = members;
-        
+
 		var rolesMap = {};
 		for( var i = 0; i < members.length; i++ ) {
 			rolesMap[ members[ i ].resource ] = members[ i ];
@@ -80,7 +80,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
     };
 
     $scope.filterSecondaryRoles = function(role) {
-            return role.resource !== profile.primaryRole.resource;     
+            return role.resource !== profile.primaryRole.resource;
     };
 
     $scope.isPrimaryRole = function (role) {
@@ -159,7 +159,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
       $scope.userSecurityGroups = _.filter($scope.securityGroups, function(securityGroup) {
         return _.findWhere($scope.userRole.roles, { resource: securityGroup.resource }) ? true : false;
       });
-      
+
       $scope.initialUserGroups = [];
       _.extend($scope.initialUserGroups, $scope.userSecurityGroups);
 	};
@@ -1076,7 +1076,7 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
         if ($scope.isMe()) {
             return $rootScope.hasPermissions(CONSTS.VIEW_MY_SECURITY_ROLES);
         } else {
-            $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_SECURITY_ROLES);
+            return $rootScope.hasPermissions(CONSTS.VIEW_OTHERS_SECURITY_ROLES);
         }
     };
 
