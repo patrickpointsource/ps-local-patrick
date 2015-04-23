@@ -510,6 +510,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                 var tmpStart;
                 var tmpEnd;
 
+                // from all vacation list exctract vacations which are needed to be displayed on current day
                 currentDay.vacations = _.filter(currentVacations, function (v, ind)
                 {
                     var res = false;
@@ -532,6 +533,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                     return res;
                 });
 
+                // sort those vacations according to countofdays
                 currentDay.vacations.sort(function (v1, v2)
                 {
                     if (v1.countDays > v2.countDays)
@@ -540,6 +542,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                         return 1;
 
                 });
+                
                 // before setting mutlidays order for current vacations check if ther are vacation with visual "order" from
                 // previous days and set them on correct positions
                 var tmpVac;
@@ -574,6 +577,10 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                         currentDay.vacations[currentDay.vacations[k].order] = currentDay.vacations[k];
 
                         currentDay.vacations[k] = tmpVac;
+                        
+                        // if we move vacation to another position fix it "order" value
+                        if (!isNaN(parseInt(tmpVac.order)))
+                        	tmpVac.order = k;
                     }
                 }
 
