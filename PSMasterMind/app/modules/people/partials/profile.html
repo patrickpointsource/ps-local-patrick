@@ -113,18 +113,18 @@
                             </div>
                         </div>
                         <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;">
-                            <div ng-show="!profile.partTime" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding" ng-if="canViewPublicPersonnelData()">
+                            <div ng-show="!profile.partTime" style="min-width:115px;" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding" ng-if="canViewPublicPersonnelData()">
                                 <i class="fa fa-check fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Full time</span>
                             </div>
-                            <div ng-show="profile.partTime" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding padding-top-10" ng-if="canViewPublicPersonnelData()">
+                            <div ng-show="profile.partTime" style="min-width:110px;" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding padding-top-10" ng-if="canViewPublicPersonnelData()">
                                 <span ng-show="profile.partTime"><strong>Part time: </strong>{{profile.partTimeHours}} h/w</span>
                             </div>
 
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding" ng-if="canViewPrivatePersonnelData()">
-                                <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'true'">
+                                <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'true'" style="min-width:85px;">
                                     <i class="fa fa-check fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Active</span>
                                 </div>
-                                <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'false'">
+                                <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'false'" style="min-width:90px;">
                                     <i class="fa fa-times-circle fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Inactive</span>
                                 </div>
                             </div>
