@@ -366,28 +366,30 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
         var person;
         var mappingEntry;
         var personEntry;
+        var isAllRolesSelected = _.find(params.userRoles, function(role){ return role.ToLowerCase() == 'all'; });
         
         // find by person_resource person in {roles_mapping}-[persons]
         var findPersonOnProject = function( rolesPersonMapping, resource ) {
             var prop;
             var res = null;
-
+           
             for( prop in rolesPersonMapping ) {
-                res = res || _.find( rolesPersonMapping[ prop ], function( p ) {
-                    return p.resource == resource;
-                } );
+                if (prop != CONSTS.UNKNOWN_ROLE || isAllRolesSelected) { //Show Unassigned records if 'All roles' selected ONLY.
+    				res = res || _.find( rolesPersonMapping[ prop ], function( p ) {
+    					return p.resource == resource;
+    				} );
+    			}
             }
 
             return res;
         };
         
-        var isAllRolesSelected = _.find(params.userRoles, function(role){ return role.ToLowerCase() == 'all'; });
         //init projectMapping with entries related to hours which were logged by persons who are not assigned on project
         for (var i = 0; i < reportHours.length; i ++) {
         	if (peopleMap[ reportHours[ i ].person.resource ] &&
 					(!params.person || params.person.resource == reportHours[ i ].person.resource)) {
         		// when we have project logged entry
-                if (reportHours[ i ].project && isAllRolesSelected) { //Show Unassigned records if 'All roles' selected ONLY.
+                if (reportHours[ i ].project) {
                     if(  reportHours[ i ].project.resource && !projectMapping[ reportHours[ i ].project.resource ] )
                         projectMapping[ reportHours[ i ].project.resource ] = {};
 
@@ -457,14 +459,17 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
             }
             
             // for found person put current hours entry into hours collection
-                person.hours = person.hours ? person.hours : [ ];
+			if( person ) {
+				person.hours = person.hours ? person.hours : [ ];
 
-                if( ( !params.startDate || reportHours[ i ].date >= params.startDate ) && ( !params.endDate || reportHours[ i ].date <= params.endDate ) )
-                    person.hours.push( {
-                        hours: reportHours[ i ].hours,
-                        description: reportHours[ i ].description,
-                        date: reportHours[ i ].date
-                    } );
+				 if( ( !params.startDate || reportHours[ i ].date >= params.startDate ) && ( !params.endDate || reportHours[ i ].date <= params.endDate ) )
+	                    person.hours.push( {
+	                        hours: reportHours[ i ].hours,
+	                        description: reportHours[ i ].description,
+	                        date: reportHours[ i ].date
+	                    } );
+			}
+
         }
 
         var roleResource;
