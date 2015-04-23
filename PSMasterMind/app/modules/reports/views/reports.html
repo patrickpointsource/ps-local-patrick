@@ -13,7 +13,7 @@
 		</div>
 		
 		<div class="actions col-xs-6 pageActions">
-			<button class="btn btn-export" ng-hide="!csvData" >
+			<!-- <button class="btn btn-export" ng-hide="!csvData" >
 				<a href="{{hoursToCSV.link}}" download="Custom.csv" >
 			      Download
 			    </a>
@@ -25,6 +25,11 @@
 		    <button class="btn btn-export" ng-show="isGenerationInProgress" 
 					ng-click="hoursToCSV.cancelGeneration($event)" >
 				Cancel
+		    </button> -->
+		    <button class="btn pull-right btn-export" name="topCSVLink" ng-click="hoursToCSV.generate($event)" >
+				<a href="{{hoursToCSV.link()}}" download="Custom.csv" >
+			      EXPORT CSV
+			    </a>
 		    </button>
 		</div>
 	</div>
@@ -313,7 +318,7 @@
 	</div>
 	<div class="row " style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
 		<div class="actions col-xs-12 pageActions">
-			<button class="btn btn-export" ng-hide="!csvData" >
+			<!-- <button class="btn btn-export" ng-hide="!csvData" >
 				<a href="{{hoursToCSV.link}}" download="Custom.csv" >
 			      Download
 			    </a>
@@ -325,6 +330,11 @@
 		    <button class="btn btn-export" ng-show="isGenerationInProgress" 
 					ng-click="hoursToCSV.cancelGeneration($event)" >
 				Cancel
+		    </button> -->
+		    <button class="btn pull-right btn-export" name="bottomCSVLink" ng-click="hoursToCSV.generate($event)" >
+				<a href="{{hoursToCSV.link()}}" download="Custom.csv" >
+			      EXPORT CSV
+			    </a>
 		    </button>
 		</div>
 	</div>
