@@ -253,6 +253,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
                 Resources.update($scope.editableVacation).then(function (result) {
                     $scope.initOOO();
                     $scope.$emit('required-notifications-update');
+                    $rootScope.$emit('calendar:update', result);
                     $scope.messages.push("Re-submit of edited out of office request was successfull!");
                 });
             } else {
@@ -382,7 +383,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
             Resources.update(request).then(function(result) {
                 if ($rootScope.hasPermissions(CONSTS.VIEW_VACATIONS)) {
-                    $rootScope.$emit('calendar:update');
+                    $rootScope.$emit('calendar:update', result);
                     $scope.showRequests();
                 }
 
