@@ -13,8 +13,8 @@ describe('E2E: Vacation Tests', function() {
 	var signIn = by.id('signIn');
 	var submit_approve_access = by.id('submit_approve_access');
 	
-	var profilePhoto = element(by.id('profile-photo'));
-	var viewProfile = element(by.partialLinkText('VIEW PROFILE'));
+	var profilePhoto = by.id('profile-photo');
+	var viewProfile = by.partialLinkText('VIEW PROFILE');
 
 	var addRequest = element(by.css('[ng-click="requestHours()"]'));
 	var addRequestBtn = element.all(by.css('[ng-click="requestHours()"]')).get(0);
@@ -46,16 +46,16 @@ describe('E2E: Vacation Tests', function() {
 	var vacationStartTime = element(by.model("vacationStartTime"));
 	var vacationEndTime = element(by.model("vacationEndTime"));
 	
-	var notificationCtrl = element(by.id("notifications"));
+	var notificationCtrl = element(by.repeater("notification in notifications"));
 	var notificationBtn = element(by.id("notifications")).all(by.tagName('i')).get(0);
-	var notificationLoaded = element(by.css('[ng-if="notifications.length > 0"]'));
+	var notificationCounter = element(by.binding('{{notifications.length}}'));
+	var notificationIsEmpty = element(by.css('[ng-if="notifications.length == 0"]'));
 	var requestApprove = element(by.css('[ng-click="oooDecide($index, true)"]'));
 	var requestDeny = element(by.css('[ng-click="oooDecide($index, false)"]'));
 	var notifications = element(by.repeater("notification in notifications"));
 	var notificationsAll = element.all(by.repeater("notification in notifications"));
-	var notificationType = element(by.css('[ng-if="notification.type == \'ooo-pending\' || notification.type == \'ooo-approved\' || notification.type == \'ooo-cancelled\' || notification.type == \'ooo-denied\'"]'));
-	var notificationTypeCancel = element(by.className('notification-request-cancel'));
-	var removeNotificationBtn = element.all(by.css('[ng-click="removeNotification($index)"]'));
+	var removeNotification = element(by.css('[ng-click="removeNotification($index)"]'));
+	var removeNotificationBtn = element.all(by.css('[ng-click="removeNotification($index)"]')).get(0);
 	
 	var dashboardRequestCtrl = element(by.css('[ng-controller="VacationRequestsCtrl"]'));
 	var dashboardRequests = element(by.repeater('request in requests'));
@@ -76,17 +76,18 @@ describe('E2E: Vacation Tests', function() {
 
 	
 	beforeEach(function() {
-		browser.driver.manage().window().setSize(windowWidth, windowHeight);
-		browser.driver.getCurrentUrl().then(function(url) {
-			if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
-				browser.driver.get('http://localhost:9000/index.html#/');
- 	           	browser.driver.sleep(1000);
- 	           	browser.driver.getCurrentUrl().then(function(loginUrl) {
- 	           		if ( loginUrl.indexOf('http://localhost:9000/login.html') > -1 ) {  //  Re-login if needed
- 	           			login();
- 	           		} 
- 	           	});
-			}
+		browser.driver.manage().window().setSize(windowWidth, windowHeight).then(function(){
+			browser.driver.getCurrentUrl().then(function(url) {
+				if ( url.indexOf('http://localhost:9000/index.html#/') == -1 ) {  //Go to the dashboard page
+					browser.driver.get('http://localhost:9000/index.html#/');
+	 	           	browser.driver.sleep(1000);
+	 	           	browser.driver.getCurrentUrl().then(function(loginUrl) {
+	 	           		if ( loginUrl.indexOf('http://localhost:9000/login.html') > -1 ) {  //  Re-login if needed
+	 	           			login();
+	 	           		} 
+	 	           	});
+				}
+			});
 		});
 	});
 	
@@ -110,16 +111,6 @@ describe('E2E: Vacation Tests', function() {
 		checkVacationList(removeVacation);
 	});
 	
-	it('Cancel vacation creation', function() {	
-		console.log('> Running: Cancel vacation creation.');
-		checkCreationCancel();
-	});
-	
-	it('Cancel vacation removing', function() {	
-		console.log('> Running: Cancel vacation removing.');
-		checkVacationList(addVacation).then(checkRemovingCancel).then(removeVacation);
-	});
-	
 	it('Verify that you cannot select an end date earlier than the start date.', function() {	
 		console.log('> Running: Verify that you cannot select an end date earlier than the start date.');
 		addEndDateEarlierThanStartDate();
@@ -128,45 +119,51 @@ describe('E2E: Vacation Tests', function() {
 	it('Request a vacation for longer than the number of days available.', function() {	
 		console.log('> Running: Request a vacation for longer than the number of days available.');
 		checkVacationList(function() { return addVacation(6); }).then(removeVacation);
-	}, 60000);
+	}, 120000);
 	
 	it('Request a vacation for an extended period of time', function() {	
 		console.log('> Running: Request a vacation for an extended period of time');
 		checkVacationList(function() { return addVacation(50); }).then(removeVacation);
-	}, 60000);
+	}, 120000);
 	
 	it('Change vacation manager.', function() {	
 		console.log('> Running: Change vacation manager.');
 		checkVacationList(addVacation).then(changeRequestManager).then(function() { removeVacation(true); });
 	}, 120000);
 	
-	it('Add an Appointment request with more than 4 hours duration, verify that it does not automatically approve.', function() {	
-		console.log('> Running: Add an Appointment request with more than 4 hours duration, verify that it does not automatically approve.');
-		checkVacationList(function() { return checkAutoApproveRules(0, 3, REQUEST_PENDING); }).then(removeVacation);
-	}, 60000);
-	
-	it('Approve vacation request from notification control.', function() {	
-		console.log('> Running: Approve vacation request from notification control.');
+	it('Approve vacation request from notification control. Verify the appropriate message is displayed (vacation was approved).', function() {	
+		console.log('> Running: Approve vacation request from notification control. Verify the appropriate message is displayed (vacation was approved).');
 		checkVacationList(addVacation).then(approveVacationFromNotificationControl).then(removeVacation);
 	}, 120000);
 	
-	it('Deny vacation request from notification control.', function() {	
-		console.log('> Running: Deny vacation request from notification control.');
+	it('Deny vacation request from notification control. Verify the appropriate message is displayed (vacation was denied).', function() {	
+		console.log('> Running: Deny vacation request from notification control. Verify the appropriate message is displayed (vacation was denied).');
 		checkVacationList(addVacation).then(denyVacationFromNotificationControl).then(removeVacation);
 	}, 120000);
 
 	it('Approve vacation request from dashboard widget.', function() {	
 		console.log('> Running: Approve vacation request from dashboard widget.');
-//		TODO: Will be used when the Approve/Deny notification issue will fixed.
-//		checkVacationList(addVacation).then(approveVacationFromDashboardWidget).then(removeVacation);
-		checkVacationList(addVacation).then(approveVacationFromDashboardWidget).then(function() { removeVacation(true); });
+		checkVacationList(addVacation).then(approveVacationFromDashboardWidget).then(removeVacation);
 	}, 120000);
 	
 	it('Deny vacation request from dashboard widget.', function() {	
 		console.log('> Running: Deny vacation request from dashboard widget.');
-//		TODO: Will be used when the Approve/Deny notification issue will fixed.
-//		checkVacationList(addVacation).then(denyVacationFromDashboardWidget).then(removeVacation);
-		checkVacationList(addVacation).then(denyVacationFromDashboardWidget).then(function() { removeVacation(true); });
+		checkVacationList(addVacation).then(denyVacationFromDashboardWidget).then(removeVacation);
+	}, 120000);
+	
+	it('Cancel vacation creation', function() {	
+		console.log('> Running: Cancel vacation creation.');
+		checkCreationCancel();
+	});
+	
+	it('Cancel vacation removing', function() {	
+		console.log('> Running: Cancel vacation removing.');
+		checkVacationList(addVacation).then(checkRemovingCancel).then(removeVacation);
+	}, 120000);
+	
+	it('Add an Appointment request with more than 4 hours duration, verify that it does not automatically approve.', function() {	
+		console.log('> Running: Add an Appointment request with more than 4 hours duration, verify that it does not automatically approve.');
+		checkVacationList(function() { return checkAutoApproveRules(0, 3, REQUEST_PENDING); }).then(removeVacation);
 	}, 120000);
 	
 	it('Check auto approve rules.', function() {	
@@ -174,32 +171,41 @@ describe('E2E: Vacation Tests', function() {
 //		//TODO: Uncomment when the bug (should not have apportunity to remove passed vac) will be fixed.
 //		checkVacationList(function() { return checkAutoApproveRules(-3, null, REQUEST_APPROVED); });
 		checkVacationList(function() { return checkAutoApproveRules(-3, null, REQUEST_APPROVED); }).then(function() { removeVacation(true); });
-	}, 60000);
+	}, 120000);
+	
+	it('Check that notifications list was cleared.', function() {	
+		console.log('> Running: Check that notifications list was cleared.');
+		checkNotificationIsEmpty();
+	});
 	
 //	//TODO: Uncomment when the bug (should not have apportunity to remove passed vac) will be fixed.
 //	it('Edit\Cancel a vacation entry that has passed - should not be able to.', function() {	
 //		console.log('> Running: Edit\Cancel a vacation entry that has passed - should not be able to.');
 //		editCancelPassedVacation();
-//	}, 60000);
+//	}, 120000);
 	
-
-	var goToProfileVacationWidget = function () {
-		console.log('> Go to the profile OOO widget.');
-		return browser.sleep(1000).then(function(){
-			browser.wait(function(){	    		
-	    		return browser.isElementPresent(profilePhoto);
+	var goToProfilePage = function () {
+		console.log('> Go to the profile page.');
+		return browser.driver.wait(function(){	    		
+	    		return browser.driver.isElementPresent(profilePhoto);
 	    	}).then(function() {
-	    		profilePhoto.click().then(function () {
-	    			browser.sleep(1000).then(function(){
-	    				viewProfile.click().then(function () {
-	        				browser.sleep(3000).then(function(){
-	        					var scrollDownScript = 'window.scrollTo(0,' + windowHeight + ');';
-	            				return browser.executeScript(scrollDownScript);
-	        				});
-	        			});
+	    		browser.driver.findElement(profilePhoto).click().then(function(){
+	    			browser.driver.wait(function(){	    		
+	    	    		return browser.driver.isElementPresent(viewProfile);
+	    	    	}).then(function() {
+	    	    		browser.driver.findElement(viewProfile).click().then(function() {
+	    	    			return browser.driver.sleep(3000);
+	    	    		});
 	    			});
 	    		});
 	    	});
+	};
+	        			
+	var goToProfileVacationWidget = function () {
+		console.log('> Go to the profile OOO widget.');
+		return goToProfilePage().then(function(){
+			var scrollDownScript = 'window.scrollTo(0,' + windowHeight + ');';
+			return browser.executeScript(scrollDownScript);
 		});
 	};
 	
@@ -238,7 +244,7 @@ describe('E2E: Vacation Tests', function() {
     				return browser.isElementPresent(vacationDays);
     			}).then(function() {
     				vacationDays.getText().then(function( vacDaysBefore ) {
-    					callback().then(function() { browser.sleep(3000).then(function() {
+    					callback().then(function() { browser.sleep(2000).then(function() {
     						if (!errorMsg) {
     							browser.wait(function(){	    		
     								return browser.isElementPresent(vacationDays);
@@ -343,8 +349,12 @@ describe('E2E: Vacation Tests', function() {
     	    	    		sendKeys(cancellationReason, VACATION_DESCRIPTION).then(function(){
     	    	    			console.log('> Confirm deletion.');
        	    	    			cancellationYes.click().then(function() {
-                    		    if (!ignoreNotificationCheck)
-                    		    	return checkNotification(REQUEST_CANCELLED_MSG);
+       	    	    				if (!ignoreNotificationCheck)
+       	    	    					return checkNotification(REQUEST_CANCELLED_MSG).then(function(){
+       	    	    						browser.sleep(1000);
+       	    	    					});
+       	    	    				else
+       	    	    					return browser.sleep(1000);
     	    	    			});
     	    	    		});
     	    	    	});
@@ -370,10 +380,10 @@ describe('E2E: Vacation Tests', function() {
         			console.log('> Submit request.');
         			submitRequest.click().then(function(){
         				return checkRequestState(requiredState).then(function() {
-//        	    			 //TODO: Will be used when the Approve/Deny notification issue will fixed.
-//        					 if (requiredState == REQUEST_APPROVED) {
-//                 		    	checkNotification(REQUEST_APPROVED_MSG);
-//        					 }
+
+        					 if (requiredState == REQUEST_APPROVED) {
+                 		    	checkNotification(REQUEST_APPROVED_MSG);
+        					 }
         				});
     	    		});
         		});	
@@ -397,7 +407,7 @@ describe('E2E: Vacation Tests', function() {
 		console.log('> Approve vacation from the notification control.');
 		return waitAndRefresh(7000).then(function () {
 				browser.driver.wait(function(){	    		
-					return browser.isElementPresent(notificationLoaded);
+					return browser.isElementPresent(notificationCtrl);
 				}).then(function() {
 					notificationBtn.click().then(function () {
 						browser.wait(function(){	    		
@@ -420,7 +430,7 @@ describe('E2E: Vacation Tests', function() {
 		console.log('> Deny vacation from the notification control.');
 		return waitAndRefresh(7000).then(function () {
 				browser.driver.wait(function(){	    		
-					return browser.isElementPresent(notificationLoaded);
+					return browser.isElementPresent(notificationCtrl);
 				}).then(function() {
 					notificationBtn.click().then(function () {
 						browser.wait(function(){	    		
@@ -446,11 +456,9 @@ describe('E2E: Vacation Tests', function() {
 					sendKeys(requestComment, VACATION_DESCRIPTION).then(function(){
 						getVisibleElement(dashboardRequestApprove).then(function(requestApprove){
 							requestApprove.click().then(function () {
-//								TODO: Will be used when the Approve/Deny notification issue will fixed.
-//								checkRequestState(REQUEST_APPROVED).then(function(){
-//									checkNotification(REQUEST_APPROVED_MSG);
-//								});
-								checkRequestState(REQUEST_APPROVED);
+								checkRequestState(REQUEST_APPROVED).then(function(){
+									checkNotification(REQUEST_APPROVED_MSG);
+								});
 							});
 						}); 
 					});
@@ -465,11 +473,9 @@ describe('E2E: Vacation Tests', function() {
 					sendKeys(requestComment, VACATION_DESCRIPTION).then(function(){
 						getVisibleElement(dashboardRequestDeny).then(function(requestDeny){
 							requestDeny.click().then(function () {
-//								TODO: Will be used when the Approve/Deny notification issue will fixed.
-//								checkRequestState(REQUEST_DENIED).then(function() {
-//									checkNotification(REQUEST_DENIED_MSG);
-//								});
-								checkRequestState(REQUEST_DENIED);
+								checkRequestState(REQUEST_DENIED).then(function() {
+									checkNotification(REQUEST_DENIED_MSG);
+								});
 							});
 						});
 					});
@@ -499,20 +505,43 @@ describe('E2E: Vacation Tests', function() {
 		console.log('> Check notification msg: ' + notificationMsg);
 		return waitAndRefresh(7000).then(function () {
 				browser.driver.wait(function(){	    		
-					return browser.isElementPresent(notificationLoaded);
+					return browser.isElementPresent(notificationCtrl);
 				}).then(function() {
-					console.log('> Click btn');
+					console.log('> Click on notifications');
 					notificationBtn.click().then(function () {
 						browser.wait(function(){	    		
 							return browser.isElementPresent(notifications);
 						}).then(function() {
-							console.log('> Get first nitfy');
+							console.log('> Get first notification');
 							notificationsAll.first().getText().then(function( msg ) {
 								expect(msg).toContain(notificationMsg);
-								return removeNotificationBtn.first().click().then(function(){
-									console.log('> Notification was removed.');
+								browser.driver.wait(function(){	    		
+									return browser.isElementPresent(removeNotification);
+								}).then(function() {
+									return removeNotificationBtn.click().then(function(){
+										browser.sleep(2000).then(function(){
+											expect(browser.isElementPresent(notificationCounter)).toBeFalsy();
+											console.log('> Notification was removed.');
+										});	
+									});
 								});
 							});
+						});
+					});
+				});
+			});
+	};
+	
+	var checkNotificationIsEmpty = function ( notificationMsg ) {
+		console.log('> Check notifications');
+		return waitAndRefresh(1000).then(function () {
+				browser.driver.wait(function(){	    		
+					return browser.isElementPresent(notificationBtn);
+				}).then(function() {
+					console.log('> Click on notifications');
+					notificationBtn.click().then(function () {
+						browser.sleep(1000).then(function () {
+							expect(browser.isElementPresent(notificationIsEmpty)).toBeTruthy();					
 						});
 					});
 				});
@@ -555,18 +584,20 @@ describe('E2E: Vacation Tests', function() {
 	    	    			browser.wait(function(){	    		
 	    	    	    		return browser.isElementPresent(cancellationReason);
 	    	    	    	}).then(function() {
-	    	    	    		
 	    	    	    		console.log('> Click outside of pop box - box should persist - not disappear.');
-	    	    	    		browser.actions().mouseMove({x: 50, y: 50}).doubleClick().perform();
-	    	    	    		expect(cancellationReason.isDisplayed()).toBeTruthy();
-	    	    	    		
-	    	    	    		sendKeys(cancellationReason, VACATION_DESCRIPTION).then(function(){
-	    	    	    			console.log('> Click NO on cancellation popup.');
-	    	    	    			cancellationNo.click().then(function() {
-	    	    	    				expect(resubmitRequest.isDisplayed()).toBeTruthy();
-	    	    	    				closeEditRequestBtn.click();
-	    	    	    			});
+	    	    	    		browser.actions().mouseMove({x: 50, y: 50}).doubleClick().perform().then(function(){
+	    	    	    			expect(cancellationReason.isDisplayed()).toBeTruthy();
+		    	    	    		sendKeys(cancellationReason, VACATION_DESCRIPTION).then(function(){
+		    	    	    			console.log('> Click NO on cancellation popup.');
+		    	    	    			cancellationNo.click().then(function() {
+		    	    	    				browser.sleep(1000).then(function(){
+			    	    	    				expect(resubmitRequest.isDisplayed()).toBeTruthy();
+			    	    	    				closeEditRequestBtn.click();
+		    	    	    				});
+		    	    	    			});
+		    	    	    		});
 	    	    	    		});
+	    	    	    		
 	    	    	    	});
 	    	    		});
 	    	    	});	
@@ -665,7 +696,9 @@ describe('E2E: Vacation Tests', function() {
 	var waitAndRefresh = function (time){
 		return browser.sleep(time).then(function() { 
 			browser.refresh().then(function () {
-				return browser.driver.sleep(3000);
+				browser.driver.sleep(4000).then(function(){
+					return goToProfilePage();
+				});
 			});
 		});
 	};
