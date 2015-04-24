@@ -58,24 +58,24 @@ module.exports.listAllEmployeeVacations = function(statuses, startDate, endDate,
 };
 
 module.exports.listRequestsByManager = function(manager, statuses, startDate, endDate, fields, callback) {
-	dataAccess.listPeopleByManager(manager, null, function (err, people) {
-		if (err) {
-			return callback("error loading people by manager : " + manager, null);
-		}
-		var peopleResources = _.map(people.members, function(person) {
+    dataAccess.listPeopleByManager(manager, null, function (err, people) {
+        if (err) {
+            return callback("error loading people by manager : " + manager, null);
+        }
+        var peopleResources = _.map(people.members, function(person) {
             return person.resource;
         });
-		console.log("peopleResources : " + JSON.stringify(peopleResources));
-		dataAccess.listRequestsByPeople(peopleResources, statuses, startDate, endDate, fields, function(err, body){
-	        if (err) {
-	            console.log(err);
-	            callback("error loading requests", null);
-	        } else {
-	            callback(null, body);
-	        }
-	    });
-		
-	});
+        console.log("peopleResources : " + JSON.stringify(peopleResources));
+        dataAccess.listRequestsByPeople(peopleResources, statuses, startDate, endDate, fields, function(err, body){
+            if (err) {
+                console.log(err);
+                callback("error loading requests", null);
+            } else {
+                callback(null, body);
+            }
+        });
+
+    });
 };
 
 module.exports.listRequests = function(manager, statuses, startDate, endDate, fields, callback) {
@@ -90,13 +90,13 @@ module.exports.listRequests = function(manager, statuses, startDate, endDate, fi
 };
 
 module.exports.insertVacation = function(obj, callback) {
-    
-	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.VACATIONS_KEY);
-	//12/11/14 MM     if(validationMessages.length > 0) {
-	//12/11/14 MM       callback( validationMessages.join(', '), {} );
-	//12/11/14 MM       return;
-	//12/11/14 MM     }
-    
+
+    //12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.VACATIONS_KEY);
+    //12/11/14 MM     if(validationMessages.length > 0) {
+    //12/11/14 MM       callback( validationMessages.join(', '), {} );
+    //12/11/14 MM       return;
+    //12/11/14 MM     }
+
     dataAccess.insertItem(obj._id, obj, dataAccess.VACATIONS_KEY, function(err, body){
         if (err) {
             console.log(err);
@@ -108,7 +108,7 @@ module.exports.insertVacation = function(obj, callback) {
                     callback(null, body);
                 }
             });
-            
+
         }
     });
 };
@@ -165,7 +165,7 @@ var filterVacationsForPeriod = function(period, year, vacations) {
     return _.filter(vacations.members, function(vacation) {
         var startDateInRange = util.inTimeRange(vacation.startDate, start, end, 'days');
         var endDateInRange = util.inTimeRange(vacation.endDate, start, end, 'days');
-        
+
         return startDateInRange || endDateInRange;
     });
 };
@@ -208,7 +208,7 @@ module.exports.getMyVacations = function (me, callback) {
     var returnedObject = {
         periods: [],
         daysLeft: 0
-};
+    };
 
     dataAccess.listVacationsByPerson(me.resource, function (err, vacations) {
         if (err) {
@@ -270,7 +270,7 @@ module.exports.getMyVacations = function (me, callback) {
                     vacations: filterVacationsForPeriod(0, year + 1, vacations)
                 });
             }
-            
+
             returnedObject.daysLeft = (calculateDaysLeft(me.vacationCapacity, vacations) / 8).toFixed(1);
 
             callback(null, returnedObject);
@@ -296,6 +296,10 @@ module.exports.getMyRequests = function(me, callback) {
             });
 
             Q.all(promises).then(function() {
+                _.each(returnedObjects, function(obj) {
+                    obj.projects = _.compact(obj.projects);
+                });
+
                 callback(null, returnedObjects);
             });
         }
@@ -311,14 +315,26 @@ var getReturnedObject = function(vacation) {
             assignmentsService.listAssignmentsByPersonResource(person.about, function (err, assignments) {
                 if (!err) {
                     returnedObject.projects = _.map(assignments, function(assignment) {
-                        return assignment.project;
+                        var members = _.filter(assignment.members, function(member) {
+                            if(member.person.resource == returnedObject.request.person.resource) {
+                                return true;
+                            }
+
+                            return false;
+                        });
+
+                        if(members.length > 0) {
+                            if(!members[0].endDate || moment(members[0].endDate).isAfter(moment())) {
+                                return assignment.project;
+                            }
+                        }
                     });
 
                     deffered.resolve(returnedObject);
                 } else {
                     deffered.reject(personErr);
                 }
-                
+
             });
         } else {
             deffered.reject(personErr);
