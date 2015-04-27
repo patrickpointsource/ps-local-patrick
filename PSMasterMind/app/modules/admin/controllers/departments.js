@@ -270,6 +270,8 @@ angular.module('Mastermind')
 		  $scope.saveDepartment(alreadyAssigned).then(function(result){
 			  $scope.selectedDepartment.editDepartmentPeople = false;
 			  
+			  $scope.hideDepartmentsSpinner = true;
+			  
 			  if (!result) {
 				  $scope.selectedDepartment.departmentPeople = prevDepartmentPeople;
 				  $scope.selectedDepartment.editDepartmentPeople = false;
@@ -280,7 +282,7 @@ angular.module('Mastermind')
 				  }
 			  }
 			  
-			  $scope.hideDepartmentsSpinner = true;
+			 
 			  
 			  deferred.resolve(result);
 		  });
@@ -615,8 +617,12 @@ angular.module('Mastermind')
 	    			// refresh departments to hide "empty category" warnings if needed
 	    			$scope.loadDepartments();
 	    			$scope.hideDepartmentsSpinner = true;
+	    			
+	    			$rootScope.$emit('department:categories:changed');
 	    		}).catch(function() {
-	    			$scope.selectedCategory = {};
+	    			$scope.selectedCategory = {
+    					trimmedValue: 'all'
+    		  	  	};
 	    			$scope.hideDepartmentsSpinner = true;
 	    		});
 	    	else
@@ -644,12 +650,15 @@ angular.module('Mastermind')
 		    	DepartmentsService.removeDepartmentCategory($scope.selectedCategory.resource).then(function() {
 	    			DepartmentsService.loadDepartmentCategories().then(function(res) {
 	        			$scope.departmentCategories = res && res.members ? res.members: res;
-	        			$scope.selectedCategory = {};
+	        			$scope.selectedCategory = {
+        					trimmedValue: 'all'
+        		  	  	};
 	        			// hide delete confirm dialog
 	        			$('.confirm-delete-category').modal('hide');
 	        		}).then(function() {
 	        			// refresh departments to hide "empty category" warnings if needed
 		    			$scope.loadDepartments();
+		    			$rootScope.$emit('department:categories:changed');
 	        		}).then(function() {
 	        			$scope.onCategoriesLoaded();
 	        			$scope.hideDepartmentsSpinner = true;

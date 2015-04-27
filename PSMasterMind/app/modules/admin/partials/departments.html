@@ -13,7 +13,7 @@
 								
 								<div class="select-editable">
 									<select name="departmentCategories" class="form-control pull-right" ng-change="onCategoryChanged($event, this)" 
-				                                    ng-model="selectedCategory"
+				                                    ng-model="selectedCategory" ng-show="!selectedCategory.isEdit" 
 				                                    ng-required="true"
 				                                    ng-options="p.name for p in extendCategories(departmentCategories) track by p.trimmedValue"></select>
 			                     

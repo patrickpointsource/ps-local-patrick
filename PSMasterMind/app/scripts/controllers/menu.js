@@ -363,5 +363,6 @@ angular.module('Mastermind').controller('MenuCtrl', ['$scope', '$rootScope', '$s
 	$rootScope.$on('department:created', $scope.initMenu);
 	$rootScope.$on('department:updated', $scope.initMenu);
 	$rootScope.$on('department:deleted', $scope.initMenu);
+	$rootScope.$on('department:categories:changed', $scope.initMenu);
 	
   }]);

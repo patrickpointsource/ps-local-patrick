@@ -1,3 +1,26 @@
+@media (max-width:@screen-md) {
+  /* fix white space at the bottom on tablets*/
+    html {
+      height: 100%;
+      
+      body {
+        height: 100%;
+      
+        div[ng-controller] {
+          height: 100%;
+      
+          #appContent{
+            height: 100%;
+      
+            #mainContent {
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+}
+
 .departments-container  {
   .spinner-container {
     i {
@@ -39,6 +62,7 @@
         
         .manager {
           font-size: 14px;
+          white-space: nowrap;
         }
       }
       .right {
@@ -51,6 +75,15 @@
       }
     }
   }
+  
+  @media (max-width:@screen-xs) {
+    >.row.departments {
+      .left {
+        width: 50%;
+      }
+    }
+  }
+  
   .section-header {
   
     /*position: relative;
