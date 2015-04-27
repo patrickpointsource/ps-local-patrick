@@ -22,7 +22,6 @@
     "textAngular": "~1.2",
     "fastclick": "1.0.0",
     "d3": "*",
-    "nvd3": "*",
     "dimple": "~2.1.0",
     "moment": "2.7.0",
     "masonry": "3.1",
