@@ -125,34 +125,29 @@ function( $scope, $state, $stateParams, $filter, Resources, People, AssignmentSe
 	};
 
 	$scope.getSecurityInformation = function(callback) {
-	  $scope.userSecurityGroups = [];
+	    $scope.userSecurityGroups = [];
 
-	  if ($scope.canViewSecurityRoles()) {
-
-		  Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
+		Resources.get('securityRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(result) {
 	        $scope.securityGroups = result.members;
 
 	        Resources.get('userRoles', { t: ( new Date( ) ).getMilliseconds( ) }).then(function(userRoles) {
-	          $scope.userRoles = userRoles.members;
+	            $scope.userRoles = userRoles.members;
 
-	          var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
+	            var userRole = _.findWhere($scope.userRoles, { userId: $scope.profile.googleId });
 
-	          if(userRole) {
-	              $scope.userRole = userRole;
-	              $scope.prepareUserRoles();
-	              callback();
-	          } else {
-	            Resources.create('userroles', {userId: $scope.profile.googleId, roles: []}).then(function(result){
-	                $scope.userRole = result;
-	                $scope.updateUserRoles();
+	            if(userRole) {
+	                $scope.userRole = userRole;
+	                $scope.prepareUserRoles();
 	                callback();
-	            });
-	          }
+	            } else {
+	                Resources.create('userroles', {userId: $scope.profile.googleId, roles: []}).then(function(result){
+	                    $scope.userRole = result;
+	                    $scope.updateUserRoles();
+	                    callback();
+	                });
+	            }
 	        });
-	      });
-	  } else if (callback)
-		  callback();
-
+	    });
 	};
 
 	$scope.prepareUserRoles = function() {
