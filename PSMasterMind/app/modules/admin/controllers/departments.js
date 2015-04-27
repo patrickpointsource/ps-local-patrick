@@ -13,6 +13,7 @@ angular.module('Mastermind')
 	  $scope.availablePeopleList = [];
 	  $scope.departmentCodes = [];
 	  $scope.departmentCategories = [];
+	  $scope.extendedDepartmentCategories = [];
 	  $scope.hideDepartmentsSpinner = true;
 	  
 	  $scope.selectedManagerChanged = function(e, item){
@@ -606,10 +607,11 @@ angular.module('Mastermind')
 	    		promise.then(function() {
 	    			DepartmentsService.loadDepartmentCategories().then(function(res) {
 	        			$scope.departmentCategories = res && res.members ? res.members: res;
+	        			$scope.extendedDepartmentCategories = $scope.extendCategories($scope.departmentCategories);
 	        			
-	        			$scope.selectedCategory = _.find($scope.departmentCategories, function(cat) {
-	        				return cat.trimmedValue == $scope.selectedCategory.trimmedValue;
-	        			});
+        				$scope.selectedCategory = {
+    			  		  trimmedValue: 'all'
+    			  	  	};
 	        		}).then(function() {
 	        			$scope.onCategoriesLoaded();
 	        		});
@@ -650,6 +652,8 @@ angular.module('Mastermind')
 		    	DepartmentsService.removeDepartmentCategory($scope.selectedCategory.resource).then(function() {
 	    			DepartmentsService.loadDepartmentCategories().then(function(res) {
 	        			$scope.departmentCategories = res && res.members ? res.members: res;
+	        			$scope.extendedDepartmentCategories = $scope.extendCategories($scope.departmentCategories);
+	        			
 	        			$scope.selectedCategory = {
         					trimmedValue: 'all'
         		  	  	};
@@ -756,6 +760,7 @@ angular.module('Mastermind')
 	    	if ($scope.departmentCategories.length == 0)
 	    		DepartmentsService.loadDepartmentCategories().then(function(res) {
 	    			$scope.departmentCategories = res && res.members ? res.members: res;
+	    			$scope.extendedDepartmentCategories = $scope.extendCategories($scope.departmentCategories);
 	    		}).then(function() {
         			$scope.onCategoriesLoaded();
         		});
