@@ -114,35 +114,29 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 			return;
 		
 		$scope.projectStates[ state ] = !$scope.projectStates[ state ];
-		if( state == 'all' && $scope.projectStates[ state ] )
+		var checked = $scope.projectStates[ state ];
+		if( state == 'all')
 			for( prop in $scope.projectStates ) {
-				$scope.projectStates[ prop ] = true;
+				$scope.projectStates[ prop ] = checked;
 			}
-		else if( state == 'all' && !$scope.projectStates[ state ] )
-			for( prop in $scope.projectStates ) {
-				$scope.projectStates[ prop ] = false;
-			}
-		else if( state != 'all' && !$scope.projectStates[ state ] )
+		else 
 			$scope.projectStates[ 'all' ] = false;
 
 		$scope.reportProject = null;
+		$('input[name="reportProject"]').typeahead('val', '');
 	};
 
 	$scope.selectUserGroup = function( e, group ) {
 		var prop;
 
 		$scope.userGroups[ group ] = !$scope.userGroups[ group ];
-		if( group == 'all' && $scope.userGroups[ group ] )
+		var checked = $scope.userGroups[ group ];
+		if( group == 'all')
 			for( prop in $scope.userGroups ) {
-				$scope.userGroups[ prop ] = true;
+				$scope.userGroups[ prop ] = checked;
 			}
-		else if( group == 'all' && !$scope.userGroups[ group ] )
-			for( prop in $scope.userGroups ) {
-				$scope.userGroups[ prop ] = false;
-			}
-		else if( group != 'all' && !$scope.userGroups[ group ] ) {
+		else 
 			$scope.userGroups[ 'all' ] = false;
-		}
 
 		mapUserGroupToUserRoles();
 	};
@@ -151,15 +145,12 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 		var prop;
 		
 		$scope.userRoles[ role ].value = !$scope.userRoles[ role ].value;
-		if( role == 'all' && $scope.userRoles[ role ].value )
+		var checked = $scope.userRoles[ role ].value;
+		if( role == 'all')
 			for( prop in $scope.userRoles ) {
-				$scope.userRoles[ prop ].value = true;
+				$scope.userRoles[ prop ].value = checked;
 			}
-		else if( role == 'all' && !$scope.userRoles[ role ].value )
-			for( prop in $scope.userRoles ) {
-				$scope.userRoles[ prop ].value = false;
-			}
-		else if( role != 'all' && !$scope.userRoles[ role ] )
+		else 
 			$scope.userRoles[ 'all' ].value = false;
 
 	};
@@ -993,23 +984,16 @@ function ($scope, $q, $state, $stateParams, $filter, Resources, AssignmentServic
 				mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
 				person = findPersonOnProject( mappingEntry, reportHours[ i ].person.resource );
 			} else if( reportHours[ i ].task && reportHours[ i ].task.resource ) {
-				person = null;
-
-				if( projectMapping[ reportHours[ i ].task.resource ].persons )
-					person = _.find( projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ], function( p ) {
-						return p.resource == reportHours[ i ].person.resource;
-					} );
-
-				if( !projectMapping[ reportHours[ i ].task.resource ].persons )
-					projectMapping[ reportHours[ i ].task.resource ].persons = [ ];
+				person = _.find( projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ], function( p ) {
+					return p.resource == reportHours[ i ].person.resource;
+				} );
 
 				if( !person ) {
 					person = {
 						name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
 						resource: reportHours[ i ].person.resource
 					};
-
-					projectMapping[ reportHours[ i ].task.resource ].persons.push( person );
+					projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ].push( person );
 				}
 			}
 

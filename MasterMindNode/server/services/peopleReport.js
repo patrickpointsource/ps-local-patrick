@@ -374,7 +374,7 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
             var res = null;
            
             for( prop in rolesPersonMapping ) {
-                if (prop != CONSTS.UNKNOWN_ROLE || isAllRolesSelected) { //Show Unassigned records if 'All roles' selected ONLY.
+                if (prop != UNDETERMINED_ROLE || isAllRolesSelected) { //Show Unassigned records if 'All roles' selected ONLY.
     				res = res || _.find( rolesPersonMapping[ prop ], function( p ) {
     					return p.resource == resource;
     				} );
@@ -438,15 +438,10 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
                 mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
                 person = findPersonOnProject( mappingEntry, reportHours[ i ].person.resource );
             } else if( reportHours[ i ].task && reportHours[ i ].task.resource ) {
-                person = null;
-
-                if( projectMapping[ reportHours[ i ].task.resource ].persons )
-                    person = _.find( projectMapping[ reportHours[ i ].task.resource ][ UNDETERMINED_ROLE ], function( p ) {
-                        return p.resource == reportHours[ i ].person.resource;
-                    } );
-
-                if( !projectMapping[ reportHours[ i ].task.resource ].persons )
-                    projectMapping[ reportHours[ i ].task.resource ].persons = [ ];
+                
+                person = _.find( projectMapping[ reportHours[ i ].task.resource ][ UNDETERMINED_ROLE ], function( p ) {
+                    return p.resource == reportHours[ i ].person.resource;
+                } );
 
                 if( !person ) {
                     person = {
@@ -454,7 +449,7 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
                         resource: reportHours[ i ].person.resource
                     };
 
-                    projectMapping[ reportHours[ i ].task.resource ].persons.push( person );
+                    projectMapping[ reportHours[ i ].task.resource ][ UNDETERMINED_ROLE ].push( person );
                 }
             }
             

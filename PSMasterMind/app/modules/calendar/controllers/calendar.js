@@ -468,6 +468,8 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             for (var k = 0; k < persons.length; k++)
                 colorsMap[persons[k]] = lightColors[k];
 
+            $scope.colorsMap = colorsMap;
+
             var dColor;
             var c;
 
@@ -542,7 +544,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                         return 1;
 
                 });
-                
+
                 // before setting mutlidays order for current vacations check if ther are vacation with visual "order" from
                 // previous days and set them on correct positions
                 var tmpVac;
@@ -577,7 +579,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                         currentDay.vacations[currentDay.vacations[k].order] = currentDay.vacations[k];
 
                         currentDay.vacations[k] = tmpVac;
-                        
+
                         // if we move vacation to another position fix it "order" value
                         if (!isNaN(parseInt(tmpVac.order)))
                         	tmpVac.order = k;
@@ -779,9 +781,33 @@ angular.module('Mastermind').controller('CalendarCtrl', [
             $scope.initCalendar();
         };
 
-        $rootScope.$on('calendar:update', function ()
-        {
-            $scope.initCalendar();
+        $rootScope.$on('calendar:update', function (event, updatedVacation) {
+            if(updatedVacation) {
+                for(var dayIndex in $scope.displayedMonthDays) {
+                    var day = $scope.displayedMonthDays[dayIndex];
+                    for(var vacationIndex in day.vacations) {
+                        var vacation = day.vacations[vacationIndex];
+                        if(vacation._id == updatedVacation._id) {
+                            day.vacations[vacationIndex].status = updatedVacation.status;
+                            day.vacations[vacationIndex]._rev = updatedVacation._rev;
+
+                            var c = $scope.colorsMap[day.vacations[vacationIndex].person.resource];
+
+                            if(day.vacations[vacationIndex].status && day.vacations[vacationIndex].status.toLowerCase() != 'pending')
+                                day.vacations[vacationIndex].background = c;
+                            else {
+                                var dColor = Util.darkColorFrom(c, 0.4);
+                                day.vacations[vacationIndex].background = 'repeating-linear-gradient( -45deg, ' + dColor + ', ' + dColor +
+                                    ' 3px, ' + c + ' 3px, ' + c + ' 15px)';
+                            }
+
+                            if(day.vacations[vacationIndex].status && day.vacations[vacationIndex].status.toLowerCase() == 'denied') {
+                                day.vacations.splice(vacationIndex, 1);
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         //if (!$scope.initialized) {

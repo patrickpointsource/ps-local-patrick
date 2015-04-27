@@ -6,7 +6,7 @@
 
 angular.module('Mastermind').controller('OOOCtrl', [
     '$scope', '$state', '$filter', '$q', '$rootScope', 'VacationsService',
-    'Resources', 'ngTableParams', 'NotificationsService', 
+    'Resources', 'ngTableParams', 'NotificationsService',
     function($scope, $state, $filter, $q, $rootScope, VacationsService, Resources, TableParams, NotificationsService) {
         $scope.START_TIME_DEFAULT = "09:00";
 
@@ -15,6 +15,12 @@ angular.module('Mastermind').controller('OOOCtrl', [
         $scope.START_DATE_DEFAULT = moment().format("YYYY-MM-DD");
 
         $scope.loading = true;
+
+        var el = $("<div>").addClass("hidden-sm hidden-md").appendTo($("body"));
+
+        $scope.isMobile = el.is(":hidden");
+
+        el.remove();
 
         $scope.initOOO = function () {
             $scope.submitting = false;
@@ -26,6 +32,18 @@ angular.module('Mastermind').controller('OOOCtrl', [
                     $scope.oooPeriods = result.periods;
                     $scope.oooDaysLeft = result.daysLeft;
                     $scope.myVacations = result.vacations;
+
+                    // Better to do this transformation on the server side. But we have what we have.
+                    if ($scope.isMobile)
+                        for (var i = 0, count = $scope.oooPeriods.length; i < count; i++)
+                        {
+                            var names = $scope.oooPeriods[i].name.split(" - ");
+
+                            names[0] = names[0].substr(0, 3);
+                            names[1] = names[1].substr(0, 3);
+
+                            $scope.oooPeriods[i].name = names.join(" - ");
+                        }
 
                     if ($rootScope.hasPermissions(CONSTS.VIEW_VACATIONS)) {
                         $scope.showRequests();
@@ -82,15 +100,15 @@ angular.module('Mastermind').controller('OOOCtrl', [
         $scope.getShortDate = function(date) {
             return moment(date).format("MMM DD");
         };
-        
+
         $scope.getDays = function(vacation) {
             return VacationsService.getDays(vacation.startDate, vacation.endDate);
         };
-        
+
         $scope.getStatusText = function(status) {
             return VacationsService.getStatusText(status);
         };
-        
+
         $scope.getTotalDays = function(period) {
             var hours = 0;
             _.each(period.vacations, function (vacation) {
@@ -98,7 +116,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
                     hours += VacationsService.getHoursLost(vacation);
                 }
             });
-            
+
             return (hours / 8).toFixed(1);
         };
 
@@ -108,28 +126,28 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
         $scope.editableVacation = null;
         $scope.newVacationCreation = false;
-        
+
         $scope.requestNewVacation = function() {
             var now = moment();
             $scope.newVacationCreation = true;
             $scope.editableVacation = {
-                
+
             };
             $scope.setDate("#vacationFromDate", now.format("YYYY-MM-DD"));
             $scope.vacationStartTime = $scope.START_TIME_DEFAULT;
             $scope.setDate("#vacationEndDate", now.format("YYYY-MM-DD"));
             $scope.vacationEndTime = $scope.END_TIME_DEFAULT;
         };
-        
+
         $scope.editManager = false;
-        
+
         $scope.editManagerCallback = function() {
             $scope.editManager = true;
-            setTimeout(function() { 
+            setTimeout(function() {
                 $(".select-vacation-manager").selectpicker();
             }, 5);
         };
-        
+
         $scope.managerSelected = function() {
             $scope.vacationManager = this.vacationManager;
             $scope.editManager = false;
@@ -238,6 +256,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
                 Resources.update($scope.editableVacation).then(function (result) {
                     $scope.initOOO();
                     $scope.$emit('required-notifications-update');
+                    $rootScope.$emit('calendar:update', result);
                     $scope.messages.push("Re-submit of edited out of office request was successfull!");
                 });
             } else {
@@ -276,7 +295,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
             $("#vacCancelModal").modal('hide');
             $scope.submitting = true;
-            
+
             vacation.status = "Cancelled";
             vacation.reason = this.cancellationReason;
             vacation.vacationManager = { resource: vacation.vacationManager.resource, name: Util.getPersonName(vacation.vacationManager) };
@@ -367,6 +386,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
             Resources.update(request).then(function(result) {
                 if ($rootScope.hasPermissions(CONSTS.VIEW_VACATIONS)) {
+                    $rootScope.$emit('calendar:update', result);
                     $scope.showRequests();
                 }
 
