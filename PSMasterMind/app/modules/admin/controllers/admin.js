@@ -4,12 +4,12 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, groups and roles.
  */
-angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filter', '$q', 
+angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filter', '$q', '$rootScope',
                                                       'Resources','ngTableParams',
-  function ($scope, $state, $filter, $q, Resources, TableParams) {
-	
+  function ($scope, $state, $filter, $q, $rootScope, Resources, TableParams) {
+
 	$scope.navType = 'pills';
-	  
+
     // Table Parameters
     var params = {
       page: 1,            // show first page
@@ -99,7 +99,7 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
         Resources.refresh('roles').then(function(result){
           $scope.roles = result.members;
           $scope.rolesTableParams.total($scope.roles.length);
-          $scope.rolesTableParams.reload();      
+          $scope.rolesTableParams.reload();
           $scope.cancelRole();
         });
       });
@@ -131,50 +131,52 @@ angular.module('Mastermind').controller('AdminCtrl', ['$scope', '$state','$filte
         });
       });
     };
-    
+
     $scope.editMode = false;
-    
+
     $scope.tabSelected = function(tabName) {
     	$scope.selectedTab = tabName;
-    	
+
     	 $scope.$broadcast("admin:tab:selected", tabName);
     };
-    
+
     $scope.commandTrigerred = function(commandName) {
     	$scope.$broadcast("admin:" + $scope.selectedTab, commandName);
     };
-    
+
     $scope.edit = function() {
       $scope.editMode = true;
-      
+
       $scope.$broadcast("admin:edit");
     };
-    
+
     $scope.save = function() {
       $scope.editMode = false;
-      
+
       $scope.$broadcast("admin:save");
     };
-    
+
     $scope.cancel = function() {
       $scope.editMode = false;
-      
+
       $scope.$broadcast("admin:cancel");
     };
-    
+
     $scope.$on("securitygroups:create", function() {
       $scope.editMode = true;
     });
-    
+
     $scope.$on("securitygroups:editmode:false", function() {
       $scope.editMode = false;
     });
-    
+
     $scope.$on("securitygroups:editmode:true", function() {
       $scope.editMode = true;
     });
-    
+
     $scope.$on("securitygroups:delete", function() {
       $scope.editMode = false;
     });
+
+    $rootScope.adminSaveButtonEnable = true;
 }]);

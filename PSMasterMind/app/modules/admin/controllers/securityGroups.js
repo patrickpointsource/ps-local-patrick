@@ -350,9 +350,11 @@ angular.module('Mastermind')
                     } else {
                         $scope.checkForDeletedMembers();
                         $scope.checkForAddedMembers();
+                        $rootScope.adminSaveButtonEnable = false;
                         Resources.update($scope.selectedGroup).then(function (result) {
                             $scope.selectedGroup._rev = result.rev;
                             $scope.messages.push("Your changes have been saved successfully.");
+                            $rootScope.adminSaveButtonEnable = true;
                         }, function(error) {
                             var errorData = JSON.parse(error.data.split('error loading security roles:')[1]);
                             var message = "Error while saving security roles. Please try again.";
@@ -363,6 +365,7 @@ angular.module('Mastermind')
                                 }
                             }
                             $scope.errors.push(message);
+                            $rootScope.adminSaveButtonEnable = true;
                         });
                     }
                 } else {
