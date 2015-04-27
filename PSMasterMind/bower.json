@@ -11,7 +11,7 @@
     "ng-table": "~0.3.1",
     "font-awesome": "~4.0.3",
     "marked": "0.2.10",
-    "angular-ui-router": "0.2.0",
+    "angular-ui-router": "0.2.14",
     "restangular": "1.3.1",
     "bootstrap": "3.1",
     "angular-ui-bootstrap": "~0.10.0",
@@ -28,7 +28,7 @@
     "imagesloaded": "3.1.4",
     "typeahead.js": "~0.10",
     "randomcolor": "*",
-    "angular-ui-select":  "*"
+    "angular-ui-select": "*"
   },
   "devDependencies": {
     "angular-mocks": "~1.2",
@@ -36,6 +36,6 @@
   },
   "resolutions": {
     "bootstrap": "3.1",
-    "angular": "1.2.15"
+    "angular": "1.3.15"
   }
 }
