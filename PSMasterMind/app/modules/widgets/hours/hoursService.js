@@ -315,12 +315,12 @@ function( $q, Resources ) {
 		//logger.log('hoursService:query:before:' + JSON.stringify(query));
 		var onlyAndDates = query.$and && query.$and.length > 0;
 		var orEmpty = !query.$or || query.$or.length > 0;
-		var onlyProjects = query.$or && query.$or.length > 0;
+		var onlyProjectsAndTasks = query.$or && query.$or.length > 0;
 
 		var startDate = null;
 		var endDate = null;
 
-		var projects = [ ];
+		var projectsAndTasks = [ ];
 
 		for( var i = 0; query.$and && i < query.$and.length; i++ ) {
 			onlyAndDates = onlyAndDates && query.$and[ i ].date;
@@ -336,12 +336,14 @@ function( $q, Resources ) {
 
 		}
 
-		// init onlyProjects flag
+		// init onlyProjectsAndTasks  flag
 		for( var i = 0; query.$or && i < query.$or.length; i++ ) {
-			onlyProjects = onlyProjects && query.$or[ i ][ 'project.resource' ];
-
-			if( onlyProjects )
-				projects.push( query.$or[ i ][ 'project.resource' ] );
+			onlyProjectsAndTasks = onlyProjectsAndTasks && (query.$or[ i ][ 'project.resource' ] || query.$or[ i ][ 'task.resource' ]);
+			
+			if (query.$or[ i ][ 'project.resource' ])
+				projectsAndTasks.push( query.$or[ i ][ 'project.resource' ] );
+			if (query.$or[ i ][ 'task.resource' ])
+				projectsAndTasks.push( query.$or[ i ][ 'task.resource' ] );
 		}
 
 		fields = fields ? fields : {};
@@ -370,10 +372,13 @@ function( $q, Resources ) {
 				
 				deferred.resolve( result );
 			} );
-		} else if( !query.person && (onlyProjects || (query.project && query.project.resource) )  && startDate && endDate && orEmpty && onlyAndDates ) {
-			var prj = (query.project && query.project.resource) ? query.project.resource : projects;
+		} else if( !query.person && (onlyProjectsAndTasks || (query.project && query.project.resource) (query.task && query.task.resource) )  
+					&& startDate && endDate && orEmpty && onlyAndDates ) {
+			var resources = (query.project && query.project.resource) ? query.project.resource :
+							(query.task && query.task.resource) ? query.task.resource:
+							projectsAndTasks;
 			Resources.get( 'hours/projectdates', {
-				project: prj,
+				project: resources,
 				startDate: startDate,
 				endDate: endDate,
 				fields: updFields,
@@ -401,9 +406,9 @@ function( $q, Resources ) {
 				deferred.resolve( result );
 			} );
 
-		} else if( onlyProjects ) {
+		} else if( onlyProjectsAndTasks ) {
 			Resources.get( 'hours/projects', {
-				projects: projects,
+				projects: projectsAndTasks,
 				fields: updFields,
 				// to prevent from getting values from cache
 				t: ( new Date( ) ).getMilliseconds( )
