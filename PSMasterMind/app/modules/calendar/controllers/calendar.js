@@ -290,6 +290,11 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                 entry.data('popover', popover);
                 entry.popover('show');
 
+                document.onclick = function() {
+                    entry.popover('hide');
+                    document.onclick = undefined;
+                };
+
                 entry.on('hidden.bs.popover', _.bind(function ()
                 {
                     this.context.popover('destroy');
