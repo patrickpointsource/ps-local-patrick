@@ -7,7 +7,9 @@
 angular.module('Mastermind')
   .controller('DepartmentsCtrl',['$scope', '$rootScope', '$filter', 'Resources', '$state', '$stateParams', 'DepartmentsService', 'People', '$q',
   function ($scope, $rootScope, $filter, Resources, $state, $stateParams, DepartmentsService, PeopleService, $q) {
-	  $scope.selectedDepartment = {};
+	  $scope.selectedDepartment = {
+			  isModifiedPeople: false
+	  };
 	  $scope.availableDepartments = [];
 	  $scope.managersList = [];
 	  $scope.availablePeopleList = [];
@@ -37,12 +39,13 @@ angular.module('Mastermind')
 					if( !$rootScope.formDirty && 
 							( $scope.selectedDepartment.isNew || $scope.selectedDepartment.isEdit || $scope.selectedDepartment.editDepartmentPeople ) ) {
 						var changedByUser = $scope.hasChangesInFields(
-	                        ["departmentCategory",  "departmentNickname", "departmentManager", "departmentCode", "departmentPeople"],
+	                        ["departmentCategory",  "departmentNickname", "departmentManager", "departmentCode", "departmentPeople", "isModifiedPeople"],
 	                        newValue,
 	                        oldValue);
 
 						if( changedByUser ) {
 							console.debug( 'department is now dirty' );
+							
 							$rootScope.formDirty = true;
 							$rootScope.departmentEdit = true;
 							$rootScope.dirtySaveHandler = function( ) {
@@ -55,6 +58,13 @@ angular.module('Mastermind')
 			}
 	  };
 		
+	  $scope.resetSentinelDirty = function() {
+		  $rootScope.formDirty = false;
+		  delete $rootScope.departmentEdit;
+		  $rootScope.dirtySaveHandler = function( ) {
+				
+		  };
+	  };
 
 	  $scope.hasChangesInFields = function(fields, obj1, obj2) {
 			if(fields) {
@@ -90,6 +100,8 @@ angular.module('Mastermind')
 		  $scope.selectedDepartment.isEdit = false;
 		  $scope.selectedDepartment.isNew = false;
 		  $scope.selectedDepartment.isEdit = false;
+		  
+		  $scope.resetSentinelDirty();
 		  
 		  DepartmentsService.loadAvailablePeople().then( function(result) {
       		
@@ -236,17 +248,39 @@ angular.module('Mastermind')
 	  
 	  $scope.cancelDepartmentPeople = function() {
 		  $scope.selectedDepartment.editDepartmentPeople = false;
+		  $scope.selectedDepartment.isModifiedPeople = false;
+		  
+		  $scope.resetSentinelDirty();
 		  
 		  var ind;
 		  
-		  for (var k = 0; k < $scope.selectedDepartmentPeople.length; k ++) {
+		  //check for added persons
+		  for (var k = $scope.selectedDepartmentPeople.length - 1; k >= 0; k --) {
 			  ind = _.indexOf($scope.selectedDepartment.departmentPeople, $scope.selectedDepartmentPeople[k].resource);
 			  
-			  if (ind >= 0)
-				  $scope.selectedDepartment.departmentPeople.splice(ind, 1);
+			  // if persons not in original department people collection - it was added
+			  if (ind == -1)
+				  //$scope.selectedDepartment.departmentPeople.splice(ind, 1);
+				  $scope.selectedDepartmentPeople.splice(k, 1);
 		  }
 		  
-		  $scope.selectedDepartmentPeople = [];
+		  var p;
+		  
+		  // check for removed persons
+		  for (var k = $scope.selectedDepartment.departmentPeople.length - 1; k >= 0; k --) {
+			  p = _.find($scope.selectedDepartmentPeople, function(p){ return p.resource == $scope.selectedDepartment.departmentPeople[k];});
+			  
+			  // if persons not in currently displayed list but in original department people list - it was removed
+			  if (!p) {
+				  p = _.find($scope.allPeopleList, function(p){ return p.resource == $scope.selectedDepartment.departmentPeople[k];});
+				  
+				  $scope.selectedDepartmentPeople.push({
+					  resource: $scope.selectedDepartment.departmentPeople[k],
+					  name: p ? Util.getPersonName(p, true): ''
+				  });
+				  
+			  }	  
+		  }
 	  };
 	  
 	  $scope.saveDepartmentPeople = function(navigateOut) {
@@ -292,13 +326,15 @@ angular.module('Mastermind')
 	  
 	  $scope.addDepartmentPerson = function (p) {
 	      $('.confirm-reassign-person').modal('hide');
+	      
 	      $scope.departmentPeopleChanged = true;
+	      $scope.selectedDepartment.isModifiedPeople = true;
+	      
 		  if (! $scope.selectedDepartment.departmentPeople)
 			  $scope.selectedDepartment.departmentPeople = [];
 		  
-		  $scope.selectedDepartment.departmentPeople.push(p.resource);
-		  
-		  $scope.selectedDepartment.departmentPeople = _.uniq( $scope.selectedDepartment.departmentPeople);
+		  //$scope.selectedDepartment.departmentPeople.push(p.resource);
+		  //$scope.selectedDepartment.departmentPeople = _.uniq( $scope.selectedDepartment.departmentPeople);
 		  
 		  $scope.selectedDepartmentPeople.push(p);
 		  
@@ -334,6 +370,8 @@ angular.module('Mastermind')
 	  
 	  $scope.removeDepartmentPerson = function (person) {
 	      $scope.departmentPeopleChanged = true;
+	      $scope.selectedDepartment.isModifiedPeople = true;
+	      
 		  $scope.selectedDepartmentPeople = _.filter($scope.selectedDepartmentPeople, function(p){ return p.resource != person.resource;});
 		  
 		  $scope.availablePeopleList.push(person);
@@ -384,6 +422,8 @@ angular.module('Mastermind')
        		delete department.editDepartmenPeople;
        		delete department.isEdit;
        		delete department.isNew;
+       		delete department.isModifiedPeople;
+       		delete department.hidden;
        		
        		if (_.isString(department.departmentManager)) {
        			delete department.departmentManager;
@@ -408,7 +448,7 @@ angular.module('Mastermind')
 	    };
 
 	    /**
-	     * Update a new Role to the server
+	     * Update Department on the server
 	     */
 	    $scope.saveDepartment = function(alreadyAssigned, cb){
 	    	var deferred = $q.defer();
@@ -566,6 +606,7 @@ angular.module('Mastermind')
 	    	delete category.isNew;
 	    	delete category.isEdit;
 	    	delete category.value;
+	    	delete category.TrimmedValue;
 	    	
 	    	return category;
 	    };
@@ -580,6 +621,8 @@ angular.module('Mastermind')
 	    			$scope.selectedCategory = $scope.departmentCategories[ind];
 	    		}
 	    	}
+	    	
+	    	$scope.selectedCategory = childScope.selectedCategory;
 	    	
 	    	_.each($scope.availableDepartments, function(dep) {
 	    		var val = $scope.selectedCategory? dep.departmentCategory.trimmedValue: '';

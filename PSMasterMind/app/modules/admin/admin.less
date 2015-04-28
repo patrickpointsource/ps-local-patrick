@@ -159,24 +159,30 @@
    
      .select-editable {
          position:relative;
-         background-color:white;
-         
+         border-width: 0px;
+        /*fix for mobile safari - it displays top border anyway in custom color - make it transparent*/
+         border-top: 1px solid transparent;
          width:170px;
          height:18px;
          top: -7px;
          display:inline-block;
+         background-color: transparent;
      }
      .select-editable select {
          position:absolute;
-         top:0px;
+         top:4px;
          left:0px;
          font-size:14px;
          border:none;
          width:170px;
+         height:40px;
          margin:0;
          min-width: 170px;
+         margin-top: -4px;
          
      }
+     
+     
      .select-editable input {
          position:absolute;
          top:0px;
@@ -188,6 +194,7 @@
          border:none;
          margin:0px;
          height:40px;
+         
      }
      .select-editable select:focus, .select-editable input:focus {
          outline:none;
