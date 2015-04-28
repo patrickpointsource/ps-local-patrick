@@ -257,6 +257,9 @@ module.exports.getManager = function(id, callback) {
                     
                     if (filteredDepartments.length > 0) {
                         var personsDepartment = filteredDepartments[0];
+                        if(!personsDepartment.departmentManager){
+                            return callback(500, "Cannot get manager by resource");
+                        }
                         module.exports.getPersonByResource(personsDepartment.departmentManager.resource, function (managerErr, manager) {
                             if (manager) {
                                 callback(null, manager);
