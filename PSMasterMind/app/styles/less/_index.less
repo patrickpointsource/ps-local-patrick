@@ -1,7 +1,7 @@
 // out: ../main.css
 @import '_base';
 #appContent {
-  @media (min-width:@screen-md-min) {
+  @media (min-width:@screen-lg-min) {
     margin-left: 280px;
   }
 }
@@ -16,7 +16,7 @@
   -webkit-box-shadow: 0 2px 2px -2px @gray-outline;
   box-shadow: 0 2px 2px -2px @gray-outline;
 }
-@media (max-width:991px) {
+@media (max-width:@screen-md-max) {
   #navbar1 {
     left: 0px;
     background-color: @charcoleRegular;
@@ -51,7 +51,7 @@
   width: 280px !important;
   border-top: 2px solid @turquoiseRegular;
   //padding-top: 12px;
-  @media (max-width:@screen-sm-max) {
+  @media (max-width:@screen-md-max) {
     background-color: @gray-dark;
   }
   max-height: none;
@@ -70,7 +70,6 @@
     -moz-box-shadow: none !important;
     -webkit-box-shadow: none !important;
   }
- 
   li {
     text-transform: uppercase;
     a {
@@ -87,8 +86,8 @@
   float: none;
   height: 75px;
   border-bottom: 1px solid @gray-header-underline;
-  
-  @media (max-width:@screen-sm) {
+
+  @media (max-width:@screen-md-max) {
     position:absolute;
     background-color: #333333;
     z-index: 1001;
@@ -100,7 +99,7 @@
   padding: 0;
   height: 75px;
 }
-.hidden-sm .navbar-header .appTitle {
+.hidden-md .navbar-header .appTitle {
   color: white;
   font-size: 28px;
   margin: 0 auto 0 auto;
@@ -109,12 +108,13 @@
   height: auto;
   text-align: center;
 }
-.visible-sm.navbar-header .appTitle {
+.visible-md.navbar-header .appTitle, .visible-sm.navbar-header .appTitle {
   float: none;
   display: inline-block;
   padding-right: 55px;
   text-align: center;
 }
+
 .navbar .text-bold {
   font-weight: bolder;
 }
@@ -316,10 +316,8 @@ header {
       }
       li.active-subitem {
         color: white;
-        /*background-color: @navbar-subnavbar-active-bg;*/
-        height: auto !important;
-        
-        >a {
+        background-color: @navbar-subnavbar-active-bg;
+        a {
           color: @turquoiseRegular !important;
           i.fa-check {
             display: inline-block;
@@ -333,15 +331,7 @@ header {
           }
         }
       }
-      
-      li.active-subitem.has-subitems {
-        span {
-          text-transform: uppercase;
-          font-weight: bold;
-        }
-      }
-      
-      >li:hover, >li a:hover {
+      li:hover, li a:hover {
         background-color: @navbar-subnavbar-active-bg !important;
         i.fa-circle-thin {
           color: @gray-nav-circle-active;
@@ -366,23 +356,6 @@ header {
           background-color: @navbar-subnavbar-header-bg !important;
         }
       }
-      
-      
-        
-      li.inner-subitem {
-        height: 32px !important;
-        a {
-          outline: none;
-          text-decoration: none;
-          background-color: transparent !important;
-          padding-top: 0px;
-          padding-bottom: 0px !important;
-        }
-        span {
-          font-size: 13px !important;
-        }
-      }
-      
     }
     li.active ul.subnavbar {
       display: block;
@@ -840,7 +813,7 @@ header .navbar .navbar-breadcrumb {
 }
 .nav-bar-container  {
   height: 100%;
-  .navbar-collapse 
+  .navbar-collapse
   {
     overflow: hidden;
     left: 0px;
@@ -895,7 +868,7 @@ header .navbar .navbar-breadcrumb {
   margin-top: 0px;
   padding-top: 0px;
   padding-bottom: 15px;
-  
+
   > div {
     display: inline-block;
     padding-top: 10px;
@@ -915,6 +888,14 @@ header .navbar .navbar-breadcrumb {
 }
 .modal-content {
   border-radius: 0px;
+}
+.modal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  padding-top: 10px;
+  padding-right: 15px;
 }
 .cursor-pointer {
   cursor: pointer;
@@ -990,7 +971,7 @@ header .navbar .navbar-breadcrumb {
 }
 
 .twitter-typeahead {
-  
+
   width: 100%;
 }
 
@@ -1011,7 +992,7 @@ opacity: 0.7;
     margin-top: -30px;
     margin-left: -20px;
   }
-  
+
   label {
     position: absolute;
     top: 50%;
@@ -1019,7 +1000,7 @@ opacity: 0.7;
     margin-top: 15px;
     margin-left: -27px;
   }
-  
+
   button {
     position: absolute;
     top: 50%;
@@ -1033,7 +1014,7 @@ opacity: 0.7;
   .vacation, .month, .week {
     .panel-body{
       position:relative !important;
-      
+
       .spinner-container {
         margin-left: -15px !important;
         margin-top: -15px !important;

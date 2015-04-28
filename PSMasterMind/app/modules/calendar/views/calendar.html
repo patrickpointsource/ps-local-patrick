@@ -64,7 +64,7 @@
 
 
                 <div class="header-container">
-                    <div ng-click="backMonth()" class="back-month" style="float:left;">
+                    <div ng-click="goToPrevious()" class="back-month" style="float:left;">
                         <div>
                             <i class="fa fa-caret-left fa-2x"></i>
                         </div>
@@ -74,7 +74,7 @@
                         {{startDate.format('MMMM D')}} &ndash; {{endDate.format('D')}}
                     </div>
 
-                    <div ng-click="nextMonth()" class="next-month" style="float:right">
+                    <div ng-click="goToNext()" class="next-month" style="float:right">
                         <div>
                             <i class="fa fa-caret-right fa-2x"></i>
                         </div>
