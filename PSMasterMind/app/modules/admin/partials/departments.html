@@ -13,12 +13,12 @@
 								
 								<div class="select-editable">
 									<select name="departmentCategories" class="form-control pull-right" ng-change="onCategoryChanged($event, this)" 
-				                                    ng-model="selectedCategory" ng-show="!selectedCategory.isEdit" 
+				                                    ng-model="selectedCategory" ng-if="!selectedCategory.isEdit" 
 				                                    ng-required="true"
 				                                    ng-options="p.name for p in extendedDepartmentCategories track by p.trimmedValue"></select>
 			                     
 			                    	 <input type="text" name="format" ng-required="true" ng-model="selectedCategory.trimmedValue" 
-			                    	 	ng-show="selectedCategory.isEdit" />
+			                    	 	ng-show="selectedCategory.isEdit">
 				                                
 			                    </div>
 			                    
