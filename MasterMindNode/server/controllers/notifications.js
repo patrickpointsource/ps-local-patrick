@@ -64,7 +64,7 @@ module.exports.listNotificationsByPerson = function(person, fields, callback) {
                     notifications.push(notification);
                 }
             });
-            
+
             if (promises.length > 0) {
                 Q.all(promises).then(function(results) {
                     callback(null, notifications);
@@ -90,7 +90,7 @@ var resolveVacation = function(notification) {
     if (notification.details && notification.details.resource) {
         id = util.getId(notification.details.resource);
     }
-    
+
     if (id) {
         dataAccess.getItem(id, function(err, vacation) {
             if (!err) {
@@ -114,19 +114,19 @@ var resolveVacation = function(notification) {
 };
 
 module.exports.insertNotification = function(obj, callback) {
-    
-	//12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.NOTIFICATIONS_KEY);
-	//12/11/14 MM     if(validationMessages.length > 0) {
-	//12/11/14 MM       callback( validationMessages.join(', '), {} );
-	//12/11/14 MM     }
-    
+
+    //12/11/14 MM     var validationMessages = validation.validate(obj, dataAccess.NOTIFICATIONS_KEY);
+    //12/11/14 MM     if(validationMessages.length > 0) {
+    //12/11/14 MM       callback( validationMessages.join(', '), {} );
+    //12/11/14 MM     }
+
     dataAccess.insertItem(obj._id, obj, dataAccess.NOTIFICATIONS_KEY, function(err, body){
         if (err) {
             console.log(err);
             callback('error insert notification', null);
         } else {
-          sendEmailTo(obj);
-          callback(null, body);
+            sendEmailTo(obj);
+            callback(null, body);
         }
     });
 };
@@ -214,18 +214,25 @@ var sendEmailTo = function(notification) {
             dataAccess.getItem(vacationId, function(vacErr, vacation) {
                 if (!err) {
                     if (user) {
+                        // by default email to Manager
                         var personId = util.getId(vacation.person.resource);
+
+                        // if email to subordinate
+                        if (notification.type == 'ooo-approved' || notification.type == 'ooo-denied') {
+                            personId = util.getId(vacation.vacationManager.resource);
+                        }
+
                         dataAccess.getItem(personId, function(personErr, person) {
                             if (!personErr) {
                                 var message = "";
                                 if (notification.type == 'ooo-pending' || notification.type == 'ooo-cancelled') {
-                                    message = getOutOfOfficeRequestMessageForManager(util.getPersonName(user), util.getPersonName(person), vacation.type, vacation.startDate, vacation.endDate, vacation.description);
+                                    message = getOutOfOfficeRequestMessageForManager(util.getPersonName(user), util.getPersonName(person), vacation.type, vacation.startDate, vacation.endDate, vacation.description, notification.type);
                                 }
-                                
+
                                 if (notification.type == 'ooo-approved' || notification.type == 'ooo-denied') {
-                                    message = getOutOfOfficeRequestMessageForSubordinate(util.getPersonName(person), util.getPersonName(user), vacation.type, vacation.startDate, vacation.endDate, vacation.description);
+                                    message = getOutOfOfficeRequestMessageForSubordinate(util.getPersonName(user), util.getPersonName(person), vacation.type, vacation.startDate, vacation.endDate, vacation.description, notification.type);
                                 }
-                                
+
                                 message += smtpHelper.getServerInformation("NodeJS service", os.hostname(), configProperties.env);
                                 message += "<br/><br/>Sincerely Yours, <br/><strong>MasterMind Notice.</strong>";
                                 emailSender.sendEmailFromPsapps(
@@ -242,7 +249,7 @@ var sendEmailTo = function(notification) {
                                 console.log("Error getting person from vacation while sending email: " + vacErr);
                             }
                         });
-                        
+
                     } else {
                         console.log("Cant find user with resource: " + notification.person.resource + " while trying to send an email.");
                     }
@@ -260,54 +267,54 @@ var sendEmailTo = function(notification) {
 
 var getOutOfOfficeRequestMessageForManager = function (userName, personName, requestType, startDate, endDate, description, notificationType) {
     var result = '';
-    
+
     var requestTypeLabel = (requestType == "Vacation") ? requestType + "days" : requestType;
     var actionNeeded = (requestType == "Customer Travel") ? "none" : "Review and approve or deny";
     var action = "requested";
     if (notificationType == "ooo-cancelled") {
         action = "cancelled";
     }
-    
-    var result = 
+
+    var result =
         userName + ",<br/>" +
-			"<br/>" + 
-			personName + " has " + action + " " + requestTypeLabel + "<br/>" +
-			"<br/>" +
-			"Further action needed: " + actionNeeded + "<br/>" +
-			"<br/>" +
-			"Type of request : " + requestType + "<br/>" +
-			"From : " + startDate + "<br/>" +
-			"Until : " + endDate + "<br/>" +
-			"Person : " + personName + "<br/>" +
-			"Description : " + description + "<br/>" +
-			"<br/>" +
-			"Please log on to Mastermind for details by visiting the URL below." + "<br/>" + 
-			"https://mastermind.pointsource.com" + "<br/>";
-    
+        "<br/>" +
+        personName + " has " + action + " " + requestTypeLabel + "<br/>" +
+        "<br/>" +
+        "Further action needed: " + actionNeeded + "<br/>" +
+        "<br/>" +
+        "Type of request : " + requestType + "<br/>" +
+        "From : " + startDate + "<br/>" +
+        "Until : " + endDate + "<br/>" +
+        "Person : " + personName + "<br/>" +
+        "Description : " + description + "<br/>" +
+        "<br/>" +
+        "Please log on to Mastermind for details by visiting the URL below." + "<br/>" +
+        "https://mastermind.pointsource.com" + "<br/>";
+
     return result;
-}
+};
 
 var getOutOfOfficeRequestMessageForSubordinate = function (userName, personName, requestType, startDate, endDate, description, notificationType) {
     var result = '';
-    
+
     var action = "approved";
-    if (notificationType == "ooo-cancelled") {
-        action = "cancelled";
+    if (notificationType == "ooo-denied") {
+        action = "denied";
     }
-    
-    var result = 
+
+    var result =
         userName + ",<br/>" +
-			"<br/>" + 
-			personName + " has " + action + " your out of office request" + "<br/>" +
-			"<br/>" +
-			"<br/>" +
-			"Type of request : " + requestType + "<br/>" +
-			"From : " + startDate + "<br/>" +
-			"Until : " + endDate + "<br/>" +
-			"Description : " + description + "<br/>" +
-			"<br/>" +
-			"Please log on to Mastermind for details by visiting the URL below." + "<br/>" + 
-			"https://mastermind.pointsource.com" + "<br/>";
-    
+        "<br/>" +
+        personName + " has " + action + " your out of office request" + "<br/>" +
+        "<br/>" +
+        "<br/>" +
+        "Type of request : " + requestType + "<br/>" +
+        "From : " + startDate + "<br/>" +
+        "Until : " + endDate + "<br/>" +
+        "Description : " + description + "<br/>" +
+        "<br/>" +
+        "Please log on to Mastermind for details by visiting the URL below." + "<br/>" +
+        "https://mastermind.pointsource.com" + "<br/>";
+
     return result;
-}
+};
