@@ -112,12 +112,12 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		all: false,
 		sales: false,
 		administration: false,
-		clientexperience: false,
+		clientexperiencemgmt: false,
 		development: false,
 		architects: false,
 		marketing: false,
 		digitalexperience: false,
-		executives: false
+		executivemgmt: false
 	};
 
 	$scope.selectProjectState = function( e, state ) {
@@ -1298,109 +1298,108 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		
 		//init projectMapping with entries related to hours which were logged by persons who are not assigned on project
 		for (var i = 0; i < reportHours.length; i ++) {
-			
-			// when we have project logged entry
-			if (reportHours[ i ].project) {
-				if(  reportHours[ i ].project.resource && !projectMapping[ reportHours[ i ].project.resource ] )
-					projectMapping[ reportHours[ i ].project.resource ] = {};
+			if ($scope.peopleMap[ reportHours[ i ].person.resource ] &&
+				(!filter.reportPerson || filter.reportPerson.resource == reportHours[ i ].person.resource)){
+				//when we have project logged entry
+				if (reportHours[ i ].project) {
+					if(  reportHours[ i ].project.resource && !projectMapping[ reportHours[ i ].project.resource ] )
+						projectMapping[ reportHours[ i ].project.resource ] = {};
 
-				if( !projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] )
-					projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] = [ ];
+					if( !projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] )
+						projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ] = [ ];
 
-				personEntry = _.find(projectMapping[ reportHours[ i ].project.resource ][CONSTS.UNKNOWN_ROLE], function(p) { 
-					return p.resource == reportHours[ i ].person.resource;
-				});
-				
-				if (!personEntry)
-					projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
-						resource: reportHours[ i ].person.resource,
-						name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ])
-					} );
-			
-			// when we have logged entry for tasks
-			} else if (reportHours[ i ].task) {
-				if(  reportHours[ i ].task.resource && !projectMapping[ reportHours[ i ].task.resource ] )
-					projectMapping[ reportHours[ i ].task.resource ] = {};
-				
-				if( !projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ] )
-					projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ] = [ ];
+					personEntry = _.find(projectMapping[ reportHours[ i ].project.resource ][CONSTS.UNKNOWN_ROLE], function(p) { 
+						return p.resource == reportHours[ i ].person.resource;
+					});
+					
+					if (!personEntry)
+						projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
+							resource: reportHours[ i ].person.resource,
+							name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ])
+						} );
+				} 
+				// when we have logged entry for tasks
+				if (reportHours[ i ].task) {
+					if(  reportHours[ i ].task.resource && !projectMapping[ reportHours[ i ].task.resource ] )
+						projectMapping[ reportHours[ i ].task.resource ] = {};
+						
+					if( !projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ] )
+						projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ] = [ ];
 
-				personEntry = _.find(projectMapping[ reportHours[ i ].task.resource ][CONSTS.UNKNOWN_ROLE], function(p) { 
-					return p.resource == reportHours[ i ].person.resource;
-				});
-				
-				if (!personEntry)
-					projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
-						resource: reportHours[ i ].person.resource,
-						name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
-						abbreviation: $scope.peopleMap[ reportHours[ i ].person.resource ].abbreviation
-					} );
+					personEntry = _.find(projectMapping[ reportHours[ i ].task.resource ][CONSTS.UNKNOWN_ROLE], function(p) { 
+						return p.resource == reportHours[ i ].person.resource;
+					});
+					
+					var roleAbbreviation = $scope.peopleMap[ reportHours[ i ].person.resource ].abbreviation ? $scope.peopleMap[ reportHours[ i ].person.resource ].abbreviation.toLowerCase() : 'all'; 
+					var personRoleSelected = $scope.userRoles[ roleAbbreviation ] ? $scope.userRoles[ roleAbbreviation ].value : $scope.userRoles[ 'all'].value; 
+						
+					if (!personEntry && personRoleSelected)
+						projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
+							resource: reportHours[ i ].person.resource,
+							name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
+							abbreviation: $scope.peopleMap[ reportHours[ i ].person.resource ].abbreviation
+						} );
+				}
 			}
 		}
 
 		for(var i = 0; i < reportHours.length; i++ ) {
-
-			// find person entry associated with current hours entry
-			if( reportHours[ i ].project && reportHours[ i ].project.resource ) {
-				mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
-				person = findPersonOnProject( mappingEntry, reportHours[ i ].person.resource );
-			} else if( reportHours[ i ].task && reportHours[ i ].task.resource ) {
-				person = null;
-
-				if( projectMapping[ reportHours[ i ].task.resource ].persons )
+			if ($scope.peopleMap[ reportHours[ i ].person.resource ]) {
+				// find person entry associated with current hours entry
+				if( reportHours[ i ].project && reportHours[ i ].project.resource ) {
+					mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
+					person = findPersonOnProject( mappingEntry, reportHours[ i ].person.resource );
+				} else if( reportHours[ i ].task && reportHours[ i ].task.resource ) {
 					person = _.find( projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ], function( p ) {
 						return p.resource == reportHours[ i ].person.resource;
 					} );
 
-				if( !projectMapping[ reportHours[ i ].task.resource ].persons )
-					projectMapping[ reportHours[ i ].task.resource ].persons = [ ];
-
-				if( !person ) {
-					person = {
-						name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
-						resource: reportHours[ i ].person.resource
-					};
-
-					projectMapping[ reportHours[ i ].task.resource ].persons.push( person );
+					if( !person ) {
+						person = {
+							name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
+							resource: reportHours[ i ].person.resource
+						};
+						projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ].push( person );
+					}
 				}
-			}
 
-			// for found person put current hours entry into hours collection
-			if( person ) {
-				person.hours = person.hours ? person.hours : [ ];
+				// for found person put current hours entry into hours collection
+				if( person ) {
+					person.hours = person.hours ? person.hours : [ ];
 
-				if( ( !$scope.reportCustomStartDate || reportHours[ i ].date >= $scope.reportCustomStartDate ) && ( !$scope.reportCustomEndDate || reportHours[ i ].date <= $scope.reportCustomEndDate ) )
-					person.hours.push( {
-						hours: reportHours[ i ].hours,
-						description: reportHours[ i ].description,
-						date: reportHours[ i ].date
-					} );
+					if( ( !$scope.reportCustomStartDate || reportHours[ i ].date >= $scope.reportCustomStartDate ) && ( !$scope.reportCustomEndDate || reportHours[ i ].date <= $scope.reportCustomEndDate ) )
+						person.hours.push( {
+							hours: reportHours[ i ].hours,
+							description: reportHours[ i ].description,
+							date: reportHours[ i ].date
+						} );
+				}
 			}
 		}
 
 		var roleResource;
 		// migrate initialized persons collection with associated hours for each role to
 		// each project role
-		for(var i = 0; i < projects.length; i++ ) {
+		for(var i = 0; i < result.length; i++ ) {
 			
 			// add empty - will be treated as undetermined
-			if (!projects[ i ].roles)
-				projects[ i ].roles = [{abbreviation: CONSTS.UNDETERMINED_ROLE}];
+			if (!result[ i ].roles)
+				 result[ i ].roles = [{abbreviation: CONSTS.UNDETERMINED_ROLE}];
 		
-			for(var j = 0; j < projects[ i ].roles.length; j++ ) {
+			for(var j = 0; j < result[ i ].roles.length; j++ ) {
 				
-				if (projects[i].roles[ j ]._id)
-					roleResource = projects[ i ].resource + '/roles/' + projects[i].roles[ j ]._id;
+				if (result[i].roles[ j ]._id)
+					roleResource = result[ i ].resource + '/roles/' + result[i].roles[ j ]._id;
 				else
 					roleResource = CONSTS.UNKNOWN_ROLE;
 
-				if( projectMapping[ projects[ i ].resource ] && projectMapping[ projects[ i ].resource ][ roleResource ] ) {
-					projects[i].roles[ j ].persons = projectMapping[ projects[i].resource ][ roleResource ];
+				if( projectMapping[ result[ i ].resource ] && projectMapping[ result[ i ].resource ][ roleResource ] ) {
+					result[i].roles[ j ].persons = projectMapping[ result[i].resource ][ roleResource ];
 					var l = 0;
 
-					for( l = 0; l < projects[i].roles[ j ].persons.length; l++ ) {
-						if( projects[i].roles[ j ].persons[ l ].hours )
-							projects[i].roles[ j ].persons[ l ].hours.sort( function( p1, p2 ) {
+					for( l = 0; l < result[i].roles[ j ].persons.length; l++ ) {
+						if( result[i].roles[ j ].persons[ l ].hours )
+							result[i].roles[ j ].persons[ l ].hours.sort( function( p1, p2 ) {
 								if( p1.date < p2.date )
 									return 1;
 								else if( p1.date > p2.date )
@@ -1409,18 +1408,17 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 							} );
 					}
 				} else
-					projects[i].roles[ j ].persons = [ ];
+					result[i].roles[ j ].persons = [ ];
 
 			}
 		}
 
-		if( projects.length == 0 )
+		if( result.length == 0 )
 			// put tasks info
-			for( prop in projectMapping )
-				projects.push( projectMapping[ prop ] );
-		
-		cb( projects );
-		
+			for(var prop in projectMapping )
+			result.push( projectMapping[ prop ] );
+
+		cb( result );
 	};
 	
 	$scope.getHoursHeader = function( ) {

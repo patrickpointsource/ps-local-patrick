@@ -310,7 +310,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 			"development": [ 'SE', 'SSE', 'SEO', 'SSEO', 'ST', 'SI' ],
 			"architects": [ 'SSA', 'SA', 'ESA', 'SSAO' ],
 			"administration": [ 'ADMIN' ],
-			"clientexpierencemgmt": [ "SBA", "BA", "PM", "CxD" ],
+			"clientexperiencemgmt": [ "SBA", "BA", "PM", "CxD" ],
 			"digitalexperience": [ "UXD", "SUXD", "DxM", "CD" ],
 			"executivemgmt": [ "EXEC", "DD", "CxD", "CD", "DMDE" ],
 			"marketing": [ "MKT", "DMDE", "MS" ],
@@ -322,7 +322,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		if( filterPeople == 'businessdevelopment' ) {
 			return 'Business Development';
 		}
-		if( filterPeople == 'clientexpierencemgmt' ) {
+		if( filterPeople == 'clientexperiencemgmt' ) {
 			return 'Client Experience Mgmt';
 		}
 		if( filterPeople == 'digitalexperience' ) {
