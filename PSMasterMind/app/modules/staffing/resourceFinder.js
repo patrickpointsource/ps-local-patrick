@@ -40,7 +40,7 @@ angular.module( 'Mastermind' ).controller( 'ResourceFinderCtrl', [ '$scope', '$s
 
 			for( var i = 0, count = $scope.allRoles.length; i < count; i++ )
 				if( $scope.allRoles[ i ].abbreviation == args.role ) {
-					$scope.filterRole2 = $scope.allRoles[ i ].resource;
+					$scope.roleChanged($scope.allRoles[ i ].resource);
 					break;
 				}
 		}
@@ -413,6 +413,11 @@ angular.module( 'Mastermind' ).controller( 'ResourceFinderCtrl', [ '$scope', '$s
 
 		$scope.roleChanged = function(value) {
 			$scope.filterRole2 = value;
+			if($scope.sortType) {
+				$scope.changeSort( $scope.sortType );
+			} else {
+				$scope.changeSort( "availabilityPercentage-desc" );
+			}
 		};
 
 		// primaryRole decrease 200
