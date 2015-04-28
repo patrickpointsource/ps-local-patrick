@@ -432,39 +432,37 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
         }
 
         for(var i = 0; i < reportHours.length; i++ ) {
-        	if (peopleMap[ reportHours[ i ].person.resource ]) {
-        		// find person entry associated with current hours entry
-                if( reportHours[ i ].project && reportHours[ i ].project.resource ) {
-                    mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
-                    person = findPersonOnProject( mappingEntry, reportHours[ i ].person.resource );
-                } else if( reportHours[ i ].task && reportHours[ i ].task.resource ) {
-                    
-                    person = _.find( projectMapping[ reportHours[ i ].task.resource ][ UNDETERMINED_ROLE ], function( p ) {
-                        return p.resource == reportHours[ i ].person.resource;
-                    } );
-
-                    if( !person ) {
-                        person = {
-                            name:  util.getPersonName(peopleMap[ reportHours[ i ].person.resource ]),
-                            resource: reportHours[ i ].person.resource
-                        };
-
-                        projectMapping[ reportHours[ i ].task.resource ][ UNDETERMINED_ROLE ].push( person );
-                    }
-                }
+    		// find person entry associated with current hours entry
+            if( reportHours[ i ].project && reportHours[ i ].project.resource ) {
+                mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
+                person = findPersonOnProject( mappingEntry, reportHours[ i ].person.resource );
+            } else if( reportHours[ i ].task && reportHours[ i ].task.resource ) {
                 
-                // for found person put current hours entry into hours collection
-    			if( person ) {
-    				person.hours = person.hours ? person.hours : [ ];
+                person = _.find( projectMapping[ reportHours[ i ].task.resource ][ UNDETERMINED_ROLE ], function( p ) {
+                    return p.resource == reportHours[ i ].person.resource;
+                } );
 
-    				 if( ( !params.startDate || reportHours[ i ].date >= params.startDate ) && ( !params.endDate || reportHours[ i ].date <= params.endDate ) )
-    	                    person.hours.push( {
-    	                        hours: reportHours[ i ].hours,
-    	                        description: reportHours[ i ].description,
-    	                        date: reportHours[ i ].date
-    	                    } );
-    			}
-        	}
+                if( !person ) {
+                    person = {
+                        name:  util.getPersonName(peopleMap[ reportHours[ i ].person.resource ]),
+                        resource: reportHours[ i ].person.resource
+                    };
+
+                    projectMapping[ reportHours[ i ].task.resource ][ UNDETERMINED_ROLE ].push( person );
+                }
+            }
+            
+            // for found person put current hours entry into hours collection
+			if( person ) {
+				person.hours = person.hours ? person.hours : [ ];
+
+				 if( ( !params.startDate || reportHours[ i ].date >= params.startDate ) && ( !params.endDate || reportHours[ i ].date <= params.endDate ) )
+	                    person.hours.push( {
+	                        hours: reportHours[ i ].hours,
+	                        description: reportHours[ i ].description,
+	                        date: reportHours[ i ].date
+	                    } );
+			}
         }
 
         var roleResource;

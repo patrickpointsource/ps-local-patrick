@@ -24,7 +24,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 *
 	 * @returns {*}
 	 */
-	function query( query, fields ) {
+	function query( query, fields, includeInactive ) {
 		var deferred = $q.defer( );
 		var updFields = [];
 		for (var attr in fields) {
@@ -34,8 +34,17 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		}
 		var params = { fields : updFields };
 		params.t = (new Date()).getMilliseconds();
-		Resources.get( 'people/byTypes/active', params ).then (function( result ) {
-			deferred.resolve( result );
+		Resources.get( 'people/byTypes/active', params ).then (function( res ) {
+			_.map(res.members, function( person ) {	person.isActive = true;	});
+			if ( includeInactive ) {
+				Resources.get( 'people/byTypes/inactive', params ).then (function( inactive ) {
+					_.map(inactive.members, function( person ) { person.isActive = false; });
+					res.members = res.members.concat(inactive.members);
+					deferred.resolve( res );
+				});
+			} else {
+				deferred.resolve( res );	
+			}
 		} );
 		return deferred.promise;
 	}

@@ -610,24 +610,20 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 			thumbnail: 1
 		};
 
-		People.query( peopleInRoleQuery, peopleInRoleFields ).then( function( result ) {
-			//Resources.query( 'people', peopleInRoleQuery, peopleInRoleFields, function(
-			// result ) {
-			var abbr;
-			
+		People.query( peopleInRoleQuery, peopleInRoleFields, true ).then( function( result ) {		
 			$scope.peopleList = _.map( result.members, function( m ) {
-				abbr =  m.primaryRole && m.primaryRole.resource ? $scope.rolesMapping[m.primaryRole.resource]: CONSTS.UNDETERMINED_ROLE;
-				
+				var abbr =  m.primaryRole && m.primaryRole.resource ? $scope.rolesMapping[m.primaryRole.resource]: CONSTS.UNDETERMINED_ROLE;
+					
 				if (abbr)
 					abbr = abbr.toUpperCase();
 				
 				$scope.peopleMap[ m.resource ] = {
-					name: m.name,
+					name: m.isActive ? Util.getPersonName(m, true) : Util.getPersonName(m, true) + ' (Inactive)',
 					abbreviation: abbr
 				};
 
 				return {
-					value: m.name,
+					value: m.isActive ? Util.getPersonName(m, true) : '(Inactive) ' + Util.getPersonName(m, true),
 					resource: m.resource
 				};
 			} );
@@ -1038,7 +1034,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 							hoursPerWeek: assignments[ i ].members[ j ].hoursPerWeek,
 							startDate: assignments[ i ].members[ j ].startDate,
 							endDate: assignments[ i ].members[ j ].endDate,
-							name: Util.getPersonName($scope.peopleMap[ assignments[ i ].members[ j ].person.resource ])
+							name: $scope.peopleMap[ assignments[ i ].members[ j ].person.resource ].name
 						};
 
 						var project = _.find( projects, function( p ) {
@@ -1168,7 +1164,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 
 				if( !person ) {
 					person = {
-						name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
+						name:  $scope.peopleMap[ reportHours[ i ].person.resource ].name,
 						resource: reportHours[ i ].person.resource
 					};
 
@@ -1315,7 +1311,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 					if (!personEntry)
 						projectMapping[ reportHours[ i ].project.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
 							resource: reportHours[ i ].person.resource,
-							name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ])
+							name:  $scope.peopleMap[ reportHours[ i ].person.resource ].name
 						} );
 				} 
 				// when we have logged entry for tasks
@@ -1336,7 +1332,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 					if (!personEntry && personRoleSelected)
 						projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ].push( {
 							resource: reportHours[ i ].person.resource,
-							name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
+							name:  $scope.peopleMap[ reportHours[ i ].person.resource ].name,
 							abbreviation: $scope.peopleMap[ reportHours[ i ].person.resource ].abbreviation
 						} );
 				}
@@ -1344,7 +1340,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		}
 
 		for(var i = 0; i < reportHours.length; i++ ) {
-			if ($scope.peopleMap[ reportHours[ i ].person.resource ]) {
 				// find person entry associated with current hours entry
 				if( reportHours[ i ].project && reportHours[ i ].project.resource ) {
 					mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
@@ -1356,7 +1351,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 
 					if( !person ) {
 						person = {
-							name:  Util.getPersonName($scope.peopleMap[ reportHours[ i ].person.resource ]),
+							name:  $scope.peopleMap[ reportHours[ i ].person.resource ].name,
 							resource: reportHours[ i ].person.resource
 						};
 						projectMapping[ reportHours[ i ].task.resource ][ CONSTS.UNKNOWN_ROLE ].push( person );
@@ -1374,7 +1369,6 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 							date: reportHours[ i ].date
 						} );
 				}
-			}
 		}
 
 		var roleResource;
