@@ -372,7 +372,7 @@ function( $q, Resources ) {
 				
 				deferred.resolve( result );
 			} );
-		} else if( !query.person && (onlyProjectsAndTasks || (query.project && query.project.resource) (query.task && query.task.resource) )  
+		} else if( !query.person && (onlyProjectsAndTasks || (query.project && query.project.resource) || (query.task && query.task.resource) )  
 					&& startDate && endDate && orEmpty && onlyAndDates ) {
 			var resources = (query.project && query.project.resource) ? query.project.resource :
 							(query.task && query.task.resource) ? query.task.resource:
