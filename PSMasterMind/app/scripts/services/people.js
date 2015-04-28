@@ -24,7 +24,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 	 *
 	 * @returns {*}
 	 */
-	function query( query, fields ) {
+	function query( query, fields, includeInactive ) {
 		var deferred = $q.defer( );
 		var updFields = [];
 		for (var attr in fields) {
@@ -34,8 +34,17 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		}
 		var params = { fields : updFields };
 		params.t = (new Date()).getMilliseconds();
-		Resources.get( 'people/byTypes/active', params ).then (function( result ) {
-			deferred.resolve( result );
+		Resources.get( 'people/byTypes/active', params ).then (function( res ) {
+			_.map(res.members, function( person ) {	person.isActive = true;	});
+			if ( includeInactive ) {
+				Resources.get( 'people/byTypes/inactive', params ).then (function( inactive ) {
+					_.map(inactive.members, function( person ) { person.isActive = false; });
+					res.members = res.members.concat(inactive.members);
+					deferred.resolve( res );
+				});
+			} else {
+				deferred.resolve( res );	
+			}
 		} );
 		return deferred.promise;
 	}
@@ -310,7 +319,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 			"development": [ 'SE', 'SSE', 'SEO', 'SSEO', 'ST', 'SI' ],
 			"architects": [ 'SSA', 'SA', 'ESA', 'SSAO' ],
 			"administration": [ 'ADMIN' ],
-			"clientexpierencemgmt": [ "SBA", "BA", "PM", "CxD" ],
+			"clientexperiencemgmt": [ "SBA", "BA", "PM", "CxD" ],
 			"digitalexperience": [ "UXD", "SUXD", "DxM", "CD" ],
 			"executivemgmt": [ "EXEC", "DD", "CxD", "CD", "DMDE" ],
 			"marketing": [ "MKT", "DMDE", "MS" ],
@@ -322,7 +331,7 @@ function( $q, Restangular, Resources, ProjectsService ) {
 		if( filterPeople == 'businessdevelopment' ) {
 			return 'Business Development';
 		}
-		if( filterPeople == 'clientexpierencemgmt' ) {
+		if( filterPeople == 'clientexperiencemgmt' ) {
 			return 'Client Experience Mgmt';
 		}
 		if( filterPeople == 'digitalexperience' ) {

@@ -432,8 +432,7 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
         }
 
         for(var i = 0; i < reportHours.length; i++ ) {
-
-            // find person entry associated with current hours entry
+    		// find person entry associated with current hours entry
             if( reportHours[ i ].project && reportHours[ i ].project.resource ) {
                 mappingEntry = projectMapping[ reportHours[ i ].project.resource ];
                 person = findPersonOnProject( mappingEntry, reportHours[ i ].person.resource );
@@ -464,7 +463,6 @@ var getHoursReportData = function ( reportHours, params, projectMapping, peopleM
 	                        date: reportHours[ i ].date
 	                    } );
 			}
-
         }
 
         var roleResource;

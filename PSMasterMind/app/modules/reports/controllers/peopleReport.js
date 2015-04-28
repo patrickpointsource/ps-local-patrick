@@ -4,8 +4,8 @@
  * Controller for people report.
  */
 
-angular.module( 'Mastermind.controllers.reports' ).controller( 'PeopleReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'ReportExportService', 'Resources',
-function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, ReportExportService, Resources ) {
+angular.module( 'Mastermind.controllers.reports' ).controller( 'PeopleReportCtrl', [ '$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'People', 'ReportExportService', 'Resources',
+function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, People, ReportExportService, Resources ) {
 
 	var months = [];
 
@@ -58,16 +58,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
       }
    };
 
-   var groupToRolesMap = {
-		"development": [ 'SE', 'SSE', 'SEO', 'SSEO', 'ST', 'SI' ],
-		"architects": [ 'SSA', 'SA', 'ESA', 'SSAO' ],
-		"administration": [ 'ADMIN' ],
-		"clientexpierencemgmt": [ "SBA", "BA", "PM", "CxD" ],
-		"digitalexperience": [ "UXD", "SUXD", "DxM", "CD" ],
-		"executivemgmt": [ "EXEC", "DD", "CxD", "CD", "DMDE" ],
-		"marketing": [ "MKT", "DMDE", "MS" ],
-		"sales": [ "SALES" ]
-	};
+   var groupToRolesMap = People.getPeopleGroupMapping( );
 
    $scope.getPersonName = function(person, isSimply, isFirst) {
 	   return Util.getPersonName(person, isSimply, isFirst);
@@ -165,7 +156,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anc
 
 		$scope.params.departments.administration =
 			$scope.params.departments.architects =
-			$scope.params.departments.clientexpierencemgmt =
+			$scope.params.departments.clientexperiencemgmt =
 			$scope.params.departments.development =
 			$scope.params.departments.digitalexperience =
 			$scope.params.departments.executivemgmt =
