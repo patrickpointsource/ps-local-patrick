@@ -1268,7 +1268,7 @@ function( $scope, $rootScope, $q, $state, $stateParams, $filter, $location, Reso
 		
 		var filtered = $scope.processAndApplyFilters( );
 
-		var projects = filtered.result;
+		var result = filtered.result;
 		var reportClient = filtered.reportClient;
 		var reportProject = filtered.reportProject;
 		var reportPerson = filtered.reportPerson;
