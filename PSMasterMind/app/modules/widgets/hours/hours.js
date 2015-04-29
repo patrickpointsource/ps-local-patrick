@@ -161,7 +161,7 @@ function hoursEntry() {
             $rootScope.showHoursMonthInfo = true;
         };
 
-        $scope.projectsAndTasksAsCSV = function (person, hours) {
+        $scope.projectsAndTasksAsCSV = function (hours) {
             var line = '';
 
             console.log('hours:' + hours);
@@ -238,7 +238,7 @@ function hoursEntry() {
                     }
                 }
 
-                $scope.csvData = $scope.projectsAndTasksAsCSV($scope.getCurrentPerson(), hours);
+                $scope.csvData = $scope.projectsAndTasksAsCSV(hours);
             },
 
             link: function () {
