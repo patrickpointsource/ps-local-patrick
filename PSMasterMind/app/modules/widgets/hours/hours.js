@@ -15,12 +15,10 @@ function hoursEntry() {
 
     var directive = {
         name: 'hoursEntry',
-        // priority: 1,
-        // terminal: true,
         scope: true, // {} = isolate, true = child, false/undefined = no change
         controller: HoursCtrl,
         // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
-        restrict: 'EA', // E = Element, A = Attribute, C = Class, M = Comment
+        restrict: 'EA',
         // template: '',
         templateUrl: 'modules/widgets/hours/hoursEntry.html',
         replace: true,
@@ -43,30 +41,15 @@ function hoursEntry() {
         RolesService,
         AssignmentService) {
 
-        $scope.checkForFutureness = function (date) {
-            var a = moment();
-            var b = moment(date);
-
-            var futureness;
-
-            if (b.year() > a.year()) {
-                futureness = true;
-            } else if (b.year() == a.year() && b.month() > a.month() && b.date() > a.date()) {
-                futureness = true;
-            } else if (b.year() == a.year() && b.month() == a.month() && b.date() > a.date()) {
-                futureness = true;
-            } else {
-                futureness = false;
-            }
-
-            return futureness;
+        $scope.isInFuture = function (date) {
+            return moment(date).isAfter(moment(), 'day');
         };
 
         $scope.moment = moment;
 
         $scope.displayedMonthDays = [];
         $scope.currentMonth = $scope.moment();
-        $scope.startDate = new Date();
+        $scope.startDate = moment();
         $scope.ongoingProjects = [];
 
         $scope.hoursProjects = [];
@@ -84,6 +67,42 @@ function hoursEntry() {
         $scope.customHoursStartDate = '';
         $scope.customHoursEndDate = '';
 
+        $scope.newHoursRecord = {};
+        // default open status of hours entry form
+        $scope.entryFormOpen = false;
+        $scope.lastSelectedDay = {};
+        // $scope.hoursToDelete = [];
+
+
+        // Get todays date formatted as yyyy-MM-dd
+        var dd = $scope.startDate.format('DD');
+        var mm = $scope.startDate.format('MM');
+        var yyyy = $scope.startDate.format('YYYY');
+
+        var taskIconsMap = {
+            'meetings': 'fa-comments-o',
+            'design': 'fa-lightbulb-o',
+            'sales': 'fa-usd',
+            'pre-sales support': 'fa-phone',
+            'training': 'fa-bolt',
+            'marketing': 'fa-bar-chart-o',
+            'administration': 'fa-cogs',
+            'documentation': 'fa-folder-o',
+            'sick time': 'fa-ambulance',
+        };
+
+        var taskIconStylseMap = {
+            'meetings': 'padding: 3px 7px;',
+            'design': 'padding: 3px 10px;',
+            'sales': 'padding: 3px 10px;',
+            'pre-sales support': 'padding: 3px 8px;',
+            'training': 'padding: 3px 10px;',
+            'marketing': 'padding: 3px 6px;',
+            'administration': 'padding: 3px 6px;',
+            'documentation': 'padding: 4px 7.5px;',
+            'sick time': 'padding: 3px 6px;',
+        };
+
         $scope.canEditHours = function () {
             var result = true;
 
@@ -95,7 +114,6 @@ function hoursEntry() {
 
             return result;
         };
-
 
         $scope.setSubmode = function (e, subMode) {
             // should be runned only once when subMode changes
@@ -143,20 +161,14 @@ function hoursEntry() {
             $rootScope.showHoursMonthInfo = true;
         };
 
-        $scope.JSON2CSV = function (person, hours) {
-            var str = '';
+        $scope.projectsAndTasksAsCSV = function (person, hours) {
             var line = '';
 
             console.log('hours:' + hours);
 
             //Print the header
             var head = ['Project/Task', 'Date', 'Hours', 'Description'];
-            for (var i = 0; i < head.length; i++) {
-                line += head[i] + ',';
-            }
-            //Remove last comma and add a new line
-            line = line.slice(0, -1);
-            str += line + '\r\n';
+            var str = head.join(',') + '\r\n';
 
             //Print the values
             for (var x = 0; x < hours.length; x++) {
@@ -166,7 +178,7 @@ function hoursEntry() {
 
                 if (record.project) {
                     line += $scope.hoursToCSV.stringify(record.project.name) + ',';
-                } else {
+                } else if (record.task) {
                     line += $scope.hoursToCSV.stringify(record.task.name) + ',';
                 }
 
@@ -226,7 +238,7 @@ function hoursEntry() {
                     }
                 }
 
-                $scope.csvData = $scope.JSON2CSV($scope.getCurrentPerson(), hours);
+                $scope.csvData = $scope.projectsAndTasksAsCSV($scope.getCurrentPerson(), hours);
             },
 
             link: function () {
@@ -234,55 +246,7 @@ function hoursEntry() {
             }
         };
 
-        var taskIconsMap = {
-            'meetings': 'fa-comments-o',
-            'design': 'fa-lightbulb-o',
-            'sales': 'fa-usd',
-            'pre-sales support': 'fa-phone',
-            'training': 'fa-bolt',
-            'marketing': 'fa-bar-chart-o',
-            'administration': 'fa-cogs',
-            'documentation': 'fa-folder-o',
-            'sick time': 'fa-ambulance',
-        };
-
-        var taskIconStylseMap = {
-            'meetings': 'padding: 3px 7px;',
-            'design': 'padding: 3px 10px;',
-            'sales': 'padding: 3px 10px;',
-            'pre-sales support': 'padding: 3px 8px;',
-            'training': 'padding: 3px 10px;',
-            'marketing': 'padding: 3px 6px;',
-            'administration': 'padding: 3px 6px;',
-            'documentation': 'padding: 4px 7.5px;',
-            'sick time': 'padding: 3px 6px;',
-        };
-
-        var monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        /**
-         * display the month name from a month number (0 -
-         * 11)
-         */
-        $scope.getMonthName = function (monthNum) {
-            if (monthNum > 11) {
-                monthNum = monthNum - 12;
-            }
-            return monthNamesShort[monthNum];
-        };
-
-        // Get todays date formatted as yyyy-MM-dd
-        var dd = $scope.startDate.getDate();
-        var mm = $scope.startDate.getMonth() + 1;
-        // January
-        // is 0!
-        var yyyy = $scope.startDate.getFullYear();
-        if (dd < 10) {
-            dd = '0' + dd;
-        }
-        if (mm < 10) {
-            mm = '0' + mm;
-        }
-
+        // Not sure what is happening here - RCM 2015-04-25
         $scope.getCurrentPerson = function () {
             if ($scope.mode == 'month') {
                 return $scope.profile;
@@ -290,11 +254,11 @@ function hoursEntry() {
 
             return $scope.me;
         };
+
         /**
          * Set up the projects to be added to the hours
          * entry drop down
          */
-
         $scope.loadProjects = function () {
             ProjectsService.getOngoingProjects(function (result) {
 
@@ -372,11 +336,6 @@ function hoursEntry() {
             });
         };
 
-        $scope.newHoursRecord = {};
-        // default open status of hours entry form
-        $scope.entryFormOpen = false;
-        $scope.lastSelectedDay = {};
-        // $scope.hoursToDelete = [];
         /*
          * $scope.openHoursEntry = function (day) {
          *
@@ -1342,7 +1301,7 @@ function hoursEntry() {
                             for (var i = 0; i < $scope.displayedHours.length; i++) {
                                 $scope.displayedHours[i].totalHours = 0;
 
-                                var futureness = $scope.checkForFutureness($scope.displayedHours[i].date);
+                                var futureness = $scope.isInFuture($scope.displayedHours[i].date);
 
                                 $scope.displayedHours[i].futureness = futureness;
                                 $scope.displayedHours[i].dayOfMonth = $scope.moment($scope.displayedHours[i].date).date();
@@ -1412,7 +1371,7 @@ function hoursEntry() {
                             for (var i = 0; i < $scope.displayedMonthDays.length; i++) {
                                 $scope.displayedMonthDays[i].totalHours = 0;
 
-                                var futureness = $scope.checkForFutureness($scope.displayedMonthDays[i].date);
+                                var futureness = $scope.isInFuture($scope.displayedMonthDays[i].date);
 
                                 $scope.displayedMonthDays[i].futureness = futureness;
                                 $scope.displayedMonthDays[i].dayOfMonth = $scope.moment($scope.displayedMonthDays[i].date).date();
