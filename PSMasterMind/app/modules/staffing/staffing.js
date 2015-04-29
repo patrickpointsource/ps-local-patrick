@@ -4,8 +4,8 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, staffing and roles.
  */
-var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope', '$state', '$filter', '$q', 'Resources', 'RolesService', 'ProjectsService', 'AssignmentService', 'ngTableParams',
-    function ($scope, $state, $filter, $q, Resources, RolesService, ProjectsService, AssignmentService, TableParams) {
+var mmModule = angular.module('Mastermind').controller('StaffingCtrl', ['$scope', '$state', '$filter', '$q', 'Resources', 'RolesService', 'ProjectsService', 'AssignmentService', 'ngTableParams', '$timeout',
+    function ($scope, $state, $filter, $q, Resources, RolesService, ProjectsService, AssignmentService, TableParams, $timeout) {
         // Table Parameters
         var params = {
             page: 1, // show first page

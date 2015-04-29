@@ -1,5 +1,5 @@
-angular.module('Mastermind').controller('VacationsCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'TasksService', 'RolesService', 'NotificationsService',
-    function ($scope, $state, $rootScope, Resources, ProjectsService, VacationsService, TasksService, RolesService, NotificationsService) {
+angular.module('Mastermind').controller('VacationsCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'TasksService', 'RolesService', 'NotificationsService', '$timeout',
+    function ($scope, $state, $rootScope, Resources, ProjectsService, VacationsService, TasksService, RolesService, NotificationsService, $timeout) {
 
         var STATUS = VacationsService.STATUS;
 
@@ -498,7 +498,7 @@ angular.module('Mastermind').controller('VacationsCtrl', ['$scope', '$state', '$
 
         $scope.editManagerCallback = function () {
             $scope.editManager = true;
-            setTimeout(function () {
+            $timeout(function () {
                 $(".select-vacation-manager").selectpicker();
             }, 5);
         }
@@ -509,7 +509,7 @@ angular.module('Mastermind').controller('VacationsCtrl', ['$scope', '$state', '$
             } else {
                 $scope.editManagerEdit = true;
 
-                setTimeout(function () {
+                $timeout(function () {
                     $(".select-vacation-manager-" + index).selectpicker();
                 }, 5);
             }

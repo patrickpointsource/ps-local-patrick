@@ -4,7 +4,7 @@
  * Controller for people report.
  */
 
-angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtrl", ["$scope", function ($scope) {
+angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtrl", ["$scope", "$timeout", function ($scope, $timeout) {
     $scope.output = {};
     $scope.el = null;
     $scope.elemId = null;
@@ -278,7 +278,7 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         });
     };
 
-    setTimeout(function () {
+    $timeout(function () {
         $scope.render($scope.$parent.elemId || $scope.$parent.$parent.elemId);
     }, 1 * 1000);
 }]);

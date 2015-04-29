@@ -684,7 +684,7 @@ angular.module('Mastermind').controller('CalendarCtrl', [
                 return (_.isArray(result) ? result : result.members);
             }).then(function (currentVacations) {
 
-                //setTimeout(function() {
+                //$timeout(function() {
                 People.getAllActivePeople().then(function (result) {
                     var tmpPerson;
 

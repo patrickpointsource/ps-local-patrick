@@ -6,8 +6,8 @@
 
 angular.module('Mastermind').controller('OOOCtrl', [
     '$scope', '$state', '$filter', '$q', '$rootScope', 'VacationsService',
-    'Resources', 'ngTableParams', 'NotificationsService',
-    function ($scope, $state, $filter, $q, $rootScope, VacationsService, Resources, TableParams, NotificationsService) {
+    'Resources', 'ngTableParams', 'NotificationsService', '$timeout',
+    function ($scope, $state, $filter, $q, $rootScope, VacationsService, Resources, TableParams, NotificationsService, $timeout) {
         $scope.START_TIME_DEFAULT = "09:00";
 
         $scope.END_TIME_DEFAULT = "17:00";
@@ -140,7 +140,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
         $scope.editManagerCallback = function () {
             $scope.editManager = true;
-            setTimeout(function () {
+            $timeout(function () {
                 $(".select-vacation-manager").selectpicker();
             }, 5);
         };

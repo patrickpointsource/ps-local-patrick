@@ -1,5 +1,5 @@
-angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'HoursService', 'TasksService', 'RolesService', 'AssignmentService',
-    function ($scope, $state, $rootScope, Resources, ProjectsService, HoursService, TasksService, RolesService, AssignmentService) {
+angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'HoursService', 'TasksService', 'RolesService', 'AssignmentService', '$timeout',
+    function ($scope, $state, $rootScope, Resources, ProjectsService, HoursService, TasksService, RolesService, AssignmentService, $timeout) {
 
         $scope.checkForFutureness = function (date) {
             var a = moment();
@@ -824,7 +824,7 @@ angular.module('Mastermind').controller('HoursCtrl', ['$scope', '$state', '$root
 
             if (hourEntry.hoursRecord && ( hourEntry.hoursRecord.isAdded || hourEntry.hoursRecord && hourEntry.hoursRecord.isCopied || hourEntry.hoursRecord.isDefault )) {
                 // use timeout to perform code after init
-                window.setTimeout(function () {
+                $timeout(function () {
 
                     $('.dashboard-widget.hours .row.hours-logged .hours-logged-entry').each(function (ind, el) {
 

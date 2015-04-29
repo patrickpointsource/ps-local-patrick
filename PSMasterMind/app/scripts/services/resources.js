@@ -171,7 +171,7 @@ angular.module('Mastermind').factory('Resources', ['$q', '$timeout', 'Restangula
         function resolve(resourceRef) {
             var deferred = $q.defer();
 
-            setTimeout(function () {
+            $timeout(function () {
                 var resource = resourceRef.resource;
                 get(resource).then(function (result) {
                     var ret = $.extend(true, resourceRef, result);
@@ -191,7 +191,7 @@ angular.module('Mastermind').factory('Resources', ['$q', '$timeout', 'Restangula
         function forceUpdate(resource) {
             var deferred = $q.defer();
 
-            setTimeout(function () {
+            $timeout(function () {
                 var resourceURL = resource.about ? resource.about : resource.resource;
 
                 var route = '';
@@ -233,7 +233,7 @@ angular.module('Mastermind').factory('Resources', ['$q', '$timeout', 'Restangula
         function update(toUpdate) {
             var deferred = $q.defer();
 
-            setTimeout(function () {
+            $timeout(function () {
                 var resourceURL = toUpdate.about ? toUpdate.about : toUpdate.resource;
 
                 var route = '';
