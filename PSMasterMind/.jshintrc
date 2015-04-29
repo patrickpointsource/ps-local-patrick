@@ -68,7 +68,7 @@
     "laxbreak": false,
     "laxcomma": false,
     "loopfunc": true,
-    "maxerr": false,
+    "maxerr": 500,
     "moz": false,
     "multistr": false,
     "notypeof": false,
@@ -86,6 +86,8 @@
     "globals": {
         "angular": true,
         "$": true,
+        "_": true,
+        "moment": true,
         "FastClick": true,
         "Chart": false,
         "gapi": false

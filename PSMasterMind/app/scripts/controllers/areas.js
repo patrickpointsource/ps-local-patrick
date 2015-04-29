@@ -4,8 +4,8 @@
  * Controller for navigating through areas of Mastermind like its dashboard,
  * projects, people, and roles.
  */
-angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'NotificationsService',
-    function ($scope, $state, $rootScope, Resources, ProjectsService, VacationsService, NotificationsService) {
+angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService', 'VacationsService', 'NotificationsService', '$timeout',
+    function ($scope, $state, $rootScope, Resources, ProjectsService, VacationsService, NotificationsService, $timeout) {
 
         // make these vars accessible in scope methods - especially "showHome"
         var apQuery;
@@ -321,7 +321,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
             if (event.which == 13) {
                 $scope.showProjects();
 
-                setTimeout(function () {
+                $timeout(function () {
                     $scope.showProjects();
                     $rootScope.$broadcast("project:search", event.target.value);
                 }, 200); // temporary hack

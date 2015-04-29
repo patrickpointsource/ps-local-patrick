@@ -216,7 +216,7 @@
                     </td>
                     <td>
                         <button class="btn"
-                                onclick="window.setTimeout(function(){ $('#groups tab-heading').click(); }, 300);"
+                                onclick="$timeout(function(){ $('#groups tab-heading').click(); }, 300);"
                                 ng-click="navigateToResourceTab(backlogRole);" ng-show="!backlogRole.isProjectItem">View
                             Candidates
                         </button>

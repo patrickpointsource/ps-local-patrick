@@ -410,7 +410,7 @@ angular.module('Mastermind.controllers.projects').controller('AssignmentsCtrl', 
                     //TODO removing dirty handler
                     //$rootScope.formDirty = false;
 
-                    //window.setTimeout(function(){
+                    //$timeout(function(){
                     //  $scope.hideMessages();
                     //}, 7 * 1000);
 

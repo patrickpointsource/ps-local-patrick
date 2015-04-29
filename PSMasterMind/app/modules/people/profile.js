@@ -3,8 +3,8 @@
 /**
  * Controller for handling creation of Roles.
  */
-angular.module('Mastermind.controllers.people').controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService', 'TasksService', 'HoursService', 'ngTableParams', '$rootScope',
-    function ($scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, HoursService, TableParams, $rootScope) {
+angular.module('Mastermind.controllers.people').controller('ProfileCtrl', ['$scope', '$state', '$stateParams', '$filter', 'Resources', 'People', 'AssignmentService', 'ProjectsService', 'TasksService', 'HoursService', 'ngTableParams', '$rootScope', '$timeout',
+    function ($scope, $state, $stateParams, $filter, Resources, People, AssignmentService, ProjectsService, TasksService, HoursService, TableParams, $rootScope, $timeout) {
 
         $scope.moment = moment;
 
@@ -221,7 +221,7 @@ angular.module('Mastermind.controllers.people').controller('ProfileCtrl', ['$sco
                     return true;
                 });
 
-                setTimeout(function () {
+                $timeout(function () {
                     $(".select-secondary-roles").selectpicker('refresh');
                 }, 10);
             }

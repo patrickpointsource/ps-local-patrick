@@ -296,8 +296,8 @@
             };
         })
         .run([
-            '$rootScope', '$state', 'Resources',
-            function ($rootScope, $state, Resources) {
+            '$rootScope', '$state', 'Resources', '$timeout',
+            function ($rootScope, $state, Resources, $timeout) {
                 //Handle browser navigate away
                 window.onbeforeunload = function (event) {
                     if ($rootScope.formDirty) {
@@ -320,7 +320,7 @@
                             if (authenticated) {
                                 var expTime = helper.calcExpiration();
 
-                                helper.authTimer = setTimeout(function () {
+                                helper.authTimer = $timeout(function () {
                                     helper.authorize(null, Resources);
                                 }, expTime);
                             } else
