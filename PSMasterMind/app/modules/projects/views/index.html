@@ -1,28 +1,33 @@
-<br />
+<br/>
 <div class="row">
-  <div class="col-xs-6 col-md-7 xs-padding-top" style="text-align: right;">
-      <div class="btn-group">
-        <button type="button" class="btn btn-default" ng-class="{active: showTableView}" ng-click="toggleTableView()"><i class="fa fa-table"></i> <span class="hidden-xs hidden-sm">Table</span></button>
-        <button type="button" class="btn btn-default" ng-class="{active: showGraphView}" ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> <span class="hidden-xs hidden-sm">Graph</span></button>
-    </div> 
-  </div>
-  <div class="col-xs-6 col-md-2 xs-padding-top">
-  	  <div class="pull-right">
-      	<button type="button" class="btn btn-sm btn-default project-button" ng-click="createProject()" ng-show="canCreateProject">
-      	    <!-- <i class="fa fa-plus-square"></i>  -->
-      	    <span>Add Project</span>
-		</button>
-      </div>
-  </div>
-  <div class="col-xs-12 col-sm-3 col-md-3 xs-padding-top">
-    <input class="form-control" placeholder="Filter Projects"
-			ng-model="filterText" autofocus />
-  </div>
+    <div class="col-xs-6 col-md-7 xs-padding-top" style="text-align: right;">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default" ng-class="{active: showTableView}"
+                    ng-click="toggleTableView()"><i class="fa fa-table"></i> <span
+                class="hidden-xs hidden-sm">Table</span></button>
+            <button type="button" class="btn btn-default" ng-class="{active: showGraphView}"
+                    ng-click="toggleGraphView()"><i class="fa fa-tasks"></i> <span
+                class="hidden-xs hidden-sm">Graph</span></button>
+        </div>
+    </div>
+    <div class="col-xs-6 col-md-2 xs-padding-top">
+        <div class="pull-right">
+            <button type="button" class="btn btn-sm btn-default project-button" ng-click="createProject()"
+                    ng-show="canCreateProject">
+                <!-- <i class="fa fa-plus-square"></i>  -->
+                <span>Add Project</span>
+            </button>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-3 col-md-3 xs-padding-top">
+        <input class="form-control" placeholder="Filter Projects"
+               ng-model="filterText" autofocus/>
+    </div>
 </div>
 <div ng-if="showTableView">
-	<ng-include src="'modules/projects/views/projectsTable.html'"></ng-include>
+    <ng-include src="'modules/projects/views/projectsTable.html'"></ng-include>
 </div>
 
 <div ng-if="showGraphView">
-	<ng-include src="'modules/projects/views/projectsGraph.html'"></ng-include>
+    <ng-include src="'modules/projects/views/projectsGraph.html'"></ng-include>
 </div>

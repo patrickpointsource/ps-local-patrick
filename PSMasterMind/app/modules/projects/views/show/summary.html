@@ -1,151 +1,171 @@
 <div class="summary-tab">
-<div class="row summaryDescription">
-    <div class="col-xs-12 project-info-container">
-        <!-- Header with big picture and info -->
-        <div class="row project-info-row">
-             <div class="hidden-xs project-icon-div">
-                  <div class="project-icon-big"><i class="{{projectStateIcon(project)}} fa-5x" style="margin: 70px 0 0 70px; padding: 5px 0 0 15px;"></i></div>
-             </div>
-             <div class="col-xs-12 project-info">
-                 <div class="row">
-                      <div class="col-xs-10 col-sm-8">
-                          <span class="zero-margin" style="font-size: 28px; font-weight: bold; color: #3a3a3a;">{{title}}</span>
-                          <h4 class="zero-margin" style="margin-top: 10px;">{{project.customerName || 'No Customer'}}</h6>
-                      </div>
-                      <div class="col-xs-2 col-sm-4">
-                          <div class="pull-right" style="display: inline;"><i class="{{projectStateIcon(project)}} fa-3x" style="color: #1ba2c1"></i></div>
-                          <div class="hidden-xs pull-right status-text">{{projectState(project).toUpperCase()}}</div>
-                      </div>
+    <div class="row summaryDescription">
+        <div class="col-xs-12 project-info-container">
+            <!-- Header with big picture and info -->
+            <div class="row project-info-row">
+                <div class="hidden-xs project-icon-div">
+                    <div class="project-icon-big"><i class="{{projectStateIcon(project)}} fa-5x"
+                                                     style="margin: 70px 0 0 70px; padding: 5px 0 0 15px;"></i></div>
+                </div>
+                <div class="col-xs-12 project-info">
+                    <div class="row">
+                        <div class="col-xs-10 col-sm-8">
+                            <span class="zero-margin" style="font-size: 28px; font-weight: bold; color: #3a3a3a;">{{title}}</span>
+                            <h4 class="zero-margin" style="margin-top: 10px;">{{project.customerName || 'No
+                                Customer'}}</h6>
+                        </div>
+                        <div class="col-xs-2 col-sm-4">
+                            <div class="pull-right" style="display: inline;"><i
+                                class="{{projectStateIcon(project)}} fa-3x" style="color: #1ba2c1"></i></div>
+                            <div class="hidden-xs pull-right status-text">{{projectState(project).toUpperCase()}}</div>
+                        </div>
 
-                 </div>
-                 <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
-                      <div class="col-xs-12">
-                          <div ng-show="!showDescription">
-                              <div id="desc-1"></div>
-                              <div id="desc-2"></div>
-                              <div>
-                                <div id="desc-3" style="display: inline;"></div>
-                                <a ng-if="!showDescription && project.description.length > splittedDescription[0].length" ng-click="switchDescription(true)" style="cursor: pointer;">see more</a>
-                              </div>
-                          </div>
-                          <div ta-bind ng-if="project.description && showDescription" ng-model="project.description"></div>
-                          <a ng-if="showDescription" ng-click="switchDescription(false)" style="cursor: pointer;">see less</a>
-                          <div ng-if="!project.description">No description entered.</div>
-                      </div>
-                 </div>
-                 <div class="row sponsors-header">
-                     <div class="col-xs-12 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;">Executive Sponsor: &nbsp</div>
-                     <div class="hidden-xs col-sm-6 col-md-5 col-lg-7">Sales Sponsor: &nbsp </div>
-                 </div>
-                 <div class="row sponsors-row">
-                     <div class="col-xs-12 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;"><label>{{executiveSponsor}} &nbsp</label><a href="mailto: {{executiveSponsorEmail}}">email</a></div>
-                     <div class="hidden-xs col-sm-6 col-md-5 col-lg-7"><label>{{salesSponsor || '-'}} &nbsp</label><a ng-if="salesSponsor" href="mailto: {{salesSponsorEmail || '-'}}">email</a></div>
-                 </div>
-                 <div class="row visible-xs sponsors-header">
-                     <div class="visible-xs col-xs-12">Sales Sponsor: &nbsp </div>
-                 </div>
-                 <div class="row visible-xs sponsors-row">
-                     <div class="visible-xs col-xs-12"><label>{{salesSponsor || '-'}} &nbsp</label><a ng-if="salesSponsor" href="mailto: {{salesSponsorEmail || '-'}}">email</a></div>
-                 </div>
-             </div>
-        </div>
-        
-        <div class="row months-row">
-            <div class="col-xs-1" ng-repeat="month in months" ng-class="{'active': month.active, 'current': month.current}">{{month.name}}</div>
-        </div>
-        <!-- Dates -->
-        <div class="row" style=" margin-top: 23px; margin-bottom: 25px; padding-right: 20px;">
-            <div class="col-xs-12 col-sm-8 col-sm-offset-4" style="padding-right: 0px;">
-                <div class="pull-right project-timeline">
-                    <span class="hidden-xs proj-timeline-text">Project timeline &nbsp</span>
-                    <span class="proj-timeline-date">{{project.startDate | date}} &nbsp</span>
-                    <span class="proj-timeline-text">through &nbsp</span>
-                    <span class="proj-timeline-date">{{project.endDate? project.endDate:'?'| date}}</span>
-                </div>
-            </div>
-        </div>
+                    </div>
+                    <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
+                        <div class="col-xs-12">
+                            <div ng-show="!showDescription">
+                                <div id="desc-1"></div>
+                                <div id="desc-2"></div>
+                                <div>
+                                    <div id="desc-3" style="display: inline;"></div>
+                                    <a ng-if="!showDescription && project.description.length > splittedDescription[0].length"
+                                       ng-click="switchDescription(true)" style="cursor: pointer;">see more</a>
+                                </div>
+                            </div>
+                            <div ta-bind ng-if="project.description && showDescription"
+                                 ng-model="project.description"></div>
+                            <a ng-if="showDescription" ng-click="switchDescription(false)" style="cursor: pointer;">see
+                                less</a>
 
-        <!-- Full terms trigger -->
-        <div class="row full-terms" ng-if="financeAccess && isPaidClientProject()" style="margin-bottom: 0px;">
-            <hr class="zero-margin" />
-            <div ng-show="!showFullTerms" style="padding-bottom: 10px;"><a ng-click="showTerms(true);">See full terms</a></div>
-            <div ng-show="showFullTerms"><a ng-click="showTerms(false);">Hide full terms</a></div>
-        </div>
-        <!-- Terms -->
-        <div class="row" ng-if="financeAccess && isPaidClientProject() && showFullTerms" style="color: gray; padding-left: 25px;">
-            <h4><strong>Terms:</strong></h4>
-        </div>
-        <div class="row" ng-if="financeAccess && isPaidClientProject() && showFullTerms" style="margin-top: 20px; margin-bottom: 10px;">
-          <div class="col-xs-12 project-terms">
-            <div class="row-fluid terms-rows">
-                <div class="col-xs-12 col-sm-6 col-md-3" ng-if="isFixedBid()">
-                    <span>Project Type:</span> <label style="margin-bottom: 0px;">Fixed Bid</label>
-                </div>
-                <div class="col-xs-12 col-sm-6 col-md-3" ng-if="!isFixedBid()">
-                    <span>Project Type:</span> <label style="margin-bottom: 0px;">Time and Materials</label>
-                </div>
-                
-                <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Date of 1st Invoice: </span>
-                    <label ng-if="project.terms.billingDate" style="margin-bottom: 0px;">{{getFormatedBillingDate()}}</label>
-                </div>
-                <div class="clearfix visible-xs visible-sm"></div>
-                <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Software $ In Plan:</span> 
-                    <label style="margin-bottom: 0px;">
-                        {{(project.terms.softwareEstimate)?(project.terms.softwareEstimate):0
-                        | currency}}</label>
-                </div>
-                <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Loaded $ In Plan:</span> <label>{{servicesLoadedTotal
-                        | currency}}</label>
-                </div>
-                
-            </div>
-          </div>
-          <div class="col-xs-12 project-terms">
-            <div class="row-fluid terms-rows">
-                <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Contractually Committed: </span>
-                    <label ng-if="project.committed" style="margin-bottom: 0px;">Yes</span><span ng-if="!project.committed">No</label>
-                </div>
-                <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Billing Frequency: </span>
-                    <label ng-if="project.terms.billingFrequency" style="margin-bottom: 0px;">{{getFormatedBillingFrequency()}}</label>
-                </div>
-                <div class="clearfix visible-xs visible-sm"></div>
-                <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Services $ In Plan:</span> <label style="margin-bottom: 0px;">{{servicesTotal() |
-                        currency}}</label>
-                </div>
-                <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Services Margin %:</span> <label style="margin-bottom: 0px;">{{projectMargin() |
-                        number:0}}</label>
+                            <div ng-if="!project.description">No description entered.</div>
+                        </div>
+                    </div>
+                    <div class="row sponsors-header">
+                        <div class="col-xs-12 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;">Executive Sponsor:
+                            &nbsp
+                        </div>
+                        <div class="hidden-xs col-sm-6 col-md-5 col-lg-7">Sales Sponsor: &nbsp</div>
+                    </div>
+                    <div class="row sponsors-row">
+                        <div class="col-xs-12 col-sm-5 col-md-4 col-lg-2" style="min-width: 210px;"><label>{{executiveSponsor}}
+                            &nbsp</label><a href="mailto: {{executiveSponsorEmail}}">email</a></div>
+                        <div class="hidden-xs col-sm-6 col-md-5 col-lg-7"><label>{{salesSponsor || '-'}} &nbsp</label><a
+                            ng-if="salesSponsor" href="mailto: {{salesSponsorEmail || '-'}}">email</a></div>
+                    </div>
+                    <div class="row visible-xs sponsors-header">
+                        <div class="visible-xs col-xs-12">Sales Sponsor: &nbsp</div>
+                    </div>
+                    <div class="row visible-xs sponsors-row">
+                        <div class="visible-xs col-xs-12"><label>{{salesSponsor || '-'}} &nbsp</label><a
+                            ng-if="salesSponsor" href="mailto: {{salesSponsorEmail || '-'}}">email</a></div>
+                    </div>
                 </div>
             </div>
-          </div>
-          <div class="col-xs-12" ng-if="isFixedBid()">
-            <div class="row-fluid terms-rows">
-                <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Date of last Invoice: </span>
-                    <label ng-if="project.terms.lastBillingDate" style="margin-bottom: 0px;">{{getFormatedLastBillingDate()}}</label>
-                </div>
-                <div class="col-xs-12 col-sm-6 col-md-3">
-                    <span>Monthly invoice amount:</span> <label style="margin-bottom: 0px;">{{(project.terms.monthlyInvoiceAmount)?(project.terms.monthlyInvoiceAmount):0
-                        | currency}}</label>
+
+            <div class="row months-row">
+                <div class="col-xs-1" ng-repeat="month in months"
+                     ng-class="{'active': month.active, 'current': month.current}">{{month.name}}
                 </div>
             </div>
-          </div>
-        </div>
-        <!-- Rates Table -->
-        <div class="row" ng-if="financeAccess && isTandM_clientProject() && showFullTerms" style="color: gray; padding-left: 25px;">
-            <h4><strong>Project Rates:</strong></h2>
-        </div>
-        <div class="row" ng-show="financeAccess && isTandM_clientProject() && showFullTerms">
-            <div class="col-xs-12">
-                <table ng-table="sowRolesTableParams" class="table table-striped rate-table" style="background-color: white;"
-                    template-pagination="custom/pager" compute-estimate="totalEstimate">
-                    <thead>
+            <!-- Dates -->
+            <div class="row" style=" margin-top: 23px; margin-bottom: 25px; padding-right: 20px;">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-4" style="padding-right: 0px;">
+                    <div class="pull-right project-timeline">
+                        <span class="hidden-xs proj-timeline-text">Project timeline &nbsp</span>
+                        <span class="proj-timeline-date">{{project.startDate | date}} &nbsp</span>
+                        <span class="proj-timeline-text">through &nbsp</span>
+                        <span class="proj-timeline-date">{{project.endDate? project.endDate:'?'| date}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full terms trigger -->
+            <div class="row full-terms" ng-if="financeAccess && isPaidClientProject()" style="margin-bottom: 0px;">
+                <hr class="zero-margin"/>
+                <div ng-show="!showFullTerms" style="padding-bottom: 10px;"><a ng-click="showTerms(true);">See full
+                    terms</a></div>
+                <div ng-show="showFullTerms"><a ng-click="showTerms(false);">Hide full terms</a></div>
+            </div>
+            <!-- Terms -->
+            <div class="row" ng-if="financeAccess && isPaidClientProject() && showFullTerms"
+                 style="color: gray; padding-left: 25px;">
+                <h4><strong>Terms:</strong></h4>
+            </div>
+            <div class="row" ng-if="financeAccess && isPaidClientProject() && showFullTerms"
+                 style="margin-top: 20px; margin-bottom: 10px;">
+                <div class="col-xs-12 project-terms">
+                    <div class="row-fluid terms-rows">
+                        <div class="col-xs-12 col-sm-6 col-md-3" ng-if="isFixedBid()">
+                            <span>Project Type:</span> <label style="margin-bottom: 0px;">Fixed Bid</label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3" ng-if="!isFixedBid()">
+                            <span>Project Type:</span> <label style="margin-bottom: 0px;">Time and Materials</label>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <span>Date of 1st Invoice: </span>
+                            <label ng-if="project.terms.billingDate" style="margin-bottom: 0px;">{{getFormatedBillingDate()}}</label>
+                        </div>
+                        <div class="clearfix visible-xs visible-sm"></div>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <span>Software $ In Plan:</span>
+                            <label style="margin-bottom: 0px;">
+                                {{(project.terms.softwareEstimate)?(project.terms.softwareEstimate):0
+                                | currency}}</label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <span>Loaded $ In Plan:</span> <label>{{servicesLoadedTotal
+                            | currency}}</label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-xs-12 project-terms">
+                    <div class="row-fluid terms-rows">
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <span>Contractually Committed: </span>
+                            <label ng-if="project.committed" style="margin-bottom: 0px;">Yes</span><span
+                                ng-if="!project.committed">No</label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <span>Billing Frequency: </span>
+                            <label ng-if="project.terms.billingFrequency" style="margin-bottom: 0px;">{{getFormatedBillingFrequency()}}</label>
+                        </div>
+                        <div class="clearfix visible-xs visible-sm"></div>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <span>Services $ In Plan:</span> <label style="margin-bottom: 0px;">{{servicesTotal() |
+                            currency}}</label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <span>Services Margin %:</span> <label style="margin-bottom: 0px;">{{projectMargin() |
+                            number:0}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12" ng-if="isFixedBid()">
+                    <div class="row-fluid terms-rows">
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <span>Date of last Invoice: </span>
+                            <label ng-if="project.terms.lastBillingDate" style="margin-bottom: 0px;">{{getFormatedLastBillingDate()}}</label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <span>Monthly invoice amount:</span> <label style="margin-bottom: 0px;">{{(project.terms.monthlyInvoiceAmount)?(project.terms.monthlyInvoiceAmount):0
+                            | currency}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Rates Table -->
+            <div class="row" ng-if="financeAccess && isTandM_clientProject() && showFullTerms"
+                 style="color: gray; padding-left: 25px;">
+                <h4><strong>Project Rates:</strong></h2>
+            </div>
+            <div class="row" ng-show="financeAccess && isTandM_clientProject() && showFullTerms">
+                <div class="col-xs-12">
+                    <table ng-table="sowRolesTableParams" class="table table-striped rate-table"
+                           style="background-color: white;"
+                           template-pagination="custom/pager" compute-estimate="totalEstimate">
+                        <thead>
                         <tr>
                             <th>Role</th>
                             <th class="hidden-xs">Advertised Rate</th>
@@ -157,85 +177,97 @@
                             <th>Estimated Total</th>
                             <th></th>
                         </tr>
-                    </thead>
-                    <tr ng-repeat="role in $data">
-                        <td span>{{getAbbreviation(role)}}</span>
-                        </td>
-                        <td class="hidden-xs">{{role.rate.advAmount}}</td>
+                        </thead>
+                        <tr ng-repeat="role in $data">
+                            <td span>{{getAbbreviation(role)}}</span>
+                            </td>
+                            <td class="hidden-xs">{{role.rate.advAmount}}</td>
 
-                        <td>{{role.rate.amount}}</td>
-                        <td>{{role.rate.rateUnits}}</td>
-                        <td><span>{{role.rate.getNumberOfTUs()}}</span></td>
-                        <td>{{role.rate.getNumPeriods(role.startDate, role.endDate)}}</td>
-                        <td>{{role.formatMoney(role.rate.getEstimatedTotal(role.startDate,
-                            role.endDate), 0)}}</td>
-                    </tr>
-                    <tfoot>
+                            <td>{{role.rate.amount}}</td>
+                            <td>{{role.rate.rateUnits}}</td>
+                            <td><span>{{role.rate.getNumberOfTUs()}}</span></td>
+                            <td>{{role.rate.getNumPeriods(role.startDate, role.endDate)}}</td>
+                            <td>{{role.formatMoney(role.rate.getEstimatedTotal(role.startDate,
+                                role.endDate), 0)}}
+                            </td>
+                        </tr>
+                        <tfoot>
                         <tr>
-                            <td />
+                            <td/>
                             <td class="hidden-xs"/>
-                            <td />
-                            <td />
-                            <td />
+                            <td/>
+                            <td/>
+                            <td/>
                             <td class="hidden-xs"><b>Total Estimate:</b></td>
                             <td class="visible-xs"><b>Total:</b></td>
                             <td><span>{{formatMoney(getServicesEstimate(),0)}}</span></td>
                         </tr>
-                    </tfoot>
-                </table>
-                
-                <script type="text/ng-template" id="custom/pager">
-                <ul class="pager ng-cloak">
-                    <li ng-repeat="page in pages"
-                            ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
-                            ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
-                        <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
-                        <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
-                    </li>
-                    <li>
-                        <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
-                            <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
-                            <button type="button" ng-class="{'active':params.count() == 25}" ng-click="params.count(25)" class="btn btn-default">25</button>
-                            <button type="button" ng-class="{'active':params.count() == 50}" ng-click="params.count(50)" class="btn btn-default">50</button>
-                            <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
-                        </div>
-                    </li>
-                </ul>
-            </script>
+                        </tfoot>
+                    </table>
+
+                    <script type="text/ng-template" id="custom/pager">
+                        <ul class="pager ng-cloak">
+                            <li ng-repeat="page in pages"
+                                ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
+                                ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
+                                <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo;
+                                    Previous</a>
+                                <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
+                            </li>
+                            <li>
+                                <div class="btn-group" ng-show="page.type == 'prev' || page.type == 'next'">
+                                    <button type="button" ng-class="{'active':params.count() == 10}"
+                                            ng-click="params.count(10)" class="btn btn-default">10
+                                    </button>
+                                    <button type="button" ng-class="{'active':params.count() == 25}"
+                                            ng-click="params.count(25)" class="btn btn-default">25
+                                    </button>
+                                    <button type="button" ng-class="{'active':params.count() == 50}"
+                                            ng-click="params.count(50)" class="btn btn-default">50
+                                    </button>
+                                    <button type="button" ng-class="{'active':params.count() == 100}"
+                                            ng-click="params.count(100)" class="btn btn-default">100
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </script>
+                </div>
+            </div>
+
+            <div class="row" ng-if="financeAccess && isPaidClientProject()" style="margin-bottom: 0px;">
+                <div style="text-align: center;" ng-if="showFullTerms"><a ng-click="showTerms(false);"
+                                                                          style="cursor: pointer;">Hide full terms</a>
+                </div>
             </div>
         </div>
-        
-        <div class="row" ng-if="financeAccess && isPaidClientProject()" style="margin-bottom: 0px;">
-            <div style="text-align: center;" ng-if="showFullTerms"><a ng-click="showTerms(false);" style="cursor: pointer;">Hide full terms</a></div>
+    </div>
+
+    <!-- Roles -->
+    <div class="row content-header-gray project-content" style="margin-left: 0px;">
+        <div class="col-xs-4">
+            Roles:
         </div>
     </div>
-</div>
+    <div class="row rolesList" style="padding-left: 0px;">
+        <div ng-repeat-start="role in project.roles" ng-if="showSeparator(role, $index)" class="row">
+            <!--  <div class="row">
+                <hr  />
+            </div>-->
+            <div class="row">
+                <div class="col-xs-4" ng-if="showSeparator(role, $index) == 'future'" style="padding-left: 55px;">
+                    <h4>Future:</h4>
+                </div>
+                <div class="col-xs-4" ng-if="showSeparator(role, $index) == 'past'" style="padding-left: 55px;">
+                    <h4>Past:</h4>
+                </div>
+            </div>
 
-<!-- Roles -->
-    <div class="row content-header-gray project-content" style="margin-left: 0px;">
-		<div class="col-xs-4">
-			Roles:
-		</div>
-	</div>
-	<div class="row rolesList" style="padding-left: 0px;">
-		<div ng-repeat-start="role in project.roles" ng-if="showSeparator(role, $index)" class="row">
-			<!--  <div class="row">
-				<hr  />
-			</div>-->
-			<div class="row">
-				<div class="col-xs-4" ng-if="showSeparator(role, $index) == 'future'" style="padding-left: 55px;">
-					<h4>Future:</h4>
-				</div>
-				<div class="col-xs-4" ng-if="showSeparator(role, $index) == 'past'" style="padding-left: 55px;">
-					<h4>Past:</h4>
-				</div>
-			</div>
-			
-		</div>
-		<div class="row" ng-repeat-end>
-		    <!--  <div class="row people-row role-row">-->
-		    <div class="row item-row role-row" style="margin-bottom: 10px; min-height: 90px;">
-		        <div class="hidden-xs col-sm-3 col-md-2 col-lg-3 item-prop">
+        </div>
+        <div class="row" ng-repeat-end>
+            <!--  <div class="row people-row role-row">-->
+            <div class="row item-row role-row" style="margin-bottom: 10px; min-height: 90px;">
+                <div class="hidden-xs col-sm-3 col-md-2 col-lg-3 item-prop">
                     <a ng-click="tabSelected('/assignments')" style="cursor: pointer;">{{getPersonTitle(role)}}</a>
                 </div>
                 <div class="visible-xs col-xs-3 item-prop">
@@ -252,12 +284,14 @@
                 <div class="hidden-xs col-sm-2 col-md-3 col-lg-3 item-prop">
                     <label class="zero-margin">To: &nbsp</label>{{role.endDate || '-'}}
                 </div>
-                <div class="hidden-xs col-sm-4 col-md-3 col-lg-2 assignment-row" ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
+                <div class="hidden-xs col-sm-4 col-md-3 col-lg-2 assignment-row"
+                     ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
                     <strong>{{getCoverageValue(role)}}</strong>
                 </div>
-                <div class="visible-xs col-xs-6" style="margin-top: 30px;" ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
+                <div class="visible-xs col-xs-6" style="margin-top: 30px;"
+                     ng-class="{'assignment-green': getCoverageValue(role) == 'OKAY', 'assignment-yellow': getCoverageValue(role) == 'NEEDS ATTENTION' || getCoverageValue(role) == 'GAPS', 'assignment-red': getCoverageValue(role) == 'UNASSIGNED'}">
                     {{getCoverageValue(role)}}
                 </div>
-		    </div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>

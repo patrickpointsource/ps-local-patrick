@@ -1,8 +1,8 @@
 var logger = {
-	
-	log : function(msg) {
-		if (!window.avoidConsoleOutput)
-			console.log(msg);
-	}
+
+    log: function (msg) {
+        if (!window.avoidConsoleOutput)
+            console.log(msg);
+    }
 
 };

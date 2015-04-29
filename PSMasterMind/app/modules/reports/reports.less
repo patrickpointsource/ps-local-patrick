@@ -1,509 +1,508 @@
 .reports .btn-export {
-  color: white;
-  font-weight: bold;
-  background-color: buttonface;
-  
-  a {
     color: white;
-  font-weight: bold;
-  background-color: buttonface;
-  text-decoration: none;
-  }
+    font-weight: bold;
+    background-color: buttonface;
+
+    a {
+        color: white;
+        font-weight: bold;
+        background-color: buttonface;
+        text-decoration: none;
+    }
 }
 
 .reports {
 
-  .states, .groups {
-    h3 {
-      font-weight: bold;
-      color: black;
+    .states, .groups {
+        h3 {
+            font-weight: bold;
+            color: black;
+        }
+
+        label {
+            color: Gray;
+            font-weight: normal;
+        }
+
+        > div > label {
+            padding-left: 5px;
+            color: Gray;
+            font-weight: normal;
+        }
     }
-    
-    label {
-      color: Gray;
-      font-weight: normal;
+
+    .parameters {
+        .row {
+            margin-left: -10px;
+        }
     }
-    
-    > div > label {
-      padding-left: 5px;
-      color: Gray;
-      font-weight: normal;
-    }
-  }
-  
-  .parameters {
-    .row {
-      margin-left: -10px;
-    }
-  }
 }
 
 .report-types > div {
-  @media (min-width: @screen-sm) {
-    height: 123px;
-  }
-  
-  @media (max-width: @screen-sm) {
-    height: 80px;
-  }
-  /*color: #acdde8;
-  background-color: #eaf6f9;*/
-  border-right: 2px solid white;
+    @media (min-width: @screen-sm) {
+        height: 123px;
+    }
+
+    @media (max-width: @screen-sm) {
+        height: 80px;
+    }
+    /*color: #acdde8;
+    background-color: #eaf6f9;*/
+    border-right: 2px solid white;
 }
 
 .terms > .container {
-  width: 100%;
+    width: 100%;
 }
 
 .terms-selection > div {
-  @media (min-width: @screen-sm) {
-    height: 58px;
-  }
-  
-  @media (max-width: @screen-sm) {
-    height: 20px;
-  }
-  color: #acdde8;
-  background-color: #eaf6f9;
-  border-right: 1px solid white;
-  
-  .text {
-    text-align: center;
-    position:relative;
-    top: 30%;
-  }
+    @media (min-width: @screen-sm) {
+        height: 58px;
+    }
+
+    @media (max-width: @screen-sm) {
+        height: 20px;
+    }
+    color: #acdde8;
+    background-color: #eaf6f9;
+    border-right: 1px solid white;
+
+    .text {
+        text-align: center;
+        position: relative;
+        top: 30%;
+    }
 }
 
 .terms-selection > div.active {
-  background-color: #60c5db;
-  color: white;
+    background-color: #60c5db;
+    color: white;
 }
 
 .report-types > div.active {
-  background-color: #60c5db;
-  color: white;
+    background-color: #60c5db;
+    color: white;
 }
 
 .report-types {
-  margin-left: 0px;
-  
-  .text {
-    text-align: center;
-    margin-top: 10px;
-  }
-  
-  .icon {
-    text-align: center;
-    margin-top:20%;
-  }
-  
-  
+    margin-left: 0px;
+
+    .text {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .icon {
+        text-align: center;
+        margin-top: 20%;
+    }
+
 }
 
-
 .terms-dates-separator {
-  padding-left: 0px;
+    padding-left: 0px;
 }
 
 .reportsshell-hours {
-  padding-left:15px;
-  
-  @media (max-width: @screen-sm) {
-    padding-left: 10px;
-  }
-  
-  /*> div {
-    display: inline;
-    color: @gray-less;
-    font-weight: bold;
-  }*/
+    padding-left: 15px;
+
+    @media (max-width: @screen-sm) {
+        padding-left: 10px;
+    }
+
+    /*> div {
+      display: inline;
+      color: @gray-less;
+      font-weight: bold;
+    }*/
 }
 
 .reportsshell-hours.categories {
-  height: 300px;
-  border-left: 1px solid @gray-line;
-  @media (max-width: @screen-sm) {
-    border-left: 0;
-  }
+    height: 300px;
+    border-left: 1px solid @gray-line;
+    @media (max-width: @screen-sm) {
+        border-left: 0;
+    }
 }
 
 .reports-well {
-  height: 300px;
-  background-color: #f7f7f7;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    height: 300px;
+    background-color: #f7f7f7;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .reports-well.header {
-  height: 60px;
-  padding-left: 50px;
-  @media (max-width: @screen-sm) {
-    padding-left: 20px;
-  }
-  padding-top: 20px;
-  font-size: 20px;
-  font-weight: bold;
-  color: @gray-dark;
-  border-bottom: 2px solid @gray-light-search;
-  border-radius: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    height: 60px;
+    padding-left: 50px;
+    @media (max-width: @screen-sm) {
+        padding-left: 20px;
+    }
+    padding-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: @gray-dark;
+    border-bottom: 2px solid @gray-light-search;
+    border-radius: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .btn-report {
-  background-color: @smoothBlueMedium;
-  color: white;
-  font-weight: bold;
-  a {
+    background-color: @smoothBlueMedium;
     color: white;
-    text-decoration: none;
-  } 
+    font-weight: bold;
+    a {
+        color: white;
+        text-decoration: none;
+    }
 }
 
 .btn-report.big {
-  width: 70%;
-  margin-left: 10%;
-  height: 45px;
-  border-radius: 0;
+    width: 70%;
+    margin-left: 10%;
+    height: 45px;
+    border-radius: 0;
 }
 
 .report-types {
-  margin-top: 30px;
-  cursor: pointer;
-  
-  > div {
-    margin-left: 30px !important;
-  }
+    margin-top: 30px;
+    cursor: pointer;
+
+    > div {
+        margin-left: 30px !important;
+    }
 }
 
 .report-type {
-  width: 100px;
-  height: 100px;
-  background-color: @smoothBlueMedium;
+    width: 100px;
+    height: 100px;
+    background-color: @smoothBlueMedium;
 }
 
 .report-type-label {
-  margin-top: 15px;
-  margin-left: 10px;
-  font-weight: bold;
-  color: @gray-dark;
-  font-size: 20px;
+    margin-top: 15px;
+    margin-left: 10px;
+    font-weight: bold;
+    color: @gray-dark;
+    font-size: 20px;
 }
 
 .report-output-row {
-  margin-top: 15px;
-  
-  > div {
-    margin-top: 30px;
-  }
+    margin-top: 15px;
+
+    > div {
+        margin-top: 30px;
+    }
 }
 
 .report-output-well {
-  height: auto;
-  background-color: white;
-  margin-left: 15px;
+    height: auto;
+    background-color: white;
+    margin-left: 15px;
 }
 
 .report-output-well.well300 {
-  height: 300px;
-  @media (max-width: @screen-sm) {
-    height: 550px;
-  }
+    height: 300px;
+    @media (max-width: @screen-sm) {
+        height: 550px;
+    }
 }
 
 .report-output-well.well450 {
-  height: 450px;
-  @media (max-width: @screen-sm) {
-    height: 800px;
-  }
+    height: 450px;
+    @media (max-width: @screen-sm) {
+        height: 800px;
+    }
 }
 
 .report-output-well.well500 {
-  height: 500px;
-  @media (max-width: @screen-sm) {
-    height: 650px;
-  }
+    height: 500px;
+    @media (max-width: @screen-sm) {
+        height: 650px;
+    }
 }
 
 .report-output-well.well650 {
-  height: 650px;
-  @media (max-width: @screen-sm) {
-    height: 1250px;
-  }
+    height: 650px;
+    @media (max-width: @screen-sm) {
+        height: 1250px;
+    }
 }
 
 .report-output-well.header {
-  height: 58px;
-  
-  @media (max-width: @screen-sm) {
-    height: auto;
-  }
-  
-  padding-top: 20px;
-  border-bottom: 2px solid @gray-outline;
-  > h1 {
-    padding-left: 15px;
-    margin: 0 !important;
-    font-size: 27px;
-    font-weight: bold;
-  }
-  > h2 {
-    padding-left: 15px;
-    margin: 0 !important;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333333;
-  }
-  > h3 {
-    font-weight: normal;
-    font-size: 20px;
-    padding-left: 15px;
-    margin-top: 10px;
-  }
+    height: 58px;
+
+    @media (max-width: @screen-sm) {
+        height: auto;
+    }
+
+    padding-top: 20px;
+    border-bottom: 2px solid @gray-outline;
+    > h1 {
+        padding-left: 15px;
+        margin: 0 !important;
+        font-size: 27px;
+        font-weight: bold;
+    }
+    > h2 {
+        padding-left: 15px;
+        margin: 0 !important;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333333;
+    }
+    > h3 {
+        font-weight: normal;
+        font-size: 20px;
+        padding-left: 15px;
+        margin-top: 10px;
+    }
 }
+
 .report-output-well.header.no-underline {
-  border: 0;
+    border: 0;
 }
 
 .report-output-well.header.small {
-  height: 48px;
-  @media (max-width: @screen-sm) {
-    height: auto;
-  }
+    height: 48px;
+    @media (max-width: @screen-sm) {
+        height: auto;
+    }
 }
 
 .report-output-well-inside {
-  font-size: 22px;
-  border-bottom: 2px solid @gray-outline;
-  padding-bottom: 5px;
-  padding-left: 15px;
+    font-size: 22px;
+    border-bottom: 2px solid @gray-outline;
+    padding-bottom: 5px;
+    padding-left: 15px;
 }
 
 .report-output-well.body {
-  height: auto;
-  padding-top: 20px;
-  > div > label {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-  
-  > div {
-    font-weight: bold;
-  }
-  
-  .people-total {
-    font-size: 40px;
-  }
+    height: auto;
+    padding-top: 20px;
+    > div > label {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    > div {
+        font-weight: bold;
+    }
+
+    .people-total {
+        font-size: 40px;
+    }
 }
 
 .report-output-well.body.body100 {
-  height: 100px;
+    height: 100px;
 }
 
 .report-output-well-footer {
-  > span {
-    font-size: 20px;
-    font-weight: normal;
-    color: black;
-  }
+    > span {
+        font-size: 20px;
+        font-weight: normal;
+        color: black;
+    }
 }
 
 .underlined {
-  border-bottom: 1px solid @gray-outline;
+    border-bottom: 1px solid @gray-outline;
 }
 
 .upperlined {
-  border-top: 1px solid @gray-outline;
-  @media (max-width: @screen-sm) {
-    border-top: 0;
-  }
+    border-top: 1px solid @gray-outline;
+    @media (max-width: @screen-sm) {
+        border-top: 0;
+    }
 }
 
 .big-number {
-  font-size: 40px;
-  color: black;
-  font-weight: normal;
+    font-size: 40px;
+    color: black;
+    font-weight: normal;
 }
 
 .width50percent {
-  min-width: 50%;
+    min-width: 50%;
 }
 
 .report-output-inside-row {
-  margin: 30px 0 0 0;
-  padding: 0 15px 0 0;
-  min-height: 80px;
-  
-  > div > label {
-    margin: 0 !important;
-  }
-  
-  > div > div > label {
-    margin: 0 !important;
-  }
-  
-  > div > a {
-    width: 100%;
-    text-align: right;
-  }
-  
-  > div > div > a {
-    width: 100%;
-    text-align: right;
-  }
+    margin: 30px 0 0 0;
+    padding: 0 15px 0 0;
+    min-height: 80px;
+
+    > div > label {
+        margin: 0 !important;
+    }
+
+    > div > div > label {
+        margin: 0 !important;
+    }
+
+    > div > a {
+        width: 100%;
+        text-align: right;
+    }
+
+    > div > div > a {
+        width: 100%;
+        text-align: right;
+    }
 }
 
 .project-hours-row {
-  > div > div {
-    color: black;
-  }
+    > div > div {
+        color: black;
+    }
 }
 
 .report-output-nav {
-  padding-top: 20px;
-  padding-left: 10%;
-  
-  > label {
-    margin-bottom: 0px;
-  }
-  
-  > div {
-    padding-top: 12px;
-    
-    > a {
-      cursor: pointer;
+    padding-top: 20px;
+    padding-left: 10%;
+
+    > label {
+        margin-bottom: 0px;
     }
-  }
+
+    > div {
+        padding-top: 12px;
+
+        > a {
+            cursor: pointer;
+        }
+    }
 }
 
 .report-near-graph-column {
-  > label {
-    margin-bottom: 4px !important;
-  }
+    > label {
+        margin-bottom: 4px !important;
+    }
 }
 
 .report-graph-place {
-  background-color: #808080;
+    background-color: #808080;
 }
 
 .expander {
-  position: absolute;
-  right: 30px;
+    position: absolute;
+    right: 30px;
 }
 
 .report-expand-well {
-  margin-left: 15px;
-  margin-right: 15px;
-  margin-bottom: 10px;
-  background-color: white;
-  border: 1px solid @gray-outline;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    background-color: white;
+    border: 1px solid @gray-outline;
 }
 
 .report-expand-well-inside {
-  font-size: 22px;
-  border-bottom: 2px solid @gray-outline;
-  padding-bottom: 5px;
-  padding-left: 15px;
+    font-size: 22px;
+    border-bottom: 2px solid @gray-outline;
+    padding-bottom: 5px;
+    padding-left: 15px;
 }
 
 .report-expand-well-footer {
-  > span {
-    font-size: 20px;
-    font-weight: normal;
-    color: black;
-  }
+    > span {
+        font-size: 20px;
+        font-weight: normal;
+        color: black;
+    }
 }
 
 .report-expand-well.header {
-  height: 70px;
-  padding-top: 25px;
-  border: 0px;
-  
-  @media (max-width: @screen-sm) {
-    height: 155px;
-    > div > h2 {
-      font-size: 20px;
+    height: 70px;
+    padding-top: 25px;
+    border: 0px;
+
+    @media (max-width: @screen-sm) {
+        height: 155px;
+        > div > h2 {
+            font-size: 20px;
+        }
     }
-  }
-  
-  > div > h1 {
-    padding-left: 15px;
-    margin: 0 !important;
-    font-size: 25px;
-    font-weight: bold;
-  }
-  > div > h2 {
-    padding-left: 15px;
-    margin: 0 !important;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333333;
-  }
-  > div > h3 {
-    font-weight: normal;
-    font-size: 16px;
-    padding-left: 15px;
-    margin-top: 10px;
-  }
+
+    > div > h1 {
+        padding-left: 15px;
+        margin: 0 !important;
+        font-size: 25px;
+        font-weight: bold;
+    }
+    > div > h2 {
+        padding-left: 15px;
+        margin: 0 !important;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333333;
+    }
+    > div > h3 {
+        font-weight: normal;
+        font-size: 16px;
+        padding-left: 15px;
+        margin-top: 10px;
+    }
 }
 
 .report-expand-well.header.header100 {
-  padding-top: 5px;
-  height: 110px;
-  > div > i {
-    margin-top: 40px;
-  }
-  @media (max-width: @screen-sm) {
+    padding-top: 5px;
+    height: 110px;
     > div > i {
-      margin-top: 0px;
-      font-size: 2em;
+        margin-top: 40px;
     }
-  }
+    @media (max-width: @screen-sm) {
+        > div > i {
+            margin-top: 0px;
+            font-size: 2em;
+        }
+    }
 }
 
 .report-expand-well.body {
-  padding-top: 20px;
-  border: 0px;
-  border-top: 2px solid @gray-outline;
-  > div > label {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-  > div {
-    font-weight: bold;
-  }
+    padding-top: 20px;
+    border: 0px;
+    border-top: 2px solid @gray-outline;
+    > div > label {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    > div {
+        font-weight: bold;
+    }
 }
 
 .report-expand-well.body.body500 {
-  height: 500px;
-  @media (max-width: @screen-sm) {
-    height: 950px;
-  }
+    height: 500px;
+    @media (max-width: @screen-sm) {
+        height: 950px;
+    }
 }
 
 .report-expand-well.body.body450 {
-  height: 450px;
-  @media (max-width: @screen-sm) {
-    height: 900px;
-  }
+    height: 450px;
+    @media (max-width: @screen-sm) {
+        height: 900px;
+    }
 }
 
 .personDetailsGraph {
-  height:300px;
-  margin-top:10px;
-} 
+    height: 300px;
+    margin-top: 10px;
+}
 
 .report-favorite {
-  padding-left: 25px;
-  border-bottom: solid 2px #a6a6a6;
-  height: 60px;
-  background-color: white;
+    padding-left: 25px;
+    border-bottom: solid 2px #a6a6a6;
+    height: 60px;
+    background-color: white;
 }
 
 .stackedArea g.y1.axis .nv-axis g.tick line {
-  display: none;
+    display: none;
 }

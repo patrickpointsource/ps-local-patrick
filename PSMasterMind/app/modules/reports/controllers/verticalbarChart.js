@@ -4,14 +4,12 @@
  * Controller for people report.
  */
 
-angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtrl", ["$scope", function ($scope)
-{
+angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtrl", ["$scope", function ($scope) {
     $scope.output = {};
     $scope.el = null;
     $scope.elemId = null;
 
-    $scope.render = function (elId)
-    {
+    $scope.render = function (elId) {
         var height = $scope.height || 300;
         var el = $("<div id=\"" + elId + "chartContainer\"></div>").height(height).appendTo("#" + elId + " div");
 
@@ -28,13 +26,11 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
         var yTitle = $scope.yAxisTitle || "hours";
         var yKeys = dataMap ? Object.keys(dataMap) : ["", "", ""];
 
-        var getMaxValue = function (enabledProps)
-        {
+        var getMaxValue = function (enabledProps) {
             var res = 0;
 
             for (var lbl in maxValues)
-                if (maxValues.hasOwnProperty(lbl))
-                {
+                if (maxValues.hasOwnProperty(lbl)) {
                     var value = maxValues[lbl];
 
                     for (var prop in value)
@@ -44,18 +40,15 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
 
             return res;
         };
-        var getTooltipText = function (e)
-        {
+        var getTooltipText = function (e) {
             return [e.aggField[0], "\xA0", "Role: " + e.x, "\xA0", "Hours: " + e.y];
         };
 
         for (var prop in dataMap)
-            if (dataMap.hasOwnProperty(prop))
-            {
+            if (dataMap.hasOwnProperty(prop)) {
                 chartData = chartData.concat(dataMap[prop]);
 
-                for (var k = 0, item = dataMap[prop], count = item.length; k < count; k++)
-                {
+                for (var k = 0, item = dataMap[prop], count = item.length; k < count; k++) {
                     if (!maxValues[item[k].label])
                         maxValues[item[k].label] = {};
 
@@ -132,14 +125,12 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
             .style("font-weight", "normal")
             .text("Click legend to show/hide hours.");
 
-        var onLegendItemClick = function (e)
-        {
+        var onLegendItemClick = function (e) {
             // This indicates whether the item is already visible or not
             var hide = false;
             var newFilters = [];
             // If the filters contain the clicked shape hide it
-            filterValues.forEach(function (f)
-            {
+            filterValues.forEach(function (f) {
                 if (f.toLowerCase() === e.aggField.slice(-1)[0].toLowerCase())
                     hide = true;
                 else
@@ -151,16 +142,14 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
             // Hide the shape or show it
             if (hide)
                 d3.select(this).style("opacity", 0.1);
-            else
-            {
+            else {
                 newFilters.push(e.aggField.slice(-1)[0].toLowerCase());
                 d3.select(this).style("opacity", 0.8);
             }
             // Update the filters
             filterValues = newFilters;
             // Filter the data
-            chart.data = _.filter(chartData, function (val)
-            {
+            chart.data = _.filter(chartData, function (val) {
                 for (var p1 in val)
                     if (val.hasOwnProperty(p1) && (_.indexOf(filterValues, p1) >= 0 || _.indexOf(filterValues, p1.toLowerCase()) >= 0))
                         return true;
@@ -176,8 +165,7 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
 
             chart.draw(300);
         };
-        var updateLegendBoxLayout = function ()
-        {
+        var updateLegendBoxLayout = function () {
             g.select("rect")
                 .attr("width", width - 100 - 2 * strokeWidth);
 
@@ -191,8 +179,7 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
 
         updateLegendBoxLayout();
 
-        $(window).resize(function ()
-        {
+        $(window).resize(function () {
             width = el.width();
 
             legend.width = width - 130;
@@ -214,18 +201,14 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
         });
     };
 
-    setTimeout(function ()
-    {
+    setTimeout(function () {
         $scope.render($scope.$parent.elemId || $scope.$parent.$parent.elemId);
     }, 1 * 1000);
 
-    var capitalizeString = function (str)
-    {
-        if (str && str.length > 1)
-        {
+    var capitalizeString = function (str) {
+        if (str && str.length > 1) {
             return str.charAt(0).toUpperCase() + str.slice(1);
-        } else
-        {
+        } else {
             return str ? str.charAt(0).toUpperCase() : "";
         }
     };
@@ -246,8 +229,7 @@ dimple.plot.bigDash = {
     supportedAxes: ["x", "y", "c"],
 
     // Draw the chart
-    draw: function (chart, series, duration)
-    {
+    draw: function (chart, series, duration) {
 
         var chartData = series._positionData,
             theseShapes = null,
@@ -259,124 +241,135 @@ dimple.plot.bigDash = {
             cat = "none",
             weight = 2;
 
-        if (series.x._hasCategories() && series.y._hasCategories())
-        {
+        if (series.x._hasCategories() && series.y._hasCategories()) {
             cat = "both";
-        } else if (series.x._hasCategories())
-        {
+        } else if (series.x._hasCategories()) {
             cat = "x";
-        } else if (series.y._hasCategories())
-        {
+        } else if (series.y._hasCategories()) {
             cat = "y";
         }
 
-        if (chart._tooltipGroup !== null && chart._tooltipGroup !== undefined)
-        {
+        if (chart._tooltipGroup !== null && chart._tooltipGroup !== undefined) {
             chart._tooltipGroup.remove();
         }
 
-        if (series.shapes === null || series.shapes === undefined)
-        {
+        if (series.shapes === null || series.shapes === undefined) {
             theseShapes = chart._group.selectAll("." + classes.join(".")).data(chartData);
-        } else
-        {
-            theseShapes = series.shapes.data(chartData, function (d) { return d.key; });
+        } else {
+            theseShapes = series.shapes.data(chartData, function (d) {
+                return d.key;
+            });
         }
 
         // Add
         theseShapes
             .enter()
             .append("rect")
-            .attr("id", function (d) { return dimple._createClass([d.key]); })
-            .attr("class", function (d)
-            {
+            .attr("id", function (d) {
+                return dimple._createClass([d.key]);
+            })
+            .attr("class", function (d) {
                 var c = [];
                 c = c.concat(d.aggField);
                 c = c.concat(d.xField);
                 c = c.concat(d.yField);
                 return classes.join(" ") + " " + dimple._createClass(c) + " " + chart.customClassList.barSeries + " " + dimple._helpers.css(d, chart);
             })
-            .attr("x", function (d)
-            {
+            .attr("x", function (d) {
                 var returnValue = series.x._previousOrigin;
-                if (cat === "x")
-                {
+                if (cat === "x") {
                     returnValue = dimple._helpers.x(d, chart, series);
-                } else if (cat === "both")
-                {
+                } else if (cat === "both") {
                     returnValue = dimple._helpers.cx(d, chart, series);
                 }
                 return returnValue;
             })
-            .attr("y", function (d)
-            {
+            .attr("y", function (d) {
                 var returnValue = series.y._previousOrigin;
-                if (cat === "y")
-                {
+                if (cat === "y") {
                     returnValue = dimple._helpers.y(d, chart, series) - weight;
-                } else if (cat === "both")
-                {
+                } else if (cat === "both") {
                     returnValue = dimple._helpers.cy(d, chart, series) - weight;
                 }
                 return returnValue;
             })
-            .attr("width", function (d) { return (cat === "x" ? dimple._helpers.width(d, chart, series) : 0); })
-            .attr("height", function (d) { return (cat === "y" ? dimple._helpers.height(d, chart, series) : 0) ? weight : 0; })
-            .on("mouseover", function (e) { dimple._showBarTooltip(e, this, chart, series); })
-            .on("mouseleave", function (e) { dimple._removeTooltip(e, this, chart, series); })
-            .call(function ()
-            {
-                if (!chart.noFormats)
-                {
-                    this.attr("opacity", function (d) { return dimple._helpers.opacity(d, chart, series); })
-                        .style("fill", function (d) { return dimple._helpers.fill(d, chart, series); })
-                        .style("stroke", function (d) { return dimple._helpers.stroke(d, chart, series); });
+            .attr("width", function (d) {
+                return (cat === "x" ? dimple._helpers.width(d, chart, series) : 0);
+            })
+            .attr("height", function (d) {
+                return (cat === "y" ? dimple._helpers.height(d, chart, series) : 0) ? weight : 0;
+            })
+            .on("mouseover", function (e) {
+                dimple._showBarTooltip(e, this, chart, series);
+            })
+            .on("mouseleave", function (e) {
+                dimple._removeTooltip(e, this, chart, series);
+            })
+            .call(function () {
+                if (!chart.noFormats) {
+                    this.attr("opacity", function (d) {
+                        return dimple._helpers.opacity(d, chart, series);
+                    })
+                        .style("fill", function (d) {
+                            return dimple._helpers.fill(d, chart, series);
+                        })
+                        .style("stroke", function (d) {
+                            return dimple._helpers.stroke(d, chart, series);
+                        });
                 }
             });
 
         // Update
         updated = chart._handleTransition(theseShapes, duration, chart, series)
-            .attr("x", function (d) { return xFloat ? dimple._helpers.cx(d, chart, series) - series.x.floatingBarWidth / 2 : dimple._helpers.x(d, chart, series); })
-            .attr("y", function (d) { return (yFloat ? dimple._helpers.cy(d, chart, series) - series.y.floatingBarWidth / 2 : dimple._helpers.y(d, chart, series)) - weight; })
-            .attr("width", function (d) { return (xFloat ? series.x.floatingBarWidth : dimple._helpers.width(d, chart, series)); })
-            .attr("height", function (d) { return (yFloat ? series.y.floatingBarWidth : dimple._helpers.height(d, chart, series)) ? weight : 0; })
-            .call(function ()
-            {
-                if (!chart.noFormats)
-                {
-                    this.attr("fill", function (d) { return dimple._helpers.fill(d, chart, series); })
-                        .attr("stroke", function (d) { return dimple._helpers.stroke(d, chart, series); });
+            .attr("x", function (d) {
+                return xFloat ? dimple._helpers.cx(d, chart, series) - series.x.floatingBarWidth / 2 : dimple._helpers.x(d, chart, series);
+            })
+            .attr("y", function (d) {
+                return (yFloat ? dimple._helpers.cy(d, chart, series) - series.y.floatingBarWidth / 2 : dimple._helpers.y(d, chart, series)) - weight;
+            })
+            .attr("width", function (d) {
+                return (xFloat ? series.x.floatingBarWidth : dimple._helpers.width(d, chart, series));
+            })
+            .attr("height", function (d) {
+                return (yFloat ? series.y.floatingBarWidth : dimple._helpers.height(d, chart, series)) ? weight : 0;
+            })
+            .call(function () {
+                if (!chart.noFormats) {
+                    this.attr("fill", function (d) {
+                        return dimple._helpers.fill(d, chart, series);
+                    })
+                        .attr("stroke", function (d) {
+                            return dimple._helpers.stroke(d, chart, series);
+                        });
                 }
             });
 
         // Remove
         removed = chart._handleTransition(theseShapes.exit(), duration, chart, series)
-            .attr("x", function (d)
-            {
+            .attr("x", function (d) {
                 var returnValue = series.x._origin;
-                if (cat === "x")
-                {
+                if (cat === "x") {
                     returnValue = dimple._helpers.x(d, chart, series);
-                } else if (cat === "both")
-                {
+                } else if (cat === "both") {
                     returnValue = dimple._helpers.cx(d, chart, series);
                 }
                 return returnValue;
             })
-            .attr("y", function (d)
-            {
+            .attr("y", function (d) {
                 var returnValue = series.y._origin;
-                if (cat === "y")
-                {
+                if (cat === "y") {
                     returnValue = dimple._helpers.y(d, chart, series) - weight;
-                } else if (cat === "both")
-                {
+                } else if (cat === "both") {
                     returnValue = dimple._helpers.cy(d, chart, series) - weight;
                 }
                 return returnValue;
             })
-            .attr("width", function (d) { return (cat === "x" ? dimple._helpers.width(d, chart, series) : 0); })
-            .attr("height", function (d) { return (cat === "y" ? dimple._helpers.height(d, chart, series) : 0) ? weight : 0; });
+            .attr("width", function (d) {
+                return (cat === "x" ? dimple._helpers.width(d, chart, series) : 0);
+            })
+            .attr("height", function (d) {
+                return (cat === "y" ? dimple._helpers.height(d, chart, series) : 0) ? weight : 0;
+            });
 
         dimple._postDrawHandling(series, updated, removed, duration);
 

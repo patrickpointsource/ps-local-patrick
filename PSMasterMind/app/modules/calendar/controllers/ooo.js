@@ -7,7 +7,7 @@
 angular.module('Mastermind').controller('OOOCtrl', [
     '$scope', '$state', '$filter', '$q', '$rootScope', 'VacationsService',
     'Resources', 'ngTableParams', 'NotificationsService',
-    function($scope, $state, $filter, $q, $rootScope, VacationsService, Resources, TableParams, NotificationsService) {
+    function ($scope, $state, $filter, $q, $rootScope, VacationsService, Resources, TableParams, NotificationsService) {
         $scope.START_TIME_DEFAULT = "09:00";
 
         $scope.END_TIME_DEFAULT = "17:00";
@@ -26,7 +26,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
             $scope.submitting = false;
             $scope.cancelEdit();
             $scope.loading = true;
-            Resources.refresh("vacations/my").then(function(result) {
+            Resources.refresh("vacations/my").then(function (result) {
                 if (result) {
                     $scope.loading = false;
                     $scope.oooPeriods = result.periods;
@@ -35,8 +35,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
                     // Better to do this transformation on the server side. But we have what we have.
                     if ($scope.isMobile)
-                        for (var i = 0, count = $scope.oooPeriods.length; i < count; i++)
-                        {
+                        for (var i = 0, count = $scope.oooPeriods.length; i < count; i++) {
                             var names = $scope.oooPeriods[i].name.split(" - ");
 
                             names[0] = names[0].substr(0, 3);
@@ -51,27 +50,27 @@ angular.module('Mastermind').controller('OOOCtrl', [
                 }
             });
             var params = {};
-		    params.group = "Managers";
-		    Resources.refresh("people/bytypes/byGroups", params).then(
-		        function(result) {
-		            $scope.managers = result.members;
+            params.group = "Managers";
+            Resources.refresh("people/bytypes/byGroups", params).then(
+                function (result) {
+                    $scope.managers = result.members;
 
-		            Resources.refresh("people/manager/" + $scope.me._id).then(function (result) {
-		                if (result) {
-		                    $scope.vacationManager = _.findWhere($scope.managers, { resource: result.resource });
-		                }
+                    Resources.refresh("people/manager/" + $scope.me._id).then(function (result) {
+                        if (result) {
+                            $scope.vacationManager = _.findWhere($scope.managers, {resource: result.resource});
+                        }
 
-		                if ($scope.vacationManager) {
-		                    $scope.editManager = false;
-		                } else {
-		                    $scope.editManager = true;
-		                }
-		            });
+                        if ($scope.vacationManager) {
+                            $scope.editManager = false;
+                        } else {
+                            $scope.editManager = true;
+                        }
+                    });
 
-		            $('.select-vacation-type').selectpicker();
-		            $('.select-vacation-type').selectpicker('render');
-		        }
-		    );
+                    $('.select-vacation-type').selectpicker();
+                    $('.select-vacation-type').selectpicker('render');
+                }
+            );
         };
 
         $scope.cancelEdit = function () {
@@ -89,27 +88,27 @@ angular.module('Mastermind').controller('OOOCtrl', [
         $scope.editableVacation = null;
         $scope.collapsedPeriodIndex = 1;
 
-        $scope.collapsePeriod = function(index) {
+        $scope.collapsePeriod = function (index) {
             if ($scope.collapsedPeriodIndex == index) {
                 $scope.collapsedPeriodIndex = -1;
             } else {
                 $scope.collapsedPeriodIndex = index;
             }
         };
-        
-        $scope.getShortDate = function(date) {
+
+        $scope.getShortDate = function (date) {
             return moment(date).format("MMM DD");
         };
 
-        $scope.getDays = function(vacation) {
+        $scope.getDays = function (vacation) {
             return VacationsService.getDays(vacation.startDate, vacation.endDate);
         };
 
-        $scope.getStatusText = function(status) {
+        $scope.getStatusText = function (status) {
             return VacationsService.getStatusText(status);
         };
 
-        $scope.getTotalDays = function(period) {
+        $scope.getTotalDays = function (period) {
             var hours = 0;
             _.each(period.vacations, function (vacation) {
                 if (vacation.status == "Approved" || vacation.status == "Pending") {
@@ -120,19 +119,17 @@ angular.module('Mastermind').controller('OOOCtrl', [
             return (hours / 8).toFixed(1);
         };
 
-        $scope.getDaysLost = function(vacation) {
+        $scope.getDaysLost = function (vacation) {
             return (VacationsService.getHoursLost(vacation) / 8).toFixed(1);
         };
 
         $scope.editableVacation = null;
         $scope.newVacationCreation = false;
 
-        $scope.requestNewVacation = function() {
+        $scope.requestNewVacation = function () {
             var now = moment();
             $scope.newVacationCreation = true;
-            $scope.editableVacation = {
-
-            };
+            $scope.editableVacation = {};
             $scope.setDate("#vacationFromDate", now.format("YYYY-MM-DD"));
             $scope.vacationStartTime = $scope.START_TIME_DEFAULT;
             $scope.setDate("#vacationEndDate", now.format("YYYY-MM-DD"));
@@ -141,14 +138,14 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
         $scope.editManager = false;
 
-        $scope.editManagerCallback = function() {
+        $scope.editManagerCallback = function () {
             $scope.editManager = true;
-            setTimeout(function() {
+            setTimeout(function () {
                 $(".select-vacation-manager").selectpicker();
             }, 5);
         };
 
-        $scope.managerSelected = function() {
+        $scope.managerSelected = function () {
             $scope.vacationManager = this.vacationManager;
             $scope.editManager = false;
         };
@@ -172,9 +169,9 @@ angular.module('Mastermind').controller('OOOCtrl', [
             //}
             $('.select-vacation-type').selectpicker('val', vacation.type);
             $scope.editableVacation = vacation;
-            $scope.vacationManager = _.findWhere($scope.managers, { resource: vacation.vacationManager.resource });
+            $scope.vacationManager = _.findWhere($scope.managers, {resource: vacation.vacationManager.resource});
             if (!$scope.vacationManager) {
-                Resources.resolve(vacation.vacationManager).then(function(result) {
+                Resources.resolve(vacation.vacationManager).then(function (result) {
                     $scope.vacationManager = vacation.vacationManager;
                 });
             }
@@ -186,11 +183,11 @@ angular.module('Mastermind').controller('OOOCtrl', [
             $scope.vacationEndTime = vacEnd.format("HH:mm");
         };
 
-        $scope.setDate = function(id, date) {
+        $scope.setDate = function (id, date) {
             $(id).datepicker('setDate', new Date(date));
         };
 
-        $scope.getSubmitText = function() {
+        $scope.getSubmitText = function () {
             if ($scope.editableVacation && $scope.editableVacation._id) {
                 return "RE-SUBMIT";
             } else {
@@ -200,7 +197,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
         $scope.messages = [];
 
-        $scope.submit = function() {
+        $scope.submit = function () {
             $scope.clean();
             $scope.submitting = true;
 
@@ -216,7 +213,10 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
             // validate manager
             if ($scope.vacationManager) {
-                $scope.editableVacation.vacationManager = { resource: $scope.vacationManager.resource, name: $scope.getPersonName($scope.vacationManager) };
+                $scope.editableVacation.vacationManager = {
+                    resource: $scope.vacationManager.resource,
+                    name: $scope.getPersonName($scope.vacationManager)
+                };
             } else {
                 $scope.errors.push("Please select manager.");
             }
@@ -273,7 +273,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
             return VacationsService.isApproved(vacation);
         };
 
-        $scope.clean = function() {
+        $scope.clean = function () {
             $scope.errors = [];
             $scope.messages = [];
         };
@@ -298,8 +298,11 @@ angular.module('Mastermind').controller('OOOCtrl', [
 
             vacation.status = "Cancelled";
             vacation.reason = this.cancellationReason;
-            vacation.vacationManager = { resource: vacation.vacationManager.resource, name: Util.getPersonName(vacation.vacationManager) };
-            vacation.person = { resource: vacation.person.resource, name: Util.getPersonName(vacation.person) }
+            vacation.vacationManager = {
+                resource: vacation.vacationManager.resource,
+                name: Util.getPersonName(vacation.vacationManager)
+            };
+            vacation.person = {resource: vacation.person.resource, name: Util.getPersonName(vacation.person)}
             Resources.update(vacation).then(function (result) {
                 $scope.initOOO();
                 $rootScope.$emit('calendar:update');
@@ -322,11 +325,11 @@ angular.module('Mastermind').controller('OOOCtrl', [
                     $scope.cachedProjects = [];
                     for (var j = 0; j < $scope.requestsData[i].projects.length; j++) {
                         var projResource = $scope.requestsData[i].projects[j].resource;
-                        var project = _.findWhere($scope.cachedProjects, { resource: projResource });
+                        var project = _.findWhere($scope.cachedProjects, {resource: projResource});
                         if (!project) {
                             Resources.resolve($scope.requestsData[i].projects[j]).then(function (result) {
                                 if (!result.message && result.message !== "deleted") {
-                                    if (!_.findWhere($scope.cachedProjects, { _id: result._id })) {
+                                    if (!_.findWhere($scope.cachedProjects, {_id: result._id})) {
                                         $scope.cachedProjects.push(result);
                                     }
                                 }
@@ -351,7 +354,7 @@ angular.module('Mastermind').controller('OOOCtrl', [
         };
 
         $scope.showRequestsTab = false;
-        $scope.switchView = function() {
+        $scope.switchView = function () {
             $scope.showRequestsTab = !$scope.showRequestsTab;
         };
 
@@ -366,11 +369,11 @@ angular.module('Mastermind').controller('OOOCtrl', [
             }
         };
 
-        $scope.formatDate = function(date, format) {
+        $scope.formatDate = function (date, format) {
             return moment(date).format(format);
         };
 
-        $scope.decide = function(request, isApproved) {
+        $scope.decide = function (request, isApproved) {
             var status;
             if (isApproved) {
                 status = VacationsService.STATUS.Approved;
@@ -379,12 +382,12 @@ angular.module('Mastermind').controller('OOOCtrl', [
             }
 
             request.status = status;
-            request.person = { resource: request.person.resource, name: $scope.getPersonName(request.person) };
+            request.person = {resource: request.person.resource, name: $scope.getPersonName(request.person)};
 
             $scope.selectedRequest = null;
             $scope.loadingRequests = true;
 
-            Resources.update(request).then(function(result) {
+            Resources.update(request).then(function (result) {
                 if ($rootScope.hasPermissions(CONSTS.VIEW_VACATIONS)) {
                     $rootScope.$emit('calendar:update', result);
                     $scope.showRequests();
@@ -403,10 +406,10 @@ angular.module('Mastermind').controller('OOOCtrl', [
         $scope.getResourceFinderLink = function (request) {
             var startDate = moment(request.startDate).format('YYYY-MM-DD');
             var endDate = moment(request.endDate).format('YYYY-MM-DD');
-            $state.go('staffing', { tab: 'resourcefinder', startDate: startDate, endDate: endDate });
+            $state.go('staffing', {tab: 'resourcefinder', startDate: startDate, endDate: endDate});
         };
 
-        $scope.$on("ooo-needs-update", function() {
+        $scope.$on("ooo-needs-update", function () {
             $scope.initOOO();
         });
 

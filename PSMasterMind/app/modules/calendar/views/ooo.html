@@ -1,28 +1,33 @@
 <div class="panel panel-default dashboard-widget" ng-controller="OOOCtrl">
     <div class="panel-heading">
         <div style="display: inline;">Out of Office</div>
-        <div class="hidden-xs" style="display: inline; margin-left: calc(100% - 570px);" ng-show="requestsData.length > 0">You have {{requestsData.length}} new out of office requests.</div>
-        <div class="hidden-xs" style="display: inline; margin-left: calc(100% - 250px);" ng-hide="requestsData.length > 0"></div>
-        <button class="btn btn-info" ng-click="switchView()" ng-show="requestsData && requestsData.length > 0" style="margin-left: 15px;">{{getSwitchButtonText()}}</button>
+        <div class="hidden-xs" style="display: inline; margin-left: calc(100% - 570px);"
+             ng-show="requestsData.length > 0">You have {{requestsData.length}} new out of office requests.
+        </div>
+        <div class="hidden-xs" style="display: inline; margin-left: calc(100% - 250px);"
+             ng-hide="requestsData.length > 0"></div>
+        <button class="btn btn-info" ng-click="switchView()" ng-show="requestsData && requestsData.length > 0"
+                style="margin-left: 15px;">{{getSwitchButtonText()}}
+        </button>
     </div>
     <div class="panel-body">
         <!-- Vacation entries -->
         <div class="col-xs-12 col-sm-6 ooo-recent" ng-show="!showRequestsTab">
-            <ng-include src="'modules/calendar/views/partial/vacations.html'" />
+            <ng-include src="'modules/calendar/views/partial/vacations.html'"/>
         </div>
 
         <!-- Edit/New vacation entry -->
         <div class="col-xs-12 col-sm-6" ng-show="!showRequestsTab">
-            <ng-include src="'modules/calendar/views/partial/editVacation.html'" />
+            <ng-include src="'modules/calendar/views/partial/editVacation.html'"/>
         </div>
-        
+
         <!-- OOO Requests -->
         <div class="col-xs-12 col-sm-6 ooo-recent" ng-show="hasManagementRights && showRequestsTab">
-            <ng-include src="'modules/calendar/views/partial/requests.html'" />
+            <ng-include src="'modules/calendar/views/partial/requests.html'"/>
         </div>
         <!-- Request Details -->
         <div class="col-xs-12 col-sm-6" ng-show="hasManagementRights && showRequestsTab">
-            <ng-include src="'modules/calendar/views/partial/request.html'" />
+            <ng-include src="'modules/calendar/views/partial/request.html'"/>
         </div>
     </div>
 </div>

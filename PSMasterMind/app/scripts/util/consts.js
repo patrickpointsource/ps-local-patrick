@@ -6,7 +6,7 @@ var CONSTS = {
     UNKNOWN_ROLE: 'unknown_role',
     UNDETERMINED_ROLE: 'undetermined_role',
     UNSPECIFIED: 'Unspecified',
-    
+
     VIEW_TASKS_PERMISSION: "viewTasks",
     EDIT_TASKS_PERMISSION: "editTasks",
     VIEW_ASSIGNMENTS_PERMISSION: "viewAssignments",
@@ -41,7 +41,7 @@ var CONSTS = {
     EDIT_MY_VACATIONS: "editMyVacations",
     VIEW_NOTIFICATIONS: "viewNotifications",
     EDIT_NOTIFICATIONS: "editNotifications",
-    DELETE_NOTIFICATIONS: "deleteNotifications", 
+    DELETE_NOTIFICATIONS: "deleteNotifications",
     EXECUTE_UPGRADE: "executeUpgrade",
     VIEW_SECURITY_ROLES: "viewSecurityRoles",
     EDIT_SECURITY_ROLES: "editSecurityRoles",

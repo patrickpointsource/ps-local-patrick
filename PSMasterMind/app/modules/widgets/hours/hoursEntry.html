@@ -1,281 +1,334 @@
 <div ng-controller="HoursCtrl" id="hoursCtrl">
-	<div class="panel panel-default dashboard-widget hours" >
-	    <div class="panel-heading">
-	    	<div class="inner-heading">
-	    		<span class="hidden-xs"> Hours </span>
-		    	
-		        <div ng-show="isDisplayedWeek()" class="start-end" > 
-			        	 {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}}  
-			        </div>
-		        <div class="header-container" >
-		        	
-			        <div class="today-btn-container" > 
-			        	 <button class="btn btn-default today" ng-click="showToday(e)">Today</button>
-			        </div>
-			        <div ng-show="mode=='month'" class="hidden-sm hidden-xs week-month-radio">
-			          <div class="btn-group" data-toggle="buttons">
-			            <label class="btn btn-default" ng-click="setSubmode($event, 'monthly')" ng-class="{'active': subMode == 'monthly'}">
-			              <input type="radio" name="options">Month
-			            </label>
-			            <label class="btn btn-default" ng-click="setSubmode($event, 'weekly')" ng-class="{'active': subMode == 'weekly'}">
-			              <input type="radio" name="options">Week
-			            </label>
-			            <label class="btn btn-default" ng-click="setSubmode($event, 'custom')" ng-class="{'active': subMode == 'custom'}">
-			              <input type="radio" name="options">Custom
-			            </label>
-			          </div>
-			        </div>
-		        </div>
-        
-		        <div class="pull-right btn-group btn-group-sm dashboard-actions" ng-show="subMode != 'custom'">
-		        	<a id="hoursCopy" ng-click="copyHoursEntry()"><i class="fa fa-copy"></i> <span class="hidden-xs hidden-sm">Copy yesterday</span></a> 
-		        </div>
-	       </div>
-	    </div>
-	    <div class="panel-body" >
-	    	<div class="spinner-container" ng-hide="hideHoursSpinner" style="width: calc(100% - 30px);">
-	    		<i class="fa fa-spinner fa-spin fa-3x"></i>
-    		</div>
-	    	<div class="row" ng-show="hoursValidation.length > 0">
-		      <div id="hoursValidationDiv" class="alert alert-danger">
-                <a class="close" ng-click="hideMessages()">&times;</a>
+    <div class="panel panel-default dashboard-widget hours">
+        <div class="panel-heading">
+            <div class="inner-heading">
+                <span class="hidden-xs"> Hours </span>
+
+                <div ng-show="isDisplayedWeek()" class="start-end">
+                    {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}}
+                </div>
+                <div class="header-container">
+
+                    <div class="today-btn-container">
+                        <button class="btn btn-default today" ng-click="showToday(e)">Today</button>
+                    </div>
+                    <div ng-show="mode=='month'" class="hidden-sm hidden-xs week-month-radio">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default" ng-click="setSubmode($event, 'monthly')"
+                                   ng-class="{'active': subMode == 'monthly'}">
+                                <input type="radio" name="options">Month
+                            </label>
+                            <label class="btn btn-default" ng-click="setSubmode($event, 'weekly')"
+                                   ng-class="{'active': subMode == 'weekly'}">
+                                <input type="radio" name="options">Week
+                            </label>
+                            <label class="btn btn-default" ng-click="setSubmode($event, 'custom')"
+                                   ng-class="{'active': subMode == 'custom'}">
+                                <input type="radio" name="options">Custom
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pull-right btn-group btn-group-sm dashboard-actions" ng-show="subMode != 'custom'">
+                    <a id="hoursCopy" ng-click="copyHoursEntry()"><i class="fa fa-copy"></i> <span
+                        class="hidden-xs hidden-sm">Copy yesterday</span></a>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="spinner-container" ng-hide="hideHoursSpinner" style="width: calc(100% - 30px);">
+                <i class="fa fa-spinner fa-spin fa-3x"></i>
+            </div>
+            <div class="row" ng-show="hoursValidation.length > 0">
+                <div id="hoursValidationDiv" class="alert alert-danger">
+                    <a class="close" ng-click="hideMessages()">&times;</a>
                     <ul>
                         <li ng-repeat="message in hoursValidation" id="hoursValidationMsg{{$index}}">{{message}}</li>
                     </ul>
                 </div>
-		    </div>
-			
-	        <div class="row hours-week-container" ng-class="{'week-visible': mode=='month' && subMode=='weekly' || mode=='week'}">
-	        	<div ng-click="backInTime()" class="hidden-xs hidden-sm back-week">
-	        		<div >
-	                    <i class="fa fa-caret-left fa-2x"></i>
-	                </div>
-	        	</div>
-	        	<div ng-click="backDay()" class="visible-xs visible-sm back-day">
-	        		<div >
-	                    <i class="fa fa-caret-left fa-2x"></i>
-	                </div>
-	        	</div>
-	        	<div ng-repeat="day in displayedHours" class="text-center hours-day" ng-class="{'active': selected.date === day.date}">
-                	<div class="hours-day-entry"  
-	                	ng-class="{'hours-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness, 
-	                				'hours-day-today' : day.date === todaysDate, 
-	                				'hours-day-not-logged': day.totalHours == 0, 
-	                				'hours-day-active': selected.date === day.date}"  ng-click="setSelected(e, day, $index)">
-	                	<div class="hours-day-header" >
-	                		<span>{{thisWeekDayLables[$index] | uppercase}}</span>
-	                		<span class="month-day">{{day.dayOfMonth}}</span><sup>th</sup>
-	                	</div>
-	                	<div class='hours-day-content' >
-	                		<span ng-class="{'longcontent': day.totalHours >= 10 }">{{formatHours(day.totalHours)}}</span>
-	                		<span class="hours-day-check" ng-if="day.totalHours >= 8" >
+            </div>
+
+            <div class="row hours-week-container"
+                 ng-class="{'week-visible': mode=='month' && subMode=='weekly' || mode=='week'}">
+                <div ng-click="backInTime()" class="hidden-xs hidden-sm back-week">
+                    <div>
+                        <i class="fa fa-caret-left fa-2x"></i>
+                    </div>
+                </div>
+                <div ng-click="backDay()" class="visible-xs visible-sm back-day">
+                    <div>
+                        <i class="fa fa-caret-left fa-2x"></i>
+                    </div>
+                </div>
+                <div ng-repeat="day in displayedHours" class="text-center hours-day"
+                     ng-class="{'active': selected.date === day.date}">
+                    <div class="hours-day-entry"
+                         ng-class="{'hours-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness,
+	                				'hours-day-today' : day.date === todaysDate,
+	                				'hours-day-not-logged': day.totalHours == 0,
+	                				'hours-day-active': selected.date === day.date}"
+                         ng-click="setSelected(e, day, $index)">
+                        <div class="hours-day-header">
+                            <span>{{thisWeekDayLables[$index] | uppercase}}</span>
+                            <span class="month-day">{{day.dayOfMonth}}</span><sup>th</sup>
+                        </div>
+                        <div class='hours-day-content'>
+                            <span
+                                ng-class="{'longcontent': day.totalHours >= 10 }">{{formatHours(day.totalHours)}}</span>
+	                		<span class="hours-day-check" ng-if="day.totalHours >= 8">
 		                		<i class="fa fa-check fa-2x"></i>
 		                	</span>
-	                	</div>
-	                	
-	                	<div class="hours-day-footer">HOURS</div>
-	                </div>
+                        </div>
+
+                        <div class="hours-day-footer">HOURS</div>
+                    </div>
                 </div>
-	        	<div ng-click="forwardInTime()"  class="hidden-xs hidden-sm next-week" >
-	        		<div >
-	                    <i class="fa fa-caret-right fa-2x"></i>
-	                </div>
-	        	</div>
-	        	<div ng-click="nextDay()"  class="visible-xs visible-sm next-day" >
-	        		<div>
-	                    <i class="fa fa-caret-right fa-2x"></i>
-	                </div>
-	        	</div>
-	        </div>
-	        
-	        <div class="row hours-month-container hidden-xs hidden-sm" ng-class="{'month-visible': mode=='month' && subMode == 'monthly' }">
-	        	<div ng-click="backMonth()" class="back-month">
-	        		<div >
-	                    <i class="fa fa-caret-left fa-2x"></i>
-	                </div>
-	        	</div>
-	        	<div class="current-month" style="width:-webkit-calc(100% - 170px);width: calc(100% - 170px);">
-	        		<span>{{months[currentMonth.month()]}}</span> {{currentMonth.year()}}
-	        	</div>
-	        	
-	        	 <div ng-click="nextMonth()"  class="next-month" style="float:right">
-	        		<div>
-	                    <i class="fa fa-caret-right fa-2x"></i>
-	                </div>
-	        	</div>
-	        	<div class="day-labels">
-	        		<div class="hours-day-caption empty">
-		        		<div class="hours-day-header" >&nbsp;</div>
-		        	</div>
-		        	<div ng-repeat="lbl in thisWeekDayLables" class="hours-day-caption">
-		        		<div class="hours-day-header" >{{thisWeekDayLables[$index] | uppercase}}</div>
-		        	</div>
-		        	<div class="hours-day-caption empty">
-		        		<div class="hours-day-header" >&nbsp;</div>
-		        	</div>
-		        	
-	        	</div>
-	        	<div ng-repeat-start="day in displayedMonthDays" ng-show="{{$index % 7 == 0}}" class="text-center hours-day-empty">
-                	<div class="hours-day-entry"></div>
+                <div ng-click="forwardInTime()" class="hidden-xs hidden-sm next-week">
+                    <div>
+                        <i class="fa fa-caret-right fa-2x"></i>
+                    </div>
                 </div>
-  
+                <div ng-click="nextDay()" class="visible-xs visible-sm next-day">
+                    <div>
+                        <i class="fa fa-caret-right fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row hours-month-container hidden-xs hidden-sm"
+                 ng-class="{'month-visible': mode=='month' && subMode == 'monthly' }">
+                <div ng-click="backMonth()" class="back-month">
+                    <div>
+                        <i class="fa fa-caret-left fa-2x"></i>
+                    </div>
+                </div>
+                <div class="current-month" style="width:-webkit-calc(100% - 170px);width: calc(100% - 170px);">
+                    <span>{{months[currentMonth.month()]}}</span> {{currentMonth.year()}}
+                </div>
+
+                <div ng-click="nextMonth()" class="next-month" style="float:right">
+                    <div>
+                        <i class="fa fa-caret-right fa-2x"></i>
+                    </div>
+                </div>
+                <div class="day-labels">
+                    <div class="hours-day-caption empty">
+                        <div class="hours-day-header">&nbsp;</div>
+                    </div>
+                    <div ng-repeat="lbl in thisWeekDayLables" class="hours-day-caption">
+                        <div class="hours-day-header">{{thisWeekDayLables[$index] | uppercase}}</div>
+                    </div>
+                    <div class="hours-day-caption empty">
+                        <div class="hours-day-header">&nbsp;</div>
+                    </div>
+
+                </div>
+                <div ng-repeat-start="day in displayedMonthDays" ng-show="{{$index % 7 == 0}}"
+                     class="text-center hours-day-empty">
+                    <div class="hours-day-entry"></div>
+                </div>
+
                 <div class="text-center hours-day" ng-class="{'active': selected.date === day.date}">
-                	<div class="hours-day-entry"  
-	                	ng-class="{'hours-day-active': selected.date === day.date, 
+                    <div class="hours-day-entry"
+                         ng-class="{'hours-day-active': selected.date === day.date,
 	                				'hours-day-first-in-week': $index % 7 == 0 && $index > 0,
-	                				'hours-day-not-logged': day.totalHours == 0}"  ng-click="setSelected(e, day, $index)">
-	                	
-	                	<div class="hours-day-content">
-	                		<span class="month-day">{{day.dayOfMonth}}</span>
-	                	</div>
-	                	
-	                	<div class="hours-day-footer">
-	                		<span class="hours">{{day.totalHours}}</span>
-	                		
-	                		hours
-	                		<span class="hours-day-check" ng-if="day.totalHours >= 8" >
+	                				'hours-day-not-logged': day.totalHours == 0}"
+                         ng-click="setSelected(e, day, $index)">
+
+                        <div class="hours-day-content">
+                            <span class="month-day">{{day.dayOfMonth}}</span>
+                        </div>
+
+                        <div class="hours-day-footer">
+                            <span class="hours">{{day.totalHours}}</span>
+
+                            hours
+	                		<span class="hours-day-check" ng-if="day.totalHours >= 8">
 		                		<i class="fa fa-check"></i>
 		                	</span>
-	                	</div>
-	                	
-	                	<div class="active-circle" ng-class="{'bottom': $index < 21}" >
-	                		<div class="inner-circle"></div>
-	                	</div>
-	                </div>
+                        </div>
+
+                        <div class="active-circle" ng-class="{'bottom': $index < 21}">
+                            <div class="inner-circle"></div>
+                        </div>
+                    </div>
                 </div>
-                 
-                 
-                 <div ng-repeat-end ng-show="{{$index % 7 == 6 }}" class="text-center hours-day-empty last">
-                	<div class="hours-day-entry">
-	                	
-	                </div>
+
+
+                <div ng-repeat-end ng-show="{{$index % 7 == 6 }}" class="text-center hours-day-empty last">
+                    <div class="hours-day-entry">
+
+                    </div>
                 </div>
-	        </div>
-	        
-	        <div class="row hours-custom-container hidden-xs hidden-sm" ng-class="{'custom-visible': mode=='month' && subMode == 'custom' }">
-	        	<div class="col-xs-10 col-sm-10 col-md-10">
-	        		<form class="form-horizontal">
-				      <label for="period" class="hidden-xs control-label col-xs-3 col-sm-4 col-md-3 pull-left">
-				        <span class="pull-left">Select period:</span>
-				      </label>
-				      <div class="col-xs-3 col-md-3 col-sm-3">
-				        <input id="fromDate" name="fromDate" class=" form-control datepicker" type="text" placeholder="Start Date" ng-model="customHoursStartDate" data-date-format="yyyy-mm-dd" data-provide="datepicker">
-				      </div>
-				      <div class="col-xs-3 col-md-3 col-sm-3">
-				        <input id="toDate" name="toDate" class="form-control datepicker" type="text" placeholder="End Date" ng-model="customHoursEndDate" data-date-format="yyyy-mm-dd" data-provide="datepicker">
-				      </div>
-				      <div class="col-xs-2 col-md-2 col-sm-2">
-				        <a ng-disabled="!customHoursEndDate || !customHoursStartDate" class="btn btn-default" ng-click="applyCustomHoursPeriod()">
-				          <div class="hidden-xs"><i class="fa fa-search"></i>
-				          </div>
-				          <div class="visible-xs"><i class="fa fa-search"></i>
-				          </div>
-				        </a>
-				      </div>
-				    </form>
-	        	</div>
-	        	
-	        	 <div class="actions col-xs-2 col-sm-2 col-md-2">
-				    <a ng-if="financeAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default" ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}" download="{{getPersonName(profile, true)}}.csv">
-				      <div class="hidden-xs"><i class="fa fa-table"></i><span class="hidden-sm hidden-xs"> Download to Excel</span>
-				      </div>
-				      <div class="visible-xs"><i class="fa fa-table"></i>
-				      </div>
-				    </a>
-				
-				  </div>
-        	</div>
-	        <div class="row hours-logged" ng-class="{'month-visible': mode=='month' && subMode != 'weekly' }" >
-	        	<div class="hours-empty" ng-show="selected.totalHours == 0 && !anyAdded()">No hours logged</div>
-	        	<div class="visible-xs hours-logged-entry mobile-add" ng-click="showNewHoursEntry(e)">
-	        		<span class="text">Add new entry</span>
+            </div>
+
+            <div class="row hours-custom-container hidden-xs hidden-sm"
+                 ng-class="{'custom-visible': mode=='month' && subMode == 'custom' }">
+                <div class="col-xs-10 col-sm-10 col-md-10">
+                    <form class="form-horizontal">
+                        <label for="period" class="hidden-xs control-label col-xs-3 col-sm-4 col-md-3 pull-left">
+                            <span class="pull-left">Select period:</span>
+                        </label>
+
+                        <div class="col-xs-3 col-md-3 col-sm-3">
+                            <input id="fromDate" name="fromDate" class=" form-control datepicker" type="text"
+                                   placeholder="Start Date" ng-model="customHoursStartDate"
+                                   data-date-format="yyyy-mm-dd" data-provide="datepicker">
+                        </div>
+                        <div class="col-xs-3 col-md-3 col-sm-3">
+                            <input id="toDate" name="toDate" class="form-control datepicker" type="text"
+                                   placeholder="End Date" ng-model="customHoursEndDate" data-date-format="yyyy-mm-dd"
+                                   data-provide="datepicker">
+                        </div>
+                        <div class="col-xs-2 col-md-2 col-sm-2">
+                            <a ng-disabled="!customHoursEndDate || !customHoursStartDate" class="btn btn-default"
+                               ng-click="applyCustomHoursPeriod()">
+                                <div class="hidden-xs"><i class="fa fa-search"></i>
+                                </div>
+                                <div class="visible-xs"><i class="fa fa-search"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="actions col-xs-2 col-sm-2 col-md-2">
+                    <a ng-if="financeAccess" ng-enabled="csvDownloadEnabled" class="btn btn-default"
+                       ng-mousedown="hoursToCSV.generate()" href="{{hoursToCSV.link()}}"
+                       download="{{getPersonName(profile, true)}}.csv">
+                        <div class="hidden-xs"><i class="fa fa-table"></i><span class="hidden-sm hidden-xs"> Download to Excel</span>
+                        </div>
+                        <div class="visible-xs"><i class="fa fa-table"></i>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+            <div class="row hours-logged" ng-class="{'month-visible': mode=='month' && subMode != 'weekly' }">
+                <div class="hours-empty" ng-show="selected.totalHours == 0 && !anyAdded()">No hours logged</div>
+                <div class="visible-xs hours-logged-entry mobile-add" ng-click="showNewHoursEntry(e)">
+                    <span class="text">Add new entry</span>
 	        		<span class="add">
 	        			<i class="fa fa-plus"></i>
 	        		</span>
 	        		<span class="close-new" ng-click="closeNewHoursEntry(e);">
 	                    <i class="fa fa-times"></i>
 	                </span>
-	        	</div>
-	        	
-	        	<div ng-if="selected.totalHours > 0 || anyAdded()" ng-repeat="hourEntry in selected.hoursEntries" >
-	        		<div class="hidden-xs hours-logged-entry" 
-	        			ng-class="{'new-entry': hourEntry.hoursRecord.isAdded, 
+                </div>
+
+                <div ng-if="selected.totalHours > 0 || anyAdded()" ng-repeat="hourEntry in selected.hoursEntries">
+                    <div class="hidden-xs hours-logged-entry"
+                         ng-class="{'new-entry': hourEntry.hoursRecord.isAdded,
 	        						'edit-entry': hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded,
-	        						'view-entry': !hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded}" 
-	        			ng-if="hourEntry.hoursRecord.hours > 0 || hourEntry.hoursRecord.editMode" 
-	        			_	hourentryindex="{{$index}}" ng-init="initNewHoursEntry(hourEntry)">
-	        			
-	        			<span class="visible-xs edit-caption" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded">
+	        						'view-entry': !hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded}"
+                         ng-if="hourEntry.hoursRecord.hours > 0 || hourEntry.hoursRecord.editMode"
+                         _ hourentryindex="{{$index}}" ng-init="initNewHoursEntry(hourEntry)">
+
+	        			<span class="visible-xs edit-caption" ng-if="canEditHours()"
+                              ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded">
 	        				<span class="text">Edit entry</span>
 	        				<span class="close-edit" ng-click="closeEditHoursEntry(e, hourEntry);">
 			                    <i class="fa fa-times"></i>
 			                </span>
 	        			</span>
-	        			
-	        			<span id="loggedProject{{$index}}" class="hours-logged-project" ng-hide="hourEntry.hoursRecord.editMode" ng-if="hourEntry.project && hourEntry.project.name">{{hourEntry.project.name}}</span>
-	        			<span id="loggedTask{{$index}}" class="hours-logged-project" ng-hide="hourEntry.hoursRecord.editMode" ng-if="hourEntry.task && hourEntry.task.name">{{hourEntry.task.name}}</span>
-					       
-					    <span class="hours-logged-project selected-item" 
-					    	ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem != undefined" >
+
+                        <span id="loggedProject{{$index}}" class="hours-logged-project"
+                              ng-hide="hourEntry.hoursRecord.editMode"
+                              ng-if="hourEntry.project && hourEntry.project.name">{{hourEntry.project.name}}</span>
+                        <span id="loggedTask{{$index}}" class="hours-logged-project"
+                              ng-hide="hourEntry.hoursRecord.editMode" ng-if="hourEntry.task && hourEntry.task.name">{{hourEntry.task.name}}</span>
+
+					    <span class="hours-logged-project selected-item"
+                              ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem != undefined">
 					    		<span style="width: -webkit-calc(100% - 20px); width: calc(100% - 20px);">{{hourEntry.selectedItem.name}}</span>
 					    		<i ng-click="clearSelectedItem(e, hourEntry)" class="fa fa-times"></i>
 					    </span>
-					       
-	        			<input id="loggedProjectInput{{$index}}" class="hours-logged-project edit-input" type="text"  ng-disabled="projectTasksList.length == 0" 
-			                    class="form-control" placeholder="Find a project or task"
-			                    name="project-task-select"  required ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined">
-	                    <span class="search-icon" ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined" >
+
+                        <input id="loggedProjectInput{{$index}}" class="hours-logged-project edit-input" type="text"
+                               ng-disabled="projectTasksList.length == 0"
+                               class="form-control" placeholder="Find a project or task"
+                               name="project-task-select" required
+                               ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined">
+	                    <span class="search-icon"
+                              ng-show="hourEntry.hoursRecord.editMode && hourEntry.selectedItem == undefined">
 			                <i class="fa fa-search"></i>
 			            </span>
-	        			<ul id="ddlProjectsTasks{{$index}}" class="dropdown-menu ddProjectsTasksMenu" role="menu" aria-labelledby="ddProjectsTasksMenu">
-						  <li role="presentation" ng-repeat="tp in projectTasksList" ng-show="!tp.isTask || (tp.isTask && tp.visible)">
-						  	<a class="menu-item task-menu-item" role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
-							  	<span class="task-icon" ng-if="tp.icon" style="{{tp.iconCss}}"><i class="fa {{tp.icon}}"></i></span>
-							  	<span class="task-name" style="width: -webkit-calc(100% - 20px);width: calc(100% - 20px);">{{tp.name}}</span>
-						  	</a>
-						  	<a class="menu-item project-menu-item" role="menuitem" href="javascript:void(0)" ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
-							  	<span class="project-icon" ></span>
-							  	<span class="project-name" style="width: -webkit-calc(100% - 15px);width: calc(100% - 15px);">{{tp.name}}</span>
-							  	<span class="project-customer-name" style="width: -webkit-calc(100% - 25px);width: calc(100% - 25px);">{{tp.customerName}}</span>
-						  	</a>
-					  		</li>
-						</ul>
-						
-						<span id="loggedHours{{$index}}" class="hours-logged-value" ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.hours}} hrs</span>
-	        			<input id="loggedHoursInput{{$index}}" class="hours-logged-value edit-input" type="text"
-			                    class="form-control" placeholder="{{hourEntry.hoursRecord.editMode && hourEntry.selectedItem ? (hourEntry.expectedHours || '#') : '#'}} hours"
-			                    name="hours-logged-value-edit" ng-model="hourEntry.hoursRecord.hoursEdited" ng-show="hourEntry.hoursRecord.editMode">
-	        			  
-	        			  
-	        			<span id="loggedDescription{{$index}}" class="hours-logged-desc hidden-xs" ng-hide="hourEntry.hoursRecord.editMode" style="width: -webkit-calc(70% - 70px);  width: calc(70% - 100px);" 
-	        				ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.description}}</span>
-	        			
-	        			<input id="loggedDescriptionInput{{$index}}" class="hours-logged-desc edit-input" type="text" style="width: -webkit-calc(70% - 100px); width: calc(70% - 100px);" 
-			                    class="form-control" placeholder="Add a description"
-			                    name="hours-logged-desc-edit" ng-model="hourEntry.hoursRecord.descriptionEdited" ng-show="hourEntry.hoursRecord.editMode">
-			                    
-		                <span class="hours-logged-details visible-xs" ng-class="{'visible-mobile': !hourEntry.hoursRecord.editMode}" ng-hide="hourEntry.hoursRecord.editMode" ng-click="showHideDesc(e, hourEntry)">
+                        <ul id="ddlProjectsTasks{{$index}}" class="dropdown-menu ddProjectsTasksMenu" role="menu"
+                            aria-labelledby="ddProjectsTasksMenu">
+                            <li role="presentation" ng-repeat="tp in projectTasksList"
+                                ng-show="!tp.isTask || (tp.isTask && tp.visible)">
+                                <a class="menu-item task-menu-item" role="menuitem" tabindex="-1"
+                                   href="javascript:void(0)" ng-if="tp.customerName == undefined" _id="{{tp.resource}}">
+                                    <span class="task-icon" ng-if="tp.icon" style="{{tp.iconCss}}"><i
+                                        class="fa {{tp.icon}}"></i></span>
+                                    <span class="task-name"
+                                          style="width: -webkit-calc(100% - 20px);width: calc(100% - 20px);">{{tp.name}}</span>
+                                </a>
+                                <a class="menu-item project-menu-item" role="menuitem" href="javascript:void(0)"
+                                   ng-if="tp.customerName != undefined" _id="{{tp.resource}}">
+                                    <span class="project-icon"></span>
+                                    <span class="project-name"
+                                          style="width: -webkit-calc(100% - 15px);width: calc(100% - 15px);">{{tp.name}}</span>
+                                    <span class="project-customer-name"
+                                          style="width: -webkit-calc(100% - 25px);width: calc(100% - 25px);">{{tp.customerName}}</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                        <span id="loggedHours{{$index}}" class="hours-logged-value"
+                              ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.hours}} hrs</span>
+                        <input id="loggedHoursInput{{$index}}" class="hours-logged-value edit-input" type="text"
+                               class="form-control"
+                               placeholder="{{hourEntry.hoursRecord.editMode && hourEntry.selectedItem ? (hourEntry.expectedHours || '#') : '#'}} hours"
+                               name="hours-logged-value-edit" ng-model="hourEntry.hoursRecord.hoursEdited"
+                               ng-show="hourEntry.hoursRecord.editMode">
+
+
+	        			<span id="loggedDescription{{$index}}" class="hours-logged-desc hidden-xs"
+                              ng-hide="hourEntry.hoursRecord.editMode"
+                              style="width: -webkit-calc(70% - 70px);  width: calc(70% - 100px);"
+                              ng-hide="hourEntry.hoursRecord.editMode">{{hourEntry.hoursRecord.description}}</span>
+
+                        <input id="loggedDescriptionInput{{$index}}" class="hours-logged-desc edit-input" type="text"
+                               style="width: -webkit-calc(70% - 100px); width: calc(70% - 100px);"
+                               class="form-control" placeholder="Add a description"
+                               name="hours-logged-desc-edit" ng-model="hourEntry.hoursRecord.descriptionEdited"
+                               ng-show="hourEntry.hoursRecord.editMode">
+
+		                <span class="hours-logged-details visible-xs"
+                              ng-class="{'visible-mobile': !hourEntry.hoursRecord.editMode}"
+                              ng-hide="hourEntry.hoursRecord.editMode" ng-click="showHideDesc(e, hourEntry)">
 		                    <i class="fa fa-chevron-down"></i>
 		                </span>
-		                <span id="hoursEdit{{$index}}" class="hours-logged-action edit" ng-if="canEditHours()" ng-hide="hourEntry.hoursRecord.editMode" ng-click="editHoursEntry($event, hourEntry)">
+		                <span id="hoursEdit{{$index}}" class="hours-logged-action edit" ng-if="canEditHours()"
+                              ng-hide="hourEntry.hoursRecord.editMode" ng-click="editHoursEntry($event, hourEntry)">
 		                    <i class="fa fa-pencil"></i>
 		                </span>
-		                <span class="hours-logged-action delete visible-xs" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded" ng-click="deleteHoursEntry($event, hourEntry, $index)">
+		                <span class="hours-logged-action delete visible-xs" ng-if="canEditHours()"
+                              ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded"
+                              ng-click="deleteHoursEntry($event, hourEntry, $index)">
 		                    Delete
 		                </span>
-		                <span id="hoursSave{{$index}}" class="hours-logged-save" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry)">
+		                <span id="hoursSave{{$index}}" class="hours-logged-save" ng-if="canEditHours()"
+                              ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded"
+                              ng-click="saveHoursEntry($event, hourEntry)">
 		                    Save
 		                </span>
-		                <span id="hoursAdd{{$index}}" class="hours-logged-add" ng-if="canEditHours()" ng-show="hourEntry.hoursRecord.editMode && hourEntry.hoursRecord.isAdded" ng-click="saveHoursEntry($event, hourEntry, true)">
+		                <span id="hoursAdd{{$index}}" class="hours-logged-add" ng-if="canEditHours()"
+                              ng-show="hourEntry.hoursRecord.editMode && hourEntry.hoursRecord.isAdded"
+                              ng-click="saveHoursEntry($event, hourEntry, true)">
 		                    Add
 		                </span>
-		                <span id="hoursDelete{{$index}}" class="hours-logged-action hidden-xs" ng-if="canEditHours() && canDeleteMyHours()" ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
+		                <span id="hoursDelete{{$index}}" class="hours-logged-action hidden-xs"
+                              ng-if="canEditHours() && canDeleteMyHours()"
+                              ng-click="removeOrCloseHourEntry($event, hourEntry, $index);">
 		                    <i class="fa fa-times"></i>
 		                </span>
-	        		</div>
-	        	</div>
-	        </div>
-	        
-	    </div>
-	</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>

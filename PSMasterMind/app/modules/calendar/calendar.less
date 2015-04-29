@@ -4,6 +4,7 @@
     margin-bottom: 20px;
     font-size: 15px;
 }
+
 .ooo-item {
     border: 1px solid #bfbfbf;
 }
@@ -23,114 +24,115 @@
     border: 1px solid #bfbfbf;
     border-bottom: 0px;
 }
+
 .ooo-row:hover {
     background-color: #808080;
 }
+
 .container.calendar {
-  padding:0px;
-  margin:0px;
-  width:100%;
-  
-  form.hide-pending {
-    @media (max-width: @screen-lg) {
-      margin-top: 25px !important;
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+
+    form.hide-pending {
+        @media (max-width: @screen-lg) {
+            margin-top: 25px !important;
+        }
+
+        input[type="checkbox"] {
+            @media (max-width: @screen-lg) {
+                margin-top: 6px;
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        label {
+            @media (max-width: @screen-lg) {
+                margin-top: -10px !important;
+
+            }
+        }
     }
-    
-    input[type="checkbox"] {
-       @media (max-width: @screen-lg) {
-        margin-top: 6px;
-        width:18px;
-        height:18px;
-      }
-    }
-    
-    label {
-      @media (max-width: @screen-lg) {
-        margin-top: -10px !important;
-        
-      }
-    }
-  }
 }
 
 .widget.calendar .panel-heading .start-end {
-  float: left;
-  text-align: center;
-  position: absolute;
-  right: 0px;
-  width: 100%;
+    float: left;
+    text-align: center;
+    position: absolute;
+    right: 0px;
+    width: 100%;
 }
 
 .widget.calendar .panel-heading .header-container {
-  max-height: 24px;
+    max-height: 24px;
 }
 
 .widget.calendar .panel-heading .header-container .back-month, .widget.calendar .panel-heading .header-container .next-month {
-  position:relative;
-  z-index:1;
+    position: relative;
+    z-index: 1;
 }
 
-.widget.calendar .hours-day-caption{
-  width: 12.5%;
-  float: left;
-  height: 28px;
+.widget.calendar .hours-day-caption {
+    width: 12.5%;
+    float: left;
+    height: 28px;
 }
 
 .widget.calendar .hours-day-caption.empty {
-  width:6%;
+    width: 6%;
 }
 
-.widget.calendar .hours-day-empty
-{
-  width: 6%;
-  float: left;
+.widget.calendar .hours-day-empty {
+    width: 6%;
+    float: left;
 }
-.widget.calendar  {
-  .hours-day-caption .hours-day-header {
-  text-align: center;
-  border-bottom: 1px solid #efefef;
-  font-size: 20px;
-  }
-  
-  .hours-day-caption.long {
-    @media (max-width: @screen-lg) {
-      display: none;
+
+.widget.calendar {
+    .hours-day-caption .hours-day-header {
+        text-align: center;
+        border-bottom: 1px solid #efefef;
+        font-size: 20px;
     }
-  }
-  
-  .hours-day-caption.short {
-    @media (min-width: @screen-lg) {
-      display: none;
+
+    .hours-day-caption.long {
+        @media (max-width: @screen-lg) {
+            display: none;
+        }
     }
-  }
+
+    .hours-day-caption.short {
+        @media (min-width: @screen-lg) {
+            display: none;
+        }
+    }
 }
+
 .widget.calendar .header-container {
-  display:inline-block;
-  width:100%;
-  
+    display: inline-block;
+    width: 100%;
+
 }
 
 .widget.calendar .hours-day-entry {
-  height: 108px;
-  position: relative;
+    height: 108px;
+    position: relative;
 }
 
-.widget.calendar .hours-day-entry .hours-day-footer
-{
-  text-align: left;
-  position: absolute;
-  bottom: 0px;
-  left: 5px;
+.widget.calendar .hours-day-entry .hours-day-footer {
+    text-align: left;
+    position: absolute;
+    bottom: 0px;
+    left: 5px;
 }
 
-.widget.calendar .hours-day-entry .hours-day-content
-{
-  position: absolute;
-  width:100%;
+.widget.calendar .hours-day-entry .hours-day-content {
+    position: absolute;
+    width: 100%;
 }
 
 .widget.calendar .last .hours-day-entry {
-  border-right-width: 0px;
+    border-right-width: 0px;
 
 }
 
@@ -139,84 +141,85 @@
 }
 
 .widget.calendar .vacation-day-entry {
-  font-size: 9px !important;
-  font-weight: bold;
-  line-height: 12px;
-  width: 100%;
-  margin-top: 2px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding-left: 2px;
-  cursor: pointer;
-  
-   @media (max-width: @screen-lg) {
-      span {
-        white-space: nowrap;
-      }
+    font-size: 9px !important;
+    font-weight: bold;
+    line-height: 12px;
+    width: 100%;
+    margin-top: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    cursor: pointer;
+
+    @media (max-width: @screen-lg) {
+        span {
+            white-space: nowrap;
+        }
     }
 
-   @media (max-width: @screen-sm) {
-      span {
-        font-size: 14px;
-      }
+    @media (max-width: @screen-sm) {
+        span {
+            font-size: 14px;
+        }
     }
-  .vacation-day-period {
-    font-weight: normal;
-    float: right;
-    padding-right: 3px;
-    position: absolute;
-    white-space: nowrap;
-    right: 0px;
-    
-     @media (max-width: @screen-lg) {
-      display: none;
+    .vacation-day-period {
+        font-weight: normal;
+        float: right;
+        padding-right: 3px;
+        position: absolute;
+        white-space: nowrap;
+        right: 0px;
+
+        @media (max-width: @screen-lg) {
+            display: none;
+        }
     }
-  }
 }
 
 .widget.calendar .vacation-day-entry:first-child {
-  margin-top: 0px;
+    margin-top: 0px;
 }
 
 .widget.calendar .empty-vacation {
-  visibility: hidden;
+    visibility: hidden;
 }
 
-.widget.calendar .popover-content{
-  overflow-y:auto;
-  max-height:400px;
-  overflow-x: hidden;
-  padding-top:0px;
-  min-width:135px;
+.widget.calendar .popover-content {
+    overflow-y: auto;
+    max-height: 400px;
+    overflow-x: hidden;
+    padding-top: 0px;
+    min-width: 135px;
 }
 
 .widget.calendar .popover-title {
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 12px;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 12px;
 }
-.widget.calendar .vacation-entry-popup{
-  font-size: 12px;
-  font-weight: normal;
-  width: 100%;
 
-  div {
-    margin-top: 4px;
-    white-space: nowrap;
-  }
-  .name {
-    white-space: nowrap;
-    color: blue;
+.widget.calendar .vacation-entry-popup {
+    font-size: 12px;
     font-weight: normal;
-  }
-  
-  .vacation-person-name {
-    margin-top:12px;
-  }
-  
-  .vacation-person-type:not(:last-child) {
-    border-bottom: 1px solid #dbdbdb;
-    padding-bottom: 4px;
-    
-  }
+    width: 100%;
+
+    div {
+        margin-top: 4px;
+        white-space: nowrap;
+    }
+    .name {
+        white-space: nowrap;
+        color: blue;
+        font-weight: normal;
+    }
+
+    .vacation-person-name {
+        margin-top: 12px;
+    }
+
+    .vacation-person-type:not(:last-child) {
+        border-bottom: 1px solid #dbdbdb;
+        padding-bottom: 4px;
+
+    }
 }

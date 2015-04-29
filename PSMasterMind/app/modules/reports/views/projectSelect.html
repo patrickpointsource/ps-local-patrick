@@ -1,291 +1,315 @@
 <div class="reports" ng-form="projectReportForm">
-	<div class="row padded-row parameters" style="margin-top: 20px;">
-	    <div class="spinner-container" ng-show="isGenerationInProgress" style="width: calc(100% - 30px);">
+    <div class="row padded-row parameters" style="margin-top: 20px;">
+        <div class="spinner-container" ng-show="isGenerationInProgress" style="width: calc(100% - 30px);">
             <i class="fa fa-spinner fa-spin fa-3x"></i>
             <button class="btn btn-report" ng-click="reportHandler.cancel($event)" ng-show="isGenerationInProgress">
-                    Cancel
+                Cancel
             </button>
             <label id="lblTimer"></label>
         </div>
-		<div class="well col-md-12">
-			<div class="row">
-				<div class="col-md-6">
-					<div>
-						<h3>Select all projects in a project state...</h3>
-					</div>
-					<br />
-					<div class="groups row">
-						<div class="col-md-6">
-							<label>
-								<input type="checkbox" ng-model="projects.active" ng-change="selectActiveProjects();"
-									ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0" />
-								Active
-							</label>
-							<br />
-							<label>
-								<input type="checkbox" ng-model="projects.backlog" ng-change="selectBacklogProjects();"
-									ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0" />
-								Backlog
-							</label>
-							<br />
-							<label>
-								<input type="checkbox" ng-model="projects.pipeline" ng-change="selectPipelineProjects();"
-									ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0" />
-								Pipeline
-							</label>
-							<br />
-							<label>
-								<input type="checkbox" ng-model="projects.completed" ng-change="selectCompletedProjects();"
-									ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0" />
-								Complete
-							</label>
-						</div>
-						<div class="col-md-6">
-							<label>
-								<input type="checkbox" ng-model="projects.dealLost" ng-change="selectDealLostProjects();"
-									ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0" />
-								Deal Lost
-							</label>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div>
-						<h3>...or one or more project names</h3>
-					</div>
-					<br />
-					<div class="row groups">
-						<select class="form-control" ng-disabled="projects.active || projects.backlog || projects.pipeline || projects.completed || projects.dealLost"
-							style="height: 140px;" ng-model="projects.selectedProjects" required ng-options="p.name for p in projects"
-							ng-multiple="true" ng-change="onProjectSelect();" multiple="multiple" size="10"></select>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row padded-row parameters">
-		<div class="well col-md-10">
-			<div >
-				<h3>Select a date range</h3>
-			</div>
-			<br />
-			<div class="row groups">
-				<div class="col-xs-12 col-md-3">
-					<label>
-	                	<input type="radio" name="date" ng-model="params.date.range" value="week" />
-	                	One week
-                	</label>
-                	<br />
-                	<label>
-	                	<input type="radio" name="date" ng-model="params.date.range" value="weeks" />
-	                	Two weeks
-                	</label>
-                	<br />
-                	<label>
-	                	<input type="radio" name="date" ng-model="params.date.range" value="month" />
-	                	One month
-                	</label>
-                	<br />
-                	<label>
-	                	<input type="radio" name="date" ng-model="params.date.range" value="previousMonth" />
-	                	Previous month
-                	</label>
-                	<br />
-                	<label>
-	                	<input type="radio" name="date" ng-model="params.date.range" value="currentMonth" />
-	                	Current month
-                	</label>
-                	<br />
-                	<label>
-	                	<input type="radio" name="date" ng-model="params.date.range" value="custom" />
-	                	Custom
-                	</label>
-				</div>
-				<div class="col-xs-12 col-md-9">
-					<div class="row" ng-show="params.date.range.toLowerCase().indexOf('month') == -1">
-						<label class="control-label">
-							<div class="col-md-2">
-								Start:
-							</div>
-							<div class="col-md-8">
-								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker"
-									ng-model="params.date.start" />
-							</div>
-						</label>
-					</div>
-					<div class="row" ng-show="params.date.range == 'custom'">
-						<label class="control-label">
-							<div class="col-md-2">
-								End:
-							</div>
-							<div class="col-md-8">
-								<input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd" data-provide="datepicker"
-									ng-model="params.date.end" />
-							</div>
-						</label>
-					</div>
-					<div class="row" ng-show="params.date.range == 'month'">
-						<label class="control-label">
-							<div class="col-md-6">
-								<select class="form-control" ng-model="params.date.month" ng-options="m.name for m in months"></select>
-							</div>
-							<div class="col-md-6">
-								<select class="form-control" ng-model="params.date.year" ng-options="y for y in years"></select>
-							</div>
-						</label>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row padded-row parameters" style="margin-top: 20px;">
-		<div class="col-md-12 well">
-			<div>
-				<h3>Select params.fields you want to see in your report</h3>
-			</div>
-			<br />
-			<div>
-				<label>
-					<input type="checkbox" ng-change="selectAllFields(params.fields.all);" ng-model="params.fields.all" />
-					All fields
-				</label>
-			</div>
-			<div class="row groups">
-				<div class="col-xs-12 col-md-4">
-					<h5>ASSIGNMENT HOURS</h5>
-					<br />
-					<label>
-						<input type="checkbox" ng-change="selectAllAssignmentHours(params.fields.assignmentHours.all);" ng-model="params.fields.assignmentHours.all" />
-						All assignments
-					</label>
-					<br />
-					<div style="margin-left: 20px;" ng-repeat="role in assignedRoles">
-						<label>
-							<input type="checkbox" ng-change="params.fields.assignmentHours.all = false;" ng-model="params.fields.selectedAssignedRoles[role]" />
-							{{role}}
-						</label>
-					</div>
-					<label>
-						<input type="checkbox" ng-model="params.fields.assignmentHours.hoursAndDesc" />
-						Include assignment hours and descriptions
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.assignmentHours.oooDetails" />
-						Include OOO details
-					</label>
-				</div>
-				<div class="col-xs-12 col-md-4">
-					<h5>PROJECT HOURS</h5>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.projectHours.available" />
-						Available hours
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.projectHours.spent" />
-						Spent hours
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.projectHours.overallUtilRate" />
-						Overall utilization rate
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.projectHours.assignmentUtilRate" />
-						Assignment utilization rate
-					</label>
-				</div>
-				<div class="col-xs-12 col-md-4">
-					<h5>GOALS & PROJECTIONS</h5>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.goals.projectedUtil" />
-						Project utilization
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.goals.projectedHrs" />
-						Projected hours
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.goals.projectedInvestment" />
-						Projected investment
-					</label>
-					<br />
-					<label>
-						<input type="checkbox" ng-model="params.fields.goals.projectedRevenue" />
-						Projected revenue
-					</label>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row padded-row parameters" style="margin-top: 20px;">
-		<div class="col-md-4">
-			<div class="well" style="margin-left: -15px; margin-right: 20px;">
-				<div >
-					<h3>Select at least one output</h3>
-				</div>
-				<br />
-				<div>
-					You will see the report as a webpage by default.
-					You can choose external outputs or select none and only see the report within MasterMind.
-				</div>
-				<br />
-				<div class="groups">
-					<label>
-						<input type="radio" name="output" ng-model="params.output" value="csv" />
-						CSV, no graphs
-					</label>
-					<br />
-					<label>
-						<input type="radio" name="output" ng-model="params.output" value="both" />
-						CSV & Graphs
-					</label>
-					<br />
-					<label>
-						<input type="radio" name="output" ng-model="params.output" value="graphs" />
-						Graphs only
-					</label>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="well" style="margin-left: -15px; margin-right: 20px;">
-				<div >
-					<h3>Favorite this report</h3>
-				</div>
-				<br />
-				<div>
-					You can favorite this report, which means you can run it whenever you need from your report dashboard without having to recreate it.
-					You can name the report to differentiate it from other saved reports.
-				</div>
-				<br />
-				<div class="groups">
-					<label>
-						Name this report
-						<br />
-						<input class="form-control" ng-model="params.reportName" type="text" />
-					</label>
-				</div>
-				<div ng-show="messageForFavorites && messageForFavorites.length > 0" class="alert alert-success">
-                  <span>{{messageForFavorites}}</span> 
-                  <i class="fa fa-times pull-right cursor-pointer" ng-click="clearMessage()"></i>
+        <div class="well col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div>
+                        <h3>Select all projects in a project state...</h3>
+                    </div>
+                    <br/>
+
+                    <div class="groups row">
+                        <div class="col-md-6">
+                            <label>
+                                <input type="checkbox" ng-model="projects.active" ng-change="selectActiveProjects();"
+                                       ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0"/>
+                                Active
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" ng-model="projects.backlog" ng-change="selectBacklogProjects();"
+                                       ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0"/>
+                                Backlog
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" ng-model="projects.pipeline"
+                                       ng-change="selectPipelineProjects();"
+                                       ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0"/>
+                                Pipeline
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" ng-model="projects.completed"
+                                       ng-change="selectCompletedProjects();"
+                                       ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0"/>
+                                Complete
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label>
+                                <input type="checkbox" ng-model="projects.dealLost"
+                                       ng-change="selectDealLostProjects();"
+                                       ng-disabled="projects.selectedProjects && projects.selectedProjects.length > 0"/>
+                                Deal Lost
+                            </label>
+                        </div>
+                    </div>
                 </div>
-			</div>
-		</div>
-		<div class="col-md-3">
-		    <button class="btn" ng-click="save()" ng-disabled="!params.reportName">Save Report</button>
-            <br />
-            <br />
-            <button class="btn" ng-click="saveAndCreate()" ng-disabled="!params.reportName">Save & Create Report</button>
-            <br />
-            <br />
-			<button class="btn" ng-click="reportHandler.generate()">Create Report</button>
-		</div>
-	</div>
+                <div class="col-md-6">
+                    <div>
+                        <h3>...or one or more project names</h3>
+                    </div>
+                    <br/>
+
+                    <div class="row groups">
+                        <select class="form-control"
+                                ng-disabled="projects.active || projects.backlog || projects.pipeline || projects.completed || projects.dealLost"
+                                style="height: 140px;" ng-model="projects.selectedProjects" required
+                                ng-options="p.name for p in projects"
+                                ng-multiple="true" ng-change="onProjectSelect();" multiple="multiple"
+                                size="10"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row padded-row parameters">
+        <div class="well col-md-10">
+            <div>
+                <h3>Select a date range</h3>
+            </div>
+            <br/>
+
+            <div class="row groups">
+                <div class="col-xs-12 col-md-3">
+                    <label>
+                        <input type="radio" name="date" ng-model="params.date.range" value="week"/>
+                        One week
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="date" ng-model="params.date.range" value="weeks"/>
+                        Two weeks
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="date" ng-model="params.date.range" value="month"/>
+                        One month
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="date" ng-model="params.date.range" value="previousMonth"/>
+                        Previous month
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="date" ng-model="params.date.range" value="currentMonth"/>
+                        Current month
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="date" ng-model="params.date.range" value="custom"/>
+                        Custom
+                    </label>
+                </div>
+                <div class="col-xs-12 col-md-9">
+                    <div class="row" ng-show="params.date.range.toLowerCase().indexOf('month') == -1">
+                        <label class="control-label">
+                            <div class="col-md-2">
+                                Start:
+                            </div>
+                            <div class="col-md-8">
+                                <input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd"
+                                       data-provide="datepicker"
+                                       ng-model="params.date.start"/>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="row" ng-show="params.date.range == 'custom'">
+                        <label class="control-label">
+                            <div class="col-md-2">
+                                End:
+                            </div>
+                            <div class="col-md-8">
+                                <input class="form-control datepicker" type="text" data-date-format="yyyy-mm-dd"
+                                       data-provide="datepicker"
+                                       ng-model="params.date.end"/>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="row" ng-show="params.date.range == 'month'">
+                        <label class="control-label">
+                            <div class="col-md-6">
+                                <select class="form-control" ng-model="params.date.month"
+                                        ng-options="m.name for m in months"></select>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-control" ng-model="params.date.year"
+                                        ng-options="y for y in years"></select>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row padded-row parameters" style="margin-top: 20px;">
+        <div class="col-md-12 well">
+            <div>
+                <h3>Select params.fields you want to see in your report</h3>
+            </div>
+            <br/>
+
+            <div>
+                <label>
+                    <input type="checkbox" ng-change="selectAllFields(params.fields.all);"
+                           ng-model="params.fields.all"/>
+                    All fields
+                </label>
+            </div>
+            <div class="row groups">
+                <div class="col-xs-12 col-md-4">
+                    <h5>ASSIGNMENT HOURS</h5>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-change="selectAllAssignmentHours(params.fields.assignmentHours.all);"
+                               ng-model="params.fields.assignmentHours.all"/>
+                        All assignments
+                    </label>
+                    <br/>
+
+                    <div style="margin-left: 20px;" ng-repeat="role in assignedRoles">
+                        <label>
+                            <input type="checkbox" ng-change="params.fields.assignmentHours.all = false;"
+                                   ng-model="params.fields.selectedAssignedRoles[role]"/>
+                            {{role}}
+                        </label>
+                    </div>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.assignmentHours.hoursAndDesc"/>
+                        Include assignment hours and descriptions
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.assignmentHours.oooDetails"/>
+                        Include OOO details
+                    </label>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <h5>PROJECT HOURS</h5>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.projectHours.available"/>
+                        Available hours
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.projectHours.spent"/>
+                        Spent hours
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.projectHours.overallUtilRate"/>
+                        Overall utilization rate
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.projectHours.assignmentUtilRate"/>
+                        Assignment utilization rate
+                    </label>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <h5>GOALS & PROJECTIONS</h5>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.goals.projectedUtil"/>
+                        Project utilization
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.goals.projectedHrs"/>
+                        Projected hours
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.goals.projectedInvestment"/>
+                        Projected investment
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="checkbox" ng-model="params.fields.goals.projectedRevenue"/>
+                        Projected revenue
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row padded-row parameters" style="margin-top: 20px;">
+        <div class="col-md-4">
+            <div class="well" style="margin-left: -15px; margin-right: 20px;">
+                <div>
+                    <h3>Select at least one output</h3>
+                </div>
+                <br/>
+
+                <div>
+                    You will see the report as a webpage by default.
+                    You can choose external outputs or select none and only see the report within MasterMind.
+                </div>
+                <br/>
+
+                <div class="groups">
+                    <label>
+                        <input type="radio" name="output" ng-model="params.output" value="csv"/>
+                        CSV, no graphs
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="output" ng-model="params.output" value="both"/>
+                        CSV & Graphs
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="output" ng-model="params.output" value="graphs"/>
+                        Graphs only
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="well" style="margin-left: -15px; margin-right: 20px;">
+                <div>
+                    <h3>Favorite this report</h3>
+                </div>
+                <br/>
+
+                <div>
+                    You can favorite this report, which means you can run it whenever you need from your report
+                    dashboard without having to recreate it.
+                    You can name the report to differentiate it from other saved reports.
+                </div>
+                <br/>
+
+                <div class="groups">
+                    <label>
+                        Name this report
+                        <br/>
+                        <input class="form-control" ng-model="params.reportName" type="text"/>
+                    </label>
+                </div>
+                <div ng-show="messageForFavorites && messageForFavorites.length > 0" class="alert alert-success">
+                    <span>{{messageForFavorites}}</span>
+                    <i class="fa fa-times pull-right cursor-pointer" ng-click="clearMessage()"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <button class="btn" ng-click="save()" ng-disabled="!params.reportName">Save Report</button>
+            <br/>
+            <br/>
+            <button class="btn" ng-click="saveAndCreate()" ng-disabled="!params.reportName">Save & Create Report
+            </button>
+            <br/>
+            <br/>
+            <button class="btn" ng-click="reportHandler.generate()">Create Report</button>
+        </div>
+    </div>
 </div>

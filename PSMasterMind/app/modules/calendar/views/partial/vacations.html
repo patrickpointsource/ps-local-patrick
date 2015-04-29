@@ -1,4 +1,5 @@
-<div class="spinner-container" ng-show="loading" style="width: calc(100% - 30px);margin-top: 40px;height: calc(100% - 20px);">
+<div class="spinner-container" ng-show="loading"
+     style="width: calc(100% - 30px);margin-top: 40px;height: calc(100% - 20px);">
     <i class="fa fa-spinner fa-spin fa-3x"></i>
 </div>
 <div class="ooo-recent-header" ng-show="!loading">
@@ -21,12 +22,14 @@
         <div class="row ooo-row no-margin" ng-show="!period.vacations || period.vacations.length < 1">
             Nothing to show.
         </div>
-        <div ng-repeat="vacation in period.vacations" ng-click="editVacation(vacation)" ng-class="{'selected-ooo': vacation._id == editableVacation._id}" ng-hide="vacation.status == 'Cancelled'">
+        <div ng-repeat="vacation in period.vacations" ng-click="editVacation(vacation)"
+             ng-class="{'selected-ooo': vacation._id == editableVacation._id}" ng-hide="vacation.status == 'Cancelled'">
             <div class="row ooo-row no-margin cursor-pointer">
                 <div class="col-xs-5">
                     <strong>{{getShortDate(vacation.startDate)}}</strong> ({{getDays(vacation)}})
                 </div>
-                <div class="col-xs-7 no-horizontal-padding align-center" ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied' || vacation.status === 'Cancelled', 'color-yellow': vacation.status === 'Pending'}">
+                <div class="col-xs-7 no-horizontal-padding align-center"
+                     ng-class="{'assignment-green': vacation.status === 'Approved', 'assignment-red': vacation.status === 'Denied' || vacation.status === 'Cancelled', 'color-yellow': vacation.status === 'Pending'}">
                     <i class="fa fa-check" ng-show="vacation.status === 'Approved'"></i>
                     <i class="fa fa-clock-o" ng-show="vacation.status === 'Pending'"></i>
                     <span ng-class="{'bold-text': vacation.status == 'Approved' || vacation.status == 'Denied'}">{{getStatusText(vacation.status)}}</span>

@@ -1,8 +1,9 @@
-<div  class="reports">
+<div class="reports">
     <div class="row padded-row " style="margin-top:20px;">
         <div class="well" style="margin-left:16px;margin-right:16px;">
             <div style="height:430px; position:relative;">
-                <div class="spinner-container" ng-hide="hideGraphSpinner" style="width: calc(100% - 30px);margin-top: 40px;height: calc(100% - 20px);">
+                <div class="spinner-container" ng-hide="hideGraphSpinner"
+                     style="width: calc(100% - 30px);margin-top: 40px;height: calc(100% - 20px);">
                     <i class="fa fa-spinner fa-spin fa-3x"></i>
                 </div>
 
@@ -15,8 +16,10 @@
                                     <label>Hours at a glance for:</label>
                                 </div>
                                 <div class="pull-left" style="max-width:170px;">
-                                    <select class="selectpicker select-people-groups form-control" data-size="false" multiple data-selected-text-format="values"
-                                            ng-model="selectedPeopleGroups" ng-options="g.value for g in peopleGroups track by g.value">
+                                    <select class="selectpicker select-people-groups form-control" data-size="false"
+                                            multiple data-selected-text-format="values"
+                                            ng-model="selectedPeopleGroups"
+                                            ng-options="g.value for g in peopleGroups track by g.value">
 
                                     </select>
                                 </div>
@@ -24,32 +27,58 @@
                             </div>
 
                             <div>
-                                <button class="btn btn-report pull-left" ng-show="hideGraphSpinner" ng-click="loadGraphData()">regenerate</button>
-                                <button class="btn btn-report pull-left" ng-hide="hideGraphSpinner" ng-click="cancelLoadGraphData()">cancel</button>
+                                <button class="btn btn-report pull-left" ng-show="hideGraphSpinner"
+                                        ng-click="loadGraphData()">regenerate
+                                </button>
+                                <button class="btn btn-report pull-left" ng-hide="hideGraphSpinner"
+                                        ng-click="cancelLoadGraphData()">cancel
+                                </button>
 
-                                <button class="btn btn-report pull-right" ng-click="saveAsImage('shellVerticalReportchartContainer', 'hours-at-glance');">save as image</button>
+                                <button class="btn btn-report pull-right"
+                                        ng-click="saveAsImage('shellVerticalReportchartContainer', 'hours-at-glance');">
+                                    save as image
+                                </button>
                             </div>
                         </div>
 
-                        <div style="width:100%; clear: both; height: 20px; padding-left:7px;padding-right:7px; background-color: gray;position:relative;">
-                            <div class="pull-left" ng-show="isShellGraphActivePeriod(['week', 'month'])" ng-click="prevShellGraphPeriod()" style="position:relative;z-index:1;">
+                        <div
+                            style="width:100%; clear: both; height: 20px; padding-left:7px;padding-right:7px; background-color: gray;position:relative;">
+                            <div class="pull-left" ng-show="isShellGraphActivePeriod(['week', 'month'])"
+                                 ng-click="prevShellGraphPeriod()" style="position:relative;z-index:1;">
                                 <i class="fa fa-caret-left " style="color: white;"></i>
                             </div>
-                            <div style="width: 100%; text-align: center;color: white; position:absolute;">{{getGraphFormattedPeriod()}}</div>
-                            <div class="pull-right" ng-show="isShellGraphActivePeriod(['week', 'month'])" ng-click="nextShellGraphPeriod()" style="position:relative;">
+                            <div style="width: 100%; text-align: center;color: white; position:absolute;">
+                                {{getGraphFormattedPeriod()}}
+                            </div>
+                            <div class="pull-right" ng-show="isShellGraphActivePeriod(['week', 'month'])"
+                                 ng-click="nextShellGraphPeriod()" style="position:relative;">
                                 <i class="fa fa-caret-right " style="color: white;"></i>
                             </div>
                         </div>
                         <div class="pull-right" style="margin-top:10px;">
                             <div class="btn-group btn-group-sm tab-buttons">
-                                <button class="btn graph-period-button" ng-class="{'active-tab': isShellGraphActivePeriod('Week')}" ng-click="setShellGraphActivePeriod('week')">Week</button>
-                                <button class="btn graph-period-button" ng-class="{'active-tab': isShellGraphActivePeriod('Month')}" ng-click="setShellGraphActivePeriod('month')">Month</button>
-                                <button class="btn graph-period-button" ng-class="{'active-tab': isShellGraphActivePeriod('YTD')}" ng-click="setShellGraphActivePeriod('ytd')">YTD</button>
-                                <button class="btn graph-period-button" ng-class="{'active-tab': isShellGraphActivePeriod('ProjectTD')}" ng-click="setShellGraphActivePeriod('projecttd')">Project Inception TD</button>
+                                <button class="btn graph-period-button"
+                                        ng-class="{'active-tab': isShellGraphActivePeriod('Week')}"
+                                        ng-click="setShellGraphActivePeriod('week')">Week
+                                </button>
+                                <button class="btn graph-period-button"
+                                        ng-class="{'active-tab': isShellGraphActivePeriod('Month')}"
+                                        ng-click="setShellGraphActivePeriod('month')">Month
+                                </button>
+                                <button class="btn graph-period-button"
+                                        ng-class="{'active-tab': isShellGraphActivePeriod('YTD')}"
+                                        ng-click="setShellGraphActivePeriod('ytd')">YTD
+                                </button>
+                                <button class="btn graph-period-button"
+                                        ng-class="{'active-tab': isShellGraphActivePeriod('ProjectTD')}"
+                                        ng-click="setShellGraphActivePeriod('projecttd')">Project Inception TD
+                                </button>
                             </div>
                         </div>
 
-                        <div ng-include src="'modules/reports/views/verticalbarChart.html'" onload="elemId = 'shellVerticalReport'; chartData = getVerticalbarChartData();" ng-if="graphDataAvailable" id="shellVerticalReport" style="clear:both;"></div>
+                        <div ng-include src="'modules/reports/views/verticalbarChart.html'"
+                             onload="elemId = 'shellVerticalReport'; chartData = getVerticalbarChartData();"
+                             ng-if="graphDataAvailable" id="shellVerticalReport" style="clear:both;"></div>
                     </div>
 
                 </div>
@@ -58,8 +87,14 @@
                         <label>Hours %s across categories:</label>
                     </div>
 
-                    <div><button class="btn btn-report pull-right" ng-click="saveAsImage('d3DivshellPieGraph', 'Hours across categories', 300, 1000)">save as image</button></div>
-                    <div ng-include src="'modules/reports/views/pieChart.html'" onload="elemId = 'shellPieGraph'; chartData = getPieChartData();"
+                    <div>
+                        <button class="btn btn-report pull-right"
+                                ng-click="saveAsImage('d3DivshellPieGraph', 'Hours across categories', 300, 1000)">save
+                            as image
+                        </button>
+                    </div>
+                    <div ng-include src="'modules/reports/views/pieChart.html'"
+                         onload="elemId = 'shellPieGraph'; chartData = getPieChartData();"
                          ng-if="graphDataAvailable" id="shellPieGraph" style="height:100%;"></div>
                 </div>
             </div>
@@ -67,19 +102,23 @@
         </div>
     </div>
 
-    <div class="row padded-row parameters" >
+    <div class="row padded-row parameters">
 
         <div class="col-sm-6">
             <div class="reports-well">
                 <div class="reports-well header">Create a report</div>
                 <div class="report-types">
                     <div class="col-xs-5 col-sm-4 col-md-3 col-lg-2">
-                        <a href="#/reports/people/select" style="text-decoration: none;"><div class="report-type"></div>
-                            <div class="report-type-label">PEOPLE</div></a>
+                        <a href="#/reports/people/select" style="text-decoration: none;">
+                            <div class="report-type"></div>
+                            <div class="report-type-label">PEOPLE</div>
+                        </a>
                     </div>
                     <div class="col-xs-5 col-sm-4 col-md-3 col-lg-2">
-                        <a href="#/reports/project/select" style="text-decoration: none;"><div class="report-type"></div>
-                            <div class="report-type-label">PROJECT</div></a>
+                        <a href="#/reports/project/select" style="text-decoration: none;">
+                            <div class="report-type"></div>
+                            <div class="report-type-label">PROJECT</div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -93,14 +132,25 @@
                         <strong>{{favorite.params.reportName}}</strong>
                     </div>
                     <div class="col-xs-3 padding-top-10">
-                        <button class="btn btn-report" ng-click="runFavoriteReport(favorite)" ng-disabled="favoriteReportRun" ng-hide="runnedFavoriteReport == favorite && favoriteReportRun">View Report</button>
+                        <button class="btn btn-report" ng-click="runFavoriteReport(favorite)"
+                                ng-disabled="favoriteReportRun"
+                                ng-hide="runnedFavoriteReport == favorite && favoriteReportRun">View Report
+                        </button>
                         <div class="row">
-                            <div class="col-xs-4"><i class="fa fa-spinner fa-spin fa-3x" ng-show="runnedFavoriteReport == favorite && favoriteReportRun"></i></div>
-                            <div class="col-xs-8"><button class="btn btn-report" ng-show="runnedFavoriteReport == favorite && favoriteReportRun" ng-click="cancelFavoriteReportGeneration()">Cancel</button></div>
+                            <div class="col-xs-4"><i class="fa fa-spinner fa-spin fa-3x"
+                                                     ng-show="runnedFavoriteReport == favorite && favoriteReportRun"></i>
+                            </div>
+                            <div class="col-xs-8">
+                                <button class="btn btn-report"
+                                        ng-show="runnedFavoriteReport == favorite && favoriteReportRun"
+                                        ng-click="cancelFavoriteReportGeneration()">Cancel
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-1" style="padding-top: 7px;">
-                        <a class="cursor-pointer" title="Delete report"><i class="fa fa-trash-o fa-3x" style="color: red;"></i></a>
+                        <a class="cursor-pointer" title="Delete report"><i class="fa fa-trash-o fa-3x"
+                                                                           style="color: red;"></i></a>
                     </div>
                 </div>
             </div>

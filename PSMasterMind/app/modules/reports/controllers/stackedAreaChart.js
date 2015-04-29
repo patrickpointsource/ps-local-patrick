@@ -4,14 +4,12 @@
  * Controller for people report.
  */
 
-angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtrl", ["$scope", function ($scope)
-{
+angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtrl", ["$scope", function ($scope) {
     $scope.output = {};
     $scope.el = null;
     $scope.elemId = null;
 
-    $scope.render = function (elId)
-    {
+    $scope.render = function (elId) {
         var height = $scope.height || 400;
         var el = $("<div class=\"d3Div stackedArea\" style=\"height:100%\" id=\"d3Div" + elId + "\"></div>").height(height).appendTo("#" + elId + " div");
         var width = el.width();
@@ -26,8 +24,7 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Original logic left intact
         var keyChartTypeMapping = $scope.keyChartTypeMapping ? $scope.keyChartTypeMapping : {};
 
-        for (var i = 0; i < data.length; i++)
-        {
+        for (var i = 0; i < data.length; i++) {
             if (!keyChartTypeMapping[data[i].key])
                 data[i].type = "area";
             else
@@ -40,10 +37,8 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         var allValuesLengthSame = true;
         var prevLength = data[0] ? data[0].values.length : 0;
 
-        for (var i = 0; i < data.length; i++)
-        {
-            for (var j = 0; j < data[i].values.length; j++)
-            {
+        for (var i = 0; i < data.length; i++) {
+            for (var j = 0; j < data[i].values.length; j++) {
                 //d = new Date(data[i].values[j][0]);
                 //data[i].values[j][0] = d.getTime();
                 d = new Date(data[i].values[j].x);
@@ -63,22 +58,19 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         }
 
         // remove entries which has similar values for all keys - optimize graph
-        if (allValuesLengthSame && data[0])
-        {
+        if (allValuesLengthSame && data[0]) {
             var j = data[0].values.length - 2;
             var distance = Math.round(data[0].values.length / 10);
             var k = 0;
             var allValuesSame = true;
 
-            while (j > 1 && distance > 3)
-            {
+            while (j > 1 && distance > 3) {
                 allValuesSame = true;
 
                 for (var i = 0; i < data.length; i++)
                     allValuesSame = allValuesSame && data[i].values[j].y == data[i].values[j - 1].y;
 
-                if (allValuesSame && k < distance)
-                {
+                if (allValuesSame && k < distance) {
                     k++;
                     for (var i = 0; i < data.length; i++)
                         data[i].values.splice(j, 1);
@@ -90,24 +82,20 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         }
         // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-        for (var i = 0, count = data.length; i < count; i++)
-        {
+        for (var i = 0, count = data.length; i < count; i++) {
             var item = data[i];
             var key = item.key;
 
-            for (var j = 0, count2 = item.values.length; j < count2; j++)
-            {
+            for (var j = 0, count2 = item.values.length; j < count2; j++) {
                 var newItem = {
                     x: new Date(item.values[j].x)
                 };
 
-                if (key == ceilKey)
-                {
+                if (key == ceilKey) {
                     newItem.key2 = key;
                     newItem.y2 = item.values[j].y;
                 }
-                else
-                {
+                else {
                     newItem.key = key;
                     newItem.y = item.values[j].y;
                 }
@@ -116,14 +104,12 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
             }
         }
 
-        var calcMax = function ()
-        {
+        var calcMax = function () {
             var ceil = 0;
             var max = 0;
             var maxValues = {};
 
-            for (var i = 0, count = chart.data.length; i < count; i++)
-            {
+            for (var i = 0, count = chart.data.length; i < count; i++) {
                 var item = chart.data[i];
 
                 if (item.hasOwnProperty("key") && (!maxValues[item.key] || item.y > maxValues[item.key]))
@@ -156,13 +142,11 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         var areaSeries = chart.addSeries("key", dimple.plot.area, [xAxis, y1Axis]);
         var lineSeries = chart.addSeries("key2", dimple.plot.line, [xAxis, y2Axis]);
 
-        areaSeries.getTooltipText = function(e)
-        {
+        areaSeries.getTooltipText = function (e) {
             return [e.aggField[0], , "\xA0", e.y + " hours", "\xA0", d3.time.format("%B %_d, %Y")(e.x)];
         };
 
-        lineSeries.getTooltipText = function (e)
-        {
+        lineSeries.getTooltipText = function (e) {
             return [e.aggField[0], "\xA0", e.y + " hours"];
         };
 
@@ -180,14 +164,12 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         chart.setBounds(50, 15, width - 100, height - legendBoxHeight - gap - 15 - 30);
         chart.draw();
 
-        _.each(svg.selectAll("circle")[0], function (shape)
-        {
+        _.each(svg.selectAll("circle")[0], function (shape) {
             if (shape.id.indexOf("key") == 0)
                 shape.remove();
         });
 
-        _.each(svg.selectAll("path")[0], function (shape)
-        {
+        _.each(svg.selectAll("path")[0], function (shape) {
             if (shape.id.indexOf("key") == 0)
                 shape.remove();
         });
@@ -224,8 +206,7 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
             .style("font-weight", "normal")
             .text("Click legend to show/hide hours.");
 
-        var onLegendItemClick = function (e)
-        {
+        var onLegendItemClick = function (e) {
             if (e.aggField == "key")
                 return;
 
@@ -233,8 +214,7 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
             var hide = false;
             var newFilters = [];
             // If the filters contain the clicked shape hide it
-            filterValues.forEach(function (f)
-            {
+            filterValues.forEach(function (f) {
                 if (f.toLowerCase() === e.aggField.slice(-1)[0].toLowerCase())
                     hide = true;
                 else
@@ -246,16 +226,14 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
             // Hide the shape or show it
             if (hide)
                 d3.select(this).style("opacity", 0.1);
-            else
-            {
+            else {
                 newFilters.push(e.aggField.slice(-1)[0].toLowerCase());
                 d3.select(this).style("opacity", 0.8);
             }
             // Update the filters
             filterValues = newFilters;
             // Filter the data
-            chart.data = _.filter(chartData, function (item)
-            {
+            chart.data = _.filter(chartData, function (item) {
                 return !item.key || item.key && (_.indexOf(filterValues, item.key) != -1 || _.indexOf(filterValues, item.key.toLowerCase()) != -1);
             });
 
@@ -263,8 +241,7 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
 
             chart.draw(300);
         };
-        var updateLegendBoxLayout = function ()
-        {
+        var updateLegendBoxLayout = function () {
             g.select("rect")
                 .attr("width", width - 100 - 2 * strokeWidth);
 
@@ -279,8 +256,7 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
 
         updateLegendBoxLayout();
 
-        $(window).resize(function ()
-        {
+        $(window).resize(function () {
             width = el.width();
 
             legend.width = width - 130;
@@ -302,8 +278,7 @@ angular.module("Mastermind.controllers.reports").controller("StackedAreaChartCtr
         });
     };
 
-    setTimeout(function ()
-    {
+    setTimeout(function () {
         $scope.render($scope.$parent.elemId || $scope.$parent.$parent.elemId);
     }, 1 * 1000);
 }]);

@@ -1,341 +1,379 @@
-<div  class="reports">
-	
-	<div class="row" style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
-		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-		    <div class="btn-group tab-buttons" >
-		        <button class="btn project-button" ng-class="{'active-tab': activeTab['hours']}" 
-		        		ng-disabled="isGenerationInProgress" ng-click="tabSelected('hours')">Hours Reports</button>
-		        <button class="btn project-button" ng-if="executivesAccess" ng-class="{'active-tab': activeTab['billing']}"
-		       			ng-disabled="isGenerationInProgress" ng-click="tabSelected('billing')">Financial Reports</button>
-		        <button class="btn project-button" ng-class="{'active-tab': activeTab['outofoffice']}" 
-		        		ng-disabled="isGenerationInProgress" ng-click="tabSelected('outofoffice')">Out of Office Reports</button>
-		    </div>
-		</div>
-		
-		<div class="actions col-xs-6 pageActions">
-			<!-- <button class="btn btn-export" ng-hide="!csvData" >
-				<a href="{{hoursToCSV.link}}" download="Custom.csv" >
-			      Download
-			    </a>
-		   </button>
-			<button class="btn btn-export" ng-hide="isGenerationInProgress" 
-					name="topCSVLink" ng-click="hoursToCSV.generate($event)" >
-			      Generate
-		    </button>
-		    <button class="btn btn-export" ng-show="isGenerationInProgress" 
-					ng-click="hoursToCSV.cancelGeneration($event)" >
-				Cancel
-		    </button> -->
-		    <button class="btn pull-right btn-export" name="topCSVLink" ng-click="hoursToCSV.generate($event)" >
-				<a href="{{hoursToCSV.link()}}" download="Custom.csv" >
-			      EXPORT CSV
-			    </a>
-		    </button>
-		</div>
-	</div>
-	
-	<div>
-		<div class="spinner-container" ng-show="isGenerationInProgress" style="width: calc(100% - 30px); height: calc(90% - 30px);">
-			<i id="timer" class="fa fa-spinner fa-spin fa-3x"></i>
-			<label id="lblTimer"></label>
-		</div>
-	<div class="row padded-row" >	
-		<div class="well">
-			<div >
-				<h3>Select a report type</h3>
-			</div>
-			<div class="row report-types">
-				<div class="col-xs-2 custom" ng-class="{'active': reportTypes['custom']}" ng-if="!activeTab['billing']" ng-click="selectReportType(e, 'custom')">
-					<div class="icon">
-						<i class="fa fa-3x fa-file-text-o"></i>
-					</div>
-					<div class="text">Custom</div>
-				</div>
-				<div class="col-xs-2 custom" ng-class="{'active': reportTypes['customforecast']}" ng-if="activeTab['billing']" ng-click="selectReportType(e, 'customforecast')">
-					<div class="icon">
-						<i class="fa fa-3x fa-file-text-o"></i>
-					</div>
-					<div class="text">Custom Forecast</div>
-				</div>
-				
-				<div class="col-xs-2 custom" ng-class="{'active': reportTypes['customaccruals']}" ng-if="activeTab['billing']" ng-click="selectReportType(e, 'customaccruals')">
-					<div class="icon">
-						<i class="fa fa-3x fa-file-text-o"></i>
-					</div>
-					<div class="text">Custom Accruals</div>
-				</div>
-				<!--
-				<div class="col-xs-2 project" ng-class="{'active': reportTypes['project']}" ng-click="selectReportType(e, 'project')">
-					<div class="icon">
-						<i class="fa fa-3x fa-rocket"></i>
-					</div>
-					<div class="text">Project</div>
-				</div>
-				
-				<div class="col-xs-2 project" ng-class="{'active': reportTypes['overhead']}" ng-click="selectReportType(e, 'overhead')">
-					<div class="icon">
-						<i class="fa fa-3x fa-cogs"></i>
-					</div>
-					<div class="text">Overhead</div>
-				</div>
-				
-				<div class="col-xs-2 project" ng-class="{'active': reportTypes['department']}" ng-click="selectReportType(e, 'department')">
-					<div class="icon">
-						<i class="fa fa-3x fa-users"></i>
-					</div>
-					<div class="text">Department</div>
-				</div>
-				
-				<div class="col-xs-2 project" ng-class="{'active': reportTypes['person']}" ng-click="selectReportType(e, 'person')">
-					<div class="icon">
-						<i class="fa fa-3x fa-user"></i>
-					</div>
-					<div class="text">Person</div>
-				</div>
-				
-				<div class="col-xs-2 project" ng-class="{'active': reportTypes['utilization']}" ng-click="selectReportType(e, 'utilization')">
-					<div class="icon">
-						<i class="fa fa-3x fa-bar-chart-o"></i>
-					</div>
-					<div class="text">Utilization</div>
-				</div>
-				-->
-			</div>
-		</div>
-	</div>
-	
-	<div class="row padded-row parameters" >
-		<div class="well">
-			<div>
-				<h3>Select parameters</h3>
-			</div>
-			<div class="row">
-				<div class="col-xs-6">
-					<span>Select any or all of the following to narrow down your report criteria. You must select at least one to generate a report.</span>
-				</div>
-				
-			</div>
-			<div class="row">
-				<div class="col-xs-6">
-					<div class="row">
-						<label for="reportClient">Choose a client</label>
-						<input class="col-xs-6 form-control" name="reportClient"  type="text" placeholder="Search for an existing client" ng-model="reportClient"  >
-					</div>
-					
-				
-					<div class="row">
-						<label for="reportProject">Choose a project</label>
-						<input class="col-xs-6 form-control" name="reportProject"  type="text" placeholder="Search for an existing project or task" ng-model="reportProject"  >
-					</div>
-					
-					
-					<div class="row">
-						<div>
-							<label for="reportPerson">Choose a person</label>
-						</div>
-						<div class="">
-						<input  class="col-xs-12 form-control" name="reportPerson"  type="text" placeholder="Search for an existing person" 
-							ng-model="reportPerson" >
-						</div>
-					</div>
-				
-					
-					<div class="row">
-						<label for="reportClient">Choose a project state(s)</label>
-					</div>
-					
-					<div class="row states">
-						<div class="col-xs-4">
-							<input type="checkbox" name="allStates" ng-model="projectStates.all"  ng-click="selectProjectState(e, 'all')" ng-disabled="projectStatesDisabled"/>
-							<label for="allStates" >Select all states</label>
-							<br />
-							<input type="checkbox" name="activeState" ng-model="projectStates.active"  ng-click="selectProjectState(e, 'active')" ng-disabled="projectStatesDisabled"/>
-							<label for="activeState" >Active</label>
-							<br />
-							<input type="checkbox" name="backlogState" ng-model="projectStates.backlog"  ng-click="selectProjectState(e, 'backlog')" ng-disabled="projectStatesDisabled"/>
-							<label for="backlogState" >Backlog</label>
-						</div>
-						
-						<div class="col-xs-4">
-							<input type="checkbox" name="forecastedState" ng-model="projectStates.forecasted"  ng-click="selectProjectState(e, 'forecasted')" ng-disabled="projectStatesDisabled"/>
-							<label for="forecastedState">Forecasted</label>
-							<br />
-							<input type="checkbox" name="investmentState" ng-model="projectStates.investment" ng-click="selectProjectState(e, 'investment')" ng-disabled="projectStatesDisabled"/>
-							<label for="investmentState" >Investment</label>
-							<br />
-							<input type="checkbox" name="deallostState" ng-model="projectStates.deallost"  ng-click="selectProjectState(e, 'deallost')" ng-disabled="projectStatesDisabled"/>
-							<label for="deallostState" >Deal Lost</label>
-						</div>
-						
-						<div class="col-xs-4">
-							<input type="checkbox" name="completeState" ng-model="projectStates.complete"  ng-click="selectProjectState(e, 'complete')" ng-disabled="projectStatesDisabled"/>
-							<label for="completeState">Complete</label>
-							<br />
-						</div>
-					</div>
-				
-				
-				</div>
-			
-				<div class="col-xs-6">
-					<div class="col-xs-12">
-						<div class="row">
-							<div class="col-xs-6">
-								<label >Choose a group(s)</label>
-							</div>
-						</div>
-						<div class="row groups">
-							<div class="col-xs-4">
-								<input type="checkbox" name="allGroups" ng-model="userGroups.all"  ng-click="selectUserGroup(e, 'all')"/>
-								<label for="allGroups" >Select all groups</label>
-								<br />
-								<input type="checkbox" name="adminGroup" ng-model="userGroups.administration"  ng-click="selectUserGroup(e, 'administration')"/>
-								<label for="adminGroup" >Administration</label>
-								<br />
-								<input type="checkbox" name="clientExpGroup" ng-model="userGroups.clientexperiencemgmt"  ng-click="selectUserGroup(e, 'clientexperiencemgmt')"/>
-								<label for="clientExpGroup" >Client Experience</label>
-							</div>
-							
-							<div class="col-xs-4">
-								<input type="checkbox" name="forecastedState" ng-model="userGroups.development"  ng-click="selectUserGroup(e, 'development')"/>
-								<label for="devGroup">Development</label>
-								<br />
-								<input type="checkbox" name="investmentState" ng-model="userGroups.architects"  ng-click="selectUserGroup(e, 'architects')"/>
-								<label for="architectsGroup" >Architects</label>
-								<br />
-								<input type="checkbox" name="marketingGroup" ng-model="userGroups.marketing"  ng-click="selectUserGroup(e, 'marketing')"/>
-								<label for="marketingGroup" >Marketing</label>
-							</div>
-							
-							<div class="col-xs-4">
-								<input type="checkbox" name="digitalExpGroup" ng-model="userGroups.digitalexperience"  ng-click="selectUserGroup(e, 'digitalexperience')"/>
-								<label for="digitalExpGroup">Digitlal Experience</label>
-								<br />
-								<input type="checkbox" name="execGroup" ng-model="userGroups.executivemgmt"  ng-click="selectUserGroup(e, 'executivemgmt')"/>
-								<label for="execGroup">Executives</label>
-								<br />
-								<input type="checkbox" name="salesGroup" ng-model="userGroups.sales"  ng-click="selectUserGroup(e, 'sales')"/>
-								<label for="salesGroup">Sales</label>
-								
-							</div>
-						</div>
-					</div>
-					
-					<div class="col-xs-12">
-						<div class="row">
-							<div class="col-xs-6">
-								<label >Choose a role(s)</label>
-							</div>
-						</div>
-						<div class="row groups">
-							<div ng-repeat="rolesRow in arrangedRoles" class="col-xs-4">
-								<input ng-repeat-start="role in rolesRow" type="checkbox" ng-model="userRoles[role.value].value"  ng-click="selectUserRole(e, role.value)"/>
-								<label>{{role.abbreviation}}</label>
-								<br ng-repeat-end/>
-								
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<div class="row padded-row terms" >
-		<div class="well container">
-			<div class="col-xs-12 terms-dates-separator">
-				<h3>Select a timeframe</h3>
-			</div>
-			
-			<div class="col-xs-6" ng-if="activeTab['billing']">
-				<div class="row">
-					
-					<label >Term</label>
-					
-				</div>
-				<div class="row terms-selection">
-					<div class="col-xs-4" ng-class="{'active': reportTerms['week']}" ng-click="selectReportTerms(e, 'week')">
-						<div class="text">Week</div>	
-					</div>
-					
-					<div class="col-xs-4" ng-class="{'active': reportTerms['month']}" ng-click="selectReportTerms(e, 'month')">
-						<div class="text">Month</div>	
-					</div>
-					
-					<div class="col-xs-4" ng-class="{'active': reportTerms['quarter']}" ng-click="selectReportTerms(e, 'quarter')">
-						<div class="text">Quarter</div>	
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-6" ng-if="activeTab['billing']">
-				<div class="row">
-					<div class="col-xs-6">
-					<label >Choose a start date</label>
-					</div>
-				</div>
-				<div class="row" >
-					<div class="col-xs-4" >
-						<input name="reportStartDate" class="form-control datepicker fa-calendar" 
-							type="text" placeholder="Start date" ng-model="reportStartDate" 
-							data-date-format="yyyy-mm-dd" data-provide="datepicker" />
-					</div>
-					
-					
-				</div>
-			</div>
-			<div class="col-xs-12 terms-dates-separator" ng-if="activeTab['billing']">
-				<hr />
-			</div>
-			
-			<div class="col-xs-6">
-				<div class="row">
-					<div class="col-xs-6 terms-dates-separator">
-						<span ng-if="activeTab['billing']">OR </span><label >Choose a custom date range</label>
-					</div>
-				</div>
-				<div class="row" >
-					<div class="col-xs-4 terms-dates-separator" >
-						<input name="reportCustomStartDate" class="form-control datepicker fa-calendar" 
-							type="text" placeholder="Start date" ng-model="reportCustomStartDate" 
-							data-date-format="yyyy-mm-dd" data-provide="datepicker" />
-					</div>
-					<div class="col-xs-1" >
-						<div class="icon">
-							<i class="fa fa-2x fa-arrow-right"></i>
-						</div>
-					</div>
-					<div class="col-xs-4" >
-						<input name="reportCustomEndDate" class="form-control datepicker fa-calendar" 
-							type="text" placeholder="End date" ng-model="reportCustomEndDate" 
-							data-date-format="yyyy-mm-dd" data-provide="datepicker" />
-					</div>
-					
-					
-				</div>
-			</div>
-		</div>
-	</div>
-	</div>
-	<div class="row " style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
-		<div class="actions col-xs-12 pageActions">
-			<!-- <button class="btn btn-export" ng-hide="!csvData" >
-				<a href="{{hoursToCSV.link}}" download="Custom.csv" >
-			      Download
-			    </a>
-		    </button>
-			<button class="btn btn-export" ng-hide="isGenerationInProgress" 
-					name="topCSVLink" ng-click="hoursToCSV.generate($event)" >
-			      Generate
-		    </button>
-		    <button class="btn btn-export" ng-show="isGenerationInProgress" 
-					ng-click="hoursToCSV.cancelGeneration($event)" >
-				Cancel
-		    </button> -->
-		    <button class="btn pull-right btn-export" name="bottomCSVLink" ng-click="hoursToCSV.generate($event)" >
-				<a href="{{hoursToCSV.link()}}" download="Custom.csv" >
-			      EXPORT CSV
-			    </a>
-		    </button>
-		</div>
-	</div>
+<div class="reports">
+
+    <div class="row" style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div class="btn-group tab-buttons">
+                <button class="btn project-button" ng-class="{'active-tab': activeTab['hours']}"
+                        ng-disabled="isGenerationInProgress" ng-click="tabSelected('hours')">Hours Reports
+                </button>
+                <button class="btn project-button" ng-if="executivesAccess"
+                        ng-class="{'active-tab': activeTab['billing']}"
+                        ng-disabled="isGenerationInProgress" ng-click="tabSelected('billing')">Financial Reports
+                </button>
+                <button class="btn project-button" ng-class="{'active-tab': activeTab['outofoffice']}"
+                        ng-disabled="isGenerationInProgress" ng-click="tabSelected('outofoffice')">Out of Office Reports
+                </button>
+            </div>
+        </div>
+
+        <div class="actions col-xs-6 pageActions">
+            <!-- <button class="btn btn-export" ng-hide="!csvData" >
+                <a href="{{hoursToCSV.link}}" download="Custom.csv" >
+                  Download
+                </a>
+           </button>
+            <button class="btn btn-export" ng-hide="isGenerationInProgress"
+                    name="topCSVLink" ng-click="hoursToCSV.generate($event)" >
+                  Generate
+            </button>
+            <button class="btn btn-export" ng-show="isGenerationInProgress"
+                    ng-click="hoursToCSV.cancelGeneration($event)" >
+                Cancel
+            </button> -->
+            <button class="btn pull-right btn-export" name="topCSVLink" ng-click="hoursToCSV.generate($event)">
+                <a href="{{hoursToCSV.link()}}" download="Custom.csv">
+                    EXPORT CSV
+                </a>
+            </button>
+        </div>
+    </div>
+
+    <div>
+        <div class="spinner-container" ng-show="isGenerationInProgress"
+             style="width: calc(100% - 30px); height: calc(90% - 30px);">
+            <i id="timer" class="fa fa-spinner fa-spin fa-3x"></i>
+            <label id="lblTimer"></label>
+        </div>
+        <div class="row padded-row">
+            <div class="well">
+                <div>
+                    <h3>Select a report type</h3>
+                </div>
+                <div class="row report-types">
+                    <div class="col-xs-2 custom" ng-class="{'active': reportTypes['custom']}"
+                         ng-if="!activeTab['billing']" ng-click="selectReportType(e, 'custom')">
+                        <div class="icon">
+                            <i class="fa fa-3x fa-file-text-o"></i>
+                        </div>
+                        <div class="text">Custom</div>
+                    </div>
+                    <div class="col-xs-2 custom" ng-class="{'active': reportTypes['customforecast']}"
+                         ng-if="activeTab['billing']" ng-click="selectReportType(e, 'customforecast')">
+                        <div class="icon">
+                            <i class="fa fa-3x fa-file-text-o"></i>
+                        </div>
+                        <div class="text">Custom Forecast</div>
+                    </div>
+
+                    <div class="col-xs-2 custom" ng-class="{'active': reportTypes['customaccruals']}"
+                         ng-if="activeTab['billing']" ng-click="selectReportType(e, 'customaccruals')">
+                        <div class="icon">
+                            <i class="fa fa-3x fa-file-text-o"></i>
+                        </div>
+                        <div class="text">Custom Accruals</div>
+                    </div>
+                    <!--
+                    <div class="col-xs-2 project" ng-class="{'active': reportTypes['project']}" ng-click="selectReportType(e, 'project')">
+                        <div class="icon">
+                            <i class="fa fa-3x fa-rocket"></i>
+                        </div>
+                        <div class="text">Project</div>
+                    </div>
+
+                    <div class="col-xs-2 project" ng-class="{'active': reportTypes['overhead']}" ng-click="selectReportType(e, 'overhead')">
+                        <div class="icon">
+                            <i class="fa fa-3x fa-cogs"></i>
+                        </div>
+                        <div class="text">Overhead</div>
+                    </div>
+
+                    <div class="col-xs-2 project" ng-class="{'active': reportTypes['department']}" ng-click="selectReportType(e, 'department')">
+                        <div class="icon">
+                            <i class="fa fa-3x fa-users"></i>
+                        </div>
+                        <div class="text">Department</div>
+                    </div>
+
+                    <div class="col-xs-2 project" ng-class="{'active': reportTypes['person']}" ng-click="selectReportType(e, 'person')">
+                        <div class="icon">
+                            <i class="fa fa-3x fa-user"></i>
+                        </div>
+                        <div class="text">Person</div>
+                    </div>
+
+                    <div class="col-xs-2 project" ng-class="{'active': reportTypes['utilization']}" ng-click="selectReportType(e, 'utilization')">
+                        <div class="icon">
+                            <i class="fa fa-3x fa-bar-chart-o"></i>
+                        </div>
+                        <div class="text">Utilization</div>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </div>
+
+        <div class="row padded-row parameters">
+            <div class="well">
+                <div>
+                    <h3>Select parameters</h3>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <span>Select any or all of the following to narrow down your report criteria. You must select at least one to generate a report.</span>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <label for="reportClient">Choose a client</label>
+                            <input class="col-xs-6 form-control" name="reportClient" type="text"
+                                   placeholder="Search for an existing client" ng-model="reportClient">
+                        </div>
+
+
+                        <div class="row">
+                            <label for="reportProject">Choose a project</label>
+                            <input class="col-xs-6 form-control" name="reportProject" type="text"
+                                   placeholder="Search for an existing project or task" ng-model="reportProject">
+                        </div>
+
+
+                        <div class="row">
+                            <div>
+                                <label for="reportPerson">Choose a person</label>
+                            </div>
+                            <div class="">
+                                <input class="col-xs-12 form-control" name="reportPerson" type="text"
+                                       placeholder="Search for an existing person"
+                                       ng-model="reportPerson">
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <label for="reportClient">Choose a project state(s)</label>
+                        </div>
+
+                        <div class="row states">
+                            <div class="col-xs-4">
+                                <input type="checkbox" name="allStates" ng-model="projectStates.all"
+                                       ng-click="selectProjectState(e, 'all')" ng-disabled="projectStatesDisabled"/>
+                                <label for="allStates">Select all states</label>
+                                <br/>
+                                <input type="checkbox" name="activeState" ng-model="projectStates.active"
+                                       ng-click="selectProjectState(e, 'active')" ng-disabled="projectStatesDisabled"/>
+                                <label for="activeState">Active</label>
+                                <br/>
+                                <input type="checkbox" name="backlogState" ng-model="projectStates.backlog"
+                                       ng-click="selectProjectState(e, 'backlog')" ng-disabled="projectStatesDisabled"/>
+                                <label for="backlogState">Backlog</label>
+                            </div>
+
+                            <div class="col-xs-4">
+                                <input type="checkbox" name="forecastedState" ng-model="projectStates.forecasted"
+                                       ng-click="selectProjectState(e, 'forecasted')"
+                                       ng-disabled="projectStatesDisabled"/>
+                                <label for="forecastedState">Forecasted</label>
+                                <br/>
+                                <input type="checkbox" name="investmentState" ng-model="projectStates.investment"
+                                       ng-click="selectProjectState(e, 'investment')"
+                                       ng-disabled="projectStatesDisabled"/>
+                                <label for="investmentState">Investment</label>
+                                <br/>
+                                <input type="checkbox" name="deallostState" ng-model="projectStates.deallost"
+                                       ng-click="selectProjectState(e, 'deallost')"
+                                       ng-disabled="projectStatesDisabled"/>
+                                <label for="deallostState">Deal Lost</label>
+                            </div>
+
+                            <div class="col-xs-4">
+                                <input type="checkbox" name="completeState" ng-model="projectStates.complete"
+                                       ng-click="selectProjectState(e, 'complete')"
+                                       ng-disabled="projectStatesDisabled"/>
+                                <label for="completeState">Complete</label>
+                                <br/>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-xs-6">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <label>Choose a group(s)</label>
+                                </div>
+                            </div>
+                            <div class="row groups">
+                                <div class="col-xs-4">
+                                    <input type="checkbox" name="allGroups" ng-model="userGroups.all"
+                                           ng-click="selectUserGroup(e, 'all')"/>
+                                    <label for="allGroups">Select all groups</label>
+                                    <br/>
+                                    <input type="checkbox" name="adminGroup" ng-model="userGroups.administration"
+                                           ng-click="selectUserGroup(e, 'administration')"/>
+                                    <label for="adminGroup">Administration</label>
+                                    <br/>
+                                    <input type="checkbox" name="clientExpGroup"
+                                           ng-model="userGroups.clientexperiencemgmt"
+                                           ng-click="selectUserGroup(e, 'clientexperiencemgmt')"/>
+                                    <label for="clientExpGroup">Client Experience</label>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <input type="checkbox" name="forecastedState" ng-model="userGroups.development"
+                                           ng-click="selectUserGroup(e, 'development')"/>
+                                    <label for="devGroup">Development</label>
+                                    <br/>
+                                    <input type="checkbox" name="investmentState" ng-model="userGroups.architects"
+                                           ng-click="selectUserGroup(e, 'architects')"/>
+                                    <label for="architectsGroup">Architects</label>
+                                    <br/>
+                                    <input type="checkbox" name="marketingGroup" ng-model="userGroups.marketing"
+                                           ng-click="selectUserGroup(e, 'marketing')"/>
+                                    <label for="marketingGroup">Marketing</label>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <input type="checkbox" name="digitalExpGroup"
+                                           ng-model="userGroups.digitalexperience"
+                                           ng-click="selectUserGroup(e, 'digitalexperience')"/>
+                                    <label for="digitalExpGroup">Digitlal Experience</label>
+                                    <br/>
+                                    <input type="checkbox" name="execGroup" ng-model="userGroups.executivemgmt"
+                                           ng-click="selectUserGroup(e, 'executivemgmt')"/>
+                                    <label for="execGroup">Executives</label>
+                                    <br/>
+                                    <input type="checkbox" name="salesGroup" ng-model="userGroups.sales"
+                                           ng-click="selectUserGroup(e, 'sales')"/>
+                                    <label for="salesGroup">Sales</label>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <label>Choose a role(s)</label>
+                                </div>
+                            </div>
+                            <div class="row groups">
+                                <div ng-repeat="rolesRow in arrangedRoles" class="col-xs-4">
+                                    <input ng-repeat-start="role in rolesRow" type="checkbox"
+                                           ng-model="userRoles[role.value].value"
+                                           ng-click="selectUserRole(e, role.value)"/>
+                                    <label>{{role.abbreviation}}</label>
+                                    <br ng-repeat-end/>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row padded-row terms">
+            <div class="well container">
+                <div class="col-xs-12 terms-dates-separator">
+                    <h3>Select a timeframe</h3>
+                </div>
+
+                <div class="col-xs-6" ng-if="activeTab['billing']">
+                    <div class="row">
+
+                        <label>Term</label>
+
+                    </div>
+                    <div class="row terms-selection">
+                        <div class="col-xs-4" ng-class="{'active': reportTerms['week']}"
+                             ng-click="selectReportTerms(e, 'week')">
+                            <div class="text">Week</div>
+                        </div>
+
+                        <div class="col-xs-4" ng-class="{'active': reportTerms['month']}"
+                             ng-click="selectReportTerms(e, 'month')">
+                            <div class="text">Month</div>
+                        </div>
+
+                        <div class="col-xs-4" ng-class="{'active': reportTerms['quarter']}"
+                             ng-click="selectReportTerms(e, 'quarter')">
+                            <div class="text">Quarter</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6" ng-if="activeTab['billing']">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <label>Choose a start date</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <input name="reportStartDate" class="form-control datepicker fa-calendar"
+                                   type="text" placeholder="Start date" ng-model="reportStartDate"
+                                   data-date-format="yyyy-mm-dd" data-provide="datepicker"/>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col-xs-12 terms-dates-separator" ng-if="activeTab['billing']">
+                    <hr/>
+                </div>
+
+                <div class="col-xs-6">
+                    <div class="row">
+                        <div class="col-xs-6 terms-dates-separator">
+                            <span ng-if="activeTab['billing']">OR </span><label>Choose a custom date range</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 terms-dates-separator">
+                            <input name="reportCustomStartDate" class="form-control datepicker fa-calendar"
+                                   type="text" placeholder="Start date" ng-model="reportCustomStartDate"
+                                   data-date-format="yyyy-mm-dd" data-provide="datepicker"/>
+                        </div>
+                        <div class="col-xs-1">
+                            <div class="icon">
+                                <i class="fa fa-2x fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <input name="reportCustomEndDate" class="form-control datepicker fa-calendar"
+                                   type="text" placeholder="End date" ng-model="reportCustomEndDate"
+                                   data-date-format="yyyy-mm-dd" data-provide="datepicker"/>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row " style="padding-top: 20px; margin-left: -10px;margin-right: -10px;">
+        <div class="actions col-xs-12 pageActions">
+            <!-- <button class="btn btn-export" ng-hide="!csvData" >
+                <a href="{{hoursToCSV.link}}" download="Custom.csv" >
+                  Download
+                </a>
+            </button>
+            <button class="btn btn-export" ng-hide="isGenerationInProgress"
+                    name="topCSVLink" ng-click="hoursToCSV.generate($event)" >
+                  Generate
+            </button>
+            <button class="btn btn-export" ng-show="isGenerationInProgress"
+                    ng-click="hoursToCSV.cancelGeneration($event)" >
+                Cancel
+            </button> -->
+            <button class="btn pull-right btn-export" name="bottomCSVLink" ng-click="hoursToCSV.generate($event)">
+                <a href="{{hoursToCSV.link()}}" download="Custom.csv">
+                    EXPORT CSV
+                </a>
+            </button>
+        </div>
+    </div>
 </div>

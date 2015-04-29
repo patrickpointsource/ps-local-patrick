@@ -19,31 +19,34 @@
 -->
 
 <div ng-if="showTableView">
-	<ng-include src="'modules/people/peopleTable.html'"></ng-include>
+    <ng-include src="'modules/people/peopleTable.html'"></ng-include>
 </div>
 
 <div ng-if="showGraphView">
-  <div class="row people-search">
-    <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 pull-right">
-        <input class="form-control" placeholder="Filter People" ng-model="filterText" autofocus/>
+    <div class="row people-search">
+        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 pull-right">
+            <input class="form-control" placeholder="Filter People" ng-model="filterText" autofocus/>
+        </div>
+        <div class="col-xs-12 col-sm-6 btn-group sort-buttons">
+            <button type="button" class="btn btn-default"
+                    ng-class="{ active: sortType=='name-asc' || sortType=='name-desc' }"
+                    ng-click="switchSort('name')">Name
+                <i class="fa fa-caret-up" ng-show="sortType == 'name-asc'"></i>
+                <i class="fa fa-caret-down" ng-show="sortType == 'name-desc'"></i>
+            </button>
+            <button type="button" class="btn btn-default"
+                    ng-class="{ active: sortType=='role-asc' || sortType=='role-desc' }"
+                    ng-click="switchSort('role')">Role
+                <i class="fa fa-caret-up" ng-show="sortType == 'role-asc'"></i>
+                <i class="fa fa-caret-down" ng-show="sortType == 'role-desc'"></i>
+            </button>
+            <button type="button" class="btn btn-default"
+                    ng-class="{ active: sortType=='rate-asc' || sortType=='rate-desc' }"
+                    ng-click="switchSort('rate')">Utilization
+                <i class="fa fa-caret-up" ng-show="sortType == 'rate-asc'"></i>
+                <i class="fa fa-caret-down" ng-show="sortType == 'rate-desc'"></i>
+            </button>
+        </div>
     </div>
-    <div class="col-xs-12 col-sm-6 btn-group sort-buttons">
-        <button type="button" class="btn btn-default" ng-class="{ active: sortType=='name-asc' || sortType=='name-desc' }"
-              ng-click="switchSort('name')">Name
-              <i class="fa fa-caret-up" ng-show="sortType == 'name-asc'"></i>
-              <i class="fa fa-caret-down" ng-show="sortType == 'name-desc'"></i>
-        </button>
-        <button type="button" class="btn btn-default" ng-class="{ active: sortType=='role-asc' || sortType=='role-desc' }"
-              ng-click="switchSort('role')">Role
-              <i class="fa fa-caret-up" ng-show="sortType == 'role-asc'"></i>
-              <i class="fa fa-caret-down" ng-show="sortType == 'role-desc'"></i>
-        </button>
-        <button type="button" class="btn btn-default" ng-class="{ active: sortType=='rate-asc' || sortType=='rate-desc' }"
-              ng-click="switchSort('rate')">Utilization
-              <i class="fa fa-caret-up" ng-show="sortType == 'rate-asc'"></i>
-              <i class="fa fa-caret-down" ng-show="sortType == 'rate-desc'"></i>
-        </button>
-    </div>
-</div>
-	<ng-include src="'modules/people/peopleGraph.html'"></ng-include>
+    <ng-include src="'modules/people/peopleGraph.html'"></ng-include>
 </div>

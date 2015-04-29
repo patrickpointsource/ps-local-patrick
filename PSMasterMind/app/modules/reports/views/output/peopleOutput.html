@@ -1,89 +1,95 @@
-        <!-- Start of People Details section -->
+<!-- Start of People Details section -->
 
-            <div class="report-output-well">
-                <div class="report-output-well header">
-                    <h1>People Details</h1>
+<div class="report-output-well">
+    <div class="report-output-well header">
+        <h1>People Details</h1>
+    </div>
+    <div class="report-output-well body">
+        <div class="report-output-inside-row no-margin">
+            <div class="col-xs-12 col-sm-4">
+                <label>People on Client</label>
+
+                <div>
+                    {{output.peopleDetails.peopleOnClient}}
                 </div>
-                <div class="report-output-well body">
-                    <div class="report-output-inside-row no-margin">
-                        <div class="col-xs-12 col-sm-4">
-                            <label>People on Client</label>
-                            <div>
-                                {{output.peopleDetails.peopleOnClient}}
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <label>People on Investment</label>
-                            <div>
-                                {{output.peopleDetails.peopleOnInvestment}}
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <label class="no-margin">Total # People</label>
-                            <div class="people-total">
-                                {{output.peopleDetails.totalPeople}}
-                            </div>
-                        </div>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <label>People on Investment</label>
+
+                <div>
+                    {{output.peopleDetails.peopleOnInvestment}}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <label class="no-margin">Total # People</label>
+
+                <div class="people-total">
+                    {{output.peopleDetails.totalPeople}}
+                </div>
+            </div>
+        </div>
+        <div class="report-output-well header small no-margin">
+            <h2>Utilization by role</h2>
+        </div>
+        <div class="report-output-inside-row">
+            <div ng-if="!showPeopleDetailsLargerReport">
+                <div class="col-xs-12 col-sm-5">
+                    <label ng-repeat-start="utilizationByRole in output.peopleDetails.utilizationDetails">{{utilizationByRole.role.title}}</label>
+
+                    <div ng-repeat-end="utilizationByRole in output.peopleDetails.utilizationDetails">
+                        {{utilizationByRole.role.actualUtilization}} %
                     </div>
-                    <div class="report-output-well header small no-margin">
-                        <h2>Utilization by role</h2>
+                </div>
+                <div class="col-xs-12 col-sm-7">
+                    <a class="btn"
+                       ng-if="output.peopleDetails"
+                       ng-click="popupHandler.openPeopleDetailsVerticalReport()">
+                        View Larger
+                    </a>
+
+                    <div ng-include src="'modules/reports/views/verticalbarChart.html'"
+                         onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=500;yAxisTitle='utilization';"
+                         id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
                     </div>
-                    <div class="report-output-inside-row">
-                    	<div ng-if="!showPeopleDetailsLargerReport">
-                        	<div class="col-xs-12 col-sm-5">
-                            	<label ng-repeat-start="utilizationByRole in output.peopleDetails.utilizationDetails">{{utilizationByRole.role.title}}</label>
-                            	<div ng-repeat-end="utilizationByRole in output.peopleDetails.utilizationDetails">
-                                	{{utilizationByRole.role.actualUtilization}} %
-                            	</div>
-                        	</div>
-                        	<div class="col-xs-12 col-sm-7">
-                        		<a class="btn"
-                        			ng-if="output.peopleDetails"
-                        			ng-click="popupHandler.openPeopleDetailsVerticalReport()">
-                        			View Larger
-                        		</a>
-  								<div ng-include src="'modules/reports/views/verticalbarChart.html'"
-									onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=500;yAxisTitle='utilization';"
-									id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
-								</div>
-                        	</div>
-                       	</div>
-                        <div ng-if="showPeopleDetailsLargerReport">
-                        	<a class="btn"
-                        		ng-if="output.peopleDetails"
-                        		ng-click="popupHandler.closePeopleDetailsVerticalReport()">
-                        		View Smaller
-                        	</a>
-                        	<div modal="showPeopleDetailsLargerReport"
-  								close="popupHandler.closePeopleDetailsVerticalReport()">
-    							<div class="modal-body">
-        							<div ng-include src="'modules/reports/views/verticalbarChart.html'"
-										onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=700;yAxisTitle='utilization';"
-										id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
-									</div>
-    							</div>
-  							</div>
+                </div>
+            </div>
+            <div ng-if="showPeopleDetailsLargerReport">
+                <a class="btn"
+                   ng-if="output.peopleDetails"
+                   ng-click="popupHandler.closePeopleDetailsVerticalReport()">
+                    View Smaller
+                </a>
+
+                <div modal="showPeopleDetailsLargerReport"
+                     close="popupHandler.closePeopleDetailsVerticalReport()">
+                    <div class="modal-body">
+                        <div ng-include src="'modules/reports/views/verticalbarChart.html'"
+                             onload="elemId='peopleDetailsVerticalReport';chartData=getPeopleDetailsVerticalbarChartData();width=700;yAxisTitle='utilization';"
+                             id="peopleDetailsVerticalReport" ng-if="output.peopleDetails">
                         </div>
                     </div>
-                    <div class="report-output-well header height-auto no-margin">
-                        <h2>Individual hours and utilization</h2>
-                    </div>
-                    <div class="report-output-well body" style="height: 80px;">
-                        <div class="col-xs-11 report-output-well-footer">
+                </div>
+            </div>
+        </div>
+        <div class="report-output-well header height-auto no-margin">
+            <h2>Individual hours and utilization</h2>
+        </div>
+        <div class="report-output-well body" style="height: 80px;">
+            <div class="col-xs-11 report-output-well-footer">
                         <span>Click the arrow to view individual hours and utilization statistics for [
                         	<span ng-repeat="utilizationByRole in output.peopleDetails.utilizationDetails">
                         		{{utilizationByRole.role.abbreviation}},
                         	</span>
                             ]</span>
-                        </div>
-                        <div class="col-xs-1">
-                        	<a href="#/reports/people/output/hours" >
-                            	<i class="fa fa-chevron-right fa-3x color-smoothBlueRegular cursor-pointer"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-
             </div>
-        <!-- End of People Details section -->
+            <div class="col-xs-1">
+                <a href="#/reports/people/output/hours">
+                    <i class="fa fa-chevron-right fa-3x color-smoothBlueRegular cursor-pointer"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!-- End of People Details section -->

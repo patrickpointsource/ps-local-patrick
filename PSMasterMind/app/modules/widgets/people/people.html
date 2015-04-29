@@ -1,11 +1,16 @@
-<div class="panel panel-default dashboard-widget" ng-controller="PeopleWidgetCtrl" ng-if="hasPermissions(CONSTS.VIEW_PEOPLE)">
+<div class="panel panel-default dashboard-widget" ng-controller="PeopleWidgetCtrl"
+     ng-if="hasPermissions(CONSTS.VIEW_PEOPLE)">
     <div class="panel-heading">
         <i class="fa fa-users"></i> People
         <div class="pull-right  btn-group btn-group-sm dashboard-actions">
             <div class="styled-select">
-                <select class="btn-group-sm  form-control" ng-model="peopleFilter" ng-change="handlePeopleFilterChanged()">
+                <select class="btn-group-sm  form-control" ng-model="peopleFilter"
+                        ng-change="handlePeopleFilterChanged()">
                     <option value="" selected>Filter By Role</option>
-                    <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'" value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">{{roleOption.title}}</option>
+                    <option ng-repeat="roleOption in rolesFilterOptions | orderBy:'title'"
+                            value="{{roleOption.resource}}" ng-selected="peopleFilter === roleOption.resource">
+                        {{roleOption.title}}
+                    </option>
                 </select>
             </div>
         </div>
@@ -18,12 +23,12 @@
                     <a href="#{{person.resource}}" ng-if="hasPermissions(CONSTS.VIEW_PROFILE)">
                         <img alt="{{getPersonName(person)}}"
                              title="{{getPersonName(person)}}" ng-src="{{person.thumbnail}}"
-                             err-src="\images\defaultprofile.png" />
+                             err-src="\images\defaultprofile.png"/>
                     </a>
                     <a href="javascript:void(0);" ng-if="!hasPermissions(CONSTS.VIEW_PROFILE)">
                         <img alt="{{getPersonName(person)}}"
                              title="{{getPersonName(person)}}" ng-src="{{person.thumbnail}}"
-                             err-src="\images\defaultprofile.png" />
+                             err-src="\images\defaultprofile.png"/>
                     </a>
                 </div>
             </div>
@@ -35,8 +40,9 @@
         </div>
         <div class="row clearfix">
             <div class="col-xs-12 text-center">
-                <br />
-                <button class="btn btn-default btn-md" ng-click="handleShowPeopleClick()">Show All <i class="fa fa-chevron-right"></i></button>
+                <br/>
+                <button class="btn btn-default btn-md" ng-click="handleShowPeopleClick()">Show All <i
+                    class="fa fa-chevron-right"></i></button>
             </div>
         </div>
 

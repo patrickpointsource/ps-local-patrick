@@ -1,6 +1,6 @@
 <ol class="breadcrumb" ng-controller="BreadcrumpCtrl">
     <li ng-repeat="part in breadCrumpParts" ng-class="{'active': $index == breadCrumpParts.length - 1}">
-    	<a ng-click="navigate($index);" ng-show="$index != breadCrumpParts.length - 1">{{part}}</a>
-    	<span ng-show="$index == breadCrumpParts.length - 1">{{part}}</span>
-   	</li>
+        <a ng-click="navigate($index);" ng-show="$index != breadCrumpParts.length - 1">{{part}}</a>
+        <span ng-show="$index == breadCrumpParts.length - 1">{{part}}</span>
+    </li>
 </ol>

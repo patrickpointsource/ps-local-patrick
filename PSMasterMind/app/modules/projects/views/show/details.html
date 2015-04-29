@@ -2,106 +2,113 @@
     Project Details
 </div>
 <div ng-form="detailsForm" ng-controller="DetailsCtrl">
-	<div class="spinner-container" ng-hide="hideSpinner" style="width: calc(100% - 30px);">
-		<i class="fa fa-spinner fa-spin fa-3x"></i>
-	</div>
-	<div class="row">
-		<div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('projectName')}">
-		  <div class="row">
-		      <div class="col-xs-4 col-sm-3">
-		          <label class="control-label required-label" for="projectName">Project Name:</label>
-		      </div>
-		      <div class="col-xs-8 col-sm-9">
-		          <input id="projectName" type="text"
-                    class="col-xs-12 form-control" placeholder="Project Name"
-                    name="projectName" ng-model="project.name" required>
-		      </div>
-		  </div>
-		</div>
-		<div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('customerName')}">
-		  <div class="row">
-              <div class="col-xs-4 col-sm-3">
-                <label class="required-label control-label" for="customerName">Client Name:</label>
-              </div>
-              <div class="col-xs-8 col-sm-9">
-                <input id="customerName" name="customerName" type="text" class="col-xs-12 form-control" 
-                    placeholder="Customer Name"
-                    ng-model="project.customerName"
-                    ng-class="{highlight: detailsForm.customerName.$error.required}" required>
-              </div>
-          </div>
+    <div class="spinner-container" ng-hide="hideSpinner" style="width: calc(100% - 30px);">
+        <i class="fa fa-spinner fa-spin fa-3x"></i>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('projectName')}">
+            <div class="row">
+                <div class="col-xs-4 col-sm-3">
+                    <label class="control-label required-label" for="projectName">Project Name:</label>
+                </div>
+                <div class="col-xs-8 col-sm-9">
+                    <input id="projectName" type="text"
+                           class="col-xs-12 form-control" placeholder="Project Name"
+                           name="projectName" ng-model="project.name" required>
+                </div>
+            </div>
         </div>
-	</div>
-	<div class="row">
-		<div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('type')}">
-		    <div class="row">
+        <div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('customerName')}">
+            <div class="row">
+                <div class="col-xs-4 col-sm-3">
+                    <label class="required-label control-label" for="customerName">Client Name:</label>
+                </div>
+                <div class="col-xs-8 col-sm-9">
+                    <input id="customerName" name="customerName" type="text" class="col-xs-12 form-control"
+                           placeholder="Customer Name"
+                           ng-model="project.customerName"
+                           ng-class="{highlight: detailsForm.customerName.$error.required}" required>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('type')}">
+            <div class="row">
                 <div class="col-xs-4 col-sm-3">
                     <label class="required-label control-label" for="type">Project Type:</label>
                 </div>
                 <div class="col-xs-8 col-sm-9">
                     <div class="btn-group sort-buttons project-edit-buttons" data-toggle="radio">
-                        <label class="btn" data-toggle="radio" ng-class="{'active': project.type =='paid'}"><input id="project_type_paid" name="type" type="radio" value="paid" ng-model="project.type"  hidden required>PAID</label>
-                        <label class="btn" data-toggle="radio" ng-class="{'active': project.type =='poc'}"><input id="project_type_poc" name="type" type="radio" value="poc" ng-model="project.type"  hidden required>POC</label>
-                        <label class="btn" data-toggle="radio" ng-class="{'active': project.type =='invest'}"><input id="project_type_invest" name="type" type="radio" value="invest" ng-model="project.type"  hidden required>INVEST</label>
+                        <label class="btn" data-toggle="radio" ng-class="{'active': project.type =='paid'}"><input
+                            id="project_type_paid" name="type" type="radio" value="paid" ng-model="project.type" hidden
+                            required>PAID</label>
+                        <label class="btn" data-toggle="radio" ng-class="{'active': project.type =='poc'}"><input
+                            id="project_type_poc" name="type" type="radio" value="poc" ng-model="project.type" hidden
+                            required>POC</label>
+                        <label class="btn" data-toggle="radio" ng-class="{'active': project.type =='invest'}"><input
+                            id="project_type_invest" name="type" type="radio" value="invest" ng-model="project.type"
+                            hidden required>INVEST</label>
                     </div>
-                        
+
                 </div>
             </div>
         </div>
-		<div class="col-xs-12 col-sm-6 form-group">
-		    <div class="row">
-              <div class="col-xs-4 col-sm-3">
-                  <label for="primaryContact">Project Contact:</label>
-              </div>
-              <div class="col-xs-8 col-sm-9">
-                  <input id="primaryContact" type="text" class="col-xs-12 form-control"
-                    placeholder="Primary Contact" name="primaryContact"
-                    ng-model="project.primaryContact">
-              </div>
+        <div class="col-xs-12 col-sm-6 form-group">
+            <div class="row">
+                <div class="col-xs-4 col-sm-3">
+                    <label for="primaryContact">Project Contact:</label>
+                </div>
+                <div class="col-xs-8 col-sm-9">
+                    <input id="primaryContact" type="text" class="col-xs-12 form-control"
+                           placeholder="Primary Contact" name="primaryContact"
+                           ng-model="project.primaryContact">
+                </div>
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
 
-	<div class="row">
-		<div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('startDate')}">
-		  <div class="row">
-		    <div class="col-xs-4 col-sm-3">
-                <label class="required-label control-label" for="startDate">Start Date:</label>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('startDate')}">
+            <div class="row">
+                <div class="col-xs-4 col-sm-3">
+                    <label class="required-label control-label" for="startDate">Start Date:</label>
+                </div>
+                <div class="col-xs-8 col-sm-9">
+                    <input id="startDate" name="startDate"
+                           class="col-xs-12 form-control datepicker" type="text"
+                           ng-model="project.startDate" data-date-format="yyyy-mm-dd" required
+                           data-provide="datepicker">
+                </div>
             </div>
-            <div class="col-xs-8 col-sm-9">
-                <input id="startDate" name="startDate"
-                    class="col-xs-12 form-control datepicker" type="text"
-                    ng-model="project.startDate" data-date-format="yyyy-mm-dd" required
-                    data-provide="datepicker">
+        </div>
+        <div class="col-xs-12 col-sm-6 form-group">
+            <div class="row">
+                <div class="col-xs-4 col-sm-3">
+                    <label for="endDate">End Date:</label>
+                </div>
+                <div class="col-xs-8 col-sm-9">
+                    <input id="endDate"
+                           class="col-xs-12 form-control datepicker" type="text"
+                           ng-model="project.endDate" data-date-format="yyyy-mm-dd"
+                           data-provide="datepicker">
+                </div>
             </div>
-          </div>
-		</div>
-		<div class="col-xs-12 col-sm-6 form-group">
-		  <div class="row">
-		    <div class="col-xs-4 col-sm-3">
-                <label for="endDate">End Date:</label>
-            </div>
-            <div class="col-xs-8 col-sm-9">
-                <input id="endDate"
-                    class="col-xs-12 form-control datepicker" type="text"
-                    ng-model="project.endDate" data-date-format="yyyy-mm-dd"
-                    data-provide="datepicker">
-            </div>
-          </div>
-		</div>
-	</div>
-	<div class="row">
-	    <div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('executiveSponsor')}">
-	        <div class="row">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 form-group" ng-class="{error: isFieldInError('executiveSponsor')}">
+            <div class="row">
                 <div class="col-xs-4 col-sm-3">
                     <label class="control-label required-label" for="executiveSponsor">Executive Sponsor:</label>
                 </div>
                 <div class="col-xs-8 col-sm-9">
                     <select id="executiveSponsor" name="executiveSponsor"
-                        class="col-xs-12 form-control"
-                        ng-model="project.executiveSponsor.resource" required
-                        ng-options="m.resource as getPersonName(m) for m in execs.members | orderBy:orderByName">
-                       <option selected disabled hidden value=''></option>"
+                            class="col-xs-12 form-control"
+                            ng-model="project.executiveSponsor.resource" required
+                            ng-options="m.resource as getPersonName(m) for m in execs.members | orderBy:orderByName">
+                        <option selected disabled hidden value=''></option>
+                        "
                     </select>
                 </div>
             </div>
@@ -111,151 +118,161 @@
                 <div class="col-xs-4 col-sm-3">
                     <label for="salesSponsor">Sales Sponsor:</label>
                 </div>
-            <div class="col-xs-8 col-sm-9">
-                <select id="salesSponsor" class="col-xs-12 form-control"
-                    ng-model="project.salesSponsor.resource"
-                    ng-options="m.resource as getPersonName(m) for m in sales.members | orderBy:orderByName">
-                    <option selected disabled hidden value=''></option>"
-                </select>
+                <div class="col-xs-8 col-sm-9">
+                    <select id="salesSponsor" class="col-xs-12 form-control"
+                            ng-model="project.salesSponsor.resource"
+                            ng-options="m.resource as getPersonName(m) for m in sales.members | orderBy:orderByName">
+                        <option selected disabled hidden value=''></option>
+                        "
+                    </select>
+                </div>
             </div>
-          </div>
         </div>
-	</div>
+    </div>
 
-	<div class="row">
-		<div class="col-xs-12 form-group">
-			<label for="description">Description:</label>
-			<text-angular class="summaryDescription" name="htmldescription"
-				ng-model="project.description" />
-		</div>
-	</div>
-	<div ng-if="isPaidClientProject()">
-	<div class="well" ng-if="financeAccess">
-		<div class="row">
-		    <div class="col-xs-12 col-sm-6">
-		        <div class="row" style="margin-bottom: 20px;">
-		            <div class="hidden-xs col-sm-3">
-                        <label>Bid Terms:&nbsp;</label> &nbsp;&nbsp;
-                    </div>
-                    <div class="hidden-xs col-sm-9">
-                        <div class="btn-group sort-buttons project-edit-buttons" data-toggle="radio">
-                            <label class="btn" data-toggle="radio" ng-class="{'active': project.terms.type == 'timeAndMaterials'}">
-                                <input name="bid-terms" type="radio" value="timeAndMaterials" ng-model="project.terms.type" hidden>&nbsp;TIME &amp; MATERIALS &nbsp;&nbsp; 
-                            </label>
-                            <label class="btn" data-toggle="radio" ng-class="{'active': project.terms.type == 'fixed'}">
-                                <input name="bid-terms" type="radio" value="fixed" ng-model="project.terms.type" hidden>&nbsp;FIXED
-                            </label>
+    <div class="row">
+        <div class="col-xs-12 form-group">
+            <label for="description">Description:</label>
+            <text-angular class="summaryDescription" name="htmldescription"
+                          ng-model="project.description"/>
+        </div>
+    </div>
+    <div ng-if="isPaidClientProject()">
+        <div class="well" ng-if="financeAccess">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="row" style="margin-bottom: 20px;">
+                        <div class="hidden-xs col-sm-3">
+                            <label>Bid Terms:&nbsp;</label> &nbsp;&nbsp;
                         </div>
-                    </div>
-                    <div class="visible-xs col-xs-12">
-                        <label>Bid Terms:&nbsp;</label>
-                    </div>
-                    <div class="visible-xs col-xs-12">
-                        <input type="radio" value="timeAndMaterials" ng-model="project.terms.type">&nbsp;TIME &amp; MATERIALS&nbsp;&nbsp; 
-                        <input type="radio" value="fixed" ng-model="project.terms.type">&nbsp;FIXED
-                    </div>
-		        </div>
-		    </div>
-			<div class="col-xs-12 col-sm-6">
-				<input type="checkbox"
-					ng-model="project.terms.includesProjectManagementOverhead">
-				Project Values Includes PM Overhead
-			</div>
-		</div>
-		<div class="row">
-		    <div class="col-xs-12 col-sm-6">
-		        <div class="row">
-		            <div class="col-xs-12" ng-if="!isFixedBid()">
-		                <div class="row">
-                            <div class="col-xs-4 col-sm-3">
-                                <label for="servicesEstimatedValue">Services Estimate:</label>
-                            </div>
-                            <div class="col-xs-8 col-sm-9">
-                                <input class="form-control" id="servicesEstimatedValue" type="currency" readOnly value="{{getServicesEstimate() | currency}}">
+                        <div class="hidden-xs col-sm-9">
+                            <div class="btn-group sort-buttons project-edit-buttons" data-toggle="radio">
+                                <label class="btn" data-toggle="radio"
+                                       ng-class="{'active': project.terms.type == 'timeAndMaterials'}">
+                                    <input name="bid-terms" type="radio" value="timeAndMaterials"
+                                           ng-model="project.terms.type" hidden>&nbsp;TIME &amp; MATERIALS &nbsp;&nbsp;
+                                </label>
+                                <label class="btn" data-toggle="radio"
+                                       ng-class="{'active': project.terms.type == 'fixed'}">
+                                    <input name="bid-terms" type="radio" value="fixed" ng-model="project.terms.type"
+                                           hidden>&nbsp;FIXED
+                                </label>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xs-12" ng-if="isFixedBid()">
-                        <div class="row">
-                            <div class="col-xs-4 col-sm-3">
-                                <label for="fixedBidEstimate">Services Estimate:</label>
-                            </div>
-                            <div class="col-xs-8 col-sm-9">
-                                <input class="form-control" id="fixedBidEstimate" type="currency" ng-model="project.terms.fixedBidServicesRevenue">
-                            </div>
+                        <div class="visible-xs col-xs-12">
+                            <label>Bid Terms:&nbsp;</label>
+                        </div>
+                        <div class="visible-xs col-xs-12">
+                            <input type="radio" value="timeAndMaterials" ng-model="project.terms.type">&nbsp;TIME &amp;
+                            MATERIALS&nbsp;&nbsp;
+                            <input type="radio" value="fixed" ng-model="project.terms.type">&nbsp;FIXED
                         </div>
                     </div>
-		        </div>
-		        <div class="row">
-		            <div class="col-xs-12">
-                        <div class="row">
-                            <div class="col-xs-4 col-sm-3">
-                                <label for="softwareEstimate">Software Estimate:</label> 
-                            </div>
-                            <div class="col-xs-8 col-sm-9">
-                                <input class="form-control" id="softwareEstimate" type="currency" ng-model="project.terms.softwareEstimate">
-                            </div>
-                        </div>
-                    </div>
-		        </div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input type="checkbox"
+                           ng-model="project.terms.includesProjectManagementOverhead">
+                    Project Values Includes PM Overhead
+                </div>
             </div>
-            <div class="col-xs-12 col-sm-6">
-            	<div class="row" ng-if="isFixedBid()">
-		            <div class="col-xs-12">
-                        <div class="row">
-                            <div class="col-xs-4 col-sm-3">
-                                <label for="monthlyInvoiceAmount">Monthly invoice amount:</label> 
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="row">
+                        <div class="col-xs-12" ng-if="!isFixedBid()">
+                            <div class="row">
+                                <div class="col-xs-4 col-sm-3">
+                                    <label for="servicesEstimatedValue">Services Estimate:</label>
+                                </div>
+                                <div class="col-xs-8 col-sm-9">
+                                    <input class="form-control" id="servicesEstimatedValue" type="currency" readOnly
+                                           value="{{getServicesEstimate() | currency}}">
+                                </div>
                             </div>
-                            <div class="col-xs-8 col-sm-9">
-                                <input class="form-control" id="monthlyInvoiceAmount" type="currency" ng-model="project.terms.monthlyInvoiceAmount">
+                        </div>
+                        <div class="col-xs-12" ng-if="isFixedBid()">
+                            <div class="row">
+                                <div class="col-xs-4 col-sm-3">
+                                    <label for="fixedBidEstimate">Services Estimate:</label>
+                                </div>
+                                <div class="col-xs-8 col-sm-9">
+                                    <input class="form-control" id="fixedBidEstimate" type="currency"
+                                           ng-model="project.terms.fixedBidServicesRevenue">
+                                </div>
                             </div>
                         </div>
                     </div>
-		        </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading"><strong>TOTAL ESTIMATED VALUE:</strong></div>
-                    <div class="panel-body">
-                        {{getTotalEstimate() | currency}}
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-4 col-sm-3">
+                                    <label for="softwareEstimate">Software Estimate:</label>
+                                </div>
+                                <div class="col-xs-8 col-sm-9">
+                                    <input class="form-control" id="softwareEstimate" type="currency"
+                                           ng-model="project.terms.softwareEstimate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="row" ng-if="isFixedBid()">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-4 col-sm-3">
+                                    <label for="monthlyInvoiceAmount">Monthly invoice amount:</label>
+                                </div>
+                                <div class="col-xs-8 col-sm-9">
+                                    <input class="form-control" id="monthlyInvoiceAmount" type="currency"
+                                           ng-model="project.terms.monthlyInvoiceAmount">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><strong>TOTAL ESTIMATED VALUE:</strong></div>
+                        <div class="panel-body">
+                            {{getTotalEstimate() | currency}}
+                        </div>
                     </div>
                 </div>
             </div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12 col-sm-6">
-				<input type="checkbox" name="Committed" ng-model="project.committed">
-				Contractually Committed?
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-12 col-sm-6">
-				<label for="billingDate">Invoice Start Date:</label>
-				<input id="billingDate" name="billingDate"
-					class="col-xs-12 form-control datepicker" type="text"
-					ng-model="project.terms.billingDate" data-date-format="yyyy-mm-dd" required
-					data-provide="datepicker">
-			</div>
-			<div class="col-xs-12 col-sm-6">
-				<label for="billingFrequency">Billing Frequency:</label>
-				<select name="billingFrequency" class="form-control" 
-					ng-model="project.terms.billingFrequency"
-					ng-required="true"
-					ng-options="f.value as f.label for f in billingFrequencyOptions">
-				</select>
-			</div>
-		</div>
-		<div class="row" ng-if="isFixedBid()">
-			<div class="col-xs-12 col-sm-6">
-				<label for="lastBillingDate">Invoice Last Date:</label>
-				<input id="lastBillingDate" name="lastBillingDate"
-					class="col-xs-12 form-control datepicker" type="text"
-					
-					ng-model="project.terms.lastBillingDate" data-date-format="yyyy-mm-dd" required
-					data-provide="datepicker">
-			</div>
-			
-		</div>
-	  </div>
-	</div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input type="checkbox" name="Committed" ng-model="project.committed">
+                    Contractually Committed?
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <label for="billingDate">Invoice Start Date:</label>
+                    <input id="billingDate" name="billingDate"
+                           class="col-xs-12 form-control datepicker" type="text"
+                           ng-model="project.terms.billingDate" data-date-format="yyyy-mm-dd" required
+                           data-provide="datepicker">
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <label for="billingFrequency">Billing Frequency:</label>
+                    <select name="billingFrequency" class="form-control"
+                            ng-model="project.terms.billingFrequency"
+                            ng-required="true"
+                            ng-options="f.value as f.label for f in billingFrequencyOptions">
+                    </select>
+                </div>
+            </div>
+            <div class="row" ng-if="isFixedBid()">
+                <div class="col-xs-12 col-sm-6">
+                    <label for="lastBillingDate">Invoice Last Date:</label>
+                    <input id="lastBillingDate" name="lastBillingDate"
+                           class="col-xs-12 form-control datepicker" type="text"
+
+                           ng-model="project.terms.lastBillingDate" data-date-format="yyyy-mm-dd" required
+                           data-provide="datepicker">
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
 <div class="row content-header-gray" style="padding: 3px 0px 3px 15px;">
     Roles

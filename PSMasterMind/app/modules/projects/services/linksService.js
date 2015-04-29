@@ -4,84 +4,84 @@
  * Handles application state in regards to the currently accessed Projects.
  */
 angular.module('Mastermind.services.projects')
-  .service('LinksService', ['$q', 'Resources', function ($q, Resources) {
-	  
-	  /**
-	   * Fetch all the web links for a given project
-	   * 
-	   * filters out jazzHub links
-	   */
-	  this.getWebLinks = function(projectURL){
-		  var deferred = $q.defer();
-		  
-		  /**
-		   * Fetch the list of links
-		   */
-		   Resources.refresh(projectURL + '/links').then(function(result){
-		     var ret = [];
-			 if(result.members){
-		    	 for(var i = 0; i < result.members.length; i++){
-		        	 var link = result.members[i];
-		        	 if (link.members) {
-			        	 for (var k = 0; k < link.members.length; k++) {
-				        	 if(!link.members[k].type || link.members[k].type != 'jazzHub'){
-				        		 ret.push(link.members[k]);
-				        	 }
-			        	 }
-		        	 }
-		         }
-		      }
-			 
-			  deferred.resolve(ret);
-		   });
-		  
-		  return deferred.promise;
-	  };
-	  
-	  
-	  /**
-	   * Get the Jazz Hub Link if one exists
-	   */
-	  this.getJazzHubProjects = function (projectURL) {
-		  var deferred = $q.defer();
-		  
-		  /**
-		   * Fetch the list of links
-		   */
-		   Resources.refresh(projectURL + '/links').then(function(result){
-		     var ret = null;
-			 if(result.members){
-		    	 for(var i = 0; i < result.members.length; i++){
-		        	 var link = result.members[i];
-		        	 if (link.members) {
-			        	 for (var k = 0; k < link.members.length; k++) {
-				        	 if(link.members[k].type && link.members[k].type == 'jazzHub'){
-				        		 ret = link.members[k];
-				        		 break;
-				        	 }
-			        	 }
-		        	 }
-		         }
-		      }
-			 
-			  deferred.resolve(ret);
-		   });
-		  
-		   return deferred.promise;
-	  };
-	  
-	  /**
-	   * Create a new JAZZ Hub Link
-	   */
-	  this.linkWithJazzHubProject = function (projectURL, jazzHubProject) {
-		  return Resources.create(projectURL + '/links', jazzHubProject);
-	  };
-	  
-	 /**
-	  * Delete a project link
-	  */
-	 this.deleteLink = function(projectURL, link){
-		 var resource = projectURL + '/links/' + link.index;
-		 return Resources.remove(resource);
-	 };
-}]);
+    .service('LinksService', ['$q', 'Resources', function ($q, Resources) {
+
+        /**
+         * Fetch all the web links for a given project
+         *
+         * filters out jazzHub links
+         */
+        this.getWebLinks = function (projectURL) {
+            var deferred = $q.defer();
+
+            /**
+             * Fetch the list of links
+             */
+            Resources.refresh(projectURL + '/links').then(function (result) {
+                var ret = [];
+                if (result.members) {
+                    for (var i = 0; i < result.members.length; i++) {
+                        var link = result.members[i];
+                        if (link.members) {
+                            for (var k = 0; k < link.members.length; k++) {
+                                if (!link.members[k].type || link.members[k].type != 'jazzHub') {
+                                    ret.push(link.members[k]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                deferred.resolve(ret);
+            });
+
+            return deferred.promise;
+        };
+
+
+        /**
+         * Get the Jazz Hub Link if one exists
+         */
+        this.getJazzHubProjects = function (projectURL) {
+            var deferred = $q.defer();
+
+            /**
+             * Fetch the list of links
+             */
+            Resources.refresh(projectURL + '/links').then(function (result) {
+                var ret = null;
+                if (result.members) {
+                    for (var i = 0; i < result.members.length; i++) {
+                        var link = result.members[i];
+                        if (link.members) {
+                            for (var k = 0; k < link.members.length; k++) {
+                                if (link.members[k].type && link.members[k].type == 'jazzHub') {
+                                    ret = link.members[k];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                deferred.resolve(ret);
+            });
+
+            return deferred.promise;
+        };
+
+        /**
+         * Create a new JAZZ Hub Link
+         */
+        this.linkWithJazzHubProject = function (projectURL, jazzHubProject) {
+            return Resources.create(projectURL + '/links', jazzHubProject);
+        };
+
+        /**
+         * Delete a project link
+         */
+        this.deleteLink = function (projectURL, link) {
+            var resource = projectURL + '/links/' + link.index;
+            return Resources.remove(resource);
+        };
+    }]);

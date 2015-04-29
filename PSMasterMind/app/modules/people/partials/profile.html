@@ -24,9 +24,12 @@
                 <i class="fa fa-spinner fa-spin fa-3x"></i>
             </div>
             <div class="personPicColumn">
-                <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}" err-src="\images\defaultprofile.png" />
+                <img class="media-object fullProfileImage" ng-src="{{profile.thumbnail}}"
+                     err-src="\images\defaultprofile.png"/>
+
                 <div class="verticalGreyLine" ng-show="gplusProfile.url"></div>
-                <a ng-show="gplusProfile.url" class="googlePlusIcon" ng-href="{{gplusProfile.url}}"><span class="fa fa-google-plus"></span></a>
+                <a ng-show="gplusProfile.url" class="googlePlusIcon" ng-href="{{gplusProfile.url}}"><span
+                    class="fa fa-google-plus"></span></a>
             </div>
             <div class="person-contact-info">
                 <div class="personDetailName">{{getPersonName(profile, true)}}</div>
@@ -35,7 +38,8 @@
                 <!-- Left column -->
                 <div class="col-xs-12 col-sm-6 no-padding" ng-show="!editMode" ng-if="!canSeeOnlyBasicProps()">
                     <div ng-show="canViewPublicPersonnelData()">
-                        <div ng-if="profile.jobTitle" class="sub-heading">{{getJobTitle(profile.jobTitle.resource)}}</div>
+                        <div ng-if="profile.jobTitle" class="sub-heading">{{getJobTitle(profile.jobTitle.resource)}}
+                        </div>
                         <div ng-if="!profile.jobTitle" class="sub-heading">Job title is not specified yet.</div>
                     </div>
                     <div style="display: inline;" ng-show="canViewPrimaryRole()">
@@ -47,22 +51,31 @@
                         </div>
                     </div>
                     <div style="padding-top: 25px;" ng-if="canViewSecondaryRoles()">
-                        <strong for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} has the following secondary roles:</strong>
+                        <strong for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false,
+                            true)}} has the following secondary roles:</strong>
                     </div>
-                    <div ng-show="(!profile.secondaryRoles || profile.secondaryRoles.length == 0)" ng-if="canViewSecondaryRoles()" style="margin-bottom: 10px;">No secondary roles assigned.</div>
+                    <div ng-show="(!profile.secondaryRoles || profile.secondaryRoles.length == 0)"
+                         ng-if="canViewSecondaryRoles()" style="margin-bottom: 10px;">No secondary roles assigned.
+                    </div>
 
                     <div style="display:table; width: 100%;" ng-if="canViewSecondaryRoles()">
-                        <div ng-repeat="secondaryRole in profile.secondaryRoles" class="user-security-role col-lg-3 col-md-6 col-xs-12">
-                            <div class="col-xs-12 no-padding" ng-show="!editMode">{{getRoleName(secondaryRole.resource)}}</div>
+                        <div ng-repeat="secondaryRole in profile.secondaryRoles"
+                             class="user-security-role col-lg-3 col-md-6 col-xs-12">
+                            <div class="col-xs-12 no-padding" ng-show="!editMode">
+                                {{getRoleName(secondaryRole.resource)}}
+                            </div>
                         </div>
                     </div>
 
                     <div style="padding-top: 25px;" ng-show="canViewPermissions()">
-                        <strong class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</strong>
-                        <strong ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</strong>
+                        <strong class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} currently belongs
+                            to the following permissions groups:</strong>
+                        <strong ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions
+                            groups assigned.</strong>
                     </div>
 
-                    <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-3 col-md-6 col-xs-12" ng-show="canViewPermissions()">
+                    <div ng-repeat="userRole in userSecurityGroups"
+                         class="user-security-role col-lg-3 col-md-6 col-xs-12" ng-show="canViewPermissions()">
                         <div class="col-xs-12 no-padding">{{userRole.name}}</div>
                     </div>
                 </div>
@@ -95,7 +108,8 @@
                             <span ng-hide="profile.phone">Not set</span>
                         </div>
                         <div style="padding-top: 25px;">
-                            <a ng-show="profile.skypeId" ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
+                            <a ng-show="profile.skypeId"
+                               ng-href="skype:{{profile.skypeId}}?chat">{{profile.skypeId}}</a>
                             <span ng-hide="profile.skypeId">Not set</span>
                         </div>
                         <div style="padding-top: 15px;">
@@ -113,19 +127,29 @@
                         </div>
                     </div>
                     <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;">
-                        <div ng-show="!profile.partTime" style="min-width:115px;" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding" ng-if="canViewPublicPersonnelData()">
-                            <i class="fa fa-check fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Full time</span>
+                        <div ng-show="!profile.partTime" style="min-width:115px;"
+                             class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding"
+                             ng-if="canViewPublicPersonnelData()">
+                            <i class="fa fa-check fa-2x"
+                               style="color: #60c5db; margin-right: 15px;"></i><span>Full time</span>
                         </div>
-                        <div ng-show="profile.partTime" style="min-width:110px;" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding padding-top-10" ng-if="canViewPublicPersonnelData()">
-                            <span ng-show="profile.partTime"><strong>Part time: </strong>{{profile.partTimeHours}} h/w</span>
+                        <div ng-show="profile.partTime" style="min-width:110px;"
+                             class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding padding-top-10"
+                             ng-if="canViewPublicPersonnelData()">
+                            <span ng-show="profile.partTime"><strong>Part
+                                time: </strong>{{profile.partTimeHours}} h/w</span>
                         </div>
 
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding" ng-if="canViewPrivatePersonnelData()">
-                            <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'true'" style="min-width:85px;">
+                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 no-horizontal-padding"
+                             ng-if="canViewPrivatePersonnelData()">
+                            <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'true'"
+                                 style="min-width:85px;">
                                 <i class="fa fa-check fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Active</span>
                             </div>
-                            <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'false'" style="min-width:90px;">
-                                <i class="fa fa-times-circle fa-2x" style="color: #60c5db; margin-right: 15px;"></i><span>Inactive</span>
+                            <div class="col-xs-6 no-padding" ng-show="profile.isActive == 'false'"
+                                 style="min-width:90px;">
+                                <i class="fa fa-times-circle fa-2x"
+                                   style="color: #60c5db; margin-right: 15px;"></i><span>Inactive</span>
                             </div>
                         </div>
                     </div>
@@ -136,27 +160,40 @@
 
                     <div ng-if="canEditPersonnelData()" class="padding-top-10 profile-edit-select">
                         <strong>Job Title:</strong>
-                        <select class="form-control" ng-model="profile.jobTitle.resource" ng-options="m.resource as m.title for m in allTitles"></select>
+                        <select class="form-control" ng-model="profile.jobTitle.resource"
+                                ng-options="m.resource as m.title for m in allTitles"></select>
                     </div>
                     <div ng-if="canEditRolesTitles()" class="padding-top-10 profile-edit-select">
                         <strong>Primary Role:</strong>
-                        <select class="form-control" ng-model="profile.primaryRole.resource" ng-options="m.resource as m.title for m in allRoles" ng-change="primaryRoleChanged()"></select>
+                        <select class="form-control" ng-model="profile.primaryRole.resource"
+                                ng-options="m.resource as m.title for m in allRoles"
+                                ng-change="primaryRoleChanged()"></select>
                     </div>
                     <div ng-show="canEditRolesTitles()" class="padding-top-10">
                         <div>
                             <strong>Secondary Roles:</strong>
                         </div>
-                        <select class="selectpicker select-secondary-roles form-control" data-width="95%" multiple data-selected-text-format="count>3" ng-model="profile.secondaryRoles" ng-options="g.title for g in secondaryRoles" style="width: 95%;"></select>
+                        <select class="selectpicker select-secondary-roles form-control" data-width="95%" multiple
+                                data-selected-text-format="count>3" ng-model="profile.secondaryRoles"
+                                ng-options="g.title for g in secondaryRoles" style="width: 95%;"></select>
                     </div>
 
                     <div style="display: table; width: 100%;" ng-show="canEditRolesTitles()">
                         <div>
-                            <strong for="secondaryRoles" class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} has the following secondary roles:</strong>
+                            <strong for="secondaryRoles" class="profilePartTimeLabel">{{getPersonName(profile, false,
+                                true)}} has the following secondary roles:</strong>
                         </div>
-                        <div ng-show="!profile.secondaryRoles || profile.secondaryRoles.length == 0" style="margin-bottom: 10px;">No secondary roles assigned.</div>
-                        <div ng-repeat="secondaryRole in profile.secondaryRoles" class="user-security-role col-lg-3 col-md-6 col-xs-12">
-                            <div class="col-xs-12 col-sm-11 col-md-11 no-padding">{{getSecondaryRoleName(secondaryRole)}}</div>
-                            <a ng-click="removeSecondaryRole($index)" class="col-xs-1 col-sm-1 col-md-1 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
+                        <div ng-show="!profile.secondaryRoles || profile.secondaryRoles.length == 0"
+                             style="margin-bottom: 10px;">No secondary roles assigned.
+                        </div>
+                        <div ng-repeat="secondaryRole in profile.secondaryRoles"
+                             class="user-security-role col-lg-3 col-md-6 col-xs-12">
+                            <div class="col-xs-12 col-sm-11 col-md-11 no-padding">
+                                {{getSecondaryRoleName(secondaryRole)}}
+                            </div>
+                            <a ng-click="removeSecondaryRole($index)"
+                               class="col-xs-1 col-sm-1 col-md-1 no-padding cursor-pointer" style="color:white;"><i
+                                class="fa fa-times"></i></a>
                         </div>
                     </div>
 
@@ -164,18 +201,28 @@
                         <div>
                             <strong>Select permissions groups:</strong>
                         </div>
-                        <select class="selectpicker select-user-groups form-control" multiple data-selected-text-format="count>3" ng-model="userSecurityGroups" ng-options="g.name for g in securityGroups" ng-change="userSecurityGroupsChanged(this)"></select>
+                        <select class="selectpicker select-user-groups form-control" multiple
+                                data-selected-text-format="count>3" ng-model="userSecurityGroups"
+                                ng-options="g.name for g in securityGroups"
+                                ng-change="userSecurityGroupsChanged(this)"></select>
                     </div>
 
                     <div class="row col-xs-12 no-margin-bottom" ng-if="canEditSecurityRoles()">
-                        <strong for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false, true)}} currently belongs to the following permissions groups:</strong>
-                        <div ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups assigned.</div>
+                        <strong for="profileManager" class="profilePartTimeLabel">{{getPersonName(profile, false,
+                            true)}} currently belongs to the following permissions groups:</strong>
+
+                        <div ng-show="userSecurityGroups.length == 0" style="margin-bottom: 10px;">No permissions groups
+                            assigned.
+                        </div>
                     </div>
 
-                    <div ng-repeat="userRole in userSecurityGroups" class="user-security-role col-lg-3 col-md-6 col-xs-12" ng-if="canEditSecurityRoles()">
+                    <div ng-repeat="userRole in userSecurityGroups"
+                         class="user-security-role col-lg-3 col-md-6 col-xs-12" ng-if="canEditSecurityRoles()">
                         <div class="col-xs-12 no-padding" ng-show="!editMode">{{userRole.name}}</div>
                         <div class="col-xs-11 col-sm-11 col-md-10 no-padding" ng-show="editMode">{{userRole.name}}</div>
-                        <a ng-show="editMode" ng-click="removeUserRole($index)" class="col-xs-1 col-sm-1 col-md-2 no-padding cursor-pointer" style="color:white;"><i class="fa fa-times"></i></a>
+                        <a ng-show="editMode" ng-click="removeUserRole($index)"
+                           class="col-xs-1 col-sm-1 col-md-2 no-padding cursor-pointer" style="color:white;"><i
+                            class="fa fa-times"></i></a>
                     </div>
                 </div>
 
@@ -203,13 +250,16 @@
                     </div>
                     <div class="col-xs-6 col-sm-8 col-md-9 col-lg-6">
                         <div>
-                            <input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone" ng-disabled="!canEditPhoneSkypeJazz()" />
+                            <input id="profilePhone" ng-model="profile.phone" class="form-control" type="phone"
+                                   ng-disabled="!canEditPhoneSkypeJazz()"/>
                         </div>
                         <div style="padding-top: 20px;">
-                            <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="text" ng-disabled="!canEditPhoneSkypeJazz()" />
+                            <input id="profileSkype" ng-model="profile.skypeId" class="form-control" type="text"
+                                   ng-disabled="!canEditPhoneSkypeJazz()"/>
                         </div>
                         <div style="padding-top: 20px;">
-                            <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text" ng-disabled="!canEditPhoneSkypeJazz()" />
+                            <input id="profileJazzHub" ng-model="profile.jazzHubId" class="form-control" type="text"
+                                   ng-disabled="!canEditPhoneSkypeJazz()"/>
                         </div>
                         <div style="padding-top: 20px;">
                             <span>{{profile.mBox}}</span>
@@ -220,28 +270,36 @@
                             </div>
                         </div>
                         <div style="padding-top: 20px;" ng-show="canEditPersonnelData()">
-                            <input ng-model="profile.vacationCapacity" placeholder="days" type="number" class="form-control" />
+                            <input ng-model="profile.vacationCapacity" placeholder="days" type="number"
+                                   class="form-control"/>
                         </div>
                     </div>
-                    <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;" ng-show="canEditPersonnelData() && editMode">
+                    <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;"
+                         ng-show="canEditPersonnelData() && editMode">
                         <div class="col-xs-12 no-horizontal-padding">
                             <div class="btn-group col-xs-12 col-sm-10 col-md-8 col-lg-6 no-padding">
-                                <label class="btn btn-toggle" ng-model="profile.partTime" btn-radio="true" style="width: 40%;">Part Time</label>
-                                <label class="btn btn-toggle" ng-model="profile.partTime" btn-radio="false" style="width: 40%;">Full Time</label>
+                                <label class="btn btn-toggle" ng-model="profile.partTime" btn-radio="true"
+                                       style="width: 40%;">Part Time</label>
+                                <label class="btn btn-toggle" ng-model="profile.partTime" btn-radio="false"
+                                       style="width: 40%;">Full Time</label>
                             </div>
                             <div class="col-xs-2 col-lg-1 no-padding">
-                                <input type="number" class="form-control" ng-model="profile.partTimeHours" ng-show="profile.partTime" />
+                                <input type="number" class="form-control" ng-model="profile.partTimeHours"
+                                       ng-show="profile.partTime"/>
                             </div>
                             <div class="col-xs-1 padding-top-10">
                                 <strong ng-show="profile.partTime">h/w</strong>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;" ng-show="editMode && canEditPersonnelData()">
+                    <div class="col-xs-12 no-horizontal-padding" style="padding-top: 20px;"
+                         ng-show="editMode && canEditPersonnelData()">
                         <div class="col-xs-12 no-horizontal-padding">
                             <div class="btn-group col-xs-12 col-sm-10 col-md-8 col-lg-6 no-padding">
-                                <label class="btn btn-toggle" ng-model="profile.isActive" btn-radio="'true'" style="width: 40%;">Active</label>
-                                <label class="btn btn-toggle" ng-model="profile.isActive" btn-radio="'false'" style="width: 40%;">Inactive</label>
+                                <label class="btn btn-toggle" ng-model="profile.isActive" btn-radio="'true'"
+                                       style="width: 40%;">Active</label>
+                                <label class="btn btn-toggle" ng-model="profile.isActive" btn-radio="'false'"
+                                       style="width: 40%;">Inactive</label>
                             </div>
                         </div>
                     </div>

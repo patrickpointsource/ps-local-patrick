@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 (function (window) {
-  'use strict';
+    'use strict';
 
     var toString = window.toString,
         alert = window.alert,
@@ -9,36 +9,36 @@
         localStorage = window.localStorage,
         console = window.console;
 
-  angular.module('Mastermind.controllers.people', []);
-  angular.module('Mastermind.controllers.projects', []);
-  angular.module('Mastermind.controllers.staffing', []);
-  angular.module('Mastermind.controllers.reports', []);
-  angular.module('Mastermind.models.projects', []);
-  angular.module('Mastermind.services.projects', []);
-  angular.module('Mastermind.services.reports', []);
-  angular.module('d3', []);
-  angular.module('Mastermind.directives', ['d3']);
+    angular.module('Mastermind.controllers.people', []);
+    angular.module('Mastermind.controllers.projects', []);
+    angular.module('Mastermind.controllers.staffing', []);
+    angular.module('Mastermind.controllers.reports', []);
+    angular.module('Mastermind.models.projects', []);
+    angular.module('Mastermind.services.projects', []);
+    angular.module('Mastermind.services.reports', []);
+    angular.module('d3', []);
+    angular.module('Mastermind.directives', ['d3']);
     angular.module('Mastermind', [
-            'ui.router',
-            'ui.select',
-            'ui.bootstrap.tabs',
-            'ui.bootstrap.timepicker',
-            'ui.bootstrap',
-            'ngTable',
-            'restangular',
-            'textAngular',
-            'n3-charts.linechart',
-            'Mastermind.directives',
-            'Mastermind.controllers.people',
-            'Mastermind.controllers.projects',
-            'Mastermind.controllers.staffing',
-            'Mastermind.controllers.reports',
-            'Mastermind.models.projects',
-            'Mastermind.services.projects',
-            'Mastermind.services.reports'
-        ])
+        'ui.router',
+        'ui.select',
+        'ui.bootstrap.tabs',
+        'ui.bootstrap.timepicker',
+        'ui.bootstrap',
+        'ngTable',
+        'restangular',
+        'textAngular',
+        'n3-charts.linechart',
+        'Mastermind.directives',
+        'Mastermind.controllers.people',
+        'Mastermind.controllers.projects',
+        'Mastermind.controllers.staffing',
+        'Mastermind.controllers.reports',
+        'Mastermind.models.projects',
+        'Mastermind.services.projects',
+        'Mastermind.services.reports'
+    ])
         .config([
-            '$logProvider', '$stateProvider', '$urlRouterProvider', function($logProvider, $stateProvider, $urlRouterProvider) {
+            '$logProvider', '$stateProvider', '$urlRouterProvider', function ($logProvider, $stateProvider, $urlRouterProvider) {
                 $logProvider.debugEnabled(false);
 
                 $urlRouterProvider
@@ -70,7 +70,7 @@
                         templateUrl: 'modules/projects/views/edit.html',
                         controller: 'ProjectCtrl',
                         resolve: {
-                            editMode: function() {
+                            editMode: function () {
                                 return true;
                             }
                         }
@@ -82,7 +82,7 @@
                         templateUrl: 'modules/projects/views/show.html',
                         controller: 'ProjectCtrl',
                         resolve: {
-                            editMode: function() {
+                            editMode: function () {
                                 return false;
                             }
                         }
@@ -93,7 +93,7 @@
                         templateUrl: 'modules/projects/views/edit.html',
                         controller: 'ProjectCtrl',
                         resolve: {
-                            editMode: function() {
+                            editMode: function () {
                                 return true;
                             }
                         }
@@ -104,7 +104,7 @@
                         //template: '<div ui-view />',
                         controller: 'ProjectCtrl',
                         resolve: {
-                            editMode: function() {
+                            editMode: function () {
                                 return true;
                             }
                         }
@@ -182,21 +182,21 @@
                         templateUrl: '/modules/reports/views/projectOutput.html'
                     })
                 /*.state('reportsshell', {
-          url: '/reportsshell',
-          templateUrl: 'modules/reports/views/reportsShell.html',
-          controller: 'ReportsCtrl'
-        });*/
+                 url: '/reportsshell',
+                 templateUrl: 'modules/reports/views/reportsShell.html',
+                 controller: 'ReportsCtrl'
+                 });*/
             }
         ])
         .config([
             '$compileProvider',
-            function($compileProvider) {
+            function ($compileProvider) {
                 $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|skype|data):/);
                 // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
             }
         ])
         .config([
-            'RestangularProvider', function(RestangularProvider) {
+            'RestangularProvider', function (RestangularProvider) {
                 var serverLocation = window.serverLocation;
                 var restPath = window.restPath;
 
@@ -217,20 +217,20 @@
                     .setDefaultHttpFields({
                         withCredentials: true,
                         transformRequest: [
-                            function(data) {
+                            function (data) {
                                 /*
-             HACK to get around #1463 at:
-             https://github.com/angular/angular.js/issues/1463
-             This encodes the provided object as-is, whereas the default Angular behavior strips out all properties
-             beginning with '$'. This is an issue when using data from MongoDB where a response may include a property
-             like
+                                 HACK to get around #1463 at:
+                                 https://github.com/angular/angular.js/issues/1463
+                                 This encodes the provided object as-is, whereas the default Angular behavior strips out all properties
+                                 beginning with '$'. This is an issue when using data from MongoDB where a response may include a property
+                                 like
 
-             ...
-             '_id': { '$oid': '...' }
-             ...
+                                 ...
+                                 '_id': { '$oid': '...' }
+                                 ...
 
-             Also, need to remove any keys that match '$$hashKey' because these are added by Angular and hated by Mongo
-             */
+                                 Also, need to remove any keys that match '$$hashKey' because these are added by Angular and hated by Mongo
+                                 */
                                 return data !== null && typeof data === 'object' && toString.apply(data) !== '[object File]' ? JSON.stringify(data, toJsonReplacer) : data;
                             }
                         ]
@@ -238,7 +238,7 @@
 
                 //Set Error Intercepter
                 RestangularProvider.setErrorInterceptor(
-                    function(resp) {
+                    function (resp) {
                         console.log('Error Interceptor!');
                         //var json = JSON.stringify(resp);
                         console.log(resp);
@@ -273,20 +273,20 @@
                 );
             }
         ])
-        .directive('errSrc', function() {
+        .directive('errSrc', function () {
             return {
-                link: function(scope, element, attrs) {
-                    attrs.$observe('ngSrc', function(value) {
+                link: function (scope, element, attrs) {
+                    attrs.$observe('ngSrc', function (value) {
                         if ((!value || value.indexOf("generic") > 0) && attrs.errSrc) {
                             attrs.$set('ngSrc', attrs.errSrc);
                         }
                     });
-                    attrs.$observe('src', function(value) {
+                    attrs.$observe('src', function (value) {
                         if ((!value || value.indexOf("generic") > 0) && attrs.errSrc) {
                             attrs.$set('src', attrs.errSrc);
                         }
                     });
-                    element.bind('error', function() {
+                    element.bind('error', function () {
                         if (attrs.ngSrc != attrs.errSrc || attrs.src != attrs.errSrc) {
                             attrs.$set('ngSrc', attrs.errSrc);
                             attrs.$set('src', attrs.errSrc);
@@ -297,9 +297,9 @@
         })
         .run([
             '$rootScope', '$state', 'Resources',
-            function($rootScope, $state, Resources) {
+            function ($rootScope, $state, Resources) {
                 //Handle browser navigate away
-                window.onbeforeunload = function(event) {
+                window.onbeforeunload = function (event) {
                     if ($rootScope.formDirty) {
                         var message = 'You have not saved your changes. Are you sure want to leave?';
                         if (typeof event === 'undefined') {
@@ -315,12 +315,14 @@
                 if (localStorage.token) {
                     var token = JSON.parse(localStorage.token);
 
-                    gapi.auth.checkSessionState({ client_id: token.client_id, session_state: token.session_state },
-                        function(authenticated) {
+                    gapi.auth.checkSessionState({client_id: token.client_id, session_state: token.session_state},
+                        function (authenticated) {
                             if (authenticated) {
                                 var expTime = helper.calcExpiration();
 
-                                helper.authTimer = setTimeout(function() { helper.authorize(null, Resources); }, expTime);
+                                helper.authTimer = setTimeout(function () {
+                                    helper.authorize(null, Resources);
+                                }, expTime);
                             } else
                                 helper.authorize(null, Resources);
                         });
@@ -328,7 +330,7 @@
                     console.log("Access token not found.");
 
                 $rootScope.$on('$stateChangeStart',
-                    _.bind(function(event, toState, toParams, fromState, fromParams) {
+                    _.bind(function (event, toState, toParams, fromState, fromParams) {
                         if ($rootScope.formDirty) {
                             $rootScope.needsTonavigateOut = true;
 
@@ -341,31 +343,31 @@
                                 ok: 'YES',
                                 no: 'NO',
                                 cancel: 'Cancel',
-                                okHandler: function() {
+                                okHandler: function () {
                                     if ($rootScope.projectEdit) {
                                         return $rootScope.dirtySaveHandler();
                                     } else {
-                                        return $rootScope.dirtySaveHandler().then(function(project) { //Unset dirty flag
+                                        return $rootScope.dirtySaveHandler().then(function (project) { //Unset dirty flag
                                             $rootScope.formDirty = false;
                                             $('.modalYesNo').modal('hide');
                                         });
                                     }
                                 },
-                                noHandler: function() {
+                                noHandler: function () {
                                     $rootScope.formDirty = false;
                                     $('.modalYesNo').modal('hide');
                                 },
-                                Handler: function() {
+                                Handler: function () {
                                     $('.modalYesNo').modal('hide');
                                 }
                             };
 
-                            $rootScope.navigateOutFunc = function() {
+                            $rootScope.navigateOutFunc = function () {
                                 $rootScope.formDirty = false;
                                 _this.state.go(toState);
                             };
 
-                            $('.modalYesNo').modal('show').on('hide.bs.modal', function(e) {
+                            $('.modalYesNo').modal('show').on('hide.bs.modal', function (e) {
                                 if (!$rootScope.formDirty) {
                                     if ($rootScope.projectEdit || $rootScope.departmentEdit) {
                                         _this.state.go(toState);
@@ -373,9 +375,9 @@
                                 }
                             });
                         }
-                    }, { state: $state }));
+                    }, {state: $state}));
 
-                $rootScope.hideModals = function() {
+                $rootScope.hideModals = function () {
                     $('.modalYesNo').modal('hide');
                     $('#dateShiftConfirm').modal('hide');
                     $('.modal-backdrop').hide();
@@ -384,11 +386,11 @@
                 // use it as private variable
                 var currentPermissions = {};
 
-                $rootScope.setPermissions = function(permissions) {
+                $rootScope.setPermissions = function (permissions) {
                     currentPermissions = permissions;
                 };
 
-                $rootScope.hasPermissions = function(permissionName) {
+                $rootScope.hasPermissions = function (permissionName) {
 
                     var result = false;
 
@@ -396,7 +398,9 @@
                         throw "Unknown permission passed:" + permissionName;
                     }
                     for (var permission in currentPermissions) {
-                        if (!result && _.find(currentPermissions[permission], function(perm) { return perm == permissionName; }))
+                        if (!result && _.find(currentPermissions[permission], function (perm) {
+                                return perm == permissionName;
+                            }))
                             result = true;
                     }
 
@@ -405,17 +409,17 @@
 
                 $rootScope.CONSTS = CONSTS;
 
-                $rootScope.logout = function() {
+                $rootScope.logout = function () {
                     var accessToken = localStorage.getItem('access_token');
 
                     //Clear Local Storage
                     localStorage.clear();
 
-                    helper.disconnectUser(accessToken, function(cb) {
-                        Resources.get('resetuser').then(function() {
+                    helper.disconnectUser(accessToken, function (cb) {
+                        Resources.get('resetuser').then(function () {
                             console.log('user resetted');
                             cb(true);
-                        }).catch(function(e) {
+                        }).catch(function (e) {
                             console.log('error:');
                             cb(false);
                         });
@@ -423,7 +427,7 @@
                 };
 
                 // fix bootstrap responsive navbar not collapsing when being clicked in single page apps
-                $(document).on('click', '.navbar-collapse.in', function() {
+                $(document).on('click', '.navbar-collapse.in', function () {
                     $(this).collapse('hide');
                 });
             }

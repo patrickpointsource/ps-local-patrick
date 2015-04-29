@@ -4,60 +4,68 @@
     </div>
     <div class="report-output-inside-row no-margin">
         <div class="col-xs-12 report-output-well-footer">
-            <span>Estimations are based off previous month's projections. 
-            Projections are based on hours booked on active, backlog and pipeline projects. 
+            <span>Estimations are based off previous month's projections.
+            Projections are based on hours booked on active, backlog and pipeline projects.
             Capacity is based on the current number of employees as of the date of this report.</span>
         </div>
     </div>
     <div class="report-output-inside-row">
         <table class="table table-striped">
             <thead>
-                <th></th>
-                <th>Capacity</th>
-                <th>Client Hours</th>
-                <th>Invest Hours</th>
-                <th>Total Hours</th>
-                <th>OOO</th>
-                <th>Overhead</th>
-                <th>Utilization</th>
+            <th></th>
+            <th>Capacity</th>
+            <th>Client Hours</th>
+            <th>Invest Hours</th>
+            <th>Total Hours</th>
+            <th>OOO</th>
+            <th>Overhead</th>
+            <th>Utilization</th>
             </thead>
             <tbody>
-                <tr>
-                  <td>{{output.projections.clientHours.currentMonth.name}} (<sup>Actual</sup>&frasl;<sub>Estimated</sub>)</td>
-                  <td>{{output.projections.capacity}}</td>
-                  <td><sup>{{output.projections.clientHours.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.clientHours.currentMonth.projected}}</sub></td>
-                  <td><sup>{{output.projections.investHours.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.investHours.currentMonth.projected}}</sub></td>
-                  <td><sup>{{output.projections.totalHours.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.totalHours.currentMonth.projected}}</sub></td>
-                  <td>{{output.projections.outOfOffice}}</td>
-                  <td>{{output.projections.overhead}}</td>
-                  <td><sup>{{output.projections.utilization.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.utilization.currentMonth.projected}}</sub></td>
-                </tr>
-                <tr>
-                  <td>{{output.projections.clientHours.secondMonth.name}}</td>
-                  <td>{{output.projections.capacity}}</td>
-                  <td>{{output.projections.clientHours.secondMonth.projected}}</td>
-                  <td>{{output.projections.investHours.secondMonth.projected}}</td>
-                  <td>{{output.projections.totalHours.secondMonth.projected}}</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>{{output.projections.utilization.secondMonth.projected}}</td>
-                </tr>
-                <tr>
-                  <td>{{output.projections.clientHours.thirdMonth.name}}</td>
-                  <td>{{output.projections.capacity}}</td>
-                  <td>{{output.projections.clientHours.thirdMonth.projected}}</td>
-                  <td>{{output.projections.investHours.thirdMonth.projected}}</td>
-                  <td>{{output.projections.totalHours.thirdMonth.projected}}</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>{{output.projections.utilization.thirdMonth.projected}}</td>
-                </tr>
+            <tr>
+                <td>{{output.projections.clientHours.currentMonth.name}} (<sup>Actual</sup>&frasl;<sub>Estimated</sub>)
+                </td>
+                <td>{{output.projections.capacity}}</td>
+                <td><sup>{{output.projections.clientHours.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.clientHours.currentMonth.projected}}</sub>
+                </td>
+                <td><sup>{{output.projections.investHours.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.investHours.currentMonth.projected}}</sub>
+                </td>
+                <td><sup>{{output.projections.totalHours.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.totalHours.currentMonth.projected}}</sub>
+                </td>
+                <td>{{output.projections.outOfOffice}}</td>
+                <td>{{output.projections.overhead}}</td>
+                <td><sup>{{output.projections.utilization.currentMonth.actual}}</sup>&frasl;<sub>{{output.projections.utilization.currentMonth.projected}}</sub>
+                </td>
+            </tr>
+            <tr>
+                <td>{{output.projections.clientHours.secondMonth.name}}</td>
+                <td>{{output.projections.capacity}}</td>
+                <td>{{output.projections.clientHours.secondMonth.projected}}</td>
+                <td>{{output.projections.investHours.secondMonth.projected}}</td>
+                <td>{{output.projections.totalHours.secondMonth.projected}}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>{{output.projections.utilization.secondMonth.projected}}</td>
+            </tr>
+            <tr>
+                <td>{{output.projections.clientHours.thirdMonth.name}}</td>
+                <td>{{output.projections.capacity}}</td>
+                <td>{{output.projections.clientHours.thirdMonth.projected}}</td>
+                <td>{{output.projections.investHours.thirdMonth.projected}}</td>
+                <td>{{output.projections.totalHours.thirdMonth.projected}}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>{{output.projections.utilization.thirdMonth.projected}}</td>
+            </tr>
             </tbody>
         </table>
     </div>
     <div class="report-output-inside-row" style="height:450px;">
-    	<h2>Projected hours</h2>
-    	<div ng-include src="'modules/reports/views/stackedAreaChart.html'" onload="elemId='projectionsStackedAreaReport';chartData=getProjectionsStackedAreaChartData();keyChartTypeMapping={'Capacity Ceilling as of todays date': 'line'}" ng-if="true" id="projectionsStackedAreaReport" style="clear:both;height:100%;width:100%;"></div>
-					
-	</div>
+        <h2>Projected hours</h2>
+
+        <div ng-include src="'modules/reports/views/stackedAreaChart.html'"
+             onload="elemId='projectionsStackedAreaReport';chartData=getProjectionsStackedAreaChartData();keyChartTypeMapping={'Capacity Ceilling as of todays date': 'line'}"
+             ng-if="true" id="projectionsStackedAreaReport" style="clear:both;height:100%;width:100%;"></div>
+
+    </div>
 </div>

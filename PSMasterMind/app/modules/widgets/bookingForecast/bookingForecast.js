@@ -1,62 +1,62 @@
 angular.module('Mastermind').controller('BookingForecastCtrl', ['$scope', '$state', '$rootScope', 'Resources', 'ProjectsService',
-  function ($scope, $state, $rootScope, Resources, ProjectsService) {
+    function ($scope, $state, $rootScope, Resources, ProjectsService) {
 
-    $rootScope.bookingForecastAvailable = true;
-    
-    /**
-     * Booking Forecast Data
-     */
-    ProjectsService.getActiveBacklogAndPipelineProjects(function(result){
-      var projects = result.data;
-      //console.log("main.js ongoingProjects:", $scope.ongoingProjects);
-      $scope.fbProjects = projects;
-      $scope.initBookingForecast();
-    });
+        $rootScope.bookingForecastAvailable = true;
 
-    $scope.bfShowPipeline = false;
-    $scope.handleFBShowPipeline = function(checked){
-      $scope.bfShowPipeline = checked;
-      $scope.initBookingForecast();
-    };
+        /**
+         * Booking Forecast Data
+         */
+        ProjectsService.getActiveBacklogAndPipelineProjects(function (result) {
+            var projects = result.data;
+            //console.log("main.js ongoingProjects:", $scope.ongoingProjects);
+            $scope.fbProjects = projects;
+            $scope.initBookingForecast();
+        });
 
-
-    $scope.initBookingForecast = function(){
-      var showPipeline = $scope.bfShowPipeline;
-      var projects = $scope.fbProjects;
-      ProjectsService.getBookingForecastData(projects, showPipeline).then(function(result){
-        //If data did not exist set it
-
-        $scope.options = {
-          axes: {
-            x: { 
-                  key: 'x', 
-                  type: 'date', 
-                  labelFunction: function(t) {
-                    var momentX = moment(t);
-                    
-                    if(momentX.month() == 0) {
-                      return momentX.format("YYYY MMM");
-                    }
-                    
-                    return momentX.format("MMM");
-                  },
-                  tooltipFormatter: function (d) {
-                    return moment(d).fromNow();
-                  }
-                },
-            y: {type: 'linear'}
-          },
-          series: [
-            {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked'},
-            {y: 'otherValue', color: '#f34d4b', label: 'Bookable People'}
-          ],
-          lineMode: 'linear',
-          tooltipMode: "default"
+        $scope.bfShowPipeline = false;
+        $scope.handleFBShowPipeline = function (checked) {
+            $scope.bfShowPipeline = checked;
+            $scope.initBookingForecast();
         };
-        $scope.data = result;
-        
-        $scope.$emit('bookingforecast:loaded');
-      });
-    };
-  }
+
+
+        $scope.initBookingForecast = function () {
+            var showPipeline = $scope.bfShowPipeline;
+            var projects = $scope.fbProjects;
+            ProjectsService.getBookingForecastData(projects, showPipeline).then(function (result) {
+                //If data did not exist set it
+
+                $scope.options = {
+                    axes: {
+                        x: {
+                            key: 'x',
+                            type: 'date',
+                            labelFunction: function (t) {
+                                var momentX = moment(t);
+
+                                if (momentX.month() == 0) {
+                                    return momentX.format("YYYY MMM");
+                                }
+
+                                return momentX.format("MMM");
+                            },
+                            tooltipFormatter: function (d) {
+                                return moment(d).fromNow();
+                            }
+                        },
+                        y: {type: 'linear'}
+                    },
+                    series: [
+                        {y: 'value', color: '#4baa30', type: 'area', striped: true, label: 'Booked'},
+                        {y: 'otherValue', color: '#f34d4b', label: 'Bookable People'}
+                    ],
+                    lineMode: 'linear',
+                    tooltipMode: "default"
+                };
+                $scope.data = result;
+
+                $scope.$emit('bookingforecast:loaded');
+            });
+        };
+    }
 ]);

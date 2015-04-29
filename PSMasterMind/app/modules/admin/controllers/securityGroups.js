@@ -344,7 +344,7 @@ angular.module('Mastermind')
                             $scope.messages.push("Your changes have been saved successfully.");
                             $scope.creatingGroup = false;
                             $scope.getGroups();
-                        }, function(error) {
+                        }, function (error) {
                             $scope.errors.push(error);
                         });
                     } else {
@@ -355,12 +355,12 @@ angular.module('Mastermind')
                             $scope.selectedGroup._rev = result.rev;
                             $scope.messages.push("Your changes have been saved successfully.");
                             $rootScope.adminSaveButtonEnable = true;
-                        }, function(error) {
+                        }, function (error) {
                             var errorData = JSON.parse(error.data.split('error loading security roles:')[1]);
                             var message = "Error while saving security roles. Please try again.";
-                            if(errorData.message) {
+                            if (errorData.message) {
                                 message = errorData.message;
-                                if(error.data.description === "Document update conflict.") {
+                                if (error.data.description === "Document update conflict.") {
                                     message = "Security role that you are updated is old, please refresh the page to get the latest.";
                                 }
                             }

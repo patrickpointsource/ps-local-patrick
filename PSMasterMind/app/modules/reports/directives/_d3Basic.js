@@ -15,11 +15,11 @@
                     link: function (scope, element, attrs) {
 
                         var margin = attrs.margin || {
-                                top: 20,
-                                right: 20,
-                                bottom: 70,
-                                left: 40
-                            },
+                                    top: 20,
+                                    right: 20,
+                                    bottom: 70,
+                                    left: 40
+                                },
                             barWidth = parseInt(attrs.barWidth) || 20,
                             barPadding = parseInt(attrs.barPadding) || 5,
                             maxWidth = (element[0].parentElement.offsetWidth || 720),
@@ -42,7 +42,7 @@
                             .attr('height', maxHeight)
                             .append('g')
                             .attr('trasform',
-                                'translate(' + margin.left + ',' + margin.top + ')');
+                            'translate(' + margin.left + ',' + margin.top + ')');
 
 
                         $(window).on('resize.d3Bars', function (event) {
@@ -73,11 +73,11 @@
                             // remove all previous items before render
                             svg.selectAll('*').remove();
 
-                            //var arrayMax = Function.prototype.apply.bind(Math.max, null);   
+                            //var arrayMax = Function.prototype.apply.bind(Math.max, null);
 
                             // setup variables
                             var width = scope.data.length * (barWidth + barPadding),
-                                // calculate the height
+                            // calculate the height
                                 height = (element[0].parentElement.offsetHeight || 540);
                             //height = d3.select('.panel-body').node().offsetHeight - margin,
                             // Use the category20() scale function for multicolor support
@@ -153,6 +153,6 @@
                         };
                     }
                 };
-    }]);
+            }]);
 
 }());

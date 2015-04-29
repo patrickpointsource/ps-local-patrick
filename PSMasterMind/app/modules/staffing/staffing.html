@@ -1,20 +1,24 @@
 <div>
-<!-- Nav tabs -->
-  <div style="margin-top: 12px;">
-    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-6">
+    <!-- Nav tabs -->
+    <div style="margin-top: 12px;">
+        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-6">
             <div class="btn-group tab-buttons">
-                <button class="btn project-button" ng-class="{'active-tab': activeTab == 'staffing'}" ng-click="tabSelected('staffing')">Staffing</button>
-                <button class="btn project-button" ng-class="{'active-tab': activeTab == 'resourcefinder'}" ng-click="tabSelected('resourcefinder')">Resource Finder</button>
+                <button class="btn project-button" ng-class="{'active-tab': activeTab == 'staffing'}"
+                        ng-click="tabSelected('staffing')">Staffing
+                </button>
+                <button class="btn project-button" ng-class="{'active-tab': activeTab == 'resourcefinder'}"
+                        ng-click="tabSelected('resourcefinder')">Resource Finder
+                </button>
 
             </div>
-    </div>
-    
-	<div ng-if="activeTab == 'staffing'">
-	  <ng-include src="'modules/staffing/partials/staffing.html'"></ng-include>
-	</div>
+        </div>
 
-	<div ng-if="activeTab == 'resourcefinder'">
-	  <ng-include src="'modules/staffing/resourceFinder.html'"></ng-include>
-	</div>
-  </div>
+        <div ng-if="activeTab == 'staffing'">
+            <ng-include src="'modules/staffing/partials/staffing.html'"></ng-include>
+        </div>
+
+        <div ng-if="activeTab == 'resourcefinder'">
+            <ng-include src="'modules/staffing/resourceFinder.html'"></ng-include>
+        </div>
+    </div>
 </div>

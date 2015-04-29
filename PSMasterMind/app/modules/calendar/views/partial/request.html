@@ -8,7 +8,8 @@
         <strong>{{getPersonName(selectedRequest.person, true)}}'s Projects</strong>
     </div>
     <div ng-repeat="project in personsProjects" ng-hide="!project.name" style="display:inline;">
-        <a href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a><span ng-hide="$index == personsProjects.length - 1">, </span>
+        <a href="#{{project.resource}}">{{project.customerName}}: {{project.name}}</a><span
+        ng-hide="$index == personsProjects.length - 1">, </span>
     </div>
     <div style="margin-top: 15px;">
         <strong>People available to cover</strong>

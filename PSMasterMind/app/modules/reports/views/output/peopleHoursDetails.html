@@ -1,102 +1,118 @@
 <div ng-repeat="utilizationByRole in output.peopleDetails.utilizationDetails">
-	<div class="report-expand-well">
+    <div class="report-expand-well">
 
-		<div class="report-expand-well header">
-			<div class="col-xs-10">
-				<h2 style="">{{utilizationByRole.role.title}} Hours and Utilization</h2>
-			</div>
-			<div class="col-xs-2">
-				<i ng-hide="utilizationByRole.isExpanded" ng-click="utilizationByRole.isExpanded = !utilizationByRole.isExpanded" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
-				<i ng-show="utilizationByRole.isExpanded" ng-click="utilizationByRole.isExpanded = !utilizationByRole.isExpanded" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
-			</div>
-		</div>
+        <div class="report-expand-well header">
+            <div class="col-xs-10">
+                <h2 style="">{{utilizationByRole.role.title}} Hours and Utilization</h2>
+            </div>
+            <div class="col-xs-2">
+                <i ng-hide="utilizationByRole.isExpanded"
+                   ng-click="utilizationByRole.isExpanded = !utilizationByRole.isExpanded"
+                   class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
+                <i ng-show="utilizationByRole.isExpanded"
+                   ng-click="utilizationByRole.isExpanded = !utilizationByRole.isExpanded"
+                   class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
+            </div>
+        </div>
 
-		<div ng-repeat="person in utilizationByRole.members" collapse="!utilizationByRole.isExpanded">
-			<div class="report-expand-well">
-				<div class="report-expand-well header header100 person-detail">
-					<div class="col-xs-10">
-						<div class="personPicColumn">
-							<a class="person-image" href="#{{person.resource}}">
-							<img class="fullProfileImage" ng-src="{{person.thumbnail}}" err-src="\images\defaultprofile.png">
-							</img>
-							</a>
-						</div>
-						<div class="person-contact-info">
-							<div class="personDetailName">
-								<a href="#{{person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(person, true)}}</a>
-							</div>
-							<div class="sub-heading">
-								{{person.primaryRole.name}}
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-2">
-						<i ng-hide="person.isExpanded" ng-click="person.isExpanded = !person.isExpanded" class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
-						<i ng-show="person.isExpanded" ng-click="person.isExpanded = !person.isExpanded" class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
-					</div>
-				</div>
+        <div ng-repeat="person in utilizationByRole.members" collapse="!utilizationByRole.isExpanded">
+            <div class="report-expand-well">
+                <div class="report-expand-well header header100 person-detail">
+                    <div class="col-xs-10">
+                        <div class="personPicColumn">
+                            <a class="person-image" href="#{{person.resource}}">
+                                <img class="fullProfileImage" ng-src="{{person.thumbnail}}"
+                                     err-src="\images\defaultprofile.png">
+                                </img>
+                            </a>
+                        </div>
+                        <div class="person-contact-info">
+                            <div class="personDetailName">
+                                <a href="#{{person.resource + loc.href.substring(loc.href.indexOf('?'))}}">{{getPersonName(person,
+                                    true)}}</a>
+                            </div>
+                            <div class="sub-heading">
+                                {{person.primaryRole.name}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <i ng-hide="person.isExpanded" ng-click="person.isExpanded = !person.isExpanded"
+                           class="fa fa-chevron-down fa-3x color-smoothBlueRegular"></i>
+                        <i ng-show="person.isExpanded" ng-click="person.isExpanded = !person.isExpanded"
+                           class="fa fa-chevron-up fa-3x color-smoothBlueRegular"></i>
+                    </div>
+                </div>
 
-				<div collapse="!person.isExpanded" ng-if="person.isExpanded" >
-					<div class="report-expand-well body body450">
-						<div class="report-output-inside-row no-margin">
-							<div class="col-xs-12 col-sm-2">
-								<label>Capacity</label>
-								<div>
-									{{person.capacity}}
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-2">
-								<label>Hours Assigned</label>
-								<div>
-									{{person.hours.assigned}}
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-2">
-								<label class="no-margin">Hours Spent</label>
-								<div>
-									{{person.hours.spent}}
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-2">
-								<label>Total OOO</label>
-								<div>
-									{{person.hours.OOO}}
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-2">
-								<label>Total OH</label>
-								<div>
-									{{person.hours.OH}}
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-2">
-								<label>Utilization / Goal</label>
-								<div>
-									{{person.utilization}}% / {{person.goal}}%
-								</div>
-							</div>
-						</div>
-						<div class="report-output-inside-row">
-							<div class="col-xs-12 col-sm-6 ">
-								<label>Actual, Expected, Projected Hours</label>
-								<div class="personDetailsGraph"
-									ng-include src="'modules/reports/views/verticalbarChart.html'"
-									onload="elemId='projectedHoursVerticalReport' + $index;chartData=getPersonProjectedHoursVerticalbarChartData(person);width=620;xAxisTitle='project'"
-									id="{{'projectedHoursVerticalReport' + $index}}" ng-if="output.peopleDetails">
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-6 ">
-								<label>Percent Hours Across Categories</label>
-								<div class="personDetailsGraph"
-										ng-include src="'modules/reports/views/pieChart.html'"
-										onload="elemId='categoriesHoursPieGraph' + $index;chartData=getPersonCategoriesHoursPieChartData(person);width=350"
-										id="{{'categoriesHoursPieGraph' + $index}}" ng-if="output.peopleDetails">
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                <div collapse="!person.isExpanded" ng-if="person.isExpanded">
+                    <div class="report-expand-well body body450">
+                        <div class="report-output-inside-row no-margin">
+                            <div class="col-xs-12 col-sm-2">
+                                <label>Capacity</label>
+
+                                <div>
+                                    {{person.capacity}}
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-2">
+                                <label>Hours Assigned</label>
+
+                                <div>
+                                    {{person.hours.assigned}}
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-2">
+                                <label class="no-margin">Hours Spent</label>
+
+                                <div>
+                                    {{person.hours.spent}}
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-2">
+                                <label>Total OOO</label>
+
+                                <div>
+                                    {{person.hours.OOO}}
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-2">
+                                <label>Total OH</label>
+
+                                <div>
+                                    {{person.hours.OH}}
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-2">
+                                <label>Utilization / Goal</label>
+
+                                <div>
+                                    {{person.utilization}}% / {{person.goal}}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="report-output-inside-row">
+                            <div class="col-xs-12 col-sm-6 ">
+                                <label>Actual, Expected, Projected Hours</label>
+
+                                <div class="personDetailsGraph"
+                                     ng-include src="'modules/reports/views/verticalbarChart.html'"
+                                     onload="elemId='projectedHoursVerticalReport' + $index;chartData=getPersonProjectedHoursVerticalbarChartData(person);width=620;xAxisTitle='project'"
+                                     id="{{'projectedHoursVerticalReport' + $index}}" ng-if="output.peopleDetails">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 ">
+                                <label>Percent Hours Across Categories</label>
+
+                                <div class="personDetailsGraph"
+                                     ng-include src="'modules/reports/views/pieChart.html'"
+                                     onload="elemId='categoriesHoursPieGraph' + $index;chartData=getPersonCategoriesHoursPieChartData(person);width=350"
+                                     id="{{'categoriesHoursPieGraph' + $index}}" ng-if="output.peopleDetails">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

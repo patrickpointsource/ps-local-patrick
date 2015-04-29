@@ -4,21 +4,21 @@
  * Controller for people report.
  */
 
-angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$scope", function ($scope)
-{
+angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$scope", function ($scope) {
     $scope.output = {};
     $scope.el = null;
     $scope.elemId = null;
 
-    $scope.render = function (elId)
-    {
+    $scope.render = function (elId) {
         var height = $scope.height || 250;
         var el = $("<div id=\"" + elId + "chartContainer\"></div>").height(height).appendTo("#" + elId + " div");
         var chartData = $scope.chartData;
         var isEmpty = true;
 
         if (chartData)
-            isEmpty = !_.find(chartData, function (item) { return item.value !== 0; });
+            isEmpty = !_.find(chartData, function (item) {
+                return item.value !== 0;
+            });
 
         if (isEmpty)
             return;
@@ -38,9 +38,8 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
         var legend = chart.addLegend(width / 2 + gap + 10, (height - legendBoxHeight) / 2 + 30, legendBoxWidth - 10, legendBoxHeight - 30, "left");
 
         chart.addMeasureAxis("p", "value");
-        chart.addSeries("key", dimple.plot.pie).getTooltipText = function (e)
-        {
-            return [ "\xA0", e.aggField[0] + ": " + e.p + " (" + Math.round(e.piePct * 100) + "%)", "\xA0" ];
+        chart.addSeries("key", dimple.plot.pie).getTooltipText = function (e) {
+            return ["\xA0", e.aggField[0] + ": " + e.p + " (" + Math.round(e.piePct * 100) + "%)", "\xA0"];
         };
 
         chart.defaultColors = [
@@ -81,14 +80,12 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
             .style("font-weight", "normal")
             .text("Click legend to show/hide hours.");
 
-        var onLegendItemClick = function (e)
-        {
+        var onLegendItemClick = function (e) {
             // This indicates whether the item is already visible or not
             var hide = false;
             var newFilters = [];
             // If the filters contain the clicked shape hide it
-            filterValues.forEach(function(f)
-            {
+            filterValues.forEach(function (f) {
                 if (f === e.aggField.slice(-1)[0])
                     hide = true;
                 else
@@ -100,8 +97,7 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
             // Hide the shape or show it
             if (hide)
                 d3.select(this).style("opacity", 0.2);
-            else
-            {
+            else {
                 newFilters.push(e.aggField.slice(-1)[0]);
                 d3.select(this).style("opacity", 0.8);
             }
@@ -112,8 +108,7 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
             // Passing a duration parameter makes the chart animate.
             chart.draw(300);
         };
-        var updateLegendBoxLayout = function ()
-        {
+        var updateLegendBoxLayout = function () {
             g.attr("transform", "translate(" + (width / 2 + gap) + "," + (height - legendBoxHeight) / 2 + ")");
 
             g.select("rect")
@@ -130,8 +125,7 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
 
         updateLegendBoxLayout();
 
-        $(window).resize(function ()
-        {
+        $(window).resize(function () {
             width = el.width();
             legendBoxWidth = width / 2 - gap - strokeWidth;
 
@@ -156,8 +150,7 @@ angular.module("Mastermind.controllers.reports").controller("PieChartCtrl", ["$s
         });
     };
 
-    setTimeout(function ()
-    {
+    setTimeout(function () {
         $scope.render($scope.$parent.elemId || $scope.$parent.$parent.elemId);
     }, 1 * 1000);
 }]);
