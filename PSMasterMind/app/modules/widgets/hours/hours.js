@@ -475,10 +475,6 @@ function hoursEntry() {
             hourEntry.detailsVisible = false;
         };
 
-        $scope.deleteHoursEntry = function (e, hourEntry, index) {
-            $scope.removeOrCloseHourEntry(e, hourEntry, index);
-        };
-
         $scope.removeOrCloseHourEntry = function (e, hourEntry, index) {
             e = e ? e : window.event;
 
@@ -1000,22 +996,12 @@ function hoursEntry() {
                 $scope.sortProjectTaskList();
             });
         };
+
         // date formatter helper
+        // Not even sure this is used, but it's a bunch of lines shorter now - RCM 2015-04-29
         $scope.formatTheDate = function (d) {
-            var dd = d.getDate();
-            var mm = d.getMonth() + 1;
-            var yyyy = d.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            $scope.theDayFormatted = yyyy + '-' + mm + '-' + dd;
-
-            var dayFormat = yyyy + '-' + mm + '-' + dd;
-            return dayFormat;
-
+            $scope.theDayFormatted = moment(d).format('YYYY-MM-DD');
+            return $scope.theDayFormatted;
         };
 
         $scope.formatHours = function (hours) {
@@ -1222,20 +1208,8 @@ function hoursEntry() {
 
         $scope.prettyCalendarFormats = function (firstDay, lastDay) {
             $scope.prettyCalendarDates = {};
-            var d1 = new Date(firstDay);
-            d1.setDate(d1.getDate() + 1);
-            var day1 = d1.getDate();
-            var month1 = $scope.months[d1.getMonth()];
-            var month1Short = month1.substring(0, 3);
-            $scope.prettyCalendarDates.firstDate = month1Short + ' ' + day1;
-
-            var d2 = new Date(lastDay);
-            d2.setDate(d2.getDate() + 1);
-            var day2 = d2.getDate();
-            var month2 = $scope.months[d2.getMonth()];
-            var month2Short = month2.substring(0, 3);
-            var year = d2.getFullYear();
-            $scope.prettyCalendarDates.lastDate = month2Short + ' ' + day2 + ', ' + year;
+            $scope.prettyCalendarDates.firstDate = moment(firstDay).format('MMM D');
+            $scope.prettyCalendarDates.lastDate = moment(lastDay).format('MMM D, YYYY');
             return $scope.prettyCalendarDates;
         };
 
