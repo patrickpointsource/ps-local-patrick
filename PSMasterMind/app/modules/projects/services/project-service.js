@@ -4,7 +4,8 @@
  * Handles application state in regards to the currently accessed Projects.
  */
 angular.module('Mastermind.services.projects')
-    .service('ProjectsService', ['$q', '$sanitize', 'Restangular', 'Resources', 'Project', 'HoursService', '$injector', function ($q, $sanitize, Restangular, Resources, Project, HoursService, $injector) {
+    .service('ProjectsService', ['$q', '$sanitize', 'Restangular', 'Resources', 'Project', 'HoursService', '$injector', '$timeout',
+        function ($q, $sanitize, Restangular, Resources, Project, HoursService, $injector, $timeout) {
         /**
          * Create a reference to a server side resource for Projects.
          *
@@ -282,7 +283,7 @@ angular.module('Mastermind.services.projects')
         this.getForEditByURI = function (projectURI) {
             var deferred = $q.defer();
 
-            setTimeout(function () {
+            $timeout(function () {
                 Resources.refresh(projectURI).then(function (project) {
                     //Fix project description
                     if (project.description) {

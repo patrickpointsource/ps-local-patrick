@@ -4,7 +4,7 @@
  * Controller for people report.
  */
 
-angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtrl", ["$scope", function ($scope) {
+angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtrl", ["$scope", "$timeout", function ($scope, $timeout) {
     $scope.output = {};
     $scope.el = null;
     $scope.elemId = null;
@@ -201,7 +201,7 @@ angular.module("Mastermind.controllers.reports").controller("VerticalbarChartCtr
         });
     };
 
-    setTimeout(function () {
+    $timeout(function () {
         $scope.render($scope.$parent.elemId || $scope.$parent.$parent.elemId);
     }, 1 * 1000);
 

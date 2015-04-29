@@ -4,8 +4,9 @@
  * Controller for people report.
  */
 
-angular.module('Mastermind.controllers.reports').controller('PeopleReportCtrl', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', '$anchorScroll', 'People', 'ReportExportService', 'Resources',
-    function ($scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, People, ReportExportService, Resources) {
+angular.module('Mastermind.controllers.reports').controller('PeopleReportCtrl', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter',
+    '$location', '$anchorScroll', 'People', 'ReportExportService', 'Resources', '$timeout', '$interval',
+    function ($scope, $rootScope, $q, $state, $stateParams, $filter, $location, $anchorScroll, People, ReportExportService, Resources, $timeout, $interval) {
 
         var months = [];
 
@@ -52,7 +53,7 @@ angular.module('Mastermind.controllers.reports').controller('PeopleReportCtrl', 
             $location.hash(id);
             $anchorScroll();
             if (needToScrollUp) {
-                setTimeout(function () {
+                $timeout(function () {
                     window.scrollBy(0, -85);
                 }, 10);
             }
@@ -492,7 +493,7 @@ angular.module('Mastermind.controllers.reports').controller('PeopleReportCtrl', 
             if (!$rootScope.peopleReportGenerationStartTime)
                 $rootScope.peopleReportGenerationStartTime = new moment();
 
-            $scope.generationTimer = setInterval(function () {
+            $scope.generationTimer = $interval(function () {
                     var timer = $("#lblTimer")[0];
                     if (timer) {
                         var now = new moment();
@@ -504,7 +505,7 @@ angular.module('Mastermind.controllers.reports').controller('PeopleReportCtrl', 
                 },
                 1000);
 
-            $scope.generationPing = setInterval(function () {
+            $scope.generationPing = $interval(function () {
                     $scope.checkGenerationStatus();
                 },
                 $scope.reportServicePingInterval);

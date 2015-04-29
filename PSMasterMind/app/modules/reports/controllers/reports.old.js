@@ -1345,7 +1345,7 @@ angular.module('Mastermind').controller('ReportsCtrl', ['$scope', '$q', '$state'
                     var allowDefault = btn.get(0).dispatchEvent(evt);
 
                     /*
-                     window.setTimeout( function( ) {
+                     $timeout( function( ) {
                      skipGenerate = false;
                      }, 1000 * 7 );
                      */

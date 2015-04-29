@@ -3,8 +3,8 @@
 /**
  * Controller for Reports.
  */
-angular.module('Mastermind.controllers.reports').controller('ReportsCtrl', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', 'Resources', 'AssignmentService', 'ProjectsService', 'TasksService', 'RolesService', 'HoursService', 'People', 'ngTableParams',
-    function ($scope, $rootScope, $q, $state, $stateParams, $filter, $location, Resources, AssignmentService, ProjectsService, TasksService, RolesService, HoursService, People, TableParams) {
+angular.module('Mastermind.controllers.reports').controller('ReportsCtrl', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$filter', '$location', 'Resources', 'AssignmentService', 'ProjectsService', 'TasksService', 'RolesService', 'HoursService', 'People', 'ngTableParams', '$timeout', '$interval',
+    function ($scope, $rootScope, $q, $state, $stateParams, $filter, $location, Resources, AssignmentService, ProjectsService, TasksService, RolesService, HoursService, People, TableParams, $timeout, $interval) {
 
         $scope.activeTab = {
             'hours': true
@@ -330,7 +330,7 @@ angular.module('Mastermind.controllers.reports').controller('ReportsCtrl', ['$sc
                     roles: $scope.peopleGroupsMapping[group]
                 });
 
-            setTimeout(function () {
+            $timeout(function () {
                 $(".select-people-groups").selectpicker();
 
                 $(".select-people-groups").selectpicker('val', $scope.graphDataParams.groups);
@@ -405,7 +405,7 @@ angular.module('Mastermind.controllers.reports').controller('ReportsCtrl', ['$sc
                         result = data;
 
                     if (status && status.toLowerCase() != 'completed' && status.toLowerCase() != 'cancelled')
-                        setTimeout(checkReport, 7000);
+                        $timeout(checkReport, 7000);
 
                     if (status.toLowerCase() != 'running') {
                         $scope.setVerticalbarHours(result.data);
@@ -419,7 +419,7 @@ angular.module('Mastermind.controllers.reports').controller('ReportsCtrl', ['$sc
 
             };
 
-            setTimeout(checkReport, 7000);
+            $timeout(checkReport, 7000);
 
         };
 
@@ -1680,7 +1680,7 @@ angular.module('Mastermind.controllers.reports').controller('ReportsCtrl', ['$sc
             if (!$rootScope.reportGenerationStartTime)
                 $rootScope.reportGenerationStartTime = new moment();
 
-            $scope.generationTimer = setInterval(function () {
+            $scope.generationTimer = $interval(function () {
                     var timer = $("#lblTimer")[0];
                     if (timer) {
                         var now = new moment();
@@ -1692,7 +1692,7 @@ angular.module('Mastermind.controllers.reports').controller('ReportsCtrl', ['$sc
                 },
                 1000);
 
-            $scope.generationPing = setInterval(function () {
+            $scope.generationPing = $interval(function () {
                     $scope.checkGenerationStatus().then(function (result) {
                         if (result && result.data && result.data.data && result.data.data.hours && (result.data.data.hours.members || result.data.data.hours.length == 0)) {
                             $scope.onReportGenerated(result.data.data.hours.members ? result.data.data.hours.members : result.data.data.hours);
@@ -1739,7 +1739,7 @@ angular.module('Mastermind.controllers.reports').controller('ReportsCtrl', ['$sc
                 value: title ? title : 'Graph'
             }).appendTo(form);
 
-            setTimeout(function () {
+            $timeout(function () {
                 form.appendTo($('#' + graphId)).submit().remove();
             }, 100);
         };
