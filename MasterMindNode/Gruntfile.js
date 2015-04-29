@@ -105,6 +105,14 @@ module.exports = function(grunt) {
                 options: {
                     base: '<%= yeoman.dist %>'
                 }
+            },
+            swaggerServer: {
+                options: {
+                    port: 9001,
+                    base: 'swagger',
+                    open: 'http://localhost:9001/docs/?url=http://localhost:9001/spec.json',
+                    keepalive: true
+                }
             }
         },
         clean: {
@@ -436,4 +444,8 @@ module.exports = function(grunt) {
         'test',
         'build'
     ]);
+    
+    grunt.registerTask('swagger', [
+        'connect:swaggerServer'
+    ])
 };

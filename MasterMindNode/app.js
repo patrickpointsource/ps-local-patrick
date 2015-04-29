@@ -247,6 +247,8 @@ app.use(restoreUser);
 app.use(express.static(__dirname + '/public')); 
 app.use(express.static(__dirname + '/bower_components')); 
 
+app.use('/swagger', express.static(__dirname + '/swagger')); 
+
 var resetUser = function(req, res) {
 	if (req.session && req.session.user)
 		delete req.session.user;

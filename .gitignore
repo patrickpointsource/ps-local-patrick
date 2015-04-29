@@ -5,6 +5,7 @@ MasterMindNode/dist/
 PSMasterMind/dist/
 PSMasterMind/test/reports/
 *.css
+!MasterMindNode/swagger/docs/css/*.css
 
 # Merge files
 *.orig
