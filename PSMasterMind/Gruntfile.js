@@ -34,6 +34,20 @@ module.exports = function(grunt) {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.less', '<%= yeoman.app %>/modules/{,*/}*.less', '<%= yeoman.app %>/modules/widgets/{,*/}*.less'],
                 tasks: ['less']
             },
+            js: {
+                files: [
+                    '<%= yeoman.app %>/scripts/{,*/}*.js',
+                    '<%= yeoman.app %>/scripts/**/{,*/}*.js',
+                    '<%= yeoman.app %>/scripts/**/**/{,*/}*.js',
+                    '<%= yeoman.app %>/modules/{,*/}*.js',
+                    '<%= yeoman.app %>/modules/**/{,*/}*.js',
+                    '<%= yeoman.app %>/modules/**/**/{,*/}*.js'
+                ],
+                tasks: ['newer:jshint:all'],
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                }
+            },
             livereload: {
                 options: {
                     livereload: '<%= connect.options.livereload %>'
@@ -53,6 +67,7 @@ module.exports = function(grunt) {
                     '{.tmp,<%= yeoman.app %>}/modules/widgets/*/{,*/}*.*'
                 ]
             }
+
         },
         less: {
             development: {
@@ -129,7 +144,10 @@ module.exports = function(grunt) {
                 'Gruntfile.js',
                 '<%= yeoman.app %>/scripts/{,*/}*.js',
                 '<%= yeoman.app %>/scripts/**/{,*/}*.js',
-                '<%= yeoman.app %>/scripts/**/**/{,*/}*.js'
+                '<%= yeoman.app %>/scripts/**/**/{,*/}*.js',
+                '<%= yeoman.app %>/modules/{,*/}*.js',
+                '<%= yeoman.app %>/modules/**/{,*/}*.js',
+                '<%= yeoman.app %>/modules/**/**/{,*/}*.js'
             ]
         },
         coffee: {
@@ -195,7 +213,7 @@ module.exports = function(grunt) {
                 //			     ],
                 //    		css: [
                 //    		     [/(images\/.*?\.(?:gif|jpeg|jpg|png|webp|svg))/gm, 'Update the CSS to reference our revved images']
-                //  			     ]    		     
+                //  			     ]
                 //    	}
             }
         },
@@ -389,7 +407,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('server', function(target) {
+    grunt.registerTask('serve', function(target) {
         if (target === 'dist') {
             return grunt.task.run(['build', 'connect:dist:keepalive']);
         }
@@ -402,6 +420,11 @@ module.exports = function(grunt) {
             'connect:livereload',
             'watch'
         ]);
+    });
+
+    grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
+        grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
+        grunt.task.run(['serve:' + target]);
     });
 
     grunt.registerTask('test', [
