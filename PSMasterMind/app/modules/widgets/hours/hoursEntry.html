@@ -307,7 +307,7 @@
 		                </span>
 		                <span class="hours-logged-action delete visible-xs" ng-if="canEditHours()"
                               ng-show="hourEntry.hoursRecord.editMode && !hourEntry.hoursRecord.isAdded"
-                              ng-click="deleteHoursEntry($event, hourEntry, $index)">
+                              ng-click="removeOrCloseHourEntry($event, hourEntry, $index)">
 		                    Delete
 		                </span>
 		                <span id="hoursSave{{$index}}" class="hours-logged-save" ng-if="canEditHours()"
