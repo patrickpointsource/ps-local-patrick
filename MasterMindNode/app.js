@@ -1,4 +1,3 @@
-'use strict';
 // app.js
 // This file contains the server side JavaScript code for your application.
 var config = require('./server/config/config.js');
@@ -315,7 +314,9 @@ var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
 // the document or sample of each service.
 var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
 
-winston.info('hostName=' + hostName + ':httpsPort=' + httpsPort + ':useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
+winston.info('hostName=' + hostName + ':httpsPort=' + httpsPort + 
+    ':useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + 
+    webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
 
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || hostName);

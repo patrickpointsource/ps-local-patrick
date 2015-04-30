@@ -1,4 +1,3 @@
-'use strict';
 var dataAccess = require('../data/dataAccess.js');
 
 var acl = require('acl');
@@ -401,7 +400,7 @@ var extractNestedPermissionGroups = function(groupId, roleNames, userRoles, secu
 };
 
 var createDefaultRoles = function(callback) {
-    winston.info("Creating default roles.");
+    winston.info('Creating default roles.');
     dataAccess.listSecurityRoles( function(err, body) {
         var securityGroups = body.members;
 
