@@ -189,10 +189,6 @@ var app = express();
 app.use(allowCrossDomain);
 
 // configure Express
-app.use(expressWinston.errorLogger({
-    winstonInstance: winston,
-    level: 'error'
-}));
 app.use(expressWinston.logger({
     winstonInstance: winston,
     level: 'info'
@@ -297,6 +293,12 @@ require('./server/routes/auth')(app, passport, {
 require('./server/util/emailSender')({
     appConfig: appConfig
 });
+
+// error logger goes after setting up routes.
+app.use(expressWinston.errorLogger({
+    winstonInstance: winston,
+    level: 'error'
+}));
 
 
 
