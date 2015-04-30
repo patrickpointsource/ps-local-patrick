@@ -8,6 +8,7 @@ var people = require("../controllers/people");
 var Q = require('q');
 var assignmentsService = require("../controllers/assignments");
 var notifications = require('./notifications');
+var winston = require('winston');
 //12/11/14 MM var validation = require( '../data/validation.js' );
 
 var SUBORDINATE_MANAGER_DEPTH = 5;
@@ -15,7 +16,7 @@ var SUBORDINATE_MANAGER_DEPTH = 5;
 module.exports.listVacations = function(callback) {
     dataAccess.listVacations(function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading vacations', null);
         } else {
             callback(null, body);
@@ -26,7 +27,7 @@ module.exports.listVacations = function(callback) {
 module.exports.listVacationsByPerson = function(personResource, callback) {
     dataAccess.listVacationsByPerson(personResource, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback("error loading vacations by person " + personResource, null);
         } else {
             callback(null, body);
@@ -37,7 +38,7 @@ module.exports.listVacationsByPerson = function(personResource, callback) {
 module.exports.listVacationsByPeriod = function(people, startDate, endDate, fields, callback) {
     dataAccess.listVacationsByPeriod(people, startDate, endDate, fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback("error loading vacations by period", null);
         } else {
             callback(null, body);
@@ -49,7 +50,7 @@ module.exports.listVacationsByPeriod = function(people, startDate, endDate, fiel
 module.exports.listAllEmployeeVacations = function(statuses, startDate, endDate, persons, fields, callback) {
     dataAccess.listAllEmployeeVacations(statuses, startDate, endDate, persons,  fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback("error loading requests", null);
         } else {
             callback(null, body);
@@ -65,10 +66,10 @@ module.exports.listRequestsByManager = function(manager, statuses, startDate, en
         var peopleResources = _.map(people.members, function(person) {
             return person.resource;
         });
-        console.log("peopleResources : " + JSON.stringify(peopleResources));
+        winston.info("peopleResources : " + JSON.stringify(peopleResources));
         dataAccess.listRequestsByPeople(peopleResources, statuses, startDate, endDate, fields, function(err, body){
             if (err) {
-                console.log(err);
+                winston.info(err);
                 callback("error loading requests", null);
             } else {
                 callback(null, body);
@@ -81,7 +82,7 @@ module.exports.listRequestsByManager = function(manager, statuses, startDate, en
 module.exports.listRequests = function(manager, statuses, startDate, endDate, fields, callback) {
     dataAccess.listRequestsByVacationManagers(manager, statuses, startDate, endDate, fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback("error loading requests", null);
         } else {
             callback(null, body);
@@ -99,7 +100,7 @@ module.exports.insertVacation = function(obj, callback) {
 
     dataAccess.insertItem(obj._id, obj, dataAccess.VACATIONS_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error insert vacation:' + JSON.stringify(err), null);
         } else {
             var notification = notifications.constructVacationNotification(body);
@@ -116,7 +117,7 @@ module.exports.insertVacation = function(obj, callback) {
 module.exports.deleteVacation = function(obj, callback) {
     dataAccess.deleteItem(obj._id, obj._rev, dataAccess.VACATIONS_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error delete vacation', null);
         } else {
             callback(null, body);
@@ -127,7 +128,7 @@ module.exports.deleteVacation = function(obj, callback) {
 module.exports.getVacation = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error get vacation', null);
         } else {
             callback(null, body);
@@ -212,7 +213,7 @@ module.exports.getMyVacations = function (me, callback) {
 
     dataAccess.listVacationsByPerson(me.resource, function (err, vacations) {
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback("error loading vacations by person " + me.name.fullName, null);
         } else {
             var today = moment();

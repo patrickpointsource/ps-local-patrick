@@ -11,6 +11,7 @@ var security = require('../util/security');
 var notifications = require('./notifications.js');
 var Q = require('q');
 var jobTitlesCtrl = require('./jobTitles.js');
+var winston = require('winston');
 
 var DEFAULT_PROFILE_IMG_LINK = "https://ssl.gstatic.com/s2/profiles/images/silhouette200.png";
 
@@ -63,66 +64,66 @@ module.exports = function(params) {
 	
 		syncPeople(function(err, resp) {
 			if (err) {
-				console.log("Error while sync people: " + err);
+				winston.info("Error while sync people: " + err);
 			} else {
-			  console.log("Upgrade: People sync-ed");
+			  winston.info("Upgrade: People sync-ed");
 			}
 			
 	
 			updateEstimateFields(function(err, body) {
 				if (err) {
-					console.log("Error while updating estimate fields: " + err);
+					winston.info("Error while updating estimate fields: " + err);
 				} else {
-	              console.log("Upgrade: Estimate fields updated.");
+	              winston.info("Upgrade: Estimate fields updated.");
 	            }
 	
 				markInactivePeople(function(err, body) {
 					if (err) {
-					    console.log("Error while marking inactive people: " + err);
+					    winston.info("Error while marking inactive people: " + err);
 					} else {
-	                    console.log("Upgrade: Inactive people marked.");
+	                    winston.info("Upgrade: Inactive people marked.");
 	                }
 	
 					fixSecurityRolesIds(function(err, body) {
 					    if (err) {
-					    	console.log("Error while fixing security roles id's: " + err);
+					    	winston.info("Error while fixing security roles id's: " + err);
 	                    } else {
-	                    	console.log("Upgrade: Security(User) Roles fixed.");
+	                    	winston.info("Upgrade: Security(User) Roles fixed.");
 	                    }
 						security.createDefaultRoles(function(err, isOk) {
 							if(err) {
-								console.log(err);
+								winston.info(err);
 						    } else {
-						    	console.log("Upgrade: Default security roles created.");
+						    	winston.info("Upgrade: Default security roles created.");
 						    }
 						        
 						    security.initialize(true);
 						    addReportResourceInSecurityRole(function (err, body) {
 						    	if(err) {
-						    		console.log(err);
+						    		winston.info(err);
 							    } else {
-							    	console.log("Upgrade: Report resource added to security roles.");
+							    	winston.info("Upgrade: Report resource added to security roles.");
 							    }
 							        
 							    fixLinksInProjects(function (err, body) {
 							    	if(err) {
-							    		console.log(err);
+							    		winston.info(err);
 								    } else {
-								    	console.log("Upgrade: Links in projects fixed.");
+								    	winston.info("Upgrade: Links in projects fixed.");
 								    }
 
 							        deleteOldNotifications(function(err, body) {
 							            if (err) {
-							                console.log(err);
+							                winston.info(err);
 							            } else {
-							                console.log("Upgrade: Old notifications were deleted.");
+							                winston.info("Upgrade: Old notifications were deleted.");
 							            }
 
 							            insertDefaultJobTitles(function(err, body) {
 							                if (err) {
-							                    console.log(err);
+							                    winston.info(err);
 							                } else {
-							                    console.log("Upgrade: Default Job Titles created.");
+							                    winston.info("Upgrade: Default Job Titles created.");
 							                }
 
 							                callback(null, null);
@@ -142,7 +143,7 @@ module.exports = function(params) {
 	
 		getGoogleProfiles(function(err, profiles) {
 			if (err) {
-				console.log("Error while getting google profiles: " + err);
+				winston.info("Error while getting google profiles: " + err);
 			} else {
 				var counter = -1;
 				
@@ -226,10 +227,10 @@ module.exports = function(params) {
 			upgradeNameProperties(person);
 			people.insertPerson(person, function(err, resp) {
 				if (err) {
-					console.log("Synchronization error'" + err + "' for user "
+					winston.info("Synchronization error'" + err + "' for user "
 							+ person.name.fullName);
 				} else {
-					console.log("User'" + person.name.fullName
+					winston.info("User'" + person.name.fullName
 							+ "' has been synchronized with google profile");
 				}
 				
@@ -320,7 +321,7 @@ module.exports = function(params) {
 					if (isUpdated) {
 						projects.insertProject(project, function(err, res) {
 							if (err) {
-								console.log(err);
+								winston.info(err);
 							}
 							if (resultCb)
 								resultCb();
@@ -363,7 +364,7 @@ module.exports = function(params) {
 			    	securityRole.resources.push(reportsResource);
 			    	dataAccess.insertItem(securityRole._id, securityRole, dataAccess.SECURITY_ROLES_KEY, function (err, body) {
 			    		if (err) {
-			    			console.log(err);
+			    			winston.info(err);
 			    		}
 			    		if (resultCb) {
 							resultCb();
@@ -401,7 +402,7 @@ module.exports = function(params) {
 
 					dataAccess.listLinksByProject(project.resource, function (err, result) {
 						if (err) {
-			    			console.log(err);
+			    			winston.info(err);
 						} else 
 						if (result.members && result.members[0]) {
 							
@@ -431,7 +432,7 @@ module.exports = function(params) {
 								if (link._id && link._rev) {
 									dataAccess.deleteItem(link._id, link._rev, 'Links', function (err, body) {
 										if (err) {
-											console.log(err);
+											winston.info(err);
 										}
 									})
 								}
@@ -443,7 +444,7 @@ module.exports = function(params) {
 							}
 							dataAccess.insertItem(linksObject._id, linksObject, 'Links', function (err, body){
 								if (err) {
-									console.log(err);
+									winston.info(err);
 								}
 								if (resultCb) {
 									resultCb();
@@ -519,7 +520,7 @@ module.exports = function(params) {
 										updateInd += 1;
 	
 										if (countUpdated == countNeedsTobeUpdated) {
-											console.log('All userRoles updated');
+											winston.info('All userRoles updated');
 											callback(err, body);
 										} else if (updateFn[updateInd])
 											updateFn[updateInd]();
@@ -569,7 +570,7 @@ module.exports = function(params) {
 							person.lastSynchronized = result.date;
 							people.insertPerson(person, function(err, res) {
 								if (err) {
-									console.log(err);
+									winston.info(err);
 								}
 								if (resultCb) {
 									resultCb();
@@ -647,9 +648,9 @@ module.exports = function(params) {
                         !_.findWhere(jobTitles, { abbreviation: defaultJobTitle.abbreviation })) {
                         jobTitlesCtrl.insertJobTitle(defaultJobTitle, function(err, body) {
                             if (err) {
-                                console.log("Can't insert default jobTitle: " + err);
+                                winston.info("Can't insert default jobTitle: " + err);
                             } else {
-                                console.log("Default jobTitle have been inserted: " + body.title);
+                                winston.info("Default jobTitle have been inserted: " + body.title);
                             }
 
                             counter--;

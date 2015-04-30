@@ -4,6 +4,7 @@
 var config = require('../config/config.js');
 var _ = require('underscore');
 var validation = require( '../data/validation.js' );
+var winston = require('winston');
 
 module.exports = function(params) {
 	// cloudant module
@@ -122,7 +123,7 @@ module.exports = function(params) {
 			}
 			
 			params = {"keys": params, "include_docs" : include_docs};
-			//console.log(params);
+			//winston.info(params);
 			db.view(designName, viewName, params, function(err, body){
 	            if (err) {
 	                callback(err, null);
@@ -140,7 +141,7 @@ module.exports = function(params) {
 	 *	RETURN: All documents that match the key(s).  
 	 */
 	var cloudantGetDocumentsByRangeKeys = function(designName, viewName, startKeys, endKeys, include_docs, callback){
-		console.log("cloudantGetDocumentsByRangeKeys");
+		winston.info("cloudantGetDocumentsByRangeKeys");
 		var db = Cloudant.db.use(dbName);
 		
 		if (! include_docs) {
@@ -160,7 +161,7 @@ module.exports = function(params) {
 		}		
 	
 		var params = {"startkey": startKeys, "endkey" : endKeys, "include_docs" : include_docs};
-		//console.log(params);
+		//winston.info(params);
 		db.view(designName, viewName, params, function(err, body){
 	        if (err) {
 	            callback(err, null);
@@ -317,7 +318,7 @@ module.exports = function(params) {
 			if(!params.query) params.query = cloudantLucinePrepareQuery(user_params, params, dbobj);
 			if(params.bookmark) params.query.bookmark = params.bookmark;
 		
-//			console.log(params.query);
+//			winston.info(params.query);
 			db.search(dbobj.ddoc, dbobj.lindex, params.query, function(err, doc) {
 				if(err)		
 					callback(err, null);
@@ -361,7 +362,7 @@ module.exports = function(params) {
 	//startKeys = ["ProjectPersonDate", "projects/52aba189e4b0fd2a8d13002e", "people/52ab7005e4b0fd2a8d130017", "2014-01-01"]
 	//endKeys =   ["ProjectPersonDate", "projects/52aba189e4b0fd2a8d13002e", "people/52ab7005e4b0fd2a8d130017", "2014-01-31"]
 	
-	//console.log('dbAccess:' + JSON.stringify(module.exports));
+	//winston.info('dbAccess:' + JSON.stringify(module.exports));
 	
 	module.exports.listHoursByStartEndDates = function(start, end, callback) {
 	    // MM cloudantSearchByRangeKeys('views', 'AllHoursInOne', start, end, function(err, body){
@@ -372,7 +373,7 @@ module.exports = function(params) {
 	    });
 	};
 	
-	//console.log('dbAccess2:' + JSON.stringify(module.exports));
+	//winston.info('dbAccess2:' + JSON.stringify(module.exports));
 	
 	module.exports.listHoursByProjects = function(projects, callback) {
 	    var processedProjects = _.map(projects, function(val, ind){

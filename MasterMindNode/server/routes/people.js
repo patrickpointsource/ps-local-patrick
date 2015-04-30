@@ -16,6 +16,7 @@ var attribute = require('../util/attribute');
 var router = express.Router();
 
 var emailSender = require('../util/emailSender');
+var winston = require('winston');
 
 router.get('/', util.isAuthenticated, function(req, res){
 	security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.viewPeople, function(allowed){
@@ -286,7 +287,7 @@ router.get('/:id', util.isAuthenticated, function (req, res) {
             
             // initialize permissionsMap
             
-            console.log('inside:me:user:' + req.user);
+            winston.info('inside:me:user:' + req.user);
             
             
             security.getUserRoles(result, function (userRoleErr, userRole) {
@@ -295,7 +296,7 @@ router.get('/:id', util.isAuthenticated, function (req, res) {
                 for (var k = 0; k < userRole.roles.length; k++)
                     resources.push(userRole.roles[k].resource);
                 
-                console.log('inside:me:resources:' + resources.join(','));
+                winston.info('inside:me:resources:' + resources.join(','));
                 
                 
                 
@@ -309,26 +310,26 @@ router.get('/:id', util.isAuthenticated, function (req, res) {
                         err = err ? err: 'error occured while loaded user permissions';
                         res.json(500, err);
                         
-                        console.log('\r\npeople:me:from:acl:after:error');
+                        winston.info('\r\npeople:me:from:acl:after:error');
                     }).done(function (permissions) {
-                        console.log('inside:me:loaded:from:acl:permissions:' + (permissions ? JSON.stringify(permissions): permissions));
+                        winston.info('inside:me:loaded:from:acl:permissions:' + (permissions ? JSON.stringify(permissions): permissions));
                         
                         if (permissions) {
                             result.permissionsMap = permissions;
                             res.json(result);
                         }
                         
-                        console.log('\r\npeople:me:after:');
+                        winston.info('\r\npeople:me:after:');
 	    				 
                     });
                     
-                    console.log('inside:me:securityRoles.members:' + (_.map(userSecurityRoles.members, function (m) { return (m.name + ':' + m.about) })).join(','));
+                    winston.info('inside:me:securityRoles.members:' + (_.map(userSecurityRoles.members, function (m) { return (m.name + ':' + m.about) })).join(','));
                     
                     for (var k = 0; k < userSecurityRoles.members.length; k++) {
                         for (var j = 0; j < userSecurityRoles.members[k].resources.length; j++) {
                             existingResource = _.findWhere(allResource, { name: userSecurityRoles.members[k].resources[j].name });
                             
-                            console.log('inside:me:resource:name:' + userSecurityRoles.members[k].resources[j].name + ':permissions=' + userSecurityRoles.members[k].resources[j].permissions.join(','));
+                            winston.info('inside:me:resource:name:' + userSecurityRoles.members[k].resources[j].name + ':permissions=' + userSecurityRoles.members[k].resources[j].permissions.join(','));
                             
                             
                             if (existingResource)
@@ -348,7 +349,7 @@ router.get('/:id', util.isAuthenticated, function (req, res) {
                     }
                     
                     
-                    console.log('\r\npeople:me:interim:after:');
+                    winston.info('\r\npeople:me:interim:after:');
                 });
 	    		  
 	    		  
@@ -375,9 +376,9 @@ router.get('/:id', util.isAuthenticated, function (req, res) {
 });
 
 router.get('/:id/accessRights', util.isAuthenticated, function(req, res) {
-	console.log("Load access rights for user: " + req.user);
+	winston.info("Load access rights for user: " + req.user);
 	var id = req.params.id;
-	console.log("id=" + id);
+	winston.info("id=" + id);
     if (id == 'me') {
         
         people.getAccessRightsByGoogleId(req.user, function (err, result) {
@@ -432,13 +433,13 @@ router.get('/:id/gplus', util.isAuthenticated, function(req, res) {
                             data += d;
                         });
                         response.on('end', function() {
-                            console.log(data);
+                            winston.info(data);
                             res.json(data);
                         });
                     });
                     request.end();
                     request.on('error', function(e) {
-                        console.error(e);
+                        winston.error(e);
                         res.json(500, e);
                     });
                 }            
@@ -473,7 +474,7 @@ router.put('/:id', util.isAuthenticated, function(req, res) {
             });
           } else {
 	            security.isAllowed(req.user, res, securityResources.people.resourceName, securityResources.people.permissions.editProfile, function(allowed){
-	                console.log('\r\npeople:put:security:' + req.user + ':securityResources.people.permissions.editProfile:' + allowed);
+	                winston.info('\r\npeople:put:security:' + req.user + ':securityResources.people.permissions.editProfile:' + allowed);
 	            	
 	                if (allowed) {
 	                    var person = req.body;

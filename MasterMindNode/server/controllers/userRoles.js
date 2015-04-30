@@ -3,14 +3,15 @@
 var dataAccess = require('../data/dataAccess');
 //12/11/14 MM var validation = require( '../data/validation.js' );
 var _ = require( 'underscore' );
+var winston = require('winston');
 
 module.exports.listUserRoles = function(fields, callback) {
     dataAccess.listUserRoles(fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading user roles', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -26,7 +27,7 @@ module.exports.insertUserRoles = function(obj, callback) {
     
     dataAccess.insertItem(obj._id, obj, dataAccess.USER_ROLES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error inserting user roles: ' + JSON.stringify(err), null);
         } else {
             obj._id = body.id;
@@ -39,7 +40,7 @@ module.exports.insertUserRoles = function(obj, callback) {
 module.exports.deleteUserRoles = function(obj, callback) {
     dataAccess.deleteItem(obj._id, obj._rev, dataAccess.USER_ROLES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -50,7 +51,7 @@ module.exports.deleteUserRoles = function(obj, callback) {
 module.exports.getUserRoles = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);

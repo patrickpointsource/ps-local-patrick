@@ -3,11 +3,12 @@
 var dataAccess = require('../data/dataAccess');
 var util = require('../util/util');
 var _ = require('underscore');
+var winston = require('winston');
 
 module.exports.listJobTitles = function(callback) {
     dataAccess.listJobTitles( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading job titles', null);
         } else {
             callback(null, body);
@@ -18,7 +19,7 @@ module.exports.listJobTitles = function(callback) {
 module.exports.insertJobTitle = function(obj, callback) {
     dataAccess.insertItem(obj._id, obj, dataAccess.JOB_TITLE_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading roles:' + JSON.stringify(err), null);
         } else {
             callback(null, body);
@@ -29,7 +30,7 @@ module.exports.insertJobTitle = function(obj, callback) {
 module.exports.udpateJobTitle = function(id, obj, callback) {
     dataAccess.updateItem(id, obj, dataAccess.JOB_TITLE_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error update role:' + JSON.stringify(err), null);
         } else {
             callback(null, _.extend(obj, body));
@@ -40,7 +41,7 @@ module.exports.udpateJobTitle = function(id, obj, callback) {
 module.exports.deleteJobTitle = function(id, obj, callback) {
     dataAccess.deleteItem(id, obj._rev, dataAccess.JOB_TITLE_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -51,7 +52,7 @@ module.exports.deleteJobTitle = function(id, obj, callback) {
 module.exports.getJobTitle = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);

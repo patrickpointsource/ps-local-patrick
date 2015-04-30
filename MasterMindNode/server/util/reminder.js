@@ -5,6 +5,7 @@ var smtpHelper = require('../util/smtpHelper');
 var emailSender = require('../util/emailSender');
 var _ = require( 'underscore' );
 var os = require('os');
+var winston = require('winston');
 
 // Configuration properties
 var REMINDER_ACTIVE = "reminder.active";
@@ -34,13 +35,13 @@ module.exports.initialize = function(params, callback) {
     var initCronSched = later.parse.cron(INITIAL_CRON_SCHEDULE, true);
     var secondCronSched = later.parse.cron(SECOND_CRON_SCHEDULE, true);
     
-    console.log('reminders:init:' + initCronSched.toString())
+    winston.info('reminders:init:' + initCronSched.toString())
     var initialEmailReminder = later.setInterval( function() {
-    	console.log('reminders:1');
+    	winston.info('reminders:1');
     	emailReminderJob(false);
     }, initCronSched);
     var secondEmailReminder = later.setInterval( function() {
-    	console.log('reminders:2');
+    	winston.info('reminders:2');
     	emailReminderJob(true);
     }, secondCronSched);
     
@@ -66,7 +67,7 @@ function emailReminderJob(withInterestedParties) {
 	
 	if (reminderJobInprogress) {
 		setTimeout(function() {
-			console.log('\r\nwaited:emailReminderJob\r\n');
+			winston.info('\r\nwaited:emailReminderJob\r\n');
 			emailReminderJob(withInterestedParties);
 		}, 60 * 1000);
 		
@@ -74,12 +75,12 @@ function emailReminderJob(withInterestedParties) {
 	}
 	
 	if (withInterestedParties && secondRoundStarted){
-		console.log(getFormattedTime() + ' emailReminderJob:prevent from starting again:' + withInterestedParties + ':' + (new Date()).toTimeString());
+		winston.info(getFormattedTime() + ' emailReminderJob:prevent from starting again:' + withInterestedParties + ':' + (new Date()).toTimeString());
 		return;
 	}
 	
 	if (!withInterestedParties && firstRoundStarted){
-		console.log(getFormattedTime() + ' emailReminderJob:prevent from starting again:' + withInterestedParties + ':' + (new Date()).toTimeString());
+		winston.info(getFormattedTime() + ' emailReminderJob:prevent from starting again:' + withInterestedParties + ':' + (new Date()).toTimeString());
 		
 		return;
 	}
@@ -89,7 +90,7 @@ function emailReminderJob(withInterestedParties) {
 	else
 		firstRoundStarted = true;
 	
-	console.log(getFormattedTime() + ' emailReminderJob:' + withInterestedParties + ':' + (new Date()).toTimeString());
+	winston.info(getFormattedTime() + ' emailReminderJob:' + withInterestedParties + ':' + (new Date()).toTimeString());
 	
 	reminderJobInprogress = true;
 	
@@ -111,7 +112,7 @@ function emailReminderJob(withInterestedParties) {
     	var countProcessedPostponed = 0;
     	
     	var postponedCb = function() {
-    		console.log('callPostponed:' + countProcessedPostponed);
+    		winston.info('callPostponed:' + countProcessedPostponed);
     		
     		countProcessedPostponed += 1;
     		
@@ -132,7 +133,7 @@ function emailReminderJob(withInterestedParties) {
 				res += 1;
 		}
     	
-    	//console.log('getCountProcessed:' + res);
+    	//winston.info('getCountProcessed:' + res);
     	
     	return res;
     };
@@ -152,13 +153,13 @@ function emailReminderJob(withInterestedParties) {
 				unprocessed.push(prop)
 		}
 		
-		//console.log('isAllProcessed:' + countProcessedPeople + ':' + res + ':' + (unprocessed.length <= 3 ? unprocessed.join(', '): ''));
+		//winston.info('isAllProcessed:' + countProcessedPeople + ':' + res + ':' + (unprocessed.length <= 3 ? unprocessed.join(', '): ''));
 		
 		return res;
 	}
 		
     var processReminders = function() {
-    	console.log('processReminders:' + remindersProcessed);
+    	winston.info('processReminders:' + remindersProcessed);
     	
     	if (!remindersProcessed) {
     		
@@ -168,7 +169,7 @@ function emailReminderJob(withInterestedParties) {
     			return em.mBox;
     		} );
     	    
-    	    console.log('reminder:emailReminders:' + JSON.stringify(emailReminders));
+    	    winston.info('reminder:emailReminders:' + JSON.stringify(emailReminders));
     	    
     	    var emailReminderCounter = 0;
     	    
@@ -180,9 +181,9 @@ function emailReminderJob(withInterestedParties) {
     	    				emailReminders[emailReminderCounter].title, emailReminders[emailReminderCounter].message, 
 	        			_.bind(function (err, info) {
 	        				if(err) {
-	        					console.log("error sending email to: " + this.notification.mBox + ':' + err);
+	        					winston.info("error sending email to: " + this.notification.mBox + ':' + err);
 	        				} else {
-	        					console.log("Email sent. to: " + this.notification.mBox);
+	        					winston.info("Email sent. to: " + this.notification.mBox);
 	        				}
 	        				emailReminderCounter += 1;
 	        				
@@ -198,9 +199,9 @@ function emailReminderJob(withInterestedParties) {
     	    	emailSender.sendEmailFromPsapps(emailReminders[i].mBox, emailReminders[i].ccList, emailReminders[i].title, emailReminders[i].message, 
     			_.bind(function (err, info) {
     				if(err) {
-    					console.log("error sending email to: " + this.notification.mBox + ':' + err);
+    					winston.info("error sending email to: " + this.notification.mBox + ':' + err);
     				} else {
-    					console.log("Email sent. to: " + this.notification.mBox + ':' + info);
+    					winston.info("Email sent. to: " + this.notification.mBox + ':' + info);
     				}
     			}, {notification: emailReminders[i]}));
     	    }
@@ -209,7 +210,7 @@ function emailReminderJob(withInterestedParties) {
     			return em.mBox;
     		} );
     	    
-    	    console.log('reminder:emailNotifications:' + JSON.stringify(emailNotifications));
+    	    winston.info('reminder:emailNotifications:' + JSON.stringify(emailNotifications));
     	    
     	    var emailCounter = 0;
     	    
@@ -221,9 +222,9 @@ function emailReminderJob(withInterestedParties) {
     	    				emailNotifications[emailCounter].title, emailNotifications[emailCounter].message, 
 	        			_.bind(function (err, info) {
 	        				if(err) {
-	        					console.log("error sending email to: " + this.notification.mBox + ':' + err);
+	        					winston.info("error sending email to: " + this.notification.mBox + ':' + err);
 	        				} else {
-	        					console.log("Email sent. to: " + this.notification.mBox);
+	        					winston.info("Email sent. to: " + this.notification.mBox);
 	        				}
 	        				
 	        				emailCounter += 1;
@@ -233,7 +234,7 @@ function emailReminderJob(withInterestedParties) {
 	        			}, {notification: emailNotifications[emailCounter]}));	    		
     	    	} else {
     	    		reminderJobInprogress = false;
-    	    		console.log('processReminders:processed:' +  emailReminders.length + ':' + emailNotifications.length);
+    	    		winston.info('processReminders:processed:' +  emailReminders.length + ':' + emailNotifications.length);
     	    		
     	    		//reset in 4 hours
     	    		if (withInterestedParties)
@@ -265,10 +266,10 @@ function emailReminderJob(withInterestedParties) {
 	    	
 	    	//ccList = "vladimir.yancharuk@pointsource.com";
 	    	
-	    	console.log("isActive : " + isActive);
-			console.log("isDebug : " + isDebug);
-			console.log("ccList : " + JSON.stringify(ccList));
-			console.log("notificationList : " + JSON.stringify(notificationList));
+	    	winston.info("isActive : " + isActive);
+			winston.info("isDebug : " + isDebug);
+			winston.info("ccList : " + JSON.stringify(ccList));
+			winston.info("notificationList : " + JSON.stringify(notificationList));
 			
 			if (!isActive && !isDebug) {
 				return;
@@ -284,7 +285,7 @@ function emailReminderJob(withInterestedParties) {
 	        		
 	        		//var counter = 0;
 	        		
-	        		//console.log('listPeopleByIsActiveFlag:' + counter);
+	        		//winston.info('listPeopleByIsActiveFlag:' + counter);
 	        		
 	        		// gets non-billable roles
 	        		dataAccess.listNonBillableRoles(_.bind(function (err, nonBillableRoles) {
@@ -293,14 +294,14 @@ function emailReminderJob(withInterestedParties) {
 	        					
 	        					//counter += 1;
 	        					
-	        					//console.log('before:checkRole:' + counter);
+	        					//winston.info('before:checkRole:' + counter);
 	        					
 	        					// checks role of each person
 	        					checkRole(person, nonBillableRoles.members, _.bind(function (checked) {
 		        					var mBox = person.mBox;
 		        					
-		        					//console.log('inside:checkRole:' + counter + ':' +  person.mBox);
-		        					//console.log('inside:checkRole:2:' + checked + ':' + (isAllProcessed ? 'true': 'false') 
+		        					//winston.info('inside:checkRole:' + counter + ':' +  person.mBox);
+		        					//winston.info('inside:checkRole:2:' + checked + ':' + (isAllProcessed ? 'true': 'false') 
 	        						//			+ ':' + (processReminders ? 'true': 'false') + ':' + (callPostponed ? 'true': 'false'));
 		        					
 	        						if (checked) {
@@ -345,9 +346,9 @@ function emailReminderJob(withInterestedParties) {
 		            						        					/*
 		        	        		    	        					emailSender.sendEmailFromPsapps(mBox, ccList, title, message, function (err, info) {
 	   	            						        						if(err) {
-	   	            						        							console.log("error sending email to: ", err);
+	   	            						        							winston.info("error sending email to: ", err);
 	   	            						        						} else {
-	   	            						        							console.log("Email sent. Info: ", info);
+	   	            						        							winston.info("Email sent. Info: ", info);
 	   	            						        						}
 	   	            						        					});
 	   	            						        					*/
@@ -367,16 +368,16 @@ function emailReminderJob(withInterestedParties) {
 		            						        					/*
 		            						        					emailSender.sendEmailFromPsapps(notificationList, null, title, message, function (err, info) {
 		            						        						if(err) {
-		            						        							console.log("error sending email to: ", err);
+		            						        							winston.info("error sending email to: ", err);
 		            						        						} else {
-		            						        							console.log("Email sent. Info: ", info);
+		            						        							winston.info("Email sent. Info: ", info);
 		            						        						}
 		            						        					});*/
 		            						        					
 		            												}
 		            											}
 		        											} else
-		        												console.log('emailReminderJob:error:hours:' + err);
+		        												winston.info('emailReminderJob:error:hours:' + err);
 		        											
 		    		    	        						this.processedPeopleMap[this.person.resource] = true;
 		        											
@@ -413,7 +414,7 @@ function emailReminderJob(withInterestedParties) {
 	        									} else 
 	        										processedPeopleMap[this.person.resource] = true ;
 	        										
-	        									//console.log('inside:vacations:' + (this.getCountProcessed() + postponedCalls.length) + 
+	        									//winston.info('inside:vacations:' + (this.getCountProcessed() + postponedCalls.length) + 
 	        									//		':postponed=' + postponedCalls.length + ':processed:' + this.getCountProcessed());
 	        									
 		    	        						if ((this.getCountProcessed() + postponedCalls.length) == people.members.length)
@@ -430,7 +431,7 @@ function emailReminderJob(withInterestedParties) {
     												
 	        								} else {
 	    	        							processedPeopleMap[this.person.resource] = true;
-	    	        							console.log('emailReminderJob:error:vacations:' + err);
+	    	        							winston.info('emailReminderJob:error:vacations:' + err);
 	        								}
 	    	        							
     	        							if (this.isAllProcessed())
@@ -452,7 +453,7 @@ function emailReminderJob(withInterestedParties) {
 	        						} else 
 	        							processedPeopleMap[this.person.resource] = true;
 	        						
-	        						//console.log('checkRole:' + this.person + ':' + (isAllProcessed ? 'true': 'false') 
+	        						//winston.info('checkRole:' + this.person + ':' + (isAllProcessed ? 'true': 'false') 
 	        						//			+ ':' + (processReminders ? 'true': 'false') + ':' + (callPostponed ? 'true': 'false'));
 	        						
 	        						if (this.isAllProcessed())
@@ -485,7 +486,7 @@ function emailReminderJob(withInterestedParties) {
 							}));
 	        				
 	        			} else
-	        				console.log('emailReminderJob:error:roles:' + err);
+	        				winston.info('emailReminderJob:error:roles:' + err);
 	        		}, { 
 						emailNotifications: this.emailNotifications, 
 						emailReminders: this.emailReminders,
@@ -498,7 +499,7 @@ function emailReminderJob(withInterestedParties) {
 	        		
 	        		
 	        	} else
-	        		console.log('emailReminderJob:error:people:' + err);
+	        		winston.info('emailReminderJob:error:people:' + err);
 	        	
 	        }, {
 				emailNotifications: this.emailNotifications, 
@@ -511,7 +512,7 @@ function emailReminderJob(withInterestedParties) {
 			}));
 
 	    } else
-	    	console.log('emailReminderJob:error:config:' + err);
+	    	winston.info('emailReminderJob:error:config:' + err);
     }, {
 		emailNotifications: emailNotifications, 
 		emailReminders: emailReminders,

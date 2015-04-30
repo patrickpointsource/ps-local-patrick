@@ -5,6 +5,7 @@
 
 var _ = require( 'underscore' );
 var jsonValidator = require('../data/jsonValidator.js');
+var winston = require('winston');
 
 var PROJECTS_KEY = 'Projects';
 var PEOPLE_KEY = 'People';
@@ -134,7 +135,7 @@ var isProjectValid = function(project) {
 	dataAccess.listRoles( function(err, body){
 	    if (err) {
 	      var msg = "project validation, error loading roles";
-	      console.log(msg + ": " + err, null);
+	      winston.info(msg + ": " + err, null);
 	    } else {
 	      rolesFromDb = body.members;
 	    }

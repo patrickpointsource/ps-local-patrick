@@ -2,13 +2,9 @@
 
 Check out [swagger.io](http://swagger.io) for more details about swagger. 
 
-## Viewing Spec - Standalone
-
-To view the spec via the nice swagger-ui and without running the rest of the server: in the `MasterMindNode` directory, run `grunt swagger`. A web browser will open to [http://localhost:9001/docs/?url=http://localhost:9001/spec.json](http://localhost:9001/docs/?url=http://localhost:9001/spec.json). 
-
 ## Viewing Spec - Live
 
-To view the spec from a running instance of `MasterMindNode`, visit [http://localhost:3000/swagger/docs](http://localhost:3000/swagger/docs).
+To view the spec from a running instance of `MasterMindNode`, visit [http://localhost:3000/docs](http://localhost:3000/docs).
 
 ## Using the Spec
 

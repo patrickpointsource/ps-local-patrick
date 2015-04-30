@@ -2,7 +2,6 @@
     "logToFileStream": true,
     "logFileName": "/var/www/www.log",
     "errorFileName": "/var/www/www.err",
-    "log4jsPath": "/var/www/node/server/config/log4js_config.json",
     "hostName": "stage.mm.pointsource.vpc",
     "httpPort": 3000,
     "privateKeyPath": "/var/www/node/server/cert/key.pem",

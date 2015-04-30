@@ -11,6 +11,7 @@ var router = express.Router( );
 
 var security = require( '../util/security' );
 var securityResources = require( '../util/securityResources' );
+var winston = require('winston');
 
 router.get( '/', auth.isAuthenticated, function( req, res ) {
 	security.isAllowed( req.user, res, securityResources.vacations.resourceName, securityResources.vacations.permissions.viewMyVacations, function( allowed ) {
@@ -64,13 +65,13 @@ router.get( '/byperson/:person', auth.isAuthenticated, function( req, res ) {
 		}
 	  } else {
 		var errMsg = "Can't get person from vacation entry.";
-        console.log(errMsg);
+        winston.info(errMsg);
         res.json( 500, errMsg );
 	  }	
 	});
   } else {
     var errMsg = "Missing person id attribute.";
-    console.log(errMsg);
+    winston.info(errMsg);
     res.json( 500, errMsg );
   }
 } );
@@ -235,7 +236,7 @@ router.post( '/', auth.isAuthenticated, function( req, res ) {
         }
       } else {
         var errMsg = "Can't get person from vacation entry.";
-        console.log(errMsg);
+        winston.info(errMsg);
         res.json( 500, errMsg );
       }
     });
@@ -302,7 +303,7 @@ router.put( '/:id', auth.isAuthenticated, function( req, res ) {
         }
       } else {
         var errMsg = "Can't get person from vacation entry.";
-        console.log(errMsg);
+        winston.info(errMsg);
         res.json( 500, errMsg );
       }
     });
