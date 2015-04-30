@@ -3,15 +3,16 @@
 var dataAccess = require('../data/dataAccess');
 var util = require('../util/util');
 var _ = require('underscore');
+var winston = require('winston');
 //12/11/14 MM var validation = require( '../data/validation.js' );
 
 module.exports.listRoles = function(callback) {
     dataAccess.listRoles( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading roles', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -27,7 +28,7 @@ module.exports.insertRole = function(obj, callback) {
     
     dataAccess.insertItem(obj._id, obj, dataAccess.ROLES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading roles:' + JSON.stringify(err), null);
         } else {
             callback(null, body);
@@ -38,7 +39,7 @@ module.exports.insertRole = function(obj, callback) {
 module.exports.udpateRole = function(id, obj, callback) {
     dataAccess.updateItem(id, obj, dataAccess.ROLES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error update role:' + JSON.stringify(err), null);
         } else {
             callback(null, _.extend(obj, body));
@@ -49,7 +50,7 @@ module.exports.udpateRole = function(id, obj, callback) {
 module.exports.deleteRole = function(id, obj, callback) {
     dataAccess.deleteItem(id, obj._rev, dataAccess.ROLES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -60,7 +61,7 @@ module.exports.deleteRole = function(id, obj, callback) {
 module.exports.getRole = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);

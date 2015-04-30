@@ -3,27 +3,28 @@
 var _ = require('underscore');
 
 var dataAccess = require('../data/dataAccess');
+var winston = require('winston');
 
 module.exports.listSecurityRoles = function( callback ) {
-	console.log('securityRoles:listSecurityRoles');
+	winston.info('securityRoles:listSecurityRoles');
 	
     dataAccess.listSecurityRoles( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading security roles', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
 };
 
 module.exports.listSecurityRolesByResources = function(resources, callback ) {
-	 console.log('securityRoles:listSecurityRolesByResources:resources=' + resources.join(','));
+	 winston.info('securityRoles:listSecurityRolesByResources:resources=' + resources.join(','));
 	 
     dataAccess.listSecurityRolesByResources( resources, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading security roles', null);
         } else {
             callback(null, body);
@@ -55,11 +56,11 @@ module.exports.insertSecurityRole = function(obj, callback) {
 	//12/11/14 MM       return;
 	//12/11/14 MM     }
     
-    console.log('securityRoles:insert:_id=' + obj._id + ':resource=' + obj.resource + ':name=' + obj.name);
+    winston.info('securityRoles:insert:_id=' + obj._id + ':resource=' + obj.resource + ':name=' + obj.name);
     
     dataAccess.insertItem(obj._id, obj, dataAccess.SECURITY_ROLES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading security roles:' + JSON.stringify(err), null);
         } else {
         	if (!body.resource) {
@@ -72,11 +73,11 @@ module.exports.insertSecurityRole = function(obj, callback) {
 };
 
 module.exports.deleteSecurityRole = function(obj, callback) {
-	console.log('securityRoles:delete:_id=' + obj._id + ':resource=' + obj.resource + ':name=' + obj.name);
+	winston.info('securityRoles:delete:_id=' + obj._id + ':resource=' + obj.resource + ':name=' + obj.name);
 	 
     dataAccess.deleteItem(obj._id, obj._rev, dataAccess.SECURITY_ROLES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -85,11 +86,11 @@ module.exports.deleteSecurityRole = function(obj, callback) {
 };
 
 module.exports.getSecurityRole = function(id, callback) {
-	 console.log('securityRoles:get:_id=' + id);
+	 winston.info('securityRoles:get:_id=' + id);
 	 
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);

@@ -5,6 +5,7 @@ var reportAccess = require('../data/reportAccess');
 var dataAccess = require('../data/dataAccess');
 var dataFilter = require('../data/dataFilter');
 var session = require('../util/session');
+var winston = require('winston');
 
 var getStatus = function(personId, type) {
   var statusObj = reportAccess.getStatusFromMemoryCache(personId, type);
@@ -49,10 +50,10 @@ var getReport = function(personId, type, callback) {
 var listFavorites = function(callback) {
     dataAccess.listReportFavorites( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading report favorites', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -61,7 +62,7 @@ var listFavorites = function(callback) {
 var listFavoritesByPerson = function(person, callback) {
     dataAccess.listReportFavoritesByPerson( person, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading report favorites', null);
         } else {
             callback(null, body);
@@ -72,7 +73,7 @@ var listFavoritesByPerson = function(person, callback) {
 var getFavorite = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -83,7 +84,7 @@ var getFavorite = function(id, callback) {
 var insertFavorite = function(obj, callback) {
     dataAccess.insertItem(obj._id, obj, dataAccess.REPORT_FAVORITES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error inserting report favorite:' + JSON.stringify(err), null);
         } else {
             callback(null, body);
@@ -94,7 +95,7 @@ var insertFavorite = function(obj, callback) {
 var updateFavorite = function(id, obj, callback) {
     dataAccess.updateItem(id, obj, dataAccess.REPORT_FAVORITES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error update report favorite:' + JSON.stringify(err), null);
         } else {
             callback(null, _.extend(obj, body));
@@ -105,7 +106,7 @@ var updateFavorite = function(id, obj, callback) {
 var deleteFavorite = function(id, obj, callback) {
     dataAccess.deleteItem(id, obj._rev, dataAccess.REPORT_FAVORITES_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);

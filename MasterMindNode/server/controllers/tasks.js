@@ -1,12 +1,13 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
+var winston = require('winston');
 //12/11/14 MM var validation = require( '../data/validation.js' );
 
 module.exports.listTasks = function( callback ) {
     dataAccess.listTasks( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading tasks', null);
         } else {
             callback(null, body);
@@ -17,7 +18,7 @@ module.exports.listTasks = function( callback ) {
 module.exports.listTasksByName = function(name, callback) {
     dataAccess.listTasksByName(name, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading tasks by ' + name, null);
         } else {
             callback(null, body);
@@ -28,7 +29,7 @@ module.exports.listTasksByName = function(name, callback) {
 module.exports.listTasksBySubstr = function(substr, callback) {
     dataAccess.listTasksBySubstr(substr, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading tasks by ' + substr, null);
         } else {
             callback(null, body);
@@ -48,7 +49,7 @@ module.exports.insertTask = function(obj, callback) {
     
     dataAccess.insertItem(obj._id, obj, dataAccess.TASKS_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error insert task', null);
         } else {
             callback(null, body);
@@ -59,7 +60,7 @@ module.exports.insertTask = function(obj, callback) {
 module.exports.deleteTask = function(obj, callback) {
     dataAccess.deleteItem(obj._id, obj._rev, dataAccess.TASKS_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error delete task', null);
         } else {
             callback(null, body);
@@ -70,7 +71,7 @@ module.exports.deleteTask = function(obj, callback) {
 module.exports.getTask = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error get task', null);
         } else {
             callback(null, body);

@@ -1,14 +1,15 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
+var winston = require('winston');
 
 module.exports.listSkills = function(callback) {
     dataAccess.listSkills( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading skills', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -24,7 +25,7 @@ module.exports.insertSkill = function(obj, callback) {
     
     dataAccess.insertItem(obj._id, obj, dataAccess.SKILLS_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error insert skill', null);
         } else {
             callback(null, body);
@@ -35,7 +36,7 @@ module.exports.insertSkill = function(obj, callback) {
 module.exports.deleteSkill = function(id, callback) {
     dataAccess.deleteItem(id, null, dataAccess.SKILLS_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -46,7 +47,7 @@ module.exports.deleteSkill = function(id, callback) {
 module.exports.getSkill = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);

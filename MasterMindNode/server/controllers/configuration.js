@@ -1,15 +1,16 @@
 'use strict';
 
 var dataAccess = require('../data/dataAccess');
+var winston = require('winston');
 //12/11/14 MM var validation = require( '../data/validation.js' );
 
 module.exports.listConfiguration = function(callback) {
     dataAccess.listConfiguration( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading configuration', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
         	for (var memberIndex in body.members) {
         		decodeConfig(body.members[memberIndex]);
         	}
@@ -28,7 +29,7 @@ module.exports.insertConfiguration = function(obj, callback) {
 	encodeConfig(obj);
     dataAccess.insertItem(obj._id, obj, dataAccess.CONFIGURATION_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error insert configuration:' + JSON.stringify(err), null);
         } else {
             callback(null, body);
@@ -39,7 +40,7 @@ module.exports.insertConfiguration = function(obj, callback) {
 module.exports.deleteConfiguration = function(obj, callback) {
     dataAccess.deleteItem(obj._id, obj._rev, dataAccess.CONFIGURATION_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -50,7 +51,7 @@ module.exports.deleteConfiguration = function(obj, callback) {
 module.exports.getConfiguration = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
         	decodeConfig(body);
@@ -63,7 +64,7 @@ module.exports.getConfiguration = function(id, callback) {
 module.exports.getConfigurationByName = function(sectionName, callback) {
     dataAccess.listConfiguration( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading configuration', null);
         } else {
         	var configSection;

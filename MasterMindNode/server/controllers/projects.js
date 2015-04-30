@@ -6,11 +6,12 @@ var util = require('../util/util');
 var _ = require( 'underscore' );
 //12/11/14 MM var validation = require( '../data/validation.js' );
 var assignments = require( '../controllers/assignments.js' );
+var winston = require('winston');
 
 var listProjects = function(fields, callback) {
     dataAccess.listProjects( fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading projects', null);
         } else {
             callback(null, body);
@@ -22,7 +23,7 @@ var listProjects = function(fields, callback) {
 var listProjectsByIds = function(ids, callback) {
     dataAccess.listProjectsByIds(ids, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading projects', null);
         } else {
             var result = body.data;
@@ -38,7 +39,7 @@ var listProjectsByIds = function(ids, callback) {
 var listProjectsByExecutiveSponsor = function(executiveSponsor, callback) {
     dataAccess.listProjectsByExecutiveSponsor(executiveSponsor, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading listProjectsByExecutiveSponsor', null);
         } else {
             callback(null, body);
@@ -49,7 +50,7 @@ var listProjectsByExecutiveSponsor = function(executiveSponsor, callback) {
 var listProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, types, isCommited, roleResources, fields, callback) {
     dataAccess.listProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading listProjectsBetweenDatesByTypesAndSponsors', null);
         } else {
             var result = body.data;
@@ -61,7 +62,7 @@ var listProjectsBetweenDatesByTypesAndSponsors = function(startDate, endDate, ty
 var listProjectsByStatuses = function(statuses, fields, callback) {
     dataAccess.listProjectsByStatuses(statuses, fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading listProjectsByStatuses', null);
         } else {
             callback(null, body);
@@ -73,7 +74,7 @@ var listProjectsByStatuses = function(statuses, fields, callback) {
 var listProjectsByResources = function(resources, fields, callback) {
     dataAccess.listProjectsByResources(resources, fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading listProjectsByResources', null);
         } else {
             callback(null, body);
@@ -97,7 +98,7 @@ var listCurrentProjectsByPerson = function(resource, fields, callback) {
 var getProject = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
    		    body.resource = "projects/" + body._id;
@@ -116,7 +117,7 @@ var addProjectLink = function(id, obj, callback) {
 
 	listLinksByProject(id, function (err, result){
 		if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error add project link', null);
 		} else {
 			var linksObject;
@@ -140,7 +141,7 @@ var addProjectLink = function(id, obj, callback) {
 
 		    dataAccess.insertItem(linksObject._id, linksObject, dataAccess.LINKS_KEY, function(err, body){
 		        if (err) {
-		            console.log(err);
+		            winston.info(err);
 		            callback('error insert project link', null);
 		        } else {
 		            callback(null, body);
@@ -155,10 +156,10 @@ var addProjectLink = function(id, obj, callback) {
 var listLinks = function(id, callback) {
     dataAccess.listLinks(function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading links', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -170,10 +171,10 @@ var listLinksByProject = function(id, callback) {
 	
     dataAccess.listLinksByProject( util.getFullID(id, 'projects'), function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading links by project', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -185,10 +186,10 @@ var listAssignments = function(id, callback) {
 	//TODO filter by project id
 	assignments.listAssignments( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading assignments by project', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -200,7 +201,7 @@ var listAssignmentsByPerson = function(resource, callback) {
 	
 	assignments.listAssignmentsByPersonResource(resource, function(err, result){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading assignments by person', null);
         } else {			
             callback(null, result);
@@ -215,10 +216,10 @@ var listRoles = function(callback) {
 
     dataAccess.listRoles( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading roles', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -227,7 +228,7 @@ var listRoles = function(callback) {
 var getRole = function(projectId, roleId, callback) {
     dataAccess.getItem(roleId, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -238,7 +239,7 @@ var getRole = function(projectId, roleId, callback) {
 var insertAssignment = function(assignmentId, obj, callback) {
     assignments.insertAssignment(assignmentId, obj, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error insert assignment into project', null);
         } else {
             callback(null, body);
@@ -253,20 +254,20 @@ var deleteProject = function (obj, callback) {
         } else {
             assignments.getProjectAssignment(project, function (assignmentErr, assignment) {
                 if (!assignmentErr) {
-                    console.log(assignmentErr);
+                    winston.info(assignmentErr);
 
                     dataAccess.deleteItem(assignment._id, assignment._rev, dataAccess.ASSIGNMENTS_KEY, function (deleteAssignmentErr, deleteAssignemntBody) {
                         if (deleteAssignmentErr) {
-                            console.log(deleteAssignmentErr);
+                            winston.info(deleteAssignmentErr);
                         } else {
-                            console.log("Assignment deleted: " + deleteAssignemntBody);
+                            winston.info("Assignment deleted: " + deleteAssignemntBody);
                         }
                     });
                 } 
                 
                 dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PROJECTS_KEY, function (err, body) {
                     if (err) {
-                        console.log(err);
+                        winston.info(err);
                         callback(err, null);
                     } else {
                         callback(null, body);
@@ -281,7 +282,7 @@ var deleteProjectLink = function(projectId, linkIndex, callback) {
 	
 	listLinksByProject(projectId, function (err, result){
 		if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error list project links', null);
 		} else {
 			var linksObject = result.members[0];
@@ -292,7 +293,7 @@ var deleteProjectLink = function(projectId, linkIndex, callback) {
 			});
 		    dataAccess.insertItem(linksObject._id, linksObject, dataAccess.LINKS_KEY, function(err, body){
 		        if (err) {
-		            console.log(err);
+		            winston.info(err);
 		            callback('error delete project link', null);
 		        } else {
 		            callback(null, body);
@@ -336,7 +337,7 @@ var insertProject = function(obj, callback) {
 				// insert project
 			    dataAccess.insertItem(obj._id, obj, dataAccess.PROJECTS_KEY, function(err, body){
 			        if (err) {
-			            console.log(err);
+			            winston.info(err);
 			            callback('error insert project', null);
 			        } else {
 			        	if (!isNew)
@@ -367,7 +368,7 @@ var insertProjectLink = function(projectId, linkIndex, obj, callback) {
     
 	listLinksByProject(projectId, function (err, result){
 		if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error insert project link:' + JSON.stringify(err), null);
 		} else {			
 			var linksObject = result.members[0];
@@ -379,7 +380,7 @@ var insertProjectLink = function(projectId, linkIndex, obj, callback) {
 
 		    dataAccess.insertItem(linksObject._id, linksObject, dataAccess.LINKS_KEY, function(err, body){
 		        if (err) {
-		            console.log(err);
+		            winston.info(err);
 		            callback('error insert project link', null);
 		        } else {
 		            callback(null, body);

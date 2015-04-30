@@ -4,16 +4,17 @@ var dataAccess = require('../data/dataAccess');
 var roles = require('./roles');
 var util = require('../util/util');
 var _ = require( 'underscore' );
+var winston = require('winston');
 
 var security = require('../util/security');
 
 module.exports.listPeople = function(fields, callback) {
     dataAccess.listPeople(fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading people', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -22,10 +23,10 @@ module.exports.listPeople = function(fields, callback) {
 module.exports.listPeopleByRoles = function(roleIds, includeInactive, fields, callback) {
     dataAccess.listPeopleByRoles(roleIds, includeInactive, fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading people', null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -34,10 +35,10 @@ module.exports.listPeopleByRoles = function(roleIds, includeInactive, fields, ca
 module.exports.listPeopleByPerson = function(person, callback) {
     dataAccess.listPeopleByPerson(person, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading people by person ' + person, null);
         } else {
-            //console.log(body);
+            //winston.info(body);
             callback(null, body);
         }
     });
@@ -46,7 +47,7 @@ module.exports.listPeopleByPerson = function(person, callback) {
 module.exports.listPeopleByIsActiveFlag = function(isActive, fields, callback) {
     dataAccess.listPeopleByIsActiveFlag(isActive, fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading people', null);
         } else {
             callback(null, body);
@@ -57,7 +58,7 @@ module.exports.listPeopleByIsActiveFlag = function(isActive, fields, callback) {
 module.exports.listPeopleWithPrimaryRole = function(fields, callback) {
     dataAccess.listPeopleWithPrimaryRole(fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading people', null);
         } else {
             callback(null, body);
@@ -68,7 +69,7 @@ module.exports.listPeopleWithPrimaryRole = function(fields, callback) {
 module.exports.listPeopleByGroups = function(groups, fields, callback) {
     dataAccess.listPeopleByGroups(groups, fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading people by groups', null);
         } else {
             callback(null, body);
@@ -80,7 +81,7 @@ module.exports.listPeopleByGroups = function(groups, fields, callback) {
 module.exports.listActivePeopleByAssignments = function(fields, callback) {
     dataAccess.listActivePeopleByAssignments(fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading active people by assignments', null);
         } else {
             callback(null, body);
@@ -106,7 +107,7 @@ module.exports.insertPerson = function(obj, callback) {
 
 		    dataAccess.insertItem(obj._id, obj, dataAccess.PEOPLE_KEY, function(err, body){
 		        if (err) {
-		            console.log(err);
+		            winston.info(err);
 		            callback('error insert person', null);
 		        } else {
 		            callback(null, body);
@@ -139,7 +140,7 @@ var upgradeNameProperties = function(obj, callback) {
 module.exports.deletePerson = function(obj, callback) {
     dataAccess.deleteItem(obj._id, obj._rev, dataAccess.PEOPLE_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -150,7 +151,7 @@ module.exports.deletePerson = function(obj, callback) {
 module.exports.getPerson = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -162,7 +163,7 @@ module.exports.getPerson = function(id, callback) {
 module.exports.getPersonByGoogleId = function(id, callback) {
     dataAccess.listPeopleByGoogleIds(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading getPersonByGoogleId', null);
         } else {
            var person = body && body.members.length > 0 ? body.members[0]: {};
@@ -178,7 +179,7 @@ module.exports.getMyPerson = function(callback) {
 	
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
             callback(null, body);
@@ -282,7 +283,7 @@ module.exports.getManager = function(id, callback) {
 module.exports.getAccessRights = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback(err, null);
         } else {
         	getAccessRights(body, callback);
@@ -293,7 +294,7 @@ module.exports.getAccessRights = function(id, callback) {
 module.exports.getAccessRightsByGoogleId = function(id, callback) {
     dataAccess.getProfileByGoogleId(id, function(err, user){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading getPersonByGoogleId', null);
         } else {
         	getAccessRights(user, callback);

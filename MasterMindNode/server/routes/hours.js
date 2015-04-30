@@ -8,6 +8,7 @@ var auth = require( '../util/auth' );
 var security = require( '../util/security' );
 var securityResources = require( '../util/securityResources' );
 var _ = require( 'underscore' );
+var winston = require('winston');
 
 var router = express.Router( );
 
@@ -24,7 +25,7 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 			var fields = req.query.fields;
 			var now = new Date();
 			 
-			console.log( '\r\nget:hours:start:query:' + JSON.stringify( query ) + '\r\n' );
+			winston.info( '\r\nget:hours:start:query:' + JSON.stringify( query ) + '\r\n' );
 
 			hours.listHours( query, fields, function( err, result ) {
 				if( err ) {
@@ -33,7 +34,7 @@ router.get( '/', auth.isAuthenticated, function( req, res ) {
 					res.json( result );
 				}
 				
-				console.log( '\r\nget:hours:end:query:' + JSON.stringify( query ) + ':' + getExecTime(now) + '\r\n' );
+				winston.info( '\r\nget:hours:end:query:' + JSON.stringify( query ) + ':' + getExecTime(now) + '\r\n' );
 			} );
 		}
 	} );
@@ -50,11 +51,11 @@ router.get( '/persondates', auth.isAuthenticated, function( req, res ) {
             
             var now = new Date();
             
-            console.log( '\r\nget:hours:start:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate+ '\r\n' );
+            winston.info( '\r\nget:hours:start:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate+ '\r\n' );
 
             if (person && startDate && endDate)
                 hours.listHoursByPersonAndDates( person, startDate, endDate, function( err, result ) {
-                	 console.log( '\r\nget:hours:end:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate + ':' + getExecTime(now) + '\r\n' );
+                	 winston.info( '\r\nget:hours:end:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate + ':' + getExecTime(now) + '\r\n' );
                 	 
                     if( err ) {
                         res.json( 500, err );
@@ -62,7 +63,7 @@ router.get( '/persondates', auth.isAuthenticated, function( req, res ) {
                         res.json( result );
                     }
 					
-					console.log( '\r\nget:hours:end:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate + ':' + getExecTime(now) + '\r\n' );
+					winston.info( '\r\nget:hours:end:persondates:' + JSON.stringify(person) + ':' + startDate + ':' + endDate + ':' + getExecTime(now) + '\r\n' );
 					
                 } );
             else 
@@ -86,7 +87,7 @@ router.get( '/projectdates', auth.isAuthenticated, function( req, res ) {
     		}
     		
     		var now = new Date();
-            console.log( '\r\nget:hours:projectdates:start:' + JSON.stringify(projects) + ':' + startDate + ':' + endDate + ':' + fields + '\r\n' );
+            winston.info( '\r\nget:hours:projectdates:start:' + JSON.stringify(projects) + ':' + startDate + ':' + endDate + ':' + fields + '\r\n' );
 
             if (projects && startDate && endDate)
                 hours.listHoursByProjectsAndDates( projects, startDate, endDate, fields, function( err, result ) {
@@ -96,7 +97,7 @@ router.get( '/projectdates', auth.isAuthenticated, function( req, res ) {
                         res.json( result );
                     }
                     
-                    console.log( '\r\nget:hours:projectdates:end:' + JSON.stringify(projects) + ':' + startDate + ':' + endDate + ':' + fields + ':' + getExecTime(now) + '\r\n' );
+                    winston.info( '\r\nget:hours:projectdates:end:' + JSON.stringify(projects) + ':' + startDate + ':' + endDate + ':' + fields + ':' + getExecTime(now) + '\r\n' );
                 } );
             else 
                  res.json( 500, "missed params" );
@@ -114,7 +115,7 @@ router.get( '/person', auth.isAuthenticated, function( req, res ) {
              
             var now = new Date();
             
-            console.log( '\r\nget:hours:start:person:' + JSON.stringify(person) + '\r\n' );
+            winston.info( '\r\nget:hours:start:person:' + JSON.stringify(person) + '\r\n' );
 
             if (person) {
             	var fields = req.query.fields;
@@ -125,7 +126,7 @@ router.get( '/person', auth.isAuthenticated, function( req, res ) {
                         res.json( result );
                     }
                     
-                    console.log( '\r\nget:hours:end:person:' + JSON.stringify(person) + ':' + getExecTime(now) + '\r\n');
+                    winston.info( '\r\nget:hours:end:person:' + JSON.stringify(person) + ':' + getExecTime(now) + '\r\n');
 					
                 } );
             }
@@ -147,7 +148,7 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
             
             var now = new Date();
             
-            console.log( '\r\nget:hours:start:projects:'  + JSON.stringify(projects) + '\r\n' );
+            winston.info( '\r\nget:hours:start:projects:'  + JSON.stringify(projects) + '\r\n' );
 
             if (projects) {
             	var fields = req.query.fields;
@@ -158,7 +159,7 @@ router.get( '/projects', auth.isAuthenticated, function( req, res ) {
                         res.json( result );
                     }
                     
-                    console.log( '\r\nget:hours:end:projects:' + JSON.stringify(projects) + ':' + getExecTime(now) );
+                    winston.info( '\r\nget:hours:end:projects:' + JSON.stringify(projects) + ':' + getExecTime(now) );
 					
                 } );
             }
@@ -178,14 +179,14 @@ router.post( '/', auth.isAuthenticated, function( req, res ) {
               if(!err) {
                 if(person.googleId == req.user) {
                   security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
-                    console.log( '\r\npost:hours:\r\n' );
+                    winston.info( '\r\npost:hours:\r\n' );
                     if( allowed ) {
                       insertHours(req.body, res);
                     }
                   });
                 } else {
                   security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editHours, function( allowed ) {
-                    console.log( '\r\npost:hours:\r\n' );
+                    winston.info( '\r\npost:hours:\r\n' );
                     if(allowed) {
                       insertHours(req.body, res);
                     }
@@ -193,13 +194,13 @@ router.post( '/', auth.isAuthenticated, function( req, res ) {
                 }
               } else {
                 var errMsg = "Can't get person by resource from hours entry.";
-                console.log(errMsg);
+                winston.info(errMsg);
                 res.json( 500, errMsg );
               }
             });
           } else {
             var errMsg = "Can't get person resource from hours entry.";
-            console.log(errMsg);
+            winston.info(errMsg);
             res.json( 500, errMsg );
           }
 } );
@@ -223,7 +224,7 @@ router.put( '/:id', auth.isAuthenticated, function( req, res ) {
               if(!err) {
                 if(person.googleId == req.user) {
                   security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editMyHours, function( allowed ) {
-                    console.log( '\r\npost:hours:\r\n' );
+                    winston.info( '\r\npost:hours:\r\n' );
                     if( allowed ) {
                       var id = req.params.id;
 
@@ -238,7 +239,7 @@ router.put( '/:id', auth.isAuthenticated, function( req, res ) {
                   });
                 } else {
                   security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.editHours, function( allowed ) {
-                    console.log( '\r\npost:hours:\r\n' );
+                    winston.info( '\r\npost:hours:\r\n' );
                     if(allowed) {
                       var id = req.params.id;
 
@@ -254,13 +255,13 @@ router.put( '/:id', auth.isAuthenticated, function( req, res ) {
                 }
               } else {
                 var errMsg = "Can't get person by resource from hours entry.";
-                console.log(errMsg);
+                winston.info(errMsg);
                 res.json( 500, errMsg );
               }
             });
           } else {
             var errMsg = "Can't get person resource from hours entry.";
-            console.log(errMsg);
+            winston.info(errMsg);
             res.json( 500, errMsg );
           }
 
@@ -269,7 +270,7 @@ router.put( '/:id', auth.isAuthenticated, function( req, res ) {
 router.delete( '/:id', auth.isAuthenticated, function( req, res ) {
 
 	security.isAllowed( req.user, res, securityResources.hours.resourceName, securityResources.hours.permissions.deleteMyHours, function( allowed ) {
-		console.log( '\r\ndelete:hours:\r\n' );
+		winston.info( '\r\ndelete:hours:\r\n' );
 
 		if( allowed ) {
 			var id = req.params.id;

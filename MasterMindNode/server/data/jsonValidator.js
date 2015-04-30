@@ -3,6 +3,7 @@
 var config = require('../config/config.js');
 var dbAccess = require( '../data/dbAccess.js' );
 var tv4 = require("tv4");
+var winston = require('winston');
 
 var banUnknownProperties = config.dataValidation_BanUnknownProperties;
 
@@ -72,13 +73,13 @@ var validateDocument = function(doc) {
 	schema = tv4.getSchema(doc.form);
 	
 	if (schema) {
-		console.log("jsonValidator.validateDocument() : _id:" + doc._id + " : Form:" + doc.form);
-		console.log(JSON.stringify(doc));
+		winston.info("jsonValidator.validateDocument() : _id:" + doc._id + " : Form:" + doc.form);
+		winston.info(JSON.stringify(doc));
 		
 		var validationResults = tv4.validateMultiple(doc, schema, false, banUnknownProperties);
 		
 		if (validationResults.errors.length > 0){
-			console.log("jsonValidator.validateDocument() : _id:" + doc._id + " : Total " + validationResults.errors.length + " errors.");
+			winston.info("jsonValidator.validateDocument() : _id:" + doc._id + " : Total " + validationResults.errors.length + " errors.");
 			
 			validationResults.errors.forEach( function (err) {
 				message = "\nValidation Error: " + err.code + " " + err.message + " : Field:" + err.dataPath;
@@ -86,7 +87,7 @@ var validateDocument = function(doc) {
 			});	
 		};
 	} else {
-		console.log("JSON Validation Schema is not found for form:" + doc.form);
+		winston.info("JSON Validation Schema is not found for form:" + doc.form);
 	}
 	return (messages);
 };

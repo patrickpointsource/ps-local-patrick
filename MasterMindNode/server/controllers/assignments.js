@@ -6,13 +6,14 @@ var projects = require('./projects');
 var util = require('../util/util');
 var _ = require( 'underscore' );
 var validation = require( '../data/validation.js' );
+var winston = require('winston');
 
 
 var listAssignments = function(callback) {
 	// Get assignments by projects
 	dataAccess.listAssignments( function(err, body){
 		if (err) {
-			console.log(err);
+			winston.info(err);
 			callback('error loading assignments', null);
 		} else {
 			callback(null, body);
@@ -23,7 +24,7 @@ var listAssignments = function(callback) {
 var getAssignment = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error get assignment', null);
         } else {
             callback(null, body);
@@ -72,7 +73,7 @@ var insertAssignment = function(assignmentId, obj, callback) {
     listAssignmentsByProjectResourcesAndTimePeriod(obj.project.resource, "all", function(err, assignment) {
     	dataAccess.insertItem(assignment ? assignment._id : assignmentId, obj, dataAccess.ASSIGNMENTS_KEY, function(err, body) {
     		if (err) {
-    			console.log(err);
+    			winston.info(err);
     			callback('error insert assignment into project:' + JSON.stringify(err), null);
     		} else {
     			callback(null, _.extend(obj, body));
@@ -85,10 +86,10 @@ var listCurrentAssigments = function(callback) {
 	
     dataAccess.listCurrentAssigments(function(err, listCurrentAssigments){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback("error loading current assignments", null);
         } else {
-            //console.log(body);
+            //winston.info(body);
         	projects.listProjects( null, function (err, projectsResult) {
 				if (err) {
 					callback (err, null);
@@ -123,7 +124,7 @@ var listCurrentAssigments = function(callback) {
 var listAssignmentsByPersonResource = function(resource, callback) {
 	dataAccess.listAssignmentsByPerson(resource, function(err, result){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading assignments by person :' + JSON.stringify(resource), null);
         } else {
         	 callback(null, result);
@@ -220,10 +221,10 @@ var listAssignmentsByPersonResourceAndTimePeriod = function(personResource, star
 	
     dataAccess.listAssignmentsByPerson(personResource, function(err, result){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading assignments by person :' + JSON.stringify(resource), null);
         } else {
-            //console.log(body);
+            //winston.info(body);
         	
 			
 			var assignments = [ ];

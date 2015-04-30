@@ -7,6 +7,7 @@ var config = require( '../config/config.js' );
 var dataFilter = require( './dataFilter' );
 var fieldFilter = require( './fieldFilter' );
 var util = require( '../util/util.js' );
+var winston = require('winston');
 
 var PROJECTS_KEY = 'Projects';
 var PEOPLE_KEY = 'People';
@@ -173,12 +174,12 @@ var listProjects = function( fields, callback ) {
 	var data = null;
 
 	if( result ) {
-		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		winston.info( "read " + PROJECTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				winston.info( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, null, "projects/", null, fields ) );
@@ -190,12 +191,12 @@ var listProjects = function( fields, callback ) {
 var listProjectsByIds = function( ids, callback ) {
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
-		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		winston.info( "read " + PROJECTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterProjectsByIds(ids, result.data), "members", "projects/" ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				winston.info( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterProjectsByIds(ids, body.data), "members", "projects/" ) );
@@ -207,12 +208,12 @@ var listProjectsByExecutiveSponsor = function( roleResource, fields, callback ) 
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
-		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		winston.info( "read " + PROJECTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, result.data), null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				winston.info( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterProjectsByExecutiveSponsor(roleResource, body.data), null, "projects/", null, fields ) );
@@ -225,12 +226,12 @@ var listProjectsBetweenDatesByTypesAndSponsors = function( startDate, endDate, t
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
-		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		winston.info( "read " + PROJECTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, result.data), null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				winston.info( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterProjectsBetweenDatesByTypesAndSponsors(startDate, endDate, types, isCommited, roleResources, body.data), null, "projects/", null, fields ) );
@@ -243,12 +244,12 @@ var listProjectsByStatuses = function( statuses, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
-		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		winston.info( "read " + PROJECTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterProjectsByStatuses(statuses, result.data), null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				winston.info( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 			
@@ -262,12 +263,12 @@ var listProjectsByResources = function( resources, fields, callback ) {
 
 	var result = memoryCache.getObject( PROJECTS_KEY );
 	if( result ) {
-		console.log( "read " + PROJECTS_KEY + " from memory cache" );
+		winston.info( "read " + PROJECTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterProjectsByResources(resources, result.data), null, "projects/", null, fields ) );
 	} else {
 		dbAccess.listProjects( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PROJECTS_KEY + " to memory cache" );
+				winston.info( "save " + PROJECTS_KEY + " to memory cache" );
 				memoryCache.putObject( PROJECTS_KEY, body );
 			}
 			
@@ -381,7 +382,7 @@ var getPersonByGroups = function (groups, callback) {
 		} else {
 			dbAccess.listPeople( function( err, body ) {
 				if( !err ) {
-					console.log( "save " + PEOPLE_KEY + " to memory cache" );
+					winston.info( "save " + PEOPLE_KEY + " to memory cache" );
 					memoryCache.putObject( PEOPLE_KEY, body );
 				}
 				callback( err, prepareRecords( dataFilter.filterPeopleByGoogleIds(id, body.data), "members", "people/" )["members"][ 0 ] );
@@ -393,12 +394,12 @@ var getPersonByGroups = function (groups, callback) {
 var listPeople = function( fields, callback ) {
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
-		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		winston.info( "read " + PEOPLE_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				winston.info( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, "members", "people/", null, fields ) );
@@ -409,12 +410,12 @@ var listPeople = function( fields, callback ) {
 var listPeopleByNames = function( names, callback ) {
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
-		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		winston.info( "read " + PEOPLE_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterPeopleByNames(names, result.data), "members", "people/" ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				winston.info( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterPeopleByNames(names, body.data), "members", "people/" ) );
@@ -425,12 +426,12 @@ var listPeopleByNames = function( names, callback ) {
 var listPeopleByGoogleIds = function( googleIds, callback ) {
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
-		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		winston.info( "read " + PEOPLE_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterPeopleByGoogleIds(googleIds, result.data), "members", "people/" ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				winston.info( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterPeopleByGoogleIds(googleIds, body.data), "members", "people/" ) );
@@ -441,12 +442,12 @@ var listPeopleByGoogleIds = function( googleIds, callback ) {
 var listPeopleByRoles = function( roleIds, includeInactive, fields, callback ) {
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
-		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		winston.info( "read " + PEOPLE_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterPeopleByRoles(roleIds, includeInactive, result.data), "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				winston.info( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterPeopleByRoles(roleIds, includeInactive, body.data), "members", "people/", null, fields ) );
@@ -458,12 +459,12 @@ var listPeopleByRoles = function( roleIds, includeInactive, fields, callback ) {
 var listPeopleByManager = function( manager, fields, callback ) {
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
-		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		winston.info( "read " + PEOPLE_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterPeopleByManager(manager, result.data), "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				winston.info( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterPeopleByManager(manager, body.data), "members", "people/", null, fields ) );
@@ -476,12 +477,12 @@ var listPeopleByIsActiveFlag = function(isActive, fields, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
-		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		winston.info( "read " + PEOPLE_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterPeopleByIsActiveFlag(result.data, isActive), "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				winston.info( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterPeopleByIsActiveFlag(body.data, isActive), "members", "people/", null, fields ) );
@@ -494,12 +495,12 @@ var listPeopleWithPrimaryRole = function(fields, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
-		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		winston.info( "read " + PEOPLE_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterPeopleWithPrimaryRole(result.data), "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				winston.info( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterPeopleWithPrimaryRole(body.data), "members", "people/", null, fields ) );
@@ -512,12 +513,12 @@ var listPeopleByGroups = function(groups, fields, callback ) {
 
 	var result = memoryCache.getObject( PEOPLE_KEY );
 	if( result ) {
-		console.log( "read " + PEOPLE_KEY + " from memory cache" );
+		winston.info( "read " + PEOPLE_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterPeopleByGroups(groups, result.data), "members", "people/", null, fields ) );
 	} else {
 		dbAccess.listPeople( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + PEOPLE_KEY + " to memory cache" );
+				winston.info( "save " + PEOPLE_KEY + " to memory cache" );
 				memoryCache.putObject( PEOPLE_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterPeopleByGroups(groups, body.data), "members", "people/", null, fields ) );
@@ -612,7 +613,7 @@ var listActivePeopleByAssignments = function(fields, callback ) {
 			});
 			
 				
-			//console.log("result=" + JSON.stringify(result));
+			//winston.info("result=" + JSON.stringify(result));
 			
 		}
 	});
@@ -655,7 +656,7 @@ var listAssignmentsByPerson = function(resource, callback) {
 	
     listAssignments( function(err, result){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading assignments by person', null);
         } else {
 			var assignments = [];
@@ -682,7 +683,7 @@ var listAssignmentsByPeople = function(resources, callback) {
     
     listAssignments(function(err, result){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading assignments by person', null);
         } else {
             var assignments = [];
@@ -709,7 +710,7 @@ var listAssignmentsByProjects = function(resources, callback) {
     
     listAssignments(function(err, result){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading assignments by projects', null);
         } else {
             var assignments = [];
@@ -732,7 +733,7 @@ var listAssignments = function( callback ) {
 	var i = 0;
 	
 	if( result ) {
-		console.log( "read " + ASSIGNMENTS_KEY + " from memory cache" );
+		winston.info( "read " + ASSIGNMENTS_KEY + " from memory cache" );
 		finalRecords = prepareRecords( result.data, null, "projects/", "/assignments" );
 		
 		for (i = 0; i < finalRecords.data.length; i ++)
@@ -742,11 +743,11 @@ var listAssignments = function( callback ) {
 	} else {
 		dbAccess.listAssignments( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + ASSIGNMENTS_KEY + " to memory cache" );
+				winston.info( "save " + ASSIGNMENTS_KEY + " to memory cache" );
 				memoryCache.putObject( ASSIGNMENTS_KEY, body );
 			}
 			
-			console.log('\r\n\r\nloading:assignments:q=' + JSON.stringify(q) + '\r\n');
+			winston.info('\r\n\r\nloading:assignments:q=' + JSON.stringify(q) + '\r\n');
 			
 			finalRecords = prepareRecords( body.data, null, "projects/", "/assignments" );
 			
@@ -763,12 +764,12 @@ var listTasks = function( callback ) {
 
 	var result = memoryCache.getObject( TASKS_KEY );
 	if( result ) {
-		console.log( "read " + TASKS_KEY + " from memory cache" );
+		winston.info( "read " + TASKS_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "tasks/" ) );
 	} else {
 		dbAccess.listTasks( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + TASKS_KEY + " to memory cache" );
+				winston.info( "save " + TASKS_KEY + " to memory cache" );
 				memoryCache.putObject( TASKS_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, "members", "tasks/" ) );
@@ -781,12 +782,12 @@ var listTasksByName = function( name, callback ) {
 
 	var result = memoryCache.getObject( TASKS_KEY );
 	if( result ) {
-		console.log( "read " + TASKS_KEY + " from memory cache" );
+		winston.info( "read " + TASKS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterTasksByName(name, result.data), "members", "tasks/" ) );
 	} else {
 		dbAccess.listTasks( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + TASKS_KEY + " to memory cache" );
+				winston.info( "save " + TASKS_KEY + " to memory cache" );
 				memoryCache.putObject( TASKS_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterTasksByName(name, body.data), "members", "tasks/" ) );
@@ -799,12 +800,12 @@ var listTasksBySubstr = function( substr, callback ) {
 	var result = memoryCache.getObject( TASKS_KEY );
 	
 	if( result ) {
-		console.log( "read " + TASKS_KEY + " from memory cache" );
+		winston.info( "read " + TASKS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterTasksBySubstr(substr, result.data), "members", "tasks/" ) );
 	} else {
 		dbAccess.listTasks( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + TASKS_KEY + " to memory cache" );
+				winston.info( "save " + TASKS_KEY + " to memory cache" );
 				memoryCache.putObject( TASKS_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterTasksBySubstr(substr, body.data), "members", "tasks/" ) );
@@ -817,12 +818,12 @@ var listRoles = function( callback ) {
 
 	var result = memoryCache.getObject( ROLES_KEY );
 	if( result ) {
-		console.log( "read " + ROLES_KEY + " from memory cache" );
+		winston.info( "read " + ROLES_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "roles/" ) );
 	} else {
 		dbAccess.listRoles( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + ROLES_KEY + " to memory cache" );
+				winston.info( "save " + ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( ROLES_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, "members", "roles/" ) );
@@ -835,12 +836,12 @@ var listJobTitles = function (callback) {
     
     var result = memoryCache.getObject(JOB_TITLE_KEY);
     if (result) {
-        console.log("read " + JOB_TITLE_KEY + " from memory cache");
+        winston.info("read " + JOB_TITLE_KEY + " from memory cache");
         callback(null, prepareRecords(result.data, "members", "jobTitles/"));
     } else {
         dbAccess.listJobTitles(function (err, body) {
             if (!err) {
-                console.log("save " + JOB_TITLE_KEY + " to memory cache");
+                winston.info("save " + JOB_TITLE_KEY + " to memory cache");
                 memoryCache.putObject(JOB_TITLE_KEY, body);
             }
             callback(err, prepareRecords(body.data, "members", "jobTitles/"));
@@ -853,12 +854,12 @@ var listNonBillableRoles = function( callback ) {
 
 	var result = memoryCache.getObject( ROLES_KEY );
 	if( result ) {
-		console.log( "read " + ROLES_KEY + " from memory cache" );
+		winston.info( "read " + ROLES_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterNonBillableRoles(result.data), "members", "roles/" ) );
 	} else {
 		dbAccess.listRoles( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + ROLES_KEY + " to memory cache" );
+				winston.info( "save " + ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( ROLES_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterNonBillableRoles(body.data), "members", "roles/" ) );
@@ -871,12 +872,12 @@ var listLinks = function( callback ) {
 
 	var result = memoryCache.getObject( LINKS_KEY );
 	if( result ) {
-		console.log( "read " + LINKS_KEY + " from memory cache" );
+		winston.info( "read " + LINKS_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, null, "members", "links/" ) );
 	} else {
 		dbAccess.listLinks( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + LINKS_KEY + " to memory cache" );
+				winston.info( "save " + LINKS_KEY + " to memory cache" );
 				memoryCache.putObject( LINKS_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, null, "members", "links/" ) );
@@ -889,12 +890,12 @@ var listLinksByProject = function( project, callback ) {
 
 	var result = memoryCache.getObject( LINKS_KEY );
 	if( result ) {
-		console.log( "read " + LINKS_KEY + " from memory cache" );
+		winston.info( "read " + LINKS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterLinksByProject(project, result.data), "members", "links/" ) );
 	} else {
 		dbAccess.listLinks( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + LINKS_KEY + " to memory cache" );
+				winston.info( "save " + LINKS_KEY + " to memory cache" );
 				memoryCache.putObject( LINKS_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterLinksByProject(project, body.data), "members", "links/" ) );
@@ -907,12 +908,12 @@ var listConfiguration = function( callback ) {
 
 	var result = memoryCache.getObject( CONFIGURATION_KEY );
 	if( result ) {
-		console.log( "read " + CONFIGURATION_KEY + " from memory cache" );
+		winston.info( "read " + CONFIGURATION_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "configuration/" ) );
 	} else {
 		dbAccess.listConfiguration( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + CONFIGURATION_KEY + " to memory cache" );
+				winston.info( "save " + CONFIGURATION_KEY + " to memory cache" );
 				memoryCache.putObject( CONFIGURATION_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, "members", "configuration/" ) );
@@ -925,12 +926,12 @@ var listSkills = function( callback ) {
 
 	var result = memoryCache.getObject( SKILLS_KEY );
 	if( result ) {
-		console.log( "read " + SKILLS_KEY + " from memory cache" );
+		winston.info( "read " + SKILLS_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "skills/" ) );
 	} else {
 		dbAccess.listSkills( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + SKILLS_KEY + " to memory cache" );
+				winston.info( "save " + SKILLS_KEY + " to memory cache" );
 				memoryCache.putObject( SKILLS_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, "members", "skills/" ) );
@@ -943,12 +944,12 @@ var listVacations = function( callback ) {
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
-		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		winston.info( "read " + VACATIONS_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "vacations/" ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				winston.info( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, "members", "vacations/" ) );
@@ -961,12 +962,12 @@ var listVacationsByPerson = function( personResource, callback ) {
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
-		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		winston.info( "read " + VACATIONS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterVacationsByPerson(personResource, result.data), "members", "vacations/" ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				winston.info( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterVacationsByPerson(personResource, body.data), "members", "vacations/" ) );
@@ -980,12 +981,12 @@ var listVacationsByPeriod = function( people, startDate, endDate, fields, callba
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
-		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		winston.info( "read " + VACATIONS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterVacationsByPeriod(people, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				winston.info( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
 			callback( null, prepareRecords( dataFilter.filterVacationsByPeriod(people, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
@@ -999,12 +1000,12 @@ var listRequestsByVacationManagers = function( managers, statuses, startDate, en
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
-		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		winston.info( "read " + VACATIONS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterRequestsByVacationManagers(managers, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				winston.info( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
 			callback( null, prepareRecords( dataFilter.filterRequestsByVacationManagers(managers, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
@@ -1017,12 +1018,12 @@ var listRequestsByPeople = function( people, statuses, startDate, endDate, field
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
-		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		winston.info( "read " + VACATIONS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterRequestsByPeople(people, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				winston.info( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
 			callback( null, prepareRecords( dataFilter.filterRequestsByPeople(people, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
@@ -1035,12 +1036,12 @@ var listAllEmployeeVacations = function( statuses, startDate, endDate, persons, 
 
 	var result = memoryCache.getObject( VACATIONS_KEY );
 	if( result ) {
-		console.log( "read " + VACATIONS_KEY + " from memory cache" );
+		winston.info( "read " + VACATIONS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterVacations(persons, statuses, startDate, endDate, result.data), "members", "vacations/", null, fields ) );
 	} else {
 		dbAccess.listVacations( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + VACATIONS_KEY + " to memory cache" );
+				winston.info( "save " + VACATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( VACATIONS_KEY, body );
 			}
 			callback( null, prepareRecords( dataFilter.filterVacations(persons, statuses, startDate, endDate, body.data), "members", "vacations/", null, fields ) );
@@ -1052,12 +1053,12 @@ var listAllEmployeeVacations = function( statuses, startDate, endDate, persons, 
 var listSecurityRoles = function( callback ) {
 	var result = memoryCache.getObject( SECURITY_ROLES_KEY );
 	if( result ) {
-		console.log( "read " + SECURITY_ROLES_KEY + " from memory cache" );
+		winston.info( "read " + SECURITY_ROLES_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "securityroles/" ) );
 	} else {
 		dbAccess.listSecurityRoles( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + SECURITY_ROLES_KEY + " to memory cache" );
+				winston.info( "save " + SECURITY_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( SECURITY_ROLES_KEY, body );
 				callback( null, prepareRecords( body.data, "members", "securityroles/" ) );
 			} else {
@@ -1071,12 +1072,12 @@ var listSecurityRoles = function( callback ) {
 var listSecurityRolesByResources = function( resources, callback ) {
 	var result = memoryCache.getObject( SECURITY_ROLES_KEY );
 	if( result ) {
-		console.log( "read " + SECURITY_ROLES_KEY + " from memory cache" );
+		winston.info( "read " + SECURITY_ROLES_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterSecurityRolesByResources(resources, result.data), "members", "securityroles/" ) );
 	} else {
 		dbAccess.listSecurityRoles( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + SECURITY_ROLES_KEY + " to memory cache" );
+				winston.info( "save " + SECURITY_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( SECURITY_ROLES_KEY, body );
 			}
 			callback( null, prepareRecords( dataFilter.filterSecurityRolesByResources(resources, body.data), "members", "securityroles/" ) );
@@ -1093,12 +1094,12 @@ var clearCacheForSecurityRoles = function( resources, callback ) {
 var listUserRoles = function( fields, callback ) {
 	var result = memoryCache.getObject( USER_ROLES_KEY );
 	if( result ) {
-		console.log( "read " + USER_ROLES_KEY + " from memory cache" );
+		winston.info( "read " + USER_ROLES_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "userRoles/", null, fields ) );
 	} else {
 		dbAccess.listUserRoles( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
+				winston.info( "save " + USER_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( USER_ROLES_KEY, body );
 				callback( null, prepareRecords( body.data, "members", "userRoles/", null, fields ) );
 			} else {
@@ -1112,12 +1113,12 @@ var listUserRoles = function( fields, callback ) {
 var listUserRolesByGoogleId = function( googleId, callback ) {
 	var result = memoryCache.getObject( USER_ROLES_KEY );
 	if( result ) {
-		console.log( "read " + USER_ROLES_KEY + " from memory cache" );
+		winston.info( "read " + USER_ROLES_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterUserRolesByGoogleId(googleId, result.data), "members", "userRoles/" ) );
 	} else {
 		dbAccess.listUserRoles( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + USER_ROLES_KEY + " to memory cache" );
+				winston.info( "save " + USER_ROLES_KEY + " to memory cache" );
 				memoryCache.putObject( USER_ROLES_KEY, body );
 			}
 			callback( null, prepareRecords( dataFilter.filterUserRolesByGoogleId(googleId, body.data), "members", "userRoles/" ) );
@@ -1131,12 +1132,12 @@ var listNotifications = function( callback ) {
 
 	var result = memoryCache.getObject( NOTIFICATIONS_KEY );
 	if( result ) {
-		console.log( "read " + NOTIFICATIONS_KEY + " from memory cache" );
+		winston.info( "read " + NOTIFICATIONS_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "notifications/" ) );
 	} else {
 		dbAccess.listNotifications( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + NOTIFICATIONS_KEY + " to memory cache" );
+				winston.info( "save " + NOTIFICATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( NOTIFICATIONS_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, "members", "notifications/" ) );
@@ -1150,12 +1151,12 @@ var listNotificationsByPerson = function( person, fields, callback ) {
 
 	var result = memoryCache.getObject( NOTIFICATIONS_KEY );
 	if( result ) {
-		console.log( "read " + NOTIFICATIONS_KEY + " from memory cache" );
+		winston.info( "read " + NOTIFICATIONS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, result.data), "members", "notifications/", null, fields ) );
 	} else {
 		dbAccess.listNotifications( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + NOTIFICATIONS_KEY + " to memory cache" );
+				winston.info( "save " + NOTIFICATIONS_KEY + " to memory cache" );
 				memoryCache.putObject( NOTIFICATIONS_KEY, body );
 			}
 			callback( null, prepareRecords( dataFilter.filterNotificationsByPerson(person, body.data), "members", "notifications/", null, fields ) );
@@ -1215,30 +1216,30 @@ var listHours = function( q, fields, callback ) {
     if( !project && person && startDate && endDate && orEmpty && onlyAndDates ) {
         dbAccess.listHoursByStartEndDates( [ "PersonDate", person, startDate ], [ "PersonDate", person, endDate ], function( err, body ) {
             if( err ) {
-                console.log( err );
+                winston.info( err );
                 callback( 'error loading hours by start and end dates', null );
             } else {
-                console.log( body );
+                winston.info( body );
                 callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
     } else if( !person && project && startDate && endDate && orEmpty && onlyAndDates ) {
         dbAccess.listHoursByStartEndDates( [ "ProjectDate", project, startDate ], [ "ProjectDate", project, endDate ], function( err, body ) {
             if( err ) {
-                console.log( err );
+                winston.info( err );
                 callback( 'error loading hours by start and end dates', null );
             } else {
-                console.log( body );
+                winston.info( body );
                 callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
     } else if( person && project && startDate && endDate && orEmpty && onlyAndDates ) {
         dbAccess.listHoursByStartEndDates( [ "ProjectPersonDate", project, person, startDate ], [ "ProjectPersonDate", project, person, startDate ], function( err, body ) {
             if( err ) {
-                console.log( err );
+                winston.info( err );
                 callback( 'error loading hours by start and end dates', null );
             } else {
-                console.log( body );
+                winston.info( body );
                 callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
@@ -1246,20 +1247,20 @@ var listHours = function( q, fields, callback ) {
 
         dbAccess.listHoursByStartEndDates( [ "PersonDate", person, '1900-01-01' ], [ "PersonDate", person, '2050-01-01' ], function( err, body ) {
             if( err ) {
-                console.log( err );
+                winston.info( err );
                 callback( 'error loading hours by start and end dates', null );
             } else {
-                console.log( body );
+                winston.info( body );
                 callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
     } else if( onlyProjects )
         dbAccess.listHoursByProjects( projects, function( err, body ) {
             if( err ) {
-                console.log( err );
+                winston.info( err );
                 callback( 'error loading hours by start and end dates', null );
             } else {
-                console.log( body );
+                winston.info( body );
                 callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
             }
         } );
@@ -1270,10 +1271,10 @@ var listHours = function( q, fields, callback ) {
 var listHoursByProjectsTasksAndQuery = function( projectsTasks, q, fields, callback ) {
 	 dbAccess.listHoursByProjects( projectsTasks, function( err, body ) {
          if( err ) {
-             console.log( err );
+             winston.info( err );
              callback( 'error loading hours by start and end dates', null );
          } else {
-             console.log( body );
+             winston.info( body );
              callback( err, queryRecords( body, q, "members", "hours/", null, fields ) );
          }
      } );
@@ -1283,10 +1284,10 @@ var listHoursByPersonAndDates = function( person, startDate, endDate, callback )
 
     dbAccess.listHoursByStartEndDates( [ "PersonDate", person, startDate ], [ "PersonDate", person, endDate ], function( err, body ) {
         if( err ) {
-            console.log( err );
+            winston.info( err );
             callback( 'error loading hours by start and end dates', null );
         } else {
-            console.log( body );
+            winston.info( body );
             callback( err, queryRecords( body, {}, "members", "hours/" ) );
         }
     } );
@@ -1296,10 +1297,10 @@ var listHoursByProjectAndDates = function( project, startDate, endDate, callback
 
     dbAccess.listHoursByStartEndDates( [ "ProjectDate", project, startDate ], [ "ProjectDate", project, endDate ], function( err, body ) {
         if( err ) {
-            console.log( err );
+            winston.info( err );
             callback( 'error loading hours by start and end dates', null );
         } else {
-            console.log( body );
+            winston.info( body );
             callback( err, queryRecords( body, {}, "members", "hours/" ) );
         }
     } );
@@ -1309,10 +1310,10 @@ var listHoursByPerson = function( person, fields, callback ) {
 
     dbAccess.listHoursByStartEndDates( [ "PersonDate", person, '1900-01-01' ], [ "PersonDate", person, '2050-01-01' ], function( err, body ) {
         if( err ) {
-            console.log( err );
+            winston.info( err );
             callback( 'error loading hours by start and end dates', null );
         } else {
-            console.log( body );
+            winston.info( body );
             callback( err, queryRecords( body, {}, "members", "hours/", null, fields ) );
         }
     } );
@@ -1322,7 +1323,7 @@ var listHoursByPerson = function( person, fields, callback ) {
 var listHoursByProjects = function( projects, fields, callback ) {
     dbAccess.listHoursByProjects( projects, function( err, body ) {
         if( err ) {
-            console.log( err );
+            winston.info( err );
             callback( 'error loading hours by start and end dates', null );
         } else {
             callback( err, queryRecords( body, {}, "members", "hours/", null, fields ) );
@@ -1333,7 +1334,7 @@ var listHoursByProjects = function( projects, fields, callback ) {
 var listHoursByProjectsAndDates = function( projects, startDate, endDate, fields, callback ) {
     dbAccess.listHoursByProjectsAndDates( projects, startDate, endDate, function( err, body ) {
         if( err ) {
-            console.log( err );
+            winston.info( err );
             callback( 'error loading hours by start and end dates', null );
         } else {
         	var hours = queryRecords( body, {}, "members", "hours/", null, fields );
@@ -1347,12 +1348,12 @@ var listReportFavorites = function( callback ) {
 
 	var result = memoryCache.getObject( REPORT_FAVORITES_KEY );
 	if( result ) {
-		console.log( "read " + REPORT_FAVORITES_KEY + " from memory cache" );
+		winston.info( "read " + REPORT_FAVORITES_KEY + " from memory cache" );
 		callback( null, queryRecords( result, {}, "members", "reports/favorites/" ) );
 	} else {
 		dbAccess.listReportFavorites( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + REPORT_FAVORITES_KEY + " to memory cache" );
+				winston.info( "save " + REPORT_FAVORITES_KEY + " to memory cache" );
 				memoryCache.putObject( REPORT_FAVORITES_KEY, body );
 			}
 			callback( err, queryRecords( body, {}, "members", "reports/favorites/" ) );
@@ -1375,12 +1376,12 @@ var listDepartments = function( callback ) {
 	var result = memoryCache.getObject( DEPARTMENTS_KEY );
 	
 	if( result ) {
-		console.log( "read " + DEPARTMENTS_KEY + " from memory cache" );
+		winston.info( "read " + DEPARTMENTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( result.data, "members", "departments/" ) );
 	} else {
 		dbAccess.listDepartments( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + DEPARTMENTS_KEY + " to memory cache" );
+				winston.info( "save " + DEPARTMENTS_KEY + " to memory cache" );
 				memoryCache.putObject( DEPARTMENTS_KEY, body );
 			}
 			callback( err, prepareRecords( body.data, "members", "departments/" ) );
@@ -1393,12 +1394,12 @@ var filterDepartments = function(code, manager, nickname, substr, callback) {
 	var result = memoryCache.getObject( DEPARTMENTS_KEY );
 	
 	if( result ) {
-		console.log( "read " + DEPARTMENTS_KEY + " from memory cache" );
+		winston.info( "read " + DEPARTMENTS_KEY + " from memory cache" );
 		callback( null, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, substr, result.data), "members", "departments/" ) );
 	} else {
 		dbAccess.listDepartments( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + DEPARTMENTS_KEY + " to memory cache" );
+				winston.info( "save " + DEPARTMENTS_KEY + " to memory cache" );
 				memoryCache.putObject( DEPARTMENTS_KEY, body );
 			}
 			callback( err, prepareRecords( dataFilter.filterDepartmentsBy(code, manager, nickname, substr, body.data), "members", "departments/" ) );
@@ -1410,7 +1411,7 @@ var unassignDepartmentsPeople = function(people, callback) {
 	
 	listDepartments( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading departments', null);
         } else {
         	var departmentToUpdate = [];
@@ -1472,7 +1473,7 @@ var unassignDepartmentsPeople = function(people, callback) {
 var listDepartmentsAvailablePeople = function(substr, callback) {
 	listDepartments( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading departments', null);
         } else {
         	var assignedPeople = [];
@@ -1513,7 +1514,7 @@ var listDepartmentsAvailablePeople = function(substr, callback) {
 var listPeopleByDepartmentsCategories = function(categories, includeInactive, fields, callback) {
 	listDepartments( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading departments', null);
         } else {
         	var departmentsPeople = [];
@@ -1595,7 +1596,7 @@ var listDepartmentCategories = function(callback) {
 		// attach nicknames info
 		listDepartments( function(err, body){
 	        if (err) {
-	            console.log(err);
+	            winston.info(err);
 	            callback('error loading departments', null);
 	        } else {
 	        	var category = null;
@@ -1619,12 +1620,12 @@ var listDepartmentCategories = function(callback) {
 	};
 	
 	if( result ) {
-		console.log( "read " + DEPARTMENT_CATEGORY_KEY + " from memory cache" );
+		winston.info( "read " + DEPARTMENT_CATEGORY_KEY + " from memory cache" );
 		attachNicknames(result.data, null );
 	} else {
 		dbAccess.listDepartmentCategories( function( err, body ) {
 			if( !err ) {
-				console.log( "save " + DEPARTMENT_CATEGORY_KEY + " to memory cache" );
+				winston.info( "save " + DEPARTMENT_CATEGORY_KEY + " to memory cache" );
 				memoryCache.putObject( DEPARTMENT_CATEGORY_KEY, body );
 			}
 			attachNicknames(body.data, err );
@@ -1645,11 +1646,11 @@ var insertItem = function( id, obj, type, callback ) {
 		if( !err ) {
 			if( obj._deleted ) {
 				if( body.id ) {
-					console.log( "Object with id " + body.id + " marked as deleted in db" );
+					winston.info( "Object with id " + body.id + " marked as deleted in db" );
 				}
 			} else {
 				if( body.id ) {
-					console.log( "Object with id " + body.id + " inserted in db" );
+					winston.info( "Object with id " + body.id + " inserted in db" );
 				}
 			}
 		}
@@ -1666,9 +1667,9 @@ var updateItem = function( id, obj, type, callback ) {
 	dbAccess.updateItem( id, obj, function( err, body ) {
 		if( !err ) {
 			if( obj._deleted ) {
-				console.log( "Object with id " + id + " marked as deleted in db" );
+				winston.info( "Object with id " + id + " marked as deleted in db" );
 			} else {
-				console.log( "Object with id " + id + " updated in db" );
+				winston.info( "Object with id " + id + " updated in db" );
 			}
 		}
 		memoryCache.deleteObject( type );
@@ -1680,7 +1681,7 @@ var deleteItem = function( id, rev, type, callback ) {
 	if( rev ) {
 		dbAccess.deleteItem( id, rev, function( err, body ) {
 			if( !err ) {
-				console.log( "Object with id " + id + " deleted from db" );
+				winston.info( "Object with id " + id + " deleted from db" );
 			}
 			memoryCache.deleteObject( type );
 			callback( err, body );
@@ -1688,13 +1689,13 @@ var deleteItem = function( id, rev, type, callback ) {
 	} else {
 		var actualObject = getItem( id, function( err, body ) {
 			if( err ) {
-				console.log( "cannot delete item: " + id );
+				winston.info( "cannot delete item: " + id );
 			} else {
 				body._deleted = true;
 
 				insertItem( id, body, type, function( err, body ) {
 					if( err ) {
-						console.log( err );
+						winston.info( err );
 						callback( 'error delete item by inserting _deleted flag', null );
 					} else {
 						callback( null, body );
@@ -1710,7 +1711,7 @@ var deleteItem = function( id, rev, type, callback ) {
 var getItem = function( id, callback ) {
 	dbAccess.getItem( id, function( err, body ) {
 		if( !err ) {
-			console.log( "Read object with id " + id + " from db" );
+			winston.info( "Read object with id " + id + " from db" );
 		}
 		callback( err, body );
 	} );

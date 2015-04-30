@@ -16,39 +16,36 @@ var http = require('http');
 var cluster = require('cluster');
 
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
+var configFileName = 'config.json';
 
-// Setup logging
-var log4js = require('log4js');
-var configFileName = "config.json";
+var tmpArg;
+var i;
 
 for (i = 0; i < process.argv.length; i ++) {
     tmpArg = process.argv[i].toString().replace('-', '');
     tmpArg = tmpArg.split('=');
     
-    if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'configfile')
-    	configFileName = tmpArg[1];
+    if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() === 'configfile'){
+        configFileName = tmpArg[1];
+    }
 }
 
 
 function loadConfig() {
-    return JSON.parse(fs.readFileSync(__dirname + "/" + configFileName));
+    return JSON.parse(fs.readFileSync(__dirname + '/' + configFileName));
 }
 
 var appConfig = loadConfig();
 
-log4js.configure(appConfig.log4jsPath, {});
-var logger = log4js.getLogger();
-
-
 //Setup routes
 require('./server/data/dbAccess')({
-	env: appConfig.env
+    env: appConfig.env
 });
 
 //Setup routes
 require('./server/controllers/upgrade')({
-	privateKeyPath: appConfig.privateKeyPath,
-	accountEmail: appConfig.accountEmail
+    privateKeyPath: appConfig.privateKeyPath,
+    accountEmail: appConfig.accountEmail
 });
 
 //Routes
@@ -95,30 +92,28 @@ var appNames = ['MMNodeServer', 'MMNodeStaging', 'MMNodeDemo'];
 // parse command line arguments
 var useAppNames = false;
 
-var tmpArg;
-var i;
-
 for (i = 0; i < process.argv.length; i ++) {
     tmpArg = process.argv[i].toString().replace('-', '');
     tmpArg = tmpArg.split('=');
     
-    if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'hostname')
+    if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() === 'hostname'){
         hostName = tmpArg[1];
-    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'httpsport')
-        httpsPort = tmpArg[1];   
-    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'useappnames')
-        useAppNames = tmpArg[1].toLowerCase() == 'true'; 
-    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'appname')
-        appName = tmpArg[1]; 
-    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'websiteurl')
-        webSiteUrl = tmpArg[1];  
-    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'oauthcbbaseurl')
-        oauthcbbaseurl = tmpArg[1];   
+    }else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() === 'httpsport'){
+        httpsPort = tmpArg[1];
+    }else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() === 'useappnames'){
+        useAppNames = tmpArg[1].toLowerCase() === 'true';
+    }else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() === 'appname'){
+        appName = tmpArg[1];
+    }else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() === 'websiteurl'){
+        webSiteUrl = tmpArg[1];
+    }else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() === 'oauthcbbaseurl'){
+        oauthcbbaseurl = tmpArg[1];
+    }
 }
 
 if (appName) {
-   appNames = [appName];
-   useAppNames = true;
+    appNames = [appName];
+    useAppNames = true;
 }
 
 // Configure passport
@@ -140,12 +135,12 @@ var allowCrossDomain = function(req, res, next) {
     //res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
 
     // intercept OPTIONS method
-    if ('OPTIONS' == req.method) {
-      res.header('Access-Control-Allow-Headers', 'accept, authorization, content-type');
-      res.header('Access-Control-Allow-Methods', 'POST, PUT, DELETE');
+    if ('OPTIONS' === req.method) {
+        res.header('Access-Control-Allow-Headers', 'accept, authorization, content-type');
+        res.header('Access-Control-Allow-Methods', 'POST, PUT, DELETE');
       
-      // res.send(status) is deprecated      
-      res.sendStatus(200);
+        // res.send(status) is deprecated
+        res.sendStatus(200);
     }
     else {
       next();
@@ -153,75 +148,40 @@ var allowCrossDomain = function(req, res, next) {
 };
 
 var restoreUser = function(req, res, next) {
-	
-	if (req.session && req.session.user)
-		req.user = req.session.user;
-		// TODO: use specific user google id to impersonificate session
-		//req.user = '106599856894681365142';
-	
-	next();
+
+    if (req.session && req.session.user){
+        req.user = req.session.user;
+        // TODO: use specific user google id to impersonificate session
+        //req.user = '106599856894681365142';
+    }
+
+    next();
 };
 
-function openLog(logfile) {
-    return fs.createWriteStream(logfile, {
-        flags: "w", encoding: "utf8", mode: 644
+// Setup logging
+var winston = require('winston');
+var expressWinston = require('express-winston');
+if(appConfig.logToFileStream){
+    winston.remove(winston.transports.Console);
+    winston.add(winston.transports.File, {
+        name: 'info-file',
+        filename: appConfig.logFileName,
+        level: 'info'
+    });
+    winston.add(winston.transports.File, {
+        name: 'error-file',
+        filename: appConfig.errorFileName,
+        level: 'error',
+        handleExceptions: true
+    });
+}else{
+    winston.remove(winston.transports.Console);
+    winston.add(winston.transports.Console, {
+        colorize: true
     });
 }
 
-function openError(errorfile) {
-    return fs.createWriteStream(errorfile, {
-        flags: "w", encoding: "utf8", mode: 644
-    });
-}
-
-function log(msg){
-	if (arguments && arguments.length > 1) {
-		msg = JSON.stringify(arguments);
-	}
-	
-	if (appConfig.logToFileStream)
-		logStream.write(msg + "\n");
-	else
-		console.log(msg);
-}
-
-function logError(msg) {
-	if (arguments && arguments.length > 1) {
-		msg = JSON.stringify(arguments);
-	}
-
-	//if (appConfig.logToFileStream)
-	errorStream.write(msg + "\n");
-	/*else
-		console.error(msg);*/
-}
-
-
-
-var logStream = null;
-var errorStream = null;
-
-if (appConfig.logToFileStream) {
-	logStream = openLog(appConfig.logFileName);
-	errorStream = openError(appConfig.errorFileName);
-	
-	// override log function
-	console.log = log;
-	console.warn = log;
-	console.info = log;
-	
-	console.error = logError;
-	
-	process.stdout.write = log;
-	process.stderr.write = logError;
-
-	
-	process.on("uncaughtException", function(err) {
-		logError('\r\n' + err + ': Details: \r\n' + JSON.stringify(arguments));
-	});
-}
-
-log("Starting...");
+winston.info('Starting...');
 
 // setup middleware
 var app = express();
@@ -229,16 +189,24 @@ var app = express();
 app.use(allowCrossDomain);
 
 // configure Express
-app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
+app.use(expressWinston.errorLogger({
+    winstonInstance: winston,
+    level: 'error'
+}));
+app.use(expressWinston.logger({
+    winstonInstance: winston,
+    level: 'info'
+}));
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/server/views'); //optional since express defaults to CWD/views
 app.use(cookieParser());
 app.use(bodyParser());
-app.use(session({ secret: config.sessionSecret,
-                        cookie: { 
-                          maxAge: config.sessionMaxAge
-                        }
-                      }));
+app.use(session({
+    secret: config.sessionSecret,
+    cookie: { 
+        maxAge: config.sessionMaxAge
+    }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(restoreUser);
@@ -250,12 +218,13 @@ app.use(express.static(__dirname + '/bower_components'));
 app.use('/swagger', express.static(__dirname + '/swagger')); 
 
 var resetUser = function(req, res) {
-	if (req.session && req.session.user)
-		delete req.session.user;
-	
-	res.json( {
-		result: true
-	} );
+    if (req.session && req.session.user){
+        delete req.session.user;
+    }
+    
+    res.json( {
+        result: true
+    } );
 };
 
 if (!useAppNames) {
@@ -288,12 +257,12 @@ if (!useAppNames) {
 } else {
     var  i = 0;
     
+    var doIndex = function(req, res){
+        res.render('index');
+    };
     for (i = 0; i < appNames.length; i ++) {
         // Application paths that are protected
-        app.get('/' + appNames[i] + '/', ensureLoggedIn('/' + appNames[i] + '/login'),
-          function(req, res){
-                 res.render('index');
-        });
+        app.get('/' + appNames[i] + '/', ensureLoggedIn('/' + appNames[i] + '/login'), doIndex);
         
         app.use('/' + appNames[i] + '/projects', projects);
         app.use('/' + appNames[i] + '/people', people);
@@ -344,7 +313,7 @@ var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
 // the document or sample of each service.
 var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
 
-console.log('hostName=' + hostName + ':httpsPort=' + httpsPort + ':useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
+winston.info('hostName=' + hostName + ':httpsPort=' + httpsPort + ':useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
 
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || hostName);
@@ -352,28 +321,18 @@ var host = (process.env.VCAP_APP_HOST || hostName);
 var port = httpPort;
 // Start server
 var httpServer = app.listen(port, host);
-	
+    
 httpServer.timeout = (appConfig.serverTimeout ? parseInt(appConfig.serverTimeout): 10) * 60 * 1000;
 
-/*
-// start https server
-var httpsServer = https.createServer(credentials, app);
-
-httpsServer.listen(httpsPort, hostName);
-
-var httpServer = http.createServer( app);
-
-httpServer.listen(httpPort, hostName);
-*/
 //Initialize reminders
 reminder.initialize({
-	env: appConfig.env
+    env: appConfig.env
 });
 
-console.log('server:timeout:' + httpServer.timeout);
+winston.info('server:timeout:' + httpServer.timeout);
 
 // Initialize security layer
 security.initialize(false);
 
-console.log('App started on httpPort=' + httpPort);
+winston.info('App started on httpPort=' + httpPort);
 

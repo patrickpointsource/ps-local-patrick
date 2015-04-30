@@ -12,6 +12,7 @@ var configProperties = require('../../config.json');
 var moment = require('moment');
 var Q = require('q');
 var _ = require('underscore');
+var winston = require('winston');
 
 var OLD_TYPES = {
     Vacation: "Vacation",
@@ -36,7 +37,7 @@ var VACATION_TYPES = {
 module.exports.listNotifications = function( callback) {
     dataAccess.listNotifications( function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading notifications', null);
         } else {
             callback(null, body);
@@ -48,7 +49,7 @@ module.exports.listNotifications = function( callback) {
 module.exports.listNotificationsByPerson = function(person, fields, callback) {
     dataAccess.listNotificationsByPerson(person, fields, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error loading notifications by person', null);
         } else {
             var promises = [];
@@ -69,7 +70,7 @@ module.exports.listNotificationsByPerson = function(person, fields, callback) {
                 Q.all(promises).then(function(results) {
                     callback(null, notifications);
                 }, function (err) {
-                    console.log("Error resolving vacation inside notification: " + err);
+                    winston.info("Error resolving vacation inside notification: " + err);
                     callback(null, notifications);
                 });
             } else {
@@ -122,7 +123,7 @@ module.exports.insertNotification = function(obj, callback) {
 
     dataAccess.insertItem(obj._id, obj, dataAccess.NOTIFICATIONS_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error insert notification', null);
         } else {
             sendEmailTo(obj);
@@ -134,7 +135,7 @@ module.exports.insertNotification = function(obj, callback) {
 module.exports.deleteNotification = function(obj, callback) {
     dataAccess.deleteItem(obj._id, obj._rev, dataAccess.NOTIFICATIONS_KEY, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error delete notification', null);
         } else {
             callback(null, body);
@@ -145,7 +146,7 @@ module.exports.deleteNotification = function(obj, callback) {
 module.exports.getNotification = function(id, callback) {
     dataAccess.getItem(id, function(err, body){
         if (err) {
-            console.log(err);
+            winston.info(err);
             callback('error get notification', null);
         } else {
             callback(null, body);
@@ -207,7 +208,7 @@ var sendEmailTo = function(notification) {
         if (!err) {
             if (!notification.details || !notification.details.resource) {
                 var msg = "error sending notification email.";
-                console.log("error sending notification email.");
+                winston.info("error sending notification email.");
                 return;
             }
             var vacationId = util.getId(notification.details.resource);
@@ -240,27 +241,27 @@ var sendEmailTo = function(notification) {
                                     notification.header, message,
                                     function(err, info) {
                                         if (err) {
-                                            console.log("error sending email to: ", err);
+                                            winston.info("error sending email to: ", err);
                                         }
 
-                                        console.log("Email sent. Info: ", info);
+                                        winston.info("Email sent. Info: ", info);
                                     });
                             } else {
-                                console.log("Error getting person from vacation while sending email: " + vacErr);
+                                winston.info("Error getting person from vacation while sending email: " + vacErr);
                             }
                         });
 
                     } else {
-                        console.log("Cant find user with resource: " + notification.person.resource + " while trying to send an email.");
+                        winston.info("Cant find user with resource: " + notification.person.resource + " while trying to send an email.");
                     }
                 } else {
-                    console.log("Error getting vacation while sending email: " + vacErr);
+                    winston.info("Error getting vacation while sending email: " + vacErr);
                 }
 
             });
 
         } else {
-            console.log("Error: " + err);
+            winston.info("Error: " + err);
         }
     });
 };
