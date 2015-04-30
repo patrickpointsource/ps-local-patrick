@@ -90,6 +90,10 @@ var hostName = appConfig.hostName;
 var webSiteUrl = appConfig.webSiteUrl;
 var appName = appConfig.appName;
 var oauthcbbaseurl = appConfig.oauthcbbaseurl;
+var appNames = ['MMNodeServer', 'MMNodeStaging', 'MMNodeDemo'];
+
+// parse command line arguments
+var useAppNames = false;
 
 var tmpArg;
 var i;
@@ -102,12 +106,19 @@ for (i = 0; i < process.argv.length; i ++) {
         hostName = tmpArg[1];
     else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'httpsport')
         httpsPort = tmpArg[1];   
+    else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'useappnames')
+        useAppNames = tmpArg[1].toLowerCase() == 'true'; 
     else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'appname')
         appName = tmpArg[1]; 
     else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'websiteurl')
         webSiteUrl = tmpArg[1];  
     else if (tmpArg[0] && tmpArg[1] && tmpArg[0].toLowerCase() == 'oauthcbbaseurl')
         oauthcbbaseurl = tmpArg[1];   
+}
+
+if (appName) {
+   appNames = [appName];
+   useAppNames = true;
 }
 
 // Configure passport
@@ -247,35 +258,71 @@ var resetUser = function(req, res) {
 	} );
 };
 
-// Application paths that are protected
-app.get('/', ensureLoggedIn('/login'),
-  function(req, res){
-         res.render('index');
-});
-
-app.use('/projects', projects);
-app.use('/people', people);
-app.use('/assignments', assignments);
-app.use('/notifications', notifications);
-app.use('/tasks', tasks);
-app.use('/roles', roles);
-app.use('/hours', hours);
-app.use('/config', configuration);
-app.use('/links', links);
-app.use('/skills', skills);
-app.use('/vacations', vacations);
-app.use('/departments', departments);
-app.use('/departmentCategories', departmentCategories);
-app.use('/securityRoles', securityRoles);
-app.use('/userRoles', userRoles);
-app.use('/upgrade', upgrade);
-app.use('/reports', reports);
-app.use('/jobTitles', jobTitles);
-
-app.get( '/resetuser', resetUser);
+if (!useAppNames) {
+    // Application paths that are protected
+    app.get('/', ensureLoggedIn('/login'),
+      function(req, res){
+             res.render('index');
+    });
+    
+    app.use('/projects', projects);
+    app.use('/people', people);
+    app.use('/assignments', assignments);
+    app.use('/notifications', notifications);
+    app.use('/tasks', tasks);
+    app.use('/roles', roles);
+    app.use('/hours', hours);
+    app.use('/config', configuration);
+    app.use('/links', links);
+    app.use('/skills', skills);
+    app.use('/vacations', vacations);
+    app.use('/departments', departments);
+    app.use('/departmentCategories', departmentCategories);
+    app.use('/securityRoles', securityRoles);
+    app.use('/userRoles', userRoles);
+    app.use('/upgrade', upgrade);
+    app.use('/reports', reports);
+    app.use('/jobTitles', jobTitles);
+    
+    app.get( '/resetuser', resetUser);
+} else {
+    var  i = 0;
+    
+    for (i = 0; i < appNames.length; i ++) {
+        // Application paths that are protected
+        app.get('/' + appNames[i] + '/', ensureLoggedIn('/' + appNames[i] + '/login'),
+          function(req, res){
+                 res.render('index');
+        });
+        
+        app.use('/' + appNames[i] + '/projects', projects);
+        app.use('/' + appNames[i] + '/people', people);
+        app.use('/' + appNames[i] + '/assignments', assignments);
+        app.use('/' + appNames[i] + '/notifications', notifications);
+        app.use('/' + appNames[i] + '/tasks', tasks);
+        app.use('/' + appNames[i] + '/roles', roles);
+        app.use('/' + appNames[i] + '/hours', hours);
+        app.use('/' + appNames[i] + '/config', configuration);
+        app.use('/' + appNames[i] + '/links', links);
+        app.use('/' + appNames[i] + '/skills', skills);
+        app.use('/' + appNames[i] + '/vacations', vacations);
+        app.use('/' + appNames[i] + '/departments', departments);
+        app.use('/' + appNames[i] + '/departmentCategories', departmentCategories);
+        app.use('/' + appNames[i] + '/securityRoles', securityRoles);
+        app.use('/' + appNames[i] + '/userRoles', userRoles);
+        app.use('/' + appNames[i] + '/upgrade', upgrade);
+        app.use('/' + appNames[i] + '/reports', reports);
+        app.use('/' + appNames[i] + '/jobTitles', jobTitles);
+        
+        app.get( '/' + appNames[i] + '/resetuser', resetUser);
+    }
+}
 
 // Setup routes
-require('./server/routes/auth')(app, passport);
+require('./server/routes/auth')(app, passport, {
+    useAppNames: useAppNames,
+    appNames: appNames
+});
 
 //Setup routes
 require('./server/util/emailSender')({
@@ -297,7 +344,7 @@ var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
 // the document or sample of each service.
 var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
 
-console.log('hostName=' + hostName + ':httpsPort=' + httpsPort + ':appName=' + appName + ':websiteurl:' + webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
+console.log('hostName=' + hostName + ':httpsPort=' + httpsPort + ':useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
 
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || hostName);
