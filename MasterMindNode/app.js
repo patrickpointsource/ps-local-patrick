@@ -176,7 +176,8 @@ if(appConfig.logToFileStream){
 }else{
     winston.remove(winston.transports.Console);
     winston.add(winston.transports.Console, {
-        colorize: true
+        colorize: true,
+        level: 'silly'
     });
 }
 
@@ -209,8 +210,6 @@ app.use(restoreUser);
 // Public paths, mainly UI code
 app.use(express.static(__dirname + '/public')); 
 app.use(express.static(__dirname + '/bower_components')); 
-
-app.use('/swagger', express.static(__dirname + '/swagger')); 
 
 var resetUser = function(req, res) {
     if (req.session && req.session.user){
@@ -293,49 +292,89 @@ require('./server/util/emailSender')({
     appConfig: appConfig
 });
 
-// error logger goes after setting up routes.
-app.use(expressWinston.errorLogger({
-    winstonInstance: winston,
-    level: 'error'
-}));
+var Q = require('q');
+var swaggerTools = require('swagger-tools');
 
+// swaggerRouter configuration
+var options = {
+    controllers: './server/v3/controllers',
+    useStubs: process.env.NODE_ENV === 'production' ? false : true // Conditionally turn on stubs (mock mode)
+};
 
+// The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
+var swaggerDoc = require('./swagger/spec.json');
 
-// There are many useful environment variables available in process.env,
-// please refer to the following document for detailed description:
-// http://ng.w3.bluemix.net/docs/FAQ.jsp#env_var
+var deferred = Q.defer();
 
-// VCAP_APPLICATION contains useful information about a deployed application.
-var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
-// TODO: Get application information and use it in your app.
-
-// VCAP_SERVICES contains all the credentials of services bound to
-// this application. For details of its content, please refer to
-// the document or sample of each service.
-var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
-
-winston.info('hostName=' + hostName + ':httpsPort=' + httpsPort + 
-    ':useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + 
-    webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
-
-// The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
-var host = (process.env.VCAP_APP_HOST || hostName);
-// The port on the DEA for communication with the application:
-var port = httpPort;
-// Start server
-var httpServer = app.listen(port, host);
+// Initialize the Swagger middleware
+swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
     
-httpServer.timeout = (appConfig.serverTimeout ? parseInt(appConfig.serverTimeout): 10) * 60 * 1000;
+    if(options.useStubs){
+        // swagger-tools does not set a Content-Type header on it's mock data
+        // So, we'll force one for now so that the swagger-ui can operate properly
+        app.use('/v3', function(req, res, next){
+            res.header('Content-Type', 'application/json');
+            next();
+        });
+    }
+    // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
+    app.use(middleware.swaggerMetadata());
 
-//Initialize reminders
-reminder.initialize({
-    env: appConfig.env
+    // Validate Swagger requests
+    app.use(middleware.swaggerValidator());
+
+    // Route validated requests to appropriate controller
+    app.use(middleware.swaggerRouter(options));
+
+    // Serve the Swagger documents and Swagger UI
+    app.use(middleware.swaggerUi());
+    deferred.resolve();
 });
 
-winston.info('server:timeout:' + httpServer.timeout);
+deferred.promise.then(function(){
 
-// Initialize security layer
-security.initialize(false);
+    // error logger goes after setting up routes.
+    app.use(expressWinston.errorLogger({
+        winstonInstance: winston,
+        level: 'error'
+    }));
 
-winston.info('App started on httpPort=' + httpPort);
+    // There are many useful environment variables available in process.env,
+    // please refer to the following document for detailed description:
+    // http://ng.w3.bluemix.net/docs/FAQ.jsp#env_var
 
+    // VCAP_APPLICATION contains useful information about a deployed application.
+    var appInfo = JSON.parse(process.env.VCAP_APPLICATION || '{}');
+    // TODO: Get application information and use it in your app.
+
+    // VCAP_SERVICES contains all the credentials of services bound to
+    // this application. For details of its content, please refer to
+    // the document or sample of each service.
+    var services = JSON.parse(process.env.VCAP_SERVICES || '{}');
+
+    winston.info('hostName=' + hostName + ':httpsPort=' + httpsPort + 
+        ':useAppNames=' + useAppNames + ':appName=' + appName + ':websiteurl:' + 
+        webSiteUrl + ':oauthcbbaseurl=' + oauthcbbaseurl);
+
+    // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
+    var host = (process.env.VCAP_APP_HOST || hostName);
+    // The port on the DEA for communication with the application:
+    var port = httpPort;
+    // Start server
+    var httpServer = app.listen(port, host);
+        
+    httpServer.timeout = (appConfig.serverTimeout ? parseInt(appConfig.serverTimeout): 10) * 60 * 1000;
+
+    //Initialize reminders
+    reminder.initialize({
+        env: appConfig.env
+    });
+
+    winston.info('server:timeout:' + httpServer.timeout);
+
+    // Initialize security layer
+    security.initialize(false);
+
+    winston.info('App started on httpPort=' + httpPort);
+
+});
