@@ -2,7 +2,8 @@ angular.module('Mastermind').directive('hoursEntry', hoursEntry);
 
 function hoursEntry() {
 
-    HoursCtrl.$inject = ['$scope',
+    HoursCtrl.$inject = [
+        '$scope',
         '$state',
         '$rootScope',
         '$timeout',
@@ -26,7 +27,9 @@ function hoursEntry() {
         // transclude: true,
         // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
         link: function ($scope, iElm, iAttrs, controller) {
-
+            if (angular.isDefined(iAttrs['mode'])) {
+                $scope.mode = iAttrs['mode'];
+            }
         }
     };
 
@@ -74,12 +77,6 @@ function hoursEntry() {
         $scope.entryFormOpen = false;
         $scope.lastSelectedDay = {};
         // $scope.hoursToDelete = [];
-
-
-        // Get todays date formatted as yyyy-MM-dd
-        var dd = $scope.startDate.format('DD');
-        var mm = $scope.startDate.format('MM');
-        var yyyy = $scope.startDate.format('YYYY');
 
         var taskIconsMap = {
             'meetings': 'fa-comments-o',
