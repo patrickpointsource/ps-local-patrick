@@ -5,6 +5,7 @@ function hoursEntry() {
     HoursCtrl.$inject = ['$scope',
         '$state',
         '$rootScope',
+        '$timeout',
         'Resources',
         'ProjectsService',
         'HoursService',
@@ -32,14 +33,15 @@ function hoursEntry() {
     return directive;
 
     function HoursCtrl($scope,
-        $state,
-        $rootScope,
-        Resources,
-        ProjectsService,
-        HoursService,
-        TasksService,
-        RolesService,
-        AssignmentService) {
+                       $state,
+                       $rootScope,
+                       $timeout,
+                       Resources,
+                       ProjectsService,
+                       HoursService,
+                       TasksService,
+                       RolesService,
+                       AssignmentService) {
 
         $scope.isInFuture = function (date) {
             return moment(date).isAfter(moment(), 'day');
@@ -195,7 +197,7 @@ function hoursEntry() {
         $scope.hoursToCSV = {
             stringify: function (str) {
                 return '"' + str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
-                    .replace(/"/g, '""') + // replace quotes with double quotes
+                        .replace(/"/g, '""') + // replace quotes with double quotes
                     '"';
             },
 
@@ -851,7 +853,7 @@ function hoursEntry() {
 
             if (hourEntry.hoursRecord && (hourEntry.hoursRecord.isAdded || hourEntry.hoursRecord && hourEntry.hoursRecord.isCopied || hourEntry.hoursRecord.isDefault)) {
                 // use timeout to perform code after init
-                window.setTimeout(function () {
+                $timeout(function () {
 
                     $('.dashboard-widget.hours .row.hours-logged .hours-logged-entry').each(function (ind, el) {
 
