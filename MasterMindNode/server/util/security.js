@@ -21,6 +21,9 @@ var DEFAULT_ROLES = {
 module.exports.DEFAULT_ROLES = DEFAULT_ROLES;
 
 module.exports.isAllowed = function(userId, response, resource, permissions, callback, notAllowedCallback, preventNotAllowedInResponce) {
+    if(!userId){
+        return response.json(401, {'code': 401, 'message': 'User authentication required.'});
+    }
 
     acl.allowedPermissions(userId, resource, function(err, permissions){
         winston.info(permissions);
