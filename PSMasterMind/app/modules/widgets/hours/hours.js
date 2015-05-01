@@ -4,15 +4,11 @@ function hoursEntry() {
 
     var directive = {
         name: 'hoursEntry',
-        scope: true, // {} = isolate, true = child, false/undefined = no change
+        scope: true,
         controller: HoursCtrl,
-        // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
         restrict: 'EA',
-        // template: '',
         templateUrl: 'modules/widgets/hours/hoursEntry.html',
         replace: true,
-        // transclude: true,
-        // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
         link: function ($scope, iElm, iAttrs, controller) {
             if (angular.isDefined(iAttrs['mode'])) {
                 $scope.mode = iAttrs['mode'];
@@ -77,6 +73,11 @@ function hoursEntry() {
         $scope.entryFormOpen = false;
         $scope.lastSelectedDay = {};
         // $scope.hoursToDelete = [];
+
+        $scope.csvData = null;
+
+        $scope.newHoursRecord = {};
+        $scope.hoursValidation = [];
 
         var taskIconsMap = {
             'meetings': 'fa-comments-o',
@@ -190,7 +191,6 @@ function hoursEntry() {
             return str;
         };
 
-        $scope.csvData = null;
         $scope.hoursToCSV = {
             stringify: function (str) {
                 return '"' + str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
@@ -661,17 +661,17 @@ function hoursEntry() {
             delete hourEntry.selectedItem;
         };
 
-        // Not sure why this is needed
+        // Not sure why this is needed - RCM 2015-05-01 18:37
         $scope.bindEventHandlers = function () {
             $(document).bind('click', $scope.handleDocClick);
         };
 
-        // Not sure why this is needed
+        // Not sure why this is needed - RCM 2015-05-01 18:37
         $scope.unbindEventHandlers = function () {
             $(document).unbind('click', $scope.handleDocClick);
         };
 
-        // This should be a part of an autocomplete directive
+        // This should be a part of an autocomplete directive - RCM 2015-05-01 18:37
         $scope.bindAutocompleteHandlers = function (input) {
             input.bind('dblclick', function () {
                 var autocomplete = $(this).parent().find('ul.dropdown-menu');
@@ -757,7 +757,7 @@ function hoursEntry() {
             });
         };
 
-        // This should be part of an autocomplete directive
+        // This should be part of an autocomplete directive - RCM 2015-05-01 18:39
         $scope.clearAutocompleteHandlers = function (input) {
             input.unbind('click');
             input.unbind('dblclick');
@@ -766,7 +766,7 @@ function hoursEntry() {
             input.unbind('keydown');
         };
 
-        // This should be part of an autocomplete directive I think
+        // This should be part of an autocomplete directive I think - RCM 2015-05-01 18:39
         $scope.menuItemSelected = function (menuItem) {
             var id = menuItem.attr('_id');
 
@@ -790,7 +790,7 @@ function hoursEntry() {
 
         };
 
-        // Not sure what this does or why
+        // Not sure what this does or why - RCM 2015-05-01 18:40
         function setExpectedHoursPrompt(hourEntry, selectedProject) {
             hourEntry.expectedHours = null;
 
@@ -814,7 +814,7 @@ function hoursEntry() {
             }
         }
 
-        // Not sure why this is needed
+        // Not sure why this is needed - RCM 2015-05-01 18:40
         $scope.handleDocClick = function (e) {
             e = e ? e : window.event;
 
@@ -842,11 +842,11 @@ function hoursEntry() {
             });
         };
 
-        // This sets up a new row within the hours entry area
+        // This sets up a new row within the hours entry area - RCM 2015-05-01 18:42
         $scope.initNewHoursEntry = function (hourEntry) {
 
             // This shouldn't be necessary... A user that can't edit should have the control visible
-            // so this should never get called in that case
+            // so this should never get called in that case - RCM 2015-05-01 18:43
             if (!$scope.canEditHours()) {
                 if (hourEntry.hoursRecord) {
                     hourEntry.hoursRecord.isAdded = false;
@@ -859,7 +859,7 @@ function hoursEntry() {
                 return;
             }
 
-            // No clue what this is doing or why
+            // No clue what this is doing or why - RCM 2015-05-01 18:43
             if (hourEntry.hoursRecord && (hourEntry.hoursRecord.isAdded || hourEntry.hoursRecord && hourEntry.hoursRecord.isCopied || hourEntry.hoursRecord.isDefault)) {
                 // use timeout to perform code after init
                 $timeout(function () {
@@ -934,6 +934,7 @@ function hoursEntry() {
             }
         };
 
+        // This sounds like the two previous functions - RCM 2015-05-01 19:36
         $scope.addNewHoursRecord = function (day) {
             var newHoursRecord = {
                 date: day.date,
@@ -960,7 +961,7 @@ function hoursEntry() {
             }
         };
 
-        // Not sure what this does or why
+        // Not sure what this does or why - RCM 2015-05-01 18:45
         $scope.anyAdded = function () {
             var result = false;
 
@@ -975,7 +976,7 @@ function hoursEntry() {
             return result;
         };
 
-        // Not sure what this does or why
+        // Not sure what this does or why - RCM 2015-05-01 18:46
         $scope.anyCopied = function () {
             var result = false;
 
@@ -990,12 +991,12 @@ function hoursEntry() {
             return result;
         };
 
-        // Not sure what this does or why
+        // Not sure what this does or why - RCM 2015-05-01 18:46
         $scope.addNewTaskHours = function () {
             $scope.addNewHours(true);
         };
 
-        // Gets the task listing and then sets up some inline styles for proper display
+        // Gets the task listing and then sets up some inline styles for proper display - RCM 2015-05-01 14:56
         $scope.loadAvailableTasks = function () {
             TasksService.refreshTasks().then(function (tasks) {
                 _.each(tasks, function (t) {
@@ -1019,7 +1020,7 @@ function hoursEntry() {
             return $scope.theDayFormatted;
         };
 
-        // This is not needed with angular formatting filters available
+        // This is not needed with angular formatting filters available - RCM 2015-05-01 19:21
         $scope.formatHours = function (hours) {
             return Util.formatFloat(hours);
         };
@@ -1029,7 +1030,7 @@ function hoursEntry() {
         // Doc Brown - time travel.
         $scope.dateIndex = 0;
 
-        // This one moves to previous week
+        // This one moves to previous week - RCM 2015-05-01 19:22
         $scope.backInTime = function () {
             $scope.dateIndex = $scope.dateIndex + 7;
             $scope.entryFormOpen = false;
@@ -1039,7 +1040,7 @@ function hoursEntry() {
             $scope.$emit('hours:backInTime');
         };
 
-        // This one moves to next week
+        // This one moves to next week - RCM 2015-05-01 19:24
         $scope.forwardInTime = function () {
             $scope.dateIndex = $scope.dateIndex - 7;
             $scope.entryFormOpen = false;
@@ -1052,7 +1053,7 @@ function hoursEntry() {
         };
 
         // Seems like this function could be simplified if there were a way
-        // to set the day context for the hours entries area
+        // to set the day context for the hours entries area - RCM 2015-05-01 19:24
         $scope.backDay = function () {
             var foundInd;
 
@@ -1078,7 +1079,7 @@ function hoursEntry() {
         };
 
         // Seems like this function could be simplified if there were a way
-        // to set the day context for the hours entries area
+        // to set the day context for the hours entries area - RCM 2015-05-01 19:25
         $scope.nextDay = function () {
             var foundInd;
 
@@ -1125,6 +1126,7 @@ function hoursEntry() {
             $scope.hoursRequest();
         };
 
+        // Not sure why we need this or why the init function doesn't handle this - RCM 2015-05-01 19:25
         $scope.thisWeek = function () {
             $scope.dateIndex = 0;
             $scope.entryFormOpen = false;
@@ -1144,7 +1146,7 @@ function hoursEntry() {
                 var dateFormatted = moment.format('YYYY-MM-DD');
 
                 $scope.thisWeekDates.push(dateFormatted);
-                $scope.thisWeekDayLables[i] = moment.format('ddd');
+                $scope.thisWeekDayLables.push(moment.format('ddd'));
             }
         };
 
@@ -1185,6 +1187,7 @@ function hoursEntry() {
             // console.log($scope.thisWeekDates.length);
         };
 
+        // Not sure why this is doing so much. - RCM 2015-05-01 19:30
         $scope.showToday = function (e) {
             e = e ? e : window.event;
 
@@ -1227,6 +1230,7 @@ function hoursEntry() {
 
         };
 
+        // don't think we use this - RCM 2015-05-01 19:31
         $scope.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
         $scope.prettyCalendarFormats = function (firstDay, lastDay) {
@@ -1236,44 +1240,49 @@ function hoursEntry() {
             return $scope.prettyCalendarDates;
         };
 
+        // Not so sure this is doing what its name says - RCM 2015-05-01 19:37
         $scope.calculateLastBusinessDay = function (cb) {
             var todayDate = $scope.getTodaysDate();
             var startOfWeek = $scope.moment(todayDate).day(0);
             var diff = $scope.moment(todayDate).diff($scope.moment(startOfWeek), 'days');
-            var firstBusineesDay;
+            var firstBusinessDay;
 
             if (diff >= 5) {
-                firstBusineesDay = $scope.moment(startOfWeek);
+                firstBusinessDay = $scope.moment(startOfWeek);
             } else {
-                firstBusineesDay = startOfWeek.subtract((5 - diff) + 1, 'days');
+                firstBusinessDay = startOfWeek.subtract((5 - diff) + 1, 'days');
             }
 
-            firstBusineesDay = firstBusineesDay.format('YYYY-MM-DD');
-            HoursService.getHoursRecordsBetweenDates($scope.getCurrentPerson(), firstBusineesDay, todayDate).then(function (result) {
-                firstBusineesDay = '';
+            firstBusinessDay = firstBusinessDay.format('YYYY-MM-DD');
+            HoursService.getHoursRecordsBetweenDates($scope.getCurrentPerson(), firstBusinessDay, todayDate).then(function (result) {
+                firstBusinessDay = '';
 
                 for (var j = result.length - 1; result[j] && result[j].totalHours == 0 && j >= 0; j--) {
                     if (result[j].totalHours == 0 && $scope.moment(result[j].date).weekday() < 6 && $scope.moment(result[j].date).weekday() > 0) {
-                        firstBusineesDay = result[j].date;
+                        firstBusinessDay = result[j].date;
                     }
                 }
 
-                if (!firstBusineesDay) {
-                    firstBusineesDay = todayDate;
+                if (!firstBusinessDay) {
+                    firstBusinessDay = todayDate;
                 }
-                cb(firstBusineesDay);
+                cb(firstBusinessDay);
             });
+
+            // Do we need this? - RCM 2015-05-01 19:32
             /*} else {
              var weekday = $scope.moment( todayDate ).weekday( );
 
-             firstBusineesDay = $scope.moment( todayDate ).subtract( weekday - 1, 'days' );
+             firstBusinessDay = $scope.moment( todayDate ).subtract( weekday - 1, 'days' );
 
-             firstBusineesDay = firstBusineesDay.format( 'YYYY-MM-DD' );
+             firstBusinessDay = firstBusinessDay.format( 'YYYY-MM-DD' );
 
-             cb( firstBusineesDay );
+             cb( firstBusinessDay );
              }*/
         };
 
+        // Thsi function is doing too much so we need to figure out how to
+        // break it down into smaller pieces. - RCM 2015-05-01 19:33
         $scope.hoursRequest = function (cb) {
             var numberVal = function (v) {
                 if (!isNaN(parseFloat(v))) {
@@ -1413,9 +1422,7 @@ function hoursEntry() {
             }
         };
 
-        $scope.newHoursRecord = {};
-        $scope.hoursValidation = [];
-
+        // Validation errors? - RCM 2015-05-01 19:39
         $scope.getNewHoursValidationErrors = function (hourEntry) {
 
             $scope.hoursValidation = [];
@@ -1466,6 +1473,7 @@ function hoursEntry() {
             return $scope.hoursValidation.length > 0;
         };
 
+        // This is a lot of validation - RCM 2015-05-01 19:38
         $scope.validateAndCalculateTotalHours = function () {
             var entries = $scope.selected.hoursEntries;
             var hoursRecords = [];
@@ -1558,6 +1566,7 @@ function hoursEntry() {
             selectedDisplayedHours.totalHours = totalHours;
         };
 
+        // So how many places do we actually add the hours? - RCM 2015-05-01 19:38
         $scope.addHours = function (hourEntry, isAdded) {
             $scope.validateAndCalculateTotalHours();
 
@@ -1595,6 +1604,7 @@ function hoursEntry() {
 
         };
 
+        // The next few methods all do something for copying hours...lot of code. - RCM 2015-05-01 19:40
         $scope.copyHoursEntry = function () {
             $scope.copyHours();
 
@@ -1665,6 +1675,7 @@ function hoursEntry() {
                 });
             }
         };
+        // This should be unnecessary - RCM 2015-05-01 19:40
         var getDate = function (dateString) {
             var tmpD = dateString.split('-');
             var date = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]));
