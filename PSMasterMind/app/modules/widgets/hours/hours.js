@@ -2,19 +2,6 @@ angular.module('Mastermind').directive('hoursEntry', hoursEntry);
 
 function hoursEntry() {
 
-    HoursCtrl.$inject = [
-        '$scope',
-        '$state',
-        '$rootScope',
-        '$timeout',
-        'Resources',
-        'ProjectsService',
-        'HoursService',
-        'TasksService',
-        'RolesService',
-        'AssignmentService'
-    ];
-
     var directive = {
         name: 'hoursEntry',
         scope: true, // {} = isolate, true = child, false/undefined = no change
@@ -32,6 +19,19 @@ function hoursEntry() {
             }
         }
     };
+
+    HoursCtrl.$inject = [
+        '$scope',
+        '$state',
+        '$rootScope',
+        '$timeout',
+        'Resources',
+        'ProjectsService',
+        'HoursService',
+        'TasksService',
+        'RolesService',
+        'AssignmentService'
+    ];
 
     return directive;
 
@@ -661,13 +661,17 @@ function hoursEntry() {
             delete hourEntry.selectedItem;
         };
 
+        // Not sure why this is needed
         $scope.bindEventHandlers = function () {
             $(document).bind('click', $scope.handleDocClick);
         };
+
+        // Not sure why this is needed
         $scope.unbindEventHandlers = function () {
             $(document).unbind('click', $scope.handleDocClick);
         };
 
+        // This should be a part of an autocomplete directive
         $scope.bindAutocompleteHandlers = function (input) {
             input.bind('dblclick', function () {
                 var autocomplete = $(this).parent().find('ul.dropdown-menu');
@@ -753,6 +757,7 @@ function hoursEntry() {
             });
         };
 
+        // This should be part of an autocomplete directive
         $scope.clearAutocompleteHandlers = function (input) {
             input.unbind('click');
             input.unbind('dblclick');
@@ -761,6 +766,7 @@ function hoursEntry() {
             input.unbind('keydown');
         };
 
+        // This should be part of an autocomplete directive I think
         $scope.menuItemSelected = function (menuItem) {
             var id = menuItem.attr('_id');
 
@@ -784,6 +790,7 @@ function hoursEntry() {
 
         };
 
+        // Not sure what this does or why
         function setExpectedHoursPrompt(hourEntry, selectedProject) {
             hourEntry.expectedHours = null;
 
@@ -807,7 +814,7 @@ function hoursEntry() {
             }
         }
 
-
+        // Not sure why this is needed
         $scope.handleDocClick = function (e) {
             e = e ? e : window.event;
 
@@ -835,7 +842,11 @@ function hoursEntry() {
             });
         };
 
+        // This sets up a new row within the hours entry area
         $scope.initNewHoursEntry = function (hourEntry) {
+
+            // This shouldn't be necessary... A user that can't edit should have the control visible
+            // so this should never get called in that case
             if (!$scope.canEditHours()) {
                 if (hourEntry.hoursRecord) {
                     hourEntry.hoursRecord.isAdded = false;
@@ -848,6 +859,7 @@ function hoursEntry() {
                 return;
             }
 
+            // No clue what this is doing or why
             if (hourEntry.hoursRecord && (hourEntry.hoursRecord.isAdded || hourEntry.hoursRecord && hourEntry.hoursRecord.isCopied || hourEntry.hoursRecord.isDefault)) {
                 // use timeout to perform code after init
                 $timeout(function () {
@@ -948,6 +960,7 @@ function hoursEntry() {
             }
         };
 
+        // Not sure what this does or why
         $scope.anyAdded = function () {
             var result = false;
 
@@ -962,6 +975,7 @@ function hoursEntry() {
             return result;
         };
 
+        // Not sure what this does or why
         $scope.anyCopied = function () {
             var result = false;
 
@@ -976,10 +990,12 @@ function hoursEntry() {
             return result;
         };
 
+        // Not sure what this does or why
         $scope.addNewTaskHours = function () {
             $scope.addNewHours(true);
         };
 
+        // Gets the task listing and then sets up some inline styles for proper display
         $scope.loadAvailableTasks = function () {
             TasksService.refreshTasks().then(function (tasks) {
                 _.each(tasks, function (t) {
@@ -1003,6 +1019,7 @@ function hoursEntry() {
             return $scope.theDayFormatted;
         };
 
+        // This is not needed with angular formatting filters available
         $scope.formatHours = function (hours) {
             return Util.formatFloat(hours);
         };
@@ -1012,6 +1029,7 @@ function hoursEntry() {
         // Doc Brown - time travel.
         $scope.dateIndex = 0;
 
+        // This one moves to previous week
         $scope.backInTime = function () {
             $scope.dateIndex = $scope.dateIndex + 7;
             $scope.entryFormOpen = false;
@@ -1020,6 +1038,8 @@ function hoursEntry() {
 
             $scope.$emit('hours:backInTime');
         };
+
+        // This one moves to next week
         $scope.forwardInTime = function () {
             $scope.dateIndex = $scope.dateIndex - 7;
             $scope.entryFormOpen = false;
@@ -1031,6 +1051,8 @@ function hoursEntry() {
             $scope.$emit('hours:forwardInTime');
         };
 
+        // Seems like this function could be simplified if there were a way
+        // to set the day context for the hours entries area
         $scope.backDay = function () {
             var foundInd;
 
@@ -1055,6 +1077,8 @@ function hoursEntry() {
 
         };
 
+        // Seems like this function could be simplified if there were a way
+        // to set the day context for the hours entries area
         $scope.nextDay = function () {
             var foundInd;
 
@@ -1128,7 +1152,7 @@ function hoursEntry() {
             var today = $scope.moment();
 
             if (!$scope.today && $scope.firstBusinessDay) {
-                return $scope.firstBusinessDay.format('YYYY-MM-DD');
+                return moment($scope.firstBusinessDay).format('YYYY-MM-DD');
             }
 
             return today.format('YYYY-MM-DD');
