@@ -292,6 +292,13 @@ require('./server/util/emailSender')({
     appConfig: appConfig
 });
 
+// Before loading the swagger-based routes, lets setup the dbAccess object
+// that those controllers will use
+
+require('./server/v3/dbAccess').init({
+    env: appConfig.env
+});
+
 var Q = require('q');
 var swaggerTools = require('swagger-tools');
 
@@ -313,6 +320,7 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
         // swagger-tools does not set a Content-Type header on it's mock data
         // So, we'll force one for now so that the swagger-ui can operate properly
         app.use('/v3', function(req, res, next){
+            res.header('Last-Modified', (new Date()).toUTCString());
             res.header('Content-Type', 'application/json');
             next();
         });
@@ -321,7 +329,9 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
     app.use(middleware.swaggerMetadata());
 
     // Validate Swagger requests
-    app.use(middleware.swaggerValidator());
+    app.use(middleware.swaggerValidator({
+        validateResponse: true
+    }));
 
     // Route validated requests to appropriate controller
     app.use(middleware.swaggerRouter(options));

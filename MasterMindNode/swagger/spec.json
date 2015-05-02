@@ -776,7 +776,7 @@
             },
             "post": {
                 "summary": "Create Task",
-                "description": "Create a new task.\nAn ID in the POST-ed task will be ignored.\n",
+                "description": "Create a new task.\nAn 'id' or 'created' field in the POST-ed task will be ignored.\n",
                 "tags": [
                     "Tasks"
                 ],
@@ -808,9 +808,11 @@
             }
         },
         "/tasks/{id}": {
+            "x-swagger-router-controller": "Tasks",
             "get": {
                 "summary": "Retrieve Task",
                 "description": "The Task endpoint returns a single task.\n",
+                "operationId": "getSingleTask",
                 "parameters": [
                     {
                         "name": "id",
@@ -2223,5 +2225,22 @@
                 }
             }
         }
-    }
+    },
+    "securityDefinitions": {
+        "oauth2": {
+            "type": "oauth2",
+            "authorizationUrl": "http://localhost:3000/auth/google",
+            "flow": "implicit",
+            "scopes": {
+                "https://www.googleapis.com/auth/plus.login": "authenticated via Google Plus"
+            }
+        }
+    },
+    "security": [
+        {
+            "oauth2": [
+                "https://www.googleapis.com/auth/plus.login"
+            ]
+        }
+    ]
 }
