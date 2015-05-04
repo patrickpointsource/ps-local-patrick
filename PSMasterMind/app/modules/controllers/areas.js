@@ -18,7 +18,7 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
         }];
 
         // Default dashboard view overwritten below if Exec or Management
-        $scope.dashboardScreen = 'views/dashboards/baseDashboard.html';
+        $scope.dashboardScreen = 'modules/views/dashboards/baseDashboard.html';
 
         $scope.refreshNotifications = function () {
             $scope.notificationsLoaded = false;
@@ -64,10 +64,10 @@ angular.module('Mastermind').controller('AreasCtrl', ['$scope', '$state', '$root
                 $scope.hasManagementRights = accessRights.hasManagementRights;
 
                 if (accessRights.hasExecutiveRights) {
-                    $scope.dashboardScreen = 'views/dashboards/execDashboard.html';
+                    $scope.dashboardScreen = 'modules/views/dashboards/execDashboard.html';
                 }
                 if (accessRights.hasManagementRights || accessRights.hasProjectManagementRights) {
-                    $scope.dashboardScreen = 'views/dashboards/managerDashboard.html';
+                    $scope.dashboardScreen = 'modules/views/dashboards/managerDashboard.html';
                 }
 
                 $scope.notifications = [];

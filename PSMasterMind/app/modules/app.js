@@ -47,7 +47,7 @@
                 $stateProvider
                     .state('home', {
                         url: '/',
-                        templateUrl: 'views/main.html',
+                        templateUrl: 'modules/views/main.html',
                         controller: 'MainCtrl'
                     })
                     .state('admin', {
