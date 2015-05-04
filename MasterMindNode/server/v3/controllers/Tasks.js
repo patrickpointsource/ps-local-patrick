@@ -182,7 +182,7 @@ module.exports.put = function(req, res, next){
                             // Retrieve the current state of the doc to accurately reflect what's in the DB
                             db.get(docID, function(err, doc){
                                 if(err){
-                                    return access.sendJson(res, {'message': 'Error occurred while retrieving newly created document.'}, 500);
+                                    return access.sendJson(res, {'message': 'Error occurred while retrieving newly updated document.'}, 500);
                                 }
                                 access.sendJson(res, convertTaskForRestAPI(doc));
                             });
