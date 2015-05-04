@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="collapse navbar-collapse width" id="navbar-collapse-mobile">
-                            <ng-include src="'modules/views/mainMenu.html'" onload=" this.additionalClass = 'navbar-inverse visible-xs visible-sm visible-md' "></ng-include>
+                            <ng-include src="'modules/menu/menu.html'" onload=" this.additionalClass = 'navbar-inverse visible-xs visible-sm visible-md' "></ng-include>
                         </div>
 
                         <div class="user-info-container" style="right: 90px;">
@@ -119,7 +119,7 @@
                         </form>
                     </div>
 
-                    <ng-include src="'modules/views/mainMenu.html'" onload=" this.additionalClass = '' "></ng-include>
+                    <ng-include src="'modules/menu/menu.html'" onload=" this.additionalClass = '' "></ng-include>
                 </nav>
             </header>
 
@@ -226,7 +226,6 @@
     <script src="modules/controllers/areas.js"></script>
     <script src="modules/controllers/config.js"></script>
     <script src="modules/controllers/breadcrump.js"></script>
-    <script src="modules/controllers/menu.js"></script>
 
     <!-- MODULES -->
     <!-- modules/admin -->
@@ -238,6 +237,9 @@
     <script src="modules/admin/services/departmentsService.js"></script>
     <script src="modules/admin/controllers/departments.js"></script>
     <script src="modules/admin/controllers/jobTitles.js"></script>
+
+    <!-- modules/menu -->
+    <script src="modules/menu/menu.js"></script>
 
     <!-- modules/people -->
     <script src="modules/people/people.js"></script>
