@@ -358,18 +358,7 @@ angular.module('Mastermind.services.projects')
          */
         this.getToday = function () {
             //Get todays date formatted as yyyy-MM-dd
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = yyyy + '-' + mm + '-' + dd;
-
+            var today = moment().format('YYYY-MM-DD');
             return today;
         };
 
@@ -769,17 +758,7 @@ angular.module('Mastermind.services.projects')
          */
         this.getBacklogProjectsUsingQuery = function (onSuccess) {
             //Get todays date formatted as yyyy-MM-dd
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = yyyy + '-' + mm + '-' + dd;
+            var today = moment().format('YYYY-MM-DD');
 
             /*
              * Changing backlog project Query to use the committed flag and the project type.
@@ -821,17 +800,7 @@ angular.module('Mastermind.services.projects')
 
         this.getPipelineProjectsUsingQuery = function (onSuccess) {
             //Get todays date formatted as yyyy-MM-dd
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = yyyy + '-' + mm + '-' + dd;
+            var today = moment().format('YYYY-MM-DD');
 
             /*
              * Pipeline query based on the committed flag and the project type.
@@ -868,17 +837,7 @@ angular.module('Mastermind.services.projects')
 
         this.getOngoingProjectsUsingQuery = function (onSuccess) {
             //Get todays date formatted as yyyy-MM-dd
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = yyyy + '-' + mm + '-' + dd;
+            var today = moment().format('YYYY-MM-DD');
 
             var apQuery =
             {
@@ -935,17 +894,7 @@ angular.module('Mastermind.services.projects')
          */
         this.getUnfinishedProjectsUsingQuery = function (onSuccess) {
             //Get todays date formatted as yyyy-MM-dd
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = yyyy + '-' + mm + '-' + dd;
+            var today = moment().format('YYYY-MM-DD');
 
             var apQuery =
             {
@@ -991,17 +940,7 @@ angular.module('Mastermind.services.projects')
          */
         this.getInvestmentProjectsUsingQuery = function (onSuccess) {
             //Get todays date formatted as yyyy-MM-dd
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = yyyy + '-' + mm + '-' + dd;
+            var today = moment().format('YYYY-MM-DD');
 
             /*
              * Changing active project Query to use the committed flag and the project type.
@@ -1039,17 +978,7 @@ angular.module('Mastermind.services.projects')
          */
         this.getCompletedProjectsUsingQuery = function (onSuccess) {
             //Get todays date formatted as yyyy-MM-dd
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = yyyy + '-' + mm + '-' + dd;
+            var today = moment().format('YYYY-MM-DD');
 
             /*
              * Changing active project Query to use the committed flag and the project type.
@@ -1088,17 +1017,7 @@ angular.module('Mastermind.services.projects')
          */
         this.getDealLostProjectsUsingQuery = function (onSuccess) {
             //Get todays date formatted as yyyy-MM-dd
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = yyyy + '-' + mm + '-' + dd;
+            var today = moment().format('YYYY-MM-DD');
 
             var apQuery = projectsQueryMap("deallost");
 
@@ -1146,17 +1065,7 @@ angular.module('Mastermind.services.projects')
         this.getProjectState = function (project) {
             var ret = null;
             if (project) {
-                var today = new Date();
-                var dd = today.getDate();
-                var mm = today.getMonth() + 1; //January is 0!
-                var yyyy = today.getFullYear();
-                if (dd < 10) {
-                    dd = '0' + dd;
-                }
-                if (mm < 10) {
-                    mm = '0' + mm;
-                }
-                today = yyyy + '-' + mm + '-' + dd;
+                var today = moment().format('YYYY-MM-DD');
 
                 var startDate = project.startDate;
                 var endDate = project.endDate;
@@ -1208,17 +1117,7 @@ angular.module('Mastermind.services.projects')
             var getProjectState = this.getProjectState;
 
             //Get todays date formatted as yyyy-MM-dd
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = yyyy + '-' + mm + '-' + dd;
+            var today = moment().format('YYYY-MM-DD');
 
             var query =
             {
