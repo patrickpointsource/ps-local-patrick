@@ -1,6 +1,6 @@
 {
   "name": "MasterMind",
-  "version": "0.0.1",
+  "version": "3.0.0-pre0.1",
   "description": "MasterMind from PointSource",
   "main": "index.js",
   "dependencies": {

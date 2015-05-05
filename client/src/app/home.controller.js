@@ -11,7 +11,7 @@
   function HomeController ($scope, psafLogger) {
 
   	var logger = psafLogger.getInstance('mastermind.reports.controller');
-  	logger.info('Welcome to mastermind');
+  	logger.info('Welcome to MasterMind');
 
   }
 

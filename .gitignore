@@ -186,3 +186,6 @@ $RECYCLE.BIN/
 npm-debug.log
 sprout-debug.log
 sprout_packages
+
+# added by GitSavvy
+/client/Gemfile.lock
