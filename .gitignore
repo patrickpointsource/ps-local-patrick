@@ -178,10 +178,13 @@ $RECYCLE.BIN/
 # WebStorm files
 .idea/
 
+<<<<<<< HEAD
 # SublimeText files
 *.sublime-project
 *.sublime-workspace
 
+=======
+>>>>>>> e9b6adc204cc7196cb9c952f0bdd988889ca8a3e
 # Sprout specific
 npm-debug.log
 sprout-debug.log
