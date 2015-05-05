@@ -1,0 +1,100 @@
+#!/bin/sh
+PASS=true
+
+############################################################################################################
+# Run unit tests
+############################################################################################################
+
+# run all tests inside the test directory
+./node_modules/.bin/mocha ./test/*.js
+#./node_modules/.bin/jasmine ./test/*.js
+
+############################################################################################################
+# Validate app directory structure
+############################################################################################################
+
+# Determine if a 'test' directory exists in the root directory
+if [ -d ./test ]; then
+    echo "'test' directory exists"
+else
+    echo "'test' directory doesn't exist"
+    PASS=false
+fi
+
+# Determine if a 'dist' directory exists in the root directory
+if [ -d ./dist ]; then
+    echo "'dist' directory exists"
+    # Determine if a 'dist/server' directory exists in the root directory
+    if [ -d ./dist/server ]; then
+        echo "'dist/server' directory exists"
+    else
+        echo "'dist/server' directory doesn't exist"
+        PASS=false
+    fi
+    # Determine if a 'dist/client' directory exists in the root directory
+    if [ -d ./dist/client ]; then
+        echo "'dist/client' directory exists"
+    else
+        echo "'dist/client' directory doesn't exist"
+        PASS=false
+    fi
+else
+    echo "'dist' directory doesn't exist"
+    PASS=false
+fi
+
+# Determine if a 'src' directory exists in the root directory
+if [ -d ./src ]; then
+    echo "'src' directory exists"
+else
+    echo "'src' directory doesn't exist"
+    PASS=false
+fi
+
+############################################################################################################
+# Validate app file dependencies
+############################################################################################################
+
+# Determine if 'karma.conf.js' exists in the root directory
+if [ -f ./karma.conf.js ]; then
+    echo "'karma.conf.js' exists"
+else
+    echo "'karma.conf.js' doesn't exist"
+    PASS=false
+fi
+
+# Determine if 'sprout-package.json' exists in the root directory
+if [ -f ./sprout-package.json ]; then
+    echo "'sprout-package.json' exists"
+else
+    echo "'sprout-package.json' doesn't exist"
+    PASS=false
+fi
+
+# Determine if 'LICENSE' exists in the root directory
+if [ -f ./LICENSE ]; then
+    echo "'LICENSE' exists"
+else
+    echo "'LICENSE' doesn't exist"
+    PASS=false
+fi
+
+# Determine if 'README.md' exists in the root directory
+if [ -f ./README.md ]; then
+    echo "'README.md' exists"
+else
+    echo "'README.md' doesn't exist"
+    PASS=false
+fi
+
+############################################################################################################
+# Report final validation results
+############################################################################################################
+
+if $PASS; then
+    echo "Build has succeeded!"
+else
+    echo "Build has FAILED."
+    # 1 tells Jenkins that the build has failed
+    exit 1
+fi

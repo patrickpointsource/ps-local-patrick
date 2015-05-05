@@ -1,0 +1,12 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+.block-list {
+	li {
+
+		&.with-chevron {
+			&:after {
+				font: normal normal normal 14px/1 FontAwesome;
+				content: '\f054';
+			}
+		}
+	}
+}

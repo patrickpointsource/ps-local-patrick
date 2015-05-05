@@ -1,0 +1,19 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+.button {
+	&.expand {
+		width: 100%;
+		display: block;
+    	margin-left: 0;
+    	margin-right: 0;
+	}
+
+	&.float-right {
+		margin-right: 0;
+	}
+}
+
+.button-icon-large {
+	.fa {
+		font-size: 64px;
+	}
+}

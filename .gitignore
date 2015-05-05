@@ -177,3 +177,8 @@ $RECYCLE.BIN/
 
 # WebStorm files
 .idea/
+
+# Sprout specific
+npm-debug.log
+sprout-debug.log
+sprout_packages

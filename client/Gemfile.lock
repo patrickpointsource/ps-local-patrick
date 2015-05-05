@@ -1,0 +1,11 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+GEM
+  remote: https://rubygems.org/
+  specs:
+    sass (3.4.9)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  sass (~> 3.4.0)
