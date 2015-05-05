@@ -1,2 +1,0 @@
-# test file created to test rbcommons configuration
-# added second line to the testing file
