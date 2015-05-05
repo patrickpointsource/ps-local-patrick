@@ -1,45 +1,52 @@
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
 //Default config for my app
 {
-  "express": {
-    "port": "3000",
-    "middleware": ["express-monitor",
-      "csrf",
-      
-      "bodyParser"]
-  },
-  "cluster": {
-    "maxWorkers": 1
-  },
-  "logger": {
-  },
-  "randomizer": {
-    "min": 0,
-    "max": 10
-  },
-  "test": {
-    "value": {
-      "encrypted": "{aes-256-cbc}7d343a60de6b2ee4cca096509745f9fd=" //decryption key is testkey
+    "express": {
+        "port": "3000",
+        "middleware": [
+            "express-monitor",
+            "csrf",
+            "cors",
+            "session",
+            "bodyParser"
+        ]
+    },
+    "cluster": {
+        "maxWorkers": 1
+    },
+    "logger": {
+    },
+    "randomizer": {
+        "min": 0,
+        "max": 10
+    },
+    "test": {
+        "value": {
+            "encrypted": "{aes-256-cbc}7d343a60de6b2ee4cca096509745f9fd=" //decryption key is testkey
+        }
+    },
+    "security": {
+        "key": "testkey" //When set, don't prompt during startup for password
+    },
+
+    "csrf": {
+        "allowedOrigins": [
+            "http://localhost:8080",
+            "file://",
+            "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop"
+        ]
+    },
+
+    
+
+    "bodyParser": {
+        "json": {}
+    },
+
+    "monitor": {
+        "host": "localhost",
+        "debug": true
     }
-  },
-  "security": {
-    "key": "testkey" //When set, don't prompt during startup for password
-  },
-
-  "csrf": {
-    "allowedOrigins": ["http://localhost:8080", "file://", "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop"]
-  },
-
-  
-
-  "bodyParser": {
-    "json": {}
-  },
-
-  "monitor": {
-    "host": "localhost",
-    "debug": true
-  }
 
 
 }
