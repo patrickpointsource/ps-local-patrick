@@ -1,0 +1,11 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+.menu-footer {
+	position: fixed;
+	bottom: 0;
+	z-index: 3;
+	width: 100%;
+
+	.menu-bar {
+		margin-bottom: 0;
+	}
+} 

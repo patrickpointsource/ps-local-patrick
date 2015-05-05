@@ -1,0 +1,7 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+{
+  //To enable production set the NODE_ENV environment variable, export NODE_ENV=production
+  "cluster": {
+    "maxWorkers": -1 //-1 enables 1 per core
+  }
+}

@@ -1,0 +1,26 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+/*
+ * The base path for the sass files is defined in the gulpfile to be the
+ * bower_components directory/foundation-apps
+ */
+
+//Base styles
+
+//this is our override settings file
+@import "override-settings.scss";
+@import "foundation";
+
+//General styles
+@import "platforms.scss";
+@import "forms.scss";
+@import "buttons.scss";
+@import "icons.scss";
+
+//Sprout component styles
+@import "sprout.scss";
+
+//Modules styles
+@import "../../app/layout/layout.scss";
+@import "../../app/layout/header/header.scss";
+@import "../../app/layout/footer/footer.scss";
+@import "../../app/layout/menu/menu.scss";

@@ -1,0 +1,30 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+.title-bar {
+
+	&.title-bar-has-icons {
+		padding: 0;
+
+		.left {
+			&.no-icon {
+				padding-left: 1rem;
+			}
+		}
+
+		.right {
+			&.no-icon {
+				padding-right: 1rem;
+			}
+		}
+	}
+
+	.fa {
+		width: 3rem;
+		height: 3rem;
+		line-height: 3rem;
+		text-align: center;
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+}

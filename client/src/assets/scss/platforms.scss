@@ -1,0 +1,17 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+body {
+
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+
+	&.platform-ios {
+		&.platform-cordova {
+
+			.title-bar {
+				padding-top: 20px;
+			}
+
+		}
+	}
+
+}
