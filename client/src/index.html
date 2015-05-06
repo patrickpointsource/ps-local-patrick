@@ -4,7 +4,7 @@
     <!-- Copyright © 2015 PointSource, LLC. All rights reserved. -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PS Reference App</title>
+    <title>PS MasterMind</title>
     <link href="assets/css/angular-snap.css" rel="stylesheet" type="text/css">
     <link href="assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.css" rel="stylesheet" type="text/css">
@@ -12,7 +12,7 @@
   <body>
 
     <div snap-drawer="left">
-      <ui-view name="left-menu"></ui-view>
+      <ui-view name="menu"></ui-view>
     </div>
 
     <div class="grid-frame snap-content" snap-content>
@@ -39,8 +39,9 @@
     <!-- App Config is generated when running gulp -->
     <script src="app/app.config.js"></script>
 
-    <script src="app/home.controller.js"></script>
+    <script src="app/services/DashboardService.js"></script>
 
+    <script src="app/home.controller.js"></script>
     <script src="app/layout/layout.module.js"></script>
     <script src="app/layout/header/header.module.js"></script>
     <script src="app/layout/header/header.controller.js"></script>
@@ -48,6 +49,7 @@
     <script src="app/layout/footer/footer.controller.js"></script>
     <script src="app/layout/menu/menu.module.js"></script>
     <script src="app/layout/menu/left-menu.controller.js"></script>
+
 
   </body>
 </html>

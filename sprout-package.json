@@ -49,6 +49,7 @@
         "font-awesome": "~4.2",
         "iscroll": "~4.2",
         "psaf-logger": "~0.0.3",
+        "moment": "~2.10.2",
         "jquery": "~2.1.4"
       },
       "ignore": [],

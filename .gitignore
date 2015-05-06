@@ -178,7 +178,14 @@ $RECYCLE.BIN/
 # WebStorm files
 .idea/
 
+# SublimeText files
+*.sublime-project
+*.sublime-workspace
+
 # Sprout specific
 npm-debug.log
 sprout-debug.log
 sprout_packages
+
+# added by GitSavvy
+/client/Gemfile.lock
