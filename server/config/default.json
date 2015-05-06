@@ -25,10 +25,12 @@
             "encrypted": "{aes-256-cbc}7d343a60de6b2ee4cca096509745f9fd=" //decryption key is testkey
         }
     },
+    "session": {
+        "keys": ["sessionkey"]
+    },
     "security": {
         "key": "testkey" //When set, don't prompt during startup for password
     },
-
     "csrf": {
         "allowedOrigins": [
             "http://localhost:8080",
@@ -36,17 +38,32 @@
             "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop"
         ]
     },
-
-    
-
+    "cors": {
+        "origin": "http://localhost:8080",
+        "credentials": true
+    },
     "bodyParser": {
         "json": {}
     },
-
     "monitor": {
         "host": "localhost",
         "debug": true
+    },
+    "auth": {
+        "provider": "google-oauth"
+    },
+    "google-oauth": {
+        "callbackPath": "/auth",
+        "clientId": "141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com",
+        "clientSecret": "xx9Om8aLgwzlmeBmSGoOqwdh",
+        "profile": false,
+        "redirectURI": "postmessage"
+    },
+    "cloudant": {
+        "account": "psdev1",
+        "user": "tathendersheaderefortati",
+        "password": "e7wRT4nm0IgHGeWu07benG36",
+        "url": "https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/",
+        "db": "mm_dev"
     }
-
-
 }

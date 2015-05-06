@@ -328,8 +328,8 @@ gulp.task('server:start', function () {
           (function () {
             var url = require('url');
             var proxy = require('proxy-middleware');
-            var options = url.parse('http://localhost:3000/api');
-            options.route = '/api';
+            var options = url.parse('http://localhost:3000/v3');
+            options.route = '/v3';
             return proxy(options);
           })(), 
         modRewrite(['^[^\\.]*$ /index.html [L]'])
