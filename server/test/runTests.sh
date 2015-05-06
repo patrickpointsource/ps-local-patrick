@@ -1,10 +1,5 @@
 #!/bin/bash
 
-client_id='141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com'
-client_secret='xx9Om8aLgwzlmeBmSGoOqwdh' 
-scope='profile'
-# Form the request URL
-# http://goo.gl/U0uKEb
 auth_url="http://localhost:8080/login.html?justShowCode"
 
 echo "Please go to:"

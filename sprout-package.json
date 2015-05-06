@@ -3,7 +3,7 @@
   "version": "3.0.0-pre0.1",
   "description": "MasterMind from PointSource",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd server && bash test/runTests.sh"
   },
   "repository": {
     "type": "git",
