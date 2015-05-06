@@ -7,11 +7,11 @@
     function DashboardService() {
         return {
             getMenu: function () {
-                return {
-                    'Dashboard': 'home',
-                    'Projects': 'projects',
-                    'People': 'people'
-                };
+                return [
+                    {'name': 'home', 'label': 'Dashboard'},
+                    {'name': 'projects', 'label': 'Projects'},
+                    {'name': 'people', 'label': 'People'}
+                ];
             }
         };
     }

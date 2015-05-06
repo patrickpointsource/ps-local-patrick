@@ -3,7 +3,7 @@
   'use strict';
 
   angular
-      .module('mastermind.layout.menu', []);
+      .module('mastermind.layout.menu', ['DashboardModule']);
 
 
 })();

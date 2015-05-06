@@ -14,8 +14,8 @@
 	<section class="block-list">
 		<ul>
 			<li class="" ng-repeat="menuItem in menuItems">
-				<a class="" snap-toggle="left" ng-click="menuNavigate('home')">
-					<i class="fa fa-home"></i> Dashboard
+				<a class="" snap-toggle="left" ng-click="menuNavigate('{{menuItem.name}}')">
+					<i class="fa fa-home"></i> {{menuItem.label}}
 				</a>
 			</li>
 		</ul>

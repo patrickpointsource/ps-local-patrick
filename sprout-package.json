@@ -50,7 +50,8 @@
         "iscroll": "~4.2",
         "psaf-logger": "~0.0.3",
         "moment": "~2.10.2",
-        "jquery": "~2.1.4"
+        "jquery": "~2.1.4",
+        "angular-chartist.js": "~3.1.1"
       },
       "ignore": [],
       "main": "./",
