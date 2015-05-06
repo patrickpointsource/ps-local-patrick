@@ -9,7 +9,7 @@
   angular
     .module('mastermind', [
       'app.config',
-      
+
       'ui.router',
       'ngAnimate',
       'ngTouch',
@@ -51,9 +51,9 @@
         url: '',
         abstract: true,
         views: {
-          'left-menu@': {
-            templateUrl: 'app/layout/menu/left-menu.html',
-            controller: 'LeftMenuController'
+          'menu@': {
+            templateUrl: 'app/layout/menu/menu.html',
+            controller: 'MenuController'
           },
           'header@': {
             templateUrl: 'app/layout/header/header.html',
@@ -129,14 +129,14 @@
 
     FastClick.attach(document.body);
 
-    
+
     document.addEventListener('deviceready', onDeviceReady, false);
     function onDeviceReady() {
       if (window.cordova) {
         $cordovaStatusbar.style(0);
       }
     }
-    
+
 
   }
 

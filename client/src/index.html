@@ -12,7 +12,7 @@
   <body>
 
     <div snap-drawer="left">
-      <ui-view name="left-menu"></ui-view>
+      <ui-view name="menu"></ui-view>
     </div>
 
     <div class="grid-frame snap-content" snap-content>
@@ -39,8 +39,9 @@
     <!-- App Config is generated when running gulp -->
     <script src="app/app.config.js"></script>
 
-    <script src="app/home.controller.js"></script>
+    <script src="app/services/DashboardService.js"></script>
 
+    <script src="app/home.controller.js"></script>
     <script src="app/layout/layout.module.js"></script>
     <script src="app/layout/header/header.module.js"></script>
     <script src="app/layout/header/header.controller.js"></script>
@@ -48,6 +49,7 @@
     <script src="app/layout/footer/footer.controller.js"></script>
     <script src="app/layout/menu/menu.module.js"></script>
     <script src="app/layout/menu/left-menu.controller.js"></script>
+
 
   </body>
 </html>

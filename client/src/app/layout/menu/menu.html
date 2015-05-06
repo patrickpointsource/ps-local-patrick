@@ -1,6 +1,6 @@
 <div class="title-bar primary title-bar-has-icons">
 	<span class="left no-icon title">
-		Menu
+		MasterMind
 	</span>
 
 	<div class="center"></div>
@@ -13,9 +13,9 @@
 <div class="grid-content">
 	<section class="block-list">
 		<ul>
-			<li class="">
+			<li class="" ng-repeat="menuItem in menuItems">
 				<a class="" snap-toggle="left" ng-click="menuNavigate('home')">
-					<i class="fa fa-home"></i> Home
+					<i class="fa fa-home"></i> Dashboard
 				</a>
 			</li>
 		</ul>

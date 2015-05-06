@@ -183,7 +183,8 @@ gulp.task('uglify', [
         'uglify-angular',
         'uglify-dependencies',
         'uglify-foundation',
-        'uglify-sprout'
+        'uglify-sprout',
+        'uglify-app'
     ],
     function () {
         console.log('uglifying');
@@ -237,6 +238,21 @@ gulp.task('uglify-dependencies', function () {
             console.log(e);
         }))
         .pipe(concat('dependencies.js'))
+        .pipe(gulp.dest('./dist/assets/js/'))
+        .pipe(gulp.dest(webContentBaseDir + '/assets/js/'));
+});
+
+gulp.task('uglify-app', function() {
+    var libs = require('./appFiles.json');
+    console.log(libs);
+    return gulp.src(libs)
+        .pipe(uglify({
+            beautify: true,
+            mangle: false
+        }).on('error', function (e) {
+            console.log(e);
+        }))
+        .pipe(concat('appFiles.js'))
         .pipe(gulp.dest('./dist/assets/js/'))
         .pipe(gulp.dest(webContentBaseDir + '/assets/js/'));
 });
