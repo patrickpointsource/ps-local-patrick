@@ -33,10 +33,6 @@ module.exports.reInit = function(){
 
 module.exports.isAllowed = function(userId, response, resource, permissions, callback, notAllowedCallback, preventNotAllowedInResponse) {
 
-    // For now, until we get authentication working, let's hardcode a userId (Ben's)
-    // TODO: Remove this later
-    userId = '106929298400251482000';
-
     // acl.allowedPermissions(userId, resource, function(err, permissions){
     //     _logger.info('permissions for', userId, resource, permissions);
     // });

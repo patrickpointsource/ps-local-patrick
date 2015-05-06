@@ -382,9 +382,11 @@
             }
         },
         "/projects": {
+            "x-handler": "Projects",
             "get": {
                 "summary": "Retrieve Projects",
                 "description": "The Projects endpoint returns projects.\n",
+                "operationId": "getProjects",
                 "tags": [
                     "Projects"
                 ],
@@ -490,6 +492,7 @@
             "post": {
                 "summary": "Create Project",
                 "description": "Create a new project.\nAn ID in the POST-ed project will be ignored.\n",
+                "operationId": "createSingleProject",
                 "tags": [
                     "Projects"
                 ],
@@ -521,9 +524,11 @@
             }
         },
         "/projects/{id}": {
+            "x-handler": "Projects",
             "get": {
                 "summary": "Retrieve Project",
                 "description": "The Project endpoint returns a single project.\n",
+                "operationId": "getSingleProject",
                 "parameters": [
                     {
                         "name": "id",
@@ -560,6 +565,7 @@
             "put": {
                 "summary": "Update Project",
                 "description": "Updates an existing project.\n",
+                "operationId": "updateSingleProject",
                 "tags": [
                     "Projects"
                 ],
@@ -605,6 +611,7 @@
             "delete": {
                 "summary": "Delete Project",
                 "description": "Deletes a single Project.\n",
+                "operationId": "deleteSingleProject",
                 "parameters": [
                     {
                         "name": "id",
@@ -1562,9 +1569,6 @@
                 "name": {
                     "type": "string"
                 },
-                "resource": {
-                    "type": "string"
-                },
                 "salesSponsor": {
                     "type": "string",
                     "description": "ID of Person"
@@ -1738,8 +1742,17 @@
                     "format": "date-time"
                 },
                 "type": {
-                    "type": "string",
-                    "description": "ID of Role"
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "description": "ID of Role"
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "Name of Role"
+                        }
+                    }
                 }
             },
             "required": [

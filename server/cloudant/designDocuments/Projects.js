@@ -15,10 +15,13 @@ module.exports = {
                 if(doc.form == 'Projects'){
                     index('name', doc.name);
                     index('type', doc.type);
-                    index('committed', doc.committed);
+                    index('id', doc._id);
+                    if(doc.committed !== undefined){
+                        index('committed', doc.committed);
+                    }
 
                     if(doc.executiveSponsor && doc.executiveSponsor.resource){
-                        index('executiveSponsor', doc.executiveSponsor.resource);
+                        index('executiveSponsor', doc.executiveSponsor.resource.replace('people/', ''));
                     }
                     if(doc.startDate){
                         index('numericStartDate', Number(doc.startDate.replace(/-/g, '')), {store: true});
