@@ -7,9 +7,13 @@
             "express-monitor",
             "csrf",
             "cors",
+            "express-static",
             "session",
             "bodyParser"
         ]
+    },
+    "express-static": {
+        "www": "swagger"
     },
     "cluster": {
         "maxWorkers": 1

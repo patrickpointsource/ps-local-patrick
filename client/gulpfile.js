@@ -62,7 +62,8 @@ gulp.task('copy', function () {
 gulp.task('lint', function () {
     var dirs = [
         './src/**/*.js',
-        '!./src/assets/{scss,js}/**/*.*'
+        '!./src/assets/{scss,js}/**/*.*',
+        '!./src/docs/**/*.*'
     ];
 
     return gulp.src(dirs)
