@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en" ng-app="mastermind">
-  <head>
+
+<head>
     <!-- Copyright © 2015 PointSource, LLC. All rights reserved. -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,39 +9,28 @@
     <link href="assets/css/angular-snap.css" rel="stylesheet" type="text/css">
     <link href="assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.css" rel="stylesheet" type="text/css">
-  </head>
-  <body>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+</head>
 
-    <div snap-drawer="left">
-      <ui-view name="menu"></ui-view>
-    </div>
-
+<body>
     <div class="grid-frame snap-content" snap-content>
-
-      <div class="grid-block vertical">
-        <div ui-view="header"></div>
-
-        <div class="grid-block">
-          <div id="wrapper" class="primary-view ui-animation bounceIn" ui-view="content"
-            ng-class="getAppSlide()"></div>
+        <div class="grid-block vertical">
+            <div ui-view="menu"></div>
+            <div ui-view="header"></div>
+            <div class="grid-block">
+                <div id="wrapper" class="primary-view ui-animation bounceIn" ui-view="content" ng-class="getAppSlide()"></div>
+            </div>
+            <div ui-view="footer"></div>
         </div>
-
-        <div ui-view="footer"></div>
-      </div>
-
     </div>
-
     <script src="assets/js/angular-libs.js"></script>
     <script src="assets/js/dependencies.js"></script>
     <script src="assets/js/foundation-libs.js"></script>
     <script src="assets/js/sprout.js"></script>
-
     <script src="app/app.module.js"></script>
     <!-- App Config is generated when running gulp -->
     <script src="app/app.config.js"></script>
-
     <script src="app/services/DashboardService.js"></script>
-
     <script src="app/home.controller.js"></script>
     <script src="app/layout/layout.module.js"></script>
     <script src="app/layout/header/header.module.js"></script>
@@ -48,8 +38,7 @@
     <script src="app/layout/footer/footer.module.js"></script>
     <script src="app/layout/footer/footer.controller.js"></script>
     <script src="app/layout/menu/menu.module.js"></script>
-    <script src="app/layout/menu/left-menu.controller.js"></script>
+    <script src="app/layout/menu/menu.controller.js"></script>
+</body>
 
-
-  </body>
 </html>

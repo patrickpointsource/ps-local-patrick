@@ -1,5 +1,7 @@
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
 .title-bar {
+    font-size: 1.7rem;
+    color: $secondary-color;
 
 	&.title-bar-has-icons {
 		padding: 0;
@@ -27,4 +29,11 @@
 			cursor: pointer;
 		}
 	}
+
+    a {
+        color: $secondary-color;
+        :hover {
+            color: darken($secondary-color, 10);
+        }
+    }
 }

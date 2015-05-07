@@ -4,7 +4,7 @@
 //  ----------------------------
 //
 //  Table of Contents:
-//  
+//
 //  1.  CSS Exports
 //  2.  Typography
 //  3.  Breakpoints
@@ -90,7 +90,7 @@ $include-css: (
 // We use these to control various global styles
 // $body-background: #fff;
 // $body-font-color: #222;
-// $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+$body-font-family: 'Open Sans', sans-serif;
 // $body-font-weight: $font-weight-normal;
 // $body-font-style: normal;
 // $body-antialiased: true;
@@ -582,8 +582,8 @@ $dark-color: #222;
 
 // $titlebar-center-width: 50%;
 // $titlebar-side-width: (100% - $titlebar-center-width) / 2;
-// $titlebar-background: #eee;
-// $titlebar-color: #000;
+$titlebar-background: #333;
+$titlebar-color: #fff;
 // $titlebar-border: 1px solid #ccc;
 // $titlebar-padding: $global-padding;
 // $titlebar-item-classes: (

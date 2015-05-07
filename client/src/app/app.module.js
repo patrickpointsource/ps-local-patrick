@@ -17,7 +17,6 @@
       'foundation',
 
       'ngCordova',
-      'snap',
       'psaf-logger',
       'mastermind.layout'
     ])
@@ -27,17 +26,12 @@
   AppConfig.$inject = [
     '$stateProvider',
     '$urlRouterProvider',
-    'snapRemoteProvider',
     'psafLoggerProvider',
     'CONFIG'
   ];
 
-  function AppConfig ($stateProvider, $urlRouterProvider, snapRemoteProvider, psafLoggerProvider, CONFIG) {
+  function AppConfig ($stateProvider, $urlRouterProvider, psafLoggerProvider, CONFIG) {
     psafLoggerProvider.logging(true);
-
-    snapRemoteProvider.globalOptions = {
-      disable: 'right'
-    };
 
     // For any unmatched url, redirect to /state1
     $urlRouterProvider.otherwise('/home');
