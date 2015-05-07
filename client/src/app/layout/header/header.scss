@@ -1,34 +1,16 @@
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
-.title-bar {
+
+.header-title-bar {
+    // Extend the base selector to get core structural styles
+    @extend %title-bar;
+    // Add visual styles with this mixin
+    @include title-bar-style(
+        $background: $dark-color, // Background color
+        $color: $secondary-color, // Text color
+        $border: 1px solid $gray-dark, $padding: 1rem
+    );
     font-size: 1.7rem;
     color: $secondary-color;
-
-	&.title-bar-has-icons {
-		padding: 0;
-
-		.left {
-			&.no-icon {
-				padding-left: 1rem;
-			}
-		}
-
-		.right {
-			&.no-icon {
-				padding-right: 1rem;
-			}
-		}
-	}
-
-	.fa {
-		width: 3rem;
-		height: 3rem;
-		line-height: 3rem;
-		text-align: center;
-
-		&:hover {
-			cursor: pointer;
-		}
-	}
 
     a {
         color: $secondary-color;
@@ -37,3 +19,36 @@
         }
     }
 }
+
+// .title-bar {
+//     font-size: 1.7rem;
+//     color: $secondary-color;
+//     &.title-bar-has-icons {
+//         padding: 0;
+//         .left {
+//             &.no-icon {
+//                 padding-left: 1rem;
+//             }
+//         }
+//         .right {
+//             &.no-icon {
+//                 padding-right: 1rem;
+//             }
+//         }
+//     }
+//     .fa {
+//         width: 3rem;
+//         height: 3rem;
+//         line-height: 3rem;
+//         text-align: center;
+//         &:hover {
+//             cursor: pointer;
+//         }
+//     }
+//     a {
+//         color: $secondary-color;
+//         :hover {
+//             color: darken($secondary-color, 10);
+//         }
+//     }
+// }
