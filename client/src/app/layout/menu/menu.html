@@ -1,23 +1,24 @@
-<div class="title-bar primary title-bar-has-icons">
-    <span class="left no-icon title">
-        MasterMind
+<div class="show-for-medium">
+    <div class="title-bar title-bar-has-icons">
+        <span class="left no-icon title">
+        <span class="text-bold">Master</span><span class="text-light">Mind</span>
+        </span>
+        <div class="center"></div>
+        <a class="right"><i class="fa fa-close"></i></a>
     </span>
-    <div class="center"></div>
-    <span class="right" snap-toggle="left">
-        <a><i class="fa fa-close"></i></a>
-    </span>
-</div>
-<div class="grid-content">
-    <section class="block-list">
-        <ul>
-            <li>
-                <input type="text" ng-model="search" placeholder="Search" />
-            </li>
-            <li class="menuItem" ng-repeat="menuItem in menuItems">
-                <a class="" snap-toggle="left" ng-click="menuNavigate('{{menuItem.name}}')">
-                    <i class="fa fa-home"></i> {{menuItem.label}}
-                </a>
-            </li>
-        </ul>
-    </section>
+    </div>
+    <div class="grid-content">
+        <nav class="block-list">
+            <ul>
+                <li>
+                    <input type="text" ng-model="search" placeholder="Search" />
+                </li>
+                <li class="menuItem" ng-repeat="menuItem in menuItems">
+                    <a class="" ng-click="menuNavigate('{{menuItem.name}}')">
+                        <i class="fa fa-home"></i> {{menuItem.label}}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>

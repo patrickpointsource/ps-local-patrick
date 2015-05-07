@@ -6,18 +6,9 @@
       .module('mastermind.layout.header')
       .controller('HeaderController', HeaderController);
 
-  HeaderController.$inject = ['$scope', 'snapRemote'];
+  HeaderController.$inject = ['$scope'];
 
-  function HeaderController ($scope, snapRemote) {
-
-  	/**
-     ** This is just a demonstration of how to potentially use the snapRemote if necessary
-     **/
-    $scope.toggle = function (side) {
-      snapRemote.getSnapper().then(function(snapper) {
-        snapRemote.toggle(side);
-      });
-    };
+  function HeaderController ($scope) {
 
   }
 
