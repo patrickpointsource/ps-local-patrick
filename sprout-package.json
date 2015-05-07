@@ -3,7 +3,7 @@
   "version": "3.0.0-pre0.1",
   "description": "MasterMind from PointSource",
   "scripts": {
-    "test": "cd server && bash test/runTests.sh"
+    "test": "cd server && node test/runTests.js"
   },
   "repository": {
     "type": "git",

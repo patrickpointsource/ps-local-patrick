@@ -2,7 +2,7 @@
 var path = require('path'),
     request = require('request'),
     assert = require('assert'),
-    util = require('./util/launch'),
+    util = require('../util/launch'),
     _ = require('underscore');
 
 describe('TASKS - test simple REST calls (authenticated)', function () {
@@ -16,7 +16,7 @@ describe('TASKS - test simple REST calls (authenticated)', function () {
             request('http://localhost:3000/auth?code='+process.env.AUTH_CODE, {
                 jar: true
             }, function(err, resp, body){
-                console.log('posted code?', err, body);
+                console.log('posted code?', process.env.AUTH_CODE, err, body);
                 done();
             });
         });

@@ -1,0 +1,97 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MasterMind</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width">
+
+</head>
+<body>
+	
+	<div>
+		<h1>PointSource MasterMind</h1>
+		<p>Sign in with your PointSource Google+ account.</p>
+		<p>
+			<span id="signinButton"> 
+				<!-- Add where you want your sign-in button to render -->
+				<!-- Use an image that follows the branding guidelines in a real app -->
+				<button id="signinButton">Sign in with Google</button>
+			</span>
+			<div id="result"></div>
+		</p>
+		<script type="text/javascript">
+			function start() {
+				
+				gapi.load('auth2', function() {
+					auth2 = gapi.auth2.init({
+						client_id: '141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com',
+						// Scopes to request in addition to 'profile' and 'email'
+						//scope: 'additional_scope'
+					});
+					auth2.then(function(){
+						jQuery('#signinButton').click(function() {
+							// signInCallback defined in step 6.
+							auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(onSignInCallback);
+						});
+					});
+				});
+			}
+			/**
+			 * Calls the helper method that handles the authentication flow.
+			 *
+			 * @param {Object} authResult An Object which contains the access token and
+			 *   other authentication information.
+			 */
+			function onSignInCallback(authResult) {
+				if (authResult['code']) {
+					if(document.location.toString().indexOf("justShowCode") !== -1){
+						jQuery('body').prepend('<h1 id="code">'+authResult['code']+'</h1>');
+						return;
+					}
+
+					// Hide the sign-in button now that the user is authorized, for example:
+					jQuery('#signinButton').attr('style', 'display: none');
+
+					// Send the code to the server
+					jQuery.ajax({
+						type: 'GET',
+						url: 'http://localhost:3000/auth?code='+authResult['code'],
+						contentType: 'application/octet-stream; charset=utf-8',
+						xhrFields: {
+							withCredentials: true
+						},
+						success: function(result) {
+							console.log('got result?', result);
+							// Handle or verify the server response.
+							
+							// // Redirect to index.html (?)
+							// document.location = '/';
+							
+							jQuery.ajax({
+								type: 'GET',
+								url: 'http://localhost:3000/v3/tasks',
+								contentType: 'application/octet-stream; charset=utf-8',
+								xhrFields: {
+									withCredentials: true
+								},
+								success: function(result) {
+									console.log('got result:', result);
+								},
+								complete: function(){
+									console.error('complete API', arguments);
+								}
+							});
+						}
+					});
+				} else {
+					// There was an error.
+				}
+				// helper.onSignInCallback(authResult);
+			}
+		</script>
+		<!-- Last part of BODY element in file index.html -->
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="//apis.google.com/js/client:platform.js?onload=start"></script>
+</body>

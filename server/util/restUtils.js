@@ -26,7 +26,7 @@ module.exports.map = function(doc, out, fields){
             out[value] = doc[key];
         }
     });
-}
+};
 
 // Map a set of fields as dates, putting them in the right format for the given direction
 module.exports.mapStraightDates = function(direction, doc, out, fields){
@@ -175,7 +175,7 @@ module.exports.generateSingleItemCreateHandler = function(resourceName, permissi
                             if(err){
                                 return sendJson(res, {'message': 'Error occurred while retrieving newly created '+key+'.'}, 500);
                             }
-                            sendJson(res, convertForRestAPI(doc));
+                            sendJson(res, convertForRestAPI(access, doc));
                         });
                     });
                 }
@@ -187,6 +187,7 @@ module.exports.generateSingleItemCreateHandler = function(resourceName, permissi
 module.exports.generateSingleItemUpdateHandler = function(resourceName, permission, key, convertForDB, convertForRestAPI){
 
     return function(req, res, next){
+        var acl = services.get('acl');
         var access = services.get('dbAccess');
         var db = access.db;
         acl.isAllowed(
@@ -218,7 +219,7 @@ module.exports.generateSingleItemUpdateHandler = function(resourceName, permissi
                                 if(err){
                                     return sendJson(res, {'message': 'Error occurred while retrieving newly updated '+key+'.'}, 500);
                                 }
-                                sendJson(res, convertForRestAPI(doc));
+                                sendJson(res, convertForRestAPI(access, doc));
                             });
                         });
                     });
@@ -231,6 +232,7 @@ module.exports.generateSingleItemUpdateHandler = function(resourceName, permissi
 module.exports.generateSingleItemDeleteHandler = function(resourceName, permission, key){
 
     return function(req, res, next){
+        var acl = services.get('acl');
         var access = services.get('dbAccess');
         var db = access.db;
         acl.isAllowed(
@@ -258,4 +260,4 @@ module.exports.generateSingleItemDeleteHandler = function(resourceName, permissi
             });
     };
 
-}
+};
