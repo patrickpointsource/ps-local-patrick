@@ -150,7 +150,7 @@ module.exports.generateSingleItemGetHandler = function(resourceName, permission,
 
 };
 
-module.exports.generateSingleItemCreateHandler = function(resourceName, permission, key, convertForDB, convertForRestAPI){
+module.exports.generateSingleItemCreateHandler = function(resourceName, permission, key, validate, convertForDB, convertForRestAPI){
 
     return function(req, res, next){
         var acl = services.get('acl');
@@ -166,25 +166,39 @@ module.exports.generateSingleItemCreateHandler = function(resourceName, permissi
                 if(allowed){
 
                     var objToPost = convertForDB(access, req.body, true);
-                    db.insert(objToPost, function(err, doc){
-                        if(err){
-                            return sendJson(res, {'message': 'Error occurred while creating '+key+'.'}, 500);
-                        }
-                        
-                        db.get(doc.id, function(err, doc){
+                    var proceed = function(){
+                        db.insert(objToPost, function(err, doc){
                             if(err){
-                                return sendJson(res, {'message': 'Error occurred while retrieving newly created '+key+'.'}, 500);
+                                return sendJson(res, {'message': 'Error occurred while creating '+key+'.'}, 500);
                             }
-                            sendJson(res, convertForRestAPI(access, doc));
+                            
+                            db.get(doc.id, function(err, doc){
+                                if(err){
+                                    return sendJson(res, {'message': 'Error occurred while retrieving newly created '+key+'.'}, 500);
+                                }
+                                sendJson(res, convertForRestAPI(access, doc));
+                            });
                         });
-                    });
+                    };
+
+                    var err;
+                    if(validate){
+                        validate(req.body, access, function(err){
+                            if(err){
+                                return sendJson(res, {'message': err}, 400);
+                            }
+                            proceed();
+                        });
+                    }else{
+                        proceed();
+                    }
                 }
             });
     };
 
 };
 
-module.exports.generateSingleItemUpdateHandler = function(resourceName, permission, key, convertForDB, convertForRestAPI){
+module.exports.generateSingleItemUpdateHandler = function(resourceName, permission, key, validate, convertForDB, convertForRestAPI){
 
     return function(req, res, next){
         var acl = services.get('acl');
@@ -200,29 +214,43 @@ module.exports.generateSingleItemUpdateHandler = function(resourceName, permissi
                 if(allowed){
                     var docID = req.params.id;
                     var objToPost = convertForDB(access, req.body, true);
-                    
-                    // Retrieve the existing doc by ID in order to get the current _rev
-                    db.get(docID, function(err, doc){
-                        if(err){
-                            return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.'}, 404);
-                        }
 
-                        // Put the _rev of the current doc on our data to insert
-                        objToPost._rev = doc._rev;
-                        db.insert(objToPost, docID, function(err, doc){
+                    var proceed = function(){
+                        // Retrieve the existing doc by ID in order to get the current _rev
+                        db.get(docID, function(err, doc){
                             if(err){
-                                return sendJson(res, {'message': 'Error occurred while updating '+key+'.'}, 500);
+                                return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.'}, 404);
                             }
-                            
-                            // Retrieve the current state of the doc to accurately reflect what's in the DB
-                            db.get(docID, function(err, doc){
+
+                            // Put the _rev of the current doc on our data to insert
+                            objToPost._rev = doc._rev;
+                            db.insert(objToPost, docID, function(err, doc){
                                 if(err){
-                                    return sendJson(res, {'message': 'Error occurred while retrieving newly updated '+key+'.'}, 500);
+                                    return sendJson(res, {'message': 'Error occurred while updating '+key+'.'}, 500);
                                 }
-                                sendJson(res, convertForRestAPI(access, doc));
+                                
+                                // Retrieve the current state of the doc to accurately reflect what's in the DB
+                                db.get(docID, function(err, doc){
+                                    if(err){
+                                        return sendJson(res, {'message': 'Error occurred while retrieving newly updated '+key+'.'}, 500);
+                                    }
+                                    sendJson(res, convertForRestAPI(access, doc));
+                                });
                             });
                         });
-                    });
+                    };
+
+                    var err;
+                    if(validate){
+                        validate(req.body, access, function(err){
+                            if(err){
+                                return sendJson(res, {'message': err}, 400);
+                            }
+                            proceed();
+                        });
+                    }else{
+                        proceed();
+                    }
                 }
             });
     };

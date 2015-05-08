@@ -33,9 +33,9 @@ module.exports.reInit = function(){
 
 module.exports.isAllowed = function(userId, response, resource, permissions, callback, notAllowedCallback, preventNotAllowedInResponse) {
 
-    // acl.allowedPermissions(userId, resource, function(err, permissions){
-    //     _logger.info('permissions for', userId, resource, permissions);
-    // });
+    acl.allowedPermissions(userId, resource, function(err, permissions){
+        _logger.info('permissions for', userId, resource, permissions);
+    });
 
     acl.isAllowed(userId, resource, permissions, function(err, allowed){
 

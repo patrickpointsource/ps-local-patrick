@@ -115,6 +115,9 @@ var project = {
             });
         }
         
+        if(!obj.created){
+            obj.created = {};
+        }
         if(expectNew){
             obj.created.date = (new Date()).toString();
         }else if(doc.created && doc.created.date){
@@ -123,9 +126,34 @@ var project = {
         if(doc.created && doc.created.by){
             obj.created.resource = access.PEOPLE_KEY.toLowerCase()+'/'+doc.created.by;
         }
+        if(!obj.modified){
+            obj.modified = {};
+        }
         obj.modified.date = (new Date()).toString();
         obj.modified.resource = '';
         return obj;
+    },
+    validateProject: function(obj, access, callback){
+        // Check obj for invalid fields
+        // Note that spec-related validation has already occurred 
+        // (required fields are present, values are limited to those from an enum, etc.)
+        // The intention of this validation function is to check for things that are more specific than
+        // the spec can check for. In the case of projects, for example, we should make sure that the 
+        // ID specified for executiveSponsor is an actual / proper ID
+        
+        // We can assume executiveSponsor is available since the spec requires it
+        access.db.view('People', 'AllPeopleNames', { keys: [obj.executiveSponsor] }, function(err, docs){
+            if(err){
+                return callback(err);
+            }
+            if(docs.rows.length === 0){
+                // The executiveSponsor doesn't exist
+                return callback('The indicated executiveSponsor doesn\'t exist.');
+            }
+
+            callback();
+        });
+        
     }
 };
 
@@ -203,6 +231,7 @@ module.exports.createSingleProject = util.generateSingleItemCreateHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.addProjects, // permission
     'project', // key
+    project.validateProject, // validate
     project.convertForDB, // convertForDB
     project.convertForRestAPI // convertForRestAPI
 );
@@ -218,6 +247,7 @@ module.exports.updateSingleProject = util.generateSingleItemUpdateHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.editProjects, // permission
     'project', // key
+    project.validateProject, // validate
     project.convertForDB, // convertForDB
     project.convertForRestAPI // convertForRestAPI
 );

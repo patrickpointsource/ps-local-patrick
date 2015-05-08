@@ -5,7 +5,7 @@ var path = require('path'),
     util = require('../util/launch'),
     _ = require('underscore');
 
-describe('TASKS - test simple REST calls (authenticated)', function () {
+describe('TASKS - test simple REST calls', function () {
 
     before(function (done) {
         if(!process.env.AUTH_CODE){

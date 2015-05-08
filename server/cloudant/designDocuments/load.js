@@ -54,6 +54,7 @@ var loadLocalDocument = function(documentName){
 
 var docs = [
     'Tasks',
+    'People',
     'Projects',
     'SecurityRoles',
     'UserRoles'

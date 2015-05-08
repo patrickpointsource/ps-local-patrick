@@ -63,6 +63,7 @@ module.exports.createSingleTask = util.generateSingleItemCreateHandler(
     securityResources.tasks.resourceName, // resourceName
     securityResources.tasks.permissions.editTasks, // permission
     'task', // key
+    null, // validate
     task.convertForDB, // convertForDB
     task.convertForRestAPI // convertForRestAPI
 );
@@ -78,6 +79,7 @@ module.exports.updateSingleTask = util.generateSingleItemUpdateHandler(
     securityResources.tasks.resourceName, // resourceName
     securityResources.tasks.permissions.editTasks, // permission
     'task', // key
+    null, // validate
     task.convertForDB, // convertForDB
     task.convertForRestAPI // convertForRestAPI
 );
