@@ -6,11 +6,11 @@
       .module('mastermind.layout.menu')
       .controller('MenuController', MenuController);
 
-  MenuController.$inject = ['$scope', '$rootScope', 'FoundationApi', 'DashboardService'];
+  MenuController.$inject = ['$scope', '$rootScope', 'FoundationApi', 'MenuService'];
 
-  function MenuController ($scope, $rootScope, FoundationApi, DashboardService) {
+  function MenuController ($scope, $rootScope, FoundationApi, MenuService) {
 
-    $scope.menuItems = DashboardService.getMenu();
+    $scope.menuItems = MenuService.getMenu();
 
     console.log($scope.menuItems);
 
