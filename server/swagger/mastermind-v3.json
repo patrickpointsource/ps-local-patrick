@@ -1971,10 +1971,12 @@
                 }
             }
         },
-        "/security-roles": {
+        "/securityRoles": {
+            "x-handler": "SecurityRoles",
             "get": {
-                "summary": "SecurityRoles (IGNORE)",
-                "description": "The SecurityRoles endpoint returns information about security roles.\n",
+                "summary": "Retrieve Security Roles",
+                "description": "The Security Roles endpoint returns security roles.\n",
+                "operationId": "getSecurityRoles",
                 "tags": [
                     "SecurityRoles"
                 ],
@@ -1986,6 +1988,189 @@
                             "items": {
                                 "$ref": "#/definitions/SecurityRole"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Security Role",
+                "description": "Create a new security role.\nAn ID in the POST-ed security role will be ignored.\n",
+                "operationId": "createSingleSecurityRole",
+                "tags": [
+                    "SecurityRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "securityRole",
+                        "in": "body",
+                        "description": "Data representing the security role to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created security role",
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/securityRoles/{id}": {
+            "x-handler": "SecurityRoles",
+            "get": {
+                "summary": "Retrieve Security Role",
+                "description": "The Security Role endpoint returns a single security role.\n",
+                "operationId": "getSingleSecurityRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the security role to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "SecurityRoles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single security role specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A security role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Security Role",
+                "description": "Updates an existing security role.\n",
+                "operationId": "updateSingleSecurityRole",
+                "tags": [
+                    "SecurityRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the security role to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "securityRole",
+                        "in": "body",
+                        "description": "New data representing the security role",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated security role",
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A security role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Security Role",
+                "description": "Deletes a single Security Role.\n",
+                "operationId": "deleteSingleSecurityRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the security role to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "SecurityRoles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single security role specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A security role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
