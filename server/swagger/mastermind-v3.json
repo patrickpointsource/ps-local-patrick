@@ -1383,11 +1383,21 @@
             }
         },
         "/notifications": {
+            "x-handler": "Notifications",
             "get": {
-                "summary": "Notifications (IGNORE)",
-                "description": "The Notifications endpoint returns information about notifications.\n",
+                "summary": "Retrieve Notifications",
+                "description": "The Notifications endpoint returns notifications.\n",
+                "operationId": "getNotifications",
                 "tags": [
                     "Notifications"
+                ],
+                "parameters": [
+                    {
+                        "name": "person",
+                        "in": "query",
+                        "description": "Filter notifications to those for the given person, provided by ID",
+                        "type": "string"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -1397,6 +1407,189 @@
                             "items": {
                                 "$ref": "#/definitions/Notification"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Notification",
+                "description": "Create a new notification.\nAn ID in the POST-ed notification will be ignored.\n",
+                "operationId": "createSingleNotification",
+                "tags": [
+                    "Notifications"
+                ],
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "body",
+                        "description": "Data representing the notification to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created notification",
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/notifications/{id}": {
+            "x-handler": "Notifications",
+            "get": {
+                "summary": "Retrieve Notification",
+                "description": "The Notification endpoint returns a single notification.\n",
+                "operationId": "getSingleNotification",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the notification to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single notification specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A notification with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Notification",
+                "description": "Updates an existing notification.\n",
+                "operationId": "updateSingleNotification",
+                "tags": [
+                    "Notifications"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the notification to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "notification",
+                        "in": "body",
+                        "description": "New data representing the notification",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated notification",
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A notification with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Notification",
+                "description": "Deletes a single Notification.\n",
+                "operationId": "deleteSingleNotification",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the notification to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single notification specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A notification with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -2076,11 +2269,59 @@
             }
         },
         "/vacations": {
+            "x-handler": "Vacations",
             "get": {
-                "summary": "Vacations (IGNORE)",
-                "description": "The Vacations endpoint returns information about vacations.\n",
+                "summary": "Retrieve Vacations",
+                "description": "The Vacations endpoint returns vacations.\n",
+                "operationId": "getVacations",
                 "tags": [
                     "Vacations"
+                ],
+                "parameters": [
+                    {
+                        "name": "people",
+                        "in": "query",
+                        "description": "Filter vacations by only those belonging to one of these people (specified by the ID of the people)",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "statuses",
+                        "in": "query",
+                        "description": "Filter vacations to only those in one of the given statuses",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "Approved",
+                                "Pending",
+                                "Cancelled",
+                                "Denied",
+                            ]
+                        }
+                    },
+                    {
+                        "name": "manager",
+                        "in": "query",
+                        "description": "Filter vacations to only those which have this person as the manager (specified by the ID of the manager Person)",
+                        "type": "string"
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "description": "Filter vacations to those starting on or after the given date.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "description": "Filter vacations to those ending before the given date.",
+                        "type": "string",
+                        "format": "date-time"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -2090,6 +2331,189 @@
                             "items": {
                                 "$ref": "#/definitions/Vacation"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Vacation",
+                "description": "Create a new vacation.\nAn ID in the POST-ed vacation will be ignored.\n",
+                "operationId": "createSingleVacation",
+                "tags": [
+                    "Vacations"
+                ],
+                "parameters": [
+                    {
+                        "name": "vacation",
+                        "in": "body",
+                        "description": "Data representing the vacation to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created vacation",
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/vacations/{id}": {
+            "x-handler": "Vacations",
+            "get": {
+                "summary": "Retrieve Vacation",
+                "description": "The Vacation endpoint returns a single vacation.\n",
+                "operationId": "getSingleVacation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the vacation to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Vacations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single vacation specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A vacation with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Vacation",
+                "description": "Updates an existing vacation.\n",
+                "operationId": "updateSingleVacation",
+                "tags": [
+                    "Vacations"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the vacation to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "vacation",
+                        "in": "body",
+                        "description": "New data representing the vacation",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated vacation",
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A vacation with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Vacation",
+                "description": "Deletes a single vacation.\n",
+                "operationId": "deleteSingleVacation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the vacation to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Vacations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single vacation specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A vacation with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -3307,7 +3731,13 @@
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "Approved",
+                        "Pending",
+                        "Cancelled",
+                        "Denied",
+                    ]
                 },
                 "days": {
                     "type": "string"
@@ -3320,7 +3750,6 @@
                 }
             },
             "required": [
-                "id",
                 "person",
                 "vacationManager",
                 "type",
