@@ -1602,11 +1602,66 @@
             }
         },
         "/people": {
+            "x-handler": "People",
             "get": {
-                "summary": "People (IGNORE)",
-                "description": "The People endpoint returns information about people.\n",
+                "summary": "Retrieve People",
+                "description": "The People endpoint returns people.\n",
+                "operationId": "getPeople",
                 "tags": [
                     "People"
+                ],
+                "parameters": [
+                    {
+                        "name": "primaryRoles",
+                        "in": "query",
+                        "description": "Filter people to only those with one of the given roles as their primary role, identified by ID.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "roles",
+                        "in": "query",
+                        "description": "Filter people to only those belonging to a given role, identified by ID.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "active",
+                        "in": "query",
+                        "description": "Filter people to only those that are active",
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "hasAssignment",
+                        "in": "query",
+                        "description": "Filter people to only those who have an assignment",
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "hasCurrentAssignment",
+                        "in": "query",
+                        "description": "Filter people to only those who have a current assignment",
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "departmentCategories",
+                        "in": "query",
+                        "description": "Filter people to only those belonging to one of the given department categories, identified by ID.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sameAssignmentsAs",
+                        "in": "query",
+                        "description": "Filter people to only those who have a current assignment to the same project as the given person is assigned to, where the person is identied by ID.",
+                        "type": "string"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -1616,6 +1671,383 @@
                             "items": {
                                 "$ref": "#/definitions/Person"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Person",
+                "description": "Create a new person.\nAn ID in the POST-ed person will be ignored.\n",
+                "operationId": "createSinglePerson",
+                "tags": [
+                    "People"
+                ],
+                "parameters": [
+                    {
+                        "name": "person",
+                        "in": "body",
+                        "description": "Data representing the person to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created person",
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/people/{id}": {
+            "x-handler": "People",
+            "get": {
+                "summary": "Retrieve Person",
+                "description": "The People endpoint returns a single person.\n",
+                "operationId": "getSinglePerson",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the person to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single person specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A person with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Person",
+                "description": "Updates an existing person.\n",
+                "operationId": "updateSinglePerson",
+                "tags": [
+                    "People"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the person to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "person",
+                        "in": "body",
+                        "description": "New data representing the person",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated person",
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A person with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Person",
+                "description": "Deletes a single Person.\n",
+                "operationId": "deleteSinglePerson",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the person to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single person specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A person with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/people/{id}/manager": {
+            "x-handler": "People",
+            "get": {
+                "summary": "Retrieve Manager of Person",
+                "operationId": "getManagerOfPerson",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the person whose manager should be retrieved.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The manager of the person specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A person with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/people/{id}/accessRights": {
+            "x-handler": "People",
+            "get": {
+                "summary": "Retrieve Access Rights of Person",
+                "operationId": "getAccessRightsOfPerson",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the person whose access rights should be retrieved.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The access rights of the person specified by ID",
+                        "type": "object",
+                        "properties": {
+                            "hasFinanceRights": {
+                                "type": "boolean"
+                            },
+                            "hasAdminRights": {
+                                "type": "boolean"
+                            },
+                            "hasManagementRights": {
+                                "type": "boolean"
+                            },
+                            "hasProjectManagementRights": {
+                                "type": "boolean"
+                            },
+                            "hasExecutiveRights": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A person with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/people/{id}/googleProfile": {
+            "x-handler": "People",
+            "get": {
+                "summary": "Retrieve Google Profile of Person",
+                "operationId": "getGoogleProfileOfPerson",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the person whose Google Profile should be retrieved.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Google Profile of the person specified by ID",
+                        "type": "object"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A person with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/people/googlePlus/{id}": {
+            "x-handler": "People",
+            "get": {
+                "summary": "Retrieve Person",
+                "description": "The People endpoint returns a single person by Google ID.\n",
+                "operationId": "getSinglePersonByGoogleID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Google ID of the person to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single person specified by the Google ID",
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A person with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
