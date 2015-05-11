@@ -1,6 +1,3 @@
-var logger = services.get('logger');
-var acl = services.get('acl');
-
 var _ = require('underscore');
 var securityResources = require( '../util/securityResources' );
 var sendJson = require('../util/sendJson');
@@ -211,7 +208,6 @@ module.exports.getProjects = util.generateCollectionGetHandler(
         }
         if(q.length){
             // Use the SearchAllProjects index
-            logger.debug('using q:', q);
             db.search('Projects', 'SearchAllProjects', {
                 q: q,
                 include_docs: true

@@ -71,3 +71,27 @@ nodemon
 The client will be running at [http://localhost:8080](http://localhost:8080). You can login at [http://localhost:8080/login.html](http://localhost:8080/login.html). The client gulp server will proxy any API requests at /v3 (e.g. [http://localhost:8080/v3/tasks](http://localhost:8080/v3/tasks)).
 
 The server is running at [http://localhost:3000](http://localhost:3000). If you've authenticated via the client and visit an API endpoint, the proper cookies should be sent to consider you authenticated, but it might be simplest to use the aforementioned proxy to more closely replicate what a production scenario would be like.
+
+## Tests
+
+### Server-side Tests
+
+#### Running tests
+
+To run the REST tests, install casperjs and phantomjs globally:
+
+```
+npm install -g casperjs phantomjs
+```
+
+Use the `sprout test` command, but make sure you pass the needed environment variables (these are the standard set useful for automated testing):
+
+```
+USER_GUSER="psapps2@pointsourcellc.com" USER_GPASSWD="PSapps123" ADMIN_GUSER="psapps@pointsourcellc.com" ADMIN_GPASSWD="ps@pp\$777" sprout test
+```
+
+Alternatively, run the test script directly:
+
+```
+USER_GUSER="psapps2@pointsourcellc.com" USER_GPASSWD="PSapps123" ADMIN_GUSER="psapps@pointsourcellc.com" ADMIN_GPASSWD="ps@pp\$777" node server/test/runTests.js
+```

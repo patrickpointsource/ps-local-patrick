@@ -3,7 +3,7 @@ var casper = require('casper').create({
     // verbose: true,
     // logLevel: 'debug',
     viewportSize: {width: 800, height: 600},
-    waitTimeout: 10000
+    waitTimeout: 20000
 });
 
 if(!casper.cli.options.username){
