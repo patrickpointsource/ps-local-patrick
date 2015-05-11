@@ -15,11 +15,56 @@
     ],
     "paths": {
         "/assignments": {
+            "x-handler": "Assignments",
             "get": {
-                "summary": "Assignments (IGNORE)",
-                "description": "The Assignments endpoint returns information about assignments.\n",
+                "summary": "Retrieve Assignments",
+                "description": "The Assignments endpoint returns assignments.\n",
+                "operationId": "getAssignments",
                 "tags": [
                     "Assignments"
+                ],
+                "parameters": [
+                    {
+                        "name": "person",
+                        "in": "query",
+                        "description": "Filter assignments by only those relating to this person (specified by the ID of the Person)",
+                        "type": "string"
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "description": "Filter assignments to those starting on or after the given date.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "description": "Filter assignments to those ending before the given date.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "timePeriod",
+                        "in": "query",
+                        "description": "Filter assignments to those overlapping the given time period.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "projects",
+                        "in": "query",
+                        "description": "Filter assignments to those associated with any one of this set of Project IDs.",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "past",
+                                "current",
+                                "future"
+                            ]
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -29,6 +74,189 @@
                             "items": {
                                 "$ref": "#/definitions/Assignment"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Assignment",
+                "description": "Create a new assignment.\nAn ID in the POST-ed assignment will be ignored.\n",
+                "operationId": "createSingleAssignment",
+                "tags": [
+                    "Assignments"
+                ],
+                "parameters": [
+                    {
+                        "name": "assignment",
+                        "in": "body",
+                        "description": "Data representing the assignment to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created assignment",
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/assignments/{id}": {
+            "x-handler": "Assignments",
+            "get": {
+                "summary": "Retrieve Assignment",
+                "description": "The Assignment endpoint returns a single assignment.\n",
+                "operationId": "getSingleAssignment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the assignment to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Assignments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single assignment specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A assignment with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Assignment",
+                "description": "Updates an existing assignment.\n",
+                "operationId": "updateSingleAssignment",
+                "tags": [
+                    "Assignments"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the assignment to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "assignment",
+                        "in": "body",
+                        "description": "New data representing the assignment",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated assignment",
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A assignment with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Assignment",
+                "description": "Deletes a single Assignment.\n",
+                "operationId": "deleteSingleAssignment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the assignment to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Assignments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single assignment specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A assignment with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -41,11 +269,13 @@
             }
         },
         "/configurations": {
+            "x-handler": "Configurations",
             "get": {
-                "summary": "Configuration (IGNORE)",
-                "description": "The Configuration endpoint returns information about configurations.\n",
+                "summary": "Retrieve Configurations",
+                "description": "The Configurations endpoint returns configurations.\n",
+                "operationId": "getConfigurations",
                 "tags": [
-                    "Configuration"
+                    "Configurations"
                 ],
                 "responses": {
                     "200": {
@@ -55,6 +285,189 @@
                             "items": {
                                 "$ref": "#/definitions/Configuration"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Configuration",
+                "description": "Create a new configuration.\nAn ID in the POST-ed configuration will be ignored.\n",
+                "operationId": "createSingleConfiguration",
+                "tags": [
+                    "Configurations"
+                ],
+                "parameters": [
+                    {
+                        "name": "configuration",
+                        "in": "body",
+                        "description": "Data representing the configuration to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created configuration",
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/configurations/{id}": {
+            "x-handler": "Configurations",
+            "get": {
+                "summary": "Retrieve Configuration",
+                "description": "The Configuration endpoint returns a single configuration.\n",
+                "operationId": "getSingleConfiguration",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the configuration to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Configurations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single configuration specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A configuration with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Configuration",
+                "description": "Updates an existing configuration.\n",
+                "operationId": "updateSingleConfiguration",
+                "tags": [
+                    "Configurations"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the configuration to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "configuration",
+                        "in": "body",
+                        "description": "New data representing the configuration",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated configuration",
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A configuration with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Configuration",
+                "description": "Deletes a single Configuration.\n",
+                "operationId": "deleteSingleConfiguration",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the configuration to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Configurations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single configuration specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A configuration with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -67,11 +480,39 @@
             }
         },
         "/departments": {
+            "x-handler": "Departments",
             "get": {
-                "summary": "Department (IGNORE)",
-                "description": "The Department endpoint returns information about departments.\n",
+                "summary": "Retrieve Departments",
+                "description": "The Departments endpoint returns departments.\n",
+                "operationId": "getDepartments",
                 "tags": [
-                    "Department"
+                    "Departments"
+                ],
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Filter departments to only those with this code",
+                        "type": "string"
+                    },
+                    {
+                        "name": "manager",
+                        "in": "query",
+                        "description": "Filter departments to only those with the given manager, identified by ID",
+                        "type": "string"
+                    },
+                    {
+                        "name": "managerName",
+                        "in": "query",
+                        "description": "Filter departments to only those whose manager's name contains the given string",
+                        "type": "string"
+                    },
+                    {
+                        "name": "nickname",
+                        "in": "query",
+                        "description": "Filter departments to only those whose nickname contains the given string",
+                        "type": "string"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -81,6 +522,433 @@
                             "items": {
                                 "$ref": "#/definitions/Department"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Departments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Department",
+                "description": "Create a new department.\nAn ID in the POST-ed department will be ignored.\n",
+                "operationId": "createSingleDepartment",
+                "tags": [
+                    "Departments"
+                ],
+                "parameters": [
+                    {
+                        "name": "department",
+                        "in": "body",
+                        "description": "Data representing the department to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Department"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created department",
+                        "schema": {
+                            "$ref": "#/definitions/Department"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Departments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/departments/{id}": {
+            "x-handler": "Departments",
+            "get": {
+                "summary": "Retrieve Department",
+                "description": "The Department endpoint returns a single department.\n",
+                "operationId": "getSingleDepartment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Departments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single department specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Department"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Departments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Department",
+                "description": "Updates an existing department.\n",
+                "operationId": "updateSingleDepartment",
+                "tags": [
+                    "Departments"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "department",
+                        "in": "body",
+                        "description": "New data representing the department",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Department"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated department",
+                        "schema": {
+                            "$ref": "#/definitions/Department"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Departments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Department",
+                "description": "Deletes a single Department.\n",
+                "operationId": "deleteSingleDepartment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Departments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single department specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Departments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/departments/codes/available": {
+            "x-handler": "Departments",
+            "get": {
+                "summary": "Retrieve un-used department codes",
+                "operationId": "getAvailableDepartmentCodes",
+                "tags": [
+                    "Departments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of department codes matching the existing format that aren't currently in use",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Departments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/departments/categories": {
+            "x-handler": "DepartmentCategories",
+            "get": {
+                "summary": "Retrieve Department Categories",
+                "description": "The Department Categories endpoint returns department categories.\n",
+                "operationId": "getDepartmentCategories",
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of department categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/DepartmentCategory"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Department Category",
+                "description": "Create a new department category.\nAn ID in the POST-ed department category will be ignored.\n",
+                "operationId": "createSingleDepartmentCategory",
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "parameters": [
+                    {
+                        "name": "departmentCategory",
+                        "in": "body",
+                        "description": "Data representing the Department Category to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created Department Category",
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/departments/categories/{id}": {
+            "x-handler": "DepartmentCategories",
+            "get": {
+                "summary": "Retrieve Department Category",
+                "description": "The Department Category endpoint returns a single department category.\n",
+                "operationId": "getSingleDepartmentCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department category to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single department category specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department category with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Department Category",
+                "description": "Updates an existing department category.\n",
+                "operationId": "updateSingleDepartmentCategory",
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department category to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "departmentCategory",
+                        "in": "body",
+                        "description": "New data representing the department category",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated department category",
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department category with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Department Category",
+                "description": "Deletes a single Department Category.\n",
+                "operationId": "deleteSingleDepartmentCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department category to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single department category specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department category with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -304,9 +1172,11 @@
             }
         },
         "/links": {
+            "x-handler": "Links",
             "get": {
-                "summary": "Links (IGNORE)",
-                "description": "The Links endpoint returns information about links.\n",
+                "summary": "Retrieve Links",
+                "description": "The Links endpoint returns links.\n",
+                "operationId": "getLinks",
                 "tags": [
                     "Links"
                 ],
@@ -320,6 +1190,189 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to view Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Link",
+                "description": "Create a new link.\nAn ID in the POST-ed link will be ignored.\n",
+                "operationId": "createSingleLink",
+                "tags": [
+                    "Links"
+                ],
+                "parameters": [
+                    {
+                        "name": "link",
+                        "in": "body",
+                        "description": "Data representing the link to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created link",
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/links/{id}": {
+            "x-handler": "Links",
+            "get": {
+                "summary": "Retrieve Link",
+                "description": "The Link endpoint returns a single link.\n",
+                "operationId": "getSingleLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the link to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single link specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A link with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Link",
+                "description": "Updates an existing link.\n",
+                "operationId": "updateSingleLink",
+                "tags": [
+                    "Links"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the link to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "link",
+                        "in": "body",
+                        "description": "New data representing the link",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated link",
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A link with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Link",
+                "description": "Deletes a single Link.\n",
+                "operationId": "deleteSingleLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the link to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single link specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A link with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
@@ -330,11 +1383,21 @@
             }
         },
         "/notifications": {
+            "x-handler": "Notifications",
             "get": {
-                "summary": "Notifications (IGNORE)",
-                "description": "The Notifications endpoint returns information about notifications.\n",
+                "summary": "Retrieve Notifications",
+                "description": "The Notifications endpoint returns notifications.\n",
+                "operationId": "getNotifications",
                 "tags": [
                     "Notifications"
+                ],
+                "parameters": [
+                    {
+                        "name": "person",
+                        "in": "query",
+                        "description": "Filter notifications to those for the given person, provided by ID",
+                        "type": "string"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -344,6 +1407,189 @@
                             "items": {
                                 "$ref": "#/definitions/Notification"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Notification",
+                "description": "Create a new notification.\nAn ID in the POST-ed notification will be ignored.\n",
+                "operationId": "createSingleNotification",
+                "tags": [
+                    "Notifications"
+                ],
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "body",
+                        "description": "Data representing the notification to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created notification",
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/notifications/{id}": {
+            "x-handler": "Notifications",
+            "get": {
+                "summary": "Retrieve Notification",
+                "description": "The Notification endpoint returns a single notification.\n",
+                "operationId": "getSingleNotification",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the notification to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single notification specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A notification with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Notification",
+                "description": "Updates an existing notification.\n",
+                "operationId": "updateSingleNotification",
+                "tags": [
+                    "Notifications"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the notification to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "notification",
+                        "in": "body",
+                        "description": "New data representing the notification",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated notification",
+                        "schema": {
+                            "$ref": "#/definitions/Notification"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A notification with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Notification",
+                "description": "Deletes a single Notification.\n",
+                "operationId": "deleteSingleNotification",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the notification to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single notification specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Notifications",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A notification with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -481,6 +1727,12 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to view Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
@@ -512,6 +1764,12 @@
                         "description": "The newly created project",
                         "schema": {
                             "$ref": "#/definitions/Project"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -546,6 +1804,12 @@
                         "description": "The single project specified by the ID",
                         "schema": {
                             "$ref": "#/definitions/Project"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "404": {
@@ -594,6 +1858,12 @@
                             "$ref": "#/definitions/Project"
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to update Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "404": {
                         "description": "A project with the specified ID could not be found.",
                         "schema": {
@@ -627,6 +1897,12 @@
                 "responses": {
                     "200": {
                         "description": "The single project specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     },
                     "404": {
                         "description": "A project with the specified ID could not be found.",
@@ -695,10 +1971,12 @@
                 }
             }
         },
-        "/security-roles": {
+        "/securityRoles": {
+            "x-handler": "SecurityRoles",
             "get": {
-                "summary": "SecurityRoles (IGNORE)",
-                "description": "The SecurityRoles endpoint returns information about security roles.\n",
+                "summary": "Retrieve Security Roles",
+                "description": "The Security Roles endpoint returns security roles.\n",
+                "operationId": "getSecurityRoles",
                 "tags": [
                     "SecurityRoles"
                 ],
@@ -712,6 +1990,189 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to view Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Security Role",
+                "description": "Create a new security role.\nAn ID in the POST-ed security role will be ignored.\n",
+                "operationId": "createSingleSecurityRole",
+                "tags": [
+                    "SecurityRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "securityRole",
+                        "in": "body",
+                        "description": "Data representing the security role to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created security role",
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/securityRoles/{id}": {
+            "x-handler": "SecurityRoles",
+            "get": {
+                "summary": "Retrieve Security Role",
+                "description": "The Security Role endpoint returns a single security role.\n",
+                "operationId": "getSingleSecurityRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the security role to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "SecurityRoles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single security role specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A security role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Security Role",
+                "description": "Updates an existing security role.\n",
+                "operationId": "updateSingleSecurityRole",
+                "tags": [
+                    "SecurityRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the security role to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "securityRole",
+                        "in": "body",
+                        "description": "New data representing the security role",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated security role",
+                        "schema": {
+                            "$ref": "#/definitions/SecurityRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A security role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Security Role",
+                "description": "Deletes a single Security Role.\n",
+                "operationId": "deleteSingleSecurityRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the security role to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "SecurityRoles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single security role specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Security Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A security role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
@@ -722,9 +2183,11 @@
             }
         },
         "/skills": {
+            "x-handler": "Skills",
             "get": {
-                "summary": "Skills (IGNORE)",
-                "description": "The Skills endpoint returns information about skills.\n",
+                "summary": "Retrieve Skills",
+                "description": "The Skills endpoint returns skills.\n",
+                "operationId": "getSkills",
                 "tags": [
                     "Skills"
                 ],
@@ -736,6 +2199,189 @@
                             "items": {
                                 "$ref": "#/definitions/Skill"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Skill",
+                "description": "Create a new skill.\nAn ID in the POST-ed skill will be ignored.\n",
+                "operationId": "createSingleSkill",
+                "tags": [
+                    "Skills"
+                ],
+                "parameters": [
+                    {
+                        "name": "skill",
+                        "in": "body",
+                        "description": "Data representing the skill to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created skill",
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/skills/{id}": {
+            "x-handler": "Skills",
+            "get": {
+                "summary": "Retrieve Skill",
+                "description": "The Skill endpoint returns a single skill.\n",
+                "operationId": "getSingleSkill",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the skill to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single skill specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A skill with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Skill",
+                "description": "Updates an existing skill.\n",
+                "operationId": "updateSingleSkill",
+                "tags": [
+                    "Skills"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the skill to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "skill",
+                        "in": "body",
+                        "description": "New data representing the skill",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated skill",
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A skill with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Skill",
+                "description": "Deletes a single Skill.\n",
+                "operationId": "deleteSingleSkill",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the skill to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single skill specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A skill with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -774,6 +2420,12 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to view Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
@@ -805,6 +2457,12 @@
                         "description": "The newly created task",
                         "schema": {
                             "$ref": "#/definitions/Task"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -839,6 +2497,12 @@
                         "description": "The single task specified by the ID",
                         "schema": {
                             "$ref": "#/definitions/Task"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "404": {
@@ -887,6 +2551,12 @@
                             "$ref": "#/definitions/Task"
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to update Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "404": {
                         "description": "A task with the specified ID could not be found.",
                         "schema": {
@@ -921,6 +2591,12 @@
                     "200": {
                         "description": "The single task specified by the ID was deleted"
                     },
+                    "403": {
+                        "description": "The current user is not allowed to delete Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "404": {
                         "description": "A task with the specified ID could not be found.",
                         "schema": {
@@ -936,10 +2612,12 @@
                 }
             }
         },
-        "/user-roles": {
+        "/userRoles": {
+            "x-handler": "UserRoles",
             "get": {
-                "summary": "UserRoles (IGNORE)",
-                "description": "The Tasks endpoint returns information about user roles.\n",
+                "summary": "Retrieve User Roles",
+                "description": "The User Roles endpoint returns user roles.\n",
+                "operationId": "getUserRoles",
                 "tags": [
                     "UserRoles"
                 ],
@@ -953,6 +2631,189 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to view user roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create User Role",
+                "description": "Create a new user role.\nAn ID in the POST-ed user role will be ignored.\n",
+                "operationId": "createSingleUserRole",
+                "tags": [
+                    "UserRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "userRole",
+                        "in": "body",
+                        "description": "Data representing the user role to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created user role",
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new User Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/userRoles/{id}": {
+            "x-handler": "UserRoles",
+            "get": {
+                "summary": "Retrieve User Role",
+                "description": "The User Roles endpoint returns a single user role.\n",
+                "operationId": "getSingleUserRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user role to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "UserRoles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single user role specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view User Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A user role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update User Role",
+                "description": "Updates an existing User Role.\n",
+                "operationId": "updateSingleUserRole",
+                "tags": [
+                    "UserRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user role to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "userRole",
+                        "in": "body",
+                        "description": "New data representing the user role",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated user role",
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update User Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A user role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete User Role",
+                "description": "Deletes a single User Role.\n",
+                "operationId": "deleteSingleUserRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user role to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "UserRoles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single user role specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete User Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A user role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
@@ -963,11 +2824,59 @@
             }
         },
         "/vacations": {
+            "x-handler": "Vacations",
             "get": {
-                "summary": "Vacations (IGNORE)",
-                "description": "The Vacations endpoint returns information about vacations.\n",
+                "summary": "Retrieve Vacations",
+                "description": "The Vacations endpoint returns vacations.\n",
+                "operationId": "getVacations",
                 "tags": [
                     "Vacations"
+                ],
+                "parameters": [
+                    {
+                        "name": "people",
+                        "in": "query",
+                        "description": "Filter vacations by only those belonging to one of these people (specified by the ID of the people)",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "statuses",
+                        "in": "query",
+                        "description": "Filter vacations to only those in one of the given statuses",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "Approved",
+                                "Pending",
+                                "Cancelled",
+                                "Denied",
+                            ]
+                        }
+                    },
+                    {
+                        "name": "manager",
+                        "in": "query",
+                        "description": "Filter vacations to only those which have this person as the manager (specified by the ID of the manager Person)",
+                        "type": "string"
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "description": "Filter vacations to those starting on or after the given date.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "description": "Filter vacations to those ending before the given date.",
+                        "type": "string",
+                        "format": "date-time"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -977,6 +2886,189 @@
                             "items": {
                                 "$ref": "#/definitions/Vacation"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Vacation",
+                "description": "Create a new vacation.\nAn ID in the POST-ed vacation will be ignored.\n",
+                "operationId": "createSingleVacation",
+                "tags": [
+                    "Vacations"
+                ],
+                "parameters": [
+                    {
+                        "name": "vacation",
+                        "in": "body",
+                        "description": "Data representing the vacation to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created vacation",
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/vacations/{id}": {
+            "x-handler": "Vacations",
+            "get": {
+                "summary": "Retrieve Vacation",
+                "description": "The Vacation endpoint returns a single vacation.\n",
+                "operationId": "getSingleVacation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the vacation to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Vacations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single vacation specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A vacation with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Vacation",
+                "description": "Updates an existing vacation.\n",
+                "operationId": "updateSingleVacation",
+                "tags": [
+                    "Vacations"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the vacation to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "vacation",
+                        "in": "body",
+                        "description": "New data representing the vacation",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated vacation",
+                        "schema": {
+                            "$ref": "#/definitions/Vacation"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A vacation with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Vacation",
+                "description": "Deletes a single vacation.\n",
+                "operationId": "deleteSingleVacation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the vacation to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Vacations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single vacation specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Vacations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A vacation with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -1031,7 +3123,6 @@
                 }
             },
             "required": [
-                "id",
                 "role",
                 "person",
                 "startDate"
@@ -1067,12 +3158,6 @@
                             "value"
                         ]
                     }
-                },
-                "resource": {
-                    "type": "string"
-                },
-                "about": {
-                    "type": "string"
                 }
             },
             "required": [
@@ -1086,41 +3171,33 @@
                 "id": {
                     "type": "string"
                 },
-                "departmentNickname": {
+                "nickname": {
                     "type": "string"
                 },
-                "departmentCategory": {
+                "category": {
                     "type": "string",
                     "description": "ID of Department Category"
                 },
-                "departmentCode": {
-                    "$ref": "#/definitions/departmentCode"
+                "code": {
+                    "type": "string",
+                    "description": "The department code"
                 },
-                "departmentManager": {
+                "manager": {
                     "type": "string",
                     "description": "ID of Person"
                 },
-                "departmentPeople": {
+                "people": {
                     "type": "array",
+                    "description": "An array of Person IDs that belong to this department",
                     "items": {
                         "type": "string"
                     }
                 }
             },
             "required": [
-                "departmentNickname",
-                "departmentCategory"
-            ]
-        },
-        "departmentCode": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "name"
+                "code",
+                "nickname",
+                "category"
             ]
         },
         "DepartmentCategory": {
@@ -1204,7 +3281,7 @@
                 },
                 "project": {
                     "type": "string",
-                    "description": "ID of Person"
+                    "description": "ID of Project"
                 },
                 "resource": {
                     "type": "string"
@@ -1217,16 +3294,19 @@
                     "items": {
                         "type": "object",
                         "properties": {
-                            "url": {
-                                "type": "string"
-                            },
-                            "label": {
-                                "type": "string"
-                            },
                             "id": {
                                 "type": "string"
                             },
                             "icon": {
+                                "type": "string"
+                            },
+                            "index": {
+                                "type": "integer"
+                            },
+                            "label": {
+                                "type": "string"
+                            },
+                            "url": {
                                 "type": "string"
                             }
                         }
@@ -2149,9 +4229,6 @@
         },
         "UserRole": {
             "type": "object",
-            "required": [
-                "roles"
-            ],
             "properties": {
                 "id": {
                     "type": "string"
@@ -2171,7 +4248,10 @@
                         "description": "ID of Security Role"
                     }
                 }
-            }
+            },
+            "required": [
+                "roles"
+            ]
         },
         "Vacation": {
             "type": "object",
@@ -2206,7 +4286,13 @@
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "Approved",
+                        "Pending",
+                        "Cancelled",
+                        "Denied",
+                    ]
                 },
                 "days": {
                     "type": "string"
@@ -2219,7 +4305,6 @@
                 }
             },
             "required": [
-                "id",
                 "person",
                 "vacationManager",
                 "type",
@@ -2234,7 +4319,7 @@
                     "type": "integer",
                     "format": "int32"
                 },
-                "message": {
+                "error": {
                     "type": "string"
                 },
                 "fields": {

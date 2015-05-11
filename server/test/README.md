@@ -11,11 +11,11 @@ npm install -g casperjs phantomjs
 Then run the tests:
 
 ```
-GUSER="<you@pointsource.com>" GPASSWD="<your-@ps.com-password>" sprout test
+USER_GUSER="psapps2@pointsourcellc.com" USER_GPASSWD="PSapps123" ADMIN_GUSER="psapps@pointsourcellc.com" ADMIN_GPASSWD="ps@pp\$777" sprout test
 ```
 
-or, without sprout:
+Alternatively, run the test script directly:
 
 ```
-GUSER="<you@pointsource.com>" GPASSWD="<your-@ps.com-password>" node server/test/runTests.js
+USER_GUSER="psapps2@pointsourcellc.com" USER_GPASSWD="PSapps123" ADMIN_GUSER="psapps@pointsourcellc.com" ADMIN_GPASSWD="ps@pp\$777" node server/test/runTests.js
 ```

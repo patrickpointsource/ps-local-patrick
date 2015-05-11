@@ -40,7 +40,7 @@ module.exports.isAllowed = function(userId, response, resource, permissions, cal
     acl.isAllowed(userId, resource, permissions, function(err, allowed){
 
         if (err) {
-            response.json(500, err);
+            response.status(500).json(err);
         } else if (!allowed) {
             if(notAllowedCallback) {
                 notAllowedCallback();
@@ -48,7 +48,7 @@ module.exports.isAllowed = function(userId, response, resource, permissions, cal
                 callback(false);
 
                 if (!preventNotAllowedInResponse){
-                    response.json(401, 'Content ' + resource + ' is not allowed');
+                    response.status(403).json('Content ' + resource + ' is not allowed');
                 }
             }
         } else {

@@ -1,6 +1,3 @@
-var logger = services.get('logger');
-var acl = services.get('acl');
-
 var _ = require('underscore');
 var securityResources = require( '../util/securityResources' );
 var sendJson = require('../util/sendJson');

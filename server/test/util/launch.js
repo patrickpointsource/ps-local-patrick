@@ -1,7 +1,8 @@
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
 var path = require('path'),
     child_process = require('child_process'),
-    Q = require('q');
+    Q = require('q'),
+    request = require('request');
     
 var LAUNCH_TIMEOUT = 5000;
 var KILL_TIMEOUT = 100;
@@ -49,3 +50,6 @@ exports.finish = function() {
 
     return deferred.promise;
 };
+
+module.exports.adminCookieJar = request.jar();
+module.exports.userCookieJar = request.jar();
