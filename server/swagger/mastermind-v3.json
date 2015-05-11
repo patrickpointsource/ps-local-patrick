@@ -716,6 +716,217 @@
                 }
             }
         },
+        "/departments/categories": {
+            "x-handler": "DepartmentCategories",
+            "get": {
+                "summary": "Retrieve Department Categories",
+                "description": "The Department Categories endpoint returns department categories.\n",
+                "operationId": "getDepartmentCategories",
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of department categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/DepartmentCategory"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Department Category",
+                "description": "Create a new department category.\nAn ID in the POST-ed department category will be ignored.\n",
+                "operationId": "createSingleDepartmentCategory",
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "parameters": [
+                    {
+                        "name": "departmentCategory",
+                        "in": "body",
+                        "description": "Data representing the Department Category to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created Department Category",
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/departments/categories/{id}": {
+            "x-handler": "DepartmentCategories",
+            "get": {
+                "summary": "Retrieve Department Category",
+                "description": "The Department Category endpoint returns a single department category.\n",
+                "operationId": "getSingleDepartmentCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department category to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single department category specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department category with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Department Category",
+                "description": "Updates an existing department category.\n",
+                "operationId": "updateSingleDepartmentCategory",
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department category to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "departmentCategory",
+                        "in": "body",
+                        "description": "New data representing the department category",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated department category",
+                        "schema": {
+                            "$ref": "#/definitions/DepartmentCategory"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department category with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Department Category",
+                "description": "Deletes a single Department Category.\n",
+                "operationId": "deleteSingleDepartmentCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department category to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "DepartmentCategories"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single department category specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Department Categories",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department category with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/hours": {
             "get": {
                 "summary": "Retrieve Hours",
