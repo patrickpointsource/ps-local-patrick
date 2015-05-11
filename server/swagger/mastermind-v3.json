@@ -1998,9 +1998,11 @@
             }
         },
         "/skills": {
+            "x-handler": "Skills",
             "get": {
-                "summary": "Skills (IGNORE)",
-                "description": "The Skills endpoint returns information about skills.\n",
+                "summary": "Retrieve Skills",
+                "description": "The Skills endpoint returns skills.\n",
+                "operationId": "getSkills",
                 "tags": [
                     "Skills"
                 ],
@@ -2012,6 +2014,189 @@
                             "items": {
                                 "$ref": "#/definitions/Skill"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Skill",
+                "description": "Create a new skill.\nAn ID in the POST-ed skill will be ignored.\n",
+                "operationId": "createSingleSkill",
+                "tags": [
+                    "Skills"
+                ],
+                "parameters": [
+                    {
+                        "name": "skill",
+                        "in": "body",
+                        "description": "Data representing the skill to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created skill",
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/skills/{id}": {
+            "x-handler": "Skills",
+            "get": {
+                "summary": "Retrieve Skill",
+                "description": "The Skill endpoint returns a single skill.\n",
+                "operationId": "getSingleSkill",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the skill to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single skill specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A skill with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Skill",
+                "description": "Updates an existing skill.\n",
+                "operationId": "updateSingleSkill",
+                "tags": [
+                    "Skills"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the skill to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "skill",
+                        "in": "body",
+                        "description": "New data representing the skill",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated skill",
+                        "schema": {
+                            "$ref": "#/definitions/Skill"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A skill with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Skill",
+                "description": "Deletes a single Skill.\n",
+                "operationId": "deleteSingleSkill",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the skill to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single skill specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Skills",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A skill with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
