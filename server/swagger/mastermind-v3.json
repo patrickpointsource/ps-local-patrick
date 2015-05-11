@@ -1172,9 +1172,11 @@
             }
         },
         "/links": {
+            "x-handler": "Links",
             "get": {
-                "summary": "Links (IGNORE)",
-                "description": "The Links endpoint returns information about links.\n",
+                "summary": "Retrieve Links",
+                "description": "The Links endpoint returns links.\n",
+                "operationId": "getLinks",
                 "tags": [
                     "Links"
                 ],
@@ -1186,6 +1188,189 @@
                             "items": {
                                 "$ref": "#/definitions/Link"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Link",
+                "description": "Create a new link.\nAn ID in the POST-ed link will be ignored.\n",
+                "operationId": "createSingleLink",
+                "tags": [
+                    "Links"
+                ],
+                "parameters": [
+                    {
+                        "name": "link",
+                        "in": "body",
+                        "description": "Data representing the link to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created link",
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/links/{id}": {
+            "x-handler": "Links",
+            "get": {
+                "summary": "Retrieve Link",
+                "description": "The Link endpoint returns a single link.\n",
+                "operationId": "getSingleLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the link to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single link specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A link with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Link",
+                "description": "Updates an existing link.\n",
+                "operationId": "updateSingleLink",
+                "tags": [
+                    "Links"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the link to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "link",
+                        "in": "body",
+                        "description": "New data representing the link",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated link",
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A link with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Link",
+                "description": "Deletes a single Link.\n",
+                "operationId": "deleteSingleLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the link to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single link specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Links",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A link with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -2117,7 +2302,7 @@
                 },
                 "project": {
                     "type": "string",
-                    "description": "ID of Person"
+                    "description": "ID of Project"
                 },
                 "resource": {
                     "type": "string"
@@ -2130,16 +2315,19 @@
                     "items": {
                         "type": "object",
                         "properties": {
-                            "url": {
-                                "type": "string"
-                            },
-                            "label": {
-                                "type": "string"
-                            },
                             "id": {
                                 "type": "string"
                             },
                             "icon": {
+                                "type": "string"
+                            },
+                            "index": {
+                                "type": "integer"
+                            },
+                            "label": {
+                                "type": "string"
+                            },
+                            "url": {
                                 "type": "string"
                             }
                         }
