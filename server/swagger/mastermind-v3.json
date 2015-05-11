@@ -269,11 +269,13 @@
             }
         },
         "/configurations": {
+            "x-handler": "Configurations",
             "get": {
-                "summary": "Configuration (IGNORE)",
-                "description": "The Configuration endpoint returns information about configurations.\n",
+                "summary": "Retrieve Configurations",
+                "description": "The Configurations endpoint returns configurations.\n",
+                "operationId": "getConfigurations",
                 "tags": [
-                    "Configuration"
+                    "Configurations"
                 ],
                 "responses": {
                     "200": {
@@ -283,6 +285,189 @@
                             "items": {
                                 "$ref": "#/definitions/Configuration"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Configuration",
+                "description": "Create a new configuration.\nAn ID in the POST-ed configuration will be ignored.\n",
+                "operationId": "createSingleConfiguration",
+                "tags": [
+                    "Configurations"
+                ],
+                "parameters": [
+                    {
+                        "name": "configuration",
+                        "in": "body",
+                        "description": "Data representing the configuration to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created configuration",
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/configurations/{id}": {
+            "x-handler": "Configurations",
+            "get": {
+                "summary": "Retrieve Configuration",
+                "description": "The Configuration endpoint returns a single configuration.\n",
+                "operationId": "getSingleConfiguration",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the configuration to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Configurations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single configuration specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A configuration with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Configuration",
+                "description": "Updates an existing configuration.\n",
+                "operationId": "updateSingleConfiguration",
+                "tags": [
+                    "Configurations"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the configuration to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "configuration",
+                        "in": "body",
+                        "description": "New data representing the configuration",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated configuration",
+                        "schema": {
+                            "$ref": "#/definitions/Configuration"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A configuration with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Configuration",
+                "description": "Deletes a single Configuration.\n",
+                "operationId": "deleteSingleConfiguration",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the configuration to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Configurations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single configuration specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Configurations",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A configuration with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -1319,7 +1504,6 @@
                 }
             },
             "required": [
-                "id",
                 "role",
                 "person",
                 "startDate"
@@ -1355,12 +1539,6 @@
                             "value"
                         ]
                     }
-                },
-                "resource": {
-                    "type": "string"
-                },
-                "about": {
-                    "type": "string"
                 }
             },
             "required": [
