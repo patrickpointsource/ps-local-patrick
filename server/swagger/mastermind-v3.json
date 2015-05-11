@@ -15,11 +15,56 @@
     ],
     "paths": {
         "/assignments": {
+            "x-handler": "Assignments",
             "get": {
-                "summary": "Assignments (IGNORE)",
-                "description": "The Assignments endpoint returns information about assignments.\n",
+                "summary": "Retrieve Assignments",
+                "description": "The Assignments endpoint returns assignments.\n",
+                "operationId": "getAssignments",
                 "tags": [
                     "Assignments"
+                ],
+                "parameters": [
+                    {
+                        "name": "person",
+                        "in": "query",
+                        "description": "Filter assignments by only those relating to this person (specified by the ID of the Person)",
+                        "type": "string"
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "description": "Filter assignments to those starting on or after the given date.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "description": "Filter assignments to those ending before the given date.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "timePeriod",
+                        "in": "query",
+                        "description": "Filter assignments to those overlapping the given time period.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "projects",
+                        "in": "query",
+                        "description": "Filter assignments to those associated with any one of this set of Project IDs.",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "past",
+                                "current",
+                                "future"
+                            ]
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -29,6 +74,189 @@
                             "items": {
                                 "$ref": "#/definitions/Assignment"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Assignment",
+                "description": "Create a new assignment.\nAn ID in the POST-ed assignment will be ignored.\n",
+                "operationId": "createSingleAssignment",
+                "tags": [
+                    "Assignments"
+                ],
+                "parameters": [
+                    {
+                        "name": "assignment",
+                        "in": "body",
+                        "description": "Data representing the assignment to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created assignment",
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/assignments/{id}": {
+            "x-handler": "Assignments",
+            "get": {
+                "summary": "Retrieve Assignment",
+                "description": "The Assignment endpoint returns a single assignment.\n",
+                "operationId": "getSingleAssignment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the assignment to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Assignments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single assignment specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A assignment with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Assignment",
+                "description": "Updates an existing assignment.\n",
+                "operationId": "updateSingleAssignment",
+                "tags": [
+                    "Assignments"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the assignment to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "assignment",
+                        "in": "body",
+                        "description": "New data representing the assignment",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated assignment",
+                        "schema": {
+                            "$ref": "#/definitions/Assignment"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A assignment with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Assignment",
+                "description": "Deletes a single Assignment.\n",
+                "operationId": "deleteSingleAssignment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the assignment to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Assignments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single assignment specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Assignments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A assignment with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -481,6 +709,12 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to view Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
@@ -512,6 +746,12 @@
                         "description": "The newly created project",
                         "schema": {
                             "$ref": "#/definitions/Project"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -546,6 +786,12 @@
                         "description": "The single project specified by the ID",
                         "schema": {
                             "$ref": "#/definitions/Project"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "404": {
@@ -594,6 +840,12 @@
                             "$ref": "#/definitions/Project"
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to update Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "404": {
                         "description": "A project with the specified ID could not be found.",
                         "schema": {
@@ -627,6 +879,12 @@
                 "responses": {
                     "200": {
                         "description": "The single project specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Projects",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     },
                     "404": {
                         "description": "A project with the specified ID could not be found.",
@@ -774,6 +1032,12 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to view Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
@@ -805,6 +1069,12 @@
                         "description": "The newly created task",
                         "schema": {
                             "$ref": "#/definitions/Task"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -839,6 +1109,12 @@
                         "description": "The single task specified by the ID",
                         "schema": {
                             "$ref": "#/definitions/Task"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "404": {
@@ -887,6 +1163,12 @@
                             "$ref": "#/definitions/Task"
                         }
                     },
+                    "403": {
+                        "description": "The current user is not allowed to update Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "404": {
                         "description": "A task with the specified ID could not be found.",
                         "schema": {
@@ -920,6 +1202,12 @@
                 "responses": {
                     "200": {
                         "description": "The single task specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Tasks",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     },
                     "404": {
                         "description": "A task with the specified ID could not be found.",
@@ -2234,7 +2522,7 @@
                     "type": "integer",
                     "format": "int32"
                 },
-                "message": {
+                "error": {
                     "type": "string"
                 },
                 "fields": {
