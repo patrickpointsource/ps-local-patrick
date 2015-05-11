@@ -1946,9 +1946,11 @@
             }
         },
         "/roles": {
+            "x-handler": "Roles",
             "get": {
-                "summary": "Roles (IGNORE)",
-                "description": "The Roles endpoint returns information about roles.\n",
+                "summary": "Retrieve Roles",
+                "description": "The Roles endpoint returns roles.\n",
+                "operationId": "getRoles",
                 "tags": [
                     "Roles"
                 ],
@@ -1960,6 +1962,189 @@
                             "items": {
                                 "$ref": "#/definitions/Role"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Role",
+                "description": "Create a new role.\nAn ID in the POST-ed role will be ignored.\n",
+                "operationId": "createSingleRole",
+                "tags": [
+                    "Roles"
+                ],
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "body",
+                        "description": "Data representing the role to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Role"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created role",
+                        "schema": {
+                            "$ref": "#/definitions/Role"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{id}": {
+            "x-handler": "Roles",
+            "get": {
+                "summary": "Retrieve Role",
+                "description": "The Role endpoint returns a single role.\n",
+                "operationId": "getSingleRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the role to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Roles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single role specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Role"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Role",
+                "description": "Updates an existing role.\n",
+                "operationId": "updateSingleRole",
+                "tags": [
+                    "Roles"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the role to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "role",
+                        "in": "body",
+                        "description": "New data representing the role",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Role"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated role",
+                        "schema": {
+                            "$ref": "#/definitions/Role"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Role",
+                "description": "Deletes a single Role.\n",
+                "operationId": "deleteSingleRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the role to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Roles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single role specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
