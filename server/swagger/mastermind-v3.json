@@ -2242,10 +2242,12 @@
                 }
             }
         },
-        "/user-roles": {
+        "/userRoles": {
+            "x-handler": "UserRoles",
             "get": {
-                "summary": "UserRoles (IGNORE)",
-                "description": "The Tasks endpoint returns information about user roles.\n",
+                "summary": "Retrieve User Roles",
+                "description": "The User Roles endpoint returns user roles.\n",
+                "operationId": "getUserRoles",
                 "tags": [
                     "UserRoles"
                 ],
@@ -2257,6 +2259,189 @@
                             "items": {
                                 "$ref": "#/definitions/UserRole"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view user roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create User Role",
+                "description": "Create a new user role.\nAn ID in the POST-ed user role will be ignored.\n",
+                "operationId": "createSingleUserRole",
+                "tags": [
+                    "UserRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "userRole",
+                        "in": "body",
+                        "description": "Data representing the user role to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created user role",
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new User Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/userRoles/{id}": {
+            "x-handler": "UserRoles",
+            "get": {
+                "summary": "Retrieve User Role",
+                "description": "The User Roles endpoint returns a single user role.\n",
+                "operationId": "getSingleUserRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user role to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "UserRoles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single user role specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view User Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A user role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update User Role",
+                "description": "Updates an existing User Role.\n",
+                "operationId": "updateSingleUserRole",
+                "tags": [
+                    "UserRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user role to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "userRole",
+                        "in": "body",
+                        "description": "New data representing the user role",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated user role",
+                        "schema": {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update User Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A user role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete User Role",
+                "description": "Deletes a single User Role.\n",
+                "operationId": "deleteSingleUserRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user role to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "UserRoles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single user role specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete User Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A user role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -3674,9 +3859,6 @@
         },
         "UserRole": {
             "type": "object",
-            "required": [
-                "roles"
-            ],
             "properties": {
                 "id": {
                     "type": "string"
@@ -3696,7 +3878,10 @@
                         "description": "ID of Security Role"
                     }
                 }
-            }
+            },
+            "required": [
+                "roles"
+            ]
         },
         "Vacation": {
             "type": "object",
