@@ -72,6 +72,10 @@ The client will be running at [http://localhost:8080](http://localhost:8080). Yo
 
 The server is running at [http://localhost:3000](http://localhost:3000). If you've authenticated via the client and visit an API endpoint, the proper cookies should be sent to consider you authenticated, but it might be simplest to use the aforementioned proxy to more closely replicate what a production scenario would be like.
 
+## swagger-ui
+
+A convenient swagger specification viewer / testing utility is available at [http://localhost:8080/docs/index.html](http://localhost:8080/docs/index.html).
+
 ## Tests
 
 ### Server-side Tests
