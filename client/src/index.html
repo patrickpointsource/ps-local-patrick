@@ -6,21 +6,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PS MasterMind</title>
-    <link href="assets/css/angular-snap.css" rel="stylesheet" type="text/css">
     <link href="assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.css" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
 </head>
 
 <body>
-    <div class="grid-frame snap-content" snap-content>
-        <div class="grid-block vertical">
-            <div ui-view="menu"></div>
-            <div ui-view="header"></div>
-            <div class="grid-block">
-                <div id="wrapper" class="primary-view ui-animation bounceIn" ui-view="content" ng-class="getAppSlide()"></div>
-            </div>
-            <div ui-view="footer"></div>
+    <div class="grid-frame">
+        <div class="grid-block">
+            <div class="main-menu-container" main-menu></div>
+            <div class="header-bar-container" header-bar></div>
+            <div class="content-container" ui-view="content-container"></div>
         </div>
     </div>
     <script src="assets/js/angular-libs.js"></script>
