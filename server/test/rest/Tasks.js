@@ -9,6 +9,12 @@ describe('TASKS - test simple REST calls', function () {
 
     it('GET /v3/tasks (unauthenticated)', function (done) {
         request('http://localhost:3000/v3/tasks', function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
             done();
         });
@@ -18,6 +24,12 @@ describe('TASKS - test simple REST calls', function () {
         request('http://localhost:3000/v3/tasks', {
             jar: util.userCookieJar
         }, function(err, resp, body){
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
@@ -38,6 +50,12 @@ describe('TASKS - test simple REST calls', function () {
         request('http://localhost:3000/v3/tasks', {
             jar: util.adminCookieJar
         }, function(err, resp, body){
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
@@ -63,6 +81,12 @@ describe('TASKS - test simple REST calls', function () {
                 'Content-Type': 'application/json'
             }
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
             done();
         });
@@ -78,6 +102,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.userCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 403){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 403);
             done();
         });
@@ -94,6 +124,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
@@ -106,6 +142,7 @@ describe('TASKS - test simple REST calls', function () {
             
             // Save the taskID to do an update and delete later
             taskID = json.id;
+            console.log('got taskID:', taskID);
     
             done();
         });
@@ -118,6 +155,12 @@ describe('TASKS - test simple REST calls', function () {
                 'Content-Type': 'application/json'
             }
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
             done();
         });
@@ -133,6 +176,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 404){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 404);
             done();
         });
@@ -148,6 +197,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
@@ -172,6 +227,12 @@ describe('TASKS - test simple REST calls', function () {
                 'Content-Type': 'application/json'
             }
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
             done();
         });
@@ -190,6 +251,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 404){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 404);
             done();
         });
@@ -209,6 +276,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.userCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 403){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 403);
             done();
         });
@@ -227,6 +300,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
@@ -248,6 +327,12 @@ describe('TASKS - test simple REST calls', function () {
                 'Content-Type': 'application/json'
             }
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
             done();
         });
@@ -263,6 +348,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 404){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 404);
             done();
         });
@@ -278,6 +369,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.userCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 403){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 403);
             done();
         });
@@ -293,6 +390,12 @@ describe('TASKS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             done();

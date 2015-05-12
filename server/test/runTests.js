@@ -92,6 +92,7 @@ var server = http.createServer(function (req, res) {
         env['USER_AUTH_CODE'] = userAuthCode;
         env['ADMIN_AUTH_CODE'] = adminAuthCode;
         var mocha = childProcess.spawn('mocha', [
+            '--bail',
             '--timeout=10000', 
             path.resolve(__dirname, 'rest/run.js') // /server/test/rest/*
         ], {

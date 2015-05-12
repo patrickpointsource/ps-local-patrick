@@ -4,7 +4,7 @@ var path = require('path'),
     Q = require('q'),
     request = require('request');
     
-var LAUNCH_TIMEOUT = 5000;
+var LAUNCH_TIMEOUT = 6000;
 var KILL_TIMEOUT = 100;
 
 var lastLaunch = null;
