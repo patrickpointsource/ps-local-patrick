@@ -1930,22 +1930,24 @@
                 "responses": {
                     "200": {
                         "description": "The access rights of the person specified by ID",
-                        "type": "object",
-                        "properties": {
-                            "hasFinanceRights": {
-                                "type": "boolean"
-                            },
-                            "hasAdminRights": {
-                                "type": "boolean"
-                            },
-                            "hasManagementRights": {
-                                "type": "boolean"
-                            },
-                            "hasProjectManagementRights": {
-                                "type": "boolean"
-                            },
-                            "hasExecutiveRights": {
-                                "type": "boolean"
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "hasFinanceRights": {
+                                    "type": "boolean"
+                                },
+                                "hasAdminRights": {
+                                    "type": "boolean"
+                                },
+                                "hasManagementRights": {
+                                    "type": "boolean"
+                                },
+                                "hasProjectManagementRights": {
+                                    "type": "boolean"
+                                },
+                                "hasExecutiveRights": {
+                                    "type": "boolean"
+                                }
                             }
                         }
                     },
@@ -1990,7 +1992,9 @@
                 "responses": {
                     "200": {
                         "description": "The Google Profile of the person specified by ID",
-                        "type": "object"
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     "403": {
                         "description": "The current user is not allowed to view People",
@@ -3470,7 +3474,7 @@
                                 "Approved",
                                 "Pending",
                                 "Cancelled",
-                                "Denied",
+                                "Denied"
                             ]
                         }
                     },
@@ -4908,7 +4912,7 @@
                         "Approved",
                         "Pending",
                         "Cancelled",
-                        "Denied",
+                        "Denied"
                     ]
                 },
                 "days": {
