@@ -108,7 +108,7 @@ module.exports.generateCollectionGetHandler = function(resourceName, permission,
                             // Use the all documents view
                             db.view(ddoc, allDocsViewName, function(err, allDocs){
                                 if(err){
-                                    return res.json(500);
+                                    return sendJson(res, {'message': 'Could not retrieve all docs', 'detail': err}, 500);
                                 }
                                 var docs = _.map(allDocs.rows, function(row){
                                     return convertForRestAPI(access, row.value);
@@ -139,8 +139,11 @@ module.exports.generateSingleItemGetHandler = function(resourceName, permission,
                 if(allowed){
                     var docID = req.params.id;
                     db.get(docID, function(err, doc){
-                        if(err || !doc){
-                            return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.'}, 404);
+                        if(err && err.message != 'missing'){
+                            return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                        }
+                        if(!doc){
+                            return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
                         }
                         sendJson(res, convertForRestAPI(access, doc));
                     });
@@ -169,12 +172,12 @@ module.exports.generateSingleItemCreateHandler = function(resourceName, permissi
                     var proceed = function(){
                         db.insert(objToPost, function(err, doc){
                             if(err){
-                                return sendJson(res, {'message': 'Error occurred while creating '+key+'.'}, 500);
+                                return sendJson(res, {'message': 'An error occurred attempting to create the '+key+'.', 'detail': err}, 500);
                             }
                             
                             db.get(doc.id, function(err, doc){
-                                if(err){
-                                    return sendJson(res, {'message': 'Error occurred while retrieving newly created '+key+'.'}, 500);
+                                if(err || !doc){
+                                    return sendJson(res, {'message': 'An error occurred attempting to retrieve the newly created '+key+'.', 'detail': err}, 500);
                                 }
                                 sendJson(res, convertForRestAPI(access, doc));
                             });
@@ -218,21 +221,24 @@ module.exports.generateSingleItemUpdateHandler = function(resourceName, permissi
                     var proceed = function(){
                         // Retrieve the existing doc by ID in order to get the current _rev
                         db.get(docID, function(err, doc){
-                            if(err){
-                                return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.'}, 404);
+                            if(err && err.message != 'missing'){
+                                return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                            }
+                            if(!doc){
+                                return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
                             }
 
                             // Put the _rev of the current doc on our data to insert
                             objToPost._rev = doc._rev;
                             db.insert(objToPost, docID, function(err, doc){
                                 if(err){
-                                    return sendJson(res, {'message': 'Error occurred while updating '+key+'.'}, 500);
+                                    return sendJson(res, {'message': 'Error occurred while updating '+key+'.', 'detail': err}, 500);
                                 }
                                 
                                 // Retrieve the current state of the doc to accurately reflect what's in the DB
                                 db.get(docID, function(err, doc){
                                     if(err){
-                                        return sendJson(res, {'message': 'Error occurred while retrieving newly updated '+key+'.'}, 500);
+                                        return sendJson(res, {'message': 'Error occurred while retrieving newly updated '+key+'.', 'detail': err}, 500);
                                     }
                                     sendJson(res, convertForRestAPI(access, doc));
                                 });
@@ -273,12 +279,15 @@ module.exports.generateSingleItemDeleteHandler = function(resourceName, permissi
                 if(allowed){
                     var docID = req.params.id;
                     db.get(docID, function(err, doc){
-                        if(err){
-                            return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.'}, 404);
+                        if(err && err.message != 'missing'){
+                            return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                        }
+                        if(!doc){
+                            return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
                         }
                         db.destroy(docID, doc._rev, function(err){
                             if(err){
-                                return sendJson(res, {'message': 'Error occurred while deleting '+key+'.'}, 500);
+                                return sendJson(res, {'message': 'Error occurred while deleting '+key+'.', 'detail': err}, 500);
                             }
                             res.status(200);
                             res.end();

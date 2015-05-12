@@ -9,8 +9,14 @@ describe('PROJECTS - test simple REST calls', function () {
 
     it('GET /v3/projects (unauthenticated)', function (done) {
         request('http://localhost:3000/v3/projects', function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -18,6 +24,12 @@ describe('PROJECTS - test simple REST calls', function () {
         request('http://localhost:3000/v3/projects', {
             jar: util.adminCookieJar
         }, function(err, resp, body){
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
@@ -26,7 +38,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 // Pick the first one and make sure it meets the standard format
                 var item = json[0];
                 var keys = _.keys(item);
-                assert.ok(keys.length == 2 || keys.length == 3);
+                assert.ok(keys.length > 7 && keys.length < 18);
                 assert.notEqual(keys.indexOf('id'), -1);
                 assert.notEqual(keys.indexOf('customerName'), -1);
                 assert.notEqual(keys.indexOf('name'), -1);
@@ -36,7 +48,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 assert.notEqual(keys.indexOf('executiveSponsor'), -1);
                 assert.notEqual(keys.indexOf('roles'), -1);
             }
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -49,8 +61,14 @@ describe('PROJECTS - test simple REST calls', function () {
                 'Content-Type': 'application/json'
             }
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -64,10 +82,16 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 400){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 400);
             assert.ok(body.indexOf('Missing required property') !== -1);
     
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -87,10 +111,16 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 400){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 400);
-            assert.ok(body.indexOf('No enum match for: "invalid-type"') !== -1);
+            assert.ok(body.indexOf('No enum match for: \\"invalid-type\\"') !== -1);
     
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -110,9 +140,15 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 400){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 400);
             assert.ok(body.indexOf('The indicated executiveSponsor doesn\'t exist') !== -1);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -132,8 +168,14 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.userCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 403){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 403);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -154,12 +196,18 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
-            assert.ok(keys.length >= 2);
+            assert.ok(keys.length > 7 && keys.length < 18);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
             assert.equal(json.name, 'Test Project');
@@ -168,7 +216,7 @@ describe('PROJECTS - test simple REST calls', function () {
             // Save the taskID to do an update and delete later
             projectID = json.id;
     
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -179,8 +227,14 @@ describe('PROJECTS - test simple REST calls', function () {
                 'Content-Type': 'application/json'
             }
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -194,8 +248,14 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 404){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 404);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -209,18 +269,24 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
-            assert.ok(keys.length >= 2);
+            assert.ok(keys.length > 7 && keys.length < 18);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
             assert.equal(json.id, projectID);
             assert.equal(json.name, 'Test Project');
             assert.equal(json.customerName, 'Test Customer Name');
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -240,8 +306,14 @@ describe('PROJECTS - test simple REST calls', function () {
                 'Content-Type': 'application/json'
             }
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -264,8 +336,14 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 404){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 404);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -289,8 +367,14 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.userCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 403){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 403);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -313,17 +397,23 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
-            assert.ok(keys.length >= 2);
+            assert.ok(keys.length > 7 && keys.length < 18);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
             assert.equal(json.id, projectID);
             assert.equal(json.name, 'Test Project v2');
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -334,8 +424,14 @@ describe('PROJECTS - test simple REST calls', function () {
                 'Content-Type': 'application/json'
             }
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 401){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 401);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -349,8 +445,14 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 404){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 404);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -364,8 +466,14 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 403){
+                console.log('error:', err, body);
+            }
             assert.equal(resp.statusCode, 403);
-            done();
+            _.delay(done, 1000);
         });
     });
     
@@ -379,9 +487,15 @@ describe('PROJECTS - test simple REST calls', function () {
             },
             jar: util.adminCookieJar
         }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 200){
+                console.log('error:', err, body);
+            }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
-            done();
+            _.delay(done, 1000);
         });
     });
 });
