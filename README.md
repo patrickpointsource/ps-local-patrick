@@ -82,10 +82,10 @@ A convenient swagger specification viewer / testing utility is available at [htt
 
 #### Running tests
 
-To run the REST tests, install casperjs and phantomjs globally:
+To run the REST tests, install mocha, casperjs, and phantomjs globally:
 
 ```
-npm install -g casperjs phantomjs
+npm install -g mocha casperjs phantomjs
 ```
 
 Use the `sprout test` command, but make sure you pass the needed environment variables (these are the standard set useful for automated testing):

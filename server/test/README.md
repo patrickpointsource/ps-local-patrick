@@ -2,7 +2,7 @@ Add your unit tests to this directory.
 
 ## REST Tests
 
-To run the REST tests, install mocha, casperjs and phantomjs globally:
+To run the REST tests, install mocha, casperjs, and phantomjs globally:
 
 ```
 npm install -g mocha casperjs phantomjs
