@@ -16,7 +16,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 401);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -48,7 +48,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 assert.notEqual(keys.indexOf('executiveSponsor'), -1);
                 assert.notEqual(keys.indexOf('roles'), -1);
             }
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -68,7 +68,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 401);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -91,7 +91,7 @@ describe('PROJECTS - test simple REST calls', function () {
             assert.equal(resp.statusCode, 400);
             assert.ok(body.indexOf('Missing required property') !== -1);
     
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -120,7 +120,7 @@ describe('PROJECTS - test simple REST calls', function () {
             assert.equal(resp.statusCode, 400);
             assert.ok(body.indexOf('No enum match for: \\"invalid-type\\"') !== -1);
     
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -148,7 +148,7 @@ describe('PROJECTS - test simple REST calls', function () {
             }
             assert.equal(resp.statusCode, 400);
             assert.ok(body.indexOf('The indicated executiveSponsor doesn\'t exist') !== -1);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -175,7 +175,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 403);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -216,7 +216,7 @@ describe('PROJECTS - test simple REST calls', function () {
             // Save the taskID to do an update and delete later
             projectID = json.id;
     
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -234,7 +234,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 401);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -255,7 +255,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 404);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -286,7 +286,7 @@ describe('PROJECTS - test simple REST calls', function () {
             assert.equal(json.id, projectID);
             assert.equal(json.name, 'Test Project');
             assert.equal(json.customerName, 'Test Customer Name');
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -313,7 +313,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 401);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -343,7 +343,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 404);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -374,7 +374,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 403);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -413,7 +413,7 @@ describe('PROJECTS - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('name'), -1);
             assert.equal(json.id, projectID);
             assert.equal(json.name, 'Test Project v2');
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -431,7 +431,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 401);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -452,7 +452,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 404);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -473,7 +473,7 @@ describe('PROJECTS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 403);
-            _.delay(done, 1000);
+            done();
         });
     });
     
@@ -495,7 +495,7 @@ describe('PROJECTS - test simple REST calls', function () {
             }
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
-            _.delay(done, 1000);
+            done();
         });
     });
 });
