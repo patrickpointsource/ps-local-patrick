@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MasterMind</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width">
+
+</head>
+<body>
+	
+	<div>
+		<h1>PointSource MasterMind</h1>
+		<p>Sign in with your PointSource Google+ account.</p>
+		<p>
+			<span id="signinButton"> 
+				<!-- Add where you want your sign-in button to render -->
+				<!-- Use an image that follows the branding guidelines in a real app -->
+				<button id="signoutButton">Sign Out of Google</button>
+			</span>
+			<div id="result"></div>
+		</p>
+		<script type="text/javascript">
+			function start() {
+				
+				gapi.load('auth2', function() {
+					auth2 = gapi.auth2.init({
+						client_id: '141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com',
+						// Scopes to request in addition to 'profile' and 'email'
+						//scope: 'additional_scope'
+					});
+					auth2.then(function(){
+						jQuery('#signoutButton').click(function() {
+							auth2.signOut();
+						});
+					});
+				});
+			}
+		</script>
+		<!-- Last part of BODY element in file index.html -->
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="//apis.google.com/js/client:platform.js?onload=start"></script>
+</body>
