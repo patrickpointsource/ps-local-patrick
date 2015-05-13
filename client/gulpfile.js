@@ -124,7 +124,7 @@ gulp.task('copy-config', function () {
         .pipe(connect.reload());
 });
 
-gulp.task('copy-custom-css', ['copy-fa'], function () {
+gulp.task('copy-custom-css', ['copy-fonts'], function () {
     return gulp.src(['bower_components/angular-snap/angular-snap.css'])
         .pipe(gulp.dest('./dist/assets/css'))
         .pipe(gulp.dest(webContentBaseDir + '/assets/css'))
@@ -140,7 +140,7 @@ gulp.task('copy-sprout-css', [], function () {
         .pipe(gulp.dest(webContentBaseDir + '/assets/scss/'));
 });
 
-gulp.task('copy-fa', ['copy-fa-fonts'], function () {
+gulp.task('copy-fonts', ['copy-fa-fonts', 'copy-icomoon-fonts'], function () {
     return gulp.src(['bower_components/font-awesome/css/font-awesome.min.css'])
         .pipe(gulp.dest('./dist/assets/css'))
         .pipe(gulp.dest(webContentBaseDir + '/assets/css'));
@@ -156,6 +156,16 @@ gulp.task('copy-fa-fonts', [], function () {
         .pipe(gulp.dest('./dist/assets/fonts'))
         .pipe(gulp.dest(webContentBaseDir + '/assets/fonts'));
 });
+gulp.task('copy-icomoon-fonts', [], function () {
+    return gulp.src([
+            'src/assets/fonts/icomoon.eot',
+            'src/assets/fonts/icomoon.svg',
+            'src/assets/fonts/icomoon.ttf',
+            'src/assets/fonts/icomoon.woff'
+        ])
+        .pipe(gulp.dest('./dist/assets/fonts'))
+        .pipe(gulp.dest(webContentBaseDir + '/assets/fonts'));
+});
 
 gulp.task('sass', function () {
     return gulp.src('src/assets/scss/app.scss')
@@ -163,6 +173,7 @@ gulp.task('sass', function () {
             loadPath: [
                 'bower_components/foundation-apps/scss',
                 'src/assets/scss',
+                'src/app/**/*.scss',
                 sprouts
             ],
             style: 'nested',

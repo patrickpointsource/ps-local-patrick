@@ -58,8 +58,8 @@
             controller: 'FooterController'
           },
           'content@': {
-            templateUrl: 'app/home.html',
-            controller: 'HomeController'
+            templateUrl: 'app/modules/dashboard/dashboard.html',
+            controller: 'DashboardController'
           }
         }
       })
@@ -68,8 +68,28 @@
         url: '/home',
         views: {
           'content@': {
-            templateUrl: 'app/home.html',
-            controller: 'HomeController'
+            templateUrl: 'app/modules/dashboard/dashboard.html',
+            controller: 'DashboardController'
+          }
+        }
+      })
+      .state('projects', {
+        parent: 'root',
+        url: '/projects',
+        views: {
+          'content@': {
+            templateUrl: 'app/modules/projects/projects.html',
+            controller: 'ProjectsController'
+          }
+        }
+      })
+      .state('people', {
+        parent: 'root',
+        url: '/people',
+        views: {
+          'content@': {
+            templateUrl: 'app/modules/people/people.html',
+            controller: 'PeopleController'
           }
         }
       });

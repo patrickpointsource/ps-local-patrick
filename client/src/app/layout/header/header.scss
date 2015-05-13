@@ -7,9 +7,16 @@
     @include title-bar-style(
         $background: $dark-color, // Background color
         $color: $secondary-color, // Text color
-        $border: 1px solid $gray-dark, $padding: 1rem
+        $border: 1px solid $gray-dark,
+        $padding: 1rem
     );
-    font-size: 1.7rem;
+
+    @include breakpoint(medium) {
+        @include title-bar-style($background: $gray-light);
+        display: none;
+    }
+
+    font-size: 1.6rem;
     color: $secondary-color;
 
     a {
