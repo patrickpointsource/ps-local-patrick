@@ -1,8 +1,8 @@
-<div class="medium-grid-block">
+<div class="medium-grid-block medium-4 large-3">
     <div class="small-12 medium-12 vertical medium-grid-block" zf-panel id="main-menu" position="left">
         <div class="grid-block shrink vertical">
-            <div class="header-title-bar title-bar-has-icons hide-for-small-only grid-block">
-                <div class="center"><span class="text-bold">Master</span><span class="text-light">Mind</span>
+            <div class="header-title-bar hide-for-small-only grid-block">
+                <div class="title center"><span class="text-bold">Master</span><span class="text-light">Mind</span>
                 </div>
             </div>
             <div class="header-title-bar title-bar-has-icons show-for-small-only grid-block">
@@ -16,11 +16,11 @@
             <div class="block-list">
                 <ul>
                     <li>
-                        <input type="text" ng-model="search" placeholder="Search" />
+                        <input type="text" ng-model="search" placeholder="Search" class="search-bar"/>
                     </li>
-                    <li class="menuItem" ng-repeat="menuItem in menuItems">
-                        <a class="" ng-click="menuNavigate('{{menuItem.name}}')">
-                            <i class="fa fa-home"></i> {{menuItem.label}}
+                    <li class="menu-item" ng-repeat="menuItem in menuItems">
+                        <a ng-click="menuNavigate('{{menuItem.name}}', null)" ui-sref="{{menuItem.name}}">
+                            <i class="fa fa-fw" ng-class="menuItem.iconClass"></i> {{menuItem.label}}
                         </a>
                     </li>
                 </ul>

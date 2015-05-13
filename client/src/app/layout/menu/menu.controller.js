@@ -15,10 +15,15 @@
         console.log($scope.menuItems);
 
         $scope.menuNavigate = function (state, params) {
+            console.log(state);
 
             $rootScope.$broadcast('menuNavigate');
             $rootScope.navigate(state, params);
 
+        };
+
+        $scope.showIt = function() {
+            console.log('Showing it!');
         };
 
     }

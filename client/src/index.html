@@ -15,28 +15,20 @@
     <div class="grid-frame">
         <div class="grid-block">
             <div class="main-menu-container" main-menu></div>
-            <div class="header-bar-container" header-bar></div>
-            <div class="content-container" ui-view="content-container"></div>
+            <div class="grid-block vertical">
+                <div class="header-bar-container" header-bar></div>
+                <div class="content-container" ui-view="content"></div>
+            </div>
         </div>
     </div>
     <script src="assets/js/angular-libs.js"></script>
     <script src="assets/js/dependencies.js"></script>
     <script src="assets/js/foundation-libs.js"></script>
-    <script src="assets/js/sprout.js"></script>
+    <!-- <script src="assets/js/sprout.js"></script> -->
     <script src="app/app.module.js"></script>
     <!-- App Config is generated when running gulp -->
     <script src="app/app.config.js"></script>
-    <script src="app/services/UserService.js"></script>
-    <script src="app/services/DashboardService.js"></script>
-    <script src="app/home.controller.js"></script>
-    <script src="app/layout/layout.module.js"></script>
-    <script src="app/layout/header/header.module.js"></script>
-    <script src="app/layout/header/header.controller.js"></script>
-    <script src="app/layout/footer/footer.module.js"></script>
-    <script src="app/layout/footer/footer.controller.js"></script>
-    <script src="app/layout/menu/menu.module.js"></script>
-    <script src="app/layout/menu/menu.service.js"></script>
-    <script src="app/layout/menu/menu.controller.js"></script>
+    <script src="assets/js/appFiles.js"></script>
 </body>
 
 </html>

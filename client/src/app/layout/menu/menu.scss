@@ -1,6 +1,32 @@
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
+
 #leftMenu {
-	&.off-canvas {
-		overflow: hidden;
-	}
+    &.off-canvas {
+        overflow: hidden;
+    }
+}
+
+.main-menu-container {
+
+    .search-bar {
+        background-color: darken($dark-color, 8);
+    }
+
+    .menu-item {
+        background-color: $dark-color;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 0.8rem;
+
+        a {
+            color: #fff;
+        }
+
+        i {
+            font-size: 1.5rem;
+            vertical-align: middle;
+        }
+    }
+
 }
