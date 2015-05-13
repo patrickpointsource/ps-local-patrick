@@ -34,7 +34,11 @@ describe('REST TEST SETUP/TEARDOWN - ', function () {
         });
     });
 
-    var tests = [/*'Tasks', */'Projects'];
+    var tests = [
+        'Hours',
+        'Tasks', 
+        'Projects'
+    ];
     _.each(tests, function(test){
         require('./'+test);
     });

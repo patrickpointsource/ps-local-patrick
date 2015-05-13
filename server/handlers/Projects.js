@@ -161,50 +161,35 @@ module.exports.getProjects = util.generateCollectionGetHandler(
         
         var q = '';
         if(req.query.startDate){
-            if(q.length != 0){
-                q += ' AND ';
-            }
-            q += 'numericStartDate:['+req.query.startDate.replace(/-/g, '')+' TO Infinity]';
+            q = util.addToQuery(q, 'numericStartDate:['+req.query.startDate.replace(/-/g, '')+' TO Infinity]');
         }
         if(req.query.endDate){
-            if(q.length != 0){
-                q += ' AND ';
-            }
-            q += 'numericEndDate:[-Infinity TO '+req.query.startDate.replace(/-/g, '')+']';
+            q = util.addToQuery(q, 'numericEndDate:[-Infinity TO '+req.query.endDate.replace(/-/g, '')+']');
         }
+        var toAdd;
         if(req.query.types && req.query.types.length){
             var types = req.query.types.split(',');
-            if(q.length != 0){
-                q += ' AND ';
-            }
             if(types.length > 1){
-                q += 'type:('+types.join(' OR ')+')';
+                toAdd = 'type:('+types.join(' OR ')+')';
             }else{
-                q += 'type:'+types[0];
+                toAdd = 'type:'+types[0];
             }
+            q = util.addToQuery(q, toAdd);
         }
         if(req.query.committed != null){
-            if(q.length != 0){
-                q += ' AND ';
-            }
-            q += 'committed:'+req.query.committed;
+            q = util.addToQuery(q, 'committed:'+req.query.committed);
         }
         if(req.query.ids && req.query.ids.length){
             var ids = req.query.ids.split(',');
-            if(q.length != 0){
-                q += ' AND ';
-            }
             if(ids.length > 1){
-                q += 'id:('+ids.join(' OR ')+')';
+                toAdd = 'id:('+ids.join(' OR ')+')';
             }else{
-                q += 'id:'+ids[0];
+                toAdd = 'id:'+ids[0];
             }
+            q = util.addToQuery(q, toAdd);
         }
         if(req.query.executiveSponsor){
-            if(q.length != 0){
-                q += ' AND ';
-            }
-            q += 'executiveSponsor:'+req.query.executiveSponsor;
+            q = util.addToQuery(q, 'executiveSponsor:'+req.query.executiveSponsor);
         }
         if(q.length){
             // Use the SearchAllProjects index

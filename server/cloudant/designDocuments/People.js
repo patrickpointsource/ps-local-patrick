@@ -13,6 +13,13 @@ module.exports = {
                     emit(doc._id, doc.name);
                 }
             }
+        },
+        AllPeopleByGoogleId: {
+            map: function(doc){
+                if (doc.form == 'People' && doc.googleId){
+                    emit(doc.googleId, doc._id);
+                }
+            }
         }
     },
     indexes: {

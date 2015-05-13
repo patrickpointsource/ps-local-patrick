@@ -53,6 +53,7 @@ var loadLocalDocument = function(documentName){
 };
 
 var docs = [
+    'Hours',
     'Tasks',
     'People',
     'Projects',

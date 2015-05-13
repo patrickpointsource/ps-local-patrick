@@ -961,9 +961,11 @@
             }
         },
         "/hours": {
+            "x-handler": "Hours",
             "get": {
                 "summary": "Retrieve Hours",
                 "description": "The Hours endpoint returns hours.\n",
+                "operationId": "getHours",
                 "tags": [
                     "Hours"
                 ],
@@ -998,6 +1000,15 @@
                         }
                     },
                     {
+                        "name": "tasks",
+                        "in": "query",
+                        "description": "Filter hours records to those connected to one of the indicated tasks, identified by ID",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "query",
                         "in": "query",
                         "description": "Filter hours based on a complex query format. Format details TBD",
@@ -1025,6 +1036,7 @@
             "post": {
                 "summary": "Create Hours",
                 "description": "Create a new hours record.\nAn ID in the POST-ed body will be ignored.\n",
+                "operationId": "createSingleHour",
                 "tags": [
                     "Hours"
                 ],
@@ -1056,9 +1068,11 @@
             }
         },
         "/hours/{id}": {
+            "x-handler": "Hours",
             "get": {
                 "summary": "Retrieve Hours",
                 "description": "The Hours endpoint returns a single hours record.\n",
+                "operationId": "getSingleHour",
                 "parameters": [
                     {
                         "name": "id",
@@ -1095,6 +1109,7 @@
             "put": {
                 "summary": "Update Hours",
                 "description": "Updates an existing hours record.\n",
+                "operationId": "updateSingleHour",
                 "tags": [
                     "Hours"
                 ],
@@ -1140,6 +1155,7 @@
             "delete": {
                 "summary": "Delete Hours",
                 "description": "Deletes a single hours record.\n",
+                "operationId": "deleteSingleHour",
                 "parameters": [
                     {
                         "name": "id",
@@ -3858,9 +3874,6 @@
                 "description": {
                     "type": "string"
                 },
-                "editMode": {
-                    "type": "boolean"
-                },
                 "hours": {
                     "type": "number"
                 },
@@ -3882,7 +3895,6 @@
                 }
             },
             "required": [
-                "id",
                 "hours",
                 "description",
                 "person"

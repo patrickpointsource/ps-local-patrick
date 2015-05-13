@@ -464,7 +464,7 @@ describe('PROJECTS - test simple REST calls', function () {
             headers: {
                 'Content-Type': 'application/json'
             },
-            jar: util.adminCookieJar
+            jar: util.userCookieJar
         }, function(err, resp, body) {
             if(err){
                 throw err;
