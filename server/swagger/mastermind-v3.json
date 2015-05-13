@@ -2159,14 +2159,14 @@
                         "in": "query",
                         "description": "Filter projects to those starting on or after the given date.",
                         "type": "string",
-                        "format": "date-time"
+                        "format": "date"
                     },
                     {
                         "name": "endDate",
                         "in": "query",
                         "description": "Filter projects to those ending before the given date.",
                         "type": "string",
-                        "format": "date-time"
+                        "format": "date"
                     }
                 ],
                 "responses": {
@@ -4260,11 +4260,11 @@
                 },
                 "initStartDate": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date"
                 },
                 "initEndDate": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date"
                 },
                 "modified": {
                     "type": "object",
@@ -4288,11 +4288,11 @@
                 },
                 "startDate": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date"
                 },
                 "endDate": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date"
                 },
                 "state": {
                     "default": "planning",
