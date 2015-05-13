@@ -502,12 +502,6 @@
                         "type": "string"
                     },
                     {
-                        "name": "managerName",
-                        "in": "query",
-                        "description": "Filter departments to only those whose manager's name contains the given string",
-                        "type": "string"
-                    },
-                    {
                         "name": "nickname",
                         "in": "query",
                         "description": "Filter departments to only those whose nickname contains the given string",
