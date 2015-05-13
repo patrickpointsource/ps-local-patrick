@@ -27,11 +27,7 @@ var task = {
         if(!expectNew && doc.id){
             obj._id = doc.id;
         }
-        if(expectNew){
-            obj.created = (new Date()).toString();
-        }else if(doc.created){
-            obj.created = (new Date(doc.created)).toString();
-        }
+        obj.created = (expectNew ? (new Date()) : (new Date(doc.created))).toString();
         return obj;
     }
 };
@@ -48,6 +44,7 @@ module.exports.getTasks = util.generateCollectionGetHandler(
             }, function(err, results){
                 callback(results.rows);
             });
+            return;
         }
         callback(false);
     },

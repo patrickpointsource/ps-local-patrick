@@ -4,6 +4,17 @@ var sendJson = require('../util/sendJson');
 var FOR_DB = module.exports.FOR_DB = 'in';
 var FOR_REST = module.exports.FOR_REST = 'out'
 
+//// A set of convenience functions ////
+module.exports.addToQuery = function(q, toAdd){
+    if(q.length !== 0){
+        q += ' AND ';
+    }
+    q += toAdd;
+    return q;
+};
+
+//// A set of utilities for mapping fields from a DB object to a REST object ////
+
 // Map a set of fields straight from `doc` to `out`, if they exist on `doc`
 module.exports.mapStraight = function(doc, out, fields){
     if(!_.isArray(fields)){
@@ -68,7 +79,7 @@ module.exports.mapResources = function(direction, doc, out, fields, replacementK
         _.each(fields, function(key){
             if(doc[key]){
                 out[key] = {
-                    resource: key.toLowerCase()+'/'+doc[key]
+                    resource: replacementKey.toLowerCase()+'/'+doc[key]
                 }
             }
         });
@@ -82,43 +93,61 @@ module.exports.mapResources = function(direction, doc, out, fields, replacementK
     }
 };
 
-// Generate a REST handler for retrieving a collection
-module.exports.generateCollectionGetHandler = function(resourceName, permission, doSearchIfNeededCallback, ddoc, allDocsViewName, convertForRestAPI){
+//// A set of utilities for handling REST API calls ////
 
-    return function(req, res, next){
-        var acl = services.get('acl');
-        var access = services.get('dbAccess');
-        var db = access.db;
-        // Assess whether the user is allowed to access this resource
+var doAcl = function(req, res, resourceName, permission, callback){
+    var acl = services.get('acl');
+    if(_.isFunction(permission)){
+        permission(req, function(actualPermission){
+            acl.isAllowed(
+                req.user.id,
+                res,
+                resourceName,
+                actualPermission,
+                callback
+            );
+        });
+    }else{
         acl.isAllowed(
             req.user.id,
             res,
             resourceName,
             permission,
+            callback
+        );
+    }
+}
 
-            function( allowed ) {
-                if(allowed){
-                    doSearchIfNeededCallback(req, db, function(docsFromSearch){
-                        if(docsFromSearch){
-                            var docs = _.map(docsFromSearch, function(row){
-                                return convertForRestAPI(access, row.doc);
+// Generate a REST handler for retrieving a collection
+module.exports.generateCollectionGetHandler = function(resourceName, permission, doSearchIfNeededCallback, ddoc, allDocsViewName, convertForRestAPI){
+
+    return function(req, res, next){
+        var access = services.get('dbAccess');
+        var db = access.db;
+        // Assess whether the user is allowed to acc
+        doAcl(req, res, resourceName, permission, function(allowed){
+            if(allowed){
+                doSearchIfNeededCallback(req, db, function(docsFromSearch){
+                    if(docsFromSearch){
+                        var docs = _.map(docsFromSearch, function(row){
+                            return convertForRestAPI(access, row.doc);
+                        });
+                        sendJson(res, docs);
+                    }else{
+                        // Use the all documents view
+                        db.view(ddoc, allDocsViewName, function(err, allDocs){
+                            if(err){
+                                return sendJson(res, {'message': 'Could not retrieve all docs', 'detail': err}, 500);
+                            }
+                            var docs = _.map(allDocs.rows, function(row){
+                                return convertForRestAPI(access, row.value);
                             });
                             sendJson(res, docs);
-                        }else{
-                            // Use the all documents view
-                            db.view(ddoc, allDocsViewName, function(err, allDocs){
-                                if(err){
-                                    return sendJson(res, {'message': 'Could not retrieve all docs', 'detail': err}, 500);
-                                }
-                                var docs = _.map(allDocs.rows, function(row){
-                                    return convertForRestAPI(access, row.value);
-                                });
-                                sendJson(res, docs);
-                            });
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
+            }
+        });
     };
 
 };
@@ -129,26 +158,20 @@ module.exports.generateSingleItemGetHandler = function(resourceName, permission,
         var acl = services.get('acl');
         var access = services.get('dbAccess');
         var db = access.db;
-        acl.isAllowed(
-            req.user.id,
-            res,
-            resourceName,
-            permission,
-
-            function( allowed ) {
-                if(allowed){
-                    var docID = req.params.id;
-                    db.get(docID, function(err, doc){
-                        if(err && err.message != 'missing'){
-                            return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
-                        }
-                        if(!doc){
-                            return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
-                        }
-                        sendJson(res, convertForRestAPI(access, doc));
-                    });
-                }
-            });
+        doAcl(req, res, resourceName, permission, function(allowed){
+            if(allowed){
+                var docID = req.params.id;
+                db.get(docID, function(err, doc){
+                    if(err && err.message != 'missing'){
+                        return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                    }
+                    if(!doc){
+                        return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
+                    }
+                    sendJson(res, convertForRestAPI(access, doc));
+                });
+            }
+        });
     };
 
 };
@@ -159,44 +182,38 @@ module.exports.generateSingleItemCreateHandler = function(resourceName, permissi
         var acl = services.get('acl');
         var access = services.get('dbAccess');
         var db = access.db;
-        acl.isAllowed(
-            req.user.id,
-            res,
-            resourceName,
-            permission,
-            
-            function(allowed){
-                if(allowed){
+        doAcl(req, res, resourceName, permission, function(allowed){
+            if(allowed){
 
+                var proceed = function(){
                     var objToPost = convertForDB(access, req.body, true);
-                    var proceed = function(){
-                        db.insert(objToPost, function(err, doc){
-                            if(err){
-                                return sendJson(res, {'message': 'An error occurred attempting to create the '+key+'.', 'detail': err}, 500);
+                    db.insert(objToPost, function(err, doc){
+                        if(err){
+                            return sendJson(res, {'message': 'An error occurred attempting to create the '+key+'.', 'detail': err}, 500);
+                        }
+                        
+                        db.get(doc.id, function(err, doc){
+                            if(err || !doc){
+                                return sendJson(res, {'message': 'An error occurred attempting to retrieve the newly created '+key+'.', 'detail': err}, 500);
                             }
-                            
-                            db.get(doc.id, function(err, doc){
-                                if(err || !doc){
-                                    return sendJson(res, {'message': 'An error occurred attempting to retrieve the newly created '+key+'.', 'detail': err}, 500);
-                                }
-                                sendJson(res, convertForRestAPI(access, doc));
-                            });
+                            sendJson(res, convertForRestAPI(access, doc));
                         });
-                    };
+                    });
+                };
 
-                    var err;
-                    if(validate){
-                        validate(req.body, access, function(err){
-                            if(err){
-                                return sendJson(res, {'message': err}, 400);
-                            }
-                            proceed();
-                        });
-                    }else{
+                var err;
+                if(validate){
+                    validate(req.body, access, function(err){
+                        if(err){
+                            return sendJson(res, {'message': err}, 400);
+                        }
                         proceed();
-                    }
+                    });
+                }else{
+                    proceed();
                 }
-            });
+            }
+        });
     };
 
 };
@@ -207,58 +224,52 @@ module.exports.generateSingleItemUpdateHandler = function(resourceName, permissi
         var acl = services.get('acl');
         var access = services.get('dbAccess');
         var db = access.db;
-        acl.isAllowed(
-            req.user.id,
-            res,
-            resourceName,
-            permission,
-            
-            function(allowed){
-                if(allowed){
-                    var docID = req.params.id;
+        doAcl(req, res, resourceName, permission, function(allowed){
+            if(allowed){
+                var docID = req.params.id;
+
+                var proceed = function(){
                     var objToPost = convertForDB(access, req.body, true);
+                    // Retrieve the existing doc by ID in order to get the current _rev
+                    db.get(docID, function(err, doc){
+                        if(err && err.message != 'missing'){
+                            return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                        }
+                        if(!doc){
+                            return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
+                        }
 
-                    var proceed = function(){
-                        // Retrieve the existing doc by ID in order to get the current _rev
-                        db.get(docID, function(err, doc){
-                            if(err && err.message != 'missing'){
-                                return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                        // Put the _rev of the current doc on our data to insert
+                        objToPost._rev = doc._rev;
+                        db.insert(objToPost, docID, function(err, doc){
+                            if(err){
+                                return sendJson(res, {'message': 'Error occurred while updating '+key+'.', 'detail': err}, 500);
                             }
-                            if(!doc){
-                                return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
-                            }
-
-                            // Put the _rev of the current doc on our data to insert
-                            objToPost._rev = doc._rev;
-                            db.insert(objToPost, docID, function(err, doc){
+                            
+                            // Retrieve the current state of the doc to accurately reflect what's in the DB
+                            db.get(docID, function(err, doc){
                                 if(err){
-                                    return sendJson(res, {'message': 'Error occurred while updating '+key+'.', 'detail': err}, 500);
+                                    return sendJson(res, {'message': 'Error occurred while retrieving newly updated '+key+'.', 'detail': err}, 500);
                                 }
-                                
-                                // Retrieve the current state of the doc to accurately reflect what's in the DB
-                                db.get(docID, function(err, doc){
-                                    if(err){
-                                        return sendJson(res, {'message': 'Error occurred while retrieving newly updated '+key+'.', 'detail': err}, 500);
-                                    }
-                                    sendJson(res, convertForRestAPI(access, doc));
-                                });
+                                sendJson(res, convertForRestAPI(access, doc));
                             });
                         });
-                    };
+                    });
+                };
 
-                    var err;
-                    if(validate){
-                        validate(req.body, access, function(err){
-                            if(err){
-                                return sendJson(res, {'message': err}, 400);
-                            }
-                            proceed();
-                        });
-                    }else{
+                var err;
+                if(validate){
+                    validate(req.body, access, function(err){
+                        if(err){
+                            return sendJson(res, {'message': err}, 400);
+                        }
                         proceed();
-                    }
+                    });
+                }else{
+                    proceed();
                 }
-            });
+            }
+        });
     };
 
 };
@@ -269,32 +280,26 @@ module.exports.generateSingleItemDeleteHandler = function(resourceName, permissi
         var acl = services.get('acl');
         var access = services.get('dbAccess');
         var db = access.db;
-        acl.isAllowed(
-            req.user.id,
-            res,
-            resourceName,
-            permission,
-            
-            function(allowed){
-                if(allowed){
-                    var docID = req.params.id;
-                    db.get(docID, function(err, doc){
-                        if(err && err.message != 'missing'){
-                            return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+        doAcl(req, res, resourceName, permission, function(allowed){
+            if(allowed){
+                var docID = req.params.id;
+                db.get(docID, function(err, doc){
+                    if(err && err.message != 'missing'){
+                        return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                    }
+                    if(!doc){
+                        return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
+                    }
+                    db.destroy(docID, doc._rev, function(err){
+                        if(err){
+                            return sendJson(res, {'message': 'Error occurred while deleting '+key+'.', 'detail': err}, 500);
                         }
-                        if(!doc){
-                            return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
-                        }
-                        db.destroy(docID, doc._rev, function(err){
-                            if(err){
-                                return sendJson(res, {'message': 'Error occurred while deleting '+key+'.', 'detail': err}, 500);
-                            }
-                            res.status(200);
-                            res.end();
-                        });
+                        res.status(200);
+                        res.end();
                     });
-                }
-            });
+                });
+            }
+        });
     };
 
 };
