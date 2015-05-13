@@ -116,7 +116,7 @@ var doAcl = function(req, res, resourceName, permission, callback){
             callback
         );
     }
-}
+};
 
 // Generate a REST handler for retrieving a collection
 module.exports.generateCollectionGetHandler = function(resourceName, permission, doSearchIfNeededCallback, ddoc, allDocsViewName, convertForRestAPI){

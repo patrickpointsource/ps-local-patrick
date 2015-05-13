@@ -134,7 +134,7 @@ module.exports.createSingleHour = util.generateSingleItemCreateHandler(
     function(req, callback){
         var userService = services.get('user');
         userService.getUser(req.user.id, function(err, user){
-            if(!err || req.body.person !== user._id){
+            if(!err && req.body.person !== user._id){
                 return callback(securityResources.hours.permissions.editHours);
             }
             callback(securityResources.hours.permissions.editMyHours);
@@ -164,6 +164,14 @@ module.exports.updateSingleHour = util.generateSingleItemUpdateHandler(
 
 module.exports.deleteSingleHour = util.generateSingleItemDeleteHandler(
     securityResources.hours.resourceName, // resourceName
-    securityResources.hours.permissions.editHours, // permission
+    function(req, callback){
+        var userService = services.get('user');
+        userService.getUser(req.user.id, function(err, user){
+            if(!err && req.body.person !== user._id){
+                return callback(securityResources.hours.permissions.editHours);
+            }
+            callback(securityResources.hours.permissions.deleteMyHours);
+        });
+    }, // permission
     'hour' // key
 );
