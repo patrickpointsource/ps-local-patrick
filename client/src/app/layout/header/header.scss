@@ -6,23 +6,23 @@
     // Add visual styles with this mixin
     @include title-bar-style(
         $background: $dark-color, // Background color
-        $color: $secondary-color, // Text color
+        $color: $gray-lightest, // Text color
         $border: 1px solid $gray-dark,
         $padding: 1rem
     );
 
     @include breakpoint(medium) {
-        @include title-bar-style($background: $gray-light);
+        @include title-bar-style($background: $gray);
         display: none;
     }
 
     font-size: 1.6rem;
-    color: $secondary-color;
+    color: $gray-lightest;
 
     a {
-        color: $secondary-color;
+        color: $gray-lightest;
         :hover {
-            color: darken($secondary-color, 10);
+            color: $gray-light;
         }
     }
 }
