@@ -60,7 +60,8 @@ var docs = [
     'SecurityRoles',
     'UserRoles',
     'DepartmentCategories',
-    'Configurations'
+    'Configurations',
+    'Departments'
 ];
 _.each(docs, function(docName){
     var localDoc = loadLocalDocument(docName);

@@ -29,7 +29,7 @@ var configuration = {
 
 module.exports.getConfigurations = util.generateCollectionGetHandler(
     securityResources.departments.resourceName, // resourceName
-    securityResources.departments.permissions.viewDepartments, // permission
+    securityResources.departments.permissions.viewConfiguration, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
         // No searching in Configurations
         callback(false);
@@ -41,7 +41,7 @@ module.exports.getConfigurations = util.generateCollectionGetHandler(
 
 module.exports.createSingleConfiguration = util.generateSingleItemCreateHandler(
     securityResources.departments.resourceName, // resourceName
-    securityResources.departments.permissions.editDepartments, // permission
+    securityResources.departments.permissions.editConfiguration, // permission
     'configuration', // key
     null, // validate
     configuration.convertForDB, // convertForDB
@@ -50,14 +50,14 @@ module.exports.createSingleConfiguration = util.generateSingleItemCreateHandler(
 
 module.exports.getSingleConfiguration = util.generateSingleItemGetHandler(
     securityResources.departments.resourceName, // resourceName
-    securityResources.departments.permissions.viewDepartments, // permission
+    securityResources.departments.permissions.viewConfiguration, // permission
     'configuration', // key 
     configuration.convertForRestAPI // convertForRestAPI
 );
 
 module.exports.updateSingleConfiguration = util.generateSingleItemUpdateHandler(
     securityResources.departments.resourceName, // resourceName
-    securityResources.departments.permissions.editDepartments, // permission
+    securityResources.departments.permissions.editConfiguration, // permission
     'configuration', // key
     null, // validate
     configuration.convertForDB, // convertForDB
@@ -66,6 +66,6 @@ module.exports.updateSingleConfiguration = util.generateSingleItemUpdateHandler(
 
 module.exports.deleteSingleConfiguration = util.generateSingleItemDeleteHandler(
     securityResources.departments.resourceName, // resourceName
-    securityResources.departments.permissions.deleteDepartments, // permission
+    securityResources.departments.permissions.editConfiguration, // permission
     'configuration' // key
 );
