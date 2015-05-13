@@ -9,7 +9,7 @@
     PeopleController.$inject = ['$scope', 'psafLogger'];
 
     function PeopleController($scope, psafLogger) {
-
+        $scope.athing = '';
     }
 
 })();

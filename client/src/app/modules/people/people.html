@@ -1,6 +1,29 @@
 <div class="people">
-    <div>
+    <div class="grid-content">
         <h2>People</h2>
         <div>Do I really need to see all of these?</div>
+    </div>
+    <div class="grid-content">
+        <select name="" id="" ng-model="athing" ng-change="console.log(athing)">
+            <option value="something">Something</option>
+            <option value="somethingelse">Something Else</option>
+        </select>
+        <div>{{athing}}</div>
+    </div>
+    <div class="grid-content">
+        <input type="radio" name="anotherthing" value="number1"><label>Number 1</label></input>
+        <br>
+        <input type="radio" name="anotherthing" value="number2"><label>Number 2</label></input>
+        <br>
+        <input type="radio" name="anotherthing" value="number3"><label>Number 3</label></input>
+        <br>
+    </div>
+    <div class="grid-content">
+        <input type="checkbox" name="andanotherthing[]" value="number1"><label>Number 1</label>
+        <br>
+        <input type="checkbox" name="andanotherthing[]" value="number2"><label>Number 2</label>
+        <br>
+        <input type="checkbox" name="andanotherthing[]" value="number3"><label>Number 3</label>
+        <br>
     </div>
 </div>
