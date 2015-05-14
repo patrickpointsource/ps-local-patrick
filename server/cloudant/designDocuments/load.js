@@ -61,7 +61,8 @@ var docs = [
     'UserRoles',
     'DepartmentCategories',
     'Configurations',
-    'Departments'
+    'Departments',
+    'Vacations'
 ];
 _.each(docs, function(docName){
     var localDoc = loadLocalDocument(docName);

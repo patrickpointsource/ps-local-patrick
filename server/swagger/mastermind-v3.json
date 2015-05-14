@@ -4886,10 +4886,6 @@
                 "id": {
                     "type": "string"
                 },
-                "created": {
-                    "type": "string",
-                    "format": "date-time"
-                },
                 "startDate": {
                     "type": "string",
                     "format": "date-time"
@@ -4902,7 +4898,7 @@
                     "type": "string",
                     "description": "ID of Person"
                 },
-                "vacationManager": {
+                "manager": {
                     "type": "string",
                     "description": "ID of Person"
                 },
@@ -4933,7 +4929,7 @@
             },
             "required": [
                 "person",
-                "vacationManager",
+                "manager",
                 "type",
                 "status",
                 "startDate",
