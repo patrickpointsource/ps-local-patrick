@@ -26,14 +26,14 @@ module.exports = {
                         var startDate = doc.startDate.split(' ');
                         if(startDate.length){
                             startDate = startDate[0];
-                            index('numericStartDate', Number(doc.startDate.replace(/-/g, '')), {store: true});
+                            index('numericStartDate', Number(startDate.replace(/-/g, '')), {store: true});
                         }
                     }
                     if(doc.endDate){
                         var endDate = doc.endDate.split(' ');
                         if(endDate.length){
                             endDate = endDate[0];
-                            index('numericStartDate', Number(doc.endDate.replace(/-/g, '')), {store: true});
+                            index('numericEndDate', Number(endDate.replace(/-/g, '')), {store: true});
                         }
                     }
                 }

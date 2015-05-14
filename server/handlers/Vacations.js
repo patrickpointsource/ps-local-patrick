@@ -67,7 +67,15 @@ var vacation = {
 
 module.exports.getVacations = util.generateCollectionGetHandler(
     securityResources.vacations.resourceName, // resourceName
-    securityResources.vacations.permissions.viewVacations, // permission
+    function(req, callback){
+        var userService = services.get('user');
+        userService.getUser(req.user.id, function(err, user){
+            if(!err && req.body.person !== user._id){
+                return callback(securityResources.vacations.permissions.viewVacations);
+            }
+            callback(securityResources.vacations.permissions.viewMyVacations);
+        });
+    }, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
         var q = '';
         var toAdd;
@@ -117,7 +125,15 @@ module.exports.getVacations = util.generateCollectionGetHandler(
 
 module.exports.createSingleVacation = util.generateSingleItemCreateHandler(
     securityResources.vacations.resourceName, // resourceName
-    securityResources.vacations.permissions.editVacations, // permission
+    function(req, callback){
+        var userService = services.get('user');
+        userService.getUser(req.user.id, function(err, user){
+            if(!err && req.body.person !== user._id){
+                return callback(securityResources.vacations.permissions.editVacations);
+            }
+            callback(securityResources.vacations.permissions.editMyVacations);
+        });
+    }, // permission
     'vacation', // key
     vacation.validateVacations, // validate
     vacation.convertForDB, // convertForDB
@@ -126,14 +142,30 @@ module.exports.createSingleVacation = util.generateSingleItemCreateHandler(
 
 module.exports.getSingleVacation = util.generateSingleItemGetHandler(
     securityResources.vacations.resourceName, // resourceName
-    securityResources.vacations.permissions.viewVacations, // permission
+    function(req, callback){
+        var userService = services.get('user');
+        userService.getUser(req.user.id, function(err, user){
+            if(!err && req.body.person !== user._id){
+                return callback(securityResources.vacations.permissions.viewVacations);
+            }
+            callback(securityResources.vacations.permissions.viewMyVacations);
+        });
+    }, // permission
     'vacation', // key 
     vacation.convertForRestAPI // convertForRestAPI
 );
 
 module.exports.updateSingleVacation = util.generateSingleItemUpdateHandler(
     securityResources.vacations.resourceName, // resourceName
-    securityResources.vacations.permissions.editVacations, // permission
+    function(req, callback){
+        var userService = services.get('user');
+        userService.getUser(req.user.id, function(err, user){
+            if(!err && req.body.person !== user._id){
+                return callback(securityResources.vacations.permissions.editVacations);
+            }
+            callback(securityResources.vacations.permissions.editMyVacations);
+        });
+    }, // permission
     'vacation', // key
     vacation.validateVacations, // validate
     vacation.convertForDB, // convertForDB
@@ -142,6 +174,14 @@ module.exports.updateSingleVacation = util.generateSingleItemUpdateHandler(
 
 module.exports.deleteSingleVacation = util.generateSingleItemDeleteHandler(
     securityResources.vacations.resourceName, // resourceName
-    securityResources.vacations.permissions.deleteVacations, // permission
+    function(req, callback){
+        var userService = services.get('user');
+        userService.getUser(req.user.id, function(err, user){
+            if(!err && req.body.person !== user._id){
+                return callback(securityResources.vacations.permissions.editVacations);
+            }
+            callback(securityResources.vacations.permissions.editMyVacations);
+        });
+    }, // permission
     'vacation' // key
 );

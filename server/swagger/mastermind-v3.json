@@ -35,21 +35,25 @@
                         "in": "query",
                         "description": "Filter assignments to those starting on or after the given date.",
                         "type": "string",
-                        "format": "date-time"
+                        "format": "date"
                     },
                     {
                         "name": "endDate",
                         "in": "query",
                         "description": "Filter assignments to those ending before the given date.",
                         "type": "string",
-                        "format": "date-time"
+                        "format": "date"
                     },
                     {
                         "name": "timePeriod",
                         "in": "query",
                         "description": "Filter assignments to those overlapping the given time period.",
                         "type": "string",
-                        "format": "date-time"
+                        "enum": [
+                            "past",
+                            "current",
+                            "future"
+                        ]
                     },
                     {
                         "name": "projects",
@@ -57,12 +61,7 @@
                         "description": "Filter assignments to those associated with any one of this set of Project IDs.",
                         "type": "array",
                         "items": {
-                            "type": "string",
-                            "enum": [
-                                "past",
-                                "current",
-                                "future"
-                            ]
+                            "type": "string"
                         }
                     }
                 ],
@@ -3747,15 +3746,18 @@
                     "description": "ID of the Project Role"
                 },
                 "startDate": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date"
                 },
                 "endDate": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date"
                 }
             },
             "required": [
                 "role",
                 "person",
+                "project",
                 "startDate"
             ]
         },
@@ -4862,7 +4864,7 @@
                 },
                 "userId": {
                     "type": "string",
-                    "description": "ID of Person"
+                    "description": "Google ID of Person"
                 },
                 "groupId": {
                     "type": "string",
