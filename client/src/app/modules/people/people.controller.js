@@ -6,10 +6,24 @@
         .module('mastermind')
         .controller('PeopleController', PeopleController);
 
-    PeopleController.$inject = ['$scope', 'psafLogger'];
+    PeopleController.$inject = ['psafLogger', 'PeopleService'];
 
-    function PeopleController($scope, psafLogger) {
-        $scope.athing = '';
+    function PeopleController(psafLogger, PeopleService) {
+        var people = this;
+        var logs = psafLogger.getInstance('mastermind');
+        people.athing = 'athing';
+
+        people.counter = 0;
+        people.countUp = function() {
+            logs.log(people.counter++);
+        };
+
+        people.countUp();
+
+        people.list = PeopleService.get();
+
+        logs.info(people.list);
+
     }
 
 })();

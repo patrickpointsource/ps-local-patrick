@@ -1,23 +1,13 @@
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
-body {
-	overflow-x: hidden;
-}
-
 .no-padding {
 	padding: 0;
 }
 
-a {
-	&:hover {
-		cursor: pointer;
-	}
-}
-
-.grid-frame {
-	-moz-box-shadow: 0 0 1rem #888;
-	-webkit-box-shadow: 0 0 1rem #888;
-	box-shadow: 0 0 1rem #888;
-}
+// a {
+// 	&:hover {
+// 		cursor: pointer;
+// 	}
+// }
 
 .primary-view {
   position: absolute;
@@ -43,10 +33,10 @@ a {
 }
 
 .content-container {
-    @include grid-block(
-        $orientation: vertical,
-        $wrap: true
-    );
+    @include grid-block;
+
+    h2 {
+    }
 }
 
 /**

@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('mastermind.layout.menu', [])
+        .module('mastermind.layout.menu')
         .directive('mainMenu', ['MenuService', function (MenuService) {
             // Runs during compile
             return {
@@ -26,5 +26,6 @@
                 }
             };
         }]);
+
 
 })();

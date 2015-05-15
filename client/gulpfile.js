@@ -53,7 +53,8 @@ gulp.task('copy', function () {
     gulp.src(dirs, {
             base: './src/'
         })
-        .pipe(gulp.dest(webContentBaseDir));
+        .pipe(gulp.dest(webContentBaseDir))
+        .pipe(connect.reload());
 
     return gulp.src('bower_components/foundation-apps/iconic/**/*')
         .pipe(gulp.dest('dist/assets/img/iconic/'))
@@ -251,7 +252,7 @@ gulp.task('uglify-dependencies', function () {
         .pipe(gulp.dest(webContentBaseDir + '/assets/js/'));
 });
 
-gulp.task('uglify-app', function() {
+gulp.task('uglify-app', function () {
     var libs = require('./appFiles.json');
     console.log(libs);
     return gulp.src(libs)
@@ -263,7 +264,8 @@ gulp.task('uglify-app', function() {
         }))
         .pipe(concat('appFiles.js'))
         .pipe(gulp.dest('./dist/assets/js/'))
-        .pipe(gulp.dest(webContentBaseDir + '/assets/js/'));
+        .pipe(gulp.dest(webContentBaseDir + '/assets/js/'))
+        .pipe(connect.reload());
 });
 
 gulp.task('uglify-foundation', function () {
@@ -404,21 +406,17 @@ gulp.task('default', ['build',
         gulp.watch([
             './src/assets/scss/**/*',
             './scss/**/*',
-            './src/app/**/*.scss',
-            './bower_components/sprout-*/**/*.scss'
+            './src/app/**/*.scss'
         ], ['sass']);
 
         // Watch JavaScript
         gulp.watch([
-            './src/app/js/**/*',
-            './js/**/*',
-            './bower_components/sprout-*/**/*.js'
+            './src/app/**/*.js',
         ], ['uglify']);
 
         // Watch static files
         gulp.watch([
             './src/**/*.*',
-            './bower_components/sprout-*/**/*.*',
             '!./src/assets/{scss,js}/**/*.*'
         ], ['copy']);
 
