@@ -237,7 +237,8 @@ gulp.task('uglify-dependencies', function () {
         'bower_components/pouchdb/dist/pouchdb.js',
         'bower_components/mm-angular-logger/dist/mm-angular-logger.js',
         'bower_components/psaf-logger/dist/psaf-logger.min.js',
-        'bower_components/moment/moment.js'
+        'bower_components/moment/moment.js',
+        'bower_components/swagger-angular-client/dist/swagger-angular-client.js'
     ];
 
     return gulp.src(libs)
@@ -385,13 +386,11 @@ gulp.task('dev', ['build', 'server:start'], function () {
     // Watch Sass
     gulp.watch([
         './src/assets/scss/**/*',
-        './bower_components/sprout-*/*.scss',
         './scss/**/*', './src/app/**/*.scss'
     ], ['sass']);
 
     // Watch javascript and html files
     gulp.watch(['./src/**/*.*',
-        './bower_components/sprout-*/*.(js|html)',
         '!./src/assets/scss/**/*.*'
     ], ['copy']);
 
