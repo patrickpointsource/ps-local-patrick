@@ -53,7 +53,8 @@ gulp.task('copy', function () {
     gulp.src(dirs, {
             base: './src/'
         })
-        .pipe(gulp.dest(webContentBaseDir));
+        .pipe(gulp.dest(webContentBaseDir))
+        .pipe(connect.reload());
 
     return gulp.src('bower_components/foundation-apps/iconic/**/*')
         .pipe(gulp.dest('dist/assets/img/iconic/'))
@@ -236,7 +237,8 @@ gulp.task('uglify-dependencies', function () {
         'bower_components/pouchdb/dist/pouchdb.js',
         'bower_components/mm-angular-logger/dist/mm-angular-logger.js',
         'bower_components/psaf-logger/dist/psaf-logger.min.js',
-        'bower_components/moment/moment.js'
+        'bower_components/moment/moment.js',
+        'bower_components/swagger-angular-client/dist/swagger-angular-client.js'
     ];
 
     return gulp.src(libs)
@@ -251,7 +253,7 @@ gulp.task('uglify-dependencies', function () {
         .pipe(gulp.dest(webContentBaseDir + '/assets/js/'));
 });
 
-gulp.task('uglify-app', function() {
+gulp.task('uglify-app', function () {
     var libs = require('./appFiles.json');
     console.log(libs);
     return gulp.src(libs)
@@ -263,7 +265,8 @@ gulp.task('uglify-app', function() {
         }))
         .pipe(concat('appFiles.js'))
         .pipe(gulp.dest('./dist/assets/js/'))
-        .pipe(gulp.dest(webContentBaseDir + '/assets/js/'));
+        .pipe(gulp.dest(webContentBaseDir + '/assets/js/'))
+        .pipe(connect.reload());
 });
 
 gulp.task('uglify-foundation', function () {
@@ -383,13 +386,11 @@ gulp.task('dev', ['build', 'server:start'], function () {
     // Watch Sass
     gulp.watch([
         './src/assets/scss/**/*',
-        './bower_components/sprout-*/*.scss',
         './scss/**/*', './src/app/**/*.scss'
     ], ['sass']);
 
     // Watch javascript and html files
     gulp.watch(['./src/**/*.*',
-        './bower_components/sprout-*/*.(js|html)',
         '!./src/assets/scss/**/*.*'
     ], ['copy']);
 
@@ -404,21 +405,17 @@ gulp.task('default', ['build',
         gulp.watch([
             './src/assets/scss/**/*',
             './scss/**/*',
-            './src/app/**/*.scss',
-            './bower_components/sprout-*/**/*.scss'
+            './src/app/**/*.scss'
         ], ['sass']);
 
         // Watch JavaScript
         gulp.watch([
-            './src/app/js/**/*',
-            './js/**/*',
-            './bower_components/sprout-*/**/*.js'
+            './src/app/**/*.js',
         ], ['uglify']);
 
         // Watch static files
         gulp.watch([
             './src/**/*.*',
-            './bower_components/sprout-*/**/*.*',
             '!./src/assets/{scss,js}/**/*.*'
         ], ['copy']);
 

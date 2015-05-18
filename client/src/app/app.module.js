@@ -89,7 +89,8 @@
         views: {
           'content@': {
             templateUrl: 'app/modules/people/people.html',
-            controller: 'PeopleController'
+            controller: 'PeopleController',
+            controllerAs: 'people'
           }
         }
       });

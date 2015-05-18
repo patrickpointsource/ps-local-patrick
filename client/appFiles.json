@@ -10,6 +10,7 @@
     "./src/app/layout/menu/menu.service.js",
     "./src/app/layout/menu/menu.controller.js",
     "./src/app/modules/dashboard/dashboard.controller.js",
+    "./src/app/modules/people/people.service.js",
     "./src/app/modules/people/people.controller.js",
     "./src/app/modules/projects/projects.controller.js"
 ]

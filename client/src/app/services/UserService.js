@@ -2,19 +2,31 @@
     angular.module('UserModule', []).
     service('UserService', UserService);
 
-    UserService.$inject = [];
+    UserService.$inject = ['psafLogger'];
 
-    function UserService() {
+    var getMenu = function () {
+        var menu =  [{
+            'name': 'home',
+            'label': 'Dashboard'
+        }, {
+            'name': 'projects',
+            'label': 'Projects'
+        }, {
+            'name': 'people',
+            'label': 'People'
+        }];
+
+        logger.log(menu);
+        return menu;
+    };
+
+    function UserService(psafLogger) {
+
+        var logger = psafLogger.getInstance('mastermind');
+
         return {
-            getMenu: function () {
-                return [
-                    {'name': 'home', 'label': 'Dashboard'},
-                    {'name': 'projects', 'label': 'Projects'},
-                    {'name': 'people', 'label': 'People'}
-                ];
-            }
+            getMenu: getMenu
         };
     }
-
 
 })();
