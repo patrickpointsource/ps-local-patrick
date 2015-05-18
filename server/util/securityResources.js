@@ -5,46 +5,46 @@ var securityResources = {
     tasks :{
         resourceName: 'tasks',
         permissions: {
-        	viewTasks : 'viewTasks',
-        	editTasks : 'editTasks'
+            viewTasks : 'viewTasks',
+            editTasks : 'editTasks'
         }
     },
     assignments :{
         resourceName: 'assignments',
         permissions: {
-	       	viewAssignments : 'viewAssignments',
-        	editAssignments : 'editAssignments'
+            viewAssignments : 'viewAssignments',
+            editAssignments : 'editAssignments'
         }
     },
     configuration :{
         resourceName: 'configuration',
         permissions: {
-	       	viewConfiguration : 'viewConfiguration',
-        	editConfiguration : 'editConfiguration'
+            viewConfiguration : 'viewConfiguration',
+            editConfiguration : 'editConfiguration'
         }
         
     },
     hours :{
         resourceName: 'hours',
         permissions: {
-	       	viewHours : 'viewHours',
-        	editHours : 'editHours',
-        	deleteMyHours : 'deleteMyHours',
-        	editMyHours : 'editMyHours',
-        	viewHoursReportsAndCSV : 'viewHoursReportsAndCSV'
+            viewHours : 'viewHours',
+            editHours : 'editHours',
+            deleteMyHours : 'deleteMyHours',
+            editMyHours : 'editMyHours',
+            viewHoursReportsAndCSV : 'viewHoursReportsAndCSV'
         }
     },
     people :{
         resourceName: 'people',
         permissions: {
-	       	viewPeople : 'viewPeople',
-        	viewProfile : 'viewProfile',
-        	editProfile : 'editProfile',
-        	viewMyProfile : 'viewMyProfile',
-        	editMyProfile : 'editMyProfile',
-        	viewPersonnelData : 'viewPersonnelData',
-        	editPersonnelData : 'editPersonnelData',
-        	viewGroups : 'viewGroups',
+            viewPeople : 'viewPeople',
+            viewProfile : 'viewProfile',
+            editProfile : 'editProfile',
+            viewMyProfile : 'viewMyProfile',
+            editMyProfile : 'editMyProfile',
+            viewPersonnelData : 'viewPersonnelData',
+            editPersonnelData : 'editPersonnelData',
+            viewGroups : 'viewGroups',
             editGroups : 'editGroups',
             viewMyRoleTitle: 'viewMyRoleTitle',
             viewMySecondaryRole: 'viewMySecondaryRole',
@@ -67,17 +67,17 @@ var securityResources = {
             addProjects: 'addProjects',
             editProjects : 'editProjects',
             deleteProjects : 'deleteProjects',
-        	viewProjectLinks : 'viewProjectLinks',
-        	editProjectLinks : 'editProjectLinks',
-        	viewRoles : 'viewRoles',
+            viewProjectLinks : 'viewProjectLinks',
+            editProjectLinks : 'editProjectLinks',
+            viewRoles : 'viewRoles',
             editRoles : 'editRoles'
         }         
     },
     skills :{
         resourceName: 'skills',
         permissions: {
-        	viewSkills : 'viewSkills',
-        	editSkills : 'editSkills'
+            viewSkills : 'viewSkills',
+            editSkills : 'editSkills'
         }
     },
     vacations :{
@@ -103,7 +103,7 @@ var securityResources = {
             deleteNotifications : 'deleteNotifications'
         }
     },
-	upgrade :{
+    upgrade :{
         resourceName: 'upgrade',
         permissions: {
             executeUpgrade : 'executeUpgrade'
@@ -115,21 +115,19 @@ var securityResources = {
             viewSecurityRoles: 'viewSecurityRoles',
             editSecurityRoles: 'editSecurityRoles'
         }
-    }
-    ,
+    },
     reports :{
         resourceName: 'reports',
         permissions: {
             viewReports: 'viewReports'
         }
     },
-    
     departments :{
         resourceName: 'departments',
         permissions: {
-        	viewDepartments: 'viewDepartments',
-        	editDepartments: 'editDepartments',
-    		deleteDepartments: 'deleteDepartments'
+            viewDepartments: 'viewDepartments',
+            editDepartments: 'editDepartments',
+            deleteDepartments: 'deleteDepartments'
         }
     }
 

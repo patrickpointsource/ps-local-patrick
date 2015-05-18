@@ -3,7 +3,7 @@ var _ = require('underscore');
 
 var PROJECTS_KEY = 'Projects';
 var PEOPLE_KEY = 'People';
-var ASSIGNMENTS_KEY = 'Assignments';
+var ASSIGNMENTS_KEY = 'ProjectAssignments';
 var TASKS_KEY = 'Tasks';
 var ROLES_KEY = 'Roles';
 var SECURITY_ROLES_KEY = 'SecurityRoles';
