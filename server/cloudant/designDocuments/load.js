@@ -62,7 +62,9 @@ var docs = [
     'DepartmentCategories',
     'Configurations',
     'Departments',
-    'Vacations'
+    'Vacations',
+    'Migrations',
+    'ProjectAssignments'
 ];
 _.each(docs, function(docName){
     var localDoc = loadLocalDocument(docName);
