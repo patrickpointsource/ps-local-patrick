@@ -4793,9 +4793,6 @@
                 "name": {
                     "type": "string"
                 },
-                "created": {
-                    "type": "string"
-                },
                 "resources": {
                     "type": "array",
                     "items": {

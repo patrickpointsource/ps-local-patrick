@@ -7,15 +7,5 @@ module.exports = {
                 }
             }
         }
-    },
-    indexes: {
-        SearchAllSecurityRoles: {
-            analyzer: 'standard',
-            index: function (doc) {
-                if(doc.form == "SecurityRoles"){
-                    index('name', doc.name);
-                }
-            }
-        }
     }
 }
