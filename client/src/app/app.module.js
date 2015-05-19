@@ -18,7 +18,9 @@
 
       'ngCordova',
       'psaf-logger',
-      'mastermind.layout'
+      'mastermind.layout',
+      'swagger-client',
+      'UserModule'
     ])
     .config(AppConfig)
     .run(AppRun);
