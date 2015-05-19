@@ -571,177 +571,6 @@
                 }
             }
         },
-        "/departments/{id}": {
-            "x-handler": "Departments",
-            "get": {
-                "summary": "Retrieve Department",
-                "description": "The Department endpoint returns a single department.\n",
-                "operationId": "getSingleDepartment",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the department to retrieve.",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "tags": [
-                    "Departments"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The single department specified by the ID",
-                        "schema": {
-                            "$ref": "#/definitions/Department"
-                        }
-                    },
-                    "403": {
-                        "description": "The current user is not allowed to view Departments",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "404": {
-                        "description": "A department with the specified ID could not be found.",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "summary": "Update Department",
-                "description": "Updates an existing department.\n",
-                "operationId": "updateSingleDepartment",
-                "tags": [
-                    "Departments"
-                ],
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the department to update.",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "department",
-                        "in": "body",
-                        "description": "New data representing the department",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Department"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The newly updated department",
-                        "schema": {
-                            "$ref": "#/definitions/Department"
-                        }
-                    },
-                    "403": {
-                        "description": "The current user is not allowed to update Departments",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "404": {
-                        "description": "A department with the specified ID could not be found.",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete Department",
-                "description": "Deletes a single Department.\n",
-                "operationId": "deleteSingleDepartment",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the department to delete.",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "tags": [
-                    "Departments"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The single department specified by the ID was deleted"
-                    },
-                    "403": {
-                        "description": "The current user is not allowed to delete Departments",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "404": {
-                        "description": "A department with the specified ID could not be found.",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/departments/codes/available": {
-            "x-handler": "Departments",
-            "get": {
-                "summary": "Retrieve un-used department codes",
-                "operationId": "getAvailableDepartmentCodes",
-                "tags": [
-                    "Departments"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "An array of department codes matching the existing format that aren't currently in use",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "The current user is not allowed to view Departments",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
         "/departments/categories": {
             "x-handler": "DepartmentCategories",
             "get": {
@@ -940,6 +769,177 @@
                     },
                     "404": {
                         "description": "A department category with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/departments/{id}": {
+            "x-handler": "Departments",
+            "get": {
+                "summary": "Retrieve Department",
+                "description": "The Department endpoint returns a single department.\n",
+                "operationId": "getSingleDepartment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Departments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single department specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Department"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Departments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Department",
+                "description": "Updates an existing department.\n",
+                "operationId": "updateSingleDepartment",
+                "tags": [
+                    "Departments"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "department",
+                        "in": "body",
+                        "description": "New data representing the department",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Department"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated department",
+                        "schema": {
+                            "$ref": "#/definitions/Department"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Departments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Department",
+                "description": "Deletes a single Department.\n",
+                "operationId": "deleteSingleDepartment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the department to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Departments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single department specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Departments",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A department with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/departments/codes/available": {
+            "x-handler": "Departments",
+            "get": {
+                "summary": "Retrieve un-used department codes",
+                "operationId": "getAvailableDepartmentCodes",
+                "tags": [
+                    "Departments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of department codes matching the existing format that aren't currently in use",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Departments",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
