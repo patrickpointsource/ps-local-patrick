@@ -1,0 +1,14 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+{
+    //To enable production set the NODE_ENV environment variable, export NODE_ENV=production
+    "cluster": {
+        "maxWorkers": -1 //-1 enables 1 per core
+    },
+    "cloudant": {
+        "account": "psdev1",
+        "user": "tathendersheaderefortati",
+        "password": "e7wRT4nm0IgHGeWu07benG36",
+        "url": "https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/",
+        "db": "mm_demo"
+    }
+}

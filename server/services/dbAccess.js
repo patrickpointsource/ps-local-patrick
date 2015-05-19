@@ -2,6 +2,8 @@
 var _ = require('underscore');
 
 var PROJECTS_KEY = 'Projects';
+var PROJECT_PHASES_KEY = 'ProjectPhases';
+var PROJECT_PHASE_ROLES_KEY = 'ProjectPhaseRoles';
 var PEOPLE_KEY = 'People';
 var ASSIGNMENTS_KEY = 'ProjectAssignments';
 var TASKS_KEY = 'Tasks';
@@ -25,6 +27,8 @@ module.exports.SECURITY_ROLES_KEY = SECURITY_ROLES_KEY;
 module.exports.USER_ROLES_KEY = USER_ROLES_KEY;
 module.exports.ASSIGNMENTS_KEY = ASSIGNMENTS_KEY;
 module.exports.PROJECTS_KEY = PROJECTS_KEY;
+module.exports.PROJECT_PHASES_KEY = PROJECT_PHASES_KEY;
+module.exports.PROJECT_PHASE_ROLES_KEY = PROJECT_PHASE_ROLES_KEY;
 module.exports.PEOPLE_KEY = PEOPLE_KEY;
 module.exports.ROLES_KEY = ROLES_KEY;
 module.exports.HOURS_KEY = HOURS_KEY;
@@ -37,8 +41,9 @@ module.exports.JOB_TITLE_KEY = JOB_TITLE_KEY;
 module.exports.DEPARTMENTS_KEY = DEPARTMENTS_KEY;
 module.exports.DEPARTMENT_CATEGORY_KEY = DEPARTMENT_CATEGORY_KEY;
 
-module.exports.init = function(logger, config, callback) {
-    var cfg = config.get("cloudant");
+module.exports.init = function(config, callback) {
+    var cfg = config.get('cloudant');
+    console.error('config?', cfg);
     
     // cloudant module
     var dbName = cfg.db;

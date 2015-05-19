@@ -1744,6 +1744,52 @@
                 }
             }
         },
+        "/people/googlePlus/{id}": {
+            "x-handler": "People",
+            "get": {
+                "summary": "Retrieve Person",
+                "description": "The People endpoint returns a single person by Google ID.\n",
+                "operationId": "getSinglePersonByGoogleID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Google ID of the person to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single person specified by the Google ID",
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view People",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A person with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/people/{id}": {
             "x-handler": "People",
             "get": {
@@ -2034,39 +2080,433 @@
                 }
             }
         },
-        "/people/googlePlus/{id}": {
-            "x-handler": "People",
+        "/projects/phases/roles": {
+            "x-handler": "ProjectPhaseRoles",
             "get": {
-                "summary": "Retrieve Person",
-                "description": "The People endpoint returns a single person by Google ID.\n",
-                "operationId": "getSinglePersonByGoogleID",
+                "summary": "Retrieve Project Phase Roles",
+                "description": "The Project Phase Roles endpoint returns project phase roles.\n",
+                "operationId": "getProjectPhaseRoles",
+                "tags": [
+                    "ProjectPhaseRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID of the phase for which roles should be retrieved.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of project phase roles",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ProjectPhaseRole"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Project Phase Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Project Phase Role",
+                "description": "Create a new project phase role.\nAn ID in the POST-ed project phase role will be ignored.\n",
+                "operationId": "createSingleProjectPhaseRole",
+                "tags": [
+                    "ProjectPhaseRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "projectPhaseRole",
+                        "in": "body",
+                        "description": "Data representing the project phase role to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ProjectPhaseRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created project phaseRole",
+                        "schema": {
+                            "$ref": "#/definitions/ProjectPhaseRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Project Phase Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/phases/roles/{id}": {
+            "x-handler": "ProjectPhaseRoles",
+            "get": {
+                "summary": "Retrieve Project Phase Role",
+                "description": "The Project Phase Role endpoint returns a single project phase role.\n",
+                "operationId": "getSingleProjectPhaseRole",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Google ID of the person to retrieve.",
+                        "description": "ID of the project phase role to retrieve.",
                         "required": true,
                         "type": "string"
                     }
                 ],
                 "tags": [
-                    "People"
+                    "ProjectPhaseRoles"
                 ],
                 "responses": {
                     "200": {
-                        "description": "The single person specified by the Google ID",
+                        "description": "The single project phase role specified by the ID",
                         "schema": {
-                            "$ref": "#/definitions/Person"
+                            "$ref": "#/definitions/ProjectPhaseRole"
                         }
                     },
                     "403": {
-                        "description": "The current user is not allowed to view People",
+                        "description": "The current user is not allowed to view Project Phase Roles",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
                     },
                     "404": {
-                        "description": "A person with the specified ID could not be found.",
+                        "description": "A project phase role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Project Phase Role",
+                "description": "Updates an existing project phase role.\n",
+                "operationId": "updateSingleProjectPhaseRole",
+                "tags": [
+                    "ProjectPhaseRoles"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the project phase role to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "projectPhaseRole",
+                        "in": "body",
+                        "description": "New data representing the project phase role",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ProjectPhaseRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated project phase role",
+                        "schema": {
+                            "$ref": "#/definitions/ProjectPhaseRole"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Project Phase Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A project phase role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Project Phase Role",
+                "description": "Deletes a single Project Phase Role.\n",
+                "operationId": "deleteSingleProjectPhaseRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the project phase role to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "ProjectPhaseRoles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single project phase role specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Project Phase Roles",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A project phase role with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/phases": {
+            "x-handler": "ProjectPhases",
+            "get": {
+                "summary": "Retrieve Project Phases",
+                "description": "The Project Phases endpoint returns project phases.\n",
+                "operationId": "getProjectPhases",
+                "tags": [
+                    "ProjectPhases"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID of the project for which roles should be retrieved.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of project phases",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ProjectPhase"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Project Phases",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Project Phase",
+                "description": "Create a new project phase.\nAn ID in the POST-ed project phase will be ignored.\n",
+                "operationId": "createSingleProjectPhase",
+                "tags": [
+                    "ProjectPhases"
+                ],
+                "parameters": [
+                    {
+                        "name": "projectPhase",
+                        "in": "body",
+                        "description": "Data representing the project phase to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ProjectPhase"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created project phase",
+                        "schema": {
+                            "$ref": "#/definitions/ProjectPhase"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Project Phases",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/phases/{id}": {
+            "x-handler": "ProjectPhases",
+            "get": {
+                "summary": "Retrieve Project Phase",
+                "description": "The Project Phase endpoint returns a single project phase.\n",
+                "operationId": "getSingleProjectPhase",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the project phase to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "ProjectPhases"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single project phase specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/ProjectPhase"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Project Phases",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A project phase with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Project Phase",
+                "description": "Updates an existing project phase.\n",
+                "operationId": "updateSingleProjectPhase",
+                "tags": [
+                    "ProjectPhases"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the project phase to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "projectPhase",
+                        "in": "body",
+                        "description": "New data representing the project phase",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ProjectPhase"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated project phase",
+                        "schema": {
+                            "$ref": "#/definitions/ProjectPhase"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Project Phases",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A project phase with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Project Phase",
+                "description": "Deletes a single Project Phase.\n",
+                "operationId": "deleteSingleProjectPhase",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the project phase to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "ProjectPhases"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single project phase specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Project Phases",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A project phase with the specified ID could not be found.",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -4332,11 +4772,11 @@
                         }
                     }
                 },
-                "roles": {
+                "phases": {
                     "type": "array",
                     "minItems": 0,
                     "items": {
-                        "$ref": "#/definitions/ProjectRole"
+                        "$ref": "#/definitions/ProjectPhase"
                     }
                 }
             },
@@ -4350,11 +4790,40 @@
                 "roles"
             ]
         },
-        "ProjectRole": {
+        "ProjectPhase": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "string"
+                },
+                "project": {
+                    "type": "string",
+                    "description": "ID of Project"
+                },
+                "startDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "endDate": {
+                    "type": "string",
+                    "format": "date"
+                }
+            },
+            "required": [
+                "project",
+                "name",
+                "startDate",
+            ]
+        },
+        "ProjectPhaseRole": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "phase": {
+                    "type": "string",
+                    "description": "ID of Project Phase"
                 },
                 "coveredKMin": {
                     "type": "number"
@@ -4442,14 +4911,6 @@
                 "shore": {
                     "type": "string"
                 },
-                "startDate": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "endDate": {
-                    "type": "string",
-                    "format": "date-time"
-                },
                 "type": {
                     "type": "object",
                     "properties": {
@@ -4465,6 +4926,7 @@
                 }
             },
             "required": [
+                "phase",
                 "type",
                 "rate"
             ]
