@@ -1189,6 +1189,14 @@
                 "tags": [
                     "Links"
                 ],
+                "parameters": [
+                    {
+                        "name": "project",
+                        "in": "query",
+                        "description": "Filter links to those belonging to the given project, identified by ID",
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "An array of links",
@@ -3908,38 +3916,30 @@
                 "label": {
                     "type": "string"
                 },
-                "project": {
-                    "type": "string",
-                    "description": "ID of Project"
+                "index": {
+                    "type": "integer"
                 },
                 "resource": {
                     "type": "string"
                 },
-                "about": {
+                "icon": {
                     "type": "string"
                 },
-                "members": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string"
-                            },
-                            "icon": {
-                                "type": "string"
-                            },
-                            "index": {
-                                "type": "integer"
-                            },
-                            "label": {
-                                "type": "string"
-                            },
-                            "url": {
-                                "type": "string"
-                            }
-                        }
-                    }
+                "homePage": {
+                    "type": "string"
+                },
+                "currentPlans": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "string"
+                },
+                "dashboard": {
+                    "type": "string"
+                },
+                "project": {
+                    "type": "string",
+                    "description": "ID of Project"
                 }
             },
             "required": [

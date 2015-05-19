@@ -39,7 +39,7 @@ module.exports.getSecurityRoles = util.generateCollectionGetHandler(
 
 module.exports.createSingleSecurityRole = util.generateSingleItemCreateHandler(
     securityResources.securityRoles.resourceName, // resourceName
-    securityResources.securityRoles.permissions.editsecurityRoles, // permission
+    securityResources.securityRoles.permissions.editSecurityRoles, // permission
     'securityRole', // key
     null, // validate
     securityRole.convertForDB, // convertForDB

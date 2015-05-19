@@ -66,7 +66,8 @@ var docs = [
     'Migrations',
     'ProjectAssignments',
     'Skills',
-    'Roles'
+    'Roles',
+    'ProjectLinks'
 ];
 _.each(docs, function(docName){
     var localDoc = loadLocalDocument(docName);
