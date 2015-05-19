@@ -116,6 +116,13 @@ var securityResources = {
             editSecurityRoles: 'editSecurityRoles'
         }
     },
+    roles: {
+        resourceName: 'roles',
+        permissions: {
+            viewRoles: 'viewRoles',
+            editRoles: 'editRoles'
+        }
+    },
     reports :{
         resourceName: 'reports',
         permissions: {
