@@ -31,8 +31,7 @@ module.exports = function(dbAccess, callback){
                     }
                     delete role._id;
                     role.form = 'ProjectPhaseRoles';
-                    // role.phase = 'dummyPhaseID';
-                    role.phase = phase._id;
+                    role.phase = phase.id;
                     toInsert.push(role);
                 });
 
