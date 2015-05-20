@@ -13,8 +13,8 @@ module.exports = {
             analyzer: 'standard',
             index: function (doc) {
                 if(doc.form == "ProjectLinks"){
-                    if(doc.project && doc.project.resource){
-                        index('project', doc.project.resource.replace('projects/', ''));
+                    if(doc.project){
+                        index('project', doc.project);
                     }
                 }
             }

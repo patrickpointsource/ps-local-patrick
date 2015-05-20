@@ -13,11 +13,14 @@ module.exports = {
             analyzer: 'standard',
             index: function (doc) {
                 if(doc.form == "ProjectAssignments"){
-                    if(doc.project && doc.project.resource){
-                        index('project', doc.project.resource.replace('projects/', ''));
+                    if(doc.project){
+                        index('project', doc.project);
                     }
-                    if(doc.person && doc.person.resource){
-                        index('person', doc.person.resource.replace('people/', ''));
+                    if(doc.person){
+                        index('person', doc.person);
+                    }
+                    if(doc.role){
+                        index('role', doc.role);
                     }
                     if(doc.startDate){
                         index('numericStartDate', Number(doc.startDate.replace(/-/g, '')), {store: true});

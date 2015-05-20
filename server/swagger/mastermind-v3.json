@@ -4687,9 +4687,6 @@
                     "type": "string",
                     "description": "ID of Role"
                 },
-                "resource": {
-                    "type": "string"
-                },
                 "skypeId": {
                     "type": "string"
                 },
@@ -5332,9 +5329,6 @@
                         "number",
                         "null"
                     ]
-                },
-                "resource": {
-                    "type": "string"
                 }
             },
             "required": [

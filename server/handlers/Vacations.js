@@ -10,13 +10,8 @@ var vacation = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['description', 'type', 'status', 'days', 'comment', 'reason']);
+        util.mapStraight(doc, obj, ['description', 'type', 'status', 'days', 'comment', 'reason', 'person', 'manager']);
         util.mapStraightDates(util.FOR_REST, doc, obj, ['startDate', 'endDate']);
-        util.mapResources(util.FOR_REST, doc, obj, ['person', 'vacationManager'], access.PEOPLE_KEY);
-        if(obj.vacationManager){
-            obj.manager = obj.vacationManager;
-            delete obj.vacationManager;
-        }
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -26,13 +21,8 @@ var vacation = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['description', 'type', 'status', 'days', 'comment', 'reason']);
+        util.mapStraight(doc, obj, ['description', 'type', 'status', 'days', 'comment', 'reason', 'person', 'manager']);
         util.mapStraightDates(util.FOR_DB, doc, obj, ['startDate', 'endDate']);
-        util.mapResources(util.FOR_DB, doc, obj, ['person', 'manager'], access.PEOPLE_KEY);
-        if(obj.manager){
-            obj.vacationManager = obj.manager;
-            delete obj.manager;
-        }
         return obj;
     },
     validateVacations: function(obj, access, callback){

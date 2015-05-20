@@ -10,11 +10,8 @@ var hour = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['description', 'hours']);
+        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project']);
         util.mapStraightDates(util.FOR_REST, doc, obj, ['created', 'date']);
-        util.mapResources(util.FOR_REST, doc, obj, 'person', access.PEOPLE_KEY);
-        util.mapResources(util.FOR_REST, doc, obj, 'task', access.TASKS_KEY);
-        util.mapResources(util.FOR_REST, doc, obj, 'project', access.PROJECTS_KEY);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -24,11 +21,8 @@ var hour = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['description', 'hours']);
-        util.mapStraightDates(util.FOR_REST, doc, obj, 'date');
-        util.mapResources(util.FOR_DB, doc, obj, 'person', access.PEOPLE_KEY);
-        util.mapResources(util.FOR_DB, doc, obj, 'task', access.TASKS_KEY);
-        util.mapResources(util.FOR_DB, doc, obj, 'project', access.PROJECTS_KEY);
+        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project']);
+        util.mapStraightDates(util.FOR_DB, doc, obj, 'date');
         obj.created = (expectNew ? (new Date()) : (new Date(doc.created))).toString();
         return obj;
     },

@@ -8,24 +8,9 @@ var department = {
     convertForRestAPI: function(access, doc){
         var obj = {};
         util.map(doc, obj, {
-            '_id': 'id',
-            'departmentNickname': 'nickname'
+            '_id': 'id'
         });
-        if(doc.departmentCategory && doc.departmentCategory.resource){
-            obj.category = doc.departmentCategory.resource.replace('departmentcategories/', '');
-        }
-        if(doc.departmentCode && doc.departmentCode.name){
-            obj.code = doc.departmentCode.name;
-        }
-        if(doc.departmentManager && doc.departmentManager.resource){
-            obj.manager = doc.departmentManager.resource.replace('people/', '');
-        }
-        if(doc.departmentPeople){
-            obj.people = [];
-            _.each(doc.departmentPeople, function(person){
-                obj.people.push(person.replace('people/', ''));
-            });
-        }
+        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager', 'people']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -33,30 +18,9 @@ var department = {
             form: access.DEPARTMENTS_KEY
         };
         util.map(doc, obj, {
-            'id': '_id',
-            'nickname': 'departmentNickname'
+            'id': '_id'
         });
-        if(doc.category){
-            obj.departmentCategory = {
-                resource: 'departmentcategories/'+doc.category
-            };
-        }
-        if(doc.code){
-            obj.departmentCode = {
-                name: doc.code
-            };
-        }
-        if(doc.manager){
-            obj.departmentManager = {
-                resource: 'people/'+doc.manager
-            };
-        }
-        if(doc.people){
-            obj.people = [];
-            _.each(doc.people, function(person){
-                obj.people.push('people/'+person);
-            });
-        }
+        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager', 'people']);
         return obj;
     }
 };

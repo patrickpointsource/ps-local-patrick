@@ -3,65 +3,17 @@ var securityResources = require( '../util/securityResources' );
 var sendJson = require('../util/sendJson');
 var util = require('../util/restUtils');
 
-var projectRole = {
-    convertForRestAPI: function(access, doc){
-        var obj = {};
-        util.mapStraight(doc, obj, ['type', 'rate', 'shore', 'isPastRole', 'isFutureRole', 'isCurrentRole', 'percentageCovered', 'hoursExtraCovered', 'hoursNeededToCover', 'daysGap', 'coveredKMin']);
-        util.map(doc, obj, {
-            '_id': 'id'
-        });
-        util.mapStraightDates(util.FOR_REST, doc, obj, ['startDate', 'endDate']);
-
-        if(obj.type && obj.type.id){
-            obj.type.name = obj.type.id;
-            delete obj.type.id;
-        }
-        if(obj.type && obj.type.resource){
-            obj.type.id = obj.type.resource.replace(access.ROLES_KEY.toLowerCase()+'/', '');
-            delete obj.type.resource;
-        }
-        return obj;
-    },
-    convertForDB: function(access, doc, expectNew){
-        var obj = {};
-        util.mapStraight(doc, obj, ['type', 'rate', 'shore', 'isPastRole', 'isFutureRole', 'isCurrentRole', 'percentageCovered', 'hoursExtraCovered', 'hoursNeededToCover', 'daysGap', 'coveredKMin']);
-        if(!expectNew){
-            util.map(doc, obj, {
-                'id': '_id'
-            });
-        }
-        util.mapStraightDates(util.FOR_DB, doc, obj, ['startDate', 'endDate']);
-
-        if(obj.type && obj.type.id){
-            obj.type.resource = access.ROLES_KEY.toLowerCase()+'/'+obj.type.id;
-            delete obj.type.id;
-        }
-        if(obj.type && obj.type.name){
-            obj.type.id = obj.type.name;
-            delete obj.type.name;
-        }
-        return obj;
-    }
-};
-
 var project = {
     convertForRestAPI: function(access, doc){
         var obj = {};
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['name', 'committed', 'customerName', 'description', 'primaryContact', 'state', 'type', 'terms']);
+        util.mapStraight(doc, obj, ['name', 'committed', 'customerName', 'description', 'primaryContact', 'state', 'type', 'terms', 'executiveSponsor', 'salesSponsor']);
         util.mapStraightDates(util.FOR_REST, doc, obj, ['initStartDate', 'initEndDate', 'startDate', 'endDate']);
-        util.mapResources(util.FOR_REST, doc, obj, ['executiveSponsor', 'salesSponsor'], access.PEOPLE_KEY);
         
         if(obj.description){
             obj.description = decodeURIComponent(obj.description);
-        }
-        if(doc.roles && doc.roles.length){
-            obj.roles = [];
-            _.each(doc.roles, function(role){
-                obj.roles.push(projectRole.convertForRestAPI(access, role));
-            });
         }
         if(doc.created){
             obj.created = {};
@@ -71,8 +23,8 @@ var project = {
                     obj.created.date = created.toISOString();
                 }
             }
-            if(doc.created.resource){
-                obj.created.by = doc.created.resource.replace(access.PEOPLE_KEY.toLowerCase()+'/', '');
+            if(doc.created.by){
+                obj.created.by = doc.created.by;
             }
         }
         if(doc.modified){
@@ -83,8 +35,8 @@ var project = {
                     obj.modified.date = modified.toISOString();
                 }
             }
-            if(doc.modified.resource){
-                obj.modified.by = doc.modified.resource.replace(access.PEOPLE_KEY.toLowerCase()+'/', '');
+            if(doc.modified.by){
+                obj.modified.by = doc.modified.by;
             }
         }
         return obj;
@@ -98,18 +50,11 @@ var project = {
                 'id': '_id'
             });
         }
-        util.mapStraight(doc, obj, ['name', 'committed', 'customerName', 'description', 'primaryContact', 'state', 'type', 'terms']);
+        util.mapStraight(doc, obj, ['name', 'committed', 'customerName', 'description', 'primaryContact', 'state', 'type', 'terms', 'executiveSponsor', 'salesSponsor']);
         util.mapStraightDates(util.FOR_DB, doc, obj, ['initStartDate', 'initEndDate', 'startDate', 'endDate']);
-        util.mapResources(util.FOR_DB, doc, obj, ['executiveSponsor', 'salesSponsor'], access.PEOPLE_KEY);
         
         if(doc.description){
             obj.description = encodeURIComponent(doc.description);
-        }
-        if(doc.roles && doc.roles.length){
-            obj.roles = [];
-            _.each(doc.roles, function(role){
-                obj.roles.push(projectRole.convertForDB(access, role, expectNew));
-            });
         }
         
         if(!obj.created){
@@ -121,13 +66,14 @@ var project = {
             obj.created.date = (new Date(doc.created.date)).toString();
         }
         if(doc.created && doc.created.by){
-            obj.created.resource = access.PEOPLE_KEY.toLowerCase()+'/'+doc.created.by;
+            obj.created.by = doc.created.by;
         }
         if(!obj.modified){
             obj.modified = {};
         }
         obj.modified.date = (new Date()).toString();
-        obj.modified.resource = '';
+        // TODO: Make this be the current user!
+        obj.modified.by = '';
         return obj;
     },
     validateProject: function(obj, access, callback){

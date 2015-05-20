@@ -10,13 +10,7 @@ var link = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapResources(util.FOR_REST, doc, obj, ['project'], access.PROJECTS_KEY);
-        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon']);
-        _.each(['homePage', 'currentPlans', 'details', 'dashboard'], function(key){
-            if(doc[key] && doc[key].resource){
-                obj[key] = doc[key].resource;
-            }
-        });
+        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details', 'dashboard', 'project']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -26,15 +20,7 @@ var link = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapResources(util.FOR_DB, doc, obj, ['project'], access.PROJECTS_KEY);
-        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon']);
-        _.each(['homePage', 'currentPlans', 'details', 'dashboard'], function(key){
-            if(doc[key]){
-                obj[key] = {
-                    resource: doc[key]
-                };
-            }
-        });
+        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details', 'dashboard', 'project']);
         return obj;
     },
     validateLink: function(obj, access, callback){

@@ -11,14 +11,8 @@ var assignment = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage']);
+        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project', 'person', 'role']);
         util.mapStraightDates(util.FOR_REST, doc, obj, ['startDate', 'endDate']);
-        util.mapResources(util.FOR_REST, doc, obj, ['person'], access.PEOPLE_KEY);
-        util.mapResources(util.FOR_REST, doc, obj, ['project'], access.PROJECTS_KEY);
-        if(doc.role && doc.role.resource){
-            var role = doc.role.resource.split('/');
-            obj.role = role[role.length-1];
-        }
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -28,15 +22,8 @@ var assignment = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage']);
+        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project', 'person', 'role']);
         util.mapStraightDates(util.FOR_DB, doc, obj, ['startDate', 'endDate']);
-        util.mapResources(util.FOR_DB, doc, obj, ['person'], access.PEOPLE_KEY);
-        util.mapResources(util.FOR_DB, doc, obj, ['project'], access.PROJECTS_KEY);
-        if(doc.role){
-            obj.role = {
-                resource: 'projects/'+doc.project+'/roles/'+doc.role
-            };
-        }
         return obj;
     },
     validateAssignments: function(obj, access, callback){
