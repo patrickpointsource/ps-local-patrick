@@ -1,7 +1,8 @@
-var _ = require('underscore');
-var securityResources = require( '../util/securityResources' );
-var sendJson = require('../util/sendJson');
-var util = require('../util/restUtils');
+var _ = require('underscore'),
+    async = require('async'),
+    securityResources = require( '../util/securityResources' ),
+    sendJson = require('../util/sendJson'),
+    util = require('../util/restUtils');
 
 var project = {
     convertForRestAPI: function(access, doc){
@@ -84,18 +85,44 @@ var project = {
         // the spec can check for. In the case of projects, for example, we should make sure that the 
         // ID specified for executiveSponsor is an actual / proper ID
         
-        // We can assume executiveSponsor is available since the spec requires it
-        access.db.view('People', 'AllPeopleNames', { keys: [obj.executiveSponsor] }, function(err, docs){
-            if(err){
-                return callback(err);
-            }
-            if(docs.rows.length === 0){
-                // The executiveSponsor doesn't exist
-                return callback('The indicated executiveSponsor doesn\'t exist.');
-            }
+        async.parallel([
+            function(callback){
+                // We can assume executiveSponsor is available since the spec requires it
+                var keysToFind = 0;
+                if(obj.executiveSponsor){
+                    keysToFind.push(obj.executiveSponsor);
+                }
+                if(obj.salesSponsor){
+                    keysToFind.push(obj.salesSponsor);
+                }
+                if(keysToFind.length){
+                    access.db.view('People', 'AllPeopleNames', { keys: keysToFind }, function(err, docs){
+                        if(err){
+                            return callback(err);
+                        }
+                        if(docs.rows.length !== keysToFind.length){
+                            // The executiveSponsor doesn't exist
+                            return callback('The indicated salesSponsor or executiveSponsor doesn\'t exist.');
+                        }
 
-            callback();
-        });
+                        callback();
+                    });
+                }
+            },
+            function(callback){
+                access.db.view('ProjectPhases', 'AllProjectPhaseNames', { keys: obj.phases }, function(err, docs){
+                    if(err){
+                        return callback(err);
+                    }
+                    if(docs.rows.length !== obj.phases.length){
+                        // One of the phases doesn't exist
+                        return callback('One of the indicated phases doesn\'t exist.');
+                    }
+
+                    callback();
+                });
+            }
+        ], callback);
         
     }
 };
@@ -104,7 +131,6 @@ module.exports.getProjects = util.generateCollectionGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
-        
         var q = '';
         if(req.query.startDate){
             q = util.addToQuery(q, 'numericStartDate:['+req.query.startDate.replace(/-/g, '')+' TO Infinity]');

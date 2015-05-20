@@ -6,6 +6,13 @@ module.exports = {
                     emit(doc._id, doc);
                 }
             }
+        },
+        AllProjectPhaseNames: {
+            map: function(doc){
+                if (doc.form == 'ProjectPhases'){
+                    emit(doc._id, doc.name);
+                }
+            }
         }
     },
     indexes: {
