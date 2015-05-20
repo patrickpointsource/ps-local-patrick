@@ -48,7 +48,7 @@ describe('SKILLS - test simple REST calls', function () {
             done();
         });
     });
-    
+
 	it('POST /v3/skills (unauthenticated)', function(done){
         request.post('http://localhost:3000/v3/skills', {
             body: JSON.stringify({
