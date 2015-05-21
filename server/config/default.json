@@ -73,5 +73,9 @@
         "password": "e7wRT4nm0IgHGeWu07benG36",
         "url": "https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/",
         "db": "mm_dev"
+    },
+    "google-apis": {
+        "privateKeyPath": "certs/key.pem",
+        "accountEmail": "141952851027-1u88oc96rik8l6islr44ha65o984tn3q@developer.gserviceaccount.com"
     }
 }

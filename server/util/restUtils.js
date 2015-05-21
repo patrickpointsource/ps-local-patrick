@@ -95,7 +95,7 @@ module.exports.mapResources = function(direction, doc, out, fields, replacementK
 
 //// A set of utilities for handling REST API calls ////
 
-var doAcl = function(req, res, resourceName, permission, callback){
+var doAcl = module.exports.doAcl = function(req, res, resourceName, permission, callback){
     var acl = services.get('acl');
     if(_.isFunction(permission)){
         permission(req, function(actualPermission){

@@ -41,9 +41,19 @@ module.exports.JOB_TITLE_KEY = JOB_TITLE_KEY;
 module.exports.DEPARTMENTS_KEY = DEPARTMENTS_KEY;
 module.exports.DEPARTMENT_CATEGORY_KEY = DEPARTMENT_CATEGORY_KEY;
 
+
+var DEFAULT_ROLES = module.exports.DEFAULT_ROLES = {
+    EXECUTIVES: 'Execs',
+    MANAGEMENT: 'Managers',
+    PM: 'PM',
+    MINION: 'Employee',
+    SALES: 'Sales',
+    ADMIN: 'Admin',
+    SSA: 'SSA'
+};
+
 module.exports.init = function(config, callback) {
     var cfg = config.get('cloudant');
-    console.error('config?', cfg);
     
     // cloudant module
     var dbName = cfg.db;
@@ -62,7 +72,20 @@ module.exports.init = function(config, callback) {
     var Cloudant = require('cloudant')(dbConnParams);
 
     module.exports.db = Cloudant.db.use(dbName);
-    callback();
+    // Populate the DEFAULT_ROLES with their ID
+    module.exports.db.view('SecurityRoles', 'AllSecurityRoles', function(err, docs){
+        if(!err && docs.rows && docs.rows.length){
+            _.each(docs.rows, function(row){
+                return _.find(DEFAULT_ROLES, function(value, key){
+                    if(row.value.name == value){
+                        DEFAULT_ROLES[key] = row.id;
+                        return true;
+                    }
+                });
+            });
+        }
+        callback();
+    });
 };
 
 module.exports.executeView = function(ddoc, viewName, callback){

@@ -6,6 +6,13 @@ module.exports = {
                     emit(doc._id, doc);
                 }
             }
+        },
+        AllSkillTitles: {
+            map: function(doc){
+                if (doc.form == "Skills" && doc.title){
+                    emit(doc._id, doc.title);
+                }
+            }
         }
     }
 }

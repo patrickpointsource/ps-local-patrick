@@ -58,8 +58,8 @@ var vacation = {
 module.exports.getVacations = util.generateCollectionGetHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.viewVacations);
             }
@@ -116,8 +116,8 @@ module.exports.getVacations = util.generateCollectionGetHandler(
 module.exports.createSingleVacation = util.generateSingleItemCreateHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.editVacations);
             }
@@ -133,8 +133,8 @@ module.exports.createSingleVacation = util.generateSingleItemCreateHandler(
 module.exports.getSingleVacation = util.generateSingleItemGetHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.viewVacations);
             }
@@ -148,8 +148,8 @@ module.exports.getSingleVacation = util.generateSingleItemGetHandler(
 module.exports.updateSingleVacation = util.generateSingleItemUpdateHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.editVacations);
             }
@@ -165,8 +165,8 @@ module.exports.updateSingleVacation = util.generateSingleItemUpdateHandler(
 module.exports.deleteSingleVacation = util.generateSingleItemDeleteHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.editVacations);
             }

@@ -95,19 +95,20 @@ var project = {
                 if(obj.salesSponsor){
                     keysToFind.push(obj.salesSponsor);
                 }
-                if(keysToFind.length){
-                    access.db.view('People', 'AllPeopleNames', { keys: keysToFind }, function(err, docs){
-                        if(err){
-                            return callback(err);
-                        }
-                        if(docs.rows.length !== keysToFind.length){
-                            // The executiveSponsor doesn't exist
-                            return callback('The indicated salesSponsor or executiveSponsor doesn\'t exist.');
-                        }
-
-                        callback();
-                    });
+                if(keysToFind.length == 0){
+                    return callback();
                 }
+                access.db.view('People', 'AllPeopleNames', { keys: keysToFind }, function(err, docs){
+                    if(err){
+                        return callback(err);
+                    }
+                    if(docs.rows.length !== keysToFind.length){
+                        // The executiveSponsor doesn't exist
+                        return callback('The indicated salesSponsor or executiveSponsor doesn\'t exist.');
+                    }
+
+                    callback();
+                });
             },
             function(callback){
                 access.db.view('ProjectPhases', 'AllProjectPhaseNames', { keys: obj.phases }, function(err, docs){
@@ -148,7 +149,7 @@ module.exports.getProjects = util.generateCollectionGetHandler(
             }
             q = util.addToQuery(q, toAdd);
         }
-        if(req.query.committed != null){
+        if(req.query.committed !== undefined){
             q = util.addToQuery(q, 'committed:'+req.query.committed);
         }
         if(req.query.ids && req.query.ids.length){
