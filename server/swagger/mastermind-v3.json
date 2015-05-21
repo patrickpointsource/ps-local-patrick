@@ -2001,6 +2001,37 @@
                 }
             }
         },
+        "/people/me": {
+            "x-handler": "People",
+            "get": {
+                "summary": "Retrieve Person",
+                "description": "The People endpoint returns the single person that is presently logged in.\n",
+                "operationId": "getSinglePersonLoggedIn",
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single person who is logged in.",
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not logged in.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/people/{id}": {
             "x-handler": "People",
             "get": {
@@ -5095,13 +5126,12 @@
                 }
             },
             "required": [
-                "customerName",
+                "client",
                 "name",
                 "type",
                 "startDate",
                 "state",
-                "executiveSponsor",
-                "roles"
+                "executiveSponsor"
             ]
         },
         "ProjectPhase": {

@@ -185,6 +185,40 @@ module.exports.getSinglePersonByGoogleID = function(req, res, next){
     });
 };
 
+module.exports.getSinglePersonLoggedIn = function(req, res, next){
+    var acl = services.get('acl');
+    var access = services.get('dbAccess');
+    var db = access.db;
+    util.doAcl(
+        req,
+        res,
+        securityResources.people.resourceName,
+        securityResources.people.permissions.viewMyProfile, 
+        function(allowed){
+            if(allowed){
+                var googleID = req.user.id;
+                access.db.view('People', 'AllPeopleByGoogleId', { keys: [googleID] }, function(err, docs){
+                    if(err){
+                        return sendJson(res, {'message': 'An error occurred attempting to find the logged in person.', 'detail': err}, 500);
+                    }
+                    if(docs.rows.length === 0){
+                        return sendJson(res, {'message': 'The logged in person could not be found.', 'detail': err}, 404);
+                    }
+                    
+                    db.get(docs.rows[0].id, function(err, doc){
+                        if(err && err.message != 'missing'){
+                            return sendJson(res, {'message': 'An error occurred attempting to find the logged in person.', 'detail': err}, 500);
+                        }
+                        if(!doc){
+                            return sendJson(res, {'message': 'The logged in person could not be found.', 'detail': err}, 404);
+                        }
+                        sendJson(res, people.convertForRestAPI(access, doc));
+                    });
+                });
+            }
+    });
+};
+
 module.exports.getManagerOfPerson = function(req, res, next){
     var acl = services.get('acl');
     var access = services.get('dbAccess');
