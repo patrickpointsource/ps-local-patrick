@@ -267,6 +267,217 @@
                 }
             }
         },
+        "/clients": {
+            "x-handler": "Clients",
+            "get": {
+                "summary": "Retrieve Clients",
+                "description": "The Clients endpoint returns clients.\n",
+                "operationId": "getClients",
+                "tags": [
+                    "Clients"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of clients",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Client"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Client",
+                "description": "Create a new client.\nAn ID in the POST-ed client will be ignored.\n",
+                "operationId": "createSingleClient",
+                "tags": [
+                    "Clients"
+                ],
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "body",
+                        "description": "Data representing the client to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created client",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/{id}": {
+            "x-handler": "Clients",
+            "get": {
+                "summary": "Retrieve Client",
+                "description": "The Client endpoint returns a single client.\n",
+                "operationId": "getSingleClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the client to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single client specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A client with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Client",
+                "description": "Updates an existing Client.\n",
+                "operationId": "updateSingleClient",
+                "tags": [
+                    "Clients"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the client to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client",
+                        "in": "body",
+                        "description": "New data representing the client",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated client",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A client with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Client",
+                "description": "Deletes a single Client.\n",
+                "operationId": "deleteSingleClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the client to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single client specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A client with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/configurations": {
             "x-handler": "Configurations",
             "get": {
@@ -4300,6 +4511,20 @@
                 "startDate"
             ]
         },
+        "Client": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
         "Configuration": {
             "type": "object",
             "properties": {
@@ -4769,8 +4994,9 @@
                         }
                     }
                 },
-                "customerName": {
-                    "type": "string"
+                "client": {
+                    "type": "string",
+                    "description": "ID of Client"
                 },
                 "description": {
                     "type": "string"

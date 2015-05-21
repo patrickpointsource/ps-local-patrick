@@ -136,6 +136,13 @@ var securityResources = {
             editDepartments: 'editDepartments',
             deleteDepartments: 'deleteDepartments'
         }
+    },
+    clients :{
+        resourceName: 'clients',
+        permissions: {
+            viewClients: 'viewClients',
+            editClients: 'editClients'
+        }
     }
 
 };

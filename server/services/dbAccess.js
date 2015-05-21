@@ -20,7 +20,9 @@ var REPORT_FAVORITES_KEY = 'ReportFavorites';
 var JOB_TITLE_KEY = "JobTitle";
 var DEPARTMENTS_KEY = 'Department';
 var DEPARTMENT_CATEGORY_KEY = 'DepartmentCategory';
+var CLIENTS_KEY = 'Clients'
 
+module.exports.CLIENTS_KEY = CLIENTS_KEY;
 module.exports.VACATIONS_KEY = VACATIONS_KEY;
 module.exports.NOTIFICATIONS_KEY = NOTIFICATIONS_KEY;
 module.exports.SECURITY_ROLES_KEY = SECURITY_ROLES_KEY;

@@ -21,13 +21,15 @@ config.init(function(){
         var migrations = [
             'reformatAssignments',
             'reformatLinks',
-            '20150519-addProjectPhases'
+            '20150519-addProjectPhases',
+            '20150521-addClients'
         ];
 
         var migrationImplementations = {
             reformatAssignments: require('./20150518-reformatAssignments'),
             reformatLinks: require('./20150519-reformatLinks'),
-            '20150519-addProjectPhases': require('./20150519-addProjectPhases')
+            '20150519-addProjectPhases': require('./20150519-addProjectPhases'),
+            '20150521-addClients': require('./20150521-addClients')
         };
 
         // Check what migrations have been completed.
