@@ -143,6 +143,13 @@ var securityResources = {
             viewClients: 'viewClients',
             editClients: 'editClients'
         }
+    },
+    holidays :{
+        resourceName: 'holidays',
+        permissions: {
+            viewHolidays: 'viewHolidays',
+            editHolidays: 'editHolidays'
+        }
     }
 
 };
