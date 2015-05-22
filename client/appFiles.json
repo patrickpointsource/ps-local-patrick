@@ -1,6 +1,7 @@
 [
     "./src/app/services/UserService.js",
     "./src/app/services/DashboardService.js",
+    "./src/app/services/PersonService.js",
     "./src/app/layout/layout.module.js",
     "./src/app/layout/header/header.module.js",
     "./src/app/layout/header/header.controller.js",
@@ -12,5 +13,6 @@
     "./src/app/modules/dashboard/dashboard.controller.js",
     "./src/app/modules/people/people.service.js",
     "./src/app/modules/people/people.controller.js",
+    "./src/app/modules/people/profile.controller.js",
     "./src/app/modules/projects/projects.controller.js"
 ]

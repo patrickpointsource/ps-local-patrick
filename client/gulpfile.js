@@ -201,10 +201,23 @@ gulp.task('uglify', [
     ],
     function () {
         console.log('uglifying');
-        //TODO: This needs to be reworked to include the project specific controllers, etc.
         return;
     }
 );
+
+gulp.task('concatjs', [
+        'uglify-angular',
+        'uglify-dependencies',
+        'uglify-foundation',
+        'concat-sprout',
+        'concat-app'
+    ],
+    function () {
+        console.log('concatenating');
+        return;
+    }
+
+)
 
 // Process Angular JS
 gulp.task('uglify-angular', function () {
@@ -235,6 +248,8 @@ gulp.task('uglify-dependencies', function () {
         'bower_components/ngCordova/dist/ng-cordova.js',
         'bower_components/iscroll/src/iscroll.js',
         'bower_components/pouchdb/dist/pouchdb.js',
+        'bower_components/lodash/lodash.js',
+        'bower_components/restangular/dist/restangular.js',
         'bower_components/mm-angular-logger/dist/mm-angular-logger.js',
         'bower_components/psaf-logger/dist/psaf-logger.min.js',
         'bower_components/moment/moment.js',
@@ -269,6 +284,16 @@ gulp.task('uglify-app', function () {
         .pipe(connect.reload());
 });
 
+gulp.task('concat-app', function () {
+    var libs = require('./appFiles.json');
+    console.log(libs);
+    return gulp.src(libs)
+        .pipe(concat('appFiles.js'))
+        .pipe(gulp.dest('./dist/assets/js/'))
+        .pipe(gulp.dest(webContentBaseDir + '/assets/js/'))
+        .pipe(connect.reload());
+});
+
 gulp.task('uglify-foundation', function () {
     var libs = [
         'bower_components/foundation-apps/js/vendor/**/*.js',
@@ -287,7 +312,6 @@ gulp.task('uglify-foundation', function () {
         .pipe(gulp.dest(webContentBaseDir + '/assets/js/'));
 });
 
-
 gulp.task('uglify-sprout', function () {
     var sproutGlobs = [];
     makeSproutPaths('js', sprouts, sproutGlobs);
@@ -298,6 +322,16 @@ gulp.task('uglify-sprout', function () {
         }).on('error', function (e) {
             console.log(e);
         }))
+        .pipe(concat('sprout.js'))
+        .pipe(gulp.dest('./dist/assets/js/'))
+        .pipe(gulp.dest(webContentBaseDir + '/assets/js/'))
+        .pipe(connect.reload());
+});
+
+gulp.task('concat-sprout', function () {
+    var sproutGlobs = [];
+    makeSproutPaths('js', sprouts, sproutGlobs);
+    return gulp.src('./bower_components/' + sproutGlobs)
         .pipe(concat('sprout.js'))
         .pipe(gulp.dest('./dist/assets/js/'))
         .pipe(gulp.dest(webContentBaseDir + '/assets/js/'))
@@ -381,17 +415,40 @@ gulp.task('build', ['lint'], function () {
         });
 });
 
+gulp.task('build-dev', ['lint'], function () {
+    runSequence([
+            'copy-config',
+            'copy',
+            'copy-templates',
+            'copy-partials',
+            'copy-custom-css',
+            'copy-sprout-css',
+            'sass',
+            'concatjs'
+        ],
+        function () {
+            console.log('Successfully built.');
+        });
+});
+
 gulp.task('dev', ['build', 'server:start'], function () {
 
     // Watch Sass
     gulp.watch([
         './src/assets/scss/**/*',
-        './scss/**/*', './src/app/**/*.scss'
+        './scss/**/*',
+        './src/app/**/*.scss'
     ], ['sass']);
 
-    // Watch javascript and html files
-    gulp.watch(['./src/**/*.*',
-        '!./src/assets/scss/**/*.*'
+    // Watch JavaScript
+    gulp.watch([
+        './src/app/**/*.js',
+    ], ['concatjs']);
+
+    // Watch static files
+    gulp.watch([
+        './src/**/*.*',
+        '!./src/assets/{scss,js}/**/*.*'
     ], ['copy']);
 
 });

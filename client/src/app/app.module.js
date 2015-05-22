@@ -20,7 +20,9 @@
       'psaf-logger',
       'mastermind.layout',
       'swagger-client',
-      'UserModule'
+      'restangular',
+      'UserModule',
+      'PersonModule'
     ])
     .config(AppConfig)
     .run(AppRun);
@@ -29,14 +31,18 @@
     '$stateProvider',
     '$urlRouterProvider',
     'psafLoggerProvider',
+    'RestangularProvider',
     'CONFIG'
   ];
 
-  function AppConfig ($stateProvider, $urlRouterProvider, psafLoggerProvider, CONFIG) {
+  function AppConfig ($stateProvider, $urlRouterProvider, psafLoggerProvider, RestangularProvider, CONFIG) {
     psafLoggerProvider.logging(true);
 
     // For any unmatched url, redirect to /state1
     $urlRouterProvider.otherwise('/home');
+
+    RestangularProvider.setBaseUrl(CONFIG.development.apiUrl)
+                       .setDefaultHttpFields({withCredentials: true});
 
     /**
      * This abstract route serves as the base route for all other routes with parent: 'root'.
@@ -82,6 +88,17 @@
           'content@': {
             templateUrl: 'app/modules/projects/projects.html',
             controller: 'ProjectsController'
+          }
+        }
+      })
+      .state('profile', {
+        parent: 'root',
+        url: '/profile',
+        views: {
+          'content@': {
+            templateUrl: 'app/modules/people/profile.html',
+            controller: 'ProfileController',
+            controllerAs: 'profile'
           }
         }
       })

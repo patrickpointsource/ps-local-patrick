@@ -6,9 +6,9 @@
         .module('mastermind.layout.header', [])
         .directive('headerBar', HeaderBar);
 
-    HeaderBar.$inject = ['UserService', '$http'];
+    HeaderBar.$inject = ['UserService'];
 
-    function HeaderBar(UserService, $http) {
+    function HeaderBar(UserService) {
 
         return {
             name: 'headerBar',
@@ -19,17 +19,14 @@
         };
 
         function HeaderBarLink($scope, iElm, iAttrs) {
-
-            UserService.getUserProfile($http).then(function(response) {
-                $scope.$apply($scope.header.User = response);
-            }, function(error) {
-                console.log(error);
-            });
-
             if (!$scope.header) {
                 $scope.header = {};
             }
 
+            var User = UserService.getUser().then(function(response) {
+                $scope.User = response;
+                console.log($scope.User);
+            });
         }
     }
 
