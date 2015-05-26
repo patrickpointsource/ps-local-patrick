@@ -3382,6 +3382,67 @@
                 }
             }
         },
+        "/reports/utilization": {
+            "x-handler": "Reports",
+            "get": {
+                "summary": "Utilization Report",
+                "description": "Get the utilization of a singler person or all people in a department",
+                "operationId": "getUtilizationReport",
+                "tags": [
+                    "Reports"
+                ],
+                "parameters": [
+                    {
+                        "name": "department",
+                        "in": "query",
+                        "description": "The ID of the department for whose people the hours should be retrieved. Overridden by person.",
+                        "type": "string"
+                    },
+                    {
+                        "name": "person",
+                        "in": "query",
+                        "description": "The ID of the person whose hours should be retrieved. Overrides department.",
+                        "type": "string"
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "description": "Filter projects to those starting on or after the given date.",
+                        "type": "string",
+                        "format": "date",
+                        "required": true
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "description": "Filter projects to those ending before the given date.",
+                        "type": "string",
+                        "format": "date",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested utilization report",
+                        "schema": {
+                            "$ref": "#/definitions/UtilizationReport"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Reports",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/roles": {
             "x-handler": "Roles",
             "get": {
@@ -5766,6 +5827,139 @@
                 "person",
                 "type"
             ]
+        },
+        "UtilizationReport": {
+            "type": "object",
+            "properties": {
+                "hours": {
+                    "type": "object",
+                    "properties": {
+                        "projectHours": {
+                            "type": "object",
+                            "properties": {
+                                "hours": {
+                                    "type": "number"
+                                },
+                                "types": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Name of type (e.g. Invest, POC, Paid)",
+                                                "enum": [
+                                                    "invest",
+                                                    "poc",
+                                                    "paid"
+                                                ]
+                                            },
+                                            "hours": {
+                                                "type": "number"
+                                            },
+                                            "clients": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string",
+                                                            "description": "Name of Client"
+                                                        },
+                                                        "hours": {
+                                                            "type": "number"
+                                                        },
+                                                        "projects": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "description": "Name of project"
+                                                                    },
+                                                                    "hours": {
+                                                                        "type": "number"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "taskHours": {
+                            "type": "object",
+                            "properties": {
+                                "hours": {
+                                    "type": "number"
+                                },
+                                "tasks": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "hours": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "people": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "expectedHours": {
+                                "type": "number"
+                            },
+                            "actualHours": {
+                                "type": "number"
+                            },
+                            "difference": {
+                                "type": "number"
+                            },
+                            "hours": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "description": "Name of the project or task"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of hours record",
+                                            "enum": [
+                                                "project",
+                                                "task"
+                                            ]
+                                        },
+                                        "hours": {
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         "Role": {
             "type": "object",

@@ -20,6 +20,13 @@ module.exports = {
                     emit(doc.googleId, doc._id);
                 }
             }
+        },
+        AllPeopleByDepartment: {
+            map: function(doc){
+                if(doc.form === 'People' && doc.department){
+                    emit(doc.department, doc._id);
+                }
+            }
         }
     },
     indexes: {
