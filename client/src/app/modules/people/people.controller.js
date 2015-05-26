@@ -15,10 +15,8 @@
 
         PeopleService.getList().then(function(response) {
             people.list = response;
+            logs.info(people.list);
         });
-
-        logs.info(people.list);
-
     }
 
 })();
