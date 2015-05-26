@@ -5,7 +5,6 @@
   angular
       .module('mastermind.layout', [
       	'mastermind.layout.header',
-        'mastermind.layout.footer',
       	'mastermind.layout.menu']);
 
 
