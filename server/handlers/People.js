@@ -133,7 +133,14 @@ module.exports.getSinglePerson = util.generateSingleItemGetHandler(
     securityResources.people.resourceName, // resourceName
     securityResources.people.permissions.viewPeople, // permission
     'person', // key 
-    people.convertForRestAPI // convertForRestAPI
+    people.convertForRestAPI, // convertForRestAPI
+    function(doc, callback){
+        var acl = services.get('acl');
+        acl.allAllowedPermissions(doc.googleId, function(err, permissions){
+            doc.permissions = permissions;
+            callback(doc);
+        });
+    }
 );
 
 module.exports.updateSinglePerson = util.generateSingleItemUpdateHandler(
