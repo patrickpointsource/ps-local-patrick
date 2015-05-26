@@ -13,7 +13,8 @@
         return {
             getPerson: getPerson,
             getProfile: getProfile,
-            getManager: getManager
+            getManager: getManager,
+            getList: getList
             // savePerson: savePerson,
             // deletePerson: deletePerson,
             // newPerson: newPerson
@@ -35,6 +36,10 @@
             // Restangular so they'll have the Restangular methods available.
         function savePerson(person) {
 
+        }
+
+        function getList() {
+            return People.getList();
         }
 
     }

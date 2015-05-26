@@ -1,9 +1,8 @@
-<div class="people">
-    <div>
+<div class="people grid-container small-12">
+    <div class="grid-block">
         <h2>People</h2>
-        <p>Do I really need to see all of these?</p>
     </div>
-    <div>
+    <div class="grid-block">
         <div>
             <select name="athing" id="athing" ng-model="people.athing" ng-change="people.countUp()">
                 <option value="something">Something</option>
@@ -11,17 +10,10 @@
                 <option value="athing">A Thing</option>
             </select>
         </div>
-        <h4><p>{{people.athing}}</p></h4>
     </div>
-    <div ng-repeat="person in people.list">
-        <p>{{person.name}}</p>
-    </div>
-    <div>
-        <input type="checkbox" id="andanotherthing1"name="andanotherthing1" value="number1">
-        <label for="andanotherthing1">Number 1</label>
-        <input type="checkbox" id="andanotherthing2"name="andanotherthing2" value="number2">
-        <label for="andanotherthing2">Number 2</label>
-        <input type="checkbox" id="andanotherthing3"name="andanotherthing3" value="number3">
-        <label for="andanotherthing3">Number 3</label>
+    <div class="grid-block vertical">
+        <div ng-repeat="person in people.list" class="grid-content">
+            <p>{{person.name.fullName}}</p>
+        </div>
     </div>
 </div>
