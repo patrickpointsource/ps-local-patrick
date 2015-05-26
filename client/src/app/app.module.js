@@ -25,6 +25,7 @@
             'PeopleModule',
             'AuthModule',
             'UserModule',
+            'HoursModule',
             'mastermind.layout.header'
         ])
         .config(AppConfig)

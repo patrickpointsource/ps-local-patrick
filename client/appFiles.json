@@ -1,5 +1,6 @@
 [
     "./src/app/services/AuthService.js",
+    "./src/app/services/HoursService.js",
     "./src/app/services/PeopleService.js",
     "./src/app/services/UserService.js",
     "./src/app/services/DashboardService.js",

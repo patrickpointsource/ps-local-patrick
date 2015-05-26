@@ -1396,14 +1396,14 @@
                         "in": "query",
                         "description": "Filter hours records to those on or after the given date",
                         "type": "string",
-                        "format": "date-time"
+                        "format": "date"
                     },
                     {
                         "name": "endDate",
                         "in": "query",
                         "description": "Filter hours records to those before the given date",
                         "type": "string",
-                        "format": "date-time"
+                        "format": "date"
                     },
                     {
                         "name": "projects",
