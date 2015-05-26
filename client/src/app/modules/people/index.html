@@ -1,0 +1,19 @@
+<div class="people grid-container small-12">
+    <div class="grid-block">
+        <h2>People</h2>
+    </div>
+    <div class="grid-block">
+        <div>
+            <select name="athing" id="athing" ng-model="people.athing" ng-change="people.countUp()">
+                <option value="something">Something</option>
+                <option value="somethingelse">Something Else</option>
+                <option value="athing">A Thing</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-block vertical">
+        <div ng-repeat="person in people.list" class="grid-content">
+            <p>{{person.name.fullName}}</p>
+        </div>
+    </div>
+</div>
