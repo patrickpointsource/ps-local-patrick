@@ -5,9 +5,10 @@
 
     HoursService.$inject = ['psafLogger', 'Restangular'];
 
+    var path = 'hours';
     function HoursService(psafLogger, Restangular) {
         var logger = psafLogger.getInstance('mastermind');
-        var Hours = Restangular.all('/hours');
+        var Hours = Restangular.all('/'+path);
 
         return {
             getHours: getHours,
@@ -25,24 +26,24 @@
             logger.debug('HoursService', 'Getting single Hours object with ID:', id);
             return Hours.get(id);
         }
-        function createHours(hoursObject){
-            if(hoursObject.id){
-                var id = hoursObject.id;
-                delete hoursObject.id;
+        function createHours(obj){
+            if(obj.id){
+                var id = obj.id;
+                delete obj.id;
                 logger.warn('HoursService', 'createHours was called with an object that ' +
                                             'contained an ID. Calling updateHours instead.');
-                return updateHours(id, hoursObject);
+                return updateHours(id, obj);
             }
-            logger.debug('HoursService', 'Creating a new Hours object:', hoursObject);
-            return Hours.post(hoursObject);
+            logger.debug('HoursService', 'Creating a new Hours object:', obj);
+            return Hours.post(obj);
         }
-        function updateHours(id, hoursObject){
-            logger.debug('HoursService', 'Updating the Hours document with ID:', id, hoursObject);
-            return Restangular.one('hours', id).put(hoursObject);
+        function updateHours(id, obj){
+            logger.debug('HoursService', 'Updating the Hours document with ID:', id, obj);
+            return Restangular.one(path, id).put(obj);
         }
         function deleteHours(id){
             logger.debug('HoursService', 'Deleting the Hours document with ID:', id);
-            return Restangular.one('hours', id).remove();
+            return Restangular.one(path, id).remove();
         }
     }
 })();
