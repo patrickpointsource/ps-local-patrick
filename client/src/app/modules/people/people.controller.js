@@ -13,7 +13,7 @@
         var logs = psafLogger.getInstance('mastermind');
         people.athing = 'athing';
 
-        PeopleService.getList().then(function(response) {
+        PeopleService.getPeople().then(function(response) {
             people.list = response;
             logs.info(people.list);
         });
