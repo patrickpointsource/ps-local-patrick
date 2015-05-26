@@ -30,6 +30,8 @@
         }
 
         function init() {
+            // Register a listener for signin success and pass along the credentials to
+            // the server side so that we don't have to do that later.
             $rootScope.$on('event:google-plus-signin-success', function(event, authResult) {
                 console.log(authResult);
 
