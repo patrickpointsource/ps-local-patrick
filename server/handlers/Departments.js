@@ -29,6 +29,7 @@ module.exports.getDepartments = util.generateCollectionGetHandler(
     securityResources.departments.resourceName, // resourceName
     securityResources.departments.permissions.viewDepartments, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         if(req.query.code){
             q = util.addToQuery(q, 'code:'+req.query.code);

@@ -1,10 +1,10 @@
+/* global services */
+
 var _ = require('underscore'),
     google = require('googleapis'),
     path = require('path');
 
-module.exports.init = function(){
-    
-};
+module.exports.init = _.noop;
 
 module.exports.getPersonByGoogleID = function(googleId, callback){
     var access = services.get('dbAccess');

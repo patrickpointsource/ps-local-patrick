@@ -11,7 +11,8 @@ var assignment = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project', 'person', 'role']);
+        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project', 
+                                    'person', 'role']);
         util.mapStraightDates(util.FOR_REST, doc, obj, ['startDate', 'endDate']);
         return obj;
     },
@@ -22,7 +23,8 @@ var assignment = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project', 'person', 'role']);
+        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project', 
+                                    'person', 'role']);
         util.mapStraightDates(util.FOR_DB, doc, obj, ['startDate', 'endDate']);
         return obj;
     },
@@ -49,6 +51,7 @@ module.exports.getAssignments = util.generateCollectionGetHandler(
     securityResources.assignments.resourceName, // resourceName
     securityResources.assignments.permissions.viewAssignments, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         var toAdd;
         if(req.query.projects && req.query.projects.length){

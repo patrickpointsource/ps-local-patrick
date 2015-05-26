@@ -36,6 +36,7 @@ module.exports.getTasks = util.generateCollectionGetHandler(
     securityResources.tasks.resourceName, // resourceName
     securityResources.tasks.permissions.viewTasks, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         if(req.query.name){
             // Use the SearchAllProjects index
             db.search('Tasks', 'SearchAllTasks', {

@@ -43,6 +43,7 @@ module.exports.getProjectPhases = util.generateCollectionGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = 'project:'+req.params.projectID;
         // Use the SearchAllProjectPhases index
         db.search('ProjectPhases', 'SearchAllProjectPhases', {

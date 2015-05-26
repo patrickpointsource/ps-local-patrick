@@ -1,3 +1,5 @@
+/* global services */
+
 var _ = require('underscore'),
     async = require('async'),
     securityResources = require( '../util/securityResources' ),
@@ -77,6 +79,7 @@ module.exports.getHours = util.generateCollectionGetHandler(
     securityResources.hours.resourceName, // resourceName
     securityResources.hours.permissions.viewHours, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         if(req.query.startDate){
             q = util.addToQuery(q, 'numericDate:['+req.query.startDate.replace(/-/g, '')+' TO Infinity]');

@@ -1,3 +1,6 @@
+/* global services */
+/*jshint camelcase: false */
+
 var _ = require('underscore'),
     async = require('async'),
     moment = require('moment'),
@@ -204,6 +207,7 @@ module.exports.getUtilizationReport = function(req, res, next){
                 var hourResults = null;
                 async.parallel([
                     function(callback){
+                        /*jshint camelcase: false */
                         db.view('Holidays', 'AllHolidaysByDate', {
                             startkey: startDate,
                             endkey: endDate,
@@ -244,7 +248,8 @@ module.exports.getUtilizationReport = function(req, res, next){
                                 include_docs: true
                             }, function(err, results){
                                 if(err){
-                                    return callback('An error occurred attempting to retrieve the requested documents.');
+                                    return callback('An error occurred attempting to retrieve the requested ' +
+                                                    'documents.');
                                 }
                                 hourResults = computeUtilizationReportFromResults(results.rows, res);
                                 callback();
@@ -255,7 +260,8 @@ module.exports.getUtilizationReport = function(req, res, next){
                                 key: req.query.department
                             }, function(err, results){
                                 if(err){
-                                    return callback('An error occurred attempting to retrieve the people in a department.');
+                                    return callback('An error occurred attempting to retrieve the people in a ' + 
+                                                    'department.');
                                 }
                                 var queries = [];
                                 var aggregateResults = [];
@@ -274,7 +280,8 @@ module.exports.getUtilizationReport = function(req, res, next){
                                             include_docs: true
                                         }, function(err, results){
                                             if(err){
-                                                return callback('An error occurred attempting to retrieve the requested documents.');
+                                                return callback('An error occurred attempting to retrieve the ' + 
+                                                                'requested documents.');
                                             }
                                             aggregateResults = aggregateResults.concat(results.rows);
                                             callback();
@@ -284,7 +291,8 @@ module.exports.getUtilizationReport = function(req, res, next){
                                 });
                                 async.parallel(queries, function(err){
                                     if(err){
-                                        return callback('An error occurred attempting to run the queries for each person.');
+                                        return callback('An error occurred attempting to run the queries for each ' + 
+                                                        'person.');
                                     }
                                     hourResults = computeUtilizationReportFromResults(aggregateResults, res);
                                     callback();
@@ -300,8 +308,16 @@ module.exports.getUtilizationReport = function(req, res, next){
                         // Compute the expected number of hours between 
                         // startDate and endDate, removing weekends and holidays
                         // (and ignoring dates in the future)
-                        hourResults.people = computeAndPopulateExpectedHours(startDate, endDate, holidays, hourResults.people);
-                        hourResults.hours.projectHours.types = transformProjectsWithClients(hourResults.hours.projectHours.projects, clients);
+                        hourResults.people = computeAndPopulateExpectedHours(
+                            startDate,
+                            endDate,
+                            holidays,
+                            hourResults.people
+                        );
+                        hourResults.hours.projectHours.types = transformProjectsWithClients(
+                            hourResults.hours.projectHours.projects,
+                            clients
+                        );
                         delete hourResults.hours.projectHours.projects;
                         sendJson(res, {hours: hourResults.hours, people: hourResults.people});
                     }else{

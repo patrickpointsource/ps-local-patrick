@@ -10,7 +10,8 @@ var link = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details', 'dashboard', 'project']);
+        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details', 
+                                    'dashboard', 'project']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -20,7 +21,8 @@ var link = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details', 'dashboard', 'project']);
+        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details', 
+                                    'dashboard', 'project']);
         return obj;
     },
     validateLink: function(obj, access, callback){
@@ -42,6 +44,7 @@ module.exports.getLinks = util.generateCollectionGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjectLinks, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         if(req.query.project){
             q = util.addToQuery(q, 'project:'+req.query.project);

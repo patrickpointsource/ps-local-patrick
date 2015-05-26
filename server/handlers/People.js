@@ -1,3 +1,5 @@
+/* global services */
+
 var _ = require('underscore'),
     async = require('async'),
     securityResources = require( '../util/securityResources' ),
@@ -12,7 +14,10 @@ var people = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['accounts', 'googleId', 'groups', 'isActive', 'jazzHubId', 'lastSynchronized', 'mBox', 'manager', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail', 'vacationCapacity', 'skills', 'jobTitle', 'secondaryRoles', 'partTimeHours', 'partTime']);
+        util.mapStraight(doc, obj, ['accounts', 'googleId', 'groups', 'isActive', 'jazzHubId', 'lastSynchronized', 
+                                    'mBox', 'manager', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail', 
+                                    'vacationCapacity', 'skills', 'jobTitle', 'secondaryRoles', 'partTimeHours', 
+                                    'partTime']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -22,7 +27,10 @@ var people = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['accounts', 'googleId', 'groups', 'isActive', 'jazzHubId', 'lastSynchronized', 'mBox', 'manager', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail', 'vacationCapacity', 'skills', 'jobTitle', 'secondaryRoles', 'partTimeHours', 'partTime']);
+        util.mapStraight(doc, obj, ['accounts', 'googleId', 'groups', 'isActive', 'jazzHubId', 'lastSynchronized', 
+                                    'mBox', 'manager', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail', 
+                                    'vacationCapacity', 'skills', 'jobTitle', 'secondaryRoles', 'partTimeHours', 
+                                    'partTime']);
         return obj;
     },
     validatePerson: function(obj, access, callback){
@@ -40,7 +48,7 @@ var people = {
                 if(obj.secondaryRoles && obj.secondaryRoles.length){
                     roles = roles.concat(obj.secondaryRoles);
                 }
-                if(roles.length == 0){
+                if(roles.length === 0){
                     return callback();
                 }
                 access.db.view('Roles', 'AllRoleTitles', { keys: roles }, function(err, docs){
@@ -81,6 +89,7 @@ module.exports.getPeople = util.generateCollectionGetHandler(
     securityResources.people.resourceName, // resourceName
     securityResources.people.permissions.viewPeople, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         // TODO: 
         // hasAssignment
         // hasCurrentAssignment
@@ -172,18 +181,31 @@ module.exports.getSinglePersonByGoogleID = function(req, res, next){
                 var googleID = req.params.id;
                 access.db.view('People', 'AllPeopleByGoogleId', { keys: [googleID] }, function(err, docs){
                     if(err){
-                        return sendJson(res, {'message': 'An error occurred attempting to find a person with the specified Google ID.', 'detail': err}, 500);
+                        return sendJson(res, {
+                            'message': 'An error occurred attempting to find a person with the specified Google ID.', 
+                            'detail': err
+                        }, 500);
                     }
                     if(docs.rows.length === 0){
-                        return sendJson(res, {'message': 'A person with the specified Google ID could not be found.', 'detail': err}, 404);
+                        return sendJson(res, {
+                            'message': 'A person with the specified Google ID could not be found.', 
+                            'detail': err
+                        }, 404);
                     }
                     
                     db.get(docs.rows[0].id, function(err, doc){
-                        if(err && err.message != 'missing'){
-                            return sendJson(res, {'message': 'An error occurred attempting to find a person with the specified Google ID.', 'detail': err}, 500);
+                        if(err && err.message !== 'missing'){
+                            return sendJson(res, {
+                                'message': 'An error occurred attempting to find a person with the specified ' + 
+                                           'Google ID.', 
+                                'detail': err
+                            }, 500);
                         }
                         if(!doc){
-                            return sendJson(res, {'message': 'A person with the specified Google ID could not be found.', 'detail': err}, 404);
+                            return sendJson(res, {
+                                'message': 'A person with the specified Google ID could not be found.', 
+                                'detail': err
+                            }, 404);
                         }
                         sendJson(res, people.convertForRestAPI(access, doc));
                     });
@@ -206,18 +228,30 @@ module.exports.getSinglePersonLoggedIn = function(req, res, next){
                 var googleID = req.user.id;
                 access.db.view('People', 'AllPeopleByGoogleId', { keys: [googleID] }, function(err, docs){
                     if(err){
-                        return sendJson(res, {'message': 'An error occurred attempting to find the logged in person.', 'detail': err}, 500);
+                        return sendJson(res, {
+                            'message': 'An error occurred attempting to find the logged in person.', 
+                            'detail': err
+                        }, 500);
                     }
                     if(docs.rows.length === 0){
-                        return sendJson(res, {'message': 'The logged in person could not be found.', 'detail': err}, 404);
+                        return sendJson(res, {
+                            'message': 'The logged in person could not be found.', 
+                            'detail': err
+                        }, 404);
                     }
                     
                     db.get(docs.rows[0].id, function(err, doc){
-                        if(err && err.message != 'missing'){
-                            return sendJson(res, {'message': 'An error occurred attempting to find the logged in person.', 'detail': err}, 500);
+                        if(err && err.message !== 'missing'){
+                            return sendJson(res, {
+                                'message': 'An error occurred attempting to find the logged in person.', 
+                                'detail': err
+                            }, 500);
                         }
                         if(!doc){
-                            return sendJson(res, {'message': 'The logged in person could not be found.', 'detail': err}, 404);
+                            return sendJson(res, {
+                                'message': 'The logged in person could not be found.', 
+                                'detail': err
+                            }, 404);
                         }
                         sendJson(res, people.convertForRestAPI(access, doc));
                     });
@@ -239,22 +273,35 @@ module.exports.getManagerOfPerson = function(req, res, next){
             if(allowed){
                 var id = req.params.id;
                 db.get(id, function(err, doc){
-                    if(err && err.message != 'missing'){
-                        return sendJson(res, {'message': 'An error occurred attempting to find a person with the specified ID.', 'detail': err}, 500);
+                    if(err && err.message !== 'missing'){
+                        return sendJson(res, {
+                            'message': 'An error occurred attempting to find a person with the specified ID.', 
+                            'detail': err
+                        }, 500);
                     }
                     if(!doc){
-                        return sendJson(res, {'message': 'A person with the specified ID could not be found.', 'detail': err}, 404);
+                        return sendJson(res, {
+                            'message': 'A person with the specified ID could not be found.', 
+                            'detail': err
+                        }, 404);
                     }
                     if(!doc.manager){
                         // The user doesn't have a manager
                         return sendJson(res, {}, 200);
                     }
                     db.get(doc.manager, function(err, doc){
-                        if(err && err.message != 'missing'){
-                            return sendJson(res, {'message': 'An error occurred attempting to find a person (the manager) with the specified ID.', 'detail': err}, 500);
+                        if(err && err.message !== 'missing'){
+                            return sendJson(res, {
+                                'message': 'An error occurred attempting to find a person (the manager) with the ' + 
+                                           'specified ID.', 
+                                'detail': err
+                            }, 500);
                         }
                         if(!doc){
-                            return sendJson(res, {'message': 'A person (the manager) with the specified ID could not be found.', 'detail': err}, 404);
+                            return sendJson(res, {
+                                'message': 'A person (the manager) with the specified ID could not be found.', 
+                                'detail': err
+                            }, 404);
                         }
                         sendJson(res, people.convertForRestAPI(access, doc));
                     });
@@ -277,7 +324,10 @@ module.exports.getAccessRightsOfPerson = function(req, res, next){
                 var personService = services.get('person');
                 personService.getPersonAccessRights(req.params.id, function(err, accessRights){
                     if(err){
-                        return sendJson(res, {'message': 'An error occurred attempting to determine the access rights.', 'detail': err}, 500);
+                        return sendJson(res, {
+                            'message': 'An error occurred attempting to determine the access rights.', 
+                            'detail': err
+                        }, 500);
                     }
                     return sendJson(res, accessRights);
                 });
@@ -298,18 +348,27 @@ module.exports.getGoogleProfileOfPerson = function(req, res, next){
             if(allowed){
                 var id = req.params.id;
                 db.get(id, function(err, doc){
-                    if(err && err.message != 'missing'){
-                        return sendJson(res, {'message': 'An error occurred attempting to find a person with the specified ID.', 'detail': err}, 500);
+                    if(err && err.message !== 'missing'){
+                        return sendJson(res, {
+                            'message': 'An error occurred attempting to find a person with the specified ID.', 
+                            'detail': err
+                        }, 500);
                     }
                     if(!doc){
-                        return sendJson(res, {'message': 'A person with the specified ID could not be found.', 'detail': err}, 404);
+                        return sendJson(res, {
+                            'message': 'A person with the specified ID could not be found.', 
+                            'detail': err
+                        }, 404);
                     }
                     var googleID = doc.googleId;
                     
                     var personService = services.get('person');
                     personService.getPersonGoogleProfile(googleID, function(err, accessRights){
                         if(err){
-                            return sendJson(res, {'message': 'An error occurred attempting to determine the access rights.', 'detail': err}, 500);
+                            return sendJson(res, {
+                                'message': 'An error occurred attempting to determine the access rights.', 
+                                'detail': err
+                            }, 500);
                         }
                         return sendJson(res, accessRights);
                     });

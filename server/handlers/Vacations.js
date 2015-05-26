@@ -1,3 +1,5 @@
+/* global services */
+
 var _ = require('underscore'),
     async = require('async'),
     securityResources = require( '../util/securityResources' ),
@@ -67,6 +69,7 @@ module.exports.getVacations = util.generateCollectionGetHandler(
         });
     }, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         var toAdd;
         if(req.query.people && req.query.people.length){
