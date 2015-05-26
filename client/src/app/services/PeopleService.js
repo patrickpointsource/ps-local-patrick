@@ -31,6 +31,12 @@
             return People.get(id).get('manager');
         }
 
+        // the person object being saved should have been retrieved using
+            // Restangular so they'll have the Restangular methods available.
+        function savePerson(person) {
+
+        }
+
     }
 
 })();

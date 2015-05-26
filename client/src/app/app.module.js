@@ -108,8 +108,19 @@
                 url: '/people',
                 views: {
                     'content@': {
-                        templateUrl: 'app/modules/people/people.html',
+                        templateUrl: 'app/modules/people/index.html',
                         controller: 'PeopleController',
+                        controllerAs: 'people'
+                    }
+                }
+            })
+            .state('person', {
+                parent: 'root',
+                url: '/people/:id',
+                views: {
+                    'content@': {
+                        templateUrl: 'app/modules/people/person.html',
+                        controller: 'PersonController',
                         controllerAs: 'people'
                     }
                 }

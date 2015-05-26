@@ -11,6 +11,7 @@
     "./src/app/layout/menu/menu.controller.js",
     "./src/app/modules/dashboard/dashboard.controller.js",
     "./src/app/modules/people/people.controller.js",
+    "./src/app/modules/people/person.controller.js",
     "./src/app/modules/people/profile.controller.js",
     "./src/app/modules/projects/projects.controller.js"
 ]

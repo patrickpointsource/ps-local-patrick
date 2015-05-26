@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('mastermind')
+        .module('PeopleModule')
         .controller('PeopleController', PeopleController);
 
     PeopleController.$inject = ['psafLogger', 'PeopleService'];
