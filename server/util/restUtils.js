@@ -152,7 +152,7 @@ module.exports.generateCollectionGetHandler = function(resourceName, permission,
 
 };
 
-module.exports.generateSingleItemGetHandler = function(resourceName, permission, key, convertForRestAPI){
+module.exports.generateSingleItemGetHandler = function(resourceName, permission, key, convertForRestAPI, asyncDocumentFinisher){
 
     return function(req, res, next){
         var acl = services.get('acl');
@@ -168,7 +168,14 @@ module.exports.generateSingleItemGetHandler = function(resourceName, permission,
                     if(!doc){
                         return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
                     }
-                    sendJson(res, convertForRestAPI(access, doc));
+                    doc = convertForRestAPI(access, doc);
+                    if(asyncDocumentFinisher){
+                        asyncDocumentFinisher(doc, function(doc){
+                            sendJson(res, doc);
+                        });
+                    }else{
+                        sendJson(res, doc);
+                    }
                 });
             }
         });

@@ -66,6 +66,26 @@ module.exports.allowedPermissions = function(userId, resources, callback) {
     });
 };
 
+module.exports.allAllowedPermissions = function(userId, callback){
+    var allPermissions = {};
+    acl.userRoles(userId, function(err, roles){
+        async.each(roles, function(role, callback){
+            acl.whatResources(role, function(err, output){
+                _.each(output, function(permissions, resource){
+                    if(!allPermissions[resource]){
+                        allPermissions[resource] = permissions;
+                    }else{
+                        allPermissions[resource] = _.extend(allPermissions[resource], permissions);
+                    }
+                });
+                callback();
+            });
+        }, function(err){
+            callback(err, allPermissions);
+        });
+    });
+};
+
 // false - start up call, true - reinitialization
 var doInitialization = function(isReinitialization){
     _logger.info('initialize:Initializing security. Reinitialization: ' + isReinitialization);
