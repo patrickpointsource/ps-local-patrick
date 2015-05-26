@@ -6,24 +6,16 @@
         .module('mastermind')
         .controller('ProfileController', ProfileController);
 
-    ProfileController.$inject = ['psafLogger', 'PersonService'];
+    ProfileController.$inject = ['psafLogger', 'PeopleService'];
 
-    function ProfileController(psafLogger, PersonService) {
+    function ProfileController(psafLogger, PeopleService) {
         var logs = psafLogger.getInstance('mastermind');
         var profile = this;
 
-        var Person = PersonService.getProfile('me');
+        var Person = PeopleService.getProfile('me');
 
         Person.then(function(response) {
             profile.person = response;
-
-            var resourceId = profile.person.manager.resource.split('/')[1];
-            var Manager = PersonService.getProfile(resourceId);
-
-            Manager.then(function(response2) {
-                profile.manager = response2;
-                console.log(profile.manager);
-            });
         });
 
 

@@ -1,15 +1,64 @@
+$people-content-padding: 1rem;
 .people {
-    @include grid-content;
+    background-color: $gray-lightest;
+    padding: $people-content-padding;
 }
 
-.user-profile-image {
-    width: 100px;
-    height: 100px;
-    border-radius: 50px;
+.profile-image {
+    width: 125px;
+    height: 125px;
+    border-radius: 63px;
+    border: 3px solid white;
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.4);
+    margin: $people-content-padding;
 }
 
-.user-profile-thumbnail {
+.profile-thumbnail {
     width: 50px;
     height: 50px;
     border-radius: 25px;
+}
+
+.profile-info {
+    // line-height: rem-calc(40);
+    font-size: 1.1rem;
+    i.fa {
+        width: rem-calc(40);
+        vertical-align: middle;
+        margin: auto;
+        color: $gray-regular;
+    }
+    i.fa-envelope {
+        padding-left: 0.1em;
+    }
+    i.fa-skype {
+        padding-left: 0.16em;
+    }
+    i.fa-mobile {
+        padding-left: 0.18em;
+    }
+}
+
+.inner-content {
+    background-color: #fff;
+    border-radius: $global-radius;
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.profile-main {
+    border: 0 solid $gray-medium;
+    border-bottom-width: 1px;
+    padding: $people-content-padding;
+
+}
+
+.profile-additional {
+    .profile-administrative {
+        padding: $people-content-padding;
+    }
+    .profile-contact {
+        padding: $people-content-padding;
+        border: 0 solid $gray-medium;
+        border-left-width: 1px;
+    }
 }

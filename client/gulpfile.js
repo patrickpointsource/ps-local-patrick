@@ -253,7 +253,8 @@ gulp.task('uglify-dependencies', function () {
         'bower_components/mm-angular-logger/dist/mm-angular-logger.js',
         'bower_components/psaf-logger/dist/psaf-logger.min.js',
         'bower_components/moment/moment.js',
-        'bower_components/swagger-angular-client/dist/swagger-angular-client.js'
+        'bower_components/swagger-angular-client/dist/swagger-angular-client.js',
+        'bower_components/angular-directive.g-signin/google-plus-signin.js'
     ];
 
     return gulp.src(libs)

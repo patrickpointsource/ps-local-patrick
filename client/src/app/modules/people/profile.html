@@ -1,35 +1,51 @@
-<div class="people" class="grid-block">
-    <div class="grid-block">
-        <div class="grid-block">
-            <div class="grid-block"><img ng-src="{{profile.person.thumbnail}}" class="user-profile-image"></div>
-            <div class="grid-block vertical">
-                <div class="grid-content">
-                    <h2>{{profile.person.name.fullName}}</h2></div>
-                <div class="grid-content">Job Title</div>
-                <div class="grid-content">
-                    <h3>{{profile.person.primaryRole.name}}</h3></div>
+<div class="people grid-block">
+    <div class="inner-content grid-container medium-12 small-12">
+        <div class="grid-block profile-main small-12">
+            <div class="grid-block medium-10 small-12">
+                <div class="grid-block small-12 medium-3">
+                    <div class="grid-content">
+                        <img ng-src="{{profile.person.thumbnail}}" class="profile-image">
+                    </div>
+                </div>
+                <div class="grid-block vertical small-12 medium-9">
+                    <div class="grid-content">
+                        <span class="profile-name">{{profile.person.name.fullName}}</span>
+                        <span ng-show="profile.permissionsMap.people.editMyProfile" class="right"><a class="button light" ng-click="editUser()"><i class="fa fa-edit"></i> Edit</a></span>
+                    </div>
+                    <div class="grid-content profile-label">Job Title</div>
+                    <div class="grid-content profile-info">
+                        <span>{{profile.person.primaryRole.name}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-block vertical right medium-2 small-12">
+                <div class="right">
+                    <i ng-show="profile.person.isActive" class="fa fa-check"></i> <span>Active</span>
+                </div>
+                <div class="right">
+                    <i ng-show="profile.person.isActive" class="fa fa-check"></i> <span>Full Time</span>
+                </div>
+                <div class="right"></div>
             </div>
         </div>
-        <div class="grid-block vertical right">
-            <div class="right">
-                <i ng-show="profile.person.isActive" class="fa fa-check"></i> <span>Active</span>
+        <div class="grid-block profile-additional small-12">
+            <div class="grid-block vertical expand medium-6 small-12">
+                <div class="profile-administrative">
+                    <div class="grid-content profile-label">Manager</div>
+                    <div class="grid-content profile-info"><a ng-href="#/{{profile.person.manager.resource}}">{{profile.person.manager.name}}</a></div>
+                    <div class="grid-content profile-label">Vacation Days</div>
+                    <div class="grid-content profile-info">{{profile.person.vacationCapacity}}</div>
+                </div>
             </div>
-            <div class="right">
-                <i ng-show="profile.person.isActive" class="fa fa-check"></i> <span>Full Time</span>
+            <div class="grid-block vertical expand medium-6 small-12">
+                <div class="profile-contact">
+                    <div class="grid-content profile-info"><a ng-href="tel:{{profile.person.phone}}"><i class="fa fa-3x fa-mobile"></i> {{profile.person.phone}}</a></div>
+                    <div class="grid-content profile-info"><a ng-href="mailto:{{profile.person.accounts[0].primaryEmail}}"><i class="fa fa-2x fa-envelope"></i> {{profile.person.accounts[0].primaryEmail}}</a></div>
+                    <div class="grid-content profile-info"><a ng-href="skype:{{profile.person.skypeId}}?chat"><i class="fa fa-2x fa-skype"></i> {{profile.person.skypeId}}</a></div>
+                    <div class="grid-content profile-label">Dev Ops ID</div>
+                    <div class="grid-content profile-info">{{profile.person.jazzHubId}}</div>
+                </div>
             </div>
-            <div class="right"></div>
-        </div>
-    </div>
-    <div class="grid-block">
-        <div class="grid-block vertical">
-            <div class="grid-content title">Manager</div>
-            <div class="grid-content">{{profile.manager.name.fullName}}</div>
-            <div class="grid-content"><img ng-src="{{profile.manager.thumbnail}}" class="user-profile-thumbnail"></div>
-        </div>
-        <div class="grid-block vertical">
-            <div class="grid-content">{{profile.person.phone}}</div>
-            <div class="grid-content">{{profile.person.accounts[0].primaryEmail}}</div>
-            <div class="grid-content">{{profile.person.skypeId}}</div>
         </div>
     </div>
 </div>
