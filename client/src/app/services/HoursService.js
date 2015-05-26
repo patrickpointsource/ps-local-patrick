@@ -1,6 +1,6 @@
 (function () {
     angular
-        .module('HoursModule', [])
+        .module('app.services')
         .service('HoursService', HoursService);
 
     HoursService.$inject = ['psafLogger', 'Restangular'];
@@ -29,7 +29,8 @@
             if(hoursObject.id){
                 var id = hoursObject.id;
                 delete hoursObject.id;
-                logger.warn('HoursService', 'createHours was called with an object that contained an ID. Calling updateHours instead.');
+                logger.warn('HoursService', 'createHours was called with an object that ' +
+                                            'contained an ID. Calling updateHours instead.');
                 return updateHours(id, hoursObject);
             }
             logger.debug('HoursService', 'Creating a new Hours object:', hoursObject);

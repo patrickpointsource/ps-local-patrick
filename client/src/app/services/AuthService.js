@@ -1,6 +1,7 @@
 (function() {
-    angular.module('AuthModule', []).
-    factory('AuthService', AuthService);
+    angular
+        .module('app.services')
+        .factory('AuthService', AuthService);
 
     AuthService.$inject = ['$rootScope', '$http', 'psafLogger'];
 
@@ -20,7 +21,7 @@
         function login() {
             isLoggedIn = true;
             $rootScope.isLoggedIn = true;
-            console.log('Is Logged In ', isLoggedIn);
+            logger.log('Is Logged In ', isLoggedIn);
             return;
         }
 
@@ -33,7 +34,7 @@
             // Register a listener for signin success and pass along the credentials to
             // the server side so that we don't have to do that later.
             $rootScope.$on('event:google-plus-signin-success', function(event, authResult) {
-                console.log(authResult);
+                logger.log(authResult);
 
                 $http.get('http://localhost:3000/auth?code=' + authResult['code'], {
                         withCredentials: true

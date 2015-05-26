@@ -1,6 +1,7 @@
 (function () {
-    angular.module('PeopleModule', []).
-    service('PeopleService', PeopleService);
+    angular
+        .module('app.services')
+        .service('PeopleService', PeopleService);
 
     PeopleService.$inject = ['psafLogger', 'Restangular'];
 

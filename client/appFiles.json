@@ -1,4 +1,5 @@
 [
+    "./src/app/services/app.services.js",
     "./src/app/services/AuthService.js",
     "./src/app/services/HoursService.js",
     "./src/app/services/PeopleService.js",
