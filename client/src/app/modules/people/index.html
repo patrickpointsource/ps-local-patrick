@@ -1,7 +1,4 @@
-<div class="people grid-container small-12">
-    <div class="grid-block">
-        <h2>People</h2>
-    </div>
+<div class="people grid-container small-12 clearfix">
     <div class="grid-block">
         <div>
             <select name="athing" id="athing" ng-model="people.athing" ng-change="people.countUp()">
@@ -11,9 +8,16 @@
             </select>
         </div>
     </div>
-    <div class="grid-block vertical">
-        <div ng-repeat="person in people.list" class="grid-content">
-            <p>{{person.name.fullName}}</p>
-        </div>
+    <div class="person-list clearfix block-list">
+        <header>People</header>
+        <ul>
+            <li ng-repeat="person in people.list" class="person grid-block small-12">
+                <div class="person-img small-3 medium-1">
+                    <a ng-href="#/people/{{person.id}}"><img ng-src="{{person.thumbnail}}" class="profile-thumbnail"></a>
+                </div>
+                <div class="person-name small-9 medium-4"><a ng-href="#/people/{{person.id}}">{{person.name.fullName}}</a></div>
+                <div class="person-title small-12 medium-3"><a ng-href="#/people/{{person.id}}">{{person.primaryRole.name}}</a></div>
+            </li>
+        </ul>
     </div>
 </div>
