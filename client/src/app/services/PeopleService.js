@@ -14,6 +14,9 @@
             getPerson: getPerson,
             getProfile: getProfile,
             getManager: getManager
+            // savePerson: savePerson,
+            // deletePerson: deletePerson,
+            // newPerson: newPerson
         };
 
         function getPerson(id) {

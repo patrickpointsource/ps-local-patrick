@@ -1164,6 +1164,217 @@
                 }
             }
         },
+        "/holidays": {
+            "x-handler": "Holidays",
+            "get": {
+                "summary": "Retrieve Holidays",
+                "description": "The Holidays endpoint returns holidays.\n",
+                "operationId": "getHolidays",
+                "tags": [
+                    "Holidays"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of holidays",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Holiday"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Holiday",
+                "description": "Create a new holiday.\nAn ID in the POST-ed holiday will be ignored.\n",
+                "operationId": "createSingleHoliday",
+                "tags": [
+                    "Holidays"
+                ],
+                "parameters": [
+                    {
+                        "name": "holiday",
+                        "in": "body",
+                        "description": "Data representing the holiday to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created holiday",
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/holidays/{id}": {
+            "x-handler": "Holidays",
+            "get": {
+                "summary": "Retrieve Holiday",
+                "description": "The Holiday endpoint returns a single holiday.\n",
+                "operationId": "getSingleHoliday",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the holiday to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Holidays"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single holiday specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A holiday with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Holiday",
+                "description": "Updates an existing holiday.\n",
+                "operationId": "updateSingleHoliday",
+                "tags": [
+                    "Holidays"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the holiday to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "holiday",
+                        "in": "body",
+                        "description": "New data representing the holiday",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated holiday",
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A holiday with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Holiday",
+                "description": "Deletes a single Holiday.\n",
+                "operationId": "deleteSingleHoliday",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the holiday to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Holidays"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single holiday specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A holiday with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/hours": {
             "x-handler": "Hours",
             "get": {
@@ -3171,6 +3382,67 @@
                 }
             }
         },
+        "/reports/utilization": {
+            "x-handler": "Reports",
+            "get": {
+                "summary": "Utilization Report",
+                "description": "Get the utilization of a singler person or all people in a department",
+                "operationId": "getUtilizationReport",
+                "tags": [
+                    "Reports"
+                ],
+                "parameters": [
+                    {
+                        "name": "department",
+                        "in": "query",
+                        "description": "The ID of the department for whose people the hours should be retrieved. Overridden by person.",
+                        "type": "string"
+                    },
+                    {
+                        "name": "person",
+                        "in": "query",
+                        "description": "The ID of the person whose hours should be retrieved. Overrides department.",
+                        "type": "string"
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "description": "Filter projects to those starting on or after the given date.",
+                        "type": "string",
+                        "format": "date",
+                        "required": true
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "description": "Filter projects to those ending before the given date.",
+                        "type": "string",
+                        "format": "date",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested utilization report",
+                        "schema": {
+                            "$ref": "#/definitions/UtilizationReport"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Reports",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/roles": {
             "x-handler": "Roles",
             "get": {
@@ -4652,6 +4924,21 @@
                 "trimmedValue"
             ]
         },
+        "Holiday": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date"
+                }
+            }
+        },
         "Hours": {
             "type": "object",
             "properties": {
@@ -4660,7 +4947,7 @@
                 },
                 "date": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date"
                 },
                 "description": {
                     "type": "string"
@@ -5540,6 +5827,139 @@
                 "person",
                 "type"
             ]
+        },
+        "UtilizationReport": {
+            "type": "object",
+            "properties": {
+                "hours": {
+                    "type": "object",
+                    "properties": {
+                        "projectHours": {
+                            "type": "object",
+                            "properties": {
+                                "hours": {
+                                    "type": "number"
+                                },
+                                "types": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Name of type (e.g. Invest, POC, Paid)",
+                                                "enum": [
+                                                    "invest",
+                                                    "poc",
+                                                    "paid"
+                                                ]
+                                            },
+                                            "hours": {
+                                                "type": "number"
+                                            },
+                                            "clients": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string",
+                                                            "description": "Name of Client"
+                                                        },
+                                                        "hours": {
+                                                            "type": "number"
+                                                        },
+                                                        "projects": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "description": "Name of project"
+                                                                    },
+                                                                    "hours": {
+                                                                        "type": "number"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "taskHours": {
+                            "type": "object",
+                            "properties": {
+                                "hours": {
+                                    "type": "number"
+                                },
+                                "tasks": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "hours": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "people": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "expectedHours": {
+                                "type": "number"
+                            },
+                            "actualHours": {
+                                "type": "number"
+                            },
+                            "difference": {
+                                "type": "number"
+                            },
+                            "hours": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "description": "Name of the project or task"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of hours record",
+                                            "enum": [
+                                                "project",
+                                                "task"
+                                            ]
+                                        },
+                                        "hours": {
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         "Role": {
             "type": "object",
