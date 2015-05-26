@@ -9,6 +9,7 @@
     angular
         .module('mastermind', [
             'app.config',
+            'app.services',
 
             'ui.router',
             'ngAnimate',
@@ -21,11 +22,9 @@
             'mastermind.layout',
             'swagger-client',
             'directive.g+signin',
-            'restangular',
-            'PeopleModule',
-            'AuthModule',
-            'UserModule',
-            'mastermind.layout.header'
+            'mastermind.layout.header',
+            
+            'PeopleModule'
         ])
         .config(AppConfig)
         .run(AppRun);
