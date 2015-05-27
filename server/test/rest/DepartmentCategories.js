@@ -26,7 +26,7 @@ describe('DEPARTMENT CATEGORIES - test simple REST calls', function () {
                 // Pick the first one and make sure it meets the standard format
                 var item = json[0];
                 var keys = _.keys(item);
-                assert.ok(keys.length == 3 || keys.length == 4);
+                assert.ok(keys.length === 3 || keys.length === 4);
                 assert.notEqual(keys.indexOf('id'), -1);
                 assert.notEqual(keys.indexOf('name'), -1);
                 assert.notEqual(keys.indexOf('trimmedValue'), -1);
@@ -48,7 +48,7 @@ describe('DEPARTMENT CATEGORIES - test simple REST calls', function () {
                 var item = json[0];
                 var keys = _.keys(item);
                 assert.ok(keys.length >= 3);
-                assert.notEqual(keys.length == 3 || keys.length == 4);
+                assert.notEqual(keys.length === 3 || keys.length === 4);
                 assert.notEqual(keys.indexOf('name'), -1);
                 assert.notEqual(keys.indexOf('trimmedValue'), -1);
             }
@@ -334,7 +334,7 @@ describe('DEPARTMENT CATEGORIES - test simple REST calls', function () {
         // Fail if we don't have a departmentCategoryID
         assert.ok(departmentCategoryID);
     
-        request.del('http://localhost:3000/v3/departments/categories/' + departmentCategoryID.substr(0, 5), {
+        request.del('http://localhost:3000/v3/departments/categories/'+departmentCategoryID.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },
