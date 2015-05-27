@@ -341,9 +341,8 @@ var doInitialization = function(isReinitialization){
             
             
                 // assign all other roles-users access roles
-                _.each(targetUserIds, function(role){
+                _.each(targetUserIds, function(targetUsers, role){
                     if (!processedGroupsMap[role]) {
-                        targetUsers = targetUserIds[role];
                       
                         for (t = 0; t < targetUsers.length; t ++){
                             //addRole(targetUsers[t], [role], isReinitialization);
@@ -354,8 +353,8 @@ var doInitialization = function(isReinitialization){
                     }
                 });
               
-                _.each(userToRolesMap, function(uId){
-                    addRole(uId, _.uniq(userToRolesMap[uId]), isReinitialization);
+                _.each(userToRolesMap, function(userToRole, uId){
+                    addRole(uId, _.uniq(userToRole), isReinitialization);
                 });
               
                 _logger.info('initialize:' + (
