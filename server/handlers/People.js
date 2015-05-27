@@ -249,7 +249,8 @@ module.exports.getManagerOfPerson = function(req, res, next){
                         // The user doesn't have a manager
                         return sendJson(res, {}, 200);
                     }
-                    db.get(doc.manager, function(err, doc){
+                    var managerID = doc.manager.resource.replace('people/', '');
+                    db.get(managerID, function(err, doc){
                         if(err && err.message != 'missing'){
                             return sendJson(res, {'message': 'An error occurred attempting to find a person (the manager) with the specified ID.', 'detail': err}, 500);
                         }
