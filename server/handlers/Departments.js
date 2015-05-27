@@ -69,7 +69,7 @@ module.exports.createSingleDepartment = util.generateSingleItemCreateHandler(
 module.exports.getSingleDepartment = util.generateSingleItemGetHandler(
     securityResources.departments.resourceName, // resourceName
     securityResources.departments.permissions.viewDepartments, // permission
-    'department', // key 
+    'department', // key
     department.convertForRestAPI // convertForRestAPI
 );
 

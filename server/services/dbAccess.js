@@ -59,13 +59,13 @@ var DEFAULT_ROLES = module.exports.DEFAULT_ROLES = {
 module.exports.init = function(config, callback) {
     /*jshint camelcase: false */
     var cfg = config.get('cloudant');
-    
+
     // cloudant module
     var dbName = cfg.db;
     var dbAccount = cfg.account;
     var dbApiKey = cfg.user;
     var dbPwd = cfg.password;
-    
+
     var dbConnParams = {
         account: dbAccount,
         key: dbApiKey,
@@ -73,7 +73,7 @@ module.exports.init = function(config, callback) {
         request_defaults: {
             maxSockets: 30
         }
-    }; 
+    };
     var Cloudant = require('cloudant')(dbConnParams);
 
     module.exports.db = Cloudant.db.use(dbName);

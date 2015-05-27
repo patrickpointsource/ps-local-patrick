@@ -32,7 +32,7 @@ module.exports.getPersonAccessRights = function(id, callback){
             hasAdminRights: false,
             hasManagementRights: false,
             hasProjectManagementRights: false,
-            hasExecutiveRights: false,
+            hasExecutiveRights: false
         };
         var access = services.get('dbAccess');
         access.db.view('UserRoles', 'AllUserRolesByGoogleID', { keys: [googleID]}, function(err, docs){
@@ -43,7 +43,7 @@ module.exports.getPersonAccessRights = function(id, callback){
                 return callback(null, accessRights);
             }
             var userRole = docs.rows[0].value;
-        
+
             /**
              * Members of the 'Executives' group...
              *
@@ -88,7 +88,7 @@ module.exports.getPersonAccessRights = function(id, callback){
              * Can make project assignments (projectManagementAccess)
              * View Staffing Deficits (projectManagementAccess)
              */
-            if( _.contains(userRole.roles, access.DEFAULT_ROLES.PM) || 
+            if( _.contains(userRole.roles, access.DEFAULT_ROLES.PM) ||
                 _.contains(userRole.roles, access.DEFAULT_ROLES.SSA) ) {
                 accessRights.hasFinanceRights = true;
                 accessRights.hasProjectManagementRights = true;
@@ -103,7 +103,7 @@ module.exports.getPersonAccessRights = function(id, callback){
             if( _.contains(userRole.roles, access.DEFAULT_ROLES.SALES) ) {
                 accessRights.hasFinanceRights = true;
             }
-    
+
             callback(null, accessRights);
         });
     });
@@ -113,7 +113,7 @@ module.exports.getPersonAccessRights = function(id, callback){
 module.exports.getPersonGoogleProfile = function(googleID, callback){
     var config = services.get('config');
     var cfg = config.get('google-apis');
-    
+
     var SERVICE_ACCOUNT_EMAIL = cfg.accountEmail;
     var SERVICE_ACCOUNT_KEY_FILE = path.resolve('./', cfg.privateKeyPath);
 

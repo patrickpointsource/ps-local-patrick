@@ -30,7 +30,7 @@ var hour = {
     },
     validateHours: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has (theoretically) already occurred 
+        // Note that spec-related validation has (theoretically) already occurred
         async.parallel([
             function(callback){
                 access.db.view('People', 'AllPeopleNames', { keys: [obj.person] }, function(err, docs){
@@ -146,7 +146,7 @@ module.exports.createSingleHour = util.generateSingleItemCreateHandler(
 module.exports.getSingleHour = util.generateSingleItemGetHandler(
     securityResources.hours.resourceName, // resourceName
     securityResources.hours.permissions.viewHours, // permission
-    'hour', // key 
+    'hour', // key
     hour.convertForRestAPI // convertForRestAPI
 );
 

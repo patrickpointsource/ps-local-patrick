@@ -10,7 +10,7 @@ var link = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details', 
+        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details',
                                     'dashboard', 'project']);
         return obj;
     },
@@ -21,13 +21,13 @@ var link = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details', 
+        util.mapStraight(doc, obj, ['url', 'label', 'index', 'resource', 'icon', 'homePage', 'currentPlans', 'details',
                                     'dashboard', 'project']);
         return obj;
     },
     validateLink: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has (theoretically) already occurred 
+        // Note that spec-related validation has (theoretically) already occurred
         access.db.view('Projects', 'AllProjectNames', { keys: [obj.project] }, function(err, docs){
             if(err){
                 return callback(err);
@@ -78,7 +78,7 @@ module.exports.createSingleLink = util.generateSingleItemCreateHandler(
 module.exports.getSingleLink = util.generateSingleItemGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjectLinks, // permission
-    'link', // key 
+    'link', // key
     link.convertForRestAPI // convertForRestAPI
 );
 

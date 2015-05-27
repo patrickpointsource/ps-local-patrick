@@ -1,3 +1,5 @@
+/* global it, describe */
+
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
 var path = require('path'),
     request = require('request'),
@@ -38,7 +40,7 @@ describe('TASKS - test simple REST calls', function () {
                 // Pick the first one and make sure it meets the standard format
                 var item = json[0];
                 var keys = _.keys(item);
-                assert.ok(keys.length == 2 || keys.length == 3);
+                assert.ok(keys.length === 2 || keys.length === 3);
                 assert.notEqual(keys.indexOf('id'), -1);
                 assert.notEqual(keys.indexOf('name'), -1);
             }
@@ -64,7 +66,7 @@ describe('TASKS - test simple REST calls', function () {
                 // Pick the first one and make sure it meets the standard format
                 var item = json[0];
                 var keys = _.keys(item);
-                assert.ok(keys.length == 2 || keys.length == 3);
+                assert.ok(keys.length === 2 || keys.length === 3);
                 assert.notEqual(keys.indexOf('id'), -1);
                 assert.notEqual(keys.indexOf('name'), -1);
             }
@@ -342,7 +344,7 @@ describe('TASKS - test simple REST calls', function () {
         // Fail if we don't have a taskID
         assert.ok(taskID);
     
-        request.del('http://localhost:3000/v3/tasks/' + taskID.substr(0, 5), {
+        request.del('http://localhost:3000/v3/tasks/' + taskID.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },
