@@ -46,7 +46,7 @@ module.exports.mapStraightDates = function(direction, doc, out, fields){
     if(!_.isArray(fields)){
         fields = [fields];
     }
-    
+
     if(direction === FOR_DB){
         // From REST to database
         _.each(fields, function(key){
@@ -179,13 +179,13 @@ module.exports.generateSingleItemGetHandler = function(
                 db.get(docID, function(err, doc){
                     if(err && err.message !== 'missing'){
                         return sendJson(res, {
-                            'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 
+                            'message': 'An error occurred attempting to find a '+key+' with the specified ID.',
                             'detail': err
                         }, 500);
                     }
                     if(!doc){
                         return sendJson(res, {
-                            'message': 'A '+key+' with the specified ID could not be found.', 
+                            'message': 'A '+key+' with the specified ID could not be found.',
                             'detail': err
                         }, 404);
                     }
@@ -225,15 +225,15 @@ module.exports.generateSingleItemCreateHandler = function(
                     db.insert(objToPost, function(err, doc){
                         if(err){
                             return sendJson(res, {
-                                'message': 'An error occurred attempting to create the '+key+'.', 
+                                'message': 'An error occurred attempting to create the '+key+'.',
                                 'detail': err
                             }, 500);
                         }
-                        
+
                         db.get(doc.id, function(err, doc){
                             if(err || !doc){
                                 return sendJson(res, {
-                                    'message': 'An error occurred attempting to retrieve the newly created '+key+'.', 
+                                    'message': 'An error occurred attempting to retrieve the newly created '+key+'.',
                                     'detail': err
                                 }, 500);
                             }
@@ -260,11 +260,11 @@ module.exports.generateSingleItemCreateHandler = function(
 };
 
 module.exports.generateSingleItemUpdateHandler = function(
-    resourceName, 
-    permission, 
-    key, 
-    validate, 
-    convertForDB, 
+    resourceName,
+    permission,
+    key,
+    validate,
+    convertForDB,
     convertForRestAPI
 ){
 
@@ -282,13 +282,13 @@ module.exports.generateSingleItemUpdateHandler = function(
                     db.get(docID, function(err, doc){
                         if(err && err.message !== 'missing'){
                             return sendJson(res, {
-                                'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 
+                                'message': 'An error occurred attempting to find a '+key+' with the specified ID.',
                                 'detail': err
                             }, 500);
                         }
                         if(!doc){
                             return sendJson(res, {
-                                'message': 'A '+key+' with the specified ID could not be found.', 
+                                'message': 'A '+key+' with the specified ID could not be found.',
                                 'detail': err
                             }, 404);
                         }
@@ -298,16 +298,16 @@ module.exports.generateSingleItemUpdateHandler = function(
                         db.insert(objToPost, docID, function(err, doc){
                             if(err){
                                 return sendJson(res, {
-                                    'message': 'Error occurred while updating '+key+'.', 
+                                    'message': 'Error occurred while updating '+key+'.',
                                     'detail': err
                                 }, 500);
                             }
-                            
+
                             // Retrieve the current state of the doc to accurately reflect what's in the DB
                             db.get(docID, function(err, doc){
                                 if(err){
                                     return sendJson(res, {
-                                        'message': 'Error occurred while retrieving newly updated '+key+'.', 
+                                        'message': 'Error occurred while retrieving newly updated '+key+'.',
                                         'detail': err
                                     }, 500);
                                 }
@@ -346,20 +346,20 @@ module.exports.generateSingleItemDeleteHandler = function(resourceName, permissi
                 db.get(docID, function(err, doc){
                     if(err && err.message !== 'missing'){
                         return sendJson(res, {
-                            'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 
+                            'message': 'An error occurred attempting to find a '+key+' with the specified ID.',
                             'detail': err
                         }, 500);
                     }
                     if(!doc){
                         return sendJson(res, {
-                            'message': 'A '+key+' with the specified ID could not be found.', 
+                            'message': 'A '+key+' with the specified ID could not be found.',
                             'detail': err
                         }, 404);
                     }
                     db.destroy(docID, doc._rev, function(err){
                         if(err){
                             return sendJson(res, {
-                                'message': 'Error occurred while deleting '+key+'.', 
+                                'message': 'Error occurred while deleting '+key+'.',
                                 'detail': err
                             }, 500);
                         }

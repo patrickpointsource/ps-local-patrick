@@ -27,7 +27,7 @@ var userRole = {
     },
     validateUserRoles: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has (theoretically) already occurred 
+        // Note that spec-related validation has (theoretically) already occurred
         async.parallel([
             function(callback){
                 access.db.view('People', 'AllPeopleByGoogleId', { keys: [obj.userId] }, function(err, docs){
@@ -79,7 +79,7 @@ module.exports.createSingleUserRole = util.generateSingleItemCreateHandler(
 module.exports.getSingleUserRole = util.generateSingleItemGetHandler(
     securityResources.securityRoles.resourceName, // resourceName
     securityResources.securityRoles.permissions.viewSecurityRoles, // permission
-    'userRole', // key 
+    'userRole', // key
     userRole.convertForRestAPI // convertForRestAPI
 );
 

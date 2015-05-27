@@ -10,8 +10,8 @@ var projectPhaseRole = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['phase', 'coveredKMin', 'daysGap', 'hoursExtraCovered', 'hoursNeededToCover', 
-                                    'isCurrentRole', 'isFutureRole', 'isPastRole', 'percentageCovered', 'rate', 
+        util.mapStraight(doc, obj, ['phase', 'coveredKMin', 'daysGap', 'hoursExtraCovered', 'hoursNeededToCover',
+                                    'isCurrentRole', 'isFutureRole', 'isPastRole', 'percentageCovered', 'rate',
                                     'shore', 'originalAssignees', 'type']);
         return obj;
     },
@@ -22,14 +22,14 @@ var projectPhaseRole = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['phase', 'coveredKMin', 'daysGap', 'hoursExtraCovered', 'hoursNeededToCover', 
-                                    'isCurrentRole', 'isFutureRole', 'isPastRole', 'percentageCovered', 'rate', 
+        util.mapStraight(doc, obj, ['phase', 'coveredKMin', 'daysGap', 'hoursExtraCovered', 'hoursNeededToCover',
+                                    'isCurrentRole', 'isFutureRole', 'isPastRole', 'percentageCovered', 'rate',
                                     'shore', 'originalAssignees', 'type']);
         return obj;
     },
     validateProjectPhaseRole: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has (theoretically) already occurred 
+        // Note that spec-related validation has (theoretically) already occurred
         async.parallel([
             function(callback){
                 access.db.view('ProjectPhases', 'AllProjectPhaseNames', { keys: [obj.phase] }, function(err, docs){
@@ -88,7 +88,7 @@ module.exports.createSingleProjectPhaseRole = util.generateSingleItemCreateHandl
 module.exports.getSingleProjectPhaseRole = util.generateSingleItemGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
-    'projectPhaseRole', // key 
+    'projectPhaseRole', // key
     projectPhaseRole.convertForRestAPI // convertForRestAPI
 );
 

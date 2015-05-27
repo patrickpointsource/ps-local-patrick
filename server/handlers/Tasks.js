@@ -7,7 +7,7 @@ var task = {
     convertForRestAPI: function(access, doc){
         var obj = {
             id: doc._id,
-            name: doc.name,
+            name: doc.name
         };
         if(doc.created){
             var created = new Date(doc.created);
@@ -66,7 +66,7 @@ module.exports.createSingleTask = util.generateSingleItemCreateHandler(
 module.exports.getSingleTask = util.generateSingleItemGetHandler(
     securityResources.tasks.resourceName, // resourceName
     securityResources.tasks.permissions.viewTasks, // permission
-    'task', // key 
+    'task', // key
     task.convertForRestAPI // convertForRestAPI
 );
 

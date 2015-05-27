@@ -7,7 +7,7 @@ var skill = {
     convertForRestAPI: function(access, doc){
         var obj = {
             id: doc._id,
-            name: doc.title,
+            name: doc.title
         };
         return obj;
     },
@@ -49,7 +49,7 @@ module.exports.createSingleSkill = util.generateSingleItemCreateHandler(
 module.exports.getSingleSkill = util.generateSingleItemGetHandler(
     securityResources.skills.resourceName, // resourceName
     securityResources.skills.permissions.viewSkills, // permission
-    'skill', // key 
+    'skill', // key
     skill.convertForRestAPI // convertForRestAPI
 );
 
