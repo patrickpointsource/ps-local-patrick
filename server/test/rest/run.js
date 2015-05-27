@@ -38,7 +38,7 @@ describe('REST TEST SETUP/TEARDOWN - ', function () {
 
     var tests = [
         'Hours',
-        'Tasks', 
+        'Tasks',
         'Projects'
     ];
     _.each(tests, function(test){

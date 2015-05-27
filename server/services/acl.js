@@ -33,9 +33,9 @@ var initializeAllows = function(securityRoles, callback) {
     //_logger.info('\r\ninitializeAllows:start')
 
     //_logger.info('initializeAllows:'
-            
+
     var allAllowsCount = 0; //* fullResourcesMap.length;
-    
+
     for(var s = 0; s < securityRoles.length; s++) {
         allAllowsCount += securityRoles[s].resources.length;
     }
@@ -45,7 +45,7 @@ var initializeAllows = function(securityRoles, callback) {
         var allowsCount = 0;
         var resources = securityRoles[i].resources;
         for (var k=0; k < resources.length; k++) {
-            _logger.info('initializeAllows:name=' + securityRoles[i].name + ':' + securityRoles[i]._id + ':resource=' + 
+            _logger.info('initializeAllows:name=' + securityRoles[i].name + ':' + securityRoles[i]._id + ':resource=' +
                          resources[k].name + ':permissions=' + resources[k].permissions.join(','));
 
             allow(securityRoles[i].name, resources[k].name, resources[k].permissions, function(err) {
@@ -92,40 +92,40 @@ var extractNestedPermissionGroups = function(groupId, roleNames, userRoles, secu
     if (!extractedRoles){
         extractedRoles = [];
     }
-        
+
     if(groupId) {
         // persist extratced roles
         extractedRoles.push(roleNames);
 
         var usersFromGroupMember = [];
         var groupsFromGroupMember = [];
-        
+
         var getRolesInfoFromGroups = function(groups, isId) {
             var res = [];
             var tmp;
-            
+
             for (var l = 0; l < groups.length; l ++) {
                 tmp = _.find(securityRoles, function(s) {
                     return s.resource === groups[l].resource || s.resource === groups[l].groupId;
                 });
-                
+
                 if (tmp && !isId){
                     res.push(tmp.name);
                 } else if (tmp && isId){
                     res.push(tmp.resource);
                 }
             }
-                    
-                    
+
+
             return res;
-                    
+
         };
-            
+
         for(var i = 0; i < userRoles.length; i++) {
             var userRole = userRoles[i];
-          
-          
-            if(_.find(userRole.roles, function(r) { 
+
+
+            if(_.find(userRole.roles, function(r) {
                 return _.indexOf(roleNames, r.name) > -1;
             })) {
                 if(userRole.userId) {
@@ -136,7 +136,7 @@ var extractNestedPermissionGroups = function(groupId, roleNames, userRoles, secu
                 }
             }
         }
-        
+
         if(groupsFromGroupMember && groupsFromGroupMember.length > 0) {
             for(var u = 0; u < groupsFromGroupMember.length; u++) {
                 extractNestedPermissionGroups(
@@ -147,15 +147,15 @@ var extractNestedPermissionGroups = function(groupId, roleNames, userRoles, secu
                     extractedRoles
                 );
             }
-          
+
         }
     }
 };
 
 var addRole = function(userId, roles, isReinitialization, callback) {
-    //_logger.info('\r\naddRole:userId:' + userId + ':roles:' + JSON.stringify(roles) + ':isReinitialization=' + 
+    //_logger.info('\r\naddRole:userId:' + userId + ':roles:' + JSON.stringify(roles) + ':isReinitialization=' +
     //             isReinitialization);
-    
+
     if(isReinitialization) {
         acl.userRoles( userId, function(err, actualRoles) {
             /*if(userId == "110740462676845328422") {
@@ -188,7 +188,7 @@ var addRole = function(userId, roles, isReinitialization, callback) {
 var doInitialization = function(isReinitialization){
     _logger.info('initialize:Initializing security. Reinitialization: ' + isReinitialization);
     var errStr = [];
-    
+
     // TODO: Assess whether this is needed
     // // to prevent from applying "corrupted" security roles from memory cache - clean memory cache
     // dataAccess.clearCacheForSecurityRoles();
@@ -197,7 +197,7 @@ var doInitialization = function(isReinitialization){
         if(err || !securityRoles){
             return _logger.error('Error loading security roles', err, securityRoles);
         }
-        
+
         initializeSecurityRoles(securityRoles, isReinitialization, function() {
             /*acl.allowedPermissions("110740462676845328422", "projects", function(err, permissions){
                 _logger.info("Daniil allows on project after initSecurityRoles: " + permissions["projects"]);
@@ -214,7 +214,7 @@ var doInitialization = function(isReinitialization){
                 var k;
                 var userId;
                 var targetUserIds = {};
-            
+
                 // build {group}-{userIds} map
                 _.each(userRoles, function(userRole){
                     _.each(userRole.roles, function(role){
@@ -228,7 +228,7 @@ var doInitialization = function(isReinitialization){
                         targetUserIds[name].push(userRole.userId);
                     });
                 });
-            
+
                 var processedGroupsMap = {};
                 var userToRolesMap = {};
 
@@ -236,30 +236,30 @@ var doInitialization = function(isReinitialization){
                     if (!userToRolesMap[uId]){
                         userToRolesMap[uId] = [];
                     }
-                
+
                     userToRolesMap[uId] = userToRolesMap[uId].concat(rNameAr);
                 };
 
                 var targetUsers;
                 var t;
-            
+
                 // find and process nested groups
                 for (i=0; i < userRoles.length; i++) {
                     userId = userRoles[i].userId;
 
                     roleNames = getRoleNames(userRoles[i].roles);
                     //targetRoleIds = _.map(userRoles[i].roles, function(r) { return r.resource;});
-                
+
                     //_logger.info('\r\nlistUserRoles:' + i + ':' + JSON.stringify(userRoles[i]));
-                
-                
+
+
                     // give permissions to each member of group
                     var groupId = userRoles[i].groupId;
                     var group = _.find(securityRoles, function(r) { return r.resource === groupId; });
 
                     if (groupId){
                         var roles = userRoles[i].roles;
-                  
+
                         roles = _.filter(roles, function(r) {
                             return r.resource;
                         });
@@ -271,12 +271,12 @@ var doInitialization = function(isReinitialization){
                         // build sequence of all nested roles
                         var extractedRoles = [];
 
-                        // add as first element "root" parents of hierarchy - hierarchy works like in roles 
+                        // add as first element "root" parents of hierarchy - hierarchy works like in roles
                         // collection are all "mother and fathers" of current userRoles[i] entry
                         extractedRoles.push(_.map(roles, function(r) {
                             return r.name;
                         }));
-                  
+
                         for (k = 0; roles && k < roles.length; k ++) {
                             extractNestedPermissionGroups(
                                 roles[k].resource,
@@ -286,7 +286,7 @@ var doInitialization = function(isReinitialization){
                                 extractedRoles
                             );
                         }
-                  
+
                         // filter duplicates from nested roles - start from the end
                         var j;
                         for (k =  extractedRoles.length - 1; k >= 0; k --) {
@@ -317,46 +317,46 @@ var doInitialization = function(isReinitialization){
                         extractedRoles = _.filter(extractedRoles, function(entry) {
                             return entry.length > 0;
                         });
-                  
+
                         // in case when "root" elements has childs
                         if (extractedRoles.length > 1) {
                             for (k = 0; k < extractedRoles[0].length; k ++) {
                                 targetUsers =  targetUserIds[ extractedRoles[0][k] ];
-                          
-                                // starts iterating from end of hierarchy from most simple roles and 
+
+                                // starts iterating from end of hierarchy from most simple roles and
                                 // assign to users apropriate access roles
                                 for (j = extractedRoles.length - 1; targetUsers && j >= 0; j --) {
                                     for (t = 0; t < targetUsers.length; t ++){
                                         addUserRoleToMap(targetUsers[t], extractedRoles[j], isReinitialization);
                                     }
                                 }
-                          
+
                                 processedGroupsMap[ extractedRoles[0][k] ] = true;
-                            }     
+                            }
                         }
-      
+
                     }
-                
+
                 }
-            
-            
+
+
                 // assign all other roles-users access roles
                 _.each(targetUserIds, function(targetUsers, role){
                     if (!processedGroupsMap[role]) {
-                      
+
                         for (t = 0; t < targetUsers.length; t ++){
                             //addRole(targetUsers[t], [role], isReinitialization);
                             addUserRoleToMap(targetUsers[t], [role], isReinitialization);
                         }
-                      
+
                         processedGroupsMap[role] = true;
                     }
                 });
-              
+
                 _.each(userToRolesMap, function(userToRole, uId){
                     addRole(uId, _.uniq(userToRole), isReinitialization);
                 });
-              
+
                 _logger.info('initialize:' + (
                     _.map(targetUserIds, function(val, key){
                         return (key + ':' + val.length);
@@ -385,7 +385,7 @@ module.exports.isAllowed = function(
     response,
     resource,
     permissions,
-    callback, 
+    callback,
     notAllowedCallback,
     preventNotAllowedInResponse
 ) {
@@ -444,7 +444,7 @@ module.exports.allAllowedPermissions = function(userId, callback){
 };
 
 // module.exports.getUserRoles = function(user, callback) {
-//     
+//
 //     dataAccess.listUserRolesByGoogleId(user.googleId, function(err, body) {
 //         var userRoles;
 //         if (err) {
@@ -453,7 +453,7 @@ module.exports.allAllowedPermissions = function(userId, callback){
 //         } else {
 //             userRoles = body.members.length >= 1 ? body.members[0]: {'roles':[]};
 //         }
-// 
+//
 //         callback(err, userRoles);
 //     });
 // };
@@ -463,7 +463,7 @@ module.exports.allAllowedPermissions = function(userId, callback){
 //     _logger.info('Creating default roles.');
 //     dataAccess.listSecurityRoles( function(err, body) {
 //         var securityGroups = body.members;
-// 
+//
 //         // check for 5 default roles (Management, Executives, PM, Sales, Minion)
 //         var executivesGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.EXECUTIVES });
 //         var managementGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.MANAGEMENT });
@@ -472,7 +472,7 @@ module.exports.allAllowedPermissions = function(userId, callback){
 //         var employee = _.findWhere(securityGroups, { name: DEFAULT_ROLES.MINION });
 //         var adminGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.ADMIN });
 //         var ssaGroup = _.findWhere(securityGroups, { name: DEFAULT_ROLES.SSA });
-// 
+//
 //         if(!executivesGroup) {
 //             createGroup(DEFAULT_ROLES.EXECUTIVES);
 //         }
@@ -497,7 +497,7 @@ module.exports.allAllowedPermissions = function(userId, callback){
 //             createGroup(DEFAULT_ROLES.MINION, function(body) {
 //                 _logger.info('Employee group just created.');
 //                 var minionGroup = { name: DEFAULT_ROLES.MINION, resource: 'securityroles/' + body.id };
-//                 _logger.info('Employee group object to insert into userRoles: { name: ' + minionGroup.name + 
+//                 _logger.info('Employee group object to insert into userRoles: { name: ' + minionGroup.name +
 //                              ', resource: "' + minionGroup.resource + '" }');
 //                 createMinionUserRoles(callback, minionGroup);
 //             });
@@ -516,11 +516,11 @@ module.exports.allAllowedPermissions = function(userId, callback){
 //         name: name,
 //         resources: fullResourcesMap
 //     };
-// 
+//
 //     if(group.name === DEFAULT_ROLES.MINION) {
 //         group.resources = minionResouresMap;
 //     }
-// 
+//
 //     dataAccess.insertItem(null, group, dataAccess.SECURITY_ROLES_KEY, function(err, body){
 //         if (err) {
 //             _logger.info('Error in creating default security group: ' + group.name + '. Error: ' + err);
@@ -538,18 +538,18 @@ module.exports.allAllowedPermissions = function(userId, callback){
 //     dataAccess.listPeople(null, function(err, peopleBody) {
 //         if(!err) {
 //             var people = peopleBody.members;
-// 
+//
 //             dataAccess.listUserRoles( null, function(err, userRolesBody) {
 //                 var userRoles = userRolesBody.members;
-// 
+//
 //                 var countChecked = 0;
 //                 _logger.info('People length: ' + people.length);
-// 
+//
 //                 for(var i = 0; i < people.length; i++) {
 //                     var person = people[i];
-// 
+//
 //                     var userRole = _.findWhere(userRoles, { userId: person.googleId });
-// 
+//
 //                     if(!userRole) {
 //                         var uRole = { userId: person.googleId, roles: [minionRole]};
 //                         dataAccess.insertItem(null, uRole, dataAccess.USER_ROLES_KEY, function(err, body){
@@ -558,7 +558,7 @@ module.exports.allAllowedPermissions = function(userId, callback){
 //                             } else {
 //                                 _logger.info('Added default userRole: ' + body.id);
 //                             }
-// 
+//
 //                             countChecked++;
 //                             if(callback && countChecked === people.length) {
 //                                 _logger.info('CALLBACK REACHED!');
@@ -568,15 +568,15 @@ module.exports.allAllowedPermissions = function(userId, callback){
 //                     } else {
 //                         if(!userRole.roles || userRole.roles.length === 0) {
 //                             userRole.roles = [minionRole];
-// 
-//                             dataAccess.insertItem(userRole.id, userRole, dataAccess.USER_ROLES_KEY, 
+//
+//                             dataAccess.insertItem(userRole.id, userRole, dataAccess.USER_ROLES_KEY,
 //                                 function(err, body){
 //                                 if (err) {
 //                                     _logger.info('Error in updating userRole: ' + err);
 //                                 } else {
 //                                     _logger.info('Updated default userRole: ' + body.id);
 //                                 }
-// 
+//
 //                                 countChecked++;
 //                                 if(callback && countChecked === people.length) {
 //                                     _logger.info('Every person has at least "Employee" permissions now.');
@@ -623,41 +623,41 @@ module.exports.removeRole = function(role, callback) {
  */
 // module.exports.getPermissions = function(roles) {
 //     var deferred = q.defer();
-//     
+//
 //     var resourcePermissionsMap = {};
-//     
+//
 //     acl._rolesResources(roles).then(function(resources) {
-//         
+//
 //         resources = _.uniq(resources);
-//         
+//
 //         var errrorOccured = false;
-//         
+//
 //         var ind = 0;
-//         
+//
 //         var promise = q.fcall(_.bind(function(){
 //             return acl._resourcePermissions(roles, resources[this.ind]);
 //         }, {ind: ind}));
-//         
+//
 //         for (var k = 1; k < resources.length; k ++){
 //             promise = promise.then(_.bind(function(result){
 //                 resourcePermissionsMap[resources[this.ind - 1]] = [].concat(result);
-//                 
+//
 //                 return acl._resourcePermissions(roles, resources[this.ind]);
 //             }, {ind: k}));
 //         }
-//         
+//
 //         promise.catch(function(err) {
 //             deferred.reject(err);
 //             errrorOccured = true;
-//             
+//
 //         }).done(function(result){
 //             if (!errrorOccured) {
 //                 resourcePermissionsMap[resources[resources.length - 1]] = [].concat(result);
-//             
+//
 //                 deferred.resolve(resourcePermissionsMap);
 //             }
 //         });
-//         
+//
 //     });
 //     return deferred.promise;
 // };
@@ -743,7 +743,7 @@ var minionResouresMap = [
         'name': 'departments',
         'permissions': [
         ]
-      }
+    }
 ];
 
 var fullResourcesMap = [

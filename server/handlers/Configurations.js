@@ -51,7 +51,7 @@ module.exports.createSingleConfiguration = util.generateSingleItemCreateHandler(
 module.exports.getSingleConfiguration = util.generateSingleItemGetHandler(
     securityResources.configuration.resourceName, // resourceName
     securityResources.configuration.permissions.viewConfiguration, // permission
-    'configuration', // key 
+    'configuration', // key
     configuration.convertForRestAPI // convertForRestAPI
 );
 

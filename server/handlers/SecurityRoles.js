@@ -49,7 +49,7 @@ module.exports.createSingleSecurityRole = util.generateSingleItemCreateHandler(
 module.exports.getSingleSecurityRole = util.generateSingleItemGetHandler(
     securityResources.securityRoles.resourceName, // resourceName
     securityResources.securityRoles.permissions.viewSecurityRoles, // permission
-    'securityRole', // key 
+    'securityRole', // key
     securityRole.convertForRestAPI // convertForRestAPI
 );
 
