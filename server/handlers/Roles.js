@@ -7,7 +7,7 @@ var role = {
     convertForRestAPI: function(access, doc){
         var obj = {
             id: doc._id,
-            name: doc.title,
+            name: doc.title
         };
         return obj;
     },
@@ -49,7 +49,7 @@ module.exports.createSingleRole = util.generateSingleItemCreateHandler(
 module.exports.getSingleRole = util.generateSingleItemGetHandler(
     securityResources.roles.resourceName, // resourceName
     securityResources.roles.permissions.viewRoles, // permission
-    'role', // key 
+    'role', // key
     role.convertForRestAPI // convertForRestAPI
 );
 

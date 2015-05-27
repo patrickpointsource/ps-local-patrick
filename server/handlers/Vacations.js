@@ -1,3 +1,5 @@
+/* global services */
+
 var _ = require('underscore'),
     async = require('async'),
     securityResources = require( '../util/securityResources' ),
@@ -10,13 +12,8 @@ var vacation = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['description', 'type', 'status', 'days', 'comment', 'reason']);
+        util.mapStraight(doc, obj, ['description', 'type', 'status', 'days', 'comment', 'reason', 'person', 'manager']);
         util.mapStraightDates(util.FOR_REST, doc, obj, ['startDate', 'endDate']);
-        util.mapResources(util.FOR_REST, doc, obj, ['person', 'vacationManager'], access.PEOPLE_KEY);
-        if(obj.vacationManager){
-            obj.manager = obj.vacationManager;
-            delete obj.vacationManager;
-        }
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -26,18 +23,13 @@ var vacation = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['description', 'type', 'status', 'days', 'comment', 'reason']);
+        util.mapStraight(doc, obj, ['description', 'type', 'status', 'days', 'comment', 'reason', 'person', 'manager']);
         util.mapStraightDates(util.FOR_DB, doc, obj, ['startDate', 'endDate']);
-        util.mapResources(util.FOR_DB, doc, obj, ['person', 'manager'], access.PEOPLE_KEY);
-        if(obj.manager){
-            obj.vacationManager = obj.manager;
-            delete obj.manager;
-        }
         return obj;
     },
     validateVacations: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has (theoretically) already occurred 
+        // Note that spec-related validation has (theoretically) already occurred
         async.parallel([
             function(callback){
                 access.db.view('People', 'AllPeopleNames', { keys: [obj.person] }, function(err, docs){
@@ -68,8 +60,8 @@ var vacation = {
 module.exports.getVacations = util.generateCollectionGetHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.viewVacations);
             }
@@ -77,6 +69,7 @@ module.exports.getVacations = util.generateCollectionGetHandler(
         });
     }, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         var toAdd;
         if(req.query.people && req.query.people.length){
@@ -126,8 +119,8 @@ module.exports.getVacations = util.generateCollectionGetHandler(
 module.exports.createSingleVacation = util.generateSingleItemCreateHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.editVacations);
             }
@@ -143,23 +136,23 @@ module.exports.createSingleVacation = util.generateSingleItemCreateHandler(
 module.exports.getSingleVacation = util.generateSingleItemGetHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.viewVacations);
             }
             callback(securityResources.vacations.permissions.viewMyVacations);
         });
     }, // permission
-    'vacation', // key 
+    'vacation', // key
     vacation.convertForRestAPI // convertForRestAPI
 );
 
 module.exports.updateSingleVacation = util.generateSingleItemUpdateHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.editVacations);
             }
@@ -175,8 +168,8 @@ module.exports.updateSingleVacation = util.generateSingleItemUpdateHandler(
 module.exports.deleteSingleVacation = util.generateSingleItemDeleteHandler(
     securityResources.vacations.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.vacations.permissions.editVacations);
             }

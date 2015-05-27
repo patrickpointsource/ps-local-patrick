@@ -1,3 +1,5 @@
+/* global it, describe */
+
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
 var path = require('path'),
     request = require('request'),
@@ -379,7 +381,7 @@ describe('HOURS - test simple REST calls', function () {
         // Fail if we don't have a hoursID
         assert.ok(hoursID);
     
-        request.del('http://localhost:3000/v3/hours/' + hoursID.substr(0, 5), {
+        request.del('http://localhost:3000/v3/hours/' + hoursID.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },

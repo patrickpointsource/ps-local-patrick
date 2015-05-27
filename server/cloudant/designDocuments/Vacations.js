@@ -13,11 +13,11 @@ module.exports = {
             analyzer: 'standard',
             index: function (doc) {
                 if(doc.form == "Vacations"){
-                    if(doc.person && doc.person.resource){
-                        index('person', doc.person.resource.replace('people/', ''));
+                    if(doc.person){
+                        index('person', doc.person);
                     }
-                    if(doc.vacationManager && doc.vacationManager.resource){
-                        index('manager', doc.vacationManager.resource.replace('people/', ''));
+                    if(doc.manager){
+                        index('manager', doc.manager);
                     }
                     if(doc.status){
                         index('status', doc.status);

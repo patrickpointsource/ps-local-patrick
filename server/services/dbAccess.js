@@ -17,10 +17,14 @@ var LINKS_KEY = 'ProjectLinks';
 var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
 var REPORT_FAVORITES_KEY = 'ReportFavorites';
-var JOB_TITLE_KEY = "JobTitle";
+var JOB_TITLE_KEY = 'JobTitle';
 var DEPARTMENTS_KEY = 'Department';
 var DEPARTMENT_CATEGORY_KEY = 'DepartmentCategory';
+var CLIENTS_KEY = 'Clients';
+var HOLIDAYS_KEY = 'Holidays';
 
+module.exports.HOLIDAYS_KEY = HOLIDAYS_KEY;
+module.exports.CLIENTS_KEY = CLIENTS_KEY;
 module.exports.VACATIONS_KEY = VACATIONS_KEY;
 module.exports.NOTIFICATIONS_KEY = NOTIFICATIONS_KEY;
 module.exports.SECURITY_ROLES_KEY = SECURITY_ROLES_KEY;
@@ -41,16 +45,27 @@ module.exports.JOB_TITLE_KEY = JOB_TITLE_KEY;
 module.exports.DEPARTMENTS_KEY = DEPARTMENTS_KEY;
 module.exports.DEPARTMENT_CATEGORY_KEY = DEPARTMENT_CATEGORY_KEY;
 
+
+var DEFAULT_ROLES = module.exports.DEFAULT_ROLES = {
+    EXECUTIVES: 'Execs',
+    MANAGEMENT: 'Managers',
+    PM: 'PM',
+    MINION: 'Employee',
+    SALES: 'Sales',
+    ADMIN: 'Admin',
+    SSA: 'SSA'
+};
+
 module.exports.init = function(config, callback) {
+    /*jshint camelcase: false */
     var cfg = config.get('cloudant');
-    console.error('config?', cfg);
-    
+
     // cloudant module
     var dbName = cfg.db;
     var dbAccount = cfg.account;
     var dbApiKey = cfg.user;
     var dbPwd = cfg.password;
-    
+
     var dbConnParams = {
         account: dbAccount,
         key: dbApiKey,
@@ -58,11 +73,24 @@ module.exports.init = function(config, callback) {
         request_defaults: {
             maxSockets: 30
         }
-    }; 
+    };
     var Cloudant = require('cloudant')(dbConnParams);
 
     module.exports.db = Cloudant.db.use(dbName);
-    callback();
+    // Populate the DEFAULT_ROLES with their ID
+    module.exports.db.view('SecurityRoles', 'AllSecurityRoles', function(err, docs){
+        if(!err && docs.rows && docs.rows.length){
+            _.each(docs.rows, function(row){
+                return _.find(DEFAULT_ROLES, function(value, key){
+                    if(row.value.name === value){
+                        DEFAULT_ROLES[key] = row.id;
+                        return true;
+                    }
+                });
+            });
+        }
+        callback();
+    });
 };
 
 module.exports.executeView = function(ddoc, viewName, callback){

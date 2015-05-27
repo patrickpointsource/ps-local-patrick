@@ -27,8 +27,17 @@ module.exports = {
                         index('committed', doc.committed);
                     }
 
-                    if(doc.executiveSponsor && doc.executiveSponsor.resource){
-                        index('executiveSponsor', doc.executiveSponsor.resource.replace('people/', ''));
+                    if(doc.executiveSponsor){
+                        index('executiveSponsor', doc.executiveSponsor);
+                    }
+                    if(doc.salesSponsor){
+                        index('salesSponsor', doc.salesSponsor);
+                    }
+                    if(doc.created && doc.created.by){
+                        index('createdBy', doc.created.by, {store: true});
+                    }
+                    if(doc.modified && doc.modified.by){
+                        index('modifiedBy', doc.modified.by, {store: true});
                     }
                     if(doc.startDate){
                         index('numericStartDate', Number(doc.startDate.replace(/-/g, '')), {store: true});

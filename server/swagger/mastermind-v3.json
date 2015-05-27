@@ -267,6 +267,217 @@
                 }
             }
         },
+        "/clients": {
+            "x-handler": "Clients",
+            "get": {
+                "summary": "Retrieve Clients",
+                "description": "The Clients endpoint returns clients.\n",
+                "operationId": "getClients",
+                "tags": [
+                    "Clients"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of clients",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Client"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Client",
+                "description": "Create a new client.\nAn ID in the POST-ed client will be ignored.\n",
+                "operationId": "createSingleClient",
+                "tags": [
+                    "Clients"
+                ],
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "body",
+                        "description": "Data representing the client to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created client",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/{id}": {
+            "x-handler": "Clients",
+            "get": {
+                "summary": "Retrieve Client",
+                "description": "The Client endpoint returns a single client.\n",
+                "operationId": "getSingleClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the client to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single client specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A client with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Client",
+                "description": "Updates an existing Client.\n",
+                "operationId": "updateSingleClient",
+                "tags": [
+                    "Clients"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the client to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client",
+                        "in": "body",
+                        "description": "New data representing the client",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated client",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A client with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Client",
+                "description": "Deletes a single Client.\n",
+                "operationId": "deleteSingleClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the client to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single client specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Clients",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A client with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/configurations": {
             "x-handler": "Configurations",
             "get": {
@@ -953,6 +1164,217 @@
                 }
             }
         },
+        "/holidays": {
+            "x-handler": "Holidays",
+            "get": {
+                "summary": "Retrieve Holidays",
+                "description": "The Holidays endpoint returns holidays.\n",
+                "operationId": "getHolidays",
+                "tags": [
+                    "Holidays"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of holidays",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Holiday"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Holiday",
+                "description": "Create a new holiday.\nAn ID in the POST-ed holiday will be ignored.\n",
+                "operationId": "createSingleHoliday",
+                "tags": [
+                    "Holidays"
+                ],
+                "parameters": [
+                    {
+                        "name": "holiday",
+                        "in": "body",
+                        "description": "Data representing the holiday to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly created holiday",
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to create new Holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/holidays/{id}": {
+            "x-handler": "Holidays",
+            "get": {
+                "summary": "Retrieve Holiday",
+                "description": "The Holiday endpoint returns a single holiday.\n",
+                "operationId": "getSingleHoliday",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the holiday to retrieve.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Holidays"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single holiday specified by the ID",
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A holiday with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Holiday",
+                "description": "Updates an existing holiday.\n",
+                "operationId": "updateSingleHoliday",
+                "tags": [
+                    "Holidays"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the holiday to update.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "holiday",
+                        "in": "body",
+                        "description": "New data representing the holiday",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The newly updated holiday",
+                        "schema": {
+                            "$ref": "#/definitions/Holiday"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to update Holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A holiday with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Holiday",
+                "description": "Deletes a single Holiday.\n",
+                "operationId": "deleteSingleHoliday",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the holiday to delete.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Holidays"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single holiday specified by the ID was deleted"
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to delete Holidays",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "A holiday with the specified ID could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/hours": {
             "x-handler": "Hours",
             "get": {
@@ -974,14 +1396,14 @@
                         "in": "query",
                         "description": "Filter hours records to those on or after the given date",
                         "type": "string",
-                        "format": "date-time"
+                        "format": "date"
                     },
                     {
                         "name": "endDate",
                         "in": "query",
                         "description": "Filter hours records to those before the given date",
                         "type": "string",
-                        "format": "date-time"
+                        "format": "date"
                     },
                     {
                         "name": "projects",
@@ -1790,6 +2212,37 @@
                 }
             }
         },
+        "/people/me": {
+            "x-handler": "People",
+            "get": {
+                "summary": "Retrieve Person",
+                "description": "The People endpoint returns the single person that is presently logged in.\n",
+                "operationId": "getSinglePersonLoggedIn",
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The single person who is logged in.",
+                        "schema": {
+                            "$ref": "#/definitions/Person"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not logged in.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/people/{id}": {
             "x-handler": "People",
             "get": {
@@ -2080,7 +2533,7 @@
                 }
             }
         },
-        "/projects/phases/roles": {
+        "/projects/{projectID}/phases/{phaseID}/roles": {
             "x-handler": "ProjectPhaseRoles",
             "get": {
                 "summary": "Retrieve Project Phase Roles",
@@ -2091,9 +2544,16 @@
                 ],
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "query",
-                        "description": "ID of the phase for which roles should be retrieved.",
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which roles should be retrieved.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phaseID",
+                        "in": "path",
+                        "description": "ID of the project phase for which roles should be retrieved.",
                         "required": true,
                         "type": "string"
                     }
@@ -2131,6 +2591,20 @@
                 ],
                 "parameters": [
                     {
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which the role should be created.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phaseID",
+                        "in": "path",
+                        "description": "ID of the project phase for which the role should be created.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "projectPhaseRole",
                         "in": "body",
                         "description": "Data representing the project phase role to create",
@@ -2162,13 +2636,27 @@
                 }
             }
         },
-        "/projects/phases/roles/{id}": {
+        "/projects/{projectID}/phases/{phaseID}/roles/{id}": {
             "x-handler": "ProjectPhaseRoles",
             "get": {
                 "summary": "Retrieve Project Phase Role",
                 "description": "The Project Phase Role endpoint returns a single project phase role.\n",
                 "operationId": "getSingleProjectPhaseRole",
                 "parameters": [
+                    {
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which the role should be retrieved.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phaseID",
+                        "in": "path",
+                        "description": "ID of the project phase for which the role should be retrieved.",
+                        "required": true,
+                        "type": "string"
+                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -2215,6 +2703,20 @@
                     "ProjectPhaseRoles"
                 ],
                 "parameters": [
+                    {
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which the role should be updated.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phaseID",
+                        "in": "path",
+                        "description": "ID of the project phase for which the role should be updated.",
+                        "required": true,
+                        "type": "string"
+                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -2265,6 +2767,20 @@
                 "operationId": "deleteSingleProjectPhaseRole",
                 "parameters": [
                     {
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which the role should be deleted.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phaseID",
+                        "in": "path",
+                        "description": "ID of the project phase for which the role should be deleted.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "id",
                         "in": "path",
                         "description": "ID of the project phase role to delete.",
@@ -2300,7 +2816,7 @@
                 }
             }
         },
-        "/projects/phases": {
+        "/projects/{projectID}/phases": {
             "x-handler": "ProjectPhases",
             "get": {
                 "summary": "Retrieve Project Phases",
@@ -2311,9 +2827,9 @@
                 ],
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "query",
-                        "description": "ID of the project for which roles should be retrieved.",
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which the phases should be retrieved.",
                         "required": true,
                         "type": "string"
                     }
@@ -2351,6 +2867,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which the phase should be created.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "projectPhase",
                         "in": "body",
                         "description": "Data representing the project phase to create",
@@ -2382,13 +2905,20 @@
                 }
             }
         },
-        "/projects/phases/{id}": {
+        "/projects/{projectID}/phases/{id}": {
             "x-handler": "ProjectPhases",
             "get": {
                 "summary": "Retrieve Project Phase",
                 "description": "The Project Phase endpoint returns a single project phase.\n",
                 "operationId": "getSingleProjectPhase",
                 "parameters": [
+                    {
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which the phases should be retrieved.",
+                        "required": true,
+                        "type": "string"
+                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -2435,6 +2965,13 @@
                     "ProjectPhases"
                 ],
                 "parameters": [
+                    {
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which the phase should be updated.",
+                        "required": true,
+                        "type": "string"
+                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -2484,6 +3021,13 @@
                 "description": "Deletes a single Project Phase.\n",
                 "operationId": "deleteSingleProjectPhase",
                 "parameters": [
+                    {
+                        "name": "projectID",
+                        "in": "path",
+                        "description": "ID of the project for which the phase should be deleted.",
+                        "required": true,
+                        "type": "string"
+                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -2827,6 +3371,67 @@
                             "items": {
                                 "$ref": "#/definitions/ReportFavorite"
                             }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/reports/utilization": {
+            "x-handler": "Reports",
+            "get": {
+                "summary": "Utilization Report",
+                "description": "Get the utilization of a singler person or all people in a department",
+                "operationId": "getUtilizationReport",
+                "tags": [
+                    "Reports"
+                ],
+                "parameters": [
+                    {
+                        "name": "department",
+                        "in": "query",
+                        "description": "The ID of the department for whose people the hours should be retrieved. Overridden by person.",
+                        "type": "string"
+                    },
+                    {
+                        "name": "person",
+                        "in": "query",
+                        "description": "The ID of the person whose hours should be retrieved. Overrides department.",
+                        "type": "string"
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "description": "Filter projects to those starting on or after the given date.",
+                        "type": "string",
+                        "format": "date",
+                        "required": true
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "description": "Filter projects to those ending before the given date.",
+                        "type": "string",
+                        "format": "date",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested utilization report",
+                        "schema": {
+                            "$ref": "#/definitions/UtilizationReport"
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Reports",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -4209,6 +4814,20 @@
                 "startDate"
             ]
         },
+        "Client": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
         "Configuration": {
             "type": "object",
             "properties": {
@@ -4305,6 +4924,21 @@
                 "trimmedValue"
             ]
         },
+        "Holiday": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date"
+                }
+            }
+        },
         "Hours": {
             "type": "object",
             "properties": {
@@ -4313,7 +4947,7 @@
                 },
                 "date": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date"
                 },
                 "description": {
                     "type": "string"
@@ -4596,9 +5230,6 @@
                     "type": "string",
                     "description": "ID of Role"
                 },
-                "resource": {
-                    "type": "string"
-                },
                 "skypeId": {
                     "type": "string"
                 },
@@ -4681,8 +5312,9 @@
                         }
                     }
                 },
-                "customerName": {
-                    "type": "string"
+                "client": {
+                    "type": "string",
+                    "description": "ID of Client"
                 },
                 "description": {
                     "type": "string"
@@ -4781,19 +5413,21 @@
                 }
             },
             "required": [
-                "customerName",
+                "client",
                 "name",
                 "type",
                 "startDate",
                 "state",
-                "executiveSponsor",
-                "roles"
+                "executiveSponsor"
             ]
         },
         "ProjectPhase": {
             "type": "object",
             "properties": {
                 "id": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "project": {
@@ -4812,7 +5446,7 @@
             "required": [
                 "project",
                 "name",
-                "startDate",
+                "startDate"
             ]
         },
         "ProjectPhaseRole": {
@@ -4909,20 +5543,22 @@
                     ]
                 },
                 "shore": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "on",
+                        "off"
+                    ]
+                },
+                "originalAssignees": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "ID of Person"
+                    }
                 },
                 "type": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string",
-                            "description": "ID of Role"
-                        },
-                        "name": {
-                            "type": "string",
-                            "description": "Name of Role"
-                        }
-                    }
+                    "type": "string",
+                    "description": "ID of Role"
                 }
             },
             "required": [
@@ -5192,6 +5828,139 @@
                 "type"
             ]
         },
+        "UtilizationReport": {
+            "type": "object",
+            "properties": {
+                "hours": {
+                    "type": "object",
+                    "properties": {
+                        "projectHours": {
+                            "type": "object",
+                            "properties": {
+                                "hours": {
+                                    "type": "number"
+                                },
+                                "types": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Name of type (e.g. Invest, POC, Paid)",
+                                                "enum": [
+                                                    "invest",
+                                                    "poc",
+                                                    "paid"
+                                                ]
+                                            },
+                                            "hours": {
+                                                "type": "number"
+                                            },
+                                            "clients": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string",
+                                                            "description": "Name of Client"
+                                                        },
+                                                        "hours": {
+                                                            "type": "number"
+                                                        },
+                                                        "projects": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "description": "Name of project"
+                                                                    },
+                                                                    "hours": {
+                                                                        "type": "number"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "taskHours": {
+                            "type": "object",
+                            "properties": {
+                                "hours": {
+                                    "type": "number"
+                                },
+                                "tasks": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "hours": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "people": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "expectedHours": {
+                                "type": "number"
+                            },
+                            "actualHours": {
+                                "type": "number"
+                            },
+                            "difference": {
+                                "type": "number"
+                            },
+                            "hours": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "description": "Name of the project or task"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of hours record",
+                                            "enum": [
+                                                "project",
+                                                "task"
+                                            ]
+                                        },
+                                        "hours": {
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "Role": {
             "type": "object",
             "properties": {
@@ -5236,9 +6005,6 @@
                         "number",
                         "null"
                     ]
-                },
-                "resource": {
-                    "type": "string"
                 }
             },
             "required": [

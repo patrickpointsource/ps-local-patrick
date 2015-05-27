@@ -1,3 +1,98 @@
+$people-content-padding: 1rem;
 .people {
-    @include grid-content;
+    background-color: $gray-lightest;
+    padding: $people-content-padding;
+}
+
+.profile-image {
+    width: 125px;
+    height: 125px;
+    border-radius: 63px;
+    border: 3px solid white;
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.4);
+    margin: $people-content-padding;
+}
+
+.profile-thumbnail {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    border: 5px solid white;
+    box-shadow: 0 0 2px 1px rgba(32, 32, 32, 0.2);
+    margin: 2px;
+}
+
+.profile-info {
+    // line-height: rem-calc(40);
+    font-size: 1.1rem;
+    i.fa {
+        width: rem-calc(40);
+        vertical-align: middle;
+        margin: auto;
+        color: $gray-regular;
+    }
+    i.fa-envelope {
+        padding-left: 0.1em;
+    }
+    i.fa-skype {
+        padding-left: 0.16em;
+    }
+    i.fa-mobile {
+        padding-left: 0.18em;
+    }
+}
+
+.inner-content {
+    background-color: #fff;
+    border-radius: $global-radius;
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.profile-main {
+    border: 0 solid $gray-medium;
+    border-bottom-width: 1px;
+    padding: $people-content-padding;
+
+}
+
+.profile-additional {
+    .profile-administrative {
+        padding: $people-content-padding;
+    }
+    .profile-contact {
+        padding: $people-content-padding;
+        border: 0 solid $gray-medium;
+        border-left-width: 1px;
+    }
+}
+
+.person-img,
+.person-name,
+.person-title
+{
+    margin: 5px auto;
+    vertical-align: middle;
+    height: 70px;
+    display: flex;
+    align-content: middle;
+}
+.person-img {
+    img {
+        min-width: 60px;
+        min-height: 60px;
+    }
+}
+.person-list {
+    vertical-align: middle;
+}
+.person-title {
+    font-size: 1rem;
+}
+.person-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.person {
+    @include clearfix;
 }

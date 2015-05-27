@@ -49,7 +49,7 @@ module.exports.createSingleDepartmentCategory = util.generateSingleItemCreateHan
 module.exports.getSingleDepartmentCategory = util.generateSingleItemGetHandler(
     securityResources.departments.resourceName, // resourceName
     securityResources.departments.permissions.viewDepartments, // permission
-    'departmentCategory', // key 
+    'departmentCategory', // key
     departmentCategory.convertForRestAPI // convertForRestAPI
 );
 
