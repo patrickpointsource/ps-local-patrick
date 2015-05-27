@@ -1,3 +1,5 @@
+/* global it, describe */
+
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
 var path = require('path'),
     request = require('request'),
@@ -439,7 +441,7 @@ describe('PROJECTS - test simple REST calls', function () {
         // Fail if we don't have a projectID
         assert.ok(projectID);
     
-        request.del('http://localhost:3000/v3/projects/' + projectID.substr(0, 5), {
+        request.del('http://localhost:3000/v3/projects/' + projectID.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },

@@ -1,3 +1,5 @@
+/* global it, describe, before, after */
+
 var request = require('request'),
     util = require('../util/launch.js'),
     async = require('async'),
