@@ -13,7 +13,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.equal(resp.statusCode, 401);
             done();
         });
-    });
+    }); 
 	
 	it('GET /v3/assignments (User authenticated)', function(done){
         request('http://localhost:3000/v3/assignments', {
@@ -136,7 +136,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.equal(json.role, 'a1cd901e3a45792a4db010fa44c19e9bcd7e');
             assert.equal(json.person, '5b40eabf7f08c51488fbfdf7d7d787fd');
             assert.equal(json.project, 'cce171d4ed9e0b5ec3c2f78715057678');
-            assert.equal(moment(json.startDate).format("YYYY-MM-DD"), '2015-01-01');
+            assert.equal(moment(json.startDate).format('YYYY-MM-DD'), '2015-01-01');
              
             // Save the assignmentID to do an update and delete later
             assignmentID = json.id;
@@ -215,7 +215,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.equal(json.role, 'a1cd901e3a45792a4db010fa44c19e9bcd7e');
             assert.equal(json.person, '5b40eabf7f08c51488fbfdf7d7d787fd');
             assert.equal(json.project, 'cce171d4ed9e0b5ec3c2f78715057678');
-            assert.equal(moment(json.startDate).format("YYYY-MM-DD"), '2015-01-01');
+            assert.equal(moment(json.startDate).format('YYYY-MM-DD'), '2015-01-01');
             done();
         });
     });
@@ -335,7 +335,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.equal(json.role, '94e45b6d2581ac62ed2dc82e53200b9d6de2');
             assert.equal(json.person, '52ab7005e4b0fd2a8d130006');
             assert.equal(json.project, 'cfab522f1bcfb627bdf4202ebf2667d6');
-            assert.equal(moment(json.startDate).format("YYYY-MM-DD"), '2015-02-01');
+            assert.equal(moment(json.startDate).format('YYYY-MM-DD'), '2015-02-01');
 
             done();
         });
@@ -363,7 +363,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
         // Fail if we don't have a assignmentID
         assert.ok(assignmentID);
     
-        request.del('http://localhost:3000/v3/assignments/' + assignmentID.substr(0, 5), {
+        request.del('http://localhost:3000/v3/assignments/'+assignmentID.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },
