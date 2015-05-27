@@ -45,7 +45,6 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
-            console.log('json-' + JSON.stringify(json));
             assert.equal(_.isArray(json), true);
             if(json.length > 0){
                 // Pick the first one and make sure it meets the standard format
