@@ -76,6 +76,10 @@ The server is running at [http://localhost:3000](http://localhost:3000). If you'
 
 A convenient swagger specification viewer / testing utility is available at [http://localhost:8080/docs/index.html](http://localhost:8080/docs/index.html).
 
+## Code Style
+
+Please use JSHint and JSCS to validate the style in any additions to this codebase. Editor plugins are available, look [here](http://jshint.com/install/) and [here](http://jscs.info/overview.html).
+
 ## Tests
 
 ### Server-side Tests
