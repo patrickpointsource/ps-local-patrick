@@ -1,3 +1,5 @@
+/* global services */
+
 var _ = require('underscore'),
     async = require('async'),
     securityResources = require( '../util/securityResources' ),
@@ -10,11 +12,8 @@ var hour = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['description', 'hours']);
+        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project']);
         util.mapStraightDates(util.FOR_REST, doc, obj, ['created', 'date']);
-        util.mapResources(util.FOR_REST, doc, obj, 'person', access.PEOPLE_KEY);
-        util.mapResources(util.FOR_REST, doc, obj, 'task', access.TASKS_KEY);
-        util.mapResources(util.FOR_REST, doc, obj, 'project', access.PROJECTS_KEY);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -24,11 +23,8 @@ var hour = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['description', 'hours']);
-        util.mapStraightDates(util.FOR_REST, doc, obj, 'date');
-        util.mapResources(util.FOR_DB, doc, obj, 'person', access.PEOPLE_KEY);
-        util.mapResources(util.FOR_DB, doc, obj, 'task', access.TASKS_KEY);
-        util.mapResources(util.FOR_DB, doc, obj, 'project', access.PROJECTS_KEY);
+        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project']);
+        util.mapStraightDates(util.FOR_DB, doc, obj, 'date');
         obj.created = (expectNew ? (new Date()) : (new Date(doc.created))).toString();
         return obj;
     },
@@ -83,6 +79,7 @@ module.exports.getHours = util.generateCollectionGetHandler(
     securityResources.hours.resourceName, // resourceName
     securityResources.hours.permissions.viewHours, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         if(req.query.startDate){
             q = util.addToQuery(q, 'numericDate:['+req.query.startDate.replace(/-/g, '')+' TO Infinity]');
@@ -132,8 +129,8 @@ module.exports.getHours = util.generateCollectionGetHandler(
 module.exports.createSingleHour = util.generateSingleItemCreateHandler(
     securityResources.hours.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.hours.permissions.editHours);
             }
@@ -165,8 +162,8 @@ module.exports.updateSingleHour = util.generateSingleItemUpdateHandler(
 module.exports.deleteSingleHour = util.generateSingleItemDeleteHandler(
     securityResources.hours.resourceName, // resourceName
     function(req, callback){
-        var userService = services.get('user');
-        userService.getUser(req.user.id, function(err, user){
+        var personService = services.get('person');
+        personService.getUser(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.hours.permissions.editHours);
             }

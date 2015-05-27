@@ -6,6 +6,13 @@ module.exports = {
                     emit(doc._id, doc);
                 }
             }
+        },
+        AllUserRolesByGoogleID: {
+            map: function(doc){
+                if(doc.form === 'UserRoles'){
+                    emit(doc.userId, doc);
+                }
+            }
         }
     },
     indexes: {
@@ -18,4 +25,4 @@ module.exports = {
             }
         }
     }
-}
+};

@@ -1,8 +1,10 @@
+/* global services */
+
 var _ = require('underscore');
 var sendJson = require('../util/sendJson');
 
 var FOR_DB = module.exports.FOR_DB = 'in';
-var FOR_REST = module.exports.FOR_REST = 'out'
+var FOR_REST = module.exports.FOR_REST = 'out';
 
 //// A set of convenience functions ////
 module.exports.addToQuery = function(q, toAdd){
@@ -80,7 +82,7 @@ module.exports.mapResources = function(direction, doc, out, fields, replacementK
             if(doc[key]){
                 out[key] = {
                     resource: replacementKey.toLowerCase()+'/'+doc[key]
-                }
+                };
             }
         });
     }else if(direction === FOR_REST){
@@ -95,7 +97,7 @@ module.exports.mapResources = function(direction, doc, out, fields, replacementK
 
 //// A set of utilities for handling REST API calls ////
 
-var doAcl = function(req, res, resourceName, permission, callback){
+var doAcl = module.exports.doAcl = function(req, res, resourceName, permission, callback){
     var acl = services.get('acl');
     if(_.isFunction(permission)){
         permission(req, function(actualPermission){
@@ -119,7 +121,14 @@ var doAcl = function(req, res, resourceName, permission, callback){
 };
 
 // Generate a REST handler for retrieving a collection
-module.exports.generateCollectionGetHandler = function(resourceName, permission, doSearchIfNeededCallback, ddoc, allDocsViewName, convertForRestAPI){
+module.exports.generateCollectionGetHandler = function(
+    resourceName,
+    permission,
+    doSearchIfNeededCallback,
+    ddoc,
+    allDocsViewName,
+    convertForRestAPI
+){
 
     return function(req, res, next){
         var access = services.get('dbAccess');
@@ -152,7 +161,13 @@ module.exports.generateCollectionGetHandler = function(resourceName, permission,
 
 };
 
-module.exports.generateSingleItemGetHandler = function(resourceName, permission, key, convertForRestAPI){
+module.exports.generateSingleItemGetHandler = function(
+    resourceName,
+    permission,
+    key,
+    convertForRestAPI,
+    asyncDocumentFinisher
+){
 
     return function(req, res, next){
         var acl = services.get('acl');
@@ -162,13 +177,26 @@ module.exports.generateSingleItemGetHandler = function(resourceName, permission,
             if(allowed){
                 var docID = req.params.id;
                 db.get(docID, function(err, doc){
-                    if(err && err.message != 'missing'){
-                        return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                    if(err && err.message !== 'missing'){
+                        return sendJson(res, {
+                            'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 
+                            'detail': err
+                        }, 500);
                     }
                     if(!doc){
-                        return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
+                        return sendJson(res, {
+                            'message': 'A '+key+' with the specified ID could not be found.', 
+                            'detail': err
+                        }, 404);
                     }
-                    sendJson(res, convertForRestAPI(access, doc));
+                    doc = convertForRestAPI(access, doc);
+                    if(asyncDocumentFinisher){
+                        asyncDocumentFinisher(doc, function(doc){
+                            sendJson(res, doc);
+                        });
+                    }else{
+                        sendJson(res, doc);
+                    }
                 });
             }
         });
@@ -176,7 +204,14 @@ module.exports.generateSingleItemGetHandler = function(resourceName, permission,
 
 };
 
-module.exports.generateSingleItemCreateHandler = function(resourceName, permission, key, validate, convertForDB, convertForRestAPI){
+module.exports.generateSingleItemCreateHandler = function(
+    resourceName,
+    permission,
+    key,
+    validate,
+    convertForDB,
+    convertForRestAPI
+){
 
     return function(req, res, next){
         var acl = services.get('acl');
@@ -189,12 +224,18 @@ module.exports.generateSingleItemCreateHandler = function(resourceName, permissi
                     var objToPost = convertForDB(access, req.body, true);
                     db.insert(objToPost, function(err, doc){
                         if(err){
-                            return sendJson(res, {'message': 'An error occurred attempting to create the '+key+'.', 'detail': err}, 500);
+                            return sendJson(res, {
+                                'message': 'An error occurred attempting to create the '+key+'.', 
+                                'detail': err
+                            }, 500);
                         }
                         
                         db.get(doc.id, function(err, doc){
                             if(err || !doc){
-                                return sendJson(res, {'message': 'An error occurred attempting to retrieve the newly created '+key+'.', 'detail': err}, 500);
+                                return sendJson(res, {
+                                    'message': 'An error occurred attempting to retrieve the newly created '+key+'.', 
+                                    'detail': err
+                                }, 500);
                             }
                             sendJson(res, convertForRestAPI(access, doc));
                         });
@@ -218,7 +259,14 @@ module.exports.generateSingleItemCreateHandler = function(resourceName, permissi
 
 };
 
-module.exports.generateSingleItemUpdateHandler = function(resourceName, permission, key, validate, convertForDB, convertForRestAPI){
+module.exports.generateSingleItemUpdateHandler = function(
+    resourceName, 
+    permission, 
+    key, 
+    validate, 
+    convertForDB, 
+    convertForRestAPI
+){
 
     return function(req, res, next){
         var acl = services.get('acl');
@@ -232,24 +280,36 @@ module.exports.generateSingleItemUpdateHandler = function(resourceName, permissi
                     var objToPost = convertForDB(access, req.body, true);
                     // Retrieve the existing doc by ID in order to get the current _rev
                     db.get(docID, function(err, doc){
-                        if(err && err.message != 'missing'){
-                            return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                        if(err && err.message !== 'missing'){
+                            return sendJson(res, {
+                                'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 
+                                'detail': err
+                            }, 500);
                         }
                         if(!doc){
-                            return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
+                            return sendJson(res, {
+                                'message': 'A '+key+' with the specified ID could not be found.', 
+                                'detail': err
+                            }, 404);
                         }
 
                         // Put the _rev of the current doc on our data to insert
                         objToPost._rev = doc._rev;
                         db.insert(objToPost, docID, function(err, doc){
                             if(err){
-                                return sendJson(res, {'message': 'Error occurred while updating '+key+'.', 'detail': err}, 500);
+                                return sendJson(res, {
+                                    'message': 'Error occurred while updating '+key+'.', 
+                                    'detail': err
+                                }, 500);
                             }
                             
                             // Retrieve the current state of the doc to accurately reflect what's in the DB
                             db.get(docID, function(err, doc){
                                 if(err){
-                                    return sendJson(res, {'message': 'Error occurred while retrieving newly updated '+key+'.', 'detail': err}, 500);
+                                    return sendJson(res, {
+                                        'message': 'Error occurred while retrieving newly updated '+key+'.', 
+                                        'detail': err
+                                    }, 500);
                                 }
                                 sendJson(res, convertForRestAPI(access, doc));
                             });
@@ -284,15 +344,24 @@ module.exports.generateSingleItemDeleteHandler = function(resourceName, permissi
             if(allowed){
                 var docID = req.params.id;
                 db.get(docID, function(err, doc){
-                    if(err && err.message != 'missing'){
-                        return sendJson(res, {'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 'detail': err}, 500);
+                    if(err && err.message !== 'missing'){
+                        return sendJson(res, {
+                            'message': 'An error occurred attempting to find a '+key+' with the specified ID.', 
+                            'detail': err
+                        }, 500);
                     }
                     if(!doc){
-                        return sendJson(res, {'message': 'A '+key+' with the specified ID could not be found.', 'detail': err}, 404);
+                        return sendJson(res, {
+                            'message': 'A '+key+' with the specified ID could not be found.', 
+                            'detail': err
+                        }, 404);
                     }
                     db.destroy(docID, doc._rev, function(err){
                         if(err){
-                            return sendJson(res, {'message': 'Error occurred while deleting '+key+'.', 'detail': err}, 500);
+                            return sendJson(res, {
+                                'message': 'Error occurred while deleting '+key+'.', 
+                                'detail': err
+                            }, 500);
                         }
                         res.status(200);
                         res.end();

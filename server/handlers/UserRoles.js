@@ -10,16 +10,8 @@ var userRole = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, 'userId');
+        util.mapStraight(doc, obj, ['userId', 'roles']);
         // Skipping groupId as we don't have any examples of its usage right now
-        if(doc.roles){
-            obj.roles = [];
-            _.each(doc.roles, function(role){
-                if(role.resource){
-                    obj.roles.push(role.resource.replace('securityroles/', ''));
-                }
-            });
-        }
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -29,14 +21,8 @@ var userRole = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, 'userId');
+        util.mapStraight(doc, obj, ['userId', 'roles']);
         // Skipping groupId as we don't have any examples of its usage right now
-        if(doc.roles){
-            obj.roles = [];
-            _.each(doc.roles, function(role){
-                obj.roles.push('securityroles/'+role);
-            });
-        }
         return obj;
     },
     validateUserRoles: function(obj, access, callback){

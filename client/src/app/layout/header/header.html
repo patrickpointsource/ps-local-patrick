@@ -6,7 +6,7 @@
                 <a ui-sref="home"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
             </span>
             <span class="right">
-                <img ng-src="{{header.User.image.url}}" class="user-profile-image">
+                <a ui-sref="profile"><img ng-src="{{User.thumbnail}}" class="user-profile-thumbnail"></a>
             </span>
         </div>
     </div>
@@ -15,10 +15,12 @@
             <div class="title center mastermind-title">
                 <a ui-sref="home"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
             </div>
-            <span class="left">&nbsp;
+            <span class="left">&nbsp;</span>
+            <span class="right" ng-show="User.thumbnail">
+                <a ui-sref="profile"><img ng-src="{{User.thumbnail}}" class="user-profile-thumbnail"></a>
             </span>
-            <span class="right">
-                <img ng-src="{{header.User.image.url}}" height="50" width="50" class="user-profile-image">
+            <span class="right" ng-hide="User.thumbnail">
+                <google-plus-signin clientid="141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com"></google-plus-signin>
             </span>
         </div>
     </div>

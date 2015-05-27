@@ -13,17 +13,17 @@ module.exports = {
             analyzer: 'standard',
             index: function (doc) {
                 if(doc.form == "Department"){
-                    if(doc.departmentCode && doc.departmentCode.name){
-                        index('code', doc.departmentCode.name);
+                    if(doc.code){
+                        index('code', doc.code);
                     }
-                    if(doc.departmentManager && doc.departmentManager.resource){
-                        index('manager', doc.departmentManager.resource.replace('people/', ''));
+                    if(doc.manager){
+                        index('manager', doc.manager);
                     }
-                    if(doc.departmentNickname){
-                        index('nickname', doc.departmentNickname);
+                    if(doc.nickname){
+                        index('nickname', doc.nickname);
                     }
-                    if(doc.departmentCategory && doc.departmentCategory.resource){
-                        index('category', doc.departmentCategory.resource.replace('departmentcategories/', ''));
+                    if(doc.category){
+                        index('category', doc.category);
                     }
                 }
             }
