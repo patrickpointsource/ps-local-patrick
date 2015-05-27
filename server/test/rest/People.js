@@ -84,11 +84,16 @@ describe('PEOPLE - test simple REST calls', function () {
 	 it('POST /v3/people (unauthenticated)', function(done){
 	        request.post('http://localhost:3000/v3/people', {
 	            body: JSON.stringify({
-	                name: {
+	            	name: {
 	                	familyName : 'apps_test',
 	                	givenName : 'ps',
 	                	fullName : 'ps apps_test'
-	                }
+	                },
+	                isActive : 'true',
+	                googleId : '52ab7005e4b0fd2a8d12fff0',
+	                primaryRole : '52c70ae5e4b0911cacf4e117',
+	                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
+	                groups : [ 'Admin' ]
 	            }),
 	            headers: {
 	                'Content-Type': 'application/json'
@@ -228,7 +233,12 @@ describe('PEOPLE - test simple REST calls', function () {
 	                	familyName : 'apps_test_v2',
 	                	givenName : 'ps_v2',
 	                	fullName : 'ps_v2 apps_test_v2'
-	                }
+	                },	      
+	                isActive : 'true',
+	                googleId : '52ab7005e4b0fd2a8d12fff0',
+	                primaryRole : '52c70ae5e4b0911cacf4e117',
+	                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
+	                groups : [ 'Admin' ]
 	            }),
 	            headers: {
 	                'Content-Type': 'application/json'
@@ -255,7 +265,12 @@ describe('PEOPLE - test simple REST calls', function () {
 	                	familyName : 'apps_test_v2',
 	                	givenName : 'ps_v2',
 	                	fullName : 'ps_v2 apps_test_v2'
-	                }
+	                },
+	                isActive : 'true',
+	                googleId : '52ab7005e4b0fd2a8d12fff0',
+	                primaryRole : '52c70ae5e4b0911cacf4e117',
+	                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
+	                groups : [ 'Admin' ]
 	            }),
 	            headers: {
 	                'Content-Type': 'application/json'
@@ -284,7 +299,12 @@ describe('PEOPLE - test simple REST calls', function () {
 	                	familyName : 'apps_test_v2',
 	                	givenName : 'ps_v2',
 	                	fullName : 'ps_v2 apps_test_v2'
-	                }
+	                },
+	                isActive : 'true',
+	                googleId : '52ab7005e4b0fd2a8d12fff0',
+	                primaryRole : '52c70ae5e4b0911cacf4e117',
+	                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
+	                groups : [ 'Admin' ]
 	            }),
 	            headers: {
 	                'Content-Type': 'application/json'
@@ -323,7 +343,12 @@ describe('PEOPLE - test simple REST calls', function () {
 	                	familyName : 'apps_test_v2',
 	                	givenName : 'ps_v2',
 	                	fullName : 'ps_v2 apps_test_v2'
-	                }
+	                },
+	                isActive : 'true',
+	                googleId : '52ab7005e4b0fd2a8d12fff0',
+	                primaryRole : '52c70ae5e4b0911cacf4e117',
+	                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
+	                groups : [ 'Admin' ]
 	            }),
 	            headers: {
 	                'Content-Type': 'application/json'
