@@ -1,3 +1,5 @@
+/* global it, describe */
+
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
 var path = require('path'),
     request = require('request'),
@@ -9,6 +11,7 @@ var ADMIN_GOOGLE_ID = '107489151868154139257';
 var ADMIN_ID = '52ab7005e4b0fd2a8d130008';
 var USER_ID = '5310e2bae4b0a300af62db04';
 var USER_WITH_MANAGER_ID = '52ab7005e4b0fd2a8d130004';
+var personID;
 
 describe('PEOPLE - test simple REST calls', function () {
 	
@@ -532,7 +535,7 @@ describe('PEOPLE - test simple REST calls', function () {
 	    
 	 it('GET /v3/people/:id/manager (invalid person id)', function(done){
 
-		 	request.get('http://localhost:3000/v3/people/' + personID.substr(0, 5) + '/manager', {
+		 	request.get('http://localhost:3000/v3/people/' + USER_WITH_MANAGER_ID.substr(0, 5) + '/manager', {
 	            headers: {
 	                'Content-Type': 'application/json'
 	            },
@@ -551,7 +554,7 @@ describe('PEOPLE - test simple REST calls', function () {
 	   
 	 it('GET /v3/people/:id/manager (User authenticated)', function(done){
 		    
-	        request.get('http://localhost:3000/v3/people/' + personID + '/manager', {
+	        request.get('http://localhost:3000/v3/people/' + USER_WITH_MANAGER_ID + '/manager', {
 	            headers: {
 	                'Content-Type': 'application/json'
 	            },
@@ -817,7 +820,7 @@ describe('PEOPLE - test simple REST calls', function () {
 	        // Fail if we don't have a personID
 	        assert.ok(personID);
 	    
-	        request.del('http://localhost:3000/v3/people/' + personID.substr(0, 5), {
+	        request.del('http://localhost:3000/v3/people/'+personID.substr(0, 5), {
 	            headers: {
 	                'Content-Type': 'application/json'
 	            },
