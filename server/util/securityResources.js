@@ -116,6 +116,13 @@ var securityResources = {
             editSecurityRoles: 'editSecurityRoles'
         }
     },
+    roles: {
+        resourceName: 'roles',
+        permissions: {
+            viewRoles: 'viewRoles',
+            editRoles: 'editRoles'
+        }
+    },
     reports :{
         resourceName: 'reports',
         permissions: {
@@ -128,6 +135,20 @@ var securityResources = {
             viewDepartments: 'viewDepartments',
             editDepartments: 'editDepartments',
             deleteDepartments: 'deleteDepartments'
+        }
+    },
+    clients :{
+        resourceName: 'clients',
+        permissions: {
+            viewClients: 'viewClients',
+            editClients: 'editClients'
+        }
+    },
+    holidays :{
+        resourceName: 'holidays',
+        permissions: {
+            viewHolidays: 'viewHolidays',
+            editHolidays: 'editHolidays'
         }
     }
 

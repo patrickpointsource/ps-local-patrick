@@ -1,6 +1,7 @@
 (function () {
-    angular.module('DashboardModule', []).
-    service('DashboardService', DashboardService);
+    angular
+        .module('app.services')
+        .service('DashboardService', DashboardService);
 
     DashboardService.$inject = [];
 

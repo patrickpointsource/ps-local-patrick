@@ -13,17 +13,17 @@ module.exports = {
             analyzer: 'standard',
             index: function (doc) {
                 if(doc.form == "Hours"){
-                    if(doc.person && doc.person.resource){
-                        index('person', doc.person.resource.replace('people/', ''));
+                    if(doc.person){
+                        index('person', doc.person);
                     }
                     if(doc.date){
                         index('numericDate', Number(doc.date.replace(/-/g, '')), {store: true});
                     }
-                    if(doc.project && doc.project.resource){
-                        index('project', doc.project.resource.replace('projects/', ''));
+                    if(doc.project){
+                        index('project', doc.project);
                     }
-                    if(doc.task && doc.task.resource){
-                        index('task', doc.task.resource.replace('tasks/', ''));
+                    if(doc.task){
+                        index('task', doc.task);
                     }
                 }
             }
