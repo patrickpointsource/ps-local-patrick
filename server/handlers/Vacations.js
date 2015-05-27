@@ -1,3 +1,5 @@
+/* global services */
+
 var _ = require('underscore'),
     async = require('async'),
     securityResources = require( '../util/securityResources' ),
@@ -27,7 +29,7 @@ var vacation = {
     },
     validateVacations: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has (theoretically) already occurred 
+        // Note that spec-related validation has (theoretically) already occurred
         async.parallel([
             function(callback){
                 access.db.view('People', 'AllPeopleNames', { keys: [obj.person] }, function(err, docs){
@@ -67,6 +69,7 @@ module.exports.getVacations = util.generateCollectionGetHandler(
         });
     }, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         var toAdd;
         if(req.query.people && req.query.people.length){
@@ -141,7 +144,7 @@ module.exports.getSingleVacation = util.generateSingleItemGetHandler(
             callback(securityResources.vacations.permissions.viewMyVacations);
         });
     }, // permission
-    'vacation', // key 
+    'vacation', // key
     vacation.convertForRestAPI // convertForRestAPI
 );
 

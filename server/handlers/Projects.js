@@ -10,9 +10,10 @@ var project = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['name', 'committed', 'customerName', 'description', 'primaryContact', 'state', 'type', 'terms', 'executiveSponsor', 'salesSponsor']);
+        util.mapStraight(doc, obj, ['name', 'committed', 'customerName', 'description', 'primaryContact', 'state',
+                                    'type', 'terms', 'executiveSponsor', 'salesSponsor']);
         util.mapStraightDates(util.FOR_REST, doc, obj, ['initStartDate', 'initEndDate', 'startDate', 'endDate']);
-        
+
         if(obj.description){
             obj.description = decodeURIComponent(obj.description);
         }
@@ -51,13 +52,14 @@ var project = {
                 'id': '_id'
             });
         }
-        util.mapStraight(doc, obj, ['name', 'committed', 'customerName', 'description', 'primaryContact', 'state', 'type', 'terms', 'executiveSponsor', 'salesSponsor']);
+        util.mapStraight(doc, obj, ['name', 'committed', 'customerName', 'description', 'primaryContact', 'state',
+                                    'type', 'terms', 'executiveSponsor', 'salesSponsor']);
         util.mapStraightDates(util.FOR_DB, doc, obj, ['initStartDate', 'initEndDate', 'startDate', 'endDate']);
-        
+
         if(doc.description){
             obj.description = encodeURIComponent(doc.description);
         }
-        
+
         if(!obj.created){
             obj.created = {};
         }
@@ -79,12 +81,12 @@ var project = {
     },
     validateProject: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has already occurred 
+        // Note that spec-related validation has already occurred
         // (required fields are present, values are limited to those from an enum, etc.)
         // The intention of this validation function is to check for things that are more specific than
-        // the spec can check for. In the case of projects, for example, we should make sure that the 
+        // the spec can check for. In the case of projects, for example, we should make sure that the
         // ID specified for executiveSponsor is an actual / proper ID
-        
+
         async.parallel([
             function(callback){
                 // We can assume executiveSponsor is available since the spec requires it
@@ -95,7 +97,7 @@ var project = {
                 if(obj.salesSponsor){
                     keysToFind.push(obj.salesSponsor);
                 }
-                if(keysToFind.length == 0){
+                if(keysToFind.length === 0){
                     return callback();
                 }
                 access.db.view('People', 'AllPeopleNames', { keys: keysToFind }, function(err, docs){
@@ -124,7 +126,7 @@ var project = {
                 });
             }
         ], callback);
-        
+
     }
 };
 
@@ -132,6 +134,7 @@ module.exports.getProjects = util.generateCollectionGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         if(req.query.startDate){
             q = util.addToQuery(q, 'numericStartDate:['+req.query.startDate.replace(/-/g, '')+' TO Infinity]');
@@ -193,7 +196,7 @@ module.exports.createSingleProject = util.generateSingleItemCreateHandler(
 module.exports.getSingleProject = util.generateSingleItemGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
-    'project', // key 
+    'project', // key
     project.convertForRestAPI //convertForRestAPI
 );
 

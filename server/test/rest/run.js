@@ -1,3 +1,5 @@
+/* global it, describe, before, after */
+
 var request = require('request'),
     util = require('../util/launch.js'),
     async = require('async'),
@@ -36,7 +38,7 @@ describe('REST TEST SETUP/TEARDOWN - ', function () {
 
     var tests = [
         'Hours',
-        'Tasks', 
+        'Tasks',
         'Projects'
     ];
     _.each(tests, function(test){

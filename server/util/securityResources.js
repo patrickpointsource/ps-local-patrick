@@ -1,7 +1,7 @@
 'use strict';
 
 var securityResources = {
-    
+
     tasks :{
         resourceName: 'tasks',
         permissions: {
@@ -22,7 +22,7 @@ var securityResources = {
             viewConfiguration : 'viewConfiguration',
             editConfiguration : 'editConfiguration'
         }
-        
+
     },
     hours :{
         resourceName: 'hours',
@@ -58,7 +58,7 @@ var securityResources = {
             viewOthersPublicPersonnelData: 'viewOthersPublicPersonnelData',
             viewMyPrivatePersonnelData: 'viewMyPrivatePersonnelData',
             viewOthersPrivatePersonnelData: 'viewOthersPrivatePersonnelData'
-        } 
+        }
     },
     projects :{
         resourceName: 'projects',
@@ -71,7 +71,7 @@ var securityResources = {
             editProjectLinks : 'editProjectLinks',
             viewRoles : 'viewRoles',
             editRoles : 'editRoles'
-        }         
+        }
     },
     skills :{
         resourceName: 'skills',

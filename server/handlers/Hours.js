@@ -1,3 +1,5 @@
+/* global services */
+
 var _ = require('underscore'),
     async = require('async'),
     securityResources = require( '../util/securityResources' ),
@@ -28,7 +30,7 @@ var hour = {
     },
     validateHours: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has (theoretically) already occurred 
+        // Note that spec-related validation has (theoretically) already occurred
         async.parallel([
             function(callback){
                 access.db.view('People', 'AllPeopleNames', { keys: [obj.person] }, function(err, docs){
@@ -77,6 +79,7 @@ module.exports.getHours = util.generateCollectionGetHandler(
     securityResources.hours.resourceName, // resourceName
     securityResources.hours.permissions.viewHours, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         if(req.query.startDate){
             q = util.addToQuery(q, 'numericDate:['+req.query.startDate.replace(/-/g, '')+' TO Infinity]');
@@ -143,7 +146,7 @@ module.exports.createSingleHour = util.generateSingleItemCreateHandler(
 module.exports.getSingleHour = util.generateSingleItemGetHandler(
     securityResources.hours.resourceName, // resourceName
     securityResources.hours.permissions.viewHours, // permission
-    'hour', // key 
+    'hour', // key
     hour.convertForRestAPI // convertForRestAPI
 );
 

@@ -11,7 +11,8 @@ var assignment = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project', 'person', 'role']);
+        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project',
+                                    'person', 'role']);
         util.mapStraightDates(util.FOR_REST, doc, obj, ['startDate', 'endDate']);
         return obj;
     },
@@ -22,13 +23,14 @@ var assignment = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project', 'person', 'role']);
+        util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project',
+                                    'person', 'role']);
         util.mapStraightDates(util.FOR_DB, doc, obj, ['startDate', 'endDate']);
         return obj;
     },
     validateAssignments: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has (theoretically) already occurred 
+        // Note that spec-related validation has (theoretically) already occurred
         async.parallel([
             function(callback){
                 access.db.view('People', 'AllPeopleNames', { keys: [obj.person] }, function(err, docs){
@@ -49,6 +51,7 @@ module.exports.getAssignments = util.generateCollectionGetHandler(
     securityResources.assignments.resourceName, // resourceName
     securityResources.assignments.permissions.viewAssignments, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = '';
         var toAdd;
         if(req.query.projects && req.query.projects.length){
@@ -72,7 +75,7 @@ module.exports.getAssignments = util.generateCollectionGetHandler(
         if(req.query.timePeriod){
             var date = moment();
             switch(req.query.timePeriod){
-                case 'past': 
+                case 'past':
                     q = util.addToQuery(q, 'numericEndDate:[-Infinity TO '+date.format('YYYYMMDD')+']');
                     break;
                 case 'present':
@@ -113,7 +116,7 @@ module.exports.createSingleAssignment = util.generateSingleItemCreateHandler(
 module.exports.getSingleAssignment = util.generateSingleItemGetHandler(
     securityResources.assignments.resourceName, // resourceName
     securityResources.assignments.permissions.viewAssignments, // permission
-    'assignment', // key 
+    'assignment', // key
     assignment.convertForRestAPI // convertForRestAPI
 );
 

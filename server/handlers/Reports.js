@@ -1,3 +1,6 @@
+/* global services */
+/*jshint camelcase: false */
+
 var _ = require('underscore'),
     async = require('async'),
     moment = require('moment'),
@@ -26,7 +29,7 @@ var computeUtilizationReportFromResults = function(results, res){
             var key;
             if(row.doc.project){
                 key = row.doc.project.resource.replace('projects/', '');
-                
+
                 if(!projects[key]){
                     projects[key] = {
                         hours: 0
@@ -36,7 +39,7 @@ var computeUtilizationReportFromResults = function(results, res){
                 projects[key].hours += row.doc.hours;
             }else if(row.doc.task){
                 key = row.doc.task.resource.replace('tasks/', '');
-                
+
                 if(!tasks[key]){
                     tasks[key] = {
                         hours: 0
@@ -45,7 +48,7 @@ var computeUtilizationReportFromResults = function(results, res){
                 taskHours += row.doc.hours;
                 tasks[key].hours += row.doc.hours;
             }
-            
+
             if(!people[person].hours[key]){
                 people[person].hours[key] = {};
             }
@@ -78,7 +81,7 @@ var computeUtilizationReportFromResults = function(results, res){
                 };
             }
             tasks[row.doc._id].name = row.doc.name;
-            
+
             if(!people[person].hours[row.doc._id]){
                 people[person].hours[row.doc._id] = {};
             }
@@ -126,11 +129,11 @@ var computeAndPopulateExpectedHours = function(startDate, endDate, holidays, peo
             // Add in today
             numberOfWorkDays += 1;
         }
-        
+
         _.each(holidays, function(holiday){
             holiday = moment(holiday, 'YYYYMMDD');
-            if( holiday.isSame(startDate) || 
-                holiday.isSame(endDate) || 
+            if( holiday.isSame(startDate) ||
+                holiday.isSame(endDate) ||
                 (holiday.isAfter(startDate) && holiday.isBefore(endDate))
             ){
                 numberOfWorkDays--;
@@ -176,7 +179,7 @@ var transformProjectsWithClients = function(projects, clientNames){
                     projects: []
                 };
             }
-            
+
             clients[client].hours += project.hours;
             clients[client].projects.push(project);
         });
@@ -194,7 +197,7 @@ module.exports.getUtilizationReport = function(req, res, next){
         req,
         res,
         securityResources.reports.resourceName,
-        securityResources.reports.permissions.viewReports, 
+        securityResources.reports.permissions.viewReports,
         function(allowed){
             if(allowed){
                 var startDate = req.query.startDate.replace(/-/g, '');
@@ -204,6 +207,7 @@ module.exports.getUtilizationReport = function(req, res, next){
                 var hourResults = null;
                 async.parallel([
                     function(callback){
+                        /*jshint camelcase: false */
                         db.view('Holidays', 'AllHolidaysByDate', {
                             startkey: startDate,
                             endkey: endDate,
@@ -244,7 +248,8 @@ module.exports.getUtilizationReport = function(req, res, next){
                                 include_docs: true
                             }, function(err, results){
                                 if(err){
-                                    return callback('An error occurred attempting to retrieve the requested documents.');
+                                    return callback('An error occurred attempting to retrieve the requested ' +
+                                                    'documents.');
                                 }
                                 hourResults = computeUtilizationReportFromResults(results.rows, res);
                                 callback();
@@ -255,7 +260,8 @@ module.exports.getUtilizationReport = function(req, res, next){
                                 key: req.query.department
                             }, function(err, results){
                                 if(err){
-                                    return callback('An error occurred attempting to retrieve the people in a department.');
+                                    return callback('An error occurred attempting to retrieve the people in a ' +
+                                                    'department.');
                                 }
                                 var queries = [];
                                 var aggregateResults = [];
@@ -274,7 +280,8 @@ module.exports.getUtilizationReport = function(req, res, next){
                                             include_docs: true
                                         }, function(err, results){
                                             if(err){
-                                                return callback('An error occurred attempting to retrieve the requested documents.');
+                                                return callback('An error occurred attempting to retrieve the ' +
+                                                                'requested documents.');
                                             }
                                             aggregateResults = aggregateResults.concat(results.rows);
                                             callback();
@@ -284,7 +291,8 @@ module.exports.getUtilizationReport = function(req, res, next){
                                 });
                                 async.parallel(queries, function(err){
                                     if(err){
-                                        return callback('An error occurred attempting to run the queries for each person.');
+                                        return callback('An error occurred attempting to run the queries for each ' +
+                                                        'person.');
                                     }
                                     hourResults = computeUtilizationReportFromResults(aggregateResults, res);
                                     callback();
@@ -297,11 +305,19 @@ module.exports.getUtilizationReport = function(req, res, next){
                     }
                 ], function(err){
                     if(!err){
-                        // Compute the expected number of hours between 
+                        // Compute the expected number of hours between
                         // startDate and endDate, removing weekends and holidays
                         // (and ignoring dates in the future)
-                        hourResults.people = computeAndPopulateExpectedHours(startDate, endDate, holidays, hourResults.people);
-                        hourResults.hours.projectHours.types = transformProjectsWithClients(hourResults.hours.projectHours.projects, clients);
+                        hourResults.people = computeAndPopulateExpectedHours(
+                            startDate,
+                            endDate,
+                            holidays,
+                            hourResults.people
+                        );
+                        hourResults.hours.projectHours.types = transformProjectsWithClients(
+                            hourResults.hours.projectHours.projects,
+                            clients
+                        );
                         delete hourResults.hours.projectHours.projects;
                         sendJson(res, {hours: hourResults.hours, people: hourResults.people});
                     }else{

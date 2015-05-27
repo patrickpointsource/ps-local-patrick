@@ -7,4 +7,4 @@ exports.init = function(app, logger) {
             next();
         }
     });
-}
+};

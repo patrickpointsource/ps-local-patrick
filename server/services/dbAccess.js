@@ -17,7 +17,7 @@ var LINKS_KEY = 'ProjectLinks';
 var HOURS_KEY = 'Hours';
 var NOTIFICATIONS_KEY = 'Notifications';
 var REPORT_FAVORITES_KEY = 'ReportFavorites';
-var JOB_TITLE_KEY = "JobTitle";
+var JOB_TITLE_KEY = 'JobTitle';
 var DEPARTMENTS_KEY = 'Department';
 var DEPARTMENT_CATEGORY_KEY = 'DepartmentCategory';
 var CLIENTS_KEY = 'Clients';
@@ -57,14 +57,15 @@ var DEFAULT_ROLES = module.exports.DEFAULT_ROLES = {
 };
 
 module.exports.init = function(config, callback) {
+    /*jshint camelcase: false */
     var cfg = config.get('cloudant');
-    
+
     // cloudant module
     var dbName = cfg.db;
     var dbAccount = cfg.account;
     var dbApiKey = cfg.user;
     var dbPwd = cfg.password;
-    
+
     var dbConnParams = {
         account: dbAccount,
         key: dbApiKey,
@@ -72,7 +73,7 @@ module.exports.init = function(config, callback) {
         request_defaults: {
             maxSockets: 30
         }
-    }; 
+    };
     var Cloudant = require('cloudant')(dbConnParams);
 
     module.exports.db = Cloudant.db.use(dbName);
@@ -81,7 +82,7 @@ module.exports.init = function(config, callback) {
         if(!err && docs.rows && docs.rows.length){
             _.each(docs.rows, function(row){
                 return _.find(DEFAULT_ROLES, function(value, key){
-                    if(row.value.name == value){
+                    if(row.value.name === value){
                         DEFAULT_ROLES[key] = row.id;
                         return true;
                     }

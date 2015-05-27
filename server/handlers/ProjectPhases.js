@@ -26,7 +26,7 @@ var projectPhase = {
     },
     validateProjectPhase: function(obj, access, callback){
         // Check obj for invalid fields
-        // Note that spec-related validation has (theoretically) already occurred 
+        // Note that spec-related validation has (theoretically) already occurred
         access.db.view('Projects', 'AllProjectNames', { keys: [obj.project] }, function(err, docs){
             if(err){
                 return callback(err);
@@ -43,6 +43,7 @@ module.exports.getProjectPhases = util.generateCollectionGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
     function(req, db, callback){ // doSearchIfNeededCallback
+        /*jshint camelcase: false */
         var q = 'project:'+req.params.projectID;
         // Use the SearchAllProjectPhases index
         db.search('ProjectPhases', 'SearchAllProjectPhases', {
@@ -69,7 +70,7 @@ module.exports.createSingleProjectPhase = util.generateSingleItemCreateHandler(
 module.exports.getSingleProjectPhase = util.generateSingleItemGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
-    'projectPhase', // key 
+    'projectPhase', // key
     projectPhase.convertForRestAPI // convertForRestAPI
 );
 

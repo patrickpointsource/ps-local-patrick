@@ -49,7 +49,7 @@ module.exports.createSingleHoliday = util.generateSingleItemCreateHandler(
 module.exports.getSingleHoliday = util.generateSingleItemGetHandler(
     securityResources.holidays.resourceName, // resourceName
     securityResources.holidays.permissions.viewHolidays, // permission
-    'holiday', // key 
+    'holiday', // key
     holiday.convertForRestAPI // convertForRestAPI
 );
 

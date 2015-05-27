@@ -49,7 +49,7 @@ module.exports.createSingleClient = util.generateSingleItemCreateHandler(
 module.exports.getSingleClient = util.generateSingleItemGetHandler(
     securityResources.clients.resourceName, // resourceName
     securityResources.clients.permissions.viewClients, // permission
-    'client', // key 
+    'client', // key
     client.convertForRestAPI // convertForRestAPI
 );
 
