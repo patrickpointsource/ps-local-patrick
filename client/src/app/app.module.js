@@ -23,7 +23,7 @@
             'swagger-client',
             'directive.g+signin',
             'mastermind.layout.header',
-            
+
             'PeopleModule'
         ])
         .config(AppConfig)
@@ -68,6 +68,15 @@
                     'content@': {
                         templateUrl: 'app/modules/dashboard/dashboard.html',
                         controller: 'DashboardController'
+                    }
+                }
+            })
+            .state('header', {
+                parent: 'root',
+                views: {
+                    'header@': {
+                        templateUrl: 'app/layout/header/header.html',
+                        controller: 'HeaderController'
                     }
                 }
             })

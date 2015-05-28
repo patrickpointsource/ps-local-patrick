@@ -15,7 +15,9 @@
             login: login,
             logout: logout,
             init: init,
-            isLoggedIn: isLoggedIn,
+            isLoggedIn: function() {
+                return isLoggedIn;
+            }
         };
 
         function login() {

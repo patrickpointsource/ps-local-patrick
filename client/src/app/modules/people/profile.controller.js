@@ -6,13 +6,13 @@
         .module('mastermind')
         .controller('ProfileController', ProfileController);
 
-    ProfileController.$inject = ['psafLogger', 'PeopleService'];
+    ProfileController.$inject = ['psafLogger', 'PeopleService', 'UserService'];
 
-    function ProfileController(psafLogger, PeopleService) {
+    function ProfileController(psafLogger, PeopleService, UserService) {
         var logs = psafLogger.getInstance('mastermind');
         var profile = this;
 
-        var Person = PeopleService.getProfile('me');
+        var Person = UserService.getUser();
 
         Person.then(function(response) {
             profile.person = response;
