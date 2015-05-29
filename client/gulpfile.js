@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     runSequence = require('run-sequence'),
     frontMatter = require('gulp-front-matter'),
     autoprefixer = require('gulp-autoprefixer'),
-    sass = require('gulp-ruby-sass'),
+    sass = require('gulp-sass'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
     chmod = require('gulp-chmod'),
@@ -171,14 +171,14 @@ gulp.task('copy-icomoon-fonts', [], function () {
 gulp.task('sass', function () {
     return gulp.src('src/assets/scss/app.scss')
         .pipe(sass({
-            loadPath: [
+            includePaths: [
                 'bower_components/foundation-apps/scss',
                 'src/assets/scss',
                 'src/app/**/*.scss',
                 sprouts
             ],
-            style: 'nested',
-            bundleExec: true
+            outputStyle: 'nested'//,
+            // bundleExec: true
         }))
         .on('error', function (e) {
             console.log(e);
@@ -230,8 +230,8 @@ gulp.task('uglify-angular', function () {
 
     return gulp.src(libs)
         .pipe(uglify({
-            beautify: true,
-            mangle: false
+            // beautify: true,
+            // mangle: false
         }))
         .pipe(concat('angular-libs.js'))
         .pipe(gulp.dest('./dist/assets/js/'))
@@ -259,8 +259,8 @@ gulp.task('uglify-dependencies', function () {
 
     return gulp.src(libs)
         .pipe(uglify({
-            beautify: true,
-            mangle: false
+            // beautify: true,
+            // mangle: false
         }).on('error', function (e) {
             console.log(e);
         }))
@@ -273,12 +273,12 @@ gulp.task('uglify-app', function () {
     var libs = require('./appFiles.json');
     console.log(libs);
     return gulp.src(libs)
-        .pipe(uglify({
-            beautify: true,
-            mangle: false
-        }).on('error', function (e) {
-            console.log(e);
-        }))
+        // .pipe(uglify({
+        //     beautify: true,
+        //     mangle: false
+        // }).on('error', function (e) {
+        //     console.log(e);
+        // }))
         .pipe(concat('appFiles.js'))
         .pipe(gulp.dest('./dist/assets/js/'))
         .pipe(gulp.dest(webContentBaseDir + '/assets/js/'))
@@ -303,8 +303,8 @@ gulp.task('uglify-foundation', function () {
 
     return gulp.src(libs)
         .pipe(uglify({
-            beautify: true,
-            mangle: false
+            // beautify: true,
+            // mangle: false
         }).on('error', function (e) {
             console.log(e);
         }))
@@ -318,8 +318,8 @@ gulp.task('uglify-sprout', function () {
     makeSproutPaths('js', sprouts, sproutGlobs);
     return gulp.src('./bower_components/' + sproutGlobs)
         .pipe(uglify({
-            beautify: true,
-            mangle: false
+            // beautify: true,
+            // mangle: false
         }).on('error', function (e) {
             console.log(e);
         }))

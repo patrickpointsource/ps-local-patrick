@@ -15,7 +15,10 @@
             getOneHours: getOneHours,
             createHours: createHours,
             updateHours: updateHours,
-            deleteHours: deleteHours
+            deleteHours: deleteHours,
+
+            // Convenience functions
+            getHoursRecordsForPersonAndBetweenDates: getHoursRecordsForPersonAndBetweenDates
         };
 
         function getHours(params) {
@@ -44,6 +47,14 @@
         function deleteHours(id){
             logger.debug('HoursService', 'Deleting the Hours document with ID:', id);
             return Restangular.one(path, id).remove();
+        }
+
+        function getHoursRecordsForPersonAndBetweenDates(personID, startDate, endDate){
+            return getHours({
+                person: personID,
+                startDate: startDate,
+                endDate: endDate
+            });
         }
     }
 })();

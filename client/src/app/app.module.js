@@ -23,7 +23,9 @@
             'swagger-client',
             'directive.g+signin',
             'mastermind.layout.header',
-            
+
+            'app.dashboard',
+
             'PeopleModule'
         ])
         .config(AppConfig)
