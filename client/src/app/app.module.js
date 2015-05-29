@@ -73,6 +73,15 @@
                     }
                 }
             })
+            .state('header', {
+                parent: 'root',
+                views: {
+                    'header@': {
+                        templateUrl: 'app/layout/header/header.html',
+                        controller: 'HeaderController'
+                    }
+                }
+            })
             .state('home', {
                 parent: 'root',
                 url: '/home',

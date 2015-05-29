@@ -6,21 +6,23 @@
         .module('mastermind.layout.header')
         .controller('HeaderController', HeaderController);
 
-    HeaderController.$inject = ['$scope', 'UserService', 'AuthService', '$rootScope'];
+    HeaderController.$inject = ['$scope', 'UserService', '$rootScope', '$state', '$timeout'];
 
-    function HeaderController($scope, UserService, AuthService, $rootScope) {
-
-        $scope.isLoggedIn = $rootScope.isLoggedIn;
+    function HeaderController($scope, UserService, $rootScope, $state, $timeout) {
 
         if (!$scope.header) {
             $scope.header = {};
         }
 
-        $scope.loadUser = function loadUser(refresh) {
-            $scope.User = UserService.getUser(refresh);
-        };
-
-        $scope.loadUser(true);
+        $rootScope.$on('event:google-plus-signin-success', function() {
+            $timeout(function(){
+                UserService.getUser(true).then(function(response) {
+                    $scope.user = response;
+                    console.log('Refreshing the header');
+                    $state.reload('header');
+                });
+            }, 1000);
+        });
 
     }
 

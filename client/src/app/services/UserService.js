@@ -2,19 +2,18 @@
     angular.module('UserModule', []).
     factory('UserService', UserService);
 
-    UserService.$inject = ['psafLogger', 'PeopleService', 'AuthService'];
+    UserService.$inject = ['psafLogger', 'PeopleService', 'AuthService', '$interval'];
 
-    function UserService(psafLogger, PeopleService, AuthService) {
+    function UserService(psafLogger, PeopleService, AuthService, $interval) {
 
         var logger = psafLogger.getInstance('mastermind');
-        var User = {};
+        var User = User || {};
 
         AuthService.init();
 
         return {
             getMenu: getMenu,
-            getUser: getUser,
-            refreshUser: refreshUser
+            getUser: getUser
         };
 
         function getMenu(logger) {
@@ -43,12 +42,22 @@
             if (logger) {
                 logger.log(User);
             }
+
             return User;
         }
 
         function refreshUser() {
-            if (AuthService.isLoggedIn) {
-                User = PeopleService.getProfile('me');
+            if (AuthService.isLoggedIn && !angular.isDefined(User.id)) {
+                User = PeopleService.getProfile();
+            }
+            else {
+                var authTimer = $interval(function() {
+                    if (AuthService.isLoggedIn) {
+                        User = PeopleService.getProfile();
+                        $interval.cancel(authTimer);
+                        authTimer = undefined;
+                    }
+                }, 3000, 20);
             }
         }
 
