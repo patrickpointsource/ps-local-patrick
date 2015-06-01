@@ -10,14 +10,14 @@ var path = require('path'),
 
 describe('ASSIGNMENTS - test simple REST calls', function () {
 	
-	it('GET /v3/assignments (unauthenticated)', function (done) {
+    it('GET /v3/assignments (unauthenticated)', function (done) {
         request('http://localhost:3000/v3/assignments', function(err, resp, body) {
             assert.equal(resp.statusCode, 401);
             done();
         });
-    }); 
+    });
 	
-	it('GET /v3/assignments (User authenticated)', function(done){
+    it('GET /v3/assignments (User authenticated)', function(done){
         request('http://localhost:3000/v3/assignments', {
             jar: util.userCookieJar
         }, function(err, resp, body){
@@ -40,7 +40,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
         });
     });
 
-	it('GET /v3/assignments (Admin authenticated)', function(done){
+    it('GET /v3/assignments (Admin authenticated)', function(done){
         request('http://localhost:3000/v3/assignments', {
             jar: util.adminCookieJar
         }, function(err, resp, body){
@@ -63,7 +63,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
         });
     });
     
-	it('POST /v3/assignments (unauthenticated)', function(done){
+    it('POST /v3/assignments (unauthenticated)', function(done){
         request.post('http://localhost:3000/v3/assignments', {
             body: JSON.stringify({
                 'role': 'a1cd901e3a45792a4db010fa44c19e9bcd7e',
@@ -80,7 +80,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
         });
     });
 	
-	it('POST /v3/assignments (User authenticated)', function(done){
+    it('POST /v3/assignments (User authenticated)', function(done){
         request.post('http://localhost:3000/v3/assignments', {
             body: JSON.stringify({
                 'role': 'a1cd901e3a45792a4db010fa44c19e9bcd7e',
@@ -104,7 +104,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
         });
     });
 	
-	var assignmentID;
+    var assignmentID;
     it('POST /v3/assignments (Admin authenticated)', function(done){
         request.post('http://localhost:3000/v3/assignments', {
             body: JSON.stringify({
@@ -310,7 +310,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
                 'person' : '52ab7005e4b0fd2a8d130006',
                 'project' : 'cfab522f1bcfb627bdf4202ebf2667d6',
                 'startDate' : '2015-02-01'
-           }),
+            }),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -423,5 +423,5 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.equal(resp.statusCode, 200);
             done();
         });
-    });	
+    });
 });
