@@ -89,11 +89,11 @@ describe('UTILIZATION REPORT - test simple REST calls', function () {
     });
 
     it('GET /v3/reports/utilization by department (Admin authenticated)', function(done){
-        request(getRequest(requestDataTemplate.startDate,
-                    requestDataTemplate.endDate,
-                    requestDataTemplate.department), {
-                jar: util.userCookieJar
-        }, function(err, resp, body){
+        var requestStr = getRequest(requestDataTemplate.startDate,
+            requestDataTemplate.endDate,
+            requestDataTemplate.department);
+        request(requestStr, {jar: util.adminCookieJar},
+            function(err, resp, body){
             if(err){
                 throw err;
             }
@@ -112,11 +112,11 @@ describe('UTILIZATION REPORT - test simple REST calls', function () {
     });
 
     it('GET /v3/reports/utilization by department (User authenticated)', function(done){
-        request(getRequest(requestDataTemplate.startDate,
-                    requestDataTemplate.endDate,
-                    requestDataTemplate.department), {
-                jar: util.userCookieJar
-        }, function(err, resp, body){
+        var requestStr = getRequest(requestDataTemplate.startDate,
+            requestDataTemplate.endDate,
+            requestDataTemplate.department);
+        request(requestStr, {jar: util.userCookieJar},
+            function(err, resp, body){
             if(err){
                 throw err;
             }
@@ -135,12 +135,12 @@ describe('UTILIZATION REPORT - test simple REST calls', function () {
     });
 
     it('GET /v3/reports/utilization by person (Admin authenticated)', function(done){
-        request(getRequest(requestDataTemplate.startDate,
-                    requestDataTemplate.endDate,
-                    null,
-                    requestDataTemplate.person), {
-                jar: util.adminCookieJar
-        }, function(err, resp, body){
+        var requestStr = getRequest(requestDataTemplate.startDate,
+            requestDataTemplate.endDate,
+            null,
+            requestDataTemplate.person);
+        request(requestStr, {jar: util.adminCookieJar},
+            function(err, resp, body){
             if(err){
                 throw err;
             }
@@ -159,12 +159,12 @@ describe('UTILIZATION REPORT - test simple REST calls', function () {
     });
 
     it('GET /v3/reports/utilization by person (User authenticated)', function(done){
-        request(getRequest(requestDataTemplate.startDate,
-                    requestDataTemplate.endDate,
-                    null,
-                    requestDataTemplate.person), {
-                jar: util.userCookieJar
-        }, function(err, resp, body){
+        var requestStr = getRequest(requestDataTemplate.startDate,
+            requestDataTemplate.endDate,
+            null,
+            requestDataTemplate.person);
+        request(requestStr, {jar: util.userCookieJar},
+            function(err, resp, body){
             if(err){
                 throw err;
             }
