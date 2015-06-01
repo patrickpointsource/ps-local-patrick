@@ -14,6 +14,13 @@
             $scope.header = {};
         }
 
+        $scope.displayLoginOrProfile = false;
+
+
+        $timeout(function(){
+            $scope.displayLoginOrProfile = true;
+        }, 3000);
+
         $rootScope.$on('event:google-plus-signin-success', function() {
             $timeout(function(){
                 UserService.getUser(true).then(function(response) {

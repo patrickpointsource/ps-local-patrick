@@ -3,9 +3,9 @@
         .module('app.services')
         .factory('AuthService', AuthService);
 
-    AuthService.$inject = ['$rootScope', '$http', 'psafLogger'];
+    AuthService.$inject = ['psafLogger', 'ModalFactory', '$rootScope', '$http', '$window', '$q', '$state'];
 
-    function AuthService($rootScope, $http, psafLogger) {
+    function AuthService(psafLogger, ModalFactory, $rootScope, $http, $window, $q, $state) {
 
         var logger = psafLogger.getInstance('mastermind');
 
@@ -13,11 +13,12 @@
 
         return {
             login: login,
-            logout: logout,
+            showLoginBox: showLoginBox,
             init: init,
             isLoggedIn: function() {
                 return isLoggedIn;
-            }
+            },
+            refreshAccessToken: refreshAccessToken
         };
 
         function login() {
@@ -27,8 +28,19 @@
             return;
         }
 
-        function logout() {
+        function showLoginBox() {
             isLoggedIn = false;
+            var loginConfig = {
+                id: 'login-modal',
+                template: '<div>You should login to get access.</div><div>' +
+                        '<google-plus-signin zf-close clientid="141952851027-natg34uiqel1uh66im6k7r1idec5u8dh' +
+                        '.apps.googleusercontent.com"></google-plus-signin></div>'
+            };
+            logger.log('Log \'em');
+            var modal = new ModalFactory(loginConfig);
+
+            modal.activate();
+
             return;
         }
 
@@ -38,16 +50,46 @@
             $rootScope.$on('event:google-plus-signin-success', function(event, authResult) {
                 logger.log(authResult);
 
-                $http.get('http://localhost:3000/auth?code=' + authResult['code'], {
-                        withCredentials: true
-                    })
-                    .success(function(result) {
-                        console.log(result);
-                        login();
+                refreshAccessToken(authResult).then(
+                    function() {
+                        var state = $state.current;
+                        console.dir(state);
+                        $state.reload(state.name);
                     });
             });
         }
 
+        function refreshAccessToken(authResult) {
+            var code;
+            var deferred = $q.defer();
+
+            if (angular.isDefined(authResult)) {
+                code = authResult['code'];
+            }
+
+            if (!code) {
+                // figure out how to trigger a login;
+                showLoginBox();
+                deferred.reject();
+                return deferred.promise;
+            }
+
+            deferred.notify('Attempting to refresh access token.');
+            $http.get('http://localhost:3000/auth?code=' + code, {
+                    withCredentials: true
+                })
+                .success(function(result) {
+                    logger.log('Oh yeah! ' + result);
+                    login();
+                    deferred.resolve();
+                })
+                .error(function(result) {
+                    logger.log('Oh no! ' + result);
+                    showLoginBox();
+                    deferred.reject();
+                });
+            return deferred.promise;
+        }
     }
 
 })();
