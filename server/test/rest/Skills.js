@@ -9,18 +9,18 @@ var path = require('path'),
 
 describe('SKILLS - test simple REST calls', function () {
 	
-	it('GET /v3/skills (unauthenticated)', function (done) {
+    it('GET /v3/skills (unauthenticated)', function (done) {
         request('http://localhost:3000/v3/skills', function(err, resp, body) {
             assert.equal(resp.statusCode, 401);
             done();
         });
     });
 	
-	it('GET /v3/skills (User authenticated)', function(done){
+    it('GET /v3/skills (User authenticated)', function(done){
         request('http://localhost:3000/v3/skills', {
             jar: util.userCookieJar
         }, function(err, resp, body){
-        	if(err){
+            if(err){
                 throw err;
             }
             if(resp.statusCode !== 403){
@@ -31,7 +31,7 @@ describe('SKILLS - test simple REST calls', function () {
         });
     });
 
-	it('GET /v3/skills (Admin authenticated)', function(done){
+    it('GET /v3/skills (Admin authenticated)', function(done){
         request('http://localhost:3000/v3/skills', {
             jar: util.adminCookieJar
         }, function(err, resp, body){
@@ -51,7 +51,7 @@ describe('SKILLS - test simple REST calls', function () {
         });
     });
 
-	it('POST /v3/skills (unauthenticated)', function(done){
+    it('POST /v3/skills (unauthenticated)', function(done){
         request.post('http://localhost:3000/v3/skills', {
             body: JSON.stringify({
                 'title': 'Test Skill'
@@ -65,7 +65,7 @@ describe('SKILLS - test simple REST calls', function () {
         });
     });
 	
-	it('POST /v3/skills (User authenticated)', function(done){
+    it('POST /v3/skills (User authenticated)', function(done){
         request.post('http://localhost:3000/v3/skills', {
             body: JSON.stringify({
                 'title': 'Test Skill'
@@ -86,7 +86,7 @@ describe('SKILLS - test simple REST calls', function () {
         });
     });
 	
-	var skillID;
+    var skillID;
     it('POST /v3/skills (Admin authenticated)', function(done){
         request.post('http://localhost:3000/v3/skills', {
             body: JSON.stringify({
@@ -265,7 +265,7 @@ describe('SKILLS - test simple REST calls', function () {
         request.put('http://localhost:3000/v3/skills/'+skillID, {
             body: JSON.stringify({
                 'title': 'Test Skill v2'
-           }),
+            }),
             headers: {
                 'Content-Type': 'application/json'
             },
