@@ -1,0 +1,22 @@
+<div class="text-center hours-day" ng-class="{'active': selected.date === day.date}">
+    <div class="hours-day-entry"
+        ng-class="{'hours-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness,
+                   'hours-day-today' : day.date === todaysDate,
+                   'hours-day-not-logged': day.totalHours == 0,
+                   'hours-day-active': selected.date === day.date}"
+        ng-click="setSelected(e, day, $index)">
+        <div class="hours-day-header">
+            <span>{{day.dayOfWeek | uppercase}}</span>
+            <span class="month-day">{{day.dayOfMonth}}</span>
+        </div>
+        <div class='hours-day-content'>
+            <span
+                ng-class="{'longcontent': day.totalHours >= 10 }">{{day.totalHours}}</span>
+            <span class="hours-day-check" ng-if="day.totalHours >= 8">
+                <i class="fa fa-check fa-2x"></i>
+            </span>
+        </div>
+
+        <div class="hours-day-footer">HOURS</div>
+    </div>
+</div>

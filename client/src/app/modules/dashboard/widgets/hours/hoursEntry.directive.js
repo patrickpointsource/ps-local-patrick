@@ -1296,20 +1296,25 @@
             // Not so sure this is doing what its name says - RCM 2015-05-01 19:37
             $scope.calculateLastBusinessDay = function (cb) {
                 var todayDate = $scope.getTodaysDate();
-                var startOfWeek = $scope.moment(todayDate).day(0);
-                var diff = $scope.moment(todayDate).diff($scope.moment(startOfWeek), 'days');
+                var today = $scope.moment();
+                var startOfWeek = $scope.moment(today).day(0);
+                var diff = today.diff(startOfWeek, 'days');
                 var firstBusinessDay;
 
                 if (diff >= 5) {
-                    firstBusinessDay = $scope.moment(startOfWeek);
+                    firstBusinessDay = startOfWeek;
                 } else {
                     firstBusinessDay = startOfWeek.subtract((5 - diff) + 1, 'days');
                 }
 
-                firstBusinessDay = firstBusinessDay.format('YYYY-MM-DD');
+                // firstBusinessDay = firstBusinessDay.format('YYYY-MM-DD');
                 logger.debug('hours-entry', 'scope:', $scope.getCurrentPerson(), $scope);
                 HoursService
-                    .getHoursRecordsForPersonAndBetweenDates($scope.getCurrentPerson().id, firstBusinessDay, todayDate)
+                    .getHoursRecordsForPersonAndBetweenDates(
+                        $scope.getCurrentPerson().id,
+                        firstBusinessDay.format('YYYY-MM-DD'),
+                        today.format('YYYY-MM-DD')
+                    )
                     .then(function (result) {
                         firstBusinessDay = '';
 
@@ -1322,7 +1327,7 @@
                         }
 
                         if (!firstBusinessDay) {
-                            firstBusinessDay = todayDate;
+                            firstBusinessDay = today.format('YYYY-MM-DD');
                         }
                         cb(firstBusinessDay);
                     });
@@ -1797,6 +1802,23 @@
 
             var init = function (profile) {
                 $scope.me = profile;
+
+                $scope.totalHours = [];
+                for(var i=0; i<7; i++){
+                    $scope.totalHours.push({
+                        totalHours: 0,
+                        dayOfWeek: 'Monday',
+                        dayOfMonth: 29
+                    });
+                }
+
+                _.delay(function(){
+                    $scope.totalHours[1].dayOfWeek = 'Tuesday';
+                }, 1000)
+                _.delay(function(){
+                    $scope.totalHours[1].dayOfMonth = 31;
+                }, 2000)
+
                 $scope.calculateLastBusinessDay(function (firstBusinessDay) {
                     $scope.firstBusinessDay = $scope.moment(firstBusinessDay);
 
