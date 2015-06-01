@@ -9,14 +9,14 @@ var path = require('path'),
 
 describe('DEPARTMENT CATEGORIES - test simple REST calls', function () {
 		
-	it('GET /v3/departments/categories (unauthenticated)', function (done) {
+    it('GET /v3/departments/categories (unauthenticated)', function (done) {
         request('http://localhost:3000/v3/departments/categories', function(err, resp, body) {
             assert.equal(resp.statusCode, 401);
             done();
         });
     });
 	
-	it('GET /v3/departments/categories (User authenticated)', function(done){
+    it('GET /v3/departments/categories (User authenticated)', function(done){
         request('http://localhost:3000/v3/departments/categories', {
             jar: util.userCookieJar
         }, function(err, resp, body){
@@ -37,7 +37,7 @@ describe('DEPARTMENT CATEGORIES - test simple REST calls', function () {
         });
     });
 
-	it('GET /v3/departments/categories (Admin authenticated)', function(done){
+    it('GET /v3/departments/categories (Admin authenticated)', function(done){
         request('http://localhost:3000/v3/departments/categories', {
             jar: util.adminCookieJar
         }, function(err, resp, body){
@@ -58,7 +58,7 @@ describe('DEPARTMENT CATEGORIES - test simple REST calls', function () {
         });
     });
     
-	it('POST /v3/departments/categories (unauthenticated)', function(done){
+    it('POST /v3/departments/categories (unauthenticated)', function(done){
         request.post('http://localhost:3000/v3/departments/categories', {
             body: JSON.stringify({
                 'name': 'Test Department Category',
@@ -73,7 +73,7 @@ describe('DEPARTMENT CATEGORIES - test simple REST calls', function () {
         });
     });
 	
-	it('POST /v3/departments/categories (User authenticated)', function(done){
+    it('POST /v3/departments/categories (User authenticated)', function(done){
         request.post('http://localhost:3000/v3/departments/categories', {
             body: JSON.stringify({
                 'name': 'Test Department Category',
@@ -95,7 +95,7 @@ describe('DEPARTMENT CATEGORIES - test simple REST calls', function () {
         });
     });
 	
-	var departmentCategoryID;
+    var departmentCategoryID;
     it('POST /v3/departments/categories (Admin authenticated)', function(done){
         request.post('http://localhost:3000/v3/departments/categories', {
             body: JSON.stringify({
@@ -286,7 +286,7 @@ describe('DEPARTMENT CATEGORIES - test simple REST calls', function () {
             body: JSON.stringify({
                 'name': 'Test Department Category v2',
                 'trimmedValue': 'Test Trimmed Value v2'
-           }),
+            }),
             headers: {
                 'Content-Type': 'application/json'
             },
