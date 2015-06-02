@@ -32,7 +32,7 @@
             isLoggedIn = false;
             var loginConfig = {
                 id: 'login-modal',
-                template: '<div>You should login to get access.</div><div>' +
+                template: '<div>Please login to refresh your session</div><div>' +
                         '<google-plus-signin zf-close clientid="141952851027-natg34uiqel1uh66im6k7r1idec5u8dh' +
                         '.apps.googleusercontent.com"></google-plus-signin></div>'
             };

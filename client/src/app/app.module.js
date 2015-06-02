@@ -23,7 +23,7 @@
             'swagger-client',
             'directive.g+signin',
             'mastermind.layout.header',
-            'PeopleModule'
+            'PeopleModule',
         ])
         .config(AppConfig)
         .run(AppRun);
