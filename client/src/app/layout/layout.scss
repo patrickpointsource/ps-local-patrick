@@ -67,3 +67,13 @@
 		border-bottom:1px solid #ccc;
 	}
 }
+
+#login-modal {
+    .modal {
+        width: 240px;
+        > div {
+            margin: 10px auto;
+            text-align: center;
+        }
+    }
+}
