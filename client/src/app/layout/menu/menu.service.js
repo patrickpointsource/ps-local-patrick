@@ -1,4 +1,4 @@
-(function () {
+(function() {
     angular.module('mastermind.layout.menu').
     factory('MenuService', MenuService);
 
@@ -6,12 +6,25 @@
 
     function MenuService($http) {
         return {
-            getMenu: function () {
-                return [
-                    {'name': 'home', 'label': 'Dashboard', 'iconClass': 'icon-dashboard'},
-                    {'name': 'projects', 'label': 'Projects', 'iconClass': 'icon-projects'},
-                    {'name': 'people', 'label': 'People', 'iconClass': 'icon-people'}
-                ];
+            getMenu: function() {
+                return [{
+                    'name': 'home',
+                    'label': 'Dashboard',
+                    'iconClass': 'icon-dashboard',
+                    'submenuItems': [{
+                        'name': 'subhome',
+                        'label': 'SubDashboard',
+                        'iconClass': 'icon-projects'
+                    }]
+                }, {
+                    'name': 'projects',
+                    'label': 'Projects',
+                    'iconClass': 'icon-projects'
+                }, {
+                    'name': 'people',
+                    'label': 'People',
+                    'iconClass': 'icon-people'
+                }];
             }
         };
     }

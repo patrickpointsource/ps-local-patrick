@@ -72,7 +72,7 @@
         "user": "tathendersheaderefortati",
         "password": "e7wRT4nm0IgHGeWu07benG36",
         "url": "https://tathendersheaderefortati:e7wRT4nm0IgHGeWu07benG36@psdev1.cloudant.com/",
-        "db": "mm_newsprout"
+        "db": "mm_dev"
     },
     "google-apis": {
         "privateKeyPath": "certs/key.pem",

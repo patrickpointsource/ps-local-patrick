@@ -48,7 +48,7 @@ var initializeAllows = function(securityRoles, callback) {
             _logger.info('initializeAllows:name=' + securityRoles[i].name + ':' + securityRoles[i]._id + ':resource=' +
                          resources[k].name + ':permissions=' + resources[k].permissions.join(','));
 
-            allow(securityRoles[i].name, resources[k].name, resources[k].permissions, function(err) {
+            allow(securityRoles[i]._id, resources[k].name, resources[k].permissions, function(err) {
                 if(err) {
                     _logger.info('initializeAllows:Error while allowing permissions for groups: ' + err);
                 }
@@ -68,7 +68,7 @@ var initializeAllows = function(securityRoles, callback) {
 var initializeSecurityRoles = function(securityRoles, isReinitialization, callback) {
     if(isReinitialization) {
         async.each(securityRoles, function(securityRole, callback){
-            acl.removeRole(securityRole.name, callback);
+            acl.removeRole(securityRole._id, callback);
         }, function(){
             initializeAllows(securityRoles, callback);
         });
@@ -77,80 +77,69 @@ var initializeSecurityRoles = function(securityRoles, isReinitialization, callba
     }
 };
 
-var getRoleNames = function(roles) {
-    var roleNames = [];
-    if(roles) {
-        for(var j = 0; j < roles.length; j++) {
-            roleNames.push(roles[j].name);
-        }
-    }
-
-    return roleNames;
-};
-
-var extractNestedPermissionGroups = function(groupId, roleNames, userRoles, securityRoles, extractedRoles) {
-    if (!extractedRoles){
-        extractedRoles = [];
-    }
-
-    if(groupId) {
-        // persist extratced roles
-        extractedRoles.push(roleNames);
-
-        var usersFromGroupMember = [];
-        var groupsFromGroupMember = [];
-
-        var getRolesInfoFromGroups = function(groups, isId) {
-            var res = [];
-            var tmp;
-
-            for (var l = 0; l < groups.length; l ++) {
-                tmp = _.find(securityRoles, function(s) {
-                    return s.resource === groups[l].resource || s.resource === groups[l].groupId;
-                });
-
-                if (tmp && !isId){
-                    res.push(tmp.name);
-                } else if (tmp && isId){
-                    res.push(tmp.resource);
-                }
-            }
-
-
-            return res;
-
-        };
-
-        for(var i = 0; i < userRoles.length; i++) {
-            var userRole = userRoles[i];
-
-
-            if(_.find(userRole.roles, function(r) {
-                return _.indexOf(roleNames, r.name) > -1;
-            })) {
-                if(userRole.userId) {
-                    usersFromGroupMember.push(userRole);
-                }
-                if(userRole.groupId) {
-                    groupsFromGroupMember.push(userRole);
-                }
-            }
-        }
-
-        if(groupsFromGroupMember && groupsFromGroupMember.length > 0) {
-            for(var u = 0; u < groupsFromGroupMember.length; u++) {
-                extractNestedPermissionGroups(
-                    groupsFromGroupMember[u].groupId,
-                    getRolesInfoFromGroups(groupsFromGroupMember),
-                    userRoles,
-                    securityRoles,
-                    extractedRoles
-                );
-            }
-
-        }
-    }
-};
+// var extractNestedPermissionGroups = function(groupId, roleNames, userRoles, securityRoles, extractedRoles) {
+//     if (!extractedRoles){
+//         extractedRoles = [];
+//     }
+//
+//     if(groupId) {
+//         // persist extratced roles
+//         extractedRoles.push(roleNames);
+//
+//         var usersFromGroupMember = [];
+//         var groupsFromGroupMember = [];
+//
+//         var getRolesInfoFromGroups = function(groups, isId) {
+//             var res = [];
+//             var tmp;
+//
+//             for (var l = 0; l < groups.length; l ++) {
+//                 tmp = _.find(securityRoles, function(s) {
+//                     return s.resource === groups[l].resource || s.resource === groups[l].groupId;
+//                 });
+//
+//                 if (tmp && !isId){
+//                     res.push(tmp.name);
+//                 } else if (tmp && isId){
+//                     res.push(tmp.resource);
+//                 }
+//             }
+//
+//
+//             return res;
+//
+//         };
+//
+//         for(var i = 0; i < userRoles.length; i++) {
+//             var userRole = userRoles[i];
+//
+//
+//             if(_.find(userRole.roles, function(r) {
+//                 return _.indexOf(roleNames, r.name) > -1;
+//             })) {
+//                 if(userRole.userId) {
+//                     usersFromGroupMember.push(userRole);
+//                 }
+//                 if(userRole.groupId) {
+//                     groupsFromGroupMember.push(userRole);
+//                 }
+//             }
+//         }
+//
+//         if(groupsFromGroupMember && groupsFromGroupMember.length > 0) {
+//             for(var u = 0; u < groupsFromGroupMember.length; u++) {
+//                 extractNestedPermissionGroups(
+//                     groupsFromGroupMember[u].groupId,
+//                     getRolesInfoFromGroups(groupsFromGroupMember),
+//                     userRoles,
+//                     securityRoles,
+//                     extractedRoles
+//                 );
+//             }
+//
+//         }
+//     }
+// };
 
 var addRole = function(userId, roles, isReinitialization, callback) {
     //_logger.info('\r\naddRole:userId:' + userId + ':roles:' + JSON.stringify(roles) + ':isReinitialization=' +
@@ -208,7 +197,6 @@ var doInitialization = function(isReinitialization){
                     return err;
                 }
                 // var userRoles = roles.members;
-                var roleNames;
                 var targetRoleIds;
                 var i;
                 var k;
@@ -218,14 +206,14 @@ var doInitialization = function(isReinitialization){
                 // build {group}-{userIds} map
                 _.each(userRoles, function(userRole){
                     _.each(userRole.roles, function(role){
-                        var name = role.name;
-                        if(name.toLowerCase() === 'minion'){
-                            name = 'Employee';
+                        // var name = role.name;
+                        // if(name.toLowerCase() === 'minion'){
+                        //     name = 'Employee';
+                        // }
+                        if(!targetUserIds[role]){
+                            targetUserIds[role] = [];
                         }
-                        if(!targetUserIds[name]){
-                            targetUserIds[name] = [];
-                        }
-                        targetUserIds[name].push(userRole.userId);
+                        targetUserIds[role].push(userRole.userId);
                     });
                 });
 
@@ -243,101 +231,93 @@ var doInitialization = function(isReinitialization){
                 var targetUsers;
                 var t;
 
-                // find and process nested groups
-                for (i=0; i < userRoles.length; i++) {
-                    userId = userRoles[i].userId;
-
-                    roleNames = getRoleNames(userRoles[i].roles);
-                    //targetRoleIds = _.map(userRoles[i].roles, function(r) { return r.resource;});
-
-                    //_logger.info('\r\nlistUserRoles:' + i + ':' + JSON.stringify(userRoles[i]));
-
-
-                    // give permissions to each member of group
-                    var groupId = userRoles[i].groupId;
-                    var group = _.find(securityRoles, function(r) { return r.resource === groupId; });
-
-                    if (groupId){
-                        var roles = userRoles[i].roles;
-
-                        roles = _.filter(roles, function(r) {
-                            return r.resource;
-                        });
-
-                        roles = _.uniq(roles, function(r) {
-                            return r.name;
-                        });
-
-                        // build sequence of all nested roles
-                        var extractedRoles = [];
-
-                        // add as first element "root" parents of hierarchy - hierarchy works like in roles
-                        // collection are all "mother and fathers" of current userRoles[i] entry
-                        extractedRoles.push(_.map(roles, function(r) {
-                            return r.name;
-                        }));
-
-                        for (k = 0; roles && k < roles.length; k ++) {
-                            extractNestedPermissionGroups(
-                                roles[k].resource,
-                                [group.name],
-                                userRoles,
-                                securityRoles,
-                                extractedRoles
-                            );
-                        }
-
-                        // filter duplicates from nested roles - start from the end
-                        var j;
-                        for (k =  extractedRoles.length - 1; k >= 0; k --) {
-                            for (j = 0; j < extractedRoles[k].length; j ++){
-                                if (extractedRoles[k][j].toLowerCase() === 'minion'){
-                                    extractedRoles[k][j] = 'Employee';
-                                }
-                            }
-                        }
-                        for (k = extractedRoles.length - 1; k >= 0; k --) {
-
-                            for (j = (k - 1); j >= 0; j --) {
-
-                                var found = false;
-                                // compare each entry which can be array
-
-
-                                for (t = extractedRoles[j].length - 1; t >= 0; t --) {
-                                    for (var l = extractedRoles[k].length - 1; l >= 0; l --) {
-                                        if (extractedRoles[k][l] === extractedRoles[j][t]) {
-                                            extractedRoles[k].splice(l, 1);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        extractedRoles = _.filter(extractedRoles, function(entry) {
-                            return entry.length > 0;
-                        });
-
-                        // in case when "root" elements has childs
-                        if (extractedRoles.length > 1) {
-                            for (k = 0; k < extractedRoles[0].length; k ++) {
-                                targetUsers =  targetUserIds[ extractedRoles[0][k] ];
-
-                                // starts iterating from end of hierarchy from most simple roles and
-                                // assign to users apropriate access roles
-                                for (j = extractedRoles.length - 1; targetUsers && j >= 0; j --) {
-                                    for (t = 0; t < targetUsers.length; t ++){
-                                        addUserRoleToMap(targetUsers[t], extractedRoles[j], isReinitialization);
-                                    }
-                                }
-
-                                processedGroupsMap[ extractedRoles[0][k] ] = true;
-                            }
-                        }
-
-                    }
-
-                }
+                // Commenting this out as there are no instances of groupId in the database
+                // // find and process nested groups
+                // for (i=0; i < userRoles.length; i++) {
+                //     userId = userRoles[i].userId;
+                //
+                //     //targetRoleIds = _.map(userRoles[i].roles, function(r) { return r.resource;});
+                //
+                //     //_logger.info('\r\nlistUserRoles:' + i + ':' + JSON.stringify(userRoles[i]));
+                //
+                //
+                //     // give permissions to each member of group
+                //     var groupId = userRoles[i].groupId;
+                //     var group = _.find(securityRoles, function(r) { return r._id === groupId; });
+                //
+                //     if (groupId){
+                //         var roles = userRoles[i].roles;
+                //
+                //         roles = _.uniq(roles);
+                //
+                //         // build sequence of all nested roles
+                //         var extractedRoles = [];
+                //
+                //         // add as first element "root" parents of hierarchy - hierarchy works like in roles
+                //         // collection are all "mother and fathers" of current userRoles[i] entry
+                //         extractedRoles.push(roles);
+                //
+                //         for (k = 0; roles && k < roles.length; k ++) {
+                //             extractNestedPermissionGroups(
+                //                 roles[k].resource,
+                //                 [group._id],
+                //                 userRoles,
+                //                 securityRoles,
+                //                 extractedRoles
+                //             );
+                //         }
+                //
+                //         // filter duplicates from nested roles - start from the end
+                //         var j;
+                //         for (k =  extractedRoles.length - 1; k >= 0; k --) {
+                //             for (j = 0; j < extractedRoles[k].length; j ++){
+                //                 if (extractedRoles[k][j].toLowerCase() === 'minion'){
+                //                     extractedRoles[k][j] = 'Employee';
+                //                 }
+                //             }
+                //         }
+                //         for (k = extractedRoles.length - 1; k >= 0; k --) {
+                //
+                //             for (j = (k - 1); j >= 0; j --) {
+                //
+                //                 var found = false;
+                //                 // compare each entry which can be array
+                //
+                //
+                //                 for (t = extractedRoles[j].length - 1; t >= 0; t --) {
+                //                     for (var l = extractedRoles[k].length - 1; l >= 0; l --) {
+                //                         if (extractedRoles[k][l] === extractedRoles[j][t]) {
+                //                             extractedRoles[k].splice(l, 1);
+                //                         }
+                //                     }
+                //                 }
+                //             }
+                //         }
+                //
+                //         extractedRoles = _.filter(extractedRoles, function(entry) {
+                //             return entry.length > 0;
+                //         });
+                //
+                //         // in case when "root" elements has childs
+                //         if (extractedRoles.length > 1) {
+                //             for (k = 0; k < extractedRoles[0].length; k ++) {
+                //                 targetUsers =  targetUserIds[ extractedRoles[0][k] ];
+                //
+                //                 // starts iterating from end of hierarchy from most simple roles and
+                //                 // assign to users apropriate access roles
+                //                 for (j = extractedRoles.length - 1; targetUsers && j >= 0; j --) {
+                //                     for (t = 0; t < targetUsers.length; t ++){
+                //                         addUserRoleToMap(targetUsers[t], extractedRoles[j], isReinitialization);
+                //                     }
+                //                 }
+                //
+                //                 processedGroupsMap[ extractedRoles[0][k] ] = true;
+                //             }
+                //         }
+                //
+                //     }
+                //
+                // }
 
 
                 // assign all other roles-users access roles
@@ -393,6 +373,9 @@ module.exports.isAllowed = function(
     acl.allowedPermissions(userId, resource, function(err, permissions){
         _logger.info('permissions for', userId, resource, permissions);
     });
+    module.exports.allAllowedPermissions(userId, function(err, permissions){
+        _logger.debug('all permissions for:', userId, permissions);
+    });
 
     acl.isAllowed(userId, resource, permissions, function(err, allowed){
 
@@ -425,9 +408,13 @@ module.exports.allowedPermissions = function(userId, resources, callback) {
 
 module.exports.allAllowedPermissions = function(userId, callback){
     var allPermissions = {};
+    _logger.debug('here?');
     acl.userRoles(userId, function(err, roles){
+        _logger.debug('roles:', roles);
         async.each(roles, function(role, callback){
+            _logger.debug('role', role);
             acl.whatResources(role, function(err, output){
+                _logger.debug('which?', output);
                 _.each(output, function(permissions, resource){
                     if(!allPermissions[resource]){
                         allPermissions[resource] = permissions;
@@ -438,6 +425,7 @@ module.exports.allAllowedPermissions = function(userId, callback){
                 callback();
             });
         }, function(err){
+            _logger.debug('err?', err);
             callback(err, allPermissions);
         });
     });
@@ -601,9 +589,9 @@ module.exports.allAllowedPermissions = function(userId, callback){
 
 var removeRoles = function(securityRoles) {
     for(var i = 0; i < securityRoles.length; i++) {
-        acl.removeRole(securityRoles[i].name, function(err) {
+        acl.removeRole(securityRoles[i]._id, function(err) {
             if(err) {
-                _logger.info('Cannot delete "' + securityRoles[i].name + '" role.');
+                _logger.info('Cannot delete ' + securityRoles[i]._id + '(' + securityRoles[i].name + ') role.');
             }
         });
     }

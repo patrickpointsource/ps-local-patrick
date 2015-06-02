@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('PeopleModule', [])
+        .module('PeopleModule')
         .controller('PeopleController', PeopleController);
 
     PeopleController.$inject = ['psafLogger', 'PeopleService'];
@@ -15,7 +15,6 @@
 
         PeopleService.getPeople().then(function(response) {
             people.list = response;
-            logs.info(people.list);
         });
     }
 

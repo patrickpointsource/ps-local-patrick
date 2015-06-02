@@ -1,7 +1,7 @@
 /* Copyright © 2015 PointSource, LLC. All rights reserved. */
-(function() {
+(function () {
     'use strict';
 
     angular
-        .module('mastermind.layout.header', []);
+        .module('PeopleModule', []);
 })();

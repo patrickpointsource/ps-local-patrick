@@ -6,7 +6,7 @@
                 <a ui-sref="home"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
             </span>
             <span class="right">
-                <a ui-sref="profile"><img ng-src="{{User.thumbnail}}" class="user-profile-thumbnail"></a>
+                <a ui-sref="profile"><img ng-src="{{user.thumbnail}}" class="user-profile-thumbnail"></a>
             </span>
         </div>
     </div>
@@ -16,11 +16,13 @@
                 <a ui-sref="home"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
             </div>
             <span class="left">&nbsp;</span>
-            <span class="right" ng-show="User.thumbnail">
-                <a ui-sref="profile"><img ng-src="{{User.thumbnail}}" class="user-profile-thumbnail"></a>
-            </span>
-            <span class="right" ng-hide="User.thumbnail">
-                <google-plus-signin clientid="141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com"></google-plus-signin>
+            <span class="right" ng-show="displayLoginOrProfile">
+                <span ng-show="user.thumbnail">
+                    <a ui-sref="profile"><img ng-src="{{user.thumbnail}}" class="user-profile-thumbnail"></a>
+                </span>
+                <span class="ng-hide">
+                    <google-plus-signin clientid="141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com"></google-plus-signin>
+                </span>
             </span>
         </div>
     </div>
