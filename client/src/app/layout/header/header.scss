@@ -19,6 +19,7 @@
             color: $gray-light;
         }
     }
+    height: 60px;
 }
 
 .mastermind-title {
@@ -34,7 +35,7 @@
     }
 }
 
-.user-profile-image {
+.user-profile-thumbnail {
     border: 5px solid transparent;
     border-radius: 30px;
     width: 60px;
