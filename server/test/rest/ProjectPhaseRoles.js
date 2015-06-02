@@ -13,8 +13,8 @@ var phaseID = 'a2f5fd3f62a6fb1d8132d4bad39606f8';
 describe('PROJECT PHASE ROLES - test simple REST calls', function () {
 
     it('GET /v3/projects/:projectID/phases/:phaseID/roles (unauthenticated)', function (done) {
-        request('http://localhost:3000/v3/projects/' + projectID + '/phases/' + 
-        		phaseID + '/roles', function(err, resp, body) {
+        request('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
+                phaseID + '/roles', function(err, resp, body) {
             if(err){
                 throw err;
             }
@@ -85,24 +85,22 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     it('POST /v3/projects/:projectID/phases/:phaseID/roles (unauthenticated)', function(done){
         request.post('http://localhost:3000/v3/projects/' + projectID + '/phases/' + phaseID + '/roles', {
             body: JSON.stringify({
-            	phase: phaseID,
-            	daysGap: 260,
-            	hoursNeededToCover: 8,
-            	isCurrentRole: true,
-            	rate: {
-	            	type: 'weekly',
-	            	rateUnits: '$/hr',
-	            	fullyUtilized: false,
-	            	hoursPerWeek: 8,
-	            	amount: 195,
-	            	loadedAmount: 120,
-	            	advAmount: 195
-            	},
-            	shore: 'on',
-            	originalAssignees: [
-            	      '52ab7005e4b0fd2a8d13001f'
-            	],
-            	type: '52c70ae5e4b0911cacf4e11a'
+                phase: phaseID,
+                daysGap: 260,
+                hoursNeededToCover: 8,
+                isCurrentRole: true,
+                rate: {
+                    type: 'weekly',
+                    rateUnits: '$/hr',
+                    fullyUtilized: false,
+                    hoursPerWeek: 8,
+                    amount: 195,
+                    loadedAmount: 120,
+                    advAmount: 195
+                },
+                shore: 'on',
+                originalAssignees: ['52ab7005e4b0fd2a8d13001f'],
+                type: '52c70ae5e4b0911cacf4e11a'
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -122,24 +120,22 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     it('POST /v3/projects/:projectID/phases/:phaseID/roles (User authenticated)', function(done){
         request.post('http://localhost:3000/v3/projects/' + projectID + '/phases/' + phaseID + '/roles', {
             body: JSON.stringify({
-            	phase: phaseID,
-            	daysGap: 260,
-            	hoursNeededToCover: 8,
-            	isCurrentRole: true,
-            	rate: {
-	            	type: 'weekly',
-	            	rateUnits: '$/hr',
-	            	fullyUtilized: false,
-	            	hoursPerWeek: 8,
-	            	amount: 195,
-	            	loadedAmount: 120,
-	            	advAmount: 195
-            	},
-            	shore: 'on',
-            	originalAssignees: [
-            	    '52ab7005e4b0fd2a8d13001f'
-            	],
-            	type: '52c70ae5e4b0911cacf4e11a'
+                phase: phaseID,
+                daysGap: 260,
+                hoursNeededToCover: 8,
+                isCurrentRole: true,
+                rate: {
+                    type: 'weekly',
+                    rateUnits: '$/hr',
+                    fullyUtilized: false,
+                    hoursPerWeek: 8,
+                    amount: 195,
+                    loadedAmount: 120,
+                    advAmount: 195
+                },
+                shore: 'on',
+                originalAssignees: ['52ab7005e4b0fd2a8d13001f'],
+                type: '52c70ae5e4b0911cacf4e11a'
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -161,24 +157,22 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     it('POST /v3/projects/:projectID/phases/:phaseID/roles (Admin authenticated)', function(done){
         request.post('http://localhost:3000/v3/projects/' + projectID + '/phases/' + phaseID + '/roles', {
             body: JSON.stringify({
-            	phase: phaseID,
-            	daysGap: 260,
-            	hoursNeededToCover: 8,
-            	isCurrentRole: true,
-            	rate: {
-	            	type: 'weekly',
-	            	rateUnits: '$/hr',
-	            	fullyUtilized: false,
-	            	hoursPerWeek: 8,
-	            	amount: 195,
-	            	loadedAmount: 120,
-	            	advAmount: 195
-            	},
-            	shore: 'on',
-            	originalAssignees: [
-            	    '52ab7005e4b0fd2a8d13001f'
-            	],
-            	type: '52c70ae5e4b0911cacf4e11a'
+                phase: phaseID,
+                daysGap: 260,
+                hoursNeededToCover: 8,
+                isCurrentRole: true,
+                rate: {
+                    type: 'weekly',
+                    rateUnits: '$/hr',
+                    fullyUtilized: false,
+                    hoursPerWeek: 8,
+                    amount: 195,
+                    loadedAmount: 120,
+                    advAmount: 195
+                },
+                shore: 'on',
+                originalAssignees: ['52ab7005e4b0fd2a8d13001f'],
+                type: '52c70ae5e4b0911cacf4e11a'
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -194,7 +188,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
             assert.ok(!err);
             assert.equal(resp.statusCode, 200);
             var json = JSON.parse(body);
-             assert.ok(_.isObject(json));
+            assert.ok(_.isObject(json));
             var keys = _.keys(json);
             assert.ok(keys.length >= 4);
             assert.notEqual(keys.indexOf('id'), -1);
@@ -235,8 +229,8 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         // Fail if we don't have a roleID
         assert.ok(roleID);
     
-        request.get('http://localhost:3000/v3/projects/' + projectID + '/phases/' + 
-        		phaseID + '/roles/' + roleID.substr(0, 5), {
+        request.get('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
+                phaseID + '/roles/' + roleID.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -291,22 +285,22 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         // Dummy Project Phase Role ID but should still get Unauthorized
         request.put('http://localhost:3000/v3/projects/' + projectID + '/phases/' + phaseID + '/roles/A1', {
             body: JSON.stringify({
-            	phase: phaseID,
-            	daysGap: 260,
-            	hoursNeededToCover: 8,
-            	isCurrentRole: true,
-            	rate: {
-            		type: 'hourly',
-            		rateUnits: '$/hr',
-            		fullyUtilized: false,
-            		hoursPerMth: 180,
-            		amount: 90,
-            		loadedAmount: 24,
-            		advAmount: 0
-            	},
-            	shore: 'on',
-            	originalAssignees: [ '52ab7005e4b0fd2a8d13001f' ],
-            	type: '52c70ae5e4b0911cacf4e118'
+                phase: phaseID,
+                daysGap: 260,
+                hoursNeededToCover: 8,
+                isCurrentRole: true,
+                rate: {
+                    type: 'hourly',
+                    rateUnits: '$/hr',
+                    fullyUtilized: false,
+                    hoursPerMth: 180,
+                    amount: 90,
+                    loadedAmount: 24,
+                    advAmount: 0
+                },
+                shore: 'on',
+                originalAssignees: [ '52ab7005e4b0fd2a8d13001f' ],
+                type: '52c70ae5e4b0911cacf4e118'
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -328,24 +322,24 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         assert.ok(roleID);
         
         request.put('http://localhost:3000/v3/projects/' + projectID + '/phases/' + phaseID +
-        		'/roles/' + roleID.substr(0, 5), {
+                '/roles/' + roleID.substr(0, 5), {
             body: JSON.stringify({
-            	phase: phaseID,
-            	daysGap: 260,
-            	hoursNeededToCover: 8,
-            	isCurrentRole: true,
-            	rate: {
-            		type: 'hourly',
-            		rateUnits: '$/hr',
-            		fullyUtilized: false,
-            		hoursPerMth: 180,
-            		amount: 90,
-            		loadedAmount: 24,
-            		advAmount: 0
-            	},
-            	shore: 'on',
-            	originalAssignees: [ '52ab7005e4b0fd2a8d13001f' ],
-            	type: '52c70ae5e4b0911cacf4e118'
+                phase: phaseID,
+                daysGap: 260,
+                hoursNeededToCover: 8,
+                isCurrentRole: true,
+                rate: {
+                    type: 'hourly',
+                    rateUnits: '$/hr',
+                    fullyUtilized: false,
+                    hoursPerMth: 180,
+                    amount: 90,
+                    loadedAmount: 24,
+                    advAmount: 0
+                },
+                shore: 'on',
+                originalAssignees: [ '52ab7005e4b0fd2a8d13001f' ],
+                type: '52c70ae5e4b0911cacf4e118'
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -370,22 +364,22 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         // Dummy Project Phase Role ID but should still get Unauthorized
         request.put('http://localhost:3000/v3/projects/' + projectID + '/phases/' + phaseID + '/roles/' + roleID, {
             body: JSON.stringify({
-            	phase: phaseID,
-            	daysGap: 260,
-            	hoursNeededToCover: 8,
-            	isCurrentRole: true,
-            	rate: {
-            		type: 'hourly',
-            		rateUnits: '$/hr',
-            		fullyUtilized: false,
-            		hoursPerMth: 180,
-            		amount: 90,
-            		loadedAmount: 24,
-            		advAmount: 0
-            	},
-            	shore: 'on',
-            	originalAssignees: [ '52ab7005e4b0fd2a8d13001f' ],
-            	type: '52c70ae5e4b0911cacf4e118'
+                phase: phaseID,
+                daysGap: 260,
+                hoursNeededToCover: 8,
+                isCurrentRole: true,
+                rate: {
+                    type: 'hourly',
+                    rateUnits: '$/hr',
+                    fullyUtilized: false,
+                    hoursPerMth: 180,
+                    amount: 90,
+                    loadedAmount: 24,
+                    advAmount: 0
+                },
+                shore: 'on',
+                originalAssignees: [ '52ab7005e4b0fd2a8d13001f' ],
+                type: '52c70ae5e4b0911cacf4e118'
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -409,22 +403,22 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     
         request.put('http://localhost:3000/v3/projects/' + projectID + '/phases/' + phaseID + '/roles/' + roleID, {
             body: JSON.stringify({
-            	phase: phaseID,
-            	daysGap: 260,
-            	hoursNeededToCover: 8,
-            	isCurrentRole: true,
-            	rate: {
-            		type: 'hourly',
-            		rateUnits: '$/hr',
-            		fullyUtilized: false,
-            		hoursPerMth: 180,
-            		amount: 90,
-            		loadedAmount: 24,
-            		advAmount: 0
-            	},
-            	shore: 'on',
-            	originalAssignees: [ '52ab7005e4b0fd2a8d13001f' ],
-            	type: '52c70ae5e4b0911cacf4e118'
+                phase: phaseID,
+                daysGap: 260,
+                hoursNeededToCover: 8,
+                isCurrentRole: true,
+                rate: {
+                    type: 'hourly',
+                    rateUnits: '$/hr',
+                    fullyUtilized: false,
+                    hoursPerMth: 180,
+                    amount: 90,
+                    loadedAmount: 24,
+                    advAmount: 0
+                },
+                shore: 'on',
+                originalAssignees: [ '52ab7005e4b0fd2a8d13001f' ],
+                type: '52c70ae5e4b0911cacf4e118'
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -477,8 +471,8 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         // Fail if we don't have a roleID
         assert.ok(roleID);
     
-        request.del('http://localhost:3000/v3/projects/' + projectID + '/phases/' + phaseID + 
-        		'/roles/' + roleID.substr(0, 5), {
+        request.del('http://localhost:3000/v3/projects/' + projectID + '/phases/' + phaseID +
+'/roles/' + roleID.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },
