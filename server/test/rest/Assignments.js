@@ -137,7 +137,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.equal(json.role, DEFAULT_ROLE.role);
             assert.equal(json.person, DEFAULT_ROLE.person);
             assert.equal(json.project, DEFAULT_ROLE.project);
-            assert.equal(moment(json.startDate, moment.ISO_8601).format('YYYY-MM-DD'), DEFAULT_ROLE.startDate);
+            assert.equal(new Date(json.startDate).getTime() , new Date(DEFAULT_ROLE.startDate).getTime() );
              
             // Save the assignmentID to do an update and delete later
             assignmentID = json.id;
@@ -216,7 +216,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.equal(json.role, DEFAULT_ROLE.role);
             assert.equal(json.person, DEFAULT_ROLE.person);
             assert.equal(json.project, DEFAULT_ROLE.project);
-            assert.equal(moment(json.startDate, moment.ISO_8601).format('YYYY-MM-DD'), DEFAULT_ROLE.startDate);
+            assert.equal(new Date(json.startDate).getTime() , new Date(DEFAULT_ROLE.startDate).getTime() );
             done();
         });
     });
@@ -316,7 +316,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.equal(json.role, CHANGED_ROLE.role);
             assert.equal(json.person, CHANGED_ROLE.person);
             assert.equal(json.project, CHANGED_ROLE.project);
-            assert.equal(moment(json.startDate, moment.ISO_8601).format('YYYY-MM-DD'), CHANGED_ROLE.startDate);
+            assert.equal(new Date(json.startDate).getTime() , new Date(CHANGED_ROLE.startDate).getTime() );
             done();
         });
     });
