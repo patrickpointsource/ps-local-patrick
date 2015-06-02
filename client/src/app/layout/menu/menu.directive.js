@@ -18,6 +18,7 @@
             replace: true,
             link: function ($scope, iElm, iAttrs, controller) {
                 $scope.menuItems = MenuService.getMenu();
+                console.log('Menu Items!!!' + $scope.menuItems);
             }
         };
     }
