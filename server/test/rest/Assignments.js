@@ -9,6 +9,20 @@ var path = require('path'),
     _ = require('underscore');
 
 describe('ASSIGNMENTS - test simple REST calls', function () {
+
+    var DEFAULT_ROLE = {
+        role: 'a1cd901e3a45792a4db010fa44c19e9bcd7e',
+        person: '5b40eabf7f08c51488fbfdf7d7d787fd',
+        project: 'cce171d4ed9e0b5ec3c2f78715057678',
+        startDate: '2015-01-01'
+    };
+	
+    var CHANGED_ROLE = {
+        role: '94e45b6d2581ac62ed2dc82e53200b9d6de2',
+        person: '52ab7005e4b0fd2a8d130006',
+        project: 'cfab522f1bcfb627bdf4202ebf2667d6',
+        startDate: '2015-02-01'
+    };
 	
     it('GET /v3/assignments (unauthenticated)', function (done) {
         request('http://localhost:3000/v3/assignments', function(err, resp, body) {
@@ -65,12 +79,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
     
     it('POST /v3/assignments (unauthenticated)', function(done){
         request.post('http://localhost:3000/v3/assignments', {
-            body: JSON.stringify({
-                'role': 'a1cd901e3a45792a4db010fa44c19e9bcd7e',
-                'person' : '5b40eabf7f08c51488fbfdf7d7d787fd',
-                'project' : 'cce171d4ed9e0b5ec3c2f78715057678',
-                'startDate' : '2015-01-01'
-            }),
+            body: JSON.stringify(DEFAULT_ROLE),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -82,12 +91,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
 	
     it('POST /v3/assignments (User authenticated)', function(done){
         request.post('http://localhost:3000/v3/assignments', {
-            body: JSON.stringify({
-                'role': 'a1cd901e3a45792a4db010fa44c19e9bcd7e',
-                'person' : '5b40eabf7f08c51488fbfdf7d7d787fd',
-                'project' : 'cce171d4ed9e0b5ec3c2f78715057678',
-                'startDate' : '2015-01-01'
-            }),
+            body: JSON.stringify(DEFAULT_ROLE),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -107,12 +111,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
     var assignmentID;
     it('POST /v3/assignments (Admin authenticated)', function(done){
         request.post('http://localhost:3000/v3/assignments', {
-            body: JSON.stringify({
-                'role': 'a1cd901e3a45792a4db010fa44c19e9bcd7e',
-                'person' : '5b40eabf7f08c51488fbfdf7d7d787fd',
-                'project' : 'cce171d4ed9e0b5ec3c2f78715057678',
-                'startDate' : '2015-01-01'
-            }),
+            body: JSON.stringify(DEFAULT_ROLE),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -135,10 +134,10 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('person'), -1);
             assert.notEqual(keys.indexOf('project'), -1);
             assert.notEqual(keys.indexOf('startDate'), -1);
-            assert.equal(json.role, 'a1cd901e3a45792a4db010fa44c19e9bcd7e');
-            assert.equal(json.person, '5b40eabf7f08c51488fbfdf7d7d787fd');
-            assert.equal(json.project, 'cce171d4ed9e0b5ec3c2f78715057678');
-            assert.equal(moment(json.startDate).format('YYYY-MM-DD'), '2015-01-01');
+            assert.equal(json.role, DEFAULT_ROLE.role);
+            assert.equal(json.person, DEFAULT_ROLE.person);
+            assert.equal(json.project, DEFAULT_ROLE.project);
+            assert.equal(moment(json.startDate).format('YYYY-MM-DD'), DEFAULT_ROLE.startDate);
              
             // Save the assignmentID to do an update and delete later
             assignmentID = json.id;
@@ -214,10 +213,10 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('person'), -1);
             assert.notEqual(keys.indexOf('project'), -1);
             assert.notEqual(keys.indexOf('startDate'), -1);
-            assert.equal(json.role, 'a1cd901e3a45792a4db010fa44c19e9bcd7e');
-            assert.equal(json.person, '5b40eabf7f08c51488fbfdf7d7d787fd');
-            assert.equal(json.project, 'cce171d4ed9e0b5ec3c2f78715057678');
-            assert.equal(moment(json.startDate).format('YYYY-MM-DD'), '2015-01-01');
+            assert.equal(json.role, DEFAULT_ROLE.role);
+            assert.equal(json.person, DEFAULT_ROLE.person);
+            assert.equal(json.project, DEFAULT_ROLE.project);
+            assert.equal(moment(json.startDate).format('YYYY-MM-DD'), DEFAULT_ROLE.startDate);
             done();
         });
     });
@@ -225,12 +224,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
     it('PUT /v3/assignments/:id (unauthenticated)', function(done){
         // Dummy Assignment ID but should still get Unauthorized
         request.put('http://localhost:3000/v3/assignments/A1', {
-            body: JSON.stringify({
-                'role': 'a1cd901e3a45792a4db010fa44c19e9bcd7e',
-                'person' : '52ab7005e4b0fd2a8d130006',
-                'project' : 'cfab522f1bcfb627bdf4202ebf2667d6',
-                'startDate' : '2015-01-01'
-            }),
+            body: JSON.stringify(CHANGED_ROLE),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -251,12 +245,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
         assert.ok(assignmentID);
         
         request.put('http://localhost:3000/v3/assignments/' + assignmentID.substr(0, 5), {
-            body: JSON.stringify({
-                'role': '94e45b6d2581ac62ed2dc82e53200b9d6de2',
-                'person' : '52ab7005e4b0fd2a8d130006',
-                'project' : 'cfab522f1bcfb627bdf4202ebf2667d6',
-                'startDate' : '2015-01-01'
-            }),
+            body: JSON.stringify(CHANGED_ROLE),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -278,12 +267,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
         assert.ok(assignmentID);
 
         request.put('http://localhost:3000/v3/assignments/'+assignmentID, {
-            body: JSON.stringify({
-                'role': '94e45b6d2581ac62ed2dc82e53200b9d6de2',
-                'person' : '52ab7005e4b0fd2a8d130006',
-                'project' : 'cfab522f1bcfb627bdf4202ebf2667d6',
-                'startDate' : '2015-02-01'
-            }),
+            body: JSON.stringify(CHANGED_ROLE),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -305,12 +289,7 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
         assert.ok(assignmentID);
     
         request.put('http://localhost:3000/v3/assignments/'+assignmentID, {
-            body: JSON.stringify({
-                'role': '94e45b6d2581ac62ed2dc82e53200b9d6de2',
-                'person' : '52ab7005e4b0fd2a8d130006',
-                'project' : 'cfab522f1bcfb627bdf4202ebf2667d6',
-                'startDate' : '2015-02-01'
-            }),
+            body: JSON.stringify(CHANGED_ROLE),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -334,10 +313,10 @@ describe('ASSIGNMENTS - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('project'), -1);
             assert.notEqual(keys.indexOf('startDate'), -1);
             assert.equal(json.id, assignmentID);
-            assert.equal(json.role, '94e45b6d2581ac62ed2dc82e53200b9d6de2');
-            assert.equal(json.person, '52ab7005e4b0fd2a8d130006');
-            assert.equal(json.project, 'cfab522f1bcfb627bdf4202ebf2667d6');
-            assert.equal(moment(json.startDate).format('YYYY-MM-DD'), '2015-02-01');
+            assert.equal(json.role, CHANGED_ROLE.role);
+            assert.equal(json.person, CHANGED_ROLE.person);
+            assert.equal(json.project, CHANGED_ROLE.project);
+            assert.equal(moment(json.startDate).format('YYYY-MM-DD'), CHANGED_ROLE.startDate);
 
             done();
         });
