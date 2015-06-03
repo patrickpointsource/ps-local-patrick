@@ -3,5 +3,5 @@
     'use strict';
 
     angular
-        .module('mastermind.layout.header', ['UserModule']);
+        .module('mastermind.layout.header', []);
 })();

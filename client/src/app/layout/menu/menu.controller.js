@@ -14,7 +14,13 @@
 
         console.log($scope.menuItems);
 
-        $scope.menuNavigate = function (state, params) {
+        $scope.menuNavigate = function (menuItem, params) {
+            var state = menuItem.name;
+
+            if (menuItem.submenuItems) {
+                menuItem.visible = !menuItem.visible;
+            }
+
             console.log(state);
 
             $rootScope.$broadcast('menuNavigate');

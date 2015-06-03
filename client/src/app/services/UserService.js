@@ -1,5 +1,5 @@
 (function() {
-    angular.module('UserModule', []).
+    angular.module('app.services').
     factory('UserService', UserService);
 
     UserService.$inject = ['psafLogger', 'PeopleService', 'AuthService', '$interval'];
@@ -12,27 +12,8 @@
         AuthService.init();
 
         return {
-            getMenu: getMenu,
             getUser: getUser
         };
-
-        function getMenu(logger) {
-            var menu = [{
-                'name': 'home',
-                'label': 'Dashboard'
-            }, {
-                'name': 'projects',
-                'label': 'Projects'
-            }, {
-                'name': 'people',
-                'label': 'People'
-            }];
-
-            if (logger) {
-                logger.log(menu);
-            }
-            return menu;
-        }
 
         function getUser(refresh) {
             if (refresh || !angular.isDefined(User.id)) {

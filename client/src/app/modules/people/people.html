@@ -1,0 +1,27 @@
+<div class="people grid-container small-16">
+    <div class="grid-block">
+        <div>
+            <select ng-model="people.sortFilter">
+                <option value="name-asc">Name (A-Z)</option>
+                <option value="name-desc">Name (Z-A)</option>
+                <option value="role">Role</option>
+                <option value="utilization-asc">Utilization (lowest to highest)</option>
+                <option value="utilization-desc">Utilization (highest to lowest)</option>
+            </select>
+        </div>
+    </div>
+    <div class="people-list">
+        <header>People</header>
+        <ul>
+            <li ng-repeat="person in people.list" class="person grid-block small-16">
+                <div class="person-img small-3 large-2">
+                    <div><a ng-href="#/people/{{person.id}}"><img ng-src="{{person.thumbnail}}" class="profile-thumbnail"></a></div>
+                </div>
+                <div class="person-name small-12 large-4"><a ng-href="#/people/{{person.id}}">{{person.name.fullName}}</a></div>
+                <div class="person-role small-16 large-2"><div>ADMIN</div></div>
+                <div class="person-title small-16 large-5"><a ng-href="#/people/{{person.id}}">{{person.primaryRole.name}}</a></div>
+                <div class="person-utilization small-16 large-3">100%</div>
+            </li>
+        </ul>
+    </div>
+</div>
