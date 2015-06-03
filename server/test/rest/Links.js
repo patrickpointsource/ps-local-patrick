@@ -9,7 +9,9 @@ var path = require('path'),
 
 describe('LINKS - test simple REST calls', function () {
 
-    var linksTemplate = {};
+    var linksTemplate = {
+        project:'projects/52e02825e4b004c97d35e7c7'
+    };
 
     it('GET /v3/links (unauthenticated)', function (done) {
         request('http://localhost:3000/v3/links', function(err, resp, body) {
@@ -45,7 +47,6 @@ describe('LINKS - test simple REST calls', function () {
                 assert.ok(keys.length >= 1);
                 assert.notEqual(keys.indexOf('id'), -1);
                 assert.notEqual(keys.indexOf('project'), -1);
-                linksTemplate.project = json.project;
             }
             done();
         });
@@ -72,7 +73,6 @@ describe('LINKS - test simple REST calls', function () {
                 assert.ok(keys.length >= 1);
                 assert.notEqual(keys.indexOf('id'), -1);
                 assert.notEqual(keys.indexOf('project'), -1);
-                linksTemplate.project = json.project;
             }
             done();
         });
@@ -216,7 +216,7 @@ describe('LINKS - test simple REST calls', function () {
             assert.ok(keys.length >= 1);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('project'), -1);
-            assert.equal(json.project, linksTemplate.project);
+            assert.equal(json.project.resource, linksTemplate.project);
             done();
         });
     });
@@ -238,30 +238,6 @@ describe('LINKS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 401);
-            done();
-        });
-    });
-
-    it('PUT /v3/links/:id (invalid link id)', function(done){
-        // Fail if we don't have a link ID
-        assert.ok(linksTemplate.id);
-
-        request.put('http://localhost:3000/v3/links/' +linksTemplate.id.substr(0, 5), {
-            body: JSON.stringify({
-                'project': linksTemplate.project
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            jar: util.adminCookieJar
-        }, function(err, resp, body) {
-            if(err){
-                throw err;
-            }
-            if(resp.statusCode !== 404){
-                console.log('error:', err, body);
-            }
-            assert.equal(resp.statusCode, 404);
             done();
         });
     });
@@ -318,7 +294,31 @@ describe('LINKS - test simple REST calls', function () {
             assert.ok(keys.length >= 1);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('project'), -1);
-            assert.equal(json.project, linksTemplate.project);
+            assert.equal(json.project.resource, linksTemplate.project);
+            done();
+        });
+    });
+
+    it('PUT /v3/links/:id (invalid link id)', function(done){
+        // Fail if we don't have a link ID
+        assert.ok(linksTemplate.id);
+
+        request.put('http://localhost:3000/v3/links/' +linksTemplate.id.substr(0, 5), {
+            body: JSON.stringify({
+                'project': linksTemplate.project
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            jar: util.adminCookieJar
+        }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 404){
+                console.log('error:', err, body);
+            }
+            assert.equal(resp.statusCode, 404);
             done();
         });
     });
@@ -341,27 +341,6 @@ describe('LINKS - test simple REST calls', function () {
         });
     });
 
-    it('DELETE /v3/links/:id (invalid link id)', function(done){
-        // Fail if we don't have a link ID
-        assert.ok(linksTemplate.id);
-
-        request.del('http://localhost:3000/v3/links/'+linksTemplate.id.substr(0, 5), {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            jar: util.adminCookieJar
-        }, function(err, resp, body) {
-            if(err){
-                throw err;
-            }
-            if(resp.statusCode !== 404){
-                console.log('error:', err, body);
-            }
-            assert.equal(resp.statusCode, 404);
-            done();
-        });
-    });
-
     it('DELETE /v3/links/:id (User authenticated)', function(done){
         // Fail if we don't have a link ID
         assert.ok(linksTemplate.id);
@@ -379,6 +358,27 @@ describe('LINKS - test simple REST calls', function () {
                 console.log('error:', err, body);
             }
             assert.equal(resp.statusCode, 403);
+            done();
+        });
+    });
+
+    it('DELETE /v3/links/:id (invalid link id)', function(done){
+        // Fail if we don't have a link ID
+        assert.ok(linksTemplate.id);
+
+        request.del('http://localhost:3000/v3/links/'+linksTemplate.id.substr(0, 5), {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            jar: util.adminCookieJar
+        }, function(err, resp, body) {
+            if(err){
+                throw err;
+            }
+            if(resp.statusCode !== 404){
+                console.log('error:', err, body);
+            }
+            assert.equal(resp.statusCode, 404);
             done();
         });
     });
