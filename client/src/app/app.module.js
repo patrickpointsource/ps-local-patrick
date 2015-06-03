@@ -16,16 +16,14 @@
             'ngTouch',
 
             'foundation',
-
+            'restangular',
             'ngCordova',
             'psaf-logger',
             'mastermind.layout',
             'swagger-client',
             'directive.g+signin',
             'mastermind.layout.header',
-
             'app.dashboard',
-
             'PeopleModule'
         ])
         .config(AppConfig)
@@ -35,11 +33,15 @@
         '$stateProvider',
         '$urlRouterProvider',
         'psafLoggerProvider',
-        'RestangularProvider',
         'CONFIG'
     ];
 
-    function AppConfig($stateProvider, $urlRouterProvider, psafLoggerProvider, RestangularProvider, CONFIG) {
+    function AppConfig(
+        $stateProvider,
+        $urlRouterProvider,
+        psafLoggerProvider,
+        CONFIG
+    ) {
         psafLoggerProvider.logging(true);
 
         // For any unmatched url, redirect to /state1
@@ -118,9 +120,18 @@
                 url: '/people',
                 views: {
                     'content@': {
-                        templateUrl: 'app/modules/people/index.html',
+                        templateUrl: 'app/modules/people/people.html',
                         controller: 'PeopleController',
                         controllerAs: 'people'
+                    }
+                }
+            })
+            .state('styleguide', {
+                parent: 'root',
+                url: '/styleguide',
+                views: {
+                    'content@': {
+                        templateUrl: 'app/layout/styleguide.html',
                     }
                 }
             })
@@ -144,12 +155,39 @@
         '$timeout',
         '$cordovaStatusbar',
         '$http',
-        'PeopleService',
+        'Restangular',
         'AuthService',
-        'UserService',
+        'CONFIG'
     ];
 
-    function AppRun($rootScope, $state, $timeout, $cordovaStatusbar, $http, AuthService, UserService) {
+    function AppRun(
+        $rootScope,
+        $state,
+        $timeout,
+        $cordovaStatusbar,
+        $http,
+        Restangular,
+        AuthService,
+        CONFIG) {
+
+        Restangular.setBaseUrl(CONFIG.development.apiUrl)
+            .setDefaultHttpFields({
+                withCredentials: true
+            });
+
+        Restangular.setErrorInterceptor(function(response, deferred, responseHandler) {
+            if (response.status === 403 || response.status === 401) {
+                AuthService.refreshAccessToken().then(function() {
+                    // Repeat the request and then call the handlers the usual way.
+                    $http(response.config).then(responseHandler, deferred.reject);
+                    // Be aware that no request interceptors are called this way.
+                });
+
+                return false; // error handled
+            }
+
+            return true; // error not handled
+        });
 
         $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
             $rootScope.logger.log('State Change ERROR:', JSON.stringify(error));

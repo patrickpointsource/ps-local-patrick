@@ -433,7 +433,7 @@ gulp.task('build-dev', ['lint'], function () {
         });
 });
 
-gulp.task('dev', ['build', 'server:start'], function () {
+gulp.task('dev', ['build-dev', 'server:start'], function () {
 
     // Watch Sass
     gulp.watch([

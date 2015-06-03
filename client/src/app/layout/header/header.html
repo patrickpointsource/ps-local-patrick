@@ -1,26 +1,28 @@
-<div class="grid-block small-12 vertical">
-    <div class="grid-content no-padding hide-for-medium small-12">
+<div class="grid-block small-16 vertical">
+    <div class="grid-content no-padding hide-for-medium small-16">
         <div class="header-title-bar dark">
             <div class="title center">&nbsp;</div>
             <span class="left"><a zf-toggle="main-menu"><i class="fa fa-bars"></i></a>
                 <a ui-sref="home"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
             </span>
             <span class="right">
-                <a ui-sref="profile"><img ng-src="{{User.thumbnail}}" class="user-profile-thumbnail"></a>
+                <a ui-sref="profile"><img ng-src="{{user.thumbnail}}" class="user-profile-thumbnail"></a>
             </span>
         </div>
     </div>
-    <div class="grid-content no-padding show-for-medium small-12">
+    <div class="grid-content no-padding show-for-medium small-16">
         <div class="header-title-bar light">
             <div class="title center mastermind-title">
                 <a ui-sref="home"><span class="text-bold">Master</span><span class="text-light">Mind</span></a>
             </div>
             <span class="left">&nbsp;</span>
-            <span class="right" ng-if="user.thumbnail">
-                <a ui-sref="profile"><img ng-src="{{user.thumbnail}}" class="user-profile-thumbnail"></a>
-            </span>
-            <span class="right" ng-if="!user.thumbnail">
-                <google-plus-signin clientid="141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com"></google-plus-signin>
+            <span class="right" ng-show="displayLoginOrProfile">
+                <span ng-show="user.thumbnail">
+                    <a ui-sref="profile"><img ng-src="{{user.thumbnail}}" class="user-profile-thumbnail"></a>
+                </span>
+                <span class="ng-hide">
+                    <google-plus-signin clientid="141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com"></google-plus-signin>
+                </span>
             </span>
         </div>
     </div>
