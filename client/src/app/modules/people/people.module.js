@@ -3,5 +3,5 @@
     'use strict';
 
     angular
-        .module('mastermind.layout.menu', []);
+        .module('PeopleModule', []);
 })();
