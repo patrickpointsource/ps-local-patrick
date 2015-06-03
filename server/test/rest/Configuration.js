@@ -34,22 +34,10 @@ describe('CONFIGURATIONS - test simple REST calls', function () {
             if(err){
                 throw err;
             }
-            if(resp.statusCode !== 200){
+            if(resp.statusCode !== 403){
                 console.log('error:', err, body);
             }
-            assert.ok(!err);
-            assert.equal(resp.statusCode, 200);
-            var json = JSON.parse(body);
-            assert.equal(_.isArray(json), true);
-            if(json.length > 0){
-                // Pick the first one and make sure it meets the standard format
-                var item = json[0];
-                var keys = _.keys(item);
-                assert.ok(keys.length >= 2);
-                assert.notEqual(keys.indexOf('id'), -1);
-                assert.notEqual(keys.indexOf('config'), -1);
-                assert.notEqual(keys.indexOf('properties'), -1);
-            }
+            assert.equal(resp.statusCode, 403);
             done();
         });
     });
