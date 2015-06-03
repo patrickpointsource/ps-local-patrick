@@ -1,3 +1,4 @@
+/* global _ */
 (function() {
     angular.module('app.services').
     factory('UserService', UserService);
@@ -106,7 +107,7 @@
                 var permissionGroups = user.permissions;
                 var found = _.find(permissionGroups, function(permissionGroup, groupKey){
                     return _.find(permissionGroup, function(permission){
-                        return permission == permissionName;
+                        return permission === permissionName;
                     });
                 });
                 deferred.resolve(found !== undefined);
@@ -115,7 +116,7 @@
             });
 
             return deferred.promise;
-        };
+        }
 
     }
 

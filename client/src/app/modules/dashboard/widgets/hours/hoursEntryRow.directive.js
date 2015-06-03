@@ -23,7 +23,7 @@
             input = input.replace(/\[\[/g, '<span class="highlight">');
             input = input.replace(/\]\]/g, '</span>');
             return $sce.trustAsHtml(input);
-        }
+        };
     }
     function HoursEntryRow() {
 
@@ -171,7 +171,6 @@
 
                 $scope.hoursValidation = [];
 
-                var totalHours = 0;
                 var entries = $scope.selected ? $scope.selected.hoursEntries : [];
 
                 if ($scope.hourEntry &&
@@ -211,7 +210,10 @@
                     $scope.hoursValidation.push('Hours description is empty');
                 }
 
-                var totalHours = $scope.getTotalHoursWithHoursForEntryWithID($scope.hourEntry.hours, $scope.hourEntry.id);
+                var totalHours = $scope.getTotalHoursWithHoursForEntryWithID(
+                    $scope.hourEntry.hours,
+                    $scope.hourEntry.id
+                );
 
                 if (totalHours > 24) {
                     $scope.hoursValidation.push('Hours logged on a given day cannot exceed 24 hours.');
@@ -316,7 +318,7 @@
             };
             $scope.toggleDescription = function(){
                 $scope.isDescriptionExpandedOnMobile = !$scope.isDescriptionExpandedOnMobile;
-            }
+            };
         }
     }
 })();

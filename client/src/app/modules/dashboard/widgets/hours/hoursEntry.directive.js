@@ -567,7 +567,7 @@
                                                 ProjectsService.getProject(entry.project).then(function(project){
                                                     $scope.projectsMap[project.id] = project;
                                                     entry.projectName = project.name;
-                                                })
+                                                });
                                             }
                                         }else if(entry.task){
                                             if($scope.tasksMap[entry.task]){
@@ -576,7 +576,7 @@
                                                 TasksService.getTask(entry.task).then(function(task){
                                                     $scope.tasksMap[task.id] = task;
                                                     entry.taskName = task.name;
-                                                })
+                                                });
                                             }
                                         }
                                     }
@@ -611,15 +611,15 @@
                     }
                 });
                 return sum;
-            }
+            };
 
             $scope.updateTotalHours = function(){
                 if(currentSelection < 0 || currentSelection > 6){
-                    return numHours;
+                    return;
                 }
                 var total = $scope.getTotalHoursWithHoursForEntryWithID(0, -1);
                 $scope.daysOfTheWeek[currentSelection].totalHours = total;
-            }
+            };
 
             // The next few methods all do something for copying hours...lot of code. - RCM 2015-05-01 19:40
             $scope.copyHoursEntry = function () {
@@ -790,7 +790,9 @@
                 $scope
                     .loadAvailableTasks()
                     .then($scope.loadProjects)
-                    .then(function(){ $scope.hoursRequest(null, $scope.moment('2015-05-15').day()) });
+                    .then(function(){
+                        $scope.hoursRequest(null, $scope.moment('2015-05-15').day());
+                    });
             };
 
             // TODO: Get me from People and then call init

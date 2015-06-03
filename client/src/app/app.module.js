@@ -47,11 +47,6 @@
         // For any unmatched url, redirect to /state1
         $urlRouterProvider.otherwise('/home');
 
-        RestangularProvider.setBaseUrl(CONFIG.development.apiUrl)
-            .setDefaultHttpFields({
-                withCredentials: true
-            });
-
         /**
          * This abstract route serves as the base route for all other routes with parent: 'root'.
          * It loads the default page elements, topbar, menu, header and footer
