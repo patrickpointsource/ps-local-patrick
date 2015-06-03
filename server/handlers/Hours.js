@@ -12,8 +12,8 @@ var hour = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project']);
-        util.mapStraightDates(util.FOR_REST, doc, obj, ['created', 'date']);
+        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project', 'date']);
+        util.mapStraightDates(util.FOR_REST, doc, obj, ['created']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -23,8 +23,7 @@ var hour = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project']);
-        util.mapStraightDates(util.FOR_DB, doc, obj, 'date');
+        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project', 'date']);
         obj.created = (expectNew ? (new Date()) : (new Date(doc.created))).toString();
         return obj;
     },
@@ -78,7 +77,7 @@ var hour = {
 module.exports.getHours = util.generateCollectionGetHandler(
     securityResources.hours.resourceName, // resourceName
     securityResources.hours.permissions.viewHours, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         var q = '';
         if(req.query.startDate){
@@ -115,6 +114,9 @@ module.exports.getHours = util.generateCollectionGetHandler(
                 q: q,
                 include_docs: true
             }, function(err, results){
+                if(err || !results){
+                    return sendJson(res, {'message': 'Could not search Hours.', 'detail': err}, 500);
+                }
                 callback(results.rows);
             });
             return;

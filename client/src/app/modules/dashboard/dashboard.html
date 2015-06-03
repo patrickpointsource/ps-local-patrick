@@ -3,38 +3,10 @@
         <h2>Dashboard</h2>
         <div>What is this I see?</div>
 
-        <div ng-if="!isExecutive && !isManager">
-            <hours-entry></hours-entry>
-
-            <my-projects />
-
-            <project-kickoffs />
-
-            <my-ooo-requests />
-        </div>
-
-        <div ng-if="isExecutive || isManager">
-            <current-projects />
-            <staffing-deficits />
-
-            <div ng-if="hasAssignment">
-                <hours-entry />
-            </div>
-
-            <my-projects />
-
-            <div ng-if="hasPermissions(CONSTS.VIEW_PEOPLE)">
-                <people />
-                <booking-forecast />
-            </div>
-
-            <project-kickoffs />
-
-            <my-ooo-requests />
-
-            <div ng-if="financeAccess">
-                <ooo-requests />
-            </div>
+        <hours-entry></hours-entry>
+        <my-ooo-requests />
+        <div ng-if="financeAccess">
+            <ooo-requests />
         </div>
 
     </div>

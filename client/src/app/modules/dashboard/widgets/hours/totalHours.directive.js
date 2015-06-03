@@ -21,7 +21,6 @@
 
         var directive = {
             name: 'totalHours',
-            controller: TotalHoursCtrl,
             restrict: 'EA',
             templateUrl: 'app/modules/dashboard/widgets/hours/totalHours.html',
             replace: true,
@@ -33,35 +32,6 @@
             }
         };
 
-        TotalHoursCtrl.$inject = [
-            'psafLogger',
-            '$scope',
-            '$state',
-            '$rootScope',
-            '$timeout',
-            // 'Resources',
-            'PeopleService',
-            'ProjectsService',
-            'HoursService',
-            'TasksService',
-            'RolesService',
-            'AssignmentsService'
-        ];
-
         return directive;
-
-        function TotalHoursCtrl(psafLogger,
-                           $scope,
-                           $state,
-                           $rootScope,
-                           $timeout,
-                        //    Resources,
-                           PeopleService,
-                           ProjectsService,
-                           HoursService,
-                           TasksService,
-                           RolesService,
-                           AssignmentsService) {
-        }
     }
 })();

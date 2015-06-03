@@ -28,7 +28,7 @@ var securityRole = {
 module.exports.getSecurityRoles = util.generateCollectionGetHandler(
     securityResources.securityRoles.resourceName, // resourceName
     securityResources.securityRoles.permissions.viewSecurityRoles, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         // No searching for SecurityRoles
         callback(false);
     },

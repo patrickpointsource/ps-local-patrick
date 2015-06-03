@@ -1,4 +1,4 @@
-/* global moment, _ */
+/* global moment, _, async */
 (function(){
     angular
         .module('app.dashboard.widgets.hours', [
@@ -41,13 +41,16 @@
             '$state',
             '$rootScope',
             '$timeout',
+            '$q',
             // 'Resources',
+            'UserService',
             'PeopleService',
             'ProjectsService',
             'HoursService',
             'TasksService',
             'RolesService',
-            'AssignmentsService'
+            'AssignmentsService',
+            'HoursEntryService'
         ];
 
         return directive;
@@ -57,13 +60,16 @@
                            $state,
                            $rootScope,
                            $timeout,
+                           $q,
                         //    Resources,
+                           UserService,
                            PeopleService,
                            ProjectsService,
                            HoursService,
                            TasksService,
                            RolesService,
-                           AssignmentsService) {
+                           AssignmentsService,
+                           HoursEntryService) {
 
             var logger = psafLogger.getInstance('mastermind');
 
@@ -74,8 +80,9 @@
             $scope.moment = moment;
 
             $scope.displayedMonthDays = [];
-            $scope.currentMonth = $scope.moment();
-            $scope.startDate = moment();
+            // TODO: Remove date
+            $scope.currentMonth = $scope.moment('2015-05-15');
+            $scope.startDate = moment('2015-05-15');
             $scope.ongoingProjects = [];
 
             $scope.hoursProjects = [];
@@ -87,19 +94,14 @@
             $scope.hasAssignment = false;
             $rootScope.hasAssignment = false;
 
-            $scope.customHoursStartDate = '';
-            $scope.customHoursEndDate = '';
-
             $scope.newHoursRecord = {};
-            // default open status of hours entry form
-            $scope.entryFormOpen = false;
             $scope.lastSelectedDay = {};
             // $scope.hoursToDelete = [];
 
-            $scope.csvData = null;
-
             $scope.newHoursRecord = {};
             $scope.hoursValidation = [];
+
+            var thisWeekDates = [];
 
             var taskIconsMap = {
                 'meetings': 'fa-comments-o',
@@ -125,121 +127,32 @@
                 'sick time': 'padding: 3px 6px;'
             };
 
-            $scope.canEditHours = function () {
-                var result = true;
-
-                result = $scope.canEditOtherPeopleHours ? $scope.canEditOtherPeopleHours() : true;
-
-                if (!result) {
-                    result = $scope.profileId && $scope.profileId === $scope.me._id;
-                }
-
-                return result;
-            };
-
             $scope.showHideWidget = function (show) {
                 $scope.hasAssignment = show;
                 $rootScope.hasAssignment = show;
             };
 
-            $scope.applyCustomHoursPeriod = function () {
+            // Gets the task listing and then sets up some inline styles for proper display - RCM 2015-05-01 14:56
+            $scope.loadAvailableTasks = function () {
+                var deferred = $q.defer();
+                $scope.tasksMap = {};
+                TasksService.getTasks().then(function (tasks) {
+                    _.each(tasks, function (t) {
+                        $scope.tasksMap[t.id] = t;
+                        $scope.hoursTasks.push(t);
+                        $scope.projectTasksList.push(t);
 
-                if ($scope.setCustomPeriod) {
-                    $scope.setCustomPeriod($scope.customHoursStartDate, $scope.customHoursEndDate);
-                }
+                        t.isTask = true;
+                        t.originalName = t.name;
+                        t.icon = taskIconsMap[t.name.toLowerCase()];
+                        t.iconCss = taskIconStylseMap[t.name.toLowerCase()];
+                        t.visible = t.name !== 'Vacation' && t.name !== 'Appointment';
+                    });
 
-                $rootScope.showHoursMonthInfo = true;
-            };
-
-            $scope.projectsAndTasksAsCSV = function (hours) {
-                var line = '';
-
-                logger.debug('hours-entry', 'hours:' + hours);
-
-                //Print the header
-                var head = ['Project/Task', 'Date', 'Hours', 'Description'];
-                var str = head.join(',') + '\r\n';
-
-                //Print the values
-                for (var x = 0; x < hours.length; x++) {
-                    line = '';
-
-                    var record = hours[x];
-
-                    if (record.project) {
-                        line += $scope.hoursToCSV.stringify(record.project.name) + ',';
-                    } else if (record.task) {
-                        line += $scope.hoursToCSV.stringify(record.task.name) + ',';
-                    }
-
-                    line += record.hour.date + ',';
-                    line += record.hour.hours + ',';
-
-                    line += $scope.hoursToCSV.stringify(record.hour.description) + ',';
-                    str += line + '\r\n';
-                }
-                return str;
-            };
-
-            $scope.hoursToCSV = {
-                stringify: function (str) {
-                    return '"' + str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
-                            .replace(/"/g, '""') + // replace quotes with double quotes
-                        '"';
-                },
-
-                generate: function () {
-                    var project,
-                        hours = [],
-                        i,
-                        j;
-
-                    if ($scope.projectHours) {
-                        for (i = 0; i < $scope.projectHours.length; i++) {
-
-                            for (j = 0; j < $scope.projectHours[i].hours.length; j++) {
-                                if ($scope.projectHours[i].hours[j].show) {
-                                    $scope.projectHours[i].hours[j].project = {
-                                        name: $scope.projectHours[i].project.name,
-                                        roles: $scope.projectHours[i].project.roles
-                                    };
-
-                                    hours = hours.concat($scope.projectHours[i].hours[j]);
-                                }
-
-                            }
-
-                        }
-                    }
-
-                    if ($scope.taskHours) {
-                        for (i = 0; i < $scope.taskHours.length; i++) {
-
-                            for (j = 0; j < $scope.taskHours[i].hours.length; j++) {
-
-                                if ($scope.taskHours[i].hours[j].show) {
-                                    $scope.taskHours[i].hours[j].task = {
-                                        name: $scope.taskHours[i].name
-                                    };
-
-                                    hours = hours.concat($scope.taskHours[i].hours[j]);
-                                }
-
-                            }
-                        }
-                    }
-
-                    $scope.csvData = $scope.projectsAndTasksAsCSV(hours);
-                },
-
-                link: function () {
-                    return 'data:text/csv;charset=UTF-8,' + encodeURIComponent($scope.csvData);
-                }
-            };
-
-            // Not sure what is happening here - RCM 2015-04-25
-            $scope.getCurrentPerson = function () {
-                return $scope.me;
+                    sortProjectTaskList();
+                    deferred.resolve();
+                }, deferred.reject);
+                return deferred.promise;
             };
 
             /**
@@ -247,107 +160,49 @@
              * entry drop down
              */
             $scope.loadProjects = function () {
-                ProjectsService.getOngoingProjects(function (result) {
+                var deferred = $q.defer();
+                var myAndOngoingProjects = {};
 
-                    $scope.ongoingProjects = result.data;
+                AssignmentsService.getCurrentAssignments($scope.me.id).then(function(myCurrentAssignments){
+                    $scope.myAssignments = myCurrentAssignments;
 
-                    ProjectsService.getMyCurrentProjects($scope.getCurrentPerson()).then(function (myCurrentProjects) {
-                        $scope.myProjects = myCurrentProjects.data;
-                        if ($scope.myProjects.length > 0) {
-                            $scope.hasActiveProjects = true;
+                    async.each(myCurrentAssignments, function(assignment, callback){
+                        ProjectsService.getProject(assignment.project).then(function(project){
+                            myAndOngoingProjects[project.id] = project;
+                            callback();
+                        }, callback);
+                    }, function(err){
+                        if(err){
+                            return deferred.reject(err);
                         }
-
-                        var myProjects = [],
-                            m,
-                            myProj;
-
-                        for (m = 0; m < $scope.myProjects.length; m++) {
-                            myProj = $scope.myProjects[m];
-
-                            myProj.title = myProj.customerName + ': ' + myProj.name;
-                            myProjects.push(myProj);
-
-                            if (myProj && myProj.status && myProj.status.hasAssignment) {
-                                $scope.showHideWidget(true);
-                            }
-
-                        }
-
-                        var otherProjects = [],
-                            n;
-
-                        for (n = $scope.ongoingProjects.length - 1; n >= 0; n--) {
-                            var proj = _.find(myProjects, function (mp) {
-                                return mp.resource === $scope.ongoingProjects[n].resource;
-                            });
-
-                            if (!proj) {
-                                myProj = $scope.ongoingProjects[n];
-
-                                otherProjects.push(myProj);
-
-                                myProj.isOtherProj = true;
-                            }
-                        }
-
-                        $scope.hoursProjects = myProjects.concat(otherProjects);
-
-                        $scope.projectTasksList = $scope.projectTasksList.concat(myProjects.concat(otherProjects));
-
-                        // load projects on which current person have at least one assignment in
-                        // past/present/future
-                        HoursService
-                            .getCurrentPersonProjects($scope.getCurrentPerson())
-                            .then(function (projectsWithMyAssignments) {
-                                var found,
-                                    i;
-
-                                for (i = 0; i < projectsWithMyAssignments.length; i++) {
-                                    found = _.find($scope.projectTasksList, function (tp) {
-                                        return tp.resource === projectsWithMyAssignments[i].resource;
-                                    });
-                                    if (found) {
-                                        delete found.isOtherProj;
-                                    }
+                        ProjectsService.getOngoingProjects().then(function (projects) {
+                            _.each(projects, function(project){
+                                if(!myAndOngoingProjects[project.id]){
+                                    myAndOngoingProjects[project.id] = project;
+                                    myAndOngoingProjects[project.id].isOtherProj = true;
                                 }
-
-                                AssignmentsService
-                                    .getMyCurrentAssignments($scope.getCurrentPerson())
-                                    .then(function (assignments) {
-                                        $scope.myAssignments = assignments;
-
-                                        $scope.sortProjectTaskList();
-                                    });
-
-                                $scope.projectTasksList = $scope.projectTasksList.concat(projectsWithMyAssignments);
-
-                                $scope.sortProjectTaskList();
                             });
-                    });
+                            _.each(myAndOngoingProjects, function(project){
+                                project.originalName = project.name;
+                                project.originalCustomerName = project.customerName;
+                            });
+                            $scope.projectsMap = myAndOngoingProjects;
+                            $scope.hoursProjects = _.values(myAndOngoingProjects);
+                            $scope.projectTasksList = $scope.projectTasksList.concat($scope.hoursProjects);
 
+                            sortProjectTaskList();
+                            logger.debug('done loading projects!', $scope.projectsMap);
+                            deferred.resolve();
+                        }, deferred.reject);
+                    });
                 });
+
+                return deferred.promise;
             };
 
-            /*
-             * $scope.openHoursEntry = function (day) {
-             *
-             * $scope.hoursToDelete = [];
-             * //console.log($scope.selected)
-             *
-             * if ($scope.entryFormOpen && day ===
-             * $scope.selected) { $scope.entryFormOpen = false
-             * delete $scope.selected; } else { // use deep
-             * cloning to prevent from errors when some entries
-             * were removed and then canceled $scope.selected =
-             * $scope.cloneDay(day);
-             * //$('#editHours').modal('show');
-             * $scope.entryFormOpen = true;
-             * $scope.showHideHoursDialog(true)
-             *  } };
-             */
-            $scope.sortProjectTaskList = function () {
+            var sortProjectTaskList = function () {
                 $scope.projectTasksList = _.uniq($scope.projectTasksList, function (tp) {
-                    return tp.resource;
+                    return tp.id;
                 });
 
                 $scope.projectTasksList.sort(function (item1, item2) {
@@ -421,70 +276,7 @@
                 e.stopPropagation();
             };
 
-            $scope.showHideDesc = function (e, hourEntry) {
-                e = e ? e : window.event;
 
-                var i = $(e.target).closest('.hours-logged-details').find('i');
-                var entry = $(e.target).closest('.hours-logged-entry');
-                var desc = entry.find('span.hours-logged-desc');
-
-                if (!hourEntry.detailsVisible) {
-                    i.removeClass('fa-chevron-down').addClass('fa-chevron-up');
-                    desc.addClass('mobile-visible');
-                    entry.find('.edit').addClass('mobile-visible');
-                    hourEntry.detailsVisible = true;
-                    //entry.css('paddingBottom', '20px');
-                } else {
-                    i.removeClass('fa-chevron-up').addClass('fa-chevron-down');
-                    desc.removeClass('mobile-visible');
-                    entry.find('.edit').removeClass('mobile-visible');
-                    hourEntry.detailsVisible = false;
-                    //entry.css('paddingBottom', '0px')
-                }
-
-            };
-
-            $scope.editHoursEntry = function (e, hourEntry, tagetInput) {
-                e = e ? e : window.event;
-
-                if (e) {
-                    var hoursLoggedEntry = $(e.target).closest('.hours-logged-entry');
-
-                    hoursLoggedEntry.find('.mobile-visible').removeClass('mobile-visible');
-                    hoursLoggedEntry.find('.fa-chevron-up').removeClass('fa-chevron-up').addClass('fa-chevron-down');
-
-                    tagetInput = tagetInput ? tagetInput : hoursLoggedEntry.find('[name="project-task-select"]');
-                }
-
-                hourEntry.hoursRecord.editMode = true;
-
-                hourEntry.hoursRecord.hoursEdited = hourEntry.hoursRecord.hours;
-                hourEntry.hoursRecord.descriptionEdited = hourEntry.hoursRecord.description;
-
-                // if (!hourEntry.hoursRecord.isAdded){
-                hourEntry.selectedItem = hourEntry.hoursRecord.project ? hourEntry.project : hourEntry.hoursRecord.task;
-
-                setExpectedHoursPrompt(hourEntry,
-                    hourEntry.hoursRecord.project ? hourEntry.project : hourEntry.hoursRecord.task);
-                // }
-
-                $scope.bindAutocompleteHandlers(tagetInput);
-            };
-
-            /**
-             * Mobile version while operation distributed
-             */
-            $scope.closeEditHoursEntry = function (e, hourEntry) {
-                e = e ? e : window.event;
-                $scope.clearAutocompleteHandlers(
-                    $(e.target)
-                        .closest('.hours-logged-entry')
-                        .find('[name="project-task-select"]')
-                );
-
-                hourEntry.hoursRecord.editMode = false;
-                hourEntry.detailsVisible = false;
-            };
 
             $scope.removeOrCloseHourEntry = function (e, hourEntry, index) {
                 e = e ? e : window.event;
@@ -512,7 +304,7 @@
                 // $scope.deleteHoursRecord(index)
                 $scope.selected.hoursEntries.splice(index, 1);
 
-                if (hourEntry.hoursRecord && $scope.canDeleteMyHours()) {
+                if (hourEntry.hoursRecord && $scope.canDeleteMyHours) {
                     Resources.remove(hourEntry.hoursRecord.resource, hourEntry.hoursRecord).then(function () {
                         // $scope.hoursRequest();
                         $scope.validateAndCalculateTotalHours();
@@ -521,398 +313,33 @@
                 }
             };
 
-            $scope.canDeleteMyHours = function () {
-                var result = $rootScope.hasPermissions(CONSTS.DELETE_MY_HOURS_PERMISSION);
+            UserService.checkForPermission(UserService.PERMISSIONS.DELETE_MY_HOURS_PERMISSION).then(function(result){
+                $scope.canDeleteMyHours = result;
+            });
+            UserService.checkForPermission(UserService.PERMISSIONS.EDIT_HOURS_PERMISSION).then(function(result){
+                $scope.canEditHours = result;
+            });
 
-                if (!result) {
-                    result = $scope.profileId && $scope.profileId === $scope.me._id;
-                }
-
-                return result;
-            };
-
-            $scope.saveHoursEntry = function (e, hourEntry, isAdded) {
-                var tmpHours = hourEntry.hoursRecord.hours;
-                var tmpDesc = hourEntry.hoursRecord.description;
-
-                hourEntry.hoursRecord.hours = hourEntry.hoursRecord.hoursEdited;
-                hourEntry.hoursRecord.description = hourEntry.hoursRecord.descriptionEdited;
-
-                $scope.getNewHoursValidationErrors(hourEntry);
-
-                if ($scope.hoursValidation.length > 0) {
-                    hourEntry.hoursRecord.hours = tmpHours;
-                    hourEntry.hoursRecord.description = tmpDesc;
-
+            var currentSelection = -1;
+            var setSelected = function (index) {
+                if(index < -1 && index > 6){
+                    // invalid index
                     return;
                 }
 
-                if (hourEntry.hoursRecord.isAdded &&
-                    (
-                        hourEntry.hoursRecord.hours === '' ||
-                        !hourEntry.selectedItem
-                    )
-                ) {
+                for(var i=0; i<$scope.daysOfTheWeek.length; i++){
+                    $scope.daysOfTheWeek[i].selected = false;
+                }
+                if(index === -1 || index === currentSelection){
+                    // Deselecting all, so hide the Hours Rows
+                    $scope.showHoursRows = false;
                     return;
                 }
 
-                isAdded = isAdded || hourEntry.hoursRecord.isAdded;
-                delete hourEntry.hoursRecord.hoursEdited;
-                delete hourEntry.hoursRecord.descriptionEdited;
-                delete hourEntry.hoursRecord.editMode;
-                delete hourEntry.hoursRecord.isAdded;
-                delete hourEntry.hoursRecord.isCopied;
-                delete hourEntry.hoursRecord.isDefault;
-
-                if (hourEntry.selectedItem) {
-                    delete hourEntry.hoursRecord.project;
-                    delete hourEntry.hoursRecord.task;
-                    delete hourEntry.project;
-                    delete hourEntry.task;
-
-                    if (hourEntry.selectedItem.resource.indexOf('projects') > -1) {
-                        hourEntry.project = hourEntry.selectedItem;
-
-                        hourEntry.hoursRecord.project = {
-                            resource: hourEntry.selectedItem.resource,
-                            name: hourEntry.selectedItem.name
-                        };
-                    } else if (hourEntry.selectedItem.resource.indexOf('tasks') > -1) {
-                        hourEntry.task = hourEntry.selectedItem;
-
-                        hourEntry.hoursRecord.task = {
-                            resource: hourEntry.selectedItem.resource,
-                            name: hourEntry.selectedItem.name
-                        };
-                    }
-                    delete hourEntry.selectedItem;
-                }
-
-                hourEntry.hoursRecord.editMode = false;
-                hourEntry.detailsVisible = false;
-
-                $scope.addHours(hourEntry, isAdded);
-            };
-
-            $scope.setSelected = function (e, day, index) {
-                var i = 0;
-
-                // skip situation when overriding provided editing for specific day
-                //if ($scope.selected && $scope.selected.date == day.date)
-                //    return;
-
-                if ($scope.selected) {
-                    for (i = 0; i < $scope.displayedHours.length; i++) {
-                        if ($scope.selected.date === $scope.displayedHours[i].date) {
-                            $scope.displayedHours[i] = $scope.selected;
-                        }
-                    }
-                }
-
-                if (index > -1) {
-                    day = $scope.displayedHours[index];
-                }
-
-                //TODO: resolve situation when $scope.displayedMonthDays still not loaded and
-                // contains string days representation
-                if (_.isString(day)) {
-                    return;
-                }
-
-                if ($scope.selected) {
-                    delete $scope.selected;
-                }
-
-                $scope.selected = $scope.cloneDay(day);
-
-                var anyLogged = _.find($scope.selected.hoursEntries, function (h) {
-                    return h.hoursRecord.hours > 0;
-                });
-
-                for (i = 0; !anyLogged && i < $scope.selected.hoursEntries.length; i++) {
-                    if ($scope.selected.hoursEntries[i].hoursRecord &&
-                        $scope.selected.hoursEntries[i].hoursRecord.hours === 0
-                    ) {
-                        $scope.selected.hoursEntries[i].hoursRecord.editMode = true;
-                        $scope.selected.hoursEntries[i].hoursRecord.isDefault = true;
-                    }
-                }
-
-                e = e ? e : window.event;
-
-                var isCircle = e ? $(e.target).closest('.active-circle').size() > 0 : false;
-
-                if (isCircle) {
-                    $scope.showHideLoggedHours(e, index);
-                }
-
-                $scope.$emit('hours:selectedNew', $scope.selected);
-            };
-
-            $scope.showHideLoggedHours = function (e, index) {
-                var loggedHours = $('.dashboard-widget.hours .row.hours-logged');
-                //var size = $( '.dashboard-widget.hours .row.hours-logged
-                // .hours-logged-entry:visible' ).size();
-                index = index % 7 === 0 ? (index + 1) : index;
-
-                if (!loggedHours.is(':visible')) {
-                    loggedHours.show();
-
-                    if (Math.floor(index / 7) >= 3) {
-                        loggedHours.css('top', '');
-                        loggedHours.css('bottom', (5 - Math.floor(index / 7)) * 110 - 5 + 'px');
-                    } else {
-                        loggedHours.css('bottom', '');
-                        loggedHours.css('top', (Math.ceil(index / 7) + 1) * 110 + 'px');
-                    }
-                } else {
-                    loggedHours.hide();
-                }
-
-            };
-
-            $scope.clearSelectedItem = function (e, hourEntry) {
-                delete hourEntry.selectedItem;
-            };
-
-            // Not sure why this is needed - RCM 2015-05-01 18:37
-            $scope.bindEventHandlers = function () {
-                $(document).bind('click', $scope.handleDocClick);
-            };
-
-            // Not sure why this is needed - RCM 2015-05-01 18:37
-            $scope.unbindEventHandlers = function () {
-                $(document).unbind('click', $scope.handleDocClick);
-            };
-
-            // This should be a part of an autocomplete directive - RCM 2015-05-01 18:37
-            $scope.bindAutocompleteHandlers = function (input) {
-                input.bind('dblclick', function () {
-                    var autocomplete = $(this).parent().find('ul.dropdown-menu');
-
-                    autocomplete.find('li').css('display', '');
-                    autocomplete.show();
-                });
-
-                input.next('.search-icon').bind('click', function () {
-                    var autocomplete = input.parent().find('ul.dropdown-menu');
-
-                    autocomplete.find('li').css('display', '');
-                    autocomplete.show();
-                });
-
-                input.bind('keyup', function (e) {
-                    e = e ? e : window.event;
-
-                    var input = $(e.target).closest('input');
-                    var val = input.val().toLowerCase();
-                    var autocomplete = input.parent().find('ul.dropdown-menu');
-
-                    var filter = function (txt, substr) {
-
-                        if (substr) {
-                            txt = txt.replace(new RegExp(substr, 'gi'), function (s) {
-                                return '<span class="highlight">' + s + '</span>';
-                            });
-                        }
-
-                        return txt;
-                    };
-
-                    autocomplete.find('li').each(function (ind, el) {
-                        var taskName = $(el).find('.task-name').text().toLowerCase();
-                        var projectName = $(el).find('.project-name').text().toLowerCase();
-                        var projectCustomerName = $(el).find('.project-customer-name').text().toLowerCase();
-
-                        if (!$(el).find('.task-name').attr('_origName')) {
-                            $(el).find('.task-name').attr('_origName', $(el).find('.task-name').text());
-                        }
-
-                        if (!$(el).find('.project-name').attr('_origName')) {
-                            $(el).find('.project-name').attr('_origName', $(el).find('.project-name').text());
-                        }
-
-                        if (!$(el).find('.project-customer-name').attr('_origName')) {
-                            $(el)
-                                .find('.project-customer-name')
-                                .attr('_origName', $(el).find('.project-customer-name').text());
-                        }
-
-                        var result = taskName && taskName.indexOf(val) > -1;
-
-                        result = result || projectName && projectName.indexOf(val) > -1;
-                        result = result || projectCustomerName && projectCustomerName.indexOf(val) > -1;
-
-                        if (result) {
-                            $(el).css('display', '');
-                        } else {
-                            $(el).css('display', 'none');
-                        }
-
-                        var newText = '';
-
-                        if (taskName && taskName.indexOf(val) > -1) {
-                            newText = filter($(el).find('.task-name').attr('_origName'), val);
-                            $(el).find('.task-name').html(newText);
-                        }
-
-                        if (projectName && projectName.indexOf(val) > -1) {
-                            newText = filter($(el).find('.project-name').attr('_origName'), val);
-
-                            $(el).find('.project-name').html(newText);
-                        }
-
-                        if (projectCustomerName && projectCustomerName.indexOf(val) > -1) {
-                            newText = filter($(el).find('.project-customer-name').attr('_origName'), val);
-                            $(el).find('.project-customer-name').html(newText);
-                        }
-
-                    });
-
-                    autocomplete.show();
-                });
-            };
-
-            // This should be part of an autocomplete directive - RCM 2015-05-01 18:39
-            $scope.clearAutocompleteHandlers = function (input) {
-                input.unbind('click');
-                input.unbind('dblclick');
-                input.next('.search-icon').unbind('click');
-
-                input.unbind('keydown');
-            };
-
-            // This should be part of an autocomplete directive I think - RCM 2015-05-01 18:39
-            $scope.menuItemSelected = function (menuItem) {
-                var id = menuItem.attr('_id');
-
-                var item = _.find($scope.projectTasksList, function (tp) {
-                    return tp.resource === id;
-                });
-                var ul = menuItem.closest('ul');
-
-                // ul.prev('input').val(item.name);
-
-                var entry = ul.closest('.hours-logged-entry');
-                var currentInd = entry.attr('hourentryindex');
-
-                var hourEntry = $scope.selected.hoursEntries[currentInd];
-
-                $scope.$apply(function () {
-                    hourEntry.selectedItem = item;
-
-                    setExpectedHoursPrompt(hourEntry, item);
-                });
-
-            };
-
-            // Not sure what this does or why - RCM 2015-05-01 18:40
-            function setExpectedHoursPrompt(hourEntry, selectedProject) {
-                hourEntry.expectedHours = null;
-
-                if (selectedProject &&
-                    selectedProject.resource &&
-                    selectedProject.resource.indexOf('projects/') === 0
-                ) {
-                    var currentUser = $scope.getCurrentPerson();
-
-                    for (var i = 0, assignmentCount = $scope.myAssignments.length; i < assignmentCount; i++) {
-                        var assignment = $scope.myAssignments[i];
-
-                        if (assignment.project && assignment.project.about === selectedProject.resource) {
-                            for (var j = 0, memberCount = assignment.members.length; j < memberCount; j++) {
-                                var member = assignment.members[j];
-
-                                if (member.person && member.person.resource === currentUser.about) {
-                                    hourEntry.expectedHours = Math.round((member.hoursPerWeek / 5) * 10) / 10;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Not sure why this is needed - RCM 2015-05-01 18:40
-            $scope.handleDocClick = function (e) {
-                e = e ? e : window.event;
-
-                var menuItem = $(e.target).closest('a.menu-item');
-                var activeMenu = null;
-
-                if (menuItem.length === 1) {
-                    $scope.menuItemSelected(menuItem);
-                }
-
-                if ($(e.target).closest('input[name="project-task-select"]').length > 0) {
-                    activeMenu = $(e.target)
-                        .closest('input[name="project-task-select"]')
-                        .parent()
-                        .find('ul.dropdown-menu');
-                    // return
-                }
-
-                if ($(e.target).closest('.search-icon').length > 0) {
-                    activeMenu = $(e.target).closest('.search-icon').parent().find('ul.dropdown-menu');
-                    // return
-                }
-
-                $('ul.dropdown-menu.ddProjectsTasksMenu').each(function (ind, el) {
-                    if (!activeMenu || activeMenu && el !== activeMenu.get(0)) {
-                        $(el).hide();
-                    }
-                });
-            };
-
-            // This sets up a new row within the hours entry area - RCM 2015-05-01 18:42
-            $scope.initNewHoursEntry = function (hourEntry) {
-
-                // This shouldn't be necessary... A user that can't edit should have the control visible
-                // so this should never get called in that case - RCM 2015-05-01 18:43
-                if (!$scope.canEditHours()) {
-                    if (hourEntry.hoursRecord) {
-                        hourEntry.hoursRecord.isAdded = false;
-                        hourEntry.hoursRecord.isEdit = false;
-                        hourEntry.hoursRecord.isDefault = false;
-                        hourEntry.hoursRecord.editMode = false;
-
-                    }
-
-                    return;
-                }
-
-                // No clue what this is doing or why - RCM 2015-05-01 18:43
-                if (hourEntry.hoursRecord &&
-                    (
-                        hourEntry.hoursRecord.isAdded ||
-                        hourEntry.hoursRecord.isCopied ||
-                        hourEntry.hoursRecord.isDefault
-                    )
-                ) {
-                    // use timeout to perform code after init
-                    $timeout(function () {
-
-                        $('.dashboard-widget.hours .row.hours-logged .hours-logged-entry').each(function (ind, el) {
-
-                            if (hourEntry === $(el).scope().hourEntry &&
-                                (
-                                    $(el).scope().hourEntry.hoursRecord.hours === 0 ||
-                                    $(el).scope().hourEntry.hoursRecord.hours === '' ||
-                                    $(el).scope().hourEntry.hoursRecord.hours === undefined ||
-                                    $(el).scope().hourEntry.hoursRecord.isCopied
-                                )
-                            ) {
-                                $scope.$apply(function () {
-                                    $scope.editHoursEntry(
-                                        null,
-                                        $(el).scope().hourEntry,
-                                        $(el).find('input[name="project-task-select"]').eq(0)
-                                    );
-                                });
-                            }
-                        });
-                    }, 0);
-                }
+                currentSelection = index;
+                $scope.daysOfTheWeek[index].selected = true;
+                $scope.showHoursRows = true;
+                $scope.hoursEntries = $scope.daysOfTheWeek[index].hoursEntries;
             };
 
             /*
@@ -940,7 +367,7 @@
                                 date: $scope.selected.date,
                                 description: '',
                                 hours: '',
-                                person: $scope.getCurrentPerson(),
+                                person: $scope.me,
                                 editMode: true,
                                 isAdded: true
 
@@ -986,7 +413,7 @@
                     description: '',
                     hours: '',
                     project: {},
-                    person: $scope.getCurrentPerson(),
+                    person: $scope.me,
                     editMode: true,
                     isAdded: true
 
@@ -1040,250 +467,58 @@
                 return result;
             };
 
-            // Not sure what this does or why - RCM 2015-05-01 18:46
-            $scope.addNewTaskHours = function () {
-                $scope.addNewHours(true);
-            };
+            var me = $scope.me ? $scope.me.about : '';
+            // TODO: Remove Date
+            var firstDayOfWeek = moment('2015-05-15').day(0);
 
-            // Gets the task listing and then sets up some inline styles for proper display - RCM 2015-05-01 14:56
-            $scope.loadAvailableTasks = function () {
-                TasksService.getTasks().then(function (tasks) {
-                    _.each(tasks, function (t) {
-                        $scope.hoursTasks.push(t);
-                        $scope.projectTasksList.push(t);
-
-                        t.isTask = true;
-                        t.icon = taskIconsMap[t.name.toLowerCase()];
-                        t.iconCss = taskIconStylseMap[t.name.toLowerCase()];
-                        t.visible = t.name !== 'Vacation' && t.name !== 'Appointment';
-                    });
-
-                    $scope.sortProjectTaskList();
-                });
-            };
-
-            // date formatter helper
-            // Not even sure this is used, but it's a bunch of lines shorter now - RCM 2015-04-29
-            $scope.formatTheDate = function (d) {
-                $scope.theDayFormatted = moment(d).format('YYYY-MM-DD');
-                return $scope.theDayFormatted;
-            };
-
-            // This is not needed with angular formatting filters available - RCM 2015-05-01 19:21
-            $scope.formatHours = function (hours) {
-                return hours;
-                // return Util.formatFloat(hours);
-            };
-
-            var me = $scope.getCurrentPerson() ? $scope.getCurrentPerson().about : '';
-
-            // Doc Brown - time travel.
-            $scope.dateIndex = 0;
-
-            // This one moves to previous week - RCM 2015-05-01 19:22
             $scope.backInTime = function () {
-                $scope.dateIndex = $scope.dateIndex + 7;
-                $scope.entryFormOpen = false;
-                delete $scope.selected;
+                firstDayOfWeek.subtract(7, 'days');
                 $scope.hoursRequest();
 
                 $scope.$emit('hours:backInTime');
             };
 
-            // This one moves to next week - RCM 2015-05-01 19:24
             $scope.forwardInTime = function () {
-                $scope.dateIndex = $scope.dateIndex - 7;
-                $scope.entryFormOpen = false;
-                // console.log($scope.dateIndex);
-
-                delete $scope.selected;
+                firstDayOfWeek.add(7, 'days');
                 $scope.hoursRequest();
 
                 $scope.$emit('hours:forwardInTime');
             };
 
-            // Seems like this function could be simplified if there were a way
-            // to set the day context for the hours entries area - RCM 2015-05-01 19:24
-            $scope.backDay = function () {
-                var foundInd;
-
-                for (var i = 0; i < $scope.displayedHours.length; i++) {
-                    if ($scope.selected.date === $scope.displayedHours[i].date) {
-                        foundInd = i;
-                    }
-                }
-
-                if (foundInd > 0) {
-                    //$scope.selected = $scope.displayedHours[ foundInd - 1 ];
-                    $scope.setSelected(null, $scope.displayedHours[foundInd - 1], foundInd - 1);
-                } else {
-                    $scope.dateIndex = $scope.dateIndex + 7;
-                    delete $scope.selected;
-
-                    $scope.hoursRequest(function () {
-                        //$scope.selected = $scope.displayedHours[ $scope.displayedHours.length - 1 ];
-                        $scope.setSelected(
-                            null,
-                            $scope.displayedHours[$scope.displayedHours.length - 1],
-                            $scope.displayedHours.length - 1
-                        );
-                    });
-                }
-
-            };
-
-            // Seems like this function could be simplified if there were a way
-            // to set the day context for the hours entries area - RCM 2015-05-01 19:25
-            $scope.nextDay = function () {
-                var foundInd;
-
-                for (var i = 0; i < $scope.displayedHours.length; i++) {
-                    if ($scope.selected.date === $scope.displayedHours[i].date) {
-                        foundInd = i;
-                    }
-                }
-
-                if (foundInd < $scope.displayedHours.length - 1) {
-                    //$scope.selected = $scope.displayedHours[ foundInd + 1 ];
-                    $scope.setSelected(null, $scope.displayedHours[foundInd + 1], foundInd + 1);
-                } else {
-                    $scope.dateIndex = $scope.dateIndex - 7;
-                    delete $scope.selected;
-
-                    $scope.hoursRequest(function () {
-                        //$scope.selected = $scope.displayedHours[ 0 ];
-                        $scope.setSelected(null, $scope.displayedHours[0], 0);
-                    });
-                }
-
-                // $scope.hoursRequest();
-
-            };
-
-            $scope.nextMonth = function () {
-                $scope.currentMonth = $scope.moment($scope.currentMonth).add(1, 'month');
-
-                if ($scope.setCurrentMonth) {
-                    $scope.setCurrentMonth($scope.currentMonth.month());
-                }
-
-                $scope.hoursRequest();
-            };
-
-            $scope.backMonth = function () {
-                $scope.currentMonth = $scope.moment($scope.currentMonth).subtract(1, 'month');
-
-                if ($scope.setCurrentMonth) {
-                    $scope.setCurrentMonth($scope.currentMonth.month());
-                }
-
-                $scope.hoursRequest();
-            };
-
-            // Not sure why we need this or why the init function doesn't handle this - RCM 2015-05-01 19:25
-            $scope.thisWeek = function () {
-                $scope.dateIndex = 0;
-                $scope.entryFormOpen = false;
-                delete $scope.selected;
-                $scope.hoursRequest();
-            };
-
-            $scope.fillWeekDays = function (startOfWeek) {
-                // array to hold the dates
-                $scope.thisWeekDates = [];
-                $scope.thisWeekDayLables = [];
-
+            $scope.fillWeekDays = function () {
                 // run through and build out the array of the
                 // week's dates
+                var moment = $scope.moment(firstDayOfWeek);
+                var dateFormatted;
                 for (var i = 0; i < 7; i++) {
-                    var moment = $scope.moment(startOfWeek).add(i, 'days');
-                    var dateFormatted = moment.format('YYYY-MM-DD');
+                    moment.day(i);
+                    dateFormatted = moment.format('YYYY-MM-DD');
 
-                    $scope.thisWeekDates.push(dateFormatted);
-                    $scope.thisWeekDayLables.push(moment.format('ddd'));
+                    thisWeekDates[i] = dateFormatted;
+
+                    $scope.daysOfTheWeek[i].futureness = $scope.isInFuture(moment);
+                    $scope.daysOfTheWeek[i].selected = false;
+                    $scope.daysOfTheWeek[i].totalHours = 0;
+                    $scope.daysOfTheWeek[i].moment = moment;
+                    $scope.daysOfTheWeek[i].dayOfWeek = moment.format('dddd');
+                    $scope.daysOfTheWeek[i].dayOfMonth = moment.format('D');
                 }
             };
 
-            $scope.getTodaysDate = function () {
-                var today = $scope.moment();
-
-                if (!$scope.today && $scope.firstBusinessDay) {
-                    return moment($scope.firstBusinessDay).format('YYYY-MM-DD');
-                }
-
-                return today.format('YYYY-MM-DD');
-            };
-
-            // TODO task: get this week of dates
             $scope.showWeekDates = function (callback) {
-                $scope.todaysDate = $scope.getTodaysDate();
+                $scope.fillWeekDays();
 
-                var moment = null;
+                $scope.prettyCalendarFormats(thisWeekDates[0], thisWeekDates[6]);
 
-                if (!$scope.selected) {
-                    moment = $scope.moment($scope.todaysDate).subtract($scope.dateIndex, 'days');
-                } else {
-
-                    moment = $scope.moment($scope.selected.date).startOf('week');
-
-                    //$scope.dateIndex = $scope.moment( $scope.selected.date ).subtract(
-                    // $scope.moment( ) ).days( );
-                    //$scope.dateIndex = $scope.moment.duration($scope.moment( $scope.selected.date
-                    // ).diff( $scope.moment( ) )).days();
-                    $scope.dateIndex = $scope
-                        .moment($scope.todaysDate)
-                        .diff($scope.moment($scope.selected.date), 'days');
-                }
-
-                $scope.fillWeekDays(moment.day(0));
-
-                $scope.prettyCalendarFormats($scope.thisWeekDates[0], $scope.thisWeekDates[6]);
-
-                callback($scope.thisWeekDates);
-                // console.log($scope.thisWeekDates.length);
+                callback(thisWeekDates);
             };
 
-            // Not sure why this is doing so much. - RCM 2015-05-01 19:30
-            $scope.showToday = function (e) {
-                e = e ? e : window.event;
-
-                e.stopPropagation();
-
-                $scope.today = true;
-                $scope.dateIndex = 0;
-                $scope.currentMonth = $scope.moment();
-
-                if ($scope.selected) {
-                    $scope.setSelected(null, $scope.selected, -1);
-                }
-                delete $scope.selected;
-
+            $scope.showToday = function () {
+                // TODO: Remove date
+                firstDayOfWeek = moment('2015-05-15').day(0);
                 $scope.hoursRequest();
 
                 $scope.$emit('hours:showToday');
-            };
-
-            $scope.calculateMonthDates = function (callback) {
-                $scope.displayedMonthDays = [];
-                $scope.todaysDate = $scope.getTodaysDate();
-
-                var moment = $scope.moment($scope.currentMonth);
-
-                var startOfMonth = moment.startOf('month');
-                var starOfFirstWeek = startOfMonth.startOf('week');
-
-                var current;
-                var day = 0;
-
-                while (day < 35) {
-                    current = $scope.moment(starOfFirstWeek).add(day, 'days');
-                    day += 1;
-
-                    $scope.displayedMonthDays.push(current.format('YYYY-MM-DD'));
-                }
-
-                callback($scope.displayedMonthDays);
-
             };
 
             $scope.prettyCalendarFormats = function (firstDay, lastDay) {
@@ -1293,163 +528,67 @@
                 return $scope.prettyCalendarDates;
             };
 
-            // Not so sure this is doing what its name says - RCM 2015-05-01 19:37
-            $scope.calculateLastBusinessDay = function (cb) {
-                var todayDate = $scope.getTodaysDate();
-                var today = $scope.moment();
-                var startOfWeek = $scope.moment(today).day(0);
-                var diff = today.diff(startOfWeek, 'days');
-                var firstBusinessDay;
-
-                if (diff >= 5) {
-                    firstBusinessDay = startOfWeek;
-                } else {
-                    firstBusinessDay = startOfWeek.subtract((5 - diff) + 1, 'days');
-                }
-
-                // firstBusinessDay = firstBusinessDay.format('YYYY-MM-DD');
-                logger.debug('hours-entry', 'scope:', $scope.getCurrentPerson(), $scope);
-                HoursService
-                    .getHoursRecordsForPersonAndBetweenDates(
-                        $scope.getCurrentPerson().id,
-                        firstBusinessDay.format('YYYY-MM-DD'),
-                        today.format('YYYY-MM-DD')
-                    )
-                    .then(function (result) {
-                        firstBusinessDay = '';
-
-                        for (var j = result.length - 1; result[j] && result[j].totalHours === 0 && j >= 0; j--) {
-                            if (result[j].totalHours === 0 &&
-                                $scope.moment(result[j].date).weekday() < 6 &&
-                                $scope.moment(result[j].date).weekday() > 0) {
-                                firstBusinessDay = result[j].date;
-                            }
-                        }
-
-                        if (!firstBusinessDay) {
-                            firstBusinessDay = today.format('YYYY-MM-DD');
-                        }
-                        cb(firstBusinessDay);
-                    });
-
-                // Do we need this? - RCM 2015-05-01 19:32
-                /*} else {
-                 var weekday = $scope.moment( todayDate ).weekday( );
-
-                 firstBusinessDay = $scope.moment( todayDate ).subtract( weekday - 1, 'days' );
-
-                 firstBusinessDay = firstBusinessDay.format( 'YYYY-MM-DD' );
-
-                 cb( firstBusinessDay );
-                 }*/
-            };
-
             // Thsi function is doing too much so we need to figure out how to
             // break it down into smaller pieces. - RCM 2015-05-01 19:33
-            $scope.hoursRequest = function (cb) {
-                var numberVal = function (v) {
-                    if (!isNaN(parseFloat(v))) {
-                        return Util.formatFloat(v);
-                    }
-
-                    return 0;
-
-                };
+            $scope.hoursRequest = function (cb, setSelectedIndex) {
+                setSelected(-1);
                 $scope.hideHoursSpinner = false;
 
                 $scope.showWeekDates(function (result) {
                     HoursService
                         .getHoursRecordsForPersonAndBetweenDates(
-                            $scope.getCurrentPerson().id,
-                            $scope.thisWeekDates[0],
-                            $scope.thisWeekDates[6])
+                            $scope.me.id,
+                            thisWeekDates[0],
+                            thisWeekDates[6])
                         .then(function (result) {
                             var i, futureness;
                             if (result.length === 0) {
-                                console.error('getHoursRecordsForPersonAndBetweenDates(' + $scope.thisWeekDates[0] +
-                                              ',' + $scope.thisWeekDates[6] + ') gave me no results');
-
-                                $scope.displayedHours = [];
-                                for(i=0; i<7; i++){
-                                    var date = $scope.thisWeekDates[i];
-                                    futureness = $scope.isInFuture(date);
-                                    $scope.displayedHours.push({
-                                        totalHours: 0,
-                                        futureness: futureness,
-                                        dayOfMonth: $scope.moment(date).date(),
-                                        hoursEntries: []
-                                    });
-                                }
-                                logger.log('hours-entry', 'displayedHours:', $scope.displayedHours);
+                                logger.error('getHoursRecordsForPersonAndBetweenDates(' + thisWeekDates[0] +
+                                              ',' + thisWeekDates[6] + ') gave me no results');
                             } else {
                                 $scope.showHideWidget(true);
 
-                                $scope.displayedHours = result;
-
-                                for (i = 0; i < $scope.displayedHours.length; i++) {
-                                    $scope.displayedHours[i].totalHours = 0;
-
-                                    futureness = $scope.isInFuture($scope.displayedHours[i].date);
-
-                                    $scope.displayedHours[i].futureness = futureness;
-                                    $scope.displayedHours[i].dayOfMonth = $scope
-                                        .moment($scope.displayedHours[i].date)
-                                        .date();
-
-                                    for (var j = 0; j < $scope.displayedHours[i].hoursEntries.length; j++) {
-                                        if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
-                                            $scope.displayedHours[i].totalHours +=
-                                                $scope.displayedHours[i].hoursEntries[j].hoursRecord.hours;
-                                            //$scope.displayedHours[ i ].totalHours =
-                                            //    numberVal( $scope.displayedHours[ i ].totalHours ) +
-                                            //    numberVal(
-                                            //        $scope.displayedHours[i].hoursEntries[ j ].hoursRecord.hours
-                                            //    );
-
-                                            if ($scope.displayedHours[i].hoursEntries[j].hoursRecord.task) {
-                                                $scope.displayedHours[i].hoursEntries[j].task =
-                                                    $scope.displayedHours[i].hoursEntries[j].hoursRecord.task;
-                                                Resources.resolve($scope.displayedHours[i].hoursEntries[j].task);
+                                _.each(result, function(entry){
+                                    var date = moment(entry.date),
+                                        index = -1;
+                                    _.find(thisWeekDates, function(thisWeekDate, i){
+                                        if(date.format('YYYY-MM-DD') === thisWeekDate){
+                                            index = i;
+                                            return true;
+                                        }
+                                    });
+                                    if(index !== -1){
+                                        $scope.daysOfTheWeek[index].totalHours += entry.hours;
+                                        $scope.daysOfTheWeek[index].hoursEntries.push(entry);
+                                        if(entry.project){
+                                            if($scope.projectsMap[entry.project]){
+                                                entry.projectName = $scope.projectsMap[entry.project].name;
+                                            }else{
+                                                ProjectsService.getProject(entry.project).then(function(project){
+                                                    $scope.projectsMap[project.id] = project;
+                                                    entry.projectName = project.name;
+                                                })
+                                            }
+                                        }else if(entry.task){
+                                            if($scope.tasksMap[entry.task]){
+                                                entry.taskName = $scope.tasksMap[entry.task].name;
+                                            }else{
+                                                TasksService.getTask(entry.task).then(function(task){
+                                                    $scope.tasksMap[task.id] = task;
+                                                    entry.taskName = task.name;
+                                                })
                                             }
                                         }
                                     }
+                                });
+                            }
 
-                                    if (false && $scope.displayedHours[i].totalHours === 0) {
-                                        for (j = 0;
-                                            false && j < $scope.displayedHours[i].hoursEntries.length;
-                                            j++) {
-                                            if ($scope.displayedHours[i].hoursEntries[j].hoursRecord) {
-                                                $scope.displayedHours[i].hoursEntries[j].hoursRecord.isAdded = true;
-                                            }
-                                        }
+                            if(setSelectedIndex){
+                                setSelected(setSelectedIndex);
+                            }
 
-                                    }
-                                    //$scope.firstBusinessDay = $scope.firstBusinessDay.add(1, 'days');
-
-                                    $scope.addNewHoursRecord($scope.displayedHours[i]);
-
-                                    if (!$scope.selected && $scope.displayedHours[i].date === $scope.todaysDate) {
-                                        // $scope.selected
-                                        // =
-                                        // JSON.parse(JSON.stringify(
-                                        // $scope.displayedHours[i]));
-                                        $scope.setSelected(null, $scope.displayedHours[i], i);
-                                        //$scope.selected = $scope.displayedHours[ i ];
-                                    } else if ($scope.selected &&
-                                               $scope.displayedHours[i].date === $scope.selected.date) {
-                                        //$scope.selected = $scope.displayedHours[ i ];
-                                        $scope.selected.dayOfMonth = $scope.displayedHours[i].dayOfMonth;
-                                        $scope.setSelected(null, $scope.displayedHours[i], i);
-                                    }
-
-                                }
-
-                                $('.dashboard-widget.hours .row.hours-logged').show();
-
-                                if (cb) {
-                                    cb();
-                                }
-
+                            if (cb) {
+                                cb();
                             }
 
                             $scope.hideHoursSpinner = true;
@@ -1458,187 +597,29 @@
                 });
             };
 
-            // Validation errors? - RCM 2015-05-01 19:39
-            $scope.getNewHoursValidationErrors = function (hourEntry) {
-
-                $scope.hoursValidation = [];
-
-                var totalHours = 0;
-                var entries = $scope.selected ? $scope.selected.hoursEntries : [];
-
-                if (hourEntry.hoursRecord &&
-                    (
-                        hourEntry.hoursRecord.hours === '' ||
-                        parseFloat(hourEntry.hoursRecord.hours) === 0
-                    ) ||
-                    hourEntry.hoursRecord.hours === undefined) {
-                    $scope.hoursValidation.push('Hours value is empty');
-                } else if (hourEntry.hoursRecord && hourEntry.hoursRecord.hours) {
-                    var res = /^\d*(\.\d{1,2})?$/.exec(hourEntry.hoursRecord.hours);
-
-                    if (!res) {
-                        $scope.hoursValidation.push('Incorrect value for hours');
+            $scope.getTotalHoursWithHoursForEntryWithID = function(numHours, entryID){
+                if(currentSelection < 0 || currentSelection > 6){
+                    return numHours;
+                }
+                var theDay = $scope.daysOfTheWeek[currentSelection];
+                var sum = 0;
+                _.each(theDay.hoursEntries, function(entry){
+                    if(entry.id === entryID){
+                        sum += numHours;
+                    }else{
+                        sum += entry.hours;
                     }
-
-                }
-
-                if (hourEntry.hoursRecord && hourEntry.selectedItem && hourEntry.selectedItem.startDate) {
-                    var selectedDate = new Date($scope.selected.date);
-
-                    if (selectedDate > new Date(hourEntry.selectedItem.endDate) ||
-                        selectedDate < new Date(hourEntry.selectedItem.startDate)) {
-                        $scope.hoursValidation.push('You are logging hours for project which is already ended or ' +
-                                                    'not started');
-                    }
-                }
-
-                if (hourEntry.hoursRecord && hourEntry.hoursRecord.editMode && !hourEntry.selectedItem) {
-                    $scope.hoursValidation.push('Project or task hasn\'t been selected');
-                }
-
-                if (!hourEntry.hoursRecord.description) {
-                    $scope.hoursValidation.push('Hours description is empty');
-                }
-
-                for (var i = 0; i < entries.length; i++) {
-                    if (entries[i].hoursRecord && entries[i].hoursRecord.hours) {
-                        totalHours += parseFloat(entries[i].hoursRecord.hours);
-                    }
-
-                }
-
-                if (totalHours > 24) {
-                    $scope.hoursValidation.push('Hours logged on a given day cannot exceed 24 hours.');
-                }
-
-                $scope.hoursValidation = _.uniq($scope.hoursValidation);
-
-                return $scope.hoursValidation.length > 0;
-            };
-
-            // This is a lot of validation - RCM 2015-05-01 19:38
-            $scope.validateAndCalculateTotalHours = function () {
-                var entries = $scope.selected.hoursEntries;
-                var hoursRecords = [];
-                var totalHours = 0;
-
-                $scope.hoursValidation = [];
-
-                for (var i = 0; i < entries.length; i++) {
-                    var entry = entries[i];
-
-                    if (entry.hoursRecord) {
-                        hoursRecords.push(entry.hoursRecord);
-                        totalHours += (!isNaN(parseFloat(entry.hoursRecord.hours)) &&
-                                       !entry.hoursRecord.editMode) ? Util.formatFloat(entry.hoursRecord.hours) : 0;
-                        // if (!entry.hoursRecord.person) {
-                        /*
-                         * Max 12/02/14
-                         * 1. Added If condition for person.resource update. If value already exists why to override it?
-                         * 2. Added person.name value if it doesn't exist.
-                         *
-                         *  NOTE: Because there is a mess with Hours constructor (person: $scope.getCurrentPerson( )),
-                         *  we need to erase current person node and re-create it.
-                         *  TODO: Fix this problem in constructor. Do we really need to have full Person object
-                         *  in Hours???
-                         */
-
-                        /* ORIGINAL CODE
-                         entry.hoursRecord.person = {
-                         resource: $scope.getCurrentPerson( ).about
-                         };
-                         */
-
-                        var personEntry = $scope.getCurrentPerson();
-                        entry.hoursRecord.person = {}; //  this line should be removed after Constructor fix.
-
-                        // Update current value only if it doesn't exist.
-                        if (!entry.hoursRecord.person.resource) {
-                            entry.hoursRecord.person = {
-                                resource: personEntry.about
-                            };
-                        }
-
-                        if (!entry.hoursRecord.person.name) {
-                            if (personEntry.name.fullName) {
-                                entry.hoursRecord.person.name = personEntry.name.fullName;
-                            }
-                        }
-
-                        // }
-                        if (!entry.hoursRecord.date) {
-                            entry.hoursRecord.date = $scope.selected.date;
-                        }
-                    }
-
-                    // remove embedded property which leverage
-                    // to server side error when updating hours
-                    // record
-                    if (entry.hoursRecord && entry.hoursRecord.project && entry.hoursRecord.project['$fromServer']) {
-                        delete entry.hoursRecord.project['$fromServer'];
-                    } else if (entry.hoursRecord && entry.hoursRecord.task && entry.hoursRecord.task['$fromServer']) {
-                        delete entry.hoursRecord.task['$fromServer'];
-                    }
-                }
-
-                if (totalHours > 24) {
-                    $scope.hoursValidation.push('Hours logged on a given day cannot exceed 24 hours.');
-                    return;
-                }
-
-                // update total hours value to apropriatly
-                // display in hours widget
-                $scope.selected.totalHours = totalHours;
-
-                var selectedDisplayedHours;
-
-                selectedDisplayedHours = _.find($scope.displayedHours, function (dh) {
-                    if ($scope.selected.date === dh.date) {
-                        return dh;
-                    }
-
                 });
+                return sum;
+            }
 
-                selectedDisplayedHours.totalHours = totalHours;
-            };
-
-            // So how many places do we actually add the hours? - RCM 2015-05-01 19:38
-            $scope.addHours = function (hourEntry, isAdded) {
-                $scope.validateAndCalculateTotalHours();
-
-                //$scope.hideHoursSpinner = false;
-
-                // update only passed hourEntry
-                HoursService.updateHours([hourEntry.hoursRecord]).then(function (updatedRecords) {
-                    // update with received
-                    // values from backend
-                    if (updatedRecords[0]) {
-                        _.extend(hourEntry.hoursRecord, {
-                            _id: updatedRecords[0]._id,
-                            _rev: updatedRecords[0]._rev,
-                            about: updatedRecords[0].about,
-                            resource: updatedRecords[0].resource,
-                            base: updatedRecords[0].base,
-                            created: updatedRecords[0].created,
-                            date: updatedRecords[0].date,
-                            etag: updatedRecords[0].etag,
-                            description: updatedRecords[0].description,
-                            hours: Util.formatFloat(updatedRecords[0].hours, true),
-                            person: updatedRecords[0].person,
-                            project: updatedRecords[0].project,
-                            task: updatedRecords[0].task
-                        });
-                    }
-
-                    if (isAdded) {
-                        $scope.addNewHoursRecord($scope.selected);
-                    }
-
-                    //$scope.hideHoursSpinner = true;
-                    $scope.$emit('hours:added', $scope.selected);
-                });
-
-            };
+            $scope.updateTotalHours = function(){
+                if(currentSelection < 0 || currentSelection > 6){
+                    return numHours;
+                }
+                var total = $scope.getTotalHoursWithHoursForEntryWithID(0, -1);
+                $scope.daysOfTheWeek[currentSelection].totalHours = total;
+            }
 
             // The next few methods all do something for copying hours...lot of code. - RCM 2015-05-01 19:40
             $scope.copyHoursEntry = function () {
@@ -1656,7 +637,7 @@
             $scope.copyHours = function () {
                 $scope.hideMessages();
 
-                var selectedDate = getDate($scope.selected.date);
+                var selectedDate = $scope.moment($scope.selected.date).toDate();
 
                 var copyFromEntries = [];
 
@@ -1666,7 +647,7 @@
 
                 var copyFromDate = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]) - 1);
 
-                var shortDate = getShortDate(copyFromDate);
+                var shortDate = moment(copyFromDate).format('YYYY-MM-DD');
                 var copyFromEntry = _.findWhere($scope.displayedHours, {
                     date: shortDate
                 });
@@ -1689,9 +670,9 @@
                 // hours.
                 if (!copyEntryFound) {
                     var fromDate = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]) - 7);
-                    var from = getShortDate(fromDate);
+                    var from = moment(fromDate).format('YYYY-MM-DD');
                     HoursService
-                        .getHoursRecordsForPersonAndBetweenDates($scope.getCurrentPerson().id, from, shortDate)
+                        .getHoursRecordsForPersonAndBetweenDates($scope.me.id, from, shortDate)
                         .then(function (result) {
                             for (var i = result.length - 1; i >= 0; i--) {
                                 if (result[i].hoursEntries.length > 0) {
@@ -1714,12 +695,6 @@
                             }
                         });
                 }
-            };
-            // This should be unnecessary - RCM 2015-05-01 19:40
-            var getDate = function (dateString) {
-                var tmpD = dateString.split('-');
-                var date = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]));
-                return date;
             };
             var copyHoursCallback = function (copyFromEntries) {
                 var hoursRecords = _.pluck($scope.selected.hoursEntries, 'hoursRecord');
@@ -1744,7 +719,7 @@
                             description: copyFromEntries[i].hoursRecord.description,
                             hours: copyFromEntries[i].hoursRecord.hours,
                             person: {
-                                resource: $scope.getCurrentPerson().about
+                                resource: $scope.me.about
                             }
                         };
 
@@ -1781,9 +756,6 @@
                  * Resources.remove($scope.hoursToDelete[i]) }
                  */
             };
-            var getShortDate = function (date) {
-                return moment(date).format('YYYY-MM-DD');
-            };
 
             $scope.hideMessages = function () {
                 $scope.hoursValidation = [];
@@ -1793,46 +765,32 @@
                 return JSON.parse(JSON.stringify(day));
             };
 
-            $scope.$watch('displayedHours', function (value) {
-                var val = value || null;
-                if (val) {
-                    $scope.$emit('masonryGo');
-                }
-            });
+            $scope.dayClick = function(index){
+                setSelected(index);
+            };
 
             var init = function (profile) {
                 $scope.me = profile;
 
-                $scope.totalHours = [];
+                $scope.hoursEntries = [];
+                $scope.daysOfTheWeek = [];
                 for(var i=0; i<7; i++){
-                    $scope.totalHours.push({
+                    $scope.daysOfTheWeek.push({
+                        futureness: false,
+                        selected: false,
                         totalHours: 0,
-                        dayOfWeek: 'Monday',
-                        dayOfMonth: 29
+                        moment: moment(),
+                        dayOfWeek: '',
+                        dayOfMonth: 0,
+                        hoursEntries: []
                     });
                 }
 
-                _.delay(function(){
-                    $scope.totalHours[1].dayOfWeek = 'Tuesday';
-                }, 1000)
-                _.delay(function(){
-                    $scope.totalHours[1].dayOfMonth = 31;
-                }, 2000)
-
-                $scope.calculateLastBusinessDay(function (firstBusinessDay) {
-                    $scope.firstBusinessDay = $scope.moment(firstBusinessDay);
-
-                    $scope.hoursRequest(function () {
-                        var startOfWeek = $scope.moment().day(0);
-                        if ($scope.firstBusinessDay.isBefore(startOfWeek)) {
-                            $rootScope.defaultHoursWeekShiftedBack = true;
-                        }
-                    });
-                });
-
-                $scope.loadAvailableTasks();
-                $scope.bindEventHandlers();
-                $scope.loadProjects();
+                // TODO: Remove date
+                $scope
+                    .loadAvailableTasks()
+                    .then($scope.loadProjects)
+                    .then(function(){ $scope.hoursRequest(null, $scope.moment('2015-05-15').day()) });
             };
 
             // TODO: Get me from People and then call init

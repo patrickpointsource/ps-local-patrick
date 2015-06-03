@@ -1,3 +1,4 @@
+/* global moment */
 (function () {
     angular
         .module('app.services')
@@ -15,7 +16,10 @@
             getAssignment: getAssignment,
             createAssignment: createAssignment,
             updateAssignment: updateAssignment,
-            deleteAssignment: deleteAssignment
+            deleteAssignment: deleteAssignment,
+
+            // Convenience methods
+            getCurrentAssignments: getCurrentAssignments
         };
 
         function getAssignments(params) {
@@ -44,6 +48,15 @@
         function deleteAssignment(id){
             logger.debug('AssignmentsService', 'Deleting the Assignment with ID:', id);
             return Restangular.one(path, id).remove();
+        }
+
+        function getCurrentAssignments(personID){
+            var today = moment().format('YYYY-MM-DD');
+            return getAssignments({
+                person: personID,
+                startingBefore: today,
+                endingAfter: today
+            });
         }
     }
 })();

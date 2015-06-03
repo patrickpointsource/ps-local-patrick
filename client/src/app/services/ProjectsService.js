@@ -1,15 +1,19 @@
-/* global _ */
+/* global moment, _ */
 (function () {
     angular
         .module('app.services')
         .service('ProjectsService', ProjectsService);
 
-    ProjectsService.$inject = ['psafLogger', 'Restangular'];
+    ProjectsService.$inject = [
+        'psafLogger',
+        'Restangular',
+        '$q'
+    ];
 
     var path = 'projects';
     var phasesPath = 'phases';
     var rolesPath = 'roles';
-    function ProjectsService(psafLogger, Restangular) {
+    function ProjectsService(psafLogger, Restangular, $q) {
         var logger = psafLogger.getInstance('mastermind');
         var Projects = Restangular.all('/'+path);
 
@@ -126,19 +130,23 @@
 
 
         function getOngoingProjects(){
-            return getProjects({
-                types: 'invest,poc,paid'
+            var deferred = $q.defer();
+            getProjects({
+                types: 'invest,poc,paid',
+                endingAfter: moment().format('YYYY-MM-DD')
             }).then(function(projects){
                 // Filter out paid but uncommitted projects
                 projects = _.filter(projects, function(project){
                     if(project.type === 'paid' && !project.committed){
-                        console.log('filtering:', project.name, project.type, project.committed);
                         return false;
                     }
                     return true;
                 });
-                return projects;
+                deferred.resolve(projects);
+            }, function(err){
+                deferred.reject(err);
             });
+            return deferred.promise;
         }
     }
 })();

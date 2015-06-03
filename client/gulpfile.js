@@ -206,9 +206,9 @@ gulp.task('uglify', [
 );
 
 gulp.task('concatjs', [
-        'uglify-angular',
-        'uglify-dependencies',
-        'uglify-foundation',
+        // 'uglify-angular',
+        // 'uglify-dependencies',
+        // 'uglify-foundation',
         'concat-sprout',
         'concat-app'
     ],
@@ -254,7 +254,8 @@ gulp.task('uglify-dependencies', function () {
         'bower_components/psaf-logger/dist/psaf-logger.min.js',
         'bower_components/moment/moment.js',
         'bower_components/swagger-angular-client/dist/swagger-angular-client.js',
-        'bower_components/angular-directive.g-signin/google-plus-signin.js'
+        'bower_components/angular-directive.g-signin/google-plus-signin.js',
+        'bower_components/async/lib/async.js'
     ];
 
     return gulp.src(libs)

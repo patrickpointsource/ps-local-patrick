@@ -370,12 +370,12 @@ module.exports.isAllowed = function(
     preventNotAllowedInResponse
 ) {
 
-    acl.allowedPermissions(userId, resource, function(err, permissions){
-        _logger.info('permissions for', userId, resource, permissions);
-    });
-    module.exports.allAllowedPermissions(userId, function(err, permissions){
-        _logger.debug('all permissions for:', userId, permissions);
-    });
+    // acl.allowedPermissions(userId, resource, function(err, permissions){
+    //     _logger.info('permissions for', userId, resource, permissions);
+    // });
+    // module.exports.allAllowedPermissions(userId, function(err, permissions){
+    //     _logger.debug('all permissions for:', userId, permissions);
+    // });
 
     acl.isAllowed(userId, resource, permissions, function(err, allowed){
 
@@ -408,13 +408,9 @@ module.exports.allowedPermissions = function(userId, resources, callback) {
 
 module.exports.allAllowedPermissions = function(userId, callback){
     var allPermissions = {};
-    _logger.debug('here?');
     acl.userRoles(userId, function(err, roles){
-        _logger.debug('roles:', roles);
         async.each(roles, function(role, callback){
-            _logger.debug('role', role);
             acl.whatResources(role, function(err, output){
-                _logger.debug('which?', output);
                 _.each(output, function(permissions, resource){
                     if(!allPermissions[resource]){
                         allPermissions[resource] = permissions;
@@ -425,7 +421,6 @@ module.exports.allAllowedPermissions = function(userId, callback){
                 callback();
             });
         }, function(err){
-            _logger.debug('err?', err);
             callback(err, allPermissions);
         });
     });

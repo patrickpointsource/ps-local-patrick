@@ -42,7 +42,7 @@ var projectPhase = {
 module.exports.getProjectPhases = util.generateCollectionGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         var q = 'project:'+req.params.projectID;
         // Use the SearchAllProjectPhases index
@@ -50,6 +50,9 @@ module.exports.getProjectPhases = util.generateCollectionGetHandler(
             q: q,
             include_docs: true
         }, function(err, results){
+            if(err || !results){
+                return sendJson(res, {'message': 'Could not search ProjectPhases.', 'detail': err}, 500);
+            }
             callback(results.rows);
         });
     },

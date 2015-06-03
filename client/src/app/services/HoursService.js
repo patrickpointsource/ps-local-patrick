@@ -42,7 +42,7 @@
         }
         function updateHours(id, obj){
             logger.debug('HoursService', 'Updating the Hours document with ID:', id, obj);
-            return Restangular.one(path, id).put(obj);
+            return Restangular.one(path, id).customPUT(obj);
         }
         function deleteHours(id){
             logger.debug('HoursService', 'Deleting the Hours document with ID:', id);

@@ -31,16 +31,30 @@
                         "type": "string"
                     },
                     {
-                        "name": "startDate",
+                        "name": "startingAfter",
                         "in": "query",
                         "description": "Filter assignments to those starting on or after the given date.",
                         "type": "string",
                         "format": "date"
                     },
                     {
-                        "name": "endDate",
+                        "name": "startingBefore",
+                        "in": "query",
+                        "description": "Filter assignments to those starting before the given date.",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "name": "endingBefore",
                         "in": "query",
                         "description": "Filter assignments to those ending before the given date.",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "name": "endingAfter",
+                        "in": "query",
+                        "description": "Filter assignments to those ending after the given date.",
                         "type": "string",
                         "format": "date"
                     },
@@ -3140,19 +3154,34 @@
                         }
                     },
                     {
-                        "name": "startDate",
+                        "name": "startingAfter",
                         "in": "query",
                         "description": "Filter projects to those starting on or after the given date.",
                         "type": "string",
                         "format": "date"
                     },
                     {
-                        "name": "endDate",
+                        "name": "startingBefore",
+                        "in": "query",
+                        "description": "Filter projects to those starting before the given date.",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "name": "endingBefore",
                         "in": "query",
                         "description": "Filter projects to those ending before the given date.",
                         "type": "string",
                         "format": "date"
+                    },
+                    {
+                        "name": "endingAfter",
+                        "in": "query",
+                        "description": "Filter projects to those ending after the given date.",
+                        "type": "string",
+                        "format": "date"
                     }
+
                 ],
                 "responses": {
                     "200": {
@@ -5270,6 +5299,10 @@
                 },
                 "partTime": {
                     "type": "boolean"
+                },
+                "permissions": {
+                    "type": "object",
+                    "description": "A map of all permissions this user has. Only returned on /people/me"
                 }
             },
             "required": [

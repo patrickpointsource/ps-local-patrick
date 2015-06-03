@@ -1,10 +1,9 @@
-<div class="text-center hours-day" ng-class="{'active': selected.date === day.date}">
+<div class="text-center hours-day" ng-class="{'active': day.selected}" ng-click="dayClick($index)">
     <div class="hours-day-entry"
         ng-class="{'hours-default' : days.totalHours >= 8 && $index > 0 && $index<6 && !day.futureness,
                    'hours-day-today' : day.date === todaysDate,
                    'hours-day-not-logged': day.totalHours == 0,
-                   'hours-day-active': selected.date === day.date}"
-        ng-click="setSelected(e, day, $index)">
+                   'hours-day-active': day.selected}">
         <div class="hours-day-header">
             <span>{{day.dayOfWeek | uppercase}}</span>
             <span class="month-day">{{day.dayOfMonth}}</span>

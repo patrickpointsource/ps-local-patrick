@@ -60,7 +60,7 @@ var projectPhaseRole = {
 module.exports.getProjectPhaseRoles = util.generateCollectionGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         var q = 'phase:'+req.params.phaseID;
         // Use the SearchAllProjectPhaseRoles index
@@ -68,6 +68,9 @@ module.exports.getProjectPhaseRoles = util.generateCollectionGetHandler(
             q: q,
             include_docs: true
         }, function(err, results){
+            if(err || !results){
+                return sendJson(res, {'message': 'Could not search ProjectPhaseRoles.', 'detail': err}, 500);
+            }
             callback(results.rows);
         });
     },
