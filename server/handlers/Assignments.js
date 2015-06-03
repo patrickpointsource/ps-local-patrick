@@ -37,7 +37,7 @@ var assignment = {
                     if(err){
                         return callback(err);
                     }
-                    if(docs.rows.length !== 2){
+                    if(docs.rows.length === 0){
                         return callback('The indicated person doesn\'t exist.');
                     }
                     callback();
