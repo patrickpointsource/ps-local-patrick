@@ -165,7 +165,7 @@ module.exports.deleteSingleHour = util.generateSingleItemDeleteHandler(
     securityResources.hours.resourceName, // resourceName
     function(req, callback){
         var personService = services.get('person');
-        personService.getUser(req.user.id, function(err, user){
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.hours.permissions.editHours);
             }
@@ -174,3 +174,48 @@ module.exports.deleteSingleHour = util.generateSingleItemDeleteHandler(
     }, // permission
     'hour' // key
 );
+
+module.exports.getMostRecent = function(req, res){
+    var access = services.get('dbAccess');
+    var db = access.db;
+    util.doAcl(
+        req,
+        res,
+        securityResources.hours.resourceName,
+        securityResources.hours.permissions.viewHours,
+        function(allowed){
+            if(allowed){
+                var personService = services.get('person');
+                personService.getPersonByGoogleID(req.user.id, function(err, user){
+                    if(err || !user){
+                        return sendJson(res, {
+                            'message': 'Could not find currently logged-in person',
+                            'detail': error
+                        }, 500);
+                    }
+                    // Use the SearchAllHours index
+                    // Knock one day of the provided date
+                    var searchableDate = String(Number(req.query.date.replace(/-/g, '')) - 1);
+                    db.search('Hours', 'SearchAllHours', {
+                        q: 'person:'+user.id+' AND numericDate:[-Infinity TO '+searchableDate+']',
+                        sort: '"-numericDate"',
+                        include_docs: true
+                    }, function(err, results){
+                        if(err || !results){
+                            return sendJson(res, {'message': 'Could not search Hours.', 'detail': err}, 500);
+                        }
+                        var firstDate = null;
+                        var rows = _.filter(results.rows, function(row){
+                            if(!firstDate){
+                                firstDate = row.doc.date;
+                                return true;
+                            }
+                            return row.doc.date === firstDate;
+                        });
+                        rows = _.pluck(rows, 'doc');
+                        return sendJson(res, rows);
+                    });
+                });
+            }
+        });
+};

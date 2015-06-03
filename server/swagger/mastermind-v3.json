@@ -1496,6 +1496,49 @@
                 }
             }
         },
+        "/hours/mostRecent": {
+            "x-handler": "Hours",
+            "get": {
+                "summary": "Retrieve Most Recent Hours",
+                "description": "For a given date, return the hours records for the most recent past date that has hours records.\n",
+                "operationId": "getMostRecent",
+                "tags": [
+                    "Hours"
+                ],
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "The date from which to find the most recent past date with hours records",
+                        "type": "string",
+                        "format": "date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of Hours",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Hours"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Hours",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/hours/{id}": {
             "x-handler": "Hours",
             "get": {
@@ -5004,6 +5047,7 @@
             "required": [
                 "hours",
                 "description",
+                "date",
                 "person"
             ]
         },

@@ -39,46 +39,36 @@
         HoursEntryRowCtrl.$inject = [
             'psafLogger',
             '$scope',
-            '$state',
-            '$rootScope',
-            '$timeout',
             '$sce',
-            // 'Resources',
-            'PeopleService',
-            'ProjectsService',
+            '$q',
             'HoursService',
-            'TasksService',
-            'RolesService',
-            'AssignmentsService'
+            'UserService',
+            'ProjectsService'
         ];
 
         return directive;
 
         function HoursEntryRowCtrl(psafLogger,
                            $scope,
-                           $state,
-                           $rootScope,
-                           $timeout,
                            $sce,
-                        //    Resources,
-                           PeopleService,
-                           ProjectsService,
+                           $q,
                            HoursService,
-                           TasksService,
-                           RolesService,
-                           AssignmentsService) {
+                           UserService,
+                           ProjectsService) {
 
-            $scope.editMode = false;
             if(!$scope.hourEntry){
-                $scope.isNew = true;
-                $scope.editMode = true;
-                $scope.hourEntry = {};
+                $scope.hourEntry = {
+                    isNew: true,
+                    editMode: true
+                };
             }
+            $scope.hourEntry.hoursEdited = $scope.hourEntry.hours;
+            $scope.hourEntry.descriptionEdited = $scope.hourEntry.description;
 
             // Get the expectedHours for this project (e.g. Assignment of 45 hours/week = 9 hours/day)
-            var setExpectedHoursPrompt = function(selectedProject) {
+            var setExpectedHoursPrompt = function() {
                 $scope.hourEntry.expectedHours = null;
-
+                var selectedProject = $scope.hourEntry.project || $scope.hourEntry.task;
                 if (selectedProject) {
                     for (var i = 0, assignmentCount = $scope.myAssignments.length; i < assignmentCount; i++) {
                         var assignment = $scope.myAssignments[i];
@@ -96,6 +86,7 @@
                     }
                 }
             };
+            setExpectedHoursPrompt();
 
             $scope.clearSelectedItem = function () {
                 $scope.hourEntry.project = null;
@@ -104,110 +95,79 @@
                 $scope.hourEntry.taskName = null;
             };
 
-            $scope.editHoursEntry = function (e, hourEntry, tagetInput) {
-                e = e ? e : window.event;
-
-                if (e) {
-                    var hoursLoggedEntry = $(e.target).closest('.hours-logged-entry');
-
-                    hoursLoggedEntry.find('.mobile-visible').removeClass('mobile-visible');
-                    hoursLoggedEntry.find('.fa-chevron-up').removeClass('fa-chevron-up').addClass('fa-chevron-down');
-
-                    tagetInput = tagetInput ? tagetInput : hoursLoggedEntry.find('[name="project-task-select"]');
-                }
-
-                $scope.editMode = true;
-
-                $scope.hourEntry.hoursEdited = $scope.hourEntry.hours;
-                $scope.hourEntry.descriptionEdited = $scope.hourEntry.description;
-
-                setExpectedHoursPrompt(
-                    $scope.hourEntry.project ? $scope.hourEntry.project : $scope.hourEntry.task
-                );
+            $scope.editHoursEntry = function () {
+                $scope.hourEntry.editMode = true;
             };
 
             $scope.closeEditHoursEntry = function () {
-                $scope.editMode = false;
+                $scope.hourEntry.editMode = false;
             };
 
-            $scope.saveHoursEntry = function (isAdded) {
+            $scope.clearEditHoursEntry = function(){
+                $scope.hourEntry = {};
+            };
+
+            $scope.removeHourEntry = function () {
+                $scope.removeHourEntryRow($scope.hourEntry);
+                if($scope.hourEntry.id){
+                    HoursService.deleteHours($scope.hourEntry.id);
+                }
+            };
+
+            $scope.saveHoursEntry = function () {
                 var tmpHours = $scope.hourEntry.hours;
                 var tmpDesc = $scope.hourEntry.description;
 
                 $scope.hourEntry.hours = Number($scope.hourEntry.hoursEdited);
                 $scope.hourEntry.description = $scope.hourEntry.descriptionEdited;
 
-                $scope.getNewHoursValidationErrors($scope.hourEntry);
+                $scope.getNewHoursValidationErrors($scope.hourEntry).then(function(numErrors){
+                    if(numErrors > 0){
+                        $scope.hourEntry.hours = tmpHours;
+                        $scope.hourEntry.description = tmpDesc;
 
-                if ($scope.hoursValidation.length > 0) {
-                    $scope.hourEntry.hours = tmpHours;
-                    $scope.hourEntry.description = tmpDesc;
-
-                    return;
-                }
-
-                if (isAdded &&
-                    (
-                        $scope.hourEntry.hours === '' ||
-                        (!$scope.hourEntry.project && !$scope.hourEntry.task)
-                    )
-                ) {
-                    console.error('shouldn\'t see this?');
-                    return;
-                }
-
-                var obj = {};
-                _.each(['id', 'date', 'description', 'hours', 'person', 'created', 'task', 'project'], function(key){
-                    if($scope.hourEntry[key]){
-                        obj[key] = $scope.hourEntry[key];
+                        return;
                     }
-                });
 
-                $scope.editMode = false;
-                $scope.saveHoursToBackend(obj, isAdded);
+                    var obj = {};
+                    _.each(['id', 'date', 'description', 'hours', 'person', 'created', 'task', 'project'], function(key){
+                        if($scope.hourEntry[key]){
+                            obj[key] = $scope.hourEntry[key];
+                        }
+                    });
+
+                    if($scope.hourEntry.isNew && !$scope.hourEntry.isACopy){
+                        $scope.clearEditHoursEntry();
+                    }else{
+                        $scope.hourEntry.editMode = false;
+                    }
+                    $scope.saveHoursToBackend(obj);
+                });
             };
 
             $scope.getNewHoursValidationErrors = function () {
+                var deferred = $q.defer();
 
-                $scope.hoursValidation = [];
+                $scope.resetMessages();
 
                 var entries = $scope.selected ? $scope.selected.hoursEntries : [];
 
-                if ($scope.hourEntry &&
-                    (
-                        $scope.hourEntry.hours === '' ||
-                        parseFloat($scope.hourEntry.hours) === 0
-                    ) ||
-                    $scope.hourEntry.hours === undefined) {
-                    $scope.hoursValidation.push('Hours value is empty');
-                } else if ($scope.hourEntry && $scope.hourEntry.hours) {
-                    var res = /^\d*(\.\d{1,2})?$/.exec($scope.hourEntry.hours);
-
-                    if (!res) {
-                        $scope.hoursValidation.push('Incorrect value for hours');
-                    }
-
-                }
-
-                if ($scope.hourEntry && $scope.hourEntry.selectedItem && $scope.hourEntry.selectedItem.startDate) {
-                    var selectedDate = new Date($scope.selected.date);
-
-                    if (selectedDate > new Date($scope.hourEntry.selectedItem.endDate) ||
-                        selectedDate < new Date($scope.hourEntry.selectedItem.startDate)) {
-                        $scope.hoursValidation.push('You are logging hours for project which is already ended or ' +
-                                                    'not started');
-                    }
+                var hours = Number($scope.hourEntry.hours);
+                if(isNaN(hours) || hours === 0){
+                    $scope.addValidationMessage('Hours value is empty');
+                }else if(hours < 0 || hours > 24){
+                    $scope.addValidationMessage('Incorrect value for hours');
                 }
 
                 if ($scope.hourEntry &&
-                    $scope.editMode &&
+                    $scope.hourEntry.editMode &&
                     !$scope.hourEntry.project &&
                     !$scope.hourEntry.task) {
-                    $scope.hoursValidation.push('Project or task hasn\'t been selected');
+                    $scope.addValidationMessage('Project or task hasn\'t been selected');
                 }
 
                 if (!$scope.hourEntry.description) {
-                    $scope.hoursValidation.push('Hours description is empty');
+                    $scope.addValidationMessage('Hours description is empty');
                 }
 
                 var totalHours = $scope.getTotalHoursWithHoursForEntryWithID(
@@ -216,22 +176,43 @@
                 );
 
                 if (totalHours > 24) {
-                    $scope.hoursValidation.push('Hours logged on a given day cannot exceed 24 hours.');
+                    $scope.addValidationMessage('Hours logged on a given day cannot exceed 24 hours.');
                 }
 
-                $scope.hoursValidation = _.uniq($scope.hoursValidation);
+                if ($scope.hourEntry.project) {
+                    if($scope.hourEntry.isNew &&
+                       $scope.checkForExistingRowForProject($scope.hourEntry.project, $scope.hourEntry.id)){
+                        $scope.addValidationMessage('Use one entry per day for a given project.');
+                    }
 
-                return $scope.hoursValidation.length > 0;
+                    // Get the start and end dates for the project
+                    // Ensure that the selected date is between them.
+                    ProjectsService.getProject($scope.hourEntry.project).then(function(project){
+                        var selectedDate = moment($scope.getSelectedDate());
+                        var projectStartDate = moment(project.startDate);
+                        var projectEndDate = project.endDate ? moment(project.endDate) : null;
+
+                        if (selectedDate.isBefore(projectStartDate) ||
+                            (projectEndDate && selectedDate.isAfter(projectEndDate))){
+                            $scope.addValidationMessage('You are logging hours for project which is already ended or ' +
+                                                        'not started');
+                        }
+                        deferred.resolve($scope.hoursValidation.length);
+                    }, deferred.reject);
+                }else{
+                    deferred.resolve($scope.hoursValidation.length);
+                }
+                return deferred.promise;
             };
 
-            $scope.saveHoursToBackend = function (entry, isAdded) {
-                $scope.updateTotalHours();
+            $scope.saveHoursToBackend = function (entry) {
 
-                HoursService.updateHours(entry.id, entry).then(function (updatedHoursEntry) {
-                    if ($scope.isNew) {
-                        $scope.addNewHoursRecord(updatedHoursEntry);
-                        $scope.clearEditHoursEntry();
+                var finish = function (updatedHoursEntry) {
+                    if ($scope.hourEntry.isNew && !$scope.hourEntry.isACopy) {
+                        $scope.addHourEntryRow(updatedHoursEntry);
                     }else if (updatedHoursEntry) {
+                        $scope.hourEntry.isNew = false;
+                        $scope.hourEntry.isACopy = false;
                         _.extend($scope.hourEntry, {
                             id: updatedHoursEntry.id,
                             created: updatedHoursEntry.created,
@@ -243,22 +224,29 @@
                             task: updatedHoursEntry.task
                         });
                     }
-
-                    //$scope.hideHoursSpinner = true;
-                    $scope.$emit('hours:added', $scope.selected);
-                });
+                    $scope.updateTotalHours();
+                };
+                if($scope.hourEntry.isNew){
+                    UserService.getUser().then(function(user){
+                        entry.person = user.id;
+                        entry.date = $scope.getSelectedDate();
+                        HoursService.createHours(entry).then(finish);
+                    });
+                }else{
+                    HoursService.updateHours(entry.id, entry).then(finish);
+                }
 
             };
 
-            $scope.dropdownOpen = false;
-            $scope.toggleDropdown = function(){
-                $scope.dropdownOpen = !$scope.dropdownOpen;
+            $scope.projectTaskDropdownOpen = false;
+            $scope.toggleProjectTaskDropdown = function(){
+                $scope.projectTaskDropdownOpen = !$scope.projectTaskDropdownOpen;
             };
-            $scope.openDropdown = function(){
-                $scope.dropdownOpen = true;
+            $scope.openProjectTaskDropdown = function(){
+                $scope.projectTaskDropdownOpen = true;
             };
-            $scope.closeDropdown = function(){
-                $scope.dropdownOpen = false;
+            $scope.closeProjectTaskDropdown = function(){
+                $scope.projectTaskDropdownOpen = false;
             };
 
             var filter = function (txt, substr) {
@@ -270,7 +258,7 @@
                 return txt;
             };
 
-            $scope.updateAutocomplete = function($event){
+            $scope.emphasizeMatchingNamesInDropdown = function($event){
                 var val = $scope.hourEntry.searchInput;
                 if(!val || !val.length){
                     return;
@@ -296,8 +284,7 @@
                 });
             };
 
-            // This should be part of an autocomplete directive I think - RCM 2015-05-01 18:39
-            $scope.menuItemSelected = function (id, name, isTask) {
+            $scope.selectTaskOrProject = function (id, name, isTask) {
                 if(!isTask){
                     $scope.hourEntry.project = id;
                     $scope.hourEntry.projectName = name;
@@ -306,7 +293,8 @@
                     $scope.hourEntry.task = id;
                     $scope.hourEntry.taskName = name;
                 }
-                $scope.dropdownOpen = false;
+                $scope.projectTaskDropdownOpen = false;
+                setExpectedHoursPrompt();
             };
 
             $scope.isDescriptionExpandedOnMobile = false;

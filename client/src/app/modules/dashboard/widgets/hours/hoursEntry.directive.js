@@ -6,19 +6,6 @@
         ])
         .directive('hoursEntry', HoursEntry);
 
-    var CONSTS = {
-            DELETE_MY_HOURS_PERMISSION: 'FIXME'
-        },
-        // TODO: FIXME
-        Util = {
-            formatFloat: _.noop
-        },
-        // TODO: FIXME
-        Resources = {
-            remove: _.noop,
-            resolve: _.noop
-        };
-
     function HoursEntry() {
 
         var directive = {
@@ -38,13 +25,9 @@
         HoursCtrl.$inject = [
             'psafLogger',
             '$scope',
-            '$state',
             '$rootScope',
-            '$timeout',
             '$q',
-            // 'Resources',
             'UserService',
-            'PeopleService',
             'ProjectsService',
             'HoursService',
             'TasksService',
@@ -57,13 +40,9 @@
 
         function HoursCtrl(psafLogger,
                            $scope,
-                           $state,
                            $rootScope,
-                           $timeout,
                            $q,
-                        //    Resources,
                            UserService,
-                           PeopleService,
                            ProjectsService,
                            HoursService,
                            TasksService,
@@ -79,30 +58,15 @@
 
             $scope.moment = moment;
 
-            $scope.displayedMonthDays = [];
-            // TODO: Remove date
-            $scope.currentMonth = $scope.moment('2015-05-15');
-            $scope.startDate = moment('2015-05-15');
-            $scope.ongoingProjects = [];
-
-            $scope.hoursProjects = [];
-            // fill it in hours controller
-            $scope.hoursTasks = [];
-
+            $scope.currentMonth = moment();
+            $scope.startDate = moment();
             $scope.projectTasksList = [];
-
-            $scope.hasAssignment = false;
-            $rootScope.hasAssignment = false;
-
-            $scope.newHoursRecord = {};
-            $scope.lastSelectedDay = {};
-            // $scope.hoursToDelete = [];
-
-            $scope.newHoursRecord = {};
             $scope.hoursValidation = [];
 
             var thisWeekDates = [];
 
+            // Since we're using SASS, this stuff could really all go in CSS!!
+            // TODO: When working on styling, this stuff should all go away and be in CSS instead!!!
             var taskIconsMap = {
                 'meetings': 'fa-comments-o',
                 'design': 'fa-lightbulb-o',
@@ -115,6 +79,7 @@
                 'sick time': 'fa-ambulance'
             };
 
+            // TODO: When working on styling, this stuff should all go away and be in CSS instead!!!
             var taskIconStylseMap = {
                 'meetings': 'padding: 3px 7px;',
                 'design': 'padding: 3px 10px;',
@@ -127,19 +92,12 @@
                 'sick time': 'padding: 3px 6px;'
             };
 
-            $scope.showHideWidget = function (show) {
-                $scope.hasAssignment = show;
-                $rootScope.hasAssignment = show;
-            };
-
-            // Gets the task listing and then sets up some inline styles for proper display - RCM 2015-05-01 14:56
             $scope.loadAvailableTasks = function () {
                 var deferred = $q.defer();
                 $scope.tasksMap = {};
                 TasksService.getTasks().then(function (tasks) {
                     _.each(tasks, function (t) {
                         $scope.tasksMap[t.id] = t;
-                        $scope.hoursTasks.push(t);
                         $scope.projectTasksList.push(t);
 
                         t.isTask = true;
@@ -163,6 +121,7 @@
                 var deferred = $q.defer();
                 var myAndOngoingProjects = {};
 
+                // Pull from assignments in case the person's assignment isn't in ongoing projects
                 AssignmentsService.getCurrentAssignments($scope.me.id).then(function(myCurrentAssignments){
                     $scope.myAssignments = myCurrentAssignments;
 
@@ -187,8 +146,7 @@
                                 project.originalCustomerName = project.customerName;
                             });
                             $scope.projectsMap = myAndOngoingProjects;
-                            $scope.hoursProjects = _.values(myAndOngoingProjects);
-                            $scope.projectTasksList = $scope.projectTasksList.concat($scope.hoursProjects);
+                            $scope.projectTasksList = $scope.projectTasksList.concat(_.values(myAndOngoingProjects));
 
                             sortProjectTaskList();
                             logger.debug('done loading projects!', $scope.projectsMap);
@@ -223,96 +181,6 @@
                 });
             };
 
-            $scope.showNewHoursEntry = function (e) {
-                $('.dashboard-widget.hours .row.hours-logged .hours-logged-entry').each(function (ind, el) {
-
-                    if ($(el).scope().hourEntry &&
-                        $(el).scope().hourEntry.hoursRecord.isAdded &&
-                        (
-                            $(el).scope().hourEntry.hoursRecord.hours === 0 ||
-                            $(el).scope().hourEntry.hoursRecord.hours === '' ||
-                            $(el).scope().hourEntry.hoursRecord.hours === undefined
-                        )
-                    ) {
-                        $(el).addClass('view-entry');
-                    }
-
-                });
-
-                e = e ? e : window.event;
-
-                $(e.target).closest('.hours-logged-entry').find('.close-new').show();
-                $(e.target).closest('.hours-logged-entry').find('.add').hide();
-            };
-
-            $scope.closeNewHoursEntry = function (e) {
-                $('.dashboard-widget.hours .row.hours-logged .hours-logged-entry').each(function (ind, el) {
-
-                    if (
-                        $(el).scope().hourEntry &&
-                        $(el).scope().hourEntry.hoursRecord.isAdded &&
-                        (
-                            $(el).scope().hourEntry.hoursRecord.hours === 0 ||
-                            $(el).scope().hourEntry.hoursRecord.hours === '' ||
-                            $(el).scope().hourEntry.hoursRecord.hours === undefined
-                        )
-                    ) {
-                        $(el).removeClass('view-entry');
-                    }
-
-                    /*
-                     $scope.$apply( function( ) {
-                     $scope.editHoursEntry( null, $( el ).scope( ).hourEntry, $( el ).find(
-                     'input[name="project-task-select"]' ).eq( 0 ) );
-                     } );
-                     */
-                });
-
-                e = e ? e : window.event;
-
-                $(e.target).closest('.hours-logged-entry').find('.close-new').hide();
-                $(e.target).closest('.hours-logged-entry').find('.add').show();
-
-                e.stopPropagation();
-            };
-
-
-
-            $scope.removeOrCloseHourEntry = function (e, hourEntry, index) {
-                e = e ? e : window.event;
-
-                if (hourEntry.hoursRecord.isAdded) {
-                    return;
-                }
-
-                //if( hourEntry.hoursRecord.editMode ) {
-
-                // if (!hourEntry.hoursRecord.isCopied) {
-                hourEntry.hoursRecord.editMode = false;
-                $scope.clearAutocompleteHandlers(
-                    $(e.target)
-                        .closest('.hours-logged-entry')
-                        .find('[name="project-task-select"]')
-                );
-                // }
-
-                //delete hourEntry.hoursRecord.isCopied;
-
-                //$scope.validateAndCalculateTotalHours( );
-
-                //} else {
-                // $scope.deleteHoursRecord(index)
-                $scope.selected.hoursEntries.splice(index, 1);
-
-                if (hourEntry.hoursRecord && $scope.canDeleteMyHours) {
-                    Resources.remove(hourEntry.hoursRecord.resource, hourEntry.hoursRecord).then(function () {
-                        // $scope.hoursRequest();
-                        $scope.validateAndCalculateTotalHours();
-                        $scope.$emit('hours:deleted', $scope.selected);
-                    });
-                }
-            };
-
             UserService.checkForPermission(UserService.PERMISSIONS.DELETE_MY_HOURS_PERMISSION).then(function(result){
                 $scope.canDeleteMyHours = result;
             });
@@ -321,6 +189,7 @@
             });
 
             var currentSelection = -1;
+            $scope.haveHoursEntries = false;
             var setSelected = function (index) {
                 if(index < -1 && index > 6){
                     // invalid index
@@ -330,8 +199,14 @@
                 for(var i=0; i<$scope.daysOfTheWeek.length; i++){
                     $scope.daysOfTheWeek[i].selected = false;
                 }
-                if(index === -1 || index === currentSelection){
+                if(index === -1){
                     // Deselecting all, so hide the Hours Rows
+                    currentSelection = index;
+                    $scope.showHoursRows = false;
+                    return;
+                }
+                if(index === currentSelection){
+                    currentSelection = -1;
                     $scope.showHoursRows = false;
                     return;
                 }
@@ -340,136 +215,56 @@
                 $scope.daysOfTheWeek[index].selected = true;
                 $scope.showHoursRows = true;
                 $scope.hoursEntries = $scope.daysOfTheWeek[index].hoursEntries;
+                $scope.haveHoursEntries = $scope.hoursEntries.length > 0;
             };
 
-            /*
-             $scope.addHoursEntry = function( ) {
-             $scope.addNewHours( );
-             };*/
-            // MOVE THIS TO FORM CONTROLLER WHEN READY
-            $scope.addNewHours = function (isTask) {
-                // match date with current hours
-                var displayedHoursLength = $scope.displayedHours.length;
+            $scope.getSelectedDate = function(){
+                if(currentSelection < 0 || currentSelection > 6){
+                    return;
+                }
+                return $scope.daysOfTheWeek[currentSelection].dateFormatted;
+            };
 
-                for (var i = 0; i < displayedHoursLength; i++) {
-                    if ($scope.selected.date === $scope.displayedHours[i].date) {
-                        // $scope.activeAddition =
-                        // $scope.displayedHours[i];
-
-                        if ($scope.selected.totalHours > 0 ||
-                            $scope.anyCopied() ||
-                            (
-                                $scope.selected.hoursEntries &&
-                                $scope.selected.hoursEntries.length === 0
-                            )
-                        ) {
-                            $scope.newHoursRecord = {
-                                date: $scope.selected.date,
-                                description: '',
-                                hours: '',
-                                person: $scope.me,
-                                editMode: true,
-                                isAdded: true
-
-                            };
-
-                            if (!isTask) {
-                                $scope.newHoursRecord.project = {};
-                            } else {
-                                $scope.newHoursRecord.task = {};
-                            }
-
-                            // sync selected object with
-                            // displayedHours collection
-                            if ($scope.selected.hoursEntries) {
-                                $scope.selected.hoursEntries.unshift({
-                                    hoursRecord: $scope.newHoursRecord
-                                });
-                            } else {
-                                $scope.selected.hoursEntries = [];
-                                $scope.selected.hoursEntries.unshift({
-                                    hoursRecord: $scope.newHoursRecord
-                                });
-                            }
-                        } else {
-                            // switch to edit mode predefined
-                            // entries
-                            for (var j = 0; j < $scope.selected.hoursEntries.length; j++) {
-                                if ($scope.selected.hoursEntries[j].hoursRecord) {
-                                    $scope.selected.hoursEntries[j].hoursRecord.editMode = true;
-                                    $scope.selected.hoursEntries[j].hoursRecord.isAdded = true;
-                                }
-                            }
-                        }
-
+            $scope.removeHourEntryRow = function(theEntry){
+                if(currentSelection < 0 || currentSelection > 6){
+                    return;
+                }
+                var index = -1;
+                _.find($scope.daysOfTheWeek[currentSelection].hoursEntries, function(entry, idx){
+                    if(theEntry === entry){
+                        index = idx;
+                        return true;
                     }
-                }
-            };
-
-            // This sounds like the two previous functions - RCM 2015-05-01 19:36
-            $scope.addNewHoursRecord = function (day) {
-                var newHoursRecord = {
-                    date: day.date,
-                    description: '',
-                    hours: '',
-                    project: {},
-                    person: $scope.me,
-                    editMode: true,
-                    isAdded: true
-
-                };
-
-                // sync selected object with
-                // displayedHours collection
-                if (day.hoursEntries) {
-                    day.hoursEntries.unshift({
-                        hoursRecord: newHoursRecord
-                    });
-                } else {
-                    day.hoursEntries = [];
-                    day.hoursEntries.unshift({
-                        hoursRecord: newHoursRecord
-                    });
-                }
-            };
-
-            // Not sure what this does or why - RCM 2015-05-01 18:45
-            $scope.anyAdded = function () {
-                var result = false;
-
-                for (var i = 0; i < $scope.selected.hoursEntries.length; i++) {
-                    var entry = $scope.selected.hoursEntries[i];
-
-                    if (entry.hoursRecord &&
-                        entry.hoursRecord.isAdded ||
-                        entry.hoursRecord.isCopied) {
-                        result = true;
+                });
+                if(index > -1){
+                    $scope.daysOfTheWeek[currentSelection].hoursEntries.splice(index, 1);
+                    if($scope.daysOfTheWeek[currentSelection].hoursEntries.length === 0){
+                        $scope.haveHoursEntries = false;
                     }
+                    $scope.updateTotalHours();
                 }
-
-                return result;
             };
 
-            // Not sure what this does or why - RCM 2015-05-01 18:46
-            $scope.anyCopied = function () {
-                var result = false;
-
-                for (var i = 0; i < $scope.selected.hoursEntries.length; i++) {
-                    var entry = $scope.selected.hoursEntries[i];
-
-                    if (entry.hoursRecord &&
-                        entry.hoursRecord.editMode &&
-                        entry.hoursRecord.isCopied) {
-                        result = true;
-                    }
+            $scope.addHourEntryRow = function (hourEntry) {
+                if(hourEntry.project){
+                    hourEntry.projectName = $scope.projectsMap[hourEntry.project].originalName;
                 }
+                if(hourEntry.task){
+                    hourEntry.taskName = $scope.tasksMap[hourEntry.task].originalName;
+                }
+                $scope.daysOfTheWeek[currentSelection].hoursEntries.unshift(hourEntry);
+                $scope.haveHoursEntries = true;
+                $scope.updateTotalHours();
+            };
 
-                return result;
+            $scope.checkForExistingRowForProject = function(projectID, entryIDToIgnore){
+                return _.find($scope.daysOfTheWeek[currentSelection].hoursEntries, function(entry){
+                    return entry.id !== entryIDToIgnore && entry.project === projectID;
+                });
             };
 
             var me = $scope.me ? $scope.me.about : '';
-            // TODO: Remove Date
-            var firstDayOfWeek = moment('2015-05-15').day(0);
+            var firstDayOfWeek = moment().day(0);
 
             $scope.backInTime = function () {
                 firstDayOfWeek.subtract(7, 'days');
@@ -488,37 +283,42 @@
             $scope.fillWeekDays = function () {
                 // run through and build out the array of the
                 // week's dates
-                var moment = $scope.moment(firstDayOfWeek);
+                var dayMoment = moment(firstDayOfWeek);
                 var dateFormatted;
                 for (var i = 0; i < 7; i++) {
-                    moment.day(i);
-                    dateFormatted = moment.format('YYYY-MM-DD');
+                    dayMoment.day(i);
+                    dateFormatted = dayMoment.format('YYYY-MM-DD');
 
                     thisWeekDates[i] = dateFormatted;
 
-                    $scope.daysOfTheWeek[i].futureness = $scope.isInFuture(moment);
+                    $scope.daysOfTheWeek[i].futureness = $scope.isInFuture(dayMoment);
                     $scope.daysOfTheWeek[i].selected = false;
                     $scope.daysOfTheWeek[i].totalHours = 0;
-                    $scope.daysOfTheWeek[i].moment = moment;
-                    $scope.daysOfTheWeek[i].dayOfWeek = moment.format('dddd');
-                    $scope.daysOfTheWeek[i].dayOfMonth = moment.format('D');
+                    $scope.daysOfTheWeek[i].moment = dayMoment;
+                    $scope.daysOfTheWeek[i].dateFormatted = dateFormatted;
+                    $scope.daysOfTheWeek[i].dayOfWeek = dayMoment.format('dddd');
+                    $scope.daysOfTheWeek[i].dayOfMonth = dayMoment.format('D');
+                    $scope.daysOfTheWeek[i].hoursEntries = [];
                 }
             };
 
-            $scope.showWeekDates = function (callback) {
+            $scope.showWeekDates = function () {
                 $scope.fillWeekDays();
-
                 $scope.prettyCalendarFormats(thisWeekDates[0], thisWeekDates[6]);
-
-                callback(thisWeekDates);
             };
 
             $scope.showToday = function () {
-                // TODO: Remove date
-                firstDayOfWeek = moment('2015-05-15').day(0);
-                $scope.hoursRequest();
-
-                $scope.$emit('hours:showToday');
+                var today = moment(),
+                    todayIndex = today.day();
+                if(today.day(0).isSame(firstDayOfWeek)){
+                    // We're on the week that contains today, so simply setSelected
+                    if(todayIndex != currentSelection){
+                        setSelected(todayIndex);
+                    }
+                }else{
+                    firstDayOfWeek = today.day(0);
+                    $scope.hoursRequest(todayIndex);
+                }
             };
 
             $scope.prettyCalendarFormats = function (firstDay, lastDay) {
@@ -528,39 +328,76 @@
                 return $scope.prettyCalendarDates;
             };
 
-            // Thsi function is doing too much so we need to figure out how to
-            // break it down into smaller pieces. - RCM 2015-05-01 19:33
-            $scope.hoursRequest = function (cb, setSelectedIndex) {
+            $scope.hoursRequest = function (setSelectedIndex) {
+                $scope.resetMessages();
                 setSelected(-1);
                 $scope.hideHoursSpinner = false;
 
-                $scope.showWeekDates(function (result) {
-                    HoursService
-                        .getHoursRecordsForPersonAndBetweenDates(
-                            $scope.me.id,
-                            thisWeekDates[0],
-                            thisWeekDates[6])
-                        .then(function (result) {
-                            var i, futureness;
-                            if (result.length === 0) {
-                                logger.error('getHoursRecordsForPersonAndBetweenDates(' + thisWeekDates[0] +
-                                              ',' + thisWeekDates[6] + ') gave me no results');
-                            } else {
-                                $scope.showHideWidget(true);
+                $scope.showWeekDates();
+                HoursService
+                    .getHoursRecordsForPersonAndBetweenDates(
+                        $scope.me.id,
+                        thisWeekDates[0],
+                        thisWeekDates[6])
+                    .then(function (result) {
+                        var i, futureness;
+                        if (result.length === 0) {
+                            logger.error('getHoursRecordsForPersonAndBetweenDates(' + thisWeekDates[0] +
+                                          ',' + thisWeekDates[6] + ') gave me no results');
+                        } else {
 
-                                _.each(result, function(entry){
-                                    var date = moment(entry.date),
-                                        index = -1;
-                                    _.find(thisWeekDates, function(thisWeekDate, i){
-                                        if(date.format('YYYY-MM-DD') === thisWeekDate){
-                                            index = i;
-                                            return true;
+                            _.each(result, function(entry){
+                                var date = moment(entry.date),
+                                    index = -1;
+                                _.find(thisWeekDates, function(thisWeekDate, i){
+                                    if(date.format('YYYY-MM-DD') === thisWeekDate){
+                                        index = i;
+                                        return true;
+                                    }
+                                });
+                                if(index !== -1){
+                                    $scope.daysOfTheWeek[index].totalHours += entry.hours;
+                                    $scope.daysOfTheWeek[index].hoursEntries.push(entry);
+                                    if(entry.project){
+                                        if($scope.projectsMap[entry.project]){
+                                            entry.projectName = $scope.projectsMap[entry.project].name;
+                                        }else{
+                                            ProjectsService.getProject(entry.project).then(function(project){
+                                                $scope.projectsMap[project.id] = project;
+                                                entry.projectName = project.name;
+                                            });
                                         }
-                                    });
-                                    if(index !== -1){
-                                        $scope.daysOfTheWeek[index].totalHours += entry.hours;
-                                        $scope.daysOfTheWeek[index].hoursEntries.push(entry);
-                                        if(entry.project){
+                                    }else if(entry.task){
+                                        if($scope.tasksMap[entry.task]){
+                                            entry.taskName = $scope.tasksMap[entry.task].name;
+                                        }else{
+                                            TasksService.getTask(entry.task).then(function(task){
+                                                $scope.tasksMap[task.id] = task;
+                                                entry.taskName = task.name;
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+                        }
+
+                        _.each(thisWeekDates, function(date, index){
+                            // Check for assignments on this date and, if we have one, add a hourEntry row
+                            AssignmentsService
+                                .getAssignmentsImpactingDate($scope.me.id, date)
+                                .then(function(assignments){
+                                    _.each(assignments, function(assignment){
+                                        // Only add the new row if there's not already one for the given project
+                                        var found = _.find($scope.daysOfTheWeek[index].hoursEntries, function(entry){
+                                            return entry.project === assignment.project;
+                                        });
+                                        if(!found){
+                                            var entry = {
+                                                editMode: true,
+                                                isNew: true,
+                                                isACopy: true,
+                                                project: assignment.project
+                                            };
                                             if($scope.projectsMap[entry.project]){
                                                 entry.projectName = $scope.projectsMap[entry.project].name;
                                             }else{
@@ -569,32 +406,20 @@
                                                     entry.projectName = project.name;
                                                 });
                                             }
-                                        }else if(entry.task){
-                                            if($scope.tasksMap[entry.task]){
-                                                entry.taskName = $scope.tasksMap[entry.task].name;
-                                            }else{
-                                                TasksService.getTask(entry.task).then(function(task){
-                                                    $scope.tasksMap[task.id] = task;
-                                                    entry.taskName = task.name;
-                                                });
+                                            $scope.daysOfTheWeek[index].hoursEntries.unshift(entry);
+                                            if(index === currentSelection){
+                                                $scope.haveHoursEntries = true;
                                             }
                                         }
-                                    }
+                                    });
                                 });
-                            }
-
-                            if(setSelectedIndex){
-                                setSelected(setSelectedIndex);
-                            }
-
-                            if (cb) {
-                                cb();
-                            }
-
-                            $scope.hideHoursSpinner = true;
-                            $scope.$emit('hours:loaded');
                         });
-                });
+
+                        if(setSelectedIndex){
+                            setSelected(setSelectedIndex);
+                        }
+                        $scope.hideHoursSpinner = true;
+                    });
             };
 
             $scope.getTotalHoursWithHoursForEntryWithID = function(numHours, entryID){
@@ -604,6 +429,9 @@
                 var theDay = $scope.daysOfTheWeek[currentSelection];
                 var sum = 0;
                 _.each(theDay.hoursEntries, function(entry){
+                    if(entry.isNew){
+                        return;
+                    }
                     if(entry.id === entryID){
                         sum += numHours;
                     }else{
@@ -621,143 +449,47 @@
                 $scope.daysOfTheWeek[currentSelection].totalHours = total;
             };
 
-            // The next few methods all do something for copying hours...lot of code. - RCM 2015-05-01 19:40
             $scope.copyHoursEntry = function () {
-                $scope.copyHours();
-
-                for (var i = 0; i < $scope.selected.hoursEntries.length; i++) {
-                    if ($scope.selected.hoursEntries[i].hoursRecord &&
-                        $scope.selected.hoursEntries[i].hoursRecord.hours > 0 &&
-                        $scope.selected.hoursEntries[i].hoursRecord.isCopied) {
-                        $scope.selected.hoursEntries[i].hoursRecord.editMode = true;
-                    }
-                }
-            };
-
-            $scope.copyHours = function () {
-                $scope.hideMessages();
-
-                var selectedDate = $scope.moment($scope.selected.date).toDate();
-
-                var copyFromEntries = [];
-
-                // if it's possible, trying to find hours
-                // entries from yesterday
-                var tmpD = $scope.selected.date.split('-');
-
-                var copyFromDate = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]) - 1);
-
-                var shortDate = moment(copyFromDate).format('YYYY-MM-DD');
-                var copyFromEntry = _.findWhere($scope.displayedHours, {
-                    date: shortDate
-                });
-                var copyEntryFound = false;
-
-                if (copyFromEntry) {
-                    var prevDayHoursRecords = _.pluck(copyFromEntry.hoursEntries, 'hoursRecord');
-                    prevDayHoursRecords = _.filter(prevDayHoursRecords, function (p) {
-                        if (!isNaN(parseFloat(p.hours))) {
-                            return true;
+                $scope.resetMessages();
+                HoursService.getMostRecent($scope.daysOfTheWeek[currentSelection].dateFormatted).then(function(entries){
+                    _.each(entries, function(entry){
+                        delete entry.id;
+                        delete entry.created;
+                        delete entry.date;
+                        entry.editMode = true;
+                        entry.isNew = true;
+                        entry.isACopy = true;
+                        $scope.daysOfTheWeek[currentSelection].hoursEntries.push(entry);
+                        if(entry.project){
+                            if($scope.projectsMap[entry.project]){
+                                entry.projectName = $scope.projectsMap[entry.project].name;
+                            }else{
+                                ProjectsService.getProject(entry.project).then(function(project){
+                                    $scope.projectsMap[project.id] = project;
+                                    entry.projectName = project.name;
+                                });
+                            }
+                        }else if(entry.task){
+                            if($scope.tasksMap[entry.task]){
+                                entry.taskName = $scope.tasksMap[entry.task].name;
+                            }else{
+                                TasksService.getTask(entry.task).then(function(task){
+                                    $scope.tasksMap[task.id] = task;
+                                    entry.taskName = task.name;
+                                });
+                            }
                         }
                     });
-                    if (prevDayHoursRecords.length > 0) {
-                        copyHoursCallback(copyFromEntry.hoursEntries);
-                        copyEntryFound = true;
+                    if(entries.length){
+                        $scope.haveHoursEntries = true;
                     }
-                }
-                // if not, get hours for 1 week earlier than
-                // selected date, find nearest day with logged
-                // hours.
-                if (!copyEntryFound) {
-                    var fromDate = new Date(parseInt(tmpD[0]), parseInt(tmpD[1]) - 1, parseInt(tmpD[2]) - 7);
-                    var from = moment(fromDate).format('YYYY-MM-DD');
-                    HoursService
-                        .getHoursRecordsForPersonAndBetweenDates($scope.me.id, from, shortDate)
-                        .then(function (result) {
-                            for (var i = result.length - 1; i >= 0; i--) {
-                                if (result[i].hoursEntries.length > 0) {
-                                    var houseRecordsInside = _.filter(result[i].hoursEntries, function (h) {
-                                        //if( h.hoursRecord )
-                                        if (!isNaN(parseFloat(h.hoursRecord.hours))) {
-                                            return true;
-                                        }
-                                    });
-                                    if (houseRecordsInside.length > 0) {
-                                        copyHoursCallback(result[i].hoursEntries);
-                                        copyEntryFound = true;
-                                        return;
-                                    }
-                                }
-                            }
-
-                            if (!copyEntryFound) {
-                                $scope.hoursValidation.push('No hours to copy found for the last week.');
-                            }
-                        });
-                }
-            };
-            var copyHoursCallback = function (copyFromEntries) {
-                var hoursRecords = _.pluck($scope.selected.hoursEntries, 'hoursRecord');
-
-                hoursRecords = _.reject(hoursRecords, function (h) {
-                    return (typeof h) === 'undefined';
                 });
-                // $scope.hoursToDelete = _.pluck(hoursRecords,
-                // "resource");
-                // $scope.selected.hoursEntries = [];
-
-                // simply add copied hours to current day hours
-                // entries
-                var displayedHoursEntry = _.findWhere($scope.displayedHours, {
-                    date: $scope.selected.date
-                });
-
-                for (var i = 0; i < copyFromEntries.length; i++) {
-                    if (copyFromEntries[i].hoursRecord && copyFromEntries[i].hoursRecord.hours > 0) {
-                        var newHoursRecord = {
-                            date: $scope.selected.date,
-                            description: copyFromEntries[i].hoursRecord.description,
-                            hours: copyFromEntries[i].hoursRecord.hours,
-                            person: {
-                                resource: $scope.me.about
-                            }
-                        };
-
-                        newHoursRecord.isCopied = true;
-
-                        if (copyFromEntries[i].hoursRecord.project) {
-                            newHoursRecord.project = copyFromEntries[i].hoursRecord.project;
-                        }
-
-                        if (copyFromEntries[i].hoursRecord.task) {
-                            newHoursRecord.task = copyFromEntries[i].hoursRecord.task;
-                        }
-
-                        var hoursEntry = {
-                            project: copyFromEntries[i].project,
-                            task: copyFromEntries[i].task,
-                            hoursRecord: newHoursRecord
-                        };
-
-                        if (copyFromEntries[i].assignment) {
-                            hoursEntry.assignment = copyFromEntries[i].assignment;
-                        }
-
-                        // displayedHoursEntry.hoursEntries.unshift(hoursEntry);
-
-                        $scope.selected.hoursEntries.unshift($scope.cloneDay(hoursEntry));
-                    }
-                }
-                /*
-                 * // after copying remove all previous day's
-                 * hours for (var i = 0; $scope.hoursToDelete &&
-                 * i < $scope.hoursToDelete.length; i ++) { if
-                 * ($scope.hoursToDelete[i])
-                 * Resources.remove($scope.hoursToDelete[i]) }
-                 */
             };
 
-            $scope.hideMessages = function () {
+            $scope.addValidationMessage = function(message){
+                $scope.hoursValidation.push(message);
+            };
+            $scope.resetMessages = function () {
                 $scope.hoursValidation = [];
             };
 
@@ -786,21 +518,15 @@
                     });
                 }
 
-                // TODO: Remove date
                 $scope
                     .loadAvailableTasks()
                     .then($scope.loadProjects)
                     .then(function(){
-                        $scope.hoursRequest(null, $scope.moment('2015-05-15').day());
+                        $scope.hoursRequest(moment().day());
                     });
             };
 
-            // TODO: Get me from People and then call init
-            PeopleService.getProfile().then(init);
-
-            $scope.$on('$destroy', function () {
-                $scope.unbindEventHandlers();
-            });
+            UserService.getUser().then(init);
 
             $rootScope.$on('hours:requiredRefresh', function () {
                 $scope.hoursRequest();

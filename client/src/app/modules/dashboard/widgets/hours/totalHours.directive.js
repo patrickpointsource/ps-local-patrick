@@ -24,12 +24,7 @@
             restrict: 'EA',
             templateUrl: 'app/modules/dashboard/widgets/hours/totalHours.html',
             replace: true,
-            transclude: true,
-            link: function ($scope, iElm, iAttrs, controller) {
-                if (angular.isDefined(iAttrs['mode'])) {
-                    $scope.mode = iAttrs['mode'];
-                }
-            }
+            transclude: true
         };
 
         return directive;

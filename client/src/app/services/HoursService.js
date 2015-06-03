@@ -18,6 +18,7 @@
             deleteHours: deleteHours,
 
             // Convenience functions
+            getMostRecent: getMostRecent,
             getHoursRecordsForPersonAndBetweenDates: getHoursRecordsForPersonAndBetweenDates
         };
 
@@ -47,6 +48,12 @@
         function deleteHours(id){
             logger.debug('HoursService', 'Deleting the Hours document with ID:', id);
             return Restangular.one(path, id).remove();
+        }
+
+        function getMostRecent(date){
+            return Hours.get('mostRecent', {
+                date: date
+            });
         }
 
         function getHoursRecordsForPersonAndBetweenDates(personID, startDate, endDate){

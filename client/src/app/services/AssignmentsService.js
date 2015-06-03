@@ -19,7 +19,8 @@
             deleteAssignment: deleteAssignment,
 
             // Convenience methods
-            getCurrentAssignments: getCurrentAssignments
+            getCurrentAssignments: getCurrentAssignments,
+            getAssignmentsImpactingDate: getAssignmentsImpactingDate
         };
 
         function getAssignments(params) {
@@ -52,10 +53,14 @@
 
         function getCurrentAssignments(personID){
             var today = moment().format('YYYY-MM-DD');
+            return getAssignmentsImpactingDate(personID, today);
+        }
+
+        function getAssignmentsImpactingDate(personID, date){
             return getAssignments({
                 person: personID,
-                startingBefore: today,
-                endingAfter: today
+                startingBefore: date,
+                endingAfter: date
             });
         }
     }
