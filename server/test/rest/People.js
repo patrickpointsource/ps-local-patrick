@@ -7,13 +7,65 @@ var path = require('path'),
     util = require('../util/launch'),
     _ = require('underscore');
 
-var ADMIN_GOOGLE_ID = '107489151868154139257';
-var ADMIN_ID = '52ab7005e4b0fd2a8d130008';
-var USER_ID = '5310e2bae4b0a300af62db04';
-var USER_WITH_MANAGER_ID = '52ab7005e4b0fd2a8d130004';
-var personID;
 
 describe('PEOPLE - test simple REST calls', function () {
+	
+	
+    var personID;
+
+    var ADMIN = {
+        id : '52ab7005e4b0fd2a8d130008',
+        googleId : '107489151868154139257',
+        name: {
+            familyName : 'apps',
+            givenName : 'ps',
+            fullName : 'ps apps'
+        }
+    };
+	
+    var USER = {
+        id : '5310e2bae4b0a300af62db04',
+        name: {
+            familyName : 'apps2',
+            givenName : 'ps',
+            fullName : 'ps apps2'
+        }
+    };
+
+    var USER_WITH_MANAGER = {
+        id : '52ab7005e4b0fd2a8d130004',
+        name: {
+            familyName : 'Burckart',
+            givenName : 'Erik',
+            fullName : 'Erik Burckart'
+        }
+    };
+
+    var DEFAULT_PERSON = {
+        name: {
+            familyName : 'apps_test',
+            givenName : 'ps',
+            fullName : 'ps apps_test'
+        },
+        isActive : 'true',
+        googleId : '52ab7005e4b0fd2a8d12fff0',
+        primaryRole : '52c70ae5e4b0911cacf4e117',
+        secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
+        groups : [ 'Admin' ]
+    };
+	
+    var CHANGED_PERSON = {
+        name: {
+            familyName : 'apps_test_v2',
+            givenName : 'ps_v2',
+            fullName : 'ps_v2 apps_test_v2'
+        },
+        isActive : 'true',
+        googleId : '52ab7005e4b0fd2a8d12fff0',
+        primaryRole : '52c70ae5e4b0911cacf4e117',
+        secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
+        groups : [ 'Admin' ]
+    };
 	
     it('GET /v3/people (unauthenticated)', function (done) {
         request('http://localhost:3000/v3/people', function(err, resp, body) {
@@ -82,18 +134,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('POST /v3/people (unauthenticated)', function(done){
         request.post('http://localhost:3000/v3/people', {
-            body: JSON.stringify({
-                name: {
-                    familyName : 'apps_test',
-                    givenName : 'ps',
-                    fullName : 'ps apps_test'
-                },
-                isActive : 'true',
-                googleId : '52ab7005e4b0fd2a8d12fff0',
-                primaryRole : '52c70ae5e4b0911cacf4e117',
-                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
-                groups : [ 'Admin' ]
-            }),
+            body: JSON.stringify(DEFAULT_PERSON),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -111,18 +152,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('POST /v3/people (User authenticated)', function(done){
         request.post('http://localhost:3000/v3/people', {
-            body: JSON.stringify({
-                name: {
-                    familyName : 'apps_test',
-                    givenName : 'ps',
-                    fullName : 'ps apps_test'
-                },
-                isActive : 'true',
-                googleId : '52ab7005e4b0fd2a8d12fff0',
-                primaryRole : '52c70ae5e4b0911cacf4e117',
-                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
-                groups : [ 'Admin' ]
-            }),
+            body: JSON.stringify(DEFAULT_PERSON),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -142,9 +172,9 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.ok(keys.length >= 2);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
-            assert.equal(json.name.familyName, 'apps_test');
-            assert.equal(json.name.givenName, 'ps');
-            assert.equal(json.name.fullName, 'ps apps_test');
+            assert.equal(json.name.familyName, DEFAULT_PERSON.name.familyName);
+            assert.equal(json.name.givenName, DEFAULT_PERSON.name.givenName);
+            assert.equal(json.name.fullName, DEFAULT_PERSON.name.fullName);
 
             // Save the personID to do an update and delete later
             personID = json.id;
@@ -217,9 +247,9 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
             assert.equal(json.id, personID);
-            assert.equal(json.name.familyName, 'apps_test');
-            assert.equal(json.name.givenName, 'ps');
-            assert.equal(json.name.fullName, 'ps apps_test');
+            assert.equal(json.name.familyName, DEFAULT_PERSON.name.familyName);
+            assert.equal(json.name.givenName, DEFAULT_PERSON.name.givenName);
+            assert.equal(json.name.fullName, DEFAULT_PERSON.name.fullName);
             done();
         });
     });
@@ -227,18 +257,7 @@ describe('PEOPLE - test simple REST calls', function () {
     it('PUT /v3/people/:id (unauthenticated)', function(done){
         // Dummy Person ID but should still get Unauthorized
         request.put('http://localhost:3000/v3/people/A1', {
-            body: JSON.stringify({
-                name: {
-                    familyName : 'apps_test_v2',
-                    givenName : 'ps_v2',
-                    fullName : 'ps_v2 apps_test_v2'
-                },
-                isActive : 'true',
-                googleId : '52ab7005e4b0fd2a8d12fff0',
-                primaryRole : '52c70ae5e4b0911cacf4e117',
-                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
-                groups : [ 'Admin' ]
-            }),
+            body: JSON.stringify(CHANGED_PERSON),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -259,18 +278,7 @@ describe('PEOPLE - test simple REST calls', function () {
         assert.ok(personID);
 
         request.put('http://localhost:3000/v3/people/' + personID.substr(0, 5), {
-            body: JSON.stringify({
-                name: {
-                    familyName : 'apps_test_v2',
-                    givenName : 'ps_v2',
-                    fullName : 'ps_v2 apps_test_v2'
-                },
-                isActive : 'true',
-                googleId : '52ab7005e4b0fd2a8d12fff0',
-                primaryRole : '52c70ae5e4b0911cacf4e117',
-                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
-                groups : [ 'Admin' ]
-            }),
+            body: JSON.stringify(CHANGED_PERSON),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -293,18 +301,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
         // Dummy Person ID but should still get Unauthorized
         request.put('http://localhost:3000/v3/people/'+personID, {
-            body: JSON.stringify({
-                name: {
-                    familyName : 'apps_test_v2',
-                    givenName : 'ps_v2',
-                    fullName : 'ps_v2 apps_test_v2'
-                },
-                isActive : 'true',
-                googleId : '52ab7005e4b0fd2a8d12fff0',
-                primaryRole : '52c70ae5e4b0911cacf4e117',
-                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
-                groups : [ 'Admin' ]
-            }),
+            body: JSON.stringify(CHANGED_PERSON),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -325,9 +322,9 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
             assert.equal(json.id, personID);
-            assert.equal(json.name.familyName, 'apps_test_v2');
-            assert.equal(json.name.givenName, 'ps_v2');
-            assert.equal(json.name.fullName, 'ps_v2 apps_test_v2');
+            assert.equal(json.name.familyName, CHANGED_PERSON.name.familyName);
+            assert.equal(json.name.givenName, CHANGED_PERSON.name.givenName);
+            assert.equal(json.name.fullName, CHANGED_PERSON.name.fullName);
             done();
         });
     });
@@ -337,18 +334,7 @@ describe('PEOPLE - test simple REST calls', function () {
         assert.ok(personID);
 
         request.put('http://localhost:3000/v3/people/'+personID, {
-            body: JSON.stringify({
-                name: {
-                    familyName : 'apps_test_v2',
-                    givenName : 'ps_v2',
-                    fullName : 'ps_v2 apps_test_v2'
-                },
-                isActive : 'true',
-                googleId : '52ab7005e4b0fd2a8d12fff0',
-                primaryRole : '52c70ae5e4b0911cacf4e117',
-                secondaryRoles : ['52c70ae5e4b0911cacf4e118'],
-                groups : [ 'Admin' ]
-            }),
+            body: JSON.stringify(CHANGED_PERSON),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -369,15 +355,15 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
             assert.equal(json.id, personID);
-            assert.equal(json.name.familyName, 'apps_test_v2');
-            assert.equal(json.name.givenName, 'ps_v2');
-            assert.equal(json.name.fullName, 'ps_v2 apps_test_v2');
+            assert.equal(json.name.familyName, CHANGED_PERSON.name.familyName);
+            assert.equal(json.name.givenName, CHANGED_PERSON.name.givenName);
+            assert.equal(json.name.fullName, CHANGED_PERSON.name.fullName);
             done();
         });
     });
 
     it('GET /v3/googlePlus/:id (unauthenticated)', function (done) {
-        request('http://localhost:3000/v3/people/googlePlus/' + ADMIN_GOOGLE_ID, function(err, resp, body) {
+        request('http://localhost:3000/v3/people/googlePlus/' + ADMIN.googleId, function(err, resp, body) {
             if(err){
                 throw err;
             }
@@ -391,7 +377,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('GET /v3/googlePlus/:id (invalid person id)', function(done){
 
-        request.get('http://localhost:3000/v3/people/googlePlus/' + ADMIN_GOOGLE_ID.substr(0, 5), {
+        request.get('http://localhost:3000/v3/people/googlePlus/' + ADMIN.googleId.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -410,7 +396,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('GET /v3/people/googlePlus/:id (User authenticated)', function(done){
 
-        request.get('http://localhost:3000/v3/people/googlePlus/' + ADMIN_GOOGLE_ID, {
+        request.get('http://localhost:3000/v3/people/googlePlus/' + ADMIN.googleId, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -430,16 +416,16 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.ok(keys.length >= 2);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
-            assert.equal(json.name.familyName, 'apps');
-            assert.equal(json.name.givenName, 'ps');
-            assert.equal(json.name.fullName, 'ps apps');
+            assert.equal(json.name.familyName, ADMIN.name.familyName);
+            assert.equal(json.name.givenName, ADMIN.name.givenName);
+            assert.equal(json.name.fullName, ADMIN.name.fullName);
             done();
         });
     });
 
     it('GET /v3/people/googlePlus/:id (Admin authenticated)', function(done){
 
-        request.get('http://localhost:3000/v3/people/googlePlus/' + ADMIN_GOOGLE_ID, {
+        request.get('http://localhost:3000/v3/people/googlePlus/' + ADMIN.googleId, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -459,9 +445,9 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.ok(keys.length >= 2);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
-            assert.equal(json.name.familyName, 'apps');
-            assert.equal(json.name.givenName, 'ps');
-            assert.equal(json.name.fullName, 'ps apps');
+            assert.equal(json.name.familyName, ADMIN.name.familyName);
+            assert.equal(json.name.givenName, ADMIN.name.givenName);
+            assert.equal(json.name.fullName, ADMIN.name.fullName);
             done();
         });
     });
@@ -557,7 +543,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('GET /v3/people/:id/manager (invalid person id)', function(done){
 
-        request.get('http://localhost:3000/v3/people/' + USER_WITH_MANAGER_ID.substr(0, 5) + '/manager', {
+        request.get('http://localhost:3000/v3/people/' + USER_WITH_MANAGER.id.substr(0, 5) + '/manager', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -576,7 +562,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('GET /v3/people/:id/manager (User authenticated)', function(done){
 
-        request.get('http://localhost:3000/v3/people/' + USER_WITH_MANAGER_ID + '/manager', {
+        request.get('http://localhost:3000/v3/people/' + USER_WITH_MANAGER.id + '/manager', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -596,16 +582,16 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.ok(keys.length >= 2);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
-            assert.equal(json.name.familyName, 'Burckart');
-            assert.equal(json.name.givenName, 'Erik');
-            assert.equal(json.name.fullName, 'Erik Burckart');
+            assert.equal(json.name.familyName, USER_WITH_MANAGER.name.familyName);
+            assert.equal(json.name.givenName, USER_WITH_MANAGER.name.givenName);
+            assert.equal(json.name.fullName, USER_WITH_MANAGER.name.fullName);
             done();
         });
     });
 
     it('GET /v3/people/:id/manager (Admin authenticated)', function(done){
     
-        request.get('http://localhost:3000/v3/people/' + USER_WITH_MANAGER_ID + '/manager', {
+        request.get('http://localhost:3000/v3/people/' + USER_WITH_MANAGER.id + '/manager', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -625,9 +611,9 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.ok(keys.length >= 2);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
-            assert.equal(json.name.familyName, 'Burckart');
-            assert.equal(json.name.givenName, 'Erik');
-            assert.equal(json.name.fullName, 'Erik Burckart');
+            assert.equal(json.name.familyName, USER_WITH_MANAGER.name.familyName);
+            assert.equal(json.name.givenName, USER_WITH_MANAGER.name.givenName);
+            assert.equal(json.name.fullName, USER_WITH_MANAGER.name.fullName);
             done();
         });
     });
@@ -652,7 +638,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('GET /v3/people/:id/accessRights (invalid person id)', function(done){
 
-        request.get('http://localhost:3000/v3/people/' + ADMIN_ID.substr(0, 5) + '/accessRights', {
+        request.get('http://localhost:3000/v3/people/' + ADMIN.id.substr(0, 5) + '/accessRights', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -671,7 +657,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('GET /v3/people/:id/accessRights (User authenticated)', function(done){
 
-        request.get('http://localhost:3000/v3/people/' + ADMIN_ID + '/accessRights', {
+        request.get('http://localhost:3000/v3/people/' + ADMIN.id + '/accessRights', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -700,7 +686,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('GET /v3/people/:id/accessRights (Admin authenticated)', function(done){
 
-        request.get('http://localhost:3000/v3/people/' + ADMIN_ID + '/accessRights', {
+        request.get('http://localhost:3000/v3/people/' + ADMIN.id + '/accessRights', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -747,7 +733,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('GET /v3/people/:id/googleProfile (invalid person id)', function(done){
 
-        request.get('http://localhost:3000/v3/people/' + ADMIN_ID.substr(0, 5) + '/googleProfile', {
+        request.get('http://localhost:3000/v3/people/' + ADMIN.id.substr(0, 5) + '/googleProfile', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -766,7 +752,7 @@ describe('PEOPLE - test simple REST calls', function () {
 
     it('GET /v3/people/:id/googleProfile (User authenticated)', function(done){
 
-        request.get('http://localhost:3000/v3/people/' + ADMIN_ID + '/googleProfile', {
+        request.get('http://localhost:3000/v3/people/' + ADMIN.id + '/googleProfile', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -784,17 +770,17 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
             assert.ok(keys.length >= 2);
-            assert.equal(json.id, ADMIN_GOOGLE_ID);
-            assert.equal(json.name.familyName, 'apps');
-            assert.equal(json.name.givenName, 'ps');
-            assert.equal(json.name.fullName, 'ps apps');
+            assert.equal(json.id, ADMIN.googleId);
+            assert.equal(json.name.familyName, ADMIN.name.familyName);
+            assert.equal(json.name.givenName, ADMIN.name.givenName);
+            assert.equal(json.name.fullName, ADMIN.name.fullName);
             done();
         });
     });
 
     it('GET /v3/people/:id/accessRights (Admin authenticated)', function(done){
 
-        request.get('http://localhost:3000/v3/people/' + ADMIN_ID + '/googleProfile', {
+        request.get('http://localhost:3000/v3/people/' + ADMIN.id + '/googleProfile', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -812,10 +798,10 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
             assert.ok(keys.length >= 2);
-            assert.equal(json.id, ADMIN_GOOGLE_ID);
-            assert.equal(json.name.familyName, 'apps');
-            assert.equal(json.name.givenName, 'ps');
-            assert.equal(json.name.fullName, 'ps apps');
+            assert.equal(json.id, ADMIN.googleId);
+            assert.equal(json.name.familyName, ADMIN.name.familyName);
+            assert.equal(json.name.givenName, ADMIN.name.givenName);
+            assert.equal(json.name.fullName, ADMIN.name.fullName);
             done();
         });
     });
@@ -883,13 +869,7 @@ describe('PEOPLE - test simple REST calls', function () {
     // create another user by admin
     it('POST /v3/people (Admin authenticated)', function(done){
         request.post('http://localhost:3000/v3/people', {
-            body: JSON.stringify({
-                name: {
-                    familyName : 'apps_test',
-                    givenName : 'ps',
-                    fullName : 'ps apps_test'
-                }
-            }),
+            body: JSON.stringify(DEFAULT_PERSON),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -909,9 +889,9 @@ describe('PEOPLE - test simple REST calls', function () {
             assert.ok(keys.length >= 2);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
-            assert.equal(json.name.familyName, 'apps_test');
-            assert.equal(json.name.givenName, 'ps');
-            assert.equal(json.name.fullName, 'ps apps_test');
+            assert.equal(json.name.familyName, DEFAULT_PERSON.name.familyName);
+            assert.equal(json.name.givenName, DEFAULT_PERSON.name.givenName);
+            assert.equal(json.name.fullName, DEFAULT_PERSON.name.fullName);
     
             // Save the personID to do an update and delete later
             personID = json.id;
