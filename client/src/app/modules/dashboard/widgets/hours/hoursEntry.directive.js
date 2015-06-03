@@ -266,18 +266,39 @@
             var me = $scope.me ? $scope.me.about : '';
             var firstDayOfWeek = moment().day(0);
 
+            $scope.moveSelectionBackInTime = function(){
+                if(currentSelection < 0 || currentSelection > 6){
+                    return;
+                }
+                var index = currentSelection - 1;
+                if(index < 0){
+                    index = 6;
+                    $scope.backInTime();
+                }
+                setSelected(index);
+            };
             $scope.backInTime = function () {
                 firstDayOfWeek.subtract(7, 'days');
                 $scope.hoursRequest();
 
                 $scope.$emit('hours:backInTime');
             };
-
             $scope.forwardInTime = function () {
                 firstDayOfWeek.add(7, 'days');
                 $scope.hoursRequest();
 
                 $scope.$emit('hours:forwardInTime');
+            };
+            $scope.moveSelectionForwardInTime = function(){
+                if(currentSelection < 0 || currentSelection > 6){
+                    return;
+                }
+                var index = currentSelection + 1;
+                if(index > 6){
+                    index = 0;
+                    $scope.forwardInTime();
+                }
+                setSelected(index);
             };
 
             $scope.fillWeekDays = function () {

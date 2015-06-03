@@ -46,6 +46,10 @@
             </div>
 
             <div class="row hours-week-container week-visible">
+                <div ng-click="moveSelectionBackInTime()"
+                     class="back-week">
+                    &laquo;
+                </div>
                 <div ng-click="backInTime()"
                      class="back-week">
                     <i class="fa fa-caret-left fa-2x"></i>
@@ -56,6 +60,10 @@
                 <div ng-click="forwardInTime()"
                      class="next-week">
                     <i class="fa fa-caret-right fa-2x"></i>
+                </div>
+                <div ng-click="moveSelectionForwardInTime()"
+                     class="next-week">
+                    &raquo;
                 </div>
             </div>
 
