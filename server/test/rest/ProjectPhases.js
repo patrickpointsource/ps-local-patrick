@@ -9,7 +9,7 @@ var path = require('path'),
 
 describe('PROJECT PHASES - test simple REST calls', function () {
 
-    var projectPhasesRequest = '/projects/05625e12ea02cbdf615a53025b3efe5d/phases';
+    var projectPhasesRequest = 'http://localhost:3000/v3/projects/05625e12ea02cbdf615a53025b3efe5d/phases';
     var projectPhasesDataTemplate = {};
 
     it('GET /projects/{projectID}/phases (unauthenticated)', function (done) {
@@ -43,7 +43,7 @@ describe('PROJECT PHASES - test simple REST calls', function () {
                 // Pick the first one and make sure it meets the standard format
                 var item = json[0];
                 var keys = _.keys(item);
-                assert.ok(keys.length > 3 && keys.length < 5);
+                assert.ok(keys.length > 2 && keys.length < 6);
                 assert.notEqual(keys.indexOf('id'), -1);
                 assert.notEqual(keys.indexOf('project'), -1);
                 assert.notEqual(keys.indexOf('name'), -1);
@@ -57,7 +57,9 @@ describe('PROJECT PHASES - test simple REST calls', function () {
     it('POST /projects/{projectID}/phases (unauthenticated)', function(done){
         request.post(projectPhasesRequest, {
             body: JSON.stringify({
-                projectID: projectPhasesDataTemplate.project
+                project: projectPhasesDataTemplate.project,
+                name: projectPhasesDataTemplate.name,
+                startDate: getFormattedDate(projectPhasesDataTemplate.startDate)
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -77,7 +79,6 @@ describe('PROJECT PHASES - test simple REST calls', function () {
     it('POST /projects/{projectID}/phases (missing required attributes)', function(done){
         request.post(projectPhasesRequest, {
             body: JSON.stringify({
-                projectID: projectPhasesDataTemplate.project
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -100,8 +101,9 @@ describe('PROJECT PHASES - test simple REST calls', function () {
     it('POST /projects/{projectID}/phases (User authenticated)', function(done){
         request.post(projectPhasesRequest, {
             body: JSON.stringify({
-                projectID: projectPhasesDataTemplate.project,
-                projectPhase: projectPhasesDataTemplate
+                project: projectPhasesDataTemplate.project,
+                name: projectPhasesDataTemplate.name,
+                startDate: getFormattedDate(projectPhasesDataTemplate.startDate)
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -122,8 +124,9 @@ describe('PROJECT PHASES - test simple REST calls', function () {
     it('POST /projects/{projectID}/phases (Admin authenticated)', function(done){
         request.post(projectPhasesRequest, {
             body: JSON.stringify({
-                projectID: projectPhasesDataTemplate.project,
-                projectPhase: projectPhasesDataTemplate
+                project: projectPhasesDataTemplate.project,
+                name: projectPhasesDataTemplate.name,
+                startDate: getFormattedDate(projectPhasesDataTemplate.startDate)
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -141,7 +144,7 @@ describe('PROJECT PHASES - test simple REST calls', function () {
             var json = JSON.parse(body);
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
-            assert.ok(keys.length > 3 && keys.length < 5);
+            assert.ok(keys.length > 2 && keys.length < 6);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('project'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
@@ -200,7 +203,7 @@ describe('PROJECT PHASES - test simple REST calls', function () {
         // Fail if we don't have a project phases ID
         assert.ok(projectPhasesDataTemplate.id);
 
-        request.get(projectPhasesRequest + projectPhasesDataTemplate.id, {
+        request.get(projectPhasesRequest+'/'+projectPhasesDataTemplate.id, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -217,7 +220,7 @@ describe('PROJECT PHASES - test simple REST calls', function () {
             var json = JSON.parse(body);
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
-            assert.ok(keys.length > 3 && keys.length < 5);
+            assert.ok(keys.length > 2 && keys.length < 6);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('project'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
@@ -232,10 +235,11 @@ describe('PROJECT PHASES - test simple REST calls', function () {
 
     it('PUT /projects/{projectID}/phases/:id (unauthenticated)', function(done){
         // Dummy Project Phase ID but should still get Unauthorized
-        request.put(projectPhasesRequest + '/A1', {
+        request.put(projectPhasesRequest+'/A1', {
             body: JSON.stringify({
-                projectID: projectPhasesDataTemplate.project,
-                projectPhase: projectPhasesDataTemplate
+                project: projectPhasesDataTemplate.project,
+                name: projectPhasesDataTemplate.name,
+                startDate: getFormattedDate(projectPhasesDataTemplate.startDate)
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -256,10 +260,11 @@ describe('PROJECT PHASES - test simple REST calls', function () {
         // Fail if we don't have a project phases ID
         assert.ok(projectPhasesDataTemplate.id);
 
-        request.put(projectPhasesRequest + projectPhasesDataTemplate.id.substr(0, 5), {
+        request.put(projectPhasesRequest+'/'+projectPhasesDataTemplate.id.substr(0, 5), {
             body: JSON.stringify({
-                projectID: projectPhasesDataTemplate.project,
-                projectPhase: projectPhasesDataTemplate
+                project: projectPhasesDataTemplate.project,
+                name: projectPhasesDataTemplate.name,
+                startDate: getFormattedDate(projectPhasesDataTemplate.startDate)
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -282,10 +287,11 @@ describe('PROJECT PHASES - test simple REST calls', function () {
         // Fail if we don't have a project phases ID
         assert.ok(projectPhasesDataTemplate.id);
 
-        request.put(projectPhasesRequest + projectPhasesDataTemplate.id, {
+        request.put(projectPhasesRequest+'/'+projectPhasesDataTemplate.id, {
             body: JSON.stringify({
-                projectID: projectPhasesDataTemplate.project,
-                projectPhase: projectPhasesDataTemplate
+                project: projectPhasesDataTemplate.project,
+                name: projectPhasesDataTemplate.name,
+                startDate: getFormattedDate(projectPhasesDataTemplate.startDate)
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -308,10 +314,11 @@ describe('PROJECT PHASES - test simple REST calls', function () {
         assert.ok(projectPhasesDataTemplate.id);
         projectPhasesDataTemplate.name = projectPhasesDataTemplate.name + 'v2';
 
-        request.put(projectPhasesRequest + projectPhasesDataTemplate.id, {
+        request.put(projectPhasesRequest+'/'+projectPhasesDataTemplate.id, {
             body: JSON.stringify({
-                projectID: projectPhasesDataTemplate.project,
-                projectPhase: projectPhasesDataTemplate
+                project: projectPhasesDataTemplate.project,
+                name: projectPhasesDataTemplate.name,
+                startDate: getFormattedDate(projectPhasesDataTemplate.startDate)
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -329,7 +336,7 @@ describe('PROJECT PHASES - test simple REST calls', function () {
             var json = JSON.parse(body);
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
-            assert.ok(keys.length > 3 && keys.length < 5);
+            assert.ok(keys.length > 2 && keys.length < 6);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('project'), -1);
             assert.notEqual(keys.indexOf('name'), -1);
@@ -344,7 +351,7 @@ describe('PROJECT PHASES - test simple REST calls', function () {
 
     it('DELETE /projects/{projectID}/phases/:id (unauthenticated)', function(done){
         // Dummy Project Phase ID but should still get Unauthorized
-        request.del(projectPhasesRequest + '/A1', {
+        request.del(projectPhasesRequest+'/A1', {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -364,7 +371,7 @@ describe('PROJECT PHASES - test simple REST calls', function () {
         // Fail if we don't have a project phases ID
         assert.ok(projectPhasesDataTemplate.id);
 
-        request.del(projectPhasesRequest + projectPhasesDataTemplate.id.substr(0, 5), {
+        request.del(projectPhasesRequest+'/'+projectPhasesDataTemplate.id.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -385,7 +392,7 @@ describe('PROJECT PHASES - test simple REST calls', function () {
         // Fail if we don't have a project phases ID
         assert.ok(projectPhasesDataTemplate.id);
 
-        request.del(projectPhasesRequest + projectPhasesDataTemplate.id, {
+        request.del(projectPhasesRequest+'/'+projectPhasesDataTemplate.id, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -406,7 +413,7 @@ describe('PROJECT PHASES - test simple REST calls', function () {
         // Fail if we don't have a project phases ID
         assert.ok(projectPhasesDataTemplate.id);
 
-        request.del(projectPhasesRequest + projectPhasesDataTemplate.id, {
+        request.del(projectPhasesRequest+'/'+projectPhasesDataTemplate.id, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -423,4 +430,8 @@ describe('PROJECT PHASES - test simple REST calls', function () {
             done();
         });
     });
+
+    var getFormattedDate = function(dateStr) {
+        return dateStr.slice(0, 10);
+    };
 });
