@@ -216,7 +216,7 @@ describe('LINKS - test simple REST calls', function () {
             assert.ok(keys.length >= 1);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('project'), -1);
-            assert.equal(json.project.resource, linksTemplate.project);
+            assert.equal(json.project, linksTemplate.project);
             done();
         });
     });
@@ -294,7 +294,7 @@ describe('LINKS - test simple REST calls', function () {
             assert.ok(keys.length >= 1);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('project'), -1);
-            assert.equal(json.project.resource, linksTemplate.project);
+            assert.equal(json.project, linksTemplate.project);
             done();
         });
     });
