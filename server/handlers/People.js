@@ -15,7 +15,7 @@ var people = {
             '_id': 'id'
         });
         util.mapStraight(doc, obj, ['accounts', 'googleId', 'groups', 'isActive', 'jazzHubId', 'lastSynchronized',
-                                    'mBox', 'manager', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail',
+                                    'mBox', 'department', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail',
                                     'vacationCapacity', 'skills', 'jobTitle', 'secondaryRoles', 'partTimeHours',
                                     'partTime']);
         return obj;
@@ -28,7 +28,7 @@ var people = {
             'id': '_id'
         });
         util.mapStraight(doc, obj, ['accounts', 'googleId', 'groups', 'isActive', 'jazzHubId', 'lastSynchronized',
-                                    'mBox', 'manager', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail',
+                                    'mBox', 'department', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail',
                                     'vacationCapacity', 'skills', 'jobTitle', 'secondaryRoles', 'partTimeHours',
                                     'partTime']);
         return obj;
@@ -286,25 +286,43 @@ module.exports.getManagerOfPerson = function(req, res, next){
                             'detail': err
                         }, 404);
                     }
-                    if(!doc.manager){
-                        // The user doesn't have a manager
+                    if(!doc.department){
+                        // The user doesn't have a department
                         return sendJson(res, {}, 200);
                     }
-                    db.get(doc.manager, function(err, doc){
+                    db.get(doc.department, function(err, doc){
                         if(err && err.message !== 'missing'){
                             return sendJson(res, {
-                                'message': 'An error occurred attempting to find a person (the manager) with the ' +
-                                           'specified ID.',
+                                'message': 'An error occurred attempting to find the person\'s department.',
                                 'detail': err
                             }, 500);
                         }
                         if(!doc){
                             return sendJson(res, {
-                                'message': 'A person (the manager) with the specified ID could not be found.',
+                                'message': 'The person\'s department could not be found.',
                                 'detail': err
                             }, 404);
                         }
-                        sendJson(res, people.convertForRestAPI(access, doc));
+                        if(!doc.manager){
+                            // The deparment doesn't have a manager
+                            return sendJson(res, {}, 200);
+                        }
+                        db.get(doc.manager, function(err, doc){
+                            if(err && err.message !== 'missing'){
+                                return sendJson(res, {
+                                    'message': 'An error occurred attempting to find a person (the manager) with the ' +
+                                               'specified ID.',
+                                    'detail': err
+                                }, 500);
+                            }
+                            if(!doc){
+                                return sendJson(res, {
+                                    'message': 'A person (the manager) with the specified ID could not be found.',
+                                    'detail': err
+                                }, 404);
+                            }
+                            sendJson(res, people.convertForRestAPI(access, doc));
+                        });
                     });
                 });
             }

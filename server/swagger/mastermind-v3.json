@@ -4674,13 +4674,6 @@
                 "manager": {
                     "type": "string",
                     "description": "ID of Person"
-                },
-                "people": {
-                    "type": "array",
-                    "description": "An array of Person IDs that belong to this department",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [
@@ -5006,9 +4999,9 @@
                 "mBox": {
                     "type": "string"
                 },
-                "manager": {
+                "department": {
                     "type": "string",
-                    "description": "ID of Person"
+                    "description": "ID of Department"
                 },
                 "name": {
                     "$ref": "#/definitions/name"

@@ -10,7 +10,7 @@ var department = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager', 'people']);
+        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -20,7 +20,7 @@ var department = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager', 'people']);
+        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager']);
         return obj;
     }
 };
