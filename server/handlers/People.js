@@ -88,7 +88,7 @@ var people = {
 module.exports.getPeople = util.generateCollectionGetHandler(
     securityResources.people.resourceName, // resourceName
     securityResources.people.permissions.viewPeople, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         // TODO:
         // hasAssignment
@@ -118,6 +118,9 @@ module.exports.getPeople = util.generateCollectionGetHandler(
                 q: q,
                 include_docs: true
             }, function(err, results){
+                if(err || !results){
+                    return sendJson(res, {'message': 'Could not search People.', 'detail': err}, 500);
+                }
                 callback(results.rows);
             });
             return;
@@ -142,14 +145,7 @@ module.exports.getSinglePerson = util.generateSingleItemGetHandler(
     securityResources.people.resourceName, // resourceName
     securityResources.people.permissions.viewPeople, // permission
     'person', // key
-    people.convertForRestAPI, // convertForRestAPI
-    function(doc, callback){
-        var acl = services.get('acl');
-        acl.allAllowedPermissions(doc.googleId, function(err, permissions){
-            doc.permissions = permissions;
-            callback(doc);
-        });
-    }
+    people.convertForRestAPI // convertForRestAPI
 );
 
 module.exports.updateSinglePerson = util.generateSingleItemUpdateHandler(
@@ -253,7 +249,12 @@ module.exports.getSinglePersonLoggedIn = function(req, res, next){
                                 'detail': err
                             }, 404);
                         }
-                        sendJson(res, people.convertForRestAPI(access, doc));
+                        doc = people.convertForRestAPI(access, doc);
+                        var acl = services.get('acl');
+                        acl.allAllowedPermissions(doc.googleId, function(err, permissions){
+                            doc.permissions = permissions;
+                            sendJson(res, doc);
+                        });
                     });
                 });
             }

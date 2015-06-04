@@ -35,7 +35,7 @@ var task = {
 module.exports.getTasks = util.generateCollectionGetHandler(
     securityResources.tasks.resourceName, // resourceName
     securityResources.tasks.permissions.viewTasks, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         if(req.query.name){
             // Use the SearchAllProjects index
@@ -43,6 +43,9 @@ module.exports.getTasks = util.generateCollectionGetHandler(
                 q: 'name:' + req.query.name + '*',
                 include_docs: true
             }, function(err, results){
+                if(err || !results){
+                    return sendJson(res, {'message': 'Could not search Tasks.', 'detail': err}, 500);
+                }
                 callback(results.rows);
             });
             return;

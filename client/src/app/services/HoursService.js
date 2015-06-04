@@ -15,7 +15,11 @@
             getOneHours: getOneHours,
             createHours: createHours,
             updateHours: updateHours,
-            deleteHours: deleteHours
+            deleteHours: deleteHours,
+
+            // Convenience functions
+            getMostRecent: getMostRecent,
+            getHoursRecordsForPersonAndBetweenDates: getHoursRecordsForPersonAndBetweenDates
         };
 
         function getHours(params) {
@@ -39,11 +43,25 @@
         }
         function updateHours(id, obj){
             logger.debug('HoursService', 'Updating the Hours document with ID:', id, obj);
-            return Restangular.one(path, id).put(obj);
+            return Restangular.one(path, id).customPUT(obj);
         }
         function deleteHours(id){
             logger.debug('HoursService', 'Deleting the Hours document with ID:', id);
             return Restangular.one(path, id).remove();
+        }
+
+        function getMostRecent(date){
+            return Hours.get('mostRecent', {
+                date: date
+            });
+        }
+
+        function getHoursRecordsForPersonAndBetweenDates(personID, startDate, endDate){
+            return getHours({
+                person: personID,
+                startDate: startDate,
+                endDate: endDate
+            });
         }
     }
 })();

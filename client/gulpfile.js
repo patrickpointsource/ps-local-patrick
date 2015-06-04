@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     runSequence = require('run-sequence'),
     frontMatter = require('gulp-front-matter'),
     autoprefixer = require('gulp-autoprefixer'),
-    sass = require('gulp-ruby-sass'),
+    sass = require('gulp-sass'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
     chmod = require('gulp-chmod'),
@@ -57,7 +57,7 @@ gulp.task('copy', function () {
         .pipe(connect.reload());
 
     return gulp.src('bower_components/foundation-apps/iconic/**/*')
-        .pipe(gulp.dest('dist/assets/img/iconic/'))
+        .pipe(gulp.dest('dist/assets/img/iconic/'));
 });
 
 gulp.task('lint', function () {
@@ -171,14 +171,14 @@ gulp.task('copy-icomoon-fonts', [], function () {
 gulp.task('sass', function () {
     return gulp.src('src/assets/scss/app.scss')
         .pipe(sass({
-            loadPath: [
+            includePaths: [
                 'bower_components/foundation-apps/scss',
                 'src/assets/scss',
                 'src/app/**/*.scss',
                 sprouts
             ],
-            style: 'nested',
-            bundleExec: true
+            outputStyle: 'nested'//,
+            // bundleExec: true
         }))
         .on('error', function (e) {
             console.log(e);
@@ -206,9 +206,9 @@ gulp.task('uglify', [
 );
 
 gulp.task('concatjs', [
-        'uglify-angular',
-        'uglify-dependencies',
-        'uglify-foundation',
+        // 'uglify-angular',
+        // 'uglify-dependencies',
+        // 'uglify-foundation',
         'concat-sprout',
         'concat-app'
     ],
@@ -217,7 +217,7 @@ gulp.task('concatjs', [
         return;
     }
 
-)
+);
 
 // Process Angular JS
 gulp.task('uglify-angular', function () {
@@ -230,8 +230,8 @@ gulp.task('uglify-angular', function () {
 
     return gulp.src(libs)
         .pipe(uglify({
-            beautify: true,
-            mangle: false
+            // beautify: true,
+            // mangle: false
         }))
         .pipe(concat('angular-libs.js'))
         .pipe(gulp.dest('./dist/assets/js/'))
@@ -251,13 +251,14 @@ gulp.task('uglify-dependencies', function () {
         'bower_components/psaf-logger/dist/psaf-logger.min.js',
         'bower_components/moment/moment.js',
         'bower_components/swagger-angular-client/dist/swagger-angular-client.js',
-        'bower_components/angular-directive.g-signin/google-plus-signin.js'
+        'bower_components/angular-directive.g-signin/google-plus-signin.js',
+        'bower_components/async/lib/async.js'
     ];
 
     return gulp.src(libs)
         .pipe(uglify({
-            beautify: true,
-            mangle: false
+            // beautify: true,
+            // mangle: false
         }).on('error', function (e) {
             console.log(e);
         }))
@@ -270,12 +271,12 @@ gulp.task('uglify-app', function () {
     var libs = require('./appFiles.json');
     console.log(libs);
     return gulp.src(libs)
-        .pipe(uglify({
-            beautify: true,
-            mangle: false
-        }).on('error', function (e) {
-            console.log(e);
-        }))
+        // .pipe(uglify({
+        //     beautify: true,
+        //     mangle: false
+        // }).on('error', function (e) {
+        //     console.log(e);
+        // }))
         .pipe(concat('appFiles.js'))
         .pipe(gulp.dest('./dist/assets/js/'))
         .pipe(gulp.dest(webContentBaseDir + '/assets/js/'))
@@ -300,8 +301,8 @@ gulp.task('uglify-foundation', function () {
 
     return gulp.src(libs)
         .pipe(uglify({
-            beautify: true,
-            mangle: false
+            // beautify: true,
+            // mangle: false
         }).on('error', function (e) {
             console.log(e);
         }))
@@ -315,8 +316,8 @@ gulp.task('uglify-sprout', function () {
     makeSproutPaths('js', sprouts, sproutGlobs);
     return gulp.src('./bower_components/' + sproutGlobs)
         .pipe(uglify({
-            beautify: true,
-            mangle: false
+            // beautify: true,
+            // mangle: false
         }).on('error', function (e) {
             console.log(e);
         }))
@@ -440,7 +441,7 @@ gulp.task('dev', ['build-dev', 'server:start'], function () {
 
     // Watch JavaScript
     gulp.watch([
-        './src/app/**/*.js',
+        './src/app/**/*.js'
     ], ['concatjs']);
 
     // Watch static files
@@ -465,7 +466,7 @@ gulp.task('default', ['build',
 
         // Watch JavaScript
         gulp.watch([
-            './src/app/**/*.js',
+            './src/app/**/*.js'
         ], ['uglify']);
 
         // Watch static files

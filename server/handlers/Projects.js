@@ -120,14 +120,20 @@ var project = {
 module.exports.getProjects = util.generateCollectionGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         var q = '';
-        if(req.query.startDate){
-            q = util.addToQuery(q, 'numericStartDate:['+req.query.startDate.replace(/-/g, '')+' TO Infinity]');
+        if(req.query.startingAfter){
+            q = util.addToQuery(q, 'numericStartDate:['+req.query.startingAfter.replace(/-/g, '')+' TO Infinity]');
         }
-        if(req.query.endDate){
-            q = util.addToQuery(q, 'numericEndDate:[-Infinity TO '+req.query.endDate.replace(/-/g, '')+']');
+        if(req.query.endingBefore){
+            q = util.addToQuery(q, 'numericEndDate:[-Infinity TO '+req.query.endingBefore.replace(/-/g, '')+']');
+        }
+        if(req.query.startingBefore){
+            q = util.addToQuery(q, 'numericStartDate:[-Infinity TO '+req.query.startingBefore.replace(/-/g, '')+']');
+        }
+        if(req.query.endingAfter){
+            q = util.addToQuery(q, 'numericEndDate:['+req.query.endingAfter.replace(/-/g, '')+' TO Infinity]');
         }
         var toAdd;
         if(req.query.types && req.query.types.length){
@@ -160,6 +166,9 @@ module.exports.getProjects = util.generateCollectionGetHandler(
                 q: q,
                 include_docs: true
             }, function(err, results){
+                if(err || !results){
+                    return sendJson(res, {'message': 'Could not search Projects.', 'detail': err}, 500);
+                }
                 callback(results.rows);
             });
             return;

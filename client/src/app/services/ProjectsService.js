@@ -1,14 +1,19 @@
+/* global moment, _ */
 (function () {
     angular
         .module('app.services')
         .service('ProjectsService', ProjectsService);
 
-    ProjectsService.$inject = ['psafLogger', 'Restangular'];
+    ProjectsService.$inject = [
+        'psafLogger',
+        'Restangular',
+        '$q'
+    ];
 
     var path = 'projects';
     var phasesPath = 'phases';
     var rolesPath = 'roles';
-    function ProjectsService(psafLogger, Restangular) {
+    function ProjectsService(psafLogger, Restangular, $q) {
         var logger = psafLogger.getInstance('mastermind');
         var Projects = Restangular.all('/'+path);
 
@@ -18,18 +23,21 @@
             createProject: createProject,
             updateProject: updateProject,
             deleteProject: deleteProject,
-            
+
             getProjectPhases: getProjectPhases,
             getProjectPhase: getProjectPhase,
             createProjectPhase: createProjectPhase,
             updateProjectPhase: updateProjectPhase,
             deleteProjectPhase: deleteProjectPhase,
-            
+
             getProjectPhaseRoles: getProjectPhaseRoles,
             getProjectPhaseRole: getProjectPhaseRole,
             createProjectPhaseRole: createProjectPhaseRole,
             updateProjectPhaseRole: updateProjectPhaseRole,
-            deleteProjectPhaseRole: deleteProjectPhaseRole
+            deleteProjectPhaseRole: deleteProjectPhaseRole,
+
+            // Convenience methods
+            getOngoingProjects: getOngoingProjects
         };
 
         function getProjects(params) {
@@ -59,15 +67,15 @@
             logger.debug('ProjectsService', 'Deleting the Project with ID:', id);
             return Restangular.one(path, id).remove();
         }
-        
+
 
         function getProjectPhases(projectID, params) {
-            logger.debug('ProjectsService', 'Getting ProjectPhases for Project with ID:', projectID, 
+            logger.debug('ProjectsService', 'Getting ProjectPhases for Project with ID:', projectID,
                                             'and with params:', params);
             return Restangular.one(path, projectID).all(phasesPath).getList(params);
         }
         function getProjectPhase(projectID, id){
-            logger.debug('ProjectsService', 'Getting single ProjectPhase for Project with ID:', projectID, 
+            logger.debug('ProjectsService', 'Getting single ProjectPhase for Project with ID:', projectID,
                                             'and with ID:', id);
             return Projects.one(path, projectID).all(phasesPath).get(id);
         }
@@ -90,7 +98,7 @@
             logger.debug('ProjectsService', 'Deleting the ProjectPhase with ID:', id);
             return Restangular.one(path, projectID).one(phasesPath, id).remove();
         }
-        
+
 
         function getProjectPhaseRoles(projectID, phaseID, params) {
             logger.debug('ProjectsService', 'Getting ProjectPhaseRoles with params:', params);
@@ -120,5 +128,25 @@
             return Restangular.one(path, projectID).one(phasesPath, phaseID).one(rolesPath, id).remove();
         }
 
+
+        function getOngoingProjects(){
+            var deferred = $q.defer();
+            getProjects({
+                types: 'invest,poc,paid',
+                endingAfter: moment().format('YYYY-MM-DD')
+            }).then(function(projects){
+                // Filter out paid but uncommitted projects
+                projects = _.filter(projects, function(project){
+                    if(project.type === 'paid' && !project.committed){
+                        return false;
+                    }
+                    return true;
+                });
+                deferred.resolve(projects);
+            }, function(err){
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        }
     }
 })();

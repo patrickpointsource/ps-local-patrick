@@ -28,7 +28,7 @@ var skill = {
 module.exports.getSkills = util.generateCollectionGetHandler(
     securityResources.skills.resourceName, // resourceName
     securityResources.skills.permissions.viewSkills, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         // No searching for Skills
         callback(false);
     },

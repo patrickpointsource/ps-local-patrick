@@ -12,8 +12,8 @@ var hour = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project']);
-        util.mapStraightDates(util.FOR_REST, doc, obj, ['created', 'date']);
+        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project', 'date']);
+        util.mapStraightDates(util.FOR_REST, doc, obj, ['created']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -23,8 +23,7 @@ var hour = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project']);
-        util.mapStraightDates(util.FOR_DB, doc, obj, 'date');
+        util.mapStraight(doc, obj, ['description', 'hours', 'person', 'task', 'project', 'date']);
         obj.created = (expectNew ? (new Date()) : (new Date(doc.created))).toString();
         return obj;
     },
@@ -78,7 +77,7 @@ var hour = {
 module.exports.getHours = util.generateCollectionGetHandler(
     securityResources.hours.resourceName, // resourceName
     securityResources.hours.permissions.viewHours, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         var q = '';
         if(req.query.startDate){
@@ -115,6 +114,9 @@ module.exports.getHours = util.generateCollectionGetHandler(
                 q: q,
                 include_docs: true
             }, function(err, results){
+                if(err || !results){
+                    return sendJson(res, {'message': 'Could not search Hours.', 'detail': err}, 500);
+                }
                 callback(results.rows);
             });
             return;
@@ -163,7 +165,7 @@ module.exports.deleteSingleHour = util.generateSingleItemDeleteHandler(
     securityResources.hours.resourceName, // resourceName
     function(req, callback){
         var personService = services.get('person');
-        personService.getUser(req.user.id, function(err, user){
+        personService.getPersonByGoogleID(req.user.id, function(err, user){
             if(!err && req.body.person !== user._id){
                 return callback(securityResources.hours.permissions.editHours);
             }
@@ -172,3 +174,49 @@ module.exports.deleteSingleHour = util.generateSingleItemDeleteHandler(
     }, // permission
     'hour' // key
 );
+
+module.exports.getMostRecent = function(req, res){
+    var access = services.get('dbAccess');
+    var db = access.db;
+    util.doAcl(
+        req,
+        res,
+        securityResources.hours.resourceName,
+        securityResources.hours.permissions.viewHours,
+        function(allowed){
+            if(allowed){
+                var personService = services.get('person');
+                personService.getPersonByGoogleID(req.user.id, function(err, user){
+                    if(err || !user){
+                        return sendJson(res, {
+                            'message': 'Could not find currently logged-in person',
+                            'detail': err
+                        }, 500);
+                    }
+                    // Use the SearchAllHours index
+                    // Knock one day of the provided date
+                    var searchableDate = String(Number(req.query.date.replace(/-/g, '')) - 1);
+                    /*jshint camelcase: false */
+                    db.search('Hours', 'SearchAllHours', {
+                        q: 'person:'+user.id+' AND numericDate:[-Infinity TO '+searchableDate+']',
+                        sort: '"-numericDate"',
+                        include_docs: true
+                    }, function(err, results){
+                        if(err || !results){
+                            return sendJson(res, {'message': 'Could not search Hours.', 'detail': err}, 500);
+                        }
+                        var firstDate = null;
+                        var rows = _.filter(results.rows, function(row){
+                            if(!firstDate){
+                                firstDate = row.doc.date;
+                                return true;
+                            }
+                            return row.doc.date === firstDate;
+                        });
+                        rows = _.pluck(rows, 'doc');
+                        return sendJson(res, rows);
+                    });
+                });
+            }
+        });
+};

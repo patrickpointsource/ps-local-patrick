@@ -31,16 +31,30 @@
                         "type": "string"
                     },
                     {
-                        "name": "startDate",
+                        "name": "startingAfter",
                         "in": "query",
                         "description": "Filter assignments to those starting on or after the given date.",
                         "type": "string",
                         "format": "date"
                     },
                     {
-                        "name": "endDate",
+                        "name": "startingBefore",
+                        "in": "query",
+                        "description": "Filter assignments to those starting before the given date.",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "name": "endingBefore",
                         "in": "query",
                         "description": "Filter assignments to those ending before the given date.",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "name": "endingAfter",
+                        "in": "query",
+                        "description": "Filter assignments to those ending after the given date.",
                         "type": "string",
                         "format": "date"
                     },
@@ -1482,6 +1496,49 @@
                 }
             }
         },
+        "/hours/mostRecent": {
+            "x-handler": "Hours",
+            "get": {
+                "summary": "Retrieve Most Recent Hours",
+                "description": "For a given date, return the hours records for the most recent past date that has hours records.\n",
+                "operationId": "getMostRecent",
+                "tags": [
+                    "Hours"
+                ],
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "The date from which to find the most recent past date with hours records",
+                        "type": "string",
+                        "format": "date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of Hours",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Hours"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The current user is not allowed to view Hours",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/hours/{id}": {
             "x-handler": "Hours",
             "get": {
@@ -2857,19 +2914,34 @@
                         }
                     },
                     {
-                        "name": "startDate",
+                        "name": "startingAfter",
                         "in": "query",
                         "description": "Filter projects to those starting on or after the given date.",
                         "type": "string",
                         "format": "date"
                     },
                     {
-                        "name": "endDate",
+                        "name": "startingBefore",
+                        "in": "query",
+                        "description": "Filter projects to those starting before the given date.",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "name": "endingBefore",
                         "in": "query",
                         "description": "Filter projects to those ending before the given date.",
                         "type": "string",
                         "format": "date"
+                    },
+                    {
+                        "name": "endingAfter",
+                        "in": "query",
+                        "description": "Filter projects to those ending after the given date.",
+                        "type": "string",
+                        "format": "date"
                     }
+
                 ],
                 "responses": {
                     "200": {
@@ -4692,6 +4764,7 @@
             "required": [
                 "hours",
                 "description",
+                "date",
                 "person"
             ]
         },
@@ -4987,6 +5060,10 @@
                 },
                 "partTime": {
                     "type": "boolean"
+                },
+                "permissions": {
+                    "type": "object",
+                    "description": "A map of all permissions this user has. Only returned on /people/me"
                 }
             },
             "required": [

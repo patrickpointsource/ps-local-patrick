@@ -1,0 +1,181 @@
+<div class="hours-logged-entry"
+     ng-class="{'new-entry': hourEntry.isNew,
+                'edit-entry': hourEntry.editMode && !hourEntry.isNew,
+                'view-entry': !hourEntry.editMode && !hourEntry.isNew}"
+     ng-if="hourEntry.hours > 0 || hourEntry.editMode || hourEntry.isNew">
+
+    <!-- Hours in Display mode -->
+    <span id="loggedHours{{$index}}"
+          class="hours-logged-value"
+          ng-if="!hourEntry.editMode">
+        {{hourEntry.hours}} hrs
+    </span>
+    <!-- Hours in Edit mode -->
+    <input id="loggedHoursInput{{$index}}"
+           class="hours-logged-value edit-input"
+           type="text"
+           class="form-control"
+           placeholder="{{hourEntry.editMode && hourEntry.selectedItem ? (hourEntry.expectedHours || '#') : '#'}} hours"
+           name="hours-logged-value-edit"
+           ng-model="hourEntry.hoursEdited"
+           ng-if="hourEntry.editMode" />
+
+    <!-- Project / Task name in Display mode -->
+    <span id="loggedProject{{$index}}"
+          class="hours-logged-project"
+          ng-if="!hourEntry.editMode && hourEntry.project && hourEntry.projectName">
+        {{hourEntry.projectName}}
+    </span>
+    <span id="loggedTask{{$index}}"
+          class="hours-logged-project"
+          ng-if="!hourEntry.editMode && hourEntry.task && hourEntry.taskName">
+        {{hourEntry.taskName}}
+    </span>
+
+    <!-- Project / Task name in Edit mode if one is selected -->
+    <span class="hours-logged-project selected-item"
+          ng-if="hourEntry.editMode && (hourEntry.projectName || hourEntry.taskName)">
+        <span ng-if="hourEntry.task && hourEntry.taskName">
+            {{hourEntry.taskName}}
+        </span>
+        <span ng-if="hourEntry.project && hourEntry.projectName">
+            {{hourEntry.projectName}}
+        </span>
+        <i ng-click="clearSelectedItem(e, hourEntry)" class="fa fa-times"></i>
+    </span>
+
+    <!-- Project / Task input box, search icon, and dropdown -->
+    <input id="loggedProjectInput{{$index}}"
+           class="hours-logged-project edit-input"
+           type="text"
+           ng-disabled="projectTasksList.length == 0"
+           class="form-control"
+           placeholder="Find a project or task"
+           name="project-task-select"
+           required
+           ng-focus="openProjectTaskDropdown()"
+           ng-dblclick="toggleProjectTaskDropdown()"
+           ng-keyup="emphasizeMatchingNamesInDropdown()"
+           ng-model="hourEntry.searchInput"
+           ng-if="hourEntry.editMode && !hourEntry.projectName && !hourEntry.taskName">
+    <span class="search-icon"
+          ng-click="toggleProjectTaskDropdown()"
+          ng-if="hourEntry.editMode && !hourEntry.projectName && !hourEntry.taskName">
+        <i class="fa fa-search"></i>
+    </span>
+    <ul id="ddlProjectsTasks{{$index}}"
+        ng-if="projectTaskDropdownOpen"
+        class="dropdown-menu ddProjectsTasksMenu"
+        role="menu"
+        aria-labelledby="ddProjectsTasksMenu">
+        <li role="presentation"
+            ng-repeat="tp in projectTasksList"
+            ng-if="!tp.hidden && (!tp.isTask || (tp.isTask && tp.visible))">
+            <a class="menu-item task-menu-item"
+               role="menuitem"
+               tabindex="-1"
+               ng-if="tp.customerName == undefined"
+               ng-click="selectTaskOrProject(tp.id, tp.originalName, tp.isTask, $event)"
+               id="{{tp.id}}">
+                <span class="task-icon"
+                      ng-if="tp.icon"
+                      style="{{tp.iconCss}}">
+                    <i class="fa {{tp.icon}}"></i>
+                </span>
+                <span class="task-name"
+                      ng-bind-html="tp.name | transformHighlightNotation">
+                </span>
+            </a>
+            <a class="menu-item project-menu-item"
+               role="menuitem"
+               ng-if="tp.customerName != undefined"
+               ng-click="selectTaskOrProject(tp.id, tp.originalName, tp.isTask, $event)"
+               ng-if="!tp.hidden"
+               id="{{tp.id}}">
+                <span class="project-icon"></span>
+                <span class="project-name"
+                      ng-bind-html="tp.name | transformHighlightNotation">
+                </span>
+                <span class="project-customer-name"
+                      ng-bind-html="tp.customerName | transformHighlightNotation">
+                </span>
+            </a>
+        </li>
+    </ul>
+
+    <span class="hours-logged-details"
+          ng-class="{'visible-mobile': !hourEntry.editMode}"
+          ng-if="!hourEntry.editMode"
+          ng-click="toggleDescription()"
+          ng-bind-html="chevronIcon()">
+    </span>
+
+    <!-- Description in Display mode -->
+    <span id="loggedDescription{{$index}}"
+          class="hours-logged-desc"
+          ng-class="{'visible-mobile': isDescriptionExpandedOnMobile}"
+          ng-if="!hourEntry.editMode">
+        {{hourEntry.description}}
+    </span>
+
+    <!-- Description input in Edit mode -->
+    <input id="loggedDescriptionInput{{$index}}"
+           class="hours-logged-desc edit-input"
+           type="text"
+           placeholder="Add a description"
+           name="hours-logged-desc-edit"
+           ng-model="hourEntry.descriptionEdited"
+           ng-if="hourEntry.editMode" />
+
+    <div ng-if="!hourEntry.editMode">
+        <!-- Edit Button -->
+        <a id="hoursEdit{{$index}}"
+           class="hours-logged-action edit"
+           ng-class="{'visible-mobile': isDescriptionExpandedOnMobile}"
+           ng-click="editHoursEntry()">
+            Edit
+        </a>
+
+        <!-- Remove Button -->
+        <a class="hours-logged-action delete"
+           ng-click="removeHourEntry()">
+            Remove
+        </a>
+    </div>
+    <div ng-if="hourEntry.editMode && hourEntry.isNew">
+        <!-- Add Button -->
+        <a id="hoursSave{{$index}}"
+           class="hours-logged-save"
+           ng-click="saveHoursEntry()">
+            Add
+        </a>
+
+        <!-- Clear Button for New -->
+        <a class="hours-logged-action clear"
+           ng-click="clearEditHoursEntry()"
+           ng-if="!hourEntry.isACopy">
+            Clear
+        </a>
+
+        <!-- Remove Button for Copies -->
+        <a class="hours-logged-action remove"
+           ng-click="removeHourEntry()"
+           ng-if="hourEntry.isACopy">
+            Remove
+        </a>
+    </div>
+    <div ng-if="hourEntry.editMode && !hourEntry.isNew">
+        <!-- Save Button -->
+        <a id="hoursSave{{$index}}"
+           class="hours-logged-save"
+           ng-click="saveHoursEntry()">
+            Save
+        </a>
+
+        <!-- Cancel Button -->
+        <a class="hours-logged-action cancel"
+           ng-click="closeEditHoursEntry()">
+            Cancel
+        </a>
+    </div>
+</div>

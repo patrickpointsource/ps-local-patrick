@@ -30,7 +30,7 @@ var configuration = {
 module.exports.getConfigurations = util.generateCollectionGetHandler(
     securityResources.configuration.resourceName, // resourceName
     securityResources.configuration.permissions.viewConfiguration, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         // No searching in Configurations
         callback(false);
     },

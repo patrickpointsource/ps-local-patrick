@@ -1,0 +1,84 @@
+<div id="hoursCtrl">
+    <div class="card dashboard-widget hours">
+        <div class="card-divider">
+            <div class="inner-heading">
+                <span class="hidden-xs"> Hours </span>
+
+                <div class="start-end">
+                    {{prettyCalendarDates.firstDate}} &ndash; {{prettyCalendarDates.lastDate}}
+                </div>
+                <div class="header-container">
+
+                    <div class="today-btn-container">
+                        <button class="today" ng-click="showToday(e)">Today</button>
+                    </div>
+                </div>
+
+                <div class="pull-right btn-group btn-group-sm dashboard-actions">
+                    <a id="hoursCopy"
+                       ng-click="copyHoursEntry()">
+                        <i class="fa fa-copy"></i>
+                        <span class="hidden-xs hidden-sm">Copy most recent</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-section">
+            <div class="spinner-container"
+                 ng-hide="hideHoursSpinner">
+                <i class="fa fa-spinner fa-spin fa-3x"></i>
+            </div>
+            <div class="row"
+                 ng-show="hoursValidation.length > 0">
+                <div id="hoursValidationDiv"
+                     class="alert alert-danger">
+                    <a class="close"
+                       ng-click="resetMessages()">
+                        &times;
+                    </a>
+                    <ul>
+                        <li ng-repeat="message in hoursValidation"
+                            id="hoursValidationMsg{{$index}}">
+                            {{message}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row hours-week-container week-visible">
+                <div ng-click="moveSelectionBackInTime()"
+                     class="back-week">
+                    &laquo;
+                </div>
+                <div ng-click="backInTime()"
+                     class="back-week">
+                    <i class="fa fa-caret-left fa-2x"></i>
+                </div>
+
+                <total-hours ng-repeat="day in daysOfTheWeek"></total-hours>
+
+                <div ng-click="forwardInTime()"
+                     class="next-week">
+                    <i class="fa fa-caret-right fa-2x"></i>
+                </div>
+                <div ng-click="moveSelectionForwardInTime()"
+                     class="next-week">
+                    &raquo;
+                </div>
+            </div>
+
+            <div class="row hours-logged"
+                 ng-show="showHoursRows">
+                <hours-entry-row is-new="true"></hours-entry-row>
+                <div class="hours-empty"
+                     ng-if="!haveHoursEntries">
+                    No hours logged
+                </div>
+                <div ng-repeat="hourEntry in hoursEntries">
+                    <hours-entry-row></hours-entry-row>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -21,7 +21,8 @@
             'swagger-client',
             'directive.g+signin',
             'mastermind.layout.header',
-            'PeopleModule',
+            'app.dashboard',
+            'PeopleModule'
         ])
         .config(AppConfig)
         .run(AppRun);
@@ -123,7 +124,7 @@
                 url: '/styleguide',
                 views: {
                     'content@': {
-                        templateUrl: 'app/layout/styleguide.html',
+                        templateUrl: 'app/layout/styleguide.html'
                     }
                 }
             })
