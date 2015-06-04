@@ -69,7 +69,6 @@ $people-content-padding: 1rem;
     a {
         color: $gray-medium;
     }
-
     ul {
         margin: 0;
     }
@@ -79,13 +78,15 @@ $people-content-padding: 1rem;
 .person-name,
 .person-title,
 .person-role,
-.person-utilization
-{
+.person-utilization {
     @include grid-content;
     font-size: rem-calc(24);
     line-height: rem-calc(32);
+    display: flex;
+    align-content: center;
     margin: auto;
 }
+
 .person-img {
     div {
         margin: auto;
@@ -95,30 +96,43 @@ $people-content-padding: 1rem;
         min-height: rem-calc(60);
     }
 }
+
 .person-title {
     font-size: rem-calc(24);
 }
+
 .person-name {
     font-size: rem-calc(24);
     font-weight: 700;
 }
+
 .person-utilization {
     font-size: rem-calc(48);
     font-weight: 600;
     color: $gray-medium;
     line-height: rem-calc(72);
+    background-color: $gray-almost-white;
+    text-align: center;
+    margin: 0;
+    div {
+        margin: auto;
+    }
 }
+
 .person-role {
     color: white;
-    padding: rem-calc(5) rem-calc(29);
     text-align: center;
+    text-transform: uppercase;
     div {
         background-color: $primary-color;
         margin: auto;
+        line-height: 2.5rem;
+        width: 5rem;
     }
     font-size: rem-calc(18);
     font-weight: 600;
 }
+
 .person {
     @include clearfix;
     height: rem-calc(112);

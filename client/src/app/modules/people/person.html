@@ -1,13 +1,13 @@
 <div class="people grid-block">
-    <div class="inner-content grid-container medium-12 small-12">
-        <div class="grid-block profile-main small-12">
-            <div class="grid-block medium-10 small-12">
-                <div class="grid-block small-12 medium-3">
+    <div class="inner-content grid-container medium-16 small-16">
+        <div class="grid-block profile-main small-16">
+            <div class="grid-block medium-10 small-16">
+                <div class="grid-block small-16 medium-4">
                     <div class="grid-content">
                         <img ng-src="{{people.person.thumbnail}}" class="profile-image">
                     </div>
                 </div>
-                <div class="grid-block vertical small-12 medium-9">
+                <div class="grid-block vertical small-16 medium-12">
                     <div class="grid-content">
                         <span class="profile-name">{{people.person.name.fullName}}</span>
                         <span ng-show="people.permissionsMap.people.editMyProfile" class="right"><a class="button light" ng-click="editUser()"><i class="fa fa-edit"></i> Edit</a></span>
@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </div>
-            <div class="grid-block vertical right medium-2 small-12">
+            <div class="grid-block vertical right medium-3 small-16">
                 <div class="right">
                     <i ng-show="people.person.isActive" class="fa fa-check"></i> <span>Active</span>
                 </div>
@@ -28,8 +28,8 @@
                 <div class="right"></div>
             </div>
         </div>
-        <div class="grid-block profile-additional small-12">
-            <div class="grid-block vertical expand medium-6 small-12">
+        <div class="grid-block profile-additional small-16">
+            <div class="grid-block vertical expand medium-8 small-16">
                 <div class="profile-administrative">
                     <div ng-hide="angular.isEmpty(people.person.manager)" class="grid-content profile-label">Manager</div>
                     <div ng-hide="angular.isEmpty(people.person.manager)" class="grid-content profile-info"><a ng-href="#/{{people.person.manager.resource}}">{{people.person.manager.name}}</a></div>
@@ -37,7 +37,7 @@
                     <div class="grid-content profile-info">{{people.person.vacationCapacity}}</div>
                 </div>
             </div>
-            <div class="grid-block vertical expand medium-6 small-12">
+            <div class="grid-block vertical expand medium-8 small-16">
                 <div class="profile-contact">
                     <div class="grid-content profile-info"><a ng-href="tel:{{people.person.phone}}"><i class="fa fa-3x fa-mobile"></i> {{people.person.phone}}</a></div>
                     <div class="grid-content profile-info"><a ng-href="mailto:{{people.person.accounts[0].primaryEmail}}"><i class="fa fa-2x fa-envelope"></i> {{people.person.accounts[0].primaryEmail}}</a></div>
