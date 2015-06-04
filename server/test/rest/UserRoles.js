@@ -31,22 +31,10 @@ describe('USER ROLES - test simple REST calls', function () {
             if(err){
                 throw err;
             }
-            if(resp.statusCode !== 200){
+            if(resp.statusCode !== 403){
                 console.log('error:', err, body);
             }
-            assert.ok(!err);
-            assert.equal(resp.statusCode, 200);
-            var json = JSON.parse(body);
-            assert.equal(_.isArray(json), true);
-            if(json.length > 0){
-                // Pick the first one and make sure it meets the standard format
-                var item = json[0];
-                var keys = _.keys(item);
-                assert.ok(keys.length >= 1);
-                assert.notEqual(keys.indexOf('id'), -1);
-                assert.notEqual(keys.indexOf('roles'), -1);
-                userRoleTemplate.roles= json.roles;
-            }
+            assert.equal(resp.statusCode, 403);
             done();
         });
     });
@@ -69,10 +57,12 @@ describe('USER ROLES - test simple REST calls', function () {
                 // Pick the first one and make sure it meets the standard format
                 var item = json[0];
                 var keys = _.keys(item);
-                assert.ok(keys.length >= 1);
+                assert.ok(keys.length >= 2);
                 assert.notEqual(keys.indexOf('id'), -1);
                 assert.notEqual(keys.indexOf('roles'), -1);
-                userRoleTemplate.roles= json.roles;
+                assert.notEqual(keys.indexOf('userId'), -1);
+                userRoleTemplate.roles = item.roles;
+                userRoleTemplate.userId = item.userId;
             }
             done();
         });
@@ -81,7 +71,8 @@ describe('USER ROLES - test simple REST calls', function () {
     it('POST /v3/userRoles (unauthenticated)', function(done){
         request.post('http://localhost:3000/v3/userRoles', {
             body: JSON.stringify({
-                'roles': userRoleTemplate.roles
+                'roles': userRoleTemplate.roles,
+                'userId': userRoleTemplate.userId
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -102,7 +93,7 @@ describe('USER ROLES - test simple REST calls', function () {
         request.post('http://localhost:3000/v3/userRoles', {
             body: JSON.stringify({
                 'roles': userRoleTemplate.roles,
-                'userId':  userRoleTemplate.userId
+                'userId': userRoleTemplate.userId
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -121,9 +112,10 @@ describe('USER ROLES - test simple REST calls', function () {
     });
 
     it('POST /v3/userRoles (Admin authenticated)', function(done){
-        request.post('http://localhost:3000/v3/userRoless', {
+        request.post('http://localhost:3000/v3/userRoles', {
             body: JSON.stringify({
-                'roles': userRoleTemplate.roles
+                'roles': userRoleTemplate.roles,
+                'userId': userRoleTemplate.userId
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -141,10 +133,12 @@ describe('USER ROLES - test simple REST calls', function () {
             var json = JSON.parse(body);
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
-            assert.ok(keys.length >= 1);
+            assert.ok(keys.length >= 2);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('roles'), -1);
-            assert.ok(_.isEqual(json.roles, userRoleTemplate.roles));
+            assert.notEqual(keys.indexOf('userId'), -1);
+            assert.equal(json.roles[0], userRoleTemplate.roles[0]);
+            assert.equal(json.userId, userRoleTemplate.userId);
 
             // Save the userRole ID to do an update and delete later
             userRoleTemplate.id = json.id;
@@ -214,10 +208,12 @@ describe('USER ROLES - test simple REST calls', function () {
             var json = JSON.parse(body);
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
-            assert.ok(keys.length >= 1);
+            assert.ok(keys.length >= 2);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('roles'), -1);
-            assert.ok(_.isEqual(json.roles, userRoleTemplate.roles));
+            assert.notEqual(keys.indexOf('userId'), -1);
+            assert.equal(json.roles[0], userRoleTemplate.roles[0]);
+            assert.equal(json.userId, userRoleTemplate.userId);
             assert.equal(json.id, userRoleTemplate.id);
             done();
         });
@@ -227,7 +223,8 @@ describe('USER ROLES - test simple REST calls', function () {
         // Dummy User Role ID but should still get Unauthorized
         request.put('http://localhost:3000/v3/userRoles/A1', {
             body: JSON.stringify({
-                'roles': userRoleTemplate.roles
+                'roles': userRoleTemplate.roles,
+                'userId': userRoleTemplate.userId
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -250,7 +247,8 @@ describe('USER ROLES - test simple REST calls', function () {
 
         request.put('http://localhost:3000/v3/userRoles/' + userRoleTemplate.id.substr(0, 5), {
             body: JSON.stringify({
-                'roles': userRoleTemplate.roles
+                'roles': userRoleTemplate.roles,
+                'userId': userRoleTemplate.userId
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -275,7 +273,8 @@ describe('USER ROLES - test simple REST calls', function () {
         // Dummy User Role ID but should still get Unauthorized
         request.put('http://localhost:3000/v3/userRoles/'+userRoleTemplate.id, {
             body: JSON.stringify({
-                'roles': userRoleTemplate.roles
+                'roles': userRoleTemplate.roles,
+                'userId': userRoleTemplate.userId
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -299,7 +298,8 @@ describe('USER ROLES - test simple REST calls', function () {
 
         request.put('http://localhost:3000/v3/userRoles/'+userRoleTemplate.id, {
             body: JSON.stringify({
-                'roles': userRoleTemplate.roles
+                'roles': userRoleTemplate.roles,
+                'userId': userRoleTemplate.userId
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -317,10 +317,12 @@ describe('USER ROLES - test simple REST calls', function () {
             var json = JSON.parse(body);
             assert.ok(_.isObject(json));
             var keys = _.keys(json);
-            assert.ok(keys.length >= 1);
+            assert.ok(keys.length >= 2);
             assert.notEqual(keys.indexOf('id'), -1);
             assert.notEqual(keys.indexOf('roles'), -1);
-            assert.ok(_.isEqual(json.roles, userRoleTemplate.roles));
+            assert.notEqual(keys.indexOf('userId'), -1);
+            assert.equal(json.roles[0], userRoleTemplate.roles[0]);
+            assert.equal(json.userId, userRoleTemplate.userId);
             assert.equal(json.id, userRoleTemplate.id);
             done();
         });
