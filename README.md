@@ -66,7 +66,7 @@ cd server
 nodemon
 ```
 
-### Access 
+### Access
 
 The client will be running at [http://localhost:8080](http://localhost:8080). You can login at [http://localhost:8080/login.html](http://localhost:8080/login.html). The client gulp server will proxy any API requests at /v3 (e.g. [http://localhost:8080/v3/tasks](http://localhost:8080/v3/tasks)).
 
@@ -79,6 +79,19 @@ A convenient swagger specification viewer / testing utility is available at [htt
 ## Code Style
 
 Please use JSHint and JSCS to validate the style in any additions to this codebase. Editor plugins are available, look [here](http://jshint.com/install/) and [here](http://jscs.info/overview.html).
+
+## Automatic Code Style Checking
+
+Want to help yourself make sure that you don't check in any badly styled code? Trying copying in the provided pre-commit hook. Make sure you install jscs and jshint globally!
+
+From the root of your repository:
+```
+npm install -g jscs jshint
+cp .pre-commit-hook .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+
+Now, anytime you try to commit, JSCS and JSHint will automatically run against any .js files that are staged!
 
 ## Tests
 

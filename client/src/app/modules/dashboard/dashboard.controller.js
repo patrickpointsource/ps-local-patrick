@@ -3,13 +3,16 @@
     'use strict';
 
     angular
-        .module('mastermind')
+        .module('app.dashboard', [
+            'app.dashboard.widgets.hours'
+        ])
         .controller('DashboardController', DashboardController);
 
     DashboardController.$inject = ['$scope', 'psafLogger'];
 
     function DashboardController($scope, psafLogger) {
-
+        $scope.isManager = false;
+        $scope.isExecutive = false;
     }
 
 })();

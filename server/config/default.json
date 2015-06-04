@@ -42,7 +42,8 @@
         "allowedOrigins": [
             "http://localhost:8080",
             "file://",
-            "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop"
+            "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop",
+            "chrome-extension://fdmmgilgnpjigdojojpjoooidkmcomcm"
         ]
     },
     "cors": {

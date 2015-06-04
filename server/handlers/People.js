@@ -15,7 +15,7 @@ var people = {
             '_id': 'id'
         });
         util.mapStraight(doc, obj, ['accounts', 'googleId', 'groups', 'isActive', 'jazzHubId', 'lastSynchronized',
-                                    'mBox', 'manager', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail',
+                                    'mBox', 'department', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail',
                                     'vacationCapacity', 'skills', 'jobTitle', 'secondaryRoles', 'partTimeHours',
                                     'partTime']);
         return obj;
@@ -28,7 +28,7 @@ var people = {
             'id': '_id'
         });
         util.mapStraight(doc, obj, ['accounts', 'googleId', 'groups', 'isActive', 'jazzHubId', 'lastSynchronized',
-                                    'mBox', 'manager', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail',
+                                    'mBox', 'department', 'name', 'phone', 'primaryRole', 'skypeId', 'thumbnail',
                                     'vacationCapacity', 'skills', 'jobTitle', 'secondaryRoles', 'partTimeHours',
                                     'partTime']);
         return obj;
@@ -88,7 +88,7 @@ var people = {
 module.exports.getPeople = util.generateCollectionGetHandler(
     securityResources.people.resourceName, // resourceName
     securityResources.people.permissions.viewPeople, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         // TODO:
         // hasAssignment
@@ -118,6 +118,9 @@ module.exports.getPeople = util.generateCollectionGetHandler(
                 q: q,
                 include_docs: true
             }, function(err, results){
+                if(err || !results){
+                    return sendJson(res, {'message': 'Could not search People.', 'detail': err}, 500);
+                }
                 callback(results.rows);
             });
             return;
@@ -142,14 +145,7 @@ module.exports.getSinglePerson = util.generateSingleItemGetHandler(
     securityResources.people.resourceName, // resourceName
     securityResources.people.permissions.viewPeople, // permission
     'person', // key
-    people.convertForRestAPI, // convertForRestAPI
-    function(doc, callback){
-        var acl = services.get('acl');
-        acl.allAllowedPermissions(doc.googleId, function(err, permissions){
-            doc.permissions = permissions;
-            callback(doc);
-        });
-    }
+    people.convertForRestAPI // convertForRestAPI
 );
 
 module.exports.updateSinglePerson = util.generateSingleItemUpdateHandler(
@@ -253,7 +249,12 @@ module.exports.getSinglePersonLoggedIn = function(req, res, next){
                                 'detail': err
                             }, 404);
                         }
-                        sendJson(res, people.convertForRestAPI(access, doc));
+                        doc = people.convertForRestAPI(access, doc);
+                        var acl = services.get('acl');
+                        acl.allAllowedPermissions(doc.googleId, function(err, permissions){
+                            doc.permissions = permissions;
+                            sendJson(res, doc);
+                        });
                     });
                 });
             }
@@ -285,25 +286,43 @@ module.exports.getManagerOfPerson = function(req, res, next){
                             'detail': err
                         }, 404);
                     }
-                    if(!doc.manager){
-                        // The user doesn't have a manager
+                    if(!doc.department){
+                        // The user doesn't have a department
                         return sendJson(res, {}, 200);
                     }
-                    db.get(doc.manager, function(err, doc){
+                    db.get(doc.department, function(err, doc){
                         if(err && err.message !== 'missing'){
                             return sendJson(res, {
-                                'message': 'An error occurred attempting to find a person (the manager) with the ' +
-                                           'specified ID.',
+                                'message': 'An error occurred attempting to find the person\'s department.',
                                 'detail': err
                             }, 500);
                         }
                         if(!doc){
                             return sendJson(res, {
-                                'message': 'A person (the manager) with the specified ID could not be found.',
+                                'message': 'The person\'s department could not be found.',
                                 'detail': err
                             }, 404);
                         }
-                        sendJson(res, people.convertForRestAPI(access, doc));
+                        if(!doc.manager){
+                            // The deparment doesn't have a manager
+                            return sendJson(res, {}, 200);
+                        }
+                        db.get(doc.manager, function(err, doc){
+                            if(err && err.message !== 'missing'){
+                                return sendJson(res, {
+                                    'message': 'An error occurred attempting to find a person (the manager) with the ' +
+                                               'specified ID.',
+                                    'detail': err
+                                }, 500);
+                            }
+                            if(!doc){
+                                return sendJson(res, {
+                                    'message': 'A person (the manager) with the specified ID could not be found.',
+                                    'detail': err
+                                }, 404);
+                            }
+                            sendJson(res, people.convertForRestAPI(access, doc));
+                        });
                     });
                 });
             }

@@ -28,7 +28,7 @@ var departmentCategory = {
 module.exports.getDepartmentCategories = util.generateCollectionGetHandler(
     securityResources.departments.resourceName, // resourceName
     securityResources.departments.permissions.viewDepartments, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         // No searching in DepartmentCategories
         callback(false);
     },

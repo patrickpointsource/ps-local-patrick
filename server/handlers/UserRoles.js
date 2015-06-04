@@ -41,7 +41,7 @@ var userRole = {
                 });
             },
             function(callback){
-                access.db.view('People', 'AllSecurityRoles', { keys: obj.roles }, function(err, docs){
+                access.db.view('SecurityRoles', 'AllSecurityRoles', { keys: obj.roles }, function(err, docs){
                     if(err){
                         return callback(err);
                     }
@@ -58,7 +58,7 @@ var userRole = {
 module.exports.getUserRoles = util.generateCollectionGetHandler(
     securityResources.securityRoles.resourceName, // resourceName
     securityResources.securityRoles.permissions.viewSecurityRoles, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         // No searching for UserRoles
         callback(false);
     },
@@ -69,7 +69,7 @@ module.exports.getUserRoles = util.generateCollectionGetHandler(
 
 module.exports.createSingleUserRole = util.generateSingleItemCreateHandler(
     securityResources.securityRoles.resourceName, // resourceName
-    securityResources.securityRoles.permissions.editsecurityRoles, // permission
+    securityResources.securityRoles.permissions.editSecurityRoles, // permission
     'userRole', // key
     userRole.validateUserRoles, // validate
     userRole.convertForDB, // convertForDB

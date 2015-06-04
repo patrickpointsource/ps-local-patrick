@@ -28,7 +28,7 @@ var client = {
 module.exports.getClients = util.generateCollectionGetHandler(
     securityResources.clients.resourceName, // resourceName
     securityResources.clients.permissions.viewClients, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         // No searching in Clients
         callback(false);
     },

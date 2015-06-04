@@ -1,23 +1,24 @@
+/* global emit, index */
 module.exports = {
     views: {
-        AllProjectPhaseRoles: {
+        AllProjectRoles: {
             map: function(doc){
-                if (doc.form == 'ProjectPhaseRoles'){
+                if (doc.form === 'ProjectRoles'){
                     emit(doc._id, doc);
                 }
             }
         }
     },
     indexes: {
-        SearchAllProjectPhaseRoles: {
+        SearchAllProjectRoles: {
             analyzer: 'standard',
             index: function (doc) {
-                if(doc.form == 'ProjectPhaseRoles'){
-                    if(doc.phase){
-                        index('phase', doc.phase);
+                if(doc.form === 'ProjectRoles'){
+                    if(doc.project){
+                        index('project', doc.project);
                     }
                 }
             }
         }
     }
-}
+};

@@ -2,8 +2,7 @@
 var _ = require('underscore');
 
 var PROJECTS_KEY = 'Projects';
-var PROJECT_PHASES_KEY = 'ProjectPhases';
-var PROJECT_PHASE_ROLES_KEY = 'ProjectPhaseRoles';
+var PROJECT_ROLES_KEY = 'ProjectRoles';
 var PEOPLE_KEY = 'People';
 var ASSIGNMENTS_KEY = 'ProjectAssignments';
 var TASKS_KEY = 'Tasks';
@@ -31,8 +30,7 @@ module.exports.SECURITY_ROLES_KEY = SECURITY_ROLES_KEY;
 module.exports.USER_ROLES_KEY = USER_ROLES_KEY;
 module.exports.ASSIGNMENTS_KEY = ASSIGNMENTS_KEY;
 module.exports.PROJECTS_KEY = PROJECTS_KEY;
-module.exports.PROJECT_PHASES_KEY = PROJECT_PHASES_KEY;
-module.exports.PROJECT_PHASE_ROLES_KEY = PROJECT_PHASE_ROLES_KEY;
+module.exports.PROJECT_ROLES_KEY = PROJECT_ROLES_KEY;
 module.exports.PEOPLE_KEY = PEOPLE_KEY;
 module.exports.ROLES_KEY = ROLES_KEY;
 module.exports.HOURS_KEY = HOURS_KEY;

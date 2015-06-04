@@ -21,9 +21,9 @@ config.init(function(){
         var migrations = [
             'reformatAssignments',
             'reformatLinks',
-            '20150519-addProjectPhases',
             '20150521-addClients',
             '20150522-reformatDepartmentPeopleLink',
+            '20150604-reformatProjectRoles',
             '20150521-Departments', 
             '20150527-Hours', '20150527-People', 
             '20150528-ProjectAssignments', '20150528-Projects', '20150528-UserRoles', 
@@ -34,9 +34,9 @@ config.init(function(){
         var migrationImplementations = {
             reformatAssignments: require('./20150518-reformatAssignments'),
             reformatLinks: require('./20150519-reformatLinks'),
-            '20150519-addProjectPhases': require('./20150519-addProjectPhases'),
             '20150521-addClients': require('./20150521-addClients'),
             '20150522-reformatDepartmentPeopleLink': require('./20150522-reformatDepartmentPeopleLink'),
+            '20150604-reformatProjectRoles': require('./20150604-reformatProjectRoles'),
             '20150521-Departments': require('./20150521-Departments'),
             '20150527-Hours': require('./20150527-Hours'),
     	    '20150527-People': require('./20150527-People'),

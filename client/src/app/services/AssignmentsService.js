@@ -1,3 +1,4 @@
+/* global moment */
 (function () {
     angular
         .module('app.services')
@@ -15,16 +16,27 @@
             getAssignment: getAssignment,
             createAssignment: createAssignment,
             updateAssignment: updateAssignment,
-            deleteAssignment: deleteAssignment
+            deleteAssignment: deleteAssignment,
+
+            // Convenience methods
+            getCurrentAssignments: getCurrentAssignments,
+            getAssignmentsImpactingDate: getAssignmentsImpactingDate
         };
 
-        function getAssignments(params) {
+        function getAssignments(params, refresh) {
             logger.debug('AssignmentsService', 'Getting Assignments with params:', params);
-            return Assignments.getList(params);
+            if (refresh) {
+                return Assignments.getList(params);
+            }
+            return Assignments.withHttpConfig({cache: true}).getList(params);
+
         }
-        function getAssignment(id){
+        function getAssignment(id, refresh){
             logger.debug('AssignmentsService', 'Getting single Assignment with ID:', id);
-            return Assignments.get(id);
+            if (refresh) {
+                return Assignments.get(id);
+            }
+            return Assignments.withHttpConfig({cache: true}).get(id);
         }
         function createAssignment(obj){
             if(obj.id){
@@ -44,6 +56,19 @@
         function deleteAssignment(id){
             logger.debug('AssignmentsService', 'Deleting the Assignment with ID:', id);
             return Restangular.one(path, id).remove();
+        }
+
+        function getCurrentAssignments(personID){
+            var today = moment().format('YYYY-MM-DD');
+            return getAssignmentsImpactingDate(personID, today);
+        }
+
+        function getAssignmentsImpactingDate(personID, date){
+            return getAssignments({
+                person: personID,
+                startingBefore: date,
+                endingAfter: date
+            });
         }
     }
 })();

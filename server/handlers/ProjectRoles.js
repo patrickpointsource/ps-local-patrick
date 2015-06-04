@@ -4,40 +4,40 @@ var _ = require('underscore'),
     sendJson = require('../util/sendJson'),
     util = require('../util/restUtils');
 
-var projectPhaseRole = {
+var projectRole = {
     convertForRestAPI: function(access, doc){
         var obj = {};
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['phase', 'coveredKMin', 'daysGap', 'hoursExtraCovered', 'hoursNeededToCover',
+        util.mapStraight(doc, obj, ['project', 'coveredKMin', 'daysGap', 'hoursExtraCovered', 'hoursNeededToCover',
                                     'isCurrentRole', 'isFutureRole', 'isPastRole', 'percentageCovered', 'rate',
                                     'shore', 'originalAssignees', 'type']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
         var obj = {
-            form: access.PROJECT_PHASE_ROLES_KEY
+            form: access.PROJECT_ROLES_KEY
         };
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['phase', 'coveredKMin', 'daysGap', 'hoursExtraCovered', 'hoursNeededToCover',
+        util.mapStraight(doc, obj, ['project', 'coveredKMin', 'daysGap', 'hoursExtraCovered', 'hoursNeededToCover',
                                     'isCurrentRole', 'isFutureRole', 'isPastRole', 'percentageCovered', 'rate',
                                     'shore', 'originalAssignees', 'type']);
         return obj;
     },
-    validateProjectPhaseRole: function(obj, access, callback){
+    validateProjectRole: function(obj, access, callback){
         // Check obj for invalid fields
         // Note that spec-related validation has (theoretically) already occurred
         async.parallel([
             function(callback){
-                access.db.view('ProjectPhases', 'AllProjectPhaseNames', { keys: [obj.phase] }, function(err, docs){
+                access.db.view('Projects', 'AllProjectNames', { keys: [obj.project] }, function(err, docs){
                     if(err){
                         return callback(err);
                     }
                     if(docs.rows.length === 0){
-                        return callback('The indicated phase doesn\'t exist.');
+                        return callback('The indicated project doesn\'t exist.');
                     }
                     callback();
                 });
@@ -57,52 +57,55 @@ var projectPhaseRole = {
     }
 };
 
-module.exports.getProjectPhaseRoles = util.generateCollectionGetHandler(
+module.exports.getProjectRoles = util.generateCollectionGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
-        var q = 'phase:'+req.params.phaseID;
-        // Use the SearchAllProjectPhaseRoles index
-        db.search('ProjectPhaseRoles', 'SearchAllProjectPhaseRoles', {
+        var q = 'project:'+req.params.projectID;
+        // Use the SearchAllProjectRoles index
+        db.search('ProjectRoles', 'SearchAllProjectRoles', {
             q: q,
             include_docs: true
         }, function(err, results){
+            if(err || !results){
+                return sendJson(res, {'message': 'Could not search ProjectPhaseRoles.', 'detail': err}, 500);
+            }
             callback(results.rows);
         });
     },
-    'ProjectPhaseRoles', // ddoc
-    'AllProjectPhaseRoles', // allDocsViewName
-    projectPhaseRole.convertForRestAPI //convertForRestAPI
+    'ProjectRoles', // ddoc
+    'AllProjectRoles', // allDocsViewName
+    projectRole.convertForRestAPI //convertForRestAPI
 );
 
-module.exports.createSingleProjectPhaseRole = util.generateSingleItemCreateHandler(
+module.exports.createSingleProjectRole = util.generateSingleItemCreateHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.editProjects, // permission
-    'projectPhaseRole', // key
-    projectPhaseRole.validateProjectPhaseRole, // validate
-    projectPhaseRole.convertForDB, // convertForDB
-    projectPhaseRole.convertForRestAPI // convertForRestAPI
+    'projectRole', // key
+    projectRole.validateProjectRole, // validate
+    projectRole.convertForDB, // convertForDB
+    projectRole.convertForRestAPI // convertForRestAPI
 );
 
-module.exports.getSingleProjectPhaseRole = util.generateSingleItemGetHandler(
+module.exports.getSingleProjectRole = util.generateSingleItemGetHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.viewProjects, // permission
-    'projectPhaseRole', // key
-    projectPhaseRole.convertForRestAPI // convertForRestAPI
+    'projectRole', // key
+    projectRole.convertForRestAPI // convertForRestAPI
 );
 
-module.exports.updateSingleProjectPhaseRole = util.generateSingleItemUpdateHandler(
+module.exports.updateSingleProjectRole = util.generateSingleItemUpdateHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.editProjects, // permission
-    'projectPhaseRole', // key
-    projectPhaseRole.validateProjectPhaseRole, // validate
-    projectPhaseRole.convertForDB, // convertForDB
-    projectPhaseRole.convertForRestAPI // convertForRestAPI
+    'projectRole', // key
+    projectRole.validateProjectRole, // validate
+    projectRole.convertForDB, // convertForDB
+    projectRole.convertForRestAPI // convertForRestAPI
 );
 
-module.exports.deleteSingleProjectPhaseRole = util.generateSingleItemDeleteHandler(
+module.exports.deleteSingleProjectRole = util.generateSingleItemDeleteHandler(
     securityResources.projects.resourceName, // resourceName
     securityResources.projects.permissions.editProjects, // permission
-    'projectPhaseRole' // key
+    'projectRole' // key
 );

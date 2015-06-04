@@ -68,7 +68,7 @@ module.exports.getVacations = util.generateCollectionGetHandler(
             callback(securityResources.vacations.permissions.viewMyVacations);
         });
     }, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         var q = '';
         var toAdd;
@@ -105,6 +105,9 @@ module.exports.getVacations = util.generateCollectionGetHandler(
                 q: q,
                 include_docs: true
             }, function(err, results){
+                if(err || !results){
+                    return sendJson(res, {'message': 'Could not search Vacations.', 'detail': err}, 500);
+                }
                 callback(results.rows);
             });
             return;

@@ -136,7 +136,7 @@ module.exports.generateCollectionGetHandler = function(
         // Assess whether the user is allowed to acc
         doAcl(req, res, resourceName, permission, function(allowed){
             if(allowed){
-                doSearchIfNeededCallback(req, db, function(docsFromSearch){
+                doSearchIfNeededCallback(req, res, db, function(docsFromSearch){
                     if(docsFromSearch){
                         var docs = _.map(docsFromSearch, function(row){
                             return convertForRestAPI(access, row.doc);

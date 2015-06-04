@@ -12,8 +12,7 @@ var assignment = {
             '_id': 'id'
         });
         util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project',
-                                    'person', 'role']);
-        util.mapStraightDates(util.FOR_REST, doc, obj, ['startDate', 'endDate']);
+                                    'person', 'role', 'startDate', 'endDate']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -24,8 +23,7 @@ var assignment = {
             'id': '_id'
         });
         util.mapStraight(doc, obj, ['hoursPerWeek', 'isCurrent', 'isFuture', 'isPast', 'percentage', 'project',
-                                    'person', 'role']);
-        util.mapStraightDates(util.FOR_DB, doc, obj, ['startDate', 'endDate']);
+                                    'person', 'role', 'startDate', 'endDate']);
         return obj;
     },
     validateAssignments: function(obj, access, callback){
@@ -37,7 +35,7 @@ var assignment = {
                     if(err){
                         return callback(err);
                     }
-                    if(docs.rows.length !== 2){
+                    if(docs.rows.length === 0){
                         return callback('The indicated person doesn\'t exist.');
                     }
                     callback();
@@ -50,7 +48,7 @@ var assignment = {
 module.exports.getAssignments = util.generateCollectionGetHandler(
     securityResources.assignments.resourceName, // resourceName
     securityResources.assignments.permissions.viewAssignments, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         var q = '';
         var toAdd;
@@ -66,11 +64,17 @@ module.exports.getAssignments = util.generateCollectionGetHandler(
         if(req.query.person){
             q = util.addToQuery(q, 'person:'+req.query.person);
         }
-        if(req.query.startDate){
-            q = util.addToQuery(q, 'numericStartDate:['+req.query.startDate.replace(/-/g, '')+' TO Infinity]');
+        if(req.query.startingAfter){
+            q = util.addToQuery(q, 'numericStartDate:['+req.query.startingAfter.replace(/-/g, '')+' TO Infinity]');
         }
-        if(req.query.endDate){
-            q = util.addToQuery(q, 'numericEndDate:[-Infinity TO '+req.query.endDate.replace(/-/g, '')+']');
+        if(req.query.endingBefore){
+            q = util.addToQuery(q, 'numericEndDate:[-Infinity TO '+req.query.endingBefore.replace(/-/g, '')+']');
+        }
+        if(req.query.startingBefore){
+            q = util.addToQuery(q, 'numericStartDate:[-Infinity TO '+req.query.startingBefore.replace(/-/g, '')+']');
+        }
+        if(req.query.endingAfter){
+            q = util.addToQuery(q, 'numericEndDate:['+req.query.endingAfter.replace(/-/g, '')+' TO Infinity]');
         }
         if(req.query.timePeriod){
             var date = moment();
@@ -93,6 +97,9 @@ module.exports.getAssignments = util.generateCollectionGetHandler(
                 q: q,
                 include_docs: true
             }, function(err, results){
+                if(err || !results){
+                    return sendJson(res, {'message': 'Could not search Assignments.', 'detail': err}, 500);
+                }
                 callback(results.rows);
             });
             return;

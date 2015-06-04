@@ -1,22 +1,30 @@
-<div class="people grid-container small-12 clearfix">
-    <div class="grid-block">
-        <div>
-            <select name="athing" id="athing" ng-model="people.athing" ng-change="people.countUp()">
-                <option value="something">Something</option>
-                <option value="somethingelse">Something Else</option>
-                <option value="athing">A Thing</option>
+<div class="people grid-container small-16">
+    <div class="grid-block align-justify">
+        <div class="small-4">
+            <select ng-model="people.sorting" ng-change="people.sortFilter(people.sorting)">
+                <option value="">Select Sort</option>
+                <option value="name">Name (A-Z)</option>
+                <option value="name-desc">Name (Z-A)</option>
+                <option value="role">Role</option>
+                <option value="utilization">Utilization (lowest to highest)</option>
+                <option value="utilization-desc">Utilization (highest to lowest)</option>
             </select>
         </div>
+        <div class="small-4">
+            <input type="text" ng-model="people.search" placeholder="Search People">
+        </div>
     </div>
-    <div class="person-list clearfix block-list">
+    <div class="people-list">
         <header>People</header>
         <ul>
-            <li ng-repeat="person in people.list" class="person grid-block small-12">
-                <div class="person-img small-3 medium-1">
-                    <a ng-href="#/people/{{person.id}}"><img ng-src="{{person.thumbnail}}" class="profile-thumbnail"></a>
+            <li ng-repeat="person in people.list | filter:people.search | orderBy:people.sorter:people.sortReverse" class="person grid-block small-16">
+                <div class="person-img grid-block shrink">
+                    <div><a ng-href="#/people/{{person.id}}"><img ng-src="{{person.thumbnail}}" class="profile-thumbnail"></a></div>
                 </div>
-                <div class="person-name small-9 medium-4"><a ng-href="#/people/{{person.id}}">{{person.name.fullName}}</a></div>
-                <div class="person-title small-12 medium-3"><a ng-href="#/people/{{person.id}}">{{person.primaryRole.name}}</a></div>
+                <div class="person-name small-12 large-4"><a ng-href="#/people/{{person.id}}">{{person.name.fullName}}</a></div>
+                <div class="person-role small-16 large-2"><div>{{person.role.abbreviation}}</div></div>
+                <div class="person-title small-16 large-5"><a ng-href="#/people/{{person.id}}">{{person.role.name}}</a></div>
+                <div class="person-utilization small-16 large-3"><div>{{person.utilization}}%</div></div>
             </li>
         </ul>
     </div>

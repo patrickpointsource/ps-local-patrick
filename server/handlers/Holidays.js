@@ -28,7 +28,7 @@ var holiday = {
 module.exports.getHolidays = util.generateCollectionGetHandler(
     securityResources.holidays.resourceName, // resourceName
     securityResources.holidays.permissions.viewHolidays, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         // No searching in Holidays
         callback(false);
     },

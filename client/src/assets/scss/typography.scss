@@ -1,3 +1,12 @@
+$h1-font-size: rem-calc(32);
+$h2-font-size: rem-calc(28);
+$h3-font-size: rem-calc(25);
+$h4-font-size: rem-calc(20);
+$h5-font-size: rem-calc(16);
+$h6-font-size: rem-calc(16);
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&subset=latin,latin-ext);
+
 .text-bold {
     font-weight: bolder;
 }
@@ -5,13 +14,6 @@
 .text-light {
     font-weight: lighter;
 }
-
-$h1-font-size: rem-calc(32);
-$h2-font-size: rem-calc(28);
-$h3-font-size: rem-calc(25);
-$h4-font-size: rem-calc(20);
-$h5-font-size: rem-calc(16);
-$h6-font-size: rem-calc(16);
 
 h1 {
     font-size: $h1-font-size;

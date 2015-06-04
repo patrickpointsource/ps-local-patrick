@@ -10,7 +10,7 @@ var department = {
         util.map(doc, obj, {
             '_id': 'id'
         });
-        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager', 'people']);
+        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager']);
         return obj;
     },
     convertForDB: function(access, doc, expectNew){
@@ -20,7 +20,7 @@ var department = {
         util.map(doc, obj, {
             'id': '_id'
         });
-        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager', 'people']);
+        util.mapStraight(doc, obj, ['nickname', 'category', 'code', 'manager']);
         return obj;
     }
 };
@@ -28,7 +28,7 @@ var department = {
 module.exports.getDepartments = util.generateCollectionGetHandler(
     securityResources.departments.resourceName, // resourceName
     securityResources.departments.permissions.viewDepartments, // permission
-    function(req, db, callback){ // doSearchIfNeededCallback
+    function(req, res, db, callback){ // doSearchIfNeededCallback
         /*jshint camelcase: false */
         var q = '';
         if(req.query.code){
@@ -46,6 +46,9 @@ module.exports.getDepartments = util.generateCollectionGetHandler(
                 q: q,
                 include_docs: true
             }, function(err, results){
+                if(err || !results){
+                    return sendJson(res, {'message': 'Could not search Departments.', 'detail': err}, 500);
+                }
                 callback(results.rows);
             });
             return;
