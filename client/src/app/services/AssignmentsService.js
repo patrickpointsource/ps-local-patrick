@@ -18,13 +18,20 @@
             deleteAssignment: deleteAssignment
         };
 
-        function getAssignments(params) {
+        function getAssignments(params, refresh) {
             logger.debug('AssignmentsService', 'Getting Assignments with params:', params);
-            return Assignments.getList(params);
+            if (refresh) {
+                return Assignments.getList(params);
+            }
+            return Assignments.withHttpConfig({cache: true}).getList(params);
+
         }
-        function getAssignment(id){
+        function getAssignment(id, refresh){
             logger.debug('AssignmentsService', 'Getting single Assignment with ID:', id);
-            return Assignments.get(id);
+            if (refresh) {
+                return Assignments.get(id);
+            }
+            return Assignments.withHttpConfig({cache: true}).get(id);
         }
         function createAssignment(obj){
             if(obj.id){
