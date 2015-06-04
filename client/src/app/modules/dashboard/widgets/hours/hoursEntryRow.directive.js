@@ -130,7 +130,16 @@
                     }
 
                     var obj = {};
-                    _.each(['id', 'date', 'description', 'hours', 'person', 'created', 'task', 'project'], function(key){
+                    _.each([
+                        'id',
+                        'date',
+                        'description',
+                        'hours',
+                        'person',
+                        'created',
+                        'task',
+                        'project'
+                    ], function(key){
                         if($scope.hourEntry[key]){
                             obj[key] = $scope.hourEntry[key];
                         }

@@ -333,7 +333,7 @@
                     todayIndex = today.day();
                 if(today.day(0).isSame(firstDayOfWeek)){
                     // We're on the week that contains today, so simply setSelected
-                    if(todayIndex != currentSelection){
+                    if(todayIndex !== currentSelection){
                         setSelected(todayIndex);
                     }
                 }else{
