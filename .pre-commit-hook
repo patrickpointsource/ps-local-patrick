@@ -1,0 +1,99 @@
+#!/bin/sh
+
+# Extract staged files to a temp directory
+TMPDIR=
+TMPFILE=
+if [ "$IS_LINUX" == "true" ]; then
+    TMPFILE=`mktemp jscs_tmp_XXXXXX`
+    TMPDIR=`mktemp -d jscs_tmp_XXXXXX`
+else
+    TMPFILE=`mktemp -t tmp/jscs_tmp_XXXXXX`
+    TMPDIR=`mktemp -t tmp/jscs_tmp -d`
+fi
+git diff --cached --name-only --diff-filter=ACMR | xargs git checkout-index --prefix=$TMPDIR/ --
+
+# Check JavaScript code style
+JSCS_PATH=`which jscs`
+RUN_JSCS=1
+JSHINT_PATH=`which jshint`
+RUN_JSHINT=1
+TOTAL_ERRORS=0
+
+JSFILES=$(git diff-index --name-status --cached HEAD | grep -v ^D | egrep '.js$' | cut -c3-)
+if [ -z "$JSFILES" ]; then
+    # No JavaScript file changed for this commit
+    RUN_JSCS=0
+    RUN_JSHINT=0
+elif [ -z "$JSCS_PATH" ]; then
+    echo "Warning: You can't check the JSCS-based coding style."
+    echo "You need to download and install jscs: npm install -g jscs"
+    RUN_JSCS=0
+elif [ -z "$JSHINT_PATH" ]; then
+    echo "Warning: You can't check the JSHint-based coding style."
+    echo "You need to download and install jshint: npm install -g jshint"
+    RUN_JSHINT=0
+fi
+
+# Ensuring proper coding style
+if [ $RUN_JSCS -ne 0 ]; then
+    echo -n "Checking JSCS-based style errors..."
+    OUT=`$JSCS_PATH -c ./.jscsrc -r text $TMPDIR`
+    CODE=$?
+    # Erase last output line
+    echo -ne '\r\033[K'
+    if [ $CODE -ne 0 ]; then
+        # Replace temp file name with real filename with color
+        # in sed we use commas as separators for clarity, and execute echo
+        # in the replacement part to get colors
+        # Probably cleaner ways exist but I don't know them at the moment
+        OUT=`echo -e "$OUT" | sed "s,$TMPDIR/\([^ ]*\),\`echo -e \"\033[1;32m\1\033[0m\"\`,"`
+
+        # grab the number of errors for that file
+        # (keeps only numbers and takes the last line)
+        TOTAL_ERRORS=`echo -e "$OUT" | sed 's/[^0-9]//g' | tail -1`
+
+        # echo output minus last line
+        echo -e "\033[1;37mJavaScript style errors found:\033[0m"
+        echo -e "$OUT" | sed '$ d'
+
+        echo "$TOTAL_ERRORS code style errors found."
+        echo "Please fix and stage the files before commiting again."
+        rm -Rf $TMPDIR $TMPFILE
+        exit $CODE
+    else
+        echo "No JSCS-based code style errors found."
+    fi
+fi
+# Ensuring proper coding style
+if [ $RUN_JSHINT -ne 0 ]; then
+    echo -n "Checking JSHint-based style errors..."
+    OUT=`$JSHINT_PATH -c ./.jshintrc $TMPDIR`
+    CODE=$?
+    # Erase last output line
+    echo -ne '\r\033[K'
+    if [ $CODE -ne 0 ]; then
+        # Replace temp file name with real filename with color
+        # in sed we use commas as separators for clarity, and execute echo
+        # in the replacement part to get colors
+        # Probably cleaner ways exist but I don't know them at the moment
+        OUT=`echo -e "$OUT" | sed "s,$TMPDIR/\([^ ]*\),\`echo -e \"\033[1;32m\1\033[0m\"\`,"`
+
+        # grab the number of errors for that file
+        # (keeps only numbers and takes the last line)
+        TOTAL_ERRORS=`echo -e "$OUT" | sed 's/[^0-9]//g' | tail -1`
+
+        # echo output minus last line
+        echo -e "\033[1;37mJavaScript style errors found:\033[0m"
+        echo -e "$OUT" | sed '$ d'
+
+        echo "$TOTAL_ERRORS code style errors found."
+        echo "Please fix and stage the files before commiting again."
+        rm -Rf $TMPDIR $TMPFILE
+        exit $CODE
+    else
+        echo "No JSHint-based code style errors found."
+    fi
+fi
+
+# Clean up
+rm -Rf $TMPDIR $TMPFILE
