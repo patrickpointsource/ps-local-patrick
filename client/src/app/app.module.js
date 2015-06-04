@@ -87,6 +87,16 @@
                     }
                 }
             })
+            .state('dashboard-hours-entry-only', {
+                parent: 'root',
+                url: '/home/hours-entry',
+                views: {
+                    'content@': {
+                        templateUrl: 'app/modules/dashboard/dashboard-hours-entry-only.html',
+                        controller: 'DashboardController'
+                    }
+                }
+            })
             .state('projects', {
                 parent: 'root',
                 url: '/projects',
