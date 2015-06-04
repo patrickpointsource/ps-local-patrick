@@ -12,7 +12,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     var projectID = '52b0a6c2e4b02565de24922d';
 	
     var DEFAULT_PROJECT_PHASE_ROLE = {
-        phase: '52b0a6c2e4b02565de24922d',
+        phase: 'a2f5fd3f62a6fb1d8132d4bad39606f8',
         daysGap: 260,
         hoursNeededToCover: 8,
         isCurrentRole: true,
@@ -31,7 +31,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     };
     
     var CHANGED_PROJECT_PHASE_ROLE = {
-        phase: '52b0a6c2e4b02565de24922d',
+        phase: 'a2f5fd3f62a6fb1d8132d4bad39606f8',
         daysGap: 260,
         hoursNeededToCover: 8,
         isCurrentRole: true,
@@ -51,7 +51,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
 
     it('GET /v3/projects/:projectID/phases/:phaseID/roles (unauthenticated)', function (done) {
         request('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            DEFAULT_PROJECT_PHASE_ROLE.phaseID + '/roles', function(err, resp, body) {
+            DEFAULT_PROJECT_PHASE_ROLE.phase + '/roles', function(err, resp, body) {
             if(err){
                 throw err;
             }
@@ -65,7 +65,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
 
     it('GET /v3/projects/:projectID/phases/:phaseID/roles (User authenticated)', function(done){
         request('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            DEFAULT_PROJECT_PHASE_ROLE.phaseID + '/roles', {
+            DEFAULT_PROJECT_PHASE_ROLE.phase + '/roles', {
             jar: util.userCookieJar
         }, function(err, resp, body){
             if(err){
@@ -94,7 +94,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
 
     it('GET /v3/projects/:projectID/phases/:phaseID/roles (Admin authenticated)', function(done){
         request('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            DEFAULT_PROJECT_PHASE_ROLE.phaseID + '/roles', {
+            DEFAULT_PROJECT_PHASE_ROLE.phase + '/roles', {
             jar: util.adminCookieJar
         }, function(err, resp, body){
             if(err){
@@ -123,7 +123,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     
     it('POST /v3/projects/:projectID/phases/:phaseID/roles (unauthenticated)', function(done){
         request.post('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            DEFAULT_PROJECT_PHASE_ROLE.phaseID +'/roles', {
+            DEFAULT_PROJECT_PHASE_ROLE.phase +'/roles', {
             body: JSON.stringify(DEFAULT_PROJECT_PHASE_ROLE),
             headers: {
                 'Content-Type': 'application/json'
@@ -142,7 +142,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     
     it('POST /v3/projects/:projectID/phases/:phaseID/roles (User authenticated)', function(done){
         request.post('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            DEFAULT_PROJECT_PHASE_ROLE.phaseID + '/roles', {
+            DEFAULT_PROJECT_PHASE_ROLE.phase + '/roles', {
             body: JSON.stringify(DEFAULT_PROJECT_PHASE_ROLE),
             headers: {
                 'Content-Type': 'application/json'
@@ -163,7 +163,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     var roleID;
     it('POST /v3/projects/:projectID/phases/:phaseID/roles (Admin authenticated)', function(done){
         request.post('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            DEFAULT_PROJECT_PHASE_ROLE.phaseID + '/roles', {
+            DEFAULT_PROJECT_PHASE_ROLE.phase + '/roles', {
             body: JSON.stringify(DEFAULT_PROJECT_PHASE_ROLE),
             headers: {
                 'Content-Type': 'application/json'
@@ -186,7 +186,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('phase'), -1);
             assert.notEqual(keys.indexOf('type'), -1);
             assert.notEqual(keys.indexOf('rate'), -1);
-            assert.equal(json.phase, DEFAULT_PROJECT_PHASE_ROLE.phaseID);
+            assert.equal(json.phase, DEFAULT_PROJECT_PHASE_ROLE.phase);
             assert.equal(json.type, DEFAULT_PROJECT_PHASE_ROLE.type);
             assert.equal(json.rate.type, DEFAULT_PROJECT_PHASE_ROLE.rate.type);
             
@@ -201,7 +201,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     it('GET /v3/projects/:projectID/phases/:phaseID/roles/:id (unauthenticated)', function(done){
         // Dummy Project Phase Role ID but should still get Unauthorized
         request.get('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            DEFAULT_PROJECT_PHASE_ROLE.phaseID + '/roles/A1', {
+            DEFAULT_PROJECT_PHASE_ROLE.phase + '/roles/A1', {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -222,7 +222,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         assert.ok(roleID);
     
         request.get('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            DEFAULT_PROJECT_PHASE_ROLE.phaseID + '/roles/' + roleID.substr(0, 5), {
+            DEFAULT_PROJECT_PHASE_ROLE.phase + '/roles/' + roleID.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -244,7 +244,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         assert.ok(roleID);
     
         request.get('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            DEFAULT_PROJECT_PHASE_ROLE.phaseID + '/roles/' + roleID, {
+            DEFAULT_PROJECT_PHASE_ROLE.phase + '/roles/' + roleID, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -266,7 +266,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('phase'), -1);
             assert.notEqual(keys.indexOf('type'), -1);
             assert.notEqual(keys.indexOf('rate'), -1);
-            assert.equal(json.phase, DEFAULT_PROJECT_PHASE_ROLE.phaseID);
+            assert.equal(json.phase, DEFAULT_PROJECT_PHASE_ROLE.phase);
             assert.equal(json.type, DEFAULT_PROJECT_PHASE_ROLE.type);
             assert.equal(json.rate.type, DEFAULT_PROJECT_PHASE_ROLE.rate.type);
             assert.equal(json.id, roleID);
@@ -277,7 +277,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     it('PUT /v3/projects/:projectID/phases/:phaseID/roles/:id (unauthenticated)', function(done){
         // Dummy Project Phase Role ID but should still get Unauthorized
         request.put('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            CHANGED_PROJECT_PHASE_ROLE.phaseID + '/roles/A1', {
+            CHANGED_PROJECT_PHASE_ROLE.phase + '/roles/A1', {
             body: JSON.stringify(CHANGED_PROJECT_PHASE_ROLE),
             headers: {
                 'Content-Type': 'application/json'
@@ -299,7 +299,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         assert.ok(roleID);
         
         request.put('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            CHANGED_PROJECT_PHASE_ROLE.phaseID +
+            CHANGED_PROJECT_PHASE_ROLE.phase +
                 '/roles/' + roleID.substr(0, 5), {
             body: JSON.stringify(CHANGED_PROJECT_PHASE_ROLE),
             headers: {
@@ -324,7 +324,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
 
         // Dummy Project Phase Role ID but should still get Unauthorized
         request.put('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            CHANGED_PROJECT_PHASE_ROLE.phaseID + '/roles/' + roleID, {
+            CHANGED_PROJECT_PHASE_ROLE.phase + '/roles/' + roleID, {
             body: JSON.stringify(CHANGED_PROJECT_PHASE_ROLE),
             headers: {
                 'Content-Type': 'application/json'
@@ -347,7 +347,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         assert.ok(roleID);
     
         request.put('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            CHANGED_PROJECT_PHASE_ROLE.phaseID + '/roles/' + roleID, {
+            CHANGED_PROJECT_PHASE_ROLE.phase + '/roles/' + roleID, {
             body: JSON.stringify(CHANGED_PROJECT_PHASE_ROLE),
             headers: {
                 'Content-Type': 'application/json'
@@ -370,7 +370,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
             assert.notEqual(keys.indexOf('phase'), -1);
             assert.notEqual(keys.indexOf('type'), -1);
             assert.notEqual(keys.indexOf('rate'), -1);
-            assert.equal(json.phase, CHANGED_PROJECT_PHASE_ROLE.phaseID);
+            assert.equal(json.phase, CHANGED_PROJECT_PHASE_ROLE.phase);
             assert.equal(json.type, CHANGED_PROJECT_PHASE_ROLE.type);
             assert.equal(json.rate.type, CHANGED_PROJECT_PHASE_ROLE.rate.type);
             assert.equal(json.id, roleID);
@@ -381,7 +381,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
     it('DELETE /v3/projects/:projectID/phases/:phaseID/roles/:id (unauthenticated)', function(done){
         // Dummy Project Phase Role ID but should still get Unauthorized
         request.del('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            CHANGED_PROJECT_PHASE_ROLE.phaseID + '/roles/A1', {
+            CHANGED_PROJECT_PHASE_ROLE.phase + '/roles/A1', {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -402,7 +402,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         assert.ok(roleID);
     
         request.del('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            CHANGED_PROJECT_PHASE_ROLE.phaseID +
+            CHANGED_PROJECT_PHASE_ROLE.phase +
 '/roles/' + roleID.substr(0, 5), {
             headers: {
                 'Content-Type': 'application/json'
@@ -425,7 +425,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         assert.ok(roleID);
     
         request.del('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            CHANGED_PROJECT_PHASE_ROLE.phaseID + '/roles/' + roleID, {
+            CHANGED_PROJECT_PHASE_ROLE.phase + '/roles/' + roleID, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -447,7 +447,7 @@ describe('PROJECT PHASE ROLES - test simple REST calls', function () {
         assert.ok(roleID);
     
         request.del('http://localhost:3000/v3/projects/' + projectID + '/phases/' +
-            CHANGED_PROJECT_PHASE_ROLE.phaseID + '/roles/' + roleID, {
+            CHANGED_PROJECT_PHASE_ROLE.phase + '/roles/' + roleID, {
             headers: {
                 'Content-Type': 'application/json'
             },
