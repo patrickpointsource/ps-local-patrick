@@ -21,17 +21,17 @@ config.init(function(){
         var migrations = [
             'reformatAssignments',
             'reformatLinks',
-            '20150519-addProjectPhases',
             '20150521-addClients',
-            '20150522-reformatDepartmentPeopleLink'
+            '20150522-reformatDepartmentPeopleLink',
+            '20150604-reformatProjectRoles'
         ];
 
         var migrationImplementations = {
             reformatAssignments: require('./20150518-reformatAssignments'),
             reformatLinks: require('./20150519-reformatLinks'),
-            '20150519-addProjectPhases': require('./20150519-addProjectPhases'),
             '20150521-addClients': require('./20150521-addClients'),
-            '20150522-reformatDepartmentPeopleLink': require('./20150522-reformatDepartmentPeopleLink')
+            '20150522-reformatDepartmentPeopleLink': require('./20150522-reformatDepartmentPeopleLink'),
+            '20150604-reformatProjectRoles': require('./20150604-reformatProjectRoles')
         };
 
         // Check what migrations have been completed.

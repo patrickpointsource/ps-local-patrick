@@ -111,19 +111,6 @@ var project = {
 
                     callback();
                 });
-            },
-            function(callback){
-                access.db.view('ProjectPhases', 'AllProjectPhaseNames', { keys: obj.phases }, function(err, docs){
-                    if(err){
-                        return callback(err);
-                    }
-                    if(docs.rows.length !== obj.phases.length){
-                        // One of the phases doesn't exist
-                        return callback('One of the indicated phases doesn\'t exist.');
-                    }
-
-                    callback();
-                });
             }
         ], callback);
 

@@ -3,7 +3,7 @@ var stripJsonComments = require('strip-json-comments');
 var fs = require('fs');
 var _ = require('underscore');
 
-if(process.argv.length != 3){
+if(process.argv.length !== 3){
     console.log('usage: node load.js {stage,prod,demo,dev,test}');
     process.exit(1);
 }
@@ -18,7 +18,7 @@ var loadConfig = function(filename){
     }
     return defaults;
 };
-if(env == 'dev'){
+if(env === 'dev'){
     env = 'default';
     config = loadConfig('/../../config/default.json');
 }else{
@@ -29,14 +29,15 @@ var dbAccount = config.cloudant.account;
 var dbApiKey = config.cloudant.user;
 var dbPwd = config.cloudant.password;
 
+/*jshint camelcase: false */
 var dbConnParams = {
     account: dbAccount,
-    key: "blehrietherieldstlyievio",
-    password: "yU1lWnVqAqfKEKu2ywLI4Wok",
+    key: 'blehrietherieldstlyievio',
+    password: 'yU1lWnVqAqfKEKu2ywLI4Wok',
     request_defaults: {
         maxSockets: 30
     }
-}; 
+};
 var Cloudant = require('cloudant')(dbConnParams);
 var db = Cloudant.db.use(dbName);
 
@@ -68,8 +69,7 @@ var docs = [
     'Skills',
     'Roles',
     'ProjectLinks',
-    'ProjectPhases',
-    'ProjectPhaseRoles',
+    'ProjectRoles',
     'Clients',
     'Reports',
     'Holidays'
