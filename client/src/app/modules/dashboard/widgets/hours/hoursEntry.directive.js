@@ -32,8 +32,7 @@
             'HoursService',
             'TasksService',
             'RolesService',
-            'AssignmentsService',
-            'HoursEntryService'
+            'AssignmentsService'
         ];
 
         return directive;
@@ -47,8 +46,7 @@
                            HoursService,
                            TasksService,
                            RolesService,
-                           AssignmentsService,
-                           HoursEntryService) {
+                           AssignmentsService) {
 
             var logger = psafLogger.getInstance('mastermind');
 
@@ -123,6 +121,7 @@
 
                 // Pull from assignments in case the person's assignment isn't in ongoing projects
                 AssignmentsService.getCurrentAssignments($scope.me.id).then(function(myCurrentAssignments){
+                    myCurrentAssignments = myCurrentAssignments.plain();
                     $scope.myAssignments = myCurrentAssignments;
 
                     async.each(myCurrentAssignments, function(assignment, callback){

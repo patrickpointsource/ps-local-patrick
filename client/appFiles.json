@@ -30,7 +30,6 @@
     "./src/app/modules/dashboard/dashboard.controller.js",
     "./src/app/modules/people/people.module.js",
     "./src/app/modules/dashboard/widgets/hours/hoursEntry.directive.js",
-    "./src/app/modules/dashboard/widgets/hours/hoursEntry.service.js",
     "./src/app/modules/dashboard/widgets/hours/totalHours.directive.js",
     "./src/app/modules/dashboard/widgets/hours/hoursEntryRow.directive.js",
     "./src/app/modules/people/people.controller.js",
