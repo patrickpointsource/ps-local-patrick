@@ -23,7 +23,12 @@ config.init(function(){
             'reformatLinks',
             '20150519-addProjectPhases',
             '20150521-addClients',
-            '20150522-reformatDepartmentPeopleLink'
+            '20150522-reformatDepartmentPeopleLink',
+            '20150521-Departments', 
+            '20150527-Hours', '20150527-People', 
+            '20150528-ProjectAssignments', '20150528-Projects', '20150528-UserRoles', 
+            '20150528-Vacations', '20150528-ProjectLinks', '20150528-ProjectPhaseRoles'
+
         ];
 
         var migrationImplementations = {
@@ -31,7 +36,16 @@ config.init(function(){
             reformatLinks: require('./20150519-reformatLinks'),
             '20150519-addProjectPhases': require('./20150519-addProjectPhases'),
             '20150521-addClients': require('./20150521-addClients'),
-            '20150522-reformatDepartmentPeopleLink': require('./20150522-reformatDepartmentPeopleLink')
+            '20150522-reformatDepartmentPeopleLink': require('./20150522-reformatDepartmentPeopleLink'),
+            '20150521-Departments': require('./20150521-Departments'),
+            '20150527-Hours': require('./20150527-Hours'),
+    	    '20150527-People': require('./20150527-People'),
+    	    '20150528-ProjectAssignments': require('./20150528-ProjectAssignments'),
+    	    '20150528-Projects': require('./20150528-Projects'),
+    	    '20150528-UserRoles': require('./20150528-UserRoles'),
+    	    '20150528-Vacations': require('./20150528-Vacations'),
+    	    '20150528-ProjectLinks': require('./20150528-ProjectLinks'),
+    	    '20150528-ProjectPhaseRoles': require('./20150528-ProjectPhaseRoles')
         };
 
         // Check what migrations have been completed.
