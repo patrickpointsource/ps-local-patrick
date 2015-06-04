@@ -2,6 +2,8 @@ $people-content-padding: 1rem;
 .people {
     background-color: $gray-lightest;
     padding: $people-content-padding;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .profile-image {
@@ -14,16 +16,14 @@ $people-content-padding: 1rem;
 }
 
 .profile-thumbnail {
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    border: 5px solid white;
-    box-shadow: 0 0 2px 1px rgba(32, 32, 32, 0.2);
-    margin: 2px;
+    width: 72px;
+    height: 72px;
+    border-radius: 36px;
+    border: 2px solid white;
+    box-shadow: 0 0 1px 1px rgba(64, 64, 64, 0.2);
 }
 
 .profile-info {
-    // line-height: rem-calc(40);
     font-size: 1.1rem;
     i.fa {
         width: rem-calc(40);
@@ -45,14 +45,13 @@ $people-content-padding: 1rem;
 .inner-content {
     background-color: #fff;
     border-radius: $global-radius;
-    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.2);
+    // box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 .profile-main {
     border: 0 solid $gray-medium;
     border-bottom-width: 1px;
     padding: $people-content-padding;
-
 }
 
 .profile-additional {
@@ -66,33 +65,64 @@ $people-content-padding: 1rem;
     }
 }
 
-.person-img,
-.person-name,
-.person-title
-{
-    margin: 5px auto;
-    vertical-align: middle;
-    height: 70px;
-    display: flex;
-    align-items: center;
-}
-.person-img {
-    img {
-        min-width: 60px;
-        min-height: 60px;
+.people-list {
+    a {
+        color: $gray-medium;
+    }
+
+    ul {
+        margin: 0;
     }
 }
-.person-list {
-    vertical-align: middle;
+
+.person-img,
+.person-name,
+.person-title,
+.person-role,
+.person-utilization
+{
+    @include grid-content;
+    font-size: rem-calc(24);
+    line-height: rem-calc(32);
+    margin: auto;
+}
+.person-img {
+    div {
+        margin: auto;
+    }
+    img {
+        min-width: rem-calc(60);
+        min-height: rem-calc(60);
+    }
 }
 .person-title {
-    font-size: 1rem;
+    font-size: rem-calc(24);
 }
 .person-name {
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-size: rem-calc(24);
+    font-weight: 700;
 }
-
+.person-utilization {
+    font-size: rem-calc(48);
+    font-weight: 600;
+    color: $gray-medium;
+    line-height: rem-calc(72);
+}
+.person-role {
+    color: white;
+    padding: rem-calc(5) rem-calc(29);
+    text-align: center;
+    div {
+        background-color: $primary-color;
+        margin: auto;
+    }
+    font-size: rem-calc(18);
+    font-weight: 600;
+}
 .person {
     @include clearfix;
+    height: rem-calc(112);
+    border: 1px solid $gray-lighter;
+    margin: rem-calc(16) 0;
+    background-color: white;
 }

@@ -77,3 +77,10 @@
         }
     }
 }
+
+// adding a global select hover rule
+select {
+    &:hover {
+        color: $select-color-hover;
+    }
+}
