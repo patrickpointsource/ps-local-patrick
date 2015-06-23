@@ -1,0 +1,10 @@
+{
+  "name": "HoursAppSprout",
+  "version": "0.0.1",
+  "description": "testing sprout",
+  "main": "index.js",
+  "dependencies": {
+    "sprout-server": "^0.4.0",
+    "request": "^2.51.0"
+  }
+}

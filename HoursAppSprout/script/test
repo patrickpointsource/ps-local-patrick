@@ -1,0 +1,10 @@
+#!/bin/sh
+
+############################################################################################################
+# Run unit tests
+############################################################################################################
+
+# run all tests inside the test directories
+# there is a test directory in the 'client' and 'server' directories
+./node_modules/.bin/mocha ./client/test/*.js
+./node_modules/.bin/mocha ./server/test/*.js

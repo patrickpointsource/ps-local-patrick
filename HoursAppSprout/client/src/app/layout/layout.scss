@@ -1,0 +1,73 @@
+/* Copyright © 2015 PointSource, LLC. All rights reserved. */
+body {
+	overflow-x: hidden;
+}
+
+.no-padding {
+	padding: 0;
+}
+
+a {
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.grid-frame {
+	-moz-box-shadow: 0 0 1rem #888;
+	-webkit-box-shadow: 0 0 1rem #888;
+	box-shadow: 0 0 1rem #888;
+}
+
+.username-text {
+	font-size: .8rem;
+	font-style: bold;
+	font: italic;
+}
+
+.primary-view {
+  position: absolute;
+  top: 0;
+  bottom: 64px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+
+  background-color: #ededed;
+
+	&.slideInLeft, &.slideOutLeft, &.slideInRight, &.slideOutRight {
+
+		&.ng-enter, &.ng-leave {
+			transition: all 0.25s linear;
+		}
+	}
+}
+
+/**
+ *
+ * iScroll styles
+ *
+ */
+
+#scroller {
+	padding-bottom: 60px;
+}
+
+#pullDown {
+	padding: 0.5rem 0;
+	text-align: center;
+	font-size: 1.5rem;
+	transition: 0.25s;
+	color: #ffffff;
+
+	&.flip, &.loading {
+		font-size: 2.5rem;
+		color: $primary-color;
+	}
+
+	.pullDownLabel {
+		height: 3rem;
+		line-height: 3rem;
+		border-bottom:1px solid #ccc;
+	}
+}

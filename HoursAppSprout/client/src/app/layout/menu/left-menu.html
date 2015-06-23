@@ -1,0 +1,26 @@
+<div class="title-bar primary title-bar-has-icons">
+	<span class="left no-icon title">
+		Account Info
+	</span>
+
+	<div class="center"></div>
+
+	<span class="right" snap-toggle="left">
+	 	<a><i class="fa fa-close"></i></a>
+	</span>
+</div>
+
+<div class="grid-content">
+	<section class="block-list">
+		<ul>
+			<li class="">
+				<a class="" snap-toggle="left" ng-click="menuNavigate('home')">
+					<img class="fa" ng-src="{{ProfPic}}"></img><p class="username-text">{{username}}</p>
+				</a>
+				<a class="" snap-toggle="left" ng-click="logout()">
+					<i class="fa"></i> Logout
+				</a>
+			</li>
+		</ul>
+	</section>
+</div>

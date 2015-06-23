@@ -1,0 +1,65 @@
+<div class="grid-content">
+
+	
+<carousel>
+  <slide  ng-click="onDateChange()" ng-repeat="day in Days">
+    <div class="sign-in-page-container" ng-click="entryView()">
+        </div>
+        <h1>{{day}}</h1>
+        <p>day</p>
+    </div>
+  </slide>
+</carousel>
+</div>
+
+
+
+<nav class="projectMenu" ng-class="showMenu">
+  <div id="menuHeader">
+    <i class="fa fa-angle-left entry" ng-click="close()"></i>
+  </div>
+
+  <div class="projectSearch">
+    <div class="searchIcon"><i class="fa fa-search searchPad"></i>
+    </div>
+    <input type="text" placeholder="Find or select from list below" ng-model="search.$">
+  </div>
+<!--   <div id="recentList">
+    <div class="listSlot">
+      <div class="listTitle">Recent</div>
+    </div>
+    <div style="height:1px;"></div>
+    <task ng-repeat="item in hoursData track by $index | filter:search | orderBy:'name':false" content="item.projectName"></task>
+  </div> -->
+  <div id="taskList">
+    <div class="listSlot">
+      <div class="listTitle">Tasks</div>
+    </div>
+    <div style="height:1px;"></div>
+    <task ng-repeat="item in taskData track by $index | filter:search | orderBy:'name':false" content="item"></task>
+  </div>
+    <div id="taskList">
+    <div class="listSlot">
+      <div class="listTitle">Projects</div>
+    </div>
+    <div style="height:1px;"></div>
+    <task ng-repeat="item in projectData track by $index | filter:search | orderBy:'name':false" content="item"></task>
+  </div>
+</nav>
+
+<div ng-repeat="task in HoursTasks" class="slotView" ng-click="editTask(task)">
+  <div class="eventHrs" style="color:#868686;font-size:35px; font-weight:1000">
+    {{task.hours}}
+  </div>
+  <div class="eventTitle" style="color:#868686;font-weight:700;">{{task.name}}</div>
+</div>
+
+<div class="slotView" ng-click="entryView()">
+  <div class="eventHrs" style="color:#1ba1c5;font-size:28px">
+    <i class="fa fa-plus"></i>
+  </div>
+  <div class="eventTitle" style="color:#1ba1c5;font-weight:700;">Add project or task</div>
+</div>
+
+
+

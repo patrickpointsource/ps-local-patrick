@@ -1,0 +1,87 @@
+
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+.flex-item {
+   background-image: url('../../assets/images/PS-MasterMind_H&E-App-Design_v4.png');
+  padding: 5px;
+  width: 200px;
+  height: 150px;
+  margin-top: 10px;
+  
+  line-height: 150px;
+  color: white;
+  font-weight: bold;
+  font-size: 3em;
+  text-align: center;
+}
+
+.sign-in-page-container{
+
+    height: 100%;
+    width: 100%;
+    background-image: url('../../assets/images/PS-MasterMind_H&E-App-Design_v4.png');
+    background-size:100% 100%;
+
+    #login-image {
+        
+        display: inline-flex;
+    }
+
+
+    span.label {
+        font-weight: bold;
+    }
+    span.icon {
+        background: url('../../assets/images/Red-signin-Long-base-44dp.png');
+        background-size: auto;
+        display: inline-flex;
+        vertical-align: middle;
+        width: 80%;
+        height: 15%;
+       
+    }
+
+    #customBtn {
+        display: -webkit-box;
+        vertical-align: middle;
+        width: 90%;
+        overflow: hidden;
+        padding-top: 150px;
+    }
+
+    img#icon {
+        padding-botton: 25%;
+        max-width: 100%;
+        max-height: 100%;
+        content: url('../../assets/images/Red-signin-Long-base-44dp.png');
+    }
+
+}
+.mainTitleWrap {
+    text-align: center;
+}
+.innerTitleWrap {
+    display: inline-block;
+    vertical-align: middle;
+    width: 255px;
+    overflow: hidden;
+    margin-top: 60px;
+
+}
+.spaceBlock {
+    height: 100%;
+}
+

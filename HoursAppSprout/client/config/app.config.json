@@ -1,0 +1,11 @@
+{
+    "CONFIG": {
+        "localDBName": "reference_db",
+        "googleClientId": "141952851027-natg34uiqel1uh66im6k7r1idec5u8dh.apps.googleusercontent.com",
+        "redirect_uri": "http://localhost:8080/oauth2callback",
+        "googleScopes": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://apps-apis.google.com/a/feeds/calendar/resource/ https://www.googleapis.com/auth/admin.directory.user.readonly https://www.googleapis.com/auth/admin.directory.user",
+       	"apiHost": "http://localhost:8080/",
+       	"BaseRequestURL": "http://localhost:3000/v3/"
+
+    }
+}

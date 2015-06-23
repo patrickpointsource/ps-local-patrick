@@ -1,0 +1,75 @@
+<!-- This is an up to date copy of index.html -->
+<!doctype html>
+<html lang="en" ng-app="hoursappsprout">
+  <head>
+    <!-- Copyright © 2015 PointSource, LLC. All rights reserved. -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PS Reference App</title>
+    <!-- <link href="assets/css/angular-snap.css" rel="stylesheet" type="text/css"> -->
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap/bootstrap.min.css">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/app.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="assets/main.css">
+
+  </head>
+  <body>
+
+    <div snap-drawer="left">
+      <ui-view name="left-menu"></ui-view>
+    </div>
+
+    <div class="grid-frame snap-content" snap-content>
+
+      <div class="grid-block vertical">
+        <div ui-view="header"></div>
+
+        <div class="grid-block" align="center">
+          <div id="wrapper" class="primary-view ui-animation bounceIn" ui-view="content"
+            ng-class="getAppSlide()"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <script src="assets/js/angular-libs.js"></script>
+    <script src="assets/js/dependencies.js"></script>
+    <script src="assets/js/foundation-libs.js"></script>
+    <script type="text/javascript" src="assets/ui-bootstrap-tpls.js"></script>
+    <scipt type="text/javascript" src="assets/picker.date.js"></script>
+
+
+
+    <script src="app/js/app.module.js"></script>
+    <!-- App Config is generated when running gulp -->
+    <script src="app/app.config.js"></script>
+
+   
+    <script src="app/layout/layout.module.js"></script>
+    <script src="app/layout/header/header.module.js"></script>
+    <script src="app/layout/header/header.controller.js"></script>
+
+
+    <script src="app/layout/footer/footer.module.js"></script>
+    <script src="app/layout/footer/footer.controller.js"></script>
+    <script src="app/layout/menu/menu.module.js"></script>
+    <script src="app/layout/menu/left-menu.controller.js"></script>
+
+    <script src="app/login/login.module.js"></script>
+    <script src="app/login/login.controller.js"></script>
+    <script src="app/login/login.service.js"></script>
+
+    <script src="app/home/home.module.js"></script>
+    <script src="app/home/home.controller.js"></script>
+    <script src = "app/home/home.service.js"></script>
+
+    <script type="text/javascript" src="app/login/googlePlus.module.js"></script>
+    <script type="text/javascript" src="app/login/googlePlus.service.js"></script>
+
+    <script type="text/javascript" src="app/js/directives.js"></script>
+
+  </body>
+</html>
